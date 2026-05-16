@@ -754,8 +754,6 @@ This project exists thanks to all the people who contribute. [Become a contribut
 
 <div align="center">
 
-**Made with ❤️ by the AI Resume Builder Team**
 
-[Report Bug](https://github.com/your-username/ai-resume-builder/issues) • [Request Feature](https://github.com/your-username/ai-resume-builder/issues)
 
 </div>
