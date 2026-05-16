@@ -733,14 +733,6 @@ This project is licensed under the MIT License - see the [LICENSE](LICENSE) file
 
 ---
 
-## 👥 Team Members
-
-- **Harshita Bhansali (Team Leader)**
-- **Gungun Wadhwani (Team Member 1)**
-- **Mohnish Pamnani (Team Member 2)**
-- **Shivang Jaiswal (Team Member 3)**
-
----
 
 ## 🙏 Acknowledgments
 
@@ -753,8 +745,6 @@ This project is licensed under the MIT License - see the [LICENSE](LICENSE) file
 
 <div align="center">
 
-**Made with ❤️ by the AI Resume Builder Team**
 
-[Report Bug](https://github.com/your-username/ai-resume-builder/issues) • [Request Feature](https://github.com/your-username/ai-resume-builder/issues)
 
 </div>
