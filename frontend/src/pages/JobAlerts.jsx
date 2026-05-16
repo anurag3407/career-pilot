@@ -330,11 +330,13 @@ function JobCard({ job, index }) {
               <Briefcase className="w-4 h-4" />
               {job.employmentType || "Full-time"}
             </span>
-            {job.salary?.min && (
+            {job.salary?.min != null && (
               <span className="text-green-400 font-medium">
-                ₹{job.salary.min.toLocaleString("en-IN")} - ₹
-                {job.salary.max?.toLocaleString("en-IN") || "+"} /{" "}
-                {job.salary.period || "year"}
+                ₹{job.salary.min.toLocaleString("en-IN")}
+                {job.salary.max != null
+                  ? ` - ₹${job.salary.max.toLocaleString("en-IN")}`
+                  : "+"}{" "}
+                / {job.salary.period || "year"}
               </span>
             )}
           </div>
