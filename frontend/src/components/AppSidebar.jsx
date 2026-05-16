@@ -12,8 +12,11 @@ import {
     LogOut,
     Settings,
     Zap,
+    Sun,
+    Moon
 } from "lucide-react";
 import { useAuth } from "../context/AuthContext";
+import { useTheme } from "../context/ThemeContext";
 import {
     Sidebar,
     SidebarBody,
@@ -88,6 +91,7 @@ function Logo() {
 function UserSection() {
     const { user, logout } = useAuth();
     const { open, animate, setOpen } = useSidebar();
+    const { theme, toggleTheme } = useTheme();
     const navigate = useNavigate();
 
     const handleLogout = async () => {
@@ -130,6 +134,25 @@ function UserSection() {
                     <p className="text-xs text-muted-foreground font-medium truncate">{user.email}</p>
                 </motion.div>
             </div>
+            <button
+                onClick={toggleTheme}
+                className={cn(
+                    "flex items-center gap-3 w-full py-3 px-4 rounded-2xl text-muted-foreground hover:text-foreground hover:bg-muted transition-all cursor-pointer font-bold",
+                    !open && animate && "justify-center"
+                )}
+            >
+                {theme === 'dark' ? <Sun className="w-5 h-5 flex-shrink-0" /> : <Moon className="w-5 h-5 flex-shrink-0" />}
+                <motion.span
+                    animate={{
+                        display: animate ? (open ? "inline-block" : "none") : "inline-block",
+                        opacity: animate ? (open ? 1 : 0) : 1,
+                    }}
+                    transition={{ duration: 0.2 }}
+                    className="text-sm font-bold whitespace-pre"
+                >
+                    {theme === 'dark' ? 'Light Mode' : 'Dark Mode'}
+                </motion.span>
+            </button>
             <button
                 onClick={() => {
                     handleLogout();

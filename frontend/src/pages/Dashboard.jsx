@@ -124,7 +124,7 @@ export default function Dashboard() {
                 <span className="font-semibold">{fetchError}</span>
                 <button
                   onClick={fetchData}
-                  className="px-4 py-1.5 bg-destructive text-white rounded-lg font-bold hover:opacity-90 transition-opacity"
+                  className="px-4 py-1.5 bg-destructive text-foreground rounded-lg font-bold hover:opacity-90 transition-opacity"
                 >
                   Retry
                 </button>
@@ -136,10 +136,10 @@ export default function Dashboard() {
               {[
                 { to: '/jobs', icon: Search, label: 'Find Jobs', sub: 'Opportunities', color: 'primary' },
                 { to: '/job-alerts', icon: Bell, label: 'Alerts', sub: 'Get notified', color: 'secondary' },
-                { to: '/interview-prep', icon: Mic, label: 'Interview', sub: 'AI practice', color: 'indigo-500' },
-                { to: '/upload', icon: Sparkles, label: 'AI Enhance', sub: 'Optimize', color: 'amber-500' },
+                { to: '/interview-prep', icon: Mic, label: 'Interview', sub: 'AI practice', color: 'primary' },
+                { to: '/upload', icon: Sparkles, label: 'AI Enhance', sub: 'Optimize', color: 'secondary' },
                 { to: '/job-tracker', icon: Briefcase, label: 'Tracker', sub: `${jobStats.total} tracked`, color: 'emerald-500' },
-                { to: '/community', icon: Users, label: 'Community', sub: 'Connect', color: 'cyan-500' },
+                { to: '/community', icon: Users, label: 'Community', sub: 'Connect', color: 'primary' },
                 { to: '/fellowship', icon: GraduationCap, label: 'Fellowship', sub: 'Earn & learn', color: 'primary', isNew: true },
               ].map((action, idx) => (
                 <Link key={idx} to={action.to} className="group">

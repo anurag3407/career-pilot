@@ -43,7 +43,7 @@ function StackedCircularFooter() {
     }
 
     return (
-        <footer className="bg-zinc-100 dark:bg-muted py-12 border-t border-border relative overflow-hidden">
+        <footer className="bg-muted dark:bg-muted py-12 border-t border-border relative overflow-hidden">
             <div className="absolute inset-0 bg-gradient-to-b from-transparent to-background/50" />
             
             <div className="container mx-auto px-4 md:px-6 relative z-10">
