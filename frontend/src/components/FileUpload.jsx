@@ -1,13 +1,28 @@
 import { useCallback } from 'react'
 import { useDropzone } from 'react-dropzone'
 import { Upload, FileText } from 'lucide-react'
+import toast from 'react-hot-toast'
 
-export default function FileUpload({ onFileSelect, disabled = false }) {
-  const onDrop = useCallback((acceptedFiles) => {
+export default function FileUpload({ onFileSelect, disabled = false, maxSizeMB = 5 }) {
+  const maxSizeBytes = maxSizeMB * 1024 * 1024
+
+  const onDrop = useCallback((acceptedFiles, rejectedFiles) => {
+    if (rejectedFiles && rejectedFiles.length > 0) {
+      rejectedFiles.forEach((file) => {
+        if (file.file.size > maxSizeBytes) {
+          const fileSizeMB = (file.file.size / (1024 * 1024)).toFixed(2)
+          toast.error(
+            `File "${file.file.name}" (${fileSizeMB}MB) exceeds the maximum limit of ${maxSizeMB}MB`
+          )
+        }
+      })
+      return
+    }
+
     if (acceptedFiles.length > 0) {
       onFileSelect(acceptedFiles[0])
     }
-  }, [onFileSelect])
+  }, [onFileSelect, maxSizeBytes, maxSizeMB])
 
   const { getRootProps, getInputProps, isDragActive } = useDropzone({
     onDrop,
@@ -15,7 +30,7 @@ export default function FileUpload({ onFileSelect, disabled = false }) {
       'application/pdf': ['.pdf']
     },
     maxFiles: 1,
-    maxSize: 5 * 1024 * 1024, // 5MB
+    maxSize: maxSizeBytes,
     disabled
   })
 
@@ -50,7 +65,7 @@ export default function FileUpload({ onFileSelect, disabled = false }) {
             <p className="text-sm text-neutral-500 mb-4">or click to browse</p>
             <div className="inline-flex items-center gap-2 px-4 py-2 bg-neutral-800 rounded-lg">
               <FileText className="w-4 h-4 text-neutral-500" />
-              <span className="text-xs text-neutral-500">PDF files only • Max 5MB</span>
+              <span className="text-xs text-neutral-500">PDF files only • Max {maxSizeMB}MB</span>
             </div>
           </>
         )}
