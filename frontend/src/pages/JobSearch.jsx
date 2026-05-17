@@ -5,6 +5,7 @@ import { motion, AnimatePresence } from 'framer-motion'
 import { formatDistanceToNow } from 'date-fns'
 import {
   Search,
+  X,
   MapPin,
   Briefcase,
   Clock,
@@ -14,7 +15,6 @@ import {
   Bookmark,
   BookmarkCheck,
   Filter,
-  X,
   Loader2,
   TrendingUp,
   Zap,
@@ -189,6 +189,15 @@ export default function JobSearch() {
                     placeholder="Job title, keywords, or company..."
                     className="w-full pl-12 pr-4 py-4 bg-neutral-800/50 border border-neutral-700 rounded-xl text-lg text-white placeholder-neutral-500 focus:ring-2 focus:ring-indigo-500 focus:border-transparent transition-all"
                   />
+                  {searchQuery && (
+  <button
+    type="button"
+    onClick={() => setSearchQuery('')}
+    className="absolute right-4 top-1/2 transform -translate-y-1/2 text-neutral-500 hover:text-white transition-colors"
+  >
+    <X className="w-5 h-5" />
+  </button>
+)}
                 </div>
                 <Button
                   type="submit"
