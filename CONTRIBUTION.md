@@ -29,6 +29,8 @@ We welcome contributions from developers of all skill levels.
 
 ## Code of Conduct
 
+This project follows the [Contributor Covenant](CODE_OF_CONDUCT.md). The summary below is provided for convenience; the linked file is the canonical version.
+
 ### Our Pledge
 
 We are committed to providing a welcoming and inspiring community for all. We pledge to make participation in our project a harassment-free experience for everyone, regardless of age, body size, disability, ethnicity, gender identity and expression, level of experience, nationality, personal appearance, race, religion, or sexual identity and orientation.
