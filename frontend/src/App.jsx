@@ -14,7 +14,7 @@ import ResumeView from './pages/ResumeView'
 import JobSearch from './pages/JobSearch'
 import JobAlerts from './pages/JobAlerts'
 import JobTracker from './pages/JobTracker'
-import Community from './pages/Community'
+import { Community, NotFound } from './pages'
 import InterviewPrep from './pages/InterviewPrep'
 import FellowshipLayout from './pages/fellowship/FellowshipLayout'
 import Onboarding from './pages/fellowship/Onboarding'
@@ -128,7 +128,7 @@ function App() {
               <Route path="messages/:roomId" element={<FellowshipChat />} />
             </Route>
 
-            <Route path="*" element={<Navigate to="/" replace />} />
+            <Route path="*" element={<NotFound />} />
           </Routes>
         </BrowserRouter>
       </SocketProvider>
