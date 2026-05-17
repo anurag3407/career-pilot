@@ -203,8 +203,8 @@ git checkout -b fix/bug-description
 # Stage changes
 git add .
 
-# Commit with descriptive message
-git commit -m "feat: add resume template selection"
+# Commit with descriptive message (use frontend/backend scope when applicable)
+git commit -m "feat(frontend): add resume template selection"
 ```
 
 ### 4. Push and Create PR
@@ -437,6 +437,19 @@ refactor(services): extract job fetching to separate module
 # Performance
 perf(search): add pagination to job results
 ```
+
+### Scoped commits (`frontend` / `backend`)
+
+This repo is split into `frontend/` and `backend/`. Prefix the scope when the change clearly belongs to one side:
+
+```bash
+feat(frontend): add icon to resume template cards
+fix(backend): handle null user id in job alert query
+docs(frontend): document community channel keyboard shortcuts
+chore(backend): align eslint config with root scripts
+```
+
+Use a narrow scope only when maintainers request it (for example `feat(community): ...`). Otherwise prefer `frontend` or `backend`.
 
 ### Commit Best Practices
 
