@@ -20,6 +20,7 @@
 ## 📋 Table of Contents
 
 - [Overview](#-overview)
+- [Architecture & Diagrams](#-architecture--diagrams)
 - [Problem Statement](#-problem-statement)
 - [Our Solution](#-our-solution)
 - [Features](#-features)
@@ -45,6 +46,12 @@ The **AI Resume Builder & Career Platform** is a comprehensive full-stack applic
 - Track job applications through an intuitive pipeline interface
 - Connect with fellow job seekers through a real-time community platform
 - Get AI-powered insights and improvement suggestions
+
+---
+
+## 🏗 Architecture & Diagrams
+
+New contributors and reviewers should read **[ARCHITECTURE.md](./ARCHITECTURE.md)** early — it includes high-level system diagrams, data-flow charts, API layout, security notes, and deployment topology. Use it alongside the [API Reference](./API_DOCS/README.md) when tracing features end-to-end.
 
 ---
 
