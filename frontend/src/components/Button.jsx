@@ -10,15 +10,15 @@ export default function Button({
   onClick,
   className = ''
 }) {
-  const baseStyles = 'inline-flex items-center justify-center gap-2 font-medium transition-all duration-200 disabled:opacity-50 disabled:cursor-not-allowed cursor-pointer rounded-lg'
+  const baseStyles = 'inline-flex items-center justify-center gap-2 font-medium transition-all duration-200 disabled:opacity-50 disabled:cursor-not-allowed cursor-pointer rounded-lg focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-offset-black active:scale-95'
   
   const variants = {
-    primary: 'bg-white text-black hover:bg-neutral-200',
-    secondary: 'bg-neutral-900 border border-neutral-800 text-white hover:bg-neutral-800 hover:border-neutral-700',
-    danger: 'bg-red-600 hover:bg-red-700 text-white',
-    outline: 'border border-neutral-700 text-white hover:bg-neutral-900 hover:border-neutral-600',
-    ghost: 'text-neutral-400 hover:text-white hover:bg-neutral-900',
-    gradient: 'bg-gradient-to-r from-indigo-500 to-purple-500 text-white hover:from-indigo-600 hover:to-purple-600 shadow-lg shadow-indigo-500/25',
+    primary: 'bg-white text-black hover:bg-neutral-200 focus:ring-white',
+    secondary: 'bg-neutral-900 border border-neutral-800 text-white hover:bg-neutral-800 hover:border-neutral-700 focus:ring-neutral-500',
+    danger: 'bg-red-600 hover:bg-red-700 text-white focus:ring-red-500',
+    outline: 'border border-neutral-700 text-white hover:bg-neutral-900 hover:border-neutral-600 focus:ring-neutral-500',
+    ghost: 'text-neutral-400 hover:text-white hover:bg-neutral-900 focus:ring-neutral-500',
+    gradient: 'bg-gradient-to-r from-indigo-500 to-purple-500 text-white hover:from-indigo-600 hover:to-purple-600 shadow-lg shadow-indigo-500/25 focus:ring-indigo-500',
   }
 
   const sizes = {
