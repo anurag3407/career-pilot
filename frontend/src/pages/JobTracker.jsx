@@ -5,6 +5,7 @@ import Layout from '../components/Layout'
 import { jobTrackerApi } from '../services/api'
 import Button from '../components/Button'
 import Card from '../components/Card'
+import EmptyJobState from '../components/EmptyJobState'
 
 const JobTracker = () => {
   const [trackedJobs, setTrackedJobs] = useState([])
@@ -203,28 +204,10 @@ const JobTracker = () => {
 
           {/* Jobs List */}
           {filteredJobs.length === 0 ? (
-            <Card className="p-12 text-center bg-neutral-900/50 border-neutral-800">
-              <div className="max-w-md mx-auto">
-                <Briefcase className="w-16 h-16 text-neutral-600 mx-auto mb-4" />
-                <h3 className="text-xl font-semibold text-white mb-2">
-                  {filterStatus === 'all' ? 'No Tracked Jobs Yet' : `No ${getStatusInfo(filterStatus).label} Jobs`}
-                </h3>
-                <p className="text-neutral-400 mb-6">
-                  {filterStatus === 'all'
-                    ? 'Start tracking jobs from the job search page'
-                    : `You don't have any jobs with "${getStatusInfo(filterStatus).label}" status`}
-                </p>
-                {filterStatus === 'all' && (
-                  <Button
-                    onClick={() => window.location.href = '/jobs'}
-                    className="mx-auto"
-                  >
-                    <Plus className="w-5 h-5 mr-2" />
-                    Find Jobs
-                  </Button>
-                )}
-              </div>
-            </Card>
+            <EmptyJobState 
+              filterStatus={filterStatus} 
+              statusLabel={getStatusInfo(filterStatus).label} 
+            />
           ) : (
             <div className="grid gap-4">
               {filteredJobs.map(job => {
