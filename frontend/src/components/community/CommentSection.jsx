@@ -120,12 +120,19 @@ function CommentItem({ comment, currentUser, onReply, onLike, depth = 0 }) {
               <button
                 type="submit"
                 disabled={!replyContent.trim() || isSubmitting}
+                aria-label={isSubmitting ? "Posting reply" : "Post reply"}
                 className="px-3 py-2 bg-indigo-600 text-white rounded-lg hover:bg-indigo-500 disabled:opacity-50 disabled:cursor-not-allowed"
               >
                 {isSubmitting ? (
-                  <Loader2 className="w-4 h-4 animate-spin" />
+                  <>
+                    <Loader2 className="w-4 h-4 animate-spin" aria-hidden="true" />
+                    <span className="sr-only">Posting reply</span>
+                  </>
                 ) : (
-                  <Send className="w-4 h-4" />
+                  <>
+                    <Send className="w-4 h-4" aria-hidden="true" />
+                    <span className="sr-only">Post reply</span>
+                  </>
                 )}
               </button>
             </form>

@@ -10,7 +10,7 @@ const stageMessages = {
   applied: {
     emoji: '✉️',
     headline: 'No applications sent',
-    sub: 'Hit submit on your first application and watch this board come alive.',
+    sub: 'Apply to your first role and watch this board come alive.',
   },
   interviewing: {
     emoji: '🎤',

@@ -344,12 +344,19 @@ export default function FellowshipChat() {
                     <button
                         type="submit"
                         disabled={!newMessage.trim() || sending}
+                        aria-label={sending ? "Sending message" : "Send message"}
                         className="px-4 py-3 bg-emerald-600 hover:bg-emerald-500 text-white rounded-xl disabled:opacity-50 disabled:cursor-not-allowed flex items-center justify-center"
                     >
                         {sending ? (
-                            <Loader2 className="w-5 h-5 animate-spin" />
+                            <>
+                                <Loader2 className="w-5 h-5 animate-spin" aria-hidden="true" />
+                                <span className="sr-only">Sending message</span>
+                            </>
                         ) : (
-                            <Send className="w-5 h-5" />
+                            <>
+                                <Send className="w-5 h-5" aria-hidden="true" />
+                                <span className="sr-only">Send message</span>
+                            </>
                         )}
                     </button>
                 </div>

@@ -265,9 +265,11 @@ export default function MessageInput({ channelId, channelName, onTyping, replyTo
           <button
             type="submit"
             disabled={!content.trim() && attachments.length === 0}
+            aria-label="Send message"
             className="p-2.5 bg-indigo-600 text-white rounded-xl hover:bg-indigo-500 disabled:opacity-50 disabled:cursor-not-allowed transition-colors cursor-pointer"
           >
-            <Send className="w-5 h-5" />
+            <Send className="w-5 h-5" aria-hidden="true" />
+            <span className="sr-only">Send message</span>
           </button>
         </div>
       </form>
