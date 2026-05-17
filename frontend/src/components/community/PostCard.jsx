@@ -148,7 +148,9 @@ export default function PostCard({ post, currentUser, onLike, onCommentAdded }) 
               </button>
             </>
           ) : (
-            <ReactMarkdown>{post.content}</ReactMarkdown>
+            <ReactMarkdown className="break-all">
+  {post.content}
+</ReactMarkdown>
           )}
         </div>
 
