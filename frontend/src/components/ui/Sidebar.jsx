@@ -1,4 +1,5 @@
 import { cn } from "../../lib/utils";
+import { isNavActive } from "../../lib/nav";
 import { Link, useLocation } from "react-router-dom";
 import { useState, createContext, useContext } from "react";
 import { AnimatePresence, motion } from "framer-motion";
@@ -141,17 +142,19 @@ export const SidebarLink = ({
 }) => {
     const { open, animate } = useSidebar();
     const location = useLocation();
-    const isActive = active !== undefined ? active : location.pathname === link.href;
+    const isActive =
+        active !== undefined ? active : isNavActive(link.href, location.pathname);
 
     return (
         <Link
             to={link.href}
             onClick={onClick}
+            aria-current={isActive ? "page" : undefined}
             className={cn(
-                "flex items-center justify-start gap-3 group/sidebar py-3 px-3 rounded-xl transition-all duration-200",
+                "flex items-center justify-start gap-3 group/sidebar py-3 px-3 rounded-xl transition-all duration-200 border-l-2",
                 isActive
-                    ? "bg-indigo-500/10 text-indigo-400 border border-indigo-500/20"
-                    : "text-neutral-400 hover:text-white hover:bg-neutral-800/50",
+                    ? "bg-indigo-500/10 text-indigo-400 border-indigo-400 border border-indigo-500/20"
+                    : "text-neutral-400 hover:text-white hover:bg-neutral-800/50 border-transparent",
                 className
             )}
             {...props}
