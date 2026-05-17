@@ -46,8 +46,10 @@ const EmptyJobState = ({ filterStatus, statusLabel }) => {
   return (
     <div className="ejs-root">
       <style>{`
+        @import url('https://fonts.googleapis.com/css2?family=DM+Sans:wght@400;500;600&display=swap');
+
         .ejs-root {
-          font-family: 'DM Sans', system-ui, -apple-system, sans-serif;
+          font-family: 'DM Sans', sans-serif;
           position: relative;
           overflow: hidden;
           padding: 72px 24px 80px;
@@ -256,27 +258,6 @@ const EmptyJobState = ({ filterStatus, statusLabel }) => {
           .ejs-gc { display: none; }
           .ejs-h { font-size: 24px; }
           .ejs-solar { width: 148px; height: 148px; }
-        }
-
-        /* Reduced-Motion Fallback to secure layout stability for motion-sensitive environments */
-        @media (prefers-reduced-motion: reduce) {
-          .ejs-solar,
-          .ejs-sun,
-          .ejs-o1,
-          .ejs-o2,
-          .ejs-o3,
-          .ejs-o1 .ejs-planet,
-          .ejs-o2 .ejs-planet,
-          .ejs-o3 .ejs-planet,
-          .ejs-gc,
-          .ejs-pill,
-          .ejs-h,
-          .ejs-p,
-          .ejs-ctas,
-          .ejs-chips {
-            animation: none !important;
-            transition: none !important;
-          }
         }
       `}</style>
 
