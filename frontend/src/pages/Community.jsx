@@ -478,7 +478,7 @@ function CreateChannelModal({ onClose, onCreate }) {
             <label className="block text-sm font-medium text-neutral-400 mb-2">
               Visibility
             </label>
-            <div className="flex gap-4">
+            <div className="flex gap-4 min-w-0">
               <label className="flex items-center gap-2 cursor-pointer">
                 <input
                   type="radio"
