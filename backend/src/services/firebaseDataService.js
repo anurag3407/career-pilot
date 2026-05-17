@@ -199,7 +199,7 @@ export const getUserAlertsFromFirebase = async (userId) => {
         return { success: true, alerts };
     } catch (error) {
         console.error('❌ Firebase: Error getting user alerts:', error.message);
-        return { success: false, alerts: [] };
+        return { success: false, error: error.message, alerts: [] };
     }
 };
 

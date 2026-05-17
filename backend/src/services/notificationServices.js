@@ -36,7 +36,7 @@ export const Agent_24_7_Jobs = async (req, res) => {
     console.error('Agent_24_7_Jobs failed:', error);
     return res.status(500).json({
       success: false,
-      message: 'Failed to check jobs'
+      error: 'Failed to check jobs'
     });
   }
 };
