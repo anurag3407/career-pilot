@@ -1,6 +1,7 @@
 import { useState, useEffect } from 'react'
 import { Link, useLocation } from 'react-router-dom'
 import { useAuth } from '../context/AuthContext'
+import { isNavActive } from '../lib/nav'
 import {
   Zap,
   Search,
@@ -38,8 +39,6 @@ export default function Navbar() {
     }
   }
 
-  const isActive = (path) => location.pathname === path
-
   const navLinks = [
     { path: '/dashboard', label: 'Dashboard', icon: LayoutDashboard },
     { path: '/jobs', label: 'Find Jobs', icon: Search },
@@ -75,9 +74,9 @@ export default function Navbar() {
                   <Link
                     key={path}
                     to={path}
-                    className={`flex items-center gap-2 px-4 py-2 rounded-lg text-sm font-medium transition-all ${isActive(path)
-                      ? 'bg-zinc-800 text-white'
-                      : 'text-zinc-400 hover:text-white hover:bg-zinc-900'
+                    className={`flex items-center gap-2 px-4 py-2 rounded-lg text-sm font-medium transition-all border-b-2 ${isNavActive(path, location.pathname)
+                      ? 'bg-zinc-800 text-white border-indigo-400'
+                      : 'text-zinc-400 hover:text-white hover:bg-zinc-900 border-transparent'
                       }`}
                   >
                     <Icon className="w-4 h-4" />
@@ -167,9 +166,9 @@ export default function Navbar() {
                     key={path}
                     to={path}
                     onClick={() => setMobileMenuOpen(false)}
-                    className={`flex items-center gap-3 px-4 py-3 rounded-xl text-base font-medium transition-all ${isActive(path)
-                      ? 'bg-zinc-800 text-white'
-                      : 'text-zinc-400 hover:bg-zinc-900 hover:text-white'
+                    className={`flex items-center gap-3 px-4 py-3 rounded-xl text-base font-medium transition-all border-l-2 ${isNavActive(path, location.pathname)
+                      ? 'bg-zinc-800 text-white border-indigo-400'
+                      : 'text-zinc-400 hover:bg-zinc-900 hover:text-white border-transparent'
                       }`}
                   >
                     <Icon className="w-5 h-5" />
