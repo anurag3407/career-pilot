@@ -698,6 +698,7 @@ npm start
 | [API Reference](./API_DOCS/README.md)          | Complete API documentation                        |
 | [Real-World Use Cases](./Real_life_usecase.md) | Success stories and applications                  |
 | [Contributing Guide](./CONTRIBUTION.md)        | How to contribute to the project                  |
+| [Code of Conduct](./CODE_OF_CONDUCT.md)        | Community standards (Contributor Covenant)        |
 
 ---
 
