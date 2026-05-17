@@ -66,10 +66,12 @@ const trackedJobSchema = new mongoose.Schema({
 });
 
 // Compound index for checking duplicate tracked jobs
-trackedJobSchema.index({ userId: 1, jobId: 1 }, { unique: true });
+trackedJobSchema.index({ userId: 1, jobId: 1 }, { unique: true, background: true });
 
 // Index for faster queries
-trackedJobSchema.index({ userId: 1, createdAt: -1 });
+trackedJobSchema.index({ userId: 1, createdAt: -1 }, { background: true });
+trackedJobSchema.index({ userId: 1, title: 1 }, { background: true });
+trackedJobSchema.index({ userId: 1, status: 1 }, { background: true });
 
 const TrackedJob = mongoose.model('TrackedJob', trackedJobSchema);
 
