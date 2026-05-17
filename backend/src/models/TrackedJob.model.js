@@ -1,5 +1,9 @@
 import mongoose from 'mongoose';
 
+/** Maximum numeric salary represented in a tracked job (prevents overflow / junk). */
+export const MAX_TRACKED_SALARY_VALUE = 999_999_999;
+export const MAX_TRACKED_SALARY_STRING_LENGTH = 64;
+
 const noteSchema = new mongoose.Schema({
     text: {
         type: String,
@@ -41,7 +45,21 @@ const trackedJobSchema = new mongoose.Schema({
     },
     salary: {
         type: String,
-        default: null
+        default: null,
+        maxlength: [
+            MAX_TRACKED_SALARY_STRING_LENGTH,
+            `Salary must be at most ${MAX_TRACKED_SALARY_STRING_LENGTH} characters`,
+        ],
+        validate: {
+            validator(value) {
+                if (value == null || value === '') return true;
+                const digitsOnly = value.replace(/[^\d]/g, '');
+                if (!digitsOnly) return true;
+                const numeric = Number(digitsOnly);
+                return Number.isFinite(numeric) && numeric <= MAX_TRACKED_SALARY_VALUE;
+            },
+            message: `Salary must not exceed ${MAX_TRACKED_SALARY_VALUE.toLocaleString('en-US')}`,
+        },
     },
     applyLink: {
         type: String,

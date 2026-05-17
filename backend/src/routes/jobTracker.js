@@ -1,9 +1,31 @@
 import express from 'express';
 import { verifyToken } from '../middleware/auth.js';
 import { asyncHandler, ApiError } from '../middleware/errorHandler.js';
-import TrackedJob from '../models/TrackedJob.model.js';
+import TrackedJob, {
+  MAX_TRACKED_SALARY_STRING_LENGTH,
+  MAX_TRACKED_SALARY_VALUE,
+} from '../models/TrackedJob.model.js';
 
 const router = express.Router();
+
+const normalizeSalary = (salary) => {
+  if (salary == null || salary === '') return null;
+  const trimmed = String(salary).trim();
+  if (!trimmed) return null;
+
+  const digitsOnly = trimmed.replace(/[^\d]/g, '');
+  if (digitsOnly) {
+    const numeric = Number(digitsOnly);
+    if (!Number.isFinite(numeric) || numeric > MAX_TRACKED_SALARY_VALUE) {
+      throw new ApiError(
+        400,
+        `Salary must not exceed ${MAX_TRACKED_SALARY_VALUE.toLocaleString('en-US')}`,
+      );
+    }
+  }
+
+  return trimmed.slice(0, MAX_TRACKED_SALARY_STRING_LENGTH);
+};
 
 // Get all tracked jobs for a user
 router.get('/', verifyToken, asyncHandler(async (req, res) => {
@@ -84,6 +106,8 @@ router.post('/', verifyToken, asyncHandler(async (req, res) => {
     throw new ApiError(400, 'Job title and company are required');
   }
 
+  const normalizedSalary = normalizeSalary(salary);
+
   // Check if job already tracked (handled by unique index, but check explicitly for better error message)
   const existingJob = jobId
     ? await TrackedJob.findOne({ userId, jobId })
@@ -99,7 +123,7 @@ router.post('/', verifyToken, asyncHandler(async (req, res) => {
     company,
     location: location || 'Remote',
     jobType: jobType || 'Full-time',
-    salary: salary || null,
+    salary: normalizedSalary,
     applyLink: applyLink || null,
     description: description || null,
     status,
