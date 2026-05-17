@@ -226,7 +226,7 @@ NODE_ENV=development
 FRONTEND_URL=http://localhost:5173
 
 # MongoDB
-MONGODB_URI=mongodb://localhost:27017/ai-resume-builder
+MONGODB_URI=mongodb://localhost:27017/career-pilot
 
 # Firebase Admin
 FIREBASE_PROJECT_ID=your-project-id
@@ -277,8 +277,8 @@ VITE_FIREBASE_APP_ID=your-app-id
 1. **Clone the repository**
 
 ```bash
-git clone https://github.com/your-username/ai-resume-builder.git
-cd ai-resume-builder
+git clone https://github.com/ishwari418/career-pilot.git
+cd career-pilot
 ```
 
 2. **Install backend dependencies**
@@ -329,7 +329,7 @@ npm run dev
 ## 📁 Project Structure
 
 ```
-GdocNitp/
+career-pilot/
 ├── backend/
 │   ├── package.json
 │   └── src/
