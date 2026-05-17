@@ -1,31 +1,31 @@
-import { useState, useEffect } from 'react';
-import { motion } from 'framer-motion';
+import { useState, useEffect } from "react";
+import { motion } from "framer-motion";
 import {
-    Bell,
-    Plus,
-    Search,
-    Briefcase,
-    MapPin,
-    Mail,
-    ExternalLink,
-    Loader2,
-    AlertCircle,
-    Sparkles,
-    TrendingUp,
-    Zap
-} from 'lucide-react';
-import toast from 'react-hot-toast';
-import { jobAlertsApi, jobsApi } from '../services/api';
-import { JobAlertModal, JobAlertsList } from '../components';
+  Bell,
+  Plus,
+  Search,
+  Briefcase,
+  MapPin,
+  Mail,
+  ExternalLink,
+  Loader2,
+  AlertCircle,
+  Sparkles,
+  TrendingUp,
+  Zap,
+} from "lucide-react";
+import toast from "react-hot-toast";
+import { jobAlertsApi, jobsApi } from "../services/api";
+import { JobAlertModal, JobAlertsList } from "../components";
 
 export default function JobAlerts() {
-    const [activeTab, setActiveTab] = useState('alerts'); // 'alerts' | 'search' | 'matches'
-    const [isModalOpen, setIsModalOpen] = useState(false);
-    const [stats, setStats] = useState(null);
-    const [loading, setLoading] = useState(true);
-    const [searchQuery, setSearchQuery] = useState('');
-    const [searchResults, setSearchResults] = useState([]);
-    const [searchLoading, setSearchLoading] = useState(false);
+  const [activeTab, setActiveTab] = useState("alerts"); // 'alerts' | 'search' | 'matches'
+  const [isModalOpen, setIsModalOpen] = useState(false);
+  const [stats, setStats] = useState(null);
+  const [loading, setLoading] = useState(true);
+  const [searchQuery, setSearchQuery] = useState("");
+  const [searchResults, setSearchResults] = useState([]);
+  const [searchLoading, setSearchLoading] = useState(false);
 
     const hoverBorderClassMap = {
         indigo: 'hover:border-primary/30',
@@ -34,45 +34,45 @@ export default function JobAlerts() {
         blue: 'hover:border-blue-500/30'
     };
 
-    useEffect(() => {
-        fetchStats();
-    }, []);
+  useEffect(() => {
+    fetchStats();
+  }, []);
 
-    const fetchStats = async () => {
-        try {
-            const response = await jobAlertsApi.getStats();
-            setStats(response.stats);
-        } catch (err) {
-            console.error('Failed to fetch stats:', err);
-        } finally {
-            setLoading(false);
-        }
-    };
+  const fetchStats = async () => {
+    try {
+      const response = await jobAlertsApi.getStats();
+      setStats(response.stats);
+    } catch (err) {
+      console.error("Failed to fetch stats:", err);
+    } finally {
+      setLoading(false);
+    }
+  };
 
-    const handleSearch = async (e) => {
-        e.preventDefault();
-        if (!searchQuery.trim()) return;
+  const handleSearch = async (e) => {
+    e.preventDefault();
+    if (!searchQuery.trim()) return;
 
-        setSearchLoading(true);
-        try {
-            const response = await jobsApi.search(searchQuery);
-            // API returns data in response.data, not response.jobs
-            const jobs = response.data || response.jobs || [];
-            setSearchResults(jobs);
-            if (jobs.length === 0) {
-                toast('No jobs found for this search', { icon: '📭' });
-            }
-        } catch (err) {
-            toast.error(err.message || 'Search failed');
-        } finally {
-            setSearchLoading(false);
-        }
-    };
+    setSearchLoading(true);
+    try {
+      const response = await jobsApi.search(searchQuery);
+      // API returns data in response.data, not response.jobs
+      const jobs = response.data || response.jobs || [];
+      setSearchResults(jobs);
+      if (jobs.length === 0) {
+        toast("No jobs found for this search", { icon: "📭" });
+      }
+    } catch (err) {
+      toast.error(err.message || "Search failed");
+    } finally {
+      setSearchLoading(false);
+    }
+  };
 
-    const handleCreateAlertFromSearch = () => {
-        // Pre-fill modal with search query
-        setIsModalOpen(true);
-    };
+  const handleCreateAlertFromSearch = () => {
+    // Pre-fill modal with search query
+    setIsModalOpen(true);
+  };
 
     return (
         <div className="min-h-screen bg-background">
@@ -126,6 +126,14 @@ export default function JobAlerts() {
                     )}
                 </div>
             </div>
+            <button
+              onClick={() => setIsModalOpen(true)}
+              className="flex items-center gap-2 px-6 py-3 bg-white text-black rounded-xl font-semibold hover:bg-neutral-200 transition-all cursor-pointer"
+            >
+              <Plus className="w-5 h-5" />
+              Create Alert
+            </button>
+          </div>
 
             {/* Tabs */}
             <div className="relative max-w-6xl mx-auto px-4">
@@ -146,7 +154,11 @@ export default function JobAlerts() {
                         </button>
                     ))}
                 </div>
+              ))}
             </div>
+          )}
+        </div>
+      </div>
 
             {/* Content */}
             <div className="relative max-w-6xl mx-auto px-4 pb-8">
@@ -228,31 +240,52 @@ export default function JobAlerts() {
                         </div>
                     )}
                 </div>
-            </div>
+              )}
 
-            {/* Modal */}
-            <JobAlertModal
-                isOpen={isModalOpen}
-                onClose={() => setIsModalOpen(false)}
-                onSuccess={fetchStats}
-            />
+              {/* Empty State */}
+              {!searchLoading && searchResults.length === 0 && !searchQuery && (
+                <div className="text-center py-16">
+                  <div className="w-20 h-20 bg-neutral-800 rounded-full flex items-center justify-center mx-auto mb-4">
+                    <Search className="w-10 h-10 text-neutral-600" />
+                  </div>
+                  <h3 className="text-lg font-medium text-white">
+                    Search for Jobs
+                  </h3>
+                  <p className="text-neutral-500 mt-2 max-w-md mx-auto">
+                    Enter a job title, skill, or company name to find matching
+                    opportunities. You can then create an alert to get notified
+                    about new matches.
+                  </p>
+                </div>
+              )}
+            </div>
+          )}
         </div>
-    );
+      </div>
+
+      {/* Modal */}
+      <JobAlertModal
+        isOpen={isModalOpen}
+        onClose={() => setIsModalOpen(false)}
+        onSuccess={fetchStats}
+      />
+    </div>
+  );
 }
 
 // Job Card Component
 function JobCard({ job, index }) {
-    const handleApply = () => {
-        if (job.applyLink) {
-            window.open(job.applyLink, '_blank');
-        }
-    };
+  const handleApply = () => {
+    if (job.applyLink) {
+      window.open(job.applyLink, "_blank");
+    }
+  };
 
-    const handleEmail = () => {
-        if (job.recruiterEmail) {
-            window.location.href = `mailto:${job.recruiterEmail}?subject=Application for ${job.title}`;
-        }
-    };
+  const handleEmail = () => {
+    if (job.recruiterEmail) {
+      window.location.href = `mailto:${job.recruiterEmail}?subject=Application for ${job.title}`;
+    }
+  };
 
     return (
         <motion.div

@@ -54,7 +54,7 @@ const resumeSchema = new mongoose.Schema({
 });
 
 // Index for faster queries
-resumeSchema.index({ userId: 1, createdAt: -1 });
+resumeSchema.index({ userId: 1, createdAt: -1 }, { background: true });
 
 const Resume = mongoose.model('Resume', resumeSchema);
 

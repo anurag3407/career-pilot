@@ -5,6 +5,7 @@ import Layout from '../components/Layout'
 import { jobTrackerApi } from '../services/api'
 import Button from '../components/Button'
 import Card from '../components/Card'
+import EmptyJobState from '../components/EmptyJobState'
 
 const JobTracker = () => {
   const [trackedJobs, setTrackedJobs] = useState([])
