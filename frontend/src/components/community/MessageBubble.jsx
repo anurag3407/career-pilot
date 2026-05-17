@@ -1,3 +1,5 @@
+import ReactMarkdown from 'react-markdown';
+import remarkGfm from 'remark-gfm';
 import { useState } from 'react';
 import { useSocket } from '../../context/SocketContext';
 import { useAuth } from '../../context/AuthContext';
@@ -188,9 +190,18 @@ export default function MessageBubble({ message, isOwn, showAvatar, channelId, o
                   : 'bg-neutral-800 border border-neutral-700 text-white rounded-bl-md'
               }`}
             >
-              <p className="whitespace-pre-wrap break-words text-sm">
-                {message.content}
-              </p>
+           <ReactMarkdown
+  remarkPlugins={[remarkGfm]}
+  disallowedElements={['img']}
+  components={{
+    a: ({ node, ...props }) => (
+      <a {...props} target="_blank" rel="noopener noreferrer" />
+    ),
+  }}
+  className="prose prose-invert prose-sm max-w-none break-words text-sm"
+>
+  {message.content}
+</ReactMarkdown>
               {message.isEdited && (
                 <span className={`text-xs ${isOwn ? 'text-indigo-200' : 'text-neutral-500'}`}>
                   (edited)
