@@ -137,9 +137,9 @@ export default function PostCard({ post, currentUser, onLike, onCommentAdded }) 
         <div className="prose prose-sm prose-invert max-w-none text-neutral-400">
           {shouldTruncate && !showFullContent ? (
             <>
-              <ReactMarkdown>
-                {previewText + '...'}
-              </ReactMarkdown>
+              <ReactMarkdown className="break-words">
+  {preview.content}
+</ReactMarkdown>
               <button
                 onClick={() => setShowFullContent(true)}
                 className="text-indigo-400 hover:text-indigo-300 font-medium text-sm"
@@ -148,7 +148,7 @@ export default function PostCard({ post, currentUser, onLike, onCommentAdded }) 
               </button>
             </>
           ) : (
-            <ReactMarkdown className="break-all">
+            <ReactMarkdown className="break-words">
   {post.content}
 </ReactMarkdown>
           )}
