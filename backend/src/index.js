@@ -20,6 +20,7 @@ import interviewRoutes from './routes/interview.js';
 import paymentRoutes from './routes/payments.js';
 
 import { errorHandler } from './middleware/errorHandler.js';
+import { requestLogger } from './middleware/requestLogger.js';
 
 import { initializeSocket } from './config/socket.js';
 
@@ -85,6 +86,7 @@ app.use('/api/', limiter);
 
 app.use(express.json({ limit: '10mb' }));
 app.use(express.urlencoded({ extended: true, limit: '10mb' }));
+app.use(requestLogger);
 
 app.get('/health', (req, res) => {
   res.status(200).json({

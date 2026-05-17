@@ -349,6 +349,7 @@ GET /api/resumes/:resumeId
 ```
 
 **Parameters:**
+
 | Name | Type | Description |
 |------|------|-------------|
 | `resumeId` | string | MongoDB ObjectId |
@@ -438,6 +439,7 @@ PUT /api/resumes/:resumeId
 ```
 
 **Parameters:**
+
 | Name | Type | Description |
 |------|------|-------------|
 | `resumeId` | string | MongoDB ObjectId |
@@ -503,6 +505,7 @@ GET /api/resumes/:resumeId/download?version=enhanced
 ```
 
 **Query Parameters:**
+
 | Name | Type | Default | Description |
 |------|------|---------|-------------|
 | `version` | string | `enhanced` | `enhanced` or `original` |
@@ -660,6 +663,7 @@ GET /api/fetchjobs?query=software+engineer&location=New+York&page=1
 ```
 
 **Query Parameters:**
+
 | Name | Type | Default | Description |
 |------|------|---------|-------------|
 | `query` | string | required | Search keywords |
@@ -1102,6 +1106,7 @@ GET /api/community/channels/:channelId/messages?limit=50
 ```
 
 **Query Parameters:**
+
 | Name | Type | Default | Description |
 |------|------|---------|-------------|
 | `limit` | number | `50` | Messages to retrieve |
@@ -1130,6 +1135,7 @@ GET /api/community/posts?page=1&limit=20
 ```
 
 **Query Parameters:**
+
 | Name | Type | Default | Description |
 |------|------|---------|-------------|
 | `page` | number | `1` | Page number |
