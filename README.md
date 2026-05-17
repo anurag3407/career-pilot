@@ -215,6 +215,32 @@ The **AI Resume Builder & Career Platform** is a comprehensive full-stack applic
 - Google Gemini API key
 - RapidAPI key (for job fetching)
 
+### Windows setup notes
+
+You can run this project on **Windows 10/11** without WSL. Use **Node.js 18 LTS or 20 LTS** (64-bit) from [nodejs.org](https://nodejs.org/).
+
+| Requirement | Windows guidance |
+|-------------|------------------|
+| **Node.js** | v18+ (LTS recommended). Verify with `node -v` and `npm -v` in PowerShell or Command Prompt. |
+| **MongoDB** | Use [MongoDB Atlas](https://www.mongodb.com/atlas) (cloud) or install MongoDB Community locally. |
+| **Redis** | Use [Redis Cloud](https://redis.io/cloud/) free tier, Docker Desktop, or WSL2 only if you prefer a local Linux Redis install. |
+| **pdf-parse** | Pure JavaScript; no native build tools required for resume PDF text extraction. |
+| **Optional build tools** | If `npm install` in `backend/` fails on native modules, install [Visual Studio Build Tools](https://visualstudio.microsoft.com/visual-cpp-build-tools/) with the **Desktop development with C++** workload, then rerun `npm install`. |
+
+Run backend and frontend in **separate terminals** from the repo root:
+
+```powershell
+# Terminal 1 — API
+cd backend
+npm install
+npm run dev
+
+# Terminal 2 — UI
+cd frontend
+npm install
+npm run dev
+```
+
 ### Environment Variables
 
 #### Backend (.env)
