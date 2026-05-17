@@ -72,6 +72,13 @@ app.use(helmet({
   crossOriginOpenerPolicy: { policy: 'same-origin-allow-popups' }
 }));
 
+app.get('/api/ping', (req, res) => {
+  res.status(200).json({
+    message: 'Pong!',
+    timestamp: new Date().toISOString(),
+  });
+});
+
 const limiter = rateLimit({
   windowMs: parseInt(process.env.RATE_LIMIT_WINDOW_MS) || 15 * 60 * 1000, // 15 minutes
   max: parseInt(process.env.RATE_LIMIT_MAX_REQUESTS) || 1000, // increased for development
