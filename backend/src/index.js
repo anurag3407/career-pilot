@@ -20,6 +20,7 @@ import interviewRoutes from './routes/interview.js';
 import paymentRoutes from './routes/payments.js';
 
 import { errorHandler } from './middleware/errorHandler.js';
+import { requireDatabase } from './middleware/requireDatabase.js';
 
 import { initializeSocket } from './config/socket.js';
 
@@ -93,6 +94,8 @@ app.get('/health', (req, res) => {
     environment: process.env.NODE_ENV
   });
 });
+
+app.use('/api', requireDatabase);
 
 app.use('/api/auth', authRoutes);
 app.use('/api/upload', uploadRoutes);

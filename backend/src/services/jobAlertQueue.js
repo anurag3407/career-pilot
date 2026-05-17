@@ -10,12 +10,17 @@ let redisConnection = null;
 let jobAlertQueue = null;
 let redisUrl = null; // Store the URL for creating worker connections
 
-// Rate limiter configuration
+/**
+ * Worker-side pacing for external job-search API calls. BullMQ may run multiple
+ * workers in other deployments; these values keep RapidAPI usage under quota.
+ */
 export const RATE_LIMIT_CONFIG = {
-    maxConcurrent: 1,        // Process one job at a time
-    delayBetweenJobs: 2000,  // 2 seconds between API calls
+    /** BullMQ worker concurrency — one alert fetch at a time per process. */
+    maxConcurrent: 1,
+    /** Stagger between enqueue operations (see addBatchAlertsToQueue). */
+    delayBetweenJobs: 2000,
     maxRequestsPerMinute: 30,
-    maxRequestsPerDay: 500   // Conservative daily limit
+    maxRequestsPerDay: 500,
 };
 
 /**
@@ -93,19 +98,23 @@ export const initializeQueue = async () => {
         jobAlertQueue = new Queue('job-alerts', {
             connection: redisConnection,
             defaultJobOptions: {
+                /** Retry transient Redis/API failures without losing the alert payload. */
                 attempts: 3,
+                /** Exponential backoff: 5s, then 10s, then 20s between retries. */
                 backoff: {
                     type: 'exponential',
-                    delay: 5000
+                    delay: 5000,
                 },
+                /** Trim completed jobs after 24h (max 1000 retained) to bound Redis memory. */
                 removeOnComplete: {
                     age: 24 * 3600,
-                    count: 1000
+                    count: 1000,
                 },
+                /** Keep failed jobs for 7 days for post-mortem / manual replay. */
                 removeOnFail: {
-                    age: 7 * 24 * 3600
-                }
-            }
+                    age: 7 * 24 * 3600,
+                },
+            },
         });
 
         // Queue events for monitoring

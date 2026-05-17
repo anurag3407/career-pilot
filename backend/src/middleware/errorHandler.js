@@ -69,6 +69,20 @@ export const errorHandler = (err, req, res, next) => {
     });
   }
 
+  // MongoDB selection / socket timeouts — respond quickly instead of hanging
+  if (
+    err.name === 'MongoServerSelectionError' ||
+    err.name === 'MongooseServerSelectionError' ||
+    err.name === 'MongoNetworkTimeoutError' ||
+    err.name === 'MongoTimeoutError' ||
+    (typeof err.message === 'string' && err.message.toLowerCase().includes('timed out'))
+  ) {
+    return res.status(503).json({
+      success: false,
+      error: 'Database temporarily unavailable. Please try again shortly.',
+    });
+  }
+
   // Handle validation errors
   if (err.name === 'ValidationError') {
     return res.status(400).json({
