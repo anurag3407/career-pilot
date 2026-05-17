@@ -138,6 +138,21 @@ npm run dev
 
 ---
 
+## Troubleshooting
+
+| Symptom | Likely cause | What to try |
+|--------|----------------|-------------|
+| `ECONNREFUSED` / MongoDB errors on startup | MongoDB not running or wrong `MONGODB_URI` | Start local MongoDB (`mongod`) or use Atlas; confirm the URI in `backend/.env` |
+| AI resume / interview features fail | Missing or invalid `GEMINI_API_KEY` | Add a key from [Google AI Studio](https://aistudio.google.com/apikey) to `backend/.env` |
+| `EADDRINUSE` on backend start | Port **5000** already in use | Stop the other process or set `PORT` to a free port and update `VITE_API_URL` in `frontend/.env` |
+| Job alerts / queues hang | Redis not reachable | Ensure Redis is running locally or set `REDIS_HOST` / `REDIS_PORT` for your cloud instance |
+| Login fails in the UI | Firebase config mismatch | Copy web app credentials into `frontend/.env`; enable Email/Password in Firebase Console |
+| CORS or 401 on API calls | Frontend pointing at wrong API | Set `VITE_API_URL=http://localhost:5000` (or your backend URL) and restart `npm run dev` |
+
+Still stuck? Open an issue with logs, OS, and the steps you followed.
+
+---
+
 ## How to Contribute
 
 ### Types of Contributions
