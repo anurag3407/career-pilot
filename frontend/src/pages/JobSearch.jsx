@@ -79,7 +79,7 @@ export default function JobSearch() {
       setJobs(response.data || [])
 
       if (response.data?.length === 0) {
-        toast('No jobs found. Try different keywords.', { icon: '🔍' })
+        toast('No jobs found. Try different keywords.', { icon: 'ðŸ”' })
       } else {
         toast.success(`Found ${response.data.length} jobs!`)
       }
@@ -102,7 +102,7 @@ export default function JobSearch() {
     const jobId = job.job_id || job.id
 
     if (savedJobs.has(jobId)) {
-      toast('Job already saved to tracker', { icon: '📌' })
+      toast('Job already saved to tracker', { icon: 'ðŸ“Œ' })
       return
     }
 
@@ -182,13 +182,22 @@ export default function JobSearch() {
               <div className="flex gap-3">
                 <div className="flex-1 relative">
                   <Search className="absolute left-4 top-1/2 transform -translate-y-1/2 text-neutral-500 w-5 h-5" />
-                  <input
-                    type="text"
-                    value={searchQuery}
-                    onChange={(e) => setSearchQuery(e.target.value)}
-                    placeholder="Job title, keywords, or company..."
-                    className="w-full pl-12 pr-4 py-4 bg-neutral-800/50 border border-neutral-700 rounded-xl text-lg text-white placeholder-neutral-500 focus:ring-2 focus:ring-indigo-500 focus:border-transparent transition-all"
-                  />
+               <input
+  type="text"
+  value={searchQuery}
+  onChange={(e) => setSearchQuery(e.target.value)}
+  placeholder="Job title, keywords, or company..."
+  className="w-full pl-12 pr-10 py-4 bg-neutral-800/50 border border-neutral-700 rounded-xl text-lg text-white placeholder-neutral-500 focus:ring-2 focus:ring-indigo-500 focus:border-transparent transition-all"
+/>
+{searchQuery && (
+  <button
+    type="button"
+    onClick={() => setSearchQuery('')}
+    className="absolute right-4 top-1/2 transform -translate-y-1/2 text-neutral-500 hover:text-white transition-colors"
+  >
+    <X className="w-5 h-5" />
+  </button>
+)}
                 </div>
                 <Button
                   type="submit"
