@@ -170,20 +170,20 @@ export default function FellowshipChat() {
 
     return (
         <div className="flex flex-col h-[calc(100vh-8rem)]">
-            <div className="flex items-center gap-4 pb-4 border-b border-neutral-800">
+            <div className="flex items-center gap-4 pb-4 border-b border-border">
                 <button
                     onClick={() => navigate('/fellowship/messages')}
-                    className="p-2 hover:bg-neutral-800 rounded-lg text-neutral-400 hover:text-white"
+                    className="p-2 hover:bg-muted rounded-lg text-muted-foreground hover:text-foreground"
                 >
                     <ArrowLeft className="w-5 h-5" />
                 </button>
                 <div className="flex items-center gap-3">
-                    <div className="w-10 h-10 rounded-full bg-neutral-800 flex items-center justify-center">
-                        <User className="w-5 h-5 text-neutral-400" />
+                    <div className="w-10 h-10 rounded-full bg-muted flex items-center justify-center">
+                        <User className="w-5 h-5 text-muted-foreground" />
                     </div>
                     <div>
-                        <h2 className="font-semibold text-white">{otherName}</h2>
-                        <p className="text-xs text-neutral-500">{room.challengeTitle}</p>
+                        <h2 className="font-semibold text-foreground">{otherName}</h2>
+                        <p className="text-xs text-muted-foreground">{room.challengeTitle}</p>
                     </div>
                 </div>
                 <div className="ml-auto flex items-center gap-3">
@@ -205,7 +205,7 @@ export default function FellowshipChat() {
                     {canReleaseFunds && (
                         <button
                             onClick={() => setShowReleaseConfirm(true)}
-                            className="flex items-center gap-2 px-4 py-2 bg-emerald-600 hover:bg-emerald-500 text-white rounded-lg text-sm font-medium transition-colors"
+                            className="flex items-center gap-2 px-4 py-2 bg-emerald-600 hover:bg-emerald-500 text-foreground rounded-lg text-sm font-medium transition-colors"
                         >
                             <CheckCircle className="w-4 h-4" />
                             Release Funds
@@ -219,8 +219,8 @@ export default function FellowshipChat() {
                             Connected
                         </span>
                     ) : (
-                        <span className="flex items-center gap-1 text-xs text-neutral-500">
-                            <span className="w-2 h-2 bg-neutral-600 rounded-full" />
+                        <span className="flex items-center gap-1 text-xs text-muted-foreground">
+                            <span className="w-2 h-2 bg-muted-foreground/50 rounded-full" />
                             Offline
                         </span>
                     )}
@@ -229,19 +229,19 @@ export default function FellowshipChat() {
 
             {/* Release Funds Confirmation Modal */}
             {showReleaseConfirm && (
-                <div className="fixed inset-0 bg-black/70 flex items-center justify-center z-50">
+                <div className="fixed inset-0 bg-background/70 flex items-center justify-center z-50">
                     <motion.div
                         initial={{ scale: 0.9, opacity: 0 }}
                         animate={{ scale: 1, opacity: 1 }}
-                        className="bg-neutral-900 border border-neutral-800 rounded-2xl p-6 max-w-md w-full mx-4"
+                        className="bg-background border border-border rounded-2xl p-6 max-w-md w-full mx-4"
                     >
                         <div className="flex items-center gap-3 mb-4">
                             <div className="w-12 h-12 bg-emerald-950 rounded-full flex items-center justify-center">
                                 <Wallet className="w-6 h-6 text-emerald-400" />
                             </div>
                             <div>
-                                <h3 className="text-lg font-semibold text-white">Release Funds</h3>
-                                <p className="text-sm text-neutral-400">₹{room.amount?.toLocaleString('en-IN')}</p>
+                                <h3 className="text-lg font-semibold text-foreground">Release Funds</h3>
+                                <p className="text-sm text-muted-foreground">₹{room.amount?.toLocaleString('en-IN')}</p>
                             </div>
                         </div>
 
@@ -259,14 +259,14 @@ export default function FellowshipChat() {
                             <button
                                 onClick={() => setShowReleaseConfirm(false)}
                                 disabled={releasingFunds}
-                                className="flex-1 py-2.5 bg-neutral-800 hover:bg-neutral-700 text-white rounded-lg font-medium disabled:opacity-50"
+                                className="flex-1 py-2.5 bg-muted hover:bg-muted/80 text-foreground rounded-lg font-medium disabled:opacity-50"
                             >
                                 Cancel
                             </button>
                             <button
                                 onClick={handleReleaseFunds}
                                 disabled={releasingFunds}
-                                className="flex-1 py-2.5 bg-emerald-600 hover:bg-emerald-500 text-white rounded-lg font-medium flex items-center justify-center gap-2 disabled:opacity-50"
+                                className="flex-1 py-2.5 bg-emerald-600 hover:bg-emerald-500 text-foreground rounded-lg font-medium flex items-center justify-center gap-2 disabled:opacity-50"
                             >
                                 {releasingFunds ? (
                                     <Loader2 className="w-4 h-4 animate-spin" />
@@ -282,7 +282,7 @@ export default function FellowshipChat() {
 
             <div className="flex-1 overflow-y-auto py-4 space-y-4">
                 {messages.length === 0 ? (
-                    <div className="flex flex-col items-center justify-center h-full text-neutral-500">
+                    <div className="flex flex-col items-center justify-center h-full text-muted-foreground">
                         <MessageCircle className="w-12 h-12 mb-3" />
                         <p>No messages yet</p>
                         <p className="text-sm">Start the conversation!</p>
@@ -301,7 +301,7 @@ export default function FellowshipChat() {
                                 <div key={message._id || index}>
                                     {showDate && (
                                         <div className="flex justify-center my-4">
-                                            <span className="px-3 py-1 bg-neutral-800 rounded-full text-xs text-neutral-400">
+                                            <span className="px-3 py-1 bg-muted rounded-full text-xs text-muted-foreground">
                                                 {formatDate(message.createdAt)}
                                             </span>
                                         </div>
@@ -313,12 +313,12 @@ export default function FellowshipChat() {
                                     >
                                         <div className={`max-w-[70%] ${isMe ? 'order-2' : 'order-1'}`}>
                                             <div className={`px-4 py-2.5 rounded-2xl ${isMe
-                                                ? 'bg-emerald-600 text-white rounded-br-md'
-                                                : 'bg-neutral-800 text-white rounded-bl-md'
+                                                ? 'bg-emerald-600 text-foreground rounded-br-md'
+                                                : 'bg-muted text-foreground rounded-bl-md'
                                                 }`}>
                                                 <p className="text-sm whitespace-pre-wrap">{message.content}</p>
                                             </div>
-                                            <p className={`text-[10px] text-neutral-500 mt-1 ${isMe ? 'text-right' : 'text-left'}`}>
+                                            <p className={`text-[10px] text-muted-foreground mt-1 ${isMe ? 'text-right' : 'text-left'}`}>
                                                 {formatTime(message.createdAt)}
                                             </p>
                                         </div>
@@ -331,7 +331,7 @@ export default function FellowshipChat() {
                 )}
             </div>
 
-            <form onSubmit={handleSend} className="pt-4 border-t border-neutral-800">
+            <form onSubmit={handleSend} className="pt-4 border-t border-border">
                 <div className="flex gap-2">
                     <input
                         ref={inputRef}
@@ -339,18 +339,21 @@ export default function FellowshipChat() {
                         value={newMessage}
                         onChange={(e) => setNewMessage(e.target.value)}
                         placeholder="Type a message..."
-                        className="flex-1 px-4 py-3 bg-neutral-800 border border-neutral-700 rounded-xl text-white placeholder-neutral-500 focus:outline-none focus:border-emerald-500"
+                        className="flex-1 px-4 py-3 bg-muted border border-border rounded-xl text-foreground placeholder:text-muted-foreground focus:outline-none focus:border-emerald-500"
                     />
                     <button
                         type="submit"
                         disabled={!newMessage.trim() || sending}
-                        className="px-4 py-3 bg-emerald-600 hover:bg-emerald-500 text-white rounded-xl disabled:opacity-50 disabled:cursor-not-allowed flex items-center justify-center"
+                        className="px-4 py-3 bg-emerald-600 hover:bg-emerald-500 text-foreground rounded-xl disabled:opacity-50 disabled:cursor-not-allowed flex items-center justify-center"
                     >
                         {sending ? (
                             <Loader2 className="w-5 h-5 animate-spin" />
                         ) : (
+                            <>
                             <Send className="w-5 h-5" />
-                        )}
+                            <span className="sr-only">Send Message</span>
+                        </>
+                    )}
                     </button>
                 </div>
             </form>

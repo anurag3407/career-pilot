@@ -1,7 +1,7 @@
 import mongoose from 'mongoose';
 
 const noteSchema = new mongoose.Schema({
-    text: {
+    content: {
         type: String,
         required: true
     },
@@ -9,7 +9,7 @@ const noteSchema = new mongoose.Schema({
         type: Date,
         default: Date.now
     }
-}, { _id: false });
+});
 
 const trackedJobSchema = new mongoose.Schema({
     userId: {
