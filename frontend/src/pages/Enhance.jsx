@@ -452,14 +452,34 @@ export default function Enhance() {
   }
 
   if (loading) {
-    return (
-      <div className="min-h-screen bg-black">
-        <div className="flex items-center justify-center py-20">
-          <div className="w-8 h-8 border-2 border-indigo-500 border-t-transparent rounded-full animate-spin" />
+  return (
+    <div className="min-h-screen bg-black px-4 py-8 animate-pulse">
+      <div className="max-w-6xl mx-auto space-y-6">
+
+        {/* Header Skeleton */}
+        <div className="space-y-3">
+          <div className="h-6 w-40 bg-neutral-800 rounded-lg"></div>
+          <div className="h-10 w-72 bg-neutral-800 rounded-lg"></div>
+          <div className="h-4 w-52 bg-neutral-800 rounded-lg"></div>
         </div>
+
+        {/* Main Cards */}
+        <div className="grid lg:grid-cols-3 gap-6">
+          <div className="h-72 bg-neutral-900 rounded-2xl border border-neutral-800"></div>
+          <div className="lg:col-span-2 h-72 bg-neutral-900 rounded-2xl border border-neutral-800"></div>
+        </div>
+
+        {/* Lower Sections */}
+        <div className="grid md:grid-cols-2 gap-6">
+          <div className="h-56 bg-neutral-900 rounded-2xl border border-neutral-800"></div>
+          <div className="h-56 bg-neutral-900 rounded-2xl border border-neutral-800"></div>
+        </div>
+
+        <div className="h-72 bg-neutral-900 rounded-2xl border border-neutral-800"></div>
       </div>
-    )
-  }
+    </div>
+  )
+}
 
   return (
     <div className="min-h-screen bg-black">
