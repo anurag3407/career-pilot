@@ -1,19 +1,21 @@
 import { useState } from 'react';
 import { useNavigate } from 'react-router-dom';
-import { formatDistanceToNow } from 'date-fns';
-import { 
-  Heart, 
-  MessageCircle, 
-  Share2, 
-  Bookmark, 
+import { formatDistanceToNow, format } from 'date-fns';
+import {
+  Heart,
+  MessageCircle,
+  Share2,
+  Bookmark,
   Eye,
   ChevronDown,
-  ChevronUp
+  ChevronUp,
+  Clock,
+  X
 } from 'lucide-react';
 import ReactMarkdown from 'react-markdown';
 import CommentSection from './CommentSection';
 
-export default function PostCard({ post, currentUser, onLike, onCommentAdded }) {
+export default function PostCard({ post, currentUser, onLike, onCommentAdded, onCancelSchedule }) {
   const [showFullContent, setShowFullContent] = useState(false);
   const [showComments, setShowComments] = useState(false);
   const [commentCount, setCommentCount] = useState(post.commentCount || 0);
@@ -125,7 +127,37 @@ export default function PostCard({ post, currentUser, onLike, onCommentAdded }) 
               📌 Pinned
             </span>
           )}
+          {post.status === 'scheduled' && post.scheduledAt && (
+            <span className="inline-flex items-center gap-1 px-2 py-0.5 rounded-full text-xs font-medium bg-sky-500/20 text-sky-400">
+              <Clock className="w-3 h-3" />
+              Scheduled · {format(new Date(post.scheduledAt), 'MMM d, h:mm a')}
+            </span>
+          )}
+          {post.status === 'draft' && (
+            <span className="inline-flex items-center gap-1 px-2 py-0.5 rounded-full text-xs font-medium bg-neutral-600/40 text-neutral-400">
+              Draft
+            </span>
+          )}
         </div>
+
+        {/* Cancel schedule banner — only visible to the post author */}
+        {post.status === 'scheduled' && post.scheduledAt && isOwn && onCancelSchedule && (
+          <div className="mt-2 flex items-center justify-between px-3 py-2 bg-sky-500/10 border border-sky-500/20 rounded-lg">
+            <p className="text-xs text-sky-400">
+              This post will publish automatically on{' '}
+              <span className="font-medium">
+                {format(new Date(post.scheduledAt), "MMM d, yyyy 'at' h:mm a")}
+              </span>
+            </p>
+            <button
+              onClick={() => onCancelSchedule(post.id || post._id)}
+              className="flex items-center gap-1 text-xs text-neutral-400 hover:text-red-400 ml-3 flex-shrink-0 transition-colors"
+            >
+              <X className="w-3.5 h-3.5" />
+              Cancel
+            </button>
+          </div>
+        )}
       </div>
 
       {/* Content */}
