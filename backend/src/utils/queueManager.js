@@ -73,7 +73,7 @@ export const clearQueue = async () => {
 
     if (!isQueueAvailable()) {
         console.log('❌ Queue is NOT available - nothing to clear');
-        return { success: false, message: 'Queue not available' };
+        return { success: false, error: 'Queue not available' };
     }
 
     // Show stats before clearing

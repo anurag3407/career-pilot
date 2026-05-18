@@ -6,11 +6,17 @@ export const getJobs = async (req, res) => {
   try {
     const user = req.user;
     if (!user) {
-      return res.status(401).json({ message: "Unauthorized" });
+      return res.status(401).json({
+        success: false,
+        error: "Unauthorized"
+      });
     }
     const { query, jobType, experienceLevel, location } = req.query;
     if (!query) {
-      return res.status(400).json({ message: "Query parameter is required" });
+      return res.status(400).json({
+        success: false,
+        error: "Query parameter is required"
+      });
     }
 
     const querystring = {
@@ -27,7 +33,7 @@ export const getJobs = async (req, res) => {
       const statusCode = jobsData.statusCode || 500;
       return res.status(statusCode).json({
         success: false,
-        message: jobsData.error,
+        error: jobsData.error,
         data: [],
         count: 0
       });
@@ -45,7 +51,7 @@ export const getJobs = async (req, res) => {
     console.error("Error fetching jobs:", error);
     return res.status(500).json({
       success: false,
-      message: "Failed to fetch jobs. Please try again later."
+      error: "Failed to fetch jobs. Please try again later."
     });
   }
 };
@@ -57,7 +63,7 @@ export const getJobById = async (req, res) => {
     if (!mongoose.Types.ObjectId.isValid(jobId)) {
       return res.status(400).json({
         success: false,
-        message: "Invalid jobId format"
+        error: "Invalid jobId format"
       });
     }
     
@@ -66,7 +72,7 @@ export const getJobById = async (req, res) => {
     if (!job) {
       return res.status(404).json({
         success: false,
-        message: "Job not found"
+        error: "Job not found"
       });
     }
     
@@ -78,7 +84,7 @@ export const getJobById = async (req, res) => {
     console.error("Error fetching job:", error);
     return res.status(500).json({
       success: false, 
-      message: "Failed to fetch job details"
+      error: "Failed to fetch job details"
     });
   }
 };

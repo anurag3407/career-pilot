@@ -110,7 +110,10 @@ app.use('/api/payments', paymentRoutes);
 app.use('/api/search', searchRoutes);
 
 app.use((req, res) => {
-  res.status(404).json({ error: 'Route not found' });
+  res.status(404).json({
+    success: false,
+    error: 'Route not found'
+  });
 });
 app.use(errorHandler);
 const startServer = async () => {

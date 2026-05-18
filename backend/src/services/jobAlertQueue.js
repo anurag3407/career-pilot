@@ -233,7 +233,7 @@ export const cleanQueue = async () => {
 export const emptyQueue = async () => {
     if (!isQueueAvailable()) {
         console.log('⚠️  Queue not available');
-        return { success: false, message: 'Queue not available' };
+        return { success: false, error: 'Queue not available' };
     }
 
     try {
