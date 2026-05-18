@@ -479,8 +479,7 @@ export const scheduleAlertChecks = () => {
     // Custom schedule can be set via ALERT_CRON_SCHEDULE env var
     const schedule = process.env.ALERT_CRON_SCHEDULE || '0 0 */2 * *'; // Default: every 2 days at midnight
     
-    console.log(`🏭 PRODUCTION MODE: Job alerts scheduled with cron: ${schedule} (runs every 24 hours)`);
-
+console.log(`🏭 PRODUCTION MODE: Job alerts scheduled with cron: ${schedule} (runs every 2 days)`);
     cron.schedule(schedule, async () => {
         console.log('\n⏰ [PROD] Scheduled job alert check starting...');
 

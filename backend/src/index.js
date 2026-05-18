@@ -106,7 +106,6 @@ app.use('/api/community', communityRoutes);
 app.use('/api/fellowship', fellowshipRoutes);
 app.use('/api/interview', interviewRoutes);
 app.use('/api/payments', paymentRoutes);
-// app.use('/api/search', require('./routes/search'));
 app.use('/api/search', searchRoutes);
 
 app.use((req, res) => {

@@ -7,6 +7,7 @@ const router = express.Router();
 router.get('/', verifyToken, async (req, res) => {
   try {
     const { q, type = 'all' } = req.query;
+    const userId = req.user.uid; // from verifyToken middleware
 
     if (!q || q.trim().length < 2) {
       return res.status(400).json({
@@ -20,14 +21,14 @@ router.get('/', verifyToken, async (req, res) => {
 
     switch (type) {
       case 'resume':
-        results = await searchResumes(query);
+        results = await searchResumes(query, userId);
         break;
       case 'job':
         results = await searchJobs(query);
         break;
       case 'all':
       default:
-        results = await searchAll(query);
+        results = await searchAll(query, userId);
         break;
     }
 

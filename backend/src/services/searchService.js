@@ -5,13 +5,15 @@ const rankByRelevance = (results) => {
   return results.sort((a, b) => (b.score || 0) - (a.score || 0));
 };
 
-export const searchResumes = async (query) => {
+// userId param ensures users only see their own resumes
+export const searchResumes = async (query, userId) => {
   try {
     const results = await Resume.find(
-      { $text: { $search: query } },
+      { $text: { $search: query }, userId },
       { score: { $meta: 'textScore' } }
     )
-      .select('userId originalText enhancedText createdAt')
+      .select({ title: 1, jobRole: 1, createdAt: 1, score: { $meta: 'textScore' } })
+      .sort({ score: { $meta: 'textScore' } })
       .limit(10)
       .lean();
 
@@ -27,7 +29,8 @@ export const searchJobs = async (query) => {
       { $text: { $search: query } },
       { score: { $meta: 'textScore' } }
     )
-      .select('title company location description employmentType')
+      .select({ title: 1, company: 1, location: 1, employmentType: 1, score: { $meta: 'textScore' } })
+      .sort({ score: { $meta: 'textScore' } })
       .limit(10)
       .lean();
 
@@ -37,9 +40,9 @@ export const searchJobs = async (query) => {
   }
 };
 
-export const searchAll = async (query) => {
+export const searchAll = async (query, userId) => {
   const [resumes, jobs] = await Promise.all([
-    searchResumes(query),
+    searchResumes(query, userId),
     searchJobs(query),
   ]);
 
