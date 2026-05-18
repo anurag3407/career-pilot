@@ -528,6 +528,24 @@ export const communityApi = {
     return handleResponse(response)
   },
 
+  async getScheduledPosts() {
+    const headers = await getAuthHeaders()
+    const response = await fetch(`${API_BASE}/community/posts/scheduled/mine`, {
+      method: 'GET',
+      headers
+    })
+    return handleResponse(response)
+  },
+
+  async cancelScheduledPost(postId) {
+    const headers = await getAuthHeaders()
+    const response = await fetch(`${API_BASE}/community/posts/${postId}/schedule`, {
+      method: 'DELETE',
+      headers
+    })
+    return handleResponse(response)
+  },
+
   // ---- Comments ----
   async getComments(postId, page = 1) {
     const headers = await getAuthHeaders()
