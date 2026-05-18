@@ -1,5 +1,5 @@
 import { useState, useEffect } from 'react'
-import { Link } from 'react-router-dom'
+import { Link, useSearchParams } from 'react-router-dom'
 import toast from 'react-hot-toast'
 import { motion, AnimatePresence } from 'framer-motion'
 import { formatDistanceToNow } from 'date-fns'
@@ -38,16 +38,17 @@ const POPULAR_SEARCHES = [
 ]
 
 export default function JobSearch() {
-  const [searchQuery, setSearchQuery] = useState('')
+const [searchParams, setSearchParams] = useSearchParams()
+  const [searchQuery, setSearchQuery] = useState(searchParams.get('q') || '')
   const [jobs, setJobs] = useState([])
   const [loading, setLoading] = useState(false)
   const [hasSearched, setHasSearched] = useState(false)
   const [savedJobs, setSavedJobs] = useState(new Set())
   const [showFilters, setShowFilters] = useState(false)
-  const [filters, setFilters] = useState({
-    jobType: 'All Types',
-    experienceLevel: 'All Levels',
-    location: ''
+const [filters, setFilters] = useState({
+    jobType: searchParams.get('jobType') || 'All Types',
+    experienceLevel: searchParams.get('experienceLevel') || 'All Levels',
+    location: searchParams.get('location') || ''
   })
 
   // Load saved jobs on mount
@@ -73,13 +74,19 @@ export default function JobSearch() {
 
     setLoading(true)
     setHasSearched(true)
+setSearchParams({
+  q: searchQuery,
+  jobType: filters.jobType,
+  experienceLevel: filters.experienceLevel,
+  location: filters.location
+})
 
     try {
       const response = await jobsApi.search(searchQuery, filters)
       setJobs(response.data || [])
 
       if (response.data?.length === 0) {
-        toast('No jobs found. Try different keywords.', { icon: 'ðŸ”' })
+        toast('No jobs found. Try different keywords.', { icon: '🔍' })
       } else {
         toast.success(`Found ${response.data.length} jobs!`)
       }
@@ -102,7 +109,7 @@ export default function JobSearch() {
     const jobId = job.job_id || job.id
 
     if (savedJobs.has(jobId)) {
-      toast('Job already saved to tracker', { icon: 'ðŸ“Œ' })
+      toast('Job already saved to tracker', { icon: '📌' })
       return
     }
 
@@ -190,11 +197,12 @@ export default function JobSearch() {
   className="w-full pl-12 pr-10 py-4 bg-neutral-800/50 border border-neutral-700 rounded-xl text-lg text-white placeholder-neutral-500 focus:ring-2 focus:ring-indigo-500 focus:border-transparent transition-all"
 />
 {searchQuery && (
-  <button
-    type="button"
-    onClick={() => setSearchQuery('')}
-    className="absolute right-4 top-1/2 transform -translate-y-1/2 text-neutral-500 hover:text-white transition-colors"
-  >
+ <button
+  type="button"
+  onClick={() => setSearchQuery('')}
+  aria-label="Clear search"
+  className="absolute right-4 top-1/2 transform -translate-y-1/2 text-neutral-500 hover:text-white transition-colors"
+>
     <X className="w-5 h-5" />
   </button>
 )}
