@@ -2,38 +2,39 @@ import { useState, useEffect, useRef, useCallback } from 'react';
 import { useSocket } from '../../context/SocketContext';
 import MessageBubble from './MessageBubble';
 import MessageInput from './MessageInput';
-import { Hash, Users, Pin, Search, Settings, MoreVertical, Loader2 } from 'lucide-react';
+import { useTheme } from '../../context/ThemeContext';
+import { Hash, Users, Pin, Search, Settings, MoreVertical, Loader2, Sun, Moon } from 'lucide-react';
 
 // Skeleton loader component for chat messages
 const MessageSkeleton = ({ isOwn }) => (
   <div className={`flex gap-3 ${isOwn ? 'flex-row-reverse' : ''} animate-pulse`}>
     {!isOwn && (
-      <div className="w-9 h-9 rounded-full bg-gradient-to-br from-indigo-800 to-purple-800 flex-shrink-0" />
+      <div className="w-9 h-9 rounded-full bg-gradient-to-br from-primary to-secondary flex-shrink-0" />
     )}
     <div className={`flex flex-col gap-1 ${isOwn ? 'items-end' : 'items-start'}`}>
-      {!isOwn && <div className="h-3 w-20 bg-neutral-700 rounded" />}
-      <div className={`rounded-2xl px-4 py-3 ${isOwn ? 'bg-gradient-to-r from-indigo-900/50 to-purple-900/50' : 'bg-neutral-800 border border-neutral-700'}`}>
+      {!isOwn && <div className="h-3 w-20 bg-muted-foreground/30 rounded" />}
+      <div className={`rounded-2xl px-4 py-3 ${isOwn ? 'bg-primary/20' : 'bg-card border border-border'}`}>
         <div className="space-y-2">
-          <div className={`h-3 ${isOwn ? 'w-32' : 'w-48'} bg-neutral-700 rounded`} />
-          <div className={`h-3 ${isOwn ? 'w-24' : 'w-36'} bg-neutral-700 rounded`} />
+          <div className={`h-3 ${isOwn ? 'w-32' : 'w-48'} bg-muted-foreground/30 rounded`} />
+          <div className={`h-3 ${isOwn ? 'w-24' : 'w-36'} bg-muted-foreground/30 rounded`} />
         </div>
       </div>
-      <div className="h-2 w-12 bg-neutral-800 rounded mt-1" />
+      <div className="h-2 w-12 bg-muted rounded mt-1" />
     </div>
   </div>
 );
 
 // Animated loading component
 const ChatLoadingSkeleton = () => (
-  <div className="flex-1 flex flex-col px-4 py-4 space-y-6 bg-neutral-900 overflow-hidden">
+  <div className="flex-1 flex flex-col px-4 py-4 space-y-6 bg-background overflow-hidden">
     {/* Animated gradient overlay */}
-    <div className="absolute inset-0 bg-gradient-to-b from-transparent via-neutral-900/5 to-neutral-900/20 pointer-events-none" />
+    <div className="absolute inset-0 bg-gradient-to-b from-transparent via-background/5 to-background/20 pointer-events-none" />
     
     {/* Date separator skeleton */}
     <div className="flex items-center gap-4 my-2 animate-pulse">
-      <div className="flex-1 h-px bg-neutral-800"></div>
-      <div className="h-4 w-28 bg-neutral-800 rounded-full"></div>
-      <div className="flex-1 h-px bg-neutral-800"></div>
+      <div className="flex-1 h-px bg-muted"></div>
+      <div className="h-4 w-28 bg-muted rounded-full"></div>
+      <div className="flex-1 h-px bg-muted"></div>
     </div>
     
     {/* Message skeletons with staggered animation */}
@@ -57,13 +58,13 @@ const ChatLoadingSkeleton = () => (
     
     {/* Floating loading indicator */}
     <div className="flex justify-center mt-4">
-      <div className="flex items-center gap-2 px-4 py-2 bg-neutral-800 rounded-full shadow-lg border border-neutral-700">
-        <Loader2 className="w-4 h-4 text-indigo-400 animate-spin" />
-        <span className="text-sm text-neutral-300 font-medium">Loading messages...</span>
+      <div className="flex items-center gap-2 px-4 py-2 bg-card rounded-full shadow-lg border border-border">
+        <Loader2 className="w-4 h-4 text-primary animate-spin" />
+        <span className="text-sm text-foreground font-medium">Loading messages...</span>
         <div className="flex gap-1 ml-1">
-          <span className="w-1.5 h-1.5 bg-indigo-400 rounded-full animate-bounce" style={{ animationDelay: '0ms' }}></span>
-          <span className="w-1.5 h-1.5 bg-indigo-400 rounded-full animate-bounce" style={{ animationDelay: '150ms' }}></span>
-          <span className="w-1.5 h-1.5 bg-indigo-400 rounded-full animate-bounce" style={{ animationDelay: '300ms' }}></span>
+          <span className="w-1.5 h-1.5 bg-primary rounded-full animate-bounce" style={{ animationDelay: '0ms' }}></span>
+          <span className="w-1.5 h-1.5 bg-primary rounded-full animate-bounce" style={{ animationDelay: '150ms' }}></span>
+          <span className="w-1.5 h-1.5 bg-primary rounded-full animate-bounce" style={{ animationDelay: '300ms' }}></span>
         </div>
       </div>
     </div>
@@ -71,6 +72,7 @@ const ChatLoadingSkeleton = () => (
 );
 
 export default function ChatWindow({ channel, messages, currentUser, onOptimisticMessage, onOptimisticReaction, onOptimisticEdit, onOptimisticDelete, loading }) {
+  const { theme, toggleTheme } = useTheme();
   const { subscribe, startTyping, stopTyping } = useSocket();
   const [typingUsers, setTypingUsers] = useState([]);
   const [showSearch, setShowSearch] = useState(false);
@@ -169,20 +171,20 @@ export default function ChatWindow({ channel, messages, currentUser, onOptimisti
   return (
     <div className="flex-1 flex flex-col h-full">
       {/* Channel Header */}
-      <div className="h-14 px-4 border-b border-neutral-800 bg-neutral-900 flex items-center justify-between flex-shrink-0">
+      <div className="h-14 px-4 border-b border-border bg-background flex items-center justify-between flex-shrink-0">
         <div className="flex items-center gap-3">
           <span className="text-xl">{channel.icon || '💬'}</span>
           <div>
-            <h2 className="font-semibold text-white flex items-center gap-2">
+            <h2 className="font-semibold text-foreground flex items-center gap-2">
               {channel.name}
               {channel.type === 'private' && (
-                <span className="text-xs bg-neutral-800 text-neutral-400 px-1.5 py-0.5 rounded">
+                <span className="text-xs bg-muted text-muted-foreground px-1.5 py-0.5 rounded">
                   Private
                 </span>
               )}
             </h2>
             {channel.description && (
-              <p className="text-xs text-neutral-500 truncate max-w-md">
+              <p className="text-xs text-muted-foreground truncate max-w-md">
                 {channel.description}
               </p>
             )}
@@ -193,18 +195,25 @@ export default function ChatWindow({ channel, messages, currentUser, onOptimisti
           <button
             onClick={() => setShowSearch(!showSearch)}
             className={`p-2 rounded-lg transition-colors ${
-              showSearch ? 'bg-indigo-500/20 text-indigo-400' : 'text-neutral-400 hover:bg-neutral-800'
+              showSearch ? 'bg-primary/20 text-primary' : 'text-muted-foreground hover:bg-muted'
             }`}
           >
             <Search className="w-5 h-5" />
           </button>
-          <button className="p-2 text-neutral-400 hover:bg-neutral-800 rounded-lg">
+          <button className="p-2 text-muted-foreground hover:bg-muted rounded-lg">
             <Pin className="w-5 h-5" />
           </button>
-          <button className="p-2 text-neutral-400 hover:bg-neutral-800 rounded-lg">
+          <button className="p-2 text-muted-foreground hover:bg-muted rounded-lg">
             <Users className="w-5 h-5" />
           </button>
-          <button className="p-2 text-neutral-400 hover:bg-neutral-800 rounded-lg">
+          <button
+            onClick={toggleTheme}
+            className="p-2 text-muted-foreground hover:bg-muted rounded-lg transition-colors"
+            title="Toggle Theme"
+          >
+            {theme === 'dark' ? <Sun className="w-5 h-5" /> : <Moon className="w-5 h-5" />}
+          </button>
+          <button className="p-2 text-muted-foreground hover:bg-muted rounded-lg">
             <MoreVertical className="w-5 h-5" />
           </button>
         </div>
@@ -212,13 +221,13 @@ export default function ChatWindow({ channel, messages, currentUser, onOptimisti
 
       {/* Search Bar */}
       {showSearch && (
-        <div className="px-4 py-2 border-b border-neutral-800 bg-neutral-900/50">
+        <div className="px-4 py-2 border-b border-border bg-background/50">
           <input
             type="text"
             value={searchQuery}
             onChange={(e) => setSearchQuery(e.target.value)}
             placeholder="Search messages..."
-            className="w-full px-3 py-2 bg-neutral-800 border border-neutral-700 rounded-lg text-sm text-white placeholder-neutral-500 focus:ring-2 focus:ring-indigo-500 focus:border-indigo-500"
+            className="w-full px-3 py-2 bg-muted border border-border rounded-lg text-sm text-foreground placeholder:text-muted-foreground focus:ring-2 focus:ring-primary focus:border-primary"
             autoFocus
           />
         </div>
@@ -230,15 +239,15 @@ export default function ChatWindow({ channel, messages, currentUser, onOptimisti
       ) : (
         <div 
           ref={messagesContainerRef}
-          className="flex-1 overflow-y-auto px-4 py-4 space-y-4 bg-neutral-900"
+          className="flex-1 overflow-y-auto px-4 py-4 space-y-4 bg-background"
         >
           {Object.entries(groupedMessages).map(([date, dateMessages]) => (
             <div key={date}>
               {/* Date Separator */}
               <div className="flex items-center gap-4 my-4">
-                <div className="flex-1 h-px bg-neutral-800"></div>
-                <span className="text-xs text-neutral-500 font-medium">{date}</span>
-                <div className="flex-1 h-px bg-neutral-800"></div>
+                <div className="flex-1 h-px bg-muted"></div>
+                <span className="text-xs text-muted-foreground font-medium">{date}</span>
+                <div className="flex-1 h-px bg-muted"></div>
               </div>
 
               {/* Messages */}
@@ -269,17 +278,17 @@ export default function ChatWindow({ channel, messages, currentUser, onOptimisti
 
           {filteredMessages.length === 0 && (
             <div className="flex-1 flex items-center justify-center h-full">
-              <div className="text-center text-neutral-500">
+              <div className="text-center text-muted-foreground">
                 {searchQuery ? (
                   <>
                     <span className="text-4xl mb-3 block">🔎</span>
-                    <h3 className="font-medium text-white">No results for "{searchQuery}"</h3>
+                    <h3 className="font-medium text-foreground">No results for "{searchQuery}"</h3>
                     <p className="text-sm mt-1">Try a different keyword or clear the search.</p>
                   </>
                 ) : (
                   <>
                     <span className="text-4xl mb-3 block">{channel.icon || '💬'}</span>
-                    <h3 className="font-medium text-white">Welcome to #{channel.name}</h3>
+                    <h3 className="font-medium text-foreground">Welcome to #{channel.name}</h3>
                     <p className="text-sm mt-1">{channel.description || 'Start the conversation!'}</p>
                   </>
                 )}
@@ -293,12 +302,12 @@ export default function ChatWindow({ channel, messages, currentUser, onOptimisti
 
       {/* Typing Indicator */}
       {typingUsers.length > 0 && (
-        <div className="px-4 py-2 text-sm text-neutral-400 bg-neutral-900 border-t border-neutral-800">
+        <div className="px-4 py-2 text-sm text-muted-foreground bg-background border-t border-border">
           <span className="inline-flex items-center gap-2">
             <span className="flex gap-1">
-              <span className="w-2 h-2 bg-neutral-500 rounded-full animate-bounce" style={{ animationDelay: '0ms' }}></span>
-              <span className="w-2 h-2 bg-neutral-500 rounded-full animate-bounce" style={{ animationDelay: '150ms' }}></span>
-              <span className="w-2 h-2 bg-neutral-500 rounded-full animate-bounce" style={{ animationDelay: '300ms' }}></span>
+              <span className="w-2 h-2 bg-muted-foreground/50 rounded-full animate-bounce" style={{ animationDelay: '0ms' }}></span>
+              <span className="w-2 h-2 bg-muted-foreground/50 rounded-full animate-bounce" style={{ animationDelay: '150ms' }}></span>
+              <span className="w-2 h-2 bg-muted-foreground/50 rounded-full animate-bounce" style={{ animationDelay: '300ms' }}></span>
             </span>
             {typingUsers.length === 1 
               ? `${typingUsers[0].name} is typing...`

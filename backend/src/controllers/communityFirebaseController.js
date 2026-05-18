@@ -411,6 +411,17 @@ export const createPost = async (req, res, next) => {
       const jobId = await schedulePostJob(docRef.id, scheduledAt);
       if (!jobId && !isSchedulerAvailable()) {
         // Redis unavailable — immediately publish instead of silently dropping
+      try {
+        const jobId = await schedulePostJob(docRef.id, scheduledAt);
+        if (!jobId && !isSchedulerAvailable()) {
+          // Redis unavailable — fall back to immediate publish rather than leaving post stranded
+          await postsRef.doc(docRef.id).update({ status: 'published', scheduledAt: null });
+          newPost.status = 'published';
+          newPost.scheduledAt = null;
+        }
+      } catch (scheduleErr) {
+        // Job enqueue failed after post was saved — revert to immediate publish to avoid orphan
+        console.error('schedulePostJob failed, publishing immediately:', scheduleErr.message);
         await postsRef.doc(docRef.id).update({ status: 'published', scheduledAt: null });
         newPost.status = 'published';
         newPost.scheduledAt = null;

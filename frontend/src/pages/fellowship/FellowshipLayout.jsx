@@ -71,10 +71,10 @@ export default function FellowshipLayout() {
 
     if (loading) {
         return (
-            <div className="flex h-screen items-center justify-center bg-neutral-950">
+            <div className="flex h-screen items-center justify-center bg-background">
                 <div className="flex flex-col items-center gap-4">
                     <div className="h-8 w-8 animate-spin rounded-full border-4 border-emerald-500 border-t-transparent" />
-                    <p className="text-neutral-400">Loading...</p>
+                    <p className="text-muted-foreground">Loading...</p>
                 </div>
             </div>
         )
@@ -82,19 +82,19 @@ export default function FellowshipLayout() {
 
     if (error) {
         return (
-            <div className="flex h-screen items-center justify-center bg-neutral-950">
+            <div className="flex h-screen items-center justify-center bg-background">
                 <div className="max-w-md text-center space-y-4">
-                    <p className="text-neutral-300">{error}</p>
+                    <p className="text-foreground">{error}</p>
                     <div className="flex flex-wrap justify-center gap-3">
                         <button
                             onClick={loadProfile}
-                            className="px-4 py-2 bg-emerald-600 hover:bg-emerald-500 text-white rounded-lg"
+                            className="px-4 py-2 bg-emerald-600 hover:bg-emerald-500 text-foreground rounded-lg"
                         >
                             Retry
                         </button>
                         <button
                             onClick={() => navigate('/dashboard')}
-                            className="px-4 py-2 bg-neutral-800 text-neutral-300 rounded-lg hover:bg-neutral-700"
+                            className="px-4 py-2 bg-muted text-foreground rounded-lg hover:bg-muted/80"
                         >
                             Back to Dashboard
                         </button>
@@ -110,20 +110,20 @@ export default function FellowshipLayout() {
 
     const SidebarContent = () => (
         <div className="flex h-full flex-col">
-            <div className="flex h-16 items-center border-b border-neutral-800 px-6">
+            <div className="flex h-16 items-center border-b border-border px-6">
                 <NavLink to="/fellowship/challenges" className="flex items-center gap-2">
                     <div className="flex h-8 w-8 items-center justify-center rounded-lg bg-emerald-600">
-                        <Briefcase className="h-5 w-5 text-white" />
+                        <Briefcase className="h-5 w-5 text-foreground" />
                     </div>
                     <div className="flex flex-col">
-                        <span className="text-lg font-bold text-white leading-tight">Fellowships</span>
-                        <span className="text-[10px] text-neutral-400">by careerpilot</span>
+                        <span className="text-lg font-bold text-foreground leading-tight">Fellowships</span>
+                        <span className="text-[10px] text-muted-foreground">by careerpilot</span>
                     </div>
                 </NavLink>
             </div>
 
             {profile?.role && (
-                <div className="border-b border-neutral-800 px-4 py-3">
+                <div className="border-b border-border px-4 py-3">
                     <div className={`flex items-center gap-2 rounded-lg px-3 py-2 text-sm font-medium ${profile.role === 'corporate'
                         ? 'bg-blue-950 text-blue-300'
                         : 'bg-emerald-950 text-emerald-300'
@@ -153,8 +153,8 @@ export default function FellowshipLayout() {
                         to={item.href}
                         onClick={() => setSidebarOpen(false)}
                         className={({ isActive }) => `flex items-center gap-3 rounded-lg px-3 py-2.5 text-sm font-medium transition-colors ${isActive
-                            ? 'bg-emerald-600 text-white'
-                            : 'text-neutral-400 hover:bg-neutral-800 hover:text-white'
+                            ? 'bg-emerald-600 text-foreground'
+                            : 'text-muted-foreground hover:bg-muted hover:text-foreground'
                             }`}
                     >
                         <item.icon className="h-5 w-5" />
@@ -162,26 +162,26 @@ export default function FellowshipLayout() {
                     </NavLink>
                 ))}
 
-                <div className="my-4 border-t border-neutral-800" />
+                <div className="my-4 border-t border-border" />
 
                 <NavLink
                     to="/dashboard"
                     onClick={() => setSidebarOpen(false)}
-                    className="flex items-center gap-3 rounded-lg px-3 py-2.5 text-sm font-medium text-neutral-400 hover:bg-neutral-800 hover:text-white transition-colors"
+                    className="flex items-center gap-3 rounded-lg px-3 py-2.5 text-sm font-medium text-muted-foreground hover:bg-muted hover:text-foreground transition-colors"
                 >
                     <Sparkles className="h-5 w-5" />
                     Back to Dashboard
                 </NavLink>
             </nav>
 
-            <div className="border-t border-neutral-800 p-4">
-                <div className="flex items-center gap-3 rounded-lg bg-neutral-800 p-3">
-                    <div className="h-10 w-10 rounded-full bg-neutral-700 flex items-center justify-center text-white font-medium">
+            <div className="border-t border-border p-4">
+                <div className="flex items-center gap-3 rounded-lg bg-muted p-3">
+                    <div className="h-10 w-10 rounded-full bg-card flex items-center justify-center text-foreground font-medium">
                         {user?.displayName?.charAt(0)?.toUpperCase() || 'U'}
                     </div>
                     <div className="flex-1 overflow-hidden">
-                        <p className="truncate text-sm font-medium text-white">{user?.displayName || 'User'}</p>
-                        <p className="truncate text-xs text-neutral-400">{user?.email}</p>
+                        <p className="truncate text-sm font-medium text-foreground">{user?.displayName || 'User'}</p>
+                        <p className="truncate text-xs text-muted-foreground">{user?.email}</p>
                     </div>
                 </div>
             </div>
@@ -189,36 +189,36 @@ export default function FellowshipLayout() {
     )
 
     return (
-        <div className="flex h-screen bg-neutral-950">
-            <aside className="hidden w-64 border-r border-neutral-800 bg-neutral-900 lg:block">
+        <div className="flex h-screen bg-background">
+            <aside className="hidden w-64 border-r border-border bg-background lg:block">
                 <SidebarContent />
             </aside>
 
             {sidebarOpen && (
                 <div className="fixed inset-0 z-50 lg:hidden">
-                    <div className="absolute inset-0 bg-black/50" onClick={() => setSidebarOpen(false)} />
-                    <aside className="absolute left-0 top-0 h-full w-64 bg-neutral-900">
+                    <div className="absolute inset-0 bg-background/50" onClick={() => setSidebarOpen(false)} />
+                    <aside className="absolute left-0 top-0 h-full w-64 bg-background">
                         <SidebarContent />
                     </aside>
                 </div>
             )}
 
             <div className="flex flex-1 flex-col overflow-hidden">
-                <header className="flex h-16 items-center justify-between border-b border-neutral-800 bg-neutral-900 px-4 lg:px-6">
+                <header className="flex h-16 items-center justify-between border-b border-border bg-background px-4 lg:px-6">
                     <div className="flex items-center gap-4">
                         <button
-                            className="lg:hidden p-2 text-neutral-400 hover:text-white"
+                            className="lg:hidden p-2 text-muted-foreground hover:text-foreground"
                             onClick={() => setSidebarOpen(true)}
                         >
                             <Menu className="h-5 w-5" />
                         </button>
-                        <h1 className="text-lg font-semibold text-white lg:hidden">Fellowships</h1>
+                        <h1 className="text-lg font-semibold text-foreground lg:hidden">Fellowships</h1>
                     </div>
 
                     <div className="flex items-center gap-3">
                         <button
                             onClick={handleLogout}
-                            className="flex items-center gap-2 px-3 py-1.5 text-sm text-neutral-400 hover:text-white transition-colors"
+                            className="flex items-center gap-2 px-3 py-1.5 text-sm text-muted-foreground hover:text-foreground transition-colors"
                         >
                             <LogOut className="h-4 w-4" />
                             Logout
