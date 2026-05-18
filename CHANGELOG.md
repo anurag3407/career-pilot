@@ -1,3 +1,10 @@
+# [1.7.0](https://github.com/anurag3407/career-pilot/compare/v1.6.0...v1.7.0) (2026-05-18)
+
+
+### Features
+
+* add pagination middleware and update resume routes ([7038a1c](https://github.com/anurag3407/career-pilot/commit/7038a1c77f8ca0ed91918e697ecbbed520d4bd70))
+
 # [1.6.0](https://github.com/anurag3407/career-pilot/compare/v1.5.0...v1.6.0) (2026-05-18)
 
 
