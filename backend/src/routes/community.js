@@ -15,6 +15,9 @@ import {
   updatePost,
   deletePost,
   toggleLikePost,
+  // Post scheduling
+  getScheduledPosts,
+  cancelScheduledPost,
   // Comments
   getComments,
   createComment,
@@ -45,11 +48,13 @@ router.get('/channels/:channelId/messages', getChannelMessages);
 
 // ============ POST ROUTES ============
 router.get('/posts', getPosts);
+router.get('/posts/scheduled/mine', getScheduledPosts);
 router.get('/posts/:postId', getPost);
 router.post('/posts', createPost);
 router.put('/posts/:postId', updatePost);
 router.delete('/posts/:postId', deletePost);
 router.post('/posts/:postId/like', toggleLikePost);
+router.delete('/posts/:postId/schedule', cancelScheduledPost);
 
 // ============ COMMENT ROUTES ============
 router.get('/posts/:postId/comments', getComments);

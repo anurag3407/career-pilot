@@ -38,28 +38,28 @@ function ChallengeCard({ challenge, onClick }) {
             animate={{ opacity: 1, y: 0 }}
             whileHover={{ y: -4 }}
             onClick={onClick}
-            className="bg-neutral-900 border border-neutral-800 rounded-2xl p-5 cursor-pointer hover:border-emerald-500/50 transition-all"
+            className="bg-background border border-border rounded-2xl p-5 cursor-pointer hover:border-emerald-500/50 transition-all"
         >
             <div className="flex items-start justify-between gap-4">
-                <span className="text-xs px-2 py-1 bg-neutral-800 rounded-lg">
+                <span className="text-xs px-2 py-1 bg-muted rounded-lg">
                     {CATEGORIES.find(c => c.id === challenge.category)?.icon} {challenge.category}
                 </span>
                 <span className="text-emerald-400 font-bold">₹{formattedPrice}</span>
             </div>
 
-            <h3 className="mt-3 text-lg font-semibold text-white line-clamp-2">{challenge.title}</h3>
-            <p className="mt-2 text-sm text-neutral-400 line-clamp-2">{challenge.description || ''}</p>
+            <h3 className="mt-3 text-lg font-semibold text-foreground line-clamp-2">{challenge.title}</h3>
+            <p className="mt-2 text-sm text-muted-foreground line-clamp-2">{challenge.description || ''}</p>
 
             <div className="mt-4 flex items-center justify-between text-sm">
-                <span className="text-neutral-500">by {challenge.companyName}</span>
-                <div className="flex items-center gap-1 text-neutral-400">
+                <span className="text-muted-foreground">by {challenge.companyName}</span>
+                <div className="flex items-center gap-1 text-muted-foreground">
                     <Clock className="w-4 h-4" />
                     {daysLeft === null ? 'Unknown' : daysLeft > 0 ? `${daysLeft} days left` : 'Expired'}
                 </div>
             </div>
 
             {challenge.proposalCount > 0 && (
-                <div className="mt-3 text-xs text-neutral-500">
+                <div className="mt-3 text-xs text-muted-foreground">
                     {challenge.proposalCount} proposal{challenge.proposalCount > 1 ? 's' : ''} received
                 </div>
             )}
@@ -112,8 +112,8 @@ export default function Challenges() {
         <div className="space-y-6">
             <div className="flex flex-col gap-4 sm:flex-row sm:items-center sm:justify-between">
                 <div>
-                    <h1 className="text-2xl font-bold text-white">Browse Challenges</h1>
-                    <p className="text-neutral-400">Find opportunities to earn while building your portfolio</p>
+                    <h1 className="text-2xl font-bold text-foreground">Browse Challenges</h1>
+                    <p className="text-muted-foreground">Find opportunities to earn while building your portfolio</p>
                 </div>
                 <div className="flex items-center gap-2">
                     <span className="flex items-center gap-1 px-3 py-1.5 bg-emerald-950 text-emerald-400 rounded-lg text-sm">
@@ -124,45 +124,45 @@ export default function Challenges() {
             </div>
 
             <div className="grid grid-cols-2 gap-4 sm:grid-cols-4">
-                <div className="rounded-xl border border-neutral-800 bg-neutral-900 p-4">
-                    <div className="flex items-center gap-2 text-neutral-400">
+                <div className="rounded-xl border border-border bg-background p-4">
+                    <div className="flex items-center gap-2 text-muted-foreground">
                         <Briefcase className="h-4 w-4" />
                         <span className="text-sm">Total</span>
                     </div>
-                    <p className="mt-2 text-2xl font-bold text-white">{challenges.length}</p>
+                    <p className="mt-2 text-2xl font-bold text-foreground">{challenges.length}</p>
                 </div>
-                <div className="rounded-xl border border-neutral-800 bg-neutral-900 p-4">
-                    <div className="flex items-center gap-2 text-neutral-400">
+                <div className="rounded-xl border border-border bg-background p-4">
+                    <div className="flex items-center gap-2 text-muted-foreground">
                         <Sparkles className="h-4 w-4" />
                         <span className="text-sm">Avg. Reward</span>
                     </div>
-                    <p className="mt-2 text-2xl font-bold text-white">₹{avgReward.toLocaleString('en-IN')}</p>
+                    <p className="mt-2 text-2xl font-bold text-foreground">₹{avgReward.toLocaleString('en-IN')}</p>
                 </div>
-                <div className="rounded-xl border border-neutral-800 bg-neutral-900 p-4">
+                <div className="rounded-xl border border-border bg-background p-4">
                     <div className="flex items-center gap-2 text-emerald-400">
                         <TrendingUp className="h-4 w-4" />
                         <span className="text-sm">Highest</span>
                     </div>
                     <p className="mt-2 text-2xl font-bold text-emerald-400">₹{maxReward.toLocaleString('en-IN')}</p>
                 </div>
-                <div className="rounded-xl border border-neutral-800 bg-neutral-900 p-4">
-                    <div className="flex items-center gap-2 text-neutral-400">
+                <div className="rounded-xl border border-border bg-background p-4">
+                    <div className="flex items-center gap-2 text-muted-foreground">
                         <Filter className="h-4 w-4" />
                         <span className="text-sm">Categories</span>
                     </div>
-                    <p className="mt-2 text-2xl font-bold text-white">5</p>
+                    <p className="mt-2 text-2xl font-bold text-foreground">5</p>
                 </div>
             </div>
 
             <div className="flex flex-col gap-4 sm:flex-row sm:items-center">
                 <div className="relative flex-1">
-                    <Search className="absolute left-3 top-1/2 h-4 w-4 -translate-y-1/2 text-neutral-500" />
+                    <Search className="absolute left-3 top-1/2 h-4 w-4 -translate-y-1/2 text-muted-foreground" />
                     <input
                         type="text"
                         placeholder="Search challenges..."
                         value={searchQuery}
                         onChange={(e) => setSearchQuery(e.target.value)}
-                        className="w-full pl-10 pr-4 py-2.5 bg-neutral-900 border border-neutral-800 rounded-xl text-white placeholder-neutral-500 focus:outline-none focus:border-emerald-500"
+                        className="w-full pl-10 pr-4 py-2.5 bg-background border border-border rounded-xl text-foreground placeholder:text-muted-foreground focus:outline-none focus:border-emerald-500"
                     />
                 </div>
                 <div className="flex flex-wrap gap-2">
@@ -171,8 +171,8 @@ export default function Challenges() {
                             key={cat.id}
                             onClick={() => setSelectedCategory(cat.id)}
                             className={`px-3 py-1.5 rounded-lg text-sm font-medium transition-colors ${selectedCategory === cat.id
-                                    ? 'bg-emerald-600 text-white'
-                                    : 'bg-neutral-800 text-neutral-400 hover:text-white'
+                                    ? 'bg-emerald-600 text-foreground'
+                                    : 'bg-muted text-muted-foreground hover:text-foreground'
                                 }`}
                         >
                             {cat.id === 'all' ? 'All' : `${cat.icon} ${cat.label}`}
@@ -184,7 +184,7 @@ export default function Challenges() {
             {loading ? (
                 <div className="grid gap-4 sm:grid-cols-2 lg:grid-cols-3">
                     {[...Array(6)].map((_, i) => (
-                        <div key={i} className="h-48 bg-neutral-900 border border-neutral-800 rounded-2xl animate-pulse" />
+                        <div key={i} className="h-48 bg-background border border-border rounded-2xl animate-pulse" />
                     ))}
                 </div>
             ) : filteredChallenges.length > 0 ? (
@@ -198,10 +198,10 @@ export default function Challenges() {
                     ))}
                 </div>
             ) : (
-                <div className="flex flex-col items-center justify-center rounded-xl border border-dashed border-neutral-700 py-16">
-                    <Briefcase className="h-12 w-12 text-neutral-600" />
-                    <h3 className="mt-4 text-lg font-semibold text-white">No challenges found</h3>
-                    <p className="mt-2 text-sm text-neutral-400">
+                <div className="flex flex-col items-center justify-center rounded-xl border border-dashed border-border py-16">
+                    <Briefcase className="h-12 w-12 text-muted-foreground/80" />
+                    <h3 className="mt-4 text-lg font-semibold text-foreground">No challenges found</h3>
+                    <p className="mt-2 text-sm text-muted-foreground">
                         {searchQuery || selectedCategory !== 'all' ? 'Try adjusting your filters' : 'Check back later for new opportunities'}
                     </p>
                 </div>
