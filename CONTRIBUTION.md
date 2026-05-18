@@ -218,7 +218,7 @@ Then create a Pull Request on GitHub with:
 - Clear title describing the change
 - Description of what and why
 - Link to related issue(s)
-- Screenshots for UI changes
+- **Mandatory Screenshots/GIFs** for any UI/UX or visual changes
 
 ### 5. PR Review Process
 
@@ -249,7 +249,8 @@ Fixes #(issue number)
 - [ ] Manual testing completed
 - [ ] New tests added
 
-## Screenshots (if applicable)
+## Screenshots (MANDATORY for UI/UX changes)
+Please attach screenshots or screen recordings showing the before and after state of your visual changes.
 
 ## Checklist
 - [ ] Code follows project style guidelines
