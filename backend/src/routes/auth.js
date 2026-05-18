@@ -2,8 +2,18 @@ import express from 'express';
 import { asyncHandler } from '../middleware/errorHandler.js';
 import { verifyToken } from '../middleware/auth.js';
 import { saveUserToFirebase } from '../services/firebaseDataService.js';
+import { validate } from '../middleware/validate.js';
+import { registerSchema } from '../validators/authValidator.js';
 
 const router = express.Router();
+
+// Example register endpoint with validation
+router.post('/register', validate(registerSchema), asyncHandler(async (req, res) => {
+  res.status(201).json({
+    success: true,
+    message: 'User registered successfully'
+  });
+}));
 
 // Verify token endpoint
 router.post('/verify', verifyToken, asyncHandler(async (req, res) => {
