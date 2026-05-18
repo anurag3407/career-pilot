@@ -4,6 +4,7 @@ import { motion } from 'framer-motion';
 import { Mic, MicOff, Video, VideoOff, XCircle, CheckCircle, AlertCircle, Volume2, VolumeX, RotateCcw, UserX, Loader2, Sparkles, ArrowRight, Target, TrendingUp, MessageSquare, Eye, Brain, Award, ChevronDown, ChevronUp, Clock, BarChart3, Lightbulb, Zap, Laptop, Smartphone, Chrome, AlertTriangle, FileUp, FileText, X } from 'lucide-react';
 import Button from '../components/Button';
 import { interviewApi, uploadApi } from '../services/api';
+import { launchConfetti } from "../utils/confetti";
 
 // Device and browser detection utilities
 const isMobileDevice = () => {
@@ -705,6 +706,11 @@ export default function InterviewPrep() {
       setLoading(false);
     }
   };
+  launchConfetti({
+  particleCount: 120,
+  spread: 80,
+  duration: 2500,
+});
 
   const formatTime = (seconds) => {
     const mins = Math.floor(seconds / 60);
