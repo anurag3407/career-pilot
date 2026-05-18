@@ -864,4 +864,26 @@ export const paymentApi = {
     })
     return handleResponse(response)
   }
+  
+}
+// ============ NOTIFICATION PREFERENCES API ============
+export const notificationApi = {
+  async getPreferences() {
+    const headers = await getAuthHeaders()
+    const response = await fetch(`${API_BASE}/auth/notification-preferences`, {
+      method: 'GET',
+      headers
+    })
+    return handleResponse(response)
+  },
+
+  async updatePreferences(preferences) {
+    const headers = await getAuthHeaders()
+    const response = await fetch(`${API_BASE}/auth/notification-preferences`, {
+      method: 'PUT',
+      headers,
+      body: JSON.stringify(preferences)
+    })
+    return handleResponse(response)
+  }
 }
