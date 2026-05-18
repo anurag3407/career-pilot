@@ -1,3 +1,10 @@
+# [1.8.0](https://github.com/anurag3407/career-pilot/compare/v1.7.0...v1.8.0) (2026-05-18)
+
+
+### Features
+
+* persist job search filters in URL params ([9d0629a](https://github.com/anurag3407/career-pilot/commit/9d0629a11ed1332b90d6764283bc3ca0194852b5))
+
 # [1.7.0](https://github.com/anurag3407/career-pilot/compare/v1.6.0...v1.7.0) (2026-05-18)
 
 
