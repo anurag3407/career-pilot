@@ -30,6 +30,7 @@ import ChallengeProposals from './pages/fellowship/ChallengeProposals'
 import Verify from './pages/fellowship/Verify'
 import FellowshipMessages from './pages/fellowship/FellowshipMessages'
 import FellowshipChat from './pages/fellowship/FellowshipChat'
+import LinkedInCallback from './pages/LinkedInCallback'
 
 function ProtectedRoute({ children }) {
   const { user, loading } = useAuth()
@@ -103,12 +104,14 @@ function App() {
                     secondary: '#fff',
                   },
                 },
-              }}
-            />
-            <Routes>
-              <Route path="/" element={<PublicRoute><Home /></PublicRoute>} />
-              <Route path="/login" element={<PublicRoute><Login /></PublicRoute>} />
-              <Route path="/register" element={<PublicRoute><Register /></PublicRoute>} />
+              }
+            }
+          />
+          <Routes>
+            <Route path="/" element={<PublicRoute><Home /></PublicRoute>} />
+            <Route path="/login" element={<PublicRoute><Login /></PublicRoute>} />
+            <Route path="/register" element={<PublicRoute><Register /></PublicRoute>} />
+            <Route path="/auth/linkedin/callback" element={<PublicRoute><LinkedInCallback /></PublicRoute>} />
 
               <Route path="/dashboard" element={<ProtectedRoute><Dashboard /></ProtectedRoute>} />
               <Route path="/upload" element={<ProtectedRoute><Upload /></ProtectedRoute>} />

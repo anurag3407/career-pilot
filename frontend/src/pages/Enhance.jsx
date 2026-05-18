@@ -456,6 +456,9 @@ export default function Enhance() {
         <div className="flex items-center justify-center py-20">
           <div className="w-8 h-8 border-2 border-primary border-t-transparent rounded-full animate-spin" />
         </div>
+
+        <div className="h-72 bg-neutral-900 rounded-2xl border border-neutral-800">
+        </div>
       </div>
     )
   }
