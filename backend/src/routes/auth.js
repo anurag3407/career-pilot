@@ -53,10 +53,14 @@ router.put('/notification-preferences', verifyToken, asyncHandler(async (req, re
   const User = (await import('../models/User.model.js')).default;
   const { jobAlerts, directMessages, proposalUpdates } = req.body;
 
+  if (typeof jobAlerts !== 'boolean' || typeof directMessages !== 'boolean' || typeof proposalUpdates !== 'boolean') {
+    return res.status(400).json({ success: false, error: 'Invalid preference values' });
+  }
+
   await User.findOneAndUpdate(
     { email: req.user.email },
     { notificationPreferences: { jobAlerts, directMessages, proposalUpdates } },
-    { upsert: true, new: true }
+    { new: true }
   );
 
   res.json({ success: true, message: 'Preferences updated!' });
