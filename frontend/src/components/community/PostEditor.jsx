@@ -222,7 +222,7 @@ export default function PostEditor({ onClose, onSubmit, editPost = null }) {
               <button
                 type="button"
                 onClick={onClose}
-                className="px-4 py-2 border border-neutral-700 rounded-lg text-neutral-300 hover:bg-neutral-800 text-sm"
+                className="px-4 py-2 border border-border rounded-lg text-foreground hover:bg-muted text-sm"
               >
                 Cancel
               </button>
@@ -247,11 +247,11 @@ export default function PostEditor({ onClose, onSubmit, editPost = null }) {
               <button
                 type="submit"
                 disabled={loading || !title.trim() || !content.trim()}
-                className="flex items-center gap-2 px-5 py-2 bg-indigo-600 text-white rounded-lg hover:bg-indigo-500 disabled:opacity-50 disabled:cursor-not-allowed text-sm font-medium"
+                className="flex items-center gap-2 px-5 py-2 bg-primary text-primary-foreground rounded-lg hover:bg-primary/90 disabled:opacity-50 disabled:cursor-not-allowed text-sm font-medium"
               >
                 {loading ? (
                   <>
-                    <div className="w-4 h-4 border-2 border-white border-t-transparent rounded-full animate-spin" />
+                    <div className="w-4 h-4 border-2 border-primary-foreground border-t-transparent rounded-full animate-spin" />
                     {scheduledAt ? 'Scheduling...' : 'Publishing...'}
                   </>
                 ) : (
