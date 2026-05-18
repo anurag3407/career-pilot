@@ -494,3 +494,6 @@ export const sendVerificationEmail = async ({ email, code }) => {
     throw new Error(`Failed to send verification email: ${error.message}`);
   }
 };
+
+
+export { handleBounceNotification } from "./bounceHandler.js";

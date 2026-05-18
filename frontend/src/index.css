@@ -1,28 +1,80 @@
 @import "tailwindcss";
 
-/* Dark Theme Variables - Minimal & Professional */
+@theme {
+  --color-background: var(--background);
+  --color-foreground: var(--foreground);
+  --color-card: var(--card);
+  --color-card-foreground: var(--card-foreground);
+  --color-popover: var(--popover);
+  --color-popover-foreground: var(--popover-foreground);
+  --color-primary: var(--primary);
+  --color-primary-foreground: var(--primary-foreground);
+  --color-secondary: var(--secondary);
+  --color-secondary-foreground: var(--secondary-foreground);
+  --color-muted: var(--muted);
+  --color-muted-foreground: var(--muted-foreground);
+  --color-accent: var(--accent);
+  --color-accent-foreground: var(--accent-foreground);
+  --color-destructive: var(--destructive);
+  --color-destructive-foreground: var(--destructive-foreground);
+  --color-border: var(--border);
+  --color-input: var(--input);
+  --color-ring: var(--ring);
+}
+
 :root {
-  --background: 0 0% 0%;
-  --foreground: 0 0% 100%;
-  --muted: 220 13% 10%;
-  --muted-foreground: 220 9% 55%;
-  --border: 220 13% 15%;
-  --input: 220 13% 12%;
-  --primary: 199 89% 48%;
-  --primary-foreground: 0 0% 100%;
-  --secondary: 220 13% 10%;
-  --secondary-foreground: 0 0% 100%;
-  --accent: 199 89% 48%;
-  --accent-foreground: 0 0% 100%;
-  --destructive: 0 84% 60%;
-  --destructive-foreground: 0 0% 100%;
-  --ring: 199 89% 48%;
-  --radius: 0.5rem;
+  /* Light Theme Design Tokens */
+  --background: #F8FAFC;
+  --secondary-bg: #FFFFFF;
+  --foreground: #0F172A;
+  --card: #FFFFFF;
+  --card-foreground: #0F172A;
+  --popover: #FFFFFF;
+  --popover-foreground: #0F172A;
+  --primary: #0EA5E9;
+  --primary-foreground: #FFFFFF;
+  --secondary: #6366F1;
+  --secondary-foreground: #FFFFFF;
+  --muted: #F1F5F9;
+  --muted-foreground: #64748B;
+  --accent: #F1F5F9;
+  --accent-foreground: #0F172A;
+  --destructive: #EF4444;
+  --destructive-foreground: #FFFFFF;
+  --border: #E2E8F0;
+  --input: #E2E8F0;
+  --ring: #0EA5E9;
+  --radius: 0.75rem;
+}
+
+.dark {
+  /* Dark Theme Design Tokens */
+  --background: #050816;
+  --secondary-bg: #0B1120;
+  --foreground: #FFFFFF;
+  --card: rgba(255, 255, 255, 0.04);
+  --card-foreground: #FFFFFF;
+  --popover: #0B1120;
+  --popover-foreground: #FFFFFF;
+  --primary: #00BFFF;
+  --primary-foreground: #FFFFFF;
+  --secondary: #7C3AED;
+  --secondary-foreground: #FFFFFF;
+  --muted: #0B1120;
+  --muted-foreground: #B3B8C5;
+  --accent: rgba(255, 255, 255, 0.04);
+  --accent-foreground: #FFFFFF;
+  --destructive: #EF4444;
+  --destructive-foreground: #FFFFFF;
+  --border: rgba(255, 255, 255, 0.08);
+  --input: rgba(255, 255, 255, 0.08);
+  --ring: #00BFFF;
 }
 
 /* Base Styles */
 * {
   box-sizing: border-box;
+  transition: background-color 0.3s ease, border-color 0.3s ease, color 0.3s ease, box-shadow 0.3s ease;
 }
 
 html {
@@ -30,165 +82,146 @@ html {
 }
 
 body {
-  font-family: 'Inter', -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, sans-serif;
-  background-color: #000000;
-  color: #ffffff;
+  font-family: 'Inter', 'Outfit', -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, sans-serif;
+  background-color: var(--background);
+  color: var(--foreground);
   -webkit-font-smoothing: antialiased;
   -moz-osx-font-smoothing: grayscale;
+  overflow-x: hidden;
 }
 
-/* Custom Scrollbar - Dark Theme */
+/* Custom Scrollbar */
 ::-webkit-scrollbar {
-  width: 8px;
-  height: 8px;
+  width: 10px;
+  height: 10px;
 }
 
 ::-webkit-scrollbar-track {
-  background: #0a0a0a;
+  background: var(--background);
 }
 
 ::-webkit-scrollbar-thumb {
-  background: #333;
-  border-radius: 4px;
+  background: var(--muted-foreground);
+  border: 3px solid var(--background);
+  border-radius: 10px;
 }
 
 ::-webkit-scrollbar-thumb:hover {
-  background: #444;
+  background: var(--primary);
 }
 
 /* Selection */
 ::selection {
-  background-color: rgba(14, 165, 233, 0.25);
-  color: #fff;
-}
-
-/* Gradient Animation */
-@keyframes gradient {
-  0% {
-    background-position: 0% 50%;
-  }
-  50% {
-    background-position: 100% 50%;
-  }
-  100% {
-    background-position: 0% 50%;
-  }
-}
-
-.animate-gradient {
-  animation: gradient 3s ease infinite;
+  background-color: var(--primary);
+  color: var(--primary-foreground);
 }
 
 /* Glow Effects */
 .glow {
-  box-shadow: 0 0 20px rgba(14, 165, 233, 0.2);
+  box-shadow: 0 0 20px rgba(0, 191, 255, 0.15);
 }
 
-.glow-text {
-  text-shadow: 0 0 20px rgba(14, 165, 233, 0.3);
+.dark .glow {
+  box-shadow: 0 0 30px rgba(0, 191, 255, 0.2);
 }
 
 /* Glass Effect */
 .glass {
-  background: rgba(10, 10, 10, 0.8);
-  backdrop-filter: blur(12px);
-  -webkit-backdrop-filter: blur(12px);
+  background: rgba(255, 255, 255, 0.7);
+  backdrop-filter: blur(16px);
+  -webkit-backdrop-filter: blur(16px);
+  border: 1px solid var(--border);
+}
+
+.dark .glass {
+  background: rgba(11, 17, 32, 0.8);
   border: 1px solid rgba(255, 255, 255, 0.05);
 }
 
-/* Focus States */
-*:focus-visible {
-  outline: 2px solid rgba(14, 165, 233, 0.4);
-  outline-offset: 2px;
+/* Smooth Transitions */
+.transition-all-300 {
+  transition: all 0.3s cubic-bezier(0.4, 0, 0.2, 1);
 }
 
-/* Smooth transitions */
-a, button {
-  transition: all 0.2s ease;
+/* Animations */
+@keyframes float {
+  0%, 100% { transform: translateY(0); }
+  50% { transform: translateY(-10px); }
 }
 
-button {
-  cursor: pointer;
+.animate-float {
+  animation: float 6s ease-in-out infinite;
 }
 
-/* Loading skeleton animation */
-@keyframes shimmer {
-  0% {
-    background-position: -200% 0;
-  }
-  100% {
-    background-position: 200% 0;
-  }
+@keyframes blob {
+  0%, 100% { transform: translate(0px, 0px) scale(1); }
+  33% { transform: translate(30px, -50px) scale(1.1); }
+  66% { transform: translate(-20px, 20px) scale(0.9); }
 }
 
-.skeleton {
-  background: linear-gradient(
-    90deg,
-    rgba(255, 255, 255, 0.05) 25%,
-    rgba(255, 255, 255, 0.1) 50%,
-    rgba(255, 255, 255, 0.05) 75%
-  );
-  background-size: 200% 100%;
-  animation: shimmer 1.5s infinite;
+.animate-blob {
+  animation: blob 7s infinite;
 }
 
-/* Dot pattern background */
-.dot-pattern {
-  background-image: radial-gradient(rgba(255, 255, 255, 0.1) 1px, transparent 1px);
-  background-size: 20px 20px;
+/* Premium Gradient Text */
+.gradient-text {
+  background: linear-gradient(135deg, var(--primary), var(--secondary));
+  -webkit-background-clip: text;
+  -webkit-text-fill-color: transparent;
+  background-clip: text;
 }
 
-/* Border gradient */
-.border-gradient {
-  position: relative;
-  background: linear-gradient(#000, #000) padding-box,
-              linear-gradient(to right, #0ea5e9, #22d3ee) border-box;
-  border: 1px solid transparent;
+/* Card Styles */
+.premium-card {
+  background: var(--card);
+  border: 1px solid var(--border);
+  border-radius: var(--radius);
+  transition: all 0.3s ease;
 }
 
-/* Input dark styles */
-input, textarea, select {
-  background-color: #0a0a0a;
-  border-color: #262626;
-  color: #fff;
+.premium-card:hover {
+  border-color: var(--primary);
+  transform: translateY(-4px);
+  box-shadow: 0 10px 30px -10px rgba(0, 191, 255, 0.2);
 }
 
-input::placeholder, textarea::placeholder {
-  color: #525252;
+/* Layout Utilities */
+.page-container {
+  max-width: 1400px;
+  margin: 0 auto;
+  padding: 0 1.5rem;
 }
 
-input:focus, textarea:focus, select:focus {
-  border-color: #6366f1;
-  box-shadow: 0 0 0 2px rgba(99, 102, 241, 0.2);
+/* Background Gradients */
+.bg-mesh {
+  position: fixed;
+  top: 0;
+  left: 0;
+  right: 0;
+  bottom: 0;
+  z-index: -1;
+  background: var(--background);
 }
 
-/* Card hover effect */
-.card-hover {
-  transition: transform 0.2s ease, box-shadow 0.2s ease;
-}
-
-.card-hover:hover {
-  transform: translateY(-2px);
-  box-shadow: 0 10px 40px -10px rgba(99, 102, 241, 0.2);
-}
-
-/* Pulse animation for status indicators */
-@keyframes pulse-ring {
-  0% {
-    transform: scale(0.8);
-    opacity: 0.5;
-  }
-  100% {
-    transform: scale(2);
-    opacity: 0;
-  }
-}
-
-.pulse-ring::before {
+.dark .bg-mesh::after {
   content: '';
   position: absolute;
-  inset: 0;
-  border-radius: inherit;
-  background: inherit;
-  animation: pulse-ring 1.5s cubic-bezier(0.215, 0.61, 0.355, 1) infinite;
+  top: 0;
+  left: 0;
+  right: 0;
+  bottom: 0;
+  background: radial-gradient(circle at 50% 50%, rgba(124, 58, 237, 0.05) 0%, transparent 50%),
+              radial-gradient(circle at 10% 10%, rgba(0, 191, 255, 0.05) 0%, transparent 40%);
 }
+
+.light .bg-mesh::after {
+  content: '';
+  position: absolute;
+  top: 0;
+  left: 0;
+  right: 0;
+  bottom: 0;
+  background: radial-gradient(circle at 50% 50%, rgba(99, 102, 241, 0.03) 0%, transparent 50%),
+              radial-gradient(circle at 10% 10%, rgba(14, 165, 233, 0.03) 0%, transparent 40%);
+}
+
