@@ -4,6 +4,7 @@ import cors from 'cors';
 import helmet from 'helmet';
 import rateLimit from 'express-rate-limit';
 import dotenv from 'dotenv';
+import searchRoutes from './routes/search.js';
 
 dotenv.config();
 
@@ -106,6 +107,7 @@ app.use('/api/community', communityRoutes);
 app.use('/api/fellowship', fellowshipRoutes);
 app.use('/api/interview', interviewRoutes);
 app.use('/api/payments', paymentRoutes);
+app.use('/api/search', searchRoutes);
 
 app.use((req, res) => {
   res.status(404).json({ error: 'Route not found' });

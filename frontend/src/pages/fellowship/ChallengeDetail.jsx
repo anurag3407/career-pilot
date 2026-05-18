@@ -105,7 +105,7 @@ export default function ChallengeDetail() {
         <div className="max-w-3xl mx-auto space-y-6">
             <button
                 onClick={() => navigate(-1)}
-                className="flex items-center gap-2 text-neutral-400 hover:text-white text-sm"
+                className="flex items-center gap-2 text-muted-foreground hover:text-foreground text-sm"
             >
                 <ArrowLeft className="w-4 h-4" />
                 Back to Challenges
@@ -114,70 +114,70 @@ export default function ChallengeDetail() {
             <motion.div
                 initial={{ opacity: 0, y: 20 }}
                 animate={{ opacity: 1, y: 0 }}
-                className="bg-neutral-900 border border-neutral-800 rounded-2xl overflow-hidden"
+                className="bg-background border border-border rounded-2xl overflow-hidden"
             >
-                <div className="bg-gradient-to-r from-emerald-900/50 to-neutral-900 p-6 border-b border-neutral-800">
+                <div className="bg-gradient-to-r from-emerald-900/50 to-neutral-900 p-6 border-b border-border">
                     <div className="flex items-start justify-between gap-4">
-                        <span className="px-3 py-1 bg-neutral-800/80 rounded-lg text-sm">
+                        <span className="px-3 py-1 bg-muted/80 rounded-lg text-sm">
                             {category.icon} {category.label}
                         </span>
                         <div className="text-right">
-                            <p className="text-xs text-neutral-400">Reward</p>
+                            <p className="text-xs text-muted-foreground">Reward</p>
                             <p className="text-2xl font-bold text-emerald-400">
                                 ₹{challenge.price.toLocaleString('en-IN')}
                             </p>
                         </div>
                     </div>
-                    <h1 className="mt-4 text-2xl font-bold text-white">{challenge.title}</h1>
+                    <h1 className="mt-4 text-2xl font-bold text-foreground">{challenge.title}</h1>
                 </div>
 
                 <div className="p-6 space-y-6">
                     <div className="grid grid-cols-2 md:grid-cols-4 gap-4">
-                        <div className="bg-neutral-800/50 rounded-xl p-4">
-                            <div className="flex items-center gap-2 text-neutral-400 text-xs mb-1">
+                        <div className="bg-muted/50 rounded-xl p-4">
+                            <div className="flex items-center gap-2 text-muted-foreground text-xs mb-1">
                                 <Building2 className="w-3 h-3" />
                                 Company
                             </div>
-                            <p className="text-white font-medium truncate">{challenge.companyName}</p>
+                            <p className="text-foreground font-medium truncate">{challenge.companyName}</p>
                         </div>
-                        <div className="bg-neutral-800/50 rounded-xl p-4">
-                            <div className="flex items-center gap-2 text-neutral-400 text-xs mb-1">
+                        <div className="bg-muted/50 rounded-xl p-4">
+                            <div className="flex items-center gap-2 text-muted-foreground text-xs mb-1">
                                 <Calendar className="w-3 h-3" />
                                 Deadline
                             </div>
-                            <p className="text-white font-medium">{isValidDeadline ? deadlineDate.toLocaleDateString() : 'Unknown'}</p>
+                            <p className="text-foreground font-medium">{isValidDeadline ? deadlineDate.toLocaleDateString() : 'Unknown'}</p>
                         </div>
-                        <div className="bg-neutral-800/50 rounded-xl p-4">
-                            <div className="flex items-center gap-2 text-neutral-400 text-xs mb-1">
+                        <div className="bg-muted/50 rounded-xl p-4">
+                            <div className="flex items-center gap-2 text-muted-foreground text-xs mb-1">
                                 <Clock className="w-3 h-3" />
                                 Time Left
                             </div>
-                            <p className={`font-medium ${daysLeft === null ? 'text-neutral-400' : daysLeft > 0 ? 'text-white' : 'text-red-400'}`}>
+                            <p className={`font-medium ${daysLeft === null ? 'text-muted-foreground' : daysLeft > 0 ? 'text-foreground' : 'text-red-400'}`}>
                                 {daysLeft === null ? 'Unknown' : daysLeft > 0 ? `${daysLeft} days` : 'Expired'}
                             </p>
                         </div>
-                        <div className="bg-neutral-800/50 rounded-xl p-4">
-                            <div className="flex items-center gap-2 text-neutral-400 text-xs mb-1">
+                        <div className="bg-muted/50 rounded-xl p-4">
+                            <div className="flex items-center gap-2 text-muted-foreground text-xs mb-1">
                                 <Users className="w-3 h-3" />
                                 Proposals
                             </div>
-                            <p className="text-white font-medium">{challenge.proposalCount || 0}</p>
+                            <p className="text-foreground font-medium">{challenge.proposalCount || 0}</p>
                         </div>
                     </div>
 
                     <div>
-                        <h3 className="flex items-center gap-2 text-sm font-medium text-neutral-300 mb-3">
+                        <h3 className="flex items-center gap-2 text-sm font-medium text-foreground mb-3">
                             <FileText className="w-4 h-4" />
                             Project Description
                         </h3>
-                        <div className="bg-neutral-800/30 rounded-xl p-4">
-                            <p className="text-neutral-300 whitespace-pre-wrap leading-relaxed">{challenge.description}</p>
+                        <div className="bg-muted/30 rounded-xl p-4">
+                            <p className="text-foreground whitespace-pre-wrap leading-relaxed">{challenge.description}</p>
                         </div>
                     </div>
 
                     {challenge.requirements?.length > 0 && (
                         <div>
-                            <h3 className="text-sm font-medium text-neutral-300 mb-3">Required Skills</h3>
+                            <h3 className="text-sm font-medium text-foreground mb-3">Required Skills</h3>
                             <div className="flex flex-wrap gap-2">
                                 {challenge.requirements.map((req, i) => (
                                     <span key={i} className="px-3 py-1.5 bg-emerald-950 text-emerald-300 rounded-lg text-sm">
@@ -209,7 +209,7 @@ export default function ChallengeDetail() {
                     </div>
                     <button
                         onClick={() => navigate('/fellowship/verify')}
-                        className="ml-auto px-4 py-2 bg-amber-600 text-white rounded-lg text-sm hover:bg-amber-500"
+                        className="ml-auto px-4 py-2 bg-amber-600 text-foreground rounded-lg text-sm hover:bg-amber-500"
                     >
                         Verify Now
                     </button>
@@ -219,7 +219,7 @@ export default function ChallengeDetail() {
             {canApply && !showApplyForm && (
                 <button
                     onClick={() => setShowApplyForm(true)}
-                    className="w-full py-4 bg-emerald-600 hover:bg-emerald-500 text-white rounded-2xl font-semibold flex items-center justify-center gap-2"
+                    className="w-full py-4 bg-emerald-600 hover:bg-emerald-500 text-foreground rounded-2xl font-semibold flex items-center justify-center gap-2"
                 >
                     <Send className="w-5 h-5" />
                     Submit Proposal
@@ -230,69 +230,69 @@ export default function ChallengeDetail() {
                 <motion.div
                     initial={{ opacity: 0, y: 20 }}
                     animate={{ opacity: 1, y: 0 }}
-                    className="bg-neutral-900 border border-neutral-800 rounded-2xl p-6 space-y-5"
+                    className="bg-background border border-border rounded-2xl p-6 space-y-5"
                 >
                     <div className="flex items-center justify-between">
-                        <h2 className="text-lg font-semibold text-white">Submit Your Proposal</h2>
+                        <h2 className="text-lg font-semibold text-foreground">Submit Your Proposal</h2>
                         <div className="text-right">
-                            <p className="text-xs text-neutral-400">You will earn</p>
+                            <p className="text-xs text-muted-foreground">You will earn</p>
                             <p className="text-lg font-bold text-emerald-400">₹{challenge.price.toLocaleString('en-IN')}</p>
                         </div>
                     </div>
 
-                    <div className="bg-neutral-800/50 rounded-xl p-4 border border-neutral-700">
-                        <p className="text-sm text-neutral-400 mb-2">You're applying for:</p>
-                        <p className="text-white font-medium">{challenge.title}</p>
-                        <p className="text-sm text-neutral-500 mt-1">by {challenge.companyName}</p>
+                    <div className="bg-muted/50 rounded-xl p-4 border border-border">
+                        <p className="text-sm text-muted-foreground mb-2">You're applying for:</p>
+                        <p className="text-foreground font-medium">{challenge.title}</p>
+                        <p className="text-sm text-muted-foreground mt-1">by {challenge.companyName}</p>
                     </div>
 
                     <div>
-                        <label className="block text-sm text-neutral-400 mb-2">Cover Letter *</label>
+                        <label className="block text-sm text-muted-foreground mb-2">Cover Letter *</label>
                         <textarea
                             value={coverLetter}
                             onChange={(e) => setCoverLetter(e.target.value)}
                             placeholder="Explain why you're the right fit for this challenge. Describe your relevant experience, approach, and what makes you uniquely qualified..."
                             rows={6}
-                            className="w-full px-4 py-3 bg-neutral-800 border border-neutral-700 rounded-xl text-white placeholder-neutral-500 focus:outline-none focus:border-emerald-500 resize-none"
+                            className="w-full px-4 py-3 bg-muted border border-border rounded-xl text-foreground placeholder:text-muted-foreground focus:outline-none focus:border-emerald-500 resize-none"
                         />
-                        <p className="mt-1 text-xs text-neutral-500">{coverLetter.length}/100 minimum characters</p>
+                        <p className="mt-1 text-xs text-muted-foreground">{coverLetter.length}/100 minimum characters</p>
                     </div>
 
                     <div>
-                        <label className="block text-sm text-neutral-400 mb-2">Days to Complete *</label>
+                        <label className="block text-sm text-muted-foreground mb-2">Days to Complete *</label>
                         <input
                             type="number"
                             value={estimatedDays}
                             onChange={(e) => setEstimatedDays(e.target.value)}
                             placeholder="e.g., 7"
                             min="1"
-                            className="w-full px-4 py-3 bg-neutral-800 border border-neutral-700 rounded-xl text-white placeholder-neutral-500 focus:outline-none focus:border-emerald-500"
+                            className="w-full px-4 py-3 bg-muted border border-border rounded-xl text-foreground placeholder:text-muted-foreground focus:outline-none focus:border-emerald-500"
                         />
-                        <p className="mt-1 text-xs text-neutral-500">How many days do you need to complete this project?</p>
+                        <p className="mt-1 text-xs text-muted-foreground">How many days do you need to complete this project?</p>
                     </div>
 
                     <div>
-                        <label className="block text-sm text-neutral-400 mb-2">Portfolio Links (optional, one per line)</label>
+                        <label className="block text-sm text-muted-foreground mb-2">Portfolio Links (optional, one per line)</label>
                         <textarea
                             value={portfolioLinks}
                             onChange={(e) => setPortfolioLinks(e.target.value)}
                             placeholder="https://yourportfolio.com&#10;https://github.com/yourusername"
                             rows={3}
-                            className="w-full px-4 py-3 bg-neutral-800 border border-neutral-700 rounded-xl text-white placeholder-neutral-500 focus:outline-none focus:border-emerald-500 resize-none"
+                            className="w-full px-4 py-3 bg-muted border border-border rounded-xl text-foreground placeholder:text-muted-foreground focus:outline-none focus:border-emerald-500 resize-none"
                         />
                     </div>
 
                     <div className="flex gap-3 pt-2">
                         <button
                             onClick={() => setShowApplyForm(false)}
-                            className="px-6 py-3 bg-neutral-800 text-neutral-300 rounded-xl font-medium hover:bg-neutral-700"
+                            className="px-6 py-3 bg-muted text-foreground rounded-xl font-medium hover:bg-muted/80"
                         >
                             Cancel
                         </button>
                         <button
                             onClick={handleApply}
                             disabled={applying}
-                            className="flex-1 py-3 bg-emerald-600 hover:bg-emerald-500 text-white rounded-xl font-medium disabled:opacity-50 flex items-center justify-center gap-2"
+                            className="flex-1 py-3 bg-emerald-600 hover:bg-emerald-500 text-foreground rounded-xl font-medium disabled:opacity-50 flex items-center justify-center gap-2"
                         >
                             {applying ? <Loader2 className="w-5 h-5 animate-spin" /> : <Send className="w-5 h-5" />}
                             {applying ? 'Submitting...' : 'Submit Proposal'}

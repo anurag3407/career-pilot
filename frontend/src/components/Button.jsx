@@ -10,22 +10,22 @@ export default function Button({
   onClick,
   className = ''
 }) {
-  const baseStyles = 'inline-flex items-center justify-center gap-2 font-medium transition-all duration-200 disabled:opacity-50 disabled:cursor-not-allowed cursor-pointer rounded-lg focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-offset-black active:scale-95'
+  const baseStyles = 'inline-flex items-center justify-center gap-2 font-black tracking-wide transition-all duration-300 disabled:opacity-50 disabled:cursor-not-allowed cursor-pointer rounded-2xl'
   
   const variants = {
-    primary: 'bg-white text-black hover:bg-neutral-200 focus:ring-white',
-    secondary: 'bg-neutral-900 border border-neutral-800 text-white hover:bg-neutral-800 hover:border-neutral-700 focus:ring-neutral-500',
-    danger: 'bg-red-600 hover:bg-red-700 text-white focus:ring-red-500',
-    outline: 'border border-neutral-700 text-white hover:bg-neutral-900 hover:border-neutral-600 focus:ring-neutral-500',
-    ghost: 'text-neutral-400 hover:text-white hover:bg-neutral-900 focus:ring-neutral-500',
-    gradient: 'bg-gradient-to-r from-indigo-500 to-purple-500 text-white hover:from-indigo-600 hover:to-purple-600 shadow-lg shadow-indigo-500/25 focus:ring-indigo-500',
+    primary: 'bg-primary text-primary-foreground hover:bg-primary/90 shadow-lg shadow-primary/20',
+    secondary: 'bg-card border-2 border-border text-foreground hover:bg-muted hover:border-primary/50',
+    danger: 'bg-destructive hover:bg-destructive/90 text-destructive-foreground shadow-lg shadow-destructive/20',
+    outline: 'border-2 border-border text-foreground hover:bg-muted',
+    ghost: 'text-muted-foreground hover:text-foreground hover:bg-muted',
+    gradient: 'bg-gradient-to-r from-primary to-secondary text-primary-foreground hover:scale-105 shadow-xl shadow-primary/25',
   }
 
   const sizes = {
-    sm: 'px-3 py-1.5 text-sm',
-    default: 'px-4 py-2 text-sm',
-    lg: 'px-6 py-3 text-base',
-    xl: 'px-8 py-4 text-lg',
+    sm: 'px-4 py-2 text-sm',
+    default: 'px-6 py-3 text-sm',
+    lg: 'px-8 py-4 text-base',
+    xl: 'px-10 py-5 text-lg',
   }
 
   return (

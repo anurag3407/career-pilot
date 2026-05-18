@@ -42,22 +42,13 @@ const worldMapDots = [
 
 export default function HeroSection() {
   return (
-    <section className="relative min-h-screen overflow-hidden">
-      {/* Background Effects - Minimal */}
-      <div className="absolute inset-0 bg-gradient-to-b from-zinc-950 via-black to-black" />
-      <div className="absolute inset-0 bg-[radial-gradient(ellipse_at_top,_var(--tw-gradient-stops))] from-sky-900/10 via-transparent to-transparent" />
-
-      {/* Grid Pattern */}
-      <div
-        className="absolute inset-0 opacity-[0.02]"
-        style={{
-          backgroundImage: `linear-gradient(rgba(255,255,255,.1) 1px, transparent 1px), linear-gradient(90deg, rgba(255,255,255,.1) 1px, transparent 1px)`,
-          backgroundSize: '50px 50px',
-        }}
-      />
-
+    <section className="relative min-h-screen overflow-hidden bg-background">
+      {/* Background Effects - Premium Blobs */}
+      <div className="absolute top-0 left-1/4 w-96 h-96 bg-primary/20 rounded-full blur-[120px] animate-blob" />
+      <div className="absolute bottom-1/4 right-1/4 w-96 h-96 bg-secondary/20 rounded-full blur-[120px] animate-blob animation-delay-2000" />
+      
       {/* Content */}
-      <div className="relative max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 pt-32 pb-20">
+      <div className="relative max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 pt-32 pb-20 z-10">
         <motion.div
           initial={{ opacity: 0, y: 20 }}
           animate={{ opacity: 1, y: 0 }}
@@ -69,16 +60,16 @@ export default function HeroSection() {
             initial={{ opacity: 0, scale: 0.95 }}
             animate={{ opacity: 1, scale: 1 }}
             transition={{ delay: 0.1 }}
-            className="inline-flex items-center gap-2 px-4 py-2 rounded-full border border-zinc-800 bg-zinc-900/50 backdrop-blur-sm mb-8"
+            className="inline-flex items-center gap-2 px-4 py-2 rounded-full border border-border bg-muted/50 backdrop-blur-md mb-8"
           >
-            <Sparkles className="w-4 h-4 text-sky-400" />
-            <span className="text-sm text-zinc-300">
+            <Sparkles className="w-4 h-4 text-primary animate-pulse" />
+            <span className="text-sm font-medium text-muted-foreground">
               AI-Powered Career Acceleration
             </span>
           </motion.div>
 
           {/* Main Headline */}
-          <h1 className="text-5xl md:text-7xl font-bold text-white mb-6 leading-[1.1] tracking-tight">
+          <h1 className="text-5xl md:text-8xl font-bold text-foreground mb-6 leading-[1.05] tracking-tight">
             <motion.span
               initial={{ opacity: 0, y: 20 }}
               animate={{ opacity: 1, y: 0 }}
@@ -94,7 +85,7 @@ export default function HeroSection() {
               className="block"
             >
               with{" "}
-              <AnimatedGradientText>careerpilot</AnimatedGradientText>
+              <span className="gradient-text">careerpilot</span>
             </motion.span>
           </h1>
 
@@ -103,7 +94,7 @@ export default function HeroSection() {
             initial={{ opacity: 0, y: 20 }}
             animate={{ opacity: 1, y: 0 }}
             transition={{ delay: 0.4 }}
-            className="text-lg md:text-xl text-zinc-400 mb-10 max-w-2xl mx-auto leading-relaxed"
+            className="text-lg md:text-xl text-muted-foreground mb-10 max-w-2xl mx-auto leading-relaxed font-medium"
           >
             The intelligent job search platform that enhances your resume with AI,
             matches you with perfect opportunities, and tracks your applications—all in one place.
@@ -118,14 +109,15 @@ export default function HeroSection() {
           >
             <Link
               to="/register"
-              className="group inline-flex items-center justify-center gap-2 px-8 py-4 bg-white text-black font-medium rounded-lg hover:bg-zinc-200 transition-all duration-200"
+              className="group relative inline-flex items-center justify-center gap-2 px-8 py-4 bg-primary text-primary-foreground font-bold rounded-2xl hover:scale-105 transition-all duration-300 shadow-xl shadow-primary/25 overflow-hidden"
             >
-              Get Started Free
-              <ArrowRight className="w-4 h-4 group-hover:translate-x-1 transition-transform" />
+              <span className="relative z-10">Get Started Free</span>
+              <ArrowRight className="w-5 h-5 group-hover:translate-x-1 transition-transform relative z-10" />
+              <div className="absolute inset-0 bg-gradient-to-r from-transparent via-white/10 to-transparent -translate-x-full group-hover:translate-x-full transition-transform duration-1000" />
             </Link>
             <Link
               to="/jobs"
-              className="inline-flex items-center justify-center gap-2 px-8 py-4 border border-zinc-700 text-white font-medium rounded-lg hover:bg-zinc-900 hover:border-zinc-600 transition-all duration-200"
+              className="inline-flex items-center justify-center gap-2 px-8 py-4 border border-border bg-card hover:bg-muted text-foreground font-bold rounded-2xl transition-all duration-300 backdrop-blur-sm"
             >
               Explore Jobs
             </Link>
@@ -136,7 +128,7 @@ export default function HeroSection() {
             initial={{ opacity: 0, y: 20 }}
             animate={{ opacity: 1, y: 0 }}
             transition={{ delay: 0.6 }}
-            className="flex flex-wrap justify-center gap-8 md:gap-16 mt-16 pt-8 border-t border-zinc-800"
+            className="flex flex-wrap justify-center gap-8 md:gap-20 mt-20 pt-10 border-t border-border"
           >
             {[
               { value: "10K+", label: "Active Jobs" },
@@ -144,9 +136,9 @@ export default function HeroSection() {
               { value: "2.5x", label: "Faster Hiring" },
               { value: "50K+", label: "Users" },
             ].map((stat, index) => (
-              <div key={index} className="text-center">
-                <div className="text-2xl md:text-3xl font-bold text-white">{stat.value}</div>
-                <div className="text-sm text-zinc-500 mt-1">{stat.label}</div>
+              <div key={index} className="text-center group">
+                <div className="text-2xl md:text-4xl font-black text-foreground group-hover:text-primary transition-colors">{stat.value}</div>
+                <div className="text-sm font-semibold text-muted-foreground mt-1 uppercase tracking-wider">{stat.label}</div>
               </div>
             ))}
           </motion.div>
@@ -157,33 +149,34 @@ export default function HeroSection() {
           initial={{ opacity: 0, y: 40 }}
           animate={{ opacity: 1, y: 0 }}
           transition={{ delay: 0.7, duration: 0.8 }}
-          className="mt-20 relative"
+          className="mt-24 relative"
         >
-          {/* Glow background for map */}
-          <div className="absolute inset-0 bg-gradient-to-b from-sky-500/5 via-transparent to-transparent rounded-3xl" />
-
-          <div className="text-center mb-8 relative">
-            <p className="text-2xl md:text-3xl font-medium text-white">
+          <div className="text-center mb-10 relative">
+            <h2 className="text-3xl md:text-4xl font-bold text-foreground">
               Global{" "}
-              <span className="text-sky-400">
-                <AnimatedLetters text="Connectivity" delay={1} />
+              <span className="text-primary">
+                Connectivity
               </span>
-            </p>
-            <p className="text-sm md:text-base text-zinc-400 max-w-xl mx-auto mt-3">
+            </h2>
+            <p className="text-base md:text-lg text-muted-foreground max-w-xl mx-auto mt-4 font-medium">
               Connect with opportunities worldwide. Work remotely from anywhere
               or find on-site roles across continents.
             </p>
           </div>
 
-          <div className="relative p-4 rounded-2xl border border-zinc-800/50 bg-zinc-950/50 backdrop-blur-sm">
-            <WorldMap dots={worldMapDots} lineColor="#0ea5e9" />
+          <div className="relative p-1 rounded-[2rem] border border-border bg-card/30 backdrop-blur-xl shadow-2xl overflow-hidden group">
+            <div className="absolute inset-0 bg-gradient-to-tr from-primary/5 via-transparent to-secondary/5" />
+            <div className="relative p-4">
+              <WorldMap dots={worldMapDots} lineColor="var(--primary)" />
+            </div>
           </div>
         </motion.div>
         <FeaturesCard />
       </div>
 
       {/* Bottom Gradient Fade */}
-      <div className="absolute bottom-0 left-0 right-0 h-32 bg-gradient-to-t from-black to-transparent" />
+      <div className="absolute bottom-0 left-0 right-0 h-40 bg-gradient-to-t from-background to-transparent z-10" />
     </section>
   );
 }
+

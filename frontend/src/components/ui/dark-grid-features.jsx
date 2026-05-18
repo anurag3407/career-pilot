@@ -36,16 +36,16 @@ const items = [
     },
 ];
 
-export default function DarkGridFeatures() {
+export default function AdditionalFeatures() {
     return (
-        <div className="w-full bg-black text-zinc-50">
-            <div className="mx-auto max-w-6xl px-4 py-16">
-                <p className="text-xs tracking-widest text-zinc-500 uppercase">[ Capabilities ]</p>
-                <h1 className="mt-3 text-3xl font-semibold tracking-tight sm:text-4xl lg:text-5xl">
+        <div className="w-full bg-transparent">
+            <div className="mx-auto max-w-7xl px-4 py-20">
+                <p className="text-xs font-black tracking-[0.2em] text-primary uppercase mb-4 opacity-70">[ Capabilities ]</p>
+                <h2 className="text-4xl md:text-6xl font-black tracking-tight text-foreground mb-12">
                     Tools that fit your needs
-                </h1>
+                </h2>
 
-                <div className="mt-10 grid grid-cols-1 gap-4 sm:grid-cols-2 lg:grid-cols-3">
+                <div className="grid grid-cols-1 gap-6 sm:grid-cols-2 lg:grid-cols-3">
                     {items.map(({ title, icon: Icon, desc, badge }, i) => (
                         <motion.div
                             key={title}
@@ -55,33 +55,17 @@ export default function DarkGridFeatures() {
                             transition={{ delay: i * 0.08 }}
                         >
                             <Card
-                                className="group relative overflow-visible border-zinc-800 bg-gradient-to-b from-zinc-950/60 to-zinc-950/30 p-0 transition-colors duration-300 hover:border-zinc-700"
+                                className="group relative overflow-hidden border-border bg-card/50 backdrop-blur-sm p-0 transition-all duration-300 hover:border-primary/50 hover:shadow-2xl hover:shadow-primary/5 rounded-[2rem]"
                             >
-                                {/* subtle gradient on hover */}
-                                <div className="pointer-events-none absolute inset-0 opacity-0 transition-opacity duration-300 group-hover:opacity-100">
-                                    <div className="absolute -inset-[1px] rounded-xl bg-gradient-to-br from-white/10 via-white/5 to-transparent" />
-                                </div>
-
-                                {/* faint inner glow that appears on hover */}
-                                <div className="pointer-events-none absolute inset-0 rounded-xl bg-gradient-to-tr from-white/0 to-white/0 group-hover:from-white/[0.03] group-hover:to-white/[0.06] transition-colors" />
-
-                                {/* white corner squares on hover - now outside the card and square shaped */}
-                                <div className="pointer-events-none absolute inset-0 hidden group-hover:block">
-                                    <div className="absolute -left-2 -top-2 h-3 w-3 bg-white" />
-                                    <div className="absolute -right-2 -top-2 h-3 w-3 bg-white" />
-                                    <div className="absolute -left-2 -bottom-2 h-3 w-3 bg-white" />
-                                    <div className="absolute -right-2 -bottom-2 h-3 w-3 bg-white" />
-                                </div>
-
-                                <CardHeader className="relative z-10 flex flex-row items-start gap-3 p-6">
-                                    <div className="flex h-10 w-10 items-center justify-center rounded-xl border border-zinc-700 bg-zinc-900/70 text-zinc-200">
-                                        <Icon className="h-5 w-5 text-sky-400" />
+                                <CardHeader className="relative z-10 flex flex-row items-start gap-4 p-8">
+                                    <div className="flex h-14 w-14 items-center justify-center rounded-2xl border border-border bg-muted/50 text-foreground group-hover:scale-110 group-hover:bg-primary/10 group-hover:text-primary transition-all duration-300">
+                                        <Icon className="h-7 w-7" />
                                     </div>
                                     <div className="flex-1">
-                                        <div className="flex items-center gap-2">
-                                            <CardTitle className="text-lg font-medium text-zinc-100">{title}</CardTitle>
+                                        <div className="flex items-center gap-3">
+                                            <CardTitle className="text-2xl font-black text-foreground">{title}</CardTitle>
                                             {badge && (
-                                                <span className="rounded-full border border-sky-500/50 bg-sky-500/10 px-2 py-0.5 text-[10px] leading-none text-sky-400">
+                                                <span className="rounded-full border border-primary/20 bg-primary/10 px-2.5 py-1 text-[10px] font-black uppercase tracking-widest text-primary animate-pulse">
                                                     {badge}
                                                 </span>
                                             )}
@@ -89,9 +73,12 @@ export default function DarkGridFeatures() {
                                     </div>
                                 </CardHeader>
 
-                                <CardContent className="relative z-10 px-6 pb-6 text-sm text-zinc-400">
+                                <CardContent className="relative z-10 px-8 pb-8 text-base text-muted-foreground font-medium leading-relaxed">
                                     {desc}
                                 </CardContent>
+                                
+                                {/* Bottom Accent Line */}
+                                <div className="absolute bottom-0 left-0 h-1 w-0 bg-primary group-hover:w-full transition-all duration-500" />
                             </Card>
                         </motion.div>
                     ))}
@@ -99,4 +86,4 @@ export default function DarkGridFeatures() {
             </div>
         </div>
     );
-}
+}
