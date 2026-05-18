@@ -1,3 +1,10 @@
+# [1.9.0](https://github.com/anurag3407/career-pilot/compare/v1.8.0...v1.9.0) (2026-05-18)
+
+
+### Features
+
+* **auth:** add optional TOTP two-factor authentication ([#590](https://github.com/anurag3407/career-pilot/issues/590)) ([7bff166](https://github.com/anurag3407/career-pilot/commit/7bff16642a10f7f66a6ac1cdbec5beae70befd99))
+
 # [1.8.0](https://github.com/anurag3407/career-pilot/compare/v1.7.0...v1.8.0) (2026-05-18)
 
 
