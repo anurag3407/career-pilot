@@ -17,6 +17,7 @@ import JobAlerts from './pages/JobAlerts'
 import JobTracker from './pages/JobTracker'
 import { Community, NotFound } from './pages'
 import InterviewPrep from './pages/InterviewPrep'
+import UserProfile from './pages/UserProfile'
 import EmailGenerator from './pages/EmailGenerator'
 import FellowshipLayout from './pages/fellowship/FellowshipLayout'
 import Onboarding from './pages/fellowship/Onboarding'
@@ -123,6 +124,8 @@ function App() {
             <Route path="/job-tracker" element={<ProtectedRoute><JobTracker /></ProtectedRoute>} />
             <Route path="/community" element={<ProtectedRoute><Community /></ProtectedRoute>} />
             <Route path="/interview-prep" element={<ProtectedRoute><InterviewPrep /></ProtectedRoute>} />
+            <Route path="/profile" element={<ProtectedRoute><UserProfile /></ProtectedRoute>} />
+            <Route path="/profile/:uid" element={<ProtectedRoute><UserProfile /></ProtectedRoute>} />
             <Route path="/security" element={<ProtectedRoute><SecuritySettings /></ProtectedRoute>} />
               <Route path="/dashboard" element={<ProtectedRoute><Dashboard /></ProtectedRoute>} />
               <Route path="/upload" element={<ProtectedRoute><Upload /></ProtectedRoute>} />
