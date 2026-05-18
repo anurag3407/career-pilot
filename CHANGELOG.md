@@ -1,3 +1,10 @@
+# [1.4.0](https://github.com/anurag3407/career-pilot/compare/v1.3.0...v1.4.0) (2026-05-18)
+
+
+### Features
+
+* Login with Linkedin with custom firebase token and callback routes ([33b2929](https://github.com/anurag3407/career-pilot/commit/33b292952f67629f9430d8f7500e17cbcb15a552))
+
 # 1.0.0 (2026-05-18)
 
 
