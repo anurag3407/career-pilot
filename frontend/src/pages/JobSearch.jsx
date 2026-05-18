@@ -79,7 +79,7 @@ export default function JobSearch() {
       setJobs(response.data || [])
 
       if (response.data?.length === 0) {
-        toast('No jobs found. Try different keywords.', { icon: '🔍' })
+        toast('No jobs found. Try different keywords.', { icon: 'ðŸ”' })
       } else {
         toast.success(`Found ${response.data.length} jobs!`)
       }
@@ -102,7 +102,7 @@ export default function JobSearch() {
     const jobId = job.job_id || job.id
 
     if (savedJobs.has(jobId)) {
-      toast('Job already saved to tracker', { icon: '📌' })
+      toast('Job already saved to tracker', { icon: 'ðŸ“Œ' })
       return
     }
 
