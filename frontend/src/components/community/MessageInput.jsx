@@ -268,6 +268,7 @@ export default function MessageInput({ channelId, channelName, onTyping, replyTo
             className="p-2.5 bg-indigo-600 text-white rounded-xl hover:bg-indigo-500 disabled:opacity-50 disabled:cursor-not-allowed transition-colors cursor-pointer"
           >
             <Send className="w-5 h-5" />
+            <span className="sr-only">Send Message</span>
           </button>
         </div>
       </form>
