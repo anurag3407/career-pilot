@@ -1,3 +1,10 @@
+# [1.6.0](https://github.com/anurag3407/career-pilot/compare/v1.5.0...v1.6.0) (2026-05-18)
+
+
+### Features
+
+* add AI Email Generator & fix JSX syntax errors ([#573](https://github.com/anurag3407/career-pilot/issues/573)) ([6bfb0e8](https://github.com/anurag3407/career-pilot/commit/6bfb0e8b1644ab11f70ce051ab8e9a0959396bda))
+
 # [1.5.0](https://github.com/anurag3407/career-pilot/compare/v1.4.0...v1.5.0) (2026-05-18)
 
 
