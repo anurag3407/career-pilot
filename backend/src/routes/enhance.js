@@ -1,5 +1,6 @@
 import express from 'express';
 import { enhanceResume, generateSummary, suggestImprovements, analyzeATSScore, analyzeResumeComprehensive, analyzeBulletPoints, generateBeforeAfter, getVerbLists } from '../config/langchain.js';
+import { generateEmails } from '../services/emailGeneratorService.js';
 import { verifyToken } from '../middleware/auth.js';
 import { asyncHandler, ApiError } from '../middleware/errorHandler.js';
 
@@ -205,6 +206,23 @@ router.get('/verb-lists', verifyToken, asyncHandler(async (req, res) => {
     success: true,
     data: verbs
   });
+}));
+
+// Generate Email Variants
+router.post('/generate-email', verifyToken, asyncHandler(async (req, res) => {
+  const { resume, jobDesc, tone } = req.body;
+
+  if (!resume || !jobDesc) {
+    throw new ApiError(400, 'Resume and Job Description are required');
+  }
+
+  try {
+    const result = await generateEmails(resume, jobDesc, tone || 'Professional');
+    res.json(result);
+  } catch (error) {
+    console.error('Email generation error:', error);
+    throw new ApiError(500, 'Failed to generate emails. Please try again.');
+  }
 }));
 
 export default router;
