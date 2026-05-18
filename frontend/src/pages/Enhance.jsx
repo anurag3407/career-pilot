@@ -3,6 +3,7 @@ import { useParams, useNavigate } from 'react-router-dom'
 import toast from 'react-hot-toast'
 import { motion } from 'framer-motion'
 import { resumeApi, enhanceApi } from '../services/api'
+import { launchConfetti } from "../utils/confetti";
 import {
   Target,
   TrendingUp,
@@ -402,6 +403,15 @@ export default function Enhance() {
       ])
 
       setAtsAnalysis(atsResponse.data)
+      if (atsResponse.data.atsScore >= 90) {
+  launchConfetti({
+    particleCount: 180,
+    spread: 100,
+    duration: 3000,
+  });
+}
+      
+
       setComprehensiveAnalysis(comprehensiveResponse.data)
       setHasAnalyzed(true)
 
@@ -460,6 +470,13 @@ export default function Enhance() {
       </div>
     )
   }
+
+  launchConfetti({
+  particleCount: 120,
+  duration: 2500,
+});
+
+
 
   return (
     <div className="min-h-screen bg-background">
