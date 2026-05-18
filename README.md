@@ -105,6 +105,7 @@ The **AI Resume Builder & Career Platform** is a comprehensive full-stack applic
 - **Employment Type Selection**: Full-time, Part-time, Contract, Internship
 - **Email Notifications**: Receive new job matches directly in your inbox
 - **Real-time Socket Updates**: Instant in-app notifications when new jobs match
+> **Note:** Job alerts run every 2 days (`0 0 */2 * *`) to reduce API costs.
 
 ### 📊 Job Application Tracker
 
