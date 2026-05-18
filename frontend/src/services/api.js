@@ -255,6 +255,17 @@ export const enhanceApi = {
       headers
     })
     return handleResponse(response)
+  },
+
+  // Generate job application emails
+  async generateEmail(data) {
+    const headers = await getAuthHeaders()
+    const response = await fetch(`${API_BASE}/enhance/generate-email`, {
+      method: 'POST',
+      headers,
+      body: JSON.stringify(data)
+    })
+    return handleResponse(response)
   }
 }
 
