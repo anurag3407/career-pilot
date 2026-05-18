@@ -839,6 +839,77 @@ export const interviewApi = {
   }
 }
 
+// ============ TWO-FACTOR AUTH API ============
+export const twoFactorApi = {
+  async getStatus() {
+    const headers = await getAuthHeaders()
+    const response = await fetch(`${API_BASE}/auth/2fa/status`, {
+      method: 'GET',
+      headers
+    })
+    return handleResponse(response)
+  },
+
+  async setup() {
+    const headers = await getAuthHeaders()
+    const response = await fetch(`${API_BASE}/auth/2fa/setup`, {
+      method: 'POST',
+      headers
+    })
+    return handleResponse(response)
+  },
+
+  async enable(secret, token) {
+    const headers = await getAuthHeaders()
+    const response = await fetch(`${API_BASE}/auth/2fa/enable`, {
+      method: 'POST',
+      headers,
+      body: JSON.stringify({ secret, token })
+    })
+    return handleResponse(response)
+  },
+
+  async disable(token) {
+    const headers = await getAuthHeaders()
+    const response = await fetch(`${API_BASE}/auth/2fa/disable`, {
+      method: 'POST',
+      headers,
+      body: JSON.stringify({ token })
+    })
+    return handleResponse(response)
+  },
+
+  async verify(token) {
+    const headers = await getAuthHeaders()
+    const response = await fetch(`${API_BASE}/auth/2fa/verify`, {
+      method: 'POST',
+      headers,
+      body: JSON.stringify({ token })
+    })
+    return handleResponse(response)
+  },
+
+  async verifyBackup(code) {
+    const headers = await getAuthHeaders()
+    const response = await fetch(`${API_BASE}/auth/2fa/verify-backup`, {
+      method: 'POST',
+      headers,
+      body: JSON.stringify({ code })
+    })
+    return handleResponse(response)
+  },
+
+  async regenerateBackupCodes(token) {
+    const headers = await getAuthHeaders()
+    const response = await fetch(`${API_BASE}/auth/2fa/backup-codes/regenerate`, {
+      method: 'POST',
+      headers,
+      body: JSON.stringify({ token })
+    })
+    return handleResponse(response)
+  }
+}
+
 // ============ PAYMENT API ============
 export const paymentApi = {
   // Create Razorpay order for proposal acceptance

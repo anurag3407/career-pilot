@@ -27,6 +27,7 @@ import ChallengeProposals from './pages/fellowship/ChallengeProposals'
 import Verify from './pages/fellowship/Verify'
 import FellowshipMessages from './pages/fellowship/FellowshipMessages'
 import FellowshipChat from './pages/fellowship/FellowshipChat'
+import SecuritySettings from './pages/SecuritySettings'
 
 function ProtectedRoute({ children }) {
   const { user, loading } = useAuth()
@@ -113,6 +114,7 @@ function App() {
             <Route path="/job-tracker" element={<ProtectedRoute><JobTracker /></ProtectedRoute>} />
             <Route path="/community" element={<ProtectedRoute><Community /></ProtectedRoute>} />
             <Route path="/interview-prep" element={<ProtectedRoute><InterviewPrep /></ProtectedRoute>} />
+            <Route path="/security" element={<ProtectedRoute><SecuritySettings /></ProtectedRoute>} />
 
             <Route path="/fellowship" element={<ProtectedRoute><FellowshipLayout /></ProtectedRoute>}>
               <Route index element={<Challenges />} />
