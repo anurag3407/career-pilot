@@ -13,7 +13,7 @@ export default function WorldMap({
       const map = new DottedMap({ height: 100, grid: "diagonal" });
       return map.getSVG({
         radius: 0.22,
-        color: "#FFFFFF40",
+        color: "currentColor",
         shape: "circle",
         backgroundColor: "transparent",
       });
@@ -36,7 +36,7 @@ export default function WorldMap({
   };
 
   return (
-    <div className="w-full aspect-[2/1] rounded-lg relative font-sans min-h-[300px]">
+    <div className="w-full aspect-[2/1] rounded-lg relative font-sans min-h-[300px] text-muted-foreground/30">
       {svgMap && (
         <img
           src={`data:image/svg+xml;utf8,${encodeURIComponent(svgMap)}`}
