@@ -12,6 +12,7 @@ import {
     LogOut,
     Settings,
     Zap,
+    User,
 } from "lucide-react";
 import { useAuth } from "../context/AuthContext";
 import {
@@ -58,6 +59,11 @@ const navLinks = [
         label: "Resume",
         href: "/upload",
         icon: <FileText className="w-5 h-5 flex-shrink-0" />,
+    },
+    {
+        label: "Profile",
+        href: "/profile",
+        icon: <User className="w-5 h-5 flex-shrink-0" />,
     },
 ];
 
