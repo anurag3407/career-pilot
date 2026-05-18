@@ -4,14 +4,16 @@ import { useSocket } from '../../context/SocketContext';
 import { communityApi } from '../../services/api';
 import PostCard from './PostCard';
 import PostEditor from './PostEditor';
-import { 
-  Plus, 
-  TrendingUp, 
-  Clock, 
+import {
+  Plus,
+  TrendingUp,
+  Clock,
   Heart,
   Filter,
   Search,
-  X
+  X,
+  ChevronDown,
+  ChevronUp
 } from 'lucide-react';
 import toast from 'react-hot-toast';
 
@@ -31,6 +33,8 @@ export default function PostsFeed() {
   const { subscribe, subscribePosts, unsubscribePosts } = useSocket();
   
   const [posts, setPosts] = useState([]);
+  const [scheduledPosts, setScheduledPosts] = useState([]);
+  const [showScheduled, setShowScheduled] = useState(true);
   const [loading, setLoading] = useState(true);
   const [showEditor, setShowEditor] = useState(false);
   const [selectedCategory, setSelectedCategory] = useState('all');
@@ -43,6 +47,15 @@ export default function PostsFeed() {
   useEffect(() => {
     fetchPosts();
   }, [selectedCategory, sortBy]);
+
+  // Refetch scheduled posts whenever the logged-in user changes
+  useEffect(() => {
+    if (user) {
+      fetchScheduledPosts();
+    } else {
+      setScheduledPosts([]);
+    }
+  }, [user?.uid]);
 
   // Subscribe to real-time updates
   useEffect(() => {
@@ -118,14 +131,41 @@ export default function PostsFeed() {
     }
   };
 
+  const fetchScheduledPosts = async () => {
+    try {
+      const data = await communityApi.getScheduledPosts();
+      setScheduledPosts(data.posts || []);
+    } catch {
+      // Silently ignore — not critical
+    }
+  };
+
   const handleCreatePost = async (postData) => {
     try {
       const data = await communityApi.createPost(postData);
-      setPosts(prev => [data.post, ...prev]);
-      setShowEditor(false);
-      toast.success('Post created successfully!');
+      if (data.post.status === 'scheduled') {
+        setScheduledPosts(prev => [data.post, ...prev].sort(
+          (a, b) => new Date(a.scheduledAt) - new Date(b.scheduledAt)
+        ));
+        setShowEditor(false);
+        toast.success('Post scheduled successfully!');
+      } else {
+        setPosts(prev => [data.post, ...prev]);
+        setShowEditor(false);
+        toast.success('Post created successfully!');
+      }
     } catch (error) {
       toast.error(error.message);
+    }
+  };
+
+  const handleCancelScheduled = async (postId) => {
+    try {
+      await communityApi.cancelScheduledPost(postId);
+      setScheduledPosts(prev => prev.filter(p => (p.id || p._id) !== postId));
+      toast.success('Scheduled post cancelled');
+    } catch (error) {
+      toast.error(error.message || 'Failed to cancel scheduled post');
     }
   };
 
@@ -300,6 +340,41 @@ export default function PostsFeed() {
       {/* Posts List */}
       <div className="flex-1 overflow-y-auto p-6">
         <div className="max-w-3xl mx-auto space-y-4">
+          {/* Scheduled posts section — only shown to the post author */}
+          {scheduledPosts.length > 0 && (
+            <div className="border border-sky-500/20 rounded-xl overflow-hidden">
+              <button
+                onClick={() => setShowScheduled(prev => !prev)}
+                className="w-full flex items-center justify-between px-4 py-3 bg-sky-500/10 hover:bg-sky-500/15 transition-colors"
+              >
+                <div className="flex items-center gap-2 text-sky-400 text-sm font-medium">
+                  <Clock className="w-4 h-4" />
+                  Scheduled Posts ({scheduledPosts.length})
+                </div>
+                {showScheduled
+                  ? <ChevronUp className="w-4 h-4 text-sky-400" />
+                  : <ChevronDown className="w-4 h-4 text-sky-400" />
+                }
+              </button>
+              {showScheduled && (
+                <div className="divide-y divide-neutral-800/50 bg-neutral-900/50">
+                  {scheduledPosts.map(post => {
+                    const postId = post.id || post._id;
+                    return (
+                      <PostCard
+                        key={postId}
+                        post={post}
+                        currentUser={user}
+                        onLike={() => {}}
+                        onCancelSchedule={handleCancelScheduled}
+                      />
+                    );
+                  })}
+                </div>
+              )}
+            </div>
+          )}
+
           {loading ? (
             [...Array(3)].map((_, i) => (
               <div key={i} className="bg-muted border border-border rounded-xl p-6 animate-pulse">
@@ -328,6 +403,7 @@ export default function PostsFeed() {
                     currentUser={user}
                     onLike={handleLikePost}
                     onDelete={handleDeletePost}
+                    onCancelSchedule={handleCancelScheduled}
                     onCommentAdded={() => {
                       // Update comment count in local state
                       setPosts(prev => prev.map(p => {

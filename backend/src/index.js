@@ -25,6 +25,7 @@ import { errorHandler } from './middleware/errorHandler.js';
 import { initializeSocket } from './config/socket.js';
 
 import { initializeDefaultChannels } from './controllers/communityFirebaseController.js';
+import { initializePostScheduler } from './services/postScheduler.js';
 
 import mongoose from 'mongoose';
 import { initJobFetcher } from './services/jobFetcher.js';
@@ -135,6 +136,12 @@ const startServer = async () => {
       console.log('💬 Community channels initialized');
     } catch (channelError) {
       console.warn('⚠️ Could not initialize default channels:', channelError.message);
+    }
+
+    try {
+      await initializePostScheduler();
+    } catch (schedulerError) {
+      console.warn('⚠️ Post scheduler initialization skipped:', schedulerError.message);
     }
 
     const allowDevDbMutations = process.env.ALLOW_DEV_DB_MUTATIONS === 'true';

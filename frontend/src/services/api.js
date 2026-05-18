@@ -528,6 +528,24 @@ export const communityApi = {
     return handleResponse(response)
   },
 
+  async getScheduledPosts() {
+    const headers = await getAuthHeaders()
+    const response = await fetch(`${API_BASE}/community/posts/scheduled/mine`, {
+      method: 'GET',
+      headers
+    })
+    return handleResponse(response)
+  },
+
+  async cancelScheduledPost(postId) {
+    const headers = await getAuthHeaders()
+    const response = await fetch(`${API_BASE}/community/posts/${postId}/schedule`, {
+      method: 'DELETE',
+      headers
+    })
+    return handleResponse(response)
+  },
+
   // ---- Comments ----
   async getComments(postId, page = 1) {
     const headers = await getAuthHeaders()
@@ -861,6 +879,28 @@ export const paymentApi = {
     const response = await fetch(`${API_BASE}/payments/status/${roomId}`, {
       method: 'GET',
       headers
+    })
+    return handleResponse(response)
+  }
+  
+}
+// ============ NOTIFICATION PREFERENCES API ============
+export const notificationApi = {
+  async getPreferences() {
+    const headers = await getAuthHeaders()
+    const response = await fetch(`${API_BASE}/auth/notification-preferences`, {
+      method: 'GET',
+      headers
+    })
+    return handleResponse(response)
+  },
+
+  async updatePreferences(preferences) {
+    const headers = await getAuthHeaders()
+    const response = await fetch(`${API_BASE}/auth/notification-preferences`, {
+      method: 'PUT',
+      headers,
+      body: JSON.stringify(preferences)
     })
     return handleResponse(response)
   }

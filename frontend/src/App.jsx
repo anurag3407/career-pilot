@@ -20,6 +20,7 @@ import InterviewPrep from './pages/InterviewPrep'
 import FellowshipLayout from './pages/fellowship/FellowshipLayout'
 import Onboarding from './pages/fellowship/Onboarding'
 import Challenges from './pages/fellowship/Challenges'
+import Settings from './pages/Settings'
 import ChallengeDetail from './pages/fellowship/ChallengeDetail'
 import CreateChallenge from './pages/fellowship/CreateChallenge'
 import MyProposals from './pages/fellowship/MyProposals'
@@ -117,6 +118,7 @@ function App() {
               <Route path="/job-tracker" element={<ProtectedRoute><JobTracker /></ProtectedRoute>} />
               <Route path="/community" element={<ProtectedRoute><Community /></ProtectedRoute>} />
               <Route path="/interview-prep" element={<ProtectedRoute><InterviewPrep /></ProtectedRoute>} />
+              <Route path="/settings" element={<ProtectedRoute><Settings /></ProtectedRoute>} />
 
               <Route path="/fellowship" element={<ProtectedRoute><FellowshipLayout /></ProtectedRoute>}>
                 <Route index element={<Challenges />} />
