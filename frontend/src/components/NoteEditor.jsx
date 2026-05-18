@@ -34,14 +34,15 @@ export default function NoteEditor({ notes = [], onAddNote }) {
 
                 {!showPreview ? (
                     <textarea
-                        className="w-full border border-gray-200 rounded p-2 text-sm font-mono resize-y focus:outline-none focus:ring-2 focus:ring-blue-300"
+                        className="w-full border border-gray-200 rounded p-2 text-sm font-mono resize-y focus:outline-none focus:ring-2 focus:ring-blue-300 bg-white text-black"
                         rows={5}
                         placeholder="Add a note… Markdown supported"
                         value={content}
+                        
                         onChange={(e) => setContent(e.target.value)}
                     />
                 ) : (
-                    <div className="min-h-[120px] p-2 border border-gray-200 rounded text-sm prose prose-sm max-w-none">
+                    <div className="min-h-[220px] p-3 border border-gray-200 rounded text-sm prose prose-sm max-w-none bg-white text-black overflow-auto">
                         {content.trim()
                             ? <ReactMarkdown>{content}</ReactMarkdown>
                             : <span className="text-gray-400">Nothing to preview yet…</span>
