@@ -1,3 +1,10 @@
+# [1.11.0](https://github.com/anurag3407/career-pilot/compare/v1.10.0...v1.11.0) (2026-05-18)
+
+
+### Features
+
+* **security:** per-user rate limiting on AI endpoints ([#477](https://github.com/anurag3407/career-pilot/issues/477)) ([160d834](https://github.com/anurag3407/career-pilot/commit/160d834cb1f65bf71efecc5b64cbc61a3fe77afc))
+
 # [1.10.0](https://github.com/anurag3407/career-pilot/compare/v1.9.0...v1.10.0) (2026-05-18)
 
 
