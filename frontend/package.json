@@ -15,6 +15,7 @@
     "@tabler/icons-react": "^3.36.1",
     "@tailwindcss/vite": "^4.1.18",
     "cabe": "^1.0.1",
+    "canvas-confetti": "^1.9.4",
     "class-variance-authority": "^0.7.1",
     "clsx": "^2.1.1",
     "cobe": "^0.6.5",
@@ -34,7 +35,7 @@
     "react-markdown": "^9.0.1",
     "react-router-dom": "^7.1.1",
     "remark-gfm": "^4.0.1",
-    "socket.io-client": "^4.8.3",
+    "socket.io-client": "^4.2.0",
     "tailwind-merge": "^3.4.0",
     "tailwindcss": "^4.1.18",
     "zustand": "^5.0.2"
