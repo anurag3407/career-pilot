@@ -5,7 +5,7 @@ dotenv.config();
 
 const geminiApiKey = process.env.GEMINI_API_KEY;
 if (!geminiApiKey) {
-  console.error('❌ GEMINI_API_KEY is missing. Aborting AI initialization in jobSummarizer.');
+  throw new Error('GEMINI_API_KEY is missing. AI summarization is disabled.');
 }
 
 const genAI = new GoogleGenerativeAI(geminiApiKey);
@@ -50,6 +50,17 @@ ${jobDescription}`;
       // Remove markdown code blocks if present
       const cleanedText = text.replace(/```json\n?/g, '').replace(/```\n?/g, '').trim();
       summaryData = JSON.parse(cleanedText);
+      
+      const isValid = 
+        summaryData &&
+        Array.isArray(summaryData.mustHaveSkills) &&
+        Array.isArray(summaryData.niceToHaveSkills) &&
+        typeof summaryData.salaryRange === 'string' &&
+        typeof summaryData.cultureAndTeam === 'string';
+        
+      if (!isValid) {
+        throw new Error('AI response JSON does not match expected schema');
+      }
     } catch (parseError) {
       console.error('Failed to parse job summary JSON:', parseError);
       throw new Error('Failed to parse AI response');

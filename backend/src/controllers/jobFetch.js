@@ -86,12 +86,19 @@ export const getJobById = async (req, res) => {
 
 export const summarizeJob = async (req, res) => {
   try {
-    const { jobDescription } = req.body;
+    const { jobDescription } = req.body ?? {};
     
-    if (!jobDescription) {
+    if (typeof jobDescription !== "string" || !jobDescription.trim()) {
       return res.status(400).json({
         success: false,
-        message: "Job description is required"
+        message: "Job description is required and must be a valid string"
+      });
+    }
+
+    if (jobDescription.length > 20000) {
+      return res.status(413).json({
+        success: false,
+        message: "Job description is too long"
       });
     }
 
@@ -102,8 +109,7 @@ export const summarizeJob = async (req, res) => {
     console.error("Error summarizing job:", error);
     return res.status(500).json({
       success: false,
-      message: "Failed to summarize job description",
-      error: error.message
+      message: "Failed to summarize job description"
     });
   }
 };
