@@ -12,6 +12,7 @@ import {
     LogOut,
     Settings,
     Zap,
+    ShieldCheck,
     Sun,
     Moon
 } from "lucide-react";
@@ -62,6 +63,10 @@ const navLinks = [
         href: "/upload",
         icon: <FileText className="w-5 h-5 flex-shrink-0" />,
     },
+    {
+        label: "Security",
+        href: "/security",
+        icon: <ShieldCheck className="w-5 h-5 flex-shrink-0" />,
      {
         label: "Settings",
         href: "/settings",

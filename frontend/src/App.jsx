@@ -30,6 +30,7 @@ import ChallengeProposals from './pages/fellowship/ChallengeProposals'
 import Verify from './pages/fellowship/Verify'
 import FellowshipMessages from './pages/fellowship/FellowshipMessages'
 import FellowshipChat from './pages/fellowship/FellowshipChat'
+import SecuritySettings from './pages/SecuritySettings'
 import LinkedInCallback from './pages/LinkedInCallback'
 
 function ProtectedRoute({ children }) {
@@ -113,6 +114,16 @@ function App() {
             <Route path="/register" element={<PublicRoute><Register /></PublicRoute>} />
             <Route path="/auth/linkedin/callback" element={<PublicRoute><LinkedInCallback /></PublicRoute>} />
 
+            <Route path="/dashboard" element={<ProtectedRoute><Dashboard /></ProtectedRoute>} />
+            <Route path="/upload" element={<ProtectedRoute><Upload /></ProtectedRoute>} />
+            <Route path="/enhance/:resumeId" element={<ProtectedRoute><Enhance /></ProtectedRoute>} />
+            <Route path="/resume/:resumeId" element={<ProtectedRoute><ResumeView /></ProtectedRoute>} />
+            <Route path="/jobs" element={<ProtectedRoute><JobSearch /></ProtectedRoute>} />
+            <Route path="/job-alerts" element={<ProtectedRoute><JobAlerts /></ProtectedRoute>} />
+            <Route path="/job-tracker" element={<ProtectedRoute><JobTracker /></ProtectedRoute>} />
+            <Route path="/community" element={<ProtectedRoute><Community /></ProtectedRoute>} />
+            <Route path="/interview-prep" element={<ProtectedRoute><InterviewPrep /></ProtectedRoute>} />
+            <Route path="/security" element={<ProtectedRoute><SecuritySettings /></ProtectedRoute>} />
               <Route path="/dashboard" element={<ProtectedRoute><Dashboard /></ProtectedRoute>} />
               <Route path="/upload" element={<ProtectedRoute><Upload /></ProtectedRoute>} />
               <Route path="/enhance/:resumeId" element={<ProtectedRoute><Enhance /></ProtectedRoute>} />
