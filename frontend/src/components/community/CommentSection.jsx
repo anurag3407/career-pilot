@@ -43,11 +43,11 @@ function CommentItem({ comment, currentUser, onReply, onLike, depth = 0 }) {
   };
 
   return (
-    <div className={`${depth > 0 ? 'ml-8 border-l-2 border-neutral-700 pl-4' : ''}`}>
+    <div className={`${depth > 0 ? 'ml-8 border-l-2 border-border pl-4' : ''}`}>
       <div className="flex gap-3 py-3">
         {/* Avatar */}
         <div className="flex-shrink-0">
-          <div className="w-8 h-8 rounded-full bg-gradient-to-br from-indigo-500 to-purple-500 flex items-center justify-center text-white text-xs font-medium">
+          <div className="w-8 h-8 rounded-full bg-gradient-to-br from-primary to-secondary flex items-center justify-center text-primary-foreground text-xs font-medium">
             {comment.author?.avatar ? (
               <img 
                 src={comment.author.avatar} 
@@ -63,23 +63,23 @@ function CommentItem({ comment, currentUser, onReply, onLike, depth = 0 }) {
         {/* Content */}
         <div className="flex-1 min-w-0">
           <div className="flex items-center gap-2 flex-wrap">
-            <span className="font-medium text-sm text-white">
+            <span className="font-medium text-sm text-foreground">
               {comment.author?.name || 'Anonymous'}
             </span>
             {isOwn && (
-              <span className="text-xs bg-indigo-500/20 text-indigo-400 px-1.5 py-0.5 rounded">
+              <span className="text-xs bg-primary/20 text-primary px-1.5 py-0.5 rounded">
                 You
               </span>
             )}
-            <span className="text-xs text-neutral-500">
+            <span className="text-xs text-muted-foreground">
               {comment.createdAt ? formatDistanceToNow(new Date(comment.createdAt), { addSuffix: true }) : ''}
             </span>
             {comment.isEdited && (
-              <span className="text-xs text-neutral-500">(edited)</span>
+              <span className="text-xs text-muted-foreground">(edited)</span>
             )}
           </div>
 
-          <p className="text-sm text-neutral-300 mt-1 whitespace-pre-wrap">
+          <p className="text-sm text-foreground mt-1 whitespace-pre-wrap">
             {comment.content}
           </p>
 
@@ -88,7 +88,7 @@ function CommentItem({ comment, currentUser, onReply, onLike, depth = 0 }) {
             <button
               onClick={() => onLike(comment.id)}
               className={`flex items-center gap-1 text-xs transition-colors ${
-                isLiked ? 'text-red-500' : 'text-neutral-500 hover:text-red-500'
+                isLiked ? 'text-destructive' : 'text-muted-foreground hover:text-destructive'
               }`}
             >
               <Heart className={`w-4 h-4 ${isLiked ? 'fill-current' : ''}`} />
@@ -98,7 +98,7 @@ function CommentItem({ comment, currentUser, onReply, onLike, depth = 0 }) {
             {depth === 0 && (
               <button
                 onClick={() => setIsReplying(!isReplying)}
-                className="flex items-center gap-1 text-xs text-neutral-500 hover:text-indigo-400"
+                className="flex items-center gap-1 text-xs text-muted-foreground hover:text-primary"
               >
                 <MessageCircle className="w-4 h-4" />
                 <span>Reply</span>
@@ -114,13 +114,13 @@ function CommentItem({ comment, currentUser, onReply, onLike, depth = 0 }) {
                 value={replyContent}
                 onChange={(e) => setReplyContent(e.target.value)}
                 placeholder="Write a reply..."
-                className="flex-1 px-3 py-2 text-sm bg-neutral-800 border border-neutral-700 rounded-lg text-white placeholder-neutral-500 focus:outline-none focus:ring-2 focus:ring-indigo-500"
+                className="flex-1 px-3 py-2 text-sm bg-muted border border-border rounded-lg text-foreground placeholder:text-muted-foreground focus:outline-none focus:ring-2 focus:ring-primary"
                 autoFocus
               />
               <button
                 type="submit"
                 disabled={!replyContent.trim() || isSubmitting}
-                className="px-3 py-2 bg-indigo-600 text-white rounded-lg hover:bg-indigo-500 disabled:opacity-50 disabled:cursor-not-allowed"
+                className="px-3 py-2 bg-primary text-primary-foreground rounded-lg hover:bg-primary/90 disabled:opacity-50 disabled:cursor-not-allowed"
               >
                 {isSubmitting ? (
                   <Loader2 className="w-4 h-4 animate-spin" />
@@ -141,7 +141,7 @@ function CommentItem({ comment, currentUser, onReply, onLike, depth = 0 }) {
         <div className="mt-1">
           <button
             onClick={() => setShowReplies(!showReplies)}
-            className="flex items-center gap-1 text-xs text-indigo-400 hover:text-indigo-300 mb-2 ml-11"
+            className="flex items-center gap-1 text-xs text-primary hover:text-primary/80 mb-2 ml-11"
           >
             {showReplies ? <ChevronUp className="w-4 h-4" /> : <ChevronDown className="w-4 h-4" />}
             {showReplies ? 'Hide' : 'Show'} {comment.replies.length} {comment.replies.length === 1 ? 'reply' : 'replies'}
@@ -272,11 +272,11 @@ export default function CommentSection({ postId, currentUser, onCommentAdded }) 
   };
 
   return (
-    <div className="border-t border-neutral-700 bg-neutral-900">
+    <div className="border-t border-border bg-card">
       {/* Comment Input */}
-      <div className="p-4 border-b border-neutral-700 bg-neutral-800/50">
+      <div className="p-4 border-b border-border bg-muted/50">
         <form onSubmit={handleSubmitComment} className="flex gap-2">
-          <div className="w-8 h-8 rounded-full bg-gradient-to-br from-indigo-500 to-purple-500 flex items-center justify-center text-white text-xs font-medium flex-shrink-0">
+          <div className="w-8 h-8 rounded-full bg-gradient-to-br from-primary to-secondary flex items-center justify-center text-primary-foreground text-xs font-medium flex-shrink-0">
             {currentUser?.photoURL ? (
               <img 
                 src={currentUser.photoURL} 
@@ -292,12 +292,12 @@ export default function CommentSection({ postId, currentUser, onCommentAdded }) 
             value={newComment}
             onChange={(e) => setNewComment(e.target.value)}
             placeholder="Write a comment..."
-            className="flex-1 px-4 py-2 bg-neutral-800 border border-neutral-700 rounded-full text-sm text-white placeholder-neutral-500 focus:outline-none focus:ring-2 focus:ring-indigo-500"
+            className="flex-1 px-4 py-2 bg-muted border border-border rounded-full text-sm text-foreground placeholder:text-muted-foreground focus:outline-none focus:ring-2 focus:ring-primary"
           />
           <button
             type="submit"
             disabled={!newComment.trim() || isSubmitting}
-            className="px-4 py-2 bg-indigo-600 text-white rounded-full hover:bg-indigo-500 disabled:opacity-50 disabled:cursor-not-allowed flex items-center gap-2"
+            className="px-4 py-2 bg-primary text-primary-foreground rounded-full hover:bg-primary/90 disabled:opacity-50 disabled:cursor-not-allowed flex items-center gap-2"
           >
             {isSubmitting ? (
               <Loader2 className="w-4 h-4 animate-spin" />
@@ -315,15 +315,15 @@ export default function CommentSection({ postId, currentUser, onCommentAdded }) 
       <div className="max-h-96 overflow-y-auto">
         {loading ? (
           <div className="flex items-center justify-center py-8">
-            <Loader2 className="w-6 h-6 animate-spin text-indigo-400" />
+            <Loader2 className="w-6 h-6 animate-spin text-primary" />
           </div>
         ) : comments.length === 0 ? (
-          <div className="text-center py-8 text-neutral-500">
-            <MessageCircle className="w-12 h-12 mx-auto mb-2 text-neutral-600" />
+          <div className="text-center py-8 text-muted-foreground">
+            <MessageCircle className="w-12 h-12 mx-auto mb-2 text-muted-foreground/60" />
             <p>No comments yet. Be the first to comment!</p>
           </div>
         ) : (
-          <div className="px-4 divide-y divide-neutral-700">
+          <div className="px-4 divide-y divide-border">
             {comments.map(comment => (
               <CommentItem
                 key={comment.id || comment._id}
@@ -341,7 +341,7 @@ export default function CommentSection({ postId, currentUser, onCommentAdded }) 
           <div className="p-4 text-center">
             <button
               onClick={() => fetchComments(true)}
-              className="text-sm text-indigo-400 hover:text-indigo-300 font-medium"
+              className="text-sm text-primary hover:text-primary/80 font-medium"
             >
               Load more comments ({total - comments.length} remaining)
             </button>

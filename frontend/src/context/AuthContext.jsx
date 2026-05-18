@@ -54,6 +54,12 @@ export function AuthProvider({ children }) {
     return result.user
   }
 
+  // Sign in with LinkedIn
+  const loginWithLinkedIn = () => {
+    const apiUrl = import.meta.env.VITE_API_URL || 'http://localhost:5000'
+    window.location.href = `${apiUrl}/api/auth/linkedin`
+  }
+
   // Sign out
   const logout = async () => {
     await signOut(auth)
@@ -71,6 +77,7 @@ export function AuthProvider({ children }) {
     signup,
     login,
     loginWithGoogle,
+    loginWithLinkedIn,
     logout,
     getToken
   }
