@@ -70,3 +70,5 @@ temp/
 # Misc
 *.pdf
 !resume.pdf
+
+*issues
