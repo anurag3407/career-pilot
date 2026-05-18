@@ -105,6 +105,7 @@ The **AI Resume Builder & Career Platform** is a comprehensive full-stack applic
 - **Employment Type Selection**: Full-time, Part-time, Contract, Internship
 - **Email Notifications**: Receive new job matches directly in your inbox
 - **Real-time Socket Updates**: Instant in-app notifications when new jobs match
+> **Note:** By default, job alerts use the cron schedule `0 0 */2 * *` to reduce API costs. This means they run at midnight on every other day of the month (a day-of-month step), not on a strict 48-hour interval, so behavior can differ around month boundaries. You can override this schedule with the `ALERT_CRON_SCHEDULE` environment variable.
 
 ### 📊 Job Application Tracker
 

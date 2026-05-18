@@ -16,8 +16,9 @@ Fixes #(issue number)
 - [ ] Tested Locally
 - [ ] New tests added
 
-## Screenshots
-- [ ] Attached Screenshots (if applicable)
+## Screenshots (MANDATORY for UI/UX changes)
+- [ ] Attached Screenshots or Screen Recordings (showing before and after)
+- *If your PR does not make any visual/UI changes, please write "N/A"*
 
 ## Checklist
 - [ ] Code follows project style guidelines

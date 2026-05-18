@@ -28,7 +28,7 @@ const notificationLogSchema = new mongoose.Schema({
     },
     emailStatus: {
         type: String,
-        enum: ['pending', 'sent', 'failed'],
+        enum: ['pending', 'sent', 'failed', 'bounced'],
         default: 'pending'
     },
     emailMessageId: {
