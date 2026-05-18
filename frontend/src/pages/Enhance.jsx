@@ -450,10 +450,14 @@ export default function Enhance() {
       setEnhancing(false)
     }
   }
-
-  if (loading) {
   return (
-    <div className="min-h-screen bg-background px-4 py-8 animate-pulse">
+    <div
+      className="min-h-screen bg-black px-4 py-8 animate-pulse"
+      role="status"
+      aria-live="polite"
+      aria-busy="true"
+    >
+      <span className="sr-only">Loading resume analysis…</span>
       <div className="max-w-6xl mx-auto space-y-6">
 
         {/* Header Skeleton */}
