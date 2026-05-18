@@ -158,7 +158,7 @@ router.put('/:trackerId', verifyToken, asyncHandler(async (req, res) => {
   if (notes) {
     updateData.$push = {
       notes: {
-        text: notes,
+        content: notes,
         createdAt: new Date()
       }
     };
