@@ -54,6 +54,6 @@ const interviewSchema = new mongoose.Schema({
     duration: { type: Number, default: 0 }
 }, { timestamps: true });
 
-interviewSchema.index({ odId: 1, createdAt: -1 });
+interviewSchema.index({ odId: 1, createdAt: -1 }, { background: true });
 
 export default mongoose.model('Interview', interviewSchema);

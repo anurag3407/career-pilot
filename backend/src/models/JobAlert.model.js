@@ -69,7 +69,10 @@ const jobAlertSchema = new mongoose.Schema({
 });
 
 // Compound indexes for efficient querying
-jobAlertSchema.index({ userId: 1, isActive: 1 });
-jobAlertSchema.index({ isActive: 1, lastCheckedAt: 1 });
+jobAlertSchema.index({ userId: 1, isActive: 1 }, { background: true });
+jobAlertSchema.index({ isActive: 1, lastCheckedAt: 1 }, { background: true });
+jobAlertSchema.index({ userId: 1, createdAt: -1 }, { background: true });
+jobAlertSchema.index({ isActive: 1, userEmail: 1 }, { background: true });
+jobAlertSchema.index({ userId: 1, title: 1, isActive: 1 }, { background: true });
 
 export default mongoose.model('JobAlert', jobAlertSchema);
