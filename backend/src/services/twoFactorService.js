@@ -9,7 +9,7 @@ const BACKUP_CODE_COUNT = 8;
 
 const getKey = () => {
   const key = process.env.TOTP_ENCRYPTION_KEY;
-  if (!key || key.length !== 64) {
+  if (!key || !/^[0-9a-fA-F]{64}$/.test(key)) {
     throw new Error('TOTP_ENCRYPTION_KEY must be a 64-character hex string (32 bytes)');
   }
   return Buffer.from(key, 'hex');
@@ -86,7 +86,7 @@ export const enableTwoFactor = async (uid, rawSecret, token) => {
  * Returns true on success, false on bad token or 2FA not enabled.
  */
 export const disableTwoFactor = async (uid, token) => {
-  const record = await TwoFactor.findOne({ uid, enabled: true });
+  const record = await TwoFactor.findOne({ uid, enabled: true }).select('+secret');
   if (!record?.secret) return false;
 
   const valid = speakeasy.totp.verify({
@@ -108,7 +108,7 @@ export const disableTwoFactor = async (uid, token) => {
  * Verify a TOTP token during login. Returns true on valid code.
  */
 export const verifyTotp = async (uid, token) => {
-  const record = await TwoFactor.findOne({ uid, enabled: true });
+  const record = await TwoFactor.findOne({ uid, enabled: true }).select('+secret');
   if (!record?.secret) return false;
 
   return speakeasy.totp.verify({
@@ -124,19 +124,26 @@ export const verifyTotp = async (uid, token) => {
  * code from storage; false if no matching code found.
  */
 export const verifyBackupCode = async (uid, code) => {
-  const record = await TwoFactor.findOne({ uid, enabled: true });
+  const record = await TwoFactor.findOne({ uid, enabled: true }).select('+backupCodes');
   if (!record?.backupCodes?.length) return false;
 
   const normalised = normaliseCode(code);
-  for (let i = 0; i < record.backupCodes.length; i++) {
-    const match = await bcrypt.compare(normalised, record.backupCodes[i]);
-    if (match) {
-      record.backupCodes.splice(i, 1);
-      await record.save();
-      return true;
+  let matchedHash = null;
+  for (const hash of record.backupCodes) {
+    if (await bcrypt.compare(normalised, hash)) {
+      matchedHash = hash;
+      break;
     }
   }
-  return false;
+  if (!matchedHash) return false;
+
+  // Atomic remove — concurrent requests racing on the same code will only
+  // succeed if the hash is still present, preventing double-use.
+  const updated = await TwoFactor.findOneAndUpdate(
+    { uid, enabled: true, backupCodes: matchedHash },
+    { $pull: { backupCodes: matchedHash } }
+  );
+  return updated !== null;
 };
 
 /**
@@ -144,7 +151,7 @@ export const verifyBackupCode = async (uid, code) => {
  * Returns plaintext codes on success, null on bad token or 2FA not enabled.
  */
 export const regenerateBackupCodes = async (uid, token) => {
-  const record = await TwoFactor.findOne({ uid, enabled: true });
+  const record = await TwoFactor.findOne({ uid, enabled: true }).select('+secret');
   if (!record?.secret) return null;
 
   const valid = speakeasy.totp.verify({
@@ -165,7 +172,7 @@ export const regenerateBackupCodes = async (uid, token) => {
  * Return the 2FA status for a user (enabled flag + backup codes remaining).
  */
 export const getStatus = async (uid) => {
-  const record = await TwoFactor.findOne({ uid });
+  const record = await TwoFactor.findOne({ uid }).select('+backupCodes');
   return {
     enabled: record?.enabled ?? false,
     backupCodesRemaining: record?.backupCodes?.length ?? 0
