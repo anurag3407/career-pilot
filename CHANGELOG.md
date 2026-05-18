@@ -1,3 +1,16 @@
+# [1.1.0](https://github.com/anurag3407/career-pilot/compare/v1.0.0...v1.1.0) (2026-05-18)
+
+
+### Bug Fixes
+
+* address Copilot review comments on global search PR ([#620](https://github.com/anurag3407/career-pilot/issues/620)) ([69ab2d3](https://github.com/anurag3407/career-pilot/commit/69ab2d3cbe4474ca6725c3beab82efa21204af89))
+* change job alert cron from daily to every 2 days to reduce API costs ([#446](https://github.com/anurag3407/career-pilot/issues/446)) ([7eb1434](https://github.com/anurag3407/career-pilot/commit/7eb1434e4fea4bf4ad052ef38b82947ad978f336))
+
+
+### Features
+
+* add global search endpoint GET /api/search ([#620](https://github.com/anurag3407/career-pilot/issues/620)) ([60e2576](https://github.com/anurag3407/career-pilot/commit/60e25769224051be042c38512432d79789235be2))
+
 # 1.0.0 (2026-05-18)
 
 
