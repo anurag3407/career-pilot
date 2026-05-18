@@ -1,3 +1,10 @@
+# [1.2.0](https://github.com/anurag3407/career-pilot/compare/v1.1.0...v1.2.0) (2026-05-18)
+
+
+### Features
+
+* **community:** add post scheduling for later publishing ([294db15](https://github.com/anurag3407/career-pilot/commit/294db155806d85a13fc4b75860aed3bee134ef5b)), closes [#615](https://github.com/anurag3407/career-pilot/issues/615)
+
 # 1.0.0 (2026-05-18)
 
 
