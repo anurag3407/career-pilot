@@ -57,5 +57,7 @@ const resumeSchema = new mongoose.Schema({
 resumeSchema.index({ userId: 1, createdAt: -1 }, { background: true });
 
 const Resume = mongoose.model('Resume', resumeSchema);
+// Text index for global search
+resumeSchema.index({ originalText: 'text', enhancedText: 'text' });
 
 export default Resume;
