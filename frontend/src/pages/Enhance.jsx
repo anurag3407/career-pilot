@@ -453,7 +453,7 @@ export default function Enhance() {
 
   if (loading) {
   return (
-    <div className="min-h-screen bg-black px-4 py-8 animate-pulse">
+    <div className="min-h-screen bg-background px-4 py-8 animate-pulse">
       <div className="max-w-6xl mx-auto space-y-6">
 
         {/* Header Skeleton */}
