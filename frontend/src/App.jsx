@@ -3,6 +3,7 @@ import { Toaster } from 'react-hot-toast'
 import { AuthProvider, useAuth } from './context/AuthContext'
 import { SocketProvider } from './context/SocketContext'
 import AppLayout from './components/AppLayout'
+import Footer from './components/ui/Footer'
 
 import Home from './pages/Home'
 import Login from './pages/Login'
