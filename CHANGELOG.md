@@ -1,3 +1,15 @@
+# [1.5.0](https://github.com/anurag3407/career-pilot/compare/v1.4.0...v1.5.0) (2026-05-18)
+
+
+### Bug Fixes
+
+* implement CodeRabbit review feedback ([127984e](https://github.com/anurag3407/career-pilot/commit/127984e5cdc2d93e43be25c21d45e5215164a48f))
+
+
+### Features
+
+* add AI-powered job description summarizer ([#522](https://github.com/anurag3407/career-pilot/issues/522)) ([53aac1d](https://github.com/anurag3407/career-pilot/commit/53aac1da2ae444068364a167eeba7063f2ff8ee7))
+
 # [1.4.0](https://github.com/anurag3407/career-pilot/compare/v1.3.0...v1.4.0) (2026-05-18)
 
 
