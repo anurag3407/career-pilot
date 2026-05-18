@@ -9,7 +9,8 @@ const twoFactorSchema = new mongoose.Schema({
   },
   secret: {
     type: String,
-    default: null
+    default: null,
+    select: false
   },
   enabled: {
     type: Boolean,
@@ -17,7 +18,8 @@ const twoFactorSchema = new mongoose.Schema({
   },
   backupCodes: {
     type: [String],
-    default: []
+    default: [],
+    select: false
   }
 }, { timestamps: true });
 

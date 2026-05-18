@@ -41,7 +41,7 @@ router.post('/enable', verifyToken, asyncHandler(async (req, res) => {
   const backupCodes = await twoFactor.enableTwoFactor(req.user.uid, secret, token);
   if (!backupCodes) throw new ApiError(400, 'Invalid verification code — please try again');
 
-  console.log(`🔐 2FA enabled for uid: ${req.user.uid}`);
+  console.log('2FA enabled for a user');
   res.json({ success: true, backupCodes });
 }));
 
@@ -54,7 +54,7 @@ router.post('/disable', verifyToken, asyncHandler(async (req, res) => {
   const ok = await twoFactor.disableTwoFactor(req.user.uid, token);
   if (!ok) throw new ApiError(400, 'Invalid verification code');
 
-  console.log(`2FA disabled for uid: ${req.user.uid}`);
+  console.log('2FA disabled for a user');
   res.json({ success: true });
 }));
 
@@ -91,7 +91,7 @@ router.post('/backup-codes/regenerate', verifyToken, asyncHandler(async (req, re
   const codes = await twoFactor.regenerateBackupCodes(req.user.uid, token);
   if (!codes) throw new ApiError(400, 'Invalid verification code or 2FA is not enabled');
 
-  console.log(`2FA backup codes regenerated for uid: ${req.user.uid}`);
+  console.log('2FA backup codes regenerated for a user');
   res.json({ success: true, backupCodes: codes });
 }));
 
