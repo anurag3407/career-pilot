@@ -7,7 +7,8 @@
   "scripts": {
     "start": "node src/index.js",
     "dev": "nodemon src/index.js",
-    "lint": "eslint src/"
+    "lint": "eslint src/",
+    "seed:staging": "node scripts/seed.js"
   },
   "dependencies": {
     "@google/generative-ai": "^0.21.0",
