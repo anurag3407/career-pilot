@@ -194,19 +194,19 @@ export default function JobSearch() {
                     type="text"
                     value={searchQuery}
                     onChange={(e) => setSearchQuery(e.target.value)}
-                    placeholder="Job title, keywords, or company..."
-                    className="w-full pl-12 pr-10 py-4 bg-muted/50 border border-border rounded-xl text-lg text-foreground placeholder:text-muted-foreground focus:ring-2 focus:ring-primary focus:border-transparent transition-all"
-                  />
-                  {searchQuery && (
-                    <button
-                      type="button"
-                      onClick={() => setSearchQuery('')}
-                      aria-label="Clear search"
-                      className="absolute right-4 top-1/2 transform -translate-y-1/2 text-muted-foreground hover:text-foreground transition-colors"
-                    >
-                      <X className="w-5 h-5" />
-                    </button>
-                  )}
+                  placeholder="Job title, keywords, or company..."
+className="w-full pl-12 pr-10 py-4 bg-muted/50 border border-border rounded-xl text-lg text-foreground placeholder:text-muted-foreground focus:ring-2 focus:ring-primary focus:border-transparent transition-all"
+/>
+{searchQuery && (
+  <button
+    type="button"
+    onClick={() => setSearchQuery('')}
+    aria-label="Clear search"
+    className="absolute right-4 top-1/2 transform -translate-y-1/2 text-muted-foreground hover:text-foreground transition-colors"
+  >
+    <X className="w-5 h-5" />
+  </button>
+)}
                 </div>
                 <Button
                   type="submit"
