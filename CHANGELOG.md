@@ -1,3 +1,15 @@
+# [1.12.0](https://github.com/anurag3407/career-pilot/compare/v1.11.0...v1.12.0) (2026-05-18)
+
+
+### Bug Fixes
+
+* **auth:** address 2FA security review feedback ([dba65ff](https://github.com/anurag3407/career-pilot/commit/dba65ff9bfdb85a52e9a65af53a63ec922baeb0d))
+
+
+### Features
+
+* **security:** account lockout after 5 failed login attempts ([#558](https://github.com/anurag3407/career-pilot/issues/558)) ([e6288ab](https://github.com/anurag3407/career-pilot/commit/e6288ab5ad17fed5ea78fe43e7db56228649688e))
+
 # [1.11.0](https://github.com/anurag3407/career-pilot/compare/v1.10.0...v1.11.0) (2026-05-18)
 
 
