@@ -1,3 +1,17 @@
+# [1.3.0](https://github.com/anurag3407/career-pilot/compare/v1.2.0...v1.3.0) (2026-05-18)
+
+
+### Bug Fixes
+
+* add input validation and accessibility to notification preferences ([fbb7980](https://github.com/anurag3407/career-pilot/commit/fbb79800893f44c402c4032fb9017c4f7fca2286))
+* **job-tracker:** validate applyLink is a valid http/https URL on POST ([#86](https://github.com/anurag3407/career-pilot/issues/86)) ([e39bbad](https://github.com/anurag3407/career-pilot/commit/e39bbad0bd344b5b5bd1ae8fccbaba85735dd7d5))
+* resolve merge conflict in App.jsx ([fecd5d8](https://github.com/anurag3407/career-pilot/commit/fecd5d8cc63383152941c8fa42c983e163292214))
+
+
+### Features
+
+* add email notification preferences settings closes [#20](https://github.com/anurag3407/career-pilot/issues/20) ([21fcf71](https://github.com/anurag3407/career-pilot/commit/21fcf716be3aae76cc70e1576078e722ae80e092))
+
 # [1.2.0](https://github.com/anurag3407/career-pilot/compare/v1.1.0...v1.2.0) (2026-05-18)
 
 
