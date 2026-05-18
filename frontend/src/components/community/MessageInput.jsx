@@ -140,18 +140,18 @@ export default function MessageInput({ channelId, channelName, onTyping, replyTo
   };
 
   return (
-    <div className="border-t border-neutral-800 bg-neutral-900">
+    <div className="border-t border-border bg-card">
       {/* Reply Preview */}
       {replyTo && (
-        <div className="px-4 py-2 bg-neutral-800/50 border-b border-neutral-800 flex items-center gap-2">
+        <div className="px-4 py-2 bg-muted/50 border-b border-border flex items-center gap-2">
           <div className="flex-1 text-sm">
-            <span className="text-neutral-500">Replying to </span>
-            <span className="font-medium text-neutral-300">{replyTo.sender.name}</span>
-            <p className="text-neutral-500 truncate">{replyTo.content}</p>
+            <span className="text-muted-foreground">Replying to </span>
+            <span className="font-medium text-foreground">{replyTo.sender.name}</span>
+            <p className="text-muted-foreground truncate">{replyTo.content}</p>
           </div>
           <button
             onClick={onCancelReply}
-            className="p-1 text-neutral-500 hover:text-neutral-300 cursor-pointer"
+            className="p-1 text-muted-foreground hover:text-foreground cursor-pointer"
           >
             <X className="w-4 h-4" />
           </button>
@@ -160,23 +160,23 @@ export default function MessageInput({ channelId, channelName, onTyping, replyTo
 
       {/* Attachments Preview */}
       {attachments.length > 0 && (
-        <div className="px-4 py-2 border-b border-neutral-800 flex gap-2 flex-wrap">
+        <div className="px-4 py-2 border-b border-border flex gap-2 flex-wrap">
           {attachments.map((file, index) => (
             <div 
               key={index}
-              className="relative group bg-neutral-800 rounded-lg px-3 py-2 flex items-center gap-2"
+              className="relative group bg-muted rounded-lg px-3 py-2 flex items-center gap-2"
             >
               {file.type.startsWith('image/') ? (
-                <ImageIcon className="w-4 h-4 text-neutral-500" />
+                <ImageIcon className="w-4 h-4 text-muted-foreground" />
               ) : (
-                <Paperclip className="w-4 h-4 text-neutral-500" />
+                <Paperclip className="w-4 h-4 text-muted-foreground" />
               )}
-              <span className="text-sm text-neutral-300 max-w-[150px] truncate">
+              <span className="text-sm text-foreground max-w-[150px] truncate">
                 {file.name}
               </span>
               <button
                 onClick={() => removeAttachment(index)}
-                className="absolute -top-1 -right-1 w-4 h-4 bg-red-500 text-white rounded-full opacity-0 group-hover:opacity-100 transition-opacity flex items-center justify-center cursor-pointer"
+                className="absolute -top-1 -right-1 w-4 h-4 bg-destructive text-destructive-foreground rounded-full opacity-0 group-hover:opacity-100 transition-opacity flex items-center justify-center cursor-pointer"
               >
                 <X className="w-3 h-3" />
               </button>
@@ -200,7 +200,7 @@ export default function MessageInput({ channelId, channelName, onTyping, replyTo
           <button
             type="button"
             onClick={() => fileInputRef.current?.click()}
-            className="p-2 text-neutral-500 hover:text-neutral-300 hover:bg-neutral-800 rounded-lg cursor-pointer"
+            className="p-2 text-muted-foreground hover:text-foreground hover:bg-muted rounded-lg cursor-pointer"
           >
             <Paperclip className="w-5 h-5" />
           </button>
@@ -214,7 +214,7 @@ export default function MessageInput({ channelId, channelName, onTyping, replyTo
               onKeyDown={handleKeyDown}
               placeholder={`Message #${channelName}`}
               rows={1}
-              className="w-full px-4 py-2.5 pr-24 bg-neutral-800 border border-neutral-700 rounded-xl text-white placeholder-neutral-500 resize-none focus:ring-2 focus:ring-indigo-500 focus:border-indigo-500 max-h-32"
+              className="w-full px-4 py-2.5 pr-24 bg-muted border border-border rounded-xl text-foreground placeholder:text-muted-foreground resize-none focus:ring-2 focus:ring-primary focus:border-primary max-h-32"
               style={{ minHeight: '44px' }}
             />
             
@@ -226,7 +226,7 @@ export default function MessageInput({ channelId, channelName, onTyping, replyTo
                   type="button"
                   onClick={() => setShowEmoji(!showEmoji)}
                   className={`p-1.5 rounded-lg transition-colors cursor-pointer ${
-                    showEmoji ? 'text-indigo-400 bg-indigo-500/20' : 'text-neutral-500 hover:text-neutral-300'
+                    showEmoji ? 'text-primary bg-primary/20' : 'text-muted-foreground hover:text-foreground'
                   }`}
                 >
                   <Smile className="w-5 h-5" />
@@ -234,14 +234,14 @@ export default function MessageInput({ channelId, channelName, onTyping, replyTo
 
                 {/* Emoji Dropdown */}
                 {showEmoji && (
-                  <div className="absolute bottom-full right-0 mb-2 bg-neutral-800 border border-neutral-700 rounded-xl shadow-lg p-2 w-64">
+                  <div className="absolute bottom-full right-0 mb-2 bg-card border border-border rounded-xl shadow-lg p-2 w-64">
                     <div className="grid grid-cols-6 gap-1">
                       {EMOJI_LIST.map(emoji => (
                         <button
                           key={emoji}
                           type="button"
                           onClick={() => insertEmoji(emoji)}
-                          className="p-2 text-xl hover:bg-neutral-700 rounded-lg cursor-pointer"
+                          className="p-2 text-xl hover:bg-muted rounded-lg cursor-pointer"
                         >
                           {emoji}
                         </button>
@@ -254,7 +254,7 @@ export default function MessageInput({ channelId, channelName, onTyping, replyTo
               {/* Mention Button */}
               <button
                 type="button"
-                className="p-1.5 text-neutral-500 hover:text-neutral-300 rounded-lg cursor-pointer"
+                className="p-1.5 text-muted-foreground hover:text-foreground rounded-lg cursor-pointer"
               >
                 <AtSign className="w-5 h-5" />
               </button>
@@ -265,7 +265,7 @@ export default function MessageInput({ channelId, channelName, onTyping, replyTo
           <button
             type="submit"
             disabled={!content.trim() && attachments.length === 0}
-            className="p-2.5 bg-indigo-600 text-white rounded-xl hover:bg-indigo-500 disabled:opacity-50 disabled:cursor-not-allowed transition-colors cursor-pointer"
+            className="p-2.5 bg-primary text-primary-foreground rounded-xl hover:bg-primary/90 disabled:opacity-50 disabled:cursor-not-allowed transition-colors cursor-pointer"
           >
             <Send className="w-5 h-5" />
             <span className="sr-only">Send Message</span>

@@ -1,9 +1,11 @@
 import { useRef, useEffect } from "react";
 import createGlobe from "cobe";
 import { cn } from "@/lib/utils";
+import { useTheme } from "../../context/ThemeContext";
 
 export default function Globe({ className }) {
   const canvasRef = useRef(null);
+  const { theme } = useTheme();
 
   useEffect(() => {
     let phi = 0;
@@ -19,19 +21,21 @@ export default function Globe({ className }) {
     window.addEventListener("resize", onResize);
     onResize();
 
+    const isDark = theme === "dark";
+
     const globe = createGlobe(canvasRef.current, {
       devicePixelRatio: 2,
       width: 600 * 2,
       height: 600 * 2,
       phi: 0,
       theta: 0.3,
-      dark: 1,
+      dark: isDark ? 1 : 0,
       diffuse: 1.2,
       mapSamples: 16000,
-      mapBrightness: 6,
-      baseColor: [0.15, 0.15, 0.15],
-      markerColor: [0.4, 0.4, 1],
-      glowColor: [0.15, 0.15, 0.2],
+      mapBrightness: isDark ? 6 : 4,
+      baseColor: isDark ? [0.15, 0.15, 0.15] : [0.9, 0.9, 0.9],
+      markerColor: [0, 0.75, 1], // primary color #00BFFF
+      glowColor: isDark ? [0.15, 0.15, 0.2] : [0.95, 0.95, 1],
       markers: [
         { location: [37.7595, -122.4367], size: 0.03 },
         { location: [40.7128, -74.006], size: 0.05 },
@@ -54,7 +58,7 @@ export default function Globe({ className }) {
       globe.destroy();
       window.removeEventListener("resize", onResize);
     };
-  }, []);
+  }, [theme]);
 
   return (
     <canvas
