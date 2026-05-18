@@ -1,3 +1,11 @@
+# [1.10.0](https://github.com/anurag3407/career-pilot/compare/v1.9.0...v1.10.0) (2026-05-18)
+
+
+### Features
+
+* implement post scheduling feature with create, fetch, and cancel functionalities ([45d5a44](https://github.com/anurag3407/career-pilot/commit/45d5a44d498addf63fe4516a1e2bf1fed6cdc27b))
+* **profile:** public user profiles with activity feed, stats, and edit support ([981269a](https://github.com/anurag3407/career-pilot/commit/981269ae64b06706133047211885b1fff73f3e55))
+
 # [1.9.0](https://github.com/anurag3407/career-pilot/compare/v1.8.0...v1.9.0) (2026-05-18)
 
 
