@@ -41,31 +41,31 @@ export default function FileUpload({ onFileSelect, disabled = false, maxSizeMB =
         border-2 border-dashed rounded-xl p-12 text-center cursor-pointer
         transition-all duration-300
         ${isDragActive 
-          ? 'border-indigo-500 bg-indigo-500/10' 
-          : 'border-neutral-700 hover:border-neutral-600 bg-neutral-800/30 hover:bg-neutral-800/50'}
+          ? 'border-primary bg-primary/10' 
+          : 'border-border hover:border-primary/50 bg-card hover:bg-muted'}
         ${disabled ? 'opacity-50 cursor-not-allowed' : ''}
       `}
     >
       <input {...getInputProps()} />
       <div className="flex flex-col items-center">
         <div className={`w-16 h-16 rounded-full flex items-center justify-center mb-4 transition-colors ${
-          isDragActive ? 'bg-indigo-500/20' : 'bg-neutral-800'
+          isDragActive ? 'bg-primary/20' : 'bg-muted'
         }`}>
           {isDragActive ? (
-            <FileText className="w-8 h-8 text-indigo-400" />
+            <FileText className="w-8 h-8 text-primary" />
           ) : (
-            <Upload className="w-8 h-8 text-neutral-500" />
+            <Upload className="w-8 h-8 text-muted-foreground" />
           )}
         </div>
         {isDragActive ? (
-          <p className="text-lg font-medium text-indigo-400">Drop the PDF file here...</p>
+          <p className="text-lg font-medium text-primary">Drop the PDF file here...</p>
         ) : (
           <>
-            <p className="text-lg font-medium text-white mb-1">Drag & drop your resume PDF here</p>
-            <p className="text-sm text-neutral-500 mb-4">or click to browse</p>
-            <div className="inline-flex items-center gap-2 px-4 py-2 bg-neutral-800 rounded-lg">
-              <FileText className="w-4 h-4 text-neutral-500" />
-              <span className="text-xs text-neutral-500">PDF files only • Max {maxSizeMB}MB</span>
+            <p className="text-lg font-medium text-foreground mb-1">Drag & drop your resume PDF here</p>
+            <p className="text-sm text-muted-foreground mb-4">or click to browse</p>
+            <div className="inline-flex items-center gap-2 px-4 py-2 bg-muted rounded-lg">
+              <FileText className="w-4 h-4 text-muted-foreground" />
+              <span className="text-xs text-muted-foreground">PDF files only • Max {maxSizeMB}MB</span>
             </div>
           </>
         )}

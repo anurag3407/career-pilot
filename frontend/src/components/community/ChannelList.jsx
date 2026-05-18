@@ -48,7 +48,7 @@ export default function ChannelList({
       <div className="p-4 space-y-3">
         {[...Array(5)].map((_, i) => (
           <div key={i} className="animate-pulse">
-            <div className="h-8 bg-neutral-800 rounded-lg"></div>
+            <div className="h-8 bg-muted rounded-lg"></div>
           </div>
         ))}
       </div>
@@ -61,7 +61,7 @@ export default function ChannelList({
       <div className="px-3 mb-2">
         <button
           onClick={onCreateChannel}
-          className="w-full flex items-center gap-2 px-3 py-2 text-sm text-neutral-400 hover:bg-neutral-800 rounded-lg transition-colors"
+          className="w-full flex items-center gap-2 px-3 py-2 text-sm text-muted-foreground hover:bg-muted rounded-lg transition-colors"
         >
           <Plus className="w-4 h-4" />
           Create Channel
@@ -74,7 +74,7 @@ export default function ChannelList({
           {/* Category Header */}
           <button
             onClick={() => toggleCategory(category)}
-            className="w-full flex items-center gap-1 px-3 py-1.5 text-xs font-semibold text-neutral-500 uppercase tracking-wider hover:text-neutral-300"
+            className="w-full flex items-center gap-1 px-3 py-1.5 text-xs font-semibold text-muted-foreground uppercase tracking-wider hover:text-foreground"
           >
             {expandedCategories[category] ? (
               <ChevronDown className="w-3 h-3" />
@@ -82,7 +82,7 @@ export default function ChannelList({
               <ChevronRight className="w-3 h-3" />
             )}
             {categoryLabels[category] || category}
-            <span className="ml-auto text-neutral-600 font-normal">
+            <span className="ml-auto text-muted-foreground/50 font-normal">
               {categoryChannels.length}
             </span>
           </button>
@@ -99,12 +99,12 @@ export default function ChannelList({
                     onClick={() => onSelectChannel(channel)}
                     className={`w-full flex items-center gap-2 px-3 py-2 rounded-lg text-left transition-colors ${
                       activeId === channelId
-                        ? 'bg-indigo-500/20 text-indigo-400'
-                        : 'text-neutral-300 hover:bg-neutral-800'
+                        ? 'bg-primary/20 text-primary'
+                        : 'text-foreground hover:bg-muted'
                     }`}
                   >
                     {channel.type === 'private' ? (
-                      <Lock className="w-4 h-4 text-neutral-500 flex-shrink-0" />
+                      <Lock className="w-4 h-4 text-muted-foreground flex-shrink-0" />
                     ) : (
                       <span className="text-base flex-shrink-0">{channel.icon || '💬'}</span>
                     )}
@@ -113,13 +113,13 @@ export default function ChannelList({
                         <span className="font-medium truncate text-sm">{channel.name}</span>
                       </div>
                       {channel.lastMessage && (
-                        <p className="text-xs text-neutral-500 truncate">
+                        <p className="text-xs text-muted-foreground truncate">
                           {channel.lastMessage.senderName}: {channel.lastMessage.content}
                         </p>
                       )}
                     </div>
                     {channel.memberCount > 0 && (
-                      <span className="text-xs text-neutral-500 flex-shrink-0">
+                      <span className="text-xs text-muted-foreground flex-shrink-0">
                         {channel.memberCount}
                       </span>
                     )}
@@ -132,11 +132,11 @@ export default function ChannelList({
       ))}
 
       {channels.length === 0 && !loading && (
-        <div className="px-4 py-8 text-center text-neutral-500">
+        <div className="px-4 py-8 text-center text-muted-foreground">
           <p className="text-sm">No channels yet</p>
           <button
             onClick={onCreateChannel}
-            className="mt-2 text-indigo-400 hover:text-indigo-300 text-sm font-medium"
+            className="mt-2 text-primary hover:text-primary/80 text-sm font-medium"
           >
             Create the first channel
           </button>

@@ -9,15 +9,15 @@ import { StackedCircularFooter } from '../components/ui/stacked-circular-footer'
 
 export default function Home() {
   return (
-    <div className="min-h-screen bg-black text-white">
+    <div className="min-h-screen bg-background text-foreground selection:bg-primary selection:text-primary-foreground">
       <Navbar />
 
       {/* Hero Section with World Map */}
       <HeroSection />
 
       {/* Main Features Section - Bento Grid */}
-      <section id="features" className="relative">
-        <div className="absolute inset-0 bg-gradient-to-b from-black via-zinc-950 to-black" />
+      <section id="features" className="relative overflow-hidden">
+        <div className="absolute inset-0 bg-gradient-to-b from-background via-muted/50 to-background" />
         <div className="relative px-4 sm:px-6 lg:px-8">
           <FeaturesSection />
 
@@ -32,8 +32,8 @@ export default function Home() {
       <HowItWorksSection />
 
       {/* Testimonials Section */}
-      <section className="relative">
-        <div className="absolute inset-0 bg-gradient-to-b from-black via-zinc-950 to-black" />
+      <section className="relative overflow-hidden">
+        <div className="absolute inset-0 bg-gradient-to-b from-background via-muted/50 to-background" />
         <div className="relative">
           <TestimonialsSection />
         </div>

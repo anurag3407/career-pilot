@@ -55,22 +55,22 @@ export default function FellowshipMessages() {
     return (
         <div className="space-y-6">
             <div>
-                <h1 className="text-2xl font-bold text-white">Messages</h1>
-                <p className="text-neutral-400">Chat with your accepted {profile?.role === 'student' ? 'companies' : 'students'}</p>
+                <h1 className="text-2xl font-bold text-foreground">Messages</h1>
+                <p className="text-muted-foreground">Chat with your accepted {profile?.role === 'student' ? 'companies' : 'students'}</p>
             </div>
 
             {rooms.length === 0 ? (
-                <div className="flex flex-col items-center justify-center rounded-xl border border-dashed border-neutral-700 py-16">
-                    <MessageCircle className="h-12 w-12 text-neutral-600" />
-                    <h3 className="mt-4 text-lg font-semibold text-white">No conversations yet</h3>
-                    <p className="mt-2 text-sm text-neutral-400 text-center max-w-md">
+                <div className="flex flex-col items-center justify-center rounded-xl border border-dashed border-border py-16">
+                    <MessageCircle className="h-12 w-12 text-muted-foreground/80" />
+                    <h3 className="mt-4 text-lg font-semibold text-foreground">No conversations yet</h3>
+                    <p className="mt-2 text-sm text-muted-foreground text-center max-w-md">
                         {profile?.role === 'student'
                             ? 'Once a company accepts your proposal, you can chat with them here.'
                             : 'Accept a student proposal to start a conversation with them.'}
                     </p>
                     <button
                         onClick={() => navigate('/fellowship/challenges')}
-                        className="mt-4 px-4 py-2 bg-emerald-600 hover:bg-emerald-500 text-white rounded-xl font-medium"
+                        className="mt-4 px-4 py-2 bg-emerald-600 hover:bg-emerald-500 text-foreground rounded-xl font-medium"
                     >
                         Browse Challenges
                     </button>
@@ -86,21 +86,21 @@ export default function FellowshipMessages() {
                                 initial={{ opacity: 0, y: 10 }}
                                 animate={{ opacity: 1, y: 0 }}
                                 onClick={() => navigate(`/fellowship/messages/${room._id}`)}
-                                className="flex items-center gap-4 p-4 bg-neutral-900 border border-neutral-800 rounded-2xl cursor-pointer hover:border-emerald-500/50 transition-all"
+                                className="flex items-center gap-4 p-4 bg-background border border-border rounded-2xl cursor-pointer hover:border-emerald-500/50 transition-all"
                             >
-                                <div className="w-12 h-12 rounded-full bg-neutral-800 flex items-center justify-center">
-                                    <User className="w-6 h-6 text-neutral-400" />
+                                <div className="w-12 h-12 rounded-full bg-muted flex items-center justify-center">
+                                    <User className="w-6 h-6 text-muted-foreground" />
                                 </div>
                                 <div className="flex-1 min-w-0">
-                                    <h3 className="font-semibold text-white truncate">{otherName}</h3>
-                                    <p className="text-sm text-neutral-400 truncate">{room.challengeTitle}</p>
+                                    <h3 className="font-semibold text-foreground truncate">{otherName}</h3>
+                                    <p className="text-sm text-muted-foreground truncate">{room.challengeTitle}</p>
                                 </div>
                                 <div className="flex flex-col items-end gap-1">
-                                    <span className="text-xs text-neutral-500 flex items-center gap-1">
+                                    <span className="text-xs text-muted-foreground flex items-center gap-1">
                                         <Clock className="w-3 h-3" />
                                         {formatTime(room.lastMessageAt)}
                                     </span>
-                                    <ArrowRight className="w-4 h-4 text-neutral-600" />
+                                    <ArrowRight className="w-4 h-4 text-muted-foreground/80" />
                                 </div>
                             </motion.div>
                         )

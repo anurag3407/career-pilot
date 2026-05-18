@@ -81,13 +81,13 @@ export default function CreateChallenge() {
                 <motion.div
                     initial={{ opacity: 0, scale: 0.9 }}
                     animate={{ opacity: 1, scale: 1 }}
-                    className="bg-neutral-900 border border-neutral-800 rounded-2xl p-12 text-center"
+                    className="bg-background border border-border rounded-2xl p-12 text-center"
                 >
                     <div className="w-16 h-16 mx-auto rounded-full bg-emerald-950 flex items-center justify-center">
                         <CheckCircle className="w-8 h-8 text-emerald-400" />
                     </div>
-                    <h2 className="mt-4 text-xl font-semibold text-white">Challenge Posted!</h2>
-                    <p className="mt-2 text-neutral-400">Students can now start applying.</p>
+                    <h2 className="mt-4 text-xl font-semibold text-foreground">Challenge Posted!</h2>
+                    <p className="mt-2 text-muted-foreground">Students can now start applying.</p>
                 </motion.div>
             </div>
         )
@@ -97,37 +97,37 @@ export default function CreateChallenge() {
         <div className="max-w-2xl mx-auto space-y-6">
             <button
                 onClick={() => navigate(-1)}
-                className="flex items-center gap-2 text-neutral-400 hover:text-white text-sm"
+                className="flex items-center gap-2 text-muted-foreground hover:text-foreground text-sm"
             >
                 <ArrowLeft className="w-4 h-4" />
                 Back
             </button>
 
             <div>
-                <h1 className="text-2xl font-bold text-white">Post a New Challenge</h1>
-                <p className="text-neutral-400">Create a challenge for students to solve and earn</p>
+                <h1 className="text-2xl font-bold text-foreground">Post a New Challenge</h1>
+                <p className="text-muted-foreground">Create a challenge for students to solve and earn</p>
             </div>
 
-            <div className="bg-neutral-900 border border-neutral-800 rounded-2xl p-6 space-y-6">
-                <div className="flex items-center gap-2 text-white">
+            <div className="bg-background border border-border rounded-2xl p-6 space-y-6">
+                <div className="flex items-center gap-2 text-foreground">
                     <Briefcase className="w-5 h-5" />
                     <h2 className="text-lg font-semibold">Challenge Details</h2>
                 </div>
 
                 <div>
-                    <label className="block text-sm text-neutral-400 mb-2">Title *</label>
+                    <label className="block text-sm text-muted-foreground mb-2">Title *</label>
                     <input
                         type="text"
                         value={title}
                         onChange={(e) => setTitle(e.target.value)}
                         placeholder="e.g., Design a Modern Logo for TechStart"
-                        className="w-full px-4 py-3 bg-neutral-800 border border-neutral-700 rounded-xl text-white placeholder-neutral-500 focus:outline-none focus:border-emerald-500"
+                        className="w-full px-4 py-3 bg-muted border border-border rounded-xl text-foreground placeholder:text-muted-foreground focus:outline-none focus:border-emerald-500"
                     />
-                    <p className="mt-1 text-xs text-neutral-500">Minimum 10 characters</p>
+                    <p className="mt-1 text-xs text-muted-foreground">Minimum 10 characters</p>
                 </div>
 
                 <div>
-                    <label className="block text-sm text-neutral-400 mb-2">Category *</label>
+                    <label className="block text-sm text-muted-foreground mb-2">Category *</label>
                     <div className="grid grid-cols-2 sm:grid-cols-3 gap-2">
                         {CATEGORIES.map(cat => (
                             <button
@@ -135,8 +135,8 @@ export default function CreateChallenge() {
                                 type="button"
                                 onClick={() => setCategory(cat.id)}
                                 className={`px-4 py-2 rounded-xl text-sm font-medium transition-colors ${category === cat.id
-                                    ? 'bg-emerald-600 text-white'
-                                    : 'bg-neutral-800 text-neutral-400 hover:text-white'
+                                    ? 'bg-emerald-600 text-foreground'
+                                    : 'bg-muted text-muted-foreground hover:text-foreground'
                                     }`}
                             >
                                 {cat.icon} {cat.label}
@@ -146,43 +146,43 @@ export default function CreateChallenge() {
                 </div>
 
                 <div>
-                    <label className="block text-sm text-neutral-400 mb-2">Description *</label>
+                    <label className="block text-sm text-muted-foreground mb-2">Description *</label>
                     <textarea
                         value={description}
                         onChange={(e) => setDescription(e.target.value)}
                         placeholder="Describe the challenge in detail..."
                         rows={5}
-                        className="w-full px-4 py-3 bg-neutral-800 border border-neutral-700 rounded-xl text-white placeholder-neutral-500 focus:outline-none focus:border-emerald-500 resize-none"
+                        className="w-full px-4 py-3 bg-muted border border-border rounded-xl text-foreground placeholder:text-muted-foreground focus:outline-none focus:border-emerald-500 resize-none"
                     />
-                    <p className="mt-1 text-xs text-neutral-500">{description.length}/50 minimum characters</p>
+                    <p className="mt-1 text-xs text-muted-foreground">{description.length}/50 minimum characters</p>
                 </div>
 
                 <div className="grid gap-4 sm:grid-cols-2">
                     <div>
-                        <label className="block text-sm text-neutral-400 mb-2">Reward Amount (₹) *</label>
+                        <label className="block text-sm text-muted-foreground mb-2">Reward Amount (₹) *</label>
                         <div className="relative">
-                            <IndianRupee className="absolute left-4 top-1/2 -translate-y-1/2 w-4 h-4 text-neutral-500" />
+                            <IndianRupee className="absolute left-4 top-1/2 -translate-y-1/2 w-4 h-4 text-muted-foreground" />
                             <input
                                 type="number"
                                 value={price}
                                 onChange={(e) => setPrice(e.target.value)}
                                 placeholder="5000"
                                 min="1000"
-                                className="w-full pl-10 pr-4 py-3 bg-neutral-800 border border-neutral-700 rounded-xl text-white placeholder-neutral-500 focus:outline-none focus:border-emerald-500"
+                                className="w-full pl-10 pr-4 py-3 bg-muted border border-border rounded-xl text-foreground placeholder:text-muted-foreground focus:outline-none focus:border-emerald-500"
                             />
                         </div>
-                        <p className="mt-1 text-xs text-neutral-500">Minimum ₹1,000</p>
+                        <p className="mt-1 text-xs text-muted-foreground">Minimum ₹1,000</p>
                     </div>
                     <div>
-                        <label className="block text-sm text-neutral-400 mb-2">Deadline *</label>
+                        <label className="block text-sm text-muted-foreground mb-2">Deadline *</label>
                         <div className="relative">
-                            <Calendar className="absolute left-4 top-1/2 -translate-y-1/2 w-4 h-4 text-neutral-500 pointer-events-none" />
+                            <Calendar className="absolute left-4 top-1/2 -translate-y-1/2 w-4 h-4 text-muted-foreground pointer-events-none" />
                             <input
                                 type="date"
                                 value={deadline}
                                 onChange={(e) => setDeadline(e.target.value)}
                                 min={new Date().toISOString().split('T')[0]}
-                                className="w-full pl-10 pr-4 py-3 bg-neutral-800 border border-neutral-700 rounded-xl text-white focus:outline-none focus:border-emerald-500 cursor-pointer [color-scheme:dark]"
+                                className="w-full pl-10 pr-4 py-3 bg-muted border border-border rounded-xl text-foreground focus:outline-none focus:border-emerald-500 cursor-pointer [color-scheme:dark]"
                                 style={{ colorScheme: 'dark' }}
                             />
                         </div>
@@ -190,7 +190,7 @@ export default function CreateChallenge() {
                 </div>
 
                 <div>
-                    <label className="block text-sm text-neutral-400 mb-2">Skills/Requirements</label>
+                    <label className="block text-sm text-muted-foreground mb-2">Skills/Requirements</label>
                     <div className="flex gap-2">
                         <input
                             type="text"
@@ -198,12 +198,12 @@ export default function CreateChallenge() {
                             onChange={(e) => setNewRequirement(e.target.value)}
                             onKeyDown={(e) => e.key === 'Enter' && (e.preventDefault(), handleAddRequirement())}
                             placeholder="e.g., Figma, React, Writing"
-                            className="flex-1 px-4 py-2.5 bg-neutral-800 border border-neutral-700 rounded-xl text-white placeholder-neutral-500 focus:outline-none focus:border-emerald-500"
+                            className="flex-1 px-4 py-2.5 bg-muted border border-border rounded-xl text-foreground placeholder:text-muted-foreground focus:outline-none focus:border-emerald-500"
                         />
                         <button
                             type="button"
                             onClick={handleAddRequirement}
-                            className="px-4 py-2.5 bg-neutral-800 border border-neutral-700 rounded-xl text-neutral-400 hover:text-white"
+                            className="px-4 py-2.5 bg-muted border border-border rounded-xl text-muted-foreground hover:text-foreground"
                         >
                             <Plus className="w-4 h-4" />
                         </button>
@@ -211,7 +211,7 @@ export default function CreateChallenge() {
                     {requirements.length > 0 && (
                         <div className="mt-3 flex flex-wrap gap-2">
                             {requirements.map((req, i) => (
-                                <span key={i} className="flex items-center gap-1 px-3 py-1 bg-neutral-800 text-neutral-300 rounded-lg text-sm">
+                                <span key={i} className="flex items-center gap-1 px-3 py-1 bg-muted text-foreground rounded-lg text-sm">
                                     {req}
                                     <button onClick={() => handleRemoveRequirement(i)} className="hover:text-red-400">
                                         <X className="w-3 h-3" />
@@ -222,17 +222,17 @@ export default function CreateChallenge() {
                     )}
                 </div>
 
-                <div className="flex gap-3 pt-4 border-t border-neutral-800">
+                <div className="flex gap-3 pt-4 border-t border-border">
                     <button
                         onClick={() => navigate(-1)}
-                        className="px-6 py-3 bg-neutral-800 text-neutral-300 rounded-xl font-medium hover:bg-neutral-700"
+                        className="px-6 py-3 bg-muted text-foreground rounded-xl font-medium hover:bg-muted/80"
                     >
                         Cancel
                     </button>
                     <button
                         onClick={handleSubmit}
                         disabled={!isValid || loading}
-                        className="flex-1 py-3 bg-emerald-600 hover:bg-emerald-500 text-white rounded-xl font-medium disabled:opacity-50 disabled:cursor-not-allowed flex items-center justify-center gap-2"
+                        className="flex-1 py-3 bg-emerald-600 hover:bg-emerald-500 text-foreground rounded-xl font-medium disabled:opacity-50 disabled:cursor-not-allowed flex items-center justify-center gap-2"
                     >
                         {loading ? (
                             <><Loader2 className="w-5 h-5 animate-spin" /> Creating...</>
