@@ -163,8 +163,11 @@ export async function deploy(portfolioId, htmlContent, assets = {}, repoName, to
       );
       parentShas = [ref.object.sha];
       baseTreeSha = parentCommit.tree.sha;
-    } catch {
-      // Repo exists but main branch has no commits yet (edge case: interrupted prior deploy)
+    } catch (err) {
+      // Only swallow 404 — main branch doesn't exist yet on this repo.
+      // Any other failure (rate limit, network error) must propagate so
+      // we don't incorrectly fall through to POST /git/refs on an existing branch.
+      if (!err.message.includes('404')) throw err;
     }
   }
 
