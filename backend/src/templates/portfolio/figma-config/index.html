@@ -10,18 +10,33 @@
 <body>
 
   <!-- ── Navigation ─────────────────────────────────────── -->
-  <nav class="nav">
+  <nav class="nav" id="main-nav">
     <div class="container">
       <div class="nav-inner">
         <span class="nav-logo">{{name}}<span></span></span>
-        <ul class="nav-links">
+        <ul class="nav-links" id="nav-links">
           <li><a href="#skills">Skills</a></li>
           <li><a href="#projects">Projects</a></li>
           <li><a href="#experience">Experience</a></li>
           <li><a href="#education">Education</a></li>
         </ul>
-        <a href="#contact" class="nav-links a nav-cta">Get in touch</a>
+        <div class="nav-right">
+          <a href="#contact" class="nav-cta">Get in touch</a>
+          <button class="hamburger" id="hamburger" aria-label="Toggle navigation" aria-expanded="false" aria-controls="mobile-nav">
+            <span></span><span></span><span></span>
+          </button>
+        </div>
       </div>
+    </div>
+    <!-- mobile nav panel -->
+    <div class="mobile-nav" id="mobile-nav" aria-hidden="true">
+      <ul class="mobile-nav-links">
+        <li><a href="#skills">Skills</a></li>
+        <li><a href="#projects">Projects</a></li>
+        <li><a href="#experience">Experience</a></li>
+        <li><a href="#education">Education</a></li>
+        <li><a href="#contact" class="mobile-nav-cta">Get in touch</a></li>
+      </ul>
     </div>
   </nav>
 
@@ -223,79 +238,52 @@
       <p class="section-sub">Have a project or opportunity in mind? I'd love to hear from you.</p>
 
       <div class="contact-grid">
-        <form class="contact-form" action="#" method="post" novalidate>
-          <div class="contact-field accent-blue">
-            <label class="contact-field-label" for="contact-email">
-              <span class="contact-field-icon">
-                <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M4 4h16c1.1 0 2 .9 2 2v12c0 1.1-.9 2-2 2H4c-1.1 0-2-.9-2-2V6c0-1.1.9-2 2-2z"/><polyline points="22,6 12,13 2,6"/></svg>
-              </span>
-              Email
-            </label>
-            <input
-              id="contact-email"
-              class="contact-input"
-              type="email"
-              name="email"
-              value="{{email}}"
-              placeholder="your@email.com"
-              autocomplete="email"
-            />
+        <div class="contact-info">
+          {{#if email}}
+          <a href="mailto:{{email}}" class="contact-item accent-blue">
+            <div class="contact-icon">
+              <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M4 4h16c1.1 0 2 .9 2 2v12c0 1.1-.9 2-2 2H4c-1.1 0-2-.9-2-2V6c0-1.1.9-2 2-2z"/><polyline points="22,6 12,13 2,6"/></svg>
+            </div>
+            <div>
+              <p class="contact-label">Email</p>
+              <p class="contact-value">{{email}}</p>
+            </div>
+          </a>
+          {{/if}}
+          {{#if phone}}
+          <div class="contact-item accent-green">
+            <div class="contact-icon">
+              <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M22 16.92v3a2 2 0 0 1-2.18 2 19.79 19.79 0 0 1-8.63-3.07A19.5 19.5 0 0 1 4.69 12 19.79 19.79 0 0 1 1.58 3.4a2 2 0 0 1 1.99-2.18h3a2 2 0 0 1 2 1.72c.13.96.36 1.9.7 2.81a2 2 0 0 1-.45 2.11L7.91 9c1.27 2.17 2.87 3.77 5.04 5.04l1.01-.9a2 2 0 0 1 2.11-.45c.91.34 1.85.57 2.81.7a2 2 0 0 1 1.72 2z"/></svg>
+            </div>
+            <div>
+              <p class="contact-label">Phone</p>
+              <p class="contact-value">{{phone}}</p>
+            </div>
           </div>
-
-          <div class="contact-field accent-green">
-            <label class="contact-field-label" for="contact-phone">
-              <span class="contact-field-icon">
-                <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M22 16.92v3a2 2 0 0 1-2.18 2 19.79 19.79 0 0 1-8.63-3.07A19.5 19.5 0 0 1 4.69 12 19.79 19.79 0 0 1 1.58 3.4a2 2 0 0 1 1.99-2.18h3a2 2 0 0 1 2 1.72c.13.96.36 1.9.7 2.81a2 2 0 0 1-.45 2.11L7.91 9c1.27 2.17 2.87 3.77 5.04 5.04l1.01-.9a2 2 0 0 1 2.11-.45c.91.34 1.85.57 2.81.7a2 2 0 0 1 1.72 2z"/></svg>
-              </span>
-              Phone
-            </label>
-            <input
-              id="contact-phone"
-              class="contact-input"
-              type="tel"
-              name="phone"
-              value="{{phone}}"
-              placeholder="+1 (555) 000-0000"
-              autocomplete="tel"
-            />
+          {{/if}}
+          {{#if location}}
+          <div class="contact-item accent-orange">
+            <div class="contact-icon">
+              <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M21 10c0 7-9 13-9 13s-9-6-9-13a9 9 0 0 1 18 0z"/><circle cx="12" cy="10" r="3"/></svg>
+            </div>
+            <div>
+              <p class="contact-label">Location</p>
+              <p class="contact-value">{{location}}</p>
+            </div>
           </div>
-
-          <div class="contact-field accent-orange">
-            <label class="contact-field-label" for="contact-location">
-              <span class="contact-field-icon">
-                <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M21 10c0 7-9 13-9 13s-9-6-9-13a9 9 0 0 1 18 0z"/><circle cx="12" cy="10" r="3"/></svg>
-              </span>
-              Location
-            </label>
-            <input
-              id="contact-location"
-              class="contact-input"
-              type="text"
-              name="location"
-              value="{{location}}"
-              placeholder="City, Country"
-              autocomplete="address-level2"
-            />
-          </div>
-
-          <div class="contact-field accent-purple">
-            <label class="contact-field-label" for="contact-linkedin">
-              <span class="contact-field-icon">
-                <svg viewBox="0 0 24 24" fill="currentColor"><path d="M20.45 20.45h-3.55v-5.57c0-1.33-.03-3.04-1.85-3.04-1.85 0-2.14 1.45-2.14 2.94v5.67H9.36V9h3.41v1.56h.05c.48-.9 1.64-1.85 3.37-1.85 3.6 0 4.27 2.37 4.27 5.45v6.29zM5.34 7.43a2.06 2.06 0 1 1 0-4.12 2.06 2.06 0 0 1 0 4.12zM7.12 20.45H3.56V9h3.56v11.45zM22.22 0H1.77C.79 0 0 .77 0 1.72v20.56C0 23.23.79 24 1.77 24h20.45c.98 0 1.78-.77 1.78-1.72V1.72C24 .77 23.2 0 22.22 0z"/></svg>
-              </span>
-              LinkedIn
-            </label>
-            <input
-              id="contact-linkedin"
-              class="contact-input"
-              type="url"
-              name="linkedin"
-              value="{{linkedin}}"
-              placeholder="https://linkedin.com/in/yourname"
-              autocomplete="url"
-            />
-          </div>
-        </form>
+          {{/if}}
+          {{#if linkedin}}
+          <a href="{{linkedin}}" target="_blank" rel="noopener noreferrer" class="contact-item accent-purple">
+            <div class="contact-icon">
+              <svg viewBox="0 0 24 24" fill="currentColor"><path d="M20.45 20.45h-3.55v-5.57c0-1.33-.03-3.04-1.85-3.04-1.85 0-2.14 1.45-2.14 2.94v5.67H9.36V9h3.41v1.56h.05c.48-.9 1.64-1.85 3.37-1.85 3.6 0 4.27 2.37 4.27 5.45v6.29zM5.34 7.43a2.06 2.06 0 1 1 0-4.12 2.06 2.06 0 0 1 0 4.12zM7.12 20.45H3.56V9h3.56v11.45zM22.22 0H1.77C.79 0 0 .77 0 1.72v20.56C0 23.23.79 24 1.77 24h20.45c.98 0 1.78-.77 1.78-1.72V1.72C24 .77 23.2 0 22.22 0z"/></svg>
+            </div>
+            <div>
+              <p class="contact-label">LinkedIn</p>
+              <p class="contact-value">Connect with me</p>
+            </div>
+          </a>
+          {{/if}}
+        </div>
 
         <div class="contact-cta">
           <h3 class="contact-cta-heading">Ready to collaborate?</h3>
@@ -313,13 +301,32 @@
   <footer class="footer">
     <div class="container">
       <p class="footer-text">
-        &copy; <span id="year"></span> {{name}} &mdash; Built with <a href="#">CareerPilot</a>
+        &copy; <span id="year"></span> {{name}} &mdash; Built with <a href="https://github.com/Anuj3558/career-pilot" target="_blank" rel="noopener noreferrer">CareerPilot</a>
       </p>
     </div>
   </footer>
 
   <script>
     document.getElementById('year').textContent = new Date().getFullYear();
+
+    const hamburger = document.getElementById('hamburger');
+    const mobileNav = document.getElementById('mobile-nav');
+    hamburger.addEventListener('click', () => {
+      const open = hamburger.getAttribute('aria-expanded') === 'true';
+      hamburger.setAttribute('aria-expanded', String(!open));
+      hamburger.classList.toggle('is-open', !open);
+      mobileNav.setAttribute('aria-hidden', String(open));
+      mobileNav.classList.toggle('is-open', !open);
+    });
+    // close mobile nav when a link is clicked
+    mobileNav.querySelectorAll('a').forEach(link => {
+      link.addEventListener('click', () => {
+        hamburger.setAttribute('aria-expanded', 'false');
+        hamburger.classList.remove('is-open');
+        mobileNav.setAttribute('aria-hidden', 'true');
+        mobileNav.classList.remove('is-open');
+      });
+    });
   </script>
 </body>
 </html>

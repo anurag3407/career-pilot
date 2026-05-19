@@ -28,7 +28,9 @@
   --font-sans: 'DM Sans', 'Plus Jakarta Sans', system-ui, sans-serif;
 }
 
-html { scroll-behavior: smooth; }
+@media (prefers-reduced-motion: no-preference) {
+  html { scroll-behavior: smooth; }
+}
 
 body {
   font-family: var(--font-sans);
@@ -175,12 +177,17 @@ section { padding: 80px 0; position: relative; }
   height: 8px;
   background: var(--blue);
   border-radius: 50%;
-  animation: pulse 2s ease-in-out infinite;
 }
 
 @keyframes pulse {
   0%, 100% { transform: scale(1); opacity: 1; }
   50% { transform: scale(1.4); opacity: .7; }
+}
+
+@media (prefers-reduced-motion: no-preference) {
+  .hero-badge::before {
+    animation: pulse 2s ease-in-out infinite;
+  }
 }
 
 .hero-name {
@@ -692,57 +699,6 @@ section { padding: 80px 0; position: relative; }
 .contact-label { font-size: .75rem; color: #64748B; font-weight: 500; }
 .contact-value { font-size: .95rem; font-weight: 600; color: #fff; }
 
-/* ── Contact form fields ──────────────────────────────────── */
-.contact-form { display: flex; flex-direction: column; gap: 16px; }
-
-.contact-field {
-  display: flex;
-  flex-direction: column;
-  gap: 6px;
-}
-
-.contact-field-label {
-  display: flex;
-  align-items: center;
-  gap: 8px;
-  font-size: .78rem;
-  font-weight: 700;
-  letter-spacing: .06em;
-  text-transform: uppercase;
-  color: var(--accent, var(--blue));
-}
-
-.contact-field-icon {
-  width: 28px;
-  height: 28px;
-  border-radius: 8px;
-  background: var(--accent, var(--blue));
-  display: flex;
-  align-items: center;
-  justify-content: center;
-  flex-shrink: 0;
-}
-.contact-field-icon svg { width: 14px; height: 14px; color: #fff; stroke: #fff; }
-
-.contact-input {
-  width: 100%;
-  background: rgba(255,255,255,.06);
-  border: 1.5px solid rgba(255,255,255,.1);
-  border-radius: var(--radius-sm);
-  padding: 12px 16px;
-  font-family: var(--font-sans);
-  font-size: .95rem;
-  font-weight: 500;
-  color: #fff;
-  outline: none;
-  transition: border-color .2s, background .2s, box-shadow .2s;
-}
-.contact-input::placeholder { color: #475569; }
-.contact-input:focus {
-  border-color: var(--accent, var(--blue));
-  background: rgba(255,255,255,.09);
-  box-shadow: 0 0 0 3px color-mix(in srgb, var(--accent, var(--blue)) 20%, transparent);
-}
 
 .contact-cta {
   background: linear-gradient(135deg, var(--blue) 0%, var(--purple) 100%);
@@ -797,9 +753,87 @@ section { padding: 80px 0; position: relative; }
   .contact-grid { grid-template-columns: 1fr; }
 }
 
+/* ── Hamburger button ─────────────────────────────────────── */
+.nav-right {
+  display: flex;
+  align-items: center;
+  gap: 12px;
+}
+
+.hamburger {
+  display: none;
+  flex-direction: column;
+  justify-content: center;
+  gap: 5px;
+  width: 36px;
+  height: 36px;
+  padding: 6px;
+  background: transparent;
+  border: 1.5px solid var(--border);
+  border-radius: 8px;
+  cursor: pointer;
+  transition: border-color .2s;
+}
+.hamburger:hover { border-color: var(--blue); }
+.hamburger span {
+  display: block;
+  width: 100%;
+  height: 2px;
+  background: var(--text);
+  border-radius: 2px;
+  transition: transform .25s, opacity .25s;
+  transform-origin: center;
+}
+
+.hamburger.is-open span:nth-child(1) { transform: translateY(7px) rotate(45deg); }
+.hamburger.is-open span:nth-child(2) { opacity: 0; transform: scaleX(0); }
+.hamburger.is-open span:nth-child(3) { transform: translateY(-7px) rotate(-45deg); }
+
+/* ── Mobile nav panel ─────────────────────────────────────── */
+.mobile-nav {
+  display: none;
+  overflow: hidden;
+  max-height: 0;
+  transition: max-height .3s ease;
+  border-top: 1px solid var(--border);
+  background: var(--surface);
+}
+.mobile-nav.is-open { max-height: 320px; }
+
+.mobile-nav-links {
+  list-style: none;
+  display: flex;
+  flex-direction: column;
+  padding: 12px 0 16px;
+}
+.mobile-nav-links li a {
+  display: block;
+  padding: 12px 24px;
+  font-size: .95rem;
+  font-weight: 500;
+  color: var(--muted);
+  transition: color .15s, background .15s;
+}
+.mobile-nav-links li a:hover {
+  color: var(--text);
+  background: var(--bg);
+}
+.mobile-nav-cta {
+  margin: 8px 24px 0;
+  padding: 10px 20px !important;
+  background: var(--text) !important;
+  color: #fff !important;
+  border-radius: 100px;
+  text-align: center;
+  font-weight: 600 !important;
+}
+.mobile-nav-cta:hover { background: var(--blue) !important; }
+
 @media (max-width: 600px) {
   section { padding: 56px 0; }
   .nav-links { display: none; }
+  .hamburger { display: flex; }
+  .mobile-nav { display: block; }
   .projects-grid { grid-template-columns: 1fr; }
   .edu-grid { grid-template-columns: 1fr; }
   .timeline-item { grid-template-columns: 1fr; }
