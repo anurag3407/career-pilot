@@ -102,6 +102,10 @@ router.put('/:resumeId', verifyToken, asyncHandler(async (req, res) => {
     if (updates[key] !== undefined) updateData[key] = updates[key];
   }
 
+  if (Object.keys(updateData).length === 0) {
+    throw new ApiError(400, 'No valid fields to update');
+  }
+
   const updatedResume = await Resume.findOneAndUpdate(
     { _id: resumeId, userId },
     { $set: updateData },
