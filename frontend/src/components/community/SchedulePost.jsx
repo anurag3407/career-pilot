@@ -36,7 +36,6 @@ export default function SchedulePost({ onClose, onSchedule }) {
       return;
     }
 
-    if (chosen.getTime() <= Date.now() + 4 * 60 * 1000) {
     if (chosen.getTime() <= Date.now() + 5 * 60 * 1000) {
       setError('Please schedule at least 5 minutes into the future.');
       return;
