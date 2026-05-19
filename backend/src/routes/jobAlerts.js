@@ -53,20 +53,32 @@ router.get('/stats/summary', verifyToken, asyncHandler(async (req, res) => {
 
 router.get('/', verifyToken, asyncHandler(async (req, res) => {
     const userId = req.user.uid;
+    const limit = Math.min(Math.max(parseInt(req.query.limit) || 10, 1), 50);
+    const skip = Math.max(parseInt(req.query.skip) || 0, 0);
 
-    const alerts = await JobAlert.find({ userId })
-        .sort({ createdAt: -1 })
-        .lean();
+    const [alerts, total] = await Promise.all([
+        JobAlert.find({ userId })
+            .sort({ createdAt: -1 })
+            .limit(limit)
+            .skip(skip)
+            .lean(),
+        JobAlert.countDocuments({ userId })
+    ]);
 
     const alertsWithIndex = alerts.map((alert, index) => ({
         ...alert,
-        position: index + 1 
+        position: skip + index + 1
     }));
 
     res.json({
         success: true,
         count: alerts.length,
-        alerts: alertsWithIndex
+        alerts: alertsWithIndex,
+        pagination: {
+            total,
+            limit,
+            skip
+        }
     });
 }));
 
