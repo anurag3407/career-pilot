@@ -1,3 +1,4 @@
+import { Children, cloneElement, isValidElement, useId } from 'react'
 import { cn } from '@/lib/utils'
 
 const positions = {
@@ -27,11 +28,27 @@ export default function Tooltip({
   contentClassName = '',
 }) {
   const placement = positions[position] || positions.top
+  const tooltipId = useId()
+
+  const trigger = Children.map(children, (child) => {
+    if (!isValidElement(child)) {
+      return child
+    }
+
+    const currentDescription = child.props['aria-describedby']
+
+    return cloneElement(child, {
+      'aria-describedby': currentDescription
+        ? `${currentDescription} ${tooltipId}`
+        : tooltipId,
+    })
+  })
 
   return (
     <span className={cn('group relative inline-flex w-fit', className)}>
-      {children}
+      {trigger}
       <span
+        id={tooltipId}
         role="tooltip"
         className={cn(
           'pointer-events-none absolute z-50 min-w-max max-w-xs rounded-xl bg-foreground px-3 py-2 text-xs font-semibold leading-relaxed text-background shadow-xl',
