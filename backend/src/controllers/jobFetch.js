@@ -29,6 +29,7 @@ export const getJobs = async (req, res) => {
       return res.status(statusCode).json({
         success: false,
         message: jobsData.error,
+        error: jobsData.error,
         data: [],
         count: 0
       });
