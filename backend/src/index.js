@@ -20,6 +20,7 @@ import paymentRoutes from './routes/payments.js';
 import userProfileRoutes from './routes/userProfile.js';
 import twoFactorRoutes from './routes/twoFactor.js';
 import aiRoutes from './routes/ai.js';
+import portfolioRoutes from './routes/portfolio.js';
 
 import { globalErrorHandler } from './middleware/globalErrorHandler.js';
 
@@ -114,6 +115,7 @@ app.use('/api/payments', paymentRoutes);
 app.use('/api/portfolio', portfolioRoutes);
 app.use('/api/user-profiles', userProfileRoutes);
 app.use('/api/auth/2fa', twoFactorRoutes);
+
 app.use('/api/search', searchRoutes);
 app.use('/api/ai', aiRoutes);
 

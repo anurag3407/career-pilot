@@ -83,7 +83,8 @@ function HealthIndicator({ label, status, latency }) {
 
 // ── Provider Usage Bar ────────────────────────────────────────
 function UsageBar({ provider, used, limit }) {
-  const pct = Math.min(100, (used / limit) * 100);
+  const safeLimit = limit > 0 ? limit : 1; // Prevent division by zero
+  const pct = Math.min(100, (used / safeLimit) * 100);
   const isWarning = pct > 80;
   const isCritical = pct > 90;
   const color = isCritical ? '#EF4444' : isWarning ? '#F59E0B' : '#0EA5E9';
@@ -169,7 +170,7 @@ function CustomTooltip({ active, payload, label }) {
       <p className="text-xs font-bold text-foreground mb-2">{label}</p>
       {payload.map((entry, i) => (
         <div key={i} className="flex items-center gap-2 text-xs">
-          <span className="w-2 h-2 rounded-full" style={{ backgroundColor: entry.color }} />
+          <span className="w-2 h-2 rounded-full" style={{ backgroundColor: entry.payload.fill || entry.color }} />
           <span className="text-muted-foreground capitalize">{entry.dataKey}:</span>
           <span className="font-semibold text-foreground">{entry.value}</span>
         </div>
@@ -221,12 +222,12 @@ export default function DeploymentMonitor() {
     try {
       setError(null);
       const token = await getToken();
-      const apiUrl = import.meta.env.VITE_API_URL || 'http://localhost:5001';
+      const apiUrl = import.meta.env.VITE_API_URL || 'http://localhost:5000';
       const response = await fetch(`${apiUrl}/api/portfolio/admin/stats`, {
         headers: { Authorization: `Bearer ${token}` },
       });
 
-      if (response.status === 403) {
+      if (response.status === 401 || response.status === 403) {
         setIsAdmin(false);
         setLoading(false);
         return;
@@ -240,7 +241,7 @@ export default function DeploymentMonitor() {
     } catch (err) {
       console.error('Failed to fetch deployment stats:', err);
       setError(err.message);
-      setIsAdmin(true); // Show error state, not redirect
+      setIsAdmin(false); // Redirect instead of treating as admin on error
     } finally {
       setLoading(false);
       setRefreshing(false);
@@ -471,7 +472,7 @@ export default function DeploymentMonitor() {
               {providerPieData.map((entry, i) => (
                 <div key={entry.name} className="flex items-center justify-between text-sm">
                   <div className="flex items-center gap-2">
-                    <span className="w-2.5 h-2.5 rounded-full" style={{ backgroundColor: PIE_COLORS[i] }} />
+                    <span className="w-2.5 h-2.5 rounded-full" style={{ backgroundColor: PIE_COLORS[i % PIE_COLORS.length] }} />
                     <span className="text-muted-foreground">{entry.name}</span>
                   </div>
                   <span className="font-semibold text-foreground">{entry.value}</span>
