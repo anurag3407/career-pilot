@@ -21,7 +21,7 @@ import userProfileRoutes from './routes/userProfile.js';
 import twoFactorRoutes from './routes/twoFactor.js';
 import aiRoutes from './routes/ai.js';
 
-import { errorHandler } from './middleware/errorHandler.js';
+import { globalErrorHandler } from './middleware/globalErrorHandler.js';
 
 import { initializeSocket } from './config/socket.js';
 
@@ -120,7 +120,7 @@ app.use('/api/ai', aiRoutes);
 app.use((req, res) => {
   res.status(404).json({ error: 'Route not found' });
 });
-app.use(errorHandler);
+app.use(globalErrorHandler);
 const startServer = async () => {
   try {
     await connectDB();
