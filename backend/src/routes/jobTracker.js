@@ -167,6 +167,10 @@ router.put('/:trackerId', verifyToken, asyncHandler(async (req, res) => {
     };
   }
 
+  if (!status && !notes) {
+    throw new ApiError(400, 'Provide status or notes to update');
+  }
+
   const updatedJob = await TrackedJob.findOneAndUpdate(
     { _id: trackerId, userId },
     updateData,

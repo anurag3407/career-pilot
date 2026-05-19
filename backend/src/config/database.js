@@ -11,8 +11,10 @@ export const connectDB = async () => {
   });
   console.log('📦 Connected to MongoDB');
 
-  // Enable slow-query profiling (level 1 = queries > slowms threshold)
-  if (process.env.NODE_ENV !== 'test') {
+  // Enable slow-query profiling only when explicitly opted in (level 1 = queries > slowms).
+  // Not enabled by default in production to avoid system.profile growth overhead.
+  // Set ENABLE_DB_PROFILING=true in .env to activate.
+  if (process.env.ENABLE_DB_PROFILING === 'true') {
     try {
       await mongoose.connection.db.command({ profile: 1, slowms: 100 });
       console.log('📊 MongoDB profiling enabled (threshold: 100ms)');
