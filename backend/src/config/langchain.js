@@ -3,6 +3,25 @@ import dotenv from 'dotenv';
 
 dotenv.config();
 
+const geminiApiKey = process.env.GEMINI_API_KEY;
+if (!geminiApiKey) {
+  console.warn('⚠️  GEMINI_API_KEY is not set — AI features will be unavailable. Non-AI routes are unaffected.');
+}
+
+let _model = null;
+
+const getModel = () => {
+  if (_model) return _model;
+  if (!geminiApiKey) {
+    const err = new Error('AI features are unavailable — GEMINI_API_KEY is not configured.');
+    err.statusCode = 503;
+    throw err;
+  }
+  const genAI = new GoogleGenerativeAI(geminiApiKey);
+  _model = genAI.getGenerativeModel({ model: 'gemini-2.5-flash' });
+  return _model;
+};
+
 // ---------------------------------------------------------------------------
 // Helper: resolve the AI provider to use
 // If an explicit provider is passed (from the middleware) use it,
@@ -124,15 +143,19 @@ export const enhanceResume = async (resumeText, preferences, aiProvider) => {
 
     const prompt = `${systemPrompt}\n\nPlease enhance the following resume:\n\n${resumeText}`;
 
-    const result = await provider.generateContent(prompt);
+    const result = await getModel().generateContent(prompt);
+    const response = await result.response;
+    const text = response.text();
+    const providerResult = await provider.generateContent(prompt);
 
     return {
       success: true,
-      enhancedResume: result.text,
+      enhancedResume: providerResult.text,
       provider: provider.providerName,
-      tokensUsed: tokensUsedFromResult(result),
+      tokensUsed: tokensUsedFromResult(providerResult),
     };
   } catch (error) {
+    if (error.statusCode === 503) throw error;
     console.error('Error enhancing resume:', error);
     throw new Error(`Failed to enhance resume: ${error.message}`);
   }
@@ -147,14 +170,18 @@ export const generateSummary = async (resumeText, jobRole, aiProvider) => {
 Resume:
 ${resumeText}`;
 
-    const result = await provider.generateContent(prompt);
+    const result = await getModel().generateContent(prompt);
+    const response = await result.response;
+    const text = response.text();
+    const providerResult = await provider.generateContent(prompt);
 
     return {
       success: true,
-      summary: result.text,
+      summary: providerResult.text,
       provider: provider.providerName
     };
   } catch (error) {
+    if (error.statusCode === 503) throw error;
     console.error('Error generating summary:', error);
     throw new Error(`Failed to generate summary: ${error.message}`);
   }
@@ -169,14 +196,18 @@ export const suggestImprovements = async (resumeText, jobRole, aiProvider) => {
 Resume:
 ${resumeText}`;
 
-    const result = await provider.generateContent(prompt);
+    const result = await getModel().generateContent(prompt);
+    const response = await result.response;
+    const text = response.text();
+    const providerResult = await provider.generateContent(prompt);
 
     return {
       success: true,
-      suggestions: result.text,
+      suggestions: providerResult.text,
       provider: provider.providerName
     };
   } catch (error) {
+    if (error.statusCode === 503) throw error;
     console.error('Error suggesting improvements:', error);
     throw new Error(`Failed to suggest improvements: ${error.message}`);
   }
@@ -229,13 +260,16 @@ Rules:
 Resume:
 ${resumeText}`;
 
-    const result = await provider.generateContent(prompt);
+    const result = await getModel().generateContent(prompt);
+    const response = await result.response;
+    const text = response.text();
+    const providerResult = await provider.generateContent(prompt);
 
     // Parse JSON from response
     let analysisData;
     try {
       // Remove markdown code blocks if present
-      const cleanedText = result.text.replace(/```json\n?/g, '').replace(/```\n?/g, '').trim();
+      const cleanedText = providerResult.text.replace(/```json\n?/g, '').replace(/```\n?/g, '').trim();
       analysisData = JSON.parse(cleanedText);
     } catch (parseError) {
       console.error('Failed to parse ATS analysis JSON:', parseError);
@@ -267,6 +301,7 @@ ${resumeText}`;
       provider: provider.providerName
     };
   } catch (error) {
+    if (error.statusCode === 503) throw error;
     console.error('Error analyzing ATS score:', error);
     throw new Error(`Failed to analyze ATS score: ${error.message}`);
   }
@@ -375,11 +410,14 @@ ANALYSIS RULES:
 Resume to analyze:
 ${resumeText}`;
 
-    const result = await provider.generateContent(prompt);
+    const result = await getModel().generateContent(prompt);
+    const response = await result.response;
+    const text = response.text();
+    const providerResult = await provider.generateContent(prompt);
 
     let analysisData;
     try {
-      const cleanedText = result.text.replace(/```json\n?/g, '').replace(/```\n?/g, '').trim();
+      const cleanedText = providerResult.text.replace(/```json\n?/g, '').replace(/```\n?/g, '').trim();
       analysisData = JSON.parse(cleanedText);
     } catch (parseError) {
       console.error('Failed to parse comprehensive analysis JSON:', parseError);
@@ -392,6 +430,7 @@ ${resumeText}`;
       provider: provider.providerName
     };
   } catch (error) {
+    if (error.statusCode === 503) throw error;
     console.error('Error in comprehensive analysis:', error);
     throw new Error(`Failed to analyze resume: ${error.message}`);
   }
@@ -444,11 +483,14 @@ Rules:
 Resume:
 ${resumeText}`;
 
-    const result = await provider.generateContent(prompt);
+    const result = await getModel().generateContent(prompt);
+    const response = await result.response;
+    const text = response.text();
+    const providerResult = await provider.generateContent(prompt);
 
     let bulletData;
     try {
-      const cleanedText = result.text.replace(/```json\n?/g, '').replace(/```\n?/g, '').trim();
+      const cleanedText = providerResult.text.replace(/```json\n?/g, '').replace(/```\n?/g, '').trim();
       bulletData = JSON.parse(cleanedText);
     } catch (parseError) {
       console.error('Failed to parse bullet analysis JSON:', parseError);
@@ -461,6 +503,7 @@ ${resumeText}`;
       provider: provider.providerName
     };
   } catch (error) {
+    if (error.statusCode === 503) throw error;
     console.error('Error analyzing bullets:', error);
     throw new Error(`Failed to analyze bullet points: ${error.message}`);
   }
@@ -496,11 +539,14 @@ Focus on the 3-5 most impactful changes.
 Original Resume:
 ${resumeText}`;
 
-    const result = await provider.generateContent(prompt);
+    const result = await getModel().generateContent(prompt);
+    const response = await result.response;
+    const text = response.text();
+    const providerResult = await provider.generateContent(prompt);
 
     let comparisonData;
     try {
-      const cleanedText = result.text.replace(/```json\n?/g, '').replace(/```\n?/g, '').trim();
+      const cleanedText = providerResult.text.replace(/```json\n?/g, '').replace(/```\n?/g, '').trim();
       comparisonData = JSON.parse(cleanedText);
     } catch (parseError) {
       console.error('Failed to parse comparison JSON:', parseError);
@@ -513,6 +559,7 @@ ${resumeText}`;
       provider: provider.providerName
     };
   } catch (error) {
+    if (error.statusCode === 503) throw error;
     console.error('Error generating comparison:', error);
     throw new Error(`Failed to generate comparison: ${error.message}`);
   }

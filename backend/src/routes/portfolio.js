@@ -70,6 +70,39 @@ router.post('/enhance-portfolio-content', verifyToken, asyncHandler(async (req, 
   });
 }));
 
+/**
+ * POST /api/portfolio/:id/performance
+ * Analyze or track portfolio performance metrics
+ */
+router.post('/:id/performance', verifyToken, asyncHandler(async (req, res) => {
+  const { id } = req.params;
+  const { htmlSizeKB, cssSizeKB, imageSizeMB, externalRequests, cssSelectors, fontStrategy } = req.body;
+
+  // Validate basic payload presence
+  if (!htmlSizeKB && !cssSizeKB && !imageSizeMB) {
+    throw new ApiError(400, 'Performance metrics payload is required.');
+  }
+
+  // TODO: Connect to a metrics controller or service here
+  // For now, return a successful stub response acknowledging the data
+
+  res.status(200).json({
+    success: true,
+    message: `Performance metrics recorded for portfolio ${id}`,
+    data: {
+      portfolioId: id,
+      receivedMetrics: {
+        htmlSizeKB,
+        cssSizeKB,
+        imageSizeMB,
+        externalRequests,
+        cssSelectors,
+        fontStrategy
+      }
+    }
+  });
+}));
+
 router.get('/public/:slug/sitemap.xml', asyncHandler(async (req, res) => {
   const { slug } = req.params;
   assertValidPortfolioSlug(slug);

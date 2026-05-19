@@ -54,6 +54,29 @@ const userProfileSchema = new mongoose.Schema({
     maxlength: 200,
     trim: true,
   },
+  projects: [{
+    githubRepoUrl: {
+      type: String,
+      trim: true,
+    },
+    isManuallyEdited: {
+      type: Boolean,
+      default: false,
+    },
+    lastSyncedAt: {
+      type: Date,
+    },
+    autoData: {
+      description: {
+        type: String,
+        default: '',
+      },
+      readme: {
+        type: String,
+        default: '',
+      }
+    }
+  }],
 }, { timestamps: true });
 
 export default mongoose.model('UserProfile', userProfileSchema);

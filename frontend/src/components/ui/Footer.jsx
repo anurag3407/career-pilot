@@ -41,7 +41,7 @@ export default function Footer() {
               <div className="w-12 h-12 flex items-center justify-center">
                 <img src="/speed.png" alt="" className="w-full h-full object-contain" />
               </div>
-              <span className="text-xl font-bold text-foreground">careerpilot</span>
+              <span className="text-xl font-bold text-white">careerpilot</span>
             </Link>
             <p className="text-sm text-muted-foreground mb-4">
               AI-powered job search platform for the modern professional.
@@ -50,7 +50,7 @@ export default function Footer() {
 
           {/* Product Links */}
           <div>
-            <h4 className="text-sm font-semibold text-foreground mb-4">Product</h4>
+            <h4 className="text-sm font-semibold text-white mb-4">Product</h4>
             <ul className="space-y-3">
               {footerLinks.product.map((link) => (
                 <li key={link.label}>
@@ -93,7 +93,7 @@ export default function Footer() {
 
           {/* Company Links */}
           <div>
-            <h4 className="text-sm font-semibold text-foreground mb-4">Company</h4>
+            <h4 className="text-sm font-semibold text-white mb-4">Company</h4>
             <ul className="space-y-3">
               {footerLinks.company.map((link) => (
                 <li key={link.label}>
@@ -110,7 +110,7 @@ export default function Footer() {
 
           {/* Legal Links */}
           <div>
-            <h4 className="text-sm font-semibold text-foreground mb-4">Legal</h4>
+            <h4 className="text-sm font-semibold text-white mb-4">Legal</h4>
             <ul className="space-y-3">
               {footerLinks.legal.map((link) => (
                 <li key={link.label}>

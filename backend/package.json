@@ -30,12 +30,14 @@
     "nodemailer": "^7.0.12",
     "openai": "^6.38.0",
     "pdf-parse": "^1.1.1",
-    "puppeteer": "^24.43.1",
     "pdfkit": "^0.17.2",
+    "puppeteer": "^24.43.1",
     "qrcode": "^1.5.4",
     "razorpay": "^2.9.6",
     "socket.io": "^4.8.3",
     "speakeasy": "^2.0.0",
+    "swagger-jsdoc": "^6.2.8",
+    "swagger-ui-express": "^5.0.1",
     "uuid": "^10.0.0"
   },
   "devDependencies": {

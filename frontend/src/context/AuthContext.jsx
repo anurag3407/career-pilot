@@ -25,15 +25,23 @@ export function AuthProvider({ children }) {
   const [loading, setLoading] = useState(true)
 
   useEffect(() => {
+    // If firebase initialization was skipped, unblock the loading state immediately
+    if (!auth) {
+      setLoading(false)
+      return
+    }
+
     const unsubscribe = onAuthStateChanged(auth, (user) => {
       setUser(user)
       setLoading(false)
     })
+    
     return unsubscribe
   }, [])
 
   // Sign up with email/password
   const signup = async (email, password, displayName) => {
+    if (!auth) throw new Error('Authentication service is currently unconfigured.')
     const result = await createUserWithEmailAndPassword(auth, email, password)
     if (displayName) {
       await updateProfile(result.user, { displayName })
@@ -43,12 +51,14 @@ export function AuthProvider({ children }) {
 
   // Sign in with email/password
   const login = async (email, password) => {
+    if (!auth) throw new Error('Authentication service is currently unconfigured.')
     const result = await signInWithEmailAndPassword(auth, email, password)
     return result.user
   }
 
   // Sign in with Google
   const loginWithGoogle = async () => {
+    if (!auth) throw new Error('Authentication service is currently unconfigured.')
     const provider = new GoogleAuthProvider()
     const result = await signInWithPopup(auth, provider)
     return result.user
@@ -62,6 +72,7 @@ export function AuthProvider({ children }) {
 
   // Sign out
   const logout = async () => {
+    if (!auth) throw new Error('Authentication service is currently unconfigured.')
     await signOut(auth)
   }
 
@@ -79,7 +90,8 @@ export function AuthProvider({ children }) {
     loginWithGoogle,
     loginWithLinkedIn,
     logout,
-    getToken
+    getToken,
+    isMockAuth: !auth // Helper flag indicating local offline development
   }
 
   return (

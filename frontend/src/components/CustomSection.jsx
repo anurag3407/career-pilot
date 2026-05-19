@@ -33,6 +33,7 @@ const ICONS = {
   x:          'M18 6L6 18M6 6l12 12',
   arrowUp:    'M12 19V5M5 12l7-7 7 7',
   arrowDown:  'M12 5v14M19 12l-7 7-7-7',
+  sparkles: 'M12 3l1.912 5.813a2 2 0 001.275 1.275L21 12l-5.813 1.912a2 2 0 00-1.275 1.275L12 21l-1.912-5.813a2 2 0 00-1.275-1.275L3 12l5.813-1.912a2 2 0 001.275-1.275L12 3z',
 }
 
 // ─── Suggested section presets ─────────────────────────────────────────────
@@ -182,7 +183,26 @@ function SectionCard({
   const [collapsed, setCollapsed] = useState(false)
   const [editingName, setEditingName] = useState(false)
   const nameRef = useRef(null)
+  const [isEnhancing, setIsEnhancing] = useState(false)
+  const [enhancedData, setEnhancedData] = useState(null)
+  const handleEnhance = async () => {
+    if (!section.entries || section.entries.length === 0) return
 
+    setIsEnhancing(true)
+    
+    // Simulate a 2-second API delay
+    setTimeout(() => {
+      const mockEnhancedEntries = section.entries.map(entry => ({
+        ...entry,
+        description: entry.description 
+          ? `✨ [AI ENHANCED] ${entry.description}\n- Restructured for professional impact.\n- Quantified achievements and optimized keywords.` 
+          : '✨ [AI ENHANCED] Developed and executed core modules using high-performance engineering standards.'
+      }))
+      
+      setEnhancedData({ ...section, entries: mockEnhancedEntries })
+      setIsEnhancing(false)
+    }, 2000)
+  }
   // ── entry helpers ────────────────────────────────────────────────────────
 
   const addEntry = () =>
@@ -274,6 +294,20 @@ function SectionCard({
         >
           <Icon path={editingName ? ICONS.check : ICONS.edit} size={14} />
         </button>
+        {/* AI Enhance Button */}
+        <button
+          type="button"
+          onClick={handleEnhance}
+          disabled={isEnhancing || !section.entries || section.entries.length === 0}
+          className="flex items-center gap-1.5 px-2.5 py-1.5 ml-2 rounded-lg text-xs font-medium bg-primary/10 text-primary hover:bg-primary/20 transition-colors disabled:opacity-40 disabled:cursor-not-allowed"
+        >
+          <Icon 
+            path={ICONS.sparkles} 
+            size={14} 
+            className={isEnhancing ? "animate-spin text-amber-500" : ""} 
+          />
+          {isEnhancing ? 'Enhancing...' : 'Enhance with AI'}
+        </button>
 
         {/* Collapse */}
         <button
@@ -299,6 +333,58 @@ function SectionCard({
       {/* Section body */}
       {!collapsed && (
         <div className="px-5 py-4 space-y-3">
+          {/* AI Diff View Overlay */}
+          {enhancedData && (
+            <div className="mb-4 border border-amber-500/30 rounded-xl p-4 bg-amber-500/5 space-y-4 animate-in fade-in slide-in-from-top-2 duration-200">
+              <div className="flex items-center justify-between border-b border-border/50 pb-2">
+                <span className="text-xs font-semibold text-amber-600 flex items-center gap-1">
+                  <Icon path={ICONS.sparkles} size={12} /> AI Comparison View
+                </span>
+                <div className="flex gap-2">
+                  <button
+                    type="button"
+                    onClick={() => {
+                      onChange(enhancedData); // Apply changes to original state
+                      setEnhancedData(null); // Close diff view
+                      alert("Successfully enhanced section!"); // Simple success toast/notification
+                    }}
+                    className="px-2.5 py-1 rounded bg-emerald-600 text-white text-xs font-medium hover:bg-emerald-700 transition-colors"
+                  >
+                    Accept
+                  </button>
+                  <button
+                    type="button"
+                    onClick={() => setEnhancedData(null)} // Clear and close without saving
+                    className="px-2.5 py-1 rounded bg-muted-foreground/20 text-foreground text-xs font-medium hover:bg-muted-foreground/30 transition-colors"
+                  >
+                    Reject
+                  </button>
+                </div>
+              </div>
+              
+              {/* Split-Screen Diff Layout */}
+              <div className="grid grid-cols-1 md:grid-cols-2 gap-4 text-xs">
+                <div className="space-y-2 border-r border-border/50 pr-2">
+                  <p className="font-semibold text-muted-foreground uppercase tracking-wider text-[10px]">Original Description</p>
+                  {section.entries.map((entry) => (
+                    <div key={entry.id} className="p-2 bg-background/50 rounded border border-border/30">
+                      <p className="font-medium">{entry.title || "Untitled"}</p>
+                      <p className="text-muted-foreground whitespace-pre-line">{entry.description || <span className="italic">No description</span>}</p>
+                    </div>
+                  ))}
+                </div>
+                <div className="space-y-2">
+                  <p className="font-semibold text-amber-600 uppercase tracking-wider text-[10px]">AI Enhanced Description</p>
+                  {enhancedData.entries.map((entry) => (
+                    <div key={entry.id} className="p-2 bg-amber-500/5 rounded border border-amber-500/20">
+                      <p className="font-medium">{entry.title || "Untitled"}</p>
+                      <p className="text-foreground whitespace-pre-line">{entry.description}</p>
+                    </div>
+                  ))}
+                </div>
+              </div>
+            </div>
+          )}
           {section.entries.length === 0 && (
             <p className="text-xs text-muted-foreground text-center py-4 italic">
               No entries yet — add one below.

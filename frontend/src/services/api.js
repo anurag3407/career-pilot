@@ -147,6 +147,28 @@ export const resumeApi = {
     return handleResponse(response)
   },
 
+  // Preview LinkedIn profile data before importing
+  async previewLinkedIn(url) {
+    const headers = await getAuthHeaders()
+    const response = await fetch(`${API_BASE}/resumes/import/linkedin/preview`, {
+      method: 'POST',
+      headers,
+      body: JSON.stringify({ url })
+    })
+    return handleResponse(response)
+  },
+
+  // Import LinkedIn profile as a resume
+  async importLinkedIn(url, profile = null) {
+    const headers = await getAuthHeaders()
+    const response = await fetch(`${API_BASE}/resumes/import/linkedin`, {
+      method: 'POST',
+      headers,
+      body: JSON.stringify({ url, profile })
+    })
+    return handleResponse(response)
+  },
+
   // Download resume as PDF
   async downloadPdf(resumeId, version = 'enhanced') {
     const user = auth.currentUser
