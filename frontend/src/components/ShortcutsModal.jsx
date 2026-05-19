@@ -1,4 +1,4 @@
-import { useState } from 'react';
+import { useState, useEffect } from 'react';
 import { useKeyboardShortcuts } from '../hooks/useKeyboardShortcuts';
 import '../styles/ShortcutsModal.css';
 
@@ -18,9 +18,12 @@ export function ShortcutsModal() {
   ];
 
   // Expose openShortcuts method for external access
-  if (!window.openShortcuts) {
+  useEffect(() => {
     window.openShortcuts = () => setIsOpen(true);
-  }
+    return () => {
+      delete window.openShortcuts;
+    };
+  }, []);
 
   return (
     <>

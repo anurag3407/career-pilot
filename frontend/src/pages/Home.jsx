@@ -6,7 +6,6 @@ import TestimonialsSection from '../components/ui/TestimonialsSection'
 import CTASection from '../components/ui/CTASection'
 import Footer from '../components/ui/Footer'
 import { StackedCircularFooter } from '../components/ui/stacked-circular-footer'
-import ShortcutsModal from '../components/ShortcutsModal';
 
 
 export default function Home() {
@@ -40,7 +39,6 @@ export default function Home() {
           <TestimonialsSection />
         </div>
       </section>
-      <ShortcutsModal />
 
       {/* CTA Section */}
       <CTASection />
