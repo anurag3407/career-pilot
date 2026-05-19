@@ -442,12 +442,13 @@ export const updatePost = async (req, res, next) => {
 export const deletePost = async (req, res, next) => {
   try {
     const { postId } = req.params;
+    const normalizedPostId = typeof postId === 'string' ? postId.trim() : '';
 
-    if (!postId || typeof postId !== 'string' || postId.trim() === '') {
+    if (!normalizedPostId) {
       throw new ApiError(400, 'Invalid or missing postId');
     }
 
-    const doc = await postsRef.doc(postId).get();
+    const doc = await postsRef.doc(normalizedPostId).get();
     
     if (!doc.exists) {
       throw new ApiError(404, 'Post not found');
@@ -455,19 +456,19 @@ export const deletePost = async (req, res, next) => {
 
     const post = doc.data();
 
-    if (post.isDeleted) {
-      throw new ApiError(409, 'Post already deleted');
-    }
-
-    if (!post.author || !post.author.uid) {
-      throw new ApiError(500, 'Invalid post data');
+    if (!post || !post.author || !post.author.uid) {
+      throw new ApiError(400, 'Invalid post data');
     }
 
     if (post.author.uid !== req.user.uid) {
       throw new ApiError(403, 'Not authorized to delete this post');
     }
 
-    await postsRef.doc(postId).update({
+    if (post.isDeleted) {
+      return res.json({ success: true, message: 'Post already deleted' });
+    }
+
+    await postsRef.doc(normalizedPostId).update({
       isDeleted: true,
       deletedAt: FieldValue.serverTimestamp()
     });
