@@ -46,6 +46,7 @@ router.get('/me', asyncHandler(async (req, res) => {
       uid,
       displayName: req.user.name || req.user.email?.split('@')[0] || '',
     });
+    profile = profile.toObject();
   }
   res.json({ success: true, profile });
 }));

@@ -2,12 +2,19 @@
 
 <div align="center">
 
-![License](https://img.shields.io/badge/license-MIT-blue.svg)
-![Node.js](https://img.shields.io/badge/Node.js-18%2B-green.svg)
-![React](https://img.shields.io/badge/React-19-blue.svg)
-![Firebase](https://img.shields.io/badge/Firebase-Firestore-orange.svg)
-![AI](https://img.shields.io/badge/AI-Gemini%202.5-purple.svg)
-![Razorpay](https://img.shields.io/badge/Payments-Razorpay-blue.svg)
+<p align="center">
+  <img src="https://img.shields.io/badge/License-MIT-blue?logo=opensourceinitiative&logoColor=white">
+  &nbsp;
+  <img src="https://img.shields.io/badge/Node.js-18+-green?logo=node.js&logoColor=white">
+  &nbsp;
+  <img src="https://img.shields.io/badge/React-19-61DAFB?logo=react&logoColor=black">
+  <br/>
+  <img src="https://img.shields.io/badge/Firebase-Firestore-FFCA28?logo=firebase&logoColor=black">
+  &nbsp;
+  <img src="https://img.shields.io/badge/AI-Gemini_2.5-8E75B2?logo=google&logoColor=white">
+  &nbsp;
+  <img src="https://img.shields.io/badge/Payments-Razorpay-02042B?logo=razorpay&logoColor=white">
+</p>
 
 **An intelligent, AI-powered career platform that revolutionizes the job hunting experience through automated resume enhancement, intelligent job matching, AI mock interviews, corporate fellowships, and community-driven networking.**
 
@@ -23,6 +30,9 @@
 - [Problem Statement](#-problem-statement)
 - [Our Solution](#-our-solution)
 - [Features](#-features)
+- [Portfolio Builder](#-portfolio-builder)
+- [GitHub Intelligence](#-github-intelligence)
+- [AI Career Tools](#-ai-career-tools)
 - [Tech Stack](#-tech-stack)
 - [Getting Started](#-getting-started)
 - [Project Structure](#-project-structure)
@@ -143,6 +153,33 @@ The **AI Resume Builder & Career Platform** is a comprehensive full-stack applic
 - **Interview History**: Track progress across multiple sessions
 - **Multi-Round Support**: Technical, behavioral, and HR round simulations
 
+### 🖼️ Portfolio Builder
+
+- **AI Section Enhancement**: Enhance your portfolio's hero, projects, about, and skills sections using Gemini AI
+- **Before/After Comparison**: Preview AI suggestions before applying them — nothing saves automatically
+- **Project Impact Statements**: AI generates measurable impact statements and technical highlights for each project
+- **Smart Skills Categorization**: Groups your skills into logical categories (Languages, Frameworks, Tools) and suggests complementary skills
+- **Theme Selector**: Choose from multiple portfolio themes to match your personal brand
+- **Custom Sections**: Add fully customizable sections to your portfolio beyond the defaults
+
+### 🐙 GitHub Intelligence
+
+- **LinkedIn Profile Optimizer**: Paste your LinkedIn profile text and receive AI-generated headline rewrites, an About section overhaul, and a skills gap analysis vs. industry peers
+- **Profile Score Breakdown**: Scores your LinkedIn profile across Headline, About, and Skills dimensions with an overall rating
+- **Headline Suggestions**: Get 3–5 optimized, one-click-copyable LinkedIn headlines tailored to your target role
+- **Quick Wins**: Actionable improvements ranked by impact (High / Medium / Low) so you know exactly what to fix first
+- **Skills Gap vs Peers**: See which skills are missing compared to professionals in your target role
+- **LinkedIn OAuth**: Sign in with LinkedIn and auto-import profile data for seamless optimization
+
+### 🤖 AI Career Tools
+
+- **AI Email Generator**: Generate high-converting job application emails from your resume and a job description; choose from Professional, Enthusiastic, Direct, or Creative tones
+- **Company Research**: AI-powered deep-dive into any company — overview, size, funding stage, culture, Glassdoor-style ratings, and recent news
+- **Intelligent Search**: Cross-search across your resumes and the job database in a single query (`/api/search?q=...&type=all|resume|job`)
+- **Post Scheduler**: Schedule community posts in advance via the community platform
+- **Two-Factor Authentication (2FA)**: TOTP-based 2FA with QR code setup, backup codes, and brute-force rate limiting
+- **User Profiles**: Public and private profile pages with activity feeds, stats, and social links (GitHub, LinkedIn, website)
+
 ### 💳 Payments (Razorpay)
 
 - **Secure Payments**: PCI-DSS compliant payment processing
@@ -164,43 +201,55 @@ The **AI Resume Builder & Career Platform** is a comprehensive full-stack applic
 
 ### Frontend
 
-| Technology           | Purpose                          |
-| -------------------- | -------------------------------- |
-| **React 19**         | UI library with latest features  |
-| **Vite 7**           | Fast build tool and dev server   |
-| **TailwindCSS 4**    | Utility-first CSS framework      |
-| **Framer Motion**    | Animation library                |
-| **React Router 7**   | Client-side routing              |
-| **Socket.IO Client** | Real-time communication          |
-| **Firebase SDK**     | Authentication & client services |
-| **Zustand**          | State management                 |
-| **React Hook Form**  | Form handling                    |
-| **Lucide React**     | Icon library                     |
+| Technology              | Purpose                          |
+| ----------------------- | -------------------------------- |
+| **React 19**            | UI library with latest features  |
+| **Vite 7**              | Fast build tool and dev server   |
+| **TailwindCSS 4**       | Utility-first CSS framework      |
+| **Framer Motion**       | Animation library                |
+| **React Router 7**      | Client-side routing              |
+| **Socket.IO Client**    | Real-time communication          |
+| **Firebase SDK**        | Authentication & client services |
+| **Zustand**             | State management                 |
+| **React Hook Form**     | Form handling                    |
+| **Lucide React**        | Icon library                     |
+| **React Markdown**      | Markdown rendering               |
+| **React Dropzone**      | Drag-and-drop file uploads       |
+| **React Hot Toast**     | Toast notifications              |
+| **jsPDF + html2canvas** | Client-side PDF generation       |
+| **Radix UI**            | Accessible UI primitives         |
 
 ### Backend
 
-| Technology             | Purpose                                   |
-| ---------------------- | ----------------------------------------- |
-| **Node.js 18+**        | JavaScript runtime                        |
-| **Express.js**         | Web framework                             |
-| **Socket.IO**          | WebSocket server                          |
-| **Firebase Admin SDK** | Server-side Firebase services             |
-| **MongoDB + Mongoose** | Database & ODM                            |
-| **BullMQ + IORedis**   | Job queue for background tasks            |
-| **Google Gemini AI**   | AI/ML for resume enhancement & interviews |
-| **Razorpay**           | Payment processing & escrow               |
-| **Nodemailer**         | Email notifications                       |
-| **PDFKit**             | PDF generation                            |
-| **Node-Cron**          | Scheduled tasks                           |
+| Technology             | Purpose                                          |
+| ---------------------- | ------------------------------------------------ |
+| **Node.js 18+**        | JavaScript runtime                               |
+| **Express.js**         | Web framework                                    |
+| **Socket.IO**          | WebSocket server                                 |
+| **Firebase Admin SDK** | Server-side Firebase services                    |
+| **MongoDB + Mongoose** | Database & ODM                                   |
+| **BullMQ + IORedis**   | Job queue for background tasks                   |
+| **Google Gemini AI**   | AI/ML for resume enhancement, interviews & portfolio |
+| **Groq SDK**           | Alternative AI provider integration             |
+| **OpenAI SDK**         | Multi-provider AI support                        |
+| **Razorpay**           | Payment processing & escrow                      |
+| **Nodemailer**         | Email notifications                              |
+| **PDFKit**             | PDF generation                                   |
+| **Node-Cron**          | Scheduled tasks                                  |
+| **Speakeasy + QRCode** | TOTP-based two-factor authentication             |
+| **bcryptjs**           | Password & secret hashing                        |
+| **Axios**              | HTTP client for external API calls               |
 
 ### Infrastructure
 
-| Technology        | Purpose                  |
-| ----------------- | ------------------------ |
-| **Firebase**      | Auth, Firestore, Storage |
-| **MongoDB Atlas** | Cloud database           |
-| **Redis**         | Queue backend            |
-| **RapidAPI**      | Job search integration   |
+| Technology        | Purpose                        |
+| ----------------- | ------------------------------ |
+| **Firebase**      | Auth, Firestore, Storage       |
+| **MongoDB Atlas** | Cloud database                 |
+| **Redis**         | Queue backend & caching        |
+| **RapidAPI**      | Job search integration         |
+| **LinkedIn API**  | OAuth login & profile import   |
+| **Netlify**       | Frontend hosting (live demo)   |
 
 ---
 
@@ -259,6 +308,22 @@ RATE_LIMIT_MAX_REQUESTS=100
 # Razorpay (Payment Gateway)
 RAZORPAY_KEY_ID=rzp_test_xxxxxxxxxxxxx
 RAZORPAY_KEY_SECRET=your-razorpay-secret
+
+# LinkedIn OAuth
+LINKEDIN_CLIENT_ID=your-linkedin-client-id
+LINKEDIN_CLIENT_SECRET=your-linkedin-client-secret
+LINKEDIN_REDIRECT_URI=http://localhost:5000/api/auth/linkedin/callback
+
+# Two-Factor Authentication
+TOTP_ENCRYPTION_KEY=your-32-char-encryption-key
+
+# Job Alert Schedule (optional override)
+ALERT_CRON_SCHEDULE=0 0 */2 * *
+
+# AI Provider (optional: gemini | groq | openai)
+AI_PROVIDER=gemini
+GROQ_API_KEY=your-groq-api-key
+OPENAI_API_KEY=your-openai-api-key
 ```
 
 #### Frontend (.env)
@@ -271,6 +336,9 @@ VITE_FIREBASE_PROJECT_ID=your-project-id
 VITE_FIREBASE_STORAGE_BUCKET=your-bucket.appspot.com
 VITE_FIREBASE_MESSAGING_SENDER_ID=your-sender-id
 VITE_FIREBASE_APP_ID=your-app-id
+
+# LinkedIn OAuth (frontend callback)
+VITE_LINKEDIN_CLIENT_ID=your-linkedin-client-id
 ```
 
 ### Installation
@@ -689,6 +757,31 @@ npm start
 2. Get connection credentials
 3. Configure BullMQ
 
+### LinkedIn OAuth Setup
+
+1. Go to [LinkedIn Developer Portal](https://developer.linkedin.com/)
+2. Create a new app and request `openid`, `profile`, and `email` scopes
+3. Add your redirect URI: `<BACKEND_URL>/api/auth/linkedin/callback`
+4. Copy the Client ID and Secret into your backend `.env`
+
+### Multi-Provider AI Setup (Optional)
+
+CareerPilot supports Gemini (default), Groq, and OpenAI as AI backends. Set `AI_PROVIDER` in your backend `.env` to switch providers without changing any application code:
+
+```env
+# Use Gemini (default)
+AI_PROVIDER=gemini
+GEMINI_API_KEY=your-gemini-key
+
+# Or use Groq
+AI_PROVIDER=groq
+GROQ_API_KEY=your-groq-key
+
+# Or use OpenAI
+AI_PROVIDER=openai
+OPENAI_API_KEY=your-openai-key
+```
+
 ---
 
 ## 📖 Documentation
@@ -713,6 +806,174 @@ See [Real_life_usecase.md](./Real_life_usecase.md) for detailed success stories 
 - **University Career Centers**: Student resume workshops and tracking
 
 ---
+
+## 🖼️ Screenshots
+
+> 📸 **Screenshots and GIFs of new features will be added here once available. PRs with screenshots are very welcome!**
+
+| Feature | Preview |
+| ------- | ------- |
+| Portfolio Builder — AI Section Enhancement | _Coming soon_ |
+| LinkedIn Profile Optimizer — Score Breakdown | _Coming soon_ |
+| AI Email Generator — Tone Selection | _Coming soon_ |
+| Company Research — Glassdoor-style Report | _Coming soon_ |
+| Two-Factor Authentication Setup | _Coming soon_ |
+
+---
+
+## 📊 Feature Comparison
+
+| Feature | Free | Pro |
+| ------- | ---- | --- |
+| AI Resume Enhancement | ✅ | ✅ |
+| ATS Score Analysis | ✅ | ✅ |
+| Job Application Tracker | ✅ | ✅ |
+| Job Alerts (bi-daily) | ✅ | ✅ |
+| Community Platform | ✅ | ✅ |
+| AI Mock Interviews | ✅ | ✅ |
+| Portfolio Builder + AI Enhancement | ✅ | ✅ |
+| LinkedIn Profile Optimizer | ✅ | ✅ |
+| AI Email Generator | ✅ | ✅ |
+| Company Research AI | ✅ | ✅ |
+| careerpilot Fellowships (Escrow Payments) | ✅ | ✅ |
+| Two-Factor Authentication | ✅ | ✅ |
+| LinkedIn OAuth Login | ✅ | ✅ |
+
+---
+
+## 🛠️ Troubleshooting Guide
+
+If you encounter issues while setting up or running the project locally, try the following common fixes before creating a new issue.
+
+### MongoDB Connection Error:
+
+#### Problem
+
+```bash
+MongoServerSelectionError
+```
+
+#### Solution
+
+- Verify your `MONGODB_URI` in backend `.env`
+- Ensure MongoDB service is running
+- Check internet connection if using MongoDB Atlas
+- Restart backend server after updating environment variables
+
+### Redis Connection Error:
+
+#### Problem
+
+```bash
+ECONNREFUSED 127.0.0.1:6379
+```
+
+#### Solution
+
+- Ensure Redis server is installed and running
+- Verify `REDIS_HOST` and `REDIS_PORT`
+- Restart Redis service
+- Check firewall restrictions
+
+### Firebase Admin Initialization Error:
+
+#### Problem
+
+```bash
+FirebaseAppError
+```
+
+#### Solution
+
+- Verify Firebase credentials in `.env`
+- Ensure service account JSON is valid
+- Check `FIREBASE_PROJECT_ID`
+- Restart backend server after changes
+
+### Port Already in Use:
+
+#### Problem
+
+```bash
+EADDRINUSE
+```
+
+#### Solution
+
+- Change the `PORT` value in `.env`
+- Stop other applications using the same port
+- Restart your terminal and development server
+
+### npm Install Errors:
+
+#### Problem
+
+Dependencies fail during installation.
+
+#### Solution
+
+Run:
+
+```bash
+npm install
+```
+
+If the issue persists:
+
+```bash
+npm cache clean --force
+```
+
+Then reinstall dependencies:
+
+```bash
+npm install
+```
+
+### Frontend Not Starting:
+
+#### Problem
+
+Frontend server does not run properly.
+
+#### Solution
+
+- Ensure frontend `.env` exists
+- Verify all `VITE_*` variables are correct
+- Run:
+
+```bash
+npm run dev
+```
+
+inside the `frontend` directory.
+
+### Backend Not Starting:
+
+#### Problem
+
+Backend crashes during startup.
+
+#### Solution
+
+- Ensure backend `.env` is configured
+- Verify MongoDB and Redis are running
+- Run:
+
+```bash
+npm run dev
+```
+
+inside the `backend` directory.
+
+### Environment Variables Tips:
+
+- Never commit `.env` files
+- Double-check all API keys
+- Restart servers after changing environment variables
+- Ensure no extra spaces are added in `.env`
+
+
 
 ## 🤝 Contributing
 

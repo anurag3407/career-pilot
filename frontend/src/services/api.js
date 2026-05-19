@@ -15,6 +15,7 @@ async function getAuthHeaders() {
   }
 }
 
+
 // Helper to handle API responses
 async function handleResponse(response) {
   const data = await response.json()
@@ -266,6 +267,49 @@ export const enhanceApi = {
       body: JSON.stringify(data)
     })
     return handleResponse(response)
+  },
+
+  // Optimize LinkedIn profile with AI
+  async optimizeLinkedIn(data) {
+    const headers = await getAuthHeaders()
+    const response = await fetch(`${API_BASE}/enhance/optimize-linkedin`, {
+      method: 'POST',
+      headers,
+      body: JSON.stringify(data)
+    })
+    return handleResponse(response)
+  }
+}
+
+// ============ AI API ============
+export const aiApi = {
+  // Get AI models for a specific provider
+  async getModels(provider) {
+    const headers = await getAuthHeaders()
+    const response = await fetch(`${API_BASE}/ai/models?provider=${encodeURIComponent(provider)}`, {
+      method: 'GET',
+      headers
+    })
+    return handleResponse(response)
+  },
+
+  async getConfig() {
+    const headers = await getAuthHeaders()
+    const response = await fetch(`${API_BASE}/ai/config`, {
+      method: 'GET',
+      headers
+    })
+    return handleResponse(response)
+  },
+
+  async updateConfig(data) {
+    const headers = await getAuthHeaders()
+    const response = await fetch(`${API_BASE}/ai/config`, {
+      method: 'PUT',
+      headers,
+      body: JSON.stringify(data)
+    })
+    return handleResponse(response)
   }
 }
 
@@ -323,6 +367,17 @@ export const jobTrackerApi = {
     const response = await fetch(`${API_BASE}/job-tracker/${jobId}`, {
       method: 'DELETE',
       headers
+    })
+    return handleResponse(response)
+  },
+
+  // Research a company
+  async researchCompany(companyName, industry = '') {
+    const headers = await getAuthHeaders()
+    const response = await fetch(`${API_BASE}/job-tracker/research`, {
+      method: 'POST',
+      headers,
+      body: JSON.stringify({ companyName, industry })
     })
     return handleResponse(response)
   },
@@ -864,22 +919,6 @@ export const userProfileApi = {
       method: 'PUT',
       headers,
       body: JSON.stringify(data)
-// ============ TWO-FACTOR AUTH API ============
-export const twoFactorApi = {
-  async getStatus() {
-    const headers = await getAuthHeaders()
-    const response = await fetch(`${API_BASE}/auth/2fa/status`, {
-      method: 'GET',
-      headers
-    })
-    return handleResponse(response)
-  },
-
-  async setup() {
-    const headers = await getAuthHeaders()
-    const response = await fetch(`${API_BASE}/auth/2fa/setup`, {
-      method: 'POST',
-      headers
     })
     return handleResponse(response)
   },
@@ -902,6 +941,12 @@ export const twoFactorApi = {
     return handleResponse(response)
   },
 
+  async getPublicProfile(uid) {
+    const headers = await getAuthHeaders()
+    const response = await fetch(`${API_BASE}/user-profiles/${uid}`, { method: 'GET', headers })
+    return handleResponse(response)
+  },
+
   async getStats(uid) {
     const headers = await getAuthHeaders()
     const response = await fetch(`${API_BASE}/user-profiles/${uid}/stats`, { method: 'GET', headers })
@@ -911,6 +956,29 @@ export const twoFactorApi = {
   async getActivity(uid) {
     const headers = await getAuthHeaders()
     const response = await fetch(`${API_BASE}/user-profiles/${uid}/activity`, { method: 'GET', headers })
+    return handleResponse(response)
+  }
+}
+// ============ TWO-FACTOR AUTH API ============
+export const twoFactorApi = {
+  async getStatus() {
+    const headers = await getAuthHeaders()
+    const response = await fetch(`${API_BASE}/auth/2fa/status`, {
+      method: 'GET',
+      headers
+    })
+    return handleResponse(response)
+  },
+
+  async setup() {
+    const headers = await getAuthHeaders()
+    const response = await fetch(`${API_BASE}/auth/2fa/setup`, {
+      method: 'POST',
+      headers
+    })
+    return handleResponse(response)
+  },
+
   async enable(secret, token) {
     const headers = await getAuthHeaders()
     const response = await fetch(`${API_BASE}/auth/2fa/enable`, {
@@ -941,6 +1009,16 @@ export const twoFactorApi = {
     return handleResponse(response)
   },
 
+  async verifyLogin(email, token, useBackup) {
+    const headers = await getAuthHeaders()
+    const response = await fetch(`${API_BASE}/auth/2fa/verify-login`, {
+      method: 'POST',
+      headers,
+      body: JSON.stringify({ email, token, useBackup })
+    })
+    return handleResponse(response)
+  },
+
   async verifyBackup(code) {
     const headers = await getAuthHeaders()
     const response = await fetch(`${API_BASE}/auth/2fa/verify-backup`, {
@@ -961,6 +1039,7 @@ export const twoFactorApi = {
     return handleResponse(response)
   }
 }
+
 
 // ============ PAYMENT API ============
 export const paymentApi = {

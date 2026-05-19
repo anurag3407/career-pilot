@@ -1,14 +1,16 @@
 import express from 'express';
 import { enhanceResume, generateSummary, suggestImprovements, analyzeATSScore, analyzeResumeComprehensive, analyzeBulletPoints, generateBeforeAfter, getVerbLists } from '../config/langchain.js';
 import { generateEmails } from '../services/emailGeneratorService.js';
+import { optimizeLinkedInProfile } from '../services/linkedinOptimizerService.js';
 import { verifyToken } from '../middleware/auth.js';
+import { extractAIProvider } from '../middleware/aiKey.js';
 import { asyncHandler, ApiError } from '../middleware/errorHandler.js';
 import { aiRateLimiter } from '../middleware/rateLimiter.js';
 
 const router = express.Router();
 
 // Enhance resume with AI
-router.post('/', verifyToken, aiRateLimiter, asyncHandler(async (req, res) => {
+router.post('/', verifyToken, extractAIProvider, aiRateLimiter, asyncHandler(async (req, res) => {
   const { resumeText, preferences } = req.body;
 
   if (!resumeText || !resumeText.trim()) {
@@ -29,13 +31,15 @@ router.post('/', verifyToken, aiRateLimiter, asyncHandler(async (req, res) => {
   };
 
   try {
-    const result = await enhanceResume(resumeText, validatedPreferences);
+    const result = await enhanceResume(resumeText, validatedPreferences, req.aiProvider);
 
     res.json({
       success: true,
       data: {
         enhancedResume: result.enhancedResume,
         tokensUsed: result.tokensUsed,
+        provider: result.provider,
+        providerSource: req.aiProviderSource,
         processedAt: new Date().toISOString()
       }
     });
@@ -46,7 +50,7 @@ router.post('/', verifyToken, aiRateLimiter, asyncHandler(async (req, res) => {
 }));
 
 // Generate summary only
-router.post('/summary', verifyToken, aiRateLimiter, asyncHandler(async (req, res) => {
+router.post('/summary', verifyToken, extractAIProvider, aiRateLimiter, asyncHandler(async (req, res) => {
   const { resumeText, jobRole } = req.body;
 
   if (!resumeText || !resumeText.trim()) {
@@ -58,12 +62,14 @@ router.post('/summary', verifyToken, aiRateLimiter, asyncHandler(async (req, res
   }
 
   try {
-    const result = await generateSummary(resumeText, jobRole);
+    const result = await generateSummary(resumeText, jobRole, req.aiProvider);
 
     res.json({
       success: true,
       data: {
-        summary: result.summary
+        summary: result.summary,
+        provider: result.provider,
+        providerSource: req.aiProviderSource
       }
     });
   } catch (error) {
@@ -73,7 +79,7 @@ router.post('/summary', verifyToken, aiRateLimiter, asyncHandler(async (req, res
 }));
 
 // Get improvement suggestions
-router.post('/suggestions', verifyToken, aiRateLimiter, asyncHandler(async (req, res) => {
+router.post('/suggestions', verifyToken, extractAIProvider, aiRateLimiter, asyncHandler(async (req, res) => {
   const { resumeText, jobRole } = req.body;
 
   if (!resumeText || !resumeText.trim()) {
@@ -85,12 +91,14 @@ router.post('/suggestions', verifyToken, aiRateLimiter, asyncHandler(async (req,
   }
 
   try {
-    const result = await suggestImprovements(resumeText, jobRole);
+    const result = await suggestImprovements(resumeText, jobRole, req.aiProvider);
 
     res.json({
       success: true,
       data: {
-        suggestions: result.suggestions
+        suggestions: result.suggestions,
+        provider: result.provider,
+        providerSource: req.aiProviderSource
       }
     });
   } catch (error) {
@@ -100,7 +108,7 @@ router.post('/suggestions', verifyToken, aiRateLimiter, asyncHandler(async (req,
 }));
 
 // Analyze ATS score
-router.post('/ats-analysis', verifyToken, aiRateLimiter, asyncHandler(async (req, res) => {
+router.post('/ats-analysis', verifyToken, extractAIProvider, aiRateLimiter, asyncHandler(async (req, res) => {
   const { resumeText, jobRole } = req.body;
 
   if (!resumeText || !resumeText.trim()) {
@@ -112,11 +120,13 @@ router.post('/ats-analysis', verifyToken, aiRateLimiter, asyncHandler(async (req
   }
 
   try {
-    const result = await analyzeATSScore(resumeText, jobRole);
+    const result = await analyzeATSScore(resumeText, jobRole, req.aiProvider);
 
     res.json({
       success: true,
-      data: result.analysis
+      data: result.analysis,
+      provider: result.provider,
+      providerSource: req.aiProviderSource
     });
   } catch (error) {
     console.error('ATS analysis error:', error);
@@ -125,7 +135,7 @@ router.post('/ats-analysis', verifyToken, aiRateLimiter, asyncHandler(async (req
 }));
 
 // Comprehensive resume analysis (Senior Expert Level)
-router.post('/comprehensive-analysis', verifyToken, aiRateLimiter, asyncHandler(async (req, res) => {
+router.post('/comprehensive-analysis', verifyToken, extractAIProvider, aiRateLimiter, asyncHandler(async (req, res) => {
   const { resumeText, jobRole } = req.body;
 
   if (!resumeText || !resumeText.trim()) {
@@ -137,11 +147,13 @@ router.post('/comprehensive-analysis', verifyToken, aiRateLimiter, asyncHandler(
   }
 
   try {
-    const result = await analyzeResumeComprehensive(resumeText, jobRole);
+    const result = await analyzeResumeComprehensive(resumeText, jobRole, req.aiProvider);
 
     res.json({
       success: true,
-      data: result.analysis
+      data: result.analysis,
+      provider: result.provider,
+      providerSource: req.aiProviderSource
     });
   } catch (error) {
     console.error('Comprehensive analysis error:', error);
@@ -150,7 +162,7 @@ router.post('/comprehensive-analysis', verifyToken, aiRateLimiter, asyncHandler(
 }));
 
 // Analyze individual bullet points
-router.post('/analyze-bullets', verifyToken, aiRateLimiter, asyncHandler(async (req, res) => {
+router.post('/analyze-bullets', verifyToken, extractAIProvider, aiRateLimiter, asyncHandler(async (req, res) => {
   const { resumeText, jobRole } = req.body;
 
   if (!resumeText || !resumeText.trim()) {
@@ -162,11 +174,13 @@ router.post('/analyze-bullets', verifyToken, aiRateLimiter, asyncHandler(async (
   }
 
   try {
-    const result = await analyzeBulletPoints(resumeText, jobRole);
+    const result = await analyzeBulletPoints(resumeText, jobRole, req.aiProvider);
 
     res.json({
       success: true,
-      data: result.analysis
+      data: result.analysis,
+      provider: result.provider,
+      providerSource: req.aiProviderSource
     });
   } catch (error) {
     console.error('Bullet analysis error:', error);
@@ -175,7 +189,7 @@ router.post('/analyze-bullets', verifyToken, aiRateLimiter, asyncHandler(async (
 }));
 
 // Generate before/after comparison
-router.post('/before-after', verifyToken, aiRateLimiter, asyncHandler(async (req, res) => {
+router.post('/before-after', verifyToken, extractAIProvider, aiRateLimiter, asyncHandler(async (req, res) => {
   const { resumeText, jobRole, analysisResults } = req.body;
 
   if (!resumeText || !resumeText.trim()) {
@@ -187,11 +201,13 @@ router.post('/before-after', verifyToken, aiRateLimiter, asyncHandler(async (req
   }
 
   try {
-    const result = await generateBeforeAfter(resumeText, jobRole, analysisResults || {});
+    const result = await generateBeforeAfter(resumeText, jobRole, analysisResults || {}, req.aiProvider);
 
     res.json({
       success: true,
-      data: result.comparison
+      data: result.comparison,
+      provider: result.provider,
+      providerSource: req.aiProviderSource
     });
   } catch (error) {
     console.error('Before/after generation error:', error);
@@ -210,7 +226,7 @@ router.get('/verb-lists', verifyToken, asyncHandler(async (req, res) => {
 }));
 
 // Generate Email Variants
-router.post('/generate-email', verifyToken, asyncHandler(async (req, res) => {
+router.post('/generate-email', verifyToken, extractAIProvider, aiRateLimiter, asyncHandler(async (req, res) => {
   const { resume, jobDesc, tone } = req.body;
 
   if (!resume || !jobDesc) {
@@ -218,12 +234,36 @@ router.post('/generate-email', verifyToken, asyncHandler(async (req, res) => {
   }
 
   try {
-    const result = await generateEmails(resume, jobDesc, tone || 'Professional');
-    res.json(result);
+    const result = await generateEmails(resume, jobDesc, tone || 'Professional', req.aiProvider);
+    res.json({
+      success: true,
+      subjectLines: result.subjectLines,
+      variants: result.variants,
+      provider: req.aiProvider.providerName,
+      providerSource: req.aiProviderSource,
+    });
   } catch (error) {
     console.error('Email generation error:', error);
     throw new ApiError(500, 'Failed to generate emails. Please try again.');
   }
+}));
+
+// Optimize LinkedIn Profile
+router.post('/optimize-linkedin', verifyToken, aiRateLimiter, asyncHandler(async (req, res) => {
+  const { profileText, targetRole } = req.body;
+  const normalizedProfile = typeof profileText === 'string' ? profileText.trim() : '';
+  const normalizedRole = typeof targetRole === 'string' ? targetRole.trim() : '';
+
+  if (!normalizedProfile) {
+    throw new ApiError(400, 'LinkedIn profile text is required');
+  }
+
+  if (normalizedProfile.length > 5000) {
+    throw new ApiError(400, 'Profile text exceeds the allowed limit (max 5000 characters)');
+  }
+
+  const result = await optimizeLinkedInProfile(normalizedProfile, normalizedRole);
+  res.json(result);
 }));
 
 export default router;
