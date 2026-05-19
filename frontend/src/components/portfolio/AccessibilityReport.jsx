@@ -1,6 +1,6 @@
 import React from "react";
 
-const AccessibilityReport = () => {
+const AccessibilityReport = ({ onRecheck }) => {
   const issues = [
     {
       severity: "critical",
@@ -31,6 +31,20 @@ const AccessibilityReport = () => {
     }
   };
 
+  // ✅ Severity sorting (important fix)
+  const severityOrder = {
+    critical: 0,
+    serious: 1,
+    moderate: 2,
+    minor: 3,
+  };
+
+  const sortedIssues = [...issues].sort(
+    (a, b) =>
+      severityOrder[a.severity.toLowerCase()] -
+      severityOrder[b.severity.toLowerCase()]
+  );
+
   return (
     <div className="p-4 border rounded-lg shadow-md">
       <h2 className="text-xl font-bold mb-4">
@@ -43,8 +57,9 @@ const AccessibilityReport = () => {
         </p>
       </div>
 
+      {/* ✅ Sorted rendering */}
       <div className="space-y-4">
-        {issues.map((issue, index) => (
+        {sortedIssues.map((issue, index) => (
           <div
             key={index}
             className="border p-3 rounded-md"
@@ -68,7 +83,12 @@ const AccessibilityReport = () => {
         ))}
       </div>
 
-      <button className="mt-4 px-4 py-2 bg-black text-white rounded">
+      {/* ✅ Functional button */}
+      <button
+        type="button"
+        onClick={onRecheck}
+        className="mt-4 px-4 py-2 bg-black text-white rounded"
+      >
         Re-check
       </button>
     </div>
