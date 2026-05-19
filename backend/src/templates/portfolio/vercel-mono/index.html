@@ -1,0 +1,267 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+
+  <!-- SEO -->
+  <title>{{NAME}} — Portfolio</title>
+  <meta name="description" content="{{NAME}}'s developer portfolio. Shipped products, clean code, and zero downtime." />
+  <meta name="keywords" content="developer, portfolio, fullstack, next.js, vercel, typescript, software engineer" />
+  <meta property="og:title" content="{{NAME}} — Portfolio" />
+  <meta property="og:description" content="{{NAME}} — {{ROLE}}" />
+  <meta property="og:type" content="website" />
+
+  <!-- Fonts: Geist Sans + Geist Mono via Google Fonts -->
+  <link rel="preconnect" href="https://fonts.googleapis.com" />
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
+  <link href="https://fonts.googleapis.com/css2?family=Geist+Mono:wght@400;500&family=Geist:wght@300;400;500;600;700&display=swap" rel="stylesheet" />
+
+  <!-- Stylesheet -->
+  <link rel="stylesheet" href="style.css" />
+</head>
+<body>
+
+  <!-- ══════════════════════════════════════════════════════
+       BACKGROUND — Grid + Glowing Orbs
+  ══════════════════════════════════════════════════════ -->
+  <div class="bg-elements" aria-hidden="true">
+    <div class="bg-grid"></div>
+    <div class="glow-orb orb-1"></div>
+    <div class="glow-orb orb-2"></div>
+  </div>
+
+  <!-- ══════════════════════════════════════════════════════
+       NAVIGATION
+  ══════════════════════════════════════════════════════ -->
+  <nav id="navbar" role="navigation" aria-label="Main navigation">
+    <a href="#hero" class="nav-logo" aria-label="Home">
+      <span class="nav-logo-bracket">/</span>{{INITIALS}}<span class="nav-logo-bracket">/</span>
+    </a>
+
+    <button id="nav-toggle" aria-controls="nav-links" aria-expanded="false" aria-label="Toggle navigation">
+      <span></span><span></span><span></span>
+    </button>
+
+    <ul class="nav-links" id="nav-links" role="list">
+      <li><a href="#about"      id="nav-about"      aria-label="About section">about</a></li>
+      <li><a href="#skills"     id="nav-skills"     aria-label="Skills section">skills</a></li>
+      <li><a href="#projects"   id="nav-projects"   aria-label="Projects section">projects</a></li>
+      <li><a href="#experience" id="nav-experience" aria-label="Experience section">experience</a></li>
+      <li><a href="#contact"    id="nav-contact"    aria-label="Contact section">contact</a></li>
+    </ul>
+  </nav>
+
+  <!-- ══════════════════════════════════════════════════════
+       HERO
+  ══════════════════════════════════════════════════════ -->
+  <section id="hero" aria-label="Hero section">
+    <div class="hero-inner">
+      <p class="hero-label" aria-hidden="true">
+        <span class="mono">$ whoami</span>
+      </p>
+
+      <h1 class="hero-title">
+        {{NAME}}<span class="cursor" aria-hidden="true">_</span>
+      </h1>
+
+      <p class="hero-role mono" id="hero-subtitle">{{ROLE}}</p>
+
+      <p class="hero-desc">{{TAGLINE}}</p>
+
+      <div class="btn-group">
+        <a href="#projects"
+           class="btn btn-primary"
+           id="hero-projects-btn"
+           aria-label="View my projects">
+          View Projects →
+        </a>
+        <a href="#contact"
+           class="btn btn-outline"
+           id="hero-contact-btn"
+           aria-label="Get in touch">
+          Get in Touch
+        </a>
+      </div>
+
+      <!-- Deployment status badge -->
+      <div class="deploy-badge" aria-label="Deployment status: Ready">
+        <span class="deploy-dot" aria-hidden="true"></span>
+        <span class="mono deploy-text">Ready</span>
+        <span class="deploy-sep" aria-hidden="true">|</span>
+        <span class="mono deploy-env">Production</span>
+      </div>
+    </div>
+  </section>
+
+  <!-- ══════════════════════════════════════════════════════
+       ABOUT
+  ══════════════════════════════════════════════════════ -->
+  <section id="about" aria-label="About me">
+    <div class="inner">
+      <div class="section-header">
+        <span class="section-tag mono">// about</span>
+        <h2 class="section-title">About Me</h2>
+      </div>
+
+      <div class="about-grid">
+        <div class="about-text">
+          <p>{{ABOUT_PARA_1}}</p>
+          <p>{{ABOUT_PARA_2}}</p>
+
+          <div class="stats-row" aria-label="Key stats">
+            <div class="stat-card">
+              <span class="stat-value">{{STAT_1_VALUE}}</span>
+              <span class="stat-label mono">{{STAT_1_LABEL}}</span>
+            </div>
+            <div class="stat-card">
+              <span class="stat-value">{{STAT_2_VALUE}}</span>
+              <span class="stat-label mono">{{STAT_2_LABEL}}</span>
+            </div>
+            <div class="stat-card">
+              <span class="stat-value">{{STAT_3_VALUE}}</span>
+              <span class="stat-label mono">{{STAT_3_LABEL}}</span>
+            </div>
+          </div>
+        </div>
+
+        <div class="about-terminal" aria-label="Terminal card">
+          <div class="terminal-bar" aria-hidden="true">
+            <span class="t-dot t-red"></span>
+            <span class="t-dot t-yellow"></span>
+            <span class="t-dot t-green"></span>
+            <span class="t-title mono">~/portfolio</span>
+          </div>
+          <div class="terminal-body" id="terminal-body">
+            <!-- Injected by script.js -->
+          </div>
+        </div>
+      </div>
+    </div>
+  </section>
+
+  <!-- ══════════════════════════════════════════════════════
+       SKILLS
+  ══════════════════════════════════════════════════════ -->
+  <section id="skills" aria-label="Skills">
+    <div class="inner">
+      <div class="section-header">
+        <span class="section-tag mono">// skills</span>
+        <h2 class="section-title">Stack &amp; Skills</h2>
+      </div>
+
+      <div class="skills-grid" id="skills-grid">
+        <!-- Injected by script.js -->
+      </div>
+    </div>
+  </section>
+
+  <!-- ══════════════════════════════════════════════════════
+       PROJECTS
+  ══════════════════════════════════════════════════════ -->
+  <section id="projects" aria-label="Projects">
+    <div class="inner">
+      <div class="section-header">
+        <span class="section-tag mono">// projects</span>
+        <h2 class="section-title">Shipped Projects</h2>
+      </div>
+
+      <div class="projects-grid" id="projects-grid">
+        <!-- Injected by script.js -->
+      </div>
+    </div>
+  </section>
+
+  <!-- ══════════════════════════════════════════════════════
+       EXPERIENCE
+  ══════════════════════════════════════════════════════ -->
+  <section id="experience" aria-label="Work experience">
+    <div class="inner">
+      <div class="section-header">
+        <span class="section-tag mono">// experience</span>
+        <h2 class="section-title">Experience</h2>
+      </div>
+
+      <div class="timeline" id="timeline">
+        <!-- Injected by script.js -->
+      </div>
+    </div>
+  </section>
+
+  <!-- ══════════════════════════════════════════════════════
+       CONTACT
+  ══════════════════════════════════════════════════════ -->
+  <section id="contact" aria-label="Contact information">
+    <div class="inner">
+      <div class="section-header">
+        <span class="section-tag mono">// contact</span>
+        <h2 class="section-title">Let's Build Together</h2>
+      </div>
+
+      <div class="contact-card gradient-border">
+        <p class="mono contact-cmd">$ git commit -m "start new collaboration"</p>
+        <p>Open to new opportunities, freelance projects, and interesting conversations. Let's make something great.</p>
+
+        <a href="mailto:{{EMAIL}}"
+           class="btn btn-primary"
+           id="contact-email-btn"
+           aria-label="Send me an email">
+          Send Message →
+        </a>
+
+        <div class="contact-links" aria-label="Social links">
+          <a href="{{GITHUB_URL}}"
+             target="_blank"
+             rel="noopener noreferrer"
+             class="contact-link mono"
+             id="contact-github-link"
+             aria-label="GitHub profile">
+            GitHub ↗
+          </a>
+          <a href="{{LINKEDIN_URL}}"
+             target="_blank"
+             rel="noopener noreferrer"
+             class="contact-link mono"
+             id="contact-linkedin-link"
+             aria-label="LinkedIn profile">
+            LinkedIn ↗
+          </a>
+          <a href="{{TWITTER_URL}}"
+             target="_blank"
+             rel="noopener noreferrer"
+             class="contact-link mono"
+             id="contact-twitter-link"
+             aria-label="Twitter/X profile">
+            Twitter ↗
+          </a>
+        </div>
+      </div>
+    </div>
+  </section>
+
+  <!-- ══════════════════════════════════════════════════════
+       FOOTER
+  ══════════════════════════════════════════════════════ -->
+  <footer role="contentinfo">
+    <div class="footer-inner">
+      <p class="mono">
+        © <span id="year"></span> <span>{{NAME}}</span>
+      </p>
+      <p class="mono footer-built">
+        Built with CareerPilot
+      </p>
+    </div>
+  </footer>
+
+  <!-- Scroll to top -->
+  <button id="scroll-top"
+          class="scroll-top"
+          aria-label="Scroll to top"
+          title="Back to top">
+    ↑
+  </button>
+
+  <!-- Script -->
+  <script src="script.js"></script>
+</body>
+</html>
