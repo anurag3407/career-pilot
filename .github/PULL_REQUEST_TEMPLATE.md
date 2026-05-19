@@ -1,14 +1,13 @@
----
-name: Task
-about: General contributor task template
-title: "[TASK] "
-labels: task
----
-
 ## Task Description
 
 ## Proposed Changes
 
 ## Benefits
+
+## Testing / Validation
+- [ ] Tested locally
+- [ ] Screenshots/videos attached (if UI)
+- [ ] Edge cases checked
+- [ ] No console errors
 
 ## Additional Notes
