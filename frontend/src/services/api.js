@@ -15,6 +15,7 @@ async function getAuthHeaders() {
   }
 }
 
+
 // Helper to handle API responses
 async function handleResponse(response) {
   const data = await response.json()
@@ -295,6 +296,38 @@ export const enhanceApi = {
     const headers = await getAuthHeaders()
     const response = await fetch(`${API_BASE}/enhance/optimize-linkedin`, {
       method: 'POST',
+      headers,
+      body: JSON.stringify(data)
+    })
+    return handleResponse(response)
+  }
+}
+
+// ============ AI API ============
+export const aiApi = {
+  // Get AI models for a specific provider
+  async getModels(provider) {
+    const headers = await getAuthHeaders()
+    const response = await fetch(`${API_BASE}/ai/models?provider=${encodeURIComponent(provider)}`, {
+      method: 'GET',
+      headers
+    })
+    return handleResponse(response)
+  },
+
+  async getConfig() {
+    const headers = await getAuthHeaders()
+    const response = await fetch(`${API_BASE}/ai/config`, {
+      method: 'GET',
+      headers
+    })
+    return handleResponse(response)
+  },
+
+  async updateConfig(data) {
+    const headers = await getAuthHeaders()
+    const response = await fetch(`${API_BASE}/ai/config`, {
+      method: 'PUT',
       headers,
       body: JSON.stringify(data)
     })

@@ -6,6 +6,8 @@ import { uploadApi, resumeApi } from '../services/api'
 import FileUpload from '../components/FileUpload'
 import Button from '../components/Button'
 import { FileText, Upload as UploadIcon, CheckCircle, Target, BarChart3, Zap, Linkedin, ArrowRight, User, Briefcase, GraduationCap } from 'lucide-react'
+import DropZone from '../components/DropZone'
+import { FileText, Upload as UploadIcon, CheckCircle, Target, BarChart3, Zap } from 'lucide-react'
 
 export default function Upload() {
   const navigate = useNavigate()
@@ -185,10 +187,14 @@ export default function Upload() {
                 <p className="text-sm text-muted-foreground">We'll extract and analyze your resume automatically</p>
               </div>
             </div>
-            <FileUpload
+
+            <DropZone
               onFileSelect={handleFileSelect}
               disabled={loading}
+              maxSizeMB={5}
+              multiple={false}
             />
+
             {loading && (
               <div className="flex flex-col items-center justify-center gap-3 mt-6">
                 <div className="relative">

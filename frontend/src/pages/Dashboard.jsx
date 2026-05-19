@@ -203,24 +203,40 @@ export default function Dashboard() {
                 ) : (
                   <div className="rounded-[2rem] bg-card border border-border overflow-hidden shadow-sm">
                     <div className="divide-y divide-border">
-                      {trackedJobs.slice(0, 5).map((job, index) => {
-                        const statusConfig = STATUS_CONFIG[job.status] || STATUS_CONFIG.saved
-                        const StatusIcon = statusConfig.icon
-                        return (
-                          <div key={job.id || index} className="p-5 hover:bg-muted/50 transition-all group">
-                            <div className="flex justify-between items-center">
-                              <div className="flex-1">
-                                <h4 className="text-lg font-bold text-foreground group-hover:text-primary transition-colors">{job.title}</h4>
-                                <p className="text-sm text-muted-foreground font-semibold">{job.company}</p>
+                     {/** * GSSoC Optimization: Defensive structural evaluation on the active data view slice.
+                        * Prevents layout container voids if the array slice metrics index is altered.
+                        */}
+                      {(() => {
+                        const displayedJobs = trackedJobs.slice(0, 5);
+                        
+                        if (displayedJobs.length > 0) {
+                          return displayedJobs.map((job, index) => {
+                            const statusConfig = STATUS_CONFIG[job.status] || STATUS_CONFIG.saved;
+                            const StatusIcon = statusConfig.icon;
+                            return (
+                              <div key={job.id || index} className="p-5 hover:bg-muted/50 transition-all group">
+                                <div className="flex justify-between items-center">
+                                  <div className="flex-1">
+                                    <h4 className="text-lg font-bold text-foreground group-hover:text-primary transition-colors">{job.title}</h4>
+                                    <p className="text-sm text-muted-foreground font-semibold">{job.company}</p>
+                                  </div>
+                                  <span className={`px-3 py-1.5 rounded-xl text-xs font-bold flex items-center gap-2 ${statusConfig.color}`}>
+                                    <StatusIcon className="w-3.5 h-3.5" />
+                                    {statusConfig.label}
+                                  </span>
+                                </div>
                               </div>
-                              <span className={`px-3 py-1.5 rounded-xl text-xs font-bold flex items-center gap-2 ${statusConfig.color}`}>
-                                <StatusIcon className="w-3.5 h-3.5" />
-                                {statusConfig.label}
-                              </span>
+                            );
+                          });
+                        } else {
+                          return (
+                            /* Graceful fallback UI layout state when view density evaluation yields zero records */
+                            <div className="p-10 text-center text-sm font-medium text-muted-foreground bg-muted/10 rounded-2xl border border-dashed border-border/60 mx-5 my-4">
+                              No active application records available in this view index.
                             </div>
-                          </div>
-                        )
-                      })}
+                          );
+                        }
+                      })()}
                     </div>
                   </div>
                 )}

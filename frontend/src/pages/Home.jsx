@@ -7,6 +7,7 @@ import CTASection from '../components/ui/CTASection'
 import Footer from '../components/ui/Footer'
 import { StackedCircularFooter } from '../components/ui/stacked-circular-footer'
 
+
 export default function Home() {
   return (
     <div className="min-h-screen bg-background text-foreground selection:bg-primary selection:text-primary-foreground">
@@ -43,7 +44,8 @@ export default function Home() {
       <CTASection />
 
       {/* Footer */}
-      <StackedCircularFooter />
+      <Footer />
+     
     </div>
   )
 }
