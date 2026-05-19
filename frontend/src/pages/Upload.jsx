@@ -3,11 +3,9 @@ import { useNavigate } from 'react-router-dom'
 import toast from 'react-hot-toast'
 import { motion } from 'framer-motion'
 import { uploadApi, resumeApi } from '../services/api'
-import FileUpload from '../components/FileUpload'
 import Button from '../components/Button'
-import { FileText, Upload as UploadIcon, CheckCircle, Target, BarChart3, Zap, Linkedin, ArrowRight, User, Briefcase, GraduationCap } from 'lucide-react'
 import DropZone from '../components/DropZone'
-import { FileText, Upload as UploadIcon, CheckCircle, Target, BarChart3, Zap } from 'lucide-react'
+import { FileText, Upload as UploadIcon, CheckCircle, Target, BarChart3, Zap, Linkedin, ArrowRight, User, Briefcase, GraduationCap } from 'lucide-react'
 
 export default function Upload() {
   const navigate = useNavigate()
@@ -21,20 +19,6 @@ export default function Upload() {
   const [linkedinPreview, setLinkedinPreview] = useState(null)
   const [linkedinProfile, setLinkedinProfile] = useState(null)
   const [importing, setImporting] = useState(false)
-
-  /**
-   * Validates file size before upload
-   * @param {File} file - The file to validate
-   * @returns {boolean} - True if valid, false otherwise
-   */
-  const validateFileSize = (file) => {
-    if (file.size > FILE_SIZE_CONFIG.maxSizeBytes) {
-      const fileSizeMB = (file.size / (1024 * 1024)).toFixed(2)
-      toast.error(`File size (${fileSizeMB}MB) exceeds the maximum limit of ${FILE_SIZE_CONFIG.maxSizeMB}MB.`)
-      return false
-    }
-    return true
-  }
 
   const handleFileSelect = async (selectedFile) => {
     setFile(selectedFile)
