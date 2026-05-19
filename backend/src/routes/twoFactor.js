@@ -95,4 +95,17 @@ router.post('/backup-codes/regenerate', verifyToken, asyncHandler(async (req, re
   res.json({ success: true, backupCodes: codes });
 }));
 
+// POST /api/auth/2fa/disable-with-backup
+// Allows disabling 2FA using a backup code when authenticator is unavailable.
+router.post('/disable-with-backup', verifyToken, verifyLimiter, asyncHandler(async (req, res) => {
+  const { code } = req.body;
+  if (!code) throw new ApiError(400, 'code is required');
+
+  const ok = await twoFactor.disableTwoFactorWithBackup(req.user.uid, code);
+  if (!ok) throw new ApiError(401, 'Invalid backup code');
+
+  console.log('2FA disabled using backup code for a user');
+  res.json({ success: true });
+}));
+
 export default router;
