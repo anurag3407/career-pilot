@@ -1,3 +1,4 @@
+<<<<<<< HEAD
 import TemplateGallery from "./pages/TemplateGallery";
 import { BrowserRouter, Routes, Route, Navigate } from 'react-router-dom';
 import { Toaster } from 'react-hot-toast';
@@ -6,6 +7,15 @@ import { SocketProvider } from './context/SocketContext';
 import { ThemeProvider } from './context/ThemeContext';
 import AppLayout from './components/AppLayout';
 import Footer from './components/ui/Footer';
+=======
+import { BrowserRouter, Routes, Route, Navigate } from 'react-router-dom'
+import { Toaster } from 'react-hot-toast'
+import { AuthProvider, useAuth } from './context/AuthContext'
+import { SocketProvider } from './context/SocketContext'
+import { ThemeProvider } from './context/ThemeContext'
+import AppLayout from './components/AppLayout'
+import ShortcutsModal from './components/ShortcutsModal';
+>>>>>>> b27547f (feat: add keyboard shortcuts and shortcuts help modal)
 
 import Home from './pages/Home';
 import Login from './pages/Login';
@@ -157,6 +167,7 @@ function App() {
               <Route path="*" element={<NotFound />} />
             </Routes>
           </BrowserRouter>
+          <ShortcutsModal />
         </SocketProvider>
       </AuthProvider>
     </ThemeProvider>

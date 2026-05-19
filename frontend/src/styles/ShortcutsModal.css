@@ -1,0 +1,127 @@
+/* Backdrop */
+.shortcuts-backdrop {
+  position: fixed;
+  top: 0;
+  left: 0;
+  right: 0;
+  bottom: 0;
+  background-color: rgba(0, 0, 0, 0.9);
+  z-index: 999;
+}
+
+/* Modal */
+.shortcuts-modal {
+  position: fixed;
+  top: 50%;
+  left: 50%;
+  transform: translate(-50%, -50%);
+  background: var(--card);
+  border: 1px solid var(--border);
+  border-radius: var(--radius);
+  box-shadow: 0 20px 60px rgba(0, 0, 0, 0.15);
+  z-index: 1000;
+  width: 90%;
+  max-width: 500px;
+  max-height: 80vh;
+  overflow-y: auto;
+}
+
+/* Header */
+.shortcuts-header {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  padding: 24px;
+  border-bottom: 1px solid var(--border);
+}
+
+.shortcuts-header h2 {
+  margin: 0;
+  font-size: 20px;
+  font-weight: 600;
+  color: var(--foreground);
+}
+
+.shortcuts-close {
+  background: none;
+  border: none;
+  font-size: 24px;
+  cursor: pointer;
+  color: var(--muted-foreground);
+  padding: 0;
+  width: 30px;
+  height: 30px;
+  border-radius: 4px;
+  transition: all 0.2s;
+}
+
+.shortcuts-close:hover {
+  background-color: var(--muted);
+  color: var(--foreground);
+}
+
+/* Content */
+.shortcuts-content {
+  padding: 24px;
+}
+
+.shortcut-row {
+  display: grid;
+  grid-template-columns: 120px 1fr;
+  gap: 20px;
+  align-items: center;
+  padding: 14px 0;
+  border-bottom: 1px solid var(--border);
+}
+
+.shortcut-row:last-child {
+  border-bottom: none;
+}
+
+.shortcut-key {
+  background: var(--muted);
+  border: 1px solid var(--border);
+  color: var(--primary);
+  font-family: monospace;
+  font-size: 13px;
+  font-weight: 600;
+  padding: 6px 10px;
+  border-radius: 4px;
+  white-space: nowrap;
+}
+
+.shortcut-desc {
+  color: var(--foreground);
+  font-size: 14px;
+}
+
+/* Footer */
+.shortcuts-footer {
+  padding: 16px 24px;
+  border-top: 1px solid var(--border);
+  font-size: 12px;
+  color: var(--muted-foreground);
+  text-align: center;
+}
+
+.shortcuts-footer kbd {
+  background: var(--muted);
+  border: 1px solid var(--border);
+  color: var(--foreground);
+  font-family: monospace;
+  padding: 3px 7px;
+  border-radius: 4px;
+  margin: 0 4px;
+}
+
+/* Mobile */
+@media (max-width: 600px) {
+  .shortcuts-modal {
+    width: 95%;
+  }
+
+  .shortcut-row {
+    grid-template-columns: 100px 1fr;
+    gap: 15px;
+  }
+}
