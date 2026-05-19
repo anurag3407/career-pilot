@@ -113,4 +113,40 @@ router.get('/public/:slug/robots.txt', asyncHandler(async (req, res) => {
     .send(generateRobotsTxt({ sitemapUrl }));
 }));
 
+router.get('/:slug/bandwidth', asyncHandler(async (req, res) => {
+  const { slug } = req.params;
+
+  assertValidPortfolioSlug(slug);
+
+  try {
+    await fs.stat(getPortfolioTemplatePath(slug));
+  } catch {
+    throw new ApiError(404, 'Portfolio template not found.');
+  }
+
+  // Placeholder analytics estimation until real tracking is implemented
+  const estimatedPageSizeKB = 500;
+  const monthlyViews = 1200;
+
+  const bandwidthUsageMB =
+    (estimatedPageSizeKB * monthlyViews) / 1024;
+
+  const FREE_TIER_LIMIT_MB = 102400;
+
+  const usagePercentage =
+    (bandwidthUsageMB / FREE_TIER_LIMIT_MB) * 100;
+
+  res.status(200).json({
+    success: true,
+    data: {
+      slug,
+      estimatedPageSizeKB,
+      monthlyViews,
+      bandwidthUsageMB: bandwidthUsageMB.toFixed(2),
+      freeTierLimitMB: FREE_TIER_LIMIT_MB,
+      usagePercentage: usagePercentage.toFixed(2),
+      warning: usagePercentage >= 80,
+    },
+  });
+}));
 export default router;
