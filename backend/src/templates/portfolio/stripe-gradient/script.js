@@ -121,6 +121,20 @@ const el = (tag, classes = [], attrs = {}) => {
   return node;
 };
 
+const sanitizeHref = (value, allowMailto = false) => {
+  if (!value) return '#';
+  const val = value.trim();
+  if (val.startsWith('#') || val.startsWith('/') || val.startsWith('.')) return val;
+  try {
+    const url = new URL(val, window.location.origin);
+    const allowed = allowMailto ? ['http:', 'https:', 'mailto:'] : ['http:', 'https:'];
+    if (allowed.includes(url.protocol)) return val;
+  } catch (e) {
+    if (allowMailto && val.toLowerCase().startsWith('mailto:')) return val;
+  }
+  return '#';
+};
+
 /* ═══════════════════════════════════════════════════════════
    PLACEHOLDER REPLACEMENT
 ═══════════════════════════════════════════════════════════ */
@@ -142,7 +156,8 @@ const fillPlaceholders = () => {
     '{{STAT_3}}':      PORTFOLIO.stats[2] || '',
   };
 
-  const walker = document.createTreeWalker(document.body, NodeFilter.SHOW_TEXT);
+  // Walk entire document.documentElement to process <head> (meta, title) and <body>
+  const walker = document.createTreeWalker(document.documentElement, NodeFilter.SHOW_TEXT);
   const textNodes = [];
   while (walker.nextNode()) textNodes.push(walker.currentNode);
 
@@ -158,13 +173,21 @@ const fillPlaceholders = () => {
     if (changed) node.nodeValue = val;
   });
 
-  document.querySelectorAll('[href],[src],[aria-label],[title],[alt]').forEach((node) => {
-    ['href', 'src', 'aria-label', 'title', 'alt'].forEach((attr) => {
+  // Replaces placeholder values in standard attributes
+  const attrsToReplace = ['href', 'src', 'content', 'aria-label', 'title', 'alt'];
+  document.querySelectorAll(attrsToReplace.map(attr => `[${attr}]`).join(',')).forEach((node) => {
+    attrsToReplace.forEach((attr) => {
       const val = node.getAttribute(attr);
       if (!val) return;
       let newVal = val;
       Object.entries(map).forEach(([p, r]) => { newVal = newVal.split(p).join(r); });
-      if (newVal !== val) node.setAttribute(attr, newVal);
+      
+      if (newVal !== val) {
+        if (attr === 'href') {
+          newVal = sanitizeHref(newVal, true);
+        }
+        node.setAttribute(attr, newVal);
+      }
     });
   });
 };
@@ -238,12 +261,12 @@ const buildProjects = () => {
     
     const links = el('div', ['project-links']);
     if (proj.demo) {
-      const demo = el('a', ['project-link'], { href: proj.demo, target: '_blank', rel: 'noopener noreferrer' });
+      const demo = el('a', ['project-link'], { href: sanitizeHref(proj.demo), target: '_blank', rel: 'noopener noreferrer' });
       demo.innerHTML = 'Live Demo &rarr;';
       links.appendChild(demo);
     }
     if (proj.code) {
-      const code = el('a', ['project-link'], { href: proj.code, target: '_blank', rel: 'noopener noreferrer' });
+      const code = el('a', ['project-link'], { href: sanitizeHref(proj.code), target: '_blank', rel: 'noopener noreferrer' });
       code.innerHTML = 'Source Code &rarr;';
       links.appendChild(code);
     }
@@ -369,6 +392,26 @@ const setFooterYear = () => {
   if (el) el.textContent = new Date().getFullYear();
 };
 
+const initCopyButtons = () => {
+  document.querySelectorAll('.copy-btn').forEach(btn => {
+    btn.addEventListener('click', () => {
+      const codeBlock = btn.closest('.code-card').querySelector('code');
+      if (!codeBlock) return;
+      const code = codeBlock.textContent;
+      navigator.clipboard.writeText(code).then(() => {
+        btn.textContent = 'Copied!';
+        btn.classList.add('copied');
+        setTimeout(() => {
+          btn.textContent = 'Copy';
+          btn.classList.remove('copied');
+        }, 2000);
+      }).catch(err => {
+        console.error('Failed to copy text: ', err);
+      });
+    });
+  });
+};
+
 /* ═══════════════════════════════════════════════════════════
    INIT
 ═══════════════════════════════════════════════════════════ */
@@ -381,5 +424,6 @@ document.addEventListener('DOMContentLoaded', () => {
   
   initObservers();
   initNavigation();
+  initCopyButtons();
   removeLoadingScreen();
 });
