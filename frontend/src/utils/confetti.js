@@ -5,6 +5,10 @@ export const triggerConfetti = ({
   particleCount = 150,
   spread = 120
 } = {}) => {
+  if (window.matchMedia('(prefers-reduced-motion: reduce)').matches) {
+    return;
+  }
+
   const end = Date.now() + duration;
 
   const frame = () => {

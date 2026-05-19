@@ -6,6 +6,8 @@ import { jobTrackerApi } from '../services/api'
 import Button from '../components/Button'
 import Card from '../components/Card'
 import EmptyJobState from '../components/EmptyJobState'
+import CompanyResearch from '../components/CompanyResearch'
+import { Sparkles } from 'lucide-react'
 
 const JobTracker = () => {
   const [trackedJobs, setTrackedJobs] = useState([])
@@ -13,6 +15,7 @@ const JobTracker = () => {
   const [loading, setLoading] = useState(true)
   const [filterStatus, setFilterStatus] = useState('all')
   const [updateLoading, setUpdateLoading] = useState({})
+  const [researchCompany, setResearchCompany] = useState(null)
 
   const statusOptions = [
     { value: 'saved', label: 'Saved', color: 'bg-muted-foreground', icon: '📌' },
@@ -243,9 +246,18 @@ const JobTracker = () => {
                             <h3 className="text-xl font-semibold text-foreground mb-1">
                               {job.title}
                             </h3>
-                            <p className="text-primary font-medium mb-2">
-                              {job.company}
-                            </p>
+                            <div className="flex items-center gap-2 mb-2">
+                              <span className="text-primary font-medium">
+                                {job.company}
+                              </span>
+                              <button
+                                onClick={() => setResearchCompany({ name: job.company, industry: job.industry || '' })}
+                                className="text-[10px] font-semibold tracking-wide px-2 py-0.5 rounded bg-primary/10 text-primary border border-primary/20 hover:bg-primary/20 transition flex items-center gap-1"
+                                title="Analyze company size, culture, funding, rating and news"
+                              >
+                                <Sparkles className="w-3 h-3" /> AI Research
+                              </button>
+                            </div>
                           </div>
                           <span className={`px-3 py-1 rounded-full text-xs font-medium text-foreground ${statusInfo.color}`}>
                             {statusInfo.icon} {statusInfo.label}
@@ -322,6 +334,13 @@ const JobTracker = () => {
           )}
         </div>
       </div>
+      {researchCompany && (
+        <CompanyResearch
+          companyName={researchCompany.name}
+          industry={researchCompany.industry}
+          onClose={() => setResearchCompany(null)}
+        />
+      )}
     </Layout>
   )
 }

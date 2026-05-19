@@ -1,16 +1,44 @@
-import { GoogleGenerativeAI } from '@google/generative-ai';
+import { getDefaultProvider } from './aiProviders.js';
 import dotenv from 'dotenv';
 
 dotenv.config();
 
 const geminiApiKey = process.env.GEMINI_API_KEY;
 if (!geminiApiKey) {
-  console.error('❌ GEMINI_API_KEY is missing. Aborting AI initialization.');
-  throw new Error('GEMINI_API_KEY is required to start the AI services.');
+  console.warn('⚠️  GEMINI_API_KEY is not set — AI features will be unavailable. Non-AI routes are unaffected.');
 }
 
-const genAI = new GoogleGenerativeAI(geminiApiKey);
-const model = genAI.getGenerativeModel({ model: 'gemini-2.5-flash' });
+let _model = null;
+
+const getModel = () => {
+  if (_model) return _model;
+  if (!geminiApiKey) {
+    const err = new Error('AI features are unavailable — GEMINI_API_KEY is not configured.');
+    err.statusCode = 503;
+    throw err;
+  }
+  const genAI = new GoogleGenerativeAI(geminiApiKey);
+  _model = genAI.getGenerativeModel({ model: 'gemini-2.5-flash' });
+  return _model;
+};
+
+// ---------------------------------------------------------------------------
+// Helper: resolve the AI provider to use
+// If an explicit provider is passed (from the middleware) use it,
+// otherwise fall back to the default server-side Gemini instance.
+// ---------------------------------------------------------------------------
+const resolveProvider = (aiProvider) => aiProvider || getDefaultProvider();
+
+/** Normalises optional `usage` from any adapter into enhanceResume `tokensUsed` shape. */
+function tokensUsedFromResult(result) {
+  const u = result?.usage;
+  if (!u) return { prompt: 0, completion: 0, total: 0 };
+  return {
+    prompt: Number(u.prompt) || 0,
+    completion: Number(u.completion) || 0,
+    total: Number(u.total) || 0,
+  };
+}
 
 const getSystemPrompt = (jobRole, yearsOfExperience, skills, industry, customInstructions, profileInfo) => {
   const { fullName, email, phone, linkedinUrl, githubUrl, portfolioUrl } = profileInfo || {};
@@ -92,7 +120,7 @@ OUTPUT RULES:
 - End with the last skill or section`;
 };
 
-export const enhanceResume = async (resumeText, preferences) => {
+export const enhanceResume = async (resumeText, preferences, aiProvider) => {
   const {
     jobRole,
     yearsOfExperience,
@@ -103,6 +131,7 @@ export const enhanceResume = async (resumeText, preferences) => {
   } = preferences;
 
   try {
+    const provider = resolveProvider(aiProvider);
     const systemPrompt = getSystemPrompt(
       jobRole,
       yearsOfExperience,
@@ -114,72 +143,80 @@ export const enhanceResume = async (resumeText, preferences) => {
 
     const prompt = `${systemPrompt}\n\nPlease enhance the following resume:\n\n${resumeText}`;
 
-    const result = await model.generateContent(prompt);
+    const result = await getModel().generateContent(prompt);
     const response = await result.response;
     const text = response.text();
+    const result = await provider.generateContent(prompt);
 
     return {
       success: true,
-      enhancedResume: text,
-      tokensUsed: {
-        prompt: 0,
-        completion: 0,
-        total: 0
-      }
+      enhancedResume: result.text,
+      provider: provider.providerName,
+      tokensUsed: tokensUsedFromResult(result),
     };
   } catch (error) {
+    if (error.statusCode === 503) throw error;
     console.error('Error enhancing resume:', error);
     throw new Error(`Failed to enhance resume: ${error.message}`);
   }
 };
 
 // Function to generate resume summary
-export const generateSummary = async (resumeText, jobRole) => {
+export const generateSummary = async (resumeText, jobRole, aiProvider) => {
   try {
+    const provider = resolveProvider(aiProvider);
     const prompt = `You are an expert resume writer. Generate a compelling 2-3 sentence professional summary for a ${jobRole} position based on the provided resume. Focus on key achievements, years of experience, and core competencies. Be concise and impactful.
 
 Resume:
 ${resumeText}`;
 
-    const result = await model.generateContent(prompt);
+    const result = await getModel().generateContent(prompt);
     const response = await result.response;
     const text = response.text();
+    const result = await provider.generateContent(prompt);
 
     return {
       success: true,
-      summary: text
+      summary: result.text,
+      provider: provider.providerName
     };
   } catch (error) {
+    if (error.statusCode === 503) throw error;
     console.error('Error generating summary:', error);
     throw new Error(`Failed to generate summary: ${error.message}`);
   }
 };
 
 // Function to suggest improvements
-export const suggestImprovements = async (resumeText, jobRole) => {
+export const suggestImprovements = async (resumeText, jobRole, aiProvider) => {
   try {
+    const provider = resolveProvider(aiProvider);
     const prompt = `You are an expert resume reviewer. Analyze the provided resume for a ${jobRole} position and provide 5 specific, actionable improvement suggestions. Format as a numbered list.
 
 Resume:
 ${resumeText}`;
 
-    const result = await model.generateContent(prompt);
+    const result = await getModel().generateContent(prompt);
     const response = await result.response;
     const text = response.text();
+    const result = await provider.generateContent(prompt);
 
     return {
       success: true,
-      suggestions: text
+      suggestions: result.text,
+      provider: provider.providerName
     };
   } catch (error) {
+    if (error.statusCode === 503) throw error;
     console.error('Error suggesting improvements:', error);
     throw new Error(`Failed to suggest improvements: ${error.message}`);
   }
 };
 
 // Function to analyze ATS score
-export const analyzeATSScore = async (resumeText, jobRole) => {
+export const analyzeATSScore = async (resumeText, jobRole, aiProvider) => {
   try {
+    const provider = resolveProvider(aiProvider);
     const prompt = `You are an expert ATS (Applicant Tracking System) analyzer and resume reviewer. Analyze the provided resume for a ${jobRole} position.
 
 IMPORTANT: The current year is 2026. Do NOT flag dates from 2024, 2025, or 2026 as outdated or issues. All recent dates are valid.
@@ -223,15 +260,16 @@ Rules:
 Resume:
 ${resumeText}`;
 
-    const result = await model.generateContent(prompt);
+    const result = await getModel().generateContent(prompt);
     const response = await result.response;
     const text = response.text();
+    const result = await provider.generateContent(prompt);
 
     // Parse JSON from response
     let analysisData;
     try {
       // Remove markdown code blocks if present
-      const cleanedText = text.replace(/```json\n?/g, '').replace(/```\n?/g, '').trim();
+      const cleanedText = result.text.replace(/```json\n?/g, '').replace(/```\n?/g, '').trim();
       analysisData = JSON.parse(cleanedText);
     } catch (parseError) {
       console.error('Failed to parse ATS analysis JSON:', parseError);
@@ -259,9 +297,11 @@ ${resumeText}`;
 
     return {
       success: true,
-      analysis: analysisData
+      analysis: analysisData,
+      provider: provider.providerName
     };
   } catch (error) {
+    if (error.statusCode === 503) throw error;
     console.error('Error analyzing ATS score:', error);
     throw new Error(`Failed to analyze ATS score: ${error.message}`);
   }
@@ -279,8 +319,9 @@ const WEAK_VERBS = [
   'Was involved in', 'Handled', 'Did', 'Made', 'Used', 'Had'
 ];
 
-export const analyzeResumeComprehensive = async (resumeText, jobRole) => {
+export const analyzeResumeComprehensive = async (resumeText, jobRole, aiProvider) => {
   try {
+    const provider = resolveProvider(aiProvider);
     const prompt = `You are a SENIOR RESUME EXPERT with 20+ years of experience helping candidates land jobs at top companies.
 
 IMPORTANT: The current year is 2026. Do NOT flag dates from 2024, 2025, or 2026 as issues. Accept all recent dates as valid and current.
@@ -369,13 +410,14 @@ ANALYSIS RULES:
 Resume to analyze:
 ${resumeText}`;
 
-    const result = await model.generateContent(prompt);
+    const result = await getModel().generateContent(prompt);
     const response = await result.response;
     const text = response.text();
+    const result = await provider.generateContent(prompt);
 
     let analysisData;
     try {
-      const cleanedText = text.replace(/```json\n?/g, '').replace(/```\n?/g, '').trim();
+      const cleanedText = result.text.replace(/```json\n?/g, '').replace(/```\n?/g, '').trim();
       analysisData = JSON.parse(cleanedText);
     } catch (parseError) {
       console.error('Failed to parse comprehensive analysis JSON:', parseError);
@@ -384,17 +426,20 @@ ${resumeText}`;
 
     return {
       success: true,
-      analysis: analysisData
+      analysis: analysisData,
+      provider: provider.providerName
     };
   } catch (error) {
+    if (error.statusCode === 503) throw error;
     console.error('Error in comprehensive analysis:', error);
     throw new Error(`Failed to analyze resume: ${error.message}`);
   }
 };
 
 // Analyze individual bullet points with improvement suggestions
-export const analyzeBulletPoints = async (resumeText, jobRole) => {
+export const analyzeBulletPoints = async (resumeText, jobRole, aiProvider) => {
   try {
+    const provider = resolveProvider(aiProvider);
     const prompt = `You are an expert resume writer. Extract and analyze EVERY bullet point from the experience and projects sections.
 
 IMPORTANT: Return ONLY valid JSON, no markdown.
@@ -438,13 +483,14 @@ Rules:
 Resume:
 ${resumeText}`;
 
-    const result = await model.generateContent(prompt);
+    const result = await getModel().generateContent(prompt);
     const response = await result.response;
     const text = response.text();
+    const result = await provider.generateContent(prompt);
 
     let bulletData;
     try {
-      const cleanedText = text.replace(/```json\n?/g, '').replace(/```\n?/g, '').trim();
+      const cleanedText = result.text.replace(/```json\n?/g, '').replace(/```\n?/g, '').trim();
       bulletData = JSON.parse(cleanedText);
     } catch (parseError) {
       console.error('Failed to parse bullet analysis JSON:', parseError);
@@ -453,17 +499,20 @@ ${resumeText}`;
 
     return {
       success: true,
-      analysis: bulletData
+      analysis: bulletData,
+      provider: provider.providerName
     };
   } catch (error) {
+    if (error.statusCode === 503) throw error;
     console.error('Error analyzing bullets:', error);
     throw new Error(`Failed to analyze bullet points: ${error.message}`);
   }
 };
 
 // Generate before/after comparison
-export const generateBeforeAfter = async (resumeText, jobRole, analysisResults) => {
+export const generateBeforeAfter = async (resumeText, jobRole, analysisResults, aiProvider) => {
   try {
+    const provider = resolveProvider(aiProvider);
     const prompt = `Based on the analysis, generate an improved version of key resume sections.
 
 Target Role: ${jobRole}
@@ -490,13 +539,14 @@ Focus on the 3-5 most impactful changes.
 Original Resume:
 ${resumeText}`;
 
-    const result = await model.generateContent(prompt);
+    const result = await getModel().generateContent(prompt);
     const response = await result.response;
     const text = response.text();
+    const result = await provider.generateContent(prompt);
 
     let comparisonData;
     try {
-      const cleanedText = text.replace(/```json\n?/g, '').replace(/```\n?/g, '').trim();
+      const cleanedText = result.text.replace(/```json\n?/g, '').replace(/```\n?/g, '').trim();
       comparisonData = JSON.parse(cleanedText);
     } catch (parseError) {
       console.error('Failed to parse comparison JSON:', parseError);
@@ -505,9 +555,11 @@ ${resumeText}`;
 
     return {
       success: true,
-      comparison: comparisonData
+      comparison: comparisonData,
+      provider: provider.providerName
     };
   } catch (error) {
+    if (error.statusCode === 503) throw error;
     console.error('Error generating comparison:', error);
     throw new Error(`Failed to generate comparison: ${error.message}`);
   }
