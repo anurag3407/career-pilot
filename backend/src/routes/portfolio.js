@@ -4,6 +4,8 @@ import { verifyToken } from '../middleware/auth.js';
 import { asyncHandler, ApiError } from '../middleware/errorHandler.js';
 import { enhanceSection } from '../services/ai/portfolioContentEnhancer.js';
 import { generateRobotsTxt, generateSitemapXml } from '../utils/sitemapGenerator.js';
+import { scorePortfolioPerformance } from '../services/portfolioPerformanceScorer.js';
+
 
 const router = express.Router();
 
@@ -111,6 +113,32 @@ router.get('/public/:slug/robots.txt', asyncHandler(async (req, res) => {
     .status(200)
     .type('text/plain')
     .send(generateRobotsTxt({ sitemapUrl }));
+}));
+
+/**
+ * GET /api/portfolio/:id/performance
+ * Lighthouse-lite performance scorer for portfolio
+ */
+router.get('/:id/performance', verifyToken, asyncHandler(async (req, res) => {
+  const { id } = req.params;
+
+  if (!id || id.trim() === '') {
+    throw new ApiError(400, 'Portfolio ID is required.');
+  }
+
+  const portfolioData = req.body;
+
+  if (!portfolioData || Object.keys(portfolioData).length === 0) {
+    throw new ApiError(400, 'Portfolio performance metrics are required in request body.');
+  }
+
+  const result = scorePortfolioPerformance({ id, ...portfolioData });
+
+  return res.status(200).json({
+    success: true,
+    message: 'Portfolio performance analysis complete.',
+    data: result,
+  });
 }));
 
 export default router;
