@@ -17,9 +17,12 @@ export const generatePDF = async (markdownText, options = {}) => {
   // Convert markdown to HTML
   const htmlContent = marked.parse(markdownText);
   const structuredData = generateStructuredData(options.portfolio || {});
+const jsonLd = JSON.stringify(structuredData, null, 2)
+  .replace(/<\/script>/gi, '<\\/script>');
+
 const jsonLdScript = `
 <script type="application/ld+json">
-${JSON.stringify(structuredData, null, 2)}
+${jsonLd}
 </script>
 `;
   // Read full HTML structure with styles
