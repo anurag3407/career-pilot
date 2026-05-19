@@ -29,7 +29,6 @@ import { initializeSocket } from './config/socket.js';
 import { initializeDefaultChannels } from './controllers/communityFirebaseController.js';
 import { initializePostScheduler } from './services/postScheduler.js';
 
-import mongoose from 'mongoose';
 import { connectDB } from './config/database.js';
 import { initJobFetcher } from './services/jobFetcher.js';
 import JobAlert from './models/JobAlert.model.js';
