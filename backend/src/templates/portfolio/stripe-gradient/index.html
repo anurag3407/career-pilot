@@ -1,0 +1,216 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+
+  <!-- SEO -->
+  <title>{{NAME}} — Portfolio</title>
+  <meta name="description" content="{{NAME}}'s developer portfolio. Featuring projects, skills, and experience." />
+  <meta name="keywords" content="developer, portfolio, software engineer, programming" />
+  <meta property="og:title" content="{{NAME}} — Portfolio" />
+  <meta property="og:description" content="Developer portfolio of {{NAME}}" />
+  <meta property="og:type" content="website" />
+
+  <!-- Fonts: Inter and JetBrains Mono -->
+  <link rel="preconnect" href="https://fonts.googleapis.com" />
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
+  <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700;800&family=JetBrains+Mono:wght@400;500&display=swap" rel="stylesheet" />
+
+  <!-- Stylesheet -->
+  <link rel="stylesheet" href="style.css" />
+</head>
+<body>
+
+  <!-- Background Animated Mesh -->
+  <div class="mesh-background" aria-hidden="true">
+    <div class="mesh-orb orb-1"></div>
+    <div class="mesh-orb orb-2"></div>
+    <div class="mesh-orb orb-3"></div>
+  </div>
+
+  <!-- Loading Screen -->
+  <div id="loading-screen" role="status" aria-label="Loading portfolio">
+    <div class="loading-spinner"></div>
+  </div>
+
+  <!-- Navigation -->
+  <nav id="navbar" role="navigation" aria-label="Main navigation">
+    <div class="nav-container">
+      <a href="#hero" class="nav-logo" aria-label="Home">
+        <svg width="24" height="24" viewBox="0 0 24 24" fill="none" xmlns="http://www.w3.org/2000/svg">
+          <path d="M12 2L2 7L12 12L22 7L12 2Z" fill="var(--primary)" />
+          <path d="M2 17L12 22L22 17" stroke="var(--primary)" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" />
+          <path d="M2 12L12 17L22 12" stroke="var(--primary)" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" />
+        </svg>
+        <span>{{INITIALS}}</span>
+      </a>
+
+      <button id="nav-toggle" aria-controls="nav-links" aria-expanded="false" aria-label="Toggle navigation">
+        <span></span><span></span><span></span>
+      </button>
+
+      <ul class="nav-links" id="nav-links" role="list">
+        <li><a href="#about" id="nav-about" aria-label="About section">About</a></li>
+        <li><a href="#skills" id="nav-skills" aria-label="Skills section">Skills</a></li>
+        <li><a href="#projects" id="nav-projects" aria-label="Projects section">Projects</a></li>
+        <li><a href="#experience" id="nav-experience" aria-label="Experience section">Experience</a></li>
+        <li><a href="#contact" id="nav-contact" aria-label="Contact section">Contact</a></li>
+      </ul>
+    </div>
+  </nav>
+
+  <!-- Hero Section -->
+  <section id="hero" aria-label="Hero section">
+    <div class="hero-content">
+      <span class="hero-tag">Developer Portfolio</span>
+      <h1 class="hero-title">
+        Hi, I'm <span id="hero-name" class="gradient-text">{{NAME}}</span>
+      </h1>
+      <p class="hero-subtitle" id="hero-subtitle">{{ROLE}}</p>
+      <p class="hero-desc">{{TAGLINE}}</p>
+      
+      <div class="btn-group">
+        <a href="#projects" class="btn btn-primary" id="hero-projects-btn" aria-label="View my projects">View Projects</a>
+        <a href="#contact" class="btn btn-secondary" id="hero-contact-btn" aria-label="Get in touch">Get in touch</a>
+      </div>
+    </div>
+    
+    <!-- Decorative Code Block -->
+    <div class="hero-graphic" aria-hidden="true">
+      <div class="code-card floating-card">
+        <div class="code-header">
+          <div class="code-dots"><span></span><span></span><span></span></div>
+          <div class="code-title">developer.js</div>
+        </div>
+        <pre class="code-block"><code><span class="token-keyword">const</span> developer <span class="token-operator">=</span> {
+  <span class="token-property">name</span>: <span class="token-string">'{{NAME}}'</span>,
+  <span class="token-property">role</span>: <span class="token-string">'{{ROLE}}'</span>,
+  <span class="token-property">passions</span>: [<span class="token-string">'Code'</span>, <span class="token-string">'Design'</span>, <span class="token-string">'Innovation'</span>],
+  <span class="token-method">build</span>() {
+    <span class="token-keyword">return</span> <span class="token-keyword">this</span>.passions.<span class="token-method">map</span>(p <span class="token-operator">=></span> <span class="token-string">`Scalable ${p}`</span>);
+  }
+};</code></pre>
+      </div>
+    </div>
+  </section>
+
+  <!-- About Section -->
+  <section id="about" aria-label="About me">
+    <div class="section-container floating-card">
+      <div class="section-header">
+        <h2 class="section-title">About Me</h2>
+        <p class="section-subtitle">A brief introduction</p>
+      </div>
+
+      <div class="about-grid">
+        <div class="about-avatar" aria-hidden="true">
+          <div class="avatar-frame">
+            {{AVATAR_EMOJI}}
+          </div>
+        </div>
+
+        <div class="about-text">
+          <p>{{ABOUT_PARA_1}}</p>
+          <p>{{ABOUT_PARA_2}}</p>
+
+          <div class="stats-row" aria-label="Key stats">
+            <div class="stat-card">
+              <span class="stat-value gradient-text">{{STAT_1}}</span>
+            </div>
+            <div class="stat-card">
+              <span class="stat-value gradient-text">{{STAT_2}}</span>
+            </div>
+            <div class="stat-card">
+              <span class="stat-value gradient-text">{{STAT_3}}</span>
+            </div>
+          </div>
+        </div>
+      </div>
+    </div>
+  </section>
+
+  <!-- Skills Section -->
+  <section id="skills" aria-label="Skills">
+    <div class="section-header center">
+      <h2 class="section-title">Technical Expertise</h2>
+      <p class="section-subtitle">Technologies and tools I work with</p>
+    </div>
+
+    <div class="skills-grid" id="skills-grid">
+      <!-- Skill cards injected by script.js -->
+    </div>
+  </section>
+
+  <!-- Projects Section -->
+  <section id="projects" aria-label="Projects">
+    <div class="section-header center">
+      <h2 class="section-title">Featured Projects</h2>
+      <p class="section-subtitle">A selection of my recent work</p>
+    </div>
+
+    <div class="projects-grid" id="projects-grid">
+      <!-- Project cards injected by script.js -->
+    </div>
+  </section>
+
+  <!-- Experience Section -->
+  <section id="experience" aria-label="Work experience">
+    <div class="section-container floating-card">
+      <div class="section-header">
+        <h2 class="section-title">Experience</h2>
+        <p class="section-subtitle">My professional journey</p>
+      </div>
+
+      <div class="timeline" id="timeline">
+        <!-- Timeline items injected by script.js -->
+      </div>
+    </div>
+  </section>
+
+  <!-- Contact Section -->
+  <section id="contact" aria-label="Contact information">
+    <div class="contact-card floating-card">
+      <h2 class="section-title">Let's Connect</h2>
+      <p>I'm always open to discussing new projects, creative ideas, or opportunities to be part of your visions.</p>
+
+      <a href="mailto:{{EMAIL}}" class="btn btn-primary" id="contact-email-btn" aria-label="Send me an email">Email Me</a>
+
+      <div class="contact-links" aria-label="Social links">
+        <a href="{{GITHUB_URL}}" target="_blank" rel="noopener noreferrer" class="contact-link" aria-label="GitHub profile">
+          <svg width="20" height="20" viewBox="0 0 24 24" fill="currentColor" xmlns="http://www.w3.org/2000/svg">
+            <path d="M12 2C6.477 2 2 6.477 2 12C2 16.42 4.866 20.17 8.838 21.504C9.338 21.596 9.52 21.288 9.52 21.036C9.52 20.812 9.512 20.188 9.508 19.34C6.728 19.944 6.14 17.996 6.14 17.996C5.686 16.844 5.032 16.536 5.032 16.536C4.128 15.918 5.1 15.93 5.1 15.93C6.102 16.002 6.628 16.96 6.628 16.96C7.518 18.484 8.96 18.044 9.544 17.788C9.634 17.132 9.898 16.692 10.19 16.444C7.968 16.192 5.632 15.334 5.632 11.472C5.632 10.372 6.026 9.472 6.666 8.766C6.562 8.512 6.216 7.486 6.764 6.108C6.764 6.108 7.606 5.838 9.502 7.12C10.302 6.898 11.156 6.788 12 6.784C12.842 6.788 13.696 6.898 14.498 7.12C16.392 5.838 17.232 6.108 17.232 6.108C17.782 7.486 17.438 8.512 17.334 8.766C17.976 9.472 18.368 10.372 18.368 11.472C18.368 15.344 16.028 16.188 13.798 16.434C14.166 16.75 14.496 17.376 14.496 18.336C14.496 19.712 14.484 20.82 14.484 21.036C14.484 21.292 14.664 21.604 15.172 21.5C19.14 20.166 22 16.416 22 12C22 6.477 17.522 2 12 2Z" />
+          </svg>
+          GitHub
+        </a>
+        <a href="{{LINKEDIN_URL}}" target="_blank" rel="noopener noreferrer" class="contact-link" aria-label="LinkedIn profile">
+          <svg width="20" height="20" viewBox="0 0 24 24" fill="currentColor" xmlns="http://www.w3.org/2000/svg">
+            <path d="M19 3A2 2 0 0 1 21 5V19A2 2 0 0 1 19 21H5A2 2 0 0 1 3 19V5A2 2 0 0 1 5 3H19M18.5 18.5V13.2A3.26 3.26 0 0 0 15.24 9.94C14.39 9.94 13.4 10.46 12.92 11.24V10.13H10.13V18.5H12.92V13.57C12.92 12.8 13.54 12.17 14.31 12.17A1.4 1.4 0 0 1 15.71 13.57V18.5H18.5M6.88 8.56A1.68 1.68 0 0 0 8.56 6.88C8.56 5.95 7.81 5.19 6.88 5.19A1.69 1.69 0 0 0 5.19 6.88C5.19 7.81 5.95 8.56 6.88 8.56M8.27 18.5V10.13H5.5V18.5H8.27Z" />
+          </svg>
+          LinkedIn
+        </a>
+        <a href="{{TWITTER_URL}}" target="_blank" rel="noopener noreferrer" class="contact-link" aria-label="Twitter profile">
+          <svg width="20" height="20" viewBox="0 0 24 24" fill="currentColor" xmlns="http://www.w3.org/2000/svg">
+            <path d="M22.46 6C21.69 6.35 20.86 6.58 20 6.69C20.88 6.16 21.56 5.32 21.88 4.31C21.05 4.81 20.13 5.16 19.16 5.36C18.37 4.5 17.26 4 16 4C13.65 4 11.73 5.92 11.73 8.29C11.73 8.63 11.77 8.96 11.84 9.27C8.28 9.09 5.11 7.38 3 4.79C2.63 5.42 2.42 6.16 2.42 6.94C2.42 8.43 3.17 9.75 4.33 10.5C3.62 10.5 2.96 10.3 2.38 10V10.03C2.38 12.11 3.86 13.85 5.82 14.24C5.46 14.34 5.08 14.39 4.69 14.39C4.42 14.39 4.15 14.36 3.89 14.31C4.43 16.01 6.01 17.26 7.89 17.29C6.43 18.45 4.58 19.13 2.56 19.13C2.22 19.13 1.88 19.11 1.54 19.07C3.44 20.29 5.7 21 8.12 21C16.01 21 20.33 14.46 20.33 8.79C20.33 8.6 20.33 8.42 20.32 8.23C21.16 7.63 21.88 6.87 22.46 6Z" />
+          </svg>
+          Twitter
+        </a>
+      </div>
+    </div>
+  </section>
+
+  <!-- Footer -->
+  <footer role="contentinfo">
+    <p>&copy; <span id="year"></span> {{NAME}}. Built with <span class="gradient-text">Stripe-inspired</span> design.</p>
+  </footer>
+
+  <!-- Scroll to top -->
+  <button id="scroll-top" class="scroll-top" aria-label="Scroll to top" title="Back to top">
+    <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+      <path d="M12 19V5M5 12l7-7 7 7" />
+    </svg>
+  </button>
+
+  <script src="script.js"></script>
+</body>
+</html>
