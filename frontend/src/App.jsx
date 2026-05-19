@@ -4,6 +4,7 @@ import { AuthProvider, useAuth } from './context/AuthContext'
 import { SocketProvider } from './context/SocketContext'
 import { ThemeProvider } from './context/ThemeContext'
 import AppLayout from './components/AppLayout'
+import Footer from './components/ui/Footer'
 
 import Home from './pages/Home'
 import Login from './pages/Login'

@@ -1,12 +1,10 @@
+import 'dotenv/config';
 import express from 'express';
 import { createServer } from 'http';
 import cors from 'cors';
 import helmet from 'helmet';
 import rateLimit from 'express-rate-limit';
-import dotenv from 'dotenv';
 import searchRoutes from './routes/search.js';
-
-dotenv.config();
 import portfolioRoutes from './routes/portfolio.js';
 import uploadRoutes from './routes/upload.js';
 import resumeRoutes from './routes/resume.js';
@@ -34,6 +32,8 @@ import { connectDB } from './config/database.js';
 import { initJobFetcher } from './services/jobFetcher.js';
 import JobAlert from './models/JobAlert.model.js';
 
+const swaggerUi = require('swagger-ui-express');
+const swaggerSpec = require('./config/swagger');
 const app = express();
 const httpServer = createServer(app);
 const PORT = process.env.PORT || 5000;
@@ -99,6 +99,7 @@ app.get('/health', (req, res) => {
   });
 });
 
+app.use('/api/docs', swaggerUi.serve, swaggerUi.setup(swaggerSpec));
 app.use('/api/auth', authRoutes);
 app.use('/api/upload', uploadRoutes);
 app.use('/api/resumes', resumeRoutes);
