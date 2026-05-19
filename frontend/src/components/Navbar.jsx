@@ -66,8 +66,8 @@ export default function Navbar() {
       <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
         <div className="flex justify-between h-16 items-center">
           {/* Logo */}
-          <Link to="/" className="flex items-center gap-2 group">
-            <div className="w-10 h-10 flex items-center justify-center p-1.5 rounded-xl bg-primary/10 group-hover:scale-110 transition-transform">
+          <Link to="/" className="flex items-center  group">
+            <div className="w-15 h-15 flex items-center justify-center p-1.5 rounded-xl  group-hover:scale-110 transition-transform">
               <img src="/speed.png" alt="" className="w-full h-full object-contain" />
             </div>
             <span className="text-xl font-bold text-foreground tracking-tight">
