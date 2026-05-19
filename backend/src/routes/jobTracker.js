@@ -1,14 +1,43 @@
 import express from 'express';
 import { verifyToken } from '../middleware/auth.js';
 import { asyncHandler, ApiError } from '../middleware/errorHandler.js';
+import { extractAIProvider } from '../middleware/aiKey.js';
+import { aiRateLimiter } from '../middleware/rateLimiter.js';
 import TrackedJob from '../models/TrackedJob.model.js';
+import { researchCompany } from '../services/companyResearchService.js';
+
+function isValidWebUrl(str) {
+  try {
+    const url = new URL(str);
+    return url.protocol === 'http:' || url.protocol === 'https:';
+  } catch {
+    return false;
+  }
+}
 
 const router = express.Router();
+
+// Research a company using AI
+router.post('/research', verifyToken, extractAIProvider, aiRateLimiter, asyncHandler(async (req, res) => {
+  const { companyName, industry } = req.body;
+
+  if (!companyName || !companyName.trim()) {
+    throw new ApiError(400, 'Company name is required for research');
+  }
+
+  const research = await researchCompany(companyName, industry, req.aiProvider);
+  res.json({
+    success: true,
+    data: research,
+    provider: req.aiProvider.providerName,
+    providerSource: req.aiProviderSource,
+  });
+}));
 
 // Get all tracked jobs for a user
 router.get('/', verifyToken, asyncHandler(async (req, res) => {
   const userId = req.user.uid;
-  
+
   const userJobs = await TrackedJob.find({ userId })
     .sort({ createdAt: -1 })
     .lean();
@@ -30,7 +59,7 @@ router.get('/', verifyToken, asyncHandler(async (req, res) => {
 // Get tracker stats for a user
 router.get('/stats', verifyToken, asyncHandler(async (req, res) => {
   const userId = req.user.uid;
-  
+
   // Use MongoDB aggregation for efficient stats calculation
   const statsPipeline = [
     { $match: { userId } },
@@ -43,7 +72,7 @@ router.get('/stats', verifyToken, asyncHandler(async (req, res) => {
   ];
 
   const results = await TrackedJob.aggregate(statsPipeline);
-  
+
   // Build stats object
   const stats = {
     total: 0,
@@ -68,10 +97,10 @@ router.get('/stats', verifyToken, asyncHandler(async (req, res) => {
 // Track a new job
 router.post('/', verifyToken, asyncHandler(async (req, res) => {
   const userId = req.user.uid;
-  const { 
+  const {
     jobId,
-    title, 
-    company, 
+    title,
+    company,
     location,
     jobType,
     salary,
@@ -82,6 +111,10 @@ router.post('/', verifyToken, asyncHandler(async (req, res) => {
 
   if (!title || !company) {
     throw new ApiError(400, 'Job title and company are required');
+  }
+
+  if (applyLink && !isValidWebUrl(applyLink)) {
+    throw new ApiError(400, 'applyLink must be a valid URL starting with http:// or https://');
   }
 
   // Check if job already tracked (handled by unique index, but check explicitly for better error message)
@@ -134,41 +167,39 @@ router.put('/:trackerId', verifyToken, asyncHandler(async (req, res) => {
   const userId = req.user.uid;
   const { status, notes } = req.body;
 
-  const job = await TrackedJob.findById(trackerId);
-
-  if (!job) {
-    throw new ApiError(404, 'Tracked job not found');
-  }
-
-  if (job.userId !== userId) {
-    throw new ApiError(403, 'Access denied');
-  }
-
   const validStatuses = ['saved', 'applied', 'interviewing', 'offered', 'rejected'];
   if (status && !validStatuses.includes(status)) {
     throw new ApiError(400, 'Invalid status');
   }
 
   const updateData = {};
-  
+
   if (status) {
     updateData.status = status;
   }
-  
+
   if (notes) {
     updateData.$push = {
       notes: {
-        text: notes,
+        content: notes,
         createdAt: new Date()
       }
     };
   }
 
-  const updatedJob = await TrackedJob.findByIdAndUpdate(
-    trackerId,
+  if (!status && !notes) {
+    throw new ApiError(400, 'Provide status or notes to update');
+  }
+
+  const updatedJob = await TrackedJob.findOneAndUpdate(
+    { _id: trackerId, userId },
     updateData,
     { new: true, runValidators: true }
   ).lean();
+
+  if (!updatedJob) {
+    throw new ApiError(404, 'Tracked job not found');
+  }
 
   res.json({
     success: true,
@@ -186,17 +217,11 @@ router.delete('/:trackerId', verifyToken, asyncHandler(async (req, res) => {
   const { trackerId } = req.params;
   const userId = req.user.uid;
 
-  const job = await TrackedJob.findById(trackerId);
+  const job = await TrackedJob.findOneAndDelete({ _id: trackerId, userId });
 
   if (!job) {
     throw new ApiError(404, 'Tracked job not found');
   }
-
-  if (job.userId !== userId) {
-    throw new ApiError(403, 'Access denied');
-  }
-
-  await TrackedJob.findByIdAndDelete(trackerId);
 
   res.json({
     success: true,

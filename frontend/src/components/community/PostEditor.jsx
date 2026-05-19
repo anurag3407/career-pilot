@@ -1,5 +1,7 @@
 import { useState } from 'react';
-import { X, Image as ImageIcon, Link, Hash, Send } from 'lucide-react';
+import { X, Image as ImageIcon, Link, Hash, Send, Clock } from 'lucide-react';
+import { format } from 'date-fns';
+import SchedulePost from './SchedulePost';
 
 const CATEGORIES = [
   { value: 'discussion', label: '💬 Discussion' },
@@ -18,24 +20,24 @@ export default function PostEditor({ onClose, onSubmit, editPost = null }) {
   const [tags, setTags] = useState(editPost?.tags?.join(', ') || '');
   const [loading, setLoading] = useState(false);
   const [error, setError] = useState('');
+  const [showScheduler, setShowScheduler] = useState(false);
+  const [scheduledAt, setScheduledAt] = useState(null);
+
+  const buildPostData = () => ({
+    title: title.trim(),
+    content: content.trim(),
+    category,
+    tags: tags.split(',').map(t => t.trim()).filter(Boolean),
+    ...(scheduledAt && { scheduledAt })
+  });
 
   const handleSubmit = async (e) => {
     e.preventDefault();
-    
     if (!title.trim() || !content.trim()) return;
-
     setLoading(true);
     setError('');
-    
-    const postData = {
-      title: title.trim(),
-      content: content.trim(),
-      category,
-      tags: tags.split(',').map(t => t.trim()).filter(Boolean)
-    };
-
     try {
-      await onSubmit(postData);
+      await onSubmit(buildPostData());
     } catch (err) {
       console.error('Failed to submit post:', err);
       setError(err.message || 'Failed to submit post');
@@ -43,6 +45,13 @@ export default function PostEditor({ onClose, onSubmit, editPost = null }) {
       setLoading(false);
     }
   };
+
+  const handleScheduleConfirm = (isoString) => {
+    setScheduledAt(isoString);
+    setShowScheduler(false);
+  };
+
+  const clearSchedule = () => setScheduledAt(null);
 
   return (
     <div className="fixed inset-0 bg-background/80 flex items-center justify-center z-50 p-4">
@@ -168,6 +177,28 @@ export default function PostEditor({ onClose, onSubmit, editPost = null }) {
             </div>
           )}
 
+          {/* Scheduled time indicator */}
+          {scheduledAt && (
+            <div className="mx-6 mb-3 flex items-center justify-between px-3 py-2 bg-indigo-500/10 border border-indigo-500/30 rounded-lg">
+              <div className="flex items-center gap-2 text-sm text-indigo-300">
+                <Clock className="w-4 h-4 flex-shrink-0" />
+                <span>
+                  Scheduled for{' '}
+                  <span className="font-medium">
+                    {format(new Date(scheduledAt), "MMM d, yyyy 'at' h:mm a")}
+                  </span>
+                </span>
+              </div>
+              <button
+                type="button"
+                onClick={clearSchedule}
+                className="text-xs text-neutral-500 hover:text-white ml-3"
+              >
+                Remove
+              </button>
+            </div>
+          )}
+
           {/* Footer */}
           <div className="px-6 py-4 border-t border-border bg-card flex items-center justify-between">
             <div className="flex gap-2">
@@ -187,28 +218,46 @@ export default function PostEditor({ onClose, onSubmit, editPost = null }) {
               </button>
             </div>
 
-            <div className="flex gap-3">
+            <div className="flex gap-2">
               <button
                 type="button"
                 onClick={onClose}
-                className="px-4 py-2 border border-border rounded-lg text-foreground hover:bg-muted"
+                className="px-4 py-2 border border-border rounded-lg text-foreground hover:bg-muted text-sm"
               >
                 Cancel
               </button>
+              {!editPost && (
+                <button
+                  type="button"
+                  onClick={() => setShowScheduler(true)}
+                  disabled={loading || !title.trim() || !content.trim()}
+                  className={`
+                    flex items-center gap-2 px-4 py-2 rounded-lg text-sm font-medium border transition-colors
+                    disabled:opacity-50 disabled:cursor-not-allowed
+                    ${scheduledAt
+                      ? 'bg-indigo-500/20 border-indigo-500 text-indigo-300 hover:bg-indigo-500/30'
+                      : 'border-neutral-600 text-neutral-300 hover:bg-neutral-800'
+                    }
+                  `}
+                >
+                  <Clock className="w-4 h-4" />
+                  {scheduledAt ? 'Change time' : 'Schedule'}
+                </button>
+              )}
               <button
                 type="submit"
                 disabled={loading || !title.trim() || !content.trim()}
-                className="flex items-center gap-2 px-5 py-2 bg-primary text-primary-foreground rounded-lg hover:bg-primary/90 disabled:opacity-50 disabled:cursor-not-allowed"
+                className="flex items-center gap-2 px-5 py-2 bg-primary text-primary-foreground rounded-lg hover:bg-primary/90 disabled:opacity-50 disabled:cursor-not-allowed text-sm font-medium"
               >
                 {loading ? (
                   <>
                     <div className="w-4 h-4 border-2 border-primary-foreground border-t-transparent rounded-full animate-spin" />
-                    Publishing...
+                    {scheduledAt ? 'Scheduling...' : 'Publishing...'}
                   </>
                 ) : (
                   <>
-                    <Send className="w-4 h-4" />
-                    {editPost ? 'Update Post' : 'Publish Post'}
+                    {scheduledAt ? <Clock className="w-4 h-4" /> : <Send className="w-4 h-4" />}
+                    {editPost ? 'Update Post' : scheduledAt ? 'Confirm Schedule' : 'Publish Post'}
                   </>
                 )}
               </button>
@@ -216,6 +265,13 @@ export default function PostEditor({ onClose, onSubmit, editPost = null }) {
           </div>
         </form>
       </div>
+
+      {showScheduler && (
+        <SchedulePost
+          onClose={() => setShowScheduler(false)}
+          onSchedule={handleScheduleConfirm}
+        />
+      )}
     </div>
   );
 }

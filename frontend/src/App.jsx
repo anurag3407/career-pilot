@@ -17,9 +17,13 @@ import JobAlerts from './pages/JobAlerts'
 import JobTracker from './pages/JobTracker'
 import { Community, NotFound } from './pages'
 import InterviewPrep from './pages/InterviewPrep'
+import UserProfile from './pages/UserProfile'
+import EmailGenerator from './pages/EmailGenerator'
+import LinkedInOptimizer from './pages/LinkedInOptimizer'
 import FellowshipLayout from './pages/fellowship/FellowshipLayout'
 import Onboarding from './pages/fellowship/Onboarding'
 import Challenges from './pages/fellowship/Challenges'
+import Settings from './pages/Settings'
 import ChallengeDetail from './pages/fellowship/ChallengeDetail'
 import CreateChallenge from './pages/fellowship/CreateChallenge'
 import MyProposals from './pages/fellowship/MyProposals'
@@ -28,6 +32,8 @@ import ChallengeProposals from './pages/fellowship/ChallengeProposals'
 import Verify from './pages/fellowship/Verify'
 import FellowshipMessages from './pages/fellowship/FellowshipMessages'
 import FellowshipChat from './pages/fellowship/FellowshipChat'
+import SecuritySettings from './pages/SecuritySettings'
+import LinkedInCallback from './pages/LinkedInCallback'
 
 function ProtectedRoute({ children }) {
   const { user, loading } = useAuth()
@@ -107,6 +113,7 @@ function App() {
               <Route path="/" element={<PublicRoute><Home /></PublicRoute>} />
               <Route path="/login" element={<PublicRoute><Login /></PublicRoute>} />
               <Route path="/register" element={<PublicRoute><Register /></PublicRoute>} />
+              <Route path="/auth/linkedin/callback" element={<PublicRoute><LinkedInCallback /></PublicRoute>} />
 
               <Route path="/dashboard" element={<ProtectedRoute><Dashboard /></ProtectedRoute>} />
               <Route path="/upload" element={<ProtectedRoute><Upload /></ProtectedRoute>} />
@@ -117,6 +124,12 @@ function App() {
               <Route path="/job-tracker" element={<ProtectedRoute><JobTracker /></ProtectedRoute>} />
               <Route path="/community" element={<ProtectedRoute><Community /></ProtectedRoute>} />
               <Route path="/interview-prep" element={<ProtectedRoute><InterviewPrep /></ProtectedRoute>} />
+              <Route path="/profile" element={<ProtectedRoute><UserProfile /></ProtectedRoute>} />
+              <Route path="/profile/:uid" element={<ProtectedRoute><UserProfile /></ProtectedRoute>} />
+              <Route path="/security" element={<ProtectedRoute><SecuritySettings /></ProtectedRoute>} />
+              <Route path="/email-generator" element={<ProtectedRoute><EmailGenerator /></ProtectedRoute>} />
+              <Route path="/linkedin-optimizer" element={<ProtectedRoute><LinkedInOptimizer /></ProtectedRoute>} />
+              <Route path="/settings" element={<ProtectedRoute><Settings /></ProtectedRoute>} />
 
               <Route path="/fellowship" element={<ProtectedRoute><FellowshipLayout /></ProtectedRoute>}>
                 <Route index element={<Challenges />} />
@@ -132,7 +145,7 @@ function App() {
                 <Route path="messages/:roomId" element={<FellowshipChat />} />
               </Route>
 
-              <Route path="*" element={<Navigate to="/" replace />} />
+              <Route path="*" element={<NotFound />} />
             </Routes>
           </BrowserRouter>
         </SocketProvider>

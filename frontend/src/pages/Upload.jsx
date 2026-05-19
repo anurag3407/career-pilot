@@ -3,16 +3,8 @@ import { useNavigate } from 'react-router-dom'
 import toast from 'react-hot-toast'
 import { motion } from 'framer-motion'
 import { uploadApi, resumeApi } from '../services/api'
-import FileUpload from '../components/FileUpload'
+import DropZone from '../components/DropZone'
 import { FileText, Upload as UploadIcon, CheckCircle, Target, BarChart3, Zap } from 'lucide-react'
-
-// Configuration for file size validation
-const FILE_SIZE_CONFIG = {
-  maxSizeMB: parseInt(import.meta.env.VITE_MAX_SIZE_MB || '5'),
-  get maxSizeBytes() {
-    return this.maxSizeMB * 1024 * 1024
-  }
-}
 
 export default function Upload() {
   const navigate = useNavigate()
@@ -21,25 +13,7 @@ export default function Upload() {
   const [loading, setLoading] = useState(false)
   const [uploadComplete, setUploadComplete] = useState(false)
 
-  /**
-   * Validates file size before upload
-   * @param {File} file - The file to validate
-   * @returns {boolean} - True if valid, false otherwise
-   */
-  const validateFileSize = (file) => {
-    if (file.size > FILE_SIZE_CONFIG.maxSizeBytes) {
-      const fileSizeMB = (file.size / (1024 * 1024)).toFixed(2)
-      toast.error(`File size (${fileSizeMB}MB) exceeds the maximum limit of ${FILE_SIZE_CONFIG.maxSizeMB}MB.`)
-      return false
-    }
-    return true
-  }
-
   const handleFileSelect = async (selectedFile) => {
-    if (!validateFileSize(selectedFile)) {
-      return
-    }
-
     setFile(selectedFile)
     setLoading(true)
 
@@ -149,11 +123,14 @@ export default function Upload() {
                 <p className="text-sm text-muted-foreground">We'll extract and analyze your resume automatically</p>
               </div>
             </div>
-            <FileUpload
+
+            <DropZone
               onFileSelect={handleFileSelect}
               disabled={loading}
-              maxSizeMB={FILE_SIZE_CONFIG.maxSizeMB}
+              maxSizeMB={5}
+              multiple={false}
             />
+
             {loading && (
               <div className="flex flex-col items-center justify-center gap-3 mt-6">
                 <div className="relative">
