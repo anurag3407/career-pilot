@@ -75,13 +75,13 @@ Before contributing, ensure you have:
 
 2. **Clone your fork:**
 ```bash
-git clone https://github.com/YOUR_USERNAME/career-pilot.git
-cd career-pilot
+git clone https://github.com/YOUR_USERNAME/ai-resume-builder.git
+cd ai-resume-builder
 ```
 
 3. **Add upstream remote:**
 ```bash
-git remote add upstream https://github.com/anurag3407/career-pilot.git
+git remote add upstream https://github.com/ORIGINAL_OWNER/ai-resume-builder.git
 ```
 
 4. **Keep your fork synced:**
@@ -218,7 +218,7 @@ Then create a Pull Request on GitHub with:
 - Clear title describing the change
 - Description of what and why
 - Link to related issue(s)
-- Screenshots for UI changes
+- **Mandatory Screenshots/GIFs** for any UI/UX or visual changes
 
 ### 5. PR Review Process
 
@@ -249,7 +249,8 @@ Fixes #(issue number)
 - [ ] Manual testing completed
 - [ ] New tests added
 
-## Screenshots (if applicable)
+## Screenshots (MANDATORY for UI/UX changes)
+Please attach screenshots or screen recordings showing the before and after state of your visual changes.
 
 ## Checklist
 - [ ] Code follows project style guidelines

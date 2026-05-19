@@ -46,7 +46,7 @@ export default function PostCard({ post, currentUser, onLike, onCommentAdded, on
       question: 'bg-green-500/20 text-green-400',
       'success-story': 'bg-pink-500/20 text-pink-400',
       resource: 'bg-orange-500/20 text-orange-400',
-      discussion: 'bg-neutral-700 text-neutral-300',
+      discussion: 'bg-muted text-muted-foreground',
     };
     return styles[category] || styles.discussion;
   };
@@ -79,13 +79,13 @@ export default function PostCard({ post, currentUser, onLike, onCommentAdded, on
   };
 
   return (
-    <article className="bg-neutral-800 border border-neutral-700 rounded-xl hover:border-neutral-600 transition-colors">
+    <article className="bg-card border border-border rounded-xl hover:border-primary/30 transition-colors">
       {/* Header */}
       <div className="p-4 pb-0">
         <div className="flex items-start justify-between">
           <div className="flex items-center gap-3">
             {/* Author Avatar */}
-            <div className="w-10 h-10 rounded-full bg-gradient-to-br from-indigo-500 to-purple-500 flex items-center justify-center text-white text-sm font-medium">
+            <div className="w-10 h-10 rounded-full bg-gradient-to-br from-primary to-secondary flex items-center justify-center text-primary-foreground text-sm font-medium">
               {post.author.avatar ? (
                 <img 
                   src={post.author.avatar} 
@@ -99,12 +99,12 @@ export default function PostCard({ post, currentUser, onLike, onCommentAdded, on
 
             <div>
               <div className="flex items-center gap-2">
-                <span className="font-medium text-white">{post.author.name}</span>
+                <span className="font-medium text-foreground">{post.author.name}</span>
                 {post.author.jobRole && (
-                  <span className="text-xs text-neutral-500">• {post.author.jobRole}</span>
+                  <span className="text-xs text-muted-foreground">• {post.author.jobRole}</span>
                 )}
               </div>
-              <div className="flex items-center gap-2 text-xs text-neutral-500">
+              <div className="flex items-center gap-2 text-xs text-muted-foreground">
                 <span>{formatDistanceToNow(new Date(post.createdAt), { addSuffix: true })}</span>
                 {post.isEdited && <span>• edited</span>}
                 <span className="flex items-center gap-1">
@@ -142,6 +142,7 @@ export default function PostCard({ post, currentUser, onLike, onCommentAdded, on
 
         {/* Cancel schedule banner — only visible to the post author */}
         {post.status === 'scheduled' && isOwn && onCancelSchedule && (
+        {post.status === 'scheduled' && post.scheduledAt && isOwn && onCancelSchedule && (
           <div className="mt-2 flex items-center justify-between px-3 py-2 bg-sky-500/10 border border-sky-500/20 rounded-lg">
             <p className="text-xs text-sky-400">
               This post will publish automatically on{' '}
@@ -162,27 +163,25 @@ export default function PostCard({ post, currentUser, onLike, onCommentAdded, on
 
       {/* Content */}
       <div className="px-4 py-3">
-        <h3 className="text-lg font-semibold text-white mb-2 line-clamp-2">
+        <h3 className="text-lg font-semibold text-foreground mb-2 line-clamp-2">
           {post.title}
         </h3>
         
-        <div className="prose prose-sm prose-invert max-w-none text-neutral-400">
+        <div className="prose prose-sm max-w-none text-muted-foreground dark:prose-invert">
           {shouldTruncate && !showFullContent ? (
             <>
-              <ReactMarkdown className="break-words">
-  {preview.content}
-</ReactMarkdown>
+              <ReactMarkdown>
+                {previewText + '...'}
+              </ReactMarkdown>
               <button
                 onClick={() => setShowFullContent(true)}
-                className="text-indigo-400 hover:text-indigo-300 font-medium text-sm"
+                className="text-primary hover:text-primary/80 font-medium text-sm"
               >
                 Read more
               </button>
             </>
           ) : (
-            <ReactMarkdown className="break-words">
-  {post.content}
-</ReactMarkdown>
+            <ReactMarkdown>{post.content}</ReactMarkdown>
           )}
         </div>
 
@@ -192,7 +191,7 @@ export default function PostCard({ post, currentUser, onLike, onCommentAdded, on
             {post.tags.map(tag => (
               <span
                 key={tag}
-                className="px-2 py-0.5 bg-neutral-700 text-neutral-400 rounded text-xs hover:bg-neutral-600 cursor-pointer"
+                className="px-2 py-0.5 bg-muted text-muted-foreground rounded text-xs hover:bg-muted/80 cursor-pointer"
               >
                 #{tag}
               </span>
@@ -218,7 +217,7 @@ export default function PostCard({ post, currentUser, onLike, onCommentAdded, on
                     href={att.url}
                     target="_blank"
                     rel="noopener noreferrer"
-                    className="flex items-center gap-2 px-3 py-2 bg-neutral-700 rounded-lg text-sm text-neutral-300"
+                    className="flex items-center gap-2 px-3 py-2 bg-muted rounded-lg text-sm text-foreground"
                   >
                     📎 {att.name}
                   </a>
@@ -230,13 +229,13 @@ export default function PostCard({ post, currentUser, onLike, onCommentAdded, on
       )}
 
       {/* Actions */}
-      <div className="px-4 py-3 border-t border-neutral-700 flex items-center justify-between">
+      <div className="px-4 py-3 border-t border-border flex items-center justify-between">
         <div className="flex items-center gap-4">
           {/* Like */}
           <button
             onClick={() => onLike(post.id || post._id)}
             className={`flex items-center gap-1.5 text-sm transition-colors ${
-              isLiked ? 'text-red-500' : 'text-neutral-500 hover:text-red-500'
+              isLiked ? 'text-red-500' : 'text-muted-foreground hover:text-red-500'
             }`}
           >
             <Heart className={`w-5 h-5 ${isLiked ? 'fill-current' : ''}`} />
@@ -247,10 +246,10 @@ export default function PostCard({ post, currentUser, onLike, onCommentAdded, on
           <button 
             onClick={() => setShowComments(!showComments)}
             className={`flex items-center gap-1.5 text-sm transition-colors ${
-              showComments ? 'text-indigo-400' : 'text-neutral-500 hover:text-indigo-400'
+              showComments ? 'text-primary' : 'text-muted-foreground hover:text-primary'
             }`}
           >
-            <MessageCircle className={`w-5 h-5 ${showComments ? 'fill-indigo-900' : ''}`} />
+            <MessageCircle className={`w-5 h-5 ${showComments ? 'fill-primary/20' : ''}`} />
             <span>{commentCount}</span>
             {showComments ? <ChevronUp className="w-4 h-4" /> : <ChevronDown className="w-4 h-4" />}
           </button>
@@ -258,14 +257,14 @@ export default function PostCard({ post, currentUser, onLike, onCommentAdded, on
           {/* Share */}
           <button
             onClick={handleShare}
-            className="flex items-center gap-1.5 text-sm text-neutral-500 hover:text-indigo-400"
+            className="flex items-center gap-1.5 text-sm text-muted-foreground hover:text-primary"
           >
             <Share2 className="w-5 h-5" />
           </button>
         </div>
 
         {/* Bookmark */}
-        <button className="text-neutral-500 hover:text-indigo-400">
+        <button className="text-muted-foreground hover:text-primary">
           <Bookmark className="w-5 h-5" />
         </button>
       </div>

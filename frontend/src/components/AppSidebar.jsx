@@ -12,8 +12,13 @@ import {
     LogOut,
     Settings,
     Zap,
+    User,
+    ShieldCheck,
+    Sun,
+    Moon
 } from "lucide-react";
 import { useAuth } from "../context/AuthContext";
+import { useTheme } from "../context/ThemeContext";
 import {
     Sidebar,
     SidebarBody,
@@ -59,15 +64,27 @@ const navLinks = [
         href: "/upload",
         icon: <FileText className="w-5 h-5 flex-shrink-0" />,
     },
+    {
+        label: "Profile",
+        href: "/profile",
+        icon: <User className="w-5 h-5 flex-shrink-0" />,
+        label: "Security",
+        href: "/security",
+        icon: <ShieldCheck className="w-5 h-5 flex-shrink-0" />,
+     {
+        label: "Settings",
+        href: "/settings",
+        icon: <Settings className="w-5 h-5 flex-shrink-0" />,
+    },
 ];
 
 function Logo() {
     const { open, animate } = useSidebar();
 
     return (
-        <div className="flex items-center gap-3 py-2 px-1">
-            <div className="w-12 h-8 flex-shrink-0 flex items-center justify-center">
-                <img src="/speed.png" alt="careerpilot" className="w-12 h-8 object-contain" />
+        <div className="flex items-center gap-3 py-2 px-1 group">
+            <div className="w-10 h-10 flex-shrink-0 flex items-center justify-center p-1.5 rounded-xl bg-primary/10 group-hover:scale-110 transition-transform">
+                <img src="/speed.png" alt="careerpilot" className="w-full h-full object-contain" />
             </div>
             <motion.div
                 animate={{
@@ -77,7 +94,7 @@ function Logo() {
                 transition={{ duration: 0.2 }}
                 className="flex items-center gap-2"
             >
-                <span className="text-xl font-bold text-white whitespace-pre">
+                <span className="text-xl font-bold text-foreground tracking-tight whitespace-pre">
                     careerpilot
                 </span>
             </motion.div>
@@ -88,6 +105,7 @@ function Logo() {
 function UserSection() {
     const { user, logout } = useAuth();
     const { open, animate, setOpen } = useSidebar();
+    const { theme, toggleTheme } = useTheme();
     const navigate = useNavigate();
 
     const handleLogout = async () => {
@@ -105,16 +123,16 @@ function UserSection() {
     const initials = displayName.charAt(0).toUpperCase();
 
     return (
-        <div className="space-y-2">
+        <div className="space-y-3">
             <SidebarDivider />
             <div
                 className={cn(
-                    "flex items-center gap-3 p-3 rounded-xl bg-neutral-900/50 border border-neutral-800 transition-all",
+                    "flex items-center gap-3 p-3 rounded-2xl bg-muted/50 border border-border transition-all hover:bg-muted",
                     !open && animate && "justify-center"
                 )}
             >
-                <div className="w-9 h-9 rounded-full bg-gradient-to-br from-indigo-500 to-purple-600 flex items-center justify-center flex-shrink-0">
-                    <span className="text-white font-semibold text-sm">{initials}</span>
+                <div className="w-10 h-10 rounded-xl bg-primary/20 flex items-center justify-center flex-shrink-0 border border-primary/20">
+                    <span className="text-primary font-bold text-base">{initials}</span>
                 </div>
                 <motion.div
                     animate={{
@@ -124,19 +142,38 @@ function UserSection() {
                     transition={{ duration: 0.2 }}
                     className="flex-1 min-w-0"
                 >
-                    <p className="text-sm font-medium text-white truncate">
+                    <p className="text-sm font-bold text-foreground truncate">
                         {displayName}
                     </p>
-                    <p className="text-xs text-neutral-500 truncate">{user.email}</p>
+                    <p className="text-xs text-muted-foreground font-medium truncate">{user.email}</p>
                 </motion.div>
             </div>
+            <button
+                onClick={toggleTheme}
+                className={cn(
+                    "flex items-center gap-3 w-full py-3 px-4 rounded-2xl text-muted-foreground hover:text-foreground hover:bg-muted transition-all cursor-pointer font-bold",
+                    !open && animate && "justify-center"
+                )}
+            >
+                {theme === 'dark' ? <Sun className="w-5 h-5 flex-shrink-0" /> : <Moon className="w-5 h-5 flex-shrink-0" />}
+                <motion.span
+                    animate={{
+                        display: animate ? (open ? "inline-block" : "none") : "inline-block",
+                        opacity: animate ? (open ? 1 : 0) : 1,
+                    }}
+                    transition={{ duration: 0.2 }}
+                    className="text-sm font-bold whitespace-pre"
+                >
+                    {theme === 'dark' ? 'Light Mode' : 'Dark Mode'}
+                </motion.span>
+            </button>
             <button
                 onClick={() => {
                     handleLogout();
                     setOpen(false);
                 }}
                 className={cn(
-                    "flex items-center gap-3 w-full py-3 px-3 rounded-xl text-neutral-400 hover:text-red-400 hover:bg-red-500/10 transition-all cursor-pointer",
+                    "flex items-center gap-3 w-full py-3 px-4 rounded-2xl text-muted-foreground hover:text-destructive hover:bg-destructive/10 transition-all cursor-pointer font-bold",
                     !open && animate && "justify-center"
                 )}
             >
@@ -147,7 +184,7 @@ function UserSection() {
                         opacity: animate ? (open ? 1 : 0) : 1,
                     }}
                     transition={{ duration: 0.2 }}
-                    className="text-sm font-medium whitespace-pre"
+                    className="text-sm font-bold whitespace-pre"
                 >
                     Logout
                 </motion.span>
@@ -158,12 +195,11 @@ function UserSection() {
 
 export default function AppSidebar() {
     const [open, setOpen] = useState(false);
-    const { setOpen: setSidebarOpen } = { setOpen };
 
     return (
         <Sidebar open={open} setOpen={setOpen}>
-            <SidebarBody className="justify-between gap-6 bg-black border-r border-neutral-800">
-                <div className="flex flex-col flex-1 overflow-y-auto overflow-x-hidden">
+            <SidebarBody className="justify-between gap-6 bg-card border-r border-border">
+                <div className="flex flex-col flex-1 overflow-y-auto overflow-x-hidden scrollbar-hide">
                     <Logo />
                     <SidebarDivider />
                     <div className="flex flex-col gap-1">
@@ -172,6 +208,7 @@ export default function AppSidebar() {
                                 key={link.href}
                                 link={link}
                                 onClick={() => setOpen(false)}
+                                className="text-muted-foreground hover:text-foreground hover:bg-muted font-semibold transition-all rounded-xl"
                             />
                         ))}
                     </div>
@@ -181,3 +218,4 @@ export default function AppSidebar() {
         </Sidebar>
     );
 }
+

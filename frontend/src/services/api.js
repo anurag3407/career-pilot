@@ -255,6 +255,17 @@ export const enhanceApi = {
       headers
     })
     return handleResponse(response)
+  },
+
+  // Generate job application emails
+  async generateEmail(data) {
+    const headers = await getAuthHeaders()
+    const response = await fetch(`${API_BASE}/enhance/generate-email`, {
+      method: 'POST',
+      headers,
+      body: JSON.stringify(data)
+    })
+    return handleResponse(response)
   }
 }
 
@@ -839,6 +850,118 @@ export const interviewApi = {
   }
 }
 
+// ============ USER PROFILE API ============
+export const userProfileApi = {
+  async getMyProfile() {
+    const headers = await getAuthHeaders()
+    const response = await fetch(`${API_BASE}/user-profiles/me`, { method: 'GET', headers })
+    return handleResponse(response)
+  },
+
+  async updateMyProfile(data) {
+    const headers = await getAuthHeaders()
+    const response = await fetch(`${API_BASE}/user-profiles/me`, {
+      method: 'PUT',
+      headers,
+      body: JSON.stringify(data)
+// ============ TWO-FACTOR AUTH API ============
+export const twoFactorApi = {
+  async getStatus() {
+    const headers = await getAuthHeaders()
+    const response = await fetch(`${API_BASE}/auth/2fa/status`, {
+      method: 'GET',
+      headers
+    })
+    return handleResponse(response)
+  },
+
+  async setup() {
+    const headers = await getAuthHeaders()
+    const response = await fetch(`${API_BASE}/auth/2fa/setup`, {
+      method: 'POST',
+      headers
+    })
+    return handleResponse(response)
+  },
+
+  async getMyStats() {
+    const headers = await getAuthHeaders()
+    const response = await fetch(`${API_BASE}/user-profiles/me/stats`, { method: 'GET', headers })
+    return handleResponse(response)
+  },
+
+  async getMyActivity() {
+    const headers = await getAuthHeaders()
+    const response = await fetch(`${API_BASE}/user-profiles/me/activity`, { method: 'GET', headers })
+    return handleResponse(response)
+  },
+
+  async getProfile(uid) {
+    const headers = await getAuthHeaders()
+    const response = await fetch(`${API_BASE}/user-profiles/${uid}`, { method: 'GET', headers })
+    return handleResponse(response)
+  },
+
+  async getStats(uid) {
+    const headers = await getAuthHeaders()
+    const response = await fetch(`${API_BASE}/user-profiles/${uid}/stats`, { method: 'GET', headers })
+    return handleResponse(response)
+  },
+
+  async getActivity(uid) {
+    const headers = await getAuthHeaders()
+    const response = await fetch(`${API_BASE}/user-profiles/${uid}/activity`, { method: 'GET', headers })
+  async enable(secret, token) {
+    const headers = await getAuthHeaders()
+    const response = await fetch(`${API_BASE}/auth/2fa/enable`, {
+      method: 'POST',
+      headers,
+      body: JSON.stringify({ secret, token })
+    })
+    return handleResponse(response)
+  },
+
+  async disable(token) {
+    const headers = await getAuthHeaders()
+    const response = await fetch(`${API_BASE}/auth/2fa/disable`, {
+      method: 'POST',
+      headers,
+      body: JSON.stringify({ token })
+    })
+    return handleResponse(response)
+  },
+
+  async verify(token) {
+    const headers = await getAuthHeaders()
+    const response = await fetch(`${API_BASE}/auth/2fa/verify`, {
+      method: 'POST',
+      headers,
+      body: JSON.stringify({ token })
+    })
+    return handleResponse(response)
+  },
+
+  async verifyBackup(code) {
+    const headers = await getAuthHeaders()
+    const response = await fetch(`${API_BASE}/auth/2fa/verify-backup`, {
+      method: 'POST',
+      headers,
+      body: JSON.stringify({ code })
+    })
+    return handleResponse(response)
+  },
+
+  async regenerateBackupCodes(token) {
+    const headers = await getAuthHeaders()
+    const response = await fetch(`${API_BASE}/auth/2fa/backup-codes/regenerate`, {
+      method: 'POST',
+      headers,
+      body: JSON.stringify({ token })
+    })
+    return handleResponse(response)
+  }
+}
+
 // ============ PAYMENT API ============
 export const paymentApi = {
   // Create Razorpay order for proposal acceptance
@@ -879,6 +1002,28 @@ export const paymentApi = {
     const response = await fetch(`${API_BASE}/payments/status/${roomId}`, {
       method: 'GET',
       headers
+    })
+    return handleResponse(response)
+  }
+  
+}
+// ============ NOTIFICATION PREFERENCES API ============
+export const notificationApi = {
+  async getPreferences() {
+    const headers = await getAuthHeaders()
+    const response = await fetch(`${API_BASE}/auth/notification-preferences`, {
+      method: 'GET',
+      headers
+    })
+    return handleResponse(response)
+  },
+
+  async updatePreferences(preferences) {
+    const headers = await getAuthHeaders()
+    const response = await fetch(`${API_BASE}/auth/notification-preferences`, {
+      method: 'PUT',
+      headers,
+      body: JSON.stringify(preferences)
     })
     return handleResponse(response)
   }

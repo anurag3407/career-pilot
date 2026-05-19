@@ -3,12 +3,21 @@ import { verifyToken } from '../middleware/auth.js';
 import { asyncHandler, ApiError } from '../middleware/errorHandler.js';
 import TrackedJob from '../models/TrackedJob.model.js';
 
+function isValidWebUrl(str) {
+  try {
+    const url = new URL(str);
+    return url.protocol === 'http:' || url.protocol === 'https:';
+  } catch {
+    return false;
+  }
+}
+
 const router = express.Router();
 
 // Get all tracked jobs for a user
 router.get('/', verifyToken, asyncHandler(async (req, res) => {
   const userId = req.user.uid;
-  
+
   const userJobs = await TrackedJob.find({ userId })
     .sort({ createdAt: -1 })
     .lean();
@@ -30,7 +39,7 @@ router.get('/', verifyToken, asyncHandler(async (req, res) => {
 // Get tracker stats for a user
 router.get('/stats', verifyToken, asyncHandler(async (req, res) => {
   const userId = req.user.uid;
-  
+
   // Use MongoDB aggregation for efficient stats calculation
   const statsPipeline = [
     { $match: { userId } },
@@ -43,7 +52,7 @@ router.get('/stats', verifyToken, asyncHandler(async (req, res) => {
   ];
 
   const results = await TrackedJob.aggregate(statsPipeline);
-  
+
   // Build stats object
   const stats = {
     total: 0,
@@ -68,10 +77,10 @@ router.get('/stats', verifyToken, asyncHandler(async (req, res) => {
 // Track a new job
 router.post('/', verifyToken, asyncHandler(async (req, res) => {
   const userId = req.user.uid;
-  const { 
+  const {
     jobId,
-    title, 
-    company, 
+    title,
+    company,
     location,
     jobType,
     salary,
@@ -82,6 +91,10 @@ router.post('/', verifyToken, asyncHandler(async (req, res) => {
 
   if (!title || !company) {
     throw new ApiError(400, 'Job title and company are required');
+  }
+
+  if (applyLink && !isValidWebUrl(applyLink)) {
+    throw new ApiError(400, 'applyLink must be a valid URL starting with http:// or https://');
   }
 
   // Check if job already tracked (handled by unique index, but check explicitly for better error message)
@@ -140,8 +153,19 @@ router.put('/:trackerId', verifyToken, asyncHandler(async (req, res) => {
   }
 
   const updateData = {};
-  if (status) updateData.$set = { status };
-  if (notes) updateData.$push = { notes: { text: notes, createdAt: new Date() } };
+
+  if (status) {
+    updateData.status = status;
+  }
+
+  if (notes) {
+    updateData.$push = {
+      notes: {
+        content: notes,
+        createdAt: new Date()
+      }
+    };
+  }
 
   const updatedJob = await TrackedJob.findOneAndUpdate(
     { _id: trackerId, userId },

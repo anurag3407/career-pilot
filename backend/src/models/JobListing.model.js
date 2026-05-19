@@ -86,5 +86,5 @@ jobListingSchema.index({ title: 'text', company: 'text', description: 'text' });
 jobListingSchema.index({ source: 1, fetchedAt: -1 });
 jobListingSchema.index({ location: 1, isRemote: 1 });
 jobListingSchema.index({ createdAt: -1 });
-
+// Text index for global search
 export default mongoose.model('JobListing', jobListingSchema);
