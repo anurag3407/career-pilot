@@ -6,11 +6,19 @@ import { verifyToken } from '../middleware/auth.js';
 import { extractAIProvider } from '../middleware/aiKey.js';
 import { asyncHandler, ApiError } from '../middleware/errorHandler.js';
 import { aiRateLimiter } from '../middleware/rateLimiter.js';
+import { validate } from '../middleware/validate.js';
+import {
+  enhanceResumeSchema,
+  resumeTextJobRoleSchema,
+  beforeAfterSchema,
+  generateEmailSchema,
+  optimizeLinkedInSchema,
+} from '../schemas/enhance.schema.js';
 
 const router = express.Router();
 
 // Enhance resume with AI
-router.post('/', verifyToken, extractAIProvider, aiRateLimiter, asyncHandler(async (req, res) => {
+router.post('/', verifyToken, extractAIProvider, aiRateLimiter, validate(enhanceResumeSchema), asyncHandler(async (req, res) => {
   const { resumeText, preferences } = req.body;
 
   if (!resumeText || !resumeText.trim()) {
@@ -50,7 +58,7 @@ router.post('/', verifyToken, extractAIProvider, aiRateLimiter, asyncHandler(asy
 }));
 
 // Generate summary only
-router.post('/summary', verifyToken, extractAIProvider, aiRateLimiter, asyncHandler(async (req, res) => {
+router.post('/summary', verifyToken, extractAIProvider, aiRateLimiter, validate(resumeTextJobRoleSchema), asyncHandler(async (req, res) => {
   const { resumeText, jobRole } = req.body;
 
   if (!resumeText || !resumeText.trim()) {
@@ -79,7 +87,7 @@ router.post('/summary', verifyToken, extractAIProvider, aiRateLimiter, asyncHand
 }));
 
 // Get improvement suggestions
-router.post('/suggestions', verifyToken, extractAIProvider, aiRateLimiter, asyncHandler(async (req, res) => {
+router.post('/suggestions', verifyToken, extractAIProvider, aiRateLimiter, validate(resumeTextJobRoleSchema), asyncHandler(async (req, res) => {
   const { resumeText, jobRole } = req.body;
 
   if (!resumeText || !resumeText.trim()) {
@@ -108,7 +116,7 @@ router.post('/suggestions', verifyToken, extractAIProvider, aiRateLimiter, async
 }));
 
 // Analyze ATS score
-router.post('/ats-analysis', verifyToken, extractAIProvider, aiRateLimiter, asyncHandler(async (req, res) => {
+router.post('/ats-analysis', verifyToken, extractAIProvider, aiRateLimiter, validate(resumeTextJobRoleSchema), asyncHandler(async (req, res) => {
   const { resumeText, jobRole } = req.body;
 
   if (!resumeText || !resumeText.trim()) {
@@ -135,7 +143,7 @@ router.post('/ats-analysis', verifyToken, extractAIProvider, aiRateLimiter, asyn
 }));
 
 // Comprehensive resume analysis (Senior Expert Level)
-router.post('/comprehensive-analysis', verifyToken, extractAIProvider, aiRateLimiter, asyncHandler(async (req, res) => {
+router.post('/comprehensive-analysis', verifyToken, extractAIProvider, aiRateLimiter, validate(resumeTextJobRoleSchema), asyncHandler(async (req, res) => {
   const { resumeText, jobRole } = req.body;
 
   if (!resumeText || !resumeText.trim()) {
@@ -162,7 +170,7 @@ router.post('/comprehensive-analysis', verifyToken, extractAIProvider, aiRateLim
 }));
 
 // Analyze individual bullet points
-router.post('/analyze-bullets', verifyToken, extractAIProvider, aiRateLimiter, asyncHandler(async (req, res) => {
+router.post('/analyze-bullets', verifyToken, extractAIProvider, aiRateLimiter, validate(resumeTextJobRoleSchema), asyncHandler(async (req, res) => {
   const { resumeText, jobRole } = req.body;
 
   if (!resumeText || !resumeText.trim()) {
@@ -189,7 +197,7 @@ router.post('/analyze-bullets', verifyToken, extractAIProvider, aiRateLimiter, a
 }));
 
 // Generate before/after comparison
-router.post('/before-after', verifyToken, extractAIProvider, aiRateLimiter, asyncHandler(async (req, res) => {
+router.post('/before-after', verifyToken, extractAIProvider, aiRateLimiter, validate(beforeAfterSchema), asyncHandler(async (req, res) => {
   const { resumeText, jobRole, analysisResults } = req.body;
 
   if (!resumeText || !resumeText.trim()) {
@@ -226,7 +234,7 @@ router.get('/verb-lists', verifyToken, asyncHandler(async (req, res) => {
 }));
 
 // Generate Email Variants
-router.post('/generate-email', verifyToken, extractAIProvider, aiRateLimiter, asyncHandler(async (req, res) => {
+router.post('/generate-email', verifyToken, extractAIProvider, aiRateLimiter, validate(generateEmailSchema), asyncHandler(async (req, res) => {
   const { resume, jobDesc, tone } = req.body;
 
   if (!resume || !jobDesc) {
@@ -249,7 +257,7 @@ router.post('/generate-email', verifyToken, extractAIProvider, aiRateLimiter, as
 }));
 
 // Optimize LinkedIn Profile
-router.post('/optimize-linkedin', verifyToken, aiRateLimiter, asyncHandler(async (req, res) => {
+router.post('/optimize-linkedin', verifyToken, aiRateLimiter, validate(optimizeLinkedInSchema), asyncHandler(async (req, res) => {
   const { profileText, targetRole } = req.body;
   const normalizedProfile = typeof profileText === 'string' ? profileText.trim() : '';
   const normalizedRole = typeof targetRole === 'string' ? targetRole.trim() : '';
