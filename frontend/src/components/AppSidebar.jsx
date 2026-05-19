@@ -11,7 +11,6 @@ import {
     FileText,
     LogOut,
     Settings,
-    Zap,
     User,
     ShieldCheck,
     Sun,
