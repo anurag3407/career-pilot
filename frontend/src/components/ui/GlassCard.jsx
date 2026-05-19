@@ -23,10 +23,12 @@ export const GlassCard = ({
 
   return (
     <div
-      className={`${baseStyles} ${variants[variant]} ${className}`}
+      className={`group ${baseStyles} ${
+        variants[variant] ?? variants.default
+      } ${className}`}
     >
       {variant === "interactive" && (
-        <div className="absolute inset-0 bg-gradient-to-tr from-cyan-500/10 via-transparent to-purple-500/10 opacity-0 hover:opacity-100 transition-opacity duration-300 pointer-events-none" />
+        <div className="absolute inset-0 bg-gradient-to-tr from-cyan-500/10 via-transparent to-purple-500/10 opacity-0 group-hover:opacity-100 transition-opacity duration-300 pointer-events-none" />
       )}
 
       <div className="relative z-10">

@@ -1,13 +1,28 @@
-## Task Description
+## Description
+Brief description of changes
 
-## Proposed Changes
+## Type of Change
+- [ ] Bug fix
+- [ ] New feature
+- [ ] Documentation update
+- [ ] Performance improvement
+- [ ] Other (describe)
 
-## Benefits
+## Related Issue
+Fixes #(issue number)
 
-## Testing / Validation
-- [ ] Tested locally
-- [ ] Screenshots/videos attached (if UI)
-- [ ] Edge cases checked
-- [ ] No console errors
+## Testing
+- [ ] Unit tests pass
+- [ ] Tested Locally
+- [ ] New tests added
 
-## Additional Notes
+## Screenshots (MANDATORY for UI/UX changes)
+- [ ] Attached Screenshots or Screen Recordings (showing before and after)
+- *If your PR does not make any visual/UI changes, please write "N/A"*
+
+## Checklist
+- [ ] Code follows project style guidelines
+- [ ] Self-reviewed my code
+- [ ] Added comments where necessary
+- [ ] Updated documentation
+- [ ] No new warnings generated
