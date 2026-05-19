@@ -2,7 +2,7 @@ const DragHandle = () => {
   return (
     <div
       className="cursor-grab active:cursor-grabbing opacity-0 group-hover:opacity-100 transition-opacity duration-200"
-      aria-label="Drag Handle"
+      // aria-label="Drag Handle"
     >
       <div className="grid grid-cols-2 gap-1">
         {[...Array(6)].map((_, index) => (
