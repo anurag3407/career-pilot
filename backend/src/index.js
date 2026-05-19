@@ -105,7 +105,7 @@ app.use('/api/community', communityRoutes);
 app.use('/api/fellowship', fellowshipRoutes);
 app.use('/api/interview', interviewRoutes);
 app.use('/api/payments', paymentRoutes);
-app.use('/api/ai', portfolioRoutes);
+app.use('/api/portfolio', portfolioRoutes);
 
 app.use((req, res) => {
   res.status(404).json({ error: 'Route not found' });

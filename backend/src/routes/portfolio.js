@@ -24,9 +24,9 @@ router.post('/enhance-portfolio-content', verifyToken, asyncHandler(async (req, 
     throw new ApiError(400, `Invalid sectionType. Allowed: ${VALID_SECTIONS.join(', ')}`);
   }
 
-  if (typeof content !== 'object') {
-    throw new ApiError(400, 'content must be an object.');
-  }
+  if (content === null || Array.isArray(content) || typeof content !== 'object') {
+  throw new ApiError(400, 'content must be a non-null object.');
+}
 
   const result = await enhanceSection(sectionType, content);
 

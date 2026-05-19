@@ -1,6 +1,10 @@
 import { GoogleGenerativeAI } from '@google/generative-ai';
 
-const genAI = new GoogleGenerativeAI(process.env.GEMINI_API_KEY);
+const geminiApiKey = process.env.GEMINI_API_KEY;
+if (!geminiApiKey || !geminiApiKey.trim()) {
+  throw new Error('GEMINI_API_KEY environment variable is required');
+}
+const genAI = new GoogleGenerativeAI(geminiApiKey);
 
 const SECTION_PROMPTS = {
   hero: (content) => `
@@ -31,7 +35,7 @@ You are a technical portfolio expert. Enhance this project description with impa
 Original content:
 Name: ${content.name || ''}
 Description: ${content.description || ''}
-Technologies: ${(content.technologies || []).join(', ')}
+Technologies: ${Array.isArray(content.technologies) ? content.technologies.join(', ') : (content.technologies || '')}
 Role: ${content.role || ''}
 
 Requirements:
@@ -91,12 +95,6 @@ Respond ONLY with valid JSON in this exact format:
 }`,
 };
 
-/**
- * Enhance a portfolio section using Gemini AI
- * @param {string} sectionType - 'hero' | 'projects' | 'about' | 'skills'
- * @param {object} content - Original section content
- * @returns {object} - { original, enhanced, improvements }
- */
 export const enhanceSection = async (sectionType, content) => {
   const promptBuilder = SECTION_PROMPTS[sectionType];
 
@@ -110,9 +108,18 @@ export const enhanceSection = async (sectionType, content) => {
   const result = await model.generateContent(prompt);
   const responseText = result.response.text();
 
-  // Strip markdown code fences if present
   const clean = responseText.replace(/```json|```/g, '').trim();
-  const enhanced = JSON.parse(clean);
+
+  let enhanced;
+  try {
+    enhanced = JSON.parse(clean);
+  } catch (error) {
+    const parseError = new Error('AI returned invalid JSON');
+    parseError.statusCode = 502;
+    parseError.cause = error;
+    parseError.responseText = responseText;
+    throw parseError;
+  }
 
   return {
     sectionType,
