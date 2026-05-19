@@ -2,6 +2,8 @@
 
 This guide helps you deploy the project using popular platforms. No prior setup assumed.
 
+> ⚠️ Note: This guide primarily covers frontend deployment. Backend services (Node.js, MongoDB, Redis) should be deployed separately using platforms like Render, Railway, or similar.
+
 ---
 
 ## 🌐 Overview
@@ -18,7 +20,8 @@ Each section includes:
 * Account setup
 * Configuration
 * Environment variables
-* Testing
+* API token (if required)
+* Testing & validation
 * Troubleshooting
 
 ---
@@ -44,45 +47,52 @@ flowchart TD
 ## 2. Create Project
 
 * Go to **Pages → Create Project**
-* Connect your GitHub repo
+* Connect your GitHub repository
 
 ## 3. Build Settings
 
 * Framework preset: None / Vite
 * Build command:
 
-  ```bash
-  npm run build
-  ```
+```bash
+npm run build
+```
+
 * Output directory:
 
-  ```text
-  dist
-  ```
-
-## 4. Environment Variables
-
-Add:
-
-```
-VITE_API_URL=http://your-backend-url
+```text
+dist
 ```
 
-## 5. Deploy
+## 4. API Token (Optional)
+
+* Go to **My Profile → API Tokens**
+* Create a token if using advanced integrations
+* Keep it secure
+
+## 5. Environment Variables
+
+```bash
+VITE_API_URL=https://your-backend-url
+```
+
+## 6. Deploy
 
 * Click **Deploy**
-* Wait for build
+* Wait for build completion
 
-## 6. Test
+## 7. Integration Testing
 
-* Open provided URL
-* Check UI + API calls
+* Open deployed URL
+* Verify UI loads correctly
+* Check API calls in browser network tab
+* Ensure environment variables are working
 
 ## ⚠️ Troubleshooting
 
 * Build fails → check Node version
-* Blank page → wrong build folder
-* API issues → wrong env variable
+* Blank page → incorrect build folder
+* API issues → incorrect environment variable
 
 ---
 
@@ -90,12 +100,10 @@ VITE_API_URL=http://your-backend-url
 
 ## 1. Setup
 
-* Go to repo → Settings → Pages
-* Select branch: `main` / `gh-pages`
+* Go to repository → Settings → Pages
+* Select branch: `main` or `gh-pages`
 
 ## 2. Build
-
-If using Vite:
 
 ```bash
 npm run build
@@ -103,7 +111,7 @@ npm run build
 
 ## 3. Deploy
 
-Use:
+Install:
 
 ```bash
 npm install gh-pages --save-dev
@@ -123,10 +131,21 @@ Run:
 npm run deploy
 ```
 
+## 4. API Token / Access
+
+* Uses your GitHub account permissions
+* Ensure repo has proper access
+
+## 5. Integration Testing
+
+* Open deployed site
+* Refresh routes to check SPA behavior
+* Verify assets load correctly
+
 ## ⚠️ Troubleshooting
 
 * 404 on refresh → SPA routing issue
-* Assets not loading → wrong base path
+* Assets not loading → incorrect base path
 
 ---
 
@@ -145,26 +164,36 @@ npm run deploy
 
 * Build command:
 
-  ```bash
-  npm run build
-  ```
+```bash
+npm run build
+```
+
 * Publish directory:
 
-  ```text
-  dist
-  ```
-
-## 4. Environment Variables
-
-Set:
-
-```
-VITE_API_URL=http://your-backend-url
+```text
+dist
 ```
 
-## 5. Deploy
+## 4. API Token (Optional)
+
+* Go to **User Settings → Applications → Personal Access Tokens**
+* Generate token if needed for automation
+
+## 5. Environment Variables
+
+```bash
+VITE_API_URL=https://your-backend-url
+```
+
+## 6. Deploy
 
 * Click **Deploy site**
+
+## 7. Integration Testing
+
+* Verify deployed URL
+* Check environment variables applied
+* Inspect console for errors
 
 ## ⚠️ Troubleshooting
 
@@ -183,24 +212,39 @@ VITE_API_URL=http://your-backend-url
 ## 2. Configure
 
 * Framework: Vite / React
-* Auto-detected usually
+* Usually auto-detected
 
-## 3. Environment Variables
+## 3. API Token (Optional)
 
-Add:
+* Go to **Settings → Tokens**
+* Generate token if using CLI or automation
 
+## 4. Environment Variables
+
+```bash
+VITE_API_URL=https://your-backend-url
 ```
-VITE_API_URL=http://your-backend-url
-```
 
-## 4. Deploy
+## 5. Deploy
 
 * Click **Deploy**
 
+## 6. Integration Testing
+
+* Open deployed app
+* Verify API connectivity
+* Check logs for build/runtime issues
+
 ## ⚠️ Troubleshooting
 
-* API errors → wrong backend URL
+* API errors → incorrect backend URL
 * Build issues → check logs
+
+---
+
+# 📸 Screenshots (Optional)
+
+You can include dashboard screenshots for each provider to improve clarity for beginners.
 
 ---
 
@@ -215,6 +259,6 @@ VITE_API_URL=http://your-backend-url
 
 # 🎯 Notes
 
-* Do not deploy backend secrets publicly
+* Do not expose backend secrets publicly
 * Always verify environment variables
 * Use HTTPS URLs for production
