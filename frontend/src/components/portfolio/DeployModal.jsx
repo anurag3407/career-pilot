@@ -18,6 +18,17 @@ const LOADING_STATUSES = [
   "Finalizing configuration..."
 ];
 
+/**
+ * DeployModal Component.
+ * Renders a multi-state dialog supporting target provider selection,
+ * build loading indicators, celebratory success confetti, and copy-link triggers.
+ *
+ * @param {Object} props - The component properties.
+ * @param {boolean} props.isOpen - Dictates whether the modal is visible.
+ * @param {Function} props.onClose - Triggered when closing the modal window.
+ * @param {string} [props.portfolioTitle] - The stable target portfolio title.
+ * @returns {JSX.Element|null} The rendered component node or null.
+ */
 export default function DeployModal({ isOpen, onClose, portfolioTitle = "My Portfolio" }) {
   const [step, setStep] = useState('select'); // 'select', 'loading', 'success', 'error'
   const [selectedProvider, setSelectedProvider] = useState('github');
@@ -28,12 +39,14 @@ export default function DeployModal({ isOpen, onClose, portfolioTitle = "My Port
   
   const statusTimerRef = useRef(null);
   const confettiIntervalRef = useRef(null);
+  const deployTimeoutRef = useRef(null);
 
   // Clear timers/confetti on unmount
   useEffect(() => {
     return () => {
       if (statusTimerRef.current) clearInterval(statusTimerRef.current);
       if (confettiIntervalRef.current) clearInterval(confettiIntervalRef.current);
+      if (deployTimeoutRef.current) clearTimeout(deployTimeoutRef.current);
       confetti.reset();
     };
   }, []);
@@ -58,6 +71,11 @@ export default function DeployModal({ isOpen, onClose, portfolioTitle = "My Port
     }
   }, [step]);
 
+  /**
+   * Triggers a smooth, high-performance canvas-confetti burst animation.
+   * Fires multi-directional bursts for exactly 3 seconds and clears cleanly.
+   * @returns {void}
+   */
   const triggerConfetti = () => {
     const duration = 3000;
     const animationEnd = Date.now() + duration;
@@ -89,11 +107,16 @@ export default function DeployModal({ isOpen, onClose, portfolioTitle = "My Port
     }, 250);
   };
 
+  /**
+   * Initiates the portfolio deployment simulation sequence.
+   * Updates state to loading and schedules success/error transitions.
+   * @returns {void}
+   */
   const handleDeploy = () => {
     setStep('loading');
     
     // Simulate deployment process (3.5 seconds)
-    setTimeout(() => {
+    deployTimeoutRef.current = setTimeout(() => {
       // Simulate success/failure randomly (90% success rate for simulation)
       const isSuccess = Math.random() < 0.9;
       
@@ -118,6 +141,11 @@ export default function DeployModal({ isOpen, onClose, portfolioTitle = "My Port
     }, 3500);
   };
 
+  /**
+   * Copies the generated deployed URL directly to the user's clipboard.
+   * Triggers a success toast notification and manages copying animation state.
+   * @returns {Promise<void>} Resolves when copying finishes.
+   */
   const handleCopyLink = async () => {
     if (!deployedUrl) return;
     try {
@@ -131,6 +159,11 @@ export default function DeployModal({ isOpen, onClose, portfolioTitle = "My Port
     }
   };
 
+  /**
+   * Handles resetting the state and closing the modal.
+   * Cancels any active deployment timeouts, status timers, or confetti loops.
+   * @returns {void}
+   */
   const handleClose = () => {
     // Reset state on close
     setStep('select');
@@ -139,6 +172,10 @@ export default function DeployModal({ isOpen, onClose, portfolioTitle = "My Port
     if (confettiIntervalRef.current) {
       clearInterval(confettiIntervalRef.current);
       confettiIntervalRef.current = null;
+    }
+    if (deployTimeoutRef.current) {
+      clearTimeout(deployTimeoutRef.current);
+      deployTimeoutRef.current = null;
     }
     confetti.reset();
     onClose();
