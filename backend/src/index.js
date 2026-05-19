@@ -21,6 +21,7 @@ import interviewRoutes from './routes/interview.js';
 import paymentRoutes from './routes/payments.js';
 import userProfileRoutes from './routes/userProfile.js';
 import twoFactorRoutes from './routes/twoFactor.js';
+import aiRoutes from './routes/ai.js';
 
 import { errorHandler } from './middleware/errorHandler.js';
 
@@ -113,6 +114,7 @@ app.use('/api/portfolio', portfolioRoutes);
 app.use('/api/user-profiles', userProfileRoutes);
 app.use('/api/auth/2fa', twoFactorRoutes);
 app.use('/api/search', searchRoutes);
+app.use('/api/ai', aiRoutes);
 
 app.use((req, res) => {
   res.status(404).json({ error: 'Route not found' });
