@@ -47,6 +47,10 @@ const connectDB = async (...args) => {
   }
 };
 
+import {
+  scheduleWeeklyDigest
+} from './services/weeklyDigestService.js';
+
 const app = express();
 const httpServer = createServer(app);
 const PORT = process.env.PORT || 5000;
@@ -183,6 +187,15 @@ const startServer = async () => {
       await initJobFetcher();
     } catch (fetcherError) {
       console.warn('⚠️ Job fetcher initialization skipped:', fetcherError.message);
+    }
+
+    try {
+      scheduleWeeklyDigest();
+    } catch (digestError) {
+      console.warn(
+        '⚠️ Weekly digest scheduler initialization skipped:',
+        digestError.message
+      );
     }
 
   } catch (error) {

@@ -1,0 +1,87 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+
+  <title>Weekly Career Digest</title>
+
+  <style>
+    body {
+      font-family: Arial, sans-serif;
+      background-color: #f4f4f4;
+      margin: 0;
+      padding: 0;
+    }
+
+    .container {
+      max-width: 640px;
+      margin: 40px auto;
+      background: #ffffff;
+      padding: 32px;
+      border-radius: 12px;
+    }
+
+    h1 {
+      color: #222222;
+      margin-bottom: 8px;
+    }
+
+    h2 {
+      color: #444444;
+      margin-top: 32px;
+    }
+
+    p {
+      color: #555555;
+      line-height: 1.6;
+    }
+
+    ul {
+      padding-left: 20px;
+    }
+
+    li {
+      margin-bottom: 10px;
+      color: #444444;
+    }
+
+    .footer {
+      margin-top: 40px;
+      font-size: 12px;
+      color: #888888;
+      text-align: center;
+    }
+  </style>
+</head>
+
+<body>
+  <div class="container">
+    <h1>Weekly Career Insights</h1>
+
+    <p>
+      Hello {{USER_NAME}},
+    </p>
+
+    <p>
+      Here is your AI-generated weekly career digest based on your recent activity.
+    </p>
+
+    <h2>Insights</h2>
+
+    <p>
+      {{INSIGHTS}}
+    </p>
+
+    <h2>Recently Tracked Jobs</h2>
+
+    <ul>
+      {{TRACKED_JOBS}}
+    </ul>
+
+    <div class="footer">
+      Career Pilot Weekly Digest
+    </div>
+  </div>
+</body>
+</html>
