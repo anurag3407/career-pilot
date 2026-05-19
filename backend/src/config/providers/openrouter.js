@@ -77,4 +77,31 @@ export class OpenRouterAdapter {
       throw new Error(`OpenRouter API Error: ${error.message}`);
     }
   }
+
+  async *generateContentStream(prompt) {
+    try {
+      const completion = await withRetry(() =>
+        this.client.chat.completions.create({
+          model: this.modelName,
+          messages: [{ role: 'user', content: prompt }],
+          temperature: 0.7,
+          stream: true,
+        })
+      );
+      let fullText = '';
+      for await (const chunk of completion) {
+        const text = chunk.choices[0]?.delta?.content || '';
+        fullText += text;
+        yield { text, fullText };
+      }
+      const u = completion.usage;
+      yield { done: true, usage: u ? { prompt: u.prompt_tokens ?? 0, completion: u.completion_tokens ?? 0, total: u.total_tokens ?? 0 } : undefined };
+    } catch (error) {
+      console.error('OpenRouter generateContentStream Error:', error);
+      if (error?.status === 401) throw new Error('OpenRouter API Key is invalid.');
+      if (error?.status === 402) throw new Error('OpenRouter account has insufficient credits.');
+      if (error?.status === 429) throw new Error('OpenRouter rate limit exceeded.');
+      throw new Error(`OpenRouter API Error: ${error.message}`);
+    }
+  }
 }

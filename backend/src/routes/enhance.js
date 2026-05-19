@@ -1,11 +1,13 @@
 import express from 'express';
-import { enhanceResume, generateSummary, suggestImprovements, analyzeATSScore, analyzeResumeComprehensive, analyzeBulletPoints, generateBeforeAfter, getVerbLists } from '../config/langchain.js';
+import { enhanceResume, generateSummary, suggestImprovements, analyzeATSScore, analyzeResumeComprehensive, analyzeBulletPoints, generateBeforeAfter, getVerbLists, getSystemPrompt } from '../config/langchain.js';
 import { generateEmails } from '../services/emailGeneratorService.js';
 import { optimizeLinkedInProfile } from '../services/linkedinOptimizerService.js';
 import { verifyToken } from '../middleware/auth.js';
 import { extractAIProvider } from '../middleware/aiKey.js';
 import { asyncHandler, ApiError } from '../middleware/errorHandler.js';
 import { aiRateLimiter } from '../middleware/rateLimiter.js';
+import { createSSEStream } from '../middleware/stream.js';
+import { getDefaultProvider } from '../config/aiProviders.js';
 
 const router = express.Router();
 
@@ -264,6 +266,88 @@ router.post('/optimize-linkedin', verifyToken, aiRateLimiter, asyncHandler(async
 
   const result = await optimizeLinkedInProfile(normalizedProfile, normalizedRole);
   res.json(result);
+}));
+
+// Streaming endpoint for resume enhancement
+router.post('/stream', verifyToken, extractAIProvider, aiRateLimiter, asyncHandler(async (req, res) => {
+  const { resumeText, preferences } = req.body;
+
+  if (!resumeText || !resumeText.trim()) {
+    throw new ApiError(400, 'Resume text is required');
+  }
+
+  if (!preferences || !preferences.jobRole) {
+    throw new ApiError(400, 'Job role preference is required');
+  }
+
+  const stream = createSSEStream(res);
+
+  try {
+    stream.sendProgress(10, 'Initializing AI model...');
+
+    const validatedPreferences = {
+      jobRole: preferences.jobRole,
+      yearsOfExperience: preferences.yearsOfExperience || 0,
+      skills: Array.isArray(preferences.skills) ? preferences.skills : [],
+      industry: preferences.industry || '',
+      customInstructions: preferences.customInstructions || ''
+    };
+
+    stream.sendProgress(20, 'Preparing prompt...');
+
+    const provider = req.aiProvider || getDefaultProvider();
+    const systemPrompt = getSystemPrompt(
+      validatedPreferences.jobRole,
+      validatedPreferences.yearsOfExperience,
+      validatedPreferences.skills,
+      validatedPreferences.industry,
+      validatedPreferences.customInstructions,
+      preferences.profileInfo || {}
+    );
+
+    const prompt = `${systemPrompt}\n\nPlease enhance the following resume:\n\n${resumeText}`;
+
+    stream.sendProgress(30, 'Processing resume with AI...');
+
+    if (!provider.generateContentStream) {
+      const result = await provider.generateContent(prompt);
+      stream.sendChunk(result.text, true);
+      stream.sendDone({ tokensUsed: result.usage });
+      stream.endStream();
+      return;
+    }
+
+    let fullText = '';
+    let tokensUsed = { prompt: 0, completion: 0, total: 0 };
+    let lastProgress = 30;
+
+    for await (const chunk of await provider.generateContentStream(prompt)) {
+      if (chunk.done) {
+        tokensUsed = chunk.usage || tokensUsed;
+        stream.sendDone({ tokensUsed });
+        break;
+      }
+
+      if (chunk.text) {
+        fullText += chunk.text;
+        stream.sendChunk(chunk.text, false);
+
+        const progress = Math.min(90, 30 + (fullText.length / 50));
+        if (progress - lastProgress > 5) {
+          stream.sendProgress(Math.round(progress), 'Generating enhanced resume...');
+          lastProgress = progress;
+        }
+      }
+    }
+
+    stream.sendProgress(100, 'Complete!');
+    stream.endStream();
+
+  } catch (error) {
+    console.error('Streaming enhancement error:', error);
+    stream.sendError(error.message || 'Failed to enhance resume');
+    stream.endStream();
+  }
 }));
 
 export default router;
