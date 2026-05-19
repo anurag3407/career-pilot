@@ -266,17 +266,33 @@ export const getChannelMessages = async (req, res, next) => {
 
 // ============ POST CONTROLLERS ============
 
-// Get all posts
+const transformPost = (doc) => {
+  const data = doc.data();
+  return {
+    id: doc.id,
+    ...data,
+    likeCount: (data.likes || []).length,
+    createdAt: data.createdAt?.toDate?.() || data.createdAt
+  };
+};
+
 export const getPosts = async (req, res, next) => {
   try {
-    const { page = 1, limit = 20, category, sortBy = 'latest' } = req.query;
-    const pageNum = parseInt(page);
-    const limitNum = parseInt(limit);
+    const { limit = 20, cursor, category, channelId, authorId, startDate, endDate, sortBy = 'latest' } = req.query;
+    const maxLimit = Math.min(parseInt(limit) || 20, 100);
 
     let query = postsRef.where('isDeleted', '==', false);
 
     if (category && category !== 'all') {
       query = query.where('category', '==', category);
+    }
+
+    if (channelId) {
+      query = query.where('channelId', '==', channelId);
+    }
+
+    if (authorId) {
+      query = query.where('author.uid', '==', authorId);
     }
 
     if (sortBy === 'popular') {
@@ -287,36 +303,62 @@ export const getPosts = async (req, res, next) => {
       query = query.orderBy('createdAt', 'desc');
     }
 
-    const startIndex = (pageNum - 1) * limitNum;
-    if (startIndex > 0) {
-      query = query.offset(startIndex);
+    if (cursor) {
+      try {
+        const cursorDoc = await postsRef.doc(cursor).get();
+        if (cursorDoc.exists) {
+          const postData = cursorDoc.data();
+          
+          if (sortBy === 'popular') {
+            query = query.startAfter(postData.likeCount, postData.createdAt);
+          } else if (sortBy === 'trending') {
+            query = query.startAfter(postData.views, postData.likeCount);
+          } else {
+            query = query.startAfter(postData.createdAt);
+          }
+        }
+      } catch (err) {
+        console.warn('Invalid cursor parameter');
+      }
     }
 
-    query = query.limit(limitNum);
+    const hasDateFilter = startDate || endDate;
+    
+    if (hasDateFilter) {
+      const snapshot = await query.limit(maxLimit * 2).get();
+      let posts = snapshot.docs.map(transformPost).filter(p => !p.status || p.status === 'published');
 
+      if (startDate) {
+        posts = posts.filter(p => new Date(p.createdAt) >= new Date(startDate));
+      }
+      if (endDate) {
+        posts = posts.filter(p => new Date(p.createdAt) <= new Date(endDate));
+      }
+
+      posts = posts.slice(0, maxLimit);
+      
+      return res.json({
+        success: true,
+        posts,
+        pagination: {
+          limit: maxLimit,
+          nextCursor: posts.length ? posts[posts.length - 1].id : null,
+          hasMore: posts.length === maxLimit
+        }
+      });
+    }
+
+    query = query.limit(maxLimit);
     const snapshot = await query.get();
-
-    const posts = snapshot.docs
-      .map(doc => {
-        const data = doc.data();
-        const likes = data.likes || [];
-        return {
-          id: doc.id,
-          ...data,
-          likeCount: likes.length,
-          createdAt: data.createdAt?.toDate?.() || data.createdAt
-        };
-      })
-      // Exclude posts that are still waiting for their scheduled publish time
-      .filter(post => !post.status || post.status === 'published');
+    const posts = snapshot.docs.map(transformPost).filter(p => !p.status || p.status === 'published');
 
     res.json({
       success: true,
       posts,
       pagination: {
-        page: pageNum,
-        limit: limitNum,
-        hasMore: snapshot.size === limitNum
+        limit: maxLimit,
+        nextCursor: snapshot.size === maxLimit ? snapshot.docs[snapshot.size - 1].id : null,
+        hasMore: snapshot.size === maxLimit
       }
     });
   } catch (error) {
