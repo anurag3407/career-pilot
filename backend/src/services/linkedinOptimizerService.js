@@ -64,7 +64,17 @@ export const optimizeLinkedInProfile = async (profileText, targetRole) => {
     `;
 
     try {
-        const result = await getModel().generateContent(prompt);
+        let timer;
+        const timeoutPromise = new Promise((_, reject) => {
+            timer = setTimeout(() => reject(new Error('AI Content generation timed out (max 30 seconds)')), 30000);
+        });
+
+        const result = await Promise.race([
+            getModel().generateContent(prompt),
+            timeoutPromise
+        ]);
+        clearTimeout(timer);
+
         const response = await result.response;
         const text = response.text();
 
