@@ -109,7 +109,6 @@ function App() {
                 },
               }}
             />
-
             <Routes>
               <Route path="/" element={<PublicRoute><Home /></PublicRoute>} />
               <Route path="/login" element={<PublicRoute><Login /></PublicRoute>} />
