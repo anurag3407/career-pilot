@@ -1,5 +1,5 @@
 import { useState, useEffect } from 'react'
-import { Link } from 'react-router-dom'
+import { Link, useSearchParams } from 'react-router-dom'
 import toast from 'react-hot-toast'
 import { motion, AnimatePresence } from 'framer-motion'
 import { formatDistanceToNow } from 'date-fns'
@@ -38,16 +38,17 @@ const POPULAR_SEARCHES = [
 ]
 
 export default function JobSearch() {
-  const [searchQuery, setSearchQuery] = useState('')
+  const [searchParams, setSearchParams] = useSearchParams()
+  const [searchQuery, setSearchQuery] = useState(searchParams.get('q') || '')
   const [jobs, setJobs] = useState([])
   const [loading, setLoading] = useState(false)
   const [hasSearched, setHasSearched] = useState(false)
   const [savedJobs, setSavedJobs] = useState(new Set())
   const [showFilters, setShowFilters] = useState(false)
   const [filters, setFilters] = useState({
-    jobType: 'All Types',
-    experienceLevel: 'All Levels',
-    location: ''
+    jobType: JOB_TYPES.includes(searchParams.get('jobType')) ? searchParams.get('jobType') : 'All Types',
+    experienceLevel: EXPERIENCE_LEVELS.includes(searchParams.get('experienceLevel')) ? searchParams.get('experienceLevel') : 'All Levels',
+    location: searchParams.get('location') || ''
   })
 
   // Load saved jobs on mount
@@ -74,12 +75,19 @@ export default function JobSearch() {
     setLoading(true)
     setHasSearched(true)
 
+    // Only persist non-default filter values for cleaner URLs
+    const params = { q: searchQuery }
+    if (filters.jobType !== 'All Types') params.jobType = filters.jobType
+    if (filters.experienceLevel !== 'All Levels') params.experienceLevel = filters.experienceLevel
+    if (filters.location) params.location = filters.location
+    setSearchParams(params)
+
     try {
       const response = await jobsApi.search(searchQuery, filters)
       setJobs(response.data || [])
 
       if (response.data?.length === 0) {
-        toast('No jobs found. Try different keywords.', { icon: 'ðŸ”' })
+        toast('No jobs found. Try different keywords.', { icon: '🔍' })
       } else {
         toast.success(`Found ${response.data.length} jobs!`)
       }
@@ -102,7 +110,7 @@ export default function JobSearch() {
     const jobId = job.job_id || job.id
 
     if (savedJobs.has(jobId)) {
-      toast('Job already saved to tracker', { icon: 'ðŸ“Œ' })
+      toast('Job already saved to tracker', { icon: '📌' })
       return
     }
 
@@ -144,9 +152,9 @@ export default function JobSearch() {
   }
 
   return (
-    <div className="min-h-screen bg-black">
+    <div className="min-h-screen bg-background">
       <div className="fixed inset-0 overflow-hidden pointer-events-none">
-        <div className="absolute top-1/4 left-0 w-96 h-96 bg-indigo-500/10 rounded-full blur-3xl" />
+        <div className="absolute top-1/4 left-0 w-96 h-96 bg-primary/10 rounded-full blur-3xl" />
         <div className="absolute bottom-1/4 right-0 w-96 h-96 bg-purple-500/10 rounded-full blur-3xl" />
       </div>
 
@@ -157,14 +165,14 @@ export default function JobSearch() {
           animate={{ opacity: 1, y: 0 }}
           className="text-center mb-10"
         >
-          <div className="inline-flex items-center gap-2 px-4 py-2 rounded-full bg-indigo-500/10 border border-indigo-500/20 text-indigo-400 text-sm mb-4">
+          <div className="inline-flex items-center gap-2 px-4 py-2 rounded-full bg-primary/10 border border-primary/20 text-primary text-sm mb-4">
             <Sparkles className="w-4 h-4" />
             AI-Powered Job Search
           </div>
-          <h1 className="text-4xl md:text-5xl font-bold text-white mb-3">
+          <h1 className="text-4xl md:text-5xl font-bold text-foreground mb-3">
             Find Your Dream Job
           </h1>
-          <p className="text-lg text-neutral-400 max-w-2xl mx-auto">
+          <p className="text-lg text-muted-foreground max-w-2xl mx-auto">
             Search thousands of opportunities and accelerate your career with careerpilot
           </p>
         </motion.div>
@@ -176,24 +184,25 @@ export default function JobSearch() {
           transition={{ delay: 0.1 }}
           className="mb-8"
         >
-          <div className="p-6 rounded-2xl bg-neutral-900/50 border border-neutral-800 backdrop-blur-sm">
+          <div className="p-6 rounded-2xl bg-background/50 border border-border backdrop-blur-sm">
             <form onSubmit={handleSearch} className="space-y-4">
               {/* Main Search Bar */}
               <div className="flex gap-3">
                 <div className="flex-1 relative">
-                  <Search className="absolute left-4 top-1/2 transform -translate-y-1/2 text-neutral-500 w-5 h-5" />
-               <input
-  type="text"
-  value={searchQuery}
-  onChange={(e) => setSearchQuery(e.target.value)}
-  placeholder="Job title, keywords, or company..."
-  className="w-full pl-12 pr-10 py-4 bg-neutral-800/50 border border-neutral-700 rounded-xl text-lg text-white placeholder-neutral-500 focus:ring-2 focus:ring-indigo-500 focus:border-transparent transition-all"
+                  <Search className="absolute left-4 top-1/2 transform -translate-y-1/2 text-muted-foreground w-5 h-5" />
+                  <input
+                    type="text"
+                    value={searchQuery}
+                    onChange={(e) => setSearchQuery(e.target.value)}
+                  placeholder="Job title, keywords, or company..."
+className="w-full pl-12 pr-10 py-4 bg-muted/50 border border-border rounded-xl text-lg text-foreground placeholder:text-muted-foreground focus:ring-2 focus:ring-primary focus:border-transparent transition-all"
 />
 {searchQuery && (
   <button
     type="button"
     onClick={() => setSearchQuery('')}
-    className="absolute right-4 top-1/2 transform -translate-y-1/2 text-neutral-500 hover:text-white transition-colors"
+    aria-label="Clear search"
+    className="absolute right-4 top-1/2 transform -translate-y-1/2 text-muted-foreground hover:text-foreground transition-colors"
   >
     <X className="w-5 h-5" />
   </button>
@@ -216,8 +225,8 @@ export default function JobSearch() {
                   type="button"
                   onClick={() => setShowFilters(!showFilters)}
                   className={`px-4 py-4 rounded-xl border transition-all cursor-pointer ${showFilters
-                    ? 'bg-indigo-500/20 border-indigo-500/30 text-indigo-400'
-                    : 'bg-neutral-800/50 border-neutral-700 text-neutral-400 hover:bg-neutral-800'
+                    ? 'bg-primary/20 border-primary/30 text-primary'
+                    : 'bg-muted/50 border-border text-muted-foreground hover:bg-muted'
                     }`}
                 >
                   <Filter className="w-5 h-5" />
@@ -233,15 +242,15 @@ export default function JobSearch() {
                     exit={{ height: 0, opacity: 0 }}
                     className="overflow-hidden"
                   >
-                    <div className="pt-4 border-t border-neutral-800 grid md:grid-cols-3 gap-4">
+                    <div className="pt-4 border-t border-border grid md:grid-cols-3 gap-4">
                       <div>
-                        <label className="block text-sm font-medium text-neutral-400 mb-2">
+                        <label className="block text-sm font-medium text-muted-foreground mb-2">
                           Job Type
                         </label>
                         <select
                           value={filters.jobType}
                           onChange={(e) => setFilters({ ...filters, jobType: e.target.value })}
-                          className="w-full px-4 py-3 bg-neutral-800/50 border border-neutral-700 rounded-lg text-white focus:ring-2 focus:ring-indigo-500"
+                          className="w-full px-4 py-3 bg-muted/50 border border-border rounded-lg text-foreground focus:ring-2 focus:ring-primary"
                         >
                           {JOB_TYPES.map(type => (
                             <option key={type} value={type}>{type}</option>
@@ -249,13 +258,13 @@ export default function JobSearch() {
                         </select>
                       </div>
                       <div>
-                        <label className="block text-sm font-medium text-neutral-400 mb-2">
+                        <label className="block text-sm font-medium text-muted-foreground mb-2">
                           Experience Level
                         </label>
                         <select
                           value={filters.experienceLevel}
                           onChange={(e) => setFilters({ ...filters, experienceLevel: e.target.value })}
-                          className="w-full px-4 py-3 bg-neutral-800/50 border border-neutral-700 rounded-lg text-white focus:ring-2 focus:ring-indigo-500"
+                          className="w-full px-4 py-3 bg-muted/50 border border-border rounded-lg text-foreground focus:ring-2 focus:ring-primary"
                         >
                           {EXPERIENCE_LEVELS.map(level => (
                             <option key={level} value={level}>{level}</option>
@@ -263,17 +272,17 @@ export default function JobSearch() {
                         </select>
                       </div>
                       <div>
-                        <label className="block text-sm font-medium text-neutral-400 mb-2">
+                        <label className="block text-sm font-medium text-muted-foreground mb-2">
                           Location
                         </label>
                         <div className="relative">
-                          <MapPin className="absolute left-3 top-1/2 transform -translate-y-1/2 text-neutral-500 w-4 h-4" />
+                          <MapPin className="absolute left-3 top-1/2 transform -translate-y-1/2 text-muted-foreground w-4 h-4" />
                           <input
                             type="text"
                             value={filters.location}
                             onChange={(e) => setFilters({ ...filters, location: e.target.value })}
                             placeholder="City, state, or remote"
-                            className="w-full pl-10 pr-4 py-3 bg-neutral-800/50 border border-neutral-700 rounded-lg text-white placeholder-neutral-500 focus:ring-2 focus:ring-indigo-500"
+                            className="w-full pl-10 pr-4 py-3 bg-muted/50 border border-border rounded-lg text-foreground placeholder:text-muted-foreground focus:ring-2 focus:ring-primary"
                           />
                         </div>
                       </div>
@@ -285,8 +294,8 @@ export default function JobSearch() {
 
             {/* Popular Searches */}
             {!hasSearched && (
-              <div className="mt-6 pt-4 border-t border-neutral-800">
-                <p className="text-sm text-neutral-500 mb-3 flex items-center gap-2">
+              <div className="mt-6 pt-4 border-t border-border">
+                <p className="text-sm text-muted-foreground mb-3 flex items-center gap-2">
                   <TrendingUp className="w-4 h-4" />
                   Trending searches
                 </p>
@@ -295,7 +304,7 @@ export default function JobSearch() {
                     <button
                       key={search}
                       onClick={() => handleQuickSearch(search)}
-                      className="px-4 py-2 bg-neutral-800 hover:bg-indigo-500/20 hover:text-indigo-400 hover:border-indigo-500/30 border border-neutral-700 rounded-full text-sm text-neutral-400 transition-all cursor-pointer"
+                      className="px-4 py-2 bg-muted hover:bg-primary/20 hover:text-primary hover:border-primary/30 border border-border rounded-full text-sm text-muted-foreground transition-all cursor-pointer"
                     >
                       {search}
                     </button>
@@ -310,10 +319,10 @@ export default function JobSearch() {
         {loading ? (
           <div className="flex flex-col items-center justify-center py-20">
             <div className="relative">
-              <div className="w-16 h-16 border-2 border-neutral-800 rounded-full" />
-              <div className="absolute top-0 left-0 w-16 h-16 border-2 border-transparent border-t-indigo-500 rounded-full animate-spin" />
+              <div className="w-16 h-16 border-2 border-border rounded-full" />
+              <div className="absolute top-0 left-0 w-16 h-16 border-2 border-transparent border-t-primary rounded-full animate-spin" />
             </div>
-            <p className="text-neutral-400 mt-4">Searching for opportunities...</p>
+            <p className="text-muted-foreground mt-4">Searching for opportunities...</p>
           </div>
         ) : hasSearched && jobs.length === 0 ? (
           <motion.div
@@ -321,11 +330,11 @@ export default function JobSearch() {
             animate={{ opacity: 1 }}
             className="text-center py-20"
           >
-            <div className="w-20 h-20 bg-neutral-800 rounded-full flex items-center justify-center mx-auto mb-4">
-              <Search className="w-10 h-10 text-neutral-600" />
+            <div className="w-20 h-20 bg-muted rounded-full flex items-center justify-center mx-auto mb-4">
+              <Search className="w-10 h-10 text-muted-foreground/80" />
             </div>
-            <h3 className="text-xl font-semibold text-white mb-2">No jobs found</h3>
-            <p className="text-neutral-400 mb-6">Try adjusting your search terms or filters</p>
+            <h3 className="text-xl font-semibold text-foreground mb-2">No jobs found</h3>
+            <p className="text-muted-foreground mb-6">Try adjusting your search terms or filters</p>
             <Button variant="ghost" onClick={() => setHasSearched(false)}>
               Clear Search
             </Button>
@@ -338,8 +347,8 @@ export default function JobSearch() {
           >
             {/* Results Header */}
             <div className="flex justify-between items-center mb-6">
-              <p className="text-neutral-400">
-                Found <span className="font-semibold text-white">{jobs.length}</span> jobs for "{searchQuery}"
+              <p className="text-muted-foreground">
+                Found <span className="font-semibold text-foreground">{jobs.length}</span> jobs for "{searchQuery}"
               </p>
               <Link to="/job-tracker">
                 <Button variant="ghost" className="flex items-center gap-2">
@@ -358,11 +367,11 @@ export default function JobSearch() {
                   animate={{ opacity: 1, y: 0 }}
                   transition={{ delay: index * 0.05 }}
                 >
-                  <div className="p-6 rounded-xl bg-neutral-900/50 border border-neutral-800 hover:border-neutral-700 transition-all group">
+                  <div className="p-6 rounded-xl bg-background/50 border border-border hover:border-border transition-all group">
                     <div className="flex justify-between items-start">
                       <div className="flex gap-4">
                         {/* Company Logo */}
-                        <div className="w-14 h-14 bg-gradient-to-br from-indigo-500/20 to-purple-500/20 rounded-xl flex items-center justify-center flex-shrink-0 border border-neutral-700">
+                        <div className="w-14 h-14 bg-gradient-to-br from-primary/20 to-secondary/20 rounded-xl flex items-center justify-center flex-shrink-0 border border-border">
                           {job.employer_logo ? (
                             <img
                               src={job.employer_logo}
@@ -374,19 +383,19 @@ export default function JobSearch() {
                               }}
                             />
                           ) : null}
-                          <Building2 className={`w-6 h-6 text-indigo-400 ${job.employer_logo ? 'hidden' : ''}`} />
+                          <Building2 className={`w-6 h-6 text-primary ${job.employer_logo ? 'hidden' : ''}`} />
                         </div>
 
                         <div className="flex-1">
-                          <h3 className="text-lg font-semibold text-white group-hover:text-indigo-400 transition-colors">
+                          <h3 className="text-lg font-semibold text-foreground group-hover:text-primary transition-colors">
                             {job.job_title || job.title}
                           </h3>
-                          <p className="text-neutral-400 font-medium">
+                          <p className="text-muted-foreground font-medium">
                             {job.employer_name || job.company}
                           </p>
 
                           {/* Job Meta */}
-                          <div className="flex flex-wrap items-center gap-4 mt-3 text-sm text-neutral-500">
+                          <div className="flex flex-wrap items-center gap-4 mt-3 text-sm text-muted-foreground">
                             <span className="flex items-center gap-1">
                               <MapPin className="w-4 h-4" />
                               {job.job_city || job.location?.city || 'Remote'}{job.job_state ? `, ${job.job_state}` : ''}
@@ -408,7 +417,7 @@ export default function JobSearch() {
                           </div>
 
                           {/* Job Description Preview */}
-                          <p className="text-neutral-500 text-sm mt-3 line-clamp-2">
+                          <p className="text-muted-foreground text-sm mt-3 line-clamp-2">
                             {(job.job_description || job.description || '').substring(0, 200)}...
                           </p>
 
@@ -418,7 +427,7 @@ export default function JobSearch() {
                               {job.job_required_skills.slice(0, 5).map((skill, i) => (
                                 <span
                                   key={i}
-                                  className="px-2 py-1 bg-indigo-500/20 text-indigo-400 border border-indigo-500/30 rounded-md text-xs font-medium"
+                                  className="px-2 py-1 bg-primary/20 text-primary border border-primary/30 rounded-md text-xs font-medium"
                                 >
                                   {skill}
                                 </span>
@@ -433,8 +442,8 @@ export default function JobSearch() {
                         <button
                           onClick={() => handleSaveJob(job)}
                           className={`p-2 rounded-lg transition-colors cursor-pointer ${savedJobs.has(job.job_id || job.id)
-                            ? 'bg-indigo-500/20 text-indigo-400 border border-indigo-500/30'
-                            : 'bg-neutral-800 text-neutral-500 hover:bg-indigo-500/20 hover:text-indigo-400 border border-neutral-700'
+                            ? 'bg-primary/20 text-primary border border-primary/30'
+                            : 'bg-muted text-muted-foreground hover:bg-primary/20 hover:text-primary border border-border'
                             }`}
                           title={savedJobs.has(job.job_id || job.id) ? 'Saved' : 'Save to tracker'}
                         >
@@ -448,12 +457,12 @@ export default function JobSearch() {
                     </div>
 
                     {/* Apply Button */}
-                    <div className="flex justify-end mt-4 pt-4 border-t border-neutral-800">
+                    <div className="flex justify-end mt-4 pt-4 border-t border-border">
                       <a
                         href={job.job_apply_link || job.applyLink}
                         target="_blank"
                         rel="noopener noreferrer"
-                        className="inline-flex items-center gap-2 px-6 py-2.5 bg-white hover:bg-neutral-200 text-black rounded-lg font-medium transition-colors cursor-pointer"
+                        className="inline-flex items-center gap-2 px-6 py-2.5 bg-card hover:bg-muted/20 text-foreground rounded-lg font-medium transition-colors cursor-pointer"
                       >
                         Apply Now
                         <ExternalLink className="w-4 h-4" />
@@ -472,32 +481,32 @@ export default function JobSearch() {
             transition={{ delay: 0.3 }}
             className="grid md:grid-cols-3 gap-6 mt-12"
           >
-            <div className="text-center p-8 rounded-xl bg-neutral-900/50 border border-neutral-800 hover:border-indigo-500/30 transition-all group">
-              <div className="w-14 h-14 bg-indigo-500/20 rounded-2xl flex items-center justify-center mx-auto mb-4 group-hover:scale-110 transition-transform">
-                <Zap className="w-7 h-7 text-indigo-400" />
+            <div className="text-center p-8 rounded-xl bg-background/50 border border-border hover:border-primary/30 transition-all group">
+              <div className="w-14 h-14 bg-primary/20 rounded-2xl flex items-center justify-center mx-auto mb-4 group-hover:scale-110 transition-transform">
+                <Zap className="w-7 h-7 text-primary" />
               </div>
-              <h3 className="text-lg font-semibold text-white mb-2">Quick Apply</h3>
-              <p className="text-neutral-400 text-sm">
+              <h3 className="text-lg font-semibold text-foreground mb-2">Quick Apply</h3>
+              <p className="text-muted-foreground text-sm">
                 Apply to multiple jobs with your optimized resume in just one click
               </p>
             </div>
 
-            <div className="text-center p-8 rounded-xl bg-neutral-900/50 border border-neutral-800 hover:border-green-500/30 transition-all group">
+            <div className="text-center p-8 rounded-xl bg-background/50 border border-border hover:border-green-500/30 transition-all group">
               <div className="w-14 h-14 bg-green-500/20 rounded-2xl flex items-center justify-center mx-auto mb-4 group-hover:scale-110 transition-transform">
                 <Target className="w-7 h-7 text-green-400" />
               </div>
-              <h3 className="text-lg font-semibold text-white mb-2">Smart Matching</h3>
-              <p className="text-neutral-400 text-sm">
+              <h3 className="text-lg font-semibold text-foreground mb-2">Smart Matching</h3>
+              <p className="text-muted-foreground text-sm">
                 AI-powered job recommendations based on your skills and experience
               </p>
             </div>
 
-            <div className="text-center p-8 rounded-xl bg-neutral-900/50 border border-neutral-800 hover:border-purple-500/30 transition-all group">
+            <div className="text-center p-8 rounded-xl bg-background/50 border border-border hover:border-purple-500/30 transition-all group">
               <div className="w-14 h-14 bg-purple-500/20 rounded-2xl flex items-center justify-center mx-auto mb-4 group-hover:scale-110 transition-transform">
                 <TrendingUp className="w-7 h-7 text-purple-400" />
               </div>
-              <h3 className="text-lg font-semibold text-white mb-2">Track Progress</h3>
-              <p className="text-neutral-400 text-sm">
+              <h3 className="text-lg font-semibold text-foreground mb-2">Track Progress</h3>
+              <p className="text-muted-foreground text-sm">
                 Monitor all your applications and get insights on your job search
               </p>
             </div>

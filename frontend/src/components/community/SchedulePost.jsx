@@ -36,10 +36,15 @@ export default function SchedulePost({ onClose, onSchedule }) {
       return;
     }
 
-    if (chosen.getTime() <= Date.now() + 4 * 60 * 1000) {
+    // Round comparison to minutes to match UI/input precision
+    const nowRounded = new Date();
+    nowRounded.setSeconds(0, 0);
+
+    if (chosen.getTime() <= nowRounded.getTime() + 5 * 60 * 1000) {
       setError('Please schedule at least 5 minutes into the future.');
       return;
     }
+
 
     onSchedule(chosen.toISOString());
   };
@@ -60,6 +65,7 @@ export default function SchedulePost({ onClose, onSchedule }) {
           </div>
           <button
             onClick={onClose}
+            aria-label="Close schedule picker"
             className="p-1.5 text-neutral-500 hover:text-white hover:bg-neutral-800 rounded-lg transition-colors"
           >
             <X className="w-4 h-4" />

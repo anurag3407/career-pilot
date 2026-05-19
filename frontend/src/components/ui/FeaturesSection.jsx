@@ -15,41 +15,41 @@ import Globe from "./Globe";
 function SkeletonOne() {
   return (
     <div className="relative flex py-8 px-2 gap-10 h-full">
-      <div className="w-full p-5 mx-auto bg-zinc-900 shadow-2xl group h-full rounded-xl border border-zinc-800">
+      <div className="w-full p-5 mx-auto bg-muted shadow-2xl group h-full rounded-2xl border border-border">
         <div className="flex flex-1 w-full h-full flex-col space-y-2">
           {/* Resume preview mockup */}
           <div className="flex flex-col gap-3">
             <div className="flex items-center gap-3">
-              <div className="w-12 h-12 rounded-full bg-sky-500/20 border border-sky-500/30" />
+              <div className="w-12 h-12 rounded-full bg-primary/20 border border-primary/30" />
               <div className="flex-1 space-y-2">
-                <div className="h-4 bg-zinc-700 rounded w-32" />
-                <div className="h-3 bg-zinc-800 rounded w-24" />
+                <div className="h-4 bg-foreground/10 rounded w-32" />
+                <div className="h-3 bg-foreground/5 rounded w-24" />
               </div>
               <div className="flex gap-1">
-                <Sparkles className="w-5 h-5 text-sky-400" />
-                <span className="text-xs text-sky-400 font-medium">AI Enhanced</span>
+                <Sparkles className="w-5 h-5 text-primary" />
+                <span className="text-xs text-primary font-bold uppercase tracking-wider">AI Enhanced</span>
               </div>
             </div>
-            <div className="space-y-2 pt-4 border-t border-zinc-800">
-              <div className="h-3 bg-zinc-700 rounded w-full" />
-              <div className="h-3 bg-zinc-800 rounded w-5/6" />
-              <div className="h-3 bg-zinc-800 rounded w-4/6" />
+            <div className="space-y-2 pt-4 border-t border-border">
+              <div className="h-3 bg-foreground/10 rounded w-full" />
+              <div className="h-3 bg-foreground/5 rounded w-5/6" />
+              <div className="h-3 bg-foreground/5 rounded w-4/6" />
             </div>
             <div className="flex gap-2 pt-2">
-              <span className="px-2 py-1 bg-sky-500/10 text-sky-400 text-xs rounded-full border border-sky-500/20">React</span>
-              <span className="px-2 py-1 bg-emerald-500/10 text-emerald-400 text-xs rounded-full border border-emerald-500/20">TypeScript</span>
-              <span className="px-2 py-1 bg-amber-500/10 text-amber-400 text-xs rounded-full border border-amber-500/20">Node.js</span>
+              <span className="px-2 py-1 bg-primary/10 text-primary text-xs font-bold rounded-full border border-primary/20 tracking-tight">React</span>
+              <span className="px-2 py-1 bg-secondary/10 text-secondary text-xs font-bold rounded-full border border-secondary/20 tracking-tight">TypeScript</span>
+              <span className="px-2 py-1 bg-primary/10 text-primary text-xs font-bold rounded-full border border-primary/20 tracking-tight">Node.js</span>
             </div>
-            <div className="space-y-2 pt-4 border-t border-zinc-800">
-              <div className="h-3 bg-zinc-700 rounded w-full" />
-              <div className="h-3 bg-zinc-800 rounded w-5/6" />
+            <div className="space-y-2 pt-4 border-t border-border">
+              <div className="h-3 bg-foreground/10 rounded w-full" />
+              <div className="h-3 bg-foreground/5 rounded w-5/6" />
             </div>
           </div>
         </div>
       </div>
 
-      <div className="absolute bottom-0 z-40 inset-x-0 h-60 bg-gradient-to-t from-black via-black to-transparent w-full pointer-events-none" />
-      <div className="absolute top-0 z-40 inset-x-0 h-60 bg-gradient-to-b from-black via-transparent to-transparent w-full pointer-events-none" />
+      <div className="absolute bottom-0 z-40 inset-x-0 h-60 bg-gradient-to-t from-background via-background to-transparent w-full pointer-events-none" />
+      <div className="absolute top-0 z-40 inset-x-0 h-60 bg-gradient-to-b from-background via-transparent to-transparent w-full pointer-events-none" />
     </div>
   );
 }
@@ -72,23 +72,23 @@ function SkeletonTwo() {
           whileInView={{ opacity: 1, x: 0 }}
           viewport={{ once: true }}
           transition={{ delay: idx * 0.1 }}
-          className="w-full p-3 bg-zinc-900 rounded-lg border border-zinc-800 hover:border-zinc-700 transition-colors"
+          className="w-full p-3 bg-muted rounded-xl border border-border hover:border-primary transition-all duration-300"
         >
           <div className="flex items-center justify-between">
             <div>
-              <p className="text-sm text-white font-medium">{job.title}</p>
-              <p className="text-xs text-zinc-500">{job.company}</p>
+              <p className="text-sm text-foreground font-bold">{job.title}</p>
+              <p className="text-xs text-muted-foreground font-medium">{job.company}</p>
             </div>
-            <div className="flex items-center gap-1">
-              <div className="w-2 h-2 rounded-full bg-emerald-500" />
-              <span className="text-xs text-emerald-400">{job.match}%</span>
+            <div className="flex items-center gap-1 bg-primary/10 px-2 py-1 rounded-lg">
+              <div className="w-1.5 h-1.5 rounded-full bg-primary animate-pulse" />
+              <span className="text-xs text-primary font-bold">{job.match}%</span>
             </div>
           </div>
         </motion.div>
       ))}
-      <div className="absolute left-0 z-[100] inset-y-0 w-10 bg-gradient-to-r from-black to-transparent h-full pointer-events-none" />
-      <div className="absolute right-0 z-[100] inset-y-0 w-10 bg-gradient-to-l from-black to-transparent h-full pointer-events-none" />
-      <div className="absolute bottom-0 z-[100] inset-x-0 h-20 bg-gradient-to-t from-black to-transparent w-full pointer-events-none" />
+      <div className="absolute left-0 z-[100] inset-y-0 w-10 bg-gradient-to-r from-background to-transparent h-full pointer-events-none" />
+      <div className="absolute right-0 z-[100] inset-y-0 w-10 bg-gradient-to-l from-background to-transparent h-full pointer-events-none" />
+      <div className="absolute bottom-0 z-[100] inset-x-0 h-20 bg-gradient-to-t from-background to-transparent w-full pointer-events-none" />
     </div>
   );
 }
@@ -109,24 +109,24 @@ function SkeletonThree() {
           whileInView={{ opacity: 1, scale: 1 }}
           viewport={{ once: true }}
           transition={{ delay: idx * 0.15 }}
-          className="flex items-start gap-3 p-3 bg-zinc-900 rounded-lg border border-zinc-800"
+          className="flex items-start gap-3 p-3 bg-card rounded-xl border border-border shadow-sm"
         >
           <div className={cn(
             "w-8 h-8 rounded-full flex items-center justify-center",
-            alert.type === "new" && "bg-sky-500/10",
-            alert.type === "match" && "bg-emerald-500/10",
-            alert.type === "update" && "bg-amber-500/10"
+            alert.type === "new" && "bg-primary/10",
+            alert.type === "match" && "bg-primary/10",
+            alert.type === "update" && "bg-secondary/10"
           )}>
             <Bell className={cn(
               "w-4 h-4",
-              alert.type === "new" && "text-sky-400",
-              alert.type === "match" && "text-emerald-400",
-              alert.type === "update" && "text-amber-400"
+              alert.type === "new" && "text-primary",
+              alert.type === "match" && "text-primary",
+              alert.type === "update" && "text-secondary"
             )} />
           </div>
           <div className="flex-1">
-            <p className="text-sm text-white">{alert.message}</p>
-            <p className="text-xs text-zinc-500">{alert.time}</p>
+            <p className="text-sm text-foreground font-semibold leading-tight">{alert.message}</p>
+            <p className="text-xs text-muted-foreground mt-1">{alert.time}</p>
           </div>
         </motion.div>
       ))}
@@ -148,28 +148,28 @@ const features = [
     description:
       "Transform your resume with cutting-edge AI. Get ATS-optimized formatting, keyword suggestions, and industry-specific improvements.",
     skeleton: <SkeletonOne />,
-    className: "col-span-1 lg:col-span-4 border-b lg:border-r border-zinc-800",
+    className: "col-span-1 lg:col-span-4 border-b lg:border-r border-border",
   },
   {
     title: "Smart Job Matching",
     description:
       "Find opportunities that truly match your skills. Our AI analyzes thousands of listings to surface your perfect roles.",
     skeleton: <SkeletonTwo />,
-    className: "border-b col-span-1 lg:col-span-2 border-zinc-800",
+    className: "border-b col-span-1 lg:col-span-2 border-border",
   },
   {
     title: "Real-time Job Alerts",
     description:
       "Never miss an opportunity. Get instant notifications when jobs matching your criteria are posted.",
     skeleton: <SkeletonThree />,
-    className: "col-span-1 lg:col-span-3 lg:border-r border-zinc-800",
+    className: "col-span-1 lg:col-span-3 lg:border-r border-border",
   },
   {
     title: "Global Opportunities",
     description:
       "Access job markets worldwide. Whether remote or on-site, find opportunities across continents.",
     skeleton: <SkeletonFour />,
-    className: "col-span-1 lg:col-span-3 border-b lg:border-none border-zinc-800",
+    className: "col-span-1 lg:col-span-3 border-b lg:border-none border-border",
   },
 ];
 
@@ -181,10 +181,10 @@ export default function FeaturesSection() {
           initial={{ opacity: 0, y: 20 }}
           whileInView={{ opacity: 1, y: 0 }}
           viewport={{ once: true }}
-          className="text-3xl lg:text-5xl lg:leading-tight max-w-5xl mx-auto text-center tracking-tight font-medium text-white"
+          className="text-3xl lg:text-6xl lg:leading-tight max-w-5xl mx-auto text-center tracking-tight font-black text-foreground"
         >
           Everything you need to{" "}
-          <span className="text-sky-400">
+          <span className="text-primary underline decoration-primary/20 underline-offset-8">
             accelerate
           </span>{" "}
           your career
@@ -195,15 +195,15 @@ export default function FeaturesSection() {
           whileInView={{ opacity: 1, y: 0 }}
           viewport={{ once: true }}
           transition={{ delay: 0.1 }}
-          className="text-sm lg:text-base max-w-2xl my-4 mx-auto text-zinc-400 text-center font-normal"
+          className="text-base lg:text-lg max-w-2xl my-6 mx-auto text-muted-foreground text-center font-medium"
         >
           From AI resume optimization to global job search, careerpilot provides
           the tools you need to land your dream job faster.
         </motion.p>
       </div>
 
-      <div className="relative">
-        <div className="grid grid-cols-1 lg:grid-cols-6 mt-12 border rounded-xl border-zinc-800 bg-zinc-950/50 backdrop-blur-sm">
+      <div className="relative mt-12">
+        <div className="grid grid-cols-1 lg:grid-cols-6 border rounded-[2.5rem] border-border bg-card/50 backdrop-blur-xl overflow-hidden shadow-2xl">
           {features.map((feature, index) => (
             <FeatureCard key={feature.title} className={feature.className} index={index}>
               <FeatureTitle>{feature.title}</FeatureTitle>
@@ -224,7 +224,7 @@ function FeatureCard({ children, className, index }) {
       whileInView={{ opacity: 1, y: 0 }}
       viewport={{ once: true }}
       transition={{ delay: index * 0.1 }}
-      className={cn("p-4 sm:p-8 relative overflow-hidden", className)}
+      className={cn("p-6 sm:p-10 relative overflow-hidden group hover:bg-muted/50 transition-colors duration-500", className)}
     >
       {children}
     </motion.div>
@@ -233,7 +233,7 @@ function FeatureCard({ children, className, index }) {
 
 function FeatureTitle({ children }) {
   return (
-    <p className="max-w-5xl mx-auto text-left tracking-tight text-white text-xl md:text-2xl md:leading-snug font-medium">
+    <p className="max-w-5xl mx-auto text-left tracking-tight text-foreground text-xl md:text-3xl md:leading-snug font-black">
       {children}
     </p>
   );
@@ -241,7 +241,7 @@ function FeatureTitle({ children }) {
 
 function FeatureDescription({ children }) {
   return (
-    <p className="text-sm md:text-base max-w-4xl text-left mx-auto text-neutral-400 font-normal my-2">
+    <p className="text-base md:text-lg max-w-4xl text-left mx-auto text-muted-foreground font-medium my-3">
       {children}
     </p>
   );

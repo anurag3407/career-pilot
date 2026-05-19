@@ -1,6 +1,7 @@
 import { fetchJobs } from "../utils/jobSearch.js";
 import Job from "../models/Job.model.js";
 import mongoose from "mongoose";
+import { summarizeJobDescription } from "../services/jobSummarizer.js";
 
 export const getJobs = async (req, res) => {
   try {
@@ -79,6 +80,36 @@ export const getJobById = async (req, res) => {
     return res.status(500).json({
       success: false, 
       message: "Failed to fetch job details"
+    });
+  }
+};
+
+export const summarizeJob = async (req, res) => {
+  try {
+    const { jobDescription } = req.body ?? {};
+    
+    if (typeof jobDescription !== "string" || !jobDescription.trim()) {
+      return res.status(400).json({
+        success: false,
+        message: "Job description is required and must be a valid string"
+      });
+    }
+
+    if (jobDescription.length > 20000) {
+      return res.status(413).json({
+        success: false,
+        message: "Job description is too long"
+      });
+    }
+
+    const result = await summarizeJobDescription(jobDescription);
+    
+    return res.status(200).json(result);
+  } catch (error) {
+    console.error("Error summarizing job:", error);
+    return res.status(500).json({
+      success: false,
+      message: "Failed to summarize job description"
     });
   }
 };
