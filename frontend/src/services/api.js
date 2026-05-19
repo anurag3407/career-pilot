@@ -266,6 +266,17 @@ export const enhanceApi = {
       body: JSON.stringify(data)
     })
     return handleResponse(response)
+  },
+
+  // Optimize LinkedIn profile with AI
+  async optimizeLinkedIn(data) {
+    const headers = await getAuthHeaders()
+    const response = await fetch(`${API_BASE}/enhance/optimize-linkedin`, {
+      method: 'POST',
+      headers,
+      body: JSON.stringify(data)
+    })
+    return handleResponse(response)
   }
 }
 
@@ -897,6 +908,12 @@ export const userProfileApi = {
     return handleResponse(response)
   },
 
+  async getPublicProfile(uid) {
+    const headers = await getAuthHeaders()
+    const response = await fetch(`${API_BASE}/user-profiles/${uid}`, { method: 'GET', headers })
+    return handleResponse(response)
+  },
+
   async getStats(uid) {
     const headers = await getAuthHeaders()
     const response = await fetch(`${API_BASE}/user-profiles/${uid}/stats`, { method: 'GET', headers })
@@ -907,10 +924,8 @@ export const userProfileApi = {
     const headers = await getAuthHeaders()
     const response = await fetch(`${API_BASE}/user-profiles/${uid}/activity`, { method: 'GET', headers })
     return handleResponse(response)
-  },
+  }
 }
-
-
 // ============ TWO-FACTOR AUTH API ============
 export const twoFactorApi = {
   async getStatus() {

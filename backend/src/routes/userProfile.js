@@ -40,7 +40,6 @@ const getPostsForUser = async (uid) => {
 // Get or create own profile
 router.get('/me', asyncHandler(async (req, res) => {
   const uid = req.user.uid;
-  let profile = await UserProfile.findOne({ uid }).lean();
   let profile = await UserProfile.findOne({ uid });
   if (!profile) {
     profile = await UserProfile.create({
@@ -97,7 +96,6 @@ router.get('/me/activity', asyncHandler(async (req, res) => {
 
 // Get public profile by uid
 router.get('/:uid', asyncHandler(async (req, res) => {
-  const profile = await UserProfile.findOne({ uid: req.params.uid }).lean();
   const profile = await UserProfile.findOne({ uid: req.params.uid });
   if (!profile) throw new ApiError(404, 'Profile not found');
   res.json({ success: true, profile });

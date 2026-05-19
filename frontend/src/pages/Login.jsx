@@ -12,16 +12,11 @@ import { twoFactorApi } from '../services/api'
 export default function Login() {
   const navigate = useNavigate()
   const { login, loginWithGoogle, loginWithLinkedIn } = useAuth()
-  
-  const [formData, setFormData] = useState({
-    email: '',
-    password: ''
-  })
+
+  const [formData, setFormData] = useState({ email: '', password: '' })
   const [loading, setLoading] = useState(false)
   const [errors, setErrors] = useState({})
-
-  // Two-factor auth step
-  const [step, setStep] = useState('credentials') // 'credentials' | 'totp'
+  const [step, setStep] = useState('credentials')
   const [totpToken, setTotpToken] = useState('')
   const [useBackup, setUseBackup] = useState(false)
   const [totpLoading, setTotpLoading] = useState(false)
@@ -118,11 +113,15 @@ export default function Login() {
 
   const handleTotpSubmit = async (e) => {
     e.preventDefault()
-    if (!totpToken) return
+    if (!totpToken.trim()) return
 
     setTotpLoading(true)
     try {
-      await twoFactorApi.verifyLogin(formData.email, totpToken, useBackup)
+      if (useBackup) {
+        await twoFactorApi.verifyBackup(totpToken)
+      } else {
+        await twoFactorApi.verify(totpToken)
+      }
       toast.success('Verification successful!')
       navigate('/dashboard')
     } catch (error) {
@@ -245,13 +244,7 @@ export default function Login() {
                   type="text"
                   name="totpToken"
                   value={totpToken}
-                  onChange={(e) =>
-                    setTotpToken(
-                      useBackup
-                        ? e.target.value.toUpperCase()
-                        : e.target.value.replace(/\D/g, '').slice(0, 6)
-                    )
-                  }
+                  onChange={(e) => setTotpToken(useBackup ? e.target.value.toUpperCase() : e.target.value.replace(/\D/g, '').slice(0, 6))}
                   placeholder={useBackup ? 'XXXX-XXXX' : '000000'}
                   className="font-mono tracking-widest text-center text-lg font-bold"
                   maxLength={useBackup ? 9 : 6}
@@ -261,7 +254,7 @@ export default function Login() {
                 <Button
                   type="submit"
                   loading={totpLoading}
-                  disabled={useBackup ? totpToken.length < 4 : totpToken.length !== 6}
+                  disabled={useBackup ? totpToken.replace(/[^A-Z0-9]/g, '').length !== 8 : totpToken.length !== 6}
                   className="w-full mt-4 font-bold"
                 >
                   Verify &amp; Sign In
