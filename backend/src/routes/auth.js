@@ -8,6 +8,7 @@ import User from '../models/User.model.js';
 import admin from '../config/firebase.js';
 import crypto from 'crypto';
 
+const router = express.Router();
 const stateStore = new Map();
 
 // Periodic sweep of expired stateStore entries every 10 minutes to prevent memory leaks
