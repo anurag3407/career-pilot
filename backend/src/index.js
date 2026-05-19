@@ -1,12 +1,10 @@
+import 'dotenv/config';
 import express from 'express';
 import { createServer } from 'http';
 import cors from 'cors';
 import helmet from 'helmet';
 import rateLimit from 'express-rate-limit';
-import dotenv from 'dotenv';
 import searchRoutes from './routes/search.js';
-
-dotenv.config();
 import portfolioRoutes from './routes/portfolio.js';
 import uploadRoutes from './routes/upload.js';
 import resumeRoutes from './routes/resume.js';

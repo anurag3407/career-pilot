@@ -2,6 +2,7 @@ import { GoogleGenerativeAI } from '@google/generative-ai';
 import OpenAI from 'openai';
 import Groq from 'groq-sdk';
 import dotenv from 'dotenv';
+import { OpenRouterAdapter } from './providers/openrouter.js';
 
 dotenv.config();
 
@@ -78,40 +79,6 @@ class OpenAIAdapter {
   }
 }
 
-/**
- * Adapter for OpenRouter (OpenAI-compatible endpoint via openai SDK).
- */
-class OpenRouterAdapter {
-  constructor(apiKey, modelName) {
-    this.client = new OpenAI({
-      apiKey,
-      baseURL: 'https://openrouter.ai/api/v1',
-      defaultHeaders: {
-        'HTTP-Referer': process.env.FRONTEND_URL || 'http://localhost:5173',
-        'X-Title': 'CareerPilot',
-      },
-    });
-    this.modelName = modelName || DEFAULT_MODELS.openrouter;
-    this.providerName = 'openrouter';
-  }
-
-  async generateContent(prompt) {
-    const completion = await this.client.chat.completions.create({
-      model: this.modelName,
-      messages: [{ role: 'user', content: prompt }],
-      temperature: 0.7,
-    });
-    const u = completion.usage;
-    const usage = u
-      ? {
-          prompt: u.prompt_tokens ?? 0,
-          completion: u.completion_tokens ?? 0,
-          total: u.total_tokens ?? 0,
-        }
-      : undefined;
-    return { text: completion.choices[0]?.message?.content || '', usage };
-  }
-}
 
 /**
  * Adapter for Groq (via groq-sdk).
