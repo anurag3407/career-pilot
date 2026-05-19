@@ -33,7 +33,7 @@ const ProgressBar = ({
 
   useEffect(() => {
     if (!isIndeterminate) {
-      const clamped = Math.min(100, Math.max(0, value));
+     const clamped = Math.min(100, Math.max(0, isNaN(value) ? 0 : value));
       const timer = setTimeout(() => setWidth(clamped), 50);
       return () => clearTimeout(timer);
     }
