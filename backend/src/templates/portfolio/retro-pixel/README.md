@@ -1,6 +1,6 @@
 # Retro Pixel Portfolio Theme
 
-A retro 8-bit inspired portfolio template for gaming and creative developers.
+A retro 8-bit-inspired portfolio template for gaming and creative developers.
 Built for the [CareerPilot](https://github.com/xyron24/career-pilot) platform.
 
 ---
@@ -121,4 +121,4 @@ No build step required — pure HTML, CSS, and vanilla JS.
 
 ## 📝 Issue Reference
 
-Closes **#[ISSUE_NUMBER]** — _Retro Pixel Portfolio Theme for Gaming Developers_
+Closes **#868** — _Retro Pixel Portfolio Theme for Gaming Developers_

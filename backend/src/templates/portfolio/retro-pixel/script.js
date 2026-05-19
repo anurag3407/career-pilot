@@ -31,7 +31,7 @@ const PORTFOLIO = {
   avatarEmoji: '🕹️',
 
   aboutPara1: "I'm a software developer with a love for retro aesthetics and modern performance. My toolkit spans React, Node.js, and cloud infrastructure — with an unhealthy attachment to pixel fonts.",
-  aboutPara2: 'When I'm not pushing commits, I'm speed-running classic NES titles or designing chiptune soundtracks. Code is my XP; problems are my boss fights.',
+  aboutPara2: "When I'm not pushing commits, I'm speed-running classic NES titles or designing chiptune soundtracks. Code is my XP; problems are my boss fights.",
 
   stats: ['5+ YRS EXP', '30+ PROJECTS', '∞ COFFEE'],
 
