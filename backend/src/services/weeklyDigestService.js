@@ -22,6 +22,15 @@ const model = genAI.getGenerativeModel({
   model: 'gemini-2.5-flash'
 });
 
+const escapeHtml = (unsafe = '') => {
+    return String(unsafe)
+      .replace(/&/g, '&amp;')
+      .replace(/</g, '&lt;')
+      .replace(/>/g, '&gt;')
+      .replace(/"/g, '&quot;')
+      .replace(/'/g, '&#039;');
+  };
+
 const generateWeeklyInsights = async (user, trackedJobs) => {
   try {
     const recentJobs = trackedJobs.slice(0, 5);
@@ -103,23 +112,30 @@ const buildDigestHtml = async ({
     .slice(0, 5)
     .map((job) => `
       <li>
-        <strong>${job.title}</strong> at ${job.company}
-        (${job.status})
+        <strong>${escapeHtml(job.title)}</strong>
+        at ${escapeHtml(job.company)}
+        (${escapeHtml(job.status)})
       </li>
     `)
     .join('');
 
   template = template
-    .replace('{{USER_NAME}}', user.username)
-    .replace('{{INSIGHTS}}', insights.replace(/\n/g, '<br>'))
+    .replace(
+    '{{USER_NAME}}',
+    escapeHtml(user.username)
+     )
+    .replace(
+    '{{INSIGHTS}}',
+    escapeHtml(insights).replace(/\n/g, '<br>')
+    )
     .replace('{{TRACKED_JOBS}}', trackedJobsHtml);
 
-  return template;
+return template;
 };
 
 export const generateWeeklyDigestForUser = async (user) => {
   const trackedJobs = await TrackedJob.find({
-    userId: user._id.toString()
+    userId: user.uid
   })
     .sort({ updatedAt: -1 })
     .limit(10);
@@ -193,11 +209,18 @@ export const sendWeeklyDigests = async () => {
       `Weekly digest scheduled with cron: ${schedule}`
     );
   
-    cron.schedule(schedule, async () => {
-      console.log(
-        'Weekly digest cron triggered'
+    cron.schedule(
+        schedule,
+        async () => {
+          console.log(
+            'Weekly digest cron triggered'
+          );
+      
+          await sendWeeklyDigests();
+        },
+        {
+          timezone:
+            process.env.WEEKLY_DIGEST_TIMEZONE || 'UTC'
+        }
       );
-  
-      await sendWeeklyDigests();
-    });
   };
