@@ -49,6 +49,19 @@ class GeminiAdapter {
       : undefined;
     return { text, usage };
   }
+
+  async *generateContentStream(prompt) {
+    const result = await this.model.generateContentStream(prompt);
+    let fullText = '';
+    for await (const chunk of result.stream) {
+      const text = chunk.text();
+      fullText += text;
+      yield { text, fullText };
+    }
+    const response = await result.response;
+    const um = response.usageMetadata;
+    yield { done: true, usage: um ? { prompt: um.promptTokenCount ?? 0, completion: um.candidatesTokenCount ?? 0, total: um.totalTokenCount ?? 0 } : undefined };
+  }
 }
 
 /**
@@ -76,6 +89,23 @@ class OpenAIAdapter {
         }
       : undefined;
     return { text: completion.choices[0]?.message?.content || '', usage };
+  }
+
+  async *generateContentStream(prompt) {
+    const completion = await this.client.chat.completions.create({
+      model: this.modelName,
+      messages: [{ role: 'user', content: prompt }],
+      temperature: 0.7,
+      stream: true,
+    });
+    let fullText = '';
+    for await (const chunk of completion) {
+      const text = chunk.choices[0]?.delta?.content || '';
+      fullText += text;
+      yield { text, fullText };
+    }
+    const u = completion.usage;
+    yield { done: true, usage: u ? { prompt: u.prompt_tokens ?? 0, completion: u.completion_tokens ?? 0, total: u.total_tokens ?? 0 } : undefined };
   }
 }
 
@@ -106,6 +136,24 @@ class GroqAdapter {
         }
       : undefined;
     return { text: completion.choices[0]?.message?.content || '', usage };
+  }
+
+  async *generateContentStream(prompt) {
+    const completion = await this.client.chat.completions.create({
+      model: this.modelName,
+      messages: [{ role: 'user', content: prompt }],
+      temperature: 0.7,
+      max_tokens: 4096,
+      stream: true,
+    });
+    let fullText = '';
+    for await (const chunk of completion) {
+      const text = chunk.choices[0]?.delta?.content || '';
+      fullText += text;
+      yield { text, fullText };
+    }
+    const u = completion.usage;
+    yield { done: true, usage: u ? { prompt: u.prompt_tokens ?? 0, completion: u.completion_tokens ?? 0, total: u.total_tokens ?? 0 } : undefined };
   }
 }
 
