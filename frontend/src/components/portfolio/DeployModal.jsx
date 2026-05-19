@@ -326,7 +326,7 @@ export default function DeployModal({ isOpen, onClose, portfolioTitle = "My Port
                   {/* Submit Action */}
                   <button
                     onClick={handleDeploy}
-                    className="w-full mt-2 py-3.5 bg-gradient-to-r from-indigo-500 to-purple-600 text-zinc-100 rounded-2xl font-semibold shadow-xl shadow-indigo-950/20 hover:from-indigo-600 hover:to-purple-700 active:scale-98 transition-all cursor-pointer flex items-center justify-center gap-2"
+                    className="w-full mt-2 py-3.5 bg-gradient-to-r from-indigo-500 to-purple-600 text-zinc-100 rounded-2xl font-semibold shadow-xl shadow-indigo-950/20 hover:from-indigo-600 hover:to-purple-700 active:scale-95 transition-all cursor-pointer flex items-center justify-center gap-2"
                   >
                     <Sparkles className="w-4 h-4 text-indigo-200" />
                     Deploy with {PROVIDERS.find(p => p.id === selectedProvider)?.name}
@@ -361,7 +361,7 @@ export default function DeployModal({ isOpen, onClose, portfolioTitle = "My Port
                   {/* Retro Build Terminal */}
                   <div className="bg-zinc-950 border border-zinc-800 rounded-2xl overflow-hidden shadow-2xl flex flex-col h-56 text-left">
                     {/* Terminal Window Chrome */}
-                    <div className="bg-zinc-900/90 px-4 py-2.5 border-b border-zinc-850 flex items-center justify-between select-none">
+                    <div className="bg-zinc-900/90 px-4 py-2.5 border-b border-zinc-800 flex items-center justify-between select-none">
                       <div className="flex items-center gap-1.5">
                         <div className="w-2.5 h-2.5 rounded-full bg-rose-500/80" />
                         <div className="w-2.5 h-2.5 rounded-full bg-amber-500/80" />
@@ -464,7 +464,7 @@ export default function DeployModal({ isOpen, onClose, portfolioTitle = "My Port
                       href={deployedUrl}
                       target="_blank"
                       rel="noopener noreferrer"
-                      className="py-3.5 px-4 bg-indigo-600 text-zinc-100 rounded-2xl font-semibold shadow-lg shadow-indigo-950/20 hover:bg-indigo-500 transition-colors flex items-center justify-center gap-2 select-none active:scale-98"
+                      className="py-3.5 px-4 bg-indigo-600 text-zinc-100 rounded-2xl font-semibold shadow-lg shadow-indigo-950/20 hover:bg-indigo-500 transition-colors flex items-center justify-center gap-2 select-none active:scale-95"
                     >
                       <ExternalLink className="w-4 h-4" />
                       View Live Site
@@ -472,7 +472,7 @@ export default function DeployModal({ isOpen, onClose, portfolioTitle = "My Port
                     
                     <button
                       onClick={handleClose}
-                      className="py-3.5 px-4 bg-zinc-850 hover:bg-zinc-800 border border-zinc-750 text-zinc-200 rounded-2xl font-semibold transition-colors cursor-pointer select-none active:scale-98"
+                      className="py-3.5 px-4 bg-zinc-800 hover:bg-zinc-700 border border-zinc-700/60 text-zinc-200 rounded-2xl font-semibold transition-colors cursor-pointer select-none active:scale-95"
                     >
                       All Done
                     </button>
@@ -513,14 +513,14 @@ export default function DeployModal({ isOpen, onClose, portfolioTitle = "My Port
                   <div className="w-full flex gap-3 pt-1">
                     <button
                       onClick={handleDeploy}
-                      className="flex-1 py-3.5 bg-indigo-600 text-zinc-100 rounded-2xl font-semibold shadow-lg shadow-indigo-950/20 hover:bg-indigo-500 transition-all cursor-pointer active:scale-98"
+                      className="flex-1 py-3.5 bg-indigo-600 text-zinc-100 rounded-2xl font-semibold shadow-lg shadow-indigo-950/20 hover:bg-indigo-500 transition-all cursor-pointer active:scale-95"
                     >
                       Retry Build
                     </button>
                     
                     <button
                       onClick={() => setStep('select')}
-                      className="flex-1 py-3.5 bg-zinc-850 hover:bg-zinc-800 border border-zinc-750 text-zinc-200 rounded-2xl font-semibold transition-colors cursor-pointer active:scale-98"
+                      className="flex-1 py-3.5 bg-zinc-800 hover:bg-zinc-700 border border-zinc-700/60 text-zinc-200 rounded-2xl font-semibold transition-colors cursor-pointer active:scale-95"
                     >
                       Change Provider
                     </button>
