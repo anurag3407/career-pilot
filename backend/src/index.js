@@ -6,7 +6,7 @@ import rateLimit from 'express-rate-limit';
 import dotenv from 'dotenv';
 
 dotenv.config();
-
+import portfolioRoutes from './routes/portfolio.js';
 import uploadRoutes from './routes/upload.js';
 import resumeRoutes from './routes/resume.js';
 import enhanceRoutes from './routes/enhance.js';
@@ -105,6 +105,7 @@ app.use('/api/community', communityRoutes);
 app.use('/api/fellowship', fellowshipRoutes);
 app.use('/api/interview', interviewRoutes);
 app.use('/api/payments', paymentRoutes);
+app.use('/api/ai', portfolioRoutes);
 
 app.use((req, res) => {
   res.status(404).json({ error: 'Route not found' });
