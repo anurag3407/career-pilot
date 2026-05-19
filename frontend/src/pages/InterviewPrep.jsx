@@ -1,3 +1,4 @@
+import { triggerConfetti } from '../utils/confetti'
 import { useState, useRef, useEffect } from 'react';
 import { useNavigate } from 'react-router-dom';
 import { motion } from 'framer-motion';
@@ -692,20 +693,28 @@ export default function InterviewPrep() {
     }
   };
 
-  const completeInterview = async () => {
-    setLoading(true);
-    try {
-      const response = await interviewApi.completeInterview(interviewId);
-      setOverallResults(response.data);
-      setStep('feedback');
-      cleanupMedia();
-    } catch (err) {
-      setError(err.message || 'Failed to complete interview');
-    } finally {
-      setLoading(false);
-    }
-  };
+ const completeInterview = async () => {
+  setLoading(true);
+  try {
+    const response = await interviewApi.completeInterview(interviewId);
 
+    setOverallResults(response.data);
+    setStep('feedback');
+
+    triggerConfetti({
+      duration: 3500,
+      particleCount: 180,
+      spread: 130
+    });
+
+    cleanupMedia();
+
+  } catch (err) {
+    setError(err.message || 'Failed to complete interview');
+  } finally {
+    setLoading(false);
+  }
+};
   const formatTime = (seconds) => {
     const mins = Math.floor(seconds / 60);
     const secs = seconds % 60;
