@@ -204,10 +204,11 @@ export default function DeployModal({ isOpen, onClose, portfolioTitle = "My Port
                     {PROVIDERS.map((provider) => {
                       const isSelected = selectedProvider === provider.id;
                       return (
-                        <div
+                        <button
+                          type="button"
                           key={provider.id}
                           onClick={() => setSelectedProvider(provider.id)}
-                          className={`flex items-start gap-4 p-3.5 rounded-xl border-2 transition-all cursor-pointer select-none ${
+                          className={`w-full text-left flex items-start gap-4 p-3.5 rounded-xl border-2 transition-all cursor-pointer select-none focus:outline-none focus:ring-2 focus:ring-primary/40 ${
                             isSelected 
                               ? 'bg-primary/5 border-primary shadow-sm' 
                               : 'bg-card border-border hover:border-muted-foreground/30 hover:bg-muted/30'
@@ -227,7 +228,7 @@ export default function DeployModal({ isOpen, onClose, portfolioTitle = "My Port
                           }`}>
                             {isSelected && <span className="w-2.5 h-2.5 rounded-full bg-white" />}
                           </div>
-                        </div>
+                        </button>
                       );
                     })}
                   </div>
