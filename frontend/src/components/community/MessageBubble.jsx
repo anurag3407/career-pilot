@@ -1,3 +1,5 @@
+import ReactMarkdown from 'react-markdown';
+import remarkGfm from 'remark-gfm';
 import { useState } from 'react';
 import { useSocket } from '../../context/SocketContext';
 import { useAuth } from '../../context/AuthContext';
@@ -99,7 +101,7 @@ export default function MessageBubble({ message, isOwn, showAvatar, channelId, o
     return (
       <div className={`flex gap-3 ${isOwn ? 'flex-row-reverse' : ''}`}>
         <div className="w-8" />
-        <div className="bg-neutral-800 rounded-lg px-4 py-2 text-neutral-500 italic text-sm">
+        <div className="bg-muted rounded-lg px-4 py-2 text-muted-foreground italic text-sm">
           This message was deleted
         </div>
       </div>
@@ -108,7 +110,7 @@ export default function MessageBubble({ message, isOwn, showAvatar, channelId, o
 
   return (
     <div 
-      className={`group flex gap-3 hover:bg-neutral-800/50 -mx-2 px-2 py-1 rounded-lg ${
+      className={`group flex gap-3 hover:bg-muted/50 -mx-2 px-2 py-1 rounded-lg ${
         isOwn ? 'flex-row-reverse' : ''
       }`}
       onMouseEnter={() => setShowActions(true)}
@@ -119,7 +121,7 @@ export default function MessageBubble({ message, isOwn, showAvatar, channelId, o
     >
       {/* Avatar */}
       {showAvatar ? (
-        <div className="w-8 h-8 rounded-full bg-gradient-to-br from-indigo-500 to-purple-500 flex items-center justify-center text-white text-xs font-medium flex-shrink-0">
+        <div className="w-8 h-8 rounded-full bg-gradient-to-br from-primary to-secondary flex items-center justify-center text-primary-foreground text-xs font-medium flex-shrink-0">
           {message.sender.avatar ? (
             <img 
               src={message.sender.avatar} 
@@ -138,17 +140,17 @@ export default function MessageBubble({ message, isOwn, showAvatar, channelId, o
       <div className={`flex-1 min-w-0 ${isOwn ? 'text-right' : ''}`}>
         {showAvatar && (
           <div className={`flex items-baseline gap-2 mb-0.5 ${isOwn ? 'flex-row-reverse' : ''}`}>
-            <span className="font-medium text-sm text-white">
+            <span className="font-medium text-sm text-foreground">
               {message.sender.name}
             </span>
-            <span className="text-xs text-neutral-500">{formattedTime}</span>
+            <span className="text-xs text-muted-foreground">{formattedTime}</span>
           </div>
         )}
 
         {/* Reply Preview */}
         {message.replyToPreview && (
           <div className={`mb-1 ${isOwn ? 'ml-auto' : 'mr-auto'} max-w-sm`}>
-            <div className="text-xs text-neutral-400 bg-neutral-800 rounded px-2 py-1 border-l-2 border-indigo-400">
+            <div className="text-xs text-muted-foreground bg-muted rounded px-2 py-1 border-l-2 border-primary">
               <span className="font-medium">{message.replyToPreview.senderName}</span>
               <p className="truncate">{message.replyToPreview.content}</p>
             </div>
@@ -164,18 +166,18 @@ export default function MessageBubble({ message, isOwn, showAvatar, channelId, o
                 value={editContent}
                 onChange={(e) => setEditContent(e.target.value)}
                 onKeyDown={(e) => e.key === 'Enter' && handleEdit()}
-                className="flex-1 px-3 py-1.5 bg-neutral-800 border border-neutral-700 rounded-lg text-sm text-white focus:ring-2 focus:ring-indigo-500"
+                className="flex-1 px-3 py-1.5 bg-muted border border-border rounded-lg text-sm text-foreground focus:ring-2 focus:ring-primary"
                 autoFocus
               />
               <button
                 onClick={handleEdit}
-                className="px-3 py-1 bg-indigo-600 text-white rounded-lg text-sm"
+                className="px-3 py-1 bg-primary text-primary-foreground rounded-lg text-sm"
               >
                 Save
               </button>
               <button
                 onClick={() => setIsEditing(false)}
-                className="px-3 py-1 bg-neutral-700 text-neutral-300 rounded-lg text-sm"
+                className="px-3 py-1 bg-muted-foreground/20 text-foreground rounded-lg text-sm"
               >
                 Cancel
               </button>
@@ -184,15 +186,24 @@ export default function MessageBubble({ message, isOwn, showAvatar, channelId, o
             <div
               className={`rounded-2xl px-4 py-2 max-w-lg ${
                 isOwn 
-                  ? 'bg-indigo-600 text-white rounded-br-md' 
-                  : 'bg-neutral-800 border border-neutral-700 text-white rounded-bl-md'
+                  ? 'bg-primary text-primary-foreground rounded-br-md' 
+                  : 'bg-card border border-border text-foreground rounded-bl-md'
               }`}
             >
-              <p className="whitespace-pre-wrap break-words text-sm">
-                {message.content}
-              </p>
+           <ReactMarkdown
+  remarkPlugins={[remarkGfm]}
+  disallowedElements={['img']}
+  components={{
+    a: ({ node, ...props }) => (
+      <a {...props} target="_blank" rel="noopener noreferrer" />
+    ),
+  }}
+  className="prose prose-invert prose-sm max-w-none break-words text-sm"
+>
+  {message.content}
+</ReactMarkdown>
               {message.isEdited && (
-                <span className={`text-xs ${isOwn ? 'text-indigo-200' : 'text-neutral-500'}`}>
+                <span className={`text-xs ${isOwn ? 'text-primary-foreground/70' : 'text-muted-foreground'}`}>
                   (edited)
                 </span>
               )}
@@ -215,7 +226,7 @@ export default function MessageBubble({ message, isOwn, showAvatar, channelId, o
                       href={attachment.url}
                       target="_blank"
                       rel="noopener noreferrer"
-                      className="flex items-center gap-2 px-3 py-2 bg-neutral-800 rounded-lg text-sm text-neutral-300 hover:bg-neutral-700"
+                      className="flex items-center gap-2 px-3 py-2 bg-muted rounded-lg text-sm text-foreground hover:bg-muted/80"
                     >
                       📎 {attachment.name}
                     </a>
@@ -234,8 +245,8 @@ export default function MessageBubble({ message, isOwn, showAvatar, channelId, o
                   onClick={() => handleReaction(reaction.emoji)}
                   className={`inline-flex items-center gap-1 px-2 py-0.5 rounded-full text-xs transition-colors ${
                     reaction.users.some(u => u.uid === user?.uid)
-                      ? 'bg-indigo-500/20 text-indigo-400 border border-indigo-500/50'
-                      : 'bg-neutral-800 text-neutral-300 hover:bg-neutral-700'
+                      ? 'bg-primary/20 text-primary border border-primary/50'
+                      : 'bg-muted text-muted-foreground hover:bg-muted/80'
                   }`}
                 >
                   <span>{reaction.emoji}</span>
@@ -250,23 +261,23 @@ export default function MessageBubble({ message, isOwn, showAvatar, channelId, o
             <div 
               className={`absolute ${isOwn ? 'left-0 -translate-x-full' : 'right-0 translate-x-full'} top-0 px-2`}
             >
-              <div className="flex items-center gap-1 bg-neutral-800 border border-neutral-700 rounded-lg shadow-sm p-1">
+              <div className="flex items-center gap-1 bg-card border border-border rounded-lg shadow-sm p-1">
                 {/* Quick Reaction */}
                 <div className="relative">
                   <button
                     onClick={() => setShowReactions(!showReactions)}
-                    className="p-1.5 text-neutral-400 hover:text-white hover:bg-neutral-700 rounded"
+                    className="p-1.5 text-muted-foreground hover:text-foreground hover:bg-muted rounded"
                   >
                     <Smile className="w-4 h-4" />
                   </button>
 
                   {showReactions && (
-                    <div className="absolute bottom-full mb-1 left-0 bg-neutral-800 border border-neutral-700 rounded-lg shadow-lg p-1 flex gap-1">
+                    <div className="absolute bottom-full mb-1 left-0 bg-card border border-border rounded-lg shadow-lg p-1 flex gap-1">
                       {QUICK_REACTIONS.map(emoji => (
                         <button
                           key={emoji}
                           onClick={() => handleReaction(emoji)}
-                          className="p-1 hover:bg-neutral-700 rounded text-lg"
+                          className="p-1 hover:bg-muted rounded text-lg"
                         >
                           {emoji}
                         </button>
@@ -278,7 +289,7 @@ export default function MessageBubble({ message, isOwn, showAvatar, channelId, o
                 {/* Copy */}
                 <button 
                   onClick={handleCopy}
-                  className="p-1.5 text-neutral-400 hover:text-white hover:bg-neutral-700 rounded"
+                  className="p-1.5 text-muted-foreground hover:text-foreground hover:bg-muted rounded"
                 >
                   {copied ? <Check className="w-4 h-4 text-green-500" /> : <Copy className="w-4 h-4" />}
                 </button>
@@ -288,13 +299,13 @@ export default function MessageBubble({ message, isOwn, showAvatar, channelId, o
                   <>
                     <button
                       onClick={() => setIsEditing(true)}
-                      className="p-1.5 text-neutral-400 hover:text-white hover:bg-neutral-700 rounded"
+                      className="p-1.5 text-muted-foreground hover:text-foreground hover:bg-muted rounded"
                     >
                       <Edit2 className="w-4 h-4" />
                     </button>
                     <button
                       onClick={handleDelete}
-                      className="p-1.5 text-neutral-400 hover:text-red-400 hover:bg-red-500/10 rounded"
+                      className="p-1.5 text-muted-foreground hover:text-destructive hover:bg-destructive/10 rounded"
                     >
                       <Trash2 className="w-4 h-4" />
                     </button>
