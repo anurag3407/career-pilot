@@ -2,6 +2,7 @@ import express from 'express';
 import { verifyToken } from '../middleware/auth.js';
 import { asyncHandler, ApiError } from '../middleware/errorHandler.js';
 import Resume from '../models/Resume.model.js';
+import { scrapeLinkedInProfile, profileToResumeText } from '../services/linkedinImporter.js';
 
 const router = express.Router();
 
@@ -35,14 +36,10 @@ router.get('/:resumeId', verifyToken, asyncHandler(async (req, res) => {
   const { resumeId } = req.params;
   const userId = req.user.uid;
 
-  const resume = await Resume.findById(resumeId).lean();
+  const resume = await Resume.findOne({ _id: resumeId, userId }).lean();
 
   if (!resume) {
     throw new ApiError(404, 'Resume not found');
-  }
-
-  if (resume.userId !== userId) {
-    throw new ApiError(403, 'Access denied');
   }
 
   res.json({
@@ -102,38 +99,21 @@ router.put('/:resumeId', verifyToken, asyncHandler(async (req, res) => {
   const userId = req.user.uid;
   const updates = req.body;
 
-  const resume = await Resume.findById(resumeId);
-
-  if (!resume) {
-    throw new ApiError(404, 'Resume not found');
-  }
-
-  if (resume.userId !== userId) {
-    throw new ApiError(403, 'Access denied');
-  }
-
-  // Fields that can be updated
-  const allowedUpdates = [
-    'originalText', 
-    'enhancedText', 
-    'jobRole', 
-    'preferences', 
-    'title', 
-    'pdfUrl'
-  ];
-
+  const allowedUpdates = ['originalText', 'enhancedText', 'jobRole', 'preferences', 'title', 'pdfUrl'];
   const updateData = {};
   for (const key of allowedUpdates) {
-    if (updates[key] !== undefined) {
-      updateData[key] = updates[key];
-    }
+    if (updates[key] !== undefined) updateData[key] = updates[key];
   }
 
-  const updatedResume = await Resume.findByIdAndUpdate(
-    resumeId,
+  const updatedResume = await Resume.findOneAndUpdate(
+    { _id: resumeId, userId },
     { $set: updateData },
     { new: true, runValidators: true }
   ).lean();
+
+  if (!updatedResume) {
+    throw new ApiError(404, 'Resume not found');
+  }
 
   res.json({
     success: true,
@@ -150,21 +130,85 @@ router.delete('/:resumeId', verifyToken, asyncHandler(async (req, res) => {
   const { resumeId } = req.params;
   const userId = req.user.uid;
 
-  const resume = await Resume.findById(resumeId);
+  const resume = await Resume.findOneAndDelete({ _id: resumeId, userId });
 
   if (!resume) {
     throw new ApiError(404, 'Resume not found');
   }
 
-  if (resume.userId !== userId) {
-    throw new ApiError(403, 'Access denied');
-  }
-
-  await Resume.findByIdAndDelete(resumeId);
-
   res.json({
     success: true,
     message: 'Resume deleted successfully'
+  });
+}));
+
+// Preview LinkedIn profile before importing
+router.post('/import/linkedin/preview', verifyToken, asyncHandler(async (req, res) => {
+  const { url } = req.body;
+
+  if (!url || typeof url !== 'string') {
+    throw new ApiError(400, 'LinkedIn URL is required');
+  }
+
+  const isLinkedIn = /^https?:\/\/(www\.)?linkedin\.com\/in\//.test(url.trim());
+  if (!isLinkedIn) {
+    throw new ApiError(400, 'Please provide a valid LinkedIn profile URL (linkedin.com/in/...)');
+  }
+
+  const profile = await scrapeLinkedInProfile(url.trim());
+
+  res.json({
+    success: true,
+    preview: {
+      name: profile.name,
+      headline: profile.headline,
+      location: profile.location,
+      about: profile.about,
+      experienceCount: profile.experience?.length || 0,
+      educationCount: profile.education?.length || 0,
+      skills: profile.skills || [],
+    },
+    profile,
+  });
+}));
+
+// Import LinkedIn profile as a resume
+router.post('/import/linkedin', verifyToken, asyncHandler(async (req, res) => {
+  const { url, profile: cachedProfile } = req.body;
+  const userId = req.user.uid;
+
+  if (!url && !cachedProfile) {
+    throw new ApiError(400, 'LinkedIn URL or profile data is required');
+  }
+
+  const profile = cachedProfile || await scrapeLinkedInProfile(url.trim());
+  const resumeText = profileToResumeText(profile);
+  const title = `${profile.name || 'LinkedIn'} — Imported ${new Date().toLocaleDateString()}`;
+
+  const resume = await Resume.create({
+    userId,
+    originalText: resumeText,
+    jobRole: profile.headline || null,
+    preferences: {
+      skills: profile.skills || [],
+    },
+    title,
+  });
+
+  res.status(201).json({
+    success: true,
+    data: {
+      id: resume._id.toString(),
+      userId: resume.userId,
+      originalText: resume.originalText,
+      enhancedText: resume.enhancedText,
+      jobRole: resume.jobRole,
+      preferences: resume.preferences,
+      title: resume.title,
+      pdfUrl: resume.pdfUrl,
+      createdAt: resume.createdAt,
+      lastModified: resume.lastModified,
+    },
   });
 }));
 

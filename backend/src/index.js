@@ -27,6 +27,7 @@ import { initializeDefaultChannels } from './controllers/communityFirebaseContro
 import { initializePostScheduler } from './services/postScheduler.js';
 
 import mongoose from 'mongoose';
+import { connectDB } from './config/database.js';
 import { initJobFetcher } from './services/jobFetcher.js';
 import JobAlert from './models/JobAlert.model.js';
 
@@ -113,15 +114,7 @@ app.use((req, res) => {
 app.use(errorHandler);
 const startServer = async () => {
   try {
-    const mongoUri = process.env.MONGODB_URI || 'mongodb://localhost:27017/careerpilot';
-
-    console.log('📦 Connecting to MongoDB...');
-    await mongoose.connect(mongoUri, {
-      serverSelectionTimeoutMS: 30000,
-      socketTimeoutMS: 45000,
-      maxPoolSize: 10
-    });
-    console.log('📦 Connected to MongoDB');
+    await connectDB();
 
     httpServer.listen(PORT, () => {
       console.log(`🚀 Server running on port ${PORT}`);
