@@ -5,8 +5,10 @@ import { useEffect, useRef, useState } from "react";
  * Returns { numeric: number, suffix: string }
  */
 function parseStat(value) {
-  const match = value.match(/^([\d.]+)([A-Za-z%+x]*)$/);
-  if (!match) return { numeric: null, suffix: value };
+  if (value === undefined || value === null) return { numeric: null, suffix: "" };
+  const strValue = String(value);
+  const match = strValue.match(/^([\d.]+)([A-Za-z%+x]*)$/);
+  if (!match) return { numeric: null, suffix: strValue };
   return { numeric: parseFloat(match[1]), suffix: match[2] };
 }
 
@@ -20,19 +22,26 @@ function easeOutCubic(t) {
 /**
  * AnimatedCounter
  * Props:
- *   value (string)  — the stat string, e.g. "10K+", "95%", "2.5x"
- *   duration (number) — animation duration in ms, default 2000
+ *   value (string|number) — the stat string, e.g. "10K+", "95%", "2.5x"
+ *   duration (number)      — animation duration in ms, default 2000
  */
 export default function AnimatedCounter({ value, duration = 2000 }) {
   const [display, setDisplay] = useState("0");
   const [hasAnimated, setHasAnimated] = useState(false);
   const ref = useRef(null);
+  const rafId = useRef(null);
 
   const { numeric, suffix } = parseStat(value);
 
+  // Reset animation state when the target value changes
   useEffect(() => {
-    if (numeric === null) {
-      setDisplay(value);
+    setHasAnimated(false);
+    setDisplay("0");
+  }, [value]);
+
+  useEffect(() => {
+    if (numeric === null || hasAnimated) {
+      if (numeric === null) setDisplay(String(value));
       return;
     }
 
@@ -44,10 +53,12 @@ export default function AnimatedCounter({ value, duration = 2000 }) {
 
           const startTime = performance.now();
           const isDecimal = numeric % 1 !== 0;
+          // Guard against non-positive duration
+          const safeDuration = Math.max(duration, 1);
 
           function step(currentTime) {
             const elapsed = currentTime - startTime;
-            const progress = Math.min(elapsed / duration, 1);
+            const progress = Math.min(elapsed / safeDuration, 1);
             const easedProgress = easeOutCubic(progress);
             const current = easedProgress * numeric;
 
@@ -56,23 +67,27 @@ export default function AnimatedCounter({ value, duration = 2000 }) {
             );
 
             if (progress < 1) {
-              requestAnimationFrame(step);
+              rafId.current = requestAnimationFrame(step);
             } else {
               setDisplay(isDecimal ? numeric.toFixed(1) : numeric.toString());
             }
           }
 
-          requestAnimationFrame(step);
+          rafId.current = requestAnimationFrame(step);
         }
       },
       { threshold: 0.3 }
     );
 
     if (ref.current) observer.observe(ref.current);
-    return () => observer.disconnect();
+    
+    return () => {
+      observer.disconnect();
+      if (rafId.current) cancelAnimationFrame(rafId.current);
+    };
   }, [numeric, duration, hasAnimated, value]);
 
-  if (numeric === null) return <span ref={ref}>{value}</span>;
+  if (numeric === null) return <span ref={ref}>{String(value)}</span>;
 
   return (
     <span ref={ref}>

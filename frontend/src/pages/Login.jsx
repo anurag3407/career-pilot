@@ -28,44 +28,52 @@ export default function Login() {
 
   const handleChange = (e) => {
     const { name, value } = e.target
-    setFormData(prev => ({ ...prev, [name]: value }))
-    setErrors(prev => ({ ...prev, [name]: '' }))
+    setFormData((prev) => ({
+      ...prev,
+      [name]: value
+    }))
+    if (errors[name]) {
+      setErrors((prev) => ({
+        ...prev,
+        [name]: ''
+      }))
+    }
   }
 
-  const validate = () => {
+  const validateForm = () => {
     const newErrors = {}
-    if (!formData.email) newErrors.email = 'Email is required'
-    if (!formData.password) newErrors.password = 'Password is required'
+    if (!formData.email) {
+      newErrors.email = 'Email is required'
+    } else if (!/\S+@\S+\.\S+/.test(formData.email)) {
+      newErrors.email = 'Invalid email address'
+    }
+    if (!formData.password) {
+      newErrors.password = 'Password is required'
+    }
     setErrors(newErrors)
     return Object.keys(newErrors).length === 0
   }
 
-  const checkAndProceed = async () => {
-    try {
-      const status = await twoFactorApi.getStatus()
-      if (status.enabled) {
-        setStep('totp')
-      } else {
-        toast.success('Welcome back!')
-        navigate('/dashboard')
-      }
-    } catch {
-      // If 2FA status check fails, proceed without blocking login
-      toast.success('Welcome back!')
-      navigate('/dashboard')
-    }
-  }
-
   const handleSubmit = async (e) => {
     e.preventDefault()
-    if (!validate()) return
+    if (!validateForm()) return
 
     setLoading(true)
     try {
-      await login(formData.email, formData.password)
-      await checkAndProceed()
+      // 1. Primary authentication check
+      const response = await login(formData.email, formData.password)
+      
+      // 2. Check if two-factor is enabled for this user
+      if (response && response.twoFactorRequired) {
+        setStep('totp')
+        toast.success('Two-factor authentication required')
+      } else {
+        toast.success('Signed in successfully!')
+        navigate('/dashboard')
+      }
     } catch (error) {
-      toast.error(error.message || 'Failed to login')
+      console.error('Login error:', error)
+      toast.error(error.message || 'Failed to sign in. Please check your credentials.')
     } finally {
       setLoading(false)
     }
@@ -75,38 +83,43 @@ export default function Login() {
     setLoading(true)
     try {
       await loginWithGoogle()
-      await checkAndProceed()
+      // Note: Google login often handles its own redirect via Firebase or OAuth
+      // If it returns, we check for 2FA but standard Google social login usually session-exists
+      toast.success('Signed in with Google!')
+      navigate('/dashboard')
     } catch (error) {
-      toast.error(error.message || 'Failed to login with Google')
+      console.error('Google login error:', error)
+      toast.error(error.message || 'Failed to sign in with Google')
     } finally {
       setLoading(false)
     }
   }
 
-  const handleLinkedInLogin = async () => {
+  const handleLinkedInLogin = () => {
+    if (!loginWithLinkedIn) {
+      toast.error('LinkedIn login integration is not configured.')
+      return
+    }
     setLoading(true)
     try {
-      await loginWithLinkedIn()
-      await checkAndProceed()
+      // loginWithLinkedIn triggers a full-page redirect to LinkedIn OAuth
+      loginWithLinkedIn()
+      // We don't toast or navigate here as the page is redirecting
     } catch (error) {
+      console.error('LinkedIn login error:', error)
       toast.error(error.message || 'Failed to login with LinkedIn')
-    } finally {
       setLoading(false)
     }
   }
 
   const handleTotpSubmit = async (e) => {
     e.preventDefault()
-    if (!totpToken.trim()) return
+    if (!totpToken) return
 
     setTotpLoading(true)
     try {
-      if (useBackup) {
-        await twoFactorApi.verifyBackup(totpToken.trim())
-      } else {
-        await twoFactorApi.verify(totpToken.trim())
-      }
-      toast.success('Welcome back!')
+      await twoFactorApi.verifyLogin(formData.email, totpToken, useBackup)
+      toast.success('Verification successful!')
       navigate('/dashboard')
     } catch (error) {
       toast.error(error.message || 'Invalid code — please try again')
@@ -118,8 +131,8 @@ export default function Login() {
   return (
     <div className="min-h-screen bg-background relative overflow-hidden">
       {/* Background Effect */}
-      <div className="absolute top-1/4 left-1/4 w-96 h-96 bg-primary/20 rounded-full blur-[120px] animate-blob pointer-events-none" />
-      <div className="absolute bottom-1/4 right-1/4 w-96 h-96 bg-secondary/20 rounded-full blur-[120px] animate-blob animation-delay-2000 pointer-events-none" />
+      <div className="absolute top-1/4 left-1/4 w-96 h-96 bg-primary/20 rounded-full blur-[120px] pointer-events-none" />
+      <div className="absolute bottom-1/4 right-1/4 w-96 h-96 bg-secondary/20 rounded-full blur-[120px] pointer-events-none" />
       
       <Navbar />
 
@@ -155,12 +168,12 @@ export default function Login() {
                 <Button 
                   type="submit" 
                   loading={loading}
-                  className="w-full mt-4"
+                  className="w-full mt-4 font-bold"
                 >
                   Sign In
                 </Button>
               </form>
-              
+
               <div className="relative my-8">
                 <div className="absolute inset-0 flex items-center">
                   <div className="w-full border-t border-border"></div>
@@ -198,7 +211,7 @@ export default function Login() {
                   LinkedIn
                 </Button>
               </div>
-              
+
               <p className="text-center text-sm font-medium text-muted-foreground mt-8">
                 Don't have an account?{' '}
                 <Link to="/register" className="text-primary hover:text-primary/80 font-bold transition-colors underline decoration-primary/30 underline-offset-4">
@@ -245,7 +258,7 @@ export default function Login() {
                   type="submit"
                   loading={totpLoading}
                   disabled={useBackup ? totpToken.length < 4 : totpToken.length !== 6}
-                  className="w-full mt-2"
+                  className="w-full mt-4 font-bold"
                 >
                   Verify &amp; Sign In
                 </Button>

@@ -36,7 +36,11 @@ export default function SchedulePost({ onClose, onSchedule }) {
       return;
     }
 
-    if (chosen.getTime() <= Date.now() + 5 * 60 * 1000) {
+    // Round comparison to minutes to match UI/input precision
+    const nowRounded = new Date();
+    nowRounded.setSeconds(0, 0);
+
+    if (chosen.getTime() <= nowRounded.getTime() + 5 * 60 * 1000) {
       setError('Please schedule at least 5 minutes into the future.');
       return;
     }
