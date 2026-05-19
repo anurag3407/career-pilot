@@ -22,6 +22,11 @@ import twoFactorRoutes from './routes/twoFactor.js';
 import aiRoutes from './routes/ai.js';
 
 import { globalErrorHandler } from './middleware/globalErrorHandler.js';
+import {
+  metricsMiddleware,
+  metricsHandler,
+} from "./middleware/metrics.js";
+
 
 import { initializeSocket } from './config/socket.js';
 
@@ -37,6 +42,7 @@ import { initGitHubSyncCron } from './services/portfolioGitHubSync.js';
 initGitHubSyncCron();
 
 const app = express();
+app.use(metricsMiddleware);
 const httpServer = createServer(app);
 const PORT = process.env.PORT || 5000;
 
@@ -100,6 +106,8 @@ app.get('/health', (req, res) => {
     environment: process.env.NODE_ENV
   });
 });
+
+app.get('/metrics', metricsHandler);
 
 app.use('/api/docs', swaggerUi.serve, swaggerUi.setup(swaggerSpec));
 app.use('/api/auth', authRoutes);

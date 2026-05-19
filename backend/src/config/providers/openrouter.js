@@ -1,4 +1,5 @@
 import OpenAI from 'openai';
+import { aiCallsCounter } from '../../middleware/metrics.js';
 
 // Exponential backoff helper
 const sleep = (ms) => new Promise(resolve => setTimeout(resolve, ms));
@@ -42,6 +43,7 @@ export class OpenRouterAdapter {
 
   async generateContent(prompt) {
     try {
+      aiCallsCounter.inc({ provider: this.providerName });
       const completion = await withRetry(() => 
         this.client.chat.completions.create({
           model: this.modelName,
