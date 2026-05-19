@@ -33,14 +33,10 @@ router.get('/:resumeId', verifyToken, asyncHandler(async (req, res) => {
   const { resumeId } = req.params;
   const userId = req.user.uid;
 
-  const resume = await Resume.findById(resumeId).lean();
+  const resume = await Resume.findOne({ _id: resumeId, userId }).lean();
 
   if (!resume) {
     throw new ApiError(404, 'Resume not found');
-  }
-
-  if (resume.userId !== userId) {
-    throw new ApiError(403, 'Access denied');
   }
 
   res.json({
@@ -100,38 +96,25 @@ router.put('/:resumeId', verifyToken, asyncHandler(async (req, res) => {
   const userId = req.user.uid;
   const updates = req.body;
 
-  const resume = await Resume.findById(resumeId);
-
-  if (!resume) {
-    throw new ApiError(404, 'Resume not found');
-  }
-
-  if (resume.userId !== userId) {
-    throw new ApiError(403, 'Access denied');
-  }
-
-  // Fields that can be updated
-  const allowedUpdates = [
-    'originalText', 
-    'enhancedText', 
-    'jobRole', 
-    'preferences', 
-    'title', 
-    'pdfUrl'
-  ];
-
+  const allowedUpdates = ['originalText', 'enhancedText', 'jobRole', 'preferences', 'title', 'pdfUrl'];
   const updateData = {};
   for (const key of allowedUpdates) {
-    if (updates[key] !== undefined) {
-      updateData[key] = updates[key];
-    }
+    if (updates[key] !== undefined) updateData[key] = updates[key];
   }
 
-  const updatedResume = await Resume.findByIdAndUpdate(
-    resumeId,
+  if (Object.keys(updateData).length === 0) {
+    throw new ApiError(400, 'No valid fields to update');
+  }
+
+  const updatedResume = await Resume.findOneAndUpdate(
+    { _id: resumeId, userId },
     { $set: updateData },
     { new: true, runValidators: true }
   ).lean();
+
+  if (!updatedResume) {
+    throw new ApiError(404, 'Resume not found');
+  }
 
   res.json({
     success: true,
@@ -148,17 +131,11 @@ router.delete('/:resumeId', verifyToken, asyncHandler(async (req, res) => {
   const { resumeId } = req.params;
   const userId = req.user.uid;
 
-  const resume = await Resume.findById(resumeId);
+  const resume = await Resume.findOneAndDelete({ _id: resumeId, userId });
 
   if (!resume) {
     throw new ApiError(404, 'Resume not found');
   }
-
-  if (resume.userId !== userId) {
-    throw new ApiError(403, 'Access denied');
-  }
-
-  await Resume.findByIdAndDelete(resumeId);
 
   res.json({
     success: true,
