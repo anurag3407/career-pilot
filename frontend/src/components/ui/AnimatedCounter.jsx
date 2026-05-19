@@ -27,33 +27,33 @@ function easeOutCubic(t) {
  */
 export default function AnimatedCounter({ value, duration = 2000 }) {
   const [display, setDisplay] = useState("0");
-  const [hasAnimated, setHasAnimated] = useState(false);
+  const [, setTrigger] = useState(0); // Dummy state to force re-render if needed, but not used here
   const ref = useRef(null);
   const rafId = useRef(null);
+  const hasAnimatedRef = useRef(false);
 
   const { numeric, suffix } = parseStat(value);
 
   // Reset animation state when the target value changes
   useEffect(() => {
-    setHasAnimated(false);
+    hasAnimatedRef.current = false;
     setDisplay("0");
   }, [value]);
 
   useEffect(() => {
-    if (numeric === null || hasAnimated) {
+    if (numeric === null || hasAnimatedRef.current) {
       if (numeric === null) setDisplay(String(value));
       return;
     }
 
     const observer = new IntersectionObserver(
       ([entry]) => {
-        if (entry.isIntersecting && !hasAnimated) {
-          setHasAnimated(true);
+        if (entry.isIntersecting && !hasAnimatedRef.current) {
+          hasAnimatedRef.current = true;
           observer.disconnect();
 
           const startTime = performance.now();
           const isDecimal = numeric % 1 !== 0;
-          // Guard against non-positive duration
           const safeDuration = Math.max(duration, 1);
 
           function step(currentTime) {
@@ -85,7 +85,8 @@ export default function AnimatedCounter({ value, duration = 2000 }) {
       observer.disconnect();
       if (rafId.current) cancelAnimationFrame(rafId.current);
     };
-  }, [numeric, duration, hasAnimated, value]);
+  }, [numeric, duration, value]);
+
 
   if (numeric === null) return <span ref={ref}>{String(value)}</span>;
 

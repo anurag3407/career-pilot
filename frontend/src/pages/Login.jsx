@@ -82,11 +82,15 @@ export default function Login() {
   const handleGoogleLogin = async () => {
     setLoading(true)
     try {
-      await loginWithGoogle()
-      // Note: Google login often handles its own redirect via Firebase or OAuth
-      // If it returns, we check for 2FA but standard Google social login usually session-exists
-      toast.success('Signed in with Google!')
-      navigate('/dashboard')
+      const response = await loginWithGoogle()
+      
+      if (response && response.twoFactorRequired) {
+        setStep('totp')
+        toast.success('Two-factor authentication required')
+      } else {
+        toast.success('Signed in with Google!')
+        navigate('/dashboard')
+      }
     } catch (error) {
       console.error('Google login error:', error)
       toast.error(error.message || 'Failed to sign in with Google')
