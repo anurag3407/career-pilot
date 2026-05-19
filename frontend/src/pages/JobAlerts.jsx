@@ -107,19 +107,31 @@ export default function JobAlerts() {
 
           {/* Quick Stats */}
           {stats && (
-            <div className="grid grid-cols-4 gap-4">
+            <motion.div
+              className="grid grid-cols-4 gap-4"
+              variants={{ animate: { transition: { staggerChildren: 0.08 } } }}
+              initial="initial"
+              animate="animate"
+            >
               {[
                 { value: stats.totalAlerts || 0, label: 'Total Alerts', color: 'indigo' },
                 { value: stats.activeAlerts || 0, label: 'Active Alerts', color: 'green' },
                 { value: stats.totalJobsFound || 0, label: 'Jobs Found', color: 'purple' },
                 { value: stats.totalEmailsSent || 0, label: 'Emails Sent', color: 'blue' }
               ].map((stat, idx) => (
-                <div key={idx} className={`bg-background/50 border border-border rounded-xl p-4 ${hoverBorderClassMap[stat.color] || 'hover:border-border'} transition-colors`}>
+                <motion.div
+                  key={idx}
+                  variants={{
+                    initial: { opacity: 0, y: 12 },
+                    animate: { opacity: 1, y: 0, transition: { duration: 0.22, ease: 'easeOut' } }
+                  }}
+                  className={`bg-background/50 border border-border rounded-xl p-4 ${hoverBorderClassMap[stat.color] || 'hover:border-border'} transition-colors`}
+                >
                   <div className={`text-3xl font-bold text-foreground`}>{stat.value}</div>
                   <div className="text-muted-foreground text-sm">{stat.label}</div>
-                </div>
+                </motion.div>
               ))}
-            </div>
+            </motion.div>
           )}
         </div>
       </div>
@@ -205,9 +217,18 @@ export default function JobAlerts() {
                   <h3 className="text-lg font-semibold text-foreground">
                     Search Results ({searchResults.length} jobs)
                   </h3>
-                  {searchResults.map((job, index) => (
-                    <JobCard key={job.id || index} job={job} index={index} />
-                  ))}
+                  <motion.div
+                    className="space-y-4"
+                    variants={{
+                      animate: { transition: { staggerChildren: 0.07 } }
+                    }}
+                    initial="initial"
+                    animate="animate"
+                  >
+                    {searchResults.map((job, index) => (
+                      <JobCard key={job.id || index} job={job} index={index} />
+                    ))}
+                  </motion.div>
                 </div>
               )}
 
@@ -240,7 +261,7 @@ export default function JobAlerts() {
 }
 
 // Job Card Component
-function JobCard({ job, index }) {
+function JobCard({ job }) {
   const handleApply = () => {
     if (job.applyLink) {
       window.open(job.applyLink, '_blank');
@@ -255,9 +276,10 @@ function JobCard({ job, index }) {
 
   return (
     <motion.div
-      initial={{ opacity: 0, y: 10 }}
-      animate={{ opacity: 1, y: 0 }}
-      transition={{ delay: index * 0.05 }}
+      variants={{
+        initial: { opacity: 0, y: 12 },
+        animate: { opacity: 1, y: 0, transition: { duration: 0.22, ease: 'easeOut' } }
+      }}
       className="bg-muted/50 rounded-xl border border-border p-5 hover:border-primary/30 transition-all"
     >
       <div className="flex items-start gap-4">
