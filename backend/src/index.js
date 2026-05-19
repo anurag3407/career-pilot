@@ -27,13 +27,15 @@ import { initializeSocket } from './config/socket.js';
 
 import { initializeDefaultChannels } from './controllers/communityFirebaseController.js';
 import { initializePostScheduler } from './services/postScheduler.js';
+import swaggerUi from 'swagger-ui-express';
+import swaggerSpec from './config/swagger.js';
 
 import { connectDB } from './config/database.js';
 import { initJobFetcher } from './services/jobFetcher.js';
 import JobAlert from './models/JobAlert.model.js';
+import { initGitHubSyncCron } from './services/portfolioGitHubSync.js';
+initGitHubSyncCron();
 
-const swaggerUi = require('swagger-ui-express');
-const swaggerSpec = require('./config/swagger');
 const app = express();
 const httpServer = createServer(app);
 const PORT = process.env.PORT || 5000;
