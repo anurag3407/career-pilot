@@ -714,6 +714,140 @@ See [Real_life_usecase.md](./Real_life_usecase.md) for detailed success stories 
 
 ---
 
+## 🛠️ Troubleshooting Guide
+
+If you encounter issues while setting up or running the project locally, try the following common fixes before creating a new issue.
+
+### MongoDB Connection Error:
+
+#### Problem
+
+```bash
+MongoServerSelectionError
+```
+
+#### Solution
+
+- Verify your `MONGODB_URI` in backend `.env`
+- Ensure MongoDB service is running
+- Check internet connection if using MongoDB Atlas
+- Restart backend server after updating environment variables
+
+### Redis Connection Error:
+
+#### Problem
+
+```bash
+ECONNREFUSED 127.0.0.1:6379
+```
+
+#### Solution
+
+- Ensure Redis server is installed and running
+- Verify `REDIS_HOST` and `REDIS_PORT`
+- Restart Redis service
+- Check firewall restrictions
+
+### Firebase Admin Initialization Error:
+
+#### Problem
+
+```bash
+FirebaseAppError
+```
+
+#### Solution
+
+- Verify Firebase credentials in `.env`
+- Ensure service account JSON is valid
+- Check `FIREBASE_PROJECT_ID`
+- Restart backend server after changes
+
+### Port Already in Use:
+
+#### Problem
+
+```bash
+EADDRINUSE
+```
+
+#### Solution
+
+- Change the `PORT` value in `.env`
+- Stop other applications using the same port
+- Restart your terminal and development server
+
+### npm Install Errors:
+
+#### Problem
+
+Dependencies fail during installation.
+
+#### Solution
+
+Run:
+
+```bash
+npm install
+```
+
+If the issue persists:
+
+```bash
+npm cache clean --force
+```
+
+Then reinstall dependencies:
+
+```bash
+npm install
+```
+
+### Frontend Not Starting:
+
+#### Problem
+
+Frontend server does not run properly.
+
+#### Solution
+
+- Ensure frontend `.env` exists
+- Verify all `VITE_*` variables are correct
+- Run:
+
+```bash
+npm run dev
+```
+
+inside the `frontend` directory.
+
+### Backend Not Starting:
+
+#### Problem
+
+Backend crashes during startup.
+
+#### Solution
+
+- Ensure backend `.env` is configured
+- Verify MongoDB and Redis are running
+- Run:
+
+```bash
+npm run dev
+```
+
+inside the `backend` directory.
+
+### Environment Variables Tips:
+
+- Never commit `.env` files
+- Double-check all API keys
+- Restart servers after changing environment variables
+- Ensure no extra spaces are added in `.env`
+
+
+
 ## 🤝 Contributing
 
 We welcome contributions! Please see our [CONTRIBUTION.md](./CONTRIBUTION.md) for:
