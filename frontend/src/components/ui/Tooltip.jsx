@@ -1,4 +1,4 @@
-import { useState, useRef } from 'react';
+import { useState, useRef, useEffect } from 'react';
 
 export default function Tooltip({ content, children }) {
   const [visible, setVisible] = useState(false);
@@ -12,6 +12,12 @@ export default function Tooltip({ content, children }) {
     clearTimeout(timeoutRef.current);
     setVisible(false);
   };
+
+  useEffect(() => {
+    return () => {
+      clearTimeout(timeoutRef.current);
+    };
+  }, []);
 
   return (
     <div
