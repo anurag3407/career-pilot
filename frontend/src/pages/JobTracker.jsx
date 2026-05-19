@@ -6,6 +6,8 @@ import { jobTrackerApi } from '../services/api'
 import Button from '../components/Button'
 import Card from '../components/Card'
 import EmptyJobState from '../components/EmptyJobState'
+import CompanyResearch from '../components/CompanyResearch'
+import { Sparkles } from 'lucide-react'
 
 const JobTracker = () => {
   const [trackedJobs, setTrackedJobs] = useState([])
@@ -13,9 +15,10 @@ const JobTracker = () => {
   const [loading, setLoading] = useState(true)
   const [filterStatus, setFilterStatus] = useState('all')
   const [updateLoading, setUpdateLoading] = useState({})
+  const [researchCompany, setResearchCompany] = useState(null)
 
   const statusOptions = [
-    { value: 'saved', label: 'Saved', color: 'bg-gray-500', icon: '📌' },
+    { value: 'saved', label: 'Saved', color: 'bg-muted-foreground', icon: '📌' },
     { value: 'applied', label: 'Applied', color: 'bg-blue-500', icon: '✉️' },
     { value: 'interviewing', label: 'Interviewing', color: 'bg-yellow-500', icon: '🎤' },
     { value: 'offered', label: 'Offered', color: 'bg-green-500', icon: '🎉' },
@@ -108,8 +111,8 @@ const JobTracker = () => {
       <Layout>
         <div className="min-h-screen flex items-center justify-center">
           <div className="flex flex-col items-center gap-4">
-            <div className="w-12 h-12 border-4 border-neutral-800 border-t-indigo-500 rounded-full animate-spin"></div>
-            <p className="text-neutral-400">Loading tracked jobs...</p>
+            <div className="w-12 h-12 border-4 border-border border-t-primary rounded-full animate-spin"></div>
+            <p className="text-muted-foreground">Loading tracked jobs...</p>
           </div>
         </div>
       </Layout>
@@ -118,58 +121,58 @@ const JobTracker = () => {
 
   return (
     <Layout>
-      <div className="min-h-screen bg-black py-8 px-4">
+      <div className="min-h-screen bg-background py-8 px-4">
         <div className="max-w-7xl mx-auto">
           {/* Header */}
           <div className="mb-8">
-            <h1 className="text-4xl font-bold text-white mb-2">Job Tracker</h1>
-            <p className="text-neutral-400">Track your job applications in one place</p>
+            <h1 className="text-4xl font-bold text-foreground mb-2">Job Tracker</h1>
+            <p className="text-muted-foreground">Track your job applications in one place</p>
           </div>
 
           {/* Stats Cards */}
           {stats && (
             <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-5 gap-4 mb-8">
-              <Card className="p-6 bg-neutral-900/50 border-neutral-800">
+              <Card className="p-6 bg-background/50 border-border">
                 <div className="flex items-center justify-between">
                   <div>
-                    <p className="text-neutral-400 text-sm mb-1">Total</p>
-                    <p className="text-3xl font-bold text-white">{stats.total}</p>
+                    <p className="text-muted-foreground text-sm mb-1">Total</p>
+                    <p className="text-3xl font-bold text-foreground">{stats.total}</p>
                   </div>
                   <div className="text-3xl">📊</div>
                 </div>
               </Card>
-              <Card className="p-6 bg-neutral-900/50 border-neutral-800">
+              <Card className="p-6 bg-background/50 border-border">
                 <div className="flex items-center justify-between">
                   <div>
-                    <p className="text-neutral-400 text-sm mb-1">Saved</p>
-                    <p className="text-3xl font-bold text-white">{stats.saved}</p>
+                    <p className="text-muted-foreground text-sm mb-1">Saved</p>
+                    <p className="text-3xl font-bold text-foreground">{stats.saved}</p>
                   </div>
                   <div className="text-3xl">📌</div>
                 </div>
               </Card>
-              <Card className="p-6 bg-neutral-900/50 border-neutral-800">
+              <Card className="p-6 bg-background/50 border-border">
                 <div className="flex items-center justify-between">
                   <div>
-                    <p className="text-neutral-400 text-sm mb-1">Applied</p>
-                    <p className="text-3xl font-bold text-white">{stats.applied}</p>
+                    <p className="text-muted-foreground text-sm mb-1">Applied</p>
+                    <p className="text-3xl font-bold text-foreground">{stats.applied}</p>
                   </div>
                   <div className="text-3xl">✉️</div>
                 </div>
               </Card>
-              <Card className="p-6 bg-neutral-900/50 border-neutral-800">
+              <Card className="p-6 bg-background/50 border-border">
                 <div className="flex items-center justify-between">
                   <div>
-                    <p className="text-neutral-400 text-sm mb-1">Interviewing</p>
-                    <p className="text-3xl font-bold text-white">{stats.interviewing}</p>
+                    <p className="text-muted-foreground text-sm mb-1">Interviewing</p>
+                    <p className="text-3xl font-bold text-foreground">{stats.interviewing}</p>
                   </div>
                   <div className="text-3xl">🎤</div>
                 </div>
               </Card>
-              <Card className="p-6 bg-neutral-900/50 border-neutral-800">
+              <Card className="p-6 bg-background/50 border-border">
                 <div className="flex items-center justify-between">
                   <div>
-                    <p className="text-neutral-400 text-sm mb-1">Offered</p>
-                    <p className="text-3xl font-bold text-white">{stats.offered}</p>
+                    <p className="text-muted-foreground text-sm mb-1">Offered</p>
+                    <p className="text-3xl font-bold text-foreground">{stats.offered}</p>
                   </div>
                   <div className="text-3xl">🎉</div>
                 </div>
@@ -182,8 +185,8 @@ const JobTracker = () => {
             <button
               onClick={() => setFilterStatus('all')}
               className={`px-4 py-2 rounded-lg font-medium transition-colors ${filterStatus === 'all'
-                  ? 'bg-indigo-500 text-white'
-                  : 'bg-neutral-800 text-neutral-300 hover:bg-neutral-700'
+                  ? 'bg-primary text-foreground'
+                  : 'bg-muted text-foreground hover:bg-muted/80'
                 }`}
             >
               All Jobs
@@ -193,8 +196,8 @@ const JobTracker = () => {
                 key={status.value}
                 onClick={() => setFilterStatus(status.value)}
                 className={`px-4 py-2 rounded-lg font-medium transition-colors ${filterStatus === status.value
-                    ? 'bg-indigo-500 text-white'
-                    : 'bg-neutral-800 text-neutral-300 hover:bg-neutral-700'
+                    ? 'bg-primary text-foreground'
+                    : 'bg-muted text-foreground hover:bg-muted/80'
                   }`}
               >
                 {status.icon} {status.label}
@@ -204,10 +207,28 @@ const JobTracker = () => {
 
           {/* Jobs List */}
           {filteredJobs.length === 0 ? (
-            <EmptyJobState 
-              filterStatus={filterStatus} 
-              statusLabel={getStatusInfo(filterStatus).label} 
-            />
+            <Card className="p-12 text-center bg-background/50 border-border">
+              <div className="max-w-md mx-auto">
+                <Briefcase className="w-16 h-16 text-muted-foreground/80 mx-auto mb-4" />
+                <h3 className="text-xl font-semibold text-foreground mb-2">
+                  {filterStatus === 'all' ? 'No Tracked Jobs Yet' : `No ${getStatusInfo(filterStatus).label} Jobs`}
+                </h3>
+                <p className="text-muted-foreground mb-6">
+                  {filterStatus === 'all'
+                    ? 'Start tracking jobs from the job search page'
+                    : `You don't have any jobs with "${getStatusInfo(filterStatus).label}" status`}
+                </p>
+                {filterStatus === 'all' && (
+                  <Button
+                    onClick={() => window.location.href = '/jobs'}
+                    className="mx-auto"
+                  >
+                    <Plus className="w-5 h-5 mr-2" />
+                    Find Jobs
+                  </Button>
+                )}
+              </div>
+            </Card>
           ) : (
             <div className="grid gap-4">
               {filteredJobs.map(job => {
@@ -215,26 +236,35 @@ const JobTracker = () => {
                 return (
                   <Card
                     key={job.id}
-                    className="p-6 bg-neutral-900/50 border-neutral-800 hover:border-neutral-700 transition-all"
+                    className="p-6 bg-background/50 border-border hover:border-border transition-all"
                   >
                     <div className="flex flex-col lg:flex-row lg:items-center justify-between gap-4">
                       {/* Job Info */}
                       <div className="flex-1">
                         <div className="flex items-start gap-3 mb-3">
                           <div className="flex-1">
-                            <h3 className="text-xl font-semibold text-white mb-1">
+                            <h3 className="text-xl font-semibold text-foreground mb-1">
                               {job.title}
                             </h3>
-                            <p className="text-indigo-400 font-medium mb-2">
-                              {job.company}
-                            </p>
+                            <div className="flex items-center gap-2 mb-2">
+                              <span className="text-primary font-medium">
+                                {job.company}
+                              </span>
+                              <button
+                                onClick={() => setResearchCompany({ name: job.company, industry: job.industry || '' })}
+                                className="text-[10px] font-semibold tracking-wide px-2 py-0.5 rounded bg-primary/10 text-primary border border-primary/20 hover:bg-primary/20 transition flex items-center gap-1"
+                                title="Analyze company size, culture, funding, rating and news"
+                              >
+                                <Sparkles className="w-3 h-3" /> AI Research
+                              </button>
+                            </div>
                           </div>
-                          <span className={`px-3 py-1 rounded-full text-xs font-medium text-white ${statusInfo.color}`}>
+                          <span className={`px-3 py-1 rounded-full text-xs font-medium text-foreground ${statusInfo.color}`}>
                             {statusInfo.icon} {statusInfo.label}
                           </span>
                         </div>
 
-                        <div className="flex flex-wrap gap-4 text-sm text-neutral-400 mb-3">
+                        <div className="flex flex-wrap gap-4 text-sm text-muted-foreground mb-3">
                           {job.location && (
                             <div className="flex items-center gap-1">
                               <MapPin className="w-4 h-4" />
@@ -254,7 +284,7 @@ const JobTracker = () => {
                         </div>
 
                         {job.notes && (
-                          <p className="text-sm text-neutral-300 bg-neutral-800/50 rounded p-3 mb-3">
+                          <p className="text-sm text-foreground bg-muted/50 rounded p-3 mb-3">
                             📝 {job.notes}
                           </p>
                         )}
@@ -266,7 +296,7 @@ const JobTracker = () => {
                           value={job.status}
                           onChange={(e) => handleStatusUpdate(job.id, e.target.value)}
                           disabled={updateLoading[job.id]}
-                          className="w-full px-3 py-2 bg-neutral-800 border border-neutral-700 rounded-lg text-white text-sm focus:outline-none focus:border-indigo-500 disabled:opacity-50"
+                          className="w-full px-3 py-2 bg-muted border border-border rounded-lg text-foreground text-sm focus:outline-none focus:border-primary disabled:opacity-50"
                         >
                           {statusOptions.map(status => (
                             <option key={status.value} value={status.value}>
@@ -281,7 +311,7 @@ const JobTracker = () => {
                               href={job.applyLink}
                               target="_blank"
                               rel="noopener noreferrer"
-                              className="flex-1 px-3 py-2 bg-indigo-600 hover:bg-indigo-700 text-white rounded-lg text-sm font-medium transition-colors flex items-center justify-center gap-1"
+                              className="flex-1 px-3 py-2 bg-primary hover:bg-primary/80 text-foreground rounded-lg text-sm font-medium transition-colors flex items-center justify-center gap-1"
                             >
                               <ExternalLink className="w-4 h-4" />
                               Apply
@@ -304,6 +334,13 @@ const JobTracker = () => {
           )}
         </div>
       </div>
+      {researchCompany && (
+        <CompanyResearch
+          companyName={researchCompany.name}
+          industry={researchCompany.industry}
+          onClose={() => setResearchCompany(null)}
+        />
+      )}
     </Layout>
   )
 }

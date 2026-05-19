@@ -4,6 +4,7 @@ import cors from 'cors';
 import helmet from 'helmet';
 import rateLimit from 'express-rate-limit';
 import dotenv from 'dotenv';
+import searchRoutes from './routes/search.js';
 
 dotenv.config();
 import portfolioRoutes from './routes/portfolio.js';
@@ -18,14 +19,17 @@ import communityRoutes from './routes/community.js';
 import fellowshipRoutes from './routes/fellowships.js';
 import interviewRoutes from './routes/interview.js';
 import paymentRoutes from './routes/payments.js';
+import userProfileRoutes from './routes/userProfile.js';
+import twoFactorRoutes from './routes/twoFactor.js';
 
 import { errorHandler } from './middleware/errorHandler.js';
 
 import { initializeSocket } from './config/socket.js';
 
 import { initializeDefaultChannels } from './controllers/communityFirebaseController.js';
+import { initializePostScheduler } from './services/postScheduler.js';
 
-import mongoose from 'mongoose';
+import { connectDB } from './config/database.js';
 import { initJobFetcher } from './services/jobFetcher.js';
 import JobAlert from './models/JobAlert.model.js';
 
@@ -116,15 +120,7 @@ app.use((req, res) => {
 app.use(errorHandler);
 const startServer = async () => {
   try {
-    const mongoUri = process.env.MONGODB_URI || 'mongodb://localhost:27017/careerpilot';
-
-    console.log('📦 Connecting to MongoDB...');
-    await mongoose.connect(mongoUri, {
-      serverSelectionTimeoutMS: 30000,
-      socketTimeoutMS: 45000,
-      maxPoolSize: 10
-    });
-    console.log('📦 Connected to MongoDB');
+    await connectDB();
 
     httpServer.listen(PORT, () => {
       console.log(`🚀 Server running on port ${PORT}`);
@@ -137,6 +133,12 @@ const startServer = async () => {
       console.log('💬 Community channels initialized');
     } catch (channelError) {
       console.warn('⚠️ Could not initialize default channels:', channelError.message);
+    }
+
+    try {
+      await initializePostScheduler();
+    } catch (schedulerError) {
+      console.warn('⚠️ Post scheduler initialization skipped:', schedulerError.message);
     }
 
     const allowDevDbMutations = process.env.ALLOW_DEV_DB_MUTATIONS === 'true';

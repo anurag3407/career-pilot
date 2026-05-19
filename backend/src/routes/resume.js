@@ -1,33 +1,31 @@
 import express from 'express';
 import { verifyToken } from '../middleware/auth.js';
 import { asyncHandler, ApiError } from '../middleware/errorHandler.js';
+import { paginate, paginatedResponse } from '../middleware/paginate.js';
 import Resume from '../models/Resume.model.js';
 
 const router = express.Router();
 
-// Get all resumes for a user
-router.get('/', verifyToken, asyncHandler(async (req, res) => {
+// Get all resumes for a user (paginated)
+router.get('/', verifyToken, paginate(), asyncHandler(async (req, res) => {
   const userId = req.user.uid;
-  
-  // Get resumes from MongoDB sorted by creation date (newest first)
+  const { page, limit, skip, sort } = req.paginate;
+
+  const total = await Resume.countDocuments({ userId });
+
   const userResumes = await Resume.find({ userId })
-    .sort({ createdAt: -1 })
+    .sort(sort)
+    .skip(skip)
+    .limit(limit)
     .lean();
 
-  // Transform _id to id for frontend compatibility
   const resumes = userResumes.map(resume => ({
     id: resume._id.toString(),
     ...resume,
     _id: undefined
   }));
 
-  res.json({
-    success: true,
-    data: {
-      resumes,
-      count: resumes.length
-    }
-  });
+  paginatedResponse(res, { data: resumes, total, page, limit });
 }));
 
 // Get a specific resume
@@ -35,14 +33,10 @@ router.get('/:resumeId', verifyToken, asyncHandler(async (req, res) => {
   const { resumeId } = req.params;
   const userId = req.user.uid;
 
-  const resume = await Resume.findById(resumeId).lean();
+  const resume = await Resume.findOne({ _id: resumeId, userId }).lean();
 
   if (!resume) {
     throw new ApiError(404, 'Resume not found');
-  }
-
-  if (resume.userId !== userId) {
-    throw new ApiError(403, 'Access denied');
   }
 
   res.json({
@@ -102,38 +96,25 @@ router.put('/:resumeId', verifyToken, asyncHandler(async (req, res) => {
   const userId = req.user.uid;
   const updates = req.body;
 
-  const resume = await Resume.findById(resumeId);
-
-  if (!resume) {
-    throw new ApiError(404, 'Resume not found');
-  }
-
-  if (resume.userId !== userId) {
-    throw new ApiError(403, 'Access denied');
-  }
-
-  // Fields that can be updated
-  const allowedUpdates = [
-    'originalText', 
-    'enhancedText', 
-    'jobRole', 
-    'preferences', 
-    'title', 
-    'pdfUrl'
-  ];
-
+  const allowedUpdates = ['originalText', 'enhancedText', 'jobRole', 'preferences', 'title', 'pdfUrl'];
   const updateData = {};
   for (const key of allowedUpdates) {
-    if (updates[key] !== undefined) {
-      updateData[key] = updates[key];
-    }
+    if (updates[key] !== undefined) updateData[key] = updates[key];
   }
 
-  const updatedResume = await Resume.findByIdAndUpdate(
-    resumeId,
+  if (Object.keys(updateData).length === 0) {
+    throw new ApiError(400, 'No valid fields to update');
+  }
+
+  const updatedResume = await Resume.findOneAndUpdate(
+    { _id: resumeId, userId },
     { $set: updateData },
     { new: true, runValidators: true }
   ).lean();
+
+  if (!updatedResume) {
+    throw new ApiError(404, 'Resume not found');
+  }
 
   res.json({
     success: true,
@@ -150,17 +131,11 @@ router.delete('/:resumeId', verifyToken, asyncHandler(async (req, res) => {
   const { resumeId } = req.params;
   const userId = req.user.uid;
 
-  const resume = await Resume.findById(resumeId);
+  const resume = await Resume.findOneAndDelete({ _id: resumeId, userId });
 
   if (!resume) {
     throw new ApiError(404, 'Resume not found');
   }
-
-  if (resume.userId !== userId) {
-    throw new ApiError(403, 'Access denied');
-  }
-
-  await Resume.findByIdAndDelete(resumeId);
 
   res.json({
     success: true,

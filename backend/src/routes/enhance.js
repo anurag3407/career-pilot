@@ -1,12 +1,15 @@
 import express from 'express';
 import { enhanceResume, generateSummary, suggestImprovements, analyzeATSScore, analyzeResumeComprehensive, analyzeBulletPoints, generateBeforeAfter, getVerbLists } from '../config/langchain.js';
+import { generateEmails } from '../services/emailGeneratorService.js';
+import { optimizeLinkedInProfile } from '../services/linkedinOptimizerService.js';
 import { verifyToken } from '../middleware/auth.js';
 import { asyncHandler, ApiError } from '../middleware/errorHandler.js';
+import { aiRateLimiter } from '../middleware/rateLimiter.js';
 
 const router = express.Router();
 
 // Enhance resume with AI
-router.post('/', verifyToken, asyncHandler(async (req, res) => {
+router.post('/', verifyToken, aiRateLimiter, asyncHandler(async (req, res) => {
   const { resumeText, preferences } = req.body;
 
   if (!resumeText || !resumeText.trim()) {
@@ -44,7 +47,7 @@ router.post('/', verifyToken, asyncHandler(async (req, res) => {
 }));
 
 // Generate summary only
-router.post('/summary', verifyToken, asyncHandler(async (req, res) => {
+router.post('/summary', verifyToken, aiRateLimiter, asyncHandler(async (req, res) => {
   const { resumeText, jobRole } = req.body;
 
   if (!resumeText || !resumeText.trim()) {
@@ -71,7 +74,7 @@ router.post('/summary', verifyToken, asyncHandler(async (req, res) => {
 }));
 
 // Get improvement suggestions
-router.post('/suggestions', verifyToken, asyncHandler(async (req, res) => {
+router.post('/suggestions', verifyToken, aiRateLimiter, asyncHandler(async (req, res) => {
   const { resumeText, jobRole } = req.body;
 
   if (!resumeText || !resumeText.trim()) {
@@ -98,7 +101,7 @@ router.post('/suggestions', verifyToken, asyncHandler(async (req, res) => {
 }));
 
 // Analyze ATS score
-router.post('/ats-analysis', verifyToken, asyncHandler(async (req, res) => {
+router.post('/ats-analysis', verifyToken, aiRateLimiter, asyncHandler(async (req, res) => {
   const { resumeText, jobRole } = req.body;
 
   if (!resumeText || !resumeText.trim()) {
@@ -123,7 +126,7 @@ router.post('/ats-analysis', verifyToken, asyncHandler(async (req, res) => {
 }));
 
 // Comprehensive resume analysis (Senior Expert Level)
-router.post('/comprehensive-analysis', verifyToken, asyncHandler(async (req, res) => {
+router.post('/comprehensive-analysis', verifyToken, aiRateLimiter, asyncHandler(async (req, res) => {
   const { resumeText, jobRole } = req.body;
 
   if (!resumeText || !resumeText.trim()) {
@@ -148,7 +151,7 @@ router.post('/comprehensive-analysis', verifyToken, asyncHandler(async (req, res
 }));
 
 // Analyze individual bullet points
-router.post('/analyze-bullets', verifyToken, asyncHandler(async (req, res) => {
+router.post('/analyze-bullets', verifyToken, aiRateLimiter, asyncHandler(async (req, res) => {
   const { resumeText, jobRole } = req.body;
 
   if (!resumeText || !resumeText.trim()) {
@@ -173,7 +176,7 @@ router.post('/analyze-bullets', verifyToken, asyncHandler(async (req, res) => {
 }));
 
 // Generate before/after comparison
-router.post('/before-after', verifyToken, asyncHandler(async (req, res) => {
+router.post('/before-after', verifyToken, aiRateLimiter, asyncHandler(async (req, res) => {
   const { resumeText, jobRole, analysisResults } = req.body;
 
   if (!resumeText || !resumeText.trim()) {
@@ -205,6 +208,41 @@ router.get('/verb-lists', verifyToken, asyncHandler(async (req, res) => {
     success: true,
     data: verbs
   });
+}));
+
+// Generate Email Variants
+router.post('/generate-email', verifyToken, asyncHandler(async (req, res) => {
+  const { resume, jobDesc, tone } = req.body;
+
+  if (!resume || !jobDesc) {
+    throw new ApiError(400, 'Resume and Job Description are required');
+  }
+
+  try {
+    const result = await generateEmails(resume, jobDesc, tone || 'Professional');
+    res.json(result);
+  } catch (error) {
+    console.error('Email generation error:', error);
+    throw new ApiError(500, 'Failed to generate emails. Please try again.');
+  }
+}));
+
+// Optimize LinkedIn Profile
+router.post('/optimize-linkedin', verifyToken, aiRateLimiter, asyncHandler(async (req, res) => {
+  const { profileText, targetRole } = req.body;
+  const normalizedProfile = typeof profileText === 'string' ? profileText.trim() : '';
+  const normalizedRole = typeof targetRole === 'string' ? targetRole.trim() : '';
+
+  if (!normalizedProfile) {
+    throw new ApiError(400, 'LinkedIn profile text is required');
+  }
+
+  if (normalizedProfile.length > 5000) {
+    throw new ApiError(400, 'Profile text exceeds the allowed limit (max 5000 characters)');
+  }
+
+  const result = await optimizeLinkedInProfile(normalizedProfile, normalizedRole);
+  res.json(result);
 }));
 
 export default router;

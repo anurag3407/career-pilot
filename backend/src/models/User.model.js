@@ -33,6 +33,11 @@ const userSchema = new mongoose.Schema({
     type: [String],
     required: true,
   },
+  notificationPreferences: {
+  jobAlerts: { type: Boolean, default: true },
+  directMessages: { type: Boolean, default: true },
+  proposalUpdates: { type: Boolean, default: true },
+}
 });
 
 const User = mongoose.model('User', userSchema);

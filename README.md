@@ -2,12 +2,19 @@
 
 <div align="center">
 
-![License](https://img.shields.io/badge/license-MIT-blue.svg)
-![Node.js](https://img.shields.io/badge/Node.js-18%2B-green.svg)
-![React](https://img.shields.io/badge/React-19-blue.svg)
-![Firebase](https://img.shields.io/badge/Firebase-Firestore-orange.svg)
-![AI](https://img.shields.io/badge/AI-Gemini%202.5-purple.svg)
-![Razorpay](https://img.shields.io/badge/Payments-Razorpay-blue.svg)
+<p align="center">
+  <img src="https://img.shields.io/badge/License-MIT-blue?logo=opensourceinitiative&logoColor=white">
+  &nbsp;
+  <img src="https://img.shields.io/badge/Node.js-18+-green?logo=node.js&logoColor=white">
+  &nbsp;
+  <img src="https://img.shields.io/badge/React-19-61DAFB?logo=react&logoColor=black">
+  <br/>
+  <img src="https://img.shields.io/badge/Firebase-Firestore-FFCA28?logo=firebase&logoColor=black">
+  &nbsp;
+  <img src="https://img.shields.io/badge/AI-Gemini_2.5-8E75B2?logo=google&logoColor=white">
+  &nbsp;
+  <img src="https://img.shields.io/badge/Payments-Razorpay-02042B?logo=razorpay&logoColor=white">
+</p>
 
 **An intelligent, AI-powered career platform that revolutionizes the job hunting experience through automated resume enhancement, intelligent job matching, AI mock interviews, corporate fellowships, and community-driven networking.**
 
@@ -105,7 +112,7 @@ The **AI Resume Builder & Career Platform** is a comprehensive full-stack applic
 - **Employment Type Selection**: Full-time, Part-time, Contract, Internship
 - **Email Notifications**: Receive new job matches directly in your inbox
 - **Real-time Socket Updates**: Instant in-app notifications when new jobs match
-> **Note:** Job alerts run every 2 days (`0 0 */2 * *`) to reduce API costs.
+> **Note:** By default, job alerts use the cron schedule `0 0 */2 * *` to reduce API costs. This means they run at midnight on every other day of the month (a day-of-month step), not on a strict 48-hour interval, so behavior can differ around month boundaries. You can override this schedule with the `ALERT_CRON_SCHEDULE` environment variable.
 
 ### 📊 Job Application Tracker
 
@@ -713,6 +720,140 @@ See [Real_life_usecase.md](./Real_life_usecase.md) for detailed success stories 
 - **University Career Centers**: Student resume workshops and tracking
 
 ---
+
+## 🛠️ Troubleshooting Guide
+
+If you encounter issues while setting up or running the project locally, try the following common fixes before creating a new issue.
+
+### MongoDB Connection Error:
+
+#### Problem
+
+```bash
+MongoServerSelectionError
+```
+
+#### Solution
+
+- Verify your `MONGODB_URI` in backend `.env`
+- Ensure MongoDB service is running
+- Check internet connection if using MongoDB Atlas
+- Restart backend server after updating environment variables
+
+### Redis Connection Error:
+
+#### Problem
+
+```bash
+ECONNREFUSED 127.0.0.1:6379
+```
+
+#### Solution
+
+- Ensure Redis server is installed and running
+- Verify `REDIS_HOST` and `REDIS_PORT`
+- Restart Redis service
+- Check firewall restrictions
+
+### Firebase Admin Initialization Error:
+
+#### Problem
+
+```bash
+FirebaseAppError
+```
+
+#### Solution
+
+- Verify Firebase credentials in `.env`
+- Ensure service account JSON is valid
+- Check `FIREBASE_PROJECT_ID`
+- Restart backend server after changes
+
+### Port Already in Use:
+
+#### Problem
+
+```bash
+EADDRINUSE
+```
+
+#### Solution
+
+- Change the `PORT` value in `.env`
+- Stop other applications using the same port
+- Restart your terminal and development server
+
+### npm Install Errors:
+
+#### Problem
+
+Dependencies fail during installation.
+
+#### Solution
+
+Run:
+
+```bash
+npm install
+```
+
+If the issue persists:
+
+```bash
+npm cache clean --force
+```
+
+Then reinstall dependencies:
+
+```bash
+npm install
+```
+
+### Frontend Not Starting:
+
+#### Problem
+
+Frontend server does not run properly.
+
+#### Solution
+
+- Ensure frontend `.env` exists
+- Verify all `VITE_*` variables are correct
+- Run:
+
+```bash
+npm run dev
+```
+
+inside the `frontend` directory.
+
+### Backend Not Starting:
+
+#### Problem
+
+Backend crashes during startup.
+
+#### Solution
+
+- Ensure backend `.env` is configured
+- Verify MongoDB and Redis are running
+- Run:
+
+```bash
+npm run dev
+```
+
+inside the `backend` directory.
+
+### Environment Variables Tips:
+
+- Never commit `.env` files
+- Double-check all API keys
+- Restart servers after changing environment variables
+- Ensure no extra spaces are added in `.env`
+
+
 
 ## 🤝 Contributing
 

@@ -3,10 +3,11 @@ import { verifyToken } from '../middleware/auth.js';
 import { asyncHandler, ApiError } from '../middleware/errorHandler.js';
 import Interview from '../models/Interview.model.js';
 import { generateInterviewQuestions, analyzeAnswer, generateOverallFeedback } from '../services/interviewService.js';
+import { aiRateLimiter } from '../middleware/rateLimiter.js';
 
 const router = express.Router();
 
-router.post('/start', verifyToken, asyncHandler(async (req, res) => {
+router.post('/start', verifyToken, aiRateLimiter, asyncHandler(async (req, res) => {
     const { jobRole, industry, experienceLevel, questionCount, resumeText } = req.body;
 
     if (!jobRole || !industry || !experienceLevel) {
@@ -43,7 +44,7 @@ router.post('/start', verifyToken, asyncHandler(async (req, res) => {
     });
 }));
 
-router.post('/:id/answer', verifyToken, asyncHandler(async (req, res) => {
+router.post('/:id/answer', verifyToken, aiRateLimiter, asyncHandler(async (req, res) => {
     const { id } = req.params;
     const { questionId, transcript, duration, expressionMetrics } = req.body;
 
@@ -97,7 +98,7 @@ router.post('/:id/answer', verifyToken, asyncHandler(async (req, res) => {
     });
 }));
 
-router.post('/:id/complete', verifyToken, asyncHandler(async (req, res) => {
+router.post('/:id/complete', verifyToken, aiRateLimiter, asyncHandler(async (req, res) => {
     const { id } = req.params;
 
     const interview = await Interview.findOne({ _id: id, odId: req.user.uid });
@@ -137,7 +138,8 @@ router.get('/history', verifyToken, asyncHandler(async (req, res) => {
     const interviews = await Interview.find({ odId: req.user.uid })
         .sort({ createdAt: -1 })
         .limit(20)
-        .select('jobRole industry experienceLevel status overallScore createdAt completedAt duration');
+        .select('jobRole industry experienceLevel status overallScore createdAt completedAt duration')
+        .lean();
 
     res.json({
         success: true,
@@ -148,7 +150,7 @@ router.get('/history', verifyToken, asyncHandler(async (req, res) => {
 router.get('/:id', verifyToken, asyncHandler(async (req, res) => {
     const { id } = req.params;
 
-    const interview = await Interview.findOne({ _id: id, odId: req.user.uid });
+    const interview = await Interview.findOne({ _id: id, odId: req.user.uid }).lean();
     if (!interview) {
         throw new ApiError(404, 'Interview not found');
     }
