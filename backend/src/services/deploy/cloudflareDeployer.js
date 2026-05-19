@@ -29,13 +29,14 @@ function assertSafeId(value, label) {
 }
 
 // Project names are derived slugs — stricter (no underscores, lowercase only).
+// Cloudflare rejects names that start or end with a hyphen, so the regex enforces that too.
 function assertSafeProjectName(value, label) {
   if (typeof value !== 'string' || value.length === 0) {
     throw new Error(`${label} must be a non-empty string.`);
   }
-  if (!/^[a-z0-9][a-z0-9-]*$/.test(value)) {
+  if (!/^[a-z0-9]([a-z0-9-]*[a-z0-9])?$/.test(value)) {
     throw new Error(
-      `${label} must be lowercase, start with alphanumeric, and contain only letters, numbers, and hyphens.`
+      `${label} must be lowercase, start and end with alphanumeric, and contain only letters, numbers, and hyphens.`
     );
   }
 }
@@ -244,6 +245,12 @@ export function handleDeploymentWebhook(rawBody, signatureHeader) {
   if (!secret) {
     throw new Error(
       'CLOUDFLARE_WEBHOOK_SECRET must be set in environment variables to verify webhook signatures.'
+    );
+  }
+
+  if (!signatureHeader || typeof signatureHeader !== 'string') {
+    throw new Error(
+      'Webhook signature verification failed. CF-Webhook-Signature header is missing or invalid.'
     );
   }
 
