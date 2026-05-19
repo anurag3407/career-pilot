@@ -117,7 +117,11 @@ export default function Login() {
 
     setTotpLoading(true)
     try {
-      await twoFactorApi.verifyLogin(formData.email, totpToken, useBackup)
+      if (useBackup) {
+        await twoFactorApi.verifyBackup(totpToken)
+      } else {
+        await twoFactorApi.verify(totpToken)
+      }
       toast.success('Verification successful!')
       navigate('/dashboard')
     } catch (error) {
@@ -250,7 +254,7 @@ export default function Login() {
                 <Button
                   type="submit"
                   loading={totpLoading}
-                  disabled={useBackup ? totpToken.length < 4 : totpToken.length !== 6}
+                  disabled={useBackup ? totpToken.replace(/[^A-Z0-9]/g, '').length !== 8 : totpToken.length !== 6}
                   className="w-full mt-4 font-bold"
                 >
                   Verify &amp; Sign In

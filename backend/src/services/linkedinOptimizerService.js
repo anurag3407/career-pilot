@@ -80,6 +80,14 @@ export const optimizeLinkedInProfile = async (profileText, targetRole) => {
 
         const parsed = JSON.parse(cleanedText.slice(start, end + 1));
 
+        // Coerce overallScore if it is returned as a numeric string
+        if (parsed && typeof parsed.overallScore === 'string') {
+            const parsedNum = Number(parsed.overallScore);
+            if (!isNaN(parsedNum)) {
+                parsed.overallScore = parsedNum;
+            }
+        }
+
         // Validate the expected response shape
         const hasShape =
             typeof parsed?.overallScore === 'number' &&
@@ -95,13 +103,15 @@ export const optimizeLinkedInProfile = async (profileText, targetRole) => {
 
         // Clamp scores to 0-100
         parsed.overallScore = Math.max(0, Math.min(100, Math.round(Number(parsed.overallScore) || 0)));
-        if (parsed.scoreBreakdown) {
-            for (const key of Object.keys(parsed.scoreBreakdown)) {
-                const val = Number(parsed.scoreBreakdown[key]);
+        if (parsed.scoreBreakdown && typeof parsed.scoreBreakdown === 'object' && !Array.isArray(parsed.scoreBreakdown)) {
+            const keys = ['headline', 'about', 'skills', 'overall'];
+            for (const key of keys) {
+                const rawVal = parsed.scoreBreakdown[key] !== undefined ? parsed.scoreBreakdown[key] : parsed.overallScore;
+                const val = Number(rawVal);
                 parsed.scoreBreakdown[key] = isNaN(val) ? 0 : Math.max(0, Math.min(100, Math.round(val)));
             }
         } else {
-            parsed.scoreBreakdown = { headline: 0, about: 0, skills: 0, overall: parsed.overallScore };
+            parsed.scoreBreakdown = { headline: parsed.overallScore, about: parsed.overallScore, skills: parsed.overallScore, overall: parsed.overallScore };
         }
 
         return parsed;

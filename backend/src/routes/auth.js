@@ -8,8 +8,17 @@ import User from '../models/User.model.js';
 import admin from '../config/firebase.js';
 import crypto from 'crypto';
 
-const router = express.Router();
 const stateStore = new Map();
+
+// Periodic sweep of expired stateStore entries every 10 minutes to prevent memory leaks
+setInterval(() => {
+  const now = Date.now();
+  for (const [state, expiry] of stateStore.entries()) {
+    if (now > expiry) {
+      stateStore.delete(state);
+    }
+  }
+}, 10 * 60 * 1000).unref();
 
 // Verify token endpoint — loginProtection tracks failed attempts per IP
 // and locks out after 5 consecutive failures for 15 minutes.

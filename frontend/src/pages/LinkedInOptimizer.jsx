@@ -15,16 +15,17 @@ const IMPACT_CONFIG = {
 }
 
 function ScoreRing({ score, label, size = 'md' }) {
+  const safeScore = isNaN(Number(score)) ? 0 : Math.max(0, Math.min(100, Math.round(Number(score))))
   const r = size === 'lg' ? 44 : 28
   const stroke = size === 'lg' ? 7 : 5
   const dim = (r + stroke) * 2
   const circ = 2 * Math.PI * r
   const color =
-    score >= 75 ? 'stroke-green-400' :
-    score >= 50 ? 'stroke-yellow-400' : 'stroke-red-400'
+    safeScore >= 75 ? 'stroke-green-400' :
+    safeScore >= 50 ? 'stroke-yellow-400' : 'stroke-red-400'
   const textColor =
-    score >= 75 ? 'text-green-400' :
-    score >= 50 ? 'text-yellow-400' : 'text-red-400'
+    safeScore >= 75 ? 'text-green-400' :
+    safeScore >= 50 ? 'text-yellow-400' : 'text-red-400'
 
   return (
     <div className="flex flex-col items-center gap-1">
@@ -39,12 +40,12 @@ function ScoreRing({ score, label, size = 'md' }) {
             cx={r + stroke} cy={r + stroke} r={r}
             fill="none" strokeWidth={stroke}
             strokeDasharray={circ}
-            strokeDashoffset={circ * (1 - score / 100)}
+            strokeDashoffset={circ * (1 - safeScore / 100)}
             strokeLinecap="round"
             className={`transition-all duration-700 ${color}`}
           />
         </svg>
-        <span className={`absolute text-sm font-bold ${textColor}`}>{score}%</span>
+        <span className={`absolute text-sm font-bold ${textColor}`}>{safeScore}%</span>
       </div>
       <p className="text-xs text-muted-foreground text-center">{label}</p>
     </div>
@@ -96,10 +97,8 @@ export default function LinkedInOptimizer() {
       return
     }
     
-    if (!trimmedRole) {
-      setError('Please specify a target role to tailor the optimization.')
-      return
-    }
+    // targetRole is optional, default to General career growth if empty
+    const finalRole = trimmedRole || 'General career growth'
 
     setLoading(true)
     setError(null)
@@ -107,7 +106,7 @@ export default function LinkedInOptimizer() {
     try {
       const response = await enhanceApi.optimizeLinkedIn({ 
         profileText: trimmedProfile, 
-        targetRole: trimmedRole 
+        targetRole: finalRole 
       })
       setResults(response)
     } catch (err) {
