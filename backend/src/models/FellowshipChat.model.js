@@ -65,9 +65,9 @@ const fellowshipChatRoomSchema = new mongoose.Schema({
     }
 });
 
-fellowshipChatRoomSchema.index({ proposalId: 1 }, { unique: true });
-fellowshipChatRoomSchema.index({ studentId: 1, status: 1 });
-fellowshipChatRoomSchema.index({ corporateId: 1, status: 1 });
+fellowshipChatRoomSchema.index({ proposalId: 1 }, { unique: true, background: true });
+fellowshipChatRoomSchema.index({ studentId: 1, status: 1, lastMessageAt: -1 }, { background: true });
+fellowshipChatRoomSchema.index({ corporateId: 1, status: 1, lastMessageAt: -1 }, { background: true });
 
 const FellowshipChatRoom = mongoose.model('FellowshipChatRoom', fellowshipChatRoomSchema);
 
@@ -102,7 +102,7 @@ const fellowshipMessageSchema = new mongoose.Schema({
     }
 });
 
-fellowshipMessageSchema.index({ roomId: 1, createdAt: -1 });
+fellowshipMessageSchema.index({ roomId: 1, createdAt: -1 }, { background: true });
 
 const FellowshipMessage = mongoose.model('FellowshipMessage', fellowshipMessageSchema);
 

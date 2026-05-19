@@ -1,0 +1,248 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+
+  <!-- SEO -->
+  <title>{{NAME}} — Retro Pixel Portfolio</title>
+  <meta name="description" content="{{NAME}}'s retro 8-bit inspired developer portfolio. Featuring projects, skills, and experience with a pixel-art aesthetic." />
+  <meta name="keywords" content="developer, portfolio, retro, pixel art, 8-bit, game developer, programming" />
+  <meta property="og:title" content="{{NAME}} — Retro Pixel Portfolio" />
+  <meta property="og:description" content="8-bit inspired portfolio of {{NAME}}" />
+  <meta property="og:type" content="website" />
+
+  <!-- Fonts -->
+  <link rel="preconnect" href="https://fonts.googleapis.com" />
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
+  <link href="https://fonts.googleapis.com/css2?family=Press+Start+2P&display=swap" rel="stylesheet" />
+
+  <!-- Stylesheet -->
+  <link rel="stylesheet" href="style.css" />
+</head>
+<body>
+
+  <!-- ══════════════════════════════════════════════════════
+       LOADING SCREEN
+  ══════════════════════════════════════════════════════ -->
+  <div id="loading-screen" role="status" aria-label="Loading portfolio">
+    <div class="loading-title">CAREER PILOT</div>
+    <div class="loading-bar-wrap">
+      <div class="loading-bar"></div>
+    </div>
+    <div class="loading-text">LOADING PORTFOLIO… PLEASE WAIT</div>
+  </div>
+
+  <!-- ══════════════════════════════════════════════════════
+       NAVIGATION
+  ══════════════════════════════════════════════════════ -->
+  <nav id="navbar" role="navigation" aria-label="Main navigation">
+    <a href="#hero" class="nav-logo" aria-label="Home">
+      &lt;<span>{{INITIALS}}</span>&gt;
+    </a>
+
+    <button id="nav-toggle" aria-controls="nav-links" aria-expanded="false" aria-label="Toggle navigation">
+      <span></span><span></span><span></span>
+    </button>
+
+    <ul class="nav-links" id="nav-links" role="list">
+      <li><a href="#about"      id="nav-about"      aria-label="About section">ABOUT</a></li>
+      <li><a href="#skills"     id="nav-skills"     aria-label="Skills section">SKILLS</a></li>
+      <li><a href="#projects"   id="nav-projects"   aria-label="Projects section">PROJECTS</a></li>
+      <li><a href="#experience" id="nav-experience" aria-label="Experience section">EXP</a></li>
+      <li><a href="#contact"    id="nav-contact"    aria-label="Contact section">CONTACT</a></li>
+    </ul>
+  </nav>
+
+  <!-- ══════════════════════════════════════════════════════
+       HERO
+  ══════════════════════════════════════════════════════ -->
+  <section id="hero" aria-label="Hero section">
+    <p class="hero-tag">▶ PLAYER 1 SELECT</p>
+
+    <h1 class="hero-title">
+      HI, I'M <br />
+      <span id="hero-name">{{NAME}}</span><span class="cursor" aria-hidden="true"></span>
+    </h1>
+
+    <p class="hero-subtitle" id="hero-subtitle">{{ROLE}}</p>
+
+    <p class="hero-desc">
+      {{TAGLINE}}
+    </p>
+
+    <div class="btn-group">
+      <a href="#projects"
+         class="btn btn-primary"
+         id="hero-projects-btn"
+         aria-label="View my projects">
+        ▶ VIEW PROJECTS
+      </a>
+      <a href="#contact"
+         class="btn btn-secondary"
+         id="hero-contact-btn"
+         aria-label="Get in touch">
+        ✉ GET IN TOUCH
+      </a>
+    </div>
+  </section>
+
+  <!-- ══════════════════════════════════════════════════════
+       ABOUT
+  ══════════════════════════════════════════════════════ -->
+  <section id="about" aria-label="About me">
+    <div class="section-header">
+      <span class="section-tag">// PLAYER PROFILE</span>
+      <h2 class="section-title">ABOUT ME</h2>
+    </div>
+
+    <div class="about-grid">
+      <div class="about-avatar" aria-hidden="true">
+        <div class="avatar-frame" title="Pixel avatar">
+          {{AVATAR_EMOJI}}
+        </div>
+      </div>
+
+      <div class="about-text">
+        <h3>&gt; {{NAME}}</h3>
+
+        <p>{{ABOUT_PARA_1}}</p>
+        <p>{{ABOUT_PARA_2}}</p>
+
+        <div class="stats-row" aria-label="Key stats">
+          <span class="stat-chip">{{STAT_1}}</span>
+          <span class="stat-chip">{{STAT_2}}</span>
+          <span class="stat-chip">{{STAT_3}}</span>
+        </div>
+      </div>
+    </div>
+  </section>
+
+  <div class="pixel-divider" aria-hidden="true"></div>
+
+  <!-- ══════════════════════════════════════════════════════
+       SKILLS
+  ══════════════════════════════════════════════════════ -->
+  <section id="skills" aria-label="Skills">
+    <div class="inner">
+      <div class="section-header">
+        <span class="section-tag">// POWER-UPS COLLECTED</span>
+        <h2 class="section-title">SKILLS &amp; TECH</h2>
+      </div>
+
+      <div class="skills-grid" id="skills-grid">
+        <!-- Skill cards are injected by script.js -->
+      </div>
+    </div>
+  </section>
+
+  <div class="pixel-divider" aria-hidden="true"></div>
+
+  <!-- ══════════════════════════════════════════════════════
+       PROJECTS
+  ══════════════════════════════════════════════════════ -->
+  <section id="projects" aria-label="Projects">
+    <div class="section-header">
+      <span class="section-tag">// GAME CARTRIDGES</span>
+      <h2 class="section-title">PROJECTS</h2>
+    </div>
+
+    <div class="projects-grid" id="projects-grid">
+      <!-- Project cartridges are injected by script.js -->
+    </div>
+  </section>
+
+  <div class="pixel-divider" aria-hidden="true"></div>
+
+  <!-- ══════════════════════════════════════════════════════
+       EXPERIENCE
+  ══════════════════════════════════════════════════════ -->
+  <section id="experience" aria-label="Work experience">
+    <div class="inner">
+      <div class="section-header">
+        <span class="section-tag">// QUEST LOG</span>
+        <h2 class="section-title">EXPERIENCE</h2>
+      </div>
+
+      <div class="timeline" id="timeline">
+        <!-- Timeline items are injected by script.js -->
+      </div>
+    </div>
+  </section>
+
+  <div class="pixel-divider" aria-hidden="true"></div>
+
+  <!-- ══════════════════════════════════════════════════════
+       CONTACT
+  ══════════════════════════════════════════════════════ -->
+  <section id="contact" aria-label="Contact information">
+    <div class="section-header">
+      <span class="section-tag">// SEND MESSAGE</span>
+      <h2 class="section-title">CONTACT</h2>
+    </div>
+
+    <div class="contact-card">
+      <p>
+        PRESS START TO CONNECT! I'M ALWAYS OPEN TO
+        NEW QUESTS, SIDE-QUESTS, AND BOSS-BATTLES
+        DISGUISED AS FREELANCE PROJECTS.
+      </p>
+
+      <a href="mailto:{{EMAIL}}"
+         class="btn btn-primary"
+         id="contact-email-btn"
+         aria-label="Send me an email">
+        ▶ SEND MESSAGE
+      </a>
+
+      <div class="contact-links" aria-label="Social links">
+        <a href="{{GITHUB_URL}}"
+           target="_blank"
+           rel="noopener noreferrer"
+           class="contact-link"
+           id="contact-github-link"
+           aria-label="GitHub profile">
+          ⊞ GITHUB
+        </a>
+        <a href="{{LINKEDIN_URL}}"
+           target="_blank"
+           rel="noopener noreferrer"
+           class="contact-link"
+           id="contact-linkedin-link"
+           aria-label="LinkedIn profile">
+          ✦ LINKEDIN
+        </a>
+        <a href="{{TWITTER_URL}}"
+           target="_blank"
+           rel="noopener noreferrer"
+           class="contact-link"
+           id="contact-twitter-link"
+           aria-label="Twitter profile">
+          ✿ TWITTER
+        </a>
+      </div>
+    </div>
+  </section>
+
+  <!-- ══════════════════════════════════════════════════════
+       FOOTER
+  ══════════════════════════════════════════════════════ -->
+  <footer role="contentinfo">
+    <p>
+      &copy; <span id="year"></span> <span>{{NAME}}</span> — BUILT WITH
+      <span>&#9829;</span> &amp; PIXEL POWER
+    </p>
+  </footer>
+
+  <!-- Scroll to top -->
+  <button id="scroll-top"
+          class="scroll-top"
+          aria-label="Scroll to top"
+          title="Back to top">
+    ▲
+  </button>
+
+  <!-- Script -->
+  <script src="script.js"></script>
+</body>
+</html>

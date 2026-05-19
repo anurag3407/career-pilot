@@ -9,6 +9,27 @@ const headers = {
   "X-RapidAPI-Host": process.env.RAPIDAPI_HOST || "jsearch.p.rapidapi.com"
 };
 
+const wait = (ms) => new Promise((resolve) => setTimeout(resolve, ms));
+
+const withRetry = async (fn, retries = 3, delay = 1000) => {
+  for (let i = 0; i < retries; i++) {
+    try {
+      return await fn();
+    } catch (error) {
+      const isRateLimit = error.response?.status === 429 || error.message?.includes('429');
+      const isLastAttempt = i === retries - 1;
+
+      if (isRateLimit && !isLastAttempt) {
+        const backoffDelay = delay * Math.pow(2, i);
+        console.warn(`⏱️ RapidAPI JSearch Rate limit reached (429). Retrying in ${backoffDelay}ms... (Attempt ${i + 1}/${retries})`);
+        await wait(backoffDelay);
+        continue;
+      }
+      throw error;
+    }
+  }
+};
+
 const fetchJobs = async (querystring) => {
   try {
     if (!process.env.RAPIDAPI_KEY) {
@@ -17,7 +38,8 @@ const fetchJobs = async (querystring) => {
     }
     
     console.log('🔍 Fetching jobs with query:', querystring);
-    const response = await axios.get(url, { headers, params: querystring });
+    const fetchWithRetry = () => axios.get(url, { headers, params: querystring });
+    const response = await withRetry(fetchWithRetry);
     
     return {
       data: response.data.data,
@@ -46,7 +68,7 @@ const fetchJobs = async (querystring) => {
         console.error('⏱️  Rate limit exceeded');
         return {
           data: [],
-          error: 'API rate limit exceeded. Please try again later.',
+          error: 'We have temporarily reached the job search service limit. Please try again in a few minutes.',
           statusCode: 429
         };
       }

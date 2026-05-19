@@ -46,7 +46,7 @@ const ScoreRing = ({ score, size = 120, strokeWidth = 8 }) => {
     <div className="relative" style={{ width: size, height: size }}>
       <svg className="transform -rotate-90" width={size} height={size}>
         <circle
-          className="text-neutral-700"
+          className="text-muted-foreground/70"
           strokeWidth={strokeWidth}
           stroke="currentColor"
           fill="transparent"
@@ -75,11 +75,11 @@ const ScoreRing = ({ score, size = 120, strokeWidth = 8 }) => {
           initial={{ opacity: 0, scale: 0.5 }}
           animate={{ opacity: 1, scale: 1 }}
           transition={{ delay: 0.5, duration: 0.3 }}
-          className="text-3xl font-bold text-white"
+          className="text-3xl font-bold text-foreground"
         >
           {score}
         </motion.span>
-        <span className="text-xs text-neutral-400">ATS Score</span>
+        <span className="text-xs text-muted-foreground">ATS Score</span>
       </div>
     </div>
   )
@@ -97,10 +97,10 @@ const ScoreBar = ({ label, score, delay = 0 }) => {
   return (
     <div className="space-y-1">
       <div className="flex justify-between text-sm">
-        <span className="text-neutral-400">{label}</span>
-        <span className="text-white font-medium">{score}%</span>
+        <span className="text-muted-foreground">{label}</span>
+        <span className="text-foreground font-medium">{score}%</span>
       </div>
-      <div className="h-2 bg-neutral-700 rounded-full overflow-hidden">
+      <div className="h-2 bg-card rounded-full overflow-hidden">
         <motion.div
           initial={{ width: 0 }}
           animate={{ width: `${score}%` }}
@@ -121,7 +121,7 @@ const ImprovementCard = ({ improvement, index }) => {
       case 'high': return 'bg-red-500/20 text-red-400 border-red-500/30'
       case 'medium': return 'bg-yellow-500/20 text-yellow-400 border-yellow-500/30'
       case 'low': return 'bg-green-500/20 text-green-400 border-green-500/30'
-      default: return 'bg-neutral-500/20 text-neutral-400 border-neutral-500/30'
+      default: return 'bg-muted-foreground/20 text-muted-foreground border-border/60/30'
     }
   }
 
@@ -130,7 +130,7 @@ const ImprovementCard = ({ improvement, index }) => {
       initial={{ opacity: 0, y: 20 }}
       animate={{ opacity: 1, y: 0 }}
       transition={{ delay: index * 0.1 }}
-      className="bg-neutral-800/50 border border-neutral-700 rounded-xl p-4 hover:border-neutral-600 transition-colors"
+      className="bg-muted/50 border border-border rounded-xl p-4 hover:border-border/80 transition-colors"
     >
       <div
         className="flex items-start justify-between cursor-pointer"
@@ -141,14 +141,14 @@ const ImprovementCard = ({ improvement, index }) => {
             <span className={`text-xs px-2 py-0.5 rounded-full border ${getPriorityColor(improvement.priority)}`}>
               {improvement.priority || 'Medium'} Priority
             </span>
-            <span className="text-xs text-neutral-500">{improvement.category}</span>
+            <span className="text-xs text-muted-foreground">{improvement.category}</span>
           </div>
-          <p className="text-white font-medium">{improvement.issue}</p>
+          <p className="text-foreground font-medium">{improvement.issue}</p>
         </div>
         {expanded ? (
-          <ChevronUp className="w-5 h-5 text-neutral-400 ml-2 flex-shrink-0" />
+          <ChevronUp className="w-5 h-5 text-muted-foreground ml-2 flex-shrink-0" />
         ) : (
-          <ChevronDown className="w-5 h-5 text-neutral-400 ml-2 flex-shrink-0" />
+          <ChevronDown className="w-5 h-5 text-muted-foreground ml-2 flex-shrink-0" />
         )}
       </div>
 
@@ -156,11 +156,11 @@ const ImprovementCard = ({ improvement, index }) => {
         <motion.div
           initial={{ opacity: 0, height: 0 }}
           animate={{ opacity: 1, height: 'auto' }}
-          className="mt-3 pt-3 border-t border-neutral-700"
+          className="mt-3 pt-3 border-t border-border"
         >
           <div className="flex items-start gap-2">
-            <Zap className="w-4 h-4 text-indigo-400 mt-0.5 flex-shrink-0" />
-            <p className="text-sm text-neutral-300">{improvement.suggestion}</p>
+            <Zap className="w-4 h-4 text-primary mt-0.5 flex-shrink-0" />
+            <p className="text-sm text-foreground">{improvement.suggestion}</p>
           </div>
         </motion.div>
       )}
@@ -185,19 +185,19 @@ const SectionGradeCard = ({ section, data, icon: Icon }) => {
     <motion.div
       initial={{ opacity: 0, scale: 0.95 }}
       animate={{ opacity: 1, scale: 1 }}
-      className="bg-neutral-800/50 border border-neutral-700 rounded-xl p-4 hover:border-neutral-600 transition-all"
+      className="bg-muted/50 border border-border rounded-xl p-4 hover:border-border/80 transition-all"
     >
       <div className="flex items-center justify-between mb-3">
         <div className="flex items-center gap-2">
-          <Icon className="w-5 h-5 text-indigo-400" />
-          <span className="font-medium text-white capitalize">{section}</span>
+          <Icon className="w-5 h-5 text-primary" />
+          <span className="font-medium text-foreground capitalize">{section}</span>
         </div>
         <div className={`w-10 h-10 rounded-lg bg-gradient-to-br ${getGradeColor(data?.grade)} flex items-center justify-center`}>
-          <span className="text-white font-bold text-lg">{data?.grade || 'N/A'}</span>
+          <span className="text-foreground font-bold text-lg">{data?.grade || 'N/A'}</span>
         </div>
       </div>
       <div className="space-y-2">
-        <div className="h-1.5 bg-neutral-700 rounded-full overflow-hidden">
+        <div className="h-1.5 bg-card rounded-full overflow-hidden">
           <motion.div
             initial={{ width: 0 }}
             animate={{ width: `${data?.score || 0}%` }}
@@ -205,7 +205,7 @@ const SectionGradeCard = ({ section, data, icon: Icon }) => {
             className={`h-full rounded-full bg-gradient-to-r ${getGradeColor(data?.grade)}`}
           />
         </div>
-        <p className="text-sm text-neutral-400">{data?.feedback || 'No feedback available'}</p>
+        <p className="text-sm text-muted-foreground">{data?.feedback || 'No feedback available'}</p>
       </div>
     </motion.div>
   )
@@ -226,22 +226,22 @@ const BulletAnalysisCard = ({ bullet, index }) => {
       initial={{ opacity: 0, x: -20 }}
       animate={{ opacity: 1, x: 0 }}
       transition={{ delay: index * 0.05 }}
-      className="bg-neutral-800/30 border border-neutral-700 rounded-xl p-4 hover:bg-neutral-800/50 transition-all"
+      className="bg-muted/30 border border-border rounded-xl p-4 hover:bg-muted/50 transition-all"
     >
       <div
         className="cursor-pointer"
         onClick={() => setExpanded(!expanded)}
       >
         <div className="flex items-start justify-between gap-4">
-          <p className="text-neutral-300 text-sm flex-1">{bullet.original}</p>
+          <p className="text-foreground text-sm flex-1">{bullet.original}</p>
           <div className="flex items-center gap-2 flex-shrink-0">
             <span className={`text-xs px-2 py-1 rounded-lg border ${getScoreColor(bullet.score)}`}>
               {bullet.score}/10
             </span>
             {expanded ? (
-              <ChevronUp className="w-4 h-4 text-neutral-400" />
+              <ChevronUp className="w-4 h-4 text-muted-foreground" />
             ) : (
-              <ChevronDown className="w-4 h-4 text-neutral-400" />
+              <ChevronDown className="w-4 h-4 text-muted-foreground" />
             )}
           </div>
         </div>
@@ -255,7 +255,7 @@ const BulletAnalysisCard = ({ bullet, index }) => {
               return (
                 <span
                   key={letter}
-                  className={`text-xs px-1.5 py-0.5 rounded ${has ? 'bg-green-500/20 text-green-400' : 'bg-neutral-700 text-neutral-500'}`}
+                  className={`text-xs px-1.5 py-0.5 rounded ${has ? 'bg-green-500/20 text-green-400' : 'bg-card text-muted-foreground'}`}
                 >
                   {letter}
                 </span>
@@ -269,11 +269,11 @@ const BulletAnalysisCard = ({ bullet, index }) => {
         <motion.div
           initial={{ opacity: 0, height: 0 }}
           animate={{ opacity: 1, height: 'auto' }}
-          className="mt-4 pt-4 border-t border-neutral-700 space-y-3"
+          className="mt-4 pt-4 border-t border-border space-y-3"
         >
           {bullet.issues && bullet.issues.length > 0 && (
             <div>
-              <p className="text-xs text-neutral-500 mb-1">Issues:</p>
+              <p className="text-xs text-muted-foreground mb-1">Issues:</p>
               <div className="flex flex-wrap gap-1">
                 {bullet.issues.map((issue, i) => (
                   <span key={i} className="text-xs px-2 py-0.5 bg-red-500/10 text-red-400 rounded">
@@ -284,12 +284,12 @@ const BulletAnalysisCard = ({ bullet, index }) => {
             </div>
           )}
 
-          <div className="bg-indigo-500/10 border border-indigo-500/30 rounded-lg p-3">
+          <div className="bg-primary/10 border border-primary/30 rounded-lg p-3">
             <div className="flex items-center gap-2 mb-2">
-              <Sparkles className="w-4 h-4 text-indigo-400" />
-              <span className="text-xs text-indigo-400 font-medium">Improved Version</span>
+              <Sparkles className="w-4 h-4 text-primary" />
+              <span className="text-xs text-primary font-medium">Improved Version</span>
             </div>
-            <p className="text-sm text-white">{bullet.improved}</p>
+            <p className="text-sm text-foreground">{bullet.improved}</p>
           </div>
         </motion.div>
       )}
@@ -317,7 +317,7 @@ const SeniorTipCard = ({ tip, index }) => {
       case 'impact': return 'bg-orange-500/20 text-orange-400 border-orange-500/30'
       case 'keywords': return 'bg-green-500/20 text-green-400 border-green-500/30'
       case 'structure': return 'bg-cyan-500/20 text-cyan-400 border-cyan-500/30'
-      default: return 'bg-indigo-500/20 text-indigo-400 border-indigo-500/30'
+      default: return 'bg-primary/20 text-primary border-primary/30'
     }
   }
 
@@ -450,21 +450,23 @@ export default function Enhance() {
       setEnhancing(false)
     }
   }
-
   if (loading) {
     return (
-      <div className="min-h-screen bg-black">
+      <div className="min-h-screen bg-background">
         <div className="flex items-center justify-center py-20">
-          <div className="w-8 h-8 border-2 border-indigo-500 border-t-transparent rounded-full animate-spin" />
+          <div className="w-8 h-8 border-2 border-primary border-t-transparent rounded-full animate-spin" />
+        </div>
+
+        <div className="h-72 bg-neutral-900 rounded-2xl border border-neutral-800">
         </div>
       </div>
     )
   }
 
   return (
-    <div className="min-h-screen bg-black">
+    <div className="min-h-screen bg-background">
       <div className="fixed inset-0 overflow-hidden pointer-events-none">
-        <div className="absolute top-1/4 right-0 w-96 h-96 bg-indigo-500/10 rounded-full blur-3xl" />
+        <div className="absolute top-1/4 right-0 w-96 h-96 bg-primary/10 rounded-full blur-3xl" />
         <div className="absolute bottom-1/4 left-0 w-96 h-96 bg-purple-500/10 rounded-full blur-3xl" />
       </div>
 
@@ -475,12 +477,12 @@ export default function Enhance() {
           animate={{ opacity: 1, y: 0 }}
           className="mb-8"
         >
-          <div className="inline-flex items-center gap-2 px-4 py-2 rounded-full bg-indigo-500/10 border border-indigo-500/20 text-indigo-400 text-sm mb-4">
+          <div className="inline-flex items-center gap-2 px-4 py-2 rounded-full bg-primary/10 border border-primary/20 text-primary text-sm mb-4">
             <Target className="w-4 h-4" />
             ATS Score Analysis
           </div>
-          <h1 className="text-3xl font-bold text-white mb-2">Resume Analysis</h1>
-          <p className="text-neutral-400 flex items-center gap-2">
+          <h1 className="text-3xl font-bold text-foreground mb-2">Resume Analysis</h1>
+          <p className="text-muted-foreground flex items-center gap-2">
             <FileText className="w-4 h-4" />
             {resume?.title}
           </p>
@@ -491,15 +493,15 @@ export default function Enhance() {
           <motion.div
             initial={{ opacity: 0, y: 20 }}
             animate={{ opacity: 1, y: 0 }}
-            className="bg-neutral-900/50 border border-neutral-800 rounded-2xl p-8 mb-8"
+            className="bg-background/50 border border-border rounded-2xl p-8 mb-8"
           >
             <div className="flex items-center gap-3 mb-6">
-              <div className="w-12 h-12 bg-indigo-500/20 rounded-xl flex items-center justify-center">
-                <Briefcase className="w-6 h-6 text-indigo-400" />
+              <div className="w-12 h-12 bg-primary/20 rounded-xl flex items-center justify-center">
+                <Briefcase className="w-6 h-6 text-primary" />
               </div>
               <div>
-                <h2 className="text-xl font-semibold text-white">Enter Target Job Role</h2>
-                <p className="text-sm text-neutral-500">We'll analyze your resume against this position</p>
+                <h2 className="text-xl font-semibold text-foreground">Enter Target Job Role</h2>
+                <p className="text-sm text-muted-foreground">We'll analyze your resume against this position</p>
               </div>
             </div>
 
@@ -509,13 +511,13 @@ export default function Enhance() {
                 value={jobRole}
                 onChange={(e) => setJobRole(e.target.value)}
                 placeholder="e.g., Senior Software Engineer, Product Manager, Data Scientist"
-                className="flex-1 px-4 py-3 bg-neutral-800/50 border border-neutral-700 rounded-xl text-white placeholder-neutral-500 focus:ring-2 focus:ring-indigo-500 focus:border-transparent"
+                className="flex-1 px-4 py-3 bg-muted/50 border border-border rounded-xl text-foreground placeholder:text-muted-foreground focus:ring-2 focus:ring-primary focus:border-transparent"
                 onKeyPress={(e) => e.key === 'Enter' && handleAnalyze()}
               />
               <button
                 onClick={handleAnalyze}
                 disabled={analyzing || !jobRole.trim()}
-                className="px-8 py-3 bg-gradient-to-r from-indigo-600 to-purple-600 text-white rounded-xl font-medium hover:from-indigo-500 hover:to-purple-500 transition-all disabled:opacity-50 disabled:cursor-not-allowed flex items-center gap-2"
+                className="px-8 py-3 bg-gradient-to-r from-indigo-600 to-purple-600 text-foreground rounded-xl font-medium hover:from-primary hover:to-secondary transition-all disabled:opacity-50 disabled:cursor-not-allowed flex items-center gap-2"
               >
                 {analyzing ? (
                   <>
@@ -538,13 +540,13 @@ export default function Enhance() {
           <motion.div
             initial={{ opacity: 0 }}
             animate={{ opacity: 1 }}
-            className="bg-neutral-900/50 border border-neutral-800 rounded-2xl p-12 text-center"
+            className="bg-background/50 border border-border rounded-2xl p-12 text-center"
           >
-            <div className="inline-flex items-center justify-center w-16 h-16 bg-indigo-500/20 rounded-full mb-4">
-              <RefreshCw className="w-8 h-8 text-indigo-400 animate-spin" />
+            <div className="inline-flex items-center justify-center w-16 h-16 bg-primary/20 rounded-full mb-4">
+              <RefreshCw className="w-8 h-8 text-primary animate-spin" />
             </div>
-            <h3 className="text-xl font-semibold text-white mb-2">Analyzing Your Resume</h3>
-            <p className="text-neutral-400">
+            <h3 className="text-xl font-semibold text-foreground mb-2">Analyzing Your Resume</h3>
+            <p className="text-muted-foreground">
               Our AI is evaluating your resume against ATS systems for the {jobRole} position...
             </p>
             <div className="mt-4 flex justify-center gap-1">
@@ -560,7 +562,7 @@ export default function Enhance() {
                     repeat: Infinity,
                     delay: i * 0.2
                   }}
-                  className="w-2 h-2 bg-indigo-500 rounded-full"
+                  className="w-2 h-2 bg-primary rounded-full"
                 />
               ))}
             </div>
@@ -576,18 +578,18 @@ export default function Enhance() {
               <motion.div
                 initial={{ opacity: 0, scale: 0.95 }}
                 animate={{ opacity: 1, scale: 1 }}
-                className="lg:col-span-1 bg-neutral-900/50 border border-neutral-800 rounded-2xl p-6"
+                className="lg:col-span-1 bg-background/50 border border-border rounded-2xl p-6"
               >
                 <div className="flex flex-col items-center">
                   <ScoreRing score={atsAnalysis.atsScore} size={160} strokeWidth={12} />
 
                   <div className="mt-4 text-center">
-                    <p className="text-lg font-medium text-white mb-1">
+                    <p className="text-lg font-medium text-foreground mb-1">
                       {atsAnalysis.atsScore >= 80 ? 'Excellent!' :
                         atsAnalysis.atsScore >= 60 ? 'Good Progress' :
                           atsAnalysis.atsScore >= 40 ? 'Needs Work' : 'Major Improvements Needed'}
                     </p>
-                    <p className="text-sm text-neutral-400">for {jobRole}</p>
+                    <p className="text-sm text-muted-foreground">for {jobRole}</p>
                   </div>
 
                   <button
@@ -597,7 +599,7 @@ export default function Enhance() {
                       setComprehensiveAnalysis(null)
                       setActiveTab('overview')
                     }}
-                    className="mt-4 text-sm text-indigo-400 hover:text-indigo-300 flex items-center gap-1"
+                    className="mt-4 text-sm text-primary hover:text-primary/80 flex items-center gap-1"
                   >
                     <RefreshCw className="w-4 h-4" />
                     Analyze Different Role
@@ -610,10 +612,10 @@ export default function Enhance() {
                 initial={{ opacity: 0, x: 20 }}
                 animate={{ opacity: 1, x: 0 }}
                 transition={{ delay: 0.2 }}
-                className="lg:col-span-2 bg-neutral-900/50 border border-neutral-800 rounded-2xl p-6"
+                className="lg:col-span-2 bg-background/50 border border-border rounded-2xl p-6"
               >
-                <h3 className="text-lg font-semibold text-white mb-4 flex items-center gap-2">
-                  <BarChart3 className="w-5 h-5 text-indigo-400" />
+                <h3 className="text-lg font-semibold text-foreground mb-4 flex items-center gap-2">
+                  <BarChart3 className="w-5 h-5 text-primary" />
                   Score Breakdown
                 </h3>
                 <div className="space-y-4">
@@ -631,13 +633,13 @@ export default function Enhance() {
               initial={{ opacity: 0, y: 20 }}
               animate={{ opacity: 1, y: 0 }}
               transition={{ delay: 0.3 }}
-              className="bg-neutral-900/50 border border-neutral-800 rounded-2xl p-6"
+              className="bg-background/50 border border-border rounded-2xl p-6"
             >
-              <h3 className="text-lg font-semibold text-white mb-3 flex items-center gap-2">
-                <AlertCircle className="w-5 h-5 text-indigo-400" />
+              <h3 className="text-lg font-semibold text-foreground mb-3 flex items-center gap-2">
+                <AlertCircle className="w-5 h-5 text-primary" />
                 Analysis Summary
               </h3>
-              <p className="text-neutral-300 leading-relaxed">{atsAnalysis.summary}</p>
+              <p className="text-foreground leading-relaxed">{atsAnalysis.summary}</p>
             </motion.div>
 
             {/* Strengths & Missing Keywords */}
@@ -647,9 +649,9 @@ export default function Enhance() {
                 initial={{ opacity: 0, x: -20 }}
                 animate={{ opacity: 1, x: 0 }}
                 transition={{ delay: 0.4 }}
-                className="bg-neutral-900/50 border border-neutral-800 rounded-2xl p-6"
+                className="bg-background/50 border border-border rounded-2xl p-6"
               >
-                <h3 className="text-lg font-semibold text-white mb-4 flex items-center gap-2">
+                <h3 className="text-lg font-semibold text-foreground mb-4 flex items-center gap-2">
                   <CheckCircle className="w-5 h-5 text-green-400" />
                   Strengths
                 </h3>
@@ -663,7 +665,7 @@ export default function Enhance() {
                       className="flex items-start gap-2"
                     >
                       <Award className="w-4 h-4 text-green-400 mt-1 flex-shrink-0" />
-                      <span className="text-neutral-300">{strength}</span>
+                      <span className="text-foreground">{strength}</span>
                     </motion.li>
                   ))}
                 </ul>
@@ -674,9 +676,9 @@ export default function Enhance() {
                 initial={{ opacity: 0, x: 20 }}
                 animate={{ opacity: 1, x: 0 }}
                 transition={{ delay: 0.4 }}
-                className="bg-neutral-900/50 border border-neutral-800 rounded-2xl p-6"
+                className="bg-background/50 border border-border rounded-2xl p-6"
               >
-                <h3 className="text-lg font-semibold text-white mb-4 flex items-center gap-2">
+                <h3 className="text-lg font-semibold text-foreground mb-4 flex items-center gap-2">
                   <AlertTriangle className="w-5 h-5 text-yellow-400" />
                   Missing Keywords
                 </h3>
@@ -693,7 +695,7 @@ export default function Enhance() {
                     </motion.span>
                   ))}
                   {(!atsAnalysis.missingKeywords || atsAnalysis.missingKeywords.length === 0) && (
-                    <p className="text-neutral-500 text-sm">No critical keywords missing!</p>
+                    <p className="text-muted-foreground text-sm">No critical keywords missing!</p>
                   )}
                 </div>
               </motion.div>
@@ -704,10 +706,10 @@ export default function Enhance() {
               initial={{ opacity: 0, y: 20 }}
               animate={{ opacity: 1, y: 0 }}
               transition={{ delay: 0.5 }}
-              className="bg-neutral-900/50 border border-neutral-800 rounded-2xl p-6"
+              className="bg-background/50 border border-border rounded-2xl p-6"
             >
-              <h3 className="text-lg font-semibold text-white mb-4 flex items-center gap-2">
-                <TrendingUp className="w-5 h-5 text-indigo-400" />
+              <h3 className="text-lg font-semibold text-foreground mb-4 flex items-center gap-2">
+                <TrendingUp className="w-5 h-5 text-primary" />
                 Recommended Improvements
               </h3>
               <div className="grid md:grid-cols-2 gap-4">
@@ -725,7 +727,7 @@ export default function Enhance() {
                   initial={{ opacity: 0, y: 20 }}
                   animate={{ opacity: 1, y: 0 }}
                   transition={{ delay: 0.55 }}
-                  className="flex items-center justify-center gap-2 bg-neutral-900/50 border border-neutral-800 rounded-xl p-2"
+                  className="flex items-center justify-center gap-2 bg-background/50 border border-border rounded-xl p-2"
                 >
                   {[
                     { id: 'overview', label: 'Section Grades', icon: BarChart3 },
@@ -736,8 +738,8 @@ export default function Enhance() {
                       key={tab.id}
                       onClick={() => setActiveTab(tab.id)}
                       className={`flex items-center gap-2 px-4 py-2 rounded-lg transition-all ${activeTab === tab.id
-                        ? 'bg-indigo-500/20 text-indigo-400 border border-indigo-500/30'
-                        : 'text-neutral-400 hover:text-white hover:bg-neutral-800'
+                        ? 'bg-primary/20 text-primary border border-primary/30'
+                        : 'text-muted-foreground hover:text-foreground hover:bg-muted'
                         }`}
                     >
                       <tab.icon className="w-4 h-4" />
@@ -759,11 +761,11 @@ export default function Enhance() {
                           comprehensiveAnalysis.overallGrade === 'C' ? 'from-yellow-500 to-orange-400' :
                             'from-red-500 to-red-600'
                         } flex items-center justify-center`}>
-                        <span className="text-white font-bold text-2xl">{comprehensiveAnalysis.overallGrade}</span>
+                        <span className="text-foreground font-bold text-2xl">{comprehensiveAnalysis.overallGrade}</span>
                       </div>
                       <div>
-                        <h3 className="text-xl font-semibold text-white">Overall Resume Grade</h3>
-                        <p className="text-neutral-400 text-sm">{comprehensiveAnalysis.executiveSummary}</p>
+                        <h3 className="text-xl font-semibold text-foreground">Overall Resume Grade</h3>
+                        <p className="text-muted-foreground text-sm">{comprehensiveAnalysis.executiveSummary}</p>
                       </div>
                     </div>
 
@@ -778,15 +780,15 @@ export default function Enhance() {
                     {/* Action Verb & Quantification Analysis */}
                     <div className="grid lg:grid-cols-2 gap-4 mt-6">
                       {/* Action Verb Analysis */}
-                      <div className="bg-neutral-800/50 border border-neutral-700 rounded-xl p-4">
-                        <h4 className="font-medium text-white mb-3 flex items-center gap-2">
+                      <div className="bg-muted/50 border border-border rounded-xl p-4">
+                        <h4 className="font-medium text-foreground mb-3 flex items-center gap-2">
                           <Zap className="w-4 h-4 text-orange-400" />
                           Action Verb Quality
                         </h4>
                         <ScoreBar label="Verb Score" score={comprehensiveAnalysis.actionVerbAnalysis?.verbScore || 0} delay={0.1} />
                         {comprehensiveAnalysis.actionVerbAnalysis?.powerVerbsUsed?.length > 0 && (
                           <div className="mt-3">
-                            <p className="text-xs text-neutral-500 mb-1">Power verbs used:</p>
+                            <p className="text-xs text-muted-foreground mb-1">Power verbs used:</p>
                             <div className="flex flex-wrap gap-1">
                               {comprehensiveAnalysis.actionVerbAnalysis.powerVerbsUsed.slice(0, 5).map((verb, i) => (
                                 <span key={i} className="text-xs px-2 py-0.5 bg-green-500/10 text-green-400 rounded">{verb}</span>
@@ -797,15 +799,15 @@ export default function Enhance() {
                       </div>
 
                       {/* Quantification Analysis */}
-                      <div className="bg-neutral-800/50 border border-neutral-700 rounded-xl p-4">
-                        <h4 className="font-medium text-white mb-3 flex items-center gap-2">
+                      <div className="bg-muted/50 border border-border rounded-xl p-4">
+                        <h4 className="font-medium text-foreground mb-3 flex items-center gap-2">
                           <BarChart3 className="w-4 h-4 text-blue-400" />
                           Quantification Level
                         </h4>
                         <ScoreBar label="Bullets with Metrics" score={comprehensiveAnalysis.quantificationAnalysis?.percentageQuantified || 0} delay={0.2} />
                         <div className="mt-2 flex gap-4 text-sm">
                           <span className="text-green-400">{comprehensiveAnalysis.quantificationAnalysis?.bulletsWithMetrics || 0} with metrics</span>
-                          <span className="text-neutral-500">{comprehensiveAnalysis.quantificationAnalysis?.bulletsWithoutMetrics || 0} without</span>
+                          <span className="text-muted-foreground">{comprehensiveAnalysis.quantificationAnalysis?.bulletsWithoutMetrics || 0} without</span>
                         </div>
                       </div>
                     </div>
@@ -817,40 +819,40 @@ export default function Enhance() {
                   <motion.div
                     initial={{ opacity: 0, y: 20 }}
                     animate={{ opacity: 1, y: 0 }}
-                    className="bg-neutral-900/50 border border-neutral-800 rounded-2xl p-6"
+                    className="bg-background/50 border border-border rounded-2xl p-6"
                   >
                     <div className="flex items-center justify-between mb-4">
-                      <h3 className="text-lg font-semibold text-white flex items-center gap-2">
-                        <Edit3 className="w-5 h-5 text-indigo-400" />
+                      <h3 className="text-lg font-semibold text-foreground flex items-center gap-2">
+                        <Edit3 className="w-5 h-5 text-primary" />
                         Bullet-by-Bullet Analysis
                       </h3>
                       <div className="flex items-center gap-2 text-sm">
-                        <span className="text-neutral-500">Legend:</span>
+                        <span className="text-muted-foreground">Legend:</span>
                         <span className="flex items-center gap-1 text-xs">
                           <span className="px-1.5 py-0.5 bg-green-500/20 text-green-400 rounded">S</span>
-                          <span className="text-neutral-400">Situation</span>
+                          <span className="text-muted-foreground">Situation</span>
                         </span>
                         <span className="flex items-center gap-1 text-xs">
                           <span className="px-1.5 py-0.5 bg-green-500/20 text-green-400 rounded">T</span>
-                          <span className="text-neutral-400">Task</span>
+                          <span className="text-muted-foreground">Task</span>
                         </span>
                         <span className="flex items-center gap-1 text-xs">
                           <span className="px-1.5 py-0.5 bg-green-500/20 text-green-400 rounded">A</span>
-                          <span className="text-neutral-400">Action</span>
+                          <span className="text-muted-foreground">Action</span>
                         </span>
                         <span className="flex items-center gap-1 text-xs">
                           <span className="px-1.5 py-0.5 bg-green-500/20 text-green-400 rounded">R</span>
-                          <span className="text-neutral-400">Result</span>
+                          <span className="text-muted-foreground">Result</span>
                         </span>
                       </div>
                     </div>
-                    <p className="text-sm text-neutral-400 mb-4">Click on any bullet to see detailed analysis and AI-improved version</p>
+                    <p className="text-sm text-muted-foreground mb-4">Click on any bullet to see detailed analysis and AI-improved version</p>
                     <div className="space-y-3">
                       {comprehensiveAnalysis.bulletAnalysis?.map((bullet, index) => (
                         <BulletAnalysisCard key={index} bullet={bullet} index={index} />
                       ))}
                       {(!comprehensiveAnalysis.bulletAnalysis || comprehensiveAnalysis.bulletAnalysis.length === 0) && (
-                        <p className="text-neutral-500 text-center py-8">No bullet points analyzed</p>
+                        <p className="text-muted-foreground text-center py-8">No bullet points analyzed</p>
                       )}
                     </div>
                   </motion.div>
@@ -865,11 +867,11 @@ export default function Enhance() {
                   >
                     <div className="flex items-center gap-3 mb-4">
                       <div className="w-12 h-12 bg-gradient-to-br from-amber-500 to-orange-500 rounded-xl flex items-center justify-center">
-                        <Brain className="w-6 h-6 text-white" />
+                        <Brain className="w-6 h-6 text-foreground" />
                       </div>
                       <div>
-                        <h3 className="text-xl font-semibold text-white">Senior Resume Expert Tips</h3>
-                        <p className="text-neutral-400 text-sm">Pro advice to make your resume stand out</p>
+                        <h3 className="text-xl font-semibold text-foreground">Senior Resume Expert Tips</h3>
+                        <p className="text-muted-foreground text-sm">Pro advice to make your resume stand out</p>
                       </div>
                     </div>
 
@@ -882,13 +884,13 @@ export default function Enhance() {
                     {/* Competitive Edge */}
                     {comprehensiveAnalysis.competitiveEdge && (
                       <div className="bg-gradient-to-r from-amber-900/30 to-orange-900/30 border border-amber-500/30 rounded-xl p-6 mt-4">
-                        <h4 className="font-semibold text-white mb-3 flex items-center gap-2">
+                        <h4 className="font-semibold text-foreground mb-3 flex items-center gap-2">
                           <Star className="w-5 h-5 text-amber-400" />
                           Competitive Edge Score: {comprehensiveAnalysis.competitiveEdge.score}/100
                         </h4>
                         {comprehensiveAnalysis.competitiveEdge.standoutFactors?.length > 0 && (
                           <div className="mb-3">
-                            <p className="text-xs text-neutral-400 mb-2">What makes you stand out:</p>
+                            <p className="text-xs text-muted-foreground mb-2">What makes you stand out:</p>
                             <ul className="space-y-1">
                               {comprehensiveAnalysis.competitiveEdge.standoutFactors.map((factor, i) => (
                                 <li key={i} className="text-sm text-amber-300 flex items-start gap-2">
@@ -901,10 +903,10 @@ export default function Enhance() {
                         )}
                         {comprehensiveAnalysis.competitiveEdge.differentiators?.length > 0 && (
                           <div>
-                            <p className="text-xs text-neutral-400 mb-2">To stand out even more:</p>
+                            <p className="text-xs text-muted-foreground mb-2">To stand out even more:</p>
                             <ul className="space-y-1">
                               {comprehensiveAnalysis.competitiveEdge.differentiators.map((diff, i) => (
-                                <li key={i} className="text-sm text-white/80 flex items-start gap-2">
+                                <li key={i} className="text-sm text-foreground/80 flex items-start gap-2">
                                   <ArrowRight className="w-4 h-4 flex-shrink-0 mt-0.5 text-amber-400" />
                                   {diff}
                                 </li>
@@ -924,22 +926,22 @@ export default function Enhance() {
               initial={{ opacity: 0, y: 20 }}
               animate={{ opacity: 1, y: 0 }}
               transition={{ delay: 0.6 }}
-              className="bg-gradient-to-r from-indigo-900/50 to-purple-900/50 border border-indigo-500/30 rounded-2xl p-8"
+              className="bg-gradient-to-r from-indigo-900/50 to-purple-900/50 border border-primary/30 rounded-2xl p-8"
             >
               <div className="flex flex-col md:flex-row items-center justify-between gap-6">
                 <div className="flex items-center gap-4">
-                  <div className="w-14 h-14 bg-gradient-to-br from-indigo-500 to-purple-500 rounded-xl flex items-center justify-center">
-                    <Sparkles className="w-7 h-7 text-white" />
+                  <div className="w-14 h-14 bg-gradient-to-br from-primary to-secondary rounded-xl flex items-center justify-center">
+                    <Sparkles className="w-7 h-7 text-foreground" />
                   </div>
                   <div>
-                    <h3 className="text-xl font-semibold text-white">Ready to Improve Your Resume?</h3>
-                    <p className="text-neutral-400">Let AI optimize your resume based on the analysis above</p>
+                    <h3 className="text-xl font-semibold text-foreground">Ready to Improve Your Resume?</h3>
+                    <p className="text-muted-foreground">Let AI optimize your resume based on the analysis above</p>
                   </div>
                 </div>
                 <button
                   onClick={handleEnhanceWithAI}
                   disabled={enhancing}
-                  className="w-full md:w-auto px-8 py-4 bg-gradient-to-r from-indigo-600 to-purple-600 text-white rounded-xl font-semibold hover:from-indigo-500 hover:to-purple-500 transition-all disabled:opacity-50 disabled:cursor-not-allowed flex items-center justify-center gap-2 shadow-lg shadow-indigo-500/25"
+                  className="w-full md:w-auto px-8 py-4 bg-gradient-to-r from-indigo-600 to-purple-600 text-foreground rounded-xl font-semibold hover:from-primary hover:to-secondary transition-all disabled:opacity-50 disabled:cursor-not-allowed flex items-center justify-center gap-2 shadow-lg shadow-indigo-500/25"
                 >
                   {enhancing ? (
                     <>
@@ -958,7 +960,7 @@ export default function Enhance() {
 
               {enhancing && (
                 <div className="mt-4 text-center">
-                  <p className="text-sm text-neutral-400">
+                  <p className="text-sm text-muted-foreground">
                     This may take a minute. We're optimizing your resume for {jobRole} position...
                   </p>
                 </div>
