@@ -1,35 +1,25 @@
-import { GoogleGenerativeAI } from '@google/generative-ai';
+import { getDefaultProvider } from '../config/aiProviders.js';
 import dotenv from 'dotenv';
 
 dotenv.config();
 
-let modelInstance = null;
-
-const getModel = () => {
-  if (modelInstance) return modelInstance;
-
-  const apiKey = process.env.GEMINI_API_KEY;
-  if (!apiKey) {
-    console.error('GEMINI_API_KEY is missing. Aborting Company Research Service initialization.');
-    throw new Error('GEMINI_API_KEY is required for Company Research Service.');
-  }
-
-  const genAI = new GoogleGenerativeAI(apiKey);
-  modelInstance = genAI.getGenerativeModel({ model: 'gemini-2.5-flash' });
-  return modelInstance;
-};
+// ---------------------------------------------------------------------------
+// Helper: resolve the AI provider to use
+// ---------------------------------------------------------------------------
+const resolveProvider = (aiProvider) => aiProvider || getDefaultProvider();
 
 /**
- * Researches a company using Gemini AI and returns detailed structured insights.
+ * Researches a company using AI and returns detailed structured insights.
  * @param {string} companyName - Name of the company to research
  * @param {string} [fallbackIndustry] - Fallback industry if available
+ * @param {object} [aiProvider] - Optional AI provider adapter (from middleware)
  */
-export const researchCompany = async (companyName, fallbackIndustry = '') => {
+export const researchCompany = async (companyName, fallbackIndustry = '', aiProvider) => {
   if (!companyName || !companyName.trim()) {
     throw new Error('Company name is required for research.');
   }
 
-  const model = getModel();
+  const provider = resolveProvider(aiProvider);
 
   const prompt = `
   You are an expert market analyst and corporate researcher. Conduct deep research on the company: "${companyName.trim()}" (Industry: "${fallbackIndustry}").
@@ -75,9 +65,8 @@ export const researchCompany = async (companyName, fallbackIndustry = '') => {
   `;
 
   try {
-    const result = await model.generateContent(prompt);
-    const response = await result.response;
-    const rawText = response.text().trim();
+    const result = await provider.generateContent(prompt);
+    const rawText = result.text.trim();
 
     // Clean up markdown block indicators if any
     const cleanedJson = rawText
