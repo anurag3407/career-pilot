@@ -6,7 +6,7 @@ Welcome to **Career Pilot**! We're here to help you land your dream job at warp 
 
 ### 1. Create Your Account
 Start by heading to the Sign Up page. You can register using your email and password, or use quick social logins like Google or LinkedIn.  
-![Sign Up Page](https://via.placeholder.com/800x400?text=Sign+Up+Page)
+![Sign Up Page](./images/signup_page.png)
 
 ### 2. Set Up Two-Factor Authentication (2FA)
 We care about your security! Upon your first login, we highly recommend setting up 2FA.
@@ -26,36 +26,36 @@ Instantly upgrade your resume to beat the ATS (Applicant Tracking System).
 - **Upload PDF:** Just upload your current resume.
 - **ATS Analysis:** Get an estimated ATS score and actionable feedback.
 - **AI Enhancement:** Automatically improve your bullet points with strong action verbs.
-![Resume Enhancer](https://via.placeholder.com/800x400?text=Resume+Enhancer+Results)
+![Resume Enhancer](./images/resume_enhancer.png)
 
 ### Smart Job Search & Tracker
 Find roles perfectly matched to your profile and track every application seamlessly.
 - **Search Jobs:** Use advanced filters to find open roles.
 - **Job Tracker:** Stop using messy spreadsheets! Track your application statuses (Applied, Interviewing, Offer) in our visual kanban board.
 - **Job Alerts:** Set up custom email alerts for specific keywords so you never miss an opportunity.
-![Job Tracker Kanban](https://via.placeholder.com/800x400?text=Job+Tracker+Dashboard)
+![Job Tracker Kanban](./images/job_tracker.png)
 
 ### Community & Fellowship Platform
 Network with peers, ask questions, and apply for exclusive fellowships.
 - **Channels & Posts:** Discuss interview strategies and share success stories in categorized channels.
 - **Direct Messaging:** Connect 1-on-1 with mentors and other job seekers.
 - **Fellowships:** Participate in challenges, submit proposals, and level up your skills.
-![Community Board](https://via.placeholder.com/800x400?text=Community+Board)
+![Community Board](./images/community_board.png)
 
 ### AI Mock Interviews
 Practice makes perfect. Simulate real interviews customized to your target job role.
 - Answer questions in a dynamic interview format.
 - Receive instant, personalized AI feedback on your performance.
-![Mock Interview Simulator](https://via.placeholder.com/800x400?text=Mock+Interview+Simulator)
+![Mock Interview Simulator](./images/mock_interview.png)
 
 ### Smart AI Email Generator
 Drafting cold emails can be tedious and intimidating. Our AI email generator helps you instantly draft compelling outreach messages to recruiters and hiring managers.
 
 **Input your preferences:**
-![Email Generator Form](../email_generator_form.png)
+![Email Generator Form](./images/email_generator_form.png)
 
 **Get your tailored email out in seconds:**
-![Email Generator Results](../email_generator_results.png)
+![Email Generator Results](./images/email_generator_results.png)
 
 ---
 
