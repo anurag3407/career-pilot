@@ -27,3 +27,4 @@ export {
   SkeletonListItems
 } from './ui/Skeleton'
 
+export { default as DragHandle } from './DragHandle'

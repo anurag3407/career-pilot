@@ -1,19 +1,25 @@
-const DragHandle = () => {
+import { GripVertical } from 'lucide-react'
+
+import { cn } from '@/lib/utils'
+
+export default function DragHandle({
+  label = 'Drag to reorder',
+  isDragging = false,
+  className = '',
+}) {
   return (
-    <div
-      className="cursor-grab active:cursor-grabbing opacity-0 group-hover:opacity-100 transition-opacity duration-200"
-      // aria-label="Drag Handle"
+    <button
+      type="button"
+      aria-label={label}
+      className={cn(
+        'inline-flex h-8 w-8 items-center justify-center rounded-lg text-muted-foreground transition-all duration-200',
+        'cursor-grab hover:bg-muted hover:text-foreground focus:outline-none focus:ring-2 focus:ring-primary/20',
+        'opacity-0 group-hover:opacity-100 group-focus-within:opacity-100',
+        isDragging && 'cursor-grabbing bg-muted text-foreground opacity-100',
+        className
+      )}
     >
-      <div className="grid grid-cols-2 gap-1">
-        {[...Array(6)].map((_, index) => (
-          <span
-            key={index}
-            className="w-1 h-1 bg-gray-500 rounded-full"
-          ></span>
-        ))}
-      </div>
-    </div>
+      <GripVertical className="h-4 w-4" aria-hidden="true" />
+    </button>
   )
 }
-
-export default DragHandle
