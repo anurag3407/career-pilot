@@ -6,6 +6,16 @@ import Resume from '../models/Resume.model.js';
 
 const router = express.Router();
 
+/**
+ * @swagger
+ * /api/resumes:
+ *   get:
+ *     summary: Get all resumes
+ *     responses:
+ *       200:
+ *         description: Success
+ */
+
 // Get all resumes for a user (paginated)
 router.get('/', verifyToken, paginate(), asyncHandler(async (req, res) => {
   const userId = req.user.uid;
@@ -28,6 +38,19 @@ router.get('/', verifyToken, paginate(), asyncHandler(async (req, res) => {
   paginatedResponse(res, { data: resumes, total, page, limit });
 }));
 
+/**
+ * @swagger
+ * /api/resumes/{resumeId}:
+ *   get:
+ *     summary: Get resume by ID
+ *     parameters:
+ *       - in: path
+ *         name: resumeId
+ *         required: true
+ *     responses:
+ *       200:
+ *         description: Success
+ */
 // Get a specific resume
 router.get('/:resumeId', verifyToken, asyncHandler(async (req, res) => {
   const { resumeId } = req.params;
@@ -49,6 +72,21 @@ router.get('/:resumeId', verifyToken, asyncHandler(async (req, res) => {
   });
 }));
 
+/**
+ * @swagger
+ * /api/resumes:
+ *   post:
+ *     summary: Create new resume
+ *     requestBody:
+ *       required: true
+ *       content:
+ *         application/json:
+ *           schema:
+ *             type: object
+ *     responses:
+ *       201:
+ *         description: Created
+ */ 
 // Create a new resume
 router.post('/', verifyToken, asyncHandler(async (req, res) => {
   const userId = req.user.uid;
@@ -90,6 +128,25 @@ router.post('/', verifyToken, asyncHandler(async (req, res) => {
   });
 }));
 
+/**
+ * @swagger
+ * /api/resumes/{resumeId}:
+ *   put:
+ *     summary: Update resume
+ *     parameters:
+ *       - in: path
+ *         name: resumeId
+ *         required: true
+ *     requestBody:
+ *       required: true
+ *       content:
+ *         application/json:
+ *           schema:
+ *             type: object
+ *     responses:
+ *       200:
+ *         description: Success
+ */
 // Update a resume
 router.put('/:resumeId', verifyToken, asyncHandler(async (req, res) => {
   const { resumeId } = req.params;
@@ -126,6 +183,19 @@ router.put('/:resumeId', verifyToken, asyncHandler(async (req, res) => {
   });
 }));
 
+/**
+ * @swagger
+ * /api/resumes/{resumeId}:
+ *   delete:
+ *     summary: Delete resume
+ *     parameters:
+ *       - in: path
+ *         name: resumeId
+ *         required: true
+ *     responses:
+ *       200:
+ *         description: Success
+ */
 // Delete a resume
 router.delete('/:resumeId', verifyToken, asyncHandler(async (req, res) => {
   const { resumeId } = req.params;

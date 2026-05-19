@@ -34,6 +34,8 @@ import { connectDB } from './config/database.js';
 import { initJobFetcher } from './services/jobFetcher.js';
 import JobAlert from './models/JobAlert.model.js';
 
+const swaggerUi = require('swagger-ui-express');
+const swaggerSpec = require('./config/swagger');
 const app = express();
 const httpServer = createServer(app);
 const PORT = process.env.PORT || 5000;
@@ -99,6 +101,7 @@ app.get('/health', (req, res) => {
   });
 });
 
+app.use('/api/docs', swaggerUi.serve, swaggerUi.setup(swaggerSpec));
 app.use('/api/auth', authRoutes);
 app.use('/api/upload', uploadRoutes);
 app.use('/api/resumes', resumeRoutes);
