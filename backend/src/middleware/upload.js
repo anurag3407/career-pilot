@@ -15,7 +15,13 @@ const fileFilter = (req, file, cb) => {
   if (allowedMimeTypes.includes(file.mimetype) && allowedExtensions.includes(ext)) {
     cb(null, true);
   } else {
-    cb(new ApiError(400, 'Only PDF files are allowed'), false);
+    cb(
+  new ApiError(
+    400,
+    'Unsupported file format. Please upload a valid PDF resume.'
+  ),
+  false
+);
   }
 };
 
@@ -37,7 +43,12 @@ export const handleUpload = (req, res, next) => {
   singleUpload(req, res, (err) => {
     if (err instanceof multer.MulterError) {
       if (err.code === 'LIMIT_FILE_SIZE') {
-        return next(new ApiError(400, 'File size exceeds 5MB limit'));
+        return next(
+  new ApiError(
+    400,
+    'File size exceeds 5MB limit. Please upload a smaller PDF file.'
+  )
+);
       }
       return next(new ApiError(400, err.message));
     } else if (err) {

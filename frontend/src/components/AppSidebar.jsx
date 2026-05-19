@@ -81,6 +81,7 @@ const navLinks = [
     },
 ];
 
+
 function Logo() {
     const { open, animate } = useSidebar();
 

@@ -138,7 +138,8 @@ router.get('/history', verifyToken, asyncHandler(async (req, res) => {
     const interviews = await Interview.find({ odId: req.user.uid })
         .sort({ createdAt: -1 })
         .limit(20)
-        .select('jobRole industry experienceLevel status overallScore createdAt completedAt duration');
+        .select('jobRole industry experienceLevel status overallScore createdAt completedAt duration')
+        .lean();
 
     res.json({
         success: true,
@@ -149,7 +150,7 @@ router.get('/history', verifyToken, asyncHandler(async (req, res) => {
 router.get('/:id', verifyToken, asyncHandler(async (req, res) => {
     const { id } = req.params;
 
-    const interview = await Interview.findOne({ _id: id, odId: req.user.uid });
+    const interview = await Interview.findOne({ _id: id, odId: req.user.uid }).lean();
     if (!interview) {
         throw new ApiError(404, 'Interview not found');
     }

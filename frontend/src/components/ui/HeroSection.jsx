@@ -4,6 +4,8 @@ import { ArrowRight, Sparkles } from "lucide-react";
 import WorldMap from "./WorldMap";
 import { AnimatedGradientText, AnimatedLetters } from "./AnimatedText";
 import FeaturesCard from "./FeaturesCard";
+import AnimatedCounter from "./AnimatedCounter";
+
 
 const worldMapDots = [
   {
@@ -137,7 +139,10 @@ export default function HeroSection() {
               { value: "50K+", label: "Users" },
             ].map((stat, index) => (
               <div key={index} className="text-center group">
-                <div className="text-2xl md:text-4xl font-black text-foreground group-hover:text-primary transition-colors">{stat.value}</div>
+                <div className="text-2xl md:text-4xl font-black text-foreground group-hover:text-primary transition-colors">
+                  <AnimatedCounter value={stat.value} duration={2000} />
+                </div>
+
                 <div className="text-sm font-semibold text-muted-foreground mt-1 uppercase tracking-wider">{stat.label}</div>
               </div>
             ))}

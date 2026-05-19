@@ -338,6 +338,17 @@ export const jobTrackerApi = {
     return handleResponse(response)
   },
 
+  // Research a company
+  async researchCompany(companyName, industry = '') {
+    const headers = await getAuthHeaders()
+    const response = await fetch(`${API_BASE}/job-tracker/research`, {
+      method: 'POST',
+      headers,
+      body: JSON.stringify({ companyName, industry })
+    })
+    return handleResponse(response)
+  },
+
   // Get job tracker stats
   async getStats() {
     const headers = await getAuthHeaders()
@@ -915,7 +926,6 @@ export const userProfileApi = {
     return handleResponse(response)
   }
 }
-
 // ============ TWO-FACTOR AUTH API ============
 export const twoFactorApi = {
   async getStatus() {
@@ -996,6 +1006,7 @@ export const twoFactorApi = {
     return handleResponse(response)
   }
 }
+
 
 // ============ PAYMENT API ============
 export const paymentApi = {
