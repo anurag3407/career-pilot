@@ -1,0 +1,99 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+
+  <!-- Portfolio title variable -->
+  <title>{{portfolio.title}}</title>
+
+  <link rel="stylesheet" href="style.css">
+</head>
+<body>
+
+  <!-- ======================
+       HEADER SECTION
+       Available variables:
+       {{portfolio.owner.name}} - Full name of portfolio owner
+       {{portfolio.owner.avatar}} - Profile picture URL
+       {{portfolio.owner.bio}} - Short bio
+       {{portfolio.owner.location}} - Location
+       ====================== -->
+  <header>
+    <img src="{{portfolio.owner.avatar}}" alt="{{portfolio.owner.name}}">
+    <h1>{{portfolio.owner.name}}</h1>
+    <p>{{portfolio.owner.bio}}</p>
+    <p>{{portfolio.owner.location}}</p>
+  </header>
+
+  <!-- ======================
+       SOCIAL LINKS SECTION
+       Available variables:
+       {{portfolio.owner.github}} - GitHub profile URL
+       {{portfolio.owner.linkedin}} - LinkedIn profile URL
+       {{portfolio.owner.twitter}} - Twitter profile URL
+       {{portfolio.owner.website}} - Personal website URL
+       ====================== -->
+  <section class="social-links">
+    {{#if portfolio.owner.github}}
+      <a href="{{portfolio.owner.github}}">GitHub</a>
+    {{/if}}
+    {{#if portfolio.owner.linkedin}}
+      <a href="{{portfolio.owner.linkedin}}">LinkedIn</a>
+    {{/if}}
+    {{#if portfolio.owner.twitter}}
+      <a href="{{portfolio.owner.twitter}}">Twitter</a>
+    {{/if}}
+  </section>
+
+  <!-- ======================
+       REPOSITORIES SECTION
+       Available variables:
+       {{repos}} - Array of repositories
+       {{repo.name}} - Repository name
+       {{repo.description}} - Repository description
+       {{repo.url}} - Repository URL
+       {{repo.stars}} - Star count
+       {{repo.language}} - Primary language
+       {{repo.forks}} - Fork count
+       ====================== -->
+  <section class="repositories">
+    <h2>Projects</h2>
+    {{#each repos}}
+      <div class="repo-card">
+        <a href="{{this.url}}">{{this.name}}</a>
+        <p>{{this.description}}</p>
+        <span>⭐ {{this.stars}}</span>
+        <span>🍴 {{this.forks}}</span>
+        <span>{{this.language}}</span>
+      </div>
+    {{/each}}
+  </section>
+
+  <!-- ======================
+       STATS SECTION
+       Available variables:
+       {{stats.totalStars}} - Total stars across all repos
+       {{stats.totalForks}} - Total forks across all repos
+       {{stats.totalRepos}} - Total number of repositories
+       {{stats.followers}} - GitHub followers count
+       {{stats.contributions}} - Total contributions
+       ====================== -->
+  <section class="stats">
+    <h2>Stats</h2>
+    <p>Total Stars: {{stats.totalStars}}</p>
+    <p>Total Repos: {{stats.totalRepos}}</p>
+    <p>Followers: {{stats.followers}}</p>
+    <p>Contributions: {{stats.contributions}}</p>
+  </section>
+
+  <!-- ======================
+       FOOTER SECTION
+       ====================== -->
+  <footer>
+    <!-- TODO: Add your footer content here -->
+    <p>Built with career-pilot</p>
+  </footer>
+
+</body>
+</html>
