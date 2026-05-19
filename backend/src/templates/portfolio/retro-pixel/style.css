@@ -1,0 +1,884 @@
+/* ============================================================
+   RETRO PIXEL PORTFOLIO — style.css
+   8-bit / NES-inspired design for gaming & retro developers
+   ============================================================ */
+
+/* Font loaded via <link> in index.html — no @import needed */
+
+/* ---------- NES Colour Palette ---------- */
+:root {
+  --black:      #0f0f0f;
+  --dark-gray:  #1a1a2e;
+  --mid-gray:   #16213e;
+  --light-gray: #0f3460;
+  --white:      #e8e8e8;
+  --off-white:  #c0c0c0;
+
+  /* Accent colours */
+  --green:   #00ff41;   /* matrix / NES green */
+  --yellow:  #ffd700;   /* gold / coin */
+  --red:     #ff0040;   /* NES red */
+  --cyan:    #00e5ff;   /* sky / water */
+  --purple:  #b14aed;   /* power-up */
+  --orange:  #ff6b35;   /* fire */
+
+  /* Pixel border shadow (CSS stacking technique) */
+  --pixel-border: 4px solid var(--green);
+  --pixel-shadow:
+    4px 0    0 var(--green),
+   -4px 0    0 var(--green),
+    0   4px  0 var(--green),
+    0  -4px  0 var(--green);
+
+  --pixel-shadow-yellow:
+    4px 0    0 var(--yellow),
+   -4px 0    0 var(--yellow),
+    0   4px  0 var(--yellow),
+    0  -4px  0 var(--yellow);
+
+  --pixel-shadow-cyan:
+    4px 0    0 var(--cyan),
+   -4px 0    0 var(--cyan),
+    0   4px  0 var(--cyan),
+    0  -4px  0 var(--cyan);
+
+  --font-pixel: 'Press Start 2P', monospace;
+  --transition: 0.15s steps(4);
+}
+
+/* ---------- Reset ---------- */
+*, *::before, *::after { box-sizing: border-box; margin: 0; padding: 0; }
+
+html { scroll-behavior: smooth; }
+
+body {
+  background-color: var(--black);
+  color: var(--white);
+  font-family: var(--font-pixel);
+  font-size: 14px;
+  line-height: 1.9;
+  overflow-x: hidden;
+}
+
+/* ============================================================
+   SCANLINE OVERLAY
+   ============================================================ */
+body::after {
+  content: '';
+  position: fixed;
+  inset: 0;
+  pointer-events: none;
+  z-index: 9999;
+  background: repeating-linear-gradient(
+    0deg,
+    transparent,
+    transparent 2px,
+    rgba(0, 0, 0, 0.18) 2px,
+    rgba(0, 0, 0, 0.18) 4px
+  );
+  animation: scanlines 8s linear infinite;
+}
+
+@keyframes scanlines {
+  0%   { background-position: 0 0; }
+  100% { background-position: 0 100%; }
+}
+
+/* ============================================================
+   UTILITY — PIXEL CORNERS
+   A box-shadow technique that mimics chunky pixel borders
+   ============================================================ */
+.pixel-box {
+  position: relative;
+  background: var(--dark-gray);
+  box-shadow:
+    /* top */    0 -4px 0 var(--green),
+    /* bottom */ 0  4px 0 var(--green),
+    /* left */  -4px 0  0 var(--green),
+    /* right */  4px 0  0 var(--green);
+  padding: 24px;
+}
+
+.pixel-box--yellow {
+  box-shadow:
+    0 -4px 0 var(--yellow),
+    0  4px 0 var(--yellow),
+   -4px 0  0 var(--yellow),
+    4px 0  0 var(--yellow);
+}
+
+.pixel-box--cyan {
+  box-shadow:
+    0 -4px 0 var(--cyan),
+    0  4px 0 var(--cyan),
+   -4px 0  0 var(--cyan),
+    4px 0  0 var(--cyan);
+}
+
+/* ============================================================
+   NAVBAR
+   ============================================================ */
+#navbar {
+  position: fixed;
+  top: 0; left: 0; right: 0;
+  z-index: 1000;
+  background: var(--black);
+  border-bottom: 4px solid var(--green);
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  padding: 14px 32px;
+  gap: 16px;
+}
+
+.nav-logo {
+  font-size: 18px;
+  color: var(--green);
+  text-decoration: none;
+  letter-spacing: 2px;
+  text-shadow: 0 0 12px var(--green);
+}
+
+.nav-logo span { color: var(--yellow); }
+
+.nav-links {
+  display: flex;
+  gap: 24px;
+  list-style: none;
+}
+
+.nav-links a {
+  font-size: 14px;
+  color: var(--off-white);
+  text-decoration: none;
+  transition: color var(--transition), text-shadow var(--transition);
+}
+
+.nav-links a:hover,
+.nav-links a.active {
+  color: var(--green);
+  text-shadow: 0 0 10px var(--green);
+}
+
+/* Hamburger (mobile) */
+#nav-toggle {
+  display: none;
+  flex-direction: column;
+  gap: 5px;
+  cursor: pointer;
+  background: none;
+  border: none;
+}
+#nav-toggle span {
+  display: block;
+  width: 22px; height: 3px;
+  background: var(--green);
+  transition: all 0.2s;
+}
+
+/* ============================================================
+   HERO SECTION
+   ============================================================ */
+#hero {
+  min-height: 100vh;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  justify-content: center;
+  text-align: center;
+  padding: 120px 24px 60px;
+  background:
+    radial-gradient(ellipse at 20% 50%, rgba(0, 255, 65, 0.06) 0%, transparent 60%),
+    radial-gradient(ellipse at 80% 20%, rgba(177, 74, 237, 0.07) 0%, transparent 60%),
+    var(--black);
+  position: relative;
+  overflow: hidden;
+}
+
+/* pixel-art star grid */
+#hero::before {
+  content: '';
+  position: absolute;
+  inset: 0;
+  background-image:
+    radial-gradient(1px 1px at 10% 15%, var(--off-white) 0%, transparent 100%),
+    radial-gradient(1px 1px at 30% 40%, var(--off-white) 0%, transparent 100%),
+    radial-gradient(1px 1px at 60% 10%, var(--off-white) 0%, transparent 100%),
+    radial-gradient(1px 1px at 80% 60%, var(--off-white) 0%, transparent 100%),
+    radial-gradient(1px 1px at 50% 80%, var(--off-white) 0%, transparent 100%),
+    radial-gradient(1px 1px at 90% 30%, var(--off-white) 0%, transparent 100%);
+  animation: twinkle 3s steps(2) infinite;
+  pointer-events: none;
+}
+
+@keyframes twinkle {
+  0%, 100% { opacity: 1; }
+  50%       { opacity: 0.3; }
+}
+
+.hero-tag {
+  font-size: 14px;
+  color: var(--yellow);
+  margin-bottom: 18px;
+  letter-spacing: 3px;
+  text-shadow: 0 0 8px var(--yellow);
+}
+
+.hero-title {
+  font-size: clamp(22px, 4vw, 42px);
+  color: var(--green);
+  text-shadow: 0 0 20px var(--green), 0 0 40px rgba(0,255,65,0.4);
+  margin-bottom: 16px;
+  line-height: 1.4;
+}
+
+.hero-title .cursor {
+  display: inline-block;
+  width: 18px; height: 32px;
+  background: var(--green);
+  margin-left: 4px;
+  vertical-align: middle;
+  animation: blink 1s steps(1) infinite;
+}
+
+@keyframes blink {
+  0%, 100% { opacity: 1; }
+  50%       { opacity: 0; }
+}
+
+.hero-subtitle {
+  font-size: 14px;
+  color: var(--cyan);
+  margin-bottom: 8px;
+  text-shadow: 0 0 8px var(--cyan);
+}
+
+.hero-desc {
+  font-size: 14px;
+  color: var(--off-white);
+  max-width: 520px;
+  margin: 18px auto 36px;
+  line-height: 2.2;
+}
+
+/* CTA buttons */
+.btn-group {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 18px;
+  justify-content: center;
+}
+
+.btn {
+  display: inline-block;
+  font-family: var(--font-pixel);
+  font-size: 14px;
+  padding: 14px 28px;
+  cursor: pointer;
+  text-decoration: none;
+  transition: transform 0.1s steps(2), box-shadow 0.1s steps(2);
+  border: none;
+  position: relative;
+}
+
+.btn-primary {
+  background: var(--green);
+  color: var(--black);
+  box-shadow:
+    4px 4px 0 var(--off-white);
+}
+
+.btn-primary:hover {
+  transform: translate(-2px, -2px);
+  box-shadow: 6px 6px 0 var(--off-white);
+}
+
+.btn-secondary {
+  background: transparent;
+  color: var(--yellow);
+  box-shadow:
+    0 -4px 0 var(--yellow),
+    0  4px 0 var(--yellow),
+   -4px 0  0 var(--yellow),
+    4px 0  0 var(--yellow);
+}
+
+.btn-secondary:hover {
+  background: var(--yellow);
+  color: var(--black);
+}
+
+/* ============================================================
+   SECTIONS — common
+   ============================================================ */
+section {
+  padding: 80px 24px;
+  max-width: 1100px;
+  margin: 0 auto;
+}
+
+.section-header {
+  text-align: center;
+  margin-bottom: 56px;
+}
+
+.section-tag {
+  font-size: 14px;
+  color: var(--purple);
+  letter-spacing: 3px;
+  display: block;
+  margin-bottom: 10px;
+  text-shadow: 0 0 8px var(--purple);
+}
+
+.section-title {
+  font-size: clamp(16px, 2.5vw, 26px);
+  color: var(--green);
+  text-shadow: 0 0 12px var(--green);
+}
+
+/* Pixel divider */
+.pixel-divider {
+  width: 100%;
+  height: 4px;
+  background: repeating-linear-gradient(
+    90deg,
+    var(--green) 0, var(--green) 8px,
+    transparent 8px, transparent 16px
+  );
+  margin: 0 auto 72px;
+}
+
+/* ============================================================
+   ABOUT SECTION
+   ============================================================ */
+#about .about-grid {
+  display: grid;
+  grid-template-columns: 1fr 1fr;
+  gap: 40px;
+  align-items: center;
+}
+
+.about-avatar {
+  display: flex;
+  justify-content: center;
+}
+
+.avatar-frame {
+  position: relative;
+  width: 180px; height: 180px;
+  background: var(--dark-gray);
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  font-size: 80px;
+  box-shadow:
+    0 -4px 0 var(--yellow),
+    0  4px 0 var(--yellow),
+   -4px 0  0 var(--yellow),
+    4px 0  0 var(--yellow),
+    8px 8px 0 rgba(255,215,0,0.3);
+  animation: avatar-pulse 2s steps(2) infinite;
+}
+
+@keyframes avatar-pulse {
+  0%, 100% { box-shadow: 0 -4px 0 var(--yellow), 0 4px 0 var(--yellow), -4px 0 0 var(--yellow), 4px 0 0 var(--yellow), 8px 8px 0 rgba(255,215,0,0.3); }
+  50%       { box-shadow: 0 -4px 0 var(--green),  0 4px 0 var(--green),  -4px 0 0 var(--green),  4px 0 0 var(--green),  8px 8px 0 rgba(0,255,65,0.3); }
+}
+
+.about-text h3 {
+  font-size: 14px;
+  color: var(--yellow);
+  margin-bottom: 16px;
+  text-shadow: 0 0 8px var(--yellow);
+}
+
+.about-text p {
+  font-size: 14px;
+  color: var(--off-white);
+  line-height: 2.2;
+  margin-bottom: 14px;
+}
+
+/* Stats row */
+.stats-row {
+  display: flex;
+  gap: 20px;
+  flex-wrap: wrap;
+  margin-top: 24px;
+}
+
+.stat-chip {
+  font-size: 14px;
+  padding: 8px 14px;
+  background: var(--mid-gray);
+  color: var(--cyan);
+  box-shadow:
+    0 -2px 0 var(--cyan),
+    0  2px 0 var(--cyan),
+   -2px 0  0 var(--cyan),
+    2px 0  0 var(--cyan);
+  text-shadow: 0 0 6px var(--cyan);
+}
+
+/* ============================================================
+   SKILLS SECTION
+   ============================================================ */
+#skills {
+  background: var(--dark-gray);
+  max-width: 100%;
+  padding: 80px 24px;
+}
+
+#skills .inner {
+  max-width: 1100px;
+  margin: 0 auto;
+}
+
+.skills-grid {
+  display: grid;
+  grid-template-columns: repeat(auto-fit, minmax(280px, 1fr));
+  gap: 28px;
+}
+
+.skill-card {
+  background: var(--black);
+  padding: 24px;
+  box-shadow:
+    0 -4px 0 var(--purple),
+    0  4px 0 var(--purple),
+   -4px 0  0 var(--purple),
+    4px 0  0 var(--purple);
+  transition: transform var(--transition), box-shadow var(--transition);
+}
+
+.skill-card:hover {
+  transform: translate(-2px, -2px);
+  box-shadow:
+    0 -4px 0 var(--yellow),
+    0  4px 0 var(--yellow),
+   -4px 0  0 var(--yellow),
+    4px 0  0 var(--yellow),
+    6px 6px 0 rgba(255,215,0,0.25);
+}
+
+.skill-card h4 {
+  font-size: 14px;
+  color: var(--yellow);
+  margin-bottom: 18px;
+  text-shadow: 0 0 6px var(--yellow);
+}
+
+.skill-bar-wrap {
+  margin-bottom: 14px;
+}
+
+.skill-label {
+  display: flex;
+  justify-content: space-between;
+  font-size: 14px;
+  color: var(--off-white);
+  margin-bottom: 6px;
+}
+
+.skill-bar {
+  height: 12px;
+  background: var(--mid-gray);
+  position: relative;
+  box-shadow: inset 0 2px 0 rgba(0,0,0,0.5);
+}
+
+.skill-fill {
+  height: 100%;
+  background: repeating-linear-gradient(
+    90deg,
+    var(--green) 0, var(--green) 8px,
+    rgba(0,255,65,0.5) 8px, rgba(0,255,65,0.5) 10px
+  );
+  width: 0;
+  transition: width 1.2s steps(20);
+  box-shadow: 0 0 8px var(--green);
+}
+
+/* ============================================================
+   PROJECTS — GAME CARTRIDGE CARDS
+   ============================================================ */
+#projects {
+  padding: 80px 24px;
+}
+
+.projects-grid {
+  display: grid;
+  grid-template-columns: repeat(auto-fit, minmax(300px, 1fr));
+  gap: 36px;
+}
+
+/* Cartridge shape */
+.cartridge {
+  position: relative;
+  background: var(--dark-gray);
+  display: flex;
+  flex-direction: column;
+  /* Chunky pixel border */
+  box-shadow:
+    0 -4px 0 var(--cyan),
+    0  4px 0 var(--cyan),
+   -4px 0  0 var(--cyan),
+    4px 0  0 var(--cyan);
+  transition: transform 0.12s steps(3), box-shadow 0.12s steps(3);
+  cursor: pointer;
+  overflow: hidden;
+}
+
+.cartridge:hover {
+  transform: translateY(-6px);
+  box-shadow:
+    0 -4px 0 var(--yellow),
+    0  4px 0 var(--yellow),
+   -4px 0  0 var(--yellow),
+    4px 0  0 var(--yellow),
+    0 10px 0 rgba(255,215,0,0.2);
+}
+
+/* Top notch — the cartridge "cutout" at the top */
+.cartridge-notch {
+  height: 16px;
+  background: var(--black);
+  clip-path: polygon(0 0, 30% 0, 40% 100%, 60% 100%, 70% 0, 100% 0, 100% 100%, 0 100%);
+  margin-bottom: -2px;
+}
+
+.cartridge-label {
+  background: linear-gradient(135deg, var(--mid-gray) 0%, var(--dark-gray) 100%);
+  padding: 20px;
+  flex: 1;
+  border-top: 3px solid var(--light-gray);
+}
+
+.cartridge-id {
+  font-size: 14px;
+  color: var(--purple);
+  margin-bottom: 8px;
+  text-shadow: 0 0 6px var(--purple);
+}
+
+.cartridge-title {
+  font-size: 14px;
+  color: var(--yellow);
+  margin-bottom: 12px;
+  text-shadow: 0 0 8px var(--yellow);
+  line-height: 1.5;
+}
+
+.cartridge-desc {
+  font-size: 14px;
+  color: var(--off-white);
+  line-height: 2;
+  margin-bottom: 16px;
+}
+
+.cartridge-tags {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 8px;
+  margin-bottom: 18px;
+}
+
+.tag {
+  font-size: 14px;
+  padding: 4px 8px;
+  color: var(--black);
+  background: var(--green);
+}
+
+.cartridge-links {
+  display: flex;
+  gap: 12px;
+}
+
+.cartridge-links a {
+  font-size: 14px;
+  color: var(--cyan);
+  text-decoration: none;
+  transition: color var(--transition);
+}
+
+.cartridge-links a:hover { color: var(--yellow); text-shadow: 0 0 6px var(--yellow); }
+
+/* Bottom pins (cartridge connector) */
+.cartridge-pins {
+  height: 18px;
+  background: var(--black);
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  gap: 6px;
+  padding: 0 16px;
+}
+
+.pin {
+  flex: 1;
+  height: 10px;
+  max-width: 14px;
+  background: var(--off-white);
+}
+
+/* ============================================================
+   EXPERIENCE TIMELINE
+   ============================================================ */
+#experience {
+  background: var(--dark-gray);
+  max-width: 100%;
+  padding: 80px 24px;
+}
+
+#experience .inner {
+  max-width: 900px;
+  margin: 0 auto;
+}
+
+.timeline {
+  position: relative;
+  padding-left: 40px;
+}
+
+.timeline::before {
+  content: '';
+  position: absolute;
+  left: 14px; top: 0; bottom: 0;
+  width: 4px;
+  background: repeating-linear-gradient(
+    180deg,
+    var(--green) 0, var(--green) 8px,
+    transparent 8px, transparent 14px
+  );
+}
+
+.timeline-item {
+  position: relative;
+  margin-bottom: 40px;
+}
+
+.timeline-item::before {
+  content: '▶';
+  position: absolute;
+  left: -34px;
+  top: 4px;
+  font-size: 14px;
+  color: var(--yellow);
+  text-shadow: 0 0 8px var(--yellow);
+}
+
+.timeline-date {
+  font-size: 14px;
+  color: var(--purple);
+  margin-bottom: 6px;
+  text-shadow: 0 0 6px var(--purple);
+}
+
+.timeline-role {
+  font-size: 14px;
+  color: var(--green);
+  margin-bottom: 4px;
+  text-shadow: 0 0 8px var(--green);
+}
+
+.timeline-company {
+  font-size: 14px;
+  color: var(--yellow);
+  margin-bottom: 12px;
+}
+
+.timeline-desc {
+  font-size: 14px;
+  color: var(--off-white);
+  line-height: 2.1;
+}
+
+/* ============================================================
+   CONTACT SECTION
+   ============================================================ */
+#contact {
+  text-align: center;
+  padding: 80px 24px;
+}
+
+.contact-card {
+  max-width: 600px;
+  margin: 0 auto;
+  background: var(--dark-gray);
+  padding: 48px 36px;
+  box-shadow:
+    0 -4px 0 var(--green),
+    0  4px 0 var(--green),
+   -4px 0  0 var(--green),
+    4px 0  0 var(--green),
+    10px 10px 0 rgba(0,255,65,0.12);
+}
+
+.contact-card p {
+  font-size: 14px;
+  color: var(--off-white);
+  line-height: 2.2;
+  margin-bottom: 32px;
+}
+
+.contact-links {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 18px;
+  justify-content: center;
+  margin-top: 28px;
+}
+
+.contact-link {
+  display: inline-flex;
+  align-items: center;
+  gap: 8px;
+  font-size: 14px;
+  color: var(--cyan);
+  text-decoration: none;
+  padding: 10px 18px;
+  box-shadow:
+    0 -2px 0 var(--cyan),
+    0  2px 0 var(--cyan),
+   -2px 0  0 var(--cyan),
+    2px 0  0 var(--cyan);
+  transition: background var(--transition), color var(--transition);
+}
+
+.contact-link:hover {
+  background: var(--cyan);
+  color: var(--black);
+  box-shadow: none;
+}
+
+/* ============================================================
+   FOOTER
+   ============================================================ */
+footer {
+  background: var(--black);
+  border-top: 4px solid var(--green);
+  padding: 24px;
+  text-align: center;
+  font-size: 14px;
+  color: var(--off-white);
+}
+
+footer span { color: var(--green); text-shadow: 0 0 6px var(--green); }
+
+/* ============================================================
+   SCROLL TO TOP
+   ============================================================ */
+#scroll-top {
+  position: fixed;
+  bottom: 24px; right: 24px;
+  z-index: 999;
+  background: var(--green);
+  color: var(--black);
+  font-family: var(--font-pixel);
+  font-size: 16px;
+  width: 44px; height: 44px;
+  border: none;
+  cursor: pointer;
+  display: none;
+  align-items: center;
+  justify-content: center;
+  box-shadow: 4px 4px 0 var(--off-white);
+  transition: transform 0.1s steps(2);
+}
+
+#scroll-top:hover { transform: translateY(-4px); }
+#scroll-top.show  { display: flex; }
+
+/* ============================================================
+   LOADING SCREEN
+   ============================================================ */
+#loading-screen {
+  position: fixed;
+  inset: 0;
+  z-index: 99999;
+  background: var(--black);
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  justify-content: center;
+  gap: 24px;
+  transition: opacity 0.5s;
+}
+
+#loading-screen.fade-out {
+  opacity: 0;
+  pointer-events: none;
+}
+
+.loading-title {
+  font-size: 18px;
+  color: var(--green);
+  text-shadow: 0 0 20px var(--green);
+}
+
+.loading-bar-wrap {
+  width: 260px;
+  height: 20px;
+  box-shadow:
+    0 -4px 0 var(--green),
+    0  4px 0 var(--green),
+   -4px 0  0 var(--green),
+    4px 0  0 var(--green);
+  background: var(--dark-gray);
+  overflow: hidden;
+}
+
+.loading-bar {
+  height: 100%;
+  background: var(--green);
+  width: 0;
+  animation: load 1.6s steps(16) forwards;
+  box-shadow: 0 0 10px var(--green);
+}
+
+@keyframes load {
+  to { width: 100%; }
+}
+
+.loading-text {
+  font-size: 14px;
+  color: var(--off-white);
+  animation: blink 1s steps(1) infinite;
+}
+
+/* ============================================================
+   RESPONSIVE
+   ============================================================ */
+@media (max-width: 768px) {
+  body { font-size: 14px; }
+
+  #navbar { padding: 12px 18px; }
+
+  #nav-toggle { display: flex; }
+
+  .nav-links {
+    display: none;
+    flex-direction: column;
+    position: absolute;
+    top: 100%; left: 0; right: 0;
+    background: var(--black);
+    border-bottom: 4px solid var(--green);
+    padding: 18px 24px;
+    gap: 16px;
+  }
+
+  .nav-links.open { display: flex; }
+
+  #about .about-grid {
+    grid-template-columns: 1fr;
+    text-align: center;
+  }
+
+  .stats-row { justify-content: center; }
+
+  .hero-title { font-size: 18px; }
+
+  .projects-grid { grid-template-columns: 1fr; }
+}
