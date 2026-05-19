@@ -148,7 +148,13 @@ export default function DeployModal({ isOpen, onClose, portfolioTitle = "My Port
       if (isSuccess) {
         // Generate a fun mock live domain name
         const username = "portfolio-" + Math.floor(Math.random() * 899 + 100);
-        const slug = portfolioTitle.toLowerCase().replace(/[^a-z0-9]/g, '-').replace(/-+/g, '-');
+        // Robust regex sanitization: replaces special characters with dashes, collapses multiple consecutive
+        // dashes, strips leading/trailing dashes, and provides a default fallback if the title is purely symbols.
+        const slug = portfolioTitle
+          .toLowerCase()
+          .replace(/[^a-z0-9]/g, '-')
+          .replace(/-+/g, '-')
+          .replace(/^-|-$/g, '') || 'portfolio';
         
         const url = selectedProvider === 'github'
           ? `https://${username}.github.io/${slug}`
