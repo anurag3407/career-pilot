@@ -907,8 +907,9 @@ export const userProfileApi = {
     const headers = await getAuthHeaders()
     const response = await fetch(`${API_BASE}/user-profiles/${uid}/activity`, { method: 'GET', headers })
     return handleResponse(response)
-  }
+  },
 }
+
 
 // ============ TWO-FACTOR AUTH API ============
 export const twoFactorApi = {
@@ -990,6 +991,7 @@ export const twoFactorApi = {
     return handleResponse(response)
   }
 }
+
 
 // ============ PAYMENT API ============
 export const paymentApi = {
