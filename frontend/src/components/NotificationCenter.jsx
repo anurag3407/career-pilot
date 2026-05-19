@@ -21,13 +21,23 @@ const TYPE_CONFIG = {
 };
 
 function getTitle(notif) {
-  if (notif.type === "job_alert_new_jobs")
-    return `${notif.data?.jobCount} new job${notif.data?.jobCount > 1 ? "s" : ""} for "${notif.data?.alertTitle}"`;
+  if (notif.type === "job_alert_new_jobs") {
+    const count = Number.isFinite(notif.data?.jobCount)
+      ? notif.data.jobCount
+      : 0;
+
+    const title = notif.data?.alertTitle || "your alert";
+
+    return `${count} new job${count === 1 ? "" : "s"} for "${title}"`;
+  }
+
   if (notif.type === "job_alert_email_sent")
-    return `Email sent for "${notif.data?.alertTitle}"`;
+    return `Email sent for "${notif.data?.alertTitle || "your alert"}"`;
+
   if (notif.type === "job_alert_email_failed")
-    return `Email failed for "${notif.data?.alertTitle}"`;
-  return notif.data?.message || TYPE_CONFIG.notification.label;
+    return `Email failed for "${notif.data?.alertTitle || "your alert"}"`;
+
+  return notif.data?.message ?? TYPE_CONFIG.notification.label;
 }
 
 export default function NotificationCenter() {
@@ -119,6 +129,14 @@ export default function NotificationCenter() {
                     <div
                       key={notif.id}
                       onClick={() => handleClick(notif)}
+                      role="button"
+                      tabIndex={0}
+                      onKeyDown={(e) => {
+                        if (e.key === "Enter" || e.key === " ") {
+                          e.preventDefault();
+                          handleClick(notif);
+                        }
+                      }}
                       className={cn(
                         "flex items-start gap-3 px-4 py-3 cursor-pointer transition-colors hover:bg-muted/60 relative group",
                         !notif.read && "bg-primary/5"

@@ -136,6 +136,7 @@ export function SocketProvider({ children }) {
         setSocket(null);
         setIsConnected(false);
         setOnlineUsers([]);
+        setNotifications([]);
       }
     };
 
