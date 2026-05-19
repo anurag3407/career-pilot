@@ -322,6 +322,52 @@ export const sendJobAlertEmail = async ({
   }
 };
 
+export const sendWeeklyDigestEmail = async ({
+  userEmail,
+  userName = 'there',
+  html
+}) => {
+  try {
+    console.log(`\n📧 Sending weekly digest email to: ${userEmail}`);
+
+    if (!userEmail) {
+      throw new Error('No recipient email address provided!');
+    }
+
+    if (isExternalServiceConfigured) {
+      return await callEmailService('/api/send-weekly-digest', {
+        userEmail,
+        userName,
+        html
+      });
+    }
+
+    const transport = await initLocalTransporter();
+
+    const mailOptions = {
+      from: `"careerpilot Insights" <${process.env.EMAIL_USER}>`,
+      to: userEmail,
+      subject: '📈 Your Weekly Career Digest',
+      html
+    };
+
+    const info = await transport.sendMail(mailOptions);
+
+    console.log('Weekly digest email sent:', info.messageId);
+
+    return {
+      success: true,
+      messageId: info.messageId
+    };
+  } catch (error) {
+    console.error('Error sending weekly digest email:', error);
+
+    throw new Error(
+      `Failed to send weekly digest email: ${error.message}`
+    );
+  }
+};
+
 /**
  * Send proposal approval notification email to student
  */

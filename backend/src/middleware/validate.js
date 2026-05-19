@@ -59,6 +59,7 @@ export const validate = (schema, target = 'body') => {
 
     // Replace req[target] with the parsed (possibly transformed) data
     req[target] = result.data;
+
     next();
   };
 };
