@@ -9,7 +9,9 @@ let modelInstance = null;
 
 const getModel = () => {
     if (!geminiApiKey) {
-        throw new Error('GEMINI_API_KEY is required for LinkedIn optimization.');
+        const err = new Error('AI features are unavailable — GEMINI_API_KEY is not configured.');
+        err.statusCode = 503;
+        throw err;
     }
     if (!modelInstance) {
         const genAI = new GoogleGenerativeAI(geminiApiKey);
@@ -117,6 +119,7 @@ export const optimizeLinkedInProfile = async (profileText, targetRole) => {
         return parsed;
 
     } catch (error) {
+        if (error.statusCode === 503) throw error;
         console.error('Error optimizing LinkedIn profile:', error);
         throw new Error('Failed to optimize LinkedIn profile.');
     }

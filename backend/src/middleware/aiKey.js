@@ -52,7 +52,14 @@ export const extractAIProvider = async (req, res, next) => {
     }
 
     // --- Case 3: No custom headers & No DB config – fall back to server Gemini key ---
-    req.aiProvider = getDefaultProvider();
+    const defaultProvider = getDefaultProvider();
+    if (!defaultProvider) {
+      return res.status(503).json({
+        success: false,
+        error: 'AI features are unavailable — GEMINI_API_KEY is not configured on this server.',
+      });
+    }
+    req.aiProvider = defaultProvider;
     req.aiProviderSource = 'server';
     return next();
   } catch (error) {

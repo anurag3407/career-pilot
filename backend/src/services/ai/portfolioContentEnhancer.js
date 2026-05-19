@@ -2,9 +2,13 @@ import { GoogleGenerativeAI } from '@google/generative-ai';
 
 const geminiApiKey = process.env.GEMINI_API_KEY;
 if (!geminiApiKey) {
-  throw new Error('GEMINI_API_KEY environment variable is required');
+  console.warn('⚠️  GEMINI_API_KEY is not set — portfolio AI enhancement will be unavailable.');
 }
-const genAI = new GoogleGenerativeAI(geminiApiKey);
+
+let genAI = null;
+if (geminiApiKey) {
+  genAI = new GoogleGenerativeAI(geminiApiKey);
+}
 
 const SECTION_PROMPTS = {
   hero: (content) => `
@@ -96,6 +100,12 @@ Respond ONLY with valid JSON in this exact format:
 };
 
 export const enhanceSection = async (sectionType, content) => {
+  if (!genAI) {
+    const err = new Error('AI features are unavailable — GEMINI_API_KEY is not configured.');
+    err.statusCode = 503;
+    throw err;
+  }
+
   const promptBuilder = SECTION_PROMPTS[sectionType];
 
   if (!promptBuilder) {

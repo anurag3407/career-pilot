@@ -153,18 +153,22 @@ export const AIProviderFactory = {
 // ---------------------------------------------------------------------------
 
 let _defaultProvider = null;
+let _warnedAboutMissingKey = false;
 
 /**
  * Returns the default server-side Gemini provider (lazy-initialised).
- * Throws if GEMINI_API_KEY is not set.
+ * Returns null if GEMINI_API_KEY is not set — callers must guard accordingly.
  */
 export function getDefaultProvider() {
   if (_defaultProvider) return _defaultProvider;
 
   const geminiApiKey = process.env.GEMINI_API_KEY;
   if (!geminiApiKey) {
-    console.error('❌ GEMINI_API_KEY is missing. Aborting AI initialization.');
-    throw new Error('GEMINI_API_KEY is required to start the AI services.');
+    if (!_warnedAboutMissingKey) {
+      console.warn('⚠️  GEMINI_API_KEY is not set — AI features will be unavailable. Non-AI routes are unaffected.');
+      _warnedAboutMissingKey = true;
+    }
+    return null;
   }
 
   _defaultProvider = createAIProvider('gemini', geminiApiKey);

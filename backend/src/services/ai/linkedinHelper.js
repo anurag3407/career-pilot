@@ -5,7 +5,7 @@ dotenv.config();
 
 const geminiApiKey = process.env.GEMINI_API_KEY;
 if (!geminiApiKey) {
-    console.error('GEMINI_API_KEY is missing. Aborting AI initialization.');
+    console.warn('⚠️  GEMINI_API_KEY is not set — LinkedIn headline AI features will be unavailable.');
 }
 
 // We instantiate the model only if the API key is present to avoid crashing at startup if it's missing in some environments
