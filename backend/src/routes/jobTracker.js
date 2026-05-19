@@ -2,6 +2,7 @@ import express from 'express';
 import { verifyToken } from '../middleware/auth.js';
 import { asyncHandler, ApiError } from '../middleware/errorHandler.js';
 import TrackedJob from '../models/TrackedJob.model.js';
+import { researchCompany } from '../services/companyResearchService.js';
 
 function isValidWebUrl(str) {
   try {
@@ -13,6 +14,21 @@ function isValidWebUrl(str) {
 }
 
 const router = express.Router();
+
+// Research a company using AI
+router.post('/research', verifyToken, asyncHandler(async (req, res) => {
+  const { companyName, industry } = req.body;
+
+  if (!companyName || !companyName.trim()) {
+    throw new ApiError(400, 'Company name is required for research');
+  }
+
+  const research = await researchCompany(companyName, industry);
+  res.json({
+    success: true,
+    data: research
+  });
+}));
 
 // Get all tracked jobs for a user
 router.get('/', verifyToken, asyncHandler(async (req, res) => {

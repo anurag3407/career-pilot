@@ -327,6 +327,17 @@ export const jobTrackerApi = {
     return handleResponse(response)
   },
 
+  // Research a company
+  async researchCompany(companyName, industry = '') {
+    const headers = await getAuthHeaders()
+    const response = await fetch(`${API_BASE}/job-tracker/research`, {
+      method: 'POST',
+      headers,
+      body: JSON.stringify({ companyName, industry })
+    })
+    return handleResponse(response)
+  },
+
   // Get job tracker stats
   async getStats() {
     const headers = await getAuthHeaders()
@@ -864,22 +875,6 @@ export const userProfileApi = {
       method: 'PUT',
       headers,
       body: JSON.stringify(data)
-// ============ TWO-FACTOR AUTH API ============
-export const twoFactorApi = {
-  async getStatus() {
-    const headers = await getAuthHeaders()
-    const response = await fetch(`${API_BASE}/auth/2fa/status`, {
-      method: 'GET',
-      headers
-    })
-    return handleResponse(response)
-  },
-
-  async setup() {
-    const headers = await getAuthHeaders()
-    const response = await fetch(`${API_BASE}/auth/2fa/setup`, {
-      method: 'POST',
-      headers
     })
     return handleResponse(response)
   },
@@ -911,6 +906,30 @@ export const twoFactorApi = {
   async getActivity(uid) {
     const headers = await getAuthHeaders()
     const response = await fetch(`${API_BASE}/user-profiles/${uid}/activity`, { method: 'GET', headers })
+    return handleResponse(response)
+  }
+}
+
+// ============ TWO-FACTOR AUTH API ============
+export const twoFactorApi = {
+  async getStatus() {
+    const headers = await getAuthHeaders()
+    const response = await fetch(`${API_BASE}/auth/2fa/status`, {
+      method: 'GET',
+      headers
+    })
+    return handleResponse(response)
+  },
+
+  async setup() {
+    const headers = await getAuthHeaders()
+    const response = await fetch(`${API_BASE}/auth/2fa/setup`, {
+      method: 'POST',
+      headers
+    })
+    return handleResponse(response)
+  },
+
   async enable(secret, token) {
     const headers = await getAuthHeaders()
     const response = await fetch(`${API_BASE}/auth/2fa/enable`, {
@@ -937,6 +956,16 @@ export const twoFactorApi = {
       method: 'POST',
       headers,
       body: JSON.stringify({ token })
+    })
+    return handleResponse(response)
+  },
+
+  async verifyLogin(email, token, useBackup) {
+    const headers = await getAuthHeaders()
+    const response = await fetch(`${API_BASE}/auth/2fa/verify-login`, {
+      method: 'POST',
+      headers,
+      body: JSON.stringify({ email, token, useBackup })
     })
     return handleResponse(response)
   },
