@@ -15,6 +15,32 @@ async function getAuthHeaders() {
   }
 }
 
+/**
+ * Optional BYOK for AI routes: set localStorage `cp_ai_provider` + `cp_ai_key`
+ * (and optionally `cp_ai_model`). Sent as X-AI-* headers; backend falls back to server Gemini if omitted.
+ */
+function optionalAiRequestHeaders() {
+  if (typeof window === 'undefined') return {}
+  try {
+    const provider = window.localStorage.getItem('cp_ai_provider')
+    const key = window.localStorage.getItem('cp_ai_key')
+    const model = window.localStorage.getItem('cp_ai_model')
+    if (!provider?.trim() || !key?.trim()) return {}
+    const headers = {
+      'X-AI-Provider': provider.trim(),
+      'X-AI-Key': key.trim(),
+    }
+    if (model?.trim()) headers['X-AI-Model'] = model.trim()
+    return headers
+  } catch {
+    return {}
+  }
+}
+
+function mergeOptionalAiHeaders(headers) {
+  return { ...headers, ...optionalAiRequestHeaders() }
+}
+
 // Helper to handle API responses
 async function handleResponse(response) {
   const data = await response.json()
@@ -172,7 +198,7 @@ export const resumeApi = {
 export const enhanceApi = {
   // Enhance resume with AI
   async enhance(resumeText, preferences) {
-    const headers = await getAuthHeaders()
+    const headers = mergeOptionalAiHeaders(await getAuthHeaders())
     const response = await fetch(`${API_BASE}/enhance`, {
       method: 'POST',
       headers,
@@ -183,7 +209,7 @@ export const enhanceApi = {
 
   // Generate summary only
   async generateSummary(resumeText, jobRole) {
-    const headers = await getAuthHeaders()
+    const headers = mergeOptionalAiHeaders(await getAuthHeaders())
     const response = await fetch(`${API_BASE}/enhance/summary`, {
       method: 'POST',
       headers,
@@ -194,7 +220,7 @@ export const enhanceApi = {
 
   // Get improvement suggestions
   async getSuggestions(resumeText, jobRole) {
-    const headers = await getAuthHeaders()
+    const headers = mergeOptionalAiHeaders(await getAuthHeaders())
     const response = await fetch(`${API_BASE}/enhance/suggestions`, {
       method: 'POST',
       headers,
@@ -205,7 +231,7 @@ export const enhanceApi = {
 
   // Analyze ATS score
   async analyzeATS(resumeText, jobRole) {
-    const headers = await getAuthHeaders()
+    const headers = mergeOptionalAiHeaders(await getAuthHeaders())
     const response = await fetch(`${API_BASE}/enhance/ats-analysis`, {
       method: 'POST',
       headers,
@@ -216,7 +242,7 @@ export const enhanceApi = {
 
   // Comprehensive resume analysis (Senior Expert Level)
   async comprehensiveAnalysis(resumeText, jobRole) {
-    const headers = await getAuthHeaders()
+    const headers = mergeOptionalAiHeaders(await getAuthHeaders())
     const response = await fetch(`${API_BASE}/enhance/comprehensive-analysis`, {
       method: 'POST',
       headers,
@@ -227,7 +253,7 @@ export const enhanceApi = {
 
   // Analyze individual bullet points
   async analyzeBullets(resumeText, jobRole) {
-    const headers = await getAuthHeaders()
+    const headers = mergeOptionalAiHeaders(await getAuthHeaders())
     const response = await fetch(`${API_BASE}/enhance/analyze-bullets`, {
       method: 'POST',
       headers,
@@ -238,7 +264,7 @@ export const enhanceApi = {
 
   // Generate before/after comparison
   async beforeAfter(resumeText, jobRole, analysisResults = {}) {
-    const headers = await getAuthHeaders()
+    const headers = mergeOptionalAiHeaders(await getAuthHeaders())
     const response = await fetch(`${API_BASE}/enhance/before-after`, {
       method: 'POST',
       headers,
@@ -259,7 +285,7 @@ export const enhanceApi = {
 
   // Generate job application emails
   async generateEmail(data) {
-    const headers = await getAuthHeaders()
+    const headers = mergeOptionalAiHeaders(await getAuthHeaders())
     const response = await fetch(`${API_BASE}/enhance/generate-email`, {
       method: 'POST',
       headers,
@@ -329,7 +355,7 @@ export const jobTrackerApi = {
 
   // Research a company
   async researchCompany(companyName, industry = '') {
-    const headers = await getAuthHeaders()
+    const headers = mergeOptionalAiHeaders(await getAuthHeaders())
     const response = await fetch(`${API_BASE}/job-tracker/research`, {
       method: 'POST',
       headers,
