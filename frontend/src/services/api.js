@@ -266,6 +266,17 @@ export const enhanceApi = {
       body: JSON.stringify(data)
     })
     return handleResponse(response)
+  },
+
+  // Optimize LinkedIn profile with AI
+  async optimizeLinkedIn(data) {
+    const headers = await getAuthHeaders()
+    const response = await fetch(`${API_BASE}/enhance/optimize-linkedin`, {
+      method: 'POST',
+      headers,
+      body: JSON.stringify(data)
+    })
+    return handleResponse(response)
   }
 }
 
@@ -864,6 +875,17 @@ export const userProfileApi = {
       method: 'PUT',
       headers,
       body: JSON.stringify(data)
+    })
+    return handleResponse(response)
+  },
+
+  async getPublicProfile(uid) {
+    const headers = await getAuthHeaders()
+    const response = await fetch(`${API_BASE}/user-profiles/${uid}`, { method: 'GET', headers })
+    return handleResponse(response)
+  }
+}
+
 // ============ TWO-FACTOR AUTH API ============
 export const twoFactorApi = {
   async getStatus() {
@@ -911,6 +933,12 @@ export const twoFactorApi = {
   async getActivity(uid) {
     const headers = await getAuthHeaders()
     const response = await fetch(`${API_BASE}/user-profiles/${uid}/activity`, { method: 'GET', headers })
+    return handleResponse(response)
+  }
+}
+
+// ============ TWO-FACTOR AUTH API (continued) ============
+export const twoFactorApiExtended = {
   async enable(secret, token) {
     const headers = await getAuthHeaders()
     const response = await fetch(`${API_BASE}/auth/2fa/enable`, {

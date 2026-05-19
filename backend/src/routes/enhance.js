@@ -1,6 +1,7 @@
 import express from 'express';
 import { enhanceResume, generateSummary, suggestImprovements, analyzeATSScore, analyzeResumeComprehensive, analyzeBulletPoints, generateBeforeAfter, getVerbLists } from '../config/langchain.js';
 import { generateEmails } from '../services/emailGeneratorService.js';
+import { optimizeLinkedInProfile } from '../services/linkedinOptimizerService.js';
 import { verifyToken } from '../middleware/auth.js';
 import { asyncHandler, ApiError } from '../middleware/errorHandler.js';
 import { aiRateLimiter } from '../middleware/rateLimiter.js';
@@ -223,6 +224,29 @@ router.post('/generate-email', verifyToken, asyncHandler(async (req, res) => {
   } catch (error) {
     console.error('Email generation error:', error);
     throw new ApiError(500, 'Failed to generate emails. Please try again.');
+  }
+}));
+
+// Optimize LinkedIn Profile
+router.post('/optimize-linkedin', verifyToken, aiRateLimiter, asyncHandler(async (req, res) => {
+  const { profileText, targetRole } = req.body;
+  const normalizedProfile = typeof profileText === 'string' ? profileText.trim() : '';
+  const normalizedRole = typeof targetRole === 'string' ? targetRole.trim() : '';
+
+  if (!normalizedProfile) {
+    throw new ApiError(400, 'LinkedIn profile text is required');
+  }
+
+  if (normalizedProfile.length > 5000) {
+    throw new ApiError(400, 'Profile text exceeds the allowed limit (max 5000 characters)');
+  }
+
+  try {
+    const result = await optimizeLinkedInProfile(normalizedProfile, normalizedRole);
+    res.json(result);
+  } catch (error) {
+    console.error('LinkedIn optimization error:', error);
+    throw new ApiError(500, 'Failed to optimize LinkedIn profile. Please try again.');
   }
 }));
 

@@ -19,6 +19,7 @@ import { Community, NotFound } from './pages'
 import InterviewPrep from './pages/InterviewPrep'
 import UserProfile from './pages/UserProfile'
 import EmailGenerator from './pages/EmailGenerator'
+import LinkedInOptimizer from './pages/LinkedInOptimizer'
 import FellowshipLayout from './pages/fellowship/FellowshipLayout'
 import Onboarding from './pages/fellowship/Onboarding'
 import Challenges from './pages/fellowship/Challenges'
@@ -137,6 +138,7 @@ function App() {
               <Route path="/community" element={<ProtectedRoute><Community /></ProtectedRoute>} />
               <Route path="/interview-prep" element={<ProtectedRoute><InterviewPrep /></ProtectedRoute>} />
               <Route path="/email-generator" element={<ProtectedRoute><EmailGenerator /></ProtectedRoute>} />
+              <Route path="/linkedin-optimizer" element={<ProtectedRoute><LinkedInOptimizer /></ProtectedRoute>} />
               <Route path="/settings" element={<ProtectedRoute><Settings /></ProtectedRoute>} />
 
               <Route path="/fellowship" element={<ProtectedRoute><FellowshipLayout /></ProtectedRoute>}>
