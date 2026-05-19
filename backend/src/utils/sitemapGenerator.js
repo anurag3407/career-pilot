@@ -1,6 +1,5 @@
 /**
  * Utility to generate XML sitemaps for portfolio pages.
- * Filters out draft/unpublished project and blog entries when supplied.
  */
 
 const escapeXml = (value = '') => {
@@ -16,7 +15,7 @@ const formatDate = (date) => {
   const parsedDate = new Date(date);
 
   if (Number.isNaN(parsedDate.getTime())) {
-    return new Date().toISOString().split('T')[0];
+    return null;
   }
 
   return parsedDate.toISOString().split('T')[0];
@@ -32,35 +31,17 @@ const normalizePath = (value = '') => {
   return `/${trimmed.replace(/^\/+|\/+$/g, '')}`;
 };
 
-const isPublishedContent = (item) => {
-  if (!item || typeof item !== 'object') {
-    return false;
-  }
-
-  if (item.isPublished === false || item.isDraft === true) {
-    return false;
-  }
-
-  if (typeof item.status === 'string') {
-    const status = item.status.trim().toLowerCase();
-
-    if (['draft', 'unpublished', 'private', 'hidden'].includes(status)) {
-      return false;
-    }
-  }
-
-  return true;
-};
-
 const buildUrlEntry = ({
   loc,
   lastmod,
   changefreq = 'monthly',
   priority = '0.5',
 }) => {
+  const formattedLastmod = formatDate(lastmod);
+
   return `  <url>
     <loc>${escapeXml(loc)}</loc>
-    <lastmod>${formatDate(lastmod)}</lastmod>
+    ${formattedLastmod ? `<lastmod>${formattedLastmod}</lastmod>` : ''}
     <changefreq>${escapeXml(changefreq)}</changefreq>
     <priority>${escapeXml(priority)}</priority>
   </url>`;
@@ -88,7 +69,7 @@ const generateSitemapXml = ({
     }),
   ];
 
-  projects.filter(isPublishedContent).forEach((project) => {
+  projects.forEach((project) => {
     if (!project?.slug) {
       return;
     }
@@ -103,7 +84,7 @@ const generateSitemapXml = ({
     );
   });
 
-  blogs.filter(isPublishedContent).forEach((blog) => {
+  blogs.forEach((blog) => {
     if (!blog?.slug) {
       return;
     }
