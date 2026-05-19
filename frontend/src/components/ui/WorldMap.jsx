@@ -1,27 +1,39 @@
-import { useRef, useMemo } from "react";
+import { useRef, useMemo, useState, useEffect } from "react";
 import { motion } from "framer-motion";
 import DottedMap from "dotted-map";
+
+// Cache the computed map globally so it runs only once per app session
+let cachedSvgMap = null;
 
 export default function WorldMap({
   dots = [],
   lineColor = "#6366f1",
 }) {
   const svgRef = useRef(null);
+  const [isMounted, setIsMounted] = useState(false);
+
+  useEffect(() => {
+    setIsMounted(true);
+  }, []);
 
   const svgMap = useMemo(() => {
+    if (!isMounted) return null;
+    if (cachedSvgMap) return cachedSvgMap;
+
     try {
       const map = new DottedMap({ height: 100, grid: "diagonal" });
-      return map.getSVG({
+      cachedSvgMap = map.getSVG({
         radius: 0.22,
         color: "currentColor",
         shape: "circle",
         backgroundColor: "transparent",
       });
+      return cachedSvgMap;
     } catch (error) {
       console.error("WorldMap error:", error);
       return null;
     }
-  }, []);
+  }, [isMounted]);
 
   const projectPoint = (lat, lng) => {
     const x = (lng + 180) * (800 / 360);

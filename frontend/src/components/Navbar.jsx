@@ -43,6 +43,17 @@ export default function Navbar() {
     }
   }
 
+  const handleHomeClick = (e) => {
+    if (location.pathname === '/') {
+      e.preventDefault()
+      window.scrollTo({ top: 0, behavior: 'smooth' })
+    } else {
+      setTimeout(() => {
+        window.scrollTo(0, 0)
+      }, 0)
+    }
+  }
+
   const isActive = (path) => location.pathname === path
 
   const navLinks = [
@@ -64,7 +75,7 @@ export default function Navbar() {
       <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
         <div className="flex justify-between h-16 items-center">
           {/* Logo */}
-          <Link to="/" className="flex items-center gap-2 group">
+          <Link to="/" onClick={handleHomeClick} className="flex items-center gap-2 group">
             <div className="w-10 h-10 flex items-center justify-center p-1.5 rounded-xl bg-primary/10 group-hover:scale-110 transition-transform">
               <img src="/speed.png" alt="" className="w-full h-full object-contain" />
             </div>
