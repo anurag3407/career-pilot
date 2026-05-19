@@ -3,6 +3,25 @@ import dotenv from 'dotenv';
 
 dotenv.config();
 
+const geminiApiKey = process.env.GEMINI_API_KEY;
+if (!geminiApiKey) {
+  console.warn('⚠️  GEMINI_API_KEY is not set — AI features will be unavailable. Non-AI routes are unaffected.');
+}
+
+let _model = null;
+
+const getModel = () => {
+  if (_model) return _model;
+  if (!geminiApiKey) {
+    const err = new Error('AI features are unavailable — GEMINI_API_KEY is not configured.');
+    err.statusCode = 503;
+    throw err;
+  }
+  const genAI = new GoogleGenerativeAI(geminiApiKey);
+  _model = genAI.getGenerativeModel({ model: 'gemini-2.5-flash' });
+  return _model;
+};
+
 // ---------------------------------------------------------------------------
 // Helper: resolve the AI provider to use
 // If an explicit provider is passed (from the middleware) use it,
@@ -124,6 +143,9 @@ export const enhanceResume = async (resumeText, preferences, aiProvider) => {
 
     const prompt = `${systemPrompt}\n\nPlease enhance the following resume:\n\n${resumeText}`;
 
+    const result = await getModel().generateContent(prompt);
+    const response = await result.response;
+    const text = response.text();
     const result = await provider.generateContent(prompt);
 
     return {
@@ -133,6 +155,7 @@ export const enhanceResume = async (resumeText, preferences, aiProvider) => {
       tokensUsed: tokensUsedFromResult(result),
     };
   } catch (error) {
+    if (error.statusCode === 503) throw error;
     console.error('Error enhancing resume:', error);
     throw new Error(`Failed to enhance resume: ${error.message}`);
   }
@@ -147,6 +170,9 @@ export const generateSummary = async (resumeText, jobRole, aiProvider) => {
 Resume:
 ${resumeText}`;
 
+    const result = await getModel().generateContent(prompt);
+    const response = await result.response;
+    const text = response.text();
     const result = await provider.generateContent(prompt);
 
     return {
@@ -155,6 +181,7 @@ ${resumeText}`;
       provider: provider.providerName
     };
   } catch (error) {
+    if (error.statusCode === 503) throw error;
     console.error('Error generating summary:', error);
     throw new Error(`Failed to generate summary: ${error.message}`);
   }
@@ -169,6 +196,9 @@ export const suggestImprovements = async (resumeText, jobRole, aiProvider) => {
 Resume:
 ${resumeText}`;
 
+    const result = await getModel().generateContent(prompt);
+    const response = await result.response;
+    const text = response.text();
     const result = await provider.generateContent(prompt);
 
     return {
@@ -177,6 +207,7 @@ ${resumeText}`;
       provider: provider.providerName
     };
   } catch (error) {
+    if (error.statusCode === 503) throw error;
     console.error('Error suggesting improvements:', error);
     throw new Error(`Failed to suggest improvements: ${error.message}`);
   }
@@ -229,6 +260,9 @@ Rules:
 Resume:
 ${resumeText}`;
 
+    const result = await getModel().generateContent(prompt);
+    const response = await result.response;
+    const text = response.text();
     const result = await provider.generateContent(prompt);
 
     // Parse JSON from response
@@ -267,6 +301,7 @@ ${resumeText}`;
       provider: provider.providerName
     };
   } catch (error) {
+    if (error.statusCode === 503) throw error;
     console.error('Error analyzing ATS score:', error);
     throw new Error(`Failed to analyze ATS score: ${error.message}`);
   }
@@ -375,6 +410,9 @@ ANALYSIS RULES:
 Resume to analyze:
 ${resumeText}`;
 
+    const result = await getModel().generateContent(prompt);
+    const response = await result.response;
+    const text = response.text();
     const result = await provider.generateContent(prompt);
 
     let analysisData;
@@ -392,6 +430,7 @@ ${resumeText}`;
       provider: provider.providerName
     };
   } catch (error) {
+    if (error.statusCode === 503) throw error;
     console.error('Error in comprehensive analysis:', error);
     throw new Error(`Failed to analyze resume: ${error.message}`);
   }
@@ -444,6 +483,9 @@ Rules:
 Resume:
 ${resumeText}`;
 
+    const result = await getModel().generateContent(prompt);
+    const response = await result.response;
+    const text = response.text();
     const result = await provider.generateContent(prompt);
 
     let bulletData;
@@ -461,6 +503,7 @@ ${resumeText}`;
       provider: provider.providerName
     };
   } catch (error) {
+    if (error.statusCode === 503) throw error;
     console.error('Error analyzing bullets:', error);
     throw new Error(`Failed to analyze bullet points: ${error.message}`);
   }
@@ -496,6 +539,9 @@ Focus on the 3-5 most impactful changes.
 Original Resume:
 ${resumeText}`;
 
+    const result = await getModel().generateContent(prompt);
+    const response = await result.response;
+    const text = response.text();
     const result = await provider.generateContent(prompt);
 
     let comparisonData;
@@ -513,6 +559,7 @@ ${resumeText}`;
       provider: provider.providerName
     };
   } catch (error) {
+    if (error.statusCode === 503) throw error;
     console.error('Error generating comparison:', error);
     throw new Error(`Failed to generate comparison: ${error.message}`);
   }
