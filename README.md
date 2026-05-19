@@ -2,12 +2,19 @@
 
 <div align="center">
 
-![License](https://img.shields.io/badge/license-MIT-blue.svg)
-![Node.js](https://img.shields.io/badge/Node.js-18%2B-green.svg)
-![React](https://img.shields.io/badge/React-19-blue.svg)
-![Firebase](https://img.shields.io/badge/Firebase-Firestore-orange.svg)
-![AI](https://img.shields.io/badge/AI-Gemini%202.5-purple.svg)
-![Razorpay](https://img.shields.io/badge/Payments-Razorpay-blue.svg)
+<p align="center">
+  <img src="https://img.shields.io/badge/License-MIT-blue?logo=opensourceinitiative&logoColor=white">
+  &nbsp;
+  <img src="https://img.shields.io/badge/Node.js-18+-green?logo=node.js&logoColor=white">
+  &nbsp;
+  <img src="https://img.shields.io/badge/React-19-61DAFB?logo=react&logoColor=black">
+  <br/>
+  <img src="https://img.shields.io/badge/Firebase-Firestore-FFCA28?logo=firebase&logoColor=black">
+  &nbsp;
+  <img src="https://img.shields.io/badge/AI-Gemini_2.5-8E75B2?logo=google&logoColor=white">
+  &nbsp;
+  <img src="https://img.shields.io/badge/Payments-Razorpay-02042B?logo=razorpay&logoColor=white">
+</p>
 
 **An intelligent, AI-powered career platform that revolutionizes the job hunting experience through automated resume enhancement, intelligent job matching, AI mock interviews, corporate fellowships, and community-driven networking.**
 
