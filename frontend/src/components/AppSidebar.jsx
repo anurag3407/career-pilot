@@ -12,6 +12,8 @@ import {
     LogOut,
     Settings,
     Zap,
+    User,
+    ShieldCheck,
     Sun,
     Moon
 } from "lucide-react";
@@ -61,6 +63,18 @@ const navLinks = [
         label: "Resume",
         href: "/upload",
         icon: <FileText className="w-5 h-5 flex-shrink-0" />,
+    },
+    {
+        label: "Profile",
+        href: "/profile",
+        icon: <User className="w-5 h-5 flex-shrink-0" />,
+        label: "Security",
+        href: "/security",
+        icon: <ShieldCheck className="w-5 h-5 flex-shrink-0" />,
+     {
+        label: "Settings",
+        href: "/settings",
+        icon: <Settings className="w-5 h-5 flex-shrink-0" />,
     },
 ];
 

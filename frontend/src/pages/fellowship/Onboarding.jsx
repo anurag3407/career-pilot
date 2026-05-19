@@ -14,38 +14,25 @@ import {
     ShieldCheck
 } from 'lucide-react'
 
+const MotionDiv = motion.div
+const MotionButton = motion.button
+
 export default function Onboarding() {
     const { user } = useAuth()
     const navigate = useNavigate()
     const [step, setStep] = useState('role')
-    const [role, setRole] = useState(null)
     const [companyName, setCompanyName] = useState('')
     const [collegeName, setCollegeName] = useState('')
+    const [bio, setBio] = useState('')
     const [email, setEmail] = useState(user?.email || '')
     const [verificationCode, setVerificationCode] = useState('')
     const [loading, setLoading] = useState(false)
 
     const handleRoleSelect = (selectedRole) => {
-        setRole(selectedRole)
         if (selectedRole === 'corporate') {
             setStep('company')
         } else {
             setStep('verify')
-        }
-    }
-
-    const handleStudentSubmit = async () => {
-        setLoading(true)
-        try {
-            await fellowshipApi.createProfile({
-                role: 'student',
-                collegeName: collegeName || null
-            })
-            setStep('verify')
-        } catch (error) {
-            toast.error(error.message || 'Failed to save role')
-        } finally {
-            setLoading(false)
         }
     }
 
@@ -57,7 +44,11 @@ export default function Onboarding() {
 
         setLoading(true)
         try {
-            await fellowshipApi.createProfile({ role: 'corporate', companyName })
+            await fellowshipApi.createProfile({
+                role: 'corporate',
+                companyName: companyName.trim(),
+                bio: bio.trim() || null
+            })
             toast.success('Profile created!')
             navigate('/fellowship/challenges')
         } catch (error) {
@@ -77,7 +68,8 @@ export default function Onboarding() {
         try {
             await fellowshipApi.createProfile({
                 role: 'student',
-                collegeName: collegeName.trim() || null
+                collegeName: collegeName.trim() || null,
+                bio: bio.trim() || null
             })
             await fellowshipApi.sendVerificationEmail(email)
             toast.success('Verification code sent!')
@@ -113,7 +105,8 @@ export default function Onboarding() {
         try {
             await fellowshipApi.createProfile({
                 role: 'student',
-                collegeName: collegeName.trim() || null
+                collegeName: collegeName.trim() || null,
+                bio: bio.trim() || null
             })
             navigate('/fellowship/challenges')
         } catch (error) {
@@ -125,7 +118,7 @@ export default function Onboarding() {
 
     return (
         <div className="min-h-[70vh] flex items-center justify-center py-12">
-            <motion.div
+            <MotionDiv
                 initial={{ opacity: 0, y: 20 }}
                 animate={{ opacity: 1, y: 0 }}
                 className="w-full max-w-lg"
@@ -138,7 +131,7 @@ export default function Onboarding() {
                         </div>
 
                         <div className="grid gap-4">
-                            <motion.button
+                            <MotionButton
                                 whileHover={{ scale: 1.02 }}
                                 whileTap={{ scale: 0.98 }}
                                 onClick={() => handleRoleSelect('student')}
@@ -153,9 +146,9 @@ export default function Onboarding() {
                                     <p className="text-sm text-muted-foreground">Browse challenges, submit proposals, earn money</p>
                                 </div>
                                 <ArrowRight className="w-5 h-5 text-muted-foreground" />
-                            </motion.button>
+                            </MotionButton>
 
-                            <motion.button
+                            <MotionButton
                                 whileHover={{ scale: 1.02 }}
                                 whileTap={{ scale: 0.98 }}
                                 onClick={() => handleRoleSelect('corporate')}
@@ -170,7 +163,7 @@ export default function Onboarding() {
                                     <p className="text-sm text-muted-foreground">Post challenges, find talent, get work done</p>
                                 </div>
                                 <ArrowRight className="w-5 h-5 text-muted-foreground" />
-                            </motion.button>
+                            </MotionButton>
                         </div>
                     </div>
                 )}
@@ -193,6 +186,20 @@ export default function Onboarding() {
                                 placeholder="Company Name"
                                 className="w-full px-4 py-3 bg-background border border-border rounded-xl text-foreground placeholder:text-muted-foreground focus:outline-none focus:border-blue-500"
                             />
+
+                            <div>
+                                <label htmlFor="company-bio" className="block text-sm text-muted-foreground mb-2">Profile summary (optional)</label>
+                                <textarea
+                                    id="company-bio"
+                                    value={bio}
+                                    onChange={(e) => setBio(e.target.value)}
+                                    maxLength={500}
+                                    rows={4}
+                                    placeholder="Briefly describe your organization and the kind of challenges you offer"
+                                    className="w-full px-4 py-3 bg-background border border-border rounded-xl text-foreground placeholder:text-muted-foreground focus:outline-none focus:border-blue-500 resize-none"
+                                />
+                                <p className="mt-1 text-right text-xs text-muted-foreground">{bio.length}/500 characters</p>
+                            </div>
 
                             <button
                                 onClick={handleCompanySubmit}
@@ -225,6 +232,19 @@ export default function Onboarding() {
                                     placeholder="College/University name"
                                     className="w-full px-4 py-3 bg-background border border-border rounded-xl text-foreground placeholder:text-muted-foreground focus:outline-none focus:border-emerald-500"
                                 />
+                            </div>
+                            <div>
+                                <label htmlFor="student-bio" className="block text-sm text-muted-foreground mb-2">Profile summary (optional)</label>
+                                <textarea
+                                    id="student-bio"
+                                    value={bio}
+                                    onChange={(e) => setBio(e.target.value)}
+                                    maxLength={500}
+                                    rows={4}
+                                    placeholder="Briefly describe your background, skills, and what you want to work on"
+                                    className="w-full px-4 py-3 bg-background border border-border rounded-xl text-foreground placeholder:text-muted-foreground focus:outline-none focus:border-emerald-500 resize-none"
+                                />
+                                <p className="mt-1 text-right text-xs text-muted-foreground">{bio.length}/500 characters</p>
                             </div>
                             <div className="relative">
                                 <Mail className="absolute left-4 top-1/2 -translate-y-1/2 w-5 h-5 text-muted-foreground" />
@@ -304,7 +324,7 @@ export default function Onboarding() {
                         <p className="text-muted-foreground">Redirecting to challenges...</p>
                     </div>
                 )}
-            </motion.div>
+            </MotionDiv>
         </div>
     )
 }

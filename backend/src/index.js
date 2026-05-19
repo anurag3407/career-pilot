@@ -4,6 +4,7 @@ import cors from 'cors';
 import helmet from 'helmet';
 import rateLimit from 'express-rate-limit';
 import dotenv from 'dotenv';
+import searchRoutes from './routes/search.js';
 
 dotenv.config();
 
@@ -18,12 +19,15 @@ import communityRoutes from './routes/community.js';
 import fellowshipRoutes from './routes/fellowships.js';
 import interviewRoutes from './routes/interview.js';
 import paymentRoutes from './routes/payments.js';
+import userProfileRoutes from './routes/userProfile.js';
+import twoFactorRoutes from './routes/twoFactor.js';
 
 import { errorHandler } from './middleware/errorHandler.js';
 
 import { initializeSocket } from './config/socket.js';
 
 import { initializeDefaultChannels } from './controllers/communityFirebaseController.js';
+import { initializePostScheduler } from './services/postScheduler.js';
 
 import mongoose from 'mongoose';
 import { initJobFetcher } from './services/jobFetcher.js';
@@ -105,6 +109,9 @@ app.use('/api/community', communityRoutes);
 app.use('/api/fellowship', fellowshipRoutes);
 app.use('/api/interview', interviewRoutes);
 app.use('/api/payments', paymentRoutes);
+app.use('/api/user-profiles', userProfileRoutes);
+app.use('/api/auth/2fa', twoFactorRoutes);
+app.use('/api/search', searchRoutes);
 
 app.use((req, res) => {
   res.status(404).json({ error: 'Route not found' });
@@ -133,6 +140,12 @@ const startServer = async () => {
       console.log('💬 Community channels initialized');
     } catch (channelError) {
       console.warn('⚠️ Could not initialize default channels:', channelError.message);
+    }
+
+    try {
+      await initializePostScheduler();
+    } catch (schedulerError) {
+      console.warn('⚠️ Post scheduler initialization skipped:', schedulerError.message);
     }
 
     const allowDevDbMutations = process.env.ALLOW_DEV_DB_MUTATIONS === 'true';
