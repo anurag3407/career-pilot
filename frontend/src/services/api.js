@@ -879,9 +879,39 @@ export const userProfileApi = {
     return handleResponse(response)
   },
 
+  async getMyStats() {
+    const headers = await getAuthHeaders()
+    const response = await fetch(`${API_BASE}/user-profiles/me/stats`, { method: 'GET', headers })
+    return handleResponse(response)
+  },
+
+  async getMyActivity() {
+    const headers = await getAuthHeaders()
+    const response = await fetch(`${API_BASE}/user-profiles/me/activity`, { method: 'GET', headers })
+    return handleResponse(response)
+  },
+
+  async getProfile(uid) {
+    const headers = await getAuthHeaders()
+    const response = await fetch(`${API_BASE}/user-profiles/${uid}`, { method: 'GET', headers })
+    return handleResponse(response)
+  },
+
   async getPublicProfile(uid) {
     const headers = await getAuthHeaders()
     const response = await fetch(`${API_BASE}/user-profiles/${uid}`, { method: 'GET', headers })
+    return handleResponse(response)
+  },
+
+  async getStats(uid) {
+    const headers = await getAuthHeaders()
+    const response = await fetch(`${API_BASE}/user-profiles/${uid}/stats`, { method: 'GET', headers })
+    return handleResponse(response)
+  },
+
+  async getActivity(uid) {
+    const headers = await getAuthHeaders()
+    const response = await fetch(`${API_BASE}/user-profiles/${uid}/activity`, { method: 'GET', headers })
     return handleResponse(response)
   }
 }
@@ -906,39 +936,6 @@ export const twoFactorApi = {
     return handleResponse(response)
   },
 
-  async getMyStats() {
-    const headers = await getAuthHeaders()
-    const response = await fetch(`${API_BASE}/user-profiles/me/stats`, { method: 'GET', headers })
-    return handleResponse(response)
-  },
-
-  async getMyActivity() {
-    const headers = await getAuthHeaders()
-    const response = await fetch(`${API_BASE}/user-profiles/me/activity`, { method: 'GET', headers })
-    return handleResponse(response)
-  },
-
-  async getProfile(uid) {
-    const headers = await getAuthHeaders()
-    const response = await fetch(`${API_BASE}/user-profiles/${uid}`, { method: 'GET', headers })
-    return handleResponse(response)
-  },
-
-  async getStats(uid) {
-    const headers = await getAuthHeaders()
-    const response = await fetch(`${API_BASE}/user-profiles/${uid}/stats`, { method: 'GET', headers })
-    return handleResponse(response)
-  },
-
-  async getActivity(uid) {
-    const headers = await getAuthHeaders()
-    const response = await fetch(`${API_BASE}/user-profiles/${uid}/activity`, { method: 'GET', headers })
-    return handleResponse(response)
-  }
-}
-
-// ============ TWO-FACTOR AUTH API (continued) ============
-export const twoFactorApiExtended = {
   async enable(secret, token) {
     const headers = await getAuthHeaders()
     const response = await fetch(`${API_BASE}/auth/2fa/enable`, {
@@ -965,6 +962,16 @@ export const twoFactorApiExtended = {
       method: 'POST',
       headers,
       body: JSON.stringify({ token })
+    })
+    return handleResponse(response)
+  },
+
+  async verifyLogin(email, token, useBackup) {
+    const headers = await getAuthHeaders()
+    const response = await fetch(`${API_BASE}/auth/2fa/verify-login`, {
+      method: 'POST',
+      headers,
+      body: JSON.stringify({ email, token, useBackup })
     })
     return handleResponse(response)
   },

@@ -241,13 +241,8 @@ router.post('/optimize-linkedin', verifyToken, aiRateLimiter, asyncHandler(async
     throw new ApiError(400, 'Profile text exceeds the allowed limit (max 5000 characters)');
   }
 
-  try {
-    const result = await optimizeLinkedInProfile(normalizedProfile, normalizedRole);
-    res.json(result);
-  } catch (error) {
-    console.error('LinkedIn optimization error:', error);
-    throw new ApiError(500, 'Failed to optimize LinkedIn profile. Please try again.');
-  }
+  const result = await optimizeLinkedInProfile(normalizedProfile, normalizedRole);
+  res.json(result);
 }));
 
 export default router;

@@ -94,11 +94,14 @@ export const optimizeLinkedInProfile = async (profileText, targetRole) => {
         }
 
         // Clamp scores to 0-100
-        parsed.overallScore = Math.max(0, Math.min(100, Math.round(parsed.overallScore)));
+        parsed.overallScore = Math.max(0, Math.min(100, Math.round(Number(parsed.overallScore) || 0)));
         if (parsed.scoreBreakdown) {
             for (const key of Object.keys(parsed.scoreBreakdown)) {
-                parsed.scoreBreakdown[key] = Math.max(0, Math.min(100, Math.round(parsed.scoreBreakdown[key])));
+                const val = Number(parsed.scoreBreakdown[key]);
+                parsed.scoreBreakdown[key] = isNaN(val) ? 0 : Math.max(0, Math.min(100, Math.round(val)));
             }
+        } else {
+            parsed.scoreBreakdown = { headline: 0, about: 0, skills: 0, overall: parsed.overallScore };
         }
 
         return parsed;

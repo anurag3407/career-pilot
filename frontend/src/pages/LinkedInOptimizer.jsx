@@ -6,6 +6,7 @@ import {
   AlertCircle, CheckCircle2, Star
 } from 'lucide-react'
 import { enhanceApi } from '../services/api'
+import { toast } from 'react-hot-toast'
 
 const IMPACT_CONFIG = {
   High:   { color: 'text-red-400',    bg: 'bg-red-500/10',    border: 'border-red-500/30'    },
@@ -85,30 +86,91 @@ export default function LinkedInOptimizer() {
 
   const handleOptimize = async (e) => {
     e.preventDefault()
+    
+    // Safety check: minimum length validation
+    const trimmedProfile = profileText.trim()
+    const trimmedRole = targetRole.trim()
+    
+    if (trimmedProfile.length < 50) {
+      setError('Please paste a substantial portion of your LinkedIn profile (at least 50 characters) for optimization.')
+      return
+    }
+    
+    if (!trimmedRole) {
+      setError('Please specify a target role to tailor the optimization.')
+      return
+    }
+
     setLoading(true)
     setError(null)
     setResults(null)
     try {
-      const response = await enhanceApi.optimizeLinkedIn({ profileText, targetRole })
+      const response = await enhanceApi.optimizeLinkedIn({ 
+        profileText: trimmedProfile, 
+        targetRole: trimmedRole 
+      })
       setResults(response)
     } catch (err) {
       console.error('LinkedIn optimization error:', err)
-      setError('Failed to optimize your profile. Please try again.')
+      setError(err.message || 'Failed to optimize your profile. Please try again.')
     } finally {
       setLoading(false)
     }
   }
 
-  const copyToClipboard = (text, key) => {
-    navigator.clipboard.writeText(text)
-    setCopiedIndex(key)
-    setTimeout(() => setCopiedIndex(null), 2000)
+  const copyToClipboard = async (text, key) => {
+    try {
+      if (navigator.clipboard && navigator.clipboard.writeText) {
+        await navigator.clipboard.writeText(text)
+        setCopiedIndex(key)
+        setTimeout(() => setCopiedIndex(null), 2000)
+      } else {
+        throw new Error('Clipboard API not supported')
+      }
+    } catch (err) {
+      console.warn('Clipboard write failed:', err)
+      // Fallback selection copy
+      try {
+        const textarea = document.createElement('textarea')
+        textarea.value = text
+        document.body.appendChild(textarea)
+        textarea.select()
+        document.execCommand('copy')
+        document.body.removeChild(textarea)
+        setCopiedIndex(key)
+        setTimeout(() => setCopiedIndex(null), 2000)
+      } catch (fallbackErr) {
+        toast.error('Could not copy to clipboard. Please copy manually.')
+      }
+    }
   }
 
-  const copyAbout = () => {
-    navigator.clipboard.writeText(results.aboutRewrite)
-    setAboutCopied(true)
-    setTimeout(() => setAboutCopied(false), 2000)
+  const copyAbout = async () => {
+    if (!results?.aboutRewrite) return
+    try {
+      if (navigator.clipboard && navigator.clipboard.writeText) {
+        await navigator.clipboard.writeText(results.aboutRewrite)
+        setAboutCopied(true)
+        setTimeout(() => setAboutCopied(false), 2000)
+      } else {
+        throw new Error('Clipboard API not supported')
+      }
+    } catch (err) {
+      console.warn('Clipboard write failed:', err)
+      // Fallback selection copy
+      try {
+        const textarea = document.createElement('textarea')
+        textarea.value = results.aboutRewrite
+        document.body.appendChild(textarea)
+        textarea.select()
+        document.execCommand('copy')
+        document.body.removeChild(textarea)
+        setAboutCopied(true)
+        setTimeout(() => setAboutCopied(false), 2000)
+      } catch (fallbackErr) {
+        toast.error('Could not copy to clipboard. Please copy manually.')
+      }
+    }
   }
 
   return (
