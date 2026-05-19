@@ -146,13 +146,13 @@ export const enhanceResume = async (resumeText, preferences, aiProvider) => {
     const result = await getModel().generateContent(prompt);
     const response = await result.response;
     const text = response.text();
-    const result = await provider.generateContent(prompt);
+    const providerResult = await provider.generateContent(prompt);
 
     return {
       success: true,
-      enhancedResume: result.text,
+      enhancedResume: providerResult.text,
       provider: provider.providerName,
-      tokensUsed: tokensUsedFromResult(result),
+      tokensUsed: tokensUsedFromResult(providerResult),
     };
   } catch (error) {
     if (error.statusCode === 503) throw error;
@@ -173,11 +173,11 @@ ${resumeText}`;
     const result = await getModel().generateContent(prompt);
     const response = await result.response;
     const text = response.text();
-    const result = await provider.generateContent(prompt);
+    const providerResult = await provider.generateContent(prompt);
 
     return {
       success: true,
-      summary: result.text,
+      summary: providerResult.text,
       provider: provider.providerName
     };
   } catch (error) {
@@ -199,11 +199,11 @@ ${resumeText}`;
     const result = await getModel().generateContent(prompt);
     const response = await result.response;
     const text = response.text();
-    const result = await provider.generateContent(prompt);
+    const providerResult = await provider.generateContent(prompt);
 
     return {
       success: true,
-      suggestions: result.text,
+      suggestions: providerResult.text,
       provider: provider.providerName
     };
   } catch (error) {
@@ -263,13 +263,13 @@ ${resumeText}`;
     const result = await getModel().generateContent(prompt);
     const response = await result.response;
     const text = response.text();
-    const result = await provider.generateContent(prompt);
+    const providerResult = await provider.generateContent(prompt);
 
     // Parse JSON from response
     let analysisData;
     try {
       // Remove markdown code blocks if present
-      const cleanedText = result.text.replace(/```json\n?/g, '').replace(/```\n?/g, '').trim();
+      const cleanedText = providerResult.text.replace(/```json\n?/g, '').replace(/```\n?/g, '').trim();
       analysisData = JSON.parse(cleanedText);
     } catch (parseError) {
       console.error('Failed to parse ATS analysis JSON:', parseError);
@@ -413,11 +413,11 @@ ${resumeText}`;
     const result = await getModel().generateContent(prompt);
     const response = await result.response;
     const text = response.text();
-    const result = await provider.generateContent(prompt);
+    const providerResult = await provider.generateContent(prompt);
 
     let analysisData;
     try {
-      const cleanedText = result.text.replace(/```json\n?/g, '').replace(/```\n?/g, '').trim();
+      const cleanedText = providerResult.text.replace(/```json\n?/g, '').replace(/```\n?/g, '').trim();
       analysisData = JSON.parse(cleanedText);
     } catch (parseError) {
       console.error('Failed to parse comprehensive analysis JSON:', parseError);
@@ -486,11 +486,11 @@ ${resumeText}`;
     const result = await getModel().generateContent(prompt);
     const response = await result.response;
     const text = response.text();
-    const result = await provider.generateContent(prompt);
+    const providerResult = await provider.generateContent(prompt);
 
     let bulletData;
     try {
-      const cleanedText = result.text.replace(/```json\n?/g, '').replace(/```\n?/g, '').trim();
+      const cleanedText = providerResult.text.replace(/```json\n?/g, '').replace(/```\n?/g, '').trim();
       bulletData = JSON.parse(cleanedText);
     } catch (parseError) {
       console.error('Failed to parse bullet analysis JSON:', parseError);
@@ -542,11 +542,11 @@ ${resumeText}`;
     const result = await getModel().generateContent(prompt);
     const response = await result.response;
     const text = response.text();
-    const result = await provider.generateContent(prompt);
+    const providerResult = await provider.generateContent(prompt);
 
     let comparisonData;
     try {
-      const cleanedText = result.text.replace(/```json\n?/g, '').replace(/```\n?/g, '').trim();
+      const cleanedText = providerResult.text.replace(/```json\n?/g, '').replace(/```\n?/g, '').trim();
       comparisonData = JSON.parse(cleanedText);
     } catch (parseError) {
       console.error('Failed to parse comparison JSON:', parseError);
