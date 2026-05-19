@@ -60,7 +60,7 @@ export default function Navbar() {
           {/* Logo */}
           <Link to="/" className="flex items-center gap-2 group">
             <div className="w-12 h-8 flex items-center justify-center">
-              <img src="/speed.png" alt="" className="w-full h-full object-cover" />
+              <img src="/speed.png" alt="" className="w-full h-full object-contain" />
             </div>
             <span className="text-xl font-bold text-white">
               careerpilot
