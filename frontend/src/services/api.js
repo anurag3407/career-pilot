@@ -15,6 +15,7 @@ async function getAuthHeaders() {
   }
 }
 
+
 // Helper to handle API responses
 async function handleResponse(response) {
   const data = await response.json()
@@ -255,6 +256,60 @@ export const enhanceApi = {
       headers
     })
     return handleResponse(response)
+  },
+
+  // Generate job application emails
+  async generateEmail(data) {
+    const headers = await getAuthHeaders()
+    const response = await fetch(`${API_BASE}/enhance/generate-email`, {
+      method: 'POST',
+      headers,
+      body: JSON.stringify(data)
+    })
+    return handleResponse(response)
+  },
+
+  // Optimize LinkedIn profile with AI
+  async optimizeLinkedIn(data) {
+    const headers = await getAuthHeaders()
+    const response = await fetch(`${API_BASE}/enhance/optimize-linkedin`, {
+      method: 'POST',
+      headers,
+      body: JSON.stringify(data)
+    })
+    return handleResponse(response)
+  }
+}
+
+// ============ AI API ============
+export const aiApi = {
+  // Get AI models for a specific provider
+  async getModels(provider) {
+    const headers = await getAuthHeaders()
+    const response = await fetch(`${API_BASE}/ai/models?provider=${encodeURIComponent(provider)}`, {
+      method: 'GET',
+      headers
+    })
+    return handleResponse(response)
+  },
+
+  async getConfig() {
+    const headers = await getAuthHeaders()
+    const response = await fetch(`${API_BASE}/ai/config`, {
+      method: 'GET',
+      headers
+    })
+    return handleResponse(response)
+  },
+
+  async updateConfig(data) {
+    const headers = await getAuthHeaders()
+    const response = await fetch(`${API_BASE}/ai/config`, {
+      method: 'PUT',
+      headers,
+      body: JSON.stringify(data)
+    })
+    return handleResponse(response)
   }
 }
 
@@ -312,6 +367,17 @@ export const jobTrackerApi = {
     const response = await fetch(`${API_BASE}/job-tracker/${jobId}`, {
       method: 'DELETE',
       headers
+    })
+    return handleResponse(response)
+  },
+
+  // Research a company
+  async researchCompany(companyName, industry = '') {
+    const headers = await getAuthHeaders()
+    const response = await fetch(`${API_BASE}/job-tracker/research`, {
+      method: 'POST',
+      headers,
+      body: JSON.stringify({ companyName, industry })
     })
     return handleResponse(response)
   },
@@ -838,6 +904,142 @@ export const interviewApi = {
     return handleResponse(response)
   }
 }
+
+// ============ USER PROFILE API ============
+export const userProfileApi = {
+  async getMyProfile() {
+    const headers = await getAuthHeaders()
+    const response = await fetch(`${API_BASE}/user-profiles/me`, { method: 'GET', headers })
+    return handleResponse(response)
+  },
+
+  async updateMyProfile(data) {
+    const headers = await getAuthHeaders()
+    const response = await fetch(`${API_BASE}/user-profiles/me`, {
+      method: 'PUT',
+      headers,
+      body: JSON.stringify(data)
+    })
+    return handleResponse(response)
+  },
+
+  async getMyStats() {
+    const headers = await getAuthHeaders()
+    const response = await fetch(`${API_BASE}/user-profiles/me/stats`, { method: 'GET', headers })
+    return handleResponse(response)
+  },
+
+  async getMyActivity() {
+    const headers = await getAuthHeaders()
+    const response = await fetch(`${API_BASE}/user-profiles/me/activity`, { method: 'GET', headers })
+    return handleResponse(response)
+  },
+
+  async getProfile(uid) {
+    const headers = await getAuthHeaders()
+    const response = await fetch(`${API_BASE}/user-profiles/${uid}`, { method: 'GET', headers })
+    return handleResponse(response)
+  },
+
+  async getPublicProfile(uid) {
+    const headers = await getAuthHeaders()
+    const response = await fetch(`${API_BASE}/user-profiles/${uid}`, { method: 'GET', headers })
+    return handleResponse(response)
+  },
+
+  async getStats(uid) {
+    const headers = await getAuthHeaders()
+    const response = await fetch(`${API_BASE}/user-profiles/${uid}/stats`, { method: 'GET', headers })
+    return handleResponse(response)
+  },
+
+  async getActivity(uid) {
+    const headers = await getAuthHeaders()
+    const response = await fetch(`${API_BASE}/user-profiles/${uid}/activity`, { method: 'GET', headers })
+    return handleResponse(response)
+  }
+}
+// ============ TWO-FACTOR AUTH API ============
+export const twoFactorApi = {
+  async getStatus() {
+    const headers = await getAuthHeaders()
+    const response = await fetch(`${API_BASE}/auth/2fa/status`, {
+      method: 'GET',
+      headers
+    })
+    return handleResponse(response)
+  },
+
+  async setup() {
+    const headers = await getAuthHeaders()
+    const response = await fetch(`${API_BASE}/auth/2fa/setup`, {
+      method: 'POST',
+      headers
+    })
+    return handleResponse(response)
+  },
+
+  async enable(secret, token) {
+    const headers = await getAuthHeaders()
+    const response = await fetch(`${API_BASE}/auth/2fa/enable`, {
+      method: 'POST',
+      headers,
+      body: JSON.stringify({ secret, token })
+    })
+    return handleResponse(response)
+  },
+
+  async disable(token) {
+    const headers = await getAuthHeaders()
+    const response = await fetch(`${API_BASE}/auth/2fa/disable`, {
+      method: 'POST',
+      headers,
+      body: JSON.stringify({ token })
+    })
+    return handleResponse(response)
+  },
+
+  async verify(token) {
+    const headers = await getAuthHeaders()
+    const response = await fetch(`${API_BASE}/auth/2fa/verify`, {
+      method: 'POST',
+      headers,
+      body: JSON.stringify({ token })
+    })
+    return handleResponse(response)
+  },
+
+  async verifyLogin(email, token, useBackup) {
+    const headers = await getAuthHeaders()
+    const response = await fetch(`${API_BASE}/auth/2fa/verify-login`, {
+      method: 'POST',
+      headers,
+      body: JSON.stringify({ email, token, useBackup })
+    })
+    return handleResponse(response)
+  },
+
+  async verifyBackup(code) {
+    const headers = await getAuthHeaders()
+    const response = await fetch(`${API_BASE}/auth/2fa/verify-backup`, {
+      method: 'POST',
+      headers,
+      body: JSON.stringify({ code })
+    })
+    return handleResponse(response)
+  },
+
+  async regenerateBackupCodes(token) {
+    const headers = await getAuthHeaders()
+    const response = await fetch(`${API_BASE}/auth/2fa/backup-codes/regenerate`, {
+      method: 'POST',
+      headers,
+      body: JSON.stringify({ token })
+    })
+    return handleResponse(response)
+  }
+}
+
 
 // ============ PAYMENT API ============
 export const paymentApi = {

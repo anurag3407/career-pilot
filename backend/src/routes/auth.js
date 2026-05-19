@@ -1,6 +1,7 @@
 import express from 'express';
 import { asyncHandler } from '../middleware/errorHandler.js';
 import { verifyToken } from '../middleware/auth.js';
+import { loginProtection } from '../middleware/loginProtection.js';
 import { saveUserToFirebase } from '../services/firebaseDataService.js';
 import { exchangeCodeForToken, getLinkedInAuthUrl, getLinkedInProfile } from '../services/linkedinService.js';
 import User from '../models/User.model.js';
@@ -8,16 +9,26 @@ import admin from '../config/firebase.js';
 import crypto from 'crypto';
 
 const router = express.Router();
-
 const stateStore = new Map();
 
-// Verify token endpoint
-router.post('/verify', verifyToken, asyncHandler(async (req, res) => {
+// Periodic sweep of expired stateStore entries every 10 minutes to prevent memory leaks
+setInterval(() => {
+  const now = Date.now();
+  for (const [state, expiry] of stateStore.entries()) {
+    if (now > expiry) {
+      stateStore.delete(state);
+    }
+  }
+}, 10 * 60 * 1000).unref();
+
+// Verify token endpoint — loginProtection tracks failed attempts per IP
+// and locks out after 5 consecutive failures for 15 minutes.
+router.post('/verify', loginProtection, verifyToken, asyncHandler(async (req, res) => {
   // Save/update user in Firebase on each verification
   try {
     await saveUserToFirebase(req.user);
   } catch (error) {
-    console.warn('⚠️  Could not save user to Firebase:', error.message);
+    console.warn('Could not save user to Firebase:', error.message);
   }
   
   res.json({

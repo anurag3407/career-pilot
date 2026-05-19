@@ -48,6 +48,10 @@ export default function PostsFeed() {
     fetchPosts();
   }, [selectedCategory, sortBy]);
 
+  // Fetch current user's scheduled posts on mount
+  useEffect(() => {
+    fetchScheduledPosts();
+  }, []);
   // Refetch scheduled posts whenever the logged-in user changes
   useEffect(() => {
     if (user) {
