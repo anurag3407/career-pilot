@@ -5,7 +5,6 @@ import {
     LayoutDashboard,
     Search,
     Bell,
-    Mic,
     GraduationCap,
     Users,
     FileText,
@@ -14,7 +13,8 @@ import {
     User,
     ShieldCheck,
     Sun,
-    Moon
+    Moon,
+    Zap
 } from "lucide-react";
 import { useAuth } from "../context/AuthContext";
 import { useTheme } from "../context/ThemeContext";
@@ -46,7 +46,7 @@ const navLinks = [
     {
         label: "Interview Prep",
         href: "/interview-prep",
-        icon: <Mic className="w-5 h-5 flex-shrink-0" />,
+        icon: <Zap className="w-5 h-5 flex-shrink-0" />,
     },
     {
         label: "Fellowship",
