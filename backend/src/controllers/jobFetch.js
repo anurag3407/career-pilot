@@ -102,9 +102,13 @@ export const summarizeJob = async (req, res) => {
       });
     }
 
-    const result = await summarizeJobDescription(jobDescription);
+    const result = await summarizeJobDescription(jobDescription, req.aiProvider);
     
-    return res.status(200).json(result);
+    return res.status(200).json({
+      ...result,
+      provider: req.aiProvider.providerName,
+      providerSource: req.aiProviderSource,
+    });
   } catch (error) {
     console.error("Error summarizing job:", error);
     return res.status(500).json({
