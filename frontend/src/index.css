@@ -225,3 +225,31 @@ body {
               radial-gradient(circle at 10% 10%, rgba(14, 165, 233, 0.03) 0%, transparent 40%);
 }
 
+@media print {
+
+  body {
+    background: white;
+    color: black;
+    margin: 0;
+    padding: 0;
+  }
+
+  nav,
+  button,
+  .no-print {
+    display: none !important;
+  }
+
+  .resume-container {
+    width: 100%;
+    margin: 0;
+    padding: 20px;
+    box-shadow: none;
+    background: white;
+  }
+
+  @page {
+    size: A4;
+    margin: 12mm;
+  }
+}

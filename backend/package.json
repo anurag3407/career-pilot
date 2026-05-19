@@ -14,7 +14,7 @@
     "axios": "^1.13.2",
     "bullmq": "^5.66.4",
     "cors": "^2.8.5",
-    "dotenv": "^16.4.5",
+    "dotenv": "^16.6.1",
     "express": "^4.21.0",
     "express-rate-limit": "^7.4.1",
     "firebase-admin": "^12.6.0",

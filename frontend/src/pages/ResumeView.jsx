@@ -143,8 +143,15 @@ export default function ResumeView() {
             >
               Original Version
             </button>
+            <button
+  onClick={() => window.print()}
+  className="px-4 py-2 bg-blue-600 text-white rounded-lg hover:bg-blue-700 print:hidden"
+>
+  Print Resume
+</button>
           </nav>
         </div>
+        <div className="resume-container">
 
         {/* Content */}
         <Card>
@@ -297,6 +304,7 @@ export default function ResumeView() {
           </Card>
         )}
       </div>
+    </div>
     </div>
   )
 }
