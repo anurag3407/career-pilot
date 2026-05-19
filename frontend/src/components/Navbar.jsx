@@ -19,7 +19,11 @@ import {
   Mic,
   Sun,
   Moon,
+<<<<<<< HEAD
   Palette
+=======
+  HelpCircle
+>>>>>>> b27547f (feat: add keyboard shortcuts and shortcuts help modal)
 } from 'lucide-react'
 
 export default function Navbar() {
@@ -117,6 +121,16 @@ export default function Navbar() {
 
           {/* User Menu & Toggle */}
           <div className="hidden md:flex items-center gap-3">
+            {/* Help Button */}
+            <button
+              onClick={() => window.openShortcuts?.()}
+              className="p-2 rounded-xl bg-muted hover:bg-accent border border-border text-foreground transition-all cursor-pointer"
+              aria-label="Keyboard shortcuts"
+              title="Keyboard shortcuts (Shift + ?)"
+            >
+              <HelpCircle className="w-5 h-5" />
+            </button>
+
             {/* Theme Toggle */}
             <button
               onClick={toggleTheme}
