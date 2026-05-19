@@ -41,9 +41,7 @@ function generateFavicon(name = "") {
         font-family="Arial, sans-serif"
         font-size="${initials.length === 1 ? 14 : 12}"
         font-weight="bold"
-      >
-        ${initials}
-      </text>
+      >${initials}</text>
     </svg>
   `.trim();
 
