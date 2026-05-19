@@ -450,16 +450,15 @@ export default function Enhance() {
       setEnhancing(false)
     }
   }
-  
-  if(loading) {
+  if (loading) {
     return (
       <div className="min-h-screen bg-background">
-                <div className="flex items-center justify-center py-20">
-                  <div className="w-8 h-8 border-2 border-primary border-t-transparent rounded-full animate-spin" />
-                </div>
+        <div className="flex items-center justify-center py-20">
+          <div className="w-8 h-8 border-2 border-primary border-t-transparent rounded-full animate-spin" />
+        </div>
 
-                <div className="h-72 bg-neutral-900 rounded-2xl border border-neutral-800">
-                </div>
+        <div className="h-72 bg-neutral-900 rounded-2xl border border-neutral-800">
+        </div>
       </div>
     )
   }

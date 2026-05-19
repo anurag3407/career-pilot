@@ -388,6 +388,69 @@ export const sendProposalApprovalEmail = async ({
 
 
 /**
+ * Send account lockout alert email
+ */
+export const sendLockoutAlertEmail = async ({ email, ip, lockoutUntil }) => {
+  const lockedUntilStr = lockoutUntil
+    ? new Date(lockoutUntil).toUTCString()
+    : 'Unknown';
+
+  try {
+    if (isExternalServiceConfigured) {
+      return await callEmailService('/api/send-lockout-alert', {
+        email,
+        ip,
+        lockedUntilStr,
+        timestamp: new Date().toUTCString()
+      });
+    }
+
+    const transport = await initLocalTransporter();
+
+    const mailOptions = {
+      from: `"careerpilot Security" <${process.env.EMAIL_USER}>`,
+      to: email,
+      subject: 'careerpilot: Account temporarily locked',
+      html: `
+        <div style="font-family: Arial, sans-serif; max-width: 520px; margin: 0 auto; padding: 24px;">
+          <h2 style="color: #ef4444;">Security Alert</h2>
+          <p>We detected 5 consecutive failed login attempts on your careerpilot account.</p>
+          <p>Your account has been temporarily locked as a precaution.</p>
+          <table style="border-collapse: collapse; width: 100%; margin: 16px 0;">
+            <tr>
+              <td style="padding: 8px; color: #6b7280;">Time</td>
+              <td style="padding: 8px;">${escapeHtml(new Date().toUTCString())}</td>
+            </tr>
+            <tr>
+              <td style="padding: 8px; color: #6b7280;">IP address</td>
+              <td style="padding: 8px;">${escapeHtml(String(ip))}</td>
+            </tr>
+            <tr>
+              <td style="padding: 8px; color: #6b7280;">Locked until</td>
+              <td style="padding: 8px;">${escapeHtml(lockedUntilStr)}</td>
+            </tr>
+          </table>
+          <p style="color: #6b7280; font-size: 13px;">
+            If this was you, simply wait 15 minutes and try again.
+            If you don't recognise this activity, consider changing your password.
+          </p>
+          <p style="color: #6b7280; font-size: 12px;">
+            This is an automated security notification. Do not reply to this email.
+          </p>
+        </div>
+      `
+    };
+
+    const info = await transport.sendMail(mailOptions);
+    console.log('Lockout alert email sent:', info.messageId);
+    return { success: true, messageId: info.messageId };
+  } catch (error) {
+    console.error('Error sending lockout alert email:', error.message);
+    throw new Error(`Failed to send lockout alert email: ${error.message}`);
+  }
+};
+
+/**
  * Send verification code email
  */
 export const sendVerificationEmail = async ({ email, code }) => {

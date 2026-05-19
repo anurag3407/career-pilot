@@ -1,3 +1,70 @@
+# [1.12.0](https://github.com/anurag3407/career-pilot/compare/v1.11.0...v1.12.0) (2026-05-18)
+
+
+### Bug Fixes
+
+* **auth:** address 2FA security review feedback ([dba65ff](https://github.com/anurag3407/career-pilot/commit/dba65ff9bfdb85a52e9a65af53a63ec922baeb0d))
+
+
+### Features
+
+* **security:** account lockout after 5 failed login attempts ([#558](https://github.com/anurag3407/career-pilot/issues/558)) ([e6288ab](https://github.com/anurag3407/career-pilot/commit/e6288ab5ad17fed5ea78fe43e7db56228649688e))
+
+# [1.11.0](https://github.com/anurag3407/career-pilot/compare/v1.10.0...v1.11.0) (2026-05-18)
+
+
+### Features
+
+* **security:** per-user rate limiting on AI endpoints ([#477](https://github.com/anurag3407/career-pilot/issues/477)) ([160d834](https://github.com/anurag3407/career-pilot/commit/160d834cb1f65bf71efecc5b64cbc61a3fe77afc))
+
+# [1.10.0](https://github.com/anurag3407/career-pilot/compare/v1.9.0...v1.10.0) (2026-05-18)
+
+
+### Features
+
+* implement post scheduling feature with create, fetch, and cancel functionalities ([45d5a44](https://github.com/anurag3407/career-pilot/commit/45d5a44d498addf63fe4516a1e2bf1fed6cdc27b))
+* **profile:** public user profiles with activity feed, stats, and edit support ([981269a](https://github.com/anurag3407/career-pilot/commit/981269ae64b06706133047211885b1fff73f3e55))
+
+# [1.9.0](https://github.com/anurag3407/career-pilot/compare/v1.8.0...v1.9.0) (2026-05-18)
+
+
+### Features
+
+* **auth:** add optional TOTP two-factor authentication ([#590](https://github.com/anurag3407/career-pilot/issues/590)) ([7bff166](https://github.com/anurag3407/career-pilot/commit/7bff16642a10f7f66a6ac1cdbec5beae70befd99))
+
+# [1.8.0](https://github.com/anurag3407/career-pilot/compare/v1.7.0...v1.8.0) (2026-05-18)
+
+
+### Features
+
+* persist job search filters in URL params ([9d0629a](https://github.com/anurag3407/career-pilot/commit/9d0629a11ed1332b90d6764283bc3ca0194852b5))
+
+# [1.7.0](https://github.com/anurag3407/career-pilot/compare/v1.6.0...v1.7.0) (2026-05-18)
+
+
+### Features
+
+* add pagination middleware and update resume routes ([7038a1c](https://github.com/anurag3407/career-pilot/commit/7038a1c77f8ca0ed91918e697ecbbed520d4bd70))
+
+# [1.6.0](https://github.com/anurag3407/career-pilot/compare/v1.5.0...v1.6.0) (2026-05-18)
+
+
+### Features
+
+* add AI Email Generator & fix JSX syntax errors ([#573](https://github.com/anurag3407/career-pilot/issues/573)) ([6bfb0e8](https://github.com/anurag3407/career-pilot/commit/6bfb0e8b1644ab11f70ce051ab8e9a0959396bda))
+
+# [1.5.0](https://github.com/anurag3407/career-pilot/compare/v1.4.0...v1.5.0) (2026-05-18)
+
+
+### Bug Fixes
+
+* implement CodeRabbit review feedback ([127984e](https://github.com/anurag3407/career-pilot/commit/127984e5cdc2d93e43be25c21d45e5215164a48f))
+
+
+### Features
+
+* add AI-powered job description summarizer ([#522](https://github.com/anurag3407/career-pilot/issues/522)) ([53aac1d](https://github.com/anurag3407/career-pilot/commit/53aac1da2ae444068364a167eeba7063f2ff8ee7))
+
 # [1.4.0](https://github.com/anurag3407/career-pilot/compare/v1.3.0...v1.4.0) (2026-05-18)
 
 

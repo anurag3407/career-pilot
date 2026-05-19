@@ -408,6 +408,9 @@ export const createPost = async (req, res, next) => {
     };
 
     if (isScheduled) {
+      const jobId = await schedulePostJob(docRef.id, scheduledAt);
+      if (!jobId && !isSchedulerAvailable()) {
+        // Redis unavailable — immediately publish instead of silently dropping
       try {
         const jobId = await schedulePostJob(docRef.id, scheduledAt);
         if (!jobId && !isSchedulerAvailable()) {

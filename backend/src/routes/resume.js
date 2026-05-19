@@ -1,33 +1,31 @@
 import express from 'express';
 import { verifyToken } from '../middleware/auth.js';
 import { asyncHandler, ApiError } from '../middleware/errorHandler.js';
+import { paginate, paginatedResponse } from '../middleware/paginate.js';
 import Resume from '../models/Resume.model.js';
 
 const router = express.Router();
 
-// Get all resumes for a user
-router.get('/', verifyToken, asyncHandler(async (req, res) => {
+// Get all resumes for a user (paginated)
+router.get('/', verifyToken, paginate(), asyncHandler(async (req, res) => {
   const userId = req.user.uid;
-  
-  // Get resumes from MongoDB sorted by creation date (newest first)
+  const { page, limit, skip, sort } = req.paginate;
+
+  const total = await Resume.countDocuments({ userId });
+
   const userResumes = await Resume.find({ userId })
-    .sort({ createdAt: -1 })
+    .sort(sort)
+    .skip(skip)
+    .limit(limit)
     .lean();
 
-  // Transform _id to id for frontend compatibility
   const resumes = userResumes.map(resume => ({
     id: resume._id.toString(),
     ...resume,
     _id: undefined
   }));
 
-  res.json({
-    success: true,
-    data: {
-      resumes,
-      count: resumes.length
-    }
-  });
+  paginatedResponse(res, { data: resumes, total, page, limit });
 }));
 
 // Get a specific resume

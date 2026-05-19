@@ -19,6 +19,8 @@ import communityRoutes from './routes/community.js';
 import fellowshipRoutes from './routes/fellowships.js';
 import interviewRoutes from './routes/interview.js';
 import paymentRoutes from './routes/payments.js';
+import userProfileRoutes from './routes/userProfile.js';
+import twoFactorRoutes from './routes/twoFactor.js';
 
 import { errorHandler } from './middleware/errorHandler.js';
 
@@ -107,6 +109,8 @@ app.use('/api/community', communityRoutes);
 app.use('/api/fellowship', fellowshipRoutes);
 app.use('/api/interview', interviewRoutes);
 app.use('/api/payments', paymentRoutes);
+app.use('/api/user-profiles', userProfileRoutes);
+app.use('/api/auth/2fa', twoFactorRoutes);
 app.use('/api/search', searchRoutes);
 
 app.use((req, res) => {
