@@ -36,6 +36,7 @@ import FellowshipMessages from './pages/fellowship/FellowshipMessages';
 import FellowshipChat from './pages/fellowship/FellowshipChat';
 import SecuritySettings from './pages/SecuritySettings';
 import LinkedInCallback from './pages/LinkedInCallback';
+import DeploymentMonitor from './pages/admin/DeploymentMonitor';
 
 function ProtectedRoute({ children }) {
   const { user, loading } = useAuth();
@@ -152,6 +153,9 @@ function App() {
                 <Route path="messages" element={<FellowshipMessages />} />
                 <Route path="messages/:roomId" element={<FellowshipChat />} />
               </Route>
+
+              {/* Admin Routes */}
+              <Route path="/admin/deployments" element={<ProtectedRoute><DeploymentMonitor /></ProtectedRoute>} />
 
               {/* Catch-All Route */}
               <Route path="*" element={<NotFound />} />
