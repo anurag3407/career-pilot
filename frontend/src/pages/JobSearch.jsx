@@ -1,5 +1,5 @@
 import { useState, useEffect } from 'react'
-import { Link } from 'react-router-dom'
+import { Link, useSearchParams } from 'react-router-dom'
 import toast from 'react-hot-toast'
 import { motion, AnimatePresence } from 'framer-motion'
 import { formatDistanceToNow } from 'date-fns'
@@ -38,16 +38,17 @@ const POPULAR_SEARCHES = [
 ]
 
 export default function JobSearch() {
-  const [searchQuery, setSearchQuery] = useState('')
+  const [searchParams, setSearchParams] = useSearchParams()
+  const [searchQuery, setSearchQuery] = useState(searchParams.get('q') || '')
   const [jobs, setJobs] = useState([])
   const [loading, setLoading] = useState(false)
   const [hasSearched, setHasSearched] = useState(false)
   const [savedJobs, setSavedJobs] = useState(new Set())
   const [showFilters, setShowFilters] = useState(false)
   const [filters, setFilters] = useState({
-    jobType: 'All Types',
-    experienceLevel: 'All Levels',
-    location: ''
+    jobType: JOB_TYPES.includes(searchParams.get('jobType')) ? searchParams.get('jobType') : 'All Types',
+    experienceLevel: EXPERIENCE_LEVELS.includes(searchParams.get('experienceLevel')) ? searchParams.get('experienceLevel') : 'All Levels',
+    location: searchParams.get('location') || ''
   })
 
   // Load saved jobs on mount
@@ -74,12 +75,19 @@ export default function JobSearch() {
     setLoading(true)
     setHasSearched(true)
 
+    // Only persist non-default filter values for cleaner URLs
+    const params = { q: searchQuery }
+    if (filters.jobType !== 'All Types') params.jobType = filters.jobType
+    if (filters.experienceLevel !== 'All Levels') params.experienceLevel = filters.experienceLevel
+    if (filters.location) params.location = filters.location
+    setSearchParams(params)
+
     try {
       const response = await jobsApi.search(searchQuery, filters)
       setJobs(response.data || [])
 
       if (response.data?.length === 0) {
-        toast('No jobs found. Try different keywords.', { icon: 'ðŸ”' })
+        toast('No jobs found. Try different keywords.', { icon: '🔍' })
       } else {
         toast.success(`Found ${response.data.length} jobs!`)
       }
@@ -102,7 +110,7 @@ export default function JobSearch() {
     const jobId = job.job_id || job.id
 
     if (savedJobs.has(jobId)) {
-      toast('Job already saved to tracker', { icon: 'ðŸ“Œ' })
+      toast('Job already saved to tracker', { icon: '📌' })
       return
     }
 
@@ -186,9 +194,19 @@ export default function JobSearch() {
                     type="text"
                     value={searchQuery}
                     onChange={(e) => setSearchQuery(e.target.value)}
-                    placeholder="Job title, keywords, or company..."
-                    className="w-full pl-12 pr-4 py-4 bg-muted/50 border border-border rounded-xl text-lg text-foreground placeholder:text-muted-foreground focus:ring-2 focus:ring-primary focus:border-transparent transition-all"
-                  />
+                  placeholder="Job title, keywords, or company..."
+className="w-full pl-12 pr-10 py-4 bg-muted/50 border border-border rounded-xl text-lg text-foreground placeholder:text-muted-foreground focus:ring-2 focus:ring-primary focus:border-transparent transition-all"
+/>
+{searchQuery && (
+  <button
+    type="button"
+    onClick={() => setSearchQuery('')}
+    aria-label="Clear search"
+    className="absolute right-4 top-1/2 transform -translate-y-1/2 text-muted-foreground hover:text-foreground transition-colors"
+  >
+    <X className="w-5 h-5" />
+  </button>
+)}
                 </div>
                 <Button
                   type="submit"
@@ -286,7 +304,7 @@ export default function JobSearch() {
                     <button
                       key={search}
                       onClick={() => handleQuickSearch(search)}
-                      className="px-4 py-2 bg-muted hover:bg-primary/90/20 hover:text-primary hover:border-primary/30 border border-border rounded-full text-sm text-muted-foreground transition-all cursor-pointer"
+                      className="px-4 py-2 bg-muted hover:bg-primary/20 hover:text-primary hover:border-primary/30 border border-border rounded-full text-sm text-muted-foreground transition-all cursor-pointer"
                     >
                       {search}
                     </button>
@@ -425,7 +443,7 @@ export default function JobSearch() {
                           onClick={() => handleSaveJob(job)}
                           className={`p-2 rounded-lg transition-colors cursor-pointer ${savedJobs.has(job.job_id || job.id)
                             ? 'bg-primary/20 text-primary border border-primary/30'
-                            : 'bg-muted text-muted-foreground hover:bg-primary/90/20 hover:text-primary border border-border'
+                            : 'bg-muted text-muted-foreground hover:bg-primary/20 hover:text-primary border border-border'
                             }`}
                           title={savedJobs.has(job.job_id || job.id) ? 'Saved' : 'Save to tracker'}
                         >

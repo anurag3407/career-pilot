@@ -1,21 +1,22 @@
 ---
-name: Bug report
+name: Bug Report
 about: Report a bug to help improve the project
+title: "[BUG] "
+labels: bug
 ---
 
-## Describe the bug
-A clear and concise description of the bug.
+## Description
+Describe the bug clearly.
 
-## Steps to reproduce
-1. Go to...
-2. Click on...
-3. Observe error
+## Steps To Reproduce
+1.
+2.
+3.
 
-## Expected behavior
-What should happen?
+## Expected Behavior
 
 ## Screenshots
-If applicable, add screenshots.
 
-## Additional context
-Any other details.
+## Environment
+- OS:
+- Browser:

@@ -71,3 +71,4 @@ temp/
 *.pdf
 !resume.pdf
 
+*issues
