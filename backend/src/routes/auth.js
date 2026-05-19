@@ -11,6 +11,7 @@ import admin from '../config/firebase.js';
 import crypto from 'crypto';
 
 const router = express.Router();
+const stateStore = new Map();
 
 const stateStore = new Map();
 
@@ -35,6 +36,10 @@ setInterval(() => {
 // Verify token endpoint — loginProtection tracks failed attempts per IP
 // and locks out after 5 consecutive failures for 15 minutes.
 router.post('/verify', loginProtection, verifyToken, asyncHandler(async (req, res) => {
+
+
+// Verify token endpoint
+router.post('/verify', verifyToken, asyncHandler(async (req, res) => {
   // Save/update user in Firebase on each verification
   try {
     await saveUserToFirebase(req.user);
