@@ -3,17 +3,16 @@ import { asyncHandler } from '../middleware/errorHandler.js';
 import { verifyToken } from '../middleware/auth.js';
 import { loginProtection } from '../middleware/loginProtection.js';
 import { saveUserToFirebase } from '../services/firebaseDataService.js';
-import { validate } from '../middleware/validate.js';
+
 import { registerSchema } from '../validators/authValidator.js';
 import { exchangeCodeForToken, getLinkedInAuthUrl, getLinkedInProfile } from '../services/linkedinService.js';
 import User from '../models/User.model.js';
 import admin from '../config/firebase.js';
 import crypto from 'crypto';
-// import { validate } from '../middleware/validate.js';
+
 import { updateNotificationPrefsSchema } from '../schemas/auth.schema.js';
 
 const router = express.Router();
-
 const stateStore = new Map();
 
 // Example register endpoint with validation
@@ -34,7 +33,6 @@ setInterval(() => {
   }
 }, 10 * 60 * 1000).unref();
 
-// const router = express.Router();
 
 // Verify token endpoint — loginProtection tracks failed attempts per IP
 // and locks out after 5 consecutive failures for 15 minutes.
