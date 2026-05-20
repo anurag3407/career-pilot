@@ -16,10 +16,19 @@ export default function SearchInput({
   debounceMs = 300,
   isLoading = false,
   wrapperClassName = "",
-  inputClassName = ""
+  inputClassName = "",
 }) {
-  // Internal query state which is decoupled from the parent's onChange so we can debounce without the parent re-rendering on every keystroke
+  // Internal input state used for debouncing.
+  // Starts with the external value prop if provided.
   const [query, setQuery] = useState(value || "");
+
+  /**
+   * Keep internal query state synced with external value changes.
+   * Useful when parent components reset or update the search value.
+   */
+  useEffect(() => {
+    setQuery(value);
+  }, [value]);
 
   /**
    * Store the latest onChange in a ref so the debounce effect doesn't need onChange in its dependency array.
@@ -37,26 +46,36 @@ export default function SearchInput({
    * The cleanup function cancels the pending timer if query changes again
    * before the delay completes, ensuring onChange is never called mid-typing.
    */
+
+  // Used to skip the debounce effect during the initial render
+  // so onChange is not triggered immediately on mount.
+  const isFirstRender = useRef(true);
+
   useEffect(() => {
+    // Skip debounce on first render to avoid firing
+    // an unnecessary initial onChange call.
+    if (isFirstRender.current) {
+      isFirstRender.current = false;
+      return;
+    }
+
     const timer = setTimeout(() => {
       onChangeRef.current(query);
     }, debounceMs);
 
-    // Cleanup function
     return () => clearTimeout(timer);
   }, [query, debounceMs]);
 
+  // Update local query state immediately for responsive typing.
+  // The parent onChange will still be debounced separately.
   const handleInputChange = (e) => {
     setQuery(e.target.value);
   };
 
+  // Clear the current search query.
+  // This will also trigger the debounced onChange effect.
   const handleInputClear = () => {
-    // Resetting query triggers the debounce effect above,
-    // which will call onChange("") after debounceMs.
     setQuery("");
-
-    // Uncomment to trigger onChange immediately on clear, bypassing debounce
-    // onChangeRef.current("");
   };
 
   return (
@@ -89,9 +108,11 @@ export default function SearchInput({
           id={name}
           name={name}
           value={query}
+          aria-label={label || placeholder || "Search"}
           onChange={handleInputChange}
           placeholder={placeholder}
           disabled={disabled}
+          required={required}
           className={cn(
             "w-full px-5 py-3.5 rounded-2xl transition-all duration-300",
             "bg-muted/30 border border-border",
@@ -100,7 +121,7 @@ export default function SearchInput({
             "disabled:bg-muted disabled:cursor-not-allowed disabled:opacity-50",
             "pl-10 pr-10", // room for icons on both sides
             error ? "border-destructive/50 focus:ring-destructive/20" : "",
-            inputClassName, 
+            inputClassName,
           )}
         />
 
@@ -142,7 +163,7 @@ SearchInput.propTypes = {
   onChange: PropTypes.func.isRequired,
   error: PropTypes.string,
   debounceMs: PropTypes.number,
-  isLoading: PropTypes.bool, 
+  isLoading: PropTypes.bool,
   wrapperClassName: PropTypes.string,
   inputClassName: PropTypes.string,
 };
