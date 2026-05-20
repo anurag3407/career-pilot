@@ -25,6 +25,9 @@ import {
 import { resumeApi, jobTrackerApi } from '../services/api'
 import Button from '../components/Button'
 
+// EXACT BOT FIX: Import the LanguageChart component
+import LanguageChart from '../components/github/LanguageChart'
+
 const STATUS_CONFIG = {
   saved: { label: 'Saved', color: 'bg-muted text-muted-foreground border border-border', icon: Star },
   applied: { label: 'Applied', color: 'bg-primary/10 text-primary border border-primary/20', icon: Send },
@@ -292,6 +295,11 @@ export default function Dashboard() {
                 )}
               </motion.div>
             </div>
+
+            {/* EXACT BOT FIX: Display the LanguageChart component cleanly right here */}
+            <motion.div variants={itemVariants} className="mt-10">
+              <LanguageChart data={[]} />
+            </motion.div>
 
             {/* Tips Section */}
             <motion.div variants={itemVariants} className="mt-16">

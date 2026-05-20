@@ -22,6 +22,11 @@ const LanguageChart = ({ data, mode = 'single' }) => {
   // 1. Calculate Total Value to figure out percentages
   const totalValue = data.reduce((sum, item) => sum + item.value, 0);
 
+  // EXACT BOT FIX: Stop processing immediately if total value is zero or negative
+  if (totalValue <= 0) {
+    return <div className="text-gray-500 p-4 text-center">No language data available</div>;
+  }
+
   // 2. Process data: Group languages < 1% into 'Other'
   let processedData = [];
   let otherValue = 0;
