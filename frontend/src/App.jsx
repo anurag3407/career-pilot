@@ -1,4 +1,5 @@
 import TemplateGallery from "./pages/TemplateGallery";
+
 import { BrowserRouter, Routes, Route, Navigate } from 'react-router-dom';
 import { Toaster } from 'react-hot-toast';
 import { AuthProvider, useAuth } from './context/AuthContext';
@@ -36,6 +37,9 @@ import FellowshipMessages from './pages/fellowship/FellowshipMessages';
 import FellowshipChat from './pages/fellowship/FellowshipChat';
 import SecuritySettings from './pages/SecuritySettings';
 import LinkedInCallback from './pages/LinkedInCallback';
+
+// GitHub Dashboard Page Import
+import GitHubDashboard from './pages/GitHubDashboard';
 
 function ProtectedRoute({ children }) {
   const { user, loading } = useAuth();
@@ -120,6 +124,9 @@ function App() {
 
               {/* Template Gallery Route (Registered at /templates) */}
               <Route path="/templates" element={<TemplateGallery />} />
+
+              {/* GitHub Dashboard Standalone Route (Bypassed Protection for direct local UI/UX testing) */}
+              <Route path="/github-dashboard" element={<GitHubDashboard />} />
 
               {/* Core Protected Routes */}
               <Route path="/dashboard" element={<ProtectedRoute><Dashboard /></ProtectedRoute>} />
