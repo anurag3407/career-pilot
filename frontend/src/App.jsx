@@ -35,6 +35,7 @@ import FellowshipMessages from './pages/fellowship/FellowshipMessages'
 import FellowshipChat from './pages/fellowship/FellowshipChat'
 import SecuritySettings from './pages/SecuritySettings'
 import LinkedInCallback from './pages/LinkedInCallback'
+import Deployments from './pages/Deployments'
 
 function ProtectedRoute({ children }) {
   const { user, loading } = useAuth()
@@ -56,6 +57,7 @@ function ProtectedRoute({ children }) {
 
   return <AppLayout>{children}</AppLayout>
 }
+
 
 function PublicRoute({ children }) {
   const { user, loading } = useAuth()
@@ -115,8 +117,7 @@ function App() {
               <Route path="/login" element={<PublicRoute><Login /></PublicRoute>} />
               <Route path="/register" element={<PublicRoute><Register /></PublicRoute>} />
               <Route path="/auth/linkedin/callback" element={<PublicRoute><LinkedInCallback /></PublicRoute>} />
-
-              <Route path="/dashboard" element={<ProtectedRoute><Dashboard /></ProtectedRoute>} />
+              <Route path="/dashboard" element={<ProtectedRoute><Dashboard /></ProtectedRoute>} />`
               <Route path="/upload" element={<ProtectedRoute><Upload /></ProtectedRoute>} />
               <Route path="/enhance/:resumeId" element={<ProtectedRoute><Enhance /></ProtectedRoute>} />
               <Route path="/resume/:resumeId" element={<ProtectedRoute><ResumeView /></ProtectedRoute>} />
@@ -130,6 +131,7 @@ function App() {
               <Route path="/security" element={<ProtectedRoute><SecuritySettings /></ProtectedRoute>} />
               <Route path="/email-generator" element={<ProtectedRoute><EmailGenerator /></ProtectedRoute>} />
               <Route path="/linkedin-optimizer" element={<ProtectedRoute><LinkedInOptimizer /></ProtectedRoute>} />
+              <Route path="/deployments" element={<ProtectedRoute><Deployments /></ProtectedRoute>} />
               <Route path="/settings" element={<ProtectedRoute><Settings /></ProtectedRoute>} />
 
               <Route path="/fellowship" element={<ProtectedRoute><FellowshipLayout /></ProtectedRoute>}>
