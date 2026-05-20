@@ -203,9 +203,6 @@ export default function Dashboard() {
                 ) : (
                   <div className="rounded-[2rem] bg-card border border-border overflow-hidden shadow-sm">
                     <div className="divide-y divide-border">
-                     {/** * GSSoC Optimization: Defensive structural evaluation on the active data view slice.
-                        * Prevents layout container voids if the array slice metrics index is altered.
-                        */}
                       {(() => {
                         const displayedJobs = trackedJobs.slice(0, 5);
                         
@@ -230,7 +227,6 @@ export default function Dashboard() {
                           });
                         } else {
                           return (
-                            /* Graceful fallback UI layout state when view density evaluation yields zero records */
                             <div className="p-10 text-center text-sm font-medium text-muted-foreground bg-muted/10 rounded-2xl border border-dashed border-border/60 mx-5 my-4">
                               No active application records available in this view index.
                             </div>
@@ -325,4 +321,3 @@ export default function Dashboard() {
     </div>
   )
 }
-
