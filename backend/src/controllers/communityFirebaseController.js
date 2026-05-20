@@ -325,8 +325,6 @@ export const getPosts = async (req, res, next) => {
       }
     }
 
-    const hasDateFilter = startDate || endDate;
-
     let parsedStartDate = null;
     let parsedEndDate = null;
     if (startDate) {
