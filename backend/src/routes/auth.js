@@ -33,7 +33,6 @@ setInterval(() => {
   }
 }, 10 * 60 * 1000).unref();
 
-const router = express.Router();
 
 // Verify token endpoint — loginProtection tracks failed attempts per IP
 // and locks out after 5 consecutive failures for 15 minutes.
@@ -89,7 +88,7 @@ router.put('/notification-preferences', verifyToken, validate(updateNotification
   }
 
   await User.findOneAndUpdate(
-    { email: req.user.email },
+    { email: req.user.email},
     { notificationPreferences: { jobAlerts, directMessages, proposalUpdates } },
     { new: true }
   );
