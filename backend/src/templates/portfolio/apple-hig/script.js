@@ -274,6 +274,33 @@ const initMobileNav = () => {
   });
 };
 
+const initThemeToggle = () => {
+  const toggleBtn = document.getElementById('theme-toggle');
+  if (!toggleBtn) return;
+  
+  const currentTheme = localStorage.getItem('theme');
+  const prefersDark = window.matchMedia('(prefers-color-scheme: dark)').matches;
+  
+  if (currentTheme === 'dark' || (!currentTheme && prefersDark)) {
+    document.documentElement.setAttribute('data-theme', 'dark');
+  } else if (currentTheme === 'light') {
+    document.documentElement.setAttribute('data-theme', 'light');
+  }
+
+  toggleBtn.addEventListener('click', () => {
+    const isDark = document.documentElement.getAttribute('data-theme') === 'dark' || 
+                   (!document.documentElement.hasAttribute('data-theme') && window.matchMedia('(prefers-color-scheme: dark)').matches);
+    
+    if (isDark) {
+      document.documentElement.setAttribute('data-theme', 'light');
+      localStorage.setItem('theme', 'light');
+    } else {
+      document.documentElement.setAttribute('data-theme', 'dark');
+      localStorage.setItem('theme', 'dark');
+    }
+  });
+};
+
 const setFooterYear = () => {
   const el = document.getElementById('year');
   if (el) el.textContent = new Date().getFullYear();
@@ -289,4 +316,5 @@ document.addEventListener('DOMContentLoaded', () => {
   buildExperience();
   setFooterYear();
   initMobileNav();
+  initThemeToggle();
 });
