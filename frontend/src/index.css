@@ -143,6 +143,38 @@ body {
   transition: all 0.3s cubic-bezier(0.4, 0, 0.2, 1);
 }
 
+/*  Additional Animation Keyframes
+   - pulse-glow: Continuously glows a element in & out
+   - shimmer:    Moving shine effect (useful for loading states) */
+
+
+@keyframes pulse-glow {
+  0%, 100% { box-shadow: 0 0 20px rgba(0, 191, 255, 0.15); }
+  50%       { box-shadow: 0 0 40px rgba(0, 191, 255, 0.4);  }
+}
+ 
+@keyframes shimmer {
+  0%   { background-position: -200% center; }
+  100% { background-position:  200% center; }
+}
+ 
+/* Shimmer utility class — use on skeleton loaders or highlight cards */
+.animate-shimmer {
+  background: linear-gradient(
+    90deg,
+    transparent,
+    rgba(255, 255, 255, 0.1),
+    transparent
+  );
+  background-size: 200% auto;
+  animation: shimmer 2s linear infinite;
+}
+ 
+/* Pulse-glow utility class — use on CTA buttons or highlight cards */
+.animate-pulse-glow {
+  animation: pulse-glow 2s ease-in-out infinite;
+}
+
 /* Animations */
 @keyframes float {
   0%, 100% { transform: translateY(0); }
@@ -170,6 +202,16 @@ body {
   -webkit-text-fill-color: transparent;
   background-clip: text;
 }
+/* Gradient Border Utility
+   - Wraps element with a gradient border using background trick
+   - Works on cards, inputs, buttons, etc.
+   Usage: <div class="gradient-border">...</div> */
+.gradient-border {
+  border: 1px solid transparent;
+  background:
+    linear-gradient(var(--card), var(--card)) padding-box,
+    linear-gradient(135deg, var(--primary), var(--secondary)) border-box;
+}
 
 /* Card Styles */
 .premium-card {
@@ -190,6 +232,16 @@ body {
   max-width: 1400px;
   margin: 0 auto;
   padding: 0 1.5rem;
+}
+
+/* Responsive Grid Utility
+   - Auto-fit grid: columns adjust based on available space
+   - Min column width: 280px, max: 1fr (full available space)
+   Usage: <div class="responsive-grid">...</div> */
+.responsive-grid {
+  display: grid;
+  grid-template-columns: repeat(auto-fit, minmax(280px, 1fr));
+  gap: 1.5rem;
 }
 
 /* Background Gradients */
@@ -225,3 +277,65 @@ body {
               radial-gradient(circle at 10% 10%, rgba(14, 165, 233, 0.03) 0%, transparent 40%);
 }
 
+/*  Badge / Chip Component
+   - .badge        → Default muted badge
+   - .badge-primary → Primary colored badge with subtle border
+   Usage: <span class="badge badge-primary">New</span>  */
+
+.badge {
+  display: inline-flex;
+  align-items: center;
+  padding: 0.25rem 0.75rem;
+  border-radius: 9999px;
+  font-size: 0.75rem;
+  font-weight: 500;
+  background: var(--muted);
+  color: var(--muted-foreground);
+}
+ 
+.badge-primary {
+  background: rgba(0, 191, 255, 0.1);
+  color: var(--primary);
+  border: 1px solid rgba(0, 191, 255, 0.2);
+}
+
+
+/* Accessible Focus Ring */
+.focus-ring:focus-visible {
+  outline: 2px solid var(--ring);
+  outline-offset: 2px;
+  border-radius: var(--radius);
+}
+
+
+/* Typography Scale (Fluid / Responsive) */
+
+.text-display {
+  font-size: clamp(2rem, 5vw, 4rem);
+  font-weight: 800;
+  line-height: 1.1;
+}
+ 
+.text-heading {
+  font-size: clamp(1.5rem, 3vw, 2.5rem);
+  font-weight: 700;
+}
+ 
+.text-body {
+  font-size: 1rem;
+  line-height: 1.7;
+  color: var(--muted-foreground);
+}
+
+/* Reduced Motion — Accessibility Support */
+
+@media (prefers-reduced-motion: reduce) {
+  *,
+  *::before,
+  *::after {
+    animation-duration: 0.01ms !important;
+    animation-iteration-count: 1 !important;
+    transition-duration: 0.01ms !important;
+    scroll-behavior: auto !important;
+  }
+}
