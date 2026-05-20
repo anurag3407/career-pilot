@@ -1,6 +1,7 @@
 import express from 'express';
 import { enhanceResume, generateSummary, suggestImprovements, analyzeATSScore, analyzeResumeComprehensive, analyzeBulletPoints, generateBeforeAfter, getVerbLists, getSystemPrompt } from '../config/langchain.js';
 import { generateEmails } from '../services/emailGeneratorService.js';
+import { analyzeSkillsGap } from '../services/skillsAnalyzer.js';
 import { optimizeLinkedInProfile } from '../services/linkedinOptimizerService.js';
 import { verifyToken } from '../middleware/auth.js';
 import { extractAIProvider } from '../middleware/aiKey.js';
@@ -255,6 +256,29 @@ router.post('/generate-email', verifyToken, extractAIProvider, aiRateLimiter, va
   } catch (error) {
     console.error('Email generation error:', error);
     throw new ApiError(500, 'Failed to generate emails. Please try again.');
+  }
+}));
+
+// Analyze Skills Gap
+router.post('/analyze-skills-gap', verifyToken, asyncHandler(async (req, res) => {
+  const { userSkills, targetRole } = req.body;
+  const normalizedUserSkills = typeof userSkills === 'string' ? userSkills.trim() : '';
+  const normalizedTargetRole = typeof targetRole === 'string' ? targetRole.trim() : '';
+
+  if (!normalizedUserSkills || !normalizedTargetRole) {
+    throw new ApiError(400, 'User skills and target role are required');
+  }
+
+  if (normalizedUserSkills.length > 4000 || normalizedTargetRole.length > 1000) {
+    throw new ApiError(400, 'Input exceeds allowed length');
+  }
+
+  try {
+    const result = await analyzeSkillsGap(normalizedUserSkills, normalizedTargetRole);
+    res.json(result);
+  } catch (error) {
+    console.error('Skills gap analysis error:', error);
+    throw new ApiError(500, 'Failed to analyze skills gap. Please try again.');
   }
 }));
 

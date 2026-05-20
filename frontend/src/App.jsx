@@ -24,6 +24,7 @@ import { Community, NotFound } from './pages';
 import InterviewPrep from './pages/InterviewPrep';
 import UserProfile from './pages/UserProfile';
 import EmailGenerator from './pages/EmailGenerator';
+import SkillsGapAnalyzer from './components/SkillsGapAnalyzer';
 import LinkedInOptimizer from './pages/LinkedInOptimizer';
 import FellowshipLayout from './pages/fellowship/FellowshipLayout';
 import Onboarding from './pages/fellowship/Onboarding';
@@ -152,6 +153,7 @@ function App() {
               <Route path="/profile/:uid" element={<ProtectedRoute><UserProfile /></ProtectedRoute>} />
               <Route path="/security" element={<ProtectedRoute><SecuritySettings /></ProtectedRoute>} />
               <Route path="/email-generator" element={<ProtectedRoute><EmailGenerator /></ProtectedRoute>} />
+              <Route path="/skills-gap" element={<ProtectedRoute><SkillsGapAnalyzer /></ProtectedRoute>} />
               <Route path="/linkedin-optimizer" element={<ProtectedRoute><LinkedInOptimizer /></ProtectedRoute>} />
               <Route path="/settings" element={<ProtectedRoute><Settings /></ProtectedRoute>} />
 
