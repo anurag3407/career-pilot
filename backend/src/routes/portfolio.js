@@ -3,6 +3,9 @@ import fs from 'fs/promises';
 import { verifyToken } from '../middleware/auth.js';
 import { asyncHandler, ApiError } from '../middleware/errorHandler.js';
 import cacheHeaders from '../middleware/cacheHeaders.js';
+import { validateToken as validateCloudflareToken } from '../services/deploy/cloudflareDeployer.js';
+import { validateToken as validateGithubToken } from '../services/deploy/githubPagesDeployer.js';
+import { validateToken as validateNetlifyToken } from '../services/deploy/netlifyDeployer.js';
 import { enhanceSection } from '../services/ai/portfolioContentEnhancer.js';
 import { generateRobotsTxt, generateSitemapXml } from '../utils/sitemapGenerator.js';
 
@@ -74,7 +77,6 @@ router.post('/enhance-portfolio-content', verifyToken, asyncHandler(async (req, 
   });
 }));
 
-router.get('/public/:slug/sitemap.xml', sitemapCache, asyncHandler(async (req, res) => {
 /**
  * POST /api/portfolio/:id/performance
  * Analyze or track portfolio performance metrics
@@ -83,13 +85,9 @@ router.post('/:id/performance', verifyToken, asyncHandler(async (req, res) => {
   const { id } = req.params;
   const { htmlSizeKB, cssSizeKB, imageSizeMB, externalRequests, cssSelectors, fontStrategy } = req.body;
 
-  // Validate basic payload presence
   if (!htmlSizeKB && !cssSizeKB && !imageSizeMB) {
     throw new ApiError(400, 'Performance metrics payload is required.');
   }
-
-  // TODO: Connect to a metrics controller or service here
-  // For now, return a successful stub response acknowledging the data
 
   res.status(200).json({
     success: true,
@@ -102,13 +100,13 @@ router.post('/:id/performance', verifyToken, asyncHandler(async (req, res) => {
         imageSizeMB,
         externalRequests,
         cssSelectors,
-        fontStrategy
-      }
-    }
+        fontStrategy,
+      },
+    },
   });
 }));
 
-router.get('/public/:slug/sitemap.xml', asyncHandler(async (req, res) => {
+router.get('/public/:slug/sitemap.xml', sitemapCache, asyncHandler(async (req, res) => {
   const { slug } = req.params;
   assertValidPortfolioSlug(slug);
 
@@ -151,6 +149,30 @@ router.get('/public/:slug/robots.txt', publicPortfolioCache, asyncHandler(async 
     .send(generateRobotsTxt({ sitemapUrl }));
 }));
 
+const TOKEN_VALIDATORS = {
+  cloudflare: (token) => validateCloudflareToken(token),
+  github: (token) => validateGithubToken(token),
+  netlify: (token) => validateNetlifyToken(token),
+};
+
+/**
+ * POST /api/portfolio/validate-token
+ * Check whether a deploy provider token is valid before deployment.
+ * Body: { provider: 'cloudflare' | 'github' | 'netlify', token?: string }
+ * Cloudflare reads its token from the server environment — no token param needed.
+ */
+router.post('/validate-token', verifyToken, asyncHandler(async (req, res) => {
+  const { provider, token } = req.body ?? {};
+
+  if (!provider || !TOKEN_VALIDATORS[provider]) {
+    throw new ApiError(400, `provider must be one of: ${Object.keys(TOKEN_VALIDATORS).join(', ')}`);
+  }
+
+  const result = await TOKEN_VALIDATORS[provider](token);
+
+  res.status(200).json({ success: true, provider, ...result });
+}));
+
 router.get('/:slug/bandwidth', asyncHandler(async (req, res) => {
   const { slug } = req.params;
 
@@ -162,7 +184,6 @@ router.get('/:slug/bandwidth', asyncHandler(async (req, res) => {
     throw new ApiError(404, 'Portfolio template not found.');
   }
 
-  // Placeholder analytics estimation until real tracking is implemented
   const estimatedPageSizeKB = 500;
   const monthlyViews = 1200;
 
@@ -187,4 +208,5 @@ router.get('/:slug/bandwidth', asyncHandler(async (req, res) => {
     },
   });
 }));
+
 export default router;
