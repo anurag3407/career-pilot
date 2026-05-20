@@ -11,6 +11,8 @@ import {
     deleteJobAlertFromFirebase,
     saveUserToFirebase 
 } from '../services/firebaseDataService.js';
+import { validate } from '../middleware/validate.js';
+import { createJobAlertSchema, updateJobAlertSchema } from '../schemas/jobAlerts.schema.js';
 
 const router = express.Router();
 const enableDebugRoutes = process.env.NODE_ENV !== 'production';
@@ -109,7 +111,7 @@ router.get('/:id', verifyToken, asyncHandler(async (req, res) => {
 }));
 
 
-router.post('/', verifyToken, asyncHandler(async (req, res) => {
+router.post('/', verifyToken, validate(createJobAlertSchema), asyncHandler(async (req, res) => {
     const userId = req.user.uid;
     const userEmail = req.user.email;
     const userName = req.user.name || req.user.displayName || 'Job Seeker';
@@ -192,7 +194,7 @@ router.post('/', verifyToken, asyncHandler(async (req, res) => {
  * PUT /api/job-alerts/:id
  * Update an existing job alert
  */
-router.put('/:id', verifyToken, asyncHandler(async (req, res) => {
+router.put('/:id', verifyToken, validate(updateJobAlertSchema), asyncHandler(async (req, res) => {
     const { id } = req.params;
     const userId = req.user.uid;
 
