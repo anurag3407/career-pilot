@@ -327,15 +327,30 @@ export const getPosts = async (req, res, next) => {
 
     const hasDateFilter = startDate || endDate;
 
-    if (hasDateFilter) {
-      let dateQuery = query;
-      if (startDate) {
-        dateQuery = dateQuery.where('createdAt', '>=', new Date(startDate));
+    let parsedStartDate = null;
+    let parsedEndDate = null;
+    if (startDate) {
+      parsedStartDate = new Date(startDate);
+      if (isNaN(parsedStartDate.getTime())) parsedStartDate = null;
+    }
+    if (endDate) {
+      parsedEndDate = new Date(endDate);
+      if (!isNaN(parsedEndDate.getTime())) {
+        parsedEndDate.setHours(23, 59, 59, 999);
+      } else {
+        parsedEndDate = null;
       }
-      if (endDate) {
-        const endOfDay = new Date(endDate);
-        endOfDay.setHours(23, 59, 59, 999);
-        dateQuery = dateQuery.where('createdAt', '<=', endOfDay);
+    }
+
+    const hasValidDateFilter = parsedStartDate || parsedEndDate;
+
+    if (hasValidDateFilter) {
+      let dateQuery = query;
+      if (parsedStartDate) {
+        dateQuery = dateQuery.where('createdAt', '>=', parsedStartDate);
+      }
+      if (parsedEndDate) {
+        dateQuery = dateQuery.where('createdAt', '<=', parsedEndDate);
       }
 
       const snapshot = await dateQuery.limit(maxLimit * 2).get();
