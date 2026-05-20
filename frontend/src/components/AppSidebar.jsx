@@ -9,6 +9,7 @@ import {
     GraduationCap,
     Users,
     FileText,
+    Globe,
     LogOut,
     Settings,
     User,
@@ -64,6 +65,11 @@ const navLinks = [
         label: "Resume",
         href: "/upload",
         icon: <FileText className="w-5 h-5 flex-shrink-0" />,
+    },
+    {
+        label: "Portfolio",
+        href: "/portfolio",
+        icon: <Globe className="w-5 h-5 flex-shrink-0" />,
     },
     {
         label: "Profile",
