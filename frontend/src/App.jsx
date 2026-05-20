@@ -1,3 +1,41 @@
+import { BrowserRouter, Routes, Route, Navigate } from 'react-router-dom'
+import { Toaster } from 'react-hot-toast'
+import { AuthProvider, useAuth } from './context/AuthContext'
+import { SocketProvider } from './context/SocketContext'
+import { ThemeProvider } from './context/ThemeContext'
+import AppLayout from './components/AppLayout'
+import Footer from './components/ui/Footer'
+
+import Home from './pages/Home'
+import Login from './pages/Login'
+import Register from './pages/Register'
+import Dashboard from './pages/Dashboard'
+import Upload from './pages/Upload'
+import Enhance from './pages/Enhance'
+import ResumeView from './pages/ResumeView'
+import JobSearch from './pages/JobSearch'
+import JobAlerts from './pages/JobAlerts'
+import JobTracker from './pages/JobTracker'
+import { Community, NotFound } from './pages'
+import InterviewPrep from './pages/InterviewPrep'
+import UserProfile from './pages/UserProfile'
+import EmailGenerator from './pages/EmailGenerator'
+import LinkedInOptimizer from './pages/LinkedInOptimizer'
+import FellowshipLayout from './pages/fellowship/FellowshipLayout'
+import Onboarding from './pages/fellowship/Onboarding'
+import Challenges from './pages/fellowship/Challenges'
+import Settings from './pages/Settings'
+import ChallengeDetail from './pages/fellowship/ChallengeDetail'
+import CreateChallenge from './pages/fellowship/CreateChallenge'
+import MyProposals from './pages/fellowship/MyProposals'
+import MyChallenges from './pages/fellowship/MyChallenges'
+import ChallengeProposals from './pages/fellowship/ChallengeProposals'
+import Verify from './pages/fellowship/Verify'
+import FellowshipMessages from './pages/fellowship/FellowshipMessages'
+import FellowshipChat from './pages/fellowship/FellowshipChat'
+import SecuritySettings from './pages/SecuritySettings'
+import LinkedInCallback from './pages/LinkedInCallback'
+import Deployments from './pages/Deployments'
 import TemplateGallery from "./pages/TemplateGallery";
 import { BrowserRouter, Routes, Route, Navigate } from 'react-router-dom';
 import { Toaster } from 'react-hot-toast';
@@ -7,6 +45,7 @@ import { ThemeProvider } from './context/ThemeContext';
 import AppLayout from './components/AppLayout';
 import Footer from './components/ui/Footer';
 
+import CommandPalette from './components/CommandPalette';
 import Home from './pages/Home';
 import Login from './pages/Login';
 import Register from './pages/Register';
@@ -16,6 +55,8 @@ import Enhance from './pages/Enhance';
 import ResumeView from './pages/ResumeView';
 import JobSearch from './pages/JobSearch';
 import JobAlerts from './pages/JobAlerts';
+
+
 import JobTracker from './pages/JobTracker';
 import { Community, NotFound } from './pages';
 import InterviewPrep from './pages/InterviewPrep';
@@ -61,6 +102,7 @@ function ProtectedRoute({ children }) {
   return <AppLayout>{children}</AppLayout>;
 }
 
+
 function PublicRoute({ children }) {
   const { user, loading } = useAuth();
 
@@ -83,12 +125,26 @@ function PublicRoute({ children }) {
 }
 
 function App() {
+  const [isCommandPaletteOpen, setIsCommandPaletteOpen] = useState(false);
+  const isAuthenticated = localStorage.getItem('firebase:authUser') !== null;
+  useEffect(() => {
+  if (!isAuthenticated) return;
+  const handleKeyDown = (e) => {
+    if ((e.metaKey || e.ctrlKey) && e.key.toLowerCase() === 'k') {
+      e.preventDefault();
+      setIsCommandPaletteOpen((prev) => !prev);
+    }
+  };
+  window.addEventListener('keydown', handleKeyDown);
+  return () => window.removeEventListener('keydown', handleKeyDown);
+}, [isAuthenticated]);
   return (
     <ThemeProvider>
       <AuthProvider>
         <SocketProvider>
           <BrowserRouter>
             <div className="bg-mesh" />
+            {isAuthenticated && (<CommandPalette isOpen={isCommandPaletteOpen} setIsOpen={setIsCommandPaletteOpen}/>)}
             <Toaster
               position="top-right"
               toastOptions={{
@@ -144,6 +200,7 @@ function App() {
               <Route path="/security" element={<ProtectedRoute><SecuritySettings /></ProtectedRoute>} />
               <Route path="/email-generator" element={<ProtectedRoute><EmailGenerator /></ProtectedRoute>} />
               <Route path="/linkedin-optimizer" element={<ProtectedRoute><LinkedInOptimizer /></ProtectedRoute>} />
+              <Route path="/deployments" element={<ProtectedRoute><Deployments /></ProtectedRoute>} />
               <Route path="/settings" element={<ProtectedRoute><Settings /></ProtectedRoute>} />
 
               {/* Nested Fellowship Routes */}
