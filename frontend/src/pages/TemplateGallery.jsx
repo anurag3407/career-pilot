@@ -1,5 +1,6 @@
 import { useState } from "react";
 import DeployModal from "../components/portfolio/DeployModal";
+import ThemeSelector from "../components/portfolio/ThemeSelector";
 
 export default function TemplateGallery() {
   const templates = [
@@ -46,6 +47,7 @@ export default function TemplateGallery() {
   const [colorScheme, setColorScheme] = useState("All");
   const [layout, setLayout] = useState("All");
   const [sort, setSort] = useState("Popular");
+  const [selectedTheme, setSelectedTheme] = useState("minimal");
   
   // State for deployment modal
   const [isDeployModalOpen, setIsDeployModalOpen] = useState(false);
@@ -70,6 +72,19 @@ export default function TemplateGallery() {
   return (
     <div className="min-h-screen bg-black text-white p-8">
       <h1 className="text-4xl font-bold mb-8">Template Gallery</h1>
+
+      <div className="mb-8 rounded-2xl border border-zinc-800 bg-zinc-950/70 p-5">
+        <div className="mb-4 flex items-center justify-between gap-4">
+          <div>
+            <h2 className="text-xl font-semibold">Portfolio theme</h2>
+            <p className="text-sm text-gray-400">Pick a theme before deploying. Premium themes are shown and locked in the live gallery flow.</p>
+          </div>
+          <span className="rounded-full border border-zinc-700 bg-zinc-900 px-3 py-1 text-xs text-zinc-300">
+            Selected: {selectedTheme}
+          </span>
+        </div>
+        <ThemeSelector selectedTheme={selectedTheme} onSelectTheme={setSelectedTheme} />
+      </div>
 
       {/* Filters and Sort Controls */}
       <div className="flex flex-wrap gap-4 mb-8">
