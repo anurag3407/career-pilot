@@ -14,6 +14,7 @@ export const verifyToken = async (req, res, next) => {
 
     try {
       const decodedToken = await admin.auth().verifyIdToken(token);
+
       req.user = {
         uid: decodedToken.uid,
         email: decodedToken.email,
@@ -21,17 +22,19 @@ export const verifyToken = async (req, res, next) => {
         picture: decodedToken.picture || null,
         emailVerified: decodedToken.email_verified
       };
+
       next();
     } catch (firebaseError) {
-       if (firebaseError?.code === 'app/no-app') {
+      if (firebaseError?.code === 'app/no-app') {
         console.error('Firebase Admin not configured');
+
         throw new ApiError(
           500,
           'Firebase Admin not configured'
         );
-      } else {
-        throw new ApiError(401, 'Invalid or expired token');
       }
+
+      throw new ApiError(401, 'Invalid or expired token');
     }
   } catch (error) {
     next(error);
@@ -52,6 +55,7 @@ export const optionalAuth = async (req, res, next) => {
 
     try {
       const decodedToken = await admin.auth().verifyIdToken(token);
+
       req.user = {
         uid: decodedToken.uid,
         email: decodedToken.email,
@@ -59,12 +63,22 @@ export const optionalAuth = async (req, res, next) => {
         picture: decodedToken.picture || null,
         emailVerified: decodedToken.email_verified
       };
+
+      next();
     } catch (error) {
+      if (error?.code === 'app/no-app') {
+        console.error('Firebase Admin not configured');
+
+        throw new ApiError(
+          500,
+          'Firebase Admin not configured'
+        );
+      }
+
       req.user = null;
+      next();
     }
-    next();
   } catch (error) {
-    req.user = null;
-    next();
+    next(error);
   }
 };
