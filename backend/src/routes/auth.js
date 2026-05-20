@@ -13,17 +13,15 @@ import crypto from 'crypto';
 import { updateNotificationPrefsSchema } from '../schemas/auth.schema.js';
 
 const router = express.Router();
+
+// Holds CSRF-protection state params for the LinkedIn OAuth initiation flow (10-min TTL)
 const stateStore = new Map();
 
-// Example register endpoint with validation
-router.post('/register', validate(registerSchema), asyncHandler(async (req, res) => {
-  res.status(201).json({
-    success: true,
-    message: 'User registered successfully'
-  });
-}));
+// Holds single-use Firebase custom tokens keyed by a short-lived exchange code (60-sec TTL).
+// Tokens are never placed in redirect URLs — the frontend fetches them via GET /linkedin/token.
+const linkedInTokenStore = new Map();
 
-// Periodic sweep of expired stateStore entries every 10 minutes to prevent memory leaks
+// Sweep expired stateStore entries every 10 minutes to prevent memory leaks
 setInterval(() => {
   const now = Date.now();
   for (const [state, expiry] of stateStore.entries()) {
@@ -32,6 +30,16 @@ setInterval(() => {
     }
   }
 }, 10 * 60 * 1000).unref();
+
+// Sweep expired linkedInTokenStore entries every 60 seconds
+setInterval(() => {
+  const now = Date.now();
+  for (const [code, { expiresAt }] of linkedInTokenStore.entries()) {
+    if (now > expiresAt) {
+      linkedInTokenStore.delete(code);
+    }
+  }
+}, 60 * 1000).unref();
 
 
 // Verify token endpoint — loginProtection tracks failed attempts per IP
@@ -182,7 +190,38 @@ router.get('/linkedin/callback', asyncHandler(async (req, res) => {
     linkedinId
   });
 
-  res.redirect(`${frontendUrl}/auth/linkedin/callback?token=${customToken}&isNew=${!mongoUser}`);
+  const exchangeCode = crypto.randomBytes(24).toString('hex');
+  linkedInTokenStore.set(exchangeCode, {
+    token: customToken,
+    isNew: !mongoUser,
+    expiresAt: Date.now() + 60 * 1000,
+  });
+
+  res.redirect(`${frontendUrl}/auth/linkedin/callback?code=${exchangeCode}`);
+}));
+
+// One-time token exchange endpoint — the frontend calls this immediately after the OAuth
+// redirect to retrieve the Firebase custom token without it appearing in a URL,
+// server access log, browser history, or Referer header.
+// No verifyToken here — the user is mid-authentication and has no Firebase token yet.
+// The exchange code (192-bit entropy, 60-sec TTL, single-use) is the security boundary.
+router.get('/linkedin/token', asyncHandler(async (req, res) => {
+  const { code } = req.query;
+
+  if (!code || typeof code !== 'string') {
+    return res.status(400).json({ success: false, error: 'Exchange code is required' });
+  }
+
+  const entry = linkedInTokenStore.get(code);
+
+  if (!entry || Date.now() > entry.expiresAt) {
+    linkedInTokenStore.delete(code);
+    return res.status(400).json({ success: false, error: 'Invalid or expired exchange code' });
+  }
+
+  linkedInTokenStore.delete(code);
+
+  res.json({ success: true, token: entry.token, isNew: entry.isNew });
 }));
 
 export default router;
