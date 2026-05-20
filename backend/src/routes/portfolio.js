@@ -107,6 +107,25 @@ router.post(
   })
 );
 
+  if (content === null || Array.isArray(content) || typeof content !== 'object') {
+  throw new ApiError(400, 'content must be a non-null object.');
+}
+
+  const result = await enhanceSection(sectionType, content);
+
+  res.status(200).json({
+    success: true,
+    message: 'Enhancement suggestion generated. Review before applying.',
+    data: {
+      sectionType: result.sectionType,
+      before: result.original,
+      after: result.enhanced,
+      improvements: result.improvements,
+    },
+  });
+}));
+
+// router.get('/public/:slug/sitemap.xml', sitemapCache, asyncHandler(async (req, res) => {
 /**
  * POST /api/portfolio/:id/performance
  */
