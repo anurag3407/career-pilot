@@ -8,11 +8,8 @@ import { validateToken as validateGithubToken } from '../services/deploy/githubP
 import { validateToken as validateNetlifyToken } from '../services/deploy/netlifyDeployer.js';
 import { enhanceSection } from '../services/ai/portfolioContentEnhancer.js';
 import { generateRobotsTxt, generateSitemapXml } from '../utils/sitemapGenerator.js';
-
+import { analyzeAccessibility } from '../services/accessibilityChecker.js';
 const router = express.Router();
-
-const publicPortfolioCache = cacheHeaders({ maxAge: 300 });
-const sitemapCache = cacheHeaders({ maxAge: 86400 });
 
 const VALID_SECTIONS = ['hero', 'projects', 'about', 'skills'];
 
@@ -128,7 +125,11 @@ router.post(
   });
 }));
 
+router.get('/public/:slug/sitemap.xml', asyncHandler(async (req, res) => {
+  const { slug } = req.params;
+  assertValidPortfolioSlug(slug);
 
+  let templateStat;
 /**
  * POST /api/portfolio/:id/performance
  */
@@ -294,117 +295,67 @@ router.get(
       );
     }
 
-    const sitemapXml =
-      generateSitemapXml({
-        baseUrl:
-          getPublicPortfolioBaseUrl(req),
-        slug,
-        portfolioPath:
-          '/portfolio/public',
-        portfolioUpdatedAt:
-          templateStat.mtime,
-      });
+  try {
+    templateStat = await fs.stat(getPortfolioTemplatePath(slug));
+  } catch {
+    throw new ApiError(404, 'Portfolio template not found.');
+  }
 
-    res
-      .status(200)
-      .type('application/xml')
-      .send(sitemapXml);
-  })
-);
+  const sitemapXml = generateSitemapXml({
+    baseUrl: getPublicPortfolioBaseUrl(req),
+    slug,
+    portfolioPath: '/portfolio/public',
+    portfolioUpdatedAt: templateStat.mtime,
+  });
 
-/**
- * GET robots.txt
- */
-router.get(
-  '/public/:slug/robots.txt',
-  publicPortfolioCache,
-  asyncHandler(async (req, res) => {
-    const { slug } = req.params;
+  res
+    .status(200)
+    .type('application/xml')
+    .send(sitemapXml);
+}));
 
-    assertValidPortfolioSlug(slug);
+router.get('/public/:slug/robots.txt', asyncHandler(async (req, res) => {
+  const { slug } = req.params;
+  assertValidPortfolioSlug(slug);
 
-    try {
-      await fs.stat(
-        getPortfolioTemplatePath(slug)
-      );
-    } catch {
-      throw new ApiError(
-        404,
-        'Portfolio template not found.'
-      );
-    }
-
+  try {
+    await fs.stat(getPortfolioTemplatePath(slug));
+  } catch {
+    throw new ApiError(404, 'Portfolio template not found.');
+  }
   const estimatedPageSizeKB = 500;
   const monthlyViews = 1200;
     const sitemapUrl =
       `${getApiBaseUrl(req)}/api/portfolio/public/${encodeURIComponent(slug)}/sitemap.xml`;
 
-    res
-      .status(200)
-      .type('text/plain')
-      .send(
-        generateRobotsTxt({
-          sitemapUrl,
-        })
-      );
-  })
-);
+  const sitemapUrl = `${getApiBaseUrl(req)}/api/portfolio/public/${encodeURIComponent(slug)}/sitemap.xml`;
 
-/**
- * GET bandwidth analytics
- */
+  res
+    .status(200)
+    .type('text/plain')
+    .send(generateRobotsTxt({ sitemapUrl }));
+}));
 router.get(
-  '/:slug/bandwidth',
+  '/public/:slug/accessibility',
   asyncHandler(async (req, res) => {
     const { slug } = req.params;
-
     assertValidPortfolioSlug(slug);
-
+    const templatePath = getPortfolioTemplatePath(slug);
+    let html;
     try {
-      await fs.stat(
-        getPortfolioTemplatePath(slug)
-      );
+      html = await fs.readFile(templatePath, 'utf-8');
     } catch {
-      throw new ApiError(
-        404,
-        'Portfolio template not found.'
-      );
+      throw new ApiError(404, 'Portfolio template not found.');
     }
-
-    const estimatedPageSizeKB = 500;
-    const monthlyViews = 1200;
-
-    const bandwidthUsageMB =
-      (estimatedPageSizeKB *
-        monthlyViews) /
-      1024;
-
-    const FREE_TIER_LIMIT_MB =
-      102400;
-
-    const usagePercentage =
-      (bandwidthUsageMB /
-        FREE_TIER_LIMIT_MB) *
-      100;
-
+    const report = await analyzeAccessibility(html);
     res.status(200).json({
       success: true,
-      data: {
-        slug,
-        estimatedPageSizeKB,
-        monthlyViews,
-        bandwidthUsageMB:
-          bandwidthUsageMB.toFixed(2),
-        freeTierLimitMB:
-          FREE_TIER_LIMIT_MB,
-        usagePercentage:
-          usagePercentage.toFixed(2),
-        warning:
-          usagePercentage >= 80,
-      },
+      slug,
+      data: report,
     });
   })
 );
+export default router;
 
   res.status(200).json({
     success: true,
