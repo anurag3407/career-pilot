@@ -3,6 +3,7 @@ import OpenAI from 'openai';
 import Groq from 'groq-sdk';
 import dotenv from 'dotenv';
 import { OpenRouterAdapter } from './providers/openrouter.js';
+import { aiCallsCounter } from '../middleware/metrics.js';
 
 dotenv.config();
 
@@ -36,6 +37,7 @@ class GeminiAdapter {
   }
 
   async generateContent(prompt) {
+    aiCallsCounter.inc({ provider: this.providerName });
     const result = await this.model.generateContent(prompt);
     const response = await result.response;
     const text = response.text();
@@ -75,6 +77,7 @@ class OpenAIAdapter {
   }
 
   async generateContent(prompt) {
+    aiCallsCounter.inc({ provider: this.providerName });
     const completion = await this.client.chat.completions.create({
       model: this.modelName,
       messages: [{ role: 'user', content: prompt }],
@@ -121,6 +124,7 @@ class GroqAdapter {
   }
 
   async generateContent(prompt) {
+    aiCallsCounter.inc({ provider: this.providerName });
     const completion = await this.client.chat.completions.create({
       model: this.modelName,
       messages: [{ role: 'user', content: prompt }],

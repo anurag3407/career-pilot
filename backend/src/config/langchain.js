@@ -1,5 +1,7 @@
 import { getDefaultProvider } from './aiProviders.js';
 import dotenv from 'dotenv';
+import { GoogleGenerativeAI } from '@google/generative-ai';
+import { aiCallsCounter } from '../middleware/metrics.js';
 
 dotenv.config();
 
@@ -18,7 +20,13 @@ const getModel = () => {
     throw err;
   }
   const genAI = new GoogleGenerativeAI(geminiApiKey);
-  _model = genAI.getGenerativeModel({ model: 'gemini-2.5-flash' });
+  const rawModel = genAI.getGenerativeModel({ model: 'gemini-2.5-flash' });
+  _model = {
+    generateContent: async (prompt) => {
+      aiCallsCounter.inc({ provider: 'gemini' });
+      return await rawModel.generateContent(prompt);
+    }
+  };
   return _model;
 };
 

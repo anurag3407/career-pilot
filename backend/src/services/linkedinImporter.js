@@ -2,6 +2,8 @@
 // Free tier: 10 credits. Paid: ~$0.01/profile. No scraping, no bot detection.
 // Set PROXYCURL_API_KEY in .env to enable.
 
+import { jobsScrapedCounter } from '../middleware/metrics.js';
+
 const PROXYCURL_ENDPOINT = 'https://nubela.co/proxycurl/api/v2/linkedin';
 
 export const scrapeLinkedInProfile = async (url) => {
@@ -35,6 +37,10 @@ export const scrapeLinkedInProfile = async (url) => {
   }
 
   const data = await response.json();
+
+  jobsScrapedCounter.inc({
+    source: "linkedin",
+  });
 
   // Map Proxycurl response to our internal profile shape
   const experience = (data.experiences || []).map((exp) => ({
