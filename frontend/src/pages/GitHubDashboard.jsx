@@ -1,4 +1,4 @@
-import { useState, useMemo, useEffect } from 'react'
+import { useState, useMemo } from 'react'
 import { motion } from 'framer-motion'
 import { 
   Search, 
@@ -6,74 +6,34 @@ import {
   Star, 
   GitFork, 
   Folder, 
-  ArrowUpDown,
-  Loader2
+  ArrowUpDown
 } from 'lucide-react'
-import toast from 'react-hot-toast'
+
+const INITIAL_REPOSITORIES = [
+  { id: 1, name: 'ultimate-health', language: 'JavaScript', type: 'source', visibility: 'public', stars: 24, size: 1200, updatedAt: '2026-05-18T10:00:00Z', description: 'A health content delivery network application.' },
+  { id: 2, name: 'career-pilot', language: 'JavaScript', type: 'source', visibility: 'public', stars: 156, size: 4500, updatedAt: '2026-05-19T14:30:00Z', description: 'AI-powered resume optimizer and job application tracker.' },
+  { id: 3, name: 'react-framer-motion-demo', language: 'TypeScript', type: 'fork', visibility: 'public', stars: 5, size: 850, updatedAt: '2026-04-12T08:15:00Z', description: 'Forked repository containing animation prototypes.' },
+  { id: 4, name: 'secure-auth-service', language: 'Java', type: 'source', visibility: 'private', stars: 12, size: 3100, updatedAt: '2026-05-01T19:00:00Z', description: 'Internal token authentication microservice.' },
+  { id: 5, name: 'data-structures-practice', language: 'C++', type: 'source', visibility: 'public', stars: 42, size: 500, updatedAt: '2026-05-15T11:20:00Z', description: 'Competitive programming solutions and algorithms.' },
+  { id: 6, name: 'machine-learning-model', language: 'Python', type: 'source', visibility: 'public', stars: 89, size: 8200, updatedAt: '2026-05-10T16:45:00Z', description: 'Predictive analytics model built using scikit-learn and pandas.' },
+  { id: 7, name: 'portfolio-website', language: 'HTML', type: 'source', visibility: 'public', stars: 18, size: 400, updatedAt: '2026-05-14T22:10:00Z', description: 'Personal developer portfolio website built with HTML and CSS.' },
+  { id: 8, name: 'utility-style-library', language: 'CSS', type: 'fork', visibility: 'public', stars: 3, size: 950, updatedAt: '2026-03-25T07:30:00Z', description: 'Custom responsive grid and layout utility classes.' }
+]
 
 export default function GitHubDashboard() {
-  // Real data state
-  const [repositories, setRepositories] = useState([])
-  const [loading, setLoading] = useState(true)
-
-  // Client-side control states for search and filters
+  const [repositories] = useState(INITIAL_REPOSITORIES)
   const [searchTerm, setSearchTerm] = useState('')
   const [selectedLanguage, setSelectedLanguage] = useState('All')
   const [selectedType, setSelectedType] = useState('all') 
   const [selectedVisibility, setSelectedVisibility] = useState('all') 
   const [sortBy, setSortBy] = useState('stars') 
 
-  // Fetch data cleanly on mount with StrictMode protection
-  useEffect(() => {
-    const controller = new AbortController()
-    
-    const fetchUserRepositories = async () => {
-      try {
-        setLoading(true)
-        const response = await fetch('/api/github/repositories', { signal: controller.signal })
-        
-        if (!response.ok) {
-          throw new Error('Failed to load repositories')
-        }
-        
-        const data = await response.json()
-        setRepositories(Array.isArray(data) ? data : data.repositories || [])
-      } catch (error) {
-        // If the request was aborted by React StrictMode, do nothing silently
-        if (error.name === 'AbortError') return
-
-        console.error('Error fetching repositories:', error)
-        
-        // Single toast check preventing toast duplicate stacking
-        toast.dismiss() 
-        toast.error('Local Environment: Displaying active snapshot preview.')
-        
-        // Solid fallback dashboard simulation layout state
-        setRepositories([
-          { id: 1, name: 'ultimate-health', language: 'JavaScript', type: 'source', visibility: 'public', stars: 24, size: 1200, updatedAt: '2026-05-18T10:00:00Z', description: 'A health content delivery network application.' },
-          { id: 2, name: 'career-pilot', language: 'JavaScript', type: 'source', visibility: 'public', stars: 156, size: 4500, updatedAt: '2026-05-19T14:30:00Z', description: 'AI-powered resume optimizer and job application tracker.' },
-          { id: 3, name: 'react-framer-motion-demo', language: 'TypeScript', type: 'fork', visibility: 'public', stars: 5, size: 850, updatedAt: '2026-04-12T08:15:00Z', description: 'Forked repository containing animation prototypes.' },
-          { id: 4, name: 'secure-auth-service', language: 'Java', type: 'source', visibility: 'private', stars: 0, size: 3100, updatedAt: '2026-05-01T19:00:00Z', description: 'Internal token authentication microservice.' },
-          { id: 5, name: 'data-structures-practice', language: 'C++', type: 'source', visibility: 'public', stars: 42, size: 500, updatedAt: '2026-05-15T11:20:00Z', description: 'Competitive programming solutions and algorithms.' }
-        ])
-      } finally {
-        setLoading(false)
-      }
-    }
-
-    fetchUserRepositories()
-
-    // Cleanup cancels pending operations safely on unexpected unmounts
-    return () => controller.abort()
-  }, [])
-
-  // 1. Unique languages dynamically mapped
   const languagesList = useMemo(() => {
-    const langs = repositories.map(repo => repo.language).filter(Boolean)
-    return ['All', ...new Set(langs)]
+    const dynamicLangs = repositories.map(repo => repo.language).filter(Boolean)
+    const standardLangs = ['JavaScript', 'TypeScript', 'Python', 'Java', 'C++', 'HTML', 'CSS', 'Go', 'Ruby']
+    return ['All', ...new Set([...standardLangs, ...dynamicLangs])]
   }, [repositories])
 
-  // 2. Pure Client-side Filter Configuration
   const filteredAndSortedRepos = useMemo(() => {
     return repositories
       .filter(repo => {
@@ -93,20 +53,10 @@ export default function GitHubDashboard() {
       })
   }, [repositories, searchTerm, selectedLanguage, selectedType, selectedVisibility, sortBy])
 
-  if (loading) {
-    return (
-      <div className="min-h-screen bg-background flex flex-col items-center justify-center gap-3">
-        <Loader2 className="w-10 h-10 text-primary animate-spin" />
-        <p className="text-sm font-medium text-muted-foreground animate-pulse">Syncing repositories...</p>
-      </div>
-    )
-  }
-
   return (
     <div className="min-h-screen bg-background text-foreground p-6 md:p-10">
       <div className="max-w-7xl mx-auto">
         
-        {/* Header Section */}
         <div className="mb-8">
           <h1 className="text-3xl font-black tracking-tight mb-2 flex items-center gap-2">
             <Folder className="w-8 h-8 text-primary" /> GitHub Repository Dashboard
@@ -116,11 +66,9 @@ export default function GitHubDashboard() {
           </p>
         </div>
 
-        {/* Filter and Search Bar Section */}
         <div className="bg-card border border-border p-5 rounded-2xl shadow-sm mb-8 space-y-4">
           <div className="grid grid-cols-1 md:grid-cols-4 gap-4">
             
-            {/* Search Input Control */}
             <div className="relative md:col-span-2">
               <Search className="absolute left-3.5 top-1/2 -translate-y-1/2 w-4 h-4 text-muted-foreground" />
               <input
@@ -132,7 +80,6 @@ export default function GitHubDashboard() {
               />
             </div>
 
-            {/* Sort Dropdown Option */}
             <div className="relative">
               <ArrowUpDown className="absolute left-3 top-1/2 -translate-y-1/2 w-4 h-4 text-muted-foreground" />
               <select
@@ -147,7 +94,6 @@ export default function GitHubDashboard() {
               </select>
             </div>
 
-            {/* Language Dropdown */}
             <div className="relative">
               <Filter className="absolute left-3 top-1/2 -translate-y-1/2 w-4 h-4 text-muted-foreground" />
               <select
@@ -162,7 +108,6 @@ export default function GitHubDashboard() {
             </div>
           </div>
 
-          {/* Quick Sub-Filters Row */}
           <div className="flex flex-wrap gap-6 text-xs font-semibold pt-2 border-t border-border/40">
             <div className="flex items-center gap-2">
               <span className="text-muted-foreground">Type:</span>
@@ -200,7 +145,6 @@ export default function GitHubDashboard() {
           </div>
         </div>
 
-        {/* Repositories Display Grid */}
         {filteredAndSortedRepos.length === 0 ? (
           <div className="text-center py-16 border border-dashed border-border rounded-2xl bg-card/40">
             <p className="text-muted-foreground font-medium text-sm">No repositories found matching your filters.</p>
@@ -246,7 +190,7 @@ export default function GitHubDashboard() {
                       <Star className="w-3.5 h-3.5 text-amber-500 fill-amber-500" /> {repo.stars}
                     </span>
                     {repo.type === 'fork' && (
-                      <GitFork className="w-3.5 h-3.5 text-primary" title="Forked repository" />
+                      <GitFork className="w-3.5 h-3.5 text-primary" />
                     )}
                   </div>
                   <span className="text-[11px] font-medium">
