@@ -60,7 +60,7 @@ export default function SearchInput({
   };
 
   return (
-    <div className={cn("mb-6", wrapperClassName)}>
+    <div className={cn(wrapperClassName)}>
       {/* Label only rendered when the label prop is provided */}
       {label && (
         <label
@@ -100,7 +100,7 @@ export default function SearchInput({
             "disabled:bg-muted disabled:cursor-not-allowed disabled:opacity-50",
             "pl-10 pr-10", // room for icons on both sides
             error ? "border-destructive/50 focus:ring-destructive/20" : "",
-            inputClassName,
+            inputClassName, 
           )}
         />
 
