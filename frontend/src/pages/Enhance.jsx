@@ -3,7 +3,6 @@ import { useParams, useNavigate } from 'react-router-dom'
 import toast from 'react-hot-toast'
 import { motion } from 'framer-motion'
 import { resumeApi, enhanceApi } from '../services/api'
-import { triggerConfetti } from '../utils/confetti'
 import {
   Target,
   TrendingUp,
@@ -402,17 +401,10 @@ export default function Enhance() {
         enhanceApi.comprehensiveAnalysis(resume.originalText, jobRole)
       ])
 
-     setAtsAnalysis(atsResponse.data)
-setComprehensiveAnalysis(comprehensiveResponse.data)
-setHasAnalyzed(true)
+      setAtsAnalysis(atsResponse.data)
+      setComprehensiveAnalysis(comprehensiveResponse.data)
+      setHasAnalyzed(true)
 
-if (atsResponse.data?.atsScore >= 90) {
-  triggerConfetti({
-    duration: 4000,
-    particleCount: 220,
-    spread: 140
-  })
-}
       // Save job role to resume
       await resumeApi.update(resumeId, { jobRole })
 
@@ -451,29 +443,23 @@ if (atsResponse.data?.atsScore >= 90) {
       })
 
       toast.success('Resume enhanced successfully!')
-
-triggerConfetti({
-  duration: 3000,
-  particleCount: 150,
-  spread: 120
-})
-
-navigate(`/resume/${resumeId}`)
+      navigate(`/resume/${resumeId}`)
     } catch (error) {
       toast.error(error.message || 'Failed to enhance resume')
     } finally {
       setEnhancing(false)
     }
   }
-  if (loading) {
+  
+  if(loading) {
     return (
       <div className="min-h-screen bg-background">
-        <div className="flex items-center justify-center py-20">
-          <div className="w-8 h-8 border-2 border-primary border-t-transparent rounded-full animate-spin" />
-        </div>
+                <div className="flex items-center justify-center py-20">
+                  <div className="w-8 h-8 border-2 border-primary border-t-transparent rounded-full animate-spin" />
+                </div>
 
-        <div className="h-72 bg-neutral-900 rounded-2xl border border-neutral-800">
-        </div>
+                <div className="h-72 bg-card rounded-2xl border border-border">
+                </div>
       </div>
     )
   }

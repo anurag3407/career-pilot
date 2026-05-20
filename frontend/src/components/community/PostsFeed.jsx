@@ -48,10 +48,6 @@ export default function PostsFeed() {
     fetchPosts();
   }, [selectedCategory, sortBy]);
 
-  // Fetch current user's scheduled posts on mount
-  useEffect(() => {
-    fetchScheduledPosts();
-  }, []);
   // Refetch scheduled posts whenever the logged-in user changes
   useEffect(() => {
     if (user) {
@@ -361,7 +357,7 @@ export default function PostsFeed() {
                 }
               </button>
               {showScheduled && (
-                <div className="divide-y divide-neutral-800/50 bg-neutral-900/50">
+                <div className="divide-y divide-border bg-card/50">
                   {scheduledPosts.map(post => {
                     const postId = post.id || post._id;
                     return (
