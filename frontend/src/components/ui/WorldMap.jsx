@@ -1,19 +1,24 @@
 import { useRef, useMemo } from "react";
 import { motion } from "framer-motion";
 import DottedMap from "dotted-map";
+import { useTheme } from "../../context/ThemeContext";
 
 export default function WorldMap({
   dots = [],
   lineColor = "#6366f1",
 }) {
   const svgRef = useRef(null);
+  const { theme } = useTheme();
+
+  const isDark = theme === "dark";
+  const dotColor = isDark ? "#ffffff" : "#000000";
 
   const svgMap = useMemo(() => {
     try {
       const map = new DottedMap({ height: 100, grid: "diagonal" });
       return map.getSVG({
         radius: 0.22,
-        color: "currentColor",
+        color: dotColor,
         shape: "circle",
         backgroundColor: "transparent",
       });
@@ -21,7 +26,7 @@ export default function WorldMap({
       console.error("WorldMap error:", error);
       return null;
     }
-  }, []);
+  }, [dotColor]);
 
   const projectPoint = (lat, lng) => {
     const x = (lng + 180) * (800 / 360);
