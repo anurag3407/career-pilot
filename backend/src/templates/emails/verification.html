@@ -1,0 +1,366 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Verify Your CareerPilot Account</title>
+    <style>
+        body {
+            font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, 'Helvetica Neue', Arial, sans-serif;
+            margin: 0;
+            padding: 0;
+            background-color: #f8f9fa;
+        }
+        .container {
+            max-width: 600px;
+            margin: 0 auto;
+            background-color: #ffffff;
+        }
+        .header {
+            background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+            color: white;
+            padding: 40px 20px;
+            text-align: center;
+        }
+        .header-logo {
+            font-size: 28px;
+            font-weight: bold;
+            margin: 0;
+        }
+        .header-text {
+            font-size: 16px;
+            margin: 12px 0 0 0;
+            opacity: 0.95;
+        }
+        .content {
+            padding: 32px 24px;
+        }
+        .greeting {
+            font-size: 16px;
+            color: #1a202c;
+            margin: 0 0 8px 0;
+            font-weight: 500;
+        }
+        .intro-text {
+            font-size: 14px;
+            color: #4b5563;
+            line-height: 1.6;
+            margin: 0 0 24px 0;
+        }
+        .verification-section {
+            background: linear-gradient(135deg, #f0f4ff 0%, #f5f7ff 100%);
+            border: 2px solid #667eea;
+            border-radius: 12px;
+            padding: 32px 24px;
+            text-align: center;
+            margin: 24px 0;
+        }
+        .verification-label {
+            font-size: 12px;
+            color: #6366f1;
+            font-weight: 600;
+            letter-spacing: 1px;
+            margin: 0 0 16px 0;
+            text-transform: uppercase;
+        }
+        .verification-code {
+            font-size: 48px;
+            font-weight: 700;
+            color: #667eea;
+            letter-spacing: 12px;
+            margin: 16px 0;
+            font-family: 'Courier New', monospace;
+            word-break: break-all;
+        }
+        .code-info {
+            font-size: 13px;
+            color: #718096;
+            margin: 20px 0 0 0;
+        }
+        .expiry-warning {
+            background-color: #fef3c7;
+            border-left: 4px solid #f59e0b;
+            padding: 12px;
+            border-radius: 4px;
+            margin: 16px 0 0 0;
+        }
+        .warning-text {
+            font-size: 12px;
+            color: #92400e;
+            margin: 0;
+            font-weight: 500;
+        }
+        .alternative-section {
+            background-color: #f9fafb;
+            border: 1px solid #e5e7eb;
+            border-radius: 8px;
+            padding: 16px;
+            margin: 24px 0;
+        }
+        .alternative-title {
+            font-size: 13px;
+            font-weight: 600;
+            color: #1a202c;
+            margin: 0 0 12px 0;
+        }
+        .copy-code-section {
+            background-color: white;
+            border: 1px dashed #d1d5db;
+            padding: 12px;
+            border-radius: 6px;
+            text-align: center;
+            margin: 0;
+        }
+        .copy-code {
+            font-size: 16px;
+            font-weight: 600;
+            color: #667eea;
+            font-family: 'Courier New', monospace;
+            letter-spacing: 4px;
+            margin: 0;
+        }
+        .security-info {
+            background-color: #ecf5ff;
+            border-left: 4px solid #3b82f6;
+            padding: 16px;
+            border-radius: 6px;
+            margin: 24px 0;
+        }
+        .security-title {
+            font-size: 13px;
+            font-weight: 600;
+            color: #1e40af;
+            margin: 0 0 8px 0;
+        }
+        .security-items {
+            font-size: 12px;
+            color: #1e40af;
+            margin: 0;
+            line-height: 1.8;
+        }
+        .security-items li {
+            margin: 4px 0;
+        }
+        .cta-button {
+            display: inline-block;
+            background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+            color: white;
+            padding: 12px 32px;
+            border-radius: 6px;
+            text-decoration: none;
+            font-weight: 600;
+            font-size: 14px;
+            margin: 24px 0;
+        }
+        .cta-button:hover {
+            opacity: 0.95;
+        }
+        .divider {
+            height: 1px;
+            background-color: #e2e8f0;
+            margin: 24px 0;
+        }
+        .faq-section {
+            margin: 24px 0;
+        }
+        .faq-item {
+            margin: 12px 0;
+        }
+        .faq-question {
+            font-size: 13px;
+            font-weight: 600;
+            color: #1a202c;
+            margin: 0 0 4px 0;
+        }
+        .faq-answer {
+            font-size: 12px;
+            color: #4b5563;
+            margin: 0;
+            line-height: 1.6;
+        }
+        .footer {
+            background-color: #f7fafc;
+            padding: 24px;
+            text-align: center;
+            border-top: 1px solid #e2e8f0;
+        }
+        .footer-text {
+            font-size: 12px;
+            color: #718096;
+            margin: 0 0 8px 0;
+        }
+        .footer-links {
+            font-size: 12px;
+        }
+        .footer-link {
+            color: #667eea;
+            text-decoration: none;
+            margin: 0 12px;
+        }
+        .footer-link:hover {
+            text-decoration: underline;
+        }
+        .unrecognized-section {
+            background-color: #fee2e2;
+            border-left: 4px solid #ef4444;
+            padding: 16px;
+            border-radius: 6px;
+            margin: 24px 0;
+        }
+        .unrecognized-text {
+            font-size: 13px;
+            color: #7f1d1d;
+            margin: 0;
+            line-height: 1.6;
+        }
+        .unrecognized-link {
+            color: #dc2626;
+            font-weight: 600;
+            text-decoration: none;
+        }
+        .unrecognized-link:hover {
+            text-decoration: underline;
+        }
+        @media (max-width: 600px) {
+            .container {
+                width: 100%;
+            }
+            .content {
+                padding: 20px 16px;
+            }
+            .header {
+                padding: 24px 16px;
+            }
+            .verification-code {
+                font-size: 36px;
+                letter-spacing: 8px;
+            }
+            .verification-section {
+                padding: 24px 16px;
+            }
+        }
+    </style>
+</head>
+<body>
+    <div class="container">
+        <!-- Header -->
+        <div class="header">
+            <h1 class="header-logo">🔐 CareerPilot</h1>
+            <p class="header-text">Email Verification</p>
+        </div>
+
+        <!-- Content -->
+        <div class="content">
+            <!-- Greeting -->
+            <p class="greeting">Hello,</p>
+            <p class="intro-text">
+                Thank you for signing up on CareerPilot! We're excited to have you on board. 🎉
+            </p>
+            <p class="intro-text">
+                To complete your account setup and start your career journey, please verify your email address by entering the code below:
+            </p>
+
+            <!-- Verification Code Section -->
+            <div class="verification-section">
+                <p class="verification-label">Your Verification Code</p>
+                <p class="verification-code">{{code}}</p>
+                <p class="code-info">
+                    Enter this code in the verification window
+                </p>
+                <div class="expiry-warning">
+                    <p class="warning-text">
+                        ⏰ This code expires in <strong>10 minutes</strong>
+                    </p>
+                </div>
+            </div>
+
+            <!-- Alternative Copy Section -->
+            <div class="alternative-section">
+                <p class="alternative-title">Can't see the code clearly?</p>
+                <div class="copy-code-section">
+                    <p class="copy-code">{{code}}</p>
+                </div>
+                <p style="font-size: 12px; color: #718096; margin: 8px 0 0 0;">Copy and paste the code above</p>
+            </div>
+
+            <!-- Direct Verification Link (if available) -->
+            {{#if verificationLink}}
+            <div style="text-align: center; margin: 24px 0;">
+                <p style="font-size: 13px; color: #4b5563; margin: 0 0 12px 0;">Or verify directly:</p>
+                <a href="{{verificationLink}}" class="cta-button">Verify Email</a>
+            </div>
+            {{/if}}
+
+            <div class="divider"></div>
+
+            <!-- Security Information -->
+            <div class="security-info">
+                <p class="security-title">🔒 Security Reminder:</p>
+                <ul class="security-items">
+                    <li>✓ Never share this code with anyone</li>
+                    <li>✓ We will never ask for your password or verification code via email</li>
+                    <li>✓ CareerPilot uses industry-standard encryption to protect your data</li>
+                </ul>
+            </div>
+
+            <!-- FAQ Section -->
+            <div class="faq-section">
+                <div style="background-color: #f9fafb; padding: 16px; border-radius: 8px;">
+                    <h3 style="font-size: 14px; font-weight: 600; color: #1a202c; margin: 0 0 12px 0;">Common Questions</h3>
+                    
+                    <div class="faq-item">
+                        <p class="faq-question">❓ Didn't receive the email?</p>
+                        <p class="faq-answer">Check your spam or junk folder. If it's not there, try requesting a new code.</p>
+                    </div>
+                    
+                    <div class="faq-item">
+                        <p class="faq-question">❓ Code expired?</p>
+                        <p class="faq-answer">Request a new verification code from the signup page.</p>
+                    </div>
+                    
+                    <div class="faq-item">
+                        <p class="faq-question">❓ Didn't sign up?</p>
+                        <p class="faq-answer">You can ignore this email. Your email won't be verified without entering the code.</p>
+                    </div>
+                </div>
+            </div>
+
+            <!-- If Not Recognized -->
+            <div class="unrecognized-section">
+                <p class="unrecognized-text">
+                    <strong>⚠️ Didn't sign up for CareerPilot?</strong><br>
+                    If this request wasn't made by you, please
+                    <a href="{{reportLink}}" class="unrecognized-link">report this suspicious activity</a>
+                    or simply ignore this email. Your account remains secure.
+                </p>
+            </div>
+
+            <div class="divider"></div>
+
+            <!-- Support Information -->
+            <div style="background-color: #f0f4ff; padding: 16px; border-radius: 8px; text-align: center; margin: 24px 0;">
+                <p style="font-size: 13px; color: #4338ca; margin: 0 0 8px 0;">
+                    <strong>Need help?</strong>
+                </p>
+                <p style="font-size: 12px; color: #6366f1; margin: 0;">
+                    Browse our <a href="{{helpLink}}" style="color: #6366f1; font-weight: 600;">help center</a> or
+                    <a href="{{contactLink}}" style="color: #6366f1; font-weight: 600;">contact support</a>
+                </p>
+            </div>
+        </div>
+
+        <!-- Footer -->
+        <div class="footer">
+            <p class="footer-text">© 2026 CareerPilot. All rights reserved.</p>
+            <div class="footer-links">
+                <a href="{{privacyLink}}" class="footer-link">Privacy Policy</a>
+                <a href="{{termsLink}}" class="footer-link">Terms of Service</a>
+                <a href="{{contactLink}}" class="footer-link">Contact</a>
+            </div>
+            <p class="footer-text" style="margin-top: 12px; font-size: 11px;">
+                This is an automated message. Please don't reply directly to this email.
+            </p>
+        </div>
+    </div>
+</body>
+</html>

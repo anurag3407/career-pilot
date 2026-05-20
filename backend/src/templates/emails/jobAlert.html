@@ -1,0 +1,319 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>{{alertTitle}} - Job Alerts from CareerPilot</title>
+    <style>
+        body {
+            font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, 'Helvetica Neue', Arial, sans-serif;
+            margin: 0;
+            padding: 0;
+            background-color: #f8f9fa;
+        }
+        .container {
+            max-width: 600px;
+            margin: 0 auto;
+            background-color: #ffffff;
+        }
+        .header {
+            background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+            color: white;
+            padding: 40px 20px;
+            text-align: center;
+        }
+        .header-logo {
+            font-size: 28px;
+            font-weight: bold;
+            margin: 0;
+        }
+        .header-subtitle {
+            font-size: 14px;
+            margin: 10px 0 0 0;
+            opacity: 0.9;
+        }
+        .content {
+            padding: 32px 24px;
+        }
+        .greeting {
+            font-size: 18px;
+            color: #1a202c;
+            margin: 0 0 8px 0;
+            font-weight: 600;
+        }
+        .subtitle {
+            color: #718096;
+            font-size: 14px;
+            margin: 0 0 24px 0;
+        }
+        .jobs-container {
+            display: block;
+        }
+        .job-card {
+            border: 1px solid #e2e8f0;
+            border-radius: 8px;
+            padding: 20px;
+            margin-bottom: 16px;
+            transition: box-shadow 0.2s;
+            background-color: #f9fafb;
+        }
+        .job-card:hover {
+            box-shadow: 0 4px 12px rgba(0, 0, 0, 0.08);
+        }
+        .job-title {
+            font-size: 18px;
+            font-weight: 600;
+            color: #1a202c;
+            margin: 0 0 8px 0;
+        }
+        .company-name {
+            font-size: 14px;
+            color: #667eea;
+            font-weight: 500;
+            margin: 0 0 12px 0;
+        }
+        .job-details {
+            font-size: 13px;
+            color: #718096;
+            margin: 10px 0;
+            display: flex;
+            align-items: center;
+            flex-wrap: wrap;
+        }
+        .job-detail-item {
+            margin-right: 16px;
+            margin-bottom: 8px;
+        }
+        .detail-icon {
+            margin-right: 4px;
+        }
+        .job-description {
+            font-size: 13px;
+            color: #4a5568;
+            line-height: 1.6;
+            margin: 12px 0;
+        }
+        .apply-btn {
+            display: inline-block;
+            background-color: #667eea;
+            color: white;
+            padding: 10px 24px;
+            border-radius: 6px;
+            text-decoration: none;
+            font-size: 13px;
+            font-weight: 600;
+            transition: background-color 0.2s;
+            margin-top: 12px;
+        }
+        .apply-btn:hover {
+            background-color: #5568d3;
+        }
+        .job-badge {
+            display: inline-block;
+            background-color: #e0e7ff;
+            color: #667eea;
+            padding: 4px 12px;
+            border-radius: 12px;
+            font-size: 12px;
+            font-weight: 600;
+            margin-right: 8px;
+            margin-bottom: 8px;
+        }
+        .divider {
+            height: 1px;
+            background-color: #e2e8f0;
+            margin: 24px 0;
+        }
+        .footer {
+            background-color: #f7fafc;
+            padding: 24px;
+            text-align: center;
+            border-top: 1px solid #e2e8f0;
+        }
+        .footer-text {
+            font-size: 12px;
+            color: #718096;
+            margin: 0 0 8px 0;
+        }
+        .footer-links {
+            font-size: 12px;
+        }
+        .footer-link {
+            color: #667eea;
+            text-decoration: none;
+            margin: 0 12px;
+        }
+        .footer-link:hover {
+            text-decoration: underline;
+        }
+        .highlighted {
+            background-color: #fef3c7;
+            padding: 16px;
+            border-radius: 6px;
+            border-left: 4px solid #f59e0b;
+            margin: 24px 0;
+        }
+        .highlighted-text {
+            font-size: 14px;
+            color: #92400e;
+            margin: 0;
+        }
+        .stats {
+            display: flex;
+            justify-content: space-around;
+            text-align: center;
+            margin: 24px 0;
+            padding: 20px;
+            background-color: #f0f4ff;
+            border-radius: 8px;
+        }
+        .stat-item {
+            flex: 1;
+        }
+        .stat-number {
+            font-size: 24px;
+            font-weight: bold;
+            color: #667eea;
+            margin: 0;
+        }
+        .stat-label {
+            font-size: 12px;
+            color: #718096;
+            margin: 4px 0 0 0;
+        }
+        @media (max-width: 600px) {
+            .container {
+                width: 100%;
+            }
+            .content {
+                padding: 20px 16px;
+            }
+            .header {
+                padding: 24px 16px;
+            }
+            .job-card {
+                padding: 16px;
+                margin-bottom: 12px;
+            }
+            .job-title {
+                font-size: 16px;
+            }
+            .job-details {
+                flex-direction: column;
+            }
+            .job-detail-item {
+                margin-right: 0;
+                margin-bottom: 6px;
+            }
+            .stats {
+                flex-direction: column;
+            }
+            .stat-item {
+                margin-bottom: 12px;
+            }
+        }
+    </style>
+</head>
+<body>
+    <div class="container">
+        <!-- Header -->
+        <div class="header">
+            <h1 class="header-logo">🚀 CareerPilot</h1>
+            <p class="header-subtitle">Your personalized job alerts</p>
+        </div>
+
+        <!-- Content -->
+        <div class="content">
+            <!-- Greeting -->
+            <p class="greeting">Hello {{userName}}! 👋</p>
+            <p class="subtitle">We found {{jobCount}} job{{#if jobCount > 1}}s{{/if}} matching your alert "<strong>{{alertTitle}}</strong>"</p>
+
+            <!-- Stats -->
+            <div class="stats">
+                <div class="stat-item">
+                    <p class="stat-number">{{jobCount}}</p>
+                    <p class="stat-label">New Jobs</p>
+                </div>
+                <div class="stat-item">
+                    <p class="stat-number">{{jobCount}}</p>
+                    <p class="stat-label">Applications</p>
+                </div>
+                <div class="stat-item">
+                    <p class="stat-number">∞</p>
+                    <p class="stat-label">Possibilities</p>
+                </div>
+            </div>
+
+            <!-- Highlighted Message -->
+            <div class="highlighted">
+                <p class="highlighted-text">💡 <strong>Tip:</strong> Apply early! Many employers review applications in the order received.</p>
+            </div>
+
+            <!-- Jobs List -->
+            <div class="jobs-container">
+                {{#each jobs}}
+                <div class="job-card">
+                    <div>
+                        {{#if jobType}}
+                        <span class="job-badge">{{jobType}}</span>
+                        {{/if}}
+                        {{#if salary}}
+                        <span class="job-badge">{{salary}}</span>
+                        {{/if}}
+                    </div>
+                    <h3 class="job-title">{{title}}</h3>
+                    <p class="company-name">{{company}}</p>
+                    
+                    <div class="job-details">
+                        {{#if location}}
+                        <div class="job-detail-item">
+                            <span class="detail-icon">📍</span>
+                            <span>{{location}}</span>
+                        </div>
+                        {{/if}}
+                        {{#if postedDate}}
+                        <div class="job-detail-item">
+                            <span class="detail-icon">⏰</span>
+                            <span>{{postedDate}}</span>
+                        </div>
+                        {{/if}}
+                    </div>
+
+                    {{#if description}}
+                    <p class="job-description">{{truncate description 200}}</p>
+                    {{/if}}
+
+                    {{#if applyLink}}
+                    <a href="{{applyLink}}" class="apply-btn">Apply Now →</a>
+                    {{else}}
+                    <p style="color: #a0aec0; font-size: 12px; margin-top: 12px;">Apply link unavailable</p>
+                    {{/if}}
+                </div>
+                {{/each}}
+            </div>
+
+            <div class="divider"></div>
+
+            <!-- CTA Section -->
+            <div style="background-color: #f0f4ff; padding: 20px; border-radius: 8px; text-align: center; margin: 24px 0;">
+                <h3 style="color: #1a202c; margin: 0 0 8px 0;">Manage Your Job Alerts</h3>
+                <p style="color: #718096; font-size: 14px; margin: 0 0 16px 0;">Create, edit, or delete job alerts based on your preferences</p>
+                <a href="{{dashboardLink}}" style="display: inline-block; background-color: #667eea; color: white; padding: 10px 24px; border-radius: 6px; text-decoration: none; font-weight: 600;">Go to Dashboard</a>
+            </div>
+        </div>
+
+        <!-- Footer -->
+        <div class="footer">
+            <p class="footer-text">© 2026 CareerPilot. All rights reserved.</p>
+            <div class="footer-links">
+                <a href="{{unsubscribeLink}}" class="footer-link">Unsubscribe</a>
+                <a href="{{preferencesLink}}" class="footer-link">Preferences</a>
+                <a href="https://careerpilot.com" class="footer-link">Website</a>
+            </div>
+            <p class="footer-text" style="margin-top: 12px;">
+                You received this email because you subscribed to job alerts on CareerPilot.
+            </p>
+        </div>
+    </div>
+</body>
+</html>

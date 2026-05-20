@@ -1,5 +1,6 @@
 import axios from "axios";
 import "dotenv/config";
+import { renderTemplate } from "./templateEngine.js";
 
 /**
  * Email Service Client
@@ -263,12 +264,34 @@ export const sendJobAlertEmail = async ({
       throw new Error('No jobs to send');
     }
 
+    // Render responsive email template
+    const frontendUrl = process.env.FRONTEND_URL || 'http://localhost:5173';
+    const html = renderTemplate('jobAlert', {
+      userName: escapeHtml(userName),
+      alertTitle: escapeHtml(alertTitle),
+      jobCount: jobs.length,
+      jobs: jobs.map(job => ({
+        title: escapeHtml(job.title),
+        company: escapeHtml(job.company),
+        location: job.location ? escapeHtml(job.location) : null,
+        jobType: job.jobType ? escapeHtml(job.jobType) : null,
+        salary: job.salary ? escapeHtml(job.salary) : null,
+        description: job.description ? escapeHtml(job.description) : null,
+        postedDate: job.postedDate ? escapeHtml(job.postedDate) : null,
+        applyLink: isSafeExternalUrl(job.applyLink) ? job.applyLink : null
+      })),
+      dashboardLink: `${frontendUrl}/dashboard`,
+      unsubscribeLink: `${frontendUrl}/settings/emails`,
+      preferencesLink: `${frontendUrl}/settings/job-alerts`
+    });
+
     if (isExternalServiceConfigured) {
       const result = await callEmailService('/api/send-job-alert', {
         userEmail,
         userName,
         alertTitle,
-        jobs
+        jobs,
+        html
       });
 
       console.log(`\n${'✅'.repeat(30)}`);
@@ -283,27 +306,11 @@ export const sendJobAlertEmail = async ({
     // Fallback to local SMTP
     const transport = await initLocalTransporter();
 
-    const jobListHtml = jobs.map((job, i) => {
-      const title = escapeHtml(job.title);
-      const company = escapeHtml(job.company);
-      const location = job.location ? ` - ${escapeHtml(job.location)}` : '';
-      const applyLink = isSafeExternalUrl(job.applyLink) ? job.applyLink : null;
-      const applyLinkHtml = applyLink
-        ? `<a href="${escapeHtml(applyLink)}">Apply</a>`
-        : '<span>Apply link unavailable</span>';
-
-      return `<div style="margin: 10px 0; padding: 10px; border-left: 3px solid #6366f1;">
-        <strong>${i + 1}. ${title}</strong><br>
-        ${company}${location}<br>
-        ${applyLinkHtml}
-      </div>`;
-    }).join('');
-
     const mailOptions = {
       from: `"careerpilot Jobs" <${process.env.EMAIL_USER}>`,
       to: userEmail,
       subject: `🎯 ${jobs.length} New Job${jobs.length > 1 ? 's' : ''} Matching "${alertTitle}"`,
-      html: `<h1>New Jobs for ${alertTitle}</h1>${jobListHtml}`
+      html
     };
 
     const info = await transport.sendMail(mailOptions);
@@ -389,6 +396,24 @@ export const sendProposalApprovalEmail = async ({
       throw new Error('No recipient email address provided!');
     }
 
+    // Render responsive email template
+    const frontendUrl = process.env.FRONTEND_URL || 'http://localhost:5173';
+    const html = renderTemplate('proposalApproval', {
+      studentName: escapeHtml(studentName),
+      challengeTitle: escapeHtml(challengeTitle),
+      companyName: escapeHtml(companyName),
+      corporateName: corporateName ? escapeHtml(corporateName) : null,
+      proposedPrice: proposedPrice,
+      estimatedDays: estimatedDays,
+      feedback: feedback ? escapeHtml(feedback) : null,
+      chatRoomLink: `${frontendUrl}/fellowship/messages/${chatRoomId}`,
+      projectDetailsLink: `${frontendUrl}/fellowship/projects/${chatRoomId}`,
+      milestonesLink: `${frontendUrl}/fellowship/milestones/${chatRoomId}`,
+      dashboardLink: `${frontendUrl}/dashboard`,
+      faqLink: `${frontendUrl}/fellowship/faq`,
+      supportLink: `${frontendUrl}/support`
+    });
+
     if (isExternalServiceConfigured) {
       return await callEmailService('/api/send-proposal-approval', {
         studentEmail,
@@ -400,27 +425,19 @@ export const sendProposalApprovalEmail = async ({
         estimatedDays,
         feedback,
         chatRoomId,
-        frontendUrl: process.env.FRONTEND_URL
+        frontendUrl: process.env.FRONTEND_URL,
+        html
       });
     }
 
     // Fallback to local SMTP
     const transport = await initLocalTransporter();
-    const FRONTEND_URL = process.env.FRONTEND_URL || 'http://localhost:5173';
 
     const mailOptions = {
       from: `"careerpilot Fellowships" <${process.env.EMAIL_USER}>`,
       to: studentEmail,
       subject: `🎉 Congratulations! Your Proposal Has Been Accepted`,
-      html: `
-        <h1>🎉 Proposal Accepted!</h1>
-        <p>Congratulations ${studentName}!</p>
-        <p><strong>${companyName}</strong> has accepted your proposal for: <strong>${challengeTitle}</strong></p>
-        <p>💰 Agreed Price: ₹${proposedPrice.toLocaleString()}</p>
-        <p>⏱️ Timeline: ${estimatedDays} day${estimatedDays > 1 ? 's' : ''}</p>
-        ${feedback ? `<p>Message: ${feedback}</p>` : ''}
-        <a href="${FRONTEND_URL}/fellowship/messages/${chatRoomId}">Start Conversation</a>
-      `
+      html
     };
 
     const info = await transport.sendMail(mailOptions);
@@ -499,16 +516,29 @@ export const sendLockoutAlertEmail = async ({ email, ip, lockoutUntil }) => {
 /**
  * Send verification code email
  */
-export const sendVerificationEmail = async ({ email, code }) => {
+export const sendVerificationEmail = async ({ email, code, verificationLink }) => {
   try {
     if (!email || !code) {
       throw new Error('Email and verification code are required');
     }
 
+    // Render responsive email template
+    const frontendUrl = process.env.FRONTEND_URL || 'http://localhost:5173';
+    const html = renderTemplate('verification', {
+      code: code,
+      verificationLink: verificationLink ? verificationLink : `${frontendUrl}/verify?code=${code}`,
+      helpLink: `${frontendUrl}/help`,
+      contactLink: `${frontendUrl}/support`,
+      reportLink: `${frontendUrl}/security/report`,
+      privacyLink: 'https://careerpilot.com/privacy',
+      termsLink: 'https://careerpilot.com/terms'
+    });
+
     if (isExternalServiceConfigured) {
       return await callEmailService('/api/send-verification', {
         email,
-        code
+        code,
+        html
       });
     }
 
@@ -516,20 +546,10 @@ export const sendVerificationEmail = async ({ email, code }) => {
     const transport = await initLocalTransporter();
 
     const mailOptions = {
-      from: `"careerpilot Fellowships" <${process.env.EMAIL_USER}>`,
+      from: `"careerpilot" <${process.env.EMAIL_USER}>`,
       to: email,
-      subject: 'Verify Your Fellowship Account',
-      html: `
-      <div style="font-family: Arial, sans-serif; max-width: 500px; margin: 0 auto; padding: 20px;">
-        <h2 style="color: #10b981;">careerpilot Fellowships</h2>
-        <p>Your verification code is:</p>
-        <div style="background: #f3f4f6; padding: 20px; text-align: center; border-radius: 8px; margin: 20px 0;">
-          <span style="font-size: 32px; font-weight: bold; letter-spacing: 8px; color: #1f2937;">${code}</span>
-        </div>
-        <p style="color: #6b7280;">This code expires in 10 minutes.</p>
-        <p style="color: #6b7280; font-size: 12px;">If you didn't request this, please ignore this email.</p>
-      </div>
-    `
+      subject: 'Verify Your CareerPilot Account - {{code}}',
+      html
     };
 
     const info = await transport.sendMail(mailOptions);

@@ -1,0 +1,349 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Proposal Accepted - CareerPilot Fellowships</title>
+    <style>
+        body {
+            font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, 'Helvetica Neue', Arial, sans-serif;
+            margin: 0;
+            padding: 0;
+            background-color: #f8f9fa;
+        }
+        .container {
+            max-width: 600px;
+            margin: 0 auto;
+            background-color: #ffffff;
+        }
+        .header {
+            background: linear-gradient(135deg, #10b981 0%, #059669 100%);
+            color: white;
+            padding: 40px 20px;
+            text-align: center;
+        }
+        .header-title {
+            font-size: 32px;
+            margin: 0 0 8px 0;
+            font-weight: 700;
+        }
+        .header-subtitle {
+            font-size: 16px;
+            margin: 0;
+            opacity: 0.95;
+        }
+        .content {
+            padding: 32px 24px;
+        }
+        .greeting {
+            font-size: 18px;
+            color: #1a202c;
+            margin: 0 0 8px 0;
+            font-weight: 600;
+        }
+        .congrats-message {
+            background: linear-gradient(135deg, #d1fae5 0%, #ecfdf5 100%);
+            border-left: 4px solid #10b981;
+            padding: 16px;
+            border-radius: 6px;
+            margin: 16px 0 24px 0;
+        }
+        .congrats-text {
+            font-size: 14px;
+            color: #065f46;
+            margin: 0;
+            line-height: 1.6;
+        }
+        .details-box {
+            background-color: #f9fafb;
+            border: 1px solid #e5e7eb;
+            border-radius: 8px;
+            padding: 20px;
+            margin: 24px 0;
+        }
+        .detail-row {
+            display: flex;
+            justify-content: space-between;
+            padding: 12px 0;
+            border-bottom: 1px solid #e5e7eb;
+        }
+        .detail-row:last-child {
+            border-bottom: none;
+        }
+        .detail-label {
+            font-weight: 500;
+            color: #4b5563;
+            font-size: 13px;
+        }
+        .detail-value {
+            color: #1a202c;
+            font-weight: 600;
+            font-size: 14px;
+        }
+        .price-highlight {
+            color: #10b981;
+            font-size: 18px;
+            font-weight: 700;
+        }
+        .timeline-info {
+            background-color: #eff6ff;
+            border-left: 4px solid #3b82f6;
+            padding: 16px;
+            border-radius: 6px;
+            margin: 20px 0;
+        }
+        .timeline-text {
+            font-size: 13px;
+            color: #1e40af;
+            margin: 0;
+        }
+        .next-steps {
+            background-color: #fef3c7;
+            border-left: 4px solid #f59e0b;
+            padding: 16px;
+            border-radius: 6px;
+            margin: 20px 0;
+        }
+        .next-steps-title {
+            font-weight: 600;
+            color: #92400e;
+            margin: 0 0 8px 0;
+            font-size: 14px;
+        }
+        .next-steps-text {
+            font-size: 13px;
+            color: #b45309;
+            margin: 0;
+            line-height: 1.6;
+        }
+        .cta-button {
+            display: inline-block;
+            background: linear-gradient(135deg, #10b981 0%, #059669 100%);
+            color: white;
+            padding: 12px 32px;
+            border-radius: 6px;
+            text-decoration: none;
+            font-weight: 600;
+            font-size: 14px;
+            margin: 24px 0;
+            text-align: center;
+            width: calc(100% - 64px);
+        }
+        .cta-button:hover {
+            opacity: 0.95;
+        }
+        .secondary-button {
+            display: inline-block;
+            background-color: #e5e7eb;
+            color: #1f2937;
+            padding: 10px 24px;
+            border-radius: 6px;
+            text-decoration: none;
+            font-weight: 600;
+            font-size: 13px;
+            margin: 0 8px 12px 0;
+        }
+        .secondary-button:hover {
+            background-color: #d1d5db;
+        }
+        .divider {
+            height: 1px;
+            background-color: #e2e8f0;
+            margin: 24px 0;
+        }
+        .feedback-section {
+            background-color: #f9fafb;
+            padding: 20px;
+            border-radius: 8px;
+            margin: 20px 0;
+        }
+        .feedback-title {
+            font-weight: 600;
+            color: #1a202c;
+            margin: 0 0 8px 0;
+            font-size: 14px;
+        }
+        .feedback-box {
+            background-color: white;
+            border: 1px solid #e5e7eb;
+            padding: 12px;
+            border-radius: 4px;
+            font-size: 13px;
+            color: #4b5563;
+            line-height: 1.6;
+            font-style: italic;
+        }
+        .footer {
+            background-color: #f7fafc;
+            padding: 24px;
+            text-align: center;
+            border-top: 1px solid #e2e8f0;
+        }
+        .footer-text {
+            font-size: 12px;
+            color: #718096;
+            margin: 0 0 8px 0;
+        }
+        .footer-links {
+            font-size: 12px;
+        }
+        .footer-link {
+            color: #10b981;
+            text-decoration: none;
+            margin: 0 12px;
+        }
+        .footer-link:hover {
+            text-decoration: underline;
+        }
+        .badge {
+            display: inline-block;
+            background-color: #d1fae5;
+            color: #065f46;
+            padding: 4px 12px;
+            border-radius: 12px;
+            font-size: 12px;
+            font-weight: 600;
+            margin-top: 12px;
+        }
+        @media (max-width: 600px) {
+            .container {
+                width: 100%;
+            }
+            .content {
+                padding: 20px 16px;
+            }
+            .header {
+                padding: 24px 16px;
+            }
+            .header-title {
+                font-size: 24px;
+            }
+            .detail-row {
+                flex-direction: column;
+            }
+            .detail-label {
+                margin-bottom: 4px;
+            }
+            .cta-button {
+                width: 100%;
+                padding: 14px 0;
+            }
+        }
+    </style>
+</head>
+<body>
+    <div class="container">
+        <!-- Header -->
+        <div class="header">
+            <h1 class="header-title">🎉 Proposal Accepted!</h1>
+            <p class="header-subtitle">Your journey with us begins here</p>
+        </div>
+
+        <!-- Content -->
+        <div class="content">
+            <!-- Greeting -->
+            <p class="greeting">Hello {{studentName}}! 👋</p>
+            
+            <!-- Congratulations Message -->
+            <div class="congrats-message">
+                <p class="congrats-text">
+                    Congratulations! <strong>{{companyName}}</strong> has accepted your proposal for the fellowship project: <strong>"{{challengeTitle}}"</strong>
+                </p>
+            </div>
+
+            <!-- Project Details -->
+            <div class="details-box">
+                <div class="detail-row">
+                    <div class="detail-label">📋 Project</div>
+                    <div class="detail-value">{{challengeTitle}}</div>
+                </div>
+                <div class="detail-row">
+                    <div class="detail-label">🏢 Company</div>
+                    <div class="detail-value">{{companyName}}</div>
+                </div>
+                {{#if corporateName}}
+                <div class="detail-row">
+                    <div class="detail-label">🤝 Corporate Partner</div>
+                    <div class="detail-value">{{corporateName}}</div>
+                </div>
+                {{/if}}
+                <div class="detail-row">
+                    <div class="detail-label">💰 Agreed Price</div>
+                    <div class="detail-value price-highlight">₹{{formatCurrency proposedPrice}}</div>
+                </div>
+                <div class="detail-row">
+                    <div class="detail-label">⏱️ Timeline</div>
+                    <div class="detail-value">{{estimatedDays}} day{{#if estimatedDays > 1}}s{{/if}}</div>
+                </div>
+            </div>
+
+            <!-- Timeline Info -->
+            <div class="timeline-info">
+                <p class="timeline-text">
+                    <strong>Expected Completion:</strong> {{addDays estimatedDays}}
+                </p>
+            </div>
+
+            <!-- Feedback Section (if provided) -->
+            {{#if feedback}}
+            <div class="feedback-section">
+                <p class="feedback-title">📝 Message from {{companyName}}:</p>
+                <div class="feedback-box">
+                    {{feedback}}
+                </div>
+            </div>
+            {{/if}}
+
+            <!-- Next Steps -->
+            <div class="next-steps">
+                <p class="next-steps-title">📌 Next Steps:</p>
+                <p class="next-steps-text">
+                    1. <strong>Start a conversation</strong> - Reach out to the company to clarify project details<br>
+                    2. <strong>Set milestones</strong> - Break down the project into achievable targets<br>
+                    3. <strong>Maintain communication</strong> - Update progress regularly in the chat<br>
+                    4. <strong>Complete deliverables</strong> - Submit your work for review
+                </p>
+            </div>
+
+            <!-- CTA Buttons -->
+            <div style="text-align: center;">
+                <a href="{{chatRoomLink}}" class="cta-button">Start Conversation</a>
+                <br>
+                <a href="{{projectDetailsLink}}" class="secondary-button">View Project Details</a>
+                <a href="{{milestonesLink}}" class="secondary-button">Create Milestones</a>
+            </div>
+
+            <div class="divider"></div>
+
+            <!-- Important Information -->
+            <div style="background-color: #f3f4f6; padding: 16px; border-radius: 6px; margin: 20px 0;">
+                <p style="font-size: 13px; color: #374151; margin: 0; font-weight: 500;">ℹ️ Important Information:</p>
+                <ul style="font-size: 12px; color: #6b7280; margin: 8px 0 0 0; padding-left: 20px;">
+                    <li>Payment will be released after project completion and approval</li>
+                    <li>Maintain professional communication throughout</li>
+                    <li>Report any blockers immediately to get support</li>
+                    <li>Late deliverables may impact your rating</li>
+                </ul>
+            </div>
+
+            <!-- Support -->
+            <div style="background-color: #fef3c7; padding: 16px; border-radius: 6px; margin: 20px 0; border-left: 4px solid #f59e0b;">
+                <p style="font-size: 13px; color: #92400e; margin: 0;">
+                    <strong>Need Help?</strong> If you have any questions or concerns, our support team is here to help.
+                    <a href="{{supportLink}}" style="color: #d97706; font-weight: 600;">Contact Support</a>
+                </p>
+            </div>
+        </div>
+
+        <!-- Footer -->
+        <div class="footer">
+            <p class="footer-text">© 2026 CareerPilot Fellowships. All rights reserved.</p>
+            <div class="footer-links">
+                <a href="{{dashboardLink}}" class="footer-link">Dashboard</a>
+                <a href="{{faqLink}}" class="footer-link">FAQ</a>
+                <a href="https://careerpilot.com" class="footer-link">Website</a>
+            </div>
+        </div>
+    </div>
+</body>
+</html>

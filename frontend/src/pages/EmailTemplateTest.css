@@ -1,0 +1,178 @@
+/* Email Template Test Page Styles */
+
+.email-template-test {
+  min-height: 100vh;
+  background: linear-gradient(135deg, #f5f7fa 0%, #c3cfe2 100%);
+  padding: 20px 0;
+}
+
+.email-template-test .container {
+  max-width: 1200px;
+}
+
+/* Template Selection */
+.email-template-test .template-selector button {
+  transition: all 0.3s ease;
+}
+
+.email-template-test .template-selector button:hover {
+  transform: translateX(4px);
+}
+
+/* Form Styles */
+.email-template-test input,
+.email-template-test textarea {
+  transition: all 0.2s ease;
+}
+
+.email-template-test input:focus,
+.email-template-test textarea:focus {
+  box-shadow: 0 0 0 3px rgba(99, 102, 241, 0.1);
+}
+
+/* Button Animations */
+.email-template-test button {
+  transition: all 0.3s ease;
+}
+
+.email-template-test button:hover:not(:disabled) {
+  transform: translateY(-2px);
+  box-shadow: 0 4px 12px rgba(0, 0, 0, 0.1);
+}
+
+.email-template-test button:active:not(:disabled) {
+  transform: translateY(0);
+}
+
+/* Result Styles */
+.email-template-test .result-success {
+  animation: slideIn 0.3s ease-out;
+}
+
+.email-template-test .result-error {
+  animation: slideIn 0.3s ease-out;
+}
+
+@keyframes slideIn {
+  from {
+    opacity: 0;
+    transform: translateY(10px);
+  }
+  to {
+    opacity: 1;
+    transform: translateY(0);
+  }
+}
+
+/* Preview Modal */
+.email-template-test iframe {
+  min-height: 400px;
+}
+
+/* Responsive Design */
+@media (max-width: 768px) {
+  .email-template-test .grid {
+    grid-template-columns: 1fr;
+  }
+
+  .email-template-test h1 {
+    font-size: 1.875rem;
+  }
+
+  .email-template-test button {
+    font-size: 0.875rem;
+    padding: 0.75rem 1rem;
+  }
+}
+
+/* Color-coded Template Selection */
+.email-template-test .border-blue-500 {
+  border-color: #3b82f6;
+}
+
+.email-template-test .border-purple-500 {
+  border-color: #a855f7;
+}
+
+.email-template-test .border-green-500 {
+  border-color: #10b981;
+}
+
+.email-template-test .bg-blue-50 {
+  background-color: #eff6ff;
+}
+
+.email-template-test .bg-purple-50 {
+  background-color: #faf5ff;
+}
+
+.email-template-test .bg-green-50 {
+  background-color: #f0fdf4;
+}
+
+/* Badge Styles */
+.email-template-test .bg-blue-100 {
+  background-color: #dbeafe;
+}
+
+.email-template-test .text-blue-800 {
+  color: #1e40af;
+}
+
+.email-template-test .bg-purple-100 {
+  background-color: #e9d5ff;
+}
+
+.email-template-test .text-purple-800 {
+  color: #6b21a8;
+}
+
+.email-template-test .bg-green-100 {
+  background-color: #dcfce7;
+}
+
+.email-template-test .text-green-800 {
+  color: #166534;
+}
+
+/* Loading State */
+.email-template-test button:disabled {
+  cursor: not-allowed;
+  opacity: 0.6;
+}
+
+/* Focus Ring */
+.email-template-test input:focus,
+.email-template-test textarea:focus,
+.email-template-test button:focus {
+  outline: none;
+}
+
+/* Text Utilities */
+.email-template-test .text-gray-700 {
+  color: #374151;
+}
+
+.email-template-test .text-gray-600 {
+  color: #4b5563;
+}
+
+.email-template-test .text-gray-500 {
+  color: #6b7280;
+}
+
+.email-template-test .text-green-800 {
+  color: #166534;
+}
+
+.email-template-test .text-red-800 {
+  color: #991b1b;
+}
+
+.email-template-test .text-green-900 {
+  color: #14532d;
+}
+
+.email-template-test .text-red-900 {
+  color: #7f1d1d;
+}
