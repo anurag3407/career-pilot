@@ -113,4 +113,16 @@ describe('AI Career Tools API', () => {
 
     expect(res.statusCode).toBe(400);
   });
+
+  test('Rate limit simulation', async () => {
+  const responses = await Promise.all(
+    Array.from({ length: 5 }, () =>
+      request(app).get('/api/ai/skill-gap?role=Backend')
+    )
+  );
+
+  responses.forEach((res) => {
+    expect([200, 429]).toContain(res.statusCode);
+  });
+});
 });
