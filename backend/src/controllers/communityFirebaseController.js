@@ -408,9 +408,6 @@ export const createPost = async (req, res, next) => {
     };
 
     if (isScheduled) {
-      const jobId = await schedulePostJob(docRef.id, scheduledAt);
-      if (!jobId && !isSchedulerAvailable()) {
-        // Redis unavailable — immediately publish instead of silently dropping
       try {
         const jobId = await schedulePostJob(docRef.id, scheduledAt);
         if (!jobId && !isSchedulerAvailable()) {
@@ -537,7 +534,14 @@ export const updatePost = async (req, res, next) => {
 // Delete post
 export const deletePost = async (req, res, next) => {
   try {
-    const doc = await postsRef.doc(req.params.postId).get();
+    const { postId } = req.params;
+    const normalizedPostId = typeof postId === 'string' ? postId.trim() : '';
+
+    if (!normalizedPostId) {
+      throw new ApiError(400, 'Invalid or missing postId');
+    }
+
+    const doc = await postsRef.doc(normalizedPostId).get();
     
     if (!doc.exists) {
       throw new ApiError(404, 'Post not found');
@@ -545,11 +549,19 @@ export const deletePost = async (req, res, next) => {
 
     const post = doc.data();
 
+    if (!post || !post.author || !post.author.uid) {
+      throw new ApiError(400, 'Invalid post data');
+    }
+
     if (post.author.uid !== req.user.uid) {
       throw new ApiError(403, 'Not authorized to delete this post');
     }
 
-    await postsRef.doc(req.params.postId).update({
+    if (post.isDeleted) {
+      return res.json({ success: true, message: 'Post already deleted' });
+    }
+
+    await postsRef.doc(normalizedPostId).update({
       isDeleted: true,
       deletedAt: FieldValue.serverTimestamp()
     });

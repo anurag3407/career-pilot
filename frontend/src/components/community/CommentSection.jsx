@@ -125,10 +125,10 @@ function CommentItem({ comment, currentUser, onReply, onLike, depth = 0 }) {
                 {isSubmitting ? (
                   <Loader2 className="w-4 h-4 animate-spin" />
                 ) : (
-                  <>
-                    <Send className="w-4 h-4" />
-                    <span className="sr-only">Post Reply</span>
-                  </>
+                   <>
+        <Send className="w-4 h-4" />
+        <span className="sr-only">Post Reply</span>
+    </>
                 )}
               </button>
             </form>

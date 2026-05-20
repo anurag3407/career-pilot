@@ -1,15 +1,12 @@
-import { GoogleGenerativeAI } from '@google/generative-ai';
+import { getDefaultProvider } from '../config/aiProviders.js';
 import dotenv from 'dotenv';
 
 dotenv.config();
 
-const geminiApiKey = process.env.GEMINI_API_KEY;
-if (!geminiApiKey) {
-  throw new Error('GEMINI_API_KEY is missing. AI summarization is disabled.');
-}
-
-const genAI = new GoogleGenerativeAI(geminiApiKey);
-const model = genAI.getGenerativeModel({ model: 'gemini-2.5-flash' });
+// ---------------------------------------------------------------------------
+// Helper: resolve the AI provider to use
+// ---------------------------------------------------------------------------
+const resolveProvider = (aiProvider) => aiProvider || getDefaultProvider();
 
 /**
  * Summarizes a lengthy job description into key requirements.
@@ -17,10 +14,12 @@ const model = genAI.getGenerativeModel({ model: 'gemini-2.5-flash' });
  * and culture/team size insights.
  * 
  * @param {string} jobDescription - The full text of the job description
+ * @param {object} [aiProvider] - Optional AI provider adapter (from middleware)
  * @returns {Promise<Object>} - The structured summary
  */
-export const summarizeJobDescription = async (jobDescription) => {
+export const summarizeJobDescription = async (jobDescription, aiProvider) => {
   try {
+    const provider = resolveProvider(aiProvider);
     const prompt = `You are an expert technical recruiter and HR analyst. I will provide you with a job description. 
 Please analyze the job description and extract the following information:
 1. Must-have skills (core requirements)
@@ -41,14 +40,12 @@ Return this exact JSON structure:
 Job Description:
 ${jobDescription}`;
 
-    const result = await model.generateContent(prompt);
-    const response = await result.response;
-    const text = response.text();
+    const result = await provider.generateContent(prompt);
 
     let summaryData;
     try {
       // Remove markdown code blocks if present
-      const cleanedText = text.replace(/```json\n?/g, '').replace(/```\n?/g, '').trim();
+      const cleanedText = result.text.replace(/```json\n?/g, '').replace(/```\n?/g, '').trim();
       summaryData = JSON.parse(cleanedText);
       
       const isValid = 
