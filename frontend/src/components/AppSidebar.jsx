@@ -1,4 +1,3 @@
-import { useState } from "react";
 import { useNavigate } from "react-router-dom";
 import { motion } from "framer-motion";
 import {
@@ -197,28 +196,26 @@ function UserSection() {
 }
 
 export default function AppSidebar() {
-    const [open, setOpen] = useState(false);
+    const { setOpen } = useSidebar();
 
     return (
-        <Sidebar open={open} setOpen={setOpen}>
-            <SidebarBody className="justify-between gap-6 bg-card border-r border-border">
-                <div className="flex flex-col flex-1 overflow-y-auto overflow-x-hidden scrollbar-hide">
-                    <Logo />
-                    <SidebarDivider />
-                    <div className="flex flex-col gap-1">
-                        {navLinks.map((link) => (
-                            <SidebarLink
-                                key={link.href}
-                                link={link}
-                                onClick={() => setOpen(false)}
-                                className="text-muted-foreground hover:text-foreground hover:bg-muted font-semibold transition-all rounded-xl"
-                            />
-                        ))}
-                    </div>
+        <SidebarBody className="justify-between gap-6 bg-card border-r border-border">
+            <div className="flex flex-col flex-1 overflow-y-auto overflow-x-hidden scrollbar-hide">
+                <Logo />
+                <SidebarDivider />
+                <div className="flex flex-col gap-1">
+                    {navLinks.map((link) => (
+                        <SidebarLink
+                            key={link.href}
+                            link={link}
+                            onClick={() => setOpen(false)}
+                            className="text-muted-foreground hover:text-foreground hover:bg-muted font-semibold transition-all rounded-xl"
+                        />
+                    ))}
                 </div>
-                <UserSection />
-            </SidebarBody>
-        </Sidebar>
+            </div>
+            <UserSection />
+        </SidebarBody>
     );
 }
 
