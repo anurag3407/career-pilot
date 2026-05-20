@@ -17,6 +17,46 @@ export function SocketProvider({ children }) {
   const [socket, setSocket] = useState(null);
   const [isConnected, setIsConnected] = useState(false);
   const [onlineUsers, setOnlineUsers] = useState([]);
+  const [notifications, setNotifications] = useState([]);
+  const unreadCount = notifications.filter((n) => !n.read).length;
+
+
+  const pushNotification = useCallback((type, data) => {
+    setNotifications((prev) =>
+      [
+        {
+          id: `${type}-${Date.now()}-${Math.random()}`,
+          type,
+          data,
+          read: false,
+          timestamp: new Date(),
+        },
+        ...prev,
+      ].slice(0, 50)
+    );
+  }, []);
+
+  const markRead = useCallback((id) => {
+    setNotifications((prev) =>
+      prev.map((n) => (n.id === id ? { ...n, read: true } : n))
+    );
+  }, []);
+
+  const markAllRead = useCallback(() => {
+    setNotifications((prev) =>
+     prev.map((n) => ({ ...n, read: true }))
+    );
+  }, []);
+
+  const dismissNotification = useCallback((id) => {
+    setNotifications((prev) =>
+      prev.filter((n) => n.id !== id)
+    );
+  }, []);
+
+  const clearNotifications = useCallback(() => {
+    setNotifications([]);
+  }, []);
 
   // Initialize socket when user logs in
   useEffect(() => {
@@ -49,12 +89,31 @@ export function SocketProvider({ children }) {
             );
           };
 
+
+          const handleNotification = (data) =>
+            pushNotification('notification', data);
+
+          const handleJobAlertNewJobs = (data) =>
+             pushNotification('job_alert_new_jobs', data);
+
+          const handleJobAlertEmailSent = (data) =>
+            pushNotification('job_alert_email_sent', data);
+
+          const handleJobAlertEmailFailed = (data) =>
+            pushNotification('job_alert_email_failed', data);
+
           socketInstance.on('connect', handleConnect);
           socketInstance.on('disconnect', handleDisconnect);
           socketInstance.on('online_users', handleOnlineUsers);
           socketInstance.on('user_online', handleUserOnline);
           socketInstance.on('user_offline', handleUserOffline);
           socketInstance.on('user_status_changed', handleStatusChanged);
+          socketInstance.on('notification', handleNotification);
+          socketInstance.on('job_alert_new_jobs', handleJobAlertNewJobs);
+          socketInstance.on('job_alert_email_sent', handleJobAlertEmailSent);
+          socketInstance.on('job_alert_email_failed', handleJobAlertEmailFailed);
+
+          if (socketInstance.connected) handleConnect();
 
           cleanupHandlers = () => {
             socketInstance.off('connect', handleConnect);
@@ -63,6 +122,10 @@ export function SocketProvider({ children }) {
             socketInstance.off('user_online', handleUserOnline);
             socketInstance.off('user_offline', handleUserOffline);
             socketInstance.off('user_status_changed', handleStatusChanged);
+            socketInstance.off('notification', handleNotification);
+            socketInstance.off('job_alert_new_jobs', handleJobAlertNewJobs);
+            socketInstance.off('job_alert_email_sent', handleJobAlertEmailSent);
+            socketInstance.off('job_alert_email_failed', handleJobAlertEmailFailed);
           };
 
           // Get initial online users
@@ -73,6 +136,7 @@ export function SocketProvider({ children }) {
         setSocket(null);
         setIsConnected(false);
         setOnlineUsers([]);
+        setNotifications([]);
       }
     };
 
@@ -109,6 +173,12 @@ export function SocketProvider({ children }) {
     socket,
     isConnected,
     onlineUsers,
+    notifications,
+    unreadCount,
+    markRead,
+    markAllRead,
+    dismissNotification,
+    clearNotifications,
     subscribe,
     emit,
     ...socketEvents
