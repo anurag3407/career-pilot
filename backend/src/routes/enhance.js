@@ -9,6 +9,7 @@ import { aiRateLimiter } from '../middleware/rateLimiter.js';
 import { createSSEStream } from '../middleware/stream.js';
 import { getDefaultProvider } from '../config/aiProviders.js';
 import { validate } from '../middleware/validate.js';
+import { cache } from '../middleware/cache.js';
 import {
   enhanceResumeSchema,
   resumeTextJobRoleSchema,
@@ -226,7 +227,7 @@ router.post('/before-after', verifyToken, extractAIProvider, aiRateLimiter, vali
 }));
 
 // Get power/weak verb lists
-router.get('/verb-lists', verifyToken, asyncHandler(async (req, res) => {
+router.get('/verb-lists', verifyToken, cache(900), asyncHandler(async (req, res) => {
   const verbs = getVerbLists();
 
   res.json({

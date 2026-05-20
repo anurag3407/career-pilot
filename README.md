@@ -286,10 +286,8 @@ FIREBASE_SERVICE_ACCOUNT={"type":"service_account",...}
 # AI
 GEMINI_API_KEY=your-gemini-api-key
 
-# Redis (for BullMQ)
-REDIS_HOST=localhost
-REDIS_PORT=6379
-REDIS_PASSWORD=optional-password
+# Redis (for BullMQ and API caching layer)
+REDIS_URL=redis://localhost:6379
 
 # RapidAPI (Job Search)
 RAPID_API_KEY=your-rapidapi-key
@@ -700,6 +698,15 @@ career-pilot/
 3. **Response Capture**: User answers questions in real-time
 4. **AI Evaluation**: Each answer scored with detailed feedback
 5. **Final Report**: Comprehensive performance analysis and suggestions
+
+### ⚡ Redis API Caching Layer
+
+1. **Request Interception**: Reusable caching middleware intercepts incoming GET requests to optimized endpoints.
+2. **Dynamic TTL Policies**: Configurable TTL per feature area (Job listings: 5 mins, User profiles: 10 mins, AI static resources: 15 mins).
+3. **Smart Cache Keys**: Structured key naming convention partitioned by target entity or user (e.g. `cache:user-profiles:profile:<uid>`).
+4. **Cache Invalidation**: Automatic eviction of related cache entries (profile, stats, and activity) when data mutation occurs (via profile updates).
+5. **Offline Fallback**: Seamless, production-safe error recovery. If Redis is down, the caching layer automatically bypasses Redis and resolves the API call directly from the database without any application disruption.
+6. **Observability**: Logs cache hits, misses, and response times in real-time, sending an `X-Cache: HIT | MISS` response header for developers.
 
 ---
 

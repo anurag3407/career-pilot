@@ -7,6 +7,8 @@ import Interview from '../models/Interview.model.js';
 import { db } from '../config/firebase.js';
 import { validate } from '../middleware/validate.js';
 import { updateProfileSchema } from '../schemas/userProfile.schema.js';
+import { cache } from '../middleware/cache.js';
+import { invalidateUserProfileCache } from '../utils/cacheInvalidation.js';
 
 const router = express.Router();
 
@@ -40,7 +42,7 @@ const getPostsForUser = async (uid) => {
 };
 
 // Get or create own profile
-router.get('/me', asyncHandler(async (req, res) => {
+router.get('/me', cache(600), asyncHandler(async (req, res) => {
   const uid = req.user.uid;
   let profile = await UserProfile.findOne({ uid });
   if (!profile) {
@@ -77,11 +79,15 @@ router.put('/me', validate(updateProfileSchema), asyncHandler(async (req, res) =
     { $set: update },
     { new: true, upsert: true }
   );
+
+  // Invalidate Redis caches for this user to avoid serving stale data
+  await invalidateUserProfileCache(uid);
+
   res.json({ success: true, profile });
 }));
 
 // Get own stats
-router.get('/me/stats', asyncHandler(async (req, res) => {
+router.get('/me/stats', cache(600), asyncHandler(async (req, res) => {
   const uid = req.user.uid;
   const [resumesCreated, interviewsDone] = await Promise.all([
     Resume.countDocuments({ userId: uid }),
@@ -91,20 +97,20 @@ router.get('/me/stats', asyncHandler(async (req, res) => {
 }));
 
 // Get own activity feed (community posts)
-router.get('/me/activity', asyncHandler(async (req, res) => {
+router.get('/me/activity', cache(600), asyncHandler(async (req, res) => {
   const activity = await getPostsForUser(req.user.uid);
   res.json({ success: true, activity });
 }));
 
 // Get public profile by uid
-router.get('/:uid', asyncHandler(async (req, res) => {
+router.get('/:uid', cache(600), asyncHandler(async (req, res) => {
   const profile = await UserProfile.findOne({ uid: req.params.uid });
   if (!profile) throw new ApiError(404, 'Profile not found');
   res.json({ success: true, profile });
 }));
 
 // Get public stats by uid
-router.get('/:uid/stats', asyncHandler(async (req, res) => {
+router.get('/:uid/stats', cache(600), asyncHandler(async (req, res) => {
   const uid = req.params.uid;
   const [resumesCreated, interviewsDone] = await Promise.all([
     Resume.countDocuments({ userId: uid }),
@@ -114,7 +120,7 @@ router.get('/:uid/stats', asyncHandler(async (req, res) => {
 }));
 
 // Get public activity feed by uid
-router.get('/:uid/activity', asyncHandler(async (req, res) => {
+router.get('/:uid/activity', cache(600), asyncHandler(async (req, res) => {
   const activity = await getPostsForUser(req.params.uid);
   res.json({ success: true, activity });
 }));
