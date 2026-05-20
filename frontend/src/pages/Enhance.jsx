@@ -471,10 +471,6 @@ export default function Enhance() {
     )
   }
 
-  launchConfetti({
-  particleCount: 120,
-  duration: 2500,
-});
 
 
 
