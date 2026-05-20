@@ -74,7 +74,7 @@ router.post('/enhance-portfolio-content', verifyToken, asyncHandler(async (req, 
   });
 }));
 
-router.get('/public/:slug/sitemap.xml', sitemapCache, asyncHandler(async (req, res) => {
+// router.get('/public/:slug/sitemap.xml', sitemapCache, asyncHandler(async (req, res) => {
 /**
  * POST /api/portfolio/:id/performance
  * Analyze or track portfolio performance metrics
