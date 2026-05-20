@@ -1,6 +1,6 @@
 import crypto from 'crypto';
 
-const DEFAULT_VARY_HEADERS = ['Accept-Encoding', 'Accept'];
+const DEFAULT_VARY_HEADERS = ['Accept-Encoding'];
 
 const normalizeIfNoneMatch = (headerValue) => {
   if (!headerValue) return [];
@@ -67,6 +67,13 @@ const cacheHeaders = ({ maxAge, isPublic = true } = {}) => (req, res, next) => {
   setVaryHeader(res);
 
   if (req.headers.authorization) {
+    res.set(
+      'Cache-Control',
+      'private, no-store, no-cache, must-revalidate'
+    );
+
+    setVaryHeader(res, ['Authorization']);
+
     return next();
   }
 
