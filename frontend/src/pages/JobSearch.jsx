@@ -23,6 +23,7 @@ import {
 } from 'lucide-react'
 import { jobsApi, jobTrackerApi } from '../services/api'
 import Button from '../components/Button'
+import EmptyState from '../components/EmptyState'
 
 const JOB_TYPES = ['All Types', 'Full-time', 'Part-time', 'Contract', 'Internship', 'Remote']
 const EXPERIENCE_LEVELS = ['All Levels', 'Entry Level', 'Mid Level', 'Senior Level', 'Lead/Manager']
@@ -325,20 +326,13 @@ className="w-full pl-12 pr-10 py-4 bg-muted/50 border border-border rounded-xl t
             <p className="text-muted-foreground mt-4">Searching for opportunities...</p>
           </div>
         ) : hasSearched && jobs.length === 0 ? (
-          <motion.div
-            initial={{ opacity: 0 }}
-            animate={{ opacity: 1 }}
-            className="text-center py-20"
-          >
-            <div className="w-20 h-20 bg-muted rounded-full flex items-center justify-center mx-auto mb-4">
-              <Search className="w-10 h-10 text-muted-foreground/80" />
-            </div>
-            <h3 className="text-xl font-semibold text-foreground mb-2">No jobs found</h3>
-            <p className="text-muted-foreground mb-6">Try adjusting your search terms or filters</p>
-            <Button variant="ghost" onClick={() => setHasSearched(false)}>
-              Clear Search
-            </Button>
-          </motion.div>
+          <EmptyState
+            icon={Search}
+            title="No jobs found"
+            description="Try adjusting your search terms or filters."
+            actionLabel="Clear Search"
+            onAction={() => setHasSearched(false)}
+          />
         ) : hasSearched && jobs.length > 0 ? (
           <motion.div
             initial={{ opacity: 0 }}
