@@ -5,6 +5,12 @@ import { extractAIProvider } from '../middleware/aiKey.js';
 import { aiRateLimiter } from '../middleware/rateLimiter.js';
 import TrackedJob from '../models/TrackedJob.model.js';
 import { researchCompany } from '../services/companyResearchService.js';
+import { validate } from '../middleware/validate.js';
+import {
+  companyResearchSchema,
+  trackJobSchema,
+  updateTrackedJobSchema,
+} from '../schemas/jobTracker.schema.js';
 
 function isValidWebUrl(str) {
   try {
@@ -18,7 +24,7 @@ function isValidWebUrl(str) {
 const router = express.Router();
 
 // Research a company using AI
-router.post('/research', verifyToken, extractAIProvider, aiRateLimiter, asyncHandler(async (req, res) => {
+router.post('/research', verifyToken, extractAIProvider, aiRateLimiter, validate(companyResearchSchema), asyncHandler(async (req, res) => {
   const { companyName, industry } = req.body;
 
   if (!companyName || !companyName.trim()) {
@@ -95,7 +101,7 @@ router.get('/stats', verifyToken, asyncHandler(async (req, res) => {
 }));
 
 // Track a new job
-router.post('/', verifyToken, asyncHandler(async (req, res) => {
+router.post('/', verifyToken, validate(trackJobSchema), asyncHandler(async (req, res) => {
   const userId = req.user.uid;
   const {
     jobId,
@@ -162,7 +168,7 @@ router.post('/', verifyToken, asyncHandler(async (req, res) => {
 }));
 
 // Update tracked job status
-router.put('/:trackerId', verifyToken, asyncHandler(async (req, res) => {
+router.put('/:trackerId', verifyToken, validate(updateTrackedJobSchema), asyncHandler(async (req, res) => {
   const { trackerId } = req.params;
   const userId = req.user.uid;
   const { status, notes } = req.body;
