@@ -33,6 +33,7 @@
 - [Portfolio Builder](#-portfolio-builder)
 - [GitHub Intelligence](#-github-intelligence)
 - [AI Career Tools](#-ai-career-tools)
+- [Legal Pages](#-legal-pages)
 - [Tech Stack](#-tech-stack)
 - [Getting Started](#-getting-started)
 - [Project Structure](#-project-structure)
@@ -194,6 +195,15 @@ The **AI Resume Builder & Career Platform** is a comprehensive full-stack applic
 - **JWT Token Verification**: Protected API endpoints
 - **Rate Limiting**: Protection against abuse
 - **Helmet Security Headers**: Enhanced HTTP security
+
+### 📋 Legal Pages
+
+- **Privacy Policy** (`/privacy`): Comprehensive privacy policy covering data collection, usage, storage, and user rights
+- **Terms of Service** (`/terms`): Complete terms of service with liability limits, user responsibilities, and dispute resolution
+- **Cookie Policy** (`/cookies`): Detailed cookie management guide with browser-specific instructions and compliance standards
+- **GDPR & CCPA Compliant**: Ensures compliance with major data protection regulations
+- **Public Access**: All legal pages are publicly accessible without authentication
+- **Mobile Responsive**: Optimized for all device sizes and screen orientations
 
 ---
 
