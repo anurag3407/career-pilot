@@ -1,3 +1,4 @@
+
 import express from 'express';
 import { createServer } from 'http';
 import cors from 'cors';
@@ -34,6 +35,7 @@ import { connectDB } from './config/database.js';
 import { initJobFetcher } from './services/jobFetcher.js';
 import JobAlert from './models/JobAlert.model.js';
 
+const bullBoardAdapter = require('./config/bullBoard');
 const swaggerUi = require('swagger-ui-express');
 const swaggerSpec = require('./config/swagger');
 const app = express();
@@ -102,6 +104,8 @@ app.get('/health', (req, res) => {
 });
 
 app.use('/api/docs', swaggerUi.serve, swaggerUi.setup(swaggerSpec));
+// BullMQ Dashboard
+app.use('/admin/queues', bullBoardAdapter.getRouter());
 app.use('/api/auth', authRoutes);
 app.use('/api/upload', uploadRoutes);
 app.use('/api/resumes', resumeRoutes);
