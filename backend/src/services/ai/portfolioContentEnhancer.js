@@ -1,7 +1,8 @@
 import { GoogleGenerativeAI } from '@google/generative-ai';
+import { aiCallsCounter } from '../../middleware/metrics.js';
 
 const geminiApiKey = process.env.GEMINI_API_KEY;
-if (!geminiApiKey || !geminiApiKey.trim()) {
+if (!geminiApiKey) {
   throw new Error('GEMINI_API_KEY environment variable is required');
 }
 const genAI = new GoogleGenerativeAI(geminiApiKey);
@@ -105,6 +106,7 @@ export const enhanceSection = async (sectionType, content) => {
   const model = genAI.getGenerativeModel({ model: 'gemini-2.0-flash' });
   const prompt = promptBuilder(content);
 
+  aiCallsCounter.inc({ provider: "gemini" });
   const result = await model.generateContent(prompt);
   const responseText = result.response.text();
 

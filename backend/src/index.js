@@ -1,12 +1,10 @@
+import 'dotenv/config';
 import express from 'express';
 import { createServer } from 'http';
 import cors from 'cors';
 import helmet from 'helmet';
 import rateLimit from 'express-rate-limit';
-import dotenv from 'dotenv';
 import searchRoutes from './routes/search.js';
-
-dotenv.config();
 import portfolioRoutes from './routes/portfolio.js';
 import uploadRoutes from './routes/upload.js';
 import resumeRoutes from './routes/resume.js';
@@ -23,18 +21,43 @@ import userProfileRoutes from './routes/userProfile.js';
 import twoFactorRoutes from './routes/twoFactor.js';
 import aiRoutes from './routes/ai.js';
 
-import { errorHandler } from './middleware/errorHandler.js';
+import { globalErrorHandler } from './middleware/globalErrorHandler.js';
+import {
+  metricsMiddleware,
+  metricsHandler,
+} from "./middleware/metrics.js";
+
 
 import { initializeSocket } from './config/socket.js';
 
 import { initializeDefaultChannels } from './controllers/communityFirebaseController.js';
 import { initializePostScheduler } from './services/postScheduler.js';
+import swaggerUi from 'swagger-ui-express';
+import swaggerSpec from './config/swagger.js';
 
-import { connectDB } from './config/database.js';
+import { connectDB as baseConnectDB } from './config/database.js';
 import { initJobFetcher } from './services/jobFetcher.js';
 import JobAlert from './models/JobAlert.model.js';
+import { initGitHubSyncCron } from './services/portfolioGitHubSync.js';
+
+const shouldInitGitHubSyncCron =
+  process.env.ENABLE_GITHUB_SYNC_CRON !== 'false' &&
+  process.env.NODE_ENV !== 'test';
+
+const connectDB = async (...args) => {
+  await baseConnectDB(...args);
+
+  if (shouldInitGitHubSyncCron) {
+    initGitHubSyncCron();
+  }
+};
+
+import {
+  scheduleWeeklyDigest
+} from './services/weeklyDigestService.js';
 
 const app = express();
+app.use(metricsMiddleware);
 const httpServer = createServer(app);
 const PORT = process.env.PORT || 5000;
 
@@ -99,6 +122,9 @@ app.get('/health', (req, res) => {
   });
 });
 
+app.get('/metrics', metricsHandler);
+
+app.use('/api/docs', swaggerUi.serve, swaggerUi.setup(swaggerSpec));
 app.use('/api/auth', authRoutes);
 app.use('/api/upload', uploadRoutes);
 app.use('/api/resumes', resumeRoutes);
@@ -119,7 +145,7 @@ app.use('/api/ai', aiRoutes);
 app.use((req, res) => {
   res.status(404).json({ error: 'Route not found' });
 });
-app.use(errorHandler);
+app.use(globalErrorHandler);
 const startServer = async () => {
   try {
     await connectDB();
@@ -169,6 +195,15 @@ const startServer = async () => {
       await initJobFetcher();
     } catch (fetcherError) {
       console.warn('⚠️ Job fetcher initialization skipped:', fetcherError.message);
+    }
+
+    try {
+      scheduleWeeklyDigest();
+    } catch (digestError) {
+      console.warn(
+        '⚠️ Weekly digest scheduler initialization skipped:',
+        digestError.message
+      );
     }
 
   } catch (error) {
