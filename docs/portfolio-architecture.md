@@ -954,6 +954,10 @@ const fillPlaceholders = () => {
       Object.entries(map).forEach(([p, r]) => {
         newVal = newVal.split(p).join(r);
       });
+
+      if (attr === 'href') {
+        newVal = sanitizeHref(newVal);
+      }
       
       el.setAttribute(attr, newVal);
     });
