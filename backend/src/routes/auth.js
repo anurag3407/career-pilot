@@ -13,8 +13,6 @@ import crypto from 'crypto';
 const router = express.Router();
 const stateStore = new Map();
 
-const stateStore = new Map();
-
 // Example register endpoint with validation
 router.post('/register', validate(registerSchema), asyncHandler(async (req, res) => {
   res.status(201).json({
@@ -32,10 +30,6 @@ setInterval(() => {
     }
   }
 }, 10 * 60 * 1000).unref();
-
-// Verify token endpoint — loginProtection tracks failed attempts per IP
-// and locks out after 5 consecutive failures for 15 minutes.
-router.post('/verify', loginProtection, verifyToken, asyncHandler(async (req, res) => {
 
 
 // Verify token endpoint
