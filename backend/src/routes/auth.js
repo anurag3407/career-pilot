@@ -13,7 +13,6 @@ import crypto from 'crypto';
 import { updateNotificationPrefsSchema } from '../schemas/auth.schema.js';
 
 const router = express.Router();
-
 const stateStore = new Map();
 
 // Example register endpoint with validation
