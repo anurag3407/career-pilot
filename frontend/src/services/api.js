@@ -291,6 +291,18 @@ export const enhanceApi = {
     return handleResponse(response)
   },
 
+  // Get inline AI completion for ghost text
+  async inlineCompletion(text, cursorPosition, sectionContext, fieldType, signal) {
+    const headers = await getAuthHeaders()
+    const response = await fetch(`${API_BASE}/enhance/inline-completion`, {
+      method: 'POST',
+      headers,
+      body: JSON.stringify({ text, cursorPosition, sectionContext, fieldType }),
+      signal
+    })
+    return handleResponse(response)
+  },
+
   // Optimize LinkedIn profile with AI
   async optimizeLinkedIn(data) {
     const headers = await getAuthHeaders()

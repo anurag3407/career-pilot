@@ -573,6 +573,35 @@ ${resumeText}`;
   }
 };
 
+// Generate inline text completion for ghost text suggestions
+export const generateInlineCompletion = async (text, cursorPosition, sectionContext, fieldType, aiProvider) => {
+  try {
+    const provider = resolveProvider(aiProvider);
+    const textBeforeCursor = text.slice(0, cursorPosition);
+    const textAfterCursor = text.slice(cursorPosition);
+
+    const prompt = `You are an expert resume writer providing inline text completions.
+
+The user is editing the "${fieldType}" field in the "${sectionContext}" section of their resume.
+
+Text before cursor: "${textBeforeCursor}"
+Text after cursor: "${textAfterCursor}"
+
+Provide a short, natural continuation (1-2 sentences max) that completes the current thought. Return ONLY the completion text, nothing else. No quotes, no explanations, no prefixes. If the text is empty, suggest a strong opening for this type of resume field.`;
+
+    const providerResult = await provider.generateContent(prompt);
+    return {
+      success: true,
+      completion: providerResult.text.trim(),
+      provider: provider.providerName
+    };
+  } catch (error) {
+    if (error.statusCode === 503) throw error;
+    console.error('Error generating inline completion:', error);
+    throw new Error(`Failed to generate inline completion: ${error.message}`);
+  }
+};
+
 // Export power/weak verbs for frontend use
 export const getVerbLists = () => ({
   powerVerbs: POWER_VERBS,

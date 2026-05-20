@@ -1,5 +1,5 @@
 import express from 'express';
-import { enhanceResume, generateSummary, suggestImprovements, analyzeATSScore, analyzeResumeComprehensive, analyzeBulletPoints, generateBeforeAfter, getVerbLists, getSystemPrompt } from '../config/langchain.js';
+import { enhanceResume, generateSummary, suggestImprovements, analyzeATSScore, analyzeResumeComprehensive, analyzeBulletPoints, generateBeforeAfter, getVerbLists, getSystemPrompt, generateInlineCompletion } from '../config/langchain.js';
 import { generateEmails } from '../services/emailGeneratorService.js';
 import { optimizeLinkedInProfile } from '../services/linkedinOptimizerService.js';
 import { verifyToken } from '../middleware/auth.js';
@@ -274,6 +274,36 @@ router.post('/optimize-linkedin', verifyToken, aiRateLimiter, validate(optimizeL
 
   const result = await optimizeLinkedInProfile(normalizedProfile, normalizedRole);
   res.json(result);
+}));
+
+// Inline AI completion for ghost text suggestions
+router.post('/inline-completion', verifyToken, extractAIProvider, aiRateLimiter, asyncHandler(async (req, res) => {
+  const { text, cursorPosition, sectionContext, fieldType } = req.body;
+
+  if (typeof text !== 'string') {
+    throw new ApiError(400, 'Text is required');
+  }
+
+  if (typeof cursorPosition !== 'number' || cursorPosition < 0) {
+    throw new ApiError(400, 'Valid cursor position is required');
+  }
+
+  const result = await generateInlineCompletion(
+    text,
+    cursorPosition,
+    sectionContext || 'General',
+    fieldType || 'description',
+    req.aiProvider
+  );
+
+  res.json({
+    success: true,
+    data: {
+      completion: result.completion,
+      provider: result.provider,
+      providerSource: req.aiProviderSource
+    }
+  });
 }));
 
 // Streaming endpoint for resume enhancement
