@@ -706,11 +706,7 @@ export default function InterviewPrep() {
       setLoading(false);
     }
   };
-  launchConfetti({
-  particleCount: 120,
-  spread: 80,
-  duration: 2500,
-});
+ 
 
   const formatTime = (seconds) => {
     const mins = Math.floor(seconds / 60);
