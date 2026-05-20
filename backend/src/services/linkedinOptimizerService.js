@@ -1,5 +1,6 @@
 import { GoogleGenerativeAI } from '@google/generative-ai';
 import dotenv from 'dotenv';
+import { aiCallsCounter } from '../middleware/metrics.js';
 
 dotenv.config();
 
@@ -64,6 +65,7 @@ export const optimizeLinkedInProfile = async (profileText, targetRole) => {
     `;
 
     try {
+        aiCallsCounter.inc({ provider: "gemini" });
         const result = await getModel().generateContent(prompt);
         const response = await result.response;
         const text = response.text();

@@ -7,7 +7,8 @@
   "scripts": {
     "start": "node src/index.js",
     "dev": "nodemon src/index.js",
-    "lint": "eslint src/"
+    "lint": "eslint src/",
+    "test": "node --test src/schemas/__tests__/schemas.test.js"
   },
   "dependencies": {
     "@google/generative-ai": "^0.21.0",
@@ -22,17 +23,25 @@
     "groq-sdk": "^0.37.0",
     "helmet": "^8.0.0",
     "ioredis": "^5.8.2",
+    "joi": "^18.2.1",
+    "marked": "^18.0.3",
     "mongoose": "^9.1.1",
     "multer": "^1.4.5-lts.1",
     "node-cron": "^4.2.1",
     "nodemailer": "^7.0.12",
+    "openai": "^6.38.0",
     "pdf-parse": "^1.1.1",
     "pdfkit": "^0.17.2",
+    "prom-client": "^15.1.3",
+    "puppeteer": "^24.43.1",
     "qrcode": "^1.5.4",
     "razorpay": "^2.9.6",
     "socket.io": "^4.8.3",
     "speakeasy": "^2.0.0",
-    "uuid": "^10.0.0"
+    "swagger-jsdoc": "^6.2.8",
+    "swagger-ui-express": "^5.0.1",
+    "uuid": "^10.0.0",
+    "zod": "^4.4.3"
   },
   "devDependencies": {
     "eslint": "^8.57.1",

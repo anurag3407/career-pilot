@@ -1,19 +1,16 @@
-import { GoogleGenerativeAI } from '@google/generative-ai';
+import { getDefaultProvider } from '../config/aiProviders.js';
 import dotenv from 'dotenv';
 
 dotenv.config();
 
-const geminiApiKey = process.env.GEMINI_API_KEY;
-if (!geminiApiKey) {
-    console.error('GEMINI_API_KEY is missing. Aborting AI initialization.');
-    throw new Error('GEMINI_API_KEY is required to start the AI services.');
-}
+// ---------------------------------------------------------------------------
+// Helper: resolve the AI provider to use
+// ---------------------------------------------------------------------------
+const resolveProvider = (aiProvider) => aiProvider || getDefaultProvider();
 
-const genAI = new GoogleGenerativeAI(geminiApiKey);
-const model = genAI.getGenerativeModel({ model: 'gemini-2.5-flash' });
-
-export const generateEmails = async (resumeText, jobDescription, tone) => {
+export const generateEmails = async (resumeText, jobDescription, tone, aiProvider) => {
     try {
+        const provider = resolveProvider(aiProvider);
         const prompt = `
         You are an expert career coach. Based on the following details, generate 3 variants of a professional job application email and 3 subject line options.
         Tone: ${tone}
@@ -27,12 +24,10 @@ export const generateEmails = async (resumeText, jobDescription, tone) => {
         }
         `;
 
-        const result = await model.generateContent(prompt);
-        const response = await result.response;
-        const text = response.text();
+        const result = await provider.generateContent(prompt);
 
         // Clean up markdown syntax if AI adds it
-        const cleanedText = text.replace(/```json\n?/g, '').replace(/```\n?/g, '').trim();
+        const cleanedText = result.text.replace(/```json\n?/g, '').replace(/```\n?/g, '').trim();
 
         return JSON.parse(cleanedText);
 

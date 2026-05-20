@@ -3,12 +3,26 @@ import { asyncHandler } from '../middleware/errorHandler.js';
 import { verifyToken } from '../middleware/auth.js';
 import { loginProtection } from '../middleware/loginProtection.js';
 import { saveUserToFirebase } from '../services/firebaseDataService.js';
+import { validate } from '../middleware/validate.js';
+import { registerSchema } from '../validators/authValidator.js';
 import { exchangeCodeForToken, getLinkedInAuthUrl, getLinkedInProfile } from '../services/linkedinService.js';
 import User from '../models/User.model.js';
 import admin from '../config/firebase.js';
 import crypto from 'crypto';
+import { validate } from '../middleware/validate.js';
+import { updateNotificationPrefsSchema } from '../schemas/auth.schema.js';
+
+const router = express.Router();
 
 const stateStore = new Map();
+
+// Example register endpoint with validation
+router.post('/register', validate(registerSchema), asyncHandler(async (req, res) => {
+  res.status(201).json({
+    success: true,
+    message: 'User registered successfully'
+  });
+}));
 
 // Periodic sweep of expired stateStore entries every 10 minutes to prevent memory leaks
 setInterval(() => {
@@ -19,6 +33,8 @@ setInterval(() => {
     }
   }
 }, 10 * 60 * 1000).unref();
+
+const router = express.Router();
 
 // Verify token endpoint — loginProtection tracks failed attempts per IP
 // and locks out after 5 consecutive failures for 15 minutes.
@@ -65,7 +81,7 @@ router.get('/notification-preferences', verifyToken, asyncHandler(async (req, re
 }));
 
 // Update notification preferences
-router.put('/notification-preferences', verifyToken, asyncHandler(async (req, res) => {
+router.put('/notification-preferences', verifyToken, validate(updateNotificationPrefsSchema), asyncHandler(async (req, res) => {
   const User = (await import('../models/User.model.js')).default;
   const { jobAlerts, directMessages, proposalUpdates } = req.body;
 

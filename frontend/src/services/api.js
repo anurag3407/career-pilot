@@ -187,6 +187,28 @@ export const resumeApi = {
     return handleResponse(response)
   },
 
+  // Preview LinkedIn profile data before importing
+  async previewLinkedIn(url) {
+    const headers = await getAuthHeaders()
+    const response = await fetch(`${API_BASE}/resumes/import/linkedin/preview`, {
+      method: 'POST',
+      headers,
+      body: JSON.stringify({ url })
+    })
+    return handleResponse(response)
+  },
+
+  // Import LinkedIn profile as a resume
+  async importLinkedIn(url, profile = null) {
+    const headers = await getAuthHeaders()
+    const response = await fetch(`${API_BASE}/resumes/import/linkedin`, {
+      method: 'POST',
+      headers,
+      body: JSON.stringify({ url, profile })
+    })
+    return handleResponse(response)
+  },
+
   // Download resume as PDF
   async downloadPdf(resumeId, version = 'enhanced') {
     const user = auth.currentUser
@@ -314,6 +336,38 @@ export const enhanceApi = {
     const headers = await getAuthHeaders()
     const response = await fetch(`${API_BASE}/enhance/optimize-linkedin`, {
       method: 'POST',
+      headers,
+      body: JSON.stringify(data)
+    })
+    return handleResponse(response)
+  }
+}
+
+// ============ AI API ============
+export const aiApi = {
+  // Get AI models for a specific provider
+  async getModels(provider) {
+    const headers = await getAuthHeaders()
+    const response = await fetch(`${API_BASE}/ai/models?provider=${encodeURIComponent(provider)}`, {
+      method: 'GET',
+      headers
+    })
+    return handleResponse(response)
+  },
+
+  async getConfig() {
+    const headers = await getAuthHeaders()
+    const response = await fetch(`${API_BASE}/ai/config`, {
+      method: 'GET',
+      headers
+    })
+    return handleResponse(response)
+  },
+
+  async updateConfig(data) {
+    const headers = await getAuthHeaders()
+    const response = await fetch(`${API_BASE}/ai/config`, {
+      method: 'PUT',
       headers,
       body: JSON.stringify(data)
     })
@@ -1043,6 +1097,16 @@ export const twoFactorApi = {
       method: 'POST',
       headers,
       body: JSON.stringify({ token })
+    })
+    return handleResponse(response)
+  },
+
+  async disableWithBackup(code) {
+    const headers = await getAuthHeaders()
+    const response = await fetch(`${API_BASE}/auth/2fa/disable-with-backup`, {
+      method: 'POST',
+      headers,
+      body: JSON.stringify({ code })
     })
     return handleResponse(response)
   }
