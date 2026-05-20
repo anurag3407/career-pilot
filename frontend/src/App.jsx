@@ -6,7 +6,6 @@ import { SocketProvider } from './context/SocketContext';
 import { ThemeProvider } from './context/ThemeContext';
 import AppLayout from './components/AppLayout';
 import Footer from './components/ui/Footer';
-
 import CommandPalette from './components/CommandPalette';
 import Home from './pages/Home';
 import Login from './pages/Login';
@@ -20,7 +19,8 @@ import JobAlerts from './pages/JobAlerts';
 
 
 import JobTracker from './pages/JobTracker';
-import { Community, NotFound } from './pages';
+import { Community, NotFound, Analytics } from './pages';
+
 import InterviewPrep from './pages/InterviewPrep';
 import UserProfile from './pages/UserProfile';
 import EmailGenerator from './pages/EmailGenerator';
@@ -140,6 +140,7 @@ function App() {
 
               {/* Core Protected Routes */}
               <Route path="/dashboard" element={<ProtectedRoute><Dashboard /></ProtectedRoute>} />
+                <Route path="/analytics" element={<ProtectedRoute><Analytics /></ProtectedRoute>} />
               <Route path="/upload" element={<ProtectedRoute><Upload /></ProtectedRoute>} />
               <Route path="/enhance/:resumeId" element={<ProtectedRoute><Enhance /></ProtectedRoute>} />
               <Route path="/resume/:resumeId" element={<ProtectedRoute><ResumeView /></ProtectedRoute>} />

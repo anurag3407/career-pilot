@@ -19,6 +19,7 @@ import interviewRoutes from './routes/interview.js';
 import paymentRoutes from './routes/payments.js';
 import userProfileRoutes from './routes/userProfile.js';
 import twoFactorRoutes from './routes/twoFactor.js';
+
 import aiRoutes from './routes/ai.js';
 
 import { globalErrorHandler } from './middleware/globalErrorHandler.js';
@@ -55,6 +56,7 @@ const connectDB = async (...args) => {
 import {
   scheduleWeeklyDigest
 } from './services/weeklyDigestService.js';
+
 
 const app = express();
 app.use(metricsMiddleware);
