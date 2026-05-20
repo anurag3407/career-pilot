@@ -24,6 +24,8 @@ import {
 } from 'lucide-react'
 import { resumeApi, jobTrackerApi } from '../services/api'
 import Button from '../components/Button'
+import OnboardingChecklist from '../components/OnboardingChecklist'
+import { useAuth } from '../context/AuthContext'
 
 const STATUS_CONFIG = {
   saved: { label: 'Saved', color: 'bg-muted text-muted-foreground border border-border', icon: Star },
@@ -45,9 +47,41 @@ export default function Dashboard() {
     offered: 0
   })
 
+  const { user } = useAuth()
+  const [isNewUser, setIsNewUser] = useState(false)
+  const [showChecklist, setShowChecklist] = useState(true)
+  const [checkingUserStatus, setCheckingUserStatus] = useState(true)
+
   useEffect(() => {
     fetchData()
   }, [])
+
+    // Check if user is new (less than 7 days old)
+  useEffect(() => {
+    const checkUserStatus = async () => {
+      if (!user?.uid) {
+        setCheckingUserStatus(false)
+        return
+      }
+      
+      try {
+       const token = await user.getIdToken()
+       const response = await fetch(`${import.meta.env.VITE_API_BASE}/users/onboarding/${user.uid}/status`, {
+          headers: { 'Authorization': `Bearer ${token}` }
+       }) 
+        if (response.ok) {
+          const data = await response.json()
+          setIsNewUser(data.isNewUser)
+        }
+      } catch (error) {
+        console.error('Error checking user status:', error)
+      } finally {
+        setCheckingUserStatus(false)
+      }
+    }
+    
+    checkUserStatus()
+  }, [user])
 
   const fetchData = async () => {
     try {
@@ -75,6 +109,17 @@ export default function Dashboard() {
     } finally {
       setLoading(false)
     }
+  }
+    const handleChecklistComplete = () => {
+    if (user?.uid) {
+      localStorage.setItem(`onboarding_completed_${user.uid}`, 'true')
+    }
+    toast.success('🎉 Amazing! You\'ve completed all onboarding steps!')
+  }
+
+  const handleChecklistDismiss = () => {
+    setShowChecklist(false)
+    toast.success('Checklist dismissed')
   }
 
   const formatDate = (dateString) => {
@@ -129,6 +174,13 @@ export default function Dashboard() {
                   Retry
                 </button>
               </div>
+            )}
+            {!checkingUserStatus && isNewUser && showChecklist && user && (
+              <OnboardingChecklist 
+                user={user}
+                onComplete={handleChecklistComplete}
+                onDismiss={handleChecklistDismiss}
+              />
             )}
             
             {/* Quick Actions */}

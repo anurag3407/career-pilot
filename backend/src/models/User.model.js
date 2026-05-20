@@ -34,10 +34,37 @@ const userSchema = new mongoose.Schema({
     required: true,
   },
   notificationPreferences: {
-  jobAlerts: { type: Boolean, default: true },
-  directMessages: { type: Boolean, default: true },
-  proposalUpdates: { type: Boolean, default: true },
-}
+    jobAlerts: { type: Boolean, default: true },
+    directMessages: { type: Boolean, default: true },
+    proposalUpdates: { type: Boolean, default: true },
+  },
+  //  NEW FIELDS FOR ONBOARDING CHECKLIST
+  firebaseUid: {
+    type: String,
+    unique: true,
+    sparse: true,
+    index: true
+  },
+  onboardingProgress: {
+    type: Map,
+    of: Boolean,
+    default: {
+      resume_uploaded: false,
+      resume_enhanced: false,
+      github_connected: false,
+      portfolio_created: false,
+      portfolio_deployed: false,
+      job_alerts_setup: false
+    }
+  },
+  checklistDismissed: {
+    type: Boolean,
+    default: false
+  },
+  createdAt: {
+    type: Date,
+    default: Date.now
+  }
 });
 
 const User = mongoose.model('User', userSchema);
