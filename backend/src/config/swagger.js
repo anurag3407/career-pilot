@@ -1,4 +1,5 @@
 const swaggerJsdoc = require('swagger-jsdoc');
+import swaggerJsdoc from 'swagger-jsdoc';
 
 const options = {
   definition: {
@@ -10,6 +11,11 @@ const options = {
     servers: [
       {
         url: 'http://localhost:3000',
+      description: 'CareerPilot API documentation',
+    },
+    servers: [
+      {
+        url: 'http://localhost:5000',
       },
     ],
   },
@@ -18,3 +24,5 @@ const options = {
 
 const swaggerSpec = swaggerJsdoc(options);
 module.exports = swaggerSpec;
+
+export default swaggerSpec;

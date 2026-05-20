@@ -1,0 +1,66 @@
+/* ======================
+   CSS RESET
+   ====================== */
+*, *::before, *::after {
+  box-sizing: border-box;
+  margin: 0;
+  padding: 0;
+}
+
+/* ======================
+   BASE STYLES
+   ====================== */
+body {
+  font-family: sans-serif;
+  font-size: 16px;
+  line-height: 1.5;
+  color: #333333;
+  background-color: #ffffff;
+}
+
+/* ======================
+   TYPOGRAPHY
+   ====================== */
+h1, h2, h3, h4, h5, h6 {
+  font-weight: bold;
+  margin-bottom: 0.5rem;
+}
+
+p {
+  margin-bottom: 1rem;
+}
+
+a {
+  color: inherit;
+  text-decoration: none;
+}
+
+/* ======================
+   LAYOUT
+   ====================== */
+.container {
+  width: 100%;
+  max-width: 1200px;
+  margin: 0 auto;
+  padding: 0 1rem;
+}
+
+/* ======================
+   HEADER
+   ====================== */
+/* TODO: Add your header styles here */
+
+/* ======================
+   NAVIGATION
+   ====================== */
+/* TODO: Add your navigation styles here */
+
+/* ======================
+   MAIN CONTENT
+   ====================== */
+/* TODO: Add your main content styles here */
+
+/* ======================
+   FOOTER
+   ====================== */
+/* TODO: Add your footer styles here */

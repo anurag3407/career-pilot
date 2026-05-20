@@ -7,6 +7,8 @@ import Challenge from '../models/Challenge.model.js';
 import { FellowshipChatRoom } from '../models/FellowshipChat.model.js';
 import FellowshipProfile from '../models/FellowshipProfile.model.js';
 import { sendProposalApprovalEmail } from '../services/mailService.js';
+import { validate } from '../middleware/validate.js';
+import { createOrderSchema, verifyPaymentSchema } from '../schemas/payments.schema.js';
 
 const router = express.Router();
 
@@ -14,7 +16,7 @@ const router = express.Router();
  * Create Razorpay order for proposal acceptance
  * POST /api/payments/create-order
  */
-router.post('/create-order', verifyToken, asyncHandler(async (req, res) => {
+router.post('/create-order', verifyToken, validate(createOrderSchema), asyncHandler(async (req, res) => {
     const { proposalId } = req.body;
 
     if (!proposalId) {
@@ -77,7 +79,7 @@ router.post('/create-order', verifyToken, asyncHandler(async (req, res) => {
  * Verify payment and complete proposal acceptance
  * POST /api/payments/verify-payment
  */
-router.post('/verify-payment', verifyToken, asyncHandler(async (req, res) => {
+router.post('/verify-payment', verifyToken, validate(verifyPaymentSchema), asyncHandler(async (req, res) => {
     const {
         razorpay_order_id,
         razorpay_payment_id,

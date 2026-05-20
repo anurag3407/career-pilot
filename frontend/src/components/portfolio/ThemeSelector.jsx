@@ -25,6 +25,7 @@ export default function ThemeSelector({ selectedTheme, onSelectTheme }) {
           const previewColor = isDarkPreview && t.supportsDarkMode ? t.darkPreview : t.lightPreview
           return (
             <div key={t.id} onClick={() => onSelectTheme && onSelectTheme(t.id)} className={`relative cursor-pointer rounded-xl border-2 overflow-hidden transition-all ${isSelected ? 'border-indigo-500 shadow-lg scale-105' : 'border-gray-200 dark:border-gray-700 hover:border-indigo-300'}`}>
+  
               <div className="h-24 w-full flex items-center justify-center" style={{ backgroundColor: previewColor }}>
                 <div className="w-8 h-8 rounded-full" style={{ backgroundColor: t.accent }} />
               </div>

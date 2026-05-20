@@ -3,8 +3,9 @@ import { useNavigate } from 'react-router-dom'
 import toast from 'react-hot-toast'
 import { motion } from 'framer-motion'
 import { uploadApi, resumeApi } from '../services/api'
+import Button from '../components/Button'
 import DropZone from '../components/DropZone'
-import { FileText, Upload as UploadIcon, CheckCircle, Target, BarChart3, Zap } from 'lucide-react'
+import { FileText, Upload as UploadIcon, CheckCircle, Target, BarChart3, Zap, Linkedin, ArrowRight, User, Briefcase, GraduationCap } from 'lucide-react'
 
 export default function Upload() {
   const navigate = useNavigate()
@@ -12,6 +13,12 @@ export default function Upload() {
   const [_file, setFile] = useState(null)
   const [loading, setLoading] = useState(false)
   const [uploadComplete, setUploadComplete] = useState(false)
+
+  const [linkedinUrl, setLinkedinUrl] = useState('')
+  const [linkedinLoading, setLinkedinLoading] = useState(false)
+  const [linkedinPreview, setLinkedinPreview] = useState(null)
+  const [linkedinProfile, setLinkedinProfile] = useState(null)
+  const [importing, setImporting] = useState(false)
 
   const handleFileSelect = async (selectedFile) => {
     setFile(selectedFile)
@@ -43,6 +50,47 @@ export default function Upload() {
       setFile(null)
     } finally {
       setLoading(false)
+    }
+  }
+
+  const normalizeLinkedInUrl = (raw) => {
+    let url = raw.trim()
+    if (!url.startsWith('http://') && !url.startsWith('https://')) {
+      url = `https://${url}`
+    }
+    return url
+  }
+
+  const handleLinkedinPreview = async () => {
+    if (!linkedinUrl.trim()) return toast.error('Please enter a LinkedIn profile URL')
+    const url = normalizeLinkedInUrl(linkedinUrl)
+    if (!url.includes('linkedin.com/in/')) {
+      return toast.error('Please enter a valid LinkedIn profile URL (linkedin.com/in/...)')
+    }
+    setLinkedinLoading(true)
+    setLinkedinPreview(null)
+    setLinkedinProfile(null)
+    try {
+      const res = await resumeApi.previewLinkedIn(url)
+      setLinkedinPreview(res.preview)
+      setLinkedinProfile(res.profile)
+    } catch (err) {
+      toast.error(err.message || 'Failed to load LinkedIn profile')
+    } finally {
+      setLinkedinLoading(false)
+    }
+  }
+
+  const handleLinkedinImport = async () => {
+    setImporting(true)
+    try {
+      const res = await resumeApi.importLinkedIn(normalizeLinkedInUrl(linkedinUrl), linkedinProfile)
+      toast.success('LinkedIn profile imported!')
+      navigate(`/enhance/${res.data.id}`)
+    } catch (err) {
+      toast.error(err.message || 'Failed to import profile')
+    } finally {
+      setImporting(false)
     }
   }
 
@@ -172,6 +220,123 @@ export default function Upload() {
                 />
               ))}
             </div>
+          </motion.div>
+        )}
+
+        {/* LinkedIn Import */}
+        {!uploadComplete && (
+          <motion.div
+            initial={{ opacity: 0, y: 20 }}
+            animate={{ opacity: 1, y: 0 }}
+            transition={{ delay: 0.25 }}
+            className="mt-6 rounded-xl bg-neutral-900/50 border border-neutral-800 p-6"
+          >
+            <div className="flex items-center gap-3 mb-5">
+              <div className="w-10 h-10 bg-sky-500/20 rounded-lg flex items-center justify-center">
+                <Linkedin className="w-5 h-5 text-sky-400" />
+              </div>
+              <div>
+                <h2 className="text-lg font-semibold text-white">Import from LinkedIn</h2>
+                <p className="text-sm text-neutral-500">Paste your public LinkedIn profile URL to auto-fill your resume</p>
+              </div>
+            </div>
+
+            <div className="flex gap-3">
+              <input
+                type="text"
+                value={linkedinUrl}
+                onChange={(e) => {
+                  setLinkedinUrl(e.target.value)
+                  setLinkedinPreview(null)
+                  setLinkedinProfile(null)
+                }}
+                placeholder="https://linkedin.com/in/your-profile"
+                className="flex-1 px-4 py-2.5 rounded-lg bg-neutral-950 border border-neutral-800 text-white placeholder:text-neutral-500 focus:outline-none focus:ring-2 focus:ring-sky-500/50 focus:border-sky-500 transition-all duration-200 text-sm"
+              />
+              <Button
+                variant="secondary"
+                onClick={handleLinkedinPreview}
+                loading={linkedinLoading}
+                disabled={!linkedinUrl.trim() || linkedinLoading}
+              >
+                Preview
+              </Button>
+            </div>
+
+            {/* Preview card */}
+            {linkedinPreview && (
+              <motion.div
+                initial={{ opacity: 0, y: 8 }}
+                animate={{ opacity: 1, y: 0 }}
+                className="mt-5 rounded-xl border border-sky-500/20 bg-sky-500/5 p-5"
+              >
+                <div className="flex items-start gap-4 mb-4">
+                  <div className="w-12 h-12 rounded-full bg-gradient-to-br from-sky-500 to-indigo-600 flex items-center justify-center flex-shrink-0">
+                    <span className="text-white font-bold text-lg">
+                      {linkedinPreview.name?.charAt(0)?.toUpperCase() || '?'}
+                    </span>
+                  </div>
+                  <div className="flex-1 min-w-0">
+                    <h3 className="text-white font-semibold text-base">{linkedinPreview.name}</h3>
+                    {linkedinPreview.headline && (
+                      <p className="text-sky-400 text-sm mt-0.5">{linkedinPreview.headline}</p>
+                    )}
+                    {linkedinPreview.location && (
+                      <p className="text-neutral-500 text-xs mt-0.5">{linkedinPreview.location}</p>
+                    )}
+                  </div>
+                </div>
+
+                <div className="flex flex-wrap gap-4 text-sm text-neutral-400 mb-4">
+                  {linkedinPreview.experienceCount > 0 && (
+                    <span className="flex items-center gap-1.5">
+                      <Briefcase className="w-4 h-4 text-neutral-500" />
+                      {linkedinPreview.experienceCount} experience {linkedinPreview.experienceCount === 1 ? 'entry' : 'entries'}
+                    </span>
+                  )}
+                  {linkedinPreview.educationCount > 0 && (
+                    <span className="flex items-center gap-1.5">
+                      <GraduationCap className="w-4 h-4 text-neutral-500" />
+                      {linkedinPreview.educationCount} education {linkedinPreview.educationCount === 1 ? 'entry' : 'entries'}
+                    </span>
+                  )}
+                  {linkedinPreview.skills?.length > 0 && (
+                    <span className="flex items-center gap-1.5">
+                      <User className="w-4 h-4 text-neutral-500" />
+                      {linkedinPreview.skills.length} skills
+                    </span>
+                  )}
+                </div>
+
+                {linkedinPreview.skills?.length > 0 && (
+                  <div className="flex flex-wrap gap-1.5 mb-5">
+                    {linkedinPreview.skills.slice(0, 8).map((skill, i) => (
+                      <span
+                        key={i}
+                        className="px-2.5 py-1 bg-sky-500/10 border border-sky-500/20 text-sky-400 rounded-full text-xs font-medium"
+                      >
+                        {skill}
+                      </span>
+                    ))}
+                    {linkedinPreview.skills.length > 8 && (
+                      <span className="px-2.5 py-1 text-neutral-500 text-xs">
+                        +{linkedinPreview.skills.length - 8} more
+                      </span>
+                    )}
+                  </div>
+                )}
+
+                <Button
+                  variant="gradient"
+                  onClick={handleLinkedinImport}
+                  loading={importing}
+                  className="w-full"
+                >
+                  <ArrowRight className="w-4 h-4 mr-1.5" />
+                  Import & Enhance with AI
+                </Button>
+              </motion.div>
+            )}
           </motion.div>
         )}
 
