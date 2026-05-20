@@ -103,11 +103,35 @@ app.use(helmet({
 const limiter = rateLimit({
   windowMs: parseInt(process.env.RATE_LIMIT_WINDOW_MS) || 15 * 60 * 1000, // 15 minutes
   max: parseInt(process.env.RATE_LIMIT_MAX_REQUESTS) || 1000, // increased for development
-  message: {
-    error: 'Too many requests, please try again later.'
-  },
   standardHeaders: true,
   legacyHeaders: false,
+  handler: (req, res, next, options) => {
+    const resetTime = req.rateLimit?.resetTime;
+    const retryAfterSeconds = resetTime
+      ? Math.max(1, Math.ceil((resetTime - Date.now()) / 1000))
+      : Math.ceil((options.windowMs || 0) / 1000);
+
+    const headers = {
+      'Retry-After': String(retryAfterSeconds),
+      'X-RateLimit-Limit': String(options.max),
+      'X-RateLimit-Remaining': String(req.rateLimit?.remaining ?? 0)
+    };
+
+    if (resetTime) {
+      headers['X-RateLimit-Reset'] = String(Math.ceil(resetTime / 1000));
+    }
+
+    res.set(headers);
+
+    const payload = typeof options.message === 'string'
+      ? { error: options.message }
+      : options.message || { error: 'Too many requests, please try again later.' };
+
+    return res.status(options.statusCode).json(payload);
+  },
+  message: {
+    error: 'Too many requests, please try again later.'
+  }
 });
 app.use('/api/', limiter);
 
