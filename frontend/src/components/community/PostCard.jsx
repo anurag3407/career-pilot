@@ -142,6 +142,7 @@ export default function PostCard({ post, currentUser, onLike, onCommentAdded, on
 
         {/* Cancel schedule banner — only visible to the post author */}
         {post.status === 'scheduled' && post.scheduledAt && isOwn && onCancelSchedule && (
+
           <div className="mt-2 flex items-center justify-between px-3 py-2 bg-sky-500/10 border border-sky-500/20 rounded-lg">
             <p className="text-xs text-sky-400">
               This post will publish automatically on{' '}

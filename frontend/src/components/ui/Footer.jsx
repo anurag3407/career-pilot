@@ -1,5 +1,5 @@
 import { Link } from "react-router-dom";
-import { Zap, Github, Twitter } from "lucide-react";
+import { Zap, Github, Twitter, Linkedin, Instagram } from "lucide-react";
 
 export default function Footer() {
   const footerLinks = {
@@ -8,6 +8,12 @@ export default function Footer() {
       { label: "Pricing", href: "#pricing" },
       { label: "Job Search", href: "/jobs" },
       { label: "Resume Builder", href: "/upload" },
+    ],
+    resources: [
+      { label: "Documentation", href: "#" },
+      { label: "Help Center", href: "#" },
+      { label: "Community", href: "#" },
+      { label: "Support", href: "#" },
     ],
     company: [
       { label: "About", href: "#" },
@@ -23,16 +29,19 @@ export default function Footer() {
   };
 
   return (
-    <footer className="border-t border-border bg-background">
-      <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-12">
-        <div className="grid grid-cols-2 md:grid-cols-4 gap-8 mb-12">
+
+
+    <footer className="border-t border-zinc-900 bg-zinc-950 text-zinc-300">
+
+      <div className="max-w-7xl mx-auto px-6 sm:px-8 lg:px-12 py-16">
+        <div className="grid grid-cols-2 md:grid-cols-5 gap-10 mb-14">
           {/* Brand */}
-          <div className="col-span-2 md:col-span-1">
+          <div className="col-span-2 md:col-span-1 space-y-4">
             <Link to="/" className="flex items-center gap-2 mb-4">
-              <div className="w-12 h-20 flex items-center justify-center">
+              <div className="w-12 h-12 flex items-center justify-center">
                 <img src="/speed.png" alt="" className="w-full h-full object-contain" />
               </div>
-              <span className="text-xl font-bold text-foreground">careerpilot</span>
+              <span className="text-xl font-bold text-white">careerpilot</span>
             </Link>
             <p className="text-sm text-muted-foreground mb-4">
               AI-powered job search platform for the modern professional.
@@ -41,7 +50,7 @@ export default function Footer() {
 
           {/* Product Links */}
           <div>
-            <h4 className="text-sm font-semibold text-foreground mb-4">Product</h4>
+            <h4 className="text-sm font-semibold text-white mb-4">Product</h4>
             <ul className="space-y-3">
               {footerLinks.product.map((link) => (
                 <li key={link.label}>
@@ -65,9 +74,26 @@ export default function Footer() {
             </ul>
           </div>
 
+          {/* Resources Links */}
+          <div>
+            <h4 className="text-sm font-semibold text-white mb-4">Resources</h4>
+            <ul className="space-y-3">
+              {footerLinks.resources.map((link) => (
+                <li key={link.label}>
+                  <Link
+                    to={link.href}
+                    className="text-sm text-zinc-500 hover:text-white transition-colors"
+                  >
+                    {link.label}
+                  </Link>
+                </li>
+              ))}
+            </ul>
+          </div>
+
           {/* Company Links */}
           <div>
-            <h4 className="text-sm font-semibold text-foreground mb-4">Company</h4>
+            <h4 className="text-sm font-semibold text-white mb-4">Company</h4>
             <ul className="space-y-3">
               {footerLinks.company.map((link) => (
                 <li key={link.label}>
@@ -84,7 +110,7 @@ export default function Footer() {
 
           {/* Legal Links */}
           <div>
-            <h4 className="text-sm font-semibold text-foreground mb-4">Legal</h4>
+            <h4 className="text-sm font-semibold text-white mb-4">Legal</h4>
             <ul className="space-y-3">
               {footerLinks.legal.map((link) => (
                 <li key={link.label}>
@@ -100,12 +126,63 @@ export default function Footer() {
           </div>
         </div>
 
+        {/* Newsletter */}
+        <div className="mt-16 border border-zinc-800/60 rounded-2xl bg-gradient-to-b from-zinc-900/40 to-zinc-950 p-8 flex flex-col md:flex-row md:items-center md:justify-between gap-6 hover:border-zinc-700/70 transition">
+
+          {/* Left text */}
+          <div className="md:max-w-md">
+            <h4 className="text-lg font-semibold text-white">
+              Stay updated with career tips
+            </h4>
+            <p className="text-sm text-zinc-400 mt-1">
+              Get weekly job insights, resume tips, and new features.
+            </p>
+          </div>
+
+          {/* Right input */}
+          <div className="flex w-full md:w-auto gap-3">
+            <input
+              type="email"
+              placeholder="Enter your email"
+              className="w-full md:w-72 px-4 py-3 rounded-xl bg-zinc-950 border border-zinc-800 text-white placeholder:text-zinc-500 focus:outline-none focus:ring-2 focus:ring-white/20"
+            />
+
+            <button className="px-5 py-3 rounded-xl bg-white text-black font-medium hover:bg-zinc-200 transition shadow-sm">
+              Subscribe
+            </button>
+          </div>
+
+        </div>
         {/* Bottom Bar */}
-        <div className="pt-8 border-t border-border flex flex-col md:flex-row justify-center items-center gap-4">
-          <p className="text-sm text-muted-foreground ">
+        <div className="mt-14 pt-6 border-t border-zinc-800 flex flex-col md:flex-row items-center justify-between gap-6">
+
+          {/* Left */}
+          <p className="text-sm text-zinc-600">
             © {new Date().getFullYear()} careerpilot. All rights reserved.
           </p>
-          
+
+          {/* Center (socials grouped properly) */}
+          <div className="flex items-center gap-5">
+            <a href="#" className="w-9 h-9 flex items-center justify-center rounded-full border border-zinc-800 hover:border-zinc-600 hover:bg-zinc-900 transition hover:text-white transition duration-200">
+              <Github className="w-5 h-5" />
+            </a>
+            <a href="#" className="w-9 h-9 flex items-center justify-center rounded-full border border-zinc-800 hover:border-zinc-600 hover:bg-zinc-900 transition hover:text-white transition duration-200">
+              <Twitter className="w-5 h-5" />
+            </a>
+            <a href="#" className="w-9 h-9 flex items-center justify-center rounded-full border border-zinc-800 hover:border-zinc-600 hover:bg-zinc-900 transition hover:text-white transition duration-200">
+              <Linkedin className="w-5 h-5" />
+            </a>
+            <a href="#" className="w-9 h-9 flex items-center justify-center rounded-full border border-zinc-800 hover:border-zinc-600 hover:bg-zinc-900 transition hover:text-white transition duration-200">
+              <Instagram className="w-5 h-5" />
+            </a>
+          </div>
+
+          {/* Right */}
+          <p className="text-xs text-zinc-600">
+            Version 1.0.0
+          </p>
+
+
         </div>
       </div>
     </footer>
