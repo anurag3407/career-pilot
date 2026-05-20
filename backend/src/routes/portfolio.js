@@ -2,10 +2,14 @@ import express from 'express';
 import fs from 'fs/promises';
 import { verifyToken } from '../middleware/auth.js';
 import { asyncHandler, ApiError } from '../middleware/errorHandler.js';
+import cacheHeaders from '../middleware/cacheHeaders.js';
 import { enhanceSection } from '../services/ai/portfolioContentEnhancer.js';
 import { generateRobotsTxt, generateSitemapXml } from '../utils/sitemapGenerator.js';
 
 const router = express.Router();
+
+const publicPortfolioCache = cacheHeaders({ maxAge: 300 });
+const sitemapCache = cacheHeaders({ maxAge: 86400 });
 
 const VALID_SECTIONS = ['hero', 'projects', 'about', 'skills'];
 const VALID_SLUG_PATTERN = /^[a-z0-9]+(?:[a-z0-9-]*[a-z0-9])?$/i;
@@ -70,6 +74,7 @@ router.post('/enhance-portfolio-content', verifyToken, asyncHandler(async (req, 
   });
 }));
 
+router.get('/public/:slug/sitemap.xml', sitemapCache, asyncHandler(async (req, res) => {
 /**
  * POST /api/portfolio/:id/performance
  * Analyze or track portfolio performance metrics
@@ -128,7 +133,7 @@ router.get('/public/:slug/sitemap.xml', asyncHandler(async (req, res) => {
     .send(sitemapXml);
 }));
 
-router.get('/public/:slug/robots.txt', asyncHandler(async (req, res) => {
+router.get('/public/:slug/robots.txt', publicPortfolioCache, asyncHandler(async (req, res) => {
   const { slug } = req.params;
   assertValidPortfolioSlug(slug);
 
