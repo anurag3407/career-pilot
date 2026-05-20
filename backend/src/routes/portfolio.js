@@ -3,6 +3,9 @@ import fs from 'fs/promises';
 import { verifyToken } from '../middleware/auth.js';
 import { asyncHandler, ApiError } from '../middleware/errorHandler.js';
 import cacheHeaders from '../middleware/cacheHeaders.js';
+import { validateToken as validateCloudflareToken } from '../services/deploy/cloudflareDeployer.js';
+import { validateToken as validateGithubToken } from '../services/deploy/githubPagesDeployer.js';
+import { validateToken as validateNetlifyToken } from '../services/deploy/netlifyDeployer.js';
 import { enhanceSection } from '../services/ai/portfolioContentEnhancer.js';
 import { generateRobotsTxt, generateSitemapXml } from '../utils/sitemapGenerator.js';
 
@@ -129,6 +132,100 @@ router.post(
 /**
  * POST /api/portfolio/:id/performance
  */
+router.post('/:id/performance', verifyToken, asyncHandler(async (req, res) => {
+  const { id } = req.params;
+  const { htmlSizeKB, cssSizeKB, imageSizeMB, externalRequests, cssSelectors, fontStrategy } = req.body;
+
+  if (!htmlSizeKB && !cssSizeKB && !imageSizeMB) {
+    throw new ApiError(400, 'Performance metrics payload is required.');
+  }
+
+  res.status(200).json({
+    success: true,
+    message: `Performance metrics recorded for portfolio ${id}`,
+    data: {
+      portfolioId: id,
+      receivedMetrics: {
+        htmlSizeKB,
+        cssSizeKB,
+        imageSizeMB,
+        externalRequests,
+        cssSelectors,
+        fontStrategy,
+      },
+    },
+  });
+}));
+
+router.get('/public/:slug/sitemap.xml', sitemapCache, asyncHandler(async (req, res) => {
+  const { slug } = req.params;
+  assertValidPortfolioSlug(slug);
+
+  let templateStat;
+
+  try {
+    templateStat = await fs.stat(getPortfolioTemplatePath(slug));
+  } catch {
+    throw new ApiError(404, 'Portfolio template not found.');
+  }
+
+  const sitemapXml = generateSitemapXml({
+    baseUrl: getPublicPortfolioBaseUrl(req),
+    slug,
+    portfolioPath: '/portfolio/public',
+    portfolioUpdatedAt: templateStat.mtime,
+  });
+
+  res
+    .status(200)
+    .type('application/xml')
+    .send(sitemapXml);
+}));
+
+router.get('/public/:slug/robots.txt', publicPortfolioCache, asyncHandler(async (req, res) => {
+  const { slug } = req.params;
+  assertValidPortfolioSlug(slug);
+
+  try {
+    await fs.stat(getPortfolioTemplatePath(slug));
+  } catch {
+    throw new ApiError(404, 'Portfolio template not found.');
+  }
+
+  const sitemapUrl = `${getApiBaseUrl(req)}/api/portfolio/public/${encodeURIComponent(slug)}/sitemap.xml`;
+
+  res
+    .status(200)
+    .type('text/plain')
+    .send(generateRobotsTxt({ sitemapUrl }));
+}));
+
+const TOKEN_VALIDATORS = {
+  cloudflare: (token) => validateCloudflareToken(token),
+  github: (token) => validateGithubToken(token),
+  netlify: (token) => validateNetlifyToken(token),
+};
+
+/**
+ * POST /api/portfolio/validate-token
+ * Check whether a deploy provider token is valid before deployment.
+ * Body: { provider: 'cloudflare' | 'github' | 'netlify', token?: string }
+ * Cloudflare reads its token from the server environment — no token param needed.
+ */
+router.post('/validate-token', verifyToken, asyncHandler(async (req, res) => {
+  const { provider, token } = req.body ?? {};
+
+  if (!provider || !TOKEN_VALIDATORS[provider]) {
+    throw new ApiError(400, `provider must be one of: ${Object.keys(TOKEN_VALIDATORS).join(', ')}`);
+  }
+
+  const result = await TOKEN_VALIDATORS[provider](token);
+
+  res.status(200).json({ success: true, provider, ...result });
+}));
+
+router.get('/:slug/bandwidth', asyncHandler(async (req, res) => {
+  const { slug } = req.params;
 router.post(
   '/:id/performance',
   verifyToken,
@@ -237,6 +334,8 @@ router.get(
       );
     }
 
+  const estimatedPageSizeKB = 500;
+  const monthlyViews = 1200;
     const sitemapUrl =
       `${getApiBaseUrl(req)}/api/portfolio/public/${encodeURIComponent(slug)}/sitemap.xml`;
 
@@ -307,4 +406,19 @@ router.get(
   })
 );
 
+  res.status(200).json({
+    success: true,
+    data: {
+      slug,
+      estimatedPageSizeKB,
+      monthlyViews,
+      bandwidthUsageMB: bandwidthUsageMB.toFixed(2),
+      freeTierLimitMB: FREE_TIER_LIMIT_MB,
+      usagePercentage: usagePercentage.toFixed(2),
+      warning: usagePercentage >= 80,
+    },
+  });
+}));
+
+export default router;
 export default router;
