@@ -45,6 +45,22 @@ export default function Navbar() {
     }
   }
 
+  const handleHomeClick = (e) => {
+    if (
+      location.pathname === '/' &&
+      e.button === 0 &&
+      !e.metaKey &&
+      !e.ctrlKey
+    ) {
+      e.preventDefault()
+      window.scrollTo({ top: 0, behavior: 'smooth' })
+    } else {
+      setTimeout(() => {
+        window.scrollTo(0, 0)
+      }, 0)
+    }
+  }
+
   const isActive = (path) => location.pathname === path
 
   // Public links accessible to everyone
@@ -74,7 +90,8 @@ export default function Navbar() {
       <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
         <div className="flex justify-between h-16 items-center">
           {/* Logo */}
-          <Link to="/" className="flex items-center  group">
+          
+          <Link to="/" onClick={handleHomeClick} className="flex items-center group">
             <div className="w-15 h-15 flex items-center justify-center p-1.5 rounded-xl  group-hover:scale-110 transition-transform">
               <img src="/speed.png" alt="CareerPilot logo" className="w-full h-full object-contain" />
             </div>
