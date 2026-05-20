@@ -48,7 +48,7 @@ function tokensUsedFromResult(result) {
   };
 }
 
-const getSystemPrompt = (jobRole, yearsOfExperience, skills, industry, customInstructions, profileInfo) => {
+export const getSystemPrompt = (jobRole, yearsOfExperience, skills, industry, customInstructions, profileInfo) => {
   const { fullName, email, phone, linkedinUrl, githubUrl, portfolioUrl } = profileInfo || {};
   const safeSkills = Array.isArray(skills) ? skills : (skills ? [String(skills)] : []);
 
