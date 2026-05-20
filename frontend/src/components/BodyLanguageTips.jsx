@@ -50,6 +50,7 @@ export default function BodyLanguageTips({ currentQuestionIndex }) {
 
         {/* Dismiss button */}
         <button
+          type="button"
           onClick={() => setDismissed(true)}
           className="text-xs text-cyan-400 hover:text-cyan-300 border border-cyan-500/30 hover:border-cyan-400/50 px-3 py-1.5 rounded-lg transition-colors flex-shrink-0 cursor-pointer"
         >
