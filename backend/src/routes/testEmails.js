@@ -166,15 +166,32 @@ router.post('/verification', async (req, res) => {
  */
 router.post('/preview/:template', async (req, res) => {
   try {
-    const { template } = req.params;
+    const aliasMap = {
+      verification: 'verification',
+      'job-alert': 'jobAlert',
+      jobAlert: 'jobAlert',
+      'proposal-approval': 'proposalApproval',
+      proposalApproval: 'proposalApproval'
+    };
+
+    const canonicalTemplate = aliasMap[req.params.template];
+    if (!canonicalTemplate) {
+      return res.status(400).json({
+        success: false,
+        error: 'Invalid template name',
+        template: req.params.template,
+        allowedTemplates: Object.keys(aliasMap)
+      });
+    }
+
     const { renderTemplate } = await import('../services/templateEngine.js');
 
     const data = req.body;
-    const html = renderTemplate(template, data);
+    const html = renderTemplate(canonicalTemplate, data);
 
     res.json({
       success: true,
-      template,
+      template: canonicalTemplate,
       html,
       size: `${(html.length / 1024).toFixed(2)} KB`
     });

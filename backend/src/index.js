@@ -143,7 +143,11 @@ app.use('/api/user-profiles', userProfileRoutes);
 app.use('/api/auth/2fa', twoFactorRoutes);
 app.use('/api/search', searchRoutes);
 app.use('/api/ai', aiRoutes);
-app.use('/api/test-emails', testEmailRoutes);
+
+if (process.env.NODE_ENV !== 'production' || process.env.ENABLE_TEST_EMAIL_ROUTES === 'true') {
+  app.use('/api/test-emails', testEmailRoutes);
+}
+
 app.use('/api/admin', softDeleteRoutes);
 
 app.use((req, res) => {

@@ -267,17 +267,17 @@ export const sendJobAlertEmail = async ({
     // Render responsive email template
     const frontendUrl = process.env.FRONTEND_URL || 'http://localhost:5173';
     const html = renderTemplate('jobAlert', {
-      userName: escapeHtml(userName),
-      alertTitle: escapeHtml(alertTitle),
+      userName,
+      alertTitle,
       jobCount: jobs.length,
       jobs: jobs.map(job => ({
-        title: escapeHtml(job.title),
-        company: escapeHtml(job.company),
-        location: job.location ? escapeHtml(job.location) : null,
-        jobType: job.jobType ? escapeHtml(job.jobType) : null,
-        salary: job.salary ? escapeHtml(job.salary) : null,
-        description: job.description ? escapeHtml(job.description) : null,
-        postedDate: job.postedDate ? escapeHtml(job.postedDate) : null,
+        title: job.title,
+        company: job.company,
+        location: job.location ? job.location : null,
+        jobType: job.jobType ? job.jobType : null,
+        salary: job.salary ? job.salary : null,
+        description: job.description ? job.description : null,
+        postedDate: job.postedDate ? job.postedDate : null,
         applyLink: isSafeExternalUrl(job.applyLink) ? job.applyLink : null
       })),
       dashboardLink: `${frontendUrl}/dashboard`,
@@ -399,13 +399,13 @@ export const sendProposalApprovalEmail = async ({
     // Render responsive email template
     const frontendUrl = process.env.FRONTEND_URL || 'http://localhost:5173';
     const html = renderTemplate('proposalApproval', {
-      studentName: escapeHtml(studentName),
-      challengeTitle: escapeHtml(challengeTitle),
-      companyName: escapeHtml(companyName),
-      corporateName: corporateName ? escapeHtml(corporateName) : null,
-      proposedPrice: proposedPrice,
-      estimatedDays: estimatedDays,
-      feedback: feedback ? escapeHtml(feedback) : null,
+      studentName,
+      challengeTitle,
+      companyName,
+      corporateName: corporateName ? corporateName : null,
+      proposedPrice,
+      estimatedDays,
+      feedback: feedback ? feedback : null,
       chatRoomLink: `${frontendUrl}/fellowship/messages/${chatRoomId}`,
       projectDetailsLink: `${frontendUrl}/fellowship/projects/${chatRoomId}`,
       milestonesLink: `${frontendUrl}/fellowship/milestones/${chatRoomId}`,
@@ -548,7 +548,7 @@ export const sendVerificationEmail = async ({ email, code, verificationLink }) =
     const mailOptions = {
       from: `"careerpilot" <${process.env.EMAIL_USER}>`,
       to: email,
-      subject: 'Verify Your CareerPilot Account - {{code}}',
+      subject: code ? `Verify Your CareerPilot Account - ${code}` : 'Verify Your CareerPilot Account',
       html
     };
 

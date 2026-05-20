@@ -75,6 +75,30 @@ router.post('/enhance-portfolio-content', verifyToken, asyncHandler(async (req, 
 }));
 
 router.get('/public/:slug/sitemap.xml', sitemapCache, asyncHandler(async (req, res) => {
+  const { slug } = req.params;
+  assertValidPortfolioSlug(slug);
+
+  let templateStat;
+
+  try {
+    templateStat = await fs.stat(getPortfolioTemplatePath(slug));
+  } catch {
+    throw new ApiError(404, 'Portfolio template not found.');
+  }
+
+  const sitemapXml = generateSitemapXml({
+    baseUrl: getPublicPortfolioBaseUrl(req),
+    slug,
+    portfolioPath: '/portfolio/public',
+    portfolioUpdatedAt: templateStat.mtime,
+  });
+
+  res
+    .status(200)
+    .type('application/xml')
+    .send(sitemapXml);
+}));
+
 /**
  * POST /api/portfolio/:id/performance
  * Analyze or track portfolio performance metrics
@@ -106,31 +130,6 @@ router.post('/:id/performance', verifyToken, asyncHandler(async (req, res) => {
       }
     }
   });
-}));
-
-router.get('/public/:slug/sitemap.xml', asyncHandler(async (req, res) => {
-  const { slug } = req.params;
-  assertValidPortfolioSlug(slug);
-
-  let templateStat;
-
-  try {
-    templateStat = await fs.stat(getPortfolioTemplatePath(slug));
-  } catch {
-    throw new ApiError(404, 'Portfolio template not found.');
-  }
-
-  const sitemapXml = generateSitemapXml({
-    baseUrl: getPublicPortfolioBaseUrl(req),
-    slug,
-    portfolioPath: '/portfolio/public',
-    portfolioUpdatedAt: templateStat.mtime,
-  });
-
-  res
-    .status(200)
-    .type('application/xml')
-    .send(sitemapXml);
 }));
 
 router.get('/public/:slug/robots.txt', publicPortfolioCache, asyncHandler(async (req, res) => {

@@ -79,7 +79,7 @@ const truncate = (text, length = 200) => {
  * Escape HTML special characters
  */
 const escapeHtml = (text) => {
-  if (!text) return '';
+  if (text === null || text === undefined) return '';
   return String(text)
     .replace(/&/g, '&amp;')
     .replace(/</g, '&lt;')
@@ -88,39 +88,89 @@ const escapeHtml = (text) => {
     .replace(/'/g, '&#39;');
 };
 
+const resolveValue = (key, context, data) => {
+  if (context && typeof key === 'string') {
+    const contextValue = getNestedValue(context, key);
+    if (contextValue !== undefined) {
+      return contextValue;
+    }
+  }
+
+  return getNestedValue(data, key);
+};
+
+const parseOperand = (operand, context, data) => {
+  if (/^\d+$/.test(operand)) {
+    return Number(operand);
+  }
+
+  if (/^['"].*['"]$/.test(operand)) {
+    return operand.slice(1, -1);
+  }
+
+  return resolveValue(operand, context, data);
+};
+
+const evaluateCondition = (condition, context, data) => {
+  const expression = condition.trim();
+
+  if (expression.startsWith('!')) {
+    return !Boolean(resolveValue(expression.slice(1).trim(), context, data));
+  }
+
+  const operators = ['===', '!==', '>=', '<=', '==', '!=', '>', '<'];
+  for (const operator of operators) {
+    const parts = expression.split(operator);
+    if (parts.length === 2) {
+      const left = parseOperand(parts[0].trim(), context, data);
+      const right = parseOperand(parts[1].trim(), context, data);
+
+      switch (operator) {
+        case '===': return left === right;
+        case '!==': return left !== right;
+        case '==': return left == right;
+        case '!=': return left != right;
+        case '>=': return left >= right;
+        case '<=': return left <= right;
+        case '>': return left > right;
+        case '<': return left < right;
+        default: return Boolean(left);
+      }
+    }
+  }
+
+  return Boolean(resolveValue(expression, context, data));
+};
+
 /**
- * Process conditional blocks: {{#if condition}}...{{/if}}
+ * Process conditional blocks: {{#if condition}}...{{else}}...{{/if}}
  */
-const processConditionals = (template, data) => {
-  return template.replace(/\{\{#if\s+(\w+)\}\}([\s\S]*?)\{\{\/if\}\}/g, (match, condition, content) => {
-    const value = getNestedValue(data, condition);
-    return value ? content : '';
+const processConditionals = (template, data, context) => {
+  return template.replace(/\{\{#if\s+([^\}]+)\}\}([\s\S]*?)(?:\{\{else\}\}([\s\S]*?))?\{\{\/if\}\}/g, (match, condition, truthy, falsey = '') => {
+    const result = evaluateCondition(condition, context, data);
+    return result ? truthy : falsey;
   });
+};
+
+const renderTemplateSegment = (template, data, context) => {
+  let segment = processConditionals(template, data, context);
+  segment = processLoops(segment, data, context);
+  segment = processHelpers(segment, data, context);
+  segment = processVariables(segment, data, context);
+  return segment;
 };
 
 /**
  * Process each loops: {{#each array}}...{{/each}}
  */
-const processLoops = (template, data) => {
+const processLoops = (template, data, context) => {
   return template.replace(/\{\{#each\s+(\w+)\}\}([\s\S]*?)\{\{\/each\}\}/g, (match, arrayName, content) => {
-    const array = data[arrayName];
+    const array = resolveValue(arrayName, context, data);
     if (!Array.isArray(array)) return '';
     
     return array.map((item, index) => {
-      let loopContent = content;
-      
-      // Replace item properties
-      Object.keys(item).forEach(key => {
-        const value = item[key];
-        loopContent = loopContent.replace(
-          new RegExp(`\\{\\{${key}\\}\\}`, 'g'),
-          escapeHtml(value)
-        );
-      });
-      
-      // Replace @index
+      let loopContent = renderTemplateSegment(content, data, item);
       loopContent = loopContent.replace(/\{\{@index\}\}/g, index);
-      
       return loopContent;
     }).join('');
   });
@@ -130,34 +180,35 @@ const processLoops = (template, data) => {
  * Get nested object value using dot notation
  */
 const getNestedValue = (obj, path) => {
+  if (!obj || !path) return undefined;
   return path.split('.').reduce((current, prop) => current?.[prop], obj);
 };
 
 /**
  * Process helper functions: {{functionName value}}
  */
-const processHelpers = (template, data) => {
+const processHelpers = (template, data, context) => {
   // Process formatCurrency helper
-  template = template.replace(/\{\{formatCurrency\s+(\w+)\}\}/g, (match, varName) => {
-    const value = data[varName];
+  template = template.replace(/\{\{formatCurrency\s+([\w\.]+)\}\}/g, (match, varName) => {
+    const value = resolveValue(varName, context, data);
     return value ? formatCurrency(value) : '0';
   });
 
   // Process addDays helper
-  template = template.replace(/\{\{addDays\s+(\w+)\}\}/g, (match, varName) => {
-    const value = data[varName];
+  template = template.replace(/\{\{addDays\s+([\w\.]+)\}\}/g, (match, varName) => {
+    const value = resolveValue(varName, context, data);
     return value ? addDays(value) : '';
   });
 
   // Process truncate helper
-  template = template.replace(/\{\{truncate\s+(\w+)\s+(\d+)\}\}/g, (match, varName, length) => {
-    const value = data[varName];
+  template = template.replace(/\{\{truncate\s+([\w\.]+)\s+(\d+)\}\}/g, (match, varName, length) => {
+    const value = resolveValue(varName, context, data);
     return value ? truncate(value, parseInt(length)) : '';
   });
 
   // Process truncate without length argument
-  template = template.replace(/\{\{truncate\s+(\w+)\}\}/g, (match, varName) => {
-    const value = data[varName];
+  template = template.replace(/\{\{truncate\s+([\w\.]+)\}\}/g, (match, varName) => {
+    const value = resolveValue(varName, context, data);
     return value ? truncate(value) : '';
   });
 
@@ -167,9 +218,9 @@ const processHelpers = (template, data) => {
 /**
  * Process simple variable replacement: {{variableName}}
  */
-const processVariables = (template, data) => {
-  return template.replace(/\{\{(\w+)\}\}/g, (match, varName) => {
-    const value = data[varName];
+const processVariables = (template, data, context) => {
+  return template.replace(/\{\{([\w\.]+)\}\}/g, (match, varName) => {
+    const value = resolveValue(varName, context, data);
     if (value === undefined || value === null) return '';
     return escapeHtml(value);
   });

@@ -58,6 +58,33 @@ export default function EmailTemplateTest() {
     setFormData(prev => ({ ...prev, [name]: value }));
   };
 
+  const buildPayload = () => {
+    const template = templates[selectedTemplate];
+    const payload = {};
+
+    template.fields.forEach(field => {
+      if (selectedTemplate === 'verification') {
+        if (field === 'email') payload.email = formData.email;
+        if (field === 'code') payload.code = formData.code;
+      } else if (selectedTemplate === 'job-alert') {
+        if (field === 'userEmail') payload.userEmail = formData.userEmail;
+        if (field === 'userName') payload.userName = formData.userName;
+        if (field === 'alertTitle') payload.alertTitle = formData.alertTitle;
+      } else if (selectedTemplate === 'proposal-approval') {
+        if (field === 'studentEmail') payload.studentEmail = formData.studentEmail;
+        if (field === 'studentName') payload.studentName = formData.studentName;
+        if (field === 'challengeTitle') payload.challengeTitle = formData.challengeTitle;
+        if (field === 'companyName') payload.companyName = formData.companyName;
+        if (field === 'corporateName') payload.corporateName = formData.corporateName;
+        if (field === 'proposedPrice') payload.proposedPrice = parseInt(formData.proposedPrice);
+        if (field === 'estimatedDays') payload.estimatedDays = parseInt(formData.estimatedDays);
+        if (field === 'feedback') payload.feedback = formData.feedback;
+      }
+    });
+
+    return payload;
+  };
+
   const handleSendEmail = async (e) => {
     e.preventDefault();
     setLoading(true);
@@ -65,28 +92,7 @@ export default function EmailTemplateTest() {
 
     try {
       const template = templates[selectedTemplate];
-      const payload = {};
-      
-      // Build payload with only relevant fields
-      template.fields.forEach(field => {
-        if (selectedTemplate === 'verification') {
-          if (field === 'email') payload.email = formData.email;
-          if (field === 'code') payload.code = formData.code;
-        } else if (selectedTemplate === 'job-alert') {
-          if (field === 'userEmail') payload.userEmail = formData.userEmail;
-          if (field === 'userName') payload.userName = formData.userName;
-          if (field === 'alertTitle') payload.alertTitle = formData.alertTitle;
-        } else if (selectedTemplate === 'proposal-approval') {
-          if (field === 'studentEmail') payload.studentEmail = formData.studentEmail;
-          if (field === 'studentName') payload.studentName = formData.studentName;
-          if (field === 'challengeTitle') payload.challengeTitle = formData.challengeTitle;
-          if (field === 'companyName') payload.companyName = formData.companyName;
-          if (field === 'corporateName') payload.corporateName = formData.corporateName;
-          if (field === 'proposedPrice') payload.proposedPrice = parseInt(formData.proposedPrice);
-          if (field === 'estimatedDays') payload.estimatedDays = parseInt(formData.estimatedDays);
-          if (field === 'feedback') payload.feedback = formData.feedback;
-        }
-      });
+      const payload = buildPayload();
 
       const response = await API.post(template.endpoint, payload);
       setResult({ success: true, data: response });
@@ -104,27 +110,7 @@ export default function EmailTemplateTest() {
     e.preventDefault();
     try {
       const template = templates[selectedTemplate];
-      const payload = {};
-      
-      template.fields.forEach(field => {
-        if (selectedTemplate === 'verification') {
-          if (field === 'email') payload.email = formData.email;
-          if (field === 'code') payload.code = formData.code;
-        } else if (selectedTemplate === 'job-alert') {
-          if (field === 'userEmail') payload.userEmail = formData.userEmail;
-          if (field === 'userName') payload.userName = formData.userName;
-          if (field === 'alertTitle') payload.alertTitle = formData.alertTitle;
-        } else if (selectedTemplate === 'proposal-approval') {
-          if (field === 'studentEmail') payload.studentEmail = formData.studentEmail;
-          if (field === 'studentName') payload.studentName = formData.studentName;
-          if (field === 'challengeTitle') payload.challengeTitle = formData.challengeTitle;
-          if (field === 'companyName') payload.companyName = formData.companyName;
-          if (field === 'corporateName') payload.corporateName = formData.corporateName;
-          if (field === 'proposedPrice') payload.proposedPrice = parseInt(formData.proposedPrice);
-          if (field === 'estimatedDays') payload.estimatedDays = parseInt(formData.estimatedDays);
-          if (field === 'feedback') payload.feedback = formData.feedback;
-        }
-      });
+      const payload = buildPayload();
 
       const response = await API.post(`/test-emails/preview/${selectedTemplate}`, payload);
       setPreviewHtml(response.html);
@@ -459,6 +445,7 @@ export default function EmailTemplateTest() {
               <iframe
                 title="email-preview"
                 srcDoc={previewHtml}
+                sandbox=""
                 className="w-full h-full border-0"
               />
             </div>
