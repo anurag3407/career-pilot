@@ -125,7 +125,7 @@ export const disableTwoFactorWithBackup = async (uid, code) => {
 
   const updated = await TwoFactor.findOneAndUpdate(
     { uid, enabled: true, backupCodes: matchedHash },
-    { $set: { secret: null, enabled: false }, $set: { backupCodes: [] } }
+    { $set: { secret: null, enabled: false, backupCodes: [] } }
   );
   if (!updated) return false;
 
