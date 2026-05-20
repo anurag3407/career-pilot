@@ -9,7 +9,6 @@ import { exchangeCodeForToken, getLinkedInAuthUrl, getLinkedInProfile } from '..
 import User from '../models/User.model.js';
 import admin from '../config/firebase.js';
 import crypto from 'crypto';
-import { validate } from '../middleware/validate.js';
 import { updateNotificationPrefsSchema } from '../schemas/auth.schema.js';
 
 const router = express.Router();
