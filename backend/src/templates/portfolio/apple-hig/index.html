@@ -1,0 +1,171 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0, viewport-fit=cover" />
+
+  <!-- SEO -->
+  <title>{{NAME}} — Portfolio</title>
+  <meta name="description" content="{{NAME}}'s developer portfolio." />
+  <meta property="og:title" content="{{NAME}} — Portfolio" />
+  <meta property="og:description" content="{{NAME}} — {{ROLE}}" />
+  <meta property="og:type" content="website" />
+
+  <!-- Stylesheet -->
+  <link rel="stylesheet" href="style.css" />
+</head>
+<body>
+
+  <!-- ══════════════════════════════════════════════════════
+       NAVIGATION
+  ══════════════════════════════════════════════════════ -->
+  <nav id="navbar" role="navigation" aria-label="Main navigation">
+    <div class="nav-inner">
+      <a href="#hero" class="nav-logo" aria-label="Home">
+        {{NAME}}
+      </a>
+
+      <button id="nav-toggle" aria-controls="nav-links" aria-expanded="false" aria-label="Toggle navigation">
+        <span class="icon-bar"></span>
+        <span class="icon-bar"></span>
+      </button>
+
+      <button id="theme-toggle" class="theme-toggle" aria-label="Toggle dark mode">
+        <svg class="sun-icon" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><circle cx="12" cy="12" r="5"></circle><line x1="12" y1="1" x2="12" y2="3"></line><line x1="12" y1="21" x2="12" y2="23"></line><line x1="4.22" y1="4.22" x2="5.64" y2="5.64"></line><line x1="18.36" y1="18.36" x2="19.78" y2="19.78"></line><line x1="1" y1="12" x2="3" y2="12"></line><line x1="21" y1="12" x2="23" y2="12"></line><line x1="4.22" y1="19.78" x2="5.64" y2="18.36"></line><line x1="18.36" y1="5.64" x2="19.78" y2="4.22"></line></svg>
+        <svg class="moon-icon" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M21 12.79A9 9 0 1 1 11.21 3 7 7 0 0 0 21 12.79z"></path></svg>
+      </button>
+
+      <ul class="nav-links" id="nav-links" role="list">
+        <li><a href="#about" aria-label="About section">About</a></li>
+        <li><a href="#skills" aria-label="Skills section">Skills</a></li>
+        <li><a href="#projects" aria-label="Projects section">Projects</a></li>
+        <li><a href="#experience" aria-label="Experience section">Experience</a></li>
+        <li><a href="#contact" aria-label="Contact section">Contact</a></li>
+      </ul>
+    </div>
+  </nav>
+
+  <main>
+    <!-- ══════════════════════════════════════════════════════
+         HERO
+    ══════════════════════════════════════════════════════ -->
+    <section id="hero" class="fade-up-section" aria-label="Hero section">
+      <div class="hero-mesh">
+        <div class="orb orb-1"></div>
+        <div class="orb orb-2"></div>
+        <div class="orb orb-3"></div>
+      </div>
+      <div class="hero-content">
+        <p class="hero-role">{{ROLE}}</p>
+        <h1 class="hero-title">{{NAME}}</h1>
+        <p class="hero-desc">{{TAGLINE}}</p>
+        <div class="hero-actions">
+          <a href="#projects" class="btn btn-primary">View Work</a>
+          <a href="#contact" class="btn btn-secondary">Contact Me</a>
+        </div>
+      </div>
+    </section>
+
+    <!-- ══════════════════════════════════════════════════════
+         ABOUT
+    ══════════════════════════════════════════════════════ -->
+    <section id="about" class="fade-up-section" aria-label="About me">
+      <div class="section-inner">
+        <h2 class="section-title">About</h2>
+        <div class="about-grid">
+          <div class="about-image-placeholder">
+            <img src="https://images.unsplash.com/photo-1498050108023-c5249f4df085?auto=format&fit=crop&w=600&q=80" alt="About Me Workspace" style="width: 100%; height: 100%; object-fit: cover; border-radius: inherit;" />
+          </div>
+          <div class="about-text">
+            <p class="lead-text">{{ABOUT_PARA_1}}</p>
+            <p>{{ABOUT_PARA_2}}</p>
+            <div class="stats-grid">
+              <div class="stat-item">
+                <span class="stat-value">{{STAT_1_VALUE}}</span>
+                <span class="stat-label">{{STAT_1_LABEL}}</span>
+              </div>
+              <div class="stat-item">
+                <span class="stat-value">{{STAT_2_VALUE}}</span>
+                <span class="stat-label">{{STAT_2_LABEL}}</span>
+              </div>
+              <div class="stat-item">
+                <span class="stat-value">{{STAT_3_VALUE}}</span>
+                <span class="stat-label">{{STAT_3_LABEL}}</span>
+              </div>
+            </div>
+          </div>
+        </div>
+      </div>
+    </section>
+
+    <!-- ══════════════════════════════════════════════════════
+         SKILLS
+    ══════════════════════════════════════════════════════ -->
+    <section id="skills" class="fade-up-section bg-alt" aria-label="Skills">
+      <div class="section-inner">
+        <h2 class="section-title">Skills & Technologies</h2>
+        <p class="section-subtitle">Tools and frameworks I use to build robust solutions.</p>
+        <div class="skills-container" id="skills-container">
+          <!-- Injected by script.js -->
+        </div>
+      </div>
+    </section>
+
+    <!-- ══════════════════════════════════════════════════════
+         PROJECTS
+    ══════════════════════════════════════════════════════ -->
+    <section id="projects" class="fade-up-section" aria-label="Projects">
+      <div class="section-inner">
+        <h2 class="section-title">Selected Projects</h2>
+        <p class="section-subtitle">A showcase of my recent work.</p>
+        <div class="projects-grid" id="projects-grid">
+          <!-- Injected by script.js -->
+        </div>
+      </div>
+    </section>
+
+    <!-- ══════════════════════════════════════════════════════
+         EXPERIENCE
+    ══════════════════════════════════════════════════════ -->
+    <section id="experience" class="fade-up-section bg-alt" aria-label="Work experience">
+      <div class="section-inner">
+        <h2 class="section-title">Experience</h2>
+        <div class="experience-list" id="experience-list">
+          <!-- Injected by script.js -->
+        </div>
+      </div>
+    </section>
+
+    <!-- ══════════════════════════════════════════════════════
+         CONTACT
+    ══════════════════════════════════════════════════════ -->
+    <section id="contact" class="fade-up-section" aria-label="Contact information">
+      <div class="section-inner">
+        <div class="contact-card">
+          <h2 class="section-title">Let's Connect</h2>
+          <p class="lead-text">I'm currently available for new opportunities.</p>
+          <a href="mailto:{{EMAIL}}" class="btn btn-primary btn-large">Email Me</a>
+          
+          <div class="social-links">
+            <a href="{{GITHUB_URL}}" target="_blank" rel="noopener noreferrer" class="social-link">GitHub</a>
+            <a href="{{LINKEDIN_URL}}" target="_blank" rel="noopener noreferrer" class="social-link">LinkedIn</a>
+            <a href="{{TWITTER_URL}}" target="_blank" rel="noopener noreferrer" class="social-link">Twitter</a>
+          </div>
+        </div>
+      </div>
+    </section>
+  </main>
+
+  <!-- ══════════════════════════════════════════════════════
+       FOOTER
+  ══════════════════════════════════════════════════════ -->
+  <footer role="contentinfo">
+    <div class="footer-inner">
+      <p class="copyright">Copyright © <span id="year"></span> {{NAME}}. All rights reserved.</p>
+      <p class="built-with">Built with CareerPilot</p>
+    </div>
+  </footer>
+
+  <script src="script.js"></script>
+</body>
+</html>

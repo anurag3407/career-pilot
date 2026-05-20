@@ -301,6 +301,11 @@ export default function InterviewPrep() {
   const transcriptRef = useRef('');
   const isRecordingRef = useRef(false);
 
+  const visualizerCanvasRef = useRef(null);
+  const audioCtxRef = useRef(null);
+  const analyserRef = useRef(null);
+  const animationFrameIdRef = useRef(null);
+
   // Check device and browser on mount
   useEffect(() => {
     setIsMobile(isMobileDevice());
@@ -409,6 +414,20 @@ export default function InterviewPrep() {
   };
 
   const cleanupMedia = () => {
+    if (animationFrameIdRef.current) {
+      cancelAnimationFrame(animationFrameIdRef.current);
+      animationFrameIdRef.current = null;
+    }
+    if (audioCtxRef.current) {
+      try {
+        if (audioCtxRef.current.state !== 'closed') {
+          audioCtxRef.current.close();
+        }
+      } catch (e) {}
+      audioCtxRef.current = null;
+    }
+    analyserRef.current = null;
+
     if (mediaStreamRef.current) mediaStreamRef.current.getTracks().forEach(track => track.stop());
     if (recognitionRef.current) try { recognitionRef.current.stop(); } catch (e) { }
     if (timerRef.current) clearInterval(timerRef.current);
@@ -586,6 +605,72 @@ export default function InterviewPrep() {
     }
   };
 
+  const startVisualizerDraw = (analyser, canvas) => {
+    const ctx = canvas.getContext('2d');
+    const bufferLength = analyser.frequencyBinCount;
+    const dataArray = new Uint8Array(bufferLength);
+    
+    const dpr = window.devicePixelRatio || 1;
+    canvas.width = canvas.clientWidth * dpr;
+    canvas.height = canvas.clientHeight * dpr;
+    ctx.scale(dpr, dpr);
+
+    const draw = () => {
+      if (!isRecordingRef.current) return;
+      animationFrameIdRef.current = requestAnimationFrame(draw);
+      
+      analyser.getByteTimeDomainData(dataArray);
+      
+      const width = canvas.width / dpr;
+      const height = canvas.height / dpr;
+      
+      ctx.fillStyle = 'rgba(15, 23, 42, 0.2)';
+      ctx.fillRect(0, 0, width, height);
+      
+      ctx.strokeStyle = 'rgba(129, 140, 248, 0.04)';
+      ctx.lineWidth = 1;
+      ctx.beginPath();
+      ctx.moveTo(0, height / 2);
+      ctx.lineTo(width, height / 2);
+      ctx.stroke();
+
+      ctx.lineWidth = 2.5;
+      
+      const gradient = ctx.createLinearGradient(0, 0, width, 0);
+      gradient.addColorStop(0, '#6366f1');
+      gradient.addColorStop(0.5, '#a855f7');
+      gradient.addColorStop(1, '#ec4899');
+      ctx.strokeStyle = gradient;
+      
+      ctx.shadowBlur = 6;
+      ctx.shadowColor = 'rgba(168, 85, 247, 0.4)';
+      
+      ctx.beginPath();
+      
+      const sliceWidth = width / bufferLength;
+      let x = 0;
+      
+      for (let i = 0; i < bufferLength; i++) {
+        const v = dataArray[i] / 128.0;
+        const y = (v * height) / 2;
+        
+        if (i === 0) {
+          ctx.moveTo(x, y);
+        } else {
+          ctx.lineTo(x, y);
+        }
+        
+        x += sliceWidth;
+      }
+      
+      ctx.lineTo(width, height / 2);
+      ctx.stroke();
+      ctx.shadowBlur = 0;
+    };
+    
+    draw();
+  };
+
   const startRecording = () => {
     if (!audioEnabled) {
       setError('Please enable microphone to record your answer');
@@ -608,6 +693,30 @@ export default function InterviewPrep() {
     setError('');
     isRecordingRef.current = true;
     setIsRecording(true);
+
+    // Initialize Audio Visualizer
+    try {
+      if (mediaStreamRef.current) {
+        const audioContext = new (window.AudioContext || window.webkitAudioContext)();
+        audioCtxRef.current = audioContext;
+        
+        const source = audioContext.createMediaStreamSource(mediaStreamRef.current);
+        const analyser = audioContext.createAnalyser();
+        analyser.fftSize = 512;
+        analyserRef.current = analyser;
+        
+        source.connect(analyser);
+        
+        // Start drawing loop after small timeout to allow canvas mount
+        setTimeout(() => {
+          if (visualizerCanvasRef.current) {
+            startVisualizerDraw(analyser, visualizerCanvasRef.current);
+          }
+        }, 100);
+      }
+    } catch (visErr) {
+      console.error('Failed to initialize audio visualizer:', visErr);
+    }
 
     timerRef.current = setInterval(() => {
       setRecordingTime(Math.floor((Date.now() - startTimeRef.current) / 1000));
@@ -653,6 +762,24 @@ export default function InterviewPrep() {
 
   const stopRecording = async () => {
     isRecordingRef.current = false;
+    
+    // Stop audio visualizer
+    if (animationFrameIdRef.current) {
+      cancelAnimationFrame(animationFrameIdRef.current);
+      animationFrameIdRef.current = null;
+    }
+    if (audioCtxRef.current) {
+      try {
+        if (audioCtxRef.current.state !== 'closed') {
+          audioCtxRef.current.close();
+        }
+      } catch (e) {
+        console.error('Error closing AudioContext:', e);
+      }
+      audioCtxRef.current = null;
+    }
+    analyserRef.current = null;
+
     if (recognitionRef.current) try { recognitionRef.current.stop(); } catch (e) { }
     recognitionRef.current = null;
     if (timerRef.current) clearInterval(timerRef.current);
@@ -1177,20 +1304,29 @@ export default function InterviewPrep() {
                 </div>
 
                 {isRecording && (
-                  <div className="mt-4 p-4 bg-gradient-to-r from-primary/10 to-secondary/10 border border-primary/20 rounded-xl">
-                    <div className="flex items-center gap-3">
-                      <div className="relative">
-                        <div className="w-10 h-10 rounded-full bg-primary/20 flex items-center justify-center">
-                          <Mic className="w-5 h-5 text-primary" />
+                  <>
+                    <div className="mt-4 p-4 bg-gradient-to-r from-primary/10 to-secondary/10 border border-primary/20 rounded-xl">
+                      <div className="flex items-center gap-3">
+                        <div className="relative">
+                          <div className="w-10 h-10 rounded-full bg-primary/20 flex items-center justify-center">
+                            <Mic className="w-5 h-5 text-primary" />
+                          </div>
+                          <div className="absolute inset-0 rounded-full bg-primary/30 animate-ping" />
                         </div>
-                        <div className="absolute inset-0 rounded-full bg-primary/30 animate-ping" />
-                      </div>
-                      <div>
-                        <p className="text-foreground font-medium">Recording in progress</p>
-                        <p className="text-muted-foreground text-sm">Speak clearly into your microphone</p>
+                        <div>
+                          <p className="text-foreground font-medium">Recording in progress</p>
+                          <p className="text-muted-foreground text-sm">Speak clearly into your microphone</p>
+                        </div>
                       </div>
                     </div>
-                  </div>
+                    {/* Glowing voice visualizer waveform canvas */}
+                    <div className="mt-4 rounded-xl overflow-hidden border border-border/60 bg-slate-950 p-1 flex items-center justify-center">
+                      <canvas
+                        ref={visualizerCanvasRef}
+                        className="w-full h-24 bg-slate-900 rounded-lg shadow-inner"
+                      />
+                    </div>
+                  </>
                 )}
               </div>
 
