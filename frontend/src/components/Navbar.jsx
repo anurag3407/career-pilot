@@ -44,7 +44,12 @@ export default function Navbar() {
   }
 
   const handleHomeClick = (e) => {
-    if (location.pathname === '/') {
+    if (
+      location.pathname === '/' &&
+      e.button === 0 &&
+      !e.metaKey &&
+      !e.ctrlKey
+    ) {
       e.preventDefault()
       window.scrollTo({ top: 0, behavior: 'smooth' })
     } else {
