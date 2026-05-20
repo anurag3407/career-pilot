@@ -1,6 +1,6 @@
 @import "tailwindcss";
 
-@theme {
+@theme{
   --color-background: var(--background);
   --color-foreground: var(--foreground);
   --color-card: var(--card);
@@ -144,13 +144,13 @@ body {
 }
 
 /*  Additional Animation Keyframes
-   - pulse-glow: Continuously glows a element in & out
+   - pulse-glow: Continuously glows an element in & out
    - shimmer:    Moving shine effect (useful for loading states) */
 
 
 @keyframes pulse-glow {
-  0%, 100% { box-shadow: 0 0 20px rgba(0, 191, 255, 0.15); }
-  50%       { box-shadow: 0 0 40px rgba(0, 191, 255, 0.4);  }
+  0%, 100% { box-shadow: 0 0 20px color-mix(in srgb, var(--primary) 15%, transparent); }
+  50%       { box-shadow: 0 0 40px color-mix(in srgb, var(--primary)40%, transparent); }
 }
  
 @keyframes shimmer {
@@ -163,7 +163,7 @@ body {
   background: linear-gradient(
     90deg,
     transparent,
-    rgba(255, 255, 255, 0.1),
+    color-mix(in srgb, var(--foreground) 8%, transparent),
     transparent
   );
   background-size: 200% auto;
@@ -240,7 +240,7 @@ body {
    Usage: <div class="responsive-grid">...</div> */
 .responsive-grid {
   display: grid;
-  grid-template-columns: repeat(auto-fit, minmax(280px, 1fr));
+  grid-template-columns: repeat(auto-fit, minmax(min(100%, 280px), 1fr));
   gap: 1.5rem;
 }
 
@@ -294,9 +294,9 @@ body {
 }
  
 .badge-primary {
-  background: rgba(0, 191, 255, 0.1);
+  background: color-mix(in srgb, var(--primary) 10%, transparent);
   color: var(--primary);
-  border: 1px solid rgba(0, 191, 255, 0.2);
+  border: 1px solid color-mix(in srgb, var(--primary) 20%, transparent);
 }
 
 
