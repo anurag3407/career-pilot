@@ -24,6 +24,12 @@ import {
 } from 'lucide-react'
 import { resumeApi, jobTrackerApi } from '../services/api'
 import Button from '../components/Button'
+import { 
+  SkeletonDashboardActions, 
+  SkeletonStatCards, 
+  SkeletonJobList,
+  SkeletonList 
+} from '../components/ui/Skeleton'
 
 const STATUS_CONFIG = {
   saved: { label: 'Saved', color: 'bg-muted text-muted-foreground border border-border', icon: Star },
@@ -112,10 +118,41 @@ export default function Dashboard() {
         </motion.div>
 
         {loading ? (
-          <div className="flex items-center justify-center py-32">
-            <div className="relative">
-              <div className="w-16 h-16 border-4 border-muted border-t-primary rounded-full animate-spin" />
-            </div>
+          <div className="space-y-10">
+            {/* Quick Actions Skeleton */}
+            <motion.div
+              initial={{ opacity: 0, y: 10 }}
+              animate={{ opacity: 1, y: 0 }}
+              transition={{ duration: 0.4 }}
+            >
+              <SkeletonDashboardActions />
+            </motion.div>
+
+            {/* Stats Skeleton */}
+            <motion.div
+              initial={{ opacity: 0, y: 10 }}
+              animate={{ opacity: 1, y: 0 }}
+              transition={{ duration: 0.4, delay: 0.1 }}
+            >
+              <SkeletonStatCards count={5} />
+            </motion.div>
+
+            {/* Recent Applications & Resumes Skeleton */}
+            <motion.div
+              initial={{ opacity: 0, y: 10 }}
+              animate={{ opacity: 1, y: 0 }}
+              transition={{ duration: 0.4, delay: 0.2 }}
+              className="grid lg:grid-cols-2 gap-10"
+            >
+              <div>
+                <div className="mb-6 h-8 bg-muted rounded-lg w-1/3 animate-pulse" />
+                <SkeletonList count={3} />
+              </div>
+              <div>
+                <div className="mb-6 h-8 bg-muted rounded-lg w-1/3 animate-pulse" />
+                <SkeletonList count={3} />
+              </div>
+            </motion.div>
           </div>
         ) : (
           <motion.div variants={containerVariants} initial="hidden" animate="visible">

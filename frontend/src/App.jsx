@@ -147,122 +147,122 @@ function App() {
                 <Route
                   path="/dashboard"
                   element={
-                    <ProtectedRoute>
+                    <PublicRoute>
                       <Dashboard />
-                    </ProtectedRoute>
+                    </PublicRoute>
                   }
                 />
                 <Route
                   path="/upload"
                   element={
-                    <ProtectedRoute>
+                    <PublicRoute>
                       <Upload />
-                    </ProtectedRoute>
+                     </PublicRoute>
                   }
                 />
                 <Route
                   path="/enhance/:resumeId"
                   element={
-                    <ProtectedRoute>
+                    <PublicRoute>
                       <Enhance />
-                    </ProtectedRoute>
+                     </PublicRoute>
                   }
                 />
                 <Route
                   path="/resume/:resumeId"
                   element={
-                    <ProtectedRoute>
+                    <PublicRoute>
                       <ResumeView />
-                    </ProtectedRoute>
+                     </PublicRoute>
                   }
                 />
                 <Route
                   path="/jobs"
                   element={
-                    <ProtectedRoute>
+                    <PublicRoute>
                       <JobSearch />
-                    </ProtectedRoute>
+                     </PublicRoute>
                   }
                 />
                 <Route
                   path="/job-alerts"
                   element={
-                    <ProtectedRoute>
+                    <PublicRoute>
                       <JobAlerts />
-                    </ProtectedRoute>
+                     </PublicRoute>
                   }
                 />
                 <Route
                   path="/job-tracker"
                   element={
-                    <ProtectedRoute>
+                    <PublicRoute>
                       <JobTracker />
-                    </ProtectedRoute>
+                     </PublicRoute>
                   }
                 />
                 <Route
                   path="/community"
                   element={
-                    <ProtectedRoute>
+                    <PublicRoute>
                       <Community />
-                    </ProtectedRoute>
+                     </PublicRoute>
                   }
                 />
                 <Route
                   path="/interview-prep"
                   element={
-                    <ProtectedRoute>
+                    <PublicRoute>
                       <InterviewPrep />
-                    </ProtectedRoute>
+                     </PublicRoute>
                   }
                 />
                 <Route
                   path="/profile"
                   element={
-                    <ProtectedRoute>
+                    <PublicRoute>
                       <UserProfile />
-                    </ProtectedRoute>
+                     </PublicRoute>
                   }
                 />
                 <Route
                   path="/profile/:uid"
                   element={
-                    <ProtectedRoute>
+                    <PublicRoute>
                       <UserProfile />
-                    </ProtectedRoute>
+                     </PublicRoute>
                   }
                 />
                 <Route
                   path="/security"
                   element={
-                    <ProtectedRoute>
+                    <PublicRoute>
                       <SecuritySettings />
-                    </ProtectedRoute>
+                     </PublicRoute>
                   }
                 />
                 <Route
                   path="/email-generator"
                   element={
-                    <ProtectedRoute>
+                    <PublicRoute>
                       <EmailGenerator />
-                    </ProtectedRoute>
+                     </PublicRoute>
                   }
                 />
                 <Route
                   path="/settings"
                   element={
-                    <ProtectedRoute>
+                    <PublicRoute>
                       <Settings />
-                    </ProtectedRoute>
+                     </PublicRoute>
                   }
                 />
 
                 <Route
                   path="/fellowship"
                   element={
-                    <ProtectedRoute>
+                    <PublicRoute>
                       <FellowshipLayout />
-                    </ProtectedRoute>
+                     </PublicRoute>
                   }
                 >
                   <Route index element={<Challenges />} />

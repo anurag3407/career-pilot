@@ -16,6 +16,7 @@ import {
 import toast from 'react-hot-toast';
 import { jobAlertsApi, jobsApi } from '../services/api';
 import { JobAlertModal, JobAlertsList } from '../components';
+import { SkeletonStatCards, SkeletonJobList } from '../components/ui/Skeleton'
 
 export default function JobAlerts() {
   const [activeTab, setActiveTab] = useState('alerts'); // 'alerts' | 'search'
@@ -106,7 +107,16 @@ export default function JobAlerts() {
           </div>
 
           {/* Quick Stats */}
-          {stats && (
+          {loading ? (
+            <motion.div
+              className="grid grid-cols-4 gap-4"
+              variants={{ animate: { transition: { staggerChildren: 0.08 } } }}
+              initial="initial"
+              animate="animate"
+            >
+              <SkeletonStatCards count={4} />
+            </motion.div>
+          ) : stats && (
             <motion.div
               className="grid grid-cols-4 gap-4"
               variants={{ animate: { transition: { staggerChildren: 0.08 } } }}
@@ -212,7 +222,9 @@ export default function JobAlerts() {
               </div>
 
               {/* Search Results */}
-              {searchResults.length > 0 && (
+              {searchLoading ? (
+                <SkeletonJobList count={4} />
+              ) : searchResults.length > 0 ? (
                 <div className="space-y-4">
                   <h3 className="text-lg font-semibold text-foreground">
                     Search Results ({searchResults.length} jobs)
@@ -230,7 +242,7 @@ export default function JobAlerts() {
                     ))}
                   </motion.div>
                 </div>
-              )}
+              ) : null}
 
               {/* Empty State */}
               {!searchLoading && searchResults.length === 0 && !searchQuery && (
@@ -261,7 +273,7 @@ export default function JobAlerts() {
 }
 
 // Job Card Component
-function JobCard({ job }) {
+function JobCard({ job, index }) {
   const handleApply = () => {
     if (job.applyLink) {
       window.open(job.applyLink, '_blank');

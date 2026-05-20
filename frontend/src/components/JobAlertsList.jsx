@@ -16,6 +16,7 @@ import {
 import toast from 'react-hot-toast';
 import { jobAlertsApi } from '../services/api';
 import JobAlertModal from './JobAlertModal';
+import { SkeletonList } from './ui/Skeleton';
 
 export default function JobAlertsList() {
     const [alerts, setAlerts] = useState([]);
@@ -41,6 +42,14 @@ export default function JobAlertsList() {
     useEffect(() => {
         fetchAlerts();
     }, []);
+
+    if (loading) {
+        return (
+            <div className="space-y-4 py-8">
+                <SkeletonList count={4} />
+            </div>
+        );
+    }
 
     const handleToggle = async (alertId) => {
         try {
