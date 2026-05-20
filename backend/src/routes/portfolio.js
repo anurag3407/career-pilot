@@ -2,10 +2,14 @@ import express from 'express';
 import fs from 'fs/promises';
 import { verifyToken } from '../middleware/auth.js';
 import { asyncHandler, ApiError } from '../middleware/errorHandler.js';
+import cacheHeaders from '../middleware/cacheHeaders.js';
 import { enhanceSection } from '../services/ai/portfolioContentEnhancer.js';
 import { generateRobotsTxt, generateSitemapXml } from '../utils/sitemapGenerator.js';
 
 const router = express.Router();
+
+const publicPortfolioCache = cacheHeaders({ maxAge: 300 });
+const sitemapCache = cacheHeaders({ maxAge: 86400 });
 
 const VALID_SECTIONS = ['hero', 'projects', 'about', 'skills'];
 const VALID_SLUG_PATTERN = /^[a-z0-9]+(?:[a-z0-9-]*[a-z0-9])?$/i;
@@ -70,6 +74,40 @@ router.post('/enhance-portfolio-content', verifyToken, asyncHandler(async (req, 
   });
 }));
 
+// router.get('/public/:slug/sitemap.xml', sitemapCache, asyncHandler(async (req, res) => {
+/**
+ * POST /api/portfolio/:id/performance
+ * Analyze or track portfolio performance metrics
+ */
+router.post('/:id/performance', verifyToken, asyncHandler(async (req, res) => {
+  const { id } = req.params;
+  const { htmlSizeKB, cssSizeKB, imageSizeMB, externalRequests, cssSelectors, fontStrategy } = req.body;
+
+  // Validate basic payload presence
+  if (!htmlSizeKB && !cssSizeKB && !imageSizeMB) {
+    throw new ApiError(400, 'Performance metrics payload is required.');
+  }
+
+  // TODO: Connect to a metrics controller or service here
+  // For now, return a successful stub response acknowledging the data
+
+  res.status(200).json({
+    success: true,
+    message: `Performance metrics recorded for portfolio ${id}`,
+    data: {
+      portfolioId: id,
+      receivedMetrics: {
+        htmlSizeKB,
+        cssSizeKB,
+        imageSizeMB,
+        externalRequests,
+        cssSelectors,
+        fontStrategy
+      }
+    }
+  });
+}));
+
 router.get('/public/:slug/sitemap.xml', asyncHandler(async (req, res) => {
   const { slug } = req.params;
   assertValidPortfolioSlug(slug);
@@ -95,7 +133,7 @@ router.get('/public/:slug/sitemap.xml', asyncHandler(async (req, res) => {
     .send(sitemapXml);
 }));
 
-router.get('/public/:slug/robots.txt', asyncHandler(async (req, res) => {
+router.get('/public/:slug/robots.txt', publicPortfolioCache, asyncHandler(async (req, res) => {
   const { slug } = req.params;
   assertValidPortfolioSlug(slug);
 
@@ -113,4 +151,40 @@ router.get('/public/:slug/robots.txt', asyncHandler(async (req, res) => {
     .send(generateRobotsTxt({ sitemapUrl }));
 }));
 
+router.get('/:slug/bandwidth', asyncHandler(async (req, res) => {
+  const { slug } = req.params;
+
+  assertValidPortfolioSlug(slug);
+
+  try {
+    await fs.stat(getPortfolioTemplatePath(slug));
+  } catch {
+    throw new ApiError(404, 'Portfolio template not found.');
+  }
+
+  // Placeholder analytics estimation until real tracking is implemented
+  const estimatedPageSizeKB = 500;
+  const monthlyViews = 1200;
+
+  const bandwidthUsageMB =
+    (estimatedPageSizeKB * monthlyViews) / 1024;
+
+  const FREE_TIER_LIMIT_MB = 102400;
+
+  const usagePercentage =
+    (bandwidthUsageMB / FREE_TIER_LIMIT_MB) * 100;
+
+  res.status(200).json({
+    success: true,
+    data: {
+      slug,
+      estimatedPageSizeKB,
+      monthlyViews,
+      bandwidthUsageMB: bandwidthUsageMB.toFixed(2),
+      freeTierLimitMB: FREE_TIER_LIMIT_MB,
+      usagePercentage: usagePercentage.toFixed(2),
+      warning: usagePercentage >= 80,
+    },
+  });
+}));
 export default router;

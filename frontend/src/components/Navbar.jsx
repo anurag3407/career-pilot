@@ -18,7 +18,8 @@ import {
   GraduationCap,
   Mic,
   Sun,
-  Moon
+  Moon,
+  Palette
 } from 'lucide-react'
 
 export default function Navbar() {
@@ -46,7 +47,13 @@ export default function Navbar() {
 
   const isActive = (path) => location.pathname === path
 
-  const navLinks = [
+  // Public links accessible to everyone
+  const publicLinks = [
+    { path: '/templates', label: 'Templates', icon: Palette },
+  ]
+
+  // Protected links accessible only to logged-in users
+  const privateLinks = [
     { path: '/dashboard', label: 'Dashboard', icon: LayoutDashboard },
     { path: '/jobs', label: 'Jobs', icon: Search },
     { path: '/job-alerts', label: 'Alerts', icon: Bell },
@@ -66,8 +73,8 @@ export default function Navbar() {
       <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
         <div className="flex justify-between h-16 items-center">
           {/* Logo */}
-          <Link to="/" className="flex items-center gap-2 group">
-            <div className="w-10 h-10 flex items-center justify-center p-1.5 rounded-xl bg-primary/10 group-hover:scale-110 transition-transform">
+          <Link to="/" className="flex items-center  group">
+            <div className="w-15 h-15 flex items-center justify-center p-1.5 rounded-xl  group-hover:scale-110 transition-transform">
               <img src="/speed.png" alt="" className="w-full h-full object-contain" />
             </div>
             <span className="text-xl font-bold text-foreground tracking-tight">
@@ -77,23 +84,35 @@ export default function Navbar() {
 
           {/* Desktop Navigation */}
           <div className="hidden lg:flex items-center gap-1">
-            {user ? (
-              <>
-                {navLinks.map(({ path, label, icon: Icon }) => (
-                  <Link
-                    key={path}
-                    to={path}
-                    className={`flex items-center gap-2 px-3 py-2 rounded-lg text-sm font-medium transition-all ${isActive(path)
-                      ? 'bg-primary/10 text-primary'
-                      : 'text-muted-foreground hover:text-foreground hover:bg-muted'
-                      }`}
-                  >
-                    <Icon className="w-4 h-4" />
-                    {label}
-                  </Link>
-                ))}
-              </>
-            ) : null}
+            {/* Always visible public links */}
+            {publicLinks.map(({ path, label, icon: Icon }) => (
+              <Link
+                key={path}
+                to={path}
+                className={`flex items-center gap-2 px-3 py-2 rounded-lg text-sm font-medium transition-all ${isActive(path)
+                  ? 'bg-primary/10 text-primary'
+                  : 'text-muted-foreground hover:text-foreground hover:bg-muted'
+                  }`}
+              >
+                <Icon className="w-4 h-4" />
+                {label}
+              </Link>
+            ))}
+
+            {/* Conditionally visible private links */}
+            {user && privateLinks.map(({ path, label, icon: Icon }) => (
+              <Link
+                key={path}
+                to={path}
+                className={`flex items-center gap-2 px-3 py-2 rounded-lg text-sm font-medium transition-all ${isActive(path)
+                  ? 'bg-primary/10 text-primary'
+                  : 'text-muted-foreground hover:text-foreground hover:bg-muted'
+                  }`}
+              >
+                <Icon className="w-4 h-4" />
+                {label}
+              </Link>
+            ))}
           </div>
 
           {/* User Menu & Toggle */}
@@ -185,6 +204,22 @@ export default function Navbar() {
             className="md:hidden border-t border-border bg-background/95 backdrop-blur-xl overflow-hidden"
           >
             <div className="px-4 py-6 space-y-3">
+              {/* Public Links for Mobile */}
+              {publicLinks.map(({ path, label, icon: Icon }) => (
+                <Link
+                  key={path}
+                  to={path}
+                  onClick={() => setMobileMenuOpen(false)}
+                  className={`flex items-center gap-3 px-4 py-4 rounded-xl text-base font-semibold transition-all ${isActive(path)
+                    ? 'bg-primary/10 text-primary'
+                    : 'text-muted-foreground hover:bg-muted hover:text-foreground'
+                    }`}
+                >
+                  <Icon className="w-5 h-5" />
+                  {label}
+                </Link>
+              ))}
+
               {user ? (
                 <>
                   <div className="flex items-center gap-3 px-4 py-4 bg-muted rounded-2xl mb-4 border border-border">
@@ -201,7 +236,7 @@ export default function Navbar() {
                     </div>
                   </div>
 
-                  {navLinks.map(({ path, label, icon: Icon }) => (
+                  {privateLinks.map(({ path, label, icon: Icon }) => (
                     <Link
                       key={path}
                       to={path}
@@ -252,4 +287,3 @@ export default function Navbar() {
     </nav>
   )
 }
-

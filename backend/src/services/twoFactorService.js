@@ -5,7 +5,7 @@ import bcrypt from 'bcryptjs';
 import TwoFactor from '../models/TwoFactor.model.js';
 
 const ALGORITHM = 'aes-256-gcm';
-const BACKUP_CODE_COUNT = 8;
+const BACKUP_CODE_COUNT = 10;
 
 const getKey = () => {
   const key = process.env.TOTP_ENCRYPTION_KEY;
@@ -101,6 +101,34 @@ export const disableTwoFactor = async (uid, token) => {
   record.enabled = false;
   record.backupCodes = [];
   await record.save();
+  return true;
+};
+
+/**
+ * Disable 2FA using a backup code. This is useful when user loses access
+ * to their authenticator app and needs to recover their account.
+ * Returns true on success, false if no matching backup code found.
+ */
+export const disableTwoFactorWithBackup = async (uid, code) => {
+  const record = await TwoFactor.findOne({ uid, enabled: true }).select('+backupCodes');
+  if (!record?.backupCodes?.length) return false;
+
+  const normalised = normaliseCode(code);
+  let matchedHash = null;
+  for (const hash of record.backupCodes) {
+    if (await bcrypt.compare(normalised, hash)) {
+      matchedHash = hash;
+      break;
+    }
+  }
+  if (!matchedHash) return false;
+
+  const updated = await TwoFactor.findOneAndUpdate(
+    { uid, enabled: true, backupCodes: matchedHash },
+    { $set: { secret: null, enabled: false, backupCodes: [] } }
+  );
+  if (!updated) return false;
+
   return true;
 };
 

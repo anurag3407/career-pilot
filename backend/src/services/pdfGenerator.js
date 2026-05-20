@@ -1,6 +1,6 @@
 import puppeteer from 'puppeteer';
 import { marked } from 'marked';
-
+import { generateStructuredData } from '../utils/structuredDataGenerator.js';
 /**
  * Generate a PDF from markdown text using Puppeteer.
  * @param {string} markdownText - The resume markdown content.
@@ -16,7 +16,15 @@ export const generatePDF = async (markdownText, options = {}) => {
 
   // Convert markdown to HTML
   const htmlContent = marked.parse(markdownText);
+  const structuredData = generateStructuredData(options.portfolio || {});
+const jsonLd = JSON.stringify(structuredData, null, 2)
+  .replace(/<\/script>/gi, '<\\/script>');
 
+const jsonLdScript = `
+<script type="application/ld+json">
+${jsonLd}
+</script>
+`;
   // Read full HTML structure with styles
   const fullHtml = `
     <!DOCTYPE html>
@@ -24,6 +32,7 @@ export const generatePDF = async (markdownText, options = {}) => {
     <head>
       <meta charset="UTF-8">
       <title>${title}</title>
+      ${jsonLdScript}
       <style>
         :root {
           --theme-color: ${themeColor};
