@@ -23,7 +23,7 @@ export const verifyToken = async (req, res, next) => {
       };
       next();
     } catch (firebaseError) {
-      if (firebaseError.code === 'app/no-app') {
+       if (firebaseError?.code === 'app/no-app') {
         console.error('Firebase Admin not configured');
         throw new ApiError(
           500,
