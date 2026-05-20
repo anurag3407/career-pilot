@@ -1,5 +1,6 @@
 import { GoogleGenerativeAI } from '@google/generative-ai';
 import dotenv from 'dotenv';
+import { aiCallsCounter } from '../middleware/metrics.js';
 
 dotenv.config();
 
@@ -63,17 +64,17 @@ export const optimizeLinkedInProfile = async (profileText, targetRole) => {
     - summary: Concise overall feedback.
     `;
 
+    let timer;
     try {
-        let timer;
         const timeoutPromise = new Promise((_, reject) => {
             timer = setTimeout(() => reject(new Error('AI Content generation timed out (max 30 seconds)')), 30000);
         });
 
+        aiCallsCounter.inc({ provider: "gemini" });
         const result = await Promise.race([
             getModel().generateContent(prompt),
             timeoutPromise
         ]);
-        clearTimeout(timer);
 
         const response = await result.response;
         const text = response.text();
@@ -129,5 +130,7 @@ export const optimizeLinkedInProfile = async (profileText, targetRole) => {
     } catch (error) {
         console.error('Error optimizing LinkedIn profile:', error);
         throw new Error('Failed to optimize LinkedIn profile.');
+    } finally {
+        if (timer) clearTimeout(timer);
     }
 };

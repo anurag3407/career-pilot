@@ -34,8 +34,11 @@ export const initializeSocket = (server) => {
     // Join user's personal room for DMs
     socket.join(`user:${socket.user.uid}`);
 
-    // Broadcast user online status
-    io.emit('user_online', {
+    // Join global presence room (for general presence updates)
+    socket.join('global');
+
+    // Broadcast user online status only to global room
+    io.to('global').emit('user_online', {
       uid: socket.user.uid,
       name: socket.user.name,
       timestamp: new Date()
@@ -44,17 +47,83 @@ export const initializeSocket = (server) => {
     // Setup all socket event handlers
     setupSocketHandlers(io, socket);
 
+    // Handle channel presence subscription
+    socket.on('join_channel', async (channelId) => {
+      if (channelId) {
+        socket.join(`channel:${channelId}`);
+        await presenceService.joinRoom(socket.user.uid, `channel:${channelId}`);
+        console.log(`${socket.user.name} joined channel presence: ${channelId}`);
+        
+        // Notify channel members
+        io.to(`channel:${channelId}`).emit('user_joined_channel', {
+          uid: socket.user.uid,
+          name: socket.user.name,
+          channelId,
+          timestamp: new Date()
+        });
+      }
+    });
+
+    socket.on('leave_channel', async (channelId) => {
+      if (channelId) {
+        socket.leave(`channel:${channelId}`);
+        await presenceService.leaveRoom(socket.user.uid, `channel:${channelId}`);
+        console.log(`${socket.user.name} left channel presence: ${channelId}`);
+        
+        // Notify channel members
+        io.to(`channel:${channelId}`).emit('user_left_channel', {
+          uid: socket.user.uid,
+          name: socket.user.name,
+          channelId,
+          timestamp: new Date()
+        });
+      }
+    });
+
+    // Handle friends presence subscription
+    socket.on('subscribe_friends', async (userId) => {
+      if (userId) {
+        socket.join(`friends:${userId}`);
+        await presenceService.joinRoom(socket.user.uid, `friends:${userId}`);
+        console.log(`${socket.user.name} subscribed to friends presence: ${userId}`);
+      }
+    });
+
+    socket.on('unsubscribe_friends', async (userId) => {
+      if (userId) {
+        socket.leave(`friends:${userId}`);
+        await presenceService.leaveRoom(socket.user.uid, `friends:${userId}`);
+        console.log(`${socket.user.name} unsubscribed from friends presence: ${userId}`);
+      }
+    });
+
     // Handle disconnect
     socket.on('disconnect', async (reason) => {
       console.log(`❌ User disconnected: ${socket.user.name} - ${reason}`);
       
+      // Get user's rooms before going offline
+      const rooms = await presenceService.getUserRooms(socket.user.uid);
+      
       await presenceService.setOffline(socket.user.uid);
       
-      io.emit('user_offline', {
+      // Broadcast to global room
+      io.to('global').emit('user_offline', {
         uid: socket.user.uid,
         name: socket.user.name,
         timestamp: new Date()
       });
+
+      // Notify channel rooms about user leaving
+      for (const room of rooms) {
+        if (room.startsWith('channel:')) {
+          io.to(room).emit('user_left_channel', {
+            uid: socket.user.uid,
+            name: socket.user.name,
+            channelId: room.replace('channel:', ''),
+            timestamp: new Date()
+          });
+        }
+      }
     });
 
     // Handle errors
