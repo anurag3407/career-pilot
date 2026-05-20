@@ -51,9 +51,12 @@ const buildCacheControl = ({ maxAge, isPublic = true } = {}) => {
   return tokens.join(', ');
 };
 
+const normalizeETagForWeakComparison = (etag) => String(etag).trim().replace(/^W\//i, '');
+
 const matchesETag = (incomingETags, etag) => {
+  const normalizedETag = normalizeETagForWeakComparison(etag);
   const tags = normalizeIfNoneMatch(incomingETags);
-  return tags.some((tag) => tag === etag || tag === '*');
+  return tags.some((tag) => tag === '*' || normalizeETagForWeakComparison(tag) === normalizedETag);
 };
 
 const cacheHeaders = ({ maxAge, isPublic = true } = {}) => (req, res, next) => {
