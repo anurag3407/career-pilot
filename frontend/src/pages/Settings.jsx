@@ -4,6 +4,7 @@ import { Bell, Mail, MessageSquare, FileText, Save, Cpu } from 'lucide-react'
 import { notificationApi, aiApi } from '../services/api'
 import Button from '../components/Button'
 import toast from 'react-hot-toast'
+import { SkeletonList } from '../components/ui/Skeleton'
 
 export default function Settings() {
   const [preferences, setPreferences] = useState({
@@ -122,8 +123,27 @@ const Toggle = ({ value, onChange }) => (
   )
 
   if (loading) return (
-    <div className="flex items-center justify-center min-h-screen bg-black">
-      <p className="text-neutral-400">Loading...</p>
+    <div className="min-h-screen bg-background">
+      <div className="max-w-2xl mx-auto px-4 py-8">
+        <motion.div
+          initial={{ opacity: 0, y: 10 }}
+          animate={{ opacity: 1, y: 0 }}
+          transition={{ duration: 0.4 }}
+          className="space-y-6"
+        >
+          {/* Header Skeleton */}
+          <div className="space-y-2 mb-8">
+            <div className="h-9 bg-muted rounded-lg w-1/3 animate-pulse" />
+            <div className="h-4 bg-muted rounded-lg w-2/3 animate-pulse" />
+          </div>
+
+          {/* Settings Skeleton */}
+          <div className="p-6 rounded-2xl bg-card border border-border space-y-6">
+            <div className="h-5 bg-muted rounded-lg w-1/4 animate-pulse" />
+            <SkeletonList count={3} />
+          </div>
+        </motion.div>
+      </div>
     </div>
   )
 
