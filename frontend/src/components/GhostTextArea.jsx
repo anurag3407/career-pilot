@@ -2,10 +2,6 @@ import { useRef, useCallback, useState } from 'react'
 import { cn } from '@/lib/utils'
 import { useAICompletion } from '../hooks/useAICompletion'
 
-/**
- * Textarea with inline AI ghost text suggestions.
- * Shows a faded completion after the cursor text. Tab accepts, Escape dismisses.
- */
 export default function GhostTextArea({
   value = '',
   onChange,
@@ -17,6 +13,7 @@ export default function GhostTextArea({
 }) {
   const textareaRef = useRef(null)
   const [isFocused, setIsFocused] = useState(false)
+  const [cursorPos, setCursorPos] = useState(0)
   const { suggestion, isLoading, fetchCompletion, dismiss } = useAICompletion({
     sectionContext,
     fieldType,
@@ -25,40 +22,47 @@ export default function GhostTextArea({
 
   const handleChange = useCallback((e) => {
     const newValue = e.target.value
+    const pos = e.target.selectionStart
     onChange(e)
     dismiss()
-    const cursorPos = e.target.selectionStart
-    fetchCompletion(newValue, cursorPos)
+    setCursorPos(pos)
+    fetchCompletion(newValue, pos)
   }, [onChange, fetchCompletion, dismiss])
 
   const handleKeyDown = useCallback((e) => {
+    if (e.key === 'Escape') {
+      e.preventDefault()
+      dismiss()
+      return
+    }
+
     if (!suggestion) return
 
     if (e.key === 'Tab') {
       e.preventDefault()
       const textarea = textareaRef.current
       if (!textarea) return
-      const cursorPos = textarea.selectionStart
-      const before = value.slice(0, cursorPos)
-      const after = value.slice(cursorPos)
+      const pos = textarea.selectionStart
+      const currentValue = textarea.value
+      const before = currentValue.slice(0, pos)
+      const after = currentValue.slice(pos)
       const newValue = before + suggestion + after
 
       const syntheticEvent = { target: { value: newValue } }
       onChange(syntheticEvent)
       dismiss()
 
+      const newCursorPos = pos + suggestion.length
+      setCursorPos(newCursorPos)
       requestAnimationFrame(() => {
-        const newCursorPos = cursorPos + suggestion.length
         textarea.setSelectionRange(newCursorPos, newCursorPos)
       })
-      return
     }
+  }, [suggestion, onChange, dismiss])
 
-    if (e.key === 'Escape') {
-      e.preventDefault()
-      dismiss()
-    }
-  }, [suggestion, value, onChange, dismiss])
+  const handleSelect = useCallback((e) => {
+    setCursorPos(e.target.selectionStart)
+  }, [])
 
   const showGhost = isFocused && suggestion && !isLoading
 
@@ -69,6 +73,7 @@ export default function GhostTextArea({
         value={value}
         onChange={handleChange}
         onKeyDown={handleKeyDown}
+        onSelect={handleSelect}
         onFocus={() => setIsFocused(true)}
         onBlur={() => {
           setIsFocused(false)
@@ -89,8 +94,9 @@ export default function GhostTextArea({
             'px-3 py-2 text-sm leading-[1.5]',
           )}
         >
-          <span className="invisible">{value}</span>
+          <span className="invisible">{value.slice(0, cursorPos)}</span>
           <span className="text-muted-foreground/40 italic">{suggestion}</span>
+          <span className="invisible">{value.slice(cursorPos)}</span>
         </div>
       )}
 

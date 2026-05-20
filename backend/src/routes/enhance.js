@@ -284,7 +284,11 @@ router.post('/inline-completion', verifyToken, extractAIProvider, aiRateLimiter,
     throw new ApiError(400, 'Text is required');
   }
 
-  if (typeof cursorPosition !== 'number' || cursorPosition < 0) {
+  if (text.length > 5000) {
+    throw new ApiError(400, 'Text exceeds the allowed limit (max 5000 characters)');
+  }
+
+  if (!Number.isInteger(cursorPosition) || cursorPosition < 0 || cursorPosition > text.length) {
     throw new ApiError(400, 'Valid cursor position is required');
   }
 
