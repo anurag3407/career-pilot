@@ -403,6 +403,21 @@ npm run dev
 - Backend API: http://localhost:5000
 - Health Check: http://localhost:5000/health
 
+### Quick API checks (cURL)
+
+With the backend running locally:
+
+```bash
+# Health check (no auth)
+curl -s http://localhost:5000/health | jq
+
+# Authenticated route example (replace TOKEN with a Firebase ID token)
+curl -s -H "Authorization: Bearer TOKEN" \
+  http://localhost:5000/api/auth/verify | jq
+```
+
+In [Postman](https://www.postman.com/), create a GET request to `http://localhost:5000/health`, or set **Authorization → Bearer Token** for protected `/api/*` routes. See [API_DOCS/README.md](./API_DOCS/README.md) for the full route list.
+
 ---
 
 ## 📁 Project Structure
