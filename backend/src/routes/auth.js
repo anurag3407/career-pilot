@@ -3,6 +3,8 @@ import { asyncHandler } from '../middleware/errorHandler.js';
 import { verifyToken } from '../middleware/auth.js';
 import { loginProtection } from '../middleware/loginProtection.js';
 import { saveUserToFirebase } from '../services/firebaseDataService.js';
+import { validate } from '../middleware/validate.js';
+import { updateNotificationPrefsSchema } from '../schemas/auth.schema.js';
 
 import { registerSchema } from '../validators/authValidator.js';
 import { exchangeCodeForToken, getLinkedInAuthUrl, getLinkedInProfile } from '../services/linkedinService.js';
@@ -14,14 +16,6 @@ import { updateNotificationPrefsSchema } from '../schemas/auth.schema.js';
 
 const router = express.Router();
 const stateStore = new Map();
-
-// Example register endpoint with validation
-router.post('/register', validate(registerSchema), asyncHandler(async (req, res) => {
-  res.status(201).json({
-    success: true,
-    message: 'User registered successfully'
-  });
-}));
 
 // Periodic sweep of expired stateStore entries every 10 minutes to prevent memory leaks
 setInterval(() => {
@@ -64,8 +58,10 @@ router.get('/profile', verifyToken, asyncHandler(async (req, res) => {
     user: req.user
   });
 }));
+
 // Get notification preferences
 router.get('/notification-preferences', verifyToken, asyncHandler(async (req, res) => {
+  const user = await User.findOne({ email: req.user.email });
   const User = (await import('../models/User.model.js')).default;
   let user = await User.findOne({ email: req.user.email });
 
@@ -80,12 +76,7 @@ router.get('/notification-preferences', verifyToken, asyncHandler(async (req, re
 
 // Update notification preferences
 router.put('/notification-preferences', verifyToken, validate(updateNotificationPrefsSchema), asyncHandler(async (req, res) => {
-  const User = (await import('../models/User.model.js')).default;
   const { jobAlerts, directMessages, proposalUpdates } = req.body;
-
-  if (typeof jobAlerts !== 'boolean' || typeof directMessages !== 'boolean' || typeof proposalUpdates !== 'boolean') {
-    return res.status(400).json({ success: false, error: 'Invalid preference values' });
-  }
 
   await User.findOneAndUpdate(
     { email: req.user.email },
@@ -114,6 +105,8 @@ router.get('/linkedin/callback', asyncHandler(async (req, res) => {
     return res.redirect(`${frontendUrl}/login?error=linkedin_denied`);
   }
 
+  const storedExpiry = stateStore.get(state);
+  if (!storedExpiry || Date.now() > storedExpiry) {
   const storedEnpiry = stateStore.get(state);
   if (!storedEnpiry || Date.now() > storedEnpiry) {
     stateStore.delete(state);
