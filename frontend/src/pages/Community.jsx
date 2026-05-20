@@ -19,6 +19,8 @@ import {
   Hash
 } from 'lucide-react';
 import toast from 'react-hot-toast';
+import { SkeletonListItems, SkeletonPostList } from '../components/ui/Skeleton';
+import { motion, AnimatePresence } from 'framer-motion';
 
 export default function Community() {
   const { user } = useAuth();

@@ -179,18 +179,20 @@ export default function Dashboard() {
                 { to: '/community', icon: Users, label: 'Community', sub: 'Connect', color: 'primary' },
                 { to: '/fellowship', icon: GraduationCap, label: 'Fellowship', sub: 'Earn & learn', color: 'primary', isNew: true },
               ].map((action, idx) => (
-                <Link key={idx} to={action.to} className="group">
-                  <div className={`relative p-5 rounded-2xl bg-card border border-border overflow-hidden transition-all duration-300 hover:border-${action.color} hover:shadow-xl hover:shadow-${action.color}/5 hover:-translate-y-1`}>
-                    {action.isNew && (
-                      <div className="absolute top-2 right-2 px-1.5 py-0.5 bg-primary/20 rounded text-[9px] text-primary font-black uppercase tracking-wider">NEW</div>
-                    )}
-                    <div className={`w-12 h-12 bg-muted rounded-xl flex items-center justify-center mb-4 group-hover:scale-110 transition-transform`}>
-                      <action.icon className={`w-6 h-6 text-foreground group-hover:text-primary transition-colors`} />
+                <motion.div key={idx} variants={itemVariants}>
+                  <Link to={action.to} className="group">
+                    <div className={`relative p-5 rounded-2xl bg-card border border-border overflow-hidden transition-all duration-300 hover:border-${action.color} hover:shadow-xl hover:shadow-${action.color}/5 hover:-translate-y-1`}>
+                      {action.isNew && (
+                        <div className="absolute top-2 right-2 px-1.5 py-0.5 bg-primary/20 rounded text-[9px] text-primary font-black uppercase tracking-wider">NEW</div>
+                      )}
+                      <div className={`w-12 h-12 bg-muted rounded-xl flex items-center justify-center mb-4 group-hover:scale-110 transition-transform`}>
+                        <action.icon className={`w-6 h-6 text-foreground group-hover:text-primary transition-colors`} />
+                      </div>
+                      <h3 className="text-sm font-bold text-foreground mb-1">{action.label}</h3>
+                      <p className="text-muted-foreground text-xs font-medium">{action.sub}</p>
                     </div>
-                    <h3 className="text-sm font-bold text-foreground mb-1">{action.label}</h3>
-                    <p className="text-muted-foreground text-xs font-medium">{action.sub}</p>
-                  </div>
-                </Link>
+                  </Link>
+                </motion.div>
               ))}
             </motion.div>
 
@@ -203,13 +205,13 @@ export default function Dashboard() {
                 { icon: CheckCircle2, value: jobStats.offered, label: 'Offers', color: 'text-emerald-500', bg: 'bg-emerald-500/10' },
                 { icon: FileText, value: resumes.length, label: 'Resumes', color: 'text-primary', bg: 'bg-primary/10' }
               ].map((stat, idx) => (
-                <div key={idx} className="p-6 rounded-2xl bg-card border border-border text-center hover:border-primary/30 transition-all shadow-sm group">
+                <motion.div key={idx} variants={itemVariants} className="p-6 rounded-2xl bg-card border border-border text-center hover:border-primary/30 transition-all shadow-sm group">
                   <div className={`w-12 h-12 ${stat.bg} rounded-xl flex items-center justify-center mx-auto mb-4 group-hover:scale-110 transition-transform`}>
                     <stat.icon className={`w-6 h-6 ${stat.color}`} />
                   </div>
                   <p className="text-3xl font-black text-foreground">{stat.value}</p>
                   <p className="text-xs font-bold text-muted-foreground uppercase tracking-widest mt-1">{stat.label}</p>
-                </div>
+                </motion.div>
               ))}
             </motion.div>
 

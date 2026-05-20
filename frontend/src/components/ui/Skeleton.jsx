@@ -1,5 +1,12 @@
 export function Skeleton({ className = "" }) {
-  return <div className={`animate-pulse rounded-md bg-muted ${className}`} />;
+  return (
+    <div
+      className={`animate-pulse rounded-md bg-foreground/10 ${className}`}
+      style={{
+        animationDuration: '2s'
+      }}
+    />
+  );
 }
 
 // ============ Basic Skeleton Layouts ============
@@ -200,6 +207,33 @@ export function SkeletonListItems({ count = 4 }) {
       {Array.from({ length: count }).map((_, i) => (
         <SkeletonListItem key={i} />
       ))}
+    </div>
+  );
+}
+
+// ============ Page Skeletons ============
+export function SkeletonPage({ width = "max-w-6xl", rows = 4, className = "" }) {
+  return (
+    <div className={`min-h-screen bg-background ${className}`}>
+      <div className={`${width} mx-auto px-4 sm:px-6 lg:px-8 py-8`}>
+        <div className="space-y-8">
+          <div className="space-y-3">
+            <Skeleton className="h-4 w-32" />
+            <Skeleton className="h-10 w-2/3 max-w-xl" />
+            <Skeleton className="h-4 w-1/2 max-w-md" />
+          </div>
+          <SkeletonList count={rows} />
+        </div>
+      </div>
+    </div>
+  );
+}
+
+export function SkeletonPanel({ rows = 3, className = "" }) {
+  return (
+    <div className={`space-y-4 ${className}`}>
+      <Skeleton className="h-8 w-1/3 max-w-xs" />
+      <SkeletonList count={rows} />
     </div>
   );
 }

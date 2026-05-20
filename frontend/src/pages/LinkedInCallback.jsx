@@ -3,6 +3,7 @@ import { useNavigate, useSearchParams } from "react-router-dom";
 import toast from 'react-hot-toast'
 import { signInWithCustomToken } from 'firebase/auth'
 import { auth } from '../config/firebase'
+import { SkeletonPage } from '../components/ui/Skeleton'
 
 export default function LinkedInCallback() {
     const [searchParams] = useSearchParams()
@@ -48,10 +49,10 @@ export default function LinkedInCallback() {
         handleCallback()
     }, [])
     return (
-    <div className="min-h-screen bg-black flex items-center justify-center">
-      <div className="text-center">
-        <div className="w-8 h-8 border-2 border-indigo-500 border-t-transparent rounded-full animate-spin mx-auto mb-4" />
-        <p className="text-neutral-400 text-sm">{status}</p>
+    <div className="relative">
+      <SkeletonPage width="max-w-3xl" rows={3} />
+      <div className="absolute inset-x-0 top-8 text-center">
+        <p className="text-muted-foreground text-sm">{status}</p>
       </div>
     </div>
   )

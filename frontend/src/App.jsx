@@ -5,6 +5,7 @@ import { SocketProvider } from "./context/SocketContext";
 import { ThemeProvider } from "./context/ThemeContext";
 import AppLayout from "./components/AppLayout";
 import PageTransition from "./components/ui/PageTransition"; // NEW: Import PageTransition
+import { SkeletonPage } from "./components/ui/Skeleton";
 
 import Home from "./pages/Home";
 import Login from "./pages/Login";
@@ -39,16 +40,7 @@ function ProtectedRoute({ children }) {
   const { user, loading } = useAuth();
 
   if (loading) {
-    return (
-      <div className="min-h-screen flex items-center justify-center bg-background">
-        <div className="flex flex-col items-center gap-4">
-          <div className="w-12 h-12 border-4 border-muted border-t-primary rounded-full animate-spin"></div>
-          <p className="text-muted-foreground font-medium">
-            Loading CareerPilot...
-          </p>
-        </div>
-      </div>
-    );
+    return <SkeletonPage />;
   }
 
   if (!user) {
@@ -62,16 +54,7 @@ function PublicRoute({ children }) {
   const { user, loading } = useAuth();
 
   if (loading) {
-    return (
-      <div className="min-h-screen flex items-center justify-center bg-background">
-        <div className="flex flex-col items-center gap-4">
-          <div className="w-12 h-12 border-4 border-muted border-t-primary rounded-full animate-spin"></div>
-          <p className="text-muted-foreground font-medium">
-            Loading CareerPilot...
-          </p>
-        </div>
-      </div>
-    );
+    return <SkeletonPage />;
   }
 
   if (user) {
@@ -92,6 +75,7 @@ function App() {
               position="top-right"
               toastOptions={{
                 duration: 3000,
+                className: "careerpilot-toast",
                 style: {
                   background: "var(--card)",
                   color: "var(--foreground)",

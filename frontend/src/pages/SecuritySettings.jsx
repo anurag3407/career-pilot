@@ -16,6 +16,7 @@ import { twoFactorApi } from '../services/api'
 import Button from '../components/Button'
 import Input from '../components/Input'
 import Card from '../components/Card'
+import { SkeletonPage } from '../components/ui/Skeleton'
 
 // ── sub-components ─────────────────────────────────────────────────────────────
 
@@ -228,13 +229,7 @@ export default function SecuritySettings() {
   // ── render ──
 
   if (loading) {
-    return (
-      <div className="max-w-2xl mx-auto px-4 py-8">
-        <div className="flex items-center justify-center h-48">
-          <div className="w-8 h-8 border-4 border-neutral-800 border-t-indigo-500 rounded-full animate-spin" />
-        </div>
-      </div>
-    )
+    return <SkeletonPage width="max-w-2xl" rows={3} />
   }
 
   return (

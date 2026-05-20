@@ -15,6 +15,7 @@ import {
     Wallet,
     AlertTriangle
 } from 'lucide-react'
+import { SkeletonPanel } from '../../components/ui/Skeleton'
 
 export default function FellowshipChat() {
     const { roomId } = useParams()
@@ -157,11 +158,7 @@ export default function FellowshipChat() {
     const canReleaseFunds = profile?.role === 'corporate' && room?.paymentStatus === 'escrow'
 
     if (loading) {
-        return (
-            <div className="flex items-center justify-center h-[60vh]">
-                <Loader2 className="w-8 h-8 text-emerald-500 animate-spin" />
-            </div>
-        )
+        return <SkeletonPanel rows={5} className="h-[60vh]" />
     }
 
     if (!room) return null

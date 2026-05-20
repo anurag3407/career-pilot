@@ -1,4 +1,5 @@
 import { useState, useEffect } from 'react';
+import { motion } from 'framer-motion';
 import { useAuth } from '../../context/AuthContext';
 import { useSocket } from '../../context/SocketContext';
 import { communityApi } from '../../services/api';
@@ -27,6 +28,26 @@ const CATEGORIES = [
   { value: 'resource', label: 'Resources', icon: '📚' },
   { value: 'discussion', label: 'Discussion', icon: '💬' },
 ];
+
+const containerVariants = {
+  hidden: { opacity: 0 },
+  visible: {
+    opacity: 1,
+    transition: {
+      staggerChildren: 0.08,
+      delayChildren: 0.1,
+    },
+  },
+};
+
+const itemVariants = {
+  hidden: { opacity: 0, y: 12 },
+  visible: {
+    opacity: 1,
+    y: 0,
+    transition: { type: 'spring', stiffness: 300, damping: 24 },
+  },
+};
 
 export default function PostsFeed() {
   const { user } = useAuth();
@@ -380,54 +401,69 @@ export default function PostsFeed() {
           )}
 
           {loading ? (
-            [...Array(3)].map((_, i) => (
-              <div key={i} className="bg-muted border border-border rounded-xl p-6 animate-pulse">
-                <div className="flex items-center gap-3 mb-4">
-                  <div className="w-10 h-10 bg-muted-foreground/20 rounded-full" />
-                  <div className="space-y-2">
-                    <div className="w-32 h-4 bg-muted-foreground/20 rounded" />
-                    <div className="w-24 h-3 bg-muted-foreground/20 rounded" />
+            <motion.div
+              variants={containerVariants}
+              initial="hidden"
+              animate="visible"
+              className="space-y-4"
+            >
+              {[...Array(3)].map((_, i) => (
+                <motion.div key={i} variants={itemVariants} className="bg-muted border border-border rounded-xl p-6 animate-pulse">
+                  <div className="flex items-center gap-3 mb-4">
+                    <div className="w-10 h-10 bg-muted-foreground/20 rounded-full" />
+                    <div className="space-y-2">
+                      <div className="w-32 h-4 bg-muted-foreground/20 rounded" />
+                      <div className="w-24 h-3 bg-muted-foreground/20 rounded" />
+                    </div>
                   </div>
-                </div>
-                <div className="space-y-2">
-                  <div className="w-3/4 h-5 bg-muted-foreground/20 rounded" />
-                  <div className="w-full h-4 bg-muted-foreground/20 rounded" />
-                  <div className="w-2/3 h-4 bg-muted-foreground/20 rounded" />
-                </div>
-              </div>
-            ))
+                  <div className="space-y-2">
+                    <div className="w-3/4 h-5 bg-muted-foreground/20 rounded" />
+                    <div className="w-full h-4 bg-muted-foreground/20 rounded" />
+                    <div className="w-2/3 h-4 bg-muted-foreground/20 rounded" />
+                  </div>
+                </motion.div>
+              ))}
+            </motion.div>
           ) : filteredPosts.length > 0 ? (
             <>
-              {filteredPosts.map(post => {
-                const postId = post.id || post._id;
-                return (
-                  <PostCard
-                    key={postId}
-                    post={post}
-                    currentUser={user}
-                    onLike={handleLikePost}
-                    onDelete={handleDeletePost}
-                    onCancelSchedule={handleCancelScheduled}
-                    onCommentAdded={() => {
-                      // Update comment count in local state
-                      setPosts(prev => prev.map(p => {
-                        const pId = p.id || p._id;
-                        return pId === postId 
-                          ? { ...p, commentCount: (p.commentCount || 0) + 1 }
-                          : p;
-                      }));
-                    }}
-                  />
-                );
-              })}
+              <motion.div
+                variants={containerVariants}
+                initial="hidden"
+                animate="visible"
+                className="space-y-4"
+              >
+                {filteredPosts.map(post => {
+                  const postId = post.id || post._id;
+                  return (
+                    <motion.div key={postId} variants={itemVariants}>
+                      <PostCard
+                        post={post}
+                        currentUser={user}
+                        onLike={handleLikePost}
+                        onDelete={handleDeletePost}
+                        onCancelSchedule={handleCancelScheduled}
+                        onCommentAdded={() => {
+                          setPosts(prev => prev.map(p => {
+                            const pId = p.id || p._id;
+                            return pId === postId
+                              ? { ...p, commentCount: (p.commentCount || 0) + 1 }
+                              : p;
+                          }));
+                        }}
+                      />
+                    </motion.div>
+                  );
+                })}
+              </motion.div>
 
               {hasMore && (
-                <button
+                <motion.button
+                  variants={itemVariants}
                   onClick={() => fetchPosts(true)}
                   className="w-full py-3 text-primary hover:text-primary/80 font-medium"
                 >
                   Load more posts
-                </button>
+                </motion.button>
               )}
             </>
           ) : (
