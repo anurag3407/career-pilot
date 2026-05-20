@@ -379,11 +379,29 @@ router.post('/career-trajectory', verifyToken, extractAIProvider, aiRateLimiter,
   }
 
   // Sanitise inputs — never forward raw resumeText to the AI (token cost)
+  // Validate and sanitise each field to enforce strict token/cost bounds
   const sanitisedData = {
-    currentRole: hasRole ? currentRole.trim() : 'Software Engineer',
-    skills: hasSkills ? skills.slice(0, 10) : [],
-    yearsOfExperience: typeof yearsOfExperience === 'number' ? yearsOfExperience : 0,
-    industry: typeof industry === 'string' ? industry.trim() : 'Technology',
+    // Cap role to 100 chars to prevent prompt injection / token bloat
+    currentRole: hasRole ? currentRole.trim().slice(0, 100) : 'Software Engineer',
+
+    // Filter to valid non-empty strings only, cap each skill at 50 chars, limit to 10 skills
+    skills: hasSkills
+      ? skills
+          .filter((s) => typeof s === 'string' && s.trim().length > 0)
+          .map((s) => s.trim().slice(0, 50))
+          .slice(0, 10)
+      : [],
+
+    // Reject NaN, Infinity, and negative values — clamp to safe range [0, 50]
+    yearsOfExperience:
+      typeof yearsOfExperience === 'number' &&
+      Number.isFinite(yearsOfExperience) &&
+      yearsOfExperience >= 0
+        ? Math.min(Math.floor(yearsOfExperience), 50)
+        : 0,
+
+    // Cap industry to 100 chars
+    industry: typeof industry === 'string' ? industry.trim().slice(0, 100) : 'Technology',
   };
 
   try {

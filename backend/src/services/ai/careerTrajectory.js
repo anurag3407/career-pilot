@@ -96,10 +96,15 @@ export const predictTrajectory = async (resumeData, aiProvider = null) => {
 
   // --- Use injected aiProvider (user's key / DB config) if available ---
   if (aiProvider && typeof aiProvider.generateContent === 'function') {
-    const providerName = aiProvider.providerName || 'custom';
-    aiCallsCounter.inc({ provider: providerName });
-
+    // Note: aiCallsCounter is NOT incremented here — built-in provider adapters
+    // already track this metric internally to avoid double-counting.
     const result = await aiProvider.generateContent(prompt);
+
+    // Guard against nullish adapter response before dereferencing
+    if (!result) {
+      throw new Error('AI provider returned a null or undefined response.');
+    }
+
     // Normalise across provider adapters — some return .text directly, some wrap it
     responseText = typeof result.text === 'function'
       ? result.text()
@@ -132,7 +137,26 @@ export const predictTrajectory = async (resumeData, aiProvider = null) => {
     throw err;
   }
 
-  const trajectories = parsed.typicalPaths || parsed.paths || [];
+  // Hard-cap parsed output to enforce API contract regardless of model compliance.
+  // This prevents oversized payloads and keeps token/cost bounds stable.
+  const rawPaths = Array.isArray(parsed.typicalPaths)
+    ? parsed.typicalPaths
+    : Array.isArray(parsed.paths)
+    ? parsed.paths
+    : [];
+
+  const trajectories = rawPaths.slice(0, 3).map((path) => ({
+    pathName: path.pathName || '',
+    roles: Array.isArray(path.roles)
+      ? path.roles.slice(0, 4).map((role) => ({
+          title: role.title || '',
+          level: role.level || '',
+          timeToReach: role.timeToReach || '',
+          skills: Array.isArray(role.skills) ? role.skills.slice(0, 3) : [],
+          estimatedSalary: role.estimatedSalary || '',
+        }))
+      : [],
+  }));
 
   return {
     trajectories,
