@@ -1,3 +1,5 @@
+
+import Deployments from './pages/Deployments'
 import TemplateGallery from "./pages/TemplateGallery";
 import { BrowserRouter, Routes, Route, Navigate } from 'react-router-dom';
 import { Toaster } from 'react-hot-toast';
@@ -60,6 +62,7 @@ function ProtectedRoute({ children }) {
 
   return <AppLayout>{children}</AppLayout>;
 }
+
 
 function PublicRoute({ children }) {
   const { user, loading } = useAuth();
@@ -153,6 +156,7 @@ function App() {
               <Route path="/security" element={<ProtectedRoute><SecuritySettings /></ProtectedRoute>} />
               <Route path="/email-generator" element={<ProtectedRoute><EmailGenerator /></ProtectedRoute>} />
               <Route path="/linkedin-optimizer" element={<ProtectedRoute><LinkedInOptimizer /></ProtectedRoute>} />
+              <Route path="/deployments" element={<ProtectedRoute><Deployments /></ProtectedRoute>} />
               <Route path="/settings" element={<ProtectedRoute><Settings /></ProtectedRoute>} />
 
               {/* Nested Fellowship Routes */}

@@ -3,6 +3,8 @@ import DeployModal from "../components/portfolio/DeployModal";
 import ThemeSelector from "../components/portfolio/ThemeSelector";
 
 export default function TemplateGallery() {
+  const { theme, toggleTheme } = useTheme();
+
   const templates = [
     {
       id: 1,
@@ -13,7 +15,8 @@ export default function TemplateGallery() {
       author: "Alex Johnson",
       views: 1200,
       rating: 4.8,
-      image: "https://picsum.photos/400/200?1",
+      image: "/template-previews/Modern-Portfolio.png",
+      
       createdAt: "2026-05-10",
     },
     {
@@ -25,7 +28,7 @@ export default function TemplateGallery() {
       author: "Sarah Lee",
       views: 980,
       rating: 4.6,
-      image: "https://picsum.photos/400/200?2",
+      image: "/template-previews/Minimal-Resume.png",
       createdAt: "2026-05-18",
     },
     {
@@ -37,7 +40,7 @@ export default function TemplateGallery() {
       author: "Michael",
       views: 2100,
       rating: 4.9,
-      image: "https://picsum.photos/400/200?3",
+      image: "/template-previews/Creative-Dashboard.png",
       createdAt: "2026-05-15",
     },
   ];
@@ -70,8 +73,28 @@ export default function TemplateGallery() {
   });
 
   return (
-    <div className="min-h-screen bg-black text-white p-8">
-      <h1 className="text-4xl font-bold mb-8">Template Gallery</h1>
+    <div className="min-h-screen bg-background text-foreground p-8 pt-24 transition-colors duration-300">
+      <div className="flex justify-between items-center mb-8">
+        <h1 className="text-4xl font-bold">Template Gallery</h1>
+        {/* Theme Toggle */}
+        <button
+          onClick={toggleTheme}
+          className="p-2 rounded-xl bg-muted hover:bg-accent border border-border text-foreground transition-all cursor-pointer overflow-hidden relative group"
+          aria-label="Toggle theme"
+        >
+          <AnimatePresence mode="wait" initial={false}>
+            <motion.div
+              key={theme}
+              initial={{ y: 20, opacity: 0, rotate: 45 }}
+              animate={{ y: 0, opacity: 1, rotate: 0 }}
+              exit={{ y: -20, opacity: 0, rotate: -45 }}
+              transition={{ duration: 0.2 }}
+            >
+              {theme === 'light' ? <Moon className="w-5 h-5" /> : <Sun className="w-5 h-5" />}
+            </motion.div>
+          </AnimatePresence>
+        </button>
+      </div>
 
       <div className="mb-8 rounded-2xl border border-zinc-800 bg-zinc-950/70 p-5">
         <div className="mb-4 flex items-center justify-between gap-4">
@@ -90,7 +113,7 @@ export default function TemplateGallery() {
       <div className="flex flex-wrap gap-4 mb-8">
         {/* Category Filter */}
         <select
-          className="bg-zinc-900 p-3 rounded-lg border border-zinc-800 text-gray-300 focus:outline-none"
+          className="bg-card p-3 rounded-lg border border-border text-foreground focus:outline-none focus:ring-2 focus:ring-primary/50 transition-colors"
           value={category}
           onChange={(e) => setCategory(e.target.value)}
         >
@@ -102,7 +125,7 @@ export default function TemplateGallery() {
 
         {/* Color Scheme Filter */}
         <select
-          className="bg-zinc-900 p-3 rounded-lg border border-zinc-800 text-gray-300 focus:outline-none"
+          className="bg-card p-3 rounded-lg border border-border text-foreground focus:outline-none focus:ring-2 focus:ring-primary/50 transition-colors"
           value={colorScheme}
           onChange={(e) => setColorScheme(e.target.value)}
         >
@@ -114,7 +137,7 @@ export default function TemplateGallery() {
 
         {/* Layout Filter */}
         <select
-          className="bg-zinc-900 p-3 rounded-lg border border-zinc-800 text-gray-300 focus:outline-none"
+          className="bg-card p-3 rounded-lg border border-border text-foreground focus:outline-none focus:ring-2 focus:ring-primary/50 transition-colors"
           value={layout}
           onChange={(e) => setLayout(e.target.value)}
         >
@@ -126,7 +149,7 @@ export default function TemplateGallery() {
 
         {/* Sort Selector */}
         <select
-          className="bg-zinc-900 p-3 rounded-lg border border-zinc-800 text-gray-300 focus:outline-none ml-auto"
+          className="bg-card p-3 rounded-lg border border-border text-foreground focus:outline-none focus:ring-2 focus:ring-primary/50 transition-colors ml-auto"
           value={sort}
           onChange={(e) => setSort(e.target.value)}
         >
@@ -138,7 +161,7 @@ export default function TemplateGallery() {
 
       {/* Gallery Grid */}
       {sortedTemplates.length === 0 ? (
-        <div className="text-center text-gray-500 mt-12 text-xl">
+        <div className="text-center text-muted-foreground mt-12 text-xl">
           No templates match the selected criteria.
         </div>
       ) : (
@@ -146,27 +169,27 @@ export default function TemplateGallery() {
           {sortedTemplates.map((template) => (
             <div
               key={template.id}
-              className="bg-zinc-900 rounded-2xl overflow-hidden shadow-lg border border-zinc-800 flex flex-col justify-between"
+              className="bg-card rounded-2xl overflow-hidden shadow-lg border border-border flex flex-col justify-between group transition-all duration-300 hover:border-primary/50 hover:shadow-2xl hover:-translate-y-1"
             >
               <div>
                 <img
                   src={template.image}
                   alt={template.title}
-                  className="w-full h-52 object-cover"
+                  className="w-full h-52 object-cover object-top transition-transform duration-2000 group-hover:scale-105 "
                 />
 
                 <div className="p-5">
-                  <h2 className="text-2xl font-semibold">{template.title}</h2>
-                  <p className="text-gray-400 mt-1 text-sm">By {template.author}</p>
+                  <h2 className="text-2xl font-semibold text-foreground">{template.title}</h2>
+                  <p className="text-muted-foreground mt-1 text-sm">By {template.author}</p>
                   
                   <div className="flex gap-2 mt-2">
-                    <span className="text-xs bg-zinc-800 text-zinc-400 px-2 py-1 rounded">
+                    <span className="text-xs bg-muted text-muted-foreground px-2 py-1 rounded">
                       {template.category}
                     </span>
-                    <span className="text-xs bg-zinc-800 text-zinc-400 px-2 py-1 rounded">
+                    <span className="text-xs bg-muted text-muted-foreground px-2 py-1 rounded">
                       {template.colorScheme}
                     </span>
-                    <span className="text-xs bg-zinc-800 text-zinc-400 px-2 py-1 rounded">
+                    <span className="text-xs bg-muted text-muted-foreground px-2 py-1 rounded">
                       {template.layout}
                     </span>
                   </div>
@@ -174,7 +197,7 @@ export default function TemplateGallery() {
               </div>
 
               <div className="px-5 pb-5">
-                <div className="flex justify-between text-sm text-gray-300 mt-2">
+                <div className="flex justify-between text-sm text-muted-foreground mt-2">
                   <span>⭐ {template.rating}</span>
                   <span>👁 {template.views.toLocaleString()}</span>
                 </div>
@@ -184,7 +207,7 @@ export default function TemplateGallery() {
                     setSelectedPortfolioTitle(template.title);
                     setIsDeployModalOpen(true);
                   }}
-                  className="mt-5 w-full bg-white text-black py-2 rounded-xl font-medium hover:bg-gray-200 transition cursor-pointer"
+                  className="mt-5 w-full bg-primary text-primary-foreground py-2 rounded-xl font-medium hover:bg-primary/90 transition cursor-pointer opacity-0 translate-y-1 group-hover:opacity-100 group-hover:translate-y-0 transition-all duration-300"
                 >
                   Use This Theme
                 </button>

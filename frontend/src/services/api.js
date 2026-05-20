@@ -191,6 +191,21 @@ export const resumeApi = {
   }
 }
 
+// ============ PORTFOLIO API ============
+export const portfolioApi = {
+  // Get all portfolios
+  async getAll() {
+    const headers = await getAuthHeaders()
+
+    const response = await fetch(`${API_BASE}/portfolio`, {
+      method: 'GET',
+      headers
+    })
+
+    return handleResponse(response)
+  }
+}
+
 // ============ ENHANCE API ============
 export const enhanceApi = {
   // Enhance resume with AI
