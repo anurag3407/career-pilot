@@ -3,6 +3,12 @@ import { verifyToken } from '../middleware/auth.js';
 import { asyncHandler, ApiError } from '../middleware/errorHandler.js';
 import { paginate, paginatedResponse } from '../middleware/paginate.js';
 import Resume from '../models/Resume.model.js';
+import { validate } from '../middleware/validate.js';
+import {
+  createResumeSchema,
+  updateResumeSchema,
+  downloadResumeQuerySchema,
+} from '../schemas/resume.schema.js';
 import { scrapeLinkedInProfile, profileToResumeText } from '../services/linkedinImporter.js';
 
 const router = express.Router();
@@ -89,7 +95,7 @@ router.get('/:resumeId', verifyToken, asyncHandler(async (req, res) => {
  *         description: Created
  */ 
 // Create a new resume
-router.post('/', verifyToken, asyncHandler(async (req, res) => {
+router.post('/', verifyToken, validate(createResumeSchema), asyncHandler(async (req, res) => {
   const userId = req.user.uid;
   const { 
     originalText, 
@@ -149,7 +155,7 @@ router.post('/', verifyToken, asyncHandler(async (req, res) => {
  *         description: Success
  */
 // Update a resume
-router.put('/:resumeId', verifyToken, asyncHandler(async (req, res) => {
+router.put('/:resumeId', verifyToken, validate(updateResumeSchema), asyncHandler(async (req, res) => {
   const { resumeId } = req.params;
   const userId = req.user.uid;
   const updates = req.body;
@@ -283,7 +289,7 @@ router.post('/import/linkedin', verifyToken, asyncHandler(async (req, res) => {
 }));
 
 // Download resume as PDF
-router.get('/:resumeId/download', verifyToken, asyncHandler(async (req, res) => {
+router.get('/:resumeId/download', verifyToken, validate(downloadResumeQuerySchema, 'query'), asyncHandler(async (req, res) => {
   const { resumeId } = req.params;
   const userId = req.user.uid;
   const { version = 'enhanced', paperSize = 'A4' } = req.query;
