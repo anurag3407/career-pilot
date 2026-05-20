@@ -109,6 +109,9 @@ export default function SecuritySettings() {
   const [disableOpen, setDisableOpen] = useState(false)
   const [disableToken, setDisableToken] = useState('')
   const [disableLoading, setDisableLoading] = useState(false)
+  const [useBackupToDisable, setUseBackupToDisable] = useState(false)
+  const [disableBackupCode, setDisableBackupCode] = useState('')
+  const [disableBackupLoading, setDisableBackupLoading] = useState(false)
 
   // Regenerate confirmation
   const [regenOpen, setRegenOpen] = useState(false)
@@ -185,6 +188,26 @@ export default function SecuritySettings() {
       toast.error(error.message || 'Invalid code — please try again')
     } finally {
       setDisableLoading(false)
+    }
+  }
+
+  const handleDisableWithBackup = async (e) => {
+    e.preventDefault()
+    if (!disableBackupCode.trim()) return
+
+    setDisableBackupLoading(true)
+    try {
+      await twoFactorApi.disableWithBackup(disableBackupCode.trim().toUpperCase())
+      setView('disabled')
+      setDisableOpen(false)
+      setDisableBackupCode('')
+      setNewCodes([])
+      setShowCodesFor(null)
+      toast.success('Two-factor authentication disabled')
+    } catch (error) {
+      toast.error(error.message || 'Invalid backup code')
+    } finally {
+      setDisableBackupLoading(false)
     }
   }
 
@@ -402,7 +425,7 @@ export default function SecuritySettings() {
                   <div>
                     <p className="text-sm text-white font-medium">Backup codes</p>
                     <p className="text-xs text-neutral-500">
-                      {backupCodesRemaining} of 8 codes remaining
+                      {backupCodesRemaining} of 10 codes remaining
                     </p>
                   </div>
                 </div>
@@ -478,33 +501,84 @@ export default function SecuritySettings() {
                 }
               </button>
               {disableOpen && (
-                <form
-                  onSubmit={handleDisable}
-                  className="px-4 pb-4 pt-3 border-t border-red-500/20 bg-red-500/5 space-y-3"
-                >
-                  <p className="text-xs text-red-400/80">
-                    This will remove 2FA protection from your account. Enter your current authenticator code to confirm.
-                  </p>
-                  <Input
-                    type="text"
-                    name="disableToken"
-                    value={disableToken}
-                    onChange={(e) => setDisableToken(e.target.value.replace(/\D/g, '').slice(0, 6))}
-                    placeholder="6-digit code"
-                    className="font-mono tracking-widest text-center"
-                    maxLength={6}
-                  />
-                  <Button
-                    type="submit"
-                    variant="danger"
-                    size="sm"
-                    loading={disableLoading}
-                    disabled={disableToken.length !== 6}
-                  >
-                    <ShieldOff className="w-4 h-4" />
-                    Disable 2FA
-                  </Button>
-                </form>
+                <div className="px-4 pb-4 pt-3 border-t border-red-500/20 bg-red-500/5 space-y-3">
+                  <div className="flex gap-2 mb-3">
+                    <button
+                      type="button"
+                      onClick={() => { setUseBackupToDisable(false); setDisableToken(''); setDisableBackupCode('') }}
+                      className={`flex-1 py-1.5 px-3 rounded-lg text-xs font-medium transition-colors ${
+                        !useBackupToDisable
+                          ? 'bg-red-500/20 text-red-400 border border-red-500/30'
+                          : 'bg-neutral-800 text-neutral-400 border border-neutral-700 hover:bg-neutral-700'
+                      }`}
+                    >
+                      Use Authenticator
+                    </button>
+                    <button
+                      type="button"
+                      onClick={() => { setUseBackupToDisable(true); setDisableToken(''); setDisableBackupCode('') }}
+                      className={`flex-1 py-1.5 px-3 rounded-lg text-xs font-medium transition-colors ${
+                        useBackupToDisable
+                          ? 'bg-red-500/20 text-red-400 border border-red-500/30'
+                          : 'bg-neutral-800 text-neutral-400 border border-neutral-700 hover:bg-neutral-700'
+                      }`}
+                    >
+                      Use Backup Code
+                    </button>
+                  </div>
+
+                  {!useBackupToDisable ? (
+                    <form onSubmit={handleDisable} className="space-y-3">
+                      <p className="text-xs text-red-400/80">
+                        This will remove 2FA protection from your account. Enter your current authenticator code to confirm.
+                      </p>
+                      <Input
+                        type="text"
+                        name="disableToken"
+                        value={disableToken}
+                        onChange={(e) => setDisableToken(e.target.value.replace(/\D/g, '').slice(0, 6))}
+                        placeholder="6-digit code"
+                        className="font-mono tracking-widest text-center"
+                        maxLength={6}
+                      />
+                      <Button
+                        type="submit"
+                        variant="danger"
+                        size="sm"
+                        loading={disableLoading}
+                        disabled={disableToken.length !== 6}
+                      >
+                        <ShieldOff className="w-4 h-4" />
+                        Disable 2FA
+                      </Button>
+                    </form>
+                  ) : (
+                    <form onSubmit={handleDisableWithBackup} className="space-y-3">
+                      <p className="text-xs text-red-400/80">
+                        Lost access to your authenticator? Use a backup code to disable 2FA. This will consume one backup code.
+                      </p>
+                      <Input
+                        type="text"
+                        name="disableBackupCode"
+                        value={disableBackupCode}
+                        onChange={(e) => setDisableBackupCode(e.target.value.toUpperCase().replace(/[^A-F0-9]/g, '').slice(0, 9))}
+                        placeholder="XXXX-XXXX"
+                        className="font-mono tracking-widest text-center"
+                        maxLength={9}
+                      />
+                      <Button
+                        type="submit"
+                        variant="danger"
+                        size="sm"
+                        loading={disableBackupLoading}
+                        disabled={disableBackupCode.replace(/[^A-F0-9]/g, '').length !== 8}
+                      >
+                        <ShieldOff className="w-4 h-4" />
+                        Disable 2FA with Backup Code
+                      </Button>
+                    </form>
+                  )}
+                </div>
               )}
             </div>
           </div>

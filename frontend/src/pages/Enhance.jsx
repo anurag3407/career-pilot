@@ -3,7 +3,7 @@ import { useParams, useNavigate } from 'react-router-dom'
 import toast from 'react-hot-toast'
 import { motion } from 'framer-motion'
 import { resumeApi, enhanceApi } from '../services/api'
-import { SkeletonList } from '../components/ui/Skeleton'
+import { triggerConfetti } from '../utils/confetti'
 import {
   Target,
   TrendingUp,
@@ -402,10 +402,17 @@ export default function Enhance() {
         enhanceApi.comprehensiveAnalysis(resume.originalText, jobRole)
       ])
 
-      setAtsAnalysis(atsResponse.data)
-      setComprehensiveAnalysis(comprehensiveResponse.data)
-      setHasAnalyzed(true)
+     setAtsAnalysis(atsResponse.data)
+setComprehensiveAnalysis(comprehensiveResponse.data)
+setHasAnalyzed(true)
 
+if (atsResponse.data?.atsScore >= 90) {
+  triggerConfetti({
+    duration: 4000,
+    particleCount: 220,
+    spread: 140
+  })
+}
       // Save job role to resume
       await resumeApi.update(resumeId, { jobRole })
 
@@ -444,7 +451,14 @@ export default function Enhance() {
       })
 
       toast.success('Resume enhanced successfully!')
-      navigate(`/resume/${resumeId}`)
+
+triggerConfetti({
+  duration: 3000,
+  particleCount: 150,
+  spread: 120
+})
+
+navigate(`/resume/${resumeId}`)
     } catch (error) {
       toast.error(error.message || 'Failed to enhance resume')
     } finally {

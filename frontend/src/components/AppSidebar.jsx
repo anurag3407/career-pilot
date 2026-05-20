@@ -11,7 +11,6 @@ import {
     FileText,
     LogOut,
     Settings,
-    Zap,
     User,
     ShieldCheck,
     Sun,
@@ -81,12 +80,13 @@ const navLinks = [
     },
 ];
 
+
 function Logo() {
     const { open, animate } = useSidebar();
 
     return (
         <div className="flex items-center gap-3 py-2 px-1 group">
-            <div className="w-10 h-10 flex-shrink-0 flex items-center justify-center p-1.5 rounded-xl bg-primary/10 group-hover:scale-110 transition-transform">
+            <div className="w-10 h-10 flex-shrink-0 flex items-center justify-center p-1.5 rounded-xl group-hover:scale-110 transition-transform">
                 <img src="/speed.png" alt="careerpilot" className="w-full h-full object-contain" />
             </div>
             <motion.div
