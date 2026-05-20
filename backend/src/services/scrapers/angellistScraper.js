@@ -23,14 +23,14 @@ const WELLFOUND_BASE_URL = "https://wellfound.com/jobs";
  * @returns {Promise<Browser>} Puppeteer browser instance
  */
 async function launchBrowser() {
-  return puppeteer.launch({
-    headless: "new",
-    args: [
-      "--no-sandbox",
-      "--disable-setuid-sandbox",
-      "--disable-dev-shm-usage",
-    ],
-  });
+    return puppeteer.launch({
+        headless: true,
+        args: [
+            "--no-sandbox",
+            "--disable-setuid-sandbox",
+            "--disable-dev-shm-usage",
+        ],
+    });
 }
 
 /**
@@ -41,19 +41,19 @@ async function launchBrowser() {
  * @returns {{ min: number|null, max: number|null, raw: string }}
  */
 function parseEquity(equityStr) {
-  if (!equityStr || equityStr.trim() === "" || equityStr === "No equity") {
-    return { min: null, max: null, raw: equityStr || "Not specified" };
-  }
+    if (!equityStr || equityStr.trim() === "" || equityStr === "No equity") {
+        return { min: null, max: null, raw: equityStr || "Not specified" };
+    }
 
-  // Match patterns like "0.01% – 0.5%" or "0.1%"
-  const matches = equityStr.match(/[\d.]+/g);
-  if (!matches) return { min: null, max: null, raw: equityStr };
+    // Match patterns like "0.01% – 0.5%" or "0.1%"
+    const matches = equityStr.match(/[\d.]+/g);
+    if (!matches) return { min: null, max: null, raw: equityStr };
 
-  return {
-    min: parseFloat(matches[0]) || null,
-    max: parseFloat(matches[1]) || null,
-    raw: equityStr.trim(),
-  };
+    return {
+        min: parseFloat(matches[0]) || null,
+        max: parseFloat(matches[1]) || null,
+        raw: equityStr.trim(),
+    };
 }
 
 /**
@@ -63,23 +63,24 @@ function parseEquity(equityStr) {
  * @returns {string} Normalized funding stage
  */
 function normalizeFundingStage(stage) {
-  if (!stage) return "Unknown";
+    if (!stage) return "Unknown";
 
-  const normalized = stage.toLowerCase().trim();
+    const normalized = stage.toLowerCase().trim();
 
-  if (normalized.includes("seed")) return "Seed";
-  if (normalized.includes("series a")) return "Series A";
-  if (normalized.includes("series b")) return "Series B";
-  if (normalized.includes("series c")) return "Series C";
-  if (normalized.includes("series d") || normalized.includes("series e+"))
-    return "Series D+";
-  if (normalized.includes("pre-seed") || normalized.includes("pre seed"))
-    return "Pre-Seed";
-  if (normalized.includes("ipo") || normalized.includes("public")) return "IPO";
-  if (normalized.includes("acquired")) return "Acquired";
-  if (normalized.includes("bootstrapped")) return "Bootstrapped";
+    if (normalized.includes("pre-seed") || normalized.includes("pre seed"))
+        return "Pre-Seed";
+    if (normalized.includes("seed")) return "Seed";
+    if (normalized.includes("series a")) return "Series A";
+    if (normalized.includes("series b")) return "Series B";
+    if (normalized.includes("series c")) return "Series C";
+    if (normalized.includes("series d") || normalized.includes("series e+"))
+        return "Series D+";
 
-  return stage.trim();
+    if (normalized.includes("ipo") || normalized.includes("public")) return "IPO";
+    if (normalized.includes("acquired")) return "Acquired";
+    if (normalized.includes("bootstrapped")) return "Bootstrapped";
+
+    return stage.trim();
 }
 
 /**
@@ -95,143 +96,143 @@ function normalizeFundingStage(stage) {
  * const jobs = await scrapeWellfoundJobs({ role: "backend engineer", location: "remote", maxJobs: 10 });
  */
 async function scrapeWellfoundJobs({ role = "", location = "", maxJobs = 20 } = {}) {
-  let browser;
+    let browser;
 
-  try {
-    browser = await launchBrowser();
-    const page = await browser.newPage();
+    try {
+        browser = await launchBrowser();
+        const page = await browser.newPage();
 
-    // Set a realistic user agent to avoid bot detection
-    await page.setUserAgent(
-      "Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/120.0.0.0 Safari/537.36"
-    );
+        // Set a realistic user agent to avoid bot detection
+        await page.setUserAgent(
+            "Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/120.0.0.0 Safari/537.36"
+        );
 
-    // Build search URL with query params
-    const params = new URLSearchParams();
-    if (role) params.set("q", role);
-    if (location) params.set("l", location);
+        // Build search URL with query params
+        const params = new URLSearchParams();
+        if (role) params.set("q", role);
+        if (location) params.set("l", location);
 
-    const searchUrl = `${WELLFOUND_BASE_URL}?${params.toString()}`;
-    console.log(`[AngelListScraper] Navigating to: ${searchUrl}`);
+        const searchUrl = `${WELLFOUND_BASE_URL}?${params.toString()}`;
+        console.log(`[AngelListScraper] Navigating to: ${searchUrl}`);
 
-    await page.goto(searchUrl, { waitUntil: "networkidle2", timeout: 30000 });
+        await page.goto(searchUrl, { waitUntil: "networkidle2", timeout: 30000 });
 
-    // Wait for job cards to load
-    await page.waitForSelector('[data-test="StartupResult"]', { timeout: 15000 }).catch(() => {
-      console.warn("[AngelListScraper] Job cards selector timed out — page structure may have changed.");
-    });
+        // Wait for job cards to load
+        await page.waitForSelector('[data-test="StartupResult"]', { timeout: 15000 }).catch(() => {
+            console.warn("[AngelListScraper] Job cards selector timed out — page structure may have changed.");
+        });
 
-    // Scroll to load more jobs (Wellfound uses infinite scroll)
-    await autoScroll(page, maxJobs);
+        // Scroll to load more jobs (Wellfound uses infinite scroll)
+        await autoScroll(page, maxJobs);
 
-    // Extract job data from the page
-    const jobs = await page.evaluate((maxJobs) => {
-      const results = [];
+        // Extract job data from the page
+        const jobs = await page.evaluate((maxJobs) => {
+            const results = [];
 
-      // Each startup card contains multiple job listings
-      const startupCards = document.querySelectorAll('[data-test="StartupResult"]');
+            // Each startup card contains multiple job listings
+            const startupCards = document.querySelectorAll('[data-test="StartupResult"]');
 
-      for (const card of startupCards) {
-        if (results.length >= maxJobs) break;
+            for (const card of startupCards) {
+                if (results.length >= maxJobs) break;
 
-        // --- Company Info ---
-        const companyName =
-          card.querySelector('[data-test="startup-name"]')?.innerText?.trim() ||
-          card.querySelector(".styles_companyName__AYpn3")?.innerText?.trim() ||
-          "Unknown Company";
+                // --- Company Info ---
+                const companyName =
+                    card.querySelector('[data-test="startup-name"]')?.innerText?.trim() ||
+                    card.querySelector(".styles_companyName__AYpn3")?.innerText?.trim() ||
+                    "Unknown Company";
 
-        const companyLogo =
-          card.querySelector("img[alt]")?.src || null;
+                const companyLogo =
+                    card.querySelector("img[alt]")?.src || null;
 
-        const companyDescription =
-          card.querySelector('[data-test="startup-pitch"]')?.innerText?.trim() ||
-          card.querySelector(".startupDescription")?.innerText?.trim() ||
-          "";
+                const companyDescription =
+                    card.querySelector('[data-test="startup-pitch"]')?.innerText?.trim() ||
+                    card.querySelector(".startupDescription")?.innerText?.trim() ||
+                    "";
 
-        // --- Funding Stage ---
-        const fundingRaw =
-          card.querySelector('[data-test="company-stage"]')?.innerText?.trim() ||
-          card.querySelector(".styles_fundingStage__UbhCl")?.innerText?.trim() ||
-          "";
+                // --- Funding Stage ---
+                const fundingRaw =
+                    card.querySelector('[data-test="company-stage"]')?.innerText?.trim() ||
+                    card.querySelector(".styles_fundingStage__UbhCl")?.innerText?.trim() ||
+                    "";
 
-        // --- Job Listings within this card ---
-        const jobRows = card.querySelectorAll('[data-test="job-listing"]');
+                // --- Job Listings within this card ---
+                const jobRows = card.querySelectorAll('[data-test="job-listing"]');
 
-        if (jobRows.length === 0) {
-          // Some cards don't have explicit job-listing elements; skip them
-          continue;
-        }
+                if (jobRows.length === 0) {
+                    // Some cards don't have explicit job-listing elements; skip them
+                    continue;
+                }
 
-        for (const jobRow of jobRows) {
-          if (results.length >= maxJobs) break;
+                for (const jobRow of jobRows) {
+                    if (results.length >= maxJobs) break;
 
-          const jobTitle =
-            jobRow.querySelector('[data-test="job-title"]')?.innerText?.trim() ||
-            jobRow.querySelector("a")?.innerText?.trim() ||
-            "Unknown Role";
+                    const jobTitle =
+                        jobRow.querySelector('[data-test="job-title"]')?.innerText?.trim() ||
+                        jobRow.querySelector("a")?.innerText?.trim() ||
+                        "Unknown Role";
 
-          const jobUrl =
-            jobRow.querySelector("a")?.href || "";
+                    const jobUrl =
+                        jobRow.querySelector("a")?.href || "";
 
-          const locationText =
-            jobRow.querySelector('[data-test="job-location"]')?.innerText?.trim() ||
-            jobRow.querySelector(".styles_location__JRZpY")?.innerText?.trim() ||
-            "";
+                    const locationText =
+                        jobRow.querySelector('[data-test="job-location"]')?.innerText?.trim() ||
+                        jobRow.querySelector(".styles_location__JRZpY")?.innerText?.trim() ||
+                        "";
 
-          const salaryText =
-            jobRow.querySelector('[data-test="job-compensation"]')?.innerText?.trim() ||
-            jobRow.querySelector(".styles_compensation__yYiyF")?.innerText?.trim() ||
-            "";
+                    const salaryText =
+                        jobRow.querySelector('[data-test="job-compensation"]')?.innerText?.trim() ||
+                        jobRow.querySelector(".styles_compensation__yYiyF")?.innerText?.trim() ||
+                        "";
 
-          const equityText =
-            jobRow.querySelector('[data-test="job-equity"]')?.innerText?.trim() ||
-            jobRow.querySelector(".styles_equity__j1sGQ")?.innerText?.trim() ||
-            "";
+                    const equityText =
+                        jobRow.querySelector('[data-test="job-equity"]')?.innerText?.trim() ||
+                        jobRow.querySelector(".styles_equity__j1sGQ")?.innerText?.trim() ||
+                        "";
 
-          results.push({
-            jobTitle,
-            jobUrl,
-            location: locationText,
-            salary: salaryText || "Not specified",
-            equityRaw: equityText,
-            fundingStageRaw: fundingRaw,
-            companyName,
-            companyLogo,
-            companyDescription,
-          });
-        }
-      }
+                    results.push({
+                        jobTitle,
+                        jobUrl,
+                        location: locationText,
+                        salary: salaryText || "Not specified",
+                        equityRaw: equityText,
+                        fundingStageRaw: fundingRaw,
+                        companyName,
+                        companyLogo,
+                        companyDescription,
+                    });
+                }
+            }
 
-      return results;
-    }, maxJobs);
+            return results;
+        }, maxJobs);
 
-    // Post-process: normalize funding stage and parse equity
-    const processed = jobs.map((job) => ({
-      jobTitle: job.jobTitle,
-      jobUrl: job.jobUrl,
-      location: job.location,
-      salary: job.salary,
-      equity: parseEquity(job.equityRaw),
-      fundingStage: normalizeFundingStage(job.fundingStageRaw),
-      company: {
-        name: job.companyName,
-        logo: job.companyLogo,
-        description: job.companyDescription,
-        fundingStage: normalizeFundingStage(job.fundingStageRaw),
-      },
-      source: "Wellfound",
-      scrapedAt: new Date().toISOString(),
-    }));
+        // Post-process: normalize funding stage and parse equity
+        const processed = jobs.map((job) => ({
+            jobTitle: job.jobTitle,
+            jobUrl: job.jobUrl,
+            location: job.location,
+            salary: job.salary,
+            equity: parseEquity(job.equityRaw),
+            fundingStage: normalizeFundingStage(job.fundingStageRaw),
+            company: {
+                name: job.companyName,
+                logo: job.companyLogo,
+                description: job.companyDescription,
+                fundingStage: normalizeFundingStage(job.fundingStageRaw),
+            },
+            source: "Wellfound",
+            scrapedAt: new Date().toISOString(),
+        }));
 
-    console.log(`[AngelListScraper] Scraped ${processed.length} jobs successfully.`);
-    return processed;
+        console.log(`[AngelListScraper] Scraped ${processed.length} jobs successfully.`);
+        return processed;
 
-  } catch (error) {
-    console.error("[AngelListScraper] Error during scraping:", error.message);
-    throw error;
-  } finally {
-    if (browser) await browser.close();
-  }
+    } catch (error) {
+        console.error("[AngelListScraper] Error during scraping:", error.message);
+        throw error;
+    } finally {
+        if (browser) await browser.close();
+    }
 }
 
 /**
@@ -242,26 +243,34 @@ async function scrapeWellfoundJobs({ role = "", location = "", maxJobs = 20 } = 
  * @param {number} targetCount - Stop scrolling when this many job cards are visible
  */
 async function autoScroll(page, targetCount = 20) {
-  await page.evaluate(async (targetCount) => {
-    await new Promise((resolve) => {
-      let totalHeight = 0;
-      const distance = 400;
-      const timer = setInterval(() => {
-        window.scrollBy(0, distance);
-        totalHeight += distance;
-
-        const jobCount = document.querySelectorAll('[data-test="StartupResult"]').length;
-        if (jobCount >= targetCount || totalHeight > 15000) {
-          clearInterval(timer);
-          resolve();
-        }
-      }, 300);
-    });
-  }, targetCount);
+    await page.evaluate(async (targetCount) => {
+        await new Promise((resolve) => {
+            const distance = 400;
+            let stagnantTicks = 0;
+            let lastJobCount = 0;
+            let ticks = 0;
+            const maxTicks = 120;
+            const timer = setInterval(() => {
+                window.scrollBy(0, distance);
+                const jobCount = document.querySelectorAll('[data-test="StartupResult"]').length;
+                ticks += 1;
+                if (jobCount > lastJobCount) {
+                    lastJobCount = jobCount;
+                    stagnantTicks = 0;
+                } else {
+                    stagnantTicks += 1;
+                }
+                if (jobCount >= targetCount || stagnantTicks >= 8 || ticks >= maxTicks) {
+                    clearInterval(timer);
+                    resolve();
+                }
+            }, 300);
+        });
+    }, targetCount);
 }
 
 module.exports = {
-  scrapeWellfoundJobs,
-  parseEquity,
-  normalizeFundingStage,
+    scrapeWellfoundJobs,
+    parseEquity,
+    normalizeFundingStage,
 };
