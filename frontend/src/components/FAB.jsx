@@ -1,31 +1,35 @@
 import { useState, useEffect } from "react";
+import { useNavigate } from "react-router-dom";
 import { motion, AnimatePresence } from "framer-motion";
 import { Plus, FileText, Briefcase, Search, Mic } from "lucide-react";
+import { useSidebar } from "./ui/Sidebar";
 
 export default function FAB({ scrollContainerRef }) {
   const [isOpen, setIsOpen] = useState(false);
   const [isVisible, setIsVisible] = useState(true);
+  const { open: sidebarOpen } = useSidebar();
+  const navigate = useNavigate();
 
   const actions = [
     {
       label: "Create Portfolio",
       icon: <FileText size={18} />,
-      onClick: () => console.log("Create Portfolio"),
+      onClick: () => navigate("/templates"),
     },
     {
       label: "Upload Resume",
       icon: <Briefcase size={18} />,
-      onClick: () => console.log("Upload Resume"),
+      onClick: () => navigate("/upload"),
     },
     {
       label: "Search Jobs",
       icon: <Search size={18} />,
-      onClick: () => console.log("Search Jobs"),
+      onClick: () => navigate("/jobs"),
     },
     {
       label: "Start Interview",
       icon: <Mic size={18} />,
-      onClick: () => console.log("Start Interview"),
+      onClick: () => navigate("/interview-prep"),
     },
   ];
 
@@ -37,27 +41,31 @@ export default function FAB({ scrollContainerRef }) {
       if (!mainContainer) return;
 
       const currentScrollY = mainContainer.scrollTop;
-
-      setIsVisible(
-        currentScrollY < lastScrollY || currentScrollY < 100
-      );
+      
+      // Show on scroll up or if near top
+      if (currentScrollY < lastScrollY || currentScrollY < 100) {
+        setIsVisible(true);
+      } else {
+        // Hide on scroll down
+        setIsVisible(false);
+      }
 
       lastScrollY = currentScrollY;
     };
 
-    mainContainer?.addEventListener("scroll", handleScroll);
+    mainContainer?.addEventListener("scroll", handleScroll, { passive: true });
 
     return () => {
       mainContainer?.removeEventListener("scroll", handleScroll);
     };
   }, [scrollContainerRef]);
 
-  // Close menu when FAB becomes hidden
+  // Close menu when FAB becomes hidden or sidebar opens on mobile
   useEffect(() => {
-    if (!isVisible && isOpen) {
+    if ((!isVisible || sidebarOpen) && isOpen) {
       setIsOpen(false);
     }
-  }, [isVisible, isOpen]);
+  }, [isVisible, isOpen, sidebarOpen]);
 
   // Escape key closes menu
   useEffect(() => {
@@ -74,67 +82,74 @@ export default function FAB({ scrollContainerRef }) {
     };
   }, [isOpen]);
 
+  // Requirement: Do NOT show on mobile if sidebar is visible
+  // We use a combination of sidebarOpen state and CSS media queries
+  const isHiddenOnMobile = sidebarOpen;
+
   return (
-    <motion.div className="fixed bottom-6 right-6 z-50">
+    <div className={`fixed bottom-6 right-6 z-[60] ${isHiddenOnMobile ? 'hidden md:block' : 'block'}`}>
       <AnimatePresence>
         {isVisible && (
           <div className="flex flex-col-reverse items-end gap-3">
             <motion.button
               type="button"
-              initial={{ scale: 0 }}
-              animate={{ scale: 1 }}
-              exit={{ scale: 0 }}
+              initial={{ scale: 0, opacity: 0 }}
+              animate={{ scale: 1, opacity: 1 }}
+              exit={{ scale: 0, opacity: 0 }}
+              whileHover={{ scale: 1.05 }}
+              whileTap={{ scale: 0.95 }}
               onClick={() => setIsOpen(!isOpen)}
-              onKeyDown={(e) => {
-                if (e.key === "Enter" || e.key === " ") {
-                  setIsOpen(!isOpen);
-                }
-              }}
-              aria-label={
-                isOpen ? "Close quick actions" : "Open quick actions"
-              }
+              aria-label={isOpen ? "Close quick actions" : "Open quick actions"}
               aria-expanded={isOpen}
-              className="p-4 bg-primary text-primary-foreground rounded-full shadow-xl hover:scale-105 transition-transform"
+              className="p-4 bg-primary text-primary-foreground rounded-full shadow-2xl flex items-center justify-center focus:outline-none focus:ring-2 focus:ring-primary focus:ring-offset-2"
             >
-              <motion.div animate={{ rotate: isOpen ? 45 : 0 }}>
+              <motion.div 
+                animate={{ rotate: isOpen ? 45 : 0 }}
+                transition={{ type: "spring", stiffness: 260, damping: 20 }}
+              >
                 <Plus size={24} />
               </motion.div>
             </motion.button>
 
-            {isOpen && (
-              <motion.div
-                initial={{ opacity: 0, y: 10 }}
-                animate={{ opacity: 1, y: 0 }}
-                className="flex flex-col gap-2 mb-2"
-                role="menu"
-                aria-label="Quick actions"
-              >
-                {actions.map((action, index) => (
-                  <button
-                    key={index}
-                    type="button"
-                    role="menuitem"
-                    tabIndex={0}
-                    aria-label={action.label}
-                    onClick={() => action.onClick?.()}
-                    onKeyDown={(e) => {
-                      if (e.key === "Enter" || e.key === " ") {
+            <AnimatePresence>
+              {isOpen && (
+                <motion.div
+                  initial={{ opacity: 0, y: 20, scale: 0.95 }}
+                  animate={{ opacity: 1, y: 0, scale: 1 }}
+                  exit={{ opacity: 0, y: 20, scale: 0.95 }}
+                  transition={{ duration: 0.2 }}
+                  className="flex flex-col gap-3 mb-2 items-end"
+                  role="menu"
+                  aria-label="Quick actions"
+                >
+                  {actions.map((action, index) => (
+                    <motion.button
+                      key={index}
+                      initial={{ opacity: 0, x: 20 }}
+                      animate={{ opacity: 1, x: 0 }}
+                      transition={{ delay: index * 0.05 }}
+                      type="button"
+                      role="menuitem"
+                      onClick={() => {
                         action.onClick?.();
-                      }
-                    }}
-                    className="flex items-center gap-3 px-4 py-2 bg-background border border-border rounded-full shadow-md hover:bg-muted transition-colors whitespace-nowrap"
-                  >
-                    {action.icon}
-                    <span className="text-sm font-medium">
-                      {action.label}
-                    </span>
-                  </button>
-                ))}
-              </motion.div>
-            )}
+                        setIsOpen(false);
+                      }}
+                      className="flex items-center gap-3 px-4 py-2.5 bg-card border border-border rounded-xl shadow-lg hover:bg-muted transition-all whitespace-nowrap group group-hover:border-primary/50"
+                    >
+                      <span className="text-sm font-semibold text-foreground group-hover:text-primary transition-colors">
+                        {action.label}
+                      </span>
+                      <div className="p-1.5 bg-primary/10 text-primary rounded-lg group-hover:bg-primary group-hover:text-primary-foreground transition-colors">
+                        {action.icon}
+                      </div>
+                    </motion.button>
+                  ))}
+                </motion.div>
+              )}
+            </AnimatePresence>
           </div>
         )}
       </AnimatePresence>
-    </motion.div>
+    </div>
   );
 }
