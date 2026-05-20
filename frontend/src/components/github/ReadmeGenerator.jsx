@@ -113,6 +113,7 @@ const ReadmeGenerator = () => {
           </h2>
 
           <textarea
+            aria-label="Markdown Editor"
             value={markdown}
             onChange={(e) => setMarkdown(e.target.value)}
             placeholder="Generate or write your README markdown here..."
