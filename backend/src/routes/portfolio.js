@@ -62,7 +62,7 @@ router.post('/enhance-portfolio-content', verifyToken, asyncHandler(async (req, 
 
   const result = await enhanceSection(sectionType, content);
 
-  res.status(200).json({
+res.status(200).json({
     success: true,
     message: 'Enhancement suggestion generated. Review before applying.',
     data: {
@@ -75,10 +75,33 @@ router.post('/enhance-portfolio-content', verifyToken, asyncHandler(async (req, 
 }));
 
 router.get('/public/:slug/sitemap.xml', sitemapCache, asyncHandler(async (req, res) => {
+  const { slug } = req.params;
+  assertValidPortfolioSlug(slug);
+
+  let templateStat;
+  try {
+    templateStat = await fs.stat(getPortfolioTemplatePath(slug));
+  } catch {
+    throw new ApiError(404, 'Portfolio template not found.');
+  }
+
+  const sitemapXml = generateSitemapXml({
+    baseUrl: getPublicPortfolioBaseUrl(req),
+    slug,
+    portfolioPath: '/portfolio/public',
+    portfolioUpdatedAt: templateStat.mtime,
+  });
+
+  res
+    .status(200)
+    .type('application/xml')
+    .send(sitemapXml);
+}));
 /**
  * POST /api/portfolio/:id/performance
  * Analyze or track portfolio performance metrics
  */
+
 router.post('/:id/performance', verifyToken, asyncHandler(async (req, res) => {
   const { id } = req.params;
   const { htmlSizeKB, cssSizeKB, imageSizeMB, externalRequests, cssSelectors, fontStrategy } = req.body;
@@ -187,4 +210,5 @@ router.get('/:slug/bandwidth', asyncHandler(async (req, res) => {
     },
   });
 }));
+
 export default router;

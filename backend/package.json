@@ -8,7 +8,11 @@
     "start": "node src/index.js",
     "dev": "nodemon src/index.js",
     "lint": "eslint src/",
-    "test": "node --test src/schemas/__tests__/schemas.test.js"
+    "test": "node --test src/schemas/__tests__/schemas.test.js",
+    "migrate": "node scripts/migrate.js",
+    "migrate:up": "node scripts/migrate.js up",
+    "migrate:down": "node scripts/migrate.js down",
+    "migrate:status": "node scripts/migrate.js status"
   },
   "dependencies": {
     "@google/generative-ai": "^0.21.0",
@@ -36,6 +40,7 @@
     "puppeteer": "^24.43.1",
     "qrcode": "^1.5.4",
     "razorpay": "^2.9.6",
+    "sanitize-html": "^2.17.4",
     "socket.io": "^4.8.3",
     "speakeasy": "^2.0.0",
     "swagger-jsdoc": "^6.2.8",
