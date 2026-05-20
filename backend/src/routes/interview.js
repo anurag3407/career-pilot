@@ -4,10 +4,12 @@ import { asyncHandler, ApiError } from '../middleware/errorHandler.js';
 import Interview from '../models/Interview.model.js';
 import { generateInterviewQuestions, analyzeAnswer, generateOverallFeedback } from '../services/interviewService.js';
 import { aiRateLimiter } from '../middleware/rateLimiter.js';
+import { validate } from '../middleware/validate.js';
+import { startInterviewSchema, submitAnswerSchema } from '../schemas/interview.schema.js';
 
 const router = express.Router();
 
-router.post('/start', verifyToken, aiRateLimiter, asyncHandler(async (req, res) => {
+router.post('/start', verifyToken, aiRateLimiter, validate(startInterviewSchema), asyncHandler(async (req, res) => {
     const { jobRole, industry, experienceLevel, questionCount, resumeText } = req.body;
 
     if (!jobRole || !industry || !experienceLevel) {
@@ -44,7 +46,7 @@ router.post('/start', verifyToken, aiRateLimiter, asyncHandler(async (req, res) 
     });
 }));
 
-router.post('/:id/answer', verifyToken, aiRateLimiter, asyncHandler(async (req, res) => {
+router.post('/:id/answer', verifyToken, aiRateLimiter, validate(submitAnswerSchema), asyncHandler(async (req, res) => {
     const { id } = req.params;
     const { questionId, transcript, duration, expressionMetrics } = req.body;
 

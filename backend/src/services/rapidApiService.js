@@ -1,6 +1,7 @@
 import axios from 'axios';
 import dotenv from 'dotenv';
 import crypto from 'crypto';
+import { jobsScrapedCounter } from '../middleware/metrics.js';
 
 dotenv.config();
 
@@ -99,6 +100,21 @@ export const searchJobs = async ({
 
         const fetchWithRetry = () => rapidApiClient.get('/search', { params });
         const response = await withRetry(fetchWithRetry);
+
+        if (response?.data?.data && Array.isArray(response.data.data)) {
+            response.data.data.forEach(job => {
+                const publisher = (job.job_publisher || "").toLowerCase();
+                let source = "other";
+                if (publisher.includes("linkedin")) {
+                    source = "linkedin";
+                } else if (publisher.includes("indeed")) {
+                    source = "indeed";
+                } else {
+                    source = publisher || "other";
+                }
+                jobsScrapedCounter.inc({ source });
+            });
+        }
 
         if (!response.data || !response.data.data) {
             console.log('📭 No jobs found');

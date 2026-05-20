@@ -1059,6 +1059,16 @@ export const twoFactorApi = {
       body: JSON.stringify({ token })
     })
     return handleResponse(response)
+  },
+
+  async disableWithBackup(code) {
+    const headers = await getAuthHeaders()
+    const response = await fetch(`${API_BASE}/auth/2fa/disable-with-backup`, {
+      method: 'POST',
+      headers,
+      body: JSON.stringify({ code })
+    })
+    return handleResponse(response)
   }
 }
 

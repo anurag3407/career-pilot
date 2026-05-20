@@ -6,6 +6,7 @@ import { SocketProvider } from './context/SocketContext';
 import { ThemeProvider } from './context/ThemeContext';
 import AppLayout from './components/AppLayout';
 import Footer from './components/ui/Footer';
+import CommandPalette from './components/CommandPalette';
 import Home from './pages/Home';
 import Login from './pages/Login';
 import Register from './pages/Register';
@@ -15,6 +16,8 @@ import Enhance from './pages/Enhance';
 import ResumeView from './pages/ResumeView';
 import JobSearch from './pages/JobSearch';
 import JobAlerts from './pages/JobAlerts';
+
+
 import JobTracker from './pages/JobTracker';
 import { Community, NotFound, Analytics } from './pages';
 
@@ -36,7 +39,7 @@ import FellowshipMessages from './pages/fellowship/FellowshipMessages';
 import FellowshipChat from './pages/fellowship/FellowshipChat';
 import SecuritySettings from './pages/SecuritySettings';
 import LinkedInCallback from './pages/LinkedInCallback';
-
+import { useEffect, useState } from 'react';
 function ProtectedRoute({ children }) {
   const { user, loading } = useAuth();
 
@@ -80,12 +83,26 @@ function PublicRoute({ children }) {
 }
 
 function App() {
+  const [isCommandPaletteOpen, setIsCommandPaletteOpen] = useState(false);
+  const isAuthenticated = localStorage.getItem('firebase:authUser') !== null;
+  useEffect(() => {
+  if (!isAuthenticated) return;
+  const handleKeyDown = (e) => {
+    if ((e.metaKey || e.ctrlKey) && e.key.toLowerCase() === 'k') {
+      e.preventDefault();
+      setIsCommandPaletteOpen((prev) => !prev);
+    }
+  };
+  window.addEventListener('keydown', handleKeyDown);
+  return () => window.removeEventListener('keydown', handleKeyDown);
+}, [isAuthenticated]);
   return (
     <ThemeProvider>
       <AuthProvider>
         <SocketProvider>
           <BrowserRouter>
             <div className="bg-mesh" />
+            {isAuthenticated && (<CommandPalette isOpen={isCommandPaletteOpen} setIsOpen={setIsCommandPaletteOpen}/>)}
             <Toaster
               position="top-right"
               toastOptions={{
