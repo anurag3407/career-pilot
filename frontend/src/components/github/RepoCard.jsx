@@ -13,9 +13,7 @@ const RepoCard = ({ owner, repo, name, description, language, stars, forks, isPr
 
   const handleAnalyze = () => {
     setIsScanning(true)
-    setTimeout(() => {
-      navigate(`/github/${owner}/${repo}`)
-    }, 300)
+    navigate(`/github/${owner}/${repo}`)
   }
 
   return (
