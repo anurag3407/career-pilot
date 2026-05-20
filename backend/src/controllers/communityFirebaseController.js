@@ -303,12 +303,15 @@ export const getPosts = async (req, res, next) => {
       query = query.orderBy('createdAt', 'desc');
     }
 
+    let cursorValid = true;
     if (cursor) {
       try {
         const cursorDoc = await postsRef.doc(cursor).get();
-        if (cursorDoc.exists) {
+        if (!cursorDoc.exists) {
+          cursorValid = false;
+        } else {
           const postData = cursorDoc.data();
-          
+
           if (sortBy === 'popular') {
             query = query.startAfter(postData.likeCount, postData.createdAt);
           } else if (sortBy === 'trending') {
@@ -318,38 +321,40 @@ export const getPosts = async (req, res, next) => {
           }
         }
       } catch (err) {
-        console.warn('Invalid cursor parameter');
+        cursorValid = false;
       }
     }
 
     const hasDateFilter = startDate || endDate;
-    
-    if (hasDateFilter) {
-      const snapshot = await query.limit(maxLimit * 2).get();
-      let posts = snapshot.docs.map(transformPost).filter(p => !p.status || p.status === 'published');
 
+    if (hasDateFilter) {
+      let dateQuery = query;
       if (startDate) {
-        posts = posts.filter(p => new Date(p.createdAt) >= new Date(startDate));
+        dateQuery = dateQuery.where('createdAt', '>=', new Date(startDate));
       }
       if (endDate) {
-        posts = posts.filter(p => new Date(p.createdAt) <= new Date(endDate));
+        const endOfDay = new Date(endDate);
+        endOfDay.setHours(23, 59, 59, 999);
+        dateQuery = dateQuery.where('createdAt', '<=', endOfDay);
       }
 
+      const snapshot = await dateQuery.limit(maxLimit * 2).get();
+      let posts = snapshot.docs.map(transformPost).filter(p => !p.status || p.status === 'published');
       posts = posts.slice(0, maxLimit);
-      
+
       return res.json({
         success: true,
         posts,
         pagination: {
           limit: maxLimit,
           nextCursor: posts.length ? posts[posts.length - 1].id : null,
-          hasMore: posts.length === maxLimit
+          hasMore: posts.length === maxLimit,
+          invalidCursor: !cursorValid
         }
       });
     }
 
-    query = query.limit(maxLimit);
-    const snapshot = await query.get();
+    const snapshot = await query.limit(maxLimit).get();
     const posts = snapshot.docs.map(transformPost).filter(p => !p.status || p.status === 'published');
 
     res.json({
@@ -357,8 +362,9 @@ export const getPosts = async (req, res, next) => {
       posts,
       pagination: {
         limit: maxLimit,
-        nextCursor: snapshot.size === maxLimit ? snapshot.docs[snapshot.size - 1].id : null,
-        hasMore: snapshot.size === maxLimit
+        nextCursor: posts.length === maxLimit ? posts[posts.length - 1].id : null,
+        hasMore: posts.length === maxLimit,
+        invalidCursor: !cursorValid
       }
     });
   } catch (error) {
