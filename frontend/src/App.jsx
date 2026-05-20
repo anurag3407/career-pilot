@@ -1,3 +1,5 @@
+
+import Deployments from './pages/Deployments'
 import TemplateGallery from "./pages/TemplateGallery";
 import { BrowserRouter, Routes, Route, Navigate } from 'react-router-dom';
 import { Toaster } from 'react-hot-toast';
@@ -39,7 +41,10 @@ import FellowshipMessages from './pages/fellowship/FellowshipMessages';
 import FellowshipChat from './pages/fellowship/FellowshipChat';
 import SecuritySettings from './pages/SecuritySettings';
 import LinkedInCallback from './pages/LinkedInCallback';
-import { useEffect, useState } from 'react';
+import PrivacyPolicy from './pages/PrivacyPolicy';
+import TermsOfService from './pages/TermsOfService';
+import CookiePolicy from './pages/CookiePolicy';
+
 function ProtectedRoute({ children }) {
   const { user, loading } = useAuth();
 
@@ -60,6 +65,7 @@ function ProtectedRoute({ children }) {
 
   return <AppLayout>{children}</AppLayout>;
 }
+
 
 function PublicRoute({ children }) {
   const { user, loading } = useAuth();
@@ -134,6 +140,11 @@ function App() {
               <Route path="/login" element={<PublicRoute><Login /></PublicRoute>} />
               <Route path="/register" element={<PublicRoute><Register /></PublicRoute>} />
               <Route path="/auth/linkedin/callback" element={<PublicRoute><LinkedInCallback /></PublicRoute>} />
+              
+              {/* Legal Pages (Public) */}
+              <Route path="/privacy" element={<PrivacyPolicy />} />
+              <Route path="/terms" element={<TermsOfService />} />
+              <Route path="/cookies" element={<CookiePolicy />} />
 
               {/* Template Gallery Route (Registered at /templates) */}
               <Route path="/templates" element={<TemplateGallery />} />
@@ -153,6 +164,7 @@ function App() {
               <Route path="/security" element={<ProtectedRoute><SecuritySettings /></ProtectedRoute>} />
               <Route path="/email-generator" element={<ProtectedRoute><EmailGenerator /></ProtectedRoute>} />
               <Route path="/linkedin-optimizer" element={<ProtectedRoute><LinkedInOptimizer /></ProtectedRoute>} />
+              <Route path="/deployments" element={<ProtectedRoute><Deployments /></ProtectedRoute>} />
               <Route path="/settings" element={<ProtectedRoute><Settings /></ProtectedRoute>} />
 
               {/* Nested Fellowship Routes */}

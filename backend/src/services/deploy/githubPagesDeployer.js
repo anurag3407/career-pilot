@@ -65,6 +65,46 @@ function toRepoSlug(raw) {
 }
 
 /**
+ * Verify that a GitHub OAuth token is valid and has sufficient scopes.
+ * Uses GET /user — the lightest authenticated GitHub API call.
+ *
+ * @param {string} token - GitHub OAuth token
+ * @returns {Promise<{ valid: boolean, login?: string, scopes?: string[], reason?: string }>}
+ */
+export async function validateToken(token) {
+  if (!token) return { valid: false, reason: 'A GitHub OAuth token is required.' };
+
+  let res;
+  try {
+    res = await fetch(`${GITHUB_API}/user`, { headers: githubHeaders(token) });
+  } catch (err) {
+    throw new Error(`GitHub token validation request failed: ${err.message}`);
+  }
+
+  if (res.status === 401 || res.status === 403) {
+    return { valid: false, reason: 'Token is invalid or has expired.' };
+  }
+
+  if (!res.ok) {
+    return { valid: false, reason: `GitHub API error ${res.status}.` };
+  }
+
+  const data = await res.json();
+
+  // X-OAuth-Scopes is only present on classic OAuth tokens, not fine-grained PATs.
+  const scopesHeader = res.headers.get('x-oauth-scopes');
+  if (scopesHeader !== null) {
+    const scopes = scopesHeader.split(',').map((s) => s.trim()).filter(Boolean);
+    if (!scopes.includes('repo')) {
+      return { valid: false, reason: 'Token is missing the required "repo" scope.' };
+    }
+    return { valid: true, login: data.login, scopes };
+  }
+
+  return { valid: true, login: data.login, scopes: ['fine-grained-token'] };
+}
+
+/**
  * Deploy an HTML portfolio to GitHub Pages using the Git Tree API.
  * All files are committed in a single batch — no per-file API calls.
  *
@@ -79,12 +119,11 @@ export async function deploy(portfolioId, htmlContent, assets = {}, repoName, to
   if (!token) throw new Error('A GitHub OAuth token is required.');
   assertSafeSegment(portfolioId, 'portfolioId');
 
-  // Resolve the authenticated user's login — token is used only for GitHub API calls.
-  const user = await githubRequest('GET', '/user', undefined, token);
-  if (!user?.login) {
-    throw new Error('Could not resolve GitHub username from the provided token.');
+  const tokenCheck = await validateToken(token);
+  if (!tokenCheck.valid) {
+    throw new Error(`GitHub token validation failed: ${tokenCheck.reason}`);
   }
-  const owner = user.login;
+  const owner = tokenCheck.login;
 
   const slug = repoName
     ? toRepoSlug(repoName)

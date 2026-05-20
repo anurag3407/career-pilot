@@ -66,6 +66,7 @@ export default function Navbar() {
   // Public links accessible to everyone
   const publicLinks = [
     { path: '/templates', label: 'Templates', icon: Palette },
+    { path: '/#portfolio', label: 'Portfolio', icon: User },
   ]
 
   // Protected links accessible only to logged-in users
