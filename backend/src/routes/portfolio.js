@@ -125,7 +125,7 @@ router.post(
   });
 }));
 
-// router.get('/public/:slug/sitemap.xml', sitemapCache, asyncHandler(async (req, res) => {
+
 /**
  * POST /api/portfolio/:id/performance
  */
