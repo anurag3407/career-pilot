@@ -20,9 +20,10 @@ import {
   Sparkles,
   GraduationCap,
   Bell,
-  Mic
+  Mic,
+  Globe
 } from 'lucide-react'
-import { resumeApi, jobTrackerApi } from '../services/api'
+import { resumeApi, jobTrackerApi, portfolioApi } from '../services/api'
 import Button from '../components/Button'
 
 const STATUS_CONFIG = {
@@ -44,6 +45,7 @@ export default function Dashboard() {
     interviewing: 0,
     offered: 0
   })
+  const [portfolioCount, setPortfolioCount] = useState(0)
 
   useEffect(() => {
     fetchData()
@@ -51,14 +53,23 @@ export default function Dashboard() {
 
   const fetchData = async () => {
     try {
-      const [resumeRes, jobsRes] = await Promise.all([
+      const [resumeRes, jobsRes, portfolioRes] = await Promise.all([
         resumeApi.getAll().catch(() => ({ resumes: [] })),
-        jobTrackerApi.getAll().catch(() => ({ trackedJobs: [] }))
+        jobTrackerApi.getAll().catch(() => ({ trackedJobs: [] })),
+        portfolioApi.getAll().catch(() => ({ portfolioItems: [] }))
       ])
 
       setResumes(resumeRes.resumes || resumeRes.data?.resumes || [])
       const jobs = jobsRes.trackedJobs || []
       setTrackedJobs(jobs)
+
+      const portfolios =
+        portfolioRes.portfolios ||
+        portfolioRes.data?.portfolios ||
+        portfolioRes.data ||
+        [];
+
+      setPortfolioCount(portfolios.length)
 
       const stats = {
         total: jobs.length,
@@ -130,7 +141,7 @@ export default function Dashboard() {
                 </button>
               </div>
             )}
-            
+
             {/* Quick Actions */}
             <motion.div variants={itemVariants} className="grid grid-cols-2 md:grid-cols-4 lg:grid-cols-7 gap-4 mb-10">
               {[
@@ -158,22 +169,76 @@ export default function Dashboard() {
             </motion.div>
 
             {/* Stats Row */}
-            <motion.div variants={itemVariants} className="grid grid-cols-2 md:grid-cols-5 gap-5 mb-10">
+            <motion.div variants={itemVariants} className="grid grid-cols-2 md:grid-cols-6 gap-5 mb-10">
               {[
-                { icon: Star, value: jobStats.saved, label: 'Saved', color: 'text-muted-foreground', bg: 'bg-muted' },
-                { icon: Send, value: jobStats.applied, label: 'Applied', color: 'text-primary', bg: 'bg-primary/10' },
-                { icon: MessageSquare, value: jobStats.interviewing, label: 'Interviewing', color: 'text-secondary', bg: 'bg-secondary/10' },
-                { icon: CheckCircle2, value: jobStats.offered, label: 'Offers', color: 'text-emerald-500', bg: 'bg-emerald-500/10' },
-                { icon: FileText, value: resumes.length, label: 'Resumes', color: 'text-primary', bg: 'bg-primary/10' }
-              ].map((stat, idx) => (
-                <div key={idx} className="p-6 rounded-2xl bg-card border border-border text-center hover:border-primary/30 transition-all shadow-sm group">
-                  <div className={`w-12 h-12 ${stat.bg} rounded-xl flex items-center justify-center mx-auto mb-4 group-hover:scale-110 transition-transform`}>
-                    <stat.icon className={`w-6 h-6 ${stat.color}`} />
+                {
+                  icon: Star,
+                  value: jobStats.saved,
+                  label: "Saved",
+                  color: "text-muted-foreground",
+                  bg: "bg-muted",
+                },
+                {
+                  icon: Send,
+                  value: jobStats.applied,
+                  label: "Applied",
+                  color: "text-primary",
+                  bg: "bg-primary/10",
+                },
+                {
+                  icon: MessageSquare,
+                  value: jobStats.interviewing,
+                  label: "Interviewing",
+                  color: "text-secondary",
+                  bg: "bg-secondary/10",
+                },
+                {
+                  icon: CheckCircle2,
+                  value: jobStats.offered,
+                  label: "Offers",
+                  color: "text-emerald-500",
+                  bg: "bg-emerald-500/10",
+                },
+                {
+                  icon: FileText,
+                  value: resumes.length,
+                  label: "Resumes",
+                  color: "text-primary",
+                  bg: "bg-primary/10",
+                },
+                {
+                  icon: Globe,
+                  value: portfolioCount,
+                  label: "Portfolios",
+                  color: "text-purple-500",
+                  bg: "bg-purple-500/10",
+                  link: "/portfolio",
+                },
+              ].map((stat, idx) => {
+                const content = (
+                  <div className="p-6 rounded-2xl bg-card border border-border text-center hover:border-primary/30 transition-all shadow-sm group">
+                    <div className={`w-12 h-12 ${stat.bg} rounded-xl flex items-center justify-center mx-auto mb-4 group-hover:scale-110 transition-transform`}>
+                      <stat.icon className={`w-6 h-6 ${stat.color}`} />
+                    </div>
+
+                    <p className="text-3xl font-black text-foreground">
+                      {stat.value}
+                    </p>
+
+                    <p className="text-xs font-bold text-muted-foreground uppercase tracking-widest mt-1">
+                      {stat.label}
+                    </p>
                   </div>
-                  <p className="text-3xl font-black text-foreground">{stat.value}</p>
-                  <p className="text-xs font-bold text-muted-foreground uppercase tracking-widest mt-1">{stat.label}</p>
-                </div>
-              ))}
+                );
+
+                return stat.link ? (
+                  <Link key={idx} to={stat.link}>
+                    {content}
+                  </Link>
+                ) : (
+                  <div key={idx}>{content}</div>
+                );
+              })}
             </motion.div>
 
             <div className="grid lg:grid-cols-2 gap-10">
@@ -203,12 +268,12 @@ export default function Dashboard() {
                 ) : (
                   <div className="rounded-[2rem] bg-card border border-border overflow-hidden shadow-sm">
                     <div className="divide-y divide-border">
-                     {/** * GSSoC Optimization: Defensive structural evaluation on the active data view slice.
-                        * Prevents layout container voids if the array slice metrics index is altered.
-                        */}
+                      {/** * GSSoC Optimization: Defensive structural evaluation on the active data view slice.
+                       * Prevents layout container voids if the array slice metrics index is altered.
+                       */}
                       {(() => {
                         const displayedJobs = trackedJobs.slice(0, 5);
-                        
+
                         if (displayedJobs.length > 0) {
                           return displayedJobs.map((job, index) => {
                             const statusConfig = STATUS_CONFIG[job.status] || STATUS_CONFIG.saved;
