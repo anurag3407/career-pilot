@@ -113,24 +113,19 @@ function App() {
               position="top-right"
               toastOptions={{
                 duration: 3000,
+                className: "careerpilot-toast",
                 style: {
-                  background: 'var(--card)',
-                  color: 'var(--foreground)',
-                  borderRadius: 'var(--radius)',
-                  border: '1px solid var(--border)',
-                  backdropFilter: 'blur(8px)',
+                  background: "var(--card)",
+                  color: "var(--foreground)",
+                  borderRadius: "var(--radius)",
+                  border: "1px solid var(--border)",
+                  backdropFilter: "blur(8px)",
                 },
                 success: {
-                  iconTheme: {
-                    primary: '#10B981',
-                    secondary: '#fff',
-                  },
+                  iconTheme: { primary: "#10B981", secondary: "#fff" },
                 },
                 error: {
-                  iconTheme: {
-                    primary: '#EF4444',
-                    secondary: '#fff',
-                  },
+                  iconTheme: { primary: "#EF4444", secondary: "#fff" },
                 },
               }}
             />

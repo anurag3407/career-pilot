@@ -25,6 +25,12 @@ import {
 } from 'lucide-react'
 import { resumeApi, jobTrackerApi, portfolioApi } from '../services/api'
 import Button from '../components/Button'
+import { 
+  SkeletonDashboardActions, 
+  SkeletonStatCards, 
+  SkeletonJobList,
+  SkeletonList 
+} from '../components/ui/Skeleton'
 
 const STATUS_CONFIG = {
   saved: { label: 'Saved', color: 'bg-muted text-muted-foreground border border-border', icon: Star },
@@ -123,10 +129,41 @@ export default function Dashboard() {
         </motion.div>
 
         {loading ? (
-          <div className="flex items-center justify-center py-32">
-            <div className="relative">
-              <div className="w-16 h-16 border-4 border-muted border-t-primary rounded-full animate-spin" />
-            </div>
+          <div className="space-y-10">
+            {/* Quick Actions Skeleton */}
+            <motion.div
+              initial={{ opacity: 0, y: 10 }}
+              animate={{ opacity: 1, y: 0 }}
+              transition={{ duration: 0.4 }}
+            >
+              <SkeletonDashboardActions />
+            </motion.div>
+
+            {/* Stats Skeleton */}
+            <motion.div
+              initial={{ opacity: 0, y: 10 }}
+              animate={{ opacity: 1, y: 0 }}
+              transition={{ duration: 0.4, delay: 0.1 }}
+            >
+              <SkeletonStatCards count={5} />
+            </motion.div>
+
+            {/* Recent Applications & Resumes Skeleton */}
+            <motion.div
+              initial={{ opacity: 0, y: 10 }}
+              animate={{ opacity: 1, y: 0 }}
+              transition={{ duration: 0.4, delay: 0.2 }}
+              className="grid lg:grid-cols-2 gap-10"
+            >
+              <div>
+                <div className="mb-6 h-8 bg-muted rounded-lg w-1/3 animate-pulse" />
+                <SkeletonList count={3} />
+              </div>
+              <div>
+                <div className="mb-6 h-8 bg-muted rounded-lg w-1/3 animate-pulse" />
+                <SkeletonList count={3} />
+              </div>
+            </motion.div>
           </div>
         ) : (
           <motion.div variants={containerVariants} initial="hidden" animate="visible">
@@ -153,18 +190,20 @@ export default function Dashboard() {
                 { to: '/community', icon: Users, label: 'Community', sub: 'Connect', color: 'primary' },
                 { to: '/fellowship', icon: GraduationCap, label: 'Fellowship', sub: 'Earn & learn', color: 'primary', isNew: true },
               ].map((action, idx) => (
-                <Link key={idx} to={action.to} className="group">
-                  <div className={`relative p-5 rounded-2xl bg-card border border-border overflow-hidden transition-all duration-300 hover:border-${action.color} hover:shadow-xl hover:shadow-${action.color}/5 hover:-translate-y-1`}>
-                    {action.isNew && (
-                      <div className="absolute top-2 right-2 px-1.5 py-0.5 bg-primary/20 rounded text-[9px] text-primary font-black uppercase tracking-wider">NEW</div>
-                    )}
-                    <div className={`w-12 h-12 bg-muted rounded-xl flex items-center justify-center mb-4 group-hover:scale-110 transition-transform`}>
-                      <action.icon className={`w-6 h-6 text-foreground group-hover:text-primary transition-colors`} />
+                <motion.div key={idx} variants={itemVariants}>
+                  <Link to={action.to} className="group">
+                    <div className={`relative p-5 rounded-2xl bg-card border border-border overflow-hidden transition-all duration-300 hover:border-${action.color} hover:shadow-xl hover:shadow-${action.color}/5 hover:-translate-y-1`}>
+                      {action.isNew && (
+                        <div className="absolute top-2 right-2 px-1.5 py-0.5 bg-primary/20 rounded text-[9px] text-primary font-black uppercase tracking-wider">NEW</div>
+                      )}
+                      <div className={`w-12 h-12 bg-muted rounded-xl flex items-center justify-center mb-4 group-hover:scale-110 transition-transform`}>
+                        <action.icon className={`w-6 h-6 text-foreground group-hover:text-primary transition-colors`} />
+                      </div>
+                      <h3 className="text-sm font-bold text-foreground mb-1">{action.label}</h3>
+                      <p className="text-muted-foreground text-xs font-medium">{action.sub}</p>
                     </div>
-                    <h3 className="text-sm font-bold text-foreground mb-1">{action.label}</h3>
-                    <p className="text-muted-foreground text-xs font-medium">{action.sub}</p>
-                  </div>
-                </Link>
+                  </Link>
+                </motion.div>
               ))}
             </motion.div>
 
@@ -232,11 +271,15 @@ export default function Dashboard() {
                 );
 
                 return stat.link ? (
-                  <Link key={idx} to={stat.link}>
-                    {content}
-                  </Link>
+                  <motion.div key={idx} variants={itemVariants}>
+                    <Link to={stat.link}>
+                      {content}
+                    </Link>
+                  </motion.div>
                 ) : (
-                  <div key={idx}>{content}</div>
+                  <motion.div key={idx} variants={itemVariants}>
+                    {content}
+                  </motion.div>
                 );
               })}
             </motion.div>
