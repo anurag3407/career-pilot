@@ -150,7 +150,7 @@ export default function PostsFeed() {
       
       setHasMore(data.pagination.hasMore);
     } catch (error) {
-      toast.error('Failed to load posts');
+      toast.error('Failed to load posts', { id: 'community-posts-load-error' });
     } finally {
       setLoading(false);
     }
@@ -180,7 +180,7 @@ export default function PostsFeed() {
         toast.success('Post created successfully!');
       }
     } catch (error) {
-      toast.error(error.message);
+      toast.error(error.message, { id: 'community-create-post-error' });
     }
   };
 
@@ -190,7 +190,7 @@ export default function PostsFeed() {
       setScheduledPosts(prev => prev.filter(p => (p.id || p._id) !== postId));
       toast.success('Scheduled post cancelled');
     } catch (error) {
-      toast.error(error.message || 'Failed to cancel scheduled post');
+      toast.error(error.message || 'Failed to cancel scheduled post', { id: `community-cancel-scheduled-post-error-${postId}` });
     }
   };
 
@@ -248,7 +248,7 @@ export default function PostsFeed() {
         }
         return post;
       }));
-      toast.error('Failed to like post');
+      toast.error('Failed to like post', { id: `community-like-post-error-${postId}` });
     }
   };
 
@@ -261,7 +261,7 @@ export default function PostsFeed() {
       }));
       toast.success('Post deleted');
     } catch (error) {
-      toast.error(error.message);
+      toast.error(error.message, { id: `community-delete-post-error-${postId}` });
     }
   };
 

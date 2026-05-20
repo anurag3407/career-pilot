@@ -199,7 +199,7 @@ export default function CommentSection({ postId, currentUser, onCommentAdded }) 
       setTotal(data.pagination.total);
       setHasMore(data.comments.length === 20 && data.pagination.total > pageToFetch * 20);
     } catch (error) {
-      toast.error('Failed to load comments');
+      toast.error('Failed to load comments', { id: `community-comments-load-error-${postId}` });
     } finally {
       setLoading(false);
     }
@@ -218,7 +218,7 @@ export default function CommentSection({ postId, currentUser, onCommentAdded }) 
       onCommentAdded?.();
       toast.success('Comment posted!');
     } catch (error) {
-      toast.error('Failed to post comment');
+      toast.error('Failed to post comment', { id: `community-post-comment-error-${postId}` });
     } finally {
       setIsSubmitting(false);
     }
@@ -268,7 +268,7 @@ export default function CommentSection({ postId, currentUser, onCommentAdded }) 
       
       setComments(updateCommentLike);
     } catch (error) {
-      toast.error('Failed to like comment');
+      toast.error('Failed to like comment', { id: `community-like-comment-error-${commentId}` });
     }
   };
 

@@ -58,7 +58,7 @@ const JobTracker = () => {
       setTrackedJobs(data.trackedJobs || []);
     } catch (error) {
       console.error("Error fetching jobs:", error);
-      toast.error("Failed to load tracked jobs");
+      toast.error("Failed to load tracked jobs", { id: "tracked-jobs-load-error" });
     } finally {
       setLoading(false);
     }
@@ -90,7 +90,7 @@ const JobTracker = () => {
       fetchStats();
     } catch (error) {
       console.error("Error updating status:", error);
-      toast.error("Failed to update status");
+      toast.error("Failed to update status", { id: `tracked-job-update-error-${jobId}` });
     } finally {
       setUpdateLoading((prev) => ({ ...prev, [jobId]: false }));
     }
@@ -112,7 +112,7 @@ const JobTracker = () => {
       fetchStats();
     } catch (error) {
       console.error("Error deleting job:", error);
-      toast.error("Failed to remove job");
+      toast.error("Failed to remove job", { id: `tracked-job-delete-error-${jobId}` });
     }
   };
 
