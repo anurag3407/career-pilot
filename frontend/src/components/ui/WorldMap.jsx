@@ -9,9 +9,9 @@ export default function WorldMap({
 }) {
   const svgRef = useRef(null);
   const { theme } = useTheme();
-  
+
   const isDark = theme === "dark";
-  const dotColor = isDark ? "#ffffff" : "#000000"; 
+  const dotColor = isDark ? "#ffffff" : "#000000";
 
   const svgMap = useMemo(() => {
     try {
