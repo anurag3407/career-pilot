@@ -1,8 +1,8 @@
 # 🚀 careerpilot - AI Career Platform
 
 <div align="center">
-
-<p align="center">
+<!-- edited -->
+<p align="center"> 
   <img src="https://img.shields.io/badge/License-MIT-blue?logo=opensourceinitiative&logoColor=white">
   &nbsp;
   <img src="https://img.shields.io/badge/Node.js-18+-green?logo=node.js&logoColor=white">
