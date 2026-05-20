@@ -36,6 +36,9 @@ import FellowshipMessages from './pages/fellowship/FellowshipMessages';
 import FellowshipChat from './pages/fellowship/FellowshipChat';
 import SecuritySettings from './pages/SecuritySettings';
 import LinkedInCallback from './pages/LinkedInCallback';
+import PrivacyPolicy from './pages/PrivacyPolicy';
+import TermsOfService from './pages/TermsOfService';
+import CookiePolicy from './pages/CookiePolicy';
 
 function ProtectedRoute({ children }) {
   const { user, loading } = useAuth();
@@ -117,6 +120,11 @@ function App() {
               <Route path="/login" element={<PublicRoute><Login /></PublicRoute>} />
               <Route path="/register" element={<PublicRoute><Register /></PublicRoute>} />
               <Route path="/auth/linkedin/callback" element={<PublicRoute><LinkedInCallback /></PublicRoute>} />
+              
+              {/* Legal Pages (Public) */}
+              <Route path="/privacy" element={<PrivacyPolicy />} />
+              <Route path="/terms" element={<TermsOfService />} />
+              <Route path="/cookies" element={<CookiePolicy />} />
 
               {/* Template Gallery Route (Registered at /templates) */}
               <Route path="/templates" element={<TemplateGallery />} />
