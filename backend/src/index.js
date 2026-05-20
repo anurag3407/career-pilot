@@ -1,3 +1,4 @@
+
 import 'dotenv/config';
 import express from 'express';
 import { createServer } from 'http';
@@ -56,6 +57,9 @@ import {
   scheduleWeeklyDigest
 } from './services/weeklyDigestService.js';
 
+const bullBoardAdapter = require('./config/bullBoard');
+const swaggerUi = require('swagger-ui-express');
+const swaggerSpec = require('./config/swagger');
 const app = express();
 app.use(metricsMiddleware);
 const httpServer = createServer(app);
@@ -125,6 +129,8 @@ app.get('/health', (req, res) => {
 app.get('/metrics', metricsHandler);
 
 app.use('/api/docs', swaggerUi.serve, swaggerUi.setup(swaggerSpec));
+// BullMQ Dashboard
+app.use('/admin/queues', bullBoardAdapter.getRouter());
 app.use('/api/auth', authRoutes);
 app.use('/api/upload', uploadRoutes);
 app.use('/api/resumes', resumeRoutes);

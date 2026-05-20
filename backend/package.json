@@ -11,6 +11,8 @@
     "test": "node --test src/schemas/__tests__/schemas.test.js"
   },
   "dependencies": {
+    "@bull-board/api": "^7.1.5",
+    "@bull-board/express": "^7.1.5",
     "@google/generative-ai": "^0.21.0",
     "axios": "^1.13.2",
     "bcryptjs": "^2.4.3",
@@ -40,6 +42,7 @@
     "speakeasy": "^2.0.0",
     "swagger-jsdoc": "^6.2.8",
     "swagger-ui-express": "^5.0.1",
+    "uuid": "^10.0.0"
     "uuid": "^10.0.0",
     "zod": "^4.4.3"
   },
