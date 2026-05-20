@@ -197,18 +197,13 @@ const buildHtml = (data) => {
 
   const { score, checks, grade } = health;
 
-  // Health score arc (SVG half-circle)
-  const scorePct = score / 100;
-  const circumference = 2 * Math.PI * 54; // r=54
-  const dashOffset = circumference * (1 - scorePct * 0.5); // half arc
-
   const checksHtml = checks
     .map(
       (c) => `
       <div class="check-row">
-        <span class="check-icon ${c.passed ? 'pass' : 'fail'}">${c.passed ? '✓' : '✗'}</span>
+        <span class="check-dot ${c.passed ? 'pass' : 'fail'}"></span>
         <span class="check-label">${escapeHtml(c.label)}</span>
-        <span class="check-pts">${c.earned}/${c.max}</span>
+        <span class="check-pts">${c.earned}/${c.max} pts</span>
       </div>`
     )
     .join('');
@@ -229,228 +224,351 @@ const buildHtml = (data) => {
   const contributorsHtml = (Array.isArray(contributors) ? contributors : [])
     .slice(0, 5)
     .map(
-      (c) => `
+      (c, i) => `
       <div class="contributor">
+        <span class="contrib-rank">#${i + 1}</span>
         <img class="avatar" src="${escapeHtml(c.avatar_url || '')}" alt="${escapeHtml(c.login || '')}" />
         <div class="contrib-info">
           <span class="contrib-name">${escapeHtml(c.login || 'Unknown')}</span>
-          <span class="contrib-commits">${c.contributions || 0} commits</span>
+          <span class="contrib-commits">${(c.contributions || 0).toLocaleString('en-US')} commits</span>
         </div>
       </div>`
     )
     .join('');
 
-  const recsHtml =
-    recommendations.length === 0
-      ? '<p class="all-good">🎉 No critical issues found. Great job!</p>'
-      : recommendations
-          .map((r) => `<li class="rec-item">${escapeHtml(r)}</li>`)
-          .join('');
-
   const topicsHtml = Array.isArray(repoInfo.topics) && repoInfo.topics.length > 0
     ? repoInfo.topics.map((t) => `<span class="topic">${escapeHtml(t)}</span>`).join('')
-    : '<span class="topic-none">No topics set</span>';
+    : '<span class="topic-none">No topics defined</span>';
+
+  const recsHtml = recommendations.length === 0
+    ? '<p class="all-good">No critical issues detected. Repository health is in good standing.</p>'
+    : recommendations.map((r) => `<li class="rec-item">${escapeHtml(r)}</li>`).join('');
+
+  // Score arc path for a clean half-circle gauge
+  const arcLen = Math.PI * 50; // circumference of half-circle r=50
+  const arcOffset = arcLen * (1 - score / 100);
 
   return `<!DOCTYPE html>
 <html lang="en">
 <head>
   <meta charset="UTF-8" />
   <title>${escapeHtml(repoInfo.full_name)} — Repository Report</title>
+  <link rel="preconnect" href="https://fonts.googleapis.com" />
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
+  <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700;800&display=swap" rel="stylesheet" />
   <style>
-    /* ── Reset & base ── */
+    /*
+     * CareerPilot Repository Report — Professional Theme
+     * Design tokens from frontend/src/index.css (light mode):
+     *   --primary          #0ea5e9
+     *   --secondary        #6366f1
+     *   --background       #f8fafc
+     *   --foreground       #0f172a
+     *   --card             #ffffff
+     *   --muted            #f1f5f9
+     *   --muted-foreground #64748b
+     *   --border           #e2e8f0
+     *   --destructive      #ef4444
+     *   success            #10b981
+     *   warning            #f59e0b
+     */
+
     *, *::before, *::after { box-sizing: border-box; margin: 0; padding: 0; }
+
     body {
-      font-family: 'Helvetica Neue', Helvetica, Arial, sans-serif;
-      font-size: 12px;
-      color: #1e293b;
-      background: #fff;
-      line-height: 1.5;
+      font-family: 'Inter', -apple-system, BlinkMacSystemFont, 'Segoe UI', sans-serif;
+      font-size: 11.5px;
+      color: #0f172a;
+      background: #f8fafc;
+      line-height: 1.6;
+      -webkit-font-smoothing: antialiased;
     }
 
-    /* ── Header / branding ── */
+    /* ── Header ── */
     .header {
-      background: linear-gradient(135deg, #4f46e5 0%, #7c3aed 100%);
-      color: #fff;
-      padding: 28px 36px 24px;
+      background: linear-gradient(135deg, #0284c7 0%, #4f46e5 100%);
+      padding: 30px 40px 26px;
       display: flex;
       justify-content: space-between;
-      align-items: flex-start;
+      align-items: center;
     }
-    .brand { display: flex; align-items: center; gap: 10px; }
-    .brand-logo {
-      width: 36px; height: 36px;
-      background: rgba(255,255,255,0.2);
+
+    .brand {
+      display: flex;
+      align-items: center;
+      gap: 12px;
+    }
+
+    /* Monogram instead of emoji */
+    .brand-monogram {
+      width: 38px;
+      height: 38px;
+      background: rgba(255,255,255,0.15);
+      border: 1px solid rgba(255,255,255,0.3);
       border-radius: 8px;
-      display: flex; align-items: center; justify-content: center;
-      font-size: 20px;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      color: #fff;
+      font-size: 14px;
+      font-weight: 800;
+      letter-spacing: -1px;
     }
-    .brand-name { font-size: 18px; font-weight: 700; letter-spacing: -0.3px; }
-    .brand-tagline { font-size: 10px; opacity: 0.8; margin-top: 1px; }
-    .header-meta { text-align: right; font-size: 10px; opacity: 0.85; }
-    .header-meta .repo-full-name { font-size: 14px; font-weight: 600; opacity: 1; }
 
-    /* ── Page body ── */
-    .page { padding: 28px 36px; }
+    .brand-text { color: #fff; }
+    .brand-name { font-size: 17px; font-weight: 800; letter-spacing: -0.4px; }
+    .brand-tagline { font-size: 9.5px; color: rgba(255,255,255,0.7); margin-top: 1px; font-weight: 500; letter-spacing: 0.2px; }
 
-    /* ── Section titles ── */
-    .section-title {
-      font-size: 13px;
+    .header-right { text-align: right; color: rgba(255,255,255,0.85); }
+    .header-repo { font-size: 13px; font-weight: 700; color: #fff; }
+    .header-sub { font-size: 9.5px; margin-top: 3px; font-weight: 500; }
+    .header-date { font-size: 9px; margin-top: 2px; color: rgba(255,255,255,0.65); }
+
+    /* ── Page layout ── */
+    .page { padding: 28px 40px; background: #f8fafc; }
+
+    /* ── Divider ── */
+    .divider {
+      border: none;
+      border-top: 1px solid #e2e8f0;
+      margin: 22px 0 18px;
+    }
+
+    /* ── Section label ── */
+    .section-label {
+      font-size: 9px;
       font-weight: 700;
-      color: #4f46e5;
+      color: #0ea5e9;
       text-transform: uppercase;
-      letter-spacing: 0.8px;
-      border-bottom: 2px solid #e2e8f0;
-      padding-bottom: 6px;
-      margin-bottom: 14px;
-      margin-top: 26px;
+      letter-spacing: 1.2px;
+      margin-bottom: 12px;
+      display: flex;
+      align-items: center;
+      gap: 8px;
     }
-    .section-title:first-of-type { margin-top: 0; }
+    .section-label::after {
+      content: '';
+      flex: 1;
+      height: 1px;
+      background: #e2e8f0;
+    }
 
-    /* ── Overview grid ── */
+    /* ── Overview ── */
     .overview-grid {
       display: grid;
       grid-template-columns: repeat(4, 1fr);
       gap: 10px;
-      margin-bottom: 14px;
+      margin-bottom: 16px;
     }
+
     .stat-card {
-      background: #f8fafc;
+      background: #fff;
       border: 1px solid #e2e8f0;
       border-radius: 8px;
-      padding: 12px;
+      padding: 14px 12px;
       text-align: center;
     }
-    .stat-value { font-size: 20px; font-weight: 700; color: #4f46e5; }
-    .stat-label { font-size: 9px; color: #64748b; text-transform: uppercase; margin-top: 2px; }
+
+    .stat-value {
+      font-size: 22px;
+      font-weight: 800;
+      color: #0f172a;
+      letter-spacing: -0.5px;
+    }
+
+    .stat-label {
+      font-size: 8.5px;
+      color: #64748b;
+      text-transform: uppercase;
+      letter-spacing: 0.8px;
+      margin-top: 3px;
+      font-weight: 600;
+    }
 
     .overview-desc {
-      background: #f8fafc;
-      border-left: 3px solid #4f46e5;
+      background: #fff;
+      border: 1px solid #e2e8f0;
+      border-left: 3px solid #0ea5e9;
       padding: 10px 14px;
       border-radius: 0 6px 6px 0;
       color: #334155;
       font-size: 11px;
-      margin-bottom: 10px;
+      margin-bottom: 12px;
+      font-style: italic;
     }
 
-    .topics { display: flex; flex-wrap: wrap; gap: 6px; margin-top: 8px; }
-    .topic {
-      background: #ede9fe;
-      color: #5b21b6;
-      border-radius: 999px;
-      padding: 2px 10px;
-      font-size: 10px;
-      font-weight: 600;
+    .meta-row {
+      display: flex;
+      gap: 20px;
+      flex-wrap: wrap;
+      margin-bottom: 10px;
     }
-    .topic-none { color: #94a3b8; font-size: 10px; }
+    .meta-item { display: flex; flex-direction: column; gap: 1px; }
+    .meta-key {
+      font-size: 8.5px;
+      font-weight: 700;
+      color: #94a3b8;
+      text-transform: uppercase;
+      letter-spacing: 0.8px;
+    }
+    .meta-val { font-size: 11px; font-weight: 600; color: #0f172a; }
+
+    .topics { display: flex; flex-wrap: wrap; gap: 5px; margin-top: 8px; }
+    .topic {
+      background: #f1f5f9;
+      color: #475569;
+      border: 1px solid #e2e8f0;
+      border-radius: 4px;
+      padding: 2px 8px;
+      font-size: 9.5px;
+      font-weight: 600;
+      letter-spacing: 0.2px;
+    }
+    .topic-none { color: #94a3b8; font-size: 10px; font-style: italic; }
 
     /* ── Health score ── */
     .health-layout {
       display: grid;
-      grid-template-columns: 180px 1fr;
-      gap: 20px;
+      grid-template-columns: 160px 1fr;
+      gap: 24px;
       align-items: start;
     }
-    .score-circle-wrap {
+
+    .gauge-wrap {
+      display: flex;
+      flex-direction: column;
+      align-items: center;
+      gap: 8px;
+    }
+
+    .gauge-label {
+      font-size: 8.5px;
+      font-weight: 700;
+      text-transform: uppercase;
+      letter-spacing: 0.8px;
+      padding: 3px 12px;
+      border-radius: 4px;
+      color: #fff;
+    }
+
+    .gauge-sub {
+      font-size: 9px;
+      color: #94a3b8;
+      font-weight: 500;
+    }
+
+    .checks-list { display: flex; flex-direction: column; gap: 4px; }
+
+    .check-row {
+      display: flex;
+      align-items: center;
+      gap: 10px;
+      padding: 5px 10px;
+      border-radius: 5px;
+      background: #fff;
+      border: 1px solid #f1f5f9;
+    }
+
+    .check-dot {
+      width: 7px;
+      height: 7px;
+      border-radius: 50%;
+      flex-shrink: 0;
+    }
+    .check-dot.pass { background: #10b981; }
+    .check-dot.fail { background: #cbd5e1; }
+
+    .check-label { flex: 1; color: #334155; font-size: 10.5px; font-weight: 500; }
+    .check-pts { font-size: 9.5px; color: #94a3b8; white-space: nowrap; font-weight: 600; }
+
+    /* ── Tech stack ── */
+    .lang-list { display: flex; flex-direction: column; gap: 8px; }
+    .lang-row { display: flex; align-items: center; gap: 12px; }
+    .lang-name { width: 80px; font-size: 10.5px; font-weight: 600; color: #334155; text-align: right; }
+    .lang-bar-wrap {
+      flex: 1;
+      background: #f1f5f9;
+      border-radius: 2px;
+      height: 6px;
+      overflow: hidden;
+    }
+    .lang-bar { height: 100%; border-radius: 2px; }
+    .lang-pct { width: 38px; font-size: 10px; color: #64748b; text-align: right; font-weight: 600; }
+
+    /* ── Contributors ── */
+    .contributors-grid {
+      display: grid;
+      grid-template-columns: repeat(5, 1fr);
+      gap: 10px;
+    }
+
+    .contributor {
+      background: #fff;
+      border: 1px solid #e2e8f0;
+      border-radius: 8px;
+      padding: 12px 8px;
       display: flex;
       flex-direction: column;
       align-items: center;
       gap: 6px;
+      position: relative;
     }
-    .score-svg { overflow: visible; }
-    .score-bg { fill: none; stroke: #e2e8f0; stroke-width: 10; }
-    .score-arc { fill: none; stroke-width: 10; stroke-linecap: round; transition: stroke-dashoffset 1s; }
-    .score-number {
-      font-size: 28px;
-      font-weight: 800;
-      fill: #1e293b;
-    }
-    .score-grade {
-      font-size: 13px;
+
+    .contrib-rank {
+      position: absolute;
+      top: 6px;
+      right: 8px;
+      font-size: 8.5px;
       font-weight: 700;
-      padding: 2px 12px;
-      border-radius: 999px;
-      color: #fff;
+      color: #94a3b8;
     }
-    .score-label { font-size: 10px; color: #64748b; }
 
-    .checks-list { display: flex; flex-direction: column; gap: 5px; }
-    .check-row {
-      display: flex;
-      align-items: center;
-      gap: 8px;
-      padding: 5px 8px;
-      border-radius: 6px;
-      background: #f8fafc;
-    }
-    .check-icon { font-size: 12px; font-weight: 700; width: 16px; text-align: center; }
-    .check-icon.pass { color: #22c55e; }
-    .check-icon.fail { color: #ef4444; }
-    .check-label { flex: 1; color: #334155; }
-    .check-pts { font-size: 10px; color: #94a3b8; white-space: nowrap; }
-
-    /* ── Tech stack ── */
-    .lang-list { display: flex; flex-direction: column; gap: 7px; }
-    .lang-row { display: flex; align-items: center; gap: 10px; }
-    .lang-name { width: 90px; font-size: 11px; font-weight: 600; color: #334155; text-align: right; }
-    .lang-bar-wrap {
-      flex: 1;
-      background: #f1f5f9;
-      border-radius: 999px;
-      height: 10px;
-      overflow: hidden;
-    }
-    .lang-bar { height: 100%; border-radius: 999px; }
-    .lang-pct { width: 42px; font-size: 10px; color: #64748b; text-align: right; }
-
-    /* ── Contributors ── */
-    .contributors-list { display: flex; flex-direction: column; gap: 8px; }
-    .contributor {
-      display: flex;
-      align-items: center;
-      gap: 10px;
-      padding: 8px 10px;
-      background: #f8fafc;
-      border: 1px solid #e2e8f0;
-      border-radius: 8px;
-    }
     .avatar {
-      width: 32px; height: 32px;
+      width: 36px; height: 36px;
       border-radius: 50%;
       border: 2px solid #e2e8f0;
     }
-    .contrib-info { display: flex; flex-direction: column; }
-    .contrib-name { font-weight: 600; font-size: 11px; color: #1e293b; }
-    .contrib-commits { font-size: 10px; color: #64748b; }
+
+    .contrib-info { display: flex; flex-direction: column; align-items: center; gap: 1px; }
+    .contrib-name { font-weight: 700; font-size: 10px; color: #0f172a; text-align: center; }
+    .contrib-commits { font-size: 9px; color: #64748b; font-weight: 500; }
 
     /* ── Recommendations ── */
-    .rec-list { list-style: none; display: flex; flex-direction: column; gap: 6px; }
+    .rec-list { list-style: none; display: flex; flex-direction: column; gap: 5px; }
+
     .rec-item {
-      padding: 8px 12px;
-      background: #fef9c3;
-      border-left: 3px solid #eab308;
+      padding: 9px 12px 9px 14px;
+      background: #fff;
+      border: 1px solid #e2e8f0;
+      border-left: 3px solid #f59e0b;
       border-radius: 0 6px 6px 0;
-      color: #713f12;
-      font-size: 11px;
+      color: #334155;
+      font-size: 10.5px;
+      font-weight: 500;
+      line-height: 1.5;
     }
+
     .all-good {
       padding: 10px 14px;
-      background: #dcfce7;
-      border-left: 3px solid #22c55e;
+      background: #f0fdf4;
+      border: 1px solid #bbf7d0;
+      border-left: 3px solid #10b981;
       border-radius: 0 6px 6px 0;
-      color: #14532d;
-      font-size: 11px;
+      color: #166534;
+      font-size: 10.5px;
+      font-weight: 500;
     }
 
     /* ── Footer ── */
     .footer {
-      margin-top: 32px;
-      border-top: 1px solid #e2e8f0;
+      margin-top: 28px;
       padding-top: 12px;
+      border-top: 1px solid #e2e8f0;
       display: flex;
       justify-content: space-between;
-      font-size: 9px;
+      font-size: 8.5px;
       color: #94a3b8;
+      font-weight: 500;
     }
   </style>
 </head>
@@ -459,73 +577,65 @@ const buildHtml = (data) => {
   <!-- Header -->
   <div class="header">
     <div class="brand">
-      <div class="brand-logo">🚀</div>
-      <div>
+      <div class="brand-monogram">CP</div>
+      <div class="brand-text">
         <div class="brand-name">CareerPilot</div>
         <div class="brand-tagline">AI-Powered Career Platform</div>
       </div>
     </div>
-    <div class="header-meta">
-      <div class="repo-full-name">${escapeHtml(repoInfo.full_name)}</div>
-      <div style="margin-top:4px">Repository Analysis Report</div>
-      <div>Generated ${escapeHtml(generatedAt)}</div>
+    <div class="header-right">
+      <div class="header-repo">${escapeHtml(repoInfo.full_name)}</div>
+      <div class="header-sub">Repository Analysis Report</div>
+      <div class="header-date">Generated ${escapeHtml(generatedAt)}</div>
     </div>
   </div>
 
   <div class="page">
 
     <!-- 1. Overview -->
-    <div class="section-title">1 · Overview</div>
+    <div class="section-label">Overview</div>
 
     <div class="overview-grid">
       <div class="stat-card">
-        <div class="stat-value">⭐ ${formatNum(repoInfo.stargazers_count)}</div>
+        <div class="stat-value">${formatNum(repoInfo.stargazers_count)}</div>
         <div class="stat-label">Stars</div>
       </div>
       <div class="stat-card">
-        <div class="stat-value">🍴 ${formatNum(repoInfo.forks_count)}</div>
+        <div class="stat-value">${formatNum(repoInfo.forks_count)}</div>
         <div class="stat-label">Forks</div>
       </div>
       <div class="stat-card">
-        <div class="stat-value">🐛 ${formatNum(repoInfo.open_issues_count)}</div>
+        <div class="stat-value">${formatNum(repoInfo.open_issues_count)}</div>
         <div class="stat-label">Open Issues</div>
       </div>
       <div class="stat-card">
-        <div class="stat-value">👁 ${formatNum(repoInfo.watchers_count)}</div>
+        <div class="stat-value">${formatNum(repoInfo.watchers_count)}</div>
         <div class="stat-label">Watchers</div>
       </div>
     </div>
 
-    ${
-      repoInfo.description
-        ? `<div class="overview-desc">${escapeHtml(repoInfo.description)}</div>`
-        : ''
-    }
+    ${repoInfo.description
+      ? `<div class="overview-desc">${escapeHtml(repoInfo.description)}</div>`
+      : ''}
 
-    <div>
-      <strong style="font-size:10px;color:#64748b;text-transform:uppercase;letter-spacing:0.5px">
-        License:
-      </strong>
-      <span style="font-size:11px;margin-left:6px">
-        ${escapeHtml(repoInfo.license?.spdx_id || 'None')}
-      </span>
-      &nbsp;&nbsp;
-      <strong style="font-size:10px;color:#64748b;text-transform:uppercase;letter-spacing:0.5px">
-        Visibility:
-      </strong>
-      <span style="font-size:11px;margin-left:6px">
-        ${repoInfo.private ? 'Private' : 'Public'}
-      </span>
-      &nbsp;&nbsp;
-      <strong style="font-size:10px;color:#64748b;text-transform:uppercase;letter-spacing:0.5px">
-        Default Branch:
-      </strong>
-      <span style="font-size:11px;margin-left:6px">
-        ${escapeHtml(repoInfo.default_branch || 'main')}
-      </span>
+    <div class="meta-row">
+      <div class="meta-item">
+        <span class="meta-key">License</span>
+        <span class="meta-val">${escapeHtml(repoInfo.license?.spdx_id || 'Not specified')}</span>
+      </div>
+      <div class="meta-item">
+        <span class="meta-key">Visibility</span>
+        <span class="meta-val">${repoInfo.private ? 'Private' : 'Public'}</span>
+      </div>
+      <div class="meta-item">
+        <span class="meta-key">Default Branch</span>
+        <span class="meta-val">${escapeHtml(repoInfo.default_branch || 'main')}</span>
+      </div>
     </div>
 
-    <div class="topics" style="margin-top:10px">${topicsHtml}</div>
+    <div class="topics">${topicsHtml}</div>
+
+    <hr class="divider" />
 
     <!-- 2. Health Score -->
     <div class="section-title">2 · Health Score</div>

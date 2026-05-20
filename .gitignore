@@ -62,6 +62,9 @@ temp/
 *.tmp
 *.temp
 
+# Local dev/test scripts (not for production)
+test-report.mjs
+
 # Cache
 .cache/
 .parcel-cache/
