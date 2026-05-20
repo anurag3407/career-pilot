@@ -34,7 +34,6 @@ setInterval(() => {
   }
 }, 10 * 60 * 1000).unref();
 
-const router = express.Router();
 
 // Verify token endpoint — loginProtection tracks failed attempts per IP
 // and locks out after 5 consecutive failures for 15 minutes.
