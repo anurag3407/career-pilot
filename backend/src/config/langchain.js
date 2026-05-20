@@ -578,3 +578,4 @@ export const getVerbLists = () => ({
   powerVerbs: POWER_VERBS,
   weakVerbs: WEAK_VERBS
 });
+export { getSystemPrompt };
