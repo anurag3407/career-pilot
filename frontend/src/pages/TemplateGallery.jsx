@@ -1,4 +1,5 @@
 import { useState } from "react";
+import DeployModal from "../components/portfolio/DeployModal";
 
 export default function TemplateGallery() {
   const templates = [
@@ -45,6 +46,10 @@ export default function TemplateGallery() {
   const [colorScheme, setColorScheme] = useState("All");
   const [layout, setLayout] = useState("All");
   const [sort, setSort] = useState("Popular");
+  
+  // State for deployment modal
+  const [isDeployModalOpen, setIsDeployModalOpen] = useState(false);
+  const [selectedPortfolioTitle, setSelectedPortfolioTitle] = useState("");
 
   // 1. Filter Logic
   const filteredTemplates = templates.filter((template) => {
@@ -159,7 +164,13 @@ export default function TemplateGallery() {
                   <span>👁 {template.views.toLocaleString()}</span>
                 </div>
 
-                <button className="mt-5 w-full bg-white text-black py-2 rounded-xl font-medium hover:bg-gray-200 transition">
+                <button 
+                  onClick={() => {
+                    setSelectedPortfolioTitle(template.title);
+                    setIsDeployModalOpen(true);
+                  }}
+                  className="mt-5 w-full bg-white text-black py-2 rounded-xl font-medium hover:bg-gray-200 transition cursor-pointer"
+                >
                   Use This Theme
                 </button>
               </div>
@@ -167,6 +178,12 @@ export default function TemplateGallery() {
           ))}
         </div>
       )}
+      {/* Deploy Modal */}
+      <DeployModal 
+        isOpen={isDeployModalOpen}
+        onClose={() => setIsDeployModalOpen(false)}
+        portfolioTitle={selectedPortfolioTitle}
+      />
     </div>
   );
 }
