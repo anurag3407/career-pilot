@@ -2,6 +2,7 @@ import { useState, useRef, useCallback } from 'react'
 import { cn } from '@/lib/utils'
 import Button from './Button'
 import DragHandle from './DragHandle'
+import GhostTextArea from './GhostTextArea'
 
 // ─── Icons (inline SVG to keep zero extra deps) ────────────────────────────
 
@@ -62,7 +63,7 @@ const makeEntry = () => ({
 
 // ─── Entry editor ──────────────────────────────────────────────────────────
 
-function EntryEditor({ entry, onChange, onDelete, onMoveUp, onMoveDown, isFirst, isLast }) {
+function EntryEditor({ entry, onChange, onDelete, onMoveUp, onMoveDown, isFirst, isLast, sectionName }) {
   const [expanded, setExpanded] = useState(!entry.title)
 
   const update = (field) => (e) => onChange({ ...entry, [field]: e.target.value })
@@ -156,10 +157,12 @@ function EntryEditor({ entry, onChange, onDelete, onMoveUp, onMoveDown, isFirst,
           </div>
           <div className="sm:col-span-2">
             <label className="block text-xs font-medium text-muted-foreground mb-1">Description</label>
-            <textarea
+            <GhostTextArea
               rows={2}
               value={entry.description}
               onChange={update('description')}
+              sectionContext={sectionName || 'General'}
+              fieldType="description"
               placeholder="Brief description (optional)"
               className="w-full px-3 py-2 rounded-lg bg-background border border-border text-sm text-foreground placeholder:text-muted-foreground focus:outline-none focus:ring-2 focus:ring-primary/40 focus:border-primary transition-colors resize-none"
             />
@@ -398,6 +401,7 @@ function SectionCard({
             <EntryEditor
               key={entry.id}
               entry={entry}
+              sectionName={section.name}
               onChange={(updated) => updateEntry(entry.id, updated)}
               onDelete={() => deleteEntry(entry.id)}
               onMoveUp={() => moveEntry(idx, -1)}
