@@ -161,6 +161,37 @@ router.post('/', verifyToken, asyncHandler(async (req, res) => {
   });
 }));
 
+// Bulk update tracked job statuses
+router.put('/bulk-update', verifyToken, asyncHandler(async (req, res) => {
+  const userId = req.user.uid;
+  const { jobIds, status } = req.body;
+
+  const validStatuses = ['saved', 'applied', 'interviewing', 'offered', 'rejected'];
+  if (!Array.isArray(jobIds) || jobIds.length === 0) {
+    throw new ApiError(400, 'Provide at least one job to update');
+  }
+
+  if (!status || !validStatuses.includes(status)) {
+    throw new ApiError(400, 'Invalid status');
+  }
+
+  const result = await TrackedJob.updateMany(
+    { _id: { $in: jobIds }, userId },
+    { $set: { status } },
+    { runValidators: true }
+  );
+
+  if (result.matchedCount === 0) {
+    throw new ApiError(404, 'No tracked jobs found to update');
+  }
+
+  res.json({
+    success: true,
+    message: 'Jobs updated successfully',
+    updatedCount: result.modifiedCount
+  });
+}));
+
 // Update tracked job status
 router.put('/:trackerId', verifyToken, asyncHandler(async (req, res) => {
   const { trackerId } = req.params;
@@ -209,6 +240,28 @@ router.put('/:trackerId', verifyToken, asyncHandler(async (req, res) => {
       ...updatedJob,
       _id: undefined
     }
+  });
+}));
+
+// Bulk delete tracked jobs
+router.delete('/bulk-delete', verifyToken, asyncHandler(async (req, res) => {
+  const userId = req.user.uid;
+  const { jobIds } = req.body;
+
+  if (!Array.isArray(jobIds) || jobIds.length === 0) {
+    throw new ApiError(400, 'Provide at least one job to delete');
+  }
+
+  const result = await TrackedJob.deleteMany({ _id: { $in: jobIds }, userId });
+
+  if (result.deletedCount === 0) {
+    throw new ApiError(404, 'No tracked jobs found to delete');
+  }
+
+  res.json({
+    success: true,
+    message: 'Jobs removed from tracker',
+    deletedCount: result.deletedCount
   });
 }));
 
