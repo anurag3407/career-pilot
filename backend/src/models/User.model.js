@@ -1,4 +1,5 @@
 import mongoose from 'mongoose';
+import { softDeletePlugin } from '../middleware/softDelete.js';
 
 const userSchema = new mongoose.Schema({
   username: {
@@ -38,7 +39,10 @@ const userSchema = new mongoose.Schema({
   directMessages: { type: Boolean, default: true },
   proposalUpdates: { type: Boolean, default: true },
 }
-});
+}, { timestamps: true });
+
+// Apply soft delete plugin
+userSchema.plugin(softDeletePlugin);
 
 const User = mongoose.model('User', userSchema);
 

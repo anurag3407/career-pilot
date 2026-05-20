@@ -1,4 +1,5 @@
 import mongoose from 'mongoose';
+import { softDeletePlugin } from '../middleware/softDelete.js';
 
 const answerSchema = new mongoose.Schema({
     questionId: { type: String, required: true },
@@ -56,5 +57,8 @@ const interviewSchema = new mongoose.Schema({
 
 interviewSchema.index({ odId: 1, createdAt: -1 }, { background: true });
 interviewSchema.index({ odId: 1, status: 1 }, { background: true });
+
+// Apply soft delete plugin
+interviewSchema.plugin(softDeletePlugin);
 
 export default mongoose.model('Interview', interviewSchema);

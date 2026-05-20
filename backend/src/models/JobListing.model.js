@@ -1,4 +1,5 @@
 import mongoose from 'mongoose';
+import { softDeletePlugin } from '../middleware/softDelete.js';
 
 const jobListingSchema = new mongoose.Schema({
     externalId: {

@@ -1,4 +1,5 @@
 import mongoose from 'mongoose';
+import { softDeletePlugin } from '../middleware/softDelete.js';
 
 const fellowshipChatRoomSchema = new mongoose.Schema({
     proposalId: {
@@ -71,6 +72,9 @@ fellowshipChatRoomSchema.index({ corporateId: 1, status: 1, lastMessageAt: -1 },
 
 const FellowshipChatRoom = mongoose.model('FellowshipChatRoom', fellowshipChatRoomSchema);
 
+// Apply soft delete plugin
+fellowshipChatRoomSchema.plugin(softDeletePlugin);
+
 const fellowshipMessageSchema = new mongoose.Schema({
     roomId: {
         type: mongoose.Schema.Types.ObjectId,
@@ -103,6 +107,9 @@ const fellowshipMessageSchema = new mongoose.Schema({
 });
 
 fellowshipMessageSchema.index({ roomId: 1, createdAt: -1 }, { background: true });
+
+// Apply soft delete plugin
+fellowshipMessageSchema.plugin(softDeletePlugin);
 
 const FellowshipMessage = mongoose.model('FellowshipMessage', fellowshipMessageSchema);
 

@@ -1,4 +1,5 @@
 import mongoose from 'mongoose';
+import { softDeletePlugin } from '../middleware/softDelete.js';
 
 const resumeSchema = new mongoose.Schema({
     userId: {
@@ -57,6 +58,9 @@ const resumeSchema = new mongoose.Schema({
 resumeSchema.index({ userId: 1, createdAt: -1 }, { background: true });
 // Text index for global search
 resumeSchema.index({ originalText: 'text', enhancedText: 'text' }, { background: true });
+
+// Apply soft delete plugin
+resumeSchema.plugin(softDeletePlugin);
 
 const Resume = mongoose.model('Resume', resumeSchema);
 

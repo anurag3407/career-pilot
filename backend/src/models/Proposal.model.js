@@ -1,4 +1,5 @@
 import mongoose from 'mongoose';
+import { softDeletePlugin } from '../middleware/softDelete.js';
 
 const proposalSchema = new mongoose.Schema({
     challengeId: {
@@ -65,6 +66,9 @@ proposalSchema.index({ challengeId: 1, createdAt: -1 }, { background: true });
 proposalSchema.pre('save', function () {
     this.updatedAt = new Date();
 });
+
+// Apply soft delete plugin
+proposalSchema.plugin(softDeletePlugin);
 
 const Proposal = mongoose.model('Proposal', proposalSchema);
 

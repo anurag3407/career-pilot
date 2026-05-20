@@ -1,4 +1,5 @@
 import mongoose from 'mongoose';
+import { softDeletePlugin } from '../middleware/softDelete.js';
 
 const jobSchema = new mongoose.Schema({
   title: {
@@ -65,5 +66,8 @@ jobSchema.index({ title: 'text', company: 'text', description: 'text' });
 jobSchema.index({ isActive: 1, createdAt: -1 });
 jobSchema.index({ 'location.city': 1, jobType: 1 });
 jobSchema.index({ 'location.country': 1, jobType: 1 });
+
+// Apply soft delete plugin
+jobSchema.plugin(softDeletePlugin);
 
 export default mongoose.model('Job', jobSchema);

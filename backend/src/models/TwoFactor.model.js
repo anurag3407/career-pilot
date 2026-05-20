@@ -1,4 +1,5 @@
 import mongoose from 'mongoose';
+import { softDeletePlugin } from '../middleware/softDelete.js';
 
 const twoFactorSchema = new mongoose.Schema({
   uid: {
@@ -22,6 +23,9 @@ const twoFactorSchema = new mongoose.Schema({
     select: false
   }
 }, { timestamps: true });
+
+// Apply soft delete plugin
+twoFactorSchema.plugin(softDeletePlugin);
 
 const TwoFactor = mongoose.model('TwoFactor', twoFactorSchema);
 

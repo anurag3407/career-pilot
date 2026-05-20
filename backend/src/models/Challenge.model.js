@@ -1,4 +1,5 @@
 import mongoose from 'mongoose';
+import { softDeletePlugin } from '../middleware/softDelete.js';
 
 const challengeSchema = new mongoose.Schema({
     title: {
@@ -74,6 +75,9 @@ challengeSchema.index({ corporateId: 1, createdAt: -1 }, { background: true });
 challengeSchema.pre('save', function () {
     this.updatedAt = new Date();
 });
+
+// Apply soft delete plugin
+challengSchema.plugin(softDeletePlugin);
 
 const Challenge = mongoose.model('Challenge', challengeSchema);
 

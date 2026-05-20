@@ -1,4 +1,5 @@
 import mongoose from 'mongoose';
+import { softDeletePlugin } from '../middleware/softDelete.js';
 
 const notificationLogSchema = new mongoose.Schema({
     userId: {
@@ -50,5 +51,8 @@ notificationLogSchema.index({ alertId: 1, jobListingId: 1 }, { background: true 
 notificationLogSchema.index({ userId: 1, sentAt: -1 }, { background: true });
 notificationLogSchema.index({ emailStatus: 1, sentAt: -1 }, { background: true });
 notificationLogSchema.index({ alertId: 1, sentAt: -1 }, { background: true });
+
+// Apply soft delete plugin
+notificationLogSchema.plugin(softDeletePlugin);
 
 export default mongoose.model('NotificationLog', notificationLogSchema);

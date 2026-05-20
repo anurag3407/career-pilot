@@ -1,4 +1,5 @@
 import mongoose from 'mongoose';
+import { softDeletePlugin } from '../middleware/softDelete.js';
 
 const aiConfigSchema = new mongoose.Schema({
   uid: {
@@ -22,5 +23,8 @@ const aiConfigSchema = new mongoose.Schema({
     trim: true,
   },
 }, { timestamps: true });
+
+// Apply soft delete plugin
+aiConfigSchema.plugin(softDeletePlugin);
 
 export default mongoose.model('AiConfig', aiConfigSchema);

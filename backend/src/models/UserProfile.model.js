@@ -1,4 +1,5 @@
 import mongoose from 'mongoose';
+import { softDeletePlugin } from '../middleware/softDelete.js';
 
 const userProfileSchema = new mongoose.Schema({
   uid: {
@@ -78,5 +79,6 @@ const userProfileSchema = new mongoose.Schema({
     }
   }],
 }, { timestamps: true });
-
+// Apply soft delete plugin
+userProfileSchema.plugin(softDeletePlugin);
 export default mongoose.model('UserProfile', userProfileSchema);

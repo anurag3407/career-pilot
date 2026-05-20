@@ -1,4 +1,5 @@
 import mongoose from 'mongoose';
+import { softDeletePlugin } from '../middleware/softDelete.js';
 
 const noteSchema = new mongoose.Schema({
     content: {
@@ -72,6 +73,9 @@ trackedJobSchema.index({ userId: 1, jobId: 1 }, { unique: true, background: true
 trackedJobSchema.index({ userId: 1, createdAt: -1 }, { background: true });
 trackedJobSchema.index({ userId: 1, title: 1 }, { background: true });
 trackedJobSchema.index({ userId: 1, status: 1 }, { background: true });
+
+// Apply soft delete plugin
+trackedJobSchema.plugin(softDeletePlugin);
 
 const TrackedJob = mongoose.model('TrackedJob', trackedJobSchema);
 

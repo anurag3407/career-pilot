@@ -1,5 +1,6 @@
 import mongoose from 'mongoose';
 import crypto from 'crypto';
+import { softDeletePlugin } from '../middleware/softDelete.js';
 
 const fellowshipProfileSchema = new mongoose.Schema({
     userId: {
@@ -77,6 +78,10 @@ const compareVerificationCode = (code, stored) => {
 
 fellowshipProfileSchema.index({ verificationCodeExpiry: 1 }, { expireAfterSeconds: 0 });
 
+// Apply soft delete plugin
+fellowshipProfileSchema.plugin(softDeletePlugin);
+
+// Hash verification code before saving
 fellowshipProfileSchema.pre('save', function () {
     this.updatedAt = new Date();
 
