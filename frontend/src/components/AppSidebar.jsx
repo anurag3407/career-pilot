@@ -15,11 +15,8 @@ import {
     ShieldCheck,
     Sun,
     Moon,
-<<<<<<< HEAD
-    Zap
-=======
+    Zap,
     Rocket
->>>>>>> upstream/main
 } from "lucide-react";
 import { useAuth } from "../context/AuthContext";
 import { useTheme } from "../context/ThemeContext";
@@ -76,7 +73,7 @@ const navLinks = [
     {
         label: 'Deployments',
         href: '/deployments',
-        icon: <Rocket className="w-5 h-5 flex-shrink-0" />
+        icon: <Rocket className="w-5 h-5 flex-shrink-0" />,
     },
     {
         label: "Security",
