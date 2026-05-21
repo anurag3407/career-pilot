@@ -1,4 +1,5 @@
 import { GoogleGenerativeAI } from '@google/generative-ai';
+import { aiCallsCounter } from '../../middleware/metrics.js';
 
 let genAI = null;
 
@@ -113,6 +114,7 @@ export const enhanceSection = async (sectionType, content) => {
   const model = getGenAI().getGenerativeModel({ model: 'gemini-2.0-flash' });
   const prompt = promptBuilder(content);
 
+  aiCallsCounter.inc({ provider: "gemini" });
   const result = await model.generateContent(prompt);
   const responseText = result.response.text();
 

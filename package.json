@@ -1,6 +1,7 @@
 {
   "dependencies": {
     "framer-motion": "^12.39.0",
-    "lucide-react": "^1.16.0"
+    "lucide-react": "^1.16.0",
+    "puppeteer-core": "^25.0.4"
   }
 }

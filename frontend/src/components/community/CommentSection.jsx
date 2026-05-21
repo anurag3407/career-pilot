@@ -11,6 +11,7 @@ import {
   Loader2
 } from 'lucide-react';
 import toast from 'react-hot-toast';
+import { SkeletonListItems } from '../ui/Skeleton';
 
 function CommentItem({ comment, currentUser, onReply, onLike, depth = 0 }) {
   const [showReplies, setShowReplies] = useState(depth === 0);
@@ -197,8 +198,8 @@ export default function CommentSection({ postId, currentUser, onCommentAdded }) 
       
       setTotal(data.pagination.total);
       setHasMore(data.comments.length === 20 && data.pagination.total > pageToFetch * 20);
-    } catch {
-      toast.error('Failed to load comments');
+    } catch (error) {
+      toast.error('Failed to load comments', { id: `community-comments-load-error-${postId}` });
     } finally {
       setLoading(false);
     }
@@ -216,8 +217,8 @@ export default function CommentSection({ postId, currentUser, onCommentAdded }) 
       setTotal(prev => prev + 1);
       onCommentAdded?.();
       toast.success('Comment posted!');
-    } catch {
-      toast.error('Failed to post comment');
+    } catch (error) {
+      toast.error('Failed to post comment', { id: `community-post-comment-error-${postId}` });
     } finally {
       setIsSubmitting(false);
     }
@@ -266,8 +267,8 @@ export default function CommentSection({ postId, currentUser, onCommentAdded }) 
       };
       
       setComments(updateCommentLike);
-    } catch {
-      toast.error('Failed to like comment');
+    } catch (error) {
+      toast.error('Failed to like comment', { id: `community-like-comment-error-${commentId}` });
     }
   };
 
@@ -314,8 +315,8 @@ export default function CommentSection({ postId, currentUser, onCommentAdded }) 
       {/* Comments List */}
       <div className="max-h-96 overflow-y-auto">
         {loading ? (
-          <div className="flex items-center justify-center py-8">
-            <Loader2 className="w-6 h-6 animate-spin text-primary" />
+          <div className="px-4 py-4">
+            <SkeletonListItems count={3} />
           </div>
         ) : comments.length === 0 ? (
           <div className="text-center py-8 text-muted-foreground">

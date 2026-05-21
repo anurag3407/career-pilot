@@ -1,11 +1,22 @@
 import express from 'express';
-import { enhanceResume, generateSummary, suggestImprovements, analyzeATSScore, analyzeResumeComprehensive, analyzeBulletPoints, generateBeforeAfter, getVerbLists } from '../config/langchain.js';
+import { enhanceResume, generateSummary, suggestImprovements, analyzeATSScore, analyzeResumeComprehensive, analyzeBulletPoints, generateBeforeAfter, getVerbLists, getSystemPrompt } from '../config/langchain.js';
 import { generateEmails } from '../services/emailGeneratorService.js';
+import { predictTrajectory } from '../services/ai/careerTrajectory.js';
 import { optimizeLinkedInProfile } from '../services/linkedinOptimizerService.js';
 import { verifyToken } from '../middleware/auth.js';
 import { extractAIProvider } from '../middleware/aiKey.js';
 import { asyncHandler, ApiError } from '../middleware/errorHandler.js';
 import { aiRateLimiter } from '../middleware/rateLimiter.js';
+import { createSSEStream } from '../middleware/stream.js';
+import { getDefaultProvider } from '../config/aiProviders.js';
+import { validate } from '../middleware/validate.js';
+import {
+  enhanceResumeSchema,
+  resumeTextJobRoleSchema,
+  beforeAfterSchema,
+  generateEmailSchema,
+  optimizeLinkedInSchema,
+} from '../schemas/enhance.schema.js';
 
 // Import your brand new AI service
 import { generateQuestions } from '../services/ai/interviewQuestionGenerator.js';
@@ -13,7 +24,7 @@ import { generateQuestions } from '../services/ai/interviewQuestionGenerator.js'
 const router = express.Router();
 
 // Enhance resume with AI
-router.post('/', verifyToken, extractAIProvider, aiRateLimiter, asyncHandler(async (req, res) => {
+router.post('/', verifyToken, extractAIProvider, aiRateLimiter, validate(enhanceResumeSchema), asyncHandler(async (req, res) => {
   const { resumeText, preferences } = req.body;
 
   if (!resumeText || !resumeText.trim()) {
@@ -53,7 +64,7 @@ router.post('/', verifyToken, extractAIProvider, aiRateLimiter, asyncHandler(asy
 }));
 
 // Generate summary only
-router.post('/summary', verifyToken, extractAIProvider, aiRateLimiter, asyncHandler(async (req, res) => {
+router.post('/summary', verifyToken, extractAIProvider, aiRateLimiter, validate(resumeTextJobRoleSchema), asyncHandler(async (req, res) => {
   const { resumeText, jobRole } = req.body;
 
   if (!resumeText || !resumeText.trim()) {
@@ -82,7 +93,7 @@ router.post('/summary', verifyToken, extractAIProvider, aiRateLimiter, asyncHand
 }));
 
 // Get improvement suggestions
-router.post('/suggestions', verifyToken, extractAIProvider, aiRateLimiter, asyncHandler(async (req, res) => {
+router.post('/suggestions', verifyToken, extractAIProvider, aiRateLimiter, validate(resumeTextJobRoleSchema), asyncHandler(async (req, res) => {
   const { resumeText, jobRole } = req.body;
 
   if (!resumeText || !resumeText.trim()) {
@@ -111,7 +122,7 @@ router.post('/suggestions', verifyToken, extractAIProvider, aiRateLimiter, async
 }));
 
 // Analyze ATS score
-router.post('/ats-analysis', verifyToken, extractAIProvider, aiRateLimiter, asyncHandler(async (req, res) => {
+router.post('/ats-analysis', verifyToken, extractAIProvider, aiRateLimiter, validate(resumeTextJobRoleSchema), asyncHandler(async (req, res) => {
   const { resumeText, jobRole } = req.body;
 
   if (!resumeText || !resumeText.trim()) {
@@ -138,7 +149,7 @@ router.post('/ats-analysis', verifyToken, extractAIProvider, aiRateLimiter, asyn
 }));
 
 // Comprehensive resume analysis (Senior Expert Level)
-router.post('/comprehensive-analysis', verifyToken, extractAIProvider, aiRateLimiter, asyncHandler(async (req, res) => {
+router.post('/comprehensive-analysis', verifyToken, extractAIProvider, aiRateLimiter, validate(resumeTextJobRoleSchema), asyncHandler(async (req, res) => {
   const { resumeText, jobRole } = req.body;
 
   if (!resumeText || !resumeText.trim()) {
@@ -165,7 +176,7 @@ router.post('/comprehensive-analysis', verifyToken, extractAIProvider, aiRateLim
 }));
 
 // Analyze individual bullet points
-router.post('/analyze-bullets', verifyToken, extractAIProvider, aiRateLimiter, asyncHandler(async (req, res) => {
+router.post('/analyze-bullets', verifyToken, extractAIProvider, aiRateLimiter, validate(resumeTextJobRoleSchema), asyncHandler(async (req, res) => {
   const { resumeText, jobRole } = req.body;
 
   if (!resumeText || !resumeText.trim()) {
@@ -192,7 +203,7 @@ router.post('/analyze-bullets', verifyToken, extractAIProvider, aiRateLimiter, a
 }));
 
 // Generate before/after comparison
-router.post('/before-after', verifyToken, extractAIProvider, aiRateLimiter, asyncHandler(async (req, res) => {
+router.post('/before-after', verifyToken, extractAIProvider, aiRateLimiter, validate(beforeAfterSchema), asyncHandler(async (req, res) => {
   const { resumeText, jobRole, analysisResults } = req.body;
 
   if (!resumeText || !resumeText.trim()) {
@@ -229,7 +240,7 @@ router.get('/verb-lists', verifyToken, asyncHandler(async (req, res) => {
 }));
 
 // Generate Email Variants
-router.post('/generate-email', verifyToken, extractAIProvider, aiRateLimiter, asyncHandler(async (req, res) => {
+router.post('/generate-email', verifyToken, extractAIProvider, aiRateLimiter, validate(generateEmailSchema), asyncHandler(async (req, res) => {
   const { resume, jobDesc, tone } = req.body;
 
   if (!resume || !jobDesc) {
@@ -252,7 +263,7 @@ router.post('/generate-email', verifyToken, extractAIProvider, aiRateLimiter, as
 }));
 
 // Optimize LinkedIn Profile
-router.post('/optimize-linkedin', verifyToken, aiRateLimiter, asyncHandler(async (req, res) => {
+router.post('/optimize-linkedin', verifyToken, aiRateLimiter, validate(optimizeLinkedInSchema), asyncHandler(async (req, res) => {
   const { profileText, targetRole } = req.body;
   const normalizedProfile = typeof profileText === 'string' ? profileText.trim() : '';
   const normalizedRole = typeof targetRole === 'string' ? targetRole.trim() : '';
@@ -269,20 +280,151 @@ router.post('/optimize-linkedin', verifyToken, aiRateLimiter, asyncHandler(async
   res.json(result);
 }));
 
-// NEW FEATURE: Generate Interview Questions from Portfolio Data
-router.get('/interview-prep-from-portfolio', verifyToken, extractAIProvider, aiRateLimiter, asyncHandler(async (req, res) => {
-  // Pull portfolio structure directly out of user request context or request parameters
-  const portfolioData = req.user?.portfolio || req.body?.portfolio || {};
+// Streaming endpoint for resume enhancement
+router.post('/stream', verifyToken, extractAIProvider, aiRateLimiter, asyncHandler(async (req, res) => {
+  const { resumeText, preferences } = req.body;
 
-  const questions = await generateQuestions(portfolioData);
+  if (!resumeText || !resumeText.trim()) {
+    throw new ApiError(400, 'Resume text is required');
+  }
 
-  res.json({
-    success: true,
-    count: questions.length,
-    data: questions,
-    provider: req.aiProvider?.providerName || 'Local Engine',
-    providerSource: req.aiProviderSource,
-  });
+  if (!preferences || !preferences.jobRole) {
+    throw new ApiError(400, 'Job role preference is required');
+  }
+
+  const stream = createSSEStream(res);
+
+  try {
+    stream.sendProgress(10, 'Initializing AI model...');
+
+    const validatedPreferences = {
+      jobRole: preferences.jobRole,
+      yearsOfExperience: preferences.yearsOfExperience || 0,
+      skills: Array.isArray(preferences.skills) ? preferences.skills : [],
+      industry: preferences.industry || '',
+      customInstructions: preferences.customInstructions || ''
+    };
+
+    stream.sendProgress(20, 'Preparing prompt...');
+
+    const provider = req.aiProvider || getDefaultProvider();
+    const systemPrompt = getSystemPrompt(
+      validatedPreferences.jobRole,
+      validatedPreferences.yearsOfExperience,
+      validatedPreferences.skills,
+      validatedPreferences.industry,
+      validatedPreferences.customInstructions,
+      preferences.profileInfo || {}
+    );
+
+    const prompt = `${systemPrompt}\n\nPlease enhance the following resume:\n\n${resumeText}`;
+
+    stream.sendProgress(30, 'Processing resume with AI...');
+
+    if (!provider.generateContentStream) {
+      const result = await provider.generateContent(prompt);
+      stream.sendChunk(result.text, true);
+      stream.sendDone({ tokensUsed: result.usage });
+      stream.endStream();
+      return;
+    }
+
+    let fullText = '';
+    let tokensUsed = { prompt: 0, completion: 0, total: 0 };
+    let lastProgress = 30;
+
+    for await (const chunk of await provider.generateContentStream(prompt)) {
+      if (chunk.done) {
+        tokensUsed = chunk.usage || tokensUsed;
+        stream.sendDone({ tokensUsed });
+        break;
+      }
+
+      if (chunk.text) {
+        fullText += chunk.text;
+        stream.sendChunk(chunk.text, false);
+
+        const progress = Math.min(90, 30 + (fullText.length / 50));
+        if (progress - lastProgress > 5) {
+          stream.sendProgress(Math.round(progress), 'Generating enhanced resume...');
+          lastProgress = progress;
+        }
+      }
+    }
+
+    stream.sendProgress(100, 'Complete!');
+    stream.endStream();
+
+  } catch (error) {
+    console.error('Streaming enhancement error:', error);
+    stream.sendError(error.message || 'Failed to enhance resume');
+    stream.endStream();
+  }
+}));
+
+// Predict career trajectories based on resume data
+// POST /api/enhance/career-trajectory
+router.post('/career-trajectory', verifyToken, extractAIProvider, aiRateLimiter, asyncHandler(async (req, res) => {
+  const { resumeData } = req.body;
+
+  if (!resumeData || typeof resumeData !== 'object') {
+    throw new ApiError(400, 'resumeData object is required');
+  }
+
+  const { currentRole, skills, yearsOfExperience, industry } = resumeData;
+
+  // At least one meaningful field must be present
+  const hasRole = currentRole && typeof currentRole === 'string' && currentRole.trim();
+  const hasSkills = Array.isArray(skills) && skills.length > 0;
+
+  if (!hasRole && !hasSkills) {
+    throw new ApiError(400, 'resumeData must include at least currentRole or skills');
+  }
+
+  // Sanitise inputs — never forward raw resumeText to the AI (token cost)
+  // Validate and sanitise each field to enforce strict token/cost bounds
+  const sanitisedData = {
+    // Cap role to 100 chars to prevent prompt injection / token bloat
+    currentRole: hasRole ? currentRole.trim().slice(0, 100) : 'Software Engineer',
+
+    // Filter to valid non-empty strings only, cap each skill at 50 chars, limit to 10 skills
+    skills: hasSkills
+      ? skills
+          .filter((s) => typeof s === 'string' && s.trim().length > 0)
+          .map((s) => s.trim().slice(0, 50))
+          .slice(0, 10)
+      : [],
+
+    // Reject NaN, Infinity, and negative values — clamp to safe range [0, 50]
+    yearsOfExperience:
+      typeof yearsOfExperience === 'number' &&
+      Number.isFinite(yearsOfExperience) &&
+      yearsOfExperience >= 0
+        ? Math.min(Math.floor(yearsOfExperience), 50)
+        : 0,
+
+    // Cap industry to 100 chars
+    industry: typeof industry === 'string' ? industry.trim().slice(0, 100) : 'Technology',
+  };
+
+  try {
+    const result = await predictTrajectory(sanitisedData, req.aiProvider);
+
+    res.json({
+      success: true,
+      data: {
+        ...result,
+        provider: req.aiProvider?.providerName || 'gemini',
+        providerSource: req.aiProviderSource,
+      },
+    });
+  } catch (error) {
+    console.error('Career trajectory prediction error:', error);
+    if (error.statusCode === 502) {
+      throw new ApiError(502, 'AI returned an unexpected response. Please try again.');
+    }
+    throw new ApiError(500, 'Failed to predict career trajectory. Please try again.');
+  }
 }));
 
 export default router;

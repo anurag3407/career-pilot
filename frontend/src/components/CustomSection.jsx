@@ -1,6 +1,7 @@
 import { useState, useRef, useCallback } from 'react'
 import { cn } from '@/lib/utils'
 import Button from './Button'
+import DragHandle from './DragHandle'
 
 // ─── Icons (inline SVG to keep zero extra deps) ────────────────────────────
 
@@ -245,8 +246,10 @@ function SectionCard({
       )}
     >
       {/* Section header */}
-      <div className="flex items-center gap-3 px-5 py-3.5 bg-muted/20 border-b border-border/50">
+        <div className="group flex items-center gap-3 px-5 py-3.5 bg-muted/20 border-b border-border/50">
+        <DragHandle />
         {/* Reorder */}
+        
         <div className="flex gap-1 shrink-0">
           <button
             type="button"
