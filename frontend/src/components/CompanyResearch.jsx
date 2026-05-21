@@ -6,6 +6,7 @@ import {
   Award, Heart, Star, Newspaper, ChevronRight
 } from 'lucide-react'
 import { jobTrackerApi } from '../services/api'
+import { SkeletonList } from './ui/Skeleton'
 
 export default function CompanyResearch({ companyName, industry = '', onClose }) {
   const [loading, setLoading] = useState(true)
@@ -78,9 +79,12 @@ export default function CompanyResearch({ companyName, industry = '', onClose })
           {/* Drawer Content */}
           <div className="flex-1 overflow-y-auto p-6 space-y-6 scrollbar-thin">
             {loading ? (
-              <div className="h-96 flex flex-col items-center justify-center gap-3">
-                <div className="w-10 h-10 border-4 border-muted border-t-primary rounded-full animate-spin" />
-                <p className="text-sm text-muted-foreground animate-pulse">Gathering intelligence on {companyName}...</p>
+              <div className="space-y-5">
+                <div className="space-y-2">
+                  <div className="h-5 w-48 rounded bg-foreground/10 animate-pulse" />
+                  <div className="h-3 w-64 rounded bg-foreground/10 animate-pulse" />
+                </div>
+                <SkeletonList count={4} />
               </div>
             ) : error ? (
               <div className="p-4 bg-destructive/10 border border-destructive/20 text-destructive text-sm rounded-xl flex items-start gap-2">

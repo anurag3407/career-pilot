@@ -1,21 +1,23 @@
 import { useState } from "react";
 import { useNavigate } from "react-router-dom";
 import { motion } from "framer-motion";
+
 import {
     LayoutDashboard,
     Search,
     Bell,
-    Mic,
     GraduationCap,
     Users,
     FileText,
+    Globe,
     LogOut,
     Settings,
-    Zap,
     User,
     ShieldCheck,
     Sun,
-    Moon
+    Moon,
+    Zap,
+    Rocket
 } from "lucide-react";
 import { useAuth } from "../context/AuthContext";
 import { useTheme } from "../context/ThemeContext";
@@ -47,7 +49,7 @@ const navLinks = [
     {
         label: "Interview Prep",
         href: "/interview-prep",
-        icon: <Mic className="w-5 h-5 flex-shrink-0" />,
+        icon: <Zap className="w-5 h-5 flex-shrink-0" />,
     },
     {
         label: "Fellowship",
@@ -65,9 +67,19 @@ const navLinks = [
         icon: <FileText className="w-5 h-5 flex-shrink-0" />,
     },
     {
+        label: "Portfolio",
+        href: "/portfolio",
+        icon: <Globe className="w-5 h-5 flex-shrink-0" />,
+    },
+    {
         label: "Profile",
         href: "/profile",
         icon: <User className="w-5 h-5 flex-shrink-0" />,
+    },
+    {
+        label: 'Deployments',
+        href: '/deployments',
+        icon: <Rocket className="w-5 h-5 flex-shrink-0" />,
     },
     {
         label: "Security",
@@ -78,7 +90,7 @@ const navLinks = [
         label: "Settings",
         href: "/settings",
         icon: <Settings className="w-5 h-5 flex-shrink-0" />,
-    },
+    }
 ];
 
 
@@ -87,7 +99,7 @@ function Logo() {
 
     return (
         <div className="flex items-center gap-3 py-2 px-1 group">
-            <div className="w-10 h-10 flex-shrink-0 flex items-center justify-center p-1.5 rounded-xl bg-primary/10 group-hover:scale-110 transition-transform">
+            <div className="w-10 h-10 flex-shrink-0 flex items-center justify-center p-1.5 rounded-xl group-hover:scale-110 transition-transform">
                 <img src="/speed.png" alt="careerpilot" className="w-full h-full object-contain" />
             </div>
             <motion.div

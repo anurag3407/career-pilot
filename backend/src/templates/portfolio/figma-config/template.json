@@ -1,0 +1,35 @@
+{
+  "id": "figma-config",
+  "name": "Figma Config",
+  "description": "A vibrant, geometric portfolio theme with multicolor accents, playful cards, and a grid-based project layout.",
+  "version": "1.0.0",
+  "author": "CareerPilot",
+  "category": "portfolio",
+  "tags": ["geometric", "colorful", "modern", "playful", "grid"],
+  "fonts": ["DM Sans", "Plus Jakarta Sans"],
+  "colors": {
+    "red": "#EF4444",
+    "blue": "#3B82F6",
+    "green": "#22C55E",
+    "purple": "#8B5CF6",
+    "orange": "#F97316"
+  },
+  "variables": {
+    "name": "Full name",
+    "title": "Professional title",
+    "bio": "Short biography",
+    "email": "Contact email",
+    "phone": "Phone number (optional)",
+    "location": "City, Country",
+    "github": "GitHub profile URL",
+    "linkedin": "LinkedIn profile URL",
+    "website": "Personal website URL (optional)",
+    "avatar": "Profile photo URL",
+    "skills": "Array of skill objects { name, category }",
+    "projects": "Array of project objects { title, description, tags, url, image, category }",
+    "experience": "Array of experience objects { company, role, duration, bullets }",
+    "education": "Array of education objects { institution, degree, year }"
+  },
+  "preview": "preview.png",
+  "entrypoint": "index.html"
+}

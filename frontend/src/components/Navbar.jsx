@@ -13,11 +13,13 @@ import {
   User,
   Bell,
   Mail,
+  Linkedin,
   Users,
   GraduationCap,
   Mic,
   Sun,
-  Moon
+  Moon,
+  Palette
 } from 'lucide-react'
 
 export default function Navbar() {
@@ -43,9 +45,32 @@ export default function Navbar() {
     }
   }
 
+  const handleHomeClick = (e) => {
+    if (
+      location.pathname === '/' &&
+      e.button === 0 &&
+      !e.metaKey &&
+      !e.ctrlKey
+    ) {
+      e.preventDefault()
+      window.scrollTo({ top: 0, behavior: 'smooth' })
+    } else {
+      setTimeout(() => {
+        window.scrollTo(0, 0)
+      }, 0)
+    }
+  }
+
   const isActive = (path) => location.pathname === path
 
-  const navLinks = [
+  // Public links accessible to everyone
+  const publicLinks = [
+    { path: '/templates', label: 'Templates', icon: Palette },
+    { path: '/#portfolio', label: 'Portfolio', icon: User },
+  ]
+
+  // Protected links accessible only to logged-in users
+  const privateLinks = [
     { path: '/dashboard', label: 'Dashboard', icon: LayoutDashboard },
     { path: '/jobs', label: 'Jobs', icon: Search },
     { path: '/job-alerts', label: 'Alerts', icon: Bell },
@@ -54,6 +79,7 @@ export default function Navbar() {
     { path: '/community', label: 'Community', icon: Users },
     { path: '/upload', label: 'Resume', icon: FileText },
     { path: '/email-generator', label: 'Emails', icon: Mail },
+    { path: '/linkedin-optimizer', label: 'LinkedIn', icon: Linkedin },
   ]
 
   return (
@@ -64,9 +90,10 @@ export default function Navbar() {
       <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
         <div className="flex justify-between h-16 items-center">
           {/* Logo */}
-          <Link to="/" className="flex items-center gap-2 group">
-            <div className="w-10 h-10 flex items-center justify-center p-1.5 rounded-xl bg-primary/10 group-hover:scale-110 transition-transform">
-              <img src="/speed.png" alt="" className="w-full h-full object-contain" />
+          
+          <Link to="/" onClick={handleHomeClick} className="flex items-center group">
+            <div className="w-15 h-15 flex items-center justify-center p-1.5 rounded-xl  group-hover:scale-110 transition-transform">
+              <img src="/speed.png" alt="CareerPilot logo" className="w-full h-full object-contain" />
             </div>
             <span className="text-xl font-bold text-foreground tracking-tight">
               careerpilot
@@ -75,23 +102,35 @@ export default function Navbar() {
 
           {/* Desktop Navigation */}
           <div className="hidden lg:flex items-center gap-1">
-            {user ? (
-              <>
-                {navLinks.map(({ path, label, icon: Icon }) => (
-                  <Link
-                    key={path}
-                    to={path}
-                    className={`flex items-center gap-2 px-3 py-2 rounded-lg text-sm font-medium transition-all ${isActive(path)
-                      ? 'bg-primary/10 text-primary'
-                      : 'text-muted-foreground hover:text-foreground hover:bg-muted'
-                      }`}
-                  >
-                    <Icon className="w-4 h-4" />
-                    {label}
-                  </Link>
-                ))}
-              </>
-            ) : null}
+            {/* Always visible public links */}
+            {publicLinks.map(({ path, label, icon: Icon }) => (
+              <Link
+                key={path}
+                to={path}
+                className={`flex items-center gap-2 px-3 py-2 rounded-lg text-sm font-medium transition-all ${isActive(path)
+                  ? 'bg-primary/10 text-primary'
+                  : 'text-muted-foreground hover:text-foreground hover:bg-muted'
+                  }`}
+              >
+                <Icon className="w-4 h-4" />
+                {label}
+              </Link>
+            ))}
+
+            {/* Conditionally visible private links */}
+            {user && privateLinks.map(({ path, label, icon: Icon }) => (
+              <Link
+                key={path}
+                to={path}
+                className={`flex items-center gap-2 px-3 py-2 rounded-lg text-sm font-medium transition-all ${isActive(path)
+                  ? 'bg-primary/10 text-primary'
+                  : 'text-muted-foreground hover:text-foreground hover:bg-muted'
+                  }`}
+              >
+                <Icon className="w-4 h-4" />
+                {label}
+              </Link>
+            ))}
           </div>
 
           {/* User Menu & Toggle */}
@@ -119,7 +158,7 @@ export default function Navbar() {
               <>
                 <div className="flex items-center gap-2 px-3 py-1.5 bg-muted border border-border rounded-full">
                   <div className="w-7 h-7 rounded-full overflow-hidden bg-primary/20 flex items-center justify-center">
-                    <img src="/user.svg" alt="" className="w-full h-full object-cover" />
+                    <img src="/user.svg" alt="User profile" className="w-full h-full object-cover" />
                   </div>
                   <span className="text-sm font-medium text-foreground max-w-[100px] truncate">
                     {user.displayName || user.email?.split('@')[0]}
@@ -127,6 +166,7 @@ export default function Navbar() {
                 </div>
                 <button
                   onClick={handleLogout}
+                  aria-label="Logout"
                   className="flex items-center gap-2 px-4 py-2 text-muted-foreground hover:text-destructive hover:bg-destructive/10 rounded-lg text-sm font-medium transition-all cursor-pointer"
                 >
                   <LogOut className="w-4 h-4" />
@@ -155,13 +195,16 @@ export default function Navbar() {
           <div className="flex items-center gap-2 md:hidden">
             <button
               onClick={toggleTheme}
+              aria-label="Toggle theme"
               className="p-2 rounded-xl bg-muted text-foreground border border-border"
             >
               {theme === 'light' ? <Moon className="w-5 h-5" /> : <Sun className="w-5 h-5" />}
             </button>
             <button
               onClick={() => setMobileMenuOpen(!mobileMenuOpen)}
-              className="p-2 rounded-lg hover:bg-muted text-muted-foreground cursor-pointer"
+              aria-label={mobileMenuOpen ? 'Close mobile menu' : 'Open mobile menu'}
+              aria-expanded={mobileMenuOpen}
+              className="p-2 rounded-lg hover:bg-muted text-muted-foreground cursor-pointer focus:outline-none focus:ring-2 focus:ring-primary"
             >
               {mobileMenuOpen ? (
                 <X className="w-6 h-6" />
@@ -183,6 +226,22 @@ export default function Navbar() {
             className="md:hidden border-t border-border bg-background/95 backdrop-blur-xl overflow-hidden"
           >
             <div className="px-4 py-6 space-y-3">
+              {/* Public Links for Mobile */}
+              {publicLinks.map(({ path, label, icon: Icon }) => (
+                <Link
+                  key={path}
+                  to={path}
+                  onClick={() => setMobileMenuOpen(false)}
+                  className={`flex items-center gap-3 px-4 py-4 rounded-xl text-base font-semibold transition-all ${isActive(path)
+                    ? 'bg-primary/10 text-primary'
+                    : 'text-muted-foreground hover:bg-muted hover:text-foreground'
+                    }`}
+                >
+                  <Icon className="w-5 h-5" />
+                  {label}
+                </Link>
+              ))}
+
               {user ? (
                 <>
                   <div className="flex items-center gap-3 px-4 py-4 bg-muted rounded-2xl mb-4 border border-border">
@@ -199,7 +258,7 @@ export default function Navbar() {
                     </div>
                   </div>
 
-                  {navLinks.map(({ path, label, icon: Icon }) => (
+                  {privateLinks.map(({ path, label, icon: Icon }) => (
                     <Link
                       key={path}
                       to={path}
@@ -250,4 +309,3 @@ export default function Navbar() {
     </nav>
   )
 }
-
