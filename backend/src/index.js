@@ -18,7 +18,7 @@ import jobAlertRoutes from './routes/jobAlerts.js';
 import communityRoutes from './routes/community.js';
 import fellowshipRoutes from './routes/fellowships.js';
 import interviewRoutes from './routes/interview.js';
-import paymentRoutes from './routes/payments.js';
+
 import userProfileRoutes from './routes/userProfile.js';
 import twoFactorRoutes from './routes/twoFactor.js';
 
@@ -108,7 +108,15 @@ app.use('/api/job-alerts', jobAlertRoutes);
 app.use('/api/community', communityRoutes);
 app.use('/api/fellowship', fellowshipRoutes);
 app.use('/api/interview', interviewRoutes);
-app.use('/api/payments', paymentRoutes);
+try {
+    const paymentRoutes = (await import('./routes/payments.js')).default;
+
+    app.use('/api/payments', paymentRoutes);
+
+    console.log('✅ Payment routes loaded');
+} catch (error) {
+    console.warn('⚠️ Payment routes disabled:', error.message);
+}
 app.use('/api/portfolio', portfolioRoutes);
 app.use('/api/user-profiles', userProfileRoutes);
 app.use('/api/auth/2fa', twoFactorRoutes);
