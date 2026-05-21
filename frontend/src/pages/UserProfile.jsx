@@ -142,10 +142,39 @@ export default function UserProfile() {
 
   if (loading) {
     return (
-      <div className="min-h-screen bg-black flex items-center justify-center">
-        <div className="relative">
-          <div className="w-12 h-12 border-2 border-zinc-800 rounded-full" />
-          <div className="absolute top-0 left-0 w-12 h-12 border-2 border-transparent border-t-indigo-500 rounded-full animate-spin" />
+      <div className="min-h-screen bg-background">
+        <div className="relative max-w-3xl mx-auto px-4 sm:px-6 lg:px-8 py-8">
+          <motion.div
+            initial={{ opacity: 0, y: 10 }}
+            animate={{ opacity: 1, y: 0 }}
+            transition={{ duration: 0.4 }}
+            className="space-y-6"
+          >
+            {/* Profile Header Skeleton */}
+            <div className="rounded-2xl bg-card border border-border p-6 space-y-4">
+              <div className="flex items-start gap-5">
+                <div className="w-20 h-20 rounded-2xl bg-muted animate-pulse flex-shrink-0" />
+                <div className="flex-1 space-y-3">
+                  <div className="h-6 bg-muted rounded-lg w-1/2 animate-pulse" />
+                  <div className="h-4 bg-muted rounded-lg w-1/3 animate-pulse" />
+                  <div className="h-4 bg-muted rounded-lg w-1/4 animate-pulse" />
+                </div>
+              </div>
+            </div>
+
+            {/* Stats Skeleton */}
+            <div className="grid grid-cols-3 gap-4">
+              {[...Array(3)].map((_, i) => (
+                <div key={i} className="rounded-lg bg-card border border-border p-4 space-y-2">
+                  <div className="h-3 bg-muted rounded w-2/3 animate-pulse" />
+                  <div className="h-8 bg-muted rounded w-1/2 animate-pulse" />
+                </div>
+              ))}
+            </div>
+
+            {/* Activity Skeleton */}
+            <SkeletonList count={3} />
+          </motion.div>
         </div>
       </div>
     )
