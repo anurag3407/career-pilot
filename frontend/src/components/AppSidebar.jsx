@@ -15,7 +15,8 @@ import {
     ShieldCheck,
     Sun,
     Moon,
-    Mail
+    Mail,
+    Zap
 } from "lucide-react";
 import { useAuth } from "../context/AuthContext";
 import { useTheme } from "../context/ThemeContext";
@@ -63,6 +64,11 @@ const navLinks = [
         label: "Resume",
         href: "/upload",
         icon: <FileText className="w-5 h-5 flex-shrink-0" />,
+    },
+    {
+        label: "Enhance",
+        href: "/enhance",
+        icon: <Zap className="w-5 h-5 flex-shrink-0" />,
     },
     {
         label: "Profile",
