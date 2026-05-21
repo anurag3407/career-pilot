@@ -1,4 +1,5 @@
 import mongoose from 'mongoose';
+import softDelete from '../middleware/softDelete.js';
 
 const jobSchema = new mongoose.Schema({
   title: {
@@ -56,6 +57,9 @@ const jobSchema = new mongoose.Schema({
     default: true
   },
   expiresAt: Date
+  ,
+  isDeleted: { type: Boolean, default: false },
+  deletedAt: { type: Date, default: null }
 }, {
   timestamps: true
 });
@@ -65,5 +69,7 @@ jobSchema.index({ title: 'text', company: 'text', description: 'text' });
 jobSchema.index({ isActive: 1, createdAt: -1 });
 jobSchema.index({ 'location.city': 1, jobType: 1 });
 jobSchema.index({ 'location.country': 1, jobType: 1 });
+
+jobSchema.plugin(softDelete);
 
 export default mongoose.model('Job', jobSchema);

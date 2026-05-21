@@ -1,4 +1,5 @@
 import mongoose from 'mongoose';
+import softDelete from '../middleware/softDelete.js';
 
 const jobAlertSchema = new mongoose.Schema({
     userId: {
@@ -67,6 +68,13 @@ const jobAlertSchema = new mongoose.Schema({
 }, {
     timestamps: true
 });
+
+jobAlertSchema.add({
+    isDeleted: { type: Boolean, default: false },
+    deletedAt: { type: Date, default: null }
+});
+
+jobAlertSchema.plugin(softDelete);
 
 // Compound indexes for efficient querying
 jobAlertSchema.index({ userId: 1, isActive: 1 }, { background: true });

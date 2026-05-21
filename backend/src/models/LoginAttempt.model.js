@@ -1,4 +1,5 @@
 import mongoose from 'mongoose';
+import softDelete from '../middleware/softDelete.js';
 
 const loginAttemptSchema = new mongoose.Schema({
   ip: {
@@ -20,5 +21,8 @@ const loginAttemptSchema = new mongoose.Schema({
     default: null
   }
 }, { timestamps: true });
+
+loginAttemptSchema.add({ isDeleted: { type: Boolean, default: false }, deletedAt: { type: Date, default: null } });
+loginAttemptSchema.plugin(softDelete);
 
 export default mongoose.model('LoginAttempt', loginAttemptSchema);

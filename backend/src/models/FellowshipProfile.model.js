@@ -1,4 +1,5 @@
 import mongoose from 'mongoose';
+import softDelete from '../middleware/softDelete.js';
 import crypto from 'crypto';
 
 const fellowshipProfileSchema = new mongoose.Schema({
@@ -60,6 +61,9 @@ const fellowshipProfileSchema = new mongoose.Schema({
         type: Date,
         default: Date.now
     }
+    ,
+    isDeleted: { type: Boolean, default: false },
+    deletedAt: { type: Date, default: null }
 });
 
 const hashVerificationCode = (code) => {
@@ -93,5 +97,7 @@ fellowshipProfileSchema.methods.compareVerificationCode = function (code) {
 };
 
 const FellowshipProfile = mongoose.model('FellowshipProfile', fellowshipProfileSchema);
+
+fellowshipProfileSchema.plugin(softDelete);
 
 export default FellowshipProfile;

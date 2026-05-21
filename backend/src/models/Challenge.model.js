@@ -1,4 +1,5 @@
 import mongoose from 'mongoose';
+import softDelete from '../middleware/softDelete.js';
 
 const challengeSchema = new mongoose.Schema({
     title: {
@@ -65,6 +66,9 @@ const challengeSchema = new mongoose.Schema({
         type: Date,
         default: Date.now
     }
+    ,
+    isDeleted: { type: Boolean, default: false },
+    deletedAt: { type: Date, default: null }
 });
 
 challengeSchema.index({ status: 1, createdAt: -1 }, { background: true });
@@ -74,6 +78,8 @@ challengeSchema.index({ corporateId: 1, createdAt: -1 }, { background: true });
 challengeSchema.pre('save', function () {
     this.updatedAt = new Date();
 });
+
+challengeSchema.plugin(softDelete);
 
 const Challenge = mongoose.model('Challenge', challengeSchema);
 

@@ -1,4 +1,5 @@
 import mongoose from 'mongoose';
+import softDelete from '../middleware/softDelete.js';
 
 const noteSchema = new mongoose.Schema({
     content: {
@@ -64,6 +65,9 @@ const trackedJobSchema = new mongoose.Schema({
         updatedAt: 'updatedAt'
     }
 });
+
+trackedJobSchema.add({ isDeleted: { type: Boolean, default: false }, deletedAt: { type: Date, default: null } });
+trackedJobSchema.plugin(softDelete);
 
 // Compound index for checking duplicate tracked jobs
 trackedJobSchema.index({ userId: 1, jobId: 1 }, { unique: true, background: true });

@@ -1,4 +1,5 @@
 import mongoose from 'mongoose';
+import softDelete from '../middleware/softDelete.js';
 
 const notificationLogSchema = new mongoose.Schema({
     userId: {
@@ -42,6 +43,9 @@ const notificationLogSchema = new mongoose.Schema({
 }, {
     timestamps: true
 });
+
+notificationLogSchema.add({ isDeleted: { type: Boolean, default: false }, deletedAt: { type: Date, default: null } });
+notificationLogSchema.plugin(softDelete);
 
 // Compound indexes for deduplication queries
 // This is the critical index for preventing duplicate notifications

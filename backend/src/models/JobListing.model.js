@@ -1,4 +1,5 @@
 import mongoose from 'mongoose';
+import softDelete from '../middleware/softDelete.js';
 
 const jobListingSchema = new mongoose.Schema({
     externalId: {
@@ -78,6 +79,13 @@ const jobListingSchema = new mongoose.Schema({
 }, {
     timestamps: true
 });
+
+jobListingSchema.add({
+    isDeleted: { type: Boolean, default: false },
+    deletedAt: { type: Date, default: null }
+});
+
+jobListingSchema.plugin(softDelete);
 
 // Text search index for efficient job matching
 jobListingSchema.index({ title: 'text', company: 'text', description: 'text' });
