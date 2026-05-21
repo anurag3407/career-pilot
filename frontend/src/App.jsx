@@ -1,3 +1,4 @@
+import { useState, useEffect } from 'react';
 
 import Deployments from './pages/Deployments'
 import TemplateGallery from "./pages/TemplateGallery";
@@ -155,10 +156,10 @@ function App() {
               <Route path="/job-tracker" element={<ProtectedRoute><JobTracker /></ProtectedRoute>} />
               <Route path="/community" element={<ProtectedRoute><Community /></ProtectedRoute>} />
               <Route path="/interview-prep" element={<ProtectedRoute><InterviewPrep /></ProtectedRoute>} />
+              <Route path="/email-generator" element={<ProtectedRoute><EmailGenerator /></ProtectedRoute>} />
               <Route path="/profile" element={<ProtectedRoute><UserProfile /></ProtectedRoute>} />
               <Route path="/profile/:uid" element={<ProtectedRoute><UserProfile /></ProtectedRoute>} />
               <Route path="/security" element={<ProtectedRoute><SecuritySettings /></ProtectedRoute>} />
-              <Route path="/email-generator" element={<ProtectedRoute><EmailGenerator /></ProtectedRoute>} />
               <Route path="/linkedin-optimizer" element={<ProtectedRoute><LinkedInOptimizer /></ProtectedRoute>} />
               <Route path="/deployments" element={<ProtectedRoute><Deployments /></ProtectedRoute>} />
               <Route path="/settings" element={<ProtectedRoute><Settings /></ProtectedRoute>} />
