@@ -115,6 +115,47 @@ function sanitizeHtml(html) {
 }
 
 /**
+ * Verify that the Cloudflare API token is valid before deployment.
+ * Uses the lightweight /user/tokens/verify endpoint — no side effects.
+ *
+ * @param {string} [token] - Cloudflare API token (falls back to CLOUDFLARE_API_TOKEN env var)
+ * @returns {Promise<{ valid: boolean, tokenId?: string, status?: string, reason?: string }>}
+ */
+export async function validateToken(token) {
+  const resolved = token ?? process.env.CLOUDFLARE_API_TOKEN;
+  if (!resolved) {
+    return { valid: false, reason: 'CLOUDFLARE_API_TOKEN is not configured.' };
+  }
+
+  let res;
+  try {
+    res = await fetch(`${CF_API}/user/tokens/verify`, {
+      headers: { Authorization: `Bearer ${resolved}` },
+    });
+  } catch (err) {
+    throw new Error(`Cloudflare token validation request failed: ${err.message}`);
+  }
+
+  if (res.status === 401 || res.status === 403) {
+    return { valid: false, reason: 'Token is invalid or has expired.' };
+  }
+
+  const text = await res.text();
+  let data;
+  try { data = JSON.parse(text); } catch { data = { success: false }; }
+
+  if (!res.ok || !data.success) {
+    return { valid: false, reason: `Cloudflare API error ${res.status}.` };
+  }
+
+  return {
+    valid: true,
+    tokenId: data.result?.id ?? null,
+    status: data.result?.status ?? 'active',
+  };
+}
+
+/**
  * Deploy an HTML portfolio to Cloudflare Pages via the Direct Upload API.
  * HTML is sanitized server-side before upload.
  *
@@ -126,6 +167,11 @@ function sanitizeHtml(html) {
 export async function deploy(portfolioId, htmlContent, assets = {}) {
   assertSafeId(portfolioId, 'portfolioId');
   const { token, accountId } = getCredentials();
+
+  const tokenCheck = await validateToken(token);
+  if (!tokenCheck.valid) {
+    throw new Error(`Cloudflare token validation failed: ${tokenCheck.reason}`);
+  }
 
   const projectName = toProjectName(`cp-${portfolioId}`);
 
