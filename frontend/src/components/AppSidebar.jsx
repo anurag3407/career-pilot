@@ -17,10 +17,13 @@ import {
     Sun,
     Moon,
     Zap,
-    Rocket
+    Rocket,
+    Mail
 } from "lucide-react";
+
 import { useAuth } from "../context/AuthContext";
 import { useTheme } from "../context/ThemeContext";
+
 import {
     Sidebar,
     SidebarBody,
@@ -28,6 +31,7 @@ import {
     SidebarDivider,
     useSidebar,
 } from "./ui/Sidebar";
+
 import { cn } from "../lib/utils";
 
 const navLinks = [
@@ -50,6 +54,11 @@ const navLinks = [
         label: "Interview Prep",
         href: "/interview-prep",
         icon: <Zap className="w-5 h-5 flex-shrink-0" />,
+    },
+    {
+        label: "Email Generator",
+        href: "/email-generator",
+        icon: <Mail className="w-5 h-5 flex-shrink-0" />,
     },
     {
         label: "Fellowship",
@@ -77,8 +86,8 @@ const navLinks = [
         icon: <User className="w-5 h-5 flex-shrink-0" />,
     },
     {
-        label: 'Deployments',
-        href: '/deployments',
+        label: "Deployments",
+        href: "/deployments",
         icon: <Rocket className="w-5 h-5 flex-shrink-0" />,
     },
     {
@@ -93,15 +102,19 @@ const navLinks = [
     }
 ];
 
-
 function Logo() {
     const { open, animate } = useSidebar();
 
     return (
         <div className="flex items-center gap-3 py-2 px-1 group">
             <div className="w-10 h-10 flex-shrink-0 flex items-center justify-center p-1.5 rounded-xl group-hover:scale-110 transition-transform">
-                <img src="/speed.png" alt="careerpilot" className="w-full h-full object-contain" />
+                <img
+                    src="/speed.png"
+                    alt="careerpilot"
+                    className="w-full h-full object-contain"
+                />
             </div>
+
             <motion.div
                 animate={{
                     display: animate ? (open ? "flex" : "none") : "flex",
@@ -135,12 +148,15 @@ function UserSection() {
 
     if (!user) return null;
 
-    const displayName = user.displayName || user.email?.split("@")[0] || "User";
+    const displayName =
+        user.displayName || user.email?.split("@")[0] || "User";
+
     const initials = displayName.charAt(0).toUpperCase();
 
     return (
         <div className="space-y-3">
             <SidebarDivider />
+
             <div
                 className={cn(
                     "flex items-center gap-3 p-3 rounded-2xl bg-muted/50 border border-border transition-all hover:bg-muted",
@@ -148,8 +164,11 @@ function UserSection() {
                 )}
             >
                 <div className="w-10 h-10 rounded-xl bg-primary/20 flex items-center justify-center flex-shrink-0 border border-primary/20">
-                    <span className="text-primary font-bold text-base">{initials}</span>
+                    <span className="text-primary font-bold text-base">
+                        {initials}
+                    </span>
                 </div>
+
                 <motion.div
                     animate={{
                         display: animate ? (open ? "block" : "none") : "block",
@@ -161,9 +180,13 @@ function UserSection() {
                     <p className="text-sm font-bold text-foreground truncate">
                         {displayName}
                     </p>
-                    <p className="text-xs text-muted-foreground font-medium truncate">{user.email}</p>
+
+                    <p className="text-xs text-muted-foreground font-medium truncate">
+                        {user.email}
+                    </p>
                 </motion.div>
             </div>
+
             <button
                 onClick={toggleTheme}
                 className={cn(
@@ -171,18 +194,26 @@ function UserSection() {
                     !open && animate && "justify-center"
                 )}
             >
-                {theme === 'dark' ? <Sun className="w-5 h-5 flex-shrink-0" /> : <Moon className="w-5 h-5 flex-shrink-0" />}
+                {theme === "dark" ? (
+                    <Sun className="w-5 h-5 flex-shrink-0" />
+                ) : (
+                    <Moon className="w-5 h-5 flex-shrink-0" />
+                )}
+
                 <motion.span
                     animate={{
-                        display: animate ? (open ? "inline-block" : "none") : "inline-block",
+                        display: animate
+                            ? (open ? "inline-block" : "none")
+                            : "inline-block",
                         opacity: animate ? (open ? 1 : 0) : 1,
                     }}
                     transition={{ duration: 0.2 }}
                     className="text-sm font-bold whitespace-pre"
                 >
-                    {theme === 'dark' ? 'Light Mode' : 'Dark Mode'}
+                    {theme === "dark" ? "Light Mode" : "Dark Mode"}
                 </motion.span>
             </button>
+
             <button
                 onClick={() => {
                     handleLogout();
@@ -194,9 +225,12 @@ function UserSection() {
                 )}
             >
                 <LogOut className="w-5 h-5 flex-shrink-0" />
+
                 <motion.span
                     animate={{
-                        display: animate ? (open ? "inline-block" : "none") : "inline-block",
+                        display: animate
+                            ? (open ? "inline-block" : "none")
+                            : "inline-block",
                         opacity: animate ? (open ? 1 : 0) : 1,
                     }}
                     transition={{ duration: 0.2 }}
@@ -217,7 +251,9 @@ export default function AppSidebar() {
             <SidebarBody className="justify-between gap-6 bg-card border-r border-border">
                 <div className="flex flex-col flex-1 overflow-y-auto overflow-x-hidden scrollbar-hide">
                     <Logo />
+
                     <SidebarDivider />
+
                     <div className="flex flex-col gap-1">
                         {navLinks.map((link) => (
                             <SidebarLink
@@ -229,9 +265,9 @@ export default function AppSidebar() {
                         ))}
                     </div>
                 </div>
+
                 <UserSection />
             </SidebarBody>
         </Sidebar>
     );
 }
-
