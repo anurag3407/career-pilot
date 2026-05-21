@@ -15,7 +15,6 @@ const directMessagesRef = db.collection('directMessages');
 
 // ============ CHANNEL CONTROLLERS ============
 
-// Get all channels
 export const getChannels = async (req, res, next) => {
   try {
     const { type = 'all', limit = 50, cursor } = req.query;
@@ -39,10 +38,7 @@ export const getChannels = async (req, res, next) => {
 
     const snapshot = await query.get();
 
-    let channels = snapshot.docs.map(doc => ({
-      id: doc.id,
-      ...doc.data()
-    }));
+    let channels = snapshot.docs.map(doc => ({ id: doc.id, ...doc.data() }));
 
     if (type === 'private') {
       channels = channels.filter(ch =>
@@ -56,40 +52,28 @@ export const getChannels = async (req, res, next) => {
     res.json({
       success: true,
       channels,
-      pagination: {
-        limit: limitNum,
-        nextCursor,
-        hasMore: snapshot.size === limitNum
-      }
+      pagination: { limit: limitNum, nextCursor, hasMore: snapshot.size === limitNum }
     });
   } catch (error) {
     next(error);
   }
 };
 
-// Get single channel
 export const getChannel = async (req, res, next) => {
   try {
     const doc = await channelsRef.doc(req.params.channelId).get();
-    
-    if (!doc.exists) {
-      throw new ApiError(404, 'Channel not found');
-    }
-
+    if (!doc.exists) throw new ApiError(404, 'Channel not found');
     res.json({ success: true, channel: { id: doc.id, ...doc.data() } });
   } catch (error) {
     next(error);
   }
 };
 
-// Create channel
 export const createChannel = async (req, res, next) => {
   try {
     const { name, description, type = 'public', category = 'general', icon } = req.body;
-
     const channelName = name.toLowerCase().replace(/\s+/g, '-');
 
-    // Check if channel name exists
     const existingSnapshot = await channelsRef.where('name', '==', channelName).get();
     if (!existingSnapshot.empty) {
       throw new ApiError(400, 'Channel with this name already exists');
@@ -120,7 +104,6 @@ export const createChannel = async (req, res, next) => {
     const docRef = await channelsRef.add(channelData);
     const newChannel = { id: docRef.id, ...channelData, createdAt: new Date(), updatedAt: new Date() };
 
-    // Notify all users about new channel
     try {
       const io = getIO();
       io.emit('new_channel', { channel: newChannel });
@@ -134,18 +117,13 @@ export const createChannel = async (req, res, next) => {
   }
 };
 
-// Join channel
 export const joinChannel = async (req, res, next) => {
   try {
     const channelDoc = await channelsRef.doc(req.params.channelId).get();
-    
-    if (!channelDoc.exists) {
-      throw new ApiError(404, 'Channel not found');
-    }
+    if (!channelDoc.exists) throw new ApiError(404, 'Channel not found');
 
     const channel = { id: channelDoc.id, ...channelDoc.data() };
 
-    // Check if already a member
     if (channel.members && channel.members.some(m => m.uid === req.user.uid)) {
       return res.json({ success: true, message: 'Already a member', channel });
     }
@@ -173,35 +151,24 @@ export const joinChannel = async (req, res, next) => {
   }
 };
 
-// Leave channel
 export const leaveChannel = async (req, res, next) => {
   try {
     const channelDoc = await channelsRef.doc(req.params.channelId).get();
-    
-    if (!channelDoc.exists) {
-      throw new ApiError(404, 'Channel not found');
-    }
+    if (!channelDoc.exists) throw new ApiError(404, 'Channel not found');
 
     const channel = channelDoc.data();
-
-    if (channel.isDefault) {
-      throw new ApiError(400, 'Cannot leave default channel');
-    }
+    if (channel.isDefault) throw new ApiError(400, 'Cannot leave default channel');
 
     await db.runTransaction(async (tx) => {
       const channelRef = channelsRef.doc(req.params.channelId);
       const snapshot = await tx.get(channelRef);
-      if (!snapshot.exists) {
-        throw new ApiError(404, 'Channel not found');
-      }
+      if (!snapshot.exists) throw new ApiError(404, 'Channel not found');
 
       const channelData = snapshot.data();
       const members = channelData.members || [];
       const updatedMembers = members.filter(m => m.uid !== req.user.uid);
 
-      if (updatedMembers.length === members.length) {
-        return;
-      }
+      if (updatedMembers.length === members.length) return;
 
       const nextCount = Math.max(0, (channelData.memberCount || members.length) - 1);
       tx.update(channelRef, {
@@ -217,7 +184,6 @@ export const leaveChannel = async (req, res, next) => {
   }
 };
 
-// Get channel messages
 export const getChannelMessages = async (req, res, next) => {
   try {
     const { channelId } = req.params;
@@ -253,11 +219,7 @@ export const getChannelMessages = async (req, res, next) => {
     res.json({
       success: true,
       messages,
-      pagination: {
-        limit: limitNum,
-        nextCursor,
-        hasMore: snapshot.size === limitNum
-      }
+      pagination: { limit: limitNum, nextCursor, hasMore: snapshot.size === limitNum }
     });
   } catch (error) {
     next(error);
@@ -266,7 +228,6 @@ export const getChannelMessages = async (req, res, next) => {
 
 // ============ POST CONTROLLERS ============
 
-// Get all posts
 export const getPosts = async (req, res, next) => {
   try {
     const { page = 1, limit = 20, category, sortBy = 'latest' } = req.query;
@@ -288,10 +249,7 @@ export const getPosts = async (req, res, next) => {
     }
 
     const startIndex = (pageNum - 1) * limitNum;
-    if (startIndex > 0) {
-      query = query.offset(startIndex);
-    }
-
+    if (startIndex > 0) query = query.offset(startIndex);
     query = query.limit(limitNum);
 
     const snapshot = await query.get();
@@ -307,42 +265,28 @@ export const getPosts = async (req, res, next) => {
           createdAt: data.createdAt?.toDate?.() || data.createdAt
         };
       })
-      // Exclude posts that are still waiting for their scheduled publish time
       .filter(post => !post.status || post.status === 'published');
 
     res.json({
       success: true,
       posts,
-      pagination: {
-        page: pageNum,
-        limit: limitNum,
-        hasMore: snapshot.size === limitNum
-      }
+      pagination: { page: pageNum, limit: limitNum, hasMore: snapshot.size === limitNum }
     });
   } catch (error) {
     next(error);
   }
 };
 
-// Get single post
 export const getPost = async (req, res, next) => {
   try {
     const doc = await postsRef.doc(req.params.postId).get();
-    
-    if (!doc.exists || doc.data().isDeleted) {
-      throw new ApiError(404, 'Post not found');
-    }
+
+    if (!doc.exists || doc.data().isDeleted) throw new ApiError(404, 'Post not found');
 
     const data = doc.data();
     const likes = data.likes || [];
-    const post = { 
-      id: doc.id, 
-      ...data,
-      // Always use the actual likes array length as the source of truth
-      likeCount: likes.length
-    };
+    const post = { id: doc.id, ...data, likeCount: likes.length };
 
-    // Increment view count
     const viewedBy = post.viewedBy || [];
     if (!viewedBy.includes(req.user.uid)) {
       await postsRef.doc(req.params.postId).update({
@@ -358,7 +302,6 @@ export const getPost = async (req, res, next) => {
   }
 };
 
-// Create post (supports optional scheduledAt for deferred publishing)
 export const createPost = async (req, res, next) => {
   try {
     const { title, content, tags = [], category = 'discussion', attachments = [], scheduledAt } = req.body;
@@ -400,34 +343,26 @@ export const createPost = async (req, res, next) => {
     };
 
     const docRef = await postsRef.add(postData);
-    const newPost = {
-      id: docRef.id,
-      ...postData,
-      createdAt: new Date(),
-      updatedAt: new Date()
-    };
+    const newPost = { id: docRef.id, ...postData, createdAt: new Date(), updatedAt: new Date() };
 
     if (isScheduled) {
-      const jobId = await schedulePostJob(docRef.id, scheduledAt);
-      if (!jobId && !isSchedulerAvailable()) {
-        // Redis unavailable — immediately publish instead of silently dropping
+      // FIX: single clean try-catch, no duplicate nested block
       try {
         const jobId = await schedulePostJob(docRef.id, scheduledAt);
         if (!jobId && !isSchedulerAvailable()) {
-          // Redis unavailable — fall back to immediate publish rather than leaving post stranded
+          // Redis unavailable — fall back to immediate publish
           await postsRef.doc(docRef.id).update({ status: 'published', scheduledAt: null });
           newPost.status = 'published';
           newPost.scheduledAt = null;
         }
       } catch (scheduleErr) {
-        // Job enqueue failed after post was saved — revert to immediate publish to avoid orphan
+        // Job enqueue failed — revert to immediate publish to avoid orphan post
         console.error('schedulePostJob failed, publishing immediately:', scheduleErr.message);
         await postsRef.doc(docRef.id).update({ status: 'published', scheduledAt: null });
         newPost.status = 'published';
         newPost.scheduledAt = null;
       }
     } else {
-      // Notify feed subscribers for instant-publish posts
       try {
         const io = getIO();
         io.to('posts:feed').emit('new_post', { post: newPost });
@@ -442,7 +377,6 @@ export const createPost = async (req, res, next) => {
   }
 };
 
-// Get current user's scheduled posts
 export const getScheduledPosts = async (req, res, next) => {
   try {
     const snapshot = await postsRef
@@ -464,27 +398,16 @@ export const getScheduledPosts = async (req, res, next) => {
   }
 };
 
-// Cancel a scheduled post — reverts to draft and removes the queue job
 export const cancelScheduledPost = async (req, res, next) => {
   try {
     const doc = await postsRef.doc(req.params.postId).get();
-
-    if (!doc.exists) {
-      throw new ApiError(404, 'Post not found');
-    }
+    if (!doc.exists) throw new ApiError(404, 'Post not found');
 
     const post = doc.data();
-
-    if (post.author.uid !== req.user.uid) {
-      throw new ApiError(403, 'Not authorized to modify this post');
-    }
-
-    if (post.status !== 'scheduled') {
-      throw new ApiError(400, 'Post is not in scheduled state');
-    }
+    if (post.author.uid !== req.user.uid) throw new ApiError(403, 'Not authorized to modify this post');
+    if (post.status !== 'scheduled') throw new ApiError(400, 'Post is not in scheduled state');
 
     await cancelPostJob(req.params.postId);
-
     await postsRef.doc(req.params.postId).update({
       status: 'draft',
       scheduledAt: null,
@@ -497,20 +420,13 @@ export const cancelScheduledPost = async (req, res, next) => {
   }
 };
 
-// Update post
 export const updatePost = async (req, res, next) => {
   try {
     const doc = await postsRef.doc(req.params.postId).get();
-    
-    if (!doc.exists) {
-      throw new ApiError(404, 'Post not found');
-    }
+    if (!doc.exists) throw new ApiError(404, 'Post not found');
 
     const post = doc.data();
-
-    if (post.author.uid !== req.user.uid) {
-      throw new ApiError(403, 'Not authorized to edit this post');
-    }
+    if (post.author.uid !== req.user.uid) throw new ApiError(403, 'Not authorized to edit this post');
 
     const { title, content, tags, category } = req.body;
 
@@ -526,28 +442,19 @@ export const updatePost = async (req, res, next) => {
     if (category) updateData.category = category;
 
     await postsRef.doc(req.params.postId).update(updateData);
-
-    const updatedPost = { id: doc.id, ...post, ...updateData };
-    res.json({ success: true, post: updatedPost });
+    res.json({ success: true, post: { id: doc.id, ...post, ...updateData } });
   } catch (error) {
     next(error);
   }
 };
 
-// Delete post
 export const deletePost = async (req, res, next) => {
   try {
     const doc = await postsRef.doc(req.params.postId).get();
-    
-    if (!doc.exists) {
-      throw new ApiError(404, 'Post not found');
-    }
+    if (!doc.exists) throw new ApiError(404, 'Post not found');
 
     const post = doc.data();
-
-    if (post.author.uid !== req.user.uid) {
-      throw new ApiError(403, 'Not authorized to delete this post');
-    }
+    if (post.author.uid !== req.user.uid) throw new ApiError(403, 'Not authorized to delete this post');
 
     await postsRef.doc(req.params.postId).update({
       isDeleted: true,
@@ -560,7 +467,6 @@ export const deletePost = async (req, res, next) => {
   }
 };
 
-// Like/Unlike post
 export const toggleLikePost = async (req, res, next) => {
   try {
     const postRef = postsRef.doc(req.params.postId);
@@ -570,17 +476,12 @@ export const toggleLikePost = async (req, res, next) => {
 
     await db.runTransaction(async (tx) => {
       const doc = await tx.get(postRef);
-
-      if (!doc.exists) {
-        throw new ApiError(404, 'Post not found');
-      }
+      if (!doc.exists) throw new ApiError(404, 'Post not found');
 
       const post = doc.data();
       const likes = post.likes || [];
       const currentLikeCount = post.likeCount || likes.length;
-      const likeToRemove = likes.find(l => l.uid === req.user.uid);
-      const alreadyLiked = Boolean(likeToRemove);
-
+      const alreadyLiked = Boolean(likes.find(l => l.uid === req.user.uid));
       const likeData = { uid: req.user.uid, name: req.user.name, likedAt: new Date().toISOString() };
 
       if (alreadyLiked) {
@@ -593,13 +494,9 @@ export const toggleLikePost = async (req, res, next) => {
         liked = true;
       }
 
-      tx.update(postRef, {
-        likes: newLikes,
-        likeCount: newLikeCount
-      });
+      tx.update(postRef, { likes: newLikes, likeCount: newLikeCount });
     });
 
-    // Notify via socket
     try {
       const io = getIO();
       io.to('posts:feed').emit('post_like_updated', {
@@ -611,11 +508,7 @@ export const toggleLikePost = async (req, res, next) => {
       // Socket might not be initialized
     }
 
-    res.json({
-      success: true,
-      liked,
-      likeCount: newLikeCount
-    });
+    res.json({ success: true, liked, likeCount: newLikeCount });
   } catch (error) {
     next(error);
   }
@@ -623,7 +516,6 @@ export const toggleLikePost = async (req, res, next) => {
 
 // ============ COMMENT CONTROLLERS ============
 
-// Get comments for a post
 export const getComments = async (req, res, next) => {
   try {
     const { postId } = req.params;
@@ -638,10 +530,7 @@ export const getComments = async (req, res, next) => {
       .orderBy('createdAt', 'asc');
 
     const startIndex = (pageNum - 1) * limitNum;
-    if (startIndex > 0) {
-      topLevelQuery = topLevelQuery.offset(startIndex);
-    }
-
+    if (startIndex > 0) topLevelQuery = topLevelQuery.offset(startIndex);
     topLevelQuery = topLevelQuery.limit(limitNum);
 
     const topLevelSnapshot = await topLevelQuery.get();
@@ -676,27 +565,20 @@ export const getComments = async (req, res, next) => {
     res.json({
       success: true,
       comments: commentsWithReplies,
-      pagination: {
-        page: pageNum,
-        limit: limitNum,
-        hasMore: topLevelSnapshot.size === limitNum
-      }
+      pagination: { page: pageNum, limit: limitNum, hasMore: topLevelSnapshot.size === limitNum }
     });
   } catch (error) {
     next(error);
   }
 };
 
-// Create comment
 export const createComment = async (req, res, next) => {
   try {
     const { postId } = req.params;
     const { content, parentCommentId } = req.body;
 
     const postDoc = await postsRef.doc(postId).get();
-    if (!postDoc.exists) {
-      throw new ApiError(404, 'Post not found');
-    }
+    if (!postDoc.exists) throw new ApiError(404, 'Post not found');
 
     const commentData = {
       content,
@@ -719,67 +601,43 @@ export const createComment = async (req, res, next) => {
 
     const docRef = await commentsRef.add(commentData);
 
-    // Update post comment count
-    await postsRef.doc(postId).update({
-      commentCount: FieldValue.increment(1)
-    });
+    await postsRef.doc(postId).update({ commentCount: FieldValue.increment(1) });
 
-    // Update parent comment reply count if it's a reply
     if (parentCommentId) {
-      await commentsRef.doc(parentCommentId).update({
-        replyCount: FieldValue.increment(1)
-      });
+      await commentsRef.doc(parentCommentId).update({ replyCount: FieldValue.increment(1) });
     }
 
-    const newComment = { id: docRef.id, ...commentData, createdAt: new Date() };
-    res.status(201).json({ success: true, comment: newComment });
+    res.status(201).json({ success: true, comment: { id: docRef.id, ...commentData, createdAt: new Date() } });
   } catch (error) {
     next(error);
   }
 };
 
-// Like/Unlike comment
 export const toggleLikeComment = async (req, res, next) => {
   try {
     const doc = await commentsRef.doc(req.params.commentId).get();
-    
-    if (!doc.exists) {
-      throw new ApiError(404, 'Comment not found');
-    }
+    if (!doc.exists) throw new ApiError(404, 'Comment not found');
 
     const comment = doc.data();
     const likes = comment.likes || [];
     const currentLikeCount = comment.likeCount || 0;
     const alreadyLiked = likes.some(l => l.uid === req.user.uid);
-
     const likeData = { uid: req.user.uid, name: req.user.name };
 
     let newLikeCount;
     let newLikes;
 
     if (alreadyLiked) {
-      newLikeCount = Math.max(0, currentLikeCount - 1); // Ensure it doesn't go negative
+      newLikeCount = Math.max(0, currentLikeCount - 1);
       newLikes = likes.filter(l => l.uid !== req.user.uid);
-      
-      await commentsRef.doc(req.params.commentId).update({
-        likes: newLikes,
-        likeCount: newLikeCount
-      });
     } else {
       newLikeCount = currentLikeCount + 1;
       newLikes = [...likes, likeData];
-      
-      await commentsRef.doc(req.params.commentId).update({
-        likes: newLikes,
-        likeCount: newLikeCount
-      });
     }
 
-    res.json({
-      success: true,
-      liked: !alreadyLiked,
-      likeCount: newLikeCount
-    });
+    await commentsRef.doc(req.params.commentId).update({ likes: newLikes, likeCount: newLikeCount });
+
+    res.json({ success: true, liked: !alreadyLiked, likeCount: newLikeCount });
   } catch (error) {
     next(error);
   }
@@ -787,7 +645,6 @@ export const toggleLikeComment = async (req, res, next) => {
 
 // ============ DIRECT MESSAGE CONTROLLERS ============
 
-// Get user's conversations
 export const getConversations = async (req, res, next) => {
   try {
     const snapshot = await conversationsRef
@@ -797,15 +654,13 @@ export const getConversations = async (req, res, next) => {
       .limit(50)
       .get();
 
-    let conversations = snapshot.docs
-      .map(doc => ({ id: doc.id, ...doc.data() }));
+    let conversations = snapshot.docs.map(doc => ({ id: doc.id, ...doc.data() }));
 
     conversations = await Promise.all(
       conversations.map(async (conv) => {
         const otherParticipant = conv.participants?.find(p => p.uid !== req.user.uid);
         const isOnline = await presenceService.isOnline(otherParticipant?.uid);
         const unreadCount = conv.unreadCount?.[req.user.uid] || 0;
-        
         return {
           ...conv,
           otherParticipant,
@@ -822,25 +677,20 @@ export const getConversations = async (req, res, next) => {
   }
 };
 
-// Get messages in a conversation
 export const getConversationMessages = async (req, res, next) => {
   try {
     const { conversationId } = req.params;
     const { limit = 50 } = req.query;
     const limitNum = parseInt(limit);
 
-    // Verify user is part of conversation
     const convDoc = await conversationsRef.doc(conversationId).get();
-    if (!convDoc.exists) {
-      throw new ApiError(404, 'Conversation not found');
-    }
+    if (!convDoc.exists) throw new ApiError(404, 'Conversation not found');
 
     const conversation = convDoc.data();
     if (!conversation.participantIds.includes(req.user.uid)) {
       throw new ApiError(403, 'Not authorized to view this conversation');
     }
 
-    // Simple query - filter and sort in memory to avoid composite index
     const snapshot = await directMessagesRef
       .where('conversationId', '==', conversationId)
       .get();
@@ -853,7 +703,6 @@ export const getConversationMessages = async (req, res, next) => {
       }))
       .filter(msg => !msg.isDeleted);
 
-    // Sort by createdAt descending, take limit, then reverse
     messages.sort((a, b) => {
       const aTime = a.createdAt instanceof Date ? a.createdAt.getTime() : new Date(a.createdAt || 0).getTime();
       const bTime = b.createdAt instanceof Date ? b.createdAt.getTime() : new Date(b.createdAt || 0).getTime();
@@ -861,11 +710,7 @@ export const getConversationMessages = async (req, res, next) => {
     });
     messages = messages.slice(0, limitNum).reverse();
 
-    res.json({
-      success: true,
-      messages,
-      conversation: { id: convDoc.id, ...conversation }
-    });
+    res.json({ success: true, messages, conversation: { id: convDoc.id, ...conversation } });
   } catch (error) {
     next(error);
   }
@@ -877,12 +722,7 @@ export const getOnlineUsers = async (req, res, next) => {
   try {
     const users = await presenceService.getOnlineUsers({ includeEmail: false });
     const count = await presenceService.getOnlineCount();
-    
-    res.json({ 
-      success: true, 
-      users,
-      count 
-    });
+    res.json({ success: true, users, count });
   } catch (error) {
     next(error);
   }
@@ -908,11 +748,9 @@ export const searchCommunity = async (req, res, next) => {
         .limit(50)
         .get();
 
-      const postResults = postsSnapshot.docs
-        .map(doc => ({ id: doc.id, ...doc.data() }));
-
-      results.posts = postResults
-        .filter(post => 
+      results.posts = postsSnapshot.docs
+        .map(doc => ({ id: doc.id, ...doc.data() }))
+        .filter(post =>
           post.title?.toLowerCase().includes(searchQuery) ||
           post.content?.toLowerCase().includes(searchQuery) ||
           post.tags?.some(tag => tag.includes(searchQuery))
@@ -928,7 +766,7 @@ export const searchCommunity = async (req, res, next) => {
 
       results.channels = channelsSnapshot.docs
         .map(doc => ({ id: doc.id, ...doc.data() }))
-        .filter(ch => 
+        .filter(ch =>
           ch.name?.toLowerCase().includes(searchQuery) ||
           ch.description?.toLowerCase().includes(searchQuery)
         )
@@ -942,10 +780,8 @@ export const searchCommunity = async (req, res, next) => {
         .limit(50)
         .get();
 
-      const messageResults = messagesSnapshot.docs
-        .map(doc => ({ id: doc.id, ...doc.data() }));
-
-      results.messages = messageResults
+      results.messages = messagesSnapshot.docs
+        .map(doc => ({ id: doc.id, ...doc.data() }))
         .filter(msg => msg.content?.toLowerCase().includes(searchQuery))
         .slice(0, 10);
     }
@@ -968,9 +804,7 @@ export const initializeDefaultChannels = async () => {
   ];
 
   for (const ch of defaultChannels) {
-    // Check if channel exists
     const existingSnapshot = await channelsRef.where('name', '==', ch.name).get();
-    
     if (existingSnapshot.empty) {
       await channelsRef.add({
         ...ch,
@@ -988,7 +822,6 @@ export const initializeDefaultChannels = async () => {
   }
 };
 
-// Fix posts with incorrect like counts (one-time utility)
 export const fixPostLikeCounts = async (req, res, next) => {
   try {
     const snapshot = await postsRef.get();
@@ -1000,11 +833,8 @@ export const fixPostLikeCounts = async (req, res, next) => {
       const actualLikeCount = likes.length;
       const storedLikeCount = post.likeCount || 0;
 
-      // Fix if mismatch or negative
       if (storedLikeCount !== actualLikeCount || storedLikeCount < 0) {
-        await postsRef.doc(doc.id).update({
-          likeCount: actualLikeCount
-        });
+        await postsRef.doc(doc.id).update({ likeCount: actualLikeCount });
         fixed++;
         console.log(`Fixed post ${doc.id}: ${storedLikeCount} -> ${actualLikeCount}`);
       }
@@ -1016,5 +846,4 @@ export const fixPostLikeCounts = async (req, res, next) => {
   }
 };
 
-// Export collection references for socket service
 export { channelsRef, messagesRef, postsRef, commentsRef, conversationsRef, directMessagesRef };

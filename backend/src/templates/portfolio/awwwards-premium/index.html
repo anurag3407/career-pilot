@@ -1,0 +1,150 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>{{name}} — Portfolio</title>
+  <link rel="preconnect" href="https://fonts.googleapis.com" />
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
+  <link href="https://fonts.googleapis.com/css2?family=Cormorant+Garamond:ital,wght@0,300;0,400;0,600;1,300;1,400&family=DM+Sans:wght@300;400;500&display=swap" rel="stylesheet" />
+  <link rel="stylesheet" href="style.css" />
+</head>
+<body>
+
+  <!-- Custom Cursor -->
+  <div class="cursor" id="cursor"></div>
+  <div class="cursor-follower" id="cursorFollower"></div>
+
+  <!-- Nav -->
+  <nav class="nav">
+    <a class="nav__logo" href="#">{{initials}}</a>
+    <div class="nav__links">
+      <a href="#work" class="nav__link">Work</a>
+      <a href="#about" class="nav__link">About</a>
+      <a href="#contact" class="nav__link">Contact</a>
+    </div>
+  </nav>
+
+  <!-- ─── HERO ─── -->
+  <section class="hero" id="home">
+    <div class="hero__left">
+      <div class="hero__image-wrap">
+        <img src="{{profile_image}}" alt="{{name}}" class="hero__image" onerror="this.src='https://images.unsplash.com/photo-1507003211169-0a1dd7228f2d?w=600&q=80'" />
+        <div class="hero__image-overlay"></div>
+      </div>
+    </div>
+    <div class="hero__right">
+      <p class="hero__eyebrow">Available for work</p>
+      <h1 class="hero__name">
+        <span class="hero__name-line reveal-line">{{first_name}}</span>
+        <span class="hero__name-line reveal-line delay-1">{{last_name}}</span>
+      </h1>
+      <p class="hero__role reveal-line delay-2">{{role}}</p>
+      <p class="hero__bio reveal-line delay-3">{{bio}}</p>
+      <div class="hero__cta reveal-line delay-4">
+        <a href="#work" class="btn btn--primary">View Work</a>
+        <a href="#contact" class="btn btn--ghost">Get in Touch</a>
+      </div>
+    </div>
+    <div class="hero__scroll-hint">
+      <span>Scroll</span>
+      <div class="hero__scroll-line"></div>
+    </div>
+  </section>
+
+  <!-- ─── MARQUEE SKILLS ─── -->
+  <div class="marquee-wrap" aria-hidden="true">
+    <div class="marquee">
+      <div class="marquee__inner">
+        {{#skills}}
+        <span class="marquee__item">{{.}}</span>
+        <span class="marquee__sep">✦</span>
+        {{/skills}}
+        <!-- duplicate for seamless loop -->
+        {{#skills}}
+        <span class="marquee__item">{{.}}</span>
+        <span class="marquee__sep">✦</span>
+        {{/skills}}
+      </div>
+    </div>
+  </div>
+
+  <!-- ─── HORIZONTAL SCROLL PROJECTS ─── -->
+  <section class="work" id="work">
+    <div class="work__header">
+      <h2 class="section-title">Selected<br /><em>Work</em></h2>
+      <p class="work__hint">Scroll horizontally →</p>
+    </div>
+    <div class="work__track-wrap">
+      <div class="work__track">
+
+        {{#projects}}
+        <article class="project-card">
+          <div class="project-card__image-wrap">
+            <img src="{{image}}" alt="{{title}}" class="project-card__image" onerror="this.src='https://images.unsplash.com/photo-1555066931-4365d14431b9?w=800&q=80'" />
+            <div class="project-card__overlay">
+              <a href="{{url}}" class="project-card__link" target="_blank" rel="noopener">View Project ↗</a>
+            </div>
+          </div>
+          <div class="project-card__meta">
+            <span class="project-card__year">{{year}}</span>
+            <span class="project-card__tag">{{tag}}</span>
+          </div>
+          <h3 class="project-card__title">{{title}}</h3>
+          <p class="project-card__desc">{{description}}</p>
+        </article>
+        {{/projects}}
+
+      </div>
+    </div>
+  </section>
+
+  <!-- ─── ABOUT (full bleed) ─── -->
+  <section class="about" id="about">
+    <div class="about__image-wrap">
+      <img src="{{about_image}}" alt="About {{name}}" class="about__image" onerror="this.src='https://images.unsplash.com/photo-1497366754035-f200968a6e72?w=1200&q=80'" />
+    </div>
+    <div class="about__content">
+      <p class="about__label">About</p>
+      <h2 class="about__heading reveal-line">Crafting digital<br /><em>experiences</em> that<br />matter.</h2>
+      <p class="about__body">{{about_text}}</p>
+      <div class="about__stats">
+        <div class="about__stat">
+          <span class="about__stat-num">{{years_exp}}+</span>
+          <span class="about__stat-label">Years Experience</span>
+        </div>
+        <div class="about__stat">
+          <span class="about__stat-num">{{projects_count}}+</span>
+          <span class="about__stat-label">Projects Delivered</span>
+        </div>
+        <div class="about__stat">
+          <span class="about__stat-num">{{clients_count}}+</span>
+          <span class="about__stat-label">Happy Clients</span>
+        </div>
+      </div>
+    </div>
+  </section>
+
+  <!-- ─── CONTACT ─── -->
+  <section class="contact" id="contact">
+    <p class="contact__label">Let's talk</p>
+    <h2 class="contact__heading">
+      <em>Start a project</em><br />together.
+    </h2>
+    <a href="mailto:{{email}}" class="contact__email">{{email}}</a>
+    <div class="contact__socials">
+      {{#socials}}
+      <a href="{{url}}" class="contact__social" target="_blank" rel="noopener">{{platform}}</a>
+      {{/socials}}
+    </div>
+  </section>
+
+  <!-- ─── FOOTER ─── -->
+  <footer class="footer">
+    <span>© {{year}} {{name}}</span>
+    <span>Built with careerpilot</span>
+  </footer>
+
+  <script src="script.js"></script>
+</body>
+</html>

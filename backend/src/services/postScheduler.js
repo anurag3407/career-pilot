@@ -27,10 +27,6 @@ const createWorkerConnection = () => {
     });
 };
 
-/**
- * Initialize the post scheduler queue and worker.
- * Gracefully no-ops if REDIS_URL is not configured.
- */
 export const initializePostScheduler = async () => {
     redisUrl = process.env.REDIS_URL;
 
@@ -85,7 +81,6 @@ export const initializePostScheduler = async () => {
 
                     const post = doc.data();
 
-                    // Guard: only publish if still in scheduled state
                     if (post.status !== 'scheduled') {
                         console.log(`ℹ️  Post ${postId} status is "${post.status}", skipping publish`);
                         return;
@@ -100,12 +95,7 @@ export const initializePostScheduler = async () => {
                     try {
                         const io = getIO();
                         io.to('posts:feed').emit('new_post', {
-                            post: {
-                                id: postId,
-                                ...post,
-                                status: 'published',
-                                publishedAt: new Date()
-                            }
+                            post: { id: postId, ...post, status: 'published', publishedAt: new Date() }
                         });
                     } catch {
                         // socket may not be initialized
@@ -134,16 +124,10 @@ export const initializePostScheduler = async () => {
     }
 };
 
-/**
- * Enqueue a delayed publish job for a post.
- * Uses the postId as a stable jobId so it can be retrieved and removed later.
- */
 export const schedulePostJob = async (postId, scheduledAt) => {
-    if (!redisAvailable || !postSchedulerQueue) {
-        return null;
-    }
+    if (!redisAvailable || !postSchedulerQueue) return null;
 
-    const delay = new Date(scheduledAt).getTime() - Date.now();
+    // FIX: removed duplicate `delay` declaration
     const ts = new Date(scheduledAt).getTime();
     if (isNaN(ts)) {
         throw new Error('scheduledAt is not a valid date');
@@ -161,10 +145,6 @@ export const schedulePostJob = async (postId, scheduledAt) => {
     return job.id;
 };
 
-/**
- * Remove a scheduled post job from the queue.
- * Returns true if the job was found and removed, false otherwise.
- */
 export const cancelPostJob = async (postId) => {
     if (!redisAvailable || !postSchedulerQueue) return false;
 

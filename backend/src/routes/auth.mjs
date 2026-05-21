@@ -9,78 +9,58 @@ import admin from '../config/firebase.js';
 import crypto from 'crypto';
 
 const router = express.Router();
-
-// Verify token endpoint — loginProtection tracks failed attempts per IP
-// and locks out after 5 consecutive failures for 15 minutes.
-router.post('/verify', loginProtection, verifyToken, asyncHandler(async (req, res) => {
 const stateStore = new Map();
 
-// Verify token endpoint
-router.post('/verify', verifyToken, asyncHandler(async (req, res) => {
-  // Save/update user in Firebase on each verification
+router.post('/verify', loginProtection, verifyToken, asyncHandler(async (req, res) => {
   try {
     await saveUserToFirebase(req.user);
   } catch (error) {
     console.warn('Could not save user to Firebase:', error.message);
   }
-  
-  res.json({
-    success: true,
-    user: req.user
-  });
+  res.json({ success: true, user: req.user });
 }));
 
-// Get user profile
 router.get('/profile', verifyToken, asyncHandler(async (req, res) => {
-  // Update last login in Firebase
   try {
     await saveUserToFirebase(req.user);
   } catch (error) {
-    console.warn('⚠️  Could not update user in Firebase:', error.message);
+    console.warn('Could not update user in Firebase:', error.message);
   }
-  
-  res.json({
-    success: true,
-    user: req.user
-  });
+  res.json({ success: true, user: req.user });
 }));
-// Get notification preferences
+
 router.get('/notification-preferences', verifyToken, asyncHandler(async (req, res) => {
   const User = (await import('../models/User.model.js')).default;
   let user = await User.findOne({ email: req.user.email });
-  
   const preferences = user?.notificationPreferences || {
     jobAlerts: true,
     directMessages: true,
     proposalUpdates: true,
   };
-
   res.json({ success: true, preferences });
 }));
 
-// Update notification preferences
 router.put('/notification-preferences', verifyToken, asyncHandler(async (req, res) => {
   const User = (await import('../models/User.model.js')).default;
   const { jobAlerts, directMessages, proposalUpdates } = req.body;
-
-  if (typeof jobAlerts !== 'boolean' || typeof directMessages !== 'boolean' || typeof proposalUpdates !== 'boolean') {
+  if (
+    typeof jobAlerts !== 'boolean' ||
+    typeof directMessages !== 'boolean' ||
+    typeof proposalUpdates !== 'boolean'
+  ) {
     return res.status(400).json({ success: false, error: 'Invalid preference values' });
   }
-
   await User.findOneAndUpdate(
     { email: req.user.email },
     { notificationPreferences: { jobAlerts, directMessages, proposalUpdates } },
     { new: true }
   );
-
   res.json({ success: true, message: 'Preferences updated!' });
 }));
 
-// Linkedin OAuth routes
 router.get('/linkedin', (req, res) => {
   const state = crypto.randomBytes(16).toString('hex');
   stateStore.set(state, Date.now() + 10 * 60 * 1000);
-
   const authUrl = getLinkedInAuthUrl(state);
   res.redirect(authUrl);
 });
@@ -90,23 +70,21 @@ router.get('/linkedin/callback', asyncHandler(async (req, res) => {
   const frontendUrl = process.env.FRONTEND_URL || 'http://localhost:5173';
 
   if (error) {
-    console.error('LinkedIn Oauth error: ', error);
+    console.error('LinkedIn OAuth error:', error);
     return res.redirect(`${frontendUrl}/login?error=linkedin_denied`);
   }
 
-  const storedEnpiry = stateStore.get(state);
-  if(!storedEnpiry || Date.now() > storedEnpiry) {
+  const storedExpiry = stateStore.get(state);
+  if (!storedExpiry || Date.now() > storedExpiry) {
     stateStore.delete(state);
     return res.redirect(`${frontendUrl}/login?error=linkedin_invalid_state`);
   }
-
   stateStore.delete(state);
 
   let accessToken, idToken;
-
   try {
     ({ accessToken, idToken } = await exchangeCodeForToken(code));
-  } catch(err) {
+  } catch (err) {
     console.error('LinkedIn token exchange failed:', err.response?.data || err.message);
     return res.redirect(`${frontendUrl}/login?error=linkedin_token_failed`);
   }
@@ -120,27 +98,19 @@ router.get('/linkedin/callback', asyncHandler(async (req, res) => {
   }
 
   const { linkedinId, email, name, picture } = profile;
-
   let mongoUser = await User.findOne({ email });
-
   let firebaseUid;
 
-  if(mongoUser) {
-    if(!mongoUser.linkedinId) {
+  if (mongoUser) {
+    if (!mongoUser.linkedinId) {
       mongoUser.linkedinId = linkedinId;
       await mongoUser.save();
     }
-
     try {
       const firebaseUser = await admin.auth().getUserByEmail(email);
-      firebaseUid = firebaseUser.uid
+      firebaseUid = firebaseUser.uid;
     } catch {
-      const newFirebaseUser = await admin.auth().createUser({
-        email,
-        displayName: name,
-        photoURL: picture
-      })
-
+      const newFirebaseUser = await admin.auth().createUser({ email, displayName: name, photoURL: picture });
       firebaseUid = newFirebaseUser.uid;
     }
   } else {
@@ -148,20 +118,13 @@ router.get('/linkedin/callback', asyncHandler(async (req, res) => {
     try {
       firebaseUser = await admin.auth().getUserByEmail(email);
     } catch {
-      firebaseUser = await admin.auth().createUser({ email, displayName: name, photoURL: picture})
+      firebaseUser = await admin.auth().createUser({ email, displayName: name, photoURL: picture });
     }
     firebaseUid = firebaseUser.uid;
-
-    await admin.auth().setCustomUserClaims(firebaseUid, {
-      linkedinId,
-      pendingOnboarding: true,
-    })
+    await admin.auth().setCustomUserClaims(firebaseUid, { linkedinId, pendingOnboarding: true });
   }
 
-  const customToken = await admin.auth().createCustomToken(firebaseUid, {
-    linkedinId
-  });
-
+  const customToken = await admin.auth().createCustomToken(firebaseUid, { linkedinId });
   res.redirect(`${frontendUrl}/auth/linkedin/callback?token=${customToken}&isNew=${!mongoUser}`);
 }));
 
