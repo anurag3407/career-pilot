@@ -15,7 +15,7 @@ import ResumeView from './pages/ResumeView'
 import JobSearch from './pages/JobSearch'
 import JobAlerts from './pages/JobAlerts'
 import JobTracker from './pages/JobTracker'
-import { Community, NotFound } from './pages'
+import { Community, NotFound, Portfolio } from './pages'
 import InterviewPrep from './pages/InterviewPrep'
 import UserProfile from './pages/UserProfile'
 import EmailGenerator from './pages/EmailGenerator'
@@ -127,6 +127,7 @@ function App() {
             <Route path="/profile" element={<ProtectedRoute><UserProfile /></ProtectedRoute>} />
             <Route path="/profile/:uid" element={<ProtectedRoute><UserProfile /></ProtectedRoute>} />
             <Route path="/security" element={<ProtectedRoute><SecuritySettings /></ProtectedRoute>} />
+            <Route path="/portfolio" element={<ProtectedRoute><Portfolio /></ProtectedRoute>} />
               <Route path="/dashboard" element={<ProtectedRoute><Dashboard /></ProtectedRoute>} />
               <Route path="/upload" element={<ProtectedRoute><Upload /></ProtectedRoute>} />
               <Route path="/enhance/:resumeId" element={<ProtectedRoute><Enhance /></ProtectedRoute>} />
