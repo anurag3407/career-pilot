@@ -1,7 +1,7 @@
-
-import Deployments from './pages/Deployments'
+import { useState, useEffect } from 'react';
+import Deployments from './pages/Deployments';
 import TemplateGallery from "./pages/TemplateGallery";
-
+import ToastManager from "./components/ToastManager";
 import { BrowserRouter, Routes, Route, Navigate } from 'react-router-dom';
 import { Toaster } from 'react-hot-toast';
 import { AuthProvider, useAuth } from './context/AuthContext';
@@ -9,7 +9,6 @@ import { SocketProvider } from './context/SocketContext';
 import { ThemeProvider } from './context/ThemeContext';
 import AppLayout from './components/AppLayout';
 import Footer from './components/ui/Footer';
-
 import CommandPalette from './components/CommandPalette';
 import Home from './pages/Home';
 import Login from './pages/Login';
@@ -20,8 +19,6 @@ import Enhance from './pages/Enhance';
 import ResumeView from './pages/ResumeView';
 import JobSearch from './pages/JobSearch';
 import JobAlerts from './pages/JobAlerts';
-
-
 import JobTracker from './pages/JobTracker';
 import { Community, NotFound } from './pages';
 import InterviewPrep from './pages/InterviewPrep';
@@ -67,7 +64,6 @@ function ProtectedRoute({ children }) {
   return <AppLayout>{children}</AppLayout>;
 }
 
-
 function PublicRoute({ children }) {
   const { user, loading } = useAuth();
 
@@ -92,96 +88,107 @@ function PublicRoute({ children }) {
 function App() {
   const [isCommandPaletteOpen, setIsCommandPaletteOpen] = useState(false);
   const isAuthenticated = localStorage.getItem('firebase:authUser') !== null;
+
   useEffect(() => {
-  if (!isAuthenticated) return;
-  const handleKeyDown = (e) => {
-    if ((e.metaKey || e.ctrlKey) && e.key.toLowerCase() === 'k') {
-      e.preventDefault();
-      setIsCommandPaletteOpen((prev) => !prev);
-    }
-  };
-  window.addEventListener('keydown', handleKeyDown);
-  return () => window.removeEventListener('keydown', handleKeyDown);
-}, [isAuthenticated]);
+    if (!isAuthenticated) return;
+    const handleKeyDown = (e) => {
+      if ((e.metaKey || e.ctrlKey) && e.key.toLowerCase() === 'k') {
+        e.preventDefault();
+        setIsCommandPaletteOpen((prev) => !prev);
+      }
+    };
+    window.addEventListener('keydown', handleKeyDown);
+    return () => window.removeEventListener('keydown', handleKeyDown);
+  }, [isAuthenticated]);
+
   return (
     <ThemeProvider>
       <AuthProvider>
         <SocketProvider>
-          <BrowserRouter>
-            <div className="bg-mesh" />
-            {isAuthenticated && (<CommandPalette isOpen={isCommandPaletteOpen} setIsOpen={setIsCommandPaletteOpen}/>)}
-            <Toaster
-              position="top-right"
-              toastOptions={{
-                duration: 3000,
-                className: "careerpilot-toast",
-                style: {
-                  background: "var(--card)",
-                  color: "var(--foreground)",
-                  borderRadius: "var(--radius)",
-                  border: "1px solid var(--border)",
-                  backdropFilter: "blur(8px)",
-                },
-                success: {
-                  iconTheme: { primary: "#10B981", secondary: "#fff" },
-                },
-                error: {
-                  iconTheme: { primary: "#EF4444", secondary: "#fff" },
-                },
-              }}
-            />
-            <Routes>
-              {/* Public Routes */}
-              <Route path="/" element={<PublicRoute><Home /></PublicRoute>} />
-              <Route path="/login" element={<PublicRoute><Login /></PublicRoute>} />
-              <Route path="/register" element={<PublicRoute><Register /></PublicRoute>} />
-              <Route path="/auth/linkedin/callback" element={<PublicRoute><LinkedInCallback /></PublicRoute>} />
-              
-              {/* Legal Pages (Public) */}
-              <Route path="/privacy" element={<PrivacyPolicy />} />
-              <Route path="/terms" element={<TermsOfService />} />
-              <Route path="/cookies" element={<CookiePolicy />} />
+          {/* ToastManager wraps everything so any child can call useToast() */}
+          <ToastManager position="top-right">
+            <BrowserRouter>
+              <div className="bg-mesh" />
+              {isAuthenticated && (
+                <CommandPalette
+                  isOpen={isCommandPaletteOpen}
+                  setIsOpen={setIsCommandPaletteOpen}
+                />
+              )}
+              {/* react-hot-toast kept for existing toast.success/error calls elsewhere */}
+              <Toaster
+                position="top-right"
+                toastOptions={{
+                  duration: 3000,
+                  className: "careerpilot-toast",
+                  style: {
+                    background: "var(--card)",
+                    color: "var(--foreground)",
+                    borderRadius: "var(--radius)",
+                    border: "1px solid var(--border)",
+                    backdropFilter: "blur(8px)",
+                  },
+                  success: {
+                    iconTheme: { primary: "#10B981", secondary: "#fff" },
+                  },
+                  error: {
+                    iconTheme: { primary: "#EF4444", secondary: "#fff" },
+                  },
+                }}
+              />
+              <Routes>
+                {/* Public Routes */}
+                <Route path="/" element={<PublicRoute><Home /></PublicRoute>} />
+                <Route path="/login" element={<PublicRoute><Login /></PublicRoute>} />
+                <Route path="/register" element={<PublicRoute><Register /></PublicRoute>} />
+                <Route path="/auth/linkedin/callback" element={<PublicRoute><LinkedInCallback /></PublicRoute>} />
 
-              {/* Template Gallery Route (Registered at /templates) */}
-              <Route path="/templates" element={<TemplateGallery />} />
+                {/* Legal Pages (Public) */}
+                <Route path="/privacy" element={<PrivacyPolicy />} />
+                <Route path="/terms" element={<TermsOfService />} />
+                <Route path="/cookies" element={<CookiePolicy />} />
 
-              {/* Core Protected Routes */}
-              <Route path="/dashboard" element={<ProtectedRoute><Dashboard /></ProtectedRoute>} />
-              <Route path="/upload" element={<ProtectedRoute><Upload /></ProtectedRoute>} />
-              <Route path="/enhance/:resumeId" element={<ProtectedRoute><Enhance /></ProtectedRoute>} />
-              <Route path="/resume/:resumeId" element={<ProtectedRoute><ResumeView /></ProtectedRoute>} />
-              <Route path="/jobs" element={<ProtectedRoute><JobSearch /></ProtectedRoute>} />
-              <Route path="/job-alerts" element={<ProtectedRoute><JobAlerts /></ProtectedRoute>} />
-              <Route path="/job-tracker" element={<ProtectedRoute><JobTracker /></ProtectedRoute>} />
-              <Route path="/community" element={<ProtectedRoute><Community /></ProtectedRoute>} />
-              <Route path="/interview-prep" element={<ProtectedRoute><InterviewPrep /></ProtectedRoute>} />
-              <Route path="/profile" element={<ProtectedRoute><UserProfile /></ProtectedRoute>} />
-              <Route path="/profile/:uid" element={<ProtectedRoute><UserProfile /></ProtectedRoute>} />
-              <Route path="/security" element={<ProtectedRoute><SecuritySettings /></ProtectedRoute>} />
-              <Route path="/email-generator" element={<ProtectedRoute><EmailGenerator /></ProtectedRoute>} />
-              <Route path="/linkedin-optimizer" element={<ProtectedRoute><LinkedInOptimizer /></ProtectedRoute>} />
-              <Route path="/deployments" element={<ProtectedRoute><Deployments /></ProtectedRoute>} />
-              <Route path="/settings" element={<ProtectedRoute><Settings /></ProtectedRoute>} />
+                {/* Template Gallery */}
+                <Route path="/templates" element={<TemplateGallery />} />
 
-              {/* Nested Fellowship Routes */}
-              <Route path="/fellowship" element={<ProtectedRoute><FellowshipLayout /></ProtectedRoute>}>
-                <Route index element={<Challenges />} />
-                <Route path="onboarding" element={<Onboarding />} />
-                <Route path="challenges" element={<Challenges />} />
-                <Route path="challenges/:id" element={<ChallengeDetail />} />
-                <Route path="challenges/:id/proposals" element={<ChallengeProposals />} />
-                <Route path="create-challenge" element={<CreateChallenge />} />
-                <Route path="my-proposals" element={<MyProposals />} />
-                <Route path="my-challenges" element={<MyChallenges />} />
-                <Route path="verify" element={<Verify />} />
-                <Route path="messages" element={<FellowshipMessages />} />
-                <Route path="messages/:roomId" element={<FellowshipChat />} />
-              </Route>
+                {/* Core Protected Routes */}
+                <Route path="/dashboard" element={<ProtectedRoute><Dashboard /></ProtectedRoute>} />
+                <Route path="/upload" element={<ProtectedRoute><Upload /></ProtectedRoute>} />
+                <Route path="/enhance/:resumeId" element={<ProtectedRoute><Enhance /></ProtectedRoute>} />
+                <Route path="/resume/:resumeId" element={<ProtectedRoute><ResumeView /></ProtectedRoute>} />
+                <Route path="/jobs" element={<ProtectedRoute><JobSearch /></ProtectedRoute>} />
+                <Route path="/job-alerts" element={<ProtectedRoute><JobAlerts /></ProtectedRoute>} />
+                <Route path="/job-tracker" element={<ProtectedRoute><JobTracker /></ProtectedRoute>} />
+                <Route path="/community" element={<ProtectedRoute><Community /></ProtectedRoute>} />
+                <Route path="/interview-prep" element={<ProtectedRoute><InterviewPrep /></ProtectedRoute>} />
+                <Route path="/profile" element={<ProtectedRoute><UserProfile /></ProtectedRoute>} />
+                <Route path="/profile/:uid" element={<ProtectedRoute><UserProfile /></ProtectedRoute>} />
+                <Route path="/security" element={<ProtectedRoute><SecuritySettings /></ProtectedRoute>} />
+                <Route path="/email-generator" element={<ProtectedRoute><EmailGenerator /></ProtectedRoute>} />
+                <Route path="/linkedin-optimizer" element={<ProtectedRoute><LinkedInOptimizer /></ProtectedRoute>} />
+                <Route path="/deployments" element={<ProtectedRoute><Deployments /></ProtectedRoute>} />
+                <Route path="/settings" element={<ProtectedRoute><Settings /></ProtectedRoute>} />
 
-              {/* Catch-All Route */}
-              <Route path="*" element={<NotFound />} />
-            </Routes>
-          </BrowserRouter>
+                {/* Nested Fellowship Routes */}
+                <Route path="/fellowship" element={<ProtectedRoute><FellowshipLayout /></ProtectedRoute>}>
+                  <Route index element={<Challenges />} />
+                  <Route path="onboarding" element={<Onboarding />} />
+                  <Route path="challenges" element={<Challenges />} />
+                  <Route path="challenges/:id" element={<ChallengeDetail />} />
+                  <Route path="challenges/:id/proposals" element={<ChallengeProposals />} />
+                  <Route path="create-challenge" element={<CreateChallenge />} />
+                  <Route path="my-proposals" element={<MyProposals />} />
+                  <Route path="my-challenges" element={<MyChallenges />} />
+                  <Route path="verify" element={<Verify />} />
+                  <Route path="messages" element={<FellowshipMessages />} />
+                  <Route path="messages/:roomId" element={<FellowshipChat />} />
+                </Route>
+
+                {/* Catch-All */}
+                <Route path="*" element={<NotFound />} />
+              </Routes>
+            </BrowserRouter>
+          </ToastManager>
         </SocketProvider>
       </AuthProvider>
     </ThemeProvider>
