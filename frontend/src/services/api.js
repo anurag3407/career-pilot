@@ -3,6 +3,14 @@ import { auth } from '../config/firebase'
 const API_BASE = import.meta.env.VITE_API_BASE || '/api'
 
 async function getAuthHeaders() {
+  console.log('📡 getAuthHeaders: VITE_DEV_BYPASS_AUTH =', import.meta.env.VITE_DEV_BYPASS_AUTH);
+  if (import.meta.env.VITE_DEV_BYPASS_AUTH === 'true' || import.meta.env.VITE_DEV_BYPASS_AUTH === true) {
+    return {
+      Authorization: `Bearer dev-token`,
+      'Content-Type': 'application/json'
+    }
+  }
+
   const user = auth.currentUser
 
   if (!user) {
@@ -29,13 +37,17 @@ async function handleResponse(response) {
 
 export const uploadApi = {
   async uploadPdf(file) {
-    const user = auth.currentUser
+    let token = 'dev-token'
+    const isBypass = import.meta.env.VITE_DEV_BYPASS_AUTH === 'true' || import.meta.env.VITE_DEV_BYPASS_AUTH === true;
+    if (!isBypass) {
+      const user = auth.currentUser
 
-    if (!user) {
-      throw new Error('Not authenticated')
+      if (!user) {
+        throw new Error('Not authenticated')
+      }
+
+      token = await user.getIdToken()
     }
-
-    const token = await user.getIdToken()
 
     const formData = new FormData()
     formData.append('resume', file)

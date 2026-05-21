@@ -124,58 +124,78 @@ const startServer = async () => {
     const mongoUri = process.env.MONGODB_URI || 'mongodb://localhost:27017/careerpilot';
 
     console.log('📦 Connecting to MongoDB...');
-    await mongoose.connect(mongoUri, {
-      serverSelectionTimeoutMS: 30000,
-      socketTimeoutMS: 45000,
-      maxPoolSize: 10
-    });
-    console.log('📦 Connected to MongoDB');
+    try {
+      await mongoose.connect(mongoUri, {
+        serverSelectionTimeoutMS: 3000, // Reduced from 30000 to fail fast in development
+        socketTimeoutMS: 5000,
+        maxPoolSize: 10
+      });
+      console.log('📦 Connected to MongoDB');
+      global.useDevDbFallback = false;
+    } catch (dbError) {
+      if (process.env.DEV_BYPASS_AUTH === 'true' || process.env.NODE_ENV === 'development') {
+        console.warn('⚠️  MongoDB connection failed. Running in Local Dev In-Memory Mock Database mode! 🚀');
+        console.warn(`   Reason: ${dbError.message}`);
+        global.useDevDbFallback = true;
+      } else {
+        throw dbError;
+      }
+    }
 
     httpServer.listen(PORT, () => {
       console.log(`🚀 Server running on port ${PORT}`);
       console.log(`📍 Environment: ${process.env.NODE_ENV || 'development'}`);
       console.log(`🔗 Frontend URL: ${process.env.FRONTEND_URL || 'http://localhost:5173'}`);
+      if (global.useDevDbFallback) {
+        console.log('💡 In-Memory Mock Database is ACTIVE. Features will run using mock fallbacks.');
+      }
     });
 
-    try {
-      await initializeDefaultChannels();
-      console.log('💬 Community channels initialized');
-    } catch (channelError) {
-      console.warn('⚠️ Could not initialize default channels:', channelError.message);
-    }
-
-    try {
-      await initializePostScheduler();
-    } catch (schedulerError) {
-      console.warn('⚠️ Post scheduler initialization skipped:', schedulerError.message);
-    }
-
-    const allowDevDbMutations = process.env.ALLOW_DEV_DB_MUTATIONS === 'true';
-    if (process.env.NODE_ENV === 'development' && allowDevDbMutations) {
+    if (!global.useDevDbFallback) {
       try {
-        const testEmail = process.env.DEV_USER_EMAIL || process.env.EMAIL_USER;
-        if (testEmail) {
-          const result = await JobAlert.updateMany(
-            { userEmail: 'dev@example.com' },
-            { $set: { userEmail: testEmail } }
-          );
-          if (result.modifiedCount > 0) {
-            console.log(`📧 Updated ${result.modifiedCount} alerts to use email: ${testEmail}`);
-          }
-        }
-      } catch (err) {
-        console.warn('⚠️ Could not update dev alert emails:', err.message);
+        await initializeDefaultChannels();
+        console.log('💬 Community channels initialized');
+      } catch (channelError) {
+        console.warn('⚠️ Could not initialize default channels:', channelError.message);
       }
-    } else if (process.env.NODE_ENV === 'development' && !allowDevDbMutations) {
-      console.info('ℹ️ Skipping dev alert email update (ALLOW_DEV_DB_MUTATIONS is not true)');
+
+      try {
+        await initializePostScheduler();
+      } catch (schedulerError) {
+        console.warn('⚠️ Post scheduler initialization skipped:', schedulerError.message);
+      }
+
+      const allowDevDbMutations = process.env.ALLOW_DEV_DB_MUTATIONS === 'true';
+      if (process.env.NODE_ENV === 'development' && allowDevDbMutations) {
+        try {
+          const testEmail = process.env.DEV_USER_EMAIL || process.env.EMAIL_USER;
+          if (testEmail) {
+            const result = await JobAlert.updateMany(
+              { userEmail: 'dev@example.com' },
+              { $set: { userEmail: testEmail } }
+            );
+            if (result.modifiedCount > 0) {
+              console.log(`📧 Updated ${result.modifiedCount} alerts to use email: ${testEmail}`);
+            }
+          }
+        } catch (err) {
+          console.warn('⚠️ Could not update dev alert emails:', err.message);
+        }
+      } else if (process.env.NODE_ENV === 'development' && !allowDevDbMutations) {
+        console.info('ℹ️ Skipping dev alert email update (ALLOW_DEV_DB_MUTATIONS is not true)');
+      }
+    } else {
+      console.info('ℹ️ Running in memory: skipping db-dependent jobs and channel initializations');
     }
 
     initializeSocket(httpServer);
 
-    try {
-      await initJobFetcher();
-    } catch (fetcherError) {
-      console.warn('⚠️ Job fetcher initialization skipped:', fetcherError.message);
+    if (!global.useDevDbFallback) {
+      try {
+        await initJobFetcher();
+      } catch (fetcherError) {
+        console.warn('⚠️ Job fetcher initialization skipped:', fetcherError.message);
+      }
     }
 
   } catch (error) {

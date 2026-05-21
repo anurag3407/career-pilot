@@ -2,6 +2,7 @@ import express from 'express';
 import { verifyToken } from '../middleware/auth.js';
 import { asyncHandler, ApiError } from '../middleware/errorHandler.js';
 import TrackedJob from '../models/TrackedJob.model.js';
+import { devDb } from '../utils/devDbFallback.js';
 
 function isValidWebUrl(str) {
   try {
@@ -17,6 +18,15 @@ const router = express.Router();
 // Get all tracked jobs for a user
 router.get('/', verifyToken, asyncHandler(async (req, res) => {
   const userId = req.user.uid;
+
+  if (global.useDevDbFallback) {
+    const jobs = devDb.getTrackedJobs(userId);
+    return res.json({
+      success: true,
+      trackedJobs: jobs,
+      count: jobs.length
+    });
+  }
 
   const userJobs = await TrackedJob.find({ userId })
     .sort({ createdAt: -1 })
@@ -39,6 +49,21 @@ router.get('/', verifyToken, asyncHandler(async (req, res) => {
 // Get tracker stats for a user
 router.get('/stats', verifyToken, asyncHandler(async (req, res) => {
   const userId = req.user.uid;
+
+  if (global.useDevDbFallback) {
+    const stats = {
+      total: 0,
+      saved: 0,
+      applied: 0,
+      interviewing: 0,
+      offered: 0,
+      rejected: 0
+    };
+    return res.json({
+      success: true,
+      stats
+    });
+  }
 
   // Use MongoDB aggregation for efficient stats calculation
   const statsPipeline = [

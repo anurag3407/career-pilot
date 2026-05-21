@@ -10,13 +10,17 @@ export const initializeSocket = async () => {
     return socket;
   }
 
-  const user = auth.currentUser;
-  if (!user) {
-    console.warn('Cannot initialize socket: No authenticated user');
-    return null;
-  }
+  const isBypass = import.meta.env.VITE_DEV_BYPASS_AUTH === 'true' || import.meta.env.VITE_DEV_BYPASS_AUTH === true;
+  let token = 'dev-token';
 
-  const token = await user.getIdToken();
+  if (!isBypass) {
+    const user = auth.currentUser;
+    if (!user) {
+      console.warn('Cannot initialize socket: No authenticated user');
+      return null;
+    }
+    token = await user.getIdToken();
+  }
 
   socket = io(SOCKET_URL, {
     auth: { token },

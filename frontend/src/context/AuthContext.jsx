@@ -24,7 +24,22 @@ export function AuthProvider({ children }) {
   const [user, setUser] = useState(null)
   const [loading, setLoading] = useState(true)
 
+  const isBypass = import.meta.env.VITE_DEV_BYPASS_AUTH === 'true' || import.meta.env.VITE_DEV_BYPASS_AUTH === true;
+
   useEffect(() => {
+    console.log('🔒 AuthContext: VITE_DEV_BYPASS_AUTH =', import.meta.env.VITE_DEV_BYPASS_AUTH);
+    if (isBypass) {
+      setUser({
+        uid: 'dev-user-001',
+        email: 'dev@example.com',
+        displayName: 'Developer',
+        emailVerified: true,
+        getIdToken: async () => 'dev-token'
+      })
+      setLoading(false)
+      return
+    }
+
     const unsubscribe = onAuthStateChanged(auth, (user) => {
       setUser(user)
       setLoading(false)
@@ -34,6 +49,16 @@ export function AuthProvider({ children }) {
 
   // Sign up with email/password
   const signup = async (email, password, displayName) => {
+    if (isBypass) {
+      const mockUser = {
+        uid: 'dev-user-001',
+        email: email || 'dev@example.com',
+        displayName: displayName || 'Developer',
+        getIdToken: async () => 'dev-token'
+      };
+      setUser(mockUser);
+      return mockUser;
+    }
     const result = await createUserWithEmailAndPassword(auth, email, password)
     if (displayName) {
       await updateProfile(result.user, { displayName })
@@ -43,6 +68,16 @@ export function AuthProvider({ children }) {
 
   // Sign in with email/password
   const login = async (email, password) => {
+    if (isBypass) {
+      const mockUser = {
+        uid: 'dev-user-001',
+        email: email || 'dev@example.com',
+        displayName: 'Developer',
+        getIdToken: async () => 'dev-token'
+      };
+      setUser(mockUser);
+      return mockUser;
+    }
     const result = await signInWithEmailAndPassword(auth, email, password)
     return result.user
   }
@@ -62,11 +97,18 @@ export function AuthProvider({ children }) {
 
   // Sign out
   const logout = async () => {
+    if (isBypass) {
+      setUser(null)
+      return
+    }
     await signOut(auth)
   }
 
   // Get ID token for API calls
   const getToken = async () => {
+    if (isBypass) {
+      return 'dev-token'
+    }
     if (!user) return null
     return await user.getIdToken()
   }

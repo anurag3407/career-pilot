@@ -5,6 +5,7 @@ import UserProfile from '../models/UserProfile.model.js';
 import Resume from '../models/Resume.model.js';
 import Interview from '../models/Interview.model.js';
 import { db } from '../config/firebase.js';
+import { devDb } from '../utils/devDbFallback.js';
 
 const router = express.Router();
 
@@ -40,6 +41,12 @@ const getPostsForUser = async (uid) => {
 // Get or create own profile
 router.get('/me', asyncHandler(async (req, res) => {
   const uid = req.user.uid;
+
+  if (global.useDevDbFallback) {
+    const profile = devDb.getProfile(uid, req.user.email, req.user.name);
+    return res.json({ success: true, profile });
+  }
+
   let profile = await UserProfile.findOne({ uid });
   if (!profile) {
     profile = await UserProfile.create({
@@ -54,6 +61,11 @@ router.get('/me', asyncHandler(async (req, res) => {
 router.put('/me', asyncHandler(async (req, res) => {
   const uid = req.user.uid;
   const { displayName, bio, jobRole, skills, location, website, github, linkedin } = req.body;
+
+  if (global.useDevDbFallback) {
+    const profile = devDb.updateProfile(uid, { displayName, bio, jobRole, skills, location, website, github, linkedin });
+    return res.json({ success: true, profile });
+  }
 
   const update = {};
   if (displayName !== undefined) update.displayName = String(displayName).slice(0, 100);
@@ -80,6 +92,12 @@ router.put('/me', asyncHandler(async (req, res) => {
 // Get own stats
 router.get('/me/stats', asyncHandler(async (req, res) => {
   const uid = req.user.uid;
+
+  if (global.useDevDbFallback) {
+    const resumes = devDb.getResumes(uid);
+    return res.json({ success: true, stats: { resumesCreated: resumes.length, interviewsDone: 0 } });
+  }
+
   const [resumesCreated, interviewsDone] = await Promise.all([
     Resume.countDocuments({ userId: uid }),
     Interview.countDocuments({ odId: uid, status: 'completed' }),
@@ -89,6 +107,9 @@ router.get('/me/stats', asyncHandler(async (req, res) => {
 
 // Get own activity feed (community posts)
 router.get('/me/activity', asyncHandler(async (req, res) => {
+  if (global.useDevDbFallback) {
+    return res.json({ success: true, activity: [] });
+  }
   const activity = await getPostsForUser(req.user.uid);
   res.json({ success: true, activity });
 }));
