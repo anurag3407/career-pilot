@@ -28,7 +28,13 @@ export const scrapeLinkedInProfile = async (url) => {
   const apiKey = process.env.PROXYCURL_API_KEY;
 
   if (!apiKey) {
-    console.warn('⚠️  PROXYCURL_API_KEY is not set — returning mock LinkedIn profile for dev mode.');
+    if (process.env.NODE_ENV === 'production') {
+      throw new Error(
+        'LinkedIn import is not configured. Please set PROXYCURL_API_KEY on the server. ' +
+        'Get a free key (10 credits) at https://proxycurl.com.'
+      );
+    }
+    console.warn('⚠️  PROXYCURL_API_KEY is not set — returning mock LinkedIn profile (development only).');
     return getMockProfile(url);
   }
 

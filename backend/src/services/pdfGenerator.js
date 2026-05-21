@@ -1,31 +1,32 @@
 import puppeteer from 'puppeteer';
 import { marked } from 'marked';
 import { generateStructuredData } from '../utils/structuredDataGenerator.js';
+
 /**
  * Generate a PDF from markdown text using Puppeteer.
  * @param {string} markdownText - The resume markdown content.
- * @param {Object} options - Options like format ('A4' or 'Letter') and title.
+ * @param {Object} options - Options like format ('A4' or 'Letter'), title, and portfolio data.
  * @returns {Buffer} - The generated PDF buffer.
  */
 export const generatePDF = async (markdownText, options = {}) => {
-  const { 
-    format = 'A4', 
+  const {
+    format = 'A4',
     title = 'Resume',
-    themeColor = '#2563eb' 
+    themeColor = '#2563eb'
   } = options;
 
-  // Convert markdown to HTML
   const htmlContent = marked.parse(markdownText);
-  const structuredData = generateStructuredData(options.portfolio || {});
-const jsonLd = JSON.stringify(structuredData, null, 2)
-  .replace(/<\/script>/gi, '<\\/script>');
 
-const jsonLdScript = `
-<script type="application/ld+json">
-${jsonLd}
-</script>
-`;
-  // Read full HTML structure with styles
+  // Only inject JSON-LD structured data when portfolio data is explicitly provided.
+  // Resume PDFs must not carry portfolio-flavoured Schema.org markup.
+  const jsonLdScript = options.portfolio && Object.keys(options.portfolio).length > 0
+    ? (() => {
+        const structuredData = generateStructuredData(options.portfolio);
+        const jsonLd = JSON.stringify(structuredData, null, 2).replace(/<\/script>/gi, '<\\/script>');
+        return `<script type="application/ld+json">\n${jsonLd}\n</script>`;
+      })()
+    : '';
+
   const fullHtml = `
     <!DOCTYPE html>
     <html lang="en">
@@ -133,7 +134,7 @@ ${jsonLd}
 
   // Launch puppeteer
   const browser = await puppeteer.launch({
-    headless: 'new', // Use new headless mode
+    headless: true,
     args: ['--no-sandbox', '--disable-setuid-sandbox']
   });
 

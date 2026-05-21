@@ -286,8 +286,14 @@ export function getDefaultProvider() {
   if (_defaultProvider) return _defaultProvider;
 
   const geminiApiKey = process.env.GEMINI_API_KEY;
+
   if (!geminiApiKey) {
-    console.warn('⚠️  GEMINI_API_KEY is not set — using mock dev provider. AI responses will be stubs.');
+    if (process.env.NODE_ENV === 'production') {
+      const err = new Error('Server AI key is not configured. Please set GEMINI_API_KEY or supply your own key via X-AI-Key.');
+      err.statusCode = 503;
+      throw err;
+    }
+    console.warn('⚠️  GEMINI_API_KEY is not set — using mock provider (development only). AI responses will be stubs.');
     _defaultProvider = new MockDevProvider();
     return _defaultProvider;
   }
