@@ -1,5 +1,8 @@
 import 'dotenv/config';
 import express from 'express';
+import dotenv from "dotenv";
+dotenv.config();
+
 import { createServer } from 'http';
 import cors from 'cors';
 import helmet from 'helmet';
@@ -45,7 +48,7 @@ const shouldInitGitHubSyncCron =
   process.env.NODE_ENV !== 'test';
 
 const connectDB = async (...args) => {
-  await baseConnectDB(...args);
+  //await baseConnectDB(...args);
 
   if (shouldInitGitHubSyncCron) {
     initGitHubSyncCron();
@@ -222,7 +225,7 @@ app.use((req, res) => {
 app.use(globalErrorHandler);
 const startServer = async () => {
   try {
-    await connectDB();
+    //await connectDB();
 
     httpServer.listen(PORT, () => {
       console.log(`🚀 Server running on port ${PORT}`);
