@@ -1,34 +1,7 @@
 import { getDefaultProvider } from './aiProviders.js';
 import dotenv from 'dotenv';
-import { GoogleGenerativeAI } from '@google/generative-ai';
-import { aiCallsCounter } from '../middleware/metrics.js';
 
 dotenv.config();
-
-const geminiApiKey = process.env.GEMINI_API_KEY;
-if (!geminiApiKey) {
-  console.warn('⚠️  GEMINI_API_KEY is not set — AI features will be unavailable. Non-AI routes are unaffected.');
-}
-
-let _model = null;
-
-const getModel = () => {
-  if (_model) return _model;
-  if (!geminiApiKey) {
-    const err = new Error('AI features are unavailable — GEMINI_API_KEY is not configured.');
-    err.statusCode = 503;
-    throw err;
-  }
-  const genAI = new GoogleGenerativeAI(geminiApiKey);
-  const rawModel = genAI.getGenerativeModel({ model: 'gemini-2.5-flash' });
-  _model = {
-    generateContent: async (prompt) => {
-      aiCallsCounter.inc({ provider: 'gemini' });
-      return await rawModel.generateContent(prompt);
-    }
-  };
-  return _model;
-};
 
 // ---------------------------------------------------------------------------
 // Helper: resolve the AI provider to use
@@ -151,9 +124,6 @@ export const enhanceResume = async (resumeText, preferences, aiProvider) => {
 
     const prompt = `${systemPrompt}\n\nPlease enhance the following resume:\n\n${resumeText}`;
 
-    const result = await getModel().generateContent(prompt);
-    const response = await result.response;
-    const text = response.text();
     const providerResult = await provider.generateContent(prompt);
 
     return {
@@ -178,9 +148,6 @@ export const generateSummary = async (resumeText, jobRole, aiProvider) => {
 Resume:
 ${resumeText}`;
 
-    const result = await getModel().generateContent(prompt);
-    const response = await result.response;
-    const text = response.text();
     const providerResult = await provider.generateContent(prompt);
 
     return {
@@ -204,9 +171,6 @@ export const suggestImprovements = async (resumeText, jobRole, aiProvider) => {
 Resume:
 ${resumeText}`;
 
-    const result = await getModel().generateContent(prompt);
-    const response = await result.response;
-    const text = response.text();
     const providerResult = await provider.generateContent(prompt);
 
     return {
@@ -268,9 +232,6 @@ Rules:
 Resume:
 ${resumeText}`;
 
-    const result = await getModel().generateContent(prompt);
-    const response = await result.response;
-    const text = response.text();
     const providerResult = await provider.generateContent(prompt);
 
     // Parse JSON from response
@@ -418,9 +379,6 @@ ANALYSIS RULES:
 Resume to analyze:
 ${resumeText}`;
 
-    const result = await getModel().generateContent(prompt);
-    const response = await result.response;
-    const text = response.text();
     const providerResult = await provider.generateContent(prompt);
 
     let analysisData;
@@ -491,9 +449,6 @@ Rules:
 Resume:
 ${resumeText}`;
 
-    const result = await getModel().generateContent(prompt);
-    const response = await result.response;
-    const text = response.text();
     const providerResult = await provider.generateContent(prompt);
 
     let bulletData;
@@ -547,9 +502,6 @@ Focus on the 3-5 most impactful changes.
 Original Resume:
 ${resumeText}`;
 
-    const result = await getModel().generateContent(prompt);
-    const response = await result.response;
-    const text = response.text();
     const providerResult = await provider.generateContent(prompt);
 
     let comparisonData;

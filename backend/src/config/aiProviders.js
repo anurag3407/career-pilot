@@ -210,13 +210,86 @@ let _defaultProvider = null;
  * Returns the default server-side Gemini provider (lazy-initialised).
  * Throws if GEMINI_API_KEY is not set.
  */
+/**
+ * Mock provider used in dev mode when no API key is configured.
+ * Returns clearly labelled placeholder responses so the UI remains functional.
+ */
+class MockDevProvider {
+  constructor() {
+    this.providerName = 'mock-dev';
+  }
+
+  async generateContent(prompt) {
+    const isJson = prompt.includes('Return ONLY valid JSON') || prompt.includes('return ONLY valid JSON') || prompt.includes('ONLY a valid JSON');
+
+    if (isJson) {
+      // Return minimal valid JSON stubs for analysis endpoints
+      if (prompt.includes('atsScore') || prompt.includes('ATS')) {
+        return {
+          text: JSON.stringify({
+            atsScore: 72,
+            scoreBreakdown: { keywordMatch: 70, formatting: 80, experienceRelevance: 75, skillsAlignment: 65, educationMatch: 70 },
+            strengths: ['[DEV MODE] Good structure detected', '[DEV MODE] Clear section headers'],
+            improvements: [{ category: 'Keywords', issue: '[DEV MODE] Add role-specific keywords', suggestion: 'Include job description terms', priority: 'high' }],
+            missingKeywords: ['[dev-mode]'],
+            summary: '[DEV MODE] Configure GEMINI_API_KEY for real ATS analysis.'
+          })
+        };
+      }
+      if (prompt.includes('overallGrade') || prompt.includes('comprehensive')) {
+        return {
+          text: JSON.stringify({
+            overallGrade: 'B', overallScore: 72,
+            executiveSummary: '[DEV MODE] Configure GEMINI_API_KEY for real analysis.',
+            sectionGrades: {
+              summary: { grade: 'B', score: 70, feedback: '[dev]' },
+              experience: { grade: 'B', score: 72, feedback: '[dev]' },
+              education: { grade: 'A', score: 85, feedback: '[dev]' },
+              skills: { grade: 'C', score: 65, feedback: '[dev]' },
+              projects: { grade: 'B', score: 75, feedback: '[dev]' }
+            },
+            bulletAnalysis: [], actionVerbAnalysis: { powerVerbsUsed: [], weakVerbsFound: [], verbScore: 60 },
+            quantificationAnalysis: { bulletsWithMetrics: 0, bulletsWithoutMetrics: 0, percentageQuantified: 0, missedOpportunities: [] },
+            industryKeywords: { present: [], missing: [], recommendations: ['[dev]'] },
+            seniorTips: [{ category: 'General', tip: '[DEV MODE] Set GEMINI_API_KEY', priority: 'high', example: '' }],
+            competitiveEdge: { score: 60, standoutFactors: ['[dev]'], differentiators: ['[dev]'] }
+          })
+        };
+      }
+      if (prompt.includes('bullets') || prompt.includes('bullet')) {
+        return { text: JSON.stringify({ bullets: [], summary: { totalBullets: 0, averageScore: 0, bulletsNeedingWork: 0, topIssue: '[DEV MODE]' } }) };
+      }
+      if (prompt.includes('comparisons') || prompt.includes('before')) {
+        return { text: JSON.stringify({ comparisons: [], impactSummary: '[DEV MODE] Set GEMINI_API_KEY', estimatedScoreIncrease: 0 }) };
+      }
+      return { text: '{"result": "[DEV MODE] Set GEMINI_API_KEY for real AI responses"}' };
+    }
+
+    // Plain text responses (enhance, summary, suggestions)
+    if (prompt.includes('enhance the following resume') || prompt.includes('enhance') || prompt.includes('Harvard')) {
+      return { text: `[DEV MODE — set GEMINI_API_KEY for real AI enhancement]\n\n${prompt.split('resume:\n\n')[1] || 'Resume content here'}` };
+    }
+    if (prompt.includes('professional summary')) {
+      return { text: '[DEV MODE] Configure GEMINI_API_KEY to generate a real professional summary.' };
+    }
+    return { text: '[DEV MODE] Configure GEMINI_API_KEY in your .env file to enable AI features.' };
+  }
+
+  async *generateContentStream(prompt) {
+    const text = '[DEV MODE] Configure GEMINI_API_KEY to enable AI streaming.';
+    yield { text, fullText: text };
+    yield { done: true };
+  }
+}
+
 export function getDefaultProvider() {
   if (_defaultProvider) return _defaultProvider;
 
   const geminiApiKey = process.env.GEMINI_API_KEY;
   if (!geminiApiKey) {
-    console.error('❌ GEMINI_API_KEY is missing. Aborting AI initialization.');
-    throw new Error('GEMINI_API_KEY is required to start the AI services.');
+    console.warn('⚠️  GEMINI_API_KEY is not set — using mock dev provider. AI responses will be stubs.');
+    _defaultProvider = new MockDevProvider();
+    return _defaultProvider;
   }
 
   _defaultProvider = createAIProvider('gemini', geminiApiKey);

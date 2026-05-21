@@ -6,14 +6,30 @@ import { jobsScrapedCounter } from '../middleware/metrics.js';
 
 const PROXYCURL_ENDPOINT = 'https://nubela.co/proxycurl/api/v2/linkedin';
 
+const getMockProfile = (url) => {
+  const username = url.split('/in/')[1]?.replace(/\/$/, '') || 'demo-user';
+  return {
+    name: `Demo User (${username})`,
+    headline: 'Software Engineer — [DEV MODE: set PROXYCURL_API_KEY for real import]',
+    location: 'San Francisco, CA',
+    about: 'This is a mock profile generated in dev mode. Set PROXYCURL_API_KEY in your .env to import real LinkedIn profiles.',
+    experience: [
+      { title: 'Software Engineer', company: 'Example Corp', duration: '2023 – Present', description: 'Built scalable backend services.' },
+      { title: 'Junior Developer', company: 'Startup Inc', duration: '2021 – 2023', description: 'Developed frontend features using React.' }
+    ],
+    education: [
+      { school: 'State University', degree: 'B.S., Computer Science', duration: '2017 – 2021' }
+    ],
+    skills: ['JavaScript', 'React', 'Node.js', 'Python', 'SQL', 'Git'],
+  };
+};
+
 export const scrapeLinkedInProfile = async (url) => {
   const apiKey = process.env.PROXYCURL_API_KEY;
 
   if (!apiKey) {
-    throw new Error(
-      'LinkedIn import requires a Proxycurl API key. Set PROXYCURL_API_KEY in your .env file. ' +
-      'Get a free key (10 credits) at https://proxycurl.com.'
-    );
+    console.warn('⚠️  PROXYCURL_API_KEY is not set — returning mock LinkedIn profile for dev mode.');
+    return getMockProfile(url);
   }
 
   const requestUrl = `${PROXYCURL_ENDPOINT}?url=${encodeURIComponent(url)}&fallback_to_cache=on-error&use_cache=if-present`;
