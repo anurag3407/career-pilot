@@ -60,12 +60,14 @@ export default function Dashboard() {
       const jobs = jobsRes.trackedJobs || []
       setTrackedJobs(jobs)
 
+      // Enforce strict typecasting (Number) on metric lengths to prevent loose-typing 
+      // string concatenation vulnerabilities during data synchronization workflows.
       const stats = {
-        total: jobs.length,
-        saved: jobs.filter(j => j.status === 'saved').length,
-        applied: jobs.filter(j => j.status === 'applied').length,
-        interviewing: jobs.filter(j => j.status === 'interviewing').length,
-        offered: jobs.filter(j => j.status === 'offered').length
+        total: Number(jobs.length || 0),
+        saved: Number(jobs.filter(j => j.status === 'saved').length || 0),
+        applied: Number(jobs.filter(j => j.status === 'applied').length || 0),
+        interviewing: Number(jobs.filter(j => j.status === 'interviewing').length || 0),
+        offered: Number(jobs.filter(j => j.status === 'offered').length || 0)
       }
       setJobStats(stats)
     } catch (error) {
