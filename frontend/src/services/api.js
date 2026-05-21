@@ -291,6 +291,26 @@ export const enhanceApi = {
     return handleResponse(response)
   },
 
+  // Save email to history
+  async saveEmail(data) {
+    const headers = await getAuthHeaders()
+    const response = await fetch(`${API_BASE}/enhance/emails/save`, {
+      method: 'POST',
+      headers,
+      body: JSON.stringify(data)
+    })
+    return handleResponse(response)
+  },
+
+  // Get email history
+  async getEmailHistory() {
+    const headers = await getAuthHeaders()
+    const response = await fetch(`${API_BASE}/enhance/emails/history`, {
+      headers,
+    })
+    return handleResponse(response)
+  },
+
   // Optimize LinkedIn profile with AI
   async optimizeLinkedIn(data) {
     const headers = await getAuthHeaders()

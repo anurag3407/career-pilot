@@ -1,4 +1,5 @@
 import express from 'express';
+import GeneratedEmail from '../models/GeneratedEmail.model.js';
 import { enhanceResume, generateSummary, suggestImprovements, analyzeATSScore, analyzeResumeComprehensive, analyzeBulletPoints, generateBeforeAfter, getVerbLists, getSystemPrompt } from '../config/langchain.js';
 import { generateEmails } from '../services/emailGeneratorService.js';
 import { optimizeLinkedInProfile } from '../services/linkedinOptimizerService.js';
@@ -356,6 +357,30 @@ router.post('/stream', verifyToken, extractAIProvider, aiRateLimiter, asyncHandl
     stream.sendError(error.message || 'Failed to enhance resume');
     stream.endStream();
   }
+}));
+
+// Save generated email to history
+router.post('/emails/save', verifyToken, asyncHandler(async (req, res) => {
+  const { jobTitle, tone, subjectLines, variants } = req.body;
+
+  const saved = await GeneratedEmail.create({
+    userId: req.user.uid,
+    jobTitle: jobTitle || '',
+    tone: tone || 'Professional',
+    subjectLines: subjectLines || [],
+    variants: variants || [],
+  });
+
+  res.json({ success: true, data: saved });
+}));
+
+// Get email history for logged-in user
+router.get('/emails/history', verifyToken, asyncHandler(async (req, res) => {
+  const emails = await GeneratedEmail.find({ userId: req.user.uid })
+    .sort({ createdAt: -1 })
+    .limit(20);
+
+  res.json({ success: true, data: emails });
 }));
 
 export default router;
