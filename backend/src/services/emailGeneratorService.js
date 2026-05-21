@@ -26,10 +26,28 @@ export const generateEmails = async (resumeText, jobDescription, tone, aiProvide
 
         const result = await provider.generateContent(prompt);
 
+        if (!result?.text) {
+            console.error('Empty response from AI provider');
+            throw new Error('AI provider returned an empty response.');
+        }
+
         // Clean up markdown syntax if AI adds it
         const cleanedText = result.text.replace(/```json\n?/g, '').replace(/```\n?/g, '').trim();
 
-        return JSON.parse(cleanedText);
+        let parsed;
+        try {
+            parsed = JSON.parse(cleanedText);
+        } catch (parseError) {
+            console.error('Failed to parse email generator JSON:', parseError, cleanedText);
+            throw new Error('Failed to generate valid email variants. Please try again.');
+        }
+
+        if (!parsed?.subjectLines || !parsed?.variants || !Array.isArray(parsed.subjectLines) || !Array.isArray(parsed.variants)) {
+            console.error('Invalid email generator response shape:', parsed);
+            throw new Error('Failed to generate valid email variants. Please try again.');
+        }
+
+        return parsed;
 
     } catch (error) {
         console.error("Error generating email variants:", error);
