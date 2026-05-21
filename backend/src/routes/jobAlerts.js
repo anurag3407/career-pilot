@@ -226,11 +226,9 @@ router.put('/:id', verifyToken, validate(updateJobAlertSchema), asyncHandler(asy
     if (salaryMin !== undefined) alert.salaryMin = salaryMin;
     if (salaryMax !== undefined) alert.salaryMax = salaryMax;
     if (employmentType !== undefined) alert.employmentType = employmentType;
-<<<<<<< Updated upstream
-    if (checkFrequency !== undefined) alert.checkFrequency = checkFrequency;
-=======
-    if (checkFrequency !== undefined) alert.checkFrequency = checkFrequency;  
->>>>>>> Stashed changes
+    if (checkFrequency !== undefined) {
+        alert.checkFrequency = checkFrequency;
+    }
     if (isActive !== undefined) alert.isActive = isActive;
 
     await alert.save();
