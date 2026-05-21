@@ -1,12 +1,42 @@
 import express from 'express';
 import User from '../models/User.model.js';
+import { verifyToken } from '../middleware/auth.js'; // FIX : added auth import
 
 const router = express.Router();
 
+// Whitelisted onboarding step IDs — only these are allowed in the DB
+// FIX: added whitelist for input validation
+const SUPPORTED_ONBOARDING_IDS = [
+  'resume_uploaded',
+  'resume_enhanced',
+  'github_connected',
+  'portfolio_created',
+  'portfolio_deployed',
+  'job_alerts_setup',
+];
+
+// FIX : sanitize completedItems — only whitelisted keys, boolean values only
+function sanitizeCompletedItems(raw) {
+  if (!raw || typeof raw !== 'object' || Array.isArray(raw)) return null;
+  const sanitized = {};
+  for (const key of SUPPORTED_ONBOARDING_IDS) {
+    if (key in raw) {
+      sanitized[key] = Boolean(raw[key]);
+    }
+  }
+  return sanitized;
+}
+
 // Get user's onboarding progress (using Firebase UID)
-router.get('/api/users/onboarding/:firebaseUid', async (req, res) => {
+router.get('/api/users/onboarding/:firebaseUid', verifyToken, async (req, res) => { // FIX : added verifyToken
   try {
     const { firebaseUid } = req.params;
+
+    // FIX: ownership check — user can only access their own data
+    if (req.user.uid !== firebaseUid) {
+      return res.status(403).json({ error: 'Forbidden: access denied' });
+    }
+
     const user = await User.findOne({ firebaseUid });
     
     if (!user) {
@@ -32,16 +62,32 @@ router.get('/api/users/onboarding/:firebaseUid', async (req, res) => {
 });
 
 // Update user's onboarding progress
-router.post('/api/users/onboarding/:firebaseUid', async (req, res) => {
+router.post('/api/users/onboarding/:firebaseUid', verifyToken, async (req, res) => { // FIX : added verifyToken
   try {
     const { firebaseUid } = req.params;
-    const { completedItems } = req.body;
+
+    // FIX : ownership check
+    if (req.user.uid !== firebaseUid) {
+      return res.status(403).json({ error: 'Forbidden: access denied' });
+    }
+
+    // FIX : validate and sanitize input before saving to DB
+    const sanitized = sanitizeCompletedItems(req.body.completedItems);
+    if (!sanitized) {
+      return res.status(400).json({ error: 'Invalid completedItems payload' });
+    }
     
+    // FIX : removed upsert: true to prevent creating partial user documents
     const user = await User.findOneAndUpdate(
       { firebaseUid },
-      { onboardingProgress: completedItems },
-      { new: true, upsert: true }
+      { onboardingProgress: sanitized },
+      { new: true }
     );
+
+    // FIX: handle user not found instead of silently creating broken document
+    if (!user) {
+      return res.status(404).json({ error: 'User not found' });
+    }
     
     res.json({ success: true, data: user.onboardingProgress });
   } catch (error) {
@@ -51,15 +97,26 @@ router.post('/api/users/onboarding/:firebaseUid', async (req, res) => {
 });
 
 // Dismiss checklist (don't show again)
-router.post('/api/users/onboarding/:firebaseUid/dismiss', async (req, res) => {
+router.post('/api/users/onboarding/:firebaseUid/dismiss', verifyToken, async (req, res) => { // FIX : added verifyToken
   try {
     const { firebaseUid } = req.params;
+
+    // FIX : ownership check
+    if (req.user.uid !== firebaseUid) {
+      return res.status(403).json({ error: 'Forbidden: access denied' });
+    }
     
+    // FIX : removed upsert: true
     const user = await User.findOneAndUpdate(
       { firebaseUid },
       { checklistDismissed: true },
-      { new: true, upsert: true }
+      { new: true }
     );
+
+    // FIX : handle user not found
+    if (!user) {
+      return res.status(404).json({ error: 'User not found' });
+    }
     
     res.json({ success: true, message: 'Checklist dismissed' });
   } catch (error) {
@@ -69,9 +126,15 @@ router.post('/api/users/onboarding/:firebaseUid/dismiss', async (req, res) => {
 });
 
 // Check if user is new (account less than 7 days old)
-router.get('/api/users/onboarding/:firebaseUid/status', async (req, res) => {
+router.get('/api/users/onboarding/:firebaseUid/status', verifyToken, async (req, res) => { // FIX : added verifyToken
   try {
     const { firebaseUid } = req.params;
+
+    // FIX : ownership check
+    if (req.user.uid !== firebaseUid) {
+      return res.status(403).json({ error: 'Forbidden: access denied' });
+    }
+
     const user = await User.findOne({ firebaseUid });
     
     if (!user) {

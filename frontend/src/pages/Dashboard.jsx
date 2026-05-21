@@ -115,6 +115,7 @@ export default function Dashboard() {
       localStorage.setItem(`onboarding_completed_${user.uid}`, 'true')
     }
     toast.success('🎉 Amazing! You\'ve completed all onboarding steps!')
+    setShowChecklist(false);
   }
 
   const handleChecklistDismiss = () => {
