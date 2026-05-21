@@ -11,7 +11,7 @@
 
 **An intelligent, AI-powered career platform that revolutionizes the job hunting experience through automated resume enhancement, intelligent job matching, AI mock interviews, corporate fellowships, and community-driven networking.**
 
-[Live Demo](https://careerpilotyyy.netlify.app/) • [Features](#-features) • [Tech Stack](#-tech-stack) • [Getting Started](#-getting-started) • [API Reference](./API_DOCS/README.md) • [Architecture](./ARCHITECTURE.md) • [Contributing](./CONTRIBUTION.md)
+[Features](#-features) • [Tech Stack](#-tech-stack) • [Getting Started](#-getting-started) • [API Reference](./API_DOCS/README.md) • [Architecture](./ARCHITECTURE.md) • [Contributing](./CONTRIBUTION.md)
 
 </div>
 
