@@ -43,6 +43,7 @@ const getPostsForUser = async (uid) => {
 router.get('/me', asyncHandler(async (req, res) => {
   const uid = req.user.uid;
   let profile = await UserProfile.findOne({ uid });
+  
   if (!profile) {
     profile = await UserProfile.create({
       uid,
@@ -78,16 +79,6 @@ router.put('/me', validate(updateProfileSchema), asyncHandler(async (req, res) =
     { new: true, upsert: true }
   );
   res.json({ success: true, profile });
-}));
-
-// Get own stats
-router.get('/me/stats', asyncHandler(async (req, res) => {
-  const uid = req.user.uid;
-  const [resumesCreated, interviewsDone] = await Promise.all([
-    Resume.countDocuments({ userId: uid }),
-    Interview.countDocuments({ odId: uid, status: 'completed' }),
-  ]);
-  res.json({ success: true, stats: { resumesCreated, interviewsDone } });
 }));
 
 // Get own activity feed (community posts)

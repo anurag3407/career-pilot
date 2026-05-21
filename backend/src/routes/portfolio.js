@@ -15,7 +15,7 @@ const router = express.Router();
 
 const VALID_SECTIONS = ['hero', 'projects', 'about', 'skills'];
 const VALID_SLUG_PATTERN = /^[a-z0-9]+(?:[a-z0-9-]*[a-z0-9])?$/i;
-const FREE_TIER_LIMIT_MB = 500; // Default threshold fallback constant
+const FREE_TIER_LIMIT_MB = 500;
 
 // --- Helper Functions ---
 
@@ -25,12 +25,9 @@ const getPublicPortfolioBaseUrl = (req) => {
   return String(configuredBaseUrl || fallbackBaseUrl).replace(/\/$/, '');
 };
 
-const getApiBaseUrl = (req) => {
-  return `${req.protocol}://${req.get('host')}`.replace(/\/$/, '');
-};
-
 const getPortfolioTemplatePath = (slug) => {
-  return new URL(`../templates/portfolio/${slug}/index.html`, import.meta.url);
+  // Always evaluate filesystem path on lowercase slugs to prevent matching misses
+  return new URL(`../templates/portfolio/${slug.toLowerCase()}/index.html`, import.meta.url);
 };
 
 const assertValidPortfolioSlug = (slug) => {
@@ -81,19 +78,19 @@ router.post(
  * GET /api/portfolio/public/:slug/sitemap.xml
  */
 router.get('/public/:slug/sitemap.xml', asyncHandler(async (req, res) => {
-  const { slug } = req.params;
-  assertValidPortfolioSlug(slug);
+  const normalizedSlug = req.params.slug.toLowerCase();
+  assertValidPortfolioSlug(normalizedSlug);
 
   let templateStat;
   try {
-    templateStat = await fs.stat(getPortfolioTemplatePath(slug));
+    templateStat = await fs.stat(getPortfolioTemplatePath(normalizedSlug));
   } catch {
     throw new ApiError(404, 'Portfolio template not found.');
   }
 
   const sitemapXml = generateSitemapXml({
     baseUrl: getPublicPortfolioBaseUrl(req),
-    slug,
+    slug: normalizedSlug,
     portfolioPath: '/portfolio/public',
     portfolioUpdatedAt: templateStat.mtime,
   });
@@ -103,56 +100,37 @@ router.get('/public/:slug/sitemap.xml', asyncHandler(async (req, res) => {
 
 /**
  * GET /api/portfolio/public/:slug/robots.txt
- * Handles custom database-driven user visibility settings
  */
 router.get('/public/:slug/robots.txt', asyncHandler(async (req, res, next) => {
   try {
-    const { slug } = req.params;
-    assertValidPortfolioSlug(slug);
+    const normalizedSlug = req.params.slug.toLowerCase();
+    assertValidPortfolioSlug(normalizedSlug);
 
     try {
-      await fs.stat(getPortfolioTemplatePath(slug));
+      await fs.stat(getPortfolioTemplatePath(normalizedSlug));
     } catch {
       throw new ApiError(404, 'Portfolio template not found.');
     }
 
     res.type('text/plain');
-    const profile = await UserProfile.findOne({ slug: slug.toLowerCase() });
-    const sitemapUrl = `${getApiBaseUrl(req)}/api/portfolio/public/${encodeURIComponent(slug)}/sitemap.xml`;
+    const profile = await UserProfile.findOne({ slug: normalizedSlug });
+    const sitemapUrl = `${getPublicPortfolioBaseUrl(req)}/api/portfolio/public/${encodeURIComponent(normalizedSlug)}/sitemap.xml`;
 
-    // Case A: Profile doesn't exist, or has no custom rules -> return default configuration
     if (!profile || !profile.seoSettings) {
-      const defaultRobotsTxt = [
-        'User-agent: *',
-        'Allow: /',
-        `Sitemap: ${sitemapUrl}`
-      ].join('\n');
-
+      const defaultRobotsTxt = ['User-agent: *', 'Allow: /', `Sitemap: ${sitemapUrl}`].join('\n');
       return res.send(defaultRobotsTxt);
     }
 
-    // Case B: User requested to block search engines explicitly
     if (profile.seoSettings.blockSearchEngines) {
-      const blockRobotsTxt = [
-        'User-agent: *',
-        'Disallow: /'
-      ].join('\n');
-
+      const blockRobotsTxt = ['User-agent: *', 'Disallow: /'].join('\n');
       return res.send(blockRobotsTxt);
     }
 
-    // Case C: User has written a completely custom string block for robots.txt
     if (profile.seoSettings.customRobotsTxt && profile.seoSettings.customRobotsTxt.trim() !== '') {
       return res.send(profile.seoSettings.customRobotsTxt);
     }
 
-    // Fallback if settings exist but are unconfigured
-    const standardRobotsTxt = [
-      'User-agent: *',
-      'Allow: /',
-      `Sitemap: ${sitemapUrl}`
-    ].join('\n');
-
+    const standardRobotsTxt = ['User-agent: *', 'Allow: /', `Sitemap: ${sitemapUrl}`].join('\n');
     return res.send(standardRobotsTxt);
   } catch (error) {
     next(error);
@@ -175,6 +153,11 @@ router.post('/validate-token', verifyToken, asyncHandler(async (req, res) => {
     throw new ApiError(400, `provider must be one of: ${Object.keys(TOKEN_VALIDATORS).join(', ')}`);
   }
 
+  // Enforce token validation rules for standard non-cloud deployment pipelines
+  if (provider !== 'cloudflare' && !token) {
+    throw new ApiError(400, `Token parameters are required for verification provider: ${provider}`);
+  }
+
   const result = await TOKEN_VALIDATORS[provider](token);
   res.status(200).json({ success: true, provider, ...result });
 }));
@@ -183,8 +166,8 @@ router.post('/validate-token', verifyToken, asyncHandler(async (req, res) => {
  * GET /api/portfolio/:slug/bandwidth
  */
 router.get('/:slug/bandwidth', asyncHandler(async (req, res) => {
-  const { slug } = req.params;
-  assertValidPortfolioSlug(slug);
+  const normalizedSlug = req.params.slug.toLowerCase();
+  assertValidPortfolioSlug(normalizedSlug);
 
   const estimatedPageSizeKB = 500;
   const monthlyViews = 1200;
@@ -194,7 +177,7 @@ router.get('/:slug/bandwidth', asyncHandler(async (req, res) => {
   res.status(200).json({
     success: true,
     data: {
-      slug,
+      slug: normalizedSlug,
       estimatedPageSizeKB,
       monthlyViews,
       bandwidthUsageMB: bandwidthUsageMB.toFixed(2),
@@ -212,7 +195,8 @@ router.post('/:id/performance', verifyToken, asyncHandler(async (req, res) => {
   const { id } = req.params;
   const { htmlSizeKB, cssSizeKB, imageSizeMB, externalRequests, cssSelectors, fontStrategy } = req.body;
 
-  if (!htmlSizeKB && !cssSizeKB && !imageSizeMB) {
+  // Use explicit null/undefined verification to safely handle valid numerical values of 0
+  if (htmlSizeKB == null && cssSizeKB == null && imageSizeMB == null) {
     throw new ApiError(400, 'Performance metrics payload is required.');
   }
 
@@ -222,9 +206,9 @@ router.post('/:id/performance', verifyToken, asyncHandler(async (req, res) => {
     data: {
       portfolioId: id,
       receivedMetrics: {
-        htmlSizeKB,
-        cssSizeKB,
-        imageSizeMB,
+        htmlSizeKB: htmlSizeKB ?? 0,
+        cssSizeKB: cssSizeKB ?? 0,
+        imageSizeMB: imageSizeMB ?? 0,
         externalRequests,
         cssSelectors,
         fontStrategy,
@@ -237,9 +221,9 @@ router.post('/:id/performance', verifyToken, asyncHandler(async (req, res) => {
  * GET /api/portfolio/public/:slug/accessibility
  */
 router.get('/public/:slug/accessibility', asyncHandler(async (req, res) => {
-  const { slug } = req.params;
-  assertValidPortfolioSlug(slug);
-  const templatePath = getPortfolioTemplatePath(slug);
+  const normalizedSlug = req.params.slug.toLowerCase();
+  assertValidPortfolioSlug(normalizedSlug);
+  const templatePath = getPortfolioTemplatePath(normalizedSlug);
   let html;
   try {
     html = await fs.readFile(templatePath, 'utf-8');
@@ -249,7 +233,7 @@ router.get('/public/:slug/accessibility', asyncHandler(async (req, res) => {
   const report = await analyzeAccessibility(html);
   res.status(200).json({
     success: true,
-    slug,
+    slug: normalizedSlug,
     data: report,
   });
 }));

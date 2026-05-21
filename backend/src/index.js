@@ -1,4 +1,4 @@
-import 'dotenv/config';
+import 'dotenv/config'; // Handles automatic environment variable parsing safely and cleanly
 import express from 'express';
 import { createServer } from 'http';
 import cors from 'cors';
@@ -6,9 +6,6 @@ import helmet from 'helmet';
 import rateLimit from 'express-rate-limit';
 import searchRoutes from './routes/search.js';
 import portfolioRoutes from './routes/portfolio.js';
-
-dotenv.config();
-
 import uploadRoutes from './routes/upload.js';
 import resumeRoutes from './routes/resume.js';
 import enhanceRoutes from './routes/enhance.js';
@@ -30,9 +27,7 @@ import {
   metricsHandler,
 } from "./middleware/metrics.js";
 
-
 import { initializeSocket } from './config/socket.js';
-
 import { initializeDefaultChannels } from './controllers/communityFirebaseController.js';
 import { initializePostScheduler } from './services/postScheduler.js';
 import swaggerUi from 'swagger-ui-express';
@@ -79,10 +74,8 @@ console.log('🔧 Allowed origins:', allowedOrigins);
 
 app.use(cors({
   origin: function (origin, callback) {
-    // Allow requests with no origin (like mobile apps or curl)
     if (!origin) return callback(null, true);
     
-    // Normalize origin by removing trailing slash
     const normalizedOrigin = origin.replace(/\/$/, '');
     
     if (allowedOrigins.includes(normalizedOrigin)) {
@@ -106,14 +99,14 @@ app.use(helmet({
       defaultSrc: ["'self'"],
       scriptSrc: [
         "'self'",
-        "'unsafe-inline'",       // Required for React inline scripts
+        "'unsafe-inline'",
         "https://apis.google.com",
         "https://accounts.google.com",
         "https://www.gstatic.com",
       ],
       styleSrc: [
         "'self'",
-        "'unsafe-inline'",       // Required for Tailwind/inline styles
+        "'unsafe-inline'",
         "https://fonts.googleapis.com",
       ],
       fontSrc: [
@@ -124,7 +117,7 @@ app.use(helmet({
         "'self'",
         "data:",
         "blob:",
-        "https:",                // Allow all HTTPS images (company logos etc)
+        "https:",
       ],
       connectSrc: [
         "'self'",
@@ -133,8 +126,8 @@ app.use(helmet({
         "https://*.googleapis.com",
         "https://*.firebaseio.com",
         "https://identitytoolkit.googleapis.com",
-        "wss:",                  // WebSocket for Socket.IO
-        "ws:",                   // WebSocket local dev
+        "wss:",
+        "ws:",
       ],
       frameSrc: [
         "'self'",
@@ -145,9 +138,10 @@ app.use(helmet({
     },
   },
 }));
+
 const limiter = rateLimit({
-  windowMs: parseInt(process.env.RATE_LIMIT_WINDOW_MS) || 15 * 60 * 1000, // 15 minutes
-  max: parseInt(process.env.RATE_LIMIT_MAX_REQUESTS) || 1000, // increased for development
+  windowMs: parseInt(process.env.RATE_LIMIT_WINDOW_MS) || 15 * 60 * 1000,
+  max: parseInt(process.env.RATE_LIMIT_MAX_REQUESTS) || 1000,
   standardHeaders: true,
   legacyHeaders: false,
   handler: (req, res, next, options) => {
@@ -193,6 +187,7 @@ app.get('/health', (req, res) => {
 
 app.get('/metrics', metricsHandler);
 
+// Route API Initializations
 app.use('/api/docs', swaggerUi.serve, swaggerUi.setup(swaggerSpec));
 app.use('/api/auth', authRoutes);
 app.use('/api/upload', uploadRoutes);
@@ -205,17 +200,20 @@ app.use('/api/community', communityRoutes);
 app.use('/api/fellowship', fellowshipRoutes);
 app.use('/api/interview', interviewRoutes);
 app.use('/api/payments', paymentRoutes);
-app.use('/api/portfolio', portfolioRoutes);
 app.use('/api/user-profiles', userProfileRoutes);
 app.use('/api/auth/2fa', twoFactorRoutes);
 app.use('/api/search', searchRoutes);
 app.use('/api/ai', aiRoutes);
+
+// Single registration block securely mounted ABOVE the 404 block handler
 app.use('/api/portfolio', portfolioRoutes);
 
 app.use((req, res) => {
   res.status(404).json({ error: 'Route not found' });
 });
+
 app.use(globalErrorHandler);
+
 const startServer = async () => {
   try {
     await connectDB();
