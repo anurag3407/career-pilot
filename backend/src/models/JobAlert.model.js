@@ -52,6 +52,12 @@ const jobAlertSchema = new mongoose.Schema({
         default: true,
         index: true
     },
+    checkFrequency: {
+        type: String,
+        enum: ['daily', 'every-2-days', 'weekly'],
+        default: 'every-2-days',
+        index: true
+    },
     lastCheckedAt: {
         type: Date,
         default: null
@@ -70,7 +76,7 @@ const jobAlertSchema = new mongoose.Schema({
 
 // Compound indexes for efficient querying
 jobAlertSchema.index({ userId: 1, isActive: 1 }, { background: true });
-jobAlertSchema.index({ isActive: 1, lastCheckedAt: 1 }, { background: true });
+jobAlertSchema.index({ isActive: 1, checkFrequency: 1, lastCheckedAt: 1 }, { background: true });
 jobAlertSchema.index({ userId: 1, createdAt: -1 }, { background: true });
 jobAlertSchema.index({ isActive: 1, userEmail: 1 }, { background: true });
 jobAlertSchema.index({ userId: 1, title: 1, isActive: 1 }, { background: true });

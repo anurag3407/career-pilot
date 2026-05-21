@@ -142,7 +142,8 @@ router.post('/', verifyToken, validate(createJobAlertSchema), asyncHandler(async
         remoteOnly = false,
         salaryMin = null,
         salaryMax = null,
-        employmentType = ['full-time']
+        employmentType = ['full-time'],
+        checkFrequency = 'every-2-days'
     } = req.body;
 
     // Validation
@@ -173,6 +174,7 @@ router.post('/', verifyToken, validate(createJobAlertSchema), asyncHandler(async
         salaryMin,
         salaryMax,
         employmentType,
+        checkFrequency,
         isActive: true
     });
 
@@ -212,6 +214,7 @@ router.put('/:id', verifyToken, validate(updateJobAlertSchema), asyncHandler(asy
         salaryMin,
         salaryMax,
         employmentType,
+        checkFrequency,
         isActive
     } = req.body;
 
@@ -223,6 +226,7 @@ router.put('/:id', verifyToken, validate(updateJobAlertSchema), asyncHandler(asy
     if (salaryMin !== undefined) alert.salaryMin = salaryMin;
     if (salaryMax !== undefined) alert.salaryMax = salaryMax;
     if (employmentType !== undefined) alert.employmentType = employmentType;
+    if (checkFrequency !== undefined) alert.checkFrequency = checkFrequency;
     if (isActive !== undefined) alert.isActive = isActive;
 
     await alert.save();

@@ -31,6 +31,32 @@ let consecutiveFailures = 0;
 const MAX_CONSECUTIVE_FAILURES = 5;
 const QUEUE_PAUSED_KEY = 'job-alerts:paused_at';
 const PAUSE_DURATION_MS = 60 * 60 * 1000;
+const DEFAULT_CHECK_FREQUENCY = 'every-2-days';
+const CHECK_FREQUENCY_INTERVAL_MS = {
+    daily: 24 * 60 * 60 * 1000,
+    'every-2-days': 2 * 24 * 60 * 60 * 1000,
+    weekly: 7 * 24 * 60 * 60 * 1000
+};
+
+const getDueAlertQuery = (now = new Date(), extraFilters = {}) => {
+    const thresholdFor = (frequency) =>
+        new Date(now.getTime() - CHECK_FREQUENCY_INTERVAL_MS[frequency]);
+
+    return {
+        ...extraFilters,
+        $or: [
+            { lastCheckedAt: null },
+            ...Object.keys(CHECK_FREQUENCY_INTERVAL_MS).map(checkFrequency => ({
+                checkFrequency,
+                lastCheckedAt: { $lte: thresholdFor(checkFrequency) }
+            })),
+            {
+                checkFrequency: { $exists: false },
+                lastCheckedAt: { $lte: thresholdFor(DEFAULT_CHECK_FREQUENCY) }
+            }
+        ]
+    };
+};
 
 const persistQueuePause = async () => {
     const redis = getRedisConnection();
@@ -475,18 +501,17 @@ export const scheduleAlertChecks = () => {
         return;
     }
 
-    // PRODUCTION MODE: Run every 24 hours at midnight (0 0 * * *)
+    // PRODUCTION MODE: Run daily and let each alert's frequency decide whether it is due.
     // Custom schedule can be set via ALERT_CRON_SCHEDULE env var
-    const schedule = process.env.ALERT_CRON_SCHEDULE || '0 0 */2 * *'; // Default: every 2 days at midnight
+    const schedule = process.env.ALERT_CRON_SCHEDULE || '0 0 * * *';
     
-console.log(`🏭 PRODUCTION MODE: Job alerts scheduled with cron: ${schedule} (runs every 2 days)`);
+    console.log(`🏭 PRODUCTION MODE: Job alerts scheduled with cron: ${schedule}`);
     cron.schedule(schedule, async () => {
         console.log('\n⏰ [PROD] Scheduled job alert check starting...');
 
         try {
-            // Get all active alerts
-            const activeAlerts = await JobAlert.find({ isActive: true })
-                .select('_id userId userEmail userName title keywords location remoteOnly employmentType')
+            const activeAlerts = await JobAlert.find(getDueAlertQuery(new Date(), { isActive: true }))
+                .select('_id userId userEmail userName title keywords location remoteOnly employmentType checkFrequency lastCheckedAt')
                 .lean();
 
             if (!activeAlerts.length) {
@@ -506,7 +531,8 @@ console.log(`🏭 PRODUCTION MODE: Job alerts scheduled with cron: ${schedule} (
                 keywords: alert.keywords || [],
                 location: alert.location,
                 remoteOnly: alert.remoteOnly,
-                employmentType: alert.employmentType
+                employmentType: alert.employmentType,
+                checkFrequency: alert.checkFrequency || DEFAULT_CHECK_FREQUENCY
             }));
 
             // If queue available, add to queue, otherwise process directly
@@ -540,12 +566,11 @@ console.log(`🏭 PRODUCTION MODE: Job alerts scheduled with cron: ${schedule} (
  */
 const runAlertCheck = async () => {
     try {
-        // Get all active alerts that have an email address
-        const activeAlerts = await JobAlert.find({
+        const activeAlerts = await JobAlert.find(getDueAlertQuery(new Date(), {
             isActive: true,
             userEmail: { $exists: true, $nin: ['', null] }
-        })
-            .select('_id userId userEmail userName title keywords location remoteOnly employmentType')
+        }))
+            .select('_id userId userEmail userName title keywords location remoteOnly employmentType checkFrequency lastCheckedAt')
             .lean();
 
         if (!activeAlerts.length) {
@@ -578,7 +603,8 @@ const runAlertCheck = async () => {
                     keywords: alert.keywords || [],
                     location: alert.location,
                     remoteOnly: alert.remoteOnly,
-                    employmentType: alert.employmentType
+                    employmentType: alert.employmentType,
+                    checkFrequency: alert.checkFrequency || DEFAULT_CHECK_FREQUENCY
                 });
                 
                 console.log(`\n✅ Alert processed: ${result.newJobs || 0} jobs sent\n`);
