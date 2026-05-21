@@ -1,5 +1,5 @@
 import { useState, useEffect } from 'react'
-import { Link, useLocation } from 'react-router-dom'
+import { Link, useLocation, useNavigate } from 'react-router-dom'
 import { useAuth } from '../context/AuthContext'
 import { useTheme } from '../context/ThemeContext'
 import { motion, AnimatePresence } from 'framer-motion'
@@ -26,6 +26,7 @@ export default function Navbar() {
   const { user, logout } = useAuth()
   const { theme, toggleTheme } = useTheme()
   const location = useLocation()
+  const navigate = useNavigate()
   const [mobileMenuOpen, setMobileMenuOpen] = useState(false)
   const [scrolled, setScrolled] = useState(false)
 
@@ -36,6 +37,8 @@ export default function Navbar() {
     window.addEventListener('scroll', handleScroll)
     return () => window.removeEventListener('scroll', handleScroll)
   }, [])
+
+
 
   const handleLogout = async () => {
     try {
@@ -82,7 +85,7 @@ export default function Navbar() {
     { path: '/linkedin-optimizer', label: 'LinkedIn', icon: Linkedin },
   ]
 
-  return (
+  return (<>
     <nav className={`fixed top-0 left-0 right-0 z-50 transition-all duration-300 ${scrolled
       ? 'bg-background/80 backdrop-blur-xl border-b border-border'
       : 'bg-transparent'
@@ -90,9 +93,8 @@ export default function Navbar() {
       <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
         <div className="flex justify-between h-16 items-center">
           {/* Logo */}
-          
-          <Link to="/" onClick={handleHomeClick} className="flex items-center group">
-            <div className="w-15 h-15 flex items-center justify-center p-1.5 rounded-xl  group-hover:scale-110 transition-transform">
+          <Link to="/" onClick={handleHomeClick} className="flex items-center group" aria-label="Go to homepage">
+            <div className="w-15 h-15 flex items-center justify-center p-1.5 rounded-xl group-hover:scale-110 transition-transform">
               <img src="/speed.png" alt="CareerPilot logo" className="w-full h-full object-contain" />
             </div>
             <span className="text-xl font-bold text-foreground tracking-tight">
@@ -307,5 +309,5 @@ export default function Navbar() {
         )}
       </AnimatePresence>
     </nav>
-  )
+  </>)
 }

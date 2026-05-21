@@ -1,4 +1,8 @@
+<<<<<<< HEAD
+import { useRef, useState, useEffect } from "react";
+=======
 import { useRef, useMemo, useState, useEffect } from "react";
+>>>>>>> main
 import { motion } from "framer-motion";
 import DottedMap from "dotted-map";
 import { useTheme } from "../../context/ThemeContext";
@@ -24,6 +28,35 @@ const dotColor = isDark ? "#ffffff" : "#000000";
 
 const svgMap = useMemo(() => {
 
+<<<<<<< HEAD
+  const [svgMap, setSvgMap] = useState(null);
+
+  useEffect(() => {
+    let isMounted = true;
+    // Defer the heavy calculation to allow initial render to complete quickly
+    const timer = setTimeout(() => {
+      try {
+        const map = new DottedMap({ height: 100, grid: "diagonal" });
+        const svg = map.getSVG({
+          radius: 0.22,
+          color: "#FFFFFF40",
+          shape: "circle",
+          backgroundColor: "transparent",
+        });
+        if (isMounted) {
+          setSvgMap(svg);
+        }
+      } catch (error) {
+        console.error("WorldMap error:", error);
+      }
+    }, 10);
+
+    return () => {
+      isMounted = false;
+      clearTimeout(timer);
+    };
+  }, []);
+=======
   const svgMap = useMemo(() => {
     if (!isMounted) return null;
     if (cachedSvgMap) return cachedSvgMap;
@@ -42,6 +75,7 @@ const svgMap = useMemo(() => {
       return null;
     }
 }, [isMounted, dotColor]);
+>>>>>>> main
 
   const projectPoint = (lat, lng) => {
     const x = (lng + 180) * (800 / 360);
