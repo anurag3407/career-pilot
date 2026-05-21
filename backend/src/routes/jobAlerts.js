@@ -135,20 +135,16 @@ router.post('/', verifyToken, validate(createJobAlertSchema), asyncHandler(async
         console.warn('⚠️  Could not save user to Firebase:', fbError.message);
     }
 
-    const {
-        title,
-        keywords = [],
-        location = '',
-        remoteOnly = false,
-        salaryMin = null,
-        salaryMax = null,
-        employmentType = ['full-time'],
-<<<<<<< Updated upstream
-        checkFrequency = 'every-2-days'
-=======
-        checkFrequency = 'every-2-days'  
->>>>>>> Stashed changes
-    } = req.body;
+  const {
+            title,
+            keywords = [],
+            location = '',
+            remoteOnly = false,
+            salaryMin = null,
+            salaryMax = null,
+            employmentType = ['full-time'],
+            checkFrequency = 'every-2-days'
+        } = req.body;
 
     // Validation
     if (!title || title.trim().length === 0) {
@@ -178,13 +174,9 @@ router.post('/', verifyToken, validate(createJobAlertSchema), asyncHandler(async
         salaryMin,
         salaryMax,
         employmentType,
-<<<<<<< Updated upstream
         checkFrequency,
-=======
-        checkFrequency,  
->>>>>>> Stashed changes
         isActive: true
-    });
+         });
 
     // Save to Firebase (checkFrequency is included via alert.toObject())
     try {
@@ -222,13 +214,9 @@ router.put('/:id', verifyToken, validate(updateJobAlertSchema), asyncHandler(asy
         salaryMin,
         salaryMax,
         employmentType,
-<<<<<<< Updated upstream
         checkFrequency,
-=======
-        checkFrequency,  
->>>>>>> Stashed changes
         isActive
-    } = req.body;
+        } = req.body;
 
     // Update fields if provided
     if (title !== undefined) alert.title = title.trim();
