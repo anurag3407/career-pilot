@@ -7,6 +7,7 @@ import { fileURLToPath } from 'url'
 const __dirname = path.dirname(fileURLToPath(import.meta.url))
 
 export default defineConfig({
+  base: process.env.VITE_CDN_URL || '/',
   test: {
     environment: 'jsdom',
     setupFiles: './src/test/setup.js',
