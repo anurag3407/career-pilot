@@ -101,26 +101,78 @@ app.use(helmet({
   contentSecurityPolicy: {
     directives: {
       defaultSrc: ["'self'"],
-      scriptSrc: ["'self'", "'unsafe-inline'"],
-      styleSrc: ["'self'", "'unsafe-inline'"],
-      imgSrc: ["'self'", "data:", "https:"],
-      connectSrc: ["'self'", "https:", "http:"],
-    }
-  }
+      scriptSrc: [
+        "'self'",
+        "'unsafe-inline'",       // Required for React inline scripts
+        "https://apis.google.com",
+        "https://accounts.google.com",
+        "https://www.gstatic.com",
+      ],
+      styleSrc: [
+        "'self'",
+        "'unsafe-inline'",       // Required for Tailwind/inline styles
+        "https://fonts.googleapis.com",
+      ],
+      fontSrc: [
+        "'self'",
+        "https://fonts.gstatic.com",
+      ],
+      imgSrc: [
+        "'self'",
+        "data:",
+        "blob:",
+        "https:",                // Allow all HTTPS images (company logos etc)
+      ],
+      connectSrc: [
+        "'self'",
+        process.env.FRONTEND_URL || "http://localhost:5173",
+        "https://firebaseapp.com",
+        "https://*.googleapis.com",
+        "https://*.firebaseio.com",
+        "https://identitytoolkit.googleapis.com",
+        "wss:",                  // WebSocket for Socket.IO
+        "ws:",                   // WebSocket local dev
+      ],
+      frameSrc: [
+        "'self'",
+        "https://accounts.google.com",
+      ],
+      objectSrc: ["'none'"],
+      upgradeInsecureRequests: [],
+    },
+  },
 }));
-
 const limiter = rateLimit({
   windowMs: parseInt(process.env.RATE_LIMIT_WINDOW_MS) || 15 * 60 * 1000, // 15 minutes
   max: parseInt(process.env.RATE_LIMIT_MAX_REQUESTS) || 1000, // increased for development
-  message: {
-    error: 'Too many requests, please try again later.'
-  },
   standardHeaders: true,
   legacyHeaders: false,
   handler: (req, res, next, options) => {
-    res.setHeader('Retry-After', Math.ceil(options.windowMs / 1000));
-    res.setHeader('X-RateLimit-Quota', options.max);
-    res.status(options.statusCode).send(options.message);
+    const resetTime = req.rateLimit?.resetTime;
+    const retryAfterSeconds = resetTime
+      ? Math.max(1, Math.ceil((resetTime - Date.now()) / 1000))
+      : Math.ceil((options.windowMs || 0) / 1000);
+
+    const headers = {
+      'Retry-After': String(retryAfterSeconds),
+      'X-RateLimit-Limit': String(options.max),
+      'X-RateLimit-Remaining': String(req.rateLimit?.remaining ?? 0),
+      'X-RateLimit-Quota': String(options.max)
+    };
+
+    if (resetTime) {
+      headers['X-RateLimit-Reset'] = String(Math.ceil(resetTime / 1000));
+    }
+
+    res.set(headers);
+    res.status(options.statusCode).json({
+      success: false,
+      error: options.message?.error || 'Rate limit exceeded',
+      message: options.message
+    });
+  },
+  message: {
+    error: 'Too many requests, please try again later.'
   }
 });
 app.use('/api/', limiter);

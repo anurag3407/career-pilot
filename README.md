@@ -1,8 +1,8 @@
 # 🚀 careerpilot - AI Career Platform
 
 <div align="center">
-
-<p align="center">
+<!-- edited -->
+<p align="center"> 
   <img src="https://img.shields.io/badge/License-MIT-blue?logo=opensourceinitiative&logoColor=white">
   &nbsp;
   <img src="https://img.shields.io/badge/Node.js-18+-green?logo=node.js&logoColor=white">
@@ -27,6 +27,7 @@
 ## 📋 Table of Contents
 
 - [Overview](#-overview)
+- [Architecture & Diagrams](#-architecture--diagrams)
 - [Problem Statement](#-problem-statement)
 - [Our Solution](#-our-solution)
 - [Features](#-features)
@@ -56,6 +57,12 @@ The **AI Resume Builder & Career Platform** is a comprehensive full-stack applic
 - Track job applications through an intuitive pipeline interface
 - Connect with fellow job seekers through a real-time community platform
 - Get AI-powered insights and improvement suggestions
+
+---
+
+## 🏗 Architecture & Diagrams
+
+New contributors and reviewers should read **[ARCHITECTURE.md](./ARCHITECTURE.md)** early — it includes high-level system diagrams, data-flow charts, API layout, security notes, and deployment topology. Use it alongside the [API Reference](./API_DOCS/README.md) when tracing features end-to-end.
 
 ---
 
@@ -402,6 +409,21 @@ npm run dev
 - Frontend: http://localhost:5173
 - Backend API: http://localhost:5000
 - Health Check: http://localhost:5000/health
+
+### Quick API checks (cURL)
+
+With the backend running locally:
+
+```bash
+# Health check (no auth)
+curl -s http://localhost:5000/health | jq
+
+# Authenticated route example (replace TOKEN with a Firebase ID token)
+curl -s -H "Authorization: Bearer TOKEN" \
+  http://localhost:5000/api/auth/verify | jq
+```
+
+In [Postman](https://www.postman.com/), create a GET request to `http://localhost:5000/health`, or set **Authorization → Bearer Token** for protected `/api/*` routes. See [API_DOCS/README.md](./API_DOCS/README.md) for the full route list.
 
 ---
 

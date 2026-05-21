@@ -4,14 +4,13 @@ import { verifyToken } from '../middleware/auth.js';
 import { loginProtection } from '../middleware/loginProtection.js';
 import { saveUserToFirebase } from '../services/firebaseDataService.js';
 import { validate } from '../middleware/validate.js';
+import { updateNotificationPrefsSchema } from '../schemas/auth.schema.js';
 
 import { registerSchema } from '../validators/authValidator.js';
 import { exchangeCodeForToken, getLinkedInAuthUrl, getLinkedInProfile } from '../services/linkedinService.js';
 import User from '../models/User.model.js';
 import admin from '../config/firebase.js';
 import crypto from 'crypto';
-
-import { updateNotificationPrefsSchema } from '../schemas/auth.schema.js';
 
 const router = express.Router();
 const stateStore = new Map();
@@ -30,7 +29,6 @@ router.post('/register', validate(registerSchema), asyncHandler(async (req, res)
     user: { id: user._id, email: user.email, name: user.name }
   });
 }));
-
 // Periodic sweep of expired stateStore entries every 10 minutes to prevent memory leaks
 setInterval(() => {
   const now = Date.now();
@@ -72,10 +70,11 @@ router.get('/profile', verifyToken, asyncHandler(async (req, res) => {
     user: req.user
   });
 }));
+
 // Get notification preferences
 router.get('/notification-preferences', verifyToken, asyncHandler(async (req, res) => {
   const User = (await import('../models/User.model.js')).default;
-  let user = await User.findOne({ email: req.user.email });
+  const user = await User.findOne({ email: req.user.email });
 
   const preferences = user?.notificationPreferences || {
     jobAlerts: true,
@@ -88,7 +87,6 @@ router.get('/notification-preferences', verifyToken, asyncHandler(async (req, re
 
 // Update notification preferences
 router.put('/notification-preferences', verifyToken, validate(updateNotificationPrefsSchema), asyncHandler(async (req, res) => {
-  const User = (await import('../models/User.model.js')).default;
   const { jobAlerts, directMessages, proposalUpdates } = req.body;
 
   await User.findOneAndUpdate(
@@ -120,6 +118,7 @@ router.get('/linkedin/callback', asyncHandler(async (req, res) => {
 
   const storedExpiry = stateStore.get(state);
   if (!storedExpiry || Date.now() > storedExpiry) {
+
     stateStore.delete(state);
     return res.redirect(`${frontendUrl}/login?error=linkedin_invalid_state`);
   }

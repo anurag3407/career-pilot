@@ -4,6 +4,7 @@ import { useNavigate } from 'react-router-dom';
 import { motion } from 'framer-motion';
 import { Mic, MicOff, Video, VideoOff, XCircle, CheckCircle, AlertCircle, Volume2, VolumeX, RotateCcw, UserX, Loader2, Sparkles, ArrowRight, Target, TrendingUp, MessageSquare, Eye, Brain, Award, ChevronDown, ChevronUp, Clock, BarChart3, Lightbulb, Zap, Laptop, Smartphone, Chrome, AlertTriangle, FileUp, FileText, X } from 'lucide-react';
 import Button from '../components/Button';
+import BodyLanguageTips from '../components/BodyLanguageTips';
 import { interviewApi, uploadApi } from '../services/api';
 
 // Device and browser detection utilities
@@ -1201,6 +1202,9 @@ export default function InterviewPrep() {
                   </div>
                 )}
 
+                {/* Body language coaching tip */}
+                <BodyLanguageTips currentQuestionIndex={currentQuestionIndex} />
+
                 <Button type="submit" disabled={loading} variant="primary" className="w-full !py-4 !text-lg !rounded-xl flex items-center justify-center gap-2">
                   {loading ? <Loader2 className="w-5 h-5 animate-spin" /> : <Mic className="w-5 h-5" />}
                   {loading ? 'Generating Questions...' : `Start Interview (${formData.questionCount} Questions)`}
@@ -1336,6 +1340,9 @@ export default function InterviewPrep() {
                   <p className="text-sm text-red-400">{error}</p>
                 </div>
               )}
+
+              {/* Body language coaching tip — rotates each question, dismissible */}
+              <BodyLanguageTips currentQuestionIndex={currentQuestionIndex} />
 
               <div className="flex gap-3">
                 {!isRecording ? (
