@@ -551,6 +551,7 @@ router.post('/chat/rooms/:roomId/messages', verifyToken, asyncHandler(async (req
     if (!content || content.trim().length === 0) {
         throw new ApiError(400, 'Message content is required');
     }
+    const sanitizedContent = content.trim().replace(/</g, "&lt;").replace(/>/g, "&gt;");
 
     const profile = await FellowshipProfile.findOne({ userId: req.user.uid });
 
@@ -559,7 +560,7 @@ router.post('/chat/rooms/:roomId/messages', verifyToken, asyncHandler(async (req
         senderId: req.user.uid,
         senderName: req.user.name || 'User',
         senderRole: profile?.role || 'student',
-        content: content.trim()
+        content: sanitizedContent
     });
 
     room.lastMessageAt = new Date();

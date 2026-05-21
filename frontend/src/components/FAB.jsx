@@ -85,11 +85,6 @@ export default function FAB({ scrollContainerRef }) {
               animate={{ scale: 1 }}
               exit={{ scale: 0 }}
               onClick={() => setIsOpen(!isOpen)}
-              onKeyDown={(e) => {
-                if (e.key === "Enter" || e.key === " ") {
-                  setIsOpen(!isOpen);
-                }
-              }}
               aria-label={
                 isOpen ? "Close quick actions" : "Open quick actions"
               }

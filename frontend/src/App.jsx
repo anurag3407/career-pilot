@@ -1,4 +1,4 @@
-
+import React, { useState, useEffect } from 'react';
 import Deployments from './pages/Deployments'
 import TemplateGallery from "./pages/TemplateGallery";
 import { BrowserRouter, Routes, Route, Navigate } from 'react-router-dom';
@@ -88,27 +88,33 @@ function PublicRoute({ children }) {
   return children;
 }
 
+function CommandPaletteBindings({ isOpen, setIsOpen }) {
+  const { user } = useAuth();
+  useEffect(() => {
+    if (!user) return;
+    const handleKeyDown = (e) => {
+      if ((e.metaKey || e.ctrlKey) && e.key.toLowerCase() === 'k') {
+        e.preventDefault();
+        setIsOpen((prev) => !prev);
+      }
+    };
+    window.addEventListener('keydown', handleKeyDown);
+    return () => window.removeEventListener('keydown', handleKeyDown);
+  }, [user, setIsOpen]);
+
+  if (!user) return null;
+  return <CommandPalette isOpen={isOpen} setIsOpen={setIsOpen} />;
+}
+
 function App() {
   const [isCommandPaletteOpen, setIsCommandPaletteOpen] = useState(false);
-  const isAuthenticated = localStorage.getItem('firebase:authUser') !== null;
-  useEffect(() => {
-  if (!isAuthenticated) return;
-  const handleKeyDown = (e) => {
-    if ((e.metaKey || e.ctrlKey) && e.key.toLowerCase() === 'k') {
-      e.preventDefault();
-      setIsCommandPaletteOpen((prev) => !prev);
-    }
-  };
-  window.addEventListener('keydown', handleKeyDown);
-  return () => window.removeEventListener('keydown', handleKeyDown);
-}, [isAuthenticated]);
   return (
     <ThemeProvider>
       <AuthProvider>
         <SocketProvider>
           <BrowserRouter>
+            <CommandPaletteBindings isOpen={isCommandPaletteOpen} setIsOpen={setIsCommandPaletteOpen} />
             <div className="bg-mesh" />
-            {isAuthenticated && (<CommandPalette isOpen={isCommandPaletteOpen} setIsOpen={setIsCommandPaletteOpen}/>)}
             <Toaster
               position="top-right"
               toastOptions={{

@@ -183,6 +183,8 @@ export default function Navbar() {
             </button>
             <button
               onClick={() => setMobileMenuOpen(!mobileMenuOpen)}
+              aria-label="Toggle mobile menu"
+              aria-expanded={mobileMenuOpen}
               className="p-2 rounded-lg hover:bg-muted text-muted-foreground cursor-pointer"
             >
               {mobileMenuOpen ? (

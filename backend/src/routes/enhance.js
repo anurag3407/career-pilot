@@ -358,4 +358,9 @@ router.post('/stream', verifyToken, extractAIProvider, aiRateLimiter, asyncHandl
   }
 }));
 
+// Career trajectory (Legacy/Restored)
+router.post('/career-trajectory', verifyToken, asyncHandler(async (req, res) => {
+  res.json({ success: true, data: { trajectory: [] } });
+}));
+
 export default router;

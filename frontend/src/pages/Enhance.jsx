@@ -29,6 +29,7 @@ import {
   Brain,
   Edit3
 } from 'lucide-react'
+import { SkeletonList } from '../components/ui/Skeleton'
 
 // Score ring component
 const ScoreRing = ({ score, size = 120, strokeWidth = 8 }) => {

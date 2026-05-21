@@ -1,7 +1,7 @@
 import { io } from 'socket.io-client';
 import { auth } from '../config/firebase';
 
-const SOCKET_URL = import.meta.env.VITE_API_URL || 'http://localhost:5000';
+const SOCKET_URL = import.meta.env.VITE_API_URL || 'http://localhost:5001';
 
 let socket = null;
 

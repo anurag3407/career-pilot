@@ -3,6 +3,7 @@ import { asyncHandler } from '../middleware/errorHandler.js';
 import { verifyToken } from '../middleware/auth.js';
 import { loginProtection } from '../middleware/loginProtection.js';
 import { saveUserToFirebase } from '../services/firebaseDataService.js';
+import { validate } from '../middleware/validate.js';
 
 import { registerSchema } from '../validators/authValidator.js';
 import { exchangeCodeForToken, getLinkedInAuthUrl, getLinkedInProfile } from '../services/linkedinService.js';
@@ -17,9 +18,16 @@ const stateStore = new Map();
 
 // Example register endpoint with validation
 router.post('/register', validate(registerSchema), asyncHandler(async (req, res) => {
+  const { email, name, password } = req.body;
+  const existingUser = await User.findOne({ email });
+  if (existingUser) {
+    return res.status(400).json({ success: false, error: 'User already exists' });
+  }
+  const user = await User.create({ email, name, password });
   res.status(201).json({
     success: true,
-    message: 'User registered successfully'
+    message: 'User registered successfully',
+    user: { id: user._id, email: user.email, name: user.name }
   });
 }));
 
@@ -83,10 +91,6 @@ router.put('/notification-preferences', verifyToken, validate(updateNotification
   const User = (await import('../models/User.model.js')).default;
   const { jobAlerts, directMessages, proposalUpdates } = req.body;
 
-  if (typeof jobAlerts !== 'boolean' || typeof directMessages !== 'boolean' || typeof proposalUpdates !== 'boolean') {
-    return res.status(400).json({ success: false, error: 'Invalid preference values' });
-  }
-
   await User.findOneAndUpdate(
     { email: req.user.email },
     { notificationPreferences: { jobAlerts, directMessages, proposalUpdates } },
@@ -114,8 +118,8 @@ router.get('/linkedin/callback', asyncHandler(async (req, res) => {
     return res.redirect(`${frontendUrl}/login?error=linkedin_denied`);
   }
 
-  const storedEnpiry = stateStore.get(state);
-  if (!storedEnpiry || Date.now() > storedEnpiry) {
+  const storedExpiry = stateStore.get(state);
+  if (!storedExpiry || Date.now() > storedExpiry) {
     stateStore.delete(state);
     return res.redirect(`${frontendUrl}/login?error=linkedin_invalid_state`);
   }
