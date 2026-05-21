@@ -12,7 +12,14 @@ const sizeStyles = {
   sm: "px-2 py-0.5 text-xs",
   md: "px-2.5 py-1 text-sm",
 };
-
+/**
+ * Badge component for displaying status tags and pills.
+ * @param {React.ReactNode} children - Content inside the badge.
+ * @param {"default"|"success"|"warning"|"error"|"info"} variant - Visual style variant.
+ * @param {"sm"|"md"} size - Size of the badge.
+ * @param {boolean} dot - Whether to show a dot indicator.
+ * @param {string} className - Additional CSS classes.
+ */
 export default function Badge({ 
   children, 
   variant = "default", 
