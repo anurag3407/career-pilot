@@ -6,6 +6,9 @@ import helmet from 'helmet';
 import rateLimit from 'express-rate-limit';
 import searchRoutes from './routes/search.js';
 import portfolioRoutes from './routes/portfolio.js';
+
+dotenv.config();
+
 import uploadRoutes from './routes/upload.js';
 import resumeRoutes from './routes/resume.js';
 import enhanceRoutes from './routes/enhance.js';
@@ -207,6 +210,7 @@ app.use('/api/user-profiles', userProfileRoutes);
 app.use('/api/auth/2fa', twoFactorRoutes);
 app.use('/api/search', searchRoutes);
 app.use('/api/ai', aiRoutes);
+app.use('/api/portfolio', portfolioRoutes);
 
 app.use((req, res) => {
   res.status(404).json({ error: 'Route not found' });
