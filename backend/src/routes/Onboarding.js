@@ -21,11 +21,14 @@ function sanitizeCompletedItems(raw) {
   const sanitized = {};
   for (const key of SUPPORTED_ONBOARDING_IDS) {
     if (key in raw) {
-      sanitized[key] = Boolean(raw[key]);
+      //  ONLY accept actual booleans
+      if (typeof raw[key] !== 'boolean') return null;
+      sanitized[key] = raw[key];
     }
   }
   return sanitized;
 }
+
 
 // Get user's onboarding progress (using Firebase UID)
 router.get('/api/users/onboarding/:firebaseUid', verifyToken, async (req, res) => { // FIX : added verifyToken

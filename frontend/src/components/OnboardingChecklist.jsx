@@ -1,14 +1,16 @@
-import React, { useState, useEffect } from 'react'; 
+import React, { useState, useEffect, useCallback } from 'react';
 import { motion, AnimatePresence } from 'framer-motion';
-import { useNavigate } from 'react-router-dom'; // FIX : added useNavigate
-import { 
-  X, CheckCircle, Upload, Sparkles, Github, 
+import { useNavigate } from 'react-router-dom';
+import {
+  X, CheckCircle, Upload, Sparkles, Github,
   FolderPlus, Rocket, Bell, Trophy, PartyPopper, ArrowRight
 } from 'lucide-react';
 import { auth } from '../config/firebase';
 
+const API_BASE = import.meta.env.VITE_API_BASE || '/api';
+
 const OnboardingChecklist = ({ user, onComplete, onDismiss }) => {
-  const navigate = useNavigate(); // FIX : initialize navigate
+  const navigate = useNavigate();
 
   const [items, setItems] = useState([
     { id: 'resume_uploaded', label: 'Upload your resume', completed: false, icon: Upload, path: '/upload' },
@@ -22,9 +24,9 @@ const OnboardingChecklist = ({ user, onComplete, onDismiss }) => {
   const [showCelebration, setShowCelebration] = useState(false);
   const [isDismissed, setIsDismissed] = useState(false);
   const [loading, setLoading] = useState(true);
-  const [hasCelebrated, setHasCelebrated] = useState(false); // FIX : added to prevent celebration loop
+  const [hasCelebrated, setHasCelebrated] = useState(false);
 
-  const getAuthHeaders = async () => {
+  const getAuthHeaders = useCallback(async () => {
     const currentUser = auth.currentUser;
     if (!currentUser) throw new Error('Not authenticated');
     const token = await currentUser.getIdToken();
@@ -32,36 +34,34 @@ const OnboardingChecklist = ({ user, onComplete, onDismiss }) => {
       'Authorization': `Bearer ${token}`,
       'Content-Type': 'application/json'
     };
-  };
+  }, []);
 
   useEffect(() => {
     const fetchProgress = async () => {
       if (!user?.uid) return;
       try {
         const headers = await getAuthHeaders();
-        const response = await fetch(`${import.meta.env.VITE_API_BASE}/users/onboarding/${user.uid}`, { headers });
-        if (response.ok) {
-          const data = await response.json();
-          setItems(prevItems =>
-            prevItems.map(item => ({
-              ...item,
-              completed: data.completedItems?.[item.id] || false
-            }))
-          );
-          if (data.checklistDismissed) {
-            setIsDismissed(true);
-            if (onDismiss) onDismiss();
-          }
+        const response = await fetch(`${API_BASE}/users/onboarding/${user.uid}`, { headers });
+        if (!response.ok) {
+          throw new Error(`HTTP ${response.status}`);
+        }
+        const data = await response.json();
+
+        setItems(prevItems =>
+          prevItems.map(item => ({
+            ...item,
+            completed: data.completedItems?.[item.id] || false
+          }))
+        );
+        if (data.checklistDismissed) {
+          setIsDismissed(true);
         }
       } catch (error) {
-        // FIX : check dismissal first in fallback so dismissed checklist
-        // doesn't reappear when backend is down
         const dismissedFlag = localStorage.getItem(`onboarding_dismissed_${user.uid}`);
         if (dismissedFlag === 'true') {
           setIsDismissed(true);
           return;
         }
-
         const saved = localStorage.getItem(`onboarding_${user.uid}`);
         if (saved) setItems(JSON.parse(saved));
       } finally {
@@ -69,7 +69,7 @@ const OnboardingChecklist = ({ user, onComplete, onDismiss }) => {
       }
     };
     fetchProgress();
-  }, [user, onDismiss]);
+  }, [user, getAuthHeaders]);
 
   useEffect(() => {
     const saveProgress = async () => {
@@ -80,7 +80,7 @@ const OnboardingChecklist = ({ user, onComplete, onDismiss }) => {
       }, {});
       try {
         const headers = await getAuthHeaders();
-        await fetch(`${import.meta.env.VITE_API_BASE}/users/onboarding/${user.uid}`, {
+        await fetch(`${API_BASE}/users/onboarding/${user.uid}`, {
           method: 'POST',
           headers,
           body: JSON.stringify({ completedItems })
@@ -91,43 +91,33 @@ const OnboardingChecklist = ({ user, onComplete, onDismiss }) => {
       }
     };
     saveProgress();
-  }, [items, user, loading]);
+  }, [items, user, loading, getAuthHeaders]);
 
-  // FIX : added hasCelebrated guard to prevent celebration firing
-  // every 5 seconds in an infinite loop
   useEffect(() => {
     const allCompleted = items.length > 0 && items.every(item => item.completed === true);
     if (allCompleted && !hasCelebrated && !loading) {
-      setHasCelebrated(true); // lock it — won't fire again
+      setHasCelebrated(true);
       setShowCelebration(true);
       if (onComplete) onComplete();
       const timer = setTimeout(() => setShowCelebration(false), 5000);
       return () => clearTimeout(timer);
     }
-    // reset guard only if a step gets uncompleted
     if (!allCompleted) {
       setHasCelebrated(false);
     }
-  }, [items, hasCelebrated, loading, onComplete]); // FIX : replaced showCelebration with hasCelebrated in deps
+  }, [items, hasCelebrated, loading, onComplete]);
 
-  const handleItemClick = async (itemId, path) => {
-    setItems(prevItems =>
-      prevItems.map(item => item.id === itemId ? { ...item, completed: true } : item)
-    );
-    // FIX : use navigate() instead of window.location.href
-    // to avoid hard reload racing with async save
+  const handleItemClick = useCallback((itemId, path) => {
     if (path) navigate(path);
-  };
+  }, [navigate]);
 
-  const handleDismiss = async () => {
+  const handleDismiss = useCallback(async () => {
     setIsDismissed(true);
     if (user?.uid) {
-      // FIX : save to localStorage BEFORE the async call
-      // so dismissal is persisted even if backend fails
       localStorage.setItem(`onboarding_dismissed_${user.uid}`, 'true');
       try {
         const headers = await getAuthHeaders();
-        await fetch(`${import.meta.env.VITE_API_BASE}/users/onboarding/${user.uid}/dismiss`, {
+        await fetch(`${API_BASE}/users/onboarding/${user.uid}/dismiss`, {
           method: 'POST',
           headers,
           body: JSON.stringify({ dismissed: true })
@@ -137,10 +127,8 @@ const OnboardingChecklist = ({ user, onComplete, onDismiss }) => {
       }
     }
     if (onDismiss) onDismiss();
-  };
+  }, [user, getAuthHeaders, onDismiss]);
 
-  // FIX : checklist rows changed from motion.div to button
-  // for keyboard accessibility (Tab, Enter, Space support)
   const ChecklistItem = ({ item, index }) => {
     const IconComponent = item.icon;
     return (
@@ -152,7 +140,7 @@ const OnboardingChecklist = ({ user, onComplete, onDismiss }) => {
         transition={{ delay: index * 0.05 }}
         onClick={() => !item.completed && handleItemClick(item.id, item.path)}
         disabled={item.completed}
-        aria-pressed={item.completed} // tells screen readers if step is done
+        aria-pressed={item.completed}
         className={`
           w-full group relative flex items-center p-4 rounded-xl
           transition-all duration-200 border text-left
@@ -162,7 +150,6 @@ const OnboardingChecklist = ({ user, onComplete, onDismiss }) => {
           }
         `}
       >
-        {/* Icon / Checkmark */}
         <div className={`
           flex-shrink-0 mr-4 transition-transform duration-200
           ${!item.completed && 'group-hover:scale-110'}
@@ -174,8 +161,6 @@ const OnboardingChecklist = ({ user, onComplete, onDismiss }) => {
             <IconComponent className="w-5 h-5" />
           )}
         </div>
-
-        {/* Label */}
         <div className="flex-1">
           <p className={`font-bold ${item.completed ? 'text-muted-foreground line-through' : 'text-foreground'}`}>
             {item.label}
@@ -186,8 +171,6 @@ const OnboardingChecklist = ({ user, onComplete, onDismiss }) => {
             </p>
           )}
         </div>
-
-        {/* Arrow */}
         {!item.completed && (
           <div className="flex-shrink-0">
             <ArrowRight className="w-5 h-5 text-primary group-hover:translate-x-1 transition-transform duration-200" />
@@ -205,7 +188,6 @@ const OnboardingChecklist = ({ user, onComplete, onDismiss }) => {
 
   return (
     <>
-      {/* Celebration Modal */}
       <AnimatePresence>
         {showCelebration && (
           <motion.div
@@ -233,7 +215,6 @@ const OnboardingChecklist = ({ user, onComplete, onDismiss }) => {
               >
                 <PartyPopper className="w-20 h-20 text-yellow-400 mx-auto mb-4" />
               </motion.div>
-
               <h3 className="text-2xl font-black text-foreground mb-2">
                 🎉 Congratulations! 🎉
               </h3>
@@ -243,7 +224,6 @@ const OnboardingChecklist = ({ user, onComplete, onDismiss }) => {
               <p className="text-sm text-muted-foreground">
                 Your profile is now ready to shine ✨
               </p>
-
               <button
                 onClick={handleDismiss}
                 className="mt-6 px-6 py-2 bg-primary text-primary-foreground rounded-lg font-bold hover:opacity-90 transition-all duration-200 cursor-pointer"
@@ -256,14 +236,12 @@ const OnboardingChecklist = ({ user, onComplete, onDismiss }) => {
         )}
       </AnimatePresence>
 
-      {/* Main Checklist Widget */}
       <motion.div
         initial={{ opacity: 0, y: -20 }}
         animate={{ opacity: 1, y: 0 }}
         transition={{ duration: 0.3 }}
         className="bg-card rounded-2xl border border-border overflow-hidden mb-8 shadow-sm"
       >
-        {/* Header */}
         <div className="bg-primary/10 border-b border-border px-6 py-4">
           <div className="flex justify-between items-start">
             <div className="flex-1">
@@ -277,7 +255,6 @@ const OnboardingChecklist = ({ user, onComplete, onDismiss }) => {
                 Complete these steps to make the most of Career Pilot
               </p>
             </div>
-
             <button
               onClick={handleDismiss}
               className="text-muted-foreground hover:text-foreground hover:bg-muted rounded-lg p-1.5 transition-all duration-200"
@@ -289,7 +266,6 @@ const OnboardingChecklist = ({ user, onComplete, onDismiss }) => {
           </div>
         </div>
 
-        {/* Progress Bar */}
         <div className="px-6 pt-4 pb-2">
           <div className="flex justify-between text-sm text-muted-foreground mb-2">
             <span className="font-medium">Your Progress</span>
@@ -307,14 +283,12 @@ const OnboardingChecklist = ({ user, onComplete, onDismiss }) => {
           </div>
         </div>
 
-        {/* Checklist Items */}
         <div className="p-6 space-y-3">
           {items.map((item, index) => (
             <ChecklistItem key={item.id} item={item} index={index} />
           ))}
         </div>
 
-        {/* Motivational Message */}
         {completedCount > 0 && completedCount < totalCount && (
           <div className="bg-primary/5 border-t border-border px-6 py-3">
             <p className="text-sm text-primary text-center font-medium">
@@ -323,7 +297,6 @@ const OnboardingChecklist = ({ user, onComplete, onDismiss }) => {
           </div>
         )}
 
-        {/* Completion Message */}
         {completedCount === totalCount && (
           <div className="bg-primary/5 border-t border-border px-6 py-3">
             <p className="text-sm text-primary text-center font-medium">

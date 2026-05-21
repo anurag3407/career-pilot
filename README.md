@@ -1,8 +1,8 @@
 # 🚀 careerpilot - AI Career Platform
 
 <div align="center">
-
-<p align="center">
+<!-- edited -->
+<p align="center"> 
   <img src="https://img.shields.io/badge/License-MIT-blue?logo=opensourceinitiative&logoColor=white">
   &nbsp;
   <img src="https://img.shields.io/badge/Node.js-18+-green?logo=node.js&logoColor=white">
@@ -27,12 +27,14 @@
 ## 📋 Table of Contents
 
 - [Overview](#-overview)
+- [Architecture & Diagrams](#-architecture--diagrams)
 - [Problem Statement](#-problem-statement)
 - [Our Solution](#-our-solution)
 - [Features](#-features)
 - [Portfolio Builder](#-portfolio-builder)
 - [GitHub Intelligence](#-github-intelligence)
 - [AI Career Tools](#-ai-career-tools)
+- [Legal Pages](#-legal-pages)
 - [Tech Stack](#-tech-stack)
 - [Getting Started](#-getting-started)
 - [Project Structure](#-project-structure)
@@ -55,6 +57,12 @@ The **AI Resume Builder & Career Platform** is a comprehensive full-stack applic
 - Track job applications through an intuitive pipeline interface
 - Connect with fellow job seekers through a real-time community platform
 - Get AI-powered insights and improvement suggestions
+
+---
+
+## 🏗 Architecture & Diagrams
+
+New contributors and reviewers should read **[ARCHITECTURE.md](./ARCHITECTURE.md)** early — it includes high-level system diagrams, data-flow charts, API layout, security notes, and deployment topology. Use it alongside the [API Reference](./API_DOCS/README.md) when tracing features end-to-end.
 
 ---
 
@@ -194,6 +202,15 @@ The **AI Resume Builder & Career Platform** is a comprehensive full-stack applic
 - **JWT Token Verification**: Protected API endpoints
 - **Rate Limiting**: Protection against abuse
 - **Helmet Security Headers**: Enhanced HTTP security
+
+### 📋 Legal Pages
+
+- **Privacy Policy** (`/privacy`): Comprehensive privacy policy covering data collection, usage, storage, and user rights
+- **Terms of Service** (`/terms`): Complete terms of service with liability limits, user responsibilities, and dispute resolution
+- **Cookie Policy** (`/cookies`): Detailed cookie management guide with browser-specific instructions and compliance standards
+- **GDPR & CCPA Compliant**: Ensures compliance with major data protection regulations
+- **Public Access**: All legal pages are publicly accessible without authentication
+- **Mobile Responsive**: Optimized for all device sizes and screen orientations
 
 ---
 
@@ -392,6 +409,21 @@ npm run dev
 - Frontend: http://localhost:5173
 - Backend API: http://localhost:5000
 - Health Check: http://localhost:5000/health
+
+### Quick API checks (cURL)
+
+With the backend running locally:
+
+```bash
+# Health check (no auth)
+curl -s http://localhost:5000/health | jq
+
+# Authenticated route example (replace TOKEN with a Firebase ID token)
+curl -s -H "Authorization: Bearer TOKEN" \
+  http://localhost:5000/api/auth/verify | jq
+```
+
+In [Postman](https://www.postman.com/), create a GET request to `http://localhost:5000/health`, or set **Authorization → Bearer Token** for protected `/api/*` routes. See [API_DOCS/README.md](./API_DOCS/README.md) for the full route list.
 
 ---
 

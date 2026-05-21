@@ -6,6 +6,7 @@ import { cn } from "../lib/utils";
 
 export default function AppLayout({ children, className }) {
     const mainRef = useRef(null);
+
     return (
         <div className={cn("flex h-screen bg-background overflow-hidden", className)}>
             <AppSidebar />

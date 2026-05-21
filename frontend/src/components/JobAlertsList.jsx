@@ -43,6 +43,14 @@ export default function JobAlertsList() {
         fetchAlerts();
     }, []);
 
+    if (loading) {
+        return (
+            <div className="space-y-4 py-8">
+                <SkeletonList count={4} />
+            </div>
+        );
+    }
+
     const handleToggle = async (alertId) => {
         try {
             const result = await jobAlertsApi.toggle(alertId);
