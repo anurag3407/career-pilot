@@ -740,8 +740,6 @@ This project is licensed under the MIT License - see the [LICENSE](LICENSE) file
 
 ---
 
----
-
 ## 👥 Contributors
 
 This project exists thanks to all the people who contribute. [Become a contributor!](./CONTRIBUTION.md)
