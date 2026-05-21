@@ -85,15 +85,17 @@ export const cache = (ttl) => {
         // Restore standard res.send method
         res.send = originalSend;
 
-        // Cache only successful 2xx responses
-        if (res.statusCode >= 200 && res.statusCode < 300) {
+        // Cache only successful 2xx responses and when a valid body exists
+        if (res.statusCode >= 200 && res.statusCode < 300 && body !== undefined && body !== null) {
           try {
             const bodyToCache = typeof body === 'string' ? body : JSON.stringify(body);
             
-            // Set async cache without blocking HTTP response lifecycle
-            redisClient.set(key, bodyToCache, 'EX', ttl).catch((err) => {
-              console.error(`❌ [CACHE WRITE ERROR] Failed to cache key: ${key}:`, err.message);
-            });
+            if (typeof bodyToCache === 'string') {
+              // Set async cache without blocking HTTP response lifecycle
+              redisClient.set(key, bodyToCache, 'EX', ttl).catch((err) => {
+                console.error(`❌ [CACHE WRITE ERROR] Failed to cache key: ${key}:`, err.message);
+              });
+            }
           } catch (err) {
             console.error(`❌ [CACHE STR ERROR] Failed to stringify cache body for key: ${key}:`, err.message);
           }
