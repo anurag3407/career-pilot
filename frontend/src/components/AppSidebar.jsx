@@ -1,6 +1,7 @@
 import { useState } from "react";
 import { useNavigate } from "react-router-dom";
 import { motion } from "framer-motion";
+import { useTranslation } from "react-i18next";
 import {
     LayoutDashboard,
     Search,
@@ -27,60 +28,6 @@ import {
 } from "./ui/Sidebar";
 import { cn } from "../lib/utils";
 
-const navLinks = [
-    {
-        label: "Dashboard",
-        href: "/dashboard",
-        icon: <LayoutDashboard className="w-5 h-5 flex-shrink-0" />,
-    },
-    {
-        label: "Find Jobs",
-        href: "/jobs",
-        icon: <Search className="w-5 h-5 flex-shrink-0" />,
-    },
-    {
-        label: "Job Alerts",
-        href: "/job-alerts",
-        icon: <Bell className="w-5 h-5 flex-shrink-0" />,
-    },
-    {
-        label: "Interview Prep",
-        href: "/interview-prep",
-        icon: <Mic className="w-5 h-5 flex-shrink-0" />,
-    },
-    {
-        label: "Fellowship",
-        href: "/fellowship",
-        icon: <GraduationCap className="w-5 h-5 flex-shrink-0" />,
-    },
-    {
-        label: "Community",
-        href: "/community",
-        icon: <Users className="w-5 h-5 flex-shrink-0" />,
-    },
-    {
-        label: "Resume",
-        href: "/upload",
-        icon: <FileText className="w-5 h-5 flex-shrink-0" />,
-    },
-    {
-        label: "Profile",
-        href: "/profile",
-        icon: <User className="w-5 h-5 flex-shrink-0" />,
-    },
-    {
-        label: "Security",
-        href: "/security",
-        icon: <ShieldCheck className="w-5 h-5 flex-shrink-0" />,
-    },
-    {
-        label: "Settings",
-        href: "/settings",
-        icon: <Settings className="w-5 h-5 flex-shrink-0" />,
-    },
-];
-
-
 function Logo() {
     const { open, animate } = useSidebar();
 
@@ -106,6 +53,7 @@ function Logo() {
 }
 
 function UserSection() {
+    const { t } = useTranslation();
     const { user, logout } = useAuth();
     const { open, animate, setOpen } = useSidebar();
     const { theme, toggleTheme } = useTheme();
@@ -167,7 +115,7 @@ function UserSection() {
                     transition={{ duration: 0.2 }}
                     className="text-sm font-bold whitespace-pre"
                 >
-                    {theme === 'dark' ? 'Light Mode' : 'Dark Mode'}
+                    {theme === 'dark' ? t('nav.lightMode') : t('nav.darkMode')}
                 </motion.span>
             </button>
             <button
@@ -189,7 +137,7 @@ function UserSection() {
                     transition={{ duration: 0.2 }}
                     className="text-sm font-bold whitespace-pre"
                 >
-                    Logout
+                    {t('nav.logout')}
                 </motion.span>
             </button>
         </div>
@@ -197,7 +145,61 @@ function UserSection() {
 }
 
 export default function AppSidebar() {
+    const { t } = useTranslation();
     const [open, setOpen] = useState(false);
+
+    const navLinks = [
+        {
+            label: t("nav.dashboard"),
+            href: "/dashboard",
+            icon: <LayoutDashboard className="w-5 h-5 flex-shrink-0" />,
+        },
+        {
+            label: t("nav.jobs"),
+            href: "/jobs",
+            icon: <Search className="w-5 h-5 flex-shrink-0" />,
+        },
+        {
+            label: t("nav.alerts"),
+            href: "/job-alerts",
+            icon: <Bell className="w-5 h-5 flex-shrink-0" />,
+        },
+        {
+            label: t("nav.interview"),
+            href: "/interview-prep",
+            icon: <Mic className="w-5 h-5 flex-shrink-0" />,
+        },
+        {
+            label: t("nav.fellowship"),
+            href: "/fellowship",
+            icon: <GraduationCap className="w-5 h-5 flex-shrink-0" />,
+        },
+        {
+            label: t("nav.community"),
+            href: "/community",
+            icon: <Users className="w-5 h-5 flex-shrink-0" />,
+        },
+        {
+            label: t("nav.resume"),
+            href: "/upload",
+            icon: <FileText className="w-5 h-5 flex-shrink-0" />,
+        },
+        {
+            label: t("nav.profile"),
+            href: "/profile",
+            icon: <User className="w-5 h-5 flex-shrink-0" />,
+        },
+        {
+            label: t("nav.security"),
+            href: "/security",
+            icon: <ShieldCheck className="w-5 h-5 flex-shrink-0" />,
+        },
+        {
+            label: t("nav.settings"),
+            href: "/settings",
+            icon: <Settings className="w-5 h-5 flex-shrink-0" />,
+        },
+    ];
 
     return (
         <Sidebar open={open} setOpen={setOpen}>
@@ -221,4 +223,3 @@ export default function AppSidebar() {
         </Sidebar>
     );
 }
-

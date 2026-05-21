@@ -1,5 +1,6 @@
 import { useState, useEffect } from 'react'
 import { Link, useLocation } from 'react-router-dom'
+import { useTranslation } from 'react-i18next'
 import { useAuth } from '../context/AuthContext'
 import { useTheme } from '../context/ThemeContext'
 import { motion, AnimatePresence } from 'framer-motion'
@@ -22,6 +23,7 @@ import {
 } from 'lucide-react'
 
 export default function Navbar() {
+  const { t } = useTranslation()
   const { user, logout } = useAuth()
   const { theme, toggleTheme } = useTheme()
   const location = useLocation()
@@ -47,15 +49,15 @@ export default function Navbar() {
   const isActive = (path) => location.pathname === path
 
   const navLinks = [
-    { path: '/dashboard', label: 'Dashboard', icon: LayoutDashboard },
-    { path: '/jobs', label: 'Jobs', icon: Search },
-    { path: '/job-alerts', label: 'Alerts', icon: Bell },
-    { path: '/interview-prep', label: 'Interview', icon: Mic },
-    { path: '/fellowship', label: 'Fellowship', icon: GraduationCap },
-    { path: '/community', label: 'Community', icon: Users },
-    { path: '/upload', label: 'Resume', icon: FileText },
-    { path: '/email-generator', label: 'Emails', icon: Mail },
-    { path: '/linkedin-optimizer', label: 'LinkedIn', icon: Linkedin },
+    { path: '/dashboard', label: t('nav.dashboard'), icon: LayoutDashboard },
+    { path: '/jobs', label: t('nav.jobs'), icon: Search },
+    { path: '/job-alerts', label: t('nav.alerts'), icon: Bell },
+    { path: '/interview-prep', label: t('nav.interview'), icon: Mic },
+    { path: '/fellowship', label: t('nav.fellowship'), icon: GraduationCap },
+    { path: '/community', label: t('nav.community'), icon: Users },
+    { path: '/upload', label: t('nav.resume'), icon: FileText },
+    { path: '/email-generator', label: t('nav.emails', 'Emails'), icon: Mail },
+    { path: '/linkedin-optimizer', label: t('nav.linkedin', 'LinkedIn'), icon: Linkedin },
   ]
 
   return (
@@ -132,7 +134,7 @@ export default function Navbar() {
                   className="flex items-center gap-2 px-4 py-2 text-muted-foreground hover:text-destructive hover:bg-destructive/10 rounded-lg text-sm font-medium transition-all cursor-pointer"
                 >
                   <LogOut className="w-4 h-4" />
-                  Logout
+                  {t('nav.logout')}
                 </button>
               </>
             ) : (
@@ -141,13 +143,13 @@ export default function Navbar() {
                   to="/login"
                   className="px-4 py-2 text-muted-foreground hover:text-foreground text-sm font-medium transition-colors"
                 >
-                  Login
+                  {t('nav.login')}
                 </Link>
                 <Link
                   to="/register"
                   className="px-5 py-2 bg-primary hover:bg-primary/90 text-primary-foreground rounded-lg text-sm font-bold transition-all shadow-lg shadow-primary/20"
                 >
-                  Get Started
+                  {t('nav.getStarted')}
                 </Link>
               </>
             )}
@@ -224,7 +226,7 @@ export default function Navbar() {
                     className="flex items-center gap-3 w-full px-4 py-4 rounded-xl text-base font-semibold text-destructive hover:bg-destructive/10 transition-all cursor-pointer"
                   >
                     <LogOut className="w-5 h-5" />
-                    Logout
+                    {t('nav.logout')}
                   </button>
                 </>
               ) : (
@@ -234,14 +236,14 @@ export default function Navbar() {
                     onClick={() => setMobileMenuOpen(false)}
                     className="flex items-center justify-center px-4 py-3 text-foreground bg-muted rounded-xl text-base font-bold"
                   >
-                    Login
+                    {t('nav.login')}
                   </Link>
                   <Link
                     to="/register"
                     onClick={() => setMobileMenuOpen(false)}
                     className="flex items-center justify-center px-4 py-3 bg-primary text-primary-foreground rounded-xl text-base font-bold shadow-lg shadow-primary/20"
                   >
-                    Get Started
+                    {t('nav.getStarted')}
                   </Link>
                 </div>
               )}
