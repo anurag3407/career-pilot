@@ -13,14 +13,14 @@ export default function Input({
   className = ''
 }) {
   return (
-    <div className="mb-4">
+    <div className="mb-6">
       {label && (
         <label 
           htmlFor={name} 
-          className="block text-sm font-medium text-neutral-300 mb-1.5"
+          className="block text-sm font-bold text-foreground mb-2 uppercase tracking-widest opacity-70"
         >
           {label}
-          {required && <span className="text-red-400 ml-1">*</span>}
+          {required && <span className="text-destructive ml-1">*</span>}
         </label>
       )}
       <input
@@ -32,18 +32,17 @@ export default function Input({
         placeholder={placeholder}
         disabled={disabled}
         className={cn(
-          'w-full px-4 py-2.5 rounded-lg',
-          'bg-neutral-950 border border-neutral-800',
-          'text-white placeholder:text-neutral-500',
-          'focus:outline-none focus:ring-2 focus:ring-indigo-500/50 focus:border-indigo-500',
-          'disabled:bg-neutral-900 disabled:cursor-not-allowed disabled:opacity-50',
-          'transition-all duration-200',
-          error ? 'border-red-500/50 focus:ring-red-500/50' : '',
+          'w-full px-5 py-3.5 rounded-2xl transition-all duration-300',
+          'bg-muted/30 border border-border',
+          'text-foreground placeholder:text-muted-foreground',
+          'focus:outline-none focus:ring-2 focus:ring-primary/20 focus:border-primary',
+          'disabled:bg-muted disabled:cursor-not-allowed disabled:opacity-50',
+          error ? 'border-destructive/50 focus:ring-destructive/20' : '',
           className
         )}
       />
       {error && (
-        <p className="mt-1.5 text-sm text-red-400">{error}</p>
+        <p className="mt-2 text-sm font-bold text-destructive uppercase tracking-wide">{error}</p>
       )}
     </div>
   )

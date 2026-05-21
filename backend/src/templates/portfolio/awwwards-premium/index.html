@@ -149,17 +149,27 @@
             }
         });
         
-        document.querySelectorAll('.body-text').forEach((el) => {
-            if(el.innerText.includes('{{')) {
-                el.innerText = "An innovative digital experience built from scratch.";
+        // Safely replace text content and attributes without destroying DOM nodes
+        const replacePlaceholders = (node) => {
+            if (node.nodeType === Node.TEXT_NODE) {
+                if (node.nodeValue.includes('{{name}}')) node.nodeValue = node.nodeValue.replace(/\{\{name\}\}/g, 'Alex Designer');
+                if (node.nodeValue.includes('{{email}}')) node.nodeValue = node.nodeValue.replace(/\{\{email\}\}/g, 'hello@awwwards-premium.com');
+                if (node.nodeValue.includes('{{project1Description}}')) node.nodeValue = node.nodeValue.replace(/\{\{project1Description\}\}/g, 'An innovative digital experience built from scratch.');
+                if (node.nodeValue.includes('{{project2Description}}')) node.nodeValue = node.nodeValue.replace(/\{\{project2Description\}\}/g, 'A seamless integration of design and technology.');
+            } else if (node.nodeType === Node.ELEMENT_NODE) {
+                Array.from(node.attributes).forEach(attr => {
+                    if (attr.value.includes('{{email}}')) attr.value = attr.value.replace(/\{\{email\}\}/g, 'hello@awwwards-premium.com');
+                    if (attr.value.includes('{{project1Url}}')) attr.value = attr.value.replace(/\{\{project1Url\}\}/g, '#');
+                    if (attr.value.includes('{{project2Url}}')) attr.value = attr.value.replace(/\{\{project2Url\}\}/g, '#');
+                });
+                node.childNodes.forEach(replacePlaceholders);
             }
-        });
+        };
+        replacePlaceholders(document.body);
         
-        if (document.body.innerHTML.includes('{{email}}')) {
-            document.body.innerHTML = document.body.innerHTML.replace(/\{\{email\}\}/g, 'hello@awwwards-premium.com');
-        }
-        if (document.body.innerHTML.includes('{{name}}')) {
-            document.body.innerHTML = document.body.innerHTML.replace(/\{\{name\}\}/g, 'Alex Designer');
+        // Replace document title
+        if (document.title.includes('{{name}}')) {
+            document.title = document.title.replace(/\{\{name\}\}/g, 'Alex Designer');
         }
     </script>
 </body>

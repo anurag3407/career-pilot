@@ -15,12 +15,53 @@ async function getAuthHeaders() {
   }
 }
 
+// Helper to parse numeric header values
+function parseHeaderInt(value) {
+  const parsed = parseInt(value, 10)
+  return Number.isNaN(parsed) ? null : parsed
+}
+
+// Helper to parse Retry-After header from seconds or HTTP date
+function parseRetryAfter(value) {
+  if (!value) return null
+
+  const seconds = parseInt(value, 10)
+  if (!Number.isNaN(seconds)) return seconds
+
+  const parsedDate = Date.parse(value)
+  if (!Number.isNaN(parsedDate)) {
+    return Math.max(1, Math.ceil((parsedDate - Date.now()) / 1000))
+  }
+
+  return null
+}
+
 // Helper to handle API responses
 async function handleResponse(response) {
-  const data = await response.json()
-  if (!response.ok) {
-    throw new Error(data.error || 'Something went wrong')
+  let data = null
+  const contentType = response.headers.get('content-type') || ''
+  if (contentType.includes('application/json')) {
+    data = await response.json()
+  } else {
+    data = { error: await response.text() }
   }
+
+  if (!response.ok) {
+    const error = new Error(data.error || response.statusText || 'Something went wrong')
+    error.status = response.status
+
+    if (response.status === 429) {
+      error.retryAfter = parseRetryAfter(response.headers.get('retry-after'))
+      error.rateLimit = {
+        limit: parseHeaderInt(response.headers.get('x-ratelimit-limit')),
+        remaining: parseHeaderInt(response.headers.get('x-ratelimit-remaining')),
+        reset: parseHeaderInt(response.headers.get('x-ratelimit-reset'))
+      }
+    }
+
+    throw error
+  }
+
   return data
 }
 
@@ -146,6 +187,28 @@ export const resumeApi = {
     return handleResponse(response)
   },
 
+  // Preview LinkedIn profile data before importing
+  async previewLinkedIn(url) {
+    const headers = await getAuthHeaders()
+    const response = await fetch(`${API_BASE}/resumes/import/linkedin/preview`, {
+      method: 'POST',
+      headers,
+      body: JSON.stringify({ url })
+    })
+    return handleResponse(response)
+  },
+
+  // Import LinkedIn profile as a resume
+  async importLinkedIn(url, profile = null) {
+    const headers = await getAuthHeaders()
+    const response = await fetch(`${API_BASE}/resumes/import/linkedin`, {
+      method: 'POST',
+      headers,
+      body: JSON.stringify({ url, profile })
+    })
+    return handleResponse(response)
+  },
+
   // Download resume as PDF
   async downloadPdf(resumeId, version = 'enhanced') {
     const user = auth.currentUser
@@ -165,6 +228,21 @@ export const resumeApi = {
     }
 
     return response.blob()
+  }
+}
+
+// ============ PORTFOLIO API ============
+export const portfolioApi = {
+  // Get all portfolios
+  async getAll() {
+    const headers = await getAuthHeaders()
+
+    const response = await fetch(`${API_BASE}/portfolio`, {
+      method: 'GET',
+      headers
+    })
+
+    return handleResponse(response)
   }
 }
 
@@ -255,6 +333,60 @@ export const enhanceApi = {
       headers
     })
     return handleResponse(response)
+  },
+
+  // Generate job application emails
+  async generateEmail(data) {
+    const headers = await getAuthHeaders()
+    const response = await fetch(`${API_BASE}/enhance/generate-email`, {
+      method: 'POST',
+      headers,
+      body: JSON.stringify(data)
+    })
+    return handleResponse(response)
+  },
+
+  // Optimize LinkedIn profile with AI
+  async optimizeLinkedIn(data) {
+    const headers = await getAuthHeaders()
+    const response = await fetch(`${API_BASE}/enhance/optimize-linkedin`, {
+      method: 'POST',
+      headers,
+      body: JSON.stringify(data)
+    })
+    return handleResponse(response)
+  }
+}
+
+// ============ AI API ============
+export const aiApi = {
+  // Get AI models for a specific provider
+  async getModels(provider) {
+    const headers = await getAuthHeaders()
+    const response = await fetch(`${API_BASE}/ai/models?provider=${encodeURIComponent(provider)}`, {
+      method: 'GET',
+      headers
+    })
+    return handleResponse(response)
+  },
+
+  async getConfig() {
+    const headers = await getAuthHeaders()
+    const response = await fetch(`${API_BASE}/ai/config`, {
+      method: 'GET',
+      headers
+    })
+    return handleResponse(response)
+  },
+
+  async updateConfig(data) {
+    const headers = await getAuthHeaders()
+    const response = await fetch(`${API_BASE}/ai/config`, {
+      method: 'PUT',
+      headers,
+      body: JSON.stringify(data)
+    })
+    return handleResponse(response)
   }
 }
 
@@ -312,6 +444,17 @@ export const jobTrackerApi = {
     const response = await fetch(`${API_BASE}/job-tracker/${jobId}`, {
       method: 'DELETE',
       headers
+    })
+    return handleResponse(response)
+  },
+
+  // Research a company
+  async researchCompany(companyName, industry = '') {
+    const headers = await getAuthHeaders()
+    const response = await fetch(`${API_BASE}/job-tracker/research`, {
+      method: 'POST',
+      headers,
+      body: JSON.stringify({ companyName, industry })
     })
     return handleResponse(response)
   },
@@ -523,6 +666,24 @@ export const communityApi = {
     const headers = await getAuthHeaders()
     const response = await fetch(`${API_BASE}/community/posts/${postId}/like`, {
       method: 'POST',
+      headers
+    })
+    return handleResponse(response)
+  },
+
+  async getScheduledPosts() {
+    const headers = await getAuthHeaders()
+    const response = await fetch(`${API_BASE}/community/posts/scheduled/mine`, {
+      method: 'GET',
+      headers
+    })
+    return handleResponse(response)
+  },
+
+  async cancelScheduledPost(postId) {
+    const headers = await getAuthHeaders()
+    const response = await fetch(`${API_BASE}/community/posts/${postId}/schedule`, {
+      method: 'DELETE',
       headers
     })
     return handleResponse(response)
@@ -821,6 +982,152 @@ export const interviewApi = {
   }
 }
 
+// ============ USER PROFILE API ============
+export const userProfileApi = {
+  async getMyProfile() {
+    const headers = await getAuthHeaders()
+    const response = await fetch(`${API_BASE}/user-profiles/me`, { method: 'GET', headers })
+    return handleResponse(response)
+  },
+
+  async updateMyProfile(data) {
+    const headers = await getAuthHeaders()
+    const response = await fetch(`${API_BASE}/user-profiles/me`, {
+      method: 'PUT',
+      headers,
+      body: JSON.stringify(data)
+    })
+    return handleResponse(response)
+  },
+
+  async getMyStats() {
+    const headers = await getAuthHeaders()
+    const response = await fetch(`${API_BASE}/user-profiles/me/stats`, { method: 'GET', headers })
+    return handleResponse(response)
+  },
+
+  async getMyActivity() {
+    const headers = await getAuthHeaders()
+    const response = await fetch(`${API_BASE}/user-profiles/me/activity`, { method: 'GET', headers })
+    return handleResponse(response)
+  },
+
+  async getProfile(uid) {
+    const headers = await getAuthHeaders()
+    const response = await fetch(`${API_BASE}/user-profiles/${uid}`, { method: 'GET', headers })
+    return handleResponse(response)
+  },
+
+  async getPublicProfile(uid) {
+    const headers = await getAuthHeaders()
+    const response = await fetch(`${API_BASE}/user-profiles/${uid}`, { method: 'GET', headers })
+    return handleResponse(response)
+  },
+
+  async getStats(uid) {
+    const headers = await getAuthHeaders()
+    const response = await fetch(`${API_BASE}/user-profiles/${uid}/stats`, { method: 'GET', headers })
+    return handleResponse(response)
+  },
+
+  async getActivity(uid) {
+    const headers = await getAuthHeaders()
+    const response = await fetch(`${API_BASE}/user-profiles/${uid}/activity`, { method: 'GET', headers })
+    return handleResponse(response)
+  }
+}
+// ============ TWO-FACTOR AUTH API ============
+export const twoFactorApi = {
+  async getStatus() {
+    const headers = await getAuthHeaders()
+    const response = await fetch(`${API_BASE}/auth/2fa/status`, {
+      method: 'GET',
+      headers
+    })
+    return handleResponse(response)
+  },
+
+  async setup() {
+    const headers = await getAuthHeaders()
+    const response = await fetch(`${API_BASE}/auth/2fa/setup`, {
+      method: 'POST',
+      headers
+    })
+    return handleResponse(response)
+  },
+
+  async enable(secret, token) {
+    const headers = await getAuthHeaders()
+    const response = await fetch(`${API_BASE}/auth/2fa/enable`, {
+      method: 'POST',
+      headers,
+      body: JSON.stringify({ secret, token })
+    })
+    return handleResponse(response)
+  },
+
+  async disable(token) {
+    const headers = await getAuthHeaders()
+    const response = await fetch(`${API_BASE}/auth/2fa/disable`, {
+      method: 'POST',
+      headers,
+      body: JSON.stringify({ token })
+    })
+    return handleResponse(response)
+  },
+
+  async verify(token) {
+    const headers = await getAuthHeaders()
+    const response = await fetch(`${API_BASE}/auth/2fa/verify`, {
+      method: 'POST',
+      headers,
+      body: JSON.stringify({ token })
+    })
+    return handleResponse(response)
+  },
+
+  async verifyLogin(email, token, useBackup) {
+    const headers = await getAuthHeaders()
+    const response = await fetch(`${API_BASE}/auth/2fa/verify-login`, {
+      method: 'POST',
+      headers,
+      body: JSON.stringify({ email, token, useBackup })
+    })
+    return handleResponse(response)
+  },
+
+  async verifyBackup(code) {
+    const headers = await getAuthHeaders()
+    const response = await fetch(`${API_BASE}/auth/2fa/verify-backup`, {
+      method: 'POST',
+      headers,
+      body: JSON.stringify({ code })
+    })
+    return handleResponse(response)
+  },
+
+  async regenerateBackupCodes(token) {
+    const headers = await getAuthHeaders()
+    const response = await fetch(`${API_BASE}/auth/2fa/backup-codes/regenerate`, {
+      method: 'POST',
+      headers,
+      body: JSON.stringify({ token })
+    })
+    return handleResponse(response)
+  },
+
+  async disableWithBackup(code) {
+    const headers = await getAuthHeaders()
+    const response = await fetch(`${API_BASE}/auth/2fa/disable-with-backup`, {
+      method: 'POST',
+      headers,
+      body: JSON.stringify({ code })
+    })
+    return handleResponse(response)
+  }
+}
+
+
 // ============ PAYMENT API ============
 export const paymentApi = {
   // Create Razorpay order for proposal acceptance
@@ -861,6 +1168,28 @@ export const paymentApi = {
     const response = await fetch(`${API_BASE}/payments/status/${roomId}`, {
       method: 'GET',
       headers
+    })
+    return handleResponse(response)
+  }
+  
+}
+// ============ NOTIFICATION PREFERENCES API ============
+export const notificationApi = {
+  async getPreferences() {
+    const headers = await getAuthHeaders()
+    const response = await fetch(`${API_BASE}/auth/notification-preferences`, {
+      method: 'GET',
+      headers
+    })
+    return handleResponse(response)
+  },
+
+  async updatePreferences(preferences) {
+    const headers = await getAuthHeaders()
+    const response = await fetch(`${API_BASE}/auth/notification-preferences`, {
+      method: 'PUT',
+      headers,
+      body: JSON.stringify(preferences)
     })
     return handleResponse(response)
   }

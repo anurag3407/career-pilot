@@ -1,13 +1,34 @@
+<<<<<<< HEAD
 import { useRef, useState, useEffect } from "react";
+=======
+import { useRef, useMemo, useState, useEffect } from "react";
+>>>>>>> main
 import { motion } from "framer-motion";
 import DottedMap from "dotted-map";
+import { useTheme } from "../../context/ThemeContext";
+
+// Cache the computed map globally so it runs only once per app session
+let cachedSvgMap = null;
 
 export default function WorldMap({
   dots = [],
   lineColor = "#6366f1",
 }) {
   const svgRef = useRef(null);
+const [isMounted, setIsMounted] = useState(false);
 
+useEffect(() => {
+  setIsMounted(true);
+}, []);
+
+const { theme } = useTheme();
+
+const isDark = theme === "dark";
+const dotColor = isDark ? "#ffffff" : "#000000";
+
+const svgMap = useMemo(() => {
+
+<<<<<<< HEAD
   const [svgMap, setSvgMap] = useState(null);
 
   useEffect(() => {
@@ -35,6 +56,26 @@ export default function WorldMap({
       clearTimeout(timer);
     };
   }, []);
+=======
+  const svgMap = useMemo(() => {
+    if (!isMounted) return null;
+    if (cachedSvgMap) return cachedSvgMap;
+
+    try {
+      const map = new DottedMap({ height: 100, grid: "diagonal" });
+      cachedSvgMap = map.getSVG({
+        radius: 0.22,
+        color: dotColor,
+        shape: "circle",
+        backgroundColor: "transparent",
+      });
+      return cachedSvgMap;
+    } catch (error) {
+      console.error("WorldMap error:", error);
+      return null;
+    }
+}, [isMounted, dotColor]);
+>>>>>>> main
 
   const projectPoint = (lat, lng) => {
     const x = (lng + 180) * (800 / 360);
@@ -49,7 +90,7 @@ export default function WorldMap({
   };
 
   return (
-    <div className="w-full aspect-[2/1] rounded-lg relative font-sans min-h-[300px]">
+    <div className="w-full aspect-[2/1] rounded-lg relative font-sans min-h-[300px] text-muted-foreground/30">
       {svgMap && (
         <img
           src={`data:image/svg+xml;utf8,${encodeURIComponent(svgMap)}`}

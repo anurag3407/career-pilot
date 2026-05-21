@@ -1,0 +1,13 @@
+{
+  "name": "TODO: Theme name",
+  "description": "TODO: Brief description of your theme",
+  "version": "1.0.0",
+  "author": "TODO: Your name",
+  "preview": "preview.png",
+  "tags": ["TODO: add relevant tags"],
+  "colors": {
+    "primary": "TODO: #hexcolor",
+    "background": "TODO: #hexcolor",
+    "text": "TODO: #hexcolor"
+  }
+}

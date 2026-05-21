@@ -1,6 +1,7 @@
 import axios from 'axios';
 import dotenv from 'dotenv';
 import crypto from 'crypto';
+import { jobsScrapedCounter } from '../middleware/metrics.js';
 
 dotenv.config();
 
@@ -21,6 +22,27 @@ const rapidApiClient = axios.create({
     },
     timeout: 30000 // 30 second timeout
 });
+
+const wait = (ms) => new Promise((resolve) => setTimeout(resolve, ms));
+
+const withRetry = async (fn, retries = 3, delay = 1000) => {
+    for (let i = 0; i < retries; i++) {
+        try {
+            return await fn();
+        } catch (error) {
+            const isRateLimit = error.response?.status === 429 || error.message?.includes('429');
+            const isLastAttempt = i === retries - 1;
+
+            if (isRateLimit && !isLastAttempt) {
+                const backoffDelay = delay * Math.pow(2, i);
+                console.warn(`⏱️ RapidAPI JSearch Rate limit reached (429). Retrying in ${backoffDelay}ms... (Attempt ${i + 1}/${retries})`);
+                await wait(backoffDelay);
+                continue;
+            }
+            throw error;
+        }
+    }
+};
 
 /**
  * Search for jobs using RapidAPI JSearch
@@ -76,7 +98,23 @@ export const searchJobs = async ({
 
         console.log(`🔍 Searching RapidAPI: "${searchQuery}"`);
 
-        const response = await rapidApiClient.get('/search', { params });
+        const fetchWithRetry = () => rapidApiClient.get('/search', { params });
+        const response = await withRetry(fetchWithRetry);
+
+        if (response?.data?.data && Array.isArray(response.data.data)) {
+            response.data.data.forEach(job => {
+                const publisher = (job.job_publisher || "").toLowerCase();
+                let source = "other";
+                if (publisher.includes("linkedin")) {
+                    source = "linkedin";
+                } else if (publisher.includes("indeed")) {
+                    source = "indeed";
+                } else {
+                    source = publisher || "other";
+                }
+                jobsScrapedCounter.inc({ source });
+            });
+        }
 
         if (!response.data || !response.data.data) {
             console.log('📭 No jobs found');
