@@ -4,23 +4,18 @@ import { verifyToken } from '../middleware/auth.js';
 import { loginProtection } from '../middleware/loginProtection.js';
 import { saveUserToFirebase } from '../services/firebaseDataService.js';
 import { validate } from '../middleware/validate.js';
+import { updateNotificationPrefsSchema } from '../schemas/auth.schema.js';
+
 import { registerSchema } from '../validators/authValidator.js';
 import { exchangeCodeForToken, getLinkedInAuthUrl, getLinkedInProfile } from '../services/linkedinService.js';
 import User from '../models/User.model.js';
 import admin from '../config/firebase.js';
 import crypto from 'crypto';
 
+import { updateNotificationPrefsSchema } from '../schemas/auth.schema.js';
+
 const router = express.Router();
-
 const stateStore = new Map();
-
-// Example register endpoint with validation
-router.post('/register', validate(registerSchema), asyncHandler(async (req, res) => {
-  res.status(201).json({
-    success: true,
-    message: 'User registered successfully'
-  });
-}));
 
 // Periodic sweep of expired stateStore entries every 10 minutes to prevent memory leaks
 setInterval(() => {
@@ -32,6 +27,7 @@ setInterval(() => {
   }
 }, 10 * 60 * 1000).unref();
 
+
 // Verify token endpoint — loginProtection tracks failed attempts per IP
 // and locks out after 5 consecutive failures for 15 minutes.
 router.post('/verify', loginProtection, verifyToken, asyncHandler(async (req, res) => {
@@ -41,7 +37,7 @@ router.post('/verify', loginProtection, verifyToken, asyncHandler(async (req, re
   } catch (error) {
     console.warn('Could not save user to Firebase:', error.message);
   }
-  
+
   res.json({
     success: true,
     user: req.user
@@ -56,17 +52,19 @@ router.get('/profile', verifyToken, asyncHandler(async (req, res) => {
   } catch (error) {
     console.warn('⚠️  Could not update user in Firebase:', error.message);
   }
-  
+
   res.json({
     success: true,
     user: req.user
   });
 }));
+
 // Get notification preferences
 router.get('/notification-preferences', verifyToken, asyncHandler(async (req, res) => {
+  const user = await User.findOne({ email: req.user.email });
   const User = (await import('../models/User.model.js')).default;
   let user = await User.findOne({ email: req.user.email });
-  
+
   const preferences = user?.notificationPreferences || {
     jobAlerts: true,
     directMessages: true,
@@ -77,13 +75,8 @@ router.get('/notification-preferences', verifyToken, asyncHandler(async (req, re
 }));
 
 // Update notification preferences
-router.put('/notification-preferences', verifyToken, asyncHandler(async (req, res) => {
-  const User = (await import('../models/User.model.js')).default;
+router.put('/notification-preferences', verifyToken, validate(updateNotificationPrefsSchema), asyncHandler(async (req, res) => {
   const { jobAlerts, directMessages, proposalUpdates } = req.body;
-
-  if (typeof jobAlerts !== 'boolean' || typeof directMessages !== 'boolean' || typeof proposalUpdates !== 'boolean') {
-    return res.status(400).json({ success: false, error: 'Invalid preference values' });
-  }
 
   await User.findOneAndUpdate(
     { email: req.user.email },
@@ -112,8 +105,10 @@ router.get('/linkedin/callback', asyncHandler(async (req, res) => {
     return res.redirect(`${frontendUrl}/login?error=linkedin_denied`);
   }
 
+  const storedExpiry = stateStore.get(state);
+  if (!storedExpiry || Date.now() > storedExpiry) {
   const storedEnpiry = stateStore.get(state);
-  if(!storedEnpiry || Date.now() > storedEnpiry) {
+  if (!storedEnpiry || Date.now() > storedEnpiry) {
     stateStore.delete(state);
     return res.redirect(`${frontendUrl}/login?error=linkedin_invalid_state`);
   }
@@ -124,7 +119,7 @@ router.get('/linkedin/callback', asyncHandler(async (req, res) => {
 
   try {
     ({ accessToken, idToken } = await exchangeCodeForToken(code));
-  } catch(err) {
+  } catch (err) {
     console.error('LinkedIn token exchange failed:', err.response?.data || err.message);
     return res.redirect(`${frontendUrl}/login?error=linkedin_token_failed`);
   }
@@ -143,8 +138,8 @@ router.get('/linkedin/callback', asyncHandler(async (req, res) => {
 
   let firebaseUid;
 
-  if(mongoUser) {
-    if(!mongoUser.linkedinId) {
+  if (mongoUser) {
+    if (!mongoUser.linkedinId) {
       mongoUser.linkedinId = linkedinId;
       await mongoUser.save();
     }
@@ -166,7 +161,7 @@ router.get('/linkedin/callback', asyncHandler(async (req, res) => {
     try {
       firebaseUser = await admin.auth().getUserByEmail(email);
     } catch {
-      firebaseUser = await admin.auth().createUser({ email, displayName: name, photoURL: picture})
+      firebaseUser = await admin.auth().createUser({ email, displayName: name, photoURL: picture })
     }
     firebaseUid = firebaseUser.uid;
 

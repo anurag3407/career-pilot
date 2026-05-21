@@ -3,6 +3,13 @@ import { verifyToken } from '../middleware/auth.js';
 import { asyncHandler, ApiError } from '../middleware/errorHandler.js';
 import { paginate, paginatedResponse } from '../middleware/paginate.js';
 import Resume from '../models/Resume.model.js';
+import { validate } from '../middleware/validate.js';
+import {
+  createResumeSchema,
+  updateResumeSchema,
+  downloadResumeQuerySchema,
+} from '../schemas/resume.schema.js';
+import { scrapeLinkedInProfile, profileToResumeText } from '../services/linkedinImporter.js';
 
 const router = express.Router();
 
@@ -88,7 +95,7 @@ router.get('/:resumeId', verifyToken, asyncHandler(async (req, res) => {
  *         description: Created
  */ 
 // Create a new resume
-router.post('/', verifyToken, asyncHandler(async (req, res) => {
+router.post('/', verifyToken, validate(createResumeSchema), asyncHandler(async (req, res) => {
   const userId = req.user.uid;
   const { 
     originalText, 
@@ -148,7 +155,7 @@ router.post('/', verifyToken, asyncHandler(async (req, res) => {
  *         description: Success
  */
 // Update a resume
-router.put('/:resumeId', verifyToken, asyncHandler(async (req, res) => {
+router.put('/:resumeId', verifyToken, validate(updateResumeSchema), asyncHandler(async (req, res) => {
   const { resumeId } = req.params;
   const userId = req.user.uid;
   const updates = req.body;
@@ -213,8 +220,76 @@ router.delete('/:resumeId', verifyToken, asyncHandler(async (req, res) => {
   });
 }));
 
+// Preview LinkedIn profile before importing
+router.post('/import/linkedin/preview', verifyToken, asyncHandler(async (req, res) => {
+  const { url } = req.body;
+
+  if (!url || typeof url !== 'string') {
+    throw new ApiError(400, 'LinkedIn URL is required');
+  }
+
+  const isLinkedIn = /^https?:\/\/(www\.)?linkedin\.com\/in\//.test(url.trim());
+  if (!isLinkedIn) {
+    throw new ApiError(400, 'Please provide a valid LinkedIn profile URL (linkedin.com/in/...)');
+  }
+
+  const profile = await scrapeLinkedInProfile(url.trim());
+
+  res.json({
+    success: true,
+    preview: {
+      name: profile.name,
+      headline: profile.headline,
+      location: profile.location,
+      about: profile.about,
+      experienceCount: profile.experience?.length || 0,
+      educationCount: profile.education?.length || 0,
+      skills: profile.skills || [],
+    },
+    profile,
+  });
+}));
+
+// Import LinkedIn profile as a resume
+router.post('/import/linkedin', verifyToken, asyncHandler(async (req, res) => {
+  const { url, profile: cachedProfile } = req.body;
+  const userId = req.user.uid;
+
+  if (!url && !cachedProfile) {
+    throw new ApiError(400, 'LinkedIn URL or profile data is required');
+  }
+
+  const profile = cachedProfile || await scrapeLinkedInProfile(url.trim());
+  const resumeText = profileToResumeText(profile);
+  const title = `${profile.name || 'LinkedIn'} — Imported ${new Date().toLocaleDateString()}`;
+
+  const resume = await Resume.create({
+    userId,
+    originalText: resumeText,
+    jobRole: profile.headline || null,
+    preferences: { skills: profile.skills || [] },
+    title,
+  });
+
+  res.status(201).json({
+    success: true,
+    data: {
+      id: resume._id.toString(),
+      userId: resume.userId,
+      originalText: resume.originalText,
+      enhancedText: resume.enhancedText,
+      jobRole: resume.jobRole,
+      preferences: resume.preferences,
+      title: resume.title,
+      pdfUrl: resume.pdfUrl,
+      createdAt: resume.createdAt,
+      lastModified: resume.lastModified,
+    },
+  });
+}));
+
 // Download resume as PDF
-router.get('/:resumeId/download', verifyToken, asyncHandler(async (req, res) => {
+router.get('/:resumeId/download', verifyToken, validate(downloadResumeQuerySchema, 'query'), asyncHandler(async (req, res) => {
   const { resumeId } = req.params;
   const userId = req.user.uid;
   const { version = 'enhanced', paperSize = 'A4' } = req.query;

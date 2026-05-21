@@ -1,10 +1,10 @@
 import { useState } from 'react'
-
+const ENABLE_PREMIUM_THEMES = import.meta.env.VITE_ENABLE_PREMIUM_THEMES === 'true'
 const THEMES = [
-  { id: 'minimal', name: 'Minimal', supportsDarkMode: true, lightPreview: '#ffffff', darkPreview: '#1a1a1a', accent: '#6366f1' },
-  { id: 'professional', name: 'Professional', supportsDarkMode: true, lightPreview: '#f8fafc', darkPreview: '#0f172a', accent: '#0ea5e9' },
-  { id: 'creative', name: 'Creative', supportsDarkMode: false, lightPreview: '#fdf4ff', darkPreview: null, accent: '#d946ef' },
-  { id: 'bold', name: 'Bold', supportsDarkMode: true, lightPreview: '#fff7ed', darkPreview: '#1c1917', accent: '#f97316' },
+  { id: 'minimal', name: 'Minimal', supportsDarkMode: true, lightPreview: '#ffffff', darkPreview: '#1a1a1a', accent: '#6366f1', isPremium: false },
+  { id: 'professional', name: 'Professional', supportsDarkMode: true, lightPreview: '#f8fafc', darkPreview: '#0f172a', accent: '#0ea5e9', isPremium: true },
+  { id: 'creative', name: 'Creative', supportsDarkMode: false, lightPreview: '#fdf4ff', darkPreview: null, accent: '#d946ef', isPremium: true },
+  { id: 'bold', name: 'Bold', supportsDarkMode: true, lightPreview: '#fff7ed', darkPreview: '#1c1917', accent: '#f97316', isPremium: false },
 ]
 
 export default function ThemeSelector({ selectedTheme, onSelectTheme }) {
@@ -23,8 +23,33 @@ export default function ThemeSelector({ selectedTheme, onSelectTheme }) {
         {THEMES.map((t) => {
           const isSelected = selectedTheme === t.id
           const previewColor = isDarkPreview && t.supportsDarkMode ? t.darkPreview : t.lightPreview
+          const isDisabled = ENABLE_PREMIUM_THEMES && t.isPremium
+
           return (
-            <div key={t.id} onClick={() => onSelectTheme && onSelectTheme(t.id)} className={`relative cursor-pointer rounded-xl border-2 overflow-hidden transition-all ${isSelected ? 'border-indigo-500 shadow-lg scale-105' : 'border-gray-200 dark:border-gray-700 hover:border-indigo-300'}`}>
+            <div 
+              key={t.id} 
+              onClick={() => {
+                if (isDisabled) return
+                if (onSelectTheme) onSelectTheme(t.id)
+              }} 
+              className={`relative rounded-xl border-2 overflow-hidden transition-all ${
+                isDisabled ? 'cursor-not-allowed opacity-90 border-gray-200 dark:border-gray-700' 
+                : isSelected ? 'cursor-pointer border-indigo-500 shadow-lg scale-105' 
+                : 'cursor-pointer border-gray-200 dark:border-gray-700 hover:border-indigo-300'
+              }`}
+            >
+              {t.isPremium && (
+                <span className="absolute top-2 left-2 z-10 px-2 py-0.5 text-[10px] font-bold tracking-wide text-white uppercase bg-gradient-to-r from-amber-400 to-amber-600 rounded-full shadow-sm">
+                  Premium
+                </span>
+              )}
+              {isDisabled && (
+                <div className="absolute inset-0 z-20 flex items-center justify-center bg-white/60 dark:bg-black/60 backdrop-blur-[2px]">
+                  <span className="px-3 py-1 text-sm font-semibold text-gray-800 dark:text-white bg-white/90 dark:bg-gray-800/90 rounded-md shadow-sm border border-gray-200 dark:border-gray-700">
+                    Coming Soon
+                  </span>
+                </div>
+              )}
               <div className="h-24 w-full flex items-center justify-center" style={{ backgroundColor: previewColor }}>
                 <div className="w-8 h-8 rounded-full" style={{ backgroundColor: t.accent }} />
               </div>
@@ -34,8 +59,8 @@ export default function ThemeSelector({ selectedTheme, onSelectTheme }) {
                   <span className="inline-block mt-1 text-xs px-2 py-0.5 rounded-full bg-indigo-100 dark:bg-indigo-900 text-indigo-600 dark:text-indigo-300">🌙 Dark mode supported</span>
                 )}
               </div>
-              {isSelected && (
-                <div className="absolute top-2 right-2 bg-indigo-500 text-white rounded-full w-5 h-5 flex items-center justify-center text-xs">✓</div>
+              {isSelected && !isDisabled && (
+                <div className="absolute top-2 right-2 z-10 bg-indigo-500 text-white rounded-full w-5 h-5 flex items-center justify-center text-xs">✓</div>
               )}
             </div>
           )

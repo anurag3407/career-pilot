@@ -1,6 +1,7 @@
 import Navbar from '../components/Navbar'
 import HeroSection from '../components/ui/HeroSection'
 import FeaturesSection, { AdditionalFeatures } from '../components/ui/FeaturesSection'
+import PortfolioShowcaseSection from '../components/ui/PortfolioShowcaseSection'
 import HowItWorksSection from '../components/ui/HowItWorksSection'
 import TestimonialsSection from '../components/ui/TestimonialsSection'
 import CTASection from '../components/ui/CTASection'
@@ -28,6 +29,9 @@ export default function Home() {
           </div>
         </div>
       </section>
+
+      {/* Portfolio Showcase Section */}
+      <PortfolioShowcaseSection />
 
       {/* How It Works Section */}
       <HowItWorksSection />

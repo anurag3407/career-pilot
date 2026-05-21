@@ -49,13 +49,8 @@ function StackedCircularFooter() {
             <div className="container mx-auto px-4 md:px-6 relative z-10">
                 <div className="flex flex-col items-center text-center">
                     {/* Logo in circular container */}
-                    <div className="mb-8 group">
-                        <div className="relative">
-                            <div className="absolute inset-0 bg-primary/20 rounded-full blur-xl opacity-0 group-hover:opacity-100 transition-opacity" />
-                            <div className="relative rounded-full bg-card p-4 border border-border shadow-lg group-hover:border-primary/50 transition-all duration-500 group-hover:scale-105">
-                                <img src="/speed.png" alt="careerpilot" className="w-16 h-16 object-contain" />
-                            </div>
-                        </div>
+                    <div className="mb-8 rounded-full bg-zinc-900 p-2 border border-zinc-800">
+                        <img src="/speed.png" alt="careerpilot" className="w-32 h-32 object-contain" />
                     </div>
 
                     {/* Navigation links */}
