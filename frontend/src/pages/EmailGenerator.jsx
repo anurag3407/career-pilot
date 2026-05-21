@@ -3,6 +3,7 @@ import { Mail, Briefcase, FileText, Sparkles, Copy, Check, Download, History, X 
 import { motion, AnimatePresence } from 'framer-motion';
 import { enhanceApi } from '../services/api';
 import toast from 'react-hot-toast';
+import { Skeleton } from '../components/ui/Skeleton';
 
 const EmailGenerator = () => {
   const [formData, setFormData] = useState({ resume: '', jobDesc: '', tone: 'Professional & Formal', jobTitle: '' });
@@ -175,7 +176,7 @@ const EmailGenerator = () => {
           </form>
         </motion.div>
 
-        {/* History Panel */}
+   {/* History Panel */}
         <AnimatePresence>
           {showHistory && (
             <motion.div initial={{ opacity: 0, y: -10 }} animate={{ opacity: 1, y: 0 }} exit={{ opacity: 0, y: -10 }}
@@ -209,8 +210,29 @@ const EmailGenerator = () => {
         </AnimatePresence>
 
         {/* Results */}
-        {results && (
-          <motion.div initial={{ opacity: 0, y: 20 }} animate={{ opacity: 1, y: 0 }} className="space-y-8">
+        {loading ? (
+          <div className="space-y-8 animate-pulse">
+            <Skeleton className="h-8 w-64 bg-foreground/10" />
+            <div className="bg-primary/5 p-6 rounded-2xl border border-primary/20">
+              <Skeleton className="h-6 w-48 mb-4 bg-foreground/10" />
+              <div className="space-y-3">
+                {[1, 2, 3].map(i => (
+                  <Skeleton key={i} className="h-12 w-full bg-foreground/10" />
+                ))}
+              </div>
+            </div>
+            <div className="grid grid-cols-1 md:grid-cols-3 gap-6">
+              {[1, 2, 3].map(i => (
+                <Skeleton key={i} className="h-64 w-full rounded-2xl bg-foreground/10" />
+              ))}
+            </div>
+          </div>
+        ) : results && (
+          <motion.div
+            initial={{ opacity: 0, y: 20 }}
+            animate={{ opacity: 1, y: 0 }}
+            className="space-y-8"
+          >
             <h2 className="text-2xl font-bold text-foreground border-b border-border pb-2">Your AI Generated Options</h2>
 
             <div className="bg-primary/5 p-6 rounded-2xl border border-primary/20 shadow-sm">

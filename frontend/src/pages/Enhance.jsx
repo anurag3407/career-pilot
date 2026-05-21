@@ -468,11 +468,23 @@ navigate(`/resume/${resumeId}`)
   if (loading) {
     return (
       <div className="min-h-screen bg-background">
-        <div className="flex items-center justify-center py-20">
-          <div className="w-8 h-8 border-2 border-primary border-t-transparent rounded-full animate-spin" />
-        </div>
+        <div className="relative max-w-6xl mx-auto px-4 sm:px-6 lg:px-8 py-8">
+          <motion.div
+            initial={{ opacity: 0, y: 10 }}
+            animate={{ opacity: 1, y: 0 }}
+            transition={{ duration: 0.4 }}
+            className="space-y-8"
+          >
+            {/* Header Skeleton */}
+            <div className="mb-8 space-y-3">
+              <div className="h-4 bg-muted rounded-lg w-32 animate-pulse" />
+              <div className="h-10 bg-muted rounded-lg w-2/3 animate-pulse" />
+              <div className="h-4 bg-muted rounded-lg w-1/2 animate-pulse" />
+            </div>
 
-        <div className="h-72 bg-neutral-900 rounded-2xl border border-neutral-800">
+            {/* Content Skeleton */}
+            <SkeletonList count={4} />
+          </motion.div>
         </div>
       </div>
     )
