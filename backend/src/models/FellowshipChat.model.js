@@ -69,7 +69,7 @@ const fellowshipChatRoomSchema = new mongoose.Schema({
     deletedAt: { type: Date, default: null }
 });
 
-fellowshipChatRoomSchema.index({ proposalId: 1 }, { unique: true, background: true });
+fellowshipChatRoomSchema.index({ proposalId: 1 }, { unique: true, partialFilterExpression: { isDeleted: false }, background: true });
 fellowshipChatRoomSchema.index({ studentId: 1, status: 1, lastMessageAt: -1 }, { background: true });
 fellowshipChatRoomSchema.index({ corporateId: 1, status: 1, lastMessageAt: -1 }, { background: true });
 

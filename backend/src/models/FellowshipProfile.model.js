@@ -6,7 +6,6 @@ const fellowshipProfileSchema = new mongoose.Schema({
     userId: {
         type: String,
         required: true,
-        unique: true,
         index: true
     },
     role: {
@@ -96,8 +95,11 @@ fellowshipProfileSchema.methods.compareVerificationCode = function (code) {
     return compareVerificationCode(code, this.verificationCode);
 };
 
-const FellowshipProfile = mongoose.model('FellowshipProfile', fellowshipProfileSchema);
+// Partial unique index on userId for soft-deleted docs
+fellowshipProfileSchema.index({ userId: 1 }, { unique: true, partialFilterExpression: { isDeleted: false } });
 
 fellowshipProfileSchema.plugin(softDelete);
+
+const FellowshipProfile = mongoose.model('FellowshipProfile', fellowshipProfileSchema);
 
 export default FellowshipProfile;

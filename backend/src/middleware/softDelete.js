@@ -7,6 +7,9 @@ export default function softDelete(schema) {
 
   const queryMiddleware = function () {
     if (this._withDeleted) return;
+    // Skip filtering for upsert operations to allow restoring soft-deleted docs
+    const isUpsert = this.options && this.options.upsert;
+    if (isUpsert) return;
     const q = this.getQuery ? this.getQuery() : (this._conditions || {});
     if (q && q.includeDeleted) {
       // caller asked to include deleted via filter flag
@@ -31,7 +34,7 @@ export default function softDelete(schema) {
   };
 
   schema.statics.restoreById = function (id) {
-    return this.findByIdAndUpdate(id, { isDeleted: false, deletedAt: null }, { new: true });
+    return this.findByIdAndUpdate({ _id: id, includeDeleted: true }, { isDeleted: false, deletedAt: null }, { new: true });
   };
 
   schema.methods.softDelete = function () {

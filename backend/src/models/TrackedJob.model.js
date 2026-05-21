@@ -70,7 +70,7 @@ trackedJobSchema.add({ isDeleted: { type: Boolean, default: false }, deletedAt: 
 trackedJobSchema.plugin(softDelete);
 
 // Compound index for checking duplicate tracked jobs
-trackedJobSchema.index({ userId: 1, jobId: 1 }, { unique: true, background: true });
+trackedJobSchema.index({ userId: 1, jobId: 1 }, { unique: true, partialFilterExpression: { isDeleted: false }, background: true });
 
 // Index for faster queries
 trackedJobSchema.index({ userId: 1, createdAt: -1 }, { background: true });

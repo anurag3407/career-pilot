@@ -9,7 +9,6 @@ const userSchema = new mongoose.Schema({
   email: {
     type: String,
     required: true,
-    unique: true,
     lowercase: true,
     trim: true,
     match: [/^[^\s@]+@[^\s@]+\.[^\s@]+$/, 'Invalid email address']
@@ -43,6 +42,9 @@ const userSchema = new mongoose.Schema({
   isDeleted: { type: Boolean, default: false },
   deletedAt: { type: Date, default: null }
 });
+
+// Partial unique index on email for soft-deleted docs
+userSchema.index({ email: 1 }, { unique: true, partialFilterExpression: { isDeleted: false } });
 
 userSchema.plugin(softDelete);
 

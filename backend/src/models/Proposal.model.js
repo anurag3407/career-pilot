@@ -61,7 +61,7 @@ const proposalSchema = new mongoose.Schema({
     deletedAt: { type: Date, default: null }
 });
 
-proposalSchema.index({ challengeId: 1, studentId: 1 }, { unique: true, background: true });
+proposalSchema.index({ challengeId: 1, studentId: 1 }, { unique: true, partialFilterExpression: { isDeleted: false }, background: true });
 proposalSchema.index({ studentId: 1, status: 1 }, { background: true });
 proposalSchema.index({ studentId: 1, createdAt: -1 }, { background: true });
 proposalSchema.index({ challengeId: 1, createdAt: -1 }, { background: true });

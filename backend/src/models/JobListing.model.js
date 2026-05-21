@@ -5,7 +5,6 @@ const jobListingSchema = new mongoose.Schema({
     externalId: {
         type: String,
         required: true,
-        unique: true,
         index: true
     },
     title: {
@@ -86,6 +85,9 @@ jobListingSchema.add({
 });
 
 jobListingSchema.plugin(softDelete);
+
+// Partial unique index on externalId for soft-deleted docs
+jobListingSchema.index({ externalId: 1 }, { unique: true, partialFilterExpression: { isDeleted: false } });
 
 // Text search index for efficient job matching
 jobListingSchema.index({ title: 'text', company: 'text', description: 'text' });
