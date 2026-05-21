@@ -20,6 +20,7 @@ import paymentRoutes from './routes/payments.js';
 import userProfileRoutes from './routes/userProfile.js';
 import twoFactorRoutes from './routes/twoFactor.js';
 import aiRoutes from './routes/ai.js';
+import healthRoutes from "./routes/health.js";
 
 import { globalErrorHandler } from './middleware/globalErrorHandler.js';
 import {
@@ -207,6 +208,7 @@ app.use('/api/user-profiles', userProfileRoutes);
 app.use('/api/auth/2fa', twoFactorRoutes);
 app.use('/api/search', searchRoutes);
 app.use('/api/ai', aiRoutes);
+app.use('/api/health', healthRoutes);
 
 app.use((req, res) => {
   res.status(404).json({ error: 'Route not found' });
