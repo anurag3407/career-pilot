@@ -553,6 +553,7 @@ router.post('/chat/rooms/:roomId/messages', verifyToken, asyncHandler(async (req
     if (!sanitizedContent) {
         throw new ApiError(400, 'Message content is required');
     }
+    const sanitizedContent = content.trim().replace(/</g, "&lt;").replace(/>/g, "&gt;");
 
     const profile = await FellowshipProfile.findOne({ userId: req.user.uid });
 

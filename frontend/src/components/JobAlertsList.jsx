@@ -13,6 +13,7 @@ import {
     Loader2,
     AlertCircle
 } from 'lucide-react';
+import { SkeletonList } from './ui/Skeleton';
 import toast from 'react-hot-toast';
 import { jobAlertsApi } from '../services/api';
 import JobAlertModal from './JobAlertModal';

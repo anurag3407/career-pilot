@@ -19,6 +19,8 @@ const FREE_TIER_LIMIT_MB = 500;
 
 // --- Helper Functions ---
 
+const FREE_TIER_LIMIT_MB = 100;
+
 const getPublicPortfolioBaseUrl = (req) => {
   const configuredBaseUrl = process.env.PORTFOLIO_BASE_URL || process.env.FRONTEND_URL;
   const fallbackBaseUrl = `${req.protocol}://${req.get('host')}`;

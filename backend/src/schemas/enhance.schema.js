@@ -26,6 +26,7 @@ export const enhanceResumeSchema = z.object({
       skills: z.array(z.string()).optional().default([]),
       industry: z.string().optional().default(''),
       customInstructions: z.string().optional().default(''),
+      profileInfo: z.record(z.unknown()).optional().default({}),
     })
     .strict(),
 });

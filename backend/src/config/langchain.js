@@ -276,8 +276,11 @@ ${resumeText}`;
     // Parse JSON from response
     let analysisData;
     try {
-      // Remove markdown code blocks if present
-      const cleanedText = providerResult.text.replace(/```json\n?/g, '').replace(/```\n?/g, '').trim();
+      let cleanedText = providerResult.text.replace(/```json\n?/g, '').replace(/```\n?/g, '').trim();
+      const jsonMatch = cleanedText.match(/\{[\s\S]*\}/);
+      if (jsonMatch) {
+        cleanedText = jsonMatch[0];
+      }
       analysisData = JSON.parse(cleanedText);
     } catch (parseError) {
       console.error('Failed to parse ATS analysis JSON:', parseError);
@@ -425,7 +428,11 @@ ${resumeText}`;
 
     let analysisData;
     try {
-      const cleanedText = providerResult.text.replace(/```json\n?/g, '').replace(/```\n?/g, '').trim();
+      let cleanedText = providerResult.text.replace(/```json\n?/g, '').replace(/```\n?/g, '').trim();
+      const jsonMatch = cleanedText.match(/\{[\s\S]*\}/);
+      if (jsonMatch) {
+        cleanedText = jsonMatch[0];
+      }
       analysisData = JSON.parse(cleanedText);
     } catch (parseError) {
       console.error('Failed to parse comprehensive analysis JSON:', parseError);
@@ -498,7 +505,11 @@ ${resumeText}`;
 
     let bulletData;
     try {
-      const cleanedText = providerResult.text.replace(/```json\n?/g, '').replace(/```\n?/g, '').trim();
+      let cleanedText = providerResult.text.replace(/```json\n?/g, '').replace(/```\n?/g, '').trim();
+      const jsonMatch = cleanedText.match(/\{[\s\S]*\}/);
+      if (jsonMatch) {
+        cleanedText = jsonMatch[0];
+      }
       bulletData = JSON.parse(cleanedText);
     } catch (parseError) {
       console.error('Failed to parse bullet analysis JSON:', parseError);
@@ -554,7 +565,11 @@ ${resumeText}`;
 
     let comparisonData;
     try {
-      const cleanedText = providerResult.text.replace(/```json\n?/g, '').replace(/```\n?/g, '').trim();
+      let cleanedText = providerResult.text.replace(/```json\n?/g, '').replace(/```\n?/g, '').trim();
+      const jsonMatch = cleanedText.match(/\{[\s\S]*\}/);
+      if (jsonMatch) {
+        cleanedText = jsonMatch[0];
+      }
       comparisonData = JSON.parse(cleanedText);
     } catch (parseError) {
       console.error('Failed to parse comparison JSON:', parseError);
@@ -578,4 +593,3 @@ export const getVerbLists = () => ({
   powerVerbs: POWER_VERBS,
   weakVerbs: WEAK_VERBS
 });
-export { getSystemPrompt };
