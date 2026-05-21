@@ -17,7 +17,8 @@ import {
     Sun,
     Moon,
     Zap,
-    Rocket
+    Rocket,
+    Mail
 } from "lucide-react";
 import { useAuth } from "../context/AuthContext";
 import { useTheme } from "../context/ThemeContext";
@@ -50,6 +51,11 @@ const navLinks = [
         label: "Interview Prep",
         href: "/interview-prep",
         icon: <Zap className="w-5 h-5 flex-shrink-0" />,
+    },
+    {
+        label: "Email Generator",
+        href: "/email-generator",
+        icon: <Mail className="w-5 h-5 flex-shrink-0" />,
     },
     {
         label: "Fellowship",
