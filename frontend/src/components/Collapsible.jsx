@@ -1,7 +1,6 @@
-import { useEffect, useRef, useState } from "react";
-import { ChevronDown } from "lucide-react";
+import { useState, useRef, useEffect, useId } from "react";
 import { motion } from "framer-motion";
-import { cn } from "../lib/utils";
+import { ChevronDown } from "lucide-react";
 
 export default function Collapsible({
     title,
@@ -9,6 +8,7 @@ export default function Collapsible({
     children,
     icon,
     isOpen: controlledOpen,
+    onOpenChange,
 }) {
     const [internalOpen, setInternalOpen] = useState(defaultOpen);
 
@@ -16,18 +16,28 @@ export default function Collapsible({
     const open = isControlled ? controlledOpen : internalOpen;
 
     const contentRef = useRef(null);
+    const hasMeasuredRef = useRef(false);
+
     const [height, setHeight] = useState(0);
+
+    const contentId = useId();
+    const buttonId = useId();
 
     useEffect(() => {
         if (contentRef.current) {
             setHeight(contentRef.current.scrollHeight);
+            hasMeasuredRef.current = true;
         }
     }, [children, open]);
 
     const toggleOpen = () => {
+        const nextOpen = !open;
+
         if (!isControlled) {
-            setInternalOpen((prev) => !prev);
+            setInternalOpen(nextOpen);
         }
+
+        onOpenChange?.(nextOpen);
     };
 
     return (
@@ -35,6 +45,9 @@ export default function Collapsible({
             <button
                 type="button"
                 onClick={toggleOpen}
+                aria-expanded={open}
+                aria-controls={contentId}
+                id={buttonId}
                 className="w-full flex items-center justify-between px-4 py-4 text-left hover:bg-muted/50 transition-colors"
             >
                 <div className="flex items-center gap-3">
@@ -58,23 +71,28 @@ export default function Collapsible({
             </button>
 
             <motion.div
+                id={contentId}
+                role="region"
+                aria-labelledby={buttonId}
+                aria-hidden={!open}
                 initial={false}
                 animate={{
                     height: open ? height : 0,
                     opacity: open ? 1 : 0,
                 }}
-                transition={{
-                    duration: 0.25,
-                    ease: "easeInOut",
-                }}
+                transition={
+                    hasMeasuredRef.current
+                        ? {
+                              duration: 0.25,
+                              ease: "easeInOut",
+                          }
+                        : {
+                              duration: 0,
+                          }
+                }
                 className="overflow-hidden"
             >
-                <div
-                    ref={contentRef}
-                    className={cn(
-                        "px-4 pb-4 text-sm text-muted-foreground"
-                    )}
-                >
+                <div ref={contentRef} className="px-4 pb-4">
                     {children}
                 </div>
             </motion.div>
