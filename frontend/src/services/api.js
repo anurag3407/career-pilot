@@ -865,3 +865,27 @@ export const paymentApi = {
     return handleResponse(response)
   }
 }
+
+// ============ GITHUB API ============
+export const githubApi = {
+  // Get GitHub OAuth redirect URL
+  async getConnectUrl() {
+    const headers = await getAuthHeaders()
+    const response = await fetch(`${API_BASE}/github/connect`, {
+      method: 'GET',
+      headers
+    })
+    return handleResponse(response)
+  },
+
+  // Disconnect GitHub account
+  async disconnect() {
+    const headers = await getAuthHeaders()
+    const response = await fetch(`${API_BASE}/github/disconnect`, {
+      method: 'POST',
+      headers
+    })
+    return handleResponse(response)
+  }
+}
+
