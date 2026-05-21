@@ -11,19 +11,18 @@ export default function WorldMap({
   lineColor = "#6366f1",
 }) {
   const svgRef = useRef(null);
-const [isMounted, setIsMounted] = useState(false);
+  const [isMounted, setIsMounted] = useState(false);
 
-useEffect(() => {
-  setIsMounted(true);
-}, []);
+  useEffect(() => {
+    setIsMounted(true);
+  }, []);
 
-const { theme } = useTheme();
+  const { theme } = useTheme();
 
-const isDark = theme === "dark";
-const dotColor = isDark ? "#ffffff" : "#000000";
+  const isDark = theme === "dark";
+  const dotColor = isDark ? "#ffffff" : "#000000";
 
-const svgMap = useMemo(() => {
-
+  // Clean single useMemo block
   const svgMap = useMemo(() => {
     if (!isMounted) return null;
     if (cachedSvgMap) return cachedSvgMap;
@@ -41,7 +40,7 @@ const svgMap = useMemo(() => {
       console.error("WorldMap error:", error);
       return null;
     }
-}, [isMounted, dotColor]);
+  }, [isMounted, dotColor]);
 
   const projectPoint = (lat, lng) => {
     const x = (lng + 180) * (800 / 360);
