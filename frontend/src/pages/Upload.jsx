@@ -6,11 +6,12 @@ import { uploadApi, resumeApi } from '../services/api'
 import Button from '../components/Button'
 import DropZone from '../components/DropZone'
 import { FileText, Upload as UploadIcon, CheckCircle, Target, BarChart3, Zap, Linkedin, ArrowRight, User, Briefcase, GraduationCap } from 'lucide-react'
+import ATSPreCheck from '../components/ATSPreCheck'
 
 export default function Upload() {
   const navigate = useNavigate()
 
-  const [_file, setFile] = useState(null)
+const [file, setFile] = useState(null)
   const [loading, setLoading] = useState(false)
   const [uploadComplete, setUploadComplete] = useState(false)
 
@@ -178,6 +179,7 @@ export default function Upload() {
               maxSizeMB={5}
               multiple={false}
             />
+            <ATSPreCheck file={file} />
 
             {loading && (
               <div className="flex flex-col items-center justify-center gap-3 mt-6">
