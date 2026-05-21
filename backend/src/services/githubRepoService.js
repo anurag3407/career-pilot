@@ -16,9 +16,12 @@ try {
                 return Math.min(times * 100, 500);
             }
         });
-        redisClient.on('error', () => {});
+        redisClient.on('error', (err) => {
+            console.error('Redis error:', err.message);
+        });
     }
 } catch (error) {
+    console.error('Redis cache error:', error.message);
     redisClient = null;
 }
 
@@ -33,6 +36,7 @@ const getCached = async (key) => {
         const cached = await redisClient.get(key);
         return cached ? JSON.parse(cached) : null;
     } catch (error) {
+        console.error('Redis cache error:', error.message);
         return null;
     }
 };
@@ -42,6 +46,7 @@ const setCached = async (key, value, ttl = 3600) => {
     try {
         await redisClient.setex(key, ttl, JSON.stringify(value));
     } catch (error) {
+        console.error('Redis cache error:', error.message);
     }
 };
 
@@ -57,12 +62,13 @@ const handleGithubError = (error) => {
 };
 
 export const fetchUserRepos = async (accessToken) => {
-    const cacheKey = `github:userRepos:${accessToken.slice(-8)}`;
+    const cacheKey = `github:userRepos`;
     const cached = await getCached(cacheKey);
     if (cached) return cached;
 
     const allRepos = [];
     const maxPages = 3;
+    let hadError = false;
 
     for (let page = 1; page <= maxPages; page++) {
         try {
@@ -71,7 +77,7 @@ export const fetchUserRepos = async (accessToken) => {
                     Authorization: `Bearer ${accessToken}`
                 },
                 params: {
-                    per_page: 30,
+                    per_page: 100,
                     page,
                     type: 'public'
                 }
@@ -90,14 +96,17 @@ export const fetchUserRepos = async (accessToken) => {
 
             allRepos.push(...repos);
 
-            if (response.data.length < 30) break;
+            if (response.data.length < 100) break;
         } catch (error) {
+            hadError = true;
             if (page === 1) handleGithubError(error);
             break;
         }
     }
 
-    await setCached(cacheKey, allRepos);
+    if (!hadError) {
+        await setCached(cacheKey, allRepos);
+    }
     return allRepos;
 };
 
@@ -161,7 +170,9 @@ export const fetchRepoReadme = async (accessToken, owner, repo) => {
             }
         });
 
-        const content = Buffer.from(response.data.content, 'base64').toString('utf-8');
+        const content = response.data?.content
+            ? Buffer.from(response.data.content, 'base64').toString('utf-8')
+            : '';
         await setCached(cacheKey, content);
         return content;
     } catch (error) {
