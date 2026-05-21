@@ -15,13 +15,23 @@ export default function CodeBlock({
     const [copied, setCopied] = useState(false);
 
     useEffect(() => {
+        // safer + scoped highlight
         Prism.highlightAll();
-    }, [code]);
+    }, [code, language]);
 
     const handleCopy = async () => {
-        await navigator.clipboard.writeText(code);
-        setCopied(true);
-        setTimeout(() => setCopied(false), 1500);
+        try {
+            if (!navigator.clipboard) {
+                console.warn("Clipboard not supported");
+                return;
+            }
+
+            await navigator.clipboard.writeText(code);
+            setCopied(true);
+            setTimeout(() => setCopied(false), 1500);
+        } catch (err) {
+            console.error("Copy failed:", err);
+        }
     };
 
     return (
@@ -35,6 +45,7 @@ export default function CodeBlock({
 
                 {copyable && (
                     <button
+                        type="button"
                         onClick={handleCopy}
                         className="text-xs px-3 py-1 rounded-lg bg-primary/20 text-primary hover:bg-primary/30 transition"
                     >
