@@ -216,6 +216,14 @@ The **AI Resume Builder & Career Platform** is a comprehensive full-stack applic
 - Google Gemini API key
 - RapidAPI key (for job fetching)
 
+### Install Required Tools
+
+- [Node.js](https://nodejs.org/)
+- [MongoDB](https://www.mongodb.com/)
+- [Redis](https://redis.io/)
+- [Firebase Console](https://console.firebase.google.com/)
+- [RapidAPI](https://rapidapi.com/)
+
 ### Environment Variables
 
 #### Backend (.env)
