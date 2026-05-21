@@ -1,17 +1,26 @@
 import express from 'express';
 import { asyncHandler } from '../middleware/errorHandler.js';
 import { verifyToken } from '../middleware/auth.js';
-import { loginProtection } from '../middleware/loginProtection.js';
 import { saveUserToFirebase } from '../services/firebaseDataService.js';
 import { exchangeCodeForToken, getLinkedInAuthUrl, getLinkedInProfile } from '../services/linkedinService.js';
-import User from '../models/User.model.js';
+import User from '../models/User.model.js'; // Statically imported and referenced cleanly below
 import admin from '../config/firebase.js';
 import crypto from 'crypto';
 
 const router = express.Router();
 const stateStore = new Map();
-// Verify token endpoint — loginProtection tracks failed attempts per IP
-// and locks out after 5 consecutive failures for 15 minutes.
+
+// Periodically prune expired OAuth state entries every 5 minutes to prevent memory leaks
+setInterval(() => {
+  const now = Date.now();
+  for (const [state, expiry] of stateStore.entries()) {
+    if (now > expiry) {
+      stateStore.delete(state);
+    }
+  }
+}, 5 * 60 * 1000).unref();
+
+// Verify token endpoint
 router.post('/verify', verifyToken, asyncHandler(async (req, res) => {
   // Save/update user in Firebase on each verification
   try {
@@ -40,9 +49,10 @@ router.get('/profile', verifyToken, asyncHandler(async (req, res) => {
     user: req.user
   });
 }));
+
 // Get notification preferences
 router.get('/notification-preferences', verifyToken, asyncHandler(async (req, res) => {
-  const User = (await import('../models/User.model.js')).default;
+  // Fixed: Removed dynamic import block to avoid runtime overhead and variable shadowing
   let user = await User.findOne({ email: req.user.email });
   
   const preferences = user?.notificationPreferences || {
@@ -56,7 +66,7 @@ router.get('/notification-preferences', verifyToken, asyncHandler(async (req, re
 
 // Update notification preferences
 router.put('/notification-preferences', verifyToken, asyncHandler(async (req, res) => {
-  const User = (await import('../models/User.model.js')).default;
+  // Fixed: Removed redundant dynamic import statement
   const { jobAlerts, directMessages, proposalUpdates } = req.body;
 
   if (typeof jobAlerts !== 'boolean' || typeof directMessages !== 'boolean' || typeof proposalUpdates !== 'boolean') {
@@ -72,7 +82,7 @@ router.put('/notification-preferences', verifyToken, asyncHandler(async (req, re
   res.json({ success: true, message: 'Preferences updated!' });
 }));
 
-// Linkedin OAuth routes
+// LinkedIn OAuth routes
 router.get('/linkedin', (req, res) => {
   const state = crypto.randomBytes(16).toString('hex');
   stateStore.set(state, Date.now() + 10 * 60 * 1000);
@@ -90,8 +100,9 @@ router.get('/linkedin/callback', asyncHandler(async (req, res) => {
     return res.redirect(`${frontendUrl}/login?error=linkedin_denied`);
   }
 
-  const storedEnpiry = stateStore.get(state);
-  if(!storedEnpiry || Date.now() > storedEnpiry) {
+  // Fixed typo: renamed storedEnpiry to storedExpiry
+  const storedExpiry = stateStore.get(state);
+  if (!storedExpiry || Date.now() > storedExpiry) {
     stateStore.delete(state);
     return res.redirect(`${frontendUrl}/login?error=linkedin_invalid_state`);
   }
@@ -118,24 +129,23 @@ router.get('/linkedin/callback', asyncHandler(async (req, res) => {
   const { linkedinId, email, name, picture } = profile;
 
   let mongoUser = await User.findOne({ email });
-
   let firebaseUid;
 
-  if(mongoUser) {
-    if(!mongoUser.linkedinId) {
+  if (mongoUser) {
+    if (!mongoUser.linkedinId) {
       mongoUser.linkedinId = linkedinId;
       await mongoUser.save();
     }
 
     try {
       const firebaseUser = await admin.auth().getUserByEmail(email);
-      firebaseUid = firebaseUser.uid
+      firebaseUid = firebaseUser.uid;
     } catch {
       const newFirebaseUser = await admin.auth().createUser({
         email,
         displayName: name,
         photoURL: picture
-      })
+      });
 
       firebaseUid = newFirebaseUser.uid;
     }
@@ -144,14 +154,14 @@ router.get('/linkedin/callback', asyncHandler(async (req, res) => {
     try {
       firebaseUser = await admin.auth().getUserByEmail(email);
     } catch {
-      firebaseUser = await admin.auth().createUser({ email, displayName: name, photoURL: picture})
+      firebaseUser = await admin.auth().createUser({ email, displayName: name, photoURL: picture });
     }
     firebaseUid = firebaseUser.uid;
 
     await admin.auth().setCustomUserClaims(firebaseUid, {
       linkedinId,
       pendingOnboarding: true,
-    })
+    });
   }
 
   const customToken = await admin.auth().createCustomToken(firebaseUid, {
