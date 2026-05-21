@@ -1,24 +1,9 @@
-import Groq from 'groq-sdk';
-import dotenv from 'dotenv';
-
-dotenv.config();
-
-const groq = new Groq({ apiKey: process.env.GROQ_API_KEY });
+import { getDefaultProvider } from '../config/aiProviders.js';
 
 const generateQuestionId = () => `q_${Date.now()}_${Math.random().toString(36).substr(2, 9)}`;
 
-const callGroq = async (prompt) => {
-  const completion = await groq.chat.completions.create({
-    messages: [{ role: 'user', content: prompt }],
-    model: 'llama-3.3-70b-versatile',
-    temperature: 0.7,
-    max_tokens: 4096,
-    response_format: { type: 'json_object' }
-  });
-  return completion.choices[0]?.message?.content || '{}';
-};
-
-export const generateInterviewQuestions = async (preferences) => {
+export const generateInterviewQuestions = async (preferences, aiProvider) => {
+  const provider = aiProvider || getDefaultProvider();
   const { jobRole, industry, experienceLevel, questionCount = 10, resumeText } = preferences;
 
   // Build prompt based on whether resume is provided
@@ -83,7 +68,8 @@ Rules:
 6. Generate exactly ${questionCount} questions`;
   }
 
-  const text = await callGroq(prompt);
+  const result = await provider.generateContent(prompt);
+  const text = result.text || '{}';
   const cleanedText = text.replace(/```json\n?/g, '').replace(/```\n?/g, '').trim();
 
   let parsed;
@@ -108,7 +94,8 @@ Rules:
   }));
 };
 
-export const analyzeAnswer = async (question, transcript, duration) => {
+export const analyzeAnswer = async (question, transcript, duration, aiProvider) => {
+  const provider = aiProvider || getDefaultProvider();
   const prompt = `You are a senior interview coach at a top tech company, providing detailed professional feedback on a candidate's interview response.
 
 QUESTION ASKED: "${question}"
@@ -147,7 +134,8 @@ CRITICAL RULES:
 5. Detect filler words: "um", "uh", "like", "you know", "basically", "actually", "so", "I mean"
 6. Score fairly: 90+ = exceptional, 70-89 = good, 50-69 = needs work, <50 = significant gaps`;
 
-  const text = await callGroq(prompt);
+  const result = await provider.generateContent(prompt);
+  const text = result.text || '{}';
   const cleanedText = text.replace(/```json\n?/g, '').replace(/```\n?/g, '').trim();
 
   try {
@@ -162,7 +150,8 @@ CRITICAL RULES:
   }
 };
 
-export const generateOverallFeedback = async (interview) => {
+export const generateOverallFeedback = async (interview, aiProvider) => {
+  const provider = aiProvider || getDefaultProvider();
   const answeredQuestions = interview.answers.length;
   const totalQuestions = interview.questions.length;
 
@@ -202,7 +191,8 @@ Return ONLY valid JSON with this structure:
   }
 }`;
 
-  const text = await callGroq(prompt);
+  const result = await provider.generateContent(prompt);
+  const text = result.text || '{}';
   const cleanedText = text.replace(/```json\n?/g, '').replace(/```\n?/g, '').trim();
 
   let feedback;
