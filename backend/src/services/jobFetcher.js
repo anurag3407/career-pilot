@@ -37,6 +37,7 @@ const CHECK_FREQUENCY_INTERVAL_MS = {
     'every-2-days': 2 * 24 * 60 * 60 * 1000,
     weekly: 7 * 24 * 60 * 60 * 1000
 };
+<<<<<<< Updated upstream
 
 const getDueAlertQuery = (now = new Date(), extraFilters = {}) => {
     const thresholdFor = (frequency) =>
@@ -57,7 +58,45 @@ const getDueAlertQuery = (now = new Date(), extraFilters = {}) => {
         ]
     };
 };
+=======
+>>>>>>> Stashed changes
 
+const getDueAlertQuery = (now = new Date(), extraFilters = {}) => {
+    const thresholdFor = (frequency) =>
+        new Date(now.getTime() - CHECK_FREQUENCY_INTERVAL_MS[frequency]);
+
+    const knownFrequencies = Object.keys(CHECK_FREQUENCY_INTERVAL_MS);
+
+    return {
+        ...extraFilters,
+        $or: [
+            { lastCheckedAt: null },
+
+            ...knownFrequencies.map(checkFrequency => ({
+                checkFrequency,
+                lastCheckedAt: { $lte: thresholdFor(checkFrequency) }
+            })),
+
+            {
+                checkFrequency: { $exists: false },
+                lastCheckedAt: {
+                    $lte: thresholdFor(DEFAULT_CHECK_FREQUENCY)
+                }
+            },
+
+            // Unknown/invalid frequency -> fallback to default
+            {
+                checkFrequency: {
+                    $nin: [...knownFrequencies, null]
+                },
+                lastCheckedAt: {
+                    $lte: thresholdFor(DEFAULT_CHECK_FREQUENCY)
+                }
+            }
+        ]
+    };
+};
+    
 const persistQueuePause = async () => {
     const redis = getRedisConnection();
     if (!redis) {
@@ -504,15 +543,33 @@ export const scheduleAlertChecks = () => {
     // PRODUCTION MODE: Run daily and let each alert's frequency decide whether it is due.
     // Custom schedule can be set via ALERT_CRON_SCHEDULE env var
     const schedule = process.env.ALERT_CRON_SCHEDULE || '0 0 * * *';
+<<<<<<< Updated upstream
     
     console.log(`🏭 PRODUCTION MODE: Job alerts scheduled with cron: ${schedule}`);
+=======
+
+    console.log(`🏭 PRODUCTION MODE: Job alerts scheduled with cron: ${schedule}`);
+
+>>>>>>> Stashed changes
     cron.schedule(schedule, async () => {
-        console.log('\n⏰ [PROD] Scheduled job alert check starting...');
+         console.log('\n⏰ [PROD] Scheduled job alert check starting...');
 
         try {
+<<<<<<< Updated upstream
             const activeAlerts = await JobAlert.find(getDueAlertQuery(new Date(), { isActive: true }))
                 .select('_id userId userEmail userName title keywords location remoteOnly employmentType checkFrequency lastCheckedAt')
                 .lean();
+=======
+        // Get all active alerts that are due and have valid email addresses
+            const activeAlerts = await JobAlert.find(
+            getDueAlertQuery(new Date(), {
+                isActive: true,
+                userEmail: { $exists: true, $nin: ['', null] }
+            })
+        )
+            .select('_id userId userEmail userName title keywords location remoteOnly employmentType checkFrequency lastCheckedAt')
+            .lean();
+>>>>>>> Stashed changes
 
             if (!activeAlerts.length) {
                 console.log('📭 No active alerts to process');

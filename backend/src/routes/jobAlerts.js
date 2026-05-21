@@ -143,7 +143,11 @@ router.post('/', verifyToken, validate(createJobAlertSchema), asyncHandler(async
         salaryMin = null,
         salaryMax = null,
         employmentType = ['full-time'],
+<<<<<<< Updated upstream
         checkFrequency = 'every-2-days'
+=======
+        checkFrequency = 'every-2-days'  
+>>>>>>> Stashed changes
     } = req.body;
 
     // Validation
@@ -174,11 +178,15 @@ router.post('/', verifyToken, validate(createJobAlertSchema), asyncHandler(async
         salaryMin,
         salaryMax,
         employmentType,
+<<<<<<< Updated upstream
         checkFrequency,
+=======
+        checkFrequency,  
+>>>>>>> Stashed changes
         isActive: true
     });
 
-    // Save to Firebase
+    // Save to Firebase (checkFrequency is included via alert.toObject())
     try {
         await saveJobAlertToFirebase(alert.toObject());
     } catch (fbError) {
@@ -214,7 +222,11 @@ router.put('/:id', verifyToken, validate(updateJobAlertSchema), asyncHandler(asy
         salaryMin,
         salaryMax,
         employmentType,
+<<<<<<< Updated upstream
         checkFrequency,
+=======
+        checkFrequency,  
+>>>>>>> Stashed changes
         isActive
     } = req.body;
 
@@ -226,12 +238,16 @@ router.put('/:id', verifyToken, validate(updateJobAlertSchema), asyncHandler(asy
     if (salaryMin !== undefined) alert.salaryMin = salaryMin;
     if (salaryMax !== undefined) alert.salaryMax = salaryMax;
     if (employmentType !== undefined) alert.employmentType = employmentType;
+<<<<<<< Updated upstream
     if (checkFrequency !== undefined) alert.checkFrequency = checkFrequency;
+=======
+    if (checkFrequency !== undefined) alert.checkFrequency = checkFrequency;  
+>>>>>>> Stashed changes
     if (isActive !== undefined) alert.isActive = isActive;
 
     await alert.save();
 
-    // Update in Firebase
+    // Update in Firebase (checkFrequency is included via alert.toObject())
     try {
         await saveJobAlertToFirebase(alert.toObject());
     } catch (fbError) {
