@@ -10,7 +10,7 @@ To configure the CDN URL, set the `VITE_CDN_URL` environment variable before run
 
 Example using a `.env` file or command line:
 ```bash
-VITE_CDN_URL=https://cdn.example.com/ my-app npm run build
+VITE_CDN_URL=https://cdn.example.com/ npm run build
 ```
 Or in your `.env.production` file:
 ```env
