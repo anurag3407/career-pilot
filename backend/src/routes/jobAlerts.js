@@ -368,7 +368,7 @@ if (enableDebugRoutes) {
      * GET /api/job-alerts/debug/queue-status
      * Debug endpoint to check queue and worker status
      */
-    router.get('/debug/queue-status', asyncHandler(async (req, res) => {
+    router.get('/debug/queue-status', verifyToken, asyncHandler(async (req, res) => {
         const queue = getQueue();
         const stats = await getQueueStats();
         
@@ -407,7 +407,7 @@ if (enableDebugRoutes) {
      * POST /api/job-alerts/debug/process-now
      * Debug endpoint to manually process all active alerts immediately
      */
-    router.post('/debug/process-now', asyncHandler(async (req, res) => {
+    router.post('/debug/process-now', verifyToken, asyncHandler(async (req, res) => {
         const alerts = await JobAlert.find({ 
             isActive: true,
             userEmail: { $exists: true, $ne: '', $ne: null }
@@ -448,7 +448,7 @@ if (enableDebugRoutes) {
      * POST /api/job-alerts/debug/empty-queue
      * Empty all jobs from Redis queue with detailed reporting
      */
-    router.post('/debug/empty-queue', asyncHandler(async (req, res) => {
+    router.post('/debug/empty-queue', verifyToken, asyncHandler(async (req, res) => {
         console.log('\n🗑️  Request to empty Redis queue received...');
         
         const result = await clearQueue();
@@ -464,7 +464,7 @@ if (enableDebugRoutes) {
      * GET /api/job-alerts/debug/queue-details
      * Get detailed queue status with visual formatting
      */
-    router.get('/debug/queue-details', asyncHandler(async (req, res) => {
+    router.get('/debug/queue-details', verifyToken, asyncHandler(async (req, res) => {
         const stats = await displayQueueStatus();
         const failedJobs = await getFailedJobsInfo();
         

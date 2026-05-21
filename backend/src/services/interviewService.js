@@ -84,7 +84,11 @@ Rules:
   }
 
   const text = await callGroq(prompt);
-  const cleanedText = text.replace(/```json\n?/g, '').replace(/```\n?/g, '').trim();
+  let cleanedText = text.replace(/```json\n?/g, '').replace(/```\n?/g, '').trim();
+  const jsonMatch = cleanedText.match(/\{[\s\S]*\}/);
+  if (jsonMatch) {
+    cleanedText = jsonMatch[0];
+  }
 
   let parsed;
   try {
@@ -148,7 +152,11 @@ CRITICAL RULES:
 6. Score fairly: 90+ = exceptional, 70-89 = good, 50-69 = needs work, <50 = significant gaps`;
 
   const text = await callGroq(prompt);
-  const cleanedText = text.replace(/```json\n?/g, '').replace(/```\n?/g, '').trim();
+  let cleanedText = text.replace(/```json\n?/g, '').replace(/```\n?/g, '').trim();
+  const jsonMatch = cleanedText.match(/\{[\s\S]*\}/);
+  if (jsonMatch) {
+    cleanedText = jsonMatch[0];
+  }
 
   try {
     const parsed = JSON.parse(cleanedText);
@@ -203,7 +211,11 @@ Return ONLY valid JSON with this structure:
 }`;
 
   const text = await callGroq(prompt);
-  const cleanedText = text.replace(/```json\n?/g, '').replace(/```\n?/g, '').trim();
+  let cleanedText = text.replace(/```json\n?/g, '').replace(/```\n?/g, '').trim();
+  const jsonMatch = cleanedText.match(/\{[\s\S]*\}/);
+  if (jsonMatch) {
+    cleanedText = jsonMatch[0];
+  }
 
   let feedback;
   try {

@@ -22,14 +22,13 @@ const { theme } = useTheme();
 const isDark = theme === "dark";
 const dotColor = isDark ? "#ffffff" : "#000000";
 
-const svgMap = useMemo(() => {
-
   const svgMap = useMemo(() => {
     if (!isMounted) return null;
     if (cachedSvgMap) return cachedSvgMap;
 
     try {
       const map = new DottedMap({ height: 100, grid: "diagonal" });
+      // eslint-disable-next-line
       cachedSvgMap = map.getSVG({
         radius: 0.22,
         color: dotColor,
