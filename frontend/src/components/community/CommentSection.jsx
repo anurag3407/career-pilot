@@ -35,7 +35,7 @@ function CommentItem({ comment, currentUser, onReply, onLike, depth = 0 }) {
       await onReply(comment.id, replyContent.trim());
       setReplyContent('');
       setIsReplying(false);
-    } catch (error) {
+    } catch {
       toast.error('Failed to post reply');
     } finally {
       setIsSubmitting(false);
@@ -197,7 +197,7 @@ export default function CommentSection({ postId, currentUser, onCommentAdded }) 
       
       setTotal(data.pagination.total);
       setHasMore(data.comments.length === 20 && data.pagination.total > pageToFetch * 20);
-    } catch (error) {
+    } catch {
       toast.error('Failed to load comments');
     } finally {
       setLoading(false);
@@ -216,7 +216,7 @@ export default function CommentSection({ postId, currentUser, onCommentAdded }) 
       setTotal(prev => prev + 1);
       onCommentAdded?.();
       toast.success('Comment posted!');
-    } catch (error) {
+    } catch {
       toast.error('Failed to post comment');
     } finally {
       setIsSubmitting(false);
@@ -266,7 +266,7 @@ export default function CommentSection({ postId, currentUser, onCommentAdded }) 
       };
       
       setComments(updateCommentLike);
-    } catch (error) {
+    } catch {
       toast.error('Failed to like comment');
     }
   };

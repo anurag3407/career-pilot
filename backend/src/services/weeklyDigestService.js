@@ -16,11 +16,20 @@ import {
 const __filename = fileURLToPath(import.meta.url);
 const __dirname = path.dirname(__filename);
 
-const genAI = new GoogleGenerativeAI(process.env.GEMINI_API_KEY);
+let model = null;
 
-const model = genAI.getGenerativeModel({
-  model: 'gemini-2.5-flash'
-});
+const getModel = () => {
+  if (model) return model;
+  const geminiApiKey = process.env.GEMINI_API_KEY;
+  if (!geminiApiKey) {
+    const err = new Error('GEMINI_API_KEY is required for weekly digest');
+    err.statusCode = 503;
+    throw err;
+  }
+  const genAI = new GoogleGenerativeAI(geminiApiKey);
+  model = genAI.getGenerativeModel({ model: 'gemini-2.5-flash' });
+  return model;
+};
 
 const escapeHtml = (unsafe = '') => {
     return String(unsafe)
@@ -71,7 +80,7 @@ SKILL_RECOMMENDATIONS:
 Keep response concise.
 `;
 
-    const result = await model.generateContent(prompt);
+    const result = await getModel().generateContent(prompt);
 
     const response = await result.response;
 

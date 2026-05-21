@@ -17,7 +17,7 @@ import { formatDistanceToNow } from 'date-fns';
 
 const QUICK_REACTIONS = ['👍', '❤️', '😂', '🎉', '🔥', '👏'];
 
-export default function MessageBubble({ message, isOwn, showAvatar, channelId, onOptimisticReaction, onOptimisticEdit, onOptimisticDelete }) {
+export default function MessageBubble({ message, isOwn, showAvatar, onOptimisticReaction, onOptimisticEdit, onOptimisticDelete }) {
   const { addReaction, removeReaction, editMessage, deleteMessage } = useSocket();
   const { user } = useAuth();
   const [showActions, setShowActions] = useState(false);
@@ -194,7 +194,7 @@ export default function MessageBubble({ message, isOwn, showAvatar, channelId, o
   remarkPlugins={[remarkGfm]}
   disallowedElements={['img']}
   components={{
-    a: ({ node, ...props }) => (
+    a: ({ ...props }) => (
       <a {...props} target="_blank" rel="noopener noreferrer" />
     ),
   }}

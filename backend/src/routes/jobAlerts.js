@@ -408,7 +408,7 @@ if (enableDebugRoutes) {
     router.post('/debug/process-now', asyncHandler(async (req, res) => {
         const alerts = await JobAlert.find({ 
             isActive: true,
-            userEmail: { $exists: true, $ne: '', $ne: null }
+            userEmail: { $exists: true, $nin: ['', null] }
         }).lean();
         
         console.log(`\n🔧 DEBUG: Manually processing ${alerts.length} alerts...`);

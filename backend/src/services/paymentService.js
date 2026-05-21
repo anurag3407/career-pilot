@@ -1,11 +1,20 @@
 import Razorpay from 'razorpay';
 import crypto from 'crypto';
 
-// Initialize Razorpay instance with test/live keys from environment
-const razorpay = new Razorpay({
-    key_id: process.env.RAZORPAY_KEY_ID,
-    key_secret: process.env.RAZORPAY_KEY_SECRET
-});
+let razorpay = null;
+
+const getRazorpay = () => {
+  if (razorpay) return razorpay;
+  const keyId = process.env.RAZORPAY_KEY_ID;
+  const keySecret = process.env.RAZORPAY_KEY_SECRET;
+  if (!keyId || !keySecret) {
+    const err = new Error('RAZORPAY_KEY_ID and RAZORPAY_KEY_SECRET are required for payment features');
+    err.statusCode = 503;
+    throw err;
+  }
+  razorpay = new Razorpay({ key_id: keyId, key_secret: keySecret });
+  return razorpay;
+};
 
 /**
  * Create a Razorpay order for escrow payment
@@ -24,7 +33,7 @@ export const createOrder = async (amount, receipt, notes = {}) => {
     };
 
     try {
-        const order = await razorpay.orders.create(options);
+        const order = await getRazorpay().orders.create(options);
         console.log('📦 Razorpay order created:', order.id);
         return order;
     } catch (error) {
@@ -68,7 +77,7 @@ export const verifyPaymentSignature = (orderId, paymentId, signature) => {
  */
 export const getOrder = async (orderId) => {
     try {
-        return await razorpay.orders.fetch(orderId);
+        return await getRazorpay().orders.fetch(orderId);
     } catch (error) {
         console.error('❌ Failed to fetch order:', error);
         throw new Error(`Failed to fetch order: ${error.message}`);
@@ -82,11 +91,11 @@ export const getOrder = async (orderId) => {
  */
 export const getPayment = async (paymentId) => {
     try {
-        return await razorpay.payments.fetch(paymentId);
+        return await getRazorpay().payments.fetch(paymentId);
     } catch (error) {
         console.error('❌ Failed to fetch payment:', error);
         throw new Error(`Failed to fetch payment: ${error.message}`);
     }
 };
 
-export default razorpay;
+export default { getRazorpay, createOrder, verifyPaymentSignature, getOrder, getPayment };

@@ -496,6 +496,7 @@ function AddSectionPanel({ onAdd, onClose }) {
 
 // ─── Markdown export helper ────────────────────────────────────────────────
 
+// eslint-disable-next-line react-refresh/only-export-components
 export function sectionsToMarkdown(sections) {
   if (!sections?.length) return ''
   return sections

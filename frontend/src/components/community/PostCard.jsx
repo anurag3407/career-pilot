@@ -1,5 +1,4 @@
 import { useState } from 'react';
-import { useNavigate } from 'react-router-dom';
 import { formatDistanceToNow, format } from 'date-fns';
 import {
   Heart,
@@ -19,7 +18,6 @@ export default function PostCard({ post, currentUser, onLike, onCommentAdded, on
   const [showFullContent, setShowFullContent] = useState(false);
   const [showComments, setShowComments] = useState(false);
   const [commentCount, setCommentCount] = useState(post.commentCount || 0);
-  const navigate = useNavigate();
 
   const isOwn = post.author.uid === currentUser?.uid;
   const isLiked = post.likes?.some(l => l.uid === currentUser?.uid);

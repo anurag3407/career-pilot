@@ -7,6 +7,9 @@ import { extractAIProvider } from '../middleware/aiKey.js';
 import { asyncHandler, ApiError } from '../middleware/errorHandler.js';
 import { aiRateLimiter } from '../middleware/rateLimiter.js';
 
+// Import your brand new AI service
+import { generateQuestions } from '../services/ai/interviewQuestionGenerator.js';
+
 const router = express.Router();
 
 // Enhance resume with AI
@@ -264,6 +267,22 @@ router.post('/optimize-linkedin', verifyToken, aiRateLimiter, asyncHandler(async
 
   const result = await optimizeLinkedInProfile(normalizedProfile, normalizedRole);
   res.json(result);
+}));
+
+// NEW FEATURE: Generate Interview Questions from Portfolio Data
+router.get('/interview-prep-from-portfolio', verifyToken, extractAIProvider, aiRateLimiter, asyncHandler(async (req, res) => {
+  // Pull portfolio structure directly out of user request context or request parameters
+  const portfolioData = req.user?.portfolio || req.body?.portfolio || {};
+
+  const questions = await generateQuestions(portfolioData);
+
+  res.json({
+    success: true,
+    count: questions.length,
+    data: questions,
+    provider: req.aiProvider?.providerName || 'Local Engine',
+    providerSource: req.aiProviderSource,
+  });
 }));
 
 export default router;

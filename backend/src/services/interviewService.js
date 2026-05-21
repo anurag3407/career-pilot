@@ -3,12 +3,24 @@ import dotenv from 'dotenv';
 
 dotenv.config();
 
-const groq = new Groq({ apiKey: process.env.GROQ_API_KEY });
+let groq = null;
+
+const getGroq = () => {
+  if (groq) return groq;
+  const apiKey = process.env.GROQ_API_KEY;
+  if (!apiKey) {
+    const err = new Error('GROQ_API_KEY is required for interview features');
+    err.statusCode = 503;
+    throw err;
+  }
+  groq = new Groq({ apiKey });
+  return groq;
+};
 
 const generateQuestionId = () => `q_${Date.now()}_${Math.random().toString(36).substr(2, 9)}`;
 
 const callGroq = async (prompt) => {
-  const completion = await groq.chat.completions.create({
+  const completion = await getGroq().chat.completions.create({
     messages: [{ role: 'user', content: prompt }],
     model: 'llama-3.3-70b-versatile',
     temperature: 0.7,

@@ -59,7 +59,7 @@ export default function PostsFeed() {
     } else {
       setScheduledPosts([]);
     }
-  }, [user?.uid]);
+  }, [user]);
 
   // Subscribe to real-time updates
   useEffect(() => {
@@ -128,7 +128,7 @@ export default function PostsFeed() {
       }
       
       setHasMore(data.pagination.hasMore);
-    } catch (error) {
+    } catch {
       toast.error('Failed to load posts');
     } finally {
       setLoading(false);
@@ -203,7 +203,7 @@ export default function PostsFeed() {
     try {
       // Call API in background - socket will confirm the update
       await communityApi.toggleLikePost(postId);
-    } catch (error) {
+    } catch {
       // Revert on error - toggle back
       setPosts(prev => prev.map(post => {
         const pId = post.id || post._id;
