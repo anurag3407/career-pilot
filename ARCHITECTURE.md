@@ -627,7 +627,7 @@ Response Format:
 └────────────────────────────────────────────────────────────────────────────┘
 ```
 
-### API Routes Organization
+### 🛣️ API Routes Organization
 
 ```
 /api
