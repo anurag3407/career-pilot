@@ -68,10 +68,13 @@ const navLinks = [
         label: "Profile",
         href: "/profile",
         icon: <User className="w-5 h-5 flex-shrink-0" />,
+    },
+    {
         label: "Security",
         href: "/security",
         icon: <ShieldCheck className="w-5 h-5 flex-shrink-0" />,
-     {
+    },
+    {
         label: "Settings",
         href: "/settings",
         icon: <Settings className="w-5 h-5 flex-shrink-0" />,

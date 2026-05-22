@@ -31,6 +31,7 @@ import ChallengeProposals from './pages/fellowship/ChallengeProposals'
 import Verify from './pages/fellowship/Verify'
 import FellowshipMessages from './pages/fellowship/FellowshipMessages'
 import FellowshipChat from './pages/fellowship/FellowshipChat'
+import ProjectShowcase from './pages/fellowship/ProjectShowcase'
 import SecuritySettings from './pages/SecuritySettings'
 import LinkedInCallback from './pages/LinkedInCallback'
 
@@ -151,6 +152,7 @@ function App() {
                 <Route path="verify" element={<Verify />} />
                 <Route path="messages" element={<FellowshipMessages />} />
                 <Route path="messages/:roomId" element={<FellowshipChat />} />
+                <Route path="showcase" element={<ProjectShowcase />} />
               </Route>
 
               <Route path="*" element={<Navigate to="/" replace />} />
