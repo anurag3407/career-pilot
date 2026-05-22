@@ -3,6 +3,7 @@ import { Mail, Briefcase, FileText, Sparkles, Copy, Check } from 'lucide-react';
 import { motion } from 'framer-motion';
 import { enhanceApi } from '../services/api';
 import { Skeleton } from '../components/ui/Skeleton';
+import toast from 'react-hot-toast';
 
 const EmailGenerator = () => {
   const [formData, setFormData] = useState({ resume: '', jobDesc: '', tone: 'Professional' });
@@ -18,7 +19,7 @@ const EmailGenerator = () => {
       setResults(response);
     } catch (error) {
       console.error("Error generating emails:", error);
-      alert("Failed to generate emails. Please try again.");
+      toast.error("Failed to generate emails. Please try again.");
     } finally {
       setLoading(false);
     }

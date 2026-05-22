@@ -1,4 +1,5 @@
 import { useState } from 'react'
+import toast from 'react-hot-toast'
 
 const SAMPLE_HEADLINES = [
   'Frontend Developer | React & Tailwind Enthusiast',
@@ -23,7 +24,7 @@ export default function LinkedInHeadlineGenerator() {
 
   const copyHeadline = async (headline) => {
     await navigator.clipboard.writeText(headline)
-    alert('Headline copied!')
+    toast.success('Headline copied!')
   }
 
   return (

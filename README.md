@@ -18,7 +18,7 @@
 
 **An intelligent, AI-powered career platform that revolutionizes the job hunting experience through automated resume enhancement, intelligent job matching, AI mock interviews, corporate fellowships, and community-driven networking.**
 
-[Live Demo](https://careerpilotyyy.netlify.app/) • [Features](#-features) • [Tech Stack](#-tech-stack) • [Getting Started](#-getting-started) • [API Reference](./API_DOCS/README.md) • [Architecture](./ARCHITECTURE.md) • [Contributing](./CONTRIBUTION.md)
+[Features](#-features) • [Tech Stack](#-tech-stack) • [Getting Started](#-getting-started) • [API Reference](./API_DOCS/README.md) • [Architecture](./ARCHITECTURE.md) • [Contributing](./CONTRIBUTION.md)
 
 </div>
 
@@ -281,6 +281,14 @@ New contributors and reviewers should read **[ARCHITECTURE.md](./ARCHITECTURE.md
 - Firebase project with Firestore enabled
 - Google Gemini API key
 - RapidAPI key (for job fetching)
+
+### Install Required Tools
+
+- [Node.js](https://nodejs.org/)
+- [MongoDB](https://www.mongodb.com/)
+- [Redis](https://redis.io/)
+- [Firebase Console](https://console.firebase.google.com/)
+- [RapidAPI](https://rapidapi.com/)
 
 ### Environment Variables
 
@@ -1031,8 +1039,8 @@ This project is licensed under the MIT License - see the [LICENSE](LICENSE) file
 
 This project exists thanks to all the people who contribute. [Become a contributor!](./CONTRIBUTION.md)
 
-<a href="https://github.com/your-username/career-pilot/graphs/contributors">
-  <img src="https://contributors-img.web.app/image?repo=your-username/career-pilot" width="300" />
+<a href="https://github.com/ishwari418/career-pilot/graphs/contributors">
+  <img src="https://contributors-img.web.app/image?repo=ishwari418/career-pilot" width="300" />
 </a>
 
 ---

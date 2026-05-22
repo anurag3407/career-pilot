@@ -76,3 +76,5 @@ venv/
 node_modules/
 .env
 .env.*
+
+*issues
