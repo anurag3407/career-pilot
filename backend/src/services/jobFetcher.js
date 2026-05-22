@@ -253,20 +253,31 @@ export const processAlert = async (alertData) => {
                     error: emailError.message
                 });
 
-                // Log failed notifications
-                await Promise.all(jobsToSend.map(job =>
-                    NotificationLog.create({
-                        userId,
-                        alertId,
-                        jobListingId: job._id,
-                        externalJobId: job.externalId,
-                        emailStatus: 'failed',
-                        errorMessage: emailError.message
-                    }).catch(() => { })
-                ));
+                // Log failed notifications without swallowing persistence errors
+                const logResults = await Promise.allSettled(
+                    jobsToSend.map(job =>
+                        NotificationLog.create({
+                            userId,
+                            alertId,
+                            jobListingId: job._id,
+                            externalJobId: job.externalId,
+                            emailStatus: 'failed',
+                            errorMessage: emailError.message
+                        })
+                    )
+                );
 
-                // Do not proceed to notification persistence/update on email failure
-                return { success: false, error: 'Email send failed', newJobs: 0 };
+                logResults.forEach((result, index) => {
+                    if (result.status === 'rejected') {
+                        console.warn(
+                            `⚠️ Failed to write failure log for job ${index}:`,
+                            result.reason
+                        );
+                    }
+                });
+
+                // Rethrow so BullMQ can retry transient email failures
+                throw emailError;
             }
 
             // Second try: persist notifications and update alert stats
