@@ -96,6 +96,16 @@ class EventBus extends EventEmitter {
    * @param {Function} handler – async or sync callback
    */
   register(event, name, handler) {
+    if (!this._registry.has(event)) {
+      this._registry.set(event, []);
+    }
+
+    const registeredNames = this._registry.get(event);
+    if (registeredNames.includes(name)) {
+      console.warn(`⚠️ Handler already registered: "${name}" → ${event}`);
+      return;
+    }
+
     const wrappedHandler = async (payload) => {
       try {
         await handler(payload);
@@ -110,10 +120,7 @@ class EventBus extends EventEmitter {
     this.on(event, wrappedHandler);
 
     // Track registration for debugging
-    if (!this._registry.has(event)) {
-      this._registry.set(event, []);
-    }
-    this._registry.get(event).push(name);
+    registeredNames.push(name);
 
     console.log(`✅ Handler registered: "${name}" → ${event}`);
   }
