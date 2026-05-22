@@ -1,5 +1,6 @@
 import axios from "axios";
 import "dotenv/config";
+import { jobsScrapedCounter } from "../middleware/metrics.js";
 
 const url = "https://jsearch.p.rapidapi.com/search";
 
@@ -40,6 +41,21 @@ const fetchJobs = async (querystring) => {
     console.log('🔍 Fetching jobs with query:', querystring);
     const fetchWithRetry = () => axios.get(url, { headers, params: querystring });
     const response = await withRetry(fetchWithRetry);
+    
+    if (response?.data?.data && Array.isArray(response.data.data)) {
+      response.data.data.forEach(job => {
+        const publisher = (job.job_publisher || "").toLowerCase();
+        let source = "other";
+        if (publisher.includes("linkedin")) {
+          source = "linkedin";
+        } else if (publisher.includes("indeed")) {
+          source = "indeed";
+        } else {
+          source = publisher || "other";
+        }
+        jobsScrapedCounter.inc({ source });
+      });
+    }
     
     return {
       data: response.data.data,
