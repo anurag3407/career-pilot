@@ -581,7 +581,7 @@
 
 ## 🔌 API Architecture
 
-### RESTful Design Principles
+### 🌐 RESTful Design Principles
 
 ```
 ┌─────────────────────────────────────────────────────────────────────────────┐
