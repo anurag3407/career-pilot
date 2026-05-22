@@ -1,6 +1,7 @@
 import express from 'express';
 import { enhanceResume, generateSummary, suggestImprovements, analyzeATSScore, analyzeResumeComprehensive, analyzeBulletPoints, generateBeforeAfter, getVerbLists, getSystemPrompt } from '../config/langchain.js';
 import { generateEmails } from '../services/emailGeneratorService.js';
+import { predictTrajectory } from '../services/ai/careerTrajectory.js';
 import { optimizeLinkedInProfile } from '../services/linkedinOptimizerService.js';
 import { verifyToken } from '../middleware/auth.js';
 import { extractAIProvider } from '../middleware/aiKey.js';
@@ -9,15 +10,65 @@ import { aiRateLimiter } from '../middleware/rateLimiter.js';
 import { createSSEStream } from '../middleware/stream.js';
 import { getDefaultProvider } from '../config/aiProviders.js';
 import { validate } from '../middleware/validate.js';
+import { genAI } from '../config/genAI.js';
 import {
   enhanceResumeSchema,
   resumeTextJobRoleSchema,
   beforeAfterSchema,
   generateEmailSchema,
   optimizeLinkedInSchema,
+  resumeScoreSchema,
 } from '../schemas/enhance.schema.js';
 
 const router = express.Router();
+
+// Score a resume and return structured feedback
+// POST /api/enhance/resume-score
+router.post('/resume-score', verifyToken, aiRateLimiter, validate(resumeScoreSchema), asyncHandler(async (req, res) => {
+  const { resumeText } = req.body;
+
+  const prompt = `Analyze this resume and return a JSON object with exactly these fields:
+- overallScore (number 0-100)
+- sections: object with keys "summary", "skills", "experience", "education", "projects" — each containing:
+    - score (number 0-100)
+    - feedback (string, one concise sentence)
+- topSuggestions: array of exactly 3 strings, each a specific actionable improvement tip
+
+Resume:
+${resumeText}
+
+Return only valid JSON. No markdown fences, no extra text, no explanation.`;
+
+  try {
+    const model = genAI.getGenerativeModel({ model: 'gemini-1.5-flash' });
+    const result = await model.generateContent(prompt);
+    let text = result.response.text().trim();
+
+    // Strip markdown fences if model includes them despite instructions
+    if (text.startsWith('```')) {
+      text = text.replace(/^```(?:json)?\n?/, '').replace(/\n?```$/, '').trim();
+    }
+
+    let scoreData;
+    try {
+      scoreData = JSON.parse(text);
+    } catch (parseErr) {
+      console.error('Resume score JSON parse error:', parseErr, 'Raw text:', text);
+      throw new ApiError(502, 'AI returned an unexpected response. Please try again.');
+    }
+
+    res.json({
+      success: true,
+      data: scoreData,
+    });
+  } catch (error) {
+    if (error instanceof ApiError) throw error;
+    console.error('Resume scoring error:', error);
+    throw new ApiError(500, 'Failed to score resume. Please try again.');
+  }
+}));
+
+
 
 // Enhance resume with AI
 router.post('/', verifyToken, extractAIProvider, aiRateLimiter, validate(enhanceResumeSchema), asyncHandler(async (req, res) => {
@@ -355,6 +406,74 @@ router.post('/stream', verifyToken, extractAIProvider, aiRateLimiter, asyncHandl
     console.error('Streaming enhancement error:', error);
     stream.sendError(error.message || 'Failed to enhance resume');
     stream.endStream();
+  }
+}));
+
+
+
+
+// Predict career trajectories based on resume data
+// POST /api/enhance/career-trajectory
+router.post('/career-trajectory', verifyToken, extractAIProvider, aiRateLimiter, asyncHandler(async (req, res) => {
+  const { resumeData } = req.body;
+
+  if (!resumeData || typeof resumeData !== 'object') {
+    throw new ApiError(400, 'resumeData object is required');
+  }
+
+  const { currentRole, skills, yearsOfExperience, industry } = resumeData;
+
+  // At least one meaningful field must be present
+  const hasRole = currentRole && typeof currentRole === 'string' && currentRole.trim();
+  const hasSkills = Array.isArray(skills) && skills.length > 0;
+
+  if (!hasRole && !hasSkills) {
+    throw new ApiError(400, 'resumeData must include at least currentRole or skills');
+  }
+
+  // Sanitise inputs — never forward raw resumeText to the AI (token cost)
+  // Validate and sanitise each field to enforce strict token/cost bounds
+  const sanitisedData = {
+    // Cap role to 100 chars to prevent prompt injection / token bloat
+    currentRole: hasRole ? currentRole.trim().slice(0, 100) : 'Software Engineer',
+
+    // Filter to valid non-empty strings only, cap each skill at 50 chars, limit to 10 skills
+    skills: hasSkills
+      ? skills
+          .filter((s) => typeof s === 'string' && s.trim().length > 0)
+          .map((s) => s.trim().slice(0, 50))
+          .slice(0, 10)
+      : [],
+
+    // Reject NaN, Infinity, and negative values — clamp to safe range [0, 50]
+    yearsOfExperience:
+      typeof yearsOfExperience === 'number' &&
+      Number.isFinite(yearsOfExperience) &&
+      yearsOfExperience >= 0
+        ? Math.min(Math.floor(yearsOfExperience), 50)
+        : 0,
+
+    // Cap industry to 100 chars
+    industry: typeof industry === 'string' ? industry.trim().slice(0, 100) : 'Technology',
+  };
+
+  try {
+    const result = await predictTrajectory(sanitisedData, req.aiProvider);
+
+    res.json({
+      success: true,
+      data: {
+        ...result,
+        provider: req.aiProvider?.providerName || 'gemini',
+        providerSource: req.aiProviderSource,
+      },
+    });
+  } catch (error) {
+    console.error('Career trajectory prediction error:', error);
+    if (error.statusCode === 502) {
+      throw new ApiError(502, 'AI returned an unexpected response. Please try again.');
+    }
+    throw new ApiError(500, 'Failed to predict career trajectory. Please try again.');
   }
 }));
 
