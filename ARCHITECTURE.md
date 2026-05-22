@@ -775,7 +775,7 @@ Response Format:
 | **CORS** | cors middleware | Cross-origin protection |
 | **Firestore Rules** | Security rules | Database access control |
 
-### Security Middleware Stack
+### 🛡️ Security Middleware Stack
 
 ```javascript
 // Applied in order:
