@@ -171,7 +171,7 @@ router.post('/', verifyToken, validate(trackJobSchema), asyncHandler(async (req,
 router.put('/:trackerId', verifyToken, validate(updateTrackedJobSchema), asyncHandler(async (req, res) => {
   const { trackerId } = req.params;
   const userId = req.user.uid;
-  const { status, notes } = req.body;
+  const { status, notes, interviewDate } = req.body;
 
   const validStatuses = ['saved', 'applied', 'interviewing', 'offered', 'rejected'];
   if (status && !validStatuses.includes(status)) {
@@ -182,6 +182,12 @@ router.put('/:trackerId', verifyToken, validate(updateTrackedJobSchema), asyncHa
 
   if (status) {
     updateData.status = status;
+  }
+  if (interviewDate !== undefined) {
+    updateData.interviewDate = interviewDate ? new Date(interviewDate) : null;
+    // Reset reminder flags when date changes
+    updateData.reminderSent24h = false;
+    updateData.reminderSent1h = false;
   }
 
   if (notes) {

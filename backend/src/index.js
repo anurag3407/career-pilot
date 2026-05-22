@@ -20,6 +20,7 @@ import paymentRoutes from './routes/payments.js';
 import userProfileRoutes from './routes/userProfile.js';
 import twoFactorRoutes from './routes/twoFactor.js';
 import aiRoutes from './routes/ai.js';
+import { initInterviewReminderCron } from './services/interviewReminderService.js';
 
 import { globalErrorHandler } from './middleware/globalErrorHandler.js';
 import {
@@ -161,6 +162,12 @@ const startServer = async () => {
       console.log('💬 Community channels initialized');
     } catch (channelError) {
       console.warn('⚠️ Could not initialize default channels:', channelError.message);
+    }
+
+    try {
+      initInterviewReminderCron();
+    } catch (reminderError) {
+      console.warn('⚠️ Interview reminder cron initialization skipped:', reminderError.message);
     }
 
     try {

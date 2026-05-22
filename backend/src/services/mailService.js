@@ -541,5 +541,40 @@ export const sendVerificationEmail = async ({ email, code }) => {
   }
 };
 
+export const sendInterviewReminderEmail = async ({ email, jobTitle, company, interviewDate, hoursLeft }) => {
+  try {
+    const subject = `⏰ Interview Reminder: ${jobTitle} at ${company} in ${hoursLeft} hour${hoursLeft > 1 ? 's' : ''}`;
+    const html = `
+      <div style="font-family: Arial, sans-serif; max-width: 600px; margin: 0 auto;">
+        <h2 style="color: #4F46E5;">Interview Reminder 🎯</h2>
+        <p>Your interview is coming up in <strong>${hoursLeft} hour${hoursLeft > 1 ? 's' : ''}</strong>!</p>
+        <div style="background: #F3F4F6; padding: 16px; border-radius: 8px; margin: 16px 0;">
+          <p><strong>Role:</strong> ${escapeHtml(jobTitle)}</p>
+          <p><strong>Company:</strong> ${escapeHtml(company)}</p>
+          <p><strong>Scheduled:</strong> ${escapeHtml(interviewDate)}</p>
+        </div>
+        <p>Good luck! 🚀</p>
+        <p style="color: #6B7280; font-size: 12px;">— CareerPilot Team</p>
+      </div>
+    `;
+
+    if (isExternalServiceConfigured) {
+      return await callEmailService('/api/send-generic', { to: email, subject, html });
+    }
+
+    const transport = await initLocalTransporter();
+    const info = await transport.sendMail({
+      from: process.env.EMAIL_USER,
+      to: email,
+      subject,
+      html,
+    });
+    console.log('Interview reminder sent:', info.messageId);
+    return { success: true, messageId: info.messageId };
+  } catch (error) {
+    console.error('Error sending interview reminder:', error);
+    throw new Error(`Failed to send interview reminder: ${error.message}`);
+  }
+};
 
 export { handleBounceNotification } from "./bounceHandler.js";

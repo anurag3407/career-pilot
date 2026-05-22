@@ -8,6 +8,18 @@ const noteSchema = new mongoose.Schema({
     createdAt: {
         type: Date,
         default: Date.now
+    },
+    interviewDate: {
+        type: Date,
+        default: null
+    },
+    reminderSent24h: {
+        type: Boolean,
+        default: false
+    },
+    reminderSent1h: {
+        type: Boolean,
+        default: false
     }
 });
 
