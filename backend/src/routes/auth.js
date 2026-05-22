@@ -12,11 +12,23 @@ import User from '../models/User.model.js';
 import admin from '../config/firebase.js';
 import crypto from 'crypto';
 
-import { updateNotificationPrefsSchema } from '../schemas/auth.schema.js';
-
 const router = express.Router();
 const stateStore = new Map();
 
+// Example register endpoint with validation
+router.post('/register', validate(registerSchema), asyncHandler(async (req, res) => {
+  const { email, name, password } = req.body;
+  const existingUser = await User.findOne({ email });
+  if (existingUser) {
+    return res.status(400).json({ success: false, error: 'User already exists' });
+  }
+  const user = await User.create({ email, name, password });
+  res.status(201).json({
+    success: true,
+    message: 'User registered successfully',
+    user: { id: user._id, email: user.email, name: user.name }
+  });
+}));
 // Periodic sweep of expired stateStore entries every 10 minutes to prevent memory leaks
 setInterval(() => {
   const now = Date.now();
@@ -61,9 +73,8 @@ router.get('/profile', verifyToken, asyncHandler(async (req, res) => {
 
 // Get notification preferences
 router.get('/notification-preferences', verifyToken, asyncHandler(async (req, res) => {
-  const user = await User.findOne({ email: req.user.email });
   const User = (await import('../models/User.model.js')).default;
-  let user = await User.findOne({ email: req.user.email });
+  const user = await User.findOne({ email: req.user.email });
 
   const preferences = user?.notificationPreferences || {
     jobAlerts: true,
@@ -107,8 +118,7 @@ router.get('/linkedin/callback', asyncHandler(async (req, res) => {
 
   const storedExpiry = stateStore.get(state);
   if (!storedExpiry || Date.now() > storedExpiry) {
-  const storedEnpiry = stateStore.get(state);
-  if (!storedEnpiry || Date.now() > storedEnpiry) {
+
     stateStore.delete(state);
     return res.redirect(`${frontendUrl}/login?error=linkedin_invalid_state`);
   }

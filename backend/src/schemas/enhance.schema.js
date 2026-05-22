@@ -26,6 +26,7 @@ export const enhanceResumeSchema = z.object({
       skills: z.array(z.string()).optional().default([]),
       industry: z.string().optional().default(''),
       customInstructions: z.string().optional().default(''),
+      profileInfo: z.record(z.unknown()).optional().default({}),
     })
     .strict(),
 });
@@ -60,6 +61,15 @@ export const generateEmailSchema = z.object({
     .enum(['Professional', 'Friendly', 'Formal', 'Casual'])
     .optional()
     .default('Professional'),
+});
+
+/**
+ * POST /api/enhance/resume-score
+ */
+export const resumeScoreSchema = z.object({
+  resumeText: z
+    .string({ required_error: 'resumeText is required' })
+    .min(50, 'resumeText is too short to score meaningfully'),
 });
 
 /**

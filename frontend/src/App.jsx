@@ -85,6 +85,24 @@ function PublicRoute({ children }) {
   return children;
 }
 
+function CommandPaletteBindings({ isOpen, setIsOpen }) {
+  const { user } = useAuth();
+  useEffect(() => {
+    if (!user) return;
+    const handleKeyDown = (e) => {
+      if ((e.metaKey || e.ctrlKey) && e.key.toLowerCase() === 'k') {
+        e.preventDefault();
+        setIsOpen((prev) => !prev);
+      }
+    };
+    window.addEventListener('keydown', handleKeyDown);
+    return () => window.removeEventListener('keydown', handleKeyDown);
+  }, [user, setIsOpen]);
+
+  if (!user) return null;
+  return <CommandPalette isOpen={isOpen} setIsOpen={setIsOpen} />;
+}
+
 function App() {
   const [isCommandPaletteOpen, setIsCommandPaletteOpen] = useState(false);
   const isAuthenticated = localStorage.getItem('firebase:authUser') !== null;
