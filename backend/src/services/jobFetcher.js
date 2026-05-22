@@ -428,10 +428,7 @@ export const startWorker = () => {
     console.log('   Concurrency:', RATE_LIMIT_CONFIG.maxConcurrent);
     console.log('   Rate limit:', RATE_LIMIT_CONFIG.maxRequestsPerMinute, 'requests/minute');
     
-    // Force worker to check for jobs immediately
-    worker.run().catch(err => {
-        console.error('❌ Worker run error:', err.message);
-    });
+    // Worker is already autorunning.
     
     return worker;
 };

@@ -13,6 +13,7 @@ import {
     Clock,
     IndianRupee
 } from 'lucide-react'
+import { SkeletonChallengeGrid } from '../../components/ui/Skeleton'
 
 const CATEGORIES = [
     { id: 'all', label: 'All', icon: '🎯' },
@@ -182,11 +183,7 @@ export default function Challenges() {
             </div>
 
             {loading ? (
-                <div className="grid gap-4 sm:grid-cols-2 lg:grid-cols-3">
-                    {[...Array(6)].map((_, i) => (
-                        <div key={i} className="h-48 bg-background border border-border rounded-2xl animate-pulse" />
-                    ))}
-                </div>
+                <SkeletonChallengeGrid count={6} />
             ) : filteredChallenges.length > 0 ? (
                 <div className="grid gap-4 sm:grid-cols-2 lg:grid-cols-3">
                     {filteredChallenges.map(challenge => (

@@ -11,6 +11,10 @@ import { eventBus, Events } from './eventBus.js';
  * Call `initializeEventHandlers()` once at app startup (e.g. in index.js).
  */
 
+// ─── Utility Functions ──────────────────────────────────────────────────────────
+
+const maskId = (value) => (value ? `***${String(value).slice(-4)}` : 'unknown');
+
 // ═══════════════════════════════════════════════════════════════════════════════
 //  NOTIFICATION HANDLERS
 // ═══════════════════════════════════════════════════════════════════════════════
@@ -21,7 +25,7 @@ import { eventBus, Events } from './eventBus.js';
 const onResumeEnhancedNotification = async (payload) => {
   const { userId, resumeId, enhancementType } = payload;
 
-  console.log(`📧 [Notification] Resume enhanced for user ${userId}`);
+  console.log(`📧 [Notification] Resume enhanced for user ${maskId(userId)}`);
   console.log(`   Resume ID   : ${resumeId}`);
   console.log(`   Enhancement : ${enhancementType || 'general'}`);
 
@@ -36,7 +40,7 @@ const onResumeEnhancedNotification = async (payload) => {
 const onJobAlertTriggeredNotification = async (payload) => {
   const { userId, alertId, matchCount, jobTitle, userEmail } = payload;
 
-  console.log(`📧 [Notification] Job alert triggered for user ${userId}`);
+  console.log(`📧 [Notification] Job alert triggered for user ${maskId(userId)}`);
   console.log(`   Alert ID    : ${alertId}`);
   console.log(`   Matches     : ${matchCount || 0}`);
   console.log(`   Job Title   : ${jobTitle || 'N/A'}`);
@@ -53,9 +57,9 @@ const onJobAlertTriggeredNotification = async (payload) => {
 const onInterviewCompletedNotification = async (payload) => {
   const { userId, interviewId, overallScore, jobRole } = payload;
 
-  console.log(`📧 [Notification] Interview completed for user ${userId}`);
+  console.log(`📧 [Notification] Interview completed for user ${maskId(userId)}`);
   console.log(`   Interview ID : ${interviewId}`);
-  console.log(`   Score        : ${overallScore || 'pending'}`);
+  console.log(`   Score        : ${overallScore ?? 'pending'}`);
   console.log(`   Role         : ${jobRole || 'N/A'}`);
 
   // TODO: Integrate with mailService.js to send results summary
@@ -74,7 +78,7 @@ const onResumeEnhancedAnalytics = async (payload) => {
   const { userId, resumeId, enhancementType, _meta } = payload;
 
   console.log(`📊 [Analytics] resume_enhanced tracked`);
-  console.log(`   User ID     : ${userId}`);
+  console.log(`   User ID     : ${maskId(userId)}`);
   console.log(`   Timestamp   : ${_meta?.emittedAt}`);
 
   // TODO: Persist to analytics store / database
@@ -94,7 +98,7 @@ const onJobAlertTriggeredAnalytics = async (payload) => {
   const { userId, alertId, matchCount, _meta } = payload;
 
   console.log(`📊 [Analytics] job_alert_triggered tracked`);
-  console.log(`   User ID     : ${userId}`);
+  console.log(`   User ID     : ${maskId(userId)}`);
   console.log(`   Match Count : ${matchCount || 0}`);
   console.log(`   Timestamp   : ${_meta?.emittedAt}`);
 
@@ -115,8 +119,8 @@ const onInterviewCompletedAnalytics = async (payload) => {
   const { userId, interviewId, overallScore, jobRole, experienceLevel, _meta } = payload;
 
   console.log(`📊 [Analytics] interview_completed tracked`);
-  console.log(`   User ID     : ${userId}`);
-  console.log(`   Score       : ${overallScore || 'N/A'}`);
+  console.log(`   User ID     : ${maskId(userId)}`);
+  console.log(`   Score       : ${overallScore ?? 'N/A'}`);
   console.log(`   Role        : ${jobRole || 'N/A'}`);
   console.log(`   Timestamp   : ${_meta?.emittedAt}`);
 
