@@ -91,11 +91,37 @@ const mapEmploymentType = (types) => {
     return mappedTypes.join(',');
 };
 
+const isJobInSalaryRange = (job, salaryMin, salaryMax) => {
+    const salary = job?.salary || {};
+    const jobMin = Number.isFinite(salary.min) ? salary.min : null;
+    const jobMax = Number.isFinite(salary.max) ? salary.max : null;
+
+    if (salaryMin != null) {
+        if (jobMax != null && jobMax < salaryMin) {
+            return false;
+        }
+        if (jobMax == null && jobMin != null && jobMin < salaryMin) {
+            return false;
+        }
+    }
+
+    if (salaryMax != null) {
+        if (jobMin != null && jobMin > salaryMax) {
+            return false;
+        }
+        if (jobMin == null && jobMax != null && jobMax > salaryMax) {
+            return false;
+        }
+    }
+
+    return true;
+};
+
 /**
  * Process a single job alert - fetch jobs and send notifications
  */
 export const processAlert = async (alertData) => {
-    const { alertId, userId, userEmail, userName, title, keywords, location, remoteOnly, employmentType } = alertData;
+    const { alertId, userId, userEmail, userName, title, keywords, location, remoteOnly, employmentType, salaryMin, salaryMax } = alertData;
 
     console.log(`\n📧 [${new Date().toLocaleTimeString()}] Processing alert: ${title} for user ${userId}`);
     console.log(`   📬 Target Email: ${userEmail || 'NO EMAIL PROVIDED!'}`);
@@ -159,8 +185,15 @@ export const processAlert = async (alertData) => {
 
         // Process all fetched jobs (DISABLED DEDUPLICATION - ALWAYS SEND EMAILS)
         const jobsToSend = [];
+        let filteredJobs = 0;
 
         for (const job of fetchedJobs) {
+            if (!isJobInSalaryRange(job, salaryMin, salaryMax)) {
+                filteredJobs += 1;
+                console.log(`⚠️ Skipping job due to salary filter: ${job.title} at ${job.company}`);
+                continue;
+            }
+
             // Check if job already exists in our cache
             let existingJob = await JobListing.findOne({ externalId: job.externalId });
 
@@ -182,6 +215,10 @@ export const processAlert = async (alertData) => {
                 ...job,
                 _id: existingJob._id
             });
+        }
+
+        if (filteredJobs > 0) {
+            console.log(`📉 Filtered ${filteredJobs} jobs out of ${fetchedJobs.length} by salary range`);
         }
 
         console.log(`📧 Sending ${jobsToSend.length} jobs to user (deduplication DISABLED)`);
@@ -483,7 +520,7 @@ console.log(`🏭 PRODUCTION MODE: Job alerts scheduled with cron: ${schedule} (
         try {
             // Get all active alerts
             const activeAlerts = await JobAlert.find({ isActive: true })
-                .select('_id userId userEmail userName title keywords location remoteOnly employmentType')
+                .select('_id userId userEmail userName title keywords location remoteOnly employmentType salaryMin salaryMax')
                 .lean();
 
             if (!activeAlerts.length) {
@@ -503,7 +540,9 @@ console.log(`🏭 PRODUCTION MODE: Job alerts scheduled with cron: ${schedule} (
                 keywords: alert.keywords || [],
                 location: alert.location,
                 remoteOnly: alert.remoteOnly,
-                employmentType: alert.employmentType
+                employmentType: alert.employmentType,
+                salaryMin: alert.salaryMin ?? null,
+                salaryMax: alert.salaryMax ?? null
             }));
 
             // If queue available, add to queue, otherwise process directly
@@ -542,7 +581,7 @@ const runAlertCheck = async () => {
             isActive: true,
             userEmail: { $exists: true, $nin: ['', null] }
         })
-            .select('_id userId userEmail userName title keywords location remoteOnly employmentType')
+            .select('_id userId userEmail userName title keywords location remoteOnly employmentType salaryMin salaryMax')
             .lean();
 
         if (!activeAlerts.length) {
@@ -559,13 +598,13 @@ const runAlertCheck = async () => {
 
         // PROCESS DIRECTLY - Don't use queue/worker (they're broken)
         console.log('\n🚀 PROCESSING ALERTS DIRECTLY (BYPASSING QUEUE)...\n');
-        
+
         for (const alert of activeAlerts) {
             try {
                 console.log(`\n${'='.repeat(60)}`);
                 console.log(`📧 Processing: "${alert.title}" → ${alert.userEmail}`);
                 console.log(`${'='.repeat(60)}\n`);
-                
+
                 const result = await processAlert({
                     alertId: alert._id.toString(),
                     userId: alert.userId,
@@ -575,19 +614,21 @@ const runAlertCheck = async () => {
                     keywords: alert.keywords || [],
                     location: alert.location,
                     remoteOnly: alert.remoteOnly,
-                    employmentType: alert.employmentType
+                    employmentType: alert.employmentType,
+                    salaryMin: alert.salaryMin ?? null,
+                    salaryMax: alert.salaryMax ?? null
                 });
-                
+
                 console.log(`\n✅ Alert processed: ${result.newJobs || 0} jobs sent\n`);
-                
+
                 // Add delay between requests to respect rate limits
                 await new Promise(resolve => setTimeout(resolve, RATE_LIMIT_CONFIG.delayBetweenJobs));
-                
+
             } catch (err) {
                 console.error(`❌ Failed to process alert ${alert.title}:`, err.message);
             }
         }
-        
+
         console.log('\n✅ All alerts processed!\n');
 
     } catch (error) {
@@ -618,7 +659,9 @@ export const triggerAlertCheck = async (alertId) => {
         keywords: alert.keywords || [],
         location: alert.location,
         remoteOnly: alert.remoteOnly,
-        employmentType: alert.employmentType
+        employmentType: alert.employmentType,
+        salaryMin: alert.salaryMin ?? null,
+        salaryMax: alert.salaryMax ?? null
     });
 
     return result;
