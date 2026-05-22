@@ -1,4 +1,5 @@
 import { useState, useRef, useCallback } from 'react'
+import toast from 'react-hot-toast'
 import { cn } from '@/lib/utils'
 import Button from './Button'
 import DragHandle from './DragHandle'
@@ -349,7 +350,7 @@ function SectionCard({
                     onClick={() => {
                       onChange(enhancedData); // Apply changes to original state
                       setEnhancedData(null); // Close diff view
-                      alert("Successfully enhanced section!"); // Simple success toast/notification
+                      toast.success("Successfully enhanced section!");
                     }}
                     className="px-2.5 py-1 rounded bg-emerald-600 text-white text-xs font-medium hover:bg-emerald-700 transition-colors"
                   >

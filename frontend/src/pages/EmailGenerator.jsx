@@ -4,9 +4,10 @@ import { motion, AnimatePresence } from 'framer-motion';
 import { enhanceApi } from '../services/api';
 import toast from 'react-hot-toast';
 import { Skeleton } from '../components/ui/Skeleton';
+import toast from 'react-hot-toast';
 
 const EmailGenerator = () => {
-  const [formData, setFormData] = useState({ resume: '', jobDesc: '', tone: 'Professional & Formal', jobTitle: '' });
+  const [formData, setFormData] = useState({ resume: '', jobDesc: '', tone: 'Professional', jobTitle: '' });
   const [results, setResults] = useState(null);
   const [loading, setLoading] = useState(false);
   const [copiedIndex, setCopiedIndex] = useState(null);
@@ -31,34 +32,44 @@ const EmailGenerator = () => {
   };
 
   const handleGenerate = async (e) => {
-    e.preventDefault();
-    setLoading(true);
-    try {
-      const response = await enhanceApi.generateEmail(formData);
-      setResults(response);
+  e.preventDefault();
+  setLoading(true);
+  try {
+    const response = await enhanceApi.generateEmail(formData);
+    setResults(response);
+    toast.success('Emails generated!');
 
-      // Auto-save to history
+    try {
       await enhanceApi.saveEmail({
         jobTitle: formData.jobTitle,
         tone: formData.tone,
         subjectLines: response.subjectLines,
         variants: response.variants,
       });
-      fetchHistory();
-      toast.success('Emails generated and saved!');
-    } catch (error) {
-      console.error('Error generating emails:', error);
-      toast.error('Failed to generate emails. Please try again.');
-    } finally {
-      setLoading(false);
+      await fetchHistory();
+      toast.success('Saved to history.');
+    } catch (saveError) {
+      console.error('Failed to save history:', saveError);
+      toast.error('Emails generated, but failed to save history.');
     }
-  };
-
-  const copyToClipboard = (text, index) => {
-    navigator.clipboard.writeText(text);
-    setCopiedIndex(index);
-    toast.success('Copied to clipboard!');
-    setTimeout(() => setCopiedIndex(null), 2000);
+  } catch (error) {
+    console.error('Error generating emails:', error);
+    toast.error('Failed to generate emails. Please try again.');
+  } finally {
+    setLoading(false);
+  }
+};
+  
+  const copyToClipboard = async (text, index) => {
+    try {
+      await navigator.clipboard.writeText(text);
+      setCopiedIndex(index);
+      toast.success('Copied to clipboard!');
+      setTimeout(() => setCopiedIndex(null), 2000);
+    } catch (error) {
+      console.error('Clipboard copy failed:', error);
+      toast.error('Copy failed. Please copy manually.');
+    }
   };
 
   const downloadEmail = (text, index) => {
@@ -155,10 +166,10 @@ const EmailGenerator = () => {
                 value={formData.tone}
                 onChange={(e) => setFormData({ ...formData, tone: e.target.value })}
               >
-                <option value="Professional & Formal">Professional & Formal</option>
-                <option value="Enthusiastic & Passionate">Enthusiastic & Passionate</option>
-                <option value="Direct & Concise">Direct & Concise</option>
-                <option value="Creative & Unique">Creative & Unique</option>
+                <option value="Professional">Professional</option>
+                <option value="Friendly">Friendly</option>
+                <option value="Formal">Formal</option>
+                <option value="Casual">Casual</option>    
               </select>
             </div>
 
@@ -194,14 +205,18 @@ const EmailGenerator = () => {
                   <p className="text-muted-foreground text-sm text-center py-4">No saved emails yet. Generate your first one!</p>
                 ) : (
                   history.map((item) => (
-                    <div key={item._id} className="p-4 bg-muted/30 rounded-xl border border-border hover:border-primary/40 transition cursor-pointer"
-                      onClick={() => { setResults({ subjectLines: item.subjectLines, variants: item.variants }); setShowHistory(false); }}>
+                    <button
+                      key={item._id}
+                      type="button"
+                      className="w-full text-left p-4 bg-muted/30 rounded-xl border border-border hover:border-primary/40 transition cursor-pointer"
+                      onClick={() => { setResults({ subjectLines: item.subjectLines, variants: item.variants }); setShowHistory(false); }}
+                    >
                       <div className="flex items-center justify-between">
                         <p className="font-semibold text-foreground text-sm">{item.jobTitle || 'Untitled'}</p>
                         <span className="text-xs text-muted-foreground">{new Date(item.createdAt).toLocaleDateString()}</span>
                       </div>
                       <p className="text-xs text-muted-foreground mt-1">Tone: {item.tone} · {item.variants?.length || 0} variants</p>
-                    </div>
+                    </button>
                   ))
                 )}
               </div>

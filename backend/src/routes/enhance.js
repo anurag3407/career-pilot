@@ -11,15 +11,65 @@ import { aiRateLimiter } from '../middleware/rateLimiter.js';
 import { createSSEStream } from '../middleware/stream.js';
 import { getDefaultProvider } from '../config/aiProviders.js';
 import { validate } from '../middleware/validate.js';
+import { genAI } from '../config/genAI.js';
 import {
   enhanceResumeSchema,
   resumeTextJobRoleSchema,
   beforeAfterSchema,
   generateEmailSchema,
   optimizeLinkedInSchema,
+  resumeScoreSchema,
 } from '../schemas/enhance.schema.js';
 
 const router = express.Router();
+
+// Score a resume and return structured feedback
+// POST /api/enhance/resume-score
+router.post('/resume-score', verifyToken, aiRateLimiter, validate(resumeScoreSchema), asyncHandler(async (req, res) => {
+  const { resumeText } = req.body;
+
+  const prompt = `Analyze this resume and return a JSON object with exactly these fields:
+- overallScore (number 0-100)
+- sections: object with keys "summary", "skills", "experience", "education", "projects" — each containing:
+    - score (number 0-100)
+    - feedback (string, one concise sentence)
+- topSuggestions: array of exactly 3 strings, each a specific actionable improvement tip
+
+Resume:
+${resumeText}
+
+Return only valid JSON. No markdown fences, no extra text, no explanation.`;
+
+  try {
+    const model = genAI.getGenerativeModel({ model: 'gemini-1.5-flash' });
+    const result = await model.generateContent(prompt);
+    let text = result.response.text().trim();
+
+    // Strip markdown fences if model includes them despite instructions
+    if (text.startsWith('```')) {
+      text = text.replace(/^```(?:json)?\n?/, '').replace(/\n?```$/, '').trim();
+    }
+
+    let scoreData;
+    try {
+      scoreData = JSON.parse(text);
+    } catch (parseErr) {
+      console.error('Resume score JSON parse error:', parseErr, 'Raw text:', text);
+      throw new ApiError(502, 'AI returned an unexpected response. Please try again.');
+    }
+
+    res.json({
+      success: true,
+      data: scoreData,
+    });
+  } catch (error) {
+    if (error instanceof ApiError) throw error;
+    console.error('Resume scoring error:', error);
+    throw new ApiError(500, 'Failed to score resume. Please try again.');
+  }
+}));
+
+
 
 // Enhance resume with AI
 router.post('/', verifyToken, extractAIProvider, aiRateLimiter, validate(enhanceResumeSchema), asyncHandler(async (req, res) => {
@@ -362,13 +412,26 @@ router.post('/stream', verifyToken, extractAIProvider, aiRateLimiter, asyncHandl
 
 // Save generated email to history
 router.post('/emails/save', verifyToken, asyncHandler(async (req, res) => {
-  const { jobTitle, tone, subjectLines, variants } = req.body;
+  const {
+    jobTitle = '',
+    tone = 'Professional',
+    subjectLines = [],
+    variants = [],
+  } = req.body || {};
+
+  if (!Array.isArray(subjectLines) || !subjectLines.every((s) => typeof s === 'string')) {
+    throw new ApiError(400, 'subjectLines must be an array of strings');
+  }
+  if (!Array.isArray(variants) || !variants.every((v) => typeof v === 'string')) {
+    throw new ApiError(400, 'variants must be an array of strings');
+  }
+
   const saved = await GeneratedEmail.create({
     userId: req.user.uid,
-    jobTitle: jobTitle || '',
-    tone: tone || 'Professional',
-    subjectLines: subjectLines || [],
-    variants: variants || [],
+    jobTitle,
+    tone,
+    subjectLines,
+    variants,
   });
   res.json({ success: true, data: saved });
 }));
