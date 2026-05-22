@@ -928,7 +928,7 @@ Pipeline Stages:
 
 ## 📈 Scalability Design
 
-### Horizontal Scaling Strategy
+### 📈 Horizontal Scaling Strategy
 
 ```
 ┌─────────────────────────────────────────────────────────────────────────────┐
