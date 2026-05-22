@@ -368,7 +368,7 @@
 
 ## 🗃️ Database Schema
 
-### MongoDB Collections
+### 🍃 MongoDB Collections
 
 #### Resume Collection
 ```javascript
