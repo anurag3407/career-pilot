@@ -156,6 +156,10 @@ export default function Register() {
   const handleLinkedInSignup = async () => {
     setLoading(true)
     try {
+      if (!loginWithLinkedIn) {
+      toast.error('LinkedIn signup is not configured')
+      return
+    }
       await loginWithLinkedIn()
       toast.success('Welcome!')
       navigate('/dashboard')
@@ -372,7 +376,7 @@ export default function Register() {
                         type="button"
                         onClick={() => setShowPassword(p => !p)}
                         className="absolute right-3 top-9 text-muted-foreground hover:text-foreground transition-colors text-xs select-none"
-                        tabIndex={-1}
+
                       >
                         {showPassword ? 'Hide' : 'Show'}
                       </button>
@@ -416,7 +420,7 @@ export default function Register() {
                       type="button"
                       onClick={() => setShowConfirmPassword(p => !p)}
                       className="absolute right-3 top-9 text-muted-foreground hover:text-foreground transition-colors text-xs select-none"
-                      tabIndex={-1}
+                     
                     >
                       {showConfirmPassword ? 'Hide' : 'Show'}
                     </button>

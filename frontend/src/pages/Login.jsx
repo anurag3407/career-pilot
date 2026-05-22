@@ -27,7 +27,10 @@ function GlowCard({ value, label }) {
     <div
       ref={cardRef}
       onMouseMove={handleMouseMove}
-      onMouseLeave={() => setGlow(p => ({ ...p, opacity: 0 }))}
+      onMouseLeave={(e) => {
+      setGlow(p => ({ ...p, opacity: 0 }));
+      e.currentTarget.style.transform = 'translateY(0)';
+      }}
       className="relative rounded-2xl overflow-hidden p-4 cursor-default"
       style={{
         border: '1px solid rgba(255,255,255,0.08)',
