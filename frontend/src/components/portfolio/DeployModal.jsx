@@ -3,14 +3,15 @@ import { motion, AnimatePresence } from 'framer-motion';
 import { X, Globe, Copy, Check, ExternalLink, Loader2, Sparkles, AlertCircle, Terminal } from 'lucide-react';
 import toast from 'react-hot-toast';
 import confetti from 'canvas-confetti';
+import { auth } from '../../config/firebase';
 
-// Hey there, code reviewer or fellow builder! 
+// Hey there, code reviewer or fellow builder!
 // We defined some custom metadata here for each hosting platform.
 // Adding a "tag" adds that handcrafted touch that makes standard cards feel alive.
 const PROVIDERS = [
-  { id: 'github', name: 'GitHub Pages', desc: 'Deploy to your GitHub account repository free.', icon: '⚡', tag: 'EASY & FREE' },
-  { id: 'cloudflare', name: 'Cloudflare Pages', desc: 'Fast, secure hosting with global CDN.', icon: '☁️', tag: 'RECOMMENDED' },
-  { id: 'netlify', name: 'Netlify', desc: 'Instant serverless deploys and form handling.', icon: '◈', tag: 'STABLE' }
+  { id: 'github', name: 'GitHub Pages', desc: 'Deploy to your GitHub account repository free.', icon: '⚡', tag: 'EASY & FREE', needsToken: true },
+  { id: 'cloudflare', name: 'Cloudflare Pages', desc: 'Fast, secure hosting with global CDN.', icon: '☁️', tag: 'RECOMMENDED', needsToken: false },
+  { id: 'netlify', name: 'Netlify', desc: 'Instant serverless deploys and form handling.', icon: '◈', tag: 'STABLE', needsToken: true },
 ];
 
 // High fidelity build console log stream.
@@ -34,6 +35,29 @@ const BUILD_LOGS = [
   { text: "✓ pipeline deployment successfully finalized!", type: "success" }
 ];
 
+function TokenStatusChip({ status }) {
+  if (!status) return null;
+  if (status === 'checking') {
+    return (
+      <span className="inline-flex items-center gap-1 px-2 py-0.5 rounded-full text-[9px] font-mono font-bold bg-zinc-800 text-zinc-400">
+        <Loader2 className="w-2.5 h-2.5 animate-spin" /> checking…
+      </span>
+    );
+  }
+  if (status.valid) {
+    return (
+      <span className="inline-flex items-center gap-1 px-2 py-0.5 rounded-full text-[9px] font-mono font-bold bg-emerald-500/10 text-emerald-400 border border-emerald-500/30">
+        ✓ connected
+      </span>
+    );
+  }
+  return (
+    <span className="inline-flex items-center gap-1 px-2 py-0.5 rounded-full text-[9px] font-mono font-bold bg-rose-500/10 text-rose-400 border border-rose-500/30" title={status.reason}>
+      ✕ invalid
+    </span>
+  );
+}
+
 export default function DeployModal({ isOpen, onClose, portfolioTitle = "My Portfolio" }) {
   // Step workflow: select -> loading -> success -> error
   const [step, setStep] = useState('select');
@@ -42,7 +66,11 @@ export default function DeployModal({ isOpen, onClose, portfolioTitle = "My Port
   const [deployedUrl, setDeployedUrl] = useState('');
   const [copied, setCopied] = useState(false);
   const [errorMessage, setErrorMessage] = useState('');
-  
+
+  // Token validation state — one entry per provider that needs a user-supplied token
+  const [tokenInputs, setTokenInputs] = useState({ github: '', netlify: '' });
+  const [tokenStatuses, setTokenStatuses] = useState({});
+
   // Refs for tracking async operations.
   // Crucial UX fix: If a user closes the modal before the deployment simulator finishes,
   // we MUST cancel all timeouts to avoid state updates on unmounted components (memory leaks).
@@ -73,7 +101,7 @@ export default function DeployModal({ isOpen, onClose, portfolioTitle = "My Port
     if (step === 'loading') {
       setVisibleLogs([]);
       let logIndex = 0;
-      
+
       const streamLogs = () => {
         if (logIndex < BUILD_LOGS.length) {
           const timestamp = new Date().toTimeString().split(' ')[0];
@@ -100,7 +128,7 @@ export default function DeployModal({ isOpen, onClose, portfolioTitle = "My Port
   /**
    * Confetti Burst Celebration!
    * We set the origin coordinate to (0.2, 0.8) so the confetti bursts frame the modal
-   * beautifully on the sides, instead of bursting directly over the main actions 
+   * beautifully on the sides, instead of bursting directly over the main actions
    * (which blocks the user's cursor from clicking "View Portfolio"). UX gotcha solved!
    */
   const triggerConfetti = () => {
@@ -120,7 +148,7 @@ export default function DeployModal({ isOpen, onClose, portfolioTitle = "My Port
       }
 
       const particleCount = 50 * (timeLeft / duration);
-      
+
       confetti({
         ...defaults,
         particleCount,
@@ -135,16 +163,55 @@ export default function DeployModal({ isOpen, onClose, portfolioTitle = "My Port
   };
 
   /**
+   * Validates a provider token against the backend before allowing deployment.
+   * Never caches the result — each call makes a fresh API request.
+   */
+  const handleCheckToken = async (providerId) => {
+    setTokenStatuses((prev) => ({ ...prev, [providerId]: 'checking' }));
+    try {
+      const user = auth.currentUser;
+      if (!user) throw new Error('Not authenticated');
+      const idToken = await user.getIdToken();
+
+      const provider = PROVIDERS.find((p) => p.id === providerId);
+      const res = await fetch('/api/portfolio/validate-token', {
+        method: 'POST',
+        headers: {
+          Authorization: `Bearer ${idToken}`,
+          'Content-Type': 'application/json',
+        },
+        body: JSON.stringify({
+          provider: providerId,
+          token: provider?.needsToken ? tokenInputs[providerId] : undefined,
+        }),
+      });
+
+      const data = await res.json();
+      if (!res.ok) throw new Error(data.error || 'Request failed');
+      setTokenStatuses((prev) => ({ ...prev, [providerId]: data }));
+
+      if (data.valid) {
+        toast.success(`${PROVIDERS.find((p) => p.id === providerId)?.name} token verified!`);
+      } else {
+        toast.error(data.reason || 'Token is invalid.');
+      }
+    } catch (err) {
+      setTokenStatuses((prev) => ({ ...prev, [providerId]: { valid: false, reason: err.message } }));
+      toast.error(err.message || 'Token check failed.');
+    }
+  };
+
+  /**
    * Simulates the build & publish loop.
    * 3.5 seconds gives the user just enough time to watch the build terminal telemetry.
    * A 92% success rate keeps simulation organic and realistic.
    */
   const handleDeploy = () => {
     setStep('loading');
-    
+
     deployTimeoutRef.current = setTimeout(() => {
       const isSuccess = Math.random() < 0.92;
-      
+
       if (isSuccess) {
         // Generate a fun mock live domain name
         const username = "portfolio-" + Math.floor(Math.random() * 899 + 100);
@@ -155,13 +222,13 @@ export default function DeployModal({ isOpen, onClose, portfolioTitle = "My Port
           .replace(/[^a-z0-9]/g, '-')
           .replace(/-+/g, '-')
           .replace(/^-|-$/g, '') || 'portfolio';
-        
+
         const url = selectedProvider === 'github'
           ? `https://${username}.github.io/${slug}`
           : selectedProvider === 'cloudflare'
             ? `https://${slug}.pages.dev`
             : `https://${slug}.netlify.app`;
-             
+
         setDeployedUrl(url);
         setStep('success');
         triggerConfetti();
@@ -203,6 +270,10 @@ export default function DeployModal({ isOpen, onClose, portfolioTitle = "My Port
     onClose();
   };
 
+  // Deploy button is enabled only when the selected provider's token is validated
+  const selectedProviderMeta = PROVIDERS.find((p) => p.id === selectedProvider);
+  const isTokenValidated = !selectedProviderMeta?.needsToken || tokenStatuses[selectedProvider]?.valid === true;
+
   if (!isOpen) return null;
 
   return (
@@ -217,9 +288,9 @@ export default function DeployModal({ isOpen, onClose, portfolioTitle = "My Port
           className="fixed inset-0 bg-zinc-950/80 backdrop-blur-md"
         />
 
-        {/* 
+        {/*
           Modal Window Container
-          Added a gorgeous asymmetrical floating developer pipeline badge, 
+          Added a gorgeous asymmetrical floating developer pipeline badge,
           custom premium box shadow, and sleek dark borders.
         */}
         <motion.div
@@ -247,7 +318,7 @@ export default function DeployModal({ isOpen, onClose, portfolioTitle = "My Port
                 </p>
               </div>
             </div>
-            <button 
+            <button
               onClick={handleClose}
               aria-label="Close Deploy Dialog"
               className="p-2 hover:bg-zinc-800/80 rounded-xl transition-colors cursor-pointer text-zinc-400 hover:text-zinc-200"
@@ -271,44 +342,88 @@ export default function DeployModal({ isOpen, onClose, portfolioTitle = "My Port
                   <p className="text-xs text-zinc-400 text-left leading-relaxed">
                     Choose your cloud deployment target. We will compile your clean production assets, bundle stylesheets, and provision a live SSL subdomain.
                   </p>
-                  
-                  {/* Accessible Provider Buttons */}
+
+                  {/* Provider Cards */}
                   <div className="space-y-2.5">
                     {PROVIDERS.map((provider) => {
                       const isSelected = selectedProvider === provider.id;
+                      const tokenStatus = tokenStatuses[provider.id];
                       return (
-                        <button
-                          type="button"
+                        <div
                           key={provider.id}
-                          onClick={() => setSelectedProvider(provider.id)}
-                          className={`group w-full text-left flex items-start gap-4 p-4 rounded-2xl border transition-all duration-300 cursor-pointer select-none focus:outline-none focus:ring-2 focus:ring-indigo-500/40 ${
-                            isSelected 
-                              ? 'bg-indigo-950/20 border-indigo-500 shadow-lg shadow-indigo-950/20' 
+                          className={`group w-full text-left rounded-2xl border transition-all duration-300 select-none ${
+                            isSelected
+                              ? 'bg-indigo-950/20 border-indigo-500 shadow-lg shadow-indigo-950/20'
                               : 'bg-zinc-900/40 border-zinc-800 hover:border-zinc-700 hover:bg-zinc-800/40'
                           }`}
                         >
-                          <div className={`w-10 h-10 rounded-xl flex items-center justify-center text-xl font-bold flex-shrink-0 transition-transform group-hover:scale-105 ${
-                            isSelected ? 'bg-indigo-500/20 text-indigo-400' : 'bg-zinc-800 text-zinc-400'
-                          }`}>
-                            {provider.icon}
-                          </div>
-                          
-                          <div className="flex-1 min-w-0 text-left">
-                            <div className="flex items-center justify-between">
-                              <h4 className="font-semibold text-sm text-zinc-100">{provider.name}</h4>
-                              {provider.tag && (
-                                <span className={`text-[8px] font-bold font-mono px-2 py-0.5 rounded-full uppercase tracking-wider ${
-                                  isSelected 
-                                    ? 'bg-indigo-500/20 text-indigo-400 border border-indigo-500/30' 
-                                    : 'bg-zinc-800 text-zinc-500 group-hover:text-zinc-400'
-                                }`}>
-                                  {provider.tag}
-                                </span>
-                              )}
+                          {/* Clickable header row */}
+                          <button
+                            type="button"
+                            onClick={() => setSelectedProvider(provider.id)}
+                            className="w-full flex items-start gap-4 p-4 rounded-2xl focus:outline-none focus:ring-2 focus:ring-indigo-500/40 cursor-pointer"
+                          >
+                            <div className={`w-10 h-10 rounded-xl flex items-center justify-center text-xl font-bold flex-shrink-0 transition-transform group-hover:scale-105 ${
+                              isSelected ? 'bg-indigo-500/20 text-indigo-400' : 'bg-zinc-800 text-zinc-400'
+                            }`}>
+                              {provider.icon}
                             </div>
-                            <p className="text-xs text-zinc-400 mt-1 leading-normal group-hover:text-zinc-300 transition-colors">{provider.desc}</p>
-                          </div>
-                        </button>
+
+                            <div className="flex-1 min-w-0 text-left">
+                              <div className="flex items-center gap-2 flex-wrap">
+                                <h4 className="font-semibold text-sm text-zinc-100">{provider.name}</h4>
+                                {provider.tag && (
+                                  <span className={`text-[8px] font-bold font-mono px-2 py-0.5 rounded-full uppercase tracking-wider ${
+                                    isSelected
+                                      ? 'bg-indigo-500/20 text-indigo-400 border border-indigo-500/30'
+                                      : 'bg-zinc-800 text-zinc-500 group-hover:text-zinc-400'
+                                  }`}>
+                                    {provider.tag}
+                                  </span>
+                                )}
+                                <TokenStatusChip status={tokenStatus} />
+                              </div>
+                              <p className="text-xs text-zinc-400 mt-1 leading-normal group-hover:text-zinc-300 transition-colors">{provider.desc}</p>
+                            </div>
+                          </button>
+
+                          {/* Token input + check button — shown only when this provider is selected and needs a token */}
+                          {isSelected && provider.needsToken && (
+                            <div className="px-4 pb-4 flex gap-2" onClick={(e) => e.stopPropagation()}>
+                              <input
+                                type="password"
+                                placeholder={`Paste your ${provider.name} token…`}
+                                value={tokenInputs[provider.id] ?? ''}
+                                onChange={(e) =>
+                                  setTokenInputs((prev) => ({ ...prev, [provider.id]: e.target.value }))
+                                }
+                                className="flex-1 text-xs rounded-xl border border-zinc-700 bg-zinc-800 text-zinc-100 placeholder-zinc-500 px-3 py-2 focus:outline-none focus:ring-2 focus:ring-indigo-500/40"
+                              />
+                              <button
+                                type="button"
+                                disabled={!tokenInputs[provider.id] || tokenStatus === 'checking'}
+                                onClick={() => handleCheckToken(provider.id)}
+                                className="text-[10px] font-bold font-mono px-3 py-2 rounded-xl bg-indigo-600/20 border border-indigo-500/30 text-indigo-400 hover:bg-indigo-600/30 disabled:opacity-40 disabled:cursor-not-allowed transition-colors whitespace-nowrap"
+                              >
+                                Check
+                              </button>
+                            </div>
+                          )}
+
+                          {/* Cloudflare: server-side token — show check button with no input */}
+                          {isSelected && !provider.needsToken && (
+                            <div className="px-4 pb-4 flex justify-end" onClick={(e) => e.stopPropagation()}>
+                              <button
+                                type="button"
+                                disabled={tokenStatus === 'checking'}
+                                onClick={() => handleCheckToken(provider.id)}
+                                className="text-[10px] font-bold font-mono px-3 py-2 rounded-xl bg-indigo-600/20 border border-indigo-500/30 text-indigo-400 hover:bg-indigo-600/30 disabled:opacity-40 disabled:cursor-not-allowed transition-colors"
+                              >
+                                {tokenStatus === 'checking' ? 'Checking…' : 'Check connection'}
+                              </button>
+                            </div>
+                          )}
+                        </div>
                       );
                     })}
                   </div>
@@ -332,7 +447,9 @@ export default function DeployModal({ isOpen, onClose, portfolioTitle = "My Port
                   {/* Submit Action */}
                   <button
                     onClick={handleDeploy}
-                    className="w-full mt-2 py-3.5 bg-gradient-to-r from-indigo-500 to-purple-600 text-zinc-100 rounded-2xl font-semibold shadow-xl shadow-indigo-950/20 hover:from-indigo-600 hover:to-purple-700 active:scale-95 transition-all cursor-pointer flex items-center justify-center gap-2"
+                    disabled={!isTokenValidated}
+                    title={!isTokenValidated ? 'Verify your token first by clicking "Check"' : undefined}
+                    className="w-full mt-2 py-3.5 bg-gradient-to-r from-indigo-500 to-purple-600 text-zinc-100 rounded-2xl font-semibold shadow-xl shadow-indigo-950/20 hover:from-indigo-600 hover:to-purple-700 active:scale-95 transition-all cursor-pointer flex items-center justify-center gap-2 disabled:opacity-40 disabled:cursor-not-allowed disabled:active:scale-100"
                   >
                     <Sparkles className="w-4 h-4 text-indigo-200" />
                     Deploy with {PROVIDERS.find(p => p.id === selectedProvider)?.name}
@@ -450,13 +567,13 @@ export default function DeployModal({ isOpen, onClose, portfolioTitle = "My Port
                         {deployedUrl}
                       </span>
                     </div>
-                    
+
                     <button
                       onClick={handleCopyLink}
                       aria-label="Copy deployed link to clipboard"
                       className={`p-3 rounded-xl border transition-all duration-300 flex items-center justify-center flex-shrink-0 cursor-pointer ${
-                        copied 
-                          ? 'bg-emerald-500/10 border-emerald-500/30 text-emerald-400 shadow-inner' 
+                        copied
+                          ? 'bg-emerald-500/10 border-emerald-500/30 text-emerald-400 shadow-inner'
                           : 'bg-zinc-900 border-zinc-800 text-zinc-400 hover:text-zinc-200 hover:bg-zinc-800/60'
                       }`}
                     >
@@ -475,7 +592,7 @@ export default function DeployModal({ isOpen, onClose, portfolioTitle = "My Port
                       <ExternalLink className="w-4 h-4" />
                       View Live Site
                     </a>
-                    
+
                     <button
                       onClick={handleClose}
                       className="py-3.5 px-4 bg-zinc-800 hover:bg-zinc-700 border border-zinc-700/60 text-zinc-200 rounded-2xl font-semibold transition-colors cursor-pointer select-none active:scale-95"
@@ -523,7 +640,7 @@ export default function DeployModal({ isOpen, onClose, portfolioTitle = "My Port
                     >
                       Retry Build
                     </button>
-                    
+
                     <button
                       onClick={() => setStep('select')}
                       className="flex-1 py-3.5 bg-zinc-800 hover:bg-zinc-700 border border-zinc-700/60 text-zinc-200 rounded-2xl font-semibold transition-colors cursor-pointer active:scale-95"

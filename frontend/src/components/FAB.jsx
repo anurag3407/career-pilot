@@ -85,11 +85,6 @@ export default function FAB({ scrollContainerRef }) {
               animate={{ scale: 1 }}
               exit={{ scale: 0 }}
               onClick={() => setIsOpen(!isOpen)}
-              onKeyDown={(e) => {
-                if (e.key === "Enter" || e.key === " ") {
-                  setIsOpen(!isOpen);
-                }
-              }}
               aria-label={
                 isOpen ? "Close quick actions" : "Open quick actions"
               }
@@ -117,11 +112,6 @@ export default function FAB({ scrollContainerRef }) {
                     tabIndex={0}
                     aria-label={action.label}
                     onClick={() => action.onClick?.()}
-                    onKeyDown={(e) => {
-                      if (e.key === "Enter" || e.key === " ") {
-                        action.onClick?.();
-                      }
-                    }}
                     className="flex items-center gap-3 px-4 py-2 bg-background border border-border rounded-full shadow-md hover:bg-muted transition-colors whitespace-nowrap"
                   >
                     {action.icon}
