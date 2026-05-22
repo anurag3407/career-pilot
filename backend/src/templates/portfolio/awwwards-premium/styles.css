@@ -32,6 +32,10 @@
     justify-content: center;
     align-items: center;
     animation: slideUpLoader 1s 2.5s cubic-bezier(0.85, 0, 0.15, 1) forwards;
+    /* Keep pointer-events enabled while loader is visible so it blocks interaction
+       during the loading state. After the animation completes, toggle the
+       `.hidden` class (via JS on animationend) to remove the element and
+       prevent it from blocking pointer events. */
 }
 
 .loader-text {
@@ -61,7 +65,20 @@
 }
 
 @keyframes slideUpLoader {
-    to { transform: translateY(-100%); display: none; }
+    /* `display` is not animatable; remove it from keyframes. The animation
+       will move the loader out of view. Use JS to remove the element or add
+       a class to hide it after the animation completes to fully remove it
+       from the accessibility tree and pointer events. */
+    to { transform: translateY(-100%); }
+}
+
+/* Helper class to be toggled after the loader animation completes. Use an
+   animationend listener to add `.hidden` to `.css-loader` so it no longer
+   blocks interactions or remains in the DOM visually. */
+.css-loader.hidden {
+    display: none;
+    pointer-events: none;
+    visibility: hidden;
 }
 
 @keyframes pulseLoader {
@@ -560,7 +577,7 @@ a, button, .hover-target {
     height: 2px;
     bottom: 0;
     left: 0;
-    background-color: var(--accent, #fff);
+    background-color: var(--accent-color, #fff);
     transform: scaleX(0);
     transform-origin: right;
     transition: transform 0.4s cubic-bezier(0.19, 1, 0.22, 1);

@@ -94,7 +94,7 @@ export default function Navbar() {
         <div className="flex justify-between h-16 items-center">
           {/* Logo */}
           <Link to="/" onClick={handleHomeClick} className="flex items-center group" aria-label="Go to homepage">
-            <div className="w-15 h-15 flex items-center justify-center p-1.5 rounded-xl group-hover:scale-110 transition-transform">
+            <div className="w-10 h-10 flex items-center justify-center p-1.5 rounded-xl group-hover:scale-110 transition-transform">
               <img src="/speed.png" alt="CareerPilot logo" className="w-full h-full object-contain" />
             </div>
             <span className="text-xl font-bold text-foreground tracking-tight">
