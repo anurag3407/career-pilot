@@ -89,105 +89,112 @@ function PublicRoute({ children }) {
   return children;
 }
 
-function CommandPaletteBindings({ isOpen, setIsOpen }) {
+function AppRoutes() {
   const { user } = useAuth();
+  const [isCommandPaletteOpen, setIsCommandPaletteOpen] = useState(false);
+
   useEffect(() => {
     if (!user) return;
     const handleKeyDown = (e) => {
       if ((e.metaKey || e.ctrlKey) && e.key.toLowerCase() === 'k') {
         e.preventDefault();
-        setIsOpen((prev) => !prev);
+        setIsCommandPaletteOpen((prev) => !prev);
       }
     };
     window.addEventListener('keydown', handleKeyDown);
     return () => window.removeEventListener('keydown', handleKeyDown);
-  }, [user, setIsOpen]);
+  }, [user]);
 
-  if (!user) return null;
-  return <CommandPalette isOpen={isOpen} setIsOpen={setIsOpen} />;
+  return (
+    <BrowserRouter>
+      {!!user && (
+        <CommandPalette
+          isOpen={isCommandPaletteOpen}
+          setIsOpen={setIsCommandPaletteOpen}
+        />
+      )}
+      <div className="bg-mesh" />
+      <Toaster
+        position="top-right"
+        toastOptions={{
+          duration: 3000,
+          className: "careerpilot-toast",
+          style: {
+            background: "var(--card)",
+            color: "var(--foreground)",
+            borderRadius: "var(--radius)",
+            border: "1px solid var(--border)",
+            backdropFilter: "blur(8px)",
+          },
+          success: {
+            iconTheme: { primary: "#10B981", secondary: "#fff" },
+          },
+          error: {
+            iconTheme: { primary: "#EF4444", secondary: "#fff" },
+          },
+        }}
+      />
+      <Routes>
+        {/* Public Routes */}
+        <Route path="/" element={<PublicRoute><Home /></PublicRoute>} />
+        <Route path="/login" element={<PublicRoute><Login /></PublicRoute>} />
+        <Route path="/register" element={<PublicRoute><Register /></PublicRoute>} />
+        <Route path="/auth/linkedin/callback" element={<LinkedInCallback />} />
+
+        {/* Legal Pages (Public) */}
+        <Route path="/privacy" element={<PrivacyPolicy />} />
+        <Route path="/terms" element={<TermsOfService />} />
+        <Route path="/cookies" element={<CookiePolicy />} />
+
+        {/* Template Gallery Route (Registered at /templates) */}
+        <Route path="/templates" element={<TemplateGallery />} />
+
+        {/* Core Protected Routes */}
+        <Route path="/dashboard" element={<ProtectedRoute><Dashboard /></ProtectedRoute>} />
+        <Route path="/upload" element={<ProtectedRoute><Upload /></ProtectedRoute>} />
+        <Route path="/enhance/:resumeId" element={<ProtectedRoute><Enhance /></ProtectedRoute>} />
+        <Route path="/resume/:resumeId" element={<ProtectedRoute><ResumeView /></ProtectedRoute>} />
+        <Route path="/jobs" element={<ProtectedRoute><JobSearch /></ProtectedRoute>} />
+        <Route path="/job-alerts" element={<ProtectedRoute><JobAlerts /></ProtectedRoute>} />
+        <Route path="/job-tracker" element={<ProtectedRoute><JobTracker /></ProtectedRoute>} />
+        <Route path="/community" element={<ProtectedRoute><Community /></ProtectedRoute>} />
+        <Route path="/interview-prep" element={<ProtectedRoute><InterviewPrep /></ProtectedRoute>} />
+        <Route path="/profile" element={<ProtectedRoute><UserProfile /></ProtectedRoute>} />
+        <Route path="/profile/:uid" element={<ProtectedRoute><UserProfile /></ProtectedRoute>} />
+        <Route path="/security" element={<ProtectedRoute><SecuritySettings /></ProtectedRoute>} />
+        <Route path="/email-generator" element={<ProtectedRoute><EmailGenerator /></ProtectedRoute>} />
+        <Route path="/linkedin-optimizer" element={<ProtectedRoute><LinkedInOptimizer /></ProtectedRoute>} />
+        <Route path="/deployments" element={<ProtectedRoute><Deployments /></ProtectedRoute>} />
+        <Route path="/settings" element={<ProtectedRoute><Settings /></ProtectedRoute>} />
+
+        {/* Nested Fellowship Routes */}
+        <Route path="/fellowship" element={<ProtectedRoute><FellowshipLayout /></ProtectedRoute>}>
+          <Route index element={<Challenges />} />
+          <Route path="onboarding" element={<Onboarding />} />
+          <Route path="challenges" element={<Challenges />} />
+          <Route path="challenges/:id" element={<ChallengeDetail />} />
+          <Route path="challenges/:id/proposals" element={<ChallengeProposals />} />
+          <Route path="create-challenge" element={<CreateChallenge />} />
+          <Route path="my-proposals" element={<MyProposals />} />
+          <Route path="my-challenges" element={<MyChallenges />} />
+          <Route path="verify" element={<Verify />} />
+          <Route path="messages" element={<FellowshipMessages />} />
+          <Route path="messages/:roomId" element={<FellowshipChat />} />
+        </Route>
+
+        {/* Catch-All Route */}
+        <Route path="*" element={<NotFound />} />
+      </Routes>
+    </BrowserRouter>
+  );
 }
 
 function App() {
-  const [isCommandPaletteOpen, setIsCommandPaletteOpen] = useState(false);
   return (
     <ThemeProvider>
       <AuthProvider>
         <SocketProvider>
-          <BrowserRouter>
-            <CommandPaletteBindings isOpen={isCommandPaletteOpen} setIsOpen={setIsCommandPaletteOpen} />
-            <div className="bg-mesh" />
-            <Toaster
-              position="top-right"
-              toastOptions={{
-                duration: 3000,
-                className: "careerpilot-toast",
-                style: {
-                  background: "var(--card)",
-                  color: "var(--foreground)",
-                  borderRadius: "var(--radius)",
-                  border: "1px solid var(--border)",
-                  backdropFilter: "blur(8px)",
-                },
-                success: {
-                  iconTheme: { primary: "#10B981", secondary: "#fff" },
-                },
-                error: {
-                  iconTheme: { primary: "#EF4444", secondary: "#fff" },
-                },
-              }}
-            />
-            <Routes>
-              {/* Public Routes */}
-              <Route path="/" element={<PublicRoute><Home /></PublicRoute>} />
-              <Route path="/login" element={<PublicRoute><Login /></PublicRoute>} />
-              <Route path="/register" element={<PublicRoute><Register /></PublicRoute>} />
-              <Route path="/auth/linkedin/callback" element={<LinkedInCallback />} />
-              
-              {/* Legal Pages (Public) */}
-              <Route path="/privacy" element={<PrivacyPolicy />} />
-              <Route path="/terms" element={<TermsOfService />} />
-              <Route path="/cookies" element={<CookiePolicy />} />
-
-              {/* Template Gallery Route (Registered at /templates) */}
-              <Route path="/templates" element={<TemplateGallery />} />
-
-              {/* Core Protected Routes */}
-              <Route path="/dashboard" element={<ProtectedRoute><Dashboard /></ProtectedRoute>} />
-              <Route path="/upload" element={<ProtectedRoute><Upload /></ProtectedRoute>} />
-              <Route path="/enhance/:resumeId" element={<ProtectedRoute><Enhance /></ProtectedRoute>} />
-              <Route path="/resume/:resumeId" element={<ProtectedRoute><ResumeView /></ProtectedRoute>} />
-              <Route path="/jobs" element={<ProtectedRoute><JobSearch /></ProtectedRoute>} />
-              <Route path="/job-alerts" element={<ProtectedRoute><JobAlerts /></ProtectedRoute>} />
-              <Route path="/job-tracker" element={<ProtectedRoute><JobTracker /></ProtectedRoute>} />
-              <Route path="/community" element={<ProtectedRoute><Community /></ProtectedRoute>} />
-              <Route path="/interview-prep" element={<ProtectedRoute><InterviewPrep /></ProtectedRoute>} />
-              <Route path="/profile" element={<ProtectedRoute><UserProfile /></ProtectedRoute>} />
-              <Route path="/profile/:uid" element={<ProtectedRoute><UserProfile /></ProtectedRoute>} />
-              <Route path="/security" element={<ProtectedRoute><SecuritySettings /></ProtectedRoute>} />
-              <Route path="/email-generator" element={<ProtectedRoute><EmailGenerator /></ProtectedRoute>} />
-              <Route path="/linkedin-optimizer" element={<ProtectedRoute><LinkedInOptimizer /></ProtectedRoute>} />
-              <Route path="/deployments" element={<ProtectedRoute><Deployments /></ProtectedRoute>} />
-              <Route path="/settings" element={<ProtectedRoute><Settings /></ProtectedRoute>} />
-
-              {/* Nested Fellowship Routes */}
-              <Route path="/fellowship" element={<ProtectedRoute><FellowshipLayout /></ProtectedRoute>}>
-                <Route index element={<Challenges />} />
-                <Route path="onboarding" element={<Onboarding />} />
-                <Route path="challenges" element={<Challenges />} />
-                <Route path="challenges/:id" element={<ChallengeDetail />} />
-                <Route path="challenges/:id/proposals" element={<ChallengeProposals />} />
-                <Route path="create-challenge" element={<CreateChallenge />} />
-                <Route path="my-proposals" element={<MyProposals />} />
-                <Route path="my-challenges" element={<MyChallenges />} />
-                <Route path="verify" element={<Verify />} />
-                <Route path="messages" element={<FellowshipMessages />} />
-                <Route path="messages/:roomId" element={<FellowshipChat />} />
-              </Route>
-
-              {/* Catch-All Route */}
-              <Route path="*" element={<NotFound />} />
-            </Routes>
-          </BrowserRouter>
+          <AppRoutes />
         </SocketProvider>
       </AuthProvider>
     </ThemeProvider>
