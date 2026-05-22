@@ -31,6 +31,10 @@ function formatHourRange(startHour, endHour) {
   return `${formatHour(startHour)} - ${formatHour((endHour + 1) % 24)}`
 }
 
+function formatCommitCount(count) {
+  return `${count} ${count === 1 ? 'commit' : 'commits'}`
+}
+
 function parseLocalDate(timestamp) {
   if (typeof timestamp !== 'string') {
     const date = new Date(timestamp)
@@ -38,8 +42,7 @@ function parseLocalDate(timestamp) {
   }
 
   if (DATE_ONLY_PATTERN.test(timestamp)) {
-    const [year, month, day] = timestamp.split('-').map(Number)
-    return new Date(year, month - 1, day, 12)
+    return null
   }
 
   const date = new Date(timestamp)
@@ -47,8 +50,14 @@ function parseLocalDate(timestamp) {
 }
 
 function getWeight(item) {
-  const count = Number(item?.count ?? item?.commits ?? item?.total ?? 1)
-  return Number.isFinite(count) && count > 0 ? count : 1
+  const value = item?.count ?? item?.commits ?? item?.total
+
+  if (value === undefined || value === null) {
+    return 1
+  }
+
+  const count = Number(value)
+  return Number.isFinite(count) && count >= 0 ? count : 1
 }
 
 function collectTimestampEntries(value, entries = [], inheritedWeight = 1) {
@@ -113,20 +122,12 @@ function getPeakWindows(hourlyData) {
     .slice(0, 3)
 }
 
-function hasProductivitySource(value) {
-  if (!value) {
-    return false
-  }
+function hasUsableTimestampEntries(value) {
+  return collectTimestampEntries(value).some(({ timestamp, weight }) => weight > 0 && parseLocalDate(timestamp))
+}
 
-  if (Array.isArray(value)) {
-    return value.length > 0
-  }
-
-  if (typeof value === 'object') {
-    return Object.keys(value).length > 0
-  }
-
-  return true
+function getProductivitySource(sources) {
+  return sources.find((source) => hasUsableTimestampEntries(source)) || []
 }
 
 function buildProductivityData(rawData) {
@@ -245,7 +246,7 @@ function ProductiveHoursChart({ hourlyData, maxHourlyCount, onHover, activeHour 
             d={path}
             tabIndex={0}
             role="listitem"
-            aria-label={`${count} commits around ${formatHour(hour)}`}
+            aria-label={`${formatCommitCount(count)} around ${formatHour(hour)}`}
             className={`cursor-pointer transition-opacity ${
               isPeak ? 'fill-emerald-500 opacity-95' : activeHour === hour ? 'fill-primary opacity-90' : 'fill-primary/55 hover:opacity-80'
             }`}
@@ -286,7 +287,7 @@ function ProductiveHoursChart({ hourlyData, maxHourlyCount, onHover, activeHour 
 
 export default function ProductiveHours({ data = [], commits = [], heatmapData = [], timeZone, className = '' }) {
   const [activeHour, setActiveHour] = useState(null)
-  const sourceData = hasProductivitySource(data) ? data : hasProductivitySource(commits) ? commits : heatmapData
+  const sourceData = useMemo(() => getProductivitySource([data, commits, heatmapData]), [data, commits, heatmapData])
   const timeZoneLabel = timeZone || getTimeZoneLabel()
   const { dayData, hourlyData, maxHourlyCount, peakHour, peakWindows, totalCommits } = useMemo(
     () => buildProductivityData(sourceData),
@@ -315,7 +316,7 @@ export default function ProductiveHours({ data = [], commits = [], heatmapData =
             Most Productive Hours
           </h2>
           <p className="mt-1 text-sm text-muted-foreground">
-            Based on {totalCommits} commits converted to {timeZoneLabel}.
+            Based on {formatCommitCount(totalCommits)} converted to {timeZoneLabel}.
           </p>
         </div>
 
@@ -323,7 +324,7 @@ export default function ProductiveHours({ data = [], commits = [], heatmapData =
           <div className="rounded-lg border border-emerald-500/20 bg-emerald-500/10 px-3 py-2 text-sm">
             <span className="block text-xs font-semibold uppercase tracking-wide text-emerald-600">Peak hour</span>
             <span className="font-bold text-foreground">
-              {peakHour.label} - {peakHour.count} commits
+              {peakHour.label} - {formatCommitCount(peakHour.count)}
             </span>
           </div>
         )}
@@ -341,7 +342,7 @@ export default function ProductiveHours({ data = [], commits = [], heatmapData =
           {activeHourData && (
             <div className="absolute bottom-3 left-3 rounded-md border border-border bg-popover px-3 py-2 text-xs text-popover-foreground shadow-md">
               <span className="block font-bold">{activeHourData.label}</span>
-              <span className="text-muted-foreground">{activeHourData.count} commits</span>
+              <span className="text-muted-foreground">{formatCommitCount(activeHourData.count)}</span>
             </div>
           )}
         </div>
@@ -382,7 +383,7 @@ export default function ProductiveHours({ data = [], commits = [], heatmapData =
                   className="flex items-center justify-between rounded-lg border border-border bg-background/60 px-3 py-2 text-sm"
                 >
                   <span className="font-semibold text-foreground">{formatHourRange(window.startHour, window.endHour)}</span>
-                  <span className="text-muted-foreground">{window.count} commits</span>
+                  <span className="text-muted-foreground">{formatCommitCount(window.count)}</span>
                 </div>
               ))}
             </div>
