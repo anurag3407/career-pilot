@@ -1,3 +1,4 @@
+import JobTrackerDashboard from "./components/JobTrackerDashboard";
 import React, { useState, useEffect } from 'react';
 import Deployments from './pages/Deployments'
 import TemplateGallery from "./pages/TemplateGallery";
@@ -109,13 +110,19 @@ function CommandPaletteBindings({ isOpen, setIsOpen }) {
 
 function App() {
   const [isCommandPaletteOpen, setIsCommandPaletteOpen] = useState(false);
+
   return (
     <ThemeProvider>
       <AuthProvider>
         <SocketProvider>
           <BrowserRouter>
-            <CommandPaletteBindings isOpen={isCommandPaletteOpen} setIsOpen={setIsCommandPaletteOpen} />
+            <CommandPaletteBindings
+              isOpen={isCommandPaletteOpen}
+              setIsOpen={setIsCommandPaletteOpen}
+            />
+
             <div className="bg-mesh" />
+
             <Toaster
               position="top-right"
               toastOptions={{
@@ -136,55 +143,229 @@ function App() {
                 },
               }}
             />
+
             <Routes>
               {/* Public Routes */}
-              <Route path="/" element={<PublicRoute><Home /></PublicRoute>} />
-              <Route path="/login" element={<PublicRoute><Login /></PublicRoute>} />
-              <Route path="/register" element={<PublicRoute><Register /></PublicRoute>} />
-              <Route path="/auth/linkedin/callback" element={<LinkedInCallback />} />
-              
-              {/* Legal Pages (Public) */}
+              <Route
+                path="/"
+                element={
+                  <PublicRoute>
+                    <Home />
+                  </PublicRoute>
+                }
+              />
+
+              <Route
+                path="/login"
+                element={
+                  <PublicRoute>
+                    <Login />
+                  </PublicRoute>
+                }
+              />
+
+              <Route
+                path="/register"
+                element={
+                  <PublicRoute>
+                    <Register />
+                  </PublicRoute>
+                }
+              />
+
+              <Route
+                path="/auth/linkedin/callback"
+                element={<LinkedInCallback />}
+              />
+
+              {/* Legal Pages */}
               <Route path="/privacy" element={<PrivacyPolicy />} />
               <Route path="/terms" element={<TermsOfService />} />
               <Route path="/cookies" element={<CookiePolicy />} />
 
-              {/* Template Gallery Route (Registered at /templates) */}
+              {/* Templates */}
               <Route path="/templates" element={<TemplateGallery />} />
 
-              {/* Core Protected Routes */}
-              <Route path="/dashboard" element={<ProtectedRoute><Dashboard /></ProtectedRoute>} />
-              <Route path="/upload" element={<ProtectedRoute><Upload /></ProtectedRoute>} />
-              <Route path="/enhance/:resumeId" element={<ProtectedRoute><Enhance /></ProtectedRoute>} />
-              <Route path="/resume/:resumeId" element={<ProtectedRoute><ResumeView /></ProtectedRoute>} />
-              <Route path="/jobs" element={<ProtectedRoute><JobSearch /></ProtectedRoute>} />
-              <Route path="/job-alerts" element={<ProtectedRoute><JobAlerts /></ProtectedRoute>} />
-              <Route path="/job-tracker" element={<ProtectedRoute><JobTracker /></ProtectedRoute>} />
-              <Route path="/community" element={<ProtectedRoute><Community /></ProtectedRoute>} />
-              <Route path="/interview-prep" element={<ProtectedRoute><InterviewPrep /></ProtectedRoute>} />
-              <Route path="/profile" element={<ProtectedRoute><UserProfile /></ProtectedRoute>} />
-              <Route path="/profile/:uid" element={<ProtectedRoute><UserProfile /></ProtectedRoute>} />
-              <Route path="/security" element={<ProtectedRoute><SecuritySettings /></ProtectedRoute>} />
-              <Route path="/email-generator" element={<ProtectedRoute><EmailGenerator /></ProtectedRoute>} />
-              <Route path="/linkedin-optimizer" element={<ProtectedRoute><LinkedInOptimizer /></ProtectedRoute>} />
-              <Route path="/deployments" element={<ProtectedRoute><Deployments /></ProtectedRoute>} />
-              <Route path="/settings" element={<ProtectedRoute><Settings /></ProtectedRoute>} />
+              {/* NEW JOB TRACKER DASHBOARD ROUTE */}
+              <Route
+                path="/job-dashboard-ui"
+                element={
+                  <ProtectedRoute>
+                    <JobTrackerDashboard />
+                  </ProtectedRoute>
+                }
+              />
 
-              {/* Nested Fellowship Routes */}
-              <Route path="/fellowship" element={<ProtectedRoute><FellowshipLayout /></ProtectedRoute>}>
+              {/* Protected Routes */}
+              <Route
+                path="/dashboard"
+                element={
+                  <ProtectedRoute>
+                    <Dashboard />
+                  </ProtectedRoute>
+                }
+              />
+
+              <Route
+                path="/upload"
+                element={
+                  <ProtectedRoute>
+                    <Upload />
+                  </ProtectedRoute>
+                }
+              />
+
+              <Route
+                path="/enhance/:resumeId"
+                element={
+                  <ProtectedRoute>
+                    <Enhance />
+                  </ProtectedRoute>
+                }
+              />
+
+              <Route
+                path="/resume/:resumeId"
+                element={
+                  <ProtectedRoute>
+                    <ResumeView />
+                  </ProtectedRoute>
+                }
+              />
+
+              <Route
+                path="/jobs"
+                element={
+                  <ProtectedRoute>
+                    <JobSearch />
+                  </ProtectedRoute>
+                }
+              />
+
+              <Route
+                path="/job-alerts"
+                element={
+                  <ProtectedRoute>
+                    <JobAlerts />
+                  </ProtectedRoute>
+                }
+              />
+
+              <Route path="/job-tracker" element={<JobTrackerDashboard />} />
+
+              <Route
+                path="/community"
+                element={
+                  <ProtectedRoute>
+                    <Community />
+                  </ProtectedRoute>
+                }
+              />
+
+              <Route
+                path="/interview-prep"
+                element={
+                  <ProtectedRoute>
+                    <InterviewPrep />
+                  </ProtectedRoute>
+                }
+              />
+
+              <Route
+                path="/profile"
+                element={
+                  <ProtectedRoute>
+                    <UserProfile />
+                  </ProtectedRoute>
+                }
+              />
+
+              <Route
+                path="/profile/:uid"
+                element={
+                  <ProtectedRoute>
+                    <UserProfile />
+                  </ProtectedRoute>
+                }
+              />
+
+              <Route
+                path="/security"
+                element={
+                  <ProtectedRoute>
+                    <SecuritySettings />
+                  </ProtectedRoute>
+                }
+              />
+
+              <Route
+                path="/email-generator"
+                element={
+                  <ProtectedRoute>
+                    <EmailGenerator />
+                  </ProtectedRoute>
+                }
+              />
+
+              <Route
+                path="/linkedin-optimizer"
+                element={
+                  <ProtectedRoute>
+                    <LinkedInOptimizer />
+                  </ProtectedRoute>
+                }
+              />
+
+              <Route
+                path="/deployments"
+                element={
+                  <ProtectedRoute>
+                    <Deployments />
+                  </ProtectedRoute>
+                }
+              />
+
+              <Route
+                path="/settings"
+                element={
+                  <ProtectedRoute>
+                    <Settings />
+                  </ProtectedRoute>
+                }
+              />
+
+              {/* Fellowship Routes */}
+              <Route
+                path="/fellowship"
+                element={
+                  <ProtectedRoute>
+                    <FellowshipLayout />
+                  </ProtectedRoute>
+                }
+              >
                 <Route index element={<Challenges />} />
                 <Route path="onboarding" element={<Onboarding />} />
                 <Route path="challenges" element={<Challenges />} />
                 <Route path="challenges/:id" element={<ChallengeDetail />} />
-                <Route path="challenges/:id/proposals" element={<ChallengeProposals />} />
-                <Route path="create-challenge" element={<CreateChallenge />} />
+                <Route
+                  path="challenges/:id/proposals"
+                  element={<ChallengeProposals />}
+                />
+                <Route
+                  path="create-challenge"
+                  element={<CreateChallenge />}
+                />
                 <Route path="my-proposals" element={<MyProposals />} />
                 <Route path="my-challenges" element={<MyChallenges />} />
                 <Route path="verify" element={<Verify />} />
                 <Route path="messages" element={<FellowshipMessages />} />
-                <Route path="messages/:roomId" element={<FellowshipChat />} />
+                <Route
+                  path="messages/:roomId"
+                  element={<FellowshipChat />}
+                />
               </Route>
 
-              {/* Catch-All Route */}
+              {/* 404 */}
               <Route path="*" element={<NotFound />} />
             </Routes>
           </BrowserRouter>
@@ -193,5 +374,4 @@ function App() {
     </ThemeProvider>
   );
 }
-
 export default App;
