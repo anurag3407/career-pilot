@@ -1,20 +1,23 @@
 import { useState } from "react";
 import { useNavigate } from "react-router-dom";
 import { motion } from "framer-motion";
+
 import {
     LayoutDashboard,
     Search,
     Bell,
-    Mic,
     GraduationCap,
     Users,
     FileText,
+    Globe,
     LogOut,
     Settings,
     User,
     ShieldCheck,
     Sun,
-    Moon
+    Moon,
+    Zap,
+    Rocket
 } from "lucide-react";
 import { useAuth } from "../context/AuthContext";
 import { useTheme } from "../context/ThemeContext";
@@ -46,7 +49,7 @@ const navLinks = [
     {
         label: "Interview Prep",
         href: "/interview-prep",
-        icon: <Mic className="w-5 h-5 flex-shrink-0" />,
+        icon: <Zap className="w-5 h-5 flex-shrink-0" />,
     },
     {
         label: "Fellowship",
@@ -64,9 +67,19 @@ const navLinks = [
         icon: <FileText className="w-5 h-5 flex-shrink-0" />,
     },
     {
+        label: "Portfolio",
+        href: "/portfolio",
+        icon: <Globe className="w-5 h-5 flex-shrink-0" />,
+    },
+    {
         label: "Profile",
         href: "/profile",
         icon: <User className="w-5 h-5 flex-shrink-0" />,
+    },
+    {
+        label: 'Deployments',
+        href: '/deployments',
+        icon: <Rocket className="w-5 h-5 flex-shrink-0" />,
     },
     {
         label: "Security",
@@ -77,7 +90,7 @@ const navLinks = [
         label: "Settings",
         href: "/settings",
         icon: <Settings className="w-5 h-5 flex-shrink-0" />,
-    },
+    }
 ];
 
 

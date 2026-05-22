@@ -7,6 +7,7 @@ import Challenge from '../models/Challenge.model.js';
 import Proposal from '../models/Proposal.model.js';
 import { FellowshipChatRoom, FellowshipMessage } from '../models/FellowshipChat.model.js';
 import { sendProposalApprovalEmail, sendVerificationEmail } from '../services/mailService.js';
+import { sanitizeMessageContent } from '../utils/sanitizeMessage.js';
 
 const router = express.Router();
 
@@ -548,9 +549,11 @@ router.post('/chat/rooms/:roomId/messages', verifyToken, asyncHandler(async (req
     }
 
     const { content } = req.body;
-    if (!content || content.trim().length === 0) {
+    const sanitizedContent = sanitizeMessageContent(content);
+    if (!sanitizedContent) {
         throw new ApiError(400, 'Message content is required');
     }
+    const sanitizedContent = content.trim().replace(/</g, "&lt;").replace(/>/g, "&gt;");
 
     const profile = await FellowshipProfile.findOne({ userId: req.user.uid });
 
@@ -559,7 +562,7 @@ router.post('/chat/rooms/:roomId/messages', verifyToken, asyncHandler(async (req
         senderId: req.user.uid,
         senderName: req.user.name || 'User',
         senderRole: profile?.role || 'student',
-        content: content.trim()
+        content: sanitizedContent
     });
 
     room.lastMessageAt = new Date();
