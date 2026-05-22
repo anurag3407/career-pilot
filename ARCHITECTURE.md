@@ -466,7 +466,7 @@
 { userId: 1, sentAt: -1 }
 ```
 
-### Firebase Firestore Collections
+### 🔥 Firebase Firestore Collections
 
 #### Users Collection
 ```javascript
