@@ -828,7 +828,7 @@ service cloud.firestore {
 
 ## 🚀 Deployment Architecture
 
-### Production Environment
+### 🚀 Production Environment
 
 ```
 ┌─────────────────────────────────────────────────────────────────────────────┐
