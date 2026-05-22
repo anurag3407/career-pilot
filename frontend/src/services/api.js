@@ -355,6 +355,17 @@ export const enhanceApi = {
       body: JSON.stringify(data)
     })
     return handleResponse(response)
+  },
+
+  // Score resume and get structured feedback
+  async scoreResume(resumeText) {
+    const headers = await getAuthHeaders()
+    const response = await fetch(`${API_BASE}/enhance/resume-score`, {
+      method: 'POST',
+      headers,
+      body: JSON.stringify({ resumeText })
+    })
+    return handleResponse(response)
   }
 }
 

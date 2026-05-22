@@ -141,7 +141,7 @@ function App() {
               <Route path="/" element={<PublicRoute><Home /></PublicRoute>} />
               <Route path="/login" element={<PublicRoute><Login /></PublicRoute>} />
               <Route path="/register" element={<PublicRoute><Register /></PublicRoute>} />
-              <Route path="/auth/linkedin/callback" element={<PublicRoute><LinkedInCallback /></PublicRoute>} />
+              <Route path="/auth/linkedin/callback" element={<LinkedInCallback />} />
               
               {/* Legal Pages (Public) */}
               <Route path="/privacy" element={<PrivacyPolicy />} />

@@ -295,4 +295,24 @@ router.get(
   })
 );
 
+/**
+ * GET /api/portfolio
+ * Returns a list of available portfolio template slugs.
+ */
+router.get('/', asyncHandler(async (req, res) => {
+  const templatesDir = new URL('../templates/portfolio', import.meta.url);
+  let slugs = [];
+  try {
+    const entries = await fs.readdir(templatesDir);
+    slugs = entries.filter((e) => !e.startsWith('.'));
+  } catch {
+    slugs = [];
+  }
+  const portfolios = slugs.map((slug) => ({
+    slug,
+    url: `/portfolio/public/${slug}`,
+  }));
+  res.status(200).json({ success: true, portfolios, data: portfolios });
+}));
+
 export default router;
