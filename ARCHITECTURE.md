@@ -148,7 +148,7 @@
 
 ## 🔄 Data Flow Diagrams
 
-### Resume Enhancement Flow
+### 📝 Resume Enhancement Flow
 
 ```
 ┌──────────┐     ┌──────────┐     ┌──────────┐     ┌──────────┐     ┌──────────┐
