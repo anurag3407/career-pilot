@@ -883,6 +883,26 @@ See [Real_life_usecase.md](./Real_life_usecase.md) for detailed success stories 
 
 ## 🛠️ Troubleshooting Guide
 
+### Vite Build Fails With `remark-gfm`
+
+#### Problem
+
+```bash
+Rollup failed to resolve import "remark-gfm"
+
+Solution
+
+Install frontend dependencies before running the Vite build:
+
+cd frontend
+npm install
+npm run build
+
+If dependencies are out of sync:
+rm -rf node_modules package-lock.json
+npm install
+
+
 If you encounter issues while setting up or running the project locally, try the following common fixes before creating a new issue.
 
 ### MongoDB Connection Error:
