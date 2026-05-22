@@ -10,6 +10,7 @@ import {
   ExternalLink,
   Plus,
   Filter,
+  X,
 } from "lucide-react";
 import Layout from "../components/Layout";
 import { jobTrackerApi } from "../services/api";
@@ -27,23 +28,16 @@ const JobTracker = () => {
   const [filterStatus, setFilterStatus] = useState("all");
   const [updateLoading, setUpdateLoading] = useState({});
   const [researchCompany, setResearchCompany] = useState(null);
+  // Interview modal state — feature/interview-scheduler
+  const [interviewModal, setInterviewModal] = useState(null);
+  const [interviewDate, setInterviewDate] = useState("");
 
   const statusOptions = [
-    {
-      value: "saved",
-      label: "Saved",
-      color: "bg-muted-foreground",
-      icon: "📌",
-    },
-    { value: "applied", label: "Applied", color: "bg-blue-500", icon: "✉️" },
-    {
-      value: "interviewing",
-      label: "Interviewing",
-      color: "bg-yellow-500",
-      icon: "🎤",
-    },
-    { value: "offered", label: "Offered", color: "bg-green-500", icon: "🎉" },
-    { value: "rejected", label: "Rejected", color: "bg-red-500", icon: "❌" },
+    { value: "saved",       label: "Saved",       color: "bg-muted-foreground", icon: "📌" },
+    { value: "applied",     label: "Applied",     color: "bg-blue-500",         icon: "✉️" },
+    { value: "interviewing",label: "Interviewing",color: "bg-yellow-500",       icon: "🎤" },
+    { value: "offered",     label: "Offered",     color: "bg-green-500",        icon: "🎉" },
+    { value: "rejected",    label: "Rejected",    color: "bg-red-500",          icon: "❌" },
   ];
 
   useEffect(() => {
@@ -73,19 +67,29 @@ const JobTracker = () => {
     }
   };
 
+  // Called when user picks a status from dropdown — feature/interview-scheduler
   const handleStatusUpdate = async (jobId, newStatus) => {
+    if (newStatus === "interviewing") {
+      const job = trackedJobs.find((j) => j.id === jobId);
+      setInterviewModal({ jobId, jobTitle: job.title, company: job.company });
+      setInterviewDate("");
+      return;
+    }
+    await doStatusUpdate(jobId, newStatus, null);
+  };
+
+  // Actually sends the update to backend — keeps interviewDate from feature branch
+  const doStatusUpdate = async (jobId, newStatus, date) => {
     try {
       setUpdateLoading((prev) => ({ ...prev, [jobId]: true }));
-      await jobTrackerApi.updateStatus(jobId, newStatus);
-
+      await jobTrackerApi.updateStatus(jobId, newStatus, "", date);
       setTrackedJobs((prev) =>
         prev.map((job) =>
           job.id === jobId
-            ? { ...job, status: newStatus, updatedAt: new Date() }
-            : job,
-        ),
+            ? { ...job, status: newStatus, interviewDate: date, updatedAt: new Date() }
+            : job
+        )
       );
-
       toast.success("Status updated!");
       fetchStats();
     } catch (error) {
@@ -96,15 +100,26 @@ const JobTracker = () => {
     }
   };
 
+  // User confirms interview date — feature/interview-scheduler
+  const handleInterviewModalSubmit = async () => {
+    if (!interviewModal) return;
+    await doStatusUpdate(interviewModal.jobId, "interviewing", interviewDate || null);
+    setInterviewModal(null);
+    setInterviewDate("");
+  };
+
+  // User skips adding a date — feature/interview-scheduler
+  const handleSkipDate = async () => {
+    if (!interviewModal) return;
+    await doStatusUpdate(interviewModal.jobId, "interviewing", null);
+    setInterviewModal(null);
+    setInterviewDate("");
+  };
+
   const handleDelete = async (jobId) => {
-    if (
-      !window.confirm(
-        "Are you sure you want to remove this job from your tracker?",
-      )
-    ) {
+    if (!window.confirm("Are you sure you want to remove this job from your tracker?")) {
       return;
     }
-
     try {
       await jobTrackerApi.delete(jobId);
       setTrackedJobs((prev) => prev.filter((job) => job.id !== jobId));
@@ -122,9 +137,7 @@ const JobTracker = () => {
       : trackedJobs.filter((job) => job.status === filterStatus);
 
   const getStatusInfo = (status) => {
-    return (
-      statusOptions.find((opt) => opt.value === status) || statusOptions[0]
-    );
+    return statusOptions.find((opt) => opt.value === status) || statusOptions[0];
   };
 
   const formatDate = (date) => {
@@ -150,13 +163,63 @@ const JobTracker = () => {
 
   return (
     <Layout>
+      {/* Interview Date Modal — feature/interview-scheduler */}
+      {interviewModal && (
+        <div className="fixed inset-0 z-50 flex items-center justify-center bg-black/50 backdrop-blur-sm">
+          <div className="bg-background border border-border rounded-2xl p-6 w-full max-w-md shadow-xl mx-4">
+            <div className="flex items-center justify-between mb-4">
+              <h2 className="text-lg font-bold text-foreground flex items-center gap-2">
+                <Calendar size={20} className="text-primary" /> Schedule Interview
+              </h2>
+              <button
+                onClick={() => setInterviewModal(null)}
+                className="text-muted-foreground hover:text-foreground transition"
+              >
+                <X size={20} />
+              </button>
+            </div>
+
+            <p className="text-sm text-muted-foreground mb-4">
+              Add interview date for{" "}
+              <strong className="text-foreground">{interviewModal.jobTitle}</strong> at{" "}
+              <strong className="text-foreground">{interviewModal.company}</strong>
+            </p>
+
+            <input
+              type="datetime-local"
+              className="w-full p-3 border border-border bg-muted/50 rounded-xl text-foreground mb-4 focus:ring-2 focus:ring-primary focus:outline-none"
+              value={interviewDate}
+              onChange={(e) => setInterviewDate(e.target.value)}
+            />
+
+            <div className="flex gap-3">
+              <button
+                onClick={handleInterviewModalSubmit}
+                className="flex-1 py-2 bg-primary text-primary-foreground rounded-xl font-semibold hover:bg-primary/90 transition"
+              >
+                ✅ Confirm
+              </button>
+              <button
+                onClick={handleSkipDate}
+                className="flex-1 py-2 border border-border rounded-xl text-muted-foreground hover:text-foreground transition"
+              >
+                Skip Date
+              </button>
+            </div>
+
+            <p className="text-xs text-muted-foreground text-center mt-3">
+              ⏰ You'll receive email reminders 24h and 1h before your interview
+            </p>
+          </div>
+        </div>
+      )}
+
       <div className="min-h-screen bg-background py-8 px-4">
         <div className="max-w-7xl mx-auto">
+
           {/* Header */}
           <div className="mb-8">
-            <h1 className="text-4xl font-bold text-foreground mb-2">
-              Job Tracker
-            </h1>
+            <h1 className="text-4xl font-bold text-foreground mb-2">Job Tracker</h1>
             <p className="text-muted-foreground">
               Track your job applications in one place
             </p>
@@ -165,67 +228,23 @@ const JobTracker = () => {
           {/* Stats Cards */}
           {stats && (
             <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-5 gap-4 mb-8">
-              <Card className="p-6 bg-background/50 border-border">
-                <div className="flex items-center justify-between">
-                  <div>
-                    <p className="text-muted-foreground text-sm mb-1">Total</p>
-                    <p className="text-3xl font-bold text-foreground">
-                      {stats.total}
-                    </p>
+              {[
+                { label: "Total",       value: stats.total,       icon: "📊" },
+                { label: "Saved",       value: stats.saved,       icon: "📌" },
+                { label: "Applied",     value: stats.applied,     icon: "✉️" },
+                { label: "Interviewing",value: stats.interviewing, icon: "🎤" },
+                { label: "Offered",     value: stats.offered,     icon: "🎉" },
+              ].map((s) => (
+                <Card key={s.label} className="p-6 bg-background/50 border-border">
+                  <div className="flex items-center justify-between">
+                    <div>
+                      <p className="text-muted-foreground text-sm mb-1">{s.label}</p>
+                      <p className="text-3xl font-bold text-foreground">{s.value}</p>
+                    </div>
+                    <div className="text-3xl">{s.icon}</div>
                   </div>
-                  <div className="text-3xl">📊</div>
-                </div>
-              </Card>
-              <Card className="p-6 bg-background/50 border-border">
-                <div className="flex items-center justify-between">
-                  <div>
-                    <p className="text-muted-foreground text-sm mb-1">Saved</p>
-                    <p className="text-3xl font-bold text-foreground">
-                      {stats.saved}
-                    </p>
-                  </div>
-                  <div className="text-3xl">📌</div>
-                </div>
-              </Card>
-              <Card className="p-6 bg-background/50 border-border">
-                <div className="flex items-center justify-between">
-                  <div>
-                    <p className="text-muted-foreground text-sm mb-1">
-                      Applied
-                    </p>
-                    <p className="text-3xl font-bold text-foreground">
-                      {stats.applied}
-                    </p>
-                  </div>
-                  <div className="text-3xl">✉️</div>
-                </div>
-              </Card>
-              <Card className="p-6 bg-background/50 border-border">
-                <div className="flex items-center justify-between">
-                  <div>
-                    <p className="text-muted-foreground text-sm mb-1">
-                      Interviewing
-                    </p>
-                    <p className="text-3xl font-bold text-foreground">
-                      {stats.interviewing}
-                    </p>
-                  </div>
-                  <div className="text-3xl">🎤</div>
-                </div>
-              </Card>
-              <Card className="p-6 bg-background/50 border-border">
-                <div className="flex items-center justify-between">
-                  <div>
-                    <p className="text-muted-foreground text-sm mb-1">
-                      Offered
-                    </p>
-                    <p className="text-3xl font-bold text-foreground">
-                      {stats.offered}
-                    </p>
-                  </div>
-                  <div className="text-3xl">🎉</div>
-                </div>
-              </Card>
+                </Card>
+              ))}
             </div>
           )}
 
@@ -287,11 +306,7 @@ const JobTracker = () => {
               className="grid gap-4"
               variants={{
                 initial: {},
-                animate: {
-                  transition: {
-                    staggerChildren: 0.07,
-                  },
-                },
+                animate: { transition: { staggerChildren: 0.07 } },
               }}
               initial="initial"
               animate="animate"
@@ -303,15 +318,12 @@ const JobTracker = () => {
                     key={job.id}
                     variants={{
                       initial: { opacity: 0, y: 14 },
-                      animate: {
-                        opacity: 1,
-                        y: 0,
-                        transition: { duration: 0.22, ease: "easeOut" },
-                      },
+                      animate: { opacity: 1, y: 0, transition: { duration: 0.22, ease: "easeOut" } },
                     }}
                   >
                     <Card className="p-6 bg-background/50 border-border hover:border-border transition-all">
                       <div className="flex flex-col lg:flex-row lg:items-center justify-between gap-4">
+
                         {/* Job Info */}
                         <div className="flex-1">
                           <div className="flex items-start gap-3 mb-3">
@@ -320,9 +332,7 @@ const JobTracker = () => {
                                 {job.title}
                               </h3>
                               <div className="flex items-center gap-2 mb-2">
-                                <span className="text-primary font-medium">
-                                  {job.company}
-                                </span>
+                                <span className="text-primary font-medium">{job.company}</span>
                                 <button
                                   onClick={() =>
                                     setResearchCompany({
@@ -363,6 +373,20 @@ const JobTracker = () => {
                             </div>
                           </div>
 
+                          {/* Interview date — feature/interview-scheduler */}
+                          {job.interviewDate && (
+                            <div className="flex items-center gap-1 text-yellow-500 font-medium mb-3">
+                              <Calendar className="w-4 h-4" />
+                              Interview:{" "}
+                              {new Date(job.interviewDate).toLocaleString("en-US", {
+                                month: "short",
+                                day: "numeric",
+                                hour: "2-digit",
+                                minute: "2-digit",
+                              })}
+                            </div>
+                          )}
+
                           {job.notes && (
                             <p className="text-sm text-foreground bg-muted/50 rounded p-3 mb-3">
                               📝 {job.notes}
@@ -374,9 +398,7 @@ const JobTracker = () => {
                         <div className="flex flex-col gap-2 lg:w-48">
                           <select
                             value={job.status}
-                            onChange={(e) =>
-                              handleStatusUpdate(job.id, e.target.value)
-                            }
+                            onChange={(e) => handleStatusUpdate(job.id, e.target.value)}
                             disabled={updateLoading[job.id]}
                             className="w-full px-3 py-2 bg-muted border border-border rounded-lg text-foreground text-sm focus:outline-none focus:border-primary disabled:opacity-50"
                           >
@@ -415,8 +437,10 @@ const JobTracker = () => {
               })}
             </motion.div>
           )}
+
         </div>
       </div>
+
       {researchCompany && (
         <CompanyResearch
           companyName={researchCompany.name}
