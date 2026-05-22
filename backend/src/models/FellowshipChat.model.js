@@ -1,4 +1,5 @@
 import mongoose from 'mongoose';
+import softDelete from '../middleware/softDelete.js';
 
 const fellowshipChatRoomSchema = new mongoose.Schema({
     proposalId: {
@@ -63,11 +64,16 @@ const fellowshipChatRoomSchema = new mongoose.Schema({
         type: Date,
         default: Date.now
     }
+    ,
+    isDeleted: { type: Boolean, default: false },
+    deletedAt: { type: Date, default: null }
 });
 
-fellowshipChatRoomSchema.index({ proposalId: 1 }, { unique: true, background: true });
+fellowshipChatRoomSchema.index({ proposalId: 1 }, { unique: true, partialFilterExpression: { isDeleted: false }, background: true });
 fellowshipChatRoomSchema.index({ studentId: 1, status: 1, lastMessageAt: -1 }, { background: true });
 fellowshipChatRoomSchema.index({ corporateId: 1, status: 1, lastMessageAt: -1 }, { background: true });
+
+fellowshipChatRoomSchema.plugin(softDelete);
 
 const FellowshipChatRoom = mongoose.model('FellowshipChatRoom', fellowshipChatRoomSchema);
 
@@ -100,9 +106,14 @@ const fellowshipMessageSchema = new mongoose.Schema({
         type: Date,
         default: Date.now
     }
+    ,
+    isDeleted: { type: Boolean, default: false },
+    deletedAt: { type: Date, default: null }
 });
 
 fellowshipMessageSchema.index({ roomId: 1, createdAt: -1 }, { background: true });
+
+fellowshipMessageSchema.plugin(softDelete);
 
 const FellowshipMessage = mongoose.model('FellowshipMessage', fellowshipMessageSchema);
 

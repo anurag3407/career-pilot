@@ -1,11 +1,11 @@
 import mongoose from 'mongoose';
+import softDelete from '../middleware/softDelete.js';
 import crypto from 'crypto';
 
 const fellowshipProfileSchema = new mongoose.Schema({
     userId: {
         type: String,
         required: true,
-        unique: true,
         index: true
     },
     role: {
@@ -60,6 +60,9 @@ const fellowshipProfileSchema = new mongoose.Schema({
         type: Date,
         default: Date.now
     }
+    ,
+    isDeleted: { type: Boolean, default: false },
+    deletedAt: { type: Date, default: null }
 });
 
 const hashVerificationCode = (code) => {
@@ -91,6 +94,11 @@ fellowshipProfileSchema.methods.compareVerificationCode = function (code) {
     if (!this.verificationCode) return false;
     return compareVerificationCode(code, this.verificationCode);
 };
+
+// Partial unique index on userId for soft-deleted docs
+fellowshipProfileSchema.index({ userId: 1 }, { unique: true, partialFilterExpression: { isDeleted: false } });
+
+fellowshipProfileSchema.plugin(softDelete);
 
 const FellowshipProfile = mongoose.model('FellowshipProfile', fellowshipProfileSchema);
 

@@ -1,4 +1,5 @@
 import mongoose from 'mongoose';
+import softDelete from '../middleware/softDelete.js';
 
 const resumeSchema = new mongoose.Schema({
     userId: {
@@ -52,6 +53,9 @@ const resumeSchema = new mongoose.Schema({
         updatedAt: 'lastModified'
     }
 });
+
+resumeSchema.add({ isDeleted: { type: Boolean, default: false }, deletedAt: { type: Date, default: null } });
+resumeSchema.plugin(softDelete);
 
 // Index for faster queries
 resumeSchema.index({ userId: 1, createdAt: -1 }, { background: true });

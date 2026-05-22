@@ -1,4 +1,5 @@
 import mongoose from 'mongoose';
+import softDelete from '../middleware/softDelete.js';
 
 const answerSchema = new mongoose.Schema({
     questionId: { type: String, required: true },
@@ -52,9 +53,14 @@ const interviewSchema = new mongoose.Schema({
     startedAt: { type: Date, default: Date.now },
     completedAt: Date,
     duration: { type: Number, default: 0 }
+    ,
+    isDeleted: { type: Boolean, default: false },
+    deletedAt: { type: Date, default: null }
 }, { timestamps: true });
 
 interviewSchema.index({ odId: 1, createdAt: -1 }, { background: true });
 interviewSchema.index({ odId: 1, status: 1 }, { background: true });
+
+interviewSchema.plugin(softDelete);
 
 export default mongoose.model('Interview', interviewSchema);

@@ -1,4 +1,5 @@
 import mongoose from 'mongoose';
+import softDelete from '../middleware/softDelete.js';
 
 const userSchema = new mongoose.Schema({
   username: {
@@ -8,7 +9,6 @@ const userSchema = new mongoose.Schema({
   email: {
     type: String,
     required: true,
-    unique: true,
     lowercase: true,
     trim: true,
     match: [/^[^\s@]+@[^\s@]+\.[^\s@]+$/, 'Invalid email address']
@@ -38,7 +38,15 @@ const userSchema = new mongoose.Schema({
   directMessages: { type: Boolean, default: true },
   proposalUpdates: { type: Boolean, default: true },
 }
+  ,
+  isDeleted: { type: Boolean, default: false },
+  deletedAt: { type: Date, default: null }
 });
+
+// Partial unique index on email for soft-deleted docs
+userSchema.index({ email: 1 }, { unique: true, partialFilterExpression: { isDeleted: false } });
+
+userSchema.plugin(softDelete);
 
 const User = mongoose.model('User', userSchema);
 

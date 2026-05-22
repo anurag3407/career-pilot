@@ -1,10 +1,10 @@
 import mongoose from 'mongoose';
+import softDelete from '../middleware/softDelete.js';
 
 const userProfileSchema = new mongoose.Schema({
   uid: {
     type: String,
     required: true,
-    unique: true,
     index: true,
   },
   displayName: {
@@ -78,5 +78,12 @@ const userProfileSchema = new mongoose.Schema({
     }
   }],
 }, { timestamps: true });
+
+userProfileSchema.add({ isDeleted: { type: Boolean, default: false }, deletedAt: { type: Date, default: null } });
+
+// Partial unique index on uid for soft-deleted docs
+userProfileSchema.index({ uid: 1 }, { unique: true, partialFilterExpression: { isDeleted: false } });
+
+userProfileSchema.plugin(softDelete);
 
 export default mongoose.model('UserProfile', userProfileSchema);
