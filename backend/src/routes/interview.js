@@ -6,6 +6,7 @@ import { generateInterviewQuestions, analyzeAnswer, generateOverallFeedback } fr
 import { aiRateLimiter } from '../middleware/rateLimiter.js';
 import { validate } from '../middleware/validate.js';
 import { startInterviewSchema, submitAnswerSchema } from '../schemas/interview.schema.js';
+import { useId } from 'react';
 
 const router = express.Router();
 
@@ -26,7 +27,7 @@ router.post('/start', verifyToken, aiRateLimiter, validate(startInterviewSchema)
     });
 
     const interview = new Interview({
-        odId: req.user.uid,
+        userId: req.user.uid,
         jobRole,
         industry,
         experienceLevel,
@@ -50,7 +51,7 @@ router.post('/:id/answer', verifyToken, aiRateLimiter, validate(submitAnswerSche
     const { id } = req.params;
     const { questionId, transcript, duration, expressionMetrics } = req.body;
 
-    const interview = await Interview.findOne({ _id: id, odId: req.user.uid });
+    const interview = await Interview.findOne({ _id: id, userId: req.user.uid });
     if (!interview) {
         throw new ApiError(404, 'Interview not found');
     }
@@ -103,7 +104,7 @@ router.post('/:id/answer', verifyToken, aiRateLimiter, validate(submitAnswerSche
 router.post('/:id/complete', verifyToken, aiRateLimiter, asyncHandler(async (req, res) => {
     const { id } = req.params;
 
-    const interview = await Interview.findOne({ _id: id, odId: req.user.uid });
+    const interview = await Interview.findOne({ _id: id, userId: req.user.uid });
     if (!interview) {
         throw new ApiError(404, 'Interview not found');
     }
@@ -137,7 +138,7 @@ router.post('/:id/complete', verifyToken, aiRateLimiter, asyncHandler(async (req
 }));
 
 router.get('/history', verifyToken, asyncHandler(async (req, res) => {
-    const interviews = await Interview.find({ odId: req.user.uid })
+    const interviews = await Interview.find({ userId: req.user.uid })
         .sort({ createdAt: -1 })
         .limit(20)
         .select('jobRole industry experienceLevel status overallScore createdAt completedAt duration')
@@ -152,7 +153,7 @@ router.get('/history', verifyToken, asyncHandler(async (req, res) => {
 router.get('/:id', verifyToken, asyncHandler(async (req, res) => {
     const { id } = req.params;
 
-    const interview = await Interview.findOne({ _id: id, odId: req.user.uid }).lean();
+    const interview = await Interview.findOne({ _id: id, userId: req.user.uid }).lean();
     if (!interview) {
         throw new ApiError(404, 'Interview not found');
     }
