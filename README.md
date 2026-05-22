@@ -1234,9 +1234,11 @@ Success (`200`):
     "interviewId": "665a1b2c3d4e5f6789012348",
     "questions": [
       {
-        "questionId": "q1",
+        "questionId": "q_1716378900000_a3f9k2m1x",
         "question": "Describe how you designed a scalable REST API.",
-        "category": "technical"
+        "type": "technical",
+        "difficulty": "medium",
+        "source": "general"
       }
     ]
   }
@@ -1247,7 +1249,7 @@ Success (`200`):
 
 ```json
 {
-  "questionId": "q1",
+  "questionId": "q_1716378900000_a3f9k2m1x",
   "transcript": "In my last role I led the migration to a microservices architecture...",
   "duration": 120,
   "expressionMetrics": {
@@ -1265,12 +1267,30 @@ Success (`200`):
 {
   "success": true,
   "data": {
-    "questionId": "q1",
+    "questionId": "q_1716378900000_a3f9k2m1x",
     "analysis": {
-      "score": 8,
-      "feedback": "Strong structure; add more specific metrics.",
-      "strengths": ["Clear STAR format"],
-      "improvements": ["Quantify latency improvements"]
+      "relevance": 85,
+      "clarity": 78,
+      "confidence": 80,
+      "feedback": "You addressed the architecture question directly with a clear narrative. Adding latency and scale metrics would strengthen the impact.",
+      "whatYouDidWell": ["Used a concrete project example", "Explained trade-offs between monolith and microservices"],
+      "whatWasMissing": ["Specific throughput or latency numbers", "How you measured success post-migration"],
+      "suggestions": [
+        "Open with a one-sentence summary of the system scale",
+        "Quantify performance improvements with before/after metrics",
+        "Mention team size and your specific ownership"
+      ],
+      "idealAnswer": "At Acme Corp I led a migration from a monolithic Node.js API to six microservices, reducing p99 latency from 800ms to 220ms while supporting 3x traffic growth.",
+      "communicationStyle": {
+        "pace": "appropriate",
+        "structure": "well-organized",
+        "specificity": "somewhat specific"
+      },
+      "fillerWords": {
+        "count": 2,
+        "words": ["um", "like"]
+      },
+      "keyTakeaway": "Lead with measurable outcomes, then walk through architecture decisions."
     },
     "answeredCount": 1,
     "totalQuestions": 5
@@ -1321,17 +1341,18 @@ Success (`200`):
 
 #### Error Response Reference
 
-Most API errors use this shape (from `backend/src/middleware/errorHandler.js`):
+Thrown errors are handled by the global error middleware (`backend/src/middleware/globalErrorHandler.js`), which returns:
 
 ```json
 {
   "success": false,
-  "error": "Human-readable error message",
-  "details": null
+  "message": "Human-readable error message"
 }
 ```
 
-Zod validation failures (`backend/src/middleware/validate.js`) return `400` with:
+`ApiError` instances (auth failures, missing fields, not-found resources, etc.) use the same shape — the error text is in `message`, not `error`.
+
+**Zod validation** (`backend/src/middleware/validate.js`) responds directly with `400` and a different structure:
 
 ```json
 {
@@ -1345,10 +1366,11 @@ Zod validation failures (`backend/src/middleware/validate.js`) return `400` with
 
 | Status | Meaning | Example |
 | ------ | ------- | ------- |
-| **400** Bad Request | Missing or invalid fields, bad file upload, business rule violation | `{ "success": false, "error": "Resume text is required" }` |
-| **401** Unauthorized | Missing, malformed, or expired Firebase token | `{ "success": false, "error": "No token provided" }` or `{ "success": false, "error": "Invalid or expired token" }` |
+| **400** Bad Request | Missing or invalid fields (via `ApiError`) | `{ "success": false, "message": "Resume text is required" }` |
+| **400** Validation failed | Zod schema rejection (see structure above) | `{ "success": false, "error": "Validation failed", "details": [...] }` |
+| **401** Unauthorized | Missing, malformed, or expired Firebase token | `{ "success": false, "message": "No token provided" }` or `{ "success": false, "message": "Invalid or expired token" }` |
 | **429** Rate limit exceeded | Global `/api/` limit or AI daily limit (20 requests / 24h per user) | See below |
-| **500** Internal Server Error | Unhandled failure or AI processing error | `{ "success": false, "error": "Failed to enhance resume. Please try again." }` |
+| **500** Internal Server Error | Unhandled failure or AI processing error | `{ "success": false, "message": "Failed to enhance resume. Please try again." }` |
 
 **401 — missing token**
 
@@ -1359,7 +1381,7 @@ curl -s http://localhost:5000/api/auth/profile
 ```json
 {
   "success": false,
-  "error": "No token provided"
+  "message": "No token provided"
 }
 ```
 
@@ -1404,11 +1426,9 @@ X-RateLimit-Reset: 1716378900
 ```json
 {
   "success": false,
-  "error": "Failed to enhance resume. Please try again."
+  "message": "Failed to enhance resume. Please try again."
 }
 ```
-
-In non-production environments, `500` responses may also include a `stack` field for debugging.
 
 ---
 
