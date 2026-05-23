@@ -14,6 +14,20 @@ import crypto from 'crypto';
 const router = express.Router();
 const stateStore = new Map();
 
+// Example register endpoint with validation
+router.post('/register', validate(registerSchema), asyncHandler(async (req, res) => {
+  const { email, name, password } = req.body;
+  const existingUser = await User.findOne({ email });
+  if (existingUser) {
+    return res.status(400).json({ success: false, error: 'User already exists' });
+  }
+  const user = await User.create({ email, name, password });
+  res.status(201).json({
+    success: true,
+    message: 'User registered successfully',
+    user: { id: user._id, email: user.email, name: user.name }
+  });
+}));
 // Periodic sweep of expired stateStore entries every 10 minutes to prevent memory leaks
 setInterval(() => {
   const now = Date.now();
@@ -74,7 +88,7 @@ router.put('/notification-preferences', verifyToken, validate(updateNotification
   const { jobAlerts, directMessages, proposalUpdates } = req.body;
 
   await User.findOneAndUpdate(
-    { email: req.user.email},
+    { email: req.user.email },
     { notificationPreferences: { jobAlerts, directMessages, proposalUpdates } },
     { new: true }
   );
@@ -139,13 +153,13 @@ router.get('/linkedin/callback', asyncHandler(async (req, res) => {
 
     try {
       const firebaseUser = await admin.auth().getUserByEmail(email);
-      firebaseUid = firebaseUser.uid
+      firebaseUid = firebaseUser.uid;
     } catch {
       const newFirebaseUser = await admin.auth().createUser({
         email,
         displayName: name,
         photoURL: picture
-      })
+      });
 
       firebaseUid = newFirebaseUser.uid;
     }
@@ -154,14 +168,14 @@ router.get('/linkedin/callback', asyncHandler(async (req, res) => {
     try {
       firebaseUser = await admin.auth().getUserByEmail(email);
     } catch {
-      firebaseUser = await admin.auth().createUser({ email, displayName: name, photoURL: picture })
+      firebaseUser = await admin.auth().createUser({ email, displayName: name, photoURL: picture });
     }
     firebaseUid = firebaseUser.uid;
 
     await admin.auth().setCustomUserClaims(firebaseUid, {
       linkedinId,
       pendingOnboarding: true,
-    })
+    });
   }
 
   const customToken = await admin.auth().createCustomToken(firebaseUid, {

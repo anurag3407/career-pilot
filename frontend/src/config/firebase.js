@@ -9,7 +9,9 @@ const apiKey = import.meta.env.VITE_FIREBASE_API_KEY;
 const isFirebaseConfigValid = 
   apiKey && 
   apiKey !== 'YOUR_API_KEY_HERE' && 
-  !apiKey.startsWith('<YOUR_');
+  apiKey !== 'your_api_key' &&
+  !apiKey.startsWith('<YOUR_') &&
+  !apiKey.startsWith('AIzaSy-x');
 
 let app;
 let auth = null;

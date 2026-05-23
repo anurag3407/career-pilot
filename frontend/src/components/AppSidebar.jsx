@@ -6,6 +6,7 @@ import {
     LayoutDashboard,
     Search,
     Bell,
+    Mail,
     GraduationCap,
     Users,
     FileText,
@@ -65,6 +66,11 @@ const navLinks = [
         label: "Resume",
         href: "/upload",
         icon: <FileText className="w-5 h-5 flex-shrink-0" />,
+    },
+    {
+    label: "Email Generator",
+    href: "/email-generator",
+    icon: <Mail className="w-5 h-5 flex-shrink-0" />,
     },
     {
         label: "Portfolio",
