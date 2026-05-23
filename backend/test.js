@@ -9,6 +9,7 @@ import { getQueueStats } from './src/services/jobAlertQueue.js';
 
 async function runTests() {
   console.log('--- INTEGRATION TESTS ---');
+  let failed = false;
 
   try {
     // 1. MONGODB
@@ -83,6 +84,7 @@ async function runTests() {
     console.log(`   Hash snippet: ${hash.substring(0, 20)}...`);
   } catch (err) {
     console.error('❌ bcrypt standalone Error:', err.message);
+    failed = true;
   }
 
   try {
@@ -124,6 +126,7 @@ async function runTests() {
     await mongoose.disconnect();
   } catch (err) {
     console.error('❌ pre-save hook Error:', err.message);
+    failed = true;
     await mongoose.disconnect().catch(() => { });
   }
 
@@ -153,9 +156,17 @@ async function runTests() {
     await mongoose.disconnect();
   } catch (err) {
     console.error('❌ select: false Error:', err.message);
+    failed = true;
     await mongoose.disconnect().catch(() => { });
   }
-  process.exit(0);
+
+  if (failed) {
+    console.log('\n❌ Some tests failed');
+    process.exit(1);
+  } else {
+    console.log('\n✅ All tests passed');
+    process.exit(0);
+  }
 }
 
 runTests();
