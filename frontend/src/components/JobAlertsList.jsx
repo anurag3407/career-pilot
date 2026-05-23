@@ -246,60 +246,60 @@ export default function JobAlertsList() {
                                 </div>
 
                                 {/* Actions */}
-<div className="flex items-center gap-2">
-    <Tooltip content="Test alert now">
-        <button
-            onClick={() => handleTest(alert._id)}
-            disabled={testingId === alert._id}
-            className="p-2 text-muted-foreground hover:text-emerald-500 hover:bg-emerald-500/10 rounded-lg transition-colors disabled:opacity-50"
-            aria-label="Test alert now"
-        >
-            {testingId === alert._id ? (
-                <Loader2 className="w-5 h-5 animate-spin" />
-            ) : (
-                <Play className="w-5 h-5" />
-            )}
-        </button>
-    </Tooltip>
+                                <div className="flex items-center gap-2">
+                                    <Tooltip content="Test alert now">
+                                        <button
+                                            onClick={() => handleTest(alert._id)}
+                                            disabled={testingId === alert._id}
+                                            className="p-2 text-muted-foreground hover:text-emerald-500 hover:bg-emerald-500/10 rounded-lg transition-colors disabled:opacity-50"
+                                            aria-label="Test alert now"
+                                        >
+                                            {testingId === alert._id ? (
+                                                <Loader2 className="w-5 h-5 animate-spin" />
+                                            ) : (
+                                                <Play className="w-5 h-5" />
+                                            )}
+                                        </button>
+                                    </Tooltip>
 
-    <Tooltip content={alert.isActive ? 'Pause alert' : 'Activate alert'}>
-        <button
-            onClick={() => handleToggle(alert._id)}
-            className={`p-2 rounded-lg transition-colors ${
-                alert.isActive
-                    ? 'text-muted-foreground hover:text-amber-500 hover:bg-amber-500/10'
-                    : 'text-amber-500 hover:bg-amber-500/10'
-            }`}
-            aria-label={alert.isActive ? 'Pause alert' : 'Activate alert'}
-        >
-            {alert.isActive ? (
-                <BellOff className="w-5 h-5" />
-            ) : (
-                <Bell className="w-5 h-5" />
-            )}
-        </button>
-    </Tooltip>
+                                    <Tooltip content={alert.isActive ? 'Pause alert' : 'Activate alert'}>
+                                        <button
+                                            onClick={() => handleToggle(alert._id)}
+                                            className={`p-2 rounded-lg transition-colors ${
+                                                alert.isActive
+                                                    ? 'text-muted-foreground hover:text-amber-500 hover:bg-amber-500/10'
+                                                    : 'text-amber-500 hover:bg-amber-500/10'
+                                            }`}
+                                            aria-label={alert.isActive ? 'Pause alert' : 'Activate alert'}
+                                        >
+                                            {alert.isActive ? (
+                                                <BellOff className="w-5 h-5" />
+                                            ) : (
+                                                <Bell className="w-5 h-5" />
+                                            )}
+                                        </button>
+                                    </Tooltip>
 
-    <Tooltip content="Edit alert">
-        <button
-            onClick={() => handleEdit(alert)}
-            className="p-2 text-muted-foreground hover:text-primary hover:bg-primary/10 rounded-lg transition-colors"
-            aria-label="Edit alert"
-        >
-            <Edit2 className="w-5 h-5" />
-        </button>
-    </Tooltip>
+                                    <Tooltip content="Edit alert">
+                                        <button
+                                            onClick={() => handleEdit(alert)}
+                                            className="p-2 text-muted-foreground hover:text-primary hover:bg-primary/10 rounded-lg transition-colors"
+                                            aria-label="Edit alert"
+                                        >
+                                            <Edit2 className="w-5 h-5" />
+                                        </button>
+                                    </Tooltip>
 
-    <Tooltip content="Delete alert">
-        <button
-            onClick={() => handleDelete(alert._id)}
-            className="p-2 text-muted-foreground hover:text-destructive hover:bg-destructive/10 rounded-lg transition-colors"
-            aria-label="Delete alert"
-        >
-            <Trash2 className="w-5 h-5" />
-        </button>
-    </Tooltip>
-</div>
+                                    <Tooltip content="Delete alert">
+                                        <button
+                                            onClick={() => handleDelete(alert._id)}
+                                            className="p-2 text-muted-foreground hover:text-destructive hover:bg-destructive/10 rounded-lg transition-colors"
+                                            aria-label="Delete alert"
+                                        >
+                                            <Trash2 className="w-5 h-5" />
+                                        </button>
+                                    </Tooltip>
+                                </div>
                             </div>
                         </motion.div>
                     ))}
