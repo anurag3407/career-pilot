@@ -1,4 +1,5 @@
 import { cn } from '@/lib/utils'
+import PropTypes from 'prop-types'
 
 export default function Card({ children, className = '' }) {
   return (
@@ -9,4 +10,9 @@ export default function Card({ children, className = '' }) {
       {children}
     </div>
   )
+}
+
+Card.propTypes = {
+  children: PropTypes.node,
+  className: PropTypes.string,
 }

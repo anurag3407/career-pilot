@@ -1,6 +1,3 @@
-import { cn } from "@/lib/utils";
-import { motion } from "framer-motion";
-
 export default function Button({
   children,
   type = "button",
@@ -69,4 +66,15 @@ export default function Button({
       )}
     </motion.button>
   );
+}
+
+Button.propTypes = {
+  children: PropTypes.node,
+  type: PropTypes.oneOf(['button', 'submit', 'reset']),
+  variant: PropTypes.oneOf(['primary', 'secondary', 'danger', 'outline', 'ghost', 'gradient']),
+  size: PropTypes.oneOf(['sm', 'default', 'lg', 'xl']),
+  disabled: PropTypes.bool,
+  loading: PropTypes.bool,
+  onClick: PropTypes.func,
+  className: PropTypes.string,
 }

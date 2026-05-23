@@ -1,4 +1,5 @@
 import { cn } from '@/lib/utils'
+import PropTypes from 'prop-types'
 
 export default function Input({
   label,
@@ -46,4 +47,17 @@ export default function Input({
       )}
     </div>
   )
+}
+
+Input.propTypes = {
+  label: PropTypes.string,
+  type: PropTypes.string,
+  name: PropTypes.string,
+  value: PropTypes.oneOfType([PropTypes.string, PropTypes.number]),
+  onChange: PropTypes.func,
+  placeholder: PropTypes.string,
+  error: PropTypes.string,
+  required: PropTypes.bool,
+  disabled: PropTypes.bool,
+  className: PropTypes.string,
 }
