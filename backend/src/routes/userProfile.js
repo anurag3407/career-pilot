@@ -85,7 +85,7 @@ router.get('/me/stats', asyncHandler(async (req, res) => {
   const uid = req.user.uid;
   const [resumesCreated, interviewsDone] = await Promise.all([
     Resume.countDocuments({ userId: uid }),
-    Interview.countDocuments({ odId: uid, status: 'completed' }),
+    Interview.countDocuments({ userId: uid, status: 'completed' }),
   ]);
   res.json({ success: true, stats: { resumesCreated, interviewsDone } });
 }));
@@ -108,7 +108,7 @@ router.get('/:uid/stats', asyncHandler(async (req, res) => {
   const uid = req.params.uid;
   const [resumesCreated, interviewsDone] = await Promise.all([
     Resume.countDocuments({ userId: uid }),
-    Interview.countDocuments({ odId: uid, status: 'completed' }),
+    Interview.countDocuments({ userId: uid, status: 'completed' }),
   ]);
   res.json({ success: true, stats: { resumesCreated, interviewsDone } });
 }));
