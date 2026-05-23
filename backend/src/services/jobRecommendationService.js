@@ -45,9 +45,9 @@ Return this exact JSON structure:
         const similarJobs = candidateJobs.filter(job => data.similarJobIds.includes(job.job_id || job._id || job.id));
         return similarJobs.slice(0, 5);
     }
-    return candidateJobs.slice(0, 5);
+    return Array.isArray(candidateJobs) ? candidateJobs.slice(0, 5) : [];
   } catch (error) {
     console.error('Error getting similar jobs:', error);
-    return candidateJobs.slice(0, 5);
+    return Array.isArray(candidateJobs) ? candidateJobs.slice(0, 5) : [];
   }
 };
