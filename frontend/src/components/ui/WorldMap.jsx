@@ -22,7 +22,7 @@ const { theme } = useTheme();
 const isDark = theme === "dark";
 const dotColor = isDark ? "#ffffff" : "#000000";
 
-  const svgMap = useMemo(() => {
+const svgMap = useMemo(() => {
     if (!isMounted) return null;
     if (cachedSvgMap) return cachedSvgMap;
 

@@ -1,0 +1,589 @@
+:root {
+    --bg-color: #050505;
+    --text-color: #f5f5f5;
+    --accent-color: #dfcaa0;
+    --font-heading: 'Playfair Display', serif;
+    --font-body: 'Inter', sans-serif;
+}
+
+/* --- AWWWARDS PREMIUM ENHANCEMENTS --- */
+
+/* 1. Grain Noise Overlay */
+.grain-overlay {
+    position: fixed;
+    top: 0;
+    left: 0;
+    width: 100vw;
+    height: 100vh;
+    pointer-events: none;
+    z-index: 9999;
+    opacity: 0.05;
+    background-image: url("data:image/svg+xml,%3Csvg viewBox='0 0 200 200' xmlns='http://www.w3.org/2000/svg'%3E%3Cfilter id='noiseFilter'%3E%3CfeTurbulence type='fractalNoise' baseFrequency='0.8' numOctaves='3' stitchTiles='stitch'/%3E%3C/filter%3E%3Crect width='100%25' height='100%25' filter='url(%23noiseFilter)'/%3E%3C/svg%3E");
+}
+
+/* 2. Pure CSS Loader */
+.css-loader {
+    position: fixed;
+    inset: 0;
+    background: var(--bg-color);
+    z-index: 10000;
+    display: flex;
+    flex-direction: column;
+    justify-content: center;
+    align-items: center;
+    animation: slideUpLoader 1s 2.5s cubic-bezier(0.85, 0, 0.15, 1) forwards;
+    /* Keep pointer-events enabled while loader is visible so it blocks interaction
+       during the loading state. After the animation completes, toggle the
+       `.hidden` class (via JS on animationend) to remove the element and
+       prevent it from blocking pointer events. */
+}
+
+.loader-text {
+    font-size: 3vw;
+    color: var(--text-color);
+    margin-bottom: 20px;
+    animation: pulseLoader 1s infinite alternate ease-in-out;
+}
+
+.loader-progress {
+    width: 200px;
+    height: 2px;
+    background: rgba(255,255,255,0.1);
+    position: relative;
+    overflow: hidden;
+}
+
+.loader-progress::after {
+    content: '';
+    position: absolute;
+    top: 0;
+    left: 0;
+    height: 100%;
+    width: 0;
+    background: var(--accent-color);
+    animation: progressFill 2s cubic-bezier(0.85, 0, 0.15, 1) forwards;
+}
+
+@keyframes slideUpLoader {
+    /* `display` is not animatable; remove it from keyframes. The animation
+       will move the loader out of view. Use JS to remove the element or add
+       a class to hide it after the animation completes to fully remove it
+       from the accessibility tree and pointer events. */
+    to { transform: translateY(-100%); }
+}
+
+/* Helper class to be toggled after the loader animation completes. Use an
+   animationend listener to add `.hidden` to `.css-loader` so it no longer
+   blocks interactions or remains in the DOM visually. */
+.css-loader.hidden {
+    display: none;
+    pointer-events: none;
+    visibility: hidden;
+}
+
+@keyframes pulseLoader {
+    from { opacity: 0.5; }
+    to { opacity: 1; }
+}
+
+@keyframes progressFill {
+    to { width: 100%; }
+}
+
+/* 3. Glowing Abstract Orb */
+.hero-glow {
+    position: absolute;
+    top: 50%;
+    left: 20%;
+    width: 50vw;
+    height: 50vw;
+    background: radial-gradient(circle, rgba(223, 202, 160, 0.15) 0%, rgba(5, 5, 5, 0) 70%);
+    border-radius: 50%;
+    transform: translate(-50%, -50%);
+    filter: blur(60px);
+    z-index: 1;
+    animation: floatOrb 10s infinite alternate ease-in-out;
+    pointer-events: none;
+}
+
+@keyframes floatOrb {
+    from { transform: translate(-50%, -50%) scale(1); }
+    to { transform: translate(-45%, -55%) scale(1.1); }
+}
+
+/* Custom Cursor - Pure CSS */
+body, html {
+    margin: 0;
+    padding: 0;
+    height: 100vh;
+    width: 100vw;
+    overflow: hidden;
+    background-color: var(--bg-color);
+    color: var(--text-color);
+    font-family: var(--font-body);
+    cursor: url('data:image/svg+xml;utf8,<svg width="40" height="40" viewBox="0 0 40 40" xmlns="http://www.w3.org/2000/svg"><circle cx="20" cy="20" r="18" fill="none" stroke="white" stroke-width="1.5" opacity="0.8"/><circle cx="20" cy="20" r="3" fill="white"/></svg>') 20 20, auto;
+    -webkit-font-smoothing: antialiased;
+}
+
+a, button, .hover-target {
+    cursor: url('data:image/svg+xml;utf8,<svg width="40" height="40" viewBox="0 0 40 40" xmlns="http://www.w3.org/2000/svg"><circle cx="20" cy="20" r="18" fill="white" opacity="0.3"/><circle cx="20" cy="20" r="3" fill="white"/></svg>') 20 20, pointer;
+}
+
+/* Typography */
+.editorial-title {
+    font-family: var(--font-heading);
+    font-size: 8vw;
+    font-weight: 400;
+    line-height: 1;
+    margin: 0;
+    letter-spacing: -2px;
+}
+
+.italic {
+    font-style: italic;
+}
+
+.body-text {
+    font-size: 1.25rem;
+    font-weight: 300;
+    line-height: 1.6;
+    color: #a0a0a0;
+    max-width: 400px;
+}
+
+/* Utilities */
+.mt-4 { margin-top: 1rem; }
+.mt-6 { margin-top: 1.5rem; }
+.mt-8 { margin-top: 2rem; }
+.mb-8 { margin-bottom: 2rem; }
+
+/* Horizontal Scroll Container (CSS Snap) */
+.scroll-container {
+    height: 100vh;
+    width: 100vw;
+    overflow-x: auto;
+    overflow-y: hidden;
+    display: flex;
+    scroll-snap-type: x mandatory;
+    scroll-behavior: smooth;
+    /* Hide scrollbar */
+    -ms-overflow-style: none;
+    scrollbar-width: none;
+    /* Define CSS Scroll Timeline for the progress bar */
+    scroll-timeline: --horizontal-scroll inline;
+}
+.scroll-container::-webkit-scrollbar {
+    display: none;
+}
+
+/* Pure CSS Scroll Progress Bar */
+.scroll-progress {
+    position: fixed;
+    bottom: 20px;
+    left: 40px;
+    width: calc(100vw - 80px);
+    height: 1px;
+    background: rgba(255, 255, 255, 0.1);
+    z-index: 100;
+    pointer-events: none;
+}
+
+.scroll-progress-fill {
+    height: 100%;
+    width: 100%;
+    background: var(--accent-color);
+    transform-origin: left;
+    transform: scaleX(0);
+    /* Bind animation to the scroll container's timeline */
+    animation: fillProgress linear both;
+    animation-timeline: --horizontal-scroll;
+}
+
+@keyframes fillProgress {
+    from { transform: scaleX(0); }
+    to { transform: scaleX(1); }
+}
+
+.snap-item {
+    scroll-snap-align: start;
+    scroll-snap-stop: always;
+    min-width: 100vw;
+    height: 100vh;
+    position: relative;
+    display: flex;
+}
+
+/* Staggered Text Reveal Animation with Clip-Path */
+@keyframes revealClipUp {
+    0% { transform: translateY(100%); clip-path: polygon(0 0, 100% 0, 100% 0, 0 0); }
+    100% { transform: translateY(0); clip-path: polygon(0 0, 100% 0, 100% 100%, 0 100%); }
+}
+
+.reveal-wrapper {
+    overflow: hidden;
+    display: block;
+    position: relative;
+    padding-bottom: 5px; /* Prevent descender clipping */
+}
+
+.reveal-text {
+    display: inline-block;
+    transform-origin: left top;
+    animation: revealClipUp 1.2s 2.6s cubic-bezier(0.19, 1, 0.22, 1) forwards; /* 2.6s delays it until after loader */
+    transform: translateY(100%);
+    clip-path: polygon(0 0, 100% 0, 100% 0, 0 0);
+}
+
+.hero {
+    flex-direction: row;
+    background: var(--bg-color);
+}
+
+.hero-text {
+    flex: 1;
+    display: flex;
+    flex-direction: column;
+    justify-content: center;
+    padding-left: 8vw;
+    position: relative;
+    z-index: 2;
+}
+
+.hero-image {
+    flex: 1;
+    position: relative;
+    overflow: hidden;
+    /* Ultra-premium Arch Clip-Path */
+    clip-path: inset(10% 10% 10% 10% round 300px 300px 0 0);
+    transition: clip-path 1.5s cubic-bezier(0.19, 1, 0.22, 1);
+    background: var(--bg-color);
+}
+
+.hero-image img {
+    width: 100%;
+    height: 100%;
+    object-fit: cover;
+    filter: grayscale(100%) brightness(0.8);
+    transition: filter 1.5s cubic-bezier(0.19, 1, 0.22, 1), transform 1.5s cubic-bezier(0.19, 1, 0.22, 1);
+    
+    /* Image Reveal Animation tied to loader finish */
+    animation: imageReveal 2s 2.6s cubic-bezier(0.19, 1, 0.22, 1) both;
+}
+
+@keyframes imageReveal {
+    0% { transform: scale(1.6); filter: blur(20px); opacity: 0; }
+    100% { transform: scale(1); filter: blur(0); opacity: 1; }
+}
+
+.hero:hover .hero-image {
+    /* Expands to full screen on hover */
+    clip-path: inset(0% 0% 0% 0% round 0px 0px 0 0);
+}
+
+.hero:hover .hero-image img {
+    filter: grayscale(0%) brightness(1);
+    transform: scale(1.05);
+}
+
+/* Abstract Spinning Element */
+.abstract-circle {
+    position: absolute;
+    width: 60vw;
+    height: 60vw;
+    border: 1px dashed rgba(255, 255, 255, 0.15);
+    border-radius: 50%;
+    top: 50%;
+    left: 20%;
+    transform: translate(-50%, -50%);
+    pointer-events: none;
+    animation: spinCircle 40s linear infinite;
+    mix-blend-mode: overlay;
+    z-index: 0;
+}
+
+@keyframes spinCircle {
+    0% { transform: translate(-50%, -50%) rotate(0deg); }
+    100% { transform: translate(-50%, -50%) rotate(360deg); }
+}
+
+/* Slide Indicator */
+.slide-indicator {
+    position: absolute;
+    bottom: 40px;
+    right: 40px;
+    display: flex;
+    align-items: center;
+    gap: 15px;
+    font-family: var(--font-body);
+    font-size: 0.75rem;
+    text-transform: uppercase;
+    letter-spacing: 3px;
+    z-index: 10;
+    color: var(--text-color);
+    animation: bounceRight 2s infinite ease-in-out;
+}
+
+@keyframes bounceRight {
+    0%, 100% { transform: translateX(0); }
+    50% { transform: translateX(10px); }
+}
+
+/* Marquee Section */
+.marquee-section {
+    flex-direction: column;
+    justify-content: center;
+    background: var(--text-color);
+    color: var(--bg-color);
+}
+
+.marquee-container {
+    width: 100%;
+    overflow: hidden;
+    /* Edge fade mask for premium look */
+    -webkit-mask-image: linear-gradient(to right, transparent, black 10%, black 90%, transparent);
+    mask-image: linear-gradient(to right, transparent, black 10%, black 90%, transparent);
+}
+
+.marquee-wrapper {
+    display: flex;
+    white-space: nowrap;
+}
+
+@keyframes marquee-scroll {
+    0% { transform: translateX(0); }
+    100% { transform: translateX(-50%); }
+}
+
+@keyframes marquee-scroll-reverse {
+    0% { transform: translateX(-50%); }
+    100% { transform: translateX(0); }
+}
+
+.marquee {
+    display: flex;
+    font-family: var(--font-heading);
+    font-size: 12vw;
+    text-transform: uppercase;
+    font-style: italic;
+    letter-spacing: -2px;
+    animation: marquee-scroll 25s linear infinite;
+    will-change: transform;
+    transition: transform 0.8s cubic-bezier(0.19, 1, 0.22, 1), filter 0.8s ease;
+    transform-origin: center;
+}
+
+.marquee-reverse {
+    animation: marquee-scroll-reverse 30s linear infinite;
+}
+
+/* Kinetic Typography Skew on Hover */
+.marquee-section:hover .marquee {
+    animation-play-state: paused;
+    filter: blur(3px);
+    transform: skewX(-15deg) scale(1.05);
+}
+
+.outline-text {
+    -webkit-text-stroke: 2px var(--bg-color);
+    color: transparent;
+}
+
+/* Projects Section (Parallax & Full Bleed) */
+.project {
+    align-items: center;
+    justify-content: center;
+    overflow: hidden; /* Important for parallax */
+}
+
+.project-bg {
+    position: absolute;
+    top: 0;
+    left: 0;
+    width: 100%;
+    height: 100%;
+    background-attachment: fixed; /* Fallback Parallax */
+    background-size: cover;
+    background-position: center;
+    filter: grayscale(80%) brightness(0.3);
+    transition: filter 0.8s ease, transform 1s cubic-bezier(0.19, 1, 0.22, 1);
+    z-index: 1;
+}
+
+.project-overlay {
+    position: absolute;
+    inset: 0;
+    background: radial-gradient(circle at center, transparent 0%, rgba(0,0,0,0.6) 100%);
+    z-index: 2;
+}
+
+.project:hover .project-bg {
+    filter: grayscale(0%) brightness(0.7);
+    transform: scale(1.05);
+}
+
+.project-content {
+    position: relative;
+    z-index: 3;
+    text-align: center;
+    will-change: transform, opacity;
+}
+
+.project-content .editorial-title {
+    font-size: 8vw;
+}
+
+/* --- CUTTING-EDGE PURE CSS PARALLAX (Chrome/Edge Supported) --- */
+/* This creates true background/text multi-speed parallax on horizontal scroll */
+@supports (animation-timeline: view()) {
+    .project-bg {
+        background-attachment: scroll; /* Override fixed */
+        width: 130vw; /* Make wider for panning */
+        left: -15vw; /* Center it */
+        animation: horizontalBgPan linear both;
+        animation-timeline: view(inline); /* Tracks horizontal scroll */
+    }
+
+    @keyframes horizontalBgPan {
+        0% { transform: translateX(10vw); }
+        100% { transform: translateX(-10vw); }
+    }
+
+    /* Text moves at a different speed than the background */
+    .project-content {
+        animation: textParallax linear both;
+        animation-timeline: view(inline);
+        animation-range: entry 0% cover 50%;
+    }
+
+    @keyframes textParallax {
+        0% { transform: translateX(15vw) scale(0.8); opacity: 0; filter: blur(10px); }
+        100% { transform: translateX(0) scale(1); opacity: 1; filter: blur(0px); }
+    }
+
+    .project:hover .project-bg {
+        /* Maintain animation position but add scale */
+        transform: scale(1.05); 
+    }
+}
+
+/* Hover Reveals inside Projects */
+.reveal-hover {
+    transform: translateY(40px);
+    opacity: 0;
+    transition: transform 0.8s cubic-bezier(0.19, 1, 0.22, 1), opacity 0.8s ease;
+}
+
+.project:hover .reveal-hover {
+    transform: translateY(0);
+    opacity: 1;
+}
+
+.delay-1 { transition-delay: 0.1s; }
+.delay-2 { transition-delay: 0.2s; }
+
+/* Micro-interaction Button with Arrow */
+.hover-btn {
+    position: relative;
+    display: inline-flex;
+    align-items: center;
+    justify-content: center;
+    gap: 10px;
+    padding: 16px 40px;
+    font-family: var(--font-body);
+    font-size: 0.9rem;
+    text-transform: uppercase;
+    letter-spacing: 3px;
+    color: var(--text-color);
+    text-decoration: none;
+    border: 1px solid rgba(255,255,255,0.2);
+    overflow: hidden;
+    transition: all 0.5s cubic-bezier(0.19, 1, 0.22, 1);
+    border-radius: 40px; /* Pill shape */
+    background: rgba(255,255,255,0.03);
+    backdrop-filter: blur(5px);
+}
+
+.hover-btn svg {
+    width: 18px;
+    height: 18px;
+    transition: transform 0.5s cubic-bezier(0.19, 1, 0.22, 1);
+}
+
+.hover-btn::before {
+    content: '';
+    position: absolute;
+    top: 0;
+    left: 0;
+    width: 100%;
+    height: 100%;
+    background: var(--text-color);
+    transform: scaleX(0);
+    transform-origin: right;
+    transition: transform 0.6s cubic-bezier(0.19, 1, 0.22, 1);
+    z-index: -1;
+}
+
+.hover-btn:hover {
+    color: var(--bg-color);
+    border-color: var(--text-color);
+    transform: scale(1.05); /* Simulating magnetic pop */
+    box-shadow: 0 10px 30px rgba(255,255,255,0.2);
+}
+
+.hover-btn:hover::before {
+    transform: scaleX(1);
+    transform-origin: left;
+}
+
+.hover-btn:hover svg {
+    transform: translateX(5px);
+}
+
+.outline-hover {
+    transition: color 0.4s ease, -webkit-text-stroke 0.4s ease;
+}
+
+.project:hover .outline-hover {
+    color: transparent;
+    -webkit-text-stroke: 2px var(--text-color);
+}
+
+/* Contact Section */
+.contact {
+    background: var(--bg-color);
+    align-items: center;
+    justify-content: center;
+}
+
+.contact-content {
+    text-align: center;
+}
+
+.magnetic-btn {
+    display: inline-block;
+    font-size: 3vw;
+    color: var(--text-color);
+    text-decoration: none;
+    font-family: var(--font-heading);
+    font-style: italic;
+    position: relative;
+    padding: 10px;
+}
+
+.magnetic-btn::after {
+    content: '';
+    position: absolute;
+    width: 100%;
+    height: 2px;
+    bottom: 0;
+    left: 0;
+    background-color: var(--accent-color, #fff);
+    transform: scaleX(0);
+    transform-origin: right;
+    transition: transform 0.4s cubic-bezier(0.19, 1, 0.22, 1);
+}
+
+.magnetic-btn:hover::after {
+    transform: scaleX(1);
+    transform-origin: left;
+}

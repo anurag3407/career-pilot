@@ -1,0 +1,176 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>{{name}} - Premium Portfolio</title>
+    <link rel="stylesheet" href="styles.css">
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500&family=Playfair+Display:ital,wght@0,400;0,600;1,400&display=swap" rel="stylesheet">
+</head>
+<body>
+    <!-- Pure CSS Loader -->
+    <div class="css-loader">
+        <div class="loader-text editorial-title italic">Loading Experience</div>
+        <div class="loader-progress"></div>
+    </div>
+
+    <!-- Grain Texture Overlay -->
+    <div class="grain-overlay"></div>
+
+    <!-- Horizontal Scroll Container with CSS Scroll Snap -->
+    <main class="scroll-container">
+        
+        <!-- CSS Scroll Progress Indicator -->
+        <div class="scroll-progress">
+            <div class="scroll-progress-fill"></div>
+        </div>
+        
+        <!-- Section 1: Hero (Split Screen) -->
+        <section class="snap-item hero">
+            <!-- Slide Indicator -->
+            <div class="slide-indicator">
+                Slide to explore 
+                <svg width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.5" aria-hidden="true"><path d="M5 12h14M12 5l7 7-7 7"/></svg>
+            </div>
+            <!-- Glowing Orb and Abstract Shapes -->
+            <div class="hero-glow"></div>
+            <div class="abstract-circle"></div>
+            
+            <div class="hero-text">
+                <div class="reveal-wrapper">
+                    <h1 class="reveal-text editorial-title">Digital</h1>
+                </div>
+                <div class="reveal-wrapper">
+                    <h1 class="reveal-text editorial-title italic" style="animation-delay: 0.2s;">Artisan</h1>
+                </div>
+                <div class="reveal-wrapper mt-4">
+                    <p class="reveal-text body-text" style="animation-delay: 0.4s;">
+                        Hi, I'm {{name}}. I craft immersive digital experiences through code and design, pushing the boundaries of the modern web.
+                    </p>
+                </div>
+                <div class="reveal-wrapper mt-8">
+                    <div class="reveal-text" style="animation-delay: 0.6s;">
+                        <a href="#work" class="hover-btn arrow-btn">
+                            Explore Work 
+                            <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" aria-hidden="true"><path d="M5 12h14M12 5l7 7-7 7"/></svg>
+                        </a>
+                    </div>
+                </div>
+            </div>
+            <div class="hero-image">
+                <!-- Using placeholder for template. Backend engine will inject {{profileImage}} -->
+                <img src="{{profileImage}}" alt="Profile Image" onerror="this.src='https://images.unsplash.com/photo-1618005182384-a83a8bd57fbe?q=80&w=2564&auto=format&fit=crop'">
+            </div>
+        </section>
+
+        <!-- Section 2: Marquee Animation -->
+        <section class="snap-item marquee-section">
+            <div class="marquee-container">
+                <div class="marquee-wrapper">
+                    <div class="marquee">
+                        <span>Creative Developer • UI/UX Design • WebGL • CSS Art • </span>
+                        <span>Creative Developer • UI/UX Design • WebGL • CSS Art • </span>
+                    </div>
+                </div>
+                <div class="marquee-wrapper mt-8">
+                    <div class="marquee marquee-reverse">
+                        <span class="outline-text">Frontend • Backend • Systems • Architecture • </span>
+                        <span class="outline-text">Frontend • Backend • Systems • Architecture • </span>
+                    </div>
+                </div>
+            </div>
+        </section>
+
+        <!-- Section 3: Project 1 (Parallax & Full Bleed) -->
+        <section class="snap-item project hover-target" id="work">
+            <!-- Pure CSS parallax uses background-attachment: fixed -->
+            <div class="project-bg" style="background-image: url('{{project1Image}}');"></div>
+            <div class="project-overlay"></div>
+            <div class="project-content">
+                <h2 class="editorial-title reveal-hover outline-hover">Ethereal</h2>
+                <p class="body-text reveal-hover delay-1" style="margin: 10px auto;">{{project1Description}}</p>
+                <div class="reveal-hover delay-2 mt-6">
+                    <a href="{{project1Url}}" class="hover-btn arrow-btn">
+                        View Case Study
+                        <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" aria-hidden="true"><path d="M5 12h14M12 5l7 7-7 7"/></svg>
+                    </a>
+                </div>
+            </div>
+        </section>
+
+        <!-- Section 4: Project 2 (Parallax & Full Bleed) -->
+        <section class="snap-item project hover-target">
+            <!-- Fallback to unspash if backend doesn't inject correctly -->
+            <div class="project-bg" style="background-image: url('{{project2Image}}');"></div>
+            <div class="project-overlay"></div>
+            <div class="project-content">
+                <h2 class="editorial-title reveal-hover outline-hover">Lumina</h2>
+                <p class="body-text reveal-hover delay-1" style="margin: 10px auto;">{{project2Description}}</p>
+                <div class="reveal-hover delay-2 mt-6">
+                    <a href="{{project2Url}}" class="hover-btn arrow-btn">
+                        View Case Study
+                        <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" aria-hidden="true"><path d="M5 12h14M12 5l7 7-7 7"/></svg>
+                    </a>
+                </div>
+            </div>
+        </section>
+
+        <!-- Section 5: Contact -->
+        <section class="snap-item contact">
+            <div class="contact-content">
+                <div class="reveal-wrapper mb-8">
+                    <h2 class="reveal-text editorial-title" style="animation-delay: 0.1s;">Let's</h2>
+                </div>
+                <div class="reveal-wrapper mb-8">
+                    <h2 class="reveal-text editorial-title italic" style="animation-delay: 0.3s;">Create.</h2>
+                </div>
+                <div class="reveal-wrapper">
+                    <div class="reveal-text" style="animation-delay: 0.5s;">
+                        <a href="mailto:{{email}}" class="magnetic-btn hover-target">{{email}}</a>
+                    </div>
+                </div>
+            </div>
+        </section>
+
+    </main>
+
+    <!-- Fallback script just to ensure images load for preview purposes if handlebars variables aren't swapped out -->
+    <script>
+        // Only run if the template tags are still present (not processed by backend)
+        document.querySelectorAll('.project-bg').forEach((el, index) => {
+            if(el.style.backgroundImage.includes('{{')) {
+                const backups = [
+                    'https://images.unsplash.com/photo-1550745165-9bc0b252726f?q=80&w=2000&auto=format&fit=crop',
+                    'https://images.unsplash.com/photo-1558655146-d09347e92766?q=80&w=2000&auto=format&fit=crop'
+                ];
+                el.style.backgroundImage = `url('${backups[index]}')`;
+            }
+        });
+        
+        // Safely replace text content and attributes without destroying DOM nodes
+        const replacePlaceholders = (node) => {
+            if (node.nodeType === Node.TEXT_NODE) {
+                if (node.nodeValue.includes('{{name}}')) node.nodeValue = node.nodeValue.replace(/\{\{name\}\}/g, 'Alex Designer');
+                if (node.nodeValue.includes('{{email}}')) node.nodeValue = node.nodeValue.replace(/\{\{email\}\}/g, 'hello@awwwards-premium.com');
+                if (node.nodeValue.includes('{{project1Description}}')) node.nodeValue = node.nodeValue.replace(/\{\{project1Description\}\}/g, 'An innovative digital experience built from scratch.');
+                if (node.nodeValue.includes('{{project2Description}}')) node.nodeValue = node.nodeValue.replace(/\{\{project2Description\}\}/g, 'A seamless integration of design and technology.');
+            } else if (node.nodeType === Node.ELEMENT_NODE) {
+                Array.from(node.attributes).forEach(attr => {
+                    if (attr.value.includes('{{email}}')) attr.value = attr.value.replace(/\{\{email\}\}/g, 'hello@awwwards-premium.com');
+                    if (attr.value.includes('{{project1Url}}')) attr.value = attr.value.replace(/\{\{project1Url\}\}/g, '#');
+                    if (attr.value.includes('{{project2Url}}')) attr.value = attr.value.replace(/\{\{project2Url\}\}/g, '#');
+                });
+                node.childNodes.forEach(replacePlaceholders);
+            }
+        };
+        replacePlaceholders(document.body);
+        
+        // Replace document title
+        if (document.title.includes('{{name}}')) {
+            document.title = document.title.replace(/\{\{name\}\}/g, 'Alex Designer');
+        }
+    </script>
+</body>
+</html>
