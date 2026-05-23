@@ -1,5 +1,8 @@
 import 'dotenv/config';
 import express from 'express';
+import dotenv from "dotenv";
+dotenv.config();
+
 import { createServer } from 'http';
 import cors from 'cors';
 import helmet from 'helmet';
@@ -16,7 +19,7 @@ import jobAlertRoutes from './routes/jobAlerts.js';
 import communityRoutes from './routes/community.js';
 import fellowshipRoutes from './routes/fellowships.js';
 import interviewRoutes from './routes/interview.js';
-import paymentRoutes from './routes/payments.js';
+
 import userProfileRoutes from './routes/userProfile.js';
 import twoFactorRoutes from './routes/twoFactor.js';
 import aiRoutes from './routes/ai.js';
@@ -45,7 +48,7 @@ const shouldInitGitHubSyncCron =
   process.env.NODE_ENV !== 'test';
 
 const connectDB = async (...args) => {
-  await baseConnectDB(...args);
+  //await baseConnectDB(...args);
 
   if (shouldInitGitHubSyncCron) {
     initGitHubSyncCron();
@@ -201,7 +204,15 @@ app.use('/api/job-alerts', jobAlertRoutes);
 app.use('/api/community', communityRoutes);
 app.use('/api/fellowship', fellowshipRoutes);
 app.use('/api/interview', interviewRoutes);
-app.use('/api/payments', paymentRoutes);
+try {
+    const paymentRoutes = (await import('./routes/payments.js')).default;
+
+    app.use('/api/payments', paymentRoutes);
+
+    console.log('✅ Payment routes loaded');
+} catch (error) {
+    console.warn('⚠️ Payment routes disabled:', error.message);
+}
 app.use('/api/portfolio', portfolioRoutes);
 app.use('/api/user-profiles', userProfileRoutes);
 app.use('/api/auth/2fa', twoFactorRoutes);
@@ -214,7 +225,7 @@ app.use((req, res) => {
 app.use(globalErrorHandler);
 const startServer = async () => {
   try {
-    await connectDB();
+    //await connectDB();
 
     httpServer.listen(PORT, () => {
       console.log(`🚀 Server running on port ${PORT}`);
