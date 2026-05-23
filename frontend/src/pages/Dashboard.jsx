@@ -20,10 +20,17 @@ import {
   Sparkles,
   GraduationCap,
   Bell,
-  Mic
+  Mic,
+  Globe
 } from 'lucide-react'
-import { resumeApi, jobTrackerApi } from '../services/api'
+import { resumeApi, jobTrackerApi, portfolioApi } from '../services/api'
 import Button from '../components/Button'
+import { 
+  SkeletonDashboardActions, 
+  SkeletonStatCards, 
+  SkeletonJobList,
+  SkeletonList 
+} from '../components/ui/Skeleton'
 
 const STATUS_CONFIG = {
   saved: { label: 'Saved', color: 'bg-muted text-muted-foreground border border-border', icon: Star },
@@ -44,6 +51,7 @@ export default function Dashboard() {
     interviewing: 0,
     offered: 0
   })
+  const [portfolioCount, setPortfolioCount] = useState(0)
 
   useEffect(() => {
     fetchData()
@@ -51,14 +59,23 @@ export default function Dashboard() {
 
   const fetchData = async () => {
     try {
-      const [resumeRes, jobsRes] = await Promise.all([
+      const [resumeRes, jobsRes, portfolioRes] = await Promise.all([
         resumeApi.getAll().catch(() => ({ resumes: [] })),
-        jobTrackerApi.getAll().catch(() => ({ trackedJobs: [] }))
+        jobTrackerApi.getAll().catch(() => ({ trackedJobs: [] })),
+        portfolioApi.getAll().catch(() => ({ portfolioItems: [] }))
       ])
 
       setResumes(resumeRes.resumes || resumeRes.data?.resumes || [])
       const jobs = jobsRes.trackedJobs || []
       setTrackedJobs(jobs)
+
+      const portfolios =
+        portfolioRes.portfolios ||
+        portfolioRes.data?.portfolios ||
+        portfolioRes.data ||
+        [];
+
+      setPortfolioCount(portfolios.length)
 
       const stats = {
         total: jobs.length,
@@ -112,10 +129,41 @@ export default function Dashboard() {
         </motion.div>
 
         {loading ? (
-          <div className="flex items-center justify-center py-32">
-            <div className="relative">
-              <div className="w-16 h-16 border-4 border-muted border-t-primary rounded-full animate-spin" />
-            </div>
+          <div className="space-y-10">
+            {/* Quick Actions Skeleton */}
+            <motion.div
+              initial={{ opacity: 0, y: 10 }}
+              animate={{ opacity: 1, y: 0 }}
+              transition={{ duration: 0.4 }}
+            >
+              <SkeletonDashboardActions />
+            </motion.div>
+
+            {/* Stats Skeleton */}
+            <motion.div
+              initial={{ opacity: 0, y: 10 }}
+              animate={{ opacity: 1, y: 0 }}
+              transition={{ duration: 0.4, delay: 0.1 }}
+            >
+              <SkeletonStatCards count={5} />
+            </motion.div>
+
+            {/* Recent Applications & Resumes Skeleton */}
+            <motion.div
+              initial={{ opacity: 0, y: 10 }}
+              animate={{ opacity: 1, y: 0 }}
+              transition={{ duration: 0.4, delay: 0.2 }}
+              className="grid lg:grid-cols-2 gap-10"
+            >
+              <div>
+                <div className="mb-6 h-8 bg-muted rounded-lg w-1/3 animate-pulse" />
+                <SkeletonList count={3} />
+              </div>
+              <div>
+                <div className="mb-6 h-8 bg-muted rounded-lg w-1/3 animate-pulse" />
+                <SkeletonList count={3} />
+              </div>
+            </motion.div>
           </div>
         ) : (
           <motion.div variants={containerVariants} initial="hidden" animate="visible">
@@ -130,7 +178,7 @@ export default function Dashboard() {
                 </button>
               </div>
             )}
-            
+
             {/* Quick Actions */}
             <motion.div variants={itemVariants} className="grid grid-cols-2 md:grid-cols-4 lg:grid-cols-7 gap-4 mb-10">
               {[
@@ -142,38 +190,98 @@ export default function Dashboard() {
                 { to: '/community', icon: Users, label: 'Community', sub: 'Connect', color: 'primary' },
                 { to: '/fellowship', icon: GraduationCap, label: 'Fellowship', sub: 'Earn & learn', color: 'primary', isNew: true },
               ].map((action, idx) => (
-                <Link key={idx} to={action.to} className="group">
-                  <div className={`relative p-5 rounded-2xl bg-card border border-border overflow-hidden transition-all duration-300 hover:border-${action.color} hover:shadow-xl hover:shadow-${action.color}/5 hover:-translate-y-1`}>
-                    {action.isNew && (
-                      <div className="absolute top-2 right-2 px-1.5 py-0.5 bg-primary/20 rounded text-[9px] text-primary font-black uppercase tracking-wider">NEW</div>
-                    )}
-                    <div className={`w-12 h-12 bg-muted rounded-xl flex items-center justify-center mb-4 group-hover:scale-110 transition-transform`}>
-                      <action.icon className={`w-6 h-6 text-foreground group-hover:text-primary transition-colors`} />
+                <motion.div key={idx} variants={itemVariants}>
+                  <Link to={action.to} className="group">
+                    <div className={`relative p-5 rounded-2xl bg-card border border-border overflow-hidden transition-all duration-300 hover:border-${action.color} hover:shadow-xl hover:shadow-${action.color}/5 hover:-translate-y-1`}>
+                      {action.isNew && (
+                        <div className="absolute top-2 right-2 px-1.5 py-0.5 bg-primary/20 rounded text-[9px] text-primary font-black uppercase tracking-wider">NEW</div>
+                      )}
+                      <div className={`w-12 h-12 bg-muted rounded-xl flex items-center justify-center mb-4 group-hover:scale-110 transition-transform`}>
+                        <action.icon className={`w-6 h-6 text-foreground group-hover:text-primary transition-colors`} />
+                      </div>
+                      <h3 className="text-sm font-bold text-foreground mb-1">{action.label}</h3>
+                      <p className="text-muted-foreground text-xs font-medium">{action.sub}</p>
                     </div>
-                    <h3 className="text-sm font-bold text-foreground mb-1">{action.label}</h3>
-                    <p className="text-muted-foreground text-xs font-medium">{action.sub}</p>
-                  </div>
-                </Link>
+                  </Link>
+                </motion.div>
               ))}
             </motion.div>
 
             {/* Stats Row */}
-            <motion.div variants={itemVariants} className="grid grid-cols-2 md:grid-cols-5 gap-5 mb-10">
+            <motion.div variants={itemVariants} className="grid grid-cols-2 md:grid-cols-6 gap-5 mb-10">
               {[
-                { icon: Star, value: jobStats.saved, label: 'Saved', color: 'text-muted-foreground', bg: 'bg-muted' },
-                { icon: Send, value: jobStats.applied, label: 'Applied', color: 'text-primary', bg: 'bg-primary/10' },
-                { icon: MessageSquare, value: jobStats.interviewing, label: 'Interviewing', color: 'text-secondary', bg: 'bg-secondary/10' },
-                { icon: CheckCircle2, value: jobStats.offered, label: 'Offers', color: 'text-emerald-500', bg: 'bg-emerald-500/10' },
-                { icon: FileText, value: resumes.length, label: 'Resumes', color: 'text-primary', bg: 'bg-primary/10' }
-              ].map((stat, idx) => (
-                <div key={idx} className="p-6 rounded-2xl bg-card border border-border text-center hover:border-primary/30 transition-all shadow-sm group">
-                  <div className={`w-12 h-12 ${stat.bg} rounded-xl flex items-center justify-center mx-auto mb-4 group-hover:scale-110 transition-transform`}>
-                    <stat.icon className={`w-6 h-6 ${stat.color}`} />
+                {
+                  icon: Star,
+                  value: jobStats.saved,
+                  label: "Saved",
+                  color: "text-muted-foreground",
+                  bg: "bg-muted",
+                },
+                {
+                  icon: Send,
+                  value: jobStats.applied,
+                  label: "Applied",
+                  color: "text-primary",
+                  bg: "bg-primary/10",
+                },
+                {
+                  icon: MessageSquare,
+                  value: jobStats.interviewing,
+                  label: "Interviewing",
+                  color: "text-secondary",
+                  bg: "bg-secondary/10",
+                },
+                {
+                  icon: CheckCircle2,
+                  value: jobStats.offered,
+                  label: "Offers",
+                  color: "text-emerald-500",
+                  bg: "bg-emerald-500/10",
+                },
+                {
+                  icon: FileText,
+                  value: resumes.length,
+                  label: "Resumes",
+                  color: "text-primary",
+                  bg: "bg-primary/10",
+                },
+                {
+                  icon: Globe,
+                  value: portfolioCount,
+                  label: "Portfolios",
+                  color: "text-purple-500",
+                  bg: "bg-purple-500/10",
+                  link: "/portfolio",
+                },
+              ].map((stat, idx) => {
+                const content = (
+                  <div className="p-6 rounded-2xl bg-card border border-border text-center hover:border-primary/30 transition-all shadow-sm group">
+                    <div className={`w-12 h-12 ${stat.bg} rounded-xl flex items-center justify-center mx-auto mb-4 group-hover:scale-110 transition-transform`}>
+                      <stat.icon className={`w-6 h-6 ${stat.color}`} />
+                    </div>
+
+                    <p className="text-3xl font-black text-foreground">
+                      {stat.value}
+                    </p>
+
+                    <p className="text-xs font-bold text-muted-foreground uppercase tracking-widest mt-1">
+                      {stat.label}
+                    </p>
                   </div>
-                  <p className="text-3xl font-black text-foreground">{stat.value}</p>
-                  <p className="text-xs font-bold text-muted-foreground uppercase tracking-widest mt-1">{stat.label}</p>
-                </div>
-              ))}
+                );
+
+                return stat.link ? (
+                  <motion.div key={idx} variants={itemVariants}>
+                    <Link to={stat.link}>
+                      {content}
+                    </Link>
+                  </motion.div>
+                ) : (
+                  <motion.div key={idx} variants={itemVariants}>
+                    {content}
+                  </motion.div>
+                );
+              })}
             </motion.div>
 
             <div className="grid lg:grid-cols-2 gap-10">
@@ -203,24 +311,40 @@ export default function Dashboard() {
                 ) : (
                   <div className="rounded-[2rem] bg-card border border-border overflow-hidden shadow-sm">
                     <div className="divide-y divide-border">
-                      {trackedJobs.slice(0, 5).map((job, index) => {
-                        const statusConfig = STATUS_CONFIG[job.status] || STATUS_CONFIG.saved
-                        const StatusIcon = statusConfig.icon
-                        return (
-                          <div key={job.id || index} className="p-5 hover:bg-muted/50 transition-all group">
-                            <div className="flex justify-between items-center">
-                              <div className="flex-1">
-                                <h4 className="text-lg font-bold text-foreground group-hover:text-primary transition-colors">{job.title}</h4>
-                                <p className="text-sm text-muted-foreground font-semibold">{job.company}</p>
+                      {/** * GSSoC Optimization: Defensive structural evaluation on the active data view slice.
+                       * Prevents layout container voids if the array slice metrics index is altered.
+                       */}
+                      {(() => {
+                        const displayedJobs = trackedJobs.slice(0, 5);
+
+                        if (displayedJobs.length > 0) {
+                          return displayedJobs.map((job, index) => {
+                            const statusConfig = STATUS_CONFIG[job.status] || STATUS_CONFIG.saved;
+                            const StatusIcon = statusConfig.icon;
+                            return (
+                              <div key={job.id || index} className="p-5 hover:bg-muted/50 transition-all group">
+                                <div className="flex justify-between items-center">
+                                  <div className="flex-1">
+                                    <h4 className="text-lg font-bold text-foreground group-hover:text-primary transition-colors">{job.title}</h4>
+                                    <p className="text-sm text-muted-foreground font-semibold">{job.company}</p>
+                                  </div>
+                                  <span className={`px-3 py-1.5 rounded-xl text-xs font-bold flex items-center gap-2 ${statusConfig.color}`}>
+                                    <StatusIcon className="w-3.5 h-3.5" />
+                                    {statusConfig.label}
+                                  </span>
+                                </div>
                               </div>
-                              <span className={`px-3 py-1.5 rounded-xl text-xs font-bold flex items-center gap-2 ${statusConfig.color}`}>
-                                <StatusIcon className="w-3.5 h-3.5" />
-                                {statusConfig.label}
-                              </span>
+                            );
+                          });
+                        } else {
+                          return (
+                            /* Graceful fallback UI layout state when view density evaluation yields zero records */
+                            <div className="p-10 text-center text-sm font-medium text-muted-foreground bg-muted/10 rounded-2xl border border-dashed border-border/60 mx-5 my-4">
+                              No active application records available in this view index.
                             </div>
-                          </div>
-                        )
-                      })}
+                          );
+                        }
+                      })()}
                     </div>
                   </div>
                 )}

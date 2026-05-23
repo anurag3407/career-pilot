@@ -5,6 +5,8 @@ import UserProfile from '../models/UserProfile.model.js';
 import Resume from '../models/Resume.model.js';
 import Interview from '../models/Interview.model.js';
 import { db } from '../config/firebase.js';
+import { validate } from '../middleware/validate.js';
+import { updateProfileSchema } from '../schemas/userProfile.schema.js';
 
 const router = express.Router();
 
@@ -46,12 +48,13 @@ router.get('/me', asyncHandler(async (req, res) => {
       uid,
       displayName: req.user.name || req.user.email?.split('@')[0] || '',
     });
+    profile = profile.toObject();
   }
   res.json({ success: true, profile });
 }));
 
 // Update own profile
-router.put('/me', asyncHandler(async (req, res) => {
+router.put('/me', validate(updateProfileSchema), asyncHandler(async (req, res) => {
   const uid = req.user.uid;
   const { displayName, bio, jobRole, skills, location, website, github, linkedin } = req.body;
 

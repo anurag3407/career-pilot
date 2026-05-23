@@ -11,6 +11,8 @@ import {
     deleteJobAlertFromFirebase,
     saveUserToFirebase 
 } from '../services/firebaseDataService.js';
+import { validate } from '../middleware/validate.js';
+import { createJobAlertSchema, updateJobAlertSchema } from '../schemas/jobAlerts.schema.js';
 
 const router = express.Router();
 const enableDebugRoutes = process.env.NODE_ENV !== 'production';
@@ -53,20 +55,32 @@ router.get('/stats/summary', verifyToken, asyncHandler(async (req, res) => {
 
 router.get('/', verifyToken, asyncHandler(async (req, res) => {
     const userId = req.user.uid;
+    const limit = Math.min(Math.max(parseInt(req.query.limit) || 10, 1), 50);
+    const skip = Math.max(parseInt(req.query.skip) || 0, 0);
 
-    const alerts = await JobAlert.find({ userId })
-        .sort({ createdAt: -1 })
-        .lean();
+    const [alerts, total] = await Promise.all([
+        JobAlert.find({ userId })
+            .sort({ createdAt: -1 })
+            .limit(limit)
+            .skip(skip)
+            .lean(),
+        JobAlert.countDocuments({ userId })
+    ]);
 
     const alertsWithIndex = alerts.map((alert, index) => ({
         ...alert,
-        position: index + 1 
+        position: skip + index + 1
     }));
 
     res.json({
         success: true,
         count: alerts.length,
-        alerts: alertsWithIndex
+        alerts: alertsWithIndex,
+        pagination: {
+            total,
+            limit,
+            skip
+        }
     });
 }));
 
@@ -97,7 +111,7 @@ router.get('/:id', verifyToken, asyncHandler(async (req, res) => {
 }));
 
 
-router.post('/', verifyToken, asyncHandler(async (req, res) => {
+router.post('/', verifyToken, validate(createJobAlertSchema), asyncHandler(async (req, res) => {
     const userId = req.user.uid;
     const userEmail = req.user.email;
     const userName = req.user.name || req.user.displayName || 'Job Seeker';
@@ -180,7 +194,7 @@ router.post('/', verifyToken, asyncHandler(async (req, res) => {
  * PUT /api/job-alerts/:id
  * Update an existing job alert
  */
-router.put('/:id', verifyToken, asyncHandler(async (req, res) => {
+router.put('/:id', verifyToken, validate(updateJobAlertSchema), asyncHandler(async (req, res) => {
     const { id } = req.params;
     const userId = req.user.uid;
 
@@ -354,7 +368,7 @@ if (enableDebugRoutes) {
      * GET /api/job-alerts/debug/queue-status
      * Debug endpoint to check queue and worker status
      */
-    router.get('/debug/queue-status', asyncHandler(async (req, res) => {
+    router.get('/debug/queue-status', verifyToken, asyncHandler(async (req, res) => {
         const queue = getQueue();
         const stats = await getQueueStats();
         
@@ -393,7 +407,7 @@ if (enableDebugRoutes) {
      * POST /api/job-alerts/debug/process-now
      * Debug endpoint to manually process all active alerts immediately
      */
-    router.post('/debug/process-now', asyncHandler(async (req, res) => {
+    router.post('/debug/process-now', verifyToken, asyncHandler(async (req, res) => {
         const alerts = await JobAlert.find({ 
             isActive: true,
             userEmail: { $exists: true, $ne: '', $ne: null }
@@ -434,7 +448,7 @@ if (enableDebugRoutes) {
      * POST /api/job-alerts/debug/empty-queue
      * Empty all jobs from Redis queue with detailed reporting
      */
-    router.post('/debug/empty-queue', asyncHandler(async (req, res) => {
+    router.post('/debug/empty-queue', verifyToken, asyncHandler(async (req, res) => {
         console.log('\n🗑️  Request to empty Redis queue received...');
         
         const result = await clearQueue();
@@ -450,7 +464,7 @@ if (enableDebugRoutes) {
      * GET /api/job-alerts/debug/queue-details
      * Get detailed queue status with visual formatting
      */
-    router.get('/debug/queue-details', asyncHandler(async (req, res) => {
+    router.get('/debug/queue-details', verifyToken, asyncHandler(async (req, res) => {
         const stats = await displayQueueStatus();
         const failedJobs = await getFailedJobsInfo();
         

@@ -19,6 +19,8 @@ import {
   Hash
 } from 'lucide-react';
 import toast from 'react-hot-toast';
+import { SkeletonListItems, SkeletonPostList } from '../components/ui/Skeleton';
+import { motion, AnimatePresence } from 'framer-motion';
 
 export default function Community() {
   const { user } = useAuth();
@@ -188,15 +190,13 @@ export default function Community() {
       const data = await communityApi.getChannels();
       setChannels(data.channels);
       // Auto-select first channel
-      if (data.channels.length > 0 && !activeChannel) {
-        setActiveChannel(data.channels[0]);
-      }
+      setActiveChannel(current => current || data.channels[0] || null);
     } catch (error) {
-      toast.error('Failed to load channels');
+      toast.error('Failed to load channels', { id: 'community-channels-load-error' });
     } finally {
       setLoadingChannels(false);
     }
-  }, [activeChannel]);
+  }, []);
 
   // Fetch channels on mount
   useEffect(() => {
@@ -252,7 +252,7 @@ export default function Community() {
       setShowCreateChannel(false);
       toast.success('Channel created!');
     } catch (error) {
-      toast.error(error.message);
+      toast.error(error.message, { id: 'community-create-channel-error' });
     }
   };
 

@@ -1,13 +1,14 @@
+import 'dotenv/config';
 import express from 'express';
+import dotenv from "dotenv";
+dotenv.config();
+
 import { createServer } from 'http';
 import cors from 'cors';
 import helmet from 'helmet';
 import rateLimit from 'express-rate-limit';
-import dotenv from 'dotenv';
 import searchRoutes from './routes/search.js';
-
-dotenv.config();
-
+import portfolioRoutes from './routes/portfolio.js';
 import uploadRoutes from './routes/upload.js';
 import resumeRoutes from './routes/resume.js';
 import enhanceRoutes from './routes/enhance.js';
@@ -18,22 +19,48 @@ import jobAlertRoutes from './routes/jobAlerts.js';
 import communityRoutes from './routes/community.js';
 import fellowshipRoutes from './routes/fellowships.js';
 import interviewRoutes from './routes/interview.js';
-import paymentRoutes from './routes/payments.js';
+
 import userProfileRoutes from './routes/userProfile.js';
 import twoFactorRoutes from './routes/twoFactor.js';
+import aiRoutes from './routes/ai.js';
 
-import { errorHandler } from './middleware/errorHandler.js';
+import { globalErrorHandler } from './middleware/globalErrorHandler.js';
+import {
+  metricsMiddleware,
+  metricsHandler,
+} from "./middleware/metrics.js";
+
 
 import { initializeSocket } from './config/socket.js';
 
 import { initializeDefaultChannels } from './controllers/communityFirebaseController.js';
 import { initializePostScheduler } from './services/postScheduler.js';
+import swaggerUi from 'swagger-ui-express';
+import swaggerSpec from './config/swagger.js';
 
-import mongoose from 'mongoose';
+import { connectDB as baseConnectDB } from './config/database.js';
 import { initJobFetcher } from './services/jobFetcher.js';
 import JobAlert from './models/JobAlert.model.js';
+import { initGitHubSyncCron } from './services/portfolioGitHubSync.js';
+
+const shouldInitGitHubSyncCron =
+  process.env.ENABLE_GITHUB_SYNC_CRON !== 'false' &&
+  process.env.NODE_ENV !== 'test';
+
+const connectDB = async (...args) => {
+  //await baseConnectDB(...args);
+
+  if (shouldInitGitHubSyncCron) {
+    initGitHubSyncCron();
+  }
+};
+
+import {
+  scheduleWeeklyDigest
+} from './services/weeklyDigestService.js';
 
 const app = express();
+app.use(metricsMiddleware);
 const httpServer = createServer(app);
 const PORT = process.env.PORT || 5000;
 
@@ -67,23 +94,89 @@ app.use(cors({
   },
   credentials: true,
   methods: ['GET', 'POST', 'PUT', 'DELETE', 'OPTIONS', 'PATCH'],
-  allowedHeaders: ['Content-Type', 'Authorization', 'X-Requested-With']
+  allowedHeaders: ['Content-Type', 'Authorization', 'X-Requested-With', 'X-AI-Provider', 'X-AI-Key', 'X-AI-Model']
 }));
 
 // Helmet security headers - configured to not interfere with CORS
 app.use(helmet({
   crossOriginResourcePolicy: { policy: 'cross-origin' },
-  crossOriginOpenerPolicy: { policy: 'same-origin-allow-popups' }
+  crossOriginOpenerPolicy: { policy: 'same-origin-allow-popups' },
+  contentSecurityPolicy: {
+    directives: {
+      defaultSrc: ["'self'"],
+      scriptSrc: [
+        "'self'",
+        "'unsafe-inline'",       // Required for React inline scripts
+        "https://apis.google.com",
+        "https://accounts.google.com",
+        "https://www.gstatic.com",
+      ],
+      styleSrc: [
+        "'self'",
+        "'unsafe-inline'",       // Required for Tailwind/inline styles
+        "https://fonts.googleapis.com",
+      ],
+      fontSrc: [
+        "'self'",
+        "https://fonts.gstatic.com",
+      ],
+      imgSrc: [
+        "'self'",
+        "data:",
+        "blob:",
+        "https:",                // Allow all HTTPS images (company logos etc)
+      ],
+      connectSrc: [
+        "'self'",
+        process.env.FRONTEND_URL || "http://localhost:5173",
+        "https://firebaseapp.com",
+        "https://*.googleapis.com",
+        "https://*.firebaseio.com",
+        "https://identitytoolkit.googleapis.com",
+        "wss:",                  // WebSocket for Socket.IO
+        "ws:",                   // WebSocket local dev
+      ],
+      frameSrc: [
+        "'self'",
+        "https://accounts.google.com",
+      ],
+      objectSrc: ["'none'"],
+      upgradeInsecureRequests: [],
+    },
+  },
 }));
-
 const limiter = rateLimit({
   windowMs: parseInt(process.env.RATE_LIMIT_WINDOW_MS) || 15 * 60 * 1000, // 15 minutes
   max: parseInt(process.env.RATE_LIMIT_MAX_REQUESTS) || 1000, // increased for development
-  message: {
-    error: 'Too many requests, please try again later.'
-  },
   standardHeaders: true,
   legacyHeaders: false,
+  handler: (req, res, next, options) => {
+    const resetTime = req.rateLimit?.resetTime;
+    const retryAfterSeconds = resetTime
+      ? Math.max(1, Math.ceil((resetTime - Date.now()) / 1000))
+      : Math.ceil((options.windowMs || 0) / 1000);
+
+    const headers = {
+      'Retry-After': String(retryAfterSeconds),
+      'X-RateLimit-Limit': String(options.max),
+      'X-RateLimit-Remaining': String(req.rateLimit?.remaining ?? 0),
+      'X-RateLimit-Quota': String(options.max)
+    };
+
+    if (resetTime) {
+      headers['X-RateLimit-Reset'] = String(Math.ceil(resetTime / 1000));
+    }
+
+    res.set(headers);
+    res.status(options.statusCode).json({
+      success: false,
+      error: options.message?.error || 'Rate limit exceeded',
+      message: options.message
+    });
+  },
+  message: {
+    error: 'Too many requests, please try again later.'
+  }
 });
 app.use('/api/', limiter);
 
@@ -98,6 +191,9 @@ app.get('/health', (req, res) => {
   });
 });
 
+app.get('/metrics', metricsHandler);
+
+app.use('/api/docs', swaggerUi.serve, swaggerUi.setup(swaggerSpec));
 app.use('/api/auth', authRoutes);
 app.use('/api/upload', uploadRoutes);
 app.use('/api/resumes', resumeRoutes);
@@ -108,26 +204,28 @@ app.use('/api/job-alerts', jobAlertRoutes);
 app.use('/api/community', communityRoutes);
 app.use('/api/fellowship', fellowshipRoutes);
 app.use('/api/interview', interviewRoutes);
-app.use('/api/payments', paymentRoutes);
+try {
+    const paymentRoutes = (await import('./routes/payments.js')).default;
+
+    app.use('/api/payments', paymentRoutes);
+
+    console.log('✅ Payment routes loaded');
+} catch (error) {
+    console.warn('⚠️ Payment routes disabled:', error.message);
+}
+app.use('/api/portfolio', portfolioRoutes);
 app.use('/api/user-profiles', userProfileRoutes);
 app.use('/api/auth/2fa', twoFactorRoutes);
 app.use('/api/search', searchRoutes);
+app.use('/api/ai', aiRoutes);
 
 app.use((req, res) => {
   res.status(404).json({ error: 'Route not found' });
 });
-app.use(errorHandler);
+app.use(globalErrorHandler);
 const startServer = async () => {
   try {
-    const mongoUri = process.env.MONGODB_URI || 'mongodb://localhost:27017/careerpilot';
-
-    console.log('📦 Connecting to MongoDB...');
-    await mongoose.connect(mongoUri, {
-      serverSelectionTimeoutMS: 30000,
-      socketTimeoutMS: 45000,
-      maxPoolSize: 10
-    });
-    console.log('📦 Connected to MongoDB');
+    //await connectDB();
 
     httpServer.listen(PORT, () => {
       console.log(`🚀 Server running on port ${PORT}`);
@@ -174,6 +272,15 @@ const startServer = async () => {
       await initJobFetcher();
     } catch (fetcherError) {
       console.warn('⚠️ Job fetcher initialization skipped:', fetcherError.message);
+    }
+
+    try {
+      scheduleWeeklyDigest();
+    } catch (digestError) {
+      console.warn(
+        '⚠️ Weekly digest scheduler initialization skipped:',
+        digestError.message
+      );
     }
 
   } catch (error) {

@@ -1,0 +1,171 @@
+name: Deploy Provider Health Check
+
+on:
+  schedule:
+    - cron: '0 9 * * 1'  # Every Monday at 9AM UTC
+  workflow_dispatch:      # Manual trigger for maintainers
+
+jobs:
+  health-check:
+    name: Validate Deployment Provider Tokens
+    runs-on: ubuntu-latest
+    # Continue even if individual steps fail so all providers are checked
+    
+    steps:
+      - name: Check Cloudflare Token
+        id: cloudflare
+        continue-on-error: true
+        env:
+          CF_TOKEN: ${{ secrets.CLOUDFLARE_API_TOKEN }}
+        run: |
+          if [ -z "$CF_TOKEN" ]; then
+            echo "status=missing" >> $GITHUB_OUTPUT
+            echo "detail=Secret CLOUDFLARE_API_TOKEN is not set" >> $GITHUB_OUTPUT
+            exit 1
+          fi
+
+          RESPONSE=$(curl -s -o /tmp/cf_response.json -w "%{http_code}" \
+            -H "Authorization: Bearer $CF_TOKEN" \
+            https://api.cloudflare.com/client/v4/user/tokens/verify)
+
+          cat /tmp/cf_response.json
+
+          SUCCESS=$(cat /tmp/cf_response.json | python3 -c \
+            "import sys,json; d=json.load(sys.stdin); print(d.get('success','false'))")
+
+          if [ "$RESPONSE" = "200" ] && [ "$SUCCESS" = "True" ]; then
+            echo "status=valid" >> $GITHUB_OUTPUT
+            echo "detail=Token is active and valid" >> $GITHUB_OUTPUT
+          else
+            echo "status=invalid" >> $GITHUB_OUTPUT
+            echo "detail=HTTP $RESPONSE — token may be expired or revoked" >> $GITHUB_OUTPUT
+            exit 1
+          fi
+
+      - name: Check Netlify Token
+        id: netlify
+        continue-on-error: true
+        env:
+          NETLIFY_TOKEN: ${{ secrets.NETLIFY_AUTH_TOKEN }}
+        run: |
+          if [ -z "$NETLIFY_TOKEN" ]; then
+            echo "status=missing" >> $GITHUB_OUTPUT
+            echo "detail=Secret NETLIFY_AUTH_TOKEN is not set" >> $GITHUB_OUTPUT
+            exit 1
+          fi
+
+          RESPONSE=$(curl -s -o /tmp/netlify_response.json -w "%{http_code}" \
+            -H "Authorization: Bearer $NETLIFY_TOKEN" \
+            https://api.netlify.com/api/v1/user)
+
+          cat /tmp/netlify_response.json
+
+          EMAIL=$(cat /tmp/netlify_response.json | python3 -c \
+            "import sys,json; d=json.load(sys.stdin); print(d.get('email',''))" 2>/dev/null)
+
+          if [ "$RESPONSE" = "200" ] && [ -n "$EMAIL" ]; then
+            echo "status=valid" >> $GITHUB_OUTPUT
+            echo "detail=Token valid — account: $EMAIL" >> $GITHUB_OUTPUT
+          else
+            echo "status=invalid" >> $GITHUB_OUTPUT
+            echo "detail=HTTP $RESPONSE — token may be expired or revoked" >> $GITHUB_OUTPUT
+            exit 1
+          fi
+
+      - name: Check Vercel Token
+        id: vercel
+        continue-on-error: true
+        env:
+          VERCEL_TOKEN: ${{ secrets.VERCEL_TOKEN }}
+        run: |
+          if [ -z "$VERCEL_TOKEN" ]; then
+            echo "status=missing" >> $GITHUB_OUTPUT
+            echo "detail=Secret VERCEL_TOKEN is not set" >> $GITHUB_OUTPUT
+            exit 1
+          fi
+
+          RESPONSE=$(curl -s -o /tmp/vercel_response.json -w "%{http_code}" \
+            -H "Authorization: Bearer $VERCEL_TOKEN" \
+            https://api.vercel.com/v2/user)
+
+          cat /tmp/vercel_response.json
+
+          USERNAME=$(cat /tmp/vercel_response.json | python3 -c \
+            "import sys,json; d=json.load(sys.stdin); print(d.get('user',{}).get('username',''))" 2>/dev/null)
+
+          if [ "$RESPONSE" = "200" ] && [ -n "$USERNAME" ]; then
+            echo "status=valid" >> $GITHUB_OUTPUT
+            echo "detail=Token valid — account: $USERNAME" >> $GITHUB_OUTPUT
+          else
+            echo "status=invalid" >> $GITHUB_OUTPUT
+            echo "detail=HTTP $RESPONSE — token may be expired or revoked" >> $GITHUB_OUTPUT
+            exit 1
+          fi
+
+      - name: Write GitHub Actions Job Summary
+        if: always()
+        run: |
+          CF_STATUS="${{ steps.cloudflare.outputs.status }}"
+          CF_DETAIL="${{ steps.cloudflare.outputs.detail }}"
+          NF_STATUS="${{ steps.netlify.outputs.status }}"
+          NF_DETAIL="${{ steps.netlify.outputs.detail }}"
+          VC_STATUS="${{ steps.vercel.outputs.status }}"
+          VC_DETAIL="${{ steps.vercel.outputs.detail }}"
+
+          emoji() {
+            case $1 in
+              valid)   echo "✅" ;;
+              missing) echo "⚠️" ;;
+              *)       echo "❌" ;;
+            esac
+          }
+
+          {
+            echo "# 🚀 Deploy Provider Health Check"
+            echo ""
+            echo "**Run:** $(date -u '+%Y-%m-%d %H:%M UTC')"
+            echo ""
+            echo "| Provider | Status | Detail |"
+            echo "|---|---|---|"
+            echo "| Cloudflare | $(emoji $CF_STATUS) \`$CF_STATUS\` | $CF_DETAIL |"
+            echo "| Netlify    | $(emoji $NF_STATUS) \`$NF_STATUS\` | $NF_DETAIL |"
+            echo "| Vercel     | $(emoji $VC_STATUS) \`$VC_STATUS\` | $VC_DETAIL |"
+            echo ""
+            if [ "$CF_STATUS" = "valid" ] && [ "$NF_STATUS" = "valid" ] && [ "$VC_STATUS" = "valid" ]; then
+              echo "## ✅ All providers are healthy"
+            else
+              echo "## ❌ One or more providers need attention — check token secrets"
+            fi
+          } >> $GITHUB_STEP_SUMMARY
+
+      - name: Notify maintainers via GitHub Issue
+        if: failure()
+        uses: actions/github-script@v7
+        with:
+          script: |
+            const cf  = '${{ steps.cloudflare.outputs.status }}';
+            const nf  = '${{ steps.netlify.outputs.status }}';
+            const vc  = '${{ steps.vercel.outputs.status }}';
+
+            const lines = [];
+            if (cf  !== 'valid') lines.push(`- ❌ **Cloudflare**: ${{ steps.cloudflare.outputs.detail }}`);
+            if (nf  !== 'valid') lines.push(`- ❌ **Netlify**: ${{ steps.netlify.outputs.detail }}`);
+            if (vc  !== 'valid') lines.push(`- ❌ **Vercel**: ${{ steps.vercel.outputs.detail }}`);
+
+            await github.rest.issues.create({
+              owner: context.repo.owner,
+              repo:  context.repo.repo,
+              title: `🚨 Deploy Health Check Failed — ${new Date().toISOString().slice(0,10)}`,
+              body: [
+                '## Deploy Provider Health Check Failure',
+                '',
+                'The weekly token validation workflow detected one or more provider issues:',
+                '',
+                ...lines,
+                '',
+                `**Workflow run:** ${context.serverUrl}/${context.repo.owner}/${context.repo.repo}/actions/runs/${context.runId}`,
+                '',
+                'Please rotate or re-add the affected secrets in **Settings → Secrets → Actions**.',
+              ].join('\n'),
+              labels: ['bug', 'devops'],
+            });
