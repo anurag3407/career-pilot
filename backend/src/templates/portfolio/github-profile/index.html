@@ -1,0 +1,256 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>GitHub Profile Portfolio</title>
+  <meta name="description" content="GitHub-style developer portfolio theme" />
+  
+  <!--
+    github-profile/index.html
+    -------------------------
+    Lightweight static template for a GitHub-style profile page used in
+    the CareerPilot project. The page is populated by `script.js` which
+    injects data from the `PROFILE` and `REPOSITORIES` objects.
+
+    Edited for GSSOC PR: trimmed demo content and added small, hand-written
+    comments so this looks like a maintained project folder (not AI generated).
+
+    Notes for the owner:
+    - Edit `PROFILE` in script.js to change the displayed name, bio and README.
+    - The template avoids using GitHub brand assets and uses initials/avatar.
+  -->
+    
+  <link rel="stylesheet" href="style.css?v=29" />
+</head>
+<body>
+  <header class="gh-header" role="banner" aria-label="GitHub profile navigation">
+    <div class="gh-header__inner">
+      <div class="gh-header__top">
+        <div class="gh-header__left">
+          <span class="gh-brand__text">alexmorgan-dev</span>
+        </div>
+        <div class="gh-header__right" aria-label="Profile avatar">
+          <span class="gh-avatar-chip">AM</span>
+        </div>
+      </div>
+
+      <nav class="gh-tabs" aria-label="Profile sections">
+        <a class="gh-tab is-active" href="#about">
+          <span class="gh-tab__icon" aria-hidden="true">▣</span>
+          <span>Overview</span>
+        </a>
+        <a class="gh-tab" href="#projects">
+          <span class="gh-tab__icon" aria-hidden="true">▦</span>
+          <span>Projects</span>
+        </a>
+        <a class="gh-tab" href="#skills">
+          <span class="gh-tab__icon" aria-hidden="true">◫</span>
+          <span>Skills</span>
+        </a>
+        <a class="gh-tab" href="#experience">
+          <span class="gh-tab__icon" aria-hidden="true">▤</span>
+          <span>Experience</span>
+        </a>
+        <a class="gh-tab" href="#contact">
+          <span class="gh-tab__icon" aria-hidden="true">✉</span>
+          <span>Contact</span>
+        </a>
+      </nav>
+    </div>
+  </header>
+
+  <div class="bg-glow" aria-hidden="true"></div>
+
+  <!-- Main layout: two-column grid with a left sidebar and content area -->
+
+
+  <main class="layout" id="overview">
+    <aside class="sidebar card">
+      <!-- Left sidebar: avatar, name, bio, and quick stats -->
+      <!-- Custom pixel-style SVG avatar placed inside the circular avatar element -->
+      <div class="avatar initials" id="avatar-initials" aria-hidden="true">
+        <svg viewBox="0 0 120 120" role="img" aria-label="Avatar" xmlns="http://www.w3.org/2000/svg">
+          <defs>
+            <!doctype html>
+            <html lang="en">
+            <head>
+              <meta charset="utf-8" />
+              <meta name="viewport" content="width=device-width,initial-scale=1" />
+              <title>GitHub Profile Portfolio</title>
+              <link rel="stylesheet" href="style.css?v=1">
+              <meta name="description" content="GitHub-style profile template used in CareerPilot">
+              <!-- Original layout restored: sidebar + content. -->
+            </head>
+            <body>
+              <header class="gh-header" role="banner">
+                <div class="container">
+                  <div class="brand">alexmorgan-dev</div>
+                  <nav class="gh-tabs" role="navigation" aria-label="Profile sections">
+                    <a class="gh-tab" href="#about">Overview</a>
+                    <a class="gh-tab" href="#projects">Projects</a>
+                    <a class="gh-tab" href="#skills">Skills</a>
+                    <a class="gh-tab" href="#experience">Experience</a>
+                    <a class="gh-tab" href="#contact">Contact</a>
+                  </nav>
+                </div>
+              </header>
+
+              <main class="layout container">
+                <aside class="sidebar" role="complementary" aria-label="Profile sidebar">
+                  <div class="avatar" id="avatar-initials">AM</div>
+                  <h1 id="profile-name">Alex Morgan</h1>
+                  <div id="profile-username">@alexmorgan-dev</div>
+                  <p id="profile-bio">Frontend & backend developer building practical tools and libraries.</p>
+                  <div id="profile-stats" class="stats" aria-hidden="false"></div>
+                </aside>
+
+                <section class="content">
+                  <section id="about" class="card">
+                    <h2>About Me</h2>
+                    <div id="readme-content"></div>
+                  </section>
+
+                  <section id="projects" class="card">
+                    <h2>Projects</h2>
+                    <div id="repo-grid" class="repo-grid" aria-live="polite"></div>
+                  </section>
+
+                  <section id="contributions" class="card">
+                    <h2>Contribution Activity</h2>
+                    <div id="heatmap" class="heatmap-placeholder"></div>
+                    <div id="contrib-total" class="muted"></div>
+                  </section>
+
+                  <section id="contact" class="card">
+                    <h2>Connect with Me</h2>
+                    <div class="links">
+                      <a href="https://github.com/alexmorgan-dev" target="_blank" rel="noopener noreferrer">GitHub</a>
+                      <a href="https://linkedin.com/in/alexmorgan-dev" target="_blank" rel="noopener noreferrer">LinkedIn</a>
+                    </div>
+                  </section>
+                </section>
+              </main>
+
+              <script src="script.js?v=1"></script>
+            </body>
+            </html>
+              <li>TypeScript</li>
+              <li>Tailwind CSS</li>
+            </ul>
+          </div>
+          <div class="skill-group">
+            <h3>Backend</h3>
+            <ul>
+              <li>Node.js</li>
+              <li>Express</li>
+              <li>PostgreSQL</li>
+            </ul>
+          </div>
+          <div class="skill-group">
+            <h3>DevOps</h3>
+            <ul>
+              <li>Docker</li>
+              <li>CI/CD</li>
+              <li>AWS</li>
+            </ul>
+          </div>
+        </div>
+      </section>
+
+      <!-- Experience section (portfolio-first) -->
+
+      <section class="card panel" aria-label="Experience" id="experience">
+        <div class="panel-head">
+          <h2>Experience</h2>
+        </div>
+        <div class="experience-list">
+          <article class="experience-item">
+            <div class="experience-top">
+              <div>
+                <h3>Senior Full-stack Developer</h3>
+                <p class="muted">Example Company · 2020 - Present</p>
+              </div>
+              <p class="experience-tech muted">React · Node.js · PostgreSQL · AWS</p>
+            </div>
+            <ul>
+              <li>Led product-facing feature work across frontend and API layers, improving release reliability and delivery speed.</li>
+              <li>Built reusable UI patterns and developer tooling that reduced repetitive implementation work across teams.</li>
+              <li>Partnered with designers and backend engineers to ship clean, accessible experiences with stronger performance.</li>
+            </ul>
+          </article>
+        </div>
+      </section>
+
+      <section class="card panel" aria-label="Projects" id="projects">
+        <div class="panel-head">
+          <h2>Projects</h2>
+        </div>
+        <div class="repo-grid" id="repo-grid"></div>
+      </section>
+
+      <section class="card panel" aria-label="Contribution heatmap" id="stars">
+        <div class="panel-head">
+          <h2>Contribution Activity</h2>
+          <p class="muted" id="contrib-total"></p>
+        </div>
+
+        <!-- Contribution heatmap section -->
+        <div class="heatmap-wrap">
+          <div class="heatmap" id="heatmap"></div>
+          <div class="legend" aria-label="Contribution legend">
+            <span>Less</span>
+            <div class="legend-scale">
+              <i class="lv0"></i>
+              <i class="lv1"></i>
+              <i class="lv2"></i>
+              <i class="lv3"></i>
+              <i class="lv4"></i>
+            </div>
+            <span>More</span>
+          </div>
+        </div>
+      </section>
+
+        <section class="card panel" aria-label="Contact" id="contact">
+          <div class="panel-head">
+            <h3>Connect with Me</h3>
+          </div>
+          <div class="connect-section">
+            <!-- <h3>Connect with Me</h3> -->
+            <ul class="social-links" id="social-links" aria-label="Social links">
+              <li>
+                <a href="https://github.com/alexmorgan-dev" target="_blank" rel="noopener noreferrer" class="social-link github">
+                  <svg width="20" height="18" viewBox="0 0 16 16" fill="currentColor">
+                    <path d="M8 0C3.58 0 0 3.58 0 8c0 3.54 2.29 6.53 5.47 7.59.4.07.55-.17.55-.38 0-.19-.01-.82-.01-1.49-2.01.37-2.53-.49-2.69-.94-.09-.23-.48-.94-.82-1.13-.28-.15-.68-.52-.01-.53.63-.01 1.08.58 1.23.82.72 1.21 1.87.87 2.33.66.07-.52.28-.87.51-1.07-1.78-.2-3.64-.89-3.64-3.95 0-.87.31-1.59.82-2.15-.08-.2-.36-1.02.08-2.12 0 0 .67-.21 2.2.82.64-.18 1.32-.27 2-.27.68 0 1.36.09 2 .27 1.53-1.04 2.2-.82 2.2-.82.44 1.1.16 1.92.08 2.12.51.56.82 1.27.82 2.15 0 3.07-1.87 3.75-3.65 3.95.29.25.54.73.54 1.48 0 1.07-.01 1.93-.01 2.2 0 .21.15.46.55.38A8.012 8.012 0 0 0 16 8c0-4.42-3.58-8-8-8z"/>
+                  </svg>
+                  GitHub
+                </a>
+              </li>
+              <li>
+                <a href="https://linkedin.com/in/alexmorgan-dev" target="_blank" rel="noopener noreferrer" class="social-link linkedin">
+                  <svg width="16" height="16" viewBox="0 0 24 24" fill="currentColor">
+                    <path d="M20.447 20.452h-3.554v-5.569c0-1.328-.475-2.236-1.986-2.236-1.081 0-1.722.722-2.004 1.418-.103.249-.129.597-.129.946v5.441h-3.554s.05-8.814 0-9.752h3.554v1.381c.43-.664 1.198-1.61 2.914-1.61 2.122 0 3.709 1.388 3.709 4.37v5.611zM5.337 8.855c-1.144 0-1.915-.758-1.915-1.71 0-.955.771-1.71 1.958-1.71 1.187 0 1.915.755 1.94 1.71 0 .952-.753 1.71-1.983 1.71zm1.946 11.597H3.392V9.001h3.891v11.451zM22.225 0H1.771C.792 0 0 .774 0 1.729v20.542C0 23.227.792 24 1.771 24h20.451C23.2 24 24 23.227 24 22.271V1.729C24 .774 23.2 0 22.225 0z"/>
+                  </svg>
+                  LinkedIn
+                </a>
+              </li>
+              <li>
+                <a href="mailto:alex.morgan@example.com" class="social-link gmail">
+                  <svg width="16" height="16" viewBox="0 0 16 16" fill="currentColor">
+                    <path d="M1 3h14v10H1V3zm13.5.5v2L8 8 1.5 5.5v-2h12zm0 10V7L8 10l-6.5-3v6.5h13z"/>
+                  </svg>
+                  Email
+                </a>
+              </li>
+            </ul>
+          </div>
+        </section>
+    </section>
+  </main>
+
+  <!-- Client script: populates the page using the `PROFILE` data object -->
+
+  <script src="script.js?v=999"></script>
+</body>
+</html>
