@@ -419,6 +419,17 @@ export const jobsApi = {
       headers
     })
     return handleResponse(response)
+  },
+
+  // Get similar jobs
+  async getSimilar(targetJob, candidateJobs) {
+    const headers = await getAuthHeaders()
+    const response = await fetch(`${API_BASE}/fetchjobs/similar`, {
+      method: 'POST',
+      headers,
+      body: JSON.stringify({ targetJob, candidateJobs })
+    })
+    return handleResponse(response)
   }
 }
 
