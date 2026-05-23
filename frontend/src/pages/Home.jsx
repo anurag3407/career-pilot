@@ -1,11 +1,13 @@
 import Navbar from '../components/Navbar'
 import HeroSection from '../components/ui/HeroSection'
 import FeaturesSection, { AdditionalFeatures } from '../components/ui/FeaturesSection'
+import PortfolioShowcaseSection from '../components/ui/PortfolioShowcaseSection'
 import HowItWorksSection from '../components/ui/HowItWorksSection'
 import TestimonialsSection from '../components/ui/TestimonialsSection'
 import CTASection from '../components/ui/CTASection'
 import Footer from '../components/ui/Footer'
 import { StackedCircularFooter } from '../components/ui/stacked-circular-footer'
+
 
 export default function Home() {
   return (
@@ -28,6 +30,9 @@ export default function Home() {
         </div>
       </section>
 
+      {/* Portfolio Showcase Section */}
+      <PortfolioShowcaseSection />
+
       {/* How It Works Section */}
       <HowItWorksSection />
 
@@ -43,7 +48,8 @@ export default function Home() {
       <CTASection />
 
       {/* Footer */}
-      <StackedCircularFooter />
+      <Footer />
+     
     </div>
   )
 }

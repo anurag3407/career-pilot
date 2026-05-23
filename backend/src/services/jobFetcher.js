@@ -468,6 +468,39 @@ export const startWorker = () => {
   });
 
   return worker;
+    });
+
+    worker.on('error', (error) => {
+        console.error('\n❌ WORKER ERROR:', error.message);
+    });
+
+    worker.on('active', (job) => {
+        console.log(`\n${'▶️'.repeat(20)}`);
+        console.log(`▶️  WORKER PICKED UP JOB: ${job.id}`);
+        console.log(`   Alert: ${job.data.title}`);
+        console.log(`   Email: ${job.data.userEmail}`);
+        console.log(`${'▶️'.repeat(20)}\n`);
+    });
+
+    worker.on('stalled', (jobId) => {
+        console.warn(`\n⚠️  Job ${jobId} stalled`);
+    });
+
+    worker.on('ready', () => {
+        console.log('🟢 Worker is READY and waiting for jobs');
+    });
+
+    worker.on('closing', () => {
+        console.log('🔴 Worker is closing');
+    });
+
+    console.log('👷 Job Alert Worker started and listening for jobs...');
+    console.log('   Concurrency:', RATE_LIMIT_CONFIG.maxConcurrent);
+    console.log('   Rate limit:', RATE_LIMIT_CONFIG.maxRequestsPerMinute, 'requests/minute');
+    
+    // Worker is already autorunning.
+    
+    return worker;
 };
 
 /**

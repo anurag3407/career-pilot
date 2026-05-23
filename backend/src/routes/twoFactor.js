@@ -3,6 +3,12 @@ import rateLimit from 'express-rate-limit';
 import { asyncHandler, ApiError } from '../middleware/errorHandler.js';
 import { verifyToken } from '../middleware/auth.js';
 import * as twoFactor from '../services/twoFactorService.js';
+import { validate } from '../middleware/validate.js';
+import {
+  enable2FASchema,
+  tokenOnlySchema,
+  backupCodeSchema,
+} from '../schemas/twoFactor.schema.js';
 
 const router = express.Router();
 
@@ -34,7 +40,7 @@ router.post('/setup', verifyToken, asyncHandler(async (req, res) => {
 
 // POST /api/auth/2fa/enable
 // Verifies the first TOTP scan, stores the encrypted secret, and returns one-time backup codes.
-router.post('/enable', verifyToken, asyncHandler(async (req, res) => {
+router.post('/enable', verifyToken, validate(enable2FASchema), asyncHandler(async (req, res) => {
   const { secret, token } = req.body;
   if (!secret || !token) throw new ApiError(400, 'secret and token are required');
 
@@ -47,7 +53,7 @@ router.post('/enable', verifyToken, asyncHandler(async (req, res) => {
 
 // POST /api/auth/2fa/disable
 // Requires a valid TOTP code to confirm intent before wiping 2FA state.
-router.post('/disable', verifyToken, asyncHandler(async (req, res) => {
+router.post('/disable', verifyToken, validate(tokenOnlySchema), asyncHandler(async (req, res) => {
   const { token } = req.body;
   if (!token) throw new ApiError(400, 'token is required');
 
@@ -60,7 +66,7 @@ router.post('/disable', verifyToken, asyncHandler(async (req, res) => {
 
 // POST /api/auth/2fa/verify  (rate-limited)
 // Used during the login flow to confirm the TOTP code after Firebase auth succeeds.
-router.post('/verify', verifyToken, verifyLimiter, asyncHandler(async (req, res) => {
+router.post('/verify', verifyToken, verifyLimiter, validate(tokenOnlySchema), asyncHandler(async (req, res) => {
   const { token } = req.body;
   if (!token) throw new ApiError(400, 'token is required');
 
@@ -72,7 +78,7 @@ router.post('/verify', verifyToken, verifyLimiter, asyncHandler(async (req, res)
 
 // POST /api/auth/2fa/verify-backup  (rate-limited)
 // Allows login using a one-time backup code when the authenticator is unavailable.
-router.post('/verify-backup', verifyToken, verifyLimiter, asyncHandler(async (req, res) => {
+router.post('/verify-backup', verifyToken, verifyLimiter, validate(backupCodeSchema), asyncHandler(async (req, res) => {
   const { code } = req.body;
   if (!code) throw new ApiError(400, 'code is required');
 
@@ -84,7 +90,7 @@ router.post('/verify-backup', verifyToken, verifyLimiter, asyncHandler(async (re
 
 // POST /api/auth/2fa/backup-codes/regenerate
 // Generates a fresh set of backup codes after verifying the current TOTP.
-router.post('/backup-codes/regenerate', verifyToken, asyncHandler(async (req, res) => {
+router.post('/backup-codes/regenerate', verifyToken, validate(tokenOnlySchema), asyncHandler(async (req, res) => {
   const { token } = req.body;
   if (!token) throw new ApiError(400, 'token is required');
 
@@ -93,6 +99,19 @@ router.post('/backup-codes/regenerate', verifyToken, asyncHandler(async (req, re
 
   console.log('2FA backup codes regenerated for a user');
   res.json({ success: true, backupCodes: codes });
+}));
+
+// POST /api/auth/2fa/disable-with-backup
+// Allows disabling 2FA using a backup code when authenticator is unavailable.
+router.post('/disable-with-backup', verifyToken, verifyLimiter, asyncHandler(async (req, res) => {
+  const { code } = req.body;
+  if (!code) throw new ApiError(400, 'code is required');
+
+  const ok = await twoFactor.disableTwoFactorWithBackup(req.user.uid, code);
+  if (!ok) throw new ApiError(401, 'Invalid backup code');
+
+  console.log('2FA disabled using backup code for a user');
+  res.json({ success: true });
 }));
 
 export default router;

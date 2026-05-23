@@ -4,21 +4,19 @@ import { v4 as uuidv4 } from 'uuid';
 import { handleUpload } from '../middleware/upload.js';
 import { verifyToken } from '../middleware/auth.js';
 import { asyncHandler, ApiError } from '../middleware/errorHandler.js';
+import { validateUpload } from '../middleware/uploadValidator.js';
 
 const router = express.Router();
 
 // Upload and extract text from PDF
-router.post('/', verifyToken, handleUpload, asyncHandler(async (req, res) => {
+router.post('/', verifyToken, handleUpload, validateUpload, asyncHandler(async (req, res) => {
   if (!req.file) {
     throw new ApiError(400, 'No file uploaded');
   }
-
   try {
-    // Extract text from PDF
     const pdfData = await pdfParse(req.file.buffer);
-    
     const resumeId = uuidv4();
-    
+
     res.json({
       success: true,
       data: {
@@ -40,14 +38,13 @@ router.post('/', verifyToken, handleUpload, asyncHandler(async (req, res) => {
 }));
 
 // Extract text only endpoint (for re-processing)
-router.post('/extract-text', verifyToken, handleUpload, asyncHandler(async (req, res) => {
+router.post('/extract-text', verifyToken, handleUpload, validateUpload, asyncHandler(async (req, res) => {
   if (!req.file) {
     throw new ApiError(400, 'No file uploaded');
   }
-
   try {
     const pdfData = await pdfParse(req.file.buffer);
-    
+
     res.json({
       success: true,
       data: {

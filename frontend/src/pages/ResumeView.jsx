@@ -1,10 +1,13 @@
 import { useState, useEffect } from 'react'
 import { useParams, Link, useNavigate } from 'react-router-dom'
+import { motion } from 'framer-motion'
 import toast from 'react-hot-toast'
 import ReactMarkdown from 'react-markdown'
 import { resumeApi } from '../services/api'
 import Button from '../components/Button'
 import Card from '../components/Card'
+import CustomSection, { sectionsToMarkdown } from '../components/CustomSection'
+import { SkeletonList } from '../components/ui/Skeleton'
 
 export default function ResumeView() {
   const { resumeId } = useParams()
@@ -14,6 +17,26 @@ export default function ResumeView() {
   const [loading, setLoading] = useState(true)
   const [downloading, setDownloading] = useState(false)
   const [activeTab, setActiveTab] = useState('enhanced') // 'original' or 'enhanced'
+
+  // ── Custom sections – persisted per-resume in localStorage ───────────────
+  const STORAGE_KEY = `resume_custom_sections_${resumeId}`
+  const [customSections, setCustomSections] = useState(() => {
+    try {
+      const saved = localStorage.getItem(STORAGE_KEY)
+      return saved ? JSON.parse(saved) : []
+    } catch {
+      return []
+    }
+  })
+
+  const handleSectionsChange = (sections) => {
+    setCustomSections(sections)
+    try {
+      localStorage.setItem(STORAGE_KEY, JSON.stringify(sections))
+    } catch {
+      // storage quota exceeded – silently ignore
+    }
+  }
 
   useEffect(() => {
     fetchResume()
@@ -84,11 +107,32 @@ export default function ResumeView() {
   if (loading) {
     return (
       <div className="min-h-screen bg-background">
-        <div className="flex items-center justify-center py-20">
-          <div className="flex items-center gap-3 text-muted-foreground">
-            <div className="w-5 h-5 border-2 border-primary border-t-transparent rounded-full animate-spin" />
-            Loading resume...
-          </div>
+        <div className="max-w-5xl mx-auto px-4 sm:px-6 lg:px-8 py-8">
+          <motion.div
+            initial={{ opacity: 0, y: 10 }}
+            animate={{ opacity: 1, y: 0 }}
+            transition={{ duration: 0.4 }}
+            className="space-y-6"
+          >
+            {/* Header Skeleton */}
+            <div className="flex items-start justify-between mb-8">
+              <div className="space-y-2">
+                <div className="h-8 bg-muted rounded-lg w-1/2 animate-pulse" />
+                <div className="h-4 bg-muted rounded-lg w-1/3 animate-pulse" />
+              </div>
+              <div className="h-10 bg-muted rounded-lg w-32 animate-pulse" />
+            </div>
+
+            {/* Tabs Skeleton */}
+            <div className="flex gap-4 border-b border-border">
+              {[...Array(2)].map((_, i) => (
+                <div key={i} className="h-10 bg-muted rounded w-24 animate-pulse" />
+              ))}
+            </div>
+
+            {/* Content Skeleton */}
+            <SkeletonList count={5} />
+          </motion.div>
         </div>
       </div>
     )
@@ -152,7 +196,7 @@ export default function ResumeView() {
             <h2 className="text-lg font-medium text-foreground">
               {activeTab === 'enhanced' ? 'AI-Enhanced Resume' : 'Original Resume'}
             </h2>
-            <div className="flex gap-2">
+            <div className="flex gap-2 flex-wrap">
               <Button
                 variant="primary"
                 onClick={handleDownloadPdf}
@@ -162,14 +206,30 @@ export default function ResumeView() {
               </Button>
               <Button
                 variant="secondary"
-                onClick={() => handleCopy(
-                  activeTab === 'enhanced'
-                    ? resume?.enhancedText
-                    : resume?.originalText
-                )}
+                onClick={() =>
+                  handleCopy(
+                    activeTab === 'enhanced'
+                      ? resume?.enhancedText
+                      : resume?.originalText,
+                  )
+                }
               >
                 Copy to Clipboard
               </Button>
+              {customSections.length > 0 && (
+                <Button
+                  variant="outline"
+                  onClick={() => {
+                    const base =
+                      activeTab === 'enhanced'
+                        ? resume?.enhancedText
+                        : resume?.originalText
+                    handleCopy((base || '') + '\n\n' + sectionsToMarkdown(customSections))
+                  }}
+                >
+                  Copy with Custom Sections
+                </Button>
+              )}
             </div>
           </div>
 
@@ -296,6 +356,14 @@ export default function ResumeView() {
             </div>
           </Card>
         )}
+
+        {/* ── Custom Sections ─────────────────────────────────────────────── */}
+        <Card className="mt-6">
+          <CustomSection
+            sections={customSections}
+            onSectionsChange={handleSectionsChange}
+          />
+        </Card>
       </div>
     </div>
   )

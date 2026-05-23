@@ -7,6 +7,7 @@ import Challenge from '../models/Challenge.model.js';
 import Proposal from '../models/Proposal.model.js';
 import { FellowshipChatRoom, FellowshipMessage } from '../models/FellowshipChat.model.js';
 import { sendProposalApprovalEmail, sendVerificationEmail } from '../services/mailService.js';
+import { sanitizeMessageContent } from '../utils/sanitizeMessage.js';
 
 const router = express.Router();
 
@@ -538,35 +539,33 @@ router.get('/chat/rooms/:roomId/messages', verifyToken, asyncHandler(async (req,
 }));
 
 router.post('/chat/rooms/:roomId/messages', verifyToken, asyncHandler(async (req, res) => {
-    const room = await FellowshipChatRoom.findById(req.params.roomId);
-    if (!room) {
-        throw new ApiError(404, 'Chat room not found');
-    }
+  const room = await FellowshipChatRoom.findById(req.params.roomId);
+  if (!room) throw new ApiError(404, 'Chat room not found');
 
-    if (room.studentId !== req.user.uid && room.corporateId !== req.user.uid) {
-        throw new ApiError(403, 'Access denied');
-    }
+  if (room.studentId !== req.user.uid && room.corporateId !== req.user.uid) {
+    throw new ApiError(403, 'Access denied');
+  }
 
-    const { content } = req.body;
-    if (!content || content.trim().length === 0) {
-        throw new ApiError(400, 'Message content is required');
-    }
+  const { content } = req.body;
+  const sanitizedContent = sanitizeMessageContent(content); // keep ONE version
+  if (!sanitizedContent) throw new ApiError(400, 'Message content is required');
 
-    const profile = await FellowshipProfile.findOne({ userId: req.user.uid });
+  const profile = await FellowshipProfile.findOne({ userId: req.user.uid });
 
-    const message = await FellowshipMessage.create({
-        roomId: room._id,
-        senderId: req.user.uid,
-        senderName: req.user.name || 'User',
-        senderRole: profile?.role || 'student',
-        content: content.trim()
-    });
+  const message = await FellowshipMessage.create({
+    roomId: room._id,
+    senderId: req.user.uid,
+    senderName: req.user.name || 'User',
+    senderRole: profile?.role || 'student',
+    content: sanitizedContent
+  });
 
-    room.lastMessageAt = new Date();
-    await room.save();
+  room.lastMessageAt = new Date();
+  await room.save();
 
-    res.status(201).json({ success: true, data: message });
+  res.status(201).json({ success: true, data: message });
 }));
+
 
 router.get('/stats', verifyToken, asyncHandler(async (req, res) => {
     const profile = await FellowshipProfile.findOne({ userId: req.user.uid }).lean();

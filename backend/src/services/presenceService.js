@@ -1,6 +1,9 @@
 // In-memory presence store (can be replaced with Redis for scaling)
 const onlineUsers = new Map();
 
+// Track which rooms each user has joined
+const userRooms = new Map();
+
 export const presenceService = {
   async setOnline(uid, userData) {
     onlineUsers.set(uid, {
@@ -8,6 +11,10 @@ export const presenceService = {
       lastSeen: new Date(),
       status: 'online'
     });
+    // Initialize empty room set for user
+    if (!userRooms.has(uid)) {
+      userRooms.set(uid, new Set());
+    }
   },
 
   async setOffline(uid) {
@@ -23,6 +30,43 @@ export const presenceService = {
         }
       }, 5 * 60 * 1000); // Remove after 5 minutes
     }
+    // Clear user's room memberships
+    userRooms.delete(uid);
+  },
+
+  async joinRoom(uid, room) {
+    if (!userRooms.has(uid)) {
+      userRooms.set(uid, new Set());
+    }
+    userRooms.get(uid).add(room);
+  },
+
+  async leaveRoom(uid, room) {
+    const rooms = userRooms.get(uid);
+    if (rooms) {
+      rooms.delete(room);
+    }
+  },
+
+  async getUserRooms(uid) {
+    return Array.from(userRooms.get(uid) || []);
+  },
+
+  async getRoomMembers(room) {
+    const members = [];
+    for (const [uid, rooms] of userRooms) {
+      if (rooms.has(room)) {
+        const user = onlineUsers.get(uid);
+        if (user && user.status === 'online') {
+          members.push({
+            uid,
+            name: user.name,
+            picture: user.picture
+          });
+        }
+      }
+    }
+    return members;
   },
 
   async setAway(uid) {
