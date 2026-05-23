@@ -13,15 +13,11 @@
     the CareerPilot project. The page is populated by `script.js` which
     injects data from the `PROFILE` and `REPOSITORIES` objects.
 
-    Edited for GSSOC PR: trimmed demo content and added small, hand-written
-    comments so this looks like a maintained project folder (not AI generated).
-
     Notes for the owner:
     - Edit `PROFILE` in script.js to change the displayed name, bio and README.
     - The template avoids using GitHub brand assets and uses initials/avatar.
   -->
-    
-  <link rel="stylesheet" href="style.css?v=29" />
+  <link rel="stylesheet" href="style.css?v=1" />
 </head>
 <body>
   <header class="gh-header" role="banner" aria-label="GitHub profile navigation">
@@ -63,8 +59,6 @@
   <div class="bg-glow" aria-hidden="true"></div>
 
   <!-- Main layout: two-column grid with a left sidebar and content area -->
-
-
   <main class="layout" id="overview">
     <aside class="sidebar card">
       <!-- Left sidebar: avatar, name, bio, and quick stats -->
@@ -72,69 +66,72 @@
       <div class="avatar initials" id="avatar-initials" aria-hidden="true">
         <svg viewBox="0 0 120 120" role="img" aria-label="Avatar" xmlns="http://www.w3.org/2000/svg">
           <defs>
-            <!doctype html>
-            <html lang="en">
-            <head>
-              <meta charset="utf-8" />
-              <meta name="viewport" content="width=device-width,initial-scale=1" />
-              <title>GitHub Profile Portfolio</title>
-              <link rel="stylesheet" href="style.css?v=1">
-              <meta name="description" content="GitHub-style profile template used in CareerPilot">
-              <!-- Original layout restored: sidebar + content. -->
-            </head>
-            <body>
-              <header class="gh-header" role="banner">
-                <div class="container">
-                  <div class="brand">alexmorgan-dev</div>
-                  <nav class="gh-tabs" role="navigation" aria-label="Profile sections">
-                    <a class="gh-tab" href="#about">Overview</a>
-                    <a class="gh-tab" href="#projects">Projects</a>
-                    <a class="gh-tab" href="#skills">Skills</a>
-                    <a class="gh-tab" href="#experience">Experience</a>
-                    <a class="gh-tab" href="#contact">Contact</a>
-                  </nav>
-                </div>
-              </header>
+            <clipPath id="circleClip">
+              <circle cx="60" cy="60" r="58" />
+            </clipPath>
+            <filter id="softShadow" x="-20%" y="-20%" width="140%" height="140%">
+              <feDropShadow dx="0" dy="2" stdDeviation="3" flood-color="#000" flood-opacity="0.25"/>
+            </filter>
+          </defs>
+          <!-- outer background -->
+          <rect width="120" height="120" fill="#f5f5f5" clip-path="url(#circleClip)" />
+          <!-- subtle border inside SVG to match page border -->
+          <circle cx="60" cy="60" r="58" fill="none" stroke="#2f3438" stroke-width="2" />
 
-              <main class="layout container">
-                <aside class="sidebar" role="complementary" aria-label="Profile sidebar">
-                  <div class="avatar" id="avatar-initials">AM</div>
-                  <h1 id="profile-name">Alex Morgan</h1>
-                  <div id="profile-username">@alexmorgan-dev</div>
-                  <p id="profile-bio">Frontend & backend developer building practical tools and libraries.</p>
-                  <div id="profile-stats" class="stats" aria-hidden="false"></div>
-                </aside>
+          <!-- larger pixel blocks (centered pattern) -->
+          <g fill="#e39a90" clip-path="url(#circleClip)" filter="url(#softShadow)">
+            <rect x="26" y="16" width="20" height="20" />
+            <rect x="46" y="16" width="20" height="20" />
+            <rect x="66" y="16" width="20" height="20" />
 
-                <section class="content">
-                  <section id="about" class="card">
-                    <h2>About Me</h2>
-                    <div id="readme-content"></div>
-                  </section>
+            <rect x="16" y="36" width="20" height="20" />
+            <rect x="36" y="36" width="20" height="20" />
+            <rect x="56" y="36" width="20" height="20" />
+            <rect x="76" y="36" width="20" height="20" />
 
-                  <section id="projects" class="card">
-                    <h2>Projects</h2>
-                    <div id="repo-grid" class="repo-grid" aria-live="polite"></div>
-                  </section>
+            <rect x="36" y="56" width="20" height="20" />
+            <rect x="56" y="56" width="20" height="20" />
+            <rect x="76" y="56" width="20" height="20" />
 
-                  <section id="contributions" class="card">
-                    <h2>Contribution Activity</h2>
-                    <div id="heatmap" class="heatmap-placeholder"></div>
-                    <div id="contrib-total" class="muted"></div>
-                  </section>
+            <rect x="56" y="76" width="20" height="20" />
+            <rect x="76" y="76" width="20" height="20" />
 
-                  <section id="contact" class="card">
-                    <h2>Connect with Me</h2>
-                    <div class="links">
-                      <a href="https://github.com/alexmorgan-dev" target="_blank" rel="noopener noreferrer">GitHub</a>
-                      <a href="https://linkedin.com/in/alexmorgan-dev" target="_blank" rel="noopener noreferrer">LinkedIn</a>
-                    </div>
-                  </section>
-                </section>
-              </main>
+            <rect x="66" y="96" width="20" height="20" />
+          </g>
+        </svg>
+      </div>
+      <div>
+        <h1 id="profile-name">Developer Name</h1>
+        <p class="username" id="profile-username">@developer</p>
+        <p class="bio" id="profile-bio">Building products with thoughtful code and clean UX.</p>
+        <div class="stats" id="profile-stats" aria-label="Profile stats"></div>
+      </div>
+    </aside>
 
-              <script src="script.js?v=1"></script>
-            </body>
-            </html>
+    <!-- <section class="content">
+      <section class="card panel about-section" aria-label="About Me" id="about">
+        <div class="section-head about-head">
+          <h2>About Me</h2>
+        </div>
+        <article class="readme about-copy" id="readme-content"></article>
+      </section> -->
+      <section class="content">
+         <section class="card panel about-section" aria-label="About Me" id="about">
+         <div class="about-inner">
+             <article class="about-copy" id="readme-content"></article>
+        </div>
+      </section>
+
+      <!-- Skills section (portfolio-first) -->
+      <section class="card panel" aria-label="Skills" id="skills">
+        <div class="panel-head">
+          <h2>Skills</h2>
+        </div>
+        <div class="skill-groups">
+          <div class="skill-group">
+            <h3>Frontend</h3>
+            <ul>
+              <li>React</li>
               <li>TypeScript</li>
               <li>Tailwind CSS</li>
             </ul>
@@ -159,7 +156,6 @@
       </section>
 
       <!-- Experience section (portfolio-first) -->
-
       <section class="card panel" aria-label="Experience" id="experience">
         <div class="panel-head">
           <h2>Experience</h2>
@@ -250,7 +246,6 @@
   </main>
 
   <!-- Client script: populates the page using the `PROFILE` data object -->
-
-  <script src="script.js?v=999"></script>
+  <script src="script.js?v=1"></script>
 </body>
 </html>
