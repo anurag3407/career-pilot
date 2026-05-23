@@ -8,6 +8,7 @@ import { validateToken as validateGithubToken } from '../services/deploy/githubP
 import { validateToken as validateNetlifyToken } from '../services/deploy/netlifyDeployer.js';
 import { enhanceSection } from '../services/ai/portfolioContentEnhancer.js';
 import { generateRobotsTxt, generateSitemapXml } from '../utils/sitemapGenerator.js';
+import { reviewPortfolio } from '../services/ai/portfolioReviewer.js';
 import { analyzeAccessibility } from '../services/accessibilityChecker.js';
 
 const router = express.Router();
@@ -315,4 +316,34 @@ router.get('/', asyncHandler(async (req, res) => {
   res.status(200).json({ success: true, portfolios, data: portfolios });
 }));
 
+/**
+ * GET /api/portfolio/:id/review
+ * AI-powered review and scoring of a complete portfolio
+ */
+router.get('/:id/review', verifyToken, asyncHandler(async (req, res) => {
+  const { id } = req.params;
+
+  if (!id || id.trim() === '') {
+    throw new ApiError(400, 'Portfolio ID is required.');
+  }
+
+  // Get portfolio data from request query or body
+  // In real use this would fetch from DB by id
+  // For now accept portfolioData from request body
+  const portfolioData = req.body;
+
+  if (!portfolioData || Object.keys(portfolioData).length === 0) {
+    throw new ApiError(400, 'Portfolio data is required in request body.');
+  }
+
+  const review = await reviewPortfolio({ id, ...portfolioData });
+
+  return res.status(200).json({
+    success: true,
+    message: 'Portfolio review completed.',
+    data: review,
+  });
+}));
+
+export default router;
 export default router;

@@ -59,6 +59,7 @@ import {
   scheduleWeeklyDigest
 } from './services/weeklyDigestService.js';
 
+
 const app = express();
 app.use(metricsMiddleware);
 const httpServer = createServer(app);

@@ -6,6 +6,12 @@ const options = {
     info: {
       title: 'CareerPilot API',
       version: '1.0.0',
+      description: 'API documentation for CareerPilot',
+    },
+    servers: [
+      {
+        url: 'http://localhost:5000',
+        description: 'Development server',
       description: 'CareerPilot API documentation',
     },
     servers: [
