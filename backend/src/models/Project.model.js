@@ -1,5 +1,15 @@
 import mongoose from 'mongoose';
 
+const isHttpUrl = (value) => {
+    if (value === null || value === undefined || value === '') return true;
+    try {
+        const parsed = new URL(value);
+        return parsed.protocol === 'http:' || parsed.protocol === 'https:';
+    } catch {
+        return false;
+    }
+};
+
 const projectSchema = new mongoose.Schema({
     title: {
         type: String,
@@ -12,21 +22,36 @@ const projectSchema = new mongoose.Schema({
         required: true,
         minlength: 20
     },
-    techStack: [{
-        type: String,
-        required: true
-    }],
+    techStack: {
+        type: [{ type: String, required: true, trim: true }],
+        validate: [
+            (value) => Array.isArray(value) && value.length > 0,
+            'At least one tech stack tag is required'
+        ]
+    },
     githubUrl: {
         type: String,
-        required: true
+        required: true,
+        validate: {
+            validator: (value) => isHttpUrl(value),
+            message: 'githubUrl must be a valid http(s) URL'
+        }
     },
     demoUrl: {
-        type: String,
-        default: null
+         type: String,
+        default: null,
+        validate: {
+            validator: (value) => isHttpUrl(value),
+            message: 'demoUrl must be a valid http(s) URL'
+        }
     },
     screenshot: {
         type: String,
-        default: null
+        default: null,
+        validate: {
+            validator: (value) => isHttpUrl(value),
+            message: 'screenshot must be a valid http(s) URL'
+        }
     },
     authorId: {
         type: String,
@@ -39,11 +64,17 @@ const projectSchema = new mongoose.Schema({
     },
     upvotes: {
         type: Number,
-        default: 0
+        default: 0,
+        min: 0
+     },
+    upvotedBy: {
+        type: [String],
+        default: [],
+        validate: {
+            validator: (value) => new Set(value).size === value.length,
+            message: 'Duplicate upvotes from the same user are not allowed'
+        }
     },
-    upvotedBy: [{
-        type: String
-    }],
     status: {
         type: String,
         enum: ['pending', 'approved', 'rejected'],
