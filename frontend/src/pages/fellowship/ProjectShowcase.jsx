@@ -10,7 +10,7 @@ function ProjectCard({ project, onUpvote }) {
     const handleUpvote = () => {
         if (!upvoted) {
             setUpvoted(true)
-            onUpvote(project.id)
+            onUpvote(project._id)
         }
     }
 
@@ -57,7 +57,7 @@ function ProjectCard({ project, onUpvote }) {
             <div className="flex items-center justify-between mt-auto">
                 <div className="flex items-center gap-3">
                     <a
-                        href={project.github}
+                        href={project.githubUrl}
                         target="_blank"
                         rel="noreferrer"
                         aria-label={`Open ${project.title} GitHub repository`}
@@ -67,7 +67,7 @@ function ProjectCard({ project, onUpvote }) {
                     </a>
 
                     <a
-                        href={project.demo}
+                        href={project.demoUrl}
                         target="_blank"
                         rel="noreferrer"
                         aria-label={`Open ${project.title} live demo`}
@@ -96,7 +96,7 @@ function ProjectCard({ project, onUpvote }) {
             </div>
 
             <p className="text-xs text-muted-foreground">
-                by {project.author}
+                by {project.authorName}
             </p>
         </motion.div>
     )
@@ -107,14 +107,14 @@ export default function ProjectShowcase() {
     const [searchQuery, setSearchQuery] = useState('')
 
     const handleUpvote = (id) => {
-        setProjects((prev) =>
-            prev.map((p) =>
-                p.id === id
-                    ? { ...p, upvotes: p.upvotes + 1 }
-                    : p
-            )
+    setProjects((prev) =>
+        prev.map((p) =>
+            p._id === id
+                ? { ...p, upvotes: p.upvotes + 1 }
+                : p
         )
-    }
+    )
+}
 
     const filtered = projects.filter(
         (p) =>
@@ -152,7 +152,7 @@ export default function ProjectShowcase() {
                 <div className="grid gap-4 sm:grid-cols-2 lg:grid-cols-3">
                     {filtered.map((project) => (
                         <ProjectCard
-                            key={project.id}
+                            key={project._id}
                             project={project}
                             onUpvote={handleUpvote}
                         />
