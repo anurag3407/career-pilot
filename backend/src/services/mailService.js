@@ -548,3 +548,9 @@ export const sendVerificationEmail = async ({ email, code }) => {
 
 
 export { handleBounceNotification } from "./bounceHandler.js";
+
+// Export for testing purposes only
+export const __setMockTransport = (mock) => { 
+  transporter = mock; 
+  nodemailer = { createTransport: () => mock }; 
+};
