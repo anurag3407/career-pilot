@@ -12,6 +12,11 @@ const options = {
       {
         url: 'http://localhost:5000',
         description: 'Development server',
+      description: 'CareerPilot API documentation',
+    },
+    servers: [
+      {
+        url: `http://localhost:${process.env.PORT || 5001}`,
       },
     ],
   },

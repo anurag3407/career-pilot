@@ -1,5 +1,7 @@
 import { getDefaultProvider } from './aiProviders.js';
 import dotenv from 'dotenv';
+import { GoogleGenerativeAI } from '@google/generative-ai';
+import { aiCallsCounter } from '../middleware/metrics.js';
 
 dotenv.config();
 
@@ -18,7 +20,13 @@ const getModel = () => {
     throw err;
   }
   const genAI = new GoogleGenerativeAI(geminiApiKey);
-  _model = genAI.getGenerativeModel({ model: 'gemini-2.5-flash' });
+  const rawModel = genAI.getGenerativeModel({ model: 'gemini-2.5-flash' });
+  _model = {
+    generateContent: async (prompt) => {
+      aiCallsCounter.inc({ provider: 'gemini' });
+      return await rawModel.generateContent(prompt);
+    }
+  };
   return _model;
 };
 
@@ -40,7 +48,7 @@ function tokensUsedFromResult(result) {
   };
 }
 
-const getSystemPrompt = (jobRole, yearsOfExperience, skills, industry, customInstructions, profileInfo) => {
+export const getSystemPrompt = (jobRole, yearsOfExperience, skills, industry, customInstructions, profileInfo) => {
   const { fullName, email, phone, linkedinUrl, githubUrl, portfolioUrl } = profileInfo || {};
   const safeSkills = Array.isArray(skills) ? skills : (skills ? [String(skills)] : []);
 
@@ -150,9 +158,9 @@ export const enhanceResume = async (resumeText, preferences, aiProvider) => {
 
     return {
       success: true,
-      enhancedResume: result.text,
+      enhancedResume: providerResult.text,
       provider: provider.providerName,
-      tokensUsed: tokensUsedFromResult(result),
+      tokensUsed: tokensUsedFromResult(providerResult),
     };
   } catch (error) {
     if (error.statusCode === 503) throw error;
@@ -177,7 +185,7 @@ ${resumeText}`;
 
     return {
       success: true,
-      summary: result.text,
+      summary: providerResult.text,
       provider: provider.providerName
     };
   } catch (error) {
@@ -203,7 +211,7 @@ ${resumeText}`;
 
     return {
       success: true,
-      suggestions: result.text,
+      suggestions: providerResult.text,
       provider: provider.providerName
     };
   } catch (error) {
@@ -268,8 +276,11 @@ ${resumeText}`;
     // Parse JSON from response
     let analysisData;
     try {
-      // Remove markdown code blocks if present
-      const cleanedText = result.text.replace(/```json\n?/g, '').replace(/```\n?/g, '').trim();
+      let cleanedText = providerResult.text.replace(/```json\n?/g, '').replace(/```\n?/g, '').trim();
+      const jsonMatch = cleanedText.match(/\{[\s\S]*\}/);
+      if (jsonMatch) {
+        cleanedText = jsonMatch[0];
+      }
       analysisData = JSON.parse(cleanedText);
     } catch (parseError) {
       console.error('Failed to parse ATS analysis JSON:', parseError);
@@ -417,7 +428,11 @@ ${resumeText}`;
 
     let analysisData;
     try {
-      const cleanedText = result.text.replace(/```json\n?/g, '').replace(/```\n?/g, '').trim();
+      let cleanedText = providerResult.text.replace(/```json\n?/g, '').replace(/```\n?/g, '').trim();
+      const jsonMatch = cleanedText.match(/\{[\s\S]*\}/);
+      if (jsonMatch) {
+        cleanedText = jsonMatch[0];
+      }
       analysisData = JSON.parse(cleanedText);
     } catch (parseError) {
       console.error('Failed to parse comprehensive analysis JSON:', parseError);
@@ -490,7 +505,11 @@ ${resumeText}`;
 
     let bulletData;
     try {
-      const cleanedText = result.text.replace(/```json\n?/g, '').replace(/```\n?/g, '').trim();
+      let cleanedText = providerResult.text.replace(/```json\n?/g, '').replace(/```\n?/g, '').trim();
+      const jsonMatch = cleanedText.match(/\{[\s\S]*\}/);
+      if (jsonMatch) {
+        cleanedText = jsonMatch[0];
+      }
       bulletData = JSON.parse(cleanedText);
     } catch (parseError) {
       console.error('Failed to parse bullet analysis JSON:', parseError);
@@ -546,7 +565,11 @@ ${resumeText}`;
 
     let comparisonData;
     try {
-      const cleanedText = result.text.replace(/```json\n?/g, '').replace(/```\n?/g, '').trim();
+      let cleanedText = providerResult.text.replace(/```json\n?/g, '').replace(/```\n?/g, '').trim();
+      const jsonMatch = cleanedText.match(/\{[\s\S]*\}/);
+      if (jsonMatch) {
+        cleanedText = jsonMatch[0];
+      }
       comparisonData = JSON.parse(cleanedText);
     } catch (parseError) {
       console.error('Failed to parse comparison JSON:', parseError);

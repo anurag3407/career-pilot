@@ -1,6 +1,8 @@
 import { useState, useRef, useCallback } from 'react'
+import toast from 'react-hot-toast'
 import { cn } from '@/lib/utils'
 import Button from './Button'
+import DragHandle from './DragHandle'
 
 // ─── Icons (inline SVG to keep zero extra deps) ────────────────────────────
 
@@ -245,8 +247,10 @@ function SectionCard({
       )}
     >
       {/* Section header */}
-      <div className="flex items-center gap-3 px-5 py-3.5 bg-muted/20 border-b border-border/50">
+        <div className="group flex items-center gap-3 px-5 py-3.5 bg-muted/20 border-b border-border/50">
+        <DragHandle />
         {/* Reorder */}
+        
         <div className="flex gap-1 shrink-0">
           <button
             type="button"
@@ -346,7 +350,7 @@ function SectionCard({
                     onClick={() => {
                       onChange(enhancedData); // Apply changes to original state
                       setEnhancedData(null); // Close diff view
-                      alert("Successfully enhanced section!"); // Simple success toast/notification
+                      toast.success("Successfully enhanced section!");
                     }}
                     className="px-2.5 py-1 rounded bg-emerald-600 text-white text-xs font-medium hover:bg-emerald-700 transition-colors"
                   >
