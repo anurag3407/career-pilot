@@ -22,7 +22,8 @@ router.post('/register', validate(registerSchema), asyncHandler(async (req, res)
   if (existingUser) {
     return res.status(400).json({ success: false, error: 'User already exists' });
   }
-  const user = await User.create({ email, name, password });
+  const user = new User({ email, name, password });
+  await user.save();
   res.status(201).json({
     success: true,
     message: 'User registered successfully',
