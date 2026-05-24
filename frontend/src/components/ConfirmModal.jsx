@@ -18,6 +18,15 @@ export default function ConfirmModal({
         if (isOpen && cancelRef.current) cancelRef.current.focus();
     }, [isOpen]);
 
+    useEffect(() => {
+        if (!isOpen) return;
+        const handleKeyDown = (e) => {
+            if (e.key === 'Escape') onCancel();
+        };
+        window.addEventListener('keydown', handleKeyDown);
+        return () => window.removeEventListener('keydown', handleKeyDown);
+    }, [isOpen, onCancel]);
+
     const variantStyles = {
         danger: { icon: 'bg-destructive/10 text-destructive border-destructive/20', button: 'bg-destructive hover:bg-destructive/90 text-white' },
         warning: { icon: 'bg-amber-500/10 text-amber-500 border-amber-500/20', button: 'bg-amber-500 hover:bg-amber-500/90 text-white' },
@@ -31,7 +40,7 @@ export default function ConfirmModal({
             {isOpen && (
                 <motion.div className="fixed inset-0 z-50 flex items-center justify-center p-4" initial={{ opacity: 0 }} animate={{ opacity: 1 }} exit={{ opacity: 0 }}>
                     <div className="absolute inset-0 bg-black/50 backdrop-blur-sm" onClick={onCancel} />
-                    <motion.div className="relative w-full max-w-sm rounded-2xl bg-card border border-border p-6 shadow-2xl" initial={{ scale: 0.95, opacity: 0 }} animate={{ scale: 1, opacity: 1 }} exit={{ scale: 0.95, opacity: 0 }}>
+                    <motion.div role="dialog" aria-modal="true" className="relative w-full max-w-sm rounded-2xl bg-card border border-border p-6 shadow-2xl" initial={{ scale: 0.95, opacity: 0 }} animate={{ scale: 1, opacity: 1 }} exit={{ scale: 0.95, opacity: 0 }}>
                         <button onClick={onCancel} className="absolute top-4 right-4 p-1 rounded-lg text-muted-foreground hover:text-foreground hover:bg-muted"><X className="w-4 h-4" /></button>
                         <div className={`w-12 h-12 rounded-xl border flex items-center justify-center mb-4 ${styles.icon}`}><AlertTriangle className="w-6 h-6" /></div>
                         <h2 className="text-lg font-bold text-foreground mb-1">{title}</h2>

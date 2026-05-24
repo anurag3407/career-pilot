@@ -7,26 +7,36 @@ export function useApi(apiFn, options = {}) {
     const [error, setError] = useState(null);
     const mountedRef = useRef(true);
 
+    const apiFnRef = useRef(apiFn);
+    const onSuccessRef = useRef(onSuccess);
+    const onErrorRef = useRef(onError);
+
+    useEffect(() => {
+        apiFnRef.current = apiFn;
+        onSuccessRef.current = onSuccess;
+        onErrorRef.current = onError;
+    });
+
     const execute = useCallback(async (...args) => {
         try {
             setLoading(true);
             setError(null);
-            const result = await apiFn(...args);
+            const result = await apiFnRef.current(...args);
             if (mountedRef.current) {
                 setData(result);
-                onSuccess?.(result);
+                onSuccessRef.current?.(result);
             }
             return result;
         } catch (err) {
             if (mountedRef.current) {
                 setError(err);
-                onError?.(err);
+                onErrorRef.current?.(err);
             }
             throw err;
         } finally {
             if (mountedRef.current) setLoading(false);
         }
-    }, [apiFn, onSuccess, onError]);
+    }, []);
 
     useEffect(() => {
         mountedRef.current = true;
