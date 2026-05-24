@@ -4,13 +4,28 @@ import dotenv from 'dotenv';
 dotenv.config();
 
 const geminiApiKey = process.env.GEMINI_API_KEY;
-if (!geminiApiKey) {
-  console.error('❌ GEMINI_API_KEY is missing. Aborting AI initialization.');
-  throw new Error('GEMINI_API_KEY is required to start the AI services.');
+const isPlaceholder = !geminiApiKey || geminiApiKey.trim() === '' || geminiApiKey.startsWith('your_');
+
+let genAI = null;
+let model = null;
+
+if (isPlaceholder) {
+  console.warn('⚠️ GEMINI_API_KEY is missing or placeholder. AI resume enhancement features will be unavailable.');
+} else {
+  try {
+    genAI = new GoogleGenerativeAI(geminiApiKey);
+    model = genAI.getGenerativeModel({ model: 'gemini-2.5-flash' });
+    console.log('✅ Google Generative AI initialized successfully.');
+  } catch (error) {
+    console.error('❌ Failed to initialize Google Generative AI:', error.message);
+  }
 }
 
-const genAI = new GoogleGenerativeAI(geminiApiKey);
-const model = genAI.getGenerativeModel({ model: 'gemini-2.5-flash' });
+const checkAIInitialization = () => {
+  if (!model) {
+    throw new Error('AI service is not configured. Please set a valid GEMINI_API_KEY in your .env file.');
+  }
+};
 
 const getSystemPrompt = (jobRole, yearsOfExperience, skills, industry, customInstructions, profileInfo) => {
   const { fullName, email, phone, linkedinUrl, githubUrl, portfolioUrl } = profileInfo || {};
@@ -93,6 +108,7 @@ OUTPUT RULES:
 };
 
 export const enhanceResume = async (resumeText, preferences) => {
+  checkAIInitialization();
   const {
     jobRole,
     yearsOfExperience,
@@ -135,6 +151,7 @@ export const enhanceResume = async (resumeText, preferences) => {
 
 // Function to generate resume summary
 export const generateSummary = async (resumeText, jobRole) => {
+  checkAIInitialization();
   try {
     const prompt = `You are an expert resume writer. Generate a compelling 2-3 sentence professional summary for a ${jobRole} position based on the provided resume. Focus on key achievements, years of experience, and core competencies. Be concise and impactful.
 
@@ -157,6 +174,7 @@ ${resumeText}`;
 
 // Function to suggest improvements
 export const suggestImprovements = async (resumeText, jobRole) => {
+  checkAIInitialization();
   try {
     const prompt = `You are an expert resume reviewer. Analyze the provided resume for a ${jobRole} position and provide 5 specific, actionable improvement suggestions. Format as a numbered list.
 
@@ -179,6 +197,7 @@ ${resumeText}`;
 
 // Function to analyze ATS score
 export const analyzeATSScore = async (resumeText, jobRole) => {
+  checkAIInitialization();
   try {
     const prompt = `You are an expert ATS (Applicant Tracking System) analyzer and resume reviewer. Analyze the provided resume for a ${jobRole} position.
 
@@ -280,6 +299,7 @@ const WEAK_VERBS = [
 ];
 
 export const analyzeResumeComprehensive = async (resumeText, jobRole) => {
+  checkAIInitialization();
   try {
     const prompt = `You are a SENIOR RESUME EXPERT with 20+ years of experience helping candidates land jobs at top companies.
 
@@ -394,6 +414,7 @@ ${resumeText}`;
 
 // Analyze individual bullet points with improvement suggestions
 export const analyzeBulletPoints = async (resumeText, jobRole) => {
+  checkAIInitialization();
   try {
     const prompt = `You are an expert resume writer. Extract and analyze EVERY bullet point from the experience and projects sections.
 
@@ -463,6 +484,7 @@ ${resumeText}`;
 
 // Generate before/after comparison
 export const generateBeforeAfter = async (resumeText, jobRole, analysisResults) => {
+  checkAIInitialization();
   try {
     const prompt = `Based on the analysis, generate an improved version of key resume sections.
 

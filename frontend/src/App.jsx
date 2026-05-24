@@ -16,6 +16,7 @@ import JobAlerts from './pages/JobAlerts'
 import JobTracker from './pages/JobTracker'
 import Community from './pages/Community'
 import InterviewPrep from './pages/InterviewPrep'
+import CulinaryTest from './pages/CulinaryTest'
 import FellowshipLayout from './pages/fellowship/FellowshipLayout'
 import Onboarding from './pages/fellowship/Onboarding'
 import Challenges from './pages/fellowship/Challenges'
@@ -103,6 +104,7 @@ function App() {
             <Route path="/" element={<PublicRoute><Home /></PublicRoute>} />
             <Route path="/login" element={<PublicRoute><Login /></PublicRoute>} />
             <Route path="/register" element={<PublicRoute><Register /></PublicRoute>} />
+            <Route path="/culinary-test" element={<CulinaryTest />} />
 
             <Route path="/dashboard" element={<ProtectedRoute><Dashboard /></ProtectedRoute>} />
             <Route path="/upload" element={<ProtectedRoute><Upload /></ProtectedRoute>} />

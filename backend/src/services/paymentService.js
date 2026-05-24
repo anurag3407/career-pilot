@@ -1,11 +1,30 @@
 import Razorpay from 'razorpay';
 import crypto from 'crypto';
 
-// Initialize Razorpay instance with test/live keys from environment
-const razorpay = new Razorpay({
-    key_id: process.env.RAZORPAY_KEY_ID,
-    key_secret: process.env.RAZORPAY_KEY_SECRET
-});
+const keyId = process.env.RAZORPAY_KEY_ID;
+const keySecret = process.env.RAZORPAY_KEY_SECRET;
+const isPlaceholder = !keyId || !keySecret || keyId.trim() === '' || keySecret.trim() === '' || keyId.startsWith('your_') || keySecret.startsWith('your_');
+
+let razorpay = null;
+
+if (isPlaceholder) {
+    console.warn('⚠️ Razorpay keys are missing or placeholders. Payment services will be unavailable.');
+} else {
+    try {
+        razorpay = new Razorpay({
+            key_id: keyId,
+            key_secret: keySecret
+        });
+    } catch (error) {
+        console.error('❌ Failed to initialize Razorpay:', error.message);
+    }
+}
+
+const checkPaymentInitialization = () => {
+    if (!razorpay) {
+        throw new Error('Payment service is not configured. Please set a valid RAZORPAY_KEY_ID and RAZORPAY_KEY_SECRET in your .env file.');
+    }
+};
 
 /**
  * Create a Razorpay order for escrow payment
@@ -15,6 +34,7 @@ const razorpay = new Razorpay({
  * @returns {Promise<object>} Razorpay order object
  */
 export const createOrder = async (amount, receipt, notes = {}) => {
+    checkPaymentInitialization();
     const options = {
         amount: Math.round(amount * 100), // Razorpay expects amount in paise
         currency: 'INR',
@@ -41,6 +61,7 @@ export const createOrder = async (amount, receipt, notes = {}) => {
  * @returns {boolean} Whether the signature is valid
  */
 export const verifyPaymentSignature = (orderId, paymentId, signature) => {
+    checkPaymentInitialization();
     const body = orderId + '|' + paymentId;
     const expectedSignature = crypto
         .createHmac('sha256', process.env.RAZORPAY_KEY_SECRET)
@@ -67,6 +88,7 @@ export const verifyPaymentSignature = (orderId, paymentId, signature) => {
  * @returns {Promise<object>} Order details
  */
 export const getOrder = async (orderId) => {
+    checkPaymentInitialization();
     try {
         return await razorpay.orders.fetch(orderId);
     } catch (error) {
@@ -81,6 +103,7 @@ export const getOrder = async (orderId) => {
  * @returns {Promise<object>} Payment details
  */
 export const getPayment = async (paymentId) => {
+    checkPaymentInitialization();
     try {
         return await razorpay.payments.fetch(paymentId);
     } catch (error) {

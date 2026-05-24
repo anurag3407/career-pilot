@@ -13,12 +13,44 @@ const firebaseConfig = {
   appId: import.meta.env.VITE_FIREBASE_APP_ID
 }
 
-// Initialize Firebase
-const app = initializeApp(firebaseConfig)
+const isValidConfig = firebaseConfig.apiKey && 
+                     firebaseConfig.apiKey !== 'your_api_key' && 
+                     !firebaseConfig.apiKey.startsWith('your_');
 
-// Export services
-export const auth = getAuth(app)
-export const db = getFirestore(app)
-export const storage = getStorage(app)
+let app;
+let auth;
+let db;
+let storage;
 
+if (isValidConfig) {
+  try {
+    app = initializeApp(firebaseConfig)
+    auth = getAuth(app)
+    db = getFirestore(app)
+    storage = getStorage(app)
+  } catch (error) {
+    console.error('❌ Failed to initialize Firebase:', error)
+  }
+}
+
+if (!auth) {
+  console.warn('⚠️ Firebase initialized in mock/fallback mode because API key is missing or placeholder.')
+  app = {}
+  auth = {
+    currentUser: null,
+    onAuthStateChanged: (callback) => {
+      // Simulate unauthenticated user
+      callback(null)
+      return () => {}
+    },
+    signOut: async () => {},
+    signInWithEmailAndPassword: async () => { throw new Error('Firebase Auth is not configured (mock mode)') },
+    createUserWithEmailAndPassword: async () => { throw new Error('Firebase Auth is not configured (mock mode)') }
+  }
+  db = {}
+  storage = {}
+}
+
+export { auth, db, storage }
 export default app
+
