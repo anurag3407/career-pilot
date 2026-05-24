@@ -11,6 +11,7 @@ import { exchangeCodeForToken, getLinkedInAuthUrl, getLinkedInProfile } from '..
 import User from '../models/User.model.js';
 import admin from '../config/firebase.js';
 import crypto from 'crypto';
+import { updateNotificationPrefsSchema } from '../schemas/auth.schema.js';
 
 const router = express.Router();
 const stateStore = new Map();
@@ -38,7 +39,6 @@ setInterval(() => {
     }
   }
 }, 10 * 60 * 1000).unref();
-
 
 // Verify token endpoint — loginProtection tracks failed attempts per IP
 // and locks out after 5 consecutive failures for 15 minutes.

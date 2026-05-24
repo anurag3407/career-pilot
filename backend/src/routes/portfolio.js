@@ -8,7 +8,7 @@ import { validateToken as validateGithubToken } from '../services/deploy/githubP
 import { validateToken as validateNetlifyToken } from '../services/deploy/netlifyDeployer.js';
 import { enhanceSection } from '../services/ai/portfolioContentEnhancer.js';
 import { generateRobotsTxt, generateSitemapXml } from '../utils/sitemapGenerator.js';
-import { analyzeAccessibility } from '../services/accessibilityChecker.js';
+import { explainCodebase, generateProjectStory } from '../services/github/codebaseExplainer.js';
 
 const router = express.Router();
 
@@ -109,6 +109,58 @@ router.post(
     });
   })
 );
+
+  res.status(200).json({
+    success: true,
+    message: 'Enhancement suggestion generated. Review before applying.',
+    data: {
+      sectionType: result.sectionType,
+      before: result.original,
+      after: result.enhanced,
+      improvements: result.improvements,
+    },
+  });
+}));
+
+/**
+ * POST /api/portfolio/explain-codebase
+ * Generate human-readable explanation of a codebase
+ */
+router.post('/explain-codebase', verifyToken, asyncHandler(async (req, res) => {
+  const { repoData, verbosity = 'standard' } = req.body;
+
+  if (!repoData || typeof repoData !== 'object') {
+    throw new ApiError(400, 'repoData is required and must be an object.');
+  }
+
+  const result = await explainCodebase(repoData, verbosity);
+
+  return res.status(200).json({
+    success: true,
+    message: 'Codebase explanation generated.',
+    data: result,
+  });
+}));
+
+/**
+ * POST /api/portfolio/project-story
+ * Generate narrative story about a project
+ */
+router.post('/project-story', verifyToken, asyncHandler(async (req, res) => {
+  const { repoData, verbosity = 'standard' } = req.body;
+
+  if (!repoData || typeof repoData !== 'object') {
+    throw new ApiError(400, 'repoData is required and must be an object.');
+  }
+
+  const result = await generateProjectStory(repoData, verbosity);
+
+  return res.status(200).json({
+    success: true,
+    message: 'Project story generated.',
+    data: result,
+  });
+}));
 
 /**
  * POST /api/portfolio/:id/performance

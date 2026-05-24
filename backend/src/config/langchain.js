@@ -13,7 +13,7 @@ if (!geminiApiKey) {
 
 let _model = null;
 
-const getModel = () => {
+export const getModel = () => {
   if (_model) return _model;
   if (!geminiApiKey) {
     const err = new Error('AI features are unavailable — GEMINI_API_KEY is not configured.');
