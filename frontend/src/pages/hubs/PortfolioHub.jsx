@@ -1,33 +1,62 @@
-import { useState, useEffect } from 'react'
-import { Globe, Folder, Rocket, LayoutTemplate, Github } from 'lucide-react'
-import { portfolioApi } from '../../services/api'
-import HubLayout from '../../components/HubLayout'
-import ToolCard from '../../components/ToolCard'
-import { Link } from 'react-router-dom'
-import { motion } from 'framer-motion'
+import { useState, useEffect } from "react";
+import {
+  Globe,
+  Rocket,
+  LayoutTemplate,
+  Github,
+  MoreVertical,
+  Copy,
+  Loader2,
+} from "lucide-react";
+import { portfolioApi } from "../../services/api";
+import HubLayout from "../../components/HubLayout";
+import ToolCard from "../../components/ToolCard";
+import { motion, AnimatePresence } from "framer-motion";
 
 export default function PortfolioHub() {
-  const [portfolios, setPortfolios] = useState([])
-  const [loading, setLoading] = useState(true)
+  const [portfolios, setPortfolios] = useState([]);
+  const [loading, setLoading] = useState(true);
+  const [menuOpen, setMenuOpen] = useState(null);
+  const [duplicating, setDuplicating] = useState(null);
 
   useEffect(() => {
-    const fetchPortfolios = async () => {
-      try {
-        const res = await portfolioApi.getAll()
-        const items = res.portfolios || res.data?.portfolios || res.data || []
-        setPortfolios(items)
-      } catch (err) {
-        console.error('Failed to fetch portfolios in PortfolioHub', err)
-      } finally {
-        setLoading(false)
-      }
+    fetchPortfolios();
+  }, []);
+
+  const fetchPortfolios = async () => {
+    try {
+      const res = await portfolioApi.getAll();
+      const items = res.portfolios || res.data?.portfolios || res.data || [];
+      setPortfolios(items);
+    } catch (err) {
+      console.error("Failed to fetch portfolios", err);
+    } finally {
+      setLoading(false);
     }
-    fetchPortfolios()
-  }, [])
+  };
+
+  const handleDuplicate = async (slug) => {
+    setMenuOpen(null);
+    setDuplicating(slug);
+    try {
+      await portfolioApi.duplicate(slug);
+      await fetchPortfolios();
+    } catch (err) {
+      console.error("Failed to duplicate portfolio", err);
+    } finally {
+      setDuplicating(null);
+    }
+  };
 
   const stats = [
-    { icon: Globe, value: portfolios.length, label: 'Active Projects', color: 'text-primary', bg: 'bg-primary/10' },
-  ]
+    {
+      icon: Globe,
+      value: portfolios.length,
+      label: "Active Projects",
+      color: "text-primary",
+      bg: "bg-primary/10",
+    },
+  ];
 
   return (
     <HubLayout
@@ -60,7 +89,6 @@ export default function PortfolioHub() {
         color="emerald-500"
       />
 
-      {/* Showcase list or placeholder */}
       {!loading && portfolios.length > 0 && (
         <div className="col-span-full mt-6">
           <h2 className="text-xl font-bold text-foreground mb-4 flex items-center gap-2">
@@ -68,44 +96,93 @@ export default function PortfolioHub() {
             My Deployed Portfolios
           </h2>
           <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-4">
-            {portfolios.map((portfolio, idx) => (
-              <motion.div
-                key={portfolio.id || idx}
-                initial={{ opacity: 0, y: 10 }}
-                animate={{ opacity: 1, y: 0 }}
-                transition={{ delay: idx * 0.05 }}
-                className="p-5 rounded-2xl bg-card border border-border hover:border-primary/30 transition-all group relative overflow-hidden"
-              >
-                <div className="flex items-start justify-between mb-3">
-                  <div className="w-10 h-10 rounded-lg bg-primary/10 flex items-center justify-center">
-                    <Globe className="w-5 h-5 text-primary" />
+            {portfolios.map((portfolio, idx) => {
+              const slug = portfolio.slug || portfolio.id || String(idx);
+              const isDuplicating = duplicating === slug;
+              return (
+                <motion.div
+                  key={slug}
+                  initial={{ opacity: 0, y: 10 }}
+                  animate={{ opacity: 1, y: 0 }}
+                  transition={{ delay: idx * 0.05 }}
+                  className="p-5 rounded-2xl bg-card border border-border hover:border-primary/30 transition-all group relative overflow-hidden"
+                >
+                  <div className="flex items-start justify-between mb-3">
+                    <div className="w-10 h-10 rounded-lg bg-primary/10 flex items-center justify-center">
+                      <Globe className="w-5 h-5 text-primary" />
+                    </div>
+                    <div className="flex items-center gap-2">
+                      <span className="text-[10px] font-black uppercase tracking-wider px-2 py-0.5 rounded bg-emerald-500/10 text-emerald-500 border border-emerald-500/20">
+                        Live
+                      </span>
+                      <div className="relative">
+                        <button
+                          onClick={() =>
+                            setMenuOpen(menuOpen === slug ? null : slug)
+                          }
+                          className="p-1 rounded-lg hover:bg-muted transition-colors"
+                          aria-label="Portfolio options"
+                        >
+                          <MoreVertical className="w-4 h-4 text-muted-foreground" />
+                        </button>
+                        <AnimatePresence>
+                          {menuOpen === slug && (
+                            <motion.div
+                              initial={{ opacity: 0, scale: 0.95, y: -4 }}
+                              animate={{ opacity: 1, scale: 1, y: 0 }}
+                              exit={{ opacity: 0, scale: 0.95, y: -4 }}
+                              transition={{ duration: 0.1 }}
+                              className="absolute right-0 top-8 z-20 w-40 rounded-xl bg-popover border border-border shadow-lg overflow-hidden"
+                            >
+                              <button
+                                onClick={() => handleDuplicate(slug)}
+                                className="w-full flex items-center gap-2 px-3 py-2 text-sm text-foreground hover:bg-muted transition-colors"
+                              >
+                                <Copy className="w-4 h-4" />
+                                Duplicate
+                              </button>
+                            </motion.div>
+                          )}
+                        </AnimatePresence>
+                      </div>
+                    </div>
                   </div>
-                  <span className="text-[10px] font-black uppercase tracking-wider px-2 py-0.5 rounded bg-emerald-500/10 text-emerald-500 border border-emerald-500/20">
-                    Live
-                  </span>
-                </div>
-                <h3 className="font-bold text-foreground mb-1 truncate">
-                  {portfolio.title || portfolio.name || 'Personal Portfolio'}
-                </h3>
-                <p className="text-xs text-muted-foreground mb-4 truncate font-medium">
-                  Theme: {portfolio.theme || 'Modern'}
-                </p>
-                <div className="flex items-center gap-2">
-                  <a
-                    href={portfolio.url}
-                    target="_blank"
-                    rel="noopener noreferrer"
-                    className="flex-1 text-center text-xs font-semibold px-3 py-2 rounded-lg bg-primary/10 text-primary hover:bg-primary/20 transition-colors inline-flex items-center justify-center gap-1.5"
-                  >
-                    Visit Site
-                    <Globe className="w-3 h-3" />
-                  </a>
-                </div>
-              </motion.div>
-            ))}
+
+                  <h3 className="font-bold text-foreground mb-1 truncate">
+                    {portfolio.title || portfolio.name || "Personal Portfolio"}
+                  </h3>
+                  <p className="text-xs text-muted-foreground mb-4 truncate font-medium">
+                    Theme: {portfolio.theme || "Modern"}
+                  </p>
+
+                  <div className="flex items-center gap-2">
+                    {isDuplicating ? (
+                      <div className="flex-1 flex items-center justify-center gap-2 text-xs font-semibold px-3 py-2 rounded-lg bg-muted text-muted-foreground">
+                        <Loader2 className="w-3 h-3 animate-spin" />
+                        Duplicating...
+                      </div>
+                    ) : (
+                      <a
+                        href={portfolio.url}
+                        target="_blank"
+                        rel="noopener noreferrer"
+                        className="flex-1 text-center text-xs font-semibold px-3 py-2 rounded-lg bg-primary/10 text-primary hover:bg-primary/20 transition-colors inline-flex items-center justify-center gap-1.5"
+                      >
+                        Visit Site
+                        <Globe className="w-3 h-3" />
+                      </a>
+                    )}
+                  </div>
+                </motion.div>
+              );
+            })}
           </div>
         </div>
       )}
+
+      {menuOpen && (
+        <div className="fixed inset-0 z-10" onClick={() => setMenuOpen(null)} />
+      )}
     </HubLayout>
-  )
+  );
 }

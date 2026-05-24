@@ -318,4 +318,79 @@ router.get('/', asyncHandler(async (req, res) => {
   res.status(200).json({ success: true, portfolios, data: portfolios });
 }));
 
+/**
+ * POST /api/portfolio/:id/duplicate
+ * Duplicates a portfolio template folder with a new slug.
+ */
+router.post(
+  '/:id/duplicate',
+  verifyToken,
+  asyncHandler(async (req, res) => {
+    const { id } = req.params;
+
+    assertValidPortfolioSlug(id);
+
+    const sourcePath = getPortfolioTemplatePath(id);
+
+    // Check source exists
+    try {
+      await fs.stat(sourcePath);
+    } catch {
+      throw new ApiError(404, 'Portfolio not found.');
+    }
+
+    // Read original meta.json for title
+    let meta = {};
+    try {
+      const metaRaw = await fs.readFile(
+        new URL(`../templates/portfolio/${id}/meta.json`, import.meta.url),
+        'utf-8'
+      );
+      meta = JSON.parse(metaRaw);
+    } catch {
+      meta = { title: id };
+    }
+
+    // Generate new slug: original-slug-copy, or original-slug-copy-2, etc.
+    const templatesDir = new URL('../templates/portfolio', import.meta.url);
+    const existingSlugs = await fs.readdir(templatesDir);
+
+    let newSlug = `${id}-copy`;
+    let counter = 2;
+    while (existingSlugs.includes(newSlug)) {
+      newSlug = `${id}-copy-${counter}`;
+      counter++;
+    }
+
+    // Copy the folder
+    const destPath = new URL(`../templates/portfolio/${newSlug}`, import.meta.url);
+    await fs.cp(sourcePath, destPath, { recursive: true });
+
+    // Write updated meta.json with new title and draft status
+    const newMeta = {
+      ...meta,
+      title: `${meta.title || id} (Copy)`,
+      slug: newSlug,
+      deployStatus: 'draft',
+      deployedUrl: null,
+    };
+    await fs.writeFile(
+      new URL(`../templates/portfolio/${newSlug}/meta.json`, import.meta.url),
+      JSON.stringify(newMeta, null, 2),
+      'utf-8'
+    );
+
+    res.status(201).json({
+      success: true,
+      message: 'Portfolio duplicated successfully.',
+      data: {
+        slug: newSlug,
+        title: newMeta.title,
+        deployStatus: 'draft',
+        url: `/portfolio/public/${newSlug}`,
+      },
+    });
+  })
+);
+
 export default router;
