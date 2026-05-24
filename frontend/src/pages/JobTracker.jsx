@@ -17,6 +17,7 @@ import Button from "../components/Button";
 import Card from "../components/Card";
 import EmptyJobState from "../components/EmptyJobState";
 import CompanyResearch from "../components/CompanyResearch";
+import ConfirmModal from "../components/ConfirmModal";
 import { Sparkles } from "lucide-react";
 import { SkeletonDashboard } from "../components/ui/Skeleton.jsx";
 
@@ -27,6 +28,7 @@ const JobTracker = () => {
   const [filterStatus, setFilterStatus] = useState("all");
   const [updateLoading, setUpdateLoading] = useState({});
   const [researchCompany, setResearchCompany] = useState(null);
+  const [deleteTarget, setDeleteTarget] = useState(null);
 
   const statusOptions = [
     {
@@ -97,14 +99,6 @@ const JobTracker = () => {
   };
 
   const handleDelete = async (jobId) => {
-    if (
-      !window.confirm(
-        "Are you sure you want to remove this job from your tracker?",
-      )
-    ) {
-      return;
-    }
-
     try {
       await jobTrackerApi.delete(jobId);
       setTrackedJobs((prev) => prev.filter((job) => job.id !== jobId));
@@ -113,6 +107,8 @@ const JobTracker = () => {
     } catch (error) {
       console.error("Error deleting job:", error);
       toast.error("Failed to remove job", { id: `tracked-job-delete-error-${jobId}` });
+    } finally {
+      setDeleteTarget(null);
     }
   };
 
@@ -233,11 +229,10 @@ const JobTracker = () => {
           <div className="flex flex-wrap gap-2 mb-6">
             <button
               onClick={() => setFilterStatus("all")}
-              className={`px-4 py-2 rounded-lg font-medium transition-colors ${
-                filterStatus === "all"
+              className={`px-4 py-2 rounded-lg font-medium transition-colors ${filterStatus === "all"
                   ? "bg-primary text-foreground"
                   : "bg-muted text-foreground hover:bg-muted/80"
-              }`}
+                }`}
             >
               All Jobs
             </button>
@@ -245,11 +240,10 @@ const JobTracker = () => {
               <button
                 key={status.value}
                 onClick={() => setFilterStatus(status.value)}
-                className={`px-4 py-2 rounded-lg font-medium transition-colors ${
-                  filterStatus === status.value
+                className={`px-4 py-2 rounded-lg font-medium transition-colors ${filterStatus === status.value
                     ? "bg-primary text-foreground"
                     : "bg-muted text-foreground hover:bg-muted/80"
-                }`}
+                  }`}
               >
                 {status.icon} {status.label}
               </button>
@@ -400,7 +394,7 @@ const JobTracker = () => {
                               </a>
                             )}
                             <button
-                              onClick={() => handleDelete(job.id)}
+                              onClick={() => setDeleteTarget(job.id)}
                               className="px-3 py-2 bg-red-600/10 hover:bg-red-600/20 text-red-500 rounded-lg transition-colors"
                               title="Remove from tracker"
                             >
@@ -424,6 +418,15 @@ const JobTracker = () => {
           onClose={() => setResearchCompany(null)}
         />
       )}
+      <ConfirmModal
+        isOpen={!!deleteTarget}
+        onConfirm={() => handleDelete(deleteTarget)}
+        onCancel={() => setDeleteTarget(null)}
+        title="Remove Job"
+        message="Are you sure you want to remove this job from your tracker? This action cannot be undone."
+        confirmText="Remove"
+        variant="danger"
+      />
     </Layout>
   );
 };

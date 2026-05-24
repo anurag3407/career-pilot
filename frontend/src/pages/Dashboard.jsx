@@ -25,11 +25,11 @@ import {
 } from 'lucide-react'
 import { resumeApi, jobTrackerApi, portfolioApi } from '../services/api'
 import Button from '../components/Button'
-import { 
-  SkeletonDashboardActions, 
-  SkeletonStatCards, 
+import {
+  SkeletonDashboardActions,
+  SkeletonStatCards,
   SkeletonJobList,
-  SkeletonList 
+  SkeletonList
 } from '../components/ui/Skeleton'
 
 const STATUS_CONFIG = {
@@ -195,7 +195,7 @@ export default function Dashboard() {
                     <div className="relative p-6 rounded-3xl bg-card border border-border overflow-hidden transition-all duration-300 hover:border-primary/40 hover:shadow-xl hover:shadow-primary/5 hover:-translate-y-1 h-full flex flex-col justify-between">
                       {/* Hover glow effect */}
                       <div className="absolute inset-0 bg-gradient-to-br from-primary/5 via-transparent to-transparent opacity-0 group-hover:opacity-100 transition-opacity duration-500 pointer-events-none" />
-                      
+
                       {/* Badge */}
                       {hub.badge && (
                         <div className="absolute top-4 right-4 px-2 py-0.5 bg-primary/10 rounded-full text-[9px] text-primary font-black uppercase tracking-wider border border-primary/20">
@@ -208,7 +208,7 @@ export default function Dashboard() {
                         <div className={`w-14 h-14 bg-${hub.color}/10 border border-${hub.color}/20 rounded-2xl flex items-center justify-center mb-5 group-hover:scale-110 group-hover:bg-${hub.color}/15 transition-all duration-300`}>
                           <hub.icon className={`w-7 h-7 text-${hub.color}`} />
                         </div>
-                        
+
                         {/* Content */}
                         <h3 className="text-lg font-black text-foreground mb-2 group-hover:text-primary transition-colors">{hub.label}</h3>
                         <p className="text-muted-foreground text-xs font-semibold leading-relaxed mb-4">{hub.desc}</p>
@@ -406,6 +406,14 @@ export default function Dashboard() {
                                 <h4 className="text-lg font-bold text-foreground group-hover:text-primary transition-colors">{resume.title}</h4>
                                 {resume.enhancedText && (
                                   <span className="px-2 py-0.5 bg-primary/10 text-primary border border-primary/20 rounded text-[10px] font-black uppercase tracking-widest animate-pulse">Enhanced</span>
+                                )}
+                                {resume.atsScore !== undefined && resume.atsScore !== null && (
+                                  <span className={`px-2 py-0.5 border rounded text-[10px] font-black uppercase tracking-widest ${resume.atsScore >= 80 ? 'bg-emerald-500/10 text-emerald-500 border-emerald-500/20' :
+                                      resume.atsScore >= 50 ? 'bg-amber-500/10 text-amber-500 border-amber-500/20' :
+                                        'bg-destructive/10 text-destructive border-destructive/20'
+                                    }`}>
+                                    ATS: {resume.atsScore}
+                                  </span>
                                 )}
                               </div>
                               <p className="text-sm text-muted-foreground font-semibold">{resume.jobRole || 'General'} • {formatDate(resume.createdAt)}</p>
