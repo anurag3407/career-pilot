@@ -15,16 +15,42 @@ import ReactMarkdown from 'react-markdown';
 import remarkGfm from 'remark-gfm';
 import CommentSection from './CommentSection';
 
+const isValidDate = (value) => {
+  if (!value) return false;
+  const date = new Date(value);
+  return !Number.isNaN(date.getTime());
+};
+
 export default function PostCard({ post, currentUser, onLike, onCommentAdded, onCancelSchedule }) {
   const [showFullContent, setShowFullContent] = useState(false);
   const [showComments, setShowComments] = useState(false);
-  const [commentCount, setCommentCount] = useState(post.commentCount || 0);
 
-  const isOwn = post.author.uid === currentUser?.uid;
-  const isLiked = post.likes?.some(l => l.uid === currentUser?.uid);
+  const safePost = {
+    id: post?.id ?? post?._id,
+    _id: post?._id ?? post?.id,
+    title: typeof post?.title === 'string' && post.title.trim() ? post.title : 'Untitled post',
+    content: typeof post?.content === 'string' ? post.content : '',
+    category: post?.category || 'discussion',
+    status: post?.status || 'published',
+    author: post?.author && typeof post.author === 'object' ? post.author : { name: 'Anonymous' },
+    likes: Array.isArray(post?.likes) ? post.likes : [],
+    tags: Array.isArray(post?.tags) ? post.tags.filter(Boolean) : [],
+    attachments: Array.isArray(post?.attachments) ? post.attachments : [],
+    views: Number.isFinite(post?.views) ? post.views : 0,
+    isPinned: Boolean(post?.isPinned),
+    isEdited: Boolean(post?.isEdited),
+    scheduledAt: post?.scheduledAt || null,
+    createdAt: isValidDate(post?.createdAt) ? post.createdAt : new Date().toISOString(),
+    commentCount: Number.isFinite(post?.commentCount) ? post.commentCount : 0,
+  };
+
+  const [commentCount, setCommentCount] = useState(safePost.commentCount || 0);
+
+  const isOwn = safePost.author?.uid === currentUser?.uid;
+  const isLiked = safePost.likes.some(l => l.uid === currentUser?.uid);
   const contentPreviewLength = 300;
-  const shouldTruncate = post.content.length > contentPreviewLength;
-  const rawPreview = post.content.slice(0, contentPreviewLength);
+  const shouldTruncate = safePost.content.length > contentPreviewLength;
+  const rawPreview = safePost.content.slice(0, contentPreviewLength);
   const safePreview = rawPreview.replace(/\s+\S*$/, '').trim();
   const previewText = safePreview.length > 0 ? safePreview : rawPreview;
 
@@ -64,93 +90,98 @@ export default function PostCard({ post, currentUser, onLike, onCommentAdded, on
   };
 
   const handleShare = async () => {
-    const postId = post.id || post._id;
+    const postId = safePost.id || safePost._id;
+    const shareUrl = `${window.location.origin}/community/post/${postId}`;
+
     try {
-      await navigator.share({
-        title: post.title,
-        text: post.content.substring(0, 100) + '...',
-        url: window.location.origin + `/community/post/${postId}`
-      });
+      if (navigator.share) {
+        await navigator.share({
+          title: safePost.title,
+          text: safePost.content.substring(0, 100) + '...',
+          url: shareUrl,
+        });
+        return;
+      }
+
+      await navigator.clipboard.writeText(shareUrl);
     } catch {
-      // Fallback: copy link
-      navigator.clipboard.writeText(window.location.origin + `/community/post/${postId}`);
+      try {
+        navigator.clipboard.writeText(shareUrl);
+      } catch {
+        // Ignore clipboard failures in restricted environments.
+      }
     }
   };
 
   return (
     <article className="bg-card border border-border rounded-xl hover:border-primary/30 transition-colors">
-      {/* Header */}
       <div className="p-4 pb-0">
         <div className="flex items-start justify-between">
           <div className="flex items-center gap-3">
-            {/* Author Avatar */}
             <div className="w-10 h-10 rounded-full bg-gradient-to-br from-primary to-secondary flex items-center justify-center text-primary-foreground text-sm font-medium">
-              {post.author.avatar ? (
-                <img 
-                  src={post.author.avatar} 
-                  alt={post.author.name}
+              {safePost.author?.avatar ? (
+                <img
+                  src={safePost.author.avatar}
+                  alt={safePost.author.name}
                   className="w-full h-full rounded-full object-cover"
                 />
               ) : (
-                getInitials(post.author.name)
+                getInitials(safePost.author?.name)
               )}
             </div>
 
             <div>
               <div className="flex items-center gap-2">
-                <span className="font-medium text-foreground">{post.author.name}</span>
-                {post.author.jobRole && (
-                  <span className="text-xs text-muted-foreground">• {post.author.jobRole}</span>
+                <span className="font-medium text-foreground">{safePost.author?.name || 'Anonymous'}</span>
+                {safePost.author?.jobRole && (
+                  <span className="text-xs text-muted-foreground">• {safePost.author.jobRole}</span>
                 )}
               </div>
               <div className="flex items-center gap-2 text-xs text-muted-foreground">
-                <span>{formatDistanceToNow(new Date(post.createdAt), { addSuffix: true })}</span>
-                {post.isEdited && <span>• edited</span>}
+                <span>{formatDistanceToNow(new Date(safePost.createdAt), { addSuffix: true })}</span>
+                {safePost.isEdited && <span>• edited</span>}
                 <span className="flex items-center gap-1">
                   <Eye className="w-3 h-3" />
-                  {post.views || 0}
+                  {safePost.views || 0}
                 </span>
               </div>
             </div>
           </div>
         </div>
 
-        {/* Category Badge */}
         <div className="mt-3 flex items-center gap-2 flex-wrap">
-          <span className={`inline-flex items-center gap-1 px-2 py-0.5 rounded-full text-xs font-medium ${getCategoryStyle(post.category)}`}>
-            {getCategoryIcon(post.category)}
-            {post.category?.replace('-', ' ')}
+          <span className={`inline-flex items-center gap-1 px-2 py-0.5 rounded-full text-xs font-medium ${getCategoryStyle(safePost.category)}`}>
+            {getCategoryIcon(safePost.category)}
+            {safePost.category?.replace('-', ' ')}
           </span>
-          {post.isPinned && (
+          {safePost.isPinned && (
             <span className="inline-flex items-center gap-1 px-2 py-0.5 rounded-full text-xs font-medium bg-amber-500/20 text-amber-400">
               📌 Pinned
             </span>
           )}
-          {post.status === 'scheduled' && post.scheduledAt && (
+          {safePost.status === 'scheduled' && safePost.scheduledAt && (
             <span className="inline-flex items-center gap-1 px-2 py-0.5 rounded-full text-xs font-medium bg-sky-500/20 text-sky-400">
               <Clock className="w-3 h-3" />
-              Scheduled · {format(new Date(post.scheduledAt), 'MMM d, h:mm a')}
+              Scheduled · {format(new Date(safePost.scheduledAt), 'MMM d, h:mm a')}
             </span>
           )}
-          {post.status === 'draft' && (
+          {safePost.status === 'draft' && (
             <span className="inline-flex items-center gap-1 px-2 py-0.5 rounded-full text-xs font-medium bg-neutral-600/40 text-neutral-400">
               Draft
             </span>
           )}
         </div>
 
-        {/* Cancel schedule banner — only visible to the post author */}
-        {post.status === 'scheduled' && post.scheduledAt && isOwn && onCancelSchedule && (
-
+        {safePost.status === 'scheduled' && safePost.scheduledAt && isOwn && onCancelSchedule && (
           <div className="mt-2 flex items-center justify-between px-3 py-2 bg-sky-500/10 border border-sky-500/20 rounded-lg">
             <p className="text-xs text-sky-400">
               This post will publish automatically on{' '}
               <span className="font-medium">
-                {format(new Date(post.scheduledAt), "MMM d, yyyy 'at' h:mm a")}
+                {format(new Date(safePost.scheduledAt), "MMM d, yyyy 'at' h:mm a")}
               </span>
             </p>
             <button
-              onClick={() => onCancelSchedule(post.id || post._id)}
+              onClick={() => onCancelSchedule(safePost.id || safePost._id)}
               className="flex items-center gap-1 text-xs text-neutral-400 hover:text-red-400 ml-3 flex-shrink-0 transition-colors"
             >
               <X className="w-3.5 h-3.5" />
@@ -160,12 +191,11 @@ export default function PostCard({ post, currentUser, onLike, onCommentAdded, on
         )}
       </div>
 
-      {/* Content */}
       <div className="px-4 py-3">
         <h3 className="text-lg font-semibold text-foreground mb-2 line-clamp-2">
-          {post.title}
+          {safePost.title}
         </h3>
-        
+
         <div className="prose prose-sm max-w-none text-muted-foreground dark:prose-invert">
           {shouldTruncate && !showFullContent ? (
             <>
@@ -197,15 +227,14 @@ export default function PostCard({ post, currentUser, onLike, onCommentAdded, on
                 ),
               }}
             >
-              {post.content}
+              {safePost.content}
             </ReactMarkdown>
           )}
         </div>
 
-        {/* Tags */}
-        {post.tags?.length > 0 && (
+        {safePost.tags.length > 0 && (
           <div className="flex flex-wrap gap-1.5 mt-3">
-            {post.tags.map(tag => (
+            {safePost.tags.map(tag => (
               <span
                 key={tag}
                 className="px-2 py-0.5 bg-muted text-muted-foreground rounded text-xs hover:bg-muted/80 cursor-pointer"
@@ -217,15 +246,14 @@ export default function PostCard({ post, currentUser, onLike, onCommentAdded, on
         )}
       </div>
 
-      {/* Attachments */}
-      {post.attachments?.length > 0 && (
+      {safePost.attachments.length > 0 && (
         <div className="px-4 pb-3">
           <div className="flex gap-2 overflow-x-auto">
-            {post.attachments.map((att, index) => (
+            {safePost.attachments.map((att, index) => (
               <div key={index} className="flex-shrink-0">
                 {att.type?.startsWith('image/') ? (
-                  <img 
-                    src={att.url} 
+                  <img
+                    src={att.url}
                     alt={att.name}
                     className="max-h-48 rounded-lg"
                   />
@@ -245,22 +273,19 @@ export default function PostCard({ post, currentUser, onLike, onCommentAdded, on
         </div>
       )}
 
-      {/* Actions */}
       <div className="px-4 py-3 border-t border-border flex items-center justify-between">
         <div className="flex items-center gap-4">
-          {/* Like */}
           <button
-            onClick={() => onLike(post.id || post._id)}
+            onClick={() => onLike(safePost.id || safePost._id)}
             className={`flex items-center gap-1.5 text-sm transition-colors ${
               isLiked ? 'text-red-500' : 'text-muted-foreground hover:text-red-500'
             }`}
           >
             <Heart className={`w-5 h-5 ${isLiked ? 'fill-current' : ''}`} />
-            <span>{Math.max(0, post.likes?.length || post.likeCount || 0)}</span>
+            <span>{Math.max(0, safePost.likes.length || safePost.likeCount || 0)}</span>
           </button>
 
-          {/* Comments */}
-          <button 
+          <button
             onClick={() => setShowComments(!showComments)}
             className={`flex items-center gap-1.5 text-sm transition-colors ${
               showComments ? 'text-primary' : 'text-muted-foreground hover:text-primary'
@@ -271,7 +296,6 @@ export default function PostCard({ post, currentUser, onLike, onCommentAdded, on
             {showComments ? <ChevronUp className="w-4 h-4" /> : <ChevronDown className="w-4 h-4" />}
           </button>
 
-          {/* Share */}
           <button
             onClick={handleShare}
             className="flex items-center gap-1.5 text-sm text-muted-foreground hover:text-primary"
@@ -280,16 +304,14 @@ export default function PostCard({ post, currentUser, onLike, onCommentAdded, on
           </button>
         </div>
 
-        {/* Bookmark */}
         <button className="text-muted-foreground hover:text-primary">
           <Bookmark className="w-5 h-5" />
         </button>
       </div>
 
-      {/* Comment Section */}
       {showComments && (
         <CommentSection
-          postId={post.id || post._id}
+          postId={safePost.id || safePost._id}
           currentUser={currentUser}
           onCommentAdded={handleCommentAdded}
         />
