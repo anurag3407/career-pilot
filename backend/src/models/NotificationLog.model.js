@@ -28,7 +28,7 @@ const notificationLogSchema = new mongoose.Schema({
     },
     emailStatus: {
         type: String,
-        enum: ['pending', 'sent', 'failed'],
+        enum: ['pending', 'sent', 'failed', 'bounced'],
         default: 'pending'
     },
     emailMessageId: {
@@ -45,9 +45,12 @@ const notificationLogSchema = new mongoose.Schema({
 
 // Compound indexes for deduplication queries
 // This is the critical index for preventing duplicate notifications
-notificationLogSchema.index({ userId: 1, jobListingId: 1 }, { unique: true });
-notificationLogSchema.index({ alertId: 1, jobListingId: 1 });
-notificationLogSchema.index({ userId: 1, sentAt: -1 });
-notificationLogSchema.index({ emailStatus: 1, sentAt: -1 });
+notificationLogSchema.index({ userId: 1, jobListingId: 1 }, { unique: true, background: true });
+notificationLogSchema.index({ alertId: 1, jobListingId: 1 }, { background: true });
+notificationLogSchema.index({ userId: 1, sentAt: -1 }, { background: true });
+notificationLogSchema.index({ emailStatus: 1, sentAt: -1 }, { background: true });
+notificationLogSchema.index({ alertId: 1, sentAt: -1 }, { background: true });
+notificationLogSchema.index({ userId: 1, externalJobId: 1 }, { background: true });
+notificationLogSchema.index({ userId: 1, alertId: 1, sentAt: -1 }, { background: true });
 
 export default mongoose.model('NotificationLog', notificationLogSchema);

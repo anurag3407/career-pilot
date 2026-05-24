@@ -3,6 +3,7 @@ import { presenceService } from '../services/presenceService.js';
 import { getIO } from '../config/socket.js';
 import { ApiError } from '../middleware/errorHandler.js';
 import { FieldValue } from 'firebase-admin/firestore';
+import { schedulePostJob, cancelPostJob, isSchedulerAvailable } from '../services/postScheduler.js';
 
 // Collection references
 const channelsRef = db.collection('channels');
@@ -265,17 +266,33 @@ export const getChannelMessages = async (req, res, next) => {
 
 // ============ POST CONTROLLERS ============
 
-// Get all posts
+const transformPost = (doc) => {
+  const data = doc.data();
+  return {
+    id: doc.id,
+    ...data,
+    likeCount: (data.likes || []).length,
+    createdAt: data.createdAt?.toDate?.() || data.createdAt
+  };
+};
+
 export const getPosts = async (req, res, next) => {
   try {
-    const { page = 1, limit = 20, category, sortBy = 'latest' } = req.query;
-    const pageNum = parseInt(page);
-    const limitNum = parseInt(limit);
+    const { limit = 20, cursor, category, channelId, authorId, startDate, endDate, sortBy = 'latest' } = req.query;
+    const maxLimit = Math.min(parseInt(limit) || 20, 100);
 
     let query = postsRef.where('isDeleted', '==', false);
 
     if (category && category !== 'all') {
       query = query.where('category', '==', category);
+    }
+
+    if (channelId) {
+      query = query.where('channelId', '==', channelId);
+    }
+
+    if (authorId) {
+      query = query.where('author.uid', '==', authorId);
     }
 
     if (sortBy === 'popular') {
@@ -286,33 +303,81 @@ export const getPosts = async (req, res, next) => {
       query = query.orderBy('createdAt', 'desc');
     }
 
-    const startIndex = (pageNum - 1) * limitNum;
-    if (startIndex > 0) {
-      query = query.offset(startIndex);
+    let cursorValid = true;
+    if (cursor) {
+      try {
+        const cursorDoc = await postsRef.doc(cursor).get();
+        if (!cursorDoc.exists) {
+          cursorValid = false;
+        } else {
+          const postData = cursorDoc.data();
+
+          if (sortBy === 'popular') {
+            query = query.startAfter(postData.likeCount, postData.createdAt);
+          } else if (sortBy === 'trending') {
+            query = query.startAfter(postData.views, postData.likeCount);
+          } else {
+            query = query.startAfter(postData.createdAt);
+          }
+        }
+      } catch (err) {
+        cursorValid = false;
+      }
     }
 
-    query = query.limit(limitNum);
+    let parsedStartDate = null;
+    let parsedEndDate = null;
+    if (startDate) {
+      parsedStartDate = new Date(startDate);
+      if (isNaN(parsedStartDate.getTime())) parsedStartDate = null;
+    }
+    if (endDate) {
+      parsedEndDate = new Date(endDate);
+      if (!isNaN(parsedEndDate.getTime())) {
+        parsedEndDate.setHours(23, 59, 59, 999);
+      } else {
+        parsedEndDate = null;
+      }
+    }
 
-    const snapshot = await query.get();
+    const hasValidDateFilter = parsedStartDate || parsedEndDate;
 
-    const posts = snapshot.docs.map(doc => {
-      const data = doc.data();
-      const likes = data.likes || [];
-      return {
-        id: doc.id,
-        ...data,
-        likeCount: likes.length,
-        createdAt: data.createdAt?.toDate?.() || data.createdAt
-      };
-    });
+    if (hasValidDateFilter) {
+      let dateQuery = query;
+      if (parsedStartDate) {
+        dateQuery = dateQuery.where('createdAt', '>=', parsedStartDate);
+      }
+      if (parsedEndDate) {
+        dateQuery = dateQuery.where('createdAt', '<=', parsedEndDate);
+      }
+
+      const snapshot = await dateQuery.limit(maxLimit * 2).get();
+      let posts = snapshot.docs.map(transformPost).filter(p => !p.status || p.status === 'published');
+      posts = posts.slice(0, maxLimit);
+
+      return res.json({
+        success: true,
+        posts,
+        pagination: {
+          limit: maxLimit,
+          nextCursor: posts.length ? posts[posts.length - 1].id : null,
+          hasMore: posts.length === maxLimit,
+          invalidCursor: !cursorValid
+        }
+      });
+    }
+
+    const snapshot = await query.limit(maxLimit).get();
+    const posts = snapshot.docs.map(transformPost).filter(p => !p.status || p.status === 'published');
 
     res.json({
       success: true,
       posts,
       pagination: {
-        page: pageNum,
-        limit: limitNum,
-        hasMore: snapshot.size === limitNum
+        limit: maxLimit,
+        nextCursor: posts.length === maxLimit ? posts[posts.length - 1].id : null,
+        hasMore: posts.length === maxLimit,
+        invalidCursor: !cursorValid
       }
     });
   } catch (error) {
@@ -354,10 +419,19 @@ export const getPost = async (req, res, next) => {
   }
 };
 
-// Create post
+// Create post (supports optional scheduledAt for deferred publishing)
 export const createPost = async (req, res, next) => {
   try {
-    const { title, content, tags = [], category = 'discussion', attachments = [] } = req.body;
+    const { title, content, tags = [], category = 'discussion', attachments = [], scheduledAt } = req.body;
+
+    const isScheduled = Boolean(scheduledAt);
+
+    if (isScheduled) {
+      const scheduleDate = new Date(scheduledAt);
+      if (isNaN(scheduleDate.getTime()) || scheduleDate.getTime() <= Date.now()) {
+        throw new ApiError(400, 'scheduledAt must be a valid future datetime');
+      }
+    }
 
     const postData = {
       title,
@@ -380,22 +454,102 @@ export const createPost = async (req, res, next) => {
       isAnnouncement: false,
       isEdited: false,
       isDeleted: false,
+      status: isScheduled ? 'scheduled' : 'published',
+      ...(isScheduled && { scheduledAt: new Date(scheduledAt).toISOString() }),
       createdAt: FieldValue.serverTimestamp(),
       updatedAt: FieldValue.serverTimestamp()
     };
 
     const docRef = await postsRef.add(postData);
-    const newPost = { id: docRef.id, ...postData, createdAt: new Date(), updatedAt: new Date() };
+    const newPost = {
+      id: docRef.id,
+      ...postData,
+      createdAt: new Date(),
+      updatedAt: new Date()
+    };
 
-    // Notify subscribers
-    try {
-      const io = getIO();
-      io.to('posts:feed').emit('new_post', { post: newPost });
-    } catch (e) {
-      // Socket might not be initialized
+    if (isScheduled) {
+      try {
+        const jobId = await schedulePostJob(docRef.id, scheduledAt);
+        if (!jobId && !isSchedulerAvailable()) {
+          // Redis unavailable — fall back to immediate publish rather than leaving post stranded
+          await postsRef.doc(docRef.id).update({ status: 'published', scheduledAt: null });
+          newPost.status = 'published';
+          newPost.scheduledAt = null;
+        }
+      } catch (scheduleErr) {
+        // Job enqueue failed after post was saved — revert to immediate publish to avoid orphan
+        console.error('schedulePostJob failed, publishing immediately:', scheduleErr.message);
+        await postsRef.doc(docRef.id).update({ status: 'published', scheduledAt: null });
+        newPost.status = 'published';
+        newPost.scheduledAt = null;
+      }
+    } else {
+      // Notify feed subscribers for instant-publish posts
+      try {
+        const io = getIO();
+        io.to('posts:feed').emit('new_post', { post: newPost });
+      } catch {
+        // Socket might not be initialized
+      }
     }
 
     res.status(201).json({ success: true, post: newPost });
+  } catch (error) {
+    next(error);
+  }
+};
+
+// Get current user's scheduled posts
+export const getScheduledPosts = async (req, res, next) => {
+  try {
+    const snapshot = await postsRef
+      .where('author.uid', '==', req.user.uid)
+      .where('status', '==', 'scheduled')
+      .where('isDeleted', '==', false)
+      .orderBy('scheduledAt', 'asc')
+      .get();
+
+    const posts = snapshot.docs.map(doc => ({
+      id: doc.id,
+      ...doc.data(),
+      createdAt: doc.data().createdAt?.toDate?.() || doc.data().createdAt
+    }));
+
+    res.json({ success: true, posts });
+  } catch (error) {
+    next(error);
+  }
+};
+
+// Cancel a scheduled post — reverts to draft and removes the queue job
+export const cancelScheduledPost = async (req, res, next) => {
+  try {
+    const doc = await postsRef.doc(req.params.postId).get();
+
+    if (!doc.exists) {
+      throw new ApiError(404, 'Post not found');
+    }
+
+    const post = doc.data();
+
+    if (post.author.uid !== req.user.uid) {
+      throw new ApiError(403, 'Not authorized to modify this post');
+    }
+
+    if (post.status !== 'scheduled') {
+      throw new ApiError(400, 'Post is not in scheduled state');
+    }
+
+    await cancelPostJob(req.params.postId);
+
+    await postsRef.doc(req.params.postId).update({
+      status: 'draft',
+      scheduledAt: null,
+      updatedAt: FieldValue.serverTimestamp()
+    });
+
+    res.json({ success: true, message: 'Scheduled post cancelled and reverted to draft' });
   } catch (error) {
     next(error);
   }
@@ -441,7 +595,14 @@ export const updatePost = async (req, res, next) => {
 // Delete post
 export const deletePost = async (req, res, next) => {
   try {
-    const doc = await postsRef.doc(req.params.postId).get();
+    const { postId } = req.params;
+    const normalizedPostId = typeof postId === 'string' ? postId.trim() : '';
+
+    if (!normalizedPostId) {
+      throw new ApiError(400, 'Invalid or missing postId');
+    }
+
+    const doc = await postsRef.doc(normalizedPostId).get();
     
     if (!doc.exists) {
       throw new ApiError(404, 'Post not found');
@@ -449,11 +610,19 @@ export const deletePost = async (req, res, next) => {
 
     const post = doc.data();
 
+    if (!post || !post.author || !post.author.uid) {
+      throw new ApiError(400, 'Invalid post data');
+    }
+
     if (post.author.uid !== req.user.uid) {
       throw new ApiError(403, 'Not authorized to delete this post');
     }
 
-    await postsRef.doc(req.params.postId).update({
+    if (post.isDeleted) {
+      return res.json({ success: true, message: 'Post already deleted' });
+    }
+
+    await postsRef.doc(normalizedPostId).update({
       isDeleted: true,
       deletedAt: FieldValue.serverTimestamp()
     });
