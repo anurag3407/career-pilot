@@ -97,11 +97,12 @@ export default function PortfolioHub() {
           </h2>
           <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-4">
             {portfolios.map((portfolio, idx) => {
-              const slug = portfolio.slug || portfolio.id || String(idx);
-              const isDuplicating = duplicating === slug;
+              const slug = portfolio.slug ?? portfolio.id ?? null;
+              const cardKey = slug ?? `portfolio-${idx}`;
+              const isDuplicating = slug !== null && duplicating === slug;
               return (
                 <motion.div
-                  key={slug}
+                  key={cardKey}
                   initial={{ opacity: 0, y: 10 }}
                   animate={{ opacity: 1, y: 0 }}
                   transition={{ delay: idx * 0.05 }}
@@ -135,7 +136,8 @@ export default function PortfolioHub() {
                               className="absolute right-0 top-8 z-20 w-40 rounded-xl bg-popover border border-border shadow-lg overflow-hidden"
                             >
                               <button
-                                onClick={() => handleDuplicate(slug)}
+                                onClick={() => slug && handleDuplicate(slug)}
+                                disabled={!slug || isDuplicating}
                                 className="w-full flex items-center gap-2 px-3 py-2 text-sm text-foreground hover:bg-muted transition-colors"
                               >
                                 <Copy className="w-4 h-4" />

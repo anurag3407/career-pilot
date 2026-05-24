@@ -322,7 +322,7 @@ export const portfolioApi = {
 
   async duplicate(slug) {
     const headers = await getAuthHeaders();
-    const response = await fetch(`${API_BASE}/portfolio/${slug}/duplicate`, {
+    const response = await fetch(`${API_BASE}/portfolio/${encodeURIComponent(slug)}/duplicate`, {
       method: "POST",
       headers,
     });

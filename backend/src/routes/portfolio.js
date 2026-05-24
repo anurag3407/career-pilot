@@ -330,7 +330,7 @@ router.post(
 
     assertValidPortfolioSlug(id);
 
-    const sourcePath = getPortfolioTemplatePath(id);
+    const sourcePath = new URL(`../templates/portfolio/${id}`, import.meta.url);
 
     // Check source exists
     try {
@@ -364,7 +364,11 @@ router.post(
 
     // Copy the folder
     const destPath = new URL(`../templates/portfolio/${newSlug}`, import.meta.url);
-    await fs.cp(sourcePath, destPath, { recursive: true });
+    await fs.cp(sourcePath, destPath, {
+      recursive: true,
+      force: false,
+      errorOnExist: true,
+    });
 
     // Write updated meta.json with new title and draft status
     const newMeta = {
