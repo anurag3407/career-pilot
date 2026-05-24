@@ -4,6 +4,7 @@ import ThemeSelector from "../components/portfolio/ThemeSelector";
 import { useTheme } from "../context/ThemeContext";
 import { motion, AnimatePresence } from "framer-motion";
 import { Moon, Sun } from "lucide-react";
+import HolographicHero from "../components/portfolio/templates/Holographic/Hero";
 
 export default function TemplateGallery() {
   const { theme, toggleTheme } = useTheme();
@@ -111,6 +112,30 @@ export default function TemplateGallery() {
         </div>
         <ThemeSelector selectedTheme={selectedTheme} onSelectTheme={setSelectedTheme} />
       </div>
+
+      {/* Live Interactive Template Preview */}
+      {selectedTheme === 'holographic' && (
+        <div className="mb-8 rounded-3xl border border-cyan-500/30 overflow-hidden bg-slate-950/90 shadow-2xl relative">
+          <div className="bg-slate-900 border-b border-cyan-950 px-6 py-3 flex items-center justify-between">
+            <span className="text-xs font-mono text-cyan-400 font-bold uppercase tracking-widest flex items-center gap-2">
+              <span className="w-2.5 h-2.5 rounded-full bg-cyan-500 animate-pulse" />
+              Live Interactive Theme Preview (Holographic Hero)
+            </span>
+            <span className="text-[10px] font-mono text-cyan-500/60">
+              Interactive Mock View
+            </span>
+          </div>
+          <div className="relative w-full text-left">
+            <HolographicHero 
+              name="Alex Johnson"
+              title="Full Stack Developer"
+              tagline="Building the future, one line at a time."
+              onViewWork={() => alert("Action: View Work clicked")}
+              onContactMe={() => alert("Action: Contact Me clicked")}
+            />
+          </div>
+        </div>
+      )}
 
       {/* Filters and Sort Controls */}
       <div className="flex flex-wrap gap-4 mb-8">
