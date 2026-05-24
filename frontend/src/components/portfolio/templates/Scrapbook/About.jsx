@@ -2,7 +2,7 @@ import { Heart, MapPin, Pencil, Sparkles } from "lucide-react";
 
 export default function About() {
 return ( 
-<section className="max-h-screen relative overflow-hidden bg-[#fdf6ec] px-6 py-20 md:px-12 lg:px-24">
+<section className="relative overflow-hidden bg-[#fdf6ec] px-6 py-20 md:px-12 lg:px-24">
 
   <div className="absolute left-6 top-10 h-16 w-16 rotate-12 rounded-full border-4 border-dashed border-pink-300 opacity-40"></div>
   <div className="absolute bottom-10 right-10 h-20 w-20 rotate-45 rounded-xl border-4 border-yellow-300 opacity-40"></div>
