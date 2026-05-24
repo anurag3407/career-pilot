@@ -1,6 +1,6 @@
 import { createContext, useContext, useState, useEffect } from 'react'
-import { 
-  onAuthStateChanged, 
+import {
+  onAuthStateChanged,
   signInWithEmailAndPassword,
   createUserWithEmailAndPassword,
   signOut,
@@ -35,7 +35,7 @@ export function AuthProvider({ children }) {
       setUser(user)
       setLoading(false)
     })
-    
+
     return unsubscribe
   }, [])
 

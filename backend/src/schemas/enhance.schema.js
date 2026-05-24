@@ -64,6 +64,15 @@ export const generateEmailSchema = z.object({
 });
 
 /**
+ * POST /api/enhance/resume-score
+ */
+export const resumeScoreSchema = z.object({
+  resumeText: z
+    .string({ required_error: 'resumeText is required' })
+    .min(50, 'resumeText is too short to score meaningfully'),
+});
+
+/**
  * POST /api/enhance/optimize-linkedin
  */
 export const optimizeLinkedInSchema = z.object({

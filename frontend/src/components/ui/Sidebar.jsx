@@ -63,11 +63,11 @@ export const DesktopSidebar = ({
     return (
         <motion.div
             className={cn(
-                "h-full px-4 py-4 hidden md:flex md:flex-col bg-card border-r border-border w-[280px] flex-shrink-0",
+                "h-full px-3 py-4 hidden md:flex md:flex-col bg-card border-r border-border w-[280px] flex-shrink-0 overflow-x-hidden",
                 className
             )}
             animate={{
-                width: animate ? (open ? "280px" : "70px") : "280px",
+                width: animate ? (open ? "280px" : "80px") : "280px",
             }}
             transition={{
                 duration: 0.3,
@@ -97,10 +97,14 @@ export const MobileSidebar = ({
                 {...props}
             >
                 <div className="flex justify-end z-20 w-full">
-                    <Menu
-                        className="text-muted-foreground cursor-pointer hover:text-foreground transition-colors"
+                    <button
                         onClick={() => setOpen(!open)}
-                    />
+                        className="p-2 rounded-lg text-muted-foreground hover:text-foreground hover:bg-muted transition-colors focus:outline-none focus:ring-2 focus:ring-primary focus:ring-offset-2 focus:ring-offset-background"
+                        aria-label={open ? "Close sidebar menu" : "Open sidebar menu"}
+                        aria-expanded={open}
+                    >
+                        <Menu className="w-6 h-6" />
+                    </button>
                 </div>
                 <AnimatePresence>
                     {open && (
@@ -117,12 +121,13 @@ export const MobileSidebar = ({
                                 className
                             )}
                         >
-                            <div
-                                className="absolute right-6 top-6 z-50 text-muted-foreground cursor-pointer hover:text-foreground transition-colors"
+                            <button
+                                className="absolute right-6 top-6 z-50 p-2 rounded-lg text-muted-foreground hover:text-foreground hover:bg-muted transition-colors focus:outline-none focus:ring-2 focus:ring-primary focus:ring-offset-2 focus:ring-offset-background"
                                 onClick={() => setOpen(!open)}
+                                aria-label="Close sidebar menu"
                             >
                                 <X className="w-6 h-6" />
-                            </div>
+                            </button>
                             {children}
                         </motion.div>
                     )}
@@ -148,10 +153,9 @@ export const SidebarLink = ({
             to={link.href}
             onClick={onClick}
             className={cn(
-                "flex items-center justify-start gap-3 group/sidebar py-3 px-3 rounded-xl transition-all duration-200",
-                isActive
-                    ? "bg-primary/10 text-primary border border-primary/20"
-                    : "text-muted-foreground hover:text-foreground hover:bg-muted",
+                "nav-link w-full group/sidebar transition-all duration-200",
+                !open && animate ? "justify-center px-0" : "justify-start px-3",
+                isActive ? "nav-link-active" : "nav-link-inactive",
                 className
             )}
             {...props}

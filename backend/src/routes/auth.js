@@ -79,7 +79,6 @@ router.get('/profile', verifyToken, asyncHandler(async (req, res) => {
 
 // Get notification preferences
 router.get('/notification-preferences', verifyToken, asyncHandler(async (req, res) => {
-  const User = (await import('../models/User.model.js')).default;
   const user = await User.findOne({ email: req.user.email });
 
   const preferences = user?.notificationPreferences || {

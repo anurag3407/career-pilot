@@ -74,5 +74,8 @@ jobAlertSchema.index({ isActive: 1, lastCheckedAt: 1 }, { background: true });
 jobAlertSchema.index({ userId: 1, createdAt: -1 }, { background: true });
 jobAlertSchema.index({ isActive: 1, userEmail: 1 }, { background: true });
 jobAlertSchema.index({ userId: 1, title: 1, isActive: 1 }, { background: true });
+jobAlertSchema.index({ isActive: 1, remoteOnly: 1 }, { background: true });
+jobAlertSchema.index({ isActive: 1, location: 1, lastCheckedAt: 1 }, { background: true });
+jobAlertSchema.index({ employmentType: 1 }, { background: true });
 
 export default mongoose.model('JobAlert', jobAlertSchema);
