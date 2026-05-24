@@ -93,7 +93,7 @@ export default function PortfolioHub() {
         <div className="col-span-full mt-6">
           <h2 className="text-xl font-bold text-foreground mb-4 flex items-center gap-2">
             <span className="w-1.5 h-6 rounded-full bg-secondary" />
-            My Deployed Portfolios
+            My Portfolios
           </h2>
           <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-4">
             {portfolios.map((portfolio, idx) => {

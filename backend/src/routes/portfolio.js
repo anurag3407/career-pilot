@@ -387,12 +387,12 @@ router.post(
     }
 
     const originalTitle = meta.title ?? meta.name ?? id;
+    const originalName = meta.name ?? id;
 
-    // Write updated meta.json with new title and draft status
     const newMeta = {
       ...meta,
       title: `${originalTitle} (Copy)`,
-      ...(meta.name ? { name: `${originalTitle} (Copy)` } : {}),
+      ...(meta.name ? { name: `${originalName} (Copy)` } : {}),
       slug: newSlug,
       deployStatus: 'draft',
       deployedUrl: null,
