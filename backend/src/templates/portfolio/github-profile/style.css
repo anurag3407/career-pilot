@@ -12,12 +12,6 @@
   --green-4: #39d353;
 }
 
-/*
-  style.css — hand-tuned theme for github-profile
-  Small adjustments were made to spacing and accessibility for clarity
-  in the GSSOC PR. This file is intentionally minimal and readable.
-*/
-
 * {
   box-sizing: border-box;
 }
@@ -30,6 +24,7 @@ body {
   font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", Helvetica, Arial, sans-serif;
   /* Base font size increased for better mobile readability */
   font-size: 16px;
+  overflow-x: hidden;
 }
 
 /* Enable smooth scrolling for in-page navigation */
@@ -132,7 +127,7 @@ html {
 .gh-tabs {
   display: flex;
   align-items: center;
-  gap: 16px; 
+  gap: 16px; /* slightly larger gap for clearer spacing */
   padding: 5px 0;
   margin-left: 0;
   justify-content: flex-end;
@@ -149,7 +144,7 @@ html {
   display: inline-flex;
   align-items: center;
   gap: 8px;
-  padding: 10px 6px;
+  padding: 10px 6px; /* balanced vertical padding */
   color: #8b949e;
   text-decoration: none;
   font-size: 16px;
@@ -173,7 +168,7 @@ html {
 
 .gh-tab.is-active {
   color: #f0f6fc;
-  border-bottom-color: #f78166; 
+  border-bottom-color: #f78166; /* stable underline via border */
 }
 
 @media (max-width: 960px) {
@@ -555,7 +550,9 @@ p {
 
 .heatmap-wrap {
   overflow-x: auto;
+  overflow-y: hidden;
   -webkit-overflow-scrolling: touch;
+  overscroll-behavior-x: contain;
   margin: 0 -18px;
   padding: 0 18px;
 }
@@ -687,12 +684,14 @@ p {
     grid-template-columns: 1fr;
     gap: 16px;
     margin: 16px auto;
-    width: min(100%, 94vw);
+    width: calc(100% - 24px);
+    padding: 0;
   }
 
   .sidebar {
     position: static;
     width: 100%;
+    max-width: none;
     padding: 20px;
     height: auto;
     top: auto;
@@ -745,15 +744,21 @@ p {
     gap: 12px;
   }
 
+  .content {
+    width: 100%;
+    min-width: 0;
+  }
+
   .panel {
     padding: 16px;
   }
 
   .heatmap {
-    min-width: 100%;
+    min-width: 780px;
+    width: max-content;
     grid-template-rows: repeat(7, 10px);
     grid-auto-columns: 10px;
-    gap: 3px;
+    gap: 2px;
   }
 
   .legend {
@@ -781,19 +786,81 @@ p {
 }
 
 @media (max-width: 768px) {
+  html,
+  body {
+    overflow-x: hidden;
+  }
+
+  .layout,
+  .content,
+  .card,
+  .panel,
+  .sidebar,
+  .about-inner,
+  .about-copy {
+    min-width: 0;
+    max-width: 100%;
+  }
+
+  .card,
+  .panel {
+    overflow-x: hidden;
+  }
+
+  .gh-header__inner {
+    flex-direction: column;
+    align-items: stretch;
+    width: calc(100% - 16px);
+    gap: 6px;
+  }
+
+  .gh-header__top {
+    width: 100%;
+    min-height: 56px;
+    padding: 8px 0 6px;
+  }
+
+  .gh-brand__text {
+    font-size: 16px;
+  }
+
+  .gh-tabs {
+    width: 100%;
+    gap: 10px;
+    padding: 4px 0 6px;
+    margin-left: 0;
+    justify-content: flex-start;
+    overflow-x: auto;
+    overflow-y: hidden;
+    -webkit-overflow-scrolling: touch;
+  }
+
+  .gh-tab {
+    font-size: 14px;
+    padding: 8px 4px;
+    flex: 0 0 auto;
+  }
+
   .layout {
     gap: 12px;
     margin: 12px auto;
+    width: calc(100% - 16px);
+    max-width: calc(100% - 16px);
+    overflow-x: hidden;
   }
 
   .sidebar {
     flex-direction: column;
     gap: 12px;
+    width: 100%;
+    max-width: none;
+    min-width: 0;
+    padding: 14px;
   }
 
   .avatar {
-    width: 100%;
-    max-width: 100px;
+    width: clamp(88px, 28vw, 110px);
+    height: clamp(88px, 28vw, 110px);
     margin: 0;
   }
 
@@ -803,6 +870,9 @@ p {
 
   .panel {
     padding: 14px;
+    width: 100%;
+    min-width: 0;
+    max-width: 100%;
   }
 
   .panel-head h2 {
@@ -822,6 +892,7 @@ p {
   .pinned-grid,
   .repo-grid {
     grid-template-columns: 1fr;
+    width: 100%;
   }
 
   .repo-card {
@@ -845,9 +916,11 @@ p {
   }
 
   .heatmap {
-    grid-template-rows: repeat(7, 9px);
-    grid-auto-columns: 9px;
-    gap: 2px;
+    min-width: 780px;
+    width: max-content;
+    grid-template-rows: repeat(7, 8px);
+    grid-auto-columns: 8px;
+    gap: 1px;
   }
 
   .day {
@@ -889,6 +962,10 @@ p {
     height: 14px;
     margin-right: 4px;
   }
+
+  .social-links {
+    width: 100%;
+  }
 }
 
 @media (max-width: 480px) {
@@ -897,18 +974,43 @@ p {
     font-size: 16px;
   }
 
+  .layout,
+  .content,
+  .card,
+  .panel,
+  .sidebar,
+  .about-inner,
+  .about-copy {
+    min-width: 0;
+    max-width: 100%;
+  }
+
+  .card,
+  .panel {
+    overflow-x: hidden;
+  }
+
   .layout {
     gap: 10px;
     margin: 8px auto;
+    width: calc(100% - 12px);
+    max-width: calc(100% - 12px);
+    overflow-x: hidden;
   }
 
   .sidebar {
     padding: 12px;
     flex-direction: column;
+    width: 100%;
+    max-width: none;
+    min-width: 0;
   }
 
   .panel {
     padding: 12px;
+    width: 100%;
+    min-width: 0;
+    max-width: 100%;
   }
 
   #profile-name {
@@ -969,6 +1071,14 @@ p {
 
   .skill-groups {
     grid-template-columns: 1fr;
+    gap: 10px;
+  }
+
+  .skill-group,
+  .experience-item,
+  .repo-card {
+    width: 100%;
+    min-width: 0;
   }
 
   .experience-top {
@@ -1018,8 +1128,9 @@ p {
   .heatmap {
     grid-template-rows: repeat(7, 8px);
     grid-auto-columns: 8px;
-    gap: 2px;
-    min-width: 100%;
+    gap: 1px;
+    min-width: 780px;
+    width: max-content;
     padding: 2px 0;
   }
 
@@ -1068,6 +1179,14 @@ p {
     height: 12px;
     margin-right: 3px;
   }
+
+  .gh-tabs {
+    gap: 8px;
+  }
+
+  .gh-tab {
+    font-size: 13px;
+  }
 }
 
 /* Extra small screens (< 350px) */
@@ -1088,5 +1207,35 @@ p {
     font-size: 17px;
     min-height: 52px;
     border-radius: 10px;
+  }
+
+  .heatmap-wrap {
+    width: 100%;
+    margin: 0;
+    padding: 0;
+    max-width: 100%;
+    min-width: 0;
+    overflow-x: auto;
+    overflow-y: hidden;
+    display: block;
+    box-sizing: border-box;
+  }
+
+  .heatmap-wrap::-webkit-scrollbar {
+    height: 8px;
+  }
+
+  .heatmap-wrap::-webkit-scrollbar-track {
+    background: rgba(255, 255, 255, 0.04);
+    border-radius: 999px;
+  }
+
+  .heatmap-wrap::-webkit-scrollbar-thumb {
+    background: rgba(88, 166, 255, 0.28);
+    border-radius: 999px;
+  }
+
+  .heatmap-wrap::-webkit-scrollbar-thumb:hover {
+    background: rgba(88, 166, 255, 0.42);
   }
 }

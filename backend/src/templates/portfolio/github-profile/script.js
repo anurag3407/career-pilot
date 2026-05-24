@@ -1,24 +1,8 @@
 "use strict";
 
-/*
-  script.js — GitHub-style profile template
-
-  Purpose:
-  - Minimal, hand-maintained script to populate the local `index.html`
-    demo. Keeps a small set of demo data and supports overriding via
-    `window.GITHUB_PROFILE_DATA` when the template is embedded by other
-    code or during testing.
-
-  Notes for reviewers / PR:
-  - Short, human-written comments were added for clarity (GSSOC PR).
-  - Demo text intentionally concise and realistic to avoid AI-generated
-    wording.
-  - Keep the public API: `PROFILE` and `REPOSITORIES` variables.
-
-  Edited for PR: contributor
-*/
 
 // ----- Demo defaults (used when no user-provided data exists) -----
+
 const DEFAULT_PROFILE = {
   name: 'Alex Morgan',
   username: 'alexmorgan-dev',
@@ -28,20 +12,34 @@ const DEFAULT_PROFILE = {
     followers: 2340,
     following: 487
   },
+
   // Small README used for the About section. Keep simple and editable.
+
   readme: `## About Me
-I build web apps and developer tools. This profile is a lightweight
-static template used in CareerPilot. Edit this text to represent the
-project owner.`
+I am a senior full-stack developer focused on building reliable, maintainable, and high-performance web applications and developer tooling.
+
+I work across frontend and backend boundaries to deliver end-to-end solutions — shipping component-driven UIs with React and TypeScript, and designing scalable APIs and services with Node.js and PostgreSQL. My approach balances product velocity with engineering discipline: robust testing, observability, and incremental performance improvements.
+
+Core areas I focus on:
+- Frontend: architecting component libraries, accessible UI patterns, client performance optimizations, and TypeScript-first developer experiences.
+- Backend: building resilient REST and GraphQL APIs, data modeling and migrations with PostgreSQL, background processing, and service-level scalability.
+- Performance & Scalability: profiling, caching, fault-tolerant design, horizontal scaling, and cost-aware infrastructure decisions.
+- Collaboration & Open Source: clear documentation, automated releases, mentoring peers, and contributing to open-source projects and developer tooling.
+
+I enjoy transforming ambiguous product goals into pragmatic roadmaps, improving developer experience, and shipping production-ready systems that are maintainable and observable.
+`,
 };
 
 const DEFAULT_REPOSITORIES = [
-  { name: 'career-pilot', url: '#', description: 'Main project repository', language: 'JavaScript', languageColor: '#f1e05a', stars: 542 },
-  { name: 'react-component-library', url: '#', description: 'Shared UI components', language: 'TypeScript', languageColor: '#3178c6', stars: 189 },
-  { name: 'docker-deployment-automation', url: '#', description: 'CI/CD helper scripts', language: 'Shell', languageColor: '#89e051', stars: 156 }
+  { name: 'career-pilot', url: '#', description: 'AI-powered career platform combining scalable Node.js APIs with a PostgreSQL backbone. Features include job ingestion, personalized recommendations, resume optimization, and real-time notifications designed for production load and observability.', language: 'JavaScript', languageColor: '#f1e05a', stars: 542 },
+  { name: 'react-component-library', url: '#', description: 'A TypeScript-first, accessible component system with Storybook, visual regression tests, and design tokens. Focused on performance, low runtime overhead, theming, and improving developer experience across multiple products.', language: 'TypeScript', languageColor: '#3178c6', stars: 189 },
+  { name: 'docker-deployment-automation', url: '#', description: 'Deployment and CI/CD tooling for containerized services: reproducible builds, automated image scanning, health checks, blue/green and canary rollout scripts, and Helm/GitOps helpers to streamline production rollouts.', language: 'Shell', languageColor: '#89e051', stars: 156 },
+  { name: 'ai-career-assistant', url: '#', description: 'Model orchestration and tooling powering resume feedback, interview practice, and job summarization. Built with privacy-first design, cached embeddings for performance, and extensible connectors for provider integrations.', language: 'Python', languageColor: '#3572A5', stars: 78 },
+  { name: 'dev-productivity-tools', url: '#', description: 'Developer tooling suite: CLI helpers, code generators, linting presets, and local environment orchestration. Includes observability dashboards and scripts to automate repetitive workflows and enforce best practices.', language: 'JavaScript', languageColor: '#f1e05a', stars: 214 }
 ];
 
 // ----- Utility: shallow/deep merge helper -----
+
 function deepMerge(target, source) {
   if (!source) return target;
   const out = Array.isArray(target) ? target.slice() : Object.assign({}, target);
@@ -58,6 +56,7 @@ function deepMerge(target, source) {
 
 // ----- Merge dynamic overrides (if provided by a user script) -----
 // Expected shape on the page: `window.GITHUB_PROFILE_DATA = { profile: {...}, repositories: [...] }`
+
 const PROFILE = (window.GITHUB_PROFILE_DATA && window.GITHUB_PROFILE_DATA.profile)
   ? deepMerge(DEFAULT_PROFILE, window.GITHUB_PROFILE_DATA.profile)
   : DEFAULT_PROFILE;
@@ -70,6 +69,7 @@ const REPOSITORIES = (window.GITHUB_PROFILE_DATA && Array.isArray(window.GITHUB_
 
 // ----- Render: profile sidebar -----
 // Populates name, username, bio and stats in the left sidebar.
+
 const renderProfile = () => {
   document.getElementById('profile-name').textContent = PROFILE.name;
   document.getElementById('profile-username').textContent = `@${PROFILE.username}`;
@@ -85,10 +85,10 @@ const renderProfile = () => {
 };
 
 // ----- Render: single repository card -----
-function renderRepoCard(repo, index) {
-  var article = document.createElement('article');
+const renderRepoCard = (repo, index) => {
+  const article = document.createElement('article');
   article.className = 'repo-card';
-  article.style.animationDelay = (index * 60) + 'ms';
+  article.style.animationDelay = `${index * 60}ms`;
 
   article.innerHTML = `
     <a class="repo-name" href="${repo.url}" target="_blank" rel="noopener noreferrer">${repo.name}</a>
@@ -103,68 +103,100 @@ function renderRepoCard(repo, index) {
   `;
 
   return article;
-}
+};
 
 // ----- Render: repository lists (pinned + grid) -----
-function renderRepositories() {
-  var repoGrid = document.getElementById('repo-grid');
-  if (!repoGrid || !Array.isArray(REPOSITORIES)) return;
-  // clear and re-populate
-  repoGrid.innerHTML = '';
-  for (var i = 0; i < REPOSITORIES.length; i++) {
-    repoGrid.appendChild(renderRepoCard(REPOSITORIES[i], i));
-  }
-}
+const renderRepositories = () => {
+  const repoGrid = document.getElementById('repo-grid');
+
+  // Populate the single Projects section (no duplicate pinned/projects lists)
+  REPOSITORIES.forEach((repo, index) => {
+    if (repoGrid) repoGrid.appendChild(renderRepoCard(repo, index));
+  });
+};
 
 // ----- Render: contribution heatmap -----
-// Lightweight placeholder for demo. Keeps DOM small and predictable.
-function renderHeatmap() {
-  var heatmap = document.getElementById('heatmap');
-  var total = document.getElementById('contrib-total');
-  if (!heatmap || !total) return;
-  heatmap.innerHTML = '<div class="heatmap-placeholder">▢▢▢▢▢</div>';
-  total.textContent = (REPOSITORIES.length * 3) + ' contributions (demo)';
-}
+// Generates a random heatmap (visual only; no external API calls).
+const renderHeatmap = () => {
+  const heatmap = document.getElementById('heatmap');
+  const total = document.getElementById('contrib-total');
+  const levels = [0, 1, 2, 3, 4];
+  let sum = 0;
+
+  // Contribution heatmap section — generate grid of levels
+
+  for (let col = 0; col < 53; col += 1) {
+    for (let row = 0; row < 7; row += 1) {
+      const level = levels[Math.floor(Math.random() * levels.length)];
+      const cell = document.createElement('div');
+      cell.className = `day lv${level}`;
+      heatmap.appendChild(cell);
+      sum += level;
+    }
+  }
+
+  total.textContent = `${sum * 4} contributions in the last year`;
+};
 
 // ----- Utility: escape HTML for safe rendering -----
-function escapeHtml(value) {
-  return String(value)
-    .replace(/&/g, '&amp;')
-    .replace(/</g, '&lt;')
-    .replace(/>/g, '&gt;');
-}
+const escapeHtml = (value) => value
+  .replace(/&/g, '&amp;')
+  .replace(/</g, '&lt;')
+  .replace(/>/g, '&gt;');
 
 // ----- Render: simple markdown subset -----
 // Supports headings (##/###), unordered lists (-), paragraphs and inline code.
-function renderMarkdown(source) {
-  var lines = String(source).split('\n');
-  var out = [];
-  var listOpen = false;
+const renderMarkdown = (source) => {
+  const lines = source.split('\n');
+  const html = [];
+  let listOpen = false;
 
-  function flushList() {
-    if (listOpen) { out.push('</ul>'); listOpen = false; }
-  }
+  const flushList = () => {
+    if (listOpen) {
+      html.push('</ul>');
+      listOpen = false;
+    }
+  };
 
-  lines.forEach(function (raw) {
-    var line = raw.trim();
-    if (!line) { flushList(); return; }
+  lines.forEach((raw) => {
+    const line = raw.trim();
 
-    if (line.indexOf('### ') === 0) { flushList(); out.push('<h3>' + escapeHtml(line.slice(4)) + '</h3>'); return; }
-    if (line.indexOf('## ') === 0)  { flushList(); out.push('<h3>' + escapeHtml(line.slice(3)) + '</h3>'); return; }
+    if (!line) {
+      flushList();
+      return;
+    }
 
-    if (line.indexOf('- ') === 0) {
-      if (!listOpen) { out.push('<ul>'); listOpen = true; }
-      out.push('<li>' + escapeHtml(line.slice(2)) + '</li>');
+    if (line.startsWith('### ')) {
+      flushList();
+      html.push(`<h3>${escapeHtml(line.slice(4))}</h3>`);
+      return;
+    }
+
+    if (line.startsWith('## ')) {
+      flushList();
+      html.push(`<h3>${escapeHtml(line.slice(3))}</h3>`);
+      return;
+    }
+
+    if (line.startsWith('- ')) {
+      if (!listOpen) {
+        html.push('<ul>');
+        listOpen = true;
+      }
+      html.push(`<li>${escapeHtml(line.slice(2))}</li>`);
       return;
     }
 
     flushList();
-    out.push('<p>' + escapeHtml(line) + '</p>');
+    html.push(`<p>${escapeHtml(line)}</p>`);
   });
 
   flushList();
-  return out.join('').replace(/`([^`]+)`/g, '<code>$1</code>');
-}
+
+  return html
+    .join('')
+    .replace(/`([^`]+)`/g, '<code>$1</code>');
+};
 
 // ----- Render: README content -----
 const renderReadme = () => {
@@ -195,123 +227,40 @@ const init = () => {
   const tabs = Array.from(document.querySelectorAll('.gh-tab'));
   if (tabs.length) {
     tabs.forEach((tab) => {
-      // Restored script: includes repositories stat and multiple default repos.
-      var DEFAULT_PROFILE = {
-        name: 'Alex Morgan',
-        username: 'alexmorgan-dev',
-        bio: 'Frontend & backend developer building practical tools and libraries.',
-        stats: {
-          followers: 2340,
-          following: 487,
-          repositories: 68
-        },
-        readme: '## About Me\nFull-stack developer specializing in product-focused web applications, design-system driven UI, and dependable API development.'
-      };
+      tab.addEventListener('click', (e) => {
+        e.preventDefault();
+        tabs.forEach((t) => t.classList.remove('is-active'));
+        tab.classList.add('is-active');
 
-      var DEFAULT_REPOSITORIES = [
-        { name: 'career-pilot', description: 'Main project repository', language: 'JavaScript', languageColor: '#f1e05a', stars: 542, url: '#' },
-        { name: 'react-component-library', description: 'Shared UI components', language: 'TypeScript', languageColor: '#2b7489', stars: 189, url: '#' },
-        { name: 'docker-deployment-automation', description: 'CI/CD helper scripts', language: 'Shell', languageColor: '#89e051', stars: 156, url: '#' },
-        { name: 'database-optimization-tools', description: 'SQL analysis utilities', language: 'Python', languageColor: '#3572A5', stars: 98, url: '#' },
-        { name: 'perf-tools', description: 'Frontend performance utilities', language: 'JavaScript', languageColor: '#f1e05a', stars: 96, url: '#' },
-        { name: 'design-system-docs', description: 'Component documentation site', language: 'Markdown', languageColor: '#555555', stars: 61, url: '#' }
-      ];
-
-      (function () {
-        function deepMerge(target, source) {
-          for (var key in source) {
-            if (source[key] && source[key].constructor === Object) {
-              target[key] = target[key] || {};
-              deepMerge(target[key], source[key]);
-            } else {
-              target[key] = source[key];
-            }
+        const href = tab.getAttribute('href');
+        if (href && href.startsWith('#')) {
+          const target = document.querySelector(href);
+          if (target) {
+            target.scrollIntoView({ behavior: 'smooth' });
+            try { history.replaceState(null, '', href); } catch (err) { /* ignore */ }
           }
-          return target;
         }
+      });
+    });
 
-        var PROFILE = deepMerge({}, DEFAULT_PROFILE);
-        var REPOS = DEFAULT_REPOSITORIES.slice();
+    // Set initial active based on hash
+    if (location.hash) {
+      const current = document.querySelector(`.gh-tab[href="${location.hash}"]`);
+      if (current) {
+        tabs.forEach((t) => t.classList.remove('is-active'));
+        current.classList.add('is-active');
+      }
+    }
 
-        function escapeHtml(value) {
-          return String(value).replace(/&/g, '&amp;').replace(/</g, '&lt;').replace(/>/g, '&gt;');
-        }
+    // Update active on hashchange (keyboard nav / history)
+    window.addEventListener('hashchange', () => {
+      const current = document.querySelector(`.gh-tab[href="${location.hash}"]`);
+      if (current) {
+        tabs.forEach((t) => t.classList.remove('is-active'));
+        current.classList.add('is-active');
+      }
+    });
+  }
+};
 
-        function renderProfile() {
-          document.getElementById('profile-name').textContent = PROFILE.name;
-          document.getElementById('profile-username').textContent = '@' + PROFILE.username;
-          document.getElementById('profile-bio').textContent = PROFILE.bio;
-
-          var statsEl = document.getElementById('profile-stats');
-          statsEl.innerHTML = '';
-          var stats = [
-            { label: 'followers', value: PROFILE.stats.followers },
-            { label: 'following', value: PROFILE.stats.following },
-            { label: 'repositories', value: PROFILE.stats.repositories }
-          ];
-          stats.forEach(function (s) {
-            var el = document.createElement('div');
-            el.className = 'stat';
-            el.innerHTML = '<strong>' + escapeHtml(s.value) + '</strong> ' + escapeHtml(s.label);
-            statsEl.appendChild(el);
-          });
-        }
-
-        function renderRepoCard(repo) {
-          var art = document.createElement('article');
-          art.className = 'repo-card';
-          art.innerHTML = '<h3><a href="' + escapeHtml(repo.url) + '">' + escapeHtml(repo.name) + '</a></h3>' +
-            '<p>' + escapeHtml(repo.description) + '</p>' +
-            '<div class="meta"><span class="lang" style="background:' + escapeHtml(repo.languageColor) + '"></span>' +
-            escapeHtml(repo.language) + ' <span class="stars">★ ' + escapeHtml(repo.stars) + '</span></div>';
-          return art;
-        }
-
-        function renderRepositories() {
-          var grid = document.getElementById('repo-grid');
-          grid.innerHTML = '';
-          REPOS.forEach(function (r) { grid.appendChild(renderRepoCard(r)); });
-        }
-
-        function renderHeatmap() {
-          var hm = document.getElementById('heatmap');
-          // simple visual grid placeholder to mimic contribution heatmap
-          var out = '';
-          for (var row = 0; row < 3; row++) {
-            out += '<div class="heat-row">';
-            for (var col = 0; col < 12; col++) {
-              out += '<span class="heat-cell"></span>';
-            }
-            out += '</div>';
-          }
-          hm.innerHTML = out;
-          document.getElementById('contrib-total').textContent = '2988 contributions in the last year';
-        }
-
-        function renderReadme() {
-          var md = PROFILE.readme || '';
-          // very small markdown renderer (headings + paragraphs)
-          var html = md.replace(/^### (.*$)/gim, '<h3>$1</h3>').replace(/^## (.*$)/gim, '<h2>$1</h2>').replace(/\n\n/g, '<p></p>');
-          document.getElementById('readme-content').innerHTML = html;
-        }
-
-        function setAvatarInitials() {
-          var initials = PROFILE.name.split(' ').map(function (p) { return p[0] || ''; }).slice(0, 2).join('').toUpperCase();
-          var el = document.getElementById('avatar-initials');
-          if (el) el.textContent = initials;
-        }
-
-        function init() {
-          renderProfile();
-          renderRepositories();
-          renderHeatmap();
-          renderReadme();
-          setAvatarInitials();
-        }
-
-        if (document.readyState === 'loading') {
-          window.addEventListener('DOMContentLoaded', init);
-        } else {
-          init();
-        }
-      })();
+document.addEventListener('DOMContentLoaded', init);
