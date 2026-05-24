@@ -1,4 +1,4 @@
-import { useState, useEffect, useRef, useCallback } from 'react';
+import { useState, useEffect, useRef, useCallback, useMemo } from 'react';
 import { useSocket } from '../../context/SocketContext';
 import MessageBubble from './MessageBubble';
 import MessageInput from './MessageInput';
@@ -146,12 +146,19 @@ export default function ChatWindow({ channel, messages = [], currentUser, onOpti
     }, 2000);
   }, [currentChannelId, startTyping, stopTyping]);
 
-  // Robust unique array item builder checking message mutations defensively
-  const safeMessageStream = Array.isArray(messages) 
-    ? messages.filter((msg, idx, self) => 
-        msg && idx === self.findIndex((m) => (m.id || m._id) === (msg.id || msg._id))
-      )
-    : [];
+  // FIXED: Optimized linear-time uniqueness filter using a tracking Set & useMemo
+  const safeMessageStream = useMemo(() => {
+    if (!Array.isArray(messages)) return [];
+    
+    const seenIds = new Set();
+    return messages.filter((msg) => {
+      if (!msg) return false;
+      const msgId = msg.id || msg._id;
+      if (!msgId || seenIds.has(msgId)) return false;
+      seenIds.add(msgId);
+      return true;
+    });
+  }, [messages]);
 
   // Filter messages based on clean casing matching
   const filteredMessages = searchQuery
