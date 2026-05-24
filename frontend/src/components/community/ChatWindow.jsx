@@ -26,17 +26,14 @@ const MessageSkeleton = ({ isOwn }) => (
 // Animated loading component
 const ChatLoadingSkeleton = () => (
   <div className="flex-1 flex flex-col px-4 py-4 space-y-6 bg-neutral-900 overflow-hidden">
-    {/* Animated gradient overlay */}
     <div className="absolute inset-0 bg-gradient-to-b from-transparent via-neutral-900/5 to-neutral-900/20 pointer-events-none" />
     
-    {/* Date separator skeleton */}
     <div className="flex items-center gap-4 my-2 animate-pulse">
       <div className="flex-1 h-px bg-neutral-800"></div>
       <div className="h-4 w-28 bg-neutral-800 rounded-full"></div>
       <div className="flex-1 h-px bg-neutral-800"></div>
     </div>
     
-    {/* Message skeletons with staggered animation */}
     <div className="space-y-4">
       <div style={{ animationDelay: '0ms' }}>
         <MessageSkeleton isOwn={false} />
@@ -55,7 +52,6 @@ const ChatLoadingSkeleton = () => (
       </div>
     </div>
     
-    {/* Floating loading indicator */}
     <div className="flex justify-center mt-4">
       <div className="flex items-center gap-2 px-4 py-2 bg-neutral-800 rounded-full shadow-lg border border-neutral-700">
         <Loader2 className="w-4 h-4 text-indigo-400 animate-spin" />
@@ -70,7 +66,7 @@ const ChatLoadingSkeleton = () => (
   </div>
 );
 
-export default function ChatWindow({ channel, messages, currentUser, onOptimisticMessage, onOptimisticReaction, onOptimisticEdit, onOptimisticDelete, loading }) {
+export default function ChatWindow({ channel, messages = [], currentUser, onOptimisticMessage, onOptimisticReaction, onOptimisticEdit, onOptimisticDelete, loading }) {
   const { subscribe, startTyping, stopTyping } = useSocket();
   const [typingUsers, setTypingUsers] = useState([]);
   const [showSearch, setShowSearch] = useState(false);
@@ -80,17 +76,27 @@ export default function ChatWindow({ channel, messages, currentUser, onOptimisti
   const clearTypingUsersTimeoutRef = useRef(null);
   const stopTypingTimeoutRef = useRef(null);
 
+  const currentChannelId = channel?.id || channel?._id;
+
+  // Clear typing layout entirely whenever active target conversation container changes
+  useEffect(() => {
+    setTypingUsers([]);
+    setSearchQuery('');
+    setShowSearch(false);
+    if (clearTypingUsersTimeoutRef.current) clearTimeout(clearTypingUsersTimeoutRef.current);
+  }, [currentChannelId]);
+
   // Auto-scroll to bottom on new messages
   useEffect(() => {
-    scrollToBottom();
+    messagesEndRef.current?.scrollIntoView({ behavior: 'smooth' });
   }, [messages]);
 
-  // Subscribe to typing events
+  // Subscribe to typing events safely mapped to specific conversation components
   useEffect(() => {
-    const channelId = channel.id || channel._id;
+    if (!currentChannelId) return;
     
     const unsubTyping = subscribe('user_typing', ({ channelId: typingChannelId, user }) => {
-      if (typingChannelId === channelId && user.uid !== currentUser?.uid) {
+      if (typingChannelId === currentChannelId && user?.uid !== currentUser?.uid) {
         setTypingUsers(prev => {
           if (!prev.find(u => u.uid === user.uid)) {
             return [...prev, user];
@@ -101,8 +107,8 @@ export default function ChatWindow({ channel, messages, currentUser, onOptimisti
     });
 
     const unsubStoppedTyping = subscribe('user_stopped_typing', ({ channelId: typingChannelId, user }) => {
-      if (typingChannelId === channelId) {
-        setTypingUsers(prev => prev.filter(u => u.uid !== user.uid));
+      if (typingChannelId === currentChannelId) {
+        setTypingUsers(prev => prev.filter(u => u.uid !== user?.uid));
       }
     });
 
@@ -110,49 +116,54 @@ export default function ChatWindow({ channel, messages, currentUser, onOptimisti
       unsubTyping();
       unsubStoppedTyping();
     };
-  }, [subscribe, channel.id, channel._id, currentUser]);
+  }, [subscribe, currentChannelId, currentUser]);
 
-  // Clear typing users after 3 seconds
+  // Clear active local layout typing logs automatically after a short timeout window
   useEffect(() => {
     if (typingUsers.length > 0) {
+      if (clearTypingUsersTimeoutRef.current) clearTimeout(clearTypingUsersTimeoutRef.current);
       clearTypingUsersTimeoutRef.current = setTimeout(() => {
         setTypingUsers([]);
       }, 3000);
     }
-    return () => clearTimeout(clearTypingUsersTimeoutRef.current);
+    return () => {
+      if (clearTypingUsersTimeoutRef.current) clearTimeout(clearTypingUsersTimeoutRef.current);
+    };
   }, [typingUsers]);
 
   useEffect(() => () => clearTimeout(stopTypingTimeoutRef.current), []);
 
-  const scrollToBottom = () => {
-    messagesEndRef.current?.scrollIntoView({ behavior: 'smooth' });
-  };
-
   const handleTyping = useCallback(() => {
-    const channelId = channel.id || channel._id;
-    startTyping(channelId);
+    if (!currentChannelId) return;
+    startTyping(currentChannelId);
     
-    // Clear previous timeout
     if (stopTypingTimeoutRef.current) {
       clearTimeout(stopTypingTimeoutRef.current);
     }
     
-    // Stop typing after 2 seconds of inactivity
     stopTypingTimeoutRef.current = setTimeout(() => {
-      stopTyping(channelId);
+      stopTyping(currentChannelId);
     }, 2000);
-  }, [channel.id, channel._id, startTyping, stopTyping]);
+  }, [currentChannelId, startTyping, stopTyping]);
 
-  // Filter messages based on search
-  const filteredMessages = searchQuery
-    ? messages.filter(msg => 
-        msg.content.toLowerCase().includes(searchQuery.toLowerCase()) ||
-        msg.sender.name.toLowerCase().includes(searchQuery.toLowerCase())
+  // Robust unique array item builder checking message mutations defensively
+  const safeMessageStream = Array.isArray(messages) 
+    ? messages.filter((msg, idx, self) => 
+        msg && idx === self.findIndex((m) => (m.id || m._id) === (msg.id || msg._id))
       )
-    : messages;
+    : [];
 
-  // Group messages by date
+  // Filter messages based on clean casing matching
+  const filteredMessages = searchQuery
+    ? safeMessageStream.filter(msg => 
+        msg?.content?.toLowerCase().includes(searchQuery.toLowerCase()) ||
+        msg?.sender?.name?.toLowerCase().includes(searchQuery.toLowerCase())
+      )
+    : safeMessageStream;
+
+  // Group messages seamlessly by calendar structure
   const groupedMessages = filteredMessages.reduce((groups, message) => {
+    if (!message || !message.createdAt) return groups;
     const date = new Date(message.createdAt).toLocaleDateString('en-US', {
       weekday: 'long',
       year: 'numeric',
@@ -171,17 +182,17 @@ export default function ChatWindow({ channel, messages, currentUser, onOptimisti
       {/* Channel Header */}
       <div className="h-14 px-4 border-b border-neutral-800 bg-neutral-900 flex items-center justify-between flex-shrink-0">
         <div className="flex items-center gap-3">
-          <span className="text-xl">{channel.icon || '💬'}</span>
+          <span className="text-xl">{channel?.icon || '💬'}</span>
           <div>
             <h2 className="font-semibold text-white flex items-center gap-2">
-              {channel.name}
-              {channel.type === 'private' && (
+              {channel?.name}
+              {channel?.type === 'private' && (
                 <span className="text-xs bg-neutral-800 text-neutral-400 px-1.5 py-0.5 rounded">
                   Private
                 </span>
               )}
             </h2>
-            {channel.description && (
+            {channel?.description && (
               <p className="text-xs text-neutral-500 truncate max-w-md">
                 {channel.description}
               </p>
@@ -234,30 +245,27 @@ export default function ChatWindow({ channel, messages, currentUser, onOptimisti
         >
           {Object.entries(groupedMessages).map(([date, dateMessages]) => (
             <div key={date}>
-              {/* Date Separator */}
               <div className="flex items-center gap-4 my-4">
                 <div className="flex-1 h-px bg-neutral-800"></div>
                 <span className="text-xs text-neutral-500 font-medium">{date}</span>
                 <div className="flex-1 h-px bg-neutral-800"></div>
               </div>
 
-              {/* Messages */}
               {dateMessages.map((message, index) => {
                 const prevMessage = dateMessages[index - 1];
                 const showAvatar = !prevMessage || 
-                  prevMessage.sender.uid !== message.sender.uid ||
+                  prevMessage.sender?.uid !== message.sender?.uid ||
                   new Date(message.createdAt) - new Date(prevMessage.createdAt) > 5 * 60 * 1000;
                 
                 const messageId = message.id || message._id;
-                const channelId = channel.id || channel._id;
                 
                 return (
                   <MessageBubble
                     key={messageId}
                     message={message}
-                    isOwn={message.sender.uid === currentUser?.uid}
+                    isOwn={message.sender?.uid === currentUser?.uid}
                     showAvatar={showAvatar}
-                    channelId={channelId}
+                    channelId={currentChannelId}
                     onOptimisticReaction={onOptimisticReaction}
                     onOptimisticEdit={onOptimisticEdit}
                     onOptimisticDelete={onOptimisticDelete}
@@ -268,7 +276,7 @@ export default function ChatWindow({ channel, messages, currentUser, onOptimisti
           ))}
 
           {filteredMessages.length === 0 && (
-            <div className="flex-1 flex items-center justify-center h-full">
+            <div className="flex-1 flex items-center justify-center h-full min-h-[300px]">
               <div className="text-center text-neutral-500">
                 {searchQuery ? (
                   <>
@@ -278,9 +286,9 @@ export default function ChatWindow({ channel, messages, currentUser, onOptimisti
                   </>
                 ) : (
                   <>
-                    <span className="text-4xl mb-3 block">{channel.icon || '💬'}</span>
-                    <h3 className="font-medium text-white">Welcome to #{channel.name}</h3>
-                    <p className="text-sm mt-1">{channel.description || 'Start the conversation!'}</p>
+                    <span className="text-4xl mb-3 block">{channel?.icon || '💬'}</span>
+                    <h3 className="font-medium text-white">Welcome to #{channel?.name}</h3>
+                    <p className="text-sm mt-1">{channel?.description || 'Start the conversation!'}</p>
                   </>
                 )}
               </div>
@@ -310,8 +318,8 @@ export default function ChatWindow({ channel, messages, currentUser, onOptimisti
 
       {/* Message Input */}
       <MessageInput
-        channelId={channel.id || channel._id}
-        channelName={channel.name}
+        channelId={currentChannelId}
+        channelName={channel?.name || ''}
         onTyping={handleTyping}
         onOptimisticMessage={onOptimisticMessage}
         currentUser={currentUser}
