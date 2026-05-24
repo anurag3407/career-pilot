@@ -113,9 +113,11 @@ export default function PortfolioHub() {
                       <Globe className="w-5 h-5 text-primary" />
                     </div>
                     <div className="flex items-center gap-2">
-                      <span className="text-[10px] font-black uppercase tracking-wider px-2 py-0.5 rounded bg-emerald-500/10 text-emerald-500 border border-emerald-500/20">
-                        Live
-                      </span>
+                      {portfolio.deployStatus !== "draft" && (
+                        <span className="text-[10px] font-black uppercase tracking-wider px-2 py-0.5 rounded bg-emerald-500/10 text-emerald-500 border border-emerald-500/20">
+                          Live
+                        </span>
+                      )}
                       <div className="relative">
                         <button
                           onClick={() =>
@@ -163,8 +165,12 @@ export default function PortfolioHub() {
                         <Loader2 className="w-3 h-3 animate-spin" />
                         Duplicating...
                       </div>
+                    ) : portfolio.deployStatus === "draft" ? (
+                      <span className="flex-1 text-center text-xs font-semibold px-3 py-2 rounded-lg bg-muted text-muted-foreground">
+                        Draft
+                      </span>
                     ) : (
-                      <a
+                        <a
                         href={portfolio.url}
                         target="_blank"
                         rel="noopener noreferrer"

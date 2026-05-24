@@ -311,10 +311,22 @@ router.get('/', asyncHandler(async (req, res) => {
   } catch {
     slugs = [];
   }
-  const portfolios = slugs.map((slug) => ({
-    slug,
-    url: `/portfolio/public/${slug}`,
-  }));
+  const portfolios = await Promise.all(
+    slugs.map(async (slug) => {
+      let deployStatus = 'live';
+      try {
+        const metaRaw = await fs.readFile(
+          new URL(`../templates/portfolio/${slug}/meta.json`, import.meta.url),
+          'utf-8'
+        );
+        const meta = JSON.parse(metaRaw);
+        deployStatus = meta.deployStatus ?? 'live';
+      } catch {
+        // no meta.json, assume live
+      }
+      return { slug, url: `/portfolio/public/${slug}`, deployStatus };
+    })
+  );
   res.status(200).json({ success: true, portfolios, data: portfolios });
 }));
 
@@ -353,27 +365,34 @@ router.post(
 
     // Generate new slug: original-slug-copy, or original-slug-copy-2, etc.
     const templatesDir = new URL('../templates/portfolio', import.meta.url);
-    const existingSlugs = await fs.readdir(templatesDir);
-
     let newSlug = `${id}-copy`;
     let counter = 2;
-    while (existingSlugs.includes(newSlug)) {
-      newSlug = `${id}-copy-${counter}`;
-      counter++;
+
+    while (true) {
+      const destPath = new URL(`../templates/portfolio/${newSlug}`, import.meta.url);
+      try {
+        await fs.cp(sourcePath, destPath, {
+          recursive: true,
+          force: false,
+          errorOnExist: true,
+        });
+        break;
+      } catch (error) {
+        if (error?.code !== 'ERR_FS_CP_EEXIST' && error?.code !== 'EEXIST') {
+          throw error;
+        }
+        newSlug = `${id}-copy-${counter}`;
+        counter++;
+      }
     }
 
-    // Copy the folder
-    const destPath = new URL(`../templates/portfolio/${newSlug}`, import.meta.url);
-    await fs.cp(sourcePath, destPath, {
-      recursive: true,
-      force: false,
-      errorOnExist: true,
-    });
+    const originalTitle = meta.title ?? meta.name ?? id;
 
     // Write updated meta.json with new title and draft status
     const newMeta = {
       ...meta,
-      title: `${meta.title || id} (Copy)`,
+      title: `${originalTitle} (Copy)`,
+      ...(meta.name ? { name: `${originalTitle} (Copy)` } : {}),
       slug: newSlug,
       deployStatus: 'draft',
       deployedUrl: null,
