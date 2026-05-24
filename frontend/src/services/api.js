@@ -1,30 +1,100 @@
 import { auth } from '../config/firebase'
+import { decryptKey } from '../utils/encryption'
 
 const API_BASE = import.meta.env.VITE_API_BASE || '/api';
 
 // Helper to get auth headers
 async function getAuthHeaders() {
-  const user = auth.currentUser
+  const user = auth?.currentUser
   if (!user) throw new Error('Not authenticated')
 
 
   const token = await user.getIdToken()
-  return {
+  const headers = {
     'Authorization': `Bearer ${token}`,
     'Content-Type': 'application/json'
   }
+
+  const aiConfigStr = localStorage.getItem('aiConfig');
+  if (aiConfigStr) {
+    try {
+      const aiConfig = JSON.parse(aiConfigStr);
+      if (aiConfig.provider) headers['X-AI-Provider'] = aiConfig.provider;
+      if (aiConfig.apiKey) headers['X-AI-Key'] = decryptKey(aiConfig.apiKey);
+      if (aiConfig.model) headers['X-AI-Model'] = aiConfig.model;
+    } catch(e) {}
+  } else {
+    const openRouterKey = localStorage.getItem('openRouterApiKey');
+    if (openRouterKey) {
+      headers['X-OpenRouter-Key'] = decryptKey(openRouterKey);
+    }
+  }
+
+  return headers
 }
 
+// Helper to parse numeric header values
+function parseHeaderInt(value) {
+  const parsed = parseInt(value, 10)
+  return Number.isNaN(parsed) ? null : parsed
+}
+
+// Helper to parse Retry-After header from seconds or HTTP date
+function parseRetryAfter(value) {
+  if (!value) return null
+
+  const seconds = parseInt(value, 10)
+  if (!Number.isNaN(seconds)) return seconds
+
+  const parsedDate = Date.parse(value)
+  if (!Number.isNaN(parsedDate)) {
+    return Math.max(1, Math.ceil((parsedDate - Date.now()) / 1000))
+  }
+
+  return null
+}
 
 // Helper to handle API responses
-async function handleResponse(response) {
-  const data = await response.json()
-  if (!response.ok) {
-    throw new Error(data.error || 'Something went wrong')
-  }
-  return data
-}
 
+async function handleResponse(response) {
+  let data = null;
+  const contentType = response.headers.get('content-type') || '';
+
+  if (contentType.includes('application/json')) {
+    try {
+      data = await response.json();
+    } catch {
+      data = null;
+    }
+  } else {
+    try {
+      const text = await response.text();
+      data = { error: text || response.statusText };
+    } catch (e) {
+      data = { error: response.statusText };
+    }
+  }
+
+  if (!response.ok) {
+    const error = new Error(
+      (data && data.error) || `Server error (${response.status})`
+    );
+    error.status = response.status;
+
+    if (response.status === 429) {
+      error.retryAfter = parseRetryAfter(response.headers.get('retry-after'));
+      error.rateLimit = {
+        limit: parseHeaderInt(response.headers.get('x-ratelimit-limit')),
+        remaining: parseHeaderInt(response.headers.get('x-ratelimit-remaining')),
+        reset: parseHeaderInt(response.headers.get('x-ratelimit-reset'))
+      };
+    }
+
+    throw error;
+  }
+
+  return data || {};
+}
 // ============ AUTH API ============
 export const authApi = {
   // Verify token
@@ -52,7 +122,7 @@ export const authApi = {
 export const uploadApi = {
   // Upload PDF and extract text
   async uploadPdf(file) {
-    const user = auth.currentUser
+    const user = auth?.currentUser
     if (!user) throw new Error('Not authenticated')
 
 
@@ -73,7 +143,7 @@ export const uploadApi = {
 
   // Extract text from PDF (re-process)
   async extractText(file) {
-    const user = auth.currentUser
+    const user = auth?.currentUser
     if (!user) throw new Error('Not authenticated')
 
 
@@ -169,9 +239,31 @@ export const resumeApi = {
     return handleResponse(response)
   },
 
+  // Preview GitHub profile before importing
+  async previewGitHub(username) {
+    const headers = await getAuthHeaders()
+    const response = await fetch(`${API_BASE}/resumes/import/github/preview`, {
+      method: 'POST',
+      headers,
+      body: JSON.stringify({ username })
+    })
+    return handleResponse(response)
+  },
+
+  // Import GitHub profile as a resume
+  async importGitHub(username, profile = null) {
+    const headers = await getAuthHeaders()
+    const response = await fetch(`${API_BASE}/resumes/import/github`, {
+      method: 'POST',
+      headers,
+      body: JSON.stringify({ username, profile })
+    })
+    return handleResponse(response)
+  },
+
   // Download resume as PDF
   async downloadPdf(resumeId, version = 'enhanced') {
-    const user = auth.currentUser
+    const user = auth?.currentUser
     if (!user) throw new Error('Not authenticated')
 
     const token = await user.getIdToken()
@@ -183,11 +275,49 @@ export const resumeApi = {
     })
 
     if (!response.ok) {
-      const errorData = await response.json()
-      throw new Error(errorData.error || 'Failed to download PDF')
+      let errorMsg = 'Failed to download PDF';
+      try {
+        const contentType = response.headers.get('content-type');
+        if (contentType && contentType.includes('application/json')) {
+          const errorData = await response.json();
+          errorMsg = errorData.error || errorMsg;
+        } else {
+          const errorText = await response.text();
+          errorMsg = errorText || errorMsg;
+        }
+      } catch (e) {
+        // ignore parsing error and keep default
+      }
+      throw new Error(errorMsg);
     }
 
     return response.blob()
+  },
+
+  // Convert raw text to resume
+  async createFromText(text, jobRole) {
+    const headers = await getAuthHeaders()
+    const response = await fetch(`${API_BASE}/resumes/from-text`, {
+      method: 'POST',
+      headers,
+      body: JSON.stringify({ text, jobRole })
+    })
+    return handleResponse(response)
+  }
+}
+
+// ============ PORTFOLIO API ============
+export const portfolioApi = {
+  // Get all portfolios
+  async getAll() {
+    const headers = await getAuthHeaders()
+
+    const response = await fetch(`${API_BASE}/portfolio`, {
+      method: 'GET',
+      headers
+    })
+
+    return handleResponse(response)
   }
 }
 
@@ -300,6 +430,17 @@ export const enhanceApi = {
       body: JSON.stringify(data)
     })
     return handleResponse(response)
+  },
+
+  // Score resume and get structured feedback
+  async scoreResume(resumeText) {
+    const headers = await getAuthHeaders()
+    const response = await fetch(`${API_BASE}/enhance/resume-score`, {
+      method: 'POST',
+      headers,
+      body: JSON.stringify({ resumeText })
+    })
+    return handleResponse(response)
   }
 }
 
@@ -311,25 +452,6 @@ export const aiApi = {
     const response = await fetch(`${API_BASE}/ai/models?provider=${encodeURIComponent(provider)}`, {
       method: 'GET',
       headers
-    })
-    return handleResponse(response)
-  },
-
-  async getConfig() {
-    const headers = await getAuthHeaders()
-    const response = await fetch(`${API_BASE}/ai/config`, {
-      method: 'GET',
-      headers
-    })
-    return handleResponse(response)
-  },
-
-  async updateConfig(data) {
-    const headers = await getAuthHeaders()
-    const response = await fetch(`${API_BASE}/ai/config`, {
-      method: 'PUT',
-      headers,
-      body: JSON.stringify(data)
     })
     return handleResponse(response)
   }

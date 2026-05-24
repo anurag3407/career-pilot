@@ -79,7 +79,7 @@ export default function Register() {
 
       <Navbar />
       
-      <div className="max-w-md mx-auto pt-24 px-4 pb-12 relative z-10">
+      <div className="max-w-md mx-auto pt-24 md:pt-32 px-4 pb-12 relative z-10">
         <Card className="border-border/50 bg-card/60">
           <h1 className="text-3xl font-black text-center mb-8 text-foreground tracking-tight">Create Account</h1>
           

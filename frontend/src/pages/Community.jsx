@@ -1,3 +1,4 @@
+import { useSearchParams } from 'react-router-dom';
 import { useState, useEffect, useRef, useCallback } from 'react';
 import { useAuth } from '../context/AuthContext';
 import { useSocket } from '../context/SocketContext';
@@ -19,15 +20,32 @@ import {
   Hash
 } from 'lucide-react';
 import toast from 'react-hot-toast';
+import { SkeletonListItems, SkeletonPostList } from '../components/ui/Skeleton';
+import { motion, AnimatePresence } from 'framer-motion';
 
 export default function Community() {
   const { user } = useAuth();
   const { isConnected, onlineUsers, subscribe, joinChannel, leaveChannel } = useSocket();
+  const [searchParams, setSearchParams] = useSearchParams();
 
   // View state
-  const [activeView, setActiveView] = useState('channels'); // channels, posts, dms
+  const [activeView, setActiveView] = useState(searchParams.get('view') || 'channels'); // channels, posts, dms
   const [sidebarOpen, setSidebarOpen] = useState(true);
   const [membersOpen, setMembersOpen] = useState(true);
+
+  // Sync activeView with search parameter changes
+  useEffect(() => {
+    const view = searchParams.get('view');
+    if (view && ['channels', 'posts', 'dms'].includes(view)) {
+      setActiveView(view);
+    }
+  }, [searchParams]);
+
+  // Update URL search parameters when tab is clicked
+  const handleTabChange = (view) => {
+    setActiveView(view);
+    setSearchParams({ view });
+  };
 
   // Channel state
   const [channels, setChannels] = useState([]);
@@ -188,15 +206,13 @@ export default function Community() {
       const data = await communityApi.getChannels();
       setChannels(data.channels);
       // Auto-select first channel
-      if (data.channels.length > 0 && !activeChannel) {
-        setActiveChannel(data.channels[0]);
-      }
+      setActiveChannel(current => current || data.channels[0] || null);
     } catch (error) {
-      toast.error('Failed to load channels');
+      toast.error('Failed to load channels', { id: 'community-channels-load-error' });
     } finally {
       setLoadingChannels(false);
     }
-  }, [activeChannel]);
+  }, []);
 
   // Fetch channels on mount
   useEffect(() => {
@@ -252,7 +268,7 @@ export default function Community() {
       setShowCreateChannel(false);
       toast.success('Channel created!');
     } catch (error) {
-      toast.error(error.message);
+      toast.error(error.message, { id: 'community-create-channel-error' });
     }
   };
 
@@ -265,7 +281,7 @@ export default function Community() {
           <div className="p-3 border-b border-border">
             <div className="flex gap-1 bg-muted p-1 rounded-lg">
               <button
-                onClick={() => setActiveView('channels')}
+                onClick={() => handleTabChange('channels')}
                 className={`flex-1 flex items-center justify-center gap-1.5 py-2 px-3 rounded-md text-sm font-medium transition-colors ${activeView === 'channels' ? 'bg-card text-foreground shadow-sm' : 'text-muted-foreground hover:text-foreground'
                   }`}
               >
@@ -273,7 +289,7 @@ export default function Community() {
                 <span className="hidden lg:inline">Chat</span>
               </button>
               <button
-                onClick={() => setActiveView('posts')}
+                onClick={() => handleTabChange('posts')}
                 className={`flex-1 flex items-center justify-center gap-1.5 py-2 px-3 rounded-md text-sm font-medium transition-colors ${activeView === 'posts' ? 'bg-card text-foreground shadow-sm' : 'text-muted-foreground hover:text-foreground'
                   }`}
               >
@@ -281,7 +297,7 @@ export default function Community() {
                 <span className="hidden lg:inline">Posts</span>
               </button>
               <button
-                onClick={() => setActiveView('dms')}
+                onClick={() => handleTabChange('dms')}
                 className={`flex-1 flex items-center justify-center gap-1.5 py-2 px-3 rounded-md text-sm font-medium transition-colors ${activeView === 'dms' ? 'bg-card text-foreground shadow-sm' : 'text-muted-foreground hover:text-foreground'
                   }`}
               >

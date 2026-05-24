@@ -1,6 +1,6 @@
 import { createContext, useContext, useState, useEffect } from 'react'
-import { 
-  onAuthStateChanged, 
+import {
+  onAuthStateChanged,
   signInWithEmailAndPassword,
   createUserWithEmailAndPassword,
   signOut,
@@ -35,7 +35,7 @@ export function AuthProvider({ children }) {
       setUser(user)
       setLoading(false)
     })
-    
+
     return unsubscribe
   }, [])
 
@@ -66,7 +66,7 @@ export function AuthProvider({ children }) {
 
   // Sign in with LinkedIn
   const loginWithLinkedIn = () => {
-    const apiUrl = import.meta.env.VITE_API_URL || 'http://localhost:5000'
+    const apiUrl = import.meta.env.VITE_API_URL || 'http://localhost:5001'
     window.location.href = `${apiUrl}/api/auth/linkedin`
   }
 

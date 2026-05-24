@@ -97,9 +97,11 @@ export default function FAB({ scrollContainerRef }) {
               animate={{ scale: 1 }}
               exit={{ scale: 0 }}
               onClick={() => setIsOpen(!isOpen)}
-              aria-label="Floating Action Button"
+              aria-label={
+                isOpen ? "Close quick actions" : "Open quick actions"
+              }
               aria-expanded={isOpen}
-              className="p-4 bg-primary text-primary-foreground rounded-full shadow-xl hover:scale-105 transition-transform"
+              className="p-4 bg-primary text-primary-foreground rounded-full shadow-xl hover:scale-110 transition-transform glow"
             >
               <motion.div
                 animate={{ rotate: isOpen ? 45 : 0 }}
@@ -120,7 +122,9 @@ export default function FAB({ scrollContainerRef }) {
                     key={index}
                     onClick={item.action}
                     role="menuitem"
-                    className="flex items-center gap-3 px-4 py-2 bg-background border border-border rounded-full shadow-md hover:bg-muted transition-colors whitespace-nowrap"
+                    tabIndex={0}
+                    aria-label={item.label}
+                    className="flex items-center gap-3 px-4 py-2 glass border-border rounded-full shadow-lg hover:bg-primary/10 hover:text-primary transition-all-300 hover:-translate-y-1 whitespace-nowrap"
                   >
                     {item.icon}
                     <span className="text-sm font-medium">

@@ -4,6 +4,7 @@ import { useNavigate } from 'react-router-dom';
 import { motion } from 'framer-motion';
 import { Mic, MicOff, Video, VideoOff, XCircle, CheckCircle, AlertCircle, Volume2, VolumeX, RotateCcw, UserX, Loader2, Sparkles, ArrowRight, Target, TrendingUp, MessageSquare, Eye, Brain, Award, ChevronDown, ChevronUp, Clock, BarChart3, Lightbulb, Zap, Laptop, Smartphone, Chrome, AlertTriangle, FileUp, FileText, X } from 'lucide-react';
 import Button from '../components/Button';
+import BodyLanguageTips from '../components/BodyLanguageTips';
 import { interviewApi, uploadApi } from '../services/api';
 
 // Device and browser detection utilities
@@ -301,6 +302,11 @@ export default function InterviewPrep() {
   const transcriptRef = useRef('');
   const isRecordingRef = useRef(false);
 
+  const visualizerCanvasRef = useRef(null);
+  const audioCtxRef = useRef(null);
+  const analyserRef = useRef(null);
+  const animationFrameIdRef = useRef(null);
+
   // Check device and browser on mount
   useEffect(() => {
     setIsMobile(isMobileDevice());
@@ -409,6 +415,20 @@ export default function InterviewPrep() {
   };
 
   const cleanupMedia = () => {
+    if (animationFrameIdRef.current) {
+      cancelAnimationFrame(animationFrameIdRef.current);
+      animationFrameIdRef.current = null;
+    }
+    if (audioCtxRef.current) {
+      try {
+        if (audioCtxRef.current.state !== 'closed') {
+          audioCtxRef.current.close();
+        }
+      } catch (e) {}
+      audioCtxRef.current = null;
+    }
+    analyserRef.current = null;
+
     if (mediaStreamRef.current) mediaStreamRef.current.getTracks().forEach(track => track.stop());
     if (recognitionRef.current) try { recognitionRef.current.stop(); } catch (e) { }
     if (timerRef.current) clearInterval(timerRef.current);
@@ -586,6 +606,72 @@ export default function InterviewPrep() {
     }
   };
 
+  const startVisualizerDraw = (analyser, canvas) => {
+    const ctx = canvas.getContext('2d');
+    const bufferLength = analyser.frequencyBinCount;
+    const dataArray = new Uint8Array(bufferLength);
+    
+    const dpr = window.devicePixelRatio || 1;
+    canvas.width = canvas.clientWidth * dpr;
+    canvas.height = canvas.clientHeight * dpr;
+    ctx.scale(dpr, dpr);
+
+    const draw = () => {
+      if (!isRecordingRef.current) return;
+      animationFrameIdRef.current = requestAnimationFrame(draw);
+      
+      analyser.getByteTimeDomainData(dataArray);
+      
+      const width = canvas.width / dpr;
+      const height = canvas.height / dpr;
+      
+      ctx.fillStyle = 'rgba(15, 23, 42, 0.2)';
+      ctx.fillRect(0, 0, width, height);
+      
+      ctx.strokeStyle = 'rgba(129, 140, 248, 0.04)';
+      ctx.lineWidth = 1;
+      ctx.beginPath();
+      ctx.moveTo(0, height / 2);
+      ctx.lineTo(width, height / 2);
+      ctx.stroke();
+
+      ctx.lineWidth = 2.5;
+      
+      const gradient = ctx.createLinearGradient(0, 0, width, 0);
+      gradient.addColorStop(0, '#6366f1');
+      gradient.addColorStop(0.5, '#a855f7');
+      gradient.addColorStop(1, '#ec4899');
+      ctx.strokeStyle = gradient;
+      
+      ctx.shadowBlur = 6;
+      ctx.shadowColor = 'rgba(168, 85, 247, 0.4)';
+      
+      ctx.beginPath();
+      
+      const sliceWidth = width / bufferLength;
+      let x = 0;
+      
+      for (let i = 0; i < bufferLength; i++) {
+        const v = dataArray[i] / 128.0;
+        const y = (v * height) / 2;
+        
+        if (i === 0) {
+          ctx.moveTo(x, y);
+        } else {
+          ctx.lineTo(x, y);
+        }
+        
+        x += sliceWidth;
+      }
+      
+      ctx.lineTo(width, height / 2);
+      ctx.stroke();
+      ctx.shadowBlur = 0;
+    };
+    
+    draw();
+  };
+
   const startRecording = () => {
     if (!audioEnabled) {
       setError('Please enable microphone to record your answer');
@@ -608,6 +694,30 @@ export default function InterviewPrep() {
     setError('');
     isRecordingRef.current = true;
     setIsRecording(true);
+
+    // Initialize Audio Visualizer
+    try {
+      if (mediaStreamRef.current) {
+        const audioContext = new (window.AudioContext || window.webkitAudioContext)();
+        audioCtxRef.current = audioContext;
+        
+        const source = audioContext.createMediaStreamSource(mediaStreamRef.current);
+        const analyser = audioContext.createAnalyser();
+        analyser.fftSize = 512;
+        analyserRef.current = analyser;
+        
+        source.connect(analyser);
+        
+        // Start drawing loop after small timeout to allow canvas mount
+        setTimeout(() => {
+          if (visualizerCanvasRef.current) {
+            startVisualizerDraw(analyser, visualizerCanvasRef.current);
+          }
+        }, 100);
+      }
+    } catch (visErr) {
+      console.error('Failed to initialize audio visualizer:', visErr);
+    }
 
     timerRef.current = setInterval(() => {
       setRecordingTime(Math.floor((Date.now() - startTimeRef.current) / 1000));
@@ -653,11 +763,30 @@ export default function InterviewPrep() {
 
   const stopRecording = async () => {
     isRecordingRef.current = false;
+    
+    // Stop audio visualizer
+    if (animationFrameIdRef.current) {
+      cancelAnimationFrame(animationFrameIdRef.current);
+      animationFrameIdRef.current = null;
+    }
+    if (audioCtxRef.current) {
+      try {
+        if (audioCtxRef.current.state !== 'closed') {
+          audioCtxRef.current.close();
+        }
+      } catch (e) {
+        console.error('Error closing AudioContext:', e);
+      }
+      audioCtxRef.current = null;
+    }
+    analyserRef.current = null;
+
     if (recognitionRef.current) try { recognitionRef.current.stop(); } catch (e) { }
     recognitionRef.current = null;
     if (timerRef.current) clearInterval(timerRef.current);
 
     setIsRecording(false);
+    // eslint-disable-next-line
     const duration = Math.floor((Date.now() - startTimeRef.current) / 1000);
     const metrics = getAverageMetrics();
 
@@ -945,8 +1074,9 @@ export default function InterviewPrep() {
           </motion.div>
 
           <motion.div initial={{ opacity: 0, y: 20 }} animate={{ opacity: 1, y: 0 }} transition={{ delay: 0.1 }}>
-            <div className="p-6 rounded-2xl bg-background/50 border border-border backdrop-blur-sm">
-              <form onSubmit={handleStartInterview} className="space-y-5">
+            <div className="p-8 rounded-3xl glass glow border border-border shadow-2xl relative overflow-hidden">
+              <div className="absolute top-0 right-0 w-64 h-64 bg-primary/5 rounded-full blur-3xl pointer-events-none"></div>
+              <form onSubmit={handleStartInterview} className="space-y-6 relative z-10">
                 <div>
                   <label className="block text-sm font-medium text-muted-foreground mb-2">Job Role *</label>
                   <input
@@ -954,7 +1084,7 @@ export default function InterviewPrep() {
                     value={formData.jobRole}
                     onChange={(e) => setFormData({ ...formData, jobRole: e.target.value })}
                     placeholder="e.g., Software Engineer, Product Manager"
-                    className="w-full px-4 py-3 bg-muted/50 border border-border rounded-xl text-foreground placeholder:text-muted-foreground focus:ring-2 focus:ring-primary focus:border-transparent transition-all"
+                    className="w-full px-4 py-3 bg-card/50 border border-border rounded-xl text-foreground placeholder:text-muted-foreground focus:ring-2 focus:ring-primary focus:border-primary/50 transition-all-300 shadow-sm"
                     required
                   />
                 </div>
@@ -998,19 +1128,19 @@ export default function InterviewPrep() {
                 </div>
 
                 {/* Resume Upload Section */}
-                <div className="border border-dashed border-border rounded-xl p-5 bg-muted/30">
-                  <div className="flex items-center gap-3 mb-3">
-                    <div className="w-10 h-10 bg-primary/20 rounded-lg flex items-center justify-center">
-                      <FileUp className="w-5 h-5 text-primary" />
+                <div className="border-2 border-dashed border-primary/20 rounded-2xl p-6 bg-primary/5 hover:bg-primary/10 transition-colors cursor-pointer relative group">
+                  <div className="flex items-center gap-4 mb-4">
+                    <div className="w-12 h-12 bg-primary/20 rounded-xl flex items-center justify-center group-hover:scale-110 transition-transform">
+                      <FileUp className="w-6 h-6 text-primary" />
                     </div>
                     <div>
-                      <h3 className="text-foreground font-medium">Upload Resume (Optional)</h3>
-                      <p className="text-xs text-muted-foreground">Get personalized questions based on your experience</p>
+                      <h3 className="text-foreground font-bold text-lg">Upload Resume (Optional)</h3>
+                      <p className="text-sm text-muted-foreground">Get personalized questions based on your experience</p>
                     </div>
                   </div>
 
                   {!resumeFile ? (
-                    <div className="relative">
+                    <div className="relative mt-2">
                       <input
                         ref={resumeInputRef}
                         type="file"
@@ -1019,11 +1149,11 @@ export default function InterviewPrep() {
                         className="absolute inset-0 w-full h-full opacity-0 cursor-pointer"
                         disabled={resumeLoading}
                       />
-                      <div className="flex items-center justify-center gap-2 py-3 px-4 rounded-lg bg-muted/50 border border-border hover:border-primary/50 transition-colors cursor-pointer">
+                      <div className="flex items-center justify-center gap-2 py-4 px-4 rounded-xl bg-card border border-border group-hover:border-primary/50 transition-colors shadow-sm">
                         {resumeLoading ? (
                           <>
-                            <Loader2 className="w-4 h-4 text-primary animate-spin" />
-                            <span className="text-sm text-muted-foreground">Extracting text...</span>
+                            <Loader2 className="w-5 h-5 text-primary animate-spin" />
+                            <span className="text-sm font-semibold text-muted-foreground">Extracting text...</span>
                           </>
                         ) : (
                           <>
@@ -1073,6 +1203,9 @@ export default function InterviewPrep() {
                     <p className="text-sm text-red-400">{error}</p>
                   </div>
                 )}
+
+                {/* Body language coaching tip */}
+                <BodyLanguageTips currentQuestionIndex={currentQuestionIndex} />
 
                 <Button type="submit" disabled={loading} variant="primary" className="w-full !py-4 !text-lg !rounded-xl flex items-center justify-center gap-2">
                   {loading ? <Loader2 className="w-5 h-5 animate-spin" /> : <Mic className="w-5 h-5" />}
@@ -1177,20 +1310,29 @@ export default function InterviewPrep() {
                 </div>
 
                 {isRecording && (
-                  <div className="mt-4 p-4 bg-gradient-to-r from-primary/10 to-secondary/10 border border-primary/20 rounded-xl">
-                    <div className="flex items-center gap-3">
-                      <div className="relative">
-                        <div className="w-10 h-10 rounded-full bg-primary/20 flex items-center justify-center">
-                          <Mic className="w-5 h-5 text-primary" />
+                  <>
+                    <div className="mt-4 p-4 bg-gradient-to-r from-primary/10 to-secondary/10 border border-primary/20 rounded-xl">
+                      <div className="flex items-center gap-3">
+                        <div className="relative">
+                          <div className="w-10 h-10 rounded-full bg-primary/20 flex items-center justify-center">
+                            <Mic className="w-5 h-5 text-primary" />
+                          </div>
+                          <div className="absolute inset-0 rounded-full bg-primary/30 animate-ping" />
                         </div>
-                        <div className="absolute inset-0 rounded-full bg-primary/30 animate-ping" />
-                      </div>
-                      <div>
-                        <p className="text-foreground font-medium">Recording in progress</p>
-                        <p className="text-muted-foreground text-sm">Speak clearly into your microphone</p>
+                        <div>
+                          <p className="text-foreground font-medium">Recording in progress</p>
+                          <p className="text-muted-foreground text-sm">Speak clearly into your microphone</p>
+                        </div>
                       </div>
                     </div>
-                  </div>
+                    {/* Glowing voice visualizer waveform canvas */}
+                    <div className="mt-4 rounded-xl overflow-hidden border border-border/60 bg-slate-950 p-1 flex items-center justify-center">
+                      <canvas
+                        ref={visualizerCanvasRef}
+                        className="w-full h-24 bg-slate-900 rounded-lg shadow-inner"
+                      />
+                    </div>
+                  </>
                 )}
               </div>
 
@@ -1200,6 +1342,9 @@ export default function InterviewPrep() {
                   <p className="text-sm text-red-400">{error}</p>
                 </div>
               )}
+
+              {/* Body language coaching tip — rotates each question, dismissible */}
+              <BodyLanguageTips currentQuestionIndex={currentQuestionIndex} />
 
               <div className="flex gap-3">
                 {!isRecording ? (

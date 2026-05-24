@@ -5,6 +5,7 @@ import JobListing from '../models/JobListing.model.js';
 import NotificationLog from '../models/NotificationLog.model.js';
 import { searchJobs } from './rapidApiService.js';
 import { sendJobAlertEmail } from './mailService.js';
+import scraperRegistry from './scrapers/index.js';
 import {
     emitNewJobsFound,
     emitEmailSent,
@@ -150,6 +151,23 @@ export const processAlert = async (alertData) => {
             page: 1,
             numPages: 1
         });
+
+        // Run registered local scrapers (e.g., Naukri) to enrich results
+        try {
+            console.log(`[JOB_FETCHER] 🔌 Fetching from modular local scrapers for query: "${searchQuery}"...`);
+            const localRun = await scraperRegistry.scrapeAll({
+                query: searchQuery,
+                location: location || '',
+                remoteOnly: remoteOnly || false,
+                employmentType: employmentType || []
+            });
+            if (localRun.jobs && localRun.jobs.length > 0) {
+                console.log(`[JOB_FETCHER] 🔌 Local scrapers aggregated ${localRun.jobs.length} additional jobs.`);
+                fetchedJobs.push(...localRun.jobs);
+            }
+        } catch (scraperErr) {
+            console.error('[JOB_FETCHER] ❌ Failed to run local scrapers registry:', scraperErr.message);
+        }
 
         if (!fetchedJobs.length) {
             console.log('📭 No jobs found for this alert');
@@ -428,10 +446,7 @@ export const startWorker = () => {
     console.log('   Concurrency:', RATE_LIMIT_CONFIG.maxConcurrent);
     console.log('   Rate limit:', RATE_LIMIT_CONFIG.maxRequestsPerMinute, 'requests/minute');
     
-    // Force worker to check for jobs immediately
-    worker.run().catch(err => {
-        console.error('❌ Worker run error:', err.message);
-    });
+    // Worker is already autorunning.
     
     return worker;
 };

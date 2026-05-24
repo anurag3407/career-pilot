@@ -139,7 +139,7 @@ export default function Login() {
       
       <Navbar />
 
-      <div className="max-w-md mx-auto pt-32 px-4 relative z-10">
+      <div className="max-w-md mx-auto pt-24 md:pt-32 px-4 relative z-10">
         <Card className="border-border/50 bg-card/60 backdrop-blur-xl">
           {step === 'credentials' ? (
             <>

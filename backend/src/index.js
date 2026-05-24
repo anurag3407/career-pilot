@@ -1,5 +1,8 @@
 import 'dotenv/config';
 import express from 'express';
+import dotenv from "dotenv";
+dotenv.config();
+
 import { createServer } from 'http';
 import cors from 'cors';
 import helmet from 'helmet';
@@ -16,10 +19,11 @@ import jobAlertRoutes from './routes/jobAlerts.js';
 import communityRoutes from './routes/community.js';
 import fellowshipRoutes from './routes/fellowships.js';
 import interviewRoutes from './routes/interview.js';
-import paymentRoutes from './routes/payments.js';
+
 import userProfileRoutes from './routes/userProfile.js';
 import twoFactorRoutes from './routes/twoFactor.js';
 import aiRoutes from './routes/ai.js';
+import emailTrackingRoutes from './routes/emailTracking.js';
 
 import { globalErrorHandler } from './middleware/globalErrorHandler.js';
 import {
@@ -59,7 +63,7 @@ import {
 const app = express();
 app.use(metricsMiddleware);
 const httpServer = createServer(app);
-const PORT = process.env.PORT || 5000;
+const PORT = process.env.PORT || 5001;
 
 // Log FRONTEND_URL for debugging
 console.log('🔧 FRONTEND_URL env var:', process.env.FRONTEND_URL);
@@ -91,23 +95,89 @@ app.use(cors({
   },
   credentials: true,
   methods: ['GET', 'POST', 'PUT', 'DELETE', 'OPTIONS', 'PATCH'],
-  allowedHeaders: ['Content-Type', 'Authorization', 'X-Requested-With', 'X-AI-Provider', 'X-AI-Key', 'X-AI-Model']
+  allowedHeaders: ['Content-Type', 'Authorization', 'X-Requested-With', 'X-AI-Provider', 'X-AI-Key', 'X-AI-Model', 'X-OpenRouter-Key']
 }));
 
 // Helmet security headers - configured to not interfere with CORS
 app.use(helmet({
   crossOriginResourcePolicy: { policy: 'cross-origin' },
-  crossOriginOpenerPolicy: { policy: 'same-origin-allow-popups' }
+  crossOriginOpenerPolicy: { policy: 'same-origin-allow-popups' },
+  contentSecurityPolicy: {
+    directives: {
+      defaultSrc: ["'self'"],
+      scriptSrc: [
+        "'self'",
+        "'unsafe-inline'",       // Required for React inline scripts
+        "https://apis.google.com",
+        "https://accounts.google.com",
+        "https://www.gstatic.com",
+      ],
+      styleSrc: [
+        "'self'",
+        "'unsafe-inline'",       // Required for Tailwind/inline styles
+        "https://fonts.googleapis.com",
+      ],
+      fontSrc: [
+        "'self'",
+        "https://fonts.gstatic.com",
+      ],
+      imgSrc: [
+        "'self'",
+        "data:",
+        "blob:",
+        "https:",                // Allow all HTTPS images (company logos etc)
+      ],
+      connectSrc: [
+        "'self'",
+        process.env.FRONTEND_URL || "http://localhost:5173",
+        "https://firebaseapp.com",
+        "https://*.googleapis.com",
+        "https://*.firebaseio.com",
+        "https://identitytoolkit.googleapis.com",
+        "wss:",                  // WebSocket for Socket.IO
+        "ws:",                   // WebSocket local dev
+      ],
+      frameSrc: [
+        "'self'",
+        "https://accounts.google.com",
+      ],
+      objectSrc: ["'none'"],
+      upgradeInsecureRequests: [],
+    },
+  },
 }));
-
 const limiter = rateLimit({
   windowMs: parseInt(process.env.RATE_LIMIT_WINDOW_MS) || 15 * 60 * 1000, // 15 minutes
   max: parseInt(process.env.RATE_LIMIT_MAX_REQUESTS) || 1000, // increased for development
-  message: {
-    error: 'Too many requests, please try again later.'
-  },
   standardHeaders: true,
   legacyHeaders: false,
+  handler: (req, res, next, options) => {
+    const resetTime = req.rateLimit?.resetTime;
+    const retryAfterSeconds = resetTime
+      ? Math.max(1, Math.ceil((resetTime - Date.now()) / 1000))
+      : Math.ceil((options.windowMs || 0) / 1000);
+
+    const headers = {
+      'Retry-After': String(retryAfterSeconds),
+      'X-RateLimit-Limit': String(options.max),
+      'X-RateLimit-Remaining': String(req.rateLimit?.remaining ?? 0),
+      'X-RateLimit-Quota': String(options.max)
+    };
+
+    if (resetTime) {
+      headers['X-RateLimit-Reset'] = String(Math.ceil(resetTime / 1000));
+    }
+
+    res.set(headers);
+    res.status(options.statusCode).json({
+      success: false,
+      error: options.message?.error || 'Rate limit exceeded',
+      message: options.message
+    });
+  },
+  message: {
+    error: 'Too many requests, please try again later.'
+  }
 });
 app.use('/api/', limiter);
 
@@ -122,6 +192,7 @@ app.get('/health', (req, res) => {
   });
 });
 
+// Removed broken swagger doc route
 app.get('/metrics', metricsHandler);
 
 app.use('/api/docs', swaggerUi.serve, swaggerUi.setup(swaggerSpec));
@@ -135,12 +206,21 @@ app.use('/api/job-alerts', jobAlertRoutes);
 app.use('/api/community', communityRoutes);
 app.use('/api/fellowship', fellowshipRoutes);
 app.use('/api/interview', interviewRoutes);
-app.use('/api/payments', paymentRoutes);
+try {
+    const paymentRoutes = (await import('./routes/payments.js')).default;
+
+    app.use('/api/payments', paymentRoutes);
+
+    console.log('✅ Payment routes loaded');
+} catch (error) {
+    console.warn('⚠️ Payment routes disabled:', error.message);
+}
 app.use('/api/portfolio', portfolioRoutes);
 app.use('/api/user-profiles', userProfileRoutes);
 app.use('/api/auth/2fa', twoFactorRoutes);
 app.use('/api/search', searchRoutes);
 app.use('/api/ai', aiRoutes);
+app.use('/api/email-tracking', emailTrackingRoutes);
 
 app.use((req, res) => {
   res.status(404).json({ error: 'Route not found' });
