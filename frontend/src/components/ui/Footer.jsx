@@ -1,7 +1,24 @@
+import { useState } from "react";
 import { Link } from "react-router-dom";
 import { Zap, Github, Twitter, Linkedin, Instagram } from "lucide-react";
 
 export default function Footer() {
+  const [email, setEmail] = useState("");
+  const [status, setStatus] = useState("idle"); // idle, loading, success, error
+
+  const handleSubscribe = async (e) => {
+    e.preventDefault();
+    if (!email || !email.trim()) return;
+    setStatus("loading");
+    try {
+      // Simulate API subscription delay
+      await new Promise((resolve) => setTimeout(resolve, 800));
+      setStatus("success");
+      setEmail("");
+    } catch (err) {
+      setStatus("error");
+    }
+  };
   const footerLinks = {
     product: [
       { label: "Features", href: "#features" },
@@ -140,17 +157,30 @@ export default function Footer() {
           </div>
 
           {/* Right input */}
-          <div className="flex w-full md:w-auto gap-3">
-            <input
-              type="email"
-              placeholder="Enter your email"
-              className="w-full md:w-72 px-4 py-3 rounded-xl bg-zinc-950 border border-zinc-800 text-white placeholder:text-zinc-500 focus:outline-none focus:ring-2 focus:ring-white/20"
-            />
+          {status === "success" ? (
+            <div className="text-sm font-semibold text-emerald-400 py-3 px-4 bg-emerald-500/10 rounded-xl border border-emerald-500/20 shadow-sm">
+              🎉 Thanks for subscribing! Check your inbox soon.
+            </div>
+          ) : (
+            <form onSubmit={handleSubscribe} className="flex w-full md:w-auto gap-3">
+              <input
+                type="email"
+                value={email}
+                onChange={(e) => setEmail(e.target.value)}
+                required
+                placeholder="Enter your email"
+                className="w-full md:w-72 px-4 py-3 rounded-xl bg-zinc-950 border border-zinc-800 text-white placeholder:text-zinc-500 focus:outline-none focus:ring-2 focus:ring-white/20"
+              />
 
-            <button className="px-5 py-3 rounded-xl bg-white text-black font-medium hover:bg-zinc-200 transition shadow-sm">
-              Subscribe
-            </button>
-          </div>
+              <button 
+                type="submit"
+                disabled={status === "loading"}
+                className="px-5 py-3 rounded-xl bg-white text-black font-medium hover:bg-zinc-200 transition shadow-sm disabled:opacity-50 disabled:cursor-not-allowed"
+              >
+                {status === "loading" ? "Subscribing..." : "Subscribe"}
+              </button>
+            </form>
+          )}
 
         </div>
         {/* Bottom Bar */}

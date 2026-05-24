@@ -20,7 +20,7 @@
     "dotenv": "^16.4.5",
     "express": "^4.21.0",
     "express-rate-limit": "^7.4.1",
-    "firebase-admin": "^12.6.0",
+    "firebase-admin": "^13.10.0",
     "groq-sdk": "^0.37.0",
     "helmet": "^8.0.0",
     "ioredis": "^5.8.2",
@@ -31,7 +31,7 @@
     "multer": "^1.4.5-lts.1",
     "node-cron": "^4.2.1",
     "node-fetch": "^3.3.2",
-    "nodemailer": "^7.0.12",
+    "nodemailer": "^8.0.7",
     "openai": "^6.38.0",
     "pdf-parse": "^1.1.1",
     "pdfkit": "^0.17.2",
@@ -43,7 +43,7 @@
     "speakeasy": "^2.0.0",
     "swagger-jsdoc": "^6.2.8",
     "swagger-ui-express": "^5.0.1",
-    "uuid": "^10.0.0",
+    "uuid": "^14.0.0",
     "zod": "^4.4.3"
   },
   "devDependencies": {

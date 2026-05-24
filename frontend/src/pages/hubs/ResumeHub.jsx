@@ -1,5 +1,5 @@
 import { useState, useEffect } from 'react'
-import { FileText, Upload, Sparkles, Linkedin, BarChart3, LayoutTemplate, Eye, FileDown } from 'lucide-react'
+import { FileText, Upload, Sparkles, Linkedin, BarChart3, LayoutTemplate, Eye, FileDown, PlusCircle, Github, TextSelect } from 'lucide-react'
 import { resumeApi } from '../../services/api'
 import HubLayout from '../../components/HubLayout'
 import ToolCard from '../../components/ToolCard'
@@ -15,7 +15,8 @@ export default function ResumeHub() {
     const fetchResumes = async () => {
       try {
         const res = await resumeApi.getAll()
-        setResumes(res.resumes || res.data?.resumes || [])
+        const fetchedResumes = Array.isArray(res.data) ? res.data : (res.resumes || res.data?.resumes || [])
+        setResumes(fetchedResumes)
       } catch {
         console.error('Failed to fetch resumes')
       } finally {
@@ -48,6 +49,28 @@ export default function ResumeHub() {
       breadcrumb="Resume Builder"
       stats={loading ? [] : stats}
     >
+      <ToolCard
+        to="/resume-builder"
+        icon={PlusCircle}
+        title="Create from Scratch"
+        description="Build a structured, ATS-friendly resume from scratch using our multi-step builder."
+        color="secondary"
+      />
+      <ToolCard
+        to="/text-to-resume"
+        icon={TextSelect}
+        title="Text to Resume"
+        description="Paste unformatted text or an old resume and let AI generate a structured markdown resume."
+        badge="AI"
+        color="primary"
+      />
+      <ToolCard
+        to="/github-dashboard"
+        icon={Github}
+        title="GitHub to Resume"
+        description="Import your GitHub profile and repositories to instantly generate a developer resume."
+        color="foreground"
+      />
       <ToolCard
         to="/upload"
         icon={Upload}
@@ -118,9 +141,16 @@ export default function ResumeHub() {
                 <h3 className="font-bold text-foreground mb-1 truncate">
                   {resume.title || resume.originalFilename || 'Untitled Resume'}
                 </h3>
-                <p className="text-xs text-muted-foreground mb-4">
-                  {resume.enhancedText ? 'AI Enhanced' : 'Original'}
-                </p>
+                <div className="flex items-center gap-2 mb-4">
+                  <p className="text-xs text-muted-foreground">
+                    {resume.enhancedText ? 'AI Enhanced' : 'Original'}
+                  </p>
+                  {resume.atsScore && (
+                    <span className="text-[10px] font-bold px-2 py-0.5 rounded-md bg-indigo-500/10 text-indigo-600 border border-indigo-500/20">
+                      ATS: {resume.atsScore}
+                    </span>
+                  )}
+                </div>
                 <div className="flex items-center gap-2">
                   <Link
                     to={resume.enhancedText ? `/enhance/${resume._id}` : `/resume/${resume._id}`}

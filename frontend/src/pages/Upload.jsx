@@ -5,7 +5,8 @@ import { motion } from 'framer-motion'
 import { uploadApi, resumeApi } from '../services/api'
 import Button from '../components/Button'
 import DropZone from '../components/DropZone'
-import { FileText, Upload as UploadIcon, CheckCircle, Target, BarChart3, Zap, Linkedin, ArrowRight, User, Briefcase, GraduationCap } from 'lucide-react'
+import { FileText, Upload as UploadIcon, CheckCircle, Target, BarChart3, Zap, Linkedin, ArrowRight, User, Briefcase, GraduationCap, PlusCircle, TextSelect } from 'lucide-react'
+import { Link } from 'react-router-dom'
 
 export default function Upload() {
   const navigate = useNavigate()
@@ -153,6 +154,31 @@ export default function Upload() {
             </div>
           </div>
         </motion.div>
+
+        {/* Alternative Methods */}
+        {!uploadComplete && (
+          <motion.div
+            initial={{ opacity: 0, y: 20 }}
+            animate={{ opacity: 1, y: 0 }}
+            transition={{ delay: 0.15 }}
+            className="grid md:grid-cols-2 gap-6 mb-8"
+          >
+            <Link to="/resume-builder" className="group p-6 rounded-xl bg-background/50 border border-border hover:border-primary/50 transition-all flex flex-col items-center text-center">
+              <div className="w-12 h-12 bg-primary/10 rounded-full flex items-center justify-center mb-4 group-hover:scale-110 transition-transform">
+                <PlusCircle className="w-6 h-6 text-primary" />
+              </div>
+              <h3 className="text-lg font-semibold text-foreground mb-2">Create from Scratch</h3>
+              <p className="text-sm text-muted-foreground">Use our step-by-step builder to create a professional resume.</p>
+            </Link>
+            <Link to="/text-to-resume" className="group p-6 rounded-xl bg-background/50 border border-border hover:border-primary/50 transition-all flex flex-col items-center text-center">
+              <div className="w-12 h-12 bg-secondary/10 rounded-full flex items-center justify-center mb-4 group-hover:scale-110 transition-transform">
+                <TextSelect className="w-6 h-6 text-secondary-foreground" />
+              </div>
+              <h3 className="text-lg font-semibold text-foreground mb-2">Paste Text</h3>
+              <p className="text-sm text-muted-foreground">Convert raw text or an old resume into a structured format using AI.</p>
+            </Link>
+          </motion.div>
+        )}
 
         {/* Upload Section */}
         {!uploadComplete ? (

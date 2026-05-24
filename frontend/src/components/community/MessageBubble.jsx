@@ -25,6 +25,7 @@ export default function MessageBubble({ message, isOwn, showAvatar, channelId, o
   const [isEditing, setIsEditing] = useState(false);
   const [editContent, setEditContent] = useState(message.content);
   const [copied, setCopied] = useState(false);
+  const [showConfirmDelete, setShowConfirmDelete] = useState(false);
 
   const handleReaction = (emoji) => {
     const messageId = message.id || message._id;
@@ -54,40 +55,40 @@ export default function MessageBubble({ message, isOwn, showAvatar, channelId, o
     setIsEditing(false);
   };
 
-  const handleDelete = () => {
+  const confirmDelete = () => {
     const messageId = message.id || message._id;
-    if (confirm('Are you sure you want to delete this message?')) {
-      // Optimistic update - immediately show as deleted
-      onOptimisticDelete?.({ messageId });
-      deleteMessage(messageId);
-    }
+    // Optimistic update - immediately show as deleted
+    onOptimisticDelete?.({ messageId });
+    deleteMessage(messageId);
+    setShowConfirmDelete(false);
   };
 
   const handleCopy = async () => {
     try {
-      await navigator.clipboard.writeText(message.content);
-      setCopied(true);
-      setTimeout(() => setCopied(false), 2000);
-    } catch (error) {
-      console.error('Failed to copy message:', error);
-      setCopied(false);
-
-      const textarea = document.createElement('textarea');
-      textarea.value = message.content;
-      textarea.style.position = 'fixed';
-      textarea.style.opacity = '0';
-      document.body.appendChild(textarea);
-      textarea.focus();
-      textarea.select();
-      try {
-        document.execCommand('copy');
+      if (navigator.clipboard && navigator.clipboard.writeText) {
+        await navigator.clipboard.writeText(message.content);
         setCopied(true);
         setTimeout(() => setCopied(false), 2000);
-      } catch (fallbackError) {
-        console.error('Fallback copy failed:', fallbackError);
-      } finally {
+      } else {
+        // Fallback for older browsers or insecure contexts
+        const textarea = document.createElement('textarea');
+        textarea.value = message.content;
+        textarea.style.position = 'fixed';
+        textarea.style.left = '-999999px';
+        textarea.setAttribute('readonly', '');
+        document.body.appendChild(textarea);
+        textarea.select();
+        const success = document.execCommand('copy');
         document.body.removeChild(textarea);
+        if (success) {
+          setCopied(true);
+          setTimeout(() => setCopied(false), 2000);
+        } else {
+          throw new Error('Fallback copy command failed');
+        }
       }
+    } catch (error) {
+      console.error('Failed to copy message:', error);
     }
   };
 
@@ -95,7 +96,9 @@ export default function MessageBubble({ message, isOwn, showAvatar, channelId, o
     return name?.split(' ').map(n => n[0]).join('').toUpperCase().slice(0, 2) || '??';
   };
 
-  const formattedTime = formatDistanceToNow(new Date(message.createdAt), { addSuffix: true });
+  const formattedTime = message.createdAt 
+    ? formatDistanceToNow(new Date(message.createdAt), { addSuffix: true }) 
+    : '';
 
   if (message.isDeleted) {
     return (
@@ -303,12 +306,29 @@ export default function MessageBubble({ message, isOwn, showAvatar, channelId, o
                     >
                       <Edit2 className="w-4 h-4" />
                     </button>
-                    <button
-                      onClick={handleDelete}
-                      className="p-1.5 text-muted-foreground hover:text-destructive hover:bg-destructive/10 rounded"
-                    >
-                      <Trash2 className="w-4 h-4" />
-                    </button>
+                    {showConfirmDelete ? (
+                      <div className="flex items-center gap-1 bg-destructive/10 rounded p-0.5">
+                        <button
+                          onClick={confirmDelete}
+                          className="text-[10px] text-destructive hover:underline px-1"
+                        >
+                          Confirm
+                        </button>
+                        <button
+                          onClick={() => setShowConfirmDelete(false)}
+                          className="text-[10px] text-muted-foreground hover:underline px-1"
+                        >
+                          Cancel
+                        </button>
+                      </div>
+                    ) : (
+                      <button
+                        onClick={() => setShowConfirmDelete(true)}
+                        className="p-1.5 text-muted-foreground hover:text-destructive hover:bg-destructive/10 rounded"
+                      >
+                        <Trash2 className="w-4 h-4" />
+                      </button>
+                    )}
                   </>
                 )}
               </div>

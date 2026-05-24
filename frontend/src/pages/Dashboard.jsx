@@ -65,7 +65,8 @@ export default function Dashboard() {
         portfolioApi.getAll().catch(() => ({ portfolioItems: [] }))
       ])
 
-      setResumes(resumeRes.resumes || resumeRes.data?.resumes || [])
+      const fetchedResumes = Array.isArray(resumeRes.data) ? resumeRes.data : (resumeRes.resumes || resumeRes.data?.resumes || [])
+      setResumes(fetchedResumes)
       const jobs = jobsRes.trackedJobs || []
       setTrackedJobs(jobs)
 
