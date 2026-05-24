@@ -115,7 +115,7 @@ export default function LinkedInCallback() {
           
           <Navbar />
 
-          <div className="max-w-md mx-auto pt-32 px-4 relative z-10">
+          <div className="max-w-md mx-auto pt-24 md:pt-32 px-4 relative z-10">
             <Card className="border-border/50 bg-card/60 backdrop-blur-xl">
               <div className="flex flex-col items-center mb-6">
                 <div className="p-3 rounded-full bg-primary/10 border border-primary/20 mb-4">

@@ -1,6 +1,37 @@
 import Razorpay from 'razorpay';
 import crypto from 'crypto';
 
+let razorpayInstance = null;
+
+const getRazorpay = () => {
+    if (razorpayInstance) return razorpayInstance;
+    const keyId = process.env.RAZORPAY_KEY_ID;
+    const keySecret = process.env.RAZORPAY_KEY_SECRET;
+    
+    if (!keyId || !keySecret) {
+        if (process.env.NODE_ENV === 'production') {
+            throw new Error('Razorpay key_id and key_secret are required in production');
+        }
+        console.warn('⚠️ Razorpay credentials missing. Using dummy credentials for startup.');
+    }
+    
+    razorpayInstance = new Razorpay({
+        key_id: keyId || 'dummy_key',
+        key_secret: keySecret || 'dummy_secret'
+    });
+    return razorpayInstance;
+};
+
+const razorpay = new Proxy({}, {
+    get: (target, prop) => {
+        const instance = getRazorpay();
+        const value = instance[prop];
+        if (typeof value === 'function') {
+            return value.bind(instance);
+        }
+        return value;
+    }
+});
 // Initialize Razorpay instance with test/live keys from environment
 const razorpayKeyId = process.env.RAZORPAY_KEY_ID;
 const razorpayKeySecret = process.env.RAZORPAY_KEY_SECRET;

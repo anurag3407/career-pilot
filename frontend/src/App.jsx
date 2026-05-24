@@ -11,6 +11,7 @@ import AppLayout from './components/AppLayout';
 import Footer from './components/ui/Footer';
 
 import CommandPalette from './components/CommandPalette';
+import BackToTop from './components/BackToTop';
 import Home from './pages/Home';
 import Login from './pages/Login';
 import Register from './pages/Register';
@@ -20,6 +21,8 @@ import Enhance from './pages/Enhance';
 import ResumeView from './pages/ResumeView';
 import JobSearch from './pages/JobSearch';
 import JobAlerts from './pages/JobAlerts';
+import ResumeBuilder from './pages/ResumeBuilder';
+import TextToResume from './pages/TextToResume';
 
 
 import JobTracker from './pages/JobTracker';
@@ -45,6 +48,15 @@ import LinkedInCallback from './pages/LinkedInCallback';
 import PrivacyPolicy from './pages/PrivacyPolicy';
 import TermsOfService from './pages/TermsOfService';
 import CookiePolicy from './pages/CookiePolicy';
+import OpenRouterCallback from './pages/OpenRouterCallback';
+
+// Hub Imports
+import ResumeHub from './pages/hubs/ResumeHub';
+import JobsHub from './pages/hubs/JobsHub';
+import PortfolioHub from './pages/hubs/PortfolioHub';
+import CareerGrowthHub from './pages/hubs/CareerGrowthHub';
+import CommunityHub from './pages/hubs/CommunityHub';
+import GitHubDashboard from './pages/GitHubDashboard';
 
 function ProtectedRoute({ children }) {
   const { user, loading } = useAuth();
@@ -114,6 +126,7 @@ function AppRoutes() {
         />
       )}
       <div className="bg-mesh" />
+      <BackToTop />
       <Toaster
         position="top-right"
         toastOptions={{
@@ -140,6 +153,7 @@ function AppRoutes() {
         <Route path="/login" element={<PublicRoute><Login /></PublicRoute>} />
         <Route path="/register" element={<PublicRoute><Register /></PublicRoute>} />
         <Route path="/auth/linkedin/callback" element={<LinkedInCallback />} />
+        <Route path="/auth/openrouter/callback" element={<OpenRouterCallback />} />
 
         {/* Legal Pages (Public) */}
         <Route path="/privacy" element={<PrivacyPolicy />} />
@@ -152,6 +166,8 @@ function AppRoutes() {
         {/* Core Protected Routes */}
         <Route path="/dashboard" element={<ProtectedRoute><Dashboard /></ProtectedRoute>} />
         <Route path="/upload" element={<ProtectedRoute><Upload /></ProtectedRoute>} />
+        <Route path="/resume-builder" element={<ProtectedRoute><ResumeBuilder /></ProtectedRoute>} />
+        <Route path="/text-to-resume" element={<ProtectedRoute><TextToResume /></ProtectedRoute>} />
         <Route path="/enhance/:resumeId" element={<ProtectedRoute><Enhance /></ProtectedRoute>} />
         <Route path="/resume/:resumeId" element={<ProtectedRoute><ResumeView /></ProtectedRoute>} />
         <Route path="/jobs" element={<ProtectedRoute><JobSearch /></ProtectedRoute>} />
@@ -166,6 +182,14 @@ function AppRoutes() {
         <Route path="/linkedin-optimizer" element={<ProtectedRoute><LinkedInOptimizer /></ProtectedRoute>} />
         <Route path="/deployments" element={<ProtectedRoute><Deployments /></ProtectedRoute>} />
         <Route path="/settings" element={<ProtectedRoute><Settings /></ProtectedRoute>} />
+
+        {/* Hub Routes */}
+        <Route path="/hub/resume" element={<ProtectedRoute><ResumeHub /></ProtectedRoute>} />
+        <Route path="/hub/jobs" element={<ProtectedRoute><JobsHub /></ProtectedRoute>} />
+        <Route path="/hub/portfolio" element={<ProtectedRoute><PortfolioHub /></ProtectedRoute>} />
+        <Route path="/hub/career" element={<ProtectedRoute><CareerGrowthHub /></ProtectedRoute>} />
+        <Route path="/hub/community" element={<ProtectedRoute><CommunityHub /></ProtectedRoute>} />
+        <Route path="/github-dashboard" element={<ProtectedRoute><GitHubDashboard /></ProtectedRoute>} />
 
         {/* Nested Fellowship Routes */}
         <Route path="/fellowship" element={<ProtectedRoute><FellowshipLayout /></ProtectedRoute>}>

@@ -1,11 +1,13 @@
-import { useState } from "react";
+import { useState, useEffect } from "react";
 import { useNavigate } from "react-router-dom";
 import { motion } from "framer-motion";
+import { Brain, ChevronDown } from "lucide-react";
 
 import {
     LayoutDashboard,
     Search,
     Bell,
+    Mail,
     GraduationCap,
     Users,
     FileText,
@@ -17,10 +19,12 @@ import {
     Sun,
     Moon,
     Zap,
-    Rocket
+    Rocket,
+    Briefcase
 } from "lucide-react";
 import { useAuth } from "../context/AuthContext";
 import { useTheme } from "../context/ThemeContext";
+import { generateRandomString, generateCodeChallenge } from "../utils/pkce";
 import {
     Sidebar,
     SidebarBody,
@@ -37,49 +41,34 @@ const navLinks = [
         icon: <LayoutDashboard className="w-5 h-5 flex-shrink-0" />,
     },
     {
-        label: "Find Jobs",
-        href: "/jobs",
-        icon: <Search className="w-5 h-5 flex-shrink-0" />,
-    },
-    {
-        label: "Job Alerts",
-        href: "/job-alerts",
-        icon: <Bell className="w-5 h-5 flex-shrink-0" />,
-    },
-    {
-        label: "Interview Prep",
-        href: "/interview-prep",
-        icon: <Zap className="w-5 h-5 flex-shrink-0" />,
-    },
-    {
-        label: "Fellowship",
-        href: "/fellowship",
-        icon: <GraduationCap className="w-5 h-5 flex-shrink-0" />,
-    },
-    {
-        label: "Community",
-        href: "/community",
-        icon: <Users className="w-5 h-5 flex-shrink-0" />,
-    },
-    {
-        label: "Resume",
-        href: "/upload",
+        label: "Resume Builder",
+        href: "/hub/resume",
         icon: <FileText className="w-5 h-5 flex-shrink-0" />,
     },
     {
-        label: "Portfolio",
-        href: "/portfolio",
+        label: "Job Finder",
+        href: "/hub/jobs",
+        icon: <Briefcase className="w-5 h-5 flex-shrink-0" />,
+    },
+    {
+        label: "Portfolio Builder",
+        href: "/hub/portfolio",
         icon: <Globe className="w-5 h-5 flex-shrink-0" />,
+    },
+    {
+        label: "Career Growth",
+        href: "/hub/career",
+        icon: <GraduationCap className="w-5 h-5 flex-shrink-0" />,
+    },
+    {
+        label: "Community Hub",
+        href: "/hub/community",
+        icon: <Users className="w-5 h-5 flex-shrink-0" />,
     },
     {
         label: "Profile",
         href: "/profile",
         icon: <User className="w-5 h-5 flex-shrink-0" />,
-    },
-    {
-        label: 'Deployments',
-        href: '/deployments',
-        icon: <Rocket className="w-5 h-5 flex-shrink-0" />,
     },
     {
         label: "Security",
@@ -98,7 +87,10 @@ function Logo() {
     const { open, animate } = useSidebar();
 
     return (
-        <div className="flex items-center gap-3 py-2 px-1 group">
+        <div className={cn(
+            "flex items-center gap-3 py-2 group",
+            !open && animate ? "px-0 justify-center" : "px-1 justify-start"
+        )}>
             <div className="w-10 h-10 flex-shrink-0 flex items-center justify-center p-1.5 rounded-xl group-hover:scale-110 transition-transform">
                 <img src="/speed.png" alt="careerpilot" className="w-full h-full object-contain" />
             </div>
@@ -123,6 +115,28 @@ function UserSection() {
     const { open, animate, setOpen } = useSidebar();
     const { theme, toggleTheme } = useTheme();
     const navigate = useNavigate();
+    const [openRouterKey, setOpenRouterKey] = useState(null);
+
+    useEffect(() => {
+        setOpenRouterKey(localStorage.getItem('openRouterApiKey'));
+    }, []);
+
+    const handleOpenRouterConnect = async () => {
+        if (openRouterKey) {
+            localStorage.removeItem('openRouterApiKey');
+            setOpenRouterKey(null);
+            return;
+        }
+
+        const verifier = generateRandomString();
+        sessionStorage.setItem('or_code_verifier', verifier);
+        const challenge = await generateCodeChallenge(verifier);
+        
+        const callbackUrl = `${window.location.origin}/auth/openrouter/callback`;
+        const openRouterUrl = `https://openrouter.ai/auth?callback_url=${encodeURIComponent(callbackUrl)}&code_challenge=${challenge}&code_challenge_method=S256`;
+        
+        window.location.href = openRouterUrl;
+    };
 
     const handleLogout = async () => {
         try {
@@ -143,8 +157,8 @@ function UserSection() {
             <SidebarDivider />
             <div
                 className={cn(
-                    "flex items-center gap-3 p-3 rounded-2xl bg-muted/50 border border-border transition-all hover:bg-muted",
-                    !open && animate && "justify-center"
+                    "flex items-center gap-3 rounded-2xl bg-muted/50 border border-border transition-all hover:bg-muted",
+                    !open && animate ? "p-2 justify-center" : "p-3"
                 )}
             >
                 <div className="w-10 h-10 rounded-xl bg-primary/20 flex items-center justify-center flex-shrink-0 border border-primary/20">
@@ -167,8 +181,8 @@ function UserSection() {
             <button
                 onClick={toggleTheme}
                 className={cn(
-                    "flex items-center gap-3 w-full py-3 px-4 rounded-2xl text-muted-foreground hover:text-foreground hover:bg-muted transition-all cursor-pointer font-bold",
-                    !open && animate && "justify-center"
+                    "flex items-center gap-2 px-3 py-2 rounded-lg text-sm font-medium transition-all duration-300 w-full text-muted-foreground hover:text-foreground hover:bg-muted cursor-pointer",
+                    !open && animate ? "px-0 justify-center" : "justify-start"
                 )}
             >
                 {theme === 'dark' ? <Sun className="w-5 h-5 flex-shrink-0" /> : <Moon className="w-5 h-5 flex-shrink-0" />}
@@ -178,9 +192,28 @@ function UserSection() {
                         opacity: animate ? (open ? 1 : 0) : 1,
                     }}
                     transition={{ duration: 0.2 }}
-                    className="text-sm font-bold whitespace-pre"
+                    className="text-sm font-semibold whitespace-pre"
                 >
                     {theme === 'dark' ? 'Light Mode' : 'Dark Mode'}
+                </motion.span>
+            </button>
+            <button
+                onClick={handleOpenRouterConnect}
+                className={cn(
+                    "flex items-center gap-3 w-full py-3 px-4 rounded-2xl text-muted-foreground hover:text-foreground hover:bg-muted transition-all cursor-pointer font-bold",
+                    !open && animate && "justify-center"
+                )}
+            >
+                <Zap className={cn("w-5 h-5 flex-shrink-0", openRouterKey && "text-indigo-500")} />
+                <motion.span
+                    animate={{
+                        display: animate ? (open ? "inline-block" : "none") : "inline-block",
+                        opacity: animate ? (open ? 1 : 0) : 1,
+                    }}
+                    transition={{ duration: 0.2 }}
+                    className="text-sm font-bold whitespace-pre"
+                >
+                    {openRouterKey ? 'OpenRouter Connected' : 'Connect OpenRouter'}
                 </motion.span>
             </button>
             <button
@@ -189,8 +222,8 @@ function UserSection() {
                     setOpen(false);
                 }}
                 className={cn(
-                    "flex items-center gap-3 w-full py-3 px-4 rounded-2xl text-muted-foreground hover:text-destructive hover:bg-destructive/10 transition-all cursor-pointer font-bold",
-                    !open && animate && "justify-center"
+                    "flex items-center gap-2 px-3 py-2 rounded-lg text-sm font-semibold transition-all duration-300 w-full cursor-pointer hover:text-destructive hover:bg-destructive/10",
+                    !open && animate ? "px-0 justify-center" : "justify-start"
                 )}
             >
                 <LogOut className="w-5 h-5 flex-shrink-0" />
@@ -200,7 +233,7 @@ function UserSection() {
                         opacity: animate ? (open ? 1 : 0) : 1,
                     }}
                     transition={{ duration: 0.2 }}
-                    className="text-sm font-bold whitespace-pre"
+                    className="text-sm font-semibold whitespace-pre"
                 >
                     Logout
                 </motion.span>
@@ -211,6 +244,7 @@ function UserSection() {
 
 export default function AppSidebar() {
     const [open, setOpen] = useState(false);
+const [openAI, setOpenAI] = useState(false);
 
     return (
         <Sidebar open={open} setOpen={setOpen}>
@@ -228,6 +262,62 @@ export default function AppSidebar() {
                             />
                         ))}
                     </div>
+                     {/* AI Tools Collapsible */}
+<div className="mt-2">
+    <button
+        onClick={() => setOpenAI(!openAI)}
+        className="flex items-center justify-between w-full px-4 py-3 rounded-xl text-muted-foreground hover:text-foreground hover:bg-muted font-semibold transition-all"
+    >
+        <div className="flex items-center gap-3">
+            <Brain className="w-5 h-5 flex-shrink-0" />
+            <span>AI Tools</span>
+        </div>
+
+        <ChevronDown
+            className={cn(
+                "w-4 h-4 transition-transform duration-300",
+                openAI && "rotate-180"
+            )}
+        />
+    </button>
+
+    <motion.div
+        initial={false}
+        animate={{
+            height: openAI ? "auto" : 0,
+            opacity: openAI ? 1 : 0,
+        }}
+        transition={{ duration: 0.3 }}
+        className="overflow-hidden ml-4 flex flex-col gap-1"
+    >
+        <SidebarLink
+            link={{
+                label: "Skill Gap Analyzer",
+                href: "/skill-gap",
+                icon: <Brain className="w-4 h-4 flex-shrink-0" />,
+            }}
+            onClick={() => setOpen(false)}
+        />
+
+        <SidebarLink
+            link={{
+                label: "Career Trajectory",
+                href: "/career-path",
+                icon: <Brain className="w-4 h-4 flex-shrink-0" />,
+            }}
+            onClick={() => setOpen(false)}
+        />
+
+        <SidebarLink
+            link={{
+                label: "Salary Estimator",
+                href: "/salary-estimate",
+                icon: <Brain className="w-4 h-4 flex-shrink-0" />,
+            }}
+            onClick={() => setOpen(false)}
+        />
+    </motion.div>
+</div>
                 </div>
                 <UserSection />
             </SidebarBody>

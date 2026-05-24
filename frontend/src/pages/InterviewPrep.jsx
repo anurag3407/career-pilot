@@ -1074,8 +1074,9 @@ export default function InterviewPrep() {
           </motion.div>
 
           <motion.div initial={{ opacity: 0, y: 20 }} animate={{ opacity: 1, y: 0 }} transition={{ delay: 0.1 }}>
-            <div className="p-6 rounded-2xl bg-background/50 border border-border backdrop-blur-sm">
-              <form onSubmit={handleStartInterview} className="space-y-5">
+            <div className="p-8 rounded-3xl glass glow border border-border shadow-2xl relative overflow-hidden">
+              <div className="absolute top-0 right-0 w-64 h-64 bg-primary/5 rounded-full blur-3xl pointer-events-none"></div>
+              <form onSubmit={handleStartInterview} className="space-y-6 relative z-10">
                 <div>
                   <label className="block text-sm font-medium text-muted-foreground mb-2">Job Role *</label>
                   <input
@@ -1083,7 +1084,7 @@ export default function InterviewPrep() {
                     value={formData.jobRole}
                     onChange={(e) => setFormData({ ...formData, jobRole: e.target.value })}
                     placeholder="e.g., Software Engineer, Product Manager"
-                    className="w-full px-4 py-3 bg-muted/50 border border-border rounded-xl text-foreground placeholder:text-muted-foreground focus:ring-2 focus:ring-primary focus:border-transparent transition-all"
+                    className="w-full px-4 py-3 bg-card/50 border border-border rounded-xl text-foreground placeholder:text-muted-foreground focus:ring-2 focus:ring-primary focus:border-primary/50 transition-all-300 shadow-sm"
                     required
                   />
                 </div>
@@ -1127,19 +1128,19 @@ export default function InterviewPrep() {
                 </div>
 
                 {/* Resume Upload Section */}
-                <div className="border border-dashed border-border rounded-xl p-5 bg-muted/30">
-                  <div className="flex items-center gap-3 mb-3">
-                    <div className="w-10 h-10 bg-primary/20 rounded-lg flex items-center justify-center">
-                      <FileUp className="w-5 h-5 text-primary" />
+                <div className="border-2 border-dashed border-primary/20 rounded-2xl p-6 bg-primary/5 hover:bg-primary/10 transition-colors cursor-pointer relative group">
+                  <div className="flex items-center gap-4 mb-4">
+                    <div className="w-12 h-12 bg-primary/20 rounded-xl flex items-center justify-center group-hover:scale-110 transition-transform">
+                      <FileUp className="w-6 h-6 text-primary" />
                     </div>
                     <div>
-                      <h3 className="text-foreground font-medium">Upload Resume (Optional)</h3>
-                      <p className="text-xs text-muted-foreground">Get personalized questions based on your experience</p>
+                      <h3 className="text-foreground font-bold text-lg">Upload Resume (Optional)</h3>
+                      <p className="text-sm text-muted-foreground">Get personalized questions based on your experience</p>
                     </div>
                   </div>
 
                   {!resumeFile ? (
-                    <div className="relative">
+                    <div className="relative mt-2">
                       <input
                         ref={resumeInputRef}
                         type="file"
@@ -1148,11 +1149,11 @@ export default function InterviewPrep() {
                         className="absolute inset-0 w-full h-full opacity-0 cursor-pointer"
                         disabled={resumeLoading}
                       />
-                      <div className="flex items-center justify-center gap-2 py-3 px-4 rounded-lg bg-muted/50 border border-border hover:border-primary/50 transition-colors cursor-pointer">
+                      <div className="flex items-center justify-center gap-2 py-4 px-4 rounded-xl bg-card border border-border group-hover:border-primary/50 transition-colors shadow-sm">
                         {resumeLoading ? (
                           <>
-                            <Loader2 className="w-4 h-4 text-primary animate-spin" />
-                            <span className="text-sm text-muted-foreground">Extracting text...</span>
+                            <Loader2 className="w-5 h-5 text-primary animate-spin" />
+                            <span className="text-sm font-semibold text-muted-foreground">Extracting text...</span>
                           </>
                         ) : (
                           <>

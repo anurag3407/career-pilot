@@ -1,11 +1,17 @@
 import { GoogleGenerativeAI } from '@google/generative-ai';
 import { aiCallsCounter } from '../../middleware/metrics.js';
 
-const geminiApiKey = process.env.GEMINI_API_KEY;
-if (!geminiApiKey) {
-  throw new Error('GEMINI_API_KEY environment variable is required');
-}
-const genAI = new GoogleGenerativeAI(geminiApiKey);
+let genAIInstance = null;
+
+const getGenAI = () => {
+  if (genAIInstance) return genAIInstance;
+  const geminiApiKey = process.env.GEMINI_API_KEY;
+  if (!geminiApiKey) {
+    throw new Error('GEMINI_API_KEY environment variable is required');
+  }
+  genAIInstance = new GoogleGenerativeAI(geminiApiKey);
+  return genAIInstance;
+};
 
 const SECTION_PROMPTS = {
   hero: (content) => `
@@ -103,7 +109,7 @@ export const enhanceSection = async (sectionType, content) => {
     throw new Error(`Unsupported section type: ${sectionType}. Allowed: hero, projects, about, skills`);
   }
 
-  const model = genAI.getGenerativeModel({ model: 'gemini-2.0-flash' });
+  const model = getGenAI().getGenerativeModel({ model: 'gemini-2.0-flash' });
   const prompt = promptBuilder(content);
 
   aiCallsCounter.inc({ provider: "gemini" });

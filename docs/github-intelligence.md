@@ -34,7 +34,7 @@ Add the following variables to your `.env` file:
 # GitHub OAuth Configuration
 GITHUB_OAUTH_CLIENT_ID=your_oauth_client_id_here
 GITHUB_OAUTH_CLIENT_SECRET=your_oauth_client_secret_here
-GITHUB_OAUTH_REDIRECT_URI=http://localhost:5000/api/auth/github/callback
+GITHUB_OAUTH_REDIRECT_URI=http://localhost:5001/api/auth/github/callback
 
 # GitHub API Configuration
 GITHUB_API_TOKEN=your_personal_access_token_here
@@ -42,7 +42,7 @@ GITHUB_API_BASE=https://api.github.com
 GITHUB_API_VERSION=2022-11-28
 
 # Rate Limiting
-GITHUB_API_RATE_LIMIT=5000
+GITHUB_API_RATE_LIMIT=5001
 GITHUB_API_RATE_WINDOW=3600000
 ```
 
@@ -247,7 +247,7 @@ export const decryptToken = (encryptedToken) => {
 
 ### Base URL
 ```
-http://localhost:5000/api/github
+http://localhost:5001/api/github
 ```
 
 ### Authentication
@@ -266,7 +266,7 @@ GET /api/auth/github
 
 **Example:**
 ```bash
-curl http://localhost:5000/api/auth/github
+curl http://localhost:5001/api/auth/github
 ```
 
 ---

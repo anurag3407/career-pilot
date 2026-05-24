@@ -1,6 +1,6 @@
 # 🚀 Deployment & Security API
 
-> Base URL: `http://localhost:5000/api`
+> Base URL: `http://localhost:5001/api`
 > All endpoints require `Authorization: Bearer <firebase_id_token>`
 
 ---

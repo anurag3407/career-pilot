@@ -452,6 +452,8 @@ export default function Enhance() {
     try {
       const response = await enhanceApi.scoreResume(resume.originalText)
       setScoreData(response.data)
+      // Save the score back to the resume history
+      await resumeApi.update(resumeId, { atsScore: response.data.overallScore })
       toast.success('Resume scored!')
     } catch (error) {
       toast.error(error.message || 'Failed to score resume')
@@ -959,9 +961,10 @@ export default function Enhance() {
               initial={{ opacity: 0, y: 20 }}
               animate={{ opacity: 1, y: 0 }}
               transition={{ delay: 0.6 }}
-              className="bg-gradient-to-r from-indigo-900/50 to-purple-900/50 border border-primary/30 rounded-2xl p-8"
+              className="glass glow border border-primary/30 rounded-3xl p-8 relative overflow-hidden mt-8"
             >
-              <div className="flex flex-col md:flex-row items-center justify-between gap-6">
+              <div className="absolute inset-0 pointer-events-none bg-gradient-to-r from-indigo-500/10 to-purple-500/10"></div>
+              <div className="relative z-10 flex flex-col md:flex-row items-center justify-between gap-6">
                 <div className="flex items-center gap-4">
                   <div className="w-14 h-14 bg-gradient-to-br from-primary to-secondary rounded-xl flex items-center justify-center">
                     <Sparkles className="w-7 h-7 text-foreground" />
