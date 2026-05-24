@@ -2,7 +2,7 @@ import React, { useState, useEffect } from "react";
 import { motion } from "framer-motion";
 import { Link } from "react-router-dom";
 import { ArrowRight } from "lucide-react";
-
+import Projects from '@/components/portfolio/templates/Holographic/Projects';
 export default function PortfolioShowcaseSection() {
   const [currentIndex, setCurrentIndex] = useState(0);
 
@@ -114,7 +114,10 @@ export default function PortfolioShowcaseSection() {
             ))}
           </div>
         </div>
-
+{/* Holographic Projects Section */}
+<div className="mt-20">
+  <Projects />
+</div>
         {/* CTA Button */}
         <div className="text-center">
           <Link
