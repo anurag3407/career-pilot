@@ -2,18 +2,41 @@ import { createContext, useContext, useEffect, useState } from 'react'
 
 const ThemeContext = createContext(null)
 
+const getStoredTheme = () => {
+  try {
+    return window.localStorage.getItem('theme')
+  } catch {
+    return null
+  }
+}
+
+const setStoredTheme = (theme) => {
+  try {
+    window.localStorage.setItem('theme', theme)
+  } catch {
+    // Ignore storage write failures in restricted/brittle browser contexts.
+  }
+}
+
 export function ThemeProvider({ children }) {
   const [theme, setTheme] = useState(() => {
-    const savedTheme = localStorage.getItem('theme')
-    if (savedTheme) return savedTheme
-    return window.matchMedia('(prefers-color-scheme: dark)').matches ? 'dark' : 'light'
+    const savedTheme = getStoredTheme()
+    if (savedTheme === 'light' || savedTheme === 'dark') {
+      return savedTheme
+    }
+
+    if (typeof window !== 'undefined' && typeof window.matchMedia === 'function') {
+      return window.matchMedia('(prefers-color-scheme: dark)').matches ? 'dark' : 'light'
+    }
+
+    return 'dark'
   })
 
   useEffect(() => {
     const root = window.document.documentElement
     root.classList.remove('light', 'dark')
     root.classList.add(theme)
-    localStorage.setItem('theme', theme)
+    setStoredTheme(theme)
   }, [theme])
 
   const toggleTheme = () => {

@@ -29,6 +29,26 @@ const CATEGORIES = [
   { value: 'discussion', label: 'Discussion', icon: '💬' },
 ];
 
+const normalizePost = (post = {}) => ({
+  ...post,
+  id: post.id ?? post._id,
+  _id: post._id ?? post.id,
+  title: typeof post.title === 'string' && post.title.trim() ? post.title : 'Untitled post',
+  content: typeof post.content === 'string' ? post.content : '',
+  category: post.category || 'discussion',
+  status: post.status || 'published',
+  author: post.author && typeof post.author === 'object' ? post.author : { name: 'Anonymous' },
+  likes: Array.isArray(post.likes) ? post.likes : [],
+  tags: Array.isArray(post.tags) ? post.tags.filter(Boolean) : [],
+  attachments: Array.isArray(post.attachments) ? post.attachments : [],
+  commentCount: Number.isFinite(post.commentCount) ? post.commentCount : 0,
+  likeCount: Number.isFinite(post.likeCount) ? post.likeCount : (Array.isArray(post.likes) ? post.likes.length : 0),
+  createdAt: post.createdAt || new Date().toISOString(),
+  scheduledAt: post.scheduledAt || null,
+  isPinned: Boolean(post.isPinned),
+  isEdited: Boolean(post.isEdited),
+});
+
 const containerVariants = {
   hidden: { opacity: 0 },
   visible: {
@@ -68,7 +88,8 @@ export default function PostsFeed() {
   const fetchScheduledPosts = useCallback(async () => {
     try {
       const data = await communityApi.getScheduledPosts();
-      setScheduledPosts(data.posts || []);
+      const nextPosts = Array.isArray(data.posts) ? data.posts.map(normalizePost) : [];
+      setScheduledPosts(nextPosts);
     } catch {
       // Silently ignore — not critical
     }
@@ -89,14 +110,15 @@ export default function PostsFeed() {
       };
 
       const data = await communityApi.getPosts(params);
-      
+      const nextPosts = Array.isArray(data.posts) ? data.posts.map(normalizePost) : [];
+
       if (isLoadMore) {
-        setPosts(prev => [...prev, ...data.posts]);
+        setPosts(prev => [...prev, ...nextPosts]);
       } else {
-        setPosts(data.posts);
+        setPosts(nextPosts);
       }
-      
-      setHasMore(data.pagination.hasMore);
+
+      setHasMore(Boolean(data.pagination?.hasMore));
     } catch (error) {
       toast.error('Failed to load posts');
     } finally {
@@ -130,12 +152,13 @@ export default function PostsFeed() {
     subscribePosts();
 
     const unsubNewPost = subscribe('new_post', ({ post }) => {
+      const normalized = normalizePost(post);
       setPosts(prev => {
-        const postId = post.id || post._id;
+        const postId = normalized.id || normalized._id;
         if (prev.some(p => (p.id || p._id) === postId)) {
           return prev;
         }
-        return [post, ...prev];
+        return [normalized, ...prev];
       });
     });
 
@@ -172,14 +195,15 @@ export default function PostsFeed() {
   const handleCreatePost = async (postData) => {
     try {
       const data = await communityApi.createPost(postData);
-      if (data.post.status === 'scheduled') {
-        setScheduledPosts(prev => [data.post, ...prev].sort(
-          (a, b) => new Date(a.scheduledAt) - new Date(b.scheduledAt)
+      const createdPost = normalizePost(data.post);
+      if (createdPost.status === 'scheduled') {
+        setScheduledPosts(prev => [createdPost, ...prev].sort(
+          (a, b) => new Date(a.scheduledAt || 0) - new Date(b.scheduledAt || 0)
         ));
         setShowEditor(false);
         toast.success('Post scheduled successfully!');
       } else {
-        setPosts(prev => [data.post, ...prev]);
+        setPosts(prev => [createdPost, ...prev]);
         setShowEditor(false);
         toast.success('Post created successfully!');
       }
@@ -270,12 +294,17 @@ export default function PostsFeed() {
   };
 
   // Filter posts by search
-  const filteredPosts = searchQuery
-    ? posts.filter(post => 
-        post.title.toLowerCase().includes(searchQuery.toLowerCase()) ||
-        post.content.toLowerCase().includes(searchQuery.toLowerCase()) ||
-        post.tags?.some(tag => tag.toLowerCase().includes(searchQuery.toLowerCase()))
-      )
+  const normalizedSearch = searchQuery.trim().toLowerCase();
+  const filteredPosts = normalizedSearch
+    ? posts.filter(post => {
+        const title = (post.title || '').toLowerCase();
+        const content = (post.content || '').toLowerCase();
+        const tags = Array.isArray(post.tags) ? post.tags : [];
+
+        return title.includes(normalizedSearch) ||
+          content.includes(normalizedSearch) ||
+          tags.some(tag => `${tag}`.toLowerCase().includes(normalizedSearch));
+      })
     : posts;
 
   return (
