@@ -3,7 +3,7 @@ import { useParams, Link, useNavigate } from 'react-router-dom'
 import { motion } from 'framer-motion'
 import toast from 'react-hot-toast'
 import ReactMarkdown from 'react-markdown'
-import { resumeApi } from '../services/api'
+import { resumeApi, enhanceApi } from '../services/api'
 import Button from '../components/Button'
 import Card from '../components/Card'
 import CustomSection, { sectionsToMarkdown } from '../components/CustomSection'
@@ -125,40 +125,34 @@ export default function ResumeView() {
   }
 
   const handleAnalyzeResume = async () => {
-  try {
-    setScoring(true)
+    try {
+      setScoring(true)
 
-    const resumeText =
-      activeTab === 'enhanced'
-        ? resume?.enhancedText
-        : resume?.originalText
+      const resumeText =
+        activeTab === 'enhanced'
+          ? resume?.enhancedText
+          : resume?.originalText
 
-    const response = await fetch(
-      'http://localhost:5000/api/resumes/score',
-      {
-        method: 'POST',
-        headers: {
-          'Content-Type': 'application/json',
-        },
-        body: JSON.stringify({ resumeText }),
+      if (!resumeText || !resumeText.trim()) {
+        toast.error('No resume content to analyze.')
+        return
       }
-    )
 
-    const data = await response.json()
+      const result = await enhanceApi.scoreResume(resumeText)
 
-    if (!data.success) {
-      throw new Error(data.message || 'Failed to analyze resume')
+      if (result.success && result.data) {
+        setScoreData(result.data)
+        toast.success('Resume analyzed successfully!')
+      } else {
+        throw new Error(result.message || 'Failed to analyze resume')
+      }
+    } catch (error) {
+      console.error('Resume analysis failed:', error)
+      toast.error(error.message || 'Failed to analyze resume')
+    } finally {
+      setScoring(false)
     }
-
-    setScoreData(data.data)
-    toast.success('Resume analyzed successfully!')
-  } catch (error) {
-    console.error(error)
-    toast.error('Failed to analyze resume')
-  } finally {
-    setScoring(false)
   }
-}
 
   const formatDate = (dateString) => {
     return new Date(dateString).toLocaleDateString('en-US', {
