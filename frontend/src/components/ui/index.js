@@ -10,4 +10,5 @@ export { default as Footer } from './Footer'
 export { default as GradientBorder, GlowCard } from './GradientBorder'
 export { AnimatedGradientText, AnimatedLetters, TypewriterText, FadeInText } from './AnimatedText'
 export { default as AnimatedCounter } from './AnimatedCounter'
+export { default as Badge } from './Badge';
 
