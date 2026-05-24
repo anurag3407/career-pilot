@@ -65,11 +65,6 @@ export default function About() {
               immersive interaction in mind — optimized for mobile, tablet, and
               desktop environments.
             </p>
-
-            <button className="group mt-8 inline-flex items-center gap-2 rounded-full border border-white/10 bg-white/5 px-5 py-3 text-sm font-medium text-white backdrop-blur-xl transition-all duration-300 hover:border-cyan-300/40 hover:bg-cyan-400/10">
-              Explore More
-              <ArrowUpRight className="h-4 w-4 transition-transform duration-300 group-hover:-translate-y-1 group-hover:translate-x-1" />
-            </button>
           </div>
 
           {/* Holographic Display Panel */}
