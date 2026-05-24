@@ -1,8 +1,8 @@
 import ReactMarkdown from 'react-markdown';
 import remarkGfm from 'remark-gfm';
 import { useState } from 'react';
-import { useSocket } from '../../context/SocketContext';
-import { useAuth } from '../../context/AuthContext';
+import { useSocket } from '../../hooks/useSocket';
+import { useAuth } from '../../hooks/useAuth';
 import { 
   MoreHorizontal, 
   Reply, 

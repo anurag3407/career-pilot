@@ -499,30 +499,9 @@ function AddSectionPanel({ onAdd, onClose }) {
 }
 
 // ─── Markdown export helper ────────────────────────────────────────────────
-
-export function sectionsToMarkdown(sections) {
-  if (!sections?.length) return ''
-  return sections
-    .map((s) => {
-      const header = `## ${s.name}\n`
-      const body = s.entries
-        .map((e) => {
-          const parts = []
-          if (e.title) {
-            const titleLine = e.subtitle
-              ? `**${e.title}** — *${e.subtitle}*`
-              : `**${e.title}**`
-            parts.push(e.date ? `${titleLine} *(${e.date})*` : titleLine)
-          }
-          if (e.description) parts.push(e.description)
-          return parts.join('\n')
-        })
-        .filter(Boolean)
-        .join('\n\n')
-      return header + body
-    })
-    .join('\n\n')
-}
+// Moved to ./customSectionUtils.js to keep this file Fast Refresh–compatible
+// (mixing a default component export with named non-component exports
+// violates react-refresh/only-export-components and breaks Vite HMR).
 
 // ─── Main exported component ───────────────────────────────────────────────
 

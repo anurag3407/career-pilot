@@ -199,6 +199,7 @@ export default function Upload() {
             </div>
 
             <DropZone
+              key={_file ? 'uploading' : 'empty'}
               onFileSelect={handleFileSelect}
               disabled={loading}
               maxSizeMB={5}

@@ -1,8 +1,7 @@
 import { useState, useEffect, useCallback } from 'react';
-import { useState, useEffect } from 'react';
 import { motion } from 'framer-motion';
-import { useAuth } from '../../context/AuthContext';
-import { useSocket } from '../../context/SocketContext';
+import { useAuth } from '../../hooks/useAuth';
+import { useSocket } from '../../hooks/useSocket';
 import { communityApi } from '../../services/api';
 import PostCard from './PostCard';
 import PostEditor from './PostEditor';
@@ -169,45 +168,6 @@ export default function PostsFeed() {
     };
   }, [subscribe, subscribePosts, unsubscribePosts]);
 
-  const fetchPosts = async (loadMore = false) => {
-    try {
-      if (!loadMore) {
-        setLoading(true);
-        setPage(1);
-      }
-
-      const params = {
-        page: loadMore ? page + 1 : 1,
-        limit: 20,
-        sortBy,
-        ...(selectedCategory !== 'all' && { category: selectedCategory })
-      };
-
-      const data = await communityApi.getPosts(params);
-      
-      if (loadMore) {
-        setPosts(prev => [...prev, ...data.posts]);
-        setPage(prev => prev + 1);
-      } else {
-        setPosts(data.posts);
-      }
-      
-      setHasMore(data.pagination.hasMore);
-    } catch (error) {
-      toast.error('Failed to load posts', { id: 'community-posts-load-error' });
-    } finally {
-      setLoading(false);
-    }
-  };
-
-  const fetchScheduledPosts = async () => {
-    try {
-      const data = await communityApi.getScheduledPosts();
-      setScheduledPosts(data.posts || []);
-    } catch {
-      // Silently ignore — not critical
-    }
-  };
 
   const handleCreatePost = async (postData) => {
     try {
@@ -501,11 +461,9 @@ export default function PostsFeed() {
               </motion.div>
 
               {hasMore && (
-                <button
-                  onClick={handleLoadMore}
                 <motion.button
                   variants={itemVariants}
-                  onClick={() => fetchPosts(true)}
+                  onClick={handleLoadMore}
                   className="w-full py-3 text-primary hover:text-primary/80 font-medium"
                 >
                   Load more posts
