@@ -1,5 +1,4 @@
 import { useState } from 'react';
-import { useNavigate } from 'react-router-dom';
 import { formatDistanceToNow, format } from 'date-fns';
 import {
   Heart,
@@ -13,13 +12,13 @@ import {
   X
 } from 'lucide-react';
 import ReactMarkdown from 'react-markdown';
+import remarkGfm from 'remark-gfm';
 import CommentSection from './CommentSection';
 
 export default function PostCard({ post, currentUser, onLike, onCommentAdded, onCancelSchedule }) {
   const [showFullContent, setShowFullContent] = useState(false);
   const [showComments, setShowComments] = useState(false);
   const [commentCount, setCommentCount] = useState(post.commentCount || 0);
-  const navigate = useNavigate();
 
   const isOwn = post.author.uid === currentUser?.uid;
   const isLiked = post.likes?.some(l => l.uid === currentUser?.uid);
@@ -170,7 +169,15 @@ export default function PostCard({ post, currentUser, onLike, onCommentAdded, on
         <div className="prose prose-sm max-w-none text-muted-foreground dark:prose-invert">
           {shouldTruncate && !showFullContent ? (
             <>
-              <ReactMarkdown>
+              <ReactMarkdown
+                remarkPlugins={[remarkGfm]}
+                disallowedElements={['script', 'iframe', 'style']}
+                components={{
+                  a: ({ node, ...props }) => (
+                    <a {...props} target="_blank" rel="noopener noreferrer" className="text-primary hover:underline" />
+                  ),
+                }}
+              >
                 {previewText + '...'}
               </ReactMarkdown>
               <button
@@ -181,7 +188,17 @@ export default function PostCard({ post, currentUser, onLike, onCommentAdded, on
               </button>
             </>
           ) : (
-            <ReactMarkdown>{post.content}</ReactMarkdown>
+            <ReactMarkdown
+              remarkPlugins={[remarkGfm]}
+              disallowedElements={['script', 'iframe', 'style']}
+              components={{
+                a: ({ node, ...props }) => (
+                  <a {...props} target="_blank" rel="noopener noreferrer" className="text-primary hover:underline" />
+                ),
+              }}
+            >
+              {post.content}
+            </ReactMarkdown>
           )}
         </div>
 

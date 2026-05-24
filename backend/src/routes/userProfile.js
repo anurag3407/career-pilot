@@ -112,6 +112,9 @@ router.get('/:uid', cache(600), asyncHandler(async (req, res) => {
 // Get public stats by uid
 router.get('/:uid/stats', cache(600), asyncHandler(async (req, res) => {
   const uid = req.params.uid;
+  if (uid !== req.user.uid) {
+    throw new ApiError(403, 'Access denied. You can only view your own stats.');
+  }
   const [resumesCreated, interviewsDone] = await Promise.all([
     Resume.countDocuments({ userId: uid }),
     Interview.countDocuments({ odId: uid, status: 'completed' }),

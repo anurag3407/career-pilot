@@ -39,6 +39,7 @@ export const socketAuthMiddleware = async (socket, next) => {
       next();
     } catch (firebaseError) {
       // Development mode bypass - extract user info from token without verification
+      if (process.env.NODE_ENV === 'development' && process.env.ALLOW_DEV_SOCKET_AUTH === 'true') {
       if (process.env.ALLOW_DEV_SOCKET_AUTH === 'true' || (process.env.NODE_ENV === 'development' && process.env.DEV_BYPASS_AUTH === 'true')) {
         console.warn('Firebase Admin verification failed, using token payload with ALLOW_DEV_SOCKET_AUTH');
         const tokenPayload = decodeTokenPayload(token);

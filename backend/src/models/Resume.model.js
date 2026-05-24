@@ -18,6 +18,10 @@ const resumeSchema = new mongoose.Schema({
         type: String,
         default: null
     },
+    atsScore: {
+        type: Number,
+        default: null
+    },
     preferences: {
         yearsOfExperience: {
             type: Number,

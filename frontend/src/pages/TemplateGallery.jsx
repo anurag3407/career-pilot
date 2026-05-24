@@ -1,6 +1,9 @@
 import { useState } from "react";
 import DeployModal from "../components/portfolio/DeployModal";
 import ThemeSelector from "../components/portfolio/ThemeSelector";
+import { useTheme } from "../context/ThemeContext";
+import { motion, AnimatePresence } from "framer-motion";
+import { Moon, Sun } from "lucide-react";
 
 export default function TemplateGallery() {
   const { theme, toggleTheme } = useTheme();

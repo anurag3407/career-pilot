@@ -75,7 +75,6 @@ const compareVerificationCode = (code, stored) => {
     return crypto.timingSafeEqual(Buffer.from(hash, 'hex'), Buffer.from(storedHash, 'hex'));
 };
 
-fellowshipProfileSchema.index({ verificationCodeExpiry: 1 }, { expireAfterSeconds: 0 });
 
 fellowshipProfileSchema.pre('save', function () {
     this.updatedAt = new Date();

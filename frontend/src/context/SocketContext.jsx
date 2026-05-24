@@ -159,7 +159,7 @@ export function SocketProvider({ children }) {
       return () => currentSocket.off(event, callback);
     }
     return () => {};
-  }, []);
+  }, [socket]);
 
   // Emit socket events
   const emit = useCallback((event, data) => {
@@ -167,7 +167,7 @@ export function SocketProvider({ children }) {
     if (currentSocket?.connected) {
       currentSocket.emit(event, data);
     }
-  }, []);
+  }, [socket]);
 
   const value = {
     socket,

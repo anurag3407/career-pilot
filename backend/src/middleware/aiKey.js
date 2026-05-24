@@ -21,6 +21,14 @@ export const extractAIProvider = async (req, res, next) => {
     const providerHeader = req.headers['x-ai-provider'];
     const apiKeyHeader   = req.headers['x-ai-key'];
     const modelHeader    = req.headers['x-ai-model'];
+    const openRouterKeyHeader = req.headers['x-openrouter-key'];
+
+    // --- Case 1a: User supplies OpenRouter key via BYOK PKCE flow ---
+    if (openRouterKeyHeader) {
+      req.aiProvider = AIProviderFactory.create('openrouter', openRouterKeyHeader);
+      req.aiProviderSource = 'user_openrouter_pkce';
+      return next();
+    }
 
     // --- Case 1: User supplies both provider + key via headers (Legacy/API fallback) ---
     if (providerHeader && apiKeyHeader) {

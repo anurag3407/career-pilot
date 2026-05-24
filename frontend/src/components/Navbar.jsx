@@ -99,7 +99,7 @@ export default function Navbar() {
     <nav
       className={`fixed top-0 left-0 right-0 z-50 transition-all duration-300 ${
         scrolled
-          ? 'bg-background/70 backdrop-blur-xl border-b border-border shadow-lg'
+          ? 'glass border-b border-border shadow-sm'
           : 'bg-transparent'
       }`}
     >
@@ -115,13 +115,13 @@ export default function Navbar() {
             <div className="w-12 h-12 flex items-center justify-center rounded-xl overflow-hidden group-hover:scale-105 transition-transform">
               <img
                 src="/speed.png"
-                alt="CareerPilot logo"
+                alt="careerpilot logo"
                 className="w-full h-full object-contain"
               />
             </div>
 
             <span className="text-xl font-bold text-foreground tracking-tight">
-              CareerPilot
+              careerpilot
             </span>
           </Link>
 
@@ -171,28 +171,20 @@ export default function Navbar() {
               <Link
                 key={path}
                 to={path}
-                className={`flex items-center gap-2 px-3 py-2 rounded-lg text-sm font-medium transition-all ${
-                  isActive(path)
-                    ? 'bg-primary/10 text-primary'
-                    : 'text-muted-foreground hover:text-foreground hover:bg-muted'
-                }`}
+                className={`nav-link ${isActive(path) ? 'nav-link-active' : 'nav-link-inactive'}`}
               >
                 <Icon className="w-4 h-4" />
                 {label}
               </Link>
             ))}
 
-            {/* Private Links */}
+            {/* Conditionally visible private links */}
             {user &&
               privateLinks.map(({ path, label, icon: Icon }) => (
                 <Link
                   key={path}
                   to={path}
-                  className={`flex items-center gap-2 px-3 py-2 rounded-lg text-sm font-medium transition-all ${
-                    isActive(path)
-                      ? 'bg-primary/10 text-primary'
-                      : 'text-muted-foreground hover:text-foreground hover:bg-muted'
-                  }`}
+                  className={`nav-link ${isActive(path) ? 'nav-link-active' : 'nav-link-inactive'}`}
                 >
                   <Icon className="w-4 h-4" />
                   {label}
@@ -307,7 +299,7 @@ export default function Navbar() {
 
                 <Link
                   to="/register"
-                  className="px-5 py-2 bg-primary hover:bg-primary/90 text-primary-foreground rounded-lg text-sm font-bold transition-all shadow-lg shadow-primary/20"
+                  className="px-5 py-2 bg-primary hover:bg-primary/90 text-primary-foreground rounded-lg text-sm font-bold transition-all-300 shadow-lg shadow-primary/20 hover:-translate-y-0.5 hover:shadow-primary/40"
                 >
                   Get Started
                 </Link>
@@ -370,7 +362,7 @@ export default function Navbar() {
                   key={path}
                   to={path}
                   onClick={() => setMobileMenuOpen(false)}
-                  className="flex items-center gap-3 px-4 py-4 rounded-xl text-base font-semibold hover:bg-muted transition-all"
+                  className={`nav-link text-base ${isActive(path) ? 'nav-link-active' : 'nav-link-inactive'}`}
                 >
                   <Icon className="w-5 h-5" />
                   {label}
@@ -383,9 +375,12 @@ export default function Navbar() {
                     key={path}
                     to={path}
                     onClick={() => setMobileMenuOpen(false)}
-                    className="flex items-center gap-3 px-4 py-4 rounded-xl text-base font-semibold hover:bg-muted transition-all"
+                    className={`nav-link text-base ${isActive(path) ? 'nav-link-active' : 'nav-link-inactive'}`}
                   >
                     <Icon className="w-5 h-5" />
+                    {label}
+                  </Link>
+                ))}
                     {label}
                   </Link>
                 ))}
