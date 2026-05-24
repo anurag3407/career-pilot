@@ -9,6 +9,8 @@ import { SocketProvider } from './context/SocketContext';
 import { ThemeProvider } from './context/ThemeContext';
 import AppLayout from './components/AppLayout';
 import Footer from './components/ui/Footer';
+import ErrorBoundary from './components/ErrorBoundary';
+import LoadingSpinner from './components/LoadingSpinner';
 
 import CommandPalette from './components/CommandPalette';
 import BackToTop from './components/BackToTop';
@@ -62,14 +64,7 @@ function ProtectedRoute({ children }) {
   const { user, loading } = useAuth();
 
   if (loading) {
-    return (
-      <div className="min-h-screen flex items-center justify-center bg-background">
-        <div className="flex flex-col items-center gap-4">
-          <div className="w-12 h-12 border-4 border-muted border-t-primary rounded-full animate-spin"></div>
-          <p className="text-muted-foreground font-medium">Loading CareerPilot...</p>
-        </div>
-      </div>
-    );
+    return <LoadingSpinner />;
   }
 
   if (!user) {
@@ -84,14 +79,7 @@ function PublicRoute({ children }) {
   const { user, loading } = useAuth();
 
   if (loading) {
-    return (
-      <div className="min-h-screen flex items-center justify-center bg-background">
-        <div className="flex flex-col items-center gap-4">
-          <div className="w-12 h-12 border-4 border-muted border-t-primary rounded-full animate-spin"></div>
-          <p className="text-muted-foreground font-medium">Loading CareerPilot...</p>
-        </div>
-      </div>
-    );
+    return <LoadingSpinner />;
   }
 
   if (user) {
@@ -218,7 +206,9 @@ function App() {
     <ThemeProvider>
       <AuthProvider>
         <SocketProvider>
-          <AppRoutes />
+          <ErrorBoundary>
+            <AppRoutes />
+          </ErrorBoundary>
         </SocketProvider>
       </AuthProvider>
     </ThemeProvider>

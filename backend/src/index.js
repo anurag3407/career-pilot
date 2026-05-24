@@ -26,6 +26,7 @@ import aiRoutes from './routes/ai.js';
 import emailTrackingRoutes from './routes/emailTracking.js';
 
 import { globalErrorHandler } from './middleware/globalErrorHandler.js';
+import requestLogger from './middleware/requestLogger.js';
 import {
   metricsMiddleware,
   metricsHandler,
@@ -62,6 +63,7 @@ import {
 
 const app = express();
 app.use(metricsMiddleware);
+app.use(requestLogger);
 const httpServer = createServer(app);
 const PORT = process.env.PORT || 5001;
 
@@ -82,10 +84,10 @@ app.use(cors({
   origin: function (origin, callback) {
     // Allow requests with no origin (like mobile apps or curl)
     if (!origin) return callback(null, true);
-    
+
     // Normalize origin by removing trailing slash
     const normalizedOrigin = origin.replace(/\/$/, '');
-    
+
     if (allowedOrigins.includes(normalizedOrigin)) {
       callback(null, true);
     } else {
@@ -207,13 +209,13 @@ app.use('/api/community', communityRoutes);
 app.use('/api/fellowship', fellowshipRoutes);
 app.use('/api/interview', interviewRoutes);
 try {
-    const paymentRoutes = (await import('./routes/payments.js')).default;
+  const paymentRoutes = (await import('./routes/payments.js')).default;
 
-    app.use('/api/payments', paymentRoutes);
+  app.use('/api/payments', paymentRoutes);
 
-    console.log('✅ Payment routes loaded');
+  console.log('✅ Payment routes loaded');
 } catch (error) {
-    console.warn('⚠️ Payment routes disabled:', error.message);
+  console.warn('⚠️ Payment routes disabled:', error.message);
 }
 app.use('/api/portfolio', portfolioRoutes);
 app.use('/api/user-profiles', userProfileRoutes);
