@@ -16,7 +16,7 @@ import { useState, useRef, useCallback, useEffect } from 'react';
  * Returns true when the Web Speech API is available in the current browser.
  */
 export const isSpeechRecognitionSupported = () =>
-    !!(window.SpeechRecognition || window.webkitSpeechRecognition);
+    typeof window !== 'undefined' && !!(window.SpeechRecognition || window.webkitSpeechRecognition);
 
 /**
  * @param {object} options
@@ -65,6 +65,10 @@ export function useVoiceToText({
             setError(msg);
             onError?.(msg);
             return;
+        }
+
+        if (isListeningRef.current || recognitionRef.current) {
+            return; // Prevent duplicate instances on rapid re-entry
         }
 
         // Reset state
@@ -125,11 +129,15 @@ export function useVoiceToText({
         };
 
         recognition.onend = () => {
-            // Auto-restart if we're still supposed to be listening
             if (isListeningRef.current) {
-                setTimeout(() => {
-                    try { recognition.start(); } catch (_) { /* ignore */ }
-                }, 150);
+                if (continuous) {
+                    // Auto-restart if continuous
+                    setTimeout(() => {
+                        try { recognition.start(); } catch (_) { /* ignore */ }
+                    }, 150);
+                } else {
+                    stopListening();
+                }
             }
         };
 
