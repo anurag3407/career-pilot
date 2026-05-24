@@ -300,6 +300,12 @@ For complete documentation, see the [API Reference Guide](./API_DOCS/README.md).
 
 We welcome contributions! Please see our [CONTRIBUTION.md](./CONTRIBUTION.md) for the Development Setup, Pull Request Process, and Coding Standards.
 
+## 💙 Thank You Contributors
+
+Thank you to all the amazing contributors who have helped improve this project.
+
+Your efforts, pull requests, ideas, and support make this project better every day and help grow an incredible open-source community 🚀
+
 ---
 
 ## 📄 License

@@ -59,9 +59,15 @@ async function handleResponse(response) {
   } else {
     try {
       const text = await response.text();
+
       data = { message: text || response.statusText };
     } catch (e) {
       data = { message: response.statusText };
+
+      data = { error: text || response.statusText };
+    } catch (e) {
+      data = { error: response.statusText };
+
     }
   }
 
@@ -71,7 +77,10 @@ async function handleResponse(response) {
       `Server error (${response.status})`
     );
 
+
     error.status = response.status;
+
+=======
 
     if (response.status === 429) {
       error.retryAfter = parseRetryAfter(
