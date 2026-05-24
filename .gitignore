@@ -70,3 +70,11 @@ temp/
 # Misc
 *.pdf
 !resume.pdf
+
+*issues
+venv/
+node_modules/
+.env
+.env.*
+
+*issues

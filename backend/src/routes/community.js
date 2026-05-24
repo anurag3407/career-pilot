@@ -15,6 +15,9 @@ import {
   updatePost,
   deletePost,
   toggleLikePost,
+  // Post scheduling
+  getScheduledPosts,
+  cancelScheduledPost,
   // Comments
   getComments,
   createComment,
@@ -45,11 +48,13 @@ router.get('/channels/:channelId/messages', getChannelMessages);
 
 // ============ POST ROUTES ============
 router.get('/posts', getPosts);
+router.get('/posts/scheduled/mine', getScheduledPosts);
 router.get('/posts/:postId', getPost);
 router.post('/posts', createPost);
 router.put('/posts/:postId', updatePost);
 router.delete('/posts/:postId', deletePost);
 router.post('/posts/:postId/like', toggleLikePost);
+router.delete('/posts/:postId/schedule', cancelScheduledPost);
 
 // ============ COMMENT ROUTES ============
 router.get('/posts/:postId/comments', getComments);
@@ -62,6 +67,62 @@ router.get('/conversations/:conversationId/messages', getConversationMessages);
 
 // ============ PRESENCE ROUTES ============
 router.get('/online-users', getOnlineUsers);
+
+// Room-based presence endpoints
+router.post('/presence/channel/:channelId/subscribe', async (req, res, next) => {
+  const { channelId } = req.params;
+  try {
+    const { getIO } = await import('../config/socket.js');
+    const io = getIO();
+    const socketId = req.headers['x-socket-id'];
+    
+    if (socketId) {
+      const socket = io.sockets.sockets.get(socketId);
+      if (socket) {
+        socket.join(`channel:${channelId}`);
+        const { presenceService } = await import('../services/presenceService.js');
+        await presenceService.joinRoom(req.user.uid, `channel:${channelId}`);
+        return res.json({ success: true, message: `Joined channel ${channelId} presence` });
+      }
+    }
+    return res.status(400).json({ success: false, error: 'Socket not connected' });
+  } catch (error) {
+    next(error);
+  }
+});
+
+router.post('/presence/channel/:channelId/unsubscribe', async (req, res, next) => {
+  const { channelId } = req.params;
+  try {
+    const { getIO } = await import('../config/socket.js');
+    const io = getIO();
+    const socketId = req.headers['x-socket-id'];
+    
+    if (socketId) {
+      const socket = io.sockets.sockets.get(socketId);
+      if (socket) {
+        socket.leave(`channel:${channelId}`);
+        const { presenceService } = await import('../services/presenceService.js');
+        await presenceService.leaveRoom(req.user.uid, `channel:${channelId}`);
+        return res.json({ success: true, message: `Left channel ${channelId} presence` });
+      }
+    }
+    return res.status(400).json({ success: false, error: 'Socket not connected' });
+  } catch (error) {
+    next(error);
+  }
+});
+
+router.get('/presence/channel/:channelId/members', async (req, res, next) => {
+  const { channelId } = req.params;
+  try {
+    const { presenceService } = await import('../services/presenceService.js');
+    const members = await presenceService.getRoomMembers(`channel:${channelId}`);
+    return res.json({ success: true, members });
+  } catch (error) {
+    next(error);
+  }
+});
 
 // ============ SEARCH ROUTES ============
 router.get('/search', searchCommunity);

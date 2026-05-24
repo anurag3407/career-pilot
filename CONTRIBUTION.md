@@ -36,6 +36,7 @@ We are committed to providing a welcoming and inspiring community for all. We pl
 ### Our Standards
 
 **Examples of positive behavior:**
+
 - Using welcoming and inclusive language
 - Being respectful of differing viewpoints and experiences
 - Gracefully accepting constructive criticism
@@ -43,6 +44,7 @@ We are committed to providing a welcoming and inspiring community for all. We pl
 - Showing empathy towards other community members
 
 **Examples of unacceptable behavior:**
+
 - Trolling, insulting/derogatory comments, and personal attacks
 - Public or private harassment
 - Publishing others' private information without permission
@@ -74,17 +76,20 @@ Before contributing, ensure you have:
 1. **Fork the repository** on GitHub
 
 2. **Clone your fork:**
+
 ```bash
 git clone https://github.com/YOUR_USERNAME/ai-resume-builder.git
 cd ai-resume-builder
 ```
 
-3. **Add upstream remote:**
+1. **Add upstream remote:**
+
 ```bash
 git remote add upstream https://github.com/ORIGINAL_OWNER/ai-resume-builder.git
 ```
 
-4. **Keep your fork synced:**
+1. **Keep your fork synced:**
+
 ```bash
 git fetch upstream
 git checkout main
@@ -154,23 +159,58 @@ npm run dev
 
 ### Finding Issues to Work On
 
-1. **Browse open issues:** Look for labels like:
-   - `good first issue` - Great for newcomers
-   - `help wanted` - Community help needed
-   - `bug` - Something isn't working
-   - `enhancement` - New feature or request
-   - `documentation` - Documentation improvements
+1. **Browse open issues:** Look for difficulty labels:
+   - `good first issue` - Great for newcomers (69 available!)
+   - `beginner` - Suitable for new contributors
+   - `intermediate` - Requires moderate experience
+   - `advanced` - Complex tasks for experienced developers
+   - `critical` - High priority, needs immediate attention
 
-2. **Check the project board:** See planned features and priorities
+2. **Feature areas:**
+   - `portfolio` - Portfolio builder features
+   - `github` - GitHub Intelligence features
+   - `deployment` - Deployment/hosting features
+   - `ai-feature` - AI/ML features
+   - `resume-builder` - Resume builder features
+   - `job-scraper` - Job scraping features
+   - `interview` - Interview prep features
+   - `ui-revamp` - UI/UX redesign
+   - `testing` - Tests and coverage
+   - `documentation` - Docs and guides
+   - `devops` - CI/CD and infrastructure
+   - `security` - Security improvements
+   - `performance` - Performance optimization
 
-3. **Create your own:** If you have an idea, open an issue first to discuss
+3. **Check the project board:** See planned features and priorities
+
+4. **Create your own:** If you have an idea, open an issue first to discuss
+
+### Issue and PR Limits
+
+To ensure fair distribution of work across all contributors:
+
+| Rule | Limit |
+|------|-------|
+| **Issues opened per day** | Max 4 issues per contributor |
+| **PRs opened per day** | Max 3 PRs per contributor |
+| **Issues assigned at once** | Max 3 issues per contributor |
+| **Issue inactivity timeout** | 7 days - unassigned if no PR is opened |
+| **PR review response** | Respond to review comments within 48 hours |
+| **Stale PR closure** | PRs with no activity for 14 days will be closed |
+
+> **Why?** These limits prevent issue hoarding, encourage quality over quantity, and give everyone a fair chance to contribute.
 
 ### Before Starting Work
 
 1. **Check existing issues** for duplicates
-2. **Comment on the issue** to claim it
-3. **Wait for maintainer approval** for major features
-4. **Create a branch** from `main`
+2. **Comment on the issue** to claim it (say: "I'd like to work on this")
+3. **Wait for a maintainer to assign you** (usually within 24 hours)
+4. **Do NOT start working before assignment** - another contributor may already be working on it
+5. **Create a branch** from `main`
+6. **Read the issue description carefully** - each issue specifies:
+   - What to do (required tasks)
+   - What NOT to do (common mistakes to avoid)
+   - Files to modify (exact file paths)
 
 ---
 
@@ -215,10 +255,11 @@ git push origin feature/your-feature-name
 ```
 
 Then create a Pull Request on GitHub with:
+
 - Clear title describing the change
 - Description of what and why
 - Link to related issue(s)
-- Screenshots for UI changes
+- **Mandatory Screenshots/GIFs** for any UI/UX or visual changes
 
 ### 5. PR Review Process
 
@@ -249,7 +290,8 @@ Fixes #(issue number)
 - [ ] Manual testing completed
 - [ ] New tests added
 
-## Screenshots (if applicable)
+## Screenshots (MANDATORY for UI/UX changes)
+Please attach screenshots or screen recordings showing the before and after state of your visual changes.
 
 ## Checklist
 - [ ] Code follows project style guidelines
@@ -516,10 +558,46 @@ backend/src/
 │   ├── langchain.js      # AI configuration
 │   └── socket.js         # Socket.IO setup
 ├── controllers/          # Route handlers
-├── middleware/           # Express middleware
+├── middleware/            # Express middleware
+│   ├── cmsAuth.js        # CMS API key auth
+│   └── portfolioValidator.js # Portfolio content validation
 ├── models/               # Mongoose schemas
+│   ├── Portfolio.model.js # Portfolio data
+│   ├── Deployment.model.js # Deploy history
+│   └── ...
 ├── routes/               # API route definitions
+│   ├── portfolio.js      # Portfolio CRUD + deploy
+│   ├── portfolioCMS.js   # Headless CMS API
+│   ├── github.js         # GitHub intelligence
+│   ├── webhooks.js       # Deploy provider webhooks
+│   └── ...
 ├── services/             # Business logic
+│   ├── ai/               # AI career tools
+│   │   ├── skillGapAnalyzer.js
+│   │   ├── careerTrajectory.js
+│   │   ├── salaryEstimator.js
+│   │   └── projectDescriptionWriter.js
+│   ├── deploy/           # Deployment providers
+│   │   ├── cloudflareDeployer.js
+│   │   ├── githubPagesDeployer.js
+│   │   ├── netlifyDeployer.js
+│   │   ├── vercelDeployer.js
+│   │   └── deployerFactory.js
+│   ├── github/           # GitHub analysis
+│   │   ├── repoDeepScanner.js
+│   │   ├── techStackDetector.js
+│   │   ├── commitHeatmap.js
+│   │   ├── repoHealthScorer.js
+│   │   ├── codebaseExplainer.js
+│   │   └── readmeAssetEngine.js
+│   └── ...
+├── templates/            # Portfolio themes
+│   └── portfolio/
+│       ├── _starter/     # Starter kit for contributors
+│       ├── minimal-dark/
+│       ├── developer-pro/
+│       ├── creative-gradient/
+│       └── ...
 └── utils/                # Helper functions
 ```
 
@@ -531,11 +609,36 @@ frontend/src/
 ├── main.jsx              # Entry point
 ├── components/           # Reusable components
 │   ├── ui/               # Generic UI components
-│   └── community/        # Community-specific components
+│   ├── community/        # Community-specific components
+│   ├── portfolio/        # Portfolio builder components
+│   │   ├── PortfolioCard.jsx
+│   │   ├── SectionEditor.jsx
+│   │   ├── ThemeSelector.jsx
+│   │   ├── DeployModal.jsx
+│   │   └── ...
+│   ├── github/           # GitHub intelligence components
+│   │   ├── RepoCard.jsx
+│   │   ├── ContributionHeatmap.jsx
+│   │   ├── HealthScoreGauge.jsx
+│   │   └── ...
+│   └── ai/               # AI tools components
+│       ├── CareerTrajectoryChart.jsx
+│       └── LinkedInHeadlineGenerator.jsx
 ├── config/               # Configuration
 ├── context/              # React context providers
 ├── hooks/                # Custom React hooks
 ├── pages/                # Page components
+│   ├── Portfolio.jsx
+│   ├── PortfolioEditor.jsx
+│   ├── GitHubDashboard.jsx
+│   ├── RepoAnalysis.jsx
+│   ├── SkillGap.jsx
+│   ├── CareerPath.jsx
+│   ├── SalaryEstimate.jsx
+│   ├── Deployments.jsx
+│   ├── TemplateGallery.jsx
+│   ├── admin/            # Admin-only pages
+│   └── fellowship/       # Fellowship pages
 ├── services/             # API service layer
 └── lib/                  # Utility functions
 ```
@@ -544,12 +647,18 @@ frontend/src/
 
 | File | Purpose |
 |------|---------|
-| `backend/src/index.js` | Server initialization |
+| `backend/src/index.js` | Server initialization, route registration |
 | `backend/src/routes/*.js` | API endpoint definitions |
 | `backend/src/services/*.js` | Core business logic |
+| `backend/src/services/deploy/` | All deployment provider integrations |
+| `backend/src/services/github/` | GitHub analysis and intelligence |
+| `backend/src/services/ai/` | AI-powered career tools |
+| `backend/src/templates/portfolio/` | Portfolio theme templates |
 | `frontend/src/App.jsx` | Application routing |
 | `frontend/src/services/api.js` | API client functions |
 | `frontend/src/context/*.jsx` | Global state management |
+| `frontend/src/components/portfolio/` | Portfolio builder UI |
+| `frontend/src/components/github/` | GitHub intelligence UI |
 
 ---
 
@@ -646,6 +755,7 @@ describe('POST /api/enhance', () => {
 ### Recognition
 
 Contributors are recognized in:
+
 - README contributors section
 - Release notes
 - Annual contributor highlights
@@ -653,6 +763,7 @@ Contributors are recognized in:
 ### Becoming a Maintainer
 
 Active contributors may be invited to become maintainers. Criteria:
+
 - Consistent quality contributions
 - Helpful code reviews
 - Community engagement
@@ -693,10 +804,34 @@ git fetch upstream && git merge upstream/main
 
 ---
 
+## Issue Lifecycle
+
+| State | Description |
+|-------|-------------|
+| **Open** | Available for anyone to claim |
+| **Assigned** | Claimed by a contributor, work expected within 7 days |
+| **In Progress** | PR has been opened |
+| **Review** | PR is being reviewed by maintainers |
+| **Merged** | Work is complete and merged |
+| **Closed** | Issue resolved or deemed unnecessary |
+
+### Quality Expectations
+
+- **Code must pass linting** (`npm run lint`)
+- **No `console.log` in production code** (use proper logging)
+- **All new components must be responsive** (mobile-first)
+- **All new API endpoints must have input validation**
+- **All new features must follow existing design tokens** (CSS variables)
+- **Screenshots are MANDATORY for UI changes** in PRs
+
+---
+
 <div align="center">
 
-**Thank you for contributing to AI Resume Builder! 🎉**
+**Thank you for contributing to CareerPilot! 🎉**
 
-Your contributions help job seekers worldwide achieve their career goals.
+Your contributions help job seekers worldwide build portfolios, ace interviews, and land their dream jobs.
+
+**415+ issues available** across all difficulty levels - there is something for everyone!
 
 </div>
