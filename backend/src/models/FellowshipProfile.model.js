@@ -84,6 +84,16 @@ fellowshipProfileSchema.pre('save', function () {
             this.verificationCode = hashVerificationCode(this.verificationCode);
         }
     }
+
+    // Defence-in-depth: enforce the invariant that a student profile cannot
+    // hold isVerified=true without a verifiedEmail. This catches any code path
+    // that assigns isVerified without going through the route-level role-change
+    // guard (e.g. direct Model.save() calls or future refactors).
+    if (this.isModified('role') && this.role === 'student' && this.isVerified && !this.verifiedEmail) {
+        this.isVerified = false;
+        this.verificationCode = null;
+        this.verificationCodeExpiry = null;
+    }
 });
 
 fellowshipProfileSchema.methods.compareVerificationCode = function (code) {

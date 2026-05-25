@@ -46,13 +46,35 @@ router.post('/profile', verifyToken, asyncHandler(async (req, res) => {
     let profile = await FellowshipProfile.findOne({ userId: req.user.uid });
 
     if (profile) {
+        const roleChanging = profile.role !== role;
+
         profile.role = role;
         profile.companyName = companyName || profile.companyName;
         profile.collegeName = collegeName || profile.collegeName;
         profile.bio = bio || profile.bio;
         profile.skills = skills || profile.skills;
+
+        // Re-evaluate verification state whenever the role changes.
+        // Carrying over isVerified from a different role lets a user obtain
+        // verified-student status without completing academic email verification.
+        if (roleChanging) {
+            if (role === 'student') {
+                // Revoke any verification granted under the previous role and
+                // invalidate pending codes so a pre-filled code cannot be used.
+                profile.isVerified = false;
+                profile.verificationCode = null;
+                profile.verificationCodeExpiry = null;
+                profile.verifiedEmail = null;
+            } else if (role === 'corporate') {
+                // Corporate accounts are auto-verified; no email flow required.
+                profile.isVerified = true;
+            }
+        }
+
         await profile.save();
     } else {
+        // isVerified is tied to the role at creation time.
+        // Corporate accounts are auto-verified; students must pass the email flow.
         profile = await FellowshipProfile.create({
             userId: req.user.uid,
             role,
@@ -85,6 +107,13 @@ router.post('/verify/send-email', verifyToken, asyncHandler(async (req, res) => 
 
     if (profile.isVerified) {
         throw new ApiError(400, 'Already verified');
+    }
+
+    // Corporate accounts are auto-verified and must not pre-fill a verification
+    // code. Without this guard a corporate user could request a code, switch to
+    // student, and consume the already-issued code to bypass academic verification.
+    if (profile.role === 'corporate') {
+        throw new ApiError(400, 'Corporate accounts do not require email verification');
     }
 
     if (profile.role === 'student' && !isAcademicEmail(email)) {
