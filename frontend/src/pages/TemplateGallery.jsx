@@ -5,6 +5,7 @@ import { useTheme } from "../hooks/useTheme";
 import { motion, AnimatePresence } from "framer-motion";
 import { Moon, Sun, ChevronDown, Check, Eye, Star } from "lucide-react";
 import HolographicAbout from "../components/portfolio/templates/Holographic/About";
+import Contact from "../components/portfolio/templates/Holographic/Contact";
 import CulinaryAbout from "../components/portfolio/templates/Culinary_Restaurant/About";
 import Navbar from '../components/Navbar'
 
@@ -376,6 +377,7 @@ export default function TemplateGallery() {
         </div>
         <div className="overflow-hidden rounded-2xl border border-border">
           <HolographicAbout />
+          <Contact />
         </div>
       </div>
 
