@@ -30,7 +30,11 @@ export function hasJobMatchData(job) {
   const matched = asStringList(job.matchedSkills ?? job.matchingSkills ?? job.matched_skills);
   const missing = asStringList(job.missingSkills ?? job.skillGaps ?? job.missing_skills);
 
-  const hasScore = score != null && !Number.isNaN(Number(score));
+  const hasScore =
+    score != null &&
+    score !== '' &&
+    typeof score !== 'boolean' &&
+    !Number.isNaN(Number(score));
   return hasScore || Boolean(reason) || matched.length > 0 || missing.length > 0;
 }
 
@@ -42,7 +46,13 @@ export function getJobMatchReasoning(job) {
     job.matchPercentage ??
     job.match;
 
-  const score = scoreRaw != null && !Number.isNaN(Number(scoreRaw)) ? Number(scoreRaw) : null;
+  const score =
+    scoreRaw != null &&
+    scoreRaw !== '' &&
+    typeof scoreRaw !== 'boolean' &&
+    !Number.isNaN(Number(scoreRaw))
+      ? Number(scoreRaw)
+      : null;
 
   const reason = normalizeText(
     job.matchReason ??

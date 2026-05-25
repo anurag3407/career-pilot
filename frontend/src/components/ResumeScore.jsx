@@ -122,7 +122,7 @@ export default function ResumeScore({ data, onRescore }) {
               details={[
                 ...Object.entries(sections || {}).map(
                   ([name, { score: sectionScore, feedback: sectionFeedback }]) =>
-                    `${name}: ${sectionScore}/100 — ${sectionFeedback}`
+                    `${name}: ${sectionScore}/100${sectionFeedback ? ` — ${sectionFeedback}` : ''}`
                 ),
               ]}
             />

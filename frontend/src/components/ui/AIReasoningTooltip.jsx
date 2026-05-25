@@ -15,6 +15,7 @@ export default function AIReasoningTooltip({
   const [hovered, setHovered] = useState(false);
   const [expanded, setExpanded] = useState(false);
   const containerRef = useRef(null);
+  const triggerButtonRef = useRef(null);
   const closeButtonRef = useRef(null);
   const tooltipId = useId().replace(/:/g, '');
   const dialogId = useId().replace(/:/g, '');
@@ -26,6 +27,11 @@ export default function AIReasoningTooltip({
 
   const hasContent = Boolean(reasonText) || detailList.length > 0;
 
+  const closeDialog = () => {
+    setExpanded(false);
+    setTimeout(() => triggerButtonRef.current?.focus(), 0);
+  };
+
   useEffect(() => {
     if (!expanded) return undefined;
 
@@ -33,13 +39,13 @@ export default function AIReasoningTooltip({
 
     const handleOutside = (event) => {
       if (containerRef.current && !containerRef.current.contains(event.target)) {
-        setExpanded(false);
+        closeDialog();
       }
     };
 
     const handleEscape = (event) => {
       if (event.key === 'Escape') {
-        setExpanded(false);
+        closeDialog();
       }
     };
 
@@ -60,6 +66,7 @@ export default function AIReasoningTooltip({
   return (
     <div ref={containerRef} className="relative inline-flex shrink-0 align-middle">
       <button
+        ref={triggerButtonRef}
         type="button"
         className="inline-flex h-6 w-6 items-center justify-center rounded-full text-muted-foreground transition-colors hover:bg-muted hover:text-primary focus:outline-none focus-visible:ring-2 focus-visible:ring-primary/50"
         aria-label={title}
@@ -105,7 +112,7 @@ export default function AIReasoningTooltip({
               onClick={(e) => {
                 e.preventDefault();
                 e.stopPropagation();
-                setExpanded(false);
+                closeDialog();
               }}
               className="rounded p-0.5 text-muted-foreground hover:bg-muted hover:text-foreground"
               aria-label="Dismiss details"

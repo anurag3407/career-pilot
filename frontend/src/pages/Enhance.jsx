@@ -34,8 +34,11 @@ import { SkeletonList } from '../components/ui/Skeleton'
 import ResumeScore from '../components/ResumeScore'
 import AIReasoningTooltip from '../components/ui/AIReasoningTooltip'
 
-const categoryIncludes = (item, keyword) =>
-  (item?.category?.toLowerCase() ?? '').includes(keyword)
+const categoryIncludes = (item, keyword) => {
+  const cat = item?.category
+  if (cat == null) return false
+  return String(cat).toLowerCase().includes(keyword)
+}
 
 // Score ring component
 const ScoreRing = ({ score, size = 120, strokeWidth = 8 }) => {
@@ -1105,8 +1108,8 @@ export default function Enhance() {
                             title="Competitive Edge Explanation"
                             reason={`Competitive edge score of ${comprehensiveAnalysis.competitiveEdge.score}/100 reflects how you compare to typical candidates.`}
                             details={[
-                              ...(comprehensiveAnalysis.competitiveEdge.standoutFactors || []),
-                              ...(comprehensiveAnalysis.competitiveEdge.differentiators || []),
+                              ...(comprehensiveAnalysis.competitiveEdge?.standoutFactors ?? []),
+                              ...(comprehensiveAnalysis.competitiveEdge?.differentiators ?? []),
                             ]}
                           />
                         </h4>
