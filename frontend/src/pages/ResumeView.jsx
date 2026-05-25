@@ -11,6 +11,7 @@ import { sectionsToMarkdown } from '../components/customSectionUtils'
 import { SkeletonList } from '../components/ui/Skeleton'
 import ResumeVersions from '../components/ResumeVersions'
 import AtsProgressChart from '../components/AtsProgressChart'
+import AIReasoningTooltip from '../components/ui/AIReasoningTooltip'
 
 export default function ResumeView() {
   const { resumeId } = useParams()
@@ -470,8 +471,18 @@ export default function ResumeView() {
                 </h3>
 
                 <div className="flex flex-col items-center mb-8">
-                  <div className="w-32 h-32 rounded-full border-8 border-primary flex items-center justify-center text-3xl font-bold">
-                    {scoreData.overallScore}
+                  <div className="flex items-center gap-2">
+                    <div className="w-32 h-32 rounded-full border-8 border-primary flex items-center justify-center text-3xl font-bold">
+                      {scoreData.overallScore}
+                    </div>
+                    <AIReasoningTooltip
+                      title="Overall Resume Score Explanation"
+                      reason={`Your resume scored ${scoreData.overallScore}/100 based on section analysis and keyword alignment.`}
+                      details={Object.entries(scoreData.sections || {}).map(
+                        ([name, { score, feedback }]) =>
+                          `${name}: ${score}/100${feedback ? ` — ${feedback}` : ''}`
+                      )}
+                    />
                   </div>
 
                   <p className="mt-3 text-muted-foreground">
@@ -486,7 +497,16 @@ export default function ResumeView() {
                         <span className="capitalize font-medium">
                           {section}
                         </span>
-                        <span>{value.score}/100</span>
+                        <span className="flex items-center gap-1">
+                          {value.score}/100
+                          {value.feedback && (
+                            <AIReasoningTooltip
+                              title={`${section} Score Explanation`}
+                              reason={value.feedback}
+                              details={[`Section score: ${value.score}/100`]}
+                            />
+                          )}
+                        </span>
                       </div>
 
                       <div className="w-full bg-muted rounded-full h-3">
@@ -512,9 +532,15 @@ export default function ResumeView() {
                     {scoreData.topSuggestions.map((tip, index) => (
                       <li
                         key={index}
-                        className="bg-muted p-3 rounded-lg"
+                        className="bg-muted p-3 rounded-lg flex items-start gap-2"
                       >
-                        • {tip}
+                        <span>•</span>
+                        <span className="flex-1">{tip}</span>
+                        <AIReasoningTooltip
+                          title="Suggestion Rationale"
+                          reason={tip}
+                          details={['Actioning this tip can improve ATS visibility and overall resume score.']}
+                        />
                       </li>
                     ))}
                   </ul>
