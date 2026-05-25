@@ -8,7 +8,7 @@ const Contact = ({
     { name: "GitHub", url: "https://github.com/anurag3407", icon: Github },
     { name: "LinkedIn", url: "https://www.linkedin.com/in/anurag3407/", icon: Linkedin },
     { name: "Twitter", url: "https://x.com/anurag3407", icon: Twitter },
-    { name: "Instagram", url: "https://www.instagram.com/anuragmishra_05_", icon: Instagram },
+    { name: "Instagram", url: "https://www.instagram.com/anurag3407", icon: Instagram },
   ]
 }) => {
   const [formData, setFormData] = useState({
@@ -31,7 +31,7 @@ const Contact = ({
     // Simulate API call
     setTimeout(() => {
       console.log("📧 Contact Form Submitted:", formData);
-      // TODO: Connect to real backend here
+      // TODO: Connect to real backend here later
       // Example: await fetch('/api/contact', { method: 'POST', body: JSON.stringify(formData) });
       
       setIsSubmitted(true);
