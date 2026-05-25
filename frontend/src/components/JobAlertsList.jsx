@@ -100,7 +100,7 @@ export default function JobAlertsList() {
     };
 
     // Reorder alerts after drag ends
-    const handleDragEnd = (result) => {
+    const handleDragEnd = async (result) => {
         if (!result.destination) return;
         if (result.destination.index === result.source.index) return;
 
@@ -108,7 +108,15 @@ export default function JobAlertsList() {
         const [moved] = reordered.splice(result.source.index, 1);
         reordered.splice(result.destination.index, 0, moved);
         setAlerts(reordered);
-        toast.success('Alert order updated');
+
+        try {
+            await jobAlertsApi.reorder(reordered.map(a => a._id));
+            toast.success('Alert order updated');
+        } catch (err) {
+            toast.error('Failed to save alert order');
+            // Revert on failure
+            fetchAlerts();
+        }
     };
 
     const formatDate = (date) => {
@@ -185,6 +193,7 @@ export default function JobAlertsList() {
                                             <div
                                                 ref={provided.innerRef}
                                                 {...provided.draggableProps}
+                                                style={provided.draggableProps.style}
                                                 className={`bg-card rounded-xl border p-5 transition-all hover:border-primary/50 ${
                                                     alert.isActive ? 'border-border shadow-sm' : 'border-border opacity-60'
                                                 } ${snapshot.isDragging ? 'shadow-2xl scale-[1.02] border-primary/60 rotate-[0.5deg]' : ''}`}
@@ -192,13 +201,14 @@ export default function JobAlertsList() {
                                                 <div className="flex items-start justify-between">
                                                     <div className="flex items-start gap-4">
                                                         {/* Drag Handle */}
-                                                        <div
+                                                        <button
+                                                            type="button"
                                                             {...provided.dragHandleProps}
                                                             className="mt-1 p-1 text-muted-foreground hover:text-primary cursor-grab active:cursor-grabbing rounded transition-colors"
                                                             aria-label="Drag to reorder"
                                                         >
                                                             <GripVertical className="w-5 h-5" />
-                                                        </div>
+                                                        </button>
 
                                                         {/* Alert Number */}
                                                         <div className={`w-10 h-10 rounded-lg flex items-center justify-center text-sm font-bold ${
