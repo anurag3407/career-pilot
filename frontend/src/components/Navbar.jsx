@@ -72,7 +72,7 @@ export default function Navbar() {
 
   const publicLinks = [
     { path: '/templates', label: 'Templates', icon: Palette },
-    { path: '/#portfolio', label: 'Portfolio', icon: User },
+    { path: '/portfolio', label: 'Portfolio', icon: User },
   ]
 
   const privateLinks = [

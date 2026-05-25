@@ -15,23 +15,28 @@ const userSchema = new mongoose.Schema({
   },
   jobRole: {
     type: String,
-    required: true,
+    required: false,
+    default: '',
   },
   gender: {
     type: String,
-    required: true,
+    required: false,
+    default: '',
   },
   yearsOfExperience: {
     type: Number,
-    required: true,
+    required: false,
+    default: 0,
   },
   collegeStudent: {
     type: Boolean,
-    required: true,
+    required: false,
+    default: false,
   },
   skills: {
     type: [String],
-    required: true,
+    required: false,
+    default: [],
   },
   notificationPreferences: {
     jobAlerts: { type: Boolean, default: true },
