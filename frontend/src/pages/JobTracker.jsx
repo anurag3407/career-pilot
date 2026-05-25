@@ -110,7 +110,9 @@ const JobTracker = () => {
     }
 
     const newStatus = destination.droppableId;
-    
+    const oldStatus = source.droppableId;
+    const originalJob = trackedJobs.find((j) => j.id === draggableId);
+
     // Optimistic UI update
     setTrackedJobs((prev) =>
       prev.map((job) =>
@@ -120,16 +122,42 @@ const JobTracker = () => {
       ),
     );
 
+    // Optimistic stats update
+    setStats((prev) => {
+      if (!prev) return prev;
+      return {
+        ...prev,
+        [oldStatus]: Math.max(0, (prev[oldStatus] || 0) - 1),
+        [newStatus]: (prev[newStatus] || 0) + 1,
+      };
+    });
+
     // Backend update
     try {
       await jobTrackerApi.updateStatus(draggableId, newStatus);
       toast.success("Status updated!");
-      fetchStats();
+      fetchStats(); // keep background sync for eventual consistency
     } catch (error) {
       console.error("Error updating status:", error);
       toast.error("Failed to update status");
-      // Revert on failure
-      fetchJobs();
+      
+      // Localized atomic revert on failure to prevent concurrent state corruption
+      if (originalJob) {
+        setTrackedJobs((prev) =>
+          prev.map((job) =>
+            job.id === draggableId ? { ...originalJob } : job,
+          ),
+        );
+      }
+      
+      setStats((prev) => {
+        if (!prev) return prev;
+        return {
+          ...prev,
+          [newStatus]: Math.max(0, (prev[newStatus] || 0) - 1),
+          [oldStatus]: (prev[oldStatus] || 0) + 1,
+        };
+      });
     }
   };
 
