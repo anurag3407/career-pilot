@@ -122,7 +122,96 @@ Return ONLY valid JSON. No markdown fences, no extra text.`;
 
 
 
-// Enhance resume with AI
+/**
+ * @openapi
+ * /api/enhance:
+ *   post:
+ *     summary: Enhance resume with AI
+ *     tags:
+ *       - Resume
+ *     description: Tailors and enhances resume text based on user preferences, target job role, experience level, and industry. Uses an AI provider to optimize impact and wording.
+ *     security:
+ *       - bearerAuth: []
+ *     requestBody:
+ *       required: true
+ *       content:
+ *         application/json:
+ *           schema:
+ *             type: object
+ *             properties:
+ *               resumeText:
+ *                 type: string
+ *                 description: Plain text content of the resume to be enhanced
+ *                 example: "John Doe\nExperience: Software Developer..."
+ *               preferences:
+ *                 type: object
+ *                 properties:
+ *                   jobRole:
+ *                     type: string
+ *                     description: Target job role/title
+ *                     example: "Senior Frontend Engineer"
+ *                   yearsOfExperience:
+ *                     type: integer
+ *                     description: Number of years of experience
+ *                     example: 5
+ *                   skills:
+ *                     type: array
+ *                     items:
+ *                       type: string
+ *                     description: Core skills to highlight
+ *                     example: ["React", "TypeScript", "Node.js"]
+ *                   industry:
+ *                     type: string
+ *                     description: Focus industry
+ *                     example: "Technology"
+ *                   customInstructions:
+ *                     type: string
+ *                     description: Additional custom instructions for enhancement
+ *                     example: "Highlight leadership and cloud architecture experience."
+ *                 required:
+ *                   - jobRole
+ *             required:
+ *               - resumeText
+ *               - preferences
+ *     responses:
+ *       200:
+ *         description: Resume enhanced successfully
+ *         content:
+ *           application/json:
+ *             schema:
+ *               type: object
+ *               properties:
+ *                 success:
+ *                   type: boolean
+ *                   example: true
+ *                 data:
+ *                   type: object
+ *                   properties:
+ *                     enhancedResume:
+ *                       type: string
+ *                       description: The AI-enhanced resume text
+ *                     tokensUsed:
+ *                       type: integer
+ *                       description: Approximate AI tokens used
+ *                       example: 1850
+ *                     provider:
+ *                       type: string
+ *                       description: The AI model provider used
+ *                       example: "gemini"
+ *                     providerSource:
+ *                       type: string
+ *                       description: The model source configuration
+ *                       example: "default"
+ *                     processedAt:
+ *                       type: string
+ *                       format: date-time
+ *       400:
+ *         description: Bad request (missing or invalid body fields)
+ *       401:
+ *         description: Unauthorized (missing or invalid Firebase ID Token)
+ *       500:
+ *         description: Internal server error
+ */
 router.post('/', verifyToken, extractAIProvider, aiRateLimiter, validate(enhanceResumeSchema), asyncHandler(async (req, res) => {
   const { resumeText, preferences } = req.body;
 
