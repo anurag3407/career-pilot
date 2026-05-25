@@ -1,24 +1,8 @@
-import { GoogleGenerativeAI } from '@google/generative-ai';
-import dotenv from 'dotenv';
 import { aiCallsCounter } from '../../middleware/metrics.js';
 
-dotenv.config();
-
-const geminiApiKey = process.env.GEMINI_API_KEY;
-if (!geminiApiKey) {
-    console.error('GEMINI_API_KEY is missing. Aborting AI initialization.');
-}
-
-// We instantiate the model only if the API key is present to avoid crashing at startup if it's missing in some environments
-let model;
-if (geminiApiKey) {
-    const genAI = new GoogleGenerativeAI(geminiApiKey);
-    model = genAI.getGenerativeModel({ model: 'gemini-2.5-flash' });
-}
-
-export const generateHeadline = async (portfolioData) => {
-    if (!model) {
-        throw new Error("AI model is not initialized due to missing API key.");
+export const generateHeadline = async (portfolioData, aiProvider) => {
+    if (!aiProvider) {
+        throw new Error("AI Provider is required. Please provide an API key.");
     }
     
     try {
@@ -45,10 +29,8 @@ export const generateHeadline = async (portfolioData) => {
         }
         `;
 
-        aiCallsCounter.inc({ provider: "gemini" });
-        const result = await model.generateContent(prompt);
-        const response = await result.response;
-        const text = response.text();
+        const result = await aiProvider.generateContent(prompt);
+        const text = result.text;
 
         // Clean up markdown syntax if AI adds it
         const cleanedText = text.replace(/```json\n?/g, '').replace(/```\n?/g, '').trim();

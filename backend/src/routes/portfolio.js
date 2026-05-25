@@ -7,6 +7,7 @@ import { validateToken as validateCloudflareToken } from '../services/deploy/clo
 import { validateToken as validateGithubToken } from '../services/deploy/githubPagesDeployer.js';
 import { validateToken as validateNetlifyToken } from '../services/deploy/netlifyDeployer.js';
 import { enhanceSection } from '../services/ai/portfolioContentEnhancer.js';
+import { extractAIProvider } from '../middleware/aiKey.js';
 import { generateRobotsTxt, generateSitemapXml } from '../utils/sitemapGenerator.js';
 import { analyzeAccessibility } from '../services/accessibilityChecker.js';
 
@@ -63,6 +64,7 @@ const assertValidPortfolioSlug = (slug) => {
 router.post(
   '/enhance-portfolio-content',
   verifyToken,
+  extractAIProvider,
   asyncHandler(async (req, res) => {
     const { sectionType, content } = req.body;
 
@@ -93,7 +95,8 @@ router.post(
 
     const result = await enhanceSection(
       sectionType,
-      content
+      content,
+      req.aiProvider
     );
 
     res.status(200).json({

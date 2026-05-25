@@ -1,4 +1,5 @@
 import { useState, useEffect } from "react";
+import { DragDropContext, Droppable, Draggable } from "@hello-pangea/dnd";
 import { motion } from "framer-motion";
 import { toast } from "react-hot-toast";
 import {
@@ -96,6 +97,42 @@ const JobTracker = () => {
     }
   };
 
+  const onDragEnd = async (result) => {
+    const { destination, source, draggableId } = result;
+
+    if (!destination) return;
+
+    if (
+      destination.droppableId === source.droppableId &&
+      destination.index === source.index
+    ) {
+      return;
+    }
+
+    const newStatus = destination.droppableId;
+    
+    // Optimistic UI update
+    setTrackedJobs((prev) =>
+      prev.map((job) =>
+        job.id === draggableId
+          ? { ...job, status: newStatus, updatedAt: new Date() }
+          : job,
+      ),
+    );
+
+    // Backend update
+    try {
+      await jobTrackerApi.updateStatus(draggableId, newStatus);
+      toast.success("Status updated!");
+      fetchStats();
+    } catch (error) {
+      console.error("Error updating status:", error);
+      toast.error("Failed to update status");
+      // Revert on failure
+      fetchJobs();
+    }
+  };
+
   const handleDelete = async (jobId) => {
     if (
       !window.confirm(
@@ -115,11 +152,6 @@ const JobTracker = () => {
       toast.error("Failed to remove job", { id: `tracked-job-delete-error-${jobId}` });
     }
   };
-
-  const filteredJobs =
-    filterStatus === "all"
-      ? trackedJobs
-      : trackedJobs.filter((job) => job.status === filterStatus);
 
   const getStatusInfo = (status) => {
     return (
@@ -235,11 +267,11 @@ const JobTracker = () => {
               onClick={() => setFilterStatus("all")}
               className={`px-4 py-2 rounded-lg font-medium transition-colors ${
                 filterStatus === "all"
-                  ? "bg-primary text-foreground"
+                  ? "bg-primary text-primary-foreground"
                   : "bg-muted text-foreground hover:bg-muted/80"
               }`}
             >
-              All Jobs
+              All Columns
             </button>
             {statusOptions.map((status) => (
               <button
@@ -247,7 +279,7 @@ const JobTracker = () => {
                 onClick={() => setFilterStatus(status.value)}
                 className={`px-4 py-2 rounded-lg font-medium transition-colors ${
                   filterStatus === status.value
-                    ? "bg-primary text-foreground"
+                    ? "bg-primary text-primary-foreground"
                     : "bg-muted text-foreground hover:bg-muted/80"
                 }`}
               >
@@ -256,164 +288,134 @@ const JobTracker = () => {
             ))}
           </div>
 
-          {/* Jobs List */}
-          {filteredJobs.length === 0 ? (
+          {/* Kanban Board */}
+          {trackedJobs.length === 0 ? (
             <Card className="p-12 text-center bg-background/50 border-border">
               <div className="max-w-md mx-auto">
                 <Briefcase className="w-16 h-16 text-muted-foreground/80 mx-auto mb-4" />
                 <h3 className="text-xl font-semibold text-foreground mb-2">
-                  {filterStatus === "all"
-                    ? "No Tracked Jobs Yet"
-                    : `No ${getStatusInfo(filterStatus).label} Jobs`}
+                  No Tracked Jobs Yet
                 </h3>
                 <p className="text-muted-foreground mb-6">
-                  {filterStatus === "all"
-                    ? "Start tracking jobs from the job search page"
-                    : `You don't have any jobs with "${getStatusInfo(filterStatus).label}" status`}
+                  Start tracking jobs from the job search page
                 </p>
-                {filterStatus === "all" && (
-                  <Button
-                    onClick={() => (window.location.href = "/jobs")}
-                    className="mx-auto"
-                  >
-                    <Plus className="w-5 h-5 mr-2" />
-                    Find Jobs
-                  </Button>
-                )}
+                <Button
+                  onClick={() => (window.location.href = "/jobs")}
+                  className="mx-auto"
+                >
+                  <Plus className="w-5 h-5 mr-2" />
+                  Find Jobs
+                </Button>
               </div>
             </Card>
           ) : (
-            <motion.div
-              className="grid gap-4"
-              variants={{
-                initial: {},
-                animate: {
-                  transition: {
-                    staggerChildren: 0.07,
-                  },
-                },
-              }}
-              initial="initial"
-              animate="animate"
-            >
-              {filteredJobs.map((job) => {
-                const statusInfo = getStatusInfo(job.status);
-                return (
-                  <motion.div
-                    key={job.id}
-                    variants={{
-                      initial: { opacity: 0, y: 14 },
-                      animate: {
-                        opacity: 1,
-                        y: 0,
-                        transition: { duration: 0.22, ease: "easeOut" },
-                      },
-                    }}
-                  >
-                    <Card className="p-6 bg-background/50 border-border hover:border-border transition-all">
-                      <div className="flex flex-col lg:flex-row lg:items-center justify-between gap-4">
-                        {/* Job Info */}
-                        <div className="flex-1">
-                          <div className="flex items-start gap-3 mb-3">
-                            <div className="flex-1">
-                              <h3 className="text-xl font-semibold text-foreground mb-1">
-                                {job.title}
-                              </h3>
-                              <div className="flex items-center gap-2 mb-2">
-                                <span className="text-primary font-medium">
-                                  {job.company}
-                                </span>
-                                <button
-                                  onClick={() =>
-                                    setResearchCompany({
-                                      name: job.company,
-                                      industry: job.industry || "",
-                                    })
-                                  }
-                                  className="text-[10px] font-semibold tracking-wide px-2 py-0.5 rounded bg-primary/10 text-primary border border-primary/20 hover:bg-primary/20 transition flex items-center gap-1"
-                                  title="Analyze company size, culture, funding, rating and news"
-                                >
-                                  <Sparkles className="w-3 h-3" /> AI Research
-                                </button>
-                              </div>
-                            </div>
-                            <span
-                              className={`px-3 py-1 rounded-full text-xs font-medium text-foreground ${statusInfo.color}`}
-                            >
-                              {statusInfo.icon} {statusInfo.label}
-                            </span>
-                          </div>
+            <DragDropContext onDragEnd={onDragEnd}>
+              <div className="flex gap-6 overflow-x-auto pb-8 min-h-[60vh] snap-x scrollbar-thin scrollbar-thumb-primary/20 scrollbar-track-transparent">
+                {statusOptions
+                  .filter((status) => filterStatus === "all" || status.value === filterStatus)
+                  .map((status) => {
+                  const columnJobs = trackedJobs.filter((j) => j.status === status.value);
 
-                          <div className="flex flex-wrap gap-4 text-sm text-muted-foreground mb-3">
-                            {job.location && (
-                              <div className="flex items-center gap-1">
-                                <MapPin className="w-4 h-4" />
-                                {job.location}
-                              </div>
-                            )}
-                            {job.salary && (
-                              <div className="flex items-center gap-1">
-                                <DollarSign className="w-4 h-4" />
-                                {job.salary}
-                              </div>
-                            )}
-                            <div className="flex items-center gap-1">
-                              <Calendar className="w-4 h-4" />
-                              Added {formatDate(job.createdAt)}
-                            </div>
-                          </div>
-
-                          {job.notes && (
-                            <p className="text-sm text-foreground bg-muted/50 rounded p-3 mb-3">
-                              📝 {job.notes}
-                            </p>
-                          )}
-                        </div>
-
-                        {/* Actions */}
-                        <div className="flex flex-col gap-2 lg:w-48">
-                          <select
-                            value={job.status}
-                            onChange={(e) =>
-                              handleStatusUpdate(job.id, e.target.value)
-                            }
-                            disabled={updateLoading[job.id]}
-                            className="w-full px-3 py-2 bg-muted border border-border rounded-lg text-foreground text-sm focus:outline-none focus:border-primary disabled:opacity-50"
-                          >
-                            {statusOptions.map((status) => (
-                              <option key={status.value} value={status.value}>
-                                {status.icon} {status.label}
-                              </option>
-                            ))}
-                          </select>
-
-                          <div className="flex gap-2">
-                            {job.applyLink && (
-                              <a
-                                href={job.applyLink}
-                                target="_blank"
-                                rel="noopener noreferrer"
-                                className="flex-1 px-3 py-2 bg-primary hover:bg-primary/80 text-foreground rounded-lg text-sm font-medium transition-colors flex items-center justify-center gap-1"
-                              >
-                                <ExternalLink className="w-4 h-4" />
-                                Apply
-                              </a>
-                            )}
-                            <button
-                              onClick={() => handleDelete(job.id)}
-                              className="px-3 py-2 bg-red-600/10 hover:bg-red-600/20 text-red-500 rounded-lg transition-colors"
-                              title="Remove from tracker"
-                            >
-                              <Trash2 className="w-4 h-4" />
-                            </button>
-                          </div>
-                        </div>
+                  return (
+                    <div key={status.value} className="flex-shrink-0 w-80 bg-muted/20 rounded-2xl p-4 flex flex-col snap-start border border-border/40 shadow-sm">
+                      <div className="flex items-center justify-between mb-4 px-2">
+                        <h3 className="font-bold flex items-center gap-2 text-foreground text-sm uppercase tracking-wider">
+                          <span>{status.icon}</span> {status.label}
+                        </h3>
+                        <span className="bg-background px-2.5 py-0.5 rounded-full text-xs font-black border border-border text-muted-foreground">
+                          {columnJobs.length}
+                        </span>
                       </div>
-                    </Card>
-                  </motion.div>
-                );
-              })}
-            </motion.div>
+
+                      <Droppable droppableId={status.value}>
+                        {(provided, snapshot) => (
+                          <div
+                            ref={provided.innerRef}
+                            {...provided.droppableProps}
+                            className={`flex-1 flex flex-col gap-3 min-h-[150px] transition-colors rounded-xl p-1.5 ${snapshot.isDraggingOver ? 'bg-primary/5 border border-primary/20 border-dashed' : 'border border-transparent'}`}
+                          >
+                            {columnJobs.map((job, index) => (
+                              <Draggable key={job.id} draggableId={job.id} index={index}>
+                                {(provided, snapshot) => (
+                                  <div
+                                    ref={provided.innerRef}
+                                    {...provided.draggableProps}
+                                    {...provided.dragHandleProps}
+                                    style={{
+                                      ...provided.draggableProps.style,
+                                    }}
+                                  >
+                                    <Card className={`p-4 bg-card hover:border-primary/40 transition-all ${snapshot.isDragging ? 'shadow-2xl shadow-primary/20 scale-105 rotate-2 z-50 border-primary ring-2 ring-primary/20' : 'border-border/60 shadow-sm hover:-translate-y-0.5'}`}>
+                                      <div className="flex justify-between items-start mb-2">
+                                        <h4 className="font-bold text-foreground text-sm line-clamp-2 leading-tight pr-4">
+                                          {job.title}
+                                        </h4>
+                                        <button
+                                          onClick={() => handleDelete(job.id)}
+                                          className="text-muted-foreground/50 hover:text-red-500 transition-colors absolute top-4 right-4"
+                                          title="Remove Job"
+                                        >
+                                          <Trash2 className="w-3.5 h-3.5" />
+                                        </button>
+                                      </div>
+                                      <p className="text-primary font-black text-xs mb-3 tracking-wide">
+                                        {job.company}
+                                      </p>
+                                      
+                                      <div className="flex flex-col gap-1.5 text-[11px] font-semibold text-muted-foreground mb-4">
+                                        {job.location && (
+                                          <div className="flex items-center gap-1.5">
+                                            <MapPin className="w-3.5 h-3.5 text-foreground/40" /> {job.location}
+                                          </div>
+                                        )}
+                                        {job.salary && (
+                                          <div className="flex items-center gap-1.5">
+                                            <DollarSign className="w-3.5 h-3.5 text-foreground/40" /> {job.salary}
+                                          </div>
+                                        )}
+                                        <div className="flex items-center gap-1.5">
+                                          <Calendar className="w-3.5 h-3.5 text-foreground/40" /> 
+                                          Added {formatDate(job.createdAt)}
+                                        </div>
+                                      </div>
+
+                                      <div className="flex gap-2 mt-auto pt-3 border-t border-border/50">
+                                        {job.applyLink && (
+                                          <a
+                                            href={job.applyLink}
+                                            target="_blank"
+                                            rel="noopener noreferrer"
+                                            className="flex-1 bg-primary text-background hover:bg-primary/90 py-1.5 rounded-md text-xs font-bold text-center transition-colors flex items-center justify-center gap-1"
+                                          >
+                                            <ExternalLink className="w-3 h-3" /> Apply
+                                          </a>
+                                        )}
+                                        <button
+                                          onClick={() =>
+                                            setResearchCompany({
+                                              name: job.company,
+                                              industry: job.industry || "",
+                                            })
+                                          }
+                                          className="flex-1 bg-primary/10 hover:bg-primary/20 text-primary py-1.5 rounded-md text-[11px] font-bold text-center transition-colors flex items-center justify-center gap-1"
+                                        >
+                                          <Sparkles className="w-3 h-3" /> AI Research
+                                        </button>
+                                      </div>
+                                    </Card>
+                                  </div>
+                                )}
+                              </Draggable>
+                            ))}
+                            {provided.placeholder}
+                          </div>
+                        )}
+                      </Droppable>
+                    </div>
+                  );
+                })}
+              </div>
+            </DragDropContext>
           )}
         </div>
       </div>

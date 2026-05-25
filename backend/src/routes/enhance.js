@@ -9,7 +9,6 @@ import { extractAIProvider } from '../middleware/aiKey.js';
 import { asyncHandler, ApiError } from '../middleware/errorHandler.js';
 import { aiRateLimiter } from '../middleware/rateLimiter.js';
 import { createSSEStream } from '../middleware/stream.js';
-import { getDefaultProvider } from '../config/aiProviders.js';
 import { validate } from '../middleware/validate.js';
 import { genAI } from '../config/genAI.js';
 import {
@@ -25,7 +24,7 @@ const router = express.Router();
 
 // Score a resume and return structured feedback
 // POST /api/enhance/resume-score
-router.post('/resume-score', verifyToken, aiRateLimiter, validate(resumeScoreSchema), asyncHandler(async (req, res) => {
+router.post('/resume-score', verifyToken, extractAIProvider, aiRateLimiter, validate(resumeScoreSchema), asyncHandler(async (req, res) => {
   const { resumeText, jobRole } = req.body;
   const targetRole = jobRole || 'Software Engineer'; // Fallback if not provided
 
@@ -44,7 +43,7 @@ ${resumeText}
 
 Return ONLY valid JSON. No markdown fences, no extra text.`;
 
-    const provider = req.aiProvider || getDefaultProvider();
+    const provider = req.aiProvider;
     const result = await provider.generateContent(prompt);
     let text = result.text.trim();
 
@@ -363,7 +362,7 @@ router.post('/generate-email', verifyToken, extractAIProvider, aiRateLimiter, va
 }));
 
 // Optimize LinkedIn Profile
-router.post('/optimize-linkedin', verifyToken, aiRateLimiter, validate(optimizeLinkedInSchema), asyncHandler(async (req, res) => {
+router.post('/optimize-linkedin', verifyToken, extractAIProvider, aiRateLimiter, validate(optimizeLinkedInSchema), asyncHandler(async (req, res) => {
   const { profileText, targetRole } = req.body;
   const normalizedProfile = typeof profileText === 'string' ? profileText.trim() : '';
   const normalizedRole = typeof targetRole === 'string' ? targetRole.trim() : '';
@@ -376,7 +375,7 @@ router.post('/optimize-linkedin', verifyToken, aiRateLimiter, validate(optimizeL
     throw new ApiError(400, 'Profile text exceeds the allowed limit (max 5000 characters)');
   }
 
-  const result = await optimizeLinkedInProfile(normalizedProfile, normalizedRole);
+  const result = await optimizeLinkedInProfile(normalizedProfile, normalizedRole, req.aiProvider);
   res.json(result);
 }));
 
@@ -407,7 +406,7 @@ router.post('/stream', verifyToken, extractAIProvider, aiRateLimiter, asyncHandl
 
     stream.sendProgress(20, 'Preparing prompt...');
 
-    const provider = req.aiProvider || getDefaultProvider();
+    const provider = req.aiProvider;
     const systemPrompt = getSystemPrompt(
       validatedPreferences.jobRole,
       validatedPreferences.yearsOfExperience,

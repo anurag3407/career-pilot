@@ -1,6 +1,6 @@
-import { createContext, useContext, useState, useEffect } from 'react'
-import { 
-  onAuthStateChanged, 
+import { useState, useEffect } from 'react'
+import {
+  onAuthStateChanged,
   signInWithEmailAndPassword,
   createUserWithEmailAndPassword,
   signOut,
@@ -9,17 +9,15 @@ import {
   updateProfile
 } from 'firebase/auth'
 import { auth } from '../config/firebase'
+import { AuthContext } from './AuthContext'
 
-const AuthContext = createContext(null)
-
-export function useAuth() {
-  const context = useContext(AuthContext)
-  if (!context) {
-    throw new Error('useAuth must be used within an AuthProvider')
-  }
-  return context
-}
-
+/**
+ * Provider component that manages and exposes the Firebase authentication state and methods.
+ *
+ * @param {object} props - The component props.
+ * @param {React.ReactNode} props.children - The children elements.
+ * @returns {React.JSX.Element} The rendered Provider component.
+ */
 export function AuthProvider({ children }) {
   const [user, setUser] = useState(null)
   const [loading, setLoading] = useState(true)
@@ -35,11 +33,18 @@ export function AuthProvider({ children }) {
       setUser(user)
       setLoading(false)
     })
-    
+
     return unsubscribe
   }, [])
 
-  // Sign up with email/password
+  /**
+   * Registers a new user with an email, password, and display name.
+   *
+   * @param {string} email - The email address.
+   * @param {string} password - The password.
+   * @param {string} displayName - The user's display name.
+   * @returns {Promise<object>} The Firebase user object.
+   */
   const signup = async (email, password, displayName) => {
     if (!auth) throw new Error('Authentication service is currently unconfigured.')
     const result = await createUserWithEmailAndPassword(auth, email, password)
@@ -49,14 +54,24 @@ export function AuthProvider({ children }) {
     return result.user
   }
 
-  // Sign in with email/password
+  /**
+   * Logs in a user with an email and password.
+   *
+   * @param {string} email - The email address.
+   * @param {string} password - The password.
+   * @returns {Promise<object>} The Firebase user object.
+   */
   const login = async (email, password) => {
     if (!auth) throw new Error('Authentication service is currently unconfigured.')
     const result = await signInWithEmailAndPassword(auth, email, password)
     return result.user
   }
 
-  // Sign in with Google
+  /**
+   * Logs in a user using Google Sign-In popup.
+   *
+   * @returns {Promise<object>} The Firebase user object.
+   */
   const loginWithGoogle = async () => {
     if (!auth) throw new Error('Authentication service is currently unconfigured.')
     const provider = new GoogleAuthProvider()
@@ -64,19 +79,29 @@ export function AuthProvider({ children }) {
     return result.user
   }
 
-  // Sign in with LinkedIn
+  /**
+   * Redirects the user to the LinkedIn authentication flow.
+   */
   const loginWithLinkedIn = () => {
     const apiUrl = import.meta.env.VITE_API_URL || 'http://localhost:5001'
     window.location.href = `${apiUrl}/api/auth/linkedin`
   }
 
-  // Sign out
+  /**
+   * Signs the user out of the current session.
+   *
+   * @returns {Promise<void>}
+   */
   const logout = async () => {
     if (!auth) throw new Error('Authentication service is currently unconfigured.')
     await signOut(auth)
   }
 
-  // Get ID token for API calls
+  /**
+   * Retrieves the current user's Firebase ID token.
+   *
+   * @returns {Promise<string|null>} The token string, or null if no user is authenticated.
+   */
   const getToken = async () => {
     if (!user) return null
     return await user.getIdToken()

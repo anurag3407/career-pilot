@@ -7,7 +7,7 @@ import {
   FileText, Mic, Heart, MessageSquare, Calendar,
   Plus, ExternalLink
 } from 'lucide-react'
-import { useAuth } from '../context/AuthContext'
+import { useAuth } from '../hooks/useAuth'
 import { userProfileApi } from '../services/api'
 import Button from '../components/Button'
 import Input from '../components/Input'

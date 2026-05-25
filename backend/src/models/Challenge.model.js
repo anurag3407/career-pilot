@@ -70,6 +70,10 @@ const challengeSchema = new mongoose.Schema({
 challengeSchema.index({ status: 1, createdAt: -1 }, { background: true });
 challengeSchema.index({ category: 1, status: 1 }, { background: true });
 challengeSchema.index({ corporateId: 1, createdAt: -1 }, { background: true });
+challengeSchema.index({ status: 1, deadline: 1 }, { background: true });
+challengeSchema.index({ price: 1 }, { background: true });
+challengeSchema.index({ title: 'text', description: 'text' }, { background: true });
+challengeSchema.index({ status: 1, category: 1, deadline: 1 }, { background: true });
 
 challengeSchema.pre('save', function () {
     this.updatedAt = new Date();

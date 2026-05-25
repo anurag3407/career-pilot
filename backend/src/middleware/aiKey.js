@@ -1,5 +1,4 @@
 import { AIProviderFactory, getDefaultProvider, SUPPORTED_PROVIDERS } from '../config/aiProviders.js';
-import { getAiConfig } from '../services/aiConfigService.js';
 
 /**
  * Middleware: extractAIProvider
@@ -46,23 +45,12 @@ export const extractAIProvider = async (req, res, next) => {
       return next();
     }
 
-    // --- Case 2: Check Database for User Config ---
-    if (req.user && req.user.uid) {
-      const aiConfig = await getAiConfig(req.user.uid);
-      if (aiConfig && aiConfig.provider && aiConfig.apiKey) {
-        const provider = aiConfig.provider.toLowerCase().trim();
-        if (SUPPORTED_PROVIDERS.includes(provider)) {
-          req.aiProvider = AIProviderFactory.create(provider, aiConfig.apiKey, aiConfig.model);
-          req.aiProviderSource = 'user_db';
-          return next();
-        }
-      }
-    }
-
-    // --- Case 3: No custom headers & No DB config – fall back to server Gemini key ---
-    req.aiProvider = getDefaultProvider();
-    req.aiProviderSource = 'server';
-    return next();
+    // --- Case 2: No custom headers – reject request ---
+    return res.status(403).json({
+      success: false,
+      error: 'API key is required. Please add your API key in Settings to use this feature.',
+      requireApiKey: true
+    });
   } catch (error) {
     console.error('AI provider middleware error:', error.message);
     return res.status(500).json({
