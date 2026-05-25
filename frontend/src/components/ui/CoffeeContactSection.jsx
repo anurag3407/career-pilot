@@ -1,5 +1,10 @@
 import { motion } from "framer-motion";
 import { Coffee, Mail, MapPin, Phone } from "lucide-react";
+const contactInfo = {
+  email: "hello@careerpilot.dev",
+  phone: "+91 98765 43210",
+  location: "Remote • Worldwide",
+};
 
 export default function CoffeeContactSection() {
   return (
@@ -54,21 +59,21 @@ export default function CoffeeContactSection() {
               <div className="flex items-center gap-4">
                 <Mail className="w-5 h-5 text-primary" />
                 <span className="text-muted-foreground">
-                  hello@careerpilot.dev
+                  {contactInfo.email}
                 </span>
               </div>
 
               <div className="flex items-center gap-4">
                 <Phone className="w-5 h-5 text-primary" />
                 <span className="text-muted-foreground">
-                  +91 98765 43210
+                  {contactInfo.phone}
                 </span>
               </div>
 
               <div className="flex items-center gap-4">
                 <MapPin className="w-5 h-5 text-primary" />
                 <span className="text-muted-foreground">
-                  Remote • Worldwide
+                  {contactInfo.location}
                 </span>
               </div>
             </div>
