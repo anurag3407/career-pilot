@@ -68,9 +68,6 @@ app.use(metricsMiddleware);
 const httpServer = createServer(app);
 const PORT = process.env.PORT || 5001;
 
-// Log FRONTEND_URL for debugging
-console.log('🔧 FRONTEND_URL env var:', process.env.FRONTEND_URL);
-
 // CORS configuration - MUST come before helmet
 const allowedOrigins = [
   'http://localhost:5173',
@@ -79,7 +76,11 @@ const allowedOrigins = [
   process.env.FRONTEND_URL,
 ].filter(Boolean).map(url => url.replace(/\/$/, '')); // Remove trailing slashes
 
-console.log('🔧 Allowed origins:', allowedOrigins);
+// Only log debug info in development — never in production
+if (process.env.NODE_ENV !== "production") {
+  console.log('🔧 FRONTEND_URL env var:', process.env.FRONTEND_URL);
+  console.log('🔧 Allowed origins:', allowedOrigins);
+}
 
 app.use(cors({
   origin: function (origin, callback) {
@@ -92,7 +93,9 @@ app.use(cors({
     if (allowedOrigins.includes(normalizedOrigin)) {
       callback(null, true);
     } else {
-      console.log('❌ CORS blocked origin:', origin, '| Allowed:', allowedOrigins);
+      if (process.env.NODE_ENV !== 'production') {
+        console.log('❌ CORS blocked origin:', origin, '| Allowed:', allowedOrigins);
+      }
       callback(new Error('Not allowed by CORS'));
     }
   },
@@ -235,8 +238,11 @@ const startServer = async () => {
 
     httpServer.listen(PORT, () => {
       console.log(`🚀 Server running on port ${PORT}`);
-      console.log(`📍 Environment: ${process.env.NODE_ENV || 'development'}`);
-      console.log(`🔗 Frontend URL: ${process.env.FRONTEND_URL || 'http://localhost:5173'}`);
+      // Only log debug info in development — never in production
+      if (process.env.NODE_ENV !== 'production') {
+        console.log(`📍 Environment: ${process.env.NODE_ENV || 'development'}`);
+        console.log(`🔗 Frontend URL: ${process.env.FRONTEND_URL || 'http://localhost:5173'}`);
+      }
     });
 
     try {
