@@ -5,7 +5,6 @@ import { loginProtection } from '../middleware/loginProtection.js';
 import { saveUserToFirebase } from '../services/firebaseDataService.js';
 import { validate } from '../middleware/validate.js';
 import { updateNotificationPrefsSchema } from '../schemas/auth.schema.js';
-
 import { registerSchema } from '../validators/authValidator.js';
 import { exchangeCodeForToken, getLinkedInAuthUrl, getLinkedInProfile } from '../services/linkedinService.js';
 import User from '../models/User.model.js';
@@ -126,7 +125,6 @@ router.get('/linkedin/callback', asyncHandler(async (req, res) => {
 
   const storedExpiry = stateStore.get(state);
   if (!storedExpiry || Date.now() > storedExpiry) {
-
     stateStore.delete(state);
     return res.redirect(`${frontendUrl}/login?error=linkedin_invalid_state`);
   }
@@ -164,13 +162,13 @@ router.get('/linkedin/callback', asyncHandler(async (req, res) => {
 
     try {
       const firebaseUser = await admin.auth().getUserByEmail(email);
-      firebaseUid = firebaseUser.uid
+      firebaseUid = firebaseUser.uid;
     } catch {
       const newFirebaseUser = await admin.auth().createUser({
         email,
         displayName: name,
         photoURL: picture
-      })
+      });
 
       firebaseUid = newFirebaseUser.uid;
     }
@@ -179,14 +177,14 @@ router.get('/linkedin/callback', asyncHandler(async (req, res) => {
     try {
       firebaseUser = await admin.auth().getUserByEmail(email);
     } catch {
-      firebaseUser = await admin.auth().createUser({ email, displayName: name, photoURL: picture })
+      firebaseUser = await admin.auth().createUser({ email, displayName: name, photoURL: picture });
     }
     firebaseUid = firebaseUser.uid;
 
     await admin.auth().setCustomUserClaims(firebaseUid, {
       linkedinId,
       pendingOnboarding: true,
-    })
+    });
   }
 
   const customToken = await admin.auth().createCustomToken(firebaseUid, {
