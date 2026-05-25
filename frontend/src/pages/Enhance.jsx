@@ -34,6 +34,9 @@ import { SkeletonList } from '../components/ui/Skeleton'
 import ResumeScore from '../components/ResumeScore'
 import AIReasoningTooltip from '../components/ui/AIReasoningTooltip'
 
+const categoryIncludes = (item, keyword) =>
+  (item?.category?.toLowerCase() ?? '').includes(keyword)
+
 // Score ring component
 const ScoreRing = ({ score, size = 120, strokeWidth = 8 }) => {
   const radius = (size - strokeWidth) / 2
@@ -151,15 +154,21 @@ const ImprovementCard = ({ improvement, index }) => {
           </div>
           <p className="flex flex-1 items-start gap-1.5 text-foreground font-medium">
             {improvement.issue}
-            <AIReasoningTooltip
-              title="Improvement Rationale"
-              reason={improvement.issue}
-              details={[
-                improvement.suggestion && `Suggestion: ${improvement.suggestion}`,
-                improvement.priority && `Priority: ${improvement.priority}`,
-                improvement.category && `Category: ${improvement.category}`,
-              ].filter(Boolean)}
-            />
+            <span
+              className="inline-flex shrink-0"
+              onClick={(e) => e.stopPropagation()}
+              onKeyDown={(e) => e.stopPropagation()}
+            >
+              <AIReasoningTooltip
+                title="Improvement Rationale"
+                reason={improvement.issue}
+                details={[
+                  improvement.suggestion && `Suggestion: ${improvement.suggestion}`,
+                  improvement.priority && `Priority: ${improvement.priority}`,
+                  improvement.category && `Category: ${improvement.category}`,
+                ].filter(Boolean)}
+              />
+            </span>
           </p>
         </div>
         {expanded ? (
@@ -735,7 +744,7 @@ export default function Enhance() {
                     reasoning={{
                       title: 'Formatting Score Explanation',
                       reason: `Formatting scored ${atsAnalysis.scoreBreakdown?.formatting || 0}% based on structure and ATS readability.`,
-                      details: [atsAnalysis.summary].filter(Boolean),
+                      details: [atsAnalysis.summary != null ? String(atsAnalysis.summary) : ''].filter(Boolean),
                     }}
                   />
                   <ScoreBar
@@ -746,7 +755,7 @@ export default function Enhance() {
                       title: 'Experience Relevance Explanation',
                       reason: `Experience relevance scored ${atsAnalysis.scoreBreakdown?.experienceRelevance || 0}% for ${jobRole}.`,
                       details: atsAnalysis.improvements
-                        ?.filter((i) => i.category?.toLowerCase().includes('experience'))
+                        ?.filter((i) => categoryIncludes(i, 'experience'))
                         .slice(0, 3)
                         .map((i) => i.issue) || [],
                     }}
@@ -759,7 +768,7 @@ export default function Enhance() {
                       title: 'Skills Alignment Explanation',
                       reason: `Skills alignment scored ${atsAnalysis.scoreBreakdown?.skillsAlignment || 0}% against role requirements.`,
                       details: atsAnalysis.improvements
-                        ?.filter((i) => i.category?.toLowerCase().includes('skill'))
+                        ?.filter((i) => categoryIncludes(i, 'skill'))
                         .slice(0, 3)
                         .map((i) => i.suggestion || i.issue) || [],
                     }}
@@ -772,7 +781,7 @@ export default function Enhance() {
                       title: 'Education Match Explanation',
                       reason: `Education match scored ${atsAnalysis.scoreBreakdown?.educationMatch || 0}% for this role.`,
                       details: atsAnalysis.improvements
-                        ?.filter((i) => i.category?.toLowerCase().includes('education'))
+                        ?.filter((i) => categoryIncludes(i, 'education'))
                         .slice(0, 2)
                         .map((i) => i.issue) || ['Education section evaluated for role fit'],
                     }}
@@ -937,6 +946,64 @@ export default function Enhance() {
                       <SectionGradeCard section="Skills" data={comprehensiveAnalysis.sectionGrades?.skills} icon={Code} />
                       <SectionGradeCard section="Projects" data={comprehensiveAnalysis.sectionGrades?.projects} icon={FolderKanban} />
                     </div>
+
+                    {comprehensiveAnalysis.industryKeywords &&
+                      (comprehensiveAnalysis.industryKeywords.present?.length > 0 ||
+                        comprehensiveAnalysis.industryKeywords.missing?.length > 0) && (
+                      <div className="bg-muted/50 border border-border rounded-xl p-4">
+                        <h4 className="font-medium text-foreground mb-3 flex items-center gap-2">
+                          <Target className="w-4 h-4 text-primary" />
+                          Role Keyword Match
+                          <AIReasoningTooltip
+                            title="Job Role Match Explanation"
+                            reason={`AI compared your resume keywords against expectations for ${jobRole}.`}
+                            details={[
+                              ...(comprehensiveAnalysis.industryKeywords.present || []).map(
+                                (keyword) => `Matching: ${keyword}`
+                              ),
+                              ...(comprehensiveAnalysis.industryKeywords.missing || []).map(
+                                (keyword) => `Gap: ${keyword}`
+                              ),
+                              ...(comprehensiveAnalysis.industryKeywords.recommendations || []).map(
+                                (tip) => `Recommendation: ${tip}`
+                              ),
+                            ]}
+                          />
+                        </h4>
+                        <div className="grid md:grid-cols-2 gap-4 text-sm">
+                          {comprehensiveAnalysis.industryKeywords.present?.length > 0 && (
+                            <div>
+                              <p className="text-xs text-muted-foreground mb-2">Matching keywords</p>
+                              <div className="flex flex-wrap gap-1">
+                                {comprehensiveAnalysis.industryKeywords.present.map((keyword, i) => (
+                                  <span
+                                    key={`present-${i}`}
+                                    className="text-xs px-2 py-0.5 bg-green-500/10 text-green-400 rounded"
+                                  >
+                                    {keyword}
+                                  </span>
+                                ))}
+                              </div>
+                            </div>
+                          )}
+                          {comprehensiveAnalysis.industryKeywords.missing?.length > 0 && (
+                            <div>
+                              <p className="text-xs text-muted-foreground mb-2">Missing keywords</p>
+                              <div className="flex flex-wrap gap-1">
+                                {comprehensiveAnalysis.industryKeywords.missing.map((keyword, i) => (
+                                  <span
+                                    key={`missing-${i}`}
+                                    className="text-xs px-2 py-0.5 bg-red-500/10 text-red-400 rounded"
+                                  >
+                                    {keyword}
+                                  </span>
+                                ))}
+                              </div>
+                            </div>
+                          )}
+                        </div>
+                      </div>
+                    )}
 
                     <div className="grid lg:grid-cols-2 gap-4 mt-6">
                       <div className="bg-muted/50 border border-border rounded-xl p-4">

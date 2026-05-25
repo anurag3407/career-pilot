@@ -7,6 +7,7 @@ import {
 } from 'lucide-react'
 import { enhanceApi } from '../services/api'
 import { toast } from 'react-hot-toast'
+import AIReasoningTooltip from '../components/ui/AIReasoningTooltip'
 
 const IMPACT_CONFIG = {
   High:   { color: 'text-red-400',    bg: 'bg-red-500/10',    border: 'border-red-500/30'    },
@@ -410,9 +411,23 @@ export default function LinkedInOptimizer() {
                           className="flex items-start gap-3 p-3 rounded-xl bg-muted/40 border border-border"
                         >
                           <span className="w-2 h-2 rounded-full bg-red-400 shrink-0 mt-1.5" />
-                          <div>
-                            <p className="text-sm font-semibold text-foreground">{item.skill}</p>
-                            <p className="text-xs text-muted-foreground mt-0.5">{item.reason}</p>
+                          <div className="flex-1">
+                            <p className="text-sm font-semibold text-foreground flex items-center gap-1">
+                              {item.skill}
+                              {item.reason && (
+                                <AIReasoningTooltip
+                                  title="Skills Gap Explanation"
+                                  reason={item.reason}
+                                  details={[
+                                    item.skill && `Skill gap: ${item.skill}`,
+                                    'Compared against industry peers for your target role.',
+                                  ].filter(Boolean)}
+                                />
+                              )}
+                            </p>
+                            {item.reason && (
+                              <p className="text-xs text-muted-foreground mt-0.5">{item.reason}</p>
+                            )}
                           </div>
                         </motion.div>
                       ))}
