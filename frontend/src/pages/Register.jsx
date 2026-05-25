@@ -37,7 +37,10 @@ export default function Register() {
     }
     if (!formData.confirmPassword) {
   newErrors.confirmPassword = 'Confirm Password is required'
-} else if (formData.password !== formData.confirmPassword) {
+} else if (
+  formData.password &&
+  formData.password !== formData.confirmPassword
+) {
   newErrors.confirmPassword = 'Passwords do not match'
 }
     setErrors(newErrors)
