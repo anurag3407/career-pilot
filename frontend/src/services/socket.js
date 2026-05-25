@@ -28,7 +28,7 @@ export const initializeSocket = async () => {
   });
 
   socket.on('connect_error', (error) => {
-    console.error('❌ Socket connection error:', error.message);
+    console.error('[Socket Error] Connection failed:', error.message);
   });
 
   socket.on('error', (error) => {
