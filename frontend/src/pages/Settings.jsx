@@ -2,6 +2,7 @@ import { useState, useEffect } from 'react'
 import { motion } from 'framer-motion'
 import { Bell, Mail, MessageSquare, FileText, Save, Cpu } from 'lucide-react'
 import { notificationApi, aiApi } from '../services/api'
+import { encryptKey, decryptKey } from '../utils/encryption'
 import Button from '../components/Button'
 import toast from 'react-hot-toast'
 import { SkeletonList } from '../components/ui/Skeleton'
@@ -14,7 +15,7 @@ export default function Settings() {
   })
   const [loading, setLoading] = useState(true)
   const [saving, setSaving] = useState(false)
-  
+
   // AI Settings State
   const [aiProvider, setAiProvider] = useState('')
   const [aiKey, setAiKey] = useState('')
@@ -39,16 +40,21 @@ export default function Settings() {
 
   const loadAiSettings = async () => {
     try {
-      const res = await aiApi.getConfig()
-      if (res.success && res.config) {
-        setAiProvider(res.config.provider || '')
-        setAiModel(res.config.model || '')
-        if (res.config.hasKey) {
-          setAiKey('••••••••') // Placeholder to indicate key is set
+      const aiConfigStr = localStorage.getItem('aiConfig')
+      if (aiConfigStr) {
+        const config = JSON.parse(aiConfigStr)
+        setAiProvider(config.provider || '')
+        setAiModel(config.model || '')
+        setAiKey(decryptKey(config.apiKey) || '')
+      } else {
+        const openRouterKey = localStorage.getItem('openRouterApiKey')
+        if (openRouterKey) {
+          setAiProvider('openrouter')
+          setAiKey(decryptKey(openRouterKey) || '')
         }
       }
     } catch (error) {
-      toast.error('Failed to load AI Configuration')
+      console.error('Failed to parse AI config', error)
     } finally {
       setLoadingAiSettings(false)
     }
@@ -94,12 +100,21 @@ export default function Settings() {
   const handleSaveAiSettings = async () => {
     setSavingAi(true)
     try {
-      await aiApi.updateConfig({
+      const aiConfig = {
         provider: aiProvider,
-        apiKey: aiKey,
+        apiKey: encryptKey(aiKey),
         model: aiModel
-      })
-      toast.success('AI Configuration saved!')
+      }
+      localStorage.setItem('aiConfig', JSON.stringify(aiConfig))
+
+      // Keep legacy key updated if using OpenRouter
+      if (aiProvider === 'openrouter' && aiKey) {
+        localStorage.setItem('openRouterApiKey', encryptKey(aiKey))
+      } else if (!aiKey) {
+        localStorage.removeItem('openRouterApiKey')
+      }
+
+      toast.success('AI Configuration saved locally!')
     } catch (error) {
       toast.error('Failed to save AI Configuration')
     } finally {
@@ -107,18 +122,16 @@ export default function Settings() {
     }
   }
 
-const Toggle = ({ value, onChange }) => (
+  const Toggle = ({ value, onChange }) => (
     <button
       role="switch"
       aria-checked={value}
       onClick={() => onChange(!value)}
-      className={`relative w-12 h-6 rounded-full transition-colors cursor-pointer ${
-        value ? 'bg-indigo-500' : 'bg-neutral-700'
-      }`}
+      className={`relative w-12 h-6 rounded-full transition-colors cursor-pointer ${value ? 'bg-indigo-500' : 'bg-neutral-700'
+        }`}
     >
-      <span className={`absolute top-1 w-4 h-4 bg-white rounded-full transition-all ${
-        value ? 'left-7' : 'left-1'
-      }`} />
+      <span className={`absolute top-1 w-4 h-4 bg-white rounded-full transition-all ${value ? 'left-7' : 'left-1'
+        }`} />
     </button>
   )
 
@@ -222,64 +235,64 @@ const Toggle = ({ value, onChange }) => (
               AI Configuration (Bring Your Own Key)
             </h2>
             <p className="text-neutral-400 text-sm mb-4">
-              Override the default server AI by providing your own API credentials. Your keys are securely encrypted in our database.
+              Override the default server AI by providing your own API credentials. Your keys are stored in localstorage.
             </p>
 
             {loadingAiSettings ? (
               <p className="text-neutral-500 text-sm">Loading settings...</p>
             ) : (
               <div className="space-y-4">
-              <div>
-                <label className="block text-sm font-medium text-neutral-300 mb-1">Provider</label>
-                <select
-                  value={aiProvider}
-                  onChange={(e) => {
-                    setAiProvider(e.target.value)
-                    if (e.target.value !== 'openrouter') {
-                      setAiModel('')
-                    }
-                  }}
-                  className="w-full bg-neutral-800 border border-neutral-700 rounded-lg px-4 py-2 text-white focus:outline-none focus:border-indigo-500"
-                >
-                  <option value="">Server Default (Gemini)</option>
-                  <option value="gemini">Google Gemini</option>
-                  <option value="openai">OpenAI</option>
-                  <option value="openrouter">OpenRouter (100+ Models)</option>
-                  <option value="groq">Groq</option>
-                </select>
-              </div>
-
-              {aiProvider && (
                 <div>
-                  <label className="block text-sm font-medium text-neutral-300 mb-1">API Key</label>
-                  <input
-                    type="password"
-                    value={aiKey}
-                    onChange={(e) => setAiKey(e.target.value)}
-                    placeholder={`Enter your ${aiProvider} API key`}
-                    className="w-full bg-neutral-800 border border-neutral-700 rounded-lg px-4 py-2 text-white focus:outline-none focus:border-indigo-500"
-                  />
-                </div>
-              )}
-
-              {aiProvider === 'openrouter' && (
-                <div>
-                  <label className="block text-sm font-medium text-neutral-300 mb-1">Model Selection</label>
+                  <label className="block text-sm font-medium text-neutral-300 mb-1">Provider</label>
                   <select
-                    value={aiModel}
-                    onChange={(e) => setAiModel(e.target.value)}
-                    disabled={loadingModels}
+                    value={aiProvider}
+                    onChange={(e) => {
+                      setAiProvider(e.target.value)
+                      if (e.target.value !== 'openrouter') {
+                        setAiModel('')
+                      }
+                    }}
                     className="w-full bg-neutral-800 border border-neutral-700 rounded-lg px-4 py-2 text-white focus:outline-none focus:border-indigo-500"
                   >
-                    <option value="">Default (gpt-4o-mini)</option>
-                    {aiModelsList.map(m => (
-                      <option key={m.id} value={m.id}>{m.name}</option>
-                    ))}
+                    <option value="">Server Default (Gemini)</option>
+                    <option value="gemini">Google Gemini</option>
+                    <option value="openai">OpenAI</option>
+                    <option value="openrouter">OpenRouter (100+ Models)</option>
+                    <option value="groq">Groq</option>
                   </select>
-                  {loadingModels && <p className="text-xs text-neutral-500 mt-1">Loading OpenRouter models...</p>}
                 </div>
-              )}
-            </div>
+
+                {aiProvider && (
+                  <div>
+                    <label className="block text-sm font-medium text-neutral-300 mb-1">API Key</label>
+                    <input
+                      type="password"
+                      value={aiKey}
+                      onChange={(e) => setAiKey(e.target.value)}
+                      placeholder={`Enter your ${aiProvider} API key`}
+                      className="w-full bg-neutral-800 border border-neutral-700 rounded-lg px-4 py-2 text-white focus:outline-none focus:border-indigo-500"
+                    />
+                  </div>
+                )}
+
+                {aiProvider === 'openrouter' && (
+                  <div>
+                    <label className="block text-sm font-medium text-neutral-300 mb-1">Model Selection</label>
+                    <select
+                      value={aiModel}
+                      onChange={(e) => setAiModel(e.target.value)}
+                      disabled={loadingModels}
+                      className="w-full bg-neutral-800 border border-neutral-700 rounded-lg px-4 py-2 text-white focus:outline-none focus:border-indigo-500"
+                    >
+                      <option value="">Default (gpt-4o-mini)</option>
+                      {aiModelsList.map(m => (
+                        <option key={m.id} value={m.id}>{m.name}</option>
+                      ))}
+                    </select>
+                    {loadingModels && <p className="text-xs text-neutral-500 mt-1">Loading OpenRouter models...</p>}
+                  </div>
+                )}
+              </div>
             )}
 
             <Button

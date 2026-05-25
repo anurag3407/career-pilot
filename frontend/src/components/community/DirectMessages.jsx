@@ -1,6 +1,6 @@
 import { useState, useEffect, useCallback } from 'react';
-import { useAuth } from '../../context/AuthContext';
-import { useSocket } from '../../context/SocketContext';
+import { useAuth } from '../../hooks/useAuth';
+import { useSocket } from '../../hooks/useSocket';
 import { communityApi } from '../../services/api';
 import { formatDistanceToNow } from 'date-fns';
 import { Search, Plus, Circle, X } from 'lucide-react';

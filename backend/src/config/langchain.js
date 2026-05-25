@@ -1,35 +1,8 @@
 import { getDefaultProvider } from './aiProviders.js';
 import { computeATSScore } from '../services/atsScorer.js';
 import dotenv from 'dotenv';
-import { GoogleGenerativeAI } from '@google/generative-ai';
-import { aiCallsCounter } from '../middleware/metrics.js';
 
 dotenv.config();
-
-const geminiApiKey = process.env.GEMINI_API_KEY;
-if (!geminiApiKey) {
-  console.warn('⚠️  GEMINI_API_KEY is not set — AI features will be unavailable. Non-AI routes are unaffected.');
-}
-
-let _model = null;
-
-const getModel = () => {
-  if (_model) return _model;
-  if (!geminiApiKey) {
-    const err = new Error('AI features are unavailable — GEMINI_API_KEY is not configured.');
-    err.statusCode = 503;
-    throw err;
-  }
-  const genAI = new GoogleGenerativeAI(geminiApiKey);
-  const rawModel = genAI.getGenerativeModel({ model: 'gemini-2.5-flash' });
-  _model = {
-    generateContent: async (prompt) => {
-      aiCallsCounter.inc({ provider: 'gemini' });
-      return await rawModel.generateContent(prompt);
-    }
-  };
-  return _model;
-};
 
 // ---------------------------------------------------------------------------
 // Helper: resolve the AI provider to use

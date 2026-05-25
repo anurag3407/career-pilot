@@ -1,159 +1,380 @@
-import React from 'react';
-import { motion } from 'framer-motion';
-import {
-  ArrowRight,
-  Download,
-  PlayCircle,
-  ShieldCheck,
-  Sparkles,
-  Zap,
-} from 'lucide-react';
+import { useEffect, useRef } from "react";
+import { Download, Eye } from "lucide-react";
 
-const defaultContent = {
-  eyebrow: 'Resume CTA',
-  title: 'Make your next opportunity feel inevitable.',
-  description:
-    'Turn your portfolio into a high-conviction hiring moment with a polished resume snapshot, curated skills, and a clear next step for recruiters.',
-  primaryLabel: 'Download resume kit',
-  secondaryLabel: 'Preview portfolio flow',
-  primaryHref: '#',
-  secondaryHref: '#',
-  metrics: [
-    { value: '97%', label: 'Faster first impressions' },
-    { value: '3x', label: 'More recruiter clicks' },
-    { value: '24h', label: 'Average turnaround' },
+/* ─── default data ──────────────────────────────────────────── */
+const DEFAULT_DATA = {
+  eyebrow: "Download Resume",
+  heading: ["Ready to make", "an impression?"],
+  body:
+    "Every opportunity starts with a single document. My resume captures the full spectrum of my work — engineered to stand out in any dimension.",
+  stats: [
+    { value: "5+", label: "Years experience" },
+    { value: "40+", label: "Projects shipped" },
+    { value: "12", label: "Technologies" },
   ],
+  resumeUrl: "#",
+  previewUrl: "#",
 };
 
-const featureBadges = [
-  { icon: ShieldCheck, text: 'ATS-friendly layout' },
-  { icon: Sparkles, text: 'Holographic highlight accents' },
-  { icon: Zap, text: 'Fast scanning for hiring teams' },
-];
+/* ─── tiny particle hook ────────────────────────────────────── */
+function useParticles(ref) {
+  useEffect(() => {
+    const el = ref.current;
+    if (!el) return;
 
-export default function ResumeCTA({
-  eyebrow = defaultContent.eyebrow,
-  title = defaultContent.title,
-  description = defaultContent.description,
-  primaryLabel = defaultContent.primaryLabel,
-  secondaryLabel = defaultContent.secondaryLabel,
-  primaryHref = defaultContent.primaryHref,
-  secondaryHref = defaultContent.secondaryHref,
-  metrics = defaultContent.metrics,
-}) {
+    const colors = ["#7b2fff", "#00e5ff", "#ff4de0", "#ffffff"];
+    const particles = [];
+
+    for (let i = 0; i < 20; i++) {
+      const p = document.createElement("div");
+      const size = Math.random() * 5 + 2;
+      Object.assign(p.style, {
+        position: "absolute",
+        width: `${size}px`,
+        height: `${size}px`,
+        borderRadius: "50%",
+        background: colors[Math.floor(Math.random() * colors.length)],
+        left: `${Math.random() * 100}%`,
+        bottom: `${Math.random() * 30}px`,
+        pointerEvents: "none",
+        opacity: "0",
+        animation: `holo-float ${3 + Math.random() * 4}s linear ${
+          Math.random() * 5
+        }s infinite`,
+      });
+      el.appendChild(p);
+      particles.push(p);
+    }
+
+    return () => particles.forEach((p) => p.remove());
+  }, [ref]);
+}
+
+/* ─── main component ────────────────────────────────────────── */
+export default function ResumeCTA({ data = DEFAULT_DATA }) {
+  const particleRef = useRef(null);
+  useParticles(particleRef);
+
+  const {
+    eyebrow,
+    heading,
+    body,
+    stats,
+    resumeUrl,
+    previewUrl,
+  } = { ...DEFAULT_DATA, ...data };
+
   return (
-    <section className="relative overflow-hidden rounded-[2rem] border border-fuchsia-300/40 bg-[linear-gradient(135deg,#090A1A_0%,#11142E_45%,#1B1A4A_100%)] px-5 py-8 sm:px-8 lg:px-12 lg:py-12">
-      <div className="pointer-events-none absolute inset-0">
-        <div className="absolute inset-0 bg-[radial-gradient(circle_at_top_left,rgba(99,102,241,0.3),transparent_28%),radial-gradient(circle_at_bottom_right,rgba(244,114,182,0.24),transparent_24%),radial-gradient(circle_at_center,rgba(34,211,238,0.15),transparent_30%)]" />
-        <div className="absolute left-[-8rem] top-1/2 h-48 w-48 rounded-full bg-cyan-300/20 blur-3xl" />
-        <div className="absolute right-[-6rem] top-[-4rem] h-56 w-56 rounded-full bg-fuchsia-400/20 blur-3xl" />
-        <div className="absolute inset-0 bg-[linear-gradient(120deg,transparent_0%,rgba(255,255,255,0.08)_50%,transparent_100%)] opacity-40" />
-      </div>
+    <>
+      {/* ── keyframes injected once ── */}
+      <style>{`
+        @import url('https://fonts.googleapis.com/css2?family=Orbitron:wght@400;700;900&family=Rajdhani:wght@300;400;600&display=swap');
 
-      <div className="relative z-10 mx-auto grid max-w-6xl items-center gap-8 lg:grid-cols-[1.1fr_0.9fr]">
-        <motion.div
-          initial={{ opacity: 0, y: 20 }}
-          animate={{ opacity: 1, y: 0 }}
-          transition={{ duration: 0.5, ease: 'easeOut' }}
-          className="space-y-6"
+        @keyframes holo-border {
+          0%,100% { background-position: 0% 50%; }
+          50%      { background-position: 100% 50%; }
+        }
+        @keyframes holo-shimmer {
+          0%   { background-position: 0% center; }
+          100% { background-position: 200% center; }
+        }
+        @keyframes holo-float {
+          0%   { transform: translateY(0) scale(0);   opacity: 0; }
+          10%  { opacity: 0.85; }
+          90%  { opacity: 0.55; }
+          100% { transform: translateY(-260px) scale(1.6); opacity: 0; }
+        }
+
+        .holo-border-anim {
+          animation: holo-border 4s ease infinite;
+        }
+        .holo-bar-anim {
+          animation: holo-border 3s ease infinite;
+        }
+        .holo-shimmer-text {
+          background: linear-gradient(135deg,
+            #ffffff 0%, #c4b5fd 38%, #00e5ff 65%, #ff4de0 100%
+          );
+          background-size: 200% auto;
+          -webkit-background-clip: text;
+          -webkit-text-fill-color: transparent;
+          background-clip: text;
+          animation: holo-shimmer 3s linear infinite;
+        }
+        .holo-btn-primary:hover  { transform: translateY(-2px); opacity: 0.88; }
+        .holo-btn-primary:active { transform: scale(0.97); }
+        .holo-btn-secondary:hover {
+          background: rgba(0,229,255,0.08);
+          border-color: rgba(0,229,255,0.9);
+          transform: translateY(-2px);
+        }
+        .holo-btn-secondary:active { transform: scale(0.97); }
+      `}</style>
+
+      {/* ── section wrapper ── */}
+      <section
+        className="relative flex items-center justify-center overflow-hidden px-4 py-16 sm:py-20 min-h-[520px]"
+        style={{
+          background: "#050510",
+          fontFamily: "'Rajdhani', sans-serif",
+        }}
+      >
+        {/* background grid */}
+        <div
+          className="absolute inset-0 pointer-events-none"
+          style={{
+            backgroundImage: `
+              linear-gradient(rgba(120,220,255,0.04) 1px, transparent 1px),
+              linear-gradient(90deg, rgba(120,220,255,0.04) 1px, transparent 1px)
+            `,
+            backgroundSize: "44px 44px",
+          }}
+        />
+
+        {/* ambient orbs */}
+        <div
+          className="absolute pointer-events-none rounded-full"
+          style={{
+            width: 360, height: 360,
+            background: "#7b2fff",
+            top: -80, left: -80,
+            filter: "blur(80px)",
+            opacity: 0.22,
+          }}
+        />
+        <div
+          className="absolute pointer-events-none rounded-full"
+          style={{
+            width: 300, height: 300,
+            background: "#00e5ff",
+            bottom: -60, right: -60,
+            filter: "blur(80px)",
+            opacity: 0.2,
+          }}
+        />
+        <div
+          className="absolute pointer-events-none rounded-full"
+          style={{
+            width: 200, height: 200,
+            background: "#ff4de0",
+            top: "50%", left: "50%",
+            transform: "translate(-50%,-50%)",
+            filter: "blur(80px)",
+            opacity: 0.12,
+          }}
+        />
+
+        {/* ── animated gradient border card ── */}
+        <div
+          className="relative w-full max-w-2xl rounded-[20px] p-[3px] holo-border-anim"
+          style={{
+            background:
+              "linear-gradient(135deg,rgba(123,47,255,0.9),rgba(0,229,255,0.9),rgba(255,77,224,0.9),rgba(123,47,255,0.9))",
+            backgroundSize: "300% 300%",
+          }}
         >
-          <div className="inline-flex items-center gap-2 rounded-full border border-cyan-300/40 bg-cyan-300/10 px-3 py-1 text-[0.7rem] font-semibold uppercase tracking-[0.3em] text-cyan-100">
-            <Sparkles className="h-3.5 w-3.5" />
-            {eyebrow}
-          </div>
+          {/* inner card */}
+          <div
+            className="relative rounded-[18px] px-8 py-12 sm:px-12 overflow-hidden"
+            style={{ background: "rgba(5,5,22,0.93)" }}
+            ref={particleRef}
+          >
+            {/* scanlines */}
+            <div
+              className="absolute inset-0 rounded-[18px] pointer-events-none"
+              style={{
+                background:
+                  "repeating-linear-gradient(0deg,rgba(255,255,255,0.015) 0px,rgba(255,255,255,0.015) 1px,transparent 1px,transparent 4px)",
+              }}
+            />
 
-          <div className="space-y-4">
-            <h2 className="max-w-xl text-3xl font-semibold tracking-tight text-white sm:text-4xl lg:text-[2.6rem] lg:leading-tight">
-              {title}
+            {/* corner brackets */}
+            <div
+              className="absolute top-5 left-5 w-9 h-9 pointer-events-none"
+              style={{
+                borderTop: "2px solid rgba(0,229,255,0.6)",
+                borderLeft: "2px solid rgba(0,229,255,0.6)",
+              }}
+            />
+            <div
+              className="absolute bottom-5 right-5 w-9 h-9 pointer-events-none"
+              style={{
+                borderBottom: "2px solid rgba(123,47,255,0.6)",
+                borderRight: "2px solid rgba(123,47,255,0.6)",
+              }}
+            />
+
+            {/* ── content ── */}
+
+            {/* eyebrow */}
+            <div
+              className="flex items-center gap-3 mb-5"
+              style={{
+                fontFamily: "'Orbitron', monospace",
+                fontSize: 11,
+                fontWeight: 400,
+                letterSpacing: "5px",
+                textTransform: "uppercase",
+                color: "#00e5ff",
+              }}
+            >
+              <span
+                className="flex-1 max-w-[80px] h-px"
+                style={{ background: "linear-gradient(90deg,#00e5ff,transparent)" }}
+              />
+              {eyebrow}
+              <span
+                className="flex-1 max-w-[80px] h-px"
+                style={{ background: "linear-gradient(90deg,transparent,#00e5ff)" }}
+              />
+            </div>
+
+            {/* heading */}
+            <h2
+              className="holo-shimmer-text mb-4 leading-tight"
+              style={{
+                fontFamily: "'Orbitron', monospace",
+                fontSize: "clamp(26px, 5vw, 46px)",
+                fontWeight: 900,
+              }}
+            >
+              {Array.isArray(heading) ? heading.join("\n") : heading}
             </h2>
-            <p className="max-w-2xl text-sm leading-7 text-slate-200/90 sm:text-base">
-              {description}
+
+            {/* body */}
+            <p
+              className="mb-8"
+              style={{
+                fontSize: 17,
+                fontWeight: 300,
+                color: "rgba(200,210,255,0.75)",
+                lineHeight: 1.65,
+                maxWidth: 520,
+              }}
+            >
+              {body}
             </p>
-          </div>
 
-          <div className="flex flex-wrap gap-3">
-            <a
-              href={primaryHref}
-              className="inline-flex items-center gap-2 rounded-full bg-gradient-to-r from-cyan-300 via-sky-400 to-fuchsia-400 px-5 py-3 text-sm font-semibold text-slate-950 shadow-[0_12px_40px_rgba(103,232,249,0.28)] transition-transform duration-200 hover:scale-[1.01]"
-            >
-              <Download className="h-4 w-4" />
-              {primaryLabel}
-              <ArrowRight className="h-4 w-4" />
-            </a>
+            {/* prism bar */}
+            <div
+              className="w-full rounded-sm mb-8 holo-bar-anim"
+              style={{
+                height: 3,
+                background:
+                  "linear-gradient(90deg,#7b2fff,#00e5ff,#ff4de0,#7b2fff)",
+                backgroundSize: "200% 100%",
+                opacity: 0.6,
+              }}
+            />
 
-            <a
-              href={secondaryHref}
-              className="inline-flex items-center gap-2 rounded-full border border-white/15 bg-white/5 px-5 py-3 text-sm font-semibold text-white backdrop-blur-sm transition hover:border-fuchsia-200/40 hover:bg-white/10"
-            >
-              <PlayCircle className="h-4 w-4 text-fuchsia-200" />
-              {secondaryLabel}
-            </a>
-          </div>
-
-          <div className="grid gap-3 pt-2 sm:grid-cols-3">
-            {metrics.map((item, index) => (
-              <motion.div
-                key={item.label}
-                initial={{ opacity: 0, y: 12 }}
-                animate={{ opacity: 1, y: 0 }}
-                transition={{ duration: 0.45, delay: 0.1 + index * 0.08 }}
-                className="rounded-2xl border border-white/10 bg-white/5 px-4 py-4 backdrop-blur-lg"
-              >
-                <p className="text-lg font-semibold text-white sm:text-xl">{item.value}</p>
-                <p className="mt-1 text-xs text-slate-200/80">{item.label}</p>
-              </motion.div>
-            ))}
-          </div>
-        </motion.div>
-
-        <motion.div
-          initial={{ opacity: 0, scale: 0.96 }}
-          animate={{ opacity: 1, scale: 1 }}
-          transition={{ duration: 0.5, delay: 0.1, ease: 'easeOut' }}
-          className="relative"
-        >
-          <div className="absolute inset-0 rounded-[1.75rem] bg-gradient-to-br from-cyan-300/30 via-fuchsia-300/20 to-sky-300/10 blur-[2px]" />
-          <div className="relative overflow-hidden rounded-[1.75rem] border border-white/15 bg-[linear-gradient(180deg,rgba(12,18,48,0.92),rgba(11,16,38,0.85))] p-5 shadow-[0_24px_80px_rgba(72,85,255,0.18)] backdrop-blur-xl sm:p-6">
-            <div className="flex items-center justify-between gap-4 border-b border-white/10 pb-4">
-              <div>
-                <p className="text-[0.65rem] uppercase tracking-[0.35em] text-cyan-100/80">Resume spotlight</p>
-                <p className="mt-2 text-lg font-semibold text-white">Holographic Recruiter Preview</p>
-              </div>
-              <div className="rounded-full border border-cyan-200/30 bg-cyan-100/10 px-3 py-1 text-xs text-cyan-50">
-                Live
-              </div>
-            </div>
-
-            <div className="mt-5 grid gap-3">
-              <div className="rounded-2xl border border-fuchsia-300/30 bg-fuchsia-300/10 px-4 py-4">
-                <p className="text-xs uppercase tracking-[0.3em] text-fuchsia-100/80">Core message</p>
-                <p className="mt-3 text-sm leading-6 text-slate-100">
-                  Designed to feel premium, futuristic, and immediately memorable for the hiring team.
-                </p>
-              </div>
-
-              <div className="grid gap-3 sm:grid-cols-2">
-                {featureBadges.map(({ icon: Icon, text }) => (
-                  <div
-                    key={text}
-                    className="rounded-2xl border border-white/10 bg-white/5 px-4 py-3"
-                  >
-                    <Icon className="h-4 w-4 text-cyan-100" />
-                    <p className="mt-3 text-sm text-slate-100">{text}</p>
+            {/* stats */}
+            <div className="flex flex-wrap gap-6 sm:gap-8 mb-10">
+              {stats.map(({ value, label }, i) => (
+                <div key={label} className="flex items-stretch gap-6 sm:gap-8">
+                  {i > 0 && (
+                    <div
+                      className="w-px self-stretch"
+                      style={{
+                        background:
+                          "linear-gradient(180deg,transparent,rgba(0,229,255,0.4),transparent)",
+                      }}
+                    />
+                  )}
+                  <div>
+                    <div
+                      style={{
+                        fontFamily: "'Orbitron', monospace",
+                        fontSize: "clamp(22px,3.5vw,30px)",
+                        fontWeight: 700,
+                        lineHeight: 1,
+                        background: "linear-gradient(135deg,#00e5ff,#7b2fff)",
+                        WebkitBackgroundClip: "text",
+                        WebkitTextFillColor: "transparent",
+                        backgroundClip: "text",
+                      }}
+                    >
+                      {value}
+                    </div>
+                    <div
+                      style={{
+                        fontSize: 12,
+                        fontWeight: 400,
+                        letterSpacing: "2px",
+                        textTransform: "uppercase",
+                        color: "rgba(150,160,200,0.7)",
+                        marginTop: 4,
+                      }}
+                    >
+                      {label}
+                    </div>
                   </div>
-                ))}
-              </div>
+                </div>
+              ))}
             </div>
 
-            <div className="mt-5 rounded-2xl border border-cyan-200/20 bg-[linear-gradient(135deg,rgba(34,211,238,0.18),rgba(244,114,182,0.14))] px-4 py-4 text-sm text-slate-100">
-              <p className="font-medium text-white">Next best action</p>
-              <p className="mt-2 leading-6 text-slate-100/90">
-                Highlight your most important proof points, emphasize impact, and invite the recruiter to connect instantly.
-              </p>
+            {/* CTA buttons */}
+            <div className="flex flex-wrap gap-4 items-center">
+              {/* primary */}
+              <a
+                href={resumeUrl}
+                download
+                className="holo-btn-primary inline-flex items-center gap-2.5 no-underline transition-all duration-200"
+                style={{
+                  fontFamily: "'Orbitron', monospace",
+                  fontSize: 13,
+                  fontWeight: 700,
+                  letterSpacing: "2px",
+                  textTransform: "uppercase",
+                  padding: "14px 32px",
+                  borderRadius: 8,
+                  border: "none",
+                  background: "linear-gradient(135deg,#7b2fff,#00e5ff)",
+                  color: "#ffffff",
+                  position: "relative",
+                  overflow: "hidden",
+                  cursor: "pointer",
+                }}
+              >
+                {/* sheen */}
+                <span
+                  className="absolute inset-0 pointer-events-none"
+                  style={{
+                    background:
+                      "linear-gradient(135deg,rgba(255,255,255,0.15),transparent)",
+                    borderRadius: 8,
+                  }}
+                />
+                <Download size={18} strokeWidth={2} />
+                Download PDF
+              </a>
+
+              {/* secondary */}
+              <a
+                href={previewUrl}
+                target="_blank"
+                rel="noopener noreferrer"
+                className="holo-btn-secondary inline-flex items-center gap-2.5 no-underline transition-all duration-200"
+                style={{
+                  fontFamily: "'Orbitron', monospace",
+                  fontSize: 13,
+                  fontWeight: 400,
+                  letterSpacing: "2px",
+                  textTransform: "uppercase",
+                  padding: "13px 28px",
+                  borderRadius: 8,
+                  background: "transparent",
+                  color: "#00e5ff",
+                  border: "1px solid rgba(0,229,255,0.5)",
+                  cursor: "pointer",
+                }}
+              >
+                <Eye size={16} strokeWidth={2} />
+                Preview Online
+              </a>
             </div>
           </div>
-        </motion.div>
-      </div>
-    </section>
+        </div>
+      </section>
+    </>
   );
 }

@@ -2,7 +2,7 @@ import { useState, useEffect, useRef } from "react";
 import { motion, AnimatePresence } from "framer-motion";
 import { Bell, BriefcaseBusiness, Mail, XCircle, CheckCheck, X } from "lucide-react";
 import { useNavigate } from "react-router-dom";
-import { useSocket } from "../context/SocketContext";
+import { useSocket } from "../hooks/useSocket";
 import { cn } from "../lib/utils";
 
 function timeAgo(date) {
@@ -161,6 +161,7 @@ export default function NotificationCenter() {
                       <button
                         onClick={(e) => handleDismiss(e, notif.id)}
                         className="opacity-0 group-hover:opacity-100 absolute right-2 top-2 p-1 rounded-lg hover:bg-muted text-muted-foreground hover:text-foreground transition-all"
+                        aria-label="Dismiss notification"
                       >
                         <X className="w-3 h-3" />
                       </button>

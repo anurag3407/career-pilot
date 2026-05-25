@@ -3,10 +3,11 @@ import { useParams, Link, useNavigate } from 'react-router-dom'
 import { motion } from 'framer-motion'
 import toast from 'react-hot-toast'
 import ReactMarkdown from 'react-markdown'
-import { resumeApi } from '../services/api'
+import { resumeApi, enhanceApi } from '../services/api'
 import Button from '../components/Button'
 import Card from '../components/Card'
-import CustomSection, { sectionsToMarkdown } from '../components/CustomSection'
+import CustomSection from '../components/CustomSection'
+import { sectionsToMarkdown } from '../components/customSectionUtils'
 import { SkeletonList } from '../components/ui/Skeleton'
 
 export default function ResumeView() {
@@ -17,37 +18,21 @@ export default function ResumeView() {
   const [loading, setLoading] = useState(false)
   const [downloading, setDownloading] = useState(false)
   const [activeTab, setActiveTab] = useState('enhanced') // 'original' or 'enhanced'
-  const [scoreData, setScoreData] = useState({
-  overallScore: 82,
-  sections: {
-    summary: {
-      score: 80,
-      feedback: "Strong professional summary"
-    },
-    skills: {
-      score: 88,
-      feedback: "Relevant technical skills"
-    },
-    experience: {
-      score: 75,
-      feedback: "Add more measurable achievements"
-    },
-    education: {
-      score: 90,
-      feedback: "Education section is well structured"
-    },
-    projects: {
-      score: 78,
-      feedback: "Projects could include impact metrics"
-    }
-  },
-  topSuggestions: [
-    "Add quantified achievements",
-    "Improve project descriptions",
-    "Use stronger action verbs"
-  ]
-})
+  const [scoreData, setScoreData] = useState(null)
   const [scoring, setScoring] = useState(false)
+  const [scoringStep, setScoringStep] = useState(0)
+
+  useEffect(() => {
+    let interval
+    if (scoring) {
+      interval = setInterval(() => {
+        setScoringStep((prev) => (prev + 1) % 4)
+      }, 2500)
+    } else {
+      setScoringStep(0)
+    }
+    return () => clearInterval(interval)
+  }, [scoring])
   // ── Custom sections – persisted per-resume in localStorage ───────────────
   const STORAGE_KEY = `resume_custom_sections_${resumeId}`
   const [customSections, setCustomSections] = useState(() => {
@@ -125,40 +110,50 @@ export default function ResumeView() {
   }
 
   const handleAnalyzeResume = async () => {
-  try {
-    setScoring(true)
+    try {
+      setScoring(true)
 
-    const resumeText =
-      activeTab === 'enhanced'
-        ? resume?.enhancedText
-        : resume?.originalText
+      const resumeText =
+        activeTab === 'enhanced'
+          ? resume?.enhancedText
+          : resume?.originalText
 
-    const response = await fetch(
-      'http://localhost:5000/api/resumes/score',
-      {
-        method: 'POST',
-        headers: {
-          'Content-Type': 'application/json',
-        },
-        body: JSON.stringify({ resumeText }),
+      if (!resumeText || !resumeText.trim()) {
+        toast.error('No resume text available to analyze.')
+        return
       }
-    )
 
-    const data = await response.json()
+      const result = await enhanceApi.scoreResume(resumeText)
 
-    if (!data.success) {
-      throw new Error(data.message || 'Failed to analyze resume')
+      if (!result.success) {
+        throw new Error(result.message || 'Failed to analyze resume')
+      }
+
+      setScoreData(result.data)
+      toast.success('Resume analyzed successfully!')
+    } catch (error) {
+      console.error('Resume analysis error:', error)
+
+      if (error.message === 'Not authenticated') {
+        toast.error('Session expired. Please log in again.')
+      } else if (error.status === 429) {
+        const retryMsg = error.retryAfter
+          ? ` Try again in ${Math.ceil(error.retryAfter / 60)} minutes.`
+          : ' Try again tomorrow.'
+        toast.error(`Daily AI limit reached.${retryMsg}`)
+      } else if (error.status === 401 || error.status === 403) {
+        toast.error('Authentication error. Please log in again.')
+      } else if (error.status >= 500) {
+        toast.error('Analysis service temporarily unavailable. Please try again.')
+      } else if (!navigator.onLine || error.message?.includes('Failed to fetch')) {
+        toast.error('Network error. Check your connection and try again.')
+      } else {
+        toast.error(error.message || 'Failed to analyze resume. Please try again.')
+      }
+    } finally {
+      setScoring(false)
     }
-
-    setScoreData(data.data)
-    toast.success('Resume analyzed successfully!')
-  } catch (error) {
-    console.error(error)
-    toast.error('Failed to analyze resume')
-  } finally {
-    setScoring(false)
   }
-}
 
   const formatDate = (dateString) => {
     return new Date(dateString).toLocaleDateString('en-US', {
@@ -370,6 +365,49 @@ export default function ResumeView() {
             )}
           </div>
         </Card>
+
+      {/* Animated Scanner Loader during AI Scoring */}
+      {scoring && (
+        <Card className="mt-6 border-primary/20 bg-primary/5 relative overflow-hidden animate-pulse">
+          <div className="flex flex-col items-center py-10 px-4">
+            {/* Animated Glowing ATS Radar Scanner */}
+            <div className="relative w-24 h-24 mb-6">
+              <motion.div
+                animate={{ scale: [1, 1.2, 1], opacity: [0.3, 0.8, 0.3] }}
+                transition={{ duration: 2, repeat: Infinity }}
+                className="absolute inset-0 rounded-full bg-primary/20"
+              />
+              <div className="absolute inset-2 rounded-full border-4 border-dashed border-primary/40 animate-spin" />
+              <div className="absolute inset-4 rounded-full border border-primary/60 flex items-center justify-center">
+                <svg className="w-8 h-8 text-primary animate-pulse" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+                  <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M9.663 17h4.673M12 3v1m6.364 1.636l-.707.707M21 12h-1M4 12H3m3.343-5.657l-.707-.707m2.828 9.9a5 5 0 117.072 0l-.548.547A3.374 3.374 0 0014 18.469V19a2 2 0 11-4 0v-.531c0-.895-.356-1.754-.988-2.386l-.548-.547z" />
+                </svg>
+              </div>
+            </div>
+
+            <h3 className="text-xl font-bold text-foreground mb-2">Analyzing Your Resume</h3>
+            
+            {/* Animated active scoring message */}
+            <motion.p
+              key={scoringStep}
+              initial={{ opacity: 0, y: 5 }}
+              animate={{ opacity: 1, y: 0 }}
+              exit={{ opacity: 0, y: -5 }}
+              className="text-sm font-semibold text-primary tracking-wide text-center"
+            >
+              {scoringStep === 0 && "🤖 Initializing AI ATS parser..."}
+              {scoringStep === 1 && "🔍 Analyzing keyword relevance & density..."}
+              {scoringStep === 2 && "⚡ Measuring impact statements & formatting..."}
+              {scoringStep === 3 && "📈 Compiling score and suggestions..."}
+            </motion.p>
+            
+            <p className="text-xs text-muted-foreground mt-4 text-center max-w-sm">
+              This might take a few seconds as the AI evaluates your resume against industry benchmarks and formats custom suggestions.
+            </p>
+          </div>
+        </Card>
+      )}
+
       {scoreData && (
   <Card className="mt-6">
     <h3 className="text-2xl font-bold mb-6">
