@@ -33,7 +33,7 @@ const ProgressBar = ({
 
   useEffect(() => {
     if (!isIndeterminate) {
-     const clamped = Math.min(100, Math.max(0, isNaN(value) ? 0 : value));
+      const clamped = Math.min(100, Math.max(0, isNaN(value) ? 0 : value));
       const timer = setTimeout(() => setWidth(clamped), 50);
       return () => clearTimeout(timer);
     }
@@ -67,8 +67,12 @@ const ProgressBar = ({
             />
             <style>{`
               @keyframes indeterminate {
-                0% { transform: translateX(-100%); }
-                100% { transform: translateX(400%); }
+                0% {
+                  transform: translateX(-100%);
+                }
+                100% {
+                  transform: translateX(400%);
+                }
               }
             `}</style>
           </>
@@ -89,16 +93,21 @@ const ProgressBar = ({
           .progress-stripes {
             background-image: repeating-linear-gradient(
               45deg,
-              rgba(255,255,255,0.15) 0px,
-              rgba(255,255,255,0.15) 10px,
+              rgba(255, 255, 255, 0.15) 0px,
+              rgba(255, 255, 255, 0.15) 10px,
               transparent 10px,
               transparent 20px
             );
             animation: stripes 1s linear infinite;
           }
+
           @keyframes stripes {
-            from { background-position: 0 0; }
-            to { background-position: 40px 0; }
+            from {
+              background-position: 0 0;
+            }
+            to {
+              background-position: 40px 0;
+            }
           }
         `}</style>
       )}

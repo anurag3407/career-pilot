@@ -6,6 +6,8 @@ import { motion, AnimatePresence } from "framer-motion";
 import { Moon, Sun, ChevronDown, Check, Eye, Star } from "lucide-react";
 import HolographicAbout from "../components/portfolio/templates/Holographic/About";
 import HolographicPrismEffect from "../components/portfolio/templates/Holographic/PrismEffect";
+import CulinaryAbout from "../components/portfolio/templates/Culinary_Restaurant/About";
+import Navbar from '../components/Navbar'
 
 /* ─────────────────────────────────────────────────────────
    Custom FilterSelect
@@ -37,12 +39,12 @@ function FilterSelect({ value, onChange, options, className = "" }) {
         onClick={() => setOpen((prev) => !prev)}
         className={`
           flex items-center justify-between gap-3 min-w-[160px] px-4 py-2.5
-          rounded-xl border text-sm font-medium text-white
-          bg-zinc-900/80 backdrop-blur-sm
+          rounded-xl border text-sm font-medium text-foreground
+          bg-card backdrop-blur-sm
           transition-all duration-300 cursor-pointer select-none
           ${open
             ? "border-cyan-400 shadow-[0_0_12px_rgba(34,211,238,0.45)] ring-1 ring-cyan-400/30"
-            : "border-zinc-700 hover:border-cyan-500/60 hover:shadow-[0_0_8px_rgba(34,211,238,0.25)]"
+            : "border-border hover:border-cyan-500/60 hover:shadow-[0_0_8px_rgba(34,211,238,0.25)]"
           }
         `}
       >
@@ -62,7 +64,7 @@ function FilterSelect({ value, onChange, options, className = "" }) {
             transition={{ duration: 0.18, ease: "easeOut" }}
             className="
               absolute z-50 left-0 top-[calc(100%+6px)] min-w-full
-              bg-zinc-900 border border-cyan-500/40
+              bg-card border border-border
               shadow-[0_0_20px_rgba(34,211,238,0.2)]
               rounded-xl overflow-hidden py-1
             "
@@ -79,7 +81,7 @@ function FilterSelect({ value, onChange, options, className = "" }) {
                     transition-all duration-200
                     ${isSelected
                       ? "bg-cyan-500/20 text-cyan-300 font-semibold"
-                      : "text-white hover:bg-cyan-500 hover:text-white"
+                      : "text-foreground hover:bg-cyan-500 hover:text-white"
                     }
                   `}
                 >
@@ -291,6 +293,7 @@ export default function TemplateGallery() {
 
   return (
     <div className="min-h-screen bg-background text-foreground p-8 pt-24 transition-colors duration-300">
+      <Navbar />
       <div className="flex justify-between items-center mb-8">
         <h1 className="text-4xl font-bold">Template Gallery</h1>
         {/* Theme Toggle */}
@@ -313,15 +316,15 @@ export default function TemplateGallery() {
         </button>
       </div>
 
-      <div className="mb-8 rounded-2xl border border-zinc-800 bg-zinc-950/70 p-5">
+      <div className="mb-8 rounded-2xl border border-border bg-card p-5">
         <div className="mb-4 flex items-center justify-between gap-4">
           <div>
-            <h2 className="text-xl font-semibold">Portfolio theme</h2>
-            <p className="text-sm text-gray-400">
+            <h2 className="text-xl font-semibold text-foreground">Portfolio theme</h2>
+            <p className="text-sm text-muted-foreground">
               Pick a theme before deploying. Premium themes are shown and locked in the live gallery flow.
             </p>
           </div>
-          <span className="rounded-full border border-zinc-700 bg-zinc-900 px-3 py-1 text-xs text-zinc-300">
+          <span className="rounded-full border border-border bg-muted px-3 py-1 text-xs text-muted-foreground">
             Selected: {selectedTheme}
           </span>
         </div>
@@ -370,7 +373,7 @@ export default function TemplateGallery() {
           <span className="rounded-full bg-cyan-500/20 px-3 py-1 text-xs font-bold uppercase tracking-widest text-cyan-400 border border-cyan-500/30">
             Preview
           </span>
-          <h2 className="text-lg font-semibold text-white/70">Holographic Theme — About Section</h2>
+          <h2 className="text-lg font-semibold text-foreground/70">Holographic Theme — About Section</h2>
         </div>
        </div>
 
@@ -386,6 +389,22 @@ export default function TemplateGallery() {
         </div>
       </div>
 
+        <div className="overflow-hidden rounded-2xl border border-border">
+          <HolographicAbout />
+        </div>
+      </div>
+
+      <div className="mt-12">
+        <div className="mb-4 flex items-center gap-3 px-1">
+          <span className="rounded-full bg-amber-500/20 px-3 py-1 text-xs font-bold uppercase tracking-widest text-amber-400 border border-amber-500/30">
+            Preview
+          </span>
+          <h2 className="text-lg font-semibold text-foreground/70">Culinary Restaurant Theme — About Section</h2>
+        </div>
+        <div className="overflow-hidden rounded-2xl border border-border">
+          <CulinaryAbout />
+        </div>
+      </div>
     </div>
   );
 }
