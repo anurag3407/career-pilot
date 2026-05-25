@@ -1,14 +1,14 @@
 import React, { useState } from 'react';
-import { Mail, Phone, MapPin, Send, Github, Linkedin, Twitter, Instagram } from 'lucide-react';
+import { Mail, MapPin, Send, Github, Linkedin, Twitter, Instagram } from 'lucide-react';
 
 const Contact = ({ 
   name = "Artist Name", 
   email = "hello@artist.com",
   socials = [
-    { name: "GitHub", url: "https://github.com/anurag3407", icon: Github },
-    { name: "LinkedIn", url: "https://www.linkedin.com/in/anurag3407/", icon: Linkedin },
-    { name: "Twitter", url: "https://x.com/anurag3407", icon: Twitter },
-    { name: "Instagram", url: "https://www.instagram.com/anurag3407", icon: Instagram },
+    { name: "GitHub", url: "https://github.com/yourusername", icon: Github },
+    { name: "LinkedIn", url: "https://www.linkedin.com/in/yourusername", icon: Linkedin },
+    { name: "Twitter", url: "https://x.com/yourusername", icon: Twitter },
+    { name: "Instagram", url: "https://www.instagram.com/yourusername", icon: Instagram },
   ]
 }) => {
   const [formData, setFormData] = useState({
@@ -30,7 +30,10 @@ const Contact = ({
 
     // Simulate API call
     setTimeout(() => {
-      console.log("📧 Contact Form Submitted:", formData);
+      // Only log in development to avoid exposing user data in production
+      if (import.meta.env.DEV) {
+        console.log("📧 Contact Form Submitted:", formData);
+      }
       // TODO: Connect to real backend here later
       // Example: await fetch('/api/contact', { method: 'POST', body: JSON.stringify(formData) });
       
@@ -116,45 +119,69 @@ const Contact = ({
               {!isSubmitted ? (
                 <form onSubmit={handleSubmit} className="space-y-6">
                   <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
+                    <div>
+                      <label htmlFor="contact-name" className="block text-sm font-medium text-violet-900 mb-2">
+                        Your Name
+                      </label>
+                      <input
+                        id="contact-name"
+                        type="text"
+                        name="name"
+                        placeholder="Your Name"
+                        value={formData.name}
+                        onChange={handleChange}
+                        required
+                        className="w-full px-6 py-4 rounded-2xl border border-violet-200 focus:border-violet-400 focus:ring-4 focus:ring-violet-100 outline-none transition-all"
+                      />
+                    </div>
+                    <div>
+                      <label htmlFor="contact-email" className="block text-sm font-medium text-violet-900 mb-2">
+                        Your Email
+                      </label>
+                      <input
+                        id="contact-email"
+                        type="email"
+                        name="email"
+                        placeholder="Your Email"
+                        value={formData.email}
+                        onChange={handleChange}
+                        required
+                        className="w-full px-6 py-4 rounded-2xl border border-violet-200 focus:border-violet-400 focus:ring-4 focus:ring-violet-100 outline-none transition-all"
+                      />
+                    </div>
+                  </div>
+
+                  <div>
+                    <label htmlFor="contact-subject" className="block text-sm font-medium text-violet-900 mb-2">
+                      Subject
+                    </label>
                     <input
+                      id="contact-subject"
                       type="text"
-                      name="name"
-                      placeholder="Your Name"
-                      value={formData.name}
-                      onChange={handleChange}
-                      required
-                      className="w-full px-6 py-4 rounded-2xl border border-violet-200 focus:border-violet-400 focus:ring-4 focus:ring-violet-100 outline-none transition-all"
-                    />
-                    <input
-                      type="email"
-                      name="email"
-                      placeholder="Your Email"
-                      value={formData.email}
+                      name="subject"
+                      placeholder="Subject"
+                      value={formData.subject}
                       onChange={handleChange}
                       required
                       className="w-full px-6 py-4 rounded-2xl border border-violet-200 focus:border-violet-400 focus:ring-4 focus:ring-violet-100 outline-none transition-all"
                     />
                   </div>
 
-                  <input
-                    type="text"
-                    name="subject"
-                    placeholder="Subject"
-                    value={formData.subject}
-                    onChange={handleChange}
-                    required
-                    className="w-full px-6 py-4 rounded-2xl border border-violet-200 focus:border-violet-400 focus:ring-4 focus:ring-violet-100 outline-none transition-all"
-                  />
-
-                  <textarea
-                    name="message"
-                    placeholder="Your Message..."
-                    rows={6}
-                    value={formData.message}
-                    onChange={handleChange}
-                    required
-                    className="w-full px-6 py-4 rounded-3xl border border-violet-200 focus:border-violet-400 focus:ring-4 focus:ring-violet-100 outline-none resize-y transition-all"
-                  />
+                  <div>
+                    <label htmlFor="contact-message" className="block text-sm font-medium text-violet-900 mb-2">
+                      Message
+                    </label>
+                    <textarea
+                      id="contact-message"
+                      name="message"
+                      placeholder="Your Message..."
+                      rows={6}
+                      value={formData.message}
+                      onChange={handleChange}
+                      required
+                      className="w-full px-6 py-4 rounded-3xl border border-violet-200 focus:border-violet-400 focus:ring-4 focus:ring-violet-100 outline-none resize-y transition-all"
+                    />
+                  </div>
 
                   <button
                     type="submit"
