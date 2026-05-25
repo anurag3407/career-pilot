@@ -5,6 +5,7 @@ import PortfolioShowcaseSection from '../components/ui/PortfolioShowcaseSection'
 import HowItWorksSection from '../components/ui/HowItWorksSection'
 import TestimonialsSection from '../components/ui/TestimonialsSection'
 import CTASection from '../components/ui/CTASection'
+import CoffeeContactSection from '../components/ui/CoffeeContactSection'
 import Footer from '../components/ui/Footer'
 import { StackedCircularFooter } from '../components/ui/stacked-circular-footer'
 
@@ -46,6 +47,8 @@ export default function Home() {
 
       {/* CTA Section */}
       <CTASection />
+      {/* Coffee Contact Section */}
+      <CoffeeContactSection />
 
       {/* Footer */}
       <Footer />
