@@ -15,8 +15,9 @@ router.post('/', verifyToken, handleUpload, validateUpload, asyncHandler(async (
     throw new ApiError(400, 'No file uploaded');
   }
   try {
-    const fileBuffer = await fs.readFile(req.file.path);
+    let fileBuffer = await fs.readFile(req.file.path);
     const pdfData = await pdfParse(fileBuffer);
+    fileBuffer = null; // Explicitly free memory buffer to reduce RAM pressure
     const resumeId = uuidv4();
 
     res.json({
@@ -53,8 +54,9 @@ router.post('/extract-text', verifyToken, handleUpload, validateUpload, asyncHan
     throw new ApiError(400, 'No file uploaded');
   }
   try {
-    const fileBuffer = await fs.readFile(req.file.path);
+    let fileBuffer = await fs.readFile(req.file.path);
     const pdfData = await pdfParse(fileBuffer);
+    fileBuffer = null; // Explicitly free memory buffer to reduce RAM pressure
 
     res.json({
       success: true,
