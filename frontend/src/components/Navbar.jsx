@@ -344,7 +344,7 @@ export default function Navbar() {
             exit={{ opacity: 0, height: 0 }}
             className="xl:hidden border-t border-border bg-background/95 backdrop-blur-xl overflow-hidden"
           >
-            <div className="px-4 py-6 space-y-3 max-h-[calc(100vh-4rem)] overflow-y-auto纯">
+            <div className="px-4 py-6 space-y-3 max-h-[calc(100vh-4rem)] overflow-y-auto">
 
               <div className="flex items-center bg-muted border border-border rounded-xl px-3 py-2.5">
                 <Search className="w-4 h-4 text-muted-foreground mr-2" />
