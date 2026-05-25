@@ -49,6 +49,7 @@ class RequestQueue {
     this.concurrency = concurrency;
     this.activeCount = 0;
     this.queue = [];
+    this.rateLimitResetAt = null; // ← add this
   }
 
   enqueue(task) {
@@ -59,6 +60,11 @@ class RequestQueue {
   }
 
   dequeue() {
+    // If we're currently paused due to a rate limit, don't dequeue.
+    if (this.rateLimitResetAt && Date.now() < this.rateLimitResetAt) {
+      return;
+    }
+
     if (this.activeCount >= this.concurrency || this.queue.length === 0) {
       return;
     }
@@ -75,8 +81,26 @@ class RequestQueue {
         this.dequeue();
       });
   }
-}
 
+  pauseUntil(resetTimestamp) {
+   
+    if (!resetTimestamp) return;
+    if (resetTimestamp > 1e12) {
+      // looks like milliseconds
+      this.rateLimitResetAt = resetTimestamp;
+    } else {
+      // assume seconds
+      this.rateLimitResetAt = resetTimestamp * 1000;
+    }
+  }
+}
+export class RateLimitError extends Error {
+  constructor(retryAfter) {
+    super(`GitHub rate limit hit. Retry after ${retryAfter}s`);
+    this.name = 'RateLimitError';
+    this.retryAfter = retryAfter;
+  }
+}
 const requestQueue = new RequestQueue(DEFAULT_CONCURRENCY);
 
 const executeRequestWithRetry = async (requestFn, attempt = 1) => {
@@ -86,9 +110,33 @@ const executeRequestWithRetry = async (requestFn, attempt = 1) => {
     const response = error?.response;
     const retryAfterSeconds = parseRetryAfter(response?.headers, response?.status);
 
-    if (attempt < MAX_REQUEST_RETRIES && retryAfterSeconds) {
+    const status = response?.status;
+    const isRateLimited = status === 429 || (status === 403 && retryAfterSeconds);
+
+    // Try to determine an absolute reset timestamp (in seconds).
+    const resetHeader = response?.headers?.['x-ratelimit-reset'] || response?.headers?.['X-RateLimit-Reset'];
+    let resetTimestamp = null;
+    if (resetHeader) {
+      const parsed = Number.parseInt(resetHeader, 10);
+      if (!Number.isNaN(parsed)) {
+        resetTimestamp = parsed;
+      }
+    } else if (retryAfterSeconds) {
+      resetTimestamp = Math.floor(Date.now() / 1000) + retryAfterSeconds;
+    }
+
+    
+    if (isRateLimited && resetTimestamp) {
+      requestQueue.pauseUntil(resetTimestamp);
+    }
+
+    if (attempt < MAX_REQUEST_RETRIES && isRateLimited && retryAfterSeconds) {
       await delay(retryAfterSeconds * 1000);
       return executeRequestWithRetry(requestFn, attempt + 1);
+    }
+
+    if (isRateLimited) {
+      throw new RateLimitError(retryAfterSeconds || 0);
     }
 
     throw error;
@@ -98,10 +146,14 @@ const executeRequestWithRetry = async (requestFn, attempt = 1) => {
 const fetchGitHubResource = async (path, token, options = {}) => {
   const requestFn = async () => {
     const url = `${GITHUB_API_BASE}${path}`;
-    const response = await axios.get(url, {
-      headers: getGitHubHeaders(token),
-      ...options
-    });
+    const { headers: customHeaders, ...restOptions } = options;
+const response = await axios.get(url, {
+  ...restOptions,
+  headers: {
+    ...getGitHubHeaders(token),
+    ...customHeaders
+  }
+});
 
     return {
       status: response.status,
@@ -169,5 +221,6 @@ const batchRepoScans = async (repos = [], token) => {
 export default {
   fetchGitHubResource,
   groupRepoRequests,
-  batchRepoScans
+  batchRepoScans,
+  RateLimitError
 };
