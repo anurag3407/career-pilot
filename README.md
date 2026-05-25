@@ -300,6 +300,16 @@ For complete documentation, see the [API Reference Guide](./API_DOCS/README.md).
 
 We welcome contributions! Please see our [CONTRIBUTION.md](./CONTRIBUTION.md) for the Development Setup, Pull Request Process, and Coding Standards.
 
+## 💙 Thank You Contributors
+
+Thank you to all the amazing contributors who have helped improve this project. <br></br>
+
+<a href="https://github.com/anurag3407/career-pilot/graphs/contributors">
+  <img src="https://contrib.rocks/image?repo=anurag3407/career-pilot" />
+</a>
+
+Your efforts, pull requests, ideas, and support make this project better every day and help grow an incredible open-source community 🚀
+
 ---
 
 ## 📄 License
@@ -308,8 +318,3 @@ This project is licensed under the MIT License - see the [LICENSE](LICENSE) file
 
 <br />
 
-<div align="center">
-  <a href="https://github.com/ishwari418/career-pilot/graphs/contributors">
-    <img src="https://contributors-img.web.app/image?repo=ishwari418/career-pilot" width="300" alt="Contributors" />
-  </a>
-</div>

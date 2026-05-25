@@ -22,16 +22,16 @@ import {
     Rocket,
     Briefcase
 } from "lucide-react";
-import { useAuth } from "../context/AuthContext";
-import { useTheme } from "../context/ThemeContext";
+import { useAuth } from "../hooks/useAuth";
+import { useTheme } from "../hooks/useTheme";
 import { generateRandomString, generateCodeChallenge } from "../utils/pkce";
 import {
     Sidebar,
     SidebarBody,
     SidebarLink,
     SidebarDivider,
-    useSidebar,
 } from "./ui/Sidebar";
+import { useSidebar } from "../hooks/useSidebar";
 import { cn } from "../lib/utils";
 
 const navLinks = [

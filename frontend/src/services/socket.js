@@ -53,35 +53,35 @@ export const socketEvents = {
   joinChannel: (channelId) => {
     socket?.emit('join_channel', channelId);
   },
-  
+
   leaveChannel: (channelId) => {
     socket?.emit('leave_channel', channelId);
   },
-  
+
   sendMessage: (data) => {
     socket?.emit('send_message', data);
   },
-  
+
   startTyping: (channelId) => {
     socket?.emit('typing_start', { channelId });
   },
-  
+
   stopTyping: (channelId) => {
     socket?.emit('typing_stop', { channelId });
   },
-  
+
   addReaction: (messageId, emoji) => {
     socket?.emit('add_reaction', { messageId, emoji });
   },
-  
+
   removeReaction: (messageId, emoji) => {
     socket?.emit('remove_reaction', { messageId, emoji });
   },
-  
+
   editMessage: (messageId, content) => {
     socket?.emit('edit_message', { messageId, content });
   },
-  
+
   deleteMessage: (messageId) => {
     socket?.emit('delete_message', { messageId });
   },
@@ -90,19 +90,19 @@ export const socketEvents = {
   startConversation: (data) => {
     socket?.emit('start_conversation', data);
   },
-  
+
   sendDirectMessage: (data) => {
     socket?.emit('send_direct_message', data);
   },
-  
+
   markMessagesRead: (conversationId) => {
     socket?.emit('mark_messages_read', { conversationId });
   },
-  
+
   dmStartTyping: (conversationId, receiverId) => {
     socket?.emit('dm_typing_start', { conversationId, receiverId });
   },
-  
+
   dmStopTyping: (conversationId, receiverId) => {
     socket?.emit('dm_typing_stop', { conversationId, receiverId });
   },
@@ -111,15 +111,15 @@ export const socketEvents = {
   subscribePosts: () => {
     socket?.emit('subscribe_posts');
   },
-  
+
   unsubscribePosts: () => {
     socket?.emit('unsubscribe_posts');
   },
-  
+
   likePost: (postId) => {
     socket?.emit('like_post', { postId });
   },
-  
+
   newComment: (data) => {
     socket?.emit('new_comment', data);
   },
@@ -128,7 +128,7 @@ export const socketEvents = {
   getOnlineUsers: () => {
     socket?.emit('get_online_users');
   },
-  
+
   updateStatus: (status) => {
     socket?.emit('update_status', { status });
   }

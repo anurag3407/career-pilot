@@ -1,17 +1,16 @@
-import { createContext, useContext, useState, useEffect, useCallback } from 'react';
-import { useAuth } from './AuthContext';
+import { useState, useEffect, useCallback } from 'react';
+import { useAuth } from '../hooks/useAuth';
 import { initializeSocket, disconnectSocket, getSocket, socketEvents } from '../services/socket';
+import { SocketContext } from './SocketContext';
 
-const SocketContext = createContext(null);
-
-export function useSocket() {
-  const context = useContext(SocketContext);
-  if (!context) {
-    throw new Error('useSocket must be used within a SocketProvider');
-  }
-  return context;
-}
-
+/**
+ * Provider component that handles real-time web socket connections,
+ * status updates of online users, and push notifications.
+ *
+ * @param {object} props - The component props.
+ * @param {React.ReactNode} props.children - The children elements.
+ * @returns {React.JSX.Element} The rendered Provider component.
+ */
 export function SocketProvider({ children }) {
   const { user } = useAuth();
   const [socket, setSocket] = useState(null);
@@ -21,6 +20,12 @@ export function SocketProvider({ children }) {
   const unreadCount = notifications.filter((n) => !n.read).length;
 
 
+  /**
+   * Pushes a new notification to the state stack.
+   *
+   * @param {string} type - The notification type.
+   * @param {object} data - Metadata payload of the notification.
+   */
   const pushNotification = useCallback((type, data) => {
     setNotifications((prev) =>
       [
@@ -36,24 +41,40 @@ export function SocketProvider({ children }) {
     );
   }, []);
 
+  /**
+   * Marks a specific notification as read.
+   *
+   * @param {string} id - The notification ID.
+   */
   const markRead = useCallback((id) => {
     setNotifications((prev) =>
       prev.map((n) => (n.id === id ? { ...n, read: true } : n))
     );
   }, []);
 
+  /**
+   * Marks all notifications as read.
+   */
   const markAllRead = useCallback(() => {
     setNotifications((prev) =>
      prev.map((n) => ({ ...n, read: true }))
     );
   }, []);
 
+  /**
+   * Dismisses a specific notification.
+   *
+   * @param {string} id - The notification ID.
+   */
   const dismissNotification = useCallback((id) => {
     setNotifications((prev) =>
       prev.filter((n) => n.id !== id)
     );
   }, []);
 
+  /**
+   * Clears all notifications.
+   */
   const clearNotifications = useCallback(() => {
     setNotifications([]);
   }, []);
@@ -151,7 +172,13 @@ export function SocketProvider({ children }) {
     };
   }, [user]);
 
-  // Subscribe to socket events
+  /**
+   * Subscribes to a socket event with a callback, returning an unsubscribe cleanup function.
+   *
+   * @param {string} event - The socket event name.
+   * @param {Function} callback - The event handler callback function.
+   * @returns {Function} An unsubscribe function to remove the listener.
+   */
   const subscribe = useCallback((event, callback) => {
     const currentSocket = getSocket();
     if (currentSocket) {
@@ -161,7 +188,12 @@ export function SocketProvider({ children }) {
     return () => {};
   }, [socket]);
 
-  // Emit socket events
+  /**
+   * Emits a socket event with data to the server.
+   *
+   * @param {string} event - The socket event name.
+   * @param {object} data - The message payload to emit.
+   */
   const emit = useCallback((event, data) => {
     const currentSocket = getSocket();
     if (currentSocket?.connected) {

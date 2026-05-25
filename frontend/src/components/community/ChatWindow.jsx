@@ -1,8 +1,8 @@
 import { useState, useEffect, useRef, useCallback } from 'react';
-import { useSocket } from '../../context/SocketContext';
+import { useSocket } from '../../hooks/useSocket';
 import MessageBubble from './MessageBubble';
 import MessageInput from './MessageInput';
-import { useTheme } from '../../context/ThemeContext';
+import { useTheme } from '../../hooks/useTheme';
 import { Hash, Users, Pin, Search, Settings, MoreVertical, Loader2, Sun, Moon } from 'lucide-react';
 
 // Skeleton loader component for chat messages

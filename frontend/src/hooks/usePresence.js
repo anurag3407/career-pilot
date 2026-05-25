@@ -1,18 +1,24 @@
-import { useState, useEffect } from 'react';
-import { useSocket } from '../context/SocketContext';
+import { useState, useEffect, useMemo, useCallback } from 'react';
+import { useSocket } from './useSocket';
 
 /**
- * Custom hook to track user presence status
+ * Custom hook to track user presence status safely with optimized event cleanup
  * @param {string[]} userIds - Array of user IDs to track
  */
 export function usePresence(userIds = []) {
   const { onlineUsers, subscribe } = useSocket();
   const [presenceMap, setPresenceMap] = useState({});
 
-  // Update presence map when online users change
+  // Create a stable primitive key based on array content to prevent unnecessary effect triggers
+  const serializedUserIds = userIds.join(',');
+
+  // Memoize the target user IDs array so its reference remains stable between renders
+  const stableUserIds = useMemo(() => userIds, [serializedUserIds]);
+
+  // 1. Synchronize local map when global onlineUsers change or target user IDs change
   useEffect(() => {
     const map = {};
-    userIds.forEach(uid => {
+    stableUserIds.forEach(uid => {
       const user = onlineUsers.find(u => u.uid === uid);
       map[uid] = {
         isOnline: !!user,
@@ -21,12 +27,15 @@ export function usePresence(userIds = []) {
       };
     });
     setPresenceMap(map);
-  }, [userIds, onlineUsers]);
+  }, [stableUserIds, onlineUsers]);
 
-  // Subscribe to status changes
+  // 2. Subscribe to real-time status changes with a stabilized dependency array
   useEffect(() => {
+    // If no target users are provided, skip setting up socket listeners entirely
+    if (stableUserIds.length === 0) return;
+
     const unsubOnline = subscribe('user_online', ({ uid }) => {
-      if (userIds.includes(uid)) {
+      if (stableUserIds.includes(uid)) {
         setPresenceMap(prev => ({
           ...prev,
           [uid]: { isOnline: true, status: 'online', lastSeen: new Date() }
@@ -35,7 +44,7 @@ export function usePresence(userIds = []) {
     });
 
     const unsubOffline = subscribe('user_offline', ({ uid }) => {
-      if (userIds.includes(uid)) {
+      if (stableUserIds.includes(uid)) {
         setPresenceMap(prev => ({
           ...prev,
           [uid]: { isOnline: false, status: 'offline', lastSeen: new Date() }
@@ -44,7 +53,7 @@ export function usePresence(userIds = []) {
     });
 
     const unsubStatusChange = subscribe('user_status_changed', ({ uid, status }) => {
-      if (userIds.includes(uid)) {
+      if (stableUserIds.includes(uid)) {
         setPresenceMap(prev => ({
           ...prev,
           [uid]: { ...prev[uid], status, lastSeen: new Date() }
@@ -52,18 +61,23 @@ export function usePresence(userIds = []) {
       }
     });
 
+    // CRITICAL CLEANUP: Ensures old subscriptions are cleanly unwound 
+    // before re-executing or upon hook unmount.
     return () => {
       unsubOnline();
       unsubOffline();
       unsubStatusChange();
     };
-  }, [userIds, subscribe]);
+  }, [stableUserIds, subscribe]);
 
-  // Helper function to check if a specific user is online
-  const isUserOnline = (uid) => presenceMap[uid]?.isOnline || false;
+  // 3. Wrap helper utility methods in useCallback to prevent parent re-renders
+  const isUserOnline = useCallback((uid) => {
+    return presenceMap[uid]?.isOnline || false;
+  }, [presenceMap]);
 
-  // Helper function to get user status
-  const getUserStatus = (uid) => presenceMap[uid]?.status || 'offline';
+  const getUserStatus = useCallback((uid) => {
+    return presenceMap[uid]?.status || 'offline';
+  }, [presenceMap]);
 
   return {
     presenceMap,

@@ -1,7 +1,7 @@
 import { useState, useEffect, useRef } from 'react'
 import { useParams, useNavigate, useOutletContext } from 'react-router-dom'
 import { fellowshipApi, paymentApi } from '../../services/api'
-import { useSocket } from '../../context/SocketContext'
+import { useSocket } from '../../hooks/useSocket'
 import toast from 'react-hot-toast'
 import { motion } from 'framer-motion'
 import {

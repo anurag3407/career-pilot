@@ -10,6 +10,7 @@
     "preview": "vite preview"
   },
   "dependencies": {
+    "@hello-pangea/dnd": "^18.0.1",
     "@radix-ui/react-label": "^2.1.8",
     "@radix-ui/react-slot": "^1.2.4",
     "@tabler/icons-react": "^3.36.1",
@@ -19,10 +20,11 @@
     "class-variance-authority": "^0.7.1",
     "clsx": "^2.1.1",
     "cobe": "^0.6.5",
+    "crypto-js": "^4.2.0",
     "date-fns": "^4.1.0",
     "dotted-map": "^2.2.3",
     "firebase": "^11.1.0",
-    "framer-motion": "^11.15.0",
+    "framer-motion": "^12.39.0",
     "html2canvas": "^1.4.1",
     "jspdf": "^4.0.0",
     "lucide-react": "^0.468.0",
