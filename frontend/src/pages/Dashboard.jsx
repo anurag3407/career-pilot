@@ -21,7 +21,8 @@ import {
   GraduationCap,
   Bell,
   Mic,
-  Globe
+  Globe,
+  Calendar
 } from 'lucide-react'
 import { resumeApi, jobTrackerApi, portfolioApi } from '../services/api'
 import Button from '../components/Button'
@@ -399,7 +400,7 @@ export default function Dashboard() {
                   <div className="rounded-[2rem] bg-card border border-border overflow-hidden shadow-sm">
                     <div className="divide-y divide-border">
                       {resumes.slice(0, 5).map(resume => (
-                        <div key={resume.id} className="p-5 hover:bg-muted/50 transition-all group">
+                        <div key={resume.id} className="p-5 hover:bg-muted/80 transition-all group hover:shadow-md relative rounded-xl hover:z-10 bg-transparent hover:bg-card">
                           <div className="flex justify-between items-center">
                             <div className="flex-1">
                               <div className="flex items-center gap-3">
@@ -408,7 +409,10 @@ export default function Dashboard() {
                                   <span className="px-2 py-0.5 bg-primary/10 text-primary border border-primary/20 rounded text-[10px] font-black uppercase tracking-widest animate-pulse">Enhanced</span>
                                 )}
                               </div>
-                              <p className="text-sm text-muted-foreground font-semibold">{resume.jobRole || 'General'} • {formatDate(resume.createdAt)}</p>
+                              <div className="flex items-center gap-4 text-xs text-muted-foreground font-semibold mt-1.5">
+                                <span className="flex items-center gap-1.5"><Briefcase className="w-3.5 h-3.5" /> {resume.jobRole || 'General'}</span>
+                                <span className="flex items-center gap-1.5"><Calendar className="w-3.5 h-3.5" /> {formatDate(resume.createdAt)}</span>
+                              </div>
                             </div>
                             <div className="flex gap-2">
                               <Link to={`/resume/${resume.id}`}>
