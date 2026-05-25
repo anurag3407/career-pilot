@@ -5,6 +5,7 @@ import { useTheme } from "../hooks/useTheme";
 import { motion, AnimatePresence } from "framer-motion";
 import { Moon, Sun, ChevronDown, Check, Eye, Star } from "lucide-react";
 import HolographicAbout from "../components/portfolio/templates/Holographic/About";
+import HolographicPrismEffect from "../components/portfolio/templates/Holographic/PrismEffect";
 
 /* ─────────────────────────────────────────────────────────
    Custom FilterSelect
@@ -371,10 +372,20 @@ export default function TemplateGallery() {
           </span>
           <h2 className="text-lg font-semibold text-white/70">Holographic Theme — About Section</h2>
         </div>
+       </div>
+
+      <div className="mb-12">
+        <div className="flex items-center gap-3 mb-4">
+          <span className="text-xs font-bold px-2 py-1 rounded-full bg-cyan-500/20 text-cyan-400 border border-cyan-500/30">
+            Preview
+          </span>
+          <h2 className="text-lg font-semibold text-white/70">Holographic Theme — Prism Effect</h2>
+        </div>
         <div className="overflow-hidden rounded-2xl border border-white/10">
-          <HolographicAbout />
+          <HolographicPrismEffect />
         </div>
       </div>
+
     </div>
   );
 }
