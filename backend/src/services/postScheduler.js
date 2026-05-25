@@ -33,8 +33,8 @@ export const initializePostScheduler = async () => {
         postSchedulerQueue = new Queue(QUEUE_NAME, {
             connection: client,
             defaultJobOptions: {
-                attempts: 3,
-                backoff: { type: 'exponential', delay: 5000 },
+                attempts: 5,
+                backoff: { type: 'exponential', delay: 2000 },
                 removeOnComplete: { age: 7 * 24 * 3600, count: 500 },
                 removeOnFail: { age: 30 * 24 * 3600 }
             }
@@ -94,10 +94,30 @@ export const initializePostScheduler = async () => {
             redisManager.registerWorker(QUEUE_NAME, worker);
 
             worker.on('completed', (job) => {
-                console.log(`✅ Post scheduler job ${job.id} completed`);
+                console.log(`[BullMQ] ✅ Completed | ${job.queueName} | ID: ${job.id}`);
             });
-            worker.on('failed', (job, err) => {
-                console.error(`❌ Post scheduler job ${job?.id} failed: ${err.message}`);
+            worker.on('failed', async (job, err) => {
+                console.error(
+                    `[BullMQ] ❌ Failed | ${job.queueName} | ID: ${job.id} | Attempt ${job.attemptsMade}/${job.opts.attempts}`,
+                    { data: job.data, error: err.message }
+                );
+
+                if (job.attemptsMade >= job.opts.attempts) {
+                    console.error(`[DLQ] ☠️ Permanently failed | ID: ${job.id}`, {
+                        queue: job.queueName,
+                        data: job.data,
+                        error: err.message,
+                        failedAt: new Date().toISOString(),
+                    });
+                    const dlq = new Queue('dead-letter', { connection: workerConnection });
+                    await dlq.add('failed-job', {
+                        originalQueue: job.queueName,
+                        jobId: job.id,
+                        data: job.data,
+                        error: err.message,
+                        failedAt: new Date().toISOString(),
+                    });
+                }
             });
         }
 
@@ -130,7 +150,15 @@ export const schedulePostJob = async (postId, scheduledAt) => {
     const job = await postSchedulerQueue.add(
         'publish-post',
         { postId },
-        { delay, jobId: `post:${postId}` }
+        {
+            delay,
+            jobId: `post:${postId}`,
+            attempts: 5,
+            backoff: {
+                type: 'exponential',
+                delay: 2000
+            }
+        }
     );
     return job.id;
 };
