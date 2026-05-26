@@ -326,6 +326,25 @@ className="w-full pl-12 pr-10 py-4 bg-muted/50 border border-border rounded-xl t
                         Reset Filters
                       </button>
                     </div>
+                    <div className="mt-4 flex justify-end gap-3">
+                      <button
+                        type="button"
+                        onClick={handleResetFilters}
+                        className="px-4 py-2.5 bg-muted/40 hover:bg-muted/60 border border-border rounded-xl text-sm font-medium text-muted-foreground hover:text-foreground transition-all duration-200 flex items-center gap-2 backdrop-blur-md shadow-sm cursor-pointer hover:border-primary/30"
+                      >
+                        <X className="w-4 h-4 text-muted-foreground hover:text-foreground transition-colors" />
+                        Reset Filters
+                      </button>
+
+                      <button
+                        type="button"
+                        onClick={handleResetFilters}
+                        className="px-4 py-2.5 bg-red-500 hover:bg-red-600 text-white rounded-xl text-sm font-medium transition-all duration-200 flex items-center gap-2 shadow-sm cursor-pointer"
+                      > 
+                        Clear All Filters
+                      </button>
+                    </div>
+
                   </motion.div>
                 )}
               </AnimatePresence>
