@@ -8,8 +8,8 @@ export default function ProjectsFrame({ data }) {
     <div className="h-full p-10 bg-[#1A1A1A] overflow-y-auto custom-scrollbar">
       <h2 className="text-3xl font-bold mb-8 text-white">Selected Works</h2>
       <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
-        {projects.map(project => (
-          <div key={project.id} className="bg-[#252525] rounded-xl overflow-hidden border border-[#333] hover:border-blue-500/50 transition-all duration-300 group">
+        {projects && projects.map((project, i) => (
+          <div key={project.id || i} className="bg-[#252525] rounded-xl overflow-hidden border border-[#333] hover:border-blue-500/50 transition-all duration-300 group">
             <div className="h-48 overflow-hidden relative">
               <div className="absolute inset-0 bg-blue-500/20 opacity-0 group-hover:opacity-100 transition-opacity z-10 mix-blend-overlay"></div>
               <img src={project.image} alt={project.title} className="w-full h-full object-cover group-hover:scale-105 transition-transform duration-500" />
