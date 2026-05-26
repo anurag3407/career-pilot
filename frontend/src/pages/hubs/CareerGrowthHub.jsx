@@ -20,6 +20,14 @@ export default function CareerGrowthHub() {
         color="primary"
       />
       <ToolCard
+        to="/career-simulator"
+        icon={Sparkles}
+        title="AI Career Simulator"
+        description="Simulate recruitment stages, visualize skill gap heatmaps, inspect interview risks, and generate roadmaps."
+        badge="New"
+        color="secondary"
+      />
+      <ToolCard
         to="/fellowship"
         icon={GraduationCap}
         title="Developer Fellowship"

@@ -187,7 +187,7 @@ export default function Dashboard() {
                 { to: '/hub/resume', icon: FileText, label: 'Resume Builder', desc: 'Create, parse, and optimize ATS resumes.', sub: `${resumes.length} resumes`, color: 'primary', badge: 'AI' },
                 { to: '/hub/jobs', icon: Briefcase, label: 'Job Finder', desc: 'Search jobs, set alerts, and track applications.', sub: `${jobStats.total} tracked`, color: 'primary' },
                 { to: '/hub/portfolio', icon: Globe, label: 'Portfolio Builder', desc: 'Sync repos and deploy portfolios instantly.', sub: `${portfolioCount} portfolios`, color: 'secondary' },
-                { to: '/hub/career', icon: GraduationCap, label: 'Career Growth', desc: 'AI mock interviews, email & profile tuning.', sub: '4 tools', color: 'emerald-500', badge: 'AI' },
+                { to: '/hub/career', icon: GraduationCap, label: 'Career Growth', desc: 'AI mock interviews, email & profile tuning.', sub: '5 tools', color: 'emerald-500', badge: 'AI' },
                 { to: '/hub/community', icon: Users, label: 'Community Hub', desc: 'Group chat, public posts, and direct DMs.', sub: 'Connect', color: 'primary' },
               ].map((hub, idx) => (
                 <motion.div key={idx} variants={itemVariants}>

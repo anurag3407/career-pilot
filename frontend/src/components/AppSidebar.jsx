@@ -292,6 +292,14 @@ const [openAI, setOpenAI] = useState(false);
     >
         <SidebarLink
             link={{
+                label: "Career Simulator",
+                href: "/career-simulator",
+                icon: <Brain className="w-4 h-4 flex-shrink-0" />,
+            }}
+            onClick={() => setOpen(false)}
+        />
+        <SidebarLink
+            link={{
                 label: "Skill Gap Analyzer",
                 href: "/skill-gap",
                 icon: <Brain className="w-4 h-4 shrink-0" />,

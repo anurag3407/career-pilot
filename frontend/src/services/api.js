@@ -1353,3 +1353,52 @@ export const notificationApi = {
     return handleResponse(response)
   }
 }
+
+// ============ CAREER SIMULATION API ============
+export const careerSimulationApi = {
+  async getAll() {
+    const headers = await getAuthHeaders()
+    const response = await fetch(`${API_BASE}/career-simulations`, {
+      method: 'GET',
+      headers
+    })
+    return handleResponse(response)
+  },
+
+  async getById(id) {
+    const headers = await getAuthHeaders()
+    const response = await fetch(`${API_BASE}/career-simulations/${id}`, {
+      method: 'GET',
+      headers
+    })
+    return handleResponse(response)
+  },
+
+  async create(data) {
+    const headers = await getAuthHeaders()
+    const response = await fetch(`${API_BASE}/career-simulations`, {
+      method: 'POST',
+      headers,
+      body: JSON.stringify(data)
+    })
+    return handleResponse(response)
+  },
+
+  async delete(id) {
+    const headers = await getAuthHeaders()
+    const response = await fetch(`${API_BASE}/career-simulations/${id}`, {
+      method: 'DELETE',
+      headers
+    })
+    return handleResponse(response)
+  },
+
+  async getStats() {
+    const headers = await getAuthHeaders()
+    const response = await fetch(`${API_BASE}/career-simulations/stats`, {
+      method: 'GET',
+      headers
+    })
+    return handleResponse(response)
+  }
+}
