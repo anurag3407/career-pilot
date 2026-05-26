@@ -1,6 +1,6 @@
 import React from 'react';
 import { motion } from 'framer-motion';
-import { FileText, Download, Mail, Sparkles } from 'lucide-react';
+import { Download, Mail, Sparkles } from 'lucide-react';
 
 export default function ResumeCTA({ data }) {
   // Extract user parameters safely with fallback defaults
@@ -94,12 +94,10 @@ export default function ResumeCTA({ data }) {
             className="mt-10 flex flex-col sm:flex-row gap-4 items-center justify-center w-full sm:w-auto"
           >
 
-            {/* Primary Action Button */}
+            {/* Primary Action Button: Standard direct download, appending .pdf */}
             <motion.a
               href={resumeUrl}
-              download={`${fullName.replace(/\s+/g, '_')}_Resume`}
-              target="_blank"
-              rel="noopener noreferrer"
+              download={`${fullName.replace(/\s+/g, '_')}_Resume.pdf`}
               whileHover={{
                 scale: 1.025,
                 boxShadow: "0 0 25px rgba(0, 210, 255, 0.4)"
