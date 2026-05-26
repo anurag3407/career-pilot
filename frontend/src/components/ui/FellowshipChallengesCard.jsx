@@ -79,6 +79,7 @@ export default function FellowshipChallengesCard() {
 
       {/* View all button */}
       <motion.button
+        aria-label="View all fellowship opportunities"
         initial={{ opacity: 0 }}
         whileInView={{ opacity: 1 }}
         viewport={{ once: true }}

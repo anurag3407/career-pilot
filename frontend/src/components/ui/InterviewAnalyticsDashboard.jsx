@@ -38,12 +38,20 @@ export default function InterviewAnalyticsDashboard({
         Object.keys(metrics).length
     ) || 0;
 
+  const scoreColorMap = {
+    emerald: "text-emerald-400",
+    blue: "text-blue-400",
+    amber: "text-amber-400",
+    orange: "text-orange-400",
+    red: "text-red-400",
+  };
+
   const getScoreLevel = (score) => {
-    if (score >= 90) return { label: "Excellent", color: "emerald" };
-    if (score >= 80) return { label: "Very Good", color: "blue" };
-    if (score >= 70) return { label: "Good", color: "amber" };
-    if (score >= 60) return { label: "Fair", color: "orange" };
-    return { label: "Needs Work", color: "red" };
+    if (score >= 90) return { label: "Excellent", color: "emerald", fromColor: "from-emerald-500", toColor: "to-teal-500" };
+    if (score >= 80) return { label: "Very Good", color: "blue", fromColor: "from-blue-500", toColor: "to-cyan-500" };
+    if (score >= 70) return { label: "Good", color: "amber", fromColor: "from-amber-500", toColor: "to-orange-500" };
+    if (score >= 60) return { label: "Fair", color: "orange", fromColor: "from-orange-500", toColor: "to-amber-500" };
+    return { label: "Needs Work", color: "red", fromColor: "from-red-500", toColor: "to-orange-500" };
   };
 
   const scoreLevel = getScoreLevel(avgScore);
@@ -109,29 +117,9 @@ export default function InterviewAnalyticsDashboard({
                   initial={{ width: 0 }}
                   animate={{ width: "100%" }}
                   transition={{ duration: 1.5, ease: "easeOut" }}
-                  className={`h-3 rounded-full bg-gradient-to-r from-${
-                    scoreLevel.color === "emerald"
-                      ? "emerald"
-                      : scoreLevel.color === "blue"
-                      ? "blue"
-                      : scoreLevel.color === "amber"
-                      ? "amber"
-                      : scoreLevel.color === "orange"
-                      ? "orange"
-                      : "red"
-                  }-500 to-${
-                    scoreLevel.color === "emerald"
-                      ? "teal"
-                      : scoreLevel.color === "blue"
-                      ? "cyan"
-                      : scoreLevel.color === "amber"
-                      ? "orange"
-                      : scoreLevel.color === "orange"
-                      ? "amber"
-                      : "orange"
-                  }-500 shadow-lg`}
+                  className={`h-3 rounded-full bg-gradient-to-r ${scoreLevel.fromColor} ${scoreLevel.toColor} shadow-lg`}
                 />
-                <p className={`text-sm font-bold mt-2 text-${scoreLevel.color}-400`}>
+                <p className={`text-sm font-bold mt-2 ${scoreColorMap[scoreLevel.color] || scoreColorMap.blue}`}>
                   {scoreLevel.label}
                 </p>
               </div>
@@ -337,7 +325,9 @@ function DetailedMetricCard({
     cyan: "from-cyan-500 to-blue-500 bg-cyan-500/10 border-cyan-500/20 text-cyan-400",
   };
 
-  const [bgClass, borderClass, textClass] = colorMap[color].split(" ");
+  const colorClasses = colorMap[color] || colorMap.blue;
+  const [bgClass, borderClass, textClass] = colorClasses.split(" ");
+  const gradientClass = bgClass || "from-blue-500";
 
   return (
     <motion.div
@@ -356,7 +346,7 @@ function DetailedMetricCard({
         initial={{ width: 0 }}
         animate={{ width: "100%" }}
         transition={{ duration: 1, delay: index * 0.08 + 0.3, ease: "easeOut" }}
-        className={`h-2 rounded-full bg-gradient-to-r ${colorMap[color].split(" ")[0]}`}
+        className={`h-2 rounded-full bg-gradient-to-r ${gradientClass} ${bgClass.includes("purple") ? "to-pink-500" : bgClass.includes("blue") ? "to-cyan-500" : bgClass.includes("emerald") ? "to-teal-500" : bgClass.includes("orange") ? "to-red-500" : bgClass.includes("pink") ? "to-rose-500" : "to-blue-500"}`}
       />
     </motion.div>
   );

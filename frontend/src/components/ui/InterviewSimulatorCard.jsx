@@ -114,6 +114,7 @@ export default function InterviewSimulatorCard() {
                 {/* Mic and camera status indicators - bottom left */}
                 <div className="absolute bottom-4 left-4 flex items-center gap-2">
                   <motion.button
+                    aria-label="Toggle microphone"
                     whileHover={{ scale: 1.1 }}
                     whileTap={{ scale: 0.95 }}
                     className="w-10 h-10 rounded-full bg-gradient-to-br from-slate-700/80 to-slate-800/80 backdrop-blur-md border border-slate-600/30 flex items-center justify-center text-slate-300 hover:text-white hover:border-slate-500/50 transition-all shadow-lg"
@@ -121,6 +122,7 @@ export default function InterviewSimulatorCard() {
                     <Mic className="w-5 h-5" />
                   </motion.button>
                   <motion.button
+                    aria-label="Toggle camera"
                     whileHover={{ scale: 1.1 }}
                     whileTap={{ scale: 0.95 }}
                     className="w-10 h-10 rounded-full bg-gradient-to-br from-slate-700/80 to-slate-800/80 backdrop-blur-md border border-slate-600/30 flex items-center justify-center text-slate-300 hover:text-white hover:border-slate-500/50 transition-all shadow-lg"
@@ -236,6 +238,10 @@ function AnalyticsMetric({
     poor: "bg-red-500/20 border-red-500/30",
   };
 
+  // Safe defaults for object access
+  const safeStatusColor = statusColors[status] || statusColors.good;
+  const safeStatusIndicator = statusIndicatorColors[status] || statusIndicatorColors.good;
+
   return (
     <motion.div
       initial={{ opacity: 0, y: 10 }}
@@ -248,7 +254,7 @@ function AnalyticsMetric({
       {/* Card background with gradient */}
       <div className={`absolute -inset-px rounded-xl bg-gradient-to-r ${color} blur opacity-0 group-hover:opacity-20 transition-opacity duration-300`} />
 
-      <div className={`relative rounded-xl bg-gradient-to-br from-slate-700/40 to-slate-800/40 backdrop-blur-md border border-slate-600/30 p-3 sm:p-4 transition-all duration-300 hover:border-slate-500/50`}>
+      <div className="relative rounded-xl bg-gradient-to-br from-slate-700/40 to-slate-800/40 backdrop-blur-md border border-slate-600/30 p-3 sm:p-4 transition-all duration-300 hover:border-slate-500/50">
         {/* Icon with background */}
         <div className={`absolute -right-2 -top-2 w-10 h-10 rounded-full bg-gradient-to-r ${color} opacity-10 blur-xl group-hover:opacity-20 transition-opacity`} />
 
@@ -261,12 +267,12 @@ function AnalyticsMetric({
             <motion.div
               animate={{ scale: [1, 1.1, 1] }}
               transition={{ duration: 2, repeat: Infinity }}
-              className={`w-2 h-2 rounded-full ${statusIndicatorColors[status]}`}
+              className={`w-2 h-2 rounded-full ${safeStatusIndicator}`}
             />
           </div>
 
           <p className="text-xs text-slate-400 font-medium mb-1">{label}</p>
-          <p className={`text-2xl font-bold ${statusColors[status]}`}>{value}</p>
+          <p className={`text-2xl font-bold ${safeStatusColor}`}>{value}</p>
         </div>
       </div>
     </motion.div>
