@@ -1,6 +1,8 @@
 import React, { useEffect, useRef } from 'react';
 import { ArrowUpRight, ExternalLink } from 'lucide-react';
 
+
+
 /**
  * @component AboutSection
  * @description A premium, editorial-style "About" section built with the Warm Obsidian & Gold Leaf design system.
@@ -434,7 +436,13 @@ export default function AboutSection() {
           <CurrentlyCard project={CURRENTLY.project} date={CURRENTLY.date} />
         </aside>
 
-      </div>
+           </div>
+
+      
+
     </section>
+    
   );
 }
+    
+
