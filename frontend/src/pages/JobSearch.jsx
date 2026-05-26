@@ -24,6 +24,7 @@ import {
 import { jobsApi, jobTrackerApi } from '../services/api'
 import Button from '../components/Button'
 import { SkeletonJobList } from '../components/ui/Skeleton'
+import JobMatchBadge from '../components/jobs/JobMatchBadge'
 
 const JOB_TYPES = ['All Types', 'Full-time', 'Part-time', 'Contract', 'Internship', 'Remote']
 const EXPERIENCE_LEVELS = ['All Levels', 'Entry Level', 'Mid Level', 'Senior Level', 'Lead/Manager']
@@ -435,6 +436,7 @@ className="w-full pl-12 pr-10 py-4 bg-muted/50 border border-border rounded-xl t
 
                           {/* Job Meta */}
                           <div className="flex flex-wrap items-center gap-4 mt-3 text-sm text-muted-foreground">
+                            <JobMatchBadge job={job} />
                             <span className="flex items-center gap-1">
                               <MapPin className="w-4 h-4" />
                               {job.job_city || job.location?.city || 'Remote'}{job.job_state ? `, ${job.job_state}` : ''}

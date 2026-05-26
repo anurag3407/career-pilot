@@ -1,5 +1,6 @@
 import { motion } from 'framer-motion'
 import { CheckCircle, Lightbulb, RefreshCw } from 'lucide-react'
+import AIReasoningTooltip from './ui/AIReasoningTooltip'
 
 const getScoreColor = (score) => {
   if (score >= 70) return { bar: 'bg-green-500', text: 'text-green-400', ring: '#22c55e' }
@@ -67,7 +68,16 @@ const SectionBar = ({ section, score, feedback, index }) => {
     >
       <div className="flex justify-between text-sm">
         <span className="text-foreground capitalize font-medium">{section}</span>
-        <span className={`font-semibold ${text}`}>{score}</span>
+        <div className={`flex items-center gap-1 font-semibold ${text}`}>
+          {score}
+          {feedback && (
+            <AIReasoningTooltip
+              title={`${section} Score Explanation`}
+              reason={feedback}
+              details={[`Section score: ${score}/100`]}
+            />
+          )}
+        </div>
       </div>
       <div className="h-2 bg-card rounded-full overflow-hidden">
         <motion.div
@@ -104,7 +114,19 @@ export default function ResumeScore({ data, onRescore }) {
       <div className="bg-background/50 border border-border rounded-2xl p-6 flex flex-col sm:flex-row items-center gap-6">
         <ScoreRing score={overallScore} />
         <div className="text-center sm:text-left">
-          <p className={`text-2xl font-bold ${scoreText}`}>{label}</p>
+          <div className="flex items-center justify-center gap-2 sm:justify-start">
+            <p className={`text-2xl font-bold ${scoreText}`}>{label}</p>
+            <AIReasoningTooltip
+              title="Overall Resume Score Explanation"
+              reason={`Your resume scored ${overallScore}/100 based on section analysis and keyword alignment.`}
+              details={[
+                ...Object.entries(sections || {}).map(
+                  ([name, { score: sectionScore, feedback: sectionFeedback }]) =>
+                    `${name}: ${sectionScore}/100${sectionFeedback ? ` — ${sectionFeedback}` : ''}`
+                ),
+              ]}
+            />
+          </div>
           <p className="text-muted-foreground text-sm mt-1">Overall Resume Score</p>
           {onRescore && (
             <button
@@ -145,7 +167,14 @@ export default function ResumeScore({ data, onRescore }) {
                 className="flex items-start gap-3"
               >
                 <CheckCircle className="w-4 h-4 text-primary mt-0.5 shrink-0" />
-                <span className="text-foreground text-sm">{tip}</span>
+                <div className="flex flex-1 items-start gap-1.5 text-foreground text-sm">
+                  {tip}
+                  <AIReasoningTooltip
+                    title="Suggestion Rationale"
+                    reason={tip}
+                    details={['Actioning this tip can improve ATS visibility and overall resume score.']}
+                  />
+                </div>
               </motion.li>
             ))}
           </ul>

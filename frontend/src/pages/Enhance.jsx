@@ -32,6 +32,13 @@ import {
 } from 'lucide-react'
 import { SkeletonList } from '../components/ui/Skeleton'
 import ResumeScore from '../components/ResumeScore'
+import AIReasoningTooltip from '../components/ui/AIReasoningTooltip'
+
+const categoryIncludes = (item, keyword) => {
+  const cat = item?.category
+  if (cat == null) return false
+  return String(cat).toLowerCase().includes(keyword)
+}
 
 // Score ring component
 const ScoreRing = ({ score, size = 120, strokeWidth = 8 }) => {
@@ -88,7 +95,7 @@ const ScoreRing = ({ score, size = 120, strokeWidth = 8 }) => {
 }
 
 // Score breakdown bar
-const ScoreBar = ({ label, score, delay = 0 }) => {
+const ScoreBar = ({ label, score, delay = 0, reasoning }) => {
   const getBarColor = (score) => {
     if (score >= 80) return 'bg-green-500'
     if (score >= 60) return 'bg-yellow-500'
@@ -99,7 +106,10 @@ const ScoreBar = ({ label, score, delay = 0 }) => {
   return (
     <div className="space-y-1">
       <div className="flex justify-between text-sm">
-        <span className="text-muted-foreground">{label}</span>
+        <span className="flex items-center gap-1 text-muted-foreground">
+          {label}
+          {reasoning && <AIReasoningTooltip {...reasoning} />}
+        </span>
         <span className="text-foreground font-medium">{score}%</span>
       </div>
       <div className="h-2 bg-card rounded-full overflow-hidden">
@@ -145,7 +155,24 @@ const ImprovementCard = ({ improvement, index }) => {
             </span>
             <span className="text-xs text-muted-foreground">{improvement.category}</span>
           </div>
-          <p className="text-foreground font-medium">{improvement.issue}</p>
+          <p className="flex flex-1 items-start gap-1.5 text-foreground font-medium">
+            {improvement.issue}
+            <span
+              className="inline-flex shrink-0"
+              onClick={(e) => e.stopPropagation()}
+              onKeyDown={(e) => e.stopPropagation()}
+            >
+              <AIReasoningTooltip
+                title="Improvement Rationale"
+                reason={improvement.issue}
+                details={[
+                  improvement.suggestion && `Suggestion: ${improvement.suggestion}`,
+                  improvement.priority && `Priority: ${improvement.priority}`,
+                  improvement.category && `Category: ${improvement.category}`,
+                ].filter(Boolean)}
+              />
+            </span>
+          </p>
         </div>
         {expanded ? (
           <ChevronUp className="w-5 h-5 text-muted-foreground ml-2 shrink-0" />
@@ -194,8 +221,20 @@ const SectionGradeCard = ({ section, data, icon: Icon }) => {
           <Icon className="w-5 h-5 text-primary" />
           <span className="font-medium text-foreground capitalize">{section}</span>
         </div>
-        <div className={`w-10 h-10 rounded-lg bg-gradient-to-br ${getGradeColor(data?.grade)} flex items-center justify-center`}>
-          <span className="text-foreground font-bold text-lg">{data?.grade || 'N/A'}</span>
+        <div className="flex items-center gap-1">
+          <div className={`w-10 h-10 rounded-lg bg-gradient-to-br ${getGradeColor(data?.grade)} flex items-center justify-center`}>
+            <span className="text-foreground font-bold text-lg">{data?.grade || 'N/A'}</span>
+          </div>
+          {data?.feedback && (
+            <AIReasoningTooltip
+              title={`${section} Grade Explanation`}
+              reason={data.feedback}
+              details={[
+                data?.score != null && `Section score: ${data.score}/100`,
+                data?.grade && `Grade: ${data.grade}`,
+              ].filter(Boolean)}
+            />
+          )}
         </div>
       </div>
       <div className="space-y-2">
@@ -234,9 +273,27 @@ const BulletAnalysisCard = ({ bullet, index }) => {
         <div className="flex items-start justify-between gap-4">
           <p className="text-foreground text-sm flex-1">{bullet.original}</p>
           <div className="flex items-center gap-2 shrink-0">
-            <span className={`text-xs px-2 py-1 rounded-lg border ${getScoreColor(bullet.score)}`}>
+            <div className={`flex items-center gap-1 text-xs px-2 py-1 rounded-lg border ${getScoreColor(bullet.score)}`}>
               {bullet.score}/10
-            </span>
+              {(bullet.issues?.length > 0 || bullet.improved) && (
+                <div
+                  className="inline-flex"
+                  onClick={(e) => e.stopPropagation()}
+                  onKeyDown={(e) => {
+                    if (e.key !== 'Escape') e.stopPropagation()
+                  }}
+                >
+                  <AIReasoningTooltip
+                    title="Bullet Analysis"
+                    reason={bullet.issues?.[0] || 'This bullet could be strengthened for greater impact.'}
+                    details={[
+                      ...(bullet.issues || []),
+                      bullet.improved && `Improved: ${bullet.improved}`,
+                    ].filter(Boolean)}
+                  />
+                </div>
+              )}
+            </div>
             {expanded ? (
               <ChevronUp className="w-4 h-4 text-muted-foreground" />
             ) : (
@@ -336,7 +393,18 @@ const SeniorTipCard = ({ tip, index }) => {
               <span className="text-xs px-1.5 py-0.5 bg-red-500/30 text-red-300 rounded">High Priority</span>
             )}
           </div>
-          <p className="text-sm font-medium">{tip.tip}</p>
+          <p className="flex items-start gap-1.5 text-sm font-medium">
+            {tip.tip}
+            <AIReasoningTooltip
+              title="Expert Tip Rationale"
+              reason={tip.tip}
+              details={[
+                tip.category && `Category: ${tip.category}`,
+                tip.priority && `Priority: ${tip.priority}`,
+                tip.example && `Example: ${tip.example}`,
+              ].filter(Boolean)}
+            />
+          </p>
           {tip.example && (
             <p className="text-xs opacity-75 mt-2 italic">"{tip.example}"</p>
           )}
@@ -598,7 +666,22 @@ export default function Enhance() {
                 className="lg:col-span-1 bg-background/50 border border-border rounded-2xl p-6"
               >
                 <div className="flex flex-col items-center">
-                  <ScoreRing score={atsAnalysis.atsScore} size={160} strokeWidth={12} />
+                  <div className="relative">
+                    <ScoreRing score={atsAnalysis.atsScore} size={160} strokeWidth={12} />
+                    <div className="absolute -right-1 top-2">
+                      <AIReasoningTooltip
+                        title="ATS Score Explanation"
+                        reason={atsAnalysis.summary || `Your resume scored ${atsAnalysis.atsScore}/100 for this role.`}
+                        details={[
+                          `Overall ATS score: ${atsAnalysis.atsScore}/100`,
+                          ...(atsAnalysis.strengths?.slice(0, 3).map((s) => `Strength: ${s}`) || []),
+                          ...(atsAnalysis.missingKeywords?.length
+                            ? [`Missing keywords: ${atsAnalysis.missingKeywords.join(', ')}`]
+                            : []),
+                        ]}
+                      />
+                    </div>
+                  </div>
                   <div className="mt-4 text-center">
                     <p className="text-lg font-medium text-foreground mb-1">
                       {atsAnalysis.atsScore >= 80 ? 'Excellent!' :
@@ -642,11 +725,70 @@ export default function Enhance() {
                   Score Breakdown
                 </h3>
                 <div className="space-y-4">
-                  <ScoreBar label="Keyword Match" score={atsAnalysis.scoreBreakdown?.keywordMatch || 0} delay={0.1} />
-                  <ScoreBar label="Formatting" score={atsAnalysis.scoreBreakdown?.formatting || 0} delay={0.2} />
-                  <ScoreBar label="Experience Relevance" score={atsAnalysis.scoreBreakdown?.experienceRelevance || 0} delay={0.3} />
-                  <ScoreBar label="Skills Alignment" score={atsAnalysis.scoreBreakdown?.skillsAlignment || 0} delay={0.4} />
-                  <ScoreBar label="Education Match" score={atsAnalysis.scoreBreakdown?.educationMatch || 0} delay={0.5} />
+                  <ScoreBar
+                    label="Keyword Match"
+                    score={atsAnalysis.scoreBreakdown?.keywordMatch || 0}
+                    delay={0.1}
+                    reasoning={{
+                      title: 'Keyword Match Explanation',
+                      reason: `Keyword match scored ${atsAnalysis.scoreBreakdown?.keywordMatch || 0}% for ${jobRole}.`,
+                      details: [
+                        ...(atsAnalysis.missingKeywords?.length
+                          ? [`Missing: ${atsAnalysis.missingKeywords.join(', ')}`]
+                          : ['No critical keywords missing']),
+                        ...(atsAnalysis.strengths?.slice(0, 2).map((s) => `Strength: ${s}`) || []),
+                      ],
+                    }}
+                  />
+                  <ScoreBar
+                    label="Formatting"
+                    score={atsAnalysis.scoreBreakdown?.formatting || 0}
+                    delay={0.2}
+                    reasoning={{
+                      title: 'Formatting Score Explanation',
+                      reason: `Formatting scored ${atsAnalysis.scoreBreakdown?.formatting || 0}% based on structure and ATS readability.`,
+                      details: [atsAnalysis.summary != null ? String(atsAnalysis.summary) : ''].filter(Boolean),
+                    }}
+                  />
+                  <ScoreBar
+                    label="Experience Relevance"
+                    score={atsAnalysis.scoreBreakdown?.experienceRelevance || 0}
+                    delay={0.3}
+                    reasoning={{
+                      title: 'Experience Relevance Explanation',
+                      reason: `Experience relevance scored ${atsAnalysis.scoreBreakdown?.experienceRelevance || 0}% for ${jobRole}.`,
+                      details: atsAnalysis.improvements
+                        ?.filter((i) => categoryIncludes(i, 'experience'))
+                        .slice(0, 3)
+                        .map((i) => i.issue) || [],
+                    }}
+                  />
+                  <ScoreBar
+                    label="Skills Alignment"
+                    score={atsAnalysis.scoreBreakdown?.skillsAlignment || 0}
+                    delay={0.4}
+                    reasoning={{
+                      title: 'Skills Alignment Explanation',
+                      reason: `Skills alignment scored ${atsAnalysis.scoreBreakdown?.skillsAlignment || 0}% against role requirements.`,
+                      details: atsAnalysis.improvements
+                        ?.filter((i) => categoryIncludes(i, 'skill'))
+                        .slice(0, 3)
+                        .map((i) => i.suggestion || i.issue) || [],
+                    }}
+                  />
+                  <ScoreBar
+                    label="Education Match"
+                    score={atsAnalysis.scoreBreakdown?.educationMatch || 0}
+                    delay={0.5}
+                    reasoning={{
+                      title: 'Education Match Explanation',
+                      reason: `Education match scored ${atsAnalysis.scoreBreakdown?.educationMatch || 0}% for this role.`,
+                      details: atsAnalysis.improvements
+                        ?.filter((i) => categoryIncludes(i, 'education'))
+                        .slice(0, 2)
+                        .map((i) => i.issue) || ['Education section evaluated for role fit'],
+                    }}
+                  />
                 </div>
               </motion.div>
             </div>
@@ -661,6 +803,14 @@ export default function Enhance() {
               <h3 className="text-lg font-semibold text-foreground mb-3 flex items-center gap-2">
                 <AlertCircle className="w-5 h-5 text-primary" />
                 Analysis Summary
+                <AIReasoningTooltip
+                  title="Analysis Summary"
+                  reason={atsAnalysis.summary}
+                  details={[
+                    ...(atsAnalysis.strengths?.map((s) => `Strength: ${s}`) || []),
+                    ...(atsAnalysis.missingKeywords?.map((k) => `Gap: ${k}`) || []),
+                  ]}
+                />
               </h3>
               <p className="text-foreground leading-relaxed">{atsAnalysis.summary}</p>
             </motion.div>
@@ -800,6 +950,64 @@ export default function Enhance() {
                       <SectionGradeCard section="Projects" data={comprehensiveAnalysis.sectionGrades?.projects} icon={FolderKanban} />
                     </div>
 
+                    {comprehensiveAnalysis.industryKeywords &&
+                      (comprehensiveAnalysis.industryKeywords.present?.length > 0 ||
+                        comprehensiveAnalysis.industryKeywords.missing?.length > 0) && (
+                      <div className="bg-muted/50 border border-border rounded-xl p-4">
+                        <h4 className="font-medium text-foreground mb-3 flex items-center gap-2">
+                          <Target className="w-4 h-4 text-primary" />
+                          Role Keyword Match
+                          <AIReasoningTooltip
+                            title="Job Role Match Explanation"
+                            reason={`AI compared your resume keywords against expectations for ${jobRole}.`}
+                            details={[
+                              ...(comprehensiveAnalysis.industryKeywords.present || []).map(
+                                (keyword) => `Matching: ${keyword}`
+                              ),
+                              ...(comprehensiveAnalysis.industryKeywords.missing || []).map(
+                                (keyword) => `Gap: ${keyword}`
+                              ),
+                              ...(comprehensiveAnalysis.industryKeywords.recommendations || []).map(
+                                (tip) => `Recommendation: ${tip}`
+                              ),
+                            ]}
+                          />
+                        </h4>
+                        <div className="grid md:grid-cols-2 gap-4 text-sm">
+                          {comprehensiveAnalysis.industryKeywords.present?.length > 0 && (
+                            <div>
+                              <p className="text-xs text-muted-foreground mb-2">Matching keywords</p>
+                              <div className="flex flex-wrap gap-1">
+                                {comprehensiveAnalysis.industryKeywords.present.map((keyword, i) => (
+                                  <span
+                                    key={`present-${i}`}
+                                    className="text-xs px-2 py-0.5 bg-green-500/10 text-green-400 rounded"
+                                  >
+                                    {keyword}
+                                  </span>
+                                ))}
+                              </div>
+                            </div>
+                          )}
+                          {comprehensiveAnalysis.industryKeywords.missing?.length > 0 && (
+                            <div>
+                              <p className="text-xs text-muted-foreground mb-2">Missing keywords</p>
+                              <div className="flex flex-wrap gap-1">
+                                {comprehensiveAnalysis.industryKeywords.missing.map((keyword, i) => (
+                                  <span
+                                    key={`missing-${i}`}
+                                    className="text-xs px-2 py-0.5 bg-red-500/10 text-red-400 rounded"
+                                  >
+                                    {keyword}
+                                  </span>
+                                ))}
+                              </div>
+                            </div>
+                          )}
+                        </div>
+                      </div>
+                    )}
+
                     <div className="grid lg:grid-cols-2 gap-4 mt-6">
                       <div className="bg-muted/50 border border-border rounded-xl p-4">
                         <h4 className="font-medium text-foreground mb-3 flex items-center gap-2">
@@ -896,6 +1104,14 @@ export default function Enhance() {
                         <h4 className="font-semibold text-foreground mb-3 flex items-center gap-2">
                           <Star className="w-5 h-5 text-amber-400" />
                           Competitive Edge Score: {comprehensiveAnalysis.competitiveEdge.score}/100
+                          <AIReasoningTooltip
+                            title="Competitive Edge Explanation"
+                            reason={`Competitive edge score of ${comprehensiveAnalysis.competitiveEdge.score}/100 reflects how you compare to typical candidates.`}
+                            details={[
+                              ...(comprehensiveAnalysis.competitiveEdge?.standoutFactors ?? []),
+                              ...(comprehensiveAnalysis.competitiveEdge?.differentiators ?? []),
+                            ]}
+                          />
                         </h4>
                         {comprehensiveAnalysis.competitiveEdge.standoutFactors?.length > 0 && (
                           <div className="mb-3">
