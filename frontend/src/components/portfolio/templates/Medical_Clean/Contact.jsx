@@ -414,26 +414,28 @@ export default function Contact() {
                   </FormField>
 
                   {/* Message */}
+                  {/* Message */}
                   <FormField label="Message" id="mc-message" error={errors.message}>
                     <textarea
                       id="mc-message"
                       name="message"
                       rows={5}
+                      maxLength={500}
                       value={form.message}
                       onChange={handleChange}
                       placeholder="Describe the purpose of your inquiry in detail…"
                       className={`${errors.message ? inputError : inputNormal} resize-none`}
                     />
-                    <p className="mt-1 text-xs text-slate-300 text-right">
+                    <p className={`mt-1 text-xs text-right transition-colors duration-200 ${
+                      form.message.length >= 500
+                        ? 'text-red-500 font-semibold'
+                        : form.message.length >= 450
+                        ? 'text-amber-500'
+                        : 'text-slate-300'
+                    }`}>
                       {form.message.length} / 500
                     </p>
                   </FormField>
-
-                  {/* Consent line */}
-                  <p className="text-[11px] text-slate-400 leading-relaxed">
-                    By submitting this form you agree that your data will be used solely to respond
-                    to your inquiry. This form does not transmit protected health information.
-                  </p>
 
                   {/* Submit button */}
                   <button
