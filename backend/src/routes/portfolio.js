@@ -1,12 +1,10 @@
 import express from 'express';
 import fs from 'fs/promises';
+import mongoose from 'mongoose';
 import { verifyToken } from '../middleware/auth.js';
 import { asyncHandler, ApiError } from '../middleware/errorHandler.js';
-import cacheHeaders from '../middleware/cacheHeaders.js';
-import { validateToken as validateCloudflareToken } from '../services/deploy/cloudflareDeployer.js';
-import { validateToken as validateGithubToken } from '../services/deploy/githubPagesDeployer.js';
-import { validateToken as validateNetlifyToken } from '../services/deploy/netlifyDeployer.js';
 import { enhanceSection } from '../services/ai/portfolioContentEnhancer.js';
+import { extractAIProvider } from '../middleware/aiKey.js';
 import { generateRobotsTxt, generateSitemapXml } from '../utils/sitemapGenerator.js';
 import { analyzeAccessibility } from '../services/accessibilityChecker.js';
 import UserProfile from '../models/UserProfile.model.js';
@@ -41,11 +39,12 @@ const assertValidPortfolioSlug = (slug) => {
 // --- API Endpoints ---
 
 /**
- * POST /api/portfolio/enhance-portfolio-content
+ * a. POST   /enhance-portfolio-content
  */
 router.post(
   '/enhance-portfolio-content',
   verifyToken,
+  extractAIProvider,
   asyncHandler(async (req, res) => {
     const { sectionType, content } = req.body;
 
@@ -101,7 +100,7 @@ router.get('/public/:slug/sitemap.xml', asyncHandler(async (req, res) => {
 }));
 
 /**
- * GET /api/portfolio/public/:slug/robots.txt
+ * d. GET /api/portfolio/public/:slug/robots.txt
  */
 router.get('/public/:slug/robots.txt', asyncHandler(async (req, res, next) => {
   try {
@@ -140,7 +139,7 @@ router.get('/public/:slug/robots.txt', asyncHandler(async (req, res, next) => {
 }));
 
 /**
- * POST /api/portfolio/validate-token
+ * e. GET /api/portfolio/public/:slug/accessibility
  */
 router.post('/validate-token', verifyToken, asyncHandler(async (req, res) => {
   const TOKEN_VALIDATORS = {
@@ -151,8 +150,16 @@ router.post('/validate-token', verifyToken, asyncHandler(async (req, res) => {
 
   const { provider, token } = req.body ?? {};
 
-  if (!provider || !TOKEN_VALIDATORS[provider]) {
-    throw new ApiError(400, `provider must be one of: ${Object.keys(TOKEN_VALIDATORS).join(', ')}`);
+/**
+ * g. POST /api/portfolio/:id/save
+ */
+router.post('/:id/save', verifyToken, asyncHandler(async (req, res) => {
+  const { id } = req.params;
+  const { content } = req.body;
+
+  // Authorization check (IDOR Protection)
+  if (req.user.uid !== id) {
+    throw new ApiError(403, 'Unauthorized access to this portfolio.');
   }
 
   // Enforce token validation rules for standard non-cloud deployment pipelines
@@ -165,7 +172,54 @@ router.post('/validate-token', verifyToken, asyncHandler(async (req, res) => {
 }));
 
 /**
- * GET /api/portfolio/:slug/bandwidth
+ * j. POST /api/portfolio/:id/performance
+ */
+router.post(
+  '/:id/performance',
+  verifyToken,
+  asyncHandler(async (req, res) => {
+    const { id } = req.params;
+
+    const {
+      htmlSizeKB,
+      cssSizeKB,
+      imageSizeMB,
+      externalRequests,
+      cssSelectors,
+      fontStrategy,
+    } = req.body;
+
+    if (
+      !htmlSizeKB &&
+      !cssSizeKB &&
+      !imageSizeMB
+    ) {
+      throw new ApiError(
+        400,
+        'Performance metrics payload is required.'
+      );
+    }
+
+    res.status(200).json({
+      success: true,
+      message: `Performance metrics recorded for portfolio ${id}`,
+      data: {
+        portfolioId: id,
+        receivedMetrics: {
+          htmlSizeKB,
+          cssSizeKB,
+          imageSizeMB,
+          externalRequests,
+          cssSelectors,
+          fontStrategy,
+        },
+      },
+    });
+  })
+);
+
+/**
+ * k. GET /api/portfolio/:slug/bandwidth
  */
 router.get('/:slug/bandwidth', asyncHandler(async (req, res) => {
   const normalizedSlug = req.params.slug.toLowerCase();

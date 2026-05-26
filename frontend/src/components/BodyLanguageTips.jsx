@@ -1,18 +1,19 @@
 import { useState, useEffect } from 'react';
+import { Eye, User, Hand } from 'lucide-react';
 
 const TIPS = [
   {
-    icon: '👁️',
+    icon: <Eye className="w-5 h-5 text-cyan-400" />,
     title: 'Eye Contact',
     tip: 'Look directly into the camera lens — not at your own face on screen. This creates the impression of natural eye contact with your interviewer.',
   },
   {
-    icon: '🪑',
+    icon: <User className="w-5 h-5 text-cyan-400" />,
     title: 'Posture',
     tip: 'Sit up straight with your shoulders back. Good posture signals confidence and keeps you looking engaged throughout the interview.',
   },
   {
-    icon: '🤲',
+    icon: <Hand className="w-5 h-5 text-cyan-400" />,
     title: 'Hand Gestures',
     tip: 'Keep your hands relaxed and visible. Gentle gestures while speaking feel natural — but avoid fidgeting, as it can be distracting.',
   },
@@ -37,9 +38,9 @@ export default function BodyLanguageTips({ currentQuestionIndex }) {
       <div className="flex items-start justify-between gap-3">
         {/* Icon + text */}
         <div className="flex items-start gap-3">
-          <span className="text-2xl leading-none mt-0.5" role="img" aria-label={tip.title}>
+          <div className="mt-0.5 flex-shrink-0" aria-label={tip.title}>
             {tip.icon}
-          </span>
+          </div>
           <div>
             <p className="text-xs text-cyan-400 uppercase tracking-wide font-medium mb-1">
               Body Language Tip · {tip.title}
@@ -52,7 +53,7 @@ export default function BodyLanguageTips({ currentQuestionIndex }) {
         <button
           type="button"
           onClick={() => setDismissed(true)}
-          className="text-xs text-cyan-400 hover:text-cyan-300 border border-cyan-500/30 hover:border-cyan-400/50 px-3 py-1.5 rounded-lg transition-colors flex-shrink-0 cursor-pointer"
+          className="text-xs text-cyan-400 hover:text-cyan-300 border border-cyan-500/30 hover:border-cyan-400/50 px-3 py-1.5 rounded-lg transition-colors shrink-0 cursor-pointer"
         >
           Got it
         </button>

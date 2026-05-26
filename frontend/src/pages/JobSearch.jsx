@@ -107,6 +107,30 @@ export default function JobSearch() {
     }, 100)
   }
 
+  const handleResetFilters = () => {
+    const defaultFilters = { jobType: 'All Types', experienceLevel: 'All Levels', location: '' }
+    setFilters(defaultFilters)
+    setSearchParams({ q: searchQuery })
+
+    if (hasSearched && searchQuery.trim()) {
+      setLoading(true)
+      jobsApi.search(searchQuery, defaultFilters)
+        .then(response => {
+          setJobs(response.data || [])
+          toast.success('Filters reset successfully')
+        })
+        .catch(error => {
+          toast.error(error.message || 'Failed to search jobs')
+          setJobs([])
+        })
+        .finally(() => {
+          setLoading(false)
+        })
+    } else {
+      toast.success('Filters reset')
+    }
+  }
+
   const handleSaveJob = async (job) => {
     const jobId = job.job_id || job.id
 
@@ -225,6 +249,7 @@ className="w-full pl-12 pr-10 py-4 bg-muted/50 border border-border rounded-xl t
                 <button
                   type="button"
                   onClick={() => setShowFilters(!showFilters)}
+                  aria-label="Toggle Filters"
                   className={`px-4 py-4 rounded-xl border transition-all cursor-pointer ${showFilters
                     ? 'bg-primary/20 border-primary/30 text-primary'
                     : 'bg-muted/50 border-border text-muted-foreground hover:bg-muted'
@@ -245,10 +270,11 @@ className="w-full pl-12 pr-10 py-4 bg-muted/50 border border-border rounded-xl t
                   >
                     <div className="pt-4 border-t border-border grid md:grid-cols-3 gap-4">
                       <div>
-                        <label className="block text-sm font-medium text-muted-foreground mb-2">
+                        <label htmlFor="job-type-select" className="block text-sm font-medium text-muted-foreground mb-2">
                           Job Type
                         </label>
                         <select
+                          id="job-type-select"
                           value={filters.jobType}
                           onChange={(e) => setFilters({ ...filters, jobType: e.target.value })}
                           className="w-full px-4 py-3 bg-muted/50 border border-border rounded-lg text-foreground focus:ring-2 focus:ring-primary"
@@ -259,10 +285,11 @@ className="w-full pl-12 pr-10 py-4 bg-muted/50 border border-border rounded-xl t
                         </select>
                       </div>
                       <div>
-                        <label className="block text-sm font-medium text-muted-foreground mb-2">
+                        <label htmlFor="experience-level-select" className="block text-sm font-medium text-muted-foreground mb-2">
                           Experience Level
                         </label>
                         <select
+                          id="experience-level-select"
                           value={filters.experienceLevel}
                           onChange={(e) => setFilters({ ...filters, experienceLevel: e.target.value })}
                           className="w-full px-4 py-3 bg-muted/50 border border-border rounded-lg text-foreground focus:ring-2 focus:ring-primary"
@@ -273,12 +300,13 @@ className="w-full pl-12 pr-10 py-4 bg-muted/50 border border-border rounded-xl t
                         </select>
                       </div>
                       <div>
-                        <label className="block text-sm font-medium text-muted-foreground mb-2">
+                        <label htmlFor="location-input" className="block text-sm font-medium text-muted-foreground mb-2">
                           Location
                         </label>
                         <div className="relative">
                           <MapPin className="absolute left-3 top-1/2 transform -translate-y-1/2 text-muted-foreground w-4 h-4" />
                           <input
+                            id="location-input"
                             type="text"
                             value={filters.location}
                             onChange={(e) => setFilters({ ...filters, location: e.target.value })}
@@ -287,6 +315,16 @@ className="w-full pl-12 pr-10 py-4 bg-muted/50 border border-border rounded-xl t
                           />
                         </div>
                       </div>
+                    </div>
+                    <div className="mt-4 flex justify-end">
+                      <button
+                        type="button"
+                        onClick={handleResetFilters}
+                        className="px-4 py-2.5 bg-muted/40 hover:bg-muted/60 border border-border rounded-xl text-sm font-medium text-muted-foreground hover:text-foreground transition-all duration-200 flex items-center gap-2 backdrop-blur-md shadow-sm cursor-pointer hover:border-primary/30"
+                      >
+                        <X className="w-4 h-4 text-muted-foreground hover:text-foreground transition-colors" />
+                        Reset Filters
+                      </button>
                     </div>
                   </motion.div>
                 )}
@@ -372,7 +410,7 @@ className="w-full pl-12 pr-10 py-4 bg-muted/50 border border-border rounded-xl t
                     <div className="flex justify-between items-start">
                       <div className="flex gap-4">
                         {/* Company Logo */}
-                        <div className="w-14 h-14 bg-gradient-to-br from-primary/20 to-secondary/20 rounded-xl flex items-center justify-center flex-shrink-0 border border-border">
+                        <div className="w-14 h-14 bg-gradient-to-br from-primary/20 to-secondary/20 rounded-xl flex items-center justify-center shrink-0 border border-border">
                           {job.employer_logo ? (
                             <img
                               src={job.employer_logo}

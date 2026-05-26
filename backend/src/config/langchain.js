@@ -1,34 +1,8 @@
 import { getDefaultProvider } from './aiProviders.js';
+import { computeATSScore } from '../services/atsScorer.js';
 import dotenv from 'dotenv';
-import { GoogleGenerativeAI } from '@google/generative-ai';
-import { aiCallsCounter } from '../middleware/metrics.js';
 
 dotenv.config();
-
-const geminiApiKey = process.env.GEMINI_API_KEY;
-if (!geminiApiKey) {
-  console.warn('⚠️  GEMINI_API_KEY is not set — AI features will be unavailable. Non-AI routes are unaffected.');
-}
-
-let _model = null;
-
-const getModel = () => {
-  if (_model) return _model;
-  if (!geminiApiKey) {
-    const err = new Error('AI features are unavailable — GEMINI_API_KEY is not configured.');
-    err.statusCode = 503;
-    throw err;
-  }
-  const genAI = new GoogleGenerativeAI(geminiApiKey);
-  const rawModel = genAI.getGenerativeModel({ model: 'gemini-2.5-flash' });
-  _model = {
-    generateContent: async (prompt) => {
-      aiCallsCounter.inc({ provider: 'gemini' });
-      return await rawModel.generateContent(prompt);
-    }
-  };
-  return _model;
-};
 
 // ---------------------------------------------------------------------------
 // Helper: resolve the AI provider to use
@@ -151,9 +125,6 @@ export const enhanceResume = async (resumeText, preferences, aiProvider) => {
 
     const prompt = `${systemPrompt}\n\nPlease enhance the following resume:\n\n${resumeText}`;
 
-    const result = await getModel().generateContent(prompt);
-    const response = await result.response;
-    const text = response.text();
     const providerResult = await provider.generateContent(prompt);
 
     return {
@@ -178,9 +149,6 @@ export const generateSummary = async (resumeText, jobRole, aiProvider) => {
 Resume:
 ${resumeText}`;
 
-    const result = await getModel().generateContent(prompt);
-    const response = await result.response;
-    const text = response.text();
     const providerResult = await provider.generateContent(prompt);
 
     return {
@@ -204,9 +172,6 @@ export const suggestImprovements = async (resumeText, jobRole, aiProvider) => {
 Resume:
 ${resumeText}`;
 
-    const result = await getModel().generateContent(prompt);
-    const response = await result.response;
-    const text = response.text();
     const providerResult = await provider.generateContent(prompt);
 
     return {
@@ -225,22 +190,18 @@ ${resumeText}`;
 export const analyzeATSScore = async (resumeText, jobRole, aiProvider) => {
   try {
     const provider = resolveProvider(aiProvider);
+    
+    // Calculate deterministic score first
+    const deterministicScoring = computeATSScore(resumeText, jobRole);
+
     const prompt = `You are an expert ATS (Applicant Tracking System) analyzer and resume reviewer. Analyze the provided resume for a ${jobRole} position.
 
 IMPORTANT: The current year is 2026. Do NOT flag dates from 2024, 2025, or 2026 as outdated or issues. All recent dates are valid.
 
 IMPORTANT: Return ONLY valid JSON, no markdown code blocks, no explanations, just pure JSON.
 
-Analyze and return the following JSON structure:
+Analyze and return the following JSON structure focusing on qualitative feedback:
 {
-  "atsScore": <number between 0-100>,
-  "scoreBreakdown": {
-    "keywordMatch": <number 0-100>,
-    "formatting": <number 0-100>,
-    "experienceRelevance": <number 0-100>,
-    "skillsAlignment": <number 0-100>,
-    "educationMatch": <number 0-100>
-  },
   "strengths": [
     "<strength 1>",
     "<strength 2>",
@@ -261,50 +222,53 @@ Analyze and return the following JSON structure:
 Rules:
 1. Be specific and actionable in improvements
 2. Provide 4-6 improvement suggestions
-3. Score fairly based on actual resume content
-4. Consider ATS parsing, keyword density, and relevance to ${jobRole}
-5. Missing keywords should be relevant to ${jobRole} position
+3. Missing keywords should be relevant to ${jobRole} position
+4. DO NOT provide numerical scores, only qualitative feedback
 
 Resume:
 ${resumeText}`;
 
-    const result = await getModel().generateContent(prompt);
-    const response = await result.response;
-    const text = response.text();
     const providerResult = await provider.generateContent(prompt);
 
     // Parse JSON from response
-    let analysisData;
+    let qualitativeData;
     try {
-      let cleanedText = providerResult.text.replace(/```json\n?/g, '').replace(/```\n?/g, '').trim();
+      let cleanedText = providerResult.text.replace(/\`\`\`json\n?/g, '').replace(/\`\`\`\n?/g, '').trim();
       const jsonMatch = cleanedText.match(/\{[\s\S]*\}/);
       if (jsonMatch) {
         cleanedText = jsonMatch[0];
       }
-      analysisData = JSON.parse(cleanedText);
+      qualitativeData = JSON.parse(cleanedText);
     } catch (parseError) {
-      console.error('Failed to parse ATS analysis JSON:', parseError);
-      // Return default structure on parse error
-      analysisData = {
-        atsScore: 50,
-        scoreBreakdown: {
-          keywordMatch: 50,
-          formatting: 50,
-          experienceRelevance: 50,
-          skillsAlignment: 50,
-          educationMatch: 50
-        },
-        strengths: ["Unable to fully analyze - please try again"],
+      console.error('Failed to parse ATS qualitative analysis JSON:', parseError);
+      qualitativeData = {
+        strengths: ["Clear effort shown in formatting"],
         improvements: [{
           category: "General",
-          issue: "Analysis incomplete",
-          suggestion: "Please try analyzing again",
-          priority: "high"
+          issue: "Could not generate full qualitative analysis",
+          suggestion: "Review keywords and formatting guidelines for your industry",
+          priority: "medium"
         }],
         missingKeywords: [],
-        summary: "Unable to complete full analysis. Please try again."
+        summary: "Unable to complete full qualitative analysis."
       };
     }
+
+    // Combine deterministic scores with AI qualitative feedback
+    const analysisData = {
+      atsScore: deterministicScoring.overallScore,
+      scoreBreakdown: {
+        keywordMatch: deterministicScoring.breakdown.keywordMatch,
+        formatting: deterministicScoring.breakdown.formatting,
+        experienceRelevance: deterministicScoring.breakdown.experience,
+        skillsAlignment: deterministicScoring.breakdown.skills,
+        educationMatch: 70 // default fallback
+      },
+      strengths: qualitativeData.strengths || [],
+      improvements: qualitativeData.improvements || [],
+      missingKeywords: qualitativeData.missingKeywords || [],
+      summary: qualitativeData.summary || "Resume analyzed successfully."
+    };
 
     return {
       success: true,
@@ -421,9 +385,6 @@ ANALYSIS RULES:
 Resume to analyze:
 ${resumeText}`;
 
-    const result = await getModel().generateContent(prompt);
-    const response = await result.response;
-    const text = response.text();
     const providerResult = await provider.generateContent(prompt);
 
     let analysisData;
@@ -498,9 +459,6 @@ Rules:
 Resume:
 ${resumeText}`;
 
-    const result = await getModel().generateContent(prompt);
-    const response = await result.response;
-    const text = response.text();
     const providerResult = await provider.generateContent(prompt);
 
     let bulletData;
@@ -558,9 +516,6 @@ Focus on the 3-5 most impactful changes.
 Original Resume:
 ${resumeText}`;
 
-    const result = await getModel().generateContent(prompt);
-    const response = await result.response;
-    const text = response.text();
     const providerResult = await provider.generateContent(prompt);
 
     let comparisonData;

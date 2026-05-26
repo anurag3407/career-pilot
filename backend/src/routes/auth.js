@@ -9,6 +9,7 @@ import crypto from 'crypto';
 
 const router = express.Router();
 const stateStore = new Map();
+const tokenStore = new Map(); // one-time token exchange store
 
 // Periodically prune expired OAuth state entries every 5 minutes to prevent memory leaks
 setInterval(() => {
@@ -168,7 +169,24 @@ router.get('/linkedin/callback', asyncHandler(async (req, res) => {
     linkedinId
   });
 
-  res.redirect(`${frontendUrl}/auth/linkedin/callback?token=${customToken}&isNew=${!mongoUser}`);
+  // Store token in one-time exchange store (60s TTL) instead of passing in URL
+  const exchangeCode = crypto.randomBytes(16).toString('hex');
+  tokenStore.set(exchangeCode, { token: customToken, isNew: !mongoUser, expiresAt: Date.now() + 60000 });
+
+  res.redirect(`${frontendUrl}/auth/linkedin/callback?code=${exchangeCode}`);
+}));
+
+// One-time token exchange endpoint — frontend calls this after LinkedIn OAuth redirect
+// instead of receiving the Firebase custom token in the URL.
+router.get('/linkedin/token/:code', asyncHandler(async (req, res) => {
+  const { code } = req.params;
+  const entry = tokenStore.get(code);
+  if (!entry || Date.now() > entry.expiresAt) {
+    tokenStore.delete(code);
+    return res.status(404).json({ success: false, error: 'Code not found or expired' });
+  }
+  tokenStore.delete(code);
+  res.json({ success: true, token: entry.token, isNew: entry.isNew });
 }));
 
 export default router;

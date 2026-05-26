@@ -1,4 +1,4 @@
-import { useState, useRef, useCallback } from 'react';
+import { useState, useRef, useCallback, useEffect } from 'react';
 
 let voskModule = null;
 let voskModel = null;
@@ -110,12 +110,19 @@ export const useVoskRecognition = () => {
         }
 
         if (audioContextRef.current) {
-            audioContextRef.current.close();
+            // Check if audioContext is open before closing to avoid errors
+            if (audioContextRef.current.state !== 'closed') {
+                audioContextRef.current.close().catch(err => console.error("Error closing AudioContext:", err));
+            }
             audioContextRef.current = null;
         }
 
         if (streamRef.current) {
-            streamRef.current.getTracks().forEach(track => track.stop());
+            streamRef.current.getTracks().forEach(track => {
+                if (track.readyState === 'live') {
+                    track.stop();
+                }
+            });
             streamRef.current = null;
         }
 
@@ -132,6 +139,14 @@ export const useVoskRecognition = () => {
         transcriptRef.current = '';
         setTranscript('');
     }, []);
+
+    // CRITICAL FIX: Global lifecycle cleanup mechanism
+    useEffect(() => {
+        // Return a cleanup wrapper that terminates background recordings if components unmount mid-session
+        return () => {
+            stopListening();
+        };
+    }, [stopListening]);
 
     return {
         isLoading,
