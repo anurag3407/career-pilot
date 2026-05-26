@@ -126,11 +126,11 @@ export default function Navbar() {
           </Link>
 
           {/* Desktop Navigation */}
-          <div className="hidden lg:flex items-center gap-2">
+          <div className="hidden md:flex items-center gap-2 flex-wrap">
 
             {/* Search Bar */}
             <div className="relative">
-              <div className="flex items-center bg-muted border border-border rounded-xl px-3 py-2 w-72 focus-within:ring-2 focus-within:ring-primary/40 transition-all">
+              <div className="flex items-center bg-muted border border-border rounded-xl px-3 py-2 w-48 lg:w-72 focus-within:ring-2 focus-within:ring-primary/40 transition-all">
                 <Search className="w-4 h-4 text-muted-foreground mr-2" />
 
                 <input

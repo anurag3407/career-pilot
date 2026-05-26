@@ -412,7 +412,8 @@ export default function TemplateGallery() {
           <TechStartupHero />
         </div>
       </div>
-    </div>
+
+    </>
   );
 }
 
