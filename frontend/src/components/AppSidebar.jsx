@@ -15,7 +15,8 @@ import {
     User,
     ShieldCheck,
     Sun,
-    Moon
+    Moon,
+    Monitor
 } from "lucide-react";
 import { useAuth } from "../context/AuthContext";
 import { useTheme } from "../context/ThemeContext";
@@ -68,10 +69,13 @@ const navLinks = [
         label: "Profile",
         href: "/profile",
         icon: <User className="w-5 h-5 flex-shrink-0" />,
+    },
+    {
         label: "Security",
         href: "/security",
         icon: <ShieldCheck className="w-5 h-5 flex-shrink-0" />,
-     {
+    },
+    {
         label: "Settings",
         href: "/settings",
         icon: <Settings className="w-5 h-5 flex-shrink-0" />,
@@ -105,7 +109,7 @@ function Logo() {
 function UserSection() {
     const { user, logout } = useAuth();
     const { open, animate, setOpen } = useSidebar();
-    const { theme, toggleTheme } = useTheme();
+    const { theme, resolvedTheme, setTheme } = useTheme();
     const navigate = useNavigate();
 
     const handleLogout = async () => {
@@ -149,13 +153,14 @@ function UserSection() {
                 </motion.div>
             </div>
             <button
-                onClick={toggleTheme}
+                onClick={() => setTheme('light')}
                 className={cn(
-                    "flex items-center gap-3 w-full py-3 px-4 rounded-2xl text-muted-foreground hover:text-foreground hover:bg-muted transition-all cursor-pointer font-bold",
+                    "flex items-center gap-3 w-full py-3 px-4 rounded-2xl transition-all cursor-pointer font-bold",
+                    theme === 'light' ? "bg-primary text-primary-foreground" : "text-muted-foreground hover:text-foreground hover:bg-muted",
                     !open && animate && "justify-center"
                 )}
             >
-                {theme === 'dark' ? <Sun className="w-5 h-5 flex-shrink-0" /> : <Moon className="w-5 h-5 flex-shrink-0" />}
+                <Sun className="w-5 h-5 flex-shrink-0" />
                 <motion.span
                     animate={{
                         display: animate ? (open ? "inline-block" : "none") : "inline-block",
@@ -164,9 +169,55 @@ function UserSection() {
                     transition={{ duration: 0.2 }}
                     className="text-sm font-bold whitespace-pre"
                 >
-                    {theme === 'dark' ? 'Light Mode' : 'Dark Mode'}
+                    Light Mode
                 </motion.span>
             </button>
+
+            <button
+                onClick={() => setTheme('dark')}
+                className={cn(
+                    "flex items-center gap-3 w-full py-3 px-4 rounded-2xl transition-all cursor-pointer font-bold",
+                    theme === 'dark' ? "bg-primary text-primary-foreground" : "text-muted-foreground hover:text-foreground hover:bg-muted",
+                    !open && animate && "justify-center"
+                )}
+            >
+                <Moon className="w-5 h-5 flex-shrink-0" />
+                <motion.span
+                    animate={{
+                        display: animate ? (open ? "inline-block" : "none") : "inline-block",
+                        opacity: animate ? (open ? 1 : 0) : 1,
+                    }}
+                    transition={{ duration: 0.2 }}
+                    className="text-sm font-bold whitespace-pre"
+                >
+                    Dark Mode
+                </motion.span>
+            </button>
+
+            <button
+                onClick={() => setTheme('system')}
+                className={cn(
+                    "flex items-center gap-3 w-full py-3 px-4 rounded-2xl transition-all cursor-pointer font-bold",
+                    theme === 'system'
+                        ? "bg-primary text-primary-foreground"
+                        : "text-muted-foreground hover:text-foreground hover:bg-muted",
+                    !open && animate && "justify-center"
+                )}
+    >
+                <Monitor className="w-5 h-5 flex-shrink-0" />
+
+                <motion.span
+                    animate={{
+                        display: animate ? (open ? "inline-block" : "none") : "inline-block",
+                        opacity: animate ? (open ? 1 : 0) : 1,
+                    }}
+                    transition={{ duration: 0.2 }}
+                    className="text-sm font-bold whitespace-pre"
+                >
+                    System Theme
+                </motion.span>
+            </button>
+
             <button
                 onClick={() => {
                     handleLogout();
@@ -218,4 +269,3 @@ export default function AppSidebar() {
         </Sidebar>
     );
 }
-

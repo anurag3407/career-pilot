@@ -17,12 +17,13 @@ import {
   GraduationCap,
   Mic,
   Sun,
-  Moon
+  Moon,
+  Monitor
 } from 'lucide-react'
 
 export default function Navbar() {
   const { user, logout } = useAuth()
-  const { theme, toggleTheme } = useTheme()
+  const { theme, setTheme } = useTheme()
   const location = useLocation()
   const [mobileMenuOpen, setMobileMenuOpen] = useState(false)
   const [scrolled, setScrolled] = useState(false)
@@ -98,21 +99,16 @@ export default function Navbar() {
           <div className="hidden md:flex items-center gap-3">
             {/* Theme Toggle */}
             <button
-              onClick={toggleTheme}
-              className="p-2 rounded-xl bg-muted hover:bg-accent border border-border text-foreground transition-all cursor-pointer overflow-hidden relative group"
-              aria-label="Toggle theme"
+              onClick={() => {
+                if (theme === 'light') setTheme('dark')
+                else if (theme === 'dark') setTheme('system')
+                else setTheme('light')
+              }}
+              className="p-2 rounded-xl"
             >
-              <AnimatePresence mode="wait" initial={false}>
-                <motion.div
-                  key={theme}
-                  initial={{ y: 20, opacity: 0, rotate: 45 }}
-                  animate={{ y: 0, opacity: 1, rotate: 0 }}
-                  exit={{ y: -20, opacity: 0, rotate: -45 }}
-                  transition={{ duration: 0.2 }}
-                >
-                  {theme === 'light' ? <Moon className="w-5 h-5" /> : <Sun className="w-5 h-5" />}
-                </motion.div>
-              </AnimatePresence>
+              {theme === 'light' && <Sun className="w-5 h-5" />}
+              {theme === 'dark' && <Moon className="w-5 h-5" />}
+              {theme === 'system' && <Monitor className="w-5 h-5" /> }
             </button>
 
             {user ? (
@@ -154,11 +150,18 @@ export default function Navbar() {
           {/* Mobile Menu Button */}
           <div className="flex items-center gap-2 md:hidden">
             <button
-              onClick={toggleTheme}
+              onClick={() => {
+                if (theme === 'light') setTheme('dark')
+                else if (theme === 'dark') setTheme('system')
+                else setTheme('light')
+              }}
               className="p-2 rounded-xl bg-muted text-foreground border border-border"
             >
-              {theme === 'light' ? <Moon className="w-5 h-5" /> : <Sun className="w-5 h-5" />}
+              {theme === 'light' && <Sun className="w-5 h-5" />}
+              {theme === 'dark' && <Moon className="w-5 h-5" />}
+              {theme === 'system' && <Monitor className="w-5 h-5" />}
             </button>
+            {/* Hamburger Menu */}
             <button
               onClick={() => setMobileMenuOpen(!mobileMenuOpen)}
               className="p-2 rounded-lg hover:bg-muted text-muted-foreground cursor-pointer"

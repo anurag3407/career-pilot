@@ -864,6 +864,10 @@ export const userProfileApi = {
       method: 'PUT',
       headers,
       body: JSON.stringify(data)
+    })
+    return handleResponse(response)
+  }
+}
 // ============ TWO-FACTOR AUTH API ============
 export const twoFactorApi = {
   async getStatus() {
@@ -911,13 +915,6 @@ export const twoFactorApi = {
   async getActivity(uid) {
     const headers = await getAuthHeaders()
     const response = await fetch(`${API_BASE}/user-profiles/${uid}/activity`, { method: 'GET', headers })
-  async enable(secret, token) {
-    const headers = await getAuthHeaders()
-    const response = await fetch(`${API_BASE}/auth/2fa/enable`, {
-      method: 'POST',
-      headers,
-      body: JSON.stringify({ secret, token })
-    })
     return handleResponse(response)
   },
 

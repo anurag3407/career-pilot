@@ -57,20 +57,20 @@ const Toggle = ({ value, onChange }) => (
   )
 
   if (loading) return (
-    <div className="flex items-center justify-center min-h-screen bg-black">
+    <div className="flex items-center justify-center min-h-screen bg-background">
       <p className="text-neutral-400">Loading...</p>
     </div>
   )
 
   return (
-    <div className="min-h-screen bg-black">
+    <div className="min-h-screen bg-background">
       <div className="max-w-2xl mx-auto px-4 py-8">
         <motion.div initial={{ opacity: 0, y: -20 }} animate={{ opacity: 1, y: 0 }}>
-          <h1 className="text-3xl font-bold text-white mb-2">Settings</h1>
+          <h1 className="text-3xl font-bold text-foreground mb-2">Settings</h1>
           <p className="text-neutral-400 mb-8">Manage your email notification preferences</p>
 
           <div className="p-6 rounded-2xl bg-neutral-900/50 border border-neutral-800 space-y-6">
-            <h2 className="text-lg font-semibold text-white flex items-center gap-2">
+            <h2 className="text-lg font-semibold text-foreground flex items-center gap-2">
               <Bell className="w-5 h-5 text-indigo-400" />
               Email Notifications
             </h2>
@@ -80,7 +80,7 @@ const Toggle = ({ value, onChange }) => (
               <div className="flex items-center gap-3">
                 <Mail className="w-5 h-5 text-indigo-400" />
                 <div>
-                  <p className="text-white font-medium">Job Alerts</p>
+                  <p className="text-foreground font-medium">Job Alerts</p>
                   <p className="text-neutral-400 text-sm">Get notified when new jobs match your alerts</p>
                 </div>
               </div>
@@ -95,7 +95,7 @@ const Toggle = ({ value, onChange }) => (
               <div className="flex items-center gap-3">
                 <MessageSquare className="w-5 h-5 text-purple-400" />
                 <div>
-                  <p className="text-white font-medium">Direct Messages</p>
+                  <p className="text-foreground font-medium">Direct Messages</p>
                   <p className="text-neutral-400 text-sm">Get notified when you receive a DM</p>
                 </div>
               </div>
@@ -110,7 +110,7 @@ const Toggle = ({ value, onChange }) => (
               <div className="flex items-center gap-3">
                 <FileText className="w-5 h-5 text-green-400" />
                 <div>
-                  <p className="text-white font-medium">Proposal Updates</p>
+                  <p className="text-foreground font-medium">Proposal Updates</p>
                   <p className="text-neutral-400 text-sm">Get notified on fellowship proposal changes</p>
                 </div>
               </div>

@@ -45,13 +45,13 @@ export default function NoteEditor({ notes = [], onAddNote }) {
                     <div className="min-h-[220px] p-3 border border-gray-200 rounded text-sm prose prose-sm max-w-none bg-white text-black overflow-auto">
                         {content.trim()
                             ? <ReactMarkdown>{content}</ReactMarkdown>
-                            : <span className="text-gray-400">Nothing to preview yet…</span>
+                            : <span className="text-muted-foreground">Nothing to preview yet…</span>
                         }
                     </div>
                 )}
 
                 <button
-                    className="mt-2 px-4 py-1.5 bg-blue-600 text-white text-sm rounded hover:bg-blue-700 disabled:opacity-50 disabled:cursor-not-allowed"
+                    className="mt-2 px-4 py-1.5 bg-blue-600 text-foreground text-sm rounded hover:bg-blue-700 disabled:opacity-50 disabled:cursor-not-allowed"
                     onClick={handleSubmit}
                     disabled={!content.trim()}
                 >
@@ -71,14 +71,14 @@ export default function NoteEditor({ notes = [], onAddNote }) {
                             <div className="text-sm prose prose-sm max-w-none">
                                 <ReactMarkdown>{note.content}</ReactMarkdown>
                             </div>
-                            <p className="text-xs text-gray-400 mt-1">
+                            <p className="text-xs text-muted-foreground mt-1">
                                 {new Date(note.createdAt).toLocaleString()}
                             </p>
                         </div>
                     ))}
                 </div>
             ) : (
-                <p className="text-sm text-gray-400 text-center py-4">
+                <p className="text-sm text-muted-foreground text-center py-4">
                     No notes yet. Add your first note above!
                 </p>
             )}

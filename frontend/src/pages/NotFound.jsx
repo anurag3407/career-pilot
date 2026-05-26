@@ -34,7 +34,7 @@ const NotFound = () => {
   }, []);
 
   return (
-    <div className="min-h-screen flex flex-col items-center justify-center bg-[#0a0a0a] text-white p-6 font-mono overflow-hidden">
+    <div className="min-h-screen flex flex-col items-center justify-center bg-[#0a0a0a] text-foreground p-6 font-mono overflow-hidden">
       {/* Glitching 404 Heading */}
       <div className="relative group">
         <h1 className="text-9xl font-black mb-2 relative z-10 animate-pulse text-[#00ffaa] drop-shadow-[0_0_15px_rgba(0,255,170,0.5)]">

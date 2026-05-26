@@ -192,7 +192,7 @@ export default function PostEditor({ onClose, onSubmit, editPost = null }) {
               <button
                 type="button"
                 onClick={clearSchedule}
-                className="text-xs text-neutral-500 hover:text-white ml-3"
+                className="text-xs text-neutral-500 hover:text-foreground ml-3"
               >
                 Remove
               </button>

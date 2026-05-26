@@ -26,7 +26,7 @@ function SectionHeader({ icon: Icon, title, description }) {
         <Icon className="w-5 h-5 text-indigo-400" />
       </div>
       <div>
-        <h2 className="text-base font-semibold text-white">{title}</h2>
+        <h2 className="text-base font-semibold text-foreground">{title}</h2>
         <p className="text-sm text-neutral-400 mt-0.5">{description}</p>
       </div>
     </div>
@@ -66,7 +66,7 @@ function BackupCodeGrid({ codes, onCopy, onDownload }) {
         {codes.map((code, i) => (
           <div
             key={i}
-            className="px-4 py-2.5 rounded-lg bg-neutral-950 border border-neutral-800 font-mono text-sm text-center text-white tracking-widest"
+            className="px-4 py-2.5 rounded-lg bg-neutral-950 border border-neutral-800 font-mono text-sm text-center text-foreground tracking-widest"
           >
             {code}
           </div>
@@ -240,7 +240,7 @@ export default function SecuritySettings() {
   return (
     <div className="max-w-2xl mx-auto px-4 py-8">
       <div className="mb-8">
-        <h1 className="text-2xl font-bold text-white">Account Security</h1>
+        <h1 className="text-2xl font-bold text-foreground">Account Security</h1>
         <p className="text-neutral-400 mt-1 text-sm">
           Manage authentication and access settings for your account.
         </p>
@@ -292,11 +292,11 @@ export default function SecuritySettings() {
           <form onSubmit={handleConfirmSetup}>
             <div className="space-y-6">
               <div className="flex items-start gap-3 p-4 rounded-xl bg-neutral-950 border border-neutral-800">
-                <span className="w-6 h-6 rounded-full bg-indigo-500 text-white text-xs font-bold flex items-center justify-center flex-shrink-0 mt-0.5">
+                <span className="w-6 h-6 rounded-full bg-indigo-500 text-foreground text-xs font-bold flex items-center justify-center flex-shrink-0 mt-0.5">
                   1
                 </span>
                 <div>
-                  <p className="text-sm font-medium text-white mb-1">
+                  <p className="text-sm font-medium text-foreground mb-1">
                     Install an authenticator app
                   </p>
                   <p className="text-xs text-neutral-400">
@@ -306,11 +306,11 @@ export default function SecuritySettings() {
               </div>
 
               <div className="flex items-start gap-3 p-4 rounded-xl bg-neutral-950 border border-neutral-800">
-                <span className="w-6 h-6 rounded-full bg-indigo-500 text-white text-xs font-bold flex items-center justify-center flex-shrink-0 mt-0.5">
+                <span className="w-6 h-6 rounded-full bg-indigo-500 text-foreground text-xs font-bold flex items-center justify-center flex-shrink-0 mt-0.5">
                   2
                 </span>
                 <div className="w-full">
-                  <p className="text-sm font-medium text-white mb-3">
+                  <p className="text-sm font-medium text-foreground mb-3">
                     Scan this QR code
                   </p>
                   {qrDataUrl && (
@@ -332,11 +332,11 @@ export default function SecuritySettings() {
               </div>
 
               <div className="flex items-start gap-3 p-4 rounded-xl bg-neutral-950 border border-neutral-800">
-                <span className="w-6 h-6 rounded-full bg-indigo-500 text-white text-xs font-bold flex items-center justify-center flex-shrink-0 mt-0.5">
+                <span className="w-6 h-6 rounded-full bg-indigo-500 text-foreground text-xs font-bold flex items-center justify-center flex-shrink-0 mt-0.5">
                   3
                 </span>
                 <div className="w-full">
-                  <p className="text-sm font-medium text-white mb-3">
+                  <p className="text-sm font-medium text-foreground mb-3">
                     Enter the 6-digit code to confirm
                   </p>
                   <Input
@@ -382,7 +382,7 @@ export default function SecuritySettings() {
             {/* Backup codes just received (after enable or regenerate) */}
             {newCodes.length > 0 && (
               <div className="p-4 rounded-xl bg-neutral-950 border border-neutral-800">
-                <p className="text-sm font-semibold text-white mb-1">
+                <p className="text-sm font-semibold text-foreground mb-1">
                   {showCodesFor === 'enable' ? 'Your backup codes' : 'New backup codes'}
                 </p>
                 <BackupCodeGrid
@@ -405,7 +405,7 @@ export default function SecuritySettings() {
                 <div className="flex items-center gap-3">
                   <KeyRound className="w-4 h-4 text-neutral-400" />
                   <div>
-                    <p className="text-sm text-white font-medium">Backup codes</p>
+                    <p className="text-sm text-foreground font-medium">Backup codes</p>
                     <p className="text-xs text-neutral-500">
                       {backupCodesRemaining} of 8 codes remaining
                     </p>
@@ -428,7 +428,7 @@ export default function SecuritySettings() {
               >
                 <div className="flex items-center gap-2.5">
                   <RefreshCw className="w-4 h-4 text-neutral-400" />
-                  <span className="text-sm text-white">Regenerate backup codes</span>
+                  <span className="text-sm text-foreground">Regenerate backup codes</span>
                 </div>
                 {regenOpen
                   ? <ChevronUp className="w-4 h-4 text-neutral-500" />

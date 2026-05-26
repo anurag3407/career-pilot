@@ -60,7 +60,7 @@ const EmailGenerator = () => {
           transition={{ delay: 0.1 }}
           className="bg-background/50 backdrop-blur-sm shadow-xl rounded-2xl overflow-hidden border border-border mb-10"
         >
-          <div className="bg-indigo-600 p-4 text-white font-semibold flex items-center gap-2">
+          <div className="bg-indigo-600 p-4 text-foreground font-semibold flex items-center gap-2">
             <Sparkles size={20} /> Let AI craft your perfect pitch
           </div>
           <form onSubmit={handleGenerate} className="p-6 md:p-8 space-y-6">
