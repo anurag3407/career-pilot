@@ -12,7 +12,7 @@ import portfolioRoutes from './routes/portfolio.js';
 import uploadRoutes from './routes/upload.js';
 import resumeRoutes from './routes/resume.js';
 import enhanceRoutes from './routes/enhance.js';
-import authRoutes from './routes/auth.js';
+import authRoutes from './routes/auth.mjs';
 import jobsRoutes from './routes/jobsRoute.js';
 import jobTrackerRoutes from './routes/jobTracker.js';
 import jobAlertRoutes from './routes/jobAlerts.js';

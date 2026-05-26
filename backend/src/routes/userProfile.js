@@ -48,7 +48,6 @@ router.get('/me', asyncHandler(async (req, res) => {
       uid,
       displayName: req.user.name || req.user.email?.split('@')[0] || '',
     });
-    profile = profile.toObject();
   }
   res.json({ success: true, profile });
 }));
@@ -85,7 +84,7 @@ router.get('/me/stats', asyncHandler(async (req, res) => {
   const uid = req.user.uid;
   const [resumesCreated, interviewsDone] = await Promise.all([
     Resume.countDocuments({ userId: uid }),
-    Interview.countDocuments({ odId: uid, status: 'completed' }),
+    Interview.countDocuments({ userId: uid, status: 'completed' }),
   ]);
   res.json({ success: true, stats: { resumesCreated, interviewsDone } });
 }));
@@ -111,7 +110,7 @@ router.get('/:uid/stats', asyncHandler(async (req, res) => {
   }
   const [resumesCreated, interviewsDone] = await Promise.all([
     Resume.countDocuments({ userId: uid }),
-    Interview.countDocuments({ odId: uid, status: 'completed' }),
+    Interview.countDocuments({ userId: uid, status: 'completed' }),
   ]);
   res.json({ success: true, stats: { resumesCreated, interviewsDone } });
 }));

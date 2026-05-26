@@ -1,10 +1,10 @@
-import LoginAttempt from '../models/LoginAttempt.model.js';
+﻿import LoginAttempt from '../models/LoginAttempt.model.js';
 import { sendLockoutAlertEmail } from '../services/mailService.js';
 
 const MAX_ATTEMPTS = 5;
 const LOCKOUT_DURATION_MS = 15 * 60 * 1000;
 
-// Decode the JWT payload without verifying the signature — used only to
+// Decode the JWT payload without verifying the signature â€” used only to
 // extract the email claim for the lockout alert, not for authentication.
 const getEmailFromToken = (authHeader) => {
   try {
