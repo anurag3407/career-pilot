@@ -53,6 +53,10 @@ import PrivacyPolicy from './pages/PrivacyPolicy';
 import TermsOfService from './pages/TermsOfService';
 import CookiePolicy from './pages/CookiePolicy';
 import OpenRouterCallback from './pages/OpenRouterCallback';
+import CareerRoadmap from './pages/CareerRoadmap';
+import CoverLetterWriter from './pages/CoverLetterWriter';
+import JobAnalytics from './pages/JobAnalytics';
+import ResumeTailor from './pages/ResumeTailor';
 
 // Hub Imports
 import ResumeHub from './pages/hubs/ResumeHub';
@@ -198,6 +202,11 @@ function AppRoutes() {
         <Route path="/hub/career" element={<ProtectedRoute><CareerGrowthHub /></ProtectedRoute>} />
         <Route path="/hub/community" element={<ProtectedRoute><CommunityHub /></ProtectedRoute>} />
         <Route path="/github-dashboard" element={<ProtectedRoute><GitHubDashboard /></ProtectedRoute>} />
+
+        <Route path="/career-roadmap" element={<ProtectedRoute><CareerRoadmap /></ProtectedRoute>} />
+        <Route path="/cover-letter" element={<ProtectedRoute><CoverLetterWriter /></ProtectedRoute>} />
+        <Route path="/job-analytics" element={<ProtectedRoute><JobAnalytics /></ProtectedRoute>} />
+        <Route path="/resume-tailor" element={<ProtectedRoute><ResumeTailor /></ProtectedRoute>} />
 
         {/* Nested Fellowship Routes */}
         <Route path="/fellowship" element={<ProtectedRoute><FellowshipLayout /></ProtectedRoute>}>

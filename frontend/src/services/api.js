@@ -1353,3 +1353,39 @@ export const notificationApi = {
     return handleResponse(response)
   }
 }
+
+export const careerRoadmapApi = {
+  async generate(targetRole, currentSkills = [], yearsOfExperience = 0) {
+    const headers = await getAuthHeaders()
+    const response = await fetch(`${API_BASE}/career-roadmap/generate`, {
+      method: 'POST',
+      headers,
+      body: JSON.stringify({ targetRole, currentSkills, yearsOfExperience })
+    })
+    return handleResponse(response)
+  }
+}
+
+export const coverLetterApi = {
+  async generate(resumeText, jobDescription, companyName = '', tone = 'professional') {
+    const headers = await getAuthHeaders()
+    const response = await fetch(`${API_BASE}/cover-letter/generate`, {
+      method: 'POST',
+      headers,
+      body: JSON.stringify({ resumeText, jobDescription, companyName, tone })
+    })
+    return handleResponse(response)
+  }
+}
+
+export const resumeTailorApi = {
+  async analyze(resumeText, jobDescription) {
+    const headers = await getAuthHeaders()
+    const response = await fetch(`${API_BASE}/resume-tailor/analyze`, {
+      method: 'POST',
+      headers,
+      body: JSON.stringify({ resumeText, jobDescription })
+    })
+    return handleResponse(response)
+  }
+}
