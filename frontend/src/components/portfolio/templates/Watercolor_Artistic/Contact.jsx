@@ -1,9 +1,10 @@
-import React, { useState } from 'react';
+import React, { useState, useRef, useEffect } from 'react';
 import { Mail, MapPin, Send, Github, Linkedin, Twitter, Instagram } from 'lucide-react';
 
 const Contact = ({ 
   name = "Artist Name", 
   email = "hello@artist.com",
+  location = "Your City, Country",
   socials = [
     { name: "GitHub", url: "https://github.com/yourusername", icon: Github },
     { name: "LinkedIn", url: "https://www.linkedin.com/in/yourusername", icon: Linkedin },
@@ -19,6 +20,16 @@ const Contact = ({
   });
   const [isSubmitted, setIsSubmitted] = useState(false);
   const [isLoading, setIsLoading] = useState(false);
+  const [error, setError] = useState(null);
+
+  const successRef = useRef(null);
+
+  // Focus management for accessibility
+  useEffect(() => {
+    if (isSubmitted && successRef.current) {
+      successRef.current.focus();
+    }
+  }, [isSubmitted]);
 
   const handleChange = (e) => {
     setFormData({ ...formData, [e.target.name]: e.target.value });
@@ -27,15 +38,27 @@ const Contact = ({
   const handleSubmit = (e) => {
     e.preventDefault();
     setIsLoading(true);
+    setError(null);
 
     // Simulate API call
     setTimeout(() => {
-      // Only log in development to avoid exposing user data in production
       if (import.meta.env.DEV) {
         console.log("📧 Contact Form Submitted:", formData);
       }
+      
       // TODO: Connect to real backend here later
-      // Example: await fetch('/api/contact', { method: 'POST', body: JSON.stringify(formData) });
+      // try {
+      //   const response = await fetch('/api/contact', { 
+      //     method: 'POST', 
+      //     headers: { 'Content-Type': 'application/json' },
+      //     body: JSON.stringify(formData) 
+      //   });
+      //   if (!response.ok) throw new Error('Failed to send message');
+      // } catch (err) {
+      //   setError(err.message || 'Something went wrong. Please try again.');
+      //   setIsLoading(false);
+      //   return;
+      // }
       
       setIsSubmitted(true);
       setIsLoading(false);
@@ -45,6 +68,7 @@ const Contact = ({
   const resetForm = () => {
     setFormData({ name: '', email: '', subject: '', message: '' });
     setIsSubmitted(false);
+    setError(null);
   };
 
   return (
@@ -84,7 +108,7 @@ const Contact = ({
                   <MapPin className="w-6 h-6 text-violet-600 mt-1" />
                   <div>
                     <p className="font-medium">Location</p>
-                    <p className="text-violet-700">Ludhiana, Punjab, India</p>
+                    <p className="text-violet-700">{location}</p>
                   </div>
                 </div>
               </div>
@@ -94,11 +118,11 @@ const Contact = ({
             <div className="backdrop-blur-xl bg-white/70 p-8 rounded-3xl border border-white/50 shadow-xl">
               <h3 className="text-2xl font-semibold mb-6 text-violet-950">Follow My Art</h3>
               <div className="flex flex-wrap gap-4">
-                {socials.map((social, index) => {
+                {socials.map((social) => {
                   const Icon = social.icon;
                   return (
                     <a
-                      key={index}
+                      key={social.name}
                       href={social.url}
                       target="_blank"
                       rel="noopener noreferrer"
@@ -118,6 +142,12 @@ const Contact = ({
             <div className="backdrop-blur-2xl bg-white/75 p-10 rounded-3xl border border-white/60 shadow-2xl">
               {!isSubmitted ? (
                 <form onSubmit={handleSubmit} className="space-y-6">
+                  {error && (
+                    <div className="p-4 bg-red-100 border border-red-300 rounded-2xl text-red-800 text-sm">
+                      {error}
+                    </div>
+                  )}
+
                   <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
                     <div>
                       <label htmlFor="contact-name" className="block text-sm font-medium text-violet-900 mb-2">
@@ -193,7 +223,13 @@ const Contact = ({
                   </button>
                 </form>
               ) : (
-                <div className="text-center py-12">
+                <div 
+                  ref={successRef}
+                  className="text-center py-12" 
+                  role="status" 
+                  aria-live="polite"
+                  tabIndex={-1}
+                >
                   <div className="w-24 h-24 mx-auto mb-6 bg-green-100 rounded-full flex items-center justify-center">
                     🎨
                   </div>
