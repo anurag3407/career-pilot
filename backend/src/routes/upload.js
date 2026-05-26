@@ -9,7 +9,73 @@ import { validateUpload } from '../middleware/uploadValidator.js';
 
 const router = express.Router();
 
-// Upload and extract text from PDF
+/**
+ * @openapi
+ * /api/upload:
+ *   post:
+ *     summary: Upload and extract text from a PDF resume
+ *     tags:
+ *       - Resume
+ *     description: Uploads a PDF resume, parses its content to extract text, and returns extracted text along with file metadata. The file is temporarily stored and immediately deleted after processing.
+ *     security:
+ *       - bearerAuth: []
+ *     requestBody:
+ *       required: true
+ *       content:
+ *         multipart/form-data:
+ *           schema:
+ *             type: object
+ *             properties:
+ *               resume:
+ *                 type: string
+ *                 format: binary
+ *                 description: PDF file of the resume (max 5MB)
+ *             required:
+ *               - resume
+ *     responses:
+ *       200:
+ *         description: Resume uploaded and parsed successfully
+ *         content:
+ *           application/json:
+ *             schema:
+ *               type: object
+ *               properties:
+ *                 success:
+ *                   type: boolean
+ *                   example: true
+ *                 data:
+ *                   type: object
+ *                   properties:
+ *                     resumeId:
+ *                       type: string
+ *                       format: uuid
+ *                     originalFilename:
+ *                       type: string
+ *                       example: resume.pdf
+ *                     size:
+ *                       type: integer
+ *                       example: 125432
+ *                     extractedText:
+ *                       type: string
+ *                       example: "John Doe\nSoftware Engineer..."
+ *                     pageCount:
+ *                       type: integer
+ *                       example: 1
+ *                     metadata:
+ *                       type: object
+ *                       properties:
+ *                         info:
+ *                           type: object
+ *                         uploadedAt:
+ *                           type: string
+ *                           format: date-time
+ *       400:
+ *         description: Bad request (no file uploaded, invalid PDF format, or file size too large)
+ *       401:
+ *         description: Unauthorized (missing or invalid Firebase ID Token)
+ *       500:
+ *         description: Internal server error
+ */
 router.post('/', verifyToken, handleUpload, validateUpload, asyncHandler(async (req, res) => {
   if (!req.file) {
     throw new ApiError(400, 'No file uploaded');
