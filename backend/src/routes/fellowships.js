@@ -546,17 +546,9 @@ router.post('/chat/rooms/:roomId/messages', verifyToken, asyncHandler(async (req
     throw new ApiError(403, 'Access denied');
   }
 
-<<<<<<< HEAD
-    const { content } = req.body;
-    const sanitizedContent = sanitizeMessageContent(content);
-    if (!sanitizedContent) {
-        throw new ApiError(400, 'Message content is required');
-    }
-=======
   const { content } = req.body;
   const sanitizedContent = sanitizeMessageContent(content); // keep ONE version
   if (!sanitizedContent) throw new ApiError(400, 'Message content is required');
->>>>>>> e2601cb6bd280582b1ae84112ab2854de654be44
 
   const profile = await FellowshipProfile.findOne({ userId: req.user.uid });
 

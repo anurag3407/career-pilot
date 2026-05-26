@@ -303,6 +303,79 @@ export const resumeApi = {
       body: JSON.stringify({ text, jobRole })
     })
     return handleResponse(response)
+  },
+
+  // Get all versions of a resume
+  async getVersions(resumeId) {
+    const headers = await getAuthHeaders()
+    const response = await fetch(`${API_BASE}/resumes/${resumeId}/versions`, {
+      method: 'GET',
+      headers
+    })
+    return handleResponse(response)
+  },
+
+  // Create a new snapshot/version of a resume
+  async createVersion(resumeId, data) {
+    const headers = await getAuthHeaders()
+    const response = await fetch(`${API_BASE}/resumes/${resumeId}/versions`, {
+      method: 'POST',
+      headers,
+      body: JSON.stringify(data)
+    })
+    return handleResponse(response)
+  },
+
+  // Update specific version metadata
+  async updateVersion(resumeId, versionId, data) {
+    const headers = await getAuthHeaders()
+    const response = await fetch(`${API_BASE}/resumes/${resumeId}/versions/${versionId}`, {
+      method: 'PUT',
+      headers,
+      body: JSON.stringify(data)
+    })
+    return handleResponse(response)
+  },
+
+  // Delete specific version
+  async deleteVersion(resumeId, versionId) {
+    const headers = await getAuthHeaders()
+    const response = await fetch(`${API_BASE}/resumes/${resumeId}/versions/${versionId}`, {
+      method: 'DELETE',
+      headers
+    })
+    return handleResponse(response)
+  },
+
+  // Restore resume to a specific version
+  async restoreVersion(resumeId, versionId) {
+    const headers = await getAuthHeaders()
+    const response = await fetch(`${API_BASE}/resumes/${resumeId}/versions/${versionId}/restore`, {
+      method: 'POST',
+      headers
+    })
+    return handleResponse(response)
+  },
+
+  // Get ATS score progression history
+  async getAtsHistory(resumeId) {
+    const headers = await getAuthHeaders()
+    const response = await fetch(`${API_BASE}/resumes/${resumeId}/ats-history`, {
+      method: 'GET',
+      headers
+    })
+    return handleResponse(response)
+  },
+
+  // Log a new ATS score run to history
+  async logAtsHistory(resumeId, data) {
+    const headers = await getAuthHeaders()
+    const response = await fetch(`${API_BASE}/resumes/${resumeId}/ats-history`, {
+      method: 'POST',
+      headers,
+      body: JSON.stringify(data)
+    })
+    return handleResponse(response)
   }
 }
 

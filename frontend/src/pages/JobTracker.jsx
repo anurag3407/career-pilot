@@ -317,7 +317,7 @@ const JobTracker = () => {
                   const columnJobs = trackedJobs.filter((j) => j.status === status.value);
 
                   return (
-                    <div key={status.value} className="flex-shrink-0 w-80 bg-muted/20 rounded-2xl p-4 flex flex-col snap-start border border-border/40 shadow-sm">
+                    <div key={status.value} className="shrink-0 w-80 bg-muted/20 rounded-2xl p-4 flex flex-col snap-start border border-border/40 shadow-sm">
                       <div className="flex items-center justify-between mb-4 px-2">
                         <h3 className="font-bold flex items-center gap-2 text-foreground text-sm uppercase tracking-wider">
                           <span>{status.icon}</span> {status.label}

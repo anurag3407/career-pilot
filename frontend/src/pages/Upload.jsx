@@ -127,7 +127,7 @@ export default function Upload() {
           className="grid md:grid-cols-3 gap-4 mb-8"
         >
           <div className="bg-background/50 border border-border rounded-xl p-4 flex items-center gap-3">
-            <div className="w-10 h-10 bg-primary/20 rounded-lg flex items-center justify-center flex-shrink-0">
+            <div className="w-10 h-10 bg-primary/20 rounded-lg flex items-center justify-center shrink-0">
               <Target className="w-5 h-5 text-primary" />
             </div>
             <div>
@@ -136,7 +136,7 @@ export default function Upload() {
             </div>
           </div>
           <div className="bg-background/50 border border-border rounded-xl p-4 flex items-center gap-3">
-            <div className="w-10 h-10 bg-purple-500/20 rounded-lg flex items-center justify-center flex-shrink-0">
+            <div className="w-10 h-10 bg-purple-500/20 rounded-lg flex items-center justify-center shrink-0">
               <BarChart3 className="w-5 h-5 text-purple-400" />
             </div>
             <div>
@@ -145,7 +145,7 @@ export default function Upload() {
             </div>
           </div>
           <div className="bg-background/50 border border-border rounded-xl p-4 flex items-center gap-3">
-            <div className="w-10 h-10 bg-green-500/20 rounded-lg flex items-center justify-center flex-shrink-0">
+            <div className="w-10 h-10 bg-green-500/20 rounded-lg flex items-center justify-center shrink-0">
               <Zap className="w-5 h-5 text-green-400" />
             </div>
             <div>
@@ -298,7 +298,7 @@ export default function Upload() {
                 className="mt-5 rounded-xl border border-sky-500/20 bg-sky-500/5 p-5"
               >
                 <div className="flex items-start gap-4 mb-4">
-                  <div className="w-12 h-12 rounded-full bg-gradient-to-br from-sky-500 to-indigo-600 flex items-center justify-center flex-shrink-0">
+                  <div className="w-12 h-12 rounded-full bg-gradient-to-br from-sky-500 to-indigo-600 flex items-center justify-center shrink-0">
                     <span className="text-white font-bold text-lg">
                       {linkedinPreview.name?.charAt(0)?.toUpperCase() || '?'}
                     </span>

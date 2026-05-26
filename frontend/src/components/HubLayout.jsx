@@ -35,7 +35,7 @@ export default function HubLayout({ icon: Icon, title, description, color = 'pri
           <div className={`absolute bottom-0 left-0 -ml-16 -mb-16 w-48 h-48 bg-${color}/5 rounded-full blur-2xl pointer-events-none`} />
 
           <div className="relative flex items-start gap-5">
-            <div className={`w-16 h-16 rounded-2xl bg-${color}/15 border border-${color}/20 flex items-center justify-center flex-shrink-0`}>
+            <div className={`w-16 h-16 rounded-2xl bg-${color}/15 border border-${color}/20 flex items-center justify-center shrink-0`}>
               <Icon className={`w-8 h-8 text-${color}`} />
             </div>
             <div className="flex-1 min-w-0">
