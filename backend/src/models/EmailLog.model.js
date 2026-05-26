@@ -71,5 +71,8 @@ const emailLogSchema = new mongoose.Schema({
 emailLogSchema.index({ recipientEmail: 1, sentAt: -1 });
 emailLogSchema.index({ campaignId: 1, sentAt: -1 });
 emailLogSchema.index({ openCount: 1, sentAt: -1 });
+emailLogSchema.index({ deliveryStatus: 1, sentAt: -1 }, { background: true });
+emailLogSchema.index({ firstOpenedAt: 1 }, { background: true, sparse: true });
+emailLogSchema.index({ campaignId: 1, openCount: -1 }, { background: true });
 
 export default mongoose.model('EmailLog', emailLogSchema);

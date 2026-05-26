@@ -1,4 +1,5 @@
 import { auth } from '../config/firebase'
+import { decryptKey } from '../utils/encryption'
 
 const API_BASE = import.meta.env.VITE_API_BASE || '/api';
 
@@ -14,9 +15,19 @@ async function getAuthHeaders() {
     'Content-Type': 'application/json'
   }
 
-  const openRouterKey = localStorage.getItem('openRouterApiKey')
-  if (openRouterKey) {
-    headers['X-OpenRouter-Key'] = openRouterKey
+  const aiConfigStr = localStorage.getItem('aiConfig');
+  if (aiConfigStr) {
+    try {
+      const aiConfig = JSON.parse(aiConfigStr);
+      if (aiConfig.provider) headers['X-AI-Provider'] = aiConfig.provider;
+      if (aiConfig.apiKey) headers['X-AI-Key'] = decryptKey(aiConfig.apiKey);
+      if (aiConfig.model) headers['X-AI-Model'] = aiConfig.model;
+    } catch(e) {}
+  } else {
+    const openRouterKey = localStorage.getItem('openRouterApiKey');
+    if (openRouterKey) {
+      headers['X-OpenRouter-Key'] = decryptKey(openRouterKey);
+    }
   }
 
   return headers
@@ -44,13 +55,15 @@ function parseRetryAfter(value) {
 }
 
 // Helper to handle API responses
+
 async function handleResponse(response) {
-  let data;
-  const contentType = response.headers.get('content-type');
-  if (contentType && contentType.includes('application/json')) {
+  let data = null;
+  const contentType = response.headers.get('content-type') || '';
+
+  if (contentType.includes('application/json')) {
     try {
       data = await response.json();
-    } catch (e) {
+    } catch {
       data = null;
     }
   } else {
@@ -63,36 +76,25 @@ async function handleResponse(response) {
   }
 
   if (!response.ok) {
-    throw new Error((data && data.error) || `Server error (${response.status})`);
-  }
-  return data || {};
-  let data = null
-  const contentType = response.headers.get('content-type') || ''
-  if (contentType.includes('application/json')) {
-    data = await response.json()
-  } else {
-    data = { error: await response.text() }
-  }
-
-  if (!response.ok) {
-    const error = new Error(data.error || response.statusText || 'Something went wrong')
-    error.status = response.status
+    const error = new Error(
+      (data && data.error) || `Server error (${response.status})`
+    );
+    error.status = response.status;
 
     if (response.status === 429) {
-      error.retryAfter = parseRetryAfter(response.headers.get('retry-after'))
+      error.retryAfter = parseRetryAfter(response.headers.get('retry-after'));
       error.rateLimit = {
         limit: parseHeaderInt(response.headers.get('x-ratelimit-limit')),
         remaining: parseHeaderInt(response.headers.get('x-ratelimit-remaining')),
         reset: parseHeaderInt(response.headers.get('x-ratelimit-reset'))
-      }
+      };
     }
 
-    throw error
+    throw error;
   }
 
-  return data
+  return data || {};
 }
-
 // ============ AUTH API ============
 export const authApi = {
   // Verify token
@@ -301,6 +303,79 @@ export const resumeApi = {
       body: JSON.stringify({ text, jobRole })
     })
     return handleResponse(response)
+  },
+
+  // Get all versions of a resume
+  async getVersions(resumeId) {
+    const headers = await getAuthHeaders()
+    const response = await fetch(`${API_BASE}/resumes/${resumeId}/versions`, {
+      method: 'GET',
+      headers
+    })
+    return handleResponse(response)
+  },
+
+  // Create a new snapshot/version of a resume
+  async createVersion(resumeId, data) {
+    const headers = await getAuthHeaders()
+    const response = await fetch(`${API_BASE}/resumes/${resumeId}/versions`, {
+      method: 'POST',
+      headers,
+      body: JSON.stringify(data)
+    })
+    return handleResponse(response)
+  },
+
+  // Update specific version metadata
+  async updateVersion(resumeId, versionId, data) {
+    const headers = await getAuthHeaders()
+    const response = await fetch(`${API_BASE}/resumes/${resumeId}/versions/${versionId}`, {
+      method: 'PUT',
+      headers,
+      body: JSON.stringify(data)
+    })
+    return handleResponse(response)
+  },
+
+  // Delete specific version
+  async deleteVersion(resumeId, versionId) {
+    const headers = await getAuthHeaders()
+    const response = await fetch(`${API_BASE}/resumes/${resumeId}/versions/${versionId}`, {
+      method: 'DELETE',
+      headers
+    })
+    return handleResponse(response)
+  },
+
+  // Restore resume to a specific version
+  async restoreVersion(resumeId, versionId) {
+    const headers = await getAuthHeaders()
+    const response = await fetch(`${API_BASE}/resumes/${resumeId}/versions/${versionId}/restore`, {
+      method: 'POST',
+      headers
+    })
+    return handleResponse(response)
+  },
+
+  // Get ATS score progression history
+  async getAtsHistory(resumeId) {
+    const headers = await getAuthHeaders()
+    const response = await fetch(`${API_BASE}/resumes/${resumeId}/ats-history`, {
+      method: 'GET',
+      headers
+    })
+    return handleResponse(response)
+  },
+
+  // Log a new ATS score run to history
+  async logAtsHistory(resumeId, data) {
+    const headers = await getAuthHeaders()
+    const response = await fetch(`${API_BASE}/resumes/${resumeId}/ats-history`, {
+      method: 'POST',
+      headers,
+      body: JSON.stringify(data)
+    })
+    return handleResponse(response)
   }
 }
 
@@ -452,26 +527,23 @@ export const aiApi = {
       headers
     })
     return handleResponse(response)
-  },
-
-  async getConfig() {
-    const headers = await getAuthHeaders()
-    const response = await fetch(`${API_BASE}/ai/config`, {
-      method: 'GET',
-      headers
-    })
-    return handleResponse(response)
-  },
-
-  async updateConfig(data) {
-    const headers = await getAuthHeaders()
-    const response = await fetch(`${API_BASE}/ai/config`, {
-      method: 'PUT',
-      headers,
-      body: JSON.stringify(data)
-    })
-    return handleResponse(response)
   }
+}
+
+// Helper to build query params, properly serializing nested objects/arrays
+function buildParams(params) {
+  const usp = new URLSearchParams()
+  for (const [key, value] of Object.entries(params)) {
+    if (value === null || value === undefined) continue
+    if (Array.isArray(value)) {
+      value.forEach(v => usp.append(key, String(v)))
+    } else if (typeof value === 'object') {
+      usp.append(key, JSON.stringify(value))
+    } else {
+      usp.append(key, String(value))
+    }
+  }
+  return usp
 }
 
 // ============ JOBS API ============
@@ -479,7 +551,7 @@ export const jobsApi = {
   // Search jobs with query
   async search(query, filters = {}) {
     const headers = await getAuthHeaders()
-    const params = new URLSearchParams({ query, ...filters })
+    const params = buildParams({ query, ...filters })
     const response = await fetch(`${API_BASE}/fetchjobs?${params}`, {
       method: 'GET',
       headers
@@ -514,10 +586,13 @@ export const jobTrackerApi = {
   // Update job application status
   async updateStatus(jobId, status, notes = '') {
     const headers = await getAuthHeaders()
+    const body = { status };
+    if (notes) body.notes = notes;
+    
     const response = await fetch(`${API_BASE}/job-tracker/${jobId}`, {
       method: 'PUT',
       headers,
-      body: JSON.stringify({ status, notes })
+      body: JSON.stringify(body)
     })
     return handleResponse(response)
   },

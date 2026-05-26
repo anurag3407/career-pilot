@@ -13,10 +13,10 @@ export default function ThemeSelector({ selectedTheme, onSelectTheme }) {
   return (
     <div className="w-full p-4">
       <div className="flex items-center gap-2 mb-6">
-        <span className="text-sm font-medium text-gray-600 dark:text-gray-300">Preview mode:</span>
-        <div className="flex rounded-lg overflow-hidden border border-gray-200 dark:border-gray-700">
-          <button onClick={() => setIsDarkPreview(false)} className={`px-4 py-1.5 text-sm font-medium transition-colors ${!isDarkPreview ? 'bg-indigo-600 text-white' : 'bg-white dark:bg-gray-800 text-gray-600 dark:text-gray-300'}`}>☀️ Light</button>
-          <button onClick={() => setIsDarkPreview(true)} className={`px-4 py-1.5 text-sm font-medium transition-colors ${isDarkPreview ? 'bg-indigo-600 text-white' : 'bg-white dark:bg-gray-800 text-gray-600 dark:text-gray-300'}`}>🌙 Dark</button>
+        <span className="text-sm font-medium text-muted-foreground">Preview mode:</span>
+        <div className="flex rounded-lg overflow-hidden border border-border">
+          <button onClick={() => setIsDarkPreview(false)} className={`px-4 py-1.5 text-sm font-medium transition-colors ${!isDarkPreview ? 'bg-primary text-primary-foreground' : 'bg-card text-muted-foreground hover:bg-muted'}`}>☀️ Light</button>
+          <button onClick={() => setIsDarkPreview(true)} className={`px-4 py-1.5 text-sm font-medium transition-colors ${isDarkPreview ? 'bg-primary text-primary-foreground' : 'bg-card text-muted-foreground hover:bg-muted'}`}>🌙 Dark</button>
         </div>
       </div>
       <div className="grid grid-cols-2 gap-4 sm:grid-cols-4">
@@ -33,9 +33,9 @@ export default function ThemeSelector({ selectedTheme, onSelectTheme }) {
                 if (onSelectTheme) onSelectTheme(t.id)
               }} 
               className={`relative rounded-xl border-2 overflow-hidden transition-all ${
-                isDisabled ? 'cursor-not-allowed opacity-90 border-gray-200 dark:border-gray-700' 
-                : isSelected ? 'cursor-pointer border-indigo-500 shadow-lg scale-105' 
-                : 'cursor-pointer border-gray-200 dark:border-gray-700 hover:border-indigo-300'
+                isDisabled ? 'cursor-not-allowed opacity-90 border-border' 
+                : isSelected ? 'cursor-pointer border-primary shadow-lg scale-105' 
+                : 'cursor-pointer border-border hover:border-primary/50'
               }`}
             >
               {t.isPremium && (
@@ -44,8 +44,8 @@ export default function ThemeSelector({ selectedTheme, onSelectTheme }) {
                 </span>
               )}
               {isDisabled && (
-                <div className="absolute inset-0 z-20 flex items-center justify-center bg-white/60 dark:bg-black/60 backdrop-blur-[2px]">
-                  <span className="px-3 py-1 text-sm font-semibold text-gray-800 dark:text-white bg-white/90 dark:bg-gray-800/90 rounded-md shadow-sm border border-gray-200 dark:border-gray-700">
+                <div className="absolute inset-0 z-20 flex items-center justify-center bg-background/60 backdrop-blur-[2px]">
+                  <span className="px-3 py-1 text-sm font-semibold text-foreground bg-card/90 rounded-md shadow-sm border border-border">
                     Coming Soon
                   </span>
                 </div>
@@ -53,14 +53,14 @@ export default function ThemeSelector({ selectedTheme, onSelectTheme }) {
               <div className="h-24 w-full flex items-center justify-center" style={{ backgroundColor: previewColor }}>
                 <div className="w-8 h-8 rounded-full" style={{ backgroundColor: t.accent }} />
               </div>
-              <div className="p-2 bg-white dark:bg-gray-900">
-                <p className="text-sm font-medium text-gray-800 dark:text-gray-100">{t.name}</p>
+              <div className="p-2 bg-card">
+                <p className="text-sm font-medium text-foreground">{t.name}</p>
                 {t.supportsDarkMode && (
-                  <span className="inline-block mt-1 text-xs px-2 py-0.5 rounded-full bg-indigo-100 dark:bg-indigo-900 text-indigo-600 dark:text-indigo-300">🌙 Dark mode supported</span>
+                  <span className="inline-block mt-1 text-xs px-2 py-0.5 rounded-full bg-primary/10 text-primary border border-primary/20">🌙 Dark mode supported</span>
                 )}
               </div>
               {isSelected && !isDisabled && (
-                <div className="absolute top-2 right-2 z-10 bg-indigo-500 text-white rounded-full w-5 h-5 flex items-center justify-center text-xs">✓</div>
+                <div className="absolute top-2 right-2 z-10 bg-primary text-primary-foreground rounded-full w-5 h-5 flex items-center justify-center text-xs">✓</div>
               )}
             </div>
           )
