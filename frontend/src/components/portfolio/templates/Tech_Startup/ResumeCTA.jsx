@@ -11,8 +11,28 @@ export default function ResumeCTA({ data }) {
   const titleText = data?.resumeCtaTitle || "Land your next opportunity with a solid track record.";
   const subtitleText = data?.resumeCtaSubtitle || "Download my complete, professionally tailored resume to explore my technical skills, architectural execution, and background.";
 
-  // Spring animation transition configurations for sleek responsiveness
+  // Spring animation transition configurations
   const springTransition = { type: "spring", stiffness: 300, damping: 20 };
+
+  // Helper function to dynamically highlight only the word "opportunity" case-insensitively
+  const renderTitle = (text) => {
+    if (!text.toLowerCase().includes("opportunity")) return text;
+
+    // Split on "opportunity" preserving case and the word itself
+    const parts = text.split(/(opportunity)/i);
+    return parts.map((part, index) =>
+      part.toLowerCase() === "opportunity" ? (
+        <span
+          key={index}
+          className="bg-clip-text text-transparent bg-gradient-to-r from-[#00D2FF] to-[#8B5CF6]"
+        >
+          {part}
+        </span>
+      ) : (
+        part
+      )
+    );
+  };
 
   return (
     <section className="relative w-full py-24 md:py-32 bg-[#030712] overflow-hidden text-slate-100 font-sans border-t border-slate-900">
@@ -46,23 +66,17 @@ export default function ResumeCTA({ data }) {
             </span>
           </motion.div>
 
-          {/* Headline with the signature careerpilot color gradient */}
+          {/* Headline rendering dynamically through the highlighting helper */}
           <motion.h2
             initial={{ opacity: 0, y: 15 }}
             animate={{ opacity: 1, y: 0 }}
             transition={{ delay: 0.2, duration: 0.6 }}
             className="text-3xl md:text-5xl font-bold tracking-tight text-white max-w-2xl leading-tight"
           >
-            {titleText.includes("opportunity") ? (
-              <>
-                Land your next <span className="bg-clip-text text-transparent bg-gradient-to-r from-[#00D2FF] to-[#8B5CF6]">opportunity</span> with a solid track record.
-              </>
-            ) : (
-              titleText
-            )}
+            {renderTitle(titleText)}
           </motion.h2>
 
-          {/* Description (Matches the slate-400 paragraph typography of careerpilot) */}
+          {/* Description */}
           <motion.p
             initial={{ opacity: 0, y: 15 }}
             animate={{ opacity: 1, y: 0 }}
@@ -80,7 +94,7 @@ export default function ResumeCTA({ data }) {
             className="mt-10 flex flex-col sm:flex-row gap-4 items-center justify-center w-full sm:w-auto"
           >
 
-            {/* Primary Action Button (Matches the bright cyan button with signature cyan outer glow shadow) */}
+            {/* Primary Action Button */}
             <motion.a
               href={resumeUrl}
               download={`${fullName.replace(/\s+/g, '_')}_Resume`}
@@ -98,7 +112,7 @@ export default function ResumeCTA({ data }) {
               Download Resume
             </motion.a>
 
-            {/* Secondary Action Button (Matches the dark gray "Explore Jobs" styled secondary button) */}
+            {/* Secondary Action Button */}
             {email && (
               <motion.a
                 href={`mailto:${email}?subject=Project Proposal`}
