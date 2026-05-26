@@ -9,7 +9,7 @@ import CulinaryAbout from "../components/portfolio/templates/Culinary_Restaurant
 import TechStartupHero from "../components/portfolio/templates/Tech_Startup/Hero";
 import ChooseAdventurePortfolio from "../components/portfolio/templates/Choose_Adventure/index";
 import Navbar from '../components/Navbar'
-import HighFashionResumeCTA from "../components/portfolio/templates/High_Fashion/ResumeCTA";
+import ResumeCTA from "../components/portfolio/templates/High_Fashion/ResumeCTA";
 import GeometricShapesAbout from "../components/portfolio/templates/Geometric_Shapes/About";
 
 function FilterSelect({ value, onChange, options, className = "" }) {
