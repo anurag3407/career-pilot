@@ -7,7 +7,7 @@
   </p>
 
   <p align="center"> 
-    <a href="https://github.com/ishwari418/career-pilot/blob/main/LICENSE">
+    <a href="https://github.com/anurag3407/career-pilot/blob/main/LICENSE">
       <img src="https://img.shields.io/badge/License-MIT-0052CC?style=for-the-badge&logo=opensourceinitiative&logoColor=white" alt="License" />
     </a>
     <img src="https://img.shields.io/badge/Node.js-18+-0066FF?style=for-the-badge&logo=node.js&logoColor=white" alt="Node.js" />
@@ -136,11 +136,13 @@ We solve the modern job seeker's most painful challenges:
     </td>
     <td valign="top">
       <ul>
+        <li><b>Node.js 18+</b></li>
         <li><b>Express.js</b></li>
         <li><b>MongoDB + Mongoose</b></li>
         <li><b>BullMQ + IORedis</b></li>
         <li><b>Google Gemini AI</b></li>
         <li><b>Razorpay API</b></li>
+      </ul>
     </td>
     <td valign="top">
       <ul>
@@ -169,7 +171,7 @@ We solve the modern job seeker's most painful challenges:
 
 ```bash
 # 1. Clone the repository
-git clone https://github.com/ishwari418/career-pilot.git
+git clone https://github.com/anurag3407/career-pilot.git
 cd career-pilot
 
 # 2. Install backend dependencies
