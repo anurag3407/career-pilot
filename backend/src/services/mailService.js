@@ -219,12 +219,17 @@ export const sendMatchingJobMail = async ({
 
     // Fallback to local SMTP
     const transport = await initLocalTransporter();
+    
+    const safeApplyLink = isSafeExternalUrl(applyLink) ? applyLink : null;
+    const applyLinkHtml = safeApplyLink
+      ? `<a href="${escapeHtml(safeApplyLink)}">Apply Now</a>`
+      : '<span>Apply link unavailable</span>';
 
     const mailOptions = {
       from: `"careerpilot Jobs" <${process.env.EMAIL_USER}>`,
       to: userEmail,
       subject: `🎯 New Job Match: ${jobTitle} at ${companyName}`,
-      html: `<h1>New Job Match</h1><p>${jobTitle} at ${companyName}</p><a href="${applyLink}">Apply Now</a>`
+      html: `<h1>New Job Match</h1><p>${escapeHtml(jobTitle)} at ${escapeHtml(companyName)}</p>${applyLinkHtml}`
     };
 
     const info = await transport.sendMail(mailOptions);
@@ -543,3 +548,9 @@ export const sendVerificationEmail = async ({ email, code }) => {
 
 
 export { handleBounceNotification } from "./bounceHandler.js";
+
+// Export for testing purposes only
+export const __setMockTransport = (mock) => { 
+  transporter = mock; 
+  nodemailer = { createTransport: () => mock }; 
+};

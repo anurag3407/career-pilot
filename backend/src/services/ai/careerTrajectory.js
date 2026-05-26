@@ -1,21 +1,4 @@
-import { GoogleGenerativeAI } from '@google/generative-ai';
-import dotenv from 'dotenv';
 import { aiCallsCounter } from '../../middleware/metrics.js';
-
-dotenv.config();
-
-const geminiApiKey = process.env.GEMINI_API_KEY;
-if (!geminiApiKey) {
-  console.warn('GEMINI_API_KEY is missing. Career trajectory service will only work with a user-supplied AI provider.');
-}
-
-// Lazily initialised — avoids crashing on startup if key is absent
-let defaultModel;
-if (geminiApiKey) {
-  const genAI = new GoogleGenerativeAI(geminiApiKey);
-  // gemini-2.0-flash: fastest & cheapest Gemini variant — minimises token cost
-  defaultModel = genAI.getGenerativeModel({ model: 'gemini-2.0-flash' });
-}
 
 /**
  * Build a compact, token-efficient prompt.
@@ -82,7 +65,11 @@ Rules:
  * @param {object}   [aiProvider] - Provider instance from extractAIProvider middleware
  * @returns {Promise<object>} Parsed trajectory result
  */
-export const predictTrajectory = async (resumeData, aiProvider = null) => {
+export const predictTrajectory = async (resumeData, aiProvider) => {
+  if (!aiProvider) {
+    throw new Error('AI Provider is required. Please provide an API key.');
+  }
+
   const profile = {
     currentRole: resumeData.currentRole,
     skills: resumeData.skills,
@@ -92,33 +79,17 @@ export const predictTrajectory = async (resumeData, aiProvider = null) => {
 
   const prompt = buildPrompt(profile);
 
-  let responseText;
+  const result = await aiProvider.generateContent(prompt);
 
-  // --- Use injected aiProvider (user's key / DB config) if available ---
-  if (aiProvider && typeof aiProvider.generateContent === 'function') {
-    // Note: aiCallsCounter is NOT incremented here — built-in provider adapters
-    // already track this metric internally to avoid double-counting.
-    const result = await aiProvider.generateContent(prompt);
-
-    // Guard against nullish adapter response before dereferencing
-    if (!result) {
-      throw new Error('AI provider returned a null or undefined response.');
-    }
-
-    // Normalise across provider adapters — some return .text directly, some wrap it
-    responseText = typeof result.text === 'function'
-      ? result.text()
-      : result.text ?? result?.response?.text?.() ?? '';
-  } else {
-    // --- Fall back to server Gemini key ---
-    if (!defaultModel) {
-      throw new Error('No AI provider available. Please configure GEMINI_API_KEY or supply a provider.');
-    }
-
-    aiCallsCounter.inc({ provider: 'gemini' });
-    const result = await defaultModel.generateContent(prompt);
-    responseText = result.response.text();
+  // Guard against nullish adapter response before dereferencing
+  if (!result) {
+    throw new Error('AI provider returned a null or undefined response.');
   }
+
+  // Normalise across provider adapters — some return .text directly, some wrap it
+  const responseText = typeof result.text === 'function'
+    ? result.text()
+    : result.text ?? result?.response?.text?.() ?? '';
 
   // Strip markdown code fences if the model adds them despite instructions
   const cleaned = responseText

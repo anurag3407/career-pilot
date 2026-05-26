@@ -1,4 +1,5 @@
 import { useState, useRef, useCallback } from 'react'
+import toast from 'react-hot-toast'
 import { cn } from '@/lib/utils'
 import Button from './Button'
 import DragHandle from './DragHandle'
@@ -349,7 +350,7 @@ function SectionCard({
                     onClick={() => {
                       onChange(enhancedData); // Apply changes to original state
                       setEnhancedData(null); // Close diff view
-                      alert("Successfully enhanced section!"); // Simple success toast/notification
+                      toast.success("Successfully enhanced section!");
                     }}
                     className="px-2.5 py-1 rounded bg-emerald-600 text-white text-xs font-medium hover:bg-emerald-700 transition-colors"
                   >
@@ -498,30 +499,9 @@ function AddSectionPanel({ onAdd, onClose }) {
 }
 
 // ─── Markdown export helper ────────────────────────────────────────────────
-
-export function sectionsToMarkdown(sections) {
-  if (!sections?.length) return ''
-  return sections
-    .map((s) => {
-      const header = `## ${s.name}\n`
-      const body = s.entries
-        .map((e) => {
-          const parts = []
-          if (e.title) {
-            const titleLine = e.subtitle
-              ? `**${e.title}** — *${e.subtitle}*`
-              : `**${e.title}**`
-            parts.push(e.date ? `${titleLine} *(${e.date})*` : titleLine)
-          }
-          if (e.description) parts.push(e.description)
-          return parts.join('\n')
-        })
-        .filter(Boolean)
-        .join('\n\n')
-      return header + body
-    })
-    .join('\n\n')
-}
+// Moved to ./customSectionUtils.js to keep this file Fast Refresh–compatible
+// (mixing a default component export with named non-component exports
+// violates react-refresh/only-export-components and breaks Vite HMR).
 
 // ─── Main exported component ───────────────────────────────────────────────
 

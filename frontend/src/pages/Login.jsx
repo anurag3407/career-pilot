@@ -5,7 +5,7 @@ import * as yup from "yup";
 import { Link, useNavigate } from 'react-router-dom'
 import toast from 'react-hot-toast'
 import { ShieldCheck } from 'lucide-react'
-import { useAuth } from '../context/AuthContext'
+import { useAuth } from '../hooks/useAuth'
 import Navbar from '../components/Navbar'
 import Input from '../components/Input'
 import Button from '../components/Button'
@@ -50,6 +50,7 @@ password: yup
     setLoading(true)
 
     try {
+
       const response = await login(
         data.email,
         data.password
@@ -63,6 +64,25 @@ password: yup
         navigate('/dashboard')
       }
 
+
+      // 1. Primary authentication via Firebase
+      await login(formData.email, formData.password)
+
+      // 2. Check with backend if two-factor is enabled for this user
+      try {
+        const statusRes = await twoFactorApi.getStatus()
+        if (statusRes.enabled) {
+          setStep('totp')
+          setLoading(false)
+          return
+        }
+      } catch (_) {
+        // 2FA status check failed — proceed without 2FA
+      }
+
+      toast.success('Signed in successfully!')
+      navigate('/dashboard')
+ main
     } catch (error) {
       console.error('Login error:', error)
 
@@ -80,6 +100,7 @@ password: yup
     setLoading(true)
 
     try {
+ 
       const response = await loginWithGoogle()
 
       if (response && response.twoFactorRequired) {
@@ -90,6 +111,23 @@ password: yup
         navigate('/dashboard')
       }
 
+      await loginWithGoogle()
+
+      // Check with backend if two-factor is enabled
+      try {
+        const statusRes = await twoFactorApi.getStatus()
+        if (statusRes.enabled) {
+          setStep('totp')
+          setLoading(false)
+          return
+        }
+      } catch (_) {
+        // 2FA status check failed — proceed without 2FA
+      }
+
+      toast.success('Signed in with Google!')
+      navigate('/dashboard')
+ main
     } catch (error) {
       console.error('Google login error:', error)
       toast.error(error.message || 'Failed to sign in with Google')
@@ -150,7 +188,7 @@ password: yup
 
       <Navbar />
 
-      <div className="max-w-md mx-auto pt-32 px-4 relative z-10">
+      <div className="max-w-md mx-auto pt-24 md:pt-32 px-4 relative z-10">
         <Card className="border-border/50 bg-card/60 backdrop-blur-xl">
 
           {step === 'credentials' ? (
