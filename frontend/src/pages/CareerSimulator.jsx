@@ -160,13 +160,17 @@ export default function CareerSimulator() {
       await careerSimulationApi.delete(id)
       toast.success('Simulation deleted')
       
-      const updatedHistory = history.filter(h => h._id !== id)
-      setHistory(updatedHistory)
-      
-      // Update active simulation if deleted was active
-      if (activeSimulation && activeSimulation._id === id) {
-        setActiveSimulation(updatedHistory.length > 0 ? updatedHistory[0] : null)
-      }
+      setHistory(prev => {
+        const updatedHistory = prev.filter(h => h._id !== id)
+        
+        // Update active simulation if deleted was active
+        if (activeSimulation && activeSimulation._id === id) {
+          setActiveSimulation(updatedHistory.length > 0 ? updatedHistory[0] : null)
+          setActivePipelineStageIdx(0)
+        }
+        
+        return updatedHistory
+      })
       
       // Refresh stats
       const statsRes = await careerSimulationApi.getStats()
@@ -258,8 +262,9 @@ export default function CareerSimulator() {
             ) : (
               <form onSubmit={handleStartSimulation} className="space-y-4">
                 <div>
-                  <label className="block text-xs font-bold text-muted-foreground mb-1.5 uppercase">Select Resume</label>
+                  <label htmlFor="resume-select" className="block text-xs font-bold text-muted-foreground mb-1.5 uppercase">Select Resume</label>
                   <select
+                    id="resume-select"
                     value={selectedResumeId}
                     onChange={handleResumeChange}
                     className="w-full px-3 py-2.5 bg-muted/40 border border-border rounded-xl text-foreground text-sm focus:ring-2 focus:ring-primary focus:border-transparent transition-all"
@@ -273,8 +278,9 @@ export default function CareerSimulator() {
                 </div>
 
                 <div>
-                  <label className="block text-xs font-bold text-muted-foreground mb-1.5 uppercase">Target Job Role</label>
+                  <label htmlFor="job-role-input" className="block text-xs font-bold text-muted-foreground mb-1.5 uppercase">Target Job Role</label>
                   <input
+                    id="job-role-input"
                     type="text"
                     value={jobRole}
                     onChange={(e) => setJobRole(e.target.value)}
@@ -284,8 +290,8 @@ export default function CareerSimulator() {
                   />
                 </div>
 
-                <div>
-                  <label className="block text-xs font-bold text-muted-foreground mb-1.5 uppercase">Experience Level</label>
+                <fieldset>
+                  <legend className="block text-xs font-bold text-muted-foreground mb-1.5 uppercase">Experience Level</legend>
                   <div className="grid grid-cols-2 gap-2">
                     {['internship', 'entry', 'mid', 'senior'].map(lvl => (
                       <button
@@ -302,7 +308,7 @@ export default function CareerSimulator() {
                       </button>
                     ))}
                   </div>
-                </div>
+                </fieldset>
 
                 <button
                   type="submit"
@@ -368,7 +374,7 @@ export default function CareerSimulator() {
                       key={idx}
                       cx={p.x}
                       cy={p.y}
-                      r={hoveredPoint?.id === p.id ? "6" : "3.5"}
+                      r={(hoveredPoint?.id === p.id || hoveredPoint?._id === p._id) ? "6" : "3.5"}
                       fill="var(--background)"
                       stroke="var(--primary)"
                       strokeWidth="2"
@@ -414,7 +420,10 @@ export default function CareerSimulator() {
                   return (
                     <div
                       key={item._id}
-                      onClick={() => setActiveSimulation(item)}
+                      onClick={() => {
+                        setActiveSimulation(item)
+                        setActivePipelineStageIdx(0)
+                      }}
                       className={`flex items-center justify-between p-3 rounded-2xl border text-left cursor-pointer transition-all ${
                         isActive
                           ? 'bg-primary/10 border-primary shadow-sm'
@@ -678,18 +687,26 @@ export default function CareerSimulator() {
                         <div className="space-y-1.5">
                           <p className="text-xs font-bold text-green-400 uppercase">Strong Matching Skills</p>
                           <div className="flex flex-wrap gap-1">
-                            {activeSimulation.skillGap.strongSkills?.map(s => (
-                              <span key={s} className="text-[10px] font-bold px-2 py-0.5 bg-green-500/10 border border-green-500/20 text-green-400 rounded-full">{s}</span>
-                            )) || <p className="text-xs text-muted-foreground italic">None identified.</p>}
+                            {activeSimulation.skillGap.strongSkills && activeSimulation.skillGap.strongSkills.length > 0 ? (
+                              activeSimulation.skillGap.strongSkills.map(s => (
+                                <span key={s} className="text-[10px] font-bold px-2 py-0.5 bg-green-500/10 border border-green-500/20 text-green-400 rounded-full">{s}</span>
+                              ))
+                            ) : (
+                              <p className="text-xs text-muted-foreground italic">None identified.</p>
+                            )}
                           </div>
                         </div>
 
                         <div className="space-y-1.5">
                           <p className="text-xs font-bold text-red-400 uppercase">Missing Tech stack/gaps</p>
                           <div className="flex flex-wrap gap-1">
-                            {activeSimulation.skillGap.missingTechnologies?.map(s => (
-                              <span key={s} className="text-[10px] font-bold px-2 py-0.5 bg-red-500/10 border border-red-500/20 text-red-400 rounded-full">{s}</span>
-                            )) || <p className="text-xs text-muted-foreground italic">None identified.</p>}
+                            {activeSimulation.skillGap.missingTechnologies && activeSimulation.skillGap.missingTechnologies.length > 0 ? (
+                              activeSimulation.skillGap.missingTechnologies.map(s => (
+                                <span key={s} className="text-[10px] font-bold px-2 py-0.5 bg-red-500/10 border border-red-500/20 text-red-400 rounded-full">{s}</span>
+                              ))
+                            ) : (
+                              <p className="text-xs text-muted-foreground italic">None identified.</p>
+                            )}
                           </div>
                         </div>
 

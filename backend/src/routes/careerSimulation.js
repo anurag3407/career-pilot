@@ -1,4 +1,5 @@
 import express from 'express';
+import mongoose from 'mongoose';
 import { verifyToken } from '../middleware/auth.js';
 import { extractAIProvider } from '../middleware/aiKey.js';
 import { asyncHandler, ApiError } from '../middleware/errorHandler.js';
@@ -50,6 +51,10 @@ router.get('/:id', verifyToken, asyncHandler(async (req, res) => {
   const userId = req.user.uid;
   const { id } = req.params;
 
+  if (!mongoose.Types.ObjectId.isValid(id)) {
+    throw new ApiError(400, 'Invalid simulation ID format');
+  }
+
   const simulation = await CareerSimulation.findOne({ _id: id, userId }).lean();
   if (!simulation) {
     throw new ApiError(404, 'Career simulation not found');
@@ -66,6 +71,10 @@ router.get('/:id', verifyToken, asyncHandler(async (req, res) => {
 router.delete('/:id', verifyToken, asyncHandler(async (req, res) => {
   const userId = req.user.uid;
   const { id } = req.params;
+
+  if (!mongoose.Types.ObjectId.isValid(id)) {
+    throw new ApiError(400, 'Invalid simulation ID format');
+  }
 
   const deleted = await CareerSimulation.findOneAndDelete({ _id: id, userId });
   if (!deleted) {
@@ -230,7 +239,7 @@ The JSON object must have exactly the following keys and structure:
     try {
       simulationData = JSON.parse(text);
     } catch (parseErr) {
-      console.error('Career Simulation JSON parse error:', parseErr, 'Raw text:', text);
+      console.error('Career Simulation JSON parse error:', parseErr.message);
       throw new ApiError(500, 'Failed to parse AI evaluation data. Please try again.');
     }
 
@@ -240,7 +249,7 @@ The JSON object must have exactly the following keys and structure:
       resumeId,
       jobRole,
       experienceLevel,
-      readinessScore: simulationData.readinessScore || 70,
+      readinessScore: simulationData.readinessScore ?? 70,
       pipelineStages: simulationData.pipelineStages || [],
       skillGap: simulationData.skillGap || {},
       roadmap: simulationData.roadmap || [],

@@ -2,7 +2,7 @@ import mongoose from 'mongoose';
 
 const pipelineStageSchema = new mongoose.Schema({
   stageName: { type: String, required: true },
-  successProbability: { type: Number, required: true },
+  successProbability: { type: Number, required: true, min: 0, max: 100 },
   weakPoints: [{ type: String }],
   requiredSkills: [{ type: String }],
   suggestions: [{ type: String }]
@@ -12,7 +12,7 @@ const skillGapSchema = new mongoose.Schema({
   strongSkills: [{ type: String }],
   missingTechnologies: [{ type: String }],
   communicationGaps: [{ type: String }],
-  projectDepth: { type: Number, default: 0 },
+  projectDepth: { type: Number, default: 0, min: 0, max: 100 },
   indicators: [{ type: String }]
 });
 
@@ -58,7 +58,9 @@ const careerSimulationSchema = new mongoose.Schema({
   },
   readinessScore: {
     type: Number,
-    required: true
+    required: true,
+    min: 0,
+    max: 100
   },
   pipelineStages: [pipelineStageSchema],
   skillGap: skillGapSchema,
