@@ -19,6 +19,9 @@ import jobAlertRoutes from './routes/jobAlerts.js';
 import communityRoutes from './routes/community.js';
 import fellowshipRoutes from './routes/fellowships.js';
 import interviewRoutes from './routes/interview.js';
+import careerRoadmapRoutes from './routes/careerRoadmap.js';
+import coverLetterRoutes from './routes/coverLetter.js';
+import resumeTailorRoutes from './routes/resumeTailor.js';
 
 import userProfileRoutes from './routes/userProfile.js';
 import twoFactorRoutes from './routes/twoFactor.js';
@@ -239,6 +242,9 @@ app.use('/api/user-profiles', userProfileRoutes);
 app.use('/api/auth/2fa', twoFactorRoutes);
 app.use('/api/search', searchRoutes);
 app.use('/api/ai', aiRoutes);
+app.use('/api/career-roadmap', careerRoadmapRoutes);
+app.use('/api/cover-letter', coverLetterRoutes);
+app.use('/api/resume-tailor', resumeTailorRoutes);
 app.use('/api/email-tracking', emailTrackingRoutes);
 
 app.use((req, res) => {

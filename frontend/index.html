@@ -4,7 +4,7 @@
     <meta charset="UTF-8" />
     <link rel="icon" type="image/png" href="/speed.png" />
     <meta name="viewport" content="width=device-width, initial-scale=1.0" />
-    <meta name="theme-color" content="#000000" />
+    <meta name="theme-color" content="#030712" />
     <meta name="description" content="careerpilot - AI-powered job search platform. Enhance your resume, find perfect matches, and land your dream job faster." />
     <meta name="keywords" content="job search, AI resume, career platform, job tracker, resume builder" />
     <link rel="preconnect" href="https://fonts.googleapis.com">
@@ -13,14 +13,43 @@
     <title>careerpilot - Land Your Dream Job at Warp Speed</title>
     <style>
       html, body {
-        background-color: #000;
+        margin: 0;
+        padding: 0;
+        background-color: #030712;
+        color: #f1f5f9;
+        font-family: 'Inter', system-ui, sans-serif;
       }
+      #debug-loading {
+        position: fixed;
+        top: 50%;
+        left: 50%;
+        transform: translate(-50%, -50%);
+        z-index: 99999;
+        text-align: center;
+        color: #f1f5f9;
+        font-size: 18px;
+      }
+      #debug-loading .spinner {
+        width: 40px;
+        height: 40px;
+        border: 3px solid #1e293b;
+        border-top-color: #0ea5e9;
+        border-radius: 50%;
+        animation: spin 0.8s linear infinite;
+        margin: 0 auto 16px;
+      }
+      @keyframes spin { to { transform: rotate(360deg); } }
     </style>
-    <!-- Razorpay Checkout SDK -->
-    <script src="https://checkout.razorpay.com/v1/checkout.js"></script>
+    <!-- Razorpay Checkout SDK - loaded async to prevent blocking -->
+    <script src="https://checkout.razorpay.com/v1/checkout.js" async></script>
   </head>
-  <body class="bg-black">
-    <div id="root"></div>
+  <body>
+    <div id="root">
+      <div id="debug-loading">
+        <div class="spinner"></div>
+        <div>Loading careerpilot...</div>
+      </div>
+    </div>
     <script type="module" src="/src/main.jsx"></script>
   </body>
 </html>

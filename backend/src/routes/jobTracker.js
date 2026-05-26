@@ -100,6 +100,101 @@ router.get('/stats', verifyToken, asyncHandler(async (req, res) => {
   });
 }));
 
+// Get detailed analytics for job tracker dashboard
+router.get('/analytics', verifyToken, asyncHandler(async (req, res) => {
+  const userId = req.user.uid;
+
+  const statusDistribution = await TrackedJob.aggregate([
+    { $match: { userId } },
+    { $group: { _id: '$status', count: { $sum: 1 } } },
+    { $sort: { count: -1 } }
+  ]);
+
+  const sixMonthsAgo = new Date();
+  sixMonthsAgo.setMonth(sixMonthsAgo.getMonth() - 6);
+
+  const monthlyTrend = await TrackedJob.aggregate([
+    { $match: { userId, createdAt: { $gte: sixMonthsAgo } } },
+    {
+      $group: {
+        _id: {
+          year: { $year: '$createdAt' },
+          month: { $month: '$createdAt' }
+        },
+        count: { $sum: 1 }
+      }
+    },
+    { $sort: { '_id.year': 1, '_id.month': 1 } }
+  ]);
+
+  const topCompanies = await TrackedJob.aggregate([
+    { $match: { userId } },
+    { $group: { _id: '$company', count: { $sum: 1 } } },
+    { $sort: { count: -1 } },
+    { $limit: 8 }
+  ]);
+
+  const funnelStages = ['saved', 'applied', 'interviewing', 'offered'];
+  const funnel = {};
+  for (const stage of funnelStages) {
+    const result = await TrackedJob.countDocuments({ userId, status: stage });
+    funnel[stage] = result;
+  }
+  funnel.rejected = await TrackedJob.countDocuments({ userId, status: 'rejected' });
+
+  const avgTimeData = await TrackedJob.aggregate([
+    { $match: { userId, status: { $in: ['applied', 'interviewing', 'offered'] } } },
+    {
+      $project: {
+        status: 1,
+        daysInPipeline: {
+          $divide: [
+            { $subtract: ['$updatedAt', '$createdAt'] },
+            1000 * 60 * 60 * 24
+          ]
+        }
+      }
+    },
+    {
+      $group: {
+        _id: '$status',
+        avgDays: { $avg: '$daysInPipeline' }
+      }
+    }
+  ]);
+
+  const totalApplications = await TrackedJob.countDocuments({ userId });
+
+  const monthNames = ['', 'Jan', 'Feb', 'Mar', 'Apr', 'May', 'Jun', 'Jul', 'Aug', 'Sep', 'Oct', 'Nov', 'Dec'];
+  const formattedTrend = monthlyTrend.map(item => ({
+    label: `${monthNames[item._id.month]} ${item._id.year}`,
+    count: item.count
+  }));
+
+  const responsiveStatuses = ['interviewing', 'offered'];
+  const responseCount = statusDistribution
+    .filter(s => responsiveStatuses.includes(s._id))
+    .reduce((sum, s) => sum + s.count, 0);
+  const appliedCount = statusDistribution
+    .filter(s => s._id !== 'saved')
+    .reduce((sum, s) => sum + s.count, 0);
+  const responseRate = appliedCount > 0 ? Math.round((responseCount / appliedCount) * 100) : 0;
+
+  res.json({
+    success: true,
+    data: {
+      totalApplications,
+      responseRate,
+      statusDistribution: statusDistribution.map(s => ({ status: s._id, count: s.count })),
+      monthlyTrend: formattedTrend,
+      topCompanies: topCompanies.map(c => ({ company: c._id, count: c.count })),
+      funnel,
+      avgTimeInStage: avgTimeData.map(a => ({ status: a._id, avgDays: Math.round(a.avgDays * 10) / 10 })),
+    }
+  });
+}));
+
+
 // Track a new job
 router.post('/', verifyToken, validate(trackJobSchema), asyncHandler(async (req, res) => {
   const userId = req.user.uid;

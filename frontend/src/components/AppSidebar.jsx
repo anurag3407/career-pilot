@@ -20,7 +20,11 @@ import {
     Moon,
     Zap,
     Rocket,
-    Briefcase
+    Briefcase,
+    Map,
+    FileSignature,
+    BarChart3,
+    Target
 } from "lucide-react";
 import { useAuth } from "../hooks/useAuth";
 import { useTheme } from "../hooks/useTheme";
@@ -49,6 +53,11 @@ const navLinks = [
         label: "Job Finder",
         href: "/hub/jobs",
         icon: <Briefcase className="w-5 h-5 shrink-0" />,
+    },
+    {
+        label: "Job Analytics",
+        href: "/job-analytics",
+        icon: <BarChart3 className="w-5 h-5 shrink-0" />,
     },
     {
         label: "Portfolio Builder",
@@ -290,6 +299,33 @@ const [openAI, setOpenAI] = useState(false);
         transition={{ duration: 0.3 }}
         className="overflow-hidden ml-4 flex flex-col gap-1"
     >
+        <SidebarLink
+            link={{
+                label: "Career Roadmap",
+                href: "/career-roadmap",
+                icon: <Map className="w-4 h-4 shrink-0" />,
+            }}
+            onClick={() => setOpen(false)}
+        />
+
+        <SidebarLink
+            link={{
+                label: "Cover Letter Writer",
+                href: "/cover-letter",
+                icon: <FileSignature className="w-4 h-4 shrink-0" />,
+            }}
+            onClick={() => setOpen(false)}
+        />
+
+        <SidebarLink
+            link={{
+                label: "Resume Tailor",
+                href: "/resume-tailor",
+                icon: <Target className="w-4 h-4 shrink-0" />,
+            }}
+            onClick={() => setOpen(false)}
+        />
+
         <SidebarLink
             link={{
                 label: "Skill Gap Analyzer",
