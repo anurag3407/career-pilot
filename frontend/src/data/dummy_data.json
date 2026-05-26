@@ -1,82 +1,64 @@
 {
   "personal": {
-    "name": "Alex Carter",
-    "title": "Full Stack Developer",
-    "bio": "I craft highly performant and beautiful web experiences.",
-    "avatar": "https://i.pravatar.cc/300?img=11",
-    "location": "San Francisco, CA"
+    "name": "Alex Rivera",
+    "title": "Full Stack Developer & Creative Technologist",
+    "bio": "Passionate developer with 5+ years of experience crafting beautiful, performant web applications. I love turning complex problems into elegant, user-friendly solutions. When I'm not coding, I'm exploring new technologies, contributing to open source, or experimenting with digital art.",
+    "avatar": "https://images.unsplash.com/photo-1507003211169-0a1dd7228f2d?w=400&h=400&fit=crop&crop=face",
+    "location": "San Francisco, CA",
+    "tagline": "Building the future, one line of code at a time."
   },
   "socials": {
     "github": "https://github.com",
     "linkedin": "https://linkedin.com",
     "twitter": "https://twitter.com",
-    "email": "hello@alexcarter.com"
+    "email": "alex.rivera@email.com"
+  },
+  "stats": {
+    "yearsExperience": 5,
+    "projectsCompleted": 48,
+    "happyClients": 32
   },
   "skills": [
     { "name": "React", "level": 95, "category": "Frontend" },
-    { "name": "TypeScript", "level": 90, "category": "Language" },
-    { "name": "Tailwind CSS", "level": 95, "category": "Design" },
-    { "name": "Next.js", "level": 85, "category": "Framework" },
-    { "name": "Node.js", "level": 75, "category": "Backend" },
-    { "name": "Figma", "level": 80, "category": "Design" }
+    { "name": "TypeScript", "level": 90, "category": "Frontend" },
+    { "name": "Next.js", "level": 88, "category": "Frontend" },
+    { "name": "Tailwind CSS", "level": 92, "category": "Frontend" },
+    { "name": "Framer Motion", "level": 80, "category": "Frontend" },
+    { "name": "Node.js", "level": 87, "category": "Backend" },
+    { "name": "Express.js", "level": 85, "category": "Backend" },
+    { "name": "PostgreSQL", "level": 82, "category": "Backend" },
+    { "name": "MongoDB", "level": 78, "category": "Backend" },
+    { "name": "GraphQL", "level": 75, "category": "Backend" },
+    { "name": "AWS", "level": 70, "category": "DevOps" },
+    { "name": "Docker", "level": 72, "category": "DevOps" },
+    { "name": "CI/CD", "level": 68, "category": "DevOps" },
+    { "name": "Figma", "level": 85, "category": "Design" },
+    { "name": "UI/UX Design", "level": 80, "category": "Design" }
   ],
   "projects": [
     {
-      "title": "Neon Dash",
-      "description": "A high-octane cyberpunk racing game built with Three.js and React.",
-      "techStack": ["React", "Three.js", "WebGL"],
-      "liveUrl": "https://example.com/neon",
-      "githubUrl": "https://github.com/example/neon",
-      "image": "https://images.unsplash.com/photo-1550745165-9bc0b252726f?w=600&q=80"
-    },
-    {
-      "title": "Finance Flow",
-      "description": "Real-time personal finance dashboard with AI predictions.",
-      "techStack": ["Next.js", "Tailwind", "OpenAI"],
-      "liveUrl": "https://example.com/finance",
-      "githubUrl": "https://github.com/example/finance",
-      "image": "https://images.unsplash.com/photo-1460925895917-afdab827c52f?w=600&q=80"
-    },
-    {
-      "title": "Task Titan",
-      "description": "Gamified productivity app that turns chores into quests.",
-      "techStack": ["React Native", "Firebase"],
-      "liveUrl": "https://example.com/titan",
-      "githubUrl": "https://github.com/example/titan",
-      "image": "https://images.unsplash.com/photo-1507925922893-873c0ce4c5c8?w=600&q=80"
+      "title": "NeuralDash",
+      "description": "AI-powered analytics dashboard with real-time data visualization.",
+      "techStack": ["React", "Python", "TensorFlow", "WebSocket"],
+      "liveUrl": "https://example.com",
+      "githubUrl": "https://github.com",
+      "image": "https://images.unsplash.com/photo-1551288049-bebda4e38f71?w=800&h=450&fit=crop"
     }
   ],
   "experience": [
     {
-      "role": "Senior Engineer",
-      "company": "TechNova",
-      "period": "2021 - Present",
-      "description": "Leading the frontend architecture and delivering pixel-perfect UIs."
-    },
-    {
-      "role": "Frontend Developer",
-      "company": "Creative Agency",
-      "period": "2018 - 2021",
-      "description": "Built award-winning marketing sites for Fortune 500 clients."
+      "role": "Senior Full Stack Engineer",
+      "company": "Vercel",
+      "period": "2022 – Present",
+      "description": "Leading development of deployment pipelines and edge runtime features."
     }
   ],
   "testimonials": [
     {
-      "name": "Sarah Jenkins",
-      "role": "CTO at TechNova",
-      "text": "Alex is an incredibly talented developer who brings both technical excellence and an eye for design to every project.",
-      "avatar": "https://i.pravatar.cc/150?img=32"
-    },
-    {
-      "name": "Marcus Chen",
-      "role": "Design Lead",
-      "text": "Working with Alex is a dream. They actually understand design systems and sweat the details.",
-      "avatar": "https://i.pravatar.cc/150?img=12"
+      "name": "Sarah Chen",
+      "role": "CTO at NeuralDash",
+      "text": "Exceptional work.",
+      "avatar": "https://images.unsplash.com/photo-1494790108755-2616b612b793?w=100&h=100&fit=crop&crop=face"
     }
-  ],
-  "stats": {
-    "yearsExperience": 5,
-    "projectsCompleted": 42,
-    "happyClients": 18
-  }
+  ]
 }

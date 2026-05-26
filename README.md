@@ -7,7 +7,7 @@
   </p>
 
   <p align="center"> 
-    <a href="https://github.com/ishwari418/career-pilot/blob/main/LICENSE">
+    <a href="https://github.com/anurag3407/career-pilot/blob/main/LICENSE">
       <img src="https://img.shields.io/badge/License-MIT-0052CC?style=for-the-badge&logo=opensourceinitiative&logoColor=white" alt="License" />
     </a>
     <img src="https://img.shields.io/badge/Node.js-18+-0066FF?style=for-the-badge&logo=node.js&logoColor=white" alt="Node.js" />
@@ -33,6 +33,34 @@
 ## 🌟 Overview
 
 The **AI Resume Builder & Career Platform** is a comprehensive full-stack application designed to streamline and enhance the job search process. By leveraging cutting-edge AI technology (Google Gemini 2.5), real-time communication via Socket.IO, and intelligent automation through BullMQ job queues, this platform provides job seekers with powerful tools to succeed.
+
+---
+
+## 📸 Project Preview
+
+### Home Page
+
+![](docs/images/home_page.png)
+
+### Resume Enhancement
+
+![](docs/images/resume_enhancer.png)
+
+### Community Platform
+
+![](docs/images/community_board.png)
+
+### Authentication
+
+![](docs/images/signup_page.png)
+
+### Job Tracker
+
+![](docs/images/job_tracker.png)
+
+### Mock Interview
+
+![](docs/images/mock_interview.png)
 
 ---
 
@@ -86,7 +114,7 @@ We solve the modern job seeker's most painful challenges:
 - **Improvement Suggestions**: Actionable recommendations to strengthen your resume
 - **ATS Score Analysis**: Get compatibility scores with detailed feedback
 - **Harvard Template Formatting**: Industry-standard resume formatting
-</details>
+      </details>
 
 <details>
 <summary><b>🎓 Career Pilot Fellowships</b></summary>
@@ -96,7 +124,7 @@ We solve the modern job seeker's most painful challenges:
 - **Student Proposals**: Students submit proposals with cover letters and pricing
 - **Escrow Payments**: Razorpay integration for secure payments until completion
 - **Real-time Chat**: Direct messaging between corporate and students
-</details>
+      </details>
 
 <details>
 <summary><b>🎤 AI Interview Prep</b></summary>
@@ -106,7 +134,7 @@ We solve the modern job seeker's most painful challenges:
 - **Role-Specific Questions**: Tailored questions based on target role
 - **Real-time Feedback**: Instant AI evaluation of responses
 - **Multi-Round Support**: Technical, behavioral, and HR round simulations
-</details>
+      </details>
 
 <details>
 <summary><b>🖼️ Portfolio Builder & GitHub Intelligence</b></summary>
@@ -116,7 +144,7 @@ We solve the modern job seeker's most painful challenges:
 - **LinkedIn Profile Optimizer**: AI-generated headline rewrites and skills gap analysis vs. industry peers
 - **Theme Selector**: Choose from multiple portfolio themes to match your personal brand
 - **LinkedIn OAuth**: Sign in with LinkedIn and auto-import profile data
-</details>
+      </details>
 
 ---
 
@@ -166,38 +194,120 @@ We solve the modern job seeker's most painful challenges:
 ## 🚀 Getting Started
 
 ### Prerequisites
-- Node.js 18.0+
-- MongoDB instance (local or Atlas)
-- Redis instance (for job queue)
-- Firebase project with Firestore enabled
+
+Before running the project locally, make sure you have:
+
+- Node.js 18+
+- MongoDB instance (local or MongoDB Atlas)
+- Redis server
+- Firebase project configuration
 - Google Gemini API key
 
-### Quick Installation
+---
+
+## 📦 Installation
+
+### 1. Clone the Repository
 
 ```bash
-# 1. Clone the repository
-git clone https://github.com/ishwari418/career-pilot.git
+git clone https://github.com/anurag3407/career-pilot.git
 cd career-pilot
+```
 
-# 2. Install backend dependencies
+---
+
+### 2. Install Backend Dependencies
+
+```bash
 cd backend
 npm install
+```
 
-# 3. Install frontend dependencies
+---
+
+### 3. Install Frontend Dependencies
+
+```bash
 cd ../frontend
 npm install
 ```
 
-Start the development servers:
-```bash
-# Backend (Port 5001)
-npm run dev
+---
 
-# Frontend (Port 5173)
+## ⚙️ Environment Variables
+
+Create a `.env` file inside the `backend` directory and configure:
+
+```env
+PORT=5001
+MONGODB_URI=your_mongodb_uri
+REDIS_HOST=localhost
+REDIS_PORT=6379
+GEMINI_API_KEY=your_api_key
+RAZORPAY_KEY_ID=your_key
+RAZORPAY_KEY_SECRET=your_secret
+```
+
+You may also need a `.env` file inside the `frontend` directory depending on your local setup.
+
+---
+
+## ▶️ Running the Application
+
+Open two terminals.
+
+### Terminal 1 — Backend
+
+```bash
+cd backend
 npm run dev
 ```
 
+Backend runs on:
+
+```text
+http://localhost:5001
+```
+
+# Terminal 2 — Frontend
+cd frontend
+npm run dev
+```
+
+After starting both servers:
+
+- Frontend runs on: `http://localhost:5173`
+- Backend runs on: `http://localhost:5001`
+
 ---
+
+### Verify Installation
+
+After starting both frontend and backend servers:
+
+- Open `http://localhost:5173`
+- Verify the frontend loads successfully
+- Check backend logs for database/API connection errors
+- Ensure Firebase and MongoDB connections initialize correctly
+
+---
+
+## 📜 Available Scripts
+
+### Frontend
+
+```bash
+npm run dev
+npm run build
+npm run lint
+```
+
+### Backend
+
+```bash
+npm run dev
+npm start
+```
 
 ## 📂 Project Structure & Architecture
 
@@ -224,9 +334,10 @@ career-pilot/
 │   │   └── services/        # API and Socket instances
 └── firebase/                # Security Rules & Indexes
 ```
+
 </details>
 
-New contributors should read **[ARCHITECTURE.md](./ARCHITECTURE.md)** early — it includes high-level system diagrams, data-flow charts, and security notes.
+New contributors should read **[ARCHITECTURE.md](./ARCHITECTURE.md)** early, as it includes high-level system diagrams, data-flow charts, and security notes.
 
 ---
 
@@ -239,12 +350,14 @@ New contributors should read **[ARCHITECTURE.md](./ARCHITECTURE.md)** early — 
 Most endpoints require a Firebase ID Token passed as an `Authorization` header.
 
 ### Authentication
+
 ```bash
 # Verify Token
 GET /api/auth/verify
 ```
 
 ### Resumes & AI
+
 ```bash
 # Upload PDF
 POST /api/upload
@@ -262,6 +375,7 @@ POST /api/enhance/ats-analysis
 ```
 
 ### Job Tracking & Alerts
+
 ```bash
 # Create Job Alert
 POST /api/job-alerts
@@ -269,7 +383,9 @@ POST /api/job-alerts
 # Track Application Pipeline
 POST /api/job-tracker
 ```
+
 For complete documentation, see the [API Reference Guide](./API_DOCS/README.md).
+
 </details>
 
 ---
@@ -281,18 +397,21 @@ For complete documentation, see the [API Reference Guide](./API_DOCS/README.md).
 <br>
 
 ### MongoDB Connection Error (`MongoServerSelectionError`)
+
 - Verify your `MONGODB_URI` in backend `.env`
 - Ensure MongoDB service is running
 - Check IP whitelist if using MongoDB Atlas
 
 ### Redis Connection Error (`ECONNREFUSED 127.0.0.1:6379`)
+
 - Ensure Redis server is installed and running
 - Verify `REDIS_HOST` and `REDIS_PORT`
 
 ### Port Already in Use (`EADDRINUSE`)
+
 - Change the `PORT` value in `.env`
 - Stop other Node instances: `killall node` (Mac/Linux)
-</details>
+      </details>
 
 ---
 
@@ -317,4 +436,3 @@ Your efforts, pull requests, ideas, and support make this project better every d
 This project is licensed under the MIT License - see the [LICENSE](LICENSE) file for details.
 
 <br />
-

@@ -18,16 +18,19 @@ const tokenStore = new Map(); // one-time token exchange store
 
 // Example register endpoint with validation
 router.post('/register', validate(registerSchema), asyncHandler(async (req, res) => {
-  const { email, name, password } = req.body;
+  const { email, name } = req.body;
   const existingUser = await User.findOne({ email });
   if (existingUser) {
     return res.status(400).json({ success: false, error: 'User already exists' });
   }
-  const user = await User.create({ email, name, password });
+  const user = await User.create({
+    email,
+    username: name,
+  });
   res.status(201).json({
     success: true,
     message: 'User registered successfully',
-    user: { id: user._id, email: user.email, name: user.name }
+    user: { id: user._id, email: user.email, name: user.username }
   });
 }));
 // Periodic sweep of expired store entries every 10 minutes to prevent memory leaks

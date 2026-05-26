@@ -33,7 +33,7 @@ export default function Footer() {
       { label: "Support", href: "#" },
     ],
     company: [
-      { label: "About", href: "#" },
+      { label: "About", href: "/about" },
       { label: "Blog", href: "#" },
       { label: "Careers", href: "#" },
       { label: "Contact", href: "#" },

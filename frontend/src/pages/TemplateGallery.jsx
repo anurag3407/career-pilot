@@ -5,22 +5,16 @@ import { useTheme } from "../hooks/useTheme";
 import { motion, AnimatePresence } from "framer-motion";
 import { Moon, Sun, ChevronDown, Check, Eye, Star } from "lucide-react";
 import HolographicAbout from "../components/portfolio/templates/Holographic/About";
-import CommandPalette from "../components/portfolio/templates/Command_Palette";
-
-/* ─────────────────────────────────────────────────────────
-   Custom FilterSelect
-   Renders a fully-styled dark dropdown with:
-   - White text on dark bg
-   - Glowing cyan border when open
-   - Cyan bg + white text on item hover
-   - Smooth slide-down animation
-───────────────────────────────────────────────────────── */
+import CulinaryAbout from "../components/portfolio/templates/Culinary_Restaurant/About";
+import TechStartupHero from "../components/portfolio/templates/Tech_Startup/Hero";
+import GeometricShapesAbout from "../components/portfolio/templates/Geometric_Shapes/About";
+import ChooseAdventurePortfolio from "../components/portfolio/templates/Choose_Adventure/index";
+import Navbar from "../components/Navbar";
 function FilterSelect({ value, onChange, options, className = "" }) {
   const [open, setOpen] = useState(false);
   const ref = useRef(null);
   const selectedLabel = options.find((o) => o.value === value)?.label ?? value;
 
-  // Close on outside click
   useEffect(() => {
     function handleClickOutside(e) {
       if (ref.current && !ref.current.contains(e.target)) setOpen(false);
@@ -31,18 +25,17 @@ function FilterSelect({ value, onChange, options, className = "" }) {
 
   return (
     <div ref={ref} className={`relative ${className}`}>
-      {/* Trigger button */}
       <button
         type="button"
         onClick={() => setOpen((prev) => !prev)}
         className={`
           flex items-center justify-between gap-3 min-w-[160px] px-4 py-2.5
-          rounded-xl border text-sm font-medium text-white
-          bg-zinc-900/80 backdrop-blur-sm
+          rounded-xl border text-sm font-medium text-foreground
+          bg-card backdrop-blur-sm
           transition-all duration-300 cursor-pointer select-none
           ${open
             ? "border-cyan-400 shadow-[0_0_12px_rgba(34,211,238,0.45)] ring-1 ring-cyan-400/30"
-            : "border-zinc-700 hover:border-cyan-500/60 hover:shadow-[0_0_8px_rgba(34,211,238,0.25)]"
+            : "border-border hover:border-cyan-500/60 hover:shadow-[0_0_8px_rgba(34,211,238,0.25)]"
           }
         `}
       >
@@ -52,7 +45,6 @@ function FilterSelect({ value, onChange, options, className = "" }) {
         />
       </button>
 
-      {/* Dropdown panel */}
       <AnimatePresence>
         {open && (
           <motion.ul
@@ -62,7 +54,7 @@ function FilterSelect({ value, onChange, options, className = "" }) {
             transition={{ duration: 0.18, ease: "easeOut" }}
             className="
               absolute z-50 left-0 top-[calc(100%+6px)] min-w-full
-              bg-zinc-900 border border-cyan-500/40
+              bg-card border border-border
               shadow-[0_0_20px_rgba(34,211,238,0.2)]
               rounded-xl overflow-hidden py-1
             "
@@ -79,7 +71,7 @@ function FilterSelect({ value, onChange, options, className = "" }) {
                     transition-all duration-200
                     ${isSelected
                       ? "bg-cyan-500/20 text-cyan-300 font-semibold"
-                      : "text-white hover:bg-cyan-500 hover:text-white"
+                      : "text-foreground hover:bg-cyan-500 hover:text-white"
                     }
                   `}
                 >
@@ -94,7 +86,6 @@ function FilterSelect({ value, onChange, options, className = "" }) {
     </div>
   );
 }
-
 
 function TemplateCard({ template, onUse }) {
   const [hovered, setHovered] = useState(false);
@@ -123,7 +114,6 @@ function TemplateCard({ template, onUse }) {
       }}
       className="bg-card rounded-2xl overflow-hidden border border-border flex flex-col justify-between cursor-pointer"
     >
-      {/* Image with spring-driven zoom + overlay */}
       <div className="overflow-hidden relative">
         <motion.img
           src={template.image}
@@ -141,7 +131,6 @@ function TemplateCard({ template, onUse }) {
         />
       </div>
 
-      {/* Card body */}
       <div className="p-5 flex-1">
         <h2 className="text-2xl font-semibold text-foreground">{template.title}</h2>
         <p className="text-muted-foreground mt-1 text-sm">By {template.author}</p>
@@ -154,7 +143,6 @@ function TemplateCard({ template, onUse }) {
         </div>
       </div>
 
-      {/* Footer */}
       <div className="px-5 pb-5">
         <div className="flex justify-between text-sm text-muted-foreground mb-4">
           <span className="flex items-center gap-1.5">
@@ -166,7 +154,6 @@ function TemplateCard({ template, onUse }) {
             {template.views.toLocaleString()}
           </span>
         </div>
-
 
         <AnimatePresence>
           {hovered && (
@@ -195,9 +182,6 @@ function TemplateCard({ template, onUse }) {
   );
 }
 
-/* ─────────────────────────────────────────────────────────
-   TemplateGallery
-───────────────────────────────────────────────────────── */
 export default function TemplateGallery() {
   const { theme, toggleTheme } = useTheme();
 
@@ -248,7 +232,6 @@ export default function TemplateGallery() {
   const [isDeployModalOpen, setIsDeployModalOpen] = useState(false);
   const [selectedPortfolioTitle, setSelectedPortfolioTitle] = useState("");
 
-  // Filter options
   const CATEGORY_OPTIONS = [
     { value: "All", label: "All Categories" },
     { value: "Portfolio", label: "Portfolio" },
@@ -273,14 +256,12 @@ export default function TemplateGallery() {
     { value: "Highest Rated", label: "Highest Rated" },
   ];
 
-
   const filteredTemplates = templates.filter((template) => {
     const matchesCategory = category === "All" || template.category === category;
     const matchesColorScheme = colorScheme === "All" || template.colorScheme === colorScheme;
     const matchesLayout = layout === "All" || template.layout === layout;
     return matchesCategory && matchesColorScheme && matchesLayout;
   });
-
 
   const sortedTemplates = [...filteredTemplates].sort((a, b) => {
     if (sort === "Popular") return b.views - a.views;
@@ -291,9 +272,9 @@ export default function TemplateGallery() {
 
   return (
     <div className="min-h-screen bg-background text-foreground p-8 pt-24 transition-colors duration-300">
+      <Navbar />
       <div className="flex justify-between items-center mb-8">
         <h1 className="text-4xl font-bold">Template Gallery</h1>
-        {/* Theme Toggle */}
         <button
           onClick={toggleTheme}
           className="p-2 rounded-xl bg-muted hover:bg-accent border border-border text-foreground transition-all cursor-pointer overflow-hidden relative group"
@@ -313,31 +294,28 @@ export default function TemplateGallery() {
         </button>
       </div>
 
-      <div className="mb-8 rounded-2xl border border-zinc-800 bg-zinc-950/70 p-5">
+      <div className="mb-8 rounded-2xl border border-border bg-card p-5">
         <div className="mb-4 flex items-center justify-between gap-4">
           <div>
-            <h2 className="text-xl font-semibold">Portfolio theme</h2>
-            <p className="text-sm text-gray-400">
+            <h2 className="text-xl font-semibold text-foreground">Portfolio theme</h2>
+            <p className="text-sm text-muted-foreground">
               Pick a theme before deploying. Premium themes are shown and locked in the live gallery flow.
             </p>
           </div>
-          <span className="rounded-full border border-zinc-700 bg-zinc-900 px-3 py-1 text-xs text-zinc-300">
+          <span className="rounded-full border border-border bg-muted px-3 py-1 text-xs text-muted-foreground">
             Selected: {selectedTheme}
           </span>
         </div>
         <ThemeSelector selectedTheme={selectedTheme} onSelectTheme={setSelectedTheme} />
       </div>
 
-      {/* ── Custom Filter / Sort Bar ── */}
       <div className="flex flex-wrap items-center gap-3 mb-8">
         <FilterSelect value={category} onChange={setCategory} options={CATEGORY_OPTIONS} />
         <FilterSelect value={colorScheme} onChange={setColorScheme} options={COLOR_OPTIONS} />
         <FilterSelect value={layout} onChange={setLayout} options={LAYOUT_OPTIONS} />
-        {/* Sort pushed to the right */}
         <FilterSelect value={sort} onChange={setSort} options={SORT_OPTIONS} className="ml-auto" />
       </div>
 
-      {/* Gallery Grid */}
       {sortedTemplates.length === 0 ? (
         <div className="text-center text-muted-foreground mt-12 text-xl">
           No templates match the selected criteria.
@@ -357,35 +335,81 @@ export default function TemplateGallery() {
         </div>
       )}
 
-
       <DeployModal
         isOpen={isDeployModalOpen}
         onClose={() => setIsDeployModalOpen(false)}
         portfolioTitle={selectedPortfolioTitle}
       />
 
-
       <div className="mt-12">
         <div className="mb-4 flex items-center gap-3 px-1">
           <span className="rounded-full bg-cyan-500/20 px-3 py-1 text-xs font-bold uppercase tracking-widest text-cyan-400 border border-cyan-500/30">
             Preview
           </span>
-          <h2 className="text-lg font-semibold text-white/70">Holographic Theme — About Section</h2>
+          <h2 className="text-lg font-semibold text-foreground/70">Holographic Theme — About Section</h2>
         </div>
-        <div className="overflow-hidden rounded-2xl border border-white/10">
+        <div className="overflow-hidden rounded-2xl border border-border">
           <HolographicAbout />
         </div>
       </div>
 
       <div className="mt-12">
         <div className="mb-4 flex items-center gap-3 px-1">
-          <span className="rounded-full bg-rose-500/20 px-3 py-1 text-xs font-bold uppercase tracking-widest text-rose-400 border border-rose-500/30">
-            Preview
-          </span>
-          <h2 className="text-lg font-semibold text-white/70">Command Palette Theme</h2>
-        </div>
-        <div className="overflow-hidden rounded-2xl border border-white/10">
-          <CommandPalette />
+<div className="mt-12">
+  <div className="mb-4 flex items-center gap-3 px-1">
+    <span className="rounded-full bg-amber-500/20 px-3 py-1 text-xs font-bold uppercase tracking-widest text-amber-400 border border-amber-500/30">
+      Preview
+    </span>
+    <h2 className="text-lg font-semibold text-foreground/70">
+      Geometric Shapes Theme — About Section
+    </h2>
+  </div>
+  <div className="overflow-hidden rounded-2xl border border-border">
+    <GeometricShapesAbout />
+  </div>
+</div>
+
+<div className="mt-12">
+  <div className="mb-4 flex items-center gap-3 px-1">
+    <span className="rounded-full bg-amber-500/20 px-3 py-1 text-xs font-bold uppercase tracking-widest text-amber-400 border border-amber-500/30">
+      Preview
+    </span>
+    <h2 className="text-lg font-semibold text-foreground/70">
+      Culinary Restaurant Theme — About Section
+    </h2>
+  </div>
+  <div className="overflow-hidden rounded-2xl border border-border">
+    <CulinaryAbout />
+  </div>
+</div>
+
+<div className="mt-12">
+  <div className="mb-4 flex items-center gap-3 px-1">
+    <span className="rounded-full bg-cyan-500/20 px-3 py-1 text-xs font-bold uppercase tracking-widest text-cyan-400 border border-cyan-500/30">
+      Preview
+    </span>
+    <h2 className="text-lg font-semibold text-foreground/70">
+      Tech Startup Theme — Hero Section
+    </h2>
+  </div>
+  <div className="overflow-hidden rounded-2xl border border-cyan-500/20">
+    <TechStartupHero />
+  </div>
+</div>
+
+<div className="mt-12">
+  <div className="mb-4 flex items-center gap-3 px-1">
+    <span className="rounded-full bg-violet-500/20 px-3 py-1 text-xs font-bold uppercase tracking-widest text-violet-400 border border-violet-500/30">
+      Preview
+    </span>
+    <h2 className="text-lg font-semibold text-foreground/70">
+      Choose Adventure Theme — Full Interactive Template
+    </h2>
+  </div>
+  <div className="overflow-hidden rounded-2xl border border-border">
+    <ChooseAdventurePortfolio />
+  </div>
+</div>
         </div>
       </div>
     </div>
