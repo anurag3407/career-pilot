@@ -1,3 +1,38 @@
+# [1.25.0](https://github.com/anurag3407/career-pilot/compare/v1.24.0...v1.25.0) (2026-05-26)
+
+
+### Features
+
+* **portfolio:** implement Netflix Browse complete portfolio template ([b6fc3e8](https://github.com/anurag3407/career-pilot/commit/b6fc3e881ca238fb2ef6ec770206367abdfe34d4))
+* **portfolio:** implement Projects section for Holographic Theme ([5fd5369](https://github.com/anurag3407/career-pilot/commit/5fd5369335c94b66220d610bcca593e022e8fc41))
+
+# [1.24.0](https://github.com/anurag3407/career-pilot/compare/v1.23.0...v1.24.0) (2026-05-26)
+
+
+### Bug Fixes
+
+* clean up template gallery tags and import geometric preview ([8be4a1b](https://github.com/anurag3407/career-pilot/commit/8be4a1b3753e21d1090c71b4dbc70790d1a71e46))
+* clean up template gallery tags and import geometric preview ([e29a54a](https://github.com/anurag3407/career-pilot/commit/e29a54a867d9c7e6ea7e03a40f6e5314a39b97bb))
+
+
+### Features
+
+* **Holographic:** implement About section with premium 3D cyber-glass aesthetic ([17d4c71](https://github.com/anurag3407/career-pilot/commit/17d4c715e160ad3431a849c8bd567866d1b8be07))
+
+# [1.23.0](https://github.com/anurag3407/career-pilot/compare/v1.22.1...v1.23.0) (2026-05-26)
+
+
+### Features
+
+* add Glitch Reveal portfolio template ([62a03e8](https://github.com/anurag3407/career-pilot/commit/62a03e8fddd8af669acdaaa012b514b3f7a1cb57))
+
+## [1.22.1](https://github.com/anurag3407/career-pilot/compare/v1.22.0...v1.22.1) (2026-05-26)
+
+
+### Bug Fixes
+
+* **usePresence:** deduplicate userIds and clarify eslint-disable comment ([919482d](https://github.com/anurag3407/career-pilot/commit/919482de962742a4a2bdeafab4d978f1f5ca4acb))
+
 # [1.22.0](https://github.com/anurag3407/career-pilot/compare/v1.21.0...v1.22.0) (2026-05-26)
 
 
