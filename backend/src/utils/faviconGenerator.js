@@ -26,8 +26,18 @@ function generateColor(name = "") {
   return `hsl(${hue}, 65%, 50%)`;
 }
 
+function escapeSvgText(value = "") {
+  return String(value)
+    .replace(/&/g, "&amp;")
+    .replace(/</g, "&lt;")
+    .replace(/>/g, "&gt;")
+    .replace(/"/g, "&quot;")
+    .replace(/'/g, "&apos;");
+}
+
 function generateFavicon(name = "") {
   const initials = getInitials(name);
+  const escapedInitials = escapeSvgText(initials);
   const backgroundColor = generateColor(name);
 
   const svg = `
@@ -41,7 +51,7 @@ function generateFavicon(name = "") {
         font-family="Arial, sans-serif"
         font-size="${initials.length === 1 ? 14 : 12}"
         font-weight="bold"
-      >${initials}</text>
+      >${escapedInitials}</text>
     </svg>
   `.trim();
 
@@ -53,13 +63,4 @@ function generateFavicon(name = "") {
   };
 }
 
-/*
- Small verification test:
-
- console.log(generateFavicon("John Doe"))
- console.log(generateFavicon("Alice"))
-*/
-
-module.exports = {
-  generateFavicon,
-};
+export { generateFavicon };
