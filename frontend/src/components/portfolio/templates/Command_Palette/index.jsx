@@ -1,11 +1,12 @@
 import React, { useState, useEffect, useRef } from 'react';
-import { Search, User, Briefcase, Code, FolderGit2, Mail, ExternalLink, Github, ChevronRight, CornerDownLeft, Command } from 'lucide-react';
+import { motion, AnimatePresence } from 'framer-motion';
+import { Search, User, Briefcase, Code, FolderGit2, Mail, ExternalLink, Github, Command, CornerDownLeft, Sparkles, MoveRight } from 'lucide-react';
 import data from '../../../../data/dummy_data.json';
 
 export default function CommandPalette() {
   const [isOpen, setIsOpen] = useState(true);
   const [query, setQuery] = useState('');
-  const [activeView, setActiveView] = useState('menu'); // 'menu', 'about', 'projects', 'skills', 'experience', 'contact'
+  const [activeView, setActiveView] = useState('menu'); 
   const [selectedIndex, setSelectedIndex] = useState(0);
   const inputRef = useRef(null);
   const listRef = useRef(null);
@@ -13,31 +14,26 @@ export default function CommandPalette() {
   const { personal, socials, skills, projects, experience, stats } = data;
 
   const menuItems = [
-    { id: 'about', title: 'About Me', icon: User, shortcut: 'A' },
-    { id: 'projects', title: 'Projects', icon: FolderGit2, shortcut: 'P' },
-    { id: 'skills', title: 'Skills', icon: Code, shortcut: 'S' },
-    { id: 'experience', title: 'Experience', icon: Briefcase, shortcut: 'E' },
-    { id: 'contact', title: 'Contact', icon: Mail, shortcut: 'C' },
+    { id: 'about', title: 'About Me', description: 'Get to know me and my background', icon: User },
+    { id: 'projects', title: 'Projects', description: 'Explore my selected works', icon: FolderGit2 },
+    { id: 'skills', title: 'Skills', description: 'Tools and technologies I use', icon: Code },
+    { id: 'experience', title: 'Experience', description: 'My professional journey', icon: Briefcase },
+    { id: 'contact', title: 'Contact', description: 'Let’s build something together', icon: Mail },
   ];
 
-  // Filter items based on search
   const filteredItems = menuItems.filter(item => 
-    item.title.toLowerCase().includes(query.toLowerCase())
+    item.title.toLowerCase().includes(query.toLowerCase()) || 
+    item.description.toLowerCase().includes(query.toLowerCase())
   );
 
-  // Handle global keyboard shortcuts
   useEffect(() => {
     const handleKeyDown = (e) => {
-      // Toggle palette with Cmd/Ctrl + K
       if ((e.metaKey || e.ctrlKey) && e.key === 'k') {
         e.preventDefault();
         setIsOpen(prev => !prev);
-        if (!isOpen) {
-          setTimeout(() => inputRef.current?.focus(), 10);
-        }
+        if (!isOpen) setTimeout(() => inputRef.current?.focus(), 100);
       }
 
-      // Escape to close or go back
       if (e.key === 'Escape') {
         e.preventDefault();
         if (activeView !== 'menu') {
@@ -50,7 +46,6 @@ export default function CommandPalette() {
         }
       }
 
-      // Arrow navigation
       if (isOpen && activeView === 'menu') {
         if (e.key === 'ArrowDown') {
           e.preventDefault();
@@ -71,14 +66,12 @@ export default function CommandPalette() {
     return () => window.removeEventListener('keydown', handleKeyDown);
   }, [isOpen, activeView, filteredItems, selectedIndex]);
 
-  // Keep selected item in view
   useEffect(() => {
     if (listRef.current && listRef.current.children[selectedIndex]) {
-      listRef.current.children[selectedIndex].scrollIntoView({ block: 'nearest' });
+      listRef.current.children[selectedIndex].scrollIntoView({ block: 'nearest', behavior: 'smooth' });
     }
   }, [selectedIndex]);
 
-  // Reset index when query changes
   useEffect(() => {
     setSelectedIndex(0);
   }, [query]);
@@ -92,194 +85,256 @@ export default function CommandPalette() {
     }
   };
 
-  if (!isOpen) {
-    return (
-      <div className="min-h-screen bg-zinc-950 flex flex-col items-center justify-center text-zinc-500 font-sans selection:bg-zinc-800">
-        <div className="flex items-center gap-4 bg-zinc-900 px-6 py-4 rounded-2xl border border-zinc-800 shadow-xl cursor-pointer hover:bg-zinc-800/80 transition-colors" onClick={() => setIsOpen(true)}>
-          <Search className="w-5 h-5" />
-          <span className="font-medium text-zinc-400">Press <kbd className="font-mono text-zinc-300 bg-zinc-800 px-1.5 py-0.5 rounded ml-1 mr-0.5 border border-zinc-700">⌘</kbd> <kbd className="font-mono text-zinc-300 bg-zinc-800 px-1.5 py-0.5 rounded border border-zinc-700">K</kbd> to open command palette</span>
-        </div>
-      </div>
-    );
-  }
-
   return (
-    <div className="min-h-screen bg-zinc-950/80 backdrop-blur-sm p-4 md:p-12 font-sans flex items-start justify-center pt-24 md:pt-32 selection:bg-zinc-700">
-      <div className="w-full max-w-2xl bg-[#1c1c1c] rounded-2xl border border-zinc-800 shadow-2xl overflow-hidden flex flex-col max-h-[80vh]">
-        
-        {/* Search Header */}
-        <div className="flex items-center px-4 py-4 border-b border-zinc-800/80">
-          <Search className="w-5 h-5 text-zinc-500 mr-3 shrink-0" />
-          <input
-            ref={inputRef}
-            type="text"
-            value={query}
-            onChange={(e) => setQuery(e.target.value)}
-            placeholder={activeView === 'menu' ? "Type a command or search..." : "Press Escape to go back..."}
-            readOnly={activeView !== 'menu'}
-            className="flex-1 bg-transparent border-none outline-none text-zinc-200 placeholder-zinc-500 text-lg"
-            autoFocus
-          />
-          {activeView !== 'menu' && (
-            <div className="flex items-center gap-1.5 px-2.5 py-1 bg-zinc-800 rounded-md text-xs font-medium text-zinc-400">
-              ESC <span className="text-zinc-500">to clear</span>
-            </div>
-          )}
-        </div>
+    <div className="relative min-h-screen bg-black font-sans selection:bg-indigo-500/30 overflow-hidden flex items-center justify-center">
+      
+      {/* Asthetic Ambient Background */}
+      <div className="absolute inset-0 z-0 opacity-40">
+        <div className="absolute top-[10%] left-[20%] w-[500px] h-[500px] bg-indigo-600/30 rounded-full mix-blend-screen filter blur-[100px] animate-pulse" />
+        <div className="absolute bottom-[10%] right-[20%] w-[400px] h-[400px] bg-purple-600/30 rounded-full mix-blend-screen filter blur-[100px] animate-pulse" style={{ animationDelay: '2s' }} />
+        <div className="absolute inset-0 bg-[url('https://grainy-gradients.vercel.app/noise.svg')] opacity-20 brightness-100 contrast-150 mix-blend-overlay"></div>
+      </div>
 
-        {/* Content Area */}
-        <div className="flex-1 overflow-y-auto hide-scrollbar p-2">
-          
-          {/* MENU VIEW */}
-          {activeView === 'menu' && (
-            <div ref={listRef} className="py-2">
-              <div className="px-3 py-2 text-xs font-semibold text-zinc-500 uppercase tracking-wider">
-                Navigation
-              </div>
-              {filteredItems.length === 0 ? (
-                <div className="px-4 py-8 text-center text-zinc-500">
-                  No commands found for "{query}"
+      <AnimatePresence>
+        {!isOpen ? (
+          <motion.div 
+            initial={{ opacity: 0, y: 10 }}
+            animate={{ opacity: 1, y: 0 }}
+            exit={{ opacity: 0, y: -10 }}
+            className="z-10 flex flex-col items-center cursor-pointer group"
+            onClick={() => setIsOpen(true)}
+          >
+            <div className="w-16 h-16 rounded-2xl bg-white/5 border border-white/10 flex items-center justify-center mb-6 shadow-2xl backdrop-blur-xl group-hover:scale-105 transition-transform duration-300">
+              <Command className="w-8 h-8 text-indigo-400" />
+            </div>
+            <div className="flex items-center gap-2 text-white/50 text-sm font-medium">
+              Press <kbd className="font-mono text-white/70 bg-white/10 px-2 py-1 rounded-md border border-white/10 shadow-sm">⌘K</kbd> to open command palette
+            </div>
+          </motion.div>
+        ) : (
+          <motion.div
+            initial={{ opacity: 0, scale: 0.95, filter: 'blur(10px)' }}
+            animate={{ opacity: 1, scale: 1, filter: 'blur(0px)' }}
+            exit={{ opacity: 0, scale: 0.95, filter: 'blur(10px)' }}
+            transition={{ duration: 0.2, ease: [0.16, 1, 0.3, 1] }}
+            className="z-20 w-full max-w-[640px] mx-4 flex flex-col max-h-[85vh] bg-[#0c0c0c]/80 backdrop-blur-3xl border border-white/[0.08] shadow-[0_0_80px_rgba(79,70,229,0.15)] rounded-2xl overflow-hidden"
+          >
+            {/* Search Header */}
+            <div className="flex items-center px-4 py-4 border-b border-white/[0.05]">
+              <Search className="w-5 h-5 text-indigo-400 mr-3 shrink-0" />
+              <input
+                ref={inputRef}
+                type="text"
+                value={query}
+                onChange={(e) => setQuery(e.target.value)}
+                placeholder={activeView === 'menu' ? "What do you want to explore?" : "Press Escape to go back..."}
+                readOnly={activeView !== 'menu'}
+                className="flex-1 bg-transparent border-none outline-none text-white placeholder-white/30 text-lg font-light"
+                autoFocus
+              />
+              {activeView !== 'menu' && (
+                <div className="flex items-center gap-1.5 px-2 py-1 bg-white/5 rounded-md text-[10px] font-bold text-white/40 uppercase tracking-widest border border-white/5">
+                  ESC
                 </div>
-              ) : (
-                filteredItems.map((item, index) => {
-                  const Icon = item.icon;
-                  const isSelected = index === selectedIndex;
-                  return (
-                    <div
-                      key={item.id}
-                      onClick={() => handleSelect(item.id)}
-                      onMouseEnter={() => setSelectedIndex(index)}
-                      className={`flex items-center px-4 py-3 mx-2 my-1 rounded-xl cursor-pointer transition-colors ${
-                        isSelected ? 'bg-blue-600 text-white' : 'text-zinc-300 hover:bg-zinc-800/50'
-                      }`}
-                    >
-                      <Icon className={`w-5 h-5 mr-3 ${isSelected ? 'text-blue-200' : 'text-zinc-500'}`} />
-                      <span className="flex-1 font-medium">{item.title}</span>
-                      <div className={`flex items-center gap-1 text-xs font-medium ${isSelected ? 'text-blue-300' : 'text-zinc-600'}`}>
-                        {isSelected ? 'Enter ↵' : ''}
-                      </div>
-                    </div>
-                  );
-                })
               )}
             </div>
-          )}
 
-          {/* ABOUT VIEW */}
-          {activeView === 'about' && (
-            <div className="p-6">
-              <div className="flex flex-col md:flex-row gap-8 items-start mb-8">
-                <img src={personal.avatar} alt={personal.name} className="w-24 h-24 rounded-2xl border border-zinc-700 object-cover shrink-0" />
-                <div>
-                  <h2 className="text-2xl font-bold text-zinc-100 mb-1">{personal.name}</h2>
-                  <p className="text-blue-400 font-medium mb-4">{personal.title}</p>
-                  <p className="text-zinc-400 leading-relaxed">{personal.bio}</p>
-                  <div className="flex gap-4 mt-6">
-                    {socials.github && (
-                      <a href={socials.github} className="flex items-center gap-2 px-4 py-2 bg-zinc-800 hover:bg-zinc-700 text-zinc-300 rounded-lg text-sm font-medium transition-colors">
-                        <Github className="w-4 h-4" /> GitHub
-                      </a>
-                    )}
-                    {socials.linkedin && (
-                      <a href={socials.linkedin} className="flex items-center gap-2 px-4 py-2 bg-zinc-800 hover:bg-zinc-700 text-zinc-300 rounded-lg text-sm font-medium transition-colors">
-                        <svg className="w-4 h-4" fill="currentColor" viewBox="0 0 24 24"><path d="M20.447 20.452h-3.554v-5.569c0-1.328-.027-3.037-1.852-3.037-1.853 0-2.136 1.445-2.136 2.939v5.667H9.351V9h3.414v1.561h.046c.477-.9 1.637-1.85 3.37-1.85 3.601 0 4.267 2.37 4.267 5.455v6.286zM5.337 7.433c-1.144 0-2.063-.926-2.063-2.065 0-1.138.92-2.063 2.063-2.063 1.14 0 2.064.925 2.064 2.063 0 1.139-.925 2.065-2.064 2.065zm1.782 13.019H3.555V9h3.564v11.452zM22.225 0H1.771C.792 0 0 .774 0 1.729v20.542C0 23.227.792 24 1.771 24h20.451C23.2 24 24 23.227 24 22.271V1.729C24 .774 23.2 0 22.222 0h.003z"/></svg> LinkedIn
-                      </a>
-                    )}
-                  </div>
-                </div>
-              </div>
-              
-              <div className="grid grid-cols-3 gap-4 border-t border-zinc-800/80 pt-6">
-                <div className="bg-zinc-900 rounded-xl p-4 border border-zinc-800">
-                  <div className="text-3xl font-bold text-zinc-100 mb-1">{stats.yearsExperience}</div>
-                  <div className="text-xs font-semibold text-zinc-500 uppercase">Years Exp.</div>
-                </div>
-                <div className="bg-zinc-900 rounded-xl p-4 border border-zinc-800">
-                  <div className="text-3xl font-bold text-zinc-100 mb-1">{stats.projectsCompleted}</div>
-                  <div className="text-xs font-semibold text-zinc-500 uppercase">Projects</div>
-                </div>
-                <div className="bg-zinc-900 rounded-xl p-4 border border-zinc-800">
-                  <div className="text-3xl font-bold text-zinc-100 mb-1">{stats.happyClients}</div>
-                  <div className="text-xs font-semibold text-zinc-500 uppercase">Clients</div>
-                </div>
-              </div>
-            </div>
-          )}
-
-          {/* PROJECTS VIEW */}
-          {activeView === 'projects' && (
-            <div className="p-4 flex flex-col gap-3">
-              {projects.map((project, i) => (
-                <div key={i} className="flex gap-4 p-4 rounded-xl bg-zinc-900 border border-zinc-800 hover:border-zinc-700 transition-colors">
-                  <img src={project.image} alt={project.title} className="w-24 h-24 rounded-lg object-cover border border-zinc-800 shrink-0 hidden sm:block" />
-                  <div className="flex-1">
-                    <h3 className="font-bold text-zinc-200 mb-1">{project.title}</h3>
-                    <p className="text-sm text-zinc-400 mb-4 line-clamp-2">{project.description}</p>
-                    <div className="flex gap-3">
-                      {project.liveUrl && (
-                        <a href={project.liveUrl} className="text-xs font-medium text-blue-400 hover:text-blue-300 flex items-center gap-1">
-                          <ExternalLink className="w-3 h-3" /> Live
-                        </a>
-                      )}
-                      {project.githubUrl && (
-                        <a href={project.githubUrl} className="text-xs font-medium text-zinc-400 hover:text-zinc-300 flex items-center gap-1">
-                          <Github className="w-3 h-3" /> Code
-                        </a>
-                      )}
+            {/* Content Area */}
+            <div className="flex-1 overflow-y-auto hide-scrollbar scroll-smooth">
+              <AnimatePresence mode="wait">
+                
+                {/* MENU VIEW */}
+                {activeView === 'menu' && (
+                  <motion.div 
+                    key="menu"
+                    initial={{ opacity: 0, x: -20 }}
+                    animate={{ opacity: 1, x: 0 }}
+                    exit={{ opacity: 0, x: -20 }}
+                    className="p-2"
+                    ref={listRef}
+                  >
+                    <div className="px-3 py-3 text-[10px] font-bold text-white/30 uppercase tracking-widest">
+                      Navigation
                     </div>
-                  </div>
-                </div>
-              ))}
-            </div>
-          )}
+                    {filteredItems.length === 0 ? (
+                      <div className="py-12 text-center text-white/40 font-medium flex flex-col items-center">
+                        <Sparkles className="w-8 h-8 mb-3 opacity-20" />
+                        No results found for "{query}"
+                      </div>
+                    ) : (
+                      filteredItems.map((item, index) => {
+                        const Icon = item.icon;
+                        const isSelected = index === selectedIndex;
+                        return (
+                          <div
+                            key={item.id}
+                            onClick={() => handleSelect(item.id)}
+                            onMouseEnter={() => setSelectedIndex(index)}
+                            className="relative flex items-center px-4 py-3 mx-1 my-1 rounded-xl cursor-pointer"
+                          >
+                            {isSelected && (
+                              <motion.div 
+                                layoutId="highlight" 
+                                className="absolute inset-0 bg-white/10 rounded-xl border border-white/5" 
+                                transition={{ type: "spring", bounce: 0.2, duration: 0.6 }}
+                              />
+                            )}
+                            <div className="relative z-10 flex items-center w-full">
+                              <div className={`p-2 rounded-lg mr-4 transition-colors ${isSelected ? 'bg-indigo-500/20 text-indigo-300' : 'bg-white/5 text-white/40'}`}>
+                                <Icon className="w-4 h-4" />
+                              </div>
+                              <div className="flex-1 flex flex-col">
+                                <span className={`font-medium transition-colors ${isSelected ? 'text-white' : 'text-white/70'}`}>{item.title}</span>
+                                <span className="text-xs text-white/40">{item.description}</span>
+                              </div>
+                              {isSelected && (
+                                <motion.div 
+                                  initial={{ opacity: 0, x: -10 }}
+                                  animate={{ opacity: 1, x: 0 }}
+                                  className="flex items-center gap-1.5 text-xs font-semibold text-indigo-400 bg-indigo-500/10 px-2 py-1 rounded-md"
+                                >
+                                  Enter <CornerDownLeft className="w-3 h-3" />
+                                </motion.div>
+                              )}
+                            </div>
+                          </div>
+                        );
+                      })
+                    )}
+                  </motion.div>
+                )}
 
-          {/* SKILLS VIEW */}
-          {activeView === 'skills' && (
-            <div className="p-6">
-              <div className="grid grid-cols-2 sm:grid-cols-3 gap-3">
-                {skills.map((skill, i) => (
-                  <div key={i} className="bg-zinc-900 border border-zinc-800 p-3 rounded-lg flex items-center justify-between">
-                    <span className="font-medium text-zinc-300 text-sm">{skill.name}</span>
-                    <span className="text-xs font-mono text-zinc-500">{skill.level}%</span>
-                  </div>
-                ))}
+                {/* ABOUT VIEW */}
+                {activeView === 'about' && (
+                  <motion.div 
+                    key="about"
+                    initial={{ opacity: 0, x: 20 }}
+                    animate={{ opacity: 1, x: 0 }}
+                    exit={{ opacity: 0, x: 20 }}
+                    className="p-6 md:p-8"
+                  >
+                    <div className="flex flex-col sm:flex-row gap-6 items-center sm:items-start text-center sm:text-left mb-8">
+                      <div className="relative group">
+                        <div className="absolute -inset-0.5 bg-gradient-to-r from-indigo-500 to-purple-500 rounded-2xl blur opacity-30 group-hover:opacity-60 transition duration-500" />
+                        <img src={personal.avatar} alt={personal.name} className="relative w-28 h-28 rounded-2xl border border-white/10 object-cover" />
+                      </div>
+                      <div className="flex-1">
+                        <h2 className="text-3xl font-bold text-white tracking-tight mb-1">{personal.name}</h2>
+                        <p className="text-indigo-400 font-medium mb-4">{personal.title}</p>
+                        <p className="text-white/60 leading-relaxed text-sm">{personal.bio}</p>
+                      </div>
+                    </div>
+                    
+                    <div className="grid grid-cols-3 gap-3">
+                      {[
+                        { label: 'Years Exp', value: stats.yearsExperience },
+                        { label: 'Projects', value: stats.projectsCompleted },
+                        { label: 'Clients', value: stats.happyClients }
+                      ].map((stat, i) => (
+                        <div key={i} className="bg-white/5 border border-white/5 rounded-xl p-4 text-center">
+                          <div className="text-2xl font-bold text-white mb-1">{stat.value}</div>
+                          <div className="text-[10px] font-bold text-white/40 uppercase tracking-widest">{stat.label}</div>
+                        </div>
+                      ))}
+                    </div>
+                  </motion.div>
+                )}
+
+                {/* PROJECTS VIEW */}
+                {activeView === 'projects' && (
+                  <motion.div 
+                    key="projects"
+                    initial={{ opacity: 0, x: 20 }}
+                    animate={{ opacity: 1, x: 0 }}
+                    exit={{ opacity: 0, x: 20 }}
+                    className="p-4 flex flex-col gap-3"
+                  >
+                    {projects.map((project, i) => (
+                      <div key={i} className="group relative flex flex-col sm:flex-row gap-4 p-4 rounded-2xl bg-white/[0.02] border border-white/[0.05] hover:bg-white/[0.05] transition-colors">
+                        <img src={project.image} alt={project.title} className="w-full sm:w-32 h-32 rounded-xl object-cover border border-white/10" />
+                        <div className="flex-1 flex flex-col">
+                          <h3 className="font-bold text-white mb-2 group-hover:text-indigo-300 transition-colors">{project.title}</h3>
+                          <p className="text-sm text-white/50 mb-4 line-clamp-2">{project.description}</p>
+                          <div className="flex gap-3 mt-auto">
+                            {project.liveUrl && (
+                              <a href={project.liveUrl} className="px-3 py-1.5 rounded-lg bg-indigo-500/20 text-indigo-300 text-xs font-semibold hover:bg-indigo-500/30 transition-colors flex items-center gap-1.5">
+                                Live Preview <MoveRight className="w-3 h-3" />
+                              </a>
+                            )}
+                            {project.githubUrl && (
+                              <a href={project.githubUrl} className="px-3 py-1.5 rounded-lg bg-white/5 text-white/60 text-xs font-semibold hover:bg-white/10 hover:text-white transition-colors flex items-center gap-1.5">
+                                <Github className="w-3 h-3" /> Source
+                              </a>
+                            )}
+                          </div>
+                        </div>
+                      </div>
+                    ))}
+                  </motion.div>
+                )}
+
+                {/* SKILLS VIEW */}
+                {activeView === 'skills' && (
+                  <motion.div 
+                    key="skills"
+                    initial={{ opacity: 0, x: 20 }}
+                    animate={{ opacity: 1, x: 0 }}
+                    exit={{ opacity: 0, x: 20 }}
+                    className="p-6"
+                  >
+                    <div className="grid grid-cols-2 gap-3">
+                      {skills.map((skill, i) => (
+                        <div key={i} className="group flex items-center justify-between p-4 bg-white/5 border border-white/5 rounded-xl hover:bg-white/10 transition-colors">
+                          <span className="font-medium text-white/80 group-hover:text-white transition-colors">{skill.name}</span>
+                          <span className="text-xs font-mono font-medium text-indigo-400 bg-indigo-500/10 px-2 py-1 rounded-md">{skill.level}%</span>
+                        </div>
+                      ))}
+                    </div>
+                  </motion.div>
+                )}
+
+                {/* EXPERIENCE VIEW */}
+                {activeView === 'experience' && (
+                  <motion.div 
+                    key="experience"
+                    initial={{ opacity: 0, x: 20 }}
+                    animate={{ opacity: 1, x: 0 }}
+                    exit={{ opacity: 0, x: 20 }}
+                    className="p-6 md:p-8"
+                  >
+                    <div className="relative before:absolute before:inset-0 before:ml-[11px] before:-translate-x-px md:before:mx-auto md:before:translate-x-0 before:h-full before:w-0.5 before:bg-gradient-to-b before:from-indigo-500/50 before:to-transparent space-y-8">
+                      {experience.map((exp, i) => (
+                        <div key={i} className="relative flex items-center justify-between md:justify-normal md:odd:flex-row-reverse group">
+                          <div className="flex items-center justify-center w-6 h-6 rounded-full bg-[#0c0c0c] border-2 border-indigo-500 shadow-[0_0_15px_rgba(99,102,241,0.5)] shrink-0 md:order-1 md:group-odd:-translate-x-1/2 md:group-even:translate-x-1/2 z-10" />
+                          <div className="w-[calc(100%-2rem)] md:w-[calc(50%-2rem)] p-5 rounded-2xl bg-white/5 border border-white/5 hover:bg-white/10 transition-colors">
+                            <div className="text-indigo-400 text-xs font-bold tracking-widest uppercase mb-1">{exp.period}</div>
+                            <h4 className="font-bold text-white text-lg">{exp.role}</h4>
+                            <div className="text-white/50 text-sm font-medium mb-3">{exp.company}</div>
+                            <p className="text-sm text-white/40 leading-relaxed">{exp.description}</p>
+                          </div>
+                        </div>
+                      ))}
+                    </div>
+                  </motion.div>
+                )}
+
+              </AnimatePresence>
+            </div>
+
+            {/* Footer actions */}
+            <div className="flex items-center justify-between px-4 py-3 border-t border-white/[0.05] bg-white/[0.02]">
+              <div className="flex items-center gap-4 text-[11px] text-white/30 font-medium">
+                <span className="flex items-center gap-1"><CornerDownLeft className="w-3.5 h-3.5" /> Select</span>
+                <span className="flex items-center gap-1"><Command className="w-3.5 h-3.5" /> K Toggle</span>
+              </div>
+              <div className="flex gap-3">
+                {socials.github && <a href={socials.github} className="text-white/30 hover:text-white transition-colors"><Github className="w-4 h-4" /></a>}
+                {socials.linkedin && <a href={socials.linkedin} className="text-white/30 hover:text-white transition-colors"><User className="w-4 h-4" /></a>}
               </div>
             </div>
-          )}
-
-          {/* EXPERIENCE VIEW */}
-          {activeView === 'experience' && (
-            <div className="p-6 flex flex-col gap-6 relative before:absolute before:inset-0 before:ml-[35px] before:w-px before:bg-zinc-800">
-              {experience.map((exp, i) => (
-                <div key={i} className="relative flex gap-6">
-                  <div className="w-3 h-3 rounded-full bg-blue-500 ring-4 ring-[#1c1c1c] mt-1.5 shrink-0 z-10 ml-[5px]" />
-                  <div>
-                    <h4 className="font-bold text-zinc-200">{exp.role}</h4>
-                    <div className="text-sm text-blue-400 font-medium mb-2">{exp.company} • {exp.period}</div>
-                    <p className="text-sm text-zinc-400 leading-relaxed">{exp.description}</p>
-                  </div>
-                </div>
-              ))}
-            </div>
-          )}
-        </div>
-
-        {/* Footer actions */}
-        <div className="flex items-center justify-between px-4 py-3 border-t border-zinc-800/80 bg-zinc-900/50">
-          <div className="flex items-center gap-4 text-xs text-zinc-500 font-medium">
-            <span className="flex items-center gap-1"><CornerDownLeft className="w-3 h-3" /> Select</span>
-            <span className="flex items-center gap-1"><Command className="w-3 h-3" /> K Toggle</span>
-          </div>
-          {activeView !== 'menu' && (
-            <button 
-              onClick={() => setActiveView('menu')}
-              className="text-xs font-medium text-zinc-400 hover:text-zinc-200"
-            >
-              Back to Menu
-            </button>
-          )}
-        </div>
-      </div>
+          </motion.div>
+        )}
+      </AnimatePresence>
     </div>
   );
 }

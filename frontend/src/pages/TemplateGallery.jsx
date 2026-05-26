@@ -5,6 +5,7 @@ import { useTheme } from "../hooks/useTheme";
 import { motion, AnimatePresence } from "framer-motion";
 import { Moon, Sun, ChevronDown, Check, Eye, Star } from "lucide-react";
 import HolographicAbout from "../components/portfolio/templates/Holographic/About";
+import CommandPalette from "../components/portfolio/templates/Command_Palette";
 
 /* ─────────────────────────────────────────────────────────
    Custom FilterSelect
@@ -373,6 +374,18 @@ export default function TemplateGallery() {
         </div>
         <div className="overflow-hidden rounded-2xl border border-white/10">
           <HolographicAbout />
+        </div>
+      </div>
+
+      <div className="mt-12">
+        <div className="mb-4 flex items-center gap-3 px-1">
+          <span className="rounded-full bg-rose-500/20 px-3 py-1 text-xs font-bold uppercase tracking-widest text-rose-400 border border-rose-500/30">
+            Preview
+          </span>
+          <h2 className="text-lg font-semibold text-white/70">Command Palette Theme</h2>
+        </div>
+        <div className="overflow-hidden rounded-2xl border border-white/10">
+          <CommandPalette />
         </div>
       </div>
     </div>
