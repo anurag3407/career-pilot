@@ -8,6 +8,7 @@ import HolographicAbout from "../components/portfolio/templates/Holographic/Abou
 import CulinaryAbout from "../components/portfolio/templates/Culinary_Restaurant/About";
 import TechStartupHero from "../components/portfolio/templates/Tech_Startup/Hero";
 import GeometricShapesAbout from "../components/portfolio/templates/Geometric_Shapes/About";
+import BentoBox from "../components/portfolio/templates/Bento_Box";
 import Navbar from '../components/Navbar'
 
 /* ─────────────────────────────────────────────────────────
@@ -241,6 +242,18 @@ export default function TemplateGallery() {
       image: "/template-previews/Creative-Dashboard.png",
       createdAt: "2026-05-15",
     },
+    {
+      id: 4,
+      title: "Bento Box",
+      category: "Portfolio",
+      colorScheme: "Dark",
+      layout: "Bento",
+      author: "Career Pilot",
+      views: 860,
+      rating: 4.9,
+      image: "/template-previews/Modern-Portfolio.png",
+      createdAt: "2026-05-26",
+    },
   ];
 
   const [category, setCategory] = useState("All");
@@ -412,6 +425,18 @@ export default function TemplateGallery() {
         </div>
         <div className="overflow-hidden rounded-2xl border border-cyan-500/20">
           <TechStartupHero />
+        </div>
+      </div>
+
+      <div className="mt-12">
+        <div className="mb-4 flex items-center gap-3 px-1">
+          <span className="rounded-full bg-fuchsia-500/20 px-3 py-1 text-xs font-bold uppercase tracking-widest text-fuchsia-400 border border-fuchsia-500/30">
+            Preview
+          </span>
+          <h2 className="text-lg font-semibold text-foreground/70">Bento Box Theme — Full Page Preview</h2>
+        </div>
+        <div className="max-h-[900px] overflow-auto rounded-2xl border border-border bg-slate-950">
+          <BentoBox />
         </div>
       </div>
     </div>
