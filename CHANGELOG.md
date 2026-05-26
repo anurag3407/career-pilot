@@ -1,3 +1,10 @@
+## [1.14.1](https://github.com/anurag3407/career-pilot/compare/v1.14.0...v1.14.1) (2026-05-26)
+
+
+### Bug Fixes
+
+* **frontend:** remove lint output files and add them to .gitignore ([998b52d](https://github.com/anurag3407/career-pilot/commit/998b52dd89182275b8f306f32962e6ffe89b7492))
+
 # [1.14.0](https://github.com/anurag3407/career-pilot/compare/v1.13.0...v1.14.0) (2026-05-25)
 
 
