@@ -154,7 +154,7 @@ export default function UserProfile() {
             {/* Profile Header Skeleton */}
             <div className="rounded-2xl bg-card border border-border p-6 space-y-4">
               <div className="flex items-start gap-5">
-                <div className="w-20 h-20 rounded-2xl bg-muted animate-pulse flex-shrink-0" />
+                <div className="w-20 h-20 rounded-2xl bg-muted animate-pulse shrink-0" />
                 <div className="flex-1 space-y-3">
                   <div className="h-6 bg-muted rounded-lg w-1/2 animate-pulse" />
                   <div className="h-4 bg-muted rounded-lg w-1/3 animate-pulse" />
@@ -202,7 +202,7 @@ export default function UserProfile() {
           >
             <div className="flex flex-col sm:flex-row items-start gap-5">
               <div
-                className={`w-20 h-20 rounded-2xl bg-gradient-to-br ${avatarGradient} flex items-center justify-center flex-shrink-0`}
+                className={`w-20 h-20 rounded-2xl bg-gradient-to-br ${avatarGradient} flex items-center justify-center shrink-0`}
               >
                 <span className="text-3xl font-bold text-white">{initials}</span>
               </div>
@@ -228,7 +228,7 @@ export default function UserProfile() {
                     )}
                     {profile?.location && (
                       <p className="flex items-center gap-1.5 text-sm text-zinc-500 mt-1">
-                        <MapPin className="w-3.5 h-3.5 flex-shrink-0" />
+                        <MapPin className="w-3.5 h-3.5 shrink-0" />
                         {profile.location}
                       </p>
                     )}

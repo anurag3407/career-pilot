@@ -90,7 +90,7 @@ export default function Hero() {
             <ul className="space-y-3">
               {specialties.map((item, i) => (
                 <li key={i} className="flex items-center gap-3 text-gray-300 text-sm" style={{ fontFamily: 'sans-serif' }}>
-                  <span className="w-1.5 h-1.5 rounded-full bg-amber-400 flex-shrink-0" />
+                  <span className="w-1.5 h-1.5 rounded-full bg-amber-400 shrink-0" />
                   {item}
                 </li>
               ))}
