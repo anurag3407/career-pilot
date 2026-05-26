@@ -1,3 +1,6 @@
+import Hero from "./components/portfolio/templates/Watercolor_Artistic/Hero";
+import About from "./components/portfolio/templates/Watercolor_Artistic/About";
+import Contact from "./components/portfolio/templates/Watercolor_Artistic/Contact";
 
 import React, { useState, useEffect } from 'react';
 import Deployments from './pages/Deployments'
@@ -222,13 +225,11 @@ function AppRoutes() {
 
 function App() {
   return (
-    <ThemeProvider>
-      <AuthProvider>
-        <SocketProvider>
-          <AppRoutes />
-        </SocketProvider>
-      </AuthProvider>
-    </ThemeProvider>
+    <>
+      <Hero />
+      <About />
+      <Contact />
+    </>
   );
 }
 
