@@ -34,6 +34,8 @@
 
 The **AI Resume Builder & Career Platform** is a comprehensive full-stack application designed to streamline and enhance the job search process. By leveraging cutting-edge AI technology (Google Gemini 2.5), real-time communication via Socket.IO, and intelligent automation through BullMQ job queues, this platform provides job seekers with powerful tools to succeed.
 
+👉 [Try the application here](https://careerpilotyy.netlify.appp)
+
 ---
 
 ## 📸 Project Preview
