@@ -1,5 +1,5 @@
 import React, { useEffect } from 'react';
-import { ArrowLeft } from 'lucide-react';
+import { ArrowLeft, ArrowRight } from 'lucide-react';
 import { Link } from 'react-router-dom';
 import Navbar from '../components/Navbar';
 import Footer from '../components/ui/Footer';
@@ -138,185 +138,43 @@ export default function CookiePolicy() {
             </div>
           </section>
 
-          {/* Third-Party Cookies */}
-          <section>
-            <h2 className="text-2xl md:text-3xl font-semibold mb-4">4. Third-Party Cookies</h2>
-            <p className="text-muted-foreground leading-relaxed mb-3">
-              We may use third-party services that set their own cookies:
-            </p>
-            <div className="space-y-2 text-muted-foreground">
-              <p><span className="font-medium text-foreground">Google Gemini/Analytics:</span> Cookies for API integration and analytics</p>
-              <p><span className="font-medium text-foreground">Firebase:</span> Authentication and real-time database cookies</p>
-              <p><span className="font-medium text-foreground">RapidAPI:</span> Cookies for job data integration</p>
-              <p><span className="font-medium text-foreground">Razorpay:</span> Payment processing cookies</p>
-              <p><span className="font-medium text-foreground">Social Media:</span> LinkedIn and GitHub integration cookies</p>
-            </div>
-            <p className="text-muted-foreground mt-3">
-              These third parties have their own privacy and cookie policies. We recommend reviewing them on their respective websites.
-            </p>
-          </section>
-
-          {/* Cookie Consent */}
-          <section>
-            <h2 className="text-2xl md:text-3xl font-semibold mb-4">5. Cookie Consent</h2>
-            <p className="text-muted-foreground leading-relaxed">
-              When you first visit CareerPilot, you'll see a cookie consent banner. You can:
-            </p>
-            <ul className="list-disc list-inside space-y-2 text-muted-foreground mt-3">
-              <li><span className="font-medium text-foreground">Accept All:</span> Allow all cookies including marketing cookies</li>
-              <li><span className="font-medium text-foreground">Accept Essential:</span> Only essential cookies required for site functionality</li>
-              <li><span className="font-medium text-foreground">Customize:</span> Choose which types of cookies to accept</li>
-              <li><span className="font-medium text-foreground">Reject Non-Essential:</span> Decline marketing and analytics cookies</li>
-            </ul>
-          </section>
-
-          {/* Managing Cookies */}
-          <section>
-            <h2 className="text-2xl md:text-3xl font-semibold mb-4">6. How to Manage Cookies</h2>
-            <div className="space-y-4">
-              <div>
-                <h3 className="text-lg font-medium mb-2">Update Your Preferences</h3>
-                <p className="text-muted-foreground">
-                  You can update your cookie preferences at any time through Settings → Privacy & Cookies on our platform.
-                </p>
-              </div>
-
-              <div>
-                <h3 className="text-lg font-medium mb-2">Browser Settings</h3>
-                <p className="text-muted-foreground mb-2">
-                  Most web browsers allow you to control cookies through their settings. Here's how to manage cookies in popular browsers:
-                </p>
-                <ul className="list-disc list-inside space-y-1 text-muted-foreground">
-                  <li><span className="font-medium text-foreground">Chrome:</span> Settings → Privacy and security → Cookies and other site data</li>
-                  <li><span className="font-medium text-foreground">Firefox:</span> Preferences → Privacy & Security → Cookies and Site Data</li>
-                  <li><span className="font-medium text-foreground">Safari:</span> Preferences → Privacy → Cookies and website data</li>
-                  <li><span className="font-medium text-foreground">Edge:</span> Settings → Privacy, search, and services → Clear browsing data</li>
-                </ul>
-              </div>
-
-              <div>
-                <h3 className="text-lg font-medium mb-2">Do Not Track (DNT)</h3>
-                <p className="text-muted-foreground">
-                  If you enable DNT in your browser settings, we will respect your preference and limit tracking cookies. However, some site functionality may be affected.
-                </p>
-              </div>
-
-              <div>
-                <h3 className="text-lg font-medium mb-2">Opt-Out Services</h3>
-                <p className="text-muted-foreground">
-                  You can opt out of marketing cookies through industry opt-out tools like the Network Advertising Initiative (NAI) or Digital Advertising Alliance (DAA).
-                </p>
-              </div>
-            </div>
-          </section>
-
-          {/* Cookie Impact */}
-          <section>
-            <h2 className="text-2xl md:text-3xl font-semibold mb-4">7. Impact of Disabling Cookies</h2>
-            <p className="text-muted-foreground leading-relaxed mb-3">
-              Disabling cookies may affect your experience on CareerPilot:
-            </p>
-            <ul className="list-disc list-inside space-y-2 text-muted-foreground">
-              <li><span className="font-medium text-foreground">Essential Cookies:</span> Disabling these will prevent login and core functionality</li>
-              <li><span className="font-medium text-foreground">Preference Cookies:</span> You'll lose saved preferences like theme and language</li>
-              <li><span className="font-medium text-foreground">Analytics Cookies:</span> We won't be able to improve the platform based on usage patterns</li>
-              <li><span className="font-medium text-foreground">Marketing Cookies:</span> You may see less relevant recommendations and ads</li>
-            </ul>
-          </section>
-
-          {/* Data Security */}
-          <section>
-            <h2 className="text-2xl md:text-3xl font-semibold mb-4">8. Cookie Data Security</h2>
-            <p className="text-muted-foreground leading-relaxed">
-              We use secure protocols to transmit cookies. Essential cookies contain encrypted information, and all data is transmitted over HTTPS. However, no method of transmission is 100% secure. For more details on how we protect your data, please see our <Link to="/privacy" className="text-primary hover:underline">Privacy Policy</Link>.
-            </p>
-          </section>
-
-          {/* Cookie Duration */}
-          <section>
-            <h2 className="text-2xl md:text-3xl font-semibold mb-4">9. Cookie Duration</h2>
-            <div className="overflow-x-auto">
-              <table className="w-full text-sm text-muted-foreground">
-                <thead>
-                  <tr className="border-b border-border">
-                    <th className="text-left py-2 px-2 font-medium text-foreground">Cookie Type</th>
-                    <th className="text-left py-2 px-2 font-medium text-foreground">Duration</th>
-                    <th className="text-left py-2 px-2 font-medium text-foreground">Purpose</th>
-                  </tr>
-                </thead>
-                <tbody>
-                  <tr className="border-b border-border hover:bg-muted/50">
-                    <td className="py-2 px-2">Session Token</td>
-                    <td className="py-2 px-2">Until logout</td>
-                    <td className="py-2 px-2">Authentication</td>
-                  </tr>
-                  <tr className="border-b border-border hover:bg-muted/50">
-                    <td className="py-2 px-2">Remember Me</td>
-                    <td className="py-2 px-2">30 days</td>
-                    <td className="py-2 px-2">Auto-login preference</td>
-                  </tr>
-                  <tr className="border-b border-border hover:bg-muted/50">
-                    <td className="py-2 px-2">Analytics</td>
-                    <td className="py-2 px-2">2 years</td>
-                    <td className="py-2 px-2">Usage tracking</td>
-                  </tr>
-                  <tr className="border-b border-border hover:bg-muted/50">
-                    <td className="py-2 px-2">User Preferences</td>
-                    <td className="py-2 px-2">1 year</td>
-                    <td className="py-2 px-2">Theme, language settings</td>
-                  </tr>
-                  <tr className="hover:bg-muted/50">
-                    <td className="py-2 px-2">Marketing</td>
-                    <td className="py-2 px-2">90 days</td>
-                    <td className="py-2 px-2">Campaign tracking</td>
-                  </tr>
-                </tbody>
-              </table>
-            </div>
-          </section>
-
-          {/* Changes */}
-          <section>
-            <h2 className="text-2xl md:text-3xl font-semibold mb-4">10. Changes to This Cookie Policy</h2>
-            <p className="text-muted-foreground leading-relaxed">
-              We may update this Cookie Policy from time to time. We will notify you of any significant changes by updating the "Last Updated" date and posting the new policy on our website. Your continued use of CareerPilot following such changes constitutes your acceptance of the updated Cookie Policy.
-            </p>
-          </section>
-
-          {/* Contact */}
-          <section>
-            <h2 className="text-2xl md:text-3xl font-semibold mb-4">11. Contact Us</h2>
-            <p className="text-muted-foreground leading-relaxed mb-3">
-              If you have questions about this Cookie Policy or would like to discuss our cookie practices, please contact us:
-            </p>
-            <div className="p-4 bg-card border border-border rounded-lg">
-              <p className="text-foreground font-medium">CareerPilot Support Team</p>
-              <p className="text-muted-foreground">Email: support@careerpilot.com</p>
-              <p className="text-muted-foreground">Privacy Email: privacy@careerpilot.com</p>
-              <p className="text-muted-foreground">Website: careerpilot.com</p>
-            </div>
-          </section>
-
           {/* Additional Resources */}
           <section className="bg-muted/50 border border-border rounded-lg p-6 mt-8">
             <h3 className="text-lg font-medium mb-3">Learn More</h3>
             <p className="text-muted-foreground text-sm mb-3">
               For more information about your privacy rights and how we handle data:
             </p>
+
             <ul className="space-y-2 text-sm">
               <li>
-                <Link to="/privacy" className="text-primary hover:underline">
-                  → Read our Privacy Policy
+                <Link
+                  to="/privacy"
+                  className="flex items-center gap-2 text-primary hover:underline"
+                >
+                  <ArrowRight className="w-4 h-4" />
+                  Read our Privacy Policy
                 </Link>
               </li>
+
               <li>
-                <Link to="/terms" className="text-primary hover:underline">
-                  → Read our Terms of Service
+                <Link
+                  to="/terms"
+                  className="flex items-center gap-2 text-primary hover:underline"
+                >
+                  <ArrowRight className="w-4 h-4" />
+                  Read our Terms of Service
                 </Link>
               </li>
+
               <li>
-                <a href="https://allaboutcookies.org" target="_blank" rel="noopener noreferrer" className="text-primary hover:underline">
-                  → Learn more about cookies (allaboutcookies.org)
+                <a
+                  href="https://allaboutcookies.org"
+                  target="_blank"
+                  rel="noopener noreferrer"
+                  className="flex items-center gap-2 text-primary hover:underline"
+                >
+                  <ArrowRight className="w-4 h-4" />
+                  Learn more about cookies (allaboutcookies.org)
                 </a>
               </li>
             </ul>
