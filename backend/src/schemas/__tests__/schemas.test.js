@@ -13,6 +13,7 @@
 import { test, describe } from 'node:test';
 import assert from 'node:assert/strict';
 import { z } from 'zod';
+import { startCareerSimulationSchema } from '../careerSimulation.schema.js';
 
 // ─── Auth ────────────────────────────────────────────────────────────────────
 import { updateNotificationPrefsSchema } from '../auth.schema.js';
@@ -608,5 +609,43 @@ describe('validate middleware', () => {
       assert.equal(req.query.name, 'Bob');
       done();
     });
+  });
+});
+
+describe('careerSimulation.schema — startCareerSimulationSchema', () => {
+  test('accepts valid input', () => {
+    const result = startCareerSimulationSchema.safeParse({
+      resumeId: '60c72b2f9b1d8b2badcf5012',
+      jobRole: 'Frontend Developer',
+      experienceLevel: 'entry'
+    });
+    assert.ok(result.success);
+  });
+
+  test('rejects invalid resumeId', () => {
+    const result = startCareerSimulationSchema.safeParse({
+      resumeId: 'invalid-id',
+      jobRole: 'Frontend Developer',
+      experienceLevel: 'entry'
+    });
+    assert.ok(!result.success);
+  });
+
+  test('rejects invalid experienceLevel', () => {
+    const result = startCareerSimulationSchema.safeParse({
+      resumeId: '60c72b2f9b1d8b2badcf5012',
+      jobRole: 'Frontend Developer',
+      experienceLevel: 'super-senior'
+    });
+    assert.ok(!result.success);
+  });
+
+  test('rejects empty jobRole', () => {
+    const result = startCareerSimulationSchema.safeParse({
+      resumeId: '60c72b2f9b1d8b2badcf5012',
+      jobRole: '',
+      experienceLevel: 'entry'
+    });
+    assert.ok(!result.success);
   });
 });
