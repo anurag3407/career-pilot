@@ -31,6 +31,7 @@ import {
 } from 'lucide-react'
 import { SkeletonList } from '../components/ui/Skeleton'
 import ResumeScore from '../components/ResumeScore'
+import CopyButton from '../components/ui/CopyButton'
 
 // Score ring component
 const ScoreRing = ({ score, size = 120, strokeWidth = 8 }) => {
@@ -161,7 +162,10 @@ const ImprovementCard = ({ improvement, index }) => {
         >
           <div className="flex items-start gap-2">
             <Zap className="w-4 h-4 text-primary mt-0.5 flex-shrink-0" />
-            <p className="text-sm text-foreground">{improvement.suggestion}</p>
+            <p className="text-sm text-foreground flex-1">{improvement.suggestion}</p>
+            <div className="flex-shrink-0 ml-2">
+              <CopyButton text={improvement.suggestion} />
+            </div>
           </div>
         </motion.div>
       )}
@@ -280,10 +284,13 @@ const BulletAnalysisCard = ({ bullet, index }) => {
               </div>
             </div>
           )}
-          <div className="bg-primary/10 border border-primary/30 rounded-lg p-3">
+          <div className="bg-primary/10 border border-primary/30 rounded-lg p-3 relative">
             <div className="flex items-center gap-2 mb-2">
               <Sparkles className="w-4 h-4 text-primary" />
               <span className="text-xs text-primary font-medium">Improved Version</span>
+            </div>
+            <div className="absolute top-3 right-3">
+              <CopyButton text={bullet.improved} />
             </div>
             <p className="text-sm text-foreground">{bullet.improved}</p>
           </div>
@@ -337,7 +344,10 @@ const SeniorTipCard = ({ tip, index }) => {
           </div>
           <p className="text-sm font-medium">{tip.tip}</p>
           {tip.example && (
-            <p className="text-xs opacity-75 mt-2 italic">"{tip.example}"</p>
+            <div className="flex items-center gap-2 mt-2">
+              <p className="text-xs opacity-75 italic">"{tip.example}"</p>
+              <CopyButton text={tip.example} />
+            </div>
           )}
         </div>
       </div>
