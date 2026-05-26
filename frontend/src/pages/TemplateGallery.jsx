@@ -8,6 +8,7 @@ import HolographicAbout from "../components/portfolio/templates/Holographic/Abou
 import CulinaryAbout from "../components/portfolio/templates/Culinary_Restaurant/About";
 import TechStartupHero from "../components/portfolio/templates/Tech_Startup/Hero";
 import ActionPanels from "../components/portfolio/templates/Comic_Book/ActionPanels";
+import GeometricShapesAbout from "../components/portfolio/templates/Geometric_Shapes/About";
 import Navbar from '../components/Navbar'
 
 /* ─────────────────────────────────────────────────────────
@@ -293,7 +294,7 @@ export default function TemplateGallery() {
   });
 
   return (
-    <><div className="min-h-screen bg-background text-foreground p-8 pt-24 transition-colors duration-300">
+    <div className="min-h-screen bg-background text-foreground p-8 pt-24 transition-colors duration-300">
       <Navbar />
       <div className="flex justify-between items-center mb-8">
         <h1 className="text-4xl font-bold">Template Gallery</h1>
@@ -428,7 +429,6 @@ export default function TemplateGallery() {
         </div>
       </div>
     </div>
-    </>
   );
 }
 

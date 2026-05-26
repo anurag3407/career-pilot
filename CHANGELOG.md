@@ -1,3 +1,10 @@
+# [1.18.0](https://github.com/anurag3407/career-pilot/compare/v1.17.0...v1.18.0) (2026-05-26)
+
+
+### Features
+
+* add GeometricShapesAbout template to TemplateGallery ([3cbbd87](https://github.com/anurag3407/career-pilot/commit/3cbbd876f96b8b5629bfdf1c1efc589a0680740f))
+
 # [1.17.0](https://github.com/anurag3407/career-pilot/compare/v1.16.0...v1.17.0) (2026-05-26)
 
 
