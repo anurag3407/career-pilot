@@ -13,6 +13,8 @@ import ChooseAdventurePortfolio from "../components/portfolio/templates/Choose_A
 import RetroProjects from "../components/portfolio/templates/2D_Retro_8bit/Projects";
 import FantasyRPGProjects from "../components/portfolio/templates/Fantasy_RPG/Projects";
 import Navbar from '../components/Navbar'
+import GraffitiHero from "../components/portfolio/templates/Graffiti_StreetArt/Hero";
+
 
 function FilterSelect({ value, onChange, options, className = "" }) {
   const [open, setOpen] = useState(false);
@@ -226,6 +228,18 @@ export default function TemplateGallery() {
       image: "/template-previews/Creative-Dashboard.png",
       createdAt: "2026-05-15",
     },
+    {
+      id: 4,
+      title: "Graffiti StreetArt",
+      category: "Portfolio",
+      colorScheme: "Colorful",
+      layout: "Creative",
+      author: "Shakshi",
+      views: 0,
+      rating: 0,
+      createdAt: "2026-05-26",
+    },
+
   ];
 
   const [category, setCategory] = useState("All");
@@ -432,6 +446,20 @@ export default function TemplateGallery() {
           <ChooseAdventurePortfolio />
         </div>
       </div>
+      <div className="mt-12">
+        <div className="mb-4 flex items-center gap-3 px-1">
+          <span className="rounded-full bg-pink-500/20 px-3 py-1 text-xs font-bold uppercase tracking-widest text-pink-400 border border-pink-500/30">
+            Preview
+          </span>
+          <h2 className="text-lg font-semibold text-foreground/70">
+            Graffiti StreetArt Theme — Hero Section
+          </h2>
+        </div>
+        <div className="overflow-hidden rounded-2xl border border-border">
+          <GraffitiHero />
+        </div>
+      </div>
+
     </div>
   );
 }
