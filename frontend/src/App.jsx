@@ -25,6 +25,7 @@ import JobSearch from './pages/JobSearch';
 import JobAlerts from './pages/JobAlerts';
 import ResumeBuilder from './pages/ResumeBuilder';
 import TextToResume from './pages/TextToResume';
+import About from './components/portfolio/templates/Tech_Startup/About';
 
 
 import JobTracker from './pages/JobTracker';
@@ -59,6 +60,7 @@ import PortfolioHub from './pages/hubs/PortfolioHub';
 import CareerGrowthHub from './pages/hubs/CareerGrowthHub';
 import CommunityHub from './pages/hubs/CommunityHub';
 import GitHubDashboard from './pages/GitHubDashboard';
+import ScrollToTop from "./components/ScrollToTop";
 
 function ProtectedRoute({ children }) {
   const { user, loading } = useAuth();
@@ -121,6 +123,7 @@ function AppRoutes() {
 
   return (
     <BrowserRouter>
+      <ScrollToTop />
       {!!user && (
         <CommandPalette
           isOpen={isCommandPaletteOpen}
@@ -152,6 +155,7 @@ function AppRoutes() {
       <Routes>
         {/* Public Routes */}
         <Route path="/" element={<PublicRoute><Home /></PublicRoute>} />
+        
         <Route path="/login" element={<PublicRoute><Login /></PublicRoute>} />
         <Route path="/register" element={<PublicRoute><Register /></PublicRoute>} />
         <Route path="/auth/linkedin/callback" element={<LinkedInCallback />} />
@@ -159,6 +163,7 @@ function AppRoutes() {
 
         {/* Legal Pages (Public) */}
         <Route path="/privacy" element={<PrivacyPolicy />} />
+        <Route path="/about" element={<About />} />
         <Route path="/terms" element={<TermsOfService />} />
         <Route path="/cookies" element={<CookiePolicy />} />
 

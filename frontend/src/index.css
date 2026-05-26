@@ -354,3 +354,25 @@ body {
   }
 }
 
+/* Modern Scrollbar */
+::-webkit-scrollbar {
+  width: 7px;
+    height: 7px;
+}
+
+::-webkit-scrollbar-track {
+  background: transparent;
+}
+
+::-webkit-scrollbar-thumb {
+  background: linear-gradient(
+    180deg,
+    #06b6d4,
+    #8b5cf6
+  );
+  border-radius: 999px;
+}
+
+::-webkit-scrollbar-thumb:hover {
+  opacity: 0.8;
+}

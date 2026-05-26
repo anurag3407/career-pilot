@@ -1,0 +1,169 @@
+{
+  "personal": {
+    "name": "Jordan Mitchell",
+    "title": "Full-Stack Developer & Creative Technologist",
+    "bio": "I build immersive, high-performance web experiences that blend cutting-edge technology with thoughtful design. Passionate about pushing the boundaries of what's possible in the browser — from 3D worlds to buttery-smooth animations.",
+    "shortBio": "Developer. Designer. Dreamer.",
+    "location": "San Francisco, CA",
+    "avatar": "https://images.unsplash.com/photo-1507003211169-0a1dd7228f2d?auto=format&fit=crop&q=80&w=256&h=256",
+    "resumeUrl": "/resume.pdf",
+    "availability": "Open to freelance & full-time opportunities"
+  },
+  "socials": {
+    "github": "https://github.com/jordanmitchell",
+    "linkedin": "https://linkedin.com/in/jordanmitchell",
+    "twitter": "https://twitter.com/jordanmitchell",
+    "dribbble": "https://dribbble.com/jordanmitchell",
+    "email": "jordan@example.com",
+    "website": "https://jordanmitchell.dev"
+  },
+  "skills": [
+    { "name": "React", "level": 95, "category": "Frontend" },
+    { "name": "Next.js", "level": 90, "category": "Frontend" },
+    { "name": "TypeScript", "level": 88, "category": "Languages" },
+    { "name": "Tailwind CSS", "level": 92, "category": "Frontend" },
+    { "name": "Three.js", "level": 80, "category": "3D/WebGL" },
+    { "name": "Framer Motion", "level": 85, "category": "Animation" },
+    { "name": "GSAP", "level": 82, "category": "Animation" },
+    { "name": "Node.js", "level": 87, "category": "Backend" },
+    { "name": "Python", "level": 78, "category": "Languages" },
+    { "name": "PostgreSQL", "level": 75, "category": "Database" },
+    { "name": "MongoDB", "level": 80, "category": "Database" },
+    { "name": "Docker", "level": 72, "category": "DevOps" },
+    { "name": "Figma", "level": 88, "category": "Design" },
+    { "name": "GraphQL", "level": 76, "category": "Backend" },
+    { "name": "AWS", "level": 70, "category": "DevOps" }
+  ],
+  "projects": [
+    {
+      "id": 1,
+      "title": "Nebula Dashboard",
+      "description": "A real-time analytics dashboard with 3D data visualizations, interactive charts, and a stunning dark-mode UI. Built for enterprise clients who need beautiful data storytelling.",
+      "techStack": ["React", "Three.js", "D3.js", "Tailwind CSS"],
+      "liveUrl": "https://example.com/nebula",
+      "githubUrl": "https://github.com/example/nebula",
+      "image": "https://images.unsplash.com/photo-1551288049-bebda4e38f71?auto=format&fit=crop&q=80&w=600&h=400",
+      "category": "Web App",
+      "featured": true
+    },
+    {
+      "id": 2,
+      "title": "Soundscape",
+      "description": "An immersive audio visualization experience powered by WebGL. Users upload music and watch generative art unfold in real-time, synchronized to the beat.",
+      "techStack": ["Next.js", "Web Audio API", "GLSL Shaders", "Framer Motion"],
+      "liveUrl": "https://example.com/soundscape",
+      "githubUrl": "https://github.com/example/soundscape",
+      "image": "https://images.unsplash.com/photo-1470225620780-dba8ba36b745?auto=format&fit=crop&q=80&w=600&h=400",
+      "category": "Creative",
+      "featured": true
+    },
+    {
+      "id": 3,
+      "title": "EcoTrack",
+      "description": "A sustainability tracking app that gamifies eco-friendly habits. Features include carbon footprint calculators, community challenges, and reward systems.",
+      "techStack": ["React", "Node.js", "MongoDB", "Chart.js"],
+      "liveUrl": "https://example.com/ecotrack",
+      "githubUrl": "https://github.com/example/ecotrack",
+      "image": "https://images.unsplash.com/photo-1497436072909-60f360e1d4b1?auto=format&fit=crop&q=80&w=600&h=400",
+      "category": "Mobile App",
+      "featured": true
+    },
+    {
+      "id": 4,
+      "title": "PixelForge",
+      "description": "A browser-based pixel art editor with real-time collaboration. Multiple users can draw on the same canvas simultaneously with WebSocket sync.",
+      "techStack": ["React", "Canvas API", "Socket.io", "Express"],
+      "liveUrl": "https://example.com/pixelforge",
+      "githubUrl": "https://github.com/example/pixelforge",
+      "image": "https://images.unsplash.com/photo-1550745165-9bc0b252726f?auto=format&fit=crop&q=80&w=600&h=400",
+      "category": "Creative Tool",
+      "featured": false
+    },
+    {
+      "id": 5,
+      "title": "DevFlow",
+      "description": "A developer productivity tool that combines task management, code snippets, and AI-powered documentation into a single sleek interface.",
+      "techStack": ["Next.js", "TypeScript", "Prisma", "PostgreSQL"],
+      "liveUrl": "https://example.com/devflow",
+      "githubUrl": "https://github.com/example/devflow",
+      "image": "https://images.unsplash.com/photo-1555066931-4365d14bab8c?auto=format&fit=crop&q=80&w=600&h=400",
+      "category": "SaaS",
+      "featured": false
+    },
+    {
+      "id": 6,
+      "title": "Wanderlust",
+      "description": "An interactive travel blog with map-based navigation. Each destination features a parallax photo story with embedded videos and local recommendations.",
+      "techStack": ["React", "Mapbox GL", "GSAP", "Contentful"],
+      "liveUrl": "https://example.com/wanderlust",
+      "githubUrl": "https://github.com/example/wanderlust",
+      "image": "https://images.unsplash.com/photo-1488646953014-85cb44e25828?auto=format&fit=crop&q=80&w=600&h=400",
+      "category": "Web App",
+      "featured": false
+    }
+  ],
+  "experience": [
+    {
+      "id": 1,
+      "role": "Senior Frontend Engineer",
+      "company": "TechNova Inc.",
+      "period": "2023 — Present",
+      "description": "Leading a team of 5 engineers building the next-gen analytics platform. Shipped 3D data visualization features that increased user engagement by 40%.",
+      "techStack": ["React", "TypeScript", "Three.js", "GraphQL"]
+    },
+    {
+      "id": 2,
+      "role": "Creative Developer",
+      "company": "Studio Lumière",
+      "period": "2021 — 2023",
+      "description": "Designed and developed award-winning interactive web experiences for global brands including Nike, Spotify, and Adobe.",
+      "techStack": ["Next.js", "GSAP", "WebGL", "Figma"]
+    },
+    {
+      "id": 3,
+      "role": "Full-Stack Developer",
+      "company": "StartupGrid",
+      "period": "2019 — 2021",
+      "description": "Built MVPs for 8 early-stage startups. Specialized in rapid prototyping and going from zero to launch in under 6 weeks.",
+      "techStack": ["React", "Node.js", "MongoDB", "AWS"]
+    }
+  ],
+  "education": [
+    {
+      "id": 1,
+      "degree": "B.S. Computer Science",
+      "school": "Stanford University",
+      "period": "2015 — 2019",
+      "description": "Focused on Human-Computer Interaction and Computer Graphics. Dean's List all 4 years."
+    }
+  ],
+  "testimonials": [
+    {
+      "id": 1,
+      "name": "Sarah Chen",
+      "role": "VP of Product, TechNova",
+      "text": "Jordan is the rare engineer who combines deep technical skills with an incredible design sensibility. Every project they touch becomes visually stunning AND performant.",
+      "avatar": "https://images.unsplash.com/photo-1494790108377-be9c29b29330?auto=format&fit=crop&q=80&w=100&h=100"
+    },
+    {
+      "id": 2,
+      "name": "Marcus Rodriguez",
+      "role": "CTO, StartupGrid",
+      "text": "I've worked with hundreds of developers, and Jordan stands out. They shipped our entire platform in 4 weeks — and it looked like it was designed by a world-class agency.",
+      "avatar": "https://images.unsplash.com/photo-1472099645785-5658abf4ff4e?auto=format&fit=crop&q=80&w=100&h=100"
+    },
+    {
+      "id": 3,
+      "name": "Emily Nakamura",
+      "role": "Creative Director, Studio Lumière",
+      "text": "Jordan doesn't just write code — they craft experiences. Their ability to translate complex creative visions into interactive reality is unmatched.",
+      "avatar": "https://images.unsplash.com/photo-1438761681033-6461ffad8d80?auto=format&fit=crop&q=80&w=100&h=100"
+    }
+  ],
+  "stats": {
+    "yearsExperience": 6,
+    "projectsCompleted": 50,
+    "happyClients": 30,
+    "coffeeConsumed": 4380
+  }
+}

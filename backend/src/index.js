@@ -30,6 +30,7 @@ import {
   metricsMiddleware,
   metricsHandler,
 } from "./middleware/metrics.js";
+import redisManager from './config/redis.js';
 
 
 import { initializeSocket } from './config/socket.js';
@@ -57,7 +58,9 @@ const connectDB = async (...args) => {
 };
 
 import {
-  scheduleWeeklyDigest
+  scheduleWeeklyDigest,
+  initializeDigestQueue,
+  startDigestWorker
 } from './services/weeklyDigestService.js';
 
 const app = express();
@@ -278,6 +281,12 @@ const startServer = async () => {
     }
 
     try {
+      const digestQueueReady = await initializeDigestQueue();
+
+      if (digestQueueReady) {
+        startDigestWorker();
+      }
+
       scheduleWeeklyDigest();
     } catch (digestError) {
       console.warn(
@@ -293,5 +302,27 @@ const startServer = async () => {
 };
 
 startServer();
+
+// Graceful shutdown
+const shutdown = async (signal) => {
+    console.log(`\n📥 Received ${signal}, shutting down gracefully...`);
+    await redisManager.shutdown();
+    console.log('👋 Server shutdown complete');
+    process.exit(0);
+};
+
+process.on('SIGTERM', () => shutdown('SIGTERM'));
+process.on('SIGINT', () => shutdown('SIGINT'));
+
+process.on("unhandledRejection", (reason) => {
+  console.error("❌ UNHANDLED REJECTION:", reason);
+});
+
+process.on("uncaughtException", (err) => {
+  console.error("❌ UNCAUGHT EXCEPTION:", err);
+  httpServer.close();
+  redisManager.shutdown().finally(() => process.exit(1));
+  setTimeout(() => process.exit(1), 10000).unref();
+});
 
 export default app;
