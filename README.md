@@ -72,7 +72,7 @@ We solve the modern job seeker's most painful challenges:
     </td>
   </tr>
 </table>
-
+          <a href="https://github.com/anurag3407/career-pilot/blob/main/LICENSE">
 ---
 
 ## ✨ Core Features
@@ -85,17 +85,12 @@ We solve the modern job seeker's most painful challenges:
 - **Professional Summary Generation**: AI-crafted summaries tailored to target roles
 - **Improvement Suggestions**: Actionable recommendations to strengthen your resume
 - **ATS Score Analysis**: Get compatibility scores with detailed feedback
-- **Harvard Template Formatting**: Industry-standard resume formatting
-</details>
-
-<details>
-<summary><b>🎓 Career Pilot Fellowships</b></summary>
 <br>
 
 - **Corporate Challenges**: Companies post real-world challenges for students
 - **Student Proposals**: Students submit proposals with cover letters and pricing
 - **Escrow Payments**: Razorpay integration for secure payments until completion
-- **Real-time Chat**: Direct messaging between corporate and students
+      git clone https://github.com/anurag3407/career-pilot.git
 </details>
 
 <details>
@@ -141,13 +136,11 @@ We solve the modern job seeker's most painful challenges:
     </td>
     <td valign="top">
       <ul>
-        <li><b>Node.js 18+</b></li>
         <li><b>Express.js</b></li>
         <li><b>MongoDB + Mongoose</b></li>
         <li><b>BullMQ + IORedis</b></li>
         <li><b>Google Gemini AI</b></li>
         <li><b>Razorpay API</b></li>
-      </ul>
     </td>
     <td valign="top">
       <ul>
