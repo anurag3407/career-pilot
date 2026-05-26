@@ -1,5 +1,5 @@
 import React, { useEffect } from 'react';
-import { ArrowLeft } from 'lucide-react';
+import { ArrowLeft, ArrowRight } from 'lucide-react';
 import { Link } from 'react-router-dom';
 import Navbar from '../components/Navbar';
 import Footer from '../components/ui/Footer';
@@ -303,20 +303,20 @@ export default function CookiePolicy() {
             <p className="text-muted-foreground text-sm mb-3">
               For more information about your privacy rights and how we handle data:
             </p>
-            <ul className="space-y-2 text-sm">
+            <ul className="space-y-3 text-sm">
               <li>
-                <Link to="/privacy" className="text-primary hover:underline">
-                  → Read our Privacy Policy
+                <Link to="/privacy" className="text-primary hover:underline flex items-center gap-1.5">
+                  <ArrowRight className="w-4 h-4" /> Read our Privacy Policy
                 </Link>
               </li>
               <li>
-                <Link to="/terms" className="text-primary hover:underline">
-                  → Read our Terms of Service
+                <Link to="/terms" className="text-primary hover:underline flex items-center gap-1.5">
+                  <ArrowRight className="w-4 h-4" /> Read our Terms of Service
                 </Link>
               </li>
               <li>
-                <a href="https://allaboutcookies.org" target="_blank" rel="noopener noreferrer" className="text-primary hover:underline">
-                  → Learn more about cookies (allaboutcookies.org)
+                <a href="https://allaboutcookies.org" target="_blank" rel="noopener noreferrer" className="text-primary hover:underline flex items-center gap-1.5">
+                  <ArrowRight className="w-4 h-4" /> Learn more about cookies (allaboutcookies.org)
                 </a>
               </li>
             </ul>
