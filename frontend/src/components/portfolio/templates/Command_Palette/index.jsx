@@ -28,3 +28,6 @@ export default function CommandPalette() {
     </div>
   );
 }
+    </div>
+  );
+}
