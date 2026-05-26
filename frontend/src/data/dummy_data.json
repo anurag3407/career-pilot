@@ -1,0 +1,82 @@
+{
+  "personal": {
+    "name": "Alex Carter",
+    "title": "Full Stack Developer",
+    "bio": "I craft highly performant and beautiful web experiences.",
+    "avatar": "https://i.pravatar.cc/300?img=11",
+    "location": "San Francisco, CA"
+  },
+  "socials": {
+    "github": "https://github.com",
+    "linkedin": "https://linkedin.com",
+    "twitter": "https://twitter.com",
+    "email": "hello@alexcarter.com"
+  },
+  "skills": [
+    { "name": "React", "level": 95, "category": "Frontend" },
+    { "name": "TypeScript", "level": 90, "category": "Language" },
+    { "name": "Tailwind CSS", "level": 95, "category": "Design" },
+    { "name": "Next.js", "level": 85, "category": "Framework" },
+    { "name": "Node.js", "level": 75, "category": "Backend" },
+    { "name": "Figma", "level": 80, "category": "Design" }
+  ],
+  "projects": [
+    {
+      "title": "Neon Dash",
+      "description": "A high-octane cyberpunk racing game built with Three.js and React.",
+      "techStack": ["React", "Three.js", "WebGL"],
+      "liveUrl": "https://example.com/neon",
+      "githubUrl": "https://github.com/example/neon",
+      "image": "https://images.unsplash.com/photo-1550745165-9bc0b252726f?w=600&q=80"
+    },
+    {
+      "title": "Finance Flow",
+      "description": "Real-time personal finance dashboard with AI predictions.",
+      "techStack": ["Next.js", "Tailwind", "OpenAI"],
+      "liveUrl": "https://example.com/finance",
+      "githubUrl": "https://github.com/example/finance",
+      "image": "https://images.unsplash.com/photo-1460925895917-afdab827c52f?w=600&q=80"
+    },
+    {
+      "title": "Task Titan",
+      "description": "Gamified productivity app that turns chores into quests.",
+      "techStack": ["React Native", "Firebase"],
+      "liveUrl": "https://example.com/titan",
+      "githubUrl": "https://github.com/example/titan",
+      "image": "https://images.unsplash.com/photo-1507925922893-873c0ce4c5c8?w=600&q=80"
+    }
+  ],
+  "experience": [
+    {
+      "role": "Senior Engineer",
+      "company": "TechNova",
+      "period": "2021 - Present",
+      "description": "Leading the frontend architecture and delivering pixel-perfect UIs."
+    },
+    {
+      "role": "Frontend Developer",
+      "company": "Creative Agency",
+      "period": "2018 - 2021",
+      "description": "Built award-winning marketing sites for Fortune 500 clients."
+    }
+  ],
+  "testimonials": [
+    {
+      "name": "Sarah Jenkins",
+      "role": "CTO at TechNova",
+      "text": "Alex is an incredibly talented developer who brings both technical excellence and an eye for design to every project.",
+      "avatar": "https://i.pravatar.cc/150?img=32"
+    },
+    {
+      "name": "Marcus Chen",
+      "role": "Design Lead",
+      "text": "Working with Alex is a dream. They actually understand design systems and sweat the details.",
+      "avatar": "https://i.pravatar.cc/150?img=12"
+    }
+  ],
+  "stats": {
+    "yearsExperience": 5,
+    "projectsCompleted": 42,
+    "happyClients": 18
+  }
+}
