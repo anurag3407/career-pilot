@@ -2,6 +2,7 @@ import { fetchJobs } from "../utils/jobSearch.js";
 import Job from "../models/Job.model.js";
 import mongoose from "mongoose";
 import { summarizeJobDescription } from "../services/jobSummarizer.js";
+import { getSimilarJobs } from "../services/jobRecommendationService.js";
 import { catchAsync } from "../middleware/globalErrorHandler.js";
 
 export const getJobs = catchAsync(async (req, res, next) => {
@@ -93,4 +94,14 @@ export const summarizeJob = catchAsync(async (req, res, next) => {
     provider: req.aiProvider.providerName,
     providerSource: req.aiProviderSource,
   });
+});
+
+export const getSimilarJobsController = catchAsync(async (req, res, next) => {
+  const { targetJob, candidateJobs } = req.body || {};
+  if (!targetJob || !Array.isArray(candidateJobs)) {
+    return res.status(400).json({ success: false, message: "targetJob is required and candidateJobs must be an array" });
+  }
+
+  const similarJobs = await getSimilarJobs(targetJob, candidateJobs, req.aiProvider);
+  return res.status(200).json({ success: true, data: similarJobs });
 });

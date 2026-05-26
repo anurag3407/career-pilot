@@ -24,6 +24,7 @@ import {
 import { jobsApi, jobTrackerApi } from '../services/api'
 import Button from '../components/Button'
 import { SkeletonJobList } from '../components/ui/Skeleton'
+import SimilarJobs from '../components/SimilarJobs'
 
 const JOB_TYPES = ['All Types', 'Full-time', 'Part-time', 'Contract', 'Internship', 'Remote']
 const EXPERIENCE_LEVELS = ['All Levels', 'Entry Level', 'Mid Level', 'Senior Level', 'Lead/Manager']
@@ -46,6 +47,7 @@ export default function JobSearch() {
   const [hasSearched, setHasSearched] = useState(false)
   const [savedJobs, setSavedJobs] = useState(new Set())
   const [showFilters, setShowFilters] = useState(false)
+  const [selectedJob, setSelectedJob] = useState(null)
   const [filters, setFilters] = useState({
     jobType: JOB_TYPES.includes(searchParams.get('jobType')) ? searchParams.get('jobType') : 'All Types',
     experienceLevel: EXPERIENCE_LEVELS.includes(searchParams.get('experienceLevel')) ? searchParams.get('experienceLevel') : 'All Levels',
@@ -496,12 +498,18 @@ className="w-full pl-12 pr-10 py-4 bg-muted/50 border border-border rounded-xl t
                     </div>
 
                     {/* Apply Button */}
-                    <div className="flex justify-end mt-4 pt-4 border-t border-border">
+                    <div className="flex justify-end mt-4 pt-4 border-t border-border gap-3">
+                      <button
+                        onClick={() => setSelectedJob(job)}
+                        className="inline-flex items-center gap-2 px-6 py-2.5 border border-border hover:bg-muted/20 text-foreground rounded-lg font-medium transition-colors cursor-pointer"
+                      >
+                        View Details
+                      </button>
                       <a
                         href={job.job_apply_link || job.applyLink}
                         target="_blank"
                         rel="noopener noreferrer"
-                        className="inline-flex items-center gap-2 px-6 py-2.5 bg-card hover:bg-muted/20 text-foreground rounded-lg font-medium transition-colors cursor-pointer"
+                        className="inline-flex items-center gap-2 px-6 py-2.5 bg-primary hover:bg-primary/90 text-primary-foreground rounded-lg font-medium transition-colors cursor-pointer"
                       >
                         Apply Now
                         <ExternalLink className="w-4 h-4" />
@@ -552,6 +560,88 @@ className="w-full pl-12 pr-10 py-4 bg-muted/50 border border-border rounded-xl t
           </motion.div>
         )}
       </div>
+
+      {/* Job Details Drawer */}
+      <AnimatePresence>
+        {selectedJob && (
+          <>
+            <motion.div
+              initial={{ opacity: 0 }}
+              animate={{ opacity: 1 }}
+              exit={{ opacity: 0 }}
+              className="fixed inset-0 bg-background/80 backdrop-blur-sm z-40"
+              onClick={() => setSelectedJob(null)}
+            />
+            <motion.div
+              initial={{ x: '100%' }}
+              animate={{ x: 0 }}
+              exit={{ x: '100%' }}
+              transition={{ type: 'spring', damping: 25, stiffness: 200 }}
+              className="fixed inset-y-0 right-0 w-full md:w-[850px] bg-background border-l border-border shadow-2xl z-50 overflow-hidden flex flex-col md:flex-row"
+            >
+              {/* Job Details Content */}
+              <div className="flex-1 overflow-y-auto p-6 md:p-8 border-r border-border">
+                <button
+                  onClick={() => setSelectedJob(null)}
+                  className="absolute top-4 right-4 md:left-4 md:right-auto p-2 bg-muted hover:bg-muted/80 rounded-full transition-colors z-50"
+                >
+                  <X className="w-5 h-5" />
+                </button>
+                <div className="md:ml-12">
+                  <div className="flex items-start gap-4 mb-6">
+                     <div className="w-16 h-16 bg-gradient-to-br from-primary/20 to-secondary/20 rounded-xl flex items-center justify-center flex-shrink-0 border border-border">
+                       {selectedJob.employer_logo ? (
+                         <img src={selectedJob.employer_logo} alt={selectedJob.employer_name} className="w-10 h-10 object-contain rounded" />
+                       ) : (
+                         <Building2 className="w-8 h-8 text-primary" />
+                       )}
+                     </div>
+                     <div>
+                        <h2 className="text-2xl font-bold text-foreground">{selectedJob.job_title || selectedJob.title}</h2>
+                        <p className="text-lg text-muted-foreground">{selectedJob.employer_name || selectedJob.company}</p>
+                     </div>
+                  </div>
+
+                  <div className="flex flex-wrap items-center gap-4 mb-8 text-sm text-muted-foreground">
+                    <span className="flex items-center gap-1"><MapPin className="w-4 h-4" />{selectedJob.job_city || selectedJob.location?.city || 'Remote'}</span>
+                    <span className="flex items-center gap-1"><Briefcase className="w-4 h-4" />{selectedJob.job_employment_type || selectedJob.employmentType || 'Full-time'}</span>
+                    {formatSalary(selectedJob) && (
+                      <span className="flex items-center gap-1 text-green-400 font-medium"><DollarSign className="w-4 h-4" />{formatSalary(selectedJob)}</span>
+                    )}
+                  </div>
+
+                  <div className="flex gap-4 mb-8">
+                     <a href={selectedJob.job_apply_link || selectedJob.applyLink} target="_blank" rel="noopener noreferrer" className="flex-1 inline-flex justify-center items-center gap-2 px-6 py-3 bg-primary hover:bg-primary/90 text-primary-foreground rounded-xl font-medium transition-colors">
+                        Apply Now <ExternalLink className="w-4 h-4" />
+                     </a>
+                     <button onClick={() => handleSaveJob(selectedJob)} className="px-6 py-3 border border-border hover:bg-muted/20 rounded-xl transition-colors">
+                        {savedJobs.has(selectedJob.job_id || selectedJob.id) ? <BookmarkCheck className="w-5 h-5 text-primary" /> : <Bookmark className="w-5 h-5" />}
+                     </button>
+                  </div>
+
+                  <div className="prose prose-sm md:prose-base dark:prose-invert max-w-none whitespace-pre-wrap text-muted-foreground">
+                     {selectedJob.job_description || selectedJob.description}
+                  </div>
+                </div>
+              </div>
+
+              {/* Similar Jobs Sidebar */}
+              <div className="w-full md:w-[320px] bg-muted/10 overflow-y-auto p-6">
+                <SimilarJobs 
+                   targetJob={selectedJob} 
+                   candidateJobs={jobs} 
+                   onSelectJob={(job) => {
+                      setSelectedJob(job);
+                      // Scroll detail view to top
+                      const detailView = document.querySelector('.flex-1.overflow-y-auto');
+                      if (detailView) detailView.scrollTop = 0;
+                   }} 
+                />
+              </div>
+            </motion.div>
+          </>
+        )}
+      </AnimatePresence>
     </div>
   )
 }
