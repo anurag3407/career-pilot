@@ -29,6 +29,7 @@ import {
 
 // Track consecutive failures for circuit breaker
 let consecutiveFailures = 0;
+let workerInstance = null;
 const MAX_CONSECUTIVE_FAILURES = 5;
 const QUEUE_PAUSED_KEY = 'job-alerts:paused_at';
 const PAUSE_DURATION_MS = 60 * 60 * 1000;
@@ -460,20 +461,29 @@ export const startWorker = () => {
         }
     );
 
+    workerInstance = worker;
+
+    worker.on("error", (err) => {
+      console.error("[BullMQ Worker] Worker-level error (non-job-specific):", err.message);
+      // This catches Redis connection errors inside BullMQ's internal promise chain
+      // without crashing the process. Do NOT rethrow.
+    });
+
+    worker.on("failed", (job, err) => {
+      console.error(
+        `[BullMQ Worker] Job failed | ID: ${job?.id} | Attempt: ${job?.attemptsMade}`,
+        { error: err.message, data: job?.data }
+      );
+    });
+
+    worker.on("stalled", (jobId) => {
+      console.warn(`[BullMQ Worker] Job stalled | ID: ${jobId}`);
+    });
+
     worker.on('completed', (job, result) => {
         console.log(`\n🎉 Job ${job.id} completed successfully!`);
         console.log(`   New jobs found: ${result?.newJobs || 0}`);
         console.log(`   Skipped: ${result?.skipped ? 'Yes' : 'No'}`);
-    });
-
-    worker.on('failed', (job, error) => {
-        console.error(`\n💥 Job ${job.id} FAILED:`);
-        console.error(`   Error: ${error.message}`);
-        console.error(`   Stack:`, error.stack);
-    });
-
-    worker.on('error', (error) => {
-        console.error('\n❌ WORKER ERROR:', error.message);
     });
 
     worker.on('active', (job) => {
@@ -482,10 +492,6 @@ export const startWorker = () => {
         console.log(`   Alert: ${job.data.title}`);
         console.log(`   Email: ${job.data.userEmail}`);
         console.log(`${'▶️'.repeat(20)}\n`);
-    });
-
-    worker.on('stalled', (jobId) => {
-        console.warn(`\n⚠️  Job ${jobId} stalled`);
     });
 
     worker.on('ready', () => {
@@ -742,10 +748,20 @@ export const initJobFetcher = async () => {
     return { worker, queueAvailable: queueInitialized };
 };
 
+// Graceful shutdown helper — call this on process exit
+export const shutdownWorker = async () => {
+  if (workerInstance) {
+    console.log("[BullMQ Worker] Shutting down worker gracefully...");
+    await workerInstance.close();
+    console.log("[BullMQ Worker] Worker closed.");
+  }
+};
+
 export default {
     initJobFetcher,
     startWorker,
     scheduleAlertChecks,
     triggerAlertCheck,
-    processAlert
+    processAlert,
+    shutdownWorker
 };
