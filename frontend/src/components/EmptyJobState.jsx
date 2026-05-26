@@ -1,29 +1,34 @@
 import React from 'react';
-import { Plus, Search, ArrowRight } from 'lucide-react';
+import { Plus, Search, ArrowRight, Bookmark, Mail, Mic, PartyPopper, Dumbbell, LayoutGrid } from 'lucide-react';
 
 const stageMessages = {
   saved: {
-    emoji: '📌',
+    icon: Bookmark,
+    iconColor: 'text-slate-400',
     headline: 'Nothing pinned yet',
     sub: 'Save roles that catch your eye. Build your wishlist before you apply.',
   },
   applied: {
-    emoji: '✉️',
+    icon: Mail,
+    iconColor: 'text-blue-400',
     headline: 'No applications sent',
     sub: 'Hit submit on your first application and watch this board come alive.',
   },
   interviewing: {
-    emoji: '🎤',
+    icon: Mic,
+    iconColor: 'text-yellow-400',
     headline: 'No interviews lined up',
     sub: "The room is yours — you're one application away from your first interview.",
   },
   offered: {
-    emoji: '🎉',
+    icon: PartyPopper,
+    iconColor: 'text-green-400',
     headline: 'No offers yet — but soon',
     sub: 'Every "yes" starts somewhere. Keep pushing and this stage will fill up.',
   },
   rejected: {
-    emoji: '💪',
+    icon: Dumbbell,
+    iconColor: 'text-red-400',
     headline: 'Zero rejections — clean slate',
     sub: "Every great career has a few plot twists. They're just not here yet.",
   },
@@ -288,7 +293,12 @@ const EmptyJobState = ({ filterStatus, statusLabel }) => {
         <div className="ejs-orbit ejs-o1"><div className="ejs-planet" /></div>
         <div className="ejs-orbit ejs-o2"><div className="ejs-planet" /></div>
         <div className="ejs-orbit ejs-o3"><div className="ejs-planet" /></div>
-        <div className="ejs-sun">{isAll ? '🗂️' : current.emoji}</div>
+        <div className="ejs-sun">
+          {isAll
+            ? <LayoutGrid className="w-8 h-8 text-amber-400" />
+            : (() => { const StageIcon = current.icon; return <StageIcon className={`w-8 h-8 ${current.iconColor}`} />; })()
+          }
+        </div>
       </div>
 
       {/* Text */}
