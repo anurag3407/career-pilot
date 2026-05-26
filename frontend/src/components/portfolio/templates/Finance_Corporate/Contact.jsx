@@ -1,32 +1,70 @@
 import React, { useState } from 'react';
 import { motion } from 'framer-motion';
-import { MapPin, Phone, Mail, Linkedin, Twitter, Github, Send, Briefcase, ChevronRight } from 'lucide-react';
+import { MapPin, Phone, Mail, Linkedin, Twitter, Github, Send, Briefcase } from 'lucide-react';
 import dummyData from '../../../../data/dummy_data.json';
 
 /* ──────────────────────────────────────────────────────────────
-   Finance Theme Background
+   Premium Finance Corporate Background
 ────────────────────────────────────────────────────────────── */
 const BackgroundGlow = () => (
-  <div className="absolute inset-0 overflow-hidden pointer-events-none">
+  <div className="absolute inset-0 overflow-hidden pointer-events-none bg-[#0a0f18]">
+    {/* Subtle Glows */}
     <div 
-      className="absolute top-[-20%] left-[-10%] w-[600px] h-[600px] rounded-full opacity-10 blur-[120px]"
-      style={{ background: 'radial-gradient(circle, #0ea5e9 0%, transparent 70%)' }}
+      className="absolute top-[-20%] left-[-10%] w-[800px] h-[800px] rounded-full opacity-[0.05] blur-[120px]"
+      style={{ background: 'radial-gradient(circle, #38bdf8 0%, transparent 70%)' }}
     />
     <div 
-      className="absolute bottom-[-20%] right-[-10%] w-[700px] h-[700px] rounded-full opacity-[0.07] blur-[150px]"
-      style={{ background: 'radial-gradient(circle, #10b981 0%, transparent 70%)' }}
+      className="absolute bottom-[-10%] right-[-10%] w-[800px] h-[800px] rounded-full opacity-[0.03] blur-[150px]"
+      style={{ background: 'radial-gradient(circle, #34d399 0%, transparent 70%)' }}
     />
-    {/* Subtle ascending trendline watermark for Finance Corporate feel */}
-    <div className="absolute inset-0 opacity-[0.03] flex items-center justify-center">
-      <svg width="100%" height="100%" preserveAspectRatio="none" viewBox="0 0 1000 400" fill="none" xmlns="http://www.w3.org/2000/svg">
-        <path d="M0 350 L 200 300 L 350 320 L 500 200 L 700 220 L 900 50 L 1000 10" stroke="#0ea5e9" strokeWidth="2" vectorEffect="non-scaling-stroke" />
-        <path d="M0 400 L 0 350 L 200 300 L 350 320 L 500 200 L 700 220 L 900 50 L 1000 10 L 1000 400 Z" fill="url(#trend-gradient)" />
+    
+    {/* Finance Motif: Abstract Candlesticks and Growth Trendline */}
+    <div className="absolute inset-0 opacity-[0.07]">
+      <svg width="100%" height="100%" preserveAspectRatio="none" xmlns="http://www.w3.org/2000/svg">
         <defs>
-          <linearGradient id="trend-gradient" x1="500" y1="0" x2="500" y2="400" gradientUnits="userSpaceOnUse">
-            <stop stopColor="#0ea5e9" stopOpacity="1" />
-            <stop offset="1" stopColor="#0ea5e9" stopOpacity="0" />
+          <linearGradient id="trendGradient" x1="0" y1="100%" x2="0" y2="0%">
+            <stop offset="0%" stopColor="#38bdf8" stopOpacity="0" />
+            <stop offset="100%" stopColor="#38bdf8" stopOpacity="0.8" />
           </linearGradient>
         </defs>
+
+        {/* Subtle Horizontal Grid Lines (Market Levels) */}
+        <line x1="0" y1="20%" x2="100%" y2="20%" stroke="#ffffff" strokeWidth="1" strokeDasharray="5 10" opacity="0.3" />
+        <line x1="0" y1="50%" x2="100%" y2="50%" stroke="#ffffff" strokeWidth="1" strokeDasharray="5 10" opacity="0.3" />
+        <line x1="0" y1="80%" x2="100%" y2="80%" stroke="#ffffff" strokeWidth="1" strokeDasharray="5 10" opacity="0.3" />
+
+        {/* Abstract Candlesticks */}
+        <g stroke="#ffffff" strokeWidth="2" opacity="0.5">
+          {/* Candle 1 */}
+          <line x1="15%" y1="60%" x2="15%" y2="30%" />
+          <rect x="14%" y="35%" width="2%" height="15%" fill="#34d399" stroke="none" />
+          
+          {/* Candle 2 */}
+          <line x1="35%" y1="50%" x2="35%" y2="20%" />
+          <rect x="34%" y="25%" width="2%" height="10%" fill="#ef4444" stroke="none" />
+          
+          {/* Candle 3 */}
+          <line x1="55%" y1="40%" x2="55%" y2="10%" />
+          <rect x="54%" y="15%" width="2%" height="20%" fill="#34d399" stroke="none" />
+          
+          {/* Candle 4 */}
+          <line x1="75%" y1="70%" x2="75%" y2="40%" />
+          <rect x="74%" y="45%" width="2%" height="18%" fill="#34d399" stroke="none" />
+        </g>
+
+        {/* Sweeping Trendline */}
+        <path 
+          d="M 0 80% Q 20% 60%, 40% 50% T 80% 20% L 100% 10%" 
+          fill="none" 
+          stroke="url(#trendGradient)" 
+          strokeWidth="4" 
+        />
+        {/* Glow underneath trendline */}
+        <path 
+          d="M 0 100% L 0 80% Q 20% 60%, 40% 50% T 80% 20% L 100% 10% L 100% 100% Z" 
+          fill="url(#trendGradient)" 
+          opacity="0.1" 
+        />
       </svg>
     </div>
   </div>
@@ -40,7 +78,7 @@ export default function Contact() {
     hidden: { opacity: 0 },
     visible: { 
       opacity: 1,
-      transition: { staggerChildren: 0.1, delayChildren: 0.2 }
+      transition: { staggerChildren: 0.1, delayChildren: 0.1 }
     }
   };
 
@@ -49,110 +87,95 @@ export default function Contact() {
     visible: { 
       y: 0, 
       opacity: 1,
-      transition: { type: "spring", stiffness: 100, damping: 20 }
+      transition: { duration: 0.6, ease: [0.16, 1, 0.3, 1] }
     }
   };
 
   return (
     <section 
       id="contact" 
-      className="relative min-h-screen flex items-center justify-center py-24 px-6 lg:px-8 overflow-hidden"
-      style={{ background: 'linear-gradient(145deg, #050b14 0%, #0a1128 100%)' }}
+      className="relative min-h-screen flex items-center justify-center py-24 px-6 lg:px-8 font-sans"
     >
       <BackgroundGlow />
 
       <motion.div 
-        className="relative z-10 max-w-7xl mx-auto w-full"
+        className="relative z-10 max-w-6xl mx-auto w-full"
         variants={containerVariants}
         initial="hidden"
         whileInView="visible"
         viewport={{ once: true, amount: 0.2 }}
       >
         {/* Header Section */}
-        <motion.div variants={itemVariants} className="text-center mb-16">
-          <div className="inline-flex items-center gap-2 px-4 py-1.5 rounded-full mb-6 text-xs font-semibold tracking-widest uppercase border border-sky-500/30 text-sky-400 bg-sky-500/10">
-            <Briefcase className="w-3.5 h-3.5" />
-            Corporate Inquiries
+        <motion.div variants={itemVariants} className="mb-16">
+          <div className="flex items-center gap-4 mb-6">
+            <div className="h-[1px] w-12 bg-neutral-600"></div>
+            <div className="inline-flex items-center gap-2 text-xs font-semibold tracking-[0.2em] uppercase text-neutral-400">
+              <Briefcase className="w-3.5 h-3.5" />
+              Corporate Relations
+            </div>
           </div>
-          <h2 className="text-4xl md:text-5xl lg:text-6xl font-extrabold tracking-tight text-white mb-6">
-            Initiate a <span className="text-transparent bg-clip-text bg-gradient-to-r from-sky-400 to-emerald-400">Partnership</span>
+          <h2 className="text-4xl md:text-5xl lg:text-6xl font-light tracking-tight text-white mb-6">
+            Get in <span className="font-semibold text-white">Touch.</span>
           </h2>
-          <p className="text-lg text-slate-400 max-w-2xl mx-auto leading-relaxed">
-            Ready to scale your enterprise infrastructure? Connect with our strategic advisory team to discuss bespoke solutions tailored to your market objectives.
+          <p className="text-lg text-neutral-400 max-w-xl leading-relaxed">
+            For investment inquiries, wealth management, or corporate advisory services, please reach out to our dedicated client relations team.
           </p>
         </motion.div>
 
-        <div className="grid grid-cols-1 lg:grid-cols-12 gap-8 lg:gap-12 items-start">
+        <div className="grid grid-cols-1 lg:grid-cols-12 gap-8 items-start">
           
           {/* Info Panel */}
           <motion.div 
             variants={itemVariants}
-            className="lg:col-span-5 flex flex-col gap-8"
+            className="lg:col-span-5 flex flex-col h-full"
           >
-            <div 
-              className="relative p-8 md:p-10 rounded-3xl border border-slate-700/50 overflow-hidden"
-              style={{ background: 'rgba(15, 23, 42, 0.4)', backdropFilter: 'blur(20px)' }}
-            >
-              <div className="absolute top-0 right-0 w-32 h-32 bg-sky-500/10 rounded-full blur-3xl" />
+            <div className="bg-neutral-900 border border-neutral-800 p-10 rounded-xl h-full flex flex-col justify-between shadow-2xl relative overflow-hidden group">
+              <div className="absolute top-0 left-0 w-full h-1 bg-gradient-to-r from-neutral-800 via-neutral-500 to-neutral-800 opacity-50"></div>
               
-              <h3 className="text-2xl font-bold text-white mb-8">Executive Contact</h3>
-              
-              <div className="space-y-8">
-                {[
-                  { icon: Mail, label: 'Secure Email', value: socials.email, href: `mailto:${socials.email}` },
-                  { icon: Phone, label: 'Direct Line', value: '+1 (555) 019-8273', href: 'tel:+15550198273' },
-                  { icon: MapPin, label: 'Global Headquarters', value: personal.location, href: '#' }
-                ].map((item, idx) => (
-                  <motion.a
-                    key={idx}
-                    href={item.href}
-                    className="group flex items-start gap-5 cursor-pointer"
-                    whileHover={{ x: 5 }}
-                    transition={{ type: "spring", stiffness: 300, damping: 20 }}
-                  >
-                    <div className="flex-shrink-0 w-12 h-12 flex items-center justify-center rounded-xl bg-slate-800/80 border border-slate-700 text-sky-400 group-hover:bg-sky-500/20 group-hover:border-sky-500/50 transition-colors">
-                      <item.icon className="w-5 h-5" />
-                    </div>
-                    <div>
-                      <p className="text-xs font-semibold uppercase tracking-wider text-slate-500 mb-1">{item.label}</p>
-                      <p className="text-base text-slate-200 group-hover:text-white transition-colors">{item.value}</p>
-                    </div>
-                  </motion.a>
-                ))}
+              <div>
+                <h3 className="text-xl font-medium text-white mb-10 tracking-wide">Direct Contact</h3>
+                
+                <div className="space-y-8">
+                  {[
+                    { icon: Mail, label: 'Email', value: socials.email, href: `mailto:${socials.email}` },
+                    { icon: Phone, label: 'Phone', value: '+1 (800) 555-0199', href: 'tel:+18005550199' },
+                    { icon: MapPin, label: 'Headquarters', value: personal.location, href: '#' }
+                  ].map((item, idx) => (
+                    <a
+                      key={idx}
+                      href={item.href}
+                      className="flex items-center gap-6 group/item cursor-pointer"
+                    >
+                      <div className="flex-shrink-0 w-12 h-12 flex items-center justify-center rounded-full bg-neutral-950 border border-neutral-800 text-neutral-400 group-hover/item:text-white group-hover/item:border-neutral-600 transition-all duration-300">
+                        <item.icon className="w-4 h-4" />
+                      </div>
+                      <div>
+                        <p className="text-[10px] font-semibold uppercase tracking-[0.15em] text-neutral-500 mb-1">{item.label}</p>
+                        <p className="text-sm text-neutral-300 group-hover/item:text-white transition-colors">{item.value}</p>
+                      </div>
+                    </a>
+                  ))}
+                </div>
               </div>
 
-              <div className="mt-12 pt-8 border-t border-slate-800 flex items-center gap-4">
+              <div className="mt-16 pt-8 border-t border-neutral-800 flex items-center gap-4">
                 {[
                   { icon: Linkedin, href: socials.linkedin },
                   { icon: Twitter, href: socials.twitter },
                   { icon: Github, href: socials.github }
                 ].map((social, idx) => (
-                  <motion.a
+                  <a
                     key={idx}
                     href={social.href}
                     target="_blank"
                     rel="noopener noreferrer"
-                    className="w-10 h-10 flex items-center justify-center rounded-full bg-slate-800 border border-slate-700 text-slate-400 hover:text-sky-400 hover:border-sky-500/50 hover:bg-sky-500/10 transition-colors"
-                    whileHover={{ scale: 1.1, rotate: 5 }}
-                    whileTap={{ scale: 0.95 }}
+                    className="p-3 text-neutral-400 hover:text-white hover:bg-neutral-800 rounded-lg transition-colors"
                   >
                     <social.icon className="w-4 h-4" />
-                  </motion.a>
+                  </a>
                 ))}
               </div>
             </div>
-
-            {/* Micro-interaction badge */}
-            <motion.div 
-              className="p-5 rounded-2xl border border-emerald-500/20 bg-emerald-500/5 flex items-center gap-4"
-              whileHover={{ scale: 1.02 }}
-            >
-              <div className="relative flex h-3 w-3">
-                <span className="animate-ping absolute inline-flex h-full w-full rounded-full bg-emerald-400 opacity-75"></span>
-                <span className="relative inline-flex rounded-full h-3 w-3 bg-emerald-500"></span>
-              </div>
-              <p className="text-sm text-emerald-400/90 font-medium">Currently accepting new corporate clients for Q3</p>
-            </motion.div>
           </motion.div>
 
           {/* Form Panel */}
@@ -160,104 +183,82 @@ export default function Contact() {
             variants={itemVariants}
             className="lg:col-span-7"
           >
-            <div 
-              className="p-8 md:p-10 rounded-3xl border border-slate-700/50 relative overflow-hidden"
-              style={{ background: 'rgba(15, 23, 42, 0.4)', backdropFilter: 'blur(20px)' }}
-            >
-              <form className="space-y-6" onSubmit={e => e.preventDefault()}>
-                <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
+            <div className="bg-neutral-900/50 border border-neutral-800/80 p-10 lg:p-12 rounded-xl backdrop-blur-sm">
+              <form className="space-y-8" onSubmit={e => e.preventDefault()}>
+                <div className="grid grid-cols-1 md:grid-cols-2 gap-8">
                   {/* Name Input */}
                   <div className="relative">
-                    <label className="block text-xs font-semibold uppercase tracking-wider text-slate-400 mb-2 ml-1">Full Name</label>
-                    <motion.div
-                      animate={{ 
-                        borderColor: hoveredInput === 'name' ? 'rgba(56, 189, 248, 0.5)' : 'rgba(51, 65, 85, 0.8)',
-                        boxShadow: hoveredInput === 'name' ? '0 0 15px rgba(56, 189, 248, 0.1)' : 'none'
-                      }}
-                      className="border rounded-xl bg-slate-900/50 overflow-hidden transition-colors"
+                    <label className="block text-[10px] font-semibold uppercase tracking-[0.15em] text-neutral-500 mb-3">Full Name</label>
+                    <div
+                      className={`border-b transition-colors duration-300 ${hoveredInput === 'name' ? 'border-white' : 'border-neutral-700'}`}
                     >
                       <input 
                         type="text" 
                         onFocus={() => setHoveredInput('name')}
                         onBlur={() => setHoveredInput(null)}
-                        className="w-full px-5 py-4 bg-transparent text-slate-200 placeholder-slate-600 outline-none"
+                        className="w-full pb-3 bg-transparent text-white placeholder-neutral-600 outline-none text-sm"
                         placeholder="John Doe"
                       />
-                    </motion.div>
+                    </div>
                   </div>
 
                   {/* Company Input */}
                   <div className="relative">
-                    <label className="block text-xs font-semibold uppercase tracking-wider text-slate-400 mb-2 ml-1">Organization</label>
-                    <motion.div
-                      animate={{ 
-                        borderColor: hoveredInput === 'company' ? 'rgba(56, 189, 248, 0.5)' : 'rgba(51, 65, 85, 0.8)',
-                        boxShadow: hoveredInput === 'company' ? '0 0 15px rgba(56, 189, 248, 0.1)' : 'none'
-                      }}
-                      className="border rounded-xl bg-slate-900/50 overflow-hidden transition-colors"
+                    <label className="block text-[10px] font-semibold uppercase tracking-[0.15em] text-neutral-500 mb-3">Organization</label>
+                    <div
+                      className={`border-b transition-colors duration-300 ${hoveredInput === 'company' ? 'border-white' : 'border-neutral-700'}`}
                     >
                       <input 
                         type="text" 
                         onFocus={() => setHoveredInput('company')}
                         onBlur={() => setHoveredInput(null)}
-                        className="w-full px-5 py-4 bg-transparent text-slate-200 placeholder-slate-600 outline-none"
-                        placeholder="Acme Corp"
+                        className="w-full pb-3 bg-transparent text-white placeholder-neutral-600 outline-none text-sm"
+                        placeholder="Company Name"
                       />
-                    </motion.div>
+                    </div>
                   </div>
                 </div>
 
                 {/* Email Input */}
                 <div className="relative">
-                  <label className="block text-xs font-semibold uppercase tracking-wider text-slate-400 mb-2 ml-1">Work Email</label>
-                  <motion.div
-                    animate={{ 
-                      borderColor: hoveredInput === 'email' ? 'rgba(56, 189, 248, 0.5)' : 'rgba(51, 65, 85, 0.8)',
-                      boxShadow: hoveredInput === 'email' ? '0 0 15px rgba(56, 189, 248, 0.1)' : 'none'
-                    }}
-                    className="border rounded-xl bg-slate-900/50 overflow-hidden transition-colors"
+                  <label className="block text-[10px] font-semibold uppercase tracking-[0.15em] text-neutral-500 mb-3">Work Email</label>
+                  <div
+                    className={`border-b transition-colors duration-300 ${hoveredInput === 'email' ? 'border-white' : 'border-neutral-700'}`}
                   >
                     <input 
                       type="email" 
                       onFocus={() => setHoveredInput('email')}
                       onBlur={() => setHoveredInput(null)}
-                      className="w-full px-5 py-4 bg-transparent text-slate-200 placeholder-slate-600 outline-none"
-                      placeholder="john@acme.com"
+                      className="w-full pb-3 bg-transparent text-white placeholder-neutral-600 outline-none text-sm"
+                      placeholder="john@company.com"
                     />
-                  </motion.div>
+                  </div>
                 </div>
 
                 {/* Message Input */}
                 <div className="relative">
-                  <label className="block text-xs font-semibold uppercase tracking-wider text-slate-400 mb-2 ml-1">Proposal Details</label>
-                  <motion.div
-                    animate={{ 
-                      borderColor: hoveredInput === 'message' ? 'rgba(56, 189, 248, 0.5)' : 'rgba(51, 65, 85, 0.8)',
-                      boxShadow: hoveredInput === 'message' ? '0 0 15px rgba(56, 189, 248, 0.1)' : 'none'
-                    }}
-                    className="border rounded-xl bg-slate-900/50 overflow-hidden transition-colors"
+                  <label className="block text-[10px] font-semibold uppercase tracking-[0.15em] text-neutral-500 mb-3">Inquiry Details</label>
+                  <div
+                    className={`border-b transition-colors duration-300 ${hoveredInput === 'message' ? 'border-white' : 'border-neutral-700'}`}
                   >
                     <textarea 
                       onFocus={() => setHoveredInput('message')}
                       onBlur={() => setHoveredInput(null)}
-                      rows="4"
-                      className="w-full px-5 py-4 bg-transparent text-slate-200 placeholder-slate-600 outline-none resize-none"
-                      placeholder="Detail your objectives and timeline..."
+                      rows="3"
+                      className="w-full pb-3 bg-transparent text-white placeholder-neutral-600 outline-none resize-none text-sm"
+                      placeholder="How can we assist you?"
                     ></textarea>
-                  </motion.div>
+                  </div>
                 </div>
 
                 {/* Submit Button */}
-                <motion.button
-                  whileHover={{ scale: 1.02 }}
-                  whileTap={{ scale: 0.98 }}
-                  className="w-full group relative flex items-center justify-center gap-3 py-4 rounded-xl font-bold text-slate-900 overflow-hidden"
-                  style={{ background: 'linear-gradient(90deg, #38bdf8, #34d399)' }}
+                <button
+                  type="submit"
+                  className="group relative flex items-center justify-between w-full md:w-auto px-8 py-4 bg-white text-black text-sm font-semibold hover:bg-neutral-200 transition-colors rounded-sm"
                 >
-                  <div className="absolute inset-0 bg-white/20 translate-y-full group-hover:translate-y-0 transition-transform duration-300 ease-in-out" />
-                  <span className="relative z-10">Transmit Request</span>
-                  <ChevronRight className="w-5 h-5 relative z-10 group-hover:translate-x-1 transition-transform" />
-                </motion.button>
+                  <span className="tracking-wide">Submit Inquiry</span>
+                  <Send className="w-4 h-4 ml-4 opacity-70 group-hover:opacity-100 group-hover:translate-x-1 transition-all" />
+                </button>
               </form>
             </div>
           </motion.div>
