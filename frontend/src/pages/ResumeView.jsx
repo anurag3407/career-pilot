@@ -11,6 +11,7 @@ import { sectionsToMarkdown } from '../components/customSectionUtils'
 import { SkeletonList } from '../components/ui/Skeleton'
 import ResumeVersions from '../components/ResumeVersions'
 import AtsProgressChart from '../components/AtsProgressChart'
+import ATSAnalyzer from '../components/ai/ATSAnalyzer'
 
 export default function ResumeView() {
   const { resumeId } = useParams()
@@ -278,6 +279,15 @@ export default function ResumeView() {
                 }`}
             >
               ATS Progression
+            </button>
+            <button
+              onClick={() => setActiveTab('ats-analyzer')}
+              className={`pb-4 text-sm font-semibold border-b-2 transition-all cursor-pointer ${activeTab === 'ats-analyzer'
+                  ? 'border-primary text-primary'
+                  : 'border-transparent text-muted-foreground hover:text-foreground'
+                }`}
+            >
+              ATS Analyzer
             </button>
           </nav>
         </div>
@@ -615,6 +625,12 @@ export default function ResumeView() {
         {activeTab === 'ats' && (
           <Card>
             <AtsProgressChart resumeId={resumeId} />
+          </Card>
+        )}
+
+        {activeTab === 'ats-analyzer' && (
+          <Card>
+            <ATSAnalyzer initialResumeText={previewTab === 'enhanced' ? resume?.enhancedText : resume?.originalText} />
           </Card>
         )}
       </div>
