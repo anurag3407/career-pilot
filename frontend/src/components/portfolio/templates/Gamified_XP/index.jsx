@@ -20,6 +20,45 @@ const PixelBox = ({ children, className = "", noBg = false }) => (
   </div>
 );
 
+// Recursive Skill Node Renderer
+const renderSkillNode = (node, isRoot = false) => {
+  return (
+    <div key={node.name} className="flex flex-col items-center">
+      <div className={`relative px-3 py-2 border-2 ${isRoot ? 'border-fuchsia-500 shadow-[0_0_10px_rgba(217,70,239,0.5)]' : 'border-cyan-500 shadow-[0_0_10px_rgba(6,182,212,0.5)]'} bg-gray-900 z-10 rounded-sm min-w-[80px]`}>
+        <div className="text-white text-[10px] md:text-xs font-bold uppercase text-center">{node.name}</div>
+        <div className={`${isRoot ? 'text-fuchsia-400' : 'text-cyan-400'} text-[9px] text-center mt-1`}>
+          LVL {node.level ? Math.floor(node.level / 10) : 'MAX'}
+        </div>
+      </div>
+      
+      {node.children && node.children.length > 0 && (
+        <div className="flex flex-col items-center w-full">
+          {/* Vertical line down from parent */}
+          <div className="w-0.5 h-6 bg-cyan-500/50" />
+          
+          <div className="flex justify-center w-full relative">
+             {node.children.map((child, i) => (
+               <div key={child.name} className="flex flex-col items-center relative px-1 sm:px-4">
+                 {/* Horizontal connector line */}
+                 {node.children.length > 1 && (
+                   <div className={`absolute top-0 h-0.5 bg-cyan-500/50
+                     ${i === 0 ? 'left-1/2 right-0' : i === node.children.length - 1 ? 'left-0 right-1/2' : 'left-0 right-0'}
+                   `} />
+                 )}
+                 {/* Vertical line down to this child */}
+                 <div className="w-0.5 h-6 bg-cyan-500/50" />
+                 
+                 {/* Render child recursively */}
+                 {renderSkillNode(child)}
+               </div>
+             ))}
+          </div>
+        </div>
+      )}
+    </div>
+  );
+};
+
 export default function GamifiedXP() {
   const { personal, socials, skills, projects, experience, testimonials, stats } = data;
 
@@ -28,6 +67,24 @@ export default function GamifiedXP() {
   const xpCurrent = 8750;
   const xpNext = 10000;
   const xpPercent = (xpCurrent / xpNext) * 100;
+
+  // Build branching tree data structure from linear skills array
+  const skillTree = {
+    name: "Mastery",
+    level: 99,
+    children: Array.from(new Set(skills.map(s => s.category))).map(cat => {
+      const catSkills = skills.filter(s => s.category === cat);
+      const avgLevel = Math.round(catSkills.reduce((acc, s) => acc + s.level, 0) / catSkills.length);
+      return {
+        name: cat,
+        level: avgLevel,
+        children: catSkills.map(s => ({
+          name: s.name,
+          level: s.level
+        }))
+      };
+    })
+  };
 
   return (
     <div className="min-h-screen bg-black text-emerald-400 font-mono selection:bg-emerald-500 selection:text-black overflow-hidden relative pb-20">
@@ -119,24 +176,9 @@ export default function GamifiedXP() {
             <div className="flex-1 h-1 bg-cyan-500/30 ml-4 hidden md:block" />
           </div>
           
-          <PixelBox className="border-cyan-500 shadow-[4px_4px_0px_0px_rgba(6,182,212,0.5)]">
-            <div className="grid grid-cols-1 md:grid-cols-2 gap-x-12 gap-y-8">
-              {skills.map((skill, i) => (
-                <div key={i} className="group">
-                  <div className="flex justify-between text-sm mb-1 uppercase tracking-wide">
-                    <span className="text-white group-hover:text-cyan-300 transition-colors">{skill.name}</span>
-                    <span className="text-cyan-500">LVL {Math.floor(skill.level / 10)}</span>
-                  </div>
-                  <div className="flex gap-1 h-3">
-                    {[...Array(10)].map((_, j) => (
-                      <div 
-                        key={j} 
-                        className={`flex-1 border border-cyan-900/50 ${j < Math.floor(skill.level / 10) ? 'bg-cyan-500 shadow-[0_0_5px_rgba(6,182,212,0.8)]' : 'bg-gray-900'}`} 
-                      />
-                    ))}
-                  </div>
-                </div>
-              ))}
+          <PixelBox className="border-cyan-500 shadow-[4px_4px_0px_0px_rgba(6,182,212,0.5)] overflow-x-auto pb-8">
+            <div className="min-w-[600px] flex justify-center pt-4">
+              {renderSkillNode(skillTree, true)}
             </div>
           </PixelBox>
         </section>
