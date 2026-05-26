@@ -17,6 +17,8 @@ import {
     Hash,
     Send
 } from "lucide-react";
+import InterviewSimulatorCard from "./InterviewSimulatorCard";
+import FellowshipChallengesCard from "./FellowshipChallengesCard";
 
 export default function FeaturesCards() {
     return (
@@ -38,36 +40,28 @@ export default function FeaturesCards() {
                 </motion.div>
 
                 {/* Main Feature Cards Grid */}
-                <div className="grid gap-4 lg:grid-cols-2">
-                    {/* Interview Simulator Card */}
-                    <FeatureCard index={0}>
-                        <CardHeader
-                            icon={Video}
-                            title="AI Interview Simulator"
-                            description="Practice with AI-powered mock interviews. Get real-time feedback on your answers, body language tips, and performance analytics."
-                        />
-                        <div className="relative mb-6 border-t border-dashed border-border sm:mb-0">
-                            <div className="absolute inset-0 bg-gradient-to-b from-transparent via-card/50 to-card" />
-                            <div className="aspect-[76/59] p-4 px-6">
-                                <InterviewMockup />
-                            </div>
-                        </div>
-                    </FeatureCard>
+                <div className="grid gap-6 lg:grid-cols-2">
+                    {/* Interview Simulator Card - Premium Redesigned */}
+                    <motion.div
+                        initial={{ opacity: 0, y: 20 }}
+                        whileInView={{ opacity: 1, y: 0 }}
+                        viewport={{ once: true }}
+                        transition={{ delay: 0 }}
+                    >
+                        <InterviewSimulatorCard />
+                    </motion.div>
 
-                    {/* Fellowship Card */}
-                    <FeatureCard index={1}>
-                        <CardHeader
-                            icon={Trophy}
-                            title="Fellowship Challenges"
-                            description="Students earn money solving real-world challenges. Companies find top talent and get work done."
-                        />
-                        <div className="p-6 pt-0">
-                            <div className="relative mb-6 sm:mb-0">
-                                <div className="absolute -inset-6 bg-gradient-to-r from-transparent via-transparent to-card" />
-                                <FellowshipMockup />
-                            </div>
+                    {/* Fellowship Challenges Card - Premium Redesigned */}
+                    <motion.div
+                        initial={{ opacity: 0, y: 20 }}
+                        whileInView={{ opacity: 1, y: 0 }}
+                        viewport={{ once: true }}
+                        transition={{ delay: 0.1 }}
+                    >
+                        <div className="h-full flex flex-col">
+                            <FellowshipChallengesCard />
                         </div>
-                    </FeatureCard>
+                    </motion.div>
 
                     {/* Full Width Secondary Features Card */}
                     <FeatureCard className="p-6 lg:col-span-2" index={2}>
@@ -189,114 +183,9 @@ function CardHeader({ icon: Icon, title, description }) {
     );
 }
 
-// Interview Mockup Visual
-function InterviewMockup() {
-    return (
-        <div className="relative">
-            {/* Video frame mockup */}
-            <div className="bg-card rounded-lg border border-border p-3 space-y-3">
-                {/* Video area */}
-                <div className="aspect-video bg-muted rounded-md relative overflow-hidden">
-                    <div className="absolute inset-0 flex items-center justify-center">
-                        <div className="w-16 h-16 rounded-full bg-card border-2 border-border flex items-center justify-center">
-                            <Video className="w-6 h-6 text-primary" />
-                        </div>
-                    </div>
-                    {/* AI indicator */}
-                    <motion.div
-                        initial={{ opacity: 0 }}
-                        whileInView={{ opacity: 1 }}
-                        viewport={{ once: true }}
-                        transition={{ delay: 0.5 }}
-                        className="absolute top-2 right-2 flex items-center gap-1 px-2 py-1 bg-primary/20 rounded-full"
-                    >
-                        <Brain className="w-3 h-3 text-primary" />
-                        <span className="text-xs text-primary font-medium">AI Active</span>
-                    </motion.div>
-                </div>
-                {/* Controls */}
-                <div className="flex items-center justify-between">
-                    <div className="flex gap-2">
-                        <div className="w-8 h-8 rounded-full bg-destructive/20 flex items-center justify-center">
-                            <Mic className="w-4 h-4 text-destructive" />
-                        </div>
-                        <div className="w-8 h-8 rounded-full bg-muted flex items-center justify-center">
-                            <Video className="w-4 h-4 text-muted-foreground" />
-                        </div>
-                    </div>
-                    <motion.div
-                        initial={{ width: 0 }}
-                        whileInView={{ width: "60%" }}
-                        viewport={{ once: true }}
-                        transition={{ delay: 0.8, duration: 1 }}
-                        className="h-1 bg-gradient-to-r from-primary to-secondary rounded-full"
-                    />
-                </div>
-            </div>
-        </div>
-    );
-}
-
-// Fellowship Mockup Visual
-function FellowshipMockup() {
-    const challenges = [
-        { title: "Build AI Dashboard", company: "TechCorp", bounty: "$500", icon: "💻", type: "Development" },
-        { title: "Market Research Report", company: "StartupX", bounty: "$300", icon: "📊", type: "Research" },
-        { title: "UI Redesign", company: "DesignCo", bounty: "$400", icon: "🎨", type: "Design" },
-    ];
-
-    return (
-        <div className="space-y-2">
-            {/* Role selector */}
-            <div className="flex gap-2 mb-3">
-                <motion.div
-                    initial={{ opacity: 0 }}
-                    whileInView={{ opacity: 1 }}
-                    viewport={{ once: true }}
-                    transition={{ delay: 0.2 }}
-                    className="flex items-center gap-1.5 px-3 py-1.5 bg-emerald-500/20 rounded-full border border-emerald-500/30"
-                >
-                    <GraduationCap className="w-3 h-3 text-emerald-600 dark:text-emerald-400" />
-                    <span className="text-xs text-emerald-600 dark:text-emerald-400 font-medium">Student</span>
-                </motion.div>
-                <motion.div
-                    initial={{ opacity: 0 }}
-                    whileInView={{ opacity: 1 }}
-                    viewport={{ once: true }}
-                    transition={{ delay: 0.3 }}
-                    className="flex items-center gap-1.5 px-3 py-1.5 bg-blue-500/20 rounded-full border border-blue-500/30"
-                >
-                    <Building2 className="w-3 h-3 text-blue-600 dark:text-blue-400" />
-                    <span className="text-xs text-blue-600 dark:text-blue-400 font-medium">Corporate</span>
-                </motion.div>
-            </div>
-
-            {/* Challenge cards */}
-            {challenges.map((challenge, idx) => (
-                <motion.div
-                    key={idx}
-                    initial={{ opacity: 0, x: -20 }}
-                    whileInView={{ opacity: 1, x: 0 }}
-                    viewport={{ once: true }}
-                    transition={{ delay: 0.4 + idx * 0.1 }}
-                    className="flex items-center gap-3 p-3 bg-muted/50 rounded-lg border border-border hover:border-primary/50 transition-colors"
-                >
-                    <div className="w-10 h-10 rounded-lg bg-card flex items-center justify-center text-lg border border-border">
-                        {challenge.icon}
-                    </div>
-                    <div className="flex-1 min-w-0">
-                        <p className="text-sm text-foreground font-medium truncate">{challenge.title}</p>
-                        <p className="text-xs text-muted-foreground">{challenge.company} • {challenge.type}</p>
-                    </div>
-                    <div className="flex items-center gap-1.5 px-2 py-1 bg-emerald-500/10 rounded-full border border-emerald-500/20">
-                        <DollarSign className="w-3 h-3 text-emerald-600 dark:text-emerald-400" />
-                        <span className="text-xs text-emerald-600 dark:text-emerald-400 font-medium">{challenge.bounty}</span>
-                    </div>
-                </motion.div>
-            ))}
-        </div>
-    );
-}
+// Interview Mockup Visual - DEPRECATED (Use InterviewSimulatorCard component instead)
+// Community Channel List Mockup - DEPRECATED (Use FellowshipChallengesCard component instead)
+// Community Chat Preview Mockup - DEPRECATED (Use FellowshipChallengesCard component instead)
 
 // Circular Feature indicator
 function CircularFeature({ icon: Icon, label, color, className }) {
