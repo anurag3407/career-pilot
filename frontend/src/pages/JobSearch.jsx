@@ -380,10 +380,12 @@ className="w-full pl-12 pr-10 py-4 bg-muted/50 border border-border rounded-xl t
                         Reset Filters
                       </button>
                     </div>
-                  </motion.div>
-                )}
-              </AnimatePresence>
-            </form>
+                  </div>
+                </motion.div>
+              )}
+            </AnimatePresence>
+          </form>
+
 
             {/* Popular Searches */}
             {!hasSearched && (

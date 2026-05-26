@@ -1,6 +1,5 @@
 import React, { useState, useEffect, useRef } from "react";
-// eslint-disable-next-line no-unused-vars
-import { motion, AnimatePresence } from "framer-motion";
+import { motion as Motion, AnimatePresence } from "framer-motion";
 import confetti from "canvas-confetti";
 import {
   Sparkles,
@@ -9,14 +8,11 @@ import {
   Crown,
   Play,
   RefreshCw,
-  Zap,
   Award,
-  Star,
   Volume2,
   VolumeX,
   Flame,
-  User,
-  Medal
+  User
 } from "lucide-react";
 
 // Technical Badges representing symbols on the Slot Machine reels
@@ -134,13 +130,32 @@ export default function SlotMachine() {
 
   // Refs for tracking reels intermediate cycles
   const intervalRefs = useRef([null, null, null]);
+  const timeoutRefs = useRef([]);
+  const audioContextRef = useRef(null);
+
+  const scheduleTimeout = (callback, delay) => {
+    const timeoutId = setTimeout(() => {
+      const index = timeoutRefs.current.indexOf(timeoutId);
+      if (index !== -1) timeoutRefs.current.splice(index, 1);
+      callback();
+    }, delay);
+
+    timeoutRefs.current.push(timeoutId);
+    return timeoutId;
+  };
 
   // --- AUDIO SYNTHESIS ENGINE (Web Audio API) ---
   const playRetroSound = (type) => {
     if (!volumeOn) return;
     try {
       const AudioContextClass = window.AudioContext || window.webkitAudioContext;
-      const ctx = new AudioContextClass();
+      if (!AudioContextClass) return;
+
+      if (!audioContextRef.current || audioContextRef.current.state === "closed") {
+        audioContextRef.current = new AudioContextClass();
+      }
+
+      const ctx = audioContextRef.current;
       
       if (type === "tick") {
         const osc = ctx.createOscillator();
@@ -225,8 +240,8 @@ export default function SlotMachine() {
 
   // --- SPINNING CONTROLLER ---
   const handleSpin = () => {
-    // Prevent double clicking while spinning
-    if (isSpinning.some(Boolean)) return;
+    // Prevent double clicking while spinning or starting from the lever with no credits.
+    if (isSpinning.some(Boolean) || credits <= 0) return;
     
     // Deduct entry fee
     setCredits((prev) => Math.max(0, prev - 25));
@@ -238,7 +253,7 @@ export default function SlotMachine() {
     playRetroSound("spin");
 
     // Animate visual lever pull sequence
-    setTimeout(() => {
+    scheduleTimeout(() => {
       setLeverPulled(false);
     }, 250);
 
@@ -266,7 +281,7 @@ export default function SlotMachine() {
     runCycle(2);
 
     // Stop Reel 1 (1.6s)
-    setTimeout(() => {
+    scheduleTimeout(() => {
       clearInterval(intervalRefs.current[0]);
       setReels((prev) => {
         const next = [...prev];
@@ -278,7 +293,7 @@ export default function SlotMachine() {
     }, 1600);
 
     // Stop Reel 2 (2.2s)
-    setTimeout(() => {
+    scheduleTimeout(() => {
       clearInterval(intervalRefs.current[1]);
       setReels((prev) => {
         const next = [...prev];
@@ -290,7 +305,7 @@ export default function SlotMachine() {
     }, 2200);
 
     // Stop Reel 3 (2.8s)
-    setTimeout(() => {
+    scheduleTimeout(() => {
       clearInterval(intervalRefs.current[2]);
       setReels((prev) => {
         const next = [...prev];
@@ -320,7 +335,7 @@ export default function SlotMachine() {
       unlockMilestone(r1);
       
       // Play Synthesized sound + golden confetti explosion
-      setTimeout(() => {
+      scheduleTimeout(() => {
         playRetroSound("jackpot");
         triggerConfetti(true);
       }, 100);
@@ -335,7 +350,7 @@ export default function SlotMachine() {
       // Unlock achievement milestone
       unlockMilestone(matchedSymbol);
       
-      setTimeout(() => {
+      scheduleTimeout(() => {
         playRetroSound("win");
         triggerConfetti(false);
       }, 100);
@@ -353,13 +368,24 @@ export default function SlotMachine() {
     });
   };
 
-  // Cleanup timers safely copying ref array locally to satisfy react-hooks/exhaustive-deps
+  // Cleanup active reel cycles, delayed spin callbacks, and the shared audio context.
   useEffect(() => {
     const currentIntervals = intervalRefs.current;
+    const currentTimeouts = timeoutRefs.current;
+
     return () => {
       currentIntervals.forEach((ref) => {
         if (ref) clearInterval(ref);
       });
+
+      currentTimeouts.forEach((ref) => {
+        if (ref) clearTimeout(ref);
+      });
+
+      const currentAudioContext = audioContextRef.current;
+      if (currentAudioContext && currentAudioContext.state !== "closed") {
+        currentAudioContext.close().catch(() => {});
+      }
     };
   }, []);
 
@@ -484,7 +510,7 @@ export default function SlotMachine() {
                           </div>
                         ) : (
                           /* STATIC SYMBOL VIEW: Clean bounce entry */
-                          <motion.div
+                          <Motion.div
                             initial={{ y: -30, opacity: 0 }}
                             animate={{ y: 0, opacity: 1 }}
                             transition={{ type: "spring", stiffness: 220, damping: 14 }}
@@ -500,7 +526,7 @@ export default function SlotMachine() {
                             <span className={`text-xs md:text-sm font-black uppercase tracking-widest ${activeSym.textColor} drop-shadow-md`}>
                               {activeSym.label}
                             </span>
-                          </motion.div>
+                          </Motion.div>
                         )}
                         
                         {/* Horizontal guidelines overlay (classic machine vibe) */}
@@ -519,7 +545,7 @@ export default function SlotMachine() {
                   </div>
 
                   {/* Lever Handle Shaft */}
-                  <motion.div
+                  <Motion.div
                     animate={{
                       height: leverPulled ? 35 : 95,
                       y: leverPulled ? 35 : 0
@@ -530,7 +556,7 @@ export default function SlotMachine() {
                   />
 
                   {/* Lever Shiny Red Knob Ball */}
-                  <motion.div
+                  <Motion.div
                     animate={{
                       y: leverPulled ? 55 : -25
                     }}
@@ -634,7 +660,7 @@ export default function SlotMachine() {
               <div className="flex-1 min-h-[300px] overflow-y-auto space-y-4 max-h-[480px] pr-1">
                 <AnimatePresence initial={false}>
                   {unlockedMilestones.length === 0 ? (
-                    <motion.div
+                    <Motion.div
                       initial={{ opacity: 0 }}
                       animate={{ opacity: 1 }}
                       className="h-full flex flex-col items-center justify-center text-center py-10"
@@ -646,10 +672,10 @@ export default function SlotMachine() {
                       <p className="text-xs text-gray-600 mt-2">
                         Pull the lever to match symbols and reveal tech milestones!
                       </p>
-                    </motion.div>
+                    </Motion.div>
                   ) : (
                     unlockedMilestones.map((milestone) => (
-                      <motion.div
+                      <Motion.div
                         key={milestone.id}
                         initial={{ x: 50, opacity: 0, scale: 0.95 }}
                         animate={{ x: 0, opacity: 1, scale: 1 }}
@@ -677,7 +703,7 @@ export default function SlotMachine() {
                         <p className="text-xs text-gray-300 leading-relaxed font-medium">
                           {milestone.milestone}
                         </p>
-                      </motion.div>
+                      </Motion.div>
                     ))
                   )}
                 </AnimatePresence>

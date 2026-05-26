@@ -1,3 +1,34 @@
+# [1.30.0](https://github.com/anurag3407/career-pilot/compare/v1.29.0...v1.30.0) (2026-05-26)
+
+
+### Bug Fixes
+
+* **2d-retro-8bit:** sanitize external links to prevent relative route redirection page not found ([e9190e8](https://github.com/anurag3407/career-pilot/commit/e9190e8349a3bef4cc97166340af6c384a0ca0db))
+
+
+### Features
+
+* **2d-retro-8bit:** add live preview of RetroProjects inside Template Gallery ([09abb36](https://github.com/anurag3407/career-pilot/commit/09abb360ea13ff60f1e40c3907b01d55bc70fa19))
+* **2d-retro-8bit:** implement high-fidelity interactive projects section and fix pre-existing compilation bugs ([be98899](https://github.com/anurag3407/career-pilot/commit/be988992d6c9e0db6ec7710184650d5d057c3125))
+
+# [1.29.0](https://github.com/anurag3407/career-pilot/compare/v1.28.0...v1.29.0) (2026-05-26)
+
+
+### Bug Fixes
+
+* resolve CodeRabbit review comments ([64eb844](https://github.com/anurag3407/career-pilot/commit/64eb844b34ef8c885d892672643c0a0f461fc2d0))
+* resolve duplicate razorpay declaration issue ([0eae6dc](https://github.com/anurag3407/career-pilot/commit/0eae6dc9a655ecc677b8e17cd8f83975aaf9ec7e))
+
+
+### Features
+
+* add chatbot portfolio interactive template ([30a2344](https://github.com/anurag3407/career-pilot/commit/30a2344ad0182e82ebcd93e69799210917d6eb5c))
+* add Liquid Morph portfolio template with fluid transitions ([4531607](https://github.com/anurag3407/career-pilot/commit/4531607c2929d7fdaf37b971b828a80a7c3d52d1))
+* **casino-vegas:** implement fully interactive slot machine component ([#1804](https://github.com/anurag3407/career-pilot/issues/1804)) ([89d2281](https://github.com/anurag3407/career-pilot/commit/89d228134b1ac7e6fee83e1cf1c322185c8915bd))
+* Implement GitHub Profile portfolio template ([#2001](https://github.com/anurag3407/career-pilot/issues/2001)) ([ab4e996](https://github.com/anurag3407/career-pilot/commit/ab4e9965935972dccdbd0a9312fbbd48aad9314e))
+* implement Liquid Morph portfolio template ([d0a734c](https://github.com/anurag3407/career-pilot/commit/d0a734cfe95889b75e7dc6da80bcfcc646b8d6f2))
+* **portfolio:** complete Grid Strict portfolio template ([#1916](https://github.com/anurag3407/career-pilot/issues/1916)) ([2545f12](https://github.com/anurag3407/career-pilot/commit/2545f1201aa2622bb52092053e38113e50f699c8))
+
 # [1.28.0](https://github.com/anurag3407/career-pilot/compare/v1.27.0...v1.28.0) (2026-05-26)
 
 
