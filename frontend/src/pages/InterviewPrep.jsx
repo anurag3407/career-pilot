@@ -143,7 +143,9 @@ function QuestionAnalysisCard({ answer, index }) {
             <div className="grid md:grid-cols-2 gap-4">
               {analysis.whatYouDidWell && analysis.whatYouDidWell.length > 0 && (
                 <div className="p-4 rounded-xl bg-emerald-500/10 border border-emerald-500/20">
-                  <p className="text-xs text-emerald-400 uppercase tracking-wide mb-3 font-medium">✓ What You Did Well</p>
+                  <p className="text-xs text-emerald-400 uppercase tracking-wide mb-3 font-medium flex items-center gap-1.5">
+                    <CheckCircle className="w-3.5 h-3.5" /> What You Did Well
+                  </p>
                   <ul className="space-y-2">
                     {analysis.whatYouDidWell.map((item, i) => (
                       <li key={i} className="flex items-start gap-2 text-foreground text-sm">
@@ -157,7 +159,9 @@ function QuestionAnalysisCard({ answer, index }) {
 
               {analysis.whatWasMissing && analysis.whatWasMissing.length > 0 && (
                 <div className="p-4 rounded-xl bg-amber-500/10 border border-amber-500/20">
-                  <p className="text-xs text-amber-400 uppercase tracking-wide mb-3 font-medium">⚠ What Was Missing</p>
+                  <p className="text-xs text-amber-400 uppercase tracking-wide mb-3 font-medium flex items-center gap-1.5">
+                    <AlertCircle className="w-3.5 h-3.5" /> What Was Missing
+                  </p>
                   <ul className="space-y-2">
                     {analysis.whatWasMissing.map((item, i) => (
                       <li key={i} className="flex items-start gap-2 text-foreground text-sm">
