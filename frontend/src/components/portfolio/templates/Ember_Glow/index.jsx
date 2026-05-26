@@ -29,8 +29,9 @@ export default function EmberGlow() {
         >
           <div className="flex items-center justify-center gap-2 mb-6">
             <Flame className="text-orange-400 w-8 h-8" />
+
             <span className="uppercase tracking-[0.3em] text-orange-300 text-sm">
-              Ember Glow
+              {data.personal.title}
             </span>
           </div>
 
@@ -51,6 +52,8 @@ export default function EmberGlow() {
               href={data.socials.github}
               target="_blank"
               rel="noreferrer"
+              aria-label="GitHub Profile"
+              title="GitHub Profile"
               className="p-4 rounded-full bg-orange-500/10 border border-orange-500/20 hover:bg-orange-500/20 transition"
             >
               <Github />
@@ -60,6 +63,8 @@ export default function EmberGlow() {
               href={data.socials.linkedin}
               target="_blank"
               rel="noreferrer"
+              aria-label="LinkedIn Profile"
+              title="LinkedIn Profile"
               className="p-4 rounded-full bg-orange-500/10 border border-orange-500/20 hover:bg-orange-500/20 transition"
             >
               <Linkedin />
@@ -67,6 +72,8 @@ export default function EmberGlow() {
 
             <a
               href={`mailto:${data.socials.email}`}
+              aria-label="Send Email"
+              title="Send Email"
               className="p-4 rounded-full bg-orange-500/10 border border-orange-500/20 hover:bg-orange-500/20 transition"
             >
               <Mail />
@@ -93,7 +100,7 @@ export default function EmberGlow() {
 
           <div>
             <h2 className="text-4xl font-bold mb-6 text-orange-400">
-              About Me
+              About
             </h2>
 
             <p className="text-gray-300 leading-relaxed mb-6">
@@ -110,6 +117,7 @@ export default function EmberGlow() {
                 <h3 className="text-3xl font-bold text-orange-400">
                   {data.stats.yearsExperience}
                 </h3>
+
                 <p className="text-sm text-gray-400">Years</p>
               </div>
 
@@ -117,6 +125,7 @@ export default function EmberGlow() {
                 <h3 className="text-3xl font-bold text-orange-400">
                   {data.stats.projectsCompleted}
                 </h3>
+
                 <p className="text-sm text-gray-400">Projects</p>
               </div>
 
@@ -124,6 +133,7 @@ export default function EmberGlow() {
                 <h3 className="text-3xl font-bold text-orange-400">
                   {data.stats.happyClients}
                 </h3>
+
                 <p className="text-sm text-gray-400">Clients</p>
               </div>
             </div>
@@ -150,6 +160,7 @@ export default function EmberGlow() {
             >
               <div className="flex justify-between mb-3">
                 <span className="font-semibold">{skill.name}</span>
+
                 <span className="text-orange-400">{skill.level}%</span>
               </div>
 
@@ -212,6 +223,8 @@ export default function EmberGlow() {
                     href={project.liveUrl}
                     target="_blank"
                     rel="noreferrer"
+                    aria-label={`Live demo of ${project.title}`}
+                    title={`Live demo of ${project.title}`}
                     className="flex items-center gap-2 px-4 py-2 rounded-xl bg-orange-500 text-black font-semibold hover:opacity-90 transition"
                   >
                     Live
@@ -222,6 +235,8 @@ export default function EmberGlow() {
                     href={project.githubUrl}
                     target="_blank"
                     rel="noreferrer"
+                    aria-label={`GitHub repository for ${project.title}`}
+                    title={`GitHub repository for ${project.title}`}
                     className="flex items-center gap-2 px-4 py-2 rounded-xl border border-orange-500/30 hover:bg-orange-500/10 transition"
                   >
                     Code
@@ -253,6 +268,7 @@ export default function EmberGlow() {
             >
               <div className="flex items-center gap-3 mb-4">
                 <Briefcase className="text-orange-400" />
+
                 <h3 className="text-2xl font-bold">{exp.role}</h3>
               </div>
 
@@ -298,6 +314,7 @@ export default function EmberGlow() {
 
                 <div>
                   <h4 className="font-bold">{testimonial.name}</h4>
+
                   <p className="text-sm text-orange-300">
                     {testimonial.role}
                   </p>
@@ -316,11 +333,11 @@ export default function EmberGlow() {
         className="border-t border-orange-500/10 py-16 px-6 text-center"
       >
         <h2 className="text-4xl font-bold text-orange-400 mb-6">
-          Let's Connect
+          Contact
         </h2>
 
-        <p className="text-gray-400 mb-8">
-          Ready to build something amazing together.
+        <p className="text-gray-400 mb-8 max-w-2xl mx-auto">
+          {data.personal.bio}
         </p>
 
         <div className="flex justify-center gap-6 mb-10">
@@ -328,6 +345,8 @@ export default function EmberGlow() {
             href={data.socials.github}
             target="_blank"
             rel="noreferrer"
+            aria-label="GitHub Profile"
+            title="GitHub Profile"
             className="hover:text-orange-400 transition"
           >
             <Github size={28} />
@@ -337,6 +356,8 @@ export default function EmberGlow() {
             href={data.socials.linkedin}
             target="_blank"
             rel="noreferrer"
+            aria-label="LinkedIn Profile"
+            title="LinkedIn Profile"
             className="hover:text-orange-400 transition"
           >
             <Linkedin size={28} />
@@ -344,6 +365,8 @@ export default function EmberGlow() {
 
           <a
             href={`mailto:${data.socials.email}`}
+            aria-label="Send Email"
+            title="Send Email"
             className="hover:text-orange-400 transition"
           >
             <Mail size={28} />
@@ -351,7 +374,7 @@ export default function EmberGlow() {
         </div>
 
         <p className="text-gray-500 text-sm">
-          © 2026 {data.personal.name}. Crafted with Ember Glow.
+          © 2026 {data.personal.name}
         </p>
       </motion.footer>
     </div>
