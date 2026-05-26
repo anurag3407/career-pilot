@@ -14,7 +14,9 @@ export default function JobMatchBadge({ job }) {
       <span
         className="inline-flex"
         onClick={(e) => e.stopPropagation()}
-        onKeyDown={(e) => e.stopPropagation()}
+        onKeyDown={(e) => {
+          if (e.key !== 'Escape') e.stopPropagation()
+        }}
       >
         <AIReasoningTooltip title={title} reason={reason} details={details} />
       </span>
