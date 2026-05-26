@@ -19,7 +19,9 @@ import {
   TrendingUp,
   Zap,
   Target,
-  Sparkles
+  Sparkles,
+  SearchX,
+  Pin
 } from 'lucide-react'
 import { jobsApi, jobTrackerApi } from '../services/api'
 import Button from '../components/Button'
@@ -125,7 +127,7 @@ export default function JobSearch() {
       setJobs(response.data || [])
 
       if (response.data?.length === 0) {
-        toast('No jobs found. Try different keywords.', { icon: '🔍' })
+        toast('No jobs found. Try different keywords.', { icon: <SearchX className="w-4 h-4 text-amber-400" /> })
       } else {
         toast.success(`Found ${response.data.length} jobs!`)
       }
@@ -172,7 +174,7 @@ export default function JobSearch() {
     const jobId = job.job_id || job.id
 
     if (savedJobs.has(jobId)) {
-      toast('Job already saved to tracker', { icon: '📌' })
+      toast('Job already saved to tracker', { icon: <Pin className="w-4 h-4 text-primary" /> })
       return
     }
 
