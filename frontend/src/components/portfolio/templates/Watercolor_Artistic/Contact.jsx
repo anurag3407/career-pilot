@@ -6,10 +6,10 @@ const Contact = ({
   email = "hello@artist.com",
   location = "Your City, Country",
   socials = [
-    { name: "GitHub", url: "https://github.com/yourusername", icon: Github },
-    { name: "LinkedIn", url: "https://www.linkedin.com/in/yourusername", icon: Linkedin },
-    { name: "Twitter", url: "https://x.com/yourusername", icon: Twitter },
-    { name: "Instagram", url: "https://www.instagram.com/yourusername", icon: Instagram },
+    { name: "GitHub", url: "https://github.com/anurag3407", icon: Github },
+    { name: "LinkedIn", url: "https://www.linkedin.com/in/anurag3407/", icon: Linkedin },
+    { name: "Twitter", url: "https://x.com/anurag3407", icon: Twitter },
+    { name: "Instagram", url: "https://www.instagram.com/anurag3407", icon: Instagram },
   ]
 }) => {
   const [formData, setFormData] = useState({
