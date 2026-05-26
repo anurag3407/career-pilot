@@ -1,169 +1,114 @@
 {
   "personal": {
-    "name": "Jordan Mitchell",
-    "title": "Full-Stack Developer & Creative Technologist",
-    "bio": "I build immersive, high-performance web experiences that blend cutting-edge technology with thoughtful design. Passionate about pushing the boundaries of what's possible in the browser — from 3D worlds to buttery-smooth animations.",
-    "shortBio": "Developer. Designer. Dreamer.",
+    "name": "Alex Mercer",
+    "title": "Full Stack Developer & Creative Engineer",
+    "bio": "I build digital experiences that live at the intersection of code and creativity. With 5+ years of crafting scalable web applications, I turn complex problems into elegant, user-centric solutions. When I'm not debugging production issues at 2 AM, I'm exploring generative art and open-source tooling.",
+    "avatar": "https://api.dicebear.com/7.x/personas/svg?seed=AlexMercer",
     "location": "San Francisco, CA",
-    "avatar": "https://images.unsplash.com/photo-1507003211169-0a1dd7228f2d?auto=format&fit=crop&q=80&w=256&h=256",
-    "resumeUrl": "/resume.pdf",
-    "availability": "Open to freelance & full-time opportunities"
+    "email": "alex.mercer@example.com",
+    "phone": "+1 (555) 234-5678",
+    "resumeUrl": "#"
   },
   "socials": {
-    "github": "https://github.com/jordanmitchell",
-    "linkedin": "https://linkedin.com/in/jordanmitchell",
-    "twitter": "https://twitter.com/jordanmitchell",
-    "dribbble": "https://dribbble.com/jordanmitchell",
-    "email": "jordan@example.com",
-    "website": "https://jordanmitchell.dev"
+    "github": "https://github.com",
+    "linkedin": "https://linkedin.com",
+    "twitter": "https://twitter.com",
+    "email": "alex.mercer@example.com",
+    "website": "https://alexmercer.dev"
   },
   "skills": [
     { "name": "React", "level": 95, "category": "Frontend" },
-    { "name": "Next.js", "level": 90, "category": "Frontend" },
-    { "name": "TypeScript", "level": 88, "category": "Languages" },
+    { "name": "TypeScript", "level": 88, "category": "Frontend" },
+    { "name": "Node.js", "level": 90, "category": "Backend" },
+    { "name": "PostgreSQL", "level": 82, "category": "Backend" },
+    { "name": "Docker", "level": 78, "category": "DevOps" },
+    { "name": "AWS", "level": 74, "category": "DevOps" },
+    { "name": "GraphQL", "level": 80, "category": "Backend" },
     { "name": "Tailwind CSS", "level": 92, "category": "Frontend" },
-    { "name": "Three.js", "level": 80, "category": "3D/WebGL" },
-    { "name": "Framer Motion", "level": 85, "category": "Animation" },
-    { "name": "GSAP", "level": 82, "category": "Animation" },
-    { "name": "Node.js", "level": 87, "category": "Backend" },
-    { "name": "Python", "level": 78, "category": "Languages" },
-    { "name": "PostgreSQL", "level": 75, "category": "Database" },
-    { "name": "MongoDB", "level": 80, "category": "Database" },
-    { "name": "Docker", "level": 72, "category": "DevOps" },
-    { "name": "Figma", "level": 88, "category": "Design" },
-    { "name": "GraphQL", "level": 76, "category": "Backend" },
-    { "name": "AWS", "level": 70, "category": "DevOps" }
+    { "name": "Redis", "level": 70, "category": "Backend" },
+    { "name": "Python", "level": 75, "category": "Backend" }
   ],
   "projects": [
     {
-      "id": 1,
-      "title": "Nebula Dashboard",
-      "description": "A real-time analytics dashboard with 3D data visualizations, interactive charts, and a stunning dark-mode UI. Built for enterprise clients who need beautiful data storytelling.",
-      "techStack": ["React", "Three.js", "D3.js", "Tailwind CSS"],
-      "liveUrl": "https://example.com/nebula",
-      "githubUrl": "https://github.com/example/nebula",
-      "image": "https://images.unsplash.com/photo-1551288049-bebda4e38f71?auto=format&fit=crop&q=80&w=600&h=400",
-      "category": "Web App",
+      "title": "NeuralHub",
+      "description": "A collaborative ML model repository with real-time training dashboards, version control for datasets, and one-click deployment pipelines to major cloud providers.",
+      "techStack": ["React", "Python", "FastAPI", "PostgreSQL", "Docker"],
+      "liveUrl": "https://example.com",
+      "githubUrl": "https://github.com",
+      "image": "https://images.unsplash.com/photo-1677442135703-1787eea5ce01?w=800&q=80",
       "featured": true
     },
     {
-      "id": 2,
-      "title": "Soundscape",
-      "description": "An immersive audio visualization experience powered by WebGL. Users upload music and watch generative art unfold in real-time, synchronized to the beat.",
-      "techStack": ["Next.js", "Web Audio API", "GLSL Shaders", "Framer Motion"],
-      "liveUrl": "https://example.com/soundscape",
-      "githubUrl": "https://github.com/example/soundscape",
-      "image": "https://images.unsplash.com/photo-1470225620780-dba8ba36b745?auto=format&fit=crop&q=80&w=600&h=400",
-      "category": "Creative",
+      "title": "FlowBoard",
+      "description": "Real-time Kanban and sprint planning tool with AI-powered task prioritization, burndown analytics, and Slack/GitHub integrations used by 500+ teams.",
+      "techStack": ["Next.js", "TypeScript", "Redis", "WebSockets", "Prisma"],
+      "liveUrl": "https://example.com",
+      "githubUrl": "https://github.com",
+      "image": "https://images.unsplash.com/photo-1611532736597-de2d4265fba3?w=800&q=80",
       "featured": true
     },
     {
-      "id": 3,
-      "title": "EcoTrack",
-      "description": "A sustainability tracking app that gamifies eco-friendly habits. Features include carbon footprint calculators, community challenges, and reward systems.",
-      "techStack": ["React", "Node.js", "MongoDB", "Chart.js"],
-      "liveUrl": "https://example.com/ecotrack",
-      "githubUrl": "https://github.com/example/ecotrack",
-      "image": "https://images.unsplash.com/photo-1497436072909-60f360e1d4b1?auto=format&fit=crop&q=80&w=600&h=400",
-      "category": "Mobile App",
-      "featured": true
-    },
-    {
-      "id": 4,
-      "title": "PixelForge",
-      "description": "A browser-based pixel art editor with real-time collaboration. Multiple users can draw on the same canvas simultaneously with WebSocket sync.",
-      "techStack": ["React", "Canvas API", "Socket.io", "Express"],
-      "liveUrl": "https://example.com/pixelforge",
-      "githubUrl": "https://github.com/example/pixelforge",
-      "image": "https://images.unsplash.com/photo-1550745165-9bc0b252726f?auto=format&fit=crop&q=80&w=600&h=400",
-      "category": "Creative Tool",
+      "title": "EchoAPI",
+      "description": "An open-source API mocking and testing platform supporting REST, GraphQL, and gRPC with a visual contract editor and CI/CD webhook triggers.",
+      "techStack": ["Go", "React", "MongoDB", "gRPC", "Kubernetes"],
+      "liveUrl": "https://example.com",
+      "githubUrl": "https://github.com",
+      "image": "https://images.unsplash.com/photo-1558494949-ef010cbdcc31?w=800&q=80",
       "featured": false
     },
     {
-      "id": 5,
-      "title": "DevFlow",
-      "description": "A developer productivity tool that combines task management, code snippets, and AI-powered documentation into a single sleek interface.",
-      "techStack": ["Next.js", "TypeScript", "Prisma", "PostgreSQL"],
-      "liveUrl": "https://example.com/devflow",
-      "githubUrl": "https://github.com/example/devflow",
-      "image": "https://images.unsplash.com/photo-1555066931-4365d14bab8c?auto=format&fit=crop&q=80&w=600&h=400",
-      "category": "SaaS",
-      "featured": false
-    },
-    {
-      "id": 6,
-      "title": "Wanderlust",
-      "description": "An interactive travel blog with map-based navigation. Each destination features a parallax photo story with embedded videos and local recommendations.",
-      "techStack": ["React", "Mapbox GL", "GSAP", "Contentful"],
-      "liveUrl": "https://example.com/wanderlust",
-      "githubUrl": "https://github.com/example/wanderlust",
-      "image": "https://images.unsplash.com/photo-1488646953014-85cb44e25828?auto=format&fit=crop&q=80&w=600&h=400",
-      "category": "Web App",
+      "title": "Luminary CMS",
+      "description": "Headless CMS with a visual block editor, multi-language support, and an edge-cached delivery layer that serves 50M+ content requests per month.",
+      "techStack": ["React", "Node.js", "GraphQL", "AWS", "CloudFront"],
+      "liveUrl": "https://example.com",
+      "githubUrl": "https://github.com",
+      "image": "https://images.unsplash.com/photo-1499750310107-5fef28a66643?w=800&q=80",
       "featured": false
     }
   ],
   "experience": [
     {
-      "id": 1,
-      "role": "Senior Frontend Engineer",
-      "company": "TechNova Inc.",
-      "period": "2023 — Present",
-      "description": "Leading a team of 5 engineers building the next-gen analytics platform. Shipped 3D data visualization features that increased user engagement by 40%.",
-      "techStack": ["React", "TypeScript", "Three.js", "GraphQL"]
+      "role": "Senior Full Stack Engineer",
+      "company": "Veritas Labs",
+      "period": "2022 – Present",
+      "description": "Lead a cross-functional team of 8 engineers building a B2B SaaS analytics platform. Reduced API response times by 60% through query optimization and Redis caching. Introduced TypeScript across the entire frontend codebase, cutting production bugs by 35%."
     },
     {
-      "id": 2,
-      "role": "Creative Developer",
-      "company": "Studio Lumière",
-      "period": "2021 — 2023",
-      "description": "Designed and developed award-winning interactive web experiences for global brands including Nike, Spotify, and Adobe.",
-      "techStack": ["Next.js", "GSAP", "WebGL", "Figma"]
+      "role": "Software Engineer",
+      "company": "Nexus Digital",
+      "period": "2020 – 2022",
+      "description": "Built and maintained React micro-frontends serving 2M+ monthly active users. Architected the real-time notification system using WebSockets and BullMQ. Mentored 4 junior engineers on code quality and system design principles."
     },
     {
-      "id": 3,
-      "role": "Full-Stack Developer",
-      "company": "StartupGrid",
-      "period": "2019 — 2021",
-      "description": "Built MVPs for 8 early-stage startups. Specialized in rapid prototyping and going from zero to launch in under 6 weeks.",
-      "techStack": ["React", "Node.js", "MongoDB", "AWS"]
-    }
-  ],
-  "education": [
-    {
-      "id": 1,
-      "degree": "B.S. Computer Science",
-      "school": "Stanford University",
-      "period": "2015 — 2019",
-      "description": "Focused on Human-Computer Interaction and Computer Graphics. Dean's List all 4 years."
+      "role": "Junior Developer",
+      "company": "Spark Agency",
+      "period": "2019 – 2020",
+      "description": "Developed responsive marketing sites and e-commerce storefronts for 20+ clients. Integrated third-party payment gateways and shipping APIs. Improved Core Web Vitals scores by an average of 40 points across client sites."
     }
   ],
   "testimonials": [
     {
-      "id": 1,
       "name": "Sarah Chen",
-      "role": "VP of Product, TechNova",
-      "text": "Jordan is the rare engineer who combines deep technical skills with an incredible design sensibility. Every project they touch becomes visually stunning AND performant.",
-      "avatar": "https://images.unsplash.com/photo-1494790108377-be9c29b29330?auto=format&fit=crop&q=80&w=100&h=100"
+      "role": "CTO at Veritas Labs",
+      "text": "Alex is the rare engineer who can architect a system at 9 AM and ship a pixel-perfect UI by 5 PM. Their technical depth combined with product empathy makes them invaluable on any team.",
+      "avatar": "https://api.dicebear.com/7.x/personas/svg?seed=SarahChen"
     },
     {
-      "id": 2,
-      "name": "Marcus Rodriguez",
-      "role": "CTO, StartupGrid",
-      "text": "I've worked with hundreds of developers, and Jordan stands out. They shipped our entire platform in 4 weeks — and it looked like it was designed by a world-class agency.",
-      "avatar": "https://images.unsplash.com/photo-1472099645785-5658abf4ff4e?auto=format&fit=crop&q=80&w=100&h=100"
+      "name": "Marcus Rivera",
+      "role": "Engineering Manager at Nexus Digital",
+      "text": "Working with Alex elevated our entire team. They brought structure to our chaotic codebase, introduced testing culture, and always found time to mentor others without sacrificing velocity.",
+      "avatar": "https://api.dicebear.com/7.x/personas/svg?seed=MarcusRivera"
     },
     {
-      "id": 3,
-      "name": "Emily Nakamura",
-      "role": "Creative Director, Studio Lumière",
-      "text": "Jordan doesn't just write code — they craft experiences. Their ability to translate complex creative visions into interactive reality is unmatched.",
-      "avatar": "https://images.unsplash.com/photo-1438761681033-6461ffad8d80?auto=format&fit=crop&q=80&w=100&h=100"
+      "name": "Priya Nair",
+      "role": "Product Lead at Spark Agency",
+      "text": "Alex translates ambiguous product requirements into clean, maintainable code better than anyone I've worked with. Clients consistently praised the quality and speed of their deliveries.",
+      "avatar": "https://api.dicebear.com/7.x/personas/svg?seed=PriyaNair"
     }
   ],
   "stats": {
-    "yearsExperience": 6,
-    "projectsCompleted": 50,
-    "happyClients": 30,
-    "coffeeConsumed": 4380
+    "yearsExperience": 5,
+    "projectsCompleted": 42,
+    "happyClients": 28
   }
 }
