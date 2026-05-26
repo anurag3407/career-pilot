@@ -9,6 +9,7 @@ import Card from '../components/Card'
 import CustomSection from '../components/CustomSection'
 import { sectionsToMarkdown } from '../components/customSectionUtils'
 import { SkeletonList } from '../components/ui/Skeleton'
+import { Bot, ScanSearch, Zap, BarChart4 } from 'lucide-react'
 import ResumeVersions from '../components/ResumeVersions'
 import AtsProgressChart from '../components/AtsProgressChart'
 
@@ -450,10 +451,10 @@ export default function ResumeView() {
                     exit={{ opacity: 0, y: -5 }}
                     className="text-sm font-semibold text-primary tracking-wide text-center"
                   >
-                    {scoringStep === 0 && "🤖 Initializing AI ATS parser..."}
-                    {scoringStep === 1 && "🔍 Analyzing keyword relevance & density..."}
-                    {scoringStep === 2 && "⚡ Measuring impact statements & formatting..."}
-                    {scoringStep === 3 && "📈 Compiling score and suggestions..."}
+                    {scoringStep === 0 && <span className="flex items-center gap-2 justify-center"><Bot className="w-4 h-4" /> Initializing AI ATS parser...</span>}
+                    {scoringStep === 1 && <span className="flex items-center gap-2 justify-center"><ScanSearch className="w-4 h-4" /> Analyzing keyword relevance & density...</span>}
+                    {scoringStep === 2 && <span className="flex items-center gap-2 justify-center"><Zap className="w-4 h-4" /> Measuring impact statements & formatting...</span>}
+                    {scoringStep === 3 && <span className="flex items-center gap-2 justify-center"><BarChart4 className="w-4 h-4" /> Compiling score and suggestions...</span>}
                   </motion.p>
                   
                   <p className="text-xs text-muted-foreground mt-4 text-center max-w-sm">
