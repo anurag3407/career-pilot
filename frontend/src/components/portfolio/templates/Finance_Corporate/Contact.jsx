@@ -139,12 +139,14 @@ export default function Contact() {
                   {[
                     { icon: Mail, label: 'Email', value: socials.email, href: `mailto:${socials.email}` },
                     { icon: Phone, label: 'Phone', value: '+1 (800) 555-0199', href: 'tel:+18005550199' },
-                    { icon: MapPin, label: 'Headquarters', value: personal.location, href: '#' }
+                    { icon: MapPin, label: 'Headquarters', value: personal.location, href: `https://www.google.com/maps/search/?api=1&query=${encodeURIComponent(personal.location)}` }
                   ].map((item, idx) => (
                     <a
                       key={idx}
                       href={item.href}
                       className="flex items-center gap-6 group/item cursor-pointer"
+                      target={item.label === 'Headquarters' ? "_blank" : "_self"}
+                      rel={item.label === 'Headquarters' ? "noopener noreferrer" : undefined}
                     >
                       <div className="flex-shrink-0 w-12 h-12 flex items-center justify-center rounded-full bg-neutral-950 border border-neutral-800 text-neutral-400 group-hover/item:text-white group-hover/item:border-neutral-600 transition-all duration-300">
                         <item.icon className="w-4 h-4" />
@@ -160,15 +162,17 @@ export default function Contact() {
 
               <div className="mt-16 pt-8 border-t border-neutral-800 flex items-center gap-4">
                 {[
-                  { icon: Linkedin, href: socials.linkedin },
-                  { icon: Twitter, href: socials.twitter },
-                  { icon: Github, href: socials.github }
+                  { icon: Linkedin, href: socials.linkedin, name: "LinkedIn" },
+                  { icon: Twitter, href: socials.twitter, name: "Twitter" },
+                  { icon: Github, href: socials.github, name: "GitHub" }
                 ].map((social, idx) => (
                   <a
                     key={idx}
                     href={social.href}
                     target="_blank"
                     rel="noopener noreferrer"
+                    aria-label={social.name}
+                    title={social.name}
                     className="p-3 text-neutral-400 hover:text-white hover:bg-neutral-800 rounded-lg transition-colors"
                   >
                     <social.icon className="w-4 h-4" />
@@ -188,11 +192,12 @@ export default function Contact() {
                 <div className="grid grid-cols-1 md:grid-cols-2 gap-8">
                   {/* Name Input */}
                   <div className="relative">
-                    <label className="block text-[10px] font-semibold uppercase tracking-[0.15em] text-neutral-500 mb-3">Full Name</label>
+                    <label htmlFor="finance-name" className="block text-[10px] font-semibold uppercase tracking-[0.15em] text-neutral-500 mb-3">Full Name</label>
                     <div
                       className={`border-b transition-colors duration-300 ${hoveredInput === 'name' ? 'border-white' : 'border-neutral-700'}`}
                     >
                       <input 
+                        id="finance-name"
                         type="text" 
                         onFocus={() => setHoveredInput('name')}
                         onBlur={() => setHoveredInput(null)}
@@ -204,11 +209,12 @@ export default function Contact() {
 
                   {/* Company Input */}
                   <div className="relative">
-                    <label className="block text-[10px] font-semibold uppercase tracking-[0.15em] text-neutral-500 mb-3">Organization</label>
+                    <label htmlFor="finance-company" className="block text-[10px] font-semibold uppercase tracking-[0.15em] text-neutral-500 mb-3">Organization</label>
                     <div
                       className={`border-b transition-colors duration-300 ${hoveredInput === 'company' ? 'border-white' : 'border-neutral-700'}`}
                     >
                       <input 
+                        id="finance-company"
                         type="text" 
                         onFocus={() => setHoveredInput('company')}
                         onBlur={() => setHoveredInput(null)}
@@ -221,11 +227,12 @@ export default function Contact() {
 
                 {/* Email Input */}
                 <div className="relative">
-                  <label className="block text-[10px] font-semibold uppercase tracking-[0.15em] text-neutral-500 mb-3">Work Email</label>
+                  <label htmlFor="finance-email" className="block text-[10px] font-semibold uppercase tracking-[0.15em] text-neutral-500 mb-3">Work Email</label>
                   <div
                     className={`border-b transition-colors duration-300 ${hoveredInput === 'email' ? 'border-white' : 'border-neutral-700'}`}
                   >
                     <input 
+                      id="finance-email"
                       type="email" 
                       onFocus={() => setHoveredInput('email')}
                       onBlur={() => setHoveredInput(null)}
@@ -237,11 +244,12 @@ export default function Contact() {
 
                 {/* Message Input */}
                 <div className="relative">
-                  <label className="block text-[10px] font-semibold uppercase tracking-[0.15em] text-neutral-500 mb-3">Inquiry Details</label>
+                  <label htmlFor="finance-message" className="block text-[10px] font-semibold uppercase tracking-[0.15em] text-neutral-500 mb-3">Inquiry Details</label>
                   <div
                     className={`border-b transition-colors duration-300 ${hoveredInput === 'message' ? 'border-white' : 'border-neutral-700'}`}
                   >
                     <textarea 
+                      id="finance-message"
                       onFocus={() => setHoveredInput('message')}
                       onBlur={() => setHoveredInput(null)}
                       rows="3"
