@@ -1,42 +1,29 @@
 import { useState, useEffect } from "react";
 import { motion, AnimatePresence } from "framer-motion";
-import { Plus, FileText, Briefcase, Search, Mic } from "lucide-react";
+import {
+  Plus,
+  FileText,
+  Briefcase,
+  Search,
+  Mic,
+} from "lucide-react";
+import { useNavigate } from "react-router-dom";
 
 export default function FAB({ scrollContainerRef }) {
   const [isOpen, setIsOpen] = useState(false);
   const [isVisible, setIsVisible] = useState(true);
 
-  const actions = [
-    {
-      label: "Create Portfolio",
-      icon: <FileText size={18} />,
-      onClick: () => console.log("Create Portfolio"),
-    },
-    {
-      label: "Upload Resume",
-      icon: <Briefcase size={18} />,
-      onClick: () => console.log("Upload Resume"),
-    },
-    {
-      label: "Search Jobs",
-      icon: <Search size={18} />,
-      onClick: () => console.log("Search Jobs"),
-    },
-    {
-      label: "Start Interview",
-      icon: <Mic size={18} />,
-      onClick: () => console.log("Start Interview"),
-    },
-  ];
+  const navigate = useNavigate();
 
   useEffect(() => {
     let lastScrollY = 0;
-    const mainContainer = scrollContainerRef?.current;
+
+    const container = scrollContainerRef?.current;
 
     const handleScroll = () => {
-      if (!mainContainer) return;
+      if (!container) return;
 
-      const currentScrollY = mainContainer.scrollTop;
+      const currentScrollY = container.scrollTop;
 
       setIsVisible(
         currentScrollY < lastScrollY || currentScrollY < 100
@@ -45,24 +32,23 @@ export default function FAB({ scrollContainerRef }) {
       lastScrollY = currentScrollY;
     };
 
-    mainContainer?.addEventListener("scroll", handleScroll);
+    const throttledScroll = () => {
+      requestAnimationFrame(handleScroll);
+    };
+
+    container?.addEventListener("scroll", throttledScroll);
 
     return () => {
-      mainContainer?.removeEventListener("scroll", handleScroll);
+      container?.removeEventListener(
+        "scroll",
+        throttledScroll
+      );
     };
   }, [scrollContainerRef]);
 
-  // Close menu when FAB becomes hidden
-  useEffect(() => {
-    if (!isVisible && isOpen) {
-      setIsOpen(false);
-    }
-  }, [isVisible, isOpen]);
-
-  // Escape key closes menu
   useEffect(() => {
     const handleKeyDown = (e) => {
-      if (e.key === "Escape" && isOpen) {
+      if (e.key === "Escape") {
         setIsOpen(false);
       }
     };
@@ -70,9 +56,35 @@ export default function FAB({ scrollContainerRef }) {
     document.addEventListener("keydown", handleKeyDown);
 
     return () => {
-      document.removeEventListener("keydown", handleKeyDown);
+      document.removeEventListener(
+        "keydown",
+        handleKeyDown
+      );
     };
-  }, [isOpen]);
+  }, []);
+
+  const actions = [
+    {
+      label: "Create Portfolio",
+      icon: <FileText size={18} />,
+      action: () => navigate("/profile"),
+    },
+    {
+      label: "Upload Resume",
+      icon: <Briefcase size={18} />,
+      action: () => navigate("/upload"),
+    },
+    {
+      label: "Search Jobs",
+      icon: <Search size={18} />,
+      action: () => navigate("/jobs"),
+    },
+    {
+      label: "Start Interview",
+      icon: <Mic size={18} />,
+      action: () => navigate("/interview-prep"),
+    },
+  ];
 
   return (
     <motion.div className="fixed bottom-6 right-6 z-50">
@@ -91,7 +103,9 @@ export default function FAB({ scrollContainerRef }) {
               aria-expanded={isOpen}
               className="p-4 bg-primary text-primary-foreground rounded-full shadow-xl hover:scale-110 transition-transform glow"
             >
-              <motion.div animate={{ rotate: isOpen ? 45 : 0 }}>
+              <motion.div
+                animate={{ rotate: isOpen ? 45 : 0 }}
+              >
                 <Plus size={24} />
               </motion.div>
             </motion.button>
@@ -102,21 +116,19 @@ export default function FAB({ scrollContainerRef }) {
                 animate={{ opacity: 1, y: 0 }}
                 className="flex flex-col gap-2 mb-2"
                 role="menu"
-                aria-label="Quick actions"
               >
-                {actions.map((action, index) => (
+                {actions.map((item, index) => (
                   <button
                     key={index}
-                    type="button"
+                    onClick={item.action}
                     role="menuitem"
                     tabIndex={0}
-                    aria-label={action.label}
-                    onClick={() => action.onClick?.()}
+                    aria-label={item.label}
                     className="flex items-center gap-3 px-4 py-2 glass border-border rounded-full shadow-lg hover:bg-primary/10 hover:text-primary transition-all-300 hover:-translate-y-1 whitespace-nowrap"
                   >
-                    {action.icon}
+                    {item.icon}
                     <span className="text-sm font-medium">
-                      {action.label}
+                      {item.label}
                     </span>
                   </button>
                 ))}

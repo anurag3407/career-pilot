@@ -8,7 +8,12 @@ export default function AppLayout({ children, className }) {
     const mainRef = useRef(null);
 
     return (
-        <div className={cn("flex h-screen bg-background overflow-hidden", className)}>
+        <div
+            className={cn(
+                "flex h-screen bg-background overflow-hidden",
+                className
+            )}
+        >
             <AppSidebar />
 
             {/* The main tag below is what the FAB component listens to for scrolling */}
