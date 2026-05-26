@@ -1,207 +1,229 @@
-import { useState, useMemo } from 'react'
-import { motion } from 'framer-motion'
+import React, { useState } from 'react'
+import { motion, AnimatePresence } from 'framer-motion'
+import { useNavigate } from 'react-router-dom'
 import { 
+  Github, 
   Search, 
-  Filter, 
+  MapPin, 
+  Building, 
+  Link as LinkIcon, 
   Star, 
   GitFork, 
-  Folder, 
-  ArrowUpDown
+  ArrowRight,
+  Loader2,
+  FileText
 } from 'lucide-react'
-
-const INITIAL_REPOSITORIES = [
-  { id: 1, name: 'ultimate-health', language: 'JavaScript', type: 'source', visibility: 'public', stars: 24, size: 1200, updatedAt: '2026-05-18T10:00:00Z', description: 'A health content delivery network application.' },
-  { id: 2, name: 'career-pilot', language: 'JavaScript', type: 'source', visibility: 'public', stars: 156, size: 4500, updatedAt: '2026-05-19T14:30:00Z', description: 'AI-powered resume optimizer and job application tracker.' },
-  { id: 3, name: 'react-framer-motion-demo', language: 'TypeScript', type: 'fork', visibility: 'public', stars: 5, size: 850, updatedAt: '2026-04-12T08:15:00Z', description: 'Forked repository containing animation prototypes.' },
-  { id: 4, name: 'secure-auth-service', language: 'Java', type: 'source', visibility: 'private', stars: 12, size: 3100, updatedAt: '2026-05-01T19:00:00Z', description: 'Internal token authentication microservice.' },
-  { id: 5, name: 'data-structures-practice', language: 'C++', type: 'source', visibility: 'public', stars: 42, size: 500, updatedAt: '2026-05-15T11:20:00Z', description: 'Competitive programming solutions and algorithms.' },
-  { id: 6, name: 'machine-learning-model', language: 'Python', type: 'source', visibility: 'public', stars: 89, size: 8200, updatedAt: '2026-05-10T16:45:00Z', description: 'Predictive analytics model built using scikit-learn and pandas.' },
-  { id: 7, name: 'portfolio-website', language: 'HTML', type: 'source', visibility: 'public', stars: 18, size: 400, updatedAt: '2026-05-14T22:10:00Z', description: 'Personal developer portfolio website built with HTML and CSS.' },
-  { id: 8, name: 'utility-style-library', language: 'CSS', type: 'fork', visibility: 'public', stars: 3, size: 950, updatedAt: '2026-03-25T07:30:00Z', description: 'Custom responsive grid and layout utility classes.' }
-]
+import { resumeApi } from '../services/api'
+import { toast } from 'react-hot-toast'
 
 export default function GitHubDashboard() {
-  const [repositories] = useState(INITIAL_REPOSITORIES)
-  const [searchTerm, setSearchTerm] = useState('')
-  const [selectedLanguage, setSelectedLanguage] = useState('All')
-  const [selectedType, setSelectedType] = useState('all') 
-  const [selectedVisibility, setSelectedVisibility] = useState('all') 
-  const [sortBy, setSortBy] = useState('stars') 
+  const navigate = useNavigate()
+  const [username, setUsername] = useState('')
+  const [isLoading, setIsLoading] = useState(false)
+  const [isImporting, setIsImporting] = useState(false)
+  const [profile, setProfile] = useState(null)
 
-  const languagesList = useMemo(() => {
-    const dynamicLangs = repositories.map(repo => repo.language).filter(Boolean)
-    const standardLangs = ['JavaScript', 'TypeScript', 'Python', 'Java', 'C++', 'HTML', 'CSS', 'Go', 'Ruby']
-    return ['All', ...new Set([...standardLangs, ...dynamicLangs])]
-  }, [repositories])
+  const handleSearch = async (e) => {
+    e.preventDefault()
+    if (!username.trim()) return
 
-  const filteredAndSortedRepos = useMemo(() => {
-    return repositories
-      .filter(repo => {
-        const matchesSearch = repo.name.toLowerCase().includes(searchTerm.toLowerCase())
-        const matchesLang = selectedLanguage === 'All' || repo.language === selectedLanguage
-        const matchesType = selectedType === 'all' || repo.type === selectedType
-        const matchesVisibility = selectedVisibility === 'all' || repo.visibility === selectedVisibility
+    try {
+      setIsLoading(true)
+      setProfile(null)
+      const response = await resumeApi.previewGitHub(username.trim())
+      setProfile(response.preview)
+    } catch (error) {
+      toast.error(error.message || 'Failed to fetch GitHub profile. Make sure the username exists.')
+    } finally {
+      setIsLoading(false)
+    }
+  }
 
-        return matchesSearch && matchesLang && matchesType && matchesVisibility
-      })
-      .sort((a, b) => {
-        if (sortBy === 'stars') return b.stars - a.stars
-        if (sortBy === 'updated') return new Date(b.updatedAt) - new Date(a.updatedAt)
-        if (sortBy === 'name') return a.name.localeCompare(b.name)
-        if (sortBy === 'size') return b.size - a.size
-        return 0
-      })
-  }, [repositories, searchTerm, selectedLanguage, selectedType, selectedVisibility, sortBy])
+  const handleImport = async () => {
+    if (!profile) return
+
+    try {
+      setIsImporting(true)
+      const response = await resumeApi.importGitHub(username.trim(), profile)
+      toast.success('GitHub profile imported as resume!')
+      navigate(`/enhance/${response.data.id}`)
+    } catch (error) {
+      toast.error(error.message || 'Failed to import GitHub profile')
+    } finally {
+      setIsImporting(false)
+    }
+  }
 
   return (
-    <div className="min-h-screen bg-background text-foreground p-6 md:p-10">
-      <div className="max-w-7xl mx-auto">
-        
-        <div className="mb-8">
-          <h1 className="text-3xl font-black tracking-tight mb-2 flex items-center gap-2">
-            <Folder className="w-8 h-8 text-primary" /> GitHub Repository Dashboard
+    <div className="min-h-screen pt-20 pb-12 bg-background relative overflow-hidden">
+      {/* Background glow elements */}
+      <div className="absolute top-0 right-0 w-[600px] h-[600px] bg-primary/5 rounded-full blur-3xl pointer-events-none translate-x-1/3 -translate-y-1/3" />
+      <div className="absolute bottom-0 left-0 w-[600px] h-[600px] bg-blue-500/5 rounded-full blur-3xl pointer-events-none -translate-x-1/3 translate-y-1/3" />
+
+      <div className="max-w-4xl mx-auto px-4 sm:px-6 lg:px-8 relative z-10">
+        <motion.div
+          initial={{ opacity: 0, y: 20 }}
+          animate={{ opacity: 1, y: 0 }}
+          className="text-center mb-10"
+        >
+          <div className="inline-flex items-center justify-center p-4 bg-[#24292e]/10 dark:bg-[#24292e]/50 rounded-2xl mb-6 ring-1 ring-border shadow-lg">
+            <Github className="w-10 h-10 text-foreground" />
+          </div>
+          <h1 className="text-4xl md:text-5xl font-bold bg-clip-text text-transparent bg-gradient-to-r from-foreground to-foreground/60 tracking-tight mb-4">
+            GitHub to Resume
           </h1>
-          <p className="text-muted-foreground text-sm font-medium">
-            Manage, filter, and track your synced GitHub repositories locally.
+          <p className="text-xl text-muted-foreground max-w-2xl mx-auto">
+            Instantly convert your GitHub profile and top repositories into a professional resume.
           </p>
-        </div>
+        </motion.div>
 
-        <div className="bg-card border border-border p-5 rounded-2xl shadow-sm mb-8 space-y-4">
-          <div className="grid grid-cols-1 md:grid-cols-4 gap-4">
-            
-            <div className="relative md:col-span-2">
-              <Search className="absolute left-3.5 top-1/2 -translate-y-1/2 w-4 h-4 text-muted-foreground" />
-              <input
-                type="text"
-                placeholder="Search repositories by name..."
-                value={searchTerm}
-                onChange={(e) => setSearchTerm(e.target.value)}
-                className="w-full pl-10 pr-4 py-2 bg-muted border border-border rounded-xl text-sm focus:outline-none focus:border-primary/50 transition-colors"
-              />
-            </div>
-
-            <div className="relative">
-              <ArrowUpDown className="absolute left-3 top-1/2 -translate-y-1/2 w-4 h-4 text-muted-foreground" />
-              <select
-                value={sortBy}
-                onChange={(e) => setSortBy(e.target.value)}
-                className="w-full pl-9 pr-4 py-2 bg-muted border border-border rounded-xl text-sm focus:outline-none appearance-none cursor-pointer"
-              >
-                <option value="stars">Sort: Stars (High to Low)</option>
-                <option value="updated">Sort: Recently Updated</option>
-                <option value="name">Sort: Name (A-Z)</option>
-                <option value="size">Sort: Size</option>
-              </select>
-            </div>
-
-            <div className="relative">
-              <Filter className="absolute left-3 top-1/2 -translate-y-1/2 w-4 h-4 text-muted-foreground" />
-              <select
-                value={selectedLanguage}
-                onChange={(e) => setSelectedLanguage(e.target.value)}
-                className="w-full pl-9 pr-4 py-2 bg-muted border border-border rounded-xl text-sm focus:outline-none appearance-none cursor-pointer"
-              >
-                {languagesList.map((lang) => (
-                  <option key={lang} value={lang}>Language: {lang}</option>
-                ))}
-              </select>
-            </div>
+        {/* Search Bar */}
+        <motion.form
+          initial={{ opacity: 0, y: 20 }}
+          animate={{ opacity: 1, y: 0 }}
+          transition={{ delay: 0.1 }}
+          onSubmit={handleSearch}
+          className="relative max-w-xl mx-auto mb-12"
+        >
+          <div className="relative flex items-center">
+            <Search className="absolute left-4 w-5 h-5 text-muted-foreground" />
+            <input
+              type="text"
+              placeholder="Enter GitHub username..."
+              value={username}
+              onChange={(e) => setUsername(e.target.value)}
+              className="w-full pl-12 pr-32 py-4 bg-card/50 backdrop-blur-xl border border-border rounded-full text-lg shadow-xl focus:outline-none focus:ring-2 focus:ring-primary/50 transition-all"
+            />
+            <button
+              type="submit"
+              disabled={isLoading || !username.trim()}
+              className="absolute right-2 px-6 py-2.5 bg-primary text-primary-foreground rounded-full font-medium hover:bg-primary/90 disabled:opacity-50 disabled:cursor-not-allowed transition-colors"
+            >
+              {isLoading ? <Loader2 className="w-5 h-5 animate-spin" /> : 'Fetch'}
+            </button>
           </div>
+        </motion.form>
 
-          <div className="flex flex-wrap gap-6 text-xs font-semibold pt-2 border-t border-border/40">
-            <div className="flex items-center gap-2">
-              <span className="text-muted-foreground">Type:</span>
-              {['all', 'source', 'fork'].map((t) => (
-                <button
-                  key={t}
-                  onClick={() => setSelectedType(t)}
-                  className={`capitalize px-2.5 py-1 rounded-md border transition-all ${
-                    selectedType === t 
-                      ? 'bg-primary/10 text-primary border-primary/20' 
-                      : 'border-transparent text-muted-foreground hover:bg-muted'
-                  }`}
-                >
-                  {t}
-                </button>
-              ))}
-            </div>
-
-            <div className="flex items-center gap-2">
-              <span className="text-muted-foreground">Visibility:</span>
-              {['all', 'public', 'private'].map((v) => (
-                <button
-                  key={v}
-                  onClick={() => setSelectedVisibility(v)}
-                  className={`capitalize px-2.5 py-1 rounded-md border transition-all ${
-                    selectedVisibility === v 
-                      ? 'bg-primary/10 text-primary border-primary/20' 
-                      : 'border-transparent text-muted-foreground hover:bg-muted'
-                  }`}
-                >
-                  {v}
-                </button>
-              ))}
-            </div>
-          </div>
-        </div>
-
-        {filteredAndSortedRepos.length === 0 ? (
-          <div className="text-center py-16 border border-dashed border-border rounded-2xl bg-card/40">
-            <p className="text-muted-foreground font-medium text-sm">No repositories found matching your filters.</p>
-          </div>
-        ) : (
-          <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-5">
-            {filteredAndSortedRepos.map((repo) => (
-              <motion.div
-                key={repo.id}
-                layout
-                initial={{ opacity: 0, scale: 0.95 }}
-                animate={{ opacity: 1, scale: 1 }}
-                className="p-5 bg-card border border-border rounded-2xl flex flex-col justify-between hover:border-primary/30 transition-all shadow-sm group relative overflow-hidden"
-              >
-                <div>
-                  <div className="flex justify-between items-start mb-3">
-                    <h3 className="font-bold text-base tracking-tight group-hover:text-primary transition-colors line-clamp-1">
-                      {repo.name}
-                    </h3>
-                    <span className={`text-[10px] uppercase font-black tracking-widest px-2 py-0.5 rounded border ${
-                      repo.visibility === 'public' 
-                        ? 'bg-emerald-500/10 text-emerald-500 border-emerald-500/20' 
-                        : 'bg-amber-500/10 text-amber-500 border-amber-500/20'
-                    }`}>
-                      {repo.visibility}
-                    </span>
-                  </div>
+        <AnimatePresence mode="wait">
+          {profile && (
+            <motion.div
+              key="profile"
+              initial={{ opacity: 0, y: 20 }}
+              animate={{ opacity: 1, y: 0 }}
+              exit={{ opacity: 0, scale: 0.95 }}
+              className="bg-card/50 backdrop-blur-xl border border-white/10 rounded-3xl overflow-hidden shadow-2xl relative"
+            >
+              {/* Profile Header */}
+              <div className="p-8 md:p-10 border-b border-white/5 flex flex-col md:flex-row items-center md:items-start gap-8">
+                <img 
+                  src={profile.avatar_url} 
+                  alt={profile.name} 
+                  className="w-32 h-32 rounded-full border-4 border-background shadow-xl"
+                />
+                <div className="flex-1 text-center md:text-left">
+                  <h2 className="text-3xl font-bold mb-1">{profile.name}</h2>
+                  <a href={profile.url} target="_blank" rel="noopener noreferrer" className="text-primary hover:underline text-lg mb-4 inline-block">
+                    @{profile.username}
+                  </a>
+                  {profile.bio && <p className="text-muted-foreground mb-4 text-base">{profile.bio}</p>}
                   
-                  <p className="text-muted-foreground text-xs font-medium line-clamp-2 mb-5 leading-relaxed">
-                    {repo.description || 'No description provided.'}
-                  </p>
-                </div>
-
-                <div className="flex items-center justify-between text-xs font-semibold text-muted-foreground border-t border-border/60 pt-3 mt-2">
-                  <div className="flex items-center gap-4">
-                    {repo.language && (
-                      <span className="flex items-center gap-1">
-                        <span className="w-2.5 h-2.5 rounded-full bg-primary/60 inline-block" />
-                        {repo.language}
-                      </span>
+                  <div className="flex flex-wrap items-center justify-center md:justify-start gap-4 text-sm text-muted-foreground">
+                    {profile.company && (
+                      <span className="flex items-center gap-1.5"><Building className="w-4 h-4" /> {profile.company}</span>
                     )}
-                    <span className="flex items-center gap-1">
-                      <Star className="w-3.5 h-3.5 text-amber-500 fill-amber-500" /> {repo.stars}
+                    {profile.location && (
+                      <span className="flex items-center gap-1.5"><MapPin className="w-4 h-4" /> {profile.location}</span>
+                    )}
+                    {profile.blog && (
+                      <a href={profile.blog.startsWith('http') ? profile.blog : `https://${profile.blog}`} target="_blank" rel="noopener noreferrer" className="flex items-center gap-1.5 hover:text-primary transition-colors">
+                        <LinkIcon className="w-4 h-4" /> Portfolio
+                      </a>
+                    )}
+                    <span className="flex items-center gap-1.5 font-medium px-2.5 py-1 bg-secondary rounded-md text-secondary-foreground">
+                      {profile.followers} Followers
                     </span>
-                    {repo.type === 'fork' && (
-                      <GitFork className="w-3.5 h-3.5 text-primary" />
-                    )}
+                    <span className="flex items-center gap-1.5 font-medium px-2.5 py-1 bg-secondary rounded-md text-secondary-foreground">
+                      {profile.public_repos} Repositories
+                    </span>
                   </div>
-                  <span className="text-[11px] font-medium">
-                    {new Date(repo.updatedAt).toLocaleDateString('en-US', { month: 'short', day: 'numeric' })}
-                  </span>
                 </div>
-              </motion.div>
-            ))}
-          </div>
-        )}
+              </div>
 
+              <div className="p-8 md:p-10 bg-background/30 space-y-8">
+                {/* Languages */}
+                {profile.topLanguages?.length > 0 && (
+                  <div>
+                    <h3 className="text-lg font-semibold mb-4 flex items-center gap-2">
+                      <Star className="w-5 h-5 text-yellow-500" /> Top Technologies
+                    </h3>
+                    <div className="flex flex-wrap gap-2">
+                      {profile.topLanguages.map(lang => (
+                        <span key={lang} className="px-3 py-1.5 bg-primary/10 text-primary border border-primary/20 rounded-lg text-sm font-medium">
+                          {lang}
+                        </span>
+                      ))}
+                    </div>
+                  </div>
+                )}
+
+                {/* Repositories */}
+                {profile.topRepositories?.length > 0 && (
+                  <div>
+                    <h3 className="text-lg font-semibold mb-4 flex items-center gap-2">
+                      <GitFork className="w-5 h-5 text-blue-400" /> Top Repositories
+                    </h3>
+                    <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
+                      {profile.topRepositories.map(repo => (
+                        <a 
+                          key={repo.name} 
+                          href={repo.url} 
+                          target="_blank" 
+                          rel="noopener noreferrer"
+                          className="block p-4 rounded-xl border border-border bg-card hover:border-primary/50 transition-colors group"
+                        >
+                          <div className="flex items-start justify-between mb-2">
+                            <h4 className="font-semibold group-hover:text-primary transition-colors line-clamp-1">{repo.name}</h4>
+                            <span className="flex items-center gap-1 text-xs text-muted-foreground bg-muted px-2 py-0.5 rounded">
+                              <Star className="w-3 h-3" /> {repo.stars}
+                            </span>
+                          </div>
+                          {repo.description && (
+                            <p className="text-sm text-muted-foreground line-clamp-2 mb-3 h-10">
+                              {repo.description}
+                            </p>
+                          )}
+                          {repo.language && (
+                            <span className="text-xs font-medium text-primary">
+                              {repo.language}
+                            </span>
+                          )}
+                        </a>
+                      ))}
+                    </div>
+                  </div>
+                )}
+
+                <div className="pt-6 border-t border-white/10 flex justify-end">
+                  <button
+                    onClick={handleImport}
+                    disabled={isImporting}
+                    className="px-8 py-3 bg-primary text-primary-foreground rounded-full font-medium hover:bg-primary/90 hover:scale-105 active:scale-95 transition-all flex items-center gap-2 shadow-lg shadow-primary/25 disabled:opacity-50 disabled:pointer-events-none"
+                  >
+                    {isImporting ? (
+                      <>
+                        <Loader2 className="w-5 h-5 animate-spin" /> Importing...
+                      </>
+                    ) : (
+                      <>
+                        <FileText className="w-5 h-5" /> Import as Resume <ArrowRight className="w-4 h-4 ml-1" />
+                      </>
+                    )}
+                  </button>
+                </div>
+              </div>
+            </motion.div>
+          )}
+        </AnimatePresence>
       </div>
     </div>
   )

@@ -1,5 +1,6 @@
 import express from 'express';
 import { verifyToken } from '../middleware/auth.js';
+import { extractAIProvider } from '../middleware/aiKey.js';
 import { asyncHandler, ApiError } from '../middleware/errorHandler.js';
 import Interview from '../models/Interview.model.js';
 import { generateInterviewQuestions, analyzeAnswer, generateOverallFeedback } from '../services/interviewService.js';
@@ -9,7 +10,7 @@ import { startInterviewSchema, submitAnswerSchema } from '../schemas/interview.s
 
 const router = express.Router();
 
-router.post('/start', verifyToken, aiRateLimiter, validate(startInterviewSchema), asyncHandler(async (req, res) => {
+router.post('/start', verifyToken, extractAIProvider, aiRateLimiter, validate(startInterviewSchema), asyncHandler(async (req, res) => {
     const { jobRole, industry, experienceLevel, questionCount, resumeText } = req.body;
 
     if (!jobRole || !industry || !experienceLevel) {
@@ -23,7 +24,7 @@ router.post('/start', verifyToken, aiRateLimiter, validate(startInterviewSchema)
         experienceLevel,
         questionCount: count,
         resumeText: resumeText || null
-    });
+    }, req.aiProvider);
 
     const interview = new Interview({
         odId: req.user.uid,
@@ -42,11 +43,13 @@ router.post('/start', verifyToken, aiRateLimiter, validate(startInterviewSchema)
         data: {
             interviewId: interview._id,
             questions: interview.questions
-        }
+        },
+        provider: req.aiProvider.providerName,
+        providerSource: req.aiProviderSource
     });
 }));
 
-router.post('/:id/answer', verifyToken, aiRateLimiter, validate(submitAnswerSchema), asyncHandler(async (req, res) => {
+router.post('/:id/answer', verifyToken, extractAIProvider, aiRateLimiter, validate(submitAnswerSchema), asyncHandler(async (req, res) => {
     const { id } = req.params;
     const { questionId, transcript, duration, expressionMetrics } = req.body;
 
@@ -69,7 +72,7 @@ router.post('/:id/answer', verifyToken, aiRateLimiter, validate(submitAnswerSche
         throw new ApiError(400, 'Question already answered');
     }
 
-    const analysis = await analyzeAnswer(question.question, transcript, duration);
+    const analysis = await analyzeAnswer(question.question, transcript, duration, req.aiProvider);
 
     const answer = {
         questionId,
@@ -96,11 +99,13 @@ router.post('/:id/answer', verifyToken, aiRateLimiter, validate(submitAnswerSche
             analysis,
             answeredCount: interview.answers.length,
             totalQuestions: interview.questions.length
-        }
+        },
+        provider: req.aiProvider.providerName,
+        providerSource: req.aiProviderSource
     });
 }));
 
-router.post('/:id/complete', verifyToken, aiRateLimiter, asyncHandler(async (req, res) => {
+router.post('/:id/complete', verifyToken, extractAIProvider, aiRateLimiter, asyncHandler(async (req, res) => {
     const { id } = req.params;
 
     const interview = await Interview.findOne({ _id: id, odId: req.user.uid });
@@ -112,7 +117,7 @@ router.post('/:id/complete', verifyToken, aiRateLimiter, asyncHandler(async (req
         throw new ApiError(400, 'Interview already completed');
     }
 
-    const { overallScore, overallFeedback } = await generateOverallFeedback(interview);
+    const { overallScore, overallFeedback } = await generateOverallFeedback(interview, req.aiProvider);
 
     interview.status = 'completed';
     interview.completedAt = new Date();
@@ -132,7 +137,9 @@ router.post('/:id/complete', verifyToken, aiRateLimiter, asyncHandler(async (req
             totalQuestions: interview.questions.length,
             duration: interview.duration,
             answers: interview.answers
-        }
+        },
+        provider: req.aiProvider.providerName,
+        providerSource: req.aiProviderSource
     });
 }));
 

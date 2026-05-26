@@ -21,8 +21,7 @@ export default function LinkedInCallback() {
 
     useEffect(() => {
         const handleCallback = async () => {
-            const token = searchParams.get('token')
-            const isNew = searchParams.get('isNew') === 'true'
+            const code = searchParams.get('code')
             const error = searchParams.get('error')
 
             if (error) {
@@ -38,7 +37,7 @@ export default function LinkedInCallback() {
                 return
             }
 
-            if(!token) {
+            if(!code) {
                 toast.error('Something went wrong. Please try again.')
                 navigate('/login')
                 return
@@ -46,7 +45,16 @@ export default function LinkedInCallback() {
 
             try {
                 setStatus('Completing sign-in...')
-                await signInWithCustomToken(auth, token)
+                // Exchange the one-time code for the Firebase custom token (never exposed in URL)
+                const apiUrl = import.meta.env.VITE_API_URL || 'http://localhost:5001'
+                const exchangeRes = await fetch(`${apiUrl}/api/auth/linkedin/token/${code}`)
+                const exchangeData = await exchangeRes.json()
+
+                if (!exchangeRes.ok || !exchangeData.token) {
+                    throw new Error(exchangeData.error || 'Failed to retrieve token')
+                }
+
+                await signInWithCustomToken(auth, exchangeData.token)
                 
                 // Fetch two-factor status to prevent 2FA bypass
                 const tfaStatus = await twoFactorApi.getStatus()
@@ -115,7 +123,7 @@ export default function LinkedInCallback() {
           
           <Navbar />
 
-          <div className="max-w-md mx-auto pt-32 px-4 relative z-10">
+          <div className="max-w-md mx-auto pt-24 md:pt-32 px-4 relative z-10">
             <Card className="border-border/50 bg-card/60 backdrop-blur-xl">
               <div className="flex flex-col items-center mb-6">
                 <div className="p-3 rounded-full bg-primary/10 border border-primary/20 mb-4">

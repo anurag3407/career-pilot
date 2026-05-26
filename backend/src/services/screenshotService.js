@@ -1,4 +1,4 @@
-const puppeteer = require("puppeteer-core");
+import puppeteer from 'puppeteer';
 
 async function generateScreenshot(htmlContent, viewport) {
   let browser;
@@ -34,6 +34,4 @@ async function generateScreenshot(htmlContent, viewport) {
   }
 }
 
-module.exports = {
-  generateScreenshot,
-};
+export { generateScreenshot };

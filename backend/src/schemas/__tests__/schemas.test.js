@@ -48,6 +48,9 @@ import {
   createResumeSchema,
   updateResumeSchema,
   downloadResumeQuerySchema,
+  createResumeVersionSchema,
+  updateResumeVersionSchema,
+  createAtsHistorySchema,
 } from '../resume.schema.js';
 
 describe('resume.schema — createResumeSchema', () => {
@@ -99,6 +102,83 @@ describe('resume.schema — downloadResumeQuerySchema', () => {
     assert.ok(!result.success);
   });
 });
+
+describe('resume.schema — createResumeVersionSchema', () => {
+  test('accepts valid body', () => {
+    const result = createResumeVersionSchema.safeParse({
+      title: 'v2',
+      originalText: 'hello content',
+      jobRole: 'Frontend Dev',
+      atsScore: 85,
+      tags: ['React', 'CSS']
+    });
+    assert.ok(result.success);
+  });
+
+  test('rejects empty originalText', () => {
+    const result = createResumeVersionSchema.safeParse({
+      originalText: '',
+    });
+    assert.ok(!result.success);
+  });
+});
+
+describe('resume.schema — updateResumeVersionSchema', () => {
+  test('accepts valid body', () => {
+    const result = updateResumeVersionSchema.safeParse({
+      title: 'v2 - updated',
+      tags: ['Frontend', 'Vite']
+    });
+    assert.ok(result.success);
+  });
+
+  test('rejects empty payload', () => {
+    const result = updateResumeVersionSchema.safeParse({});
+    assert.ok(!result.success);
+  });
+});
+
+describe('resume.schema — createAtsHistorySchema', () => {
+  test('accepts valid body', () => {
+    const result = createAtsHistorySchema.safeParse({
+      jobRole: 'SWE',
+      atsScore: 90,
+      scoreBreakdown: {
+        keywordMatch: 80,
+        formatting: 95
+      }
+    });
+    assert.ok(result.success);
+  });
+
+  test('rejects missing jobRole', () => {
+    const result = createAtsHistorySchema.safeParse({
+      atsScore: 90
+    });
+    assert.ok(!result.success);
+  });
+
+  test('rejects out of bounds breakdown scores', () => {
+    const result = createAtsHistorySchema.safeParse({
+      jobRole: 'SWE',
+      atsScore: 90,
+      scoreBreakdown: {
+        keywordMatch: 150,
+      }
+    });
+    assert.ok(!result.success);
+  });
+
+  test('rejects negative improvements count', () => {
+    const result = createAtsHistorySchema.safeParse({
+      jobRole: 'SWE',
+      atsScore: 90,
+      improvementsCount: -1
+    });
+    assert.ok(!result.success);
+  });
+});
+
 
 // ─── Enhance ─────────────────────────────────────────────────────────────────
 import {

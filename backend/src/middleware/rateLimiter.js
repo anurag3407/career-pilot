@@ -26,7 +26,7 @@ class RedisStore {
 
     const remainingTtl = ttl < 0 ? this.windowSecs : ttl;
     return {
-      totalHits: hits,
+      totalHits: Number(hits) || 1,
       resetTime: new Date(Date.now() + remainingTtl * 1000)
     };
   }
