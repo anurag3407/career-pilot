@@ -1,29 +1,47 @@
-import React from 'react';
+import React, { useState, useRef } from 'react';
 import data from '../../../../data/dummy_data.json';
+import Toolbar from './Toolbar';
+import LeftSidebar from './LeftSidebar';
+import RightSidebar from './RightSidebar';
+import Canvas from './Canvas';
 
 /**
  * Figma Canvas Portfolio Template
  * Category: Famous UI Inspired
- * Description: Figma-like infinite canvas with draggable project frames. Toolbar at top, layers panel on left. Projects are design frames scattered on the canvas.
  */
 export default function FigmaCanvas() {
+  const [activeFrame, setActiveFrame] = useState('hero');
+  const canvasRef = useRef(null);
+
+  const handleFrameClick = (frameId) => {
+    setActiveFrame(frameId);
+    if (canvasRef.current) {
+      canvasRef.current.panToFrame(frameId);
+    }
+  };
+
   return (
-    <div className="min-h-screen bg-gray-950 text-white flex flex-col items-center justify-center p-8 font-sans">
-      <div className="max-w-3xl w-full text-center">
-        <h1 className="text-5xl md:text-7xl font-bold mb-4 bg-gradient-to-r from-cyan-400 to-purple-500 bg-clip-text text-transparent">
-          {data.personal.name}
-        </h1>
-        <p className="text-xl md:text-2xl text-gray-400 mb-8">{data.personal.title}</p>
-        <div className="p-8 border-2 border-dashed border-cyan-500/40 rounded-2xl bg-gray-900/50 backdrop-blur-sm">
-          <span className="inline-block px-3 py-1 rounded-full bg-cyan-500/20 text-cyan-400 text-xs font-bold uppercase tracking-widest mb-4">
-            Famous UI Inspired
-          </span>
-          <h2 className="text-2xl font-bold text-gray-200 mb-3">Figma Canvas Template</h2>
-          <p className="text-gray-400 mb-6 leading-relaxed">
-            Figma-like infinite canvas with draggable project frames. Toolbar at top, layers panel on left. Projects are design frames scattered on the canvas.
-          </p>
-          <p className="text-cyan-400 font-semibold">Open an issue to contribute and build this template!</p>
-        </div>
+    <div className="h-full w-full flex flex-col bg-[#1E1E1E] text-white font-sans overflow-hidden">
+      <Toolbar userName={data.personal.name} />
+      
+      <div className="flex flex-1 overflow-hidden relative">
+        {/* Drawers for mobile could be added here later. Currently hidden on small screens */}
+        <LeftSidebar 
+          activeFrame={activeFrame} 
+          onFrameClick={handleFrameClick} 
+        />
+        
+        <Canvas 
+          ref={canvasRef}
+          data={data} 
+          activeFrame={activeFrame} 
+          onFrameClick={handleFrameClick}
+        />
+        
+        <RightSidebar 
+          activeFrame={activeFrame} 
+          data={data} 
+        />
       </div>
     </div>
   );

@@ -9,6 +9,7 @@ import CulinaryAbout from "../components/portfolio/templates/Culinary_Restaurant
 import TechStartupHero from "../components/portfolio/templates/Tech_Startup/Hero";
 import GeometricShapesAbout from "../components/portfolio/templates/Geometric_Shapes/About";
 import Navbar from '../components/Navbar'
+import FigmaCanvas from "../components/portfolio/templates/Figma_Canvas";
 
 /* ─────────────────────────────────────────────────────────
    Custom FilterSelect
@@ -241,6 +242,18 @@ export default function TemplateGallery() {
       image: "/template-previews/Creative-Dashboard.png",
       createdAt: "2026-05-15",
     },
+    {
+      id: 4,
+      title: "Figma Canvas",
+      category: "Portfolio",
+      colorScheme: "Dark",
+      layout: "Grid",
+      author: "Jordan Mitchell",
+      views: 5400,
+      rating: 5.0,
+      image: "https://images.unsplash.com/photo-1611162617474-5b21e879e113?auto=format&fit=crop&q=80&w=600&h=400",
+      createdAt: "2026-05-26",
+    },
   ];
 
   const [category, setCategory] = useState("All");
@@ -412,6 +425,18 @@ export default function TemplateGallery() {
         </div>
         <div className="overflow-hidden rounded-2xl border border-cyan-500/20">
           <TechStartupHero />
+        </div>
+      </div>
+
+      <div className="mt-12">
+        <div className="mb-4 flex items-center gap-3 px-1">
+          <span className="rounded-full bg-blue-500/20 px-3 py-1 text-xs font-bold uppercase tracking-widest text-blue-400 border border-blue-500/30">
+            Preview
+          </span>
+          <h2 className="text-lg font-semibold text-foreground/70">Figma Canvas Theme — Complete Template</h2>
+        </div>
+        <div className="overflow-hidden rounded-2xl border border-border h-[800px] relative">
+          <FigmaCanvas />
         </div>
       </div>
     </div>
