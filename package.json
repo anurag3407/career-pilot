@@ -1,5 +1,4 @@
 {
-<<<<<<< HEAD
   "name": "careerpilot",
   "private": true,
   "version": "1.0.0",
@@ -41,7 +40,8 @@
     "socket.io-client": "^4.2.0",
     "tailwind-merge": "^3.4.0",
     "tailwindcss": "^4.1.18",
-    "zustand": "^5.0.2"
+    "zustand": "^5.0.2",
+    "puppeteer-core": "^25.0.4"
   },
   "devDependencies": {
     "@eslint/js": "^9.39.1",
@@ -57,11 +57,5 @@
     "jsdom": "^29.1.1",
     "vite": "^7.2.4",
     "vitest": "^4.1.7"
-=======
-  "dependencies": {
-    "framer-motion": "^12.39.0",
-    "lucide-react": "^1.16.0",
-    "puppeteer-core": "^25.0.4"
->>>>>>> d9cec355c02ba7adf33119c9737350dda1bf2f81
   }
 }

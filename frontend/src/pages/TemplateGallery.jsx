@@ -14,6 +14,7 @@ import RetroProjects from "../components/portfolio/templates/2D_Retro_8bit/Proje
 import FantasyRPGProjects from "../components/portfolio/templates/Fantasy_RPG/Projects";
 import Navbar from '../components/Navbar'
 import GraffitiHero from "../components/portfolio/templates/Graffiti_StreetArt/Hero";
+import FigmaCanvas from "../components/portfolio/templates/Figma_Canvas/index";
 
 
 function FilterSelect({ value, onChange, options, className = "" }) {
@@ -249,6 +250,7 @@ export default function TemplateGallery() {
   const [selectedTheme, setSelectedTheme] = useState("minimal");
   const [isDeployModalOpen, setIsDeployModalOpen] = useState(false);
   const [selectedPortfolioTitle, setSelectedPortfolioTitle] = useState("");
+  const [loadFigmaPreview, setLoadFigmaPreview] = useState(false);
 
   const CATEGORY_OPTIONS = [
     { value: "All", label: "All Categories" },
@@ -457,6 +459,36 @@ export default function TemplateGallery() {
         </div>
         <div className="overflow-hidden rounded-2xl border border-border">
           <GraffitiHero />
+        </div>
+      </div>
+
+      <div className="mt-12">
+        <div className="mb-4 flex items-center gap-3 px-1">
+          <span className="rounded-full bg-blue-500/20 px-3 py-1 text-xs font-bold uppercase tracking-widest text-blue-400 border border-blue-500/30">
+            Preview
+          </span>
+          <h2 className="text-lg font-semibold text-foreground/70">
+            Figma Canvas Theme — Full Interactive Template
+          </h2>
+        </div>
+        <div className="overflow-hidden rounded-2xl border border-border h-[800px] relative flex items-center justify-center bg-muted/30">
+          {!loadFigmaPreview ? (
+            <div className="text-center p-8 z-10 flex flex-col items-center">
+              <div className="w-16 h-16 bg-blue-500/20 rounded-2xl flex items-center justify-center mb-4 border border-blue-500/30">
+                 <svg width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round" className="text-blue-500"><path d="M5 5.5A3.5 3.5 0 0 1 8.5 2H12v7H8.5A3.5 3.5 0 0 1 5 5.5z"></path><path d="M12 2h3.5a3.5 3.5 0 1 1 0 7H12V2z"></path><path d="M12 12.5a3.5 3.5 0 1 1 7 0 3.5 3.5 0 1 1-7 0z"></path><path d="M5 19.5A3.5 3.5 0 0 1 8.5 16H12v3.5a3.5 3.5 0 1 1-7 0z"></path><path d="M5 12.5A3.5 3.5 0 0 1 8.5 9H12v7H8.5A3.5 3.5 0 0 1 5 12.5z"></path></svg>
+              </div>
+              <h3 className="text-xl font-bold mb-2">Figma Canvas Experience</h3>
+              <p className="text-muted-foreground mb-6 max-w-md">This is a heavy, fully interactive infinite canvas replicating the Figma workspace. Click below to load it.</p>
+              <button 
+                onClick={() => setLoadFigmaPreview(true)}
+                className="bg-blue-600 hover:bg-blue-700 text-white font-medium py-2.5 px-6 rounded-lg transition-colors shadow-lg shadow-blue-500/25"
+              >
+                Load Interactive Preview
+              </button>
+            </div>
+          ) : (
+            <FigmaCanvas />
+          )}
         </div>
       </div>
 
