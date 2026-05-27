@@ -38,7 +38,7 @@ export default function PostEditor({ onClose, onSubmit, editPost = null }) {
   const [error, setError] = useState('');
   const [showScheduler, setShowScheduler] = useState(false);
   const [scheduledAt, setScheduledAt] = useState(null);
-  const [showPoll, setShowPoll] = useState(false);
+  const [showPoll, setShowPoll] = useState(!!editPost?.poll);
 
   // Attachment state — store File object + local preview URL
   const [imageFile, setImageFile] = useState(null);       // File object
@@ -99,8 +99,8 @@ export default function PostEditor({ onClose, onSubmit, editPost = null }) {
 
   const removeDoc = useCallback(() => setDocFile(null), []);
 
-  const [pollQuestion, setPollQuestion] = useState('');
-  const [pollOptions, setPollOptions] = useState(['', '']);
+  const [pollQuestion, setPollQuestion] = useState(editPost?.poll?.question || '');
+  const [pollOptions, setPollOptions] = useState(editPost?.poll?.options?.length ? editPost.poll.options : ['', '']);
 
   // ---- Build & submit ----
   const buildPostData = () => {
@@ -144,6 +144,16 @@ export default function PostEditor({ onClose, onSubmit, editPost = null }) {
   const handleSubmit = async (e) => {
     e.preventDefault();
     if (!title.trim() || !content.trim()) return;
+
+    if (showPoll) {
+      const normalizedOptions = pollOptions.map(option => option.trim()).filter(Boolean);
+      const trimmedQuestion = pollQuestion.trim();
+      if (trimmedQuestion.length === 0 || normalizedOptions.length < 2) {
+        setError('Please enter a poll question and at least two options, or remove the poll.');
+        return;
+      }
+    }
+
     setLoading(true);
     setError('');
     try {
