@@ -124,7 +124,7 @@ export default function MessageBubble({ message, isOwn, showAvatar, channelId, o
     >
       {/* Avatar */}
       {showAvatar ? (
-        <div className="w-8 h-8 rounded-full bg-gradient-to-br from-primary to-secondary flex items-center justify-center text-primary-foreground text-xs font-medium flex-shrink-0">
+        <div className="w-8 h-8 rounded-full bg-gradient-to-br from-primary to-secondary flex items-center justify-center text-primary-foreground text-xs font-medium shrink-0">
           {message.sender.avatar ? (
             <img 
               src={message.sender.avatar} 
@@ -136,7 +136,7 @@ export default function MessageBubble({ message, isOwn, showAvatar, channelId, o
           )}
         </div>
       ) : (
-        <div className="w-8 flex-shrink-0" />
+        <div className="w-8 shrink-0" />
       )}
 
       {/* Message Content */}

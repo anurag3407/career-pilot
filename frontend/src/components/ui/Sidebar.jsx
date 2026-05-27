@@ -104,7 +104,7 @@ export const DesktopSidebar = ({
     return (
         <motion.div
             className={cn(
-                "h-full px-3 py-4 hidden md:flex md:flex-col bg-card border-r border-border w-[280px] flex-shrink-0 overflow-x-hidden",
+                "h-full px-3 py-4 hidden md:flex md:flex-col bg-card border-r border-border w-[280px] shrink-0 overflow-x-hidden",
                 className
             )}
             animate={{
@@ -219,7 +219,7 @@ export const SidebarLink = ({
             )}
             {...props}
         >
-            <div className="flex-shrink-0">
+            <div className="shrink-0">
                 {link.icon}
             </div>
             <motion.span
