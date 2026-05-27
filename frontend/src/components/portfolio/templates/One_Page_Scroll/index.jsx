@@ -30,21 +30,48 @@
     const [wi, setWi] = useState(0);
     const [ci, setCi] = useState(0);
     const [deleting, setDeleting] = useState(false);
+
+    const pauseTimeoutRef = useRef(null);
+
     useEffect(() => {
       const word = words[wi];
+
       const timeout = setTimeout(() => {
         if (!deleting) {
           setText(word.slice(0, ci + 1));
-          if (ci + 1 === word.length) setTimeout(() => setDeleting(true), 1200);
-          else setCi((c) => c + 1);
+
+          if (ci + 1 === word.length) {
+            pauseTimeoutRef.current = setTimeout(() => {
+              setDeleting(true);
+            }, 1200);
+          } else {
+            setCi((c) => c + 1);
+          }
+
         } else {
           setText(word.slice(0, ci - 1));
-          if (ci - 1 === 0) { setDeleting(false); setWi((w) => (w + 1) % words.length); setCi(0); }
-          else setCi((c) => c - 1);
+
+          if (ci - 1 === 0) {
+            setDeleting(false);
+            setWi((w) => (w + 1) % words.length);
+            setCi(0);
+          } else {
+            setCi((c) => c - 1);
+          }
         }
       }, deleting ? 50 : 100);
-      return () => clearTimeout(timeout);
+
+      return () => {
+        clearTimeout(timeout);
+
+        if (pauseTimeoutRef.current) {
+          clearTimeout(pauseTimeoutRef.current);
+          pauseTimeoutRef.current = null; // ✅ important cleanup
+        }
+      };
+
     }, [text, deleting, ci, wi, words]);
+
     return text;
   }
 
