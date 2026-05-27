@@ -65,6 +65,7 @@ import CareerGrowthHub from './pages/hubs/CareerGrowthHub';
 import CommunityHub from './pages/hubs/CommunityHub';
 const GitHubDashboard = lazy(() => import('./pages/GitHubDashboard'));
 import ScrollToTop from "./components/ScrollToTop";
+import TestSocialLinks from './pages/TestSocialLinks';
 
 function ProtectedRoute({ children }) {
   const { user, loading } = useAuth();
@@ -265,6 +266,8 @@ main
           <Route path="messages" element={<FellowshipMessages />} />
           <Route path="messages/:roomId" element={<FellowshipChat />} />
         </Route>
+
+        <Route path="/test-social-links" element={<TestSocialLinks />} />
 
         {/* Catch-All Route */}
         <Route path="*" element={<NotFound />} />

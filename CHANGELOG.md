@@ -1,3 +1,58 @@
+# [1.51.0](https://github.com/anurag3407/career-pilot/compare/v1.50.0...v1.51.0) (2026-05-27)
+
+
+### Bug Fixes
+
+* align testimonial ratings with UI screenshot ([bb6c4fa](https://github.com/anurag3407/career-pilot/commit/bb6c4fa3bb8191ee6cbdc5cddeae369c8259a126))
+
+
+### Features
+
+* implement folded testimonials section for Origami Paper theme ([a5e23ee](https://github.com/anurag3407/career-pilot/commit/a5e23ee11399775a2d3277972ba04234387703e8))
+
+# [1.50.0](https://github.com/anurag3407/career-pilot/compare/v1.49.0...v1.50.0) (2026-05-27)
+
+
+### Bug Fixes
+
+* address CodeRabbit AI suggestions and improve data fallbacks ([517bf53](https://github.com/anurag3407/career-pilot/commit/517bf539cb95c4f062c9100b9f9073e2317ce6f2))
+* scope select-none to sidebars to allow text copying ([f1ffc48](https://github.com/anurag3407/career-pilot/commit/f1ffc48543a00797129137402a0b4ab3c9968698))
+
+
+### Features
+
+* add Discord Server portfolio template ([9c394ac](https://github.com/anurag3407/career-pilot/commit/9c394acc538ac16e6cb8902e030cb84d63b840cd))
+* **portfolio:** implement watercolor artistic hero section ([e482ea4](https://github.com/anurag3407/career-pilot/commit/e482ea4764a6faad04372ef6acde12d41cd82fb5))
+
+# [1.49.0](https://github.com/anurag3407/career-pilot/compare/v1.48.0...v1.49.0) (2026-05-27)
+
+
+### Features
+
+* **portfolio:** add SocialLinksEditor component ([47ab761](https://github.com/anurag3407/career-pilot/commit/47ab761206a623e9aca912c5dddd8f4fe599f340))
+
+# [1.48.0](https://github.com/anurag3407/career-pilot/compare/v1.47.0...v1.48.0) (2026-05-27)
+
+
+### Bug Fixes
+
+* improve RunwayLookbook UI for PR ([c934f39](https://github.com/anurag3407/career-pilot/commit/c934f396785d328d9dd02c839a0851136df000a5))
+* improve UI ([aae3712](https://github.com/anurag3407/career-pilot/commit/aae3712fc194c88b19911912577918202f8e2937))
+* update RunwayLookbook UI ([cec0188](https://github.com/anurag3407/career-pilot/commit/cec0188ae8267ad6e22f53830c609e9c0c00e7ce))
+* update RunwayLookbook UI improvements ([22a086e](https://github.com/anurag3407/career-pilot/commit/22a086e771e2fac62753749bdd4cead20f7e8cbe))
+
+
+### Features
+
+* implement RunwayLookbook high fashion template ([2cf12b5](https://github.com/anurag3407/career-pilot/commit/2cf12b5444b7a34650a81af61d40b22113fe760f))
+
+# [1.47.0](https://github.com/anurag3407/career-pilot/compare/v1.46.1...v1.47.0) (2026-05-27)
+
+
+### Features
+
+* add SaaS Product portfolio template ([#1961](https://github.com/anurag3407/career-pilot/issues/1961)) ([12f5c8f](https://github.com/anurag3407/career-pilot/commit/12f5c8f035c8e9eff4a4f42f197a7c30fb07b162))
+
 ## [1.46.1](https://github.com/anurag3407/career-pilot/compare/v1.46.0...v1.46.1) (2026-05-27)
 
 
