@@ -126,7 +126,7 @@ export default function ConfettiBurst() {
           transition={{ duration: 0.8 }}
           className="relative"
         >
-          <img
+          <img loading="lazy"
             src={data.personal.avatar}
             alt={data.personal.name}
             className="w-40 h-40 rounded-full border-4 border-pink-400 object-cover shadow-2xl shadow-pink-500/40"
@@ -297,7 +297,7 @@ export default function ConfettiBurst() {
               onClick={createBurst}
               className="bg-white/10 rounded-3xl overflow-hidden border border-white/10 backdrop-blur-lg cursor-pointer"
             >
-              <img
+              <img loading="lazy"
                 src={project.image}
                 alt={project.title}
                 className="w-full h-56 object-cover"
@@ -400,7 +400,7 @@ export default function ConfettiBurst() {
               </p>
 
               <div className="flex items-center gap-4">
-                <img
+                <img loading="lazy"
                   src={testimonial.avatar}
                   alt={testimonial.name}
                   className="w-14 h-14 rounded-full object-cover"

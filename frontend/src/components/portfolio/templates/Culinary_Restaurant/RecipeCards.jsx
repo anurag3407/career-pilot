@@ -56,7 +56,7 @@ export default function RecipeCards() {
               className="group relative bg-[#111111] overflow-hidden transition-all duration-500 border border-[#222222] hover:border-[#c5a880]/50 flex flex-col"
             >
               <div className="h-64 w-full relative overflow-hidden bg-[#0a0a0a]">
-                <img 
+                <img loading="lazy" 
                   src={recipe.image} 
                   alt={recipe.title} 
                   className="w-full h-full object-cover group-hover:scale-110 group-hover:opacity-80 transition-all duration-1000 ease-out opacity-90"

@@ -42,7 +42,7 @@ export default function GitHubProfile() {
           </div>
         </div>
         <div className="flex items-center gap-3">
-          <img src={data.personal.avatar} alt="Avatar" className="w-8 h-8 rounded-full border border-[#30363d]" />
+          <img loading="lazy" loading="lazy" src={data.personal.avatar} alt="Avatar" className="w-8 h-8 rounded-full border border-[#30363d]" />
         </div>
       </nav>
 
@@ -58,7 +58,7 @@ export default function GitHubProfile() {
             className="w-full md:w-1/4 flex flex-col"
           >
             <div className="relative">
-              <img 
+              <img loading="lazy" 
                 src={data.personal.avatar} 
                 alt={data.personal.name} 
                 className="w-64 h-64 md:w-full md:h-auto rounded-full border border-[#30363d] mb-4 shadow-xl z-10 relative"
@@ -256,7 +256,7 @@ export default function GitHubProfile() {
                 <div className="space-y-4">
                   {data.testimonials.map((test, idx) => (
                     <div key={idx} className="flex gap-3">
-                      <img src={test.avatar} alt={test.name} className="w-10 h-10 rounded-full border border-[#30363d]" />
+                      <img loading="lazy" loading="lazy" src={test.avatar} alt={test.name} className="w-10 h-10 rounded-full border border-[#30363d]" />
                       <div className="border border-[#30363d] rounded-md flex-1 bg-[#0d1117]">
                         <div className="bg-[#161b22] px-3 py-2 border-b border-[#30363d] rounded-t-md text-xs text-[#8b949e]">
                           <span className="font-semibold text-[#c9d1d9]">{test.name}</span> 

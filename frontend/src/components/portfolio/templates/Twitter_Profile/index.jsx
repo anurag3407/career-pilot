@@ -64,7 +64,7 @@ export default function TwitterProfile() {
 
           {/* Mini Profile (Bottom Left) */}
           <div className="flex items-center gap-3 p-3 hover:bg-white/10 rounded-full transition-colors cursor-pointer w-full mt-auto mb-3 xl:hover:bg-[#181818]">
-            <img src={data.personal.avatar} alt="Avatar" className="w-10 h-10 rounded-full object-cover shrink-0" />
+            <img loading="lazy" loading="lazy" src={data.personal.avatar} alt="Avatar" className="w-10 h-10 rounded-full object-cover shrink-0" />
             <div className="hidden xl:flex flex-col flex-1 truncate">
               <div className="font-bold text-[15px] text-[#e7e9ea] flex items-center gap-1">
                 {data.personal.name} <BadgeCheck size={16} className="text-[#1d9bf0] fill-current" />
@@ -95,7 +95,7 @@ export default function TwitterProfile() {
           <div>
             {/* Banner */}
             <div className="h-[150px] sm:h-[200px] bg-[#333639] w-full relative">
-              <img 
+              <img loading="lazy" 
                 src="https://images.unsplash.com/photo-1618005182384-a83a8bd57fbe?q=80&w=2564&auto=format&fit=crop" 
                 alt="Banner" 
                 className="w-full h-full object-cover"
@@ -107,7 +107,7 @@ export default function TwitterProfile() {
               {/* Avatar & Edit Button */}
               <div className="flex justify-between items-start mb-3">
                 <div className="w-[100px] h-[100px] sm:w-[134px] sm:h-[134px] rounded-full border-4 border-black relative -mt-[15%] bg-black overflow-hidden">
-                  <img src={data.personal.avatar} alt="Profile" className="w-full h-full object-cover" />
+                  <img loading="lazy" loading="lazy" src={data.personal.avatar} alt="Profile" className="w-full h-full object-cover" />
                 </div>
                 <div className="flex items-center gap-2 mt-3">
                   <a href={`mailto:${data.socials.email}`} className="w-9 h-9 rounded-full border border-[#536471] flex items-center justify-center hover:bg-white/10 transition-colors">
@@ -362,7 +362,7 @@ function Tweet({
 
       <div className="flex gap-3">
         <div className="shrink-0">
-          <img src={avatar} alt={name} className="w-10 h-10 rounded-full object-cover" />
+          <img loading="lazy" loading="lazy" src={avatar} alt={name} className="w-10 h-10 rounded-full object-cover" />
         </div>
         
         <div className="flex flex-col w-full min-w-0">
@@ -404,7 +404,7 @@ function Tweet({
           {/* Media */}
           {media && (
             <div className="mt-3 rounded-2xl border border-[#2f3336] overflow-hidden">
-              <img src={media} alt="Post media" className="w-full h-auto object-cover max-h-[500px]" />
+              <img loading="lazy" loading="lazy" src={media} alt="Post media" className="w-full h-auto object-cover max-h-[500px]" />
             </div>
           )}
 

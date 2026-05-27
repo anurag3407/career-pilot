@@ -335,7 +335,7 @@ export default function SecuritySettings() {
                   {qrDataUrl && (
                     <div className="flex flex-col items-center gap-3">
                       <div className="p-3 bg-white rounded-xl inline-block">
-                        <img src={qrDataUrl} alt="2FA QR Code" className="w-40 h-40" />
+                        <img loading="lazy" loading="lazy" src={qrDataUrl} alt="2FA QR Code" className="w-40 h-40" />
                       </div>
                       <details className="w-full">
                         <summary className="text-xs text-muted-foreground cursor-pointer select-none hover:text-muted-foreground/80 transition-colors">
