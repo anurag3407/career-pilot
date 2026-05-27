@@ -2,6 +2,7 @@ import { useState, useEffect } from 'react'
 import { Link, useLocation } from 'react-router-dom'
 import { useAuth } from '../hooks/useAuth'
 import { useTheme } from '../hooks/useTheme'
+import { useSocket } from '../hooks/useSocket'
 import { motion, AnimatePresence } from 'framer-motion'
 import {
   Search,
@@ -26,13 +27,13 @@ import {
 export default function Navbar() {
   const { user, logout } = useAuth()
   const { theme, toggleTheme } = useTheme()
+  const { unreadCount: notificationCount } = useSocket()
   const location = useLocation()
 
   const [mobileMenuOpen, setMobileMenuOpen] = useState(false)
   const [scrolled, setScrolled] = useState(false)
   const [searchQuery, setSearchQuery] = useState('')
   const [showDropdown, setShowDropdown] = useState(false)
-  const [notificationCount] = useState(0)
 
   useEffect(() => {
     const handleScroll = () => {
