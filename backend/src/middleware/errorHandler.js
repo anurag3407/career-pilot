@@ -17,14 +17,16 @@ export const errorHandler = (err, req, res, next) => {
   if (err.code === 'LIMIT_FILE_SIZE') {
     return res.status(400).json({
       success: false,
-      error: 'File size exceeds the limit of 5MB'
+      error: 'File size exceeds the limit of 5MB',
+      message: 'File size exceeds the limit of 5MB'
     });
   }
 
   if (err.code === 'LIMIT_UNEXPECTED_FILE') {
     return res.status(400).json({
       success: false,
-      error: 'Unexpected file field'
+      error: 'Unexpected file field',
+      message: 'Unexpected file field'
     });
   }
 
@@ -33,6 +35,7 @@ export const errorHandler = (err, req, res, next) => {
     return res.status(err.statusCode).json({
       success: false,
       error: err.message,
+      message: err.message,
       details: err.details
     });
   }
@@ -42,6 +45,7 @@ export const errorHandler = (err, req, res, next) => {
     return res.status(401).json({
       success: false,
       error: 'Authentication error',
+      message: err.message,
       details: err.message
     });
   }
@@ -62,9 +66,11 @@ export const errorHandler = (err, req, res, next) => {
       14: 'Service unavailable',
       16: 'Unauthenticated'
     };
+    const errMsg = grpcCodeMessages[err.code] || 'Database error';
     return res.status(500).json({
       success: false,
-      error: grpcCodeMessages[err.code] || 'Database error',
+      error: errMsg,
+      message: errMsg,
       details: err.details || err.message
     });
   }
@@ -74,6 +80,7 @@ export const errorHandler = (err, req, res, next) => {
     return res.status(400).json({
       success: false,
       error: 'Validation error',
+      message: err.message,
       details: err.message
     });
   }
@@ -82,11 +89,12 @@ export const errorHandler = (err, req, res, next) => {
   const statusCode = err.statusCode || 500;
   const message = process.env.NODE_ENV === 'production' 
     ? 'An unexpected error occurred' 
-    : err.message;
+    : err.message || 'Something went wrong';
 
   res.status(statusCode).json({
     success: false,
     error: message,
+    message: message,
     ...(process.env.NODE_ENV !== 'production' && { stack: err.stack })
   });
 };

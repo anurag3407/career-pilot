@@ -25,7 +25,7 @@ import twoFactorRoutes from './routes/twoFactor.js';
 import aiRoutes from './routes/ai.js';
 import emailTrackingRoutes from './routes/emailTracking.js';
 
-import { globalErrorHandler } from './middleware/globalErrorHandler.js';
+import { errorHandler } from './middleware/errorHandler.js';
 import {
   metricsMiddleware,
   metricsHandler,
@@ -244,7 +244,7 @@ app.use('/api/email-tracking', emailTrackingRoutes);
 app.use((req, res) => {
   res.status(404).json({ error: 'Route not found' });
 });
-app.use(globalErrorHandler);
+app.use(errorHandler);
 const startServer = async () => {
   try {
     await connectDB();

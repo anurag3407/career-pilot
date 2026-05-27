@@ -2,9 +2,9 @@ import { fetchJobs } from "../utils/jobSearch.js";
 import Job from "../models/Job.model.js";
 import mongoose from "mongoose";
 import { summarizeJobDescription } from "../services/jobSummarizer.js";
-import { catchAsync } from "../middleware/globalErrorHandler.js";
+import { asyncHandler } from "../middleware/errorHandler.js";
 
-export const getJobs = catchAsync(async (req, res, next) => {
+export const getJobs = asyncHandler(async (req, res, next) => {
   const user = req.user;
   if (!user) {
     return res.status(401).json({ message: "Unauthorized" });
@@ -44,7 +44,7 @@ export const getJobs = catchAsync(async (req, res, next) => {
   });
 });
 
-export const getJobById = catchAsync(async (req, res, next) => {
+export const getJobById = asyncHandler(async (req, res, next) => {
   const { jobId } = req.params;
 
   if (!mongoose.Types.ObjectId.isValid(jobId)) {
@@ -69,7 +69,7 @@ export const getJobById = catchAsync(async (req, res, next) => {
   });
 });
 
-export const summarizeJob = catchAsync(async (req, res, next) => {
+export const summarizeJob = asyncHandler(async (req, res, next) => {
   const { jobDescription } = req.body ?? {};
   
   if (typeof jobDescription !== "string" || !jobDescription.trim()) {
