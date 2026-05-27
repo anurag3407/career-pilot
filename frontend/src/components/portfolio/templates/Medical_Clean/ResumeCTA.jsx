@@ -123,16 +123,23 @@ export default function ResumeCTA() {
             <Download className="w-4 h-4" />
             Download Resume
           </button>
-
-          <button className="
-            flex items-center gap-2 px-5 py-3 rounded-xl font-semibold transition
-            border border-gray-300 dark:border-border
-            text-gray-800 dark:text-foreground
-            hover:bg-gray-100 dark:hover:bg-accent
-          ">
-            Get Started
-            <ArrowRight className="w-4 h-4" />
-          </button>
+<button
+  onClick={() =>
+    document.getElementById("resume-builder")?.scrollIntoView({
+      behavior: "smooth",
+    })
+  }
+  className="
+    flex items-center gap-2 px-5 py-3 rounded-xl font-semibold transition
+    border border-gray-300 dark:border-border
+    text-gray-800 dark:text-foreground
+    hover:bg-gray-100 dark:hover:bg-accent
+  "
+>
+  Get Started
+  <ArrowRight className="w-4 h-4" />
+</button>
+          
 
         </div>
 
