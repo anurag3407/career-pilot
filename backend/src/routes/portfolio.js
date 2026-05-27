@@ -307,7 +307,7 @@ router.get('/', asyncHandler(async (req, res) => {
   let slugs = [];
   try {
     const entries = await fs.readdir(templatesDir);
-    slugs = entries.filter((e) => !e.startsWith('.'));
+    slugs = entries.filter((e) => !e.startsWith('.') && !e.startsWith('_') && VALID_SLUG_PATTERN.test(e));
   } catch {
     slugs = [];
   }
@@ -334,11 +334,25 @@ router.get('/', asyncHandler(async (req, res) => {
  * POST /api/portfolio/:id/duplicate
  * Duplicates a portfolio template folder with a new slug.
  */
+const duplicateLimiter = new Map();
+
 router.post(
   '/:id/duplicate',
   verifyToken,
   asyncHandler(async (req, res) => {
     const { id } = req.params;
+    const userId = req.user?.uid;
+    const now = Date.now();
+    const windowMs = 60 * 1000;
+    const maxPerWindow = 5;
+
+    const userHistory = duplicateLimiter.get(userId) || [];
+    const recent = userHistory.filter((t) => now - t < windowMs);
+    if (recent.length >= maxPerWindow) {
+      throw new ApiError(429, 'Too many duplicate requests. Please wait a moment.');
+    }
+    recent.push(now);
+    duplicateLimiter.set(userId, recent);
 
     assertValidPortfolioSlug(id);
 
