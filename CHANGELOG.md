@@ -1,3 +1,17 @@
+# [1.35.0](https://github.com/anurag3407/career-pilot/compare/v1.34.2...v1.35.0) (2026-05-27)
+
+
+### Bug Fixes
+
+* **portfolio:** proper URL parsing, slug type check, and persist POST/PUT via Portfolio model ([a90a17e](https://github.com/anurag3407/career-pilot/commit/a90a17e26dbef0d021b500ecd187bcc33c2fa9c6))
+* **portfolio:** remove duplicate TOKEN_VALIDATORS and validate-token route registration ([960ccec](https://github.com/anurag3407/career-pilot/commit/960ccec318c2dbcd484422d3eff91509d853ed36))
+
+
+### Features
+
+* add portfolio content validation middleware ([#858](https://github.com/anurag3407/career-pilot/issues/858)) ([60fdd70](https://github.com/anurag3407/career-pilot/commit/60fdd70cbffe2d8acbb5be2a5f7c15111efc00b3))
+* validate deploy provider tokens before deployment ([#781](https://github.com/anurag3407/career-pilot/issues/781)) ([45bcbbf](https://github.com/anurag3407/career-pilot/commit/45bcbbf314234267fe5a846793b008be730c8205))
+
 ## [1.34.2](https://github.com/anurag3407/career-pilot/compare/v1.34.1...v1.34.2) (2026-05-27)
 
 
