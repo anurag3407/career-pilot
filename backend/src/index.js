@@ -87,18 +87,26 @@ app.use(metricsMiddleware);
 const httpServer = createServer(app);
 const PORT = process.env.PORT || 5001;
 
-// Log FRONTEND_URL for debugging
-console.log('🔧 FRONTEND_URL env var:', process.env.FRONTEND_URL);
-
 // CORS configuration - MUST come before helmet
-const allowedOrigins = [
-  'http://localhost:5173',
-  'http://localhost:3000',
-  'https://careerpilotyy.netlify.app',  // Hardcoded as fallback
-  process.env.FRONTEND_URL,
-].filter(Boolean).map(url => url.replace(/\/$/, '')); // Remove trailing slashes
+const parseAllowedOrigins = (value = '') =>
+  value
+    .split(',')
+    .map(origin => origin.trim().replace(/\/$/, ''))
+    .filter(Boolean);
 
-console.log('🔧 Allowed origins:', allowedOrigins);
+const allowedOrigins = [
+  ...parseAllowedOrigins(process.env.CORS_ALLOWED_ORIGINS),
+  ...parseAllowedOrigins(process.env.FRONTEND_URL),
+];
+const uniqueAllowedOrigins = [...new Set(allowedOrigins)];
+
+if (uniqueAllowedOrigins.length === 0) {
+  console.warn(
+    '⚠️  No allowed origins configured for CORS. Set CORS_ALLOWED_ORIGINS or FRONTEND_URL for local/dev environments.'
+  );
+}
+
+console.log('🔧 Allowed origins:', uniqueAllowedOrigins);
 
 app.use(cors({
   origin: function (origin, callback) {
@@ -108,10 +116,10 @@ app.use(cors({
     // Normalize origin by removing trailing slash
     const normalizedOrigin = origin.replace(/\/$/, '');
     
-    if (allowedOrigins.includes(normalizedOrigin)) {
+    if (uniqueAllowedOrigins.includes(normalizedOrigin)) {
       callback(null, true);
     } else {
-      console.log('❌ CORS blocked origin:', origin, '| Allowed:', allowedOrigins);
+      console.log('❌ CORS blocked origin:', origin, '| Allowed:', uniqueAllowedOrigins);
       callback(new Error('Not allowed by CORS'));
     }
   },
@@ -151,7 +159,7 @@ app.use(helmet({
       ],
       connectSrc: [
         "'self'",
-        process.env.FRONTEND_URL || "http://localhost:5173",
+        ...uniqueAllowedOrigins,
         "https://firebaseapp.com",
         "https://*.googleapis.com",
         "https://*.firebaseio.com",
@@ -257,7 +265,7 @@ const startServer = async () => {
     httpServer.listen(PORT, () => {
       console.log(`🚀 Server running on port ${PORT}`);
       console.log(`📍 Environment: ${process.env.NODE_ENV || 'development'}`);
-      console.log(`🔗 Frontend URL: ${process.env.FRONTEND_URL || 'http://localhost:5173'}`);
+      console.log(`🔗 Allowed origins: ${uniqueAllowedOrigins.join(', ') || 'none configured'}`);
     });
 
     try {
