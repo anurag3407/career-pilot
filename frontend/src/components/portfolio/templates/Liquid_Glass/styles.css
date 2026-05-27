@@ -1,0 +1,188 @@
+@import url('https://fonts.googleapis.com/css2?family=Outfit:wght@200..900&family=JetBrains+Mono:wght@300..700&display=swap');
+
+/* ── Reset & base ─────────────────────────────── */
+.lg-root,
+.lg-root * {
+  font-family: 'Outfit', -apple-system, BlinkMacSystemFont, 'Segoe UI', sans-serif;
+  -webkit-font-smoothing: antialiased;
+  -moz-osx-font-smoothing: grayscale;
+  box-sizing: border-box;
+}
+
+.lg-mono {
+  font-family: 'JetBrains Mono', ui-monospace, SFMono-Regular, Menlo, Monaco, Consolas, 'Liberation Mono', 'Courier New', monospace;
+  font-variant-numeric: tabular-nums;
+}
+
+/* ── Slow animated background gradient ───────── */
+@keyframes lgBgShift {
+  0% { background-position: 0% 50%; }
+  50% { background-position: 100% 50%; }
+  100% { background-position: 0% 50%; }
+}
+
+.lg-bg {
+  background: linear-gradient(
+    140deg,
+    #06090f 0%,
+    #0a111b 22%,
+    #0b1624 45%,
+    #0a1320 68%,
+    #070b12 100%
+  );
+  background-size: 400% 400%;
+  animation: lgBgShift 28s ease infinite;
+}
+
+/* ── Orb drift keyframes ──────────────────────── */
+@keyframes orbDrift1 {
+  0%, 100% { transform: translate(0, 0) scale(1); }
+  25% { transform: translate(60px, -90px) scale(1.08); }
+  50% { transform: translate(-50px, -140px) scale(0.94); }
+  75% { transform: translate(80px, -50px) scale(1.05); }
+}
+
+@keyframes orbDrift2 {
+  0%, 100% { transform: translate(0, 0) scale(1); }
+  30% { transform: translate(-80px, 60px) scale(1.1); }
+  60% { transform: translate(55px, 110px) scale(0.92); }
+}
+
+@keyframes orbDrift3 {
+  0%, 100% { transform: translate(0, 0) scale(1); }
+  40% { transform: translate(70px, -70px) scale(1.06); }
+  80% { transform: translate(-40px, 50px) scale(0.96); }
+}
+
+@keyframes orbDrift4 {
+  0%, 100% { transform: translate(0, 0) scale(1); }
+  33% { transform: translate(-60px, -80px) scale(1.12); }
+  66% { transform: translate(45px, 65px) scale(0.9); }
+}
+
+/* ── Noise texture overlay ───────────────────── */
+.lg-noise {
+  position: relative;
+}
+
+.lg-noise::after {
+  content: '';
+  position: absolute;
+  inset: 0;
+  background-image: url("data:image/svg+xml,%3Csvg viewBox='0 0 200 200' xmlns='http://www.w3.org/2000/svg'%3E%3Cfilter id='noise'%3E%3CfeTurbulence type='fractalNoise' baseFrequency='0.9' numOctaves='4' stitchTiles='stitch'/%3E%3C/filter%3E%3Crect width='100%25' height='100%25' filter='url(%23noise)' opacity='1'/%3E%3C/svg%3E");
+  opacity: 0.03;
+  pointer-events: none;
+  border-radius: inherit;
+}
+
+/* ── Apple Liquid Glass panel mixin ──────────── */
+.lg-glass {
+  background: linear-gradient(
+    145deg,
+    rgba(255, 255, 255, 0.10) 0%,
+    rgba(255, 255, 255, 0.04) 45%,
+    rgba(255, 255, 255, 0.07) 100%
+  );
+  backdrop-filter: saturate(175%) blur(26px);
+  -webkit-backdrop-filter: saturate(175%) blur(26px);
+  border: 1px solid rgba(255, 255, 255, 0.12);
+  box-shadow:
+    inset 0 1px 0 rgba(255, 255, 255, 0.20),
+    inset 0 -1px 0 rgba(255, 255, 255, 0.05),
+    inset 1px 0 0 rgba(255, 255, 255, 0.08),
+    0 10px 36px rgba(2, 6, 23, 0.55),
+    0 2px 10px rgba(2, 6, 23, 0.35);
+  position: relative;
+  overflow: hidden;
+}
+
+/* Prismatic edge shimmer — the "liquid" part */
+.lg-glass::before {
+  content: '';
+  position: absolute;
+  top: 0;
+  left: 0;
+  right: 0;
+  height: 1px;
+  background: linear-gradient(
+    90deg,
+    transparent 0%,
+    rgba(56, 189, 248, 0.25) 25%,
+    rgba(56, 189, 248, 0.65) 50%,
+    rgba(56, 189, 248, 0.25) 75%,
+    transparent 100%
+  );
+  animation: lgPrismaShift 8s ease-in-out infinite;
+  pointer-events: none;
+}
+
+@keyframes lgPrismaShift {
+  0%, 100% { opacity: 0.5; background-position: 0% 50%; }
+  50% { opacity: 1; background-position: 100% 50%; }
+}
+
+/* Inner refraction blob */
+.lg-glass::after {
+  content: '';
+  position: absolute;
+  top: -30%;
+  left: -20%;
+  width: 60%;
+  height: 70%;
+  background: radial-gradient(ellipse, rgba(255, 255, 255, 0.06) 0%, transparent 70%);
+  pointer-events: none;
+  border-radius: 50%;
+  filter: blur(12px);
+  animation: lgInnerBlob 12s ease-in-out infinite;
+}
+
+@keyframes lgInnerBlob {
+  0%, 100% { transform: translate(0, 0) scale(1); }
+  40% { transform: translate(30%, 20%) scale(1.2); }
+  70% { transform: translate(-10%, 35%) scale(0.85); }
+}
+
+/* ── Active nav pill ──────────────────────────── */
+.lg-nav-active {
+  background: linear-gradient(
+    135deg,
+    rgba(56, 189, 248, 0.22) 0%,
+    rgba(34, 211, 238, 0.14) 100%
+  );
+  box-shadow:
+    0 0 0 1px rgba(56, 189, 248, 0.30),
+    0 0 20px rgba(56, 189, 248, 0.22),
+    inset 0 1px 0 rgba(255, 255, 255, 0.20);
+}
+
+/* ── Mobile menu glass ────────────────────────── */
+.lg-mobile-overlay {
+  background: rgba(5, 8, 14, 0.92);
+  backdrop-filter: saturate(190%) blur(38px);
+  -webkit-backdrop-filter: saturate(190%) blur(38px);
+}
+
+/* ── Section id anchors (offset for fixed nav) ── */
+.lg-section-anchor {
+  scroll-margin-top: 80px;
+}
+
+/* ── Custom scrollbar ─────────────────────────── */
+.lg-root::-webkit-scrollbar { width: 6px; }
+.lg-root::-webkit-scrollbar-track { background: transparent; }
+.lg-root::-webkit-scrollbar-thumb {
+  background: rgba(56, 189, 248, 0.35);
+  border-radius: 3px;
+}
+
+.lg-root::-webkit-scrollbar-thumb:hover {
+  background: rgba(56, 189, 248, 0.55);
+}
+
+@media (prefers-reduced-transparency: reduce) {
+  .lg-glass {
+    background: rgba(16, 23, 38, 0.92);
+    backdrop-filter: none;
+    -webkit-backdrop-filter: none;
+  }
+}

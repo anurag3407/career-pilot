@@ -18,6 +18,25 @@
     "projectsCompleted": 48,
     "happyClients": 32
   },
+  "contact": {
+    "heading": "Get In Touch",
+    "tagline": "Open to collaborations & opportunities",
+    "description": "Have a project in mind? Let's connect and bring your vision to life.",
+    "cardTitles": {
+      "message": "Send a Message",
+      "socials": "Connect With Me"
+    },
+    "buttonText": "Send Message",
+    "emptySocialsText": "No social links available.",
+    "quote": "\"Let's create something amazing together.\"",
+    "footerText": "and a touch of glass"
+  },
+  "projectsSection": {
+    "sectionLabel": "Portfolio",
+    "heading": "Featured Projects",
+    "liveLabel": "Live Demo",
+    "sourceLabel": "Source Code"
+  },
   "skills": [
     { "name": "React", "level": 95, "category": "Frontend" },
     { "name": "TypeScript", "level": 90, "category": "Frontend" },
@@ -37,6 +56,7 @@
   ],
   "projects": [
     {
+      "slug": "neuraldash",
       "title": "NeuralDash",
       "description": "AI-powered analytics dashboard with real-time data visualization, predictive insights, and customizable widget layouts. Built for enterprise teams handling petabyte-scale datasets.",
       "techStack": ["React", "Python", "TensorFlow", "WebSocket"],
@@ -45,6 +65,7 @@
       "image": "https://images.unsplash.com/photo-1551288049-bebda4e38f71?w=800&h=450&fit=crop"
     },
     {
+      "slug": "pixelforge-studio",
       "title": "PixelForge Studio",
       "description": "Browser-based creative suite for digital artists — vector illustration, pixel art, and animation tools. 50K+ monthly active users and counting.",
       "techStack": ["Canvas API", "WebGL", "Vue.js", "Rust/WASM"],
@@ -53,6 +74,7 @@
       "image": "https://images.unsplash.com/photo-1626785774573-4b799315345d?w=800&h=450&fit=crop"
     },
     {
+      "slug": "ecotrack",
       "title": "EcoTrack",
       "description": "Sustainability platform that helps businesses measure, reduce, and offset their carbon footprint. Features gamified goals and real-time carbon market integration.",
       "techStack": ["Next.js", "Node.js", "PostgreSQL", "Stripe"],
@@ -61,6 +83,7 @@
       "image": "https://images.unsplash.com/photo-1569163139394-de4e5f43e5ca?w=800&h=450&fit=crop"
     },
     {
+      "slug": "verse-social-reading",
       "title": "Verse — Social Reading",
       "description": "Next-generation social reading app where readers annotate, discuss, and discover books together. Built-in AI summarisation and personalised recommendations.",
       "techStack": ["React Native", "GraphQL", "MongoDB", "OpenAI"],
@@ -69,6 +92,7 @@
       "image": "https://images.unsplash.com/photo-1512820790803-83ca734da794?w=800&h=450&fit=crop"
     },
     {
+      "slug": "pulse-crm",
       "title": "Pulse CRM",
       "description": "Lightweight CRM for indie businesses — contact management, deal pipelines, email sequences, and revenue analytics. Competes with Salesforce at 1% of the price.",
       "techStack": ["React", "Express", "MySQL", "Redis"],
@@ -77,6 +101,7 @@
       "image": "https://images.unsplash.com/photo-1460925895917-afdab827c52f?w=800&h=450&fit=crop"
     },
     {
+      "slug": "orbit-3d-portfolio",
       "title": "Orbit — 3D Portfolio",
       "description": "Interactive 3D portfolio builder powered by Three.js and AI content generation. Users describe their work and the system assembles a stunning 3D showcase in seconds.",
       "techStack": ["Three.js", "React", "OpenAI GPT-4", "Vercel"],
@@ -111,6 +136,9 @@
       "description": "Worked across 5 early-stage startups as an embedded developer. Built MVPs from zero to launch in under 3 months each. Gained broad experience across mobile, web, and backend systems."
     }
   ],
+  "testimonialsSection": {
+    "heading": "What People Say"
+  },
   "testimonials": [
     {
       "name": "Sarah Chen",
