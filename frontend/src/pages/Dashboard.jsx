@@ -271,7 +271,7 @@ export default function Dashboard() {
                   label: "Portfolios",
                   color: "text-purple-500",
                   bg: "bg-purple-500/10",
-                  link: "/portfolio",
+                  link: "/hub/portfolio",
                 },
               ].map((stat, idx) => {
                 const content = (

@@ -59,7 +59,7 @@ function StackedCircularFooter() {
                         <a href="#features" className="text-muted-foreground hover:text-primary font-black uppercase tracking-[0.15em] text-xs transition-colors">Features</a>
                         <Link to="/jobs" className="text-muted-foreground hover:text-primary font-black uppercase tracking-[0.15em] text-xs transition-colors">Jobs</Link>
                         <Link to="/upload" className="text-muted-foreground hover:text-primary font-black uppercase tracking-[0.15em] text-xs transition-colors">Resume</Link>
-                        <a href="#" className="text-muted-foreground hover:text-primary font-black uppercase tracking-[0.15em] text-xs transition-colors">Contact</a>
+                        <Link to="/contact" className="text-muted-foreground hover:text-primary font-black uppercase tracking-[0.15em] text-xs transition-colors">Contact</Link>
                     </nav>
 
                     {/* Social media buttons */}

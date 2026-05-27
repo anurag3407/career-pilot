@@ -36,7 +36,7 @@ export default function Footer() {
       { label: "About", href: "/about" },
       { label: "Blog", href: "#" },
       { label: "Careers", href: "#" },
-      { label: "Contact", href: "#" },
+      { label: "Contact", href: "/contact" },
     ],
     legal: [
       { label: "Privacy", href: "/privacy" },

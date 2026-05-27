@@ -52,6 +52,7 @@ import PrivacyPolicy from './pages/PrivacyPolicy';
 import TermsOfService from './pages/TermsOfService';
 import CookiePolicy from './pages/CookiePolicy';
 import OpenRouterCallback from './pages/OpenRouterCallback';
+import Contact from './pages/Contact';
 
 // Hub Imports
 import ResumeHub from './pages/hubs/ResumeHub';
@@ -166,6 +167,7 @@ function AppRoutes() {
         <Route path="/about" element={<About />} />
         <Route path="/terms" element={<TermsOfService />} />
         <Route path="/cookies" element={<CookiePolicy />} />
+        <Route path="/contact" element={<Contact />} />
 
         {/* Template Gallery Route (Registered at /templates) */}
         <Route path="/templates" element={<TemplateGallery />} />
@@ -193,6 +195,7 @@ function AppRoutes() {
         {/* Hub Routes */}
         <Route path="/hub/resume" element={<ProtectedRoute><ResumeHub /></ProtectedRoute>} />
         <Route path="/hub/jobs" element={<ProtectedRoute><JobsHub /></ProtectedRoute>} />
+        <Route path="/portfolio" element={<Navigate to="/hub/portfolio" replace />} />
         <Route path="/hub/portfolio" element={<ProtectedRoute><PortfolioHub /></ProtectedRoute>} />
         <Route path="/hub/career" element={<ProtectedRoute><CareerGrowthHub /></ProtectedRoute>} />
         <Route path="/hub/community" element={<ProtectedRoute><CommunityHub /></ProtectedRoute>} />
