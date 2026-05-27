@@ -1,5 +1,4 @@
 {
-<<<<<<< HEAD
   "name": "careerpilot",
   "private": true,
   "version": "1.0.0",
@@ -57,11 +56,5 @@
     "jsdom": "^29.1.1",
     "vite": "^7.2.4",
     "vitest": "^4.1.7"
-=======
-  "dependencies": {
-    "framer-motion": "^12.39.0",
-    "lucide-react": "^1.16.0",
-    "puppeteer-core": "^25.0.4"
->>>>>>> d9cec355c02ba7adf33119c9737350dda1bf2f81
   }
 }
