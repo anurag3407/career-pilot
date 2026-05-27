@@ -1,8 +1,8 @@
 import React, { useState, useRef } from 'react';
 import { motion } from 'framer-motion';
 import { 
-  MousePointer2, Move, Type, Square, PenTool, Layout, 
-  Layers, Hash, Eye, MessageSquare, Briefcase, User, 
+  MousePointer2, Move, Type, Square, PenTool, 
+  Hash, Eye, 
   MapPin, Mail, Github, Linkedin, Twitter 
 } from 'lucide-react';
 import data from '../../../../data/dummy_data.json';
