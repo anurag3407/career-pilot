@@ -212,7 +212,7 @@ function ProfilePin({ pin }) {
       
       <div className="relative z-10">
         <div className="w-32 h-32 rounded-full overflow-hidden mb-6 mx-auto border-4 border-white shadow-lg">
-          <img src={pin.avatar} alt={pin.name} loading="lazy" className="w-full h-full object-cover" />
+          <img src={pin.avatar} alt={pin.name} className="w-full h-full object-cover" />
         </div>
         <h1 className="text-3xl font-bold mb-2">{pin.name}</h1>
         <p className="text-[#767676] mb-4 font-medium">{pin.title}</p>

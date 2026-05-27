@@ -59,7 +59,6 @@ export default function RecipeCards() {
                 <img 
                   src={recipe.image} 
                   alt={recipe.title} 
-                  loading="lazy"
                   className="w-full h-full object-cover group-hover:scale-110 group-hover:opacity-80 transition-all duration-1000 ease-out opacity-90"
                 />
                 <div className="absolute inset-0 bg-gradient-to-t from-[#111111] via-transparent to-transparent opacity-80"></div>
