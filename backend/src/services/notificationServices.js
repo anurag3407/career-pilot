@@ -1,8 +1,8 @@
 import { sendMatchingJobMail } from "./mailService.js";
 import { searchJobs } from "./rapidApiService.js";
-import { catchAsync } from "../middleware/globalErrorHandler.js";
+import { asyncHandler } from "../middleware/errorHandler.js";
 
-export const Agent_24_7_Jobs = catchAsync(async (req, res, next) => {
+export const Agent_24_7_Jobs = asyncHandler(async (req, res, next) => {
   const user = req.user;
 
   const jobs = await searchJobs({
