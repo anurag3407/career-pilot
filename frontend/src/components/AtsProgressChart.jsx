@@ -314,7 +314,7 @@ export default function AtsProgressChart({ resumeId }) {
           </div>
 
           <div className="mt-4 pt-3 border-t border-border flex items-center gap-2 text-xs text-muted-foreground leading-snug">
-            <AlertCircle className="w-4 h-4 text-primary flex-shrink-0" />
+            <AlertCircle className="w-4 h-4 text-primary shrink-0" />
             <span>Scores correspond to: <strong className="text-foreground">{latestLog.jobRole}</strong></span>
           </div>
         </div>

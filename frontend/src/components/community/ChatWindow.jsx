@@ -9,7 +9,7 @@ import { Hash, Users, Pin, Search, Settings, MoreVertical, Loader2, Sun, Moon } 
 const MessageSkeleton = ({ isOwn }) => (
   <div className={`flex gap-3 ${isOwn ? 'flex-row-reverse' : ''} animate-pulse`}>
     {!isOwn && (
-      <div className="w-9 h-9 rounded-full bg-foreground/10 flex-shrink-0" />
+      <div className="w-9 h-9 rounded-full bg-foreground/10 shrink-0" />
     )}
     <div className={`flex flex-col gap-1 ${isOwn ? 'items-end' : 'items-start'}`}>
       {!isOwn && <div className="h-3 w-20 bg-foreground/10 rounded" />}
@@ -171,7 +171,7 @@ export default function ChatWindow({ channel, messages, currentUser, onOptimisti
   return (
     <div className="flex-1 flex flex-col h-full">
       {/* Channel Header */}
-      <div className="h-14 px-4 border-b border-border bg-background flex items-center justify-between flex-shrink-0">
+      <div className="h-14 px-4 border-b border-border bg-background flex items-center justify-between shrink-0">
         <div className="flex items-center gap-3">
           <span className="text-xl">{channel.icon || '💬'}</span>
           <div>
