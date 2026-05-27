@@ -100,6 +100,12 @@ const allowedOrigins = [
 ];
 const uniqueAllowedOrigins = [...new Set(allowedOrigins)];
 
+if (uniqueAllowedOrigins.length === 0) {
+  console.warn(
+    '⚠️  No allowed origins configured for CORS. Set CORS_ALLOWED_ORIGINS or FRONTEND_URL for local/dev environments.'
+  );
+}
+
 console.log('🔧 Allowed origins:', uniqueAllowedOrigins);
 
 app.use(cors({
