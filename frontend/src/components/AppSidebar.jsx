@@ -157,7 +157,7 @@ function UserSection() {
             <SidebarDivider />
             <div
                 className={cn(
-                    "flex items-center gap-3 rounded-2xl bg-muted/50 border border-border transition-all hover:bg-muted",
+                    "flex items-center gap-3 rounded-xl bg-card border border-border transition-all hover:bg-accent",
                     !open && animate ? "p-2 justify-center" : "p-3"
                 )}
             >
@@ -181,7 +181,7 @@ function UserSection() {
             <button
                 onClick={toggleTheme}
                 className={cn(
-                    "flex items-center gap-2 px-3 py-2 rounded-lg text-sm font-medium transition-all duration-300 w-full text-muted-foreground hover:text-foreground hover:bg-muted cursor-pointer",
+                    "flex items-center gap-3 px-3 py-2 rounded-xl text-sm font-medium transition-all duration-200 w-full text-muted-foreground hover:text-accent-foreground hover:bg-accent cursor-pointer",
                     !open && animate ? "px-0 justify-center" : "justify-start"
                 )}
             >
@@ -200,8 +200,8 @@ function UserSection() {
             <button
                 onClick={handleOpenRouterConnect}
                 className={cn(
-                    "flex items-center gap-3 w-full py-3 px-4 rounded-2xl text-muted-foreground hover:text-foreground hover:bg-muted transition-all cursor-pointer font-bold",
-                    !open && animate && "justify-center"
+                    "flex items-center gap-3 w-full py-2 px-3 rounded-xl text-sm font-medium text-muted-foreground hover:text-accent-foreground hover:bg-accent transition-all cursor-pointer",
+                    !open && animate ? "justify-center px-0" : "justify-start"
                 )}
             >
                 <Zap className={cn("w-5 h-5 shrink-0", openRouterKey && "text-indigo-500")} />
@@ -222,7 +222,7 @@ function UserSection() {
                     setOpen(false);
                 }}
                 className={cn(
-                    "flex items-center gap-2 px-3 py-2 rounded-lg text-sm font-semibold transition-all duration-300 w-full cursor-pointer hover:text-destructive hover:bg-destructive/10",
+                    "flex items-center gap-3 px-3 py-2 rounded-xl text-sm font-medium transition-all duration-200 w-full cursor-pointer hover:text-destructive hover:bg-destructive/10",
                     !open && animate ? "px-0 justify-center" : "justify-start"
                 )}
             >
@@ -258,7 +258,7 @@ const [openAI, setOpenAI] = useState(false);
                                 key={link.href}
                                 link={link}
                                 onClick={() => setOpen(false)}
-                                className="text-muted-foreground hover:text-foreground hover:bg-muted font-semibold transition-all rounded-xl"
+                                className=""
                             />
                         ))}
                     </div>
@@ -266,7 +266,7 @@ const [openAI, setOpenAI] = useState(false);
 <div className="mt-2">
     <button
         onClick={() => setOpenAI(!openAI)}
-        className="flex items-center justify-between w-full px-4 py-3 rounded-xl text-muted-foreground hover:text-foreground hover:bg-muted font-semibold transition-all"
+        className="flex items-center justify-between w-full px-3 py-2 rounded-xl text-muted-foreground hover:text-accent-foreground hover:bg-accent text-sm font-medium transition-all"
     >
         <div className="flex items-center gap-3">
             <Brain className="w-5 h-5 shrink-0" />
