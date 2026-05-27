@@ -6,7 +6,6 @@ import { communityApi } from '../services/api';
 import ChannelList from '../components/community/ChannelList';
 import ChatWindow from '../components/community/ChatWindow';
 import MembersList from '../components/community/MembersList';
-import PostsFeed from '../components/community/PostsFeed';
 import DirectMessages from '../components/community/DirectMessages';
 import {
   MessageSquare,
