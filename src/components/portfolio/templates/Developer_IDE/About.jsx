@@ -5,7 +5,7 @@ import {
   MapPin,
   Mail,
   Globe,
-  Github,
+  GitBranch as GithubIcon,
   Linkedin,
   Coffee,
   Code2,
@@ -119,7 +119,7 @@ export default function About({
     { key: "email",    value: email,    icon: <Mail size={12} /> },
     { key: "location", value: location, icon: <MapPin size={12} /> },
     { key: "website",  value: website,  icon: <Globe size={12} /> },
-    { key: "github",   value: github,   icon: <Github size={12} /> },
+    { key: "github",   value: github,   icon: <GitBranch as GithubIcon size={12} /> },
     { key: "linkedin", value: linkedin, icon: <Linkedin size={12} /> },
   ];
 

@@ -1,5 +1,5 @@
 import { motion } from "framer-motion";
-import { Github, Linkedin, Twitter, Mail, ExternalLink, MapPin, Download, Star, Briefcase, User, Code2, MessageSquare, Phone, Globe } from "lucide-react";
+import { Github as GithubIcon, Linkedin, Twitter, Mail, ExternalLink, MapPin, Download, Star, Briefcase, User, Code2, MessageSquare, Phone, Globe } from "lucide-react";
 import data from "../../../../data/dummy_data.json";
 
 // Glass card component reused throughout
@@ -81,7 +81,7 @@ function Hero() {
           {/* Socials */}
           <div className="flex gap-4 mt-6">
             {[
-              { icon: <Github size={18} />, href: data.socials.github, label: "GitHub" },
+              { icon: <GithubIconIcon size={18} />, href: data.socials.github, label: "GitHub" },
               { icon: <Linkedin size={18} />, href: data.socials.linkedin, label: "LinkedIn" },
               { icon: <Twitter size={18} />, href: data.socials.twitter, label: "Twitter" },
               { icon: <Globe size={18} />, href: data.socials.website, label: "Website" },
@@ -164,7 +164,7 @@ function About() {
               <div className="space-y-4">
                 {[
                   { label: "Email", value: data.socials.email, icon: <Mail size={14} /> },
-                  { label: "GitHub", value: data.socials.github, icon: <Github size={14} /> },
+                  { label: "GitHub", value: data.socials.github, icon: <GithubIconIcon size={14} /> },
                   { label: "Website", value: data.socials.website, icon: <Globe size={14} /> },
                 ].map(({ label, value, icon }) => (
                   <div key={label} className="flex items-center gap-3 p-3 rounded-xl bg-white/5 border border-white/10">
@@ -287,7 +287,7 @@ function Projects() {
                     </a>
                     <a href={project.githubUrl} target="_blank" rel="noreferrer"
                       className="flex items-center gap-1.5 text-xs text-white/50 hover:text-white/80 transition-colors">
-                      <Github size={13} /> Code
+                      <GithubIcon size={13} /> Code
                     </a>
                   </div>
                 </div>
@@ -463,7 +463,7 @@ function Contact() {
         {/* Social footer */}
         <motion.div variants={fadeUp} className="flex justify-center gap-4 mt-8">
           {[
-            { icon: <Github size={18} />, href: data.socials.github, label: "GitHub" },
+            { icon: <GithubIconIcon size={18} />, href: data.socials.github, label: "GitHub" },
             { icon: <Linkedin size={18} />, href: data.socials.linkedin, label: "LinkedIn" },
             { icon: <Twitter size={18} />, href: data.socials.twitter, label: "Twitter" },
             { icon: <Mail size={18} />, href: `mailto:${data.socials.email}`, label: "Email" },

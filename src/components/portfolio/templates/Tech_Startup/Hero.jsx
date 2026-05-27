@@ -1,5 +1,5 @@
 import React, { useEffect, useRef, useState } from 'react';
-import { Rocket, Zap, ArrowRight, Github, Linkedin, ExternalLink, ChevronDown, Sparkles, Code2, Cpu } from 'lucide-react';
+import { Rocket, Zap, ArrowRight, GitBranch as GithubIcon, Linkedin, ExternalLink, ChevronDown, Sparkles, Code2, Cpu } from 'lucide-react';
 
 /* ──────────────────────────────────────────────────────────────
    Animated Particle Canvas
@@ -304,7 +304,7 @@ export default function Hero() {
                 onMouseEnter={e => (e.currentTarget.style.color = '#64ffda')}
                 onMouseLeave={e => (e.currentTarget.style.color = '#8892b0')}
               >
-                <Github className="w-4 h-4" />
+                <GithubIcon className="w-4 h-4" />
               </a>
               <a
                 href="#"

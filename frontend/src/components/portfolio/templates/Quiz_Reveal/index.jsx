@@ -558,7 +558,7 @@ function ProjectCard({ project, index }) {
           )}
           {project.githubUrl && (
             <a href={githubUrl} target="_blank" rel="noreferrer" className="inline-flex items-center gap-2 rounded-full border border-white/15 px-4 py-2 text-sm font-bold text-white transition hover:border-fuchsia-200 hover:bg-fuchsia-300/10">
-              Code <Github className="h-4 w-4" />
+              Code <GithubIcon className="h-4 w-4" />
             </a>
           )}
         </div>
@@ -632,7 +632,7 @@ function Testimonials({ testimonials }) {
 function Contact({ personal, socials }) {
   const links = [
     { label: 'Email', value: socials?.email, href: sanitizeExternalUrl(socials?.email ? `mailto:${socials.email}` : ''), icon: Mail },
-    { label: 'GitHub', value: socials?.github, href: sanitizeExternalUrl(socials?.github), icon: Github },
+    { label: 'GitHub', value: socials?.github, href: sanitizeExternalUrl(socials?.github), icon: GithubIcon },
     { label: 'LinkedIn', value: socials?.linkedin, href: sanitizeExternalUrl(socials?.linkedin), icon: Linkedin },
     { label: 'Twitter', value: socials?.twitter, href: sanitizeExternalUrl(socials?.twitter), icon: Twitter },
   ].filter((link) => link.value);

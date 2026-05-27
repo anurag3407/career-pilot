@@ -176,7 +176,7 @@ export default function DragPortfolio() {
                       rel="noopener noreferrer" 
                       className="p-3 rounded-xl bg-white/5 hover:bg-slate-800 border border-white/5 text-slate-300 hover:text-white flex items-center justify-center transition-all"
                     >
-                      <Github className="w-4 h-4" />
+                      <GithubIcon className="w-4 h-4" />
                     </a>
                   )}
                   {socials.linkedin && (
@@ -319,7 +319,7 @@ export default function DragPortfolio() {
                           rel="noopener noreferrer"
                           className="text-[11px] font-mono font-bold uppercase text-slate-300 hover:text-pink-400 transition-colors flex items-center gap-1"
                         >
-                          Code <Github className="w-3.5 h-3.5" />
+                          Code <GithubIcon className="w-3.5 h-3.5" />
                         </a>
                       )}
                     </div>

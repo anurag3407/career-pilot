@@ -304,7 +304,7 @@ export default function Hero() {
                 onMouseEnter={e => (e.currentTarget.style.color = '#64ffda')}
                 onMouseLeave={e => (e.currentTarget.style.color = '#8892b0')}
               >
-                <Github className="w-4 h-4" />
+                <GithubIcon className="w-4 h-4" />
               </a>
               <a
                 href="#"

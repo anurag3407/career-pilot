@@ -1,6 +1,6 @@
 import { useRef } from "react";
 import { motion } from "framer-motion";
-import { Github, ExternalLink, ChevronLeft, ChevronRight } from "lucide-react";
+import { Github as GithubIcon, ExternalLink, ChevronLeft, ChevronRight } from "lucide-react";
 
 export default function Projects({ projects }) {
   const rowRef = useRef(null);
@@ -96,7 +96,7 @@ function ProjectCard({ project, index }) {
               onClick={(e) => e.stopPropagation()}
               className="flex items-center gap-1.5 px-3 py-1.5 bg-white/20 backdrop-blur text-white text-xs font-bold rounded-md hover:bg-white/30 transition-colors"
             >
-              <Github className="w-3 h-3" /> Code
+              <GithubIcon className="w-3 h-3" /> Code
             </a>
           )}
         </div>

@@ -51,7 +51,7 @@ export default function Projects({ data }) {
                 )}
                 {project.githubUrl && (
                   <a href={project.githubUrl} target="_blank" rel="noreferrer" className="flex items-center gap-2 text-xs font-mono font-bold tracking-wider text-slate-300 hover:text-indigo-400 uppercase transition-colors">
-                    <Github className="w-4 h-4" /> Repository
+                    <GithubIcon className="w-4 h-4" /> Repository
                   </a>
                 )}
               </div>

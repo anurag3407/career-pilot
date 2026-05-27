@@ -27,7 +27,7 @@ export default function Hero({ data }) {
           {data.socials.github && (
             <a href={data.socials.github} target="_blank" rel="noreferrer" aria-label="GitHub" className="p-3 bg-slate-900/80 border border-slate-800/80 rounded-full hover:border-indigo-500 hover:bg-indigo-500/20 text-slate-400 hover:text-indigo-400 transition-all duration-300 relative group overflow-hidden">
               <div className="absolute inset-0 bg-indigo-500/30 liquid-shape opacity-0 group-hover:opacity-100" />
-              <Github className="w-5 h-5 relative z-10" />
+              <GithubIcon className="w-5 h-5 relative z-10" />
             </a>
           )}
           {data.socials.linkedin && (

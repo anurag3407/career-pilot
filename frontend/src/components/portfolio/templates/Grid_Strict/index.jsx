@@ -1,6 +1,6 @@
 import React from 'react';
 import { motion } from 'framer-motion';
-import { Github, Linkedin, Twitter, ExternalLink, Code } from 'lucide-react';
+import { Github as GithubIcon, Linkedin, Twitter, ExternalLink, Code } from 'lucide-react';
 import data from '../../../../data/dummy_data.json';
 
 // Minimal animation variants
@@ -131,7 +131,7 @@ export default function GridStrict() {
                   <div className="absolute top-4 right-4 flex gap-2">
                     {project.githubUrl && (
                       <a href={project.githubUrl} className="p-3 bg-white border-2 border-black hover:bg-black hover:text-white transition-colors">
-                        <Github size={20} />
+                        <GithubIcon size={20} />
                       </a>
                     )}
                     {project.liveUrl && (
@@ -222,7 +222,7 @@ export default function GridStrict() {
               <div className="flex gap-4">
                 {socials.github && (
                   <a href={socials.github} className="p-4 border-2 border-black hover:bg-black hover:text-white transition-colors group">
-                    <Github size={24} className="group-hover:scale-110 transition-transform" />
+                    <GithubIcon size={24} className="group-hover:scale-110 transition-transform" />
                   </a>
                 )}
                 {socials.linkedin && (

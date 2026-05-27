@@ -70,7 +70,7 @@ function ProjectCard({ project, pulseGlowStyle }) {
             <ExternalLink className="w-4 h-4" /> Live Demo
           </a>
           <a href={project.githubUrl} className="flex-1 flex items-center justify-center gap-2 py-2.5 bg-white/5 hover:bg-white/10 rounded-lg text-sm font-semibold transition-all border border-white/10">
-            <Github className="w-4 h-4" /> Source
+            <GithubIcon className="w-4 h-4" /> Source
           </a>
         </div>
       </div>
@@ -399,7 +399,7 @@ export default function SoundReactive() {
             transition={{ duration: 0.8, delay: 0.6 }}
             className="flex gap-4"
           >
-            {data.socials.github && <a href={data.socials.github} className="p-3.5 bg-white/5 hover:bg-white/10 rounded-full border border-white/10 transition-colors"><Github className="w-5 h-5 text-gray-300" /></a>}
+            {data.socials.github && <a href={data.socials.github} className="p-3.5 bg-white/5 hover:bg-white/10 rounded-full border border-white/10 transition-colors"><GithubIcon className="w-5 h-5 text-gray-300" /></a>}
             {data.socials.linkedin && <a href={data.socials.linkedin} className="p-3.5 bg-white/5 hover:bg-white/10 rounded-full border border-white/10 transition-colors"><Linkedin className="w-5 h-5 text-gray-300" /></a>}
             {data.socials.twitter && <a href={data.socials.twitter} className="p-3.5 bg-white/5 hover:bg-white/10 rounded-full border border-white/10 transition-colors"><Twitter className="w-5 h-5 text-gray-300" /></a>}
             <a href={`mailto:${data.socials.email}`} className="p-3.5 bg-white/5 hover:bg-white/10 rounded-full border border-white/10 transition-colors"><Mail className="w-5 h-5 text-gray-300" /></a>

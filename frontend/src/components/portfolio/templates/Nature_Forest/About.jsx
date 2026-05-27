@@ -1,4 +1,4 @@
-import { Github, Heart, Leaf, Linkedin, Mail, MapPin, Mountain, TreePine, Twitter } from "lucide-react";
+import { Github as GithubIcon, Heart, Leaf, Linkedin, Mail, MapPin, Mountain, TreePine, Twitter } from "lucide-react";
 
 const skills = ["React", "Node.js", "TypeScript", "Python", "Tailwind CSS", "MongoDB", "GraphQL", "Docker"];
 
@@ -11,7 +11,7 @@ const stats = [
 
 const links = [
   { icon: Mail, label: "Email", href: "#" },
-  { icon: Github, label: "GitHub", href: "#" },
+  { icon: GithubIcon, label: "GitHub", href: "#" },
   { icon: Linkedin, label: "LinkedIn", href: "#" },
   { icon: Twitter, label: "Twitter", href: "#" },
 ];

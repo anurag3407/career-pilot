@@ -106,7 +106,7 @@ export default function ProjectsSection({ data, onChoice }) {
                       rel="noopener noreferrer"
                       className="flex items-center gap-1.5 text-xs px-3 py-2 rounded-lg border border-slate-600 hover:border-slate-400 text-slate-300 hover:text-white transition-colors"
                     >
-                      <Github size={11} />
+                      <GithubIcon size={11} />
                       Source
                     </a>
                   )}

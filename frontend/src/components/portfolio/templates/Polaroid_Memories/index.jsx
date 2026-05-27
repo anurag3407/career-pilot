@@ -90,7 +90,7 @@ export default function PolaroidMemories({ data: propData }) {
                 if (!url) return null;
                 return (
                   <a key={platform} href={platform === 'email' ? `mailto:${url}` : url} target="_blank" rel="noopener noreferrer" className="p-2 bg-gray-800 text-white rounded-full hover:bg-red-500 hover:scale-110 transition-all shadow-md">
-                    {platform === 'github' ? <Github size={18}/> : platform === 'linkedin' ? <Linkedin size={18}/> : platform === 'twitter' ? <Twitter size={18}/> : <Mail size={18}/>}
+                    {platform === 'github' ? <GithubIcon size={18}/> : platform === 'linkedin' ? <Linkedin size={18}/> : platform === 'twitter' ? <Twitter size={18}/> : <Mail size={18}/>}
                   </a>
                 );
               })}
@@ -131,7 +131,7 @@ export default function PolaroidMemories({ data: propData }) {
                       )}
                       {project.githubUrl && (
                         <a href={project.githubUrl} target="_blank" rel="noopener noreferrer" className="bg-white text-black hover:bg-gray-200 px-4 py-2 rounded-lg font-bold text-sm shadow-lg flex items-center gap-1 transition-transform hover:scale-105">
-                          <Github size={16} /> Code
+                          <GithubIcon size={16} /> Code
                         </a>
                       )}
                     </div>

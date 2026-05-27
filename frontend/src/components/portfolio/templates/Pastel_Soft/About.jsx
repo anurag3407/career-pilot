@@ -13,7 +13,7 @@ export default function About() {
     {
       title: "Open Source",
       description: "Learning through contribution",
-      icon: <Github size={20} />,
+      icon: <GithubIconIcon size={20} />,
       bgColor: "bg-teal-100",
       textColor: "text-teal-500"
     },

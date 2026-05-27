@@ -283,7 +283,7 @@ function HoloCard({ project, index, isActive, onActivate }) {
                 aria-label={`View ${project.title} on GitHub`}
                 className="flex items-center justify-center gap-2 px-4 py-2.5 rounded-xl border border-white/10 bg-white/5 text-slate-300 text-sm font-medium hover:bg-white/10 hover:border-white/20 hover:text-white transition-all duration-200 flex-1"
               >
-                <Github className="w-4 h-4" />
+                <GithubIcon className="w-4 h-4" />
                 GitHub
               </a>
             )}
@@ -295,7 +295,7 @@ function HoloCard({ project, index, isActive, onActivate }) {
                   Live Demo
                 </span>
                 <span className="flex items-center justify-center gap-2 px-4 py-2.5 rounded-xl border border-white/10 bg-white/5 text-slate-400 text-sm font-medium flex-1">
-                  <Github className="w-4 h-4" />
+                  <GithubIcon className="w-4 h-4" />
                   GitHub
                 </span>
               </>
@@ -577,7 +577,7 @@ export default function HolographicProjects({
               id="projects-cta-github"
               className="flex items-center gap-2 px-7 py-3 rounded-full border border-white/10 bg-white/5 text-slate-300 font-semibold text-sm hover:bg-white/10 hover:border-white/20 hover:text-white transition-all duration-300"
             >
-              <Github className="w-4 h-4" />
+              <GithubIcon className="w-4 h-4" />
               All Repositories
             </a>
           </div>

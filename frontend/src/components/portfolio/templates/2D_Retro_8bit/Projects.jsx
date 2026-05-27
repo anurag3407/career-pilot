@@ -483,7 +483,7 @@ export default function Projects({
                           onClick={(e) => e.stopPropagation()}
                           className="flex-1 flex items-center justify-center gap-1.5 py-2.5 bg-neutral-800 hover:bg-neutral-700 text-white font-retro-title text-[9px] border-2 border-black shadow-[3px_3px_0px_0px_rgba(0,0,0,1)] active:translate-x-[1.5px] active:translate-y-[1.5px] active:shadow-[1.5px_1.5px_0px_0px_rgba(0,0,0,1)] transition-all"
                         >
-                          <Github className="w-3 h-3" />
+                          <GithubIcon className="w-3 h-3" />
                           GET CODE
                         </a>
                       )}
@@ -594,7 +594,7 @@ export default function Projects({
                                   className="text-neutral-400 hover:text-white transition-colors"
                                   title="View Code"
                                 >
-                                  <Github className="w-4 h-4" />
+                                  <GithubIcon className="w-4 h-4" />
                                 </a>
                               )}
                             </div>

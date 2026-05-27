@@ -1,5 +1,5 @@
 import { useState, useEffect } from 'react'
-import { FileText, Upload, Sparkles, Linkedin, BarChart3, LayoutTemplate, Eye, FileDown, PlusCircle, Github, TextSelect } from 'lucide-react'
+import { FileText, Upload, Sparkles, Linkedin, BarChart3, LayoutTemplate, Eye, FileDown, PlusCircle, GitBranch as GithubIcon, TextSelect } from 'lucide-react'
 import { resumeApi } from '../../services/api'
 import HubLayout from '../../components/HubLayout'
 import ToolCard from '../../components/ToolCard'
@@ -66,7 +66,7 @@ export default function ResumeHub() {
       />
       <ToolCard
         to="/github-dashboard"
-        icon={Github}
+        icon={GithubIcon}
         title="GitHub to Resume"
         description="Import your GitHub profile and repositories to instantly generate a developer resume."
         color="foreground"

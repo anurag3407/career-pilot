@@ -1,6 +1,6 @@
 import React from 'react';
 import { motion } from 'framer-motion';
-import { Github, Linkedin, Twitter, Terminal } from 'lucide-react';
+import { Github as GithubIcon, Linkedin, Twitter, Terminal } from 'lucide-react';
 import data from '../../../../data/dummy_data.json';
 import { GlitchText, scanline } from './shared';
 
@@ -39,7 +39,7 @@ export default function Hero() {
         <div className="flex flex-wrap gap-8">
           {data.socials.github && (
             <a href={data.socials.github} target="_blank" rel="noreferrer" className="flex items-center gap-3 p-4 bg-zinc-900 border border-zinc-800 hover:border-cyan-500 hover:text-cyan-400 transition-colors group">
-              <Github className="w-6 h-6 group-hover:scale-110 transition-transform" />
+              <GithubIcon className="w-6 h-6 group-hover:scale-110 transition-transform" />
               <span className="font-mono text-sm hidden sm:block">GitHub</span>
             </a>
           )}

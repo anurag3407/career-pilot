@@ -848,7 +848,7 @@ function Hero({ theme, moodKey }) {
           <a href={data.socials.github} target="_blank" rel="noopener noreferrer"
             className="flex items-center gap-2 px-5 py-2.5 rounded-xl text-sm font-semibold shadow-lg hover:-translate-y-0.5 transition-all"
             style={{ background: theme.buttonBg, color: theme.buttonText }}>
-            <Github size={15} /> GitHub
+            <GithubIcon size={15} /> GitHub
           </a>
           <a href={data.socials.linkedin} target="_blank" rel="noopener noreferrer"
             className="flex items-center gap-2 px-5 py-2.5 rounded-xl text-sm font-semibold border hover:-translate-y-0.5 transition-all"
@@ -1006,7 +1006,7 @@ function Projects({ theme }) {
                   <a href={project.githubUrl} target="_blank" rel="noopener noreferrer"
                     className="flex items-center gap-1.5 text-xs font-semibold px-3 py-1.5 rounded-lg border transition-all hover:-translate-y-0.5"
                     style={{ ...theme.card, color: theme.prose }}>
-                    <Github size={12} /> Code
+                    <GithubIcon size={12} /> Code
                   </a>
                 </div>
               </div>
@@ -1105,7 +1105,7 @@ function Contact({ theme }) {
           </p>
           {[
             { icon: Mail,     label: data.personal.email,  href: `mailto:${data.personal.email}` },
-            { icon: Github,   label: 'GitHub',              href: data.socials.github },
+            { icon: GithubIcon,   label: 'GitHub',              href: data.socials.github },
             { icon: Linkedin, label: 'LinkedIn',            href: data.socials.linkedin },
             { icon: Twitter,  label: 'Twitter',             href: data.socials.twitter },
           ].map(({ icon: Icon, label, href }) => (

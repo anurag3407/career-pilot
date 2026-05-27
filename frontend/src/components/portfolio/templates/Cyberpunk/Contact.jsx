@@ -95,7 +95,7 @@ export default function Contact() {
                 href="#"
                 className="rounded-2xl border border-cyan-400/20 bg-white/5 p-4 text-cyan-400 transition-all duration-300 hover:scale-110 hover:shadow-[0_0_20px_rgba(0,255,255,0.5)]"
               >
-                <Github size={22} />
+                <GithubIcon size={22} />
               </a>
 
               <a

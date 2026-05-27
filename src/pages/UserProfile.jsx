@@ -3,7 +3,7 @@ import { useParams, Link } from 'react-router-dom'
 import toast from 'react-hot-toast'
 import { motion } from 'framer-motion'
 import {
-  MapPin, Globe, Github, Linkedin, Pencil, Save, X,
+  MapPin, Globe, GitBranch as GithubIcon, Linkedin, Pencil, Save, X,
   FileText, Mic, Heart, MessageSquare, Calendar,
   Plus, ExternalLink
 } from 'lucide-react'
@@ -385,7 +385,7 @@ export default function UserProfile() {
                       rel="noopener noreferrer"
                       className="flex items-center gap-1.5 text-sm text-zinc-400 hover:text-indigo-400 transition-colors"
                     >
-                      <Github className="w-4 h-4" />
+                      <GithubIcon className="w-4 h-4" />
                       {profile.github}
                       <ExternalLink className="w-3 h-3" />
                     </a>

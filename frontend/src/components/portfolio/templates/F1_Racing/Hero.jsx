@@ -379,7 +379,7 @@ export default function F1Hero({ data }) {
                 <div className="flex gap-4">
                   {profile.socials?.github && (
                     <a href={profile.socials.github} target="_blank" rel="noopener noreferrer" className="hover:text-white text-neutral-400 transition-colors">
-                      <Github className="w-4.5 h-4.5" />
+                      <GithubIcon className="w-4.5 h-4.5" />
                     </a>
                   )}
                   {profile.socials?.linkedin && (

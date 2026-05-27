@@ -1,6 +1,6 @@
 import { useState, useEffect } from "react";
 import { motion, AnimatePresence } from "framer-motion";
-import { Github, Linkedin, Twitter, Mail, MapPin, ExternalLink, Sun, Moon } from "lucide-react";
+import { Github as GithubIcon, Linkedin, Twitter, Mail, MapPin, ExternalLink, Sun, Moon } from "lucide-react";
 import data from "../../../../data/dummy_data.json";
 
 const SKY_STAGES = [
@@ -141,7 +141,7 @@ export default function DayNightCycle() {
           <p className={`italic text-sm max-w-lg mx-auto mb-8 leading-relaxed ${subClass}`}>"{data.personal.tagline}"</p>
           <div className="flex flex-wrap justify-center gap-3 mb-4">
             {[
-              { icon: <Github size={16}/>, href: data.socials.github, label: "GitHub" },
+              { icon: <GithubIconIcon size={16}/>, href: data.socials.github, label: "GitHub" },
               { icon: <Linkedin size={16}/>, href: data.socials.linkedin, label: "LinkedIn" },
               { icon: <Twitter size={16}/>, href: data.socials.twitter, label: "Twitter" },
               { icon: <Mail size={16}/>, href: `mailto:${data.socials.email}`, label: "Email" },
@@ -226,7 +226,7 @@ export default function DayNightCycle() {
                     </a>
                     <a href={p.githubUrl} target="_blank" rel="noreferrer"
                       className={`flex items-center gap-1 text-xs ${accentClass}`}>
-                      <Github size={11}/> Code
+                      <GithubIcon size={11}/> Code
                     </a>
                   </div>
                 </div>

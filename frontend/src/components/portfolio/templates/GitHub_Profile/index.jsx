@@ -29,7 +29,7 @@ export default function GitHubProfile() {
       {/* Top Navbar (GitHub style) */}
       <nav className="bg-[#161b22] px-4 py-3 flex items-center justify-between border-b border-[#30363d]">
         <div className="flex items-center gap-4">
-          <Github className="w-8 h-8 text-white" />
+          <GithubIcon className="w-8 h-8 text-white" />
           <div className="hidden md:flex items-center rounded-md border border-[#30363d] bg-[#0d1117] px-3 py-1 w-64">
             <span className="text-sm text-[#8b949e]">Search or jump to...</span>
           </div>
@@ -320,7 +320,7 @@ export default function GitHubProfile() {
       <footer className="border-t border-[#30363d] mt-12 py-8 mb-[-3rem]">
         <div className="max-w-[1280px] mx-auto px-4 flex flex-col md:flex-row items-center justify-center gap-4 text-xs text-[#8b949e]">
           <div className="flex items-center gap-2">
-            <Github className="w-5 h-5 text-[#8b949e]" />
+            <GithubIcon className="w-5 h-5 text-[#8b949e]" />
             <span>© 2026 GitHub, Inc. Profile Theme by {data.personal.name}</span>
           </div>
           <div className="flex gap-4 flex-wrap justify-center mt-2 md:mt-0">

@@ -168,7 +168,7 @@ export default function Hero() {
               transition={{ duration: 0.8, delay: 0.5 }}
             >
               {[
-                { icon: <Github size={18} />, label: 'GitHub', href: '#' },
+                { icon: <GithubIconIcon size={18} />, label: 'GitHub', href: '#' },
                 { icon: <Linkedin size={18} />, label: 'LinkedIn', href: '#' },
                 { icon: <Mail size={18} />, label: 'Email', href: '#' },
               ].map(({ icon, label, href }) => (

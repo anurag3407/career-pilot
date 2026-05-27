@@ -386,7 +386,7 @@ function ContactPin({ pin }) {
       <div className="flex gap-3 mb-2 w-full">
         {pin.socials.github && (
           <a href={pin.socials.github} target="_blank" rel="noopener noreferrer" className="flex-1 bg-white/10 hover:bg-white/20 py-3 rounded-xl flex justify-center transition-colors">
-            <Github size={20} />
+            <GithubIcon size={20} />
           </a>
         )}
         {pin.socials.linkedin && (

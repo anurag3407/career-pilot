@@ -108,7 +108,7 @@ export default function Contact({ personal, socials }) {
             <div className="space-y-3">
               {[
                 { icon: Mail, label: "Email", value: socials.email, href: `mailto:${socials.email}` },
-                { icon: Github, label: "GitHub", value: "github.com/alexrivera", href: socials.github },
+                { icon: GithubIcon, label: "GitHub", value: "github.com/alexrivera", href: socials.github },
                 { icon: Linkedin, label: "LinkedIn", value: "linkedin.com/in/alexrivera", href: socials.linkedin },
                 { icon: Twitter, label: "Twitter", value: "@alexrivera", href: socials.twitter },
               ].map(({ icon: Icon, label, value, href }) => (

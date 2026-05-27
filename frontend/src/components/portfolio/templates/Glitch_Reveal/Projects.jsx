@@ -34,7 +34,7 @@ export default function Projects() {
                   <a href={project.liveUrl} target="_blank" rel="noreferrer" className="flex items-center gap-2 text-sm font-mono text-white hover:text-cyan-400 group/link"><ExternalLink className="w-4 h-4 group-hover/link:animate-pulse" /> Live_View</a>
                 )}
                 {project.githubUrl && (
-                  <a href={project.githubUrl} target="_blank" rel="noreferrer" className="flex items-center gap-2 text-sm font-mono text-white hover:text-fuchsia-500 group/link"><Github className="w-4 h-4 group-hover/link:animate-pulse" /> Source_Code</a>
+                  <a href={project.githubUrl} target="_blank" rel="noreferrer" className="flex items-center gap-2 text-sm font-mono text-white hover:text-fuchsia-500 group/link"><GithubIcon className="w-4 h-4 group-hover/link:animate-pulse" /> Source_Code</a>
                 )}
               </div>
             </div>

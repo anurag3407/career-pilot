@@ -1,5 +1,5 @@
 import React, { useState } from "react";
-import { Github, ExternalLink, Zap, Star, Rocket, Code2, Bug, Gamepad2, Cloud } from "lucide-react";
+import { Github as GithubIcon, ExternalLink, Zap, Star, Rocket, Code2, Bug, Gamepad2, Cloud } from "lucide-react";
 
 /* ─────────────────────────────────────────────
    MOCK DATA  (fully self-contained)
@@ -253,7 +253,7 @@ const ProjectCard = ({ project }) => {
                          hover:shadow-[5px_5px_0px_0px_rgba(0,0,0,0.6)] hover:-translate-y-px hover:-translate-x-px
                          transition-all duration-150"
             >
-              <Github className="w-4 h-4" />
+              <GithubIcon className="w-4 h-4" />
               Code
             </a>
             <a
@@ -352,7 +352,7 @@ export default function Projects() {
             >
               <Zap className="w-5 h-5" />
               View All on GitHub
-              <Github className="w-5 h-5" />
+              <GithubIcon className="w-5 h-5" />
             </div>
           </div>
           {/* Exclamation bubble */}

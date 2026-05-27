@@ -261,7 +261,7 @@ export default function TwitterProfile() {
                 <FollowItem 
                   name="GitHub" 
                   handle="View Code" 
-                  icon={<Github size={20} />} 
+                  icon={<GithubIcon size={20} />} 
                   href={data.socials.github} 
                 />
               )}
@@ -395,7 +395,7 @@ function Tweet({
               )}
               {links.github && (
                 <a href={links.github} target="_blank" rel="noopener noreferrer" className="flex items-center gap-1 text-[#1d9bf0] hover:underline">
-                  <Github size={16} /> Repository
+                  <GithubIcon size={16} /> Repository
                 </a>
               )}
             </div>

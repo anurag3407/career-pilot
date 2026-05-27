@@ -181,7 +181,7 @@ export default function ConfettiBurst() {
             onClick={createBurst}
             className="p-4 rounded-full bg-white/10 hover:bg-pink-500 transition"
           >
-            <Github />
+            <GithubIcon />
           </a>
 
           <a
@@ -343,7 +343,7 @@ export default function ConfettiBurst() {
                     className="flex items-center gap-2 px-4 py-2 rounded-xl border border-pink-400"
                   >
                     Code
-                    <Github size={18} />
+                    <GithubIcon size={18} />
                   </a>
                 </div>
               </div>
@@ -436,7 +436,7 @@ export default function ConfettiBurst() {
             onClick={createBurst}
             className="hover:text-pink-400 transition"
           >
-            <Github size={30} />
+            <GithubIcon size={30} />
           </a>
 
           <a
