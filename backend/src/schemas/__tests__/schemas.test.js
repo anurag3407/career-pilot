@@ -456,19 +456,19 @@ import { enable2FASchema, tokenOnlySchema, backupCodeSchema } from '../twoFactor
 
 describe('twoFactor.schema — enable2FASchema', () => {
   test('accepts valid body', () => {
-    const result = enable2FASchema.safeParse({ secret: 'ABCD', token: '123456' });
+    const result = enable2FASchema.safeParse({ secret: 'TEST_SECRET', token: 'TEST_TOKEN' });
     assert.ok(result.success);
   });
 
   test('rejects missing token', () => {
-    const result = enable2FASchema.safeParse({ secret: 'ABCD' });
+    const result = enable2FASchema.safeParse({ secret: 'TEST_SECRET' });
     assert.ok(!result.success);
   });
 });
 
 describe('twoFactor.schema — tokenOnlySchema', () => {
   test('accepts token', () => {
-    const result = tokenOnlySchema.safeParse({ token: '123456' });
+    const result = tokenOnlySchema.safeParse({ token: 'TEST_TOKEN' });
     assert.ok(result.success);
   });
 
@@ -480,7 +480,7 @@ describe('twoFactor.schema — tokenOnlySchema', () => {
 
 describe('twoFactor.schema — backupCodeSchema', () => {
   test('accepts code', () => {
-    const result = backupCodeSchema.safeParse({ code: 'XXXX-YYYY' });
+    const result = backupCodeSchema.safeParse({ code: 'TEST_CODE' });
     assert.ok(result.success);
   });
 });
