@@ -5,6 +5,7 @@ dotenv.config();
 
 import { createServer } from 'http';
 import cors from 'cors';
+import { allowedOrigins } from './config/cors.js';
 import helmet from 'helmet';
 import rateLimit from 'express-rate-limit';
 import searchRoutes from './routes/search.js';
@@ -88,13 +89,6 @@ const PORT = process.env.PORT || 5001;
 console.log('🔧 FRONTEND_URL env var:', process.env.FRONTEND_URL);
 
 // CORS configuration - MUST come before helmet
-const allowedOrigins = [
-  'http://localhost:5173',
-  'http://localhost:3000',
-  'https://careerpilotyy.netlify.app',  // Hardcoded as fallback
-  process.env.FRONTEND_URL,
-].filter(Boolean).map(url => url.replace(/\/$/, '')); // Remove trailing slashes
-
 console.log('🔧 Allowed origins:', allowedOrigins);
 
 app.use(cors({
@@ -148,7 +142,7 @@ app.use(helmet({
       ],
       connectSrc: [
         "'self'",
-        process.env.FRONTEND_URL || "http://localhost:5173",
+        ...allowedOrigins,
         "https://firebaseapp.com",
         "https://*.googleapis.com",
         "https://*.firebaseio.com",
