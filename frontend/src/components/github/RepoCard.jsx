@@ -12,6 +12,7 @@ const languageColors = {
 
 const RepoCard = ({ repo }) => {
   const navigate = useNavigate();
+  const language = repo.language || "Unknown";
 
   return (
     <div
@@ -44,10 +45,10 @@ const RepoCard = ({ repo }) => {
             className="w-3 h-3 rounded-full"
             style={{
               backgroundColor:
-                languageColors[repo.language] || "#8b949e",
+                languageColors[language] || "#8b949e",
             }}
           />
-          <span>{repo.language}</span>
+          <span>{language}</span>
         </div>
 
         <div className="flex items-center gap-1">
@@ -66,7 +67,7 @@ const RepoCard = ({ repo }) => {
       </p>
 
       <button
-        onClick={() => console.log("Analyze clicked")}
+        onClick={() => navigate(`/repositories/${encodeURIComponent(repo.full_name || repo.name)}`)}
         className="
           mt-auto
           flex items-center justify-center gap-2

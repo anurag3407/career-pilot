@@ -37,6 +37,7 @@ import FellowshipChat from './pages/fellowship/FellowshipChat';
 import SecuritySettings from './pages/SecuritySettings';
 import LinkedInCallback from './pages/LinkedInCallback';
 
+
 function ProtectedRoute({ children }) {
   const { user, loading } = useAuth();
 
@@ -86,6 +87,7 @@ function App() {
         <SocketProvider>
           <BrowserRouter>
             <div className="bg-mesh" />
+            
             <Toaster
               position="top-right"
               toastOptions={{
