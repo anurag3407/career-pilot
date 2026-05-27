@@ -102,6 +102,10 @@ OUTPUT RULES:
 - End with the last skill or section`;
 };
 
+import { retryEnhancement } from "frontend/src/utils/retryEnhancement.js";
+import { isValidVersion } from "frontend/src/utils/versionValidation.js";
+import { recoverVersionState } from "frontend/src/utils/recoverVersionState.js";
+
 export const enhanceResume = async (resumeText, preferences, aiProvider) => {
   const {
     jobRole,
