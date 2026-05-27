@@ -335,7 +335,7 @@
                   <p className="text-gray-300 text-sm leading-relaxed italic mb-6">{t.text}</p>
                   <div className="flex items-center gap-3">
                     <div className="w-9 h-9 rounded-full bg-gradient-to-br from-yellow-500 to-orange-600 flex items-center justify-center text-sm font-bold">
-                      {t.name[0]}
+                      {t?.name?.charAt(0) || "U"}
                     </div>
                     <div>
                       <p className="font-semibold text-sm">{t.name}</p>
