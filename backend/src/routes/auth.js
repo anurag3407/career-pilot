@@ -24,6 +24,7 @@ const router = express.Router();
 const stateStore = new Map();
 const tokenStore = new Map();       // one-time LinkedIn token exchange store
 const passwordResetStore = new Map(); // one-time password reset token store (1h TTL)
+const linkedInTokenStore = new Map(); // one-time LinkedIn token cache store (60s TTL)
 
 router.post('/register', validate(registerSchema), asyncHandler(async (req, res) => {
   const { email, name, password } = req.body;
@@ -310,17 +311,17 @@ router.get('/linkedin/callback', asyncHandler(async (req, res) => {
 
   const customToken = await admin.auth().createCustomToken(firebaseUid, { linkedinId });
 
-  const exchangeCode = crypto.randomBytes(24).toString('hex');
-  linkedInTokenStore.set(exchangeCode, {
+  const exchangeCodeVal = crypto.randomBytes(24).toString('hex');
+  linkedInTokenStore.set(exchangeCodeVal, {
     token: customToken,
     isNew: !mongoUser,
     expiresAt: Date.now() + 60 * 1000,
   });
   // Store token in one-time exchange store (60s TTL) instead of passing in URL
-  const exchangeCode = crypto.randomBytes(16).toString('hex');
-  tokenStore.set(exchangeCode, { token: customToken, isNew: !mongoUser, expiresAt: Date.now() + 60000 });
+  const pathExchangeCode = crypto.randomBytes(16).toString('hex');
+  tokenStore.set(pathExchangeCode, { token: customToken, isNew: !mongoUser, expiresAt: Date.now() + 60000 });
 
-  res.redirect(`${frontendUrl}/auth/linkedin/callback?code=${exchangeCode}`);
+  res.redirect(`${frontendUrl}/auth/linkedin/callback?code=${pathExchangeCode}`);
 }));
 
 // One-time token exchange endpoint — the frontend calls this immediately after the OAuth
@@ -346,6 +347,8 @@ router.get('/linkedin/token', asyncHandler(async (req, res) => {
   }
 
   linkedInTokenStore.delete(code);
+  res.json({ success: true, token: entry.token, isNew: entry.isNew });
+}));
 
 // One-time token exchange endpoint — frontend calls this after LinkedIn OAuth redirect
 // instead of receiving the Firebase custom token in the URL.
