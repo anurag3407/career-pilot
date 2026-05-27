@@ -22,6 +22,7 @@ export default function Projects({ data }) {
               <img 
                 src={project.image} 
                 alt={project.title} 
+                loading="lazy"
                 className="w-full h-full object-cover group-hover:scale-110 transition-transform duration-[1.5s] ease-out" 
               />
               <div className="absolute inset-0 bg-slate-950/50 group-hover:bg-transparent transition-colors duration-700" />
