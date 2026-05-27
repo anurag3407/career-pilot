@@ -354,6 +354,8 @@ export default function Enhance() {
   const [loading, setLoading] = useState(true)
   const [analyzing, setAnalyzing] = useState(false)
   const [enhancing, setEnhancing] = useState(false)
+  const [generateStatus, setGenerateStatus] = useState(null) // null | 'in-progress' | 'completed' | 'failed'
+  const [generateError, setGenerateError] = useState(null)
   const [scoring, setScoring] = useState(false)
   const [scoreData, setScoreData] = useState(null)
   const [atsAnalysis, setAtsAnalysis] = useState(null)
@@ -435,6 +437,8 @@ export default function Enhance() {
 
   const handleEnhanceWithAI = async () => {
     setEnhancing(true)
+    setGenerateStatus('in-progress')
+    setGenerateError(null)
     try {
       const apiPreferences = {
         jobRole: jobRole,
@@ -467,11 +471,27 @@ export default function Enhance() {
         console.error('Failed to auto-save version snapshot for AI enhancement:', versionErr)
       }
 
+      setGenerateStatus('completed')
       toast.success('Resume enhanced successfully!')
       triggerConfetti({ duration: 3000, particleCount: 150, spread: 120 })
       navigate(`/resume/${resumeId}`)
     } catch (error) {
+      console.error('Enhance failed:', error)
+      setGenerateStatus('failed')
+      setGenerateError(error.message || 'Failed to enhance resume')
       toast.error(error.message || 'Failed to enhance resume')
+    } finally {
+      setEnhancing(false)
+    }
+  }
+
+  const handleRetryEnhance = async () => {
+    // allow quick retry without navigating away
+    setGenerateStatus('in-progress')
+    setGenerateError(null)
+    try {
+      setEnhancing(true)
+      await handleEnhanceWithAI()
     } finally {
       setEnhancing(false)
     }
@@ -606,6 +626,18 @@ export default function Enhance() {
                           atsAnalysis.atsScore >= 40 ? 'Needs Work' : 'Major Improvements Needed'}
                     </p>
                     <p className="text-sm text-muted-foreground">for {jobRole}</p>
+                  </div>
+                  {/* AI generation status + retry */}
+                  <div className="mt-4 text-center">
+                    {generateStatus === 'in-progress' && (
+                      <div className="text-sm text-muted-foreground">AI enhancement running... <span className="ml-2 inline-block animate-pulse">●</span></div>
+                    )}
+                    {generateStatus === 'failed' && (
+                      <div className="mt-2">
+                        <div className="text-sm text-red-400 mb-2">Failed to enhance: {generateError}</div>
+                        <button onClick={handleRetryEnhance} className="px-4 py-2 rounded bg-primary text-white">Retry</button>
+                      </div>
+                    )}
                   </div>
                   <button
                     onClick={() => {
