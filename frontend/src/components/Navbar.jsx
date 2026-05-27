@@ -32,7 +32,7 @@ export default function Navbar() {
   const [scrolled, setScrolled] = useState(false)
   const [searchQuery, setSearchQuery] = useState('')
   const [showDropdown, setShowDropdown] = useState(false)
-  const [notificationCount] = useState(3)
+  const [notificationCount] = useState(0)
 
   useEffect(() => {
     const handleScroll = () => {
