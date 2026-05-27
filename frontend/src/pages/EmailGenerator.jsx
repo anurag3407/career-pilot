@@ -159,7 +159,7 @@ const EmailGenerator = () => {
               <ul className="space-y-3">
                 {results.subjectLines.map((subject, idx) => (
                   <li key={idx} className="flex items-center gap-3 bg-background p-3 rounded-lg shadow-sm border border-border">
-                    <span className="flex-shrink-0 w-6 h-6 bg-primary/20 text-primary rounded-full flex items-center justify-center text-sm font-bold">{idx + 1}</span>
+                    <span className="shrink-0 w-6 h-6 bg-primary/20 text-primary rounded-full flex items-center justify-center text-sm font-bold">{idx + 1}</span>
                     <span className="text-foreground font-medium">{subject}</span>
                     <button
                       onClick={() => copyToClipboard(subject, `subj-${idx}`)}

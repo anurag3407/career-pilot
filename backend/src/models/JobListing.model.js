@@ -4,8 +4,7 @@ const jobListingSchema = new mongoose.Schema({
     externalId: {
         type: String,
         required: true,
-        unique: true,
-        index: true
+        unique: true
     },
     title: {
         type: String,
@@ -78,6 +77,9 @@ const jobListingSchema = new mongoose.Schema({
 }, {
     timestamps: true
 });
+
+// Explicit unique index for the $in bulk-lookup used by bulkUpsertJobs
+jobListingSchema.index({ externalId: 1 }, { unique: true, background: true });
 
 // Text search index for efficient job matching
 jobListingSchema.index({ title: 'text', company: 'text', description: 'text' });

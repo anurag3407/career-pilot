@@ -1,3 +1,4 @@
+import StockTicker from "./components/portfolio/templates/Finance_Corporate/StockTicker";
 
 import React, { useState, useEffect } from 'react';
 import Deployments from './pages/Deployments'
@@ -26,7 +27,7 @@ import JobAlerts from './pages/JobAlerts';
 import ResumeBuilder from './pages/ResumeBuilder';
 import TextToResume from './pages/TextToResume';
 import About from './components/portfolio/templates/Tech_Startup/About';
-
+import ChatbotPortfolio from "./components/portfolio/templates/Chatbot_Portfolio";
 
 import JobTracker from './pages/JobTracker';
 import { Community, NotFound } from './pages';
@@ -60,6 +61,7 @@ import PortfolioHub from './pages/hubs/PortfolioHub';
 import CareerGrowthHub from './pages/hubs/CareerGrowthHub';
 import CommunityHub from './pages/hubs/CommunityHub';
 import GitHubDashboard from './pages/GitHubDashboard';
+import ScrollToTop from "./components/ScrollToTop";
 
 function ProtectedRoute({ children }) {
   const { user, loading } = useAuth();
@@ -122,6 +124,7 @@ function AppRoutes() {
 
   return (
     <BrowserRouter>
+      <ScrollToTop />
       {!!user && (
         <CommandPalette
           isOpen={isCommandPaletteOpen}
@@ -167,7 +170,7 @@ function AppRoutes() {
 
         {/* Template Gallery Route (Registered at /templates) */}
         <Route path="/templates" element={<TemplateGallery />} />
-
+        <Route path="/templates/chatbot" element={<ChatbotPortfolio />} />
         {/* Core Protected Routes */}
         <Route path="/dashboard" element={<ProtectedRoute><Dashboard /></ProtectedRoute>} />
         <Route path="/upload" element={<ProtectedRoute><Upload /></ProtectedRoute>} />

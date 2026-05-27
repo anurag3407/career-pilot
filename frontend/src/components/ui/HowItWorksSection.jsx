@@ -37,7 +37,7 @@ function TimelineRow({ item, index, isLast }) {
   return (
     <div ref={ref} className="flex items-stretch">
       {/* Spine */}
-      <div className="flex flex-col items-center w-12 flex-shrink-0">
+      <div className="flex flex-col items-center w-12 shrink-0">
         {/* Line above — invisible on first step */}
         <motion.div
           initial={{ scaleY: 0 }}
@@ -53,7 +53,7 @@ function TimelineRow({ item, index, isLast }) {
           initial={{ scale: 0, opacity: 0 }}
           animate={isInView ? { scale: 1, opacity: 1 } : {}}
           transition={{ type: "spring", stiffness: 400, damping: 20, delay: 0.1 }}
-          className="flex-shrink-0 w-10 h-10 rounded-full border-2 border-primary bg-background
+          className="shrink-0 w-10 h-10 rounded-full border-2 border-primary bg-background
                      flex items-center justify-center text-xs font-bold text-primary
                      ring-4 ring-background z-10"
         >
@@ -96,7 +96,7 @@ function TimelineRow({ item, index, isLast }) {
             <motion.div
               whileHover={{ scale: 1.08, rotate: 4 }}
               transition={{ type: "spring", stiffness: 400, damping: 15 }}
-              className="flex-shrink-0 w-11 h-11 rounded-xl bg-muted border border-border
+              className="shrink-0 w-11 h-11 rounded-xl bg-muted border border-border
                          flex items-center justify-center
                          group-hover:-translate-y-1 transition-transform duration-300"
             >
