@@ -63,6 +63,22 @@ import {
   startDigestWorker
 } from './services/weeklyDigestService.js';
 
+// ============================================================================
+// Configuration validation - Check for required API keys
+// ============================================================================
+if (!process.env.GEMINI_API_KEY) {
+  console.warn('⚠️  GEMINI_API_KEY is not configured - AI features will be unavailable.');
+  console.warn('   Set GEMINI_API_KEY in your .env file to enable Google Gemini features.');
+}
+
+if (!process.env.GROQ_API_KEY) {
+  console.warn('⚠️  GROQ_API_KEY is not configured - Groq AI provider will not be available.');
+}
+
+if (!process.env.OPENAI_API_KEY) {
+  console.warn('⚠️  OPENAI_API_KEY is not configured - OpenAI provider will not be available.');
+}
+
 const app = express();
 app.use(metricsMiddleware);
 const httpServer = createServer(app);

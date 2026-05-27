@@ -1,3 +1,34 @@
+<<<<<<< HEAD
+# AI Resume Builder - Frontend
+
+React + Vite frontend for the AI Resume Builder application.
+
+## Quick Start
+
+```bash
+# Install dependencies
+npm install
+
+# Start development server
+npm run dev
+
+# Build for production
+npm run build
+```
+
+## Environment Variables
+
+Copy `.env.example` to `.env` and fill in your Firebase configuration.
+
+## Features
+
+- Modern React 19 with Vite
+- TailwindCSS 4 for styling
+- Firebase Authentication
+- Responsive design
+- Framer Motion animations
+- PDF generation with jsPDF
+=======
 <div align="center">
   <img src="docs/assets/banner.png" alt="Career Pilot Banner" width="100%" style="border-radius: 12px; margin-bottom: 20px;" />
   <br />
@@ -436,3 +467,4 @@ Your efforts, pull requests, ideas, and support make this project better every d
 This project is licensed under the MIT License - see the [LICENSE](LICENSE) file for details.
 
 <br />
+>>>>>>> d9cec355c02ba7adf33119c9737350dda1bf2f81

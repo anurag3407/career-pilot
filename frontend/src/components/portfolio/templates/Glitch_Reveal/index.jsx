@@ -1,30 +1,38 @@
 import React from 'react';
 import data from '../../../../data/dummy_data.json';
+import Hero from './Hero';
+import About from './About';
+import Skills from './Skills';
+import Projects from './Projects';
+import Experience from './Experience';
+import Testimonials from './Testimonials';
+import Contact from './Contact';
 
-/**
- * Glitch Reveal Portfolio Template
- * Category: Animated / Motion
- * Description: Digital glitch/distortion effects when transitioning between sections. RGB split, noise, and displacement. Edgy, cyberpunk-meets-modern aesthetic.
- */
-export default function GlitchReveal() {
+export default function GlitchRevealPortfolio() {
   return (
-    <div className="min-h-screen bg-gray-950 text-white flex flex-col items-center justify-center p-8 font-sans">
-      <div className="max-w-3xl w-full text-center">
-        <h1 className="text-5xl md:text-7xl font-bold mb-4 bg-gradient-to-r from-cyan-400 to-purple-500 bg-clip-text text-transparent">
-          {data.personal.name}
-        </h1>
-        <p className="text-xl md:text-2xl text-gray-400 mb-8">{data.personal.title}</p>
-        <div className="p-8 border-2 border-dashed border-cyan-500/40 rounded-2xl bg-gray-900/50 backdrop-blur-sm">
-          <span className="inline-block px-3 py-1 rounded-full bg-cyan-500/20 text-cyan-400 text-xs font-bold uppercase tracking-widest mb-4">
-            Animated / Motion
-          </span>
-          <h2 className="text-2xl font-bold text-gray-200 mb-3">Glitch Reveal Template</h2>
-          <p className="text-gray-400 mb-6 leading-relaxed">
-            Digital glitch/distortion effects when transitioning between sections. RGB split, noise, and displacement. Edgy, cyberpunk-meets-modern aesthetic.
-          </p>
-          <p className="text-cyan-400 font-semibold">Open an issue to contribute and build this template!</p>
-        </div>
-      </div>
+    <div className="min-h-screen bg-zinc-950 selection:bg-cyan-500 selection:text-zinc-950 font-sans overflow-x-hidden relative">
+      <style dangerouslySetInnerHTML={{__html: `
+        @keyframes scan { from { transform: translateX(-50%); } to { transform: translateX(0); } }
+        @keyframes violent-jitter {
+          0% { transform: translate(0, 0) skew(0deg); }
+          20% { transform: translate(-2px, 2px) skew(-5deg); filter: hue-rotate(90deg); }
+          40% { transform: translate(3px, -2px) skew(5deg); }
+          60% { transform: translate(-3px, -3px) skew(-5deg); filter: hue-rotate(-90deg); }
+          80% { transform: translate(2px, 3px) skew(5deg); }
+          100% { transform: translate(0, 0) skew(0deg); }
+        }
+        .vibrate-hover:hover { animation: violent-jitter 0.15s infinite reverse; }
+      `}} />
+      <Hero />
+      <About />
+      <Skills />
+      <Projects />
+      <Experience />
+      <Testimonials />
+      <Contact />
+      <footer className="text-center py-8 border-t border-zinc-900 relative z-40 bg-zinc-950">
+        <p className="text-zinc-600 font-mono text-sm hover:text-cyan-500 transition-colors cursor-crosshair">System.Exit(0) // Built by <span className="vibrate-hover inline-block">{data.personal.name}</span></p>
+      </footer>
     </div>
   );
 }

@@ -1,114 +1,140 @@
 {
   "personal": {
-    "name": "Alex Mercer",
-    "title": "Full Stack Developer & Creative Engineer",
-    "bio": "I build digital experiences that live at the intersection of code and creativity. With 5+ years of crafting scalable web applications, I turn complex problems into elegant, user-centric solutions. When I'm not debugging production issues at 2 AM, I'm exploring generative art and open-source tooling.",
-    "avatar": "https://api.dicebear.com/7.x/personas/svg?seed=AlexMercer",
+    "name": "Alex Rivera",
+    "title": "Full Stack Developer & Creative Technologist",
+    "bio": "Passionate developer with 5+ years of experience crafting beautiful, performant web applications. I love turning complex problems into elegant, user-friendly solutions. When I'm not coding, I'm exploring new technologies, contributing to open source, or experimenting with digital art.",
+    "avatar": "https://images.unsplash.com/photo-1507003211169-0a1dd7228f2d?w=400&h=400&fit=crop&crop=face",
     "location": "San Francisco, CA",
-    "email": "alex.mercer@example.com",
-    "phone": "+1 (555) 234-5678",
-    "resumeUrl": "#"
+    "tagline": "Building the future, one line of code at a time."
   },
   "socials": {
     "github": "https://github.com",
     "linkedin": "https://linkedin.com",
     "twitter": "https://twitter.com",
-    "email": "alex.mercer@example.com",
-    "website": "https://alexmercer.dev"
+    "email": "alex.rivera@email.com"
+  },
+  "stats": {
+    "yearsExperience": 5,
+    "projectsCompleted": 48,
+    "happyClients": 32
   },
   "skills": [
     { "name": "React", "level": 95, "category": "Frontend" },
-    { "name": "TypeScript", "level": 88, "category": "Frontend" },
-    { "name": "Node.js", "level": 90, "category": "Backend" },
-    { "name": "PostgreSQL", "level": 82, "category": "Backend" },
-    { "name": "Docker", "level": 78, "category": "DevOps" },
-    { "name": "AWS", "level": 74, "category": "DevOps" },
-    { "name": "GraphQL", "level": 80, "category": "Backend" },
+    { "name": "TypeScript", "level": 90, "category": "Frontend" },
+    { "name": "Next.js", "level": 88, "category": "Frontend" },
     { "name": "Tailwind CSS", "level": 92, "category": "Frontend" },
-    { "name": "Redis", "level": 70, "category": "Backend" },
-    { "name": "Python", "level": 75, "category": "Backend" }
+    { "name": "Framer Motion", "level": 80, "category": "Frontend" },
+    { "name": "Node.js", "level": 87, "category": "Backend" },
+    { "name": "Express.js", "level": 85, "category": "Backend" },
+    { "name": "PostgreSQL", "level": 82, "category": "Backend" },
+    { "name": "MongoDB", "level": 78, "category": "Backend" },
+    { "name": "GraphQL", "level": 75, "category": "Backend" },
+    { "name": "AWS", "level": 70, "category": "DevOps" },
+    { "name": "Docker", "level": 72, "category": "DevOps" },
+    { "name": "CI/CD", "level": 68, "category": "DevOps" },
+    { "name": "Figma", "level": 85, "category": "Design" },
+    { "name": "UI/UX Design", "level": 80, "category": "Design" }
   ],
   "projects": [
     {
-      "title": "NeuralHub",
-      "description": "A collaborative ML model repository with real-time training dashboards, version control for datasets, and one-click deployment pipelines to major cloud providers.",
-      "techStack": ["React", "Python", "FastAPI", "PostgreSQL", "Docker"],
+      "title": "NeuralDash",
+      "description": "AI-powered analytics dashboard with real-time data visualization, predictive insights, and customizable widget layouts. Built for enterprise teams handling petabyte-scale datasets.",
+      "techStack": ["React", "Python", "TensorFlow", "WebSocket"],
       "liveUrl": "https://example.com",
       "githubUrl": "https://github.com",
-      "image": "https://images.unsplash.com/photo-1677442135703-1787eea5ce01?w=800&q=80",
-      "featured": true
+      "image": "https://images.unsplash.com/photo-1551288049-bebda4e38f71?w=800&h=450&fit=crop"
     },
     {
-      "title": "FlowBoard",
-      "description": "Real-time Kanban and sprint planning tool with AI-powered task prioritization, burndown analytics, and Slack/GitHub integrations used by 500+ teams.",
-      "techStack": ["Next.js", "TypeScript", "Redis", "WebSockets", "Prisma"],
+      "title": "PixelForge Studio",
+      "description": "Browser-based creative suite for digital artists — vector illustration, pixel art, and animation tools. 50K+ monthly active users and counting.",
+      "techStack": ["Canvas API", "WebGL", "Vue.js", "Rust/WASM"],
       "liveUrl": "https://example.com",
       "githubUrl": "https://github.com",
-      "image": "https://images.unsplash.com/photo-1611532736597-de2d4265fba3?w=800&q=80",
-      "featured": true
+      "image": "https://images.unsplash.com/photo-1626785774573-4b799315345d?w=800&h=450&fit=crop"
     },
     {
-      "title": "EchoAPI",
-      "description": "An open-source API mocking and testing platform supporting REST, GraphQL, and gRPC with a visual contract editor and CI/CD webhook triggers.",
-      "techStack": ["Go", "React", "MongoDB", "gRPC", "Kubernetes"],
+      "title": "EcoTrack",
+      "description": "Sustainability platform that helps businesses measure, reduce, and offset their carbon footprint. Features gamified goals and real-time carbon market integration.",
+      "techStack": ["Next.js", "Node.js", "PostgreSQL", "Stripe"],
       "liveUrl": "https://example.com",
       "githubUrl": "https://github.com",
-      "image": "https://images.unsplash.com/photo-1558494949-ef010cbdcc31?w=800&q=80",
-      "featured": false
+      "image": "https://images.unsplash.com/photo-1569163139394-de4e5f43e5ca?w=800&h=450&fit=crop"
     },
     {
-      "title": "Luminary CMS",
-      "description": "Headless CMS with a visual block editor, multi-language support, and an edge-cached delivery layer that serves 50M+ content requests per month.",
-      "techStack": ["React", "Node.js", "GraphQL", "AWS", "CloudFront"],
+      "title": "Verse — Social Reading",
+      "description": "Next-generation social reading app where readers annotate, discuss, and discover books together. Built-in AI summarisation and personalised recommendations.",
+      "techStack": ["React Native", "GraphQL", "MongoDB", "OpenAI"],
       "liveUrl": "https://example.com",
       "githubUrl": "https://github.com",
-      "image": "https://images.unsplash.com/photo-1499750310107-5fef28a66643?w=800&q=80",
-      "featured": false
+      "image": "https://images.unsplash.com/photo-1512820790803-83ca734da794?w=800&h=450&fit=crop"
+    },
+    {
+      "title": "Pulse CRM",
+      "description": "Lightweight CRM for indie businesses — contact management, deal pipelines, email sequences, and revenue analytics. Competes with Salesforce at 1% of the price.",
+      "techStack": ["React", "Express", "MySQL", "Redis"],
+      "liveUrl": "https://example.com",
+      "githubUrl": "https://github.com",
+      "image": "https://images.unsplash.com/photo-1460925895917-afdab827c52f?w=800&h=450&fit=crop"
+    },
+    {
+      "title": "Orbit — 3D Portfolio",
+      "description": "Interactive 3D portfolio builder powered by Three.js and AI content generation. Users describe their work and the system assembles a stunning 3D showcase in seconds.",
+      "techStack": ["Three.js", "React", "OpenAI GPT-4", "Vercel"],
+      "liveUrl": "https://example.com",
+      "githubUrl": "https://github.com",
+      "image": "https://images.unsplash.com/photo-1617791160505-6f00504e3519?w=800&h=450&fit=crop"
     }
   ],
   "experience": [
     {
       "role": "Senior Full Stack Engineer",
-      "company": "Veritas Labs",
+      "company": "Vercel",
       "period": "2022 – Present",
-      "description": "Lead a cross-functional team of 8 engineers building a B2B SaaS analytics platform. Reduced API response times by 60% through query optimization and Redis caching. Introduced TypeScript across the entire frontend codebase, cutting production bugs by 35%."
+      "description": "Leading the development of Next.js deployment pipelines and edge runtime features. Reduced cold-start latency by 60% through custom caching strategies. Mentoring a team of 6 engineers."
     },
     {
-      "role": "Software Engineer",
-      "company": "Nexus Digital",
+      "role": "Frontend Engineer",
+      "company": "Figma",
       "period": "2020 – 2022",
-      "description": "Built and maintained React micro-frontends serving 2M+ monthly active users. Architected the real-time notification system using WebSockets and BullMQ. Mentored 4 junior engineers on code quality and system design principles."
+      "description": "Built the multiplayer presence system and real-time cursor sync using WebSockets and CRDTs. Shipped the Auto Layout 3.0 feature which became the most upvoted release in company history."
+    },
+    {
+      "role": "Full Stack Developer",
+      "company": "Stripe",
+      "period": "2019 – 2020",
+      "description": "Developed internal tooling for fraud detection and risk management. Built a real-time transaction monitoring dashboard processing 10M+ events per day."
     },
     {
       "role": "Junior Developer",
-      "company": "Spark Agency",
-      "period": "2019 – 2020",
-      "description": "Developed responsive marketing sites and e-commerce storefronts for 20+ clients. Integrated third-party payment gateways and shipping APIs. Improved Core Web Vitals scores by an average of 40 points across client sites."
+      "company": "Startup Studio",
+      "period": "2018 – 2019",
+      "description": "Worked across 5 early-stage startups as an embedded developer. Built MVPs from zero to launch in under 3 months each. Gained broad experience across mobile, web, and backend systems."
     }
   ],
   "testimonials": [
     {
       "name": "Sarah Chen",
-      "role": "CTO at Veritas Labs",
-      "text": "Alex is the rare engineer who can architect a system at 9 AM and ship a pixel-perfect UI by 5 PM. Their technical depth combined with product empathy makes them invaluable on any team.",
-      "avatar": "https://api.dicebear.com/7.x/personas/svg?seed=SarahChen"
+      "role": "CTO at NeuralDash",
+      "text": "Alex transformed our data platform from a confusing mess of spreadsheets into a beautiful, intuitive dashboard. The team's productivity tripled within the first month. Truly exceptional work.",
+      "avatar": "https://images.unsplash.com/photo-1494790108755-2616b612b793?w=100&h=100&fit=crop&crop=face"
     },
     {
-      "name": "Marcus Rivera",
-      "role": "Engineering Manager at Nexus Digital",
-      "text": "Working with Alex elevated our entire team. They brought structure to our chaotic codebase, introduced testing culture, and always found time to mentor others without sacrificing velocity.",
-      "avatar": "https://api.dicebear.com/7.x/personas/svg?seed=MarcusRivera"
+      "name": "Marcus Johnson",
+      "role": "Product Lead at Figma",
+      "text": "One of the most thoughtful engineers I've worked with. Alex has this rare ability to balance technical excellence with user empathy. The Auto Layout work he shipped is still one of our most-loved features.",
+      "avatar": "https://images.unsplash.com/photo-1472099645785-5658abf4ff4e?w=100&h=100&fit=crop&crop=face"
     },
     {
-      "name": "Priya Nair",
-      "role": "Product Lead at Spark Agency",
-      "text": "Alex translates ambiguous product requirements into clean, maintainable code better than anyone I've worked with. Clients consistently praised the quality and speed of their deliveries.",
-      "avatar": "https://api.dicebear.com/7.x/personas/svg?seed=PriyaNair"
+      "name": "Priya Patel",
+      "role": "Founder at EcoTrack",
+      "text": "Alex built our entire platform from scratch in 4 months. The code quality was stellar, the UX was beautiful, and he proactively suggested improvements we hadn't even thought of. Would hire again without hesitation.",
+      "avatar": "https://images.unsplash.com/photo-1438761681033-6461ffad8d80?w=100&h=100&fit=crop&crop=face"
+    },
+    {
+      "name": "David Kim",
+      "role": "Engineering Manager at Stripe",
+      "text": "Alex's fraud detection dashboard saved us countless hours of manual review. He delivered clean, well-documented code ahead of schedule and was a pleasure to collaborate with across teams.",
+      "avatar": "https://images.unsplash.com/photo-1500648767791-00dcc994a43e?w=100&h=100&fit=crop&crop=face"
     }
-  ],
-  "stats": {
-    "yearsExperience": 5,
-    "projectsCompleted": 42,
-    "happyClients": 28
-  }
+  ]
 }
