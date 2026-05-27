@@ -26,6 +26,7 @@ import JobAlerts from './pages/JobAlerts';
 import ResumeBuilder from './pages/ResumeBuilder';
 import TextToResume from './pages/TextToResume';
 import About from './components/portfolio/templates/Tech_Startup/About';
+import FigmaPortfolio from './pages/FigmaPortfolio';
 
 
 import JobTracker from './pages/JobTracker';
@@ -167,6 +168,7 @@ function AppRoutes() {
 
         {/* Template Gallery Route (Registered at /templates) */}
         <Route path="/templates" element={<TemplateGallery />} />
+        <Route path="/figma" element={<FigmaPortfolio />} />
 
         {/* Core Protected Routes */}
         <Route path="/dashboard" element={<ProtectedRoute><Dashboard /></ProtectedRoute>} />

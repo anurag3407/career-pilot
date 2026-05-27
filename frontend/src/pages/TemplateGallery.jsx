@@ -14,6 +14,7 @@ import RetroProjects from "../components/portfolio/templates/2D_Retro_8bit/Proje
 import FantasyRPGProjects from "../components/portfolio/templates/Fantasy_RPG/Projects";
 import Navbar from '../components/Navbar'
 import GraffitiHero from "../components/portfolio/templates/Graffiti_StreetArt/Hero";
+import FigmaCanvas from "../components/portfolio/templates/Figma_Canvas/index";
 
 
 function FilterSelect({ value, onChange, options, className = "" }) {
@@ -457,6 +458,20 @@ export default function TemplateGallery() {
         </div>
         <div className="overflow-hidden rounded-2xl border border-border">
           <GraffitiHero />
+        </div>
+      </div>
+
+      <div className="mt-12">
+        <div className="mb-4 flex items-center gap-3 px-1">
+          <span className="rounded-full bg-blue-500/20 px-3 py-1 text-xs font-bold uppercase tracking-widest text-blue-400 border border-blue-500/30">
+            Preview
+          </span>
+          <h2 className="text-lg font-semibold text-foreground/70">
+            Figma Canvas Theme — Full Interactive Template
+          </h2>
+        </div>
+        <div className="overflow-hidden rounded-2xl border border-border h-[800px] relative">
+          <FigmaCanvas />
         </div>
       </div>
 
