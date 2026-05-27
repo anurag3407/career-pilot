@@ -202,6 +202,74 @@ Before running the project locally, make sure you have:
 - Redis server
 - Firebase project configuration
 - Google Gemini API key
+- RapidAPI key (for job fetching)
+
+### Install Required Tools
+
+- [Node.js](https://nodejs.org/)
+- [MongoDB](https://www.mongodb.com/)
+- [Redis](https://redis.io/)
+- [Firebase Console](https://console.firebase.google.com/)
+- [RapidAPI](https://rapidapi.com/)
+
+### Environment Variables
+
+#### Backend (.env)
+
+```env
+# Server
+PORT=5000
+NODE_ENV=development
+FRONTEND_URL=http://localhost:5173
+
+# MongoDB
+MONGODB_URI=mongodb://localhost:27017/career-pilot
+
+# Firebase Admin
+FIREBASE_PROJECT_ID=your-project-id
+FIREBASE_STORAGE_BUCKET=your-bucket.appspot.com
+FIREBASE_SERVICE_ACCOUNT={"type":"service_account",...}
+
+# AI
+GEMINI_API_KEY=your-gemini-api-key
+
+# Redis (for BullMQ and API caching layer)
+REDIS_URL=redis://localhost:6379
+
+# RapidAPI (Job Search)
+RAPID_API_KEY=your-rapidapi-key
+RAPID_API_HOST=jsearch.p.rapidapi.com
+
+# Email (Nodemailer)
+SMTP_HOST=smtp.gmail.com
+SMTP_PORT=587
+SMTP_USER=your-email@gmail.com
+SMTP_PASS=your-app-password
+
+# Rate Limiting
+RATE_LIMIT_WINDOW_MS=900000
+RATE_LIMIT_MAX_REQUESTS=100
+
+# Razorpay (Payment Gateway)
+RAZORPAY_KEY_ID=rzp_test_xxxxxxxxxxxxx
+RAZORPAY_KEY_SECRET=your-razorpay-secret
+
+# LinkedIn OAuth
+LINKEDIN_CLIENT_ID=your-linkedin-client-id
+LINKEDIN_CLIENT_SECRET=your-linkedin-client-secret
+LINKEDIN_REDIRECT_URI=http://localhost:5000/api/auth/linkedin/callback
+
+# Two-Factor Authentication
+TOTP_ENCRYPTION_KEY=your-32-char-encryption-key
+
+# Job Alert Schedule (optional override)
+ALERT_CRON_SCHEDULE=0 0 */2 * *
+
+# AI Provider (optional: gemini | groq | openai)
+AI_PROVIDER=gemini
+GROQ_API_KEY=your-groq-api-key
+OPENAI_API_KEY=your-openai-api-key
+```
 
 ---
 
@@ -366,7 +434,37 @@ To help you get familiar with the advanced subsystems of Career Pilot, we have p
 <summary><b>View API Routes & Examples</b></summary>
 <br>
 
-Most endpoints require a Firebase ID Token passed as an `Authorization` header.
+1. **Challenge Creation**: Corporate creates challenge with requirements and price
+2. **Student Application**: Students submit proposals with cover letter and pricing
+3. **Proposal Review**: Corporate reviews and selects proposal
+4. **Payment**: On acceptance, Razorpay checkout opens for escrow payment
+5. **Chat Room**: After payment, chat room created with "In Escrow" status
+6. **Collaboration**: Student and corporate discuss and work on challenge
+7. **Completion**: Corporate releases funds when satisfied
+8. **Challenge Closed**: Challenge marked complete, chat archived
+
+### AI Interview Pipeline
+
+1. **Configuration**: User selects role, difficulty, and interview type
+2. **Question Generation**: Gemini AI generates role-specific questions
+3. **Response Capture**: User answers questions in real-time
+4. **AI Evaluation**: Each answer scored with detailed feedback
+5. **Final Report**: Comprehensive performance analysis and suggestions
+
+### ⚡ Redis API Caching Layer
+
+1. **Request Interception**: Reusable caching middleware intercepts incoming GET requests to optimized endpoints.
+2. **Dynamic TTL Policies**: Configurable TTL per feature area (Job listings: 5 mins, User profiles: 10 mins, AI static resources: 15 mins).
+3. **Smart Cache Keys**: Structured key naming convention partitioned by target entity or user (e.g. `cache:user-profiles:profile:<uid>`).
+4. **Cache Invalidation**: Automatic eviction of related cache entries (profile, stats, and activity) when data mutation occurs (via profile updates).
+5. **Offline Fallback**: Seamless, production-safe error recovery. If Redis is down, the caching layer automatically bypasses Redis and resolves the API call directly from the database without any application disruption.
+6. **Observability**: Logs cache hits, misses, and response times in real-time, sending an `X-Cache: HIT | MISS` response header for developers.
+
+---
+
+## 🚢 Deployment
+
+### Frontend Deployment (Vercel/Netlify)
 
 ### Authentication
 
