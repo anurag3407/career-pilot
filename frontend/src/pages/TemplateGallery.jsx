@@ -7,22 +7,23 @@ import { Moon, Sun, ChevronDown, Check, Eye, Star } from "lucide-react";
 import HolographicAbout from "../components/portfolio/templates/Holographic/About";
 import CulinaryAbout from "../components/portfolio/templates/Culinary_Restaurant/About";
 import TechStartupHero from "../components/portfolio/templates/Tech_Startup/Hero";
+import ArchitectureBlueprintHero from "../components/portfolio/templates/Architecture_Blueprint/Hero";
+import GeometricShapesAbout from "../components/portfolio/templates/Geometric_Shapes/About";
+import GeometricShapesHero from "../components/portfolio/templates/Geometric_Shapes/Hero";
+import LiquidGlass from "../components/portfolio/templates/Liquid_Glass/index";
 import Navbar from '../components/Navbar'
+// import Hero from "../components/portfolio/templates/Holographic/Hero";
+// import ChooseAdventurePortfolio from "../components/portfolio/templates/Choose_Adventure/index";
+// import RetroProjects from "../components/portfolio/templates/2D_Retro_8bit/Projects";
+// import FantasyRPGProjects from "../components/portfolio/templates/Fantasy_RPG/Projects";
+// import GraffitiHero from "../components/portfolio/templates/Graffiti_StreetArt/Hero";
 
-/* ─────────────────────────────────────────────────────────
-   Custom FilterSelect
-   Renders a fully-styled dark dropdown with:
-   - White text on dark bg
-   - Glowing cyan border when open
-   - Cyan bg + white text on item hover
-   - Smooth slide-down animation
-───────────────────────────────────────────────────────── */
+
 function FilterSelect({ value, onChange, options, className = "" }) {
   const [open, setOpen] = useState(false);
   const ref = useRef(null);
   const selectedLabel = options.find((o) => o.value === value)?.label ?? value;
 
-  // Close on outside click
   useEffect(() => {
     function handleClickOutside(e) {
       if (ref.current && !ref.current.contains(e.target)) setOpen(false);
@@ -33,7 +34,6 @@ function FilterSelect({ value, onChange, options, className = "" }) {
 
   return (
     <div ref={ref} className={`relative ${className}`}>
-      {/* Trigger button */}
       <button
         type="button"
         onClick={() => setOpen((prev) => !prev)}
@@ -54,7 +54,6 @@ function FilterSelect({ value, onChange, options, className = "" }) {
         />
       </button>
 
-      {/* Dropdown panel */}
       <AnimatePresence>
         {open && (
           <motion.ul
@@ -97,7 +96,6 @@ function FilterSelect({ value, onChange, options, className = "" }) {
   );
 }
 
-
 function TemplateCard({ template, onUse }) {
   const [hovered, setHovered] = useState(false);
 
@@ -125,7 +123,6 @@ function TemplateCard({ template, onUse }) {
       }}
       className="bg-card rounded-2xl overflow-hidden border border-border flex flex-col justify-between cursor-pointer"
     >
-      {/* Image with spring-driven zoom + overlay */}
       <div className="overflow-hidden relative">
         <motion.img
           src={template.image}
@@ -143,7 +140,6 @@ function TemplateCard({ template, onUse }) {
         />
       </div>
 
-      {/* Card body */}
       <div className="p-5 flex-1">
         <h2 className="text-2xl font-semibold text-foreground">{template.title}</h2>
         <p className="text-muted-foreground mt-1 text-sm">By {template.author}</p>
@@ -156,7 +152,6 @@ function TemplateCard({ template, onUse }) {
         </div>
       </div>
 
-      {/* Footer */}
       <div className="px-5 pb-5">
         <div className="flex justify-between text-sm text-muted-foreground mb-4">
           <span className="flex items-center gap-1.5">
@@ -168,7 +163,6 @@ function TemplateCard({ template, onUse }) {
             {template.views.toLocaleString()}
           </span>
         </div>
-
 
         <AnimatePresence>
           {hovered && (
@@ -197,9 +191,6 @@ function TemplateCard({ template, onUse }) {
   );
 }
 
-/* ─────────────────────────────────────────────────────────
-   TemplateGallery
-───────────────────────────────────────────────────────── */
 export default function TemplateGallery() {
   const { theme, toggleTheme } = useTheme();
 
@@ -250,7 +241,6 @@ export default function TemplateGallery() {
   const [isDeployModalOpen, setIsDeployModalOpen] = useState(false);
   const [selectedPortfolioTitle, setSelectedPortfolioTitle] = useState("");
 
-  // Filter options
   const CATEGORY_OPTIONS = [
     { value: "All", label: "All Categories" },
     { value: "Portfolio", label: "Portfolio" },
@@ -268,6 +258,7 @@ export default function TemplateGallery() {
     { value: "Grid", label: "Grid" },
     { value: "Minimal", label: "Minimal" },
     { value: "Cards", label: "Cards" },
+    { value: "Interactive", label: "Interactive" },
   ];
   const SORT_OPTIONS = [
     { value: "Popular", label: "Popular" },
@@ -275,14 +266,12 @@ export default function TemplateGallery() {
     { value: "Highest Rated", label: "Highest Rated" },
   ];
 
-
   const filteredTemplates = templates.filter((template) => {
     const matchesCategory = category === "All" || template.category === category;
     const matchesColorScheme = colorScheme === "All" || template.colorScheme === colorScheme;
     const matchesLayout = layout === "All" || template.layout === layout;
     return matchesCategory && matchesColorScheme && matchesLayout;
   });
-
 
   const sortedTemplates = [...filteredTemplates].sort((a, b) => {
     if (sort === "Popular") return b.views - a.views;
@@ -292,11 +281,10 @@ export default function TemplateGallery() {
   });
 
   return (
-    <><div className="min-h-screen bg-background text-foreground p-8 pt-24 transition-colors duration-300">
+    <div className="min-h-screen bg-background text-foreground p-8 pt-24 transition-colors duration-300">
       <Navbar />
       <div className="flex justify-between items-center mb-8">
         <h1 className="text-4xl font-bold">Template Gallery</h1>
-        {/* Theme Toggle */}
         <button
           onClick={toggleTheme}
           className="p-2 rounded-xl bg-muted hover:bg-accent border border-border text-foreground transition-all cursor-pointer overflow-hidden relative group"
@@ -331,16 +319,13 @@ export default function TemplateGallery() {
         <ThemeSelector selectedTheme={selectedTheme} onSelectTheme={setSelectedTheme} />
       </div>
 
-      {/* ── Custom Filter / Sort Bar ── */}
       <div className="flex flex-wrap items-center gap-3 mb-8">
         <FilterSelect value={category} onChange={setCategory} options={CATEGORY_OPTIONS} />
         <FilterSelect value={colorScheme} onChange={setColorScheme} options={COLOR_OPTIONS} />
         <FilterSelect value={layout} onChange={setLayout} options={LAYOUT_OPTIONS} />
-        {/* Sort pushed to the right */}
         <FilterSelect value={sort} onChange={setSort} options={SORT_OPTIONS} className="ml-auto" />
       </div>
 
-      {/* Gallery Grid */}
       {sortedTemplates.length === 0 ? (
         <div className="text-center text-muted-foreground mt-12 text-xl">
           No templates match the selected criteria.
@@ -354,18 +339,19 @@ export default function TemplateGallery() {
               onUse={(title) => {
                 setSelectedPortfolioTitle(title);
                 setIsDeployModalOpen(true);
-              } } />
+              }}
+            />
           ))}
         </div>
       )}
 
-
       <DeployModal
         isOpen={isDeployModalOpen}
         onClose={() => setIsDeployModalOpen(false)}
-        portfolioTitle={selectedPortfolioTitle} />
+        portfolioTitle={selectedPortfolioTitle}
+      />
 
-
+      {/* Holographic Theme */}
       <div className="mt-12">
         <div className="mb-4 flex items-center gap-3 px-1">
           <span className="rounded-full bg-cyan-500/20 px-3 py-1 text-xs font-bold uppercase tracking-widest text-cyan-400 border border-cyan-500/30">
@@ -378,6 +364,20 @@ export default function TemplateGallery() {
         </div>
       </div>
 
+      {/* Geometric Shapes Hero */}
+      <div className="mt-12">
+        <div className="mb-4 flex items-center gap-3 px-1">
+          <span className="rounded-full bg-indigo-500/20 px-3 py-1 text-xs font-bold uppercase tracking-widest text-indigo-400 border border-indigo-500/30">
+            Preview
+          </span>
+          <h2 className="text-lg font-semibold text-foreground/70">Geometric Shapes Theme — Hero Section</h2>
+        </div>
+        <div className="overflow-hidden rounded-2xl border border-border">
+          <GeometricShapesHero />
+        </div>
+      </div>
+
+      {/* Geometric Shapes About */}
       <div className="mt-12">
         <div className="mb-4 flex items-center gap-3 px-1">
           <span className="rounded-full bg-amber-500/20 px-3 py-1 text-xs font-bold uppercase tracking-widest text-amber-400 border border-amber-500/30">
@@ -389,7 +389,9 @@ export default function TemplateGallery() {
           <GeometricShapesAbout />
         </div>
       </div>
-    </div><div className="mt-12">
+
+      {/* Culinary Restaurant */}
+      <div className="mt-12">
         <div className="mb-4 flex items-center gap-3 px-1">
           <span className="rounded-full bg-amber-500/20 px-3 py-1 text-xs font-bold uppercase tracking-widest text-amber-400 border border-amber-500/30">
             Preview
@@ -401,6 +403,7 @@ export default function TemplateGallery() {
         </div>
       </div>
 
+      {/* Tech Startup */}
       <div className="mt-12">
         <div className="mb-4 flex items-center gap-3 px-1">
           <span className="rounded-full bg-cyan-500/20 px-3 py-1 text-xs font-bold uppercase tracking-widest text-cyan-400 border border-cyan-500/30">
@@ -412,7 +415,26 @@ export default function TemplateGallery() {
           <TechStartupHero />
         </div>
       </div>
+
+      {/* Liquid Glass */}
+      <div className="mt-12">
+        <div className="mb-4 flex items-center gap-3 px-1">
+          <span className="rounded-full bg-cyan-500/20 px-3 py-1 text-xs font-bold uppercase tracking-widest text-cyan-400 border border-cyan-500/30">
+            Preview
+          </span>
+          <h2 className="text-lg font-semibold text-foreground/70">Liquid Glass Theme</h2>
+        </div>
+        <div className="overflow-hidden rounded-2xl border border-border">
+          <LiquidGlass />
+        </div>
+      </div>
+
+      {/* Commented out — templates not yet available locally */}
+      {/* <ChooseAdventurePortfolio /> */}
+      {/* <RetroProjects /> */}
+      {/* <FantasyRPGProjects /> */}
+      {/* <GraffitiHero /> */}
+
     </div>
   );
 }
-

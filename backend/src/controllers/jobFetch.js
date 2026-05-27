@@ -3,6 +3,7 @@ import Job from "../models/Job.model.js";
 import mongoose from "mongoose";
 import { summarizeJobDescription } from "../services/jobSummarizer.js";
 import { catchAsync } from "../middleware/globalErrorHandler.js";
+import { trackTokenUsage } from '../utils/tokenTracker.js';
 
 export const getJobs = catchAsync(async (req, res, next) => {
   const user = req.user;
@@ -87,10 +88,19 @@ export const summarizeJob = catchAsync(async (req, res, next) => {
   }
 
   const result = await summarizeJobDescription(jobDescription, req.aiProvider);
-  
-  return res.status(200).json({
-    ...result,
-    provider: req.aiProvider.providerName,
-    providerSource: req.aiProviderSource,
-  });
+
+if (result.usage) {
+  await trackTokenUsage(
+    req.user.uid,
+    req.aiProvider.providerName,
+    'job-summarizer',
+    result.usage
+  );
+}
+
+return res.status(200).json({
+  ...result,
+  provider: req.aiProvider.providerName,
+  providerSource: req.aiProviderSource,
+});
 });
