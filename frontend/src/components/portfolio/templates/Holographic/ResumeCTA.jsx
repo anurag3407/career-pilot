@@ -1,6 +1,17 @@
 import { useEffect, useRef } from "react";
 import { Download, Eye } from "lucide-react";
 
+// Update this date periodically to reflect the resume's last update
+const RESUME_LAST_UPDATED = new Date()
+  .toLocaleDateString("en-US", { month: "short", year: "numeric" })
+  .toUpperCase();
+
+// FIX 2: URL sanitizer to prevent javascript: XSS attacks
+const safeUrl = (url) =>
+  url && (url.startsWith("https://") || url.startsWith("http://") || url === "#")
+    ? url
+    : "#";
+
 const DEFAULT_DATA = {
   eyebrow: "Download Resume",
   heading: ["Ready to make", "an impression?"],
@@ -50,6 +61,9 @@ export default function ResumeCTA({ data = DEFAULT_DATA }) {
     ...DEFAULT_DATA,
     ...data,
   };
+
+  // FIX 1: Normalize stats to array to prevent .map crash
+  const safeStats = Array.isArray(stats) ? stats : DEFAULT_DATA.stats;
 
   return (
     <>
@@ -310,9 +324,9 @@ export default function ResumeCTA({ data = DEFAULT_DATA }) {
               }}
             />
 
-            {/* Stats */}
+            {/* Stats — FIX 1: using safeStats instead of stats */}
             <div className="flex flex-wrap gap-0 mb-9">
-              {stats.map(({ value, label }, i) => (
+              {safeStats.map(({ value, label }, i) => (
                 <div key={label} className="flex items-stretch">
                   {i > 0 && (
                     <div className="w-px mx-6 self-stretch" style={{ background: "linear-gradient(180deg,transparent,rgba(0,229,255,0.4),transparent)" }} />
@@ -361,9 +375,9 @@ export default function ResumeCTA({ data = DEFAULT_DATA }) {
                 </a>
               </div>
 
-              {/* Secondary button */}
+              {/* Secondary button — FIX 2: safeUrl sanitizes previewUrl */}
               <a
-                href={previewUrl}
+                href={safeUrl(previewUrl)}
                 target="_blank"
                 rel="noopener noreferrer"
                 className="holo-btn-secondary inline-flex items-center gap-2.5 no-underline transition-all duration-200"
@@ -381,13 +395,13 @@ export default function ResumeCTA({ data = DEFAULT_DATA }) {
               </a>
             </div>
 
-            {/* Footnote */}
+            {/* Footnote — FIX 3: dynamic date */}
             <div
               className="mt-6 flex items-center gap-2"
               style={{ fontFamily: "'Orbitron', monospace", fontSize: 11, letterSpacing: "2px", color: "rgba(120,130,160,0.65)" }}
             >
               <span className="w-[5px] h-[5px] rounded-full" style={{ background: "#00e5ff", opacity: 0.5 }} />
-              PDF · UPDATED MAY 2026 · 1 PAGE
+              PDF · UPDATED {RESUME_LAST_UPDATED} · 1 PAGE
             </div>
           </div>
         </div>
