@@ -1,10 +1,10 @@
-import React, { useState, useRef, useMemo } from 'react';
+import React, { useState, useRef, useMemo, useId } from 'react';
 import { motion, AnimatePresence, useInView } from 'framer-motion';
 
 function CircularProgress({ level, size = 80, strokeWidth = 6, inView }) {
   const radius = (size - strokeWidth) / 2;
   const circumference = 2 * Math.PI * radius;
-  const gradientId = `ring-gradient-${Math.random().toString(36).slice(2, 9)}`;
+  const gradientId = `ring-gradient-${useId()}`;
 
   return (
     <svg width={size} height={size} viewBox={`0 0 ${size} ${size}`} className="drop-shadow-lg">
@@ -186,6 +186,7 @@ export default function Skills({ data }) {
               key={cat}
               layout
               onClick={() => setActiveCategory(cat)}
+              aria-pressed={isActive}
               className={`relative rounded-full border px-4 py-1.5 text-xs font-medium uppercase
                          tracking-wider backdrop-blur-sm transition-colors duration-300 sm:px-5 sm:py-2 sm:text-sm
                          ${

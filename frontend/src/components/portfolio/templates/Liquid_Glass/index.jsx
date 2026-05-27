@@ -185,6 +185,8 @@ export default function LiquidGlass() {
         <div className="md:hidden w-full flex justify-end pr-4">
           <motion.button
             onClick={() => setMobileMenuOpen(v => !v)}
+            aria-label={mobileMenuOpen ? 'Close menu' : 'Open menu'}
+            aria-expanded={mobileMenuOpen}
             whileHover={{ scale: 1.06 }}
             whileTap={{ scale: 0.93 }}
             className="lg-glass flex items-center justify-center w-12 h-12 rounded-2xl text-white/80 cursor-pointer"

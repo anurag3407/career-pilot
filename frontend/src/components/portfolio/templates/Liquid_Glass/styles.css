@@ -61,6 +61,10 @@
 }
 
 /* ── Noise texture overlay ───────────────────── */
+.lg-noise {
+  position: relative;
+}
+
 .lg-noise::after {
   content: '';
   position: absolute;

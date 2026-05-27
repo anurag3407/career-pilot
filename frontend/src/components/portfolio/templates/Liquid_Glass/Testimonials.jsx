@@ -134,6 +134,7 @@ export default function Testimonials({ data }) {
   const isSectionInView = useInView(sectionRef, { once: true, margin: "-80px" });
 
   const testimonials = data?.testimonials;
+  const testimonialsSection = data?.testimonialsSection || {};
 
   if (!testimonials || testimonials.length === 0) return null;
 
@@ -150,7 +151,7 @@ export default function Testimonials({ data }) {
         className="mx-auto mb-14 max-w-xl text-center sm:mb-20"
       >
         <h2 className="text-2xl font-bold tracking-tight text-white sm:text-3xl lg:text-4xl">
-          What People Say
+          {testimonialsSection.heading || "What People Say"}
         </h2>
 
         {/* Glass underline */}

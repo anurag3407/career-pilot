@@ -34,19 +34,37 @@ const socialIcons = {
   email: { icon: Mail, label: 'Email', color: 'group-hover:text-sky-300' },
 };
 
+const sanitizeHref = (href, type) => {
+  if (!href) return '#';
+
+  try {
+    const url = new URL(href);
+    const allowedProtocol = type === 'email' ? 'mailto:' : 'https:';
+
+    if (url.protocol !== allowedProtocol) return '#';
+
+    return url.href;
+  } catch {
+    return '#';
+  }
+};
+
 function SocialButton({ href, type, index }) {
   const config = socialIcons[type];
   if (!config || !href) return null;
 
   const Icon = config.icon;
-  const resolvedHref =
-    type === 'email' ? `mailto:${href}` : href;
+  const resolvedHref = sanitizeHref(
+    type === 'email' ? `mailto:${href}` : href,
+    type
+  );
+  const isExternal = type !== 'email' && resolvedHref !== '#';
 
   return (
     <motion.a
       href={resolvedHref}
-      target={type !== 'email' ? '_blank' : undefined}
-      rel={type !== 'email' ? 'noopener noreferrer' : undefined}
+      target={isExternal ? '_blank' : undefined}
+      rel={isExternal ? 'noopener noreferrer' : undefined}
       variants={{
         hidden: { opacity: 0, x: 30 },
         visible: {
@@ -76,7 +94,7 @@ function SocialButton({ href, type, index }) {
   );
 }
 
-function FormField({ icon: Icon, placeholder, type = 'text', isTextarea, index }) {
+function FormField({ icon: Icon, placeholder, label, id, type = 'text', isTextarea, index }) {
   const variants = {
     hidden: { opacity: 0, y: 16 },
     visible: {
@@ -88,17 +106,21 @@ function FormField({ icon: Icon, placeholder, type = 'text', isTextarea, index }
 
   return (
     <motion.div variants={variants} className="relative">
+      <label htmlFor={id} className="sr-only">
+        {label}
+      </label>
       <span className="absolute left-3.5 top-3.5 text-white/30 pointer-events-none">
         <Icon size={16} />
       </span>
       {isTextarea ? (
         <textarea
+          id={id}
           rows={4}
           placeholder={placeholder}
           className={`${inputBase} resize-none pt-3`}
         />
       ) : (
-        <input type={type} placeholder={placeholder} className={inputBase} />
+        <input id={id} type={type} placeholder={placeholder} className={inputBase} />
       )}
     </motion.div>
   );
@@ -109,9 +131,14 @@ export default function Contact({ data }) {
   const isInView = useInView(sectionRef, { once: true, margin: '-80px' });
 
   const personal = data?.personal || {};
+  const contact = data?.contact || {};
   const socials = data?.socials || {};
 
   const contactEmail = socials.email || '';
+  const descriptionText =
+    contact.description || contact.tagline ||
+    "Have a project in mind? Let&apos;s connect and bring your vision to life.";
+  const cardTitles = contact.cardTitles || {};
 
   const socialEntries = [
     socials.github && { type: 'github', href: socials.github },
@@ -173,12 +200,11 @@ export default function Contact({ data }) {
           className="text-center mb-16 sm:mb-20"
         >
           <h2 className="text-3xl sm:text-4xl lg:text-5xl font-bold tracking-tight text-white">
-            Get In Touch
+            {contact.heading || 'Get In Touch'}
           </h2>
           <div className="mt-4 mx-auto h-1 w-20 rounded-full bg-gradient-to-r from-sky-400/80 via-cyan-400/80 to-sky-400/80 shadow-[0_0_20px_rgba(56,189,248,0.3)]" />
           <p className="mt-4 text-sm sm:text-base text-white/50 max-w-md mx-auto">
-            Have a project in mind? Let&rsquo;s connect and bring your vision to
-            life.
+            {descriptionText}
           </p>
         </motion.div>
 
@@ -197,7 +223,7 @@ export default function Contact({ data }) {
               />
               <h3 className="text-lg font-semibold text-white/90 mb-6 flex items-center gap-2">
                 <Send size={18} className="text-sky-300/70" />
-                Send a Message
+                {cardTitles.message || 'Send a Message'}
               </h3>
 
               <motion.form
@@ -209,17 +235,23 @@ export default function Contact({ data }) {
               >
                 <FormField
                   icon={User}
+                  id="contactNameInput"
+                  label="Your Name"
                   placeholder="Your Name"
                   index={0}
                 />
                 <FormField
                   icon={Mail}
+                  id="contactEmailInput"
+                  label="Your Email"
                   placeholder="Your Email"
                   type="email"
                   index={1}
                 />
                 <FormField
                   icon={MessageSquare}
+                  id="contactMessageTextarea"
+                  label="Your Message"
                   placeholder="Your Message..."
                   isTextarea
                   index={2}
@@ -243,7 +275,7 @@ export default function Contact({ data }) {
                   className="mt-2 w-full py-3 rounded-xl bg-gradient-to-r from-sky-500 to-cyan-400 text-xs sm:text-sm font-semibold text-white tracking-wide shadow-lg shadow-sky-500/20 transition-shadow duration-300 hover:shadow-sky-500/30 cursor-pointer flex items-center justify-center gap-2"
                 >
                   <Send size={16} />
-                  Send Message
+                  {contact.buttonText || 'Send Message'}
                 </motion.button>
               </motion.form>
             </div>
@@ -263,7 +295,7 @@ export default function Contact({ data }) {
               />
               <h3 className="text-lg font-semibold text-white/90 mb-6 flex items-center gap-2">
                 <Sparkles size={18} className="text-sky-300/70" />
-                Connect With Me
+                {cardTitles.socials || 'Connect With Me'}
               </h3>
 
               <motion.div
@@ -283,7 +315,7 @@ export default function Contact({ data }) {
 
                 {socialEntries.length === 0 && (
                   <p className="text-sm text-white/30 text-center py-4">
-                    No social links available.
+                    {contact.emptySocialsText || 'No social links available.'}
                   </p>
                 )}
               </motion.div>
@@ -310,12 +342,12 @@ export default function Contact({ data }) {
                 }}
               />
               <p className="text-sm sm:text-base font-medium bg-gradient-to-r from-sky-300 via-cyan-200 to-sky-200 bg-clip-text text-transparent">
-                &ldquo;Let&rsquo;s create something amazing together.&rdquo;
+                {contact.quote || '"Let\'s create something amazing together."'}
               </p>
               <p className="mt-2 text-xs text-white/30">
                 {personal.name
                   ? `— ${personal.name}`
-                  : 'Open to collaborations & opportunities'}
+                  : contact.tagline || 'Open to collaborations & opportunities'}
               </p>
             </motion.div>
           </motion.div>
@@ -346,7 +378,7 @@ export default function Contact({ data }) {
                 size={12}
                 className="text-sky-300/70 fill-sky-300/70"
               />{' '}
-              and a touch of glass
+              {contact.footerText || 'and a touch of glass'}
             </p>
           </div>
         </motion.footer>

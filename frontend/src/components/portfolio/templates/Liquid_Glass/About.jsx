@@ -9,26 +9,31 @@ export default function About({ data }) {
   const personal = data?.personal || {};
   const stats = data?.stats || {};
 
-  const statCards = [
-    {
-      value: stats.yearsExperience ?? 0,
+  const statCards = [];
+
+  if (stats?.yearsExperience !== undefined)
+    statCards.push({
+      value: stats.yearsExperience,
       label: "Years Experience",
       icon: Briefcase,
       suffix: "+",
-    },
-    {
-      value: stats.projectsCompleted ?? 0,
+    });
+
+  if (stats?.projectsCompleted !== undefined)
+    statCards.push({
+      value: stats.projectsCompleted,
       label: "Projects Completed",
       icon: Code2,
       suffix: "+",
-    },
-    {
-      value: stats.happyClients ?? 0,
+    });
+
+  if (stats?.happyClients !== undefined)
+    statCards.push({
+      value: stats.happyClients,
       label: "Happy Clients",
       icon: Heart,
       suffix: "+",
-    },
-  ];
+    });
 
   return (
     <section
