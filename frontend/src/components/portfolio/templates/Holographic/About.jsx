@@ -15,6 +15,27 @@ const SKILLS = [
 ];
 
 export default function About() {
+  const features = [
+    {
+      icon: Cpu,
+      title: "Immersive Systems",
+      description:
+        "Building futuristic interfaces with layered depth, motion, and holographic interactions.",
+    },
+    {
+      icon: ShieldCheck,
+      title: "Clean Architecture",
+      description:
+        "Scalable frontend systems designed for performance, modularity, and long-term maintainability.",
+    },
+    {
+      icon: Wand2,
+      title: "Creative Engineering",
+      description:
+        "Blending visual storytelling with modern web technologies to craft memorable experiences.",
+    },
+  ];
+
   return (
     <section className="min-h-screen bg-[#0a0a18] text-cyan-200 relative overflow-hidden font-mono text-sm">
       <div className="pointer-events-none absolute inset-0 z-0">
