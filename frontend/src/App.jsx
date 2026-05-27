@@ -1,3 +1,4 @@
+import SocialLinksEditor from './components/portfolio/SocialLinksEditor'
 import { BrowserRouter, Routes, Route, Navigate } from 'react-router-dom'
 import { Toaster } from 'react-hot-toast'
 import { AuthProvider, useAuth } from './context/AuthContext'
@@ -145,6 +146,7 @@ function App() {
                 <Route path="messages" element={<FellowshipMessages />} />
                 <Route path="messages/:roomId" element={<FellowshipChat />} />
               </Route>
+              <Route path="/test" element={<SocialLinksEditor />} />
 
               <Route path="*" element={<NotFound />} />
             </Routes>
