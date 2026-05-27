@@ -223,7 +223,7 @@
             <h2 className="text-5xl font-black">Projects</h2>
           </FadeIn>
           <div className="max-w-5xl w-full grid md:grid-cols-2 gap-6">
-            {data.projects.slice(0, 6).map((proj, i) => (
+            {data?.projects?.slice(0, 6)?.map((proj, i) => (
               <FadeIn key={i} delay={i * 0.1}>
                 <div
                   className="relative group rounded-2xl overflow-hidden border border-white/10 cursor-pointer transition-all duration-300 hover:border-white/20 hover:shadow-2xl hover:-translate-y-1"
@@ -232,14 +232,24 @@
                   <div className={`absolute inset-0 bg-gradient-to-br ${PROJECT_COLORS[i % PROJECT_COLORS.length]} opacity-0 group-hover:opacity-10 transition-opacity duration-300`} />
                   <div className="p-6 relative z-10">
                     <div className={`w-10 h-10 rounded-xl bg-gradient-to-br ${PROJECT_COLORS[i % PROJECT_COLORS.length]} mb-4 flex items-center justify-center text-white font-black text-lg shadow-lg`}>
-                      {proj.title[0]}
+                      {proj?.title?.[0] || "?"}
                     </div>
-                    <h3 className="text-xl font-bold mb-2">{proj.title}</h3>
-                    <p className="text-gray-400 text-sm leading-relaxed mb-4">{proj.description}</p>
-                    {proj.tech && (
+                    <h3 className="text-xl font-bold mb-2">
+                      {proj?.title || "Untitled"}
+                    </h3>
+
+                    <p className="text-gray-400 text-sm leading-relaxed mb-4">
+                      {proj?.description || "No description available"}
+                    </p>
+                    {proj.techStack?.length > 0 && (
                       <div className="flex flex-wrap gap-2">
-                        {proj.tech.map((t) => (
-                          <span key={t} className="px-3 py-1 text-xs rounded-full bg-white/5 border border-white/10 text-gray-400">{t}</span>
+                        {proj.techStack.map((t, idx) => (
+                          <span
+                            key={idx}
+                            className="px-3 py-1 text-xs rounded-full bg-white/5 border border-white/10 text-gray-400"
+                          >
+                            {t}
+                          </span>
                         ))}
                       </div>
                     )}
