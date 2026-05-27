@@ -1,3 +1,4 @@
+import OnePageScroll from './components/portfolio/templates/One_Page_Scroll';
 import StockTicker from "./components/portfolio/templates/Finance_Corporate/StockTicker";
 
 import React, { useState, useEffect } from 'react';
@@ -226,7 +227,8 @@ function App() {
     <ThemeProvider>
       <AuthProvider>
         <SocketProvider>
-          <AppRoutes />
+          {/* <AppRoutes /> */}
+          <OnePageScroll />
         </SocketProvider>
       </AuthProvider>
     </ThemeProvider>
