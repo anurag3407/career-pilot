@@ -300,7 +300,7 @@ const removePollOption = (index) => {
           {scheduledAt && (
             <div className="mx-6 mb-3 flex items-center justify-between px-3 py-2 bg-indigo-500/10 border border-indigo-500/30 rounded-lg">
               <div className="flex items-center gap-2 text-sm text-indigo-300">
-                <Clock className="w-4 h-4 flex-shrink-0" />
+                <Clock className="w-4 h-4 shrink-0" />
                 <span>
                   Scheduled for{' '}
                   <span className="font-medium">

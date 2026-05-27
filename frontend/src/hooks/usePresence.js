@@ -12,17 +12,14 @@ export function usePresence(userIds = []) {
   // Normalize to a safe array first so null callers don't throw on spread/length.
   const safeUserIds = Array.isArray(userIds) ? userIds : [];
 
-  // Serialize to a collision-safe JSON string so that user IDs containing
-  // commas (or any delimiter) are encoded correctly. Sorting first ensures
-  // ['a','b'] and ['b','a'] produce the same key and don't trigger extra
-  // subscriptions due to order differences. Using safeUserIds.length and the
-  // individual IDs as primitive deps avoids the need for an eslint-disable.
-  const serializedUserIds = useMemo(
-    () => (safeUserIds.length === 0 ? '' : JSON.stringify([...safeUserIds].sort())),
-    // safeUserIds.length + individual IDs are primitive deps React can compare
-    // eslint-disable-next-line react-hooks/exhaustive-deps
-    [safeUserIds.length, ...safeUserIds]
-  );
+  // Deduplicate so callers passing repeated IDs don't trigger extra subscriptions.
+  const uniqueUserIds = [...new Set(safeUserIds)];
+
+  // Serialize to a collision-safe primitive key so IDs containing commas (or
+  // any delimiter) are encoded correctly. Sorting first ensures ['a','b'] and
+  // ['b','a'] produce the same key and don't trigger extra subscriptions.
+  const serializedUserIds =
+    uniqueUserIds.length === 0 ? '' : JSON.stringify([...uniqueUserIds].sort());
 
   // Reconstruct a stable array reference from the parsed JSON so that inline
   // arrays (e.g. usePresence(['user1','user2'])) do not cause subscription

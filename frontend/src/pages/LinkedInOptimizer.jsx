@@ -60,13 +60,13 @@ function HeadlineCard({ headline, index, copied, onCopy }) {
       transition={{ delay: index * 0.08 }}
       className="flex items-start gap-3 bg-background/60 border border-border rounded-xl p-4 hover:border-primary/40 transition"
     >
-      <span className="flex-shrink-0 w-6 h-6 rounded-full bg-primary/15 text-primary text-xs font-bold flex items-center justify-center mt-0.5">
+      <span className="shrink-0 w-6 h-6 rounded-full bg-primary/15 text-primary text-xs font-bold flex items-center justify-center mt-0.5">
         {index + 1}
       </span>
       <p className="text-sm text-foreground font-medium flex-1 leading-relaxed">{headline}</p>
       <button
         onClick={() => onCopy(headline, `hl-${index}`)}
-        className="ml-2 text-muted-foreground hover:text-primary transition flex-shrink-0"
+        className="ml-2 text-muted-foreground hover:text-primary transition shrink-0"
         title="Copy"
       >
         {copied === `hl-${index}` ? <Check className="w-4 h-4 text-green-400" /> : <Copy className="w-4 h-4" />}
@@ -244,7 +244,7 @@ export default function LinkedInOptimizer() {
 
             {error && (
               <div className="flex items-center gap-2 text-red-400 bg-red-500/10 border border-red-500/30 rounded-xl px-4 py-3 text-sm">
-                <AlertCircle className="w-4 h-4 flex-shrink-0" />
+                <AlertCircle className="w-4 h-4 shrink-0" />
                 {error}
               </div>
             )}
@@ -383,7 +383,7 @@ export default function LinkedInOptimizer() {
                             transition={{ delay: i * 0.07 }}
                             className={`flex items-start gap-3 p-3 rounded-xl border ${cfg.border} ${cfg.bg}`}
                           >
-                            <span className={`text-xs font-bold px-2 py-0.5 rounded-full border ${cfg.border} ${cfg.color} ${cfg.bg} flex-shrink-0 mt-0.5`}>
+                            <span className={`text-xs font-bold px-2 py-0.5 rounded-full border ${cfg.border} ${cfg.color} ${cfg.bg} shrink-0 mt-0.5`}>
                               {win.impact}
                             </span>
                             <p className="text-sm text-foreground">{win.action}</p>
@@ -409,7 +409,7 @@ export default function LinkedInOptimizer() {
                           transition={{ delay: i * 0.07 }}
                           className="flex items-start gap-3 p-3 rounded-xl bg-muted/40 border border-border"
                         >
-                          <span className="w-2 h-2 rounded-full bg-red-400 flex-shrink-0 mt-1.5" />
+                          <span className="w-2 h-2 rounded-full bg-red-400 shrink-0 mt-1.5" />
                           <div>
                             <p className="text-sm font-semibold text-foreground">{item.skill}</p>
                             <p className="text-xs text-muted-foreground mt-0.5">{item.reason}</p>
