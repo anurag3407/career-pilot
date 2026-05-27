@@ -1,4 +1,4 @@
-import 'dotenv/config';
+import 'dotenv/config'; // Handles automatic environment variable parsing safely and cleanly
 import express from 'express';
 import dotenv from "dotenv";
 dotenv.config();
@@ -32,9 +32,7 @@ import {
 } from "./middleware/metrics.js";
 import redisManager from './config/redis.js';
 
-
 import { initializeSocket } from './config/socket.js';
-
 import { initializeDefaultChannels } from './controllers/communityFirebaseController.js';
 import { initializePostScheduler } from './services/postScheduler.js';
 import swaggerUi from 'swagger-ui-express';
@@ -99,10 +97,8 @@ console.log('🔧 Allowed origins:', allowedOrigins);
 
 app.use(cors({
   origin: function (origin, callback) {
-    // Allow requests with no origin (like mobile apps or curl)
     if (!origin) return callback(null, true);
     
-    // Normalize origin by removing trailing slash
     const normalizedOrigin = origin.replace(/\/$/, '');
     
     if (allowedOrigins.includes(normalizedOrigin)) {
@@ -126,14 +122,14 @@ app.use(helmet({
       defaultSrc: ["'self'"],
       scriptSrc: [
         "'self'",
-        "'unsafe-inline'",       // Required for React inline scripts
+        "'unsafe-inline'",
         "https://apis.google.com",
         "https://accounts.google.com",
         "https://www.gstatic.com",
       ],
       styleSrc: [
         "'self'",
-        "'unsafe-inline'",       // Required for Tailwind/inline styles
+        "'unsafe-inline'",
         "https://fonts.googleapis.com",
       ],
       fontSrc: [
@@ -144,7 +140,7 @@ app.use(helmet({
         "'self'",
         "data:",
         "blob:",
-        "https:",                // Allow all HTTPS images (company logos etc)
+        "https:",
       ],
       connectSrc: [
         "'self'",
@@ -153,8 +149,8 @@ app.use(helmet({
         "https://*.googleapis.com",
         "https://*.firebaseio.com",
         "https://identitytoolkit.googleapis.com",
-        "wss:",                  // WebSocket for Socket.IO
-        "ws:",                   // WebSocket local dev
+        "wss:",
+        "ws:",
       ],
       frameSrc: [
         "'self'",
@@ -165,9 +161,10 @@ app.use(helmet({
     },
   },
 }));
+
 const limiter = rateLimit({
-  windowMs: parseInt(process.env.RATE_LIMIT_WINDOW_MS) || 15 * 60 * 1000, // 15 minutes
-  max: parseInt(process.env.RATE_LIMIT_MAX_REQUESTS) || 1000, // increased for development
+  windowMs: parseInt(process.env.RATE_LIMIT_WINDOW_MS) || 15 * 60 * 1000,
+  max: parseInt(process.env.RATE_LIMIT_MAX_REQUESTS) || 1000,
   standardHeaders: true,
   legacyHeaders: false,
   handler: (req, res, next, options) => {
@@ -214,6 +211,7 @@ app.get('/health', (req, res) => {
 // Removed broken swagger doc route
 app.get('/metrics', metricsHandler);
 
+// Route API Initializations
 app.use('/api/docs', swaggerUi.serve, swaggerUi.setup(swaggerSpec));
 app.use('/api/auth', authRoutes);
 app.use('/api/upload', uploadRoutes);
@@ -225,26 +223,22 @@ app.use('/api/job-alerts', jobAlertRoutes);
 app.use('/api/community', communityRoutes);
 app.use('/api/fellowship', fellowshipRoutes);
 app.use('/api/interview', interviewRoutes);
-try {
-    const paymentRoutes = (await import('./routes/payments.js')).default;
-
-    app.use('/api/payments', paymentRoutes);
-
-    console.log('✅ Payment routes loaded');
-} catch (error) {
-    console.warn('⚠️ Payment routes disabled:', error.message);
-}
-app.use('/api/portfolio', portfolioRoutes);
+app.use('/api/payments', paymentRoutes);
 app.use('/api/user-profiles', userProfileRoutes);
 app.use('/api/auth/2fa', twoFactorRoutes);
 app.use('/api/search', searchRoutes);
 app.use('/api/ai', aiRoutes);
 app.use('/api/email-tracking', emailTrackingRoutes);
 
+// Single registration block securely mounted ABOVE the 404 block handler
+app.use('/api/portfolio', portfolioRoutes);
+
 app.use((req, res) => {
   res.status(404).json({ error: 'Route not found' });
 });
+
 app.use(globalErrorHandler);
+
 const startServer = async () => {
   try {
     await connectDB();

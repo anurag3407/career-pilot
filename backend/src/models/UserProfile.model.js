@@ -7,6 +7,25 @@ const userProfileSchema = new mongoose.Schema({
     unique: true,
     index: true,
   },
+  // 🚀 ADDED FOR PORTFOLIO SELECTION BY SLUG
+  slug: {
+    type: String,
+    unique: true,
+    sparse: true, // Allows profiles without portfolios to remain null without breaking uniqueness
+    trim: true,
+    lowercase: true,
+  },
+  // 🚀 ADDED FOR PORTFOLIO SEO CUSTOMIZATION
+  seoSettings: {
+    customRobotsTxt: {
+      type: String,
+      default: '', // Empty means fallback to default generation
+    },
+    blockSearchEngines: {
+      type: Boolean,
+      default: false, // Ensure we don't block engines by default
+    }
+  },
   displayName: {
     type: String,
     default: '',

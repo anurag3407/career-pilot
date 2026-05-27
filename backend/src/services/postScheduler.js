@@ -117,7 +117,6 @@ export const schedulePostJob = async (postId, scheduledAt) => {
     if (!postSchedulerQueue) {
         return null;
     }
-
     const ts = new Date(scheduledAt).getTime();
     if (isNaN(ts)) {
         throw new Error('scheduledAt is not a valid date');
