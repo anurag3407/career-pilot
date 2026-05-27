@@ -32,20 +32,6 @@ const razorpay = new Proxy({}, {
         return value;
     }
 });
-// Initialize Razorpay instance with test/live keys from environment
-const razorpayKeyId = process.env.RAZORPAY_KEY_ID;
-const razorpayKeySecret = process.env.RAZORPAY_KEY_SECRET;
-
-let razorpay = null;
-
-if (!razorpayKeyId || !razorpayKeySecret) {
-    console.warn('⚠️ Razorpay is not configured. Payment features disabled.');
-} else {
-    razorpay = new Razorpay({
-        key_id: razorpayKeyId,
-        key_secret: razorpayKeySecret
-    });
-}
 
 /**
  * Create a Razorpay order for escrow payment
