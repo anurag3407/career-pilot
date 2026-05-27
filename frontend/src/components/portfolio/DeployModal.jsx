@@ -306,7 +306,7 @@ export default function DeployModal({ isOpen, onClose, portfolioTitle = "My Port
           </div>
 
           {/* Header */}
-          <div className="p-6 pb-4 border-b border-zinc-800/60 flex items-center justify-between flex-shrink-0">
+          <div className="p-6 pb-4 border-b border-zinc-800/60 flex items-center justify-between shrink-0">
             <div className="flex items-center gap-3.5">
               <div className="w-10 h-10 bg-primary/10 border border-primary/20 rounded-xl flex items-center justify-center text-primary shadow-inner">
                 <Globe className="w-5 h-5 text-indigo-400" />
@@ -363,7 +363,7 @@ export default function DeployModal({ isOpen, onClose, portfolioTitle = "My Port
                             onClick={() => setSelectedProvider(provider.id)}
                             className="w-full flex items-start gap-4 p-4 rounded-2xl focus:outline-none focus:ring-2 focus:ring-indigo-500/40 cursor-pointer"
                           >
-                            <div className={`w-10 h-10 rounded-xl flex items-center justify-center text-xl font-bold flex-shrink-0 transition-transform group-hover:scale-105 ${
+                            <div className={`w-10 h-10 rounded-xl flex items-center justify-center text-xl font-bold shrink-0 transition-transform group-hover:scale-105 ${
                               isSelected ? 'bg-indigo-500/20 text-indigo-400' : 'bg-zinc-800 text-zinc-400'
                             }`}>
                               {provider.icon}
@@ -432,7 +432,7 @@ export default function DeployModal({ isOpen, onClose, portfolioTitle = "My Port
                   <div className="bg-amber-500/5 dark:bg-amber-500/10 border-l-4 border-amber-500 rounded-r-2xl p-4 text-left relative overflow-hidden select-none">
                     <div className="absolute top-0 right-0 w-16 h-16 bg-amber-500/5 rounded-full blur-xl pointer-events-none" />
                     <div className="flex gap-3">
-                      <span className="text-amber-500 text-base flex-shrink-0 select-none">💡</span>
+                      <span className="text-amber-500 text-base shrink-0 select-none">💡</span>
                       <div className="space-y-1">
                         <h5 className="text-[10px] font-bold text-amber-500 uppercase tracking-wider">
                           Dev Insight
@@ -571,7 +571,7 @@ export default function DeployModal({ isOpen, onClose, portfolioTitle = "My Port
                     <button
                       onClick={handleCopyLink}
                       aria-label="Copy deployed link to clipboard"
-                      className={`p-3 rounded-xl border transition-all duration-300 flex items-center justify-center flex-shrink-0 cursor-pointer ${
+                      className={`p-3 rounded-xl border transition-all duration-300 flex items-center justify-center shrink-0 cursor-pointer ${
                         copied
                           ? 'bg-emerald-500/10 border-emerald-500/30 text-emerald-400 shadow-inner'
                           : 'bg-zinc-900 border-zinc-800 text-zinc-400 hover:text-zinc-200 hover:bg-zinc-800/60'

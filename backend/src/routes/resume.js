@@ -3,11 +3,16 @@ import { verifyToken } from '../middleware/auth.js';
 import { asyncHandler, ApiError } from '../middleware/errorHandler.js';
 import { paginate, paginatedResponse } from '../middleware/paginate.js';
 import Resume from '../models/Resume.model.js';
+import ResumeVersion from '../models/ResumeVersion.model.js';
+import ResumeAtsHistory from '../models/ResumeAtsHistory.model.js';
 import { validate } from '../middleware/validate.js';
 import {
   createResumeSchema,
   updateResumeSchema,
   downloadResumeQuerySchema,
+  createResumeVersionSchema,
+  updateResumeVersionSchema,
+  createAtsHistorySchema,
 } from '../schemas/resume.schema.js';
 import { scrapeLinkedInProfile, profileToResumeText } from '../services/linkedinImporter.js';
 import { fetchGitHubProfile, convertGitHubToResumeText } from '../services/githubImporter.js';
@@ -119,6 +124,24 @@ router.post('/', verifyToken, validate(createResumeSchema), asyncHandler(async (
     preferences: preferences || {},
     title: title || `Resume - ${new Date().toLocaleDateString()}`
   });
+
+  try {
+    await ResumeVersion.create({
+      resumeId: newResume._id,
+      userId,
+      versionNumber: 1,
+      title: 'v1 - Initial Draft',
+      originalText: newResume.originalText,
+      enhancedText: newResume.enhancedText,
+      jobRole: newResume.jobRole,
+      atsScore: newResume.atsScore !== undefined && newResume.atsScore !== null ? newResume.atsScore : null,
+      tags: ['initial-draft'],
+      metadata: { source: 'editor' }
+    });
+  } catch (err) {
+    await Resume.findByIdAndDelete(newResume._id);
+    throw err;
+  }
 
   res.status(201).json({
     success: true,
@@ -275,6 +298,24 @@ router.post('/import/linkedin', verifyToken, asyncHandler(async (req, res) => {
     title,
   });
 
+  try {
+    await ResumeVersion.create({
+      resumeId: resume._id,
+      userId,
+      versionNumber: 1,
+      title: 'v1 - LinkedIn Import',
+      originalText: resume.originalText,
+      enhancedText: null,
+      jobRole: resume.jobRole,
+      atsScore: null,
+      tags: ['linkedin-import'],
+      metadata: { source: 'linkedin' }
+    });
+  } catch (err) {
+    await Resume.findByIdAndDelete(resume._id);
+    throw err;
+  }
+
   res.status(201).json({
     success: true,
     data: {
@@ -371,6 +412,24 @@ router.post('/import/github', verifyToken, asyncHandler(async (req, res) => {
     title,
   });
 
+  try {
+    await ResumeVersion.create({
+      resumeId: resume._id,
+      userId,
+      versionNumber: 1,
+      title: 'v1 - GitHub Import',
+      originalText: resume.originalText,
+      enhancedText: null,
+      jobRole: resume.jobRole,
+      atsScore: null,
+      tags: ['github-import'],
+      metadata: { source: 'github' }
+    });
+  } catch (err) {
+    await Resume.findByIdAndDelete(resume._id);
+    throw err;
+  }
+
   res.status(201).json({
     success: true,
     data: {
@@ -428,6 +487,24 @@ ${text}`;
       jobRole: jobRole || null,
       title: `Resume from Text — ${new Date().toLocaleDateString()}`
     });
+
+    try {
+      await ResumeVersion.create({
+        resumeId: resume._id,
+        userId,
+        versionNumber: 1,
+        title: 'v1 - Structured from Text',
+        originalText: resume.originalText,
+        enhancedText: null,
+        jobRole: resume.jobRole,
+        atsScore: null,
+        tags: ['text-import'],
+        metadata: { source: 'text-to-resume' }
+      });
+    } catch (err) {
+      await Resume.findByIdAndDelete(resume._id);
+      throw err;
+    }
 
     res.status(201).json({
       success: true,
@@ -492,4 +569,261 @@ router.post('/score', asyncHandler(async (req, res) => {
   });
 }));
 
+
+// Get all versions of a resume
+router.get('/:resumeId/versions', verifyToken, asyncHandler(async (req, res) => {
+  const { resumeId } = req.params;
+  const userId = req.user.uid;
+
+  const resume = await Resume.findOne({ _id: resumeId, userId });
+  if (!resume) {
+    throw new ApiError(404, 'Resume not found');
+  }
+
+  const versions = await ResumeVersion.find({ resumeId })
+    .sort({ versionNumber: -1 })
+    .lean();
+
+  res.json({
+    success: true,
+    data: versions.map(v => ({
+      id: v._id.toString(),
+      ...v,
+      _id: undefined
+    }))
+  });
+}));
+
+// Create a new snapshot/version of a resume
+router.post('/:resumeId/versions', verifyToken, validate(createResumeVersionSchema), asyncHandler(async (req, res) => {
+  const { resumeId } = req.params;
+  const userId = req.user.uid;
+  const { title, originalText, enhancedText, jobRole, atsScore, tags, metadata } = req.body;
+
+  const resume = await Resume.findOne({ _id: resumeId, userId });
+  if (!resume) {
+    throw new ApiError(404, 'Resume not found');
+  }
+
+  let retries = 3;
+  let newVersion;
+  while (retries > 0) {
+    // Find latest version number
+    const latestVersion = await ResumeVersion.findOne({ resumeId })
+      .sort({ versionNumber: -1 })
+      .select('versionNumber')
+      .lean();
+
+    const nextVersionNum = latestVersion ? latestVersion.versionNumber + 1 : 1;
+    const defaultTitle = title || `Version ${nextVersionNum} - ${new Date().toLocaleDateString()}`;
+
+    try {
+      newVersion = await ResumeVersion.create({
+        resumeId,
+        userId,
+        versionNumber: nextVersionNum,
+        title: defaultTitle,
+        originalText,
+        enhancedText: enhancedText || null,
+        jobRole: jobRole || null,
+        atsScore: atsScore !== undefined && atsScore !== null ? atsScore : null,
+        tags: tags || [],
+        metadata: metadata || {}
+      });
+      break;
+    } catch (err) {
+      if (err.code === 11000 && retries > 1) {
+        retries--;
+        continue;
+      }
+      throw err;
+    }
+  }
+
+  res.status(201).json({
+    success: true,
+    data: {
+      id: newVersion._id.toString(),
+      resumeId: newVersion.resumeId,
+      userId: newVersion.userId,
+      versionNumber: newVersion.versionNumber,
+      title: newVersion.title,
+      originalText: newVersion.originalText,
+      enhancedText: newVersion.enhancedText,
+      jobRole: newVersion.jobRole,
+      atsScore: newVersion.atsScore,
+      tags: newVersion.tags,
+      metadata: newVersion.metadata,
+      createdAt: newVersion.createdAt,
+      updatedAt: newVersion.updatedAt
+    }
+  });
+}));
+
+// Update metadata of a specific version
+router.put('/:resumeId/versions/:versionId', verifyToken, validate(updateResumeVersionSchema), asyncHandler(async (req, res) => {
+  const { resumeId, versionId } = req.params;
+  const userId = req.user.uid;
+  const updates = req.body;
+
+  const version = await ResumeVersion.findOne({ _id: versionId, resumeId, userId });
+  if (!version) {
+    throw new ApiError(404, 'Resume version not found');
+  }
+
+  if (updates.title !== undefined) version.title = updates.title;
+  if (updates.tags !== undefined) version.tags = updates.tags;
+  if (updates.jobRole !== undefined) version.jobRole = updates.jobRole;
+
+  await version.save();
+
+  res.json({
+    success: true,
+    data: {
+      id: version._id.toString(),
+      resumeId: version.resumeId,
+      userId: version.userId,
+      versionNumber: version.versionNumber,
+      title: version.title,
+      originalText: version.originalText,
+      enhancedText: version.enhancedText,
+      jobRole: version.jobRole,
+      atsScore: version.atsScore,
+      tags: version.tags,
+      metadata: version.metadata,
+      createdAt: version.createdAt,
+      updatedAt: version.updatedAt
+    }
+  });
+}));
+
+// Delete a specific version
+router.delete('/:resumeId/versions/:versionId', verifyToken, asyncHandler(async (req, res) => {
+  const { resumeId, versionId } = req.params;
+  const userId = req.user.uid;
+
+  // Enforce a server-side minimum of one version before deletion
+  const totalVersions = await ResumeVersion.countDocuments({ resumeId });
+  if (totalVersions <= 1) {
+    throw new ApiError(400, 'Cannot delete the only remaining version of the resume');
+  }
+
+  const deletedVersion = await ResumeVersion.findOneAndDelete({ _id: versionId, resumeId, userId });
+  if (!deletedVersion) {
+    throw new ApiError(404, 'Resume version not found');
+  }
+
+  res.json({
+    success: true,
+    message: 'Version deleted successfully'
+  });
+}));
+
+// Restore resume to a specific version
+router.post('/:resumeId/versions/:versionId/restore', verifyToken, asyncHandler(async (req, res) => {
+  const { resumeId, versionId } = req.params;
+  const userId = req.user.uid;
+
+  const version = await ResumeVersion.findOne({ _id: versionId, resumeId, userId }).lean();
+  if (!version) {
+    throw new ApiError(404, 'Resume version not found');
+  }
+
+  const updatedResume = await Resume.findOneAndUpdate(
+    { _id: resumeId, userId },
+    {
+      $set: {
+        originalText: version.originalText,
+        enhancedText: version.enhancedText,
+        jobRole: version.jobRole,
+        atsScore: version.atsScore
+      }
+    },
+    { new: true }
+  ).lean();
+
+  if (!updatedResume) {
+    throw new ApiError(404, 'Resume not found');
+  }
+
+  res.json({
+    success: true,
+    message: 'Resume restored successfully',
+    data: {
+      id: updatedResume._id.toString(),
+      userId: updatedResume.userId,
+      originalText: updatedResume.originalText,
+      enhancedText: updatedResume.enhancedText,
+      jobRole: updatedResume.jobRole,
+      atsScore: updatedResume.atsScore,
+      title: updatedResume.title,
+      createdAt: updatedResume.createdAt,
+      lastModified: updatedResume.lastModified
+    }
+  });
+}));
+
+// Get ATS score progression history for a resume
+router.get('/:resumeId/ats-history', verifyToken, asyncHandler(async (req, res) => {
+  const { resumeId } = req.params;
+  const userId = req.user.uid;
+
+  const history = await ResumeAtsHistory.find({ resumeId, userId })
+    .sort({ createdAt: 1 })
+    .lean();
+
+  res.json({
+    success: true,
+    data: history.map(h => ({
+      id: h._id.toString(),
+      resumeId: h.resumeId,
+      userId: h.userId,
+      jobRole: h.jobRole,
+      atsScore: h.atsScore,
+      scoreBreakdown: h.scoreBreakdown,
+      missingKeywords: h.missingKeywords,
+      improvementsCount: h.improvementsCount,
+      createdAt: h.createdAt
+    }))
+  });
+}));
+
+// Log a new ATS score analysis run
+router.post('/:resumeId/ats-history', verifyToken, validate(createAtsHistorySchema), asyncHandler(async (req, res) => {
+  const { resumeId } = req.params;
+  const userId = req.user.uid;
+  const { jobRole, atsScore, scoreBreakdown, missingKeywords, improvementsCount } = req.body;
+
+  const resume = await Resume.findOne({ _id: resumeId, userId });
+  if (!resume) {
+    throw new ApiError(404, 'Resume not found');
+  }
+
+  const newLog = await ResumeAtsHistory.create({
+    resumeId,
+    userId,
+    jobRole,
+    atsScore,
+    scoreBreakdown: scoreBreakdown || {},
+    missingKeywords: missingKeywords || [],
+    improvementsCount: improvementsCount || 0
+  });
+
+  res.status(201).json({
+    success: true,
+    data: {
+      id: newLog._id.toString(),
+      resumeId: newLog.resumeId,
+      userId: newLog.userId,
+      jobRole: newLog.jobRole,
+      atsScore: newLog.atsScore,
+      scoreBreakdown: newLog.scoreBreakdown,
+      missingKeywords: newLog.missingKeywords,
+      improvementsCount: newLog.improvementsCount,
+      createdAt: newLog.createdAt
+    }
+  });
+}));
+
 export default router;
+

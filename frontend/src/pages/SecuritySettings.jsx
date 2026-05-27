@@ -23,7 +23,7 @@ import { SkeletonPage } from '../components/ui/Skeleton'
 function SectionHeader({ icon: Icon, title, description }) {
   return (
     <div className="flex items-start gap-4 mb-6">
-      <div className="p-2.5 rounded-xl bg-indigo-500/10 border border-indigo-500/20 flex-shrink-0">
+      <div className="p-2.5 rounded-xl bg-indigo-500/10 border border-indigo-500/20 shrink-0">
         <Icon className="w-5 h-5 text-indigo-400" />
       </div>
       <div>
@@ -288,7 +288,7 @@ export default function SecuritySettings() {
                   key={label}
                   className="flex items-center gap-2.5 p-3 rounded-lg bg-neutral-950 border border-neutral-800"
                 >
-                  <Icon className="w-4 h-4 text-indigo-400 flex-shrink-0" />
+                  <Icon className="w-4 h-4 text-indigo-400 shrink-0" />
                   <span className="text-xs text-neutral-300">{label}</span>
                 </div>
               ))}
@@ -310,7 +310,7 @@ export default function SecuritySettings() {
           <form onSubmit={handleConfirmSetup}>
             <div className="space-y-6">
               <div className="flex items-start gap-3 p-4 rounded-xl bg-neutral-950 border border-neutral-800">
-                <span className="w-6 h-6 rounded-full bg-indigo-500 text-white text-xs font-bold flex items-center justify-center flex-shrink-0 mt-0.5">
+                <span className="w-6 h-6 rounded-full bg-indigo-500 text-white text-xs font-bold flex items-center justify-center shrink-0 mt-0.5">
                   1
                 </span>
                 <div>
@@ -324,7 +324,7 @@ export default function SecuritySettings() {
               </div>
 
               <div className="flex items-start gap-3 p-4 rounded-xl bg-neutral-950 border border-neutral-800">
-                <span className="w-6 h-6 rounded-full bg-indigo-500 text-white text-xs font-bold flex items-center justify-center flex-shrink-0 mt-0.5">
+                <span className="w-6 h-6 rounded-full bg-indigo-500 text-white text-xs font-bold flex items-center justify-center shrink-0 mt-0.5">
                   2
                 </span>
                 <div className="w-full">
@@ -350,7 +350,7 @@ export default function SecuritySettings() {
               </div>
 
               <div className="flex items-start gap-3 p-4 rounded-xl bg-neutral-950 border border-neutral-800">
-                <span className="w-6 h-6 rounded-full bg-indigo-500 text-white text-xs font-bold flex items-center justify-center flex-shrink-0 mt-0.5">
+                <span className="w-6 h-6 rounded-full bg-indigo-500 text-white text-xs font-bold flex items-center justify-center shrink-0 mt-0.5">
                   3
                 </span>
                 <div className="w-full">
