@@ -1,4 +1,4 @@
-import React, { useState } from 'react'
+import React, { useState, useEffect, useRef } from 'react'
 import { motion, AnimatePresence } from 'framer-motion'
 import { useNavigate } from 'react-router-dom'
 import { ArrowLeft, ArrowRight, CheckCircle, Plus, Trash2, Save, FileText, User, Briefcase, GraduationCap, Code, Star } from 'lucide-react'
@@ -34,6 +34,71 @@ export default function ResumeBuilder() {
     { name: '', tech: '', link: '', description: '' }
   ])
   const [skills, setSkills] = useState('')
+  const DRAFT_KEY = 'resumeBuilder:draft:v1'
+  const saveTimerRef = useRef(null)
+
+  const resetForm = () => {
+    setPersonal({ name: '', email: '', phone: '', linkedin: '', github: '', portfolio: '', summary: '' })
+    setEducation([{ school: '', degree: '', field: '', startDate: '', endDate: '', gpa: '', description: '' }])
+    setExperience([{ title: '', company: '', location: '', startDate: '', endDate: '', current: false, description: '' }])
+    setProjects([{ name: '', tech: '', link: '', description: '' }])
+    setSkills('')
+    setTargetRole('')
+    setCurrentStep(0)
+  }
+
+  // Load draft on mount
+  useEffect(() => {
+    try {
+      const raw = localStorage.getItem(DRAFT_KEY)
+      if (raw) {
+        const d = JSON.parse(raw)
+        if (d.personal) setPersonal(d.personal)
+        if (d.education) setEducation(d.education)
+        if (d.experience) setExperience(d.experience)
+        if (d.projects) setProjects(d.projects)
+        if (d.skills) setSkills(d.skills)
+        if (d.targetRole) setTargetRole(d.targetRole)
+        if (typeof d.currentStep === 'number') setCurrentStep(d.currentStep)
+      }
+    } catch (e) {
+      // ignore parse errors
+    }
+  }, [])
+
+  // Auto-save draft to localStorage (debounced)
+  useEffect(() => {
+    try {
+      if (saveTimerRef.current) clearTimeout(saveTimerRef.current)
+      saveTimerRef.current = setTimeout(() => {
+        const payload = {
+          personal, education, experience, projects, skills, targetRole, currentStep
+        }
+        try { localStorage.setItem(DRAFT_KEY, JSON.stringify(payload)) } catch (e) {}
+      }, 450)
+    } catch (e) {}
+    return () => { if (saveTimerRef.current) clearTimeout(saveTimerRef.current) }
+  }, [personal, education, experience, projects, skills, targetRole, currentStep])
+
+  const handleSaveDraft = () => {
+    try {
+      const payload = { personal, education, experience, projects, skills, targetRole, currentStep }
+      localStorage.setItem(DRAFT_KEY, JSON.stringify(payload))
+      toast.success('Draft saved locally')
+    } catch (e) {
+      toast.error('Failed to save draft locally')
+    }
+  }
+
+  const handleClearDraft = () => {
+    try {
+      localStorage.removeItem(DRAFT_KEY)
+      resetForm()
+      toast.success('Draft cleared')
+    } catch (e) {
+      toast.error('Failed to clear draft')
+    }
+  }
 
   const handleNext = () => setCurrentStep(s => Math.min(s + 1, STEPS.length - 1))
   const handlePrev = () => setCurrentStep(s => Math.max(s - 1, 0))
@@ -379,7 +444,11 @@ export default function ResumeBuilder() {
           >
             <ArrowLeft className="w-4 h-4" /> Back
           </button>
-          
+          <div className="flex items-center gap-3">
+            <button onClick={handleSaveDraft} className="px-4 py-2 rounded-full bg-neutral-800 text-white hover:bg-neutral-700 transition-all">Save draft</button>
+            <button onClick={handleClearDraft} className="px-4 py-2 rounded-full bg-transparent border border-border text-muted-foreground hover:bg-red-600/10 transition-all">Clear draft</button>
+          </div>
+
           {currentStep === STEPS.length - 1 ? (
             <button
               onClick={handleGenerate}
