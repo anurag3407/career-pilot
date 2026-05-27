@@ -433,6 +433,7 @@ export default function Enhance() {
   }
 
   const handleEnhanceWithAI = async () => {
+    if (enhancing) return
     setEnhancing(true)
     try {
       const apiPreferences = {
@@ -477,6 +478,7 @@ export default function Enhance() {
   }
 
   const handleScoreResume = async () => {
+    if (scoring) return
     if (!resume?.originalText) {
       toast.error('No resume text found to score')
       return
