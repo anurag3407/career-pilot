@@ -1,4 +1,4 @@
-import { useState, useEffect } from "react";
+import { useState, useEffect, useRef } from "react";
 import { Mail, MapPin, Linkedin, Send, Instagram, Github } from "lucide-react";
 
 const WatercolorBlob = ({ style, color, opacity = 0.18, size = 400 }) => (
@@ -62,16 +62,23 @@ export default function Contact() {
   const [focused, setFocused] = useState(null);
   const [submitted, setSubmitted] = useState(false);
   const [mounted, setMounted] = useState(false);
+  const timeoutRef = useRef(null);
 
   useEffect(() => {
     setMounted(true);
+    return () => {
+      if (timeoutRef.current) clearTimeout(timeoutRef.current);
+    };
   }, []);
 
   const handleSubmit = (e) => {
     e.preventDefault();
     setSubmitted(true);
-    setTimeout(() => setSubmitted(false), 3500);
-    setForm({ name: "", email: "", message: "" });
+    if (timeoutRef.current) clearTimeout(timeoutRef.current);
+    timeoutRef.current = setTimeout(() => {
+      setSubmitted(false);
+      setForm({ name: "", email: "", message: "" });
+    }, 3500);
   };
 
   const inputStyle = (field) => ({
@@ -648,4 +655,3 @@ export default function Contact() {
     </section>
   );
 }
-
