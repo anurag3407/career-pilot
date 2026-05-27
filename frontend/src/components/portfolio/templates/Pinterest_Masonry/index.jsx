@@ -264,6 +264,7 @@ function ProjectPin({ pin, data }) {
         <img 
           src={pin.image} 
           alt={pin.title} 
+          loading="lazy"
           className={`w-full object-cover transition-transform duration-500 group-hover:scale-105 ${isImageTall ? 'aspect-[3/4]' : 'aspect-square'}`}
         />
         
@@ -336,7 +337,7 @@ function TestimonialPin({ pin }) {
         "{pin.text}"
       </p>
       <div className="flex items-center gap-3">
-        <img src={pin.avatar} alt={pin.name} className="w-12 h-12 rounded-full object-cover shadow-sm group-hover:scale-110 transition-transform" />
+        <img src={pin.avatar} alt={pin.name} loading="lazy" className="w-12 h-12 rounded-full object-cover shadow-sm group-hover:scale-110 transition-transform" />
         <div>
           <div className="font-bold text-[15px]">{pin.name}</div>
           <div className="text-[13px] text-gray-600">{pin.role}</div>

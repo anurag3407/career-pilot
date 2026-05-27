@@ -118,6 +118,7 @@ export default function GitHubDashboard() {
                 <img 
                   src={profile.avatar_url} 
                   alt={profile.name} 
+                  loading="lazy"
                   className="w-32 h-32 rounded-full border-4 border-background shadow-xl"
                 />
                 <div className="flex-1 text-center md:text-left">

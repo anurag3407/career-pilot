@@ -471,6 +471,7 @@ className="w-full pl-12 pr-10 py-4 bg-muted/50 border border-border rounded-xl t
                             <img
                               src={job.employer_logo}
                               alt={job.employer_name}
+                              loading="lazy"
                               className="w-10 h-10 object-contain rounded"
                               onError={(e) => {
                                 e.target.style.display = 'none'
