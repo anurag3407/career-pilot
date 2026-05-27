@@ -1,3 +1,5 @@
+import OnePageScroll from './components/portfolio/templates/One_Page_Scroll';
+
 import StockTicker from "./components/portfolio/templates/Finance_Corporate/StockTicker";
 
 import React, { useState, useEffect } from 'react';
@@ -156,6 +158,9 @@ function AppRoutes() {
       <Routes>
         {/* Public Routes */}
         <Route path="/" element={<PublicRoute><Home /></PublicRoute>} />
+
+        import OnePageScroll from "path-to-your-component";
+        <Route path="/portfolio" element={<OnePageScroll />} />
         
         <Route path="/login" element={<PublicRoute><Login /></PublicRoute>} />
         <Route path="/register" element={<PublicRoute><Register /></PublicRoute>} />
@@ -227,6 +232,7 @@ function App() {
       <AuthProvider>
         <SocketProvider>
           <AppRoutes />
+          {/* <OnePageScroll /> */}
         </SocketProvider>
       </AuthProvider>
     </ThemeProvider>
