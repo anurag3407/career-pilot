@@ -270,7 +270,9 @@ Backend runs on:
 http://localhost:5001
 ```
 
-# Terminal 2 — Frontend
+### Terminal 2 — Frontend
+
+```bash
 cd frontend
 npm run dev
 ```
