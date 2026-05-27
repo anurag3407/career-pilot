@@ -1,8 +1,10 @@
 import { useState, useEffect } from "react";
+import { useNavigate } from "react-router-dom";
 import { motion, AnimatePresence } from "framer-motion";
 import { Plus, FileText, Briefcase, Search, Mic } from "lucide-react";
 
 export default function FAB({ scrollContainerRef }) {
+  const navigate = useNavigate();
   const [isOpen, setIsOpen] = useState(false);
   const [isVisible, setIsVisible] = useState(true);
 
@@ -10,22 +12,22 @@ export default function FAB({ scrollContainerRef }) {
     {
       label: "Create Portfolio",
       icon: <FileText size={18} />,
-      onClick: () => console.log("Create Portfolio"),
+      onClick: () => { setIsOpen(false); navigate("/templates"); },
     },
     {
       label: "Upload Resume",
       icon: <Briefcase size={18} />,
-      onClick: () => console.log("Upload Resume"),
+      onClick: () => { setIsOpen(false); navigate("/upload"); },
     },
     {
       label: "Search Jobs",
       icon: <Search size={18} />,
-      onClick: () => console.log("Search Jobs"),
+      onClick: () => { setIsOpen(false); navigate("/jobs"); },
     },
     {
       label: "Start Interview",
       icon: <Mic size={18} />,
-      onClick: () => console.log("Start Interview"),
+      onClick: () => { setIsOpen(false); navigate("/interview-prep"); },
     },
   ];
 
