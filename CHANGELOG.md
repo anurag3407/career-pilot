@@ -1,5 +1,28 @@
+# [1.1.0](https://github.com/shakshi127/career-pilot/compare/v1.0.0...v1.1.0) (2026-05-27)
 
 
+### Bug Fixes
+
+* add functional image and document attachments in post editor ([f20a2da](https://github.com/shakshi127/career-pilot/commit/f20a2dae86e52bcaef4bbfa617bcd1eb3f265ba9))
+* address CodeRabbit AI suggestions and improve data fallbacks ([517bf53](https://github.com/shakshi127/career-pilot/commit/517bf539cb95c4f062c9100b9f9073e2317ce6f2))
+* align testimonial ratings with UI screenshot ([bb6c4fa](https://github.com/shakshi127/career-pilot/commit/bb6c4fa3bb8191ee6cbdc5cddeae369c8259a126))
+* ensure posts appear instantly without duplicates ([c890a2d](https://github.com/shakshi127/career-pilot/commit/c890a2d94a46da2829a636c5d39a3bcc2014f58e))
+* improve RunwayLookbook UI for PR ([c934f39](https://github.com/shakshi127/career-pilot/commit/c934f396785d328d9dd02c839a0851136df000a5))
+* improve UI ([aae3712](https://github.com/shakshi127/career-pilot/commit/aae3712fc194c88b19911912577918202f8e2937))
+* make document attachments clickable ([89f531d](https://github.com/shakshi127/career-pilot/commit/89f531df89229bbd8919c034e811ed0d04dea831))
+* scope select-none to sidebars to allow text copying ([f1ffc48](https://github.com/shakshi127/career-pilot/commit/f1ffc48543a00797129137402a0b4ab3c9968698))
+* update RunwayLookbook UI ([cec0188](https://github.com/shakshi127/career-pilot/commit/cec0188ae8267ad6e22f53830c609e9c0c00e7ce))
+* update RunwayLookbook UI improvements ([22a086e](https://github.com/shakshi127/career-pilot/commit/22a086e771e2fac62753749bdd4cead20f7e8cbe))
+
+
+### Features
+
+* add Discord Server portfolio template ([9c394ac](https://github.com/shakshi127/career-pilot/commit/9c394acc538ac16e6cb8902e030cb84d63b840cd))
+* add SaaS Product portfolio template ([#1961](https://github.com/shakshi127/career-pilot/issues/1961)) ([12f5c8f](https://github.com/shakshi127/career-pilot/commit/12f5c8f035c8e9eff4a4f42f197a7c30fb07b162))
+* implement folded testimonials section for Origami Paper theme ([a5e23ee](https://github.com/shakshi127/career-pilot/commit/a5e23ee11399775a2d3277972ba04234387703e8))
+* implement RunwayLookbook high fashion template ([2cf12b5](https://github.com/shakshi127/career-pilot/commit/2cf12b5444b7a34650a81af61d40b22113fe760f))
+* **portfolio:** add SocialLinksEditor component ([47ab761](https://github.com/shakshi127/career-pilot/commit/47ab761206a623e9aca912c5dddd8f4fe599f340))
+* **portfolio:** implement watercolor artistic hero section ([e482ea4](https://github.com/shakshi127/career-pilot/commit/e482ea4764a6faad04372ef6acde12d41cd82fb5))
 
 ### Bug Fixes
 
