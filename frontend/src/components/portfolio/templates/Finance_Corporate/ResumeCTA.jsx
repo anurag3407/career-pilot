@@ -37,12 +37,12 @@ export default function ResumeCTA() {
 
           {/* CTA Buttons */}
           <div className="flex flex-col sm:flex-row gap-4 mb-10">
-            <button className="flex items-center justify-center gap-2 bg-amber-400 text-slate-950 font-semibold px-6 py-4 rounded-xl hover:scale-105 transition-all duration-300 shadow-lg">
+            <button type="button" className="flex items-center justify-center gap-2 bg-amber-400 text-slate-950 font-semibold px-6 py-4 rounded-xl hover:scale-105 transition-all duration-300 shadow-lg">
               <Download size={18} />
               Download Resume
             </button>
 
-            <button className="flex items-center justify-center gap-2 border border-slate-700 bg-slate-900 px-6 py-4 rounded-xl hover:bg-slate-800 transition-all duration-300">
+            <button type="button" className="flex items-center justify-center gap-2 border border-slate-700 bg-slate-900 px-6 py-4 rounded-xl hover:bg-slate-800 transition-all duration-300">
               View Portfolio
               <ArrowRight size={18} />
             </button>
