@@ -1,8 +1,8 @@
-import { useState, useEffect } from 'react'
-import { Link, useLocation } from 'react-router-dom'
-import { useAuth } from '../hooks/useAuth'
-import { useTheme } from '../hooks/useTheme'
-import { motion, AnimatePresence } from 'framer-motion'
+import { useState, useEffect } from "react";
+import { Link, useNavigate, useLocation } from "react-router-dom";
+import { useAuth } from "../hooks/useAuth";
+import { useTheme } from "../hooks/useTheme";
+import { motion, AnimatePresence } from "framer-motion";
 import {
   Search,
   FileText,
@@ -20,92 +20,92 @@ import {
   Sun,
   Moon,
   Palette,
-  ChevronDown
-} from 'lucide-react'
+  ChevronDown,
+} from "lucide-react";
 
 export default function Navbar() {
-  const { user, logout } = useAuth()
-  const { theme, toggleTheme } = useTheme()
-  const location = useLocation()
+  const { user, logout } = useAuth();
+  const { theme, toggleTheme } = useTheme();
+  const location = useLocation();
 
-  const [mobileMenuOpen, setMobileMenuOpen] = useState(false)
-  const [scrolled, setScrolled] = useState(false)
-  const [searchQuery, setSearchQuery] = useState('')
-  const [showDropdown, setShowDropdown] = useState(false)
-  const [notificationCount] = useState(3)
+  const [mobileMenuOpen, setMobileMenuOpen] = useState(false);
+  const [scrolled, setScrolled] = useState(false);
+  const [searchQuery, setSearchQuery] = useState("");
+  // const [showSearchDropdown, setshowSearchDropdown] = useState(false)
+  const [showSearchDropdown, setShowSearchDropdown] = useState(false);
+  const [showUserDropdown, setShowUserDropdown] = useState(false);
+  const navigate = useNavigate();
+  const [notificationCount] = useState(3);
 
   useEffect(() => {
     const handleScroll = () => {
-      setScrolled(window.scrollY > 20)
-    }
+      setScrolled(window.scrollY > 20);
+    };
 
-    window.addEventListener('scroll', handleScroll)
+    window.addEventListener("scroll", handleScroll);
 
-    return () => window.removeEventListener('scroll', handleScroll)
-  }, [])
+    return () => window.removeEventListener("scroll", handleScroll);
+  }, []);
 
   const handleLogout = async () => {
     try {
-      await logout()
+      await logout();
     } catch (error) {
-      console.error('Logout error:', error)
+      console.error("Logout error:", error);
     }
-  }
+  };
 
   const handleHomeClick = (e) => {
     if (
-      location.pathname === '/' &&
+      location.pathname === "/" &&
       e.button === 0 &&
       !e.metaKey &&
       !e.ctrlKey
     ) {
-      e.preventDefault()
-      window.scrollTo({ top: 0, behavior: 'smooth' })
+      e.preventDefault();
+      window.scrollTo({ top: 0, behavior: "smooth" });
     } else {
       setTimeout(() => {
-        window.scrollTo(0, 0)
-      }, 0)
+        window.scrollTo(0, 0);
+      }, 0);
     }
-  }
+  };
 
-  const isActive = (path) => location.pathname === path
+  const isActive = (path) => location.pathname === path;
 
   const publicLinks = [
-    { path: '/templates', label: 'Templates', icon: Palette },
-    { path: '/portfolio', label: 'Portfolio', icon: User },
-  ]
+    { path: "/templates", label: "Templates", icon: Palette },
+    { path: "/portfolio", label: "Portfolio", icon: User },
+  ];
 
   const privateLinks = [
-    { path: '/dashboard', label: 'Dashboard', icon: LayoutDashboard },
-    { path: '/jobs', label: 'Jobs', icon: Search },
-    { path: '/job-alerts', label: 'Alerts', icon: Bell },
-    { path: '/interview-prep', label: 'Interview', icon: Mic },
-    { path: '/fellowship', label: 'Fellowship', icon: GraduationCap },
-    { path: '/community', label: 'Community', icon: Users },
-    { path: '/upload', label: 'Resume', icon: FileText },
-    { path: '/email-generator', label: 'Emails', icon: Mail },
-    { path: '/linkedin-optimizer', label: 'LinkedIn', icon: Linkedin },
-  ]
+    { path: "/dashboard", label: "Dashboard", icon: LayoutDashboard },
+    { path: "/jobs", label: "Jobs", icon: Search },
+    { path: "/job-alerts", label: "Alerts", icon: Bell },
+    { path: "/interview-prep", label: "Interview", icon: Mic },
+    { path: "/fellowship", label: "Fellowship", icon: GraduationCap },
+    { path: "/community", label: "Community", icon: Users },
+    { path: "/upload", label: "Resume", icon: FileText },
+    { path: "/email-generator", label: "Emails", icon: Mail },
+    { path: "/linkedin-optimizer", label: "LinkedIn", icon: Linkedin },
+  ];
 
   const searchSuggestions = [
-    'Frontend Developer',
-    'Backend Developer',
-    'Resume Builder',
-    'Interview Questions',
-    'Remote Jobs'
-  ]
+    "Frontend Developer",
+    "Backend Developer",
+    "Resume Builder",
+    "Interview Questions",
+    "Remote Jobs",
+  ];
 
   return (
     <nav
       className={`fixed top-0 left-0 right-0 z-50 transition-all duration-300 ${
-        scrolled
-          ? 'glass border-b border-border shadow-sm'
-          : 'bg-transparent'
+        scrolled ? "glass border-b border-border shadow-sm" : "bg-transparent"
       }`}
     >
       <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
         <div className="flex justify-between items-center h-16">
-
           {/* Logo */}
           <Link
             to="/"
@@ -127,7 +127,6 @@ export default function Navbar() {
 
           {/* Desktop Navigation */}
           <div className="hidden lg:flex items-center gap-2">
-
             {/* Search Bar */}
             <div className="relative">
               <div className="flex items-center bg-muted border border-border rounded-xl px-3 py-2 w-72 focus-within:ring-2 focus-within:ring-primary/40 transition-all">
@@ -138,15 +137,25 @@ export default function Navbar() {
                   placeholder="Search anything..."
                   value={searchQuery}
                   onChange={(e) => setSearchQuery(e.target.value)}
-                  onFocus={() => setShowDropdown(true)}
-                  onBlur={() => setTimeout(() => setShowDropdown(false), 200)}
+                  onFocus={() => setShowSearchDropdown(true)}
+                  onBlur={() =>
+                    setTimeout(() => setShowSearchDropdown(false), 200)
+                  }
+                  onKeyDown={(e) => {
+                    if (e.key === "Enter" && searchQuery.trim()) {
+                      navigate(
+                        `/jobs?search=${encodeURIComponent(searchQuery.trim())}`,
+                      );
+                      setShowSearchDropdown(false);
+                    }
+                  }}
                   className="bg-transparent outline-none text-sm w-full text-foreground placeholder:text-muted-foreground"
                 />
               </div>
 
               {/* Suggestions Dropdown */}
               <AnimatePresence>
-                {showDropdown && (
+                {showSearchDropdown   && (
                   <motion.div
                     initial={{ opacity: 0, y: 8 }}
                     animate={{ opacity: 1, y: 0 }}
@@ -156,6 +165,11 @@ export default function Navbar() {
                     {searchSuggestions.map((item, index) => (
                       <button
                         key={index}
+                        onMouseDown={() => {
+                          setSearchQuery(item);
+                          navigate(`/jobs?search=${encodeURIComponent(item)}`);
+                          setShowSearchDropdown(false);
+                        }}
                         className="w-full text-left px-4 py-3 hover:bg-muted transition-colors text-sm text-foreground"
                       >
                         {item}
@@ -171,7 +185,7 @@ export default function Navbar() {
               <Link
                 key={path}
                 to={path}
-                className={`nav-link ${isActive(path) ? 'nav-link-active' : 'nav-link-inactive'}`}
+                className={`nav-link ${isActive(path) ? "nav-link-active" : "nav-link-inactive"}`}
               >
                 <Icon className="w-4 h-4" />
                 {label}
@@ -184,7 +198,7 @@ export default function Navbar() {
                 <Link
                   key={path}
                   to={path}
-                  className={`nav-link ${isActive(path) ? 'nav-link-active' : 'nav-link-inactive'}`}
+                  className={`nav-link ${isActive(path) ? "nav-link-active" : "nav-link-inactive"}`}
                 >
                   <Icon className="w-4 h-4" />
                   {label}
@@ -194,7 +208,6 @@ export default function Navbar() {
 
           {/* Right Side */}
           <div className="hidden md:flex items-center gap-3">
-
             {/* Theme Toggle */}
             <button
               onClick={toggleTheme}
@@ -209,7 +222,7 @@ export default function Navbar() {
                   exit={{ y: -20, opacity: 0, rotate: -45 }}
                   transition={{ duration: 0.2 }}
                 >
-                  {theme === 'light' ? (
+                  {theme === "light" ? (
                     <Moon className="w-5 h-5" />
                   ) : (
                     <Sun className="w-5 h-5" />
@@ -237,10 +250,10 @@ export default function Navbar() {
                 {/* User Dropdown */}
                 <div className="relative">
                   <button
-                    onClick={() => setShowDropdown(!showDropdown)}
+                    onClick={() => setShowUserDropdown(!showUserDropdown)}
                     className="flex items-center gap-2 px-3 py-2 bg-muted border border-border rounded-full hover:bg-accent transition-all"
                     aria-label="User menu"
-                    aria-expanded={showDropdown}
+                    aria-expanded={showUserDropdown}
                   >
                     <div className="w-8 h-8 rounded-full overflow-hidden bg-primary/20 flex items-center justify-center">
                       <img
@@ -251,14 +264,14 @@ export default function Navbar() {
                     </div>
 
                     <span className="text-sm font-medium text-foreground max-w-[100px] truncate">
-                      {user.displayName || user.email?.split('@')[0]}
+                      {user.displayName || user.email?.split("@")[0]}
                     </span>
 
                     <ChevronDown className="w-4 h-4 text-muted-foreground" />
                   </button>
 
                   <AnimatePresence>
-                    {showDropdown && (
+                    {showUserDropdown  && (
                       <motion.div
                         initial={{ opacity: 0, y: 10 }}
                         animate={{ opacity: 1, y: 0 }}
@@ -314,13 +327,12 @@ export default function Navbar() {
 
           {/* Mobile Menu */}
           <div className="flex items-center gap-2 md:hidden">
-
             <button
               onClick={toggleTheme}
               className="p-2 rounded-xl bg-muted border border-border"
               aria-label="Toggle theme"
             >
-              {theme === 'light' ? (
+              {theme === "light" ? (
                 <Moon className="w-5 h-5" />
               ) : (
                 <Sun className="w-5 h-5" />
@@ -330,7 +342,11 @@ export default function Navbar() {
             <button
               onClick={() => setMobileMenuOpen(!mobileMenuOpen)}
               className="p-2 rounded-lg hover:bg-muted transition-all"
-              aria-label={mobileMenuOpen ? "Close main navigation menu" : "Open main navigation menu"}
+              aria-label={
+                mobileMenuOpen
+                  ? "Close main navigation menu"
+                  : "Open main navigation menu"
+              }
               aria-expanded={mobileMenuOpen}
             >
               {mobileMenuOpen ? (
@@ -348,12 +364,11 @@ export default function Navbar() {
         {mobileMenuOpen && (
           <motion.div
             initial={{ opacity: 0, height: 0 }}
-            animate={{ opacity: 1, height: 'auto' }}
+            animate={{ opacity: 1, height: "auto" }}
             exit={{ opacity: 0, height: 0 }}
             className="md:hidden border-t border-border bg-background/95 backdrop-blur-xl overflow-hidden"
           >
             <div className="px-4 py-6 space-y-3">
-
               {/* Mobile Search */}
               <div className="flex items-center bg-muted border border-border rounded-xl px-3 py-3">
                 <Search className="w-4 h-4 text-muted-foreground mr-2" />
@@ -361,6 +376,16 @@ export default function Navbar() {
                 <input
                   type="text"
                   placeholder="Search..."
+                  value={searchQuery}
+                  onChange={(e) => setSearchQuery(e.target.value)}
+                  onKeyDown={(e) => {
+                    if (e.key === "Enter" && searchQuery.trim()) {
+                      navigate(
+                        `/jobs?search=${encodeURIComponent(searchQuery.trim())}`,
+                      );
+                      setMobileMenuOpen(false);
+                    }
+                  }}
                   className="bg-transparent outline-none text-sm w-full"
                 />
               </div>
@@ -370,7 +395,7 @@ export default function Navbar() {
                   key={path}
                   to={path}
                   onClick={() => setMobileMenuOpen(false)}
-                  className={`nav-link text-base ${isActive(path) ? 'nav-link-active' : 'nav-link-inactive'}`}
+                  className={`nav-link text-base ${isActive(path) ? "nav-link-active" : "nav-link-inactive"}`}
                 >
                   <Icon className="w-5 h-5" />
                   {label}
@@ -383,21 +408,18 @@ export default function Navbar() {
                     key={path}
                     to={path}
                     onClick={() => setMobileMenuOpen(false)}
-                    className={`nav-link text-base ${isActive(path) ? 'nav-link-active' : 'nav-link-inactive'}`}
+                    className={`nav-link text-base ${isActive(path) ? "nav-link-active" : "nav-link-inactive"}`}
                   >
                     <Icon className="w-5 h-5" />
                     {label}
                   </Link>
                 ))}
 
-               
-
-
               {user ? (
                 <button
                   onClick={() => {
-                    handleLogout()
-                    setMobileMenuOpen(false)
+                    handleLogout();
+                    setMobileMenuOpen(false);
                   }}
                   className="flex items-center gap-3 w-full px-4 py-4 rounded-xl text-base font-semibold text-destructive hover:bg-destructive/10 transition-all"
                 >
@@ -426,5 +448,5 @@ export default function Navbar() {
         )}
       </AnimatePresence>
     </nav>
-  )
+  );
 }
