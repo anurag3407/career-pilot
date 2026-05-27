@@ -1,5 +1,5 @@
 import { useState, useEffect } from 'react'
-import { Link, useLocation } from 'react-router-dom'
+import { Link, useLocation, useNavigate } from 'react-router-dom'
 import { useAuth } from '../hooks/useAuth'
 import { useTheme } from '../hooks/useTheme'
 import { motion, AnimatePresence } from 'framer-motion'
@@ -27,6 +27,7 @@ export default function Navbar() {
   const { user, logout } = useAuth()
   const { theme, toggleTheme } = useTheme()
   const location = useLocation()
+  const navigate = useNavigate()
 
   const [mobileMenuOpen, setMobileMenuOpen] = useState(false)
   const [scrolled, setScrolled] = useState(false)
@@ -65,6 +66,14 @@ export default function Navbar() {
       setTimeout(() => {
         window.scrollTo(0, 0)
       }, 0)
+    }
+  }
+
+  const handleSearch = (query) => {
+    if (query.trim()) {
+      navigate(`/jobs?q=${encodeURIComponent(query.trim())}`)
+      setShowDropdown(false)
+      setSearchQuery('')
     }
   }
 
@@ -140,6 +149,7 @@ export default function Navbar() {
                   onChange={(e) => setSearchQuery(e.target.value)}
                   onFocus={() => setShowDropdown(true)}
                   onBlur={() => setTimeout(() => setShowDropdown(false), 200)}
+                  onKeyDown={(e) => e.key === 'Enter' && handleSearch(searchQuery)}
                   className="bg-transparent outline-none text-sm w-full text-foreground placeholder:text-muted-foreground"
                 />
               </div>
@@ -153,14 +163,20 @@ export default function Navbar() {
                     exit={{ opacity: 0, y: 8 }}
                     className="absolute top-14 left-0 w-full bg-background border border-border rounded-xl shadow-xl overflow-hidden"
                   >
-                    {searchSuggestions.map((item, index) => (
-                      <button
-                        key={index}
-                        className="w-full text-left px-4 py-3 hover:bg-muted transition-colors text-sm text-foreground"
-                      >
-                        {item}
-                      </button>
-                    ))}
+                    {searchSuggestions
+                      .filter((item) =>
+                        searchQuery.trim() === '' ||
+                        item.toLowerCase().includes(searchQuery.toLowerCase())
+                      )
+                      .map((item, index) => (
+                        <button
+                          key={index}
+                          onMouseDown={() => handleSearch(item)}
+                          className="w-full text-left px-4 py-3 hover:bg-muted transition-colors text-sm text-foreground"
+                        >
+                          {item}
+                        </button>
+                      ))}
                   </motion.div>
                 )}
               </AnimatePresence>
@@ -361,6 +377,14 @@ export default function Navbar() {
                 <input
                   type="text"
                   placeholder="Search..."
+                  value={searchQuery}
+                  onChange={(e) => setSearchQuery(e.target.value)}
+                  onKeyDown={(e) => {
+                    if (e.key === 'Enter') {
+                      handleSearch(searchQuery)
+                      setMobileMenuOpen(false)
+                    }
+                  }}
                   className="bg-transparent outline-none text-sm w-full"
                 />
               </div>
@@ -389,9 +413,6 @@ export default function Navbar() {
                     {label}
                   </Link>
                 ))}
-
-               
-
 
               {user ? (
                 <button
