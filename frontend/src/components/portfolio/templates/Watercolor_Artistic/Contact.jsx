@@ -81,110 +81,124 @@ export default function Contact() {
     }, 3500);
   };
 
-  const inputStyle = (field) => ({
-    width: "100%",
-    padding: "12px 16px",
-    background: focused === field ? "rgba(240,228,250,0.85)" : "rgba(255,252,255,0.92)",
-    border:
-      focused === field
-        ? "1.5px solid rgba(180,130,200,0.7)"
-        : "1.5px solid rgba(190,160,210,0.35)",
-    borderRadius: "14px",
-    fontSize: "15px",
-    color: "#4a3a5e",
+  // Only non-Tailwind-expressible properties remain here
+  const inputBaseStyle = {
     caretColor: "#9a7ab0",
-    outline: "none",
-    transition: "all 0.4s ease",
-    fontFamily: "'DM Serif Display', serif",
-    boxShadow:
-      focused === field
-        ? "0 0 0 4px rgba(180,130,200,0.12)"
-        : "none",
-    boxSizing: "border-box",
     WebkitTextFillColor: "#4a3a5e",
     colorScheme: "light",
+    fontFamily: "'DM Serif Display', serif",
+    fontSize: "15px",
+    boxSizing: "border-box",
+  };
+
+  const inputFocusedStyle = {
+    background: "rgba(240,228,250,0.85)",
+    border: "1.5px solid rgba(180,130,200,0.7)",
+    boxShadow: "0 0 0 4px rgba(180,130,200,0.12)",
+  };
+
+  const inputBlurStyle = {
+    background: "rgba(255,252,255,0.92)",
+    border: "1.5px solid rgba(190,160,210,0.35)",
+    boxShadow: "none",
+  };
+
+  const inputStyle = (field) => ({
+    ...inputBaseStyle,
+    ...(focused === field ? inputFocusedStyle : inputBlurStyle),
   });
 
   return (
-    <section
-      style={{
-        position: "relative",
-        minHeight: "100vh",
-        background: "linear-gradient(135deg, #fdf6ff 0%, #f0e8f8 30%, #e8f4f8 60%, #fef0f5 100%)",
-        overflow: "hidden",
-        padding: "80px 20px 80px",
-        fontFamily: "'Caveat', cursive",
-      }}
-    >
-      {/* Google Fonts */}
+    // Root scoping class — ALL selectors in the <style> block are prefixed with .watercolor-contact
+    <section className="watercolor-contact relative min-h-screen overflow-hidden" style={{
+      background: "linear-gradient(135deg, #fdf6ff 0%, #f0e8f8 30%, #e8f4f8 60%, #fef0f5 100%)",
+      padding: "80px 20px 80px",
+      fontFamily: "'Caveat', cursive",
+    }}>
+      {/*
+        Scoped styles only:
+        - Google Fonts import moved here (should ideally live in index.html or global CSS)
+        - All keyframes and class selectors are prefixed with .watercolor-contact
+        - input/textarea/placeholder/autofill rules scoped to .watercolor-contact
+        - No bare global selectors
+      */}
       <style>{`
         @import url('https://fonts.googleapis.com/css2?family=Caveat:wght@400;600;700&family=DM+Serif+Display:ital@0;1&family=DM+Sans:wght@400;500&display=swap');
 
-        @keyframes floatA {
+        @keyframes wc-floatA {
           0%,100% { transform: translateY(0px) rotate(0deg); }
           50% { transform: translateY(-22px) rotate(6deg); }
         }
-        @keyframes floatB {
+        @keyframes wc-floatB {
           0%,100% { transform: translateY(0px) rotate(0deg); }
           50% { transform: translateY(18px) rotate(-5deg); }
         }
-        @keyframes floatC {
+        @keyframes wc-floatC {
           0%,100% { transform: translateY(0px) rotate(0deg); }
           50% { transform: translateY(-14px) rotate(8deg); }
         }
-        @keyframes fadeInUp {
+        @keyframes wc-fadeInUp {
           from { opacity: 0; transform: translateY(30px); }
           to { opacity: 1; transform: translateY(0); }
         }
-        @keyframes successPop {
+        @keyframes wc-successPop {
           0% { transform: scale(0.8); opacity: 0; }
           60% { transform: scale(1.05); }
           100% { transform: scale(1); opacity: 1; }
         }
-        .blob-a { animation: floatA 7s ease-in-out infinite; }
-        .blob-b { animation: floatB 9s ease-in-out infinite; }
-        .blob-c { animation: floatC 6s ease-in-out infinite; }
-        .fade-in-1 { animation: fadeInUp 0.7s ease forwards; opacity: 0; animation-delay: 0.1s; }
-        .fade-in-2 { animation: fadeInUp 0.7s ease forwards; opacity: 0; animation-delay: 0.3s; }
-        .fade-in-3 { animation: fadeInUp 0.7s ease forwards; opacity: 0; animation-delay: 0.5s; }
-        .fade-in-4 { animation: fadeInUp 0.7s ease forwards; opacity: 0; animation-delay: 0.7s; }
-        .contact-card:hover { transform: translateY(-4px); box-shadow: 0 12px 40px rgba(160,100,200,0.18); }
-        .submit-btn:hover { background: rgba(160,100,200,0.88) !important; transform: translateY(-2px); box-shadow: 0 8px 28px rgba(160,100,200,0.35) !important; }
-        .submit-btn:active { transform: translateY(0); }
-        .success-msg { animation: successPop 0.5s ease forwards; }
 
-        input, textarea {
+        .watercolor-contact .wc-blob-a { animation: wc-floatA 7s ease-in-out infinite; }
+        .watercolor-contact .wc-blob-b { animation: wc-floatB 9s ease-in-out infinite; }
+        .watercolor-contact .wc-blob-c { animation: wc-floatC 6s ease-in-out infinite; }
+        .watercolor-contact .wc-fade-in-1 { animation: wc-fadeInUp 0.7s ease forwards; opacity: 0; animation-delay: 0.1s; }
+        .watercolor-contact .wc-fade-in-2 { animation: wc-fadeInUp 0.7s ease forwards; opacity: 0; animation-delay: 0.3s; }
+        .watercolor-contact .wc-fade-in-3 { animation: wc-fadeInUp 0.7s ease forwards; opacity: 0; animation-delay: 0.5s; }
+        .watercolor-contact .wc-fade-in-4 { animation: wc-fadeInUp 0.7s ease forwards; opacity: 0; animation-delay: 0.7s; }
+        .watercolor-contact .wc-contact-card:hover { transform: translateY(-4px); box-shadow: 0 12px 40px rgba(160,100,200,0.18); }
+        .watercolor-contact .wc-submit-btn:hover { background: rgba(160,100,200,0.88) !important; transform: translateY(-2px); box-shadow: 0 8px 28px rgba(160,100,200,0.35) !important; }
+        .watercolor-contact .wc-submit-btn:active { transform: translateY(0); }
+        .watercolor-contact .wc-success-msg { animation: wc-successPop 0.5s ease forwards; }
+
+        .watercolor-contact input,
+        .watercolor-contact textarea {
           background-color: rgba(255,252,255,0.92) !important;
           color: #4a3a5e !important;
           -webkit-text-fill-color: #4a3a5e !important;
           color-scheme: light;
+          outline: none;
+          transition: all 0.4s ease;
+          width: 100%;
+          padding: 12px 16px;
+          border-radius: 14px;
         }
-        input::placeholder, textarea::placeholder {
+        .watercolor-contact input::placeholder,
+        .watercolor-contact textarea::placeholder {
           color: #c0aad0 !important;
           opacity: 1;
         }
-        input:-webkit-autofill,
-        input:-webkit-autofill:hover,
-        input:-webkit-autofill:focus,
-        textarea:-webkit-autofill {
+        .watercolor-contact input:-webkit-autofill,
+        .watercolor-contact input:-webkit-autofill:hover,
+        .watercolor-contact input:-webkit-autofill:focus,
+        .watercolor-contact textarea:-webkit-autofill {
           -webkit-box-shadow: 0 0 0px 1000px rgba(240,228,250,0.95) inset !important;
           -webkit-text-fill-color: #4a3a5e !important;
         }
+
         @media (max-width: 768px) {
-          .contact-grid { flex-direction: column !important; }
-          .form-card { padding: 32px 20px !important; }
-          .info-col { padding: 0 !important; }
+          .watercolor-contact .wc-contact-grid { flex-direction: column !important; }
+          .watercolor-contact .wc-form-card { padding: 32px 20px !important; }
+          .watercolor-contact .wc-info-col { padding: 0 !important; }
         }
       `}</style>
 
       {/* Background blobs */}
-      <div className="blob-a" style={{ position: "absolute", top: "-60px", left: "-80px" }}>
+      <div className="wc-blob-a absolute" style={{ top: "-60px", left: "-80px" }}>
         <WatercolorBlob color="#c9a0dc" opacity={0.22} size={420} />
       </div>
-      <div className="blob-b" style={{ position: "absolute", bottom: "-80px", right: "-60px" }}>
+      <div className="wc-blob-b absolute" style={{ bottom: "-80px", right: "-60px" }}>
         <WatercolorBlob color="#87ceeb" opacity={0.18} size={380} />
       </div>
-      <div className="blob-c" style={{ position: "absolute", top: "40%", left: "50%", transform: "translateX(-50%)" }}>
+      <div className="wc-blob-c absolute" style={{ top: "40%", left: "50%", transform: "translateX(-50%)" }}>
         <WatercolorBlob color="#f4a7b9" opacity={0.13} size={300} />
       </div>
 
@@ -195,42 +209,35 @@ export default function Contact() {
 
       {/* Header */}
       <div
-        className={mounted ? "fade-in-1" : ""}
-        style={{ textAlign: "center", marginBottom: "20px", position: "relative", zIndex: 1 }}
+        className={`text-center mb-5 relative z-10 ${mounted ? "wc-fade-in-1" : ""}`}
       >
-        <p
-          style={{
-            fontFamily: "'Caveat', cursive",
-            fontSize: "20px",
-            color: "#b07fc4",
-            letterSpacing: "3px",
-            marginBottom: "10px",
-            fontWeight: 600,
-          }}
-        >
+        <p className="mb-2.5 font-semibold" style={{
+          fontFamily: "'Caveat', cursive",
+          fontSize: "20px",
+          color: "#b07fc4",
+          letterSpacing: "3px",
+        }}>
           — let's connect —
         </p>
         <h2
+          className="m-0 leading-tight italic"
           style={{
             fontFamily: "'DM Serif Display', serif",
             fontSize: "clamp(40px, 8vw, 72px)",
             color: "#4a3a5e",
-            margin: 0,
-            lineHeight: 1.1,
-            fontStyle: "italic",
           }}
         >
           Say Hello
         </h2>
-        <div style={{ display: "flex", justifyContent: "center", marginTop: "12px" }}>
+        <div className="flex justify-center mt-3">
           <BrushStroke color="#c9a0dc" />
         </div>
         <p
+          className="mt-4"
           style={{
             fontFamily: "'Caveat', cursive",
             fontSize: "19px",
             color: "#7a6a8a",
-            marginTop: "16px",
             maxWidth: "480px",
             margin: "16px auto 0",
             lineHeight: 1.6,
@@ -242,20 +249,11 @@ export default function Contact() {
 
       {/* Main content */}
       <div
-        className={`contact-grid ${mounted ? "fade-in-2" : ""}`}
-        style={{
-          display: "flex",
-          gap: "40px",
-          maxWidth: "1000px",
-          margin: "50px auto 0",
-          alignItems: "flex-start",
-          position: "relative",
-          zIndex: 1,
-        }}
+        className={`wc-contact-grid flex gap-10 max-w-4xl mx-auto mt-12 items-start relative z-10 ${mounted ? "wc-fade-in-2" : ""}`}
       >
         {/* Contact Form */}
         <div
-          className="form-card"
+          className="wc-form-card"
           style={{
             flex: "1.4",
             background: "rgba(255,255,255,0.62)",
@@ -268,38 +266,16 @@ export default function Contact() {
           }}
         >
           {submitted ? (
-            <div
-              className="success-msg"
-              style={{
-                textAlign: "center",
-                padding: "40px 20px",
-                display: "flex",
-                flexDirection: "column",
-                alignItems: "center",
-                gap: "16px",
-              }}
-            >
+            <div className="wc-success-msg text-center py-10 px-5 flex flex-col items-center gap-4">
               <div
-                style={{
-                  width: "70px",
-                  height: "70px",
-                  borderRadius: "50%",
-                  background: "linear-gradient(135deg, #c9a0dc, #87ceeb)",
-                  display: "flex",
-                  alignItems: "center",
-                  justifyContent: "center",
-                }}
+                className="w-[70px] h-[70px] rounded-full flex items-center justify-center"
+                style={{ background: "linear-gradient(135deg, #c9a0dc, #87ceeb)" }}
               >
                 <Send size={30} color="white" />
               </div>
               <h3
-                style={{
-                  fontFamily: "'DM Serif Display', serif",
-                  fontSize: "28px",
-                  color: "#4a3a5e",
-                  margin: 0,
-                  fontStyle: "italic",
-                }}
+                className="m-0 italic"
+                style={{ fontFamily: "'DM Serif Display', serif", fontSize: "28px", color: "#4a3a5e" }}
               >
                 Message Sent!
               </h3>
@@ -310,32 +286,20 @@ export default function Contact() {
           ) : (
             <>
               <h3
-                style={{
-                  fontFamily: "'DM Serif Display', serif",
-                  fontSize: "26px",
-                  color: "#4a3a5e",
-                  marginTop: 0,
-                  marginBottom: "28px",
-                  fontStyle: "italic",
-                }}
+                className="mt-0 mb-7 italic"
+                style={{ fontFamily: "'DM Serif Display', serif", fontSize: "26px", color: "#4a3a5e" }}
               >
                 Drop me a note
               </h3>
 
-              <form onSubmit={handleSubmit} style={{ display: "flex", flexDirection: "column", gap: "18px" }}>
+              <form onSubmit={handleSubmit} className="flex flex-col gap-[18px]">
                 <div>
-                  <label
-                    style={{
-                      display: "block",
-                      fontFamily: "'DM Sans', sans-serif",
-                      fontSize: "13px",
-                      fontWeight: 500,
-                      color: "#7a5a96",
-                      marginBottom: "7px",
-                      letterSpacing: "0.8px",
-                      textTransform: "uppercase",
-                    }}
-                  >
+                  <label className="block mb-[7px] font-medium uppercase tracking-wide" style={{
+                    fontFamily: "'DM Sans', sans-serif",
+                    fontSize: "13px",
+                    color: "#7a5a96",
+                    letterSpacing: "0.8px",
+                  }}>
                     Your Name
                   </label>
                   <input
@@ -351,18 +315,12 @@ export default function Contact() {
                 </div>
 
                 <div>
-                  <label
-                    style={{
-                      display: "block",
-                      fontFamily: "'DM Sans', sans-serif",
-                      fontSize: "13px",
-                      fontWeight: 500,
-                      color: "#7a5a96",
-                      marginBottom: "7px",
-                      letterSpacing: "0.8px",
-                      textTransform: "uppercase",
-                    }}
-                  >
+                  <label className="block mb-[7px] font-medium uppercase" style={{
+                    fontFamily: "'DM Sans', sans-serif",
+                    fontSize: "13px",
+                    color: "#7a5a96",
+                    letterSpacing: "0.8px",
+                  }}>
                     Email Address
                   </label>
                   <input
@@ -378,18 +336,12 @@ export default function Contact() {
                 </div>
 
                 <div>
-                  <label
-                    style={{
-                      display: "block",
-                      fontFamily: "'DM Sans', sans-serif",
-                      fontSize: "13px",
-                      fontWeight: 500,
-                      color: "#7a5a96",
-                      marginBottom: "7px",
-                      letterSpacing: "0.8px",
-                      textTransform: "uppercase",
-                    }}
-                  >
+                  <label className="block mb-[7px] font-medium uppercase" style={{
+                    fontFamily: "'DM Sans', sans-serif",
+                    fontSize: "13px",
+                    color: "#7a5a96",
+                    letterSpacing: "0.8px",
+                  }}>
                     Your Message
                   </label>
                   <textarea
@@ -411,12 +363,8 @@ export default function Contact() {
 
                 <button
                   type="submit"
-                  className="submit-btn"
+                  className="wc-submit-btn flex items-center justify-center gap-2.5"
                   style={{
-                    display: "flex",
-                    alignItems: "center",
-                    justifyContent: "center",
-                    gap: "10px",
                     padding: "14px 28px",
                     background: "rgba(160,100,200,0.78)",
                     color: "white",
@@ -442,14 +390,8 @@ export default function Contact() {
 
         {/* Info Column */}
         <div
-          className={`info-col ${mounted ? "fade-in-3" : ""}`}
-          style={{
-            flex: "1",
-            display: "flex",
-            flexDirection: "column",
-            gap: "20px",
-            paddingTop: "8px",
-          }}
+          className={`wc-info-col flex flex-col gap-5 pt-2 ${mounted ? "wc-fade-in-3" : ""}`}
+          style={{ flex: "1" }}
         >
           {/* Info Cards */}
           {[
@@ -477,11 +419,8 @@ export default function Contact() {
           ].map((item, i) => (
             <div
               key={i}
-              className="contact-card"
+              className="wc-contact-card flex items-center gap-4"
               style={{
-                display: "flex",
-                alignItems: "center",
-                gap: "16px",
                 padding: "20px 22px",
                 background: item.color,
                 border: `1.5px solid ${item.border}`,
@@ -491,41 +430,27 @@ export default function Contact() {
                 cursor: "default",
               }}
             >
-              <div
-                style={{
-                  width: "46px",
-                  height: "46px",
-                  borderRadius: "14px",
-                  background: "rgba(255,255,255,0.7)",
-                  display: "flex",
-                  alignItems: "center",
-                  justifyContent: "center",
-                  flexShrink: 0,
-                }}
-              >
+              <div className="flex items-center justify-center shrink-0 rounded-[14px]" style={{
+                width: "46px",
+                height: "46px",
+                background: "rgba(255,255,255,0.7)",
+              }}>
                 {item.icon}
               </div>
               <div>
-                <p
-                  style={{
-                    fontFamily: "'Caveat', cursive",
-                    fontSize: "14px",
-                    color: "#9a7ab0",
-                    margin: "0 0 3px",
-                    letterSpacing: "1px",
-                    textTransform: "uppercase",
-                  }}
-                >
+                <p className="m-0 mb-[3px] uppercase tracking-wide" style={{
+                  fontFamily: "'Caveat', cursive",
+                  fontSize: "14px",
+                  color: "#9a7ab0",
+                  letterSpacing: "1px",
+                }}>
                   {item.label}
                 </p>
-                <p
-                  style={{
-                    fontFamily: "'DM Serif Display', serif",
-                    fontSize: "16px",
-                    color: "#4a3a5e",
-                    margin: 0,
-                  }}
-                >
+                <p className="m-0" style={{
+                  fontFamily: "'DM Serif Display', serif",
+                  fontSize: "16px",
+                  color: "#4a3a5e",
+                }}>
                   {item.value}
                 </p>
               </div>
@@ -534,54 +459,40 @@ export default function Contact() {
 
           {/* Availability badge */}
           <div
+            className="rounded-[20px] p-[18px_22px]"
             style={{
-              padding: "18px 22px",
               background: "rgba(135,206,180,0.2)",
               border: "1.5px solid rgba(100,180,150,0.3)",
-              borderRadius: "20px",
               backdropFilter: "blur(10px)",
             }}
           >
-            <div style={{ display: "flex", alignItems: "center", gap: "10px", marginBottom: "6px" }}>
+            <div className="flex items-center gap-2.5 mb-1.5">
               <span
+                className="inline-block rounded-full w-2.5 h-2.5"
                 style={{
-                  width: "10px",
-                  height: "10px",
-                  borderRadius: "50%",
                   background: "#4caf83",
-                  display: "inline-block",
                   boxShadow: "0 0 0 3px rgba(76,175,131,0.25)",
                 }}
               />
-              <span
-                style={{
-                  fontFamily: "'Caveat', cursive",
-                  fontSize: "15px",
-                  color: "#3a8a63",
-                  fontWeight: 600,
-                }}
-              >
+              <span className="font-semibold" style={{
+                fontFamily: "'Caveat', cursive",
+                fontSize: "15px",
+                color: "#3a8a63",
+              }}>
                 Available for work
               </span>
             </div>
-            <p
-              style={{
-                fontFamily: "'Caveat', cursive",
-                fontSize: "15px",
-                color: "#5a7a6a",
-                margin: 0,
-                lineHeight: 1.5,
-              }}
-            >
+            <p className="m-0 leading-relaxed" style={{
+              fontFamily: "'Caveat', cursive",
+              fontSize: "15px",
+              color: "#5a7a6a",
+            }}>
               Open to freelance, collaborations &amp; full-time opportunities ✨
             </p>
           </div>
 
           {/* Social row */}
-          <div
-            className={mounted ? "fade-in-4" : ""}
-            style={{ display: "flex", gap: "12px", justifyContent: "center", marginTop: "6px" }}
-          >
+          <div className={`flex gap-3 justify-center mt-1.5 ${mounted ? "wc-fade-in-4" : ""}`}>
             {[
               { icon: <Github size={20} />, label: "GitHub", color: "#6e5a82" },
               { icon: <Instagram size={20} />, label: "Instagram", color: "#c9a0dc" },
@@ -590,17 +501,13 @@ export default function Contact() {
               <button
                 key={i}
                 aria-label={s.label}
+                className="flex items-center justify-center rounded-[14px] cursor-pointer"
                 style={{
                   width: "46px",
                   height: "46px",
-                  borderRadius: "14px",
                   background: "rgba(255,255,255,0.6)",
                   border: "1.5px solid rgba(200,170,220,0.35)",
-                  display: "flex",
-                  alignItems: "center",
-                  justifyContent: "center",
                   color: s.color,
-                  cursor: "pointer",
                   transition: "all 0.3s ease",
                   backdropFilter: "blur(8px)",
                 }}
@@ -621,32 +528,24 @@ export default function Contact() {
       </div>
 
       {/* Footer quote */}
-      <div
-        style={{
-          textAlign: "center",
-          marginTop: "70px",
-          position: "relative",
-          zIndex: 1,
-        }}
-      >
+      <div className="text-center mt-[70px] relative z-10">
         <BrushStroke color="#f4a7b9" style={{ margin: "0 auto 18px", display: "block" }} />
         <p
+          className="m-0 italic"
           style={{
             fontFamily: "'DM Serif Display', serif",
             fontSize: "18px",
             color: "#9a7ab0",
-            fontStyle: "italic",
-            margin: 0,
           }}
         >
           "Art is not what you see, but what you make others see."
         </p>
         <p
+          className="mt-1.5"
           style={{
             fontFamily: "'Caveat', cursive",
             fontSize: "15px",
             color: "#b0a0c0",
-            marginTop: "6px",
           }}
         >
           — Edgar Degas
