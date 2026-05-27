@@ -24,7 +24,7 @@
     "date-fns": "^4.1.0",
     "dotted-map": "^2.2.3",
     "firebase": "^11.1.0",
-    "framer-motion": "^12.39.0",
+    "framer-motion": "^12.40.0",
     "html2canvas": "^1.4.1",
     "jspdf": "^4.0.0",
     "lucide-react": "^0.468.0",
