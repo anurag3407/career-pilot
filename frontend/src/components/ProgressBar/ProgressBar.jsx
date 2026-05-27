@@ -1,4 +1,5 @@
 import { useEffect, useState } from "react";
+import "./ProgressBar.css";
 
 const colorMap = {
   primary: "bg-blue-500",
@@ -60,22 +61,9 @@ const ProgressBar = ({
         aria-label={typeof label === "string" ? label : "Progress bar"}
       >
         {isIndeterminate ? (
-          <>
-            <div
-              className={`${barHeight} ${barColor} rounded-full w-1/3`}
-              style={{ animation: "indeterminate 1.5s infinite ease-in-out" }}
-            />
-            <style>{`
-              @keyframes indeterminate {
-                0% {
-                  transform: translateX(-100%);
-                }
-                100% {
-                  transform: translateX(400%);
-                }
-              }
-            `}</style>
-          </>
+          <div
+            className={`${barHeight} ${barColor} rounded-full w-1/3 animate-indeterminate`}
+          />
         ) : (
           <div
             className={`
@@ -87,30 +75,6 @@ const ProgressBar = ({
           />
         )}
       </div>
-
-      {animated && (
-        <style>{`
-          .progress-stripes {
-            background-image: repeating-linear-gradient(
-              45deg,
-              rgba(255, 255, 255, 0.15) 0px,
-              rgba(255, 255, 255, 0.15) 10px,
-              transparent 10px,
-              transparent 20px
-            );
-            animation: stripes 1s linear infinite;
-          }
-
-          @keyframes stripes {
-            from {
-              background-position: 0 0;
-            }
-            to {
-              background-position: 40px 0;
-            }
-          }
-        `}</style>
-      )}
     </div>
   );
 };

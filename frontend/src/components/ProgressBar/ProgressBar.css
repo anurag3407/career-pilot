@@ -1,0 +1,34 @@
+/* Reusable ProgressBar Animations & Custom Classes */
+
+@keyframes indeterminate {
+  0% {
+    transform: translateX(-100%);
+  }
+  100% {
+    transform: translateX(400%);
+  }
+}
+
+.animate-indeterminate {
+  animation: indeterminate 1.5s infinite ease-in-out;
+}
+
+.progress-stripes {
+  background-image: repeating-linear-gradient(
+    45deg,
+    rgba(255, 255, 255, 0.15) 0px,
+    rgba(255, 255, 255, 0.15) 10px,
+    transparent 10px,
+    transparent 20px
+  );
+  animation: stripes 1s linear infinite;
+}
+
+@keyframes stripes {
+  from {
+    background-position: 0 0;
+  }
+  to {
+    background-position: 40px 0;
+  }
+}

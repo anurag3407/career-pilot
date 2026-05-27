@@ -1,34 +1,3 @@
-<<<<<<< HEAD
-# AI Resume Builder - Frontend
-
-React + Vite frontend for the AI Resume Builder application.
-
-## Quick Start
-
-```bash
-# Install dependencies
-npm install
-
-# Start development server
-npm run dev
-
-# Build for production
-npm run build
-```
-
-## Environment Variables
-
-Copy `.env.example` to `.env` and fill in your Firebase configuration.
-
-## Features
-
-- Modern React 19 with Vite
-- TailwindCSS 4 for styling
-- Firebase Authentication
-- Responsive design
-- Framer Motion animations
-- PDF generation with jsPDF
-=======
 <div align="center">
   <img src="docs/assets/banner.png" alt="Career Pilot Banner" width="100%" style="border-radius: 12px; margin-bottom: 20px;" />
   <br />
@@ -71,27 +40,15 @@ The **AI Resume Builder & Career Platform** is a comprehensive full-stack applic
 
 ### Home Page
 
-![](docs/images/home_page.png)
-
 ### Resume Enhancement
-
-![](docs/images/resume_enhancer.png)
 
 ### Community Platform
 
-![](docs/images/community_board.png)
-
 ### Authentication
-
-![](docs/images/signup_page.png)
 
 ### Job Tracker
 
-![](docs/images/job_tracker.png)
-
 ### Mock Interview
-
-![](docs/images/mock_interview.png)
 
 ---
 
@@ -356,7 +313,6 @@ career-pilot/
 │   │   ├── models/          # Mongoose Schemas (User, Job, Resume)
 │   │   ├── routes/          # Express Routers
 │   │   └── services/        # BullMQ Queues, Emails, Integrations
-├── frontend/
 │   ├── src/
 │   │   ├── components/      # UI, Community, Portfolio
 │   │   ├── context/         # Auth & Socket contexts
@@ -467,4 +423,3 @@ Your efforts, pull requests, ideas, and support make this project better every d
 This project is licensed under the MIT License - see the [LICENSE](LICENSE) file for details.
 
 <br />
->>>>>>> d9cec355c02ba7adf33119c9737350dda1bf2f81

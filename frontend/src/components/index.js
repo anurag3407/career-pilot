@@ -7,6 +7,8 @@ export { default as Card } from './Card'
 export { default as FileUpload } from './FileUpload'
 export { default as JobAlertModal } from './JobAlertModal'
 export { default as JobAlertsList } from './JobAlertsList'
+export { default as ProgressBar } from './ProgressBar'
+
 
 // Export skeleton components
 export {
