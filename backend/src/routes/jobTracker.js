@@ -181,7 +181,7 @@ router.put('/:trackerId', verifyToken, validate(updateTrackedJobSchema), asyncHa
   const updateData = {};
 
   if (status) {
-    updateData.status = status;
+    updateData.$set = { status };
   }
 
   if (notes) {

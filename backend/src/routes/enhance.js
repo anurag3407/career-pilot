@@ -415,7 +415,7 @@ router.post('/stream', verifyToken, extractAIProvider, aiRateLimiter, asyncHandl
 
     stream.sendProgress(20, 'Preparing prompt...');
 
-  if (isAborted) return;
+    if (isAborted) return;
 
     const provider = req.aiProvider;
     const systemPrompt = getSystemPrompt(
