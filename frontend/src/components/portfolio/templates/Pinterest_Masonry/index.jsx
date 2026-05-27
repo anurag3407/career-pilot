@@ -128,7 +128,7 @@ export default function PinterestMasonry({ data: propData }) {
             <MessageCircle size={24} />
           </div>
           <div className="w-12 h-12 rounded-full flex items-center justify-center hover:bg-gray-100 cursor-pointer">
-            <img loading="lazy" loading="lazy" src={data.personal.avatar} alt="Profile" className="w-7 h-7 rounded-full object-cover" />
+            <img loading="lazy" src={data.personal.avatar} alt="Profile" className="w-7 h-7 rounded-full object-cover" />
           </div>
         </div>
       </header>
@@ -207,12 +207,12 @@ function ProfilePin({ pin }) {
     <div className="bg-[#f0f0f0] rounded-3xl p-8 flex flex-col items-center text-center shadow-sm relative overflow-hidden group">
       {/* Decorative blurred background */}
       <div className="absolute inset-0 opacity-20 transition-opacity group-hover:opacity-30">
-        <img loading="lazy" loading="lazy" src={pin.avatar} alt="blur" className="w-full h-full object-cover blur-2xl scale-150" />
+        <img loading="lazy" src={pin.avatar} alt="blur" className="w-full h-full object-cover blur-2xl scale-150" />
       </div>
       
       <div className="relative z-10">
         <div className="w-32 h-32 rounded-full overflow-hidden mb-6 mx-auto border-4 border-white shadow-lg">
-          <img loading="lazy" loading="lazy" src={pin.avatar} alt={pin.name} className="w-full h-full object-cover" />
+          <img loading="lazy" src={pin.avatar} alt={pin.name} className="w-full h-full object-cover" />
         </div>
         <h1 className="text-3xl font-bold mb-2">{pin.name}</h1>
         <p className="text-[#767676] mb-4 font-medium">{pin.title}</p>
@@ -301,7 +301,7 @@ function ProjectPin({ pin, data }) {
       
       {/* Tiny Author attribution */}
       <div className="flex items-center gap-2 mt-2 px-1">
-        <img loading="lazy" loading="lazy" src={data.personal.avatar} alt="author" className="w-5 h-5 rounded-full object-cover" />
+        <img loading="lazy" src={data.personal.avatar} alt="author" className="w-5 h-5 rounded-full object-cover" />
         <span className="text-[13px] text-[#111111] font-medium">{data.personal.name}</span>
       </div>
     </div>
@@ -336,7 +336,7 @@ function TestimonialPin({ pin }) {
         "{pin.text}"
       </p>
       <div className="flex items-center gap-3">
-        <img loading="lazy" loading="lazy" src={pin.avatar} alt={pin.name} className="w-12 h-12 rounded-full object-cover shadow-sm group-hover:scale-110 transition-transform" />
+        <img loading="lazy" src={pin.avatar} alt={pin.name} className="w-12 h-12 rounded-full object-cover shadow-sm group-hover:scale-110 transition-transform" />
         <div>
           <div className="font-bold text-[15px]">{pin.name}</div>
           <div className="text-[13px] text-gray-600">{pin.role}</div>

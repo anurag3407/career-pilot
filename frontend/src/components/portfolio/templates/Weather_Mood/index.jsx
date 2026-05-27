@@ -1069,7 +1069,7 @@ function Testimonials({ theme }) {
               <Quote size={20} style={{ color: theme.accent, opacity: 0.6 }} />
               <p className="text-sm leading-relaxed flex-1" style={{ color: theme.muted }}>{t.text}</p>
               <div className="flex items-center gap-3">
-                <img loading="lazy" loading="lazy" src={t.avatar} alt={t.name} className="w-10 h-10 rounded-full"
+                <img loading="lazy" src={t.avatar} alt={t.name} className="w-10 h-10 rounded-full"
                   style={{ boxShadow: `0 0 0 2px ${theme.ringColor}` }} />
                 <div>
                   <div className="text-sm font-bold" style={{ color: theme.prose }}>{t.name}</div>
