@@ -165,6 +165,7 @@ export default function PostCard({
               </div>
             </div>
           </div>
+        </div>
 
         {/* Category */}
         <div className="mt-3 flex items-center gap-2 flex-wrap">
