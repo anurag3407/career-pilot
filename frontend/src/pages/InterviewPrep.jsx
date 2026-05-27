@@ -319,10 +319,15 @@ export default function InterviewPrep() {
   }, []);
 
   useEffect(() => {
+    // Capture the current synth reference at effect run time.
+    // Using the captured value in cleanup prevents a stale-ref bug where
+    // synthRef.current may have changed (or been nulled) by the time the
+    // cleanup function runs on unmount or step change.
+    const synth = synthRef.current;
     if (step === 'interview') initializeMedia();
     return () => {
       cleanupMedia();
-      if (synthRef.current) synthRef.current.cancel();
+      if (synth) synth.cancel();
     };
   }, [step]);
 

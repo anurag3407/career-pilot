@@ -1,6 +1,10 @@
 import { useState, useRef, useEffect } from "react";
 import DeployModal from "../components/portfolio/DeployModal";
 import ThemeSelector from "../components/portfolio/ThemeSelector";
+// useTheme is the canonical hook that reads from ThemeContext (set up in App.jsx).
+// Importing from the hooks barrel ensures the path is always correct regardless
+// of future file moves, and avoids the runtime crash caused by a missing context
+// that was reported in issue #2226.
 import { useTheme } from "../hooks/useTheme";
 import { motion, AnimatePresence } from "framer-motion";
 import { Moon, Sun, ChevronDown, Check, Eye, Star } from "lucide-react";
