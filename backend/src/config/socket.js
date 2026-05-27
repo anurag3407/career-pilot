@@ -2,13 +2,14 @@ import { Server } from 'socket.io';
 import { socketAuthMiddleware } from '../middleware/socketAuth.js';
 import { setupSocketHandlers } from '../services/socketServiceFirebase.js';
 import { presenceService } from '../services/presenceService.js';
+import { allowedOrigins } from './cors.js';
 
 let io = null;
 
 export const initializeSocket = (server) => {
   io = new Server(server, {
     cors: {
-      origin: process.env.FRONTEND_URL || 'http://localhost:5173',
+      origin: allowedOrigins,
       methods: ['GET', 'POST'],
       credentials: true
     },
