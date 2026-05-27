@@ -52,6 +52,43 @@ export default function JobSearch() {
     location: searchParams.get('location') || ''
   })
 
+  const isAnyFilterActive =
+    filters.jobType !== 'All Types' ||
+    filters.experienceLevel !== 'All Levels' ||
+    filters.location !== ''
+
+  const clearAllFilters = async () => {
+    const clearedFilters = {
+      jobType: 'All Types',
+      experienceLevel: 'All Levels',
+      location: ''
+    }
+    setFilters(clearedFilters)
+
+    const params = {}
+    if (searchQuery.trim()) {
+      params.q = searchQuery
+    }
+    setSearchParams(params)
+
+    if (searchQuery.trim()) {
+      setLoading(true)
+      setHasSearched(true)
+      try {
+        const response = await jobsApi.search(searchQuery, clearedFilters)
+        setJobs(response.data || [])
+        toast.success('Filters cleared!')
+      } catch (error) {
+        toast.error(error.message || 'Failed to search jobs')
+        setJobs([])
+      } finally {
+        setLoading(false)
+      }
+    } else {
+      toast.success('Filters cleared!')
+    }
+  }
+
   // Load saved jobs on mount
   useEffect(() => {
     loadSavedJobs()
@@ -268,7 +305,24 @@ className="w-full pl-12 pr-10 py-4 bg-muted/50 border border-border rounded-xl t
                     exit={{ height: 0, opacity: 0 }}
                     className="overflow-hidden"
                   >
-                    <div className="pt-4 border-t border-border grid md:grid-cols-3 gap-4">
+                    <div className="pt-4 border-t border-border">
+                      <div className="flex items-center justify-between mb-4">
+                        <h3 className="font-semibold text-lg text-foreground">Filters</h3>
+                        {isAnyFilterActive && (
+                          <button
+                            type="button"
+                            onClick={clearAllFilters}
+                            className="text-sm text-red-500 hover:text-red-700 font-medium transition-colors duration-200 flex items-center gap-1 cursor-pointer"
+                            aria-label="Clear all filters"
+                          >
+                            <svg xmlns="http://www.w3.org/2000/svg" className="h-4 w-4" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+                              <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M6 18L18 6M6 6l12 12" />
+                            </svg>
+                            Clear All
+                          </button>
+                        )}
+                      </div>
+                      <div className="grid md:grid-cols-3 gap-4">
                       <div>
                         <label htmlFor="job-type-select" className="block text-sm font-medium text-muted-foreground mb-2">
                           Job Type
@@ -326,10 +380,12 @@ className="w-full pl-12 pr-10 py-4 bg-muted/50 border border-border rounded-xl t
                         Reset Filters
                       </button>
                     </div>
-                  </motion.div>
-                )}
-              </AnimatePresence>
-            </form>
+                  </div>
+                </motion.div>
+              )}
+            </AnimatePresence>
+          </form>
+
 
             {/* Popular Searches */}
             {!hasSearched && (

@@ -1,4 +1,4 @@
-import { useState } from 'react'
+import { useEffect, useRef, useState } from 'react'
 import { useNavigate } from 'react-router-dom'
 import toast from 'react-hot-toast'
 import { motion } from 'framer-motion'
@@ -10,6 +10,8 @@ import { Link } from 'react-router-dom'
 
 export default function Upload() {
   const navigate = useNavigate()
+  const uploadControllerRef = useRef(null)
+  const redirectTimeoutRef = useRef(null)
 
   const [_file, setFile] = useState(null)
   const [loading, setLoading] = useState(false)
@@ -24,35 +26,65 @@ export default function Upload() {
   const handleFileSelect = async (selectedFile) => {
     setFile(selectedFile)
     setLoading(true)
+    const controller = new AbortController()
+    uploadControllerRef.current = controller
 
     try {
       // Upload and extract text
-      const response = await uploadApi.uploadPdf(selectedFile)
+      const response = await uploadApi.uploadPdf(selectedFile, { signal: controller.signal })
       const extractedText = response.data.extractedText
 
       // Create resume automatically
       const resumeTitle = `Resume - ${new Date().toLocaleDateString()}`
-      const resumeResponse = await resumeApi.create({
-        originalText: extractedText,
-        title: resumeTitle
-      })
+      const resumeResponse = await resumeApi.create(
+        {
+          originalText: extractedText,
+          title: resumeTitle
+        },
+        { signal: controller.signal }
+      )
 
       setUploadComplete(true)
       toast.success('Resume uploaded successfully!')
 
       // Redirect to enhance page after a brief delay
-      setTimeout(() => {
+      redirectTimeoutRef.current = setTimeout(() => {
         navigate(`/enhance/${resumeResponse.data.id}`)
       }, 1500)
 
     } catch (error) {
+      if (error.name === 'AbortError') {
+        toast('Upload cancelled')
+        return
+      }
       const message = error.response?.data?.error || error.message || 'Failed to upload resume'
       toast.error(message)
       setFile(null)
     } finally {
       setLoading(false)
+      uploadControllerRef.current = null
     }
   }
+
+  const handleCancelUpload = () => {
+    uploadControllerRef.current?.abort()
+    if (redirectTimeoutRef.current) {
+      clearTimeout(redirectTimeoutRef.current)
+      redirectTimeoutRef.current = null
+    }
+    setLoading(false)
+    setUploadComplete(false)
+    setFile(null)
+  }
+
+  useEffect(() => {
+    return () => {
+      uploadControllerRef.current?.abort()
+      if (redirectTimeoutRef.current) {
+        clearTimeout(redirectTimeoutRef.current)
+      }
+    }
+  }, [])
 
   const normalizeLinkedInUrl = (raw) => {
     let url = raw.trim()
@@ -216,6 +248,9 @@ export default function Upload() {
                   <p className="text-foreground font-medium">Processing your resume...</p>
                   <p className="text-muted-foreground text-sm">Extracting text and preparing analysis</p>
                 </div>
+                <Button variant="outline" size="sm" onClick={handleCancelUpload}>
+                  Cancel upload
+                </Button>
               </div>
             )}
           </motion.div>
@@ -298,7 +333,7 @@ export default function Upload() {
                 className="mt-5 rounded-xl border border-sky-500/20 bg-sky-500/5 p-5"
               >
                 <div className="flex items-start gap-4 mb-4">
-                  <div className="w-12 h-12 rounded-full bg-gradient-to-br from-sky-500 to-indigo-600 flex items-center justify-center shrink-0">
+                  <div className="w-12 h-12 rounded-full bg-linear-to-br from-sky-500 to-indigo-600 flex items-center justify-center shrink-0">
                     <span className="text-white font-bold text-lg">
                       {linkedinPreview.name?.charAt(0)?.toUpperCase() || '?'}
                     </span>
