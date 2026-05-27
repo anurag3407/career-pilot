@@ -1,328 +1,509 @@
-import React, { useId } from 'react';
-import {
-  Code2,
-  Sparkles,
-  Database,
-  Palette,
-  Rocket,
-  Shield,
-  Gem,
-  Layers,
-} from 'lucide-react';
-
-const FEATURES = [
-  {
-    icon: Code2,
-    title: 'Full-Stack Craft',
-    description: 'Building responsive apps with modern React, Node.js, and cloud-native architecture.',
-  },
-  {
-    icon: Sparkles,
-    title: 'UI Engineering',
-    description: 'Designing immersive interfaces with glass morphism, motion, and iridescent aesthetics.',
-  },
-  {
-    icon: Database,
-    title: 'Data Systems',
-    description: 'Modeling scalable databases and APIs that stay fast under real-world load.',
-  },
-  {
-    icon: Palette,
-    title: 'Creative Direction',
-    description: 'Translating brand vision into cohesive visual systems and interactive experiences.',
-  },
-  {
-    icon: Rocket,
-    title: 'Product Launch',
-    description: 'Shipping MVPs to production with CI/CD pipelines and performance-first workflows.',
-  },
-  {
-    icon: Shield,
-    title: 'Secure by Design',
-    description: 'Embedding auth, validation, and best practices from prototype to deployment.',
-  },
+import { useEffect, useRef, useState } from "react";
+import { Sparkles, Zap, Triangle, Hexagon, Star } from "lucide-react";
+ 
+const PRISM_COLORS = [
+  { stop: "0%", color: "#ff0080" },
+  { stop: "16%", color: "#ff4d00" },
+  { stop: "33%", color: "#ffee00" },
+  { stop: "50%", color: "#00ff88" },
+  { stop: "66%", color: "#00cfff" },
+  { stop: "83%", color: "#7b2fff" },
+  { stop: "100%", color: "#ff0080" },
 ];
-
-const SPECTRUM_SKILLS = [
-  { label: 'React', level: 92 },
-  { label: 'TypeScript', level: 88 },
-  { label: 'Node.js', level: 85 },
-  { label: 'Design', level: 80 },
-  { label: 'DevOps', level: 74 },
+ 
+const FLOATING_PARTICLES = Array.from({ length: 18 }, (_, i) => ({
+  id: i,
+  x: Math.random() * 100,
+  y: Math.random() * 100,
+  size: Math.random() * 4 + 2,
+  duration: Math.random() * 6 + 4,
+  delay: Math.random() * 4,
+}));
+ 
+const skills = [
+  { label: "React", icon: Zap, value: 92 },
+  { label: "Design", icon: Star, value: 85 },
+  { label: "Motion", icon: Sparkles, value: 78 },
+  { label: "Systems", icon: Hexagon, value: 88 },
 ];
-
-const STATS = [
-  { value: '24', label: 'Projects' },
-  { value: '3yr', label: 'Experience' },
-  { value: '12', label: 'Technologies' },
-  { value: '98%', label: 'Satisfaction' },
-];
-
-function CrystalShape({ className, style }) {
-  const gradientId = useId().replace(/:/g, '');
+ 
+function HoloPrism({ size = 120, rotate = 0, delay = 0, opacity = 0.6 }) {
   return (
     <div
-      className={`absolute pointer-events-none ${className}`}
-      style={style}
-      aria-hidden="true"
+      className="absolute pointer-events-none"
+      style={{
+        animation: `prismFloat ${6 + delay}s ease-in-out infinite`,
+        animationDelay: `${delay}s`,
+        opacity,
+      }}
     >
-      <svg viewBox="0 0 80 80" className="h-full w-full drop-shadow-[0_0_12px_rgba(34,211,238,0.5)]">
+      <svg
+        width={size}
+        height={size}
+        viewBox="0 0 120 120"
+        style={{ transform: `rotate(${rotate}deg)` }}
+      >
         <defs>
-          <linearGradient id={gradientId} x1="0%" y1="0%" x2="100%" y2="100%">
-            <stop offset="0%" stopColor="rgba(34,211,238,0.35)" />
-            <stop offset="50%" stopColor="rgba(168,85,247,0.25)" />
-            <stop offset="100%" stopColor="rgba(236,72,153,0.35)" />
+          <linearGradient id={`holoGrad-${delay}`} x1="0%" y1="0%" x2="100%" y2="100%">
+            {PRISM_COLORS.map(({ stop, color }) => (
+              <stop key={stop} offset={stop} stopColor={color} stopOpacity="0.9" />
+            ))}
           </linearGradient>
+          <filter id={`glow-${delay}`}>
+            <feGaussianBlur stdDeviation="3" result="blur" />
+            <feComposite in="SourceGraphic" in2="blur" operator="over" />
+          </filter>
         </defs>
         <polygon
-          points="40,4 72,28 60,76 20,76 8,28"
-          fill={`url(#${gradientId})`}
-          stroke="rgba(255,255,255,0.35)"
-          strokeWidth="1"
+          points="60,8 112,100 8,100"
+          fill={`url(#holoGrad-${delay})`}
+          stroke="white"
+          strokeWidth="0.5"
+          strokeOpacity="0.4"
+          filter={`url(#glow-${delay})`}
         />
+        <polygon
+          points="60,8 112,100 8,100"
+          fill="none"
+          stroke="white"
+          strokeWidth="0.5"
+          strokeOpacity="0.3"
+        />
+        <line x1="60" y1="8" x2="60" y2="100" stroke="white" strokeWidth="0.4" strokeOpacity="0.2" />
+        <line x1="8" y1="100" x2="86" y2="54" stroke="white" strokeWidth="0.4" strokeOpacity="0.2" />
+        <line x1="112" y1="100" x2="34" y2="54" stroke="white" strokeWidth="0.4" strokeOpacity="0.2" />
       </svg>
     </div>
   );
 }
-
-export default function PrismEffect() {
-  const gradientId = useId().replace(/:/g, '');
-  const beamGradId = `beamGrad-${gradientId}`;
-
+ 
+function SkillBar({ label, icon: Icon, value, index }) {
+  const [animated, setAnimated] = useState(false);
+ 
+  useEffect(() => {
+    const timer = setTimeout(() => setAnimated(true), index * 150 + 300);
+    return () => clearTimeout(timer);
+  }, [index]);
+ 
   return (
-    <section className="relative w-full overflow-hidden bg-[#0a0a0f] text-white">
-      <style>{`
-        @keyframes holographic-shimmer {
-          0% { background-position: 200% center; }
-          100% { background-position: -200% center; }
-        }
-        @keyframes rotate-gradient {
-          0% { transform: rotate(0deg); }
-          100% { transform: rotate(360deg); }
-        }
-        @keyframes prism-pulse {
-          0%, 100% { opacity: 0.35; transform: scale(1); }
-          50% { opacity: 0.85; transform: scale(1.05); }
-        }
-        @keyframes float-crystal {
-          0%, 100% { transform: translateY(0) rotate(0deg); }
-          50% { transform: translateY(-18px) rotate(12deg); }
-        }
-        @keyframes spectrum-shimmer {
-          0% { transform: translateX(-120%); }
-          100% { transform: translateX(120%); }
-        }
-        @keyframes orb-drift {
-          0%, 100% { transform: translate(0, 0) scale(1); }
-          33% { transform: translate(12px, -16px) scale(1.05); }
-          66% { transform: translate(-8px, 10px) scale(0.95); }
-        }
-        .prism-shimmer-text {
-          background-size: 200% auto;
-          animation: holographic-shimmer 5s linear infinite;
-        }
-        .prism-rotate-bg {
-          animation: rotate-gradient 20s linear infinite;
-        }
-        .prism-beam-pulse {
-          animation: prism-pulse 3s ease-in-out infinite;
-        }
-        .prism-float-crystal {
-          animation: float-crystal 6s ease-in-out infinite;
-        }
-        .prism-spectrum-shimmer {
-          animation: spectrum-shimmer 2.5s ease-in-out infinite;
-        }
-        .prism-orb-drift {
-          animation: orb-drift 8s ease-in-out infinite;
-        }
-      `}</style>
-
-      {/* Decorative background */}
-      <div className="pointer-events-none absolute inset-0" aria-hidden="true">
-        <div className="absolute inset-0 bg-[radial-gradient(ellipse_at_20%_20%,rgba(34,211,238,0.15),transparent_50%)]" />
-        <div className="absolute inset-0 bg-[radial-gradient(ellipse_at_80%_30%,rgba(168,85,247,0.12),transparent_45%)]" />
-        <div className="absolute inset-0 bg-[radial-gradient(ellipse_at_50%_90%,rgba(236,72,153,0.1),transparent_50%)]" />
-        <div
-          className="prism-rotate-bg absolute -top-1/2 -left-1/2 h-[200%] w-[200%] opacity-30"
-          style={{
-            background:
-              'conic-gradient(from 0deg, rgba(34,211,238,0.08), rgba(59,130,246,0.06), rgba(168,85,247,0.08), rgba(236,72,153,0.06), rgba(34,211,238,0.08))',
-          }}
-        />
-        <div
-          className="absolute inset-0 opacity-[0.07]"
-          style={{
-            backgroundImage:
-              'linear-gradient(rgba(255,255,255,0.4) 1px, transparent 1px), linear-gradient(90deg, rgba(255,255,255,0.4) 1px, transparent 1px)',
-            backgroundSize: '48px 48px',
-          }}
-        />
-        <div className="prism-orb-drift absolute top-16 left-[10%] h-32 w-32 rounded-full bg-cyan-500/20 blur-3xl" />
-        <div
-          className="prism-orb-drift absolute bottom-24 right-[12%] h-40 w-40 rounded-full bg-purple-500/20 blur-3xl"
-          style={{ animationDelay: '2s' }}
-        />
-        <div
-          className="prism-orb-drift absolute top-1/2 left-1/2 h-56 w-56 -translate-x-1/2 -translate-y-1/2 rounded-full bg-pink-500/10 blur-3xl"
-          style={{ animationDelay: '4s' }}
-        />
-      </div>
-
-      <div className="relative z-10 mx-auto max-w-6xl px-4 py-16 sm:px-6 lg:px-8 lg:py-24">
-        {/* Hero section */}
-        <div className="relative mb-20 text-center">
-          <CrystalShape
-            className="prism-float-crystal top-0 left-[8%] h-14 w-14 opacity-70"
-            style={{ animationDelay: '0s' }}
-          />
-          <CrystalShape
-            className="prism-float-crystal top-8 right-[10%] h-10 w-10 opacity-60"
-            style={{ animationDelay: '1.5s' }}
-          />
-          <CrystalShape
-            className="prism-float-crystal bottom-4 left-[18%] h-8 w-8 opacity-50"
-            style={{ animationDelay: '3s' }}
-          />
-
-          <svg
-            className="pointer-events-none absolute left-1/2 top-1/2 h-64 w-full max-w-2xl -translate-x-1/2 -translate-y-1/2"
-            viewBox="0 0 400 200"
-            aria-hidden="true"
+    <div className="group relative">
+      <div className="flex items-center justify-between mb-2">
+        <div className="flex items-center gap-2">
+          <div
+            className="p-1.5 rounded-md"
+            style={{
+              background: "linear-gradient(135deg, rgba(255,0,128,0.2), rgba(0,207,255,0.2))",
+              border: "0.5px solid rgba(255,255,255,0.2)",
+            }}
           >
-            <defs>
-              <linearGradient id={beamGradId} x1="0%" y1="0%" x2="100%" y2="0%">
-                <stop offset="0%" stopColor="#22d3ee" stopOpacity="0" />
-                <stop offset="30%" stopColor="#a855f7" stopOpacity="0.6" />
-                <stop offset="60%" stopColor="#ec4899" stopOpacity="0.5" />
-                <stop offset="100%" stopColor="#3b82f6" stopOpacity="0" />
-              </linearGradient>
-            </defs>
-            {[0, 1, 2, 3, 4, 5].map((i) => {
-              const angle = i * 30 - 75;
-              return (
-                <line
-                  key={i}
-                  x1="200"
-                  y1="100"
-                  x2={200 + Math.cos((angle * Math.PI) / 180) * 180}
-                  y2={100 + Math.sin((angle * Math.PI) / 180) * 80}
-                  stroke={`url(#${beamGradId})`}
-                  strokeWidth="2"
-                  className="prism-beam-pulse"
-                  style={{ animationDelay: `${i * 0.4}s` }}
-                />
-              );
-            })}
-            <polygon
-              points="200,60 230,100 200,140 170,100"
-              fill="rgba(255,255,255,0.08)"
-              stroke="rgba(255,255,255,0.25)"
-              strokeWidth="1"
-              className="prism-beam-pulse"
+            <Icon size={12} style={{ color: "#00cfff" }} />
+          </div>
+          <span
+            className="text-xs font-medium tracking-widest uppercase"
+            style={{
+              color: "rgba(255,255,255,0.7)",
+              fontFamily: "'Courier New', monospace",
+            }}
+          >
+            {label}
+          </span>
+        </div>
+        <span
+          className="text-xs font-bold"
+          style={{
+            background: "linear-gradient(90deg, #ff0080, #00cfff)",
+            WebkitBackgroundClip: "text",
+            WebkitTextFillColor: "transparent",
+            fontFamily: "'Courier New', monospace",
+          }}
+        >
+          {value}%
+        </span>
+      </div>
+      <div
+        className="h-1.5 w-full rounded-full overflow-hidden"
+        style={{ background: "rgba(255,255,255,0.08)" }}
+      >
+        <div
+          className="h-full rounded-full transition-all duration-1000 ease-out"
+          style={{
+            width: animated ? `${value}%` : "0%",
+            background: `linear-gradient(90deg, #ff0080, #7b2fff, #00cfff)`,
+            boxShadow: "0 0 8px rgba(0,207,255,0.6)",
+          }}
+        />
+      </div>
+    </div>
+  );
+}
+ 
+function PrismLightBeam({ angle, color, delay }) {
+  return (
+    <div
+      className="absolute inset-0 pointer-events-none"
+      style={{
+        background: `linear-gradient(${angle}deg, transparent 40%, ${color}08 50%, transparent 60%)`,
+        animation: `beamSweep ${8 + delay}s ease-in-out infinite`,
+        animationDelay: `${delay}s`,
+      }}
+    />
+  );
+}
+ 
+export default function PrismEffect({ name = "Alex Rivera", title = "Creative Developer", tagline = "Refracting ideas into reality" }) {
+  const canvasRef = useRef(null);
+  const [mousePos, setMousePos] = useState({ x: 50, y: 50 });
+  const [hovered, setHovered] = useState(false);
+  const containerRef = useRef(null);
+ 
+  useEffect(() => {
+    const style = document.createElement("style");
+    style.textContent = `
+      @keyframes prismFloat {
+        0%, 100% { transform: translateY(0px) rotate(0deg); }
+        33% { transform: translateY(-12px) rotate(2deg); }
+        66% { transform: translateY(6px) rotate(-1deg); }
+      }
+      @keyframes beamSweep {
+        0%, 100% { opacity: 0.3; }
+        50% { opacity: 1; }
+      }
+      @keyframes holoPulse {
+        0%, 100% { opacity: 0.6; transform: scale(1); }
+        50% { opacity: 1; transform: scale(1.02); }
+      }
+      @keyframes particleDrift {
+        0% { transform: translateY(0) translateX(0); opacity: 0; }
+        20% { opacity: 1; }
+        80% { opacity: 1; }
+        100% { transform: translateY(-60px) translateX(20px); opacity: 0; }
+      }
+      @keyframes rainbowShift {
+        0% { filter: hue-rotate(0deg); }
+        100% { filter: hue-rotate(360deg); }
+      }
+      @keyframes scanLine {
+        0% { top: -2px; }
+        100% { top: 100%; }
+      }
+      @keyframes holoShimmer {
+        0%, 100% { background-position: 0% 50%; }
+        50% { background-position: 100% 50%; }
+      }
+    `;
+    document.head.appendChild(style);
+    return () => document.head.removeChild(style);
+  }, []);
+ 
+  const handleMouseMove = (e) => {
+    if (!containerRef.current) return;
+    const rect = containerRef.current.getBoundingClientRect();
+    setMousePos({
+      x: ((e.clientX - rect.left) / rect.width) * 100,
+      y: ((e.clientY - rect.top) / rect.height) * 100,
+    });
+  };
+ 
+  return (
+    <section
+      ref={containerRef}
+      className="relative w-full min-h-screen flex items-center justify-center overflow-hidden"
+      style={{ background: "#03010a" }}
+      onMouseMove={handleMouseMove}
+      onMouseEnter={() => setHovered(true)}
+      onMouseLeave={() => setHovered(false)}
+    >
+      {/* Deep space background */}
+      <div
+        className="absolute inset-0"
+        style={{
+          background: `radial-gradient(ellipse at ${mousePos.x}% ${mousePos.y}%, rgba(123,47,255,0.15) 0%, rgba(0,207,255,0.08) 30%, transparent 60%), radial-gradient(ellipse at 80% 20%, rgba(255,0,128,0.1) 0%, transparent 50%), #03010a`,
+          transition: "background 0.3s ease",
+        }}
+      />
+ 
+      {/* Light beams from prism */}
+      <PrismLightBeam angle={30} color="#ff0080" delay={0} />
+      <PrismLightBeam angle={80} color="#00cfff" delay={2} />
+      <PrismLightBeam angle={150} color="#7b2fff" delay={4} />
+      <PrismLightBeam angle={210} color="#ffee00" delay={1.5} />
+ 
+      {/* Floating particles */}
+      {FLOATING_PARTICLES.map((p) => (
+        <div
+          key={p.id}
+          className="absolute rounded-full pointer-events-none"
+          style={{
+            left: `${p.x}%`,
+            top: `${p.y}%`,
+            width: `${p.size}px`,
+            height: `${p.size}px`,
+            background: `hsl(${(p.id * 37) % 360}, 100%, 70%)`,
+            boxShadow: `0 0 ${p.size * 2}px hsl(${(p.id * 37) % 360}, 100%, 70%)`,
+            animation: `particleDrift ${p.duration}s ease-in-out infinite`,
+            animationDelay: `${p.delay}s`,
+          }}
+        />
+      ))}
+ 
+      {/* Floating prisms — background layer */}
+      <div className="absolute top-16 left-8 md:left-24">
+        <HoloPrism size={60} rotate={-20} delay={0} opacity={0.25} />
+      </div>
+      <div className="absolute top-24 right-8 md:right-20">
+        <HoloPrism size={80} rotate={15} delay={1.5} opacity={0.2} />
+      </div>
+      <div className="absolute bottom-32 left-4 md:left-16">
+        <HoloPrism size={50} rotate={30} delay={3} opacity={0.2} />
+      </div>
+      <div className="absolute bottom-16 right-4 md:right-32">
+        <HoloPrism size={70} rotate={-10} delay={2} opacity={0.15} />
+      </div>
+ 
+      {/* Main content */}
+      <div className="relative z-10 w-full max-w-5xl mx-auto px-6 py-16 flex flex-col lg:flex-row items-center gap-12 lg:gap-20">
+ 
+        {/* Left — Prism hero */}
+        <div className="flex-shrink-0 relative flex items-center justify-center w-64 h-64 md:w-80 md:h-80">
+ 
+          {/* Rotating rainbow ring */}
+          <div
+            className="absolute inset-0 rounded-full"
+            style={{
+              background: "conic-gradient(from 0deg, #ff0080, #ff4d00, #ffee00, #00ff88, #00cfff, #7b2fff, #ff0080)",
+              animation: "rainbowShift 4s linear infinite",
+              padding: "2px",
+              borderRadius: "50%",
+            }}
+          >
+            <div
+              className="w-full h-full rounded-full"
+              style={{ background: "#03010a" }}
             />
-          </svg>
-
-          <div className="relative mb-6 inline-flex items-center gap-2 rounded-full border border-white/20 bg-white/5 px-4 py-1.5 backdrop-blur-md">
-            <Gem className="h-4 w-4 text-cyan-400" />
-            <span className="text-xs uppercase tracking-[0.25em] text-cyan-200/80">Holographic Prism</span>
           </div>
-
-          <h1 className="relative mb-4 text-4xl font-bold tracking-tight sm:text-5xl lg:text-7xl">
-            <span className="prism-shimmer-text block bg-gradient-to-r from-cyan-400 via-purple-500 to-pink-500 bg-clip-text text-transparent">
-              Spectrum Developer
-            </span>
+ 
+          {/* Inner glow ring */}
+          <div
+            className="absolute rounded-full"
+            style={{
+              inset: "8px",
+              background: "radial-gradient(circle, rgba(123,47,255,0.2) 0%, rgba(0,207,255,0.1) 50%, transparent 70%)",
+              animation: "holoPulse 3s ease-in-out infinite",
+            }}
+          />
+ 
+          {/* Central prism */}
+          <div
+            className="relative z-10"
+            style={{ animation: "holoPulse 4s ease-in-out infinite", animationDelay: "0.5s" }}
+          >
+            <svg width="140" height="140" viewBox="0 0 140 140">
+              <defs>
+                <linearGradient id="mainPrismGrad" x1="0%" y1="0%" x2="100%" y2="100%">
+                  {PRISM_COLORS.map(({ stop, color }) => (
+                    <stop key={stop} offset={stop} stopColor={color} stopOpacity="0.95" />
+                  ))}
+                </linearGradient>
+                <filter id="mainGlow">
+                  <feGaussianBlur stdDeviation="6" result="blur" />
+                  <feComposite in="SourceGraphic" in2="blur" operator="over" />
+                </filter>
+              </defs>
+              {/* Glow layer */}
+              <polygon
+                points="70,6 134,118 6,118"
+                fill="url(#mainPrismGrad)"
+                opacity="0.3"
+                filter="url(#mainGlow)"
+              />
+              {/* Main prism */}
+              <polygon
+                points="70,6 134,118 6,118"
+                fill="url(#mainPrismGrad)"
+                stroke="white"
+                strokeWidth="0.8"
+                strokeOpacity="0.5"
+              />
+              {/* Internal geometry */}
+              <line x1="70" y1="6" x2="70" y2="118" stroke="white" strokeWidth="0.5" strokeOpacity="0.3" />
+              <line x1="6" y1="118" x2="102" y2="62" stroke="white" strokeWidth="0.5" strokeOpacity="0.3" />
+              <line x1="134" y1="118" x2="38" y2="62" stroke="white" strokeWidth="0.5" strokeOpacity="0.3" />
+              {/* Highlight */}
+              <polygon
+                points="70,6 95,48 45,48"
+                fill="white"
+                opacity="0.12"
+              />
+            </svg>
+          </div>
+ 
+          {/* Scan line effect */}
+          <div
+            className="absolute inset-0 rounded-full overflow-hidden pointer-events-none"
+            style={{ mixBlendMode: "overlay" }}
+          >
+            <div
+              style={{
+                position: "absolute",
+                left: 0,
+                right: 0,
+                height: "2px",
+                background: "linear-gradient(90deg, transparent, rgba(255,255,255,0.4), transparent)",
+                animation: "scanLine 3s linear infinite",
+              }}
+            />
+          </div>
+ 
+          {/* Corner badges */}
+          <div
+            className="absolute -top-3 -right-3 flex items-center gap-1 px-2 py-1 rounded-full text-xs font-bold"
+            style={{
+              background: "linear-gradient(135deg, #7b2fff, #00cfff)",
+              color: "white",
+              fontFamily: "'Courier New', monospace",
+              fontSize: "10px",
+              letterSpacing: "0.1em",
+              boxShadow: "0 0 12px rgba(123,47,255,0.6)",
+            }}
+          >
+            <Sparkles size={10} />
+            HOLO
+          </div>
+        </div>
+ 
+        {/* Right — Info panel */}
+        <div className="flex-1 text-center lg:text-left">
+ 
+          {/* Status badge */}
+          <div className="inline-flex items-center gap-2 mb-6">
+            <div
+              className="px-3 py-1 rounded-full text-xs tracking-widest uppercase"
+              style={{
+                background: "rgba(0,207,255,0.1)",
+                border: "0.5px solid rgba(0,207,255,0.3)",
+                color: "rgba(0,207,255,0.9)",
+                fontFamily: "'Courier New', monospace",
+              }}
+            >
+              ◈ Available for work
+            </div>
+          </div>
+ 
+          {/* Name */}
+          <h1
+            className="text-4xl md:text-6xl font-black mb-3 leading-none"
+            style={{
+              background: "linear-gradient(135deg, #ffffff 0%, rgba(255,255,255,0.6) 100%)",
+              WebkitBackgroundClip: "text",
+              WebkitTextFillColor: "transparent",
+              fontFamily: "'Georgia', serif",
+              letterSpacing: "-0.02em",
+            }}
+          >
+            {name}
           </h1>
-          <p className="relative mx-auto max-w-xl bg-gradient-to-r from-cyan-300 via-violet-300 to-pink-300 bg-clip-text text-base text-transparent sm:text-lg">
-            Crafting digital experiences through light, color, and crystalline precision
+ 
+          {/* Title — rainbow */}
+          <div
+            className="text-lg md:text-2xl font-bold mb-4"
+            style={{
+              background: "linear-gradient(90deg, #ff0080, #7b2fff, #00cfff, #00ff88, #ff0080)",
+              backgroundSize: "200% auto",
+              WebkitBackgroundClip: "text",
+              WebkitTextFillColor: "transparent",
+              animation: "holoShimmer 4s linear infinite",
+              fontFamily: "'Courier New', monospace",
+              letterSpacing: "0.05em",
+            }}
+          >
+            {title}
+          </div>
+ 
+          {/* Tagline */}
+          <p
+            className="text-sm mb-8 max-w-sm mx-auto lg:mx-0"
+            style={{
+              color: "rgba(255,255,255,0.45)",
+              fontFamily: "'Courier New', monospace",
+              letterSpacing: "0.08em",
+            }}
+          >
+            ⟨ {tagline} ⟩
           </p>
-        </div>
-
-        {/* Skills / features grid */}
-        <div className="mb-20">
-          <div className="mb-10 flex items-center justify-center gap-2">
-            <Layers className="h-5 w-5 text-purple-400" />
-            <h2 className="bg-gradient-to-r from-cyan-400 to-purple-400 bg-clip-text text-xl font-semibold text-transparent sm:text-2xl">
-              Core Capabilities
-            </h2>
-          </div>
-          <div className="grid grid-cols-1 gap-5 sm:grid-cols-2 lg:grid-cols-3 lg:gap-6">
-            {FEATURES.map(({ icon: Icon, title, description }) => (
-              <div
-                key={title}
-                className="group relative rounded-2xl border border-white/10 bg-white/5 p-6 shadow-lg shadow-cyan-500/10 backdrop-blur-md transition-all duration-300 hover:scale-[1.03] hover:border-purple-400/40 hover:bg-white/10 hover:shadow-purple-500/50"
-              >
-                <div
-                  className="pointer-events-none absolute inset-0 rounded-2xl opacity-0 transition-opacity duration-300 group-hover:opacity-100"
-                  style={{
-                    background:
-                      'linear-gradient(135deg, rgba(34,211,238,0.08), rgba(168,85,247,0.08), rgba(236,72,153,0.08))',
-                  }}
-                  aria-hidden="true"
-                />
-                <div className="relative mb-4 inline-flex rounded-xl border border-white/20 bg-white/10 p-3 shadow-lg shadow-cyan-500/25">
-                  <Icon className="h-6 w-6 text-cyan-300 transition-colors duration-300 group-hover:text-pink-300" />
-                </div>
-                <h3 className="relative mb-2 text-lg font-semibold text-white">{title}</h3>
-                <p className="relative text-sm leading-relaxed text-white/60">{description}</p>
-              </div>
+ 
+          {/* Separator */}
+          <div
+            className="w-full h-px mb-8 mx-auto lg:mx-0"
+            style={{
+              background: "linear-gradient(90deg, transparent, rgba(255,255,255,0.2), transparent)",
+              maxWidth: "400px",
+            }}
+          />
+ 
+          {/* Skills */}
+          <div className="space-y-4 max-w-sm mx-auto lg:mx-0 mb-8">
+            {skills.map((skill, i) => (
+              <SkillBar key={skill.label} {...skill} index={i} />
             ))}
           </div>
-        </div>
-
-        {/* Prism spectrum bar */}
-        <div className="mb-20 rounded-2xl border border-white/10 bg-white/5 p-6 backdrop-blur-md sm:p-8">
-          <h2 className="mb-6 text-center bg-gradient-to-r from-cyan-400 via-purple-500 to-pink-500 bg-clip-text text-lg font-semibold text-transparent sm:text-xl">
-            Prism Spectrum
-          </h2>
-          <div className="relative mb-8 h-3 overflow-hidden rounded-full">
-            <div className="absolute inset-0 bg-gradient-to-r from-cyan-400 via-blue-500 via-purple-500 via-pink-500 to-cyan-400" />
-            <div className="prism-spectrum-shimmer absolute inset-0 bg-gradient-to-r from-transparent via-white/50 to-transparent" />
-          </div>
-          <div className="space-y-4">
-            {SPECTRUM_SKILLS.map(({ label, level }) => (
-              <div key={label} className="flex items-center gap-4">
-                <span className="w-24 shrink-0 text-sm text-white/70">{label}</span>
-                <div className="relative h-2 flex-1 overflow-hidden rounded-full bg-white/10">
-                  <div
-                    className="absolute inset-y-0 left-0 rounded-full bg-gradient-to-r from-cyan-400 via-purple-500 to-pink-500 shadow-lg shadow-purple-500/25"
-                    style={{ width: `${level}%` }}
-                    aria-hidden="true"
-                  />
-                  <div
-                    className="prism-spectrum-shimmer absolute inset-y-0 left-0 rounded-full bg-gradient-to-r from-transparent via-white/40 to-transparent"
-                    style={{ width: `${level}%` }}
-                    aria-hidden="true"
-                  />
-                </div>
-                <span className="w-10 shrink-0 text-right font-mono text-xs text-cyan-300">{level}%</span>
-              </div>
-            ))}
-          </div>
-        </div>
-
-        {/* Stats row */}
-        <div className="rounded-2xl border border-white/10 bg-white/5 px-4 py-8 backdrop-blur-md sm:px-8">
-          <div className="flex flex-col gap-6 sm:flex-row sm:items-center sm:justify-between">
-            {STATS.map(({ value, label }, index) => (
-              <React.Fragment key={label}>
-                <div className="flex-1 text-center">
-                  <div className="prism-shimmer-text text-3xl font-bold bg-gradient-to-r from-cyan-400 via-purple-400 to-pink-400 bg-clip-text text-transparent sm:text-4xl">
-                    {value}
-                  </div>
-                  <p className="mt-1 text-xs uppercase tracking-widest text-white/50 sm:text-sm">{label}</p>
-                </div>
-                {index < STATS.length - 1 && (
-                  <div
-                    className="hidden h-12 w-px shrink-0 bg-gradient-to-b from-transparent via-purple-500/60 to-transparent sm:block"
-                    aria-hidden="true"
-                  />
-                )}
-              </React.Fragment>
-            ))}
+ 
+          {/* CTA buttons */}
+          <div className="flex flex-wrap gap-3 justify-center lg:justify-start">
+            <button
+              className="group relative px-6 py-3 rounded-lg text-sm font-bold overflow-hidden transition-all duration-300 hover:scale-105"
+              style={{
+                background: "linear-gradient(135deg, #ff0080, #7b2fff)",
+                color: "white",
+                fontFamily: "'Courier New', monospace",
+                letterSpacing: "0.1em",
+                boxShadow: "0 0 20px rgba(123,47,255,0.4)",
+              }}
+            >
+              <span className="relative z-10 flex items-center gap-2">
+                <Zap size={14} /> View Work
+              </span>
+            </button>
+ 
+            <button
+              className="px-6 py-3 rounded-lg text-sm font-bold transition-all duration-300 hover:scale-105"
+              style={{
+                background: "transparent",
+                border: "0.5px solid rgba(0,207,255,0.4)",
+                color: "rgba(0,207,255,0.9)",
+                fontFamily: "'Courier New', monospace",
+                letterSpacing: "0.1em",
+              }}
+            >
+              <span className="flex items-center gap-2">
+                <Triangle size={12} /> Contact
+              </span>
+            </button>
           </div>
         </div>
       </div>
+ 
+      {/* Bottom grid lines */}
+      <div
+        className="absolute inset-0 pointer-events-none"
+        style={{
+          backgroundImage: `
+            linear-gradient(rgba(255,255,255,0.03) 1px, transparent 1px),
+            linear-gradient(90deg, rgba(255,255,255,0.03) 1px, transparent 1px)
+          `,
+          backgroundSize: "60px 60px",
+        }}
+      />
+ 
+      {/* Vignette */}
+      <div
+        className="absolute inset-0 pointer-events-none"
+        style={{
+          background: "radial-gradient(ellipse at center, transparent 40%, rgba(3,1,10,0.7) 100%)",
+        }}
+      />
     </section>
   );
 }
+ 
+
+
