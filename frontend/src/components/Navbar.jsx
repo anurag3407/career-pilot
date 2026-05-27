@@ -32,7 +32,8 @@ export default function Navbar() {
   const [mobileMenuOpen, setMobileMenuOpen] = useState(false)
   const [scrolled, setScrolled] = useState(false)
   const [searchQuery, setSearchQuery] = useState('')
-  const [showDropdown, setShowDropdown] = useState(false)
+  const [showSearchDropdown, setShowSearchDropdown] = useState(false)
+  const [showUserDropdown, setShowUserDropdown] = useState(false)
   const [notificationCount] = useState(3)
 
   useEffect(() => {
@@ -72,7 +73,7 @@ export default function Navbar() {
   const handleSearch = (query) => {
     if (query.trim()) {
       navigate(`/jobs?q=${encodeURIComponent(query.trim())}`)
-      setShowDropdown(false)
+      setShowSearchDropdown(false)
       setSearchQuery('')
     }
   }
@@ -147,8 +148,8 @@ export default function Navbar() {
                   placeholder="Search anything..."
                   value={searchQuery}
                   onChange={(e) => setSearchQuery(e.target.value)}
-                  onFocus={() => setShowDropdown(true)}
-                  onBlur={() => setTimeout(() => setShowDropdown(false), 200)}
+                  onFocus={() => setShowSearchDropdown(true)}
+                  onBlur={() => setTimeout(() => setShowSearchDropdown(false), 200)}
                   onKeyDown={(e) => e.key === 'Enter' && handleSearch(searchQuery)}
                   className="bg-transparent outline-none text-sm w-full text-foreground placeholder:text-muted-foreground"
                 />
@@ -156,7 +157,7 @@ export default function Navbar() {
 
               {/* Suggestions Dropdown */}
               <AnimatePresence>
-                {showDropdown && (
+                {showSearchDropdown && (
                   <motion.div
                     initial={{ opacity: 0, y: 8 }}
                     animate={{ opacity: 1, y: 0 }}
@@ -172,6 +173,7 @@ export default function Navbar() {
                         <button
                           key={index}
                           onMouseDown={() => handleSearch(item)}
+                          onClick={() => handleSearch(item)}
                           className="w-full text-left px-4 py-3 hover:bg-muted transition-colors text-sm text-foreground"
                         >
                           {item}
@@ -253,10 +255,10 @@ export default function Navbar() {
                 {/* User Dropdown */}
                 <div className="relative">
                   <button
-                    onClick={() => setShowDropdown(!showDropdown)}
+                    onClick={() => setShowUserDropdown(!showUserDropdown)}
                     className="flex items-center gap-2 px-3 py-2 bg-muted border border-border rounded-full hover:bg-accent transition-all"
                     aria-label="User menu"
-                    aria-expanded={showDropdown}
+                    aria-expanded={showUserDropdown}
                   >
                     <div className="w-8 h-8 rounded-full overflow-hidden bg-primary/20 flex items-center justify-center">
                       <img
@@ -274,7 +276,7 @@ export default function Navbar() {
                   </button>
 
                   <AnimatePresence>
-                    {showDropdown && (
+                    {showUserDropdown && (
                       <motion.div
                         initial={{ opacity: 0, y: 10 }}
                         animate={{ opacity: 1, y: 0 }}
