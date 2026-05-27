@@ -1,5 +1,9 @@
-
-import React, { useState, useEffect } from 'react';
+/**
+ * Main Application Component with Route-based Code Splitting
+ * Implements lazy loading for improved performance
+ */
+import React, { useState, useEffect, lazy, Suspense } from 'react';
+import StockTicker from "./components/portfolio/templates/Finance_Corporate/StockTicker";
 import Deployments from './pages/Deployments'
 import TemplateGallery from "./pages/TemplateGallery";
 
@@ -17,19 +21,21 @@ import BackToTop from './components/BackToTop';
 import Home from './pages/Home';
 import Login from './pages/Login';
 import Register from './pages/Register';
-import Dashboard from './pages/Dashboard';
+const Dashboard = lazy(() => import('./pages/Dashboard'));
 import Upload from './pages/Upload';
 import Enhance from './pages/Enhance';
 import ResumeView from './pages/ResumeView';
-import JobSearch from './pages/JobSearch';
+const JobSearch = lazy(() => import('./pages/JobSearch'));
 import JobAlerts from './pages/JobAlerts';
-import ResumeBuilder from './pages/ResumeBuilder';
+const ResumeBuilder = lazy(() => import('./pages/ResumeBuilder'));
 import TextToResume from './pages/TextToResume';
 import About from './components/portfolio/templates/Tech_Startup/About';
-
+import ChatbotPortfolio from "./components/portfolio/templates/Chatbot_Portfolio";
+import DayNightCycle from './components/portfolio/templates/Day_Night_Cycle/index.jsx';
 
 import JobTracker from './pages/JobTracker';
-import { Community, NotFound } from './pages';
+const Community = lazy(() => import('./pages/Community'));
+import { NotFound } from './pages';
 import InterviewPrep from './pages/InterviewPrep';
 import UserProfile from './pages/UserProfile';
 import EmailGenerator from './pages/EmailGenerator';
@@ -59,7 +65,7 @@ import JobsHub from './pages/hubs/JobsHub';
 import PortfolioHub from './pages/hubs/PortfolioHub';
 import CareerGrowthHub from './pages/hubs/CareerGrowthHub';
 import CommunityHub from './pages/hubs/CommunityHub';
-import GitHubDashboard from './pages/GitHubDashboard';
+const GitHubDashboard = lazy(() => import('./pages/GitHubDashboard'));
 import ScrollToTop from "./components/ScrollToTop";
 
 function ProtectedRoute({ children }) {
@@ -169,18 +175,55 @@ function AppRoutes() {
 
         {/* Template Gallery Route (Registered at /templates) */}
         <Route path="/templates" element={<TemplateGallery />} />
-
+        <Route path="/templates/chatbot" element={<ChatbotPortfolio />} />
+        <Route path="/templates/day-night-cycle" element={<DayNightCycle />} />
         {/* Core Protected Routes */}
-        <Route path="/dashboard" element={<ProtectedRoute><Dashboard /></ProtectedRoute>} />
+        <Route 
+  path="/dashboard" 
+  element={
+    <ProtectedRoute>
+      <Suspense fallback={<div className="flex justify-center items-center h-screen">Loading Dashboard...</div>}>
+        <Dashboard />
+      </Suspense>
+    </ProtectedRoute>
+  } 
+/>
         <Route path="/upload" element={<ProtectedRoute><Upload /></ProtectedRoute>} />
-        <Route path="/resume-builder" element={<ProtectedRoute><ResumeBuilder /></ProtectedRoute>} />
+        <Route 
+  path="/resume-builder" 
+  element={
+    <ProtectedRoute>
+      <Suspense fallback={<div className="flex justify-center items-center h-screen">Loading Resume Builder...</div>}>
+        <ResumeBuilder />
+      </Suspense>
+    </ProtectedRoute>
+  } 
+/>
         <Route path="/text-to-resume" element={<ProtectedRoute><TextToResume /></ProtectedRoute>} />
         <Route path="/enhance/:resumeId" element={<ProtectedRoute><Enhance /></ProtectedRoute>} />
         <Route path="/resume/:resumeId" element={<ProtectedRoute><ResumeView /></ProtectedRoute>} />
-        <Route path="/jobs" element={<ProtectedRoute><JobSearch /></ProtectedRoute>} />
+        <Route 
+  path="/jobs" 
+  element={
+    <ProtectedRoute>
+      <Suspense fallback={<div className="flex justify-center items-center h-screen">Loading Jobs...</div>}>
+        <JobSearch />
+      </Suspense>
+    </ProtectedRoute>
+  } 
+/>
         <Route path="/job-alerts" element={<ProtectedRoute><JobAlerts /></ProtectedRoute>} />
         <Route path="/job-tracker" element={<ProtectedRoute><JobTracker /></ProtectedRoute>} />
-        <Route path="/community" element={<ProtectedRoute><Community /></ProtectedRoute>} />
+        <Route 
+  path="/community" 
+  element={
+    <ProtectedRoute>
+      <Suspense fallback={<div className="flex justify-center items-center h-screen">Loading Community...</div>}>
+        <Community />
+      </Suspense>
+    </ProtectedRoute>
+  } 
+/>
         <Route path="/interview-prep" element={<ProtectedRoute><InterviewPrep /></ProtectedRoute>} />
         <Route path="/profile" element={<ProtectedRoute><UserProfile /></ProtectedRoute>} />
         <Route path="/profile/:uid" element={<ProtectedRoute><UserProfile /></ProtectedRoute>} />
@@ -196,7 +239,16 @@ function AppRoutes() {
         <Route path="/hub/portfolio" element={<ProtectedRoute><PortfolioHub /></ProtectedRoute>} />
         <Route path="/hub/career" element={<ProtectedRoute><CareerGrowthHub /></ProtectedRoute>} />
         <Route path="/hub/community" element={<ProtectedRoute><CommunityHub /></ProtectedRoute>} />
-        <Route path="/github-dashboard" element={<ProtectedRoute><GitHubDashboard /></ProtectedRoute>} />
+        <Route 
+  path="/github-dashboard" 
+  element={
+    <ProtectedRoute>
+      <Suspense fallback={<div className="flex justify-center items-center h-screen">Loading GitHub Dashboard...</div>}>
+        <GitHubDashboard />
+      </Suspense>
+    </ProtectedRoute>
+  } 
+/>
 
         {/* Nested Fellowship Routes */}
         <Route path="/fellowship" element={<ProtectedRoute><FellowshipLayout /></ProtectedRoute>}>

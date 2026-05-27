@@ -182,10 +182,10 @@ export default function UserProfile() {
   }
 
   return (
-    <div className="min-h-screen bg-black">
+    <div className="min-h-screen bg-background">
       <div className="fixed inset-0 overflow-hidden pointer-events-none">
-        <div className="absolute top-0 left-1/4 w-96 h-96 bg-indigo-500/5 rounded-full blur-3xl" />
-        <div className="absolute bottom-0 right-1/4 w-96 h-96 bg-purple-500/5 rounded-full blur-3xl" />
+        <div className="absolute top-0 left-1/4 w-96 h-96 bg-sky-500/5 rounded-full blur-3xl" />
+        <div className="absolute bottom-0 right-1/4 w-96 h-96 bg-cyan-500/5 rounded-full blur-3xl" />
       </div>
 
       <div className="relative max-w-3xl mx-auto px-4 sm:px-6 lg:px-8 py-8">
@@ -198,14 +198,13 @@ export default function UserProfile() {
           {/* Profile Header */}
           <motion.div
             variants={itemVariants}
-            className="rounded-2xl bg-zinc-900/80 border border-zinc-800 p-6"
-          >
+            className="relative overflow-hidden rounded-2xl bg-card/80 backdrop-blur-sm border border-border shadow-[0_8px_30px_rgb(0,0,0,0.06)] hover:shadow-xl hover:border-primary/20 transition-all duration-300 p-6">
             <div className="flex flex-col sm:flex-row items-start gap-5">
-              <div
-                className={`w-20 h-20 rounded-2xl bg-gradient-to-br ${avatarGradient} flex items-center justify-center shrink-0`}
-              >
-                <span className="text-3xl font-bold text-white">{initials}</span>
-              </div>
+             <div className="w-20 h-20 rounded-3xl bg-gradient-to-br from-sky-100 to-cyan-100 border border-sky-200 flex items-center justify-center shadow-sm flex-shrink-0">
+  <span className="text-3xl font-bold bg-gradient-to-br from-sky-500 to-cyan-500 bg-clip-text text-transparent">
+    {initials}
+  </span>
+</div>
 
               <div className="flex-1 min-w-0">
                 {editing ? (
@@ -222,13 +221,13 @@ export default function UserProfile() {
                   </div>
                 ) : (
                   <>
-                    <h1 className="text-2xl font-bold text-white">{displayName}</h1>
+                    <h1 className="text-2xl font-bold text-foreground">{displayName}</h1>
                     {profile?.jobRole && (
-                      <p className="text-indigo-400 font-medium mt-0.5">{profile.jobRole}</p>
+                      <p className="text-sky-400 font-medium mt-0.5">{profile.jobRole}</p>
                     )}
                     {profile?.location && (
-                      <p className="flex items-center gap-1.5 text-sm text-zinc-500 mt-1">
-                        <MapPin className="w-3.5 h-3.5 shrink-0" />
+                      <p className="flex items-center gap-1.5 text-sm text-muted-foreground mt-1">
+                        <MapPin className="w-3.5 h-3.5 flex-shrink-0" />
                         {profile.location}
                       </p>
                     )}
@@ -276,7 +275,7 @@ export default function UserProfile() {
             <div className="mt-5">
               {editing ? (
                 <div>
-                  <label className="block text-sm font-medium text-neutral-300 mb-1.5">
+                 <label className="block text-sm font-medium text-foreground mb-1.5">
                     Bio
                   </label>
                   <textarea
@@ -287,16 +286,16 @@ export default function UserProfile() {
                     maxLength={500}
                     rows={3}
                     placeholder="Tell others about yourself..."
-                    className="w-full px-4 py-2.5 rounded-lg bg-neutral-950 border border-neutral-800 text-white placeholder:text-neutral-500 focus:outline-none focus:ring-2 focus:ring-indigo-500/50 focus:border-indigo-500 resize-none transition-all duration-200"
+                  className="w-full px-4 py-2.5 rounded-lg bg-background border border-border text-foreground placeholder:text-muted-foreground focus:outline-none focus:ring-2 focus:ring-sky-500/50 focus:border-sky-500 resize-none transition-all duration-200"
                   />
-                  <p className="text-xs text-zinc-600 mt-1 text-right">
+                  <p className="text-xs text-sky-200/60 mt-1 text-right">
                     {form.bio.length}/500
                   </p>
                 </div>
               ) : profile?.bio ? (
-                <p className="text-zinc-300 text-sm leading-relaxed">{profile.bio}</p>
+                <p className="text-foreground text-sm leading-relaxed">{profile.bio}</p>
               ) : isOwnProfile ? (
-                <p className="text-zinc-600 text-sm italic">
+                <p className="text-muted-foreground text-sm italic">
                   No bio yet — click Edit Profile to add one.
                 </p>
               ) : null}
@@ -365,13 +364,13 @@ export default function UserProfile() {
             {/* External links (view mode) */}
             {!editing &&
               (profile?.website || profile?.github || profile?.linkedin) && (
-                <div className="flex flex-wrap gap-4 mt-5 pt-5 border-t border-zinc-800">
+                <div className="flex flex-wrap gap-4 mt-5 pt-5 border-t border-border">
                   {profile.website && (
                     <a
                       href={externalHref(profile.website)}
                       target="_blank"
                       rel="noopener noreferrer"
-                      className="flex items-center gap-1.5 text-sm text-zinc-400 hover:text-indigo-400 transition-colors"
+                      className="flex items-center gap-1.5 text-sm text-muted-foreground hover:text-sky-400 transition-colors"
                     >
                       <Globe className="w-4 h-4" />
                       Website
@@ -383,7 +382,7 @@ export default function UserProfile() {
                       href={`https://github.com/${profile.github}`}
                       target="_blank"
                       rel="noopener noreferrer"
-                      className="flex items-center gap-1.5 text-sm text-zinc-400 hover:text-indigo-400 transition-colors"
+                      className="flex items-center gap-1.5 text-sm text-zinc-400 hover:text-sky-400 transition-colors"
                     >
                       <Github className="w-4 h-4" />
                       {profile.github}
@@ -395,7 +394,7 @@ export default function UserProfile() {
                       href={externalHref(profile.linkedin)}
                       target="_blank"
                       rel="noopener noreferrer"
-                      className="flex items-center gap-1.5 text-sm text-zinc-400 hover:text-indigo-400 transition-colors"
+                      className="flex items-center gap-1.5 text-sm text-zinc-400 hover:text-sky-400 transition-colors"
                     >
                       <Linkedin className="w-4 h-4" />
                       LinkedIn
@@ -408,6 +407,7 @@ export default function UserProfile() {
           {/* Repository analysis (loading) - render skeleton when analysis is in progress */}
           {isRepoAnalyzing && (
             <motion.div variants={itemVariants} className="mt-6">
+              <div className="absolute inset-0 bg-gradient-to-br from-primary/5 via-transparent to-transparent pointer-events-none" />
               <AnalysisSkeleton />
             </motion.div>
           )}
@@ -417,16 +417,16 @@ export default function UserProfile() {
           {!editing && profile?.skills?.length > 0 && (
             <motion.div
               variants={itemVariants}
-              className="rounded-2xl bg-zinc-900/80 border border-zinc-800 p-6"
+              className="rounded-2xl bg-card/80 backdrop-blur-sm border border-border shadow-[0_8px_30px_rgb(0,0,0,0.06)] p-6"
             >
-              <h2 className="text-xs font-semibold text-zinc-500 uppercase tracking-wider mb-4">
+              <h2 className="text-xs font-semibold text-muted-foreground uppercase tracking-wider mb-4">
                 Skills
               </h2>
               <div className="flex flex-wrap gap-2">
                 {profile.skills.map((skill, i) => (
                   <span
                     key={i}
-                    className="px-3 py-1.5 bg-indigo-500/10 border border-indigo-500/20 text-indigo-400 rounded-full text-sm font-medium"
+                    className="px-3 py-1.5 bg-sky-500/10 border border-sky-500/20 text-sky-400 rounded-full text-sm font-medium"
                   >
                     {skill}
                   </span>
@@ -437,33 +437,34 @@ export default function UserProfile() {
 
           {/* Stats */}
           <motion.div variants={itemVariants} className="grid grid-cols-2 gap-4">
-            <div className="rounded-2xl bg-zinc-900/80 border border-zinc-800 p-5 text-center">
-              <div className="w-10 h-10 bg-sky-500/10 rounded-xl flex items-center justify-center mx-auto mb-2">
+            <div className="relative overflow-hidden rounded-2xl bg-card/80 backdrop-blur-sm border border-sky-500/10 shadow-[0_8px_30px_rgb(0,0,0,0.06)] hover:shadow-xl hover:border-primary/20 transition-all duration-300 p-5 text-center">
+            <div className="absolute inset-0 bg-gradient-to-br from-sky-300/5 via-cyan-200/5 to-transparent opacity-0 hover:opacity-100 transition-opacity duration-300 pointer-events-none" />              <div className="w-10 h-10 bg-sky-500/10 rounded-xl flex items-center justify-center mx-auto mb-2">
                 <FileText className="w-5 h-5 text-sky-400" />
               </div>
-              <p className="text-2xl font-bold text-white">{stats.resumesCreated}</p>
-              <p className="text-xs text-zinc-500 mt-0.5">Resumes Created</p>
+              <p className="text-2xl font-bold text-foreground">{stats.resumesCreated}</p>
+              <p className="text-xs text-muted-foreground mt-0.5">Resumes Created</p>
             </div>
-            <div className="rounded-2xl bg-zinc-900/80 border border-zinc-800 p-5 text-center">
-              <div className="w-10 h-10 bg-indigo-500/10 rounded-xl flex items-center justify-center mx-auto mb-2">
-                <Mic className="w-5 h-5 text-indigo-400" />
+            <div className="relative overflow-hidden rounded-2xl bg-card/80 backdrop-blur-sm border border-sky-500/10 shadow-[0_8px_30px_rgb(0,0,0,0.06)] hover:shadow-xl hover:border-primary/20 transition-all duration-300 p-5 text-center">
+              <div className="absolute inset-0 bg-gradient-to-br from-sky-300/5 via-cyan-200/5 to-transparent opacity-0 hover:opacity-100 transition-opacity duration-300 pointer-events-none" />
+              <div className="w-10 h-10 bg-sky-500/10 rounded-xl flex items-center justify-center mx-auto mb-2">
+                <Mic className="w-5 h-5 text-sky-400" />
               </div>
-              <p className="text-2xl font-bold text-white">{stats.interviewsDone}</p>
-              <p className="text-xs text-zinc-500 mt-0.5">Interviews Done</p>
+              <p className="text-2xl font-bold text-foreground">{stats.interviewsDone}</p>
+              <p className="text-xs text-muted-foreground mt-0.5">Interviews Done</p>
             </div>
           </motion.div>
 
           {/* Activity Feed */}
           <motion.div variants={itemVariants}>
             <div className="flex items-center justify-between mb-4">
-              <h2 className="text-xl font-semibold text-white flex items-center gap-2">
-                <Calendar className="w-5 h-5 text-zinc-500" />
+              <h2 className="text-xl font-semibold text-foreground flex items-center gap-2">
+                <Calendar className="w-5 h-5 text-muted-foreground" />
                 Activity
               </h2>
               {isOwnProfile && (
                 <Link
                   to="/community"
-                  className="text-indigo-400 hover:text-indigo-300 text-sm font-medium flex items-center gap-1 transition-colors"
+                  className="text-sky-400 hover:text-sky-300 text-sm font-medium flex items-center gap-1 transition-colors"
                 >
                   Go to Community
                 </Link>
@@ -471,12 +472,12 @@ export default function UserProfile() {
             </div>
 
             {activity.length === 0 ? (
-              <div className="rounded-2xl bg-zinc-900/80 border border-zinc-800 text-center py-12">
-                <MessageSquare className="w-12 h-12 text-zinc-700 mx-auto mb-3" />
-                <h3 className="font-medium text-white mb-1">No posts yet</h3>
+              <div className="relative overflow-hidden rounded-2xl bg-card/80 backdrop-blur-sm border border-border shadow-[0_8px_30px_rgb(0,0,0,0.06)] hover:shadow-xl hover:border-primary/20 transition-all duration-300 text-center py-12">
+                <MessageSquare className="w-12 h-12 text-sky-500/40 mx-auto mb-3" />
+                <h3 className="font-medium text-foreground mb-1">No posts yet</h3>
                 {isOwnProfile && (
                   <>
-                    <p className="text-zinc-500 text-sm mb-4">
+                    <p className="text-muted-foreground text-sm mb-4">
                       Share posts in the community to see them here
                     </p>
                     <Link to="/community">
@@ -489,37 +490,37 @@ export default function UserProfile() {
                 )}
               </div>
             ) : (
-              <div className="rounded-2xl bg-zinc-900/80 border border-zinc-800 overflow-hidden">
-                <div className="divide-y divide-zinc-800">
+              <div className="relative overflow-hidden rounded-2xl bg-card/80 backdrop-blur-sm border border-border shadow-[0_8px_30px_rgb(0,0,0,0.06)] hover:shadow-xl hover:border-primary/20 transition-all duration-300">
+                <div className="divide-y divide-border">
                   {activity.map((item) => (
                     <div
                       key={item.id}
-                      className="p-4 hover:bg-zinc-800/50 transition-colors"
+                      className="p-4 hover:bg-muted/50 transition-colors"
                     >
                       {item.title && (
-                        <h4 className="font-medium text-white text-sm">{item.title}</h4>
+                        <h4 className="font-medium text-foreground text-sm">{item.title}</h4>
                       )}
                       {item.content && (
-                        <p className="text-zinc-500 text-sm mt-0.5 line-clamp-2">
+                        <p className="text-muted-foreground text-sm mt-0.5 line-clamp-2">
                           {item.content}
                         </p>
                       )}
                       <div className="flex items-center gap-3 mt-2">
                         {item.category && (
-                          <span className="px-2 py-0.5 bg-zinc-800 border border-zinc-700 text-zinc-400 rounded text-xs">
+                          <span className="px-2 py-0.5 bg-sky-500/10 border border-sky-500/20 text-sky-300 rounded text-xs">
                             {item.category}
                           </span>
                         )}
-                        <span className="flex items-center gap-1 text-xs text-zinc-600">
+                        <span className="flex items-center gap-1 text-muted-foreground">
                           <Heart className="w-3 h-3" />
                           {item.likeCount}
                         </span>
-                        <span className="flex items-center gap-1 text-xs text-zinc-600">
+                        <span className="flex items-center gap-1 text-muted-foreground">
                           <MessageSquare className="w-3 h-3" />
                           {item.commentCount}
                         </span>
                         {item.createdAt && (
-                          <span className="text-xs text-zinc-600">
+                          <span className="text-muted-foreground">
                             {formatDate(item.createdAt)}
                           </span>
                         )}

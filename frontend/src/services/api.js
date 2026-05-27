@@ -121,7 +121,7 @@ export const authApi = {
 // ============ UPLOAD API ============
 export const uploadApi = {
   // Upload PDF and extract text
-  async uploadPdf(file) {
+  async uploadPdf(file, options = {}) {
     const user = auth?.currentUser
     if (!user) throw new Error('Not authenticated')
 
@@ -136,13 +136,14 @@ export const uploadApi = {
       headers: {
         'Authorization': `Bearer ${token}`
       },
-      body: formData
+      body: formData,
+      signal: options.signal
     })
     return handleResponse(response)
   },
 
   // Extract text from PDF (re-process)
-  async extractText(file) {
+  async extractText(file, options = {}) {
     const user = auth?.currentUser
     if (!user) throw new Error('Not authenticated')
 
@@ -157,7 +158,8 @@ export const uploadApi = {
       headers: {
         'Authorization': `Bearer ${token}`
       },
-      body: formData
+      body: formData,
+      signal: options.signal
     })
     return handleResponse(response)
   }
@@ -186,12 +188,13 @@ export const resumeApi = {
   },
 
   // Create resume
-  async create(data) {
+  async create(data, options = {}) {
     const headers = await getAuthHeaders()
     const response = await fetch(`${API_BASE}/resumes`, {
       method: 'POST',
       headers,
-      body: JSON.stringify(data)
+      body: JSON.stringify(data),
+      signal: options.signal
     })
     return handleResponse(response)
   },
