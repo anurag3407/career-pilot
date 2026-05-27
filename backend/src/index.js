@@ -91,27 +91,52 @@ const PORT = process.env.PORT || 5001;
 console.log('🔧 FRONTEND_URL env var:', process.env.FRONTEND_URL);
 
 // CORS configuration - MUST come before helmet
-const allowedOrigins = [
-  'http://localhost:5173',
-  'http://localhost:3000',
-  'https://careerpilotyy.netlify.app',  // Hardcoded as fallback
-  process.env.FRONTEND_URL,
-].filter(Boolean).map(url => url.replace(/\/$/, '')); // Remove trailing slashes
+const normalizeOrigin = (origin) => {
+  if (!origin) return null;
 
-console.log('🔧 Allowed origins:', allowedOrigins);
+  try {
+    const parsedOrigin = new URL(origin.trim());
+    return parsedOrigin.origin;
+  } catch {
+    console.warn('⚠️  Ignoring invalid CORS origin:', origin);
+    return null;
+  }
+};
+
+const parseAllowedOrigins = (origins) => (origins || '')
+  .split(',')
+  .map(normalizeOrigin)
+  .filter(Boolean);
+
+const allowedOrigins = [
+  ...parseAllowedOrigins(process.env.CORS_ALLOWED_ORIGINS),
+  ...parseAllowedOrigins(process.env.FRONTEND_URL),
+];
+const uniqueAllowedOrigins = [...new Set(allowedOrigins)];
+
+if (uniqueAllowedOrigins.length === 0) {
+  const message = '⚠️  No CORS origins configured. Set CORS_ALLOWED_ORIGINS or FRONTEND_URL to allow browser requests.';
+
+  if (process.env.NODE_ENV === 'production') {
+    throw new Error(message);
+  }
+
+  console.warn(message);
+}
+
+console.log('🔧 Allowed origins:', uniqueAllowedOrigins);
 
 app.use(cors({
   origin: function (origin, callback) {
     // Allow requests with no origin (like mobile apps or curl)
     if (!origin) return callback(null, true);
-    
-    // Normalize origin by removing trailing slash
-    const normalizedOrigin = origin.replace(/\/$/, '');
-    
-    if (allowedOrigins.includes(normalizedOrigin)) {
+
+    const normalizedOrigin = normalizeOrigin(origin);
+
+    if (uniqueAllowedOrigins.includes(normalizedOrigin)) {
       callback(null, true);
     } else {
-      console.log('❌ CORS blocked origin:', origin, '| Allowed:', allowedOrigins);
+      console.log('❌ CORS blocked origin:', origin, '| Allowed:', uniqueAllowedOrigins);
       callback(new Error('Not allowed by CORS'));
     }
   },
@@ -151,7 +176,7 @@ app.use(helmet({
       ],
       connectSrc: [
         "'self'",
-        process.env.FRONTEND_URL || "http://localhost:5173",
+        ...uniqueAllowedOrigins,  // Use configured allowed origins from CORS_ALLOWED_ORIGINS or FRONTEND_URL
         "https://firebaseapp.com",
         "https://*.googleapis.com",
         "https://*.firebaseio.com",
