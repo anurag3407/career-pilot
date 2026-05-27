@@ -52,7 +52,6 @@ import Verify from './pages/fellowship/Verify';
 import FellowshipMessages from './pages/fellowship/FellowshipMessages';
 import FellowshipChat from './pages/fellowship/FellowshipChat';
 import SecuritySettings from './pages/SecuritySettings';
-import LinkedInCallback from './pages/LinkedInCallback';
 import PrivacyPolicy from './pages/PrivacyPolicy';
 import TermsOfService from './pages/TermsOfService';
 import CookiePolicy from './pages/CookiePolicy';
@@ -164,7 +163,6 @@ function AppRoutes() {
         
         <Route path="/login" element={<PublicRoute><Login /></PublicRoute>} />
         <Route path="/register" element={<PublicRoute><Register /></PublicRoute>} />
-        <Route path="/auth/linkedin/callback" element={<LinkedInCallback />} />
         <Route path="/auth/openrouter/callback" element={<OpenRouterCallback />} />
 
         {/* Legal Pages (Public) */}

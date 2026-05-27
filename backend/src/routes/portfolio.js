@@ -75,7 +75,6 @@ const reconstructVersion = async (portfolioId, targetVersionNumber, isConnected)
     const targetVersions = versions.filter(v => v.version <= targetVersionNumber);
     if (targetVersions.length === 0) return null;
 
-    // Find latest snapshot
     let snapshotIdx = -1;
     for (let i = targetVersions.length - 1; i >= 0; i--) {
       if (targetVersions[i].snapshot) {
@@ -97,7 +96,7 @@ const reconstructVersion = async (portfolioId, targetVersionNumber, isConnected)
 };
 
 /**
- * a. POST   /enhance-portfolio-content
+ * a. POST /enhance-portfolio-content
  */
 router.post(
   '/enhance-portfolio-content',
@@ -228,13 +227,17 @@ router.get(
     const { slug } = req.params;
     assertValidPortfolioSlug(slug);
     const templatePath = getPortfolioTemplatePath(slug);
+
     let html;
+
     try {
       html = await fs.readFile(templatePath, 'utf-8');
     } catch {
       throw new ApiError(404, 'Portfolio template not found.');
     }
+
     const report = await analyzeAccessibility(html);
+
     res.status(200).json({
       success: true,
       slug,
@@ -245,377 +248,92 @@ router.get(
 
 /**
  * f. GET /api/portfolio
- * Returns a list of available portfolio template slugs.
  */
 router.get('/', asyncHandler(async (req, res) => {
   const templatesDir = new URL('../templates/portfolio', import.meta.url);
+
   let slugs = [];
+
   try {
     const entries = await fs.readdir(templatesDir);
     slugs = entries.filter((e) => !e.startsWith('.'));
   } catch {
     slugs = [];
   }
+
   const portfolios = slugs.map((slug) => ({
     slug,
     url: `/portfolio/public/${slug}`,
   }));
-  res.status(200).json({ success: true, portfolios, data: portfolios });
+
+  res.status(200).json({
+    success: true,
+    portfolios,
+    data: portfolios
+  });
 }));
 
 /**
  * POST /api/portfolio
- * Create a new portfolio with validated and sanitized content.
- */
-router.post('/', verifyToken, validatePortfolioSlug, validatePortfolioContent, asyncHandler(async (req, res) => {
-  const { slug, sections } = req.body;
-  const userId = req.user.uid;
-
-  const existing = await Portfolio.findOne({ userId, slug });
-  if (existing) {
-    throw new ApiError(409, `A portfolio with slug "${slug}" already exists.`);
-  }
-
-  const portfolio = await Portfolio.create({ userId, slug, sections });
-
-  res.status(201).json({
-    success: true,
-    message: 'Portfolio created successfully.',
-    data: portfolio,
-  });
-}));
-
-/**
- * PUT /api/portfolio/:slug
- * Update an existing portfolio with validated and sanitized content.
- */
-router.put('/:slug', verifyToken, validatePortfolioSlug, validatePortfolioContent, asyncHandler(async (req, res) => {
-  const { slug } = req.params;
-  const { sections } = req.body;
-  const userId = req.user.uid;
-
-  const portfolio = await Portfolio.findOneAndUpdate(
-    { userId, slug },
-    { sections },
-    { new: true }
-  );
-
-  if (!portfolio) {
-    throw new ApiError(404, `Portfolio "${slug}" not found.`);
-  }
-
-  res.status(200).json({
-    success: true,
-    message: 'Portfolio updated successfully.',
-    data: portfolio,
- * g. POST /api/portfolio/:id/save
- */
-router.post('/:id/save', verifyToken, asyncHandler(async (req, res) => {
-  const { id } = req.params;
-  const { content } = req.body;
-
-  // Authorization check (IDOR Protection)
-  if (req.user.uid !== id) {
-    throw new ApiError(403, 'Unauthorized access to this portfolio.');
-  }
-
-  if (!content) {
-    throw new ApiError(400, 'Content is required for saving.');
-  }
-
-  const isConnected = mongoose.connection.readyState === 1;
-  let latestVersion;
-
-  if (isConnected) {
-    latestVersion = await PortfolioVersion.findOne({ portfolioId: id }).sort({ version: -1 });
-  } else {
-    const portfolioVersions = inMemoryStore.get(id) || [];
-    latestVersion = portfolioVersions[portfolioVersions.length - 1];
-  }
-  
-  const newVersionNumber = (latestVersion?.version || 0) + 1;
-
-  let changes = null;
-  let snapshot = null;
-
-  if (!latestVersion) {
-    snapshot = content;
-  } else {
-    // Correctly reconstruct old content for diffing
-    const oldContent = await reconstructVersion(id, latestVersion.version, isConnected) || {};
-    changes = getObjectDiff(oldContent, content);
-    
-    if (!changes) {
-      return res.status(200).json({
-        success: true,
-        message: 'No changes detected. Version not created.',
-        version: latestVersion.version
-      });
-    }
-
-    // Every 10th version gets a full snapshot for efficiency
-    if (newVersionNumber % 10 === 0) {
-      snapshot = content;
-    }
-  }
-
-  const versionData = {
-    portfolioId: id,
-    version: newVersionNumber,
-    changes,
-    snapshot,
-    createdBy: req.user.uid,
-  };
-
-  if (isConnected) {
-    try {
-      await PortfolioVersion.create(versionData);
-    } catch (error) {
-      if (error.code === 11000) {
-        throw new ApiError(409, 'A save request is already in progress. Please try again.');
-      }
-      throw error;
-    }
-    
-    // Prune old versions (keep latest 50)
-    if (newVersionNumber > 50) {
-      const thresholdVersion = newVersionNumber - 50;
-      
-      // Ensure the new base version (thresholdVersion + 1) is a snapshot so it doesn't get orphaned
-      const nextBaseVersion = await PortfolioVersion.findOne({
-          portfolioId: id,
-          version: thresholdVersion + 1
-      });
-
-      if (nextBaseVersion && !nextBaseVersion.snapshot) {
-          const fullContent = await reconstructVersion(id, thresholdVersion + 1, true);
-          await PortfolioVersion.updateOne(
-              { _id: nextBaseVersion._id },
-              { $set: { snapshot: fullContent, changes: null } }
-          );
-      }
-
-      await PortfolioVersion.deleteMany({
-        portfolioId: id,
-        version: { $lte: thresholdVersion }
-      });
-    }
-  } else {
-    let portfolioVersions = inMemoryStore.get(id) || [];
-    portfolioVersions.push({ _id: `mock-${Date.now()}`, ...versionData, createdAt: new Date() });
-    if (portfolioVersions.length > 50) portfolioVersions.shift();
-    inMemoryStore.set(id, portfolioVersions);
-  }
-
-  res.status(200).json({
-    success: true,
-    message: `Portfolio saved and version ${newVersionNumber} created.`,
-    version: newVersionNumber,
-    type: snapshot ? 'snapshot' : 'diff'
-  });
-}));
-
-/**
- * h. GET /api/portfolio/:id/versions
- */
-router.get('/:id/versions', verifyToken, asyncHandler(async (req, res) => {
-  const { id } = req.params;
-
-  if (req.user.uid !== id) {
-    throw new ApiError(403, 'Unauthorized access to version history.');
-  }
-
-  const isConnected = mongoose.connection.readyState === 1;
-
-  let versions;
-  if (isConnected) {
-    versions = await PortfolioVersion.find({ portfolioId: id })
-      .sort({ version: -1 })
-      .select('-snapshot -changes')
-      .limit(50);
-  } else {
-    versions = (inMemoryStore.get(id) || [])
-      .slice()
-      .reverse()
-      .map(({ snapshot, changes, ...v }) => v);
-  }
-
-  res.status(200).json({
-    success: true,
-    portfolioId: id,
-    data: versions,
-  });
-}));
-
-/**
- * i. POST /api/portfolio/:id/restore/:versionId
- */
-router.post('/:id/restore/:versionId', verifyToken, asyncHandler(async (req, res) => {
-  const { id, versionId } = req.params;
-
-  if (req.user.uid !== id) {
-    throw new ApiError(403, 'Unauthorized access to restore this portfolio.');
-  }
-
-  const isConnected = mongoose.connection.readyState === 1;
-
-  let versionToRestore;
-  if (isConnected) {
-    if (!mongoose.Types.ObjectId.isValid(versionId)) {
-      throw new ApiError(400, 'Invalid version ID format.');
-    }
-    versionToRestore = await PortfolioVersion.findById(versionId);
-  } else {
-    const portfolioVersions = inMemoryStore.get(id) || [];
-    versionToRestore = portfolioVersions.find(v => v._id === versionId);
-  }
-
-  if (!versionToRestore || versionToRestore.portfolioId !== id) {
-    throw new ApiError(404, 'Version not found.');
-  }
-
-  const restoredContent = await reconstructVersion(id, versionToRestore.version, isConnected);
-
-  if (!restoredContent) {
-    throw new ApiError(500, 'Could not reconstruct version data.');
-  }
-
-  let newVersionNumber;
-  if (isConnected) {
-    const latest = await PortfolioVersion.findOne({ portfolioId: id }).sort({ version: -1 });
-    newVersionNumber = (latest?.version || 0) + 1;
-
-    try {
-      await PortfolioVersion.create({
-        portfolioId: id,
-        version: newVersionNumber,
-        snapshot: restoredContent,
-        createdBy: req.user.uid,
-        message: `Restored to version ${versionToRestore.version}`,
-      });
-    } catch (error) {
-      if (error.code === 11000) {
-        throw new ApiError(409, 'Conflict: Another restoration or save is in progress.');
-      }
-      throw error;
-    }
-
-    const currentProfile = await UserProfile.findOne({ uid: id }).lean();
-    const portfolioFields = ['displayName', 'bio', 'jobRole', 'skills', 'location', 'website', 'github', 'linkedin', 'projects'];
-    const update = { $set: {}, $unset: {} };
-
-    for (const field of portfolioFields) {
-      if (restoredContent[field] !== undefined) {
-        update.$set[field] = restoredContent[field];
-      } else if (currentProfile?.[field] !== undefined) {
-        update.$unset[field] = '';
-      }
-    }
-
-    if (Object.keys(update.$set).length === 0) delete update.$set;
-    if (Object.keys(update.$unset).length === 0) delete update.$unset;
-
-    await UserProfile.findOneAndUpdate({ uid: id }, update, { upsert: true });
-  } else {
-    let portfolioVersions = inMemoryStore.get(id) || [];
-    newVersionNumber = (portfolioVersions[portfolioVersions.length - 1]?.version || 0) + 1;
-    portfolioVersions.push({
-      _id: `mock-${Date.now()}`,
-      portfolioId: id,
-      version: newVersionNumber,
-      snapshot: restoredContent,
-      createdBy: req.user.uid,
-      createdAt: new Date(),
-    });
-    inMemoryStore.set(id, portfolioVersions);
-  }
-
-  res.status(200).json({
-    success: true,
-    message: `Successfully restored to version ${versionToRestore.version}`,
-    portfolioId: id,
-    version: versionToRestore.version,
-    data: restoredContent,
-  });
-}));
-
-/**
- * j. POST /api/portfolio/:id/performance
  */
 router.post(
-  '/:id/performance',
+  '/',
   verifyToken,
+  validatePortfolioSlug,
+  validatePortfolioContent,
   asyncHandler(async (req, res) => {
-    const { id } = req.params;
+    const { slug, sections } = req.body;
+    const userId = req.user.uid;
 
-    const {
-      htmlSizeKB,
-      cssSizeKB,
-      imageSizeMB,
-      externalRequests,
-      cssSelectors,
-      fontStrategy,
-    } = req.body;
+    const existing = await Portfolio.findOne({ userId, slug });
 
-    if (
-      !htmlSizeKB &&
-      !cssSizeKB &&
-      !imageSizeMB
-    ) {
-      throw new ApiError(
-        400,
-        'Performance metrics payload is required.'
-      );
+    if (existing) {
+      throw new ApiError(409, `A portfolio with slug "${slug}" already exists.`);
     }
 
-    res.status(200).json({
+    const portfolio = await Portfolio.create({
+      userId,
+      slug,
+      sections
+    });
+
+    res.status(201).json({
       success: true,
-      message: `Performance metrics recorded for portfolio ${id}`,
-      data: {
-        portfolioId: id,
-        receivedMetrics: {
-          htmlSizeKB,
-          cssSizeKB,
-          imageSizeMB,
-          externalRequests,
-          cssSelectors,
-          fontStrategy,
-        },
-      },
+      message: 'Portfolio created successfully.',
+      data: portfolio,
     });
   })
 );
 
 /**
- * k. GET /api/portfolio/:slug/bandwidth
+ * PUT /api/portfolio/:slug
  */
-router.get('/:slug/bandwidth', asyncHandler(async (req, res) => {
-  const { slug } = req.params;
-  assertValidPortfolioSlug(slug);
+router.put(
+  '/:slug',
+  verifyToken,
+  validatePortfolioSlug,
+  validatePortfolioContent,
+  asyncHandler(async (req, res) => {
+    const { slug } = req.params;
+    const { sections } = req.body;
+    const userId = req.user.uid;
 
-  try {
-    await fs.stat(getPortfolioTemplatePath(slug));
-  } catch {
-    throw new ApiError(404, 'Portfolio template not found.');
-  }
+    const portfolio = await Portfolio.findOneAndUpdate(
+      { userId, slug },
+      { sections },
+      { new: true }
+    );
 
-  const estimatedPageSizeKB = 500;
-  const monthlyViews = 1200;
-  const bandwidthUsageMB = (estimatedPageSizeKB * monthlyViews) / 1024;
-  const usagePercentage = (bandwidthUsageMB / FREE_TIER_LIMIT_MB) * 100;
+    if (!portfolio) {
+      throw new ApiError(404, `Portfolio "${slug}" not found.`);
+    }
 
-  res.status(200).json({
-    success: true,
-    data: {
-      slug,
-      estimatedPageSizeKB,
-      monthlyViews,
-      bandwidthUsageMB: bandwidthUsageMB.toFixed(2),
-      freeTierLimitMB: FREE_TIER_LIMIT_MB,
-      usagePercentage: usagePercentage.toFixed(2),
-      warning: usagePercentage >= 80,
-    },
-  });
-}));
+    res.status(200).json({
+      success: true,
+      message: 'Portfolio updated successfully.',
+      data: portfolio,
+    });
+  })
+);
 
 export default router;
