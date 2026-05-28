@@ -5,6 +5,71 @@ import { ArrowLeft, ArrowRight, CheckCircle, Plus, Trash2, Save, FileText, User,
 import { resumeApi } from '../services/api'
 import { toast } from 'react-hot-toast'
 
+const DRAFT_KEY = 'resumeBuilder:draft:v1'
+
+const createEmptyPersonal = () => ({
+  name: '', email: '', phone: '', linkedin: '', github: '', portfolio: '', summary: ''
+})
+
+const createEmptyEducationItem = () => ({
+  school: '', degree: '', field: '', startDate: '', endDate: '', gpa: '', description: ''
+})
+
+const createEmptyExperienceItem = () => ({
+  title: '', company: '', location: '', startDate: '', endDate: '', current: false, description: ''
+})
+
+const createEmptyProjectItem = () => ({
+  name: '', tech: '', link: '', description: ''
+})
+
+const isPlainObject = (value) => Boolean(value && typeof value === 'object' && !Array.isArray(value))
+const sanitizeString = (value) => (typeof value === 'string' ? value : '')
+
+const sanitizePersonalDraft = (draft) => ({
+  name: sanitizeString(draft.name),
+  email: sanitizeString(draft.email),
+  phone: sanitizeString(draft.phone),
+  linkedin: sanitizeString(draft.linkedin),
+  github: sanitizeString(draft.github),
+  portfolio: sanitizeString(draft.portfolio),
+  summary: sanitizeString(draft.summary),
+})
+
+const sanitizeEducationDraft = (draft) => ({
+  school: sanitizeString(draft.school),
+  degree: sanitizeString(draft.degree),
+  field: sanitizeString(draft.field),
+  startDate: sanitizeString(draft.startDate),
+  endDate: sanitizeString(draft.endDate),
+  gpa: sanitizeString(draft.gpa),
+  description: sanitizeString(draft.description),
+})
+
+const sanitizeExperienceDraft = (draft) => ({
+  title: sanitizeString(draft.title),
+  company: sanitizeString(draft.company),
+  location: sanitizeString(draft.location),
+  startDate: sanitizeString(draft.startDate),
+  endDate: sanitizeString(draft.endDate),
+  current: typeof draft.current === 'boolean' ? draft.current : false,
+  description: sanitizeString(draft.description),
+})
+
+const sanitizeProjectDraft = (draft) => ({
+  name: sanitizeString(draft.name),
+  tech: sanitizeString(draft.tech),
+  link: sanitizeString(draft.link),
+  description: sanitizeString(draft.description),
+})
+
+const normalizeDraftList = (entries, sanitizer, emptyItemFactory) => {
+  if (!Array.isArray(entries)) return null
+
+  const normalized = entries.filter(isPlainObject).map(sanitizer)
+  return normalized.length > 0 ? normalized : [emptyItemFactory()]
+}
+
 const STEPS = [
   { id: 'personal', title: 'Personal Info', icon: User },
   { id: 'education', title: 'Education', icon: GraduationCap },
@@ -19,29 +84,21 @@ export default function ResumeBuilder() {
   const [currentStep, setCurrentStep] = useState(0)
   const [isSubmitting, setIsSubmitting] = useState(false)
   const [targetRole, setTargetRole] = useState('')
+  const saveTimerRef = useRef(null)
+  const skipAutosaveRef = useRef(false)
 
   // Form State
-  const [personal, setPersonal] = useState({
-    name: '', email: '', phone: '', linkedin: '', github: '', portfolio: '', summary: ''
-  })
-  const [education, setEducation] = useState([
-    { school: '', degree: '', field: '', startDate: '', endDate: '', gpa: '', description: '' }
-  ])
-  const [experience, setExperience] = useState([
-    { title: '', company: '', location: '', startDate: '', endDate: '', current: false, description: '' }
-  ])
-  const [projects, setProjects] = useState([
-    { name: '', tech: '', link: '', description: '' }
-  ])
+  const [personal, setPersonal] = useState(createEmptyPersonal)
+  const [education, setEducation] = useState([createEmptyEducationItem()])
+  const [experience, setExperience] = useState([createEmptyExperienceItem()])
+  const [projects, setProjects] = useState([createEmptyProjectItem()])
   const [skills, setSkills] = useState('')
-  const DRAFT_KEY = 'resumeBuilder:draft:v1'
-  const saveTimerRef = useRef(null)
 
   const resetForm = () => {
-    setPersonal({ name: '', email: '', phone: '', linkedin: '', github: '', portfolio: '', summary: '' })
-    setEducation([{ school: '', degree: '', field: '', startDate: '', endDate: '', gpa: '', description: '' }])
-    setExperience([{ title: '', company: '', location: '', startDate: '', endDate: '', current: false, description: '' }])
-    setProjects([{ name: '', tech: '', link: '', description: '' }])
+    setPersonal(createEmptyPersonal())
+    setEducation([createEmptyEducationItem()])
+    setExperience([createEmptyExperienceItem()])
+    setProjects([createEmptyProjectItem()])
     setSkills('')
     setTargetRole('')
     setCurrentStep(0)
@@ -52,16 +109,52 @@ export default function ResumeBuilder() {
     try {
       const raw = localStorage.getItem(DRAFT_KEY)
       if (raw) {
-        const d = JSON.parse(raw)
-        if (d.personal) setPersonal(d.personal)
-        if (d.education) setEducation(d.education)
-        if (d.experience) setExperience(d.experience)
-        if (d.projects) setProjects(d.projects)
-        if (d.skills) setSkills(d.skills)
-        if (d.targetRole) setTargetRole(d.targetRole)
-        if (typeof d.currentStep === 'number') setCurrentStep(d.currentStep)
+        const draft = JSON.parse(raw)
+        if (isPlainObject(draft)) {
+          let restored = false
+
+          if (isPlainObject(draft.personal)) {
+            setPersonal(sanitizePersonalDraft(draft.personal))
+            restored = true
+          }
+
+          const restoredEducation = normalizeDraftList(draft.education, sanitizeEducationDraft, createEmptyEducationItem)
+          if (restoredEducation) {
+            setEducation(restoredEducation)
+            restored = true
+          }
+
+          const restoredExperience = normalizeDraftList(draft.experience, sanitizeExperienceDraft, createEmptyExperienceItem)
+          if (restoredExperience) {
+            setExperience(restoredExperience)
+            restored = true
+          }
+
+          const restoredProjects = normalizeDraftList(draft.projects, sanitizeProjectDraft, createEmptyProjectItem)
+          if (restoredProjects) {
+            setProjects(restoredProjects)
+            restored = true
+          }
+
+          if (typeof draft.skills === 'string') {
+            setSkills(draft.skills)
+            restored = true
+          }
+
+          if (typeof draft.targetRole === 'string') {
+            setTargetRole(draft.targetRole)
+            restored = true
+          }
+
+          if (typeof draft.currentStep === 'number' && Number.isFinite(draft.currentStep)) {
+            setCurrentStep(Math.max(0, Math.min(draft.currentStep, STEPS.length - 1)))
+            restored = true
+          }
+
+          if (restored) toast.success('Draft restored')
+        }
       }
-    } catch (e) {
+    } catch {
       // ignore parse errors
     }
   }, [])
@@ -69,14 +162,19 @@ export default function ResumeBuilder() {
   // Auto-save draft to localStorage (debounced)
   useEffect(() => {
     try {
+      if (skipAutosaveRef.current) {
+        skipAutosaveRef.current = false
+        return () => { if (saveTimerRef.current) clearTimeout(saveTimerRef.current) }
+      }
+
       if (saveTimerRef.current) clearTimeout(saveTimerRef.current)
       saveTimerRef.current = setTimeout(() => {
         const payload = {
           personal, education, experience, projects, skills, targetRole, currentStep
         }
-        try { localStorage.setItem(DRAFT_KEY, JSON.stringify(payload)) } catch (e) {}
+        try { localStorage.setItem(DRAFT_KEY, JSON.stringify(payload)) } catch {}
       }, 450)
-    } catch (e) {}
+    } catch {}
     return () => { if (saveTimerRef.current) clearTimeout(saveTimerRef.current) }
   }, [personal, education, experience, projects, skills, targetRole, currentStep])
 
@@ -85,17 +183,22 @@ export default function ResumeBuilder() {
       const payload = { personal, education, experience, projects, skills, targetRole, currentStep }
       localStorage.setItem(DRAFT_KEY, JSON.stringify(payload))
       toast.success('Draft saved locally')
-    } catch (e) {
+    } catch {
       toast.error('Failed to save draft locally')
     }
   }
 
   const handleClearDraft = () => {
     try {
+      skipAutosaveRef.current = true
+      if (saveTimerRef.current) {
+        clearTimeout(saveTimerRef.current)
+        saveTimerRef.current = null
+      }
       localStorage.removeItem(DRAFT_KEY)
       resetForm()
       toast.success('Draft cleared')
-    } catch (e) {
+    } catch {
       toast.error('Failed to clear draft')
     }
   }

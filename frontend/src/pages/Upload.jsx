@@ -71,7 +71,7 @@ export default function Upload() {
     if (uploadControllerRef.current) {
       try {
         uploadControllerRef.current.abort()
-      } catch (e) {}
+      } catch {}
     }
     if (redirectTimeoutRef.current) {
       clearTimeout(redirectTimeoutRef.current)
@@ -83,7 +83,7 @@ export default function Upload() {
   useEffect(() => {
     return () => {
       if (uploadControllerRef.current) {
-        try { uploadControllerRef.current.abort() } catch (e) {}
+        try { uploadControllerRef.current.abort() } catch {}
       }
       if (redirectTimeoutRef.current) {
         clearTimeout(redirectTimeoutRef.current)

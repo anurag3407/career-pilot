@@ -22,7 +22,7 @@ async function getAuthHeaders() {
       if (aiConfig.provider) headers['X-AI-Provider'] = aiConfig.provider;
       if (aiConfig.apiKey) headers['X-AI-Key'] = decryptKey(aiConfig.apiKey);
       if (aiConfig.model) headers['X-AI-Model'] = aiConfig.model;
-    } catch(e) {}
+    } catch {}
   } else {
     const openRouterKey = localStorage.getItem('openRouterApiKey');
     if (openRouterKey) {
@@ -70,7 +70,7 @@ async function handleResponse(response) {
     try {
       const text = await response.text();
       data = { error: text || response.statusText };
-    } catch (e) {
+    } catch {
       data = { error: response.statusText };
     }
   }
@@ -121,7 +121,7 @@ export const authApi = {
 // ============ UPLOAD API ============
 export const uploadApi = {
   // Upload PDF and extract text
-  async uploadPdf(file) {
+  async uploadPdf(file, options = {}) {
     const user = auth?.currentUser
     if (!user) throw new Error('Not authenticated')
 
@@ -136,6 +136,7 @@ export const uploadApi = {
       headers: {
         'Authorization': `Bearer ${token}`
       },
+      signal: options.signal,
       body: formData
     })
     return handleResponse(response)
@@ -285,7 +286,7 @@ export const resumeApi = {
           const errorText = await response.text();
           errorMsg = errorText || errorMsg;
         }
-      } catch (e) {
+      } catch {
         // ignore parsing error and keep default
       }
       throw new Error(errorMsg);
