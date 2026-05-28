@@ -5,7 +5,7 @@ import {
   Star,
   Sparkles,
   ExternalLink,
-  Github,
+  Code,
 } from "lucide-react";
 
 const projects = [
@@ -112,7 +112,7 @@ export default function Projects() {
 
                   <button className="flex items-center gap-2 rounded-full border border-yellow-400 px-5 py-2 font-semibold text-yellow-300 transition hover:bg-yellow-400 hover:text-black">
                     Code
-                    <Github size={18} />
+                    <Code size={18} />
                   </button>
                 </div>
 

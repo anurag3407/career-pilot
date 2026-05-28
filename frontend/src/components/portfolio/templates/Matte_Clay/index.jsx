@@ -28,7 +28,3 @@ export default function MatteClay() {
     </div>
   );
 }
-      </div>
-    </div>
-  );
-}

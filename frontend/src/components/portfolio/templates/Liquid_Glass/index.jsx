@@ -1,5 +1,6 @@
 import { motion } from "framer-motion";
 import { Github, Linkedin, Twitter, Mail, ExternalLink, MapPin, Download, Star, Briefcase, User, Code2, MessageSquare, Phone, Globe } from "lucide-react";
+import { GithubIcon, Linkedin, Twitter, Mail, ExternalLink, MapPin, Download, Star, Briefcase, User, Code2, MessageSquare, Phone, Globe } from "lucide-react";
 import data from "../../../../data/dummy_data.json";
 
 // Glass card component reused throughout
@@ -40,6 +41,12 @@ function Hero() {
           <GlassCard className="inline-flex items-center gap-2 px-4 py-2 mb-6">
             <div className="w-2 h-2 rounded-full bg-green-400 animate-pulse" />
             <span className="text-white/80 text-sm">{data.personal.availability}</span>
+          {/* FIX 1: Safe fallback for availability key */}
+          <GlassCard className="inline-flex items-center gap-2 px-4 py-2 mb-6">
+            <div className="w-2 h-2 rounded-full bg-green-400 animate-pulse" />
+            <span className="text-white/80 text-sm">
+              {data.personal.availability ?? "Open to work"}
+            </span>
           </GlassCard>
 
           <h1 className="text-5xl md:text-6xl font-black text-white leading-tight mb-4">
@@ -58,6 +65,17 @@ function Hero() {
           <div className="flex flex-wrap gap-3">
             <a
               href={data.personal.resumeUrl}
+          </p>
+
+          {/* FIX 2: Safe fallback for shortBio — falls back to bio */}
+          <p className="text-white/60 leading-relaxed mb-8">
+            {data.personal.shortBio ?? data.personal.bio}
+          </p>
+
+          <div className="flex flex-wrap gap-3">
+            {/* FIX 3: Safe fallback for resumeUrl */}
+            <a
+              href={data.personal.resumeUrl ?? "#"}
               className="flex items-center gap-2 px-5 py-2.5 rounded-xl bg-white/20 hover:bg-white/30 border border-white/30 text-white font-medium text-sm backdrop-blur-sm transition-all"
             >
               <Download size={16} /> Download CV
@@ -83,6 +101,17 @@ function Hero() {
                 href={href}
                 target="_blank"
                 rel="noreferrer"
+              { icon: <Github size={18} />, href: data.socials.github, label: "GitHub" },
+              { icon: <Linkedin size={18} />, href: data.socials.linkedin, label: "LinkedIn" },
+              { icon: <Twitter size={18} />, href: data.socials.twitter, label: "Twitter" },
+              { icon: <Globe size={18} />, href: data.socials.website, label: "Website" },
+            ].map(({ icon, href, label }) => (
+              <a
+                key={label}
+                href={href}
+                target="_blank"
+                rel="noreferrer"
+                aria-label={label}
                 className="w-10 h-10 flex items-center justify-center rounded-xl bg-white/10 hover:bg-white/20 border border-white/20 text-white/70 hover:text-white transition-all"
               >
                 {icon}
@@ -157,6 +186,8 @@ function About() {
                   { label: "Email", value: data.socials.email, icon: <Mail size={14} /> },
                   { label: "GitHub", value: "jordanmitchell", icon: <Github size={14} /> },
                   { label: "Website", value: "jordanmitchell.dev", icon: <Globe size={14} /> },
+                  { label: "GitHub", value: data.socials.github, icon: <Github size={14} /> },
+                  { label: "Website", value: data.socials.website, icon: <Globe size={14} /> },
                 ].map(({ label, value, icon }) => (
                   <div key={label} className="flex items-center gap-3 p-3 rounded-xl bg-white/5 border border-white/10">
                     <span className="text-cyan-400">{icon}</span>
@@ -247,6 +278,8 @@ function Projects() {
         <motion.div variants={stagger} className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6">
           {data.projects.map((project) => (
             <motion.div key={project.id} variants={fadeUp}>
+          {(data.projects || []).map((project, index) => (
+            <motion.div key={index} variants={fadeUp}>
               <GlassCard className="overflow-hidden h-full flex flex-col">
                 <div className="relative overflow-hidden">
                   <img
@@ -315,6 +348,8 @@ function Experience() {
           <motion.div variants={stagger} className="space-y-6">
             {data.experience.map((exp) => (
               <motion.div key={exp.id} variants={fadeUp} className="md:pl-12 relative">
+            {(data.experience || []).map((exp, index) => (
+              <motion.div key={index} variants={fadeUp} className="md:pl-12 relative">
                 {/* Dot */}
                 <div className="absolute left-2.5 top-6 w-3 h-3 rounded-full bg-cyan-400 border-2 border-white/20 hidden md:block" />
                 <GlassCard className="p-6">
@@ -330,6 +365,7 @@ function Experience() {
                   <p className="text-white/60 text-sm leading-relaxed mb-3">{exp.description}</p>
                   <div className="flex flex-wrap gap-2">
                     {exp.techStack.map((tech) => (
+                    {(exp.techStack || []).map((tech) => (
                       <span key={tech} className="px-2 py-0.5 rounded-md bg-cyan-500/10 border border-cyan-400/20 text-cyan-300 text-xs">
                         {tech}
                       </span>
@@ -365,6 +401,8 @@ function Testimonials() {
         <motion.div variants={stagger} className="grid grid-cols-1 md:grid-cols-3 gap-6">
           {data.testimonials.map((t) => (
             <motion.div key={t.id} variants={fadeUp}>
+          {(data.testimonials || []).map((t, index) => (
+            <motion.div key={index} variants={fadeUp}>
               <GlassCard className="p-6 h-full flex flex-col">
                 <div className="text-cyan-400 text-3xl mb-3">"</div>
                 <p className="text-white/70 text-sm leading-relaxed flex-1 mb-4">{t.text}</p>
@@ -458,6 +496,102 @@ function Contact() {
           ))}
         </motion.div>
         <p className="text-white/30 text-xs mt-6">© 2025 {data.personal.name}. All rights reserved.</p>
+      </motion.div>
+    </section>
+  );
+}
+
+  );
+}
+
+// ─── Contact ──────────────────────────────────────────────────────────────────
+function Contact() {
+  return (
+    <section className="relative px-6 py-20">
+      <div className="absolute top-0 left-1/2 w-72 h-72 rounded-full bg-purple-500/20 blur-[100px]" />
+      <motion.div
+        className="max-w-3xl mx-auto text-center"
+        variants={stagger}
+        initial="hidden"
+        whileInView="visible"
+        viewport={{ once: true }}
+      >
+        <motion.div variants={fadeUp} className="flex items-center justify-center gap-3 mb-4">
+          <Phone size={20} className="text-cyan-400" />
+          <h2 className="text-3xl font-black text-white">Get In Touch</h2>
+        </motion.div>
+        <motion.p variants={fadeUp} className="text-white/60 mb-10">
+          Have a project in mind? Let's build something amazing together.
+        </motion.p>
+
+        <motion.div variants={fadeUp}>
+          <GlassCard className="p-8">
+            <div className="grid grid-cols-1 sm:grid-cols-2 gap-4 mb-4">
+              {/* FIX 4: Added accessible labels to all form inputs */}
+              <div>
+                <label htmlFor="contact-name" className="sr-only">Your Name</label>
+                <input
+                  id="contact-name"
+                  type="text"
+                  placeholder="Your Name"
+                  className="w-full px-4 py-3 rounded-xl bg-white/10 border border-white/20 text-white placeholder-white/30 text-sm focus:outline-none focus:border-cyan-400/60 backdrop-blur-sm transition-all"
+                />
+              </div>
+              <div>
+                <label htmlFor="contact-email" className="sr-only">Your Email</label>
+                <input
+                  id="contact-email"
+                  type="email"
+                  placeholder="Your Email"
+                  className="w-full px-4 py-3 rounded-xl bg-white/10 border border-white/20 text-white placeholder-white/30 text-sm focus:outline-none focus:border-cyan-400/60 backdrop-blur-sm transition-all"
+                />
+              </div>
+            </div>
+            <label htmlFor="contact-subject" className="sr-only">Subject</label>
+            <input
+              id="contact-subject"
+              type="text"
+              placeholder="Subject"
+              className="w-full px-4 py-3 rounded-xl bg-white/10 border border-white/20 text-white placeholder-white/30 text-sm focus:outline-none focus:border-cyan-400/60 backdrop-blur-sm transition-all mb-4"
+            />
+            <label htmlFor="contact-message" className="sr-only">Your Message</label>
+            <textarea
+              id="contact-message"
+              rows={4}
+              placeholder="Your Message"
+              className="w-full px-4 py-3 rounded-xl bg-white/10 border border-white/20 text-white placeholder-white/30 text-sm focus:outline-none focus:border-cyan-400/60 backdrop-blur-sm transition-all mb-4 resize-none"
+            />
+            <button className="w-full py-3 rounded-xl bg-gradient-to-r from-cyan-500/40 to-purple-500/40 hover:from-cyan-500/60 hover:to-purple-500/60 border border-white/20 text-white font-semibold text-sm backdrop-blur-sm transition-all">
+              Send Message
+            </button>
+          </GlassCard>
+        </motion.div>
+
+        {/* Social footer */}
+        <motion.div variants={fadeUp} className="flex justify-center gap-4 mt-8">
+          {[
+            { icon: <Github size={18} />, href: data.socials.github, label: "GitHub" },
+            { icon: <Linkedin size={18} />, href: data.socials.linkedin, label: "LinkedIn" },
+            { icon: <Twitter size={18} />, href: data.socials.twitter, label: "Twitter" },
+            { icon: <Mail size={18} />, href: `mailto:${data.socials.email}`, label: "Email" },
+          ].map(({ icon, href, label }) => (
+            <a
+              key={label}
+              href={href}
+              target="_blank"
+              rel="noreferrer"
+              aria-label={label}
+              className="w-10 h-10 flex items-center justify-center rounded-xl bg-white/10 hover:bg-white/20 border border-white/20 text-white/60 hover:text-white transition-all"
+            >
+              {icon}
+            </a>
+          ))}
+        </motion.div>
+
+        {/* FIX 5: Dynamic copyright year instead of hardcoded 2025 */}
+        <p className="text-white/30 text-xs mt-6">
+          © {new Date().getFullYear()} {data.personal.name}. All rights reserved.
+        </p>
       </motion.div>
     </section>
   );

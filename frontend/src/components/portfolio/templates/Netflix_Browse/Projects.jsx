@@ -1,6 +1,6 @@
 import { useRef } from "react";
 import { motion } from "framer-motion";
-import { Github, ExternalLink, ChevronLeft, ChevronRight } from "lucide-react";
+import { GithubIcon, ExternalLink, ChevronLeft, ChevronRight } from "lucide-react";
 
 export default function Projects({ projects }) {
   const rowRef = useRef(null);

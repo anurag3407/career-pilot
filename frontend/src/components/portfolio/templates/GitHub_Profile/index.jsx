@@ -2,7 +2,7 @@ import React, { useState } from 'react';
 import { motion } from 'framer-motion';
 import { 
   Users, MapPin, Link as LinkIcon, Mail, Star, 
-  Book, GitFork, Circle, Twitter, Linkedin, Github, 
+  Book, GitFork, Circle, Twitter, Linkedin, GithubIcon, 
   Briefcase, MessageSquare, Smile, Code, BookOpen
 } from 'lucide-react';
 import data from '../../../../data/dummy_data.json';

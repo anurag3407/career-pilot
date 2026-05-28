@@ -1,30 +1,34 @@
-import React from 'react';
-import data from '../../../../data/dummy_data.json';
+"use client";
+
+import React from "react";
+import Background from "./components/Background";
+import Hero from "./components/Hero";
+import About from "./components/About";
+import Skills from "./components/Skills";
+import Projects from "./components/Projects";
+import Experience from "./components/Experience";
+import Testimonials from "./components/Testimonials";
+import Contact from "./components/Contact";
+import Footer from "./components/Footer";
+
+export default function GradientMeshArt() {
+  return (
+    <main className="relative min-h-screen bg-[#050712] text-white overflow-hidden">
+      <Background />
+      <Hero />
+      <About />
+      <Skills />
+      <Projects />
+      <Experience />
+      <Testimonials />
+      <Contact />
+      <Footer />
+    </main>
+  );
+}
 
 /**
  * Gradient Mesh Art Portfolio Template
  * Category: Colorful / Vibrant
  * Description: Artistic gradient mesh blobs as hero backgrounds and section dividers. Vivid blends of complementary colors. Abstract art meets web design.
  */
-export default function GradientMeshArt() {
-  return (
-    <div className="min-h-screen bg-gray-950 text-white flex flex-col items-center justify-center p-8 font-sans">
-      <div className="max-w-3xl w-full text-center">
-        <h1 className="text-5xl md:text-7xl font-bold mb-4 bg-gradient-to-r from-cyan-400 to-purple-500 bg-clip-text text-transparent">
-          {data.personal.name}
-        </h1>
-        <p className="text-xl md:text-2xl text-gray-400 mb-8">{data.personal.title}</p>
-        <div className="p-8 border-2 border-dashed border-cyan-500/40 rounded-2xl bg-gray-900/50 backdrop-blur-sm">
-          <span className="inline-block px-3 py-1 rounded-full bg-cyan-500/20 text-cyan-400 text-xs font-bold uppercase tracking-widest mb-4">
-            Colorful / Vibrant
-          </span>
-          <h2 className="text-2xl font-bold text-gray-200 mb-3">Gradient Mesh Art Template</h2>
-          <p className="text-gray-400 mb-6 leading-relaxed">
-            Artistic gradient mesh blobs as hero backgrounds and section dividers. Vivid blends of complementary colors. Abstract art meets web design.
-          </p>
-          <p className="text-cyan-400 font-semibold">Open an issue to contribute and build this template!</p>
-        </div>
-      </div>
-    </div>
-  );
-}
