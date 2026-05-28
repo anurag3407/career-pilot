@@ -179,6 +179,7 @@ function AppRoutes() {
 
         {/* Template Gallery Route (Registered at /templates) */}
         <Route path="/templates" element={<TemplateGallery />} />
+        
         <Route path="/templates/chatbot" element={<ChatbotPortfolio />} />
         <Route path="/templates/gamified-xp" element={<GamifiedXP />} />
         {/* Core Protected Routes */}

@@ -1,4 +1,5 @@
 import { motion } from "framer-motion";
+import { Github, Linkedin, Twitter, Mail, ExternalLink, MapPin, Download, Star, Briefcase, User, Code2, MessageSquare, Phone, Globe } from "lucide-react";
 import { GithubIcon, Linkedin, Twitter, Mail, ExternalLink, MapPin, Download, Star, Briefcase, User, Code2, MessageSquare, Phone, Globe } from "lucide-react";
 import data from "../../../../data/dummy_data.json";
 
@@ -37,6 +38,9 @@ function Hero() {
       >
         {/* Left */}
         <motion.div variants={fadeUp}>
+          <GlassCard className="inline-flex items-center gap-2 px-4 py-2 mb-6">
+            <div className="w-2 h-2 rounded-full bg-green-400 animate-pulse" />
+            <span className="text-white/80 text-sm">{data.personal.availability}</span>
           {/* FIX 1: Safe fallback for availability key */}
           <GlassCard className="inline-flex items-center gap-2 px-4 py-2 mb-6">
             <div className="w-2 h-2 rounded-full bg-green-400 animate-pulse" />
@@ -55,6 +59,12 @@ function Hero() {
           <p className="text-white/70 text-lg mb-4">{data.personal.title}</p>
           <p className="text-white/50 text-sm mb-2 flex items-center gap-1">
             <MapPin size={14} /> {data.personal.location}
+          </p>
+          <p className="text-white/60 leading-relaxed mb-8">{data.personal.shortBio}</p>
+
+          <div className="flex flex-wrap gap-3">
+            <a
+              href={data.personal.resumeUrl}
           </p>
 
           {/* FIX 2: Safe fallback for shortBio — falls back to bio */}
@@ -81,6 +91,16 @@ function Hero() {
           {/* Socials */}
           <div className="flex gap-4 mt-6">
             {[
+              { icon: <Github size={18} />, href: data.socials.github },
+              { icon: <Linkedin size={18} />, href: data.socials.linkedin },
+              { icon: <Twitter size={18} />, href: data.socials.twitter },
+              { icon: <Globe size={18} />, href: data.socials.website },
+            ].map(({ icon, href }, i) => (
+              <a
+                key={i}
+                href={href}
+                target="_blank"
+                rel="noreferrer"
               { icon: <Github size={18} />, href: data.socials.github, label: "GitHub" },
               { icon: <Linkedin size={18} />, href: data.socials.linkedin, label: "LinkedIn" },
               { icon: <Twitter size={18} />, href: data.socials.twitter, label: "Twitter" },
@@ -164,6 +184,8 @@ function About() {
               <div className="space-y-4">
                 {[
                   { label: "Email", value: data.socials.email, icon: <Mail size={14} /> },
+                  { label: "GitHub", value: "jordanmitchell", icon: <Github size={14} /> },
+                  { label: "Website", value: "jordanmitchell.dev", icon: <Globe size={14} /> },
                   { label: "GitHub", value: data.socials.github, icon: <Github size={14} /> },
                   { label: "Website", value: data.socials.website, icon: <Globe size={14} /> },
                 ].map(({ label, value, icon }) => (
@@ -254,6 +276,8 @@ function Projects() {
         </motion.div>
 
         <motion.div variants={stagger} className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6">
+          {data.projects.map((project) => (
+            <motion.div key={project.id} variants={fadeUp}>
           {(data.projects || []).map((project, index) => (
             <motion.div key={index} variants={fadeUp}>
               <GlassCard className="overflow-hidden h-full flex flex-col">
@@ -322,6 +346,8 @@ function Experience() {
           <div className="absolute left-4 top-0 bottom-0 w-px bg-white/10 hidden md:block" />
 
           <motion.div variants={stagger} className="space-y-6">
+            {data.experience.map((exp) => (
+              <motion.div key={exp.id} variants={fadeUp} className="md:pl-12 relative">
             {(data.experience || []).map((exp, index) => (
               <motion.div key={index} variants={fadeUp} className="md:pl-12 relative">
                 {/* Dot */}
@@ -338,6 +364,7 @@ function Experience() {
                   </div>
                   <p className="text-white/60 text-sm leading-relaxed mb-3">{exp.description}</p>
                   <div className="flex flex-wrap gap-2">
+                    {exp.techStack.map((tech) => (
                     {(exp.techStack || []).map((tech) => (
                       <span key={tech} className="px-2 py-0.5 rounded-md bg-cyan-500/10 border border-cyan-400/20 text-cyan-300 text-xs">
                         {tech}
@@ -372,6 +399,8 @@ function Testimonials() {
         </motion.div>
 
         <motion.div variants={stagger} className="grid grid-cols-1 md:grid-cols-3 gap-6">
+          {data.testimonials.map((t) => (
+            <motion.div key={t.id} variants={fadeUp}>
           {(data.testimonials || []).map((t, index) => (
             <motion.div key={index} variants={fadeUp}>
               <GlassCard className="p-6 h-full flex flex-col">
@@ -394,6 +423,84 @@ function Testimonials() {
         </motion.div>
       </motion.div>
     </section>
+  );
+}
+
+// ─── Contact ──────────────────────────────────────────────────────────────────
+function Contact() {
+  return (
+    <section className="relative px-6 py-20">
+      <div className="absolute top-0 left-1/2 w-72 h-72 rounded-full bg-purple-500/20 blur-[100px]" />
+      <motion.div
+        className="max-w-3xl mx-auto text-center"
+        variants={stagger}
+        initial="hidden"
+        whileInView="visible"
+        viewport={{ once: true }}
+      >
+        <motion.div variants={fadeUp} className="flex items-center justify-center gap-3 mb-4">
+          <Phone size={20} className="text-cyan-400" />
+          <h2 className="text-3xl font-black text-white">Get In Touch</h2>
+        </motion.div>
+        <motion.p variants={fadeUp} className="text-white/60 mb-10">
+          Have a project in mind? Let's build something amazing together.
+        </motion.p>
+
+        <motion.div variants={fadeUp}>
+          <GlassCard className="p-8">
+            <div className="grid grid-cols-1 sm:grid-cols-2 gap-4 mb-4">
+              <input
+                type="text"
+                placeholder="Your Name"
+                className="w-full px-4 py-3 rounded-xl bg-white/10 border border-white/20 text-white placeholder-white/30 text-sm focus:outline-none focus:border-cyan-400/60 backdrop-blur-sm transition-all"
+              />
+              <input
+                type="email"
+                placeholder="Your Email"
+                className="w-full px-4 py-3 rounded-xl bg-white/10 border border-white/20 text-white placeholder-white/30 text-sm focus:outline-none focus:border-cyan-400/60 backdrop-blur-sm transition-all"
+              />
+            </div>
+            <input
+              type="text"
+              placeholder="Subject"
+              className="w-full px-4 py-3 rounded-xl bg-white/10 border border-white/20 text-white placeholder-white/30 text-sm focus:outline-none focus:border-cyan-400/60 backdrop-blur-sm transition-all mb-4"
+            />
+            <textarea
+              rows={4}
+              placeholder="Your Message"
+              className="w-full px-4 py-3 rounded-xl bg-white/10 border border-white/20 text-white placeholder-white/30 text-sm focus:outline-none focus:border-cyan-400/60 backdrop-blur-sm transition-all mb-4 resize-none"
+            />
+            <button className="w-full py-3 rounded-xl bg-gradient-to-r from-cyan-500/40 to-purple-500/40 hover:from-cyan-500/60 hover:to-purple-500/60 border border-white/20 text-white font-semibold text-sm backdrop-blur-sm transition-all">
+              Send Message
+            </button>
+          </GlassCard>
+        </motion.div>
+
+        {/* Social footer */}
+        <motion.div variants={fadeUp} className="flex justify-center gap-4 mt-8">
+          {[
+            { icon: <Github size={18} />, href: data.socials.github },
+            { icon: <Linkedin size={18} />, href: data.socials.linkedin },
+            { icon: <Twitter size={18} />, href: data.socials.twitter },
+            { icon: <Mail size={18} />, href: `mailto:${data.socials.email}` },
+          ].map(({ icon, href }, i) => (
+            <a
+              key={i}
+              href={href}
+              target="_blank"
+              rel="noreferrer"
+              className="w-10 h-10 flex items-center justify-center rounded-xl bg-white/10 hover:bg-white/20 border border-white/20 text-white/60 hover:text-white transition-all"
+            >
+              {icon}
+            </a>
+          ))}
+        </motion.div>
+        <p className="text-white/30 text-xs mt-6">© 2025 {data.personal.name}. All rights reserved.</p>
+      </motion.div>
+    </section>
+  );
+}
+
   );
 }
 
