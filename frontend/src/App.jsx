@@ -57,6 +57,7 @@ const TermsOfService = lazy(() => import('./pages/TermsOfService'));
 const CookiePolicy = lazy(() => import('./pages/CookiePolicy'));
 import OpenRouterCallback from './pages/OpenRouterCallback';
 import LegalPageErrorBoundary from './components/LegalPageErrorBoundary';
+import RouteErrorBoundary from './components/RouteErrorBoundary';
 
 // Hub Imports
 import ResumeHub from './pages/hubs/ResumeHub';
@@ -178,7 +179,7 @@ function AppRoutes() {
         <Route path="/cookies" element={<LegalPageErrorBoundary><Suspense fallback={null}><CookiePolicy /></Suspense></LegalPageErrorBoundary>} />
 
         {/* Template Gallery Route (Registered at /templates) */}
-        <Route path="/templates" element={<TemplateGallery />} />
+        <Route path="/templates" element={<RouteErrorBoundary><TemplateGallery /></RouteErrorBoundary>} />
         <Route path="/templates/chatbot" element={<ChatbotPortfolio />} />
         <Route path="/templates/gamified-xp" element={<GamifiedXP />} />
         {/* Core Protected Routes */}
