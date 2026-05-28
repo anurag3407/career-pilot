@@ -86,6 +86,56 @@ describe('CaptchaHandler circuit breaker', () => {
 
         const stats = handler.getStats('naukri');
         assert.equal(stats.circuitOpen, true);
+        assert.equal(stats.samples, 0);
         assert.throws(() => handler.assertCanAttempt('naukri'), /circuit breaker is open/i);
+    });
+});
+
+describe('CaptchaHandler browser flow accounting', () => {
+    test('does not count a solved CAPTCHA as a second success sample', async () => {
+        const handler = new CaptchaHandler({
+            solverProvider: '2captcha',
+            twoCaptchaApiKey: 'test-key'
+        });
+        handler.solvePageCaptcha = async () => true;
+
+        const page = {
+            url: () => 'https://example.com/jobs',
+            evaluate: async (_fn, args) => {
+                if (args) return null;
+                return {
+                    title: 'Verify',
+                    url: 'https://example.com/jobs',
+                    bodyText: 'Please verify you are human',
+                    html: '<div class="g-recaptcha" data-sitekey="abc"></div>',
+                    selectorHits: ['.g-recaptcha']
+                };
+            }
+        };
+
+        const result = await handler.handlePageCaptcha(page, { source: 'browser-test' });
+        const stats = handler.getStats('browser-test');
+
+        assert.equal(result.detected, true);
+        assert.equal(result.solved, true);
+        assert.equal(stats.samples, 1);
+        assert.equal(stats.captchaCount, 1);
+    });
+});
+
+describe('CaptchaHandler solver HTTP hardening', () => {
+    test('fails fast on non-2xx solver responses', async () => {
+        const handler = new CaptchaHandler({
+            fetchImpl: async () => ({
+                ok: false,
+                status: 502,
+                json: async () => ({})
+            })
+        });
+
+        await assert.rejects(
+            () => handler.fetchSolverJson('https://solver.example.test', {}, 'solver test'),
+            /HTTP 502/
+        );
     });
 });

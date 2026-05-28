@@ -60,9 +60,10 @@ export class NaukriScraper extends BaseScraper {
                     this.captchaHandler.recordCaptcha(this.name, detection);
                 }
 
-                if (attempt < maxCaptchaRetries && proxyCandidates.length > 0) {
+                if (attempt < maxCaptchaRetries) {
                     const backoff = this.options.delayBetweenRequests * Math.pow(2, attempt - 1);
-                    this.log(`CAPTCHA detected (${detection.type}). Retrying Naukri scrape with rotated proxy in ${backoff}ms...`, 'warn');
+                    const retryMode = proxyCandidates.length > 0 ? 'rotated proxy' : 'fresh browser context';
+                    this.log(`CAPTCHA detected (${detection.type}). Retrying Naukri scrape with ${retryMode} in ${backoff}ms...`, 'warn');
                     await this.sleep(backoff);
                     continue;
                 }

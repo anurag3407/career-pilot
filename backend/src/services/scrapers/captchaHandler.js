@@ -4,6 +4,7 @@ const DEFAULT_CAPTCHA_MIN_SAMPLES = 5;
 const DEFAULT_CAPTCHA_COOLDOWN_MS = 5 * 60 * 1000;
 const DEFAULT_SOLVER_POLL_MS = 5000;
 const DEFAULT_SOLVER_TIMEOUT_MS = 120000;
+const DEFAULT_SOLVER_REQUEST_TIMEOUT_MS = 15000;
 
 const CAPTCHA_PATTERNS = [
     { type: 'recaptcha', pattern: /g-recaptcha|google\.com\/recaptcha|grecaptcha|recaptcha/i, weight: 0.95 },
@@ -80,6 +81,10 @@ export class CaptchaHandler {
             antiCaptchaApiKey: options.antiCaptchaApiKey ?? process.env.ANTI_CAPTCHA_API_KEY ?? '',
             solverPollMs: toNumber(options.solverPollMs ?? process.env.CAPTCHA_SOLVER_POLL_MS, DEFAULT_SOLVER_POLL_MS),
             solverTimeoutMs: toNumber(options.solverTimeoutMs ?? process.env.CAPTCHA_SOLVER_TIMEOUT_MS, DEFAULT_SOLVER_TIMEOUT_MS),
+            solverRequestTimeoutMs: toNumber(
+                options.solverRequestTimeoutMs ?? process.env.CAPTCHA_SOLVER_REQUEST_TIMEOUT_MS,
+                DEFAULT_SOLVER_REQUEST_TIMEOUT_MS
+            ),
             submitAfterSolve: toBoolean(options.submitAfterSolve ?? process.env.CAPTCHA_SUBMIT_AFTER_SOLVE, false),
             enabled: options.enabled ?? true,
             fetchImpl: options.fetchImpl ?? globalThis.fetch
@@ -179,6 +184,7 @@ export class CaptchaHandler {
             stats.captchaRate >= this.options.maxCaptchaRate
         ) {
             this.openCircuits.set(source, now + this.options.cooldownMs);
+            this.eventsBySource.set(source, []);
         }
     }
 
@@ -331,7 +337,6 @@ export class CaptchaHandler {
             throw new CaptchaDetectedError('CAPTCHA challenge detected but could not be solved.', detection);
         }
 
-        this.recordSuccess(context.source || 'default');
         return { detected: true, solved: true, detection };
     }
 
@@ -423,8 +428,7 @@ export class CaptchaHandler {
             json: '1'
         });
 
-        const createResponse = await fetchImpl(`https://2captcha.com/in.php?${params.toString()}`);
-        const createPayload = await createResponse.json();
+        const createPayload = await this.fetchSolverJson(`https://2captcha.com/in.php?${params.toString()}`, {}, '2captcha create task');
         if (createPayload.status !== 1 || !createPayload.request) {
             throw new Error(`2captcha rejected CAPTCHA task: ${createPayload.request || 'unknown error'}`);
         }
@@ -434,7 +438,6 @@ export class CaptchaHandler {
 
     async pollTwoCaptcha(taskId) {
         const startedAt = Date.now();
-        const fetchImpl = this.options.fetchImpl;
 
         while (Date.now() - startedAt < this.options.solverTimeoutMs) {
             await this.sleep(this.options.solverPollMs);
@@ -444,8 +447,7 @@ export class CaptchaHandler {
                 id: taskId,
                 json: '1'
             });
-            const response = await fetchImpl(`https://2captcha.com/res.php?${params.toString()}`);
-            const payload = await response.json();
+            const payload = await this.fetchSolverJson(`https://2captcha.com/res.php?${params.toString()}`, {}, '2captcha poll task');
 
             if (payload.status === 1) return payload.request;
             if (payload.request !== 'CAPCHA_NOT_READY') {
@@ -466,7 +468,7 @@ export class CaptchaHandler {
             turnstile: 'TurnstileTaskProxyless'
         };
 
-        const createResponse = await fetchImpl('https://api.anti-captcha.com/createTask', {
+        const createPayload = await this.fetchSolverJson('https://api.anti-captcha.com/createTask', {
             method: 'POST',
             headers: { 'Content-Type': 'application/json' },
             body: JSON.stringify({
@@ -477,8 +479,7 @@ export class CaptchaHandler {
                     websiteKey: siteKey
                 }
             })
-        });
-        const createPayload = await createResponse.json();
+        }, 'anti-captcha create task');
         if (createPayload.errorId !== 0 || !createPayload.taskId) {
             throw new Error(`anti-captcha rejected CAPTCHA task: ${createPayload.errorDescription || 'unknown error'}`);
         }
@@ -488,19 +489,17 @@ export class CaptchaHandler {
 
     async pollAntiCaptcha(taskId) {
         const startedAt = Date.now();
-        const fetchImpl = this.options.fetchImpl;
 
         while (Date.now() - startedAt < this.options.solverTimeoutMs) {
             await this.sleep(this.options.solverPollMs);
-            const response = await fetchImpl('https://api.anti-captcha.com/getTaskResult', {
+            const payload = await this.fetchSolverJson('https://api.anti-captcha.com/getTaskResult', {
                 method: 'POST',
                 headers: { 'Content-Type': 'application/json' },
                 body: JSON.stringify({
                     clientKey: this.options.antiCaptchaApiKey,
                     taskId
                 })
-            });
-            const payload = await response.json();
+            }, 'anti-captcha poll task');
 
             if (payload.errorId && payload.errorId !== 0) {
                 throw new Error(`anti-captcha failed CAPTCHA task: ${payload.errorDescription || 'unknown error'}`);
@@ -511,6 +510,38 @@ export class CaptchaHandler {
         }
 
         throw new Error('anti-captcha CAPTCHA task timed out.');
+    }
+
+    async fetchSolverJson(url, options = {}, label = 'CAPTCHA solver request') {
+        const fetchImpl = this.options.fetchImpl;
+        if (!fetchImpl) {
+            throw new Error('No fetch implementation is available for CAPTCHA solver requests.');
+        }
+
+        const controller = typeof AbortController !== 'undefined' ? new AbortController() : null;
+        const timeout = controller
+            ? setTimeout(() => controller.abort(), this.options.solverRequestTimeoutMs)
+            : null;
+
+        try {
+            const response = await fetchImpl(url, {
+                ...options,
+                ...(controller ? { signal: controller.signal } : {})
+            });
+
+            if (response && 'ok' in response && !response.ok) {
+                throw new Error(`${label} failed with HTTP ${response.status || 'error'}.`);
+            }
+
+            return response.json();
+        } catch (error) {
+            if (error?.name === 'AbortError') {
+                throw new Error(`${label} timed out after ${this.options.solverRequestTimeoutMs}ms.`);
+            }
+            throw error;
+        } finally {
+            if (timeout) clearTimeout(timeout);
+        }
     }
 
     extractSiteKey(content = '') {

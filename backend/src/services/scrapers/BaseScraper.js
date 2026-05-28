@@ -106,15 +106,16 @@ export class BaseScraper {
                 ...config.headers
             }
         };
+        const canRotateCaptchaProxy = proxyCandidates.length > 0 && requestConfig.proxy === undefined;
 
         for (let attempt = 1; attempt <= maxRetries; attempt++) {
             try {
                 this.captchaHandler.assertCanAttempt(this.name);
-                const proxyUrl = proxyCandidates.length > 0
+                const proxyUrl = canRotateCaptchaProxy
                     ? this.captchaHandler.getProxyForAttempt(proxyCandidates, attempt - 1)
                     : null;
                 const attemptConfig = { ...requestConfig };
-                if (proxyUrl && attemptConfig.proxy === undefined) {
+                if (proxyUrl) {
                     attemptConfig.proxy = this.captchaHandler.toAxiosProxy(proxyUrl);
                 }
 
@@ -125,7 +126,7 @@ export class BaseScraper {
                 if (captchaDetection.detected) {
                     this.captchaHandler.recordCaptcha(this.name, captchaDetection);
 
-                    if (attempt < maxRetries && proxyCandidates.length > 0) {
+                    if (attempt < maxRetries && canRotateCaptchaProxy) {
                         const backoff = baseDelay * Math.pow(2, attempt - 1);
                         this.log(`CAPTCHA detected (${captchaDetection.type}). Retrying with rotated proxy in ${backoff}ms...`, 'warn');
                         await this.sleep(backoff);
@@ -148,7 +149,7 @@ export class BaseScraper {
                         this.captchaHandler.recordCaptcha(this.name, captchaDetection);
                     }
 
-                    if (attempt < maxRetries && proxyCandidates.length > 0) {
+                    if (attempt < maxRetries && canRotateCaptchaProxy) {
                         const backoff = baseDelay * Math.pow(2, attempt - 1);
                         this.log(`CAPTCHA detected (${captchaDetection.type}). Retrying with rotated proxy in ${backoff}ms...`, 'warn');
                         await this.sleep(backoff);
