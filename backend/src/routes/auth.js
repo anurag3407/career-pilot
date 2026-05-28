@@ -317,10 +317,10 @@ router.get('/linkedin/callback', asyncHandler(async (req, res) => {
     expiresAt: Date.now() + 60 * 1000,
   });
   // Store token in one-time exchange store (60s TTL) instead of passing in URL
-  const exchangeCode = crypto.randomBytes(16).toString('hex');
-  tokenStore.set(exchangeCode, { token: customToken, isNew: !mongoUser, expiresAt: Date.now() + 60000 });
+  const newExchangeCode = crypto.randomBytes(16).toString('hex');
+  tokenStore.set(newExchangeCode, { token: customToken, isNew: !mongoUser, expiresAt: Date.now() + 60000 });
 
-  res.redirect(`${frontendUrl}/auth/linkedin/callback?code=${exchangeCode}`);
+  res.redirect(`${frontendUrl}/auth/linkedin/callback?code=${newExchangeCode}`);
 }));
 
 // One-time token exchange endpoint — the frontend calls this immediately after the OAuth
@@ -346,6 +346,7 @@ router.get('/linkedin/token', asyncHandler(async (req, res) => {
   }
 
   linkedInTokenStore.delete(code);
+}));
 
 // One-time token exchange endpoint — frontend calls this after LinkedIn OAuth redirect
 // instead of receiving the Firebase custom token in the URL.

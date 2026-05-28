@@ -308,7 +308,9 @@ router.put('/:slug', verifyToken, validatePortfolioSlug, validatePortfolioConten
     success: true,
     message: 'Portfolio updated successfully.',
     data: portfolio,
- * g. POST /api/portfolio/:id/save
+  });
+}));
+ /* g. POST /api/portfolio/:id/save
  */
 router.post('/:id/save', verifyToken, asyncHandler(async (req, res) => {
   const { id } = req.params;
