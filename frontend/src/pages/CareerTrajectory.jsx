@@ -5,7 +5,6 @@ import {
   Briefcase,
   Clock,
   DollarSign,
-  ChevronRight,
   AlertCircle,
   Lightbulb,
   Target,
@@ -217,8 +216,12 @@ const CareerTrajectory = () => {
 
   const handlePredict = async (e) => {
     e.preventDefault();
+    const parsedSkills = formData.skills
+      .split(',')
+      .map((s) => s.trim())
+      .filter(Boolean);
 
-    if (!formData.currentRole.trim() && !formData.skills.trim()) {
+    if (!formData.currentRole.trim() && parsedSkills.length === 0) {
       toast.error('Please enter at least your current role or skills.');
       return;
     }
@@ -229,10 +232,7 @@ const CareerTrajectory = () => {
     try {
       const resumeData = {
         currentRole: formData.currentRole.trim(),
-        skills: formData.skills
-          .split(',')
-          .map((s) => s.trim())
-          .filter(Boolean),
+        skills: parsedSkills,
         yearsOfExperience: formData.yearsOfExperience
           ? parseInt(formData.yearsOfExperience, 10)
           : 0,
@@ -298,11 +298,12 @@ const CareerTrajectory = () => {
             <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
               {/* Current Role */}
               <div>
-                <label className="flex items-center gap-2 text-sm font-semibold text-foreground mb-2">
+                <label htmlFor="currentRole" className="flex items-center gap-2 text-sm font-semibold text-foreground mb-2">
                   <Briefcase size={16} className="text-primary" />
                   Current Role
                 </label>
                 <input
+                  id="currentRole"
                   type="text"
                   name="currentRole"
                   className="w-full p-4 border border-border bg-muted/50 rounded-xl focus:ring-2 focus:ring-primary focus:border-primary transition shadow-sm text-foreground placeholder:text-muted-foreground"
@@ -314,11 +315,12 @@ const CareerTrajectory = () => {
 
               {/* Skills */}
               <div>
-                <label className="flex items-center gap-2 text-sm font-semibold text-foreground mb-2">
+                <label htmlFor="skills" className="flex items-center gap-2 text-sm font-semibold text-foreground mb-2">
                   <Layers size={16} className="text-primary" />
                   Key Skills (comma-separated)
                 </label>
                 <input
+                  id="skills"
                   type="text"
                   name="skills"
                   className="w-full p-4 border border-border bg-muted/50 rounded-xl focus:ring-2 focus:ring-primary focus:border-primary transition shadow-sm text-foreground placeholder:text-muted-foreground"
@@ -332,11 +334,12 @@ const CareerTrajectory = () => {
             <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
               {/* Years of Experience */}
               <div>
-                <label className="flex items-center gap-2 text-sm font-semibold text-foreground mb-2">
+                <label htmlFor="yearsOfExperience" className="flex items-center gap-2 text-sm font-semibold text-foreground mb-2">
                   <Clock size={16} className="text-primary" />
                   Years of Experience
                 </label>
                 <input
+                  id="yearsOfExperience"
                   type="number"
                   name="yearsOfExperience"
                   min="0"
@@ -350,11 +353,12 @@ const CareerTrajectory = () => {
 
               {/* Industry */}
               <div>
-                <label className="flex items-center gap-2 text-sm font-semibold text-foreground mb-2">
+                <label htmlFor="industry" className="flex items-center gap-2 text-sm font-semibold text-foreground mb-2">
                   <Award size={16} className="text-primary" />
                   Industry
                 </label>
                 <select
+                  id="industry"
                   name="industry"
                   className="w-full p-4 border border-border bg-muted/50 rounded-xl focus:ring-2 focus:ring-primary text-foreground cursor-pointer"
                   value={formData.industry}
