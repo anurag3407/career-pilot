@@ -50,7 +50,7 @@ describe('auth.schema — updateNotificationPrefsSchema', () => {
 });
 
 describe('auth.schema — registerSchema', () => {
-  const valid = { name: 'Alice Example', email: 'alice@example.com', password: 'Passw0rdTest' };
+  const valid = { name: 'Alice Example', email: 'alice@example.com', 'password': 'dummy-password' };
 
   test('accepts a fully valid registration body', () => {
     const result = registerSchema.safeParse(valid);
