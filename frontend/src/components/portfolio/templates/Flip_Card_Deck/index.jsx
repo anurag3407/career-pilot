@@ -1,4 +1,4 @@
-import React from 'react';
+{% comment %} import React from 'react';
 import data from '../../../../data/dummy_data.json';
 
 /**
@@ -25,6 +25,27 @@ export default function FlipCardDeck() {
           <p className="text-cyan-400 font-semibold">Open an issue to contribute and build this template!</p>
         </div>
       </div>
+    </div>
+  );
+} {% endcomment %}
+import Hero from "./Hero";
+import About from "./About";
+import Skills from "./Skills";
+import Projects from "./Projects";
+import Experience from "./Experience";
+import Testimonials from "./Testimonials";
+import Contact from "./Contact";
+
+export default function FlipCardDeck() {
+  return (
+    <div className="bg-black text-white min-h-screen">
+      <Hero />
+      <About />
+      <Skills />
+      <Projects />
+      <Experience />
+      <Testimonials />
+      <Contact />
     </div>
   );
 }

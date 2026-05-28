@@ -1060,7 +1060,7 @@ function Testimonials({ theme }) {
   return (
     <Section id="testimonials">
       <SectionTitle theme={theme}>Testimonials</SectionTitle>
-      <div className="grid md:grid-cols-3 gap-6">
+      <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-6">
         {data.testimonials.map((t, i) => (
           <motion.div key={t.name}
             initial={{ opacity: 0, y: 30 }} whileInView={{ opacity: 1, y: 0 }}

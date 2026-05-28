@@ -433,7 +433,7 @@ export default function Dashboard() {
                 <Zap className="w-6 h-6 text-amber-500 animate-pulse" />
                 Pro Tips for Success
               </h2>
-              <div className="grid md:grid-cols-3 gap-6">
+              <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-6">
                 {[
                   { icon: Zap, color: 'amber-500', title: 'Optimize Your Resume', text: 'Use our AI to tailor your resume for each job application' },
                   { icon: Target, color: 'emerald-500', title: 'Track Everything', text: 'Keep notes and update statuses to stay organized in your job hunt' },

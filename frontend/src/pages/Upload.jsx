@@ -404,13 +404,15 @@ export default function Upload() {
 
         {/* How it works */}
         <motion.div
-          initial={{ opacity: 0 }}
-          animate={{ opacity: 1 }}
-          transition={{ delay: 0.3 }}
-          className="mt-12"
-        >
+       className="relative w-full h-64 shadow-lg hover:shadow-2xl"
+       animate={{ rotateY: flipped === index ? 180 : 0 }}
+       whileHover={{ scale: 1.05 }}
+       transition={{ duration: 0.6 }}
+       style={{ transformStyle: "preserve-3d" }}
+>
+
           <h3 className="text-lg font-semibold text-foreground mb-6 text-center">How It Works</h3>
-          <div className="grid md:grid-cols-3 gap-6">
+          <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-6">
             <div className="text-center">
               <div className="w-10 h-10 bg-primary rounded-full flex items-center justify-center mx-auto mb-3 text-foreground font-bold">1</div>
               <h4 className="text-foreground font-medium mb-1">Upload Resume</h4>
