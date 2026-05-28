@@ -3,8 +3,17 @@ import { motion } from 'framer-motion';
 import { Download, Mail, Sparkles } from 'lucide-react';
 
 export default function ResumeCTA({ data }) {
-  // Extract user parameters safely
-  const resumeUrl = data?.resumeUrl || data?.resume || null; // Fallback to null instead of '#'
+  // 1. SECURITY FIX: Sanitize URL to prevent XSS (Cross-Site Scripting) attacks
+  const sanitizeUrl = (url) => {
+    if (!url || typeof url !== 'string') return null;
+    // Block dangerous javascript execution protocols
+    if (url.trim().toLowerCase().startsWith('javascript:')) return null;
+    return url;
+  };
+
+  const rawResumeUrl = data?.resumeUrl || data?.resume || null;
+  const resumeUrl = sanitizeUrl(rawResumeUrl);
+
   const fullName = data?.fullName || data?.name || 'Professional Developer';
   const email = data?.email || data?.contactEmail || '';
 
@@ -13,9 +22,9 @@ export default function ResumeCTA({ data }) {
   // Spring animation transition configurations
   const springTransition = { type: "spring", stiffness: 300, damping: 20 };
 
-  // Helper to extract file extension (e.g., .pdf, .docx) from URL, or fallback to empty string
+  // 2. STABILITY FIX: Type-check before running regex to prevent fatal crashes
   const getFileExtension = (url) => {
-    if (!url) return '';
+    if (!url || typeof url !== 'string') return '';
     const match = url.match(/\.([a-zA-Z0-9]+)(?:[\?#]|$)/);
     return match ? `.${match[1]}` : '';
   };
@@ -54,7 +63,7 @@ export default function ResumeCTA({ data }) {
             </span>
           </motion.div>
 
-          {/* Headline */}
+          {/* Headline: Clean conditional rendering */}
           <motion.h2
             initial={{ opacity: 0, y: 15 }}
             animate={{ opacity: 1, y: 0 }}
@@ -88,7 +97,7 @@ export default function ResumeCTA({ data }) {
             className="mt-10 flex flex-col sm:flex-row gap-4 items-center justify-center w-full sm:w-auto"
           >
 
-            {/* Primary Action Button: Now handles disabled state and dynamic extensions! */}
+            {/* Primary Action Button: Now handles disabled state, extensions, AND XSS Protection! */}
             <motion.a
               href={resumeUrl || undefined}
               download={resumeUrl ? `${fullName.replace(/\s+/g, '_')}_Resume${fileExtension}` : undefined}
