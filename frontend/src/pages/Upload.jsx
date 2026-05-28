@@ -10,8 +10,6 @@ import { Link } from 'react-router-dom'
 
 export default function Upload() {
   const navigate = useNavigate()
-  const uploadControllerRef = useRef(null)
-  const redirectTimeoutRef = useRef(null)
 
   const [_file, setFile] = useState(null)
   const [loading, setLoading] = useState(false)
@@ -23,19 +21,25 @@ export default function Upload() {
   const [linkedinProfile, setLinkedinProfile] = useState(null)
   const [importing, setImporting] = useState(false)
 
+  const uploadControllerRef = useRef(null)
+  const redirectTimeoutRef = useRef(null)
+  const cancelRequestedRef = useRef(false)
+
   const handleFileSelect = async (selectedFile) => {
     setFile(selectedFile)
     setLoading(true)
+    cancelRequestedRef.current = false
+
     const controller = new AbortController()
     uploadControllerRef.current = controller
 
     try {
-      // Upload and extract text
       const response = await uploadApi.uploadPdf(selectedFile, { signal: controller.signal })
-      const extractedText = response.data.extractedText
+      if (cancelRequestedRef.current) return
 
-      // Create resume automatically
+      const extractedText = response.data.extractedText
       const resumeTitle = `Resume - ${new Date().toLocaleDateString()}`
+
       const resumeResponse = await resumeApi.create(
         {
           originalText: extractedText,
@@ -44,22 +48,28 @@ export default function Upload() {
         { signal: controller.signal }
       )
 
+      if (cancelRequestedRef.current) return
+
       setUploadComplete(true)
       toast.success('Resume uploaded successfully!')
 
-      // Redirect to enhance page after a brief delay
       redirectTimeoutRef.current = setTimeout(() => {
-        navigate(`/enhance/${resumeResponse.data.id}`)
+        if (!cancelRequestedRef.current) {
+          navigate(`/enhance/${resumeResponse.data.id}`)
+        }
       }, 1500)
-
     } catch (error) {
-      if (error.name === 'AbortError') {
+      if (error?.name === 'AbortError' || cancelRequestedRef.current) {
         toast('Upload cancelled')
+        setFile(null)
+        setUploadComplete(false)
         return
       }
+
       const message = error.response?.data?.error || error.message || 'Failed to upload resume'
       toast.error(message)
       setFile(null)
+      setUploadComplete(false)
     } finally {
       setLoading(false)
       uploadControllerRef.current = null
@@ -67,11 +77,14 @@ export default function Upload() {
   }
 
   const handleCancelUpload = () => {
+    cancelRequestedRef.current = true
     uploadControllerRef.current?.abort()
+
     if (redirectTimeoutRef.current) {
       clearTimeout(redirectTimeoutRef.current)
       redirectTimeoutRef.current = null
     }
+
     setLoading(false)
     setUploadComplete(false)
     setFile(null)
@@ -79,6 +92,7 @@ export default function Upload() {
 
   useEffect(() => {
     return () => {
+      cancelRequestedRef.current = true
       uploadControllerRef.current?.abort()
       if (redirectTimeoutRef.current) {
         clearTimeout(redirectTimeoutRef.current)
@@ -135,7 +149,6 @@ export default function Upload() {
       </div>
 
       <div className="relative max-w-4xl mx-auto px-4 sm:px-6 lg:px-8 py-8">
-        {/* Header */}
         <motion.div
           initial={{ opacity: 0, y: -20 }}
           animate={{ opacity: 1, y: 0 }}
@@ -151,7 +164,6 @@ export default function Upload() {
           </p>
         </motion.div>
 
-        {/* Features Preview */}
         <motion.div
           initial={{ opacity: 0, y: 20 }}
           animate={{ opacity: 1, y: 0 }}
@@ -187,7 +199,6 @@ export default function Upload() {
           </div>
         </motion.div>
 
-        {/* Alternative Methods */}
         {!uploadComplete && (
           <motion.div
             initial={{ opacity: 0, y: 20 }}
@@ -212,7 +223,6 @@ export default function Upload() {
           </motion.div>
         )}
 
-        {/* Upload Section */}
         {!uploadComplete ? (
           <motion.div
             initial={{ opacity: 0, y: 20 }}
@@ -248,9 +258,15 @@ export default function Upload() {
                   <p className="text-foreground font-medium">Processing your resume...</p>
                   <p className="text-muted-foreground text-sm">Extracting text and preparing analysis</p>
                 </div>
-                <Button variant="outline" size="sm" onClick={handleCancelUpload}>
-                  Cancel upload
-                </Button>
+                <div className="mt-4">
+                  <button
+                    type="button"
+                    onClick={handleCancelUpload}
+                    className="px-4 py-2 rounded bg-red-600 text-white"
+                  >
+                    Cancel upload
+                  </button>
+                </div>
               </div>
             )}
           </motion.div>
@@ -285,7 +301,6 @@ export default function Upload() {
           </motion.div>
         )}
 
-        {/* LinkedIn Import */}
         {!uploadComplete && (
           <motion.div
             initial={{ opacity: 0, y: 20 }}
@@ -325,7 +340,6 @@ export default function Upload() {
               </Button>
             </div>
 
-            {/* Preview card */}
             {linkedinPreview && (
               <motion.div
                 initial={{ opacity: 0, y: 8 }}
@@ -333,7 +347,7 @@ export default function Upload() {
                 className="mt-5 rounded-xl border border-sky-500/20 bg-sky-500/5 p-5"
               >
                 <div className="flex items-start gap-4 mb-4">
-                  <div className="w-12 h-12 rounded-full bg-linear-to-br from-sky-500 to-indigo-600 flex items-center justify-center shrink-0">
+                  <div className="w-12 h-12 rounded-full bg-gradient-to-br from-sky-500 to-indigo-600 flex items-center justify-center shrink-0">
                     <span className="text-white font-bold text-lg">
                       {linkedinPreview.name?.charAt(0)?.toUpperCase() || '?'}
                     </span>
@@ -373,10 +387,7 @@ export default function Upload() {
                 {linkedinPreview.skills?.length > 0 && (
                   <div className="flex flex-wrap gap-1.5 mb-5">
                     {linkedinPreview.skills.slice(0, 8).map((skill, i) => (
-                      <span
-                        key={i}
-                        className="px-2.5 py-1 bg-sky-500/10 border border-sky-500/20 text-sky-400 rounded-full text-xs font-medium"
-                      >
+                      <span key={i} className="px-2.5 py-1 bg-sky-500/10 border border-sky-500/20 text-sky-400 rounded-full text-xs font-medium">
                         {skill}
                       </span>
                     ))}
@@ -402,7 +413,6 @@ export default function Upload() {
           </motion.div>
         )}
 
-        {/* How it works */}
         <motion.div
           initial={{ opacity: 0 }}
           animate={{ opacity: 1 }}

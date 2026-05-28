@@ -1,9 +1,74 @@
-import React, { useState } from 'react'
+import React, { useState, useEffect, useRef } from 'react'
 import { motion, AnimatePresence } from 'framer-motion'
 import { useNavigate } from 'react-router-dom'
 import { ArrowLeft, ArrowRight, CheckCircle, Plus, Trash2, Save, FileText, User, Briefcase, GraduationCap, Code, Star } from 'lucide-react'
 import { resumeApi } from '../services/api'
 import { toast } from 'react-hot-toast'
+
+const DRAFT_KEY = 'resumeBuilder:draft:v1'
+
+const createEmptyPersonal = () => ({
+  name: '', email: '', phone: '', linkedin: '', github: '', portfolio: '', summary: ''
+})
+
+const createEmptyEducationItem = () => ({
+  school: '', degree: '', field: '', startDate: '', endDate: '', gpa: '', description: ''
+})
+
+const createEmptyExperienceItem = () => ({
+  title: '', company: '', location: '', startDate: '', endDate: '', current: false, description: ''
+})
+
+const createEmptyProjectItem = () => ({
+  name: '', tech: '', link: '', description: ''
+})
+
+const isPlainObject = (value) => Boolean(value && typeof value === 'object' && !Array.isArray(value))
+const sanitizeString = (value) => (typeof value === 'string' ? value : '')
+
+const sanitizePersonalDraft = (draft) => ({
+  name: sanitizeString(draft.name),
+  email: sanitizeString(draft.email),
+  phone: sanitizeString(draft.phone),
+  linkedin: sanitizeString(draft.linkedin),
+  github: sanitizeString(draft.github),
+  portfolio: sanitizeString(draft.portfolio),
+  summary: sanitizeString(draft.summary),
+})
+
+const sanitizeEducationDraft = (draft) => ({
+  school: sanitizeString(draft.school),
+  degree: sanitizeString(draft.degree),
+  field: sanitizeString(draft.field),
+  startDate: sanitizeString(draft.startDate),
+  endDate: sanitizeString(draft.endDate),
+  gpa: sanitizeString(draft.gpa),
+  description: sanitizeString(draft.description),
+})
+
+const sanitizeExperienceDraft = (draft) => ({
+  title: sanitizeString(draft.title),
+  company: sanitizeString(draft.company),
+  location: sanitizeString(draft.location),
+  startDate: sanitizeString(draft.startDate),
+  endDate: sanitizeString(draft.endDate),
+  current: typeof draft.current === 'boolean' ? draft.current : false,
+  description: sanitizeString(draft.description),
+})
+
+const sanitizeProjectDraft = (draft) => ({
+  name: sanitizeString(draft.name),
+  tech: sanitizeString(draft.tech),
+  link: sanitizeString(draft.link),
+  description: sanitizeString(draft.description),
+})
+
+const normalizeDraftList = (entries, sanitizer, emptyItemFactory) => {
+  if (!Array.isArray(entries)) return null
+
+  const normalized = entries.filter(isPlainObject).map(sanitizer)
+  return normalized.length > 0 ? normalized : [emptyItemFactory()]
+}
 
 const STEPS = [
   { id: 'personal', title: 'Personal Info', icon: User },
@@ -19,21 +84,124 @@ export default function ResumeBuilder() {
   const [currentStep, setCurrentStep] = useState(0)
   const [isSubmitting, setIsSubmitting] = useState(false)
   const [targetRole, setTargetRole] = useState('')
+  const saveTimerRef = useRef(null)
+  const skipAutosaveRef = useRef(false)
 
   // Form State
-  const [personal, setPersonal] = useState({
-    name: '', email: '', phone: '', linkedin: '', github: '', portfolio: '', summary: ''
-  })
-  const [education, setEducation] = useState([
-    { school: '', degree: '', field: '', startDate: '', endDate: '', gpa: '', description: '' }
-  ])
-  const [experience, setExperience] = useState([
-    { title: '', company: '', location: '', startDate: '', endDate: '', current: false, description: '' }
-  ])
-  const [projects, setProjects] = useState([
-    { name: '', tech: '', link: '', description: '' }
-  ])
+  const [personal, setPersonal] = useState(createEmptyPersonal)
+  const [education, setEducation] = useState([createEmptyEducationItem()])
+  const [experience, setExperience] = useState([createEmptyExperienceItem()])
+  const [projects, setProjects] = useState([createEmptyProjectItem()])
   const [skills, setSkills] = useState('')
+
+  const resetForm = () => {
+    setPersonal(createEmptyPersonal())
+    setEducation([createEmptyEducationItem()])
+    setExperience([createEmptyExperienceItem()])
+    setProjects([createEmptyProjectItem()])
+    setSkills('')
+    setTargetRole('')
+    setCurrentStep(0)
+  }
+
+  // Load draft on mount
+  useEffect(() => {
+    try {
+      const raw = localStorage.getItem(DRAFT_KEY)
+      if (raw) {
+        const draft = JSON.parse(raw)
+        if (isPlainObject(draft)) {
+          let restored = false
+
+          if (isPlainObject(draft.personal)) {
+            setPersonal(sanitizePersonalDraft(draft.personal))
+            restored = true
+          }
+
+          const restoredEducation = normalizeDraftList(draft.education, sanitizeEducationDraft, createEmptyEducationItem)
+          if (restoredEducation) {
+            setEducation(restoredEducation)
+            restored = true
+          }
+
+          const restoredExperience = normalizeDraftList(draft.experience, sanitizeExperienceDraft, createEmptyExperienceItem)
+          if (restoredExperience) {
+            setExperience(restoredExperience)
+            restored = true
+          }
+
+          const restoredProjects = normalizeDraftList(draft.projects, sanitizeProjectDraft, createEmptyProjectItem)
+          if (restoredProjects) {
+            setProjects(restoredProjects)
+            restored = true
+          }
+
+          if (typeof draft.skills === 'string') {
+            setSkills(draft.skills)
+            restored = true
+          }
+
+          if (typeof draft.targetRole === 'string') {
+            setTargetRole(draft.targetRole)
+            restored = true
+          }
+
+          if (typeof draft.currentStep === 'number' && Number.isFinite(draft.currentStep)) {
+            setCurrentStep(Math.max(0, Math.min(draft.currentStep, STEPS.length - 1)))
+            restored = true
+          }
+
+          if (restored) toast.success('Draft restored')
+        }
+      }
+    } catch {
+      // ignore parse errors
+    }
+  }, [])
+
+  // Auto-save draft to localStorage (debounced)
+  useEffect(() => {
+    try {
+      if (skipAutosaveRef.current) {
+        skipAutosaveRef.current = false
+        return () => { if (saveTimerRef.current) clearTimeout(saveTimerRef.current) }
+      }
+
+      if (saveTimerRef.current) clearTimeout(saveTimerRef.current)
+      saveTimerRef.current = setTimeout(() => {
+        const payload = {
+          personal, education, experience, projects, skills, targetRole, currentStep
+        }
+        try { localStorage.setItem(DRAFT_KEY, JSON.stringify(payload)) } catch {}
+      }, 450)
+    } catch {}
+    return () => { if (saveTimerRef.current) clearTimeout(saveTimerRef.current) }
+  }, [personal, education, experience, projects, skills, targetRole, currentStep])
+
+  const handleSaveDraft = () => {
+    try {
+      const payload = { personal, education, experience, projects, skills, targetRole, currentStep }
+      localStorage.setItem(DRAFT_KEY, JSON.stringify(payload))
+      toast.success('Draft saved locally')
+    } catch {
+      toast.error('Failed to save draft locally')
+    }
+  }
+
+  const handleClearDraft = () => {
+    try {
+      skipAutosaveRef.current = true
+      if (saveTimerRef.current) {
+        clearTimeout(saveTimerRef.current)
+        saveTimerRef.current = null
+      }
+      localStorage.removeItem(DRAFT_KEY)
+      resetForm()
+      toast.success('Draft cleared')
+    } catch {
+      toast.error('Failed to clear draft')
+    }
+  }
 
   const handleNext = () => setCurrentStep(s => Math.min(s + 1, STEPS.length - 1))
   const handlePrev = () => setCurrentStep(s => Math.max(s - 1, 0))
@@ -379,7 +547,11 @@ export default function ResumeBuilder() {
           >
             <ArrowLeft className="w-4 h-4" /> Back
           </button>
-          
+          <div className="flex items-center gap-3">
+            <button onClick={handleSaveDraft} className="px-4 py-2 rounded-full bg-neutral-800 text-white hover:bg-neutral-700 transition-all">Save draft</button>
+            <button onClick={handleClearDraft} className="px-4 py-2 rounded-full bg-transparent border border-border text-muted-foreground hover:bg-red-600/10 transition-all">Clear draft</button>
+          </div>
+
           {currentStep === STEPS.length - 1 ? (
             <button
               onClick={handleGenerate}
