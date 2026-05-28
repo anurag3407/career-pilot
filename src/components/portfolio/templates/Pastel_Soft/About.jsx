@@ -1,5 +1,5 @@
 import React from 'react';
-import {User, Brain, Github, FlaskConical } from 'lucide-react';
+import {User, Brain, Code, FlaskConical } from 'lucide-react';
 
 export default function About() {
   const features = [
@@ -13,7 +13,7 @@ export default function About() {
     {
       title: "Open Source",
       description: "Learning through contribution",
-      icon: <Github size={20} />,
+      icon: <Code size={20} />,
       bgColor: "bg-teal-100",
       textColor: "text-teal-500"
     },

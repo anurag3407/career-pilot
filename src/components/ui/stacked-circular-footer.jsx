@@ -4,7 +4,7 @@ import { Icons } from "@/components/ui/icons"
 import { Button } from "@/components/ui/button"
 import { Input } from "@/components/ui/input"
 import { Label } from "@/components/ui/label"
-import { Facebook, Instagram, Linkedin, Twitter } from "lucide-react"
+import { Zap, Globe, Code } from "lucide-react"
 
 function StackedCircularFooter() {
     const [email, setEmail] = useState("")
@@ -65,10 +65,9 @@ function StackedCircularFooter() {
                     {/* Social media buttons */}
                     <div className="mb-8 flex space-x-4 md:space-x-6">
                         {[
-                            { Icon: Facebook, label: "Facebook" },
-                            { Icon: Twitter, label: "Twitter" },
-                            { Icon: Instagram, label: "Instagram" },
-                            { Icon: Linkedin, label: "LinkedIn" }
+                            { Icon: Globe, label: "Globe" },
+                            { Icon: Code, label: "Code" },
+                            { Icon: Zap, label: "Zap" }
                         ].map(({ Icon, label }) => (
                             <Button key={label} variant="outline" size="icon" className="h-10 w-10 md:h-12 md:w-12 rounded-xl md:rounded-2xl border-border bg-card text-muted-foreground hover:text-primary hover:border-primary/50 hover:bg-primary/5 transition-all duration-300">
                                 <Icon className="h-4 w-4 md:h-5 md:w-5" />
