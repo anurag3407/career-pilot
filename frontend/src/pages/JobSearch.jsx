@@ -23,6 +23,8 @@ import {
 } from 'lucide-react'
 import { jobsApi, jobTrackerApi } from '../services/api'
 import Button from '../components/Button'
+import LoadingSpinner from '../components/LoadingSpinner'
+import SkeletonCard from '../components/SkeletonCard'
 
 const JOB_TYPES = ['All Types', 'Full-time', 'Part-time', 'Contract', 'Internship', 'Remote']
 const EXPERIENCE_LEVELS = ['All Levels', 'Entry Level', 'Mid Level', 'Senior Level', 'Lead/Manager']
@@ -316,15 +318,21 @@ className="w-full pl-12 pr-10 py-4 bg-muted/50 border border-border rounded-xl t
         </motion.div>
 
         {/* Results Section */}
-        {loading ? (
-          <div className="flex flex-col items-center justify-center py-20">
-            <div className="relative">
-              <div className="w-16 h-16 border-2 border-border rounded-full" />
-              <div className="absolute top-0 left-0 w-16 h-16 border-2 border-transparent border-t-primary rounded-full animate-spin" />
-            </div>
-            <p className="text-muted-foreground mt-4">Searching for opportunities...</p>
-          </div>
-        ) : hasSearched && jobs.length === 0 ? (
+       {loading ? (
+  <div className="space-y-6 py-10">
+    <LoadingSpinner />
+
+    <div className="grid gap-4">
+      <SkeletonCard />
+      <SkeletonCard />
+      <SkeletonCard />
+    </div>
+
+    <p className="text-center text-muted-foreground">
+      Searching for opportunities...
+    </p>
+  </div>
+): hasSearched && jobs.length === 0 ? (
           <motion.div
             initial={{ opacity: 0 }}
             animate={{ opacity: 1 }}

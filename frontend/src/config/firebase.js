@@ -4,7 +4,7 @@ import { getFirestore } from 'firebase/firestore';
 import { getStorage } from 'firebase/storage';
 
 const apiKey = import.meta.env.VITE_FIREBASE_API_KEY;
-
+console.log("FIREBASE KEY:", import.meta.env.VITE_FIREBASE_API_KEY)
 // Check if the key is completely missing or left as a placeholder string
 const isFirebaseConfigValid = 
   apiKey && 
