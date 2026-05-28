@@ -120,11 +120,7 @@ router.post('/verify-payment', verifyToken, validate(verifyPaymentSchema), async
     }
     if (escrow.payerId !== req.user.uid) {
       throw new ApiError(403, 'Payment payer mismatch');
-    }
-    if (escrow.expectedAmount !== Math.round(challenge?.price * 100)) {
-      throw new ApiError(400, 'Payment amount mismatch');
-    }
-        
+    }        
 
     // Find proposal and challenge
     let proposal = await Proposal.findById(proposalId);
