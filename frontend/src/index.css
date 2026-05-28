@@ -48,26 +48,26 @@
 }
 
 .dark {
-  /* Dark Theme Design Tokens */
-  --background: #050816;
-  --secondary-bg: #0b1120;
+  /* Pitch Dark Theme Design Tokens */
+  --background: #000000;
+  --secondary-bg: #09090b;
   --foreground: #ffffff;
-  --card: rgba(255, 255, 255, 0.04);
+  --card: #050505;
   --card-foreground: #ffffff;
-  --popover: #0b1120;
+  --popover: #0a0a0a;
   --popover-foreground: #ffffff;
   --primary: #00bfff;
   --primary-foreground: #ffffff;
   --secondary: #7c3aed;
   --secondary-foreground: #ffffff;
-  --muted: #0b1120;
-  --muted-foreground: #b3b8c5;
-  --accent: rgba(255, 255, 255, 0.04);
+  --muted: #111111;
+  --muted-foreground: #a1a1aa;
+  --accent: #111111;
   --accent-foreground: #ffffff;
   --destructive: #ef4444;
   --destructive-foreground: #ffffff;
-  --border: rgba(255, 255, 255, 0.08);
-  --input: rgba(255, 255, 255, 0.08);
+  --border: #222222;
+  --input: #222222;
   --ring: #00bfff;
 }
 

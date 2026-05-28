@@ -32,6 +32,12 @@ const DEFAULT_MODELS = {
  */
 class GeminiAdapter {
   constructor(apiKey, modelName) {
+    if (!apiKey) {
+      throw new Error(
+        'Gemini API key is required. ' +
+        'Set GEMINI_API_KEY in your .env file or provide it via the X-AI-Key header.'
+      );
+    }
     const genAI = new GoogleGenerativeAI(apiKey);
     this.model = genAI.getGenerativeModel({ model: modelName || DEFAULT_MODELS.gemini });
     this.providerName = 'gemini';
@@ -72,6 +78,12 @@ class GeminiAdapter {
  */
 class OpenAIAdapter {
   constructor(apiKey, modelName) {
+    if (!apiKey) {
+      throw new Error(
+        'OpenAI API key is required. ' +
+        'Set OPENAI_API_KEY in your .env file or provide it via the X-AI-Key header.'
+      );
+    }
     this.client = new OpenAI({ apiKey });
     this.modelName = modelName || DEFAULT_MODELS.openai;
     this.providerName = 'openai';
@@ -119,6 +131,12 @@ class OpenAIAdapter {
  */
 class GroqAdapter {
   constructor(apiKey, modelName) {
+    if (!apiKey) {
+      throw new Error(
+        'Groq API key is required. ' +
+        'Set GROQ_API_KEY in your .env file or provide it via the X-AI-Key header.'
+      );
+    }
     this.client = new Groq({ apiKey });
     this.modelName = modelName || DEFAULT_MODELS.groq;
     this.providerName = 'groq';
