@@ -23,6 +23,7 @@ import interviewRoutes from './routes/interview.js';
 import userProfileRoutes from './routes/userProfile.js';
 import twoFactorRoutes from './routes/twoFactor.js';
 import aiRoutes from './routes/ai.js';
+import healthRoutes from "./routes/health.js";
 import emailTrackingRoutes from './routes/emailTracking.js';
 import repoAnalyzerRoutes from './routes/repoAnalyzer.js';
 
@@ -245,6 +246,7 @@ app.use('/api/user-profiles', userProfileRoutes);
 app.use('/api/auth/2fa', twoFactorRoutes);
 app.use('/api/search', searchRoutes);
 app.use('/api/ai', aiRoutes);
+app.use('/api/health', healthRoutes);
 app.use('/api/email-tracking', emailTrackingRoutes);
 app.use('/api/analyzer', repoAnalyzerRoutes);
 
