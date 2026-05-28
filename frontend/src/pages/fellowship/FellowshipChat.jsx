@@ -170,6 +170,7 @@ export default function FellowshipChat() {
             <div className="flex items-center gap-4 pb-4 border-b border-border">
                 <button
                     onClick={() => navigate('/fellowship/messages')}
+                    aria-label="Go back"
                     className="p-2 hover:bg-muted rounded-lg text-muted-foreground hover:text-foreground"
                 >
                     <ArrowLeft className="w-5 h-5" />
