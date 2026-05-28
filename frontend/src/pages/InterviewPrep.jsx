@@ -6,6 +6,7 @@ import { Mic, MicOff, Video, VideoOff, XCircle, CheckCircle, AlertCircle, Volume
 import Button from '../components/Button';
 import BodyLanguageTips from '../components/BodyLanguageTips';
 import { interviewApi, uploadApi } from '../services/api';
+import ConfidenceMeter from "../components/ConfidenceMeter";
 
 // Device and browser detection utilities
 const isMobileDevice = () => {
@@ -285,6 +286,7 @@ export default function InterviewPrep() {
   const [audioEnabled, setAudioEnabled] = useState(true);
   const [isSpeaking, setIsSpeaking] = useState(false);
   const [faceVisible, setFaceVisible] = useState(true);
+  const [faceConfidence, setFaceConfidence] = useState(50);
   const [answersSubmitted, setAnswersSubmitted] = useState([]);
 
   const [overallResults, setOverallResults] = useState(null);
@@ -396,9 +398,18 @@ export default function InterviewPrep() {
 
     setFaceVisible(detected);
     if (detected) {
-      const confidence = Math.min(100, Math.max(40, 50 + skinRatio * 200));
-      setExpressionSamples(prev => [...prev.slice(-60), { confidence, timestamp: Date.now() }]);
-    }
+  const confidence =
+    Math.min(100, Math.max(40, 50 + skinRatio * 200));
+
+  setFaceConfidence(confidence);
+
+  setExpressionSamples(prev => [
+    ...prev.slice(-60),
+    { confidence, timestamp: Date.now() }
+  ]);
+} else {
+  setFaceConfidence(20);
+}
   };
 
   const getAverageMetrics = () => {
@@ -1230,6 +1241,7 @@ export default function InterviewPrep() {
     const progress = ((currentQuestionIndex + 1) / questions.length) * 100;
 
     return (
+    <>
       <div className="min-h-screen bg-background">
         <div className="fixed inset-0 overflow-hidden pointer-events-none">
           <div className="absolute top-0 left-1/4 w-96 h-96 bg-primary/5 rounded-full blur-3xl" />
@@ -1325,6 +1337,9 @@ export default function InterviewPrep() {
                         </div>
                       </div>
                     </div>
+                    <div className="mt-4">
+                        <ConfidenceMeter confidence={faceConfidence} />
+                   </div>
                     {/* Glowing voice visualizer waveform canvas */}
                     <div className="mt-4 rounded-xl overflow-hidden border border-border/60 bg-slate-950 p-1 flex items-center justify-center">
                       <canvas
@@ -1369,6 +1384,7 @@ export default function InterviewPrep() {
           </div>
         </div>
       </div>
+      </>
     );
   }
 
@@ -1638,7 +1654,7 @@ export default function InterviewPrep() {
                     <p className="text-cyan-400/70 text-sm">Insights from facial expression tracking</p>
                   </div>
                 </div>
-                <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
+                <div className="grid grid-cols-1 md:grid-cols-[1.5fr_1fr] gap-6">
                   <div className="p-5 rounded-2xl bg-muted/30 border border-border/50">
                     <div className="flex items-center justify-between mb-4">
                       <span className="text-foreground">Expression Confidence Score</span>
@@ -1694,4 +1710,4 @@ export default function InterviewPrep() {
   }
 
   return null;
-}
+};
