@@ -1,5 +1,27 @@
 import { Hash, Lock, Plus, ChevronDown, ChevronRight } from 'lucide-react';
 import { useState } from 'react';
+import { motion } from 'framer-motion';
+import { Skeleton } from '../ui/Skeleton';
+
+const containerVariants = {
+  hidden: { opacity: 0 },
+  visible: {
+    opacity: 1,
+    transition: {
+      staggerChildren: 0.05,
+      delayChildren: 0.05,
+    },
+  },
+};
+
+const itemVariants = {
+  hidden: { opacity: 0, x: -6 },
+  visible: {
+    opacity: 1,
+    x: 0,
+    transition: { type: 'spring', stiffness: 300, damping: 24 },
+  },
+};
 
 export default function ChannelList({ 
   channels, 
@@ -27,13 +49,13 @@ export default function ChannelList({
   }, {});
 
   const categoryLabels = {
-    general: '💬 General',
-    'job-hunting': '🔍 Job Hunting',
-    'interview-prep': '🎯 Interview Prep',
-    'resume-tips': '📄 Resume Tips',
-    networking: '🤝 Networking',
-    announcements: '📢 Announcements',
-    other: '📌 Other'
+    general: 'General',
+    'job-hunting': 'Job Hunting',
+    'interview-prep': 'Interview Prep',
+    'resume-tips': 'Resume Tips',
+    networking: 'Networking',
+    announcements: 'Announcements',
+    other: 'Other'
   };
 
   const toggleCategory = (category) => {
@@ -45,12 +67,19 @@ export default function ChannelList({
 
   if (loading) {
     return (
-      <div className="p-4 space-y-3">
-        {[...Array(5)].map((_, i) => (
-          <div key={i} className="animate-pulse">
-            <div className="h-8 bg-muted rounded-lg"></div>
-          </div>
-        ))}
+      <div className="p-4 space-y-4">
+        <div className="space-y-2">
+          <Skeleton className="h-4 w-24 mb-4" />
+          {[...Array(6)].map((_, i) => (
+            <div key={i} className="flex items-center gap-3">
+              <Skeleton className="h-8 w-8 rounded-lg" />
+              <div className="flex-1 space-y-2">
+                <Skeleton className="h-3 w-full" />
+                <Skeleton className="h-2 w-2/3" />
+              </div>
+            </div>
+          ))}
+        </div>
       </div>
     );
   }
@@ -89,13 +118,19 @@ export default function ChannelList({
 
           {/* Channels in Category */}
           {expandedCategories[category] && (
-            <div className="space-y-0.5 px-2">
+            <motion.div
+              variants={containerVariants}
+              initial="hidden"
+              animate="visible"
+              className="space-y-0.5 px-2"
+            >
               {categoryChannels.map(channel => {
                 const channelId = channel.id || channel._id;
                 const activeId = activeChannel?.id || activeChannel?._id;
                 return (
-                  <button
+                  <motion.button
                     key={channelId}
+                    variants={itemVariants}
                     onClick={() => onSelectChannel(channel)}
                     className={`w-full flex items-center gap-2 px-3 py-2 rounded-lg text-left transition-colors ${
                       activeId === channelId
@@ -104,9 +139,9 @@ export default function ChannelList({
                     }`}
                   >
                     {channel.type === 'private' ? (
-                      <Lock className="w-4 h-4 text-muted-foreground flex-shrink-0" />
+                      <Lock className="w-4 h-4 text-muted-foreground shrink-0" />
                     ) : (
-                      <span className="text-base flex-shrink-0">{channel.icon || '💬'}</span>
+                      <Hash className="w-4 h-4 text-muted-foreground shrink-0" />
                     )}
                     <div className="flex-1 min-w-0">
                       <div className="flex items-center gap-1">
@@ -119,14 +154,14 @@ export default function ChannelList({
                       )}
                     </div>
                     {channel.memberCount > 0 && (
-                      <span className="text-xs text-muted-foreground flex-shrink-0">
+                      <span className="text-xs text-muted-foreground shrink-0">
                         {channel.memberCount}
                       </span>
                     )}
-                  </button>
+                  </motion.button>
                 );
               })}
-            </div>
+            </motion.div>
           )}
         </div>
       ))}

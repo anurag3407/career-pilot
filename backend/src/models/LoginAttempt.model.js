@@ -21,4 +21,8 @@ const loginAttemptSchema = new mongoose.Schema({
   }
 }, { timestamps: true });
 
+// Index for rate-limit checks combining IP + email
+loginAttemptSchema.index({ ip: 1, email: 1 }, { background: true });
+loginAttemptSchema.index({ lockoutUntil: 1 }, { background: true, sparse: true });
+
 export default mongoose.model('LoginAttempt', loginAttemptSchema);
