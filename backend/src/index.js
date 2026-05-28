@@ -25,6 +25,9 @@ import twoFactorRoutes from './routes/twoFactor.js';
 import aiRoutes from './routes/ai.js';
 import emailTrackingRoutes from './routes/emailTracking.js';
 
+import inputRoutes from'./routes/input.route.js';
+import recruiterRoutes from '../src/routes/recruiter.routes.js';
+
 import { globalErrorHandler } from './middleware/globalErrorHandler.js';
 import {
   metricsMiddleware,
@@ -225,6 +228,8 @@ app.use('/api/job-alerts', jobAlertRoutes);
 app.use('/api/community', communityRoutes);
 app.use('/api/fellowship', fellowshipRoutes);
 app.use('/api/interview', interviewRoutes);
+app.use("/api/upload", inputRoutes);
+app.use("/api/recruiter", recruiterRoutes);
 try {
     const paymentRoutes = (await import('./routes/payments.js')).default;
 
