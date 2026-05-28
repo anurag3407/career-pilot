@@ -3,15 +3,24 @@ import { motion } from 'framer-motion';
 import { Download, Mail, Sparkles } from 'lucide-react';
 
 export default function ResumeCTA({ data }) {
-  // Extract user parameters safely with fallback defaults
-  const resumeUrl = data?.resumeUrl || data?.resume || '#';
+  // Extract user parameters safely
+  const resumeUrl = data?.resumeUrl || data?.resume || null; // Fallback to null instead of '#'
   const fullName = data?.fullName || data?.name || 'Professional Developer';
   const email = data?.email || data?.contactEmail || '';
 
   const subtitleText = data?.resumeCtaSubtitle || "Download my complete, professionally tailored resume to explore my technical skills, architectural execution, and background.";
 
-  // Spring animation transition configurations for sleek responsiveness
+  // Spring animation transition configurations
   const springTransition = { type: "spring", stiffness: 300, damping: 20 };
+
+  // Helper to extract file extension (e.g., .pdf, .docx) from URL, or fallback to empty string
+  const getFileExtension = (url) => {
+    if (!url) return '';
+    const match = url.match(/\.([a-zA-Z0-9]+)(?:[\?#]|$)/);
+    return match ? `.${match[1]}` : '';
+  };
+
+  const fileExtension = getFileExtension(resumeUrl);
 
   return (
     <section className="relative w-full py-24 md:py-32 bg-[#030712] overflow-hidden text-slate-100 font-sans border-t border-slate-900">
@@ -32,7 +41,7 @@ export default function ResumeCTA({ data }) {
           {/* Top accent highlighting line */}
           <div className="absolute top-0 left-0 right-0 h-[1px] bg-gradient-to-r from-transparent via-[#00D2FF]/30 to-transparent" />
 
-          {/* Capsule Badge (Matches the "AI-Powered" home page badge) */}
+          {/* Capsule Badge */}
           <motion.div
             initial={{ scale: 0.95, opacity: 0 }}
             animate={{ scale: 1, opacity: 1 }}
@@ -45,7 +54,7 @@ export default function ResumeCTA({ data }) {
             </span>
           </motion.div>
 
-          {/* Headline: Clean conditional rendering (Fixes the CodeRabbit issue beautifully) */}
+          {/* Headline */}
           <motion.h2
             initial={{ opacity: 0, y: 15 }}
             animate={{ opacity: 1, y: 0 }}
@@ -79,20 +88,22 @@ export default function ResumeCTA({ data }) {
             className="mt-10 flex flex-col sm:flex-row gap-4 items-center justify-center w-full sm:w-auto"
           >
 
-            {/* Primary Action Button: Fixed download extension and removed target=_blank */}
+            {/* Primary Action Button: Now handles disabled state and dynamic extensions! */}
             <motion.a
-              href={resumeUrl}
-              download={`${fullName.replace(/\s+/g, '_')}_Resume.pdf`}
-              whileHover={{
-                scale: 1.025,
-                boxShadow: "0 0 25px rgba(0, 210, 255, 0.4)"
-              }}
-              whileTap={{ scale: 0.985 }}
+              href={resumeUrl || undefined}
+              download={resumeUrl ? `${fullName.replace(/\s+/g, '_')}_Resume${fileExtension}` : undefined}
+              aria-disabled={!resumeUrl}
+              whileHover={resumeUrl ? { scale: 1.025, boxShadow: "0 0 25px rgba(0, 210, 255, 0.4)" } : {}}
+              whileTap={resumeUrl ? { scale: 0.985 } : {}}
               transition={springTransition}
-              className="group flex items-center justify-center gap-2.5 w-full sm:w-auto px-8 py-4 rounded-xl text-sm font-semibold text-white bg-gradient-to-r from-[#00D2FF] to-[#0070F3] hover:brightness-110 transition-all duration-200 shadow-lg shadow-cyan-500/10"
+              className={`group flex items-center justify-center gap-2.5 w-full sm:w-auto px-8 py-4 rounded-xl text-sm font-semibold text-white transition-all duration-200 ${
+                resumeUrl
+                  ? "bg-gradient-to-r from-[#00D2FF] to-[#0070F3] hover:brightness-110 shadow-lg shadow-cyan-500/10 cursor-pointer"
+                  : "bg-slate-800 text-slate-500 cursor-not-allowed opacity-60"
+              }`}
             >
-              <Download size={16} className="text-white transition-transform group-hover:translate-y-0.5" />
-              Download Resume
+              <Download size={16} className={resumeUrl ? "text-white transition-transform group-hover:translate-y-0.5" : "text-slate-500"} />
+              {resumeUrl ? "Download Resume" : "Resume Unavailable"}
             </motion.a>
 
             {/* Secondary Action Button */}
