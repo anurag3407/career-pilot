@@ -12,14 +12,13 @@ import GeometricShapesAbout from "../components/portfolio/templates/Geometric_Sh
 import GeometricShapesHero from "../components/portfolio/templates/Geometric_Shapes/Hero";
 import LiquidGlass from "../components/portfolio/templates/Liquid_Glass/index";
 import PlayingCardsPortfolio from "../components/portfolio/templates/Playing_Cards";
-import Navbar from '../components/Navbar'
+import Navbar from "../components/Navbar";
 import { X } from "lucide-react";
 // import Hero from "../components/portfolio/templates/Holographic/Hero";
 // import ChooseAdventurePortfolio from "../components/portfolio/templates/Choose_Adventure/index";
 // import RetroProjects from "../components/portfolio/templates/2D_Retro_8bit/Projects";
 // import FantasyRPGProjects from "../components/portfolio/templates/Fantasy_RPG/Projects";
 import GraffitiHero from "../components/portfolio/templates/Graffiti_StreetArt/Hero";
-
 
 function FilterSelect({ value, onChange, options, className = "" }) {
   const [open, setOpen] = useState(false);
