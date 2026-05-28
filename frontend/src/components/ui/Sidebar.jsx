@@ -166,7 +166,7 @@ export const MobileSidebar = ({
                                 ease: "easeInOut",
                             }}
                             className={cn(
-                                "fixed h-full w-full inset-0 bg-background p-6 z-[100] flex flex-col justify-between",
+                                "fixed h-full w-full inset-0 bg-background/80 backdrop-blur-sm p-6 z-[100] flex flex-col justify-between",
                                 className
                             )}
                         >
@@ -212,9 +212,9 @@ export const SidebarLink = ({
             to={link.href}
             onClick={onClick}
             className={cn(
-                "nav-link w-full group/sidebar transition-all duration-200",
+                "w-full group/sidebar flex items-center gap-3 py-2 rounded-xl text-muted-foreground hover:bg-accent hover:text-accent-foreground transition-all duration-200",
                 !open && animate ? "justify-center px-0" : "justify-start px-3",
-                isActive ? "nav-link-active" : "nav-link-inactive",
+                isActive && "bg-accent text-accent-foreground font-semibold shadow-sm",
                 className
             )}
             {...props}
