@@ -3,6 +3,12 @@ import fs from 'fs/promises';
 import mongoose from 'mongoose';
 import { verifyToken } from '../middleware/auth.js';
 import { asyncHandler, ApiError } from '../middleware/errorHandler.js';
+import cacheHeaders from '../middleware/cacheHeaders.js';
+import { validateToken as validateCloudflareToken } from '../services/deploy/cloudflareDeployer.js';
+import { validateToken as validateGithubToken } from '../services/deploy/githubPagesDeployer.js';
+import { validateToken as validateNetlifyToken } from '../services/deploy/netlifyDeployer.js';
+import { validatePortfolioSlug, validatePortfolioContent } from '../middleware/portfolioValidator.js';
+import Portfolio from '../models/Portfolio.model.js';
 import { enhanceSection } from '../services/ai/portfolioContentEnhancer.js';
 import { extractAIProvider } from '../middleware/aiKey.js';
 import { generateRobotsTxt, generateSitemapXml } from '../utils/sitemapGenerator.js';
@@ -255,6 +261,54 @@ router.get('/', asyncHandler(async (req, res) => {
     url: `/portfolio/public/${slug}`,
   }));
   res.status(200).json({ success: true, portfolios, data: portfolios });
+}));
+
+/**
+ * POST /api/portfolio
+ * Create a new portfolio with validated and sanitized content.
+ */
+router.post('/', verifyToken, validatePortfolioSlug, validatePortfolioContent, asyncHandler(async (req, res) => {
+  const { slug, sections } = req.body;
+  const userId = req.user.uid;
+
+  const existing = await Portfolio.findOne({ userId, slug });
+  if (existing) {
+    throw new ApiError(409, `A portfolio with slug "${slug}" already exists.`);
+  }
+
+  const portfolio = await Portfolio.create({ userId, slug, sections });
+
+  res.status(201).json({
+    success: true,
+    message: 'Portfolio created successfully.',
+    data: portfolio,
+  });
+}));
+
+/**
+ * PUT /api/portfolio/:slug
+ * Update an existing portfolio with validated and sanitized content.
+ */
+router.put('/:slug', verifyToken, validatePortfolioSlug, validatePortfolioContent, asyncHandler(async (req, res) => {
+  const { slug } = req.params;
+  const { sections } = req.body;
+  const userId = req.user.uid;
+
+  const portfolio = await Portfolio.findOneAndUpdate(
+    { userId, slug },
+    { sections },
+    { new: true }
+  );
+
+  if (!portfolio) {
+    throw new ApiError(404, `Portfolio "${slug}" not found.`);
+  }
+
+  res.status(200).json({
+    success: true,
+    message: 'Portfolio updated successfully.',
+    data: portfolio,
+  });
 }));
 
 /**

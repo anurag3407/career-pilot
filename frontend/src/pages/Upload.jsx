@@ -1,4 +1,4 @@
-import { useState, useRef, useEffect } from 'react'
+import { useEffect, useRef, useState } from 'react'
 import { useNavigate } from 'react-router-dom'
 import toast from 'react-hot-toast'
 import { motion } from 'framer-motion'
@@ -21,70 +21,79 @@ export default function Upload() {
   const [linkedinProfile, setLinkedinProfile] = useState(null)
   const [importing, setImporting] = useState(false)
 
+  const uploadControllerRef = useRef(null)
+  const redirectTimeoutRef = useRef(null)
+  const cancelRequestedRef = useRef(false)
+
   const handleFileSelect = async (selectedFile) => {
     setFile(selectedFile)
     setLoading(true)
+    cancelRequestedRef.current = false
 
-    // create a controller so uploads can be cancelled by the user
     const controller = new AbortController()
     uploadControllerRef.current = controller
 
     try {
-      // Upload and extract text
       const response = await uploadApi.uploadPdf(selectedFile, { signal: controller.signal })
-      const extractedText = response.data.extractedText
+      if (cancelRequestedRef.current) return
 
-      // Create resume automatically
+      const extractedText = response.data.extractedText
       const resumeTitle = `Resume - ${new Date().toLocaleDateString()}`
-      const resumeResponse = await resumeApi.create({
-        originalText: extractedText,
-        title: resumeTitle
-      })
+
+      const resumeResponse = await resumeApi.create(
+        {
+          originalText: extractedText,
+          title: resumeTitle
+        },
+        { signal: controller.signal }
+      )
+
+      if (cancelRequestedRef.current) return
 
       setUploadComplete(true)
       toast.success('Resume uploaded successfully!')
 
-      // Redirect to enhance page after a brief delay
-      const t = setTimeout(() => {
-        navigate(`/enhance/${resumeResponse.data.id}`)
+      redirectTimeoutRef.current = setTimeout(() => {
+        if (!cancelRequestedRef.current) {
+          navigate(`/enhance/${resumeResponse.data.id}`)
+        }
       }, 1500)
-      redirectTimeoutRef.current = t
-
     } catch (error) {
-      if (error?.name === 'AbortError') {
+      if (error?.name === 'AbortError' || cancelRequestedRef.current) {
         toast('Upload cancelled')
         setFile(null)
-      } else {
-        const message = error.response?.data?.error || error.message || 'Failed to upload resume'
-        toast.error(message)
-        setFile(null)
+        setUploadComplete(false)
+        return
       }
+
+      const message = error.response?.data?.error || error.message || 'Failed to upload resume'
+      toast.error(message)
+      setFile(null)
+      setUploadComplete(false)
     } finally {
       setLoading(false)
+      uploadControllerRef.current = null
     }
   }
 
-  const uploadControllerRef = useRef(null)
-  const redirectTimeoutRef = useRef(null)
-
   const handleCancelUpload = () => {
-    if (uploadControllerRef.current) {
-      try {
-        uploadControllerRef.current.abort()
-      } catch {}
-    }
+    cancelRequestedRef.current = true
+    uploadControllerRef.current?.abort()
+
     if (redirectTimeoutRef.current) {
       clearTimeout(redirectTimeoutRef.current)
       redirectTimeoutRef.current = null
     }
+
     setLoading(false)
+    setUploadComplete(false)
+    setFile(null)
   }
 
   useEffect(() => {
     return () => {
-      if (uploadControllerRef.current) {
-        try { uploadControllerRef.current.abort() } catch {}
-      }
+      cancelRequestedRef.current = true
+      uploadControllerRef.current?.abort()
       if (redirectTimeoutRef.current) {
         clearTimeout(redirectTimeoutRef.current)
       }
@@ -140,7 +149,6 @@ export default function Upload() {
       </div>
 
       <div className="relative max-w-4xl mx-auto px-4 sm:px-6 lg:px-8 py-8">
-        {/* Header */}
         <motion.div
           initial={{ opacity: 0, y: -20 }}
           animate={{ opacity: 1, y: 0 }}
@@ -156,7 +164,6 @@ export default function Upload() {
           </p>
         </motion.div>
 
-        {/* Features Preview */}
         <motion.div
           initial={{ opacity: 0, y: 20 }}
           animate={{ opacity: 1, y: 0 }}
@@ -192,7 +199,6 @@ export default function Upload() {
           </div>
         </motion.div>
 
-        {/* Alternative Methods */}
         {!uploadComplete && (
           <motion.div
             initial={{ opacity: 0, y: 20 }}
@@ -217,7 +223,6 @@ export default function Upload() {
           </motion.div>
         )}
 
-        {/* Upload Section */}
         {!uploadComplete ? (
           <motion.div
             initial={{ opacity: 0, y: 20 }}
@@ -296,7 +301,6 @@ export default function Upload() {
           </motion.div>
         )}
 
-        {/* LinkedIn Import */}
         {!uploadComplete && (
           <motion.div
             initial={{ opacity: 0, y: 20 }}
@@ -336,7 +340,6 @@ export default function Upload() {
               </Button>
             </div>
 
-            {/* Preview card */}
             {linkedinPreview && (
               <motion.div
                 initial={{ opacity: 0, y: 8 }}
@@ -384,10 +387,7 @@ export default function Upload() {
                 {linkedinPreview.skills?.length > 0 && (
                   <div className="flex flex-wrap gap-1.5 mb-5">
                     {linkedinPreview.skills.slice(0, 8).map((skill, i) => (
-                      <span
-                        key={i}
-                        className="px-2.5 py-1 bg-sky-500/10 border border-sky-500/20 text-sky-400 rounded-full text-xs font-medium"
-                      >
+                      <span key={i} className="px-2.5 py-1 bg-sky-500/10 border border-sky-500/20 text-sky-400 rounded-full text-xs font-medium">
                         {skill}
                       </span>
                     ))}
@@ -413,7 +413,6 @@ export default function Upload() {
           </motion.div>
         )}
 
-        {/* How it works */}
         <motion.div
           initial={{ opacity: 0 }}
           animate={{ opacity: 1 }}
