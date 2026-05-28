@@ -91,7 +91,7 @@ export default function JobSearch() {
 
   // Load saved jobs on mount
   useEffect(() => {
-    loadSavedJobs()
+    loadSavedJobs().catch(err => console.error('Failed to load saved jobs on mount:', err))
   }, [])
 
   const loadSavedJobs = async () => {
@@ -140,7 +140,7 @@ export default function JobSearch() {
   const handleQuickSearch = (query) => {
     setSearchQuery(query)
     setTimeout(() => {
-      handleSearch()
+      handleSearch().catch(err => console.error('Quick search failed:', err))
     }, 100)
   }
 
