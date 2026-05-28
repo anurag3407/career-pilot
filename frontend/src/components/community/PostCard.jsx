@@ -123,7 +123,7 @@ export default function PostCard({
             {/* Avatar */}
             <div className="w-10 h-10 rounded-full bg-gradient-to-br from-primary to-secondary flex items-center justify-center text-primary-foreground text-sm font-medium">
               {post.author.avatar ? (
-                <img
+                <img loading="lazy"
                   src={post.author.avatar}
                   alt={post.author.name}
                   className="w-full h-full rounded-full object-cover"
@@ -326,7 +326,7 @@ export default function PostCard({
                     key={index}
                     className="flex-shrink-0"
                   >
-                    <img
+                    <img loading="lazy"
                       src={att.url}
                       alt={att.name}
                       className="max-h-64 rounded-xl border border-border object-cover"

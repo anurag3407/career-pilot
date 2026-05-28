@@ -75,7 +75,7 @@ export default function PostCard({ post, currentUser, onLike, onCommentAdded, on
             {/* Author Avatar */}
             <div className="w-10 h-10 rounded-full bg-gradient-to-br from-primary to-secondary flex items-center justify-center text-primary-foreground font-semibold border-2 border-background shadow-sm">
               {post.author.avatar ? (
-                <img
+                <img loading="lazy"
                   src={post.author.avatar}
                   alt={post.author.name}
                   className="w-full h-full rounded-full object-cover"

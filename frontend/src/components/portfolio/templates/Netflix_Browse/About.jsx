@@ -24,7 +24,7 @@ export default function About({ personal, socials }) {
       >
         {/* Avatar panel */}
         <div className="relative md:w-64 flex-shrink-0">
-          <img
+          <img loading="lazy"
             src={personal.avatar}
             alt={personal.name}
             className="w-full h-64 md:h-full object-cover"

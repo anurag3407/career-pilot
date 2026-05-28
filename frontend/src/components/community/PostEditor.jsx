@@ -364,7 +364,7 @@ const removePollOption = (index) => {
                 {/* Image preview */}
                 {imageFile && imagePreview && (
                   <div className="relative group inline-block">
-                    <img
+                    <img loading="lazy"
                       src={imagePreview}
                       alt={imageFile.name}
                       className="max-h-48 rounded-xl border border-border object-cover"

@@ -37,7 +37,7 @@ const isSafeRedirectUrl = (value) => {
 };
 
 const buildTrackingPixelTag = (token, baseUrl) =>
-    `<img src="${baseUrl}/api/email-tracking/open/${token}" width="1" height="1" alt="" style="display:none;" />`;
+    `<img loading="lazy" src="${baseUrl}/api/email-tracking/open/${token}" width="1" height="1" alt="" style="display:none;" />`;
 
 const wrapTrackedLink = (originalUrl, token, baseUrl) => {
     if (!isSafeRedirectUrl(originalUrl)) return originalUrl;
@@ -109,9 +109,9 @@ describe('buildTrackingPixelTag', () => {
     const BASE = 'https://api.careerpilot.io';
     const TOKEN = 'test-uuid-1234';
 
-    test('returns an <img> tag', () => {
+    test('returns an <img loading="lazy"> tag', () => {
         const tag = buildTrackingPixelTag(TOKEN, BASE);
-        assert.ok(tag.startsWith('<img'));
+        assert.ok(tag.startsWith('<img loading="lazy"'));
         assert.ok(tag.includes('</') || tag.includes('/>') || tag.endsWith('>'));
     });
 

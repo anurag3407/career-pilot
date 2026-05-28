@@ -129,7 +129,7 @@ function PlatformBadge({ platform, customIcon, size = 28 }) {
     // User-uploaded custom icon takes priority
     if (customIcon) {
         return (
-            <img
+            <img loading="lazy"
                 src={customIcon}
                 alt={platform}
                 style={{ width: size, height: size }}

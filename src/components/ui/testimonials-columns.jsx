@@ -26,7 +26,7 @@ export const TestimonialsColumn = (props) => {
                                      <div className="flex items-center gap-4 mt-8">
                                          <div className="relative">
                                              <div className="absolute inset-0 bg-primary/20 rounded-full blur-md opacity-0 group-hover/card:opacity-100 transition-opacity" />
-                                             <img
+                                             <img loading="lazy"
                                                  width={48}
                                                  height={48}
                                                  src={image}
