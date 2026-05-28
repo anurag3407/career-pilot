@@ -12,6 +12,7 @@ import path from 'path';
 import { verifyToken } from '../middleware/auth.js';
 import { aiRateLimiter } from '../middleware/rateLimiter.js';
 import rateLimit from 'express-rate-limit';
+import RepoAnalysisHistory from '../models/RepoAnalysisHistory.model.js';
 
 const ingestLimiter = rateLimit({
   windowMs: 60 * 60 * 1000, // 1 hour
@@ -39,6 +40,12 @@ router.post('/ingest', verifyToken, ingestLimiter, async (req, res) => {
     const skeleton = await buildCodebaseSkeleton(files, tempDir);
     
     sessions.set(sessionId, { repoPath: tempDir, skeleton });
+
+    await RepoAnalysisHistory.findOneAndUpdate(
+      { userId: req.user.uid, repoUrl },
+      { lastAnalyzed: new Date() },
+      { upsert: true, new: true }
+    );
     
     setTimeout(async () => {
       try {
@@ -53,6 +60,18 @@ router.post('/ingest', verifyToken, ingestLimiter, async (req, res) => {
   } catch (error) {
     console.error('Ingestion Error:', error);
     res.status(500).json({ error: 'Failed to ingest repository' });
+  }
+});
+
+router.get('/history', verifyToken, async (req, res) => {
+  try {
+    const history = await RepoAnalysisHistory.find({ userId: req.user.uid })
+      .sort({ lastAnalyzed: -1 })
+      .limit(50);
+    res.json(history);
+  } catch (error) {
+    console.error('History Fetch Error:', error);
+    res.status(500).json({ error: 'Failed to fetch history' });
   }
 });
 

@@ -1369,6 +1369,15 @@ export const analyzerApi = {
     return handleResponse(response)
   },
 
+  async getHistory() {
+    const headers = await getAuthHeaders()
+    const response = await fetch(`${API_BASE}/analyzer/history`, {
+      method: 'GET',
+      headers
+    })
+    return handleResponse(response)
+  },
+
   async getFileContent(sessionId, filePath) {
     const headers = await getAuthHeaders()
     const response = await fetch(`${API_BASE}/analyzer/file-content?sessionId=${encodeURIComponent(sessionId)}&filePath=${encodeURIComponent(filePath)}`, {

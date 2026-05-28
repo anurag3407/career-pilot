@@ -64,7 +64,9 @@ import PortfolioHub from './pages/hubs/PortfolioHub';
 import CareerGrowthHub from './pages/hubs/CareerGrowthHub';
 import CommunityHub from './pages/hubs/CommunityHub';
 const GitHubDashboard = lazy(() => import('./pages/GitHubDashboard'));
-const RepoAnalyzer = lazy(() => import('./pages/RepoAnalyzer'));
+const RepoAnalyzerLanding = lazy(() => import('./pages/RepoAnalyzer/Landing'));
+const RepoAnalyzerDashboard = lazy(() => import('./pages/RepoAnalyzer/Dashboard'));
+const RepoAnalyzerWorkspace = lazy(() => import('./pages/RepoAnalyzer/Workspace'));
 import ScrollToTop from "./components/ScrollToTop";
 import RainforestCanopy from './components/portfolio/templates/Rainforest_Canopy/index.jsx';
 import TestSocialLinks from './pages/TestSocialLinks';
@@ -257,7 +259,27 @@ function AppRoutes() {
   element={
     <ProtectedRoute>
       <Suspense fallback={<div className="flex justify-center items-center h-screen">Loading Analyzer...</div>}>
-        <RepoAnalyzer />
+        <RepoAnalyzerLanding />
+      </Suspense>
+    </ProtectedRoute>
+  } 
+/>
+        <Route 
+  path="/repo-analyzer/dashboard" 
+  element={
+    <ProtectedRoute>
+      <Suspense fallback={<div className="flex justify-center items-center h-screen">Loading Analyzer Dashboard...</div>}>
+        <RepoAnalyzerDashboard />
+      </Suspense>
+    </ProtectedRoute>
+  } 
+/>
+        <Route 
+  path="/repo-analyzer/workspace" 
+  element={
+    <ProtectedRoute>
+      <Suspense fallback={<div className="flex justify-center items-center h-screen">Loading Analyzer Workspace...</div>}>
+        <RepoAnalyzerWorkspace />
       </Suspense>
     </ProtectedRoute>
   } 

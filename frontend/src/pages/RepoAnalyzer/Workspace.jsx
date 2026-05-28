@@ -1,15 +1,15 @@
 import { useState } from 'react';
 import { motion, AnimatePresence } from 'framer-motion';
 import { Github, Loader2, GitMerge } from 'lucide-react';
-import GraphCanvas from '../components/analyzer/GraphCanvas';
-import FileDrawer from '../components/analyzer/FileDrawer';
-import ChatPanel from '../components/analyzer/ChatPanel';
-import { useAnalyzerStore } from '../stores/useAnalyzerStore';
-import { analyzerApi } from '../services/api';
-import toast from 'react-hot-toast';
+import GraphCanvas from '../../components/analyzer/GraphCanvas';
+import FileDrawer from '../../components/analyzer/FileDrawer';
+import ChatPanel from '../../components/analyzer/ChatPanel';
+import { useAnalyzerStore } from '../../stores/useAnalyzerStore';
+import { analyzerApi } from '../../services/api';
+import { useNavigate } from 'react-router-dom';
 
-export default function RepoAnalyzer() {
-  const [urlInput, setUrlInput] = useState('');
+export default function RepoAnalyzerWorkspace() {
+  const navigate = useNavigate();
   const { 
     repoUrl, 
     setRepoUrl, 
@@ -21,32 +21,6 @@ export default function RepoAnalyzer() {
     setIsLoading,
     selectedFile
   } = useAnalyzerStore();
-
-  const handleIngest = async (e) => {
-    e.preventDefault();
-    if (!urlInput.trim()) return;
-
-    if (!urlInput.includes('github.com')) {
-      toast.error('Please enter a valid GitHub repository URL');
-      return;
-    }
-
-    try {
-      setIsLoading(true);
-      const res = await analyzerApi.ingest(urlInput.trim());
-      
-      setSessionId(res.sessionId);
-      setGraph(res.nodes, res.edges);
-      setRepoUrl(urlInput.trim());
-      
-      toast.success('Repository ingested successfully!');
-    } catch (error) {
-      console.error(error);
-      toast.error('Failed to ingest repository. Make sure it is public.');
-    } finally {
-      setIsLoading(false);
-    }
-  };
 
   return (
     <div className="h-full min-h-[calc(100vh-4rem)] flex flex-col bg-[#050816] overflow-hidden text-slate-200">
@@ -60,26 +34,17 @@ export default function RepoAnalyzer() {
           <h1 className="text-lg font-bold">Codebase Analyzer</h1>
         </div>
 
-        <form onSubmit={handleIngest} className="flex-1 max-w-2xl mx-8 relative">
-          <Github className="absolute left-3 top-1/2 -translate-y-1/2 w-5 h-5 text-slate-500" />
-          <input
-            type="text"
-            value={urlInput}
-            onChange={(e) => setUrlInput(e.target.value)}
-            placeholder="Paste GitHub Repository URL (e.g., https://github.com/expressjs/express)"
-            className="w-full bg-[#0f172a] border border-slate-700 rounded-lg py-2 pl-10 pr-24 text-sm focus:outline-none focus:border-blue-500"
-          />
-          <button
-            type="submit"
-            disabled={isLoading || !urlInput.trim()}
-            className="absolute right-1 top-1/2 -translate-y-1/2 px-4 py-1.5 bg-blue-600 hover:bg-blue-500 text-white text-sm rounded-md disabled:opacity-50 transition-colors flex items-center gap-2 cursor-pointer"
-          >
-            {isLoading && <Loader2 className="w-3 h-3 animate-spin" />}
-            Analyze
-          </button>
-        </form>
+        <div className="flex-1 flex justify-center mx-8 relative">
+           <span className="text-slate-400 font-mono text-sm">{repoUrl || 'No Repository Loaded'}</span>
+        </div>
 
         <div className="flex items-center gap-3">
+          <button
+            onClick={() => navigate('/repo-analyzer/dashboard')}
+            className="px-3 py-1.5 text-sm font-medium rounded-md bg-slate-800 hover:bg-slate-700 text-slate-300 transition-all cursor-pointer mr-2"
+          >
+            Back to Dashboard
+          </button>
           <span className="text-sm text-slate-400 font-medium">Mode:</span>
           <div className="flex items-center bg-[#0f172a] rounded-lg p-1 border border-slate-700">
             <button
