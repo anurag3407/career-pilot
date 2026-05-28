@@ -1,5 +1,6 @@
 import puppeteer from 'puppeteer';
 import { BaseScraper } from './BaseScraper.js';
+import { CaptchaCircuitOpenError, CaptchaDetectedError } from './captchaHandler.js';
 
 /**
  * Concrete job scraper for Naukri.com targeting the Indian job market.
@@ -30,6 +31,50 @@ export class NaukriScraper extends BaseScraper {
      * @param {boolean} [searchParams.remoteOnly=false] - Filter for remote jobs only
      */
     async fetchRawData(searchParams) {
+        const maxCaptchaRetries = this.options.captchaMaxRetries ?? this.options.maxRetries ?? 3;
+        const proxyCandidates = this.captchaHandler.getProxyCandidates(this.options.proxies);
+        let lastCaptchaError = null;
+
+        for (let attempt = 1; attempt <= maxCaptchaRetries; attempt++) {
+            this.captchaHandler.assertCanAttempt(this.name);
+
+            const proxyUrl = proxyCandidates.length > 0
+                ? this.captchaHandler.getProxyForAttempt(proxyCandidates, attempt - 1)
+                : null;
+
+            try {
+                return await this._fetchRawDataWithBrowser(searchParams, { attempt, maxCaptchaRetries, proxyUrl });
+            } catch (error) {
+                if (error instanceof CaptchaCircuitOpenError) {
+                    throw error;
+                }
+
+                const detection = this.captchaHandler.detectFromError(error, { source: this.name });
+                if (!detection.detected) throw error;
+
+                lastCaptchaError = error instanceof CaptchaDetectedError
+                    ? error
+                    : new CaptchaDetectedError('CAPTCHA challenge detected during Naukri browser scrape.', detection);
+
+                if (!(error instanceof CaptchaDetectedError)) {
+                    this.captchaHandler.recordCaptcha(this.name, detection);
+                }
+
+                if (attempt < maxCaptchaRetries && proxyCandidates.length > 0) {
+                    const backoff = this.options.delayBetweenRequests * Math.pow(2, attempt - 1);
+                    this.log(`CAPTCHA detected (${detection.type}). Retrying Naukri scrape with rotated proxy in ${backoff}ms...`, 'warn');
+                    await this.sleep(backoff);
+                    continue;
+                }
+
+                throw lastCaptchaError;
+            }
+        }
+
+        throw lastCaptchaError || new Error('Naukri scrape failed after CAPTCHA retry attempts.');
+    }
+
+    async _fetchRawDataWithBrowser(searchParams, retryContext = {}) {
         const { query, location = '', remoteOnly = false } = searchParams;
         
         if (!query || !query.trim()) {
@@ -46,6 +91,11 @@ export class NaukriScraper extends BaseScraper {
             '--disable-blink-features=AutomationControlled'
         ];
 
+        const puppeteerProxy = this.captchaHandler.toPuppeteerProxy(retryContext.proxyUrl);
+        if (puppeteerProxy?.server) {
+            launchArgs.push(`--proxy-server=${puppeteerProxy.server}`);
+        }
+
         // Launch browser with optional overrides
         const browser = await puppeteer.launch({
             headless: this.options.headless ?? 'new',
@@ -56,6 +106,13 @@ export class NaukriScraper extends BaseScraper {
         const page = await browser.newPage();
         
         try {
+            if (puppeteerProxy?.username || puppeteerProxy?.password) {
+                await page.authenticate({
+                    username: puppeteerProxy.username,
+                    password: puppeteerProxy.password
+                });
+            }
+
             // Apply stealth configurations
             await page.setUserAgent(this.generateUserAgent());
             await page.setViewport({ width: 1366, height: 768 });
@@ -77,6 +134,10 @@ export class NaukriScraper extends BaseScraper {
             if (this.options.username && this.options.password) {
                 this.log('Form credentials found. Navigating to login page to bypass login wall...');
                 await page.goto('https://www.naukri.com/nlogin/login', { waitUntil: 'networkidle2', timeout: 30000 });
+                await this.captchaHandler.handlePageCaptcha(page, {
+                    source: this.name,
+                    url: page.url()
+                });
                 
                 try {
                     await page.waitForSelector('#usernameField', { timeout: 10000 });
@@ -110,12 +171,20 @@ export class NaukriScraper extends BaseScraper {
 
             this.log(`Navigating to Naukri search listings: ${searchUrl}`);
             await page.goto(searchUrl, { waitUntil: 'networkidle2', timeout: 40000 });
+            await this.captchaHandler.handlePageCaptcha(page, {
+                source: this.name,
+                url: searchUrl
+            });
 
             // 4. Verify list loads or detect bot verification screens
             try {
                 await page.waitForSelector('.cust-job-tuple, .jobTuple, article.jobTuple, div.srp-job-tuple', { timeout: 15000 });
             } catch (waitErr) {
                 this.log('Target listing selectors not found. Checking if page hit a challenge/login prompt...', 'warn');
+                await this.captchaHandler.handlePageCaptcha(page, {
+                    source: this.name,
+                    url: page.url()
+                });
                 await page.screenshot({ path: 'naukri_error.png', fullPage: true });
                 this.log('Saved error screenshot to naukri_error.png');
                 const title = await page.title();
