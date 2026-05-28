@@ -208,14 +208,20 @@ export class CaptchaHandler {
     detectFromResponse(response, context = {}) {
         const status = response?.status ?? response?.statusCode;
         const headers = response?.headers || {};
-        const contentType = headers['content-type'] || headers['Content-Type'] || '';
-        const body = typeof response?.data === 'string' ? response.data : JSON.stringify(response?.data || '');
+        const contentType = String(headers['content-type'] || headers['Content-Type'] || '').toLowerCase();
+        const url = context.url || response?.config?.url || response?.url || '';
+
+        if (!this.shouldScanResponseBody(contentType, response?.data)) {
+            return this.emptyDetection({ ...context, status, contentType, url });
+        }
+
+        const body = typeof response?.data === 'string' ? response.data : '';
 
         return this.detectFromHtml(body, {
             ...context,
             status,
             contentType,
-            url: context.url || response?.config?.url || response?.url
+            url
         });
     }
 
@@ -256,15 +262,7 @@ export class CaptchaHandler {
         }
 
         if (matchedTypes.size === 0) {
-            return {
-                detected: false,
-                type: null,
-                confidence: 0,
-                indicators: [],
-                siteKey: null,
-                url: context.url || '',
-                source: context.source || ''
-            };
+            return this.emptyDetection(context);
         }
 
         const [type, confidence] = Array.from(matchedTypes.entries()).sort((a, b) => b[1] - a[1])[0];
@@ -277,6 +275,36 @@ export class CaptchaHandler {
             url: context.url || '',
             source: context.source || '',
             status: Number.isFinite(status) ? status : undefined
+        };
+    }
+
+    shouldScanResponseBody(contentType = '', data = '') {
+        const normalizedContentType = String(contentType).toLowerCase();
+
+        if (normalizedContentType.includes('json')) return false;
+        if (typeof data !== 'string' || !data.trim()) return false;
+
+        return (
+            !normalizedContentType ||
+            normalizedContentType.includes('text/html') ||
+            normalizedContentType.includes('application/xhtml+xml') ||
+            normalizedContentType.includes('text/plain') ||
+            normalizedContentType.startsWith('text/')
+        );
+    }
+
+    emptyDetection(context = {}) {
+        const status = Number(context.status);
+        return {
+            detected: false,
+            type: null,
+            confidence: 0,
+            indicators: [],
+            siteKey: null,
+            url: context.url || '',
+            source: context.source || '',
+            ...(Number.isFinite(status) ? { status } : {}),
+            ...(context.contentType ? { contentType: context.contentType } : {})
         };
     }
 

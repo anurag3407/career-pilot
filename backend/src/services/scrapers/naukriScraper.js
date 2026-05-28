@@ -182,20 +182,24 @@ export class NaukriScraper extends BaseScraper {
                 await page.waitForSelector('.cust-job-tuple, .jobTuple, article.jobTuple, div.srp-job-tuple', { timeout: 15000 });
             } catch (waitErr) {
                 this.log('Target listing selectors not found. Checking if page hit a challenge/login prompt...', 'warn');
-                await this.captchaHandler.handlePageCaptcha(page, {
+                const captchaResult = await this.captchaHandler.handlePageCaptcha(page, {
                     source: this.name,
                     url: page.url()
                 });
-                await page.screenshot({ path: 'naukri_error.png', fullPage: true });
-                this.log('Saved error screenshot to naukri_error.png');
-                const title = await page.title();
-                if (title.includes('Just a moment') || title.includes('Cloudflare') || title.includes('Attention Required')) {
-                    throw new Error('Naukri block triggered: Cloudflare bot challenge encountered.');
+                if (captchaResult.solved) {
+                    await page.waitForSelector('.cust-job-tuple, .jobTuple, article.jobTuple, div.srp-job-tuple', { timeout: 15000 });
+                } else {
+                    await page.screenshot({ path: 'naukri_error.png', fullPage: true });
+                    this.log('Saved error screenshot to naukri_error.png');
+                    const title = await page.title();
+                    if (title.includes('Just a moment') || title.includes('Cloudflare') || title.includes('Attention Required')) {
+                        throw new Error('Naukri block triggered: Cloudflare bot challenge encountered.');
+                    }
+                    if (await page.$('.login-container, #usernameField')) {
+                        throw new Error('Naukri block triggered: Hit search results login wall page.');
+                    }
+                    throw new Error(`Job listings failed to render within timeout: ${waitErr.message}. Page title: "${title}"`);
                 }
-                if (await page.$('.login-container, #usernameField')) {
-                    throw new Error('Naukri block triggered: Hit search results login wall page.');
-                }
-                throw new Error(`Job listings failed to render within timeout: ${waitErr.message}. Page title: "${title}"`);
             }
 
             // 5. Auto-Scroll down slowly to trigger lazy-loaded listings and DOM components

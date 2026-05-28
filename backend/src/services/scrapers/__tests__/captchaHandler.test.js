@@ -42,6 +42,30 @@ describe('CaptchaHandler detection', () => {
         assert.equal(detection.detected, false);
         assert.equal(detection.confidence, 0);
     });
+
+    test('does not scan JSON API payloads for generic CAPTCHA words', () => {
+        const handler = new CaptchaHandler();
+        const detection = handler.detectFromResponse({
+            status: 200,
+            headers: { 'content-type': 'application/json' },
+            data: { message: 'captcha settings updated successfully' }
+        });
+
+        assert.equal(detection.detected, false);
+        assert.equal(detection.confidence, 0);
+    });
+
+    test('still scans text responses where CAPTCHA pages are normally served', () => {
+        const handler = new CaptchaHandler();
+        const detection = handler.detectFromResponse({
+            status: 403,
+            headers: { 'content-type': 'text/plain' },
+            data: 'Attention Required. Please complete the captcha.'
+        });
+
+        assert.equal(detection.detected, true);
+        assert.equal(detection.type, 'cloudflare');
+    });
 });
 
 describe('CaptchaHandler proxy helpers', () => {
