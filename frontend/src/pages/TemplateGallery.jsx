@@ -6,15 +6,33 @@ import { motion, AnimatePresence } from "framer-motion";
 import { Moon, Sun, ChevronDown, Check, Eye, Star } from "lucide-react";
 
 import HolographicAbout from "../components/portfolio/templates/Holographic/About";
+<<<<<<< finance-resumecta
 import Hero from "../components/portfolio/templates/Holographic/Hero";
 
+=======
+>>>>>>> main
 import CulinaryAbout from "../components/portfolio/templates/Culinary_Restaurant/About";
 
 import TechStartupHero from "../components/portfolio/templates/Tech_Startup/Hero";
+<<<<<<< finance-resumecta
 
 import GeometricShapesAbout from "../components/portfolio/templates/Geometric_Shapes/About";
 
 import ChooseAdventurePortfolio from "../components/portfolio/templates/Choose_Adventure/index";
+=======
+import ArchitectureBlueprintHero from "../components/portfolio/templates/Architecture_Blueprint/Hero";
+import GeometricShapesAbout from "../components/portfolio/templates/Geometric_Shapes/About";
+import GeometricShapesHero from "../components/portfolio/templates/Geometric_Shapes/Hero";
+import LiquidGlass from "../components/portfolio/templates/Liquid_Glass/index";
+import PlayingCardsPortfolio from "../components/portfolio/templates/Playing_Cards";
+import Navbar from '../components/Navbar'
+import { X } from "lucide-react";
+// import Hero from "../components/portfolio/templates/Holographic/Hero";
+// import ChooseAdventurePortfolio from "../components/portfolio/templates/Choose_Adventure/index";
+// import RetroProjects from "../components/portfolio/templates/2D_Retro_8bit/Projects";
+// import FantasyRPGProjects from "../components/portfolio/templates/Fantasy_RPG/Projects";
+import GraffitiHero from "../components/portfolio/templates/Graffiti_StreetArt/Hero";
+>>>>>>> main
 
 import FinanceCorporate from "../components/portfolio/templates/Finance_Corporate";
 
@@ -198,8 +216,8 @@ function TemplateCard({ template, onUse }) {
 
         <AnimatePresence>
           {hovered && (
-            <motion.button
-              key="cta"
+            <motion.div
+              key="cta-group"
               initial={{ opacity: 0, y: 14 }}
               animate={{
                 opacity: 1,
@@ -209,13 +227,28 @@ function TemplateCard({ template, onUse }) {
                 opacity: 0,
                 y: 10,
               }}
+<<<<<<< finance-resumecta
               whileHover={{ scale: 1.03 }}
               whileTap={{ scale: 0.97 }}
               onClick={() => onUse(template.title)}
               className="w-full bg-primary text-primary-foreground py-2.5 rounded-xl font-semibold text-sm cursor-pointer"
+=======
+              className="flex gap-2 w-full mt-4"
+>>>>>>> main
             >
-              Use This Theme
-            </motion.button>
+              <button
+                onClick={(e) => { e.stopPropagation(); onUse(template.title); }}
+                className="flex-1 bg-primary text-primary-foreground py-2.5 rounded-xl font-semibold text-sm cursor-pointer hover:scale-[1.02] active:scale-[0.98] transition-transform"
+              >
+                Use Theme
+              </button>
+              <button
+                onClick={(e) => { e.stopPropagation(); onUse(template.id, true); }}
+                className="flex-1 bg-muted text-foreground border border-border py-2.5 rounded-xl font-semibold text-sm cursor-pointer hover:bg-accent hover:scale-[1.02] active:scale-[0.98] transition-all flex items-center justify-center gap-2"
+              >
+                <Eye className="w-4 h-4" /> Preview
+              </button>
+            </motion.div>
           )}
         </AnimatePresence>
       </div>
@@ -223,8 +256,56 @@ function TemplateCard({ template, onUse }) {
   );
 }
 
+import { templates } from '../data/templates';
+import React, { Suspense, useMemo } from 'react';
+
+const TemplatePreviewModal = ({ templateId, isOpen, onClose }) => {
+  const Component = useMemo(() => {
+    if (!templateId) return null;
+    return React.lazy(() => 
+      import(`../components/portfolio/templates/${templateId}/Hero.jsx`).catch(() => 
+        import(`../components/portfolio/templates/${templateId}/index.jsx`)
+      )
+    );
+  }, [templateId]);
+
+  if (!isOpen || !templateId) return null;
+
+  return (
+    <div className="fixed inset-0 z-[100] bg-background/95 backdrop-blur-xl flex flex-col overflow-hidden">
+      <div className="flex items-center justify-between px-6 py-4 bg-card/80 border-b border-border shadow-sm">
+        <div className="flex items-center gap-4">
+          <h2 className="text-xl font-bold bg-clip-text text-transparent bg-gradient-to-r from-cyan-400 to-blue-500">
+            {templateId.replace(/_/g, ' ')} Preview
+          </h2>
+          <span className="px-3 py-1 text-xs font-medium rounded-full bg-cyan-500/10 text-cyan-400 border border-cyan-500/20">
+            Live Demo
+          </span>
+        </div>
+        <button
+          onClick={onClose}
+          className="p-2 text-muted-foreground hover:text-foreground bg-muted hover:bg-accent rounded-xl transition-colors"
+        >
+          <X className="w-5 h-5" />
+        </button>
+      </div>
+      <div className="flex-1 overflow-y-auto relative bg-background">
+        <Suspense fallback={
+          <div className="absolute inset-0 flex flex-col items-center justify-center text-muted-foreground gap-4">
+            <div className="w-8 h-8 border-4 border-cyan-500 border-t-transparent rounded-full animate-spin" />
+            <p className="animate-pulse font-medium tracking-wide text-sm uppercase">Loading interactive preview...</p>
+          </div>
+        }>
+          {Component && <Component />}
+        </Suspense>
+      </div>
+    </div>
+  );
+};
+
 export default function TemplateGallery() {
   const { theme, toggleTheme } = useTheme();
+<<<<<<< finance-resumecta
 
   const templates = [
     {
@@ -266,6 +347,9 @@ export default function TemplateGallery() {
       createdAt: "2026-05-15",
     },
   ];
+=======
+  const [previewTemplateId, setPreviewTemplateId] = useState(null);
+>>>>>>> main
 
   const [category, setCategory] = useState("All");
   const [colorScheme, setColorScheme] = useState("All");
@@ -298,6 +382,7 @@ export default function TemplateGallery() {
     { value: "Grid", label: "Grid" },
     { value: "Minimal", label: "Minimal" },
     { value: "Cards", label: "Cards" },
+    { value: "Interactive", label: "Interactive" },
   ];
 
   const SORT_OPTIONS = [
@@ -411,6 +496,7 @@ export default function TemplateGallery() {
         />
       </div>
 
+<<<<<<< finance-resumecta
       <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6">
         {sortedTemplates.map((template) => (
           <TemplateCard
@@ -423,6 +509,30 @@ export default function TemplateGallery() {
           />
         ))}
       </div>
+=======
+      {sortedTemplates.length === 0 ? (
+        <div className="text-center text-muted-foreground mt-12 text-xl">
+          No templates match the selected criteria.
+        </div>
+      ) : (
+        <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 xl:grid-cols-4 gap-6">
+          {sortedTemplates.map((template) => (
+            <TemplateCard
+              key={template.id}
+              template={template}
+              onUse={(val, isPreview) => {
+                if (isPreview) {
+                  setPreviewTemplateId(val);
+                } else {
+                  setSelectedPortfolioTitle(val);
+                  setIsDeployModalOpen(true);
+                }
+              }}
+            />
+          ))}
+        </div>
+      )}
+>>>>>>> main
 
       <DeployModal
         isOpen={isDeployModalOpen}
@@ -430,6 +540,7 @@ export default function TemplateGallery() {
         portfolioTitle={selectedPortfolioTitle}
       />
 
+<<<<<<< finance-resumecta
       {/* Holographic */}
       <div className="mt-12">
         <h2 className="text-lg font-semibold mb-4">
@@ -446,6 +557,35 @@ export default function TemplateGallery() {
       </div>
 
       {/* Geometric */}
+=======
+      {/* Holographic Theme */}
+      <div className="mt-12">
+        <div className="mb-4 flex items-center gap-3 px-1">
+          <span className="rounded-full bg-cyan-500/20 px-3 py-1 text-xs font-bold uppercase tracking-widest text-cyan-400 border border-cyan-500/30">
+            Preview
+          </span>
+          <h2 className="text-lg font-semibold text-foreground/70">Holographic Theme — About Section</h2>
+        </div>
+        <div className="overflow-hidden rounded-2xl border border-border">
+          <HolographicAbout />
+        </div>
+      </div>
+
+      {/* Geometric Shapes Hero */}
+      <div className="mt-12">
+        <div className="mb-4 flex items-center gap-3 px-1">
+          <span className="rounded-full bg-indigo-500/20 px-3 py-1 text-xs font-bold uppercase tracking-widest text-indigo-400 border border-indigo-500/30">
+            Preview
+          </span>
+          <h2 className="text-lg font-semibold text-foreground/70">Geometric Shapes Theme — Hero Section</h2>
+        </div>
+        <div className="overflow-hidden rounded-2xl border border-border">
+          <GeometricShapesHero />
+        </div>
+      </div>
+
+      {/* Geometric Shapes About */}
+>>>>>>> main
       <div className="mt-12">
         <h2 className="text-lg font-semibold mb-4">
           Geometric Shapes Theme
@@ -456,7 +596,11 @@ export default function TemplateGallery() {
         </div>
       </div>
 
+<<<<<<< finance-resumecta
       {/* Culinary */}
+=======
+      {/* Culinary Restaurant */}
+>>>>>>> main
       <div className="mt-12">
         <h2 className="text-lg font-semibold mb-4">
           Culinary Restaurant Theme
@@ -478,17 +622,29 @@ export default function TemplateGallery() {
         </div>
       </div>
 
+<<<<<<< finance-resumecta
       {/* Choose Adventure */}
       <div className="mt-12">
         <h2 className="text-lg font-semibold mb-4">
           Choose Adventure Theme
         </h2>
 
+=======
+      {/* Liquid Glass */}
+      <div className="mt-12">
+        <div className="mb-4 flex items-center gap-3 px-1">
+          <span className="rounded-full bg-cyan-500/20 px-3 py-1 text-xs font-bold uppercase tracking-widest text-cyan-400 border border-cyan-500/30">
+            Preview
+          </span>
+          <h2 className="text-lg font-semibold text-foreground/70">Liquid Glass Theme</h2>
+        </div>
+>>>>>>> main
         <div className="overflow-hidden rounded-2xl border border-border">
-          <ChooseAdventurePortfolio />
+          <LiquidGlass />
         </div>
       </div>
 
+<<<<<<< finance-resumecta
       {/* FINANCE CORPORATE */}
       <div className="mt-12">
         <h2 className="text-lg font-semibold mb-4">
@@ -499,6 +655,27 @@ export default function TemplateGallery() {
           <FinanceCorporate />
         </div>
       </div>
+=======
+      {/* Playing Cards Theme */}
+      <div className="mt-12">
+        <div className="mb-4 flex items-center gap-3 px-1">
+          <span className="rounded-full bg-emerald-500/20 px-3 py-1 text-xs font-bold uppercase tracking-widest text-emerald-400 border border-emerald-500/30">
+            🃟 NEW — Playing Cards
+          </span>
+          <h2 className="text-lg font-semibold text-foreground/70">Playing Cards Theme — Click to flip, shuffle deck</h2>
+        </div>
+        <div className="overflow-hidden rounded-2xl border border-emerald-500/20">
+          <PlayingCardsPortfolio />
+        </div>
+      </div>
+
+      {/* Commented out — templates not yet available locally */}
+      {/* <ChooseAdventurePortfolio /> */}
+      {/* <RetroProjects /> */}
+      {/* <FantasyRPGProjects /> */}
+      {/* <GraffitiHero /> */}
+
+>>>>>>> main
     </div>
   );
 }

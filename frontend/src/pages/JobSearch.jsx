@@ -381,10 +381,11 @@ className="w-full pl-12 pr-10 py-4 bg-muted/50 border border-border rounded-xl t
                       </button>
                     </div>
                   </div>
-                  </motion.div>
-                )}
-              </AnimatePresence>
-            </form>
+                </motion.div>
+              )}
+            </AnimatePresence>
+          </form>
+
 
             {/* Popular Searches */}
             {!hasSearched && (

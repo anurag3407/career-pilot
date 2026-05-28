@@ -1,6 +1,6 @@
 import React from 'react';
 import { motion } from 'framer-motion';
-import { Github, Linkedin, Twitter, ExternalLink, Code } from 'lucide-react';
+import { GithubIcon, Linkedin, Twitter, ExternalLink, Code } from 'lucide-react';
 import data from '../../../../data/dummy_data.json';
 
 // Minimal animation variants
