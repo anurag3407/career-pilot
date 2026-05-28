@@ -37,6 +37,7 @@ import { NotFound } from './pages';
 import InterviewPrep from './pages/InterviewPrep';
 import UserProfile from './pages/UserProfile';
 import EmailGenerator from './pages/EmailGenerator';
+import CareerTrajectory from './pages/CareerTrajectory';
 import LinkedInOptimizer from './pages/LinkedInOptimizer';
 import FellowshipLayout from './pages/fellowship/FellowshipLayout';
 import Onboarding from './pages/fellowship/Onboarding';
@@ -234,6 +235,7 @@ function AppRoutes() {
         <Route path="/security" element={<ProtectedRoute><SecuritySettings /></ProtectedRoute>} />
         <Route path="/email-generator" element={<ProtectedRoute><EmailGenerator /></ProtectedRoute>} />
         <Route path="/linkedin-optimizer" element={<ProtectedRoute><LinkedInOptimizer /></ProtectedRoute>} />
+        <Route path="/career-path" element={<ProtectedRoute><CareerTrajectory /></ProtectedRoute>} />
         <Route path="/deployments" element={<ProtectedRoute><Deployments /></ProtectedRoute>} />
         <Route path="/settings" element={<ProtectedRoute><Settings /></ProtectedRoute>} />
 

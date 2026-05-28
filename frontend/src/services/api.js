@@ -517,6 +517,17 @@ export const enhanceApi = {
       body: JSON.stringify({ resumeText })
     })
     return handleResponse(response)
+  },
+
+  // Predict career trajectories using AI
+  async careerTrajectory(resumeData) {
+    const headers = await getAuthHeaders()
+    const response = await fetch(`${API_BASE}/enhance/career-trajectory`, {
+      method: 'POST',
+      headers,
+      body: JSON.stringify({ resumeData })
+    })
+    return handleResponse(response)
   }
 }
 
