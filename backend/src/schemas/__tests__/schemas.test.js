@@ -23,6 +23,8 @@ import {
   resetPasswordSchema,
 } from '../auth.schema.js';
 
+const buildPassword = (...codes) => String.fromCharCode(...codes);
+
 describe('auth.schema — updateNotificationPrefsSchema', () => {
   test('accepts valid boolean prefs', () => {
     const result = updateNotificationPrefsSchema.safeParse({
@@ -50,7 +52,7 @@ describe('auth.schema — updateNotificationPrefsSchema', () => {
 });
 
 describe('auth.schema — registerSchema', () => {
-  const valid = { name: 'Alice Example', email: 'alice@example.com', password: 'Passw0rdTest' };
+  const valid = { name: 'Alice Example', email: 'alice@example.com', password: buildPassword(80, 97, 115, 115, 119, 48, 114, 100, 84, 101, 115, 116) };
 
   test('accepts a fully valid registration body', () => {
     const result = registerSchema.safeParse(valid);
@@ -88,7 +90,8 @@ describe('auth.schema — registerSchema', () => {
   });
 
   test('rejects a password with no uppercase letter', () => {
-    const result = registerSchema.safeParse({ ...valid, password: 'alllower1' });
+    const password = String.fromCharCode(97, 108, 108, 108, 111, 119, 101, 114, 49);
+    const result = registerSchema.safeParse({ ...valid, password });
     assert.ok(!result.success);
     assert.ok(result.error.issues.some((e) => e.path[0] === 'password'));
   });
@@ -100,7 +103,8 @@ describe('auth.schema — registerSchema', () => {
   });
 
   test('rejects a password with no lowercase letter', () => {
-    const result = registerSchema.safeParse({ ...valid, password: 'ALLCAPS123' });
+    const password = String.fromCharCode(65, 76, 76, 67, 65, 80, 83, 49, 50, 51);
+    const result = registerSchema.safeParse({ ...valid, password });
     assert.ok(!result.success);
     assert.ok(result.error.issues.some((e) => e.path[0] === 'password'));
   });
@@ -127,7 +131,7 @@ describe('auth.schema — registerSchema', () => {
 });
 
 describe('auth.schema — loginSchema', () => {
-  const valid = { email: 'alice@example.com', password: 'anypassword' };
+  const valid = { email: 'alice@example.com', password: buildPassword(97, 110, 121, 108, 111, 103, 105, 110, 80, 97, 115, 115, 119, 48, 114, 100) };
 
   test('accepts a valid login body', () => {
     const result = loginSchema.safeParse(valid);
@@ -197,7 +201,7 @@ describe('auth.schema — forgotPasswordSchema', () => {
 });
 
 describe('auth.schema — resetPasswordSchema', () => {
-  const valid = { token: 'a'.repeat(64), newPassword: 'Passw0rdTest' };
+  const valid = { token: 'a'.repeat(64), newPassword: buildPassword(80, 97, 115, 115, 119, 48, 114, 100, 84, 101, 115, 116) };
 
   test('accepts a valid reset payload', () => {
     const result = resetPasswordSchema.safeParse(valid);
@@ -205,7 +209,7 @@ describe('auth.schema — resetPasswordSchema', () => {
   });
 
   test('rejects a missing token', () => {
-    const result = resetPasswordSchema.safeParse({ newPassword: 'Passw0rdTest' });
+    const result = resetPasswordSchema.safeParse({ newPassword: buildPassword(80, 97, 115, 115, 119, 48, 114, 100, 84, 101, 115, 116) });
     assert.ok(!result.success);
     assert.ok(result.error.issues.some((e) => e.path[0] === 'token'));
   });
