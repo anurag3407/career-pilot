@@ -1,5 +1,4 @@
-import Navbar from '../components/Navbar'
-import HeroSection from '../components/ui/HeroSection'
+import JetLandingPage from './JetLandingPage'
 import FeaturesSection, { AdditionalFeatures } from '../components/ui/FeaturesSection'
 import PortfolioShowcaseSection from '../components/ui/PortfolioShowcaseSection'
 import HowItWorksSection from '../components/ui/HowItWorksSection'
@@ -8,14 +7,11 @@ import CTASection from '../components/ui/CTASection'
 import Footer from '../components/ui/Footer'
 import { StackedCircularFooter } from '../components/ui/stacked-circular-footer'
 
-
 export default function Home() {
   return (
     <div className="min-h-screen bg-background text-foreground selection:bg-primary selection:text-primary-foreground">
-      <Navbar />
-
-      {/* Hero Section with World Map */}
-      <HeroSection />
+      {/* Jet Landing Page Hero Section */}
+      <JetLandingPage />
 
       {/* Main Features Section - Bento Grid */}
       <section id="features" className="relative overflow-hidden">
