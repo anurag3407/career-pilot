@@ -7,6 +7,10 @@ import {
 } from "lucide-react";
 
 export default function Contact() {
+  const handleSubmit = (e) => {
+    e.preventDefault();
+  };
+
   return (
     <section className="relative overflow-hidden bg-black text-white py-20 px-6 md:px-16">
       {/* Background Effects */}
@@ -14,7 +18,7 @@ export default function Contact() {
       <div className="absolute top-0 left-1/3 h-72 w-72 rounded-full bg-amber-500/10 blur-3xl" />
 
       <div className="relative z-10 grid md:grid-cols-2 gap-14 items-center max-w-7xl mx-auto">
-        
+
         {/* Left Content */}
         <div>
           <p className="uppercase tracking-[0.3em] text-amber-400 text-sm mb-4">
@@ -54,13 +58,19 @@ export default function Contact() {
 
         {/* Form */}
         <div className="border border-white/10 bg-white/5 backdrop-blur-xl rounded-3xl p-8 md:p-10">
-          <form className="space-y-6">
+
+          <form onSubmit={handleSubmit} className="space-y-6">
+
             <div>
-              <label className="text-sm uppercase tracking-widest text-zinc-400">
+              <label
+                htmlFor="fullName"
+                className="text-sm uppercase tracking-widest text-zinc-400"
+              >
                 Full Name
               </label>
 
               <input
+                id="fullName"
                 type="text"
                 placeholder="Enter your name"
                 className="mt-3 w-full bg-transparent border-b border-zinc-700 focus:border-amber-400 outline-none py-3 text-white placeholder:text-zinc-500 transition"
@@ -68,11 +78,15 @@ export default function Contact() {
             </div>
 
             <div>
-              <label className="text-sm uppercase tracking-widest text-zinc-400">
+              <label
+                htmlFor="email"
+                className="text-sm uppercase tracking-widest text-zinc-400"
+              >
                 Email
               </label>
 
               <input
+                id="email"
                 type="email"
                 placeholder="Enter your email"
                 className="mt-3 w-full bg-transparent border-b border-zinc-700 focus:border-amber-400 outline-none py-3 text-white placeholder:text-zinc-500 transition"
@@ -80,11 +94,15 @@ export default function Contact() {
             </div>
 
             <div>
-              <label className="text-sm uppercase tracking-widest text-zinc-400">
+              <label
+                htmlFor="message"
+                className="text-sm uppercase tracking-widest text-zinc-400"
+              >
                 Message
               </label>
 
               <textarea
+                id="message"
                 rows="4"
                 placeholder="Tell us about your vision..."
                 className="mt-3 w-full bg-transparent border-b border-zinc-700 focus:border-amber-400 outline-none py-3 text-white placeholder:text-zinc-500 transition resize-none"
@@ -96,8 +114,10 @@ export default function Contact() {
               className="group mt-6 inline-flex items-center gap-3 border border-amber-400 text-amber-300 px-8 py-4 rounded-full hover:bg-amber-400 hover:text-black transition duration-300"
             >
               Submit Inquiry
+
               <ArrowUpRight className="w-4 h-4 group-hover:translate-x-1 group-hover:-translate-y-1 transition" />
             </button>
+
           </form>
         </div>
       </div>
