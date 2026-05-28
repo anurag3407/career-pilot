@@ -1,5 +1,8 @@
 import 'dotenv/config';
 import express from 'express';
+import dotenv from "dotenv";
+dotenv.config();
+
 import { createServer } from 'http';
 import cors from 'cors';
 import helmet from 'helmet';
@@ -16,17 +19,23 @@ import jobAlertRoutes from './routes/jobAlerts.js';
 import communityRoutes from './routes/community.js';
 import fellowshipRoutes from './routes/fellowships.js';
 import interviewRoutes from './routes/interview.js';
-import paymentRoutes from './routes/payments.js';
+
 import userProfileRoutes from './routes/userProfile.js';
 import twoFactorRoutes from './routes/twoFactor.js';
 import aiRoutes from './routes/ai.js';
 import healthRoutes from "./routes/health.js";
+import emailTrackingRoutes from './routes/emailTracking.js';
+import repoAnalyzerRoutes from './routes/repoAnalyzer.js';
+
+import inputRoutes from'./routes/input.route.js';
+import recruiterRoutes from '../src/routes/recruiter.routes.js';
 
 import { globalErrorHandler } from './middleware/globalErrorHandler.js';
 import {
   metricsMiddleware,
   metricsHandler,
 } from "./middleware/metrics.js";
+import redisManager from './config/redis.js';
 
 
 import { initializeSocket } from './config/socket.js';
@@ -54,13 +63,31 @@ const connectDB = async (...args) => {
 };
 
 import {
-  scheduleWeeklyDigest
+  scheduleWeeklyDigest,
+  initializeDigestQueue,
+  startDigestWorker
 } from './services/weeklyDigestService.js';
+
+// ============================================================================
+// Configuration validation - Check for required API keys
+// ============================================================================
+if (!process.env.GEMINI_API_KEY) {
+  console.warn('⚠️  GEMINI_API_KEY is not configured - AI features will be unavailable.');
+  console.warn('   Set GEMINI_API_KEY in your .env file to enable Google Gemini features.');
+}
+
+if (!process.env.GROQ_API_KEY) {
+  console.warn('⚠️  GROQ_API_KEY is not configured - Groq AI provider will not be available.');
+}
+
+if (!process.env.OPENAI_API_KEY) {
+  console.warn('⚠️  OPENAI_API_KEY is not configured - OpenAI provider will not be available.');
+}
 
 const app = express();
 app.use(metricsMiddleware);
 const httpServer = createServer(app);
-const PORT = process.env.PORT || 5000;
+const PORT = process.env.PORT || 5001;
 
 // Log FRONTEND_URL for debugging
 console.log('🔧 FRONTEND_URL env var:', process.env.FRONTEND_URL);
@@ -92,7 +119,7 @@ app.use(cors({
   },
   credentials: true,
   methods: ['GET', 'POST', 'PUT', 'DELETE', 'OPTIONS', 'PATCH'],
-  allowedHeaders: ['Content-Type', 'Authorization', 'X-Requested-With', 'X-AI-Provider', 'X-AI-Key', 'X-AI-Model']
+  allowedHeaders: ['Content-Type', 'Authorization', 'X-Requested-With', 'X-AI-Provider', 'X-AI-Key', 'X-AI-Model', 'X-OpenRouter-Key']
 }));
 
 // Helmet security headers - configured to not interfere with CORS
@@ -189,6 +216,7 @@ app.get('/health', (req, res) => {
   });
 });
 
+// Removed broken swagger doc route
 app.get('/metrics', metricsHandler);
 
 app.use('/api/docs', swaggerUi.serve, swaggerUi.setup(swaggerSpec));
@@ -202,13 +230,25 @@ app.use('/api/job-alerts', jobAlertRoutes);
 app.use('/api/community', communityRoutes);
 app.use('/api/fellowship', fellowshipRoutes);
 app.use('/api/interview', interviewRoutes);
-app.use('/api/payments', paymentRoutes);
+app.use("/api/upload", inputRoutes);
+app.use("/api/recruiter", recruiterRoutes);
+try {
+    const paymentRoutes = (await import('./routes/payments.js')).default;
+
+    app.use('/api/payments', paymentRoutes);
+
+    console.log('✅ Payment routes loaded');
+} catch (error) {
+    console.warn('⚠️ Payment routes disabled:', error.message);
+}
 app.use('/api/portfolio', portfolioRoutes);
 app.use('/api/user-profiles', userProfileRoutes);
 app.use('/api/auth/2fa', twoFactorRoutes);
 app.use('/api/search', searchRoutes);
 app.use('/api/ai', aiRoutes);
 app.use('/api/health', healthRoutes);
+app.use('/api/email-tracking', emailTrackingRoutes);
+app.use('/api/analyzer', repoAnalyzerRoutes);
 
 app.use((req, res) => {
   res.status(404).json({ error: 'Route not found' });
@@ -266,6 +306,12 @@ const startServer = async () => {
     }
 
     try {
+      const digestQueueReady = await initializeDigestQueue();
+
+      if (digestQueueReady) {
+        startDigestWorker();
+      }
+
       scheduleWeeklyDigest();
     } catch (digestError) {
       console.warn(
@@ -281,5 +327,27 @@ const startServer = async () => {
 };
 
 startServer();
+
+// Graceful shutdown
+const shutdown = async (signal) => {
+    console.log(`\n📥 Received ${signal}, shutting down gracefully...`);
+    await redisManager.shutdown();
+    console.log('👋 Server shutdown complete');
+    process.exit(0);
+};
+
+process.on('SIGTERM', () => shutdown('SIGTERM'));
+process.on('SIGINT', () => shutdown('SIGINT'));
+
+process.on("unhandledRejection", (reason) => {
+  console.error("❌ UNHANDLED REJECTION:", reason);
+});
+
+process.on("uncaughtException", (err) => {
+  console.error("❌ UNCAUGHT EXCEPTION:", err);
+  httpServer.close();
+  redisManager.shutdown().finally(() => process.exit(1));
+  setTimeout(() => process.exit(1), 10000).unref();
+});
 
 export default app;

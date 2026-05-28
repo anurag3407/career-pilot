@@ -1,5 +1,4 @@
 import { AIProviderFactory, getDefaultProvider, SUPPORTED_PROVIDERS } from '../config/aiProviders.js';
-import { getAiConfig } from '../services/aiConfigService.js';
 
 /**
  * Middleware: extractAIProvider
@@ -21,6 +20,14 @@ export const extractAIProvider = async (req, res, next) => {
     const providerHeader = req.headers['x-ai-provider'];
     const apiKeyHeader   = req.headers['x-ai-key'];
     const modelHeader    = req.headers['x-ai-model'];
+    const openRouterKeyHeader = req.headers['x-openrouter-key'];
+
+    // --- Case 1a: User supplies OpenRouter key via BYOK PKCE flow ---
+    if (openRouterKeyHeader) {
+      req.aiProvider = AIProviderFactory.create('openrouter', openRouterKeyHeader);
+      req.aiProviderSource = 'user_openrouter_pkce';
+      return next();
+    }
 
     // --- Case 1: User supplies both provider + key via headers (Legacy/API fallback) ---
     if (providerHeader && apiKeyHeader) {
@@ -38,23 +45,12 @@ export const extractAIProvider = async (req, res, next) => {
       return next();
     }
 
-    // --- Case 2: Check Database for User Config ---
-    if (req.user && req.user.uid) {
-      const aiConfig = await getAiConfig(req.user.uid);
-      if (aiConfig && aiConfig.provider && aiConfig.apiKey) {
-        const provider = aiConfig.provider.toLowerCase().trim();
-        if (SUPPORTED_PROVIDERS.includes(provider)) {
-          req.aiProvider = AIProviderFactory.create(provider, aiConfig.apiKey, aiConfig.model);
-          req.aiProviderSource = 'user_db';
-          return next();
-        }
-      }
-    }
-
-    // --- Case 3: No custom headers & No DB config – fall back to server Gemini key ---
-    req.aiProvider = getDefaultProvider();
-    req.aiProviderSource = 'server';
-    return next();
+    // --- Case 2: No custom headers – reject request ---
+    return res.status(403).json({
+      success: false,
+      error: 'API key is required. Please add your API key in Settings to use this feature.',
+      requireApiKey: true
+    });
   } catch (error) {
     console.error('AI provider middleware error:', error.message);
     return res.status(500).json({
