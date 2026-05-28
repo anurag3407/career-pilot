@@ -121,7 +121,7 @@ export const authApi = {
 // ============ UPLOAD API ============
 export const uploadApi = {
   // Upload PDF and extract text
-  async uploadPdf(file) {
+  async uploadPdf(file, options = {}) {
     const user = auth?.currentUser
     if (!user) throw new Error('Not authenticated')
 
@@ -136,13 +136,14 @@ export const uploadApi = {
       headers: {
         'Authorization': `Bearer ${token}`
       },
-      body: formData
+      body: formData,
+      signal: options.signal
     })
     return handleResponse(response)
   },
 
   // Extract text from PDF (re-process)
-  async extractText(file) {
+  async extractText(file, options = {}) {
     const user = auth?.currentUser
     if (!user) throw new Error('Not authenticated')
 
@@ -157,7 +158,8 @@ export const uploadApi = {
       headers: {
         'Authorization': `Bearer ${token}`
       },
-      body: formData
+      body: formData,
+      signal: options.signal
     })
     return handleResponse(response)
   }
@@ -186,12 +188,13 @@ export const resumeApi = {
   },
 
   // Create resume
-  async create(data) {
+  async create(data, options = {}) {
     const headers = await getAuthHeaders()
     const response = await fetch(`${API_BASE}/resumes`, {
       method: 'POST',
       headers,
-      body: JSON.stringify(data)
+      body: JSON.stringify(data),
+      signal: options.signal
     })
     return handleResponse(response)
   },
@@ -1352,4 +1355,42 @@ export const notificationApi = {
     })
     return handleResponse(response)
   }
+}
+
+// ============ ANALYZER API ============
+export const analyzerApi = {
+  async ingest(repoUrl) {
+    const headers = await getAuthHeaders()
+    const response = await fetch(`${API_BASE}/analyzer/ingest`, {
+      method: 'POST',
+      headers,
+      body: JSON.stringify({ repoUrl })
+    })
+    return handleResponse(response)
+  },
+
+  async getHistory() {
+    const headers = await getAuthHeaders()
+    const response = await fetch(`${API_BASE}/analyzer/history`, {
+      method: 'GET',
+      headers
+    })
+    return handleResponse(response)
+  },
+
+  async getFileContent(sessionId, filePath) {
+    const headers = await getAuthHeaders()
+    const response = await fetch(`${API_BASE}/analyzer/file-content?sessionId=${encodeURIComponent(sessionId)}&filePath=${encodeURIComponent(filePath)}`, {
+      method: 'GET',
+      headers
+    })
+    
+    if (!response.ok) {
+      throw new Error(`Server error (${response.status})`)
+    }
+    
+    return response.text()
+  },
+  
+  // Note: chat streams directly via SSE, so we'll handle fetch in the component directly
 }

@@ -1,5 +1,5 @@
 import React from 'react';
-import { Rocket, Code, ExternalLink, Github, Star } from 'lucide-react';
+import { Rocket, Code, ExternalLink, Code, Star } from 'lucide-react';
 
 const projectsData = [
   {
@@ -57,7 +57,7 @@ const Projects = () => {
                   </div>
                   <div className="flex gap-3">
                     <a href={project.githubUrl} target="_blank" rel="noopener noreferrer" className="text-[#CCD6F6] hover:text-[#64FFDA] transition-colors">
-                      <Github size={20} />
+                      <Code size={20} />
                     </a>
                     <a href={project.liveUrl} target="_blank" rel="noopener noreferrer" className="text-[#CCD6F6] hover:text-[#64FFDA] transition-colors">
                       <ExternalLink size={20} />

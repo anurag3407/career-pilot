@@ -1,4 +1,4 @@
-import { MapPin, Twitter, Linkedin, Github, Mail, Check } from "lucide-react";
+import { MapPin, Zap, Globe, Code, Mail, Check } from "lucide-react";
 
 const SAMPLE_DATA = {
   name: "Alex Jordan",
