@@ -15,7 +15,9 @@ import {
     Users,
     MessageSquare,
     Hash,
-    Send
+    Send,
+    Laptop,
+    Palette
 } from "lucide-react";
 
 export default function FeaturesCards() {
@@ -240,9 +242,9 @@ function InterviewMockup() {
 // Fellowship Mockup Visual
 function FellowshipMockup() {
     const challenges = [
-        { title: "Build AI Dashboard", company: "TechCorp", bounty: "$500", icon: "💻", type: "Development" },
-        { title: "Market Research Report", company: "StartupX", bounty: "$300", icon: "📊", type: "Research" },
-        { title: "UI Redesign", company: "DesignCo", bounty: "$400", icon: "🎨", type: "Design" },
+        { title: "Build AI Dashboard", company: "TechCorp", bounty: "$500", icon: Laptop, type: "Development" },
+        { title: "Market Research Report", company: "StartupX", bounty: "$300", icon: BarChart3, type: "Research" },
+        { title: "UI Redesign", company: "DesignCo", bounty: "$400", icon: Palette, type: "Design" },
     ];
 
     return (
@@ -272,28 +274,31 @@ function FellowshipMockup() {
             </div>
 
             {/* Challenge cards */}
-            {challenges.map((challenge, idx) => (
-                <motion.div
-                    key={idx}
-                    initial={{ opacity: 0, x: -20 }}
-                    whileInView={{ opacity: 1, x: 0 }}
-                    viewport={{ once: true }}
-                    transition={{ delay: 0.4 + idx * 0.1 }}
-                    className="flex items-center gap-3 p-3 bg-muted/50 rounded-lg border border-border hover:border-primary/50 transition-colors"
-                >
-                    <div className="w-10 h-10 rounded-lg bg-card flex items-center justify-center text-lg border border-border">
-                        {challenge.icon}
-                    </div>
-                    <div className="flex-1 min-w-0">
-                        <p className="text-sm text-foreground font-medium truncate">{challenge.title}</p>
-                        <p className="text-xs text-muted-foreground">{challenge.company} • {challenge.type}</p>
-                    </div>
-                    <div className="flex items-center gap-1.5 px-2 py-1 bg-emerald-500/10 rounded-full border border-emerald-500/20">
-                        <DollarSign className="w-3 h-3 text-emerald-600 dark:text-emerald-400" />
-                        <span className="text-xs text-emerald-600 dark:text-emerald-400 font-medium">{challenge.bounty}</span>
-                    </div>
-                </motion.div>
-            ))}
+            {challenges.map((challenge, idx) => {
+                const Icon = challenge.icon;
+                return (
+                    <motion.div
+                        key={idx}
+                        initial={{ opacity: 0, x: -20 }}
+                        whileInView={{ opacity: 1, x: 0 }}
+                        viewport={{ once: true }}
+                        transition={{ delay: 0.4 + idx * 0.1 }}
+                        className="flex items-center gap-3 p-3 bg-muted/50 rounded-lg border border-border hover:border-primary/50 transition-colors"
+                    >
+                        <div className="w-10 h-10 rounded-lg bg-card flex items-center justify-center text-lg border border-border">
+                            <Icon className="w-5 h-5 text-primary" />
+                        </div>
+                        <div className="flex-1 min-w-0">
+                            <p className="text-sm text-foreground font-medium truncate">{challenge.title}</p>
+                            <p className="text-xs text-zinc-500 dark:text-zinc-400">{challenge.company} • {challenge.type}</p>
+                        </div>
+                        <div className="flex items-center gap-1.5 px-2 py-1 bg-emerald-500/10 dark:bg-emerald-400/10 rounded-full border border-emerald-500/20 dark:border-emerald-400/30">
+                            <DollarSign className="w-3 h-3 text-emerald-600 dark:text-emerald-300" />
+                            <span className="text-xs text-emerald-600 dark:text-emerald-300 font-medium">{challenge.bounty}</span>
+                        </div>
+                    </motion.div>
+                );
+            })}
         </div>
     );
 }
