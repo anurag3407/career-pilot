@@ -3,10 +3,8 @@
  * Implements lazy loading for improved performance
  */
 import React, { useState, useEffect, lazy, Suspense } from 'react';
-import StockTicker from "./components/portfolio/templates/Finance_Corporate/StockTicker";
 import Deployments from './pages/Deployments'
 import TemplateGallery from "./pages/TemplateGallery";
-
 import { BrowserRouter, Routes, Route, Navigate } from 'react-router-dom';
 import { Toaster } from 'react-hot-toast';
 import { AuthProvider } from './context/AuthProvider';
@@ -66,7 +64,12 @@ import PortfolioHub from './pages/hubs/PortfolioHub';
 import CareerGrowthHub from './pages/hubs/CareerGrowthHub';
 import CommunityHub from './pages/hubs/CommunityHub';
 const GitHubDashboard = lazy(() => import('./pages/GitHubDashboard'));
+const RepoAnalyzerLanding = lazy(() => import('./pages/RepoAnalyzer/Landing'));
+const RepoAnalyzerDashboard = lazy(() => import('./pages/RepoAnalyzer/Dashboard'));
+const RepoAnalyzerWorkspace = lazy(() => import('./pages/RepoAnalyzer/Workspace'));
 import ScrollToTop from "./components/ScrollToTop";
+import RainforestCanopy from './components/portfolio/templates/Rainforest_Canopy/index.jsx';
+import TestSocialLinks from './pages/TestSocialLinks';
 
 function ProtectedRoute({ children }) {
   const { user, loading } = useAuth();
@@ -177,6 +180,7 @@ function AppRoutes() {
         <Route path="/templates" element={<TemplateGallery />} />
         <Route path="/templates/chatbot" element={<ChatbotPortfolio />} />
         <Route path="/templates/day-night-cycle" element={<DayNightCycle />} />
+        <Route path="/templates/rainforest-canopy" element={<RainforestCanopy />} />
         {/* Core Protected Routes */}
         <Route 
   path="/dashboard" 
@@ -250,6 +254,37 @@ function AppRoutes() {
   } 
 />
 
+        <Route 
+  path="/repo-analyzer" 
+  element={
+    <ProtectedRoute>
+      <Suspense fallback={<div className="flex justify-center items-center h-screen">Loading Analyzer...</div>}>
+        <RepoAnalyzerLanding />
+      </Suspense>
+    </ProtectedRoute>
+  } 
+/>
+        <Route 
+  path="/repo-analyzer/dashboard" 
+  element={
+    <ProtectedRoute>
+      <Suspense fallback={<div className="flex justify-center items-center h-screen">Loading Analyzer Dashboard...</div>}>
+        <RepoAnalyzerDashboard />
+      </Suspense>
+    </ProtectedRoute>
+  } 
+/>
+        <Route 
+  path="/repo-analyzer/workspace" 
+  element={
+    <ProtectedRoute>
+      <Suspense fallback={<div className="flex justify-center items-center h-screen">Loading Analyzer Workspace...</div>}>
+        <RepoAnalyzerWorkspace />
+      </Suspense>
+    </ProtectedRoute>
+  } 
+/>
+
         {/* Nested Fellowship Routes */}
         <Route path="/fellowship" element={<ProtectedRoute><FellowshipLayout /></ProtectedRoute>}>
           <Route index element={<Challenges />} />
@@ -264,6 +299,8 @@ function AppRoutes() {
           <Route path="messages" element={<FellowshipMessages />} />
           <Route path="messages/:roomId" element={<FellowshipChat />} />
         </Route>
+
+        <Route path="/test-social-links" element={<TestSocialLinks />} />
 
         {/* Catch-All Route */}
         <Route path="*" element={<NotFound />} />

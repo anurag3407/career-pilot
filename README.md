@@ -343,6 +343,23 @@ New contributors should read **[ARCHITECTURE.md](./ARCHITECTURE.md)** early, as 
 
 ---
 
+## 📖 Developer Guides & Extended Documentation
+
+To help you get familiar with the advanced subsystems of Career Pilot, we have provided detailed technical guides in the `docs` directory:
+
+* 🛠️ **[Environment Setup](./docs/environment-setup.md)**: Standard walkthrough for local environment variables, DB configurations, and cluster parameters.
+* 🤖 **[AI Features & Integration](./docs/ai-features.md)**: Deep-dive into Gemini prompt engineering, Harvard resume heuristics, and ATS scoring systems.
+* 📦 **[Portfolio Architecture](./docs/portfolio-architecture.md)**: Overview of the dynamic landing page renderer, metadata structures, and theme systems.
+* 🎨 **[Creating Portfolio Themes](./docs/creating-portfolio-themes.md)**: Step-by-step developer tutorial on creating custom portfolio aesthetics.
+* 🐙 **[GitHub Intelligence](./docs/github-intelligence.md)**: Inside look at how the system crawls repositories, parses metadata, and evaluates developer portfolios.
+* ⚡ **[Redis Lifecycle & Connection Tuning](./docs/redis-connection-lifecycle-issue.md)**: Advanced troubleshooting guide for Redis subscription channels and job queues.
+* 🌐 **[CDN & Assets Setup](./docs/cdn-setup.md)**: Cloudflare cache settings and optimal static asset delivery.
+* 🚀 **[Deployment Setup](./docs/deployment-setup.md)**: Production configurations for Vercel, Netlify, and server hosting.
+* 📘 **[User Guide](./docs/user-guide.md)**: Full-featured guide explaining product usage and workflow patterns.
+
+---
+
+
 ## 🔌 API Reference
 
 <details>

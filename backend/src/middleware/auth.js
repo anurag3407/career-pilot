@@ -41,6 +41,22 @@ export const verifyToken = async (req, res, next) => {
   }
 };
 
+// Middleware to restrict access to admin users only.
+// Must be placed after verifyToken in the middleware chain.
+// Admin users are identified by email matching the ADMIN_EMAILS environment variable
+// (comma-separated list). Returns 403 for any authenticated user not on the list.
+export const adminOnly = (req, res, next) => {
+  const adminEmails = (process.env.ADMIN_EMAILS || '')
+    .split(',')
+    .map((e) => e.trim())
+    .filter(Boolean);
+
+  if (!req.user || !adminEmails.includes(req.user.email)) {
+    return next(new ApiError(403, 'Admin access required'));
+  }
+  next();
+};
+
 // Optional auth middleware - doesn't fail if no token
 export const optionalAuth = async (req, res, next) => {
   try {

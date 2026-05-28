@@ -309,6 +309,13 @@ res.status(200).json({
   data: portfolio,
 });
 
+
+  res.status(200).json({
+    success: true,
+    message: 'Portfolio updated successfully.',
+    data: portfolio,
+  });
+  
 }));
 
 /**

@@ -52,10 +52,17 @@ useEffect(() => {
                 `${apiBase}/auth/linkedin/token?code=${encodeURIComponent(code)}`
             )
 
-            if (!resp.ok) {
-                const body = await resp.json().catch(() => ({}))
+if (!code) {
+    toast.error('Something went wrong. Please try again.')
+    navigate('/login')
+    return
+}
 
-                throw new Error(body.error || 'Token exchange failed')
+if (!resp.ok) {
+    const body = await resp.json().catch(() => ({}))
+
+    throw new Error(body.error || 'Token exchange failed')
+}
             }
 
             const { token, isNew } = await resp.json()
