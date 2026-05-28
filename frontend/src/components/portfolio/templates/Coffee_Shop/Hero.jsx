@@ -55,7 +55,8 @@ export default function Hero() {
   const [loaded, setLoaded] = useState(false);
  
   useEffect(() => {
-    setTimeout(() => setLoaded(true), 100);
+    const timer = setTimeout(() => setLoaded(true), 100);
+    return () => clearTimeout(timer);
   }, []);
 
    return (
@@ -239,7 +240,7 @@ export default function Hero() {
                       <span className="font-playfair text-2xl text-[#D4A574] font-bold">
                         {value} {icon}
                       </span>
-                      <span className="font-dmsans text-[#6B4E35] text-xs tracking-widest uppercase">{label}</span>
+                      <span className="font-dmsans text-[#A0714F] text-xs tracking-widest uppercase">{label}</span>
                     </div>
                   ))}
                 </div>
