@@ -152,6 +152,7 @@ export default function Contact() {
     if (!form.subject.trim()) e.subject = 'Subject is required';
     if (!form.message.trim()) e.message = 'Message cannot be empty';
     else if (form.message.trim().length < 20) e.message = 'Please write at least 20 characters';
+    else if (form.message.length > 500) e.message = 'Message must be 500 characters or fewer';
     return e;
   }
 
