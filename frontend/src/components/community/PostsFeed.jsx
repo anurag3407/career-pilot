@@ -472,7 +472,7 @@ const handleCreatePost = async (postData) => {
                   className="w-full py-3 text-primary hover:text-primary/80 font-medium"
                 >
                   Load more posts
-                </button>
+                </motion.button>
               )}
             </>
           ) : (
