@@ -38,7 +38,6 @@ export default function LinkedInCallback() {
             }
 
             if (!code) {
-            if(!code) {
                 toast.error('Something went wrong. Please try again.')
                 navigate('/login')
                 return
