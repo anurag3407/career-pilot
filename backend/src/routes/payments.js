@@ -141,6 +141,11 @@ router.post('/verify-payment', verifyToken, validate(verifyPaymentSchema), async
     if (proposal.status !== 'pending') {
         throw new ApiError(409, 'Proposal already processed');
     }
+    // Mark escrow as verified
+    await EscrowPayment.findByIdAndUpdate(escrow._id, {
+        status: 'verified',
+        razorpayPaymentId: razorpay_payment_id
+    });
 
     const updatedProposal = await Proposal.findOneAndUpdate(
         { _id: proposalId, status: 'pending' },
@@ -207,12 +212,7 @@ router.post('/verify-payment', verifyToken, validate(verifyPaymentSchema), async
         orderId: razorpay_order_id,
         paymentId: razorpay_payment_id,
         amount: challenge.price
-    });
-// Mark escrow as verified
-    await EscrowPayment.findByIdAndUpdate(escrow._id, {
-        status: 'verified',
-        razorpayPaymentId: razorpay_payment_id
-    });
+    }); 
 
     res.json({
         success: true,
