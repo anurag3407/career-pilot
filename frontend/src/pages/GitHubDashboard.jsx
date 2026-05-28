@@ -115,7 +115,7 @@ export default function GitHubDashboard() {
             >
               {/* Profile Header */}
               <div className="p-8 md:p-10 border-b border-white/5 flex flex-col md:flex-row items-center md:items-start gap-8">
-                <img 
+                <img loading="lazy" 
                   src={profile.avatar_url} 
                   alt={profile.name} 
                   className="w-32 h-32 rounded-full border-4 border-background shadow-xl"

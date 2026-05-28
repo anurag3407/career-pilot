@@ -57,7 +57,7 @@ const dotColor = isDark ? "#ffffff" : "#000000";
   return (
     <div className="w-full aspect-[2/1] rounded-lg relative font-sans min-h-[300px] text-muted-foreground/30">
       {svgMap && (
-        <img
+        <img loading="lazy"
           src={`data:image/svg+xml;utf8,${encodeURIComponent(svgMap)}`}
           className="h-full w-full pointer-events-none select-none opacity-60"
           alt="world map"

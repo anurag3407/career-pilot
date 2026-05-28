@@ -178,7 +178,7 @@ export default function PolaroidMemories({ data: propData }) {
                   <StickyNote key={idx} rotation={rotation} color={color} delay={0.15 * idx} pinType="pushpin" className="w-full max-w-sm">
                     <p className="font-handwriting text-2xl leading-tight text-gray-800 mb-4">"{test.text}"</p>
                     <div className="flex items-center gap-3">
-                      <img src={test.avatar} alt={test.name} className="w-10 h-10 rounded-full object-cover shadow-sm border-2 border-white" />
+                      <img loading="lazy" src={test.avatar} alt={test.name} className="w-10 h-10 rounded-full object-cover shadow-sm border-2 border-white" />
                       <div>
                         <div className="font-bold text-sm">{test.name}</div>
                         <div className="text-xs text-gray-500">{test.role}</div>
@@ -249,7 +249,7 @@ function Polaroid({ image, caption, rotation, delay = 0, isHero = false, classNa
       <div className="absolute -top-3 left-1/2 -translate-x-1/2 w-24 h-6 bg-white/70 shadow-sm rotate-2 backdrop-blur-sm z-20" />
       
       <div className="relative overflow-hidden bg-gray-200 aspect-square shadow-inner w-full">
-        <img 
+        <img loading="lazy" 
           src={image} 
           alt={caption} 
           className="w-full h-full object-cover hover:scale-105 transition-transform duration-700" 

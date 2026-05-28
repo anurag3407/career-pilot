@@ -210,7 +210,7 @@ export default function DayNightCycle() {
               <motion.div key={p.title} initial={{ opacity:0, y:20 }} whileInView={{ opacity:1, y:0 }}
                 transition={{ delay: i*0.08 }} viewport={{ once:true }}
                 className={`rounded-xl border overflow-hidden ${cardClass}`}>
-                <img src={p.image} alt={p.title} className="w-full h-36 object-cover" />
+                <img loading="lazy" src={p.image} alt={p.title} className="w-full h-36 object-cover" />
                 <div className="p-4">
                   <h3 className={`font-bold text-sm mb-2 ${textClass}`}>{p.title}</h3>
                   <p className={`text-xs leading-relaxed mb-3 ${subClass}`}>{p.description}</p>
@@ -262,7 +262,7 @@ export default function DayNightCycle() {
                 className={`p-4 rounded-xl border ${cardClass}`}>
                 <p className={`text-xs italic leading-relaxed mb-4 ${subClass}`}>"{t.text}"</p>
                 <div className="flex items-center gap-3">
-                  <img src={t.avatar} alt={t.name} className="w-9 h-9 rounded-full object-cover" />
+                  <img loading="lazy" src={t.avatar} alt={t.name} className="w-9 h-9 rounded-full object-cover" />
                   <div>
                     <div className={`text-xs font-bold ${textClass}`}>{t.name}</div>
                     <div className={`text-xs ${subClass}`}>{t.role}</div>

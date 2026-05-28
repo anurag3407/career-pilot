@@ -95,7 +95,7 @@ export default function TwitterProfile() {
           <div>
             {/* Banner */}
             <div className="h-[150px] sm:h-[200px] bg-[#333639] w-full relative">
-              <img 
+              <img loading="lazy" 
                 src="https://images.unsplash.com/photo-1618005182384-a83a8bd57fbe?q=80&w=2564&auto=format&fit=crop" 
                 alt="Banner" 
                 className="w-full h-full object-cover"
@@ -362,7 +362,7 @@ function Tweet({
 
       <div className="flex gap-3">
         <div className="shrink-0">
-          <img src={avatar} alt={name} className="w-10 h-10 rounded-full object-cover" />
+          <img loading="lazy" src={avatar} alt={name} className="w-10 h-10 rounded-full object-cover" />
         </div>
         
         <div className="flex flex-col w-full min-w-0">
@@ -404,7 +404,7 @@ function Tweet({
           {/* Media */}
           {media && (
             <div className="mt-3 rounded-2xl border border-[#2f3336] overflow-hidden">
-              <img src={media} alt="Post media" className="w-full h-auto object-cover max-h-[500px]" />
+              <img loading="lazy" src={media} alt="Post media" className="w-full h-auto object-cover max-h-[500px]" />
             </div>
           )}
 

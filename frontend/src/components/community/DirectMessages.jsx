@@ -138,7 +138,7 @@ export default function DirectMessages() {
                   <div className="relative">
                     <div className="w-10 h-10 rounded-full bg-gradient-to-br from-primary to-secondary flex items-center justify-center text-primary-foreground text-sm font-medium">
                       {otherUser?.avatar ? (
-                        <img 
+                        <img loading="lazy" 
                           src={otherUser.avatar} 
                           alt={otherUser.name}
                           className="w-full h-full rounded-full object-cover"
