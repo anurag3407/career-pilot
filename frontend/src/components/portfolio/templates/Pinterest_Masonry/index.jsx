@@ -128,7 +128,7 @@ export default function PinterestMasonry({ data: propData }) {
             <MessageCircle size={24} />
           </div>
           <div className="w-12 h-12 rounded-full flex items-center justify-center hover:bg-gray-100 cursor-pointer">
-            <img loading="lazy" src={data.personal.avatar} alt="Profile" className="w-7 h-7 rounded-full object-cover" />
+            <img loading="eager" fetchPriority="high" src={data.personal.avatar} alt="Profile" className="w-7 h-7 rounded-full object-cover" />
           </div>
         </div>
       </header>

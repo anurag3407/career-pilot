@@ -42,7 +42,7 @@ export default function GitHubProfile() {
           </div>
         </div>
         <div className="flex items-center gap-3">
-          <img loading="lazy" src={data.personal.avatar} alt="Avatar" className="w-8 h-8 rounded-full border border-[#30363d]" />
+          <img src={data.personal.avatar} alt="Avatar" className="w-8 h-8 rounded-full border border-[#30363d]" />
         </div>
       </nav>
 
@@ -58,7 +58,7 @@ export default function GitHubProfile() {
             className="w-full md:w-1/4 flex flex-col"
           >
             <div className="relative">
-              <img loading="lazy" 
+              <img 
                 src={data.personal.avatar} 
                 alt={data.personal.name} 
                 className="w-64 h-64 md:w-full md:h-auto rounded-full border border-[#30363d] mb-4 shadow-xl z-10 relative"
