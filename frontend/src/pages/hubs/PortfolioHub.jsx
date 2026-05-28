@@ -5,6 +5,8 @@ import HubLayout from '../../components/HubLayout'
 import ToolCard from '../../components/ToolCard'
 import { Link } from 'react-router-dom'
 import { motion } from 'framer-motion'
+import ReviewScore from '../../components/portfolio/ReviewScore'
+
 
 export default function PortfolioHub() {
   const [portfolios, setPortfolios] = useState([])
@@ -59,6 +61,8 @@ export default function PortfolioHub() {
         description="Deploy and manage active production websites on Cloudflare or GitHub Pages."
         color="emerald-500"
       />
+
+      <ReviewScore />
 
       {/* Showcase list or placeholder */}
       {!loading && portfolios.length > 0 && (
