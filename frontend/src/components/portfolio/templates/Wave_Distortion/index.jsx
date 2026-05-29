@@ -170,7 +170,7 @@ const DistortionFilter = () => (
         <feDisplacementMap
           in="SourceGraphic"
           in2="turbulence"
-          scale="6"
+          scale="1"
           xChannelSelector="R"
           yChannelSelector="G"
         />
@@ -527,7 +527,7 @@ const CatIcon = ({ cat }) => {
 /* ═══════════════════════════════════════════════════════════
    MAIN EXPORT
 ═══════════════════════════════════════════════════════════ */
-export default function WaveDistortionPortfolio() {
+export default function WaveDistortionPortfolio({ preview = false }) {
   const [menuOpen, setMenuOpen] = useState(false);
   const [activeSkillCat, setActiveSkillCat] = useState("All");
   const [scrolled, setScrolled] = useState(false);
@@ -562,7 +562,7 @@ export default function WaveDistortionPortfolio() {
     setMenuOpen(false);
   };
 
-  /* color tokens */
+  
   const BG = "#060b18";
   const BG2 = "#070d1f";
   const CYAN = "#00c8ff";
@@ -589,6 +589,7 @@ export default function WaveDistortionPortfolio() {
       />
 
       {/* ══════════ NAV ══════════ */}
+      {!preview && (
       <motion.nav
         style={{
           position: "fixed", top: 0, left: 0, right: 0, zIndex: 100,
@@ -618,7 +619,9 @@ export default function WaveDistortionPortfolio() {
               initial={{ opacity: 0, y: -10 }}
               animate={{ opacity: 1, y: 0 }}
               transition={{ delay: i * 0.06 }}
-              onClick={() => scrollTo(link)}
+              onClick={() => {
+                 if (!preview) scrollTo(link);
+               }}
               className="text-xs font-medium px-3.5 py-2 rounded-lg border-none cursor-pointer transition-all"
               style={{ background: "none", color: "rgba(200,220,255,0.72)", fontFamily: "inherit" }}
               whileHover={{ color: CYAN, background: "rgba(0,200,255,0.08)" }}
@@ -652,8 +655,10 @@ export default function WaveDistortionPortfolio() {
             >
               {navLinks.map((link) => (
                 <button
-                  key={link}
-                  onClick={() => scrollTo(link)}
+                   key={link}
+                   onClick={() => {
+                     if (!preview) scrollTo(link);
+                    }}
                   className="block w-full text-left cursor-pointer py-3.5 text-base"
                   style={{
                     background: "none", border: "none", borderBottom: "1px solid rgba(255,255,255,0.05)",
@@ -667,6 +672,7 @@ export default function WaveDistortionPortfolio() {
           )}
         </AnimatePresence>
       </motion.nav>
+      )}
 
       {/* ══════════ HERO ══════════ */}
       <section

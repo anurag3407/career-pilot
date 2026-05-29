@@ -22,6 +22,7 @@ import Upload from './pages/Upload';
 import Enhance from './pages/Enhance';
 import ResumeView from './pages/ResumeView';
 import JobSearch from './pages/JobSearch';
+
 import JobAlerts from './pages/JobAlerts';
 import ResumeBuilder from './pages/ResumeBuilder';
 import TextToResume from './pages/TextToResume';
@@ -171,6 +172,7 @@ function AppRoutes() {
 
         {/* Template Gallery Route (Registered at /templates) */}
         <Route path="/templates" element={<TemplateGallery />} />
+      
 
         {/* Core Protected Routes */}
         <Route path="/dashboard" element={<ProtectedRoute><Dashboard /></ProtectedRoute>} />

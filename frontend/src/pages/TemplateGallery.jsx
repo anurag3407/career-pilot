@@ -475,7 +475,7 @@ export default function TemplateGallery() {
           <h2 className="text-lg font-semibold text-foreground/70">Wave Distortion Theme — Full Portfolio</h2>
         </div>
         <div className="overflow-hidden rounded-2xl border border-blue-500/20">
-          <WaveDistortionPortfolio />
+          <WaveDistortionPortfolio preview={true} />
         </div>
       </div>
 
