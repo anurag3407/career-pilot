@@ -6,6 +6,7 @@ import Resume from '../models/Resume.model.js';
 import Interview from '../models/Interview.model.js';
 import { db } from '../config/firebase.js';
 import { devDb } from '../utils/devDbFallback.js';
+import { fetchJobs } from '../utils/jobSearch.js';
 
 const router = express.Router();
 
@@ -114,8 +115,97 @@ router.get('/me/activity', asyncHandler(async (req, res) => {
   res.json({ success: true, activity });
 }));
 
+const getMockRecommendations = (jobRole, skills) => {
+  const role = jobRole || 'Software Engineer';
+  const skillList = skills && skills.length > 0 ? skills : ['React', 'Node.js', 'JavaScript'];
+  
+  return [
+    {
+      employer_name: 'TechCorp Solutions',
+      employer_logo: 'https://images.unsplash.com/photo-1549923746-c502d488b3ea?w=100&h=100&fit=crop',
+      job_title: `Senior ${role}`,
+      job_employment_type: 'FULLTIME',
+      job_city: 'San Francisco',
+      job_state: 'CA',
+      job_country: 'US',
+      job_description: `We are looking for a talented Senior ${role} skilled in ${skillList.join(', ')} to join our high-growth platform team.`,
+      job_apply_link: 'https://careers.google.com',
+      job_min_salary: 120000,
+      job_max_salary: 165000,
+      job_salary_currency: 'USD'
+    },
+    {
+      employer_name: 'InnoTech Lab',
+      employer_logo: 'https://images.unsplash.com/photo-1516321318423-f06f85e504b3?w=100&h=100&fit=crop',
+      job_title: `${role} (Remote)`,
+      job_employment_type: 'FULLTIME',
+      job_city: 'Austin',
+      job_state: 'TX',
+      job_country: 'US',
+      job_description: `Exciting opportunity for a remote ${role}. Must have hands-on experience working with ${skillList.slice(0, 3).join(', ')}.`,
+      job_apply_link: 'https://careers.google.com',
+      job_min_salary: 95000,
+      job_max_salary: 130000,
+      job_salary_currency: 'USD'
+    },
+    {
+      employer_name: 'Apex Systems',
+      employer_logo: 'https://images.unsplash.com/photo-1572021335469-31706a17aaef?w=100&h=100&fit=crop',
+      job_title: `Lead ${role}`,
+      job_employment_type: 'CONTRACT',
+      job_city: 'New York',
+      job_state: 'NY',
+      job_country: 'US',
+      job_description: `Join Apex Systems as a Lead ${role} to spearhead our next-generation architecture. Experience with ${skillList[0] || 'modern tech stacks'} is required.`,
+      job_apply_link: 'https://careers.google.com',
+      job_min_salary: 140000,
+      job_max_salary: 180000,
+      job_salary_currency: 'USD'
+    }
+  ];
+};
+
+// Get personalized recommendations based on profile skills and jobRole
+router.get('/me/recommendations', asyncHandler(async (req, res) => {
+  const uid = req.user.uid;
+  let profile;
+  
+  if (global.useDevDbFallback) {
+    profile = devDb.getProfile(uid, req.user.email, req.user.name);
+  } else {
+    profile = await UserProfile.findOne({ uid });
+    if (!profile) {
+      profile = await UserProfile.create({
+        uid,
+        displayName: req.user.name || req.user.email?.split('@')[0] || '',
+      });
+    }
+  }
+
+  const queryTerm = [profile.jobRole, ...(profile.skills || [])].filter(Boolean).join(' ');
+
+  if (!queryTerm) {
+    return res.json({ success: true, recommendations: getMockRecommendations(profile.jobRole, profile.skills) });
+  }
+
+  try {
+    const jobsData = await fetchJobs({ query: queryTerm });
+    if (jobsData.error) {
+      const mockJobs = getMockRecommendations(profile.jobRole, profile.skills);
+      return res.json({ success: true, recommendations: mockJobs, isFallback: true });
+    }
+    
+    res.json({ success: true, recommendations: jobsData.data || [] });
+  } catch (error) {
+    console.error("Recommendations fetch error:", error);
+    const mockJobs = getMockRecommendations(profile.jobRole, profile.skills);
+    res.json({ success: true, recommendations: mockJobs, isFallback: true });
+  }
+}));
+
 // Get public profile by uid
 router.get('/:uid', asyncHandler(async (req, res) => {
+
   const profile = await UserProfile.findOne({ uid: req.params.uid });
   if (!profile) throw new ApiError(404, 'Profile not found');
   res.json({ success: true, profile });

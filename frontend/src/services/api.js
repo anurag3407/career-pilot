@@ -525,6 +525,17 @@ export const userProfileApi = {
     return handleResponse(response)
   },
 
+  async getMyRecommendations() {
+    const headers = await getAuthHeaders()
+
+    const response = await fetch(`${API_BASE}/user-profiles/me/recommendations`, {
+      method: 'GET',
+      headers
+    })
+
+    return handleResponse(response)
+  },
+
   async getProfile(uid) {
     const headers = await getAuthHeaders()
 

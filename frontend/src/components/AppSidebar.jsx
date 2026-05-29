@@ -135,8 +135,9 @@ function UserSection() {
         <div className="space-y-3">
             <SidebarDivider />
             <div
+                onClick={() => navigate("/profile")}
                 className={cn(
-                    "flex items-center gap-3 p-3 rounded-2xl bg-muted/50 border border-border transition-all hover:bg-muted",
+                    "flex items-center gap-3 p-3 rounded-2xl bg-muted/50 border border-border transition-all hover:bg-muted cursor-pointer",
                     !open && animate && "justify-center"
                 )}
             >
