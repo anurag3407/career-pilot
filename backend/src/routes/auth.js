@@ -17,13 +17,9 @@ import { exchangeCodeForToken, getLinkedInAuthUrl, getLinkedInProfile } from '..
 import User from '../models/User.model.js';
 import admin from '../config/firebase.js';
 import crypto from 'crypto';
+import { authStore } from '../services/authStore.js';
 
 const router = express.Router();
-
-// Holds CSRF-protection state params for the LinkedIn OAuth initiation flow (10-min TTL)
-const stateStore = new Map();
-const tokenStore = new Map();       // one-time LinkedIn token exchange store
-const passwordResetStore = new Map(); // one-time password reset token store (1h TTL)
 
 router.post('/register', validate(registerSchema), asyncHandler(async (req, res) => {
   const { email, name, password } = req.body;
@@ -106,10 +102,7 @@ router.post('/forgot-password', validate(forgotPasswordSchema), asyncHandler(asy
 
   if (user) {
     const resetToken = crypto.randomBytes(32).toString('hex');
-    passwordResetStore.set(resetToken, {
-      userId: user._id.toString(),
-      expiresAt: Date.now() + 60 * 60 * 1000, // 1 hour
-    });
+    await authStore.setPasswordResetToken(resetToken, user._id.toString(), 3600);
 
     const frontendUrl = process.env.FRONTEND_URL || 'http://localhost:5173';
     const resetLink = `${frontendUrl}/reset-password?token=${resetToken}`;
@@ -128,37 +121,22 @@ router.post('/forgot-password', validate(forgotPasswordSchema), asyncHandler(asy
 router.post('/reset-password', validate(resetPasswordSchema), asyncHandler(async (req, res) => {
   const { token, newPassword } = req.body;
 
-  const entry = passwordResetStore.get(token);
-  if (!entry || Date.now() > entry.expiresAt) {
-    passwordResetStore.delete(token);
+  const userId = await authStore.getAndDeletePasswordResetToken(token);
+  if (!userId) {
     throw new ApiError(400, 'Reset token is invalid or has expired. Please request a new one.');
   }
-
-  passwordResetStore.delete(token);
 
   const passwordHash = await bcrypt.hash(newPassword, 12);
 
   await User.updateOne(
-    { _id: entry.userId },
+    { _id: userId },
     { $set: { password: passwordHash, requiresPasswordReset: false } }
   );
 
   res.json({ success: true, message: 'Password reset successfully. You can now log in.' });
 }));
 
-// Periodic sweep of expired store entries every 10 minutes to prevent memory leaks
-setInterval(() => {
-  const now = Date.now();
-  for (const [state, expiry] of stateStore.entries()) {
-    if (now > expiry) stateStore.delete(state);
-  }
-  for (const [code, entry] of tokenStore.entries()) {
-    if (now > entry.expiresAt) tokenStore.delete(code);
-  }
-  for (const [token, entry] of passwordResetStore.entries()) {
-    if (now > entry.expiresAt) passwordResetStore.delete(token);
-  }
-}, 10 * 60 * 1000).unref();
+
 
 
 
@@ -220,13 +198,13 @@ router.put('/notification-preferences', verifyToken, validate(updateNotification
 }));
 
 // Linkedin OAuth routes
-router.get('/linkedin', (req, res) => {
+router.get('/linkedin', asyncHandler(async (req, res) => {
   const state = crypto.randomBytes(16).toString('hex');
-  stateStore.set(state, Date.now() + 10 * 60 * 1000);
+  await authStore.setOAuthState(state, 600); // 10-minute TTL
 
   const authUrl = getLinkedInAuthUrl(state);
   res.redirect(authUrl);
-});
+}));
 
 router.get('/linkedin/callback', asyncHandler(async (req, res) => {
   const { code, state, error } = req.query;
@@ -237,13 +215,10 @@ router.get('/linkedin/callback', asyncHandler(async (req, res) => {
     return res.redirect(`${frontendUrl}/login?error=linkedin_denied`);
   }
 
-  const storedExpiry = stateStore.get(state);
-  if (!storedExpiry || Date.now() > storedExpiry) {
-    stateStore.delete(state);
+  const isValid = await authStore.validateOAuthState(state);
+  if (!isValid) {
     return res.redirect(`${frontendUrl}/login?error=linkedin_invalid_state`);
   }
-
-  stateStore.delete(state);
 
   let accessToken, idToken;
 
@@ -303,7 +278,7 @@ router.get('/linkedin/callback', asyncHandler(async (req, res) => {
 
   // Store token in one-time exchange store (60s TTL) instead of passing in URL
   const exchangeCode = crypto.randomBytes(16).toString('hex');
-  tokenStore.set(exchangeCode, { token: customToken, isNew: !mongoUser, expiresAt: Date.now() + 60000 });
+  await authStore.setLinkedInCode(exchangeCode, { token: customToken, isNew: !mongoUser }, 60);
 
   res.redirect(`${frontendUrl}/auth/linkedin/callback?code=${exchangeCode}`);
 }));
@@ -312,12 +287,10 @@ router.get('/linkedin/callback', asyncHandler(async (req, res) => {
 // instead of receiving the Firebase custom token in the URL.
 router.get('/linkedin/token/:code', asyncHandler(async (req, res) => {
   const { code } = req.params;
-  const entry = tokenStore.get(code);
-  if (!entry || Date.now() > entry.expiresAt) {
-    tokenStore.delete(code);
+  const entry = await authStore.getAndDeleteLinkedInCode(code);
+  if (!entry) {
     return res.status(404).json({ success: false, error: 'Code not found or expired' });
   }
-  tokenStore.delete(code);
   res.json({ success: true, token: entry.token, isNew: entry.isNew });
 }));
 

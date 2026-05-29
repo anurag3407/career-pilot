@@ -1,6 +1,7 @@
 import express from 'express';
 import crypto from 'crypto';
 import rateLimit from 'express-rate-limit';
+import { createResilientStore } from '../middleware/rateLimiter.js';
 import { verifyToken } from '../middleware/auth.js';
 import { asyncHandler, ApiError } from '../middleware/errorHandler.js';
 import FellowshipProfile from '../models/FellowshipProfile.model.js';
@@ -18,6 +19,7 @@ const router = express.Router();
 const verifyCodeLimiter = rateLimit({
   windowMs: 15 * 60 * 1000,
   max: 5,
+  store: createResilientStore('fellowship_verify:', 15 * 60 * 1000),
   keyGenerator: (req) => req.user?.uid || req.ip,
   standardHeaders: true,
   legacyHeaders: false,
@@ -33,6 +35,7 @@ const verifyCodeLimiter = rateLimit({
 const sendEmailLimiter = rateLimit({
   windowMs: 60 * 60 * 1000,
   max: 3,
+  store: createResilientStore('fellowship_email:', 60 * 60 * 1000),
   keyGenerator: (req) => req.user?.uid || req.ip,
   standardHeaders: true,
   legacyHeaders: false,

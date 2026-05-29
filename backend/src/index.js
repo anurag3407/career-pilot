@@ -7,6 +7,7 @@ import { createServer } from 'http';
 import cors from 'cors';
 import helmet from 'helmet';
 import rateLimit from 'express-rate-limit';
+import { createResilientStore } from './middleware/rateLimiter.js';
 import searchRoutes from './routes/search.js';
 import portfolioRoutes from './routes/portfolio.js';
 import uploadRoutes from './routes/upload.js';
@@ -169,9 +170,11 @@ app.use(helmet({
     },
   },
 }));
+const globalWindowMs = parseInt(process.env.RATE_LIMIT_WINDOW_MS) || 15 * 60 * 1000;
 const limiter = rateLimit({
-  windowMs: parseInt(process.env.RATE_LIMIT_WINDOW_MS) || 15 * 60 * 1000, // 15 minutes
+  windowMs: globalWindowMs,
   max: parseInt(process.env.RATE_LIMIT_MAX_REQUESTS) || 1000, // increased for development
+  store: createResilientStore('global:', globalWindowMs),
   standardHeaders: true,
   legacyHeaders: false,
   handler: (req, res, next, options) => {

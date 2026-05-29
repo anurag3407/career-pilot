@@ -1,5 +1,6 @@
 import express from 'express';
 import rateLimit from 'express-rate-limit';
+import { createResilientStore } from '../middleware/rateLimiter.js';
 import { asyncHandler, ApiError } from '../middleware/errorHandler.js';
 import { verifyToken } from '../middleware/auth.js';
 import * as twoFactor from '../services/twoFactorService.js';
@@ -16,6 +17,7 @@ const router = express.Router();
 const verifyLimiter = rateLimit({
   windowMs: 15 * 60 * 1000,
   max: 5,
+  store: createResilientStore('2fa_verify:', 15 * 60 * 1000),
   message: {
     success: false,
     error: 'Too many verification attempts, please try again in 15 minutes.'

@@ -10,19 +10,21 @@ import { streamChat } from '../services/anthropicChatService.js';
 import fs from 'fs/promises';
 import path from 'path';
 import { verifyToken } from '../middleware/auth.js';
-import { aiRateLimiter } from '../middleware/rateLimiter.js';
+import { aiRateLimiter, createResilientStore } from '../middleware/rateLimiter.js';
 import rateLimit from 'express-rate-limit';
 import RepoAnalysisHistory from '../models/RepoAnalysisHistory.model.js';
 
 const ingestLimiter = rateLimit({
   windowMs: 60 * 60 * 1000, // 1 hour
   max: 10, // 10 repositories per hour per IP
+  store: createResilientStore('ingest:', 60 * 60 * 1000),
   message: { error: 'Too many repositories ingested from this IP, please try again after an hour' }
 });
 
 const fileReadLimiter = rateLimit({
   windowMs: 15 * 60 * 1000, // 15 minutes
   max: 200, // 200 file reads per 15 minutes per IP
+  store: createResilientStore('file_read:', 15 * 60 * 1000),
   message: { error: 'Too many file read requests from this IP, please try again later' }
 });
 
@@ -39,7 +41,7 @@ router.post('/ingest', verifyToken, ingestLimiter, async (req, res) => {
     const { nodes, edges } = await buildReactFlowGraph(files, tempDir);
     const skeleton = await buildCodebaseSkeleton(files, tempDir);
     
-    sessions.set(sessionId, { repoPath: tempDir, skeleton });
+    await sessions.set(sessionId, { repoPath: tempDir, skeleton });
 
     await RepoAnalysisHistory.findOneAndUpdate(
       { userId: req.user.uid, repoUrl },
@@ -50,7 +52,7 @@ router.post('/ingest', verifyToken, ingestLimiter, async (req, res) => {
     setTimeout(async () => {
       try {
         await fs.rm(tempDir, { recursive: true, force: true });
-        sessions.delete(sessionId);
+        await sessions.delete(sessionId);
       } catch (e) {
         console.error(`Failed to cleanup session ${sessionId}`, e);
       }
@@ -80,7 +82,7 @@ router.get('/file-content', verifyToken, fileReadLimiter, async (req, res) => {
     const { sessionId, filePath } = req.query;
     if (!sessionId || !filePath) return res.status(400).json({ error: 'sessionId and filePath are required' });
     
-    const session = sessions.get(sessionId);
+    const session = await sessions.get(sessionId);
     if (!session) return res.status(404).json({ error: 'Session not found or expired' });
     
     const normalizedPath = path.normalize(filePath).replace(/^(\.\.(\/|\\|$))+/, '');
@@ -105,7 +107,7 @@ router.post('/chat', verifyToken, aiRateLimiter, async (req, res) => {
     
     if (!sessionId || !messages) return res.status(400).json({ error: 'sessionId and messages are required' });
     
-    const session = sessions.get(sessionId);
+    const session = await sessions.get(sessionId);
     if (!session) return res.status(404).json({ error: 'Session not found or expired' });
     
     await streamChat(session.skeleton, messages, isInterviewMode, res);
