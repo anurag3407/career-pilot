@@ -321,7 +321,8 @@ export const templates = [
     "views": 1026,
     "rating": 4.5,
     "image": "/template-previews/Cherry-Blossom.png",
-    "createdAt": "2026-05-01"
+    "createdAt": "2026-05-01",
+    "isComplete": true
   },
   {
     "id": "Choose_Adventure",

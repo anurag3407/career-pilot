@@ -1,3 +1,74 @@
+# [1.88.0](https://github.com/anurag3407/career-pilot/compare/v1.87.0...v1.88.0) (2026-05-29)
+
+
+### Features
+
+* Implement resume upload feature for auto-building portfolios ([6a9f287](https://github.com/anurag3407/career-pilot/commit/6a9f28704043d40b4edbc6a24c4423393d5e11d1))
+
+# [1.87.0](https://github.com/anurag3407/career-pilot/compare/v1.86.0...v1.87.0) (2026-05-29)
+
+
+### Features
+
+* add complete Floating Islands portfolio template ([89144ac](https://github.com/anurag3407/career-pilot/commit/89144acc663c118d605da2f4b1820ff61102f452))
+
+# [1.86.0](https://github.com/anurag3407/career-pilot/compare/v1.85.0...v1.86.0) (2026-05-29)
+
+
+### Features
+
+* implement CyberSecurity Hacker Hero section ([96854a1](https://github.com/anurag3407/career-pilot/commit/96854a1036bc8188b495752ee675cc3b9f6770b0))
+
+# [1.85.0](https://github.com/anurag3407/career-pilot/compare/v1.84.0...v1.85.0) (2026-05-29)
+
+
+### Features
+
+* add Tabs component for tabbed navigation ([5f34777](https://github.com/anurag3407/career-pilot/commit/5f347777eb4759dfd98c8f9766f07ed8fa349887))
+
+# [1.84.0](https://github.com/anurag3407/career-pilot/compare/v1.83.0...v1.84.0) (2026-05-29)
+
+
+### Bug Fixes
+
+* address Copilot review feedback ([27b6141](https://github.com/anurag3407/career-pilot/commit/27b61410cf2a1abed02ee2f191320977c28c6677))
+* harden GitHub profile overview data ([fc31a5c](https://github.com/anurag3407/career-pilot/commit/fc31a5c44c69484cb5dfe8803ab0759420ddaf15))
+
+
+### Features
+
+* add GitHub overview card to dashboard with user stats ([e438e7f](https://github.com/anurag3407/career-pilot/commit/e438e7f389808a1bbdd7c35afd90d2daaf869365))
+* add match score badge to job cards and corresponding test ([b1c61c8](https://github.com/anurag3407/career-pilot/commit/b1c61c84a46917b9bb05218f1ab65b80908a6d7e))
+* implement Select component with search and multi-select functionality ([fce6c4a](https://github.com/anurag3407/career-pilot/commit/fce6c4a5e28f1a650b8de4d1c5b52a6160a2c0fa))
+
+# [1.83.0](https://github.com/anurag3407/career-pilot/compare/v1.82.1...v1.83.0) (2026-05-29)
+
+
+### Features
+
+* **portfolio:** Add complete Candy Pop portfolio template [#1930](https://github.com/anurag3407/career-pilot/issues/1930) ([531d531](https://github.com/anurag3407/career-pilot/commit/531d531dc3df055028610ae905d63233a9d32b68))
+* **portfolio:** implement Apple Showcase portfolio template ([6b56943](https://github.com/anurag3407/career-pilot/commit/6b569431ffbc6e10ce81403d185af64ac4dcd3bf))
+
+## [1.82.1](https://github.com/anurag3407/career-pilot/compare/v1.82.0...v1.82.1) (2026-05-29)
+
+
+### Performance Improvements
+
+* **frontend:** optimize bundle splitting, lazy loading, and LCP ([e2c8346](https://github.com/anurag3407/career-pilot/commit/e2c8346a9ed39cfdfc21730560bde8e4c5358b29))
+
+# [1.82.0](https://github.com/anurag3407/career-pilot/compare/v1.81.1...v1.82.0) (2026-05-29)
+
+
+### Bug Fixes
+
+* close mobile sidebar after navigation ([e5f11c7](https://github.com/anurag3407/career-pilot/commit/e5f11c736d18c9ea8c892e09b6435a06be549647))
+* improve authentication configuration error message ([f830995](https://github.com/anurag3407/career-pilot/commit/f8309953f112b204bf08916e21cd8071e08f48a6))
+
+
+### Features
+
+* add recently viewed jobs tracking ([b3ffe0f](https://github.com/anurag3407/career-pilot/commit/b3ffe0f5879d77fc2051cd7e7b24380080dd824a))
+
 ## [1.81.1](https://github.com/anurag3407/career-pilot/compare/v1.81.0...v1.81.1) (2026-05-29)
 
 

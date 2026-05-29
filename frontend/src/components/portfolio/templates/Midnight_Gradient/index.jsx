@@ -238,7 +238,7 @@ function About() {
             </p>
             <div className="flex items-center gap-2.5 text-gray-400 text-sm">
               <MapPin size={16} className="text-cyan-400" />
-              <span>Based in {data.personal.location}
+              <span>Based in {data.personal.location}</span>
             </div>
           </GlowingCard>
 

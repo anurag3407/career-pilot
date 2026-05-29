@@ -438,7 +438,7 @@ export default function Enhance() {
     try {
       const apiPreferences = {
         jobRole: jobRole,
-        yearsOfExperience: 0,
+        yearsOfExperience: resume.yearsOfExperience || 0, // Assuming yearsOfExperience is available in resume object
         skills: atsAnalysis?.missingKeywords || [],
         industry: '',
         customInstructions: `Focus on improving: ${atsAnalysis?.improvements?.map(i => i.issue).join(', ') || 'general improvements'}`,

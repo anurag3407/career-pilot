@@ -1,4 +1,4 @@
-import React, { useMemo } from "react";
+import React, { useState, useEffect } from "react";
 import data from "../../../../data/dummy_data.json";
 import {
   Github,
@@ -11,21 +11,56 @@ import {
 } from "lucide-react";
 import { motion } from "framer-motion";
 
-const CherryBlossom = () => {
-  const {
-    personal,
-    socials,
-    skills,
-    projects,
-    experience,
-    testimonials,
-    stats,
-  } = data;
+const CherryBlossom = ({ portfolioData }) => {
+  // Merge AI extracted data with dummy data fallbacks for visual completeness
+  const personal = {
+    ...data.personal,
+    ...(portfolioData?.hero?.subtitle && { name: portfolioData.hero.subtitle }),
+    ...(portfolioData?.hero?.title && { title: portfolioData.hero.title }),
+    ...(portfolioData?.hero?.tagline && { tagline: portfolioData.hero.tagline }),
+    ...(portfolioData?.about?.bio && { bio: portfolioData.about.bio }),
+  };
+
+  const socials = { ...data.socials, ...portfolioData?.socials };
+  
+  // Adapt skills array from simple strings to richer objects for the UI
+  let skills = data.skills;
+  if (portfolioData?.skills?.length > 0) {
+    if (typeof portfolioData.skills[0] === 'string') {
+      const categories = ["Core", "Technical", "Additional"];
+      skills = portfolioData.skills.map((s, i) => ({
+        name: s,
+        level: Math.floor(Math.random() * 20) + 75, // Random 75-95%
+        category: categories[i % categories.length]
+      }));
+    } else {
+      skills = portfolioData.skills;
+    }
+  }
+
+  // Adapt projects to ensure they have images and URLs
+  let projects = data.projects;
+  if (portfolioData?.projects?.length > 0) {
+    projects = portfolioData.projects.map((p, i) => ({
+      title: p.title || p.name || 'Project',
+      description: p.description || '',
+      techStack: p.technologies || p.techStack || [],
+      image: p.image || data.projects[i % data.projects.length].image,
+      liveUrl: p.liveUrl || "#",
+      githubUrl: p.githubUrl || "#"
+    }));
+  }
+
+  const experience = portfolioData?.experience?.length > 0 ? portfolioData.experience : data.experience;
+  const testimonials = portfolioData?.testimonials?.length > 0 ? portfolioData.testimonials : data.testimonials;
+  const stats = portfolioData?.stats || data.stats;
 
   const skillCategories = [...new Set(skills.map((skill) => skill.category))];
 
-  const petals = useMemo(() => {
-    return [...Array(50)].map((_, i) => ({
+  const [petals, setPetals] = useState([]);
+
+  useEffect(() => {
+    setPetals([...Array(50)].map((_, i) => ({
       id: i,
       initial: {
         opacity: 0,
@@ -46,7 +81,7 @@ const CherryBlossom = () => {
         ease: "linear",
         delay: Math.random() * 15,
       },
-    }));
+    })));
   }, []);
 
   return (
