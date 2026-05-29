@@ -281,9 +281,17 @@ function analyzeKeywords(text) {
   const keywordsMissing = [];
 
   for (const keyword of ALL_KEYWORDS) {
-    const pattern = keyword.includes(' ')
-      ? keyword
-      : `\\b${keyword.replace(/[.*+?^${}()|[\]\\]/g, '\\$&')}\\b`;
+    const escaped = keyword.replace(/[.*+?^${}()|[\]\\]/g, '\\$&');
+    let pattern;
+
+    if (keyword.includes(' ')) {
+      pattern = escaped;
+    } else {
+      const leadingBoundary = /\w/.test(keyword[0]) ? '\\b' : '';
+      const trailingBoundary = /\w/.test(keyword[keyword.length - 1]) ? '\\b' : '';
+      pattern = `${leadingBoundary}${escaped}${trailingBoundary}`;
+    }
+
     const regex = new RegExp(pattern, 'i');
     if (regex.test(lower)) {
       keywordsFound.push(keyword);

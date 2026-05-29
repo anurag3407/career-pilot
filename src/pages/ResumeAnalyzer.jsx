@@ -19,6 +19,7 @@ export default function ResumeAnalyzer() {
     selectFile,
     clearFile,
     runAnalysis,
+    setError,
   } = useResumeAnalyzer();
 
   return (
@@ -52,6 +53,7 @@ export default function ResumeAnalyzer() {
         onFileSelect={selectFile}
         onClear={clearFile}
         onAnalyze={runAnalysis}
+        onError={setError}
         loading={loading}
         extracting={extracting}
         error={error}

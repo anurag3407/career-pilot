@@ -2,23 +2,43 @@ import { useCallback } from 'react';
 import { useDropzone } from 'react-dropzone';
 import { Upload, FileText, X, Loader2 } from 'lucide-react';
 
+function getRejectionMessage(code) {
+  switch (code) {
+    case 'too-many-files':
+      return 'Please upload only one file at a time.';
+    case 'file-too-large':
+      return 'File exceeds 10MB limit. Please upload a smaller file.';
+    case 'file-invalid-type':
+      return 'Unsupported format. Please upload a .pdf or .txt file.';
+    default:
+      return 'File rejected. Please upload a valid .pdf or .txt file under 10MB.';
+  }
+}
+
 export default function ResumeUploader({
   file,
   onFileSelect,
   onClear,
   onAnalyze,
+  onError,
   loading,
   extracting,
   error,
   acceptedTypes,
 }) {
   const onDrop = useCallback(
-    (acceptedFiles) => {
+    (acceptedFiles, fileRejections) => {
+      if (fileRejections.length > 0) {
+        const code = fileRejections[0].errors[0]?.code;
+        onError?.(getRejectionMessage(code));
+        return;
+      }
+
       if (acceptedFiles.length > 0) {
         onFileSelect(acceptedFiles[0]);
       }
     },
-    [onFileSelect],
+    [onFileSelect, onError],
   );
 
   const { getRootProps, getInputProps, isDragActive } = useDropzone({
