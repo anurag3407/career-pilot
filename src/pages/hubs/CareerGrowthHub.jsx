@@ -25,7 +25,7 @@ export default function CareerGrowthHub() {
         title="AI Career Trajectory"
         description="Forecast your industry growth pathway, map required skill milestones, and estimate salary progression."
         badge="New AI"
-        color="indigo-500 animate-pulse"
+        color="indigo-500"
       />
       <ToolCard
         to="/fellowship"

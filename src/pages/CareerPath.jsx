@@ -177,7 +177,9 @@ export default function CareerPath() {
       const text = selectedResume.originalText.toLowerCase()
       const popularTechs = ['react', 'node', 'express', 'python', 'javascript', 'typescript', 'mongodb', 'sql', 'docker', 'aws', 'css', 'html', 'git', 'java', 'c++', 'c#', 'rust', 'go', 'figma', 'product management', 'kubernetes']
       popularTechs.forEach(tech => {
-        if (text.includes(tech)) {
+        const escapedTech = tech.replace(/[-\/\\^$*+?.()|[\]{}]/g, '\\$&')
+        const regex = new RegExp(`(?:^|[^a-zA-Z0-9#+])${escapedTech}(?:$|[^a-zA-Z0-9#+])`, 'i')
+        if (regex.test(text)) {
           extractedSkills.push(tech.charAt(0).toUpperCase() + tech.slice(1))
         }
       })
