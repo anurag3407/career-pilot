@@ -15,6 +15,7 @@ import AppLayout from './components/AppLayout';
 import Footer from './components/ui/Footer';
 
 import CommandPalette from './components/CommandPalette';
+import CommandPaletteTemplate from './components/portfolio/templates/Command_Palette';
 import BackToTop from './components/BackToTop';
 import Home from './pages/Home';
 import Login from './pages/Login';
@@ -182,6 +183,12 @@ function AppRoutes() {
         {/* Template Gallery Route (Registered at /templates) */}
         <Route path="/templates" element={<RouteErrorBoundary><TemplateGallery /></RouteErrorBoundary>} />
         <Route path="/templates/chatbot" element={<ChatbotPortfolio />} />
+        <Route path="/templates/day-night-cycle" element={<DayNightCycle />} />
+        <Route path="/templates/rainforest-canopy" element={<RainforestCanopy />} />
+        <Route
+          path="/templates/command-palette"
+          element={<CommandPaletteTemplate />}
+        />
         <Route path="/templates/gamified-xp" element={<GamifiedXP />} />
         
         {/* Core Protected Routes */}

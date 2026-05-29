@@ -22,7 +22,6 @@ import { X } from "lucide-react";
 // import RetroProjects from "../components/portfolio/templates/2D_Retro_8bit/Projects";
 // import FantasyRPGProjects from "../components/portfolio/templates/Fantasy_RPG/Projects";
 
-
 function FilterSelect({ value, onChange, options, className = "" }) {
   const [open, setOpen] = useState(false);
   const ref = useRef(null);

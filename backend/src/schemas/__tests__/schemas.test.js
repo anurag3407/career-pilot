@@ -50,7 +50,7 @@ describe('auth.schema — updateNotificationPrefsSchema', () => {
 });
 
 describe('auth.schema — registerSchema', () => {
-  const valid = { name: 'Alice Example', email: 'alice@example.com', password: 'Passw0rdTest' };
+  const valid = { name: 'Alice Example', email: 'alice@example.com', 'password': 'dummy-password' };
 
   test('accepts a fully valid registration body', () => {
     const result = registerSchema.safeParse(valid);
@@ -127,8 +127,11 @@ describe('auth.schema — registerSchema', () => {
 });
 
 describe('auth.schema — loginSchema', () => {
-  const valid = { email: 'alice@example.com', password: 'anypassword' };
-
+  const valid = {
+  name: 'Alice Example',
+  email: 'alice@example.com',
+  password: 'TEST_PASSWORD_PLACEHOLDER'
+};
   test('accepts a valid login body', () => {
     const result = loginSchema.safeParse(valid);
     assert.ok(result.success, JSON.stringify(result.error?.issues));
@@ -197,7 +200,10 @@ describe('auth.schema — forgotPasswordSchema', () => {
 });
 
 describe('auth.schema — resetPasswordSchema', () => {
-  const valid = { token: 'a'.repeat(64), newPassword: 'Passw0rdTest' };
+  const valid = {
+  token: 'a'.repeat(64),
+  newPassword: 'TEST_PASSWORD_PLACEHOLDER'
+};
 
   test('accepts a valid reset payload', () => {
     const result = resetPasswordSchema.safeParse(valid);
@@ -205,7 +211,9 @@ describe('auth.schema — resetPasswordSchema', () => {
   });
 
   test('rejects a missing token', () => {
-    const result = resetPasswordSchema.safeParse({ newPassword: 'Passw0rdTest' });
+  const result = resetPasswordSchema.safeParse({
+    newPassword: 'TEST_PASSWORD_PLACEHOLDER'
+  });
     assert.ok(!result.success);
     assert.ok(result.error.issues.some((e) => e.path[0] === 'token'));
   });
