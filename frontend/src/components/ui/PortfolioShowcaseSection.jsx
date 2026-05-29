@@ -24,7 +24,14 @@ export default function PortfolioShowcaseSection() {
       name: "Professional Theme",
       description: "Highlight your career milestones, industry experience, and professional achievements.",
       skills: ["Product", "Strategy", "Growth"]
-    }
+    },
+    {
+     id: 4,
+     name: "Wave Distortion",
+     description:
+    "Ocean-wave-inspired animated portfolio with fluid motion, SVG waves, liquid distortion effects, and futuristic interactive visuals.",
+     skills: ["Framer Motion", "SVG Waves", "Creative UI"]
+     }
   ];
 
   useEffect(() => {

@@ -11,6 +11,7 @@ import ArchitectureBlueprintHero from "../components/portfolio/templates/Archite
 import GeometricShapesAbout from "../components/portfolio/templates/Geometric_Shapes/About";
 import GeometricShapesHero from "../components/portfolio/templates/Geometric_Shapes/Hero";
 import LiquidGlass from "../components/portfolio/templates/Liquid_Glass/index";
+import WaveDistortionPortfolio from "../components/portfolio/templates/Wave_distortion/index.jsx";
 import PlayingCardsPortfolio from "../components/portfolio/templates/Playing_Cards";
 import Navbar from '../components/Navbar'
 import { X } from "lucide-react";
@@ -207,6 +208,7 @@ import React, { Suspense, useMemo } from 'react';
 const TemplatePreviewModal = ({ templateId, isOpen, onClose }) => {
   const Component = useMemo(() => {
     if (!templateId) return null;
+    console.log("Loading template:", templateId);
     return React.lazy(() => 
       import(`../components/portfolio/templates/${templateId}/Hero.jsx`).catch(() => 
         import(`../components/portfolio/templates/${templateId}/index.jsx`)
@@ -462,6 +464,18 @@ export default function TemplateGallery() {
         </div>
         <div className="overflow-hidden rounded-2xl border border-emerald-500/20">
           <PlayingCardsPortfolio />
+        </div>
+      </div>
+      {/* Wave Distortion Theme */}
+      <div className="mt-12">
+        <div className="mb-4 flex items-center gap-3 px-1">
+          <span className="rounded-full bg-blue-500/20 px-3 py-1 text-xs font-bold uppercase tracking-widest text-blue-400 border border-blue-500/30">
+            Preview
+          </span>
+          <h2 className="text-lg font-semibold text-foreground/70">Wave Distortion Theme — Full Portfolio</h2>
+        </div>
+        <div className="overflow-hidden rounded-2xl border border-blue-500/20">
+          <WaveDistortionPortfolio />
         </div>
       </div>
 
