@@ -554,4 +554,145 @@ router.post('/career-trajectory', verifyToken, extractAIProvider, aiRateLimiter,
   }
 }));
 
+// Generate a customized study guide & project blueprint for a target role and specific skills
+// POST /api/enhance/milestone-guide
+router.post('/milestone-guide', verifyToken, extractAIProvider, aiRateLimiter, asyncHandler(async (req, res) => {
+  const { targetRole, skills } = req.body;
+
+  if (!targetRole || typeof targetRole !== 'string' || !targetRole.trim()) {
+    throw new ApiError(400, 'targetRole is required and must be a string');
+  }
+
+  const cleanSkills = Array.isArray(skills)
+    ? skills.filter(s => typeof s === 'string' && s.trim().length > 0).map(s => s.trim().slice(0, 50)).slice(0, 8)
+    : [];
+
+  const prompt = `You are a professional tech career coach. Create a highly actionable, structured study guide and portfolio project blueprint for someone who wants to become a ${targetRole.slice(0, 100)} and needs to master these skills: ${cleanSkills.join(', ') || 'relevant industry skills'}.
+
+Return exactly this JSON structure:
+{
+  "studyPlan": [
+    {
+      "week": "Week 1: Foundations",
+      "topics": ["Topic 1", "Topic 2", "Topic 3"],
+      "recommendedResource": "e.g., official documentation, specific tutorial name"
+    },
+    {
+      "week": "Week 2: Advanced Concepts",
+      "topics": ["Topic 1", "Topic 2"],
+      "recommendedResource": "e.g., intermediate project, key repo reference"
+    },
+    {
+      "week": "Week 3: Practical Integration",
+      "topics": ["Topic 1", "Topic 2"],
+      "recommendedResource": "e.g., production deployment guide"
+    }
+  ],
+  "projectBlueprint": {
+    "title": "A highly descriptive project name matching the target skills",
+    "description": "A 2-sentence summary of what the portfolio project is and its target use case",
+    "features": [
+      "Core feature 1 representing essential skill validation",
+      "Core feature 2 representing advanced integration",
+      "Core feature 3 representing proper deployment/performance optimization"
+    ],
+    "techStack": ["Technology 1", "Technology 2", "Technology 3"]
+  },
+  "interviewPreparation": [
+    {
+      "question": "A typical, challenging technical interview question about this role/stack",
+      "answer": "A concise, 2-3 sentence model answer focusing on key architectural or conceptual points"
+    },
+    {
+      "question": "Another architectural or workflow interview question",
+      "answer": "Concise model answer"
+    }
+  ]
+}
+
+Rules:
+- Return ONLY valid JSON.
+- No markdown fences (e.g. no \`\`\`json), no extra text.
+- Do not exceed 3 weeks in the study plan.
+- Ensure project blueprint is highly creative and tailored to the target role.`;
+
+  try {
+    const provider = req.aiProvider;
+    const result = await provider.generateContent(prompt);
+    
+    if (!result) {
+      throw new Error('AI provider returned null or undefined response');
+    }
+
+    const responseText = typeof result.text === 'function'
+      ? result.text()
+      : result.text ?? result?.response?.text?.() ?? '';
+
+    const cleaned = responseText
+      .replace(/```json\s*/gi, '')
+      .replace(/```\s*/g, '')
+      .trim();
+
+    let parsed;
+    try {
+      parsed = JSON.parse(cleaned);
+    } catch (parseError) {
+      console.warn('AI milestone JSON parse failed, utilizing structured fallback:', parseError);
+      
+      // Fallback response matches target role and skills dynamically
+      parsed = {
+        studyPlan: [
+          {
+            week: 'Week 1: Core Fundamentals',
+            topics: [\`Deep dive into \${cleanSkills[0] || 'core concepts'}\`, \`Understand \${cleanSkills[1] || 'best practices'} architectures\`, 'Setup scaffolding & basic configurations'],
+            recommendedResource: \`Official \${cleanSkills[0] || 'Technology'} Documentation & MDN Web Docs\`
+          },
+          {
+            week: 'Week 2: Advanced Integration & State',
+            topics: [\`Implement \${cleanSkills[2] || 'advanced functionalities'}\`, \`Configure state management and data flows\`, \`Write unit tests for core modules\`],
+            recommendedResource: \`Advanced tutorials on Medium, dev.to, and GitHub community examples\`
+          },
+          {
+            week: 'Week 3: Practical Integration & Deploy',
+            topics: [\`Optimize bundle size and render performance\`, 'Handle security sanitization & error boundaries', \`Deploy app to Vercel/Netlify/Render\`],
+            recommendedResource: 'Lighthouse audits, web.dev optimization checklists, and production manuals'
+          }
+        ],
+        projectBlueprint: {
+          title: \`Custom AI-Driven \${targetRole} Hub\`,
+          description: \`A state-of-the-art portfolio project designed to demonstrate production-ready skills in \${cleanSkills.slice(0, 3).join(', ') || 'modern frameworks'}.\`,
+          features: [
+            \`Responsive interactive interface with advanced user flows\`,
+            \`High-performance asynchronous data fetching and local caching\`,
+            \`Polished styling, secure middleware authentication, and clean error states\`
+          ],
+          techStack: cleanSkills.length > 0 ? [...cleanSkills.slice(0, 3), 'TailwindCSS', 'Git'] : ['React', 'Node.js', 'TailwindCSS']
+        },
+        interviewPreparation: [
+          {
+            question: \`What are the typical architectural bottlenecks when working with \${cleanSkills[0] || 'this tech stack'} and how do you prevent them?\`,
+            answer: 'Common bottlenecks include excessive re-renders, slow payload transfers, and blocking operations. We solve these by implementing memoization, lazy loading, debouncing network requests, and decoupling heavy background processing.'
+          },
+          {
+            question: \`Can you walk me through your typical workflow for debugging a complex asynchronous data flow?\`,
+            answer: 'I start by tracing the call stack, inspecting request payloads in devtools, setting breakpoints in key handlers, validating response payloads against expected types, and ensuring robust local error boundary catches.'
+          }
+        ]
+      };
+    }
+
+    res.json({
+      success: true,
+      data: parsed,
+      provider: provider.providerName || 'gemini',
+      providerSource: req.aiProviderSource,
+      generatedAt: new Date().toISOString()
+    });
+
+  } catch (error) {
+    console.error('Milestone guide generation error:', error);
+    throw new ApiError(500, 'Failed to generate study guide. Please try again.');
+  }
+}));
+
 export default router;

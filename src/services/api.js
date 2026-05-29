@@ -514,6 +514,28 @@ export const enhanceApi = {
       body: JSON.stringify({ resumeText })
     })
     return handleResponse(response)
+  },
+
+  // Predict career trajectories based on resume data
+  async predictTrajectory(resumeData) {
+    const headers = await getAuthHeaders()
+    const response = await fetch(`${API_BASE}/enhance/career-trajectory`, {
+      method: 'POST',
+      headers,
+      body: JSON.stringify({ resumeData })
+    })
+    return handleResponse(response)
+  },
+
+  // Generate a customized study guide & project blueprint for a milestone
+  async getMilestoneGuide(targetRole, skills) {
+    const headers = await getAuthHeaders()
+    const response = await fetch(`${API_BASE}/enhance/milestone-guide`, {
+      method: 'POST',
+      headers,
+      body: JSON.stringify({ targetRole, skills })
+    })
+    return handleResponse(response)
   }
 }
 

@@ -1,4 +1,4 @@
-import { GraduationCap, Mic, Mail, Globe, Sparkles, Award } from 'lucide-react'
+import { GraduationCap, Mic, Mail, Globe, Award, TrendingUp } from 'lucide-react'
 import HubLayout from '../../components/HubLayout'
 import ToolCard from '../../components/ToolCard'
 
@@ -18,6 +18,14 @@ export default function CareerGrowthHub() {
         description="Practice answering mock interview questions and receive instant AI grading and tips."
         badge="Audio AI"
         color="primary"
+      />
+      <ToolCard
+        to="/career-path"
+        icon={TrendingUp}
+        title="AI Career Trajectory"
+        description="Forecast your industry growth pathway, map required skill milestones, and estimate salary progression."
+        badge="New AI"
+        color="indigo-500 animate-pulse"
       />
       <ToolCard
         to="/fellowship"
@@ -42,14 +50,14 @@ export default function CareerGrowthHub() {
         color="primary"
       />
 
-      {/* Static premium tips section */}
+      {/* Dynamic premium tips section */}
       <div className="col-span-full mt-8 p-6 rounded-2xl bg-card border border-border">
         <h3 className="text-lg font-bold text-foreground mb-3 flex items-center gap-2">
           <Award className="w-5 h-5 text-amber-500" />
           Growth Roadmap
         </h3>
         <p className="text-sm text-muted-foreground leading-relaxed">
-          Combine these tools to maximize your success: Start by practicing your elevator pitch in <strong>AI Interview Prep</strong>, draft your networking messages using the <strong>Email Generator</strong>, and make sure your <strong>LinkedIn profile</strong> is fully optimized before reaching out to hiring managers.
+          Combine these tools to maximize your success: Forecast your career timeline in <strong>AI Career Trajectory</strong>, practice your elevator pitch in <strong>AI Interview Prep</strong>, draft your networking messages using the <strong>Email Generator</strong>, and make sure your <strong>LinkedIn profile</strong> is fully optimized before reaching out to hiring managers.
         </p>
       </div>
     </HubLayout>
