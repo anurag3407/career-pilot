@@ -1,4 +1,4 @@
-import { useState, useEffect, useRef } from "react";
+﻿import { useState, useEffect, useRef } from "react";
 import {
   motion,
   useScroll,
@@ -1151,9 +1151,14 @@ export default function WaveDistortionPortfolio({ preview = false }) {
               }}
             >
               <div className="grid grid-cols-2 gap-4 mb-4">
-                {["Your Name", "Your Email"].map((ph) => (
+                {[
+                    { ph: "Your Name", type: "text" },
+                    { ph: "Your Email", type: "email" },
+                  ].map(({ ph, type }) => (
                   <input
                     key={ph}
+                    type={type}
+                    aria-label={ph}
                     placeholder={ph}
                     className="rounded-xl px-4 py-3.5 text-sm text-white outline-none col-span-1"
                     style={{
@@ -1168,14 +1173,14 @@ export default function WaveDistortionPortfolio({ preview = false }) {
                 ))}
               </div>
               <input
-                placeholder="Subject"
+                aria-label="Subject" placeholder="Subject"
                 className="w-full rounded-xl px-4 py-3.5 text-sm text-white outline-none mb-4 block"
                 style={{ background: "rgba(0,200,255,0.05)", border: "1px solid rgba(0,200,255,0.16)", fontFamily: "inherit" }}
                 onFocus={(e) => (e.target.style.borderColor = "rgba(0,200,255,0.5)")}
                 onBlur={(e) => (e.target.style.borderColor = "rgba(0,200,255,0.16)")}
               />
               <textarea
-                placeholder="Your message…"
+                aria-label="Your message" placeholder="Your message…"
                 rows={5}
                 className="w-full rounded-xl px-4 py-3.5 text-sm text-white outline-none mb-5 block resize-y"
                 style={{ background: "rgba(0,200,255,0.05)", border: "1px solid rgba(0,200,255,0.16)", fontFamily: "inherit" }}

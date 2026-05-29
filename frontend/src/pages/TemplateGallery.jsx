@@ -1,4 +1,4 @@
-import { useState, useRef, useEffect } from "react";
+﻿import { useState, useRef, useEffect } from "react";
 import DeployModal from "../components/portfolio/DeployModal";
 import ThemeSelector from "../components/portfolio/ThemeSelector";
 import { useTheme } from "../hooks/useTheme";
@@ -11,7 +11,7 @@ import ArchitectureBlueprintHero from "../components/portfolio/templates/Archite
 import GeometricShapesAbout from "../components/portfolio/templates/Geometric_Shapes/About";
 import GeometricShapesHero from "../components/portfolio/templates/Geometric_Shapes/Hero";
 import LiquidGlass from "../components/portfolio/templates/Liquid_Glass/index";
-import WaveDistortionPortfolio from "../components/portfolio/templates/Wave_distortion/index.jsx";
+import WaveDistortionPortfolio from "../components/portfolio/templates/Wave_Distortion/index.jsx";
 import PlayingCardsPortfolio from "../components/portfolio/templates/Playing_Cards";
 import Navbar from '../components/Navbar'
 import { X } from "lucide-react";
@@ -472,7 +472,7 @@ export default function TemplateGallery() {
           <span className="rounded-full bg-blue-500/20 px-3 py-1 text-xs font-bold uppercase tracking-widest text-blue-400 border border-blue-500/30">
             Preview
           </span>
-          <h2 className="text-lg font-semibold text-foreground/70">Wave Distortion Theme � Full Portfolio</h2>
+          <h2 className="text-lg font-semibold text-foreground/70">Wave Distortion Theme — Full Portfolio</h2>
         </div>
         <div className="overflow-hidden rounded-2xl border border-blue-500/20">
           <WaveDistortionPortfolio preview={true} />
