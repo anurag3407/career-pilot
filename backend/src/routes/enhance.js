@@ -624,11 +624,20 @@ Rules:
       throw new Error('AI provider returned null or undefined response');
     }
 
-    const responseText = typeof result.text === 'function'
-      ? result.text()
-      : result.text ?? result?.response?.text?.() ?? '';
+    let responseText = '';
+    if (typeof result.text === 'function') {
+      const textVal = result.text();
+      responseText = textVal instanceof Promise ? await textVal : textVal;
+    } else if (result.text) {
+      responseText = result.text;
+    } else if (typeof result?.response?.text === 'function') {
+      const textVal = result.response.text();
+      responseText = textVal instanceof Promise ? await textVal : textVal;
+    } else if (result?.response?.text) {
+      responseText = result.response.text;
+    }
 
-    const cleaned = responseText
+    const cleaned = (responseText || '')
       .replace(/```json\s*/gi, '')
       .replace(/```\s*/g, '')
       .trim();

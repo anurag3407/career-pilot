@@ -50,7 +50,7 @@ export default function CareerGrowthHub() {
         color="primary"
       />
 
-      {/* Dynamic premium tips section */}
+      {/* Static premium tips section */}
       <div className="col-span-full mt-8 p-6 rounded-2xl bg-card border border-border">
         <h3 className="text-lg font-bold text-foreground mb-3 flex items-center gap-2">
           <Award className="w-5 h-5 text-amber-500" />

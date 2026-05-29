@@ -52,6 +52,38 @@ function ScoreRing({ score, label, size = 'md' }) {
   )
 }
 
+// Robust Salary String Parser
+const parseSalary = (salaryStr) => {
+  if (!salaryStr || typeof salaryStr !== 'string') return 60000
+  
+  // Clean string: remove $, commas, and whitespace
+  const clean = salaryStr.toLowerCase().replace(/[\$,\s]/g, '')
+  
+  // Helper to parse single value like "120k" or "120000"
+  const parseSingle = (s) => {
+    let multiplier = 1
+    if (s.includes('k')) {
+      multiplier = 1000
+      s = s.replace('k', '')
+    } else if (s.includes('m')) {
+      multiplier = 1000000
+      s = s.replace('m', '')
+    }
+    const parsed = parseFloat(s)
+    return isNaN(parsed) ? 60000 : parsed * multiplier
+  }
+
+  // Handle range e.g. "120k-150k"
+  if (clean.includes('-')) {
+    const parts = clean.split('-')
+    const low = parseSingle(parts[0])
+    const high = parseSingle(parts[1])
+    return (low + high) / 2
+  }
+
+  return parseSingle(clean)
+}
+
 export default function CareerPath() {
   const location = useLocation()
   const navigate = useNavigate()
@@ -200,6 +232,7 @@ export default function CareerPath() {
     setLoadingStep(0)
     setError(null)
     setResults(null)
+    setActivePathIndex(0)
     setUserCheckedSkills({})
 
     const resumeData = {
@@ -452,7 +485,7 @@ export default function CareerPath() {
                   <input
                     type="range"
                     min="0"
-                    max="15"
+                    max="20"
                     step="1"
                     value={yearsOfExperience}
                     onChange={(e) => setYearsOfExperience(Number(e.target.value))}
@@ -479,7 +512,7 @@ export default function CareerPath() {
                       onChange={(e) => setSkillInput(e.target.value)}
                       placeholder="e.g. JavaScript, Excel, Photoshop"
                       className="flex-1 px-4 py-2 bg-muted/40 border border-border rounded-2xl text-foreground placeholder:text-muted-foreground outline-none focus:ring-2 focus:ring-indigo-500 focus:border-transparent text-sm transition"
-                      onKeyPress={(e) => e.key === 'Enter' && handleAddSkill(e)}
+                      onKeyDown={(e) => e.key === 'Enter' && handleAddSkill(e)}
                     />
                     <button
                       type="button"
@@ -804,13 +837,18 @@ export default function CareerPath() {
                       activePath.roles?.reduce((acc, role) => [...acc, ...(role.skills || [])], []) || []
                     )]
                     
-                    const acquiredSkills = allMilestoneSkills.filter(skill =>
-                      skillsList.some(userSkill => userSkill.toLowerCase() === skill.toLowerCase())
-                    )
+                    const acquiredSkills = allMilestoneSkills.filter(skill => {
+                      const isInitial = skillsList.some(userSkill => userSkill.toLowerCase() === skill.toLowerCase())
+                      if (isInitial) return true
+                      return activePath.roles?.some(role => userCheckedSkills[role.title]?.[skill] === true)
+                    })
                     
-                    const gapSkills = allMilestoneSkills.filter(skill =>
-                      !skillsList.some(userSkill => userSkill.toLowerCase() === skill.toLowerCase())
-                    )
+                    const gapSkills = allMilestoneSkills.filter(skill => {
+                      const isInitial = skillsList.some(userSkill => userSkill.toLowerCase() === skill.toLowerCase())
+                      if (isInitial) return false
+                      const isChecked = activePath.roles?.some(role => userCheckedSkills[role.title]?.[skill] === true)
+                      return !isChecked
+                    })
 
                     const overallCompletion = allMilestoneSkills.length > 0 
                       ? Math.round((acquiredSkills.length / allMilestoneSkills.length) * 100)
@@ -954,9 +992,7 @@ export default function CareerPath() {
                             
                             {/* Bar length heuristic parsing */}
                             {(() => {
-                              const salaryStr = role.estimatedSalary || '$60k'
-                              const match = salaryStr.match(/\d+/)
-                              const val = match ? Number(match[0]) : 60
+                              const val = parseSalary(role.estimatedSalary) / 1000
                               const ratio = Math.min(100, Math.round((val / 250) * 100))
 
                               return (
@@ -989,11 +1025,9 @@ export default function CareerPath() {
 
                       {/* Progression summary multiplier */}
                       {(() => {
-                        const startSalary = activePath.roles?.[0]?.estimatedSalary || '$60k'
-                        const endSalary = activePath.roles?.[activePath.roles.length - 1]?.estimatedSalary || '$180k'
-                        const sVal = Number(startSalary.match(/\d+/)?.[0] || 60)
-                        const eVal = Number(endSalary.match(/\d+/)?.[0] || 180)
-                        const multiplier = (eVal / sVal).toFixed(1)
+                        const sVal = parseSalary(activePath.roles?.[0]?.estimatedSalary)
+                        const eVal = parseSalary(activePath.roles?.[activePath.roles.length - 1]?.estimatedSalary)
+                        const multiplier = sVal > 0 ? (eVal / sVal).toFixed(1) : '1.0'
 
                         return (
                           <div className="bg-primary/5 border border-primary/15 rounded-2xl p-4">
