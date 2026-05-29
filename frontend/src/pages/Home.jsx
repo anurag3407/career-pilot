@@ -1,6 +1,6 @@
-import Navbar from '../components/Navbar'
-import HeroSection from '../components/ui/HeroSection'
+import JetLandingPage from './JetLandingPage'
 import FeaturesSection, { AdditionalFeatures } from '../components/ui/FeaturesSection'
+import PortfolioShowcaseSection from '../components/ui/PortfolioShowcaseSection'
 import HowItWorksSection from '../components/ui/HowItWorksSection'
 import TestimonialsSection from '../components/ui/TestimonialsSection'
 import CTASection from '../components/ui/CTASection'
@@ -10,10 +10,8 @@ import { StackedCircularFooter } from '../components/ui/stacked-circular-footer'
 export default function Home() {
   return (
     <div className="min-h-screen bg-background text-foreground selection:bg-primary selection:text-primary-foreground">
-      <Navbar />
-
-      {/* Hero Section with World Map */}
-      <HeroSection />
+      {/* Jet Landing Page Hero Section */}
+      <JetLandingPage />
 
       {/* Main Features Section - Bento Grid */}
       <section id="features" className="relative overflow-hidden">
@@ -27,6 +25,9 @@ export default function Home() {
           </div>
         </div>
       </section>
+
+      {/* Portfolio Showcase Section */}
+      <PortfolioShowcaseSection />
 
       {/* How It Works Section */}
       <HowItWorksSection />
@@ -43,7 +44,8 @@ export default function Home() {
       <CTASection />
 
       {/* Footer */}
-      <StackedCircularFooter />
+      <Footer />
+     
     </div>
   )
 }

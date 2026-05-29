@@ -1,48 +1,129 @@
-import { useState } from 'react'
+import { useEffect, useRef, useState } from 'react'
 import { useNavigate } from 'react-router-dom'
 import toast from 'react-hot-toast'
 import { motion } from 'framer-motion'
 import { uploadApi, resumeApi } from '../services/api'
+import Button from '../components/Button'
 import DropZone from '../components/DropZone'
-import { FileText, Upload as UploadIcon, CheckCircle, Target, BarChart3, Zap } from 'lucide-react'
+import { FileText, Upload as UploadIcon, CheckCircle, Target, BarChart3, Zap, Linkedin, ArrowRight, User, Briefcase, GraduationCap, PlusCircle, TextSelect } from 'lucide-react'
+import { Link } from 'react-router-dom'
 
 export default function Upload() {
   const navigate = useNavigate()
+  const uploadControllerRef = useRef(null)
+  const redirectTimeoutRef = useRef(null)
 
   const [_file, setFile] = useState(null)
   const [loading, setLoading] = useState(false)
   const [uploadComplete, setUploadComplete] = useState(false)
 
+  const [linkedinUrl, setLinkedinUrl] = useState('')
+  const [linkedinLoading, setLinkedinLoading] = useState(false)
+  const [linkedinPreview, setLinkedinPreview] = useState(null)
+  const [linkedinProfile, setLinkedinProfile] = useState(null)
+  const [importing, setImporting] = useState(false)
+
   const handleFileSelect = async (selectedFile) => {
     setFile(selectedFile)
     setLoading(true)
+    const controller = new AbortController()
+    uploadControllerRef.current = controller
 
     try {
       // Upload and extract text
-      const response = await uploadApi.uploadPdf(selectedFile)
+      const response = await uploadApi.uploadPdf(selectedFile, { signal: controller.signal })
       const extractedText = response.data.extractedText
 
       // Create resume automatically
       const resumeTitle = `Resume - ${new Date().toLocaleDateString()}`
-      const resumeResponse = await resumeApi.create({
-        originalText: extractedText,
-        title: resumeTitle
-      })
+      const resumeResponse = await resumeApi.create(
+        {
+          originalText: extractedText,
+          title: resumeTitle
+        },
+        { signal: controller.signal }
+      )
 
       setUploadComplete(true)
       toast.success('Resume uploaded successfully!')
 
       // Redirect to enhance page after a brief delay
-      setTimeout(() => {
+      redirectTimeoutRef.current = setTimeout(() => {
         navigate(`/enhance/${resumeResponse.data.id}`)
       }, 1500)
 
     } catch (error) {
+      if (error.name === 'AbortError') {
+        toast('Upload cancelled')
+        return
+      }
       const message = error.response?.data?.error || error.message || 'Failed to upload resume'
       toast.error(message)
       setFile(null)
     } finally {
       setLoading(false)
+      uploadControllerRef.current = null
+    }
+  }
+
+  const handleCancelUpload = () => {
+    uploadControllerRef.current?.abort()
+    if (redirectTimeoutRef.current) {
+      clearTimeout(redirectTimeoutRef.current)
+      redirectTimeoutRef.current = null
+    }
+    setLoading(false)
+    setUploadComplete(false)
+    setFile(null)
+  }
+
+  useEffect(() => {
+    return () => {
+      uploadControllerRef.current?.abort()
+      if (redirectTimeoutRef.current) {
+        clearTimeout(redirectTimeoutRef.current)
+      }
+    }
+  }, [])
+
+  const normalizeLinkedInUrl = (raw) => {
+    let url = raw.trim()
+    if (!url.startsWith('http://') && !url.startsWith('https://')) {
+      url = `https://${url}`
+    }
+    return url
+  }
+
+  const handleLinkedinPreview = async () => {
+    if (!linkedinUrl.trim()) return toast.error('Please enter a LinkedIn profile URL')
+    const url = normalizeLinkedInUrl(linkedinUrl)
+    if (!url.includes('linkedin.com/in/')) {
+      return toast.error('Please enter a valid LinkedIn profile URL (linkedin.com/in/...)')
+    }
+    setLinkedinLoading(true)
+    setLinkedinPreview(null)
+    setLinkedinProfile(null)
+    try {
+      const res = await resumeApi.previewLinkedIn(url)
+      setLinkedinPreview(res.preview)
+      setLinkedinProfile(res.profile)
+    } catch (err) {
+      toast.error(err.message || 'Failed to load LinkedIn profile')
+    } finally {
+      setLinkedinLoading(false)
+    }
+  }
+
+  const handleLinkedinImport = async () => {
+    setImporting(true)
+    try {
+      const res = await resumeApi.importLinkedIn(normalizeLinkedInUrl(linkedinUrl), linkedinProfile)
+      toast.success('LinkedIn profile imported!')
+      navigate(`/enhance/${res.data.id}`)
+    } catch (err) {
+      toast.error(err.message || 'Failed to import profile')
+    } finally {
+      setImporting(false)
     }
   }
 
@@ -78,7 +159,7 @@ export default function Upload() {
           className="grid md:grid-cols-3 gap-4 mb-8"
         >
           <div className="bg-background/50 border border-border rounded-xl p-4 flex items-center gap-3">
-            <div className="w-10 h-10 bg-primary/20 rounded-lg flex items-center justify-center flex-shrink-0">
+            <div className="w-10 h-10 bg-primary/20 rounded-lg flex items-center justify-center shrink-0">
               <Target className="w-5 h-5 text-primary" />
             </div>
             <div>
@@ -87,7 +168,7 @@ export default function Upload() {
             </div>
           </div>
           <div className="bg-background/50 border border-border rounded-xl p-4 flex items-center gap-3">
-            <div className="w-10 h-10 bg-purple-500/20 rounded-lg flex items-center justify-center flex-shrink-0">
+            <div className="w-10 h-10 bg-purple-500/20 rounded-lg flex items-center justify-center shrink-0">
               <BarChart3 className="w-5 h-5 text-purple-400" />
             </div>
             <div>
@@ -96,7 +177,7 @@ export default function Upload() {
             </div>
           </div>
           <div className="bg-background/50 border border-border rounded-xl p-4 flex items-center gap-3">
-            <div className="w-10 h-10 bg-green-500/20 rounded-lg flex items-center justify-center flex-shrink-0">
+            <div className="w-10 h-10 bg-green-500/20 rounded-lg flex items-center justify-center shrink-0">
               <Zap className="w-5 h-5 text-green-400" />
             </div>
             <div>
@@ -105,6 +186,31 @@ export default function Upload() {
             </div>
           </div>
         </motion.div>
+
+        {/* Alternative Methods */}
+        {!uploadComplete && (
+          <motion.div
+            initial={{ opacity: 0, y: 20 }}
+            animate={{ opacity: 1, y: 0 }}
+            transition={{ delay: 0.15 }}
+            className="grid md:grid-cols-2 gap-6 mb-8"
+          >
+            <Link to="/resume-builder" className="group p-6 rounded-xl bg-background/50 border border-border hover:border-primary/50 transition-all flex flex-col items-center text-center">
+              <div className="w-12 h-12 bg-primary/10 rounded-full flex items-center justify-center mb-4 group-hover:scale-110 transition-transform">
+                <PlusCircle className="w-6 h-6 text-primary" />
+              </div>
+              <h3 className="text-lg font-semibold text-foreground mb-2">Create from Scratch</h3>
+              <p className="text-sm text-muted-foreground">Use our step-by-step builder to create a professional resume.</p>
+            </Link>
+            <Link to="/text-to-resume" className="group p-6 rounded-xl bg-background/50 border border-border hover:border-primary/50 transition-all flex flex-col items-center text-center">
+              <div className="w-12 h-12 bg-secondary/10 rounded-full flex items-center justify-center mb-4 group-hover:scale-110 transition-transform">
+                <TextSelect className="w-6 h-6 text-secondary-foreground" />
+              </div>
+              <h3 className="text-lg font-semibold text-foreground mb-2">Paste Text</h3>
+              <p className="text-sm text-muted-foreground">Convert raw text or an old resume into a structured format using AI.</p>
+            </Link>
+          </motion.div>
+        )}
 
         {/* Upload Section */}
         {!uploadComplete ? (
@@ -125,6 +231,7 @@ export default function Upload() {
             </div>
 
             <DropZone
+              key={_file ? 'uploading' : 'empty'}
               onFileSelect={handleFileSelect}
               disabled={loading}
               maxSizeMB={5}
@@ -141,6 +248,9 @@ export default function Upload() {
                   <p className="text-foreground font-medium">Processing your resume...</p>
                   <p className="text-muted-foreground text-sm">Extracting text and preparing analysis</p>
                 </div>
+                <Button variant="outline" size="sm" onClick={handleCancelUpload}>
+                  Cancel upload
+                </Button>
               </div>
             )}
           </motion.div>
@@ -172,6 +282,123 @@ export default function Upload() {
                 />
               ))}
             </div>
+          </motion.div>
+        )}
+
+        {/* LinkedIn Import */}
+        {!uploadComplete && (
+          <motion.div
+            initial={{ opacity: 0, y: 20 }}
+            animate={{ opacity: 1, y: 0 }}
+            transition={{ delay: 0.25 }}
+            className="mt-6 rounded-xl bg-neutral-900/50 border border-neutral-800 p-6"
+          >
+            <div className="flex items-center gap-3 mb-5">
+              <div className="w-10 h-10 bg-sky-500/20 rounded-lg flex items-center justify-center">
+                <Linkedin className="w-5 h-5 text-sky-400" />
+              </div>
+              <div>
+                <h2 className="text-lg font-semibold text-white">Import from LinkedIn</h2>
+                <p className="text-sm text-neutral-500">Paste your public LinkedIn profile URL to auto-fill your resume</p>
+              </div>
+            </div>
+
+            <div className="flex gap-3">
+              <input
+                type="text"
+                value={linkedinUrl}
+                onChange={(e) => {
+                  setLinkedinUrl(e.target.value)
+                  setLinkedinPreview(null)
+                  setLinkedinProfile(null)
+                }}
+                placeholder="https://linkedin.com/in/your-profile"
+                className="flex-1 px-4 py-2.5 rounded-lg bg-neutral-950 border border-neutral-800 text-white placeholder:text-neutral-500 focus:outline-none focus:ring-2 focus:ring-sky-500/50 focus:border-sky-500 transition-all duration-200 text-sm"
+              />
+              <Button
+                variant="secondary"
+                onClick={handleLinkedinPreview}
+                loading={linkedinLoading}
+                disabled={!linkedinUrl.trim() || linkedinLoading}
+              >
+                Preview
+              </Button>
+            </div>
+
+            {/* Preview card */}
+            {linkedinPreview && (
+              <motion.div
+                initial={{ opacity: 0, y: 8 }}
+                animate={{ opacity: 1, y: 0 }}
+                className="mt-5 rounded-xl border border-sky-500/20 bg-sky-500/5 p-5"
+              >
+                <div className="flex items-start gap-4 mb-4">
+                  <div className="w-12 h-12 rounded-full bg-linear-to-br from-sky-500 to-indigo-600 flex items-center justify-center shrink-0">
+                    <span className="text-white font-bold text-lg">
+                      {linkedinPreview.name?.charAt(0)?.toUpperCase() || '?'}
+                    </span>
+                  </div>
+                  <div className="flex-1 min-w-0">
+                    <h3 className="text-white font-semibold text-base">{linkedinPreview.name}</h3>
+                    {linkedinPreview.headline && (
+                      <p className="text-sky-400 text-sm mt-0.5">{linkedinPreview.headline}</p>
+                    )}
+                    {linkedinPreview.location && (
+                      <p className="text-neutral-500 text-xs mt-0.5">{linkedinPreview.location}</p>
+                    )}
+                  </div>
+                </div>
+
+                <div className="flex flex-wrap gap-4 text-sm text-neutral-400 mb-4">
+                  {linkedinPreview.experienceCount > 0 && (
+                    <span className="flex items-center gap-1.5">
+                      <Briefcase className="w-4 h-4 text-neutral-500" />
+                      {linkedinPreview.experienceCount} experience {linkedinPreview.experienceCount === 1 ? 'entry' : 'entries'}
+                    </span>
+                  )}
+                  {linkedinPreview.educationCount > 0 && (
+                    <span className="flex items-center gap-1.5">
+                      <GraduationCap className="w-4 h-4 text-neutral-500" />
+                      {linkedinPreview.educationCount} education {linkedinPreview.educationCount === 1 ? 'entry' : 'entries'}
+                    </span>
+                  )}
+                  {linkedinPreview.skills?.length > 0 && (
+                    <span className="flex items-center gap-1.5">
+                      <User className="w-4 h-4 text-neutral-500" />
+                      {linkedinPreview.skills.length} skills
+                    </span>
+                  )}
+                </div>
+
+                {linkedinPreview.skills?.length > 0 && (
+                  <div className="flex flex-wrap gap-1.5 mb-5">
+                    {linkedinPreview.skills.slice(0, 8).map((skill, i) => (
+                      <span
+                        key={i}
+                        className="px-2.5 py-1 bg-sky-500/10 border border-sky-500/20 text-sky-400 rounded-full text-xs font-medium"
+                      >
+                        {skill}
+                      </span>
+                    ))}
+                    {linkedinPreview.skills.length > 8 && (
+                      <span className="px-2.5 py-1 text-neutral-500 text-xs">
+                        +{linkedinPreview.skills.length - 8} more
+                      </span>
+                    )}
+                  </div>
+                )}
+
+                <Button
+                  variant="gradient"
+                  onClick={handleLinkedinImport}
+                  loading={importing}
+                  className="w-full"
+                >
+                  <ArrowRight className="w-4 h-4 mr-1.5" />
+                  Import & Enhance with AI
+                </Button>
+              </motion.div>
+            )}
           </motion.div>
         )}
 

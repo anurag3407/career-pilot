@@ -1,0 +1,27 @@
+exports[`Email Templates Snapshot Tests > sendJobAlertEmail template 1`] = `
+"<h1>New Jobs for Software Engineering Jobs</h1><div style=\\"margin: 10px 0; padding: 10px; border-left: 3px solid #6366f1;\\">\\n        <strong>1. Frontend Dev</strong><br>\\n        Web Corp - New York<br>\\n        <a href=\\"https://example.com/job1\\">Apply</a>\\n      </div><div style=\\"margin: 10px 0; padding: 10px; border-left: 3px solid #6366f1;\\">\\n        <strong>2. Backend Dev</strong><br>\\n        Data Corp - San Francisco<br>\\n        <a href=\\"https://example.com/job2\\">Apply</a>\\n      </div>"
+`;
+
+exports[`Email Templates Snapshot Tests > sendJobApplicationEmail template 1`] = `
+"<h1>New Job Application</h1><p>Application from Jane Smith for Software Engineer at Tech Corp</p>"
+`;
+
+exports[`Email Templates Snapshot Tests > sendLockoutAlertEmail template 1`] = `
+"\\n        <div style=\\"font-family: Arial, sans-serif; max-width: 520px; margin: 0 auto; padding: 24px;\\">\\n          <h2 style=\\"color: #ef4444;\\">Security Alert</h2>\\n          <p>We detected 5 consecutive failed login attempts on your careerpilot account.</p>\\n          <p>Your account has been temporarily locked as a precaution.</p>\\n          <table style=\\"border-collapse: collapse; width: 100%; margin: 16px 0;\\">\\n            <tr>\\n              <td style=\\"padding: 8px; color: #6b7280;\\">Time</td>\\n              <td style=\\"padding: 8px;\\">Sun, 01 Jan 2023 12:00:00 GMT</td>\\n            </tr>\\n            <tr>\\n              <td style=\\"padding: 8px; color: #6b7280;\\">IP address</td>\\n              <td style=\\"padding: 8px;\\">192.168.1.1</td>\\n            </tr>\\n            <tr>\\n              <td style=\\"padding: 8px; color: #6b7280;\\">Locked until</td>\\n              <td style=\\"padding: 8px;\\">Sun, 01 Jan 2023 12:00:00 GMT</td>\\n            </tr>\\n          </table>\\n          <p style=\\"color: #6b7280; font-size: 13px;\\">\\n            If this was you, simply wait 15 minutes and try again.\\n            If you don't recognise this activity, consider changing your password.\\n          </p>\\n          <p style=\\"color: #6b7280; font-size: 12px;\\">\\n            This is an automated security notification. Do not reply to this email.\\n          </p>\\n        </div>\\n      "
+`;
+
+exports[`Email Templates Snapshot Tests > sendMatchingJobMail template 1`] = `
+"<h1>New Job Match</h1><p>Software Engineer at Tech Corp</p><a href=\\"https://example.com/apply\\">Apply Now</a>"
+`;
+
+exports[`Email Templates Snapshot Tests > sendProposalApprovalEmail template 1`] = `
+"\\n        <h1>🎉 Proposal Accepted!</h1>\\n        <p>Congratulations Jane Smith!</p>\\n        <p><strong>Tech Corp</strong> has accepted your proposal for: <strong>Build a Website</strong></p>\\n        <p>💰 Agreed Price: ₹5,000</p>\\n        <p>⏱️ Timeline: 14 days</p>\\n        <p>Message: Looks good!</p>\\n        <a href=\\"http://localhost:5173/fellowship/messages/room123\\">Start Conversation</a>\\n      "
+`;
+
+exports[`Email Templates Snapshot Tests > sendVerificationEmail template 1`] = `
+"\\n      <div style=\\"font-family: Arial, sans-serif; max-width: 500px; margin: 0 auto; padding: 20px;\\">\\n        <h2 style=\\"color: #10b981;\\">careerpilot Fellowships</h2>\\n        <p>Your verification code is:</p>\\n        <div style=\\"background: #f3f4f6; padding: 20px; text-align: center; border-radius: 8px; margin: 20px 0;\\">\\n          <span style=\\"font-size: 32px; font-weight: bold; letter-spacing: 8px; color: #1f2937;\\">123456</span>\\n        </div>\\n        <p style=\\"color: #6b7280;\\">This code expires in 10 minutes.</p>\\n        <p style=\\"color: #6b7280; font-size: 12px;\\">If you didn't request this, please ignore this email.</p>\\n      </div>\\n    "
+`;
+
+exports[`Email Templates Snapshot Tests > sendWeeklyDigestEmail template 1`] = `
+"<h1>Weekly Digest</h1><p>Here are your updates...</p>"
+`;

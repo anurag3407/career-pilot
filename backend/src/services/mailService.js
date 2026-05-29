@@ -219,12 +219,17 @@ export const sendMatchingJobMail = async ({
 
     // Fallback to local SMTP
     const transport = await initLocalTransporter();
+    
+    const safeApplyLink = isSafeExternalUrl(applyLink) ? applyLink : null;
+    const applyLinkHtml = safeApplyLink
+      ? `<a href="${escapeHtml(safeApplyLink)}">Apply Now</a>`
+      : '<span>Apply link unavailable</span>';
 
     const mailOptions = {
       from: `"careerpilot Jobs" <${process.env.EMAIL_USER}>`,
       to: userEmail,
       subject: `🎯 New Job Match: ${jobTitle} at ${companyName}`,
-      html: `<h1>New Job Match</h1><p>${jobTitle} at ${companyName}</p><a href="${applyLink}">Apply Now</a>`
+      html: `<h1>New Job Match</h1><p>${escapeHtml(jobTitle)} at ${escapeHtml(companyName)}</p>${applyLinkHtml}`
     };
 
     const info = await transport.sendMail(mailOptions);
@@ -319,6 +324,52 @@ export const sendJobAlertEmail = async ({
   } catch (error) {
     console.error('Error sending job alert email:', error);
     throw new Error(`Failed to send job alert email: ${error.message}`);
+  }
+};
+
+export const sendWeeklyDigestEmail = async ({
+  userEmail,
+  userName = 'there',
+  html
+}) => {
+  try {
+    console.log(`\n📧 Sending weekly digest email to: ${userEmail}`);
+
+    if (!userEmail) {
+      throw new Error('No recipient email address provided!');
+    }
+
+    if (isExternalServiceConfigured) {
+      return await callEmailService('/api/send-weekly-digest', {
+        userEmail,
+        userName,
+        html
+      });
+    }
+
+    const transport = await initLocalTransporter();
+
+    const mailOptions = {
+      from: `"careerpilot Insights" <${process.env.EMAIL_USER}>`,
+      to: userEmail,
+      subject: '📈 Your Weekly Career Digest',
+      html
+    };
+
+    const info = await transport.sendMail(mailOptions);
+
+    console.log('Weekly digest email sent:', info.messageId);
+
+    return {
+      success: true,
+      messageId: info.messageId
+    };
+  } catch (error) {
+    console.error('Error sending weekly digest email:', error);
+
+    throw new Error(
+      `Failed to send weekly digest email: ${error.message}`
+    );
   }
 };
 
@@ -496,4 +547,55 @@ export const sendVerificationEmail = async ({ email, code }) => {
 };
 
 
+export const sendPasswordResetEmail = async ({ email, resetLink }) => {
+  try {
+    if (!email || !resetLink) {
+      throw new Error('Email and reset link are required');
+    }
+
+    if (isExternalServiceConfigured) {
+      return await callEmailService('/api/send-password-reset', { email, resetLink });
+    }
+
+    const transport = await initLocalTransporter();
+
+    const mailOptions = {
+      from: `"careerpilot" <${process.env.EMAIL_USER}>`,
+      to: email,
+      subject: 'Reset Your careerpilot Password',
+      html: `
+      <div style="font-family: Arial, sans-serif; max-width: 500px; margin: 0 auto; padding: 20px;">
+        <h2 style="color: #6366f1;">careerpilot</h2>
+        <p>We received a request to reset the password for your account.</p>
+        <p>Click the button below to choose a new password. This link expires in <strong>1 hour</strong>.</p>
+        <div style="text-align: center; margin: 30px 0;">
+          <a href="${escapeHtml(resetLink)}"
+             style="background: #6366f1; color: #fff; padding: 12px 28px; border-radius: 6px;
+                    text-decoration: none; font-weight: bold; display: inline-block;">
+            Reset Password
+          </a>
+        </div>
+        <p style="color: #6b7280; font-size: 13px;">
+          If you didn't request a password reset, you can safely ignore this email.
+          Your password will not change until you click the link above.
+        </p>
+      </div>
+    `,
+    };
+
+    const info = await transport.sendMail(mailOptions);
+    console.log('Password reset email sent:', info.messageId);
+    return { success: true, messageId: info.messageId };
+  } catch (error) {
+    console.error('Error sending password reset email:', error);
+    throw new Error(`Failed to send password reset email: ${error.message}`);
+  }
+};
+
 export { handleBounceNotification } from "./bounceHandler.js";
+
+// Export for testing purposes only
+export const __setMockTransport = (mock) => { 
+  transporter = mock; 
+  nodemailer = { createTransport: () => mock }; 
+};

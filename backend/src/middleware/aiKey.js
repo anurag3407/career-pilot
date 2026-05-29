@@ -15,13 +15,21 @@ import { AIProviderFactory, getDefaultProvider, SUPPORTED_PROVIDERS } from '../c
  *   If no headers are supplied the server-side Gemini key (GEMINI_API_KEY)
  *   is used automatically, so existing behaviour is fully preserved.
  */
-export const extractAIProvider = (req, res, next) => {
+export const extractAIProvider = async (req, res, next) => {
   try {
     const providerHeader = req.headers['x-ai-provider'];
     const apiKeyHeader   = req.headers['x-ai-key'];
     const modelHeader    = req.headers['x-ai-model'];
+    const openRouterKeyHeader = req.headers['x-openrouter-key'];
 
-    // --- Case 1: User supplies both provider + key ---
+    // --- Case 1a: User supplies OpenRouter key via BYOK PKCE flow ---
+    if (openRouterKeyHeader) {
+      req.aiProvider = AIProviderFactory.create('openrouter', openRouterKeyHeader);
+      req.aiProviderSource = 'user_openrouter_pkce';
+      return next();
+    }
+
+    // --- Case 1: User supplies both provider + key via headers (Legacy/API fallback) ---
     if (providerHeader && apiKeyHeader) {
       const provider = providerHeader.toLowerCase().trim();
 
@@ -33,22 +41,23 @@ export const extractAIProvider = (req, res, next) => {
       }
 
       req.aiProvider = AIProviderFactory.create(provider, apiKeyHeader, modelHeader);
-      req.aiProviderSource = 'user';
+      req.aiProviderSource = 'user_header';
       return next();
     }
 
-    // --- Case 2: Only one header supplied (incomplete) ---
-    if ((providerHeader && !apiKeyHeader) || (!providerHeader && apiKeyHeader)) {
-      return res.status(400).json({
+    // --- Case 2: No custom headers – fall back to server-side .env key ---
+    try {
+      req.aiProvider = getDefaultProvider();
+      req.aiProviderSource = 'server_default';
+      return next();
+    } catch (fallbackError) {
+      // No server-side key configured either — reject gracefully
+      return res.status(403).json({
         success: false,
-        error: 'Both X-AI-Provider and X-AI-Key headers must be provided together.',
+        error: 'API key is required. Please add your API key in Settings to use this feature.',
+        requireApiKey: true
       });
     }
-
-    // --- Case 3: No custom headers – fall back to server Gemini key ---
-    req.aiProvider = getDefaultProvider();
-    req.aiProviderSource = 'server';
-    return next();
   } catch (error) {
     console.error('AI provider middleware error:', error.message);
     return res.status(500).json({
