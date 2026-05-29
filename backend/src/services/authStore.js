@@ -129,13 +129,20 @@ export const authStore = {
     if (client) {
       try {
         const key = `v1:auth:linkedin_code:${code}`;
-        const pipeline = client.pipeline();
-        pipeline.get(key);
-        pipeline.del(key);
-        const [[errGet, value], [errDel]] = await pipeline.exec();
-
-        if (errGet) throw errGet;
-        if (errDel) throw errDel;
+        let value;
+        if (typeof client.getdel === 'function') {
+          value = await client.getdel(key);
+        } else {
+          value = await client.eval(
+            `local val = redis.call('get', KEYS[1])
+             if val then
+               redis.call('del', KEYS[1])
+             end
+             return val`,
+            1,
+            key
+          );
+        }
 
         if (value) {
           return JSON.parse(value);
@@ -185,13 +192,20 @@ export const authStore = {
     if (client) {
       try {
         const key = `v1:auth:reset_token:${token}`;
-        const pipeline = client.pipeline();
-        pipeline.get(key);
-        pipeline.del(key);
-        const [[errGet, userId], [errDel]] = await pipeline.exec();
-
-        if (errGet) throw errGet;
-        if (errDel) throw errDel;
+        let userId;
+        if (typeof client.getdel === 'function') {
+          userId = await client.getdel(key);
+        } else {
+          userId = await client.eval(
+            `local val = redis.call('get', KEYS[1])
+             if val then
+               redis.call('del', KEYS[1])
+             end
+             return val`,
+            1,
+            key
+          );
+        }
 
         return userId || null;
       } catch (err) {

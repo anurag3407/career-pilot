@@ -100,10 +100,13 @@ router.post('/forgot-password', validate(forgotPasswordSchema), asyncHandler(asy
 
   const user = await User.findOne({ email });
 
-  if (user) {
-    const resetToken = crypto.randomBytes(32).toString('hex');
-    await authStore.setPasswordResetToken(resetToken, user._id.toString(), 3600);
+  const resetToken = crypto.randomBytes(32).toString('hex');
+  const userIdToStore = user ? user._id.toString() : 'placeholder-user-id-' + crypto.randomBytes(8).toString('hex');
 
+  // Always execute setPasswordResetToken to maintain identical database/network latency and error paths.
+  await authStore.setPasswordResetToken(resetToken, userIdToStore, 3600);
+
+  if (user) {
     const frontendUrl = process.env.FRONTEND_URL || 'http://localhost:5173';
     const resetLink = `${frontendUrl}/reset-password?token=${resetToken}`;
 

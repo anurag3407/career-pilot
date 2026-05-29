@@ -43,11 +43,51 @@ const validateMagicBytes = (buffer, allowedType) => {
 const checkDailyLimit = async (userId, fileSize) => {
   const today = new Date().toISOString().slice(0, 10);
 
+  if (isProd()) {
+    if (!process.env.REDIS_URL) {
+      console.error('❌ [UploadValidator] Redis not configured in production environment');
+      throw new ApiError(503, 'Upload validation service temporarily unavailable');
+    }
+    try {
+      const client = redisManager.get('upload-limiter');
+      if (!client || client.status !== 'ready') {
+        console.error(`❌ [UploadValidator] Redis client unavailable in production. Status: ${client?.status}`);
+        throw new ApiError(503, 'Upload validation service temporarily unavailable');
+      }
+
+      const redisKey = `v1:upload_limit:${userId}`;
+      const pipeline = client.pipeline();
+      pipeline.incrby(redisKey, fileSize);
+      pipeline.ttl(redisKey);
+      const [[errIncr, newTotal], [errTtl, ttl]] = await pipeline.exec();
+
+      if (errIncr) throw errIncr;
+      if (errTtl) throw errTtl;
+
+      // Set expiration only when the key is first created
+      if (ttl < 0) {
+        await client.expire(redisKey, 24 * 60 * 60); // 24 hours
+      }
+
+      if (newTotal > MAX_DAILY_BYTES) {
+        // Decrement back to keep counter precise
+        await client.decrby(redisKey, fileSize);
+        return false;
+      }
+      return true;
+    } catch (err) {
+      console.error('❌ [UploadValidator] Redis check failed in production:', err.message);
+      if (err instanceof ApiError) throw err;
+      throw new ApiError(503, 'Upload validation service temporarily unavailable');
+    }
+  }
+
+  // Development/test/non-production fallback flow
   if (process.env.REDIS_URL) {
     try {
       const client = redisManager.get('upload-limiter');
       if (client && client.status === 'ready') {
-        const redisKey = `v1:rate_limit:upload:${userId}`;
+        const redisKey = `v1:upload_limit:${userId}`;
         const pipeline = client.pipeline();
         pipeline.incrby(redisKey, fileSize);
         pipeline.ttl(redisKey);
@@ -56,30 +96,21 @@ const checkDailyLimit = async (userId, fileSize) => {
         if (errIncr) throw errIncr;
         if (errTtl) throw errTtl;
 
-        // Set expiration only when the key is first created
         if (ttl < 0) {
-          await client.expire(redisKey, 24 * 60 * 60); // 24 hours
+          await client.expire(redisKey, 24 * 60 * 60);
         }
 
         if (newTotal > MAX_DAILY_BYTES) {
-          // Decrement back to keep counter precise
           await client.decrby(redisKey, fileSize);
           return false;
         }
         return true;
       }
     } catch (err) {
-      console.error('❌ [UploadValidator] Redis check failed:', err.message);
-      if (isProd()) {
-        throw new ApiError(503, 'Upload validation service temporarily unavailable');
-      }
+      console.warn('⚠️ [UploadValidator] Redis daily upload tracker failed in development, using fallback Map:', err.message);
     }
-  } else if (isProd()) {
-    console.error('❌ [UploadValidator] Redis not configured in production environment');
-    throw new ApiError(503, 'Upload validation service temporarily unavailable');
   }
 
-  // Non-production in-memory fallback
   if (!warnedUploadFallback) {
     console.warn('⚠️ [UploadValidator] Redis daily upload tracker unavailable. Falling back to local Map store.');
     warnedUploadFallback = true;
@@ -206,6 +237,9 @@ export const validateUpload = async (req, res, next) => {
   } catch (error) {
     console.error('[UploadValidator] Error:', error.message);
     await cleanup();
+    if (error instanceof ApiError) {
+      return next(error);
+    }
     return next(new ApiError(500, 'File validation failed.'));
   }
 };
