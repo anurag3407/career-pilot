@@ -94,11 +94,11 @@ export default function ResumeHub() {
         color="primary"
       />
       <ToolCard
-        to="/upload"
+        to="/resume-analyzer"
         icon={BarChart3}
-        title="ATS Score Analyzer"
-        description="Check how well your resume scores against Applicant Tracking Systems."
-        badge="AI"
+        title="Resume Strength Analyzer"
+        description="Upload your resume for an instant strength score, ATS checks, and keyword suggestions."
+        badge="New"
         color="emerald-500"
       />
       <ToolCard

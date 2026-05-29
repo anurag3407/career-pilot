@@ -61,6 +61,7 @@ import CareerGrowthHub from './pages/hubs/CareerGrowthHub';
 import CommunityHub from './pages/hubs/CommunityHub';
 import GitHubDashboard from './pages/GitHubDashboard';
 import JetLandingPage from './pages/JetLandingPage';
+import ResumeAnalyzer from './pages/ResumeAnalyzer';
 
 function ProtectedRoute({ children }) {
   const { user, loading } = useAuth();
@@ -189,6 +190,7 @@ function AppRoutes() {
         <Route path="/security" element={<ProtectedRoute><SecuritySettings /></ProtectedRoute>} />
         <Route path="/email-generator" element={<ProtectedRoute><EmailGenerator /></ProtectedRoute>} />
         <Route path="/linkedin-optimizer" element={<ProtectedRoute><LinkedInOptimizer /></ProtectedRoute>} />
+        <Route path="/resume-analyzer" element={<ProtectedRoute><ResumeAnalyzer /></ProtectedRoute>} />
         <Route path="/deployments" element={<ProtectedRoute><Deployments /></ProtectedRoute>} />
         <Route path="/settings" element={<ProtectedRoute><Settings /></ProtectedRoute>} />
 

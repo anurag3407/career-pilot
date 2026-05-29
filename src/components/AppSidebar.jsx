@@ -20,7 +20,8 @@ import {
     Moon,
     Zap,
     Rocket,
-    Briefcase
+    Briefcase,
+    BarChart3
 } from "lucide-react";
 import { useAuth } from "../hooks/useAuth";
 import { useTheme } from "../hooks/useTheme";
@@ -44,6 +45,11 @@ const navLinks = [
         label: "Resume Builder",
         href: "/hub/resume",
         icon: <FileText className="w-5 h-5 flex-shrink-0" />,
+    },
+    {
+        label: "Resume Analyzer",
+        href: "/resume-analyzer",
+        icon: <BarChart3 className="w-5 h-5 flex-shrink-0" />,
     },
     {
         label: "Job Finder",

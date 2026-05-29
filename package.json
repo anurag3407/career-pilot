@@ -29,6 +29,7 @@
     "jspdf": "^4.0.0",
     "lucide-react": "^1.17.0",
     "motion": "^12.23.26",
+    "pdfjs-dist": "^4.10.38",
     "puppeteer-core": "^25.1.0",
     "react": "^19.2.6",
     "react-dom": "^19.2.6",
