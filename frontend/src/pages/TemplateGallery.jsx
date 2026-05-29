@@ -17,6 +17,7 @@ import MidnightGradient from "../components/portfolio/templates/Midnight_Gradien
 import PlayingCardsPortfolio from "../components/portfolio/templates/Playing_Cards";
 import Navbar from '../components/Navbar'
 import { X } from "lucide-react";
+import CherryBlossom from "../components/portfolio/templates/Cherry_Blossom/index";
 // import Hero from "../components/portfolio/templates/Holographic/Hero";
 // import ChooseAdventurePortfolio from "../components/portfolio/templates/Choose_Adventure/index";
 // import RetroProjects from "../components/portfolio/templates/2D_Retro_8bit/Projects";
@@ -480,7 +481,8 @@ export default function TemplateGallery() {
         </div>
         <div className="overflow-hidden rounded-2xl border border-border">
           <MidnightGradient />
-
+        </div>
+        <div/>
       {/* Playing Cards Theme */}
       <div className="mt-12">
         <div className="mb-4 flex items-center gap-3 px-1">
@@ -529,6 +531,7 @@ export default function TemplateGallery() {
         isOpen={!!previewTemplateId}
         onClose={() => setPreviewTemplateId(null)}
       />
+      </div>
     </div>
   );
 }
