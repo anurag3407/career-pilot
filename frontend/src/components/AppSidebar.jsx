@@ -20,7 +20,8 @@ import {
     Moon,
     Zap,
     Rocket,
-    Briefcase
+    Briefcase,
+    GitMerge
 } from "lucide-react";
 import { useAuth } from "../hooks/useAuth";
 import { useTheme } from "../hooks/useTheme";
@@ -313,6 +314,15 @@ const [openAI, setOpenAI] = useState(false);
                 label: "Salary Estimator",
                 href: "/salary-estimate",
                 icon: <Brain className="w-4 h-4 shrink-0" />,
+            }}
+            onClick={() => setOpen(false)}
+        />
+        
+        <SidebarLink
+            link={{
+                label: "Repo Analyzer",
+                href: "/repo-analyzer",
+                icon: <GitMerge className="w-4 h-4 shrink-0" />,
             }}
             onClick={() => setOpen(false)}
         />

@@ -1,4 +1,4 @@
-import { GraduationCap, Mic, Mail, Linkedin, Sparkles, Award } from 'lucide-react'
+import { GraduationCap, Mic, Mail, Globe, Sparkles, Award } from 'lucide-react'
 import HubLayout from '../../components/HubLayout'
 import ToolCard from '../../components/ToolCard'
 
@@ -35,7 +35,7 @@ export default function CareerGrowthHub() {
       />
       <ToolCard
         to="/linkedin-optimizer"
-        icon={Linkedin}
+        icon={Globe}
         title="LinkedIn Optimizer"
         description="Optimize your LinkedIn headline, bio, and descriptions with high-impact keywords."
         badge="AI"
