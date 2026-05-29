@@ -1,5 +1,8 @@
 import { useState, useEffect } from 'react'
 import { Link, useLocation } from 'react-router-dom'
+import { useTranslation } from 'react-i18next'
+import { useAuth } from '../context/AuthContext'
+import { useTheme } from '../context/ThemeContext'
 import { useAuth } from '../hooks/useAuth'
 import { useTheme } from '../hooks/useTheme'
 import { motion, AnimatePresence } from 'framer-motion'
@@ -24,6 +27,7 @@ import {
 } from 'lucide-react'
 
 export default function Navbar() {
+  const { t } = useTranslation()
   const { user, logout } = useAuth()
   const { theme, toggleTheme } = useTheme()
   const location = useLocation()
@@ -70,6 +74,16 @@ export default function Navbar() {
 
   const isActive = (path) => location.pathname === path
 
+  const navLinks = [
+    { path: '/dashboard', label: t('nav.dashboard'), icon: LayoutDashboard },
+    { path: '/jobs', label: t('nav.jobs'), icon: Search },
+    { path: '/job-alerts', label: t('nav.alerts'), icon: Bell },
+    { path: '/interview-prep', label: t('nav.interview'), icon: Mic },
+    { path: '/fellowship', label: t('nav.fellowship'), icon: GraduationCap },
+    { path: '/community', label: t('nav.community'), icon: Users },
+    { path: '/upload', label: t('nav.resume'), icon: FileText },
+    { path: '/email-generator', label: t('nav.emails', 'Emails'), icon: Mail },
+    { path: '/linkedin-optimizer', label: t('nav.linkedin', 'LinkedIn'), icon: Linkedin },
   const publicLinks = [
     { path: '/templates', label: 'Templates', icon: Palette },
     { path: '/portfolio', label: 'Portfolio', icon: User },
@@ -225,6 +239,8 @@ export default function Navbar() {
                   className="relative p-2 rounded-xl bg-muted border border-border hover:bg-accent transition-all"
                   aria-label="Notifications"
                 >
+                  <LogOut className="w-4 h-4" />
+                  {t('nav.logout')}
                   <Bell className="w-5 h-5 text-foreground" />
 
                   {notificationCount > 0 && (
@@ -299,14 +315,14 @@ export default function Navbar() {
                   to="/login"
                   className="px-4 py-2 text-muted-foreground hover:text-foreground text-sm font-medium transition-colors"
                 >
-                  Login
+                  {t('nav.login')}
                 </Link>
 
                 <Link
                   to="/register"
                   className="px-5 py-2 bg-primary hover:bg-primary/90 text-primary-foreground rounded-lg text-sm font-bold transition-all-300 shadow-lg shadow-primary/20 hover:-translate-y-0.5 hover:shadow-primary/40"
                 >
-                  Get Started
+                  {t('nav.getStarted')}
                 </Link>
               </>
             )}
@@ -385,6 +401,10 @@ export default function Navbar() {
                     onClick={() => setMobileMenuOpen(false)}
                     className={`nav-link text-base ${isActive(path) ? 'nav-link-active' : 'nav-link-inactive'}`}
                   >
+                    <LogOut className="w-5 h-5" />
+                    {t('nav.logout')}
+                  </button>
+                </>
                     <Icon className="w-5 h-5" />
                     {label}
                   </Link>
@@ -410,14 +430,14 @@ export default function Navbar() {
                     to="/login"
                     className="flex justify-center items-center px-4 py-3 bg-muted rounded-xl font-semibold"
                   >
-                    Login
+                    {t('nav.login')}
                   </Link>
 
                   <Link
                     to="/register"
                     className="flex justify-center items-center px-4 py-3 bg-primary text-primary-foreground rounded-xl font-semibold"
                   >
-                    Get Started
+                    {t('nav.getStarted')}
                   </Link>
                 </div>
               )}

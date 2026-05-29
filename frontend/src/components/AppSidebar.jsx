@@ -1,6 +1,7 @@
 import { useState, useEffect } from "react";
 import { useNavigate, useLocation } from "react-router-dom";
 import { motion } from "framer-motion";
+import { useTranslation } from "react-i18next";
 import { Brain, ChevronDown } from "lucide-react";
 
 import {
@@ -117,6 +118,7 @@ function Logo() {
 }
 
 function UserSection() {
+    const { t } = useTranslation();
     const { user, logout } = useAuth();
     const { open, animate, setOpen } = useSidebar();
     const { theme, toggleTheme } = useTheme();
@@ -219,6 +221,7 @@ function UserSection() {
                     transition={{ duration: 0.2 }}
                     className="text-sm font-bold whitespace-pre"
                 >
+                    {theme === 'dark' ? t('nav.lightMode') : t('nav.darkMode')}
                     {openRouterKey ? 'OpenRouter Connected' : 'Connect OpenRouter'}
                 </motion.span>
             </button>
@@ -241,7 +244,7 @@ function UserSection() {
                     transition={{ duration: 0.2 }}
                     className="text-sm font-semibold whitespace-pre"
                 >
-                    Logout
+                    {t('nav.logout')}
                 </motion.span>
             </button>
         </div>
@@ -249,6 +252,7 @@ function UserSection() {
 }
 
 export default function AppSidebar() {
+    const { t } = useTranslation();
     const [open, setOpen] = useState(false);
 const [openAI, setOpenAI] = useState(false);
 const location = useLocation();
@@ -256,6 +260,59 @@ const location = useLocation();
 useEffect(() => {
     setOpen(false);
 }, [location.pathname]);
+
+    const navLinks = [
+        {
+            label: t("nav.dashboard"),
+            href: "/dashboard",
+            icon: <LayoutDashboard className="w-5 h-5 flex-shrink-0" />,
+        },
+        {
+            label: t("nav.jobs"),
+            href: "/jobs",
+            icon: <Search className="w-5 h-5 flex-shrink-0" />,
+        },
+        {
+            label: t("nav.alerts"),
+            href: "/job-alerts",
+            icon: <Bell className="w-5 h-5 flex-shrink-0" />,
+        },
+        {
+            label: t("nav.interview"),
+            href: "/interview-prep",
+            icon: <Mic className="w-5 h-5 flex-shrink-0" />,
+        },
+        {
+            label: t("nav.fellowship"),
+            href: "/fellowship",
+            icon: <GraduationCap className="w-5 h-5 flex-shrink-0" />,
+        },
+        {
+            label: t("nav.community"),
+            href: "/community",
+            icon: <Users className="w-5 h-5 flex-shrink-0" />,
+        },
+        {
+            label: t("nav.resume"),
+            href: "/upload",
+            icon: <FileText className="w-5 h-5 flex-shrink-0" />,
+        },
+        {
+            label: t("nav.profile"),
+            href: "/profile",
+            icon: <User className="w-5 h-5 flex-shrink-0" />,
+        },
+        {
+            label: t("nav.security"),
+            href: "/security",
+            icon: <ShieldCheck className="w-5 h-5 flex-shrink-0" />,
+        },
+        {
+            label: t("nav.settings"),
+            href: "/settings",
+            icon: <Settings className="w-5 h-5 flex-shrink-0" />,
+        },
+    ];
 
     return (
         <Sidebar open={open} setOpen={setOpen}>
@@ -343,4 +400,5 @@ useEffect(() => {
             </SidebarBody>
         </Sidebar>
     );
+}
 }
