@@ -9,12 +9,9 @@ function formatSegment(segment) {
     .replace(/\b\w/g, (char) => char.toUpperCase())
 }
 
-function isDynamicSegment(segment) {
-  return /^[a-f0-9]{16,}$/i.test(segment) || /^\d+$/.test(segment)
-}
-
 export default function Breadcrumb({
   className,
+  labelMap = {},
   rootLabel = 'Dashboard',
   rootPath = '/dashboard',
   separator: Separator = ChevronRight,
@@ -29,8 +26,10 @@ export default function Breadcrumb({
   const pathSegments = cleanPath.split('/').filter(Boolean)
   const crumbs = pathSegments.map((segment, index) => {
     const path = `/${pathSegments.slice(0, index + 1).join('/')}`
+    const label = labelMap[path] || labelMap[segment] || formatSegment(segment)
+
     return {
-      label: isDynamicSegment(segment) ? 'Details' : formatSegment(segment),
+      label,
       path,
       current: index === pathSegments.length - 1,
     }
