@@ -1,19 +1,18 @@
 import { Mail, Phone, MapPin, Send, Instagram, Twitter, Linkedin } from "lucide-react";
-import { useState } from "react";
+import { useState, useRef, useEffect } from "react";
 
 export default function Contact() {
   const [formData, setFormData] = useState({ name: "", email: "", subject: "", message: "" });
   const [sent, setSent] = useState(false);
+  const timerRef = useRef(null);
 
-  const handleChange = (e) => setFormData({ ...formData, [e.target.name]: e.target.value });
-
-  const timerRef = React.useRef(null);
-
-  React.useEffect(() => {
+  useEffect(() => {
     return () => {
       if (timerRef.current) clearTimeout(timerRef.current);
     };
   }, []);
+
+  const handleChange = (e) => setFormData({ ...formData, [e.target.name]: e.target.value });
 
   const handleSubmit = (e) => {
     e.preventDefault();
@@ -21,6 +20,8 @@ export default function Contact() {
     setSent(true);
     timerRef.current = setTimeout(() => setSent(false), 3000);
   };
+
+  const currentYear = new Date().getFullYear();
 
   return (
     <section className="bg-white min-h-screen font-serif">
@@ -89,7 +90,7 @@ export default function Contact() {
           {/* Pull Quote */}
           <div className="mt-10 border-l-4 border-black pl-4">
             <p className="font-serif italic text-lg leading-snug text-black">
-              "Open to collaborations, commissions &amp; creative conversations."
+              "Open to collaborations, commissions & creative conversations."
             </p>
           </div>
 
@@ -97,14 +98,33 @@ export default function Contact() {
           <div className="mt-10">
             <p className="text-xs tracking-[0.3em] uppercase font-sans font-bold text-gray-400 mb-4">Follow</p>
             <div className="flex gap-3">
-              {[Instagram, Twitter, Linkedin].map((Icon, i) => (
-                <button
-                  key={i}
-                  className="w-9 h-9 border border-black flex items-center justify-center hover:bg-black hover:text-white transition-colors duration-200"
-                >
-                  <Icon size={14} />
-                </button>
-              ))}
+              
+              <a href="https://instagram.com"
+                target="_blank"
+                rel="noopener noreferrer"
+                aria-label="Follow on Instagram"
+                className="w-9 h-9 border border-black flex items-center justify-center hover:bg-black hover:text-white transition-colors duration-200"
+              >
+                <Instagram size={14} />
+              </a>
+              
+              <a href="https://twitter.com"
+                target="_blank"
+                rel="noopener noreferrer"
+                aria-label="Follow on Twitter"
+                className="w-9 h-9 border border-black flex items-center justify-center hover:bg-black hover:text-white transition-colors duration-200"
+              >
+                <Twitter size={14} />
+              </a>
+              
+              <a href="https://linkedin.com"
+                target="_blank"
+                rel="noopener noreferrer"
+                aria-label="Follow on LinkedIn"
+                className="w-9 h-9 border border-black flex items-center justify-center hover:bg-black hover:text-white transition-colors duration-200"
+              >
+                <Linkedin size={14} />
+              </a>
             </div>
           </div>
         </div>
@@ -118,10 +138,11 @@ export default function Contact() {
           <form onSubmit={handleSubmit} className="space-y-6">
             <div className="grid grid-cols-1 sm:grid-cols-2 gap-6">
               <div>
-                <label className="block text-xs tracking-[0.2em] uppercase font-sans text-gray-500 mb-2">
+                <label htmlFor="name" className="block text-xs tracking-[0.2em] uppercase font-sans text-gray-500 mb-2">
                   Your Name
                 </label>
                 <input
+                  id="name"
                   type="text"
                   name="name"
                   value={formData.name}
@@ -132,10 +153,11 @@ export default function Contact() {
                 />
               </div>
               <div>
-                <label className="block text-xs tracking-[0.2em] uppercase font-sans text-gray-500 mb-2">
+                <label htmlFor="email" className="block text-xs tracking-[0.2em] uppercase font-sans text-gray-500 mb-2">
                   Email Address
                 </label>
                 <input
+                  id="email"
                   type="email"
                   name="email"
                   value={formData.email}
@@ -148,10 +170,11 @@ export default function Contact() {
             </div>
 
             <div>
-              <label className="block text-xs tracking-[0.2em] uppercase font-sans text-gray-500 mb-2">
+              <label htmlFor="subject" className="block text-xs tracking-[0.2em] uppercase font-sans text-gray-500 mb-2">
                 Subject
               </label>
               <input
+                id="subject"
                 type="text"
                 name="subject"
                 value={formData.subject}
@@ -163,10 +186,11 @@ export default function Contact() {
             </div>
 
             <div>
-              <label className="block text-xs tracking-[0.2em] uppercase font-sans text-gray-500 mb-2">
+              <label htmlFor="message" className="block text-xs tracking-[0.2em] uppercase font-sans text-gray-500 mb-2">
                 Message
               </label>
               <textarea
+                id="message"
                 name="message"
                 value={formData.message}
                 onChange={handleChange}
@@ -195,7 +219,7 @@ export default function Contact() {
 
       {/* Footer Strip */}
       <div className="px-6 md:px-16 py-4 flex items-center justify-between">
-        <span className="text-xs font-sans tracking-widest uppercase text-gray-400">© 2024 Editorial</span>
+        <span className="text-xs font-sans tracking-widest uppercase text-gray-400">© {currentYear} Editorial</span>
         <div className="flex gap-1">
           {[...Array(5)].map((_, i) => (
             <div key={i} className={`w-2 h-2 ${i % 2 === 0 ? "bg-black" : "bg-gray-300"}`} />
