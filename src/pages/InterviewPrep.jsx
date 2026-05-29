@@ -2,7 +2,7 @@ import { triggerConfetti } from '../utils/confetti'
 import { useState, useRef, useEffect } from 'react';
 import { useNavigate } from 'react-router-dom';
 import { motion } from 'framer-motion';
-import { Mic, MicOff, Video, VideoOff, XCircle, CheckCircle, AlertCircle, Volume2, VolumeX, RotateCcw, UserX, Loader2, Sparkles, ArrowRight, Target, TrendingUp, MessageSquare, Eye, Brain, Award, ChevronDown, ChevronUp, Clock, BarChart3, Lightbulb, Zap, Laptop, Smartphone, Chrome, AlertTriangle, FileUp, FileText, X } from 'lucide-react';
+import { Mic, MicOff, Video, VideoOff, XCircle, CheckCircle, AlertCircle, Volume2, VolumeX, RotateCcw, UserX, Loader2, Sparkles, ArrowRight, Target, TrendingUp, MessageSquare, Eye, Brain, Award, ChevronDown, ChevronUp, Clock, BarChart3, Lightbulb, Zap, Laptop, Smartphone, Globe, AlertTriangle, FileUp, FileText, X } from 'lucide-react';
 import Button from '../components/Button';
 import BodyLanguageTips from '../components/BodyLanguageTips';
 import { interviewApi, uploadApi } from '../services/api';
@@ -20,8 +20,8 @@ const isMobileDevice = () => {
 
 const isChromeBrowser = () => {
   const userAgent = navigator.userAgent;
-  // Check for Chrome but not Edge (which also contains Chrome in UA)
-  const isChrome = /Chrome/.test(userAgent) && /Google Inc/.test(navigator.vendor);
+  // Check for Globe but not Edge (which also contains Globe in UA)
+  const isChrome = /Globe/.test(userAgent) && /Google Inc/.test(navigator.vendor);
   const isEdge = /Edg/.test(userAgent);
   return isChrome && !isEdge;
 };
@@ -925,7 +925,7 @@ export default function InterviewPrep() {
             <p className="text-muted-foreground">Please verify your camera and microphone are working before starting</p>
           </motion.div>
 
-          {/* Chrome Warning */}
+          {/* Globe Warning */}
           {!isChrome && (
             <motion.div
               initial={{ opacity: 0, y: 10 }}
@@ -933,11 +933,11 @@ export default function InterviewPrep() {
               className="mb-6 bg-amber-500/10 border border-amber-500/30 rounded-xl p-4"
             >
               <div className="flex items-start gap-3">
-                <Chrome className="w-6 h-6 text-amber-400 flex-shrink-0 mt-0.5" />
+                <Globe className="w-6 h-6 text-amber-400 flex-shrink-0 mt-0.5" />
                 <div>
-                  <p className="text-amber-300 font-medium">Chrome Browser Recommended</p>
+                  <p className="text-amber-300 font-medium">Globe Browser Recommended</p>
                   <p className="text-amber-400/70 text-sm mt-1">
-                    For the best experience, please use Google Chrome. Speech recognition may not work properly in other browsers.
+                    For the best experience, please use Google Globe. Speech recognition may not work properly in other browsers.
                   </p>
                 </div>
               </div>

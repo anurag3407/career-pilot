@@ -2,7 +2,7 @@ import React, { useEffect, useMemo, useRef, useState } from 'react';
 import { useNavigate } from 'react-router-dom';
 import {
   Search,
-  Github,
+  Code,
   Briefcase,
   Sparkles,
   FileText,
@@ -23,14 +23,14 @@ const actions = [
     id: 2,
     title: 'Connect GitHub',
     description: 'Link your GitHub account',
-    icon: Github,
+    icon: Code,
     path: '/profile',
   },
   {
     id: 3,
     title: 'Analyze Repository',
     description: 'Analyze repository insights',
-    icon: Github,
+    icon: Code,
     path: '/profile',
   },
   {

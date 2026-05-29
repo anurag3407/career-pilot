@@ -5,8 +5,8 @@ import {
   MapPin,
   Mail,
   Globe,
-  Github,
-  Linkedin,
+  Code,
+  Globe,
   Coffee,
   Code2,
   Braces,
@@ -119,8 +119,8 @@ export default function About({
     { key: "email",    value: email,    icon: <Mail size={12} /> },
     { key: "location", value: location, icon: <MapPin size={12} /> },
     { key: "website",  value: website,  icon: <Globe size={12} /> },
-    { key: "github",   value: github,   icon: <Github size={12} /> },
-    { key: "linkedin", value: linkedin, icon: <Linkedin size={12} /> },
+    { key: "github",   value: github,   icon: <Code size={12} /> },
+    { key: "linkedin", value: linkedin, icon: <Globe size={12} /> },
   ];
 
   const sideIcons = [Code2, User, Braces, Coffee];

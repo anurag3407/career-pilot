@@ -27,7 +27,7 @@
     "framer-motion": "^12.39.0",
     "html2canvas": "^1.4.1",
     "jspdf": "^4.0.0",
-    "lucide-react": "^1.16.0",
+    "lucide-react": "^1.17.0",
     "motion": "^12.23.26",
     "puppeteer-core": "^25.1.0",
     "react": "^19.2.6",

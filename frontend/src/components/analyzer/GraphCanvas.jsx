@@ -89,7 +89,7 @@ export default function GraphCanvas() {
   };
 
   return (
-    <div className="w-full h-full bg-[#050816]">
+    <div className="absolute inset-0 w-full h-full bg-[#050816]">
       <ReactFlow
         nodes={nodes}
         edges={edges}
