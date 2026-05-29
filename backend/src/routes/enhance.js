@@ -20,6 +20,9 @@ import {
   resumeScoreSchema,
 } from '../schemas/enhance.schema.js';
 
+// Import your brand new AI service
+import { generateQuestions } from '../services/ai/interviewQuestionGenerator.js';
+
 const router = express.Router();
 
 // Score a resume and return structured feedback

@@ -53,7 +53,7 @@ export const createOrder = async (amount, receipt, notes = {}) => {
     };
 
     try {
-        const order = await razorpay.orders.create(options);
+        const order = await getRazorpay().orders.create(options);
         console.log('📦 Razorpay order created:', order.id);
         return order;
     } catch (error) {
@@ -100,7 +100,7 @@ export const getOrder = async (orderId) => {
     throw new Error('Razorpay is not configured');
 }
     try {
-        return await razorpay.orders.fetch(orderId);
+        return await getRazorpay().orders.fetch(orderId);
     } catch (error) {
         console.error('❌ Failed to fetch order:', error);
         throw new Error(`Failed to fetch order: ${error.message}`);
@@ -117,11 +117,11 @@ export const getPayment = async (paymentId) => {
     throw new Error('Razorpay is not configured');
 }
     try {
-        return await razorpay.payments.fetch(paymentId);
+        return await getRazorpay().payments.fetch(paymentId);
     } catch (error) {
         console.error('❌ Failed to fetch payment:', error);
         throw new Error(`Failed to fetch payment: ${error.message}`);
     }
 };
 
-export default razorpay;
+export default { getRazorpay, createOrder, verifyPaymentSignature, getOrder, getPayment };

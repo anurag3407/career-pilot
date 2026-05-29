@@ -82,6 +82,10 @@ export default function ChatWindow({ channel, messages, currentUser, onOptimisti
   const clearTypingUsersTimeoutRef = useRef(null);
   const stopTypingTimeoutRef = useRef(null);
 
+  const scrollToBottom = () => {
+    messagesEndRef.current?.scrollIntoView({ behavior: 'smooth' });
+  };
+
   // Auto-scroll to bottom on new messages
   useEffect(() => {
     scrollToBottom();
@@ -125,10 +129,6 @@ export default function ChatWindow({ channel, messages, currentUser, onOptimisti
   }, [typingUsers]);
 
   useEffect(() => () => clearTimeout(stopTypingTimeoutRef.current), []);
-
-  const scrollToBottom = () => {
-    messagesEndRef.current?.scrollIntoView({ behavior: 'smooth' });
-  };
 
   const handleTyping = useCallback(() => {
     const channelId = channel.id || channel._id;
