@@ -133,7 +133,7 @@ const startServer = async () => {
       console.log('📦 Connected to MongoDB');
       global.useDevDbFallback = false;
     } catch (dbError) {
-      if (process.env.DEV_BYPASS_AUTH === 'true' || process.env.NODE_ENV === 'development') {
+      if ((process.env.DEV_BYPASS_AUTH === 'true' && process.env.NODE_ENV !== 'production') || process.env.NODE_ENV === 'development') {
         console.warn('⚠️  MongoDB connection failed. Running in Local Dev In-Memory Mock Database mode! 🚀');
         console.warn(`   Reason: ${dbError.message}`);
         global.useDevDbFallback = true;
