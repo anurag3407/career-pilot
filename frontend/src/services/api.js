@@ -394,6 +394,23 @@ export const portfolioApi = {
     })
 
     return handleResponse(response)
+  },
+
+  // Import a portfolio from a JSON file
+  async importJson(file) {
+    const headers = await getAuthHeaders()
+    delete headers['Content-Type']
+
+    const formData = new FormData()
+    formData.append('file', file)
+
+    const response = await fetch(`${API_BASE}/portfolio/import`, {
+      method: 'POST',
+      headers,
+      body: formData
+    })
+
+    return handleResponse(response)
   }
 }
 

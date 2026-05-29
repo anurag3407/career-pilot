@@ -1,29 +1,63 @@
-import { useState, useEffect } from 'react'
-import { Globe, Folder, Rocket, LayoutTemplate, Github } from 'lucide-react'
+import { useState, useEffect, useRef, useCallback } from 'react'
+import { Globe, Rocket, LayoutTemplate, Github, Upload } from 'lucide-react'
 import { portfolioApi } from '../../services/api'
 import HubLayout from '../../components/HubLayout'
 import ToolCard from '../../components/ToolCard'
-import { Link } from 'react-router-dom'
 import { motion } from 'framer-motion'
+import toast from 'react-hot-toast'
+
+const MotionDiv = motion.div
 
 export default function PortfolioHub() {
   const [portfolios, setPortfolios] = useState([])
   const [loading, setLoading] = useState(true)
+  const [importing, setImporting] = useState(false)
+  const fileInputRef = useRef(null)
+
+  const fetchPortfolios = useCallback(async () => {
+    try {
+      const res = await portfolioApi.getAll()
+      const items = res.portfolios || res.data?.portfolios || res.data || []
+      setPortfolios(items)
+    } catch (err) {
+      console.error('Failed to fetch portfolios in PortfolioHub', err)
+    } finally {
+      setLoading(false)
+    }
+  }, [])
 
   useEffect(() => {
-    const fetchPortfolios = async () => {
-      try {
-        const res = await portfolioApi.getAll()
-        const items = res.portfolios || res.data?.portfolios || res.data || []
-        setPortfolios(items)
-      } catch (err) {
-        console.error('Failed to fetch portfolios in PortfolioHub', err)
-      } finally {
-        setLoading(false)
-      }
-    }
     fetchPortfolios()
-  }, [])
+  }, [fetchPortfolios])
+
+  const handleImportClick = () => {
+    if (importing) return
+    fileInputRef.current?.click()
+  }
+
+  const handleImportFile = async (event) => {
+    const file = event.target.files?.[0]
+    event.target.value = ''
+
+    if (!file) return
+
+    if (!file.name.toLowerCase().endsWith('.json') && file.type !== 'application/json') {
+      toast.error('Choose a JSON portfolio file')
+      return
+    }
+
+    try {
+      setImporting(true)
+      const result = await portfolioApi.importJson(file)
+      const imported = result.data
+      toast.success(`Imported ${imported?.slug || 'portfolio'}`)
+      await fetchPortfolios()
+    } catch (err) {
+      toast.error(err.message || 'Failed to import portfolio')
+    } finally {
+      setImporting(false)
+    }
+  }
 
   const stats = [
     { icon: Globe, value: portfolios.length, label: 'Active Projects', color: 'text-primary', bg: 'bg-primary/10' },
@@ -59,6 +93,20 @@ export default function PortfolioHub() {
         description="Deploy and manage active production websites on Cloudflare or GitHub Pages."
         color="emerald-500"
       />
+      <ToolCard
+        icon={Upload}
+        title={importing ? 'Importing JSON' : 'Import JSON'}
+        description="Upload a validated portfolio JSON file and add it to your workspace."
+        color="amber-500"
+        onClick={handleImportClick}
+      />
+      <input
+        ref={fileInputRef}
+        type="file"
+        accept="application/json,.json"
+        className="hidden"
+        onChange={handleImportFile}
+      />
 
       {/* Showcase list or placeholder */}
       {!loading && portfolios.length > 0 && (
@@ -69,7 +117,7 @@ export default function PortfolioHub() {
           </h2>
           <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-4">
             {portfolios.map((portfolio, idx) => (
-              <motion.div
+              <MotionDiv
                 key={portfolio.id || idx}
                 initial={{ opacity: 0, y: 10 }}
                 animate={{ opacity: 1, y: 0 }}
@@ -101,7 +149,7 @@ export default function PortfolioHub() {
                     <Globe className="w-3 h-3" />
                   </a>
                 </div>
-              </motion.div>
+              </MotionDiv>
             ))}
           </div>
         </div>
