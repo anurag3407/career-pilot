@@ -50,6 +50,7 @@ Follow these steps to set up the project locally.
 ### Prerequisites
 - Node.js (v18+ recommended)
 - npm
+- A [Firebase project](https://console.firebase.google.com/) (for Authentication & Database features)
 
 ### Installation
 
@@ -59,27 +60,61 @@ git clone https://github.com/anurag3407/career-pilot.git
 
 # Navigate to the project directory
 cd career-pilot
-
-# Install frontend dependencies
-npm install
 ```
 
 ### Environment Setup
 
-Copy the example environment file and add your configuration details.
+> ⚠️ **This step is required before running the app.** Skipping it will cause Firebase-related console warnings and disable authentication/database features.
+
+**1. Set up the frontend `.env` file:**
 
 ```bash
+# Navigate to the frontend folder
+cd frontend
+
+# Copy the example environment file
 cp .env.example .env
 ```
 
-Ensure you configure the `.env` file with your **Backend API** and **Firebase** credentials as per `.env.example`.
+Open `frontend/.env` and fill in your Firebase project credentials. You can find these in the [Firebase Console](https://console.firebase.google.com/) under **Project Settings → Your Apps → SDK Setup and configuration**:
+
+```env
+VITE_FIREBASE_API_KEY=your_actual_api_key
+VITE_FIREBASE_AUTH_DOMAIN=your_project.firebaseapp.com
+VITE_FIREBASE_PROJECT_ID=your_project_id
+VITE_FIREBASE_STORAGE_BUCKET=your_project.appspot.com
+VITE_FIREBASE_MESSAGING_SENDER_ID=your_sender_id
+VITE_FIREBASE_APP_ID=your_app_id
+```
+
+**2. (Optional) Set up the backend `.env` file:**
+
+```bash
+# From the root of the project
+cd backend
+cp .env.example .env
+# Edit .env with your backend credentials
+```
+
+### Installing Dependencies
+
+```bash
+# Install frontend dependencies
+cd frontend
+npm install
+```
 
 ### Running the App
 
 ```bash
+# From the frontend directory
 # Start development server
 npm run dev
+```
 
+The app will be available at **http://localhost:5173**.
+
+```bash
 # Build for production
 npm run build
 

@@ -565,6 +565,17 @@ export const aiApi = {
       headers
     })
     return handleResponse(response)
+  },
+
+  // Generate career roadmap
+  async generateRoadmap(targetCareer) {
+    const headers = await getAuthHeaders()
+    const response = await fetch(`${API_BASE}/ai/career-roadmap`, {
+      method: 'POST',
+      headers,
+      body: JSON.stringify({ targetCareer })
+    })
+    return handleResponse(response)
   }
 }
 
