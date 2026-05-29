@@ -1,6 +1,6 @@
 import { useState } from "react";
 import { Link } from "react-router-dom";
-import { Zap, Github, Twitter, Linkedin, Instagram } from "lucide-react";
+import { Zap, Code, Globe } from "lucide-react";
 
 export default function Footer() {
   const [email, setEmail] = useState("");
@@ -194,16 +194,10 @@ export default function Footer() {
           {/* Center (socials grouped properly) */}
           <div className="flex items-center gap-5">
             <a href="#" className="w-9 h-9 flex items-center justify-center rounded-full border border-zinc-800 hover:border-zinc-600 hover:bg-zinc-900 transition hover:text-white transition duration-200">
-              <Github className="w-5 h-5" />
+              <Code className="w-5 h-5" />
             </a>
             <a href="#" className="w-9 h-9 flex items-center justify-center rounded-full border border-zinc-800 hover:border-zinc-600 hover:bg-zinc-900 transition hover:text-white transition duration-200">
-              <Twitter className="w-5 h-5" />
-            </a>
-            <a href="#" className="w-9 h-9 flex items-center justify-center rounded-full border border-zinc-800 hover:border-zinc-600 hover:bg-zinc-900 transition hover:text-white transition duration-200">
-              <Linkedin className="w-5 h-5" />
-            </a>
-            <a href="#" className="w-9 h-9 flex items-center justify-center rounded-full border border-zinc-800 hover:border-zinc-600 hover:bg-zinc-900 transition hover:text-white transition duration-200">
-              <Instagram className="w-5 h-5" />
+              <Globe className="w-5 h-5" />
             </a>
           </div>
 

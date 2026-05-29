@@ -11,9 +11,9 @@ import {
   TrendingUp, 
   ChevronsRight, 
   RotateCcw, 
-  Github, 
-  Linkedin, 
-  Twitter, 
+  Code, 
+  Globe, 
+  Zap, 
   ExternalLink,
   Flame
 } from 'lucide-react';
@@ -379,17 +379,17 @@ export default function F1Hero({ data }) {
                 <div className="flex gap-4">
                   {profile.socials?.github && (
                     <a href={profile.socials.github} target="_blank" rel="noopener noreferrer" className="hover:text-white text-neutral-400 transition-colors">
-                      <Github className="w-4.5 h-4.5" />
+                      <Code className="w-4.5 h-4.5" />
                     </a>
                   )}
                   {profile.socials?.linkedin && (
                     <a href={profile.socials.linkedin} target="_blank" rel="noopener noreferrer" className="hover:text-white text-neutral-400 transition-colors">
-                      <Linkedin className="w-4.5 h-4.5" />
+                      <Globe className="w-4.5 h-4.5" />
                     </a>
                   )}
                   {profile.socials?.twitter && (
                     <a href={profile.socials.twitter} target="_blank" rel="noopener noreferrer" className="hover:text-white text-neutral-400 transition-colors">
-                      <Twitter className="w-4.5 h-4.5" />
+                      <Zap className="w-4.5 h-4.5" />
                     </a>
                   )}
                 </div>

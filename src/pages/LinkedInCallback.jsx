@@ -118,8 +118,8 @@ export default function LinkedInCallback() {
     return (
         <div className="min-h-screen bg-background relative overflow-hidden">
           {/* Background Effect */}
-          <div className="absolute top-1/4 left-1/4 w-96 h-96 bg-primary/20 rounded-full blur-[120px] pointer-events-none" />
-          <div className="absolute bottom-1/4 right-1/4 w-96 h-96 bg-secondary/20 rounded-full blur-[120px] pointer-events-none" />
+          <div className="absolute top-1/4 left-1/4 w-48 sm:w-72 md:w-96 h-48 sm:h-72 md:h-96 bg-primary/20 rounded-full blur-[80px] sm:blur-[120px] pointer-events-none" />
+          <div className="absolute bottom-1/4 right-1/4 w-48 sm:w-72 md:w-96 h-48 sm:h-72 md:h-96 bg-secondary/20 rounded-full blur-[80px] sm:blur-[120px] pointer-events-none" />
           
           <Navbar />
 
@@ -129,7 +129,7 @@ export default function LinkedInCallback() {
                 <div className="p-3 rounded-full bg-primary/10 border border-primary/20 mb-4">
                   <ShieldCheck className="w-6 h-6 text-primary" />
                 </div>
-                <h1 className="text-2xl font-bold text-center text-foreground">
+                <h1 className="text-xl sm:text-2xl font-bold text-center text-foreground">
                   Two-Factor Verification
                 </h1>
                 <p className="text-muted-foreground text-sm text-center mt-2 font-medium">
@@ -147,7 +147,7 @@ export default function LinkedInCallback() {
                   value={totpToken}
                   onChange={(e) => setTotpToken(useBackup ? e.target.value.toUpperCase() : e.target.value.replace(/\D/g, '').slice(0, 6))}
                   placeholder={useBackup ? 'XXXX-XXXX' : '000000'}
-                  className="font-mono tracking-widest text-center text-lg font-bold"
+                  className="font-mono tracking-widest text-center text-base sm:text-lg font-bold"
                   maxLength={useBackup ? 9 : 6}
                   required
                 />

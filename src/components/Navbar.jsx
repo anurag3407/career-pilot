@@ -13,7 +13,7 @@ import {
   User,
   Bell,
   Mail,
-  Linkedin,
+  Globe,
   Users,
   GraduationCap,
   Mic,
@@ -84,7 +84,7 @@ export default function Navbar() {
     { path: '/community', label: 'Community', icon: Users },
     { path: '/upload', label: 'Resume', icon: FileText },
     { path: '/email-generator', label: 'Emails', icon: Mail },
-    { path: '/linkedin-optimizer', label: 'LinkedIn', icon: Linkedin },
+    { path: '/linkedin-optimizer', label: 'LinkedIn', icon: Globe },
   ]
 
   const searchSuggestions = [

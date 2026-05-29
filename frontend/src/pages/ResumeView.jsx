@@ -11,6 +11,7 @@ import { sectionsToMarkdown } from '../components/customSectionUtils'
 import { SkeletonList } from '../components/ui/Skeleton'
 import ResumeVersions from '../components/ResumeVersions'
 import AtsProgressChart from '../components/AtsProgressChart'
+import { Loader2 } from 'lucide-react'
 
 export default function ResumeView() {
   const { resumeId } = useParams()
@@ -313,13 +314,20 @@ export default function ResumeView() {
                   )}
                 </div>
                 <div className="flex gap-2 flex-wrap">
-                  <Button
-                    variant="primary"
-                    onClick={handleDownloadPdf}
-                    disabled={downloading}
-                  >
-                    {downloading ? 'Downloading...' : 'Download PDF'}
-                  </Button>
+                 <Button
+  variant="primary"
+  onClick={handleDownloadPdf}
+  disabled={downloading}
+>
+  {downloading ? (
+    <div className="flex items-center gap-2">
+      <Loader2 className="w-4 h-4 animate-spin" />
+      Generating PDF...
+    </div>
+  ) : (
+    'Download PDF'
+  )}
+</Button>
                   <Button
                     variant="primary"
                     onClick={handleAnalyzeResume}

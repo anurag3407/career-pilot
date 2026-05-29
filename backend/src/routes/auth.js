@@ -160,15 +160,6 @@ setInterval(() => {
   }
 }, 10 * 60 * 1000).unref();
 
-// Sweep expired linkedInTokenStore entries every 60 seconds
-setInterval(() => {
-  const now = Date.now();
-  for (const [code, { expiresAt }] of linkedInTokenStore.entries()) {
-    if (now > expiresAt) {
-      linkedInTokenStore.delete(code);
-    }
-  }
-}, 60 * 1000).unref();
 
 
 // Verify token endpoint — loginProtection tracks failed attempts per IP
@@ -310,42 +301,12 @@ router.get('/linkedin/callback', asyncHandler(async (req, res) => {
 
   const customToken = await admin.auth().createCustomToken(firebaseUid, { linkedinId });
 
-  const exchangeCode = crypto.randomBytes(24).toString('hex');
-  linkedInTokenStore.set(exchangeCode, {
-    token: customToken,
-    isNew: !mongoUser,
-    expiresAt: Date.now() + 60 * 1000,
-  });
   // Store token in one-time exchange store (60s TTL) instead of passing in URL
   const exchangeCode = crypto.randomBytes(16).toString('hex');
   tokenStore.set(exchangeCode, { token: customToken, isNew: !mongoUser, expiresAt: Date.now() + 60000 });
 
   res.redirect(`${frontendUrl}/auth/linkedin/callback?code=${exchangeCode}`);
 }));
-
-// One-time token exchange endpoint — the frontend calls this immediately after the OAuth
-// redirect to retrieve the Firebase custom token without it appearing in a URL,
-// server access log, browser history, or Referer header.
-// No verifyToken here — the user is mid-authentication and has no Firebase token yet.
-// The exchange code (192-bit entropy, 60-sec TTL, single-use) is the security boundary.
-router.get('/linkedin/token', asyncHandler(async (req, res) => {
-  res.set('Cache-Control', 'no-store');
-  res.set('Pragma', 'no-cache');
-
-  const { code } = req.query;
-
-  if (!code || typeof code !== 'string') {
-    return res.status(400).json({ success: false, error: 'Exchange code is required' });
-  }
-
-  const entry = linkedInTokenStore.get(code);
-
-  if (!entry || Date.now() > entry.expiresAt) {
-    linkedInTokenStore.delete(code);
-    return res.status(400).json({ success: false, error: 'Invalid or expired exchange code' });
-  }
-
-  linkedInTokenStore.delete(code);
 
 // One-time token exchange endpoint — frontend calls this after LinkedIn OAuth redirect
 // instead of receiving the Firebase custom token in the URL.

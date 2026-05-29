@@ -96,10 +96,49 @@ export default function UserProfile() {
   }
 
   const cancelEdit = () => setEditing(false)
+  const isValidWebsite = (url) => {
+  if (!url) return true;
+
+  try {
+    new URL(url.startsWith("http") ? url : `https://${url}`);
+    return true;
+  } catch {
+    return false;
+  }
+};
+
+const isValidLinkedIn = (url) => {
+  if (!url) return true;
+
+  return /^https?:\/\/(www\.)?linkedin\.com\/in\/.+$/i.test(url);
+};
+
+const isValidGithub = (username) => {
+  if (!username) return true;
+
+  return /^[a-zA-Z0-9-]+$/.test(username);
+};
 
   const saveEdit = async () => {
-    setSaving(true)
-    try {
+
+  if (!isValidWebsite(form.website.trim())) {
+    toast.error("Please enter a valid website URL");
+    return;
+  }
+
+  if (!isValidLinkedIn(form.linkedin.trim())) {
+    toast.error("Please enter a valid LinkedIn profile URL");
+    return;
+  }
+
+  if (!isValidGithub(form.github.trim())) {
+    toast.error("Invalid GitHub username");
+    return;
+  }
+
+  setSaving(true);
+
+  try {
       const res = await userProfileApi.updateMyProfile({
         displayName: form.displayName.trim(),
         bio: form.bio.trim(),
@@ -435,6 +474,9 @@ export default function UserProfile() {
             </motion.div>
           )}
 
+          {!editing && (
+             <> 
+
           {/* Stats */}
           <motion.div variants={itemVariants} className="grid grid-cols-2 gap-4">
             <div className="relative overflow-hidden rounded-2xl bg-card/80 backdrop-blur-sm border border-sky-500/10 shadow-[0_8px_30px_rgb(0,0,0,0.06)] hover:shadow-xl hover:border-primary/20 transition-all duration-300 p-5 text-center">
@@ -531,6 +573,8 @@ export default function UserProfile() {
               </div>
             )}
           </motion.div>
+          </>
+          )}
         </motion.div>
       </div>
     </div>
