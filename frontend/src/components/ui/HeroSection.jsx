@@ -1,3 +1,5 @@
+import ParticleBackground from "./ParticleBackground";
+import React from "react";
 import { motion } from "framer-motion";
 import { Link } from "react-router-dom";
 import { ArrowRight, Sparkles } from "lucide-react";
@@ -45,6 +47,7 @@ const worldMapDots = [
 export default function HeroSection() {
   return (
     <section className="relative min-h-screen overflow-hidden bg-background">
+      <ParticleBackground />
       {/* Background Effects - Premium Blobs */}
       <div className="absolute top-0 left-1/4 w-96 h-96 bg-primary/20 rounded-full blur-[120px] animate-blob" />
       <div className="absolute bottom-1/4 right-1/4 w-96 h-96 bg-secondary/20 rounded-full blur-[120px] animate-blob animation-delay-2000" />

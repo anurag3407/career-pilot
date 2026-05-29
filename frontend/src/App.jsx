@@ -1,10 +1,13 @@
-import { BrowserRouter, Routes, Route, Navigate } from 'react-router-dom'
+import HeroSection from "./components/ui/HeroSection";
+import { Routes, Route, Navigate } from 'react-router-dom'
 import { Toaster } from 'react-hot-toast'
 import { AuthProvider, useAuth } from './context/AuthContext'
 import { SocketProvider } from './context/SocketContext'
 import { ThemeProvider } from './context/ThemeContext'
 import AppLayout from './components/AppLayout'
 import Footer from './components/ui/Footer'
+
+
 
 import Home from './pages/Home'
 import Login from './pages/Login'
@@ -35,6 +38,7 @@ import FellowshipMessages from './pages/fellowship/FellowshipMessages'
 import FellowshipChat from './pages/fellowship/FellowshipChat'
 import SecuritySettings from './pages/SecuritySettings'
 import LinkedInCallback from './pages/LinkedInCallback'
+import { BrowserRouter } from "react-router-dom";
 
 function ProtectedRoute({ children }) {
   const { user, loading } = useAuth()
@@ -83,7 +87,9 @@ function App() {
     <ThemeProvider>
       <AuthProvider>
         <SocketProvider>
-          <BrowserRouter>
+          <BrowserRouter> 
+           <HeroSection />    
+          
             <div className="bg-mesh" />
             <Toaster
               position="top-right"
@@ -148,11 +154,13 @@ function App() {
 
               <Route path="*" element={<NotFound />} />
             </Routes>
+
           </BrowserRouter>
         </SocketProvider>
       </AuthProvider>
     </ThemeProvider>
-  )
+    
+  );
 }
 
 export default App
