@@ -245,6 +245,11 @@ function UserSection() {
 export default function AppSidebar() {
     const [open, setOpen] = useState(false);
 const [openAI, setOpenAI] = useState(false);
+const location = useLocation();
+
+useEffect(() => {
+    setOpen(false);
+}, [location.pathname]);
 
     return (
         <Sidebar open={open} setOpen={setOpen}>
@@ -324,4 +329,3 @@ const [openAI, setOpenAI] = useState(false);
         </Sidebar>
     );
 }
-
