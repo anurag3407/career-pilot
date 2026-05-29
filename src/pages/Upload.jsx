@@ -5,7 +5,7 @@ import { motion } from 'framer-motion'
 import { uploadApi, resumeApi } from '../services/api'
 import Button from '../components/Button'
 import DropZone from '../components/DropZone'
-import { FileText, Upload as UploadIcon, CheckCircle, Target, BarChart3, Zap, Linkedin, ArrowRight, User, Briefcase, GraduationCap, PlusCircle, TextSelect } from 'lucide-react'
+import { FileText, Upload as UploadIcon, CheckCircle, Target, BarChart3, Zap, Globe, ArrowRight, User, Briefcase, GraduationCap, PlusCircle, TextSelect } from 'lucide-react'
 import { Link } from 'react-router-dom'
 
 export default function Upload() {
@@ -260,7 +260,7 @@ export default function Upload() {
           >
             <div className="flex items-center gap-3 mb-5">
               <div className="w-10 h-10 bg-sky-500/20 rounded-lg flex items-center justify-center">
-                <Linkedin className="w-5 h-5 text-sky-400" />
+                <Globe className="w-5 h-5 text-sky-400" />
               </div>
               <div>
                 <h2 className="text-lg font-semibold text-white">Import from LinkedIn</h2>

@@ -55,16 +55,6 @@ export default function LinkedInCallback() {
                 const { token, isNew } = await resp.json()
 
                 await signInWithCustomToken(auth, token)
-                // Exchange the one-time code for the Firebase custom token (never exposed in URL)
-                const apiUrl = import.meta.env.VITE_API_URL || 'http://localhost:5001'
-                const exchangeRes = await fetch(`${apiUrl}/api/auth/linkedin/token/${code}`)
-                const exchangeData = await exchangeRes.json()
-
-                if (!exchangeRes.ok || !exchangeData.token) {
-                    throw new Error(exchangeData.error || 'Failed to retrieve token')
-                }
-
-                await signInWithCustomToken(auth, exchangeData.token)
                 
                 // Fetch two-factor status to prevent 2FA bypass
                 const tfaStatus = await twoFactorApi.getStatus()
@@ -83,7 +73,7 @@ export default function LinkedInCallback() {
         }
 
         handleCallback()
-    }, [])
+    }, [searchParams, navigate]) // Added dependencies
 
     const handleTotpSubmit = async (e) => {
         e.preventDefault()

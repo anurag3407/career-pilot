@@ -2,7 +2,7 @@ import React, { useState } from 'react'
 import { motion, AnimatePresence } from 'framer-motion'
 import { useNavigate } from 'react-router-dom'
 import { 
-  Github, 
+  Code, 
   Search, 
   MapPin, 
   Building, 
@@ -67,7 +67,7 @@ export default function GitHubDashboard() {
           className="text-center mb-10"
         >
           <div className="inline-flex items-center justify-center p-4 bg-[#24292e]/10 dark:bg-[#24292e]/50 rounded-2xl mb-6 ring-1 ring-border shadow-lg">
-            <Github className="w-10 h-10 text-foreground" />
+            <Code className="w-10 h-10 text-foreground" />
           </div>
           <h1 className="text-4xl md:text-5xl font-bold bg-clip-text text-transparent bg-gradient-to-r from-foreground to-foreground/60 tracking-tight mb-4">
             GitHub to Resume

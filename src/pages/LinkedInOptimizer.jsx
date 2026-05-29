@@ -1,7 +1,7 @@
 import { useState } from 'react'
 import { motion, AnimatePresence } from 'framer-motion'
 import {
-  Linkedin, Sparkles, Target, Copy, Check,
+  Globe, Sparkles, Target, Copy, Check,
   ChevronDown, ChevronUp, TrendingUp, Zap,
   AlertCircle, CheckCircle2, Star
 } from 'lucide-react'
@@ -189,7 +189,7 @@ export default function LinkedInOptimizer() {
           className="text-center mb-10"
         >
           <div className="inline-flex items-center gap-2 px-4 py-2 rounded-full bg-blue-500/10 border border-blue-500/20 text-blue-400 text-sm mb-4">
-            <Linkedin className="w-4 h-4" />
+            <Globe className="w-4 h-4" />
             AI LinkedIn Profile Optimizer
           </div>
           <h1 className="text-4xl md:text-5xl font-bold text-foreground mb-3">
@@ -208,14 +208,14 @@ export default function LinkedInOptimizer() {
           className="bg-card/50 backdrop-blur-sm rounded-2xl border border-border shadow-xl mb-10 overflow-hidden"
         >
           <div className="bg-blue-600 px-6 py-4 flex items-center gap-2 text-white font-semibold">
-            <Linkedin className="w-5 h-5" />
+            <Globe className="w-5 h-5" />
             Paste Your Profile Details
           </div>
           <form onSubmit={handleOptimize} className="p-6 md:p-8 space-y-6">
             <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
               <div>
                 <label className="flex items-center gap-2 text-sm font-semibold text-foreground mb-2">
-                  <Linkedin className="w-4 h-4 text-blue-400" />
+                  <Globe className="w-4 h-4 text-blue-400" />
                   Your LinkedIn Profile Text
                 </label>
                 <textarea
@@ -336,7 +336,7 @@ export default function LinkedInOptimizer() {
                 <div className="bg-card/60 backdrop-blur-sm border border-border rounded-2xl p-6">
                   <div className="flex items-center justify-between mb-4">
                     <h2 className="text-xl font-bold text-foreground flex items-center gap-2">
-                      <Linkedin className="w-5 h-5 text-blue-400" /> Rewritten About Section
+                      <Globe className="w-5 h-5 text-blue-400" /> Rewritten About Section
                     </h2>
                     <div className="flex gap-2">
                       <button

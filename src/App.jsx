@@ -60,6 +60,7 @@ import PortfolioHub from './pages/hubs/PortfolioHub';
 import CareerGrowthHub from './pages/hubs/CareerGrowthHub';
 import CommunityHub from './pages/hubs/CommunityHub';
 import GitHubDashboard from './pages/GitHubDashboard';
+import JetLandingPage from './pages/JetLandingPage';
 
 function ProtectedRoute({ children }) {
   const { user, loading } = useAuth();
@@ -164,6 +165,9 @@ function AppRoutes() {
         <Route path="/about" element={<About />} />
         <Route path="/terms" element={<TermsOfService />} />
         <Route path="/cookies" element={<CookiePolicy />} />
+        
+        {/* Jet Landing Page Route */}
+        <Route path="/jet" element={<JetLandingPage />} />
 
         {/* Template Gallery Route (Registered at /templates) */}
         <Route path="/templates" element={<TemplateGallery />} />

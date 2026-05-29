@@ -1,5 +1,5 @@
 import { useState, useEffect } from 'react'
-import { Globe, Folder, Rocket, LayoutTemplate, Github } from 'lucide-react'
+import { Globe, Folder, Rocket, LayoutTemplate, Code } from 'lucide-react'
 import { portfolioApi } from '../../services/api'
 import HubLayout from '../../components/HubLayout'
 import ToolCard from '../../components/ToolCard'
@@ -47,7 +47,7 @@ export default function PortfolioHub() {
       />
       <ToolCard
         to="/github-dashboard"
-        icon={Github}
+        icon={Code}
         title="GitHub Dashboard"
         description="Connect your repositories, track stats, and manage synced showcase items."
         color="secondary"

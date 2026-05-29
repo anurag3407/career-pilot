@@ -128,12 +128,17 @@ function EntryEditor({ entry, onChange, onDelete, onMoveUp, onMoveDown, isFirst,
           <div className="sm:col-span-2">
             <label className="block text-xs font-medium text-muted-foreground mb-1">Title *</label>
             <input
-              type="text"
-              value={entry.title}
-              onChange={update('title')}
-              placeholder="e.g. Best Paper Award"
-              className="w-full px-3 py-2 rounded-lg bg-background border border-border text-sm text-foreground placeholder:text-muted-foreground focus:outline-none focus:ring-2 focus:ring-primary/40 focus:border-primary transition-colors"
-            />
+  type="text"
+  value={entry.title}
+  onChange={update('title')}
+  maxLength={100}
+  placeholder="e.g. Best Paper Award"
+  className="w-full px-3 py-2 rounded-lg bg-background border border-border text-sm text-foreground placeholder:text-muted-foreground focus:outline-none focus:ring-2 focus:ring-primary/40 focus:border-primary transition-colors"
+/>
+
+<p className="text-xs text-gray-500 mt-1">
+  {entry.title?.length || 0} / 100
+</p>
           </div>
           <div>
             <label className="block text-xs font-medium text-muted-foreground mb-1">Subtitle / Issuer</label>
@@ -141,9 +146,13 @@ function EntryEditor({ entry, onChange, onDelete, onMoveUp, onMoveDown, isFirst,
               type="text"
               value={entry.subtitle}
               onChange={update('subtitle')}
+              maxLength={150}
               placeholder="e.g. IEEE Conference"
               className="w-full px-3 py-2 rounded-lg bg-background border border-border text-sm text-foreground placeholder:text-muted-foreground focus:outline-none focus:ring-2 focus:ring-primary/40 focus:border-primary transition-colors"
             />
+            <p className="text-xs text-gray-500 mt-1">
+  {entry.subtitle?.length || 0} / 150
+</p>
           </div>
           <div>
             <label className="block text-xs font-medium text-muted-foreground mb-1">Date / Year</label>
@@ -151,19 +160,33 @@ function EntryEditor({ entry, onChange, onDelete, onMoveUp, onMoveDown, isFirst,
               type="text"
               value={entry.date}
               onChange={update('date')}
+              maxLength={30}
               placeholder="e.g. May 2024"
               className="w-full px-3 py-2 rounded-lg bg-background border border-border text-sm text-foreground placeholder:text-muted-foreground focus:outline-none focus:ring-2 focus:ring-primary/40 focus:border-primary transition-colors"
             />
+            <p className="text-xs text-gray-500 mt-1">
+  {entry.date?.length || 0} / 30
+</p>
           </div>
           <div className="sm:col-span-2">
             <label className="block text-xs font-medium text-muted-foreground mb-1">Description</label>
             <textarea
-              rows={2}
-              value={entry.description}
-              onChange={update('description')}
+  rows={2}
+  value={entry.description}
+  onChange={update('description')}
+  maxLength={500}
               placeholder="Brief description (optional)"
               className="w-full px-3 py-2 rounded-lg bg-background border border-border text-sm text-foreground placeholder:text-muted-foreground focus:outline-none focus:ring-2 focus:ring-primary/40 focus:border-primary transition-colors resize-none"
             />
+            <p
+  className={`text-sm mt-1 ${
+    (entry.description?.length || 0) > 450
+      ? 'text-red-500'
+      : 'text-gray-500'
+  }`}
+>
+  {entry.description?.length || 0} / 500
+</p>
           </div>
         </div>
       )}
