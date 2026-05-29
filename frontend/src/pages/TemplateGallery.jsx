@@ -482,7 +482,7 @@ export default function TemplateGallery() {
         <div className="overflow-hidden rounded-2xl border border-border">
           <MidnightGradient />
         </div>
-        <div/>
+        </div>
       {/* Playing Cards Theme */}
       <div className="mt-12">
         <div className="mb-4 flex items-center gap-3 px-1">
@@ -532,6 +532,6 @@ export default function TemplateGallery() {
         onClose={() => setPreviewTemplateId(null)}
       />
       </div>
-    </div>
+    
   );
 }
