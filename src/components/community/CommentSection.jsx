@@ -50,7 +50,7 @@ function CommentItem({ comment, currentUser, onReply, onLike, depth = 0 }) {
         <div className="flex-shrink-0">
           <div className="w-8 h-8 rounded-full bg-gradient-to-br from-primary to-secondary flex items-center justify-center text-primary-foreground text-xs font-medium">
             {comment.author?.avatar ? (
-              <img 
+              <img loading="lazy" 
                 src={comment.author.avatar} 
                 alt={comment.author.name}
                 className="w-full h-full rounded-full object-cover"
@@ -279,7 +279,7 @@ export default function CommentSection({ postId, currentUser, onCommentAdded }) 
         <form onSubmit={handleSubmitComment} className="flex gap-2">
           <div className="w-8 h-8 rounded-full bg-gradient-to-br from-primary to-secondary flex items-center justify-center text-primary-foreground text-xs font-medium flex-shrink-0">
             {currentUser?.photoURL ? (
-              <img 
+              <img loading="lazy" 
                 src={currentUser.photoURL} 
                 alt={currentUser.displayName}
                 className="w-full h-full rounded-full object-cover"

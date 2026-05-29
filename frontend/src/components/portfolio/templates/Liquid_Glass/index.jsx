@@ -105,7 +105,7 @@ function Hero() {
           <GlassCard className="p-6 w-full max-w-sm text-center">
             <div className="relative inline-block mb-4">
               <div className="absolute inset-0 rounded-full bg-gradient-to-br from-cyan-400 to-purple-500 blur-md opacity-60" />
-              <img
+              <img loading="lazy"
                 src={data.personal.avatar}
                 alt={data.personal.name}
                 className="relative w-32 h-32 rounded-full object-cover border-2 border-white/30 mx-auto"
@@ -258,7 +258,7 @@ function Projects() {
             <motion.div key={index} variants={fadeUp}>
               <GlassCard className="overflow-hidden h-full flex flex-col">
                 <div className="relative overflow-hidden">
-                  <img
+                  <img loading="lazy"
                     src={project.image}
                     alt={project.title}
                     className="w-full h-44 object-cover"
@@ -378,7 +378,7 @@ function Testimonials() {
                 <div className="text-cyan-400 text-3xl mb-3">"</div>
                 <p className="text-white/70 text-sm leading-relaxed flex-1 mb-4">{t.text}</p>
                 <div className="flex items-center gap-3 pt-4 border-t border-white/10">
-                  <img
+                  <img loading="lazy"
                     src={t.avatar}
                     alt={t.name}
                     className="w-10 h-10 rounded-full object-cover border border-white/20"

@@ -19,7 +19,7 @@ export default function Projects({ data }) {
             <div className="absolute -inset-10 bg-gradient-to-r from-indigo-500/20 via-purple-500/20 to-cyan-500/20 liquid-shape opacity-0 group-hover:opacity-100 transition-opacity duration-700 -z-10 blur-2xl mix-blend-screen" />
             
             <div className="h-56 overflow-hidden relative">
-              <img 
+              <img loading="lazy" 
                 src={project.image} 
                 alt={project.title} 
                 className="w-full h-full object-cover group-hover:scale-110 transition-transform duration-[1.5s] ease-out" 

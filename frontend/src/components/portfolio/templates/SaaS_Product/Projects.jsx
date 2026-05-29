@@ -62,7 +62,7 @@ export default function Projects({ data }) {
           >
             <div className="relative overflow-hidden rounded-2xl">
               {featured?.image ? (
-                <img
+                <img loading="lazy"
                   src={featured.image}
                   alt={featured?.title || 'Featured project'}
                   className="h-64 w-full object-cover transition duration-700 hover:scale-[1.02] lg:h-full"
@@ -110,7 +110,7 @@ export default function Projects({ data }) {
             >
               <div className="relative h-48 overflow-hidden">
                 {project?.image ? (
-                  <img
+                  <img loading="lazy"
                     src={project.image}
                     alt={project?.title || 'Project preview'}
                     className="h-full w-full object-cover transition duration-700 hover:scale-105"

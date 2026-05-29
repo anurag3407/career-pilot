@@ -41,7 +41,7 @@ export default function About({ data }) {
           <div className="absolute -bottom-4 -right-4 h-full w-full border-b border-r border-[#C9A96E]/60" />
           <div className="relative overflow-hidden bg-[#111118] p-3">
             {data.personal?.avatar ? (
-              <img
+              <img loading="lazy"
                 src={data.personal.avatar}
                 alt={data.personal?.name || 'Portfolio portrait'}
                 className="aspect-[3/4] w-full object-cover grayscale-[20%]"

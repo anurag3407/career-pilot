@@ -92,7 +92,7 @@ export default function About() {
             <div className="absolute -inset-8 border border-[#c5a880]/10 pointer-events-none" />
 
             <div className="relative overflow-hidden bg-[#111111] border border-[#222222]">
-              <img
+              <img loading="lazy"
                 src="https://images.unsplash.com/photo-1577219491135-ce391730fb2c?auto=format&fit=crop&q=80&w=900"
                 alt={CHEF_STORY.name}
                 className="w-full h-[520px] object-cover opacity-90"

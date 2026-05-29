@@ -374,7 +374,7 @@ className="w-full pl-12 pr-10 py-4 bg-muted/50 border border-border rounded-xl t
                         {/* Company Logo */}
                         <div className="w-14 h-14 bg-gradient-to-br from-primary/20 to-secondary/20 rounded-xl flex items-center justify-center flex-shrink-0 border border-border">
                           {job.employer_logo ? (
-                            <img
+                            <img loading="lazy"
                               src={job.employer_logo}
                               alt={job.employer_name}
                               className="w-10 h-10 object-contain rounded"

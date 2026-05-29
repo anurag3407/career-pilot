@@ -62,7 +62,7 @@ export const createEmailLog = async ({ recipientEmail, campaignId = null }) => {
 };
 
 /**
- * Build the tracking pixel <img> tag to embed in an HTML email.
+ * Build the tracking pixel <img loading="lazy"> tag to embed in an HTML email.
  *
  * @param {string} trackingToken
  * @param {string} baseUrl - The public base URL of this backend (e.g. process.env.BACKEND_URL)

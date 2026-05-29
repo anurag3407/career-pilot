@@ -15,7 +15,7 @@ export function Message({ avatar, name, timestamp, children, isBot, index = 0 })
       variants={msgAnim}
       className="flex gap-4 px-4 py-1 hover:bg-[#2E3035] group transition-colors"
     >
-      <img
+      <img loading="lazy"
         src={avatar}
         alt={name}
         className="w-10 h-10 rounded-full object-cover mt-0.5 shrink-0 cursor-pointer hover:opacity-80"
@@ -53,7 +53,7 @@ export function Embed({ color = '#5865F2', title, description, fields, image, fo
             ))}
           </div>
         )}
-        {image && <img src={image} alt={title || 'Embedded image'} className="w-full rounded mt-1 max-h-48 object-cover" />}
+        {image && <img loading="lazy" src={image} alt={title || 'Embedded image'} className="w-full rounded mt-1 max-h-48 object-cover" />}
         {footer && <div className="text-[11px] text-[#949BA4] mt-2">{footer}</div>}
       </div>
     </div>
