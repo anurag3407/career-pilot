@@ -23,6 +23,7 @@ import {
 } from 'lucide-react'
 import { jobsApi, jobTrackerApi } from '../services/api'
 import Button from '../components/Button'
+import MatchScoreBadge from '../components/MatchScoreBadge'
 import { SkeletonJobList } from '../components/ui/Skeleton'
 
 const JOB_TYPES = ['All Types', 'Full-time', 'Part-time', 'Contract', 'Internship', 'Remote']
@@ -234,6 +235,12 @@ export default function JobSearch() {
     const date = new Date(dateString)
     if (Number.isNaN(date.getTime())) return 'Recently'
     return formatDistanceToNow(date, { addSuffix: true })
+  }
+
+  const getMatchScore = (job) => {
+    const score = job.matchScore ?? job.match_score ?? job.matchPercentage ?? job.match_percentage
+    const numericScore = typeof score === 'string' ? Number(score) : score
+    return typeof numericScore === 'number' && Number.isFinite(numericScore) ? numericScore : null
   }
 
   return (
@@ -505,9 +512,12 @@ className="w-full pl-12 pr-10 py-4 bg-muted/50 border border-border rounded-xl t
                         </div>
 
                         <div className="flex-1">
-                          <h3 className="text-lg font-semibold text-foreground group-hover:text-primary transition-colors">
-                            {job.job_title || job.title}
-                          </h3>
+                          <div className="flex flex-wrap items-start gap-3">
+                            <h3 className="text-lg font-semibold text-foreground group-hover:text-primary transition-colors">
+                              {job.job_title || job.title}
+                            </h3>
+                            <MatchScoreBadge score={getMatchScore(job)} />
+                          </div>
                           <p className="text-muted-foreground font-medium">
                             {job.employer_name || job.company}
                           </p>

@@ -42,7 +42,7 @@ const menuItemVariants = {
   },
 };
   return (
-    <section className="relative h-screen overflow-hidden font-inter bg-gray-50">
+    <section className="relative min-h-screen flex flex-col justify-center overflow-x-hidden font-inter bg-gray-50 py-24 md:py-32">
       {/* Background Video */}
         <video 
           autoPlay 

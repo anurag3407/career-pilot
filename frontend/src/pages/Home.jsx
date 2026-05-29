@@ -1,4 +1,5 @@
 import JetLandingPage from './JetLandingPage'
+import LandingNavbar from '../components/ui/LandingNavbar'
 import FeaturesSection, { AdditionalFeatures } from '../components/ui/FeaturesSection'
 import PortfolioShowcaseSection from '../components/ui/PortfolioShowcaseSection'
 import HowItWorksSection from '../components/ui/HowItWorksSection'
@@ -10,6 +11,9 @@ import { StackedCircularFooter } from '../components/ui/stacked-circular-footer'
 export default function Home() {
   return (
     <div className="min-h-screen bg-background text-foreground selection:bg-primary selection:text-primary-foreground">
+      {/* Global Landing Navigation Bar */}
+      <LandingNavbar />
+
       {/* Jet Landing Page Hero Section */}
       <JetLandingPage />
 
