@@ -13,6 +13,7 @@ import Button from '../components/Button'
 import Input from '../components/Input'
 import AnalysisSkeleton from '../components/github/AnalysisSkeleton'
 import { SkeletonList } from '../components/ui/Skeleton'
+import { getGithubUsername } from '../utils/github'
 
 const AVATAR_GRADIENTS = [
   'from-indigo-500 to-purple-600',
@@ -65,14 +66,31 @@ export default function UserProfile() {
   const fetchAll = async () => {
     setLoading(true)
     try {
-      const [profileRes, statsRes, activityRes] = await Promise.all([
+      const [profileResult, statsResult, activityResult] = await Promise.allSettled([
         isOwnProfile ? userProfileApi.getMyProfile() : userProfileApi.getProfile(targetUid),
         isOwnProfile ? userProfileApi.getMyStats() : userProfileApi.getStats(targetUid),
         isOwnProfile ? userProfileApi.getMyActivity() : userProfileApi.getActivity(targetUid),
       ])
+
+      if (profileResult.status === 'rejected') {
+        throw profileResult.reason
+      }
+
+      const profileRes = profileResult.value
+      const statsRes = statsResult.status === 'fulfilled' ? statsResult.value : { stats: { resumesCreated: 0, interviewsDone: 0 } }
+      const activityRes = activityResult.status === 'fulfilled' ? activityResult.value : { activity: [] }
+
       setProfile(profileRes.profile)
       setStats(statsRes.stats)
       setActivity(activityRes.activity)
+
+      if (statsResult.status === 'rejected') {
+        console.warn('Profile stats fetch failed:', statsResult.reason)
+      }
+
+      if (activityResult.status === 'rejected') {
+        console.warn('Profile activity fetch failed:', activityResult.reason)
+      }
     } catch (err) {
       toast.error('Failed to load profile')
       console.error('Profile fetch failed:', err)
@@ -96,9 +114,49 @@ export default function UserProfile() {
   }
 
   const cancelEdit = () => setEditing(false)
+  const isValidWebsite = (url) => {
+  if (!url) return true;
+
+  try {
+    new URL(url.startsWith("http") ? url : `https://${url}`);
+    return true;
+  } catch {
+    return false;
+  }
+};
+
+const isValidLinkedIn = (url) => {
+  if (!url) return true;
+
+  return /^https?:\/\/(www\.)?linkedin\.com\/in\/.+$/i.test(url);
+};
+
+const isValidGithub = (username) => {
+  if (!username) return true;
+
+  return /^[a-zA-Z0-9-]+$/.test(username);
+};
 
   const saveEdit = async () => {
+    const githubUsername = getGithubUsername(form.github)
+
+    if (!isValidWebsite(form.website.trim())) {
+      toast.error("Please enter a valid website URL")
+      return
+    }
+
+    if (!isValidLinkedIn(form.linkedin.trim())) {
+      toast.error("Please enter a valid LinkedIn profile URL")
+      return
+    }
+
+    if (!isValidGithub(githubUsername)) {
+      toast.error("Invalid GitHub username")
+      return
+    }
+
     setSaving(true)
+
     try {
       const res = await userProfileApi.updateMyProfile({
         displayName: form.displayName.trim(),
@@ -107,7 +165,7 @@ export default function UserProfile() {
         skills: form.skills.split(',').map(s => s.trim()).filter(Boolean),
         location: form.location.trim(),
         website: form.website.trim(),
-        github: form.github.trim(),
+        github: githubUsername,
         linkedin: form.linkedin.trim(),
       })
       setProfile(res.profile)
@@ -435,6 +493,9 @@ export default function UserProfile() {
             </motion.div>
           )}
 
+          {!editing && (
+             <> 
+
           {/* Stats */}
           <motion.div variants={itemVariants} className="grid grid-cols-2 gap-4">
             <div className="relative overflow-hidden rounded-2xl bg-card/80 backdrop-blur-sm border border-sky-500/10 shadow-[0_8px_30px_rgb(0,0,0,0.06)] hover:shadow-xl hover:border-primary/20 transition-all duration-300 p-5 text-center">
@@ -531,6 +592,8 @@ export default function UserProfile() {
               </div>
             )}
           </motion.div>
+          </>
+          )}
         </motion.div>
       </div>
     </div>
