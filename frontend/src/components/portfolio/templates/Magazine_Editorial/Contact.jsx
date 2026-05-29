@@ -7,10 +7,19 @@ export default function Contact() {
 
   const handleChange = (e) => setFormData({ ...formData, [e.target.name]: e.target.value });
 
+  const timerRef = React.useRef(null);
+
+  React.useEffect(() => {
+    return () => {
+      if (timerRef.current) clearTimeout(timerRef.current);
+    };
+  }, []);
+
   const handleSubmit = (e) => {
     e.preventDefault();
+    if (timerRef.current) clearTimeout(timerRef.current);
     setSent(true);
-    setTimeout(() => setSent(false), 3000);
+    timerRef.current = setTimeout(() => setSent(false), 3000);
   };
 
   return (
