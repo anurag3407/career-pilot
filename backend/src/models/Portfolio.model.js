@@ -5,6 +5,8 @@ const portfolioSchema = new mongoose.Schema(
     userId: { type: String, required: true },
     slug: { type: String, required: true },
     sections: { type: mongoose.Schema.Types.Mixed, default: {} },
+    deployedUrl: { type: String },
+    projectName: { type: String },
   },
   { timestamps: true }
 );

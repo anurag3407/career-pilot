@@ -317,11 +317,12 @@ export const templates = [
     "category": "Portfolio",
     "colorScheme": "Dark",
     "layout": "Grid",
-    "author": "System",
+    "author": "Akansha02code",
     "views": 1026,
     "rating": 4.5,
-    "image": "/template-previews/Cherry_Blossom.png",
-    "createdAt": "2026-05-01"
+    "image": "/template-previews/Cherry-Blossom.png",
+    "createdAt": "2026-05-01",
+    "isComplete": true
   },
   {
     "id": "Choose_Adventure",

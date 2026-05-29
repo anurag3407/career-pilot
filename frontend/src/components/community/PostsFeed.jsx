@@ -466,13 +466,12 @@ const handleCreatePost = async (postData) => {
               })}
 
               {hasMore && (
-                <motion.button
-                  variants={itemVariants}
+                <button
                   onClick={handleLoadMore}
-                  className="w-full py-3 text-primary hover:text-primary/80 font-medium"
+                  className="w-full py-3 text-primary hover:text-primary/80 font-medium cursor-pointer"
                 >
                   Load more posts
-                </motion.button>
+                </button>
               )}
             </>
           ) : (
