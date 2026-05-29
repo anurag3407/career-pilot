@@ -1,4 +1,4 @@
-import { useState, useEffect } from 'react'
+import { useState, useEffect, useRef } from 'react'
 import { useLocation, useNavigate } from 'react-router-dom'
 import { motion, AnimatePresence } from 'framer-motion'
 import {
@@ -125,6 +125,70 @@ export default function CareerPath() {
   // Utility states
   const [copiedTextKey, setCopiedTextKey] = useState('')
 
+  // Accessibility Refs for learning guide drawer modal
+  const panelRef = useRef(null)
+  const previousFocusRef = useRef(null)
+
+  // Manage Keyboard Focus, Escape Close, and Focus Trap for learning guide drawer
+  useEffect(() => {
+    if (!guideModalOpen) return
+
+    // Save previous active focus
+    previousFocusRef.current = document.activeElement
+
+    // Escape closure event handler
+    const handleKeyDown = (e) => {
+      if (e.key === 'Escape' && !guideLoading) {
+        setGuideModalOpen(false)
+      }
+    }
+
+    document.addEventListener('keydown', handleKeyDown)
+
+    // Set focus inside the drawer
+    const focusTimer = setTimeout(() => {
+      if (panelRef.current) {
+        panelRef.current.focus()
+      }
+    }, 80)
+
+    return () => {
+      document.removeEventListener('keydown', handleKeyDown)
+      clearTimeout(focusTimer)
+      
+      // Restore previous focus on close
+      if (previousFocusRef.current) {
+        previousFocusRef.current.focus()
+      }
+    }
+  }, [guideModalOpen, guideLoading])
+
+  // Custom key trapping to retain keyboard navigation focus
+  const handleDrawerKeyDown = (e) => {
+    if (e.key === 'Tab') {
+      if (!panelRef.current) return
+      const focusable = panelRef.current.querySelectorAll(
+        'button, [href], input, select, textarea, [tabindex]:not([tabindex="-1"])'
+      )
+      if (focusable.length === 0) return
+
+      const first = focusable[0]
+      const last = focusable[focusable.length - 1]
+
+      if (e.shiftKey) {
+        if (document.activeElement === first) {
+          last.focus()
+          e.preventDefault()
+        }
+      } else {
+        if (document.activeElement === last) {
+          first.focus()
+          e.preventDefault()
+        }
+      }
+    }
+  }
+
   // Sync tab active state with path changes
   useEffect(() => {
     setActiveSection(getTabFromPath(location.pathname))
@@ -246,12 +310,12 @@ export default function CareerPath() {
 
     try {
       const response = await enhanceApi.predictTrajectory(resumeData)
-      if (response.success && response.data) {
+      if (response.success && response.data?.trajectories?.length > 0) {
         setResults(response.data)
         triggerConfetti({ duration: 3000, particleCount: 150, spread: 100 })
         toast.success('Your Career Tracks have been generated successfully!')
       } else {
-        throw new Error('Invalid response structure received from API')
+        throw new Error('No career pathways found in the AI prediction result. Please refine your inputs or try again.')
       }
     } catch (err) {
       console.error('Trajectory prediction failure:', err)
@@ -769,7 +833,18 @@ export default function CareerPath() {
                                     <div
                                       key={sIdx}
                                       onClick={() => !isInitialAcquired && handleToggleSkillCheck(role.title, skill)}
-                                      className={`flex items-center gap-2.5 px-3 py-2 rounded-xl border text-xs font-semibold cursor-pointer select-none transition-all ${
+                                      onKeyDown={(e) => {
+                                        if (e.key === 'Enter' || e.key === ' ') {
+                                          e.preventDefault()
+                                          if (!isInitialAcquired) {
+                                            handleToggleSkillCheck(role.title, skill)
+                                          }
+                                        }
+                                      }}
+                                      role="button"
+                                      tabIndex={isInitialAcquired ? -1 : 0}
+                                      aria-label={isInitialAcquired ? `${skill} (Acquired)` : `${skill}. Click to mark as acquired.`}
+                                      className={`flex items-center gap-2.5 px-3 py-2 rounded-xl border text-xs font-semibold cursor-pointer select-none transition-all outline-none focus-visible:ring-2 focus-visible:ring-primary ${
                                         isInitialAcquired
                                           ? 'bg-emerald-500/10 border-emerald-500/30 text-emerald-400'
                                           : isChecked
@@ -1066,11 +1141,17 @@ export default function CareerPath() {
 
             {/* Sidebar drawer container */}
             <motion.div
+              ref={panelRef}
+              tabIndex={-1}
+              role="dialog"
+              aria-modal="true"
+              aria-label={`${activeGuideRole} Blueprint Guide`}
+              onKeyDown={handleDrawerKeyDown}
               initial={{ x: '100%' }}
               animate={{ x: 0 }}
               exit={{ x: '100%' }}
               transition={{ type: 'spring', damping: 25, stiffness: 200 }}
-              className="relative w-full max-w-2xl bg-card border-l border-border shadow-2xl h-full flex flex-col overflow-hidden z-10"
+              className="relative w-full max-w-2xl bg-card border-l border-border shadow-2xl h-full flex flex-col overflow-hidden z-10 outline-none"
             >
               {/* Drawer header */}
               <div className="px-6 py-5 border-b border-border flex items-center justify-between bg-muted/40">
