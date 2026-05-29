@@ -1,4 +1,4 @@
-import { useState, useEffect } from 'react';
+import { useState, useEffect, useCallback, useRef } from 'react';
 import { formatDistanceToNow } from 'date-fns';
 import { communityApi } from '../../services/api';
 import { 
@@ -36,7 +36,7 @@ function CommentItem({ comment, currentUser, onReply, onLike, depth = 0 }) {
       await onReply(comment.id, replyContent.trim());
       setReplyContent('');
       setIsReplying(false);
-    } catch (error) {
+    } catch {
       toast.error('Failed to post reply');
     } finally {
       setIsSubmitting(false);
@@ -176,18 +176,22 @@ export default function CommentSection({ postId, currentUser, onCommentAdded }) 
   const [page, setPage] = useState(1);
   const [hasMore, setHasMore] = useState(false);
   const [total, setTotal] = useState(0);
+  const requestIdRef = useRef(0);
 
-  useEffect(() => {
-    fetchComments();
-  }, [postId]);
+  const fetchComments = useCallback(async (loadMore = false, pageToFetch = 1) => {
+    const requestId = ++requestIdRef.current;
 
-  const fetchComments = async (loadMore = false) => {
     try {
-      if (!loadMore) setLoading(true);
-      
-      const pageToFetch = loadMore ? page + 1 : 1;
+      if (!loadMore) {
+        setLoading(true);
+      }
+
       const data = await communityApi.getComments(postId, pageToFetch);
-      
+
+      if (requestId !== requestIdRef.current) {
+        return;
+      }
+
       if (loadMore) {
         setComments(prev => [...prev, ...data.comments]);
         setPage(pageToFetch);
@@ -198,12 +202,28 @@ export default function CommentSection({ postId, currentUser, onCommentAdded }) 
       
       setTotal(data.pagination.total);
       setHasMore(data.comments.length === 20 && data.pagination.total > pageToFetch * 20);
-    } catch (error) {
-      toast.error('Failed to load comments', { id: `community-comments-load-error-${postId}` });
+    } catch {
+      if (requestId === requestIdRef.current) {
+        toast.error('Failed to load comments', { id: `community-comments-load-error-${postId}` });
+      }
     } finally {
-      setLoading(false);
+      if (requestId === requestIdRef.current) {
+        setLoading(false);
+      }
     }
-  };
+  }, [postId]);
+
+  useEffect(() => {
+    setComments([]);
+    setPage(1);
+    setHasMore(false);
+    setTotal(0);
+    fetchComments(false, 1);
+
+    return () => {
+      requestIdRef.current += 1;
+    };
+  }, [postId, fetchComments]);
 
   const handleSubmitComment = async (e) => {
     e.preventDefault();
@@ -217,7 +237,7 @@ export default function CommentSection({ postId, currentUser, onCommentAdded }) 
       setTotal(prev => prev + 1);
       onCommentAdded?.();
       toast.success('Comment posted!');
-    } catch (error) {
+    } catch {
       toast.error('Failed to post comment', { id: `community-post-comment-error-${postId}` });
     } finally {
       setIsSubmitting(false);
@@ -267,7 +287,7 @@ export default function CommentSection({ postId, currentUser, onCommentAdded }) 
       };
       
       setComments(updateCommentLike);
-    } catch (error) {
+    } catch {
       toast.error('Failed to like comment', { id: `community-like-comment-error-${commentId}` });
     }
   };
@@ -341,9 +361,9 @@ export default function CommentSection({ postId, currentUser, onCommentAdded }) 
         {hasMore && !loading && (
           <div className="p-4 text-center">
             <button
-              onClick={() => fetchComments(true)}
-              className="text-sm text-primary hover:text-primary/80 font-medium"
-            >
+            onClick={() => fetchComments(true, page + 1)}
+            className="text-sm text-primary hover:text-primary/80 font-medium"
+          >
               Load more comments ({total - comments.length} remaining)
             </button>
           </div>
