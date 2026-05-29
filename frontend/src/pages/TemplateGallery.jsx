@@ -16,6 +16,7 @@ import LiquidGlass from "../components/portfolio/templates/Liquid_Glass/index";
 import MidnightGradient from "../components/portfolio/templates/Midnight_Gradient/index";
 import PlayingCardsPortfolio from "../components/portfolio/templates/Playing_Cards";
 import Navbar from '../components/Navbar'
+import Breadcrumb from '../components/Breadcrumb'
 import { X } from "lucide-react";
 // import Hero from "../components/portfolio/templates/Holographic/Hero";
 // import ChooseAdventurePortfolio from "../components/portfolio/templates/Choose_Adventure/index";
@@ -314,6 +315,7 @@ export default function TemplateGallery() {
   return (
     <div className="min-h-screen bg-background text-foreground p-8 pt-24 transition-colors duration-300">
       <Navbar />
+      <Breadcrumb className="mb-6" />
       <div className="flex justify-between items-center mb-8">
         <h1 className="text-4xl font-bold">Template Gallery</h1>
         <button
