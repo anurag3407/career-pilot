@@ -3,6 +3,7 @@ import { Globe, Rocket, LayoutTemplate, Github, Upload } from 'lucide-react'
 import { portfolioApi } from '../../services/api'
 import HubLayout from '../../components/HubLayout'
 import ToolCard from '../../components/ToolCard'
+import EmptyPortfolioState from '../../components/portfolio/EmptyPortfolioState'
 import { motion } from 'framer-motion'
 import toast from 'react-hot-toast'
 
@@ -109,6 +110,12 @@ export default function PortfolioHub() {
       />
 
       {/* Showcase list or placeholder */}
+      {!loading && portfolios.length === 0 && (
+        <div className="col-span-full mt-6">
+          <EmptyPortfolioState />
+        </div>
+      )}
+
       {!loading && portfolios.length > 0 && (
         <div className="col-span-full mt-6">
           <h2 className="text-xl font-bold text-foreground mb-4 flex items-center gap-2">
