@@ -29,7 +29,7 @@ import About from './components/portfolio/templates/Tech_Startup/About';
 
 
 import JobTracker from './pages/JobTracker';
-import { Community, NotFound } from './pages';
+import { Community, NotFound, CareerPath } from './pages';
 import InterviewPrep from './pages/InterviewPrep';
 import UserProfile from './pages/UserProfile';
 import EmailGenerator from './pages/EmailGenerator';
@@ -191,6 +191,9 @@ function AppRoutes() {
         <Route path="/linkedin-optimizer" element={<ProtectedRoute><LinkedInOptimizer /></ProtectedRoute>} />
         <Route path="/deployments" element={<ProtectedRoute><Deployments /></ProtectedRoute>} />
         <Route path="/settings" element={<ProtectedRoute><Settings /></ProtectedRoute>} />
+        <Route path="/career-path" element={<ProtectedRoute><CareerPath /></ProtectedRoute>} />
+        <Route path="/skill-gap" element={<ProtectedRoute><CareerPath /></ProtectedRoute>} />
+        <Route path="/salary-estimate" element={<ProtectedRoute><CareerPath /></ProtectedRoute>} />
 
         {/* Hub Routes */}
         <Route path="/hub/resume" element={<ProtectedRoute><ResumeHub /></ProtectedRoute>} />
