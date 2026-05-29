@@ -1,24 +1,22 @@
-import { useState, useRef, useEffect } from "react";
+import React, { useState, useRef, useEffect, Suspense, useMemo } from "react";
+import { templates } from '../data/templates';
 import DeployModal from "../components/portfolio/DeployModal";
 import ThemeSelector from "../components/portfolio/ThemeSelector";
 import { useTheme } from "../hooks/useTheme";
 import { motion, AnimatePresence } from "framer-motion";
-import { Moon, Sun, ChevronDown, Check, Eye, Star } from "lucide-react";
-import HolographicAbout from "../components/portfolio/templates/Holographic/About";
-import CulinaryAbout from "../components/portfolio/templates/Culinary_Restaurant/About";
-import TechStartupHero from "../components/portfolio/templates/Tech_Startup/Hero";
-import ArchitectureBlueprintHero from "../components/portfolio/templates/Architecture_Blueprint/Hero";
-import GeometricShapesAbout from "../components/portfolio/templates/Geometric_Shapes/About";
-import GeometricShapesHero from "../components/portfolio/templates/Geometric_Shapes/Hero";
+import { Moon, Sun, ChevronDown, Check, Eye, Star, Sparkles } from "lucide-react";
+import SwissTypography from "../components/portfolio/templates/Swiss_Typography/index";
 import LiquidGlass from "../components/portfolio/templates/Liquid_Glass/index";
+import MidnightGradient from "../components/portfolio/templates/Midnight_Gradient/index";
 import PlayingCardsPortfolio from "../components/portfolio/templates/Playing_Cards";
+import CherryBlossom from "../components/portfolio/templates/Cherry_Blossom/index";
 import Navbar from '../components/Navbar'
 import { X } from "lucide-react";
+import { useSearchParams } from "react-router-dom";
 // import Hero from "../components/portfolio/templates/Holographic/Hero";
 // import ChooseAdventurePortfolio from "../components/portfolio/templates/Choose_Adventure/index";
 // import RetroProjects from "../components/portfolio/templates/2D_Retro_8bit/Projects";
 // import FantasyRPGProjects from "../components/portfolio/templates/Fantasy_RPG/Projects";
-import GraffitiHero from "../components/portfolio/templates/Graffiti_StreetArt/Hero";
 
 
 function FilterSelect({ value, onChange, options, className = "" }) {
@@ -98,13 +96,29 @@ function FilterSelect({ value, onChange, options, className = "" }) {
   );
 }
 
-function TemplateCard({ template, onUse }) {
-  const [hovered, setHovered] = useState(false);
+const TemplateHeroPreview = ({ templateId, portfolioData }) => {
+  const Component = useMemo(() => {
+    if (!templateId) return null;
+    return React.lazy(() => 
+      import(`../components/portfolio/templates/${templateId}/Hero.jsx`).catch(() => 
+        import(`../components/portfolio/templates/${templateId}/index.jsx`)
+      )
+    );
+  }, [templateId]);
 
+  if (!templateId) return null;
+  return (
+    <Suspense fallback={<div className="w-full h-full bg-muted/50" />}>
+      <Component portfolioData={portfolioData} />
+    </Suspense>
+  );
+};
+
+function TemplateCard({ template, hovered, onHover, onLeave, onUse, aiDraft }) {
   return (
     <motion.div
-      onHoverStart={() => setHovered(true)}
-      onHoverEnd={() => setHovered(false)}
+      onMouseEnter={() => onHover(template.id)}
+      onMouseLeave={onLeave}
       animate={hovered ? "hover" : "rest"}
       initial="rest"
       variants={{
@@ -125,16 +139,22 @@ function TemplateCard({ template, onUse }) {
       }}
       className="bg-card rounded-2xl overflow-hidden border border-border flex flex-col justify-between cursor-pointer"
     >
-      <div className="overflow-hidden relative">
-        <motion.img
-          src={template.image}
-          alt={template.title}
-          className="w-full h-52 object-cover object-top"
-          variants={{
-            rest: { scale: 1, transition: { duration: 0.5, ease: [0.25, 0.46, 0.45, 0.94] } },
-            hover: { scale: 1.08, transition: { type: "spring", stiffness: 200, damping: 25 } },
-          }}
-        />
+      <div className="overflow-hidden relative bg-background h-52">
+        {template.isComplete ? (
+          <div className="absolute top-0 left-0 origin-top-left pointer-events-none" style={{ width: '1280px', height: '800px', transform: 'scale(0.3)' }}>
+            <TemplateHeroPreview templateId={template.id} portfolioData={aiDraft} />
+          </div>
+        ) : (
+          <motion.img
+            src={template.image}
+            alt={template.title}
+            className="w-full h-52 object-cover object-top"
+            variants={{
+              rest: { scale: 1, transition: { duration: 0.5, ease: [0.25, 0.46, 0.45, 0.94] } },
+              hover: { scale: 1.08, transition: { type: "spring", stiffness: 200, damping: 25 } },
+            }}
+          />
+        )}
         <motion.div
           className="absolute inset-0 bg-gradient-to-t from-black/50 via-transparent to-transparent pointer-events-none"
           variants={{ rest: { opacity: 0 }, hover: { opacity: 1 } }}
@@ -182,7 +202,7 @@ function TemplateCard({ template, onUse }) {
               className="flex gap-2 w-full mt-4"
             >
               <button
-                onClick={(e) => { e.stopPropagation(); onUse(template.title); }}
+                onClick={(e) => { e.stopPropagation(); onUse(template.title, false); }}
                 className="flex-1 bg-primary text-primary-foreground py-2.5 rounded-xl font-semibold text-sm cursor-pointer hover:scale-[1.02] active:scale-[0.98] transition-transform"
               >
                 Use Theme
@@ -201,10 +221,7 @@ function TemplateCard({ template, onUse }) {
   );
 }
 
-import { templates } from '../data/templates';
-import React, { Suspense, useMemo } from 'react';
-
-const TemplatePreviewModal = ({ templateId, isOpen, onClose }) => {
+const TemplatePreviewModal = ({ templateId, isOpen, onClose, portfolioData }) => {
   const Component = useMemo(() => {
     if (!templateId) return null;
     return React.lazy(() => 
@@ -241,7 +258,7 @@ const TemplatePreviewModal = ({ templateId, isOpen, onClose }) => {
             <p className="animate-pulse font-medium tracking-wide text-sm uppercase">Loading interactive preview...</p>
           </div>
         }>
-          {Component && <Component />}
+          {Component && <Component portfolioData={portfolioData} />}
         </Suspense>
       </div>
     </div>
@@ -250,15 +267,43 @@ const TemplatePreviewModal = ({ templateId, isOpen, onClose }) => {
 
 export default function TemplateGallery() {
   const { theme, toggleTheme } = useTheme();
-  const [previewTemplateId, setPreviewTemplateId] = useState(null);
+  const [searchParams, setSearchParams] = useSearchParams();
+  const previewTemplateId = searchParams.get("preview");
+  const [hoveredCard, setHoveredCard] = useState(null);
 
   const [category, setCategory] = useState("All");
   const [colorScheme, setColorScheme] = useState("All");
   const [layout, setLayout] = useState("All");
   const [sort, setSort] = useState("Popular");
+  
+  const [aiDraft, setAiDraft] = useState(null);
+
+  useEffect(() => {
+    const draft = localStorage.getItem('ai_portfolio_draft');
+    if (draft) {
+      try {
+        setAiDraft(JSON.parse(draft));
+      } catch(e) {}
+    }
+  }, []);
+
+  const clearDraft = () => {
+    localStorage.removeItem('ai_portfolio_draft');
+    setAiDraft(null);
+  };
+
   const [selectedTheme, setSelectedTheme] = useState("minimal");
   const [isDeployModalOpen, setIsDeployModalOpen] = useState(false);
   const [selectedPortfolioTitle, setSelectedPortfolioTitle] = useState("");
+
+  const handleUseTemplate = (val, isPreview) => {
+    if (isPreview) {
+      setSearchParams({ preview: val });
+    } else {
+      setSelectedPortfolioTitle(val);
+      setIsDeployModalOpen(true);
+    }
+  };
 
   const CATEGORY_OPTIONS = [
     { value: "All", label: "All Categories" },
@@ -286,6 +331,7 @@ export default function TemplateGallery() {
   ];
 
   const filteredTemplates = templates.filter((template) => {
+    if (!template.isComplete) return false;
     const matchesCategory = category === "All" || template.category === category;
     const matchesColorScheme = colorScheme === "All" || template.colorScheme === colorScheme;
     const matchesLayout = layout === "All" || template.layout === layout;
@@ -302,6 +348,27 @@ export default function TemplateGallery() {
   return (
     <div className="min-h-screen bg-background text-foreground p-8 pt-24 transition-colors duration-300">
       <Navbar />
+      
+      {aiDraft && (
+        <div className="mb-8 p-4 rounded-xl bg-gradient-to-r from-emerald-500/10 to-teal-500/10 border border-emerald-500/30 flex items-center justify-between">
+          <div>
+            <h3 className="text-emerald-400 font-bold flex items-center gap-2">
+              <Sparkles className="w-5 h-5" /> ✨ Resume Parsed Successfully!
+            </h3>
+            <p className="text-sm text-muted-foreground mt-1">
+              Your data has been extracted. Select a template below and we'll automatically inject your experience and projects!
+            </p>
+          </div>
+          <button 
+            onClick={clearDraft}
+            className="p-2 hover:bg-emerald-500/20 text-emerald-400 rounded-lg transition-colors"
+            title="Discard Draft"
+          >
+            <X className="w-5 h-5" />
+          </button>
+        </div>
+      )}
+
       <div className="flex justify-between items-center mb-8">
         <h1 className="text-4xl font-bold">Template Gallery</h1>
         <button
@@ -355,14 +422,11 @@ export default function TemplateGallery() {
             <TemplateCard
               key={template.id}
               template={template}
-              onUse={(val, isPreview) => {
-                if (isPreview) {
-                  setPreviewTemplateId(val);
-                } else {
-                  setSelectedPortfolioTitle(val);
-                  setIsDeployModalOpen(true);
-                }
-              }}
+              hovered={hoveredCard === template.id}
+              onHover={setHoveredCard}
+              onLeave={() => setHoveredCard(null)}
+              onUse={handleUseTemplate}
+              aiDraft={aiDraft}
             />
           ))}
         </div>
@@ -372,72 +436,25 @@ export default function TemplateGallery() {
         isOpen={isDeployModalOpen}
         onClose={() => setIsDeployModalOpen(false)}
         portfolioTitle={selectedPortfolioTitle}
+        aiDraft={aiDraft}
+        onDeploySuccess={clearDraft}
       />
 
-      {/* Holographic Theme */}
-      <div className="mt-12">
-        <div className="mb-4 flex items-center gap-3 px-1">
-          <span className="rounded-full bg-cyan-500/20 px-3 py-1 text-xs font-bold uppercase tracking-widest text-cyan-400 border border-cyan-500/30">
-            Preview
-          </span>
-          <h2 className="text-lg font-semibold text-foreground/70">Holographic Theme — About Section</h2>
-        </div>
-        <div className="overflow-hidden rounded-2xl border border-border">
-          <HolographicAbout />
-        </div>
-      </div>
+      <TemplatePreviewModal
+        templateId={previewTemplateId}
+        isOpen={!!previewTemplateId}
+        onClose={() => {
+          if (searchParams.has("preview")) {
+            // Check if there is history to go back to, so we pop the preview state cleanly
+            window.history.back();
+          } else {
+            setSearchParams({}, { replace: true });
+          }
+        }}
+        portfolioData={aiDraft}
+      />
 
-      {/* Geometric Shapes Hero */}
-      <div className="mt-12">
-        <div className="mb-4 flex items-center gap-3 px-1">
-          <span className="rounded-full bg-indigo-500/20 px-3 py-1 text-xs font-bold uppercase tracking-widest text-indigo-400 border border-indigo-500/30">
-            Preview
-          </span>
-          <h2 className="text-lg font-semibold text-foreground/70">Geometric Shapes Theme — Hero Section</h2>
-        </div>
-        <div className="overflow-hidden rounded-2xl border border-border">
-          <GeometricShapesHero />
-        </div>
-      </div>
 
-      {/* Geometric Shapes About */}
-      <div className="mt-12">
-        <div className="mb-4 flex items-center gap-3 px-1">
-          <span className="rounded-full bg-amber-500/20 px-3 py-1 text-xs font-bold uppercase tracking-widest text-amber-400 border border-amber-500/30">
-            Preview
-          </span>
-          <h2 className="text-lg font-semibold text-foreground/70">Geometric Shapes Theme — About Section</h2>
-        </div>
-        <div className="overflow-hidden rounded-2xl border border-border">
-          <GeometricShapesAbout />
-        </div>
-      </div>
-
-      {/* Culinary Restaurant */}
-      <div className="mt-12">
-        <div className="mb-4 flex items-center gap-3 px-1">
-          <span className="rounded-full bg-amber-500/20 px-3 py-1 text-xs font-bold uppercase tracking-widest text-amber-400 border border-amber-500/30">
-            Preview
-          </span>
-          <h2 className="text-lg font-semibold text-foreground/70">Culinary Restaurant Theme — About Section</h2>
-        </div>
-        <div className="overflow-hidden rounded-2xl border border-border">
-          <CulinaryAbout />
-        </div>
-      </div>
-
-      {/* Tech Startup */}
-      <div className="mt-12">
-        <div className="mb-4 flex items-center gap-3 px-1">
-          <span className="rounded-full bg-cyan-500/20 px-3 py-1 text-xs font-bold uppercase tracking-widest text-cyan-400 border border-cyan-500/30">
-            Preview
-          </span>
-          <h2 className="text-lg font-semibold text-foreground/70">Tech Startup Theme — Hero Section</h2>
-        </div>
-        <div className="overflow-hidden rounded-2xl border border-cyan-500/20">
-          <TechStartupHero />
-        </div>
-      </div>
 
       {/* Liquid Glass */}
       <div className="mt-12">
@@ -448,7 +465,20 @@ export default function TemplateGallery() {
           <h2 className="text-lg font-semibold text-foreground/70">Liquid Glass Theme</h2>
         </div>
         <div className="overflow-hidden rounded-2xl border border-border">
-          <LiquidGlass />
+          <LiquidGlass portfolioData={aiDraft} />
+        </div>
+      </div>
+
+      {/* Midnight Gradient */}
+      <div className="mt-12">
+        <div className="mb-4 flex items-center gap-3 px-1">
+          <span className="rounded-full bg-indigo-500/20 px-3 py-1 text-xs font-bold uppercase tracking-widest text-indigo-400 border border-indigo-500/30">
+            Preview
+          </span>
+          <h2 className="text-lg font-semibold text-foreground/70">Midnight Gradient Theme</h2>
+        </div>
+        <div className="overflow-hidden rounded-2xl border border-border">
+          <MidnightGradient portfolioData={aiDraft} />
         </div>
       </div>
 
@@ -461,16 +491,34 @@ export default function TemplateGallery() {
           <h2 className="text-lg font-semibold text-foreground/70">Playing Cards Theme — Click to flip, shuffle deck</h2>
         </div>
         <div className="overflow-hidden rounded-2xl border border-emerald-500/20">
-          <PlayingCardsPortfolio />
+          <PlayingCardsPortfolio portfolioData={aiDraft} />
         </div>
       </div>
 
-      {/* Commented out — templates not yet available locally */}
-      {/* <ChooseAdventurePortfolio /> */}
-      {/* <RetroProjects /> */}
-      {/* <FantasyRPGProjects /> */}
-      {/* <GraffitiHero /> */}
-
+      <div className="mt-12">
+        <div className="mb-4 flex items-center gap-3 px-1">
+          <span className="rounded-full bg-red-500/20 px-3 py-1 text-xs font-bold uppercase tracking-widest text-red-400 border border-red-500/30">
+            Preview
+          </span>
+          <h2 className="text-lg font-semibold text-foreground/70">Swiss Typography — Full Interactive Template</h2>
+        </div>
+        <div className="overflow-hidden rounded-2xl border border-border">
+          <SwissTypography portfolioData={aiDraft} />
+        </div>
+      </div>
+      {/* Cherry Blossom Theme */}
+      <div className="mt-12">
+        <div className="mb-4 flex items-center gap-3 px-1">
+          <span className="rounded-full bg-rose-500/20 px-3 py-1 text-xs font-bold uppercase tracking-widest text-rose-400 border border-rose-500/30">
+            🌸 NEW — Cherry Blossom
+          </span>
+          <h2 className="text-lg font-semibold text-foreground/70">Cherry Blossom Theme — Digital Spring</h2>
+        </div>
+        <div className="overflow-hidden rounded-2xl border border-rose-500/20">
+          <CherryBlossom portfolioData={aiDraft} />
+        </div>
+      </div>
+      
     </div>
   );
 }

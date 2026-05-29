@@ -1,5 +1,5 @@
 import React, { useState } from "react";
-import { GithubIcon, ExternalLink, Zap, Star, Rocket, Code2, Bug, Gamepad2, Cloud } from "lucide-react";
+import { Github, ExternalLink, Zap, Star, Rocket, Code2, Bug, Gamepad2, Cloud } from "lucide-react";
 
 /* ─────────────────────────────────────────────
    MOCK DATA  (fully self-contained)

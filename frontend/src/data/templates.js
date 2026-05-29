@@ -317,11 +317,12 @@ export const templates = [
     "category": "Portfolio",
     "colorScheme": "Dark",
     "layout": "Grid",
-    "author": "System",
+    "author": "Akansha02code",
     "views": 1026,
     "rating": 4.5,
-    "image": "/template-previews/Cherry_Blossom.png",
-    "createdAt": "2026-05-01"
+    "image": "/template-previews/Cherry-Blossom.png",
+    "createdAt": "2026-05-01",
+    "isComplete": true
   },
   {
     "id": "Choose_Adventure",
@@ -1101,7 +1102,8 @@ export const templates = [
     "views": 1091,
     "rating": 4.5,
     "image": "/template-previews/Liquid_Glass.png",
-    "createdAt": "2026-05-01"
+    "createdAt": "2026-05-01",
+    "isComplete": true
   },
   {
     "id": "Liquid_Morph",
@@ -1221,7 +1223,8 @@ export const templates = [
     "views": 1101,
     "rating": 4.5,
     "image": "/template-previews/Midnight_Gradient.png",
-    "createdAt": "2026-05-01"
+    "createdAt": "2026-05-01",
+    "isComplete": true
   },
   {
     "id": "Minimalist_White",
@@ -1617,7 +1620,8 @@ export const templates = [
     "views": 1134,
     "rating": 4.5,
     "image": "/template-previews/Playing_Cards.png",
-    "createdAt": "2026-05-01"
+    "createdAt": "2026-05-01",
+    "isComplete": true
   },
   {
     "id": "Polaroid_Memories",
@@ -1872,17 +1876,17 @@ export const templates = [
     "createdAt": "2026-05-01"
   },
   {
-    "id": "Soft_Neumorphic",
-    "title": "Soft Neumorphic",
-    "category": "Portfolio",
-    "colorScheme": "Dark",
-    "layout": "Grid",
-    "author": "System",
-    "views": 1156,
-    "rating": 4.5,
-    "image": "/template-previews/Soft_Neumorphic.png",
-    "createdAt": "2026-05-01"
-  },
+  "id": "Soft_Neumorphic",
+  "title": "Soft Neumorphic",
+  "category": "Portfolio",
+  "colorScheme": "Light",
+  "layout": "Minimal",
+  "author": "Akansha02code",
+  "views": 1156,
+  "rating": 4.5,
+  "image": "/template-previews/Soft-Neumorphic.png",
+  "createdAt": "2026-05-01"
+},
   {
     "id": "Solar_Eclipse",
     "title": "Solar Eclipse",
@@ -2061,7 +2065,8 @@ export const templates = [
     "views": 1171,
     "rating": 4.5,
     "image": "/template-previews/Swiss_Typography.png",
-    "createdAt": "2026-05-01"
+    "createdAt": "2026-05-01",
+    "isComplete": true
   },
   {
     "id": "Tech_Startup",
