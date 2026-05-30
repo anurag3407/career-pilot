@@ -19,6 +19,7 @@
 - [Security Architecture](#-security-architecture)
 - [Deployment Architecture](#-deployment-architecture)
 - [Scalability Design](#-scalability-design)
+- [Contributor Module Flow](#contributor-module-flow)
 
 ---
 
