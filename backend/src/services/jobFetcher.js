@@ -93,6 +93,75 @@ const mapEmploymentType = (types) => {
 };
 
 /**
+ * Bulk-upsert a batch of fetched jobs into the JobListing collection.
+ *
+ * Replaces the N+1 findOne-per-job pattern with a single $in lookup followed
+ * by a single insertMany for any genuinely new entries. Handles duplicate-key
+ * errors (code 11000) from concurrent workers gracefully with a fallback
+ * re-query so no _id is ever lost.
+ *
+ * @param {object[]} fetchedJobs   Raw job objects from the API / scrapers.
+ * @param {object}   JobModel      Mongoose model for JobListing (injectable for tests).
+ * @param {Function} [onNewJobs]   Async callback receiving newly inserted docs.
+ * @returns {Promise<object[]>}    Jobs enriched with their MongoDB _id.
+ */
+export const bulkUpsertJobs = async (fetchedJobs, JobModel, onNewJobs) => {
+    const MAX_BATCH_SIZE = 25;
+    const batch = fetchedJobs.slice(0, MAX_BATCH_SIZE);
+
+    if (batch.length === 0) return [];
+
+    const externalIds = batch.map(j => j.externalId).filter(Boolean);
+
+    // Single $in query instead of one findOne per job
+    const existingDocs = await JobModel.find({ externalId: { $in: externalIds } })
+        .select('_id externalId')
+        .lean();
+
+    const existingMap = new Map(existingDocs.map(d => [d.externalId, d]));
+
+    const toInsert = batch.filter(j => j.externalId && !existingMap.has(j.externalId));
+
+    if (toInsert.length > 0) {
+        let insertedDocs = [];
+        try {
+            insertedDocs = await JobModel.insertMany(toInsert, { ordered: false });
+        } catch (err) {
+            // 11000 = duplicate key: a concurrent worker inserted first — not an error.
+            if (err.name === 'MongoBulkWriteError' || err.code === 11000) {
+                insertedDocs = err.insertedDocs ?? [];
+                console.warn(`⚠️  Bulk insert: ${err.writeErrors?.length ?? 0} duplicate(s) skipped (concurrent workers)`);
+            } else {
+                throw err;
+            }
+        }
+
+        for (const doc of insertedDocs) {
+            existingMap.set(doc.externalId, doc);
+        }
+
+        // Recover IDs for any docs a concurrent worker inserted between our find and insertMany
+        const stillMissing = toInsert
+            .map(j => j.externalId)
+            .filter(id => id && !existingMap.has(id));
+        if (stillMissing.length > 0) {
+            const recovered = await JobModel.find({ externalId: { $in: stillMissing } })
+                .select('_id externalId')
+                .lean();
+            for (const doc of recovered) existingMap.set(doc.externalId, doc);
+        }
+
+        if (onNewJobs && insertedDocs.length > 0) {
+            await onNewJobs(insertedDocs);
+        }
+    }
+
+    return batch
+        .map(job => ({ ...job, _id: existingMap.get(job.externalId)?._id }))
+        .filter(j => j._id != null);
+};
+
+/**
  * Process a single job alert - fetch jobs and send notifications
  */
 export const processAlert = async (alertData) => {
@@ -175,32 +244,17 @@ export const processAlert = async (alertData) => {
             return { success: true, newJobs: 0 };
         }
 
-        // Process all fetched jobs (DISABLED DEDUPLICATION - ALWAYS SEND EMAILS)
-        const jobsToSend = [];
-
-        for (const job of fetchedJobs) {
-            // Check if job already exists in our cache
-            let existingJob = await JobListing.findOne({ externalId: job.externalId });
-
-            if (!existingJob) {
-                // Save new job to cache
-                existingJob = await JobListing.create(job);
-                console.log(`💾 Cached new job: ${job.title} at ${job.company}`);
-
-                // Also save to Firebase
-                try {
-                    await saveJobListingToFirebase(existingJob.toObject());
-                } catch (fbError) {
-                    console.warn('⚠️  Could not save job to Firebase:', fbError.message);
-                }
-            }
-
-            // ALWAYS add to email list (deduplication disabled)
-            jobsToSend.push({
-                ...job,
-                _id: existingJob._id
-            });
-        }
+        // Bulk upsert: one $in lookup + one insertMany instead of N findOne calls
+        const jobsToSend = await bulkUpsertJobs(fetchedJobs, JobListing, async (newDocs) => {
+            // Batch Firebase sync for newly cached jobs
+            await Promise.allSettled(
+                newDocs.map(doc => {
+                    const obj = typeof doc.toObject === 'function' ? doc.toObject() : doc;
+                    return saveJobListingToFirebase(obj);
+                })
+            );
+            console.log(`💾 Cached and synced ${newDocs.length} new job(s) to Firebase`);
+        });
 
         console.log(`📧 Sending ${jobsToSend.length} jobs to user (deduplication DISABLED)`);
 

@@ -121,7 +121,7 @@ export const authApi = {
 // ============ UPLOAD API ============
 export const uploadApi = {
   // Upload PDF and extract text
-  async uploadPdf(file) {
+  async uploadPdf(file, options = {}) {
     const user = auth?.currentUser
     if (!user) throw new Error('Not authenticated')
 
@@ -136,13 +136,14 @@ export const uploadApi = {
       headers: {
         'Authorization': `Bearer ${token}`
       },
-      body: formData
+      body: formData,
+      signal: options.signal
     })
     return handleResponse(response)
   },
 
   // Extract text from PDF (re-process)
-  async extractText(file) {
+  async extractText(file, options = {}) {
     const user = auth?.currentUser
     if (!user) throw new Error('Not authenticated')
 
@@ -157,7 +158,8 @@ export const uploadApi = {
       headers: {
         'Authorization': `Bearer ${token}`
       },
-      body: formData
+      body: formData,
+      signal: options.signal
     })
     return handleResponse(response)
   }
@@ -186,12 +188,13 @@ export const resumeApi = {
   },
 
   // Create resume
-  async create(data) {
+  async create(data, options = {}) {
     const headers = await getAuthHeaders()
     const response = await fetch(`${API_BASE}/resumes`, {
       method: 'POST',
       headers,
-      body: JSON.stringify(data)
+      body: JSON.stringify(data),
+      signal: options.signal
     })
     return handleResponse(response)
   },
@@ -391,6 +394,41 @@ export const portfolioApi = {
     })
 
     return handleResponse(response)
+  },
+
+  // Create portfolio
+  async create(data) {
+    const headers = await getAuthHeaders();
+    const response = await fetch(`${API_BASE}/portfolio`, {
+      method: 'POST',
+      headers,
+      body: JSON.stringify(data)
+    });
+    return handleResponse(response);
+  },
+
+  // Extract portfolio JSON from raw resume text
+  async extractFromResume(resumeText) {
+    const headers = await getAuthHeaders();
+
+    const response = await fetch(`${API_BASE}/portfolio/extract-from-resume`, {
+      method: 'POST',
+      headers,
+      body: JSON.stringify({ resumeText })
+    });
+
+    return handleResponse(response);
+  },
+
+  // Deploy portfolio to Cloudflare Pages
+  async deploy({ slug, sections, templateId, title }) {
+    const headers = await getAuthHeaders();
+    const response = await fetch(`${API_BASE}/portfolio/deploy`, {
+      method: 'POST',
+      headers,
+      body: JSON.stringify({ slug, sections, templateId, title })
+    });
+    return handleResponse(response);
   }
 }
 
@@ -1353,3 +1391,133 @@ export const notificationApi = {
     return handleResponse(response)
   }
 }
+
+// ============ ANALYZER API ============
+export const analyzerApi = {
+  async ingest(repoUrl) {
+    const headers = await getAuthHeaders()
+    const response = await fetch(`${API_BASE}/analyzer/ingest`, {
+      method: 'POST',
+      headers,
+      body: JSON.stringify({ repoUrl })
+    })
+    return handleResponse(response)
+  },
+
+  async getHistory() {
+    const headers = await getAuthHeaders()
+    const response = await fetch(`${API_BASE}/analyzer/history`, {
+      method: 'GET',
+      headers
+    })
+    return handleResponse(response)
+  },
+
+  async getFileContent(sessionId, filePath) {
+    const headers = await getAuthHeaders()
+    const response = await fetch(`${API_BASE}/analyzer/file-content?sessionId=${encodeURIComponent(sessionId)}&filePath=${encodeURIComponent(filePath)}`, {
+      method: 'GET',
+      headers
+    })
+    
+    if (!response.ok) {
+      throw new Error(`Server error (${response.status})`)
+    }
+    
+    return response.text()
+  },
+  
+  // Note: chat streams directly via SSE, so we'll handle fetch in the component directly
+}
+
+// ============ PROJECT VISUALIZER API ============
+export const projectVisualizerApi = {
+  async analyze(repoUrl) {
+    const headers = await getAuthHeaders()
+    const response = await fetch(`${API_BASE}/project-visualizer/analyze`, {
+      method: 'POST',
+      headers,
+      body: JSON.stringify({ repoUrl })
+    })
+    return handleResponse(response)
+  },
+
+  async getAnalysis(sessionId) {
+    const headers = await getAuthHeaders()
+    const response = await fetch(`${API_BASE}/project-visualizer/analysis/${sessionId}`, {
+      method: 'GET',
+      headers
+    })
+    return handleResponse(response)
+  },
+
+  async getFileContent(sessionId, filePath) {
+    const headers = await getAuthHeaders()
+    const response = await fetch(`${API_BASE}/project-visualizer/analysis/${sessionId}/file?path=${encodeURIComponent(filePath)}`, {
+      method: 'GET',
+      headers
+    })
+    if (!response.ok) throw new Error(`Server error (${response.status})`)
+    return response.text()
+  },
+
+  async getContributors(sessionId) {
+    const headers = await getAuthHeaders()
+    const response = await fetch(`${API_BASE}/project-visualizer/analysis/${sessionId}/contributors`, {
+      method: 'GET',
+      headers
+    })
+    return handleResponse(response)
+  },
+
+  async getCommits(sessionId) {
+    const headers = await getAuthHeaders()
+    const response = await fetch(`${API_BASE}/project-visualizer/analysis/${sessionId}/commits`, {
+      method: 'GET',
+      headers
+    })
+    return handleResponse(response)
+  },
+
+  async askModule(sessionId, modulePath, question) {
+    const headers = await getAuthHeaders()
+    const response = await fetch(`${API_BASE}/project-visualizer/analysis/${sessionId}/ask-module`, {
+      method: 'POST',
+      headers,
+      body: JSON.stringify({ modulePath, question })
+    })
+    return handleResponse(response)
+  },
+
+  async getHistory() {
+    const headers = await getAuthHeaders()
+    const response = await fetch(`${API_BASE}/project-visualizer/history`, {
+      method: 'GET',
+      headers
+    })
+    return handleResponse(response)
+  },
+
+  async deleteHistory(id) {
+    const headers = await getAuthHeaders()
+    const response = await fetch(`${API_BASE}/project-visualizer/history/${id}`, {
+      method: 'DELETE',
+      headers
+    })
+    return handleResponse(response)
+  },
+}
+
+export const adminAPI = {
+  async getStats() {
+    const headers = await getAuthHeaders();
+    const response = await fetch(`${API_BASE}/admin/stats`, { headers });
+    return handleResponse(response);
+  },
+
+  async getUsers(page = 1, limit = 10) {
+    const headers = await getAuthHeaders();
+    const response = await fetch(`${API_BASE}/admin/users?page=${page}&limit=${limit}`, { headers });
+    return handleResponse(response);
+  }
+};

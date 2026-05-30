@@ -4,6 +4,7 @@ import toast from 'react-hot-toast'
 import { motion } from 'framer-motion'
 import { resumeApi, enhanceApi } from '../services/api'
 import { triggerConfetti } from '../utils/confetti'
+import ResumeAnalysisSkeleton from '../components/ui/ResumeAnalysisSkeleton'
 import {
   Target,
   TrendingUp,
@@ -147,9 +148,9 @@ const ImprovementCard = ({ improvement, index }) => {
           <p className="text-foreground font-medium">{improvement.issue}</p>
         </div>
         {expanded ? (
-          <ChevronUp className="w-5 h-5 text-muted-foreground ml-2 flex-shrink-0" />
+          <ChevronUp className="w-5 h-5 text-muted-foreground ml-2 shrink-0" />
         ) : (
-          <ChevronDown className="w-5 h-5 text-muted-foreground ml-2 flex-shrink-0" />
+          <ChevronDown className="w-5 h-5 text-muted-foreground ml-2 shrink-0" />
         )}
       </div>
 
@@ -160,7 +161,7 @@ const ImprovementCard = ({ improvement, index }) => {
           className="mt-3 pt-3 border-t border-border"
         >
           <div className="flex items-start gap-2">
-            <Zap className="w-4 h-4 text-primary mt-0.5 flex-shrink-0" />
+            <Zap className="w-4 h-4 text-primary mt-0.5 shrink-0" />
             <p className="text-sm text-foreground">{improvement.suggestion}</p>
           </div>
         </motion.div>
@@ -232,7 +233,7 @@ const BulletAnalysisCard = ({ bullet, index }) => {
       <div className="cursor-pointer" onClick={() => setExpanded(!expanded)}>
         <div className="flex items-start justify-between gap-4">
           <p className="text-foreground text-sm flex-1">{bullet.original}</p>
-          <div className="flex items-center gap-2 flex-shrink-0">
+          <div className="flex items-center gap-2 shrink-0">
             <span className={`text-xs px-2 py-1 rounded-lg border ${getScoreColor(bullet.score)}`}>
               {bullet.score}/10
             </span>
@@ -327,7 +328,7 @@ const SeniorTipCard = ({ tip, index }) => {
       className={`border rounded-xl p-4 ${getCategoryColor(tip.category)}`}
     >
       <div className="flex items-start gap-3">
-        <Icon className="w-5 h-5 mt-0.5 flex-shrink-0" />
+        <Icon className="w-5 h-5 mt-0.5 shrink-0" />
         <div>
           <div className="flex items-center gap-2 mb-1">
             <span className="text-xs opacity-75 capitalize">{tip.category}</span>
@@ -437,7 +438,7 @@ export default function Enhance() {
     try {
       const apiPreferences = {
         jobRole: jobRole,
-        yearsOfExperience: 0,
+        yearsOfExperience: resume.yearsOfExperience || 0, // Assuming yearsOfExperience is available in resume object
         skills: atsAnalysis?.missingKeywords || [],
         industry: '',
         customInstructions: `Focus on improving: ${atsAnalysis?.improvements?.map(i => i.issue).join(', ') || 'general improvements'}`,
@@ -583,31 +584,7 @@ export default function Enhance() {
         )}
 
         {/* Analyzing State */}
-        {analyzing && (
-          <motion.div
-            initial={{ opacity: 0 }}
-            animate={{ opacity: 1 }}
-            className="bg-background/50 border border-border rounded-2xl p-12 text-center"
-          >
-            <div className="inline-flex items-center justify-center w-16 h-16 bg-primary/20 rounded-full mb-4">
-              <RefreshCw className="w-8 h-8 text-primary animate-spin" />
-            </div>
-            <h3 className="text-xl font-semibold text-foreground mb-2">Analyzing Your Resume</h3>
-            <p className="text-muted-foreground">
-              Our AI is evaluating your resume against ATS systems for the {jobRole} position...
-            </p>
-            <div className="mt-4 flex justify-center gap-1">
-              {[0, 1, 2].map((i) => (
-                <motion.div
-                  key={i}
-                  animate={{ scale: [1, 1.2, 1], opacity: [0.5, 1, 0.5] }}
-                  transition={{ duration: 1, repeat: Infinity, delay: i * 0.2 }}
-                  className="w-2 h-2 bg-primary rounded-full"
-                />
-              ))}
-            </div>
-          </motion.div>
-        )}
+        {analyzing && <ResumeAnalysisSkeleton />}
 
         {/* ATS Analysis Results */}
         {hasAnalyzed && atsAnalysis && (
@@ -709,7 +686,7 @@ export default function Enhance() {
                       transition={{ delay: 0.5 + index * 0.1 }}
                       className="flex items-start gap-2"
                     >
-                      <Award className="w-4 h-4 text-green-400 mt-1 flex-shrink-0" />
+                      <Award className="w-4 h-4 text-green-400 mt-1 shrink-0" />
                       <span className="text-foreground">{strength}</span>
                     </motion.li>
                   ))}
@@ -926,7 +903,7 @@ export default function Enhance() {
                             <ul className="space-y-1">
                               {comprehensiveAnalysis.competitiveEdge.standoutFactors.map((factor, i) => (
                                 <li key={i} className="text-sm text-amber-300 flex items-start gap-2">
-                                  <CheckCircle className="w-4 h-4 flex-shrink-0 mt-0.5" />
+                                  <CheckCircle className="w-4 h-4 shrink-0 mt-0.5" />
                                   {factor}
                                 </li>
                               ))}
@@ -939,7 +916,7 @@ export default function Enhance() {
                             <ul className="space-y-1">
                               {comprehensiveAnalysis.competitiveEdge.differentiators.map((diff, i) => (
                                 <li key={i} className="text-sm text-foreground/80 flex items-start gap-2">
-                                  <ArrowRight className="w-4 h-4 flex-shrink-0 mt-0.5 text-amber-400" />
+                                  <ArrowRight className="w-4 h-4 shrink-0 mt-0.5 text-amber-400" />
                                   {diff}
                                 </li>
                               ))}

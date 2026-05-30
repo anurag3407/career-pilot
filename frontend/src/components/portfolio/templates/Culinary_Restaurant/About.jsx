@@ -185,7 +185,7 @@ export default function About() {
           <div className="grid grid-cols-1 md:grid-cols-5 gap-8 md:gap-4">
             {MILESTONES.map(({ year, label }, i) => (
               <div key={year} className="flex flex-col items-center text-center gap-4 relative">
-                <div className="relative z-10 w-10 h-10 rounded-full border-2 border-[#c5a880] bg-[#0a0a0a] flex items-center justify-center flex-shrink-0">
+                <div className="relative z-10 w-10 h-10 rounded-full border-2 border-[#c5a880] bg-[#0a0a0a] flex items-center justify-center shrink-0">
                   <div className="w-2 h-2 rounded-full bg-[#c5a880]" />
                 </div>
 
