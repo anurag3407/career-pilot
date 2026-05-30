@@ -70,7 +70,7 @@ export const buildReactFlowGraph = async (files, rootDir) => {
     
     nodes.push({
       id,
-      type: 'analyzerNode',
+      type: 'fileNode',
       position: { x: 0, y: 0 },
       data: {
         label: path.basename(file),
@@ -79,6 +79,8 @@ export const buildReactFlowGraph = async (files, rootDir) => {
       }
     });
   }
+  
+  const fileEdgesSet = new Set();
   
   for (const file of files) {
     const sourceId = pathToId.get(file);
@@ -90,13 +92,18 @@ export const buildReactFlowGraph = async (files, rootDir) => {
       
       if (possibleTargets.length > 0) {
         const targetId = pathToId.get(possibleTargets[0]);
-        edges.push({
-          id: `e-${sourceId}-${targetId}`,
-          source: sourceId,
-          target: targetId,
-          animated: true,
-          style: { stroke: '#475569', strokeWidth: 1.5 }
-        });
+        const edgeId = `e-${sourceId}-${targetId}`;
+        
+        if (!fileEdgesSet.has(edgeId)) {
+          fileEdgesSet.add(edgeId);
+          edges.push({
+            id: edgeId,
+            source: sourceId,
+            target: targetId,
+            animated: true,
+            style: { stroke: '#475569', strokeWidth: 1.5 }
+          });
+        }
       }
     }
   }

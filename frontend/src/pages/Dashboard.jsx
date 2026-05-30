@@ -56,6 +56,7 @@ export default function Dashboard() {
     offered: 0
   })
   const [portfolioCount, setPortfolioCount] = useState(0)
+  const [candidateName, setCandidateName] = useState('')
   const [githubOverview, setGithubOverview] = useState({
     connected: false,
     loading: false,
@@ -106,6 +107,8 @@ export default function Dashboard() {
         userProfileRes?.data?.github ||
         userProfileRes?.github
       )
+      const rawName = userProfileRes?.profile?.name || userProfileRes?.data?.name || userProfileRes?.name || ''
+      setCandidateName(rawName.trim())
 
       if (githubUsername) {
         setGithubOverview({ connected: true, loading: true, stats: null })
@@ -206,7 +209,7 @@ export default function Dashboard() {
         >
           <div className="absolute top-0 right-0 -mr-20 -mt-20 w-64 h-64 bg-primary/10 rounded-full blur-3xl animate-pulse"></div>
           <h1 className="text-4xl md:text-5xl font-black text-foreground mb-3 tracking-tight">
-            Welcome back <span className="gradient-text">Pilot</span>
+            Welcome back{candidateName ? <span className="gradient-text">, {candidateName}</span> : <span className="gradient-text"> Pilot</span>}
           </h1>
           <p className="text-lg text-muted-foreground font-medium max-w-2xl">Your career dashboard is ready. Track applications, enhance resumes, and land your dream job with AI insights.</p>
         </motion.div>

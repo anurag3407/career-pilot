@@ -135,6 +135,36 @@ export default function PortfolioHub() {
       breadcrumb="Portfolio Builder"
       stats={loading ? [] : stats}
     >
+      <div className="col-span-full mb-6">
+        <div
+          onClick={handleResumeUploadClick}
+          className={`relative overflow-hidden rounded-2xl border-2 border-dashed ${isUploading ? 'border-primary/50 bg-primary/5' : 'border-primary/30 hover:border-primary bg-card hover:bg-primary/5'} transition-all cursor-pointer p-8 text-center group`}
+        >
+          <div className="flex flex-col items-center justify-center space-y-4 relative z-10">
+            <div className="w-16 h-16 rounded-full bg-primary/10 flex items-center justify-center group-hover:scale-110 transition-transform">
+              {isUploading ? (
+                <Loader2 className="w-8 h-8 text-primary animate-spin" />
+              ) : (
+                <Upload className="w-8 h-8 text-primary" />
+              )}
+            </div>
+
+            <div>
+              <h3 className="text-xl font-bold text-foreground mb-2">
+                {isUploading ? 'Analyzing Resume...' : 'Upload Resume to Auto-Build'}
+              </h3>
+              <p className="text-sm text-muted-foreground max-w-md mx-auto">
+                {isUploading
+                  ? 'Our AI is extracting your experience, skills, and projects to automatically populate your perfect portfolio.'
+                  : 'Skip the manual work. Upload your PDF resume, and our AI will extract your data so you can choose a template to deploy.'}
+              </p>
+            </div>
+          </div>
+
+          <div className="absolute -top-24 -right-24 w-48 h-48 bg-primary/10 rounded-full blur-3xl group-hover:bg-primary/20 transition-colors pointer-events-none" />
+        </div>
+      </div>
+
       <ToolCard
         to="/templates"
         icon={LayoutTemplate}
@@ -155,14 +185,6 @@ export default function PortfolioHub() {
         title="Deploy Portfolio"
         description="Deploy and manage active production websites on Cloudflare or GitHub Pages."
         color="emerald-500"
-      />
-      <ToolCard
-        icon={isUploading ? Loader2 : Upload}
-        title={isUploading ? 'Parsing Resume' : 'Build From Resume'}
-        description="Upload a PDF resume and let AI prepare portfolio data for your chosen template."
-        color="primary"
-        badge="AI"
-        onClick={handleResumeUploadClick}
       />
       <ToolCard
         icon={Upload}
@@ -186,7 +208,6 @@ export default function PortfolioHub() {
         onChange={handleImportFile}
       />
 
-      {/* Showcase list or placeholder */}
       {!loading && portfolios.length === 0 && (
         <div className="col-span-full mt-6">
           <EmptyPortfolioState />
