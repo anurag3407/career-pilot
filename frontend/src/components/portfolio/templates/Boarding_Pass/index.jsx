@@ -1,30 +1,57 @@
-import React from 'react';
+import React, { useEffect } from 'react';
 import data from '../../../../data/dummy_data.json';
 
-/**
- * Boarding Pass Portfolio Template
- * Category: Unique / Creative
- * Description: Aviation boarding pass layout where each project is a flight. Departure = tech stack, Arrival = live site. Boarding pass tear-off stub design with barcodes.
- */
+// Import all boarding pass components
+import Hero from './Hero';
+import About from './About';
+import Skills from './Skills';
+import Projects from './Projects';
+import Experience from './Experience';
+import Testimonials from './Testimonials';
+
 export default function BoardingPass() {
+  // Ensure the page starts at top
+  useEffect(() => {
+    window.scrollTo(0, 0);
+  }, []);
+
   return (
-    <div className="min-h-screen bg-gray-950 text-white flex flex-col items-center justify-center p-8 font-sans">
-      <div className="max-w-3xl w-full text-center">
-        <h1 className="text-5xl md:text-7xl font-bold mb-4 bg-gradient-to-r from-cyan-400 to-purple-500 bg-clip-text text-transparent">
-          {data.personal.name}
-        </h1>
-        <p className="text-xl md:text-2xl text-gray-400 mb-8">{data.personal.title}</p>
-        <div className="p-8 border-2 border-dashed border-cyan-500/40 rounded-2xl bg-gray-900/50 backdrop-blur-sm">
-          <span className="inline-block px-3 py-1 rounded-full bg-cyan-500/20 text-cyan-400 text-xs font-bold uppercase tracking-widest mb-4">
-            Unique / Creative
-          </span>
-          <h2 className="text-2xl font-bold text-gray-200 mb-3">Boarding Pass Template</h2>
-          <p className="text-gray-400 mb-6 leading-relaxed">
-            Aviation boarding pass layout where each project is a flight. Departure = tech stack, Arrival = live site. Boarding pass tear-off stub design with barcodes.
-          </p>
-          <p className="text-cyan-400 font-semibold">Open an issue to contribute and build this template!</p>
-        </div>
+    <div className="min-h-screen bg-[#f3f4f6] text-stone-900 font-sans selection:bg-blue-200 selection:text-blue-900 overflow-x-hidden">
+      
+      {/* Repeating background pattern to look like security paper */}
+      <div 
+        className="fixed inset-0 z-0 opacity-5 pointer-events-none"
+        style={{
+          backgroundImage: `url("data:image/svg+xml,%3Csvg width='60' height='60' viewBox='0 0 60 60' xmlns='http://www.w3.org/2000/svg'%3E%3Cg fill='none' fill-rule='evenodd'%3E%3Cg fill='%23000000' fill-opacity='1'%3E%3Cpath d='M36 34v-4h-2v4h-4v2h4v4h2v-4h4v-2h-4zm0-30V0h-2v4h-4v2h4v4h2V6h4V4h-4zM6 34v-4H4v4H0v2h4v4h2v-4h4v-2H6zM6 4V0H4v4H0v2h4v4h2V6h4V4H6z'/%3E%3C/g%3E%3C/g%3E%3C/svg%3E")`
+        }}
+      />
+
+      <div className="relative z-10 w-full max-w-7xl mx-auto flex flex-col gap-12 py-12 md:py-24">
+        <Hero personal={data.personal} />
+        <About personal={data.personal} socials={data.socials} />
+        <Skills skills={data.skills} />
+        <Projects projects={data.projects} />
+        <Experience experience={data.experience} />
+        <Testimonials testimonials={data.testimonials} />
       </div>
+
+      {/* Footer / End of Pass */}
+      <footer className="relative z-10 text-center py-12 border-t-2 border-dashed border-stone-300 mx-4 max-w-5xl md:mx-auto">
+        <p className="text-[10px] font-bold text-stone-400 uppercase tracking-widest mb-2">Thank you for flying with</p>
+        <p className="font-black text-stone-800 text-xl tracking-tighter uppercase">{data.personal.name}</p>
+        <div className="mt-6 flex justify-center opacity-30 mix-blend-multiply">
+           {/* Footer Barcode */}
+           <div className="h-8 flex items-center gap-[2px]">
+              {[...Array(40)].map((_, i) => (
+                <div 
+                  key={i} 
+                  className="h-full bg-stone-800" 
+                  style={{ width: `${Math.random() * 4 + 1}px` }}
+                />
+              ))}
+            </div>
+        </div>
+      </footer>
     </div>
   );
 }
