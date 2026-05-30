@@ -1,4 +1,4 @@
-﻿import { useState, useEffect, useRef } from "react";
+import { useState, useEffect, useRef } from "react";
 import {
   motion,
   useScroll,
@@ -29,9 +29,9 @@ import {
 } from "lucide-react";
 import data from "../../../../data/dummy_data.json";
 
-/* ─────────────────────────────────────────
+/* -----------------------------------------
    ANIMATED SVG WAVE DIVIDER
-───────────────────────────────────────── */
+----------------------------------------- */
 const WaveDivider = ({ fromColor, toColor, flip = false, animated = false }) => {
   const pathRef = useRef(null);
   const tRef = useRef(0);
@@ -96,9 +96,9 @@ const WaveDivider = ({ fromColor, toColor, flip = false, animated = false }) => 
   );
 };
 
-/* ─────────────────────────────────────────
+/* -----------------------------------------
    ANIMATED WAVE BACKGROUND (hero bottom)
-───────────────────────────────────────── */
+----------------------------------------- */
 const WaveBackground = () => {
   const refs = [useRef(null), useRef(null), useRef(null)];
   const rafRef = useRef(null);
@@ -146,9 +146,9 @@ const WaveBackground = () => {
   );
 };
 
-/* ─────────────────────────────────────────
+/* -----------------------------------------
    DISTORTION FILTER (SVG feTurbulence)
-───────────────────────────────────────── */
+----------------------------------------- */
 const DistortionFilter = () => (
   <svg width="0" height="0" style={{ position: "absolute" }}>
     <defs>
@@ -196,9 +196,9 @@ const DistortionFilter = () => (
   </svg>
 );
 
-/* ─────────────────────────────────────────
+/* -----------------------------------------
    FLOATING PARTICLES
-───────────────────────────────────────── */
+----------------------------------------- */
 const Particles = ({ count = 20 }) => {
   const particles = useRef(
     Array.from({ length: count }, (_, i) => ({
@@ -244,9 +244,9 @@ const Particles = ({ count = 20 }) => {
   );
 };
 
-/* ─────────────────────────────────────────
+/* -----------------------------------------
    SCROLL-TRIGGERED FADE IN
-───────────────────────────────────────── */
+----------------------------------------- */
 const FadeIn = ({ children, delay = 0, direction = "up", className = "" }) => {
   const ref = useRef(null);
   const inView = useInView(ref, { once: true, margin: "-60px" });
@@ -274,9 +274,9 @@ const FadeIn = ({ children, delay = 0, direction = "up", className = "" }) => {
   );
 };
 
-/* ─────────────────────────────────────────
+/* -----------------------------------------
    ANIMATED SKILL BAR
-───────────────────────────────────────── */
+----------------------------------------- */
 const SkillBar = ({ skill, delay = 0 }) => {
   const ref = useRef(null);
   const inView = useInView(ref, { once: true });
@@ -310,9 +310,9 @@ const SkillBar = ({ skill, delay = 0 }) => {
   );
 };
 
-/* ─────────────────────────────────────────
+/* -----------------------------------------
    LIQUID RIPPLE CARD (hover)
-───────────────────────────────────────── */
+----------------------------------------- */
 const RippleCard = ({ children, className = "", style = {} }) => {
   const [ripples, setRipples] = useState([]);
   const handleClick = (e) => {
@@ -349,14 +349,14 @@ const RippleCard = ({ children, className = "", style = {} }) => {
   );
 };
 
-/* ─────────────────────────────────────────
+/* -----------------------------------------
    SECTION HEADING
-───────────────────────────────────────── */
+----------------------------------------- */
 const SectionHead = ({ tag, title, accent, subtitle }) => (
   <FadeIn>
     <div className="text-center mb-14">
       <p className="text-xs tracking-[4px] font-semibold uppercase mb-3" style={{ color: "#00c8ff" }}>
-        — {tag} —
+        � {tag} �
       </p>
       <h2 className="font-black tracking-tight mb-3" style={{ fontSize: "clamp(30px,4.5vw,50px)", lineHeight: 1.1, letterSpacing: "-1.5px" }}>
         {title} <span style={{ color: "#00c8ff" }}>{accent}</span>
@@ -368,9 +368,9 @@ const SectionHead = ({ tag, title, accent, subtitle }) => (
   </FadeIn>
 );
 
-/* ─────────────────────────────────────────
+/* -----------------------------------------
    PROJECT CARD
-───────────────────────────────────────── */
+----------------------------------------- */
 const ProjectCard = ({ project, index }) => {
   const [hovered, setHovered] = useState(false);
   return (
@@ -465,9 +465,9 @@ const ProjectCard = ({ project, index }) => {
   );
 };
 
-/* ─────────────────────────────────────────
+/* -----------------------------------------
    TESTIMONIAL CARD
-───────────────────────────────────────── */
+----------------------------------------- */
 const TestimonialCard = ({ t, index }) => (
   <FadeIn delay={index * 0.1}>
     <RippleCard
@@ -516,17 +516,17 @@ const TestimonialCard = ({ t, index }) => (
   </FadeIn>
 );
 
-/* ─────────────────────────────────────────
+/* -----------------------------------------
    CATEGORY ICON MAP
-───────────────────────────────────────── */
+----------------------------------------- */
 const CatIcon = ({ cat }) => {
   const map = { Frontend: <Layers size={13} />, Backend: <Cpu size={13} />, DevOps: <Zap size={13} />, Design: <Star size={13} /> };
   return map[cat] || <Code2 size={13} />;
 };
 
-/* ═══════════════════════════════════════════════════════════
+/* -----------------------------------------------------------
    MAIN EXPORT
-═══════════════════════════════════════════════════════════ */
+----------------------------------------------------------- */
 export default function WaveDistortionPortfolio({ preview = false }) {
   const [menuOpen, setMenuOpen] = useState(false);
   const [activeSkillCat, setActiveSkillCat] = useState("All");
@@ -578,7 +578,7 @@ export default function WaveDistortionPortfolio({ preview = false }) {
     >
       <DistortionFilter />
 
-     // ✅ Hide it in preview mode
+
      
       {!preview && (
         <motion.div
@@ -592,7 +592,7 @@ export default function WaveDistortionPortfolio({ preview = false }) {
   />
 )}
 
-      {/* ══════════ NAV ══════════ */}
+      {/* ---------- NAV ---------- */}
       {!preview && (
       <motion.nav
         style={{
@@ -678,7 +678,7 @@ export default function WaveDistortionPortfolio({ preview = false }) {
       </motion.nav>
       )}
 
-      {/* ══════════ HERO ══════════ */}
+      {/* ---------- HERO ---------- */}
       <section
         id="hero"
         className="relative flex items-center justify-center overflow-hidden"
@@ -751,7 +751,7 @@ export default function WaveDistortionPortfolio({ preview = false }) {
             className="text-xs font-semibold uppercase tracking-[4px] mb-4"
             style={{ color: CYAN }}
           >
-            ── Available for hire ──
+            -- Available for hire --
           </motion.p>
 
           <motion.h1
@@ -898,7 +898,7 @@ export default function WaveDistortionPortfolio({ preview = false }) {
         </motion.div>
       </section>
 
-      {/* ══════════ ABOUT ══════════ */}
+      {/* ---------- ABOUT ---------- */}
       <section id="about" style={{ background: BG, position: "relative", paddingTop: 0 }}>
         <WaveDivider fromColor={BG} toColor={BG} animated flip />
         <div className="max-w-5xl mx-auto px-6 py-20">
@@ -975,7 +975,7 @@ export default function WaveDistortionPortfolio({ preview = false }) {
         </div>
       </section>
 
-      {/* ══════════ SKILLS ══════════ */}
+      {/* ---------- SKILLS ---------- */}
       <section id="skills" style={{ background: BG2, position: "relative" }}>
         <WaveDivider fromColor={BG} toColor={BG2} animated />
         <div className="max-w-5xl mx-auto px-6 py-20">
@@ -1030,7 +1030,7 @@ export default function WaveDistortionPortfolio({ preview = false }) {
         <WaveDivider fromColor={BG2} toColor={BG2} flip animated />
       </section>
 
-      {/* ══════════ PROJECTS ══════════ */}
+      {/* ---------- PROJECTS ---------- */}
       <section id="projects" style={{ background: BG, paddingTop: 0 }}>
         <div className="max-w-6xl mx-auto px-6 py-24">
           <SectionHead tag="Portfolio" title="Featured" accent="Projects" />
@@ -1042,7 +1042,7 @@ export default function WaveDistortionPortfolio({ preview = false }) {
         </div>
       </section>
 
-      {/* ══════════ EXPERIENCE ══════════ */}
+      {/* ---------- EXPERIENCE ---------- */}
       <section id="experience" style={{ background: BG2 }}>
         <WaveDivider fromColor={BG} toColor={BG2} animated />
         <div className="max-w-3xl mx-auto px-6 py-20">
@@ -1118,7 +1118,7 @@ export default function WaveDistortionPortfolio({ preview = false }) {
         <WaveDivider fromColor={BG2} toColor={BG2} flip animated />
       </section>
 
-      {/* ══════════ TESTIMONIALS ══════════ */}
+      {/* ---------- TESTIMONIALS ---------- */}
       <section id="testimonials" style={{ background: BG, paddingTop: 0 }}>
         <div className="max-w-6xl mx-auto px-6 py-24">
           <SectionHead tag="Kind Words" title="What People" accent="Say" />
@@ -1130,7 +1130,7 @@ export default function WaveDistortionPortfolio({ preview = false }) {
         </div>
       </section>
 
-      {/* ══════════ CONTACT ══════════ */}
+      {/* ---------- CONTACT ---------- */}
       <section id="contact" style={{ background: BG2, position: "relative", overflow: "hidden" }}>
         <WaveDivider fromColor={BG} toColor={BG2} animated />
         {/* Glow orbs */}
@@ -1184,7 +1184,7 @@ export default function WaveDistortionPortfolio({ preview = false }) {
                 onBlur={(e) => (e.target.style.borderColor = "rgba(0,200,255,0.16)")}
               />
               <textarea
-                aria-label="Your message" placeholder="Your message…"
+                aria-label="Your message" placeholder="Your message�"
                 rows={5}
                 className="w-full rounded-xl px-4 py-3.5 text-sm text-white outline-none mb-5 block resize-y"
                 style={{ background: "rgba(0,200,255,0.05)", border: "1px solid rgba(0,200,255,0.16)", fontFamily: "inherit" }}
@@ -1247,7 +1247,7 @@ export default function WaveDistortionPortfolio({ preview = false }) {
             <path d="M0,10 C240,0 480,20 720,10 C960,0 1200,20 1440,10 L1440,0 L0,0 Z" fill={CYAN} />
           </svg>
           <p className="text-xs" style={{ color: "rgba(140,180,220,0.4)" }}>
-            © {new Date().getFullYear()} {data.personal.name} · Built with React &amp; Framer Motion · Wave Distortion Theme
+            � {new Date().getFullYear()} {data.personal.name} � Built with React &amp; Framer Motion � Wave Distortion Theme
           </p>
         </div>
       </section>
