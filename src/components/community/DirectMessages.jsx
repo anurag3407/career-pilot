@@ -11,7 +11,7 @@ export default function DirectMessages() {
   
   const [conversations, setConversations] = useState([]);
   const [selectedConversation, setSelectedConversation] = useState(null);
-  const [messages, setMessages] = useState([]);
+ const [_messages, setMessages] = useState([]);
   const [loading, setLoading] = useState(true);
   const [showNewDM, setShowNewDM] = useState(false);
   const [searchQuery, setSearchQuery] = useState('');
