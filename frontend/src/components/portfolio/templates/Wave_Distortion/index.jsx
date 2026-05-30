@@ -579,10 +579,12 @@ export default function WaveDistortionPortfolio({ preview = false }) {
       <DistortionFilter />
 
      // ✅ Hide it in preview mode
+     
       {!preview && (
         <motion.div
           style={{
-             position: "fixed", top: 0, left: 0, height: "3px", zIndex: 1000,
+         
+            position: "fixed", top: 0, left: 0, height: "3px", zIndex: 1000,
              background: `linear-gradient(90deg, #0070f3, ${CYAN})`,
              boxShadow: `0 0 12px rgba(0,200,255,0.8)`,
              scaleX: scrollYProgress, transformOrigin: "0%",
