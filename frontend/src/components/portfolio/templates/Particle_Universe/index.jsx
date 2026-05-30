@@ -19,16 +19,25 @@ const C = {
   aurora7: '#e879f9',           // fuchsia
 };
 
+const createSeededRandom = (seed) => {
+  let value = seed >>> 0;
+  return () => {
+    value = (value + 0x6D2B79F5) | 0;
+    let t = Math.imul(value ^ (value >>> 15), 1 | value);
+    t ^= t + Math.imul(t ^ (t >>> 7), 61 | t);
+    return ((t ^ (t >>> 14)) >>> 0) / 4294967296;
+  };
+};
+
 /* ─── GLOBAL CSS ─── */
 const GLOBAL_CSS = `
   @import url('https://fonts.googleapis.com/css2?family=Rajdhani:wght@400;500;600;700&family=Exo+2:wght@300;400;600;800;900&family=Share+Tech+Mono&display=swap');
   *,*::before,*::after{box-sizing:border-box;margin:0;padding:0;}
   html{scroll-behavior:smooth;}
-  body,#root{background:#05030f;}
-  .pu-root{cursor:none;background:#05030f;min-height:100vh;overflow-x:hidden;}
-  ::-webkit-scrollbar{width:3px;}
-  ::-webkit-scrollbar-track{background:#05030f;}
-  ::-webkit-scrollbar-thumb{background:linear-gradient(#7b5ea7,#c084fc);border-radius:99px;}
+  .pu-root{cursor:none;background:#05030f;min-height:100vh;overflow-x:hidden;overflow-y:auto;}
+  .pu-root::-webkit-scrollbar{width:3px;}
+  .pu-root::-webkit-scrollbar-track{background:#05030f;}
+  .pu-root::-webkit-scrollbar-thumb{background:linear-gradient(#7b5ea7,#c084fc);border-radius:99px;}
 
   @keyframes shimmer{0%{background-position:-400px 0;}100%{background-position:400px 0;}}
   @keyframes scan{0%,100%{top:0;opacity:.5;}50%{top:calc(100% - 2px);opacity:.08;}}
@@ -117,11 +126,12 @@ function ParticleField() {
     const ctx    = canvas.getContext('2d');
     let W, H;
     let particles = [], nebulae = [], rings = [];
+    const handleMouseMove = (e) => { mouse.current = { x: e.clientX, y: e.clientY }; };
 
     const resize = () => { W = canvas.width = window.innerWidth; H = canvas.height = window.innerHeight; };
     resize();
     window.addEventListener('resize', resize);
-    window.addEventListener('mousemove', (e) => { mouse.current = { x: e.clientX, y: e.clientY }; });
+    window.addEventListener('mousemove', handleMouseMove);
 
     // Refined aurora palette — softer, richer
     const PALETTE = [
@@ -317,7 +327,11 @@ function ParticleField() {
       raf.current = requestAnimationFrame(loop);
     };
     loop();
-    return () => { cancelAnimationFrame(raf.current); window.removeEventListener('resize', resize); };
+    return () => {
+      cancelAnimationFrame(raf.current);
+      window.removeEventListener('resize', resize);
+      window.removeEventListener('mousemove', handleMouseMove);
+    };
   }, []);
 
   return <canvas ref={ref} style={{ position:'fixed',inset:0,zIndex:0,pointerEvents:'none',mixBlendMode:'screen' }} />;
@@ -325,13 +339,16 @@ function ParticleField() {
 
 /* ─── MINI BURST PARTICLES ─── */
 function MiniBurst({ color = C.aurora2, active = false, count = 14 }) {
-  const dots = useMemo(() => Array.from({ length: count }, (_, i) => ({
-    angle: (i / count) * 360,
-    dist: 22 + Math.random() * 35,
-    dur: 1 + Math.random() * .8,
-    delay: Math.random() * .3,
-    sz: 2 + Math.random() * 3,
-  })), [count]);
+  const dots = useMemo(() => {
+    const rand = createSeededRandom(count * 101);
+    return Array.from({ length: count }, (_, i) => ({
+      angle: (i / count) * 360,
+      dist: 22 + rand() * 35,
+      dur: 1 + rand() * .8,
+      delay: rand() * .3,
+      sz: 2 + rand() * 3,
+    }));
+  }, [count]);
   if (!active) return null;
   return (
     <div style={{ position:'absolute',inset:0,pointerEvents:'none',zIndex:20 }}>
@@ -350,11 +367,14 @@ function MiniBurst({ color = C.aurora2, active = false, count = 14 }) {
 
 /* ─── ORBITING DOT RING ─── */
 function OrbitRing({ radius = 100, count = 8, color = C.aurora2, dur = 20, size = 2.5 }) {
-  const dots = useMemo(() => Array.from({ length: count }, (_, i) => ({
-    startAngle: (i / count) * 360,
-    r: size * (.6 + Math.random() * .8),
-    al: .4 + Math.random() * .5,
-  })), [count, size]);
+  const dots = useMemo(() => {
+    const rand = createSeededRandom(count * 211 + Math.round(size * 100));
+    return Array.from({ length: count }, (_, i) => ({
+      startAngle: (i / count) * 360,
+      r: size * (.6 + rand() * .8),
+      al: .4 + rand() * .5,
+    }));
+  }, [count, size]);
 
   return (
     <div style={{ position:'absolute',width:radius*2,height:radius*2,pointerEvents:'none' }}>
@@ -381,12 +401,15 @@ function OrbitRing({ radius = 100, count = 8, color = C.aurora2, dur = 20, size 
 
 /* ─── FLOATING PARTICLES ─── */
 function FloatParticles({ color = C.aurora2, count = 6 }) {
-  const items = useMemo(() => Array.from({ length: count }, () => ({
-    left: 5 + Math.random() * 90,
-    dur: 2.2 + Math.random() * 2.8,
-    delay: Math.random() * 2.5,
-    sz: 2 + Math.random() * 3,
-  })), [count]);
+  const items = useMemo(() => {
+    const rand = createSeededRandom(count * 313);
+    return Array.from({ length: count }, () => ({
+      left: 5 + rand() * 90,
+      dur: 2.2 + rand() * 2.8,
+      delay: rand() * 2.5,
+      sz: 2 + rand() * 3,
+    }));
+  }, [count]);
   return (
     <div style={{ position:'absolute',inset:0,pointerEvents:'none',overflow:'hidden',zIndex:2 }}>
       {items.map((p, i) => (
@@ -1130,17 +1153,43 @@ function Testimonials() {
 /* ─── CONTACT ─── */
 function Contact() {
   const { socials, personal } = data;
-  const [form, setForm]   = useState({ name:'', email:'', message:'' });
-  const [sent, setSent]   = useState(false);
+  const [form, setForm] = useState({ name:'', email:'', message:'' });
+  const [sent, setSent] = useState(false);
   const [burst, setBurst] = useState(false);
+  const [isSubmitting, setIsSubmitting] = useState(false);
+  const submitLockRef = useRef(false);
+  const submitTimersRef = useRef([]);
+
+  useEffect(() => {
+    return () => {
+      submitTimersRef.current.forEach(clearTimeout);
+      submitTimersRef.current = [];
+    };
+  }, []);
 
   const submit = (e) => {
     e.preventDefault();
-    if (form.name && form.email && form.message) {
-      setBurst(true);
-      setTimeout(() => { setSent(true); setBurst(false); }, 900);
-      setTimeout(() => { setSent(false); setForm({ name:'',email:'',message:'' }); }, 4500);
-    }
+    if (submitLockRef.current || isSubmitting || sent || burst) return;
+    if (!form.name || !form.email || !form.message) return;
+
+    submitLockRef.current = true;
+    setIsSubmitting(true);
+    setBurst(true);
+
+    const burstTimer = setTimeout(() => {
+      setSent(true);
+      setBurst(false);
+    }, 900);
+
+    const resetTimer = setTimeout(() => {
+      setSent(false);
+      setForm({ name:'', email:'', message:'' });
+      setIsSubmitting(false);
+      submitLockRef.current = false;
+      submitTimersRef.current = [];
+    }, 4500);
+
+    submitTimersRef.current = [burstTimer, resetTimer];
   };
 
   const inputStyle = {
@@ -1270,16 +1319,18 @@ function Contact() {
                       onBlur={e  => { e.target.style.borderColor = 'rgba(123,94,167,.18)'; }} />
                   </div>
                   <motion.button type="submit"
+                    disabled={isSubmitting}
                     whileHover={{ scale:1.03,boxShadow:`0 0 45px ${C.aurora2}45` }}
                     whileTap={{ scale:.97 }}
                     style={{ padding:'15px',borderRadius:13,
                       background:`linear-gradient(135deg,${C.aurora1},${C.aurora2},${C.aurora7})`,
-                      border:'none',cursor:'pointer',
+                      border:'none',cursor:isSubmitting ? 'not-allowed' : 'pointer',
                       color:'white',fontFamily:'Exo 2',fontWeight:800,fontSize:14,
                       letterSpacing:'0.2em',textTransform:'uppercase',
                       display:'flex',alignItems:'center',justifyContent:'center',gap:9,
                       position:'relative',overflow:'hidden',
-                      boxShadow:`0 0 22px ${C.aurora2}28`,transition:'box-shadow .35s' }}>
+                      boxShadow:`0 0 22px ${C.aurora2}28`,transition:'box-shadow .35s, opacity .2s',
+                      opacity: isSubmitting ? 0.7 : 1 }}>
                     <MiniBurst color={C.aurora2} active={burst} />
                     <Send size={16} style={{ position:'relative',zIndex:1 }} />
                     <span style={{ position:'relative',zIndex:1 }}>Send Transmission</span>
@@ -1326,13 +1377,23 @@ function Footer() {
 /* ─── ROOT ─── */
 export default function ParticleUniverse() {
   useEffect(() => {
+    const priorBodyBg = document.body.style.background;
+    const priorOverflowX = document.body.style.overflowX;
+    const priorDocElBg = document.documentElement.style.background;
+
     document.body.style.background    = C.bg;
     document.body.style.overflowX     = 'hidden';
     document.documentElement.style.background = C.bg;
+
+    return () => {
+      document.body.style.background = priorBodyBg;
+      document.body.style.overflowX = priorOverflowX;
+      document.documentElement.style.background = priorDocElBg;
+    };
   }, []);
 
   return (
-    <div className="pu-root">
+    <div className="pu-root" style={{ background: C.bg }}>
       <style>{GLOBAL_CSS}</style>
       <CosmicCursor />
       <ParticleField />
