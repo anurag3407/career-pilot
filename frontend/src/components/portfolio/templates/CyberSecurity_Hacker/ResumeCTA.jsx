@@ -81,7 +81,7 @@ const MatrixRain = () => {
     const CHARS =
       "アイウエオカキクケコサシスセソ0123456789ABCDEFGHIJKLMNOPQRSTUVWXYZ<>[]{}|\\!@#$";
 
-    ctx.font = `${FONT_SIZE}px monospace`; // set once
+    ctx.font = `${FONT_SIZE}px monospace`;
 
     const init = () => {
       canvas.width  = canvas.offsetWidth;
@@ -91,7 +91,7 @@ const MatrixRain = () => {
     };
 
     let lastTime = 0;
-    const INTERVAL = 42; // ~24 fps — smooth but cheap
+    const INTERVAL = 42;
 
     const draw = (timestamp) => {
       if (timestamp - lastTime >= INTERVAL) {
@@ -144,6 +144,15 @@ const MatrixRain = () => {
 const GlitchHeading = ({ text, color }) => {
   const [on, setOn] = useState(false);
   const timerRef = useRef(null);
+
+  // FIX 1: Clear the pending timeout on unmount to prevent
+  // setOn(false) from firing on an already-unmounted component,
+  // which would cause a React warning and a minor memory leak.
+  useEffect(() => {
+    return () => {
+      clearTimeout(timerRef.current);
+    };
+  }, []);
 
   const start = useCallback(() => {
     setOn(true);
@@ -214,6 +223,9 @@ const ResumeCTA = ({
   resumeUrl   = "/resume.pdf",
   contactHref = "#contact",
   linkedInUrl = "#",
+  // FIX 2: Accept githubUrl as a prop (consistent with linkedInUrl)
+  // instead of hardcoding "https://github.com", improving reusability.
+  githubUrl   = "#",
   stats = [
     { label: "Projects Built",  value: "20+",    color: "#00ff41" },
     { label: "Bugs Squashed",   value: "500+",   color: "#ff0044" },
@@ -228,7 +240,6 @@ const ResumeCTA = ({
     padding: "4rem 5vw",
     fontFamily: "'Courier New', Courier, monospace",
   }}>
-    {/* inject global keyframes once */}
     <style>{STYLES}</style>
 
     <MatrixRain />
@@ -376,7 +387,8 @@ const ResumeCTA = ({
             >
               <ExternalLink size={13} /> LinkedIn
             </a>
-            <a href="https://github.com" target="_blank" rel="noreferrer" style={{
+            {/* FIX 2 applied: use githubUrl prop instead of hardcoded URL */}
+            <a href={githubUrl} target="_blank" rel="noreferrer" style={{
               display: "flex", alignItems: "center", gap: 6,
               color: "#00aaff", fontSize: 12, letterSpacing: "0.1em",
               textDecoration: "none", opacity: 0.8,
