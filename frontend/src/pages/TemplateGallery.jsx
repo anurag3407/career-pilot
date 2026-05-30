@@ -1,5 +1,7 @@
-import React, { useState, useRef, useEffect, Suspense, useMemo } from "react";
-import { templates } from '../data/templates';
+import React, { useState, useEffect, useRef, useCallback, useMemo, Suspense } from "react";
+import WaveDistortionPortfolio from "../components/portfolio/templates/Wave_Distortion/index.jsx";
+import MidnightGradient from "../components/portfolio/templates/Midnight_Gradient/index";
+
 import DeployModal from "../components/portfolio/DeployModal";
 import ThemeSelector from "../components/portfolio/ThemeSelector";
 import { useTheme } from "../hooks/useTheme";
@@ -7,7 +9,7 @@ import { motion, AnimatePresence } from "framer-motion";
 import { Moon, Sun, ChevronDown, Check, Eye, Star, Sparkles } from "lucide-react";
 import SwissTypography from "../components/portfolio/templates/Swiss_Typography/index";
 import LiquidGlass from "../components/portfolio/templates/Liquid_Glass/index";
-import MidnightGradient from "../components/portfolio/templates/Midnight_Gradient/index";
+
 import PlayingCardsPortfolio from "../components/portfolio/templates/Playing_Cards";
 import CherryBlossom from "../components/portfolio/templates/Cherry_Blossom/index";
 import Navbar from '../components/Navbar'
@@ -220,7 +222,7 @@ function TemplateCard({ template, hovered, onHover, onLeave, onUse, aiDraft }) {
 const TemplatePreviewModal = ({ templateId, isOpen, onClose, portfolioData }) => {
   const Component = useMemo(() => {
     if (!templateId) return null;
-    return React.lazy(() => import(`../components/portfolio/templates/${templateId}/index.jsx`));
+
   }, [templateId]);
 
   if (!isOpen || !templateId) return null;
@@ -322,6 +324,12 @@ const [hoveredCard, setHoveredCard] = useState(null);
     { value: "Highest Rated", label: "Highest Rated" },
   ];
 
+  const templates = [
+    { id: "Liquid_Glass", title: "Minimal", description: "Clean and minimal portfolio template", category: "Portfolio", colorScheme: "Light", layout: "Minimal", isComplete: true, isPremium: false, darkMode: true, views: 1200, rating: 4.5, createdAt: "2024-01-01" },
+    { id: "Swiss_Typography", title: "Swiss Typography", description: "Bold typographic portfolio template", category: "Portfolio", colorScheme: "Light", layout: "Grid", isComplete: true, isPremium: false, darkMode: false, views: 980, rating: 4.3, createdAt: "2024-02-01" },
+    { id: "Liquid_Glass", title: "Liquid Glass", description: "Glassmorphism portfolio template", category: "Portfolio", colorScheme: "Dark", layout: "Cards", isComplete: true, isPremium: true, darkMode: true, views: 850, rating: 4.7, createdAt: "2024-03-01" },
+    { id: "Wave_Distortion", title: "Wave Distortion", description: "Ocean-wave-inspired fluid motion portfolio", category: "Portfolio", colorScheme: "Dark", layout: "Interactive", isComplete: true, isPremium: false, darkMode: true, views: 760, rating: 4.6, createdAt: "2024-04-01" },
+  ];
   const filteredTemplates = templates.filter((template) => {
     if (!template.isComplete) return false;
     const matchesCategory = category === "All" || template.category === category;
@@ -482,6 +490,18 @@ const [hoveredCard, setHoveredCard] = useState(null);
         </div>
         <div className="overflow-hidden rounded-2xl border border-emerald-500/20">
           <PlayingCardsPortfolio portfolioData={aiDraft} />
+        </div>
+      </div>
+      {/* Wave Distortion Theme */}
+      <div className="mt-12">
+        <div className="mb-4 flex items-center gap-3 px-1">
+          <span className="rounded-full bg-blue-500/20 px-3 py-1 text-xs font-bold uppercase tracking-widest text-blue-400 border border-blue-500/30">
+            Preview
+          </span>
+          <h2 className="text-lg font-semibold text-foreground/70">Wave Distortion Theme — Full Portfolio</h2>
+        </div>
+        <div className="overflow-hidden rounded-2xl border border-blue-500/20">
+          <WaveDistortionPortfolio preview={true} />
         </div>
       </div>
 
