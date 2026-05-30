@@ -5,32 +5,20 @@ const API_BASE = import.meta.env.VITE_API_BASE || '/api';
 
 // Helper to get auth headers
 async function getAuthHeaders() {
-  const user = auth?.currentUser
-  if (!user) throw new Error('Not authenticated')
+const user = auth?.currentUser
 
+if (!user) {
+  throw new Error('Not authenticated')
+}
 
-  const token = await user.getIdToken()
-  const headers = {
-    'Authorization': `Bearer ${token}`,
-    'Content-Type': 'application/json'
-  }
+const token = await user.getIdToken()
 
-  const aiConfigStr = localStorage.getItem('aiConfig');
-  if (aiConfigStr) {
-    try {
-      const aiConfig = JSON.parse(aiConfigStr);
-      if (aiConfig.provider) headers['X-AI-Provider'] = aiConfig.provider;
-      if (aiConfig.apiKey) headers['X-AI-Key'] = decryptKey(aiConfig.apiKey);
-      if (aiConfig.model) headers['X-AI-Model'] = aiConfig.model;
-    } catch(e) {}
-  } else {
-    const openRouterKey = localStorage.getItem('openRouterApiKey');
-    if (openRouterKey) {
-      headers['X-OpenRouter-Key'] = decryptKey(openRouterKey);
-    }
-  }
+const headers = {
+  'Authorization': `Bearer ${token}`,
+  'Content-Type': 'application/json'
+}
 
-  return headers
+return headers
 }
 
 // Helper to parse numeric header values
