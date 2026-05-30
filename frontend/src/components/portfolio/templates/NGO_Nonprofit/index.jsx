@@ -25,9 +25,9 @@ const SectionTitle = ({ icon: Icon, title, subtitle, light = false }) => (
 const Hero = () => {
   const { personal, socials, stats } = data;
   const impactStats = [
-    { label: "Years of Impact", value: stats?.yearsExperience ?? 8, icon: Calendar },
-    { label: "Projects Completed", value: stats?.projectsCompleted ?? 120, icon: Target },
-    { label: "Lives Touched", value: stats?.happyClients ?? 5000, icon: Heart },
+    { label: "Years of Impact", value: stats?.yearsExperience ?? 0, icon: Calendar },
+    { label: "Projects Completed", value: stats?.projectsCompleted ?? 0, icon: Target },
+    { label: "Lives Touched", value: stats?.happyClients ?? 0, icon: Heart },
   ];
   return (
     <section className="relative min-h-screen flex flex-col justify-center overflow-hidden bg-gradient-to-br from-amber-800 via-amber-700 to-orange-600">
@@ -125,7 +125,7 @@ const About = () => {
               <p className="text-amber-800 font-semibold text-sm flex items-center gap-2">
                 <Heart size={16} fill="currentColor" className="text-rose-500" /> Mission Statement
               </p>
-              <p className="text-stone-600 mt-2 italic">Every action, no matter how small, contributes to a larger wave of change.</p>
+              <p className="text-stone-600 mt-2 italic">{personal?.mission ?? ""}</p>
             </div>
           </motion.div>
         </div>
