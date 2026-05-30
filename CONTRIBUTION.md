@@ -554,93 +554,72 @@ Mockups, examples, or references
 backend/src/
 ├── index.js              # Entry point - start here
 ├── config/               # Configuration files
+│   ├── aiProviders.js    # AI Model providers config
+│   ├── database.js       # MongoDB connection
 │   ├── firebase.js       # Firebase Admin setup
-│   ├── langchain.js      # AI configuration
+│   ├── redis.js          # Redis connection for queues
 │   └── socket.js         # Socket.IO setup
 ├── controllers/          # Route handlers
-├── middleware/            # Express middleware
-│   ├── cmsAuth.js        # CMS API key auth
-│   └── portfolioValidator.js # Portfolio content validation
+├── middleware/           # Express middleware (auth, logs, etc.)
 ├── models/               # Mongoose schemas
-│   ├── Portfolio.model.js # Portfolio data
-│   ├── Deployment.model.js # Deploy history
+│   ├── Resume.model.js   # Resume data
+│   ├── JobAlert.model.js # Alert configurations
+│   ├── TrackedJob.model.js # Application tracking
 │   └── ...
 ├── routes/               # API route definitions
-│   ├── portfolio.js      # Portfolio CRUD + deploy
-│   ├── portfolioCMS.js   # Headless CMS API
-│   ├── github.js         # GitHub intelligence
-│   ├── webhooks.js       # Deploy provider webhooks
+│   ├── enhance.js        # AI Resume enhancement
+│   ├── jobAlerts.js      # Alert CRUD
+│   ├── interview.js      # Interview prep
+│   ├── community.js      # Real-time community
+│   └── ...
+├── schemas/              # Zod/Joi validation schemas
+│   ├── resume.schema.js
+│   ├── auth.schema.js
 │   └── ...
 ├── services/             # Business logic
 │   ├── ai/               # AI career tools
-│   │   ├── skillGapAnalyzer.js
 │   │   ├── careerTrajectory.js
-│   │   ├── salaryEstimator.js
-│   │   └── projectDescriptionWriter.js
+│   │   └── portfolioExtractor.js
 │   ├── deploy/           # Deployment providers
 │   │   ├── cloudflareDeployer.js
-│   │   ├── githubPagesDeployer.js
-│   │   ├── netlifyDeployer.js
-│   │   ├── vercelDeployer.js
-│   │   └── deployerFactory.js
-│   ├── github/           # GitHub analysis
-│   │   ├── repoDeepScanner.js
-│   │   ├── techStackDetector.js
-│   │   ├── commitHeatmap.js
-│   │   ├── repoHealthScorer.js
-│   │   ├── codebaseExplainer.js
-│   │   └── readmeAssetEngine.js
+│   │   └── netlifyDeployer.js
+│   ├── scrapers/         # Job scraping logic
+│   ├── mailService.js    # Email notifications
+│   ├── socketServiceFirebase.js # Real-time state sync
 │   └── ...
-├── templates/            # Portfolio themes
-│   └── portfolio/
-│       ├── _starter/     # Starter kit for contributors
-│       ├── minimal-dark/
-│       ├── developer-pro/
-│       ├── creative-gradient/
-│       └── ...
-└── utils/                # Helper functions
+├── templates/            # Portfolio & Email themes
+└── utils/                # Helper functions & validators
 ```
 
 ### Frontend Structure
 
 ```
 frontend/src/
-├── App.jsx               # Root component - start here
-├── main.jsx              # Entry point
+├── App.jsx               # Root component & Routing
+├── main.jsx              # Application entry point
 ├── components/           # Reusable components
-│   ├── ui/               # Generic UI components
-│   ├── community/        # Community-specific components
-│   ├── portfolio/        # Portfolio builder components
-│   │   ├── PortfolioCard.jsx
-│   │   ├── SectionEditor.jsx
-│   │   ├── ThemeSelector.jsx
-│   │   ├── DeployModal.jsx
-│   │   └── ...
-│   ├── github/           # GitHub intelligence components
-│   │   ├── RepoCard.jsx
-│   │   ├── ContributionHeatmap.jsx
-│   │   ├── HealthScoreGauge.jsx
-│   │   └── ...
-│   └── ai/               # AI tools components
-│       ├── CareerTrajectoryChart.jsx
-│       └── LinkedInHeadlineGenerator.jsx
-├── config/               # Configuration
-├── context/              # React context providers
+│   ├── ai/               # AI tool UI
+│   ├── analyzer/         # Resume analysis components
+│   ├── community/        # Community & Chat UI
+│   ├── github/           # GitHub integration UI
+│   ├── portfolio/        # Portfolio builder UI
+│   ├── ui/               # Generic design system (shadcn/custom)
+│   ├── visualizer/       # Data visualization components
+│   └── AtsProgressChart.jsx
+├── stores/               # Zustand state management
 ├── hooks/                # Custom React hooks
 ├── pages/                # Page components
-│   ├── Portfolio.jsx
-│   ├── PortfolioEditor.jsx
-│   ├── GitHubDashboard.jsx
-│   ├── RepoAnalysis.jsx
-│   ├── SkillGap.jsx
-│   ├── CareerPath.jsx
-│   ├── SalaryEstimate.jsx
-│   ├── Deployments.jsx
-│   ├── TemplateGallery.jsx
-│   ├── admin/            # Admin-only pages
-│   └── fellowship/       # Fellowship pages
+│   ├── Dashboard.jsx     # Main user dashboard
+│   ├── Enhance.jsx       # Resume enhancer
+│   ├── InterviewPrep.jsx # Interview coaching
+│   ├── JobSearch.jsx     # Job finding interface
+│   ├── RepoAnalyzer/     # GitHub Repo analysis
+│   ├── ResumeBuilder.jsx # Core builder page
+│   ├── UserProfile.jsx   # User settings & profile
+│   └── ...
 ├── services/             # API service layer
-└── lib/                  # Utility functions
+├── lib/                  # External library wrappers (utils, themes)
+└── context/              # Legacy React context providers
 ```
 
 ### Key Files to Understand
