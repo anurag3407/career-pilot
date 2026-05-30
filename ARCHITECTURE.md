@@ -1076,37 +1076,23 @@ Pipeline Stages:
 </div>
 
 
-## Contributor Module Flow
-
-This diagram helps new contributors understand how the major modules of Career Pilot interact with each other.
-
 ```mermaid
 flowchart TD
-    U[User] --> F[Frontend - React + Vite]
+    U[User] --> FE[Frontend React + Vite]
 
-    F --> R[Resume Builder]
-    F --> P[Portfolio Builder]
-    F --> J[Job Tracker]
-    F --> I[Interview Preparation]
-    F --> G[GitHub Intelligence]
+    FE --> BE[Backend Express.js + Socket.IO]
 
-    R --> AI[AI Services]
-    I --> AI
-    G --> AI
+    BE --> RS[Resume Services]
+    BE --> JS[Job Fetcher Services]
+    BE --> IS[Interview Services]
 
-    AI --> GEM[Gemini AI]
+    RS --> AI[Gemini AI]
+    IS --> AI
 
-    F --> AUTH[Firebase Authentication]
-    AUTH --> DB[(Firebase Database)]
+    JS --> API[External Job APIs]
 
-    J --> API[External Job APIs]
+    BE --> MDB[(MongoDB)]
+    BE --> FB[(Firebase Firestore + Storage)]
 
-    P --> DEPLOY[Deployment Services]
+    BE --> MQ[BullMQ Job Queue]
 ```
-
-### Benefits for Contributors
-
-- Provides a quick overview of major modules.
-- Explains how AI-powered features interact with external services.
-- Helps contributors understand data flow before exploring the codebase.
-- Reduces onboarding time for new developers.
