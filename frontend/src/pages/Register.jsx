@@ -1,7 +1,7 @@
 import { useState } from 'react'
 import { Link, useNavigate } from 'react-router-dom'
 import toast from 'react-hot-toast'
-import { useAuth } from '../context/AuthContext'
+import { useAuth } from '../hooks/useAuth'
 import Navbar from '../components/Navbar'
 import Input from '../components/Input'
 import Button from '../components/Button'
@@ -79,7 +79,7 @@ export default function Register() {
 
       <Navbar />
       
-      <div className="max-w-md mx-auto pt-24 px-4 pb-12 relative z-10">
+      <div className="max-w-md mx-auto pt-24 md:pt-32 px-4 pb-12 relative z-10">
         <Card className="border-border/50 bg-card/60">
           <h1 className="text-3xl font-black text-center mb-8 text-foreground tracking-tight">Create Account</h1>
           

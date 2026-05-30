@@ -1,7 +1,7 @@
 export function Skeleton({ className = "" }) {
   return (
     <div
-      className={`animate-pulse rounded-md bg-foreground/10 ${className}`}
+      className={`animate-shimmer rounded-md bg-foreground/10 ${className}`}
       style={{
         animationDuration: '2s'
       }}

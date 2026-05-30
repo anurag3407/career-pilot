@@ -15,7 +15,13 @@ import assert from 'node:assert/strict';
 import { z } from 'zod';
 
 // ─── Auth ────────────────────────────────────────────────────────────────────
-import { updateNotificationPrefsSchema } from '../auth.schema.js';
+import {
+  updateNotificationPrefsSchema,
+  registerSchema,
+  loginSchema,
+  forgotPasswordSchema,
+  resetPasswordSchema,
+} from '../auth.schema.js';
 
 describe('auth.schema — updateNotificationPrefsSchema', () => {
   test('accepts valid boolean prefs', () => {
@@ -43,11 +49,199 @@ describe('auth.schema — updateNotificationPrefsSchema', () => {
   });
 });
 
+describe('auth.schema — registerSchema', () => {
+  const valid = { name: 'Alice Example', email: 'alice@example.com', password: 'Passw0rdTest' };
+
+  test('accepts a fully valid registration body', () => {
+    const result = registerSchema.safeParse(valid);
+    assert.ok(result.success, JSON.stringify(result.error?.issues));
+  });
+
+  test('normalises email to lowercase', () => {
+    const result = registerSchema.safeParse({ ...valid, email: 'Alice@EXAMPLE.COM' });
+    assert.ok(result.success);
+    assert.equal(result.data.email, 'alice@example.com');
+  });
+
+  test('rejects name shorter than 2 characters', () => {
+    const result = registerSchema.safeParse({ ...valid, name: 'A' });
+    assert.ok(!result.success);
+    assert.ok(result.error.issues.some((e) => e.path[0] === 'name'));
+  });
+
+  test('rejects name longer than 50 characters', () => {
+    const result = registerSchema.safeParse({ ...valid, name: 'A'.repeat(51) });
+    assert.ok(!result.success);
+    assert.ok(result.error.issues.some((e) => e.path[0] === 'name'));
+  });
+
+  test('rejects an invalid email format', () => {
+    const result = registerSchema.safeParse({ ...valid, email: 'not-an-email' });
+    assert.ok(!result.success);
+    assert.ok(result.error.issues.some((e) => e.path[0] === 'email'));
+  });
+
+  test('rejects a password shorter than 8 characters', () => {
+    const result = registerSchema.safeParse({ ...valid, password: 'Ab1' });
+    assert.ok(!result.success);
+    assert.ok(result.error.issues.some((e) => e.path[0] === 'password'));
+  });
+
+  test('rejects a password with no uppercase letter', () => {
+    const result = registerSchema.safeParse({ ...valid, password: 'alllower1' });
+    assert.ok(!result.success);
+    assert.ok(result.error.issues.some((e) => e.path[0] === 'password'));
+  });
+
+  test('rejects a password with no digit', () => {
+    const result = registerSchema.safeParse({ ...valid, password: 'NoDigitsHere' });
+    assert.ok(!result.success);
+    assert.ok(result.error.issues.some((e) => e.path[0] === 'password'));
+  });
+
+  test('rejects a password with no lowercase letter', () => {
+    const result = registerSchema.safeParse({ ...valid, password: 'ALLCAPS123' });
+    assert.ok(!result.success);
+    assert.ok(result.error.issues.some((e) => e.path[0] === 'password'));
+  });
+
+  test('rejects a missing email', () => {
+    const { email, ...rest } = valid;
+    const result = registerSchema.safeParse(rest);
+    assert.ok(!result.success);
+    assert.ok(result.error.issues.some((e) => e.path[0] === 'email'));
+  });
+
+  test('rejects a missing password', () => {
+    const { password, ...rest } = valid;
+    const result = registerSchema.safeParse(rest);
+    assert.ok(!result.success);
+    assert.ok(result.error.issues.some((e) => e.path[0] === 'password'));
+  });
+
+  test('trims leading/trailing whitespace from name', () => {
+    const result = registerSchema.safeParse({ ...valid, name: '  Alice  ' });
+    assert.ok(result.success);
+    assert.equal(result.data.name, 'Alice');
+  });
+});
+
+describe('auth.schema — loginSchema', () => {
+  const valid = { email: 'alice@example.com', password: 'anypassword' };
+
+  test('accepts a valid login body', () => {
+    const result = loginSchema.safeParse(valid);
+    assert.ok(result.success, JSON.stringify(result.error?.issues));
+  });
+
+  test('normalises email to lowercase', () => {
+    const result = loginSchema.safeParse({ ...valid, email: 'ALICE@EXAMPLE.COM' });
+    assert.ok(result.success);
+    assert.equal(result.data.email, 'alice@example.com');
+  });
+
+  test('rejects an invalid email format', () => {
+    const result = loginSchema.safeParse({ ...valid, email: 'bad-email' });
+    assert.ok(!result.success);
+    assert.ok(result.error.issues.some((e) => e.path[0] === 'email'));
+  });
+
+  test('rejects an empty password string', () => {
+    const result = loginSchema.safeParse({ ...valid, password: '' });
+    assert.ok(!result.success);
+    assert.ok(result.error.issues.some((e) => e.path[0] === 'password'));
+  });
+
+  test('rejects a missing email field', () => {
+    const result = loginSchema.safeParse({ password: 'somepass' });
+    assert.ok(!result.success);
+    assert.ok(result.error.issues.some((e) => e.path[0] === 'email'));
+  });
+
+  test('rejects a missing password field', () => {
+    const result = loginSchema.safeParse({ email: 'alice@example.com' });
+    assert.ok(!result.success);
+    assert.ok(result.error.issues.some((e) => e.path[0] === 'password'));
+  });
+
+  test('rejects an empty body', () => {
+    const result = loginSchema.safeParse({});
+    assert.ok(!result.success);
+    assert.equal(result.error.issues.length, 2);
+  });
+});
+
+describe('auth.schema — forgotPasswordSchema', () => {
+  test('accepts a valid email', () => {
+    const result = forgotPasswordSchema.safeParse({ email: 'user@example.com' });
+    assert.ok(result.success, JSON.stringify(result.error?.issues));
+  });
+
+  test('normalises email to lowercase', () => {
+    const result = forgotPasswordSchema.safeParse({ email: 'USER@EXAMPLE.COM' });
+    assert.ok(result.success);
+    assert.equal(result.data.email, 'user@example.com');
+  });
+
+  test('rejects an invalid email', () => {
+    const result = forgotPasswordSchema.safeParse({ email: 'not-an-email' });
+    assert.ok(!result.success);
+    assert.ok(result.error.issues.some((e) => e.path[0] === 'email'));
+  });
+
+  test('rejects a missing email', () => {
+    const result = forgotPasswordSchema.safeParse({});
+    assert.ok(!result.success);
+    assert.ok(result.error.issues.some((e) => e.path[0] === 'email'));
+  });
+});
+
+describe('auth.schema — resetPasswordSchema', () => {
+  const valid = { token: 'a'.repeat(64), newPassword: 'Passw0rdTest' };
+
+  test('accepts a valid reset payload', () => {
+    const result = resetPasswordSchema.safeParse(valid);
+    assert.ok(result.success, JSON.stringify(result.error?.issues));
+  });
+
+  test('rejects a missing token', () => {
+    const result = resetPasswordSchema.safeParse({ newPassword: 'Passw0rdTest' });
+    assert.ok(!result.success);
+    assert.ok(result.error.issues.some((e) => e.path[0] === 'token'));
+  });
+
+  test('rejects a password shorter than 8 characters', () => {
+    const result = resetPasswordSchema.safeParse({ ...valid, newPassword: 'Ab1' });
+    assert.ok(!result.success);
+    assert.ok(result.error.issues.some((e) => e.path[0] === 'newPassword'));
+  });
+
+  test('rejects a password with no uppercase letter', () => {
+    const result = resetPasswordSchema.safeParse({ ...valid, newPassword: 'lowercase1' });
+    assert.ok(!result.success);
+    assert.ok(result.error.issues.some((e) => e.path[0] === 'newPassword'));
+  });
+
+  test('rejects a password with no digit', () => {
+    const result = resetPasswordSchema.safeParse({ ...valid, newPassword: 'NoDigitsHere' });
+    assert.ok(!result.success);
+    assert.ok(result.error.issues.some((e) => e.path[0] === 'newPassword'));
+  });
+
+  test('rejects an empty body', () => {
+    const result = resetPasswordSchema.safeParse({});
+    assert.ok(!result.success);
+  });
+});
+
 // ─── Resume ──────────────────────────────────────────────────────────────────
 import {
   createResumeSchema,
   updateResumeSchema,
   downloadResumeQuerySchema,
+  createResumeVersionSchema,
+  updateResumeVersionSchema,
+  createAtsHistorySchema,
 } from '../resume.schema.js';
 
 describe('resume.schema — createResumeSchema', () => {
@@ -99,6 +293,83 @@ describe('resume.schema — downloadResumeQuerySchema', () => {
     assert.ok(!result.success);
   });
 });
+
+describe('resume.schema — createResumeVersionSchema', () => {
+  test('accepts valid body', () => {
+    const result = createResumeVersionSchema.safeParse({
+      title: 'v2',
+      originalText: 'hello content',
+      jobRole: 'Frontend Dev',
+      atsScore: 85,
+      tags: ['React', 'CSS']
+    });
+    assert.ok(result.success);
+  });
+
+  test('rejects empty originalText', () => {
+    const result = createResumeVersionSchema.safeParse({
+      originalText: '',
+    });
+    assert.ok(!result.success);
+  });
+});
+
+describe('resume.schema — updateResumeVersionSchema', () => {
+  test('accepts valid body', () => {
+    const result = updateResumeVersionSchema.safeParse({
+      title: 'v2 - updated',
+      tags: ['Frontend', 'Vite']
+    });
+    assert.ok(result.success);
+  });
+
+  test('rejects empty payload', () => {
+    const result = updateResumeVersionSchema.safeParse({});
+    assert.ok(!result.success);
+  });
+});
+
+describe('resume.schema — createAtsHistorySchema', () => {
+  test('accepts valid body', () => {
+    const result = createAtsHistorySchema.safeParse({
+      jobRole: 'SWE',
+      atsScore: 90,
+      scoreBreakdown: {
+        keywordMatch: 80,
+        formatting: 95
+      }
+    });
+    assert.ok(result.success);
+  });
+
+  test('rejects missing jobRole', () => {
+    const result = createAtsHistorySchema.safeParse({
+      atsScore: 90
+    });
+    assert.ok(!result.success);
+  });
+
+  test('rejects out of bounds breakdown scores', () => {
+    const result = createAtsHistorySchema.safeParse({
+      jobRole: 'SWE',
+      atsScore: 90,
+      scoreBreakdown: {
+        keywordMatch: 150,
+      }
+    });
+    assert.ok(!result.success);
+  });
+
+  test('rejects negative improvements count', () => {
+    const result = createAtsHistorySchema.safeParse({
+      jobRole: 'SWE',
+      atsScore: 90,
+      improvementsCount: -1
+    });
+    assert.ok(!result.success);
+  });
+});
+
 
 // ─── Enhance ─────────────────────────────────────────────────────────────────
 import {
