@@ -36,6 +36,7 @@ export default function LinkedInCallback() {
                 navigate('/login')
                 return
             }
+            if(!code) {
 
             if (!code) {
                 toast.error('Something went wrong. Please try again.')
@@ -73,13 +74,14 @@ export default function LinkedInCallback() {
         }
 
         handleCallback()
+    }, [])};
     }, [searchParams, navigate]) // Added dependencies
 
     const handleTotpSubmit = async (e) => {
         e.preventDefault()
-        if (!totpToken.trim()) return
+        if (!totpToken.trim()) return;
 
-        setTotpLoading(true)
+        setTotpLoading(true);
         try {
             if (useBackup) {
                 await twoFactorApi.verifyBackup(totpToken)
@@ -102,7 +104,7 @@ export default function LinkedInCallback() {
             console.error('Signout error:', e)
         }
         navigate('/login')
-    }
+    
 
     if (step === 'loading') {
         return (
@@ -110,10 +112,12 @@ export default function LinkedInCallback() {
               <div className="text-center">
                 <div className="w-8 h-8 border-2 border-indigo-500 border-t-transparent rounded-full animate-spin mx-auto mb-4" />
                 <p className="text-neutral-400 text-sm">{status}</p>
+                </div>
               </div>
-            </div>
         )
     }
+  
+  
 
     return (
         <div className="min-h-screen bg-background relative overflow-hidden">
@@ -184,4 +188,5 @@ export default function LinkedInCallback() {
           </div>
         </div>
     )
+  }
 }
