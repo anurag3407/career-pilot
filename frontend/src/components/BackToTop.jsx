@@ -2,11 +2,23 @@ import React, { useState, useEffect } from 'react';
 import { ArrowUp } from 'lucide-react';
 import { motion, AnimatePresence } from 'framer-motion';
 
-const BackToTop = () => {
+/**
+ * Floating "Back to Top" button.
+ *
+ * This component monitors scroll activity and becomes visible after the
+ * user scrolls beyond a configurable threshold. It supports two modes:
+ *   • Default: listens to the window scroll (for pages that use the native
+ *     browser scroll).
+ *   • Container mode: if a `scrollContainerRef` is provided, it listens to
+ *     that element's `scroll` event (used by the app's main content area
+ *     which has `overflow-y-auto`).
+ */
+export default function BackToTop({ scrollContainerRef }) {
   const [isVisible, setIsVisible] = useState(false);
 
   const toggleVisibility = () => {
-    if (window.scrollY > 300) {
+    const scrollY = scrollContainerRef?.current?.scrollTop ?? window.scrollY;
+    if (scrollY > 300) {
       setIsVisible(true);
     } else {
       setIsVisible(false);
@@ -14,18 +26,20 @@ const BackToTop = () => {
   };
 
   const scrollToTop = () => {
-    window.scrollTo({
-      top: 0,
-      behavior: 'smooth',
-    });
+    if (scrollContainerRef?.current) {
+      scrollContainerRef.current.scrollTo({ top: 0, behavior: 'smooth' });
+    } else {
+      window.scrollTo({ top: 0, behavior: 'smooth' });
+    }
   };
 
   useEffect(() => {
-    window.addEventListener('scroll', toggleVisibility);
-    return () => {
-      window.removeEventListener('scroll', toggleVisibility);
-    };
-  }, []);
+    const target = scrollContainerRef?.current ?? window;
+    target.addEventListener('scroll', toggleVisibility);
+    // Initial check in case page loads already scrolled
+    toggleVisibility();
+    return () => target.removeEventListener('scroll', toggleVisibility);
+  }, [scrollContainerRef]);
 
   return (
     <AnimatePresence>
@@ -37,7 +51,7 @@ const BackToTop = () => {
           whileHover={{ scale: 1.1 }}
           whileTap={{ scale: 0.9 }}
           onClick={scrollToTop}
-          className="fixed bottom-8 right-8 z-50 p-3 bg-primary text-primary-foreground rounded-full shadow-lg hover:shadow-xl transition-all duration-300 focus:outline-none focus:ring-2 focus:ring-primary focus:ring-offset-2 focus:ring-offset-background"
+          className="fixed bottom-8 right-8 z-50 p-3 bg-primary/80 text-primary-foreground rounded-full shadow-lg hover:shadow-xl transition-all duration-300 backdrop-blur-md hover:bg-primary focus:outline-none focus:ring-2 focus:ring-primary"
           aria-label="Back to top"
         >
           <ArrowUp size={24} />
@@ -45,6 +59,4 @@ const BackToTop = () => {
       )}
     </AnimatePresence>
   );
-};
-
-export default BackToTop;
+}
