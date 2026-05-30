@@ -1,5 +1,6 @@
 import { useState, useEffect, useRef, useCallback } from "react";
 import WaveDistortionPortfolio from "../components/portfolio/templates/Wave_Distortion/index.jsx";
+import MidnightGradient from "../components/portfolio/templates/Midnight_Gradient/index";
 
 import DeployModal from "../components/portfolio/DeployModal";
 import ThemeSelector from "../components/portfolio/ThemeSelector";
