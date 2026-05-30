@@ -78,14 +78,14 @@ Before contributing, ensure you have:
 2. **Clone your fork:**
 
 ```bash
-git clone https://github.com/YOUR_USERNAME/ai-resume-builder.git
-cd ai-resume-builder
+git clone https://github.com/YOUR_USERNAME/career-pilot.git
+cd career-pilot
 ```
 
 1. **Add upstream remote:**
 
 ```bash
-git remote add upstream https://github.com/ORIGINAL_OWNER/ai-resume-builder.git
+git remote add upstream https://github.com/anurag3407/career-pilot.git
 ```
 
 1. **Keep your fork synced:**
