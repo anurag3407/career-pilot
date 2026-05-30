@@ -11,13 +11,7 @@ import MidnightGradient from "../components/portfolio/templates/Midnight_Gradien
 import PlayingCardsPortfolio from "../components/portfolio/templates/Playing_Cards";
 import CherryBlossom from "../components/portfolio/templates/Cherry_Blossom/index";
 import Navbar from '../components/Navbar'
-import { X } from "lucide-react";
-import { useSearchParams } from "react-router-dom";
-// import Hero from "../components/portfolio/templates/Holographic/Hero";
-// import ChooseAdventurePortfolio from "../components/portfolio/templates/Choose_Adventure/index";
-// import RetroProjects from "../components/portfolio/templates/2D_Retro_8bit/Projects";
-// import FantasyRPGProjects from "../components/portfolio/templates/Fantasy_RPG/Projects";
-
+import AbstractArtProjects from "../components/portfolio/templates/Abstract_Art/Projects";
 
 function FilterSelect({ value, onChange, options, className = "" }) {
   const [open, setOpen] = useState(false);
@@ -508,9 +502,19 @@ export default function TemplateGallery() {
           <CherryBlossom portfolioData={aiDraft} />
         </div>
       </div>
-      
-    </div>
-    
+
+      <div className="mt-12">
+        <div className="mb-4 flex items-center gap-3 px-1">
+          <span className="rounded-full bg-orange-500/20 px-3 py-1 text-xs font-bold uppercase tracking-widest text-orange-400 border border-orange-500/30">
+            Preview
+          </span>
+          <h2 className="text-lg font-semibold text-foreground/70">Abstract Art Theme — Projects Section</h2>
+        </div>
+        <div className="overflow-hidden rounded-2xl border border-border">
+          <AbstractArtProjects />
+        </div>
+      </div>
+
     </div>
   );
 }
