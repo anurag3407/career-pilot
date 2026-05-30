@@ -29,29 +29,9 @@ const CATEGORIES = [
   { value: 'discussion', label: 'Discussion', icon: '💬' },
 ];
 
-const containerVariants = {
-  hidden: { opacity: 0 },
-  visible: {
-    opacity: 1,
-    transition: {
-      staggerChildren: 0.08,
-      delayChildren: 0.1,
-    },
-  },
-};
-
-const itemVariants = {
-  hidden: { opacity: 0, y: 12 },
-  visible: {
-    opacity: 1,
-    y: 0,
-    transition: { type: 'spring', stiffness: 300, damping: 24 },
-  },
-};
-
 export default function PostsFeed() {
   const { user } = useAuth();
-  const { subscribe, subscribePosts, unsubscribePosts } = useSocket();
+  const { subscribe, subscribePosts, unsubscribePosts, isConnected } = useSocket();
   
   const [posts, setPosts] = useState([]);
   const [scheduledPosts, setScheduledPosts] = useState([]);
@@ -63,6 +43,7 @@ export default function PostsFeed() {
   const [searchQuery, setSearchQuery] = useState('');
   const [page, setPage] = useState(1);
   const [hasMore, setHasMore] = useState(true);
+  const [isSubmitting, setIsSubmitting] = useState(false);
 
   // Fetch scheduled posts helper
   const fetchScheduledPosts = useCallback(async () => {
@@ -169,24 +150,62 @@ export default function PostsFeed() {
   }, [subscribe, subscribePosts, unsubscribePosts]);
 
 
-  const handleCreatePost = async (postData) => {
-    try {
-      const data = await communityApi.createPost(postData);
-      if (data.post.status === 'scheduled') {
-        setScheduledPosts(prev => [data.post, ...prev].sort(
-          (a, b) => new Date(a.scheduledAt) - new Date(b.scheduledAt)
-        ));
-        setShowEditor(false);
-        toast.success('Post scheduled successfully!');
-      } else {
-        setPosts(prev => [data.post, ...prev]);
-        setShowEditor(false);
-        toast.success('Post created successfully!');
-      }
-    } catch (error) {
-      toast.error(error.message, { id: 'community-create-post-error' });
+const handleCreatePost = async (postData) => {
+  if (isSubmitting) return; // Prevent double-click submissions
+
+  setIsSubmitting(true);
+
+  try {
+    const data = await communityApi.createPost(postData);
+
+    if (data.post.status === 'scheduled') {
+      setScheduledPosts(prev => {
+        const postId = data.post.id || data.post._id;
+
+        if (prev.some(p => (p.id || p._id) === postId)) {
+          return prev;
+        }
+
+        return [data.post, ...prev].sort(
+          (a, b) =>
+            new Date(a.scheduledAt) -
+            new Date(b.scheduledAt)
+        );
+      });
+
+      setShowEditor(false);
+
+      toast.success('Post scheduled successfully!');
+    } else {
+      // Insert immediately for responsive UX.
+      // Socket listener already has duplicate protection.
+      setPosts(prev => {
+        const postId =
+          data.post.id || data.post._id;
+
+        if (
+          prev.some(
+            p => (p.id || p._id) === postId
+          )
+        ) {
+          return prev;
+        }
+
+        return [data.post, ...prev];
+      });
+
+      setShowEditor(false);
+
+      toast.success(
+        'Post created successfully!'
+      );
     }
-  };
+  } catch (error) {
+    toast.error(error.message);
+  } finally {
+    setIsSubmitting(false);
+  }
+};
 
   const handleCancelScheduled = async (postId) => {
     try {
@@ -194,7 +213,7 @@ export default function PostsFeed() {
       setScheduledPosts(prev => prev.filter(p => (p.id || p._id) !== postId));
       toast.success('Scheduled post cancelled');
     } catch (error) {
-      toast.error(error.message || 'Failed to cancel scheduled post', { id: `community-cancel-scheduled-post-error-${postId}` });
+      toast.error(error.message || 'Failed to cancel scheduled post');
     }
   };
 
@@ -252,7 +271,7 @@ export default function PostsFeed() {
         }
         return post;
       }));
-      toast.error('Failed to like post', { id: `community-like-post-error-${postId}` });
+      toast.error('Failed to like post');
     }
   };
 
@@ -265,7 +284,7 @@ export default function PostsFeed() {
       }));
       toast.success('Post deleted');
     } catch (error) {
-      toast.error(error.message, { id: `community-delete-post-error-${postId}` });
+      toast.error(error.message);
     }
   };
 
@@ -405,66 +424,51 @@ export default function PostsFeed() {
           )}
 
           {loading ? (
-            <motion.div
-              variants={containerVariants}
-              initial="hidden"
-              animate="visible"
-              className="space-y-4"
-            >
-              {[...Array(3)].map((_, i) => (
-                <motion.div key={i} variants={itemVariants} className="bg-muted border border-border rounded-xl p-6 animate-pulse">
-                  <div className="flex items-center gap-3 mb-4">
-                    <div className="w-10 h-10 bg-muted-foreground/20 rounded-full" />
-                    <div className="space-y-2">
-                      <div className="w-32 h-4 bg-muted-foreground/20 rounded" />
-                      <div className="w-24 h-3 bg-muted-foreground/20 rounded" />
-                    </div>
-                  </div>
+            [...Array(3)].map((_, i) => (
+              <div key={i} className="bg-muted border border-border rounded-xl p-6 animate-pulse">
+                <div className="flex items-center gap-3 mb-4">
+                  <div className="w-10 h-10 bg-muted-foreground/20 rounded-full" />
                   <div className="space-y-2">
-                    <div className="w-3/4 h-5 bg-muted-foreground/20 rounded" />
-                    <div className="w-full h-4 bg-muted-foreground/20 rounded" />
-                    <div className="w-2/3 h-4 bg-muted-foreground/20 rounded" />
+                    <div className="w-32 h-4 bg-muted-foreground/20 rounded" />
+                    <div className="w-24 h-3 bg-muted-foreground/20 rounded" />
                   </div>
-                </motion.div>
-              ))}
-            </motion.div>
+                </div>
+                <div className="space-y-2">
+                  <div className="w-3/4 h-5 bg-muted-foreground/20 rounded" />
+                  <div className="w-full h-4 bg-muted-foreground/20 rounded" />
+                  <div className="w-2/3 h-4 bg-muted-foreground/20 rounded" />
+                </div>
+              </div>
+            ))
           ) : filteredPosts.length > 0 ? (
             <>
-              <motion.div
-                variants={containerVariants}
-                initial="hidden"
-                animate="visible"
-                className="space-y-4"
-              >
-                {filteredPosts.map(post => {
-                  const postId = post.id || post._id;
-                  return (
-                    <motion.div key={postId} variants={itemVariants}>
-                      <PostCard
-                        post={post}
-                        currentUser={user}
-                        onLike={handleLikePost}
-                        onDelete={handleDeletePost}
-                        onCancelSchedule={handleCancelScheduled}
-                        onCommentAdded={() => {
-                          setPosts(prev => prev.map(p => {
-                            const pId = p.id || p._id;
-                            return pId === postId
-                              ? { ...p, commentCount: (p.commentCount || 0) + 1 }
-                              : p;
-                          }));
-                        }}
-                      />
-                    </motion.div>
-                  );
-                })}
-              </motion.div>
+              {filteredPosts.map(post => {
+                const postId = post.id || post._id;
+                return (
+                  <PostCard
+                    key={postId}
+                    post={post}
+                    currentUser={user}
+                    onLike={handleLikePost}
+                    onDelete={handleDeletePost}
+                    onCancelSchedule={handleCancelScheduled}
+                    onCommentAdded={() => {
+                      // Update comment count in local state
+                      setPosts(prev => prev.map(p => {
+                        const pId = p.id || p._id;
+                        return pId === postId 
+                          ? { ...p, commentCount: (p.commentCount || 0) + 1 }
+                          : p;
+                      }));
+                    }}
+                  />
+                );
+              })}
 
               {hasMore && (
                 <motion.button
-                  variants={itemVariants}
                   onClick={handleLoadMore}
-                  className="w-full py-3 text-primary hover:text-primary/80 font-medium"
+                  className="w-full py-3 text-primary hover:text-primary/80 font-medium cursor-pointer"
                 >
                   Load more posts
                 </motion.button>
