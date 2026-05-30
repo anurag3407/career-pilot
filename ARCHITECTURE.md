@@ -18,7 +18,10 @@
 - [API Architecture](#-api-architecture)
 - [Security Architecture](#-security-architecture)
 - [Deployment Architecture](#-deployment-architecture)
+- [CI/CD Pipeline](#-cicd-pipeline)
 - [Scalability Design](#-scalability-design)
+- [Monitoring & Observability](#-monitoring--observability)
+- [Additional Resources](#-additional-resources)
 
 ---
 
