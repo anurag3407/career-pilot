@@ -82,15 +82,15 @@ export default function ProjectVisualizerSection() {
             transition={{ duration: 0.6, delay: 0.2 }}
             className="relative"
           >
-            <div className="aspect-[4/3] rounded-2xl bg-[#0f172a] border border-slate-800 shadow-2xl overflow-hidden relative flex flex-col">
+            <div className="aspect-[4/3] rounded-2xl bg-card border border-border shadow-2xl overflow-hidden relative flex flex-col">
               {/* Window Header */}
-              <div className="h-10 bg-[#0a0f1c] border-b border-slate-800 flex items-center px-4 gap-2">
+              <div className="h-10 bg-muted/50 border-b border-border flex items-center px-4 gap-2">
                 <div className="flex gap-1.5">
                   <div className="w-3 h-3 rounded-full bg-red-500/80"></div>
                   <div className="w-3 h-3 rounded-full bg-yellow-500/80"></div>
                   <div className="w-3 h-3 rounded-full bg-green-500/80"></div>
                 </div>
-                <div className="mx-auto bg-slate-800/50 px-3 py-1 rounded text-[10px] font-mono text-slate-400 border border-slate-700/50">
+                <div className="mx-auto bg-muted/50 px-3 py-1 rounded text-[10px] font-mono text-muted-foreground border border-border/50">
                   github.com/facebook/react
                 </div>
               </div>
@@ -98,37 +98,37 @@ export default function ProjectVisualizerSection() {
               {/* Mockup Body */}
               <div className="flex-1 p-6 relative">
                 {/* Node 1 */}
-                <div className="absolute top-10 left-10 w-32 bg-[#1e293b] border border-cyan-500/50 rounded-lg p-3 shadow-[0_0_15px_rgba(34,211,238,0.15)]">
+                <div className="absolute top-10 left-10 w-32 bg-muted border border-cyan-500/50 rounded-lg p-3 shadow-[0_0_15px_rgba(34,211,238,0.15)]">
                   <div className="w-6 h-1 bg-cyan-400 rounded-full mb-2"></div>
-                  <div className="h-2 w-20 bg-slate-600 rounded-full mb-1.5"></div>
-                  <div className="h-2 w-12 bg-slate-700 rounded-full"></div>
+                  <div className="h-2 w-20 bg-muted-foreground/20 rounded-full mb-1.5"></div>
+                  <div className="h-2 w-12 bg-muted-foreground/10 rounded-full"></div>
                 </div>
                 
                 {/* Node 2 */}
-                <div className="absolute top-32 right-12 w-32 bg-[#1e293b] border border-violet-500/50 rounded-lg p-3 shadow-[0_0_15px_rgba(139,92,246,0.15)]">
+                <div className="absolute top-32 right-12 w-32 bg-muted border border-violet-500/50 rounded-lg p-3 shadow-[0_0_15px_rgba(139,92,246,0.15)]">
                   <div className="w-6 h-1 bg-violet-400 rounded-full mb-2"></div>
-                  <div className="h-2 w-16 bg-slate-600 rounded-full mb-1.5"></div>
-                  <div className="h-2 w-10 bg-slate-700 rounded-full"></div>
+                  <div className="h-2 w-16 bg-muted-foreground/20 rounded-full mb-1.5"></div>
+                  <div className="h-2 w-10 bg-muted-foreground/10 rounded-full"></div>
                 </div>
                 
                 {/* Node 3 */}
-                <div className="absolute bottom-12 left-24 w-32 bg-[#1e293b] border border-orange-500/50 rounded-lg p-3 shadow-[0_0_15px_rgba(249,115,22,0.15)]">
+                <div className="absolute bottom-12 left-24 w-32 bg-muted border border-orange-500/50 rounded-lg p-3 shadow-[0_0_15px_rgba(249,115,22,0.15)]">
                   <div className="w-6 h-1 bg-orange-400 rounded-full mb-2"></div>
-                  <div className="h-2 w-24 bg-slate-600 rounded-full mb-1.5"></div>
-                  <div className="h-2 w-14 bg-slate-700 rounded-full"></div>
+                  <div className="h-2 w-24 bg-muted-foreground/20 rounded-full mb-1.5"></div>
+                  <div className="h-2 w-14 bg-muted-foreground/10 rounded-full"></div>
                 </div>
 
                 {/* SVG Connections */}
                 <svg className="absolute inset-0 w-full h-full pointer-events-none" style={{ zIndex: 0 }}>
-                  <path d="M 160 80 Q 250 80 280 150" fill="none" stroke="#334155" strokeWidth="2" strokeDasharray="4 4" />
-                  <path d="M 120 120 Q 120 180 150 250" fill="none" stroke="#334155" strokeWidth="2" strokeDasharray="4 4" />
+                  <path d="M 160 80 Q 250 80 280 150" fill="none" stroke="currentColor" strokeWidth="2" strokeDasharray="4 4" className="text-border" />
+                  <path d="M 120 120 Q 120 180 150 250" fill="none" stroke="currentColor" strokeWidth="2" strokeDasharray="4 4" className="text-border" />
                 </svg>
                 
                 {/* Overlay Chat bubble */}
-                <div className="absolute bottom-6 right-6 max-w-[200px] bg-slate-800/90 backdrop-blur border border-slate-700 rounded-xl p-3 shadow-xl">
+                <div className="absolute bottom-6 right-6 max-w-[200px] bg-card/90 backdrop-blur border border-border rounded-xl p-3 shadow-xl">
                   <div className="flex gap-2 items-start">
                     <Zap className="w-4 h-4 text-cyan-400 mt-0.5 shrink-0" />
-                    <p className="text-xs text-slate-300 leading-relaxed">
+                    <p className="text-xs text-muted-foreground leading-relaxed">
                       The core reconciler module seems heavily coupled. Consider reviewing dependencies.
                     </p>
                   </div>
