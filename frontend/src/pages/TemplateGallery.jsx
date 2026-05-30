@@ -1,6 +1,7 @@
 import React, { useState, useRef, useEffect, Suspense, useMemo } from "react";
 import { templates } from '../data/templates';
 import DeployModal from "../components/portfolio/DeployModal";
+import PortfolioBuilderModal from "../components/portfolio/PortfolioBuilderModal";
 import ThemeSelector from "../components/portfolio/ThemeSelector";
 import { useTheme } from "../hooks/useTheme";
 import { motion, AnimatePresence } from "framer-motion";
@@ -286,6 +287,7 @@ export default function TemplateGallery() {
 
   const [selectedTheme, setSelectedTheme] = useState("minimal");
   const [isDeployModalOpen, setIsDeployModalOpen] = useState(false);
+  const [isBuilderModalOpen, setIsBuilderModalOpen] = useState(false);
   const [selectedPortfolioTitle, setSelectedPortfolioTitle] = useState("");
 
   const handleUseTemplate = (val, isPreview) => {
@@ -414,16 +416,21 @@ export default function TemplateGallery() {
             <TemplateCard
               key={template.id}
               template={template}
-              hovered={hoveredCard === template.id}
-              onHover={setHoveredCard}
-              onLeave={() => setHoveredCard(null)}
-              onUse={handleUseTemplate}
-              aiDraft={aiDraft}
+
             />
           ))}
         </div>
       )}
 
+      <PortfolioBuilderModal
+        isOpen={isBuilderModalOpen}
+        onClose={() => setIsBuilderModalOpen(false)}
+        portfolioTitle={selectedPortfolioTitle}
+        onProceedToDeploy={(content) => {
+          setIsBuilderModalOpen(false);
+          setIsDeployModalOpen(true);
+        }}
+      />
       <DeployModal
         isOpen={isDeployModalOpen}
         onClose={() => setIsDeployModalOpen(false)}
