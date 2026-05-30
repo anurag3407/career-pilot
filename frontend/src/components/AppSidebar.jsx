@@ -1,5 +1,5 @@
 import { useState, useEffect } from "react";
-import { useNavigate } from "react-router-dom";
+import { useNavigate, useLocation } from "react-router-dom";
 import { motion } from "framer-motion";
 import { Brain, ChevronDown } from "lucide-react";
 
@@ -20,7 +20,8 @@ import {
     Moon,
     Zap,
     Rocket,
-    Briefcase
+    Briefcase,
+    GitMerge
 } from "lucide-react";
 import { useAuth } from "../hooks/useAuth";
 import { useTheme } from "../hooks/useTheme";
@@ -56,6 +57,11 @@ const navLinks = [
         icon: <Globe className="w-5 h-5 shrink-0" />,
     },
     {
+        label: "Project Visualizer",
+        href: "/project-visualizer",
+        icon: <GitMerge className="w-5 h-5 shrink-0" />,
+    },
+    {
         label: "Career Growth",
         href: "/hub/career",
         icon: <GraduationCap className="w-5 h-5 shrink-0" />,
@@ -79,6 +85,11 @@ const navLinks = [
         label: "Settings",
         href: "/settings",
         icon: <Settings className="w-5 h-5 shrink-0" />,
+    },
+    {
+        label: "Admin Panel",
+        href: "/admin",
+        icon: <ShieldCheck className="w-5 h-5 shrink-0 text-blue-500" />,
     }
 ];
 
@@ -245,6 +256,11 @@ function UserSection() {
 export default function AppSidebar() {
     const [open, setOpen] = useState(false);
 const [openAI, setOpenAI] = useState(false);
+const location = useLocation();
+
+useEffect(() => {
+    setOpen(false);
+}, [location.pathname]);
 
     return (
         <Sidebar open={open} setOpen={setOpen}>
@@ -316,6 +332,15 @@ const [openAI, setOpenAI] = useState(false);
             }}
             onClick={() => setOpen(false)}
         />
+        
+        <SidebarLink
+            link={{
+                label: "Project Visualizer",
+                href: "/project-visualizer",
+                icon: <GitMerge className="w-4 h-4 shrink-0" />,
+            }}
+            onClick={() => setOpen(false)}
+        />
     </motion.div>
 </div>
                 </div>
@@ -324,4 +349,3 @@ const [openAI, setOpenAI] = useState(false);
         </Sidebar>
     );
 }
-

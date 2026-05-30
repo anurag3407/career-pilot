@@ -1,29 +1,70 @@
 import React from 'react';
 import data from '../../../../data/dummy_data.json';
+import Navbar from './Navbar';
+import Hero from './Hero';
+import StatsBar from './StatsBar';
+import About from './About';
+import Skills from './Skills';
+import Projects from './Projects';
+import Experience from './Experience';
+import Testimonials from './Testimonials';
+import CTABanner from './CTABanner';
+import Contact from './Contact';
 
-/**
- * SaaS Product Portfolio Template
- * Category: Professional / Industry
- * Description: SaaS landing page style with feature sections with icons, pricing comparison table, CTA buttons, testimonial carousel. Professional and conversion-focused.
- */
 export default function SaaSProduct() {
   return (
-    <div className="min-h-screen bg-gray-950 text-white flex flex-col items-center justify-center p-8 font-sans">
-      <div className="max-w-3xl w-full text-center">
-        <h1 className="text-5xl md:text-7xl font-bold mb-4 bg-gradient-to-r from-cyan-400 to-purple-500 bg-clip-text text-transparent">
-          {data.personal.name}
-        </h1>
-        <p className="text-xl md:text-2xl text-gray-400 mb-8">{data.personal.title}</p>
-        <div className="p-8 border-2 border-dashed border-cyan-500/40 rounded-2xl bg-gray-900/50 backdrop-blur-sm">
-          <span className="inline-block px-3 py-1 rounded-full bg-cyan-500/20 text-cyan-400 text-xs font-bold uppercase tracking-widest mb-4">
-            Professional / Industry
-          </span>
-          <h2 className="text-2xl font-bold text-gray-200 mb-3">SaaS Product Template</h2>
-          <p className="text-gray-400 mb-6 leading-relaxed">
-            SaaS landing page style with feature sections with icons, pricing comparison table, CTA buttons, testimonial carousel. Professional and conversion-focused.
-          </p>
-          <p className="text-cyan-400 font-semibold">Open an issue to contribute and build this template!</p>
-        </div>
+    <div
+      style={{
+        backgroundColor: '#0D0D12',
+        color: '#F1F0FF',
+        fontFamily: 'Plus Jakarta Sans, sans-serif',
+        minHeight: '100vh',
+      }}
+    >
+      <style>{`
+        @import url('https://fonts.googleapis.com/css2?family=Plus+Jakarta+Sans:wght@300;400;500;600;700;800&family=JetBrains+Mono:wght@400;500&display=swap');
+        * { box-sizing: border-box; }
+        .saas-gradient-text {
+          background: linear-gradient(135deg, #6366F1, #8B5CF6);
+          -webkit-background-clip: text;
+          -webkit-text-fill-color: transparent;
+          background-clip: text;
+        }
+        .saas-heading-gradient {
+          background: linear-gradient(135deg, #F1F0FF 0%, #8884A8 100%);
+          -webkit-background-clip: text;
+          -webkit-text-fill-color: transparent;
+          background-clip: text;
+        }
+        @keyframes ping {
+          0% { transform: scale(1); opacity: 1; }
+          75%, 100% { transform: scale(2); opacity: 0; }
+        }
+        .animate-ping { animation: ping 1.5s cubic-bezier(0,0,0.2,1) infinite; }
+      `}</style>
+
+      <div
+        style={{
+          position: 'fixed',
+          inset: 0,
+          opacity: 0.03,
+          pointerEvents: 'none',
+          zIndex: 0,
+          backgroundImage: 'url(https://grainy-gradients.vercel.app/noise.svg)',
+        }}
+      />
+
+      <div style={{ position: 'relative', zIndex: 1 }}>
+        <Navbar data={data} />
+        <Hero data={data} />
+        <StatsBar data={data} />
+        <About data={data} />
+        <Skills data={data} />
+        <Projects data={data} />
+        <Experience data={data} />
+        <Testimonials data={data} />
+        <CTABanner data={data} />
+        <Contact data={data} />
       </div>
     </div>
   );
