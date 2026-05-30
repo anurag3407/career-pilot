@@ -1,26 +1,16 @@
-import { Link } from 'react-router-dom'
 import { motion } from 'framer-motion'
-import { ArrowLeft, ChevronRight } from 'lucide-react'
+import Breadcrumb from './Breadcrumb'
 
-export default function HubLayout({ icon: Icon, title, description, color = 'primary', breadcrumb, children, stats }) {
+export default function HubLayout({ icon: Icon, title, description, color = 'primary', children, stats }) {
   return (
     <div className="min-h-screen bg-background">
       <div className="relative max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-8">
-        {/* Breadcrumb */}
         <motion.div
           initial={{ opacity: 0, y: -10 }}
           animate={{ opacity: 1, y: 0 }}
-          className="flex items-center gap-2 text-sm text-muted-foreground mb-6"
+          className="mb-6"
         >
-          <Link
-            to="/dashboard"
-            className="flex items-center gap-1.5 hover:text-foreground transition-colors font-medium"
-          >
-            <ArrowLeft className="w-4 h-4" />
-            Dashboard
-          </Link>
-          <ChevronRight className="w-3.5 h-3.5" />
-          <span className="text-foreground font-semibold">{breadcrumb || title}</span>
+          <Breadcrumb />
         </motion.div>
 
         {/* Hub Header */}

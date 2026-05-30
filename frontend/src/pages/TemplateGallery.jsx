@@ -1,33 +1,91 @@
 import React, { useState, useRef, useEffect, Suspense, useMemo } from "react";
-import { templates } from '../data/templates';
+import { useSearchParams } from "react-router-dom";
+import { motion, AnimatePresence } from "framer-motion";
+import { ChevronDown, Check, Eye, Star, Sparkles, X } from "lucide-react";
+import { templates } from "../data/templates";
+import dummyData from "../data/dummy_data.json";
 import DeployModal from "../components/portfolio/DeployModal";
 import ThemeSelector from "../components/portfolio/ThemeSelector";
-import { useTheme } from "../hooks/useTheme";
-import { motion, AnimatePresence } from "framer-motion";
-import { Moon, Sun, ChevronDown, Check, Eye, Star, Sparkles } from "lucide-react";
-import SwissTypography from "../components/portfolio/templates/Swiss_Typography/index";
-import LiquidGlass from "../components/portfolio/templates/Liquid_Glass/index";
-import MidnightGradient from "../components/portfolio/templates/Midnight_Gradient/index";
+import SwissTypography from "../components/portfolio/templates/Swiss_Typography";
+import LiquidGlass from "../components/portfolio/templates/Liquid_Glass";
+import MidnightGradient from "../components/portfolio/templates/Midnight_Gradient";
 import PlayingCardsPortfolio from "../components/portfolio/templates/Playing_Cards";
-import CherryBlossom from "../components/portfolio/templates/Cherry_Blossom/index";
-import Navbar from '../components/Navbar'
-import { X } from "lucide-react";
-import { useSearchParams } from "react-router-dom";
-// import Hero from "../components/portfolio/templates/Holographic/Hero";
-// import ChooseAdventurePortfolio from "../components/portfolio/templates/Choose_Adventure/index";
-// import RetroProjects from "../components/portfolio/templates/2D_Retro_8bit/Projects";
-// import FantasyRPGProjects from "../components/portfolio/templates/Fantasy_RPG/Projects";
+import CherryBlossom from "../components/portfolio/templates/Cherry_Blossom";
+import Navbar from "../components/Navbar";
+import Breadcrumb from "../components/Breadcrumb";
 
+const DRAFT_STORAGE_KEYS = ["ai_portfolio_draft", "aiDraft", "portfolioAiDraft", "portfolioDraft", "parsedResumeDraft"];
+
+function readStoredDraft() {
+  for (const key of DRAFT_STORAGE_KEYS) {
+    const rawDraft = localStorage.getItem(key);
+    if (!rawDraft) continue;
+
+    try {
+      return JSON.parse(rawDraft);
+    } catch {
+      return rawDraft;
+    }
+  }
+
+  return null;
+}
+
+function buildTemplateData(portfolioData) {
+  const draft = portfolioData && typeof portfolioData === "object" ? portfolioData : {};
+  const hero = draft.hero || {};
+  const about = draft.about || {};
+  const draftPersonal = draft.personal || {};
+
+  const personal = {
+    ...dummyData.personal,
+    ...draftPersonal,
+    ...(hero.subtitle && { name: hero.subtitle }),
+    ...(hero.title && { title: hero.title }),
+    ...(hero.tagline && { tagline: hero.tagline }),
+    ...(about.bio && { bio: about.bio }),
+  };
+
+  const normalizeSkills = (skills) => {
+    if (!Array.isArray(skills) || skills.length === 0) return dummyData.skills;
+    return skills.map((skill) => (
+      typeof skill === "string"
+        ? { name: skill, level: 80, category: "Skills" }
+        : { level: 80, category: "Skills", ...skill }
+    ));
+  };
+
+  const normalizeProjects = (projects) => {
+    if (!Array.isArray(projects) || projects.length === 0) return dummyData.projects;
+    return projects.map((project, index) => ({
+      ...dummyData.projects[index % dummyData.projects.length],
+      ...project,
+    }));
+  };
+
+  return {
+    ...dummyData,
+    ...draft,
+    personal,
+    socials: { ...dummyData.socials, ...draft.socials, email: draftPersonal.email || draft.socials?.email || dummyData.socials.email },
+    stats: { ...dummyData.stats, ...draft.stats },
+    skills: normalizeSkills(draft.skills),
+    projects: normalizeProjects(draft.projects),
+    experience: Array.isArray(draft.experience) && draft.experience.length > 0 ? draft.experience : dummyData.experience,
+    testimonials: Array.isArray(draft.testimonials) && draft.testimonials.length > 0 ? draft.testimonials : dummyData.testimonials,
+  };
+}
 
 function FilterSelect({ value, onChange, options, className = "" }) {
   const [open, setOpen] = useState(false);
   const ref = useRef(null);
-  const selectedLabel = options.find((o) => o.value === value)?.label ?? value;
+  const selectedLabel = options.find((option) => option.value === value)?.label ?? value;
 
   useEffect(() => {
-    function handleClickOutside(e) {
-      if (ref.current && !ref.current.contains(e.target)) setOpen(false);
+    function handleClickOutside(event) {
+      if (ref.current && !ref.current.contains(event.target)) setOpen(false);
     }
+
     document.addEventListener("mousedown", handleClickOutside);
     return () => document.removeEventListener("mousedown", handleClickOutside);
   }, []);
@@ -39,19 +97,15 @@ function FilterSelect({ value, onChange, options, className = "" }) {
         onClick={() => setOpen((prev) => !prev)}
         className={`
           flex items-center justify-between gap-3 min-w-[160px] px-4 py-2.5
-          rounded-xl border text-sm font-medium text-foreground
-          bg-card backdrop-blur-sm
+          rounded-xl border text-sm font-medium text-foreground bg-card backdrop-blur-sm
           transition-all duration-300 cursor-pointer select-none
           ${open
             ? "border-cyan-400 shadow-[0_0_12px_rgba(34,211,238,0.45)] ring-1 ring-cyan-400/30"
-            : "border-border hover:border-cyan-500/60 hover:shadow-[0_0_8px_rgba(34,211,238,0.25)]"
-          }
+            : "border-border hover:border-cyan-500/60 hover:shadow-[0_0_8px_rgba(34,211,238,0.25)]"}
         `}
       >
         <span>{selectedLabel}</span>
-        <ChevronDown
-          className={`w-4 h-4 text-cyan-400 transition-transform duration-300 ${open ? "rotate-180" : ""}`}
-        />
+        <ChevronDown className={`w-4 h-4 text-cyan-400 transition-transform duration-300 ${open ? "rotate-180" : ""}`} />
       </button>
 
       <AnimatePresence>
@@ -61,30 +115,23 @@ function FilterSelect({ value, onChange, options, className = "" }) {
             animate={{ opacity: 1, y: 0, scale: 1 }}
             exit={{ opacity: 0, y: -6, scale: 0.97 }}
             transition={{ duration: 0.18, ease: "easeOut" }}
-            className="
-              absolute z-50 left-0 top-[calc(100%+6px)] min-w-full
-              bg-card border border-border
-              shadow-[0_0_20px_rgba(34,211,238,0.2)]
-              rounded-xl overflow-hidden py-1
-            "
+            className="absolute z-50 left-0 top-[calc(100%+6px)] min-w-full bg-card border border-border shadow-[0_0_20px_rgba(34,211,238,0.2)] rounded-xl overflow-hidden py-1"
           >
-            {options.map((opt) => {
-              const isSelected = opt.value === value;
+            {options.map((option) => {
+              const isSelected = option.value === value;
               return (
                 <li
-                  key={opt.value}
-                  onClick={() => { onChange(opt.value); setOpen(false); }}
+                  key={option.value}
+                  onClick={() => {
+                    onChange(option.value);
+                    setOpen(false);
+                  }}
                   className={`
-                    flex items-center justify-between gap-3
-                    px-4 py-2.5 text-sm cursor-pointer select-none
-                    transition-all duration-200
-                    ${isSelected
-                      ? "bg-cyan-500/20 text-cyan-300 font-semibold"
-                      : "text-foreground hover:bg-cyan-500 hover:text-white"
-                    }
+                    flex items-center justify-between gap-3 px-4 py-2.5 text-sm cursor-pointer select-none transition-all duration-200
+                    ${isSelected ? "bg-cyan-500/20 text-cyan-300 font-semibold" : "text-foreground hover:bg-cyan-500 hover:text-white"}
                   `}
                 >
-                  <span>{opt.label}</span>
+                  <span>{option.label}</span>
                   {isSelected && <Check className="w-3.5 h-3.5 text-cyan-400 shrink-0" />}
                 </li>
               );
@@ -99,13 +146,18 @@ function FilterSelect({ value, onChange, options, className = "" }) {
 const TemplateHeroPreview = ({ templateId, portfolioData }) => {
   const Component = useMemo(() => {
     if (!templateId) return null;
-    return React.lazy(() => import(`../components/portfolio/templates/${templateId}/index.jsx`));
+    return React.lazy(() =>
+      import(`../components/portfolio/templates/${templateId}/Hero.jsx`).catch(() =>
+        import(`../components/portfolio/templates/${templateId}/index.jsx`)
+      )
+    );
   }, [templateId]);
 
-  if (!templateId) return null;
+  if (!Component) return null;
+
   return (
-    <Suspense fallback={<div className="w-full h-full bg-muted/50" />}>
-      <Component portfolioData={portfolioData} />
+    <Suspense fallback={<div className="h-full w-full bg-muted" />}>
+      <Component portfolioData={portfolioData} data={portfolioData} />
     </Suspense>
   );
 };
@@ -135,21 +187,37 @@ function TemplateCard({ template, hovered, onHover, onLeave, onUse, aiDraft }) {
       }}
       className="bg-card rounded-2xl overflow-hidden border border-border flex flex-col justify-between cursor-pointer"
     >
-      <div className="overflow-hidden relative bg-background h-52">
+      <div className="relative aspect-[16/9] overflow-hidden bg-muted">
         {template.isComplete ? (
-          <div className="absolute top-0 left-0 origin-top-left pointer-events-none" style={{ width: '1280px', height: '800px', transform: 'scale(0.3)' }}>
+          <div
+            className="absolute top-0 left-0 origin-top-left pointer-events-none"
+            style={{ width: "1280px", height: "800px", transform: "scale(0.3)" }}
+          >
             <TemplateHeroPreview templateId={template.id} portfolioData={aiDraft} />
           </div>
         ) : (
-          <motion.img
-            src={template.image}
-            alt={template.title}
-            className="w-full h-52 object-cover object-top"
-            variants={{
-              rest: { scale: 1, transition: { duration: 0.5, ease: [0.25, 0.46, 0.45, 0.94] } },
-              hover: { scale: 1.08, transition: { type: "spring", stiffness: 200, damping: 25 } },
-            }}
-          />
+          <>
+            <motion.img
+              src={template.image}
+              alt={template.title}
+              loading="lazy"
+              className="h-full w-full object-cover object-top"
+              variants={{
+                rest: { scale: 1, transition: { duration: 0.5, ease: [0.25, 0.46, 0.45, 0.94] } },
+                hover: { scale: 1.03, transition: { type: "spring", stiffness: 200, damping: 25 } },
+              }}
+              onError={(event) => {
+                event.target.style.display = "none";
+                event.target.nextSibling.style.display = "flex";
+              }}
+            />
+            <div
+              className="absolute inset-0 bg-gradient-to-br from-cyan-500/20 via-purple-500/20 to-pink-500/20 items-center justify-center"
+              style={{ display: "none" }}
+            >
+              <span className="text-white/60 text-sm font-medium">{template.title}</span>
+            </div>
+          </>
         )}
         <motion.div
           className="absolute inset-0 bg-gradient-to-t from-black/50 via-transparent to-transparent pointer-events-none"
@@ -187,24 +255,24 @@ function TemplateCard({ template, hovered, onHover, onLeave, onUse, aiDraft }) {
             <motion.div
               key="cta-group"
               initial={{ opacity: 0, y: 14 }}
-              animate={{
-                opacity: 1, y: 0,
-                transition: { type: "spring", stiffness: 340, damping: 26, delay: 0.05 },
-              }}
-              exit={{
-                opacity: 0, y: 10,
-                transition: { duration: 0.16, ease: "easeIn" },
-              }}
+              animate={{ opacity: 1, y: 0, transition: { type: "spring", stiffness: 340, damping: 26, delay: 0.05 } }}
+              exit={{ opacity: 0, y: 10, transition: { duration: 0.16, ease: "easeIn" } }}
               className="flex gap-2 w-full mt-4"
             >
               <button
-                onClick={(e) => { e.stopPropagation(); onUse(template.title, false); }}
+                onClick={(event) => {
+                  event.stopPropagation();
+                  onUse(template.title, false);
+                }}
                 className="flex-1 bg-primary text-primary-foreground py-2.5 rounded-xl font-semibold text-sm cursor-pointer hover:scale-[1.02] active:scale-[0.98] transition-transform"
               >
                 Use Theme
               </button>
               <button
-                onClick={(e) => { e.stopPropagation(); onUse(template.id, true); }}
+                onClick={(event) => {
+                  event.stopPropagation();
+                  onUse(template.id, true);
+                }}
                 className="flex-1 bg-muted text-foreground border border-border py-2.5 rounded-xl font-semibold text-sm cursor-pointer hover:bg-accent hover:scale-[1.02] active:scale-[0.98] transition-all flex items-center justify-center gap-2"
               >
                 <Eye className="w-4 h-4" /> Preview
@@ -220,7 +288,11 @@ function TemplateCard({ template, hovered, onHover, onLeave, onUse, aiDraft }) {
 const TemplatePreviewModal = ({ templateId, isOpen, onClose, portfolioData }) => {
   const Component = useMemo(() => {
     if (!templateId) return null;
-    return React.lazy(() => import(`../components/portfolio/templates/${templateId}/index.jsx`));
+    return React.lazy(() =>
+      import(`../components/portfolio/templates/${templateId}/Hero.jsx`).catch(() =>
+        import(`../components/portfolio/templates/${templateId}/index.jsx`)
+      )
+    );
   }, [templateId]);
 
   if (!isOpen || !templateId) return null;
@@ -230,7 +302,7 @@ const TemplatePreviewModal = ({ templateId, isOpen, onClose, portfolioData }) =>
       <div className="flex items-center justify-between px-6 py-4 bg-card/80 border-b border-border shadow-sm">
         <div className="flex items-center gap-4">
           <h2 className="text-xl font-bold bg-clip-text text-transparent bg-gradient-to-r from-cyan-400 to-blue-500">
-            {templateId.replace(/_/g, ' ')} Preview
+            {templateId.replace(/_/g, " ")} Preview
           </h2>
           <span className="px-3 py-1 text-xs font-medium rounded-full bg-cyan-500/10 text-cyan-400 border border-cyan-500/20">
             Live Demo
@@ -250,7 +322,7 @@ const TemplatePreviewModal = ({ templateId, isOpen, onClose, portfolioData }) =>
             <p className="animate-pulse font-medium tracking-wide text-sm uppercase">Loading interactive preview...</p>
           </div>
         }>
-          {Component && <Component portfolioData={portfolioData} />}
+          {Component && <Component portfolioData={portfolioData} data={portfolioData} />}
         </Suspense>
       </div>
     </div>
@@ -258,65 +330,58 @@ const TemplatePreviewModal = ({ templateId, isOpen, onClose, portfolioData }) =>
 };
 
 export default function TemplateGallery() {
-  const { theme, toggleTheme } = useTheme();
   const [searchParams, setSearchParams] = useSearchParams();
   const previewTemplateId = searchParams.get("preview");
   const [hoveredCard, setHoveredCard] = useState(null);
-
   const [category, setCategory] = useState("All");
   const [colorScheme, setColorScheme] = useState("All");
   const [layout, setLayout] = useState("All");
   const [sort, setSort] = useState("Popular");
-  
   const [aiDraft, setAiDraft] = useState(null);
-
-  useEffect(() => {
-    const draft = localStorage.getItem('ai_portfolio_draft');
-    if (draft) {
-      try {
-        setAiDraft(JSON.parse(draft));
-      } catch(e) {}
-    }
-  }, []);
-
-  const clearDraft = () => {
-    localStorage.removeItem('ai_portfolio_draft');
-    setAiDraft(null);
-  };
-
+  const previewData = useMemo(() => buildTemplateData(aiDraft), [aiDraft]);
   const [selectedTheme, setSelectedTheme] = useState("minimal");
   const [isDeployModalOpen, setIsDeployModalOpen] = useState(false);
   const [selectedPortfolioTitle, setSelectedPortfolioTitle] = useState("");
 
-  const handleUseTemplate = (val, isPreview) => {
-    if (isPreview) {
-      setSearchParams({ preview: val });
-    } else {
-      setSelectedPortfolioTitle(val);
-      setIsDeployModalOpen(true);
-    }
+  useEffect(() => {
+    setAiDraft(readStoredDraft());
+  }, []);
+
+  const clearDraft = () => {
+    DRAFT_STORAGE_KEYS.forEach((key) => localStorage.removeItem(key));
+    setAiDraft(null);
   };
 
-  const CATEGORY_OPTIONS = [
+  const handleUseTemplate = (value, isPreview) => {
+    if (isPreview) {
+      setSearchParams({ preview: value });
+      return;
+    }
+
+    setSelectedPortfolioTitle(value);
+    setIsDeployModalOpen(true);
+  };
+
+  const categoryOptions = [
     { value: "All", label: "All Categories" },
     { value: "Portfolio", label: "Portfolio" },
     { value: "Resume", label: "Resume" },
     { value: "Dashboard", label: "Dashboard" },
   ];
-  const COLOR_OPTIONS = [
+  const colorOptions = [
     { value: "All", label: "All Color Schemes" },
     { value: "Dark", label: "Dark" },
     { value: "Light", label: "Light" },
     { value: "Colorful", label: "Colorful" },
   ];
-  const LAYOUT_OPTIONS = [
+  const layoutOptions = [
     { value: "All", label: "All Layouts" },
     { value: "Grid", label: "Grid" },
     { value: "Minimal", label: "Minimal" },
     { value: "Cards", label: "Cards" },
     { value: "Interactive", label: "Interactive" },
   ];
-  const SORT_OPTIONS = [
+  const sortOptions = [
     { value: "Popular", label: "Popular" },
     { value: "Newest", label: "Newest" },
     { value: "Highest Rated", label: "Highest Rated" },
@@ -340,18 +405,19 @@ export default function TemplateGallery() {
   return (
     <div className="min-h-screen bg-background text-foreground p-8 pt-24 transition-colors duration-300">
       <Navbar />
-      
+      <Breadcrumb className="mb-6" />
+
       {aiDraft && (
         <div className="mb-8 p-4 rounded-xl bg-gradient-to-r from-emerald-500/10 to-teal-500/10 border border-emerald-500/30 flex items-center justify-between">
           <div>
             <h3 className="text-emerald-400 font-bold flex items-center gap-2">
-              <Sparkles className="w-5 h-5" /> ✨ Resume Parsed Successfully!
+              <Sparkles className="w-5 h-5" /> Resume Parsed Successfully!
             </h3>
             <p className="text-sm text-muted-foreground mt-1">
               Your data has been extracted. Select a template below and we'll automatically inject your experience and projects!
             </p>
           </div>
-          <button 
+          <button
             onClick={clearDraft}
             className="p-2 hover:bg-emerald-500/20 text-emerald-400 rounded-lg transition-colors"
             title="Discard Draft"
@@ -361,25 +427,8 @@ export default function TemplateGallery() {
         </div>
       )}
 
-      <div className="flex justify-between items-center mb-8">
+      <div className="mb-8">
         <h1 className="text-4xl font-bold">Template Gallery</h1>
-        <button
-          onClick={toggleTheme}
-          className="p-2 rounded-xl bg-muted hover:bg-accent border border-border text-foreground transition-all cursor-pointer overflow-hidden relative group"
-          aria-label="Toggle theme"
-        >
-          <AnimatePresence mode="wait" initial={false}>
-            <motion.div
-              key={theme}
-              initial={{ y: 20, opacity: 0, rotate: 45 }}
-              animate={{ y: 0, opacity: 1, rotate: 0 }}
-              exit={{ y: -20, opacity: 0, rotate: -45 }}
-              transition={{ duration: 0.2 }}
-            >
-              {theme === "light" ? <Moon className="w-5 h-5" /> : <Sun className="w-5 h-5" />}
-            </motion.div>
-          </AnimatePresence>
-        </button>
       </div>
 
       <div className="mb-8 rounded-2xl border border-border bg-card p-5">
@@ -398,10 +447,10 @@ export default function TemplateGallery() {
       </div>
 
       <div className="flex flex-wrap items-center gap-3 mb-8">
-        <FilterSelect value={category} onChange={setCategory} options={CATEGORY_OPTIONS} />
-        <FilterSelect value={colorScheme} onChange={setColorScheme} options={COLOR_OPTIONS} />
-        <FilterSelect value={layout} onChange={setLayout} options={LAYOUT_OPTIONS} />
-        <FilterSelect value={sort} onChange={setSort} options={SORT_OPTIONS} className="ml-auto" />
+        <FilterSelect value={category} onChange={setCategory} options={categoryOptions} />
+        <FilterSelect value={colorScheme} onChange={setColorScheme} options={colorOptions} />
+        <FilterSelect value={layout} onChange={setLayout} options={layoutOptions} />
+        <FilterSelect value={sort} onChange={setSort} options={sortOptions} className="ml-auto" />
       </div>
 
       {sortedTemplates.length === 0 ? (
@@ -418,7 +467,7 @@ export default function TemplateGallery() {
               onHover={setHoveredCard}
               onLeave={() => setHoveredCard(null)}
               onUse={handleUseTemplate}
-              aiDraft={aiDraft}
+              aiDraft={previewData}
             />
           ))}
         </div>
@@ -435,20 +484,10 @@ export default function TemplateGallery() {
       <TemplatePreviewModal
         templateId={previewTemplateId}
         isOpen={!!previewTemplateId}
-        onClose={() => {
-          if (searchParams.has("preview")) {
-            // Check if there is history to go back to, so we pop the preview state cleanly
-            window.history.back();
-          } else {
-            setSearchParams({}, { replace: true });
-          }
-        }}
-        portfolioData={aiDraft}
+        onClose={() => setSearchParams({}, { replace: true })}
+        portfolioData={previewData}
       />
 
-
-
-      {/* Liquid Glass */}
       <div className="mt-12">
         <div className="mb-4 flex items-center gap-3 px-1">
           <span className="rounded-full bg-cyan-500/20 px-3 py-1 text-xs font-bold uppercase tracking-widest text-cyan-400 border border-cyan-500/30">
@@ -461,7 +500,6 @@ export default function TemplateGallery() {
         </div>
       </div>
 
-      {/* Midnight Gradient */}
       <div className="mt-12">
         <div className="mb-4 flex items-center gap-3 px-1">
           <span className="rounded-full bg-indigo-500/20 px-3 py-1 text-xs font-bold uppercase tracking-widest text-indigo-400 border border-indigo-500/30">
@@ -470,15 +508,16 @@ export default function TemplateGallery() {
           <h2 className="text-lg font-semibold text-foreground/70">Midnight Gradient Theme</h2>
         </div>
         <div className="overflow-hidden rounded-2xl border border-border">
-          <MidnightGradient />
-</div>
-      {/* Playing Cards Theme */}
+          <MidnightGradient portfolioData={aiDraft} />
+        </div>
+      </div>
+
       <div className="mt-12">
         <div className="mb-4 flex items-center gap-3 px-1">
           <span className="rounded-full bg-emerald-500/20 px-3 py-1 text-xs font-bold uppercase tracking-widest text-emerald-400 border border-emerald-500/30">
-            🃟 NEW — Playing Cards
+            New - Playing Cards
           </span>
-          <h2 className="text-lg font-semibold text-foreground/70">Playing Cards Theme — Click to flip, shuffle deck</h2>
+          <h2 className="text-lg font-semibold text-foreground/70">Playing Cards Theme - Click to flip, shuffle deck</h2>
         </div>
         <div className="overflow-hidden rounded-2xl border border-emerald-500/20">
           <PlayingCardsPortfolio portfolioData={aiDraft} />
@@ -490,27 +529,24 @@ export default function TemplateGallery() {
           <span className="rounded-full bg-red-500/20 px-3 py-1 text-xs font-bold uppercase tracking-widest text-red-400 border border-red-500/30">
             Preview
           </span>
-          <h2 className="text-lg font-semibold text-foreground/70">Swiss Typography — Full Interactive Template</h2>
+          <h2 className="text-lg font-semibold text-foreground/70">Swiss Typography - Full Interactive Template</h2>
         </div>
         <div className="overflow-hidden rounded-2xl border border-border">
           <SwissTypography portfolioData={aiDraft} />
         </div>
       </div>
-      {/* Cherry Blossom Theme */}
+
       <div className="mt-12">
         <div className="mb-4 flex items-center gap-3 px-1">
           <span className="rounded-full bg-rose-500/20 px-3 py-1 text-xs font-bold uppercase tracking-widest text-rose-400 border border-rose-500/30">
-            🌸 NEW — Cherry Blossom
+            New - Cherry Blossom
           </span>
-          <h2 className="text-lg font-semibold text-foreground/70">Cherry Blossom Theme — Digital Spring</h2>
+          <h2 className="text-lg font-semibold text-foreground/70">Cherry Blossom Theme - Digital Spring</h2>
         </div>
         <div className="overflow-hidden rounded-2xl border border-rose-500/20">
           <CherryBlossom portfolioData={aiDraft} />
         </div>
       </div>
-      
-    </div>
-    
     </div>
   );
 }
