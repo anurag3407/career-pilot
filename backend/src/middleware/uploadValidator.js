@@ -1,6 +1,7 @@
 import path from 'path';
 import { ApiError } from './errorHandler.js';
 import fs from 'fs/promises';
+import redisManager from '../config/redis.js';
 
 // Allowed MIME types and their magic bytes
 const ALLOWED_TYPES = {
@@ -13,11 +14,15 @@ const ALLOWED_TYPES = {
 
 const MAX_FILE_SIZE = 5 * 1024 * 1024; // 5MB
 
-// In-memory store for daily upload tracking per user
+// In-memory store for daily upload tracking per user (non-production fallback)
 // { userId: { date: 'YYYY-MM-DD', totalBytes: number } }
 const dailyUploadTracker = new Map();
 
 const MAX_DAILY_BYTES = 20 * 1024 * 1024; // 20MB per user per day
+
+let warnedUploadFallback = false;
+
+const isProd = () => process.env.NODE_ENV === 'production';
 
 /**
  * Validate magic bytes of uploaded file buffer
@@ -33,14 +38,87 @@ const validateMagicBytes = (buffer, allowedType) => {
 };
 
 /**
- * Check and update daily upload limit for a user
+ * Check and update daily upload limit for a user (Redis-backed with fallback)
  */
-const checkDailyLimit = (userId, fileSize) => {
+const checkDailyLimit = async (userId, fileSize) => {
   const today = new Date().toISOString().slice(0, 10);
+
+  if (isProd()) {
+    if (!process.env.REDIS_URL) {
+      console.error('❌ [UploadValidator] Redis not configured in production environment');
+      throw new ApiError(503, 'Upload validation service temporarily unavailable');
+    }
+    try {
+      const client = redisManager.get('upload-limiter');
+      if (!client || client.status !== 'ready') {
+        console.error(`❌ [UploadValidator] Redis client unavailable in production. Status: ${client?.status}`);
+        throw new ApiError(503, 'Upload validation service temporarily unavailable');
+      }
+
+      const redisKey = `v1:upload_limit:${userId}`;
+      const pipeline = client.pipeline();
+      pipeline.incrby(redisKey, fileSize);
+      pipeline.ttl(redisKey);
+      const [[errIncr, newTotal], [errTtl, ttl]] = await pipeline.exec();
+
+      if (errIncr) throw errIncr;
+      if (errTtl) throw errTtl;
+
+      // Set expiration only when the key is first created
+      if (ttl < 0) {
+        await client.expire(redisKey, 24 * 60 * 60); // 24 hours
+      }
+
+      if (newTotal > MAX_DAILY_BYTES) {
+        // Decrement back to keep counter precise
+        await client.decrby(redisKey, fileSize);
+        return false;
+      }
+      return true;
+    } catch (err) {
+      console.error('❌ [UploadValidator] Redis check failed in production:', err.message);
+      if (err instanceof ApiError) throw err;
+      throw new ApiError(503, 'Upload validation service temporarily unavailable');
+    }
+  }
+
+  // Development/test/non-production fallback flow
+  if (process.env.REDIS_URL) {
+    try {
+      const client = redisManager.get('upload-limiter');
+      if (client && client.status === 'ready') {
+        const redisKey = `v1:upload_limit:${userId}`;
+        const pipeline = client.pipeline();
+        pipeline.incrby(redisKey, fileSize);
+        pipeline.ttl(redisKey);
+        const [[errIncr, newTotal], [errTtl, ttl]] = await pipeline.exec();
+
+        if (errIncr) throw errIncr;
+        if (errTtl) throw errTtl;
+
+        if (ttl < 0) {
+          await client.expire(redisKey, 24 * 60 * 60);
+        }
+
+        if (newTotal > MAX_DAILY_BYTES) {
+          await client.decrby(redisKey, fileSize);
+          return false;
+        }
+        return true;
+      }
+    } catch (err) {
+      console.warn('⚠️ [UploadValidator] Redis daily upload tracker failed in development, using fallback Map:', err.message);
+    }
+  }
+
+  if (!warnedUploadFallback) {
+    console.warn('⚠️ [UploadValidator] Redis daily upload tracker unavailable. Falling back to local Map store.');
+    warnedUploadFallback = true;
+  }
+
   const record = dailyUploadTracker.get(userId);
 
   if (!record || record.date !== today) {
-    // New day or new user — reset
     dailyUploadTracker.set(userId, { date: today, totalBytes: fileSize });
     return true;
   }
@@ -149,7 +227,7 @@ export const validateUpload = async (req, res, next) => {
 
     // 6. Daily limit check (per user)
     const userId = req.user?.uid || req.user?.id || 'anonymous';
-    const withinLimit = checkDailyLimit(userId, file.size);
+    const withinLimit = await checkDailyLimit(userId, file.size);
     if (!withinLimit) {
       await cleanup();
       return next(new ApiError(429, `Daily upload limit reached (${MAX_DAILY_BYTES / 1024 / 1024}MB per day). Try again tomorrow.`));
@@ -159,6 +237,9 @@ export const validateUpload = async (req, res, next) => {
   } catch (error) {
     console.error('[UploadValidator] Error:', error.message);
     await cleanup();
+    if (error instanceof ApiError) {
+      return next(error);
+    }
     return next(new ApiError(500, 'File validation failed.'));
   }
 };

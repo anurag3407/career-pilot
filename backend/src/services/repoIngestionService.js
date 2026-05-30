@@ -3,10 +3,96 @@ import { promisify } from 'util';
 import fs from 'fs/promises';
 import path from 'path';
 import os from 'os';
+import redisManager from '../config/redis.js';
+import { ApiError } from '../middleware/errorHandler.js';
 
 const execFileAsync = promisify(execFile);
 
-export const sessions = new Map();
+class RepoSessionStore {
+  constructor() {
+    this.fallbackMap = new Map();
+    this.warned = false;
+  }
+
+  getClient() {
+    if (!process.env.REDIS_URL) {
+      if (process.env.NODE_ENV === 'production') {
+        throw new ApiError(503, 'Session store configuration error');
+      }
+      return null;
+    }
+    try {
+      return redisManager.get('repo-analyzer');
+    } catch (err) {
+      if (process.env.NODE_ENV === 'production') {
+        throw new ApiError(503, 'Session store connection error');
+      }
+      if (!this.warned) {
+        console.warn('⚠️ [RepoSessionStore] Redis client retrieval failed. Falling back to local Map:', err.message);
+        this.warned = true;
+      }
+      return null;
+    }
+  }
+
+  async set(sessionId, value) {
+    const client = this.getClient();
+    if (client) {
+      try {
+        const key = `v1:session:${sessionId}`;
+        await client.set(key, JSON.stringify(value), 'EX', 3600); // 1 hour TTL
+        return;
+      } catch (err) {
+        console.error('❌ [RepoSessionStore] Redis error during set:', err.message);
+        if (process.env.NODE_ENV === 'production') {
+          throw new ApiError(503, 'Session store error');
+        }
+      }
+    }
+
+    if (!this.warned && process.env.NODE_ENV !== 'production') {
+      console.warn('⚠️ [RepoSessionStore] Redis unavailable, using local Map fallback.');
+      this.warned = true;
+    }
+    this.fallbackMap.set(sessionId, value);
+  }
+
+  async get(sessionId) {
+    const client = this.getClient();
+    if (client) {
+      try {
+        const key = `v1:session:${sessionId}`;
+        const val = await client.get(key);
+        return val ? JSON.parse(val) : null;
+      } catch (err) {
+        console.error('❌ [RepoSessionStore] Redis error during get:', err.message);
+        if (process.env.NODE_ENV === 'production') {
+          throw new ApiError(503, 'Session store error');
+        }
+      }
+    }
+    return this.fallbackMap.get(sessionId);
+  }
+
+  async delete(sessionId) {
+    const client = this.getClient();
+    if (client) {
+      try {
+        const key = `v1:session:${sessionId}`;
+        await client.del(key);
+        return;
+      } catch (err) {
+        console.error('❌ [RepoSessionStore] Redis error during delete:', err.message);
+        if (process.env.NODE_ENV === 'production') {
+          throw new ApiError(503, 'Session store error');
+        }
+      }
+    }
+    this.fallbackMap.delete(sessionId);
+  }
+}
+
+export const sessions = new RepoSessionStore();
 
 export const cloneRepo = async (repoUrl) => {
   const sessionId = Date.now().toString(36) + Math.random().toString(36).substring(2);
