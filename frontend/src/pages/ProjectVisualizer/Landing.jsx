@@ -103,7 +103,7 @@ const Landing = () => {
   ];
 
   return (
-    <div className="min-h-screen bg-[#050505] text-white overflow-x-hidden relative selection:bg-cyan-500/30">
+    <div className="min-h-screen bg-background text-foreground overflow-x-hidden relative selection:bg-cyan-500/30">
       
       {/* Background Gradients */}
       <div className="absolute top-[-20%] left-[-10%] w-[50%] h-[50%] rounded-full bg-cyan-600/10 blur-[120px] pointer-events-none" />
@@ -117,10 +117,10 @@ const Landing = () => {
             initial={{ opacity: 0, y: -20 }}
             animate={{ opacity: 1, y: 0 }}
             transition={{ duration: 0.5 }}
-            className="inline-flex items-center gap-2 px-4 py-2 rounded-full bg-white/5 border border-white/10 mb-8"
+            className="inline-flex items-center gap-2 px-4 py-2 rounded-full bg-card border border-border mb-8"
           >
             <Zap className="w-4 h-4 text-cyan-400" />
-            <span className="text-sm font-medium text-slate-300">Repo-to-Map in 10 seconds</span>
+            <span className="text-sm font-medium text-muted-foreground">Repo-to-Map in 10 seconds</span>
           </motion.div>
           
           <motion.h1
@@ -139,7 +139,7 @@ const Landing = () => {
             initial={{ opacity: 0 }}
             animate={{ opacity: 1 }}
             transition={{ duration: 0.5, delay: 0.2 }}
-            className="text-xl text-slate-400"
+            className="text-xl text-muted-foreground"
           >
             Paste a GitHub repo → get a visual architecture map + AI onboarding in seconds.
           </motion.p>
@@ -154,14 +154,14 @@ const Landing = () => {
         >
           <form onSubmit={handleSubmit} className="relative group">
             <div className="absolute -inset-1 bg-gradient-to-r from-cyan-500 to-violet-500 rounded-2xl blur opacity-25 group-hover:opacity-40 transition duration-500"></div>
-            <div className="relative flex items-center bg-[#111] border border-white/10 rounded-2xl p-2 pl-6 shadow-2xl">
-              <Search className="w-6 h-6 text-slate-400 mr-4 shrink-0" />
+            <div className="relative flex items-center bg-card border border-border rounded-2xl p-2 pl-6 shadow-2xl">
+              <Search className="w-6 h-6 text-muted-foreground mr-4 shrink-0" />
               <input
                 type="text"
                 value={url}
                 onChange={(e) => setUrl(e.target.value)}
                 placeholder="https://github.com/owner/repository"
-                className="w-full bg-transparent border-none outline-none text-lg text-white placeholder-slate-500"
+                className="w-full bg-transparent border-none outline-none text-lg text-foreground placeholder-muted-foreground"
                 disabled={status === 'analyzing'}
               />
               <button
@@ -197,16 +197,16 @@ const Landing = () => {
               initial={{ opacity: 0, y: 20 }}
               animate={{ opacity: 1, y: 0 }}
               transition={{ duration: 0.5, delay: 0.4 + i * 0.1 }}
-              className="relative p-6 rounded-2xl bg-white/5 border border-white/10 overflow-hidden group hover:border-white/20 transition-colors"
+              className="relative p-6 rounded-2xl bg-card border border-border overflow-hidden group hover:border-primary/50 transition-colors"
             >
               <div className={cn("absolute inset-0 bg-gradient-to-br opacity-0 group-hover:opacity-100 transition-opacity duration-500", feature.color)} />
               <div className="relative z-10 flex items-start gap-4">
-                <div className="p-3 rounded-xl bg-white/5 backdrop-blur-sm border border-white/10">
+                <div className="p-3 rounded-xl bg-background backdrop-blur-sm border border-border">
                   {feature.icon}
                 </div>
                 <div>
-                  <h3 className="text-xl font-semibold text-white mb-2">{feature.title}</h3>
-                  <p className="text-slate-400 leading-relaxed">{feature.desc}</p>
+                  <h3 className="text-xl font-semibold text-foreground mb-2">{feature.title}</h3>
+                  <p className="text-muted-foreground leading-relaxed">{feature.desc}</p>
                 </div>
               </div>
             </motion.div>
@@ -231,7 +231,7 @@ const Landing = () => {
                   <div className="w-12 h-12 rounded-full bg-cyan-500/20 text-cyan-400 flex items-center justify-center text-xl font-bold mb-4 border border-cyan-500/30">
                     {step.num}
                   </div>
-                  <p className="text-slate-400">{step.text}</p>
+                  <p className="text-muted-foreground">{step.text}</p>
                 </div>
              ))}
            </div>
@@ -245,7 +245,7 @@ const Landing = () => {
             transition={{ duration: 0.5, delay: 1 }}
             className="max-w-4xl mx-auto"
           >
-            <div className="flex items-center gap-2 mb-6 text-slate-300">
+            <div className="flex items-center gap-2 mb-6 text-muted-foreground">
               <History className="w-5 h-5" />
               <h2 className="text-xl font-semibold">Recent Analyses</h2>
             </div>
@@ -255,17 +255,17 @@ const Landing = () => {
                 <div
                   key={item._id}
                   onClick={() => navigate(`/project-visualizer/dashboard/${item.sessionId}`)}
-                  className="flex items-center justify-between p-4 rounded-xl bg-white/5 border border-white/10 hover:bg-white/10 cursor-pointer transition-all group"
+                  className="flex items-center justify-between p-4 rounded-xl bg-card border border-border hover:bg-accent cursor-pointer transition-all group"
                 >
                   <div className="flex items-center gap-4">
-                    <div className="p-3 rounded-lg bg-black/40">
+                    <div className="p-3 rounded-lg bg-muted">
                       <GitBranch className="w-6 h-6 text-cyan-400" />
                     </div>
                     <div>
-                      <h3 className="font-semibold text-lg text-white group-hover:text-cyan-400 transition-colors">
+                      <h3 className="font-semibold text-lg text-foreground group-hover:text-cyan-400 transition-colors">
                         {item.repoOwner} / {item.repoName}
                       </h3>
-                      <div className="flex items-center gap-4 text-sm text-slate-400 mt-1">
+                      <div className="flex items-center gap-4 text-sm text-muted-foreground mt-1">
                         <span className="flex items-center gap-1">
                           <Clock className="w-4 h-4" />
                           {new Date(item.lastAnalyzed).toLocaleDateString()}
@@ -288,7 +288,7 @@ const Landing = () => {
                   
                   <button
                     onClick={(e) => handleDeleteHistory(item._id, e)}
-                    className="p-2 rounded-lg text-slate-500 hover:text-red-400 hover:bg-red-400/10 transition-colors opacity-0 group-hover:opacity-100"
+                    className="p-2 rounded-lg text-muted-foreground hover:text-red-400 hover:bg-red-400/10 transition-colors opacity-0 group-hover:opacity-100"
                   >
                     <Trash2 className="w-5 h-5" />
                   </button>
