@@ -1,11 +1,11 @@
 import React, { useState, useRef, useEffect, Suspense, useMemo } from "react";
 import { useSearchParams } from "react-router-dom";
 import { motion, AnimatePresence } from "framer-motion";
-import { Moon, Sun, ChevronDown, Check, Eye, Star, Sparkles, X } from "lucide-react";
+import { ChevronDown, Check, Eye, Star, Sparkles, X } from "lucide-react";
 import { templates } from "../data/templates";
+import dummyData from "../data/dummy_data.json";
 import DeployModal from "../components/portfolio/DeployModal";
 import ThemeSelector from "../components/portfolio/ThemeSelector";
-import { useTheme } from "../hooks/useTheme";
 import SwissTypography from "../components/portfolio/templates/Swiss_Typography";
 import LiquidGlass from "../components/portfolio/templates/Liquid_Glass";
 import MidnightGradient from "../components/portfolio/templates/Midnight_Gradient";
@@ -29,6 +29,51 @@ function readStoredDraft() {
   }
 
   return null;
+}
+
+function buildTemplateData(portfolioData) {
+  const draft = portfolioData && typeof portfolioData === "object" ? portfolioData : {};
+  const hero = draft.hero || {};
+  const about = draft.about || {};
+  const draftPersonal = draft.personal || {};
+
+  const personal = {
+    ...dummyData.personal,
+    ...draftPersonal,
+    ...(hero.subtitle && { name: hero.subtitle }),
+    ...(hero.title && { title: hero.title }),
+    ...(hero.tagline && { tagline: hero.tagline }),
+    ...(about.bio && { bio: about.bio }),
+  };
+
+  const normalizeSkills = (skills) => {
+    if (!Array.isArray(skills) || skills.length === 0) return dummyData.skills;
+    return skills.map((skill) => (
+      typeof skill === "string"
+        ? { name: skill, level: 80, category: "Skills" }
+        : { level: 80, category: "Skills", ...skill }
+    ));
+  };
+
+  const normalizeProjects = (projects) => {
+    if (!Array.isArray(projects) || projects.length === 0) return dummyData.projects;
+    return projects.map((project, index) => ({
+      ...dummyData.projects[index % dummyData.projects.length],
+      ...project,
+    }));
+  };
+
+  return {
+    ...dummyData,
+    ...draft,
+    personal,
+    socials: { ...dummyData.socials, ...draft.socials, email: draftPersonal.email || draft.socials?.email || dummyData.socials.email },
+    stats: { ...dummyData.stats, ...draft.stats },
+    skills: normalizeSkills(draft.skills),
+    projects: normalizeProjects(draft.projects),
+    experience: Array.isArray(draft.experience) && draft.experience.length > 0 ? draft.experience : dummyData.experience,
+    testimonials: Array.isArray(draft.testimonials) && draft.testimonials.length > 0 ? draft.testimonials : dummyData.testimonials,
+  };
 }
 
 function FilterSelect({ value, onChange, options, className = "" }) {
@@ -285,7 +330,6 @@ const TemplatePreviewModal = ({ templateId, isOpen, onClose, portfolioData }) =>
 };
 
 export default function TemplateGallery() {
-  const { theme, toggleTheme } = useTheme();
   const [searchParams, setSearchParams] = useSearchParams();
   const previewTemplateId = searchParams.get("preview");
   const [hoveredCard, setHoveredCard] = useState(null);
@@ -294,6 +338,7 @@ export default function TemplateGallery() {
   const [layout, setLayout] = useState("All");
   const [sort, setSort] = useState("Popular");
   const [aiDraft, setAiDraft] = useState(null);
+  const previewData = useMemo(() => buildTemplateData(aiDraft), [aiDraft]);
   const [selectedTheme, setSelectedTheme] = useState("minimal");
   const [isDeployModalOpen, setIsDeployModalOpen] = useState(false);
   const [selectedPortfolioTitle, setSelectedPortfolioTitle] = useState("");
@@ -382,25 +427,8 @@ export default function TemplateGallery() {
         </div>
       )}
 
-      <div className="flex justify-between items-center mb-8">
+      <div className="mb-8">
         <h1 className="text-4xl font-bold">Template Gallery</h1>
-        <button
-          onClick={toggleTheme}
-          className="p-2 rounded-xl bg-muted hover:bg-accent border border-border text-foreground transition-all cursor-pointer overflow-hidden relative group"
-          aria-label="Toggle theme"
-        >
-          <AnimatePresence mode="wait" initial={false}>
-            <motion.div
-              key={theme}
-              initial={{ y: 20, opacity: 0, rotate: 45 }}
-              animate={{ y: 0, opacity: 1, rotate: 0 }}
-              exit={{ y: -20, opacity: 0, rotate: -45 }}
-              transition={{ duration: 0.2 }}
-            >
-              {theme === "light" ? <Moon className="w-5 h-5" /> : <Sun className="w-5 h-5" />}
-            </motion.div>
-          </AnimatePresence>
-        </button>
       </div>
 
       <div className="mb-8 rounded-2xl border border-border bg-card p-5">
@@ -439,7 +467,7 @@ export default function TemplateGallery() {
               onHover={setHoveredCard}
               onLeave={() => setHoveredCard(null)}
               onUse={handleUseTemplate}
-              aiDraft={aiDraft}
+              aiDraft={previewData}
             />
           ))}
         </div>
@@ -457,7 +485,7 @@ export default function TemplateGallery() {
         templateId={previewTemplateId}
         isOpen={!!previewTemplateId}
         onClose={() => setSearchParams({}, { replace: true })}
-        portfolioData={aiDraft}
+        portfolioData={previewData}
       />
 
       <div className="mt-12">

@@ -1,4 +1,4 @@
-import { useState, useEffect } from 'react'
+import { useState } from 'react'
 import { Link, useLocation } from 'react-router-dom'
 import { useAuth } from '../hooks/useAuth'
 import { useTheme } from '../hooks/useTheme'
@@ -6,43 +6,17 @@ import { motion, AnimatePresence } from 'framer-motion'
 import {
   Menu,
   X,
-  LogOut,
   User,
-  Bell,
   Sun,
-  Moon,
-  Palette,
-  ChevronDown
+  Moon
 } from 'lucide-react'
 
 export default function Navbar() {
-  const { user, logout } = useAuth()
+  const { user } = useAuth()
   const { theme, toggleTheme } = useTheme()
   const location = useLocation()
 
   const [mobileMenuOpen, setMobileMenuOpen] = useState(false)
-  const [scrolled, setScrolled] = useState(false)
-  const [showDropdown, setShowDropdown] = useState(false)
-  const [notificationCount] = useState(3)
-
-  useEffect(() => {
-    const handleScroll = () => {
-      console.log(window.scrollY);
-      setScrolled(window.scrollY>20)
-    }
-
-    window.addEventListener('scroll', handleScroll)
-
-    return () => window.removeEventListener('scroll', handleScroll)
-  }, [])
-
-  const handleLogout = async () => {
-    try {
-      await logout()
-    } catch (error) {
-      console.error('Logout error:', error)
-    }
-  }
 
   const handleHomeClick = (e) => {
     if (
@@ -62,9 +36,7 @@ export default function Navbar() {
 
   return (
     <nav
-      className={`fixed top-0 left-0 right-0 z-50 border-b border-border bg-background shadow-sm transition-shadow duration-300 ${
-        scrolled ? 'shadow-lg shadow-background/20' : ''
-      }`}
+      className="fixed top-0 left-0 right-0 z-50 border-b border-border bg-background text-foreground shadow-sm"
     >
       <div className="w-full px-4 sm:px-6 lg:px-8">
         <div className="flex h-16 items-center gap-4">
@@ -92,6 +64,12 @@ export default function Navbar() {
 
           {/* Right Side */}
           <div className="ml-auto hidden shrink-0 items-center gap-3 md:flex">
+            <Link
+              to="/community"
+              className="rounded-lg px-3 py-2 text-sm font-semibold text-muted-foreground transition-colors hover:bg-muted hover:text-foreground"
+            >
+              CareerNet
+            </Link>
 
             {/* Theme Toggle */}
             <button
@@ -116,98 +94,25 @@ export default function Navbar() {
               </AnimatePresence>
             </button>
 
-            {user ? (
-              <>
-                {/* Notification Bell */}
-                <button
-                  className="relative p-2 rounded-xl bg-muted border border-border hover:bg-accent transition-all"
-                  aria-label="Notifications"
-                >
-                  <Bell className="w-5 h-5 text-foreground" />
-
-                  {notificationCount > 0 && (
-                    <span className="absolute -top-1 -right-1 bg-red-500 text-white text-[10px] font-bold w-5 h-5 rounded-full flex items-center justify-center">
-                      {notificationCount}
-                    </span>
-                  )}
-                </button>
-
-                {/* User Dropdown */}
-                <div className="relative">
-                  <button
-                    onClick={() => setShowDropdown(!showDropdown)}
-                    className="flex items-center gap-2 px-3 py-2 bg-muted border border-border rounded-full hover:bg-accent transition-all"
-                    aria-label="User menu"
-                    aria-expanded={showDropdown}
-                  >
-                    <div className="w-8 h-8 rounded-full overflow-hidden bg-primary/20 flex items-center justify-center">
-                      <img
-                        src="/user.svg"
-                        alt="User profile"
-                        className="w-full h-full object-cover"
-                      />
-                    </div>
-
-                    <span className="text-sm font-medium text-foreground max-w-[100px] truncate">
-                      {user.displayName || user.email?.split('@')[0]}
-                    </span>
-
-                    <ChevronDown className="w-4 h-4 text-muted-foreground" />
-                  </button>
-
-                  <AnimatePresence>
-                    {showDropdown && (
-                      <motion.div
-                        initial={{ opacity: 0, y: 10 }}
-                        animate={{ opacity: 1, y: 0 }}
-                        exit={{ opacity: 0, y: 10 }}
-                        className="absolute right-0 top-14 w-52 bg-background border border-border rounded-2xl shadow-xl overflow-hidden"
-                      >
-                        <Link
-                          to="/profile"
-                          className="flex items-center gap-2 px-4 py-3 hover:bg-muted transition-colors text-sm"
-                        >
-                          <User className="w-4 h-4" />
-                          Profile
-                        </Link>
-
-                        <Link
-                          to="/settings"
-                          className="flex items-center gap-2 px-4 py-3 hover:bg-muted transition-colors text-sm"
-                        >
-                          <Palette className="w-4 h-4" />
-                          Settings
-                        </Link>
-
-                        <button
-                          onClick={handleLogout}
-                          className="flex items-center gap-2 w-full px-4 py-3 text-left hover:bg-destructive/10 text-destructive transition-colors text-sm"
-                        >
-                          <LogOut className="w-4 h-4" />
-                          Logout
-                        </button>
-                      </motion.div>
-                    )}
-                  </AnimatePresence>
+            <Link
+              to={user ? "/profile" : "/login"}
+              className="flex items-center gap-2 rounded-full border border-border bg-muted px-3 py-2 text-sm font-semibold text-foreground transition-colors hover:bg-accent"
+            >
+              {user ? (
+                <div className="w-8 h-8 rounded-full overflow-hidden bg-primary/20 flex items-center justify-center">
+                  <img
+                    src="/user.svg"
+                    alt="User profile"
+                    className="w-full h-full object-cover"
+                  />
                 </div>
-              </>
-            ) : (
-              <>
-                <Link
-                  to="/login"
-                  className="px-4 py-2 text-muted-foreground hover:text-foreground text-sm font-medium transition-colors"
-                >
-                  Login
-                </Link>
-
-                <Link
-                  to="/register"
-                  className="px-5 py-2 bg-primary hover:bg-primary/90 text-primary-foreground rounded-lg text-sm font-bold transition-all-300 shadow-lg shadow-primary/20 hover:-translate-y-0.5 hover:shadow-primary/40"
-                >
-                  Get Started
-                </Link>
-              </>
-            )}
+              ) : (
+                <User className="w-4 h-4" />
+              )}
+              <span className="max-w-[120px] truncate">
+                {user ? user.displayName || user.email?.split('@')[0] || 'Profile' : 'Profile'}
+              </span>
+            </Link>
           </div>
 
           {/* Mobile Menu */}
@@ -248,37 +153,37 @@ export default function Navbar() {
             initial={{ opacity: 0, height: 0 }}
             animate={{ opacity: 1, height: 'auto' }}
             exit={{ opacity: 0, height: 0 }}
-            className="md:hidden border-t border-border bg-background/95 backdrop-blur-xl overflow-hidden"
+            className="md:hidden border-t border-border bg-background overflow-hidden"
           >
             <div className="px-4 py-6 space-y-3">
-              {user ? (
-                <button
-                  onClick={() => {
-                    handleLogout()
-                    setMobileMenuOpen(false)
-                  }}
-                  className="flex items-center gap-3 w-full px-4 py-4 rounded-xl text-base font-semibold text-destructive hover:bg-destructive/10 transition-all"
-                >
-                  <LogOut className="w-5 h-5" />
-                  Logout
-                </button>
-              ) : (
-                <div className="grid grid-cols-2 gap-4">
-                  <Link
-                    to="/login"
-                    className="flex justify-center items-center px-4 py-3 bg-muted rounded-xl font-semibold"
-                  >
-                    Login
-                  </Link>
+              <Link
+                to="/community"
+                onClick={() => setMobileMenuOpen(false)}
+                className="flex items-center justify-between rounded-xl px-4 py-3 text-base font-semibold text-foreground hover:bg-muted"
+              >
+                CareerNet
+              </Link>
 
-                  <Link
-                    to="/register"
-                    className="flex justify-center items-center px-4 py-3 bg-primary text-primary-foreground rounded-xl font-semibold"
-                  >
-                    Get Started
-                  </Link>
-                </div>
-              )}
+              <Link
+                to={user ? "/profile" : "/login"}
+                onClick={() => setMobileMenuOpen(false)}
+                className="flex items-center gap-3 rounded-xl px-4 py-3 text-base font-semibold text-foreground hover:bg-muted"
+              >
+                {user ? (
+                  <div className="w-8 h-8 rounded-full overflow-hidden bg-primary/20 flex items-center justify-center">
+                    <img
+                      src="/user.svg"
+                      alt="User profile"
+                      className="w-full h-full object-cover"
+                    />
+                  </div>
+                ) : (
+                  <User className="w-5 h-5" />
+                )}
+                <span>
+                  {user ? user.displayName || user.email?.split('@')[0] || 'Profile' : 'Profile'}
+                </span>
+              </Link>
             </div>
           </motion.div>
         )}
