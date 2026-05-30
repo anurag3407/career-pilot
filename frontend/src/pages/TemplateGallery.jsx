@@ -1,4 +1,4 @@
-import { useState, useEffect, useRef, useCallback } from "react";
+import { useState, useEffect, useRef, useCallback, useMemo, Suspense } from "react";
 import WaveDistortionPortfolio from "../components/portfolio/templates/Wave_Distortion/index.jsx";
 import MidnightGradient from "../components/portfolio/templates/Midnight_Gradient/index";
 
