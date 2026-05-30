@@ -1,9 +1,4 @@
-<<<<<<< HEAD
-﻿import { useState, useRef, useEffect } from "react";
-=======
-import React, { useState, useRef, useEffect, Suspense, useMemo } from "react";
-import { templates } from '../data/templates';
->>>>>>> origin/main
+
 import DeployModal from "../components/portfolio/DeployModal";
 import ThemeSelector from "../components/portfolio/ThemeSelector";
 import { useTheme } from "../hooks/useTheme";
@@ -11,11 +6,7 @@ import { motion, AnimatePresence } from "framer-motion";
 import { Moon, Sun, ChevronDown, Check, Eye, Star, Sparkles } from "lucide-react";
 import SwissTypography from "../components/portfolio/templates/Swiss_Typography/index";
 import LiquidGlass from "../components/portfolio/templates/Liquid_Glass/index";
-<<<<<<< HEAD
-import WaveDistortionPortfolio from "../components/portfolio/templates/Wave_Distortion/index.jsx";
-=======
-import MidnightGradient from "../components/portfolio/templates/Midnight_Gradient/index";
->>>>>>> origin/main
+
 import PlayingCardsPortfolio from "../components/portfolio/templates/Playing_Cards";
 import CherryBlossom from "../components/portfolio/templates/Cherry_Blossom/index";
 import Navbar from '../components/Navbar'
@@ -228,16 +219,7 @@ function TemplateCard({ template, hovered, onHover, onLeave, onUse, aiDraft }) {
 const TemplatePreviewModal = ({ templateId, isOpen, onClose, portfolioData }) => {
   const Component = useMemo(() => {
     if (!templateId) return null;
-<<<<<<< HEAD
-    console.log("Loading template:", templateId);
-    return React.lazy(() => 
-      import(`../components/portfolio/templates/${templateId}/Hero.jsx`).catch(() => 
-        import(`../components/portfolio/templates/${templateId}/index.jsx`)
-      )
-    );
-=======
-    return React.lazy(() => import(`../components/portfolio/templates/${templateId}/index.jsx`));
->>>>>>> origin/main
+
   }, [templateId]);
 
   if (!isOpen || !templateId) return null;
