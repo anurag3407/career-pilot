@@ -24,6 +24,9 @@ import userProfileRoutes from './routes/userProfile.js';
 import twoFactorRoutes from './routes/twoFactor.js';
 import aiRoutes from './routes/ai.js';
 import emailTrackingRoutes from './routes/emailTracking.js';
+import repoAnalyzerRoutes from './routes/repoAnalyzer.js';
+import projectVisualizerRoutes from './routes/projectVisualizer.route.js';
+import adminRoutes from './routes/admin.js';
 
 import inputRoutes from'./routes/input.route.js';
 import recruiterRoutes from '../src/routes/recruiter.routes.js';
@@ -245,6 +248,9 @@ app.use('/api/auth/2fa', twoFactorRoutes);
 app.use('/api/search', searchRoutes);
 app.use('/api/ai', aiRoutes);
 app.use('/api/email-tracking', emailTrackingRoutes);
+app.use('/api/analyzer', repoAnalyzerRoutes);
+app.use('/api/project-visualizer', projectVisualizerRoutes);
+app.use('/api/admin', adminRoutes);
 
 app.use((req, res) => {
   res.status(404).json({ error: 'Route not found' });

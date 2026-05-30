@@ -11,6 +11,7 @@
     "test": "node --test src/schemas/__tests__/schemas.test.js"
   },
   "dependencies": {
+    "@anthropic-ai/sdk": "^0.99.0",
     "@google/generative-ai": "^0.21.0",
     "axe-core": "^4.11.4",
     "axios": "^1.16.1",
