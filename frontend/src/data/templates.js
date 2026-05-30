@@ -129,7 +129,8 @@ export const templates = [
     "views": 1010,
     "rating": 4.5,
     "image": "/template-previews/Art_Deco_Gold.png",
-    "createdAt": "2026-05-01"
+    "createdAt": "2026-05-01",
+    "isComplete": true
   },
   {
     "id": "Aurora_Sky",
