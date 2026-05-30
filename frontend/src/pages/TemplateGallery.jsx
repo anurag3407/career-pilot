@@ -5,19 +5,16 @@ import { useTheme } from "../hooks/useTheme";
 import { motion, AnimatePresence } from "framer-motion";
 import { Moon, Sun, ChevronDown, Check, Eye, Star } from "lucide-react";
 import HolographicAbout from "../components/portfolio/templates/Holographic/About";
+import Hero from "../components/portfolio/templates/Holographic/Hero";
 import CulinaryAbout from "../components/portfolio/templates/Culinary_Restaurant/About";
 import TechStartupHero from "../components/portfolio/templates/Tech_Startup/Hero";
-import ArchitectureBlueprintHero from "../components/portfolio/templates/Architecture_Blueprint/Hero";
 import GeometricShapesAbout from "../components/portfolio/templates/Geometric_Shapes/About";
-import GeometricShapesHero from "../components/portfolio/templates/Geometric_Shapes/Hero";
-import LiquidGlass from "../components/portfolio/templates/Liquid_Glass/index";
+import ChooseAdventurePortfolio from "../components/portfolio/templates/Choose_Adventure/index";
+import RetroProjects from "../components/portfolio/templates/2D_Retro_8bit/Projects";
+import FantasyRPGProjects from "../components/portfolio/templates/Fantasy_RPG/Projects";
+import Windows98Contact from "../components/portfolio/templates/Windows_98/Contact";
+import Windows98ResumeCTA from "../components/portfolio/templates/Windows_98/ResumeCTA";
 import Navbar from '../components/Navbar'
-// import Hero from "../components/portfolio/templates/Holographic/Hero";
-// import ChooseAdventurePortfolio from "../components/portfolio/templates/Choose_Adventure/index";
-// import RetroProjects from "../components/portfolio/templates/2D_Retro_8bit/Projects";
-// import FantasyRPGProjects from "../components/portfolio/templates/Fantasy_RPG/Projects";
-// import GraffitiHero from "../components/portfolio/templates/Graffiti_StreetArt/Hero";
-
 
 function FilterSelect({ value, onChange, options, className = "" }) {
   const [open, setOpen] = useState(false);
@@ -258,7 +255,6 @@ export default function TemplateGallery() {
     { value: "Grid", label: "Grid" },
     { value: "Minimal", label: "Minimal" },
     { value: "Cards", label: "Cards" },
-    { value: "Interactive", label: "Interactive" },
   ];
   const SORT_OPTIONS = [
     { value: "Popular", label: "Popular" },
@@ -281,6 +277,7 @@ export default function TemplateGallery() {
   });
 
   return (
+     
     <div className="min-h-screen bg-background text-foreground p-8 pt-24 transition-colors duration-300">
       <Navbar />
       <div className="flex justify-between items-center mb-8">
@@ -351,33 +348,45 @@ export default function TemplateGallery() {
         portfolioTitle={selectedPortfolioTitle}
       />
 
-      {/* Holographic Theme */}
+      <div className="mt-12">
+        <div className="mb-4 flex items-center gap-3 px-1">
+          <span className="rounded-full bg-yellow-500/20 px-3 py-1 text-xs font-bold uppercase tracking-widest text-yellow-400 border border-yellow-500/30">
+            Preview
+          </span>
+          <h2 className="text-lg font-semibold text-foreground/70">2D Retro 8-bit Theme — Projects Section</h2>
+        </div>
+        <div className="overflow-hidden rounded-2xl border border-border">
+          <RetroProjects />
+        </div>
+      </div>
+
+      <div className="mt-12">
+        <div className="mb-4 flex items-center gap-3 px-1">
+          <span className="rounded-full bg-amber-500/20 px-3 py-1 text-xs font-bold uppercase tracking-widest text-amber-400 border border-amber-500/30">
+            Preview
+          </span>
+          <h2 className="text-lg font-semibold text-foreground/70">Fantasy RPG Theme — Projects Section</h2>
+        </div>
+        <div className="overflow-hidden rounded-2xl border border-border">
+          <FantasyRPGProjects />
+        </div>
+      </div>
+
       <div className="mt-12">
         <div className="mb-4 flex items-center gap-3 px-1">
           <span className="rounded-full bg-cyan-500/20 px-3 py-1 text-xs font-bold uppercase tracking-widest text-cyan-400 border border-cyan-500/30">
             Preview
           </span>
-          <h2 className="text-lg font-semibold text-foreground/70">Holographic Theme — About Section</h2>
+          <h2 className="text-lg font-semibold text-foreground/70">Holographic Theme — Hero & About Sections</h2>
+        </div>
+        <div className="overflow-hidden rounded-2xl border border-border">
+           <Hero />
         </div>
         <div className="overflow-hidden rounded-2xl border border-border">
           <HolographicAbout />
         </div>
       </div>
 
-      {/* Geometric Shapes Hero */}
-      <div className="mt-12">
-        <div className="mb-4 flex items-center gap-3 px-1">
-          <span className="rounded-full bg-indigo-500/20 px-3 py-1 text-xs font-bold uppercase tracking-widest text-indigo-400 border border-indigo-500/30">
-            Preview
-          </span>
-          <h2 className="text-lg font-semibold text-foreground/70">Geometric Shapes Theme — Hero Section</h2>
-        </div>
-        <div className="overflow-hidden rounded-2xl border border-border">
-          <GeometricShapesHero />
-        </div>
-      </div>
-
-      {/* Geometric Shapes About */}
       <div className="mt-12">
         <div className="mb-4 flex items-center gap-3 px-1">
           <span className="rounded-full bg-amber-500/20 px-3 py-1 text-xs font-bold uppercase tracking-widest text-amber-400 border border-amber-500/30">
@@ -390,7 +399,6 @@ export default function TemplateGallery() {
         </div>
       </div>
 
-      {/* Culinary Restaurant */}
       <div className="mt-12">
         <div className="mb-4 flex items-center gap-3 px-1">
           <span className="rounded-full bg-amber-500/20 px-3 py-1 text-xs font-bold uppercase tracking-widest text-amber-400 border border-amber-500/30">
@@ -403,7 +411,6 @@ export default function TemplateGallery() {
         </div>
       </div>
 
-      {/* Tech Startup */}
       <div className="mt-12">
         <div className="mb-4 flex items-center gap-3 px-1">
           <span className="rounded-full bg-cyan-500/20 px-3 py-1 text-xs font-bold uppercase tracking-widest text-cyan-400 border border-cyan-500/30">
@@ -416,25 +423,41 @@ export default function TemplateGallery() {
         </div>
       </div>
 
-      {/* Liquid Glass */}
       <div className="mt-12">
         <div className="mb-4 flex items-center gap-3 px-1">
-          <span className="rounded-full bg-cyan-500/20 px-3 py-1 text-xs font-bold uppercase tracking-widest text-cyan-400 border border-cyan-500/30">
+          <span className="rounded-full bg-violet-500/20 px-3 py-1 text-xs font-bold uppercase tracking-widest text-violet-400 border border-violet-500/30">
             Preview
           </span>
-          <h2 className="text-lg font-semibold text-foreground/70">Liquid Glass Theme</h2>
+          <h2 className="text-lg font-semibold text-foreground/70">Choose Adventure Theme — Full Interactive Template</h2>
         </div>
         <div className="overflow-hidden rounded-2xl border border-border">
-          <LiquidGlass />
+          <ChooseAdventurePortfolio />
         </div>
       </div>
+      {/* Windows 98 Contact Preview */}
+<div className="mt-12">
+  <div className="mb-4 flex items-center gap-3 px-1">
+    <span className="rounded-full bg-sky-500/20 px-3 py-1 text-xs font-bold uppercase tracking-widest text-sky-400 border border-sky-500/30">
+      Preview
+    </span>
+    <h2 className="text-lg font-semibold text-foreground/70">Windows 98 Theme — Contact Section</h2>
+  </div>
+  <div className="overflow-hidden rounded-2xl border border-border">
+    <Windows98Contact />
+  </div>
+</div>
 
-      {/* Commented out — templates not yet available locally */}
-      {/* <ChooseAdventurePortfolio /> */}
-      {/* <RetroProjects /> */}
-      {/* <FantasyRPGProjects /> */}
-      {/* <GraffitiHero /> */}
-
+      <div className="mt-12">
+        <div className="mb-4 flex items-center gap-3 px-1">
+          <span className="rounded-full bg-sky-500/20 px-3 py-1 text-xs font-bold uppercase tracking-widest text-sky-400 border border-sky-500/30">
+            Preview
+          </span>
+          <h2 className="text-lg font-semibold text-foreground/70">Windows 98 Theme — Resume CTA Section</h2>
+        </div>
+        <div className="overflow-hidden rounded-2xl border border-border">
+          <Windows98ResumeCTA />
+        </div>
+      </div>
     </div>
   );
 }
