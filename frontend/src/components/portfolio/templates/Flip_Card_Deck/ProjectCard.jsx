@@ -10,8 +10,12 @@ export default function ProjectCard({ project, isFlipped, onToggle }) {
       drag
       dragConstraints={{ top: 0, left: 0, right: 0, bottom: 0 }}
       dragElastic={0.22}
-      onClick={onToggle}
+      onClick={(event) => {
+        if (event.target.closest("a")) return;
+        onToggle();
+      }}
       onKeyDown={(event) => {
+        if (event.target.closest("a")) return;
         if (event.key === "Enter" || event.key === " ") {
           event.preventDefault();
           onToggle();

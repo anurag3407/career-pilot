@@ -304,8 +304,12 @@ export default function Upload() {
             </div>
 
             <div className="flex gap-3">
+              <label htmlFor="linkedin-url" className="sr-only">
+                LinkedIn profile URL
+              </label>
               <input
-                type="text"
+                id="linkedin-url"
+                type="url"
                 value={linkedinUrl}
                 onChange={(e) => {
                   setLinkedinUrl(e.target.value)
@@ -404,8 +408,8 @@ export default function Upload() {
 
         {/* How it works */}
         <motion.div
-       className="relative w-full h-64 shadow-lg hover:shadow-2xl"
-       animate={{ rotateY: flipped === index ? 180 : 0 }}
+       className="relative w-full h-56 sm:h-64 shadow-lg hover:shadow-2xl"
+       animate={{ rotateY: 0 }}
        whileHover={{ scale: 1.05 }}
        transition={{ duration: 0.6 }}
        style={{ transformStyle: "preserve-3d" }}

@@ -12,7 +12,7 @@ export default function About() {
       <div className="mt-6">
         <img
           src={data.personal.avatar}
-          alt="avatar"
+          alt={`Avatar of ${data.personal.name}`}
           className="w-32 h-32 rounded-full"
         />
       </div>

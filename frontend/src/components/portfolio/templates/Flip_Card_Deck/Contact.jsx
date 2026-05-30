@@ -10,7 +10,10 @@ export default function Contact() {
 
       <div className="flex justify-center gap-6">
 
-        <a href={data.socials.github}>
+        <a
+          href={data.socials.github}
+          aria-label={`GitHub profile of ${data.personal.name}`}
+        >
           <Github />
         </a>
 
