@@ -21,7 +21,8 @@ import {
     Zap,
     Rocket,
     Briefcase,
-    GitMerge
+    GitMerge,
+    Palette
 } from "lucide-react";
 import { useAuth } from "../hooks/useAuth";
 import { useTheme } from "../hooks/useTheme";
@@ -40,6 +41,11 @@ const navLinks = [
         label: "Dashboard",
         href: "/dashboard",
         icon: <LayoutDashboard className="w-5 h-5 shrink-0" />,
+    },
+    {
+        label: "Templates",
+        href: "/templates",
+        icon: <Palette className="w-5 h-5 shrink-0" />,
     },
     {
         label: "Resume Builder",

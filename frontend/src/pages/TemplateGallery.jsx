@@ -15,6 +15,7 @@ import GeometricShapesHero from "../components/portfolio/templates/Geometric_Sha
 import LiquidGlass from "../components/portfolio/templates/Liquid_Glass/index";
 import MidnightGradient from "../components/portfolio/templates/Midnight_Gradient/index";
 import PlayingCardsPortfolio from "../components/portfolio/templates/Playing_Cards";
+import CherryBlossom from "../components/portfolio/templates/Cherry_Blossom/index";
 import Navbar from '../components/Navbar'
 import Breadcrumb from '../components/Breadcrumb'
 import { X } from "lucide-react";
@@ -128,14 +129,15 @@ function TemplateCard({ template, onUse }) {
       }}
       className="bg-card rounded-2xl overflow-hidden border border-border flex flex-col justify-between cursor-pointer"
     >
-      <div className="overflow-hidden relative">
+      <div className="relative aspect-[16/9] overflow-hidden bg-muted">
         <motion.img
           src={template.image}
           alt={template.title}
-          className="w-full h-52 object-cover object-top"
+          loading="lazy"
+          className="h-full w-full object-cover object-top"
           variants={{
             rest: { scale: 1, transition: { duration: 0.5, ease: [0.25, 0.46, 0.45, 0.94] } },
-            hover: { scale: 1.08, transition: { type: "spring", stiffness: 200, damping: 25 } },
+            hover: { scale: 1.03, transition: { type: "spring", stiffness: 200, damping: 25 } },
           }}
           onError={(e) => {
             e.target.style.display = 'none';

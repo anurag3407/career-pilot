@@ -4,19 +4,11 @@ import { useAuth } from '../hooks/useAuth'
 import { useTheme } from '../hooks/useTheme'
 import { motion, AnimatePresence } from 'framer-motion'
 import {
-  Search,
-  FileText,
-  LayoutDashboard,
   Menu,
   X,
   LogOut,
   User,
   Bell,
-  Mail,
-  Linkedin,
-  Users,
-  GraduationCap,
-  Mic,
   Sun,
   Moon,
   Palette,
@@ -30,7 +22,6 @@ export default function Navbar() {
 
   const [mobileMenuOpen, setMobileMenuOpen] = useState(false)
   const [scrolled, setScrolled] = useState(false)
-  const [searchQuery, setSearchQuery] = useState('')
   const [showDropdown, setShowDropdown] = useState(false)
   const [notificationCount] = useState(3)
 
@@ -68,49 +59,20 @@ export default function Navbar() {
     }
   }
 
-  const isActive = (path) => location.pathname === path
-
-  const publicLinks = [
-    { path: '/templates', label: 'Templates', icon: Palette },
-    { path: '/portfolio', label: 'Portfolio', icon: User },
-  ]
-
-  const privateLinks = [
-    { path: '/dashboard', label: 'Dashboard', icon: LayoutDashboard },
-    { path: '/jobs', label: 'Jobs', icon: Search },
-    { path: '/job-alerts', label: 'Alerts', icon: Bell },
-    { path: '/interview-prep', label: 'Interview', icon: Mic },
-    { path: '/fellowship', label: 'Fellowship', icon: GraduationCap },
-    { path: '/community', label: 'Community', icon: Users },
-    { path: '/upload', label: 'Resume', icon: FileText },
-    { path: '/email-generator', label: 'Emails', icon: Mail },
-    { path: '/linkedin-optimizer', label: 'LinkedIn', icon: Linkedin },
-  ]
-
-  const searchSuggestions = [
-    'Frontend Developer',
-    'Backend Developer',
-    'Resume Builder',
-    'Interview Questions',
-    'Remote Jobs'
-  ]
-
   return (
     <nav
-      className={`fixed top-0 left-0 right-0 z-50 transition-all duration-300 ${
-        scrolled
-          ? 'glass border-b border-border shadow-sm'
-          : 'bg-transparent'
+      className={`fixed top-0 left-0 right-0 z-50 border-b border-border bg-background shadow-sm transition-shadow duration-300 ${
+        scrolled ? 'shadow-lg shadow-background/20' : ''
       }`}
     >
-      <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
-        <div className="flex justify-between items-center h-16">
+      <div className="w-full px-4 sm:px-6 lg:px-8">
+        <div className="flex h-16 items-center gap-4">
 
           {/* Logo */}
           <Link
             to="/"
             onClick={handleHomeClick}
-            className="flex items-center gap-2 group"
+            className="group flex shrink-0 items-center gap-2"
           >
             <div className="w-12 h-12 flex items-center justify-center rounded-xl overflow-hidden group-hover:scale-105 transition-transform">
               <img
@@ -125,75 +87,10 @@ export default function Navbar() {
             </span>
           </Link>
 
-          {/* Desktop Navigation */}
-          <div className="hidden lg:flex items-center gap-2">
-
-            {/* Search Bar */}
-            <div className="relative">
-              <div className="flex items-center bg-muted border border-border rounded-xl px-3 py-2 w-72 focus-within:ring-2 focus-within:ring-primary/40 transition-all">
-                <Search className="w-4 h-4 text-muted-foreground mr-2" />
-
-                <input
-                  type="text"
-                  placeholder="Search anything..."
-                  value={searchQuery}
-                  onChange={(e) => setSearchQuery(e.target.value)}
-                  onFocus={() => setShowDropdown(true)}
-                  onBlur={() => setTimeout(() => setShowDropdown(false), 200)}
-                  className="bg-transparent outline-none text-sm w-full text-foreground placeholder:text-muted-foreground"
-                />
-              </div>
-
-              {/* Suggestions Dropdown */}
-              <AnimatePresence>
-                {showDropdown && (
-                  <motion.div
-                    initial={{ opacity: 0, y: 8 }}
-                    animate={{ opacity: 1, y: 0 }}
-                    exit={{ opacity: 0, y: 8 }}
-                    className="absolute top-14 left-0 w-full bg-background border border-border rounded-xl shadow-xl overflow-hidden"
-                  >
-                    {searchSuggestions.map((item, index) => (
-                      <button
-                        key={index}
-                        className="w-full text-left px-4 py-3 hover:bg-muted transition-colors text-sm text-foreground"
-                      >
-                        {item}
-                      </button>
-                    ))}
-                  </motion.div>
-                )}
-              </AnimatePresence>
-            </div>
-
-            {/* Public Links */}
-            {publicLinks.map(({ path, label, icon: Icon }) => (
-              <Link
-                key={path}
-                to={path}
-                className={`nav-link ${isActive(path) ? 'nav-link-active' : 'nav-link-inactive'}`}
-              >
-                <Icon className="w-4 h-4" />
-                {label}
-              </Link>
-            ))}
-
-            {/* Conditionally visible private links */}
-            {user &&
-              privateLinks.map(({ path, label, icon: Icon }) => (
-                <Link
-                  key={path}
-                  to={path}
-                  className={`nav-link ${isActive(path) ? 'nav-link-active' : 'nav-link-inactive'}`}
-                >
-                  <Icon className="w-4 h-4" />
-                  {label}
-                </Link>
-              ))}
-          </div>
+          <div className="min-w-0 flex-1" />
 
           {/* Right Side */}
-          <div className="hidden md:flex items-center gap-3">
+          <div className="ml-auto hidden shrink-0 items-center gap-3 md:flex">
 
             {/* Theme Toggle */}
             <button
@@ -353,46 +250,6 @@ export default function Navbar() {
             className="md:hidden border-t border-border bg-background/95 backdrop-blur-xl overflow-hidden"
           >
             <div className="px-4 py-6 space-y-3">
-
-              {/* Mobile Search */}
-              <div className="flex items-center bg-muted border border-border rounded-xl px-3 py-3">
-                <Search className="w-4 h-4 text-muted-foreground mr-2" />
-
-                <input
-                  type="text"
-                  placeholder="Search..."
-                  className="bg-transparent outline-none text-sm w-full"
-                />
-              </div>
-
-              {publicLinks.map(({ path, label, icon: Icon }) => (
-                <Link
-                  key={path}
-                  to={path}
-                  onClick={() => setMobileMenuOpen(false)}
-                  className={`nav-link text-base ${isActive(path) ? 'nav-link-active' : 'nav-link-inactive'}`}
-                >
-                  <Icon className="w-5 h-5" />
-                  {label}
-                </Link>
-              ))}
-
-              {user &&
-                privateLinks.map(({ path, label, icon: Icon }) => (
-                  <Link
-                    key={path}
-                    to={path}
-                    onClick={() => setMobileMenuOpen(false)}
-                    className={`nav-link text-base ${isActive(path) ? 'nav-link-active' : 'nav-link-inactive'}`}
-                  >
-                    <Icon className="w-5 h-5" />
-                    {label}
-                  </Link>
-                ))}
-
-               
-
-
               {user ? (
                 <button
                   onClick={() => {
