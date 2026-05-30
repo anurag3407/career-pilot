@@ -1098,7 +1098,7 @@ export const templates = [
     "category": "Portfolio",
     "colorScheme": "Dark",
     "layout": "Grid",
-    "author": "System",
+    "author": "Akansha02code",
     "views": 1091,
     "rating": 4.5,
     "image": "/template-previews/Liquid_Glass.png",
@@ -1833,11 +1833,12 @@ export const templates = [
     "category": "Portfolio",
     "colorScheme": "Dark",
     "layout": "Grid",
-    "author": "System",
-    "views": 1152,
-    "rating": 4.5,
-    "image": "/template-previews/Shadow_Layers.png",
-    "createdAt": "2026-05-01"
+    "author": "Akansha02code",
+    "views": 1200,
+    "rating": 4.8,
+    "image": "/template-previews/Shadow-Layers.png",
+    "createdAt": "2026-05-30",
+    "isComplete": true
   },
   {
     "id": "Silk_Flow",
