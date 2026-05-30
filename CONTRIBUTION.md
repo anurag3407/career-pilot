@@ -550,7 +550,7 @@ Mockups, examples, or references
 
 ### Backend Structure
 
-```
+```text
 backend/src/
 ├── index.js              # Entry point - start here
 ├── config/               # Configuration files
@@ -593,7 +593,7 @@ backend/src/
 
 ### Frontend Structure
 
-```
+```text
 frontend/src/
 ├── App.jsx               # Root component & Routing
 ├── main.jsx              # Application entry point
@@ -630,7 +630,9 @@ frontend/src/
 | `backend/src/routes/*.js` | API endpoint definitions |
 | `backend/src/services/*.js` | Core business logic |
 | `backend/src/services/deploy/` | All deployment provider integrations |
-| `backend/src/services/github/` | GitHub analysis and intelligence |
+| `backend/src/services/githubImporter.js` | GitHub analysis and intelligence |
+| `backend/src/services/githubEnricherService.js` | GitHub data enrichment |
+| `backend/src/services/portfolioGitHubSync.js` | Portfolio sync logic |
 | `backend/src/services/ai/` | AI-powered career tools |
 | `backend/src/templates/portfolio/` | Portfolio theme templates |
 | `frontend/src/App.jsx` | Application routing |
