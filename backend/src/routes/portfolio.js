@@ -3,7 +3,15 @@ import fs from 'fs/promises';
 import mongoose from 'mongoose';
 import { verifyToken } from '../middleware/auth.js';
 import { asyncHandler, ApiError } from '../middleware/errorHandler.js';
+import cacheHeaders from '../middleware/cacheHeaders.js';
+import { validateToken as validateCloudflareToken, deploy as cloudflareDeploy } from '../services/deploy/cloudflareDeployer.js';
+import { validateToken as validateGithubToken } from '../services/deploy/githubPagesDeployer.js';
+import { validateToken as validateNetlifyToken } from '../services/deploy/netlifyDeployer.js';
+import { generatePortfolioHtml } from '../services/deploy/portfolioHtmlGenerator.js';
+import { validatePortfolioSlug, validatePortfolioContent } from '../middleware/portfolioValidator.js';
+import Portfolio from '../models/Portfolio.model.js';
 import { enhanceSection } from '../services/ai/portfolioContentEnhancer.js';
+import { extractPortfolioData } from '../services/ai/portfolioExtractor.js';
 import { extractAIProvider } from '../middleware/aiKey.js';
 import { generateRobotsTxt, generateSitemapXml } from '../utils/sitemapGenerator.js';
 import { analyzeAccessibility } from '../services/accessibilityChecker.js';
@@ -13,9 +21,27 @@ import { getObjectDiff, applyDiff } from '../utils/diff.js';
 
 const router = express.Router();
 
-const VALID_SECTIONS = ['hero', 'projects', 'about', 'skills'];
+const VALID_SECTIONS = ['hero', 'projects', 'about', 'skills', 'experience', 'education'];
 const VALID_SLUG_PATTERN = /^[a-z0-9]+(?:[a-z0-9-]*[a-z0-9])?$/i;
 const FREE_TIER_LIMIT_MB = 100;
+
+// @route   POST /api/portfolio/extract-from-resume
+// @desc    Extracts portfolio JSON structure from raw resume text using AI
+// @access  Private
+router.post('/extract-from-resume', verifyToken, extractAIProvider, asyncHandler(async (req, res) => {
+  const { resumeText } = req.body;
+  if (!resumeText) {
+    throw new ApiError(400, 'Resume text is required');
+  }
+
+  const extractedData = await extractPortfolioData(resumeText, req.aiProvider);
+  
+  res.json({
+    success: true,
+    data: extractedData
+  });
+}));
+
 
 const getPublicPortfolioBaseUrl = (req) => {
   const configuredBaseUrl = process.env.PORTFOLIO_BASE_URL || process.env.FRONTEND_URL;
@@ -153,6 +179,58 @@ router.post('/validate-token', verifyToken, asyncHandler(async (req, res) => {
 }));
 
 /**
+ * POST /api/portfolio/deploy
+ * Generates a standalone HTML page from portfolio data and deploys it
+ * to Cloudflare Pages via the Direct Upload API.
+ */
+router.post('/deploy', verifyToken, asyncHandler(async (req, res) => {
+  const { slug, sections, templateId, title } = req.body;
+  const userId = req.user.uid;
+
+  if (!slug || typeof slug !== 'string') {
+    throw new ApiError(400, 'slug is required.');
+  }
+
+  if (!sections || typeof sections !== 'object') {
+    throw new ApiError(400, 'sections (portfolio data) is required.');
+  }
+
+  // Generate self-contained HTML from the portfolio data
+  const { html } = generatePortfolioHtml(sections, templateId || 'default');
+
+  // Deploy to Cloudflare Pages
+  let deployment;
+  try {
+    deployment = await cloudflareDeploy(slug, html);
+  } catch (err) {
+    console.error('Cloudflare deploy error:', err);
+    throw new ApiError(502, `Deployment failed: ${err.message}`);
+  }
+
+  // Save the portfolio to the database (upsert so re-deploys overwrite)
+  try {
+    await Portfolio.findOneAndUpdate(
+      { userId, slug },
+      { userId, slug, sections, deployedUrl: deployment.url, projectName: deployment.projectName },
+      { upsert: true, new: true }
+    );
+  } catch (dbErr) {
+    console.error('DB save after deploy error:', dbErr);
+    // Don't fail the response — the site IS live, even if DB save had an issue
+  }
+
+  res.status(200).json({
+    success: true,
+    message: 'Portfolio deployed successfully!',
+    data: {
+      url: deployment.url,
+      deploymentId: deployment.deploymentId,
+      projectName: deployment.projectName,
+    },
+  });
+}));
+
+/**
  * c. GET /api/portfolio/public/:slug/sitemap.xml
  */
 router.get(
@@ -255,6 +333,54 @@ router.get('/', asyncHandler(async (req, res) => {
     url: `/portfolio/public/${slug}`,
   }));
   res.status(200).json({ success: true, portfolios, data: portfolios });
+}));
+
+/**
+ * POST /api/portfolio
+ * Create a new portfolio with validated and sanitized content.
+ */
+router.post('/', verifyToken, validatePortfolioSlug, validatePortfolioContent, asyncHandler(async (req, res) => {
+  const { slug, sections } = req.body;
+  const userId = req.user.uid;
+
+  const existing = await Portfolio.findOne({ userId, slug });
+  if (existing) {
+    throw new ApiError(409, `A portfolio with slug "${slug}" already exists.`);
+  }
+
+  const portfolio = await Portfolio.create({ userId, slug, sections });
+
+  res.status(201).json({
+    success: true,
+    message: 'Portfolio created successfully.',
+    data: portfolio,
+  });
+}));
+
+/**
+ * PUT /api/portfolio/:slug
+ * Update an existing portfolio with validated and sanitized content.
+ */
+router.put('/:slug', verifyToken, validatePortfolioSlug, validatePortfolioContent, asyncHandler(async (req, res) => {
+  const { slug } = req.params;
+  const { sections } = req.body;
+  const userId = req.user.uid;
+
+  const portfolio = await Portfolio.findOneAndUpdate(
+    { userId, slug },
+    { sections },
+    { new: true }
+  );
+
+  if (!portfolio) {
+    throw new ApiError(404, `Portfolio "${slug}" not found.`);
+  }
+
+  res.status(200).json({
+    success: true,
+    message: 'Portfolio updated successfully.',
+    data: portfolio,
+  });
 }));
 
 /**
