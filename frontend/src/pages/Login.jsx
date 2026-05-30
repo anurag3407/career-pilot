@@ -1,5 +1,6 @@
 import { useState } from 'react'
 import { Link, useNavigate } from 'react-router-dom'
+import { useForm } from 'react-hook-form'
 import toast from 'react-hot-toast'
 import { ShieldCheck } from 'lucide-react'
 import { useAuth } from '../hooks/useAuth'
@@ -9,101 +10,70 @@ import Button from '../components/Button'
 import Card from '../components/Card'
 import { twoFactorApi } from '../services/api'
 
+const validationRules = {
+  email: {
+    required: 'Email is required',
+    pattern: {
+      value: /\S+@\S+\.\S+/,
+      message: 'Invalid email address',
+    },
+  },
+  password: {
+    required: 'Password is required',
+  },
+}
+
 export default function Login() {
   const navigate = useNavigate()
   const { login, loginWithGoogle, loginWithLinkedIn } = useAuth()
 
-  const [formData, setFormData] = useState({ email: '', password: '' })
-  const [loading, setLoading] = useState(false)
-  const [errors, setErrors] = useState({})
+  const {
+    register,
+    handleSubmit,
+    formState: { errors, isSubmitting },
+  } = useForm()
+
   const [step, setStep] = useState('credentials')
   const [totpToken, setTotpToken] = useState('')
   const [useBackup, setUseBackup] = useState(false)
   const [totpLoading, setTotpLoading] = useState(false)
+  const [googleLoading, setGoogleLoading] = useState(false)
+  const [linkedinLoading, setLinkedinLoading] = useState(false)
 
-  const handleChange = (e) => {
-    const { name, value } = e.target
-    setFormData((prev) => ({
-      ...prev,
-      [name]: value
-    }))
-    if (errors[name]) {
-      setErrors((prev) => ({
-        ...prev,
-        [name]: ''
-      }))
-    }
-  }
-
-  const validateForm = () => {
-    const newErrors = {}
-    if (!formData.email) {
-      newErrors.email = 'Email is required'
-    } else if (!/\S+@\S+\.\S+/.test(formData.email)) {
-      newErrors.email = 'Invalid email address'
-    }
-    if (!formData.password) {
-      newErrors.password = 'Password is required'
-    }
-    setErrors(newErrors)
-    return Object.keys(newErrors).length === 0
-  }
-
-  const handleSubmit = async (e) => {
-    e.preventDefault()
-    if (!validateForm()) return
-
-    setLoading(true)
+  const onSubmit = async (data) => {
     try {
-      // 1. Primary authentication via Firebase
-      await login(formData.email, formData.password)
-
-      // 2. Check with backend if two-factor is enabled for this user
+      await login(data.email, data.password)
       try {
         const statusRes = await twoFactorApi.getStatus()
         if (statusRes.enabled) {
           setStep('totp')
-          setLoading(false)
           return
         }
-      } catch (_) {
-        // 2FA status check failed — proceed without 2FA
-      }
-
+      } catch (_) {}
       toast.success('Signed in successfully!')
       navigate('/dashboard')
     } catch (error) {
-      console.error('Login error:', error)
       toast.error(error.message || 'Failed to sign in. Please check your credentials.')
-    } finally {
-      setLoading(false)
     }
   }
 
   const handleGoogleLogin = async () => {
-    setLoading(true)
+    setGoogleLoading(true)
     try {
       await loginWithGoogle()
-
-      // Check with backend if two-factor is enabled
       try {
         const statusRes = await twoFactorApi.getStatus()
         if (statusRes.enabled) {
           setStep('totp')
-          setLoading(false)
           return
         }
-      } catch (_) {
-        // 2FA status check failed — proceed without 2FA
-      }
-
+      } catch (_) {}
       toast.success('Signed in with Google!')
       navigate('/dashboard')
     } catch (error) {
-      console.error('Google login error:', error)
       toast.error(error.message || 'Failed to sign in with Google')
     } finally {
-      setLoading(false)
+      setGoogleLoading(false)
     }
   }
 
@@ -112,22 +82,18 @@ export default function Login() {
       toast.error('LinkedIn login integration is not configured.')
       return
     }
-    setLoading(true)
+    setLinkedinLoading(true)
     try {
-      // loginWithLinkedIn triggers a full-page redirect to LinkedIn OAuth
       loginWithLinkedIn()
-      // We don't toast or navigate here as the page is redirecting
     } catch (error) {
-      console.error('LinkedIn login error:', error)
       toast.error(error.message || 'Failed to login with LinkedIn')
-      setLoading(false)
+      setLinkedinLoading(false)
     }
   }
 
   const handleTotpSubmit = async (e) => {
     e.preventDefault()
     if (!totpToken.trim()) return
-
     setTotpLoading(true)
     try {
       if (useBackup) {
@@ -146,10 +112,9 @@ export default function Login() {
 
   return (
     <div className="min-h-screen bg-background relative overflow-hidden">
-      {/* Background Effect */}
       <div className="absolute top-1/4 left-1/4 w-96 h-96 bg-primary/20 rounded-full blur-[120px] pointer-events-none" />
       <div className="absolute bottom-1/4 right-1/4 w-96 h-96 bg-secondary/20 rounded-full blur-[120px] pointer-events-none" />
-      
+
       <Navbar />
 
       <div className="max-w-md mx-auto pt-24 md:pt-32 px-4 relative z-10">
@@ -157,33 +122,27 @@ export default function Login() {
           {step === 'credentials' ? (
             <>
               <h1 className="text-3xl font-black text-center mb-8 text-foreground tracking-tight">Welcome Back</h1>
-              
-              <form onSubmit={handleSubmit}>
+
+              <form onSubmit={handleSubmit(onSubmit)} noValidate>
                 <Input
                   label="Email"
                   type="email"
-                  name="email"
-                  value={formData.email}
-                  onChange={handleChange}
                   placeholder="you@example.com"
-                  error={errors.email}
-                  required
+                  error={errors.email?.message}
+                  {...register('email', validationRules.email)}
                 />
-                
+
                 <Input
                   label="Password"
                   type="password"
-                  name="password"
-                  value={formData.password}
-                  onChange={handleChange}
                   placeholder="••••••••"
-                  error={errors.password}
-                  required
+                  error={errors.password?.message}
+                  {...register('password', validationRules.password)}
                 />
-                
-                <Button 
-                  type="submit" 
-                  loading={loading}
+
+                <Button
+                  type="submit"
+                  loading={isSubmitting}
                   className="w-full mt-4 font-bold"
                 >
                   Sign In
@@ -198,12 +157,13 @@ export default function Login() {
                   <span className="px-4 bg-card text-muted-foreground font-bold tracking-widest uppercase text-xs">Or continue with</span>
                 </div>
               </div>
-              
+
               <div className="grid grid-cols-2 gap-3">
-                <Button 
-                  variant="outline" 
+                <Button
+                  variant="outline"
                   onClick={handleGoogleLogin}
-                  disabled={loading}
+                  disabled={googleLoading}
+                  loading={googleLoading}
                   className="w-full font-bold"
                 >
                   <svg className="w-5 h-5 mr-1" viewBox="0 0 24 24">
@@ -218,7 +178,8 @@ export default function Login() {
                 <Button
                   variant="outline"
                   onClick={handleLinkedInLogin}
-                  disabled={loading}
+                  disabled={linkedinLoading}
+                  loading={linkedinLoading}
                   className="w-full font-bold"
                 >
                   <svg className="w-5 h-5 mr-1" viewBox="0 0 24 24" fill="currentColor">
@@ -241,9 +202,7 @@ export default function Login() {
                 <div className="p-3 rounded-full bg-primary/10 border border-primary/20 mb-4">
                   <ShieldCheck className="w-6 h-6 text-primary" />
                 </div>
-                <h1 className="text-2xl font-bold text-center text-foreground">
-                  Two-Factor Verification
-                </h1>
+                <h1 className="text-2xl font-bold text-center text-foreground">Two-Factor Verification</h1>
                 <p className="text-muted-foreground text-sm text-center mt-2 font-medium">
                   {useBackup
                     ? 'Enter one of your backup codes to continue.'
@@ -255,9 +214,14 @@ export default function Login() {
                 <Input
                   label={useBackup ? 'Backup code' : 'Authenticator code'}
                   type="text"
-                  name="totpToken"
                   value={totpToken}
-                  onChange={(e) => setTotpToken(useBackup ? e.target.value.toUpperCase() : e.target.value.replace(/\D/g, '').slice(0, 6))}
+                  onChange={(e) =>
+                    setTotpToken(
+                      useBackup
+                        ? e.target.value.toUpperCase()
+                        : e.target.value.replace(/\D/g, '').slice(0, 6)
+                    )
+                  }
                   placeholder={useBackup ? 'XXXX-XXXX' : '000000'}
                   className="font-mono tracking-widest text-center text-lg font-bold"
                   maxLength={useBackup ? 9 : 6}
@@ -267,7 +231,11 @@ export default function Login() {
                 <Button
                   type="submit"
                   loading={totpLoading}
-                  disabled={useBackup ? totpToken.replace(/[^A-Z0-9]/g, '').length !== 8 : totpToken.length !== 6}
+                  disabled={
+                    useBackup
+                      ? totpToken.replace(/[^A-Z0-9]/g, '').length !== 8
+                      : totpToken.length !== 6
+                  }
                   className="w-full mt-4 font-bold"
                 >
                   Verify &amp; Sign In
@@ -277,7 +245,7 @@ export default function Login() {
               <button
                 type="button"
                 onClick={() => {
-                  setUseBackup(v => !v)
+                  setUseBackup((v) => !v)
                   setTotpToken('')
                 }}
                 className="w-full text-center text-sm text-muted-foreground hover:text-foreground transition-colors mt-4 font-bold"

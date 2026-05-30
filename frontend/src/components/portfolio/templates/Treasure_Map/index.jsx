@@ -1,6 +1,6 @@
 import React, { useState } from 'react';
 import { motion } from 'framer-motion';
-import { GithubIcon, Linkedin, Twitter, Mail, ExternalLink, MapPin, Compass, Skull, Zap } from 'lucide-react';
+import { Github, Linkedin, Twitter, Mail, ExternalLink, MapPin, Compass, Skull, Zap } from 'lucide-react';
 import data from '../../../../data/dummy_data.json';
 
 /**

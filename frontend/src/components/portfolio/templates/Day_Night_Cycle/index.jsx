@@ -1,6 +1,6 @@
 import { useState, useEffect } from "react";
 import { motion, AnimatePresence } from "framer-motion";
-import { GithubIcon, Linkedin, Twitter, Mail, MapPin, ExternalLink, Sun, Moon } from "lucide-react";
+import { Github, Linkedin, Twitter, Mail, MapPin, ExternalLink, Sun, Moon } from "lucide-react";
 import data from "../../../../data/dummy_data.json";
 
 const SKY_STAGES = [
