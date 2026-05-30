@@ -317,11 +317,12 @@ export const templates = [
     "category": "Portfolio",
     "colorScheme": "Dark",
     "layout": "Grid",
-    "author": "System",
+    "author": "Akansha02code",
     "views": 1026,
     "rating": 4.5,
-    "image": "/template-previews/Cherry_Blossom.png",
-    "createdAt": "2026-05-01"
+    "image": "/template-previews/Cherry-Blossom.png",
+    "createdAt": "2026-05-01",
+    "isComplete": true
   },
   {
     "id": "Choose_Adventure",
@@ -1101,7 +1102,8 @@ export const templates = [
     "views": 1091,
     "rating": 4.5,
     "image": "/template-previews/Liquid_Glass.png",
-    "createdAt": "2026-05-01"
+    "createdAt": "2026-05-01",
+    "isComplete": true
   },
   {
     "id": "Liquid_Morph",
@@ -1221,7 +1223,8 @@ export const templates = [
     "views": 1101,
     "rating": 4.5,
     "image": "/template-previews/Midnight_Gradient.png",
-    "createdAt": "2026-05-01"
+    "createdAt": "2026-05-01",
+    "isComplete": true
   },
   {
     "id": "Minimalist_White",
@@ -1592,6 +1595,7 @@ export const templates = [
     "author": "System",
     "views": 1132,
     "rating": 4.5,
+    "isComplete": true,
     "image": "/template-previews/Pixel_Quest.png",
     "createdAt": "2026-05-01"
   },
@@ -1617,7 +1621,8 @@ export const templates = [
     "views": 1134,
     "rating": 4.5,
     "image": "/template-previews/Playing_Cards.png",
-    "createdAt": "2026-05-01"
+    "createdAt": "2026-05-01",
+    "isComplete": true
   },
   {
     "id": "Polaroid_Memories",
@@ -1833,7 +1838,8 @@ export const templates = [
     "views": 1152,
     "rating": 4.5,
     "image": "/template-previews/Shadow_Layers.png",
-    "createdAt": "2026-05-01"
+    "createdAt": "2026-05-01",
+    "isComplete": true
   },
   {
     "id": "Silk_Flow",
@@ -1881,7 +1887,8 @@ export const templates = [
   "views": 1156,
   "rating": 4.5,
   "image": "/template-previews/Soft-Neumorphic.png",
-  "createdAt": "2026-05-01"
+  "createdAt": "2026-05-01",
+  "isComplete": true
 },
   {
     "id": "Solar_Eclipse",
@@ -2061,7 +2068,8 @@ export const templates = [
     "views": 1171,
     "rating": 4.5,
     "image": "/template-previews/Swiss_Typography.png",
-    "createdAt": "2026-05-01"
+    "createdAt": "2026-05-01",
+    "isComplete": true
   },
   {
     "id": "Tech_Startup",
@@ -2189,11 +2197,12 @@ export const templates = [
     "category": "Portfolio",
     "colorScheme": "Dark",
     "layout": "Grid",
-    "author": "System",
+    "author": "Akanhsa02code",
     "views": 1182,
     "rating": 4.5,
-    "image": "/template-previews/Type_Specimen.png",
-    "createdAt": "2026-05-01"
+    "image": "/template-previews/Type-Specimen.png",
+    "createdAt": "2026-05-01",
+    "isComplete": true
   },
   {
     "id": "Typewriter_Effect",

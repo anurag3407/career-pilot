@@ -1,5 +1,5 @@
 import React from 'react';
-import { GithubIcon, Linkedin, Twitter, Mail, Send } from 'lucide-react';
+import { Github, Linkedin, Twitter, Mail, Send } from 'lucide-react';
 import { Message, Divider } from './MessageComponents';
 
 export function ContactContent({ data }) {
@@ -72,3 +72,4 @@ export function ContactContent({ data }) {
     </div>
   );
 }
+
