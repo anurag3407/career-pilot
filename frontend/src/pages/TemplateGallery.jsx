@@ -204,13 +204,13 @@ function TemplateCard({ template, hovered, onHover, onLeave, onUse, aiDraft }) {
               className="flex gap-2 w-full mt-4"
             >
               <button
-                onClick={(e) => { e.stopPropagation(); onUse(template.title, false); }}
+                onClick={(e) => { e.stopPropagation(); onUse(template.title, false, template.id); }}
                 className="flex-1 bg-primary text-primary-foreground py-2.5 rounded-xl font-semibold text-sm cursor-pointer hover:scale-[1.02] active:scale-[0.98] transition-transform"
               >
                 Use Theme
               </button>
               <button
-                onClick={(e) => { e.stopPropagation(); onUse(template.id, true); }}
+                onClick={(e) => { e.stopPropagation(); onUse(template.id, true, template.id); }}
                 className="flex-1 bg-muted text-foreground border border-border py-2.5 rounded-xl font-semibold text-sm cursor-pointer hover:bg-accent hover:scale-[1.02] active:scale-[0.98] transition-all flex items-center justify-center gap-2"
               >
                 <Eye className="w-4 h-4" /> Preview
@@ -293,12 +293,14 @@ const [hoveredCard, setHoveredCard] = useState(null);
   const [selectedTheme, setSelectedTheme] = useState("minimal");
   const [isDeployModalOpen, setIsDeployModalOpen] = useState(false);
   const [selectedPortfolioTitle, setSelectedPortfolioTitle] = useState("");
+  const [selectedTemplateId, setSelectedTemplateId] = useState("default");
 
-  const handleUseTemplate = (val, isPreview) => {
+  const handleUseTemplate = (val, isPreview, id = "default") => {
     if (isPreview) {
       setSearchParams({ preview: val });
     } else {
       setSelectedPortfolioTitle(val);
+      setSelectedTemplateId(id);
       setIsDeployModalOpen(true);
     }
   };
@@ -434,6 +436,7 @@ const [hoveredCard, setHoveredCard] = useState(null);
         isOpen={isDeployModalOpen}
         onClose={() => setIsDeployModalOpen(false)}
         portfolioTitle={selectedPortfolioTitle}
+        templateId={selectedTemplateId}
         aiDraft={aiDraft}
         onDeploySuccess={clearDraft}
       />
