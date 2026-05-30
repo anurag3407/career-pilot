@@ -396,6 +396,42 @@ export const portfolioApi = {
     return handleResponse(response)
   },
 
+  // Create portfolio
+  async create(data) {
+    const headers = await getAuthHeaders()
+    const response = await fetch(`${API_BASE}/portfolio`, {
+      method: 'POST',
+      headers,
+      body: JSON.stringify(data)
+    })
+
+    return handleResponse(response)
+  },
+
+  // Extract portfolio JSON from raw resume text
+  async extractFromResume(resumeText) {
+    const headers = await getAuthHeaders()
+    const response = await fetch(`${API_BASE}/portfolio/extract-from-resume`, {
+      method: 'POST',
+      headers,
+      body: JSON.stringify({ resumeText })
+    })
+
+    return handleResponse(response)
+  },
+
+  // Deploy portfolio to Cloudflare Pages
+  async deploy({ slug, sections, templateId, title }) {
+    const headers = await getAuthHeaders()
+    const response = await fetch(`${API_BASE}/portfolio/deploy`, {
+      method: 'POST',
+      headers,
+      body: JSON.stringify({ slug, sections, templateId, title })
+    })
+
+    return handleResponse(response)
+  },
+
   // Check whether a portfolio slug is available for the current user
   async checkSlug(slug, currentSlug = '') {
     const headers = await getAuthHeaders()

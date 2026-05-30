@@ -3,7 +3,7 @@ import DeployModal from "../components/portfolio/DeployModal";
 import ThemeSelector from "../components/portfolio/ThemeSelector";
 import { useTheme } from "../hooks/useTheme";
 import { motion, AnimatePresence } from "framer-motion";
-import { Moon, Sun, ChevronDown, Check, Eye, Star } from "lucide-react";
+import { Moon, Sun, ChevronDown, Check, Eye, Star, Sparkles, X } from "lucide-react";
 import HolographicAbout from "../components/portfolio/templates/Holographic/About";
 import CulinaryAbout from "../components/portfolio/templates/Culinary_Restaurant/About";
 import TechStartupHero from "../components/portfolio/templates/Tech_Startup/Hero";
@@ -18,7 +18,6 @@ import PlayingCardsPortfolio from "../components/portfolio/templates/Playing_Car
 import CherryBlossom from "../components/portfolio/templates/Cherry_Blossom/index";
 import Navbar from '../components/Navbar'
 import Breadcrumb from '../components/Breadcrumb'
-import { X } from "lucide-react";
 // import Hero from "../components/portfolio/templates/Holographic/Hero";
 // import ChooseAdventurePortfolio from "../components/portfolio/templates/Choose_Adventure/index";
 // import RetroProjects from "../components/portfolio/templates/2D_Retro_8bit/Projects";
@@ -102,7 +101,7 @@ function FilterSelect({ value, onChange, options, className = "" }) {
   );
 }
 
-function TemplateCard({ template, onUse }) {
+function TemplateCard({ template, onUse, aiDraft }) {
   const [hovered, setHovered] = useState(false);
 
   return (
@@ -130,26 +129,37 @@ function TemplateCard({ template, onUse }) {
       className="bg-card rounded-2xl overflow-hidden border border-border flex flex-col justify-between cursor-pointer"
     >
       <div className="relative aspect-[16/9] overflow-hidden bg-muted">
-        <motion.img
-          src={template.image}
-          alt={template.title}
-          loading="lazy"
-          className="h-full w-full object-cover object-top"
-          variants={{
-            rest: { scale: 1, transition: { duration: 0.5, ease: [0.25, 0.46, 0.45, 0.94] } },
-            hover: { scale: 1.03, transition: { type: "spring", stiffness: 200, damping: 25 } },
-          }}
-          onError={(e) => {
-            e.target.style.display = 'none';
-            e.target.nextSibling.style.display = 'flex';
-          }}
-        />
-        <div 
-          className="absolute inset-0 bg-gradient-to-br from-cyan-500/20 via-purple-500/20 to-pink-500/20 items-center justify-center"
-          style={{ display: 'none' }}
-        >
-          <span className="text-white/60 text-sm font-medium">{template.title}</span>
-        </div>
+        {template.isComplete ? (
+          <div
+            className="absolute top-0 left-0 origin-top-left pointer-events-none"
+            style={{ width: '1280px', height: '800px', transform: 'scale(0.3)' }}
+          >
+            <TemplateHeroPreview templateId={template.id} portfolioData={aiDraft} />
+          </div>
+        ) : (
+          <>
+            <motion.img
+              src={template.image}
+              alt={template.title}
+              loading="lazy"
+              className="h-full w-full object-cover object-top"
+              variants={{
+                rest: { scale: 1, transition: { duration: 0.5, ease: [0.25, 0.46, 0.45, 0.94] } },
+                hover: { scale: 1.03, transition: { type: "spring", stiffness: 200, damping: 25 } },
+              }}
+              onError={(e) => {
+                e.target.style.display = 'none';
+                e.target.nextSibling.style.display = 'flex';
+              }}
+            />
+            <div
+              className="absolute inset-0 bg-gradient-to-br from-cyan-500/20 via-purple-500/20 to-pink-500/20 items-center justify-center"
+              style={{ display: 'none' }}
+            >
+              <span className="text-white/60 text-sm font-medium">{template.title}</span>
+            </div>
+          </>
+        )}
         <motion.div
           className="absolute inset-0 bg-gradient-to-t from-black/50 via-transparent to-transparent pointer-events-none"
           variants={{ rest: { opacity: 0 }, hover: { opacity: 1 } }}
@@ -219,6 +229,42 @@ function TemplateCard({ template, onUse }) {
 import { templates } from '../data/templates';
 import React, { Suspense, useMemo } from 'react';
 
+const DRAFT_STORAGE_KEYS = ['ai_portfolio_draft', 'aiDraft', 'portfolioAiDraft', 'portfolioDraft', 'parsedResumeDraft'];
+
+function readStoredDraft() {
+  for (const key of DRAFT_STORAGE_KEYS) {
+    const rawDraft = localStorage.getItem(key);
+    if (!rawDraft) continue;
+
+    try {
+      return JSON.parse(rawDraft);
+    } catch {
+      return rawDraft;
+    }
+  }
+
+  return null;
+}
+
+const TemplateHeroPreview = ({ templateId, portfolioData }) => {
+  const Component = useMemo(() => {
+    if (!templateId) return null;
+    return React.lazy(() =>
+      import(`../components/portfolio/templates/${templateId}/Hero.jsx`).catch(() =>
+        import(`../components/portfolio/templates/${templateId}/index.jsx`)
+      )
+    );
+  }, [templateId]);
+
+  if (!Component) return null;
+
+  return (
+    <Suspense fallback={<div className="h-full w-full bg-muted" />}>
+      <Component portfolioData={portfolioData} data={portfolioData} />
+    </Suspense>
+  );
+};
+
 const TemplatePreviewModal = ({ templateId, isOpen, onClose }) => {
   const Component = useMemo(() => {
     if (!templateId) return null;
@@ -266,6 +312,7 @@ const TemplatePreviewModal = ({ templateId, isOpen, onClose }) => {
 export default function TemplateGallery() {
   const { theme, toggleTheme } = useTheme();
   const [previewTemplateId, setPreviewTemplateId] = useState(null);
+  const [aiDraft, setAiDraft] = useState(null);
 
   const [category, setCategory] = useState("All");
   const [colorScheme, setColorScheme] = useState("All");
@@ -274,6 +321,15 @@ export default function TemplateGallery() {
   const [selectedTheme, setSelectedTheme] = useState("minimal");
   const [isDeployModalOpen, setIsDeployModalOpen] = useState(false);
   const [selectedPortfolioTitle, setSelectedPortfolioTitle] = useState("");
+
+  useEffect(() => {
+    setAiDraft(readStoredDraft());
+  }, []);
+
+  const clearDraft = () => {
+    DRAFT_STORAGE_KEYS.forEach((key) => localStorage.removeItem(key));
+    setAiDraft(null);
+  };
 
   const CATEGORY_OPTIONS = [
     { value: "All", label: "All Categories" },
@@ -318,6 +374,27 @@ export default function TemplateGallery() {
     <div className="min-h-screen bg-background text-foreground p-8 pt-24 transition-colors duration-300">
       <Navbar />
       <Breadcrumb className="mb-6" />
+
+      {aiDraft && (
+        <div className="mb-8 p-4 rounded-xl bg-gradient-to-r from-emerald-500/10 to-teal-500/10 border border-emerald-500/30 flex items-center justify-between">
+          <div>
+            <h3 className="text-emerald-400 font-bold flex items-center gap-2">
+              <Sparkles className="w-5 h-5" /> Resume Parsed Successfully!
+            </h3>
+            <p className="text-sm text-muted-foreground mt-1">
+              Your data has been extracted. Select a template below and we'll automatically inject your experience and projects!
+            </p>
+          </div>
+          <button
+            onClick={clearDraft}
+            className="p-2 hover:bg-emerald-500/20 text-emerald-400 rounded-lg transition-colors"
+            title="Discard Draft"
+          >
+            <X className="w-5 h-5" />
+          </button>
+        </div>
+      )}
+
       <div className="flex justify-between items-center mb-8">
         <h1 className="text-4xl font-bold">Template Gallery</h1>
         <button
@@ -371,6 +448,7 @@ export default function TemplateGallery() {
             <TemplateCard
               key={template.id}
               template={template}
+              aiDraft={aiDraft}
               onUse={(val, isPreview) => {
                 if (isPreview) {
                   setPreviewTemplateId(val);

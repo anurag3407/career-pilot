@@ -1,21 +1,25 @@
 import { useState, useEffect, useRef, useCallback } from 'react'
-import { Globe, Rocket, LayoutTemplate, Github, Upload, Settings } from 'lucide-react'
-import { portfolioApi } from '../../services/api'
+import { Globe, Rocket, LayoutTemplate, Github, Upload, Settings, Loader2 } from 'lucide-react'
+import { portfolioApi, uploadApi } from '../../services/api'
 import HubLayout from '../../components/HubLayout'
 import ToolCard from '../../components/ToolCard'
 import EmptyPortfolioState from '../../components/portfolio/EmptyPortfolioState'
 import PortfolioSettings from '../../components/portfolio/PortfolioSettings'
+import { useNavigate } from 'react-router-dom'
 import { motion } from 'framer-motion'
 import toast from 'react-hot-toast'
 
 const MotionDiv = motion.div
 
 export default function PortfolioHub() {
+  const navigate = useNavigate()
   const [portfolios, setPortfolios] = useState([])
   const [loading, setLoading] = useState(true)
   const [importing, setImporting] = useState(false)
+  const [isUploading, setIsUploading] = useState(false)
   const [settingsPortfolio, setSettingsPortfolio] = useState(null)
-  const fileInputRef = useRef(null)
+  const jsonInputRef = useRef(null)
+  const resumeInputRef = useRef(null)
 
   const fetchPortfolios = useCallback(async () => {
     try {
@@ -35,7 +39,7 @@ export default function PortfolioHub() {
 
   const handleImportClick = () => {
     if (importing) return
-    fileInputRef.current?.click()
+    jsonInputRef.current?.click()
   }
 
   const handleImportFile = async (event) => {
@@ -74,6 +78,50 @@ export default function PortfolioHub() {
     setSettingsPortfolio(null)
   }
 
+  const handleResumeUploadClick = () => {
+    if (isUploading) return
+    resumeInputRef.current?.click()
+  }
+
+  const handleFileUpload = async (event) => {
+    const file = event.target.files?.[0]
+    event.target.value = ''
+
+    if (!file) return
+
+    if (file.type !== 'application/pdf') {
+      toast.error('Please upload a PDF file.')
+      return
+    }
+
+    setIsUploading(true)
+    const loadingToast = toast.loading('Extracting data from resume...')
+
+    try {
+      const uploadRes = await uploadApi.uploadPdf(file)
+      const text = uploadRes.data?.extractedText || uploadRes.extractedText
+
+      if (!text) {
+        throw new Error('Could not extract text from the PDF.')
+      }
+
+      toast.loading('AI is building your portfolio data...', { id: loadingToast })
+
+      const extractRes = await portfolioApi.extractFromResume(text)
+      const portfolioData = extractRes.data || extractRes.portfolio || extractRes
+
+      localStorage.setItem('ai_portfolio_draft', JSON.stringify(portfolioData))
+
+      toast.success('Resume parsed successfully!', { id: loadingToast })
+      navigate('/templates')
+    } catch (err) {
+      console.error('Upload error:', err)
+      toast.error(err.message || 'Failed to process resume.', { id: loadingToast })
+    } finally {
+      setIsUploading(false)
+    }
+  }
+
   const stats = [
     { icon: Globe, value: portfolios.length, label: 'Active Projects', color: 'text-primary', bg: 'bg-primary/10' },
   ]
@@ -109,6 +157,14 @@ export default function PortfolioHub() {
         color="emerald-500"
       />
       <ToolCard
+        icon={isUploading ? Loader2 : Upload}
+        title={isUploading ? 'Parsing Resume' : 'Build From Resume'}
+        description="Upload a PDF resume and let AI prepare portfolio data for your chosen template."
+        color="primary"
+        badge="AI"
+        onClick={handleResumeUploadClick}
+      />
+      <ToolCard
         icon={Upload}
         title={importing ? 'Importing JSON' : 'Import JSON'}
         description="Upload a validated portfolio JSON file and add it to your workspace."
@@ -116,7 +172,14 @@ export default function PortfolioHub() {
         onClick={handleImportClick}
       />
       <input
-        ref={fileInputRef}
+        ref={resumeInputRef}
+        type="file"
+        accept="application/pdf,.pdf"
+        className="hidden"
+        onChange={handleFileUpload}
+      />
+      <input
+        ref={jsonInputRef}
         type="file"
         accept="application/json,.json"
         className="hidden"
