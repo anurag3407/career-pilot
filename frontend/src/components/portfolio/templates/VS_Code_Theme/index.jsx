@@ -207,6 +207,8 @@ export default function VSCodeTheme() {
               </nav>
             </div>
 
+          
+
             <div className="mx-3 mt-5 rounded border border-[#3c3c3c] bg-[#1e1e1e] p-4">
               <div className="mb-4 flex items-center gap-3">
                 <img
@@ -589,6 +591,7 @@ export default function VSCodeTheme() {
             </footer>
           </main>
         </div>
+
       </div>
     </div>
   );
