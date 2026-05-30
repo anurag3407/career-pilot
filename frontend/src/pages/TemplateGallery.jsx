@@ -13,10 +13,6 @@ import CherryBlossom from "../components/portfolio/templates/Cherry_Blossom/inde
 import Navbar from '../components/Navbar'
 import { X } from "lucide-react";
 import { useSearchParams } from "react-router-dom";
-// import Hero from "../components/portfolio/templates/Holographic/Hero";
-// import ChooseAdventurePortfolio from "../components/portfolio/templates/Choose_Adventure/index";
-// import RetroProjects from "../components/portfolio/templates/2D_Retro_8bit/Projects";
-// import FantasyRPGProjects from "../components/portfolio/templates/Fantasy_RPG/Projects";
 
 
 function FilterSelect({ value, onChange, options, className = "" }) {
@@ -267,7 +263,7 @@ export default function TemplateGallery() {
   const [colorScheme, setColorScheme] = useState("All");
   const [layout, setLayout] = useState("All");
   const [sort, setSort] = useState("Popular");
-  
+
   const [aiDraft, setAiDraft] = useState(null);
 
   useEffect(() => {
@@ -340,7 +336,7 @@ export default function TemplateGallery() {
   return (
     <div className="min-h-screen bg-background text-foreground p-8 pt-24 transition-colors duration-300">
       <Navbar />
-      
+
       {aiDraft && (
         <div className="mb-8 p-4 rounded-xl bg-gradient-to-r from-emerald-500/10 to-teal-500/10 border border-emerald-500/30 flex items-center justify-between">
           <div>
@@ -351,7 +347,7 @@ export default function TemplateGallery() {
               Your data has been extracted. Select a template below and we'll automatically inject your experience and projects!
             </p>
           </div>
-          <button 
+          <button
             onClick={clearDraft}
             className="p-2 hover:bg-emerald-500/20 text-emerald-400 rounded-lg transition-colors"
             title="Discard Draft"
@@ -437,7 +433,6 @@ export default function TemplateGallery() {
         isOpen={!!previewTemplateId}
         onClose={() => {
           if (searchParams.has("preview")) {
-            // Check if there is history to go back to, so we pop the preview state cleanly
             window.history.back();
           } else {
             setSearchParams({}, { replace: true });
@@ -445,8 +440,6 @@ export default function TemplateGallery() {
         }}
         portfolioData={aiDraft}
       />
-
-
 
       {/* Liquid Glass */}
       <div className="mt-12">
@@ -471,7 +464,9 @@ export default function TemplateGallery() {
         </div>
         <div className="overflow-hidden rounded-2xl border border-border">
           <MidnightGradient />
-</div>
+        </div>
+      </div>
+
       {/* Playing Cards Theme */}
       <div className="mt-12">
         <div className="mb-4 flex items-center gap-3 px-1">
@@ -485,6 +480,7 @@ export default function TemplateGallery() {
         </div>
       </div>
 
+      {/* Swiss Typography */}
       <div className="mt-12">
         <div className="mb-4 flex items-center gap-3 px-1">
           <span className="rounded-full bg-red-500/20 px-3 py-1 text-xs font-bold uppercase tracking-widest text-red-400 border border-red-500/30">
@@ -496,6 +492,7 @@ export default function TemplateGallery() {
           <SwissTypography portfolioData={aiDraft} />
         </div>
       </div>
+
       {/* Cherry Blossom Theme */}
       <div className="mt-12">
         <div className="mb-4 flex items-center gap-3 px-1">
@@ -508,9 +505,7 @@ export default function TemplateGallery() {
           <CherryBlossom portfolioData={aiDraft} />
         </div>
       </div>
-      
-    </div>
-    
+
     </div>
   );
 }
