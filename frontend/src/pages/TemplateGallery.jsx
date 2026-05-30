@@ -10,6 +10,7 @@ import LiquidGlass from "../components/portfolio/templates/Liquid_Glass/index";
 import MidnightGradient from "../components/portfolio/templates/Midnight_Gradient/index";
 import PlayingCardsPortfolio from "../components/portfolio/templates/Playing_Cards";
 import CherryBlossom from "../components/portfolio/templates/Cherry_Blossom/index";
+import ShadowLayers from "../components/portfolio/templates/Shadow_Layers/index";
 import Navbar from '../components/Navbar'
 import { X } from "lucide-react";
 import { useSearchParams } from "react-router-dom";
@@ -508,7 +509,18 @@ export default function TemplateGallery() {
           <CherryBlossom portfolioData={aiDraft} />
         </div>
       </div>
-      
+      {/* Shadow Layers Theme */}
+<div className="mt-12">
+  <div className="mb-4 flex items-center gap-3 px-1">
+    <span className="rounded-full bg-purple-500/20 px-3 py-1 text-xs font-bold uppercase tracking-widest text-purple-400 border border-purple-500/30">
+      🖤 NEW — Shadow Layers
+    </span>
+    <h2 className="text-lg font-semibold text-foreground/70">Shadow Layers Theme — Dark 3D Depth</h2>
+  </div>
+  <div className="overflow-hidden rounded-2xl border border-purple-500/20">
+    <ShadowLayers portfolioData={aiDraft} />
+  </div>
+</div>
     </div>
     
     </div>

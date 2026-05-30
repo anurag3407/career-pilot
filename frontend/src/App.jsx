@@ -31,6 +31,7 @@ import TelescopeZoom from "./components/portfolio/templates/Telescope_Zoom";
 import DayNightCycle from './components/portfolio/templates/Day_Night_Cycle/index.jsx';
 import JobTracker from './pages/JobTracker';
 
+
 const Community = lazy(() => import('./pages/Community'));
 const Login = lazy(() => import("./pages/Login"));
 const Register = lazy(() => import("./pages/Register"));
@@ -237,6 +238,7 @@ function AppRoutes() {
         {/* <Route path="/templates/day-night-cycle" element={<DayNightCycle />} /> */}
         <Route path="/templates/rainforest-canopy" element={<RainforestCanopy />} />
         <Route path="/templates/northern-fjords" element={<NorthernFjords />} />
+        
         {/* Core Protected Routes */}
         <Route 
   path="/dashboard" 
