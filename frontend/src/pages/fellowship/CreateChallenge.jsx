@@ -203,6 +203,7 @@ export default function CreateChallenge() {
                         <button
                             type="button"
                             onClick={handleAddRequirement}
+                            aria-label="Add requirement"
                             className="px-4 py-2.5 bg-muted border border-border rounded-xl text-muted-foreground hover:text-foreground"
                         >
                             <Plus className="w-4 h-4" />
@@ -213,7 +214,7 @@ export default function CreateChallenge() {
                             {requirements.map((req, i) => (
                                 <span key={i} className="flex items-center gap-1 px-3 py-1 bg-muted text-foreground rounded-lg text-sm">
                                     {req}
-                                    <button onClick={() => handleRemoveRequirement(i)} className="hover:text-red-400">
+                                    <button onClick={() => handleRemoveRequirement(i)} aria-label="Remove requirement" className="hover:text-red-400">
                                         <X className="w-3 h-3" />
                                     </button>
                                 </span>

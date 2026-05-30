@@ -125,6 +125,7 @@ export default function Settings() {
   const Toggle = ({ value, onChange }) => (
     <button
       role="switch"
+      aria-label="Toggle setting"
       aria-checked={value}
       onClick={() => onChange(!value)}
       className={`relative w-12 h-6 rounded-full transition-colors cursor-pointer ${value ? 'bg-indigo-500' : 'bg-muted'

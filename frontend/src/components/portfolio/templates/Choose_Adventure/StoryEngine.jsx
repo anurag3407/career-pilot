@@ -22,6 +22,7 @@ export default function StoryEngine({ node, onChoice, onReset, history = [] }) {
         {history.length > 0 && (
           <button
             onClick={onReset}
+            aria-label="Restart adventure"
             className="mb-8 flex items-center gap-2 text-xs text-violet-400 hover:text-violet-200 transition-colors"
           >
             <RotateCcw size={12} />
@@ -58,6 +59,7 @@ export default function StoryEngine({ node, onChoice, onReset, history = [] }) {
                     animate={{ opacity: 1, x: 0, transition: { delay: 0.15 + i * 0.08 } }}
                     whileHover={{ x: 6 }}
                     onClick={() => onChoice(choice.next)}
+                    aria-label={choice.label}
                     className="w-full flex items-center gap-3 text-left px-5 py-4 rounded-xl border border-violet-700/40 hover:border-violet-400/70 bg-violet-950/30 hover:bg-violet-900/40 text-violet-200 hover:text-white transition-all duration-200 group"
                   >
                     <ChevronRight size={14} className="text-violet-400 group-hover:text-amber-400 transition-colors shrink-0" />

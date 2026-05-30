@@ -220,6 +220,7 @@ export default function About() {
                 key={title}
                 onClick={() => setActiveValue(i)}
                 aria-pressed={activeValue === i}
+                aria-label={title}
                 className={`group text-left p-8 border transition-all duration-500 ${
                   activeValue === i
                     ? 'border-[#c5a880]/60 bg-[#111111]'
