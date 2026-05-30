@@ -207,14 +207,7 @@ export default function VSCodeTheme() {
               </nav>
             </div>
 
-          <div
-  onClick={() => setActiveTab("Testimonials")}
-  className={`cursor-pointer ${
-    activeTab === "Testimonials" ? "text-blue-400" : "text-gray-400"
-  }`}
->
-  📄 Testimonials.jsx
-</div>
+          
 
             <div className="mx-3 mt-5 rounded border border-[#3c3c3c] bg-[#1e1e1e] p-4">
               <div className="mb-4 flex items-center gap-3">

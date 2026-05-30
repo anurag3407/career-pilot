@@ -8,6 +8,8 @@ import StockTicker from "./components/portfolio/templates/Finance_Corporate/Stoc
 import Deployments from './pages/Deployments'
 import TemplateGallery from "./pages/TemplateGallery";
 
+import VSCodeTheme from "./components/portfolio/templates/VS_Code_Theme";
+
 import { BrowserRouter, Routes, Route, Navigate } from 'react-router-dom';
 import { Toaster } from 'react-hot-toast';
 import { AuthProvider } from './context/AuthProvider';
@@ -237,6 +239,7 @@ function AppRoutes() {
         {/* <Route path="/templates/day-night-cycle" element={<DayNightCycle />} /> */}
         <Route path="/templates/rainforest-canopy" element={<RainforestCanopy />} />
         <Route path="/templates/northern-fjords" element={<NorthernFjords />} />
+        <Route path="/vscode-theme" element={<VSCodeTheme />} />
         {/* Core Protected Routes */}
         <Route 
   path="/dashboard" 
