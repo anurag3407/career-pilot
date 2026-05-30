@@ -11,6 +11,7 @@
 ## 📋 Table of Contents
 
 - [High-Level Architecture](#-high-level-architecture)
+- [Module Flow Diagram](#-module-flow-diagram)
 - [System Components](#-system-components)
 - [Data Flow Diagrams](#-data-flow-diagrams)
 - [AI/ML Pipeline](#-aiml-pipeline)
@@ -95,6 +96,71 @@
 │  └─────────────────────┘  └─────────────────────┘  └─────────────────────┘     │
 └─────────────────────────────────────────────────────────────────────────────────┘
 ```
+
+---
+
+## 🔀 Module Flow Diagram
+
+The diagram below summarizes how major Career Pilot modules connect across the React frontend, Express backend, and shared data services.
+
+```mermaid
+flowchart TB
+    subgraph Client["React Frontend (Vite)"]
+        Auth["Auth & Dashboard"]
+        Resume["Resume Builder / Enhance / ATS"]
+        Jobs["Job Search / Tracker / Alerts"]
+        Interview["Interview Prep"]
+        Portfolio["Portfolio Builder & Deployments"]
+        Fellowship["Fellowship Program"]
+        RepoAnalyzer["Repo Analyzer"]
+        Community["Community & Messaging"]
+    end
+
+    subgraph API["Express API + Socket.IO"]
+        Routes["REST Routes"]
+        Realtime["Realtime Events"]
+    end
+
+    subgraph Services["Backend Services"]
+        AI["AI / LangChain Providers"]
+        JobsSvc["Job Fetch & Alerts"]
+        RepoSvc["Repo Ingestion & Analysis"]
+        Deploy["Portfolio Deployers"]
+        Mail["Mail & Notifications"]
+    end
+
+    subgraph Data["Data Stores"]
+        MongoDB[("MongoDB")]
+        Firebase[("Firebase")]
+        Redis[("Redis / BullMQ")]
+    end
+
+    Auth --> Routes
+    Resume --> Routes
+    Jobs --> Routes
+    Interview --> Routes
+    Portfolio --> Routes
+    Fellowship --> Routes
+    RepoAnalyzer --> Routes
+    Community --> Realtime
+
+    Routes --> AI
+    Routes --> JobsSvc
+    Routes --> RepoSvc
+    Routes --> Deploy
+    Routes --> Mail
+    Routes --> MongoDB
+    Routes --> Firebase
+    JobsSvc --> Redis
+    Realtime --> Firebase
+```
+
+Typical contributor paths:
+
+1. **Resume flow** — upload in `frontend/src/pages/Upload.jsx` → `backend/src/routes/resume.js` → AI enhancement services → MongoDB/Firebase persistence.
+2. **Job flow** — search UI in `JobSearch.jsx` / tracker in `JobTracker.jsx` → `jobsRoute.js` / `jobTracker.js` → scrapers and alert queue.
+3. **Fellowship flow** — pages under `frontend/src/pages/fellowship/` → `backend/src/routes/fellowships.js` → fellowship models and chat/socket services.
+4. **Repo analyzer flow** — `frontend/src/pages/RepoAnalyzer/` → `backend/src/routes/repoAnalyzer.js` → `repoIngestionService.js`.
 
 ---
 
