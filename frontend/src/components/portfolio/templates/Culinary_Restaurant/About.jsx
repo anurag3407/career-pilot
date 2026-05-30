@@ -217,9 +217,10 @@ export default function About() {
           <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-6">
             {VALUES.map(({ icon: Icon, title, desc }, i) => (
              <button
-                key={title}
-                onClick={() => setActiveValue(i)}
-                aria-pressed={activeValue === i}
+  key={title}
+  onClick={() => setActiveValue(i)}
+  aria-pressed={activeValue === i}
+  aria-label={`Select philosophy: ${title}`}
                 className={`group text-left p-8 border transition-all duration-500 ${
                   activeValue === i
                     ? 'border-[#c5a880]/60 bg-[#111111]'

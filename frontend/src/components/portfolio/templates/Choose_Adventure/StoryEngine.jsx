@@ -22,9 +22,10 @@ export default function StoryEngine({ node, onChoice, onReset, history = [] }) {
         {history.length > 0 && (
           <button
             onClick={onReset}
-            className="mb-8 flex items-center gap-2 text-xs text-violet-400 hover:text-violet-200 transition-colors"
+            aria-label="Restart adventure"
+            className="mb-8 inline-flex items-center gap-2 rounded-full border border-violet-700/60 bg-violet-950/70 px-4 py-2 text-sm text-slate-100 transition hover:border-amber-400/50 hover:text-amber-300"
           >
-            <RotateCcw size={12} />
+            <RotateCcw size={14} />
             Restart adventure
           </button>
         )}
@@ -54,14 +55,14 @@ export default function StoryEngine({ node, onChoice, onReset, history = [] }) {
                 {node.choices.map((choice, i) => (
                   <motion.button
                     key={i}
-                    initial={{ opacity: 0, x: -12 }}
-                    animate={{ opacity: 1, x: 0, transition: { delay: 0.15 + i * 0.08 } }}
-                    whileHover={{ x: 6 }}
-                    onClick={() => onChoice(choice.next)}
-                    className="w-full flex items-center gap-3 text-left px-5 py-4 rounded-xl border border-violet-700/40 hover:border-violet-400/70 bg-violet-950/30 hover:bg-violet-900/40 text-violet-200 hover:text-white transition-all duration-200 group"
+                    onClick={() => onChoice(choice)}
+                    aria-label={`Choose: ${choice.label}`}
+                    className="group flex w-full items-center justify-between gap-4 rounded-2xl border border-violet-800/60 bg-[#14142b]/80 px-5 py-4 text-left text-slate-100 transition hover:border-amber-400/50 hover:bg-violet-900/70"
+                    whileHover={{ y: -2 }}
+                    whileTap={{ scale: 0.98 }}
                   >
-                    <ChevronRight size={14} className="text-violet-400 group-hover:text-amber-400 transition-colors shrink-0" />
                     <span className="text-sm">{choice.label}</span>
+                    <ChevronRight size={14} className="text-violet-400 group-hover:text-amber-400 transition-colors shrink-0" />
                   </motion.button>
                 ))}
               </div>

@@ -169,9 +169,11 @@ export default function FellowshipChat() {
         <div className="flex flex-col h-[calc(100vh-8rem)]">
             <div className="flex items-center gap-4 pb-4 border-b border-border">
                 <button
-                    onClick={() => navigate('/fellowship/messages')}
-                    className="p-2 hover:bg-muted rounded-lg text-muted-foreground hover:text-foreground"
-                >
+    onClick={() => navigate('/fellowship/messages')}
+    aria-label="Back to messages"
+    className="p-2 hover:bg-muted rounded-lg text-muted-foreground hover:text-foreground"
+>
+                
                     <ArrowLeft className="w-5 h-5" />
                 </button>
                 <div className="flex items-center gap-3">
@@ -202,6 +204,7 @@ export default function FellowshipChat() {
                     {canReleaseFunds && (
                         <button
                             onClick={() => setShowReleaseConfirm(true)}
+                            aria-label="Release escrow funds"
                             className="flex items-center gap-2 px-4 py-2 bg-emerald-600 hover:bg-emerald-500 text-foreground rounded-lg text-sm font-medium transition-colors"
                         >
                             <CheckCircle className="w-4 h-4" />
@@ -256,12 +259,14 @@ export default function FellowshipChat() {
                             <button
                                 onClick={() => setShowReleaseConfirm(false)}
                                 disabled={releasingFunds}
+                                aria-label="Cancel fund release"
                                 className="flex-1 py-2.5 bg-muted hover:bg-muted/80 text-foreground rounded-lg font-medium disabled:opacity-50"
                             >
                                 Cancel
                             </button>
                             <button
                                 onClick={handleReleaseFunds}
+                                aria-label="Confirm fund release"
                                 disabled={releasingFunds}
                                 className="flex-1 py-2.5 bg-emerald-600 hover:bg-emerald-500 text-foreground rounded-lg font-medium flex items-center justify-center gap-2 disabled:opacity-50"
                             >

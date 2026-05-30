@@ -122,10 +122,11 @@ export default function Settings() {
     }
   }
 
-  const Toggle = ({ value, onChange }) => (
-    <button
-      role="switch"
-      aria-checked={value}
+  const Toggle = ({ value, onChange, label }) => (
+   <button
+  role="switch"
+  aria-checked={value}
+  aria-label={label}
       onClick={() => onChange(!value)}
       className={`relative w-12 h-6 rounded-full transition-colors cursor-pointer ${value ? 'bg-indigo-500' : 'bg-neutral-700'
         }`}
@@ -183,9 +184,10 @@ export default function Settings() {
                 </div>
               </div>
               <Toggle
-                value={preferences.jobAlerts}
-                onChange={(val) => setPreferences({ ...preferences, jobAlerts: val })}
-              />
+  value={preferences.jobAlerts}
+  onChange={(val) => setPreferences({ ...preferences, jobAlerts: val })}
+  label="Toggle job alerts notifications"
+/>
             </div>
 
             {/* Direct Messages */}
@@ -198,9 +200,10 @@ export default function Settings() {
                 </div>
               </div>
               <Toggle
-                value={preferences.directMessages}
-                onChange={(val) => setPreferences({ ...preferences, directMessages: val })}
-              />
+  value={preferences.directMessages}
+  onChange={(val) => setPreferences({ ...preferences, directMessages: val })}
+  label="Toggle direct message notifications"
+/>
             </div>
 
             {/* Proposal Updates */}
@@ -213,9 +216,10 @@ export default function Settings() {
                 </div>
               </div>
               <Toggle
-                value={preferences.proposalUpdates}
-                onChange={(val) => setPreferences({ ...preferences, proposalUpdates: val })}
-              />
+  value={preferences.proposalUpdates}
+  onChange={(val) => setPreferences({ ...preferences, proposalUpdates: val })}
+  label="Toggle proposal update notifications"
+/>
             </div>
 
             <Button

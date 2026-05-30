@@ -96,9 +96,9 @@ export default function CreateChallenge() {
     return (
         <div className="max-w-2xl mx-auto space-y-6">
             <button
-                onClick={() => navigate(-1)}
-                className="flex items-center gap-2 text-muted-foreground hover:text-foreground text-sm"
-            >
+  onClick={() => navigate(-1)}
+  aria-label="Go back"
+>
                 <ArrowLeft className="w-4 h-4" />
                 Back
             </button>
@@ -131,7 +131,8 @@ export default function CreateChallenge() {
                     <div className="grid grid-cols-2 sm:grid-cols-3 gap-2">
                         {CATEGORIES.map(cat => (
                             <button
-                                key={cat.id}
+  key={cat.id}
+  aria-label={`Select ${cat.label} category`}
                                 type="button"
                                 onClick={() => setCategory(cat.id)}
                                 className={`px-4 py-2 rounded-xl text-sm font-medium transition-colors ${category === cat.id
@@ -201,10 +202,10 @@ export default function CreateChallenge() {
                             className="flex-1 px-4 py-2.5 bg-muted border border-border rounded-xl text-foreground placeholder:text-muted-foreground focus:outline-none focus:border-emerald-500"
                         />
                         <button
-                            type="button"
-                            onClick={handleAddRequirement}
-                            className="px-4 py-2.5 bg-muted border border-border rounded-xl text-muted-foreground hover:text-foreground"
-                        >
+  type="button"
+  onClick={handleAddRequirement}
+  aria-label="Add requirement"
+>
                             <Plus className="w-4 h-4" />
                         </button>
                     </div>
@@ -212,11 +213,14 @@ export default function CreateChallenge() {
                         <div className="mt-3 flex flex-wrap gap-2">
                             {requirements.map((req, i) => (
                                 <span key={i} className="flex items-center gap-1 px-3 py-1 bg-muted text-foreground rounded-lg text-sm">
-                                    {req}
-                                    <button onClick={() => handleRemoveRequirement(i)} className="hover:text-red-400">
-                                        <X className="w-3 h-3" />
-                                    </button>
-                                </span>
+    {req}
+    <button
+        onClick={() => handleRemoveRequirement(i)}
+        aria-label={`Remove requirement ${req}`}
+    >
+        <X className="w-3 h-3" />
+    </button>
+</span>
                             ))}
                         </div>
                     )}
@@ -224,14 +228,16 @@ export default function CreateChallenge() {
 
                 <div className="flex gap-3 pt-4 border-t border-border">
                     <button
-                        onClick={() => navigate(-1)}
-                        className="px-6 py-3 bg-muted text-foreground rounded-xl font-medium hover:bg-muted/80"
-                    >
+    onClick={() => navigate(-1)}
+    aria-label="Cancel challenge creation"
+    className="flex items-center gap-2 text-muted-foreground hover:text-foreground text-sm"
+>
                         Cancel
                     </button>
                     <button
-                        onClick={handleSubmit}
-                        disabled={!isValid || loading}
+    onClick={handleSubmit}
+    disabled={!isValid || loading}
+    aria-label="Post challenge"
                         className="flex-1 py-3 bg-emerald-600 hover:bg-emerald-500 text-foreground rounded-xl font-medium disabled:opacity-50 disabled:cursor-not-allowed flex items-center justify-center gap-2"
                     >
                         {loading ? (
