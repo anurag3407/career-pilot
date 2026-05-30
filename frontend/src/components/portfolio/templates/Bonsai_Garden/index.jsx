@@ -1,4 +1,4 @@
-import { useEffect, useRef, useState } from "react";
+import { useEffect, useMemo, useRef, useState } from "react";
 import { motion, useInView, useScroll, useTransform, AnimatePresence } from "framer-motion";
 import {
   Github, Linkedin, Twitter, Mail, MapPin, ExternalLink,
@@ -83,8 +83,9 @@ const FloatingLeaf = ({ delay = 0, x = 0 }) => (
   >
     <Leaf size={14} color={theme.mossLight} />
   </motion.div>
-);
-
+    );
+};
+  
 /* ─── Section Wrapper ─── */
 const Section = ({ id, children, className = "" }) => {
   const ref = useRef(null);
@@ -390,7 +391,7 @@ export default function BonsaiGarden() {
                   { key: "github", Icon: Github, label: "GitHub" },
                   { key: "linkedin", Icon: Linkedin, label: "LinkedIn" },
                   { key: "twitter", Icon: Twitter, label: "Twitter" },
-                  { key: "email", Icon: Mail, label: "Email", href: `mailto:${socials.email}` },
+                  { key: "email", Icon: Mail, label: "Email" },
                 ].filter(s => socials[s.key] || s.href).map(({ key, Icon, label, href }) => (
                   <a key={key} href={href || socials[key]} target="_blank" rel="noopener noreferrer"
                     style={{ background: theme.mist, border: `1px solid ${theme.sandDark}`, color: theme.moss }}
