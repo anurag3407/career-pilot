@@ -41,8 +41,8 @@ const normalizeProjects = (projects, fallbackProjects) => {
       description: project.description || fallback.description || '',
       image: project.image || fallback.image || '',
       techStack: project.technologies || project.techStack || fallback.techStack || fallback.technologies || [],
-      liveUrl: project.liveUrl || '#',
-      githubUrl: project.githubUrl || '#',
+      liveUrl: project.liveUrl || '',
+      githubUrl: project.githubUrl || '',
     };
   });
 };

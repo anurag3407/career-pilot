@@ -2,6 +2,16 @@ import React from 'react';
 import { motion } from 'framer-motion';
 import { ExternalLink, Github } from 'lucide-react';
 
+const isValidExternalUrl = (url) => {
+  if (typeof url !== 'string') return false;
+  try {
+    const parsed = new URL(url);
+    return parsed.protocol === 'http:' || parsed.protocol === 'https:';
+  } catch {
+    return false;
+  }
+};
+
 export default function Projects({ data }) {
   const projects = data.projects || [];
 
@@ -59,21 +69,21 @@ export default function Projects({ data }) {
                   ))}
                 </div>
                 <div className="mt-8 flex flex-wrap gap-4">
-                  {project.liveUrl && (
+                  {isValidExternalUrl(project.liveUrl) && (
                     <a
                       href={project.liveUrl}
                       target="_blank"
-                      rel="noreferrer"
+                      rel="noopener noreferrer"
                       className="inline-flex items-center gap-2 text-sm font-semibold uppercase tracking-[0.26em] text-amber-100 hover:text-white transition"
                     >
                       <ExternalLink size={14} /> Live
                     </a>
                   )}
-                  {project.githubUrl && (
+                  {isValidExternalUrl(project.githubUrl) && (
                     <a
                       href={project.githubUrl}
                       target="_blank"
-                      rel="noreferrer"
+                      rel="noopener noreferrer"
                       className="inline-flex items-center gap-2 text-sm font-semibold uppercase tracking-[0.26em] text-amber-100 hover:text-white transition"
                     >
                       <Github size={14} /> Code

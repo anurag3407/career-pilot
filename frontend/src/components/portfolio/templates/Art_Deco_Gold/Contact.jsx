@@ -57,17 +57,35 @@ export default function Contact({ data }) {
                 </p>
                 <div className="flex flex-wrap gap-3">
                   {socials.linkedin && (
-                    <a href={socials.linkedin} target="_blank" rel="noreferrer" className="inline-flex h-12 w-12 items-center justify-center rounded-full bg-amber-200/10 text-amber-100 transition hover:bg-amber-200/20">
+                    <a
+                      href={socials.linkedin}
+                      target="_blank"
+                      rel="noopener noreferrer"
+                      aria-label="LinkedIn profile"
+                      className="inline-flex h-12 w-12 items-center justify-center rounded-full bg-amber-200/10 text-amber-100 transition hover:bg-amber-200/20"
+                    >
                       <Linkedin size={18} />
                     </a>
                   )}
                   {socials.github && (
-                    <a href={socials.github} target="_blank" rel="noreferrer" className="inline-flex h-12 w-12 items-center justify-center rounded-full bg-amber-200/10 text-amber-100 transition hover:bg-amber-200/20">
+                    <a
+                      href={socials.github}
+                      target="_blank"
+                      rel="noopener noreferrer"
+                      aria-label="GitHub profile"
+                      className="inline-flex h-12 w-12 items-center justify-center rounded-full bg-amber-200/10 text-amber-100 transition hover:bg-amber-200/20"
+                    >
                       <Github size={18} />
                     </a>
                   )}
                   {socials.twitter && (
-                    <a href={socials.twitter} target="_blank" rel="noreferrer" className="inline-flex h-12 w-12 items-center justify-center rounded-full bg-amber-200/10 text-amber-100 transition hover:bg-amber-200/20">
+                    <a
+                      href={socials.twitter}
+                      target="_blank"
+                      rel="noopener noreferrer"
+                      aria-label="Twitter profile"
+                      className="inline-flex h-12 w-12 items-center justify-center rounded-full bg-amber-200/10 text-amber-100 transition hover:bg-amber-200/20"
+                    >
                       <Twitter size={18} />
                     </a>
                   )}
