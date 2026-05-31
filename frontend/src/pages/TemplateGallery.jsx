@@ -1,6 +1,7 @@
 import { useState } from "react";
 import DeployModal from "../components/portfolio/DeployModal";
 import ThemeSelector from "../components/portfolio/ThemeSelector";
+import DesertDunes from "../components/portfolio/templates/Desert_Dunes/index";
 
 export default function TemplateGallery() {
   const { theme, toggleTheme } = useTheme();
@@ -217,11 +218,24 @@ export default function TemplateGallery() {
         </div>
       )}
       {/* Deploy Modal */}
-      <DeployModal 
+      <DeployModal
         isOpen={isDeployModalOpen}
         onClose={() => setIsDeployModalOpen(false)}
         portfolioTitle={selectedPortfolioTitle}
       />
+
+      {/* Desert Dunes Template Preview */}
+      <div className="mt-12">
+        <div className="mb-4 flex items-center gap-3 px-1">
+          <span className="rounded-full bg-amber-500/20 px-3 py-1 text-xs font-bold uppercase tracking-widest text-amber-400 border border-amber-500/30">
+            Preview
+          </span>
+          <h2 className="text-lg font-semibold text-foreground/70">Desert Dunes — Nature / Organic Template</h2>
+        </div>
+        <div className="overflow-hidden rounded-2xl border border-border">
+          <DesertDunes />
+        </div>
+      </div>
     </div>
   );
 }
