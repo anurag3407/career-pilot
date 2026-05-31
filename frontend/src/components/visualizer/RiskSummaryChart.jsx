@@ -6,31 +6,21 @@ const RiskSummaryChart = ({ risks }) => {
   const [dashArrays, setDashArrays] = useState({});
   const [dashOffsets, setDashOffsets] = useState({});
 
-  if (!risks || risks.length === 0) {
-    return (
-      <div className="bg-white/5 border border-white/10 rounded-2xl p-6 h-full flex flex-col items-center justify-center text-center">
-        <div className="w-16 h-16 rounded-full bg-green-500/20 flex items-center justify-center mb-4 border border-green-500/30">
-          <CheckCircle2 className="w-8 h-8 text-green-400" />
-        </div>
-        <h3 className="text-xl font-bold text-white mb-2">Codebase is Healthy</h3>
-        <p className="text-slate-400 max-w-[200px]">No significant risks or hotspots detected.</p>
-      </div>
-    );
-  }
-
-  const counts = {
-    critical: risks.filter(r => r.severity === 'critical').length,
-    high: risks.filter(r => r.severity === 'high').length,
-    medium: risks.filter(r => r.severity === 'medium').length,
-    low: risks.filter(r => r.severity === 'low').length,
-  };
-
-  const total = risks.length;
+  const safeRisks = risks || [];
+  const total = safeRisks.length;
   const radius = 60;
   const circumference = 2 * Math.PI * radius;
 
+  const counts = {
+    critical: safeRisks.filter(r => r.severity === 'critical').length,
+    high: safeRisks.filter(r => r.severity === 'high').length,
+    medium: safeRisks.filter(r => r.severity === 'medium').length,
+    low: safeRisks.filter(r => r.severity === 'low').length,
+  };
+
   // Calculate svg stroke offsets for the donut chart segments
   useEffect(() => {
+    if (total === 0) return;
     let offset = 0;
     const arrays = {};
     const offsets = {};
@@ -50,7 +40,19 @@ const RiskSummaryChart = ({ risks }) => {
 
     setDashArrays(arrays);
     setDashOffsets(offsets);
-  }, [risks, total, circumference]); // eslint-disable-line react-hooks/exhaustive-deps
+  }, [safeRisks, total, circumference]); // eslint-disable-line react-hooks/exhaustive-deps
+
+  if (!risks || risks.length === 0) {
+    return (
+      <div className="bg-white/5 border border-white/10 rounded-2xl p-6 h-full flex flex-col items-center justify-center text-center">
+        <div className="w-16 h-16 rounded-full bg-green-500/20 flex items-center justify-center mb-4 border border-green-500/30">
+          <CheckCircle2 className="w-8 h-8 text-green-400" />
+        </div>
+        <h3 className="text-xl font-bold text-white mb-2">Codebase is Healthy</h3>
+        <p className="text-slate-400 max-w-[200px]">No significant risks or hotspots detected.</p>
+      </div>
+    );
+  }
 
   const colors = {
     critical: '#ef4444',
