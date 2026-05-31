@@ -1,4 +1,4 @@
-import React, { useState } from 'react';
+import React, { useState, useEffect, useRef } from 'react';
 import { motion } from 'framer-motion';
 import { Send } from 'lucide-react';
 
@@ -11,6 +11,7 @@ const fadeInUp = {
 export default function Contact() {
   const [contactForm, setContactForm] = useState({ name: '', email: '', message: '' });
   const [formSubmitted, setFormSubmitted] = useState(false);
+  const timeoutRef = useRef(null);
 
   const handleContactChange = (e) => {
     const { name, value } = e.target;
@@ -20,11 +21,19 @@ export default function Contact() {
   const handleContactSubmit = (e) => {
     e.preventDefault();
     setFormSubmitted(true);
-    setTimeout(() => {
+    timeoutRef.current = setTimeout(() => {
       setContactForm({ name: '', email: '', message: '' });
       setFormSubmitted(false);
     }, 3000);
   };
+
+  useEffect(() => {
+    return () => {
+      if (timeoutRef.current) {
+        clearTimeout(timeoutRef.current);
+      }
+    };
+  }, []);
 
   return (
     <motion.div 
@@ -37,12 +46,14 @@ export default function Contact() {
         GET IN TOUCH
       </h4>
       {formSubmitted ? (
-        <div className="bg-green-600/20 border border-green-600 text-green-400 p-4 rounded text-sm font-semibold text-center">
+        <div className="bg-green-600/20 border border-green-600 text-green-400 p-4 rounded text-sm font-semibold text-center" role="status" aria-live="polite">
           ✓ Message sent! Thank you.
         </div>
       ) : (
         <form onSubmit={handleContactSubmit} className="space-y-3">
+          <label htmlFor="contact-name" className="block text-sm font-semibold text-yellow-500 mb-1">Your Name</label>
           <input
+            id="contact-name"
             type="text"
             name="name"
             placeholder="Your Name"
@@ -51,7 +62,9 @@ export default function Contact() {
             required
             className="w-full bg-stone-900 border border-yellow-600/30 text-gray-100 placeholder-gray-600 px-3 py-2 text-sm focus:outline-none focus:border-yellow-500"
           />
+          <label htmlFor="contact-email" className="block text-sm font-semibold text-yellow-500 mb-1">Your Email</label>
           <input
+            id="contact-email"
             type="email"
             name="email"
             placeholder="Your Email"
@@ -60,7 +73,9 @@ export default function Contact() {
             required
             className="w-full bg-stone-900 border border-yellow-600/30 text-gray-100 placeholder-gray-600 px-3 py-2 text-sm focus:outline-none focus:border-yellow-500"
           />
+          <label htmlFor="contact-message" className="block text-sm font-semibold text-yellow-500 mb-1">Your Message</label>
           <textarea
+            id="contact-message"
             name="message"
             placeholder="Your Message"
             value={contactForm.message}
