@@ -1,18 +1,36 @@
 import { auth } from '../config/firebase'
+import { decryptKey } from '../utils/encryption'
 
 const API_BASE = import.meta.env.VITE_API_BASE || '/api';
 
 // Helper to get auth headers
 async function getAuthHeaders() {
-  const user = auth.currentUser
+  const user = auth?.currentUser
   if (!user) throw new Error('Not authenticated')
 
 
   const token = await user.getIdToken()
-  return {
+  const headers = {
     'Authorization': `Bearer ${token}`,
     'Content-Type': 'application/json'
   }
+
+  const aiConfigStr = localStorage.getItem('aiConfig');
+  if (aiConfigStr) {
+    try {
+      const aiConfig = JSON.parse(aiConfigStr);
+      if (aiConfig.provider) headers['X-AI-Provider'] = aiConfig.provider;
+      if (aiConfig.apiKey) headers['X-AI-Key'] = decryptKey(aiConfig.apiKey);
+      if (aiConfig.model) headers['X-AI-Model'] = aiConfig.model;
+    } catch(e) {}
+  } else {
+    const openRouterKey = localStorage.getItem('openRouterApiKey');
+    if (openRouterKey) {
+      headers['X-OpenRouter-Key'] = decryptKey(openRouterKey);
+    }
+  }
+
+  return headers
 }
 
 // Helper to parse numeric header values
@@ -37,34 +55,46 @@ function parseRetryAfter(value) {
 }
 
 // Helper to handle API responses
+
 async function handleResponse(response) {
-  let data = null
-  const contentType = response.headers.get('content-type') || ''
+  let data = null;
+  const contentType = response.headers.get('content-type') || '';
+
   if (contentType.includes('application/json')) {
-    data = await response.json()
+    try {
+      data = await response.json();
+    } catch {
+      data = null;
+    }
   } else {
-    data = { error: await response.text() }
+    try {
+      const text = await response.text();
+      data = { error: text || response.statusText };
+    } catch (e) {
+      data = { error: response.statusText };
+    }
   }
 
   if (!response.ok) {
-    const error = new Error(data.error || response.statusText || 'Something went wrong')
-    error.status = response.status
+    const error = new Error(
+      (data && data.error) || `Server error (${response.status})`
+    );
+    error.status = response.status;
 
     if (response.status === 429) {
-      error.retryAfter = parseRetryAfter(response.headers.get('retry-after'))
+      error.retryAfter = parseRetryAfter(response.headers.get('retry-after'));
       error.rateLimit = {
         limit: parseHeaderInt(response.headers.get('x-ratelimit-limit')),
         remaining: parseHeaderInt(response.headers.get('x-ratelimit-remaining')),
         reset: parseHeaderInt(response.headers.get('x-ratelimit-reset'))
-      }
+      };
     }
 
-    throw error
+    throw error;
   }
 
-  return data
+  return data || {};
 }
-
 // ============ AUTH API ============
 export const authApi = {
   // Verify token
@@ -91,8 +121,8 @@ export const authApi = {
 // ============ UPLOAD API ============
 export const uploadApi = {
   // Upload PDF and extract text
-  async uploadPdf(file) {
-    const user = auth.currentUser
+  async uploadPdf(file, options = {}) {
+    const user = auth?.currentUser
     if (!user) throw new Error('Not authenticated')
 
 
@@ -106,14 +136,15 @@ export const uploadApi = {
       headers: {
         'Authorization': `Bearer ${token}`
       },
-      body: formData
+      body: formData,
+      signal: options.signal
     })
     return handleResponse(response)
   },
 
   // Extract text from PDF (re-process)
-  async extractText(file) {
-    const user = auth.currentUser
+  async extractText(file, options = {}) {
+    const user = auth?.currentUser
     if (!user) throw new Error('Not authenticated')
 
 
@@ -127,7 +158,8 @@ export const uploadApi = {
       headers: {
         'Authorization': `Bearer ${token}`
       },
-      body: formData
+      body: formData,
+      signal: options.signal
     })
     return handleResponse(response)
   }
@@ -156,12 +188,13 @@ export const resumeApi = {
   },
 
   // Create resume
-  async create(data) {
+  async create(data, options = {}) {
     const headers = await getAuthHeaders()
     const response = await fetch(`${API_BASE}/resumes`, {
       method: 'POST',
       headers,
-      body: JSON.stringify(data)
+      body: JSON.stringify(data),
+      signal: options.signal
     })
     return handleResponse(response)
   },
@@ -209,9 +242,31 @@ export const resumeApi = {
     return handleResponse(response)
   },
 
+  // Preview GitHub profile before importing
+  async previewGitHub(username) {
+    const headers = await getAuthHeaders()
+    const response = await fetch(`${API_BASE}/resumes/import/github/preview`, {
+      method: 'POST',
+      headers,
+      body: JSON.stringify({ username })
+    })
+    return handleResponse(response)
+  },
+
+  // Import GitHub profile as a resume
+  async importGitHub(username, profile = null) {
+    const headers = await getAuthHeaders()
+    const response = await fetch(`${API_BASE}/resumes/import/github`, {
+      method: 'POST',
+      headers,
+      body: JSON.stringify({ username, profile })
+    })
+    return handleResponse(response)
+  },
+
   // Download resume as PDF
   async downloadPdf(resumeId, version = 'enhanced') {
-    const user = auth.currentUser
+    const user = auth?.currentUser
     if (!user) throw new Error('Not authenticated')
 
     const token = await user.getIdToken()
@@ -223,11 +278,107 @@ export const resumeApi = {
     })
 
     if (!response.ok) {
-      const errorData = await response.json()
-      throw new Error(errorData.error || 'Failed to download PDF')
+      let errorMsg = 'Failed to download PDF';
+      try {
+        const contentType = response.headers.get('content-type');
+        if (contentType && contentType.includes('application/json')) {
+          const errorData = await response.json();
+          errorMsg = errorData.error || errorMsg;
+        } else {
+          const errorText = await response.text();
+          errorMsg = errorText || errorMsg;
+        }
+      } catch (e) {
+        // ignore parsing error and keep default
+      }
+      throw new Error(errorMsg);
     }
 
     return response.blob()
+  },
+
+  // Convert raw text to resume
+  async createFromText(text, jobRole) {
+    const headers = await getAuthHeaders()
+    const response = await fetch(`${API_BASE}/resumes/from-text`, {
+      method: 'POST',
+      headers,
+      body: JSON.stringify({ text, jobRole })
+    })
+    return handleResponse(response)
+  },
+
+  // Get all versions of a resume
+  async getVersions(resumeId) {
+    const headers = await getAuthHeaders()
+    const response = await fetch(`${API_BASE}/resumes/${resumeId}/versions`, {
+      method: 'GET',
+      headers
+    })
+    return handleResponse(response)
+  },
+
+  // Create a new snapshot/version of a resume
+  async createVersion(resumeId, data) {
+    const headers = await getAuthHeaders()
+    const response = await fetch(`${API_BASE}/resumes/${resumeId}/versions`, {
+      method: 'POST',
+      headers,
+      body: JSON.stringify(data)
+    })
+    return handleResponse(response)
+  },
+
+  // Update specific version metadata
+  async updateVersion(resumeId, versionId, data) {
+    const headers = await getAuthHeaders()
+    const response = await fetch(`${API_BASE}/resumes/${resumeId}/versions/${versionId}`, {
+      method: 'PUT',
+      headers,
+      body: JSON.stringify(data)
+    })
+    return handleResponse(response)
+  },
+
+  // Delete specific version
+  async deleteVersion(resumeId, versionId) {
+    const headers = await getAuthHeaders()
+    const response = await fetch(`${API_BASE}/resumes/${resumeId}/versions/${versionId}`, {
+      method: 'DELETE',
+      headers
+    })
+    return handleResponse(response)
+  },
+
+  // Restore resume to a specific version
+  async restoreVersion(resumeId, versionId) {
+    const headers = await getAuthHeaders()
+    const response = await fetch(`${API_BASE}/resumes/${resumeId}/versions/${versionId}/restore`, {
+      method: 'POST',
+      headers
+    })
+    return handleResponse(response)
+  },
+
+  // Get ATS score progression history
+  async getAtsHistory(resumeId) {
+    const headers = await getAuthHeaders()
+    const response = await fetch(`${API_BASE}/resumes/${resumeId}/ats-history`, {
+      method: 'GET',
+      headers
+    })
+    return handleResponse(response)
+  },
+
+  // Log a new ATS score run to history
+  async logAtsHistory(resumeId, data) {
+    const headers = await getAuthHeaders()
+    const response = await fetch(`${API_BASE}/resumes/${resumeId}/ats-history`, {
+      method: 'POST',
+      headers,
+      body: JSON.stringify(data)
+    })
+    return handleResponse(response)
   }
 }
 
@@ -243,6 +394,41 @@ export const portfolioApi = {
     })
 
     return handleResponse(response)
+  },
+
+  // Create portfolio
+  async create(data) {
+    const headers = await getAuthHeaders();
+    const response = await fetch(`${API_BASE}/portfolio`, {
+      method: 'POST',
+      headers,
+      body: JSON.stringify(data)
+    });
+    return handleResponse(response);
+  },
+
+  // Extract portfolio JSON from raw resume text
+  async extractFromResume(resumeText) {
+    const headers = await getAuthHeaders();
+
+    const response = await fetch(`${API_BASE}/portfolio/extract-from-resume`, {
+      method: 'POST',
+      headers,
+      body: JSON.stringify({ resumeText })
+    });
+
+    return handleResponse(response);
+  },
+
+  // Deploy portfolio to Cloudflare Pages
+  async deploy({ slug, sections, templateId, title }) {
+    const headers = await getAuthHeaders();
+    const response = await fetch(`${API_BASE}/portfolio/deploy`, {
+      method: 'POST',
+      headers,
+      body: JSON.stringify({ slug, sections, templateId, title })
+    });
+    return handleResponse(response);
   }
 }
 
@@ -379,26 +565,23 @@ export const aiApi = {
       headers
     })
     return handleResponse(response)
-  },
-
-  async getConfig() {
-    const headers = await getAuthHeaders()
-    const response = await fetch(`${API_BASE}/ai/config`, {
-      method: 'GET',
-      headers
-    })
-    return handleResponse(response)
-  },
-
-  async updateConfig(data) {
-    const headers = await getAuthHeaders()
-    const response = await fetch(`${API_BASE}/ai/config`, {
-      method: 'PUT',
-      headers,
-      body: JSON.stringify(data)
-    })
-    return handleResponse(response)
   }
+}
+
+// Helper to build query params, properly serializing nested objects/arrays
+function buildParams(params) {
+  const usp = new URLSearchParams()
+  for (const [key, value] of Object.entries(params)) {
+    if (value === null || value === undefined) continue
+    if (Array.isArray(value)) {
+      value.forEach(v => usp.append(key, String(v)))
+    } else if (typeof value === 'object') {
+      usp.append(key, JSON.stringify(value))
+    } else {
+      usp.append(key, String(value))
+    }
+  }
+  return usp
 }
 
 // ============ JOBS API ============
@@ -406,7 +589,7 @@ export const jobsApi = {
   // Search jobs with query
   async search(query, filters = {}) {
     const headers = await getAuthHeaders()
-    const params = new URLSearchParams({ query, ...filters })
+    const params = buildParams({ query, ...filters })
     const response = await fetch(`${API_BASE}/fetchjobs?${params}`, {
       method: 'GET',
       headers
@@ -441,10 +624,13 @@ export const jobTrackerApi = {
   // Update job application status
   async updateStatus(jobId, status, notes = '') {
     const headers = await getAuthHeaders()
+    const body = { status };
+    if (notes) body.notes = notes;
+    
     const response = await fetch(`${API_BASE}/job-tracker/${jobId}`, {
       method: 'PUT',
       headers,
-      body: JSON.stringify({ status, notes })
+      body: JSON.stringify(body)
     })
     return handleResponse(response)
   },
@@ -990,6 +1176,15 @@ export const interviewApi = {
       headers
     })
     return handleResponse(response)
+  },
+
+  async getAnalytics() {
+    const headers = await getAuthHeaders()
+    const response = await fetch(`${API_BASE}/interview/analytics`, {
+      method: 'GET',
+      headers
+    })
+    return handleResponse(response)
   }
 }
 
@@ -1205,3 +1400,133 @@ export const notificationApi = {
     return handleResponse(response)
   }
 }
+
+// ============ ANALYZER API ============
+export const analyzerApi = {
+  async ingest(repoUrl) {
+    const headers = await getAuthHeaders()
+    const response = await fetch(`${API_BASE}/analyzer/ingest`, {
+      method: 'POST',
+      headers,
+      body: JSON.stringify({ repoUrl })
+    })
+    return handleResponse(response)
+  },
+
+  async getHistory() {
+    const headers = await getAuthHeaders()
+    const response = await fetch(`${API_BASE}/analyzer/history`, {
+      method: 'GET',
+      headers
+    })
+    return handleResponse(response)
+  },
+
+  async getFileContent(sessionId, filePath) {
+    const headers = await getAuthHeaders()
+    const response = await fetch(`${API_BASE}/analyzer/file-content?sessionId=${encodeURIComponent(sessionId)}&filePath=${encodeURIComponent(filePath)}`, {
+      method: 'GET',
+      headers
+    })
+    
+    if (!response.ok) {
+      throw new Error(`Server error (${response.status})`)
+    }
+    
+    return response.text()
+  },
+  
+  // Note: chat streams directly via SSE, so we'll handle fetch in the component directly
+}
+
+// ============ PROJECT VISUALIZER API ============
+export const projectVisualizerApi = {
+  async analyze(repoUrl) {
+    const headers = await getAuthHeaders()
+    const response = await fetch(`${API_BASE}/project-visualizer/analyze`, {
+      method: 'POST',
+      headers,
+      body: JSON.stringify({ repoUrl })
+    })
+    return handleResponse(response)
+  },
+
+  async getAnalysis(sessionId) {
+    const headers = await getAuthHeaders()
+    const response = await fetch(`${API_BASE}/project-visualizer/analysis/${sessionId}`, {
+      method: 'GET',
+      headers
+    })
+    return handleResponse(response)
+  },
+
+  async getFileContent(sessionId, filePath) {
+    const headers = await getAuthHeaders()
+    const response = await fetch(`${API_BASE}/project-visualizer/analysis/${sessionId}/file?path=${encodeURIComponent(filePath)}`, {
+      method: 'GET',
+      headers
+    })
+    if (!response.ok) throw new Error(`Server error (${response.status})`)
+    return response.text()
+  },
+
+  async getContributors(sessionId) {
+    const headers = await getAuthHeaders()
+    const response = await fetch(`${API_BASE}/project-visualizer/analysis/${sessionId}/contributors`, {
+      method: 'GET',
+      headers
+    })
+    return handleResponse(response)
+  },
+
+  async getCommits(sessionId) {
+    const headers = await getAuthHeaders()
+    const response = await fetch(`${API_BASE}/project-visualizer/analysis/${sessionId}/commits`, {
+      method: 'GET',
+      headers
+    })
+    return handleResponse(response)
+  },
+
+  async askModule(sessionId, modulePath, question) {
+    const headers = await getAuthHeaders()
+    const response = await fetch(`${API_BASE}/project-visualizer/analysis/${sessionId}/ask-module`, {
+      method: 'POST',
+      headers,
+      body: JSON.stringify({ modulePath, question })
+    })
+    return handleResponse(response)
+  },
+
+  async getHistory() {
+    const headers = await getAuthHeaders()
+    const response = await fetch(`${API_BASE}/project-visualizer/history`, {
+      method: 'GET',
+      headers
+    })
+    return handleResponse(response)
+  },
+
+  async deleteHistory(id) {
+    const headers = await getAuthHeaders()
+    const response = await fetch(`${API_BASE}/project-visualizer/history/${id}`, {
+      method: 'DELETE',
+      headers
+    })
+    return handleResponse(response)
+  },
+}
+
+export const adminAPI = {
+  async getStats() {
+    const headers = await getAuthHeaders();
+    const response = await fetch(`${API_BASE}/admin/stats`, { headers });
+    return handleResponse(response);
+  },
+
+  async getUsers(page = 1, limit = 10) {
+    const headers = await getAuthHeaders();
+    const response = await fetch(`${API_BASE}/admin/users?page=${page}&limit=${limit}`, { headers });
+    return handleResponse(response);
+  }
+};

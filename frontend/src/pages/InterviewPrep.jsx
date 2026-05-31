@@ -5,7 +5,9 @@ import { motion } from 'framer-motion';
 import { Mic, MicOff, Video, VideoOff, XCircle, CheckCircle, AlertCircle, Volume2, VolumeX, RotateCcw, UserX, Loader2, Sparkles, ArrowRight, Target, TrendingUp, MessageSquare, Eye, Brain, Award, ChevronDown, ChevronUp, Clock, BarChart3, Lightbulb, Zap, Laptop, Smartphone, Chrome, AlertTriangle, FileUp, FileText, X } from 'lucide-react';
 import Button from '../components/Button';
 import BodyLanguageTips from '../components/BodyLanguageTips';
+import VoiceToTextButton from '../components/VoiceToTextButton';
 import { interviewApi, uploadApi } from '../services/api';
+import ConfidenceMeter from "../components/ConfidenceMeter";
 
 // Device and browser detection utilities
 const isMobileDevice = () => {
@@ -66,7 +68,7 @@ function QuestionAnalysisCard({ answer, index }) {
   return (
     <div className="rounded-2xl bg-muted/30 border border-border/50 overflow-hidden transition-all duration-300 hover:border-border/80/50">
       <button onClick={() => setExpanded(!expanded)} className="w-full p-4 flex items-center gap-4 text-left cursor-pointer">
-        <div className="w-10 h-10 rounded-xl bg-violet-500/20 border border-violet-500/30 flex items-center justify-center flex-shrink-0">
+        <div className="w-10 h-10 rounded-xl bg-violet-500/20 border border-violet-500/30 flex items-center justify-center shrink-0">
           <span className="text-violet-400 font-bold text-sm">{index + 1}</span>
         </div>
         <div className="flex-1 min-w-0">
@@ -147,7 +149,7 @@ function QuestionAnalysisCard({ answer, index }) {
                   <ul className="space-y-2">
                     {analysis.whatYouDidWell.map((item, i) => (
                       <li key={i} className="flex items-start gap-2 text-foreground text-sm">
-                        <CheckCircle className="w-4 h-4 text-emerald-400 flex-shrink-0 mt-0.5" />
+                        <CheckCircle className="w-4 h-4 text-emerald-400 shrink-0 mt-0.5" />
                         {item}
                       </li>
                     ))}
@@ -161,7 +163,7 @@ function QuestionAnalysisCard({ answer, index }) {
                   <ul className="space-y-2">
                     {analysis.whatWasMissing.map((item, i) => (
                       <li key={i} className="flex items-start gap-2 text-foreground text-sm">
-                        <AlertCircle className="w-4 h-4 text-amber-400 flex-shrink-0 mt-0.5" />
+                        <AlertCircle className="w-4 h-4 text-amber-400 shrink-0 mt-0.5" />
                         {item}
                       </li>
                     ))}
@@ -201,7 +203,7 @@ function QuestionAnalysisCard({ answer, index }) {
             {analysis.keyTakeaway && (
               <div className="p-4 rounded-xl bg-violet-500/10 border border-violet-500/20">
                 <div className="flex items-start gap-3">
-                  <Zap className="w-5 h-5 text-violet-400 flex-shrink-0 mt-0.5" />
+                  <Zap className="w-5 h-5 text-violet-400 shrink-0 mt-0.5" />
                   <div>
                     <p className="text-xs text-violet-400 uppercase tracking-wide mb-1 font-medium">Key Takeaway</p>
                     <p className="text-foreground text-sm font-medium">{analysis.keyTakeaway}</p>
@@ -217,7 +219,7 @@ function QuestionAnalysisCard({ answer, index }) {
                 <ul className="space-y-2">
                   {analysis.suggestions.map((suggestion, i) => (
                     <li key={i} className="flex items-start gap-2 text-foreground text-sm">
-                      <Lightbulb className="w-4 h-4 text-sky-400 flex-shrink-0 mt-0.5" />
+                      <Lightbulb className="w-4 h-4 text-sky-400 shrink-0 mt-0.5" />
                       {suggestion}
                     </li>
                   ))}
@@ -285,6 +287,7 @@ export default function InterviewPrep() {
   const [audioEnabled, setAudioEnabled] = useState(true);
   const [isSpeaking, setIsSpeaking] = useState(false);
   const [faceVisible, setFaceVisible] = useState(true);
+  const [faceConfidence, setFaceConfidence] = useState(50);
   const [answersSubmitted, setAnswersSubmitted] = useState([]);
 
   const [overallResults, setOverallResults] = useState(null);
@@ -396,9 +399,18 @@ export default function InterviewPrep() {
 
     setFaceVisible(detected);
     if (detected) {
-      const confidence = Math.min(100, Math.max(40, 50 + skinRatio * 200));
-      setExpressionSamples(prev => [...prev.slice(-60), { confidence, timestamp: Date.now() }]);
-    }
+  const confidence =
+    Math.min(100, Math.max(40, 50 + skinRatio * 200));
+
+  setFaceConfidence(confidence);
+
+  setExpressionSamples(prev => [
+    ...prev.slice(-60),
+    { confidence, timestamp: Date.now() }
+  ]);
+} else {
+  setFaceConfidence(20);
+}
   };
 
   const getAverageMetrics = () => {
@@ -890,7 +902,7 @@ export default function InterviewPrep() {
 
             <div className="bg-amber-500/10 border border-amber-500/20 rounded-xl p-4 mb-6">
               <div className="flex items-center gap-3">
-                <Laptop className="w-6 h-6 text-amber-400 flex-shrink-0" />
+                <Laptop className="w-6 h-6 text-amber-400 shrink-0" />
                 <p className="text-amber-300 text-sm text-left">
                   Please open this page on a laptop or desktop computer with a webcam and microphone.
                 </p>
@@ -933,7 +945,7 @@ export default function InterviewPrep() {
               className="mb-6 bg-amber-500/10 border border-amber-500/30 rounded-xl p-4"
             >
               <div className="flex items-start gap-3">
-                <Chrome className="w-6 h-6 text-amber-400 flex-shrink-0 mt-0.5" />
+                <Chrome className="w-6 h-6 text-amber-400 shrink-0 mt-0.5" />
                 <div>
                   <p className="text-amber-300 font-medium">Chrome Browser Recommended</p>
                   <p className="text-amber-400/70 text-sm mt-1">
@@ -1009,7 +1021,7 @@ export default function InterviewPrep() {
 
             {error && (
               <div className="mb-6 p-4 bg-red-500/10 border border-red-500/30 rounded-xl flex items-start gap-3">
-                <AlertCircle className="w-5 h-5 text-red-400 flex-shrink-0 mt-0.5" />
+                <AlertCircle className="w-5 h-5 text-red-400 shrink-0 mt-0.5" />
                 <p className="text-red-400 text-sm">{error}</p>
               </div>
             )}
@@ -1074,8 +1086,9 @@ export default function InterviewPrep() {
           </motion.div>
 
           <motion.div initial={{ opacity: 0, y: 20 }} animate={{ opacity: 1, y: 0 }} transition={{ delay: 0.1 }}>
-            <div className="p-6 rounded-2xl bg-background/50 border border-border backdrop-blur-sm">
-              <form onSubmit={handleStartInterview} className="space-y-5">
+            <div className="p-8 rounded-3xl glass glow border border-border shadow-2xl relative overflow-hidden">
+              <div className="absolute top-0 right-0 w-64 h-64 bg-primary/5 rounded-full blur-3xl pointer-events-none"></div>
+              <form onSubmit={handleStartInterview} className="space-y-6 relative z-10">
                 <div>
                   <label className="block text-sm font-medium text-muted-foreground mb-2">Job Role *</label>
                   <input
@@ -1083,7 +1096,7 @@ export default function InterviewPrep() {
                     value={formData.jobRole}
                     onChange={(e) => setFormData({ ...formData, jobRole: e.target.value })}
                     placeholder="e.g., Software Engineer, Product Manager"
-                    className="w-full px-4 py-3 bg-muted/50 border border-border rounded-xl text-foreground placeholder:text-muted-foreground focus:ring-2 focus:ring-primary focus:border-transparent transition-all"
+                    className="w-full px-4 py-3 bg-card/50 border border-border rounded-xl text-foreground placeholder:text-muted-foreground focus:ring-2 focus:ring-primary focus:border-primary/50 transition-all-300 shadow-sm"
                     required
                   />
                 </div>
@@ -1127,19 +1140,19 @@ export default function InterviewPrep() {
                 </div>
 
                 {/* Resume Upload Section */}
-                <div className="border border-dashed border-border rounded-xl p-5 bg-muted/30">
-                  <div className="flex items-center gap-3 mb-3">
-                    <div className="w-10 h-10 bg-primary/20 rounded-lg flex items-center justify-center">
-                      <FileUp className="w-5 h-5 text-primary" />
+                <div className="border-2 border-dashed border-primary/20 rounded-2xl p-6 bg-primary/5 hover:bg-primary/10 transition-colors cursor-pointer relative group">
+                  <div className="flex items-center gap-4 mb-4">
+                    <div className="w-12 h-12 bg-primary/20 rounded-xl flex items-center justify-center group-hover:scale-110 transition-transform">
+                      <FileUp className="w-6 h-6 text-primary" />
                     </div>
                     <div>
-                      <h3 className="text-foreground font-medium">Upload Resume (Optional)</h3>
-                      <p className="text-xs text-muted-foreground">Get personalized questions based on your experience</p>
+                      <h3 className="text-foreground font-bold text-lg">Upload Resume (Optional)</h3>
+                      <p className="text-sm text-muted-foreground">Get personalized questions based on your experience</p>
                     </div>
                   </div>
 
                   {!resumeFile ? (
-                    <div className="relative">
+                    <div className="relative mt-2">
                       <input
                         ref={resumeInputRef}
                         type="file"
@@ -1148,11 +1161,11 @@ export default function InterviewPrep() {
                         className="absolute inset-0 w-full h-full opacity-0 cursor-pointer"
                         disabled={resumeLoading}
                       />
-                      <div className="flex items-center justify-center gap-2 py-3 px-4 rounded-lg bg-muted/50 border border-border hover:border-primary/50 transition-colors cursor-pointer">
+                      <div className="flex items-center justify-center gap-2 py-4 px-4 rounded-xl bg-card border border-border group-hover:border-primary/50 transition-colors shadow-sm">
                         {resumeLoading ? (
                           <>
-                            <Loader2 className="w-4 h-4 text-primary animate-spin" />
-                            <span className="text-sm text-muted-foreground">Extracting text...</span>
+                            <Loader2 className="w-5 h-5 text-primary animate-spin" />
+                            <span className="text-sm font-semibold text-muted-foreground">Extracting text...</span>
                           </>
                         ) : (
                           <>
@@ -1198,7 +1211,7 @@ export default function InterviewPrep() {
 
                 {error && (
                   <div className="p-4 rounded-xl bg-red-500/10 border border-red-500/20 flex items-start gap-3">
-                    <AlertCircle className="w-5 h-5 text-red-400 flex-shrink-0 mt-0.5" />
+                    <AlertCircle className="w-5 h-5 text-red-400 shrink-0 mt-0.5" />
                     <p className="text-sm text-red-400">{error}</p>
                   </div>
                 )}
@@ -1229,6 +1242,7 @@ export default function InterviewPrep() {
     const progress = ((currentQuestionIndex + 1) / questions.length) * 100;
 
     return (
+    <>
       <div className="min-h-screen bg-background">
         <div className="fixed inset-0 overflow-hidden pointer-events-none">
           <div className="absolute top-0 left-1/4 w-96 h-96 bg-primary/5 rounded-full blur-3xl" />
@@ -1297,7 +1311,7 @@ export default function InterviewPrep() {
             <motion.div initial={{ opacity: 0, x: 20 }} animate={{ opacity: 1, x: 0 }} className="space-y-6">
               <div className="p-6 rounded-2xl bg-background/50 border border-border">
                 <div className="flex items-start gap-3 mb-4">
-                  <div className="w-10 h-10 rounded-xl bg-primary/20 border border-primary/30 flex items-center justify-center flex-shrink-0">
+                  <div className="w-10 h-10 rounded-xl bg-primary/20 border border-primary/30 flex items-center justify-center shrink-0">
                     <span className="text-primary font-bold">{currentQuestionIndex + 1}</span>
                   </div>
                   <div className="flex-1">
@@ -1324,6 +1338,9 @@ export default function InterviewPrep() {
                         </div>
                       </div>
                     </div>
+                    <div className="mt-4">
+                        <ConfidenceMeter confidence={faceConfidence} />
+                   </div>
                     {/* Glowing voice visualizer waveform canvas */}
                     <div className="mt-4 rounded-xl overflow-hidden border border-border/60 bg-slate-950 p-1 flex items-center justify-center">
                       <canvas
@@ -1337,7 +1354,7 @@ export default function InterviewPrep() {
 
               {error && (
                 <div className="p-4 rounded-xl bg-red-500/10 border border-red-500/20 flex items-start gap-3">
-                  <AlertCircle className="w-5 h-5 text-red-400 flex-shrink-0 mt-0.5" />
+                  <AlertCircle className="w-5 h-5 text-red-400 shrink-0 mt-0.5" />
                   <p className="text-sm text-red-400">{error}</p>
                 </div>
               )}
@@ -1354,7 +1371,7 @@ export default function InterviewPrep() {
                 ) : (
                   <button onClick={stopRecording} disabled={loading} className="flex-1 py-4 rounded-xl bg-red-500 hover:bg-red-600 text-foreground font-medium flex items-center justify-center gap-2 transition-colors cursor-pointer disabled:opacity-50">
                     <XCircle className="w-5 h-5" />
-                    {loading ? 'Submitting...' : 'Stop & Next'}
+                    {loading ? 'Submitting...' : 'Stop & Submit'}
                   </button>
                 )}
               </div>
@@ -1368,6 +1385,7 @@ export default function InterviewPrep() {
           </div>
         </div>
       </div>
+      </>
     );
   }
 
@@ -1566,7 +1584,7 @@ export default function InterviewPrep() {
                 <ul className="space-y-3">
                   {overallResults.overallFeedback?.topStrengths?.map((s, i) => (
                     <motion.li initial={{ opacity: 0, x: -10 }} animate={{ opacity: 1, x: 0 }} transition={{ delay: 0.4 + i * 0.1 }} key={i} className="flex items-start gap-3 p-3 rounded-xl bg-emerald-500/10 border border-emerald-500/10">
-                      <div className="w-6 h-6 rounded-full bg-emerald-500/20 flex items-center justify-center flex-shrink-0 mt-0.5">
+                      <div className="w-6 h-6 rounded-full bg-emerald-500/20 flex items-center justify-center shrink-0 mt-0.5">
                         <span className="text-emerald-400 text-sm font-bold">{i + 1}</span>
                       </div>
                       <span className="text-foreground/90">{s}</span>
@@ -1590,7 +1608,7 @@ export default function InterviewPrep() {
                 <ul className="space-y-3">
                   {overallResults.overallFeedback?.areasToImprove?.map((a, i) => (
                     <motion.li initial={{ opacity: 0, x: 10 }} animate={{ opacity: 1, x: 0 }} transition={{ delay: 0.4 + i * 0.1 }} key={i} className="flex items-start gap-3 p-3 rounded-xl bg-amber-500/10 border border-amber-500/10">
-                      <div className="w-6 h-6 rounded-full bg-amber-500/20 flex items-center justify-center flex-shrink-0 mt-0.5">
+                      <div className="w-6 h-6 rounded-full bg-amber-500/20 flex items-center justify-center shrink-0 mt-0.5">
                         <ArrowRight className="w-3 h-3 text-amber-400" />
                       </div>
                       <span className="text-foreground/90">{a}</span>
@@ -1637,7 +1655,7 @@ export default function InterviewPrep() {
                     <p className="text-cyan-400/70 text-sm">Insights from facial expression tracking</p>
                   </div>
                 </div>
-                <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
+                <div className="grid grid-cols-1 md:grid-cols-[1.5fr_1fr] gap-6">
                   <div className="p-5 rounded-2xl bg-muted/30 border border-border/50">
                     <div className="flex items-center justify-between mb-4">
                       <span className="text-foreground">Expression Confidence Score</span>
@@ -1693,4 +1711,4 @@ export default function InterviewPrep() {
   }
 
   return null;
-}
+};

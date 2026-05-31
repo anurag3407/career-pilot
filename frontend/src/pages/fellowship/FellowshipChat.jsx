@@ -1,7 +1,7 @@
 import { useState, useEffect, useRef } from 'react'
 import { useParams, useNavigate, useOutletContext } from 'react-router-dom'
 import { fellowshipApi, paymentApi } from '../../services/api'
-import { useSocket } from '../../context/SocketContext'
+import { useSocket } from '../../hooks/useSocket'
 import toast from 'react-hot-toast'
 import { motion } from 'framer-motion'
 import {
@@ -244,7 +244,7 @@ export default function FellowshipChat() {
 
                         <div className="bg-amber-950/50 border border-amber-900/50 rounded-lg p-4 mb-6">
                             <div className="flex items-start gap-2">
-                                <AlertTriangle className="w-5 h-5 text-amber-400 flex-shrink-0 mt-0.5" />
+                                <AlertTriangle className="w-5 h-5 text-amber-400 shrink-0 mt-0.5" />
                                 <div className="text-sm text-amber-200">
                                     <p className="font-medium mb-1">This action is final</p>
                                     <p className="text-amber-300/80">Releasing funds will mark the challenge as completed and close this chat. Make sure you're satisfied with the work delivered.</p>

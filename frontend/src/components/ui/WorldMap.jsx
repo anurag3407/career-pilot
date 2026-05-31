@@ -1,7 +1,7 @@
 import { useRef, useMemo, useState, useEffect } from "react";
 import { motion } from "framer-motion";
 import DottedMap from "dotted-map";
-import { useTheme } from "../../context/ThemeContext";
+import { useTheme } from "../../hooks/useTheme";
 
 // Cache the computed map globally so it runs only once per app session
 let cachedSvgMap = null;
