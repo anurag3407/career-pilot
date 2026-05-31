@@ -256,12 +256,13 @@ export const templates = [
     "title": "Cassette Mixtape",
     "category": "Portfolio",
     "colorScheme": "Dark",
-    "layout": "Grid",
-    "author": "System",
-    "views": 1021,
-    "rating": 4.5,
+    "layout": "Interactive",
+    "author": "Vexx",
+    "views": 2500,
+    "rating": 4.9,
     "image": "/template-previews/Cassette_Mixtape.png",
-    "createdAt": "2026-05-01"
+    "createdAt": "2026-05-31",
+    "isComplete": true
   },
   {
     "id": "Ceramic_Minimal",
@@ -581,12 +582,13 @@ export const templates = [
     "title": "Desert Dunes",
     "category": "Portfolio",
     "colorScheme": "Dark",
-    "layout": "Grid",
-    "author": "System",
-    "views": 1048,
-    "rating": 4.5,
+    "layout": "Interactive",
+    "author": "Vexx",
+    "views": 2200,
+    "rating": 4.9,
     "image": "/template-previews/Desert_Dunes.png",
-    "createdAt": "2026-05-01"
+    "createdAt": "2026-05-31",
+    "isComplete": true
   },
   {
     "id": "Developer_IDE",
@@ -1205,13 +1207,14 @@ export const templates = [
     "id": "Memphis_Pop",
     "title": "Memphis Pop",
     "category": "Portfolio",
-    "colorScheme": "Dark",
-    "layout": "Grid",
-    "author": "System",
-    "views": 1100,
-    "rating": 4.5,
+    "colorScheme": "Colorful",
+    "layout": "Interactive",
+    "author": "Vexx",
+    "views": 2600,
+    "rating": 4.9,
     "image": "/template-previews/Memphis_Pop.png",
-    "createdAt": "2026-05-01"
+    "createdAt": "2026-05-31",
+    "isComplete": true
   },
   {
     "id": "Midnight_Gradient",
@@ -1652,13 +1655,14 @@ export const templates = [
     "id": "Psychedelic_Swirl",
     "title": "Psychedelic Swirl",
     "category": "Portfolio",
-    "colorScheme": "Dark",
-    "layout": "Grid",
-    "author": "System",
-    "views": 1137,
-    "rating": 4.5,
+    "colorScheme": "Colorful",
+    "layout": "Interactive",
+    "author": "Vexx",
+    "views": 2400,
+    "rating": 4.9,
     "image": "/template-previews/Psychedelic_Swirl.png",
-    "createdAt": "2026-05-01"
+    "createdAt": "2026-05-31",
+    "isComplete": true
   },
   {
     "id": "Quiz_Reveal",

@@ -10,6 +10,10 @@ import LiquidGlass from "../components/portfolio/templates/Liquid_Glass/index";
 import MidnightGradient from "../components/portfolio/templates/Midnight_Gradient/index";
 import PlayingCardsPortfolio from "../components/portfolio/templates/Playing_Cards";
 import CherryBlossom from "../components/portfolio/templates/Cherry_Blossom/index";
+import PsychedelicSwirl from "../components/portfolio/templates/Psychedelic_Swirl/index";
+import DesertDunes from "../components/portfolio/templates/Desert_Dunes/index";
+import MemphisPop from "../components/portfolio/templates/Memphis_Pop/index";
+import CassetteMixtape from "../components/portfolio/templates/Cassette_Mixtape/index";
 import Navbar from '../components/Navbar'
 import { X } from "lucide-react";
 import { useSearchParams } from "react-router-dom";
@@ -446,8 +450,6 @@ const [hoveredCard, setHoveredCard] = useState(null);
         portfolioData={aiDraft}
       />
 
-
-
       {/* Liquid Glass */}
       <div className="mt-12">
         <div className="mb-4 flex items-center gap-3 px-1">
@@ -500,7 +502,7 @@ const [hoveredCard, setHoveredCard] = useState(null);
       <div className="mt-12">
         <div className="mb-4 flex items-center gap-3 px-1">
           <span className="rounded-full bg-rose-500/20 px-3 py-1 text-xs font-bold uppercase tracking-widest text-rose-400 border border-rose-500/30">
-            🌸 NEW — Cherry Blossom
+            🌸 Cherry Blossom
           </span>
           <h2 className="text-lg font-semibold text-foreground/70">Cherry Blossom Theme — Digital Spring</h2>
         </div>
@@ -508,9 +510,65 @@ const [hoveredCard, setHoveredCard] = useState(null);
           <CherryBlossom portfolioData={aiDraft} />
         </div>
       </div>
-      
+
+      {/* Psychedelic Swirl — sandboxed fixed-nav frame */}
+      <div className="mt-12">
+        <div className="mb-4 flex items-center gap-3 px-1">
+          <span className="rounded-full bg-fuchsia-500/20 px-3 py-1 text-xs font-bold uppercase tracking-widest text-fuchsia-400 border border-fuchsia-500/30">
+            ✿ Psychedelic Swirl
+          </span>
+          <h2 className="text-lg font-semibold text-foreground/70">Psychedelic Swirl — Retro / Nostalgic Full Template</h2>
+        </div>
+        <div className="rounded-2xl border border-fuchsia-500/20"
+          style={{ height: 640, overflowY: "auto", overflowX: "hidden", transform: "translate(0)", position: "relative" }}>
+          <PsychedelicSwirl />
+        </div>
+      </div>
+
+      {/* Desert Dunes — sandboxed fixed-nav frame */}
+      <div className="mt-12">
+        <div className="mb-4 flex items-center gap-3 px-1">
+          <span className="rounded-full bg-amber-500/20 px-3 py-1 text-xs font-bold uppercase tracking-widest text-amber-400 border border-amber-500/30">
+            🏜 Desert Dunes
+          </span>
+          <h2 className="text-lg font-semibold text-foreground/70">Desert Dunes — Nature / Organic Full Template</h2>
+        </div>
+        <div className="rounded-2xl border border-amber-500/20"
+          style={{ height: 640, overflowY: "auto", overflowX: "hidden", transform: "translate(0)", position: "relative" }}>
+          <DesertDunes />
+        </div>
+      </div>
+
+      {/* Memphis Pop — sandboxed fixed-nav frame */}
+      <div className="mt-12">
+        <div className="mb-4 flex items-center gap-3 px-1">
+          <span className="rounded-full bg-yellow-500/20 px-3 py-1 text-xs font-bold uppercase tracking-widest text-yellow-400 border border-yellow-500/30">
+            ★ Memphis Pop
+          </span>
+          <h2 className="text-lg font-semibold text-foreground/70">Memphis Pop — Retro / Nostalgic Full Template</h2>
+        </div>
+        <div className="rounded-2xl border border-yellow-500/20"
+          style={{ height: 640, overflowY: "auto", overflowX: "hidden", transform: "translate(0)", position: "relative" }}>
+          <MemphisPop />
+        </div>
+      </div>
+
+      {/* Cassette Mixtape — sandboxed fixed-nav frame */}
+      <div className="mt-12">
+        <div className="mb-4 flex items-center gap-3 px-1">
+          <span className="rounded-full bg-orange-500/20 px-3 py-1 text-xs font-bold uppercase tracking-widest text-orange-400 border border-orange-500/30">
+            ▶ Cassette Mixtape
+          </span>
+          <h2 className="text-lg font-semibold text-foreground/70">Cassette Mixtape — Retro / Nostalgic Full Template</h2>
+        </div>
+        <div className="rounded-2xl border border-orange-500/20"
+          style={{ height: 640, overflowY: "auto", overflowX: "hidden", transform: "translate(0)", position: "relative" }}>
+          <CassetteMixtape />
+        </div>
+      </div>
+
     </div>
-    
+
     </div>
   );
 }

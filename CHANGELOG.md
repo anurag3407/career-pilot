@@ -1,3 +1,31 @@
+# [1.111.0](https://github.com/anurag3407/career-pilot/compare/v1.110.0...v1.111.0) (2026-05-31)
+
+
+### Features
+
+* add Horizontal_Journey changes ([7a75d7f](https://github.com/anurag3407/career-pilot/commit/7a75d7f27572665bdb439a027311467f92066049))
+
+# [1.110.0](https://github.com/anurag3407/career-pilot/compare/v1.109.0...v1.110.0) (2026-05-31)
+
+
+### Features
+
+* add Open Graph and Twitter meta tags for SEO and social sharing ([e0a4b6f](https://github.com/anurag3407/career-pilot/commit/e0a4b6f87bc57202e767183a31d497536e1c237e))
+
+# [1.109.0](https://github.com/anurag3407/career-pilot/compare/v1.108.0...v1.109.0) (2026-05-31)
+
+
+### Features
+
+* implement Cassette Mixtape portfolio template + consolidate all prior templates ([14f58ca](https://github.com/anurag3407/career-pilot/commit/14f58caac7e6b881563a1415fada2de7041801bd)), closes [#1941](https://github.com/anurag3407/career-pilot/issues/1941) [#1C1008](https://github.com/anurag3407/career-pilot/issues/1C1008) [#EDE0C0](https://github.com/anurag3407/career-pilot/issues/EDE0C0) [#C85A10](https://github.com/anurag3407/career-pilot/issues/C85A10)
+
+# [1.108.0](https://github.com/anurag3407/career-pilot/compare/v1.107.0...v1.108.0) (2026-05-31)
+
+
+### Features
+
+* Added the Stripe Gradient portfolio template ([836cf25](https://github.com/anurag3407/career-pilot/commit/836cf25e23207ad079703d70080f0c9c9735ffce))
+
 # [1.107.0](https://github.com/anurag3407/career-pilot/compare/v1.106.0...v1.107.0) (2026-05-30)
 
 
