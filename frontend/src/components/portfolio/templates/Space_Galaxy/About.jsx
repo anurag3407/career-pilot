@@ -12,17 +12,10 @@ import {
   Send,
 } from "lucide-react";
 
-/* ── Orbitron font injector (no external CSS file) ── */
-function useOrbitronFont() {
-  useEffect(() => {
-    if (document.getElementById("sg-orbitron-font")) return;
-    const link = document.createElement("link");
-    link.id = "sg-orbitron-font";
-    link.rel = "stylesheet";
-    link.href = "https://fonts.googleapis.com/css2?family=Orbitron:wght@700;900&display=swap";
-    document.head.appendChild(link);
-  }, []);
-}
+/* ── Space font stack — no external CSS file or network request.
+   Uses Orbitron if already loaded by the host app (career-pilot loads it
+   globally), otherwise falls back to the closest system alternatives.    ── */
+const SPACE_FONT = "'Orbitron', 'Exo 2', 'Rajdhani', 'Courier New', monospace;";
 
 /* ─────────────────────────────────────────────
    DATA  — updated from reference screenshots
@@ -47,48 +40,48 @@ const projects = [
     title: "NEURALDASH",
     desc: "AI-powered analytics dashboard with real-time data visualization, predictive insights, and customizable widget layouts. Built for enterprise teams handling petabyte-scale datasets.",
     tags: ["REACT", "PYTHON", "TENSORFLOW", "WEBSOCKET"],
-    live: "#",
-    source: "#",
+    live: null,
+    source: null,
   },
   {
     num: "02",
     title: "PIXELFORGE STUDIO",
     desc: "Browser-based creative suite for digital artists — vector illustration, pixel art, and animation tools. 50K+ monthly active users and counting.",
     tags: ["CANVAS API", "WEBGL", "VUE.JS", "RUST/WASM"],
-    live: "#",
-    source: "#",
+    live: null,
+    source: null,
   },
   {
     num: "03",
     title: "ECOTRACK",
     desc: "Sustainability platform that helps businesses measure, reduce, and offset their carbon footprint. Features gamified goals and real-time carbon market integration.",
     tags: ["NEXT.JS", "NODE.JS", "POSTGRESQL", "STRIPE"],
-    live: "#",
-    source: "#",
+    live: null,
+    source: null,
   },
   {
     num: "04",
     title: "VERSE — SOCIAL READING",
     desc: "Next-generation social reading app where readers annotate, discuss, and discover books together. Built-in AI summarisation and personalised recommendations.",
     tags: ["REACT NATIVE", "GRAPHQL", "MONGODB", "OPENAI"],
-    live: "#",
-    source: "#",
+    live: null,
+    source: null,
   },
   {
     num: "05",
     title: "PULSE CRM",
     desc: "Lightweight CRM for indie businesses — contact management, deal pipelines, email sequences, and revenue analytics. Competes with Salesforce at 1% of the price.",
     tags: ["REACT", "EXPRESS", "MYSQL", "REDIS"],
-    live: "#",
-    source: "#",
+    live: null,
+    source: null,
   },
   {
     num: "06",
     title: "ORBIT — 3D PORTFOLIO",
     desc: "Interactive 3D portfolio builder powered by Three.js and AI content generation. Users describe their work and the system assembles a stunning 3D showcase in seconds.",
     tags: ["THREE.JS", "REACT", "OPENAI", "WEBGL"],
-    live: "#",
-    source: "#",
+    live: null,
+    source: null,
   },
 ];
 
@@ -148,7 +141,7 @@ function SectionTitle({ children }) {
   return (
     <h2
       className="text-center text-3xl md:text-5xl font-bold tracking-[0.25em] text-violet-300 mb-20"
-      style={{ fontFamily: "'Orbitron', monospace" }}
+      style={{ fontFamily: SPACE_FONT }}
     >
       {children}
     </h2>
@@ -374,19 +367,20 @@ function IntroSection() {
           {/* Social icon row */}
           <div className="px-8 py-6 flex items-center gap-3">
             {[
-              { Icon: Github,   href: "#", label: "GitHub"   },
-              { Icon: Linkedin, href: "#", label: "LinkedIn" },
-              { Icon: Twitter,  href: "#", label: "Twitter"  },
-              { Icon: Mail,     href: "#", label: "Email"    },
-            ].map(({ Icon, href, label }) => (
-              <a
+              { Icon: Github,   label: "GitHub"   },
+              { Icon: Linkedin, label: "LinkedIn" },
+              { Icon: Twitter,  label: "Twitter"  },
+              { Icon: Mail,     label: "Email"    },
+            ].map(({ Icon, label }) => (
+              <span
                 key={label}
-                href={href}
                 aria-label={label}
-                className="w-9 h-9 flex items-center justify-center rounded border border-white/20 text-slate-400 hover:text-violet-300 hover:border-violet-400/50 transition-colors"
+                title={label}
+                className="w-9 h-9 flex items-center justify-center rounded border border-white/20 text-slate-500 cursor-not-allowed select-none"
+                aria-disabled="true"
               >
                 <Icon size={15} />
-              </a>
+              </span>
             ))}
           </div>
         </div>
@@ -453,7 +447,7 @@ function AboutSection() {
               </svg>
             </div>
             <div>
-              <p className="text-white font-bold tracking-wide" style={{ fontFamily: "'Orbitron', monospace" }}>Alex Rivera</p>
+              <p className="text-white font-bold tracking-wide" style={{ fontFamily: SPACE_FONT }}>Alex Rivera</p>
               <p className="text-slate-500 text-xs tracking-widest">FULL STACK DEV</p>
             </div>
           </div>
@@ -514,18 +508,26 @@ function ProjectsSection() {
 
             {/* Links */}
             <div className="flex flex-col justify-start gap-3 pt-8 pr-8 pl-6 border-l border-white/10">
-              <a
-                href={p.live}
-                className="flex items-center gap-2 text-xs tracking-widest text-slate-300 hover:text-violet-300 transition-colors"
-              >
-                <ExternalLink size={12} /> LIVE SITE
-              </a>
-              <a
-                href={p.source}
-                className="flex items-center gap-2 text-xs tracking-widest text-slate-300 hover:text-violet-300 transition-colors"
-              >
-                <Code2 size={12} /> SOURCE
-              </a>
+              {p.live ? (
+                <a href={p.live} target="_blank" rel="noopener noreferrer"
+                  className="flex items-center gap-2 text-xs tracking-widest text-slate-300 hover:text-violet-300 transition-colors">
+                  <ExternalLink size={12} /> LIVE SITE
+                </a>
+              ) : (
+                <span className="flex items-center gap-2 text-xs tracking-widest text-slate-600 cursor-not-allowed select-none" aria-disabled="true">
+                  <ExternalLink size={12} /> LIVE SITE
+                </span>
+              )}
+              {p.source ? (
+                <a href={p.source} target="_blank" rel="noopener noreferrer"
+                  className="flex items-center gap-2 text-xs tracking-widest text-slate-300 hover:text-violet-300 transition-colors">
+                  <Code2 size={12} /> SOURCE
+                </a>
+              ) : (
+                <span className="flex items-center gap-2 text-xs tracking-widest text-slate-600 cursor-not-allowed select-none" aria-disabled="true">
+                  <Code2 size={12} /> SOURCE
+                </span>
+              )}
             </div>
           </div>
         ))}
@@ -607,7 +609,7 @@ function TestimonialsSection() {
                 background: c.bg,
                 border: `1px solid ${c.border}`,
                 color: c.text,
-                fontFamily: "'Orbitron', monospace",
+                fontFamily: SPACE_FONT,
                 boxShadow: `0 0 20px ${c.bg}`,
               }}
             >
@@ -670,28 +672,45 @@ function ContactSection() {
         <div className="rounded-2xl bg-slate-900/60 backdrop-blur-xl border border-white/10 p-8">
           <h3 className="text-xl font-bold text-white mb-6">Send a Message</h3>
           <form onSubmit={handleSubmit} className="flex flex-col gap-4">
-            <input
-              className={inputCls}
-              placeholder="Your name"
-              value={form.name}
-              onChange={(e) => setForm({ ...form, name: e.target.value })}
-              required
-            />
-            <input
-              type="email"
-              className={inputCls}
-              placeholder="Your email"
-              value={form.email}
-              onChange={(e) => setForm({ ...form, email: e.target.value })}
-              required
-            />
-            <textarea
-              className={`${inputCls} resize-y min-h-[130px]`}
-              placeholder="Your message..."
-              value={form.message}
-              onChange={(e) => setForm({ ...form, message: e.target.value })}
-              required
-            />
+            <div>
+              <label htmlFor="sg-name" className="sr-only">Your name</label>
+              <input
+                id="sg-name"
+                name="name"
+                autoComplete="name"
+                className={inputCls}
+                placeholder="Your name"
+                value={form.name}
+                onChange={(e) => setForm({ ...form, name: e.target.value })}
+                required
+              />
+            </div>
+            <div>
+              <label htmlFor="sg-email" className="sr-only">Your email</label>
+              <input
+                id="sg-email"
+                name="email"
+                type="email"
+                autoComplete="email"
+                className={inputCls}
+                placeholder="Your email"
+                value={form.email}
+                onChange={(e) => setForm({ ...form, email: e.target.value })}
+                required
+              />
+            </div>
+            <div>
+              <label htmlFor="sg-message" className="sr-only">Your message</label>
+              <textarea
+                id="sg-message"
+                name="message"
+                className={`${inputCls} resize-y min-h-[130px]`}
+                placeholder="Your message..."
+                value={form.message}
+                onChange={(e) => setForm({ ...form, message: e.target.value })}
+                required
+              />
+            </div>
             <button
               type="submit"
               className="w-full py-3.5 rounded-xl bg-violet-600 hover:bg-violet-500 transition-colors text-white font-semibold text-sm tracking-wide flex items-center justify-center gap-2"
@@ -730,17 +749,19 @@ function ContactSection() {
           {/* Social buttons */}
           <div className="flex flex-wrap gap-3">
             {[
-              { Icon: Github,   label: "GitHub",   href: "#", cls: "bg-slate-800 hover:bg-slate-700" },
-              { Icon: Linkedin, label: "LinkedIn",  href: "#", cls: "bg-blue-700  hover:bg-blue-600"  },
-              { Icon: Twitter,  label: "Twitter",   href: "#", cls: "bg-sky-500   hover:bg-sky-400"   },
-            ].map(({ Icon, label, href, cls }) => (
-              <a
+              { Icon: Github,   label: "GitHub",  cls: "bg-slate-800" },
+              { Icon: Linkedin, label: "LinkedIn", cls: "bg-blue-700"  },
+              { Icon: Twitter,  label: "Twitter",  cls: "bg-sky-500"   },
+            ].map(({ Icon, label, cls }) => (
+              <span
                 key={label}
-                href={href}
-                className={`flex items-center gap-2 px-5 py-2.5 rounded-xl text-white text-sm font-semibold transition-colors ${cls}`}
+                aria-label={label}
+                title={label}
+                aria-disabled="true"
+                className={`flex items-center gap-2 px-5 py-2.5 rounded-xl text-white/50 text-sm font-semibold cursor-not-allowed select-none ${cls} opacity-60`}
               >
                 <Icon size={15} /> {label}
-              </a>
+              </span>
             ))}
           </div>
 
@@ -766,7 +787,6 @@ function ContactSection() {
    MAIN EXPORT  — same outer shell as original
 ───────────────────────────────────────────── */
 export default function About() {
-  useOrbitronFont();
   return (
     <section className="relative overflow-hidden text-white">
       {/* Galaxy background — same as original */}
