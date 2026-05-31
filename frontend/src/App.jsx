@@ -158,7 +158,7 @@ function AppRoutes() {
         <Route path="/register" element={<PublicRoute><Register /></PublicRoute>} />
         <Route path="/auth/linkedin/callback" element={<LinkedInCallback />} />
         <Route path="/auth/openrouter/callback" element={<OpenRouterCallback />} />
-
+       
         {/* Legal Pages (Public) */}
         <Route path="/privacy" element={<PrivacyPolicy />} />
         <Route path="/about" element={<About />} />
