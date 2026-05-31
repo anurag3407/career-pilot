@@ -7,6 +7,7 @@ import React, { useState, useEffect, lazy, Suspense } from 'react';
 import StockTicker from "./components/portfolio/templates/Finance_Corporate/StockTicker";
 import Deployments from './pages/Deployments'
 import TemplateGallery from "./pages/TemplateGallery";
+import AdventCalendar from './components/portfolio/templates/Advent_Calendar/index.jsx';
 
 import { BrowserRouter, Routes, Route, Navigate } from 'react-router-dom';
 import { Toaster } from 'react-hot-toast';
@@ -237,6 +238,7 @@ function AppRoutes() {
 
         {/* <Route path="/templates/day-night-cycle" element={<DayNightCycle />} /> */}
         <Route path="/templates/rainforest-canopy" element={<RainforestCanopy />} />
+        <Route path="/templates/advent-calendar" element={<AdventCalendar />} />
         <Route path="/templates/northern-fjords" element={<NorthernFjords />} />
         
         {/* Core Protected Routes */}
