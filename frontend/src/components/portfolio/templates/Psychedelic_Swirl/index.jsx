@@ -142,6 +142,161 @@ function GlobalStyles() {
 
       .psych-border-anim { animation: psych-border-hue 4s linear infinite; border-style: solid; }
 
+      /* ── Responsive layout utilities ─────────────────────────────── */
+
+      /* Section padding: tighter on mobile */
+      .psych-sec { padding: 56px 16px; position: relative; overflow: hidden; }
+      @media (min-width: 640px)  { .psych-sec { padding: 72px 24px; } }
+      @media (min-width: 1024px) { .psych-sec { padding: 88px 32px; } }
+
+      /* Mandala: scale down on small screens */
+      .psych-mandala-wrap {
+        position: absolute; top: 50%; left: 50%;
+        transform: translate(-50%,-50%) scale(0.45);
+        pointer-events: none;
+      }
+      @media (min-width: 480px)  { .psych-mandala-wrap { transform: translate(-50%,-50%) scale(0.65); } }
+      @media (min-width: 768px)  { .psych-mandala-wrap { transform: translate(-50%,-50%) scale(0.85); } }
+      @media (min-width: 1100px) { .psych-mandala-wrap { transform: translate(-50%,-50%) scale(1);    } }
+
+      /* About: stack on mobile, side-by-side on md+ */
+      .psych-about-grid {
+        display: flex; flex-direction: column; gap: 36px; align-items: center;
+      }
+      @media (min-width: 768px) {
+        .psych-about-grid {
+          display: grid; grid-template-columns: auto 1fr;
+          gap: 60px; align-items: start;
+        }
+      }
+
+      /* About avatar column: centred + full-width on mobile */
+      .psych-about-col {
+        display: flex; flex-direction: column; align-items: center;
+        gap: 20px; width: 100%; text-align: center;
+      }
+      @media (min-width: 768px) {
+        .psych-about-col { align-items: flex-start; width: auto; text-align: left; }
+      }
+
+      /* About contact links: centred on mobile */
+      .psych-about-links {
+        display: flex; flex-direction: column; gap: 10px;
+        align-items: center; width: 100%;
+      }
+      @media (min-width: 768px) { .psych-about-links { align-items: flex-start; } }
+
+      /* About stats: 1-col → 3-col */
+      .psych-about-stats {
+        display: grid; grid-template-columns: repeat(3,1fr); gap: 10px;
+      }
+      @media (max-width: 400px) {
+        .psych-about-stats { grid-template-columns: 1fr; gap: 10px; }
+      }
+
+      /* Featured project card: stack on mobile */
+      .psych-featured-card {
+        display: grid; grid-template-columns: 1fr;
+        border-radius: 24px; overflow: hidden; margin-bottom: 28px;
+      }
+      @media (min-width: 768px) {
+        .psych-featured-card { grid-template-columns: 1fr 1fr; min-height: 340px; }
+      }
+
+      /* Featured image: fixed height when stacked */
+      .psych-featured-img { height: 220px; overflow: hidden; }
+      @media (min-width: 768px) { .psych-featured-img { height: auto; } }
+
+      /* Featured card content: tighter padding on mobile */
+      .psych-featured-body {
+        padding: 24px 20px;
+        display: flex; flex-direction: column; justify-content: space-between;
+      }
+      @media (min-width: 768px) { .psych-featured-body { padding: 36px 32px; } }
+
+      /* Projects grid: 1→2→auto col */
+      .psych-projects-grid {
+        display: grid; grid-template-columns: 1fr; gap: 20px;
+      }
+      @media (min-width: 520px)  { .psych-projects-grid { grid-template-columns: repeat(2,1fr); } }
+      @media (min-width: 1024px) {
+        .psych-projects-grid { grid-template-columns: repeat(auto-fill,minmax(290px,1fr)); gap: 24px; }
+      }
+
+      /* Testimonials grid: 1→2→3 col */
+      .psych-testi-grid {
+        display: grid; grid-template-columns: 1fr; gap: 20px;
+      }
+      @media (min-width: 520px) { .psych-testi-grid { grid-template-columns: repeat(2,1fr); } }
+      @media (min-width: 960px) {
+        .psych-testi-grid { grid-template-columns: repeat(auto-fill,minmax(260px,1fr)); gap: 24px; }
+      }
+
+      /* Experience card: tighter on mobile */
+      .psych-exp-card {
+        flex: 1; border-radius: 18px; padding: 18px 16px; margin-bottom: 4px;
+      }
+      @media (min-width: 640px) { .psych-exp-card { padding: 22px 26px; } }
+
+      /* Contact card: full-bleed on mobile */
+      .psych-contact-card { border-radius: 22px; padding: 26px 18px; }
+      @media (min-width: 540px) { .psych-contact-card { border-radius: 28px; padding: 44px 40px; } }
+
+      /* Contact name+email row: stack on mobile */
+      .psych-contact-row {
+        display: grid; grid-template-columns: 1fr; gap: 16px; margin-bottom: 16px;
+      }
+      @media (min-width: 520px) {
+        .psych-contact-row { grid-template-columns: 1fr 1fr; margin-bottom: 20px; }
+      }
+
+      /* Contact social links: wrap neatly on small screens */
+      .psych-contact-socials {
+        display: flex; justify-content: center;
+        gap: 16px; margin-top: 32px; flex-wrap: wrap;
+      }
+
+      /* Hero stats: force 3-col grid so they never wrap to 2+1 */
+      .psych-hero-stats {
+        display: grid;
+        grid-template-columns: repeat(3, 1fr);
+        gap: 10px;
+        margin-bottom: 36px;
+        width: 100%;
+        max-width: 420px;
+        margin-left: auto;
+        margin-right: auto;
+      }
+      .psych-hero-stat {
+        border-radius: 14px; padding: 12px 8px; text-align: center;
+        backdrop-filter: blur(8px);
+      }
+      .psych-hero-stat-num {
+        font-size: 1.5rem;
+      }
+      @media (min-width: 480px) { .psych-hero-stat-num { font-size: 1.8rem; } }
+
+      /* Hero CTA buttons: stack on very small screens */
+      .psych-hero-ctas {
+        display: flex; gap: 14px; justify-content: center;
+        flex-wrap: wrap; margin-bottom: 36px;
+      }
+      .psych-hero-cta-primary {
+        padding: 13px 28px; border-radius: 28px; font-size: 0.95rem;
+        text-decoration: none; display: inline-block;
+      }
+      @media (max-width: 380px) {
+        .psych-hero-ctas { flex-direction: column; align-items: center; }
+        .psych-hero-cta-primary { width: 100%; text-align: center; box-sizing: border-box; }
+      }
+
+      /* Skill grid: ensure single col on very small screens */
+      .psych-skills-grid {
+        display: grid;
+        grid-template-columns: repeat(auto-fit, minmax(240px, 1fr));
+        gap: 24px;
+      }
+
       @media (prefers-reduced-motion: reduce) {
         .psych-spin, .psych-spin-med, .psych-spin-fast, .psych-spin-rev,
         .psych-hue, .psych-float, .psych-glow, .psych-text,
@@ -170,8 +325,7 @@ function Mandala({ size = 700, opacity = 0.45 }) {
     });
 
   return (
-    <div style={{ position: 'absolute', top: '50%', left: '50%',
-      transform: 'translate(-50%,-50%)', pointerEvents: 'none', opacity }}>
+    <div className="psych-mandala-wrap" style={{ opacity }}>
       <svg width={s} height={s} viewBox={`0 0 ${s} ${s}`}>
         <defs>
           <radialGradient id="mglow" cx="50%" cy="50%" r="50%">
@@ -396,14 +550,14 @@ function Hero() {
     <section id="hero" style={{
       position: 'relative', minHeight: '100vh', display: 'flex',
       flexDirection: 'column', alignItems: 'center', justifyContent: 'center',
-      overflow: 'hidden', background: C.bg, padding: '100px 24px 80px',
+      overflow: 'hidden', background: C.bg, padding: '88px 16px 72px',
     }}>
       {/* Background orbs */}
       <FloatOrb style={{ width: 500, height: 500, top: -100, left: -150, background: `radial-gradient(circle, ${C.purple}55 0%, transparent 70%)` }} />
       <FloatOrb style={{ width: 400, height: 400, bottom: -80, right: -100, background: `radial-gradient(circle, ${C.pink}44 0%, transparent 70%)`, animationDelay: '-2s' }} />
       <FloatOrb style={{ width: 300, height: 300, top: '40%', right: '10%', background: `radial-gradient(circle, ${C.cyan}33 0%, transparent 70%)`, animationDelay: '-1s' }} />
 
-      {/* Mandala */}
+      {/* Mandala — CSS class handles responsive scaling */}
       <Mandala size={680} opacity={0.5} />
 
       {/* Content */}
@@ -443,39 +597,34 @@ function Hero() {
 
         {/* Stats */}
         <motion.div initial={{ opacity: 0, y: 20 }} animate={{ opacity: 1, y: 0 }}
-          transition={{ delay: 0.75 }}
-          style={{ display: 'flex', justifyContent: 'center', gap: 20, flexWrap: 'wrap', marginBottom: 40 }}>
+          transition={{ delay: 0.75 }} className="psych-hero-stats">
           {[
             { n: `${data.stats.yearsExperience}+`, l: 'Years of Groove' },
             { n: `${data.stats.projectsCompleted}+`, l: 'Projects Shipped' },
             { n: `${data.stats.happyClients}+`, l: 'Happy Clients' },
           ].map(({ n, l }) => (
-            <div key={l} style={{
-              background: C.surface, border: `1.5px solid ${C.border}`,
-              borderRadius: 16, padding: '14px 24px', textAlign: 'center',
-              backdropFilter: 'blur(8px)',
-            }} className="psych-glow">
-              <div className="psych-text" style={{ fontFamily: C.fontDisplay, fontSize: '1.9rem' }}>{n}</div>
-              <div style={{ color: C.muted, fontSize: '0.82rem', marginTop: 2 }}>{l}</div>
+            <div key={l} className="psych-glow psych-hero-stat"
+              style={{ background: C.surface, border: `1.5px solid ${C.border}` }}>
+              <div className="psych-text psych-hero-stat-num" style={{ fontFamily: C.fontDisplay }}>{n}</div>
+              <div style={{ color: C.muted, fontSize: '0.72rem', marginTop: 2 }}>{l}</div>
             </div>
           ))}
         </motion.div>
 
         {/* CTAs */}
         <motion.div initial={{ opacity: 0, y: 20 }} animate={{ opacity: 1, y: 0 }}
-          transition={{ delay: 0.9 }}
-          style={{ display: 'flex', gap: 16, justifyContent: 'center', flexWrap: 'wrap', marginBottom: 40 }}>
-          <a href="#projects" className="psych-btn"
-            style={{ padding: '14px 34px', borderRadius: 28, fontSize: '1rem', textDecoration: 'none' }}>
+          transition={{ delay: 0.9 }} className="psych-hero-ctas">
+          <a href="#projects" className="psych-btn psych-hero-cta-primary">
             See My Work ✿
           </a>
-          <a href={data.personal.resumeUrl || '#contact'} style={{
-            padding: '13px 32px', borderRadius: 28, fontSize: '1rem',
-            background: 'transparent', border: `2px solid ${C.pink}`,
-            color: C.pink, textDecoration: 'none', fontWeight: 700,
-            letterSpacing: '0.08em', textTransform: 'uppercase',
-            transition: 'all 0.25s',
-          }}
+          <a href={data.personal.resumeUrl || '#contact'}
+            className="psych-hero-cta-primary"
+            style={{
+              background: 'transparent', border: `2px solid ${C.pink}`,
+              color: C.pink, fontWeight: 700,
+              letterSpacing: '0.08em', textTransform: 'uppercase',
+              transition: 'all 0.25s',
+            }}
             onMouseEnter={e => { e.currentTarget.style.background = C.pink; e.currentTarget.style.color = C.bg; }}
             onMouseLeave={e => { e.currentTarget.style.background = 'transparent'; e.currentTarget.style.color = C.pink; }}>
             Resume
@@ -518,35 +667,36 @@ function About() {
   const inView = useInView(ref, { once: true, margin: '-80px' });
 
   return (
-    <section id="about" ref={ref} style={{ background: C.bgAlt, padding: '80px 24px', position: 'relative', overflow: 'hidden' }}>
+    <section id="about" ref={ref} className="psych-sec" style={{ background: C.bgAlt }}>
       <FloatOrb style={{ width: 350, height: 350, top: -100, right: -80,
         background: `radial-gradient(circle, ${C.green}22 0%, transparent 70%)`, pointerEvents: 'none' }} />
 
       <div style={{ maxWidth: 1100, margin: '0 auto' }}>
         <SectionHeading title="About Me" sub="Get to know the groovy developer behind the code" />
 
-        <div style={{ display: 'grid', gridTemplateColumns: 'auto 1fr', gap: 60, alignItems: 'center' }}
-          className="flex-col md:grid">
-          {/* Avatar */}
-          <motion.div initial={{ opacity: 0, x: -50 }} animate={inView ? { opacity: 1, x: 0 } : {}}
-            transition={{ duration: 0.7 }} style={{ display: 'flex', flexDirection: 'column', alignItems: 'center', gap: 20 }}>
+        {/* psych-about-grid handles the 1-col → 2-col breakpoint via CSS */}
+        <div className="psych-about-grid">
+
+          {/* Avatar column */}
+          <motion.div initial={{ opacity: 0, x: -30 }} animate={inView ? { opacity: 1, x: 0 } : {}}
+            transition={{ duration: 0.7 }} className="psych-about-col">
             <div className="psych-glow" style={{
-              width: 220, height: 220, borderRadius: '50%',
+              width: 200, height: 200, borderRadius: '50%', flexShrink: 0,
               border: '4px solid transparent',
               background: `${C.surface} padding-box, ${RAINBOW} border-box`,
-              padding: 4, flexShrink: 0,
+              padding: 4,
             }}>
               <img src={data.personal.avatar} alt={data.personal.name}
                 style={{ width: '100%', height: '100%', borderRadius: '50%', objectFit: 'cover' }} />
             </div>
-            <div style={{ display: 'flex', flexDirection: 'column', gap: 10, width: '100%' }}>
+            <div className="psych-about-links">
               <div style={{ display: 'flex', alignItems: 'center', gap: 8, color: C.sub }}>
                 <MapPin size={16} color={C.pink} />
                 <span style={{ fontSize: '0.9rem' }}>{data.personal.location}</span>
               </div>
               <div style={{ display: 'flex', alignItems: 'center', gap: 8, color: C.sub }}>
                 <Mail size={16} color={C.cyan} />
-                <span style={{ fontSize: '0.9rem' }}>{data.socials.email}</span>
+                <span style={{ fontSize: '0.85rem' }}>{data.socials.email}</span>
               </div>
               <a href={data.socials.github} target="_blank" rel="noopener noreferrer"
                 style={{ display: 'flex', alignItems: 'center', gap: 8, color: C.sub, textDecoration: 'none', fontSize: '0.9rem' }}>
@@ -555,35 +705,35 @@ function About() {
             </div>
           </motion.div>
 
-          {/* Bio */}
-          <motion.div initial={{ opacity: 0, x: 50 }} animate={inView ? { opacity: 1, x: 0 } : {}}
+          {/* Bio column */}
+          <motion.div initial={{ opacity: 0, x: 30 }} animate={inView ? { opacity: 1, x: 0 } : {}}
             transition={{ duration: 0.7, delay: 0.15 }}>
-            <p style={{ color: C.sub, fontSize: '1.05rem', lineHeight: 1.85, marginBottom: 24 }}>
+            <p style={{ color: C.sub, fontSize: '1rem', lineHeight: 1.85, marginBottom: 24 }}>
               {data.personal.bio}
             </p>
-            {/* Decorative divider */}
-            <div style={{ display: 'flex', alignItems: 'center', gap: 12, marginBottom: 24 }}>
+            <div style={{ display: 'flex', alignItems: 'center', gap: 10, marginBottom: 24 }}>
               {[C.pink, C.orange, C.yellow, C.green, C.cyan, C.purple].map(c => (
                 <div key={c} style={{ flex: 1, height: 3, borderRadius: 2, background: c }} />
               ))}
             </div>
-            {/* Fun stats */}
-            <div style={{ display: 'grid', gridTemplateColumns: 'repeat(3,1fr)', gap: 16 }}>
+            {/* psych-about-stats handles 3-col → 1-col at very small widths */}
+            <div className="psych-about-stats">
               {[
                 { n: `${data.stats.yearsExperience}+`, l: 'Years', c: C.pink },
                 { n: `${data.stats.projectsCompleted}+`, l: 'Projects', c: C.green },
                 { n: `${data.stats.happyClients}+`, l: 'Clients', c: C.cyan },
               ].map(({ n, l, c }) => (
                 <div key={l} style={{
-                  background: C.surface, borderRadius: 16, padding: '18px 12px',
+                  background: C.surface, borderRadius: 14, padding: '16px 10px',
                   textAlign: 'center', border: `1.5px solid ${c}44`,
                 }}>
-                  <div style={{ fontFamily: C.fontDisplay, fontSize: '2rem', color: c }}>{n}</div>
-                  <div style={{ color: C.muted, fontSize: '0.85rem' }}>{l}</div>
+                  <div style={{ fontFamily: C.fontDisplay, fontSize: '1.75rem', color: c }}>{n}</div>
+                  <div style={{ color: C.muted, fontSize: '0.8rem' }}>{l}</div>
                 </div>
               ))}
             </div>
           </motion.div>
+
         </div>
       </div>
     </section>
@@ -601,14 +751,14 @@ function Skills() {
   }, {});
 
   return (
-    <section id="skills" ref={ref} style={{ background: C.bg, padding: '80px 24px', position: 'relative' }}>
+    <section id="skills" ref={ref} className="psych-sec" style={{ background: C.bg }}>
       <FloatOrb style={{ width: 400, height: 400, bottom: -80, left: -100,
         background: `radial-gradient(circle, ${C.cyan}22 0%, transparent 70%)`, pointerEvents: 'none' }} />
 
       <div style={{ maxWidth: 1100, margin: '0 auto' }}>
         <SectionHeading title="My Skills" sub="A groovy rainbow of technical expertise" />
 
-        <div style={{ display: 'grid', gridTemplateColumns: 'repeat(auto-fit,minmax(260px,1fr))', gap: 28 }}>
+        <div className="psych-skills-grid">
           {Object.entries(byCategory).map(([cat, skills], ci) => {
             const meta = catMeta[cat] || { color: C.pink, bg: C.surface, icon: Code2 };
             const Icon = meta.icon;
@@ -686,27 +836,25 @@ function Projects() {
   const rest = data.projects.slice(1);
 
   return (
-    <section id="projects" ref={ref} style={{ background: C.bgAlt, padding: '80px 24px', position: 'relative', overflow: 'hidden' }}>
+    <section id="projects" ref={ref} className="psych-sec" style={{ background: C.bgAlt }}>
       <FloatOrb style={{ width: 450, height: 450, top: -100, right: -120,
         background: `radial-gradient(circle, ${C.purple}33 0%, transparent 70%)`, pointerEvents: 'none' }} />
 
       <div style={{ maxWidth: 1200, margin: '0 auto' }}>
         <SectionHeading title="My Projects" sub="Groovy things I've built and shipped" />
 
-        {/* Featured project */}
+        {/* Featured project — psych-featured-card stacks on mobile */}
         <motion.div initial={{ opacity: 0, y: 50 }} animate={inView ? { opacity: 1, y: 0 } : {}}
           transition={{ duration: 0.7 }}
-          className="psych-card"
-          style={{ borderRadius: 24, overflow: 'hidden', marginBottom: 32, display: 'grid',
-            gridTemplateColumns: '1fr 1fr', minHeight: 340 }}>
-          <div style={{ overflow: 'hidden' }}>
+          className="psych-card psych-featured-card">
+          <div className="psych-featured-img">
             <img src={featured.image} alt={featured.title}
               style={{ width: '100%', height: '100%', objectFit: 'cover',
                 transition: 'transform 0.5s ease', display: 'block' }}
               onMouseEnter={e => e.currentTarget.style.transform = 'scale(1.06)'}
               onMouseLeave={e => e.currentTarget.style.transform = 'scale(1)'} />
           </div>
-          <div style={{ padding: '36px 32px', display: 'flex', flexDirection: 'column', justifyContent: 'space-between' }}>
+          <div className="psych-featured-body">
             <div>
               <span style={{
                 display: 'inline-block', padding: '4px 14px', borderRadius: 20,
@@ -748,8 +896,8 @@ function Projects() {
           </div>
         </motion.div>
 
-        {/* Grid */}
-        <div style={{ display: 'grid', gridTemplateColumns: 'repeat(auto-fill,minmax(320px,1fr))', gap: 24 }}>
+        {/* Grid — psych-projects-grid: 1-col mobile, 2-col tablet, auto-fill desktop */}
+        <div className="psych-projects-grid">
           {rest.map((proj, i) => (
             <motion.div key={proj.title}
               initial={{ opacity: 0, y: 40 }} animate={inView ? { opacity: 1, y: 0 } : {}}
@@ -810,7 +958,7 @@ function Experience() {
   const dotColors = [C.pink, C.green, C.cyan, C.yellow];
 
   return (
-    <section id="experience" ref={ref} style={{ background: C.bg, padding: '80px 24px', position: 'relative' }}>
+    <section id="experience" ref={ref} className="psych-sec" style={{ background: C.bg }}>
       <div style={{ maxWidth: 860, margin: '0 auto' }}>
         <SectionHeading title="Experience" sub="My journey through the wild world of tech" />
 
@@ -844,7 +992,7 @@ function Experience() {
                 </div>
 
                 {/* Card */}
-                <div className="psych-card" style={{ flex: 1, borderRadius: 18, padding: '22px 26px', marginBottom: 4 }}>
+                <div className="psych-card psych-exp-card">
                   <div style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'flex-start',
                     flexWrap: 'wrap', gap: 8, marginBottom: 10 }}>
                     <div>
@@ -880,14 +1028,14 @@ function Testimonials() {
   const inView = useInView(ref, { once: true, margin: '-80px' });
 
   return (
-    <section id="testimonials" style={{ background: C.bgAlt, padding: '80px 24px', position: 'relative', overflow: 'hidden' }}>
+    <section id="testimonials" className="psych-sec" style={{ background: C.bgAlt }}>
       <FloatOrb style={{ width: 400, height: 400, bottom: -100, left: -100,
         background: `radial-gradient(circle, ${C.yellow}22 0%, transparent 70%)`, pointerEvents: 'none' }} />
 
       <div style={{ maxWidth: 1200, margin: '0 auto' }} ref={ref}>
         <SectionHeading title="Testimonials" sub="Kind words from the people I've grooved with" />
 
-        <div style={{ display: 'grid', gridTemplateColumns: 'repeat(auto-fill,minmax(280px,1fr))', gap: 24 }}>
+        <div className="psych-testi-grid">
           {data.testimonials.map((t, i) => {
             const col = [C.pink, C.cyan, C.green, C.yellow][i % 4];
             return (
@@ -953,7 +1101,7 @@ function Contact() {
   };
 
   return (
-    <section id="contact" ref={ref} style={{ background: C.bg, padding: '80px 24px', position: 'relative', overflow: 'hidden' }}>
+    <section id="contact" ref={ref} className="psych-sec" style={{ background: C.bg }}>
       <FloatOrb style={{ width: 500, height: 500, top: -150, left: -200,
         background: `radial-gradient(circle, ${C.pink}22 0%, transparent 70%)`, pointerEvents: 'none' }} />
       <FloatOrb style={{ width: 400, height: 400, bottom: -120, right: -100,
@@ -964,7 +1112,7 @@ function Contact() {
 
         <motion.div initial={{ opacity: 0, y: 40 }} animate={inView ? { opacity: 1, y: 0 } : {}}
           transition={{ duration: 0.7 }}>
-          <div className="psych-card psych-glow" style={{ borderRadius: 28, padding: '44px 40px' }}>
+          <div className="psych-card psych-glow psych-contact-card">
             <AnimatePresence mode="wait">
               {status === 'done' ? (
                 <motion.div key="done" initial={{ opacity: 0, scale: 0.8 }} animate={{ opacity: 1, scale: 1 }}
@@ -987,7 +1135,7 @@ function Contact() {
               ) : (
                 <motion.form key="form" onSubmit={handleSubmit}
                   initial={{ opacity: 0 }} animate={{ opacity: 1 }} exit={{ opacity: 0 }}>
-                  <div style={{ display: 'grid', gridTemplateColumns: '1fr 1fr', gap: 20, marginBottom: 20 }}>
+                  <div className="psych-contact-row">
                     <div>
                       <label style={{ display: 'block', color: C.muted, fontSize: '0.83rem',
                         marginBottom: 8, letterSpacing: '0.1em', textTransform: 'uppercase' }}>Name</label>
@@ -1045,7 +1193,7 @@ function Contact() {
           </div>
 
           {/* Direct contact links */}
-          <div style={{ display: 'flex', justifyContent: 'center', gap: 24, marginTop: 36, flexWrap: 'wrap' }}>
+          <div className="psych-contact-socials">
             {[
               { Icon: Mail,     href: `mailto:${data.socials.email}`,  label: data.socials.email,  color: C.pink   },
               { Icon: Github,   href: data.socials.github,             label: 'GitHub',             color: C.sub    },
