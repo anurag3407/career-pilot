@@ -466,7 +466,7 @@ const handleCreatePost = async (postData) => {
               })}
 
               {hasMore && (
-                <button
+                <motion.button
                   onClick={handleLoadMore}
                   className="w-full py-3 text-primary hover:text-primary/80 font-medium cursor-pointer"
                 >
