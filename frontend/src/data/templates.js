@@ -1862,12 +1862,13 @@ export const templates = [
     "title": "Smoke Mist",
     "category": "Portfolio",
     "colorScheme": "Dark",
-    "layout": "Grid",
-    "author": "System",
-    "views": 1154,
-    "rating": 4.5,
+    "layout": "Interactive",
+    "author": "Vexx",
+    "views": 2450,
+    "rating": 4.9,
     "image": "/template-previews/Smoke_Mist.png",
-    "createdAt": "2026-05-01"
+    "createdAt": "2026-05-31",
+    "isComplete": true
   },
   {
     "id": "Snowfall_Winter",
