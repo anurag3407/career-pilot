@@ -38,15 +38,22 @@ export function AuthProvider({ children }) {
   }, [])
 
   /**
+   * Helper for handling mock authentication
+   */
+  const handleMockAuth = (mockUser) => {
+    if (import.meta.env.DEV) {
+      console.info('🛠️ Mock Auth Bypass: Logging in as dummy user.');
+      setUser(mockUser);
+      return mockUser;
+    }
+    throw new Error('Authentication service is currently unconfigured.');
+  };
+
+  /**
    * Registers a new user with an email, password, and display name.
-   *
-   * @param {string} email - The email address.
-   * @param {string} password - The password.
-   * @param {string} displayName - The user's display name.
-   * @returns {Promise<object>} The Firebase user object.
    */
   const signup = async (email, password, displayName) => {
-    if (!auth) throw new Error('Authentication service is currently unconfigured.')
+    if (!auth) return handleMockAuth({ uid: 'demo123', email, displayName: displayName || 'Demo User' });
     const result = await createUserWithEmailAndPassword(auth, email, password)
     if (displayName) {
       await updateProfile(result.user, { displayName })
@@ -56,24 +63,18 @@ export function AuthProvider({ children }) {
 
   /**
    * Logs in a user with an email and password.
-   *
-   * @param {string} email - The email address.
-   * @param {string} password - The password.
-   * @returns {Promise<object>} The Firebase user object.
    */
   const login = async (email, password) => {
-    if (!auth) throw new Error('Authentication service is currently unconfigured.')
+    if (!auth) return handleMockAuth({ uid: 'demo123', email, displayName: 'Demo User' });
     const result = await signInWithEmailAndPassword(auth, email, password)
     return result.user
   }
 
   /**
    * Logs in a user using Google Sign-In popup.
-   *
-   * @returns {Promise<object>} The Firebase user object.
    */
   const loginWithGoogle = async () => {
-    if (!auth) throw new Error('Authentication service is currently unconfigured.')
+    if (!auth) return handleMockAuth({ uid: 'demo_google_123', email: 'google_demo@careerpilot.com', displayName: 'Google Demo User' });
     const provider = new GoogleAuthProvider()
     const result = await signInWithPopup(auth, provider)
     return result.user
@@ -83,27 +84,35 @@ export function AuthProvider({ children }) {
    * Redirects the user to the LinkedIn authentication flow.
    */
   const loginWithLinkedIn = () => {
+    if (!auth && import.meta.env.DEV) {
+      console.info('🛠️ Mock Auth Bypass: Logging in as LinkedIn user.');
+      setUser({ uid: 'demo_linkedin_123', email: 'linkedin_demo@careerpilot.com', displayName: 'LinkedIn Demo User' });
+      return;
+    }
     const apiUrl = import.meta.env.VITE_API_URL || 'http://localhost:5001'
     window.location.href = `${apiUrl}/api/auth/linkedin`
   }
 
   /**
    * Signs the user out of the current session.
-   *
-   * @returns {Promise<void>}
    */
   const logout = async () => {
-    if (!auth) throw new Error('Authentication service is currently unconfigured.')
+    if (!auth) {
+      if (import.meta.env.DEV) {
+        setUser(null);
+        return;
+      }
+      throw new Error('Authentication service is currently unconfigured.');
+    }
     await signOut(auth)
   }
 
   /**
    * Retrieves the current user's Firebase ID token.
-   *
-   * @returns {Promise<string|null>} The token string, or null if no user is authenticated.
    */
   const getToken = async () => {
-    if (!user) return null
+    if (!user) return null;
+    if (!auth && import.meta.env.DEV) return 'mock_token_123';
     return await user.getIdToken()
   }
 
