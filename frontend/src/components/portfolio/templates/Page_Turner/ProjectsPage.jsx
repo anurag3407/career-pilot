@@ -16,7 +16,7 @@ const ProjectsPage = React.forwardRef(function ProjectsPage(_, ref) {
   useEffect(() => {
     const newTotalPages = Math.max(1, Math.ceil((safeProjects?.length || 0) / itemsPerPage))
     setCurrentPage((prev) => Math.min(prev, Math.max(0, newTotalPages - 1)))
-  }, [itemsPerPage, safeProjects])
+  }, [itemsPerPage]) // safeProjects is a static module-level constant
 
   const totalPages = Math.ceil((safeProjects?.length || 0) / itemsPerPage)
   const currentProjects = (safeProjects || []).slice(currentPage * itemsPerPage, (currentPage + 1) * itemsPerPage)

@@ -323,11 +323,13 @@ export default function InterviewPrep() {
 
   useEffect(() => {
     if (step === 'interview') initializeMedia();
+    const synth = synthRef.current; // capture before cleanup to avoid stale ref
     return () => {
       cleanupMedia();
-      if (synthRef.current) synthRef.current.cancel();
+      if (synth) synth.cancel();
     };
   }, [step]);
+
 
   // Cleanup AV check stream when moving to interview
   useEffect(() => {

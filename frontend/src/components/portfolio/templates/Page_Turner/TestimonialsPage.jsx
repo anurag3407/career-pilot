@@ -16,7 +16,7 @@ const TestimonialsPage = React.forwardRef(function TestimonialsPage(_, ref) {
   useEffect(() => {
     const newTotalPages = Math.max(1, Math.ceil((safeTestimonials?.length || 0) / itemsPerPage))
     setCurrentPage((prev) => Math.min(prev, Math.max(0, newTotalPages - 1)))
-  }, [itemsPerPage, safeTestimonials])
+  }, [itemsPerPage]) // safeTestimonials is a static module-level constant
 
   const paginatedData = (safeTestimonials || []).slice(currentPage * itemsPerPage, (currentPage + 1) * itemsPerPage)
   const totalPages = Math.ceil((safeTestimonials?.length || 0) / itemsPerPage)
