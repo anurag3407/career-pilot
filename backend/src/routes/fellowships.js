@@ -546,7 +546,7 @@ router.post('/chat/rooms/:roomId/messages', verifyToken, asyncHandler(async (req
     throw new ApiError(403, 'Access denied');
   }
 
-const { content } = req.body;
+  const { content } = req.body || {};
   const sanitizedContent = sanitizeMessageContent(content);
   if (!sanitizedContent) throw new ApiError(400, 'Message content is required');
 

@@ -152,7 +152,7 @@ function Footer({ name }) {
 /* ════════════════════════════════════════
    MAIN COMPONENT
 ════════════════════════════════════════ */
-export default function NetflixBrowse() {
+export default function NetflixBrowse({ isPreview = false }) {
   return (
     <div
       id="netflix-portfolio"
@@ -160,7 +160,7 @@ export default function NetflixBrowse() {
       style={{ fontFamily: "'Inter', 'Netflix Sans', sans-serif" }}
     >
       {/* Sticky Netflix-style navbar */}
-      <Navbar />
+      {!isPreview && <Navbar />}
 
       {/* ── Hero ── */}
       <Hero personal={data.personal} stats={data.stats} />
