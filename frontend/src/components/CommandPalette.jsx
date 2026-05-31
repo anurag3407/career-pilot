@@ -204,9 +204,9 @@ const CommandPalette = ({ isOpen, setIsOpen }) => {
     >
       <div
         ref={containerRef}
-        className="w-full max-w-2xl rounded-3xl border border-white/10 bg-[#0b1120]/95 shadow-2xl overflow-hidden"
+        className="w-full max-w-2xl rounded-3xl border border-border bg-card/95 shadow-2xl overflow-hidden"
       >
-        <div className="flex items-center gap-3 border-b border-white/10 px-5 py-4">
+        <div className="flex items-center gap-3 border-b border-border px-5 py-4">
           <Search size={18} className="text-cyan-400" />
 
           <input
@@ -218,19 +218,19 @@ const CommandPalette = ({ isOpen, setIsOpen }) => {
               setQuery(e.target.value);
               setSelectedIndex(0);
             }}
-            className="w-full bg-transparent outline-none text-white placeholder:text-gray-500 text-sm"
+            className="w-full bg-transparent outline-none text-foreground placeholder:text-muted-foreground text-sm"
           />
 
-          <div className="hidden sm:flex items-center gap-2 text-xs text-gray-500">
-            <kbd className="rounded bg-white/10 px-2 py-1">
+          <div className="hidden sm:flex items-center gap-2 text-xs text-muted-foreground">
+            <kbd className="rounded bg-muted px-2 py-1">
               ESC
             </kbd>
           </div>
         </div>
 
         {!query && recentActions.length > 0 && (
-          <div className="border-b border-white/10 px-4 py-3">
-            <div className="mb-2 flex items-center gap-2 text-xs font-medium uppercase tracking-wide text-gray-400">
+          <div className="border-b border-border px-4 py-3">
+            <div className="mb-2 flex items-center gap-2 text-xs font-medium uppercase tracking-wide text-muted-foreground">
               <Clock size={14} />
               Recent
             </div>
@@ -248,18 +248,18 @@ const CommandPalette = ({ isOpen, setIsOpen }) => {
                   <button
                     key={action.id}
                     onClick={() => handleSelect(action)}
-                    className="flex w-full items-center gap-3 rounded-xl px-3 py-2 text-left hover:bg-white/5 transition"
+                    className="flex w-full items-center gap-3 rounded-xl px-3 py-2 text-left hover:bg-muted/60 transition"
                   >
                     <div className="text-cyan-400">
                       <Icon size={18} />
                     </div>
 
                     <div>
-                      <p className="text-sm text-white">
+                      <p className="text-sm text-foreground">
                         {action.title}
                       </p>
 
-                      <p className="text-xs text-gray-500">
+                      <p className="text-xs text-muted-foreground">
                         {action.description}
                       </p>
                     </div>
@@ -281,8 +281,8 @@ const CommandPalette = ({ isOpen, setIsOpen }) => {
                   onClick={() => handleSelect(action)}
                   className={`flex w-full items-center gap-3 rounded-2xl px-4 py-3 text-left transition-all duration-200 ${
                     selectedIndex === index
-                      ? 'bg-cyan-500/10 border border-cyan-500/20'
-                      : 'hover:bg-white/5'
+                      ? 'bg-primary/10 border border-primary/20'
+                      : 'hover:bg-muted/60'
                   }`}
                 >
                   <div className="text-cyan-400">
@@ -290,11 +290,11 @@ const CommandPalette = ({ isOpen, setIsOpen }) => {
                   </div>
 
                   <div className="flex-1">
-                    <p className="text-sm font-medium text-white">
+                    <p className="text-sm font-medium text-foreground">
                       {action.title}
                     </p>
 
-                    <p className="text-xs text-gray-500">
+                    <p className="text-xs text-muted-foreground">
                       {action.description}
                     </p>
                   </div>
@@ -303,27 +303,27 @@ const CommandPalette = ({ isOpen, setIsOpen }) => {
             })
           ) : (
             <div className="py-12 text-center">
-              <p className="text-sm text-gray-400">
+              <p className="text-sm text-muted-foreground">
                 No matching commands found.
               </p>
             </div>
           )}
         </div>
 
-        <div className="flex items-center justify-between border-t border-white/10 px-5 py-3 text-xs text-gray-500">
+        <div className="flex items-center justify-between border-t border-border px-5 py-3 text-xs text-muted-foreground">
           <div className="flex items-center gap-3">
             <span>↑↓ Navigate</span>
             <span>↵ Select</span>
           </div>
 
           <div className="flex items-center gap-2">
-            <kbd className="rounded bg-white/10 px-2 py-1">
+            <kbd className="rounded bg-muted px-2 py-1">
               Ctrl
             </kbd>
 
             <span>+</span>
 
-            <kbd className="rounded bg-white/10 px-2 py-1">
+            <kbd className="rounded bg-muted px-2 py-1">
               K
             </kbd>
           </div>

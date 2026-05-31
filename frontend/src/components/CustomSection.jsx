@@ -136,7 +136,7 @@ function EntryEditor({ entry, onChange, onDelete, onMoveUp, onMoveDown, isFirst,
   className="w-full px-3 py-2 rounded-lg bg-background border border-border text-sm text-foreground placeholder:text-muted-foreground focus:outline-none focus:ring-2 focus:ring-primary/40 focus:border-primary transition-colors"
 />
 
-<p className="text-xs text-gray-500 mt-1">
+<p className="text-xs text-muted-foreground mt-1">
   {entry.title?.length || 0} / 100
 </p>
           </div>
@@ -150,7 +150,7 @@ function EntryEditor({ entry, onChange, onDelete, onMoveUp, onMoveDown, isFirst,
               placeholder="e.g. IEEE Conference"
               className="w-full px-3 py-2 rounded-lg bg-background border border-border text-sm text-foreground placeholder:text-muted-foreground focus:outline-none focus:ring-2 focus:ring-primary/40 focus:border-primary transition-colors"
             />
-            <p className="text-xs text-gray-500 mt-1">
+            <p className="text-xs text-muted-foreground mt-1">
   {entry.subtitle?.length || 0} / 150
 </p>
           </div>
@@ -164,7 +164,7 @@ function EntryEditor({ entry, onChange, onDelete, onMoveUp, onMoveDown, isFirst,
               placeholder="e.g. May 2024"
               className="w-full px-3 py-2 rounded-lg bg-background border border-border text-sm text-foreground placeholder:text-muted-foreground focus:outline-none focus:ring-2 focus:ring-primary/40 focus:border-primary transition-colors"
             />
-            <p className="text-xs text-gray-500 mt-1">
+            <p className="text-xs text-muted-foreground mt-1">
   {entry.date?.length || 0} / 30
 </p>
           </div>
@@ -182,7 +182,7 @@ function EntryEditor({ entry, onChange, onDelete, onMoveUp, onMoveDown, isFirst,
   className={`text-sm mt-1 ${
     (entry.description?.length || 0) > 450
       ? 'text-red-500'
-      : 'text-gray-500'
+      : 'text-muted-foreground'
   }`}
 >
   {entry.description?.length || 0} / 500

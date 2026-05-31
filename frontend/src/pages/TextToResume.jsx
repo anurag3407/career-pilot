@@ -44,7 +44,7 @@ export default function TextToResume() {
           <div className="inline-flex items-center justify-center p-3 bg-primary/10 rounded-2xl mb-6 ring-1 ring-primary/20 shadow-[0_0_30px_rgba(var(--primary-rgb),0.2)]">
             <FileText className="w-8 h-8 text-primary" />
           </div>
-          <h1 className="text-4xl md:text-5xl font-bold bg-clip-text text-transparent bg-gradient-to-r from-white to-white/60 tracking-tight mb-4">
+          <h1 className="text-4xl md:text-5xl font-bold bg-clip-text text-transparent bg-gradient-to-r from-foreground to-foreground/60 tracking-tight mb-4">
             Text to Resume
           </h1>
           <p className="text-xl text-muted-foreground max-w-2xl mx-auto">
@@ -56,7 +56,7 @@ export default function TextToResume() {
           initial={{ opacity: 0, y: 20 }}
           animate={{ opacity: 1, y: 0 }}
           transition={{ delay: 0.1 }}
-          className="bg-card/50 backdrop-blur-xl border border-white/5 rounded-3xl p-6 sm:p-8 shadow-2xl"
+          className="bg-card/50 backdrop-blur-xl border border-border/60 rounded-3xl p-6 sm:p-8 shadow-2xl"
         >
           <div className="space-y-6">
             <div>

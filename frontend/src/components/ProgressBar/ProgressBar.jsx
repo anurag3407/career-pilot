@@ -45,14 +45,14 @@ const ProgressBar = ({
   return (
     <div className="w-full">
       {label && !isIndeterminate && (
-        <div className="flex justify-between mb-1 text-sm font-medium text-gray-600">
+        <div className="flex justify-between mb-1 text-sm font-medium text-muted-foreground">
           <span>{typeof label === "string" ? label : "Progress"}</span>
           <span>{width}%</span>
         </div>
       )}
 
       <div
-        className={`w-full ${barHeight} bg-gray-200 rounded-full overflow-hidden`}
+        className={`w-full ${barHeight} bg-muted rounded-full overflow-hidden`}
         role="progressbar"
         aria-valuenow={isIndeterminate ? undefined : width}
         aria-valuemin={0}
