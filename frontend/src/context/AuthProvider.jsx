@@ -46,7 +46,7 @@ export function AuthProvider({ children }) {
    * @returns {Promise<object>} The Firebase user object.
    */
   const signup = async (email, password, displayName) => {
-    if (!auth) throw new Error('Authentication service is currently unconfigured.')
+    if (!auth) throw new Error("Authentication service is not configured. Please check your environment variables and authentication provider setup. Refer to the project setup documentation for configuration instructions.")
     const result = await createUserWithEmailAndPassword(auth, email, password)
     if (displayName) {
       await updateProfile(result.user, { displayName })
@@ -62,7 +62,7 @@ export function AuthProvider({ children }) {
    * @returns {Promise<object>} The Firebase user object.
    */
   const login = async (email, password) => {
-    if (!auth) throw new Error('Authentication service is currently unconfigured.')
+    if (!auth) throw new Error("Authentication service is not configured. Please check your environment variables and authentication provider setup. Refer to the project setup documentation for configuration instructions.")
     const result = await signInWithEmailAndPassword(auth, email, password)
     return result.user
   }
@@ -73,7 +73,7 @@ export function AuthProvider({ children }) {
    * @returns {Promise<object>} The Firebase user object.
    */
   const loginWithGoogle = async () => {
-    if (!auth) throw new Error('Authentication service is currently unconfigured.')
+    if (!auth) throw new Error("Authentication service is not configured. Please check your environment variables and authentication provider setup. Refer to the project setup documentation for configuration instructions.")
     const provider = new GoogleAuthProvider()
     const result = await signInWithPopup(auth, provider)
     return result.user
@@ -93,7 +93,7 @@ export function AuthProvider({ children }) {
    * @returns {Promise<void>}
    */
   const logout = async () => {
-    if (!auth) throw new Error('Authentication service is currently unconfigured.')
+    if (!auth) throw new Error("Authentication service is not configured. Please check your environment variables and authentication provider setup. Refer to the project setup documentation for configuration instructions.")
     await signOut(auth)
   }
 

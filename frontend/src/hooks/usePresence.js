@@ -9,11 +9,25 @@ export function usePresence(userIds = []) {
   const { onlineUsers, subscribe } = useSocket();
   const [presenceMap, setPresenceMap] = useState({});
 
-  // Create a stable primitive key based on array content to prevent unnecessary effect triggers
-  const serializedUserIds = userIds.join(',');
+  // Normalize to a safe array first so null callers don't throw on spread/length.
+  const safeUserIds = Array.isArray(userIds) ? userIds : [];
 
-  // Memoize the target user IDs array so its reference remains stable between renders
-  const stableUserIds = useMemo(() => userIds, [serializedUserIds]);
+  // Deduplicate so callers passing repeated IDs don't trigger extra subscriptions.
+  const uniqueUserIds = [...new Set(safeUserIds)];
+
+  // Serialize to a collision-safe primitive key so IDs containing commas (or
+  // any delimiter) are encoded correctly. Sorting first ensures ['a','b'] and
+  // ['b','a'] produce the same key and don't trigger extra subscriptions.
+  const serializedUserIds =
+    uniqueUserIds.length === 0 ? '' : JSON.stringify([...uniqueUserIds].sort());
+
+  // Reconstruct a stable array reference from the parsed JSON so that inline
+  // arrays (e.g. usePresence(['user1','user2'])) do not cause subscription
+  // effects below to re-run on every parent render.
+  const stableUserIds = useMemo(
+    () => (serializedUserIds ? JSON.parse(serializedUserIds) : []),
+    [serializedUserIds]
+  );
 
   // 1. Synchronize local map when global onlineUsers change or target user IDs change
   useEffect(() => {
