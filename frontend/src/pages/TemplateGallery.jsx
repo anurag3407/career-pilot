@@ -408,7 +408,7 @@ export default function TemplateGallery() {
           </span>
           <h2 className="text-lg font-semibold text-foreground/70">Tech Startup Theme — Hero Section</h2>
         </div>
-        <div className="overflow-hidya den rounded-2xl border border-cyan-500/20">
+        <div className="overflow-hidden rounded-2xl border border-cyan-500/20">
           <TechStartupHero />
         </div>
       </div>
