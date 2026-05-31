@@ -254,7 +254,7 @@ const TemplatePreviewModal = ({ templateId, isOpen, onClose, portfolioData }) =>
             <p className="animate-pulse font-medium tracking-wide text-sm uppercase">Loading interactive preview...</p>
           </div>
         }>
-          {Component && <Component portfolioData={portfolioData} />}
+          {Component && <Component data={portfolioData} portfolioData={portfolioData} />}
         </Suspense>
       </div>
     </div>

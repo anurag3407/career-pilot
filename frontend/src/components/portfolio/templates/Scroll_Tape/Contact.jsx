@@ -4,7 +4,7 @@ import { Mail, MailCheck, Github, Linkedin, Twitter } from 'lucide-react';
 export default function Contact({ data }) {
   const handleSubmit = (e) => {
     e.preventDefault();
-    alert('VCR system: Message buffered to memory block.');
+    window.location.href = `mailto:${data.socials.email}?subject=Message from Portfolio`;
   };
 
   return (
@@ -32,18 +32,21 @@ export default function Contact({ data }) {
               <input
                 type="text"
                 placeholder="YOUR NAME"
+                aria-label="Your Name"
                 required
                 className="w-full bg-gray-50 border-2 border-gray-200 focus:border-cyan-500 rounded px-2.5 py-1.5 text-xs font-bold uppercase placeholder-gray-400 outline-none text-black"
               />
               <input
                 type="email"
                 placeholder="YOUR EMAIL"
+                aria-label="Your Email"
                 required
                 className="w-full bg-gray-50 border-2 border-gray-200 focus:border-cyan-500 rounded px-2.5 py-1.5 text-xs font-bold uppercase placeholder-gray-400 outline-none text-black"
               />
             </div>
             <textarea
               placeholder="YOUR MESSAGE..."
+              aria-label="Your Message"
               required
               rows={3}
               className="w-full bg-gray-50 border-2 border-gray-200 focus:border-cyan-500 rounded px-2.5 py-1.5 text-xs font-bold uppercase placeholder-gray-400 outline-none resize-none text-black flex-1"

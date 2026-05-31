@@ -56,6 +56,10 @@ export default function ScrollTape() {
     window.addEventListener('resize', resizeCanvas);
 
     const render = () => {
+      if (vcrState === 'PAUSE') {
+        ctx.clearRect(0, 0, canvas.width, canvas.height);
+        return;
+      }
       ctx.clearRect(0, 0, canvas.width, canvas.height);
 
       if (vcrState === 'FF' || vcrState === 'REW') {

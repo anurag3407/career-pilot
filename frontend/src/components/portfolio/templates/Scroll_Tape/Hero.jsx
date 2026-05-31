@@ -7,8 +7,10 @@ export default function Hero({ data, onNext }) {
       {/* Blinking REC Overlay & Tape Indicators */}
       <div className="flex items-center justify-between text-xs md:text-sm font-bold tracking-widest text-[#ff0055] select-none">
         <div className="flex items-center gap-2">
-          <span className="w-3 h-3 rounded-full bg-[#ff0055] animate-ping absolute" />
-          <span className="w-3 h-3 rounded-full bg-[#ff0055]" />
+          <div className="relative w-3 h-3">
+            <span className="w-3 h-3 rounded-full bg-[#ff0055] animate-ping absolute top-0 left-0" />
+            <span className="w-3 h-3 rounded-full bg-[#ff0055] absolute top-0 left-0" />
+          </div>
           <span>REC</span>
         </div>
         <div className="text-cyan-400">
