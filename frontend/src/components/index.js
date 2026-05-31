@@ -8,3 +8,22 @@ export { default as FileUpload } from './FileUpload'
 export { default as JobAlertModal } from './JobAlertModal'
 export { default as JobAlertsList } from './JobAlertsList'
 
+// Export skeleton components
+export {
+  Skeleton,
+  SkeletonCard,
+  SkeletonList,
+  SkeletonDashboard,
+  SkeletonStatCard,
+  SkeletonStatCards,
+  SkeletonJobCard,
+  SkeletonJobList,
+  SkeletonChallengeCard,
+  SkeletonChallengeGrid,
+  SkeletonPost,
+  SkeletonPostList,
+  SkeletonDashboardActions,
+  SkeletonListItem,
+  SkeletonListItems
+} from './ui/Skeleton'
+

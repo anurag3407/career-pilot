@@ -9,17 +9,17 @@ import { Hash, Users, Pin, Search, Settings, MoreVertical, Loader2, Sun, Moon } 
 const MessageSkeleton = ({ isOwn }) => (
   <div className={`flex gap-3 ${isOwn ? 'flex-row-reverse' : ''} animate-pulse`}>
     {!isOwn && (
-      <div className="w-9 h-9 rounded-full bg-gradient-to-br from-primary to-secondary flex-shrink-0" />
+      <div className="w-9 h-9 rounded-full bg-foreground/10 flex-shrink-0" />
     )}
     <div className={`flex flex-col gap-1 ${isOwn ? 'items-end' : 'items-start'}`}>
-      {!isOwn && <div className="h-3 w-20 bg-muted-foreground/30 rounded" />}
-      <div className={`rounded-2xl px-4 py-3 ${isOwn ? 'bg-primary/20' : 'bg-card border border-border'}`}>
+      {!isOwn && <div className="h-3 w-20 bg-foreground/10 rounded" />}
+      <div className={`rounded-2xl px-4 py-3 ${isOwn ? 'bg-primary/10' : 'bg-card border border-border'}`}>
         <div className="space-y-2">
-          <div className={`h-3 ${isOwn ? 'w-32' : 'w-48'} bg-muted-foreground/30 rounded`} />
-          <div className={`h-3 ${isOwn ? 'w-24' : 'w-36'} bg-muted-foreground/30 rounded`} />
+          <div className={`h-3 ${isOwn ? 'w-32' : 'w-48'} bg-foreground/10 rounded`} />
+          <div className={`h-3 ${isOwn ? 'w-24' : 'w-36'} bg-foreground/10 rounded`} />
         </div>
       </div>
-      <div className="h-2 w-12 bg-muted rounded mt-1" />
+      <div className="h-2 w-12 bg-foreground/10 mt-1 rounded" />
     </div>
   </div>
 );
@@ -32,9 +32,9 @@ const ChatLoadingSkeleton = () => (
     
     {/* Date separator skeleton */}
     <div className="flex items-center gap-4 my-2 animate-pulse">
-      <div className="flex-1 h-px bg-muted"></div>
-      <div className="h-4 w-28 bg-muted rounded-full"></div>
-      <div className="flex-1 h-px bg-muted"></div>
+      <div className="flex-1 h-px bg-foreground/10"></div>
+      <div className="h-4 w-28 bg-foreground/10 rounded-full"></div>
+      <div className="flex-1 h-px bg-foreground/10"></div>
     </div>
     
     {/* Message skeletons with staggered animation */}

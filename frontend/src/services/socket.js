@@ -1,7 +1,7 @@
 import { io } from 'socket.io-client';
 import { auth } from '../config/firebase';
 
-const SOCKET_URL = import.meta.env.VITE_API_URL || 'http://localhost:5000';
+const SOCKET_URL = import.meta.env.VITE_API_URL || 'http://localhost:5001';
 
 let socket = null;
 
@@ -27,16 +27,8 @@ export const initializeSocket = async () => {
     timeout: 10000
   });
 
-  socket.on('connect', () => {
-    console.log('✅ Socket connected:', socket.id);
-  });
-
   socket.on('connect_error', (error) => {
     console.error('❌ Socket connection error:', error.message);
-  });
-
-  socket.on('disconnect', (reason) => {
-    console.log('🔌 Socket disconnected:', reason);
   });
 
   socket.on('error', (error) => {

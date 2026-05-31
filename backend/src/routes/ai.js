@@ -5,7 +5,7 @@ import { getAiConfig, saveAiConfig } from '../services/aiConfigService.js';
 
 const router = express.Router();
 
-router.post('/linkedin-headline', async (req, res) => {
+router.post('/linkedin-headline', verifyToken, async (req, res) => {
     try {
         const portfolioData = req.body;
         
@@ -32,7 +32,7 @@ router.post('/linkedin-headline', async (req, res) => {
     }
 });
 
-router.get('/models', async (req, res) => {
+router.get('/models', verifyToken, async (req, res) => {
     const { provider } = req.query;
     
     if (provider?.toLowerCase() === 'openrouter') {
