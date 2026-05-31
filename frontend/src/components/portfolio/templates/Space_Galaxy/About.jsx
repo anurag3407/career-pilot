@@ -12,13 +12,14 @@ import {
   Send,
 } from "lucide-react";
 
-/* ── Space font stack — no external CSS file or network request.
-   Uses Orbitron if already loaded by the host app (career-pilot loads it
-   globally), otherwise falls back to the closest system alternatives.    ── */
+/**
+ * Space-themed font stack.
+ * @type {string}
+ */
 const SPACE_FONT = "'Orbitron', 'Exo 2', 'Rajdhani', 'Courier New', monospace;";
 
 /* ─────────────────────────────────────────────
-   DATA  — updated from reference screenshots
+   DATA  — updated 
 ───────────────────────────────────────────── */
 
 const skills = [
@@ -137,6 +138,15 @@ const testimonials = [
    SHARED COMPONENTS
 ───────────────────────────────────────────── */
 
+/**
+ * Shared section heading used across all portfolio sections.
+ * Renders a centred h2 in the Space Galaxy violet palette with wide
+ * letter-spacing and the project's space font stack.
+ *
+ * @param {object}      props          - Component props.
+ * @param {React.ReactNode} props.children - Heading text content.
+ * @returns {JSX.Element} Styled h2 element.
+ */
 function SectionTitle({ children }) {
   return (
     <h2
@@ -151,6 +161,14 @@ function SectionTitle({ children }) {
 /* ─────────────────────────────────────────────
    GALAXY BACKGROUND  (unchanged from original)
 ───────────────────────────────────────────── */
+/**
+ * Full-page animated canvas background for the Space Galaxy theme.
+ * Draws three radial nebula gradient blobs and 350 drifting star
+ * particles that loop from bottom to top at varying speeds and opacities.
+ * Cleans up the animation frame and resize listener on unmount.
+ *
+ * @returns {JSX.Element} A full-bleed <canvas> element.
+ */
 function GalaxyBackground() {
   const canvasRef = useRef();
   useEffect(() => {
@@ -214,6 +232,16 @@ function GalaxyBackground() {
 /* ─────────────────────────────────────────────
    SKILL CONSTELLATION  (unchanged from original)
 ───────────────────────────────────────────── */
+/**
+ * Interactive SVG skill constellation for the Space Galaxy theme.
+ * Renders 10 skill nodes at fixed percentage-based positions connected
+ * by dashed lines. Lines are drawn on a lower z-index layer so they
+ * terminate cleanly at each circle's edge (offset by DOT_R = 12 px).
+ * Clicking a node toggles a tooltip showing the skill name.
+ * Height is fluid via clamp() for mobile responsiveness.
+ *
+ * @returns {JSX.Element} Positioned container with SVG lines and skill buttons.
+ */
 function SkillConstellation() {
   const [active, setActive] = useState();
   const containerRef = useRef();
@@ -332,6 +360,15 @@ function SkillConstellation() {
    with stats sidebar (5+ yrs, 48+ projects,
    32+ clients) and social icon buttons
 ───────────────────────────────────────────── */
+/**
+ * Hero introduction section (01 — INTRODUCTION).
+ * Displays a two-column card: the left column shows the developer name
+ * and title; the right column shows three stats (years, projects, clients)
+ * and a row of social icon links rendered as aria-disabled placeholders
+ * until real URLs are supplied in the data constants above.
+ *
+ * @returns {JSX.Element} Full-viewport-height intro section.
+ */
 function IntroSection() {
   return (
     <section className="min-h-screen flex items-center justify-center px-6">
@@ -393,6 +430,14 @@ function IntroSection() {
    ABOUT SECTION  — uses that man's photo
    from pravatar (img=12 = Michael Ross look)
 ───────────────────────────────────────────── */
+/**
+ * Personal bio section (02 — ABOUT).
+ * Renders a two-column layout: an inline SVG astronaut avatar on the left
+ * (no external image asset) and a bio paragraph on the right.
+ * Uses the shared SectionTitle component for the heading.
+ *
+ * @returns {JSX.Element} About section with avatar and bio text.
+ */
 function AboutSection() {
   return (
     <section className="min-h-screen flex items-center justify-center px-6">
@@ -475,6 +520,15 @@ function AboutSection() {
    PROJECT GALAXY  — numbered list with
    description, tech tags, LIVE SITE + SOURCE
 ───────────────────────────────────────────── */
+/**
+ * Project showcase section (04 — PROJECT GALAXY).
+ * Iterates over the {@link projects} data array and renders each entry as
+ * a numbered table row with title, description, tech-stack tags, and
+ * LIVE SITE / SOURCE links. Links render as interactive anchors when a
+ * URL is provided, or as aria-disabled placeholder spans when {@code null}.
+ *
+ * @returns {JSX.Element} Bordered list of project rows.
+ */
 function ProjectsSection() {
   return (
     <section className="px-6 py-28 max-w-6xl mx-auto w-full">
@@ -540,6 +594,14 @@ function ProjectsSection() {
    EXPERIENCE ORBIT  — period + company (violet)
    + role (bold) + description paragraph
 ───────────────────────────────────────────── */
+/**
+ * Work history section (05 — EXPERIENCE ORBIT).
+ * Renders a sticky label column on the left and a divided list of roles on
+ * the right. Each entry shows the date range, company name (in violet),
+ * role title, and a description paragraph sourced from {@link experience}.
+ *
+ * @returns {JSX.Element} Two-column experience timeline.
+ */
 function ExperienceSection() {
   return (
     <section className="px-6 py-28 max-w-6xl mx-auto w-full">
@@ -581,6 +643,15 @@ function ExperienceSection() {
 /* ─────────────────────────────────────────────
    TESTIMONIALS  (unchanged structure)
 ───────────────────────────────────────────── */
+/**
+ * Social proof section (06 — TESTIMONIAL SIGNALS).
+ * Maps over {@link testimonials} and renders each as a card with a CSS
+ * initials avatar (no external images), quote text, name, and role.
+ * Avatar colours cycle through violet, cyan, and rose to match the
+ * Space Galaxy palette.
+ *
+ * @returns {JSX.Element} Three-column testimonial grid.
+ */
 function TestimonialsSection() {
   return (
     <section className="px-6 py-28">
@@ -631,6 +702,15 @@ function TestimonialsSection() {
    Connect With Me panel (right) with email
    copy button + GitHub / LinkedIn / Twitter
 ───────────────────────────────────────────── */
+/**
+ * Contact section (07 — OPEN CHANNELS).
+ * Left card: a controlled form with accessible labels (sr-only) for name,
+ * email, and message fields. Shows a success state for 3 s after submit.
+ * Right card: an email display with a clipboard-copy button, social media
+ * links as aria-disabled placeholders, location line, and footer credits.
+ *
+ * @returns {JSX.Element} Two-column contact panel.
+ */
 function ContactSection() {
   const [copied, setCopied] = useState(false);
   const [sent, setSent] = useState(false);
@@ -786,6 +866,24 @@ function ContactSection() {
 /* ─────────────────────────────────────────────
    MAIN EXPORT  — same outer shell as original
 ───────────────────────────────────────────── */
+/**
+ * Space Galaxy — About page template.
+ *
+ * Root component that composes all portfolio sections inside a single
+ * full-page wrapper with the animated {@link GalaxyBackground} canvas.
+ * Designed to be dropped directly into any page as a standalone module.
+ *
+ * Sections rendered (in order):
+ *  01 — Introduction  {@link IntroSection}
+ *  02 — About         {@link AboutSection}
+ *  03 — Skills        {@link SkillConstellation}
+ *  04 — Projects      {@link ProjectsSection}
+ *  05 — Experience    {@link ExperienceSection}
+ *  06 — Testimonials  {@link TestimonialsSection}
+ *  07 — Contact       {@link ContactSection}
+ *
+ * @returns {JSX.Element} Complete portfolio About page.
+ */
 export default function About() {
   return (
     <section className="relative overflow-hidden text-white">
