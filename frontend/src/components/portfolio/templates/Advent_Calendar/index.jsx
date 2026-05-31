@@ -58,6 +58,10 @@ const Door = ({ door, isOpen, onClick }) => (
     whileHover={{ scale: 1.05 }}
     whileTap={{ scale: 0.97 }}
     onClick={() => onClick(door)}
+    onKeyDown={(e) => e.key === 'Enter' && onClick(door)}
+    role="button"
+    tabIndex={0}
+    aria-label={`Open door ${door}`}
   >
     <div className={`relative h-24 sm:h-28 rounded-xl bg-gradient-to-br ${door.color} border-2 border-white/20 shadow-lg overflow-hidden`}>
       {/* Wood texture lines */}
@@ -402,9 +406,10 @@ export default function AdventCalendar() {
             >
               {/* Close button */}
               <button
-                onClick={closeModal}
-                className="absolute top-3 right-3 p-1 bg-white/10 hover:bg-white/20 rounded-full transition-colors"
-              >
+    onClick={closeModal}
+    aria-label="Close modal"
+    className="absolute top-3 right-3 p-1 bg-white/10 hover:bg-white/20 rounded-full transition-colors"
+  >
                 <X className="w-4 h-4 text-white" />
               </button>
 
