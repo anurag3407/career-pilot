@@ -36,7 +36,7 @@ const CommitTimeline = ({ commits }) => {
                   <div className="flex items-center gap-3 text-xs text-slate-400">
                     <div className="flex items-center gap-1.5">
                       {commit.author.avatar ? (
-                        <img src={commit.author.avatar} alt="" className="w-4 h-4 rounded-full" />
+                        <img alt=" " src={commit.author.avatar} alt="" className="w-4 h-4 rounded-full" />
                       ) : (
                         <div className="w-4 h-4 rounded-full bg-slate-700" />
                       )}

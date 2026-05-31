@@ -42,7 +42,7 @@ export default function Projects({ data }) {
             >
               <div className={`relative overflow-hidden ${index === 0 ? 'h-72' : 'h-56'}`}>
                 {project?.image ? (
-                  <img
+                  <img alt=" "
                     src={project.image}
                     alt={project?.title || 'Project preview'}
                     className="h-full w-full object-cover transition-transform duration-700 group-hover:scale-105"

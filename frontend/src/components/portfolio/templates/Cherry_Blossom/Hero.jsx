@@ -93,7 +93,7 @@ export default function Hero({ data }) {
         >
           <div className="absolute w-80 h-80 bg-pink-200 rounded-full blur-3xl opacity-40"></div>
 
-          <img
+          <img alt=" "
             src={personal.avatar}
             alt={personal.name}
             className="relative z-10 w-72 h-72 md:w-80 md:h-80 object-cover rounded-full border-8 border-white shadow-2xl"

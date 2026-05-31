@@ -100,7 +100,7 @@ export default function Testimonials({ data }) {
                 <p className="relative text-lg italic leading-relaxed text-[#F1F0FF]">{testimonial?.text}</p>
                 <div className="mt-8 flex items-center gap-3">
                   {testimonial?.avatar ? (
-                    <img
+                    <img alt=" "
                       src={testimonial.avatar}
                       alt={testimonial?.name || 'Testimonial avatar'}
                       className="h-10 w-10 rounded-full object-cover ring-2 ring-[#6366F1]/30"

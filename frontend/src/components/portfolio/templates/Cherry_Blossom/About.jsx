@@ -19,7 +19,7 @@ export default function About({ data }) {
 
           <div className="grid md:grid-cols-2 gap-10 items-center">
             <div className="flex justify-center">
-              <img
+              <img alt=" "
                 src={personal.avatar}
                 alt={personal.name}
                 className="w-64 h-64 object-cover rounded-3xl shadow-xl"

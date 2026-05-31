@@ -36,7 +36,7 @@ export default function Hero() {
         transition={{ duration: 0.8 }}
         className="max-w-4xl text-center z-10"
       >
-        <img
+        <img alt=" "
           src={data.personal.avatar}
           alt={data.personal.name}
           className="w-32 h-32 rounded-full mx-auto border-4 border-white/20 shadow-2xl"

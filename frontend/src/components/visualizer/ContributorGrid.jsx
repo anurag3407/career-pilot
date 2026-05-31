@@ -28,7 +28,7 @@ const ContributorGrid = ({ contributors }) => {
           <div className="absolute inset-0 bg-gradient-to-r from-cyan-500/0 via-cyan-500/0 to-cyan-500/10 opacity-0 group-hover:opacity-100 transition-opacity pointer-events-none" />
           
           <div className="relative shrink-0">
-            <img 
+            <img alt=" " 
               src={user.avatar} 
               alt={user.login} 
               className="w-14 h-14 rounded-full border-2 border-white/10 group-hover:border-cyan-500/50 transition-colors"

@@ -411,7 +411,7 @@ function Hero({ personal, stats }) {
         <div className="absolute -inset-4 rounded-full bg-gradient-to-br from-cyan-400/30 via-fuchsia-400/20 to-emerald-300/20 blur-3xl" />
         <div className="relative rounded-[2rem] border border-white/10 bg-slate-950/70 p-4 shadow-2xl shadow-cyan-950/40">
           {personal?.avatar ? (
-            <img
+            <img alt=" "
               src={personal.avatar}
               alt={personal?.name || 'Portfolio avatar'}
               className="aspect-square w-full rounded-[1.5rem] object-cover"
@@ -436,7 +436,7 @@ function About({ personal }) {
   return (
     <div className="grid gap-5 md:grid-cols-[0.85fr_1.15fr] md:items-center">
       {personal?.avatar ? (
-        <img
+        <img alt=" "
           src={personal.avatar}
           alt={personal?.name || 'Portfolio avatar'}
           className="mx-auto aspect-[4/5] w-full max-w-xs rounded-3xl object-cover ring-1 ring-white/10 md:max-w-none"
@@ -526,7 +526,7 @@ function ProjectCard({ project, index }) {
     >
       {project.image ? (
         <div className="relative aspect-video overflow-hidden">
-          <img
+          <img alt=" "
             src={project.image}
             alt={project.title || `Project ${index + 1}`}
             className="h-full w-full object-cover transition duration-500 group-hover:scale-105"
@@ -605,7 +605,7 @@ function Testimonials({ testimonials }) {
         >
           <div className="flex items-center gap-4">
             {testimonial.avatar ? (
-              <img
+              <img alt=" "
                 src={testimonial.avatar}
                 alt={testimonial.name || 'Testimonial avatar'}
                 className="h-14 w-14 rounded-2xl object-cover"

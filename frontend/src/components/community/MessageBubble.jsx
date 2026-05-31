@@ -126,7 +126,7 @@ export default function MessageBubble({ message, isOwn, showAvatar, channelId, o
       {showAvatar ? (
         <div className="w-8 h-8 rounded-full bg-gradient-to-br from-primary to-secondary flex items-center justify-center text-primary-foreground text-xs font-medium shrink-0">
           {message.sender.avatar ? (
-            <img 
+            <img alt=" " 
               src={message.sender.avatar} 
               alt={message.sender.name}
               className="w-full h-full rounded-full object-cover"
@@ -219,7 +219,7 @@ export default function MessageBubble({ message, isOwn, showAvatar, channelId, o
               {message.attachments.map((attachment, index) => (
                 <div key={index} className="inline-block">
                   {attachment.type?.startsWith('image/') ? (
-                    <img 
+                    <img alt=" " 
                       src={attachment.url} 
                       alt={attachment.name}
                       className="max-w-xs rounded-lg"

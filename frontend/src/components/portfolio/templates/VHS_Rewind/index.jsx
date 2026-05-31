@@ -431,7 +431,7 @@ function AboutSection() {
                 <span className="vhs-font text-[10px] text-[#f0e6d3]/30 tracking-widest">SP</span>
               </div>
               <div className="relative overflow-hidden rounded-lg">
-                <img
+                <img alt=" "
                   src={data.personal.avatar}
                   alt={data.personal.name}
                   className="w-full aspect-square object-cover vhs-tracking"
@@ -632,7 +632,7 @@ function ProjectsSection() {
             >
               {/* Project Image — CRT style */}
               <div className="relative overflow-hidden">
-                <img
+                <img alt=" "
                   src={project.image}
                   alt={project.title}
                   className="w-full h-48 sm:h-52 object-cover group-hover:scale-105 transition-transform duration-700"
@@ -824,7 +824,7 @@ function TestimonialsSection() {
           <div className="flex flex-col sm:flex-row items-start gap-6">
             {/* Avatar */}
             <div className="shrink-0 vhs-tape-border rounded-lg overflow-hidden w-16 h-16 sm:w-20 sm:h-20">
-              <img
+              <img alt=" "
                 src={data.testimonials[activeIdx].avatar}
                 alt={data.testimonials[activeIdx].name}
                 className="w-full h-full object-cover"
@@ -870,7 +870,7 @@ function TestimonialsSection() {
             >
               <div className="flex items-center gap-2 mb-1">
                 <div className="w-6 h-6 rounded-full overflow-hidden shrink-0">
-                  <img
+                  <img alt=" "
                     src={t.avatar}
                     alt={t.name}
                     className="w-full h-full object-cover"

@@ -30,7 +30,7 @@ const GitHubProfileTheme = ({ portfolioData }) => {
         <div className="w-full md:w-64 flex-shrink-0">
 
           {/* Avatar */}
-          <img
+          <img alt=" "
             src={avatar}
             alt={name}
             className="w-full rounded-full border-2 border-[#30363d] mb-4"

@@ -43,7 +43,7 @@ export default function Testimonials({ data }) {
                 <p className="text-white/70 text-sm leading-relaxed flex-1 mb-4">"{t.text}"</p>
                 <div className="flex items-center gap-3 pt-4 border-t border-white/10">
                   {t.avatar && (
-                    <img
+                    <img alt=" "
                       src={t.avatar}
                       alt={t.name}
                       className="w-10 h-10 rounded-full object-cover border border-white/20"

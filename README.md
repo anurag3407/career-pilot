@@ -10,13 +10,13 @@
     <tr>
       <td align="center">
         <a href="https://github.com/anurag3407">
-          <img src="https://github.com/anurag3407.png" width="100" style="border-radius: 50%;" alt="anurag3407"/><br />
+          <img alt=" " src="https://github.com/anurag3407.png" width="100" style="border-radius: 50%;" alt="anurag3407"/><br />
           <sub><b>anurag3407</b></sub>
         </a>
       </td>
       <td align="center">
         <a href="https://github.com/Mohnish27-dev">
-          <img src="https://github.com/Mohnish27-dev.png" width="100" style="border-radius: 50%;" alt="Mohnish27-dev"/><br />
+          <img alt=" " src="https://github.com/Mohnish27-dev.png" width="100" style="border-radius: 50%;" alt="Mohnish27-dev"/><br />
           <sub><b>Mohnish27-dev</b></sub>
         </a>
       </td>
@@ -105,7 +105,7 @@ Please make sure to read our [Contribution Guidelines](CONTRIBUTION.md) and [Cod
 Thank you to everyone who has contributed to making **Career Pilot** better! 
 
 <a href="https://github.com/anurag3407/career-pilot/graphs/contributors">
-  <img src="https://contrib.rocks/image?repo=anurag3407/career-pilot" alt="Contributors" />
+  <img alt=" " src="https://contrib.rocks/image?repo=anurag3407/career-pilot" alt="Contributors" />
 </a>
 
 ## 📄 License

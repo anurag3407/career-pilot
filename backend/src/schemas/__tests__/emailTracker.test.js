@@ -9,15 +9,12 @@
 import { test, describe } from 'node:test';
 import assert from 'node:assert/strict';
 
-// ─── Inline the helpers we want to test ──────────────────────────────────────
-// We re-implement isSafeRedirectUrl inline so these tests have zero deps.
-// The real implementation in emailTracker.js is identical.
 
 const SAFE_PROTOCOLS = new Set(['https:', 'http:']);
 
 const isSafeRedirectUrl = (value) => {
     try {
-        const parsed = new URL(value);
+        const parsed = new URL(value);f
         if (!SAFE_PROTOCOLS.has(parsed.protocol)) return false;
         const hostname = parsed.hostname.toLowerCase();
         if (hostname === 'localhost' || hostname.endsWith('.local')) return false;
@@ -37,7 +34,7 @@ const isSafeRedirectUrl = (value) => {
 };
 
 const buildTrackingPixelTag = (token, baseUrl) =>
-    `<img src="${baseUrl}/api/email-tracking/open/${token}" width="1" height="1" alt="" style="display:none;" />`;
+     `<img alt=" " src="${baseUrl}/api/email-tracking/open/${token}" width="1" height="1" alt="" style="display:none;" alt=" " />`;
 
 const wrapTrackedLink = (originalUrl, token, baseUrl) => {
     if (!isSafeRedirectUrl(originalUrl)) return originalUrl;
@@ -109,9 +106,9 @@ describe('buildTrackingPixelTag', () => {
     const BASE = 'https://api.careerpilot.io';
     const TOKEN = 'test-uuid-1234';
 
-    test('returns an <img> tag', () => {
+    test('returns an <img alt=" "> tag', () => {
         const tag = buildTrackingPixelTag(TOKEN, BASE);
-        assert.ok(tag.startsWith('<img'));
+        assert.ok(tag.startsWith('<img alt=" "'));
         assert.ok(tag.includes('</') || tag.includes('/>') || tag.endsWith('>'));
     });
 

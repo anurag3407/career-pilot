@@ -34,7 +34,7 @@ export default function Hero({ personal, socials }) {
             transition={{ duration: 4, repeat: Infinity, ease: 'easeInOut' }}
             className="mx-auto mb-6 w-28 h-28 md:w-36 md:h-36 rounded-full overflow-hidden ring-4 ring-sky-300/50 shadow-lg shadow-sky-300/30"
           >
-            <img
+            <img alt=" "
               src={personal.avatar}
               alt={personal.name}
               className="w-full h-full object-cover"

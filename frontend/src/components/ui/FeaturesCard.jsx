@@ -405,7 +405,7 @@ function CommunityChatPreview() {
                     transition={{ delay: 0.2 + idx * 0.15 }}
                     className="flex items-start gap-3"
                 >
-                    <img
+                    <img alt=" "
                         src={msg.image}
                         alt={msg.user}
                         className="w-8 h-8 rounded-full object-cover border border-border"

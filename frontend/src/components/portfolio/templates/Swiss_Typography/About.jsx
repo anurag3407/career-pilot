@@ -29,7 +29,7 @@ export default function About({ data }) {
         <div className="md:col-span-3 px-5 md:px-12 py-8 md:py-12 border-b md:border-b-0 md:border-r border-black flex flex-col gap-6">
           <Label>02 — About</Label>
           {avatar && (
-            <img
+            <img alt=" "
               src={avatar}
               alt={name}
               className="w-20 h-20 md:w-24 md:h-24 grayscale border border-black object-cover"

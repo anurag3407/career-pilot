@@ -14,7 +14,7 @@ export default function About({ personal, stats, skills }) {
             <p className="mt-3 text-stone-400 text-base md:text-lg">A concise summary of background, location, and measurable outcomes.</p>
           </div>
           <div className="mt-8 flex flex-col md:flex-row md:items-start gap-6">
-            <img src={personal.avatar} alt="profile" className="h-24 w-24 md:h-28 md:w-28 rounded-xl object-cover border border-orange-500/35 shadow-[0_0_16px_rgba(249,115,22,0.2)]" />
+            <img alt=" " src={personal.avatar} alt="profile" className="h-24 w-24 md:h-28 md:w-28 rounded-xl object-cover border border-orange-500/35 shadow-[0_0_16px_rgba(249,115,22,0.2)]" />
             <div className="flex-1">
               <div className="inline-flex items-center gap-2 text-orange-300 text-sm mb-3">
                 <MapPin size={14} /><span>{personal.location}</span>

@@ -67,7 +67,7 @@ export default function Testimonials() {
             {/* Client Info */}
             <div className="flex items-center gap-4 mt-auto pt-6 border-t border-white/5 relative z-10">
               <div className="relative w-12 h-12 rounded-full overflow-hidden border border-white/10 group-hover:border-pink-500/40 transition-colors">
-                <img
+                <img alt=" "
                   src={testimonial.avatar || fallbackAvatar}
                   alt={testimonial.name}
                   className="w-full h-full object-cover"

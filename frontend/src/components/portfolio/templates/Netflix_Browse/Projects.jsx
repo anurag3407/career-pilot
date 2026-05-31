@@ -66,7 +66,7 @@ function ProjectCard({ project, index }) {
     >
       {/* Thumbnail */}
       <div className="relative h-44 overflow-hidden">
-        <img
+        <img alt=" "
           src={project.image}
           alt={project.title}
           className="w-full h-full object-cover transition-transform duration-500 group-hover:scale-110"

@@ -10,7 +10,7 @@ function ProjectCard({ project, isMobile }) {
   return (
     <Card {...(isMobile ? {} : { variants: fadeUp })} className="flex flex-col overflow-hidden border border-zinc-800 bg-zinc-900/70">
       <div className="relative aspect-video overflow-hidden bg-zinc-950">
-        <img
+        <img alt=" "
           src={project.image}
           alt={project.title}
           loading="lazy"
