@@ -24,6 +24,12 @@ import userProfileRoutes from './routes/userProfile.js';
 import twoFactorRoutes from './routes/twoFactor.js';
 import aiRoutes from './routes/ai.js';
 import emailTrackingRoutes from './routes/emailTracking.js';
+import repoAnalyzerRoutes from './routes/repoAnalyzer.js';
+import projectVisualizerRoutes from './routes/projectVisualizer.route.js';
+import adminRoutes from './routes/admin.js';
+
+import inputRoutes from'./routes/input.route.js';
+import recruiterRoutes from '../src/routes/recruiter.routes.js';
 
 import { globalErrorHandler } from './middleware/globalErrorHandler.js';
 import {
@@ -62,6 +68,22 @@ import {
   initializeDigestQueue,
   startDigestWorker
 } from './services/weeklyDigestService.js';
+
+// ============================================================================
+// Configuration validation - Check for required API keys
+// ============================================================================
+if (!process.env.GEMINI_API_KEY) {
+  console.warn('⚠️  GEMINI_API_KEY is not configured - AI features will be unavailable.');
+  console.warn('   Set GEMINI_API_KEY in your .env file to enable Google Gemini features.');
+}
+
+if (!process.env.GROQ_API_KEY) {
+  console.warn('⚠️  GROQ_API_KEY is not configured - Groq AI provider will not be available.');
+}
+
+if (!process.env.OPENAI_API_KEY) {
+  console.warn('⚠️  OPENAI_API_KEY is not configured - OpenAI provider will not be available.');
+}
 
 const app = express();
 app.use(metricsMiddleware);
@@ -209,6 +231,8 @@ app.use('/api/job-alerts', jobAlertRoutes);
 app.use('/api/community', communityRoutes);
 app.use('/api/fellowship', fellowshipRoutes);
 app.use('/api/interview', interviewRoutes);
+app.use("/api/upload", inputRoutes);
+app.use("/api/recruiter", recruiterRoutes);
 try {
     const paymentRoutes = (await import('./routes/payments.js')).default;
 
@@ -224,6 +248,9 @@ app.use('/api/auth/2fa', twoFactorRoutes);
 app.use('/api/search', searchRoutes);
 app.use('/api/ai', aiRoutes);
 app.use('/api/email-tracking', emailTrackingRoutes);
+app.use('/api/analyzer', repoAnalyzerRoutes);
+app.use('/api/project-visualizer', projectVisualizerRoutes);
+app.use('/api/admin', adminRoutes);
 
 app.use((req, res) => {
   res.status(404).json({ error: 'Route not found' });
@@ -313,5 +340,16 @@ const shutdown = async (signal) => {
 
 process.on('SIGTERM', () => shutdown('SIGTERM'));
 process.on('SIGINT', () => shutdown('SIGINT'));
+
+process.on("unhandledRejection", (reason) => {
+  console.error("❌ UNHANDLED REJECTION:", reason);
+});
+
+process.on("uncaughtException", (err) => {
+  console.error("❌ UNCAUGHT EXCEPTION:", err);
+  httpServer.close();
+  redisManager.shutdown().finally(() => process.exit(1));
+  setTimeout(() => process.exit(1), 10000).unref();
+});
 
 export default app;

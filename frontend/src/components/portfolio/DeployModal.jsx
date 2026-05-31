@@ -4,6 +4,7 @@ import { X, Globe, Copy, Check, ExternalLink, Loader2, Sparkles, AlertCircle, Te
 import toast from 'react-hot-toast';
 import confetti from 'canvas-confetti';
 import { auth } from '../../config/firebase';
+import { portfolioApi } from '../../services/api';
 
 // Hey there, code reviewer or fellow builder!
 // We defined some custom metadata here for each hosting platform.
@@ -53,12 +54,12 @@ function TokenStatusChip({ status }) {
   }
   return (
     <span className="inline-flex items-center gap-1 px-2 py-0.5 rounded-full text-[9px] font-mono font-bold bg-rose-500/10 text-rose-400 border border-rose-500/30" title={status.reason}>
-      ✕ invalid
+      <AlertCircle className="w-2.5 h-2.5" /> failed
     </span>
   );
 }
 
-export default function DeployModal({ isOpen, onClose, portfolioTitle = "My Portfolio" }) {
+export default function DeployModal({ isOpen, onClose, portfolioTitle = "My Portfolio", aiDraft, onDeploySuccess }) {
   // Step workflow: select -> loading -> success -> error
   const [step, setStep] = useState('select');
   const [selectedProvider, setSelectedProvider] = useState('cloudflare'); // default to recommended Cloudflare
@@ -209,36 +210,45 @@ export default function DeployModal({ isOpen, onClose, portfolioTitle = "My Port
   const handleDeploy = () => {
     setStep('loading');
 
-    deployTimeoutRef.current = setTimeout(() => {
-      const isSuccess = Math.random() < 0.92;
+    // Start the terminal animation, then fire the real deploy in parallel
+    const doRealDeploy = async () => {
+      const slug = portfolioTitle
+        .toLowerCase()
+        .replace(/[^a-z0-9]/g, '-')
+        .replace(/-+/g, '-')
+        .replace(/^-|-$/g, '') || 'portfolio';
 
-      if (isSuccess) {
-        // Generate a fun mock live domain name
-        const username = "portfolio-" + Math.floor(Math.random() * 899 + 100);
-        // Robust regex sanitization: replaces special characters with dashes, collapses multiple consecutive
-        // dashes, strips leading/trailing dashes, and provides a default fallback if the title is purely symbols.
-        const slug = portfolioTitle
-          .toLowerCase()
-          .replace(/[^a-z0-9]/g, '-')
-          .replace(/-+/g, '-')
-          .replace(/^-|-$/g, '') || 'portfolio';
+      try {
+        // Call the real backend deploy endpoint
+        const result = await portfolioApi.deploy({
+          slug,
+          sections: aiDraft || {},
+          templateId: 'default',
+          title: portfolioTitle,
+        });
 
-        const url = selectedProvider === 'github'
-          ? `https://${username}.github.io/${slug}`
-          : selectedProvider === 'cloudflare'
-            ? `https://${slug}.pages.dev`
-            : `https://${slug}.netlify.app`;
+        // Wait for the terminal animation to finish (at least 3.6s total)
+        deployTimeoutRef.current = setTimeout(() => {
+          const liveUrl = result.data?.url || `https://cp-${slug}.pages.dev`;
+          setDeployedUrl(liveUrl);
+          setStep('success');
+          triggerConfetti();
+          toast.success('Your portfolio is live! 🚀');
+          if (onDeploySuccess) onDeploySuccess();
+        }, 3600);
 
-        setDeployedUrl(url);
-        setStep('success');
-        triggerConfetti();
-        toast.success('Banzai! Your portfolio is live! 🚀');
-      } else {
-        setErrorMessage('Network timeout: edge pipeline rejected file uploads due to temporary rate-limiting.');
-        setStep('error');
-        toast.error('Build pipeline failed.');
+      } catch (err) {
+        console.error('Deploy error:', err);
+        // Wait for animation before showing error
+        deployTimeoutRef.current = setTimeout(() => {
+          setErrorMessage(err.message || 'Deployment failed. Please try again.');
+          setStep('error');
+          toast.error('Deployment failed.');
+        }, 3600);
       }
-    }, 3600); // slightly offset from 3.5s to finish telemetry stream naturally
+    };
+
+    doRealDeploy();
   };
 
   const handleCopyLink = async () => {
@@ -306,7 +316,7 @@ export default function DeployModal({ isOpen, onClose, portfolioTitle = "My Port
           </div>
 
           {/* Header */}
-          <div className="p-6 pb-4 border-b border-zinc-800/60 flex items-center justify-between flex-shrink-0">
+          <div className="p-6 pb-4 border-b border-zinc-800/60 flex items-center justify-between shrink-0">
             <div className="flex items-center gap-3.5">
               <div className="w-10 h-10 bg-primary/10 border border-primary/20 rounded-xl flex items-center justify-center text-primary shadow-inner">
                 <Globe className="w-5 h-5 text-indigo-400" />
@@ -363,7 +373,7 @@ export default function DeployModal({ isOpen, onClose, portfolioTitle = "My Port
                             onClick={() => setSelectedProvider(provider.id)}
                             className="w-full flex items-start gap-4 p-4 rounded-2xl focus:outline-none focus:ring-2 focus:ring-indigo-500/40 cursor-pointer"
                           >
-                            <div className={`w-10 h-10 rounded-xl flex items-center justify-center text-xl font-bold flex-shrink-0 transition-transform group-hover:scale-105 ${
+                            <div className={`w-10 h-10 rounded-xl flex items-center justify-center text-xl font-bold shrink-0 transition-transform group-hover:scale-105 ${
                               isSelected ? 'bg-indigo-500/20 text-indigo-400' : 'bg-zinc-800 text-zinc-400'
                             }`}>
                               {provider.icon}
@@ -432,7 +442,7 @@ export default function DeployModal({ isOpen, onClose, portfolioTitle = "My Port
                   <div className="bg-amber-500/5 dark:bg-amber-500/10 border-l-4 border-amber-500 rounded-r-2xl p-4 text-left relative overflow-hidden select-none">
                     <div className="absolute top-0 right-0 w-16 h-16 bg-amber-500/5 rounded-full blur-xl pointer-events-none" />
                     <div className="flex gap-3">
-                      <span className="text-amber-500 text-base flex-shrink-0 select-none">💡</span>
+                      <span className="text-amber-500 text-base shrink-0 select-none">💡</span>
                       <div className="space-y-1">
                         <h5 className="text-[10px] font-bold text-amber-500 uppercase tracking-wider">
                           Dev Insight
@@ -571,7 +581,7 @@ export default function DeployModal({ isOpen, onClose, portfolioTitle = "My Port
                     <button
                       onClick={handleCopyLink}
                       aria-label="Copy deployed link to clipboard"
-                      className={`p-3 rounded-xl border transition-all duration-300 flex items-center justify-center flex-shrink-0 cursor-pointer ${
+                      className={`p-3 rounded-xl border transition-all duration-300 flex items-center justify-center shrink-0 cursor-pointer ${
                         copied
                           ? 'bg-emerald-500/10 border-emerald-500/30 text-emerald-400 shadow-inner'
                           : 'bg-zinc-900 border-zinc-800 text-zinc-400 hover:text-zinc-200 hover:bg-zinc-800/60'

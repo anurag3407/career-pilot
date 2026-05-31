@@ -1,5 +1,5 @@
 import { useState, useEffect } from "react";
-import { useNavigate } from "react-router-dom";
+import { useNavigate, useLocation } from "react-router-dom";
 import { motion } from "framer-motion";
 import { Brain, ChevronDown } from "lucide-react";
 
@@ -20,7 +20,8 @@ import {
     Moon,
     Zap,
     Rocket,
-    Briefcase
+    Briefcase,
+    GitMerge
 } from "lucide-react";
 import { useAuth } from "../hooks/useAuth";
 import { useTheme } from "../hooks/useTheme";
@@ -38,47 +39,57 @@ const navLinks = [
     {
         label: "Dashboard",
         href: "/dashboard",
-        icon: <LayoutDashboard className="w-5 h-5 flex-shrink-0" />,
+        icon: <LayoutDashboard className="w-5 h-5 shrink-0" />,
     },
     {
         label: "Resume Builder",
         href: "/hub/resume",
-        icon: <FileText className="w-5 h-5 flex-shrink-0" />,
+        icon: <FileText className="w-5 h-5 shrink-0" />,
     },
     {
         label: "Job Finder",
         href: "/hub/jobs",
-        icon: <Briefcase className="w-5 h-5 flex-shrink-0" />,
+        icon: <Briefcase className="w-5 h-5 shrink-0" />,
     },
     {
         label: "Portfolio Builder",
         href: "/hub/portfolio",
-        icon: <Globe className="w-5 h-5 flex-shrink-0" />,
+        icon: <Globe className="w-5 h-5 shrink-0" />,
+    },
+    {
+        label: "Project Visualizer",
+        href: "/project-visualizer",
+        icon: <GitMerge className="w-5 h-5 shrink-0" />,
     },
     {
         label: "Career Growth",
         href: "/hub/career",
-        icon: <GraduationCap className="w-5 h-5 flex-shrink-0" />,
+        icon: <GraduationCap className="w-5 h-5 shrink-0" />,
     },
     {
         label: "Community Hub",
         href: "/hub/community",
-        icon: <Users className="w-5 h-5 flex-shrink-0" />,
+        icon: <Users className="w-5 h-5 shrink-0" />,
     },
     {
         label: "Profile",
         href: "/profile",
-        icon: <User className="w-5 h-5 flex-shrink-0" />,
+        icon: <User className="w-5 h-5 shrink-0" />,
     },
     {
         label: "Security",
         href: "/security",
-        icon: <ShieldCheck className="w-5 h-5 flex-shrink-0" />,
+        icon: <ShieldCheck className="w-5 h-5 shrink-0" />,
     },
     {
         label: "Settings",
         href: "/settings",
-        icon: <Settings className="w-5 h-5 flex-shrink-0" />,
+        icon: <Settings className="w-5 h-5 shrink-0" />,
+    },
+    {
+        label: "Admin Panel",
+        href: "/admin",
+        icon: <ShieldCheck className="w-5 h-5 shrink-0 text-blue-500" />,
     }
 ];
 
@@ -91,7 +102,7 @@ function Logo() {
             "flex items-center gap-3 py-2 group",
             !open && animate ? "px-0 justify-center" : "px-1 justify-start"
         )}>
-            <div className="w-10 h-10 flex-shrink-0 flex items-center justify-center p-1.5 rounded-xl group-hover:scale-110 transition-transform">
+            <div className="w-10 h-10 shrink-0 flex items-center justify-center p-1.5 rounded-xl group-hover:scale-110 transition-transform">
                 <img src="/speed.png" alt="careerpilot" className="w-full h-full object-contain" />
             </div>
             <motion.div
@@ -161,7 +172,7 @@ function UserSection() {
                     !open && animate ? "p-2 justify-center" : "p-3"
                 )}
             >
-                <div className="w-10 h-10 rounded-xl bg-primary/20 flex items-center justify-center flex-shrink-0 border border-primary/20">
+                <div className="w-10 h-10 rounded-xl bg-primary/20 flex items-center justify-center shrink-0 border border-primary/20">
                     <span className="text-primary font-bold text-base">{initials}</span>
                 </div>
                 <motion.div
@@ -185,7 +196,7 @@ function UserSection() {
                     !open && animate ? "px-0 justify-center" : "justify-start"
                 )}
             >
-                {theme === 'dark' ? <Sun className="w-5 h-5 flex-shrink-0" /> : <Moon className="w-5 h-5 flex-shrink-0" />}
+                {theme === 'dark' ? <Sun className="w-5 h-5 shrink-0" /> : <Moon className="w-5 h-5 shrink-0" />}
                 <motion.span
                     animate={{
                         display: animate ? (open ? "inline-block" : "none") : "inline-block",
@@ -204,7 +215,7 @@ function UserSection() {
                     !open && animate && "justify-center"
                 )}
             >
-                <Zap className={cn("w-5 h-5 flex-shrink-0", openRouterKey && "text-indigo-500")} />
+                <Zap className={cn("w-5 h-5 shrink-0", openRouterKey && "text-indigo-500")} />
                 <motion.span
                     animate={{
                         display: animate ? (open ? "inline-block" : "none") : "inline-block",
@@ -226,7 +237,7 @@ function UserSection() {
                     !open && animate ? "px-0 justify-center" : "justify-start"
                 )}
             >
-                <LogOut className="w-5 h-5 flex-shrink-0" />
+                <LogOut className="w-5 h-5 shrink-0" />
                 <motion.span
                     animate={{
                         display: animate ? (open ? "inline-block" : "none") : "inline-block",
@@ -245,6 +256,11 @@ function UserSection() {
 export default function AppSidebar() {
     const [open, setOpen] = useState(false);
 const [openAI, setOpenAI] = useState(false);
+const location = useLocation();
+
+useEffect(() => {
+    setOpen(false);
+}, [location.pathname]);
 
     return (
         <Sidebar open={open} setOpen={setOpen}>
@@ -269,7 +285,7 @@ const [openAI, setOpenAI] = useState(false);
         className="flex items-center justify-between w-full px-4 py-3 rounded-xl text-muted-foreground hover:text-foreground hover:bg-muted font-semibold transition-all"
     >
         <div className="flex items-center gap-3">
-            <Brain className="w-5 h-5 flex-shrink-0" />
+            <Brain className="w-5 h-5 shrink-0" />
             <span>AI Tools</span>
         </div>
 
@@ -294,7 +310,7 @@ const [openAI, setOpenAI] = useState(false);
             link={{
                 label: "Skill Gap Analyzer",
                 href: "/skill-gap",
-                icon: <Brain className="w-4 h-4 flex-shrink-0" />,
+                icon: <Brain className="w-4 h-4 shrink-0" />,
             }}
             onClick={() => setOpen(false)}
         />
@@ -303,7 +319,7 @@ const [openAI, setOpenAI] = useState(false);
             link={{
                 label: "Career Trajectory",
                 href: "/career-path",
-                icon: <Brain className="w-4 h-4 flex-shrink-0" />,
+                icon: <Brain className="w-4 h-4 shrink-0" />,
             }}
             onClick={() => setOpen(false)}
         />
@@ -312,7 +328,16 @@ const [openAI, setOpenAI] = useState(false);
             link={{
                 label: "Salary Estimator",
                 href: "/salary-estimate",
-                icon: <Brain className="w-4 h-4 flex-shrink-0" />,
+                icon: <Brain className="w-4 h-4 shrink-0" />,
+            }}
+            onClick={() => setOpen(false)}
+        />
+        
+        <SidebarLink
+            link={{
+                label: "Project Visualizer",
+                href: "/project-visualizer",
+                icon: <GitMerge className="w-4 h-4 shrink-0" />,
             }}
             onClick={() => setOpen(false)}
         />
@@ -324,4 +349,3 @@ const [openAI, setOpenAI] = useState(false);
         </Sidebar>
     );
 }
-
