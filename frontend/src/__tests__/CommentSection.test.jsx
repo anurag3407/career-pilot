@@ -1,4 +1,4 @@
-import { act, render, screen, waitFor } from '@testing-library/react'
+import { act, fireEvent, render, screen, waitFor } from '@testing-library/react'
 import { beforeEach, describe, expect, test, vi } from 'vitest'
 
 import CommentSection from '../components/community/CommentSection'
@@ -90,5 +90,57 @@ describe('CommentSection', () => {
 
     expect(screen.getByText('Latest thread comment')).toBeInTheDocument()
     expect(screen.queryByText('Stale thread comment')).not.toBeInTheDocument()
+  })
+
+  test('ignores repeated load more clicks while a page is already loading', async () => {
+    let resolveLoadMore
+
+    communityApi.getComments
+      .mockResolvedValueOnce({
+        comments: Array.from({ length: 20 }, (_, index) => ({
+          id: `comment-${index + 1}`,
+          content: `Thread comment ${index + 1}`,
+          createdAt: '2024-01-01T00:00:00.000Z',
+          author: { uid: `user-${index + 1}`, name: `User ${index + 1}` },
+        })),
+        pagination: { total: 40 },
+      })
+      .mockImplementationOnce(
+        () => new Promise((resolve) => { resolveLoadMore = resolve })
+      )
+
+    render(
+      <CommentSection
+        postId="post-a"
+        currentUser={{ uid: 'user-1', displayName: 'Alex' }}
+      />
+    )
+
+    expect(await screen.findByText('Thread comment 1')).toBeInTheDocument()
+
+    const loadMoreButton = screen.getByRole('button', { name: /load more comments/i })
+
+    fireEvent.click(loadMoreButton)
+    await waitFor(() => {
+      expect(communityApi.getComments).toHaveBeenCalledTimes(2)
+    })
+
+    fireEvent.click(loadMoreButton)
+    expect(communityApi.getComments).toHaveBeenCalledTimes(2)
+    expect(loadMoreButton).toBeDisabled()
+
+    await act(async () => {
+      resolveLoadMore({
+        comments: Array.from({ length: 20 }, (_, index) => ({
+          id: `comment-${index + 21}`,
+          content: `Thread comment ${index + 21}`,
+          createdAt: '2024-01-01T00:00:00.000Z',
+          author: { uid: `user-${index + 21}`, name: `User ${index + 21}` },
+        })),
+        pagination: { total: 40 },
+      })
+    })
+
+    expect(screen.getByText('Thread comment 21')).toBeInTheDocument()
   })
 })

@@ -5,7 +5,6 @@ import {
   Heart, 
   MessageCircle, 
   Send, 
-  MoreHorizontal,
   ChevronDown,
   ChevronUp,
   Loader2
@@ -171,15 +170,26 @@ function CommentItem({ comment, currentUser, onReply, onLike, depth = 0 }) {
 export default function CommentSection({ postId, currentUser, onCommentAdded }) {
   const [comments, setComments] = useState([]);
   const [loading, setLoading] = useState(true);
+  const [isLoadingMore, setIsLoadingMore] = useState(false);
   const [newComment, setNewComment] = useState('');
   const [isSubmitting, setIsSubmitting] = useState(false);
   const [page, setPage] = useState(1);
   const [hasMore, setHasMore] = useState(false);
   const [total, setTotal] = useState(0);
   const requestIdRef = useRef(0);
+  const loadMoreInFlightRef = useRef(false);
 
   const fetchComments = useCallback(async (loadMore = false, pageToFetch = 1) => {
+    if (loadMore && loadMoreInFlightRef.current) {
+      return;
+    }
+
     const requestId = ++requestIdRef.current;
+
+    if (loadMore) {
+      loadMoreInFlightRef.current = true;
+      setIsLoadingMore(true);
+    }
 
     try {
       if (!loadMore) {
@@ -210,6 +220,10 @@ export default function CommentSection({ postId, currentUser, onCommentAdded }) 
       if (requestId === requestIdRef.current) {
         setLoading(false);
       }
+      if (loadMore) {
+        loadMoreInFlightRef.current = false;
+        setIsLoadingMore(false);
+      }
     }
   }, [postId]);
 
@@ -218,10 +232,13 @@ export default function CommentSection({ postId, currentUser, onCommentAdded }) 
     setPage(1);
     setHasMore(false);
     setTotal(0);
+    setIsLoadingMore(false);
+    loadMoreInFlightRef.current = false;
     fetchComments(false, 1);
 
     return () => {
       requestIdRef.current += 1;
+      loadMoreInFlightRef.current = false;
     };
   }, [postId, fetchComments]);
 
@@ -290,6 +307,14 @@ export default function CommentSection({ postId, currentUser, onCommentAdded }) 
     } catch {
       toast.error('Failed to like comment', { id: `community-like-comment-error-${commentId}` });
     }
+  };
+
+  const handleLoadMore = () => {
+    if (loading || isLoadingMore || loadMoreInFlightRef.current || !hasMore) {
+      return;
+    }
+
+    fetchComments(true, page + 1);
   };
 
   return (
@@ -361,10 +386,14 @@ export default function CommentSection({ postId, currentUser, onCommentAdded }) 
         {hasMore && !loading && (
           <div className="p-4 text-center">
             <button
-            onClick={() => fetchComments(true, page + 1)}
-            className="text-sm text-primary hover:text-primary/80 font-medium"
-          >
-              Load more comments ({total - comments.length} remaining)
+              onClick={handleLoadMore}
+              disabled={isLoadingMore}
+              className="text-sm text-primary hover:text-primary/80 font-medium disabled:cursor-not-allowed disabled:opacity-60"
+            >
+              {isLoadingMore
+                ? 'Loading more comments...'
+                : `Load more comments (${total - comments.length} remaining)`
+              }
             </button>
           </div>
         )}
