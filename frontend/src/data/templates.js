@@ -1416,7 +1416,8 @@ export const templates = [
     "views": 1117,
     "rating": 4.5,
     "image": "/template-previews/Newspaper_Front.png",
-    "createdAt": "2026-05-01"
+    "createdAt": "2026-05-01",
+    "isComplete": true
   },
   {
     "id": "Northern_Fjords",

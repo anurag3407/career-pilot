@@ -92,6 +92,7 @@ import NorthernFjords from './components/portfolio/templates/Northern_Fjords';
 import RainforestCanopy from './components/portfolio/templates/Rainforest_Canopy/index.jsx';
 import Hero from './components/portfolio/templates/Magazine_Editorial/Hero';
 import TestSocialLinks from './pages/TestSocialLinks';
+import NewspaperFront from './components/portfolio/templates/Newspaper_Front/index.jsx';
 
 function LoadingScreen({ label }) {
   return (
@@ -234,6 +235,7 @@ function AppRoutes() {
         
 
         <Route path="/templates/chatbot" element={<ChatbotPortfolio />} />
+        <Route path="/templates/newspaper-front" element={<NewspaperFront />} />
 
         {/* <Route path="/templates/day-night-cycle" element={<DayNightCycle />} /> */}
         <Route path="/templates/rainforest-canopy" element={<RainforestCanopy />} />
