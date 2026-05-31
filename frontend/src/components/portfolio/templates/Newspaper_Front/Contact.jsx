@@ -73,6 +73,7 @@ export default function Contact() {
             required
             className="w-full bg-stone-900 border border-yellow-600/30 text-gray-100 placeholder-gray-600 px-3 py-2 text-sm focus:outline-none focus:border-yellow-500"
           />
+          
           <label htmlFor="contact-message" className="block text-sm font-semibold text-yellow-500 mb-1">Your Message</label>
           <textarea
             id="contact-message"
