@@ -10,6 +10,7 @@ import TechStartupHero from "../components/portfolio/templates/Tech_Startup/Hero
 import ArchitectureBlueprintHero from "../components/portfolio/templates/Architecture_Blueprint/Hero";
 import GeometricShapesAbout from "../components/portfolio/templates/Geometric_Shapes/About";
 import GeometricShapesHero from "../components/portfolio/templates/Geometric_Shapes/Hero";
+import GeometricShapesResumeCTA from "../components/portfolio/templates/Geometric_Shapes/ResumeCTA";
 import LiquidGlass from "../components/portfolio/templates/Liquid_Glass/index";
 import Navbar from '../components/Navbar'
 // import Hero from "../components/portfolio/templates/Holographic/Hero";
@@ -387,6 +388,23 @@ export default function TemplateGallery() {
         </div>
         <div className="overflow-hidden rounded-2xl border border-border">
           <GeometricShapesAbout />
+        </div>
+      </div>
+
+      {/* Geometric Shapes ResumeCTA */}
+      <div className="mt-12">
+        <div className="mb-4 flex items-center gap-3 px-1">
+          <span className="rounded-full bg-cyan-500/20 px-3 py-1 text-xs font-bold uppercase tracking-widest text-cyan-400 border border-cyan-500/30">
+            Preview
+          </span>
+
+          <h2 className="text-lg font-semibold text-foreground/70">
+            Geometric Shapes Theme — ResumeCTA Section
+          </h2>
+        </div>
+
+        <div className="overflow-hidden rounded-2xl border border-border">
+          <GeometricShapesResumeCTA />
         </div>
       </div>
 
