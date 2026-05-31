@@ -102,8 +102,8 @@ function Logo() {
             "flex items-center gap-3 py-2 group",
             !open && animate ? "px-0 justify-center" : "px-1 justify-start"
         )}>
-            <div className="w-10 h-10 shrink-0 flex items-center justify-center p-1.5 rounded-xl group-hover:scale-110 transition-transform">
-                <img src="/speed.png" alt="careerpilot" className="w-full h-full object-contain" />
+            <div className="w-10 h-10 flex-shrink-0 flex items-center justify-center p-1.5 rounded-xl group-hover:scale-110 transition-transform">
+                <img src="/speed.png" alt="careerpilot logo" className="w-full h-full object-contain" />
             </div>
             <motion.div
                 animate={{
