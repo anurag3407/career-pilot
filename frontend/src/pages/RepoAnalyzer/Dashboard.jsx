@@ -1,7 +1,7 @@
 import { useState, useEffect } from 'react';
 import { useNavigate } from 'react-router-dom';
 import { motion } from 'framer-motion';
-import { GithubIcon, Loader2, GitMerge, Clock, Search, ExternalLink } from 'lucide-react';
+import { Github, Loader2, GitMerge, Clock, Search, ExternalLink } from 'lucide-react';
 import { analyzerApi } from '../../services/api';
 import { useAnalyzerStore } from '../../stores/useAnalyzerStore';
 import toast from 'react-hot-toast';
@@ -165,3 +165,4 @@ export default function RepoAnalyzerDashboard() {
     </div>
   );
 }
+

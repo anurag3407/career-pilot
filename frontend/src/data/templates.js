@@ -256,12 +256,13 @@ export const templates = [
     "title": "Cassette Mixtape",
     "category": "Portfolio",
     "colorScheme": "Dark",
-    "layout": "Grid",
-    "author": "System",
-    "views": 1021,
-    "rating": 4.5,
+    "layout": "Interactive",
+    "author": "Vexx",
+    "views": 2500,
+    "rating": 4.9,
     "image": "/template-previews/Cassette_Mixtape.png",
-    "createdAt": "2026-05-01"
+    "createdAt": "2026-05-31",
+    "isComplete": true
   },
   {
     "id": "Ceramic_Minimal",
@@ -317,11 +318,12 @@ export const templates = [
     "category": "Portfolio",
     "colorScheme": "Dark",
     "layout": "Grid",
-    "author": "System",
+    "author": "Akansha02code",
     "views": 1026,
     "rating": 4.5,
-    "image": "/template-previews/Cherry_Blossom.png",
-    "createdAt": "2026-05-01"
+    "image": "/template-previews/Cherry-Blossom.png",
+    "createdAt": "2026-05-01",
+    "isComplete": true
   },
   {
     "id": "Choose_Adventure",
@@ -580,12 +582,13 @@ export const templates = [
     "title": "Desert Dunes",
     "category": "Portfolio",
     "colorScheme": "Dark",
-    "layout": "Grid",
-    "author": "System",
-    "views": 1048,
-    "rating": 4.5,
+    "layout": "Interactive",
+    "author": "Vexx",
+    "views": 2200,
+    "rating": 4.9,
     "image": "/template-previews/Desert_Dunes.png",
-    "createdAt": "2026-05-01"
+    "createdAt": "2026-05-31",
+    "isComplete": true
   },
   {
     "id": "Developer_IDE",
@@ -1101,7 +1104,8 @@ export const templates = [
     "views": 1091,
     "rating": 4.5,
     "image": "/template-previews/Liquid_Glass.png",
-    "createdAt": "2026-05-01"
+    "createdAt": "2026-05-01",
+    "isComplete": true
   },
   {
     "id": "Liquid_Morph",
@@ -1203,13 +1207,14 @@ export const templates = [
     "id": "Memphis_Pop",
     "title": "Memphis Pop",
     "category": "Portfolio",
-    "colorScheme": "Dark",
-    "layout": "Grid",
-    "author": "System",
-    "views": 1100,
-    "rating": 4.5,
+    "colorScheme": "Colorful",
+    "layout": "Interactive",
+    "author": "Vexx",
+    "views": 2600,
+    "rating": 4.9,
     "image": "/template-previews/Memphis_Pop.png",
-    "createdAt": "2026-05-01"
+    "createdAt": "2026-05-31",
+    "isComplete": true
   },
   {
     "id": "Midnight_Gradient",
@@ -1221,7 +1226,8 @@ export const templates = [
     "views": 1101,
     "rating": 4.5,
     "image": "/template-previews/Midnight_Gradient.png",
-    "createdAt": "2026-05-01"
+    "createdAt": "2026-05-01",
+    "isComplete": true
   },
   {
     "id": "Minimalist_White",
@@ -1592,6 +1598,7 @@ export const templates = [
     "author": "System",
     "views": 1132,
     "rating": 4.5,
+    "isComplete": true,
     "image": "/template-previews/Pixel_Quest.png",
     "createdAt": "2026-05-01"
   },
@@ -1617,7 +1624,8 @@ export const templates = [
     "views": 1134,
     "rating": 4.5,
     "image": "/template-previews/Playing_Cards.png",
-    "createdAt": "2026-05-01"
+    "createdAt": "2026-05-01",
+    "isComplete": true
   },
   {
     "id": "Polaroid_Memories",
@@ -1647,13 +1655,14 @@ export const templates = [
     "id": "Psychedelic_Swirl",
     "title": "Psychedelic Swirl",
     "category": "Portfolio",
-    "colorScheme": "Dark",
-    "layout": "Grid",
-    "author": "System",
-    "views": 1137,
-    "rating": 4.5,
+    "colorScheme": "Colorful",
+    "layout": "Interactive",
+    "author": "Vexx",
+    "views": 2400,
+    "rating": 4.9,
     "image": "/template-previews/Psychedelic_Swirl.png",
-    "createdAt": "2026-05-01"
+    "createdAt": "2026-05-31",
+    "isComplete": true
   },
   {
     "id": "Quiz_Reveal",
@@ -1833,7 +1842,8 @@ export const templates = [
     "views": 1152,
     "rating": 4.5,
     "image": "/template-previews/Shadow_Layers.png",
-    "createdAt": "2026-05-01"
+    "createdAt": "2026-05-01",
+    "isComplete": true
   },
   {
     "id": "Silk_Flow",
@@ -1881,7 +1891,8 @@ export const templates = [
   "views": 1156,
   "rating": 4.5,
   "image": "/template-previews/Soft-Neumorphic.png",
-  "createdAt": "2026-05-01"
+  "createdAt": "2026-05-01",
+  "isComplete": true
 },
   {
     "id": "Solar_Eclipse",
@@ -2061,7 +2072,8 @@ export const templates = [
     "views": 1171,
     "rating": 4.5,
     "image": "/template-previews/Swiss_Typography.png",
-    "createdAt": "2026-05-01"
+    "createdAt": "2026-05-01",
+    "isComplete": true
   },
   {
     "id": "Tech_Startup",
@@ -2189,11 +2201,12 @@ export const templates = [
     "category": "Portfolio",
     "colorScheme": "Dark",
     "layout": "Grid",
-    "author": "System",
+    "author": "Akanhsa02code",
     "views": 1182,
     "rating": 4.5,
-    "image": "/template-previews/Type_Specimen.png",
-    "createdAt": "2026-05-01"
+    "image": "/template-previews/Type-Specimen.png",
+    "createdAt": "2026-05-01",
+    "isComplete": true
   },
   {
     "id": "Typewriter_Effect",

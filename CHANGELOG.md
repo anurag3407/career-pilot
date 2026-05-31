@@ -1,3 +1,457 @@
+# [1.111.0](https://github.com/anurag3407/career-pilot/compare/v1.110.0...v1.111.0) (2026-05-31)
+
+
+### Features
+
+* add Horizontal_Journey changes ([7a75d7f](https://github.com/anurag3407/career-pilot/commit/7a75d7f27572665bdb439a027311467f92066049))
+
+# [1.110.0](https://github.com/anurag3407/career-pilot/compare/v1.109.0...v1.110.0) (2026-05-31)
+
+
+### Features
+
+* add Open Graph and Twitter meta tags for SEO and social sharing ([e0a4b6f](https://github.com/anurag3407/career-pilot/commit/e0a4b6f87bc57202e767183a31d497536e1c237e))
+
+# [1.109.0](https://github.com/anurag3407/career-pilot/compare/v1.108.0...v1.109.0) (2026-05-31)
+
+
+### Features
+
+* implement Cassette Mixtape portfolio template + consolidate all prior templates ([14f58ca](https://github.com/anurag3407/career-pilot/commit/14f58caac7e6b881563a1415fada2de7041801bd)), closes [#1941](https://github.com/anurag3407/career-pilot/issues/1941) [#1C1008](https://github.com/anurag3407/career-pilot/issues/1C1008) [#EDE0C0](https://github.com/anurag3407/career-pilot/issues/EDE0C0) [#C85A10](https://github.com/anurag3407/career-pilot/issues/C85A10)
+
+# [1.108.0](https://github.com/anurag3407/career-pilot/compare/v1.107.0...v1.108.0) (2026-05-31)
+
+
+### Features
+
+* Added the Stripe Gradient portfolio template ([836cf25](https://github.com/anurag3407/career-pilot/commit/836cf25e23207ad079703d70080f0c9c9735ffce))
+
+# [1.107.0](https://github.com/anurag3407/career-pilot/compare/v1.106.0...v1.107.0) (2026-05-30)
+
+
+### Features
+
+* add Pixel Quest retro portfolio template closes [#1939](https://github.com/anurag3407/career-pilot/issues/1939) ([90ad937](https://github.com/anurag3407/career-pilot/commit/90ad9377a158d5356f4fc4dc83b7311cb8360652))
+
+# [1.106.0](https://github.com/anurag3407/career-pilot/compare/v1.105.0...v1.106.0) (2026-05-30)
+
+
+### Features
+
+* add interactive click-to-copy keyword chips in optimization views [#2475](https://github.com/anurag3407/career-pilot/issues/2475) ([0e76ec6](https://github.com/anurag3407/career-pilot/commit/0e76ec611df6efbc2a42bfb6ddbf813c8f98ab29))
+* implement real-time visual analytics dashboard for mock interview history [#2470](https://github.com/anurag3407/career-pilot/issues/2470) ([f510db1](https://github.com/anurag3407/career-pilot/commit/f510db1e78020583862954a30f5ee09cf3f88d1e))
+
+# [1.105.0](https://github.com/anurag3407/career-pilot/compare/v1.104.0...v1.105.0) (2026-05-30)
+
+
+### Features
+
+* Add GitHub Profile inspired portfolio theme ([df7f6e7](https://github.com/anurag3407/career-pilot/commit/df7f6e72d141b70725db090c31447dd39522ecde))
+
+# [1.104.0](https://github.com/anurag3407/career-pilot/compare/v1.103.0...v1.104.0) (2026-05-30)
+
+
+### Features
+
+* complete responsive Doctor_Medical template with all sub-components ([b06d432](https://github.com/anurag3407/career-pilot/commit/b06d432dcca8de3ade6d4a2b4d1cff7bb61dada2))
+
+# [1.103.0](https://github.com/anurag3407/career-pilot/compare/v1.102.0...v1.103.0) (2026-05-30)
+
+
+### Features
+
+* add Digital DNA portfolio template ([9382fd5](https://github.com/anurag3407/career-pilot/commit/9382fd515c2f0700589725803a4b305302dc1c1d))
+* implement Digital DNA portfolio template ([b7f2042](https://github.com/anurag3407/career-pilot/commit/b7f20423f7730f1b166a6c853af2f2b3e4143a12))
+
+# [1.102.0](https://github.com/anurag3407/career-pilot/compare/v1.101.0...v1.102.0) (2026-05-30)
+
+
+### Features
+
+* implement Depth Reveal portfolio template ([ea565fe](https://github.com/anurag3407/career-pilot/commit/ea565fea8a6f011aa4d34582874ba029dd52f1ed))
+* implement Depth Reveal portfolio template for issue [#1876](https://github.com/anurag3407/career-pilot/issues/1876) ([b45e730](https://github.com/anurag3407/career-pilot/commit/b45e730c41e0ca939d055bc3a5a39c5929cc6be0))
+
+# [1.101.0](https://github.com/anurag3407/career-pilot/compare/v1.100.1...v1.101.0) (2026-05-30)
+
+
+### Bug Fixes
+
+* restore retro futurism motion ([f64abe3](https://github.com/anurag3407/career-pilot/commit/f64abe3b4410e99cdb947086bf5d9305a7f87382))
+
+
+### Features
+
+* add Retro Futurism template ([a50fb1e](https://github.com/anurag3407/career-pilot/commit/a50fb1e437cc3f12a6ad71b56b4466bc5a20317f))
+* update Retro Futurism folder ([4e839dc](https://github.com/anurag3407/career-pilot/commit/4e839dc6137e8fc69f1f6ea3c79b14dfd77e646e))
+
+## [1.100.1](https://github.com/anurag3407/career-pilot/compare/v1.100.0...v1.100.1) (2026-05-30)
+
+
+### Bug Fixes
+
+* clamp fitAll zoom to [MIN_ZOOM, MAX_ZOOM] and guard zero dimensions ([1650a5a](https://github.com/anurag3407/career-pilot/commit/1650a5a2a746a63935ba960427c5c164fbc4bf81))
+* guard project.techStack with Array.isArray before mapping ([4e42f5e](https://github.com/anurag3407/career-pilot/commit/4e42f5eb08a83c6467f4745cf7be77e2271455f7))
+* lift layer expansion state to FigmaCanvas, gate children on toggle ([3a525fe](https://github.com/anurag3407/career-pilot/commit/3a525fec5141b1e7fee17b61565e1cd1b9cfae59))
+* replace ref.current reads during render with useState for cursor flags ([78ae9c0](https://github.com/anurag3407/career-pilot/commit/78ae9c00d632ede1a50fc9ea4259d5c58c3039cc))
+* skip space pan mode when an editable element has focus ([9d787bd](https://github.com/anurag3407/career-pilot/commit/9d787bd988146200956ff2b0a0dff697a154f515))
+
+# [1.100.0](https://github.com/anurag3407/career-pilot/compare/v1.99.0...v1.100.0) (2026-05-30)
+
+
+### Features
+
+* implement Watercolor Artistic ResumeCTA component ([8679e65](https://github.com/anurag3407/career-pilot/commit/8679e656f3711d31142b2a18fd43ad7d4ba45518))
+
+# [1.99.0](https://github.com/anurag3407/career-pilot/compare/v1.98.1...v1.99.0) (2026-05-30)
+
+
+### Bug Fixes
+
+* add IntersectionObserver fallback and sanitize URLs ([9b47d0a](https://github.com/anurag3407/career-pilot/commit/9b47d0a552cc8d48e35f53f9f816a60b8041768f))
+
+
+### Features
+
+* implement Fantasy RPG ResumeCTA section ([#1488](https://github.com/anurag3407/career-pilot/issues/1488)) ([14f6e69](https://github.com/anurag3407/career-pilot/commit/14f6e699f29b6ff84a896f8519a419338a906d3a))
+
+## [1.98.1](https://github.com/anurag3407/career-pilot/compare/v1.98.0...v1.98.1) (2026-05-30)
+
+
+### Bug Fixes
+
+* make ProjectVisualizer Landing page theme-aware ([3abafed](https://github.com/anurag3407/career-pilot/commit/3abafedde1e16c8c8025679ac6b1367a90b0cf73)), closes [#050505](https://github.com/anurag3407/career-pilot/issues/050505) [#111](https://github.com/anurag3407/career-pilot/issues/111)
+
+# [1.98.0](https://github.com/anurag3407/career-pilot/compare/v1.97.0...v1.98.0) (2026-05-30)
+
+
+### Features
+
+* refactor Home page layout and update component imports ([db1f621](https://github.com/anurag3407/career-pilot/commit/db1f62119fe3b45aef0f5311e028ed9c8865a438))
+
+# [1.97.0](https://github.com/anurag3407/career-pilot/compare/v1.96.0...v1.97.0) (2026-05-30)
+
+
+### Features
+
+* add Project Visualizer section and enhance analysis features ([cea1200](https://github.com/anurag3407/career-pilot/commit/cea120011129c8b7a954cf4caabf18f89491c122))
+
+# [1.96.0](https://github.com/anurag3407/career-pilot/compare/v1.95.0...v1.96.0) (2026-05-29)
+
+
+### Bug Fixes
+
+* **app:** remove duplicate routes ([35e7f24](https://github.com/anurag3407/career-pilot/commit/35e7f2486d4ebcca154056f8a92f0f5717a9abef))
+* **frosted-panels:** fix mobile card overlap, mobile header padding overlap, and broken testimonial image URL ([1a20c9a](https://github.com/anurag3407/career-pilot/commit/1a20c9a339b06fc069889d5cf6ffcfc37d4d9e7f))
+* **frosted-panels:** resolve CodeRabbit review comments ([c53db38](https://github.com/anurag3407/career-pilot/commit/c53db3868006040c5944640ed543de56480f7f62))
+
+
+### Features
+
+* add Frosted Panels portfolio template ([4a00d48](https://github.com/anurag3407/career-pilot/commit/4a00d48b0ff6ead09ff884b3f3fce69de907ecc4))
+
+# [1.95.0](https://github.com/anurag3407/career-pilot/compare/v1.94.1...v1.95.0) (2026-05-29)
+
+
+### Features
+
+* **portfolio:** implement Medical Clean theme Contact section ([fcd046d](https://github.com/anurag3407/career-pilot/commit/fcd046d9b0439136d5657915a5f497a03c8b67aa))
+
+## [1.94.1](https://github.com/anurag3407/career-pilot/compare/v1.94.0...v1.94.1) (2026-05-29)
+
+
+### Bug Fixes
+
+* replace console.log stubs with actual navigation in FAB ([b130555](https://github.com/anurag3407/career-pilot/commit/b130555c1fd0e9f4ff18cf60d7f780b24d8d41ce))
+
+# [1.94.0](https://github.com/anurag3407/career-pilot/compare/v1.93.0...v1.94.0) (2026-05-29)
+
+
+### Features
+
+* add premium Split Personality portfolio template ([ed0069b](https://github.com/anurag3407/career-pilot/commit/ed0069bb470d7f4f4954dd1ab606ec9c698ab43e))
+
+# [1.93.0](https://github.com/anurag3407/career-pilot/compare/v1.92.1...v1.93.0) (2026-05-29)
+
+
+### Features
+
+* add Mountain Summit portfolio template ([c11a7fd](https://github.com/anurag3407/career-pilot/commit/c11a7fda7860813709fb490e653d3587646aad5b))
+
+## [1.92.1](https://github.com/anurag3407/career-pilot/compare/v1.92.0...v1.92.1) (2026-05-29)
+
+
+### Bug Fixes
+
+* resolve greeting bug by integrating profile name state with automated fallback parameters ([b6b672f](https://github.com/anurag3407/career-pilot/commit/b6b672fc53237fa2d32c8ba3109caddfd1fc8128))
+
+# [1.92.0](https://github.com/anurag3407/career-pilot/compare/v1.91.1...v1.92.0) (2026-05-29)
+
+
+### Features
+
+* add Project Visualizer dashboard and landing page with state management ([c11af06](https://github.com/anurag3407/career-pilot/commit/c11af0694e3d46e94130ed8a06c94edabce2c95d))
+
+## [1.91.1](https://github.com/anurag3407/career-pilot/compare/v1.91.0...v1.91.1) (2026-05-29)
+
+
+### Bug Fixes
+
+* resolve landing page overlap and navbar stacking issues ([d7107f9](https://github.com/anurag3407/career-pilot/commit/d7107f98d948b74733884ebd3f442843bee79424))
+
+# [1.91.0](https://github.com/anurag3407/career-pilot/compare/v1.90.0...v1.91.0) (2026-05-29)
+
+
+### Features
+
+* **portfolio:** add custom CSS for retro VHS scanlines, noise, and glitch effects ([7553ea6](https://github.com/anurag3407/career-pilot/commit/7553ea6726cbb7db3fc088c8de7c9290643b74e5))
+* **portfolio:** build complete VHS Rewind template with responsive layout and animated sections ([bf5160f](https://github.com/anurag3407/career-pilot/commit/bf5160f5624d34895a09a6b54352c3edb478da94))
+
+# [1.90.0](https://github.com/anurag3407/career-pilot/compare/v1.89.0...v1.90.0) (2026-05-29)
+
+
+### Features
+
+* add complete Solar Eclipse portfolio template ([3fbc463](https://github.com/anurag3407/career-pilot/commit/3fbc4634c38c75df636b0586c33e2b2cb0447f90))
+
+# [1.89.0](https://github.com/anurag3407/career-pilot/compare/v1.88.0...v1.89.0) (2026-05-29)
+
+
+### Features
+
+* **resume-builder:** add comprehensive form validation ([01d0342](https://github.com/anurag3407/career-pilot/commit/01d0342d15ffa63f10c198b40c78b19c44c6d995))
+
+# [1.88.0](https://github.com/anurag3407/career-pilot/compare/v1.87.0...v1.88.0) (2026-05-29)
+
+
+### Features
+
+* Implement resume upload feature for auto-building portfolios ([6a9f287](https://github.com/anurag3407/career-pilot/commit/6a9f28704043d40b4edbc6a24c4423393d5e11d1))
+
+# [1.87.0](https://github.com/anurag3407/career-pilot/compare/v1.86.0...v1.87.0) (2026-05-29)
+
+
+### Features
+
+* add complete Floating Islands portfolio template ([89144ac](https://github.com/anurag3407/career-pilot/commit/89144acc663c118d605da2f4b1820ff61102f452))
+
+# [1.86.0](https://github.com/anurag3407/career-pilot/compare/v1.85.0...v1.86.0) (2026-05-29)
+
+
+### Features
+
+* implement CyberSecurity Hacker Hero section ([96854a1](https://github.com/anurag3407/career-pilot/commit/96854a1036bc8188b495752ee675cc3b9f6770b0))
+
+# [1.85.0](https://github.com/anurag3407/career-pilot/compare/v1.84.0...v1.85.0) (2026-05-29)
+
+
+### Features
+
+* add Tabs component for tabbed navigation ([5f34777](https://github.com/anurag3407/career-pilot/commit/5f347777eb4759dfd98c8f9766f07ed8fa349887))
+
+# [1.84.0](https://github.com/anurag3407/career-pilot/compare/v1.83.0...v1.84.0) (2026-05-29)
+
+
+### Bug Fixes
+
+* address Copilot review feedback ([27b6141](https://github.com/anurag3407/career-pilot/commit/27b61410cf2a1abed02ee2f191320977c28c6677))
+* harden GitHub profile overview data ([fc31a5c](https://github.com/anurag3407/career-pilot/commit/fc31a5c44c69484cb5dfe8803ab0759420ddaf15))
+
+
+### Features
+
+* add GitHub overview card to dashboard with user stats ([e438e7f](https://github.com/anurag3407/career-pilot/commit/e438e7f389808a1bbdd7c35afd90d2daaf869365))
+* add match score badge to job cards and corresponding test ([b1c61c8](https://github.com/anurag3407/career-pilot/commit/b1c61c84a46917b9bb05218f1ab65b80908a6d7e))
+* implement Select component with search and multi-select functionality ([fce6c4a](https://github.com/anurag3407/career-pilot/commit/fce6c4a5e28f1a650b8de4d1c5b52a6160a2c0fa))
+
+# [1.83.0](https://github.com/anurag3407/career-pilot/compare/v1.82.1...v1.83.0) (2026-05-29)
+
+
+### Features
+
+* **portfolio:** Add complete Candy Pop portfolio template [#1930](https://github.com/anurag3407/career-pilot/issues/1930) ([531d531](https://github.com/anurag3407/career-pilot/commit/531d531dc3df055028610ae905d63233a9d32b68))
+* **portfolio:** implement Apple Showcase portfolio template ([6b56943](https://github.com/anurag3407/career-pilot/commit/6b569431ffbc6e10ce81403d185af64ac4dcd3bf))
+
+## [1.82.1](https://github.com/anurag3407/career-pilot/compare/v1.82.0...v1.82.1) (2026-05-29)
+
+
+### Performance Improvements
+
+* **frontend:** optimize bundle splitting, lazy loading, and LCP ([e2c8346](https://github.com/anurag3407/career-pilot/commit/e2c8346a9ed39cfdfc21730560bde8e4c5358b29))
+
+# [1.82.0](https://github.com/anurag3407/career-pilot/compare/v1.81.1...v1.82.0) (2026-05-29)
+
+
+### Bug Fixes
+
+* close mobile sidebar after navigation ([e5f11c7](https://github.com/anurag3407/career-pilot/commit/e5f11c736d18c9ea8c892e09b6435a06be549647))
+* improve authentication configuration error message ([f830995](https://github.com/anurag3407/career-pilot/commit/f8309953f112b204bf08916e21cd8071e08f48a6))
+
+
+### Features
+
+* add recently viewed jobs tracking ([b3ffe0f](https://github.com/anurag3407/career-pilot/commit/b3ffe0f5879d77fc2051cd7e7b24380080dd824a))
+
+## [1.81.1](https://github.com/anurag3407/career-pilot/compare/v1.81.0...v1.81.1) (2026-05-29)
+
+
+### Bug Fixes
+
+* refactor register and settings forms to use react-hook-form ([d62077c](https://github.com/anurag3407/career-pilot/commit/d62077c6dc523bb1d2f1b35ad8b2e0f195150a13))
+* standardize form validation using react-hook-form ([0be5f7d](https://github.com/anurag3407/career-pilot/commit/0be5f7dbee9a5cffa3c04a81e3ed5c7eb3d2e416))
+
+# [1.81.0](https://github.com/anurag3407/career-pilot/compare/v1.80.0...v1.81.0) (2026-05-29)
+
+
+### Features
+
+* Add Midnight Gradient portfolio template and fix compilation errors ([f909791](https://github.com/anurag3407/career-pilot/commit/f909791d59644093b049f06d111e32c97e767b72))
+
+# [1.80.0](https://github.com/anurag3407/career-pilot/compare/v1.79.1...v1.80.0) (2026-05-29)
+
+
+### Features
+
+* **bauhaus-poster:** add Bauhaus poster template components and integration ([e7b686f](https://github.com/anurag3407/career-pilot/commit/e7b686f1d67aa459e727048432d4601bf91ab566))
+* **bauhaus-poster:** refine Bauhaus poster template ([cd7973d](https://github.com/anurag3407/career-pilot/commit/cd7973d87bf641ae548bbfa5bb409bc712ddf976))
+
+## [1.79.1](https://github.com/anurag3407/career-pilot/compare/v1.79.0...v1.79.1) (2026-05-29)
+
+
+### Performance Improvements
+
+* reuse shared Puppeteer browser instance for screenshots ([ab7a465](https://github.com/anurag3407/career-pilot/commit/ab7a4653a738b008d77540e64d404041d44d78e4))
+
+# [1.79.0](https://github.com/anurag3407/career-pilot/compare/v1.78.4...v1.79.0) (2026-05-29)
+
+
+### Features
+
+* add spinner indicator during PDF export ([3a6b0f9](https://github.com/anurag3407/career-pilot/commit/3a6b0f94b43a2e8702571bb0ee0e30feb9585eb1))
+
+## [1.78.4](https://github.com/anurag3407/career-pilot/compare/v1.78.3...v1.78.4) (2026-05-29)
+
+
+### Bug Fixes
+
+* add seo meta tags and noscript fallback to root html ([8abe934](https://github.com/anurag3407/career-pilot/commit/8abe934e27bd50c2b205337194c55f046b244ef4))
+
+## [1.78.3](https://github.com/anurag3407/career-pilot/compare/v1.78.2...v1.78.3) (2026-05-29)
+
+
+### Bug Fixes
+
+* auth pages break on mobile viewports below 360px width ([e86c7d9](https://github.com/anurag3407/career-pilot/commit/e86c7d9104d02588549c616baed2ae8f398f0a8d)), closes [#2299](https://github.com/anurag3407/career-pilot/issues/2299)
+
+## [1.78.2](https://github.com/anurag3407/career-pilot/compare/v1.78.1...v1.78.2) (2026-05-29)
+
+
+### Bug Fixes
+
+* remove duplicate if (!code) block in LinkedInCallback.jsx ([301dd0a](https://github.com/anurag3407/career-pilot/commit/301dd0aa6fac595fe88e82482e81ec03df3900b3))
+
+## [1.78.1](https://github.com/anurag3407/career-pilot/compare/v1.78.0...v1.78.1) (2026-05-29)
+
+
+### Bug Fixes
+
+* validate community channel name before normalizing ([#2274](https://github.com/anurag3407/career-pilot/issues/2274)) ([4a3051d](https://github.com/anurag3407/career-pilot/commit/4a3051d6185bc624c7a64d917c5154e9d9e39abf))
+
+# [1.78.0](https://github.com/anurag3407/career-pilot/compare/v1.77.0...v1.78.0) (2026-05-29)
+
+
+### Features
+
+* add Telescope Zoom portfolio template and route ([7270404](https://github.com/anurag3407/career-pilot/commit/72704047e9325e3f212abe4080bd4711cee7f3c4))
+
+# [1.77.0](https://github.com/anurag3407/career-pilot/compare/v1.76.0...v1.77.0) (2026-05-29)
+
+
+### Features
+
+* **magazine-editorial:** build projects template & fix code compliance warnings ([905b885](https://github.com/anurag3407/career-pilot/commit/905b885f6a2fd1b20e2526fe2715cab81cd807df))
+
+# [1.76.0](https://github.com/anurag3407/career-pilot/compare/v1.75.0...v1.76.0) (2026-05-28)
+
+
+### Features
+
+* add live character counters for custom section fields ([f99bda6](https://github.com/anurag3407/career-pilot/commit/f99bda6a4096e425fd17e841cbddd768616a30ee))
+
+# [1.75.0](https://github.com/anurag3407/career-pilot/compare/v1.74.0...v1.75.0) (2026-05-28)
+
+
+### Features
+
+* implement Swiss Typography portfolio template ([9f27af7](https://github.com/anurag3407/career-pilot/commit/9f27af7f32af671c5dc22f0adf7838dfa421caac))
+
+# [1.74.0](https://github.com/anurag3407/career-pilot/compare/v1.73.0...v1.74.0) (2026-05-28)
+
+
+### Features
+
+* added a Hacker Theme: Projects Section ([7bf881e](https://github.com/anurag3407/career-pilot/commit/7bf881e4a8f73ecc3f836dd1675ad7487cb9554d))
+* implement CyberSecurity_Hacker Contact section ([52775e8](https://github.com/anurag3407/career-pilot/commit/52775e894eb1c9d3f9c522fc758524eadf0b6a28))
+
+# [1.73.0](https://github.com/anurag3407/career-pilot/compare/v1.72.0...v1.73.0) (2026-05-28)
+
+
+### Features
+
+* complete Dark Mesh Gradient portfolio template ([36fa001](https://github.com/anurag3407/career-pilot/commit/36fa001260fce7be0aed0378479ec5a597886e05))
+
+# [1.72.0](https://github.com/anurag3407/career-pilot/compare/v1.71.0...v1.72.0) (2026-05-28)
+
+
+### Features
+
+* implement Parallax Mountains portfolio template ([42d4399](https://github.com/anurag3407/career-pilot/commit/42d43997a973e052bdd5df672987e611593e4c6c))
+
+# [1.71.0](https://github.com/anurag3407/career-pilot/compare/v1.70.0...v1.71.0) (2026-05-28)
+
+
+### Features
+
+* implement complete Cherry Blossom portfolio template ([2fe8b33](https://github.com/anurag3407/career-pilot/commit/2fe8b33dfbf8ed998765129afd6e90d481eeb1da))
+
+# [1.70.0](https://github.com/anurag3407/career-pilot/compare/v1.69.0...v1.70.0) (2026-05-28)
+
+
+### Bug Fixes
+
+* **portfolio:** add fallback error handling for broken avatars ([6509401](https://github.com/anurag3407/career-pilot/commit/65094019b770e7f99c4a079fc9091e28337e656b))
+
+
+### Features
+
+* **portfolio:** implement Charcoal Sketch template ([948123e](https://github.com/anurag3407/career-pilot/commit/948123e6ee5f4f7a59cb0092be3cfe9a15edce6e))
+
+# [1.69.0](https://github.com/anurag3407/career-pilot/compare/v1.68.0...v1.69.0) (2026-05-28)
+
+
+### Features
+
+* complete responsive obsidian vault template implementation ([0bb8df6](https://github.com/anurag3407/career-pilot/commit/0bb8df660c740533af2474ac19419e694883e509))
+
+# [1.68.0](https://github.com/anurag3407/career-pilot/compare/v1.67.0...v1.68.0) (2026-05-28)
+
+
+### Bug Fixes
+
+* address CodeRabbit review comments ([b8f61e2](https://github.com/anurag3407/career-pilot/commit/b8f61e21e189c018e36e943ef8849acfec01165e))
+* prevent stale timeout callbacks from re-starting speech recognition ([03f3ec8](https://github.com/anurag3407/career-pilot/commit/03f3ec857371f5b749d12825a9d3f40627346de2))
+
+
+### Features
+
+* add reusable useVoiceToText hook and VoiceToTextButton component ([#28](https://github.com/anurag3407/career-pilot/issues/28)) ([b818855](https://github.com/anurag3407/career-pilot/commit/b81885588aae7438f7e1e9897a94d2f3f8d4f52c))
+
+# [1.67.0](https://github.com/anurag3407/career-pilot/compare/v1.66.0...v1.67.0) (2026-05-28)
+
+
+### Features
+
+* improve profile validation and cleanup profile editing ui ([f8ec4c1](https://github.com/anurag3407/career-pilot/commit/f8ec4c15ac38089e816867ff3b67b7cc5f2ee539))
+
 # [1.66.0](https://github.com/anurag3407/career-pilot/compare/v1.65.0...v1.66.0) (2026-05-28)
 
 
