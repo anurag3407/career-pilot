@@ -1,5 +1,5 @@
 import { useState, useEffect } from "react";
-import { useNavigate } from "react-router-dom";
+import { useNavigate, useLocation } from "react-router-dom";
 import { motion } from "framer-motion";
 import { Brain, ChevronDown } from "lucide-react";
 
@@ -57,6 +57,11 @@ const navLinks = [
         icon: <Globe className="w-5 h-5 shrink-0" />,
     },
     {
+        label: "Project Visualizer",
+        href: "/project-visualizer",
+        icon: <GitMerge className="w-5 h-5 shrink-0" />,
+    },
+    {
         label: "Career Growth",
         href: "/hub/career",
         icon: <GraduationCap className="w-5 h-5 shrink-0" />,
@@ -80,6 +85,11 @@ const navLinks = [
         label: "Settings",
         href: "/settings",
         icon: <Settings className="w-5 h-5 shrink-0" />,
+    },
+    {
+        label: "Admin Panel",
+        href: "/admin",
+        icon: <ShieldCheck className="w-5 h-5 shrink-0 text-blue-500" />,
     }
 ];
 
@@ -92,8 +102,8 @@ function Logo() {
             "flex items-center gap-3 py-2 group",
             !open && animate ? "px-0 justify-center" : "px-1 justify-start"
         )}>
-            <div className="w-10 h-10 shrink-0 flex items-center justify-center p-1.5 rounded-xl group-hover:scale-110 transition-transform">
-                <img src="/speed.png" alt="careerpilot" className="w-full h-full object-contain" />
+            <div className="w-10 h-10 flex-shrink-0 flex items-center justify-center p-1.5 rounded-xl group-hover:scale-110 transition-transform">
+                <img src="/speed.png" alt="careerpilot logo" className="w-full h-full object-contain" />
             </div>
             <motion.div
                 animate={{
@@ -246,6 +256,11 @@ function UserSection() {
 export default function AppSidebar() {
     const [open, setOpen] = useState(false);
 const [openAI, setOpenAI] = useState(false);
+const location = useLocation();
+
+useEffect(() => {
+    setOpen(false);
+}, [location.pathname]);
 
     return (
         <Sidebar open={open} setOpen={setOpen}>
@@ -320,8 +335,8 @@ const [openAI, setOpenAI] = useState(false);
         
         <SidebarLink
             link={{
-                label: "Repo Analyzer",
-                href: "/repo-analyzer",
+                label: "Project Visualizer",
+                href: "/project-visualizer",
                 icon: <GitMerge className="w-4 h-4 shrink-0" />,
             }}
             onClick={() => setOpen(false)}
@@ -334,4 +349,3 @@ const [openAI, setOpenAI] = useState(false);
         </Sidebar>
     );
 }
-
