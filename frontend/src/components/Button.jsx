@@ -1,5 +1,6 @@
 import { cn } from "@/lib/utils";
 import { motion } from "framer-motion";
+import PropTypes from "prop-types";
 
 export default function Button({
   children,
@@ -14,7 +15,6 @@ export default function Button({
 }) {
   const baseStyles =
     "inline-flex items-center justify-center gap-2 font-black tracking-wide transition-all duration-300 disabled:opacity-50 disabled:cursor-not-allowed cursor-pointer rounded-2xl";
-
   const variants = {
     primary:
       "bg-primary text-primary-foreground hover:bg-primary/90 shadow-lg shadow-primary/20",
@@ -27,14 +27,12 @@ export default function Button({
     gradient:
       "bg-gradient-to-r from-primary to-secondary text-primary-foreground hover:scale-105 shadow-xl shadow-primary/25",
   };
-
   const sizes = {
     sm: "px-4 py-2 text-sm",
     default: "px-6 py-3 text-sm",
     lg: "px-8 py-4 text-base",
     xl: "px-10 py-5 text-lg",
   };
-
   return (
     <motion.button
       type={type}
@@ -72,3 +70,14 @@ export default function Button({
     </motion.button>
   );
 }
+
+Button.propTypes = {
+  children: PropTypes.node,
+  type: PropTypes.oneOf(["button", "submit", "reset"]),
+  variant: PropTypes.oneOf(["primary", "secondary", "danger", "outline", "ghost", "gradient"]),
+  size: PropTypes.oneOf(["sm", "default", "lg", "xl"]),
+  disabled: PropTypes.bool,
+  loading: PropTypes.bool,
+  onClick: PropTypes.func,
+  className: PropTypes.string,
+};

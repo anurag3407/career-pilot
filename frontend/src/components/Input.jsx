@@ -1,4 +1,5 @@
 import { cn } from '@/lib/utils'
+import PropTypes from 'prop-types'
 import { useState, forwardRef } from 'react'
 import { Eye, EyeOff } from 'lucide-react'
 
@@ -15,9 +16,7 @@ const Input = forwardRef(function Input({
   className = ''
 }, ref) {
   const [showPassword, setShowPassword] = useState(false)
-
   const inputType = type === 'password' ? (showPassword ? 'text' : 'password') : type
-
   return (
     <div className="mb-6">
       {label && (
@@ -65,5 +64,18 @@ const Input = forwardRef(function Input({
     </div>
   )
 })
+
+Input.propTypes = {
+  label: PropTypes.string,
+  type: PropTypes.string,
+  name: PropTypes.string,
+  value: PropTypes.oneOfType([PropTypes.string, PropTypes.number]),
+  onChange: PropTypes.func,
+  placeholder: PropTypes.string,
+  error: PropTypes.string,
+  required: PropTypes.bool,
+  disabled: PropTypes.bool,
+  className: PropTypes.string,
+}
 
 export default Input
