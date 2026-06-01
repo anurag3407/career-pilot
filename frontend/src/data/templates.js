@@ -1684,13 +1684,14 @@ export const templates = [
     "id": "Rainbow_Gradient",
     "title": "Rainbow Gradient",
     "category": "Portfolio",
-    "colorScheme": "Dark",
-    "layout": "Grid",
-    "author": "System",
-    "views": 1139,
-    "rating": 4.5,
+    "colorScheme": "Colorful",
+    "layout": "Interactive",
+    "author": "Advik Divekar",
+    "views": 2900,
+    "rating": 4.9,
     "image": "/template-previews/Rainbow_Gradient.png",
-    "createdAt": "2026-05-01"
+    "createdAt": "2026-05-31",
+    "isComplete": true
   },
   {
     "id": "Rainforest_Canopy",
