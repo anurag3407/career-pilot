@@ -7,8 +7,7 @@ import Navbar from '../components/Navbar'
 import Input from '../components/Input'
 import Button from '../components/Button'
 import Card from '../components/Card'
-import { twoFactorApi } from '../services/api'
-
+import { twoFactorApi, resumeApi } from '../services/api'
 export default function Login() {
   const navigate = useNavigate()
   const { login, loginWithGoogle, loginWithLinkedIn } = useAuth()
@@ -64,7 +63,14 @@ export default function Login() {
         toast.success('Two-factor authentication required')
       } else {
         toast.success('Signed in successfully!')
-        navigate('/dashboard')
+
+try {
+  await resumeApi.getAll()
+} catch (err) {
+  console.error('Dashboard prefetch failed', err)
+}
+
+navigate('/dashboard')
       }
     } catch (error) {
       console.error('Login error:', error)
@@ -84,7 +90,14 @@ export default function Login() {
         toast.success('Two-factor authentication required')
       } else {
         toast.success('Signed in with Google!')
-        navigate('/dashboard')
+
+try {
+  await resumeApi.getAll()
+} catch (err) {
+  console.error('Dashboard prefetch failed', err)
+}
+
+navigate('/dashboard')
       }
     } catch (error) {
       console.error('Google login error:', error)
@@ -123,7 +136,14 @@ export default function Login() {
         await twoFactorApi.verify(totpToken)
       }
       toast.success('Verification successful!')
-      navigate('/dashboard')
+
+try {
+  await resumeApi.getAll()
+} catch (err) {
+  console.error('Dashboard prefetch failed', err)
+}
+
+navigate('/dashboard')
     } catch (error) {
       toast.error(error.message || 'Invalid code — please try again')
     } finally {

@@ -2,6 +2,7 @@ import { useState, useEffect } from 'react'
 import { Link } from 'react-router-dom'
 import toast from 'react-hot-toast'
 import { motion } from 'framer-motion'
+import { usePrefetch } from "../hooks/usePrefetch";
 import {
   FileText,
   Briefcase,
@@ -33,9 +34,16 @@ const STATUS_CONFIG = {
 }
 
 export default function Dashboard() {
+
   const [resumes, setResumes] = useState([])
   const [trackedJobs, setTrackedJobs] = useState([])
   const [loading, setLoading] = useState(true)
+  export default function Dashboard() {
+  const [resumes, setResumes] = useState([])
+  const [trackedJobs, setTrackedJobs] = useState([])
+  const [loading, setLoading] = useState(true)
+
+  const { prefetchResume } = usePrefetch();
   const [fetchError, setFetchError] = useState('')
   const [jobStats, setJobStats] = useState({
     total: 0,
@@ -44,6 +52,7 @@ export default function Dashboard() {
     interviewing: 0,
     offered: 0
   })
+  
 
   useEffect(() => {
     fetchData()
@@ -261,7 +270,7 @@ export default function Dashboard() {
                     </div>
                     <h3 className="text-xl font-bold text-foreground mb-2">No resumes yet</h3>
                     <p className="text-muted-foreground text-sm mb-6 max-w-xs mx-auto font-medium">Upload your resume to get AI-powered enhancements</p>
-                    <Link to="/upload">
+                    <Link to="/upload" onMouseEnter={prefetchResume}>
                       <Button variant="primary" className="font-bold px-8">Upload Resume</Button>
                     </Link>
                   </div>
@@ -281,7 +290,7 @@ export default function Dashboard() {
                               <p className="text-sm text-muted-foreground font-semibold">{resume.jobRole || 'General'} • {formatDate(resume.createdAt)}</p>
                             </div>
                             <div className="flex gap-2">
-                              <Link to={`/resume/${resume.id}`}>
+                              <Link to={`/resume/${resume.id}`}   onMouseEnter={prefetchResume}>
                                 <Button variant="ghost" className="!py-2 !px-4 text-xs font-bold">View</Button>
                               </Link>
                               <Link to={`/enhance/${resume.id}`}>
