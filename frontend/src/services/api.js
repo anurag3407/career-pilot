@@ -398,37 +398,93 @@ export const portfolioApi = {
 
   // Create portfolio
   async create(data) {
-    const headers = await getAuthHeaders();
+    const headers = await getAuthHeaders()
     const response = await fetch(`${API_BASE}/portfolio`, {
       method: 'POST',
       headers,
       body: JSON.stringify(data)
-    });
-    return handleResponse(response);
+    })
+
+    return handleResponse(response)
   },
 
   // Extract portfolio JSON from raw resume text
   async extractFromResume(resumeText) {
-    const headers = await getAuthHeaders();
-
+    const headers = await getAuthHeaders()
     const response = await fetch(`${API_BASE}/portfolio/extract-from-resume`, {
       method: 'POST',
       headers,
       body: JSON.stringify({ resumeText })
-    });
+    })
 
-    return handleResponse(response);
+    return handleResponse(response)
   },
 
   // Deploy portfolio to Cloudflare Pages
   async deploy({ slug, sections, templateId, title }) {
-    const headers = await getAuthHeaders();
+    const headers = await getAuthHeaders()
     const response = await fetch(`${API_BASE}/portfolio/deploy`, {
       method: 'POST',
       headers,
       body: JSON.stringify({ slug, sections, templateId, title })
-    });
-    return handleResponse(response);
+    })
+
+    return handleResponse(response)
+  },
+
+  // Check whether a portfolio slug is available for the current user
+  async checkSlug(slug, currentSlug = '') {
+    const headers = await getAuthHeaders()
+    const params = currentSlug
+      ? `?currentSlug=${encodeURIComponent(currentSlug)}`
+      : ''
+
+    const response = await fetch(`${API_BASE}/portfolio/check-slug/${encodeURIComponent(slug)}${params}`, {
+      method: 'GET',
+      headers
+    })
+
+    return handleResponse(response)
+  },
+
+  // Update portfolio configuration settings
+  async updateSettings(slug, settings) {
+    const headers = await getAuthHeaders()
+    const response = await fetch(`${API_BASE}/portfolio/${encodeURIComponent(slug)}/settings`, {
+      method: 'PATCH',
+      headers,
+      body: JSON.stringify(settings)
+    })
+
+    return handleResponse(response)
+  },
+
+  // Delete a portfolio
+  async delete(slug) {
+    const headers = await getAuthHeaders()
+    const response = await fetch(`${API_BASE}/portfolio/${encodeURIComponent(slug)}`, {
+      method: 'DELETE',
+      headers
+    })
+
+    return handleResponse(response)
+  },
+
+  // Import a portfolio from a JSON file
+  async importJson(file) {
+    const headers = await getAuthHeaders()
+    delete headers['Content-Type']
+
+    const formData = new FormData()
+    formData.append('file', file)
+
+    const response = await fetch(`${API_BASE}/portfolio/import`, {
+      method: 'POST',
+      headers,
+      body: formData
+    })
+
+    return handleResponse(response)
   }
 }
 

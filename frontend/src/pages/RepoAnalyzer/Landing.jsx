@@ -1,6 +1,7 @@
 import { useNavigate } from 'react-router-dom';
 import { GitMerge, Zap, ArrowRight, Server, BrainCircuit } from 'lucide-react';
 import { motion } from 'framer-motion';
+import Breadcrumb from '../../components/Breadcrumb';
 
 export default function RepoAnalyzerLanding() {
   const navigate = useNavigate();
@@ -9,7 +10,8 @@ export default function RepoAnalyzerLanding() {
     <div className="min-h-[calc(100vh-4rem)] bg-[#050816] text-white overflow-hidden relative selection:bg-blue-500/30">
       <div className="absolute inset-0 bg-[radial-gradient(ellipse_at_top,_var(--tw-gradient-stops))] from-blue-900/20 via-[#050816] to-[#050816] pointer-events-none"></div>
       
-      <div className="container mx-auto px-6 py-20 relative z-10">
+      <div className="container mx-auto px-6 py-8 relative z-10">
+        <Breadcrumb className="mb-12 text-slate-400 [&_a:hover]:text-white" />
         <div className="max-w-4xl mx-auto text-center mb-24">
           <motion.div 
             initial={{ opacity: 0, y: 20 }}

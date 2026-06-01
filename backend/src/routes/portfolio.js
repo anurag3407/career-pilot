@@ -1,6 +1,8 @@
 import express from 'express';
+import bcrypt from 'bcryptjs';
 import fs from 'fs/promises';
 import mongoose from 'mongoose';
+import multer from 'multer';
 import { verifyToken } from '../middleware/auth.js';
 import { asyncHandler, ApiError } from '../middleware/errorHandler.js';
 import cacheHeaders from '../middleware/cacheHeaders.js';
@@ -24,6 +26,10 @@ const router = express.Router();
 const VALID_SECTIONS = ['hero', 'projects', 'about', 'skills', 'experience', 'education'];
 const VALID_SLUG_PATTERN = /^[a-z0-9]+(?:[a-z0-9-]*[a-z0-9])?$/i;
 const FREE_TIER_LIMIT_MB = 100;
+const uploadPortfolioJson = multer({
+  storage: multer.memoryStorage(),
+  limits: { fileSize: 1024 * 1024 },
+});
 
 // @route   POST /api/portfolio/extract-from-resume
 // @desc    Extracts portfolio JSON structure from raw resume text using AI
@@ -60,6 +66,86 @@ const getPortfolioTemplatePath = (slug) => {
 const assertValidPortfolioSlug = (slug) => {
   if (!VALID_SLUG_PATTERN.test(slug)) {
     throw new ApiError(400, 'Invalid portfolio slug.');
+  }
+};
+
+const normalizePortfolioSettings = async (body = {}) => {
+  const settings = {};
+
+  if (typeof body.slug === 'string') {
+    const slug = body.slug.trim();
+    assertValidPortfolioSlug(slug);
+    settings.slug = slug;
+  }
+
+  if (body.visibility !== undefined) {
+    if (!['public', 'private'].includes(body.visibility)) {
+      throw new ApiError(400, 'Visibility must be either "public" or "private".');
+    }
+    settings.visibility = body.visibility;
+  }
+
+  if (body.passwordProtected !== undefined) {
+    settings.passwordProtected = Boolean(body.passwordProtected);
+  }
+
+  if (body.password !== undefined && String(body.password).length > 0) {
+    settings.passwordHash = await bcrypt.hash(String(body.password), 12);
+  }
+
+  if (body.customCss !== undefined) {
+    settings.customCss = String(body.customCss);
+  }
+
+  if (body.customHeadTags !== undefined) {
+    settings.customHeadTags = String(body.customHeadTags);
+  }
+
+  if (settings.passwordProtected === false) {
+    settings.passwordHash = '';
+  }
+
+  return settings;
+};
+
+const normalizeImportedPortfolio = (data) => {
+  const candidate = data?.data?.portfolio || data?.portfolio || data?.data || data;
+
+  if (!candidate || typeof candidate !== 'object' || Array.isArray(candidate)) {
+    throw new ApiError(400, 'Imported JSON must contain a portfolio object.');
+  }
+
+  return {
+    slug: candidate.slug,
+    sections: candidate.sections,
+  };
+};
+
+const parsePortfolioJsonUpload = (req, res, next) => {
+  try {
+    if (!req.file) {
+      throw new ApiError(400, 'JSON file is required.');
+    }
+
+    const isJsonFile =
+      req.file.mimetype === 'application/json' ||
+      req.file.originalname?.toLowerCase().endsWith('.json');
+
+    if (!isJsonFile) {
+      throw new ApiError(400, 'Only JSON files can be imported.');
+    }
+
+    let parsed;
+    try {
+      parsed = JSON.parse(req.file.buffer.toString('utf8'));
+    } catch {
+      throw new ApiError(400, 'Uploaded file contains malformed JSON.');
+    }
+
+    req.body = normalizeImportedPortfolio(parsed);
+    next();
+  } catch (error) {
+    next(error);
   }
 };
 
@@ -317,22 +403,33 @@ router.get(
 
 /**
  * f. GET /api/portfolio
- * Returns a list of available portfolio template slugs.
+ * Returns the current user's portfolios.
  */
-router.get('/', asyncHandler(async (req, res) => {
-  const templatesDir = new URL('../templates/portfolio', import.meta.url);
-  let slugs = [];
-  try {
-    const entries = await fs.readdir(templatesDir);
-    slugs = entries.filter((e) => !e.startsWith('.'));
-  } catch {
-    slugs = [];
-  }
-  const portfolios = slugs.map((slug) => ({
-    slug,
-    url: `/portfolio/public/${slug}`,
-  }));
+router.get('/', verifyToken, asyncHandler(async (req, res) => {
+  const portfolios = await Portfolio.find({ userId: req.user.uid }).sort({ updatedAt: -1 });
   res.status(200).json({ success: true, portfolios, data: portfolios });
+}));
+
+/**
+ * GET /api/portfolio/check-slug/:slug
+ * Check if the current user can use a portfolio slug.
+ */
+router.get('/check-slug/:slug', verifyToken, asyncHandler(async (req, res) => {
+  const { slug } = req.params;
+  const currentSlug = typeof req.query.currentSlug === 'string' ? req.query.currentSlug : '';
+  const userId = req.user.uid;
+
+  assertValidPortfolioSlug(slug);
+  if (currentSlug) assertValidPortfolioSlug(currentSlug);
+
+  const existing = await Portfolio.findOne({ userId, slug });
+  const available = !existing || existing.slug === currentSlug;
+
+  res.status(200).json({
+    success: true,
+    available,
+    data: { available },
+  });
 }));
 
 /**
@@ -358,6 +455,38 @@ router.post('/', verifyToken, validatePortfolioSlug, validatePortfolioContent, a
 }));
 
 /**
+ * POST /api/portfolio/import
+ * Import a portfolio from an uploaded JSON file after validation.
+ */
+router.post(
+  '/import',
+  verifyToken,
+  uploadPortfolioJson.single('file'),
+  parsePortfolioJsonUpload,
+  validatePortfolioSlug,
+  validatePortfolioContent,
+  asyncHandler(async (req, res) => {
+    const { slug, sections } = req.body;
+    const userId = req.user.uid;
+
+    const existing = await Portfolio.findOne({ userId, slug });
+    if (existing) {
+      throw new ApiError(409, `A portfolio with slug "${slug}" already exists.`);
+    }
+
+    const portfolio = new Portfolio({ userId, slug, sections });
+    await portfolio.validate();
+    await portfolio.save();
+
+    res.status(201).json({
+      success: true,
+      message: 'Portfolio imported successfully.',
+      data: portfolio,
+    });
+  })
+);
+
+/**
  * PUT /api/portfolio/:slug
  * Update an existing portfolio with validated and sanitized content.
  */
@@ -380,6 +509,68 @@ router.put('/:slug', verifyToken, validatePortfolioSlug, validatePortfolioConten
     success: true,
     message: 'Portfolio updated successfully.',
     data: portfolio,
+  });
+}));
+
+/**
+ * PATCH /api/portfolio/:slug/settings
+ * Update portfolio configuration without replacing content sections.
+ */
+router.patch('/:slug/settings', verifyToken, asyncHandler(async (req, res) => {
+  const { slug } = req.params;
+  const userId = req.user.uid;
+
+  assertValidPortfolioSlug(slug);
+  const settings = await normalizePortfolioSettings(req.body);
+
+  if (!settings.slug) {
+    throw new ApiError(400, 'Portfolio slug is required.');
+  }
+
+  if (settings.slug !== slug) {
+    const existing = await Portfolio.findOne({ userId, slug: settings.slug });
+    if (existing) {
+      throw new ApiError(409, `A portfolio with slug "${settings.slug}" already exists.`);
+    }
+  }
+
+  const portfolio = await Portfolio.findOneAndUpdate(
+    { userId, slug },
+    settings,
+    { new: true }
+  );
+
+  if (!portfolio) {
+    throw new ApiError(404, `Portfolio "${slug}" not found.`);
+  }
+
+  res.status(200).json({
+    success: true,
+    message: 'Portfolio settings updated successfully.',
+    data: portfolio,
+  });
+}));
+
+/**
+ * DELETE /api/portfolio/:slug
+ * Delete an existing portfolio.
+ */
+router.delete('/:slug', verifyToken, asyncHandler(async (req, res) => {
+  const { slug } = req.params;
+  const userId = req.user.uid;
+
+  assertValidPortfolioSlug(slug);
+
+  const portfolio = await Portfolio.findOneAndDelete({ userId, slug });
+
+  if (!portfolio) {
+    throw new ApiError(404, `Portfolio "${slug}" not found.`);
+  }
+
+  res.status(200).json({
+    success: true,
+    message: 'Portfolio deleted successfully.',
+    data: { slug },
   });
 }));
 
