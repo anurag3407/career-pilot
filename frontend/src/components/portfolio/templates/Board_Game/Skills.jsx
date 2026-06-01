@@ -7,7 +7,7 @@ export default function Skills() {
   return (
     <section 
      id="board-skills"
-    className="py-20 px-6">
+    className=" relative overflow-hidden py-20 px-6">
       <div className="max-w-6xl mx-auto">
 
              {/* Floating Board Tiles */}

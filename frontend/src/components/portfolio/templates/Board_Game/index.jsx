@@ -28,11 +28,7 @@ export default function BoardGame() {
        <div className="fixed top-20 right-20 w-96 h-96 bg-purple-500/10 rounded-full blur-[120px] pointer-events-none" />
        <div className="fixed bottom-20 left-1/3 w-96 h-96 bg-blue-500/10 rounded-full blur-[120px] pointer-events-none" />
        <div className="fixed bottom-20 right-1/4 w-96 h-96 bg-green-500/10 rounded-full blur-[120px] pointer-events-none" />
-      <div className="relative z-10">
-
-      {/* All sections */}
-       </div>
-
+      
       {/* Game Start Screen */}
       <Hero />
       <div className="flex justify-center -mt-8 mb-8">
@@ -40,29 +36,29 @@ export default function BoardGame() {
       </div>
 
       {/* Level 01 */}
-      <section id="board-about">
+      
         <About />
-      </section>
+     
 
       {/* Level 02 */}
-      <section id="board-skills">
+     
         <Skills />
-      </section>
+     
 
       {/* Level 03 */}
-      <section id="board-projects">
+     
         <Projects />
-      </section>
+      
 
       {/* Level 04 */}
-      <section id="board-experience">
+   
         <Experience />
-      </section>
+   
 
       {/* Level 05 */}
-      <section id="board-testimonials">
+
         <Testimonials />
-      </section>
+      
 
       {/* Finish */}
       <div className="flex justify-center py-16">
@@ -82,9 +78,9 @@ export default function BoardGame() {
       </div>
 
       {/* Contact / End Game */}
-      <section id="board-contact">
+      
         <Contact />
-      </section>
+      
 
     </main>
   );

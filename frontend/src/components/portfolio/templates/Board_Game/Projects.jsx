@@ -7,8 +7,8 @@ export default function Projects() {
   return (
     <section 
     id="board-projects"
-    className="py-20 px-6">
-      <div className="max-w-7xl mx-auto">
+    className=" py-20 px-6">
+      <div className=" relative overflow-hidden max-w-7xl mx-auto">
 
               {/* Floating Board Tiles */}
   <div className="absolute inset-0 overflow-hidden pointer-events-none">

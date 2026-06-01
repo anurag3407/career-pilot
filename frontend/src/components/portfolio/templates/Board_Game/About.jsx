@@ -5,7 +5,7 @@ import data from "../../../../data/dummy_data.json";
 
 export default function About() {
   return (
-    <section  className="py-20 px-6  min-h-screen">
+    <section  className=" relative overflow-hidden py-20 px-6  min-h-screen">
       <div className="max-w-6xl mx-auto  bg-slate-900/60 backdrop-blur-md border border-slate-700 rounded-3xl p-8 ">
 
              {/* Floating Board Tiles */}

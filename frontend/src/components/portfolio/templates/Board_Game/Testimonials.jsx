@@ -7,7 +7,7 @@ export default function Testimonials() {
   return (
     <section 
     id="board-testimonials"
-    className="py-20 px-6">
+    className=" relative overflow-hidden py-20 px-6">
       <div className="max-w-6xl mx-auto">
         
         {/* Floating Board Tiles */}

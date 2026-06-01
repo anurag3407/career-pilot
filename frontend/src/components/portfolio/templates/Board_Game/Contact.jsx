@@ -12,9 +12,9 @@ import data from "../../../../data/dummy_data.json";
 
 export default function Contact() {
   return (
-    <section className="py-20 px-6">
+    <section className="  relative overflow-hidden py-20 px-6 "> 
       <div className="max-w-5xl mx-auto">
-        
+
            {/* Floating Board Tiles */}
      <div className="absolute inset-0 overflow-hidden pointer-events-none">
 

@@ -7,9 +7,9 @@ export default function Experience() {
   return (
     <section 
       id="board-experience"
-    className="py-20 px-6">
+    className="relative overflow-hidden py-20 px-6">
       <div className="max-w-6xl mx-auto">
-        
+
               {/* Floating Board Tiles */}
    <div className="absolute inset-0 overflow-hidden pointer-events-none">
 
