@@ -1,4 +1,5 @@
 import axios from 'axios';
+import captchaHandler, { CaptchaCircuitOpenError, CaptchaDetectedError } from './captchaHandler.js';
 
 // List of modern, standard User-Agents to bypass browser fingerprint blocks
 const USER_AGENTS = [
@@ -36,6 +37,7 @@ export class BaseScraper {
             ...options
         };
         this.httpClient = options.httpClient || axios;
+        this.captchaHandler = options.captchaHandler || captchaHandler;
 
         this.defaultHeaders = {
             'Accept': 'text/html,application/xhtml+xml,application/xml;q=0.9,image/avif,image/webp,image/apng,*/*;q=0.8',
@@ -93,6 +95,7 @@ export class BaseScraper {
     async request(url, config = {}) {
         const maxRetries = config.maxRetries ?? this.options.maxRetries;
         const baseDelay = config.delay ?? this.options.delayBetweenRequests;
+        const proxyCandidates = this.captchaHandler.getProxyCandidates(config.proxies ?? this.options.proxies);
         
         const requestConfig = {
             timeout: this.options.timeout,
@@ -103,13 +106,61 @@ export class BaseScraper {
                 ...config.headers
             }
         };
+        const canRotateCaptchaProxy = proxyCandidates.length > 0 && requestConfig.proxy === undefined;
 
         for (let attempt = 1; attempt <= maxRetries; attempt++) {
             try {
+                this.captchaHandler.assertCanAttempt(this.name);
+                const proxyUrl = canRotateCaptchaProxy
+                    ? this.captchaHandler.getProxyForAttempt(proxyCandidates, attempt - 1)
+                    : null;
+                const attemptConfig = { ...requestConfig };
+                if (proxyUrl) {
+                    attemptConfig.proxy = this.captchaHandler.toAxiosProxy(proxyUrl);
+                }
+
                 this.log(`Requesting URL: ${url} (Attempt ${attempt}/${maxRetries})`);
-                const response = await this.httpClient({ url, ...requestConfig });
+                const response = await this.httpClient({ url, ...attemptConfig });
+                const captchaDetection = this.captchaHandler.detectFromResponse(response, { source: this.name, url });
+
+                if (captchaDetection.detected) {
+                    this.captchaHandler.recordCaptcha(this.name, captchaDetection);
+
+                    if (attempt < maxRetries && canRotateCaptchaProxy) {
+                        const backoff = baseDelay * Math.pow(2, attempt - 1);
+                        this.log(`CAPTCHA detected (${captchaDetection.type}). Retrying with rotated proxy in ${backoff}ms...`, 'warn');
+                        await this.sleep(backoff);
+                        continue;
+                    }
+
+                    throw new CaptchaDetectedError('CAPTCHA challenge detected in HTTP scraper response.', captchaDetection);
+                }
+
+                this.captchaHandler.recordSuccess(this.name);
                 return response;
             } catch (error) {
+                if (error instanceof CaptchaCircuitOpenError) {
+                    throw error;
+                }
+
+                const captchaDetection = this.captchaHandler.detectFromError(error, { source: this.name, url });
+                if (captchaDetection.detected) {
+                    if (!(error instanceof CaptchaDetectedError)) {
+                        this.captchaHandler.recordCaptcha(this.name, captchaDetection);
+                    }
+
+                    if (attempt < maxRetries && canRotateCaptchaProxy) {
+                        const backoff = baseDelay * Math.pow(2, attempt - 1);
+                        this.log(`CAPTCHA detected (${captchaDetection.type}). Retrying with rotated proxy in ${backoff}ms...`, 'warn');
+                        await this.sleep(backoff);
+                        continue;
+                    }
+
+                    throw error instanceof CaptchaDetectedError
+                        ? error
+                        : new CaptchaDetectedError('CAPTCHA challenge detected while requesting scraper URL.', captchaDetection);
+                }
+
                 const isRateLimit = error.response?.status === 429;
                 const isNetworkError = !error.response;
                 const isServerError = error.response?.status >= 500;
