@@ -26,7 +26,7 @@ const answerSchema = new mongoose.Schema({
 });
 
 const interviewSchema = new mongoose.Schema({
-    odId: { type: String, required: true, index: true },
+    userId: { type: String, required: true },
     jobRole: { type: String, required: true },
     industry: { type: String, required: true },
     experienceLevel: { type: String, required: true },

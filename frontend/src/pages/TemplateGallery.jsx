@@ -527,6 +527,8 @@ const [hoveredCard, setHoveredCard] = useState(null);
         </div>
       </div>
 
+      </>
+  
       {/* Desert Dunes — sandboxed fixed-nav frame */}
       <div className="mt-12">
         <div className="mb-4 flex items-center gap-3 px-1">
