@@ -1,6 +1,7 @@
 import * as React from "react"
 import { Slot } from "@radix-ui/react-slot"
 import { cva } from "class-variance-authority"
+import { motion } from "framer-motion"
 
 import { cn } from "@/lib/utils"
 
@@ -33,13 +34,26 @@ const buttonVariants = cva(
     },
 )
 
+/**
+ * Custom Button component that wraps a motion button and renders with custom styles.
+ *
+ * @param {object} props - The component props.
+ * @param {string} [props.className] - Extra class name custom styling.
+ * @param {string} [props.variant] - Button variant style (default, destructive, outline, etc.).
+ * @param {string} [props.size] - Button size (default, sm, lg, icon).
+ * @param {boolean} [props.asChild=false] - Whether to render as child component slot.
+ * @returns {React.JSX.Element} The rendered Button component.
+ */
 const Button = React.forwardRef(
     ({ className, variant, size, asChild = false, ...props }, ref) => {
-        const Comp = asChild ? Slot : "button"
+        const Comp = asChild ? Slot : motion.button
         return (
             <Comp
                 className={cn(buttonVariants({ variant, size, className }))}
                 ref={ref}
+                whileHover={{ scale: 1.02 }}
+                whileTap={{ scale: 0.98 }}
+                transition={{ type: "spring", stiffness: 400, damping: 17 }}
                 {...props}
             />
         )
@@ -47,4 +61,4 @@ const Button = React.forwardRef(
 )
 Button.displayName = "Button"
 
-export { Button, buttonVariants }
+export { Button }

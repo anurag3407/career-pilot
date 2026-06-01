@@ -11,16 +11,12 @@ export default function AppLayout({ children, className }) {
         <div className={cn("flex h-screen bg-background overflow-hidden", className)}>
             <AppSidebar />
 
-            {/* Main content area */}
-            <main
-                ref={mainRef}
-                className="flex-1 overflow-y-auto relative"
-            >
+            {/* The main tag below is what the FAB component listens to for scrolling */}
+            <main ref={mainRef} className="flex-1 overflow-y-auto relative">
                 {/* Top bar with notification bell */}
                 <div className="sticky top-0 z-40 flex justify-end items-center px-4 py-2 bg-background/80 backdrop-blur border-b border-border">
                     <NotificationCenter />
                 </div>
-
                 {children}
 
                 <FAB scrollContainerRef={mainRef} />
