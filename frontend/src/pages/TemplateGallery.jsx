@@ -4,6 +4,14 @@ import DeployModal from "../components/portfolio/DeployModal";
 import ThemeSelector from "../components/portfolio/ThemeSelector";
 import { useTheme } from "../hooks/useTheme";
 import { motion, AnimatePresence } from "framer-motion";
+import { Moon, Sun, ChevronDown, Check, Eye, Star } from "lucide-react";
+import HolographicAbout from "../components/portfolio/templates/Holographic/About";
+import CulinaryAbout from "../components/portfolio/templates/Culinary_Restaurant/About";
+import TechStartupHero from "../components/portfolio/templates/Tech_Startup/Hero";
+import ArchitectureBlueprintHero from "../components/portfolio/templates/Architecture_Blueprint/Hero";
+import GeometricShapesAbout from "../components/portfolio/templates/Geometric_Shapes/About";
+import GeometricShapesHero from "../components/portfolio/templates/Geometric_Shapes/Hero";
+import GeometricShapesResumeCTA from "../components/portfolio/templates/Geometric_Shapes/ResumeCTA";
 import { Moon, Sun, ChevronDown, Check, Eye, Star, Sparkles } from "lucide-react";
 import SwissTypography from "../components/portfolio/templates/Swiss_Typography/index";
 import LiquidGlass from "../components/portfolio/templates/Liquid_Glass/index";
@@ -438,6 +446,87 @@ const [hoveredCard, setHoveredCard] = useState(null);
         onDeploySuccess={clearDraft}
       />
 
+      {/* Holographic Theme */}
+      <div className="mt-12">
+        <div className="mb-4 flex items-center gap-3 px-1">
+          <span className="rounded-full bg-cyan-500/20 px-3 py-1 text-xs font-bold uppercase tracking-widest text-cyan-400 border border-cyan-500/30">
+            Preview
+          </span>
+          <h2 className="text-lg font-semibold text-foreground/70">Holographic Theme — About Section</h2>
+        </div>
+        <div className="overflow-hidden rounded-2xl border border-border">
+          <HolographicAbout />
+        </div>
+      </div>
+
+      {/* Geometric Shapes Hero */}
+      <div className="mt-12">
+        <div className="mb-4 flex items-center gap-3 px-1">
+          <span className="rounded-full bg-indigo-500/20 px-3 py-1 text-xs font-bold uppercase tracking-widest text-indigo-400 border border-indigo-500/30">
+            Preview
+          </span>
+          <h2 className="text-lg font-semibold text-foreground/70">Geometric Shapes Theme — Hero Section</h2>
+        </div>
+        <div className="overflow-hidden rounded-2xl border border-border">
+          <GeometricShapesHero />
+        </div>
+      </div>
+
+      {/* Geometric Shapes About */}
+      <div className="mt-12">
+        <div className="mb-4 flex items-center gap-3 px-1">
+          <span className="rounded-full bg-amber-500/20 px-3 py-1 text-xs font-bold uppercase tracking-widest text-amber-400 border border-amber-500/30">
+            Preview
+          </span>
+          <h2 className="text-lg font-semibold text-foreground/70">Geometric Shapes Theme — About Section</h2>
+        </div>
+        <div className="overflow-hidden rounded-2xl border border-border">
+          <GeometricShapesAbout />
+        </div>
+      </div>
+
+      {/* Geometric Shapes ResumeCTA */}
+      <div className="mt-12">
+        <div className="mb-4 flex items-center gap-3 px-1">
+          <span className="rounded-full bg-cyan-500/20 px-3 py-1 text-xs font-bold uppercase tracking-widest text-cyan-400 border border-cyan-500/30">
+            Preview
+          </span>
+
+          <h2 className="text-lg font-semibold text-foreground/70">
+            Geometric Shapes Theme — ResumeCTA Section
+          </h2>
+        </div>
+
+        <div className="overflow-hidden rounded-2xl border border-border">
+          <GeometricShapesResumeCTA />
+        </div>
+      </div>
+
+      {/* Culinary Restaurant */}
+      <div className="mt-12">
+        <div className="mb-4 flex items-center gap-3 px-1">
+          <span className="rounded-full bg-amber-500/20 px-3 py-1 text-xs font-bold uppercase tracking-widest text-amber-400 border border-amber-500/30">
+            Preview
+          </span>
+          <h2 className="text-lg font-semibold text-foreground/70">Culinary Restaurant Theme — About Section</h2>
+        </div>
+        <div className="overflow-hidden rounded-2xl border border-border">
+          <CulinaryAbout />
+        </div>
+      </div>
+
+      {/* Tech Startup */}
+      <div className="mt-12">
+        <div className="mb-4 flex items-center gap-3 px-1">
+          <span className="rounded-full bg-cyan-500/20 px-3 py-1 text-xs font-bold uppercase tracking-widest text-cyan-400 border border-cyan-500/30">
+            Preview
+          </span>
+          <h2 className="text-lg font-semibold text-foreground/70">Tech Startup Theme — Hero Section</h2>
+        </div>
+        <div className="overflow-hidden rounded-2xl border border-cyan-500/20">
+          <TechStartupHero />
+        </div>
+      </div>
       <TemplatePreviewModal
         templateId={previewTemplateId}
         isOpen={!!previewTemplateId}
