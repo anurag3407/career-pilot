@@ -1,4 +1,4 @@
-import React from 'react';
+import React, { useMemo } from 'react';
 import { Github, Linkedin, Mail } from 'lucide-react';
 import dummyData from '../../../../data/dummy_data.json';
 
@@ -32,32 +32,38 @@ export default function NewspaperFront({ portfolioData }) {
   const socials = { ...dummyData.socials, ...portfolioData?.socials };
   
   // Adapt skills array from simple strings to richer objects for the UI
-  let skills = dummyData.skills;
-  if (portfolioData?.skills?.length > 0) {
-    if (typeof portfolioData.skills[0] === 'string') {
-      const categories = ["Core", "Technical", "Additional"];
-      skills = portfolioData.skills.map((s, i) => ({
-        name: s,
-        level: Math.floor(Math.random() * 20) + 75, // Random 75-95%
-        category: categories[i % categories.length]
-      }));
-    } else {
-      skills = portfolioData.skills;
+  const skills = useMemo(() => {
+    let skillsData = dummyData.skills;
+    if (portfolioData?.skills?.length > 0) {
+      if (typeof portfolioData.skills[0] === 'string') {
+        const categories = ["Core", "Technical", "Additional"];
+        skillsData = portfolioData.skills.map((s, i) => ({
+          name: s,
+          level: Math.floor(Math.random() * 20) + 75, // Random 75-95%
+          category: categories[i % categories.length]
+        }));
+      } else {
+        skillsData = portfolioData.skills;
+      }
     }
-  }
+    return skillsData;
+  }, [portfolioData?.skills]);
 
   // Adapt projects to ensure they have images and URLs
-  let projects = dummyData.projects;
-  if (portfolioData?.projects?.length > 0) {
-    projects = portfolioData.projects.map((p, i) => ({
-      title: p.title || p.name || 'Project',
-      description: p.description || '',
-      techStack: p.technologies || p.techStack || [],
-      image: p.image || dummyData.projects[i % dummyData.projects.length].image,
-      liveUrl: p.liveUrl || "#",
-      githubUrl: p.githubUrl || "#"
-    }));
-  }
+  const projects = useMemo(() => {
+    let projectsData = dummyData.projects;
+    if (portfolioData?.projects?.length > 0) {
+      projectsData = portfolioData.projects.map((p, i) => ({
+        title: p.title || p.name || 'Project',
+        description: p.description || '',
+        techStack: p.technologies || p.techStack || [],
+        image: p.image || dummyData.projects[i % dummyData.projects.length].image,
+        liveUrl: p.liveUrl || "#",
+        githubUrl: p.githubUrl || "#"
+      }));
+    }
+    return projectsData;
+  }, [portfolioData?.projects]);
 
   const experience = portfolioData?.experience?.length > 0 ? portfolioData.experience : dummyData.experience;
   const testimonials = portfolioData?.testimonials?.length > 0 ? portfolioData.testimonials : dummyData.testimonials;
