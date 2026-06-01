@@ -3,6 +3,7 @@
 <head>
   <meta charset="UTF-8">
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <meta name="description" content="{{portfolio.owner.bio}}">
   <title>{{portfolio.title}}</title>
 
   <!-- Google Fonts: Space Grotesk (headings) + Inter (body) -->
@@ -45,7 +46,7 @@
          HERO SECTION
          {{portfolio.owner.name}}     - Full name
          {{portfolio.owner.avatar}}   - Profile picture URL
-         {{portfolio.owner.bio}}      - Short bio
+         {{portfolio.owner.tagline}}  - Short tagline (optional)
          {{portfolio.owner.location}} - Location
          ====================== -->
     <section class="hero" id="hero">
@@ -59,8 +60,8 @@
             >
           {{/if}}
           <h1 class="hero__name">{{portfolio.owner.name}}</h1>
-          {{#if portfolio.owner.bio}}
-            <p class="hero__bio">{{portfolio.owner.bio}}</p>
+          {{#if portfolio.owner.tagline}}
+            <p class="hero__bio">{{portfolio.owner.tagline}}</p>
           {{/if}}
           {{#if portfolio.owner.location}}
             <p class="hero__location">
@@ -188,7 +189,7 @@
 
     <!-- ======================
          SKILLS SECTION
-         Skill chips driven by script.js PORTFOLIO.skills array
+         Skill chips driven by script.js SKILLS array
          ====================== -->
     <section class="skills section" id="skills">
       <div class="container">
