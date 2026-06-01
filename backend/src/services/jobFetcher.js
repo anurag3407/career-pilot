@@ -160,10 +160,45 @@ export const bulkUpsertJobs = async (fetchedJobs, JobModel, onNewJobs) => {
         .map(job => ({ ...job, _id: existingMap.get(job.externalId)?._id }))
         .filter(j => j._id != null);
 };
+/**
+ * Filter out jobs that have already been sent to this user for this alert.
+ *
+ * @param {string} userId
+ * @param {string} alertId
+ * @param {object[]} jobs
+ * @returns {Promise<object[]>}
+ */
+const filterUnsentJobsForUser = async (userId, alertId, jobs) => {
+    if (!userId || !alertId || !Array.isArray(jobs) || jobs.length === 0) {
+        return [];
+    }
 
+    const jobIds = jobs
+        .map(job => job._id)
+        .filter(Boolean);
+
+    if (jobIds.length === 0) {
+        return jobs;
+    }
+
+    const sentLogs = await NotificationLog.find({
+        userId,
+        alertId,
+        jobListingId: { $in: jobIds }
+    })
+        .select('jobListingId')
+        .lean();
+
+    const sentJobIds = new Set(
+        sentLogs.map(log => String(log.jobListingId))
+    );
+
+    return jobs.filter(job => !sentJobIds.has(String(job._id)));
+};
 /**
  * Process a single job alert - fetch jobs and send notifications
  */
+
 export const processAlert = async (alertData) => {
     const { alertId, userId, userEmail, userName, title, keywords, location, remoteOnly, employmentType } = alertData;
 
@@ -255,11 +290,17 @@ export const processAlert = async (alertData) => {
             );
             console.log(`💾 Cached and synced ${newDocs.length} new job(s) to Firebase`);
         });
+        const unsentJobs = await filterUnsentJobsForUser(userId, alertId, jobsToSend);
+        console.log(`📧 Sending ${unsentJobs.length} new jobs to user after deduplication`);
 
-        console.log(`📧 Sending ${jobsToSend.length} jobs to user (deduplication DISABLED)`);
+        if (jobsToSend.length > 0 && unsentJobs.length === 0) {
+            console.log('📭 No new jobs to email after deduplication');
+            await JobAlert.findByIdAndUpdate(alertId, { lastCheckedAt: new Date() });
+            return { success: true, newJobs: 0, skipped: true };
+        }
 
         // Always send email if there are jobs
-        if (jobsToSend.length > 0) {
+        if (unsentJobs.length > 0) {
             try {
                 // Use the current email from the database to ensure accuracy
                 const recipientEmail = currentEmail;
@@ -271,15 +312,15 @@ export const processAlert = async (alertData) => {
                 console.log(`📬 To: ${recipientEmail}`);
                 console.log(`👤 Name: ${recipientName}`);
                 console.log(`🎯 Alert: "${title}"`);
-                console.log(`📊 Jobs Count: ${jobsToSend.length}`);
+                console.log(`📊 Jobs Count: ${unsentJobs.length}`);
                 console.log(`${'='.repeat(60)}\n`);
 
                 // Emit socket event to user about new jobs found
                 emitNewJobsFound(userId, {
                     alertId,
                     alertTitle: title,
-                    jobCount: jobsToSend.length,
-                    jobs: jobsToSend.map(job => ({
+                    jobCount: unsentJobs.length,
+                    jobs: unsentJobs.map(job => ({
                         title: job.title,
                         company: job.company,
                         location: job.location,
@@ -292,7 +333,7 @@ export const processAlert = async (alertData) => {
                     userEmail: recipientEmail,
                     userName: recipientName,
                     alertTitle: title,
-                    jobs: jobsToSend
+                    jobs: unsentJobs
                 });
                 console.log(`✅ Email service call completed!`);
 
@@ -300,20 +341,20 @@ export const processAlert = async (alertData) => {
                 console.log(`✅✅✅ EMAIL SENT SUCCESSFULLY! ✅✅✅`);
                 console.log(`📧 Message ID: ${emailResult.messageId}`);
                 console.log(`📬 Recipient: ${recipientEmail}`);
-                console.log(`📊 Jobs Sent: ${jobsToSend.length}`);
+                console.log(`📊 Jobs Sent: ${unsentJobs.length}`);
                 console.log(`${'🎉'.repeat(30)}\n`);
 
                 // Emit socket event confirming email was sent
                 emitEmailSent(userId, {
                     alertId,
                     alertTitle: title,
-                    jobCount: jobsToSend.length,
+                    jobCount: unsentJobs.length,
                     recipientEmail,
                     messageId: emailResult.messageId
                 });
 
                 // Log all notifications
-                const notificationPromises = jobsToSend.map(async job => {
+                const notificationPromises = unsentJobs.map(async job => {
                     try {
                         const notification = await NotificationLog.create({
                             userId,
@@ -347,12 +388,12 @@ export const processAlert = async (alertData) => {
                 await JobAlert.findByIdAndUpdate(alertId, {
                     lastCheckedAt: new Date(),
                     $inc: {
-                        totalJobsFound: jobsToSend.length,
+                        totalJobsFound: unsentJobs.length,
                         totalEmailsSent: 1
                     }
                 });
 
-                console.log(`✉️ Email sent with ${jobsToSend.length} jobs`);
+                console.log(`✉️ Email sent with ${unsentJobs.length} jobs`);
                 consecutiveFailures = 0; // Reset on success
 
             } catch (emailError) {
@@ -366,7 +407,7 @@ export const processAlert = async (alertData) => {
                 });
 
                 // Log failed notifications
-                await Promise.all(jobsToSend.map(job =>
+                await Promise.all(unsentJobs.map(job =>
                     NotificationLog.create({
                         userId,
                         alertId,
@@ -379,7 +420,7 @@ export const processAlert = async (alertData) => {
             }
         }
 
-        return { success: true, newJobs: jobsToSend.length };
+        return { success: true, newJobs: unsentJobs.length };
 
     } catch (error) {
         console.error(`❌ Error processing alert ${alertId}:`, error.message);
