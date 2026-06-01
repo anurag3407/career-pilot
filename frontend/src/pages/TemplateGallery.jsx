@@ -618,6 +618,60 @@ const [hoveredCard, setHoveredCard] = useState(null);
           <SwissTypography portfolioData={aiDraft} />
         </div>
       </div>
+      {/* Psychedelic Swirl Theme */}
+      <div className="mt-12">
+        <div className="mb-4 flex items-center gap-3 px-1">
+          <span className="rounded-full bg-fuchsia-500/20 px-3 py-1 text-xs font-bold uppercase tracking-widest text-fuchsia-400 border border-fuchsia-500/30">
+            ✿ Psychedelic Swirl
+          </span>
+          <h2 className="text-lg font-semibold text-foreground/70">
+            Psychedelic Swirl — Retro / Nostalgic Full Template
+          </h2>
+        </div>
+        <div
+          className="rounded-2xl border border-fuchsia-500/20"
+          style={{ height: 640, overflowY: "auto", overflowX: "hidden", transform: "translate(0)", position: "relative" }}
+        >
+          <PsychedelicSwirl />
+        </div>
+      </div>
+
+      {/* Desert Dunes Theme */}
+      <div className="mt-12">
+        <div className="mb-4 flex items-center gap-3 px-1">
+          <span className="rounded-full bg-amber-500/20 px-3 py-1 text-xs font-bold uppercase tracking-widest text-amber-400 border border-amber-500/30">
+            🏜 Desert Dunes
+          </span>
+          <h2 className="text-lg font-semibold text-foreground/70">
+            Desert Dunes — Nature / Organic Full Template
+          </h2>
+        </div>
+        <div
+          className="rounded-2xl border border-amber-500/20"
+          style={{ height: 640, overflowY: "auto", overflowX: "hidden", transform: "translate(0)", position: "relative" }}
+        >
+          <DesertDunes />
+        </div>
+      </div>
+
+      {/* Memphis Pop Theme */}
+      <div className="mt-12">
+        <div className="mb-4 flex items-center gap-3 px-1">
+          <span className="rounded-full bg-yellow-500/20 px-3 py-1 text-xs font-bold uppercase tracking-widest text-yellow-400 border border-yellow-500/30">
+            ★ Memphis Pop
+          </span>
+          <h2 className="text-lg font-semibold text-foreground/70">
+            Memphis Pop — Retro / Nostalgic Full Template
+          </h2>
+        </div>
+        <div
+          className="rounded-2xl border border-yellow-500/20"
+          style={{ height: 640, overflowY: "auto", overflowX: "hidden", transform: "translate(0)", position: "relative" }}
+        >
+          <MemphisPop />
+        </div>
+      </div>
+
       {/* Cherry Blossom Theme */}
       <div className="mt-12">
         <div className="mb-4 flex items-center gap-3 px-1">
