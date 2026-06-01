@@ -177,7 +177,8 @@ export const templates = [
     "views": 1014,
     "rating": 4.5,
     "image": "/template-previews/Board_Game.png",
-    "createdAt": "2026-05-01"
+    "createdAt": "2026-05-01",
+     "isComplete": true,
   },
   {
     "id": "Boarding_Pass",
