@@ -175,7 +175,7 @@ const features = [
 
 export default function FeaturesSection() {
   return (
-    <div className="relative z-20 py-20 lg:py-32 max-w-7xl mx-auto">
+    <div className="relative py-20 lg:py-32 max-w-7xl mx-auto">
       <div className="px-8">
         <motion.h2
           initial={{ opacity: 0, y: 20 }}
@@ -202,7 +202,7 @@ export default function FeaturesSection() {
         </motion.p>
       </div>
 
-      <div className="relative mt-12">
+      <div className="relative mt-12 ">
         <div className="grid grid-cols-1 lg:grid-cols-6 border rounded-[2.5rem] border-border bg-card/50 backdrop-blur-xl overflow-hidden shadow-2xl">
           {features.map((feature, index) => (
             <FeatureCard key={feature.title} className={feature.className} index={index}>

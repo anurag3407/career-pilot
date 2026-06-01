@@ -196,6 +196,29 @@ export default function JobSearch() {
       toast.error('Failed to save job')
     }
   }
+  const saveRecentlyViewedJob = (job) => {
+  const recentJobs =
+    JSON.parse(localStorage.getItem('recentJobs')) || [];
+
+  const filteredJobs = recentJobs.filter(
+    (item) =>
+      (item.job_id || item.id) !==
+      (job.job_id || job.id)
+  );
+
+  const updatedJobs = [
+    {
+      ...job,
+      viewedAt: new Date().toISOString(),
+    },
+    ...filteredJobs,
+  ].slice(0, 15);
+
+  localStorage.setItem(
+    'recentJobs',
+    JSON.stringify(updatedJobs)
+  );
+};
 
   const formatSalary = (job) => {
     if (job.job_min_salary && job.job_max_salary) {
@@ -564,11 +587,12 @@ className="w-full pl-12 pr-10 py-4 bg-muted/50 border border-border rounded-xl t
                     {/* Apply Button */}
                     <div className="flex justify-end mt-4 pt-4 border-t border-border">
                       <a
-                        href={job.job_apply_link || job.applyLink}
-                        target="_blank"
-                        rel="noopener noreferrer"
-                        className="inline-flex items-center gap-2 px-6 py-2.5 bg-card hover:bg-muted/20 text-foreground rounded-lg font-medium transition-colors cursor-pointer"
-                      >
+  href={job.job_apply_link || job.applyLink}
+  onClick={() => saveRecentlyViewedJob(job)}
+  target="_blank"
+  rel="noopener noreferrer"
+  className="inline-flex items-center gap-2 px-6 py-2.5 bg-card hover:bg-muted/20 text-foreground rounded-lg font-medium transition-colors"
+>
                         Apply Now
                         <ExternalLink className="w-4 h-4" />
                       </a>
