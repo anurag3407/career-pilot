@@ -14,6 +14,8 @@ const portfolioSchema = new mongoose.Schema(
     customCss: { type: String, default: '' },
     customHeadTags: { type: String, default: '' },
     sections: { type: mongoose.Schema.Types.Mixed, default: {} },
+    deployedUrl: { type: String },
+    projectName: { type: String },
   },
   { timestamps: true }
 );
