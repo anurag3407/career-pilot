@@ -71,7 +71,7 @@ export const createEmailLog = async ({ recipientEmail, campaignId = null }) => {
 export const buildTrackingPixelTag = (trackingToken, baseUrl) => {
     const pixelUrl = `${baseUrl}/api/email-tracking/open/${trackingToken}`;
     // height/width and alt kept intentionally minimal so mail clients render it
-    return `<img alt=" " src="${pixelUrl}" width="1" height="1" alt="" style="display:none;" />`;
+    return `<img alt=" " src="${pixelUrl}" width="1" height="1" alt="" style="display:none;" alt = "career-pilot logo" />`;
 };
 
 /**
