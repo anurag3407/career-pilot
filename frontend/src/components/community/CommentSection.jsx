@@ -36,7 +36,7 @@ function CommentItem({ comment, currentUser, onReply, onLike, depth = 0 }) {
       await onReply(comment.id, replyContent.trim());
       setReplyContent('');
       setIsReplying(false);
-    } catch (error) {
+    } catch {
       toast.error('Failed to post reply');
     } finally {
       setIsSubmitting(false);

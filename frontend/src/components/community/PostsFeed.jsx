@@ -247,7 +247,7 @@ const handleCreatePost = async (postData) => {
     try {
       // Call API in background - socket will confirm the update
       await communityApi.toggleLikePost(postId);
-    } catch (error) {
+    } catch {
       // Revert on error - toggle back
       setPosts(prev => prev.map(post => {
         const pId = post.id || post._id;

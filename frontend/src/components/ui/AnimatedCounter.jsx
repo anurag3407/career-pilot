@@ -1,9 +1,5 @@
-import { useEffect, useRef, useState } from "react";
+import { useEffect, useRef, useCallback } from "react";
 
-/**
- * Parses a stat string like "10K+", "95%", "2.5x", "50K+"
- * Returns { numeric: number, suffix: string }
- */
 function parseStat(value) {
   if (value === undefined || value === null) return { numeric: null, suffix: "" };
   const strValue = String(value);
@@ -12,44 +8,35 @@ function parseStat(value) {
   return { numeric: parseFloat(match[1]), suffix: match[2] };
 }
 
-/**
- * Easing function: ease-out cubic for natural deceleration
- */
 function easeOutCubic(t) {
   return 1 - Math.pow(1 - t, 3);
 }
 
-/**
- * AnimatedCounter
- * Props:
- *   value (string|number) — the stat string, e.g. "10K+", "95%", "2.5x"
- *   duration (number)      — animation duration in ms, default 2000
- */
 export default function AnimatedCounter({ value, duration = 2000 }) {
-  const [display, setDisplay] = useState("0");
-  const [, setTrigger] = useState(0); // Dummy state to force re-render if needed, but not used here
-  const ref = useRef(null);
+  const spanRef = useRef(null);
   const rafId = useRef(null);
-  const hasAnimatedRef = useRef(false);
 
   const { numeric, suffix } = parseStat(value);
 
-  // Reset animation state when the target value changes
-  useEffect(() => {
-    hasAnimatedRef.current = false;
-    setDisplay("0");
-  }, [value]);
+  const setText = useCallback((text) => {
+    if (spanRef.current) {
+      spanRef.current.textContent = text;
+    }
+  }, []);
 
   useEffect(() => {
-    if (numeric === null || hasAnimatedRef.current) {
-      if (numeric === null) setDisplay(String(value));
+    if (numeric === null) {
+      setText(String(value));
       return;
     }
 
+    setText("0");
+
+    if (rafId.current) cancelAnimationFrame(rafId.current);
+
     const observer = new IntersectionObserver(
       ([entry]) => {
-        if (entry.isIntersecting && !hasAnimatedRef.current) {
-          hasAnimatedRef.current = true;
+        if (entry.isIntersecting) {
           observer.disconnect();
 
           const startTime = performance.now();
@@ -62,14 +49,14 @@ export default function AnimatedCounter({ value, duration = 2000 }) {
             const easedProgress = easeOutCubic(progress);
             const current = easedProgress * numeric;
 
-            setDisplay(
-              isDecimal ? current.toFixed(1) : Math.floor(current).toString()
+            setText(
+              `${isDecimal ? current.toFixed(1) : Math.floor(current).toString()}${suffix}`
             );
 
             if (progress < 1) {
               rafId.current = requestAnimationFrame(step);
             } else {
-              setDisplay(isDecimal ? numeric.toFixed(1) : numeric.toString());
+              setText(`${isDecimal ? numeric.toFixed(1) : numeric.toString()}${suffix}`);
             }
           }
 
@@ -79,21 +66,13 @@ export default function AnimatedCounter({ value, duration = 2000 }) {
       { threshold: 0.3 }
     );
 
-    if (ref.current) observer.observe(ref.current);
-    
+    if (spanRef.current) observer.observe(spanRef.current);
+
     return () => {
       observer.disconnect();
       if (rafId.current) cancelAnimationFrame(rafId.current);
     };
-  }, [numeric, duration, value]);
+  }, [numeric, duration, value, suffix, setText]);
 
-
-  if (numeric === null) return <span ref={ref}>{String(value)}</span>;
-
-  return (
-    <span ref={ref}>
-      {display}
-      {suffix}
-    </span>
-  );
+  return <span ref={spanRef} />;
 }

@@ -256,29 +256,38 @@ app.use((req, res) => {
   res.status(404).json({ error: 'Route not found' });
 });
 app.use(globalErrorHandler);
+
 const startServer = async () => {
+  let dbConnected = false;
   try {
     await connectDB();
+    dbConnected = true;
+    console.log('📦 MongoDB connected successfully.');
+  } catch (error) {
+    console.error('❌ MongoDB Connection Failed:', error.message);
+    console.info('ℹ️ Running server in offline/mock-database mode for local testing.');
+  }
 
-    httpServer.listen(PORT, () => {
-      console.log(`🚀 Server running on port ${PORT}`);
-      console.log(`📍 Environment: ${process.env.NODE_ENV || 'development'}`);
-      console.log(`🔗 Frontend URL: ${process.env.FRONTEND_URL || 'http://localhost:5173'}`);
-    });
+  httpServer.listen(PORT, () => {
+    console.log(`🚀 Server running on port ${PORT}`);
+    console.log(`📍 Environment: ${process.env.NODE_ENV || 'development'}`);
+    console.log(`🔗 Frontend URL: ${process.env.FRONTEND_URL || 'http://localhost:5173'}`);
+  });
 
-    try {
-      await initializeDefaultChannels();
-      console.log('💬 Community channels initialized');
-    } catch (channelError) {
-      console.warn('⚠️ Could not initialize default channels:', channelError.message);
-    }
+  try {
+    await initializeDefaultChannels();
+    console.log('💬 Community channels initialized');
+  } catch (channelError) {
+    console.warn('⚠️ Could not initialize default channels:', channelError.message);
+  }
 
-    try {
-      await initializePostScheduler();
-    } catch (schedulerError) {
-      console.warn('⚠️ Post scheduler initialization skipped:', schedulerError.message);
-    }
+  try {
+    await initializePostScheduler();
+  } catch (schedulerError) {
+    console.warn('⚠️ Post scheduler initialization skipped:', schedulerError.message);
+  }
 
+  if (dbConnected) {
     const allowDevDbMutations = process.env.ALLOW_DEV_DB_MUTATIONS === 'true';
     if (process.env.NODE_ENV === 'development' && allowDevDbMutations) {
       try {
@@ -298,8 +307,11 @@ const startServer = async () => {
     } else if (process.env.NODE_ENV === 'development' && !allowDevDbMutations) {
       console.info('ℹ️ Skipping dev alert email update (ALLOW_DEV_DB_MUTATIONS is not true)');
     }
+  } else {
+    console.info('ℹ️ Skipping dev alert email update (MongoDB not connected)');
+  }
 
-    initializeSocket(httpServer);
+  initializeSocket(httpServer);
 
     try {
       await initJobFetcher();
@@ -322,9 +334,13 @@ const startServer = async () => {
       );
     }
 
-  } catch (error) {
-    console.error('❌ Failed to start server:', error.message);
-    process.exit(1);
+  try {
+    scheduleWeeklyDigest();
+  } catch (digestError) {
+    console.warn(
+      '⚠️ Weekly digest scheduler initialization skipped:',
+      digestError.message
+    );
   }
 };
 

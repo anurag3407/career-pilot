@@ -39,10 +39,12 @@ export default function FAB({ scrollContainerRef }) {
       if (!mainContainer) return;
 
       const currentScrollY = mainContainer.scrollTop;
+      const shouldHide = currentScrollY >= lastScrollY && currentScrollY >= 100;
 
-      setIsVisible(
-        currentScrollY < lastScrollY || currentScrollY < 100
-      );
+      if (shouldHide) {
+        setIsOpen(false);
+      }
+      setIsVisible(!shouldHide);
 
       lastScrollY = currentScrollY;
     };
@@ -53,13 +55,6 @@ export default function FAB({ scrollContainerRef }) {
       mainContainer?.removeEventListener("scroll", handleScroll);
     };
   }, [scrollContainerRef]);
-
-  // Close menu when FAB becomes hidden
-  useEffect(() => {
-    if (!isVisible && isOpen) {
-      setIsOpen(false);
-    }
-  }, [isVisible, isOpen]);
 
   // Escape key closes menu
   useEffect(() => {
