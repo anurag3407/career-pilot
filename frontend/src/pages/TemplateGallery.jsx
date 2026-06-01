@@ -10,6 +10,10 @@ import LiquidGlass from "../components/portfolio/templates/Liquid_Glass/index";
 import MidnightGradient from "../components/portfolio/templates/Midnight_Gradient/index";
 import PlayingCardsPortfolio from "../components/portfolio/templates/Playing_Cards";
 import CherryBlossom from "../components/portfolio/templates/Cherry_Blossom/index";
+import PsychedelicSwirl from "../components/portfolio/templates/Psychedelic_Swirl/index";
+import DesertDunes from "../components/portfolio/templates/Desert_Dunes/index";
+import MemphisPop from "../components/portfolio/templates/Memphis_Pop/index";
+import CassetteMixtape from "../components/portfolio/templates/Cassette_Mixtape/index";
 import Navbar from '../components/Navbar'
 import { X } from "lucide-react";
 import { useSearchParams } from "react-router-dom";
@@ -99,11 +103,7 @@ function FilterSelect({ value, onChange, options, className = "" }) {
 const TemplateHeroPreview = ({ templateId, portfolioData }) => {
   const Component = useMemo(() => {
     if (!templateId) return null;
-    return React.lazy(() => 
-      import(`../components/portfolio/templates/${templateId}/Hero.jsx`).catch(() => 
-        import(`../components/portfolio/templates/${templateId}/index.jsx`)
-      )
-    );
+    return React.lazy(() => import(`../components/portfolio/templates/${templateId}/index.jsx`));
   }, [templateId]);
 
   if (!templateId) return null;
@@ -224,11 +224,7 @@ function TemplateCard({ template, hovered, onHover, onLeave, onUse, aiDraft }) {
 const TemplatePreviewModal = ({ templateId, isOpen, onClose, portfolioData }) => {
   const Component = useMemo(() => {
     if (!templateId) return null;
-    return React.lazy(() => 
-      import(`../components/portfolio/templates/${templateId}/Hero.jsx`).catch(() => 
-        import(`../components/portfolio/templates/${templateId}/index.jsx`)
-      )
-    );
+    return React.lazy(() => import(`../components/portfolio/templates/${templateId}/index.jsx`));
   }, [templateId]);
 
   if (!isOpen || !templateId) return null;
@@ -266,10 +262,10 @@ const TemplatePreviewModal = ({ templateId, isOpen, onClose, portfolioData }) =>
 };
 
 export default function TemplateGallery() {
-  const { theme, toggleTheme } = useTheme();
-  const [searchParams, setSearchParams] = useSearchParams();
-  const previewTemplateId = searchParams.get("preview");
-  const [hoveredCard, setHoveredCard] = useState(null);
+const { theme, toggleTheme } = useTheme();
+const [searchParams, setSearchParams] = useSearchParams();
+const previewTemplateId = searchParams.get("preview");
+const [hoveredCard, setHoveredCard] = useState(null);
 
   const [category, setCategory] = useState("All");
   const [colorScheme, setColorScheme] = useState("All");
@@ -419,16 +415,16 @@ export default function TemplateGallery() {
       ) : (
         <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 xl:grid-cols-4 gap-6">
           {sortedTemplates.map((template) => (
-            <TemplateCard
-              key={template.id}
-              template={template}
-              hovered={hoveredCard === template.id}
-              onHover={setHoveredCard}
-              onLeave={() => setHoveredCard(null)}
-              onUse={handleUseTemplate}
-              aiDraft={aiDraft}
-            />
-          ))}
+<TemplateCard
+  key={template.id}
+  template={template}
+  hovered={hoveredCard === template.id}
+  onHover={setHoveredCard}
+  onLeave={() => setHoveredCard(null)}
+  onUse={handleUseTemplate}
+  aiDraft={aiDraft}
+/>
+ ))}
         </div>
       )}
 
@@ -453,8 +449,6 @@ export default function TemplateGallery() {
         }}
         portfolioData={aiDraft}
       />
-
-
 
       {/* Liquid Glass */}
       <div className="mt-12">
@@ -508,7 +502,7 @@ export default function TemplateGallery() {
       <div className="mt-12">
         <div className="mb-4 flex items-center gap-3 px-1">
           <span className="rounded-full bg-rose-500/20 px-3 py-1 text-xs font-bold uppercase tracking-widest text-rose-400 border border-rose-500/30">
-            🌸 NEW — Cherry Blossom
+            🌸 Cherry Blossom
           </span>
           <h2 className="text-lg font-semibold text-foreground/70">Cherry Blossom Theme — Digital Spring</h2>
         </div>
@@ -516,9 +510,65 @@ export default function TemplateGallery() {
           <CherryBlossom portfolioData={aiDraft} />
         </div>
       </div>
-      
+
+      {/* Psychedelic Swirl — sandboxed fixed-nav frame */}
+      <div className="mt-12">
+        <div className="mb-4 flex items-center gap-3 px-1">
+          <span className="rounded-full bg-fuchsia-500/20 px-3 py-1 text-xs font-bold uppercase tracking-widest text-fuchsia-400 border border-fuchsia-500/30">
+            ✿ Psychedelic Swirl
+          </span>
+          <h2 className="text-lg font-semibold text-foreground/70">Psychedelic Swirl — Retro / Nostalgic Full Template</h2>
+        </div>
+        <div className="rounded-2xl border border-fuchsia-500/20"
+          style={{ height: 640, overflowY: "auto", overflowX: "hidden", transform: "translate(0)", position: "relative" }}>
+          <PsychedelicSwirl />
+        </div>
+      </div>
+
+      {/* Desert Dunes — sandboxed fixed-nav frame */}
+      <div className="mt-12">
+        <div className="mb-4 flex items-center gap-3 px-1">
+          <span className="rounded-full bg-amber-500/20 px-3 py-1 text-xs font-bold uppercase tracking-widest text-amber-400 border border-amber-500/30">
+            🏜 Desert Dunes
+          </span>
+          <h2 className="text-lg font-semibold text-foreground/70">Desert Dunes — Nature / Organic Full Template</h2>
+        </div>
+        <div className="rounded-2xl border border-amber-500/20"
+          style={{ height: 640, overflowY: "auto", overflowX: "hidden", transform: "translate(0)", position: "relative" }}>
+          <DesertDunes />
+        </div>
+      </div>
+
+      {/* Memphis Pop — sandboxed fixed-nav frame */}
+      <div className="mt-12">
+        <div className="mb-4 flex items-center gap-3 px-1">
+          <span className="rounded-full bg-yellow-500/20 px-3 py-1 text-xs font-bold uppercase tracking-widest text-yellow-400 border border-yellow-500/30">
+            ★ Memphis Pop
+          </span>
+          <h2 className="text-lg font-semibold text-foreground/70">Memphis Pop — Retro / Nostalgic Full Template</h2>
+        </div>
+        <div className="rounded-2xl border border-yellow-500/20"
+          style={{ height: 640, overflowY: "auto", overflowX: "hidden", transform: "translate(0)", position: "relative" }}>
+          <MemphisPop />
+        </div>
+      </div>
+
+      {/* Cassette Mixtape — sandboxed fixed-nav frame */}
+      <div className="mt-12">
+        <div className="mb-4 flex items-center gap-3 px-1">
+          <span className="rounded-full bg-orange-500/20 px-3 py-1 text-xs font-bold uppercase tracking-widest text-orange-400 border border-orange-500/30">
+            ▶ Cassette Mixtape
+          </span>
+          <h2 className="text-lg font-semibold text-foreground/70">Cassette Mixtape — Retro / Nostalgic Full Template</h2>
+        </div>
+        <div className="rounded-2xl border border-orange-500/20"
+          style={{ height: 640, overflowY: "auto", overflowX: "hidden", transform: "translate(0)", position: "relative" }}>
+          <CassetteMixtape />
+        </div>
+      </div>
+
     </div>
-    
+
     </div>
   );
 }

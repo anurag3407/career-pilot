@@ -26,7 +26,7 @@ const projectAnalysisSchema = new mongoose.Schema({
   moduleGraph: { nodes: mongoose.Schema.Types.Mixed, edges: mongoose.Schema.Types.Mixed },
   risks: [{
     file: String,
-    type: String,
+    type: { type: String },
     severity: { type: String, enum: ['low', 'medium', 'high', 'critical'] },
     description: String,
   }],

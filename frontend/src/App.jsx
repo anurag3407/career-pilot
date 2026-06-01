@@ -21,6 +21,7 @@ import CommandPalette from './components/CommandPalette';
 import BackToTop from './components/BackToTop';
 import Home from './pages/Home';
 const Dashboard = lazy(() => import('./pages/Dashboard'));
+const Analytics = lazy(() => import('./pages/Analytics'));
 const JobSearch = lazy(() => import('./pages/JobSearch'));
 const ResumeBuilder = lazy(() => import('./pages/ResumeBuilder'));
 import TextToResume from './pages/TextToResume';
@@ -73,24 +74,6 @@ import { NotFound } from './pages';
 const PrivacyPolicy = lazy(() => import('./pages/PrivacyPolicy'));
 const TermsOfService = lazy(() => import('./pages/TermsOfService'));
 const CookiePolicy = lazy(() => import('./pages/CookiePolicy'));
-import InterviewPrep from './pages/InterviewPrep';
-import UserProfile from './pages/UserProfile';
-import EmailGenerator from './pages/EmailGenerator';
-import LinkedInOptimizer from './pages/LinkedInOptimizer';
-import FellowshipLayout from './pages/fellowship/FellowshipLayout';
-import Onboarding from './pages/fellowship/Onboarding';
-import Challenges from './pages/fellowship/Challenges';
-import Settings from './pages/Settings';
-import ChallengeDetail from './pages/fellowship/ChallengeDetail';
-import CreateChallenge from './pages/fellowship/CreateChallenge';
-import MyProposals from './pages/fellowship/MyProposals';
-import MyChallenges from './pages/fellowship/MyChallenges';
-import ChallengeProposals from './pages/fellowship/ChallengeProposals';
-import Verify from './pages/fellowship/Verify';
-import FellowshipMessages from './pages/fellowship/FellowshipMessages';
-import FellowshipChat from './pages/fellowship/FellowshipChat';
-import SecuritySettings from './pages/SecuritySettings';
-import LinkedInCallback from './pages/LinkedInCallback';
 
 
 import LegalPageErrorBoundary from './components/LegalPageErrorBoundary';
@@ -99,13 +82,16 @@ import RouteErrorBoundary from './components/RouteErrorBoundary';
 
 // Hub Imports
 const GitHubDashboard = lazy(() => import('./pages/GitHubDashboard'));
+const RepoAnalyzerLanding = lazy(() => import('./pages/RepoAnalyzer/Landing'));
+const RepoAnalyzerDashboard = lazy(() => import('./pages/RepoAnalyzer/Dashboard'));
+const RepoAnalyzerWorkspace = lazy(() => import('./pages/RepoAnalyzer/Workspace'));
+const ProjectVisualizerLanding = lazy(() => import('./pages/ProjectVisualizer/Landing'));
+const ProjectVisualizerDashboard = lazy(() => import('./pages/ProjectVisualizer/Dashboard'));
 import ScrollToTop from "./components/ScrollToTop";
 import NorthernFjords from './components/portfolio/templates/Northern_Fjords';
 import RainforestCanopy from './components/portfolio/templates/Rainforest_Canopy/index.jsx';
 import Hero from './components/portfolio/templates/Magazine_Editorial/Hero';
 import TestSocialLinks from './pages/TestSocialLinks';
-
-import RainforestCanopy from './components/portfolio/templates/Rainforest_Canopy/index.jsx';
 
 function LoadingScreen({ label }) {
   return (
@@ -252,6 +238,7 @@ function AppRoutes() {
         {/* <Route path="/templates/day-night-cycle" element={<DayNightCycle />} /> */}
         <Route path="/templates/rainforest-canopy" element={<RainforestCanopy />} />
         <Route path="/templates/northern-fjords" element={<NorthernFjords />} />
+        
         {/* Core Protected Routes */}
         <Route 
   path="/dashboard" 
@@ -259,6 +246,16 @@ function AppRoutes() {
     <ProtectedRoute>
       <Suspense fallback={<LoadingScreen label="Loading Dashboard..." />}>
         <Dashboard />
+      </Suspense>
+    </ProtectedRoute>
+  } 
+/>
+        <Route 
+  path="/dashboard/analytics" 
+  element={
+    <ProtectedRoute>
+      <Suspense fallback={<LoadingScreen label="Loading Analytics..." />}>
+        <Analytics />
       </Suspense>
     </ProtectedRoute>
   } 
@@ -421,7 +418,15 @@ function AppRoutes() {
 }
 
 function App() {
-  return <Hero />;
+  return (
+    <ThemeProvider>
+      <AuthProvider>
+        <SocketProvider>
+          <AppRoutes />
+        </SocketProvider>
+      </AuthProvider>
+    </ThemeProvider>
+  );
 }
 
 export default App;

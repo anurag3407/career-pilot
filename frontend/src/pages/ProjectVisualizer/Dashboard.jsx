@@ -4,7 +4,8 @@ import { motion, AnimatePresence } from 'framer-motion';
 import {
   GitBranch, Star, GitFork, AlertCircle, ArrowLeft,
   Map, Grid3X3, AlertTriangle, Users, Search,
-  Loader2, ChevronDown, Box, Info, Scale
+  Loader2, ChevronDown, Box, Info, Scale,
+  Sparkles, CheckCircle2
 } from 'lucide-react';
 import toast from 'react-hot-toast';
 import { useProjectVisualizerStore } from '../../stores/useProjectVisualizerStore';

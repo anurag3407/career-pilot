@@ -57,6 +57,11 @@ const navLinks = [
         icon: <Globe className="w-5 h-5 shrink-0" />,
     },
     {
+        label: "Project Visualizer",
+        href: "/project-visualizer",
+        icon: <GitMerge className="w-5 h-5 shrink-0" />,
+    },
+    {
         label: "Career Growth",
         href: "/hub/career",
         icon: <GraduationCap className="w-5 h-5 shrink-0" />,

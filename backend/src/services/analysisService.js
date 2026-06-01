@@ -242,7 +242,7 @@ export const buildFileGraph = async (files, rootDir, risks) => {
         if (possibleTargets.length > 0) {
           const targetId = pathToId.get(possibleTargets[0]);
           edges.push({
-            id: \`e-\${sourceId}-\${targetId}\`,
+            id: `e-${sourceId}-${targetId}`,
             source: sourceId,
             target: targetId,
             animated: true,
@@ -292,11 +292,11 @@ export const buildModuleGraph = (modules, fileEdges, files, rootDir) => {
     const targetMod = fileToModule.get(edge.target);
     
     if (sourceMod && targetMod && sourceMod !== targetMod) {
-      const edgeId = \`\${sourceMod}->\${targetMod}\`;
+      const edgeId = `${sourceMod}->${targetMod}`;
       if (!moduleEdgesSet.has(edgeId)) {
         moduleEdgesSet.add(edgeId);
         edges.push({
-          id: \`me-\${edgeId}\`,
+          id: `me-${edgeId}`,
           source: sourceMod,
           target: targetMod,
           animated: true,
@@ -321,37 +321,37 @@ export const buildCodebaseSkeleton = async (files, rootDir) => {
   for (const file of files) {
     const relativePath = path.relative(rootDir, file);
     const lang = detectLanguage(file);
-    skeleton += \`File: \${relativePath} (\${lang})\\n\`;
+    skeleton += `File: ${relativePath} (${lang})\n`;
     
     try {
       const content = await fs.readFile(file, 'utf-8');
       const exports = [];
       
       if (lang.includes('JavaScript') || lang.includes('TypeScript')) {
-        const exportRegex = /export\\s+(const|let|var|function|class)\\s+([a-zA-Z0-9_]+)/g;
+        const exportRegex = /export\s+(const|let|var|function|class)\s+([a-zA-Z0-9_]+)/g;
         let match;
         while ((match = exportRegex.exec(content)) !== null) {
           exports.push(match[2]);
         }
-        const defaultExportRegex = /export\\s+default\\s+(function|class)?\\s*([a-zA-Z0-9_]+)?/g;
+        const defaultExportRegex = /export\s+default\s+(function|class)?\s*([a-zA-Z0-9_]+)?/g;
         const defaultMatch = defaultExportRegex.exec(content);
         if (defaultMatch) {
-          exports.push(\`default \${defaultMatch[2] || 'Anonymous'}\`);
+          exports.push(`default ${defaultMatch[2] || 'Anonymous'}`);
         }
       } else if (lang === 'Python') {
-        const defRegex = /^(?:async\\s+)?def\\s+([a-zA-Z0-9_]+)\\s*\\(/gm;
-        const classRegex = /^class\\s+([a-zA-Z0-9_]+)\\s*(?:\\(|:)/gm;
+        const defRegex = /^(?:async\s+)?def\s+([a-zA-Z0-9_]+)\s*\(/gm;
+        const classRegex = /^class\s+([a-zA-Z0-9_]+)\s*(?:\(|:)/gm;
         let match;
         while ((match = defRegex.exec(content)) !== null) exports.push(match[1]);
         while ((match = classRegex.exec(content)) !== null) exports.push(match[1]);
       } else if (lang === 'Go') {
-        const funcRegex = /^func\\s+(?:\\(\\w+\\s+\\*?\\w+\\)\\s+)?([A-Z][a-zA-Z0-9_]*)\\s*\\(/gm;
+        const funcRegex = /^func\s+(?:\(\w+\s+\*?\w+\)\s+)?([A-Z][a-zA-Z0-9_]*)\s*\(/gm;
         let match;
         while ((match = funcRegex.exec(content)) !== null) exports.push(match[1]);
       }
       
       if (exports.length > 0) {
-        skeleton += \`  Exports/Definitions: \${exports.join(', ')}\\n\`;
+        skeleton += `  Exports/Definitions: ${exports.join(', ')}\n`;
       }
     } catch (e) {}
     
@@ -361,7 +361,7 @@ export const buildCodebaseSkeleton = async (files, rootDir) => {
 };
 
 export const analyzeRepo = async (repoUrl, userId) => {
-  console.log(\`🚀 Starting analysis for \${repoUrl} by user \${userId}\`);
+  console.log(`🚀 Starting analysis for ${repoUrl} by user ${userId}`);
   const { sessionId, tempDir } = await cloneRepo(repoUrl);
   
   try {
@@ -395,7 +395,7 @@ export const analyzeRepo = async (repoUrl, userId) => {
       dependencyCount: totalDependencies
     };
     
-    console.log(\`✅ Analysis complete for \${sessionId}. Files: \${files.length}, Modules: \${modules.length}\`);
+    console.log(`✅ Analysis complete for ${sessionId}. Files: ${files.length}, Modules: ${modules.length}`);
     
     return {
       sessionId,

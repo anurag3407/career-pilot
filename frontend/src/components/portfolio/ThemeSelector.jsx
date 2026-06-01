@@ -5,7 +5,16 @@ const THEMES = [
   { id: 'professional', name: 'Professional', supportsDarkMode: true, lightPreview: '#f8fafc', darkPreview: '#0f172a', accent: '#0ea5e9', isPremium: true },
   { id: 'creative', name: 'Creative', supportsDarkMode: false, lightPreview: '#fdf4ff', darkPreview: null, accent: '#d946ef', isPremium: true },
   { id: 'bold', name: 'Bold', supportsDarkMode: true, lightPreview: '#fff7ed', darkPreview: '#1c1917', accent: '#f97316', isPremium: false },
+  {
+  id: 'digital-dna',
+  name: 'Digital DNA',
+  supportsDarkMode: true,
+  lightPreview: '#e0f7ff',
+  darkPreview: '#0f172a',
+  accent: '#06b6d4'
+},
 ]
+
 
 export default function ThemeSelector({ selectedTheme, onSelectTheme }) {
   const [isDarkPreview, setIsDarkPreview] = useState(false)

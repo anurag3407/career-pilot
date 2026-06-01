@@ -219,7 +219,7 @@ router.post('/analysis/:sessionId/ask-module', verifyToken, aiRateLimiter, async
     if (!mod) return res.status(404).json({ error: 'Module not found in session' });
     
     // Create focused context
-    const context = \`I am asking about the module '\${mod.name}' at path '\${mod.path}'. It contains \${mod.fileCount} files. Please answer: \${question}\`;
+    const context = `I am asking about the module '${mod.name}' at path '${mod.path}'. It contains ${mod.fileCount} files. Please answer: ${question}`;
     
     const messages = [{ role: 'user', content: context }];
     
