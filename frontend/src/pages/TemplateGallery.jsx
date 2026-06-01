@@ -14,7 +14,7 @@ import PsychedelicSwirl from "../components/portfolio/templates/Psychedelic_Swir
 import DesertDunes from "../components/portfolio/templates/Desert_Dunes/index";
 import MemphisPop from "../components/portfolio/templates/Memphis_Pop/index";
 import CassetteMixtape from "../components/portfolio/templates/Cassette_Mixtape/index";
-import MorphingBlobs from "../components/portfolio/templates/Morphing_Blobs/index";
+import ChromaticGlitch from "../components/portfolio/templates/Chromatic_Glitch/index";
 import MagneticDock from "../components/portfolio/templates/Magnetic_Dock/index";
 import Navbar from '../components/Navbar'
 import { X } from "lucide-react";
@@ -23,6 +23,7 @@ import { useSearchParams } from "react-router-dom";
 // import ChooseAdventurePortfolio from "../components/portfolio/templates/Choose_Adventure/index";
 // import RetroProjects from "../components/portfolio/templates/2D_Retro_8bit/Projects";
 // import FantasyRPGProjects from "../components/portfolio/templates/Fantasy_RPG/Projects";
+import MorphingBlobs from "../components/portfolio/templates/Morphing_Blobs/index";
 
 
 function FilterSelect({ value, onChange, options, className = "" }) {
@@ -569,17 +570,17 @@ const [hoveredCard, setHoveredCard] = useState(null);
         </div>
       </div>
 
-      {/* Morphing Blobs — sandboxed fixed-nav frame */}
+      {/* Chromatic Glitch — sandboxed fixed-nav frame */}
       <div className="mt-12">
         <div className="mb-4 flex items-center gap-3 px-1">
-          <span className="rounded-full bg-purple-500/15 px-3 py-1 text-xs font-bold uppercase tracking-widest text-purple-400 border border-purple-500/25">
-            ◉ Morphing Blobs
+          <span className="rounded-full bg-cyan-500/20 px-3 py-1 text-xs font-bold uppercase tracking-widest text-cyan-400 border border-cyan-500/30">
+            ◈ Chromatic Glitch
           </span>
-          <h2 className="text-lg font-semibold text-foreground/70">Morphing Blobs — Organic Fluid Full Template</h2>
+          <h2 className="text-lg font-semibold text-foreground/70">Chromatic Glitch — RGB Split / Colorful Full Template</h2>
         </div>
-        <div className="rounded-2xl border border-purple-500/15"
+        <div className="rounded-2xl border border-cyan-500/20"
           style={{ height: 640, overflowY: "auto", overflowX: "hidden", transform: "translate(0)", position: "relative" }}>
-          <MorphingBlobs />
+          <ChromaticGlitch />
       {/* Magnetic Dock — sandboxed fixed-nav frame */}
       <div className="mt-12">
         <div className="mb-4 flex items-center gap-3 px-1">

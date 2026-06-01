@@ -1,3 +1,15 @@
+# [1.113.0](https://github.com/anurag3407/career-pilot/compare/v1.112.0...v1.113.0) (2026-06-01)
+
+
+### Bug Fixes
+
+* update author to Advik Divekar in templates.js ([e85e191](https://github.com/anurag3407/career-pilot/commit/e85e191d06ec544d74bbe093b0c637ec189e374d))
+
+
+### Features
+
+* implement Chromatic Glitch portfolio template ([#1935](https://github.com/anurag3407/career-pilot/issues/1935)) ([e56c330](https://github.com/anurag3407/career-pilot/commit/e56c330148e075f8081a24a1eab43227b6fb25e2))
+
 # [1.112.0](https://github.com/anurag3407/career-pilot/compare/v1.111.0...v1.112.0) (2026-06-01)
 
 
