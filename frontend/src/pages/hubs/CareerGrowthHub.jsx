@@ -1,4 +1,4 @@
-import { GraduationCap, Mic, Mail, Linkedin, Sparkles, Award } from 'lucide-react'
+import { GraduationCap, Mic, Mail, Linkedin, Sparkles, Award, ClipboardList } from 'lucide-react'
 import HubLayout from '../../components/HubLayout'
 import ToolCard from '../../components/ToolCard'
 
@@ -11,6 +11,14 @@ export default function CareerGrowthHub() {
       color="primary"
       breadcrumb="Career Growth"
     >
+      <ToolCard
+        to="/interview-prep-tracker"
+        icon={ClipboardList}
+        title="Interview Prep Tracker"
+        description="Daily checklist, DSA & aptitude tracking, streaks, and weekly preparation summaries."
+        badge="Local"
+        color="emerald-500"
+      />
       <ToolCard
         to="/interview-prep"
         icon={Mic}
