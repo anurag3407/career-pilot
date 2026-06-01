@@ -39,21 +39,38 @@ const initNavHighlight = () => {
   const navLinks  = document.querySelectorAll('a[href^="#"]');
   if (!sections.length || !navLinks.length) return;
 
+const initNavHighlight = () => {
+  const sections = document.querySelectorAll('section[id]');
+  const navLinks  = document.querySelectorAll('a[href^="#"]');
+  if (!sections.length || !navLinks.length) return;
+
   const observer = new IntersectionObserver(
     (entries) => {
+      // Find the most intersecting section
+      let mostVisible = null;
+      let maxRatio = 0;
+
       entries.forEach((entry) => {
-        if (entry.isIntersecting) {
-          navLinks.forEach((link) => {
-            link.classList.toggle(
-              'active',
-              link.getAttribute('href') === '#' + entry.target.id
-            );
-          });
+        if (entry.isIntersecting && entry.intersectionRatio > maxRatio) {
+          maxRatio = entry.intersectionRatio;
+          mostVisible = entry.target;
         }
       });
+
+      if (mostVisible) {
+        navLinks.forEach((link) => {
+          link.classList.toggle(
+            'active',
+            link.getAttribute('href') === '#' + mostVisible.id
+          );
+        });
+      }
     },
     { rootMargin: '-40% 0px -55% 0px' }
   );
+
+  sections.forEach((s) => observer.observe(s));
+};
 
   sections.forEach((s) => observer.observe(s));
 };
