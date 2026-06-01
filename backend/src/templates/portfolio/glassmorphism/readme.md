@@ -27,7 +27,7 @@ Browsers that don't support `backdrop-filter` receive a solid semi-transparent b
 ## Layout
 
 - **Sticky nav** — frosted glass, gradient logo, active link underline, mobile hamburger
-- **Hero** — centered glass card with avatar, name, bio, location, social buttons
+- **Hero** — centered glass card with avatar, name, tagline, location, social buttons
 - **About** — 2-column: bio card left, stat cards grid right
 - **Projects** — 3-column responsive grid with shimmer border hover effect
 - **Skills** — glass card with chip list (populated by `script.js` `SKILLS` array)
@@ -38,7 +38,7 @@ Browsers that don't support `backdrop-filter` receive a solid semi-transparent b
 
 ## Files
 
-```
+```text
 glassmorphism/
 ├── index.html   # Handlebars template
 ├── style.css    # All theme styles (glass, orbs, gradient, print)
@@ -46,22 +46,3 @@ glassmorphism/
 ├── meta.json    # Theme metadata
 ├── preview.png  # Theme screenshot
 └── readme.md    # This file
-```
-
----
-
-## Customising Skills
-
-Edit the `SKILLS` array in `script.js` to change the skill chips shown in the Skills section:
-
-```js
-const SKILLS = [
-  'JavaScript', 'TypeScript', 'React', ...
-];
-```
-
----
-
-## Print Support
-
-A full `@media print` block in `style.css` ensures clean paper output — backgrounds stripped, nav/form hidden, project URLs shown inline.
