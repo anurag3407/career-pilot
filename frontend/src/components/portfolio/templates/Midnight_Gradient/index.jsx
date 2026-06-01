@@ -1,30 +1,74 @@
 import React from 'react';
-import data from '../../../../data/dummy_data.json';
+import dummyData from '../../../../data/dummy_data.json';
 
-/**
- * Midnight Gradient Portfolio Template
- * Category: Dark / Moody
- * Description: Deep midnight blue backgrounds with subtle gradient mesh animations. Dark cards with glowing borders. Sophisticated, premium dark mode.
- */
-export default function MidnightGradient() {
+// Section imports
+import Hero from './Hero';
+import About from './About';
+import Skills from './Skills';
+import Projects from './Projects';
+import Experience from './Experience';
+import Testimonials from './Testimonials';
+import Contact from './Contact';
+
+export default function MidnightGradient({ portfolioData }) {
+  // Merge AI data with dummyData
+  const personal = {
+    ...dummyData.personal,
+    ...(portfolioData?.hero?.subtitle && { name: portfolioData.hero.subtitle }),
+    ...(portfolioData?.hero?.title && { title: portfolioData.hero.title }),
+    ...(portfolioData?.hero?.tagline && { tagline: portfolioData.hero.tagline }),
+    ...(portfolioData?.about?.bio && { bio: portfolioData.about.bio }),
+  };
+
+  const socials = { ...dummyData.socials, ...portfolioData?.socials };
+
+  let skills = dummyData.skills;
+  if (portfolioData?.skills?.length > 0) {
+    if (typeof portfolioData.skills[0] === 'string') {
+      const categories = ["Core", "Technical", "Additional"];
+      skills = portfolioData.skills.map((s, i) => ({
+        name: s,
+        level: Math.floor(Math.random() * 20) + 75,
+        category: categories[i % categories.length]
+      }));
+    } else {
+      skills = portfolioData.skills;
+    }
+  }
+
+  let projects = dummyData.projects;
+  if (portfolioData?.projects?.length > 0) {
+    projects = portfolioData.projects.map((p, i) => ({
+      title: p.title || p.name || 'Project',
+      description: p.description || '',
+      techStack: p.technologies || p.techStack || [],
+      image: p.image || dummyData.projects[i % dummyData.projects.length].image,
+      liveUrl: p.liveUrl || "#",
+      githubUrl: p.githubUrl || "#"
+    }));
+  }
+
+  const experience = portfolioData?.experience?.length > 0 ? portfolioData.experience : dummyData.experience;
+  const testimonials = portfolioData?.testimonials?.length > 0 ? portfolioData.testimonials : dummyData.testimonials;
+  const stats = portfolioData?.stats || dummyData.stats;
+
+  const data = { personal, socials, skills, projects, experience, testimonials, stats };
+
   return (
-    <div className="min-h-screen bg-gray-950 text-white flex flex-col items-center justify-center p-8 font-sans">
-      <div className="max-w-3xl w-full text-center">
-        <h1 className="text-5xl md:text-7xl font-bold mb-4 bg-gradient-to-r from-cyan-400 to-purple-500 bg-clip-text text-transparent">
-          {data.personal.name}
-        </h1>
-        <p className="text-xl md:text-2xl text-gray-400 mb-8">{data.personal.title}</p>
-        <div className="p-8 border-2 border-dashed border-cyan-500/40 rounded-2xl bg-gray-900/50 backdrop-blur-sm">
-          <span className="inline-block px-3 py-1 rounded-full bg-cyan-500/20 text-cyan-400 text-xs font-bold uppercase tracking-widest mb-4">
-            Dark / Moody
-          </span>
-          <h2 className="text-2xl font-bold text-gray-200 mb-3">Midnight Gradient Template</h2>
-          <p className="text-gray-400 mb-6 leading-relaxed">
-            Deep midnight blue backgrounds with subtle gradient mesh animations. Dark cards with glowing borders. Sophisticated, premium dark mode.
-          </p>
-          <p className="text-cyan-400 font-semibold">Open an issue to contribute and build this template!</p>
-        </div>
+    <div className="min-h-screen bg-[#020410] text-gray-100 font-sans relative overflow-hidden selection:bg-cyan-500/30 selection:text-cyan-200">
+      {/* Dynamic Floating Mesh Elements */}
+      <div className="fixed inset-0 pointer-events-none z-0">
+        <div className="absolute top-[20%] left-[-10%] w-[600px] h-[600px] rounded-full bg-indigo-900/10 blur-[150px]" />
+        <div className="absolute bottom-[20%] right-[-10%] w-[600px] h-[600px] rounded-full bg-cyan-900/10 blur-[150px]" />
       </div>
+
+      <Hero data={data} />
+      <About data={data} />
+      <Skills data={data} />
+      <Projects data={data} />
+      <Experience data={data} />
+      <Testimonials data={data} />
+      <Contact data={data} />
     </div>
   );
 }
