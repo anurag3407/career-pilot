@@ -1,10 +1,11 @@
 import { useState } from "react";
 import { Link } from "react-router-dom";
-import { Zap, Github, Twitter, Linkedin, Instagram } from "lucide-react";
+import { Zap, GitGraph, Twitter, Linkedin,Instagram } from "lucide-react";
 
 export default function Footer() {
   const [email, setEmail] = useState("");
   const [status, setStatus] = useState("idle"); // idle, loading, success, error
+  const currentYear = new Date().getFullYear();
 
   const handleSubscribe = async (e) => {
     e.preventDefault();
@@ -188,13 +189,13 @@ export default function Footer() {
 
           {/* Left */}
           <p className="text-sm text-muted-foreground">
-            © {new Date().getFullYear()} careerpilot. All rights reserved.
+            &copy; {currentYear} careerpilot. All rights reserved.
           </p>
 
           {/* Center (socials grouped properly) */}
           <div className="flex items-center gap-5">
             <a href="#" className="w-9 h-9 flex items-center justify-center rounded-full border border-border hover:border-muted-foreground hover:bg-muted transition text-muted-foreground hover:text-foreground duration-200">
-              <Github className="w-5 h-5" />
+              <GitGraph className="w-5 h-5" />
             </a>
             <a href="#" className="w-9 h-9 flex items-center justify-center rounded-full border border-border hover:border-muted-foreground hover:bg-muted transition text-muted-foreground hover:text-foreground duration-200">
               <Twitter className="w-5 h-5" />

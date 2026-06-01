@@ -362,6 +362,7 @@ export default function Enhance() {
 
   const [jobRole, setJobRole] = useState('')
   const [hasAnalyzed, setHasAnalyzed] = useState(false)
+  const [copiedKeyword, setCopiedKeyword] = useState(null)
 
   useEffect(() => {
     fetchResume()
@@ -433,12 +434,27 @@ export default function Enhance() {
     }
   }
 
+  const copyKeywordToClipboard = async (keyword) => {
+    if (!keyword) return
+
+    try {
+      await navigator.clipboard.writeText(keyword)
+      setCopiedKeyword(keyword)
+      setTimeout(() => {
+        setCopiedKeyword((current) => (current === keyword ? null : current))
+      }, 2000)
+    } catch (err) {
+      console.error('Failed to copy keyword:', err)
+      toast.error('Could not copy keyword to clipboard. Please try again.')
+    }
+  }
+
   const handleEnhanceWithAI = async () => {
     setEnhancing(true)
     try {
       const apiPreferences = {
         jobRole: jobRole,
-        yearsOfExperience: 0,
+        yearsOfExperience: resume.yearsOfExperience || 0, // Assuming yearsOfExperience is available in resume object
         skills: atsAnalysis?.missingKeywords || [],
         industry: '',
         customInstructions: `Focus on improving: ${atsAnalysis?.improvements?.map(i => i.issue).join(', ') || 'general improvements'}`,
@@ -710,9 +726,15 @@ export default function Enhance() {
                       initial={{ opacity: 0, scale: 0.8 }}
                       animate={{ opacity: 1, scale: 1 }}
                       transition={{ delay: 0.5 + index * 0.05 }}
-                      className="px-3 py-1.5 bg-yellow-500/10 border border-yellow-500/30 text-yellow-400 rounded-lg text-sm"
+                      onClick={() => copyKeywordToClipboard(keyword)}
+                      className="relative cursor-pointer px-3 py-1.5 bg-yellow-500/10 border border-yellow-500/30 text-yellow-400 rounded-lg text-sm transition hover:bg-yellow-500/20 hover:border-yellow-500/50 hover:text-yellow-300"
                     >
-                      {keyword}
+                      <span className="relative z-10">{keyword}</span>
+                      {copiedKeyword === keyword && (
+                        <span className="pointer-events-none absolute -top-7 left-1/2 -translate-x-1/2 rounded-full bg-amber-500/95 px-2 py-1 text-[10px] font-semibold text-white shadow-lg">
+                          Copied!
+                        </span>
+                      )}
                     </motion.span>
                   ))}
                   {(!atsAnalysis.missingKeywords || atsAnalysis.missingKeywords.length === 0) && (
