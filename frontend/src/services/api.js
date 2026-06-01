@@ -396,6 +396,23 @@ export const portfolioApi = {
     return handleResponse(response)
   },
 
+  // Import a portfolio from a JSON file
+  async importJson(file) {
+    const headers = await getAuthHeaders()
+    delete headers['Content-Type']
+
+    const formData = new FormData()
+    formData.append('file', file)
+
+    const response = await fetch(`${API_BASE}/portfolio/import`, {
+      method: 'POST',
+      headers,
+      body: formData
+    })
+
+    return handleResponse(response)
+  },
+
   // Create portfolio
   async create(data) {
     const headers = await getAuthHeaders();
@@ -626,7 +643,7 @@ export const jobTrackerApi = {
     const headers = await getAuthHeaders()
     const body = { status };
     if (notes) body.notes = notes;
-    
+
     const response = await fetch(`${API_BASE}/job-tracker/${jobId}`, {
       method: 'PUT',
       headers,
@@ -1377,7 +1394,7 @@ export const paymentApi = {
     })
     return handleResponse(response)
   }
-  
+
 }
 // ============ NOTIFICATION PREFERENCES API ============
 export const notificationApi = {
@@ -1428,14 +1445,14 @@ export const analyzerApi = {
       method: 'GET',
       headers
     })
-    
+
     if (!response.ok) {
       throw new Error(`Server error (${response.status})`)
     }
-    
+
     return response.text()
   },
-  
+
   // Note: chat streams directly via SSE, so we'll handle fetch in the component directly
 }
 

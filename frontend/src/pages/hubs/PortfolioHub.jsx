@@ -1,33 +1,67 @@
-import { useState, useRef, useEffect } from 'react'
+import { useState, useRef, useEffect, useCallback } from 'react'
 import { Globe, Rocket, LayoutTemplate, Github, Upload, Loader2 } from 'lucide-react'
 import { portfolioApi, uploadApi } from '../../services/api'
 import HubLayout from '../../components/HubLayout'
 import ToolCard from '../../components/ToolCard'
-import { Link, useNavigate } from 'react-router-dom'
+import { useNavigate } from 'react-router-dom'
 import { motion } from 'framer-motion'
 import toast from 'react-hot-toast'
+
+const MotionDiv = motion.div
 
 export default function PortfolioHub() {
   const [portfolios, setPortfolios] = useState([])
   const [loading, setLoading] = useState(true)
+  const [importing, setImporting] = useState(false)
   const [isUploading, setIsUploading] = useState(false)
-  const fileInputRef = useRef(null)
+  const jsonInputRef = useRef(null)
+  const resumeInputRef = useRef(null)
   const navigate = useNavigate()
 
-  useEffect(() => {
-    const fetchPortfolios = async () => {
-      try {
-        const res = await portfolioApi.getAll()
-        const items = res.portfolios || res.data?.portfolios || res.data || []
-        setPortfolios(items)
-      } catch (err) {
-        console.error('Failed to fetch portfolios in PortfolioHub', err)
-      } finally {
-        setLoading(false)
-      }
+  const fetchPortfolios = useCallback(async () => {
+    try {
+      const res = await portfolioApi.getAll()
+      const items = res.portfolios || res.data?.portfolios || res.data || []
+      setPortfolios(items)
+    } catch (err) {
+      console.error('Failed to fetch portfolios in PortfolioHub', err)
+    } finally {
+      setLoading(false)
     }
-    fetchPortfolios()
   }, [])
+
+  useEffect(() => {
+    fetchPortfolios()
+  }, [fetchPortfolios])
+
+  const handleImportClick = () => {
+    if (importing) return
+    jsonInputRef.current?.click()
+  }
+
+  const handleImportFile = async (event) => {
+    const file = event.target.files?.[0]
+    event.target.value = ''
+
+    if (!file) return
+
+    if (!file.name.toLowerCase().endsWith('.json') && file.type !== 'application/json') {
+      toast.error('Choose a JSON portfolio file')
+      return
+    }
+
+    try {
+      setImporting(true)
+      const result = await portfolioApi.importJson(file)
+      const imported = result.data
+      toast.success(`Imported ${imported?.slug || 'portfolio'}`)
+      await fetchPortfolios()
+    } catch (err) {
+      toast.error(err.message || 'Failed to import portfolio')
+    } finally {
+      setImporting(false)
+    }
+  }
 
   const handleFileUpload = async (event) => {
     const file = event.target.files?.[0];
@@ -45,7 +79,7 @@ export default function PortfolioHub() {
       // 1. Upload and parse PDF
       const uploadRes = await uploadApi.uploadPdf(file);
       const text = uploadRes.data?.extractedText || uploadRes.extractedText;
-      
+
       if (!text) {
         throw new Error('Could not extract text from the PDF.');
       }
@@ -58,9 +92,9 @@ export default function PortfolioHub() {
 
       // 3. Save to local storage for the template gallery
       localStorage.setItem('ai_portfolio_draft', JSON.stringify(portfolioData));
-      
+
       toast.success('Resume parsed successfully!', { id: loadingToast });
-      
+
       // 4. Redirect to templates
       navigate('/templates');
     } catch (err) {
@@ -68,8 +102,8 @@ export default function PortfolioHub() {
       toast.error(err.message || 'Failed to process resume.', { id: loadingToast });
     } finally {
       setIsUploading(false);
-      if (fileInputRef.current) {
-        fileInputRef.current.value = '';
+      if (resumeInputRef.current) {
+        resumeInputRef.current.value = '';
       }
     }
   }
@@ -87,21 +121,21 @@ export default function PortfolioHub() {
       breadcrumb="Portfolio Builder"
       stats={loading ? [] : stats}
     >
-      
+
       {/* Upload Resume Card */}
       <div className="col-span-full mb-6">
-        <div 
-          onClick={() => !isUploading && fileInputRef.current?.click()}
+        <div
+          onClick={() => !isUploading && resumeInputRef.current?.click()}
           className={`relative overflow-hidden rounded-2xl border-2 border-dashed ${isUploading ? 'border-primary/50 bg-primary/5' : 'border-primary/30 hover:border-primary bg-card hover:bg-primary/5'} transition-all cursor-pointer p-8 text-center group`}
         >
-          <input 
-            type="file" 
-            ref={fileInputRef} 
+          <input
+            type="file"
+            ref={resumeInputRef}
             onChange={handleFileUpload}
-            accept=".pdf" 
-            className="hidden" 
+            accept=".pdf"
+            className="hidden"
           />
-          
+
           <div className="flex flex-col items-center justify-center space-y-4 relative z-10">
             <div className="w-16 h-16 rounded-full bg-primary/10 flex items-center justify-center group-hover:scale-110 transition-transform">
               {isUploading ? (
@@ -110,19 +144,19 @@ export default function PortfolioHub() {
                 <Upload className="w-8 h-8 text-primary" />
               )}
             </div>
-            
+
             <div>
               <h3 className="text-xl font-bold text-foreground mb-2">
                 {isUploading ? 'Analyzing Resume...' : 'Upload Resume to Auto-Build'}
               </h3>
               <p className="text-sm text-muted-foreground max-w-md mx-auto">
-                {isUploading 
+                {isUploading
                   ? 'Our AI is extracting your experience, skills, and projects to automatically populate your perfect portfolio.'
                   : 'Skip the manual work. Upload your PDF resume, and our AI will automatically extract your data and let you choose a template to deploy instantly.'}
               </p>
             </div>
           </div>
-          
+
           {/* Background decoration */}
           <div className="absolute -top-24 -right-24 w-48 h-48 bg-primary/10 rounded-full blur-3xl group-hover:bg-primary/20 transition-colors pointer-events-none" />
         </div>
@@ -149,6 +183,20 @@ export default function PortfolioHub() {
         description="Deploy and manage active production websites on Cloudflare or GitHub Pages."
         color="emerald-500"
       />
+      <ToolCard
+        icon={Upload}
+        title={importing ? 'Importing JSON' : 'Import JSON'}
+        description="Upload a validated portfolio JSON file and add it to your workspace."
+        color="amber-500"
+        onClick={handleImportClick}
+      />
+      <input
+        ref={jsonInputRef}
+        type="file"
+        accept="application/json,.json"
+        className="hidden"
+        onChange={handleImportFile}
+      />
 
       {/* Showcase list or placeholder */}
       {!loading && portfolios.length > 0 && (
@@ -159,7 +207,7 @@ export default function PortfolioHub() {
           </h2>
           <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-4">
             {portfolios.map((portfolio, idx) => (
-              <motion.div
+              <MotionDiv
                 key={portfolio.id || idx}
                 initial={{ opacity: 0, y: 10 }}
                 animate={{ opacity: 1, y: 0 }}
@@ -191,7 +239,7 @@ export default function PortfolioHub() {
                     <Globe className="w-3 h-3" />
                   </a>
                 </div>
-              </motion.div>
+              </MotionDiv>
             ))}
           </div>
         </div>

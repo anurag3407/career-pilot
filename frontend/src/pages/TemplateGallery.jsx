@@ -15,6 +15,7 @@ import DesertDunes from "../components/portfolio/templates/Desert_Dunes/index";
 import MemphisPop from "../components/portfolio/templates/Memphis_Pop/index";
 import CassetteMixtape from "../components/portfolio/templates/Cassette_Mixtape/index";
 import Navbar from '../components/Navbar'
+import Breadcrumb from '../components/Breadcrumb'
 import { X } from "lucide-react";
 import { useSearchParams } from "react-router-dom";
 // import Hero from "../components/portfolio/templates/Holographic/Hero";
@@ -271,7 +272,7 @@ const [hoveredCard, setHoveredCard] = useState(null);
   const [colorScheme, setColorScheme] = useState("All");
   const [layout, setLayout] = useState("All");
   const [sort, setSort] = useState("Popular");
-  
+
   const [aiDraft, setAiDraft] = useState(null);
 
   useEffect(() => {
@@ -344,18 +345,19 @@ const [hoveredCard, setHoveredCard] = useState(null);
   return (
     <div className="min-h-screen bg-background text-foreground p-8 pt-24 transition-colors duration-300">
       <Navbar />
-      
+      <Breadcrumb className="mb-6" />
+
       {aiDraft && (
         <div className="mb-8 p-4 rounded-xl bg-gradient-to-r from-emerald-500/10 to-teal-500/10 border border-emerald-500/30 flex items-center justify-between">
           <div>
             <h3 className="text-emerald-400 font-bold flex items-center gap-2">
-              <Sparkles className="w-5 h-5" /> ✨ Resume Parsed Successfully!
+              <Sparkles className="w-5 h-5" /> Resume Parsed Successfully!
             </h3>
             <p className="text-sm text-muted-foreground mt-1">
               Your data has been extracted. Select a template below and we'll automatically inject your experience and projects!
             </p>
           </div>
-          <button 
+          <button
             onClick={clearDraft}
             className="p-2 hover:bg-emerald-500/20 text-emerald-400 rounded-lg transition-colors"
             title="Discard Draft"
@@ -364,7 +366,6 @@ const [hoveredCard, setHoveredCard] = useState(null);
           </button>
         </div>
       )}
-
       <div className="flex justify-between items-center mb-8">
         <h1 className="text-4xl font-bold">Template Gallery</h1>
         <button

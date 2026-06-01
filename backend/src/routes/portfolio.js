@@ -1,6 +1,7 @@
 import express from 'express';
 import fs from 'fs/promises';
 import mongoose from 'mongoose';
+import multer from 'multer';
 import { verifyToken } from '../middleware/auth.js';
 import { asyncHandler, ApiError } from '../middleware/errorHandler.js';
 import cacheHeaders from '../middleware/cacheHeaders.js';
@@ -24,6 +25,10 @@ const router = express.Router();
 const VALID_SECTIONS = ['hero', 'projects', 'about', 'skills', 'experience', 'education'];
 const VALID_SLUG_PATTERN = /^[a-z0-9]+(?:[a-z0-9-]*[a-z0-9])?$/i;
 const FREE_TIER_LIMIT_MB = 100;
+const uploadPortfolioJson = multer({
+  storage: multer.memoryStorage(),
+  limits: { fileSize: 1024 * 1024 },
+});
 
 // @route   POST /api/portfolio/extract-from-resume
 // @desc    Extracts portfolio JSON structure from raw resume text using AI
@@ -60,6 +65,47 @@ const getPortfolioTemplatePath = (slug) => {
 const assertValidPortfolioSlug = (slug) => {
   if (!VALID_SLUG_PATTERN.test(slug)) {
     throw new ApiError(400, 'Invalid portfolio slug.');
+  }
+};
+
+const normalizeImportedPortfolio = (data) => {
+  const candidate = data?.data?.portfolio || data?.portfolio || data?.data || data;
+
+  if (!candidate || typeof candidate !== 'object' || Array.isArray(candidate)) {
+    throw new ApiError(400, 'Imported JSON must contain a portfolio object.');
+  }
+
+  return {
+    slug: candidate.slug,
+    sections: candidate.sections,
+  };
+};
+
+const parsePortfolioJsonUpload = (req, res, next) => {
+  try {
+    if (!req.file) {
+      throw new ApiError(400, 'JSON file is required.');
+    }
+
+    const isJsonFile =
+      req.file.mimetype === 'application/json' ||
+      req.file.originalname?.toLowerCase().endsWith('.json');
+
+    if (!isJsonFile) {
+      throw new ApiError(400, 'Only JSON files can be imported.');
+    }
+
+    let parsed;
+    try {
+      parsed = JSON.parse(req.file.buffer.toString('utf8'));
+    } catch {
+      throw new ApiError(400, 'Uploaded file contains malformed JSON.');
+    }
+
+    req.body = normalizeImportedPortfolio(parsed);
+    next();
+  } catch (error) {
+    next(error);
   }
 };
 
@@ -356,6 +402,38 @@ router.post('/', verifyToken, validatePortfolioSlug, validatePortfolioContent, a
     data: portfolio,
   });
 }));
+
+/**
+ * POST /api/portfolio/import
+ * Import a portfolio from an uploaded JSON file after validation.
+ */
+router.post(
+  '/import',
+  verifyToken,
+  uploadPortfolioJson.single('file'),
+  parsePortfolioJsonUpload,
+  validatePortfolioSlug,
+  validatePortfolioContent,
+  asyncHandler(async (req, res) => {
+    const { slug, sections } = req.body;
+    const userId = req.user.uid;
+
+    const existing = await Portfolio.findOne({ userId, slug });
+    if (existing) {
+      throw new ApiError(409, `A portfolio with slug "${slug}" already exists.`);
+    }
+
+    const portfolio = new Portfolio({ userId, slug, sections });
+    await portfolio.validate();
+    await portfolio.save();
+
+    res.status(201).json({
+      success: true,
+      message: 'Portfolio imported successfully.',
+      data: portfolio,
+    });
+  })
+);
 
 /**
  * PUT /api/portfolio/:slug
