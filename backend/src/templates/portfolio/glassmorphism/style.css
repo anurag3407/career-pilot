@@ -79,7 +79,6 @@ body {
   font-size: 1rem;
   line-height: 1.7;
   color: var(--color-text);
-  background-color: var(--color-bg-start);
   /* Animated gradient background */
   background: linear-gradient(
     135deg,
@@ -88,7 +87,7 @@ body {
     var(--color-bg-end)
   );
   background-size: 400% 400%;
-  animation: gradientShift 12s ease infinite;
+  animation: gradient-shift 12s ease infinite;
   min-height: 100vh;
   -webkit-font-smoothing: antialiased;
   -moz-osx-font-smoothing: grayscale;
@@ -112,7 +111,7 @@ a:hover {
 /* ======================
    ANIMATED GRADIENT
    ====================== */
-@keyframes gradientShift {
+@keyframes gradient-shift {
   0%   { background-position: 0% 50%; }
   50%  { background-position: 100% 50%; }
   100% { background-position: 0% 50%; }
@@ -134,7 +133,7 @@ a:hover {
   border-radius: 50%;
   filter: blur(80px);
   opacity: 0.35;
-  animation: orbFloat 8s ease-in-out infinite;
+  animation: orb-float 8s ease-in-out infinite;
 }
 
 .orb--1 {
@@ -165,17 +164,17 @@ a:hover {
   animation-delay: -5s;
 }
 
-@keyframes orbFloat {
+@keyframes orb-float {
   0%, 100% { transform: translateY(0) scale(1); }
   50%       { transform: translateY(-30px) scale(1.05); }
 }
 
-/* orb--3 overrides the transform from orbFloat */
+/* orb--3 overrides the transform from orb-float */
 .orb--3 {
-  animation-name: orbFloat3;
+  animation-name: orb-float-3;
 }
 
-@keyframes orbFloat3 {
+@keyframes orb-float-3 {
   0%, 100% { transform: translate(-50%, -50%) scale(1); }
   50%       { transform: translate(-50%, calc(-50% - 20px)) scale(1.05); }
 }
@@ -194,7 +193,7 @@ a:hover {
 /* Progressive enhancement: apply blur only if supported */
 @supports (backdrop-filter: blur(1px)) or (-webkit-backdrop-filter: blur(1px)) {
   .glass {
-    background: var(--glass-bg);
+    background: rgba(255, 255, 255, 0.08);
     -webkit-backdrop-filter: blur(var(--glass-blur));
     backdrop-filter: blur(var(--glass-blur));
   }
@@ -939,6 +938,6 @@ h3 { font-size: clamp(1.1rem, 2.5vw, 1.4rem); }
     color: #666;
   }
 
-  h1, h2, h3 { page-break-after: avoid; }
-  .section    { page-break-inside: avoid; }
+  h1, h2, h3 { break-after: avoid; }
+  .section    { break-inside: avoid; }
 }
