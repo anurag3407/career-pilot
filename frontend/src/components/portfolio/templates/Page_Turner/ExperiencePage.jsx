@@ -16,7 +16,7 @@ const ExperiencePage = React.forwardRef(function ExperiencePage(_, ref) {
   useEffect(() => {
     const newTotalPages = Math.max(1, Math.ceil((safeExperience?.length || 0) / itemsPerPage))
     setCurrentPage((prev) => Math.min(prev, Math.max(0, newTotalPages - 1)))
-  }, [itemsPerPage, safeExperience])
+  }, [itemsPerPage]) // safeExperience is a static module-level constant
 
   const paginatedData = (safeExperience || []).slice(currentPage * itemsPerPage, (currentPage + 1) * itemsPerPage)
   const totalPages = Math.ceil((safeExperience?.length || 0) / itemsPerPage)
