@@ -1232,6 +1232,15 @@ export const interviewApi = {
       headers
     })
     return handleResponse(response)
+  },
+
+  async getAnalytics() {
+    const headers = await getAuthHeaders()
+    const response = await fetch(`${API_BASE}/interview/analytics`, {
+      method: 'GET',
+      headers
+    })
+    return handleResponse(response)
   }
 }
 

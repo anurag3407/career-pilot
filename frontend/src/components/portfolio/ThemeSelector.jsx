@@ -39,7 +39,17 @@ const THEMES = [
     accent: '#f97316',
     isPremium: false,
   },
+  {
+    id: 'digital-dna',
+    name: 'Digital DNA',
+    supportsDarkMode: true,
+    lightPreview: 'from-cyan-100 via-sky-200 to-slate-100',
+    darkPreview: 'from-slate-950 via-cyan-950 to-slate-900',
+    accent: '#06b6d4',
+    isPremium: false,
+  },
 ]
+
 
 export default function ThemeSelector({ selectedTheme, onSelectTheme }) {
   const [isDarkPreview, setIsDarkPreview] = useState(false)

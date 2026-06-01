@@ -21,6 +21,7 @@ import CommandPalette from './components/CommandPalette';
 import BackToTop from './components/BackToTop';
 import Home from './pages/Home';
 const Dashboard = lazy(() => import('./pages/Dashboard'));
+const Analytics = lazy(() => import('./pages/Analytics'));
 const JobSearch = lazy(() => import('./pages/JobSearch'));
 const ResumeBuilder = lazy(() => import('./pages/ResumeBuilder'));
 import TextToResume from './pages/TextToResume';
@@ -237,6 +238,7 @@ function AppRoutes() {
         {/* <Route path="/templates/day-night-cycle" element={<DayNightCycle />} /> */}
         <Route path="/templates/rainforest-canopy" element={<RainforestCanopy />} />
         <Route path="/templates/northern-fjords" element={<NorthernFjords />} />
+        
         {/* Core Protected Routes */}
         <Route 
   path="/dashboard" 
@@ -244,6 +246,16 @@ function AppRoutes() {
     <ProtectedRoute>
       <Suspense fallback={<LoadingScreen label="Loading Dashboard..." />}>
         <Dashboard />
+      </Suspense>
+    </ProtectedRoute>
+  } 
+/>
+        <Route 
+  path="/dashboard/analytics" 
+  element={
+    <ProtectedRoute>
+      <Suspense fallback={<LoadingScreen label="Loading Analytics..." />}>
+        <Analytics />
       </Suspense>
     </ProtectedRoute>
   } 
