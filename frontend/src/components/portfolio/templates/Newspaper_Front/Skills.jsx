@@ -1,20 +1,22 @@
-import React from 'react';
+import React, { useMemo } from 'react';
 import { motion } from 'framer-motion';
 
 const fadeInUp = {
   initial: { opacity: 0, y: 20 },
-  animate: { opacity: 1, y: 0 },
-  transition: { duration: 0.6 }
+  animate: { opacity: 1, y: 0, transition: { duration: 0.6 } }
 };
 
 export default function Skills({ data }) {
-  const skillsByCategory = {};
-  data.skills.forEach(skill => {
-    if (!skillsByCategory[skill.category]) {
-      skillsByCategory[skill.category] = [];
-    }
-    skillsByCategory[skill.category].push(skill);
-  });
+  const skillsByCategory = useMemo(() => {
+    const categories = {};
+    data.skills.forEach(skill => {
+      if (!categories[skill.category]) {
+        categories[skill.category] = [];
+      }
+      categories[skill.category].push(skill);
+    });
+    return categories;
+  }, [data.skills]);
 
   return (
     <motion.div 
@@ -38,7 +40,7 @@ export default function Skills({ data }) {
                     <div className="w-full bg-stone-700 rounded h-1.5">
                       <div 
                         className="bg-yellow-600 h-1.5 rounded transition-all duration-500"
-                        style={{ width: `${skill.level}%` }}
+                        style={{ width: `${Math.max(0, Math.min(100, skill.level || 0))}%` }}
                       />
                     </div>
                   </div>
