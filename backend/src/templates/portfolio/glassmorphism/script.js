@@ -37,12 +37,7 @@ const buildSkillChips = () => {
 const initNavHighlight = () => {
   const sections = document.querySelectorAll('section[id]');
   const navLinks  = document.querySelectorAll('a[href^="#"]');
-  if (!sections.length || !navLinks.length) return;
-
-const initNavHighlight = () => {
-  const sections = document.querySelectorAll('section[id]');
-  const navLinks  = document.querySelectorAll('a[href^="#"]');
-  if (!sections.length || !navLinks.length) return;
+  if (!sections.length || !navLinks.length || !('IntersectionObserver' in window)) return;
 
   const observer = new IntersectionObserver(
     (entries) => {
@@ -68,9 +63,6 @@ const initNavHighlight = () => {
     },
     { rootMargin: '-40% 0px -55% 0px' }
   );
-
-  sections.forEach((s) => observer.observe(s));
-};
 
   sections.forEach((s) => observer.observe(s));
 };
