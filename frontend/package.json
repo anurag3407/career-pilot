@@ -37,6 +37,7 @@
     "react-hook-form": "^7.54.2",
     "react-hot-toast": "^2.4.1",
     "react-markdown": "^9.1.0",
+    "recharts": "^2.8.0",
     "react-pageflip": "^2.0.3",
     "react-router-dom": "^7.1.1",
     "remark-gfm": "^4.0.1",
