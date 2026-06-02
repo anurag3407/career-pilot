@@ -58,6 +58,7 @@ RAZORPAY_KEY_SECRET=<your-razorpay-key-secret>
 LINKEDIN_CLIENT_ID=<your-linkedin-client-id>
 LINKEDIN_CLIENT_SECRET=<your-linkedin-client-secret>
 LINKEDIN_REDIRECT_URI=http://localhost:5001/api/auth/linkedin/callback
+ENCRYPTION_KEY=<64-char-hex-string>
 PROXYCURL_API_KEY=<your-proxycurl-api-key>
 TOTP_ENCRYPTION_KEY=<64-char-hex-string>
 RATE_LIMIT_WINDOW_MS=900000
@@ -137,7 +138,7 @@ The live environment. All values must be real, secure, and set as environment va
 - Use **live Razorpay keys** (`rzp_live_` prefix) only in production
 - `ENABLE_DB_PROFILING` must be `false` — profiling adds overhead and slows down the app
 - `DEV_BYPASS_AUTH` must always be `false` — setting it to `true` would let anyone access the app without logging in
-- Rotate `TOTP_ENCRYPTION_KEY` and `RAZORPAY_KEY_SECRET` immediately if they are ever exposed
+- Rotate `ENCRYPTION_KEY`, `TOTP_ENCRYPTION_KEY`, and `RAZORPAY_KEY_SECRET` immediately if they are ever exposed
 
 ---
 
@@ -154,6 +155,7 @@ The live environment. All values must be real, secure, and set as environment va
 | **Proxycurl** | [proxycurl.com](https://proxycurl.com) — free tier: 10 credits, no credit card required |
 | **Gmail App Password** | [Google Account](https://myaccount.google.com/apppasswords) |
 | **TOTP Key** | Run: `node -e "console.log(require('crypto').randomBytes(32).toString('hex'))"` |
+| **Encryption Key** | Run: `node -e "console.log(require('crypto').randomBytes(32).toString('hex'))"` |
 
 ---
 
@@ -166,6 +168,7 @@ Before deploying, make sure:
 - [ ] `DEV_BYPASS_AUTH=false` in staging and production
 - [ ] `ENABLE_DB_PROFILING=false` in production
 - [ ] Razorpay live keys are only used in production
+- [ ] `ENCRYPTION_KEY` is a unique 64-char hex string
 - [ ] `TOTP_ENCRYPTION_KEY` is a unique 64-char hex string
 - [ ] `RAZORPAY_KEY_SECRET` is never exposed to the frontend
 - [ ] `ALERT_TEST_INTERVAL` is empty in staging and production

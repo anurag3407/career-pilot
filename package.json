@@ -6,5 +6,8 @@
     "build": "npm run build --prefix frontend",
     "install": "npm install --prefix frontend",
     "build:portfolio": "npm run build:portfolio --prefix frontend"
+  },
+  "dependencies": {
+    "crypto": "^1.0.1"
   }
 }
