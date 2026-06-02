@@ -2,6 +2,7 @@ import React, { useEffect, useRef } from 'react';
 import { createPortal } from 'react-dom';
 import { AnimatePresence, motion } from 'framer-motion';
 import { X } from 'lucide-react';
+import { useFocusTrap } from '../hooks';
 
 const sizeClasses = {
   sm: 'max-w-md',
@@ -44,43 +45,7 @@ const Modal = ({
   }, [isOpen, onClose]);
 
   // Handle focus trapping
-  useEffect(() => {
-    if (!isOpen || !modalRef.current) return;
-
-    const focusableElementsString =
-      'a[href], area[href], input:not([disabled]), select:not([disabled]), textarea:not([disabled]), button:not([disabled]), iframe, object, embed, [tabindex="0"], [contenteditable]';
-    let focusableElements = modalRef.current.querySelectorAll(focusableElementsString);
-    focusableElements = Array.prototype.slice.call(focusableElements);
-
-    if (focusableElements.length === 0) return;
-
-    const firstElement = focusableElements[0];
-    const lastElement = focusableElements[focusableElements.length - 1];
-
-    const handleTabKey = (e) => {
-      if (e.key !== 'Tab') return;
-
-      if (e.shiftKey) {
-        if (document.activeElement === firstElement) {
-          e.preventDefault();
-          lastElement.focus();
-        }
-      } else {
-        if (document.activeElement === lastElement) {
-          e.preventDefault();
-          firstElement.focus();
-        }
-      }
-    };
-
-    // Focus the first element initially
-    firstElement.focus();
-
-    document.addEventListener('keydown', handleTabKey);
-    return () => {
-      document.removeEventListener('keydown', handleTabKey);
-    };
-  }, [isOpen]);
+  useFocusTrap({ active: isOpen, containerRef: modalRef });
 
   // Don't render portal until mounted to avoid hydration errors in SSR (if any)
   const [mounted, setMounted] = React.useState(false);
