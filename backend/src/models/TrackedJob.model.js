@@ -72,6 +72,9 @@ trackedJobSchema.index({ userId: 1, jobId: 1 }, { unique: true, background: true
 trackedJobSchema.index({ userId: 1, createdAt: -1 }, { background: true });
 trackedJobSchema.index({ userId: 1, title: 1 }, { background: true });
 trackedJobSchema.index({ userId: 1, status: 1 }, { background: true });
+trackedJobSchema.index({ userId: 1, company: 1 }, { background: true });
+trackedJobSchema.index({ userId: 1, updatedAt: -1 }, { background: true });
+trackedJobSchema.index({ userId: 1, status: 1, updatedAt: -1 }, { background: true });
 
 const TrackedJob = mongoose.model('TrackedJob', trackedJobSchema);
 

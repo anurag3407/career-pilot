@@ -17,27 +17,27 @@ const RepoCard = ({ owner, repo, name, description, language, stars, forks, isPr
   }
 
   return (
-    <div className="bg-white dark:bg-gray-800 rounded-xl p-5 shadow-sm flex flex-col gap-3">
+    <div className="bg-card border border-border rounded-xl p-5 shadow-sm flex flex-col gap-3 transition-colors duration-300">
 
       {/* Repo Name */}
       <div className="flex items-center justify-between">
-        <h3 className="font-semibold text-gray-900 dark:text-white truncate w-3/4">
+        <h3 className="font-semibold text-foreground truncate w-3/4">
           {name}
         </h3>
-        <span className="text-xs text-gray-500 dark:text-gray-400">
+        <span className="text-xs text-muted-foreground">
           {isPrivate ? 'Private' : 'Public'}
         </span>
       </div>
 
       {/* Description */}
-      <p className="text-sm text-gray-600 dark:text-gray-300 line-clamp-2">
+      <p className="text-sm text-muted-foreground line-clamp-2">
         {description || 'No description provided'}
       </p>
 
       {/* Stats Row */}
-      <div className="flex gap-3 mt-auto text-xs text-gray-500 dark:text-gray-400">
+      <div className="flex gap-3 mt-auto text-xs text-muted-foreground">
         {language && (
-          <span className="rounded-full bg-gray-100 dark:bg-gray-700 px-2 py-1">
+          <span className="rounded-full bg-muted text-foreground px-2 py-1">
             {language}
           </span>
         )}
@@ -52,9 +52,8 @@ const RepoCard = ({ owner, repo, name, description, language, stars, forks, isPr
         aria-busy={isScanning}
         aria-label={isScanning ? 'Scanning repository' : 'Analyze repository'}
         className="mt-2 flex items-center gap-2 px-3 py-1.5 text-sm 
-        bg-gray-100 hover:bg-gray-200 dark:bg-gray-700 
-        dark:hover:bg-gray-600 text-gray-700 dark:text-gray-200 
-        rounded-lg transition-colors w-fit"
+        bg-muted hover:bg-accent text-foreground 
+        rounded-lg transition-colors w-fit disabled:opacity-50"
       >
         {isScanning ? (
           <>

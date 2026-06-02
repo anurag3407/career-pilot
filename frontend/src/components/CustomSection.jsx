@@ -1,4 +1,5 @@
 import { useState, useRef, useCallback } from 'react'
+import toast from 'react-hot-toast'
 import { cn } from '@/lib/utils'
 import Button from './Button'
 import DragHandle from './DragHandle'
@@ -127,12 +128,17 @@ function EntryEditor({ entry, onChange, onDelete, onMoveUp, onMoveDown, isFirst,
           <div className="sm:col-span-2">
             <label className="block text-xs font-medium text-muted-foreground mb-1">Title *</label>
             <input
-              type="text"
-              value={entry.title}
-              onChange={update('title')}
-              placeholder="e.g. Best Paper Award"
-              className="w-full px-3 py-2 rounded-lg bg-background border border-border text-sm text-foreground placeholder:text-muted-foreground focus:outline-none focus:ring-2 focus:ring-primary/40 focus:border-primary transition-colors"
-            />
+  type="text"
+  value={entry.title}
+  onChange={update('title')}
+  maxLength={100}
+  placeholder="e.g. Best Paper Award"
+  className="w-full px-3 py-2 rounded-lg bg-background border border-border text-sm text-foreground placeholder:text-muted-foreground focus:outline-none focus:ring-2 focus:ring-primary/40 focus:border-primary transition-colors"
+/>
+
+<p className="text-xs text-gray-500 mt-1">
+  {entry.title?.length || 0} / 100
+</p>
           </div>
           <div>
             <label className="block text-xs font-medium text-muted-foreground mb-1">Subtitle / Issuer</label>
@@ -140,9 +146,13 @@ function EntryEditor({ entry, onChange, onDelete, onMoveUp, onMoveDown, isFirst,
               type="text"
               value={entry.subtitle}
               onChange={update('subtitle')}
+              maxLength={150}
               placeholder="e.g. IEEE Conference"
               className="w-full px-3 py-2 rounded-lg bg-background border border-border text-sm text-foreground placeholder:text-muted-foreground focus:outline-none focus:ring-2 focus:ring-primary/40 focus:border-primary transition-colors"
             />
+            <p className="text-xs text-gray-500 mt-1">
+  {entry.subtitle?.length || 0} / 150
+</p>
           </div>
           <div>
             <label className="block text-xs font-medium text-muted-foreground mb-1">Date / Year</label>
@@ -150,19 +160,33 @@ function EntryEditor({ entry, onChange, onDelete, onMoveUp, onMoveDown, isFirst,
               type="text"
               value={entry.date}
               onChange={update('date')}
+              maxLength={30}
               placeholder="e.g. May 2024"
               className="w-full px-3 py-2 rounded-lg bg-background border border-border text-sm text-foreground placeholder:text-muted-foreground focus:outline-none focus:ring-2 focus:ring-primary/40 focus:border-primary transition-colors"
             />
+            <p className="text-xs text-gray-500 mt-1">
+  {entry.date?.length || 0} / 30
+</p>
           </div>
           <div className="sm:col-span-2">
             <label className="block text-xs font-medium text-muted-foreground mb-1">Description</label>
             <textarea
-              rows={2}
-              value={entry.description}
-              onChange={update('description')}
+  rows={2}
+  value={entry.description}
+  onChange={update('description')}
+  maxLength={500}
               placeholder="Brief description (optional)"
               className="w-full px-3 py-2 rounded-lg bg-background border border-border text-sm text-foreground placeholder:text-muted-foreground focus:outline-none focus:ring-2 focus:ring-primary/40 focus:border-primary transition-colors resize-none"
             />
+            <p
+  className={`text-sm mt-1 ${
+    (entry.description?.length || 0) > 450
+      ? 'text-red-500'
+      : 'text-gray-500'
+  }`}
+>
+  {entry.description?.length || 0} / 500
+</p>
           </div>
         </div>
       )}
@@ -349,7 +373,7 @@ function SectionCard({
                     onClick={() => {
                       onChange(enhancedData); // Apply changes to original state
                       setEnhancedData(null); // Close diff view
-                      alert("Successfully enhanced section!"); // Simple success toast/notification
+                      toast.success("Successfully enhanced section!");
                     }}
                     className="px-2.5 py-1 rounded bg-emerald-600 text-white text-xs font-medium hover:bg-emerald-700 transition-colors"
                   >
@@ -498,30 +522,9 @@ function AddSectionPanel({ onAdd, onClose }) {
 }
 
 // ─── Markdown export helper ────────────────────────────────────────────────
-
-export function sectionsToMarkdown(sections) {
-  if (!sections?.length) return ''
-  return sections
-    .map((s) => {
-      const header = `## ${s.name}\n`
-      const body = s.entries
-        .map((e) => {
-          const parts = []
-          if (e.title) {
-            const titleLine = e.subtitle
-              ? `**${e.title}** — *${e.subtitle}*`
-              : `**${e.title}**`
-            parts.push(e.date ? `${titleLine} *(${e.date})*` : titleLine)
-          }
-          if (e.description) parts.push(e.description)
-          return parts.join('\n')
-        })
-        .filter(Boolean)
-        .join('\n\n')
-      return header + body
-    })
-    .join('\n\n')
-}
+// Moved to ./customSectionUtils.js to keep this file Fast Refresh–compatible
+// (mixing a default component export with named non-component exports
+// violates react-refresh/only-export-components and breaks Vite HMR).
 
 // ─── Main exported component ───────────────────────────────────────────────
 
