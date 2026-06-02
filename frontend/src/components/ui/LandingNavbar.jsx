@@ -42,8 +42,8 @@ export default function LandingNavbar() {
 
       {/* Mobile Menu Dropdown */}
       {isMobileMenuOpen && (
-        <div className="fixed top-20 left-4 right-4 bg-white/95 backdrop-blur-md rounded-2xl shadow-xl z-50 md:hidden p-4 transition-all">
-          <div className="flex flex-col space-y-4 text-center">
+        <div className="fixed inset-0 z-[999] bg-black/95 backdrop-blur-md md:hidden p-4 transition-all overflow-hidden">
+          <div className="absolute inset-0 flex flex-col space-y-6 text-center pt-28 px-6 bg-black">
             {['Templates', 'Portfolio', 'Jobs', 'Resume', 'Login'].map((item) => (
               <Link 
                 key={item} 
