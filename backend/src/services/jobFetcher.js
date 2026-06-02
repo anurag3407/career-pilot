@@ -183,8 +183,8 @@ const filterUnsentJobsForUser = async (userId, alertId, jobs) => {
 
     const sentLogs = await NotificationLog.find({
         userId,
-        alertId,
-        jobListingId: { $in: jobIds }
+        jobListingId: { $in: jobIds },
+        emailStatus: 'sent'
     })
         .select('jobListingId')
         .lean();
@@ -356,15 +356,27 @@ export const processAlert = async (alertData) => {
                 // Log all notifications
                 const notificationPromises = unsentJobs.map(async job => {
                     try {
-                        const notification = await NotificationLog.create({
-                            userId,
-                            alertId,
-                            jobListingId: job._id,
-                            externalJobId: job.externalId,
-                            emailStatus: 'sent',
-                            emailMessageId: emailResult.messageId
-                        });
-
+                        const notification = await NotificationLog.findOneAndUpdate(
+                            {
+                                userId,
+                                jobListingId: job._id
+                            },
+                            {
+                                $set: {
+                                    alertId,
+                                    externalJobId: job.externalId,
+                                    emailStatus: 'sent',
+                                    emailMessageId: emailResult.messageId,
+                                    errorMessage: null,
+                                    sentAt: new Date()
+                                }
+                            },
+                            {
+                                upsert: true,
+                                new: true,
+                                setDefaultsOnInsert: true
+                            }
+                        );
                         // Save to Firebase (convert ObjectIds to strings)
                         try {
                             await saveNotificationToFirebase({
@@ -540,9 +552,9 @@ export const startWorker = () => {
     console.log('👷 Job Alert Worker started and listening for jobs...');
     console.log('   Concurrency:', RATE_LIMIT_CONFIG.maxConcurrent);
     console.log('   Rate limit:', RATE_LIMIT_CONFIG.maxRequestsPerMinute, 'requests/minute');
-    
+
     // Worker is already autorunning.
-    
+
     return worker;
 };
 
@@ -557,7 +569,7 @@ export const scheduleAlertChecks = () => {
     if (isDevelopment && testInterval) {
         // Parse interval (e.g., '10s' -> 10000ms, '5m' -> 300000ms)
         let intervalMs = 10000; // default 10 seconds
-        
+
         if (testInterval.endsWith('s')) {
             intervalMs = parseInt(testInterval) * 1000;
         } else if (testInterval.endsWith('m')) {
@@ -588,8 +600,8 @@ export const scheduleAlertChecks = () => {
     // PRODUCTION MODE: Run every 24 hours at midnight (0 0 * * *)
     // Custom schedule can be set via ALERT_CRON_SCHEDULE env var
     const schedule = process.env.ALERT_CRON_SCHEDULE || '0 0 */2 * *'; // Default: every 2 days at midnight
-    
-console.log(`🏭 PRODUCTION MODE: Job alerts scheduled with cron: ${schedule} (runs every 2 days)`);
+
+    console.log(`🏭 PRODUCTION MODE: Job alerts scheduled with cron: ${schedule} (runs every 2 days)`);
     cron.schedule(schedule, async () => {
         console.log('\n⏰ [PROD] Scheduled job alert check starting...');
 
@@ -672,13 +684,13 @@ const runAlertCheck = async () => {
 
         // PROCESS DIRECTLY - Don't use queue/worker (they're broken)
         console.log('\n🚀 PROCESSING ALERTS DIRECTLY (BYPASSING QUEUE)...\n');
-        
+
         for (const alert of activeAlerts) {
             try {
                 console.log(`\n${'='.repeat(60)}`);
                 console.log(`📧 Processing: "${alert.title}" → ${alert.userEmail}`);
                 console.log(`${'='.repeat(60)}\n`);
-                
+
                 const result = await processAlert({
                     alertId: alert._id.toString(),
                     userId: alert.userId,
@@ -690,17 +702,17 @@ const runAlertCheck = async () => {
                     remoteOnly: alert.remoteOnly,
                     employmentType: alert.employmentType
                 });
-                
+
                 console.log(`\n✅ Alert processed: ${result.newJobs || 0} jobs sent\n`);
-                
+
                 // Add delay between requests to respect rate limits
                 await new Promise(resolve => setTimeout(resolve, RATE_LIMIT_CONFIG.delayBetweenJobs));
-                
+
             } catch (err) {
                 console.error(`❌ Failed to process alert ${alert.title}:`, err.message);
             }
         }
-        
+
         console.log('\n✅ All alerts processed!\n');
 
     } catch (error) {
