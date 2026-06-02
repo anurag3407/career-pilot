@@ -987,7 +987,8 @@ export const templates = [
     "views": 1081,
     "rating": 4.5,
     "image": "/template-previews/High_Fashion.png",
-    "createdAt": "2026-05-01"
+    "createdAt": "2026-05-01",
+    "isComplete": true
   },
   {
     "id": "Holographic",
@@ -1132,7 +1133,8 @@ export const templates = [
     "views": 1093,
     "rating": 4.5,
     "image": "/template-previews/Low_Poly_Terrain.png",
-    "createdAt": "2026-05-01"
+    "createdAt": "2026-05-01",
+    "isComplete": true
   },
   {
     "id": "MacOS_Desktop",
@@ -1364,7 +1366,8 @@ export const templates = [
     "views": 1112,
     "rating": 4.5,
     "image": "/template-previews/Neon_Cityscape.png",
-    "createdAt": "2026-05-01"
+    "createdAt": "2026-05-01",
+    "isComplete": true
   },
   {
     "id": "Neon_Noir",
@@ -1484,7 +1487,8 @@ export const templates = [
     "views": 1122,
     "rating": 4.5,
     "image": "/template-previews/Ocean_Depths.png",
-    "createdAt": "2026-05-01"
+    "createdAt": "2026-05-01",
+    "isComplete": true
   },
   {
     "id": "One_Page_Scroll",
@@ -1618,7 +1622,8 @@ export const templates = [
     "views": 1133,
     "rating": 4.5,
     "image": "/template-previews/Planetary_Orbit.png",
-    "createdAt": "2026-05-01"
+    "createdAt": "2026-05-01",
+    "isComplete": true
   },
   {
     "id": "Playing_Cards",
