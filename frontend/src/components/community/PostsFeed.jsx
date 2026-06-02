@@ -1,6 +1,7 @@
-import { useState, useEffect } from 'react';
-import { useAuth } from '../../context/AuthContext';
-import { useSocket } from '../../context/SocketContext';
+import { useState, useEffect, useCallback } from 'react';
+import { motion } from 'framer-motion';
+import { useAuth } from '../../hooks/useAuth';
+import { useSocket } from '../../hooks/useSocket';
 import { communityApi } from '../../services/api';
 import PostCard from './PostCard';
 import PostEditor from './PostEditor';
@@ -30,7 +31,7 @@ const CATEGORIES = [
 
 export default function PostsFeed() {
   const { user } = useAuth();
-  const { subscribe, subscribePosts, unsubscribePosts } = useSocket();
+  const { subscribe, subscribePosts, unsubscribePosts, isConnected } = useSocket();
   
   const [posts, setPosts] = useState([]);
   const [scheduledPosts, setScheduledPosts] = useState([]);
@@ -42,16 +43,60 @@ export default function PostsFeed() {
   const [searchQuery, setSearchQuery] = useState('');
   const [page, setPage] = useState(1);
   const [hasMore, setHasMore] = useState(true);
+  const [isSubmitting, setIsSubmitting] = useState(false);
+
+  // Fetch scheduled posts helper
+  const fetchScheduledPosts = useCallback(async () => {
+    try {
+      const data = await communityApi.getScheduledPosts();
+      setScheduledPosts(data.posts || []);
+    } catch {
+      // Silently ignore — not critical
+    }
+  }, []);
+
+  // Fetch posts helper
+  const fetchPosts = useCallback(async (pageToFetch, isLoadMore) => {
+    try {
+      if (!isLoadMore) {
+        setLoading(true);
+      }
+
+      const params = {
+        page: pageToFetch,
+        limit: 20,
+        sortBy,
+        ...(selectedCategory !== 'all' && { category: selectedCategory })
+      };
+
+      const data = await communityApi.getPosts(params);
+      
+      if (isLoadMore) {
+        setPosts(prev => [...prev, ...data.posts]);
+      } else {
+        setPosts(data.posts);
+      }
+      
+      setHasMore(data.pagination.hasMore);
+    } catch (error) {
+      toast.error('Failed to load posts');
+    } finally {
+      setLoading(false);
+    }
+  }, [sortBy, selectedCategory]);
+
+  const handleLoadMore = () => {
+    const nextPage = page + 1;
+    setPage(nextPage);
+    fetchPosts(nextPage, true);
+  };
 
   // Fetch posts on mount and when filters change
   useEffect(() => {
-    fetchPosts();
-  }, [selectedCategory, sortBy]);
+    setPage(1);
+    fetchPosts(1, false);
+  }, [selectedCategory, sortBy, fetchPosts]);
 
-  // Fetch current user's scheduled posts on mount
-  useEffect(() => {
-    fetchScheduledPosts();
-  }, []);
   // Refetch scheduled posts whenever the logged-in user changes
   useEffect(() => {
     if (user) {
@@ -59,7 +104,7 @@ export default function PostsFeed() {
     } else {
       setScheduledPosts([]);
     }
-  }, [user?.uid]);
+  }, [user, fetchScheduledPosts]);
 
   // Subscribe to real-time updates
   useEffect(() => {
@@ -104,64 +149,63 @@ export default function PostsFeed() {
     };
   }, [subscribe, subscribePosts, unsubscribePosts]);
 
-  const fetchPosts = async (loadMore = false) => {
-    try {
-      if (!loadMore) {
-        setLoading(true);
-        setPage(1);
-      }
 
-      const params = {
-        page: loadMore ? page + 1 : 1,
-        limit: 20,
-        sortBy,
-        ...(selectedCategory !== 'all' && { category: selectedCategory })
-      };
+const handleCreatePost = async (postData) => {
+  if (isSubmitting) return; // Prevent double-click submissions
 
-      const data = await communityApi.getPosts(params);
-      
-      if (loadMore) {
-        setPosts(prev => [...prev, ...data.posts]);
-        setPage(prev => prev + 1);
-      } else {
-        setPosts(data.posts);
-      }
-      
-      setHasMore(data.pagination.hasMore);
-    } catch (error) {
-      toast.error('Failed to load posts');
-    } finally {
-      setLoading(false);
+  setIsSubmitting(true);
+
+  try {
+    const data = await communityApi.createPost(postData);
+
+    if (data.post.status === 'scheduled') {
+      setScheduledPosts(prev => {
+        const postId = data.post.id || data.post._id;
+
+        if (prev.some(p => (p.id || p._id) === postId)) {
+          return prev;
+        }
+
+        return [data.post, ...prev].sort(
+          (a, b) =>
+            new Date(a.scheduledAt) -
+            new Date(b.scheduledAt)
+        );
+      });
+
+      setShowEditor(false);
+
+      toast.success('Post scheduled successfully!');
+    } else {
+      // Insert immediately for responsive UX.
+      // Socket listener already has duplicate protection.
+      setPosts(prev => {
+        const postId =
+          data.post.id || data.post._id;
+
+        if (
+          prev.some(
+            p => (p.id || p._id) === postId
+          )
+        ) {
+          return prev;
+        }
+
+        return [data.post, ...prev];
+      });
+
+      setShowEditor(false);
+
+      toast.success(
+        'Post created successfully!'
+      );
     }
-  };
-
-  const fetchScheduledPosts = async () => {
-    try {
-      const data = await communityApi.getScheduledPosts();
-      setScheduledPosts(data.posts || []);
-    } catch {
-      // Silently ignore — not critical
-    }
-  };
-
-  const handleCreatePost = async (postData) => {
-    try {
-      const data = await communityApi.createPost(postData);
-      if (data.post.status === 'scheduled') {
-        setScheduledPosts(prev => [data.post, ...prev].sort(
-          (a, b) => new Date(a.scheduledAt) - new Date(b.scheduledAt)
-        ));
-        setShowEditor(false);
-        toast.success('Post scheduled successfully!');
-      } else {
-        setPosts(prev => [data.post, ...prev]);
-        setShowEditor(false);
-        toast.success('Post created successfully!');
-      }
-    } catch (error) {
-      toast.error(error.message);
-    }
-  };
+  } catch (error) {
+    toast.error(error.message);
+  } finally {
+    setIsSubmitting(false);
+  }
+};
 
   const handleCancelScheduled = async (postId) => {
     try {
@@ -422,12 +466,12 @@ export default function PostsFeed() {
               })}
 
               {hasMore && (
-                <button
-                  onClick={() => fetchPosts(true)}
-                  className="w-full py-3 text-primary hover:text-primary/80 font-medium"
+                <motion.button
+                  onClick={handleLoadMore}
+                  className="w-full py-3 text-primary hover:text-primary/80 font-medium cursor-pointer"
                 >
                   Load more posts
-                </button>
+                </motion.button>
               )}
             </>
           ) : (

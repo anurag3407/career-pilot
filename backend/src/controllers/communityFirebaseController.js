@@ -31,9 +31,11 @@ export const getChannels = async (req, res, next) => {
     }
 
     if (cursor) {
-      const cursorDate = new Date(cursor);
-      if (!Number.isNaN(cursorDate.getTime())) {
-        query = query.startAfter(cursorDate);
+      try {
+        const parsed = JSON.parse(cursor);
+        query = query.startAfter(parsed.isDefault, parsed.createdAt);
+      } catch {
+        // Ignore invalid cursor
       }
     }
 
@@ -51,7 +53,13 @@ export const getChannels = async (req, res, next) => {
     }
 
     const lastDoc = snapshot.docs[snapshot.docs.length - 1];
-    const nextCursor = lastDoc?.data().createdAt?.toDate?.()?.toISOString() || null;
+    const lastData = lastDoc?.data();
+    const nextCursor = lastData
+      ? JSON.stringify({
+          isDefault: lastData.isDefault ?? false,
+          createdAt: lastData.createdAt?.toDate?.() || lastData.createdAt
+        })
+      : null;
 
     res.json({
       success: true,
@@ -87,7 +95,11 @@ export const createChannel = async (req, res, next) => {
   try {
     const { name, description, type = 'public', category = 'general', icon } = req.body;
 
-    const channelName = name.toLowerCase().replace(/\s+/g, '-');
+    if (typeof name !== 'string' || !name.trim()) {
+      throw new ApiError(400, 'Channel name is required');
+    }
+
+    const channelName = name.trim().toLowerCase().replace(/\s+/g, '-');
 
     // Check if channel name exists
     const existingSnapshot = await channelsRef.where('name', '==', channelName).get();
@@ -266,19 +278,69 @@ export const getChannelMessages = async (req, res, next) => {
 
 // ============ POST CONTROLLERS ============
 
-// Get all posts
+const transformPost = (doc) => {
+  const data = doc.data();
+  return {
+    id: doc.id,
+    ...data,
+    likeCount: (data.likes || []).length,
+    createdAt: data.createdAt?.toDate?.() || data.createdAt
+  };
+};
+
 export const getPosts = async (req, res, next) => {
   try {
-    const { page = 1, limit = 20, category, sortBy = 'latest' } = req.query;
-    const pageNum = parseInt(page);
-    const limitNum = parseInt(limit);
+    const { limit = 20, cursor, category, channelId, authorId, startDate, endDate, sortBy = 'latest' } = req.query;
+    const maxLimit = Math.min(parseInt(limit) || 20, 100);
 
+    // Parse date filters BEFORE query building so they can be applied before orderBy
+    let parsedStartDate = null;
+    let parsedEndDate = null;
+    if (startDate) {
+      parsedStartDate = new Date(startDate);
+      if (isNaN(parsedStartDate.getTime())) parsedStartDate = null;
+    }
+    if (endDate) {
+      parsedEndDate = new Date(endDate);
+      if (!isNaN(parsedEndDate.getTime())) {
+        parsedEndDate.setHours(23, 59, 59, 999);
+      } else {
+        parsedEndDate = null;
+      }
+    }
+
+    // Determine whether the range filter is compatible with the sort order.
+    // Firestore requires: if a field has a range filter (>= / <=), it must be
+    // the first field in orderBy. Only 'latest' sort naturally orders by createdAt.
+    const hasDateFilter = parsedStartDate || parsedEndDate;
+    const needsClientDateFilter = hasDateFilter && sortBy !== 'latest';
+
+    // Phase 1: where filters (equality first, range only when compatible)
     let query = postsRef.where('isDeleted', '==', false);
 
     if (category && category !== 'all') {
       query = query.where('category', '==', category);
     }
 
+    if (channelId) {
+      query = query.where('channelId', '==', channelId);
+    }
+
+    if (authorId) {
+      query = query.where('author.uid', '==', authorId);
+    }
+
+    // Only add date range to Firestore query when sort order is compatible
+    if (!needsClientDateFilter) {
+      if (parsedStartDate) {
+        query = query.where('createdAt', '>=', parsedStartDate);
+      }
+      if (parsedEndDate) {
+        query = query.where('createdAt', '<=', parsedEndDate);
+      }
+    }
+
+    // Phase 2: orderBy
     if (sortBy === 'popular') {
       query = query.orderBy('likeCount', 'desc').orderBy('createdAt', 'desc');
     } else if (sortBy === 'trending') {
@@ -287,36 +349,58 @@ export const getPosts = async (req, res, next) => {
       query = query.orderBy('createdAt', 'desc');
     }
 
-    const startIndex = (pageNum - 1) * limitNum;
-    if (startIndex > 0) {
-      query = query.offset(startIndex);
+    // Phase 3: cursor
+    let cursorValid = true;
+    if (cursor) {
+      try {
+        const cursorDoc = await postsRef.doc(cursor).get();
+        if (!cursorDoc.exists) {
+          cursorValid = false;
+        } else {
+          const postData = cursorDoc.data();
+
+          if (sortBy === 'popular') {
+            query = query.startAfter(postData.likeCount, postData.createdAt);
+          } else if (sortBy === 'trending') {
+            query = query.startAfter(postData.views, postData.likeCount);
+          } else {
+            query = query.startAfter(postData.createdAt);
+          }
+        }
+      } catch (err) {
+        cursorValid = false;
+      }
     }
 
-    query = query.limit(limitNum);
+    const effectiveLimit = maxLimit * (needsClientDateFilter ? 3 : hasDateFilter ? 2 : 1);
+    const snapshot = await query.limit(effectiveLimit).get();
+    let posts = snapshot.docs.map(transformPost).filter(p => !p.status || p.status === 'published');
 
-    const snapshot = await query.get();
-
-    const posts = snapshot.docs
-      .map(doc => {
-        const data = doc.data();
-        const likes = data.likes || [];
-        return {
-          id: doc.id,
-          ...data,
-          likeCount: likes.length,
-          createdAt: data.createdAt?.toDate?.() || data.createdAt
-        };
-      })
-      // Exclude posts that are still waiting for their scheduled publish time
-      .filter(post => !post.status || post.status === 'published');
+    // Client-side date filtering for incompatible sort orders
+    if (needsClientDateFilter) {
+      const startTime = parsedStartDate?.getTime();
+      const endTime = parsedEndDate?.getTime();
+      posts = posts.filter(p => {
+        const created = p.createdAt instanceof Date
+          ? p.createdAt.getTime()
+          : new Date(p.createdAt || 0).getTime();
+        if (startTime && created < startTime) return false;
+        if (endTime && created > endTime) return false;
+        return true;
+      });
+      posts = posts.slice(0, maxLimit);
+    } else if (hasDateFilter) {
+      posts = posts.slice(0, maxLimit);
+    }
 
     res.json({
       success: true,
       posts,
       pagination: {
-        page: pageNum,
-        limit: limitNum,
-        hasMore: snapshot.size === limitNum
+        limit: maxLimit,
+        nextCursor: posts.length ? posts[posts.length - 1].id : null,
+        hasMore: posts.length === maxLimit,
+        invalidCursor: !cursorValid
       }
     });
   } catch (error) {
@@ -408,9 +492,6 @@ export const createPost = async (req, res, next) => {
     };
 
     if (isScheduled) {
-      const jobId = await schedulePostJob(docRef.id, scheduledAt);
-      if (!jobId && !isSchedulerAvailable()) {
-        // Redis unavailable — immediately publish instead of silently dropping
       try {
         const jobId = await schedulePostJob(docRef.id, scheduledAt);
         if (!jobId && !isSchedulerAvailable()) {
@@ -537,7 +618,14 @@ export const updatePost = async (req, res, next) => {
 // Delete post
 export const deletePost = async (req, res, next) => {
   try {
-    const doc = await postsRef.doc(req.params.postId).get();
+    const { postId } = req.params;
+    const normalizedPostId = typeof postId === 'string' ? postId.trim() : '';
+
+    if (!normalizedPostId) {
+      throw new ApiError(400, 'Invalid or missing postId');
+    }
+
+    const doc = await postsRef.doc(normalizedPostId).get();
     
     if (!doc.exists) {
       throw new ApiError(404, 'Post not found');
@@ -545,11 +633,19 @@ export const deletePost = async (req, res, next) => {
 
     const post = doc.data();
 
+    if (!post || !post.author || !post.author.uid) {
+      throw new ApiError(400, 'Invalid post data');
+    }
+
     if (post.author.uid !== req.user.uid) {
       throw new ApiError(403, 'Not authorized to delete this post');
     }
 
-    await postsRef.doc(req.params.postId).update({
+    if (post.isDeleted) {
+      return res.json({ success: true, message: 'Post already deleted' });
+    }
+
+    await postsRef.doc(normalizedPostId).update({
       isDeleted: true,
       deletedAt: FieldValue.serverTimestamp()
     });

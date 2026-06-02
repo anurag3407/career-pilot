@@ -3,7 +3,8 @@ import mongoose from 'mongoose';
 export const connectDB = async () => {
   const mongoUri = process.env.MONGODB_URI;
 
-  if (!mongoUri && process.env.NODE_ENV !== 'development') {
+  const env = process.env.NODE_ENV || 'development';
+  if (!mongoUri && env !== 'development') {
     throw new Error('MONGODB_URI is not set. Set it in your .env file before starting the server.');
   }
 
