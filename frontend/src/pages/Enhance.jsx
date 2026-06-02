@@ -5,6 +5,10 @@ import { motion } from 'framer-motion'
 import { resumeApi, enhanceApi } from '../services/api'
 import { triggerConfetti } from '../utils/confetti'
 import ResumeAnalysisSkeleton from '../components/ui/ResumeAnalysisSkeleton'
+import { SkeletonList } from '../components/ui/Skeleton'
+import ResumeScore from '../components/ResumeScore'
+import CopyButton from '../components/ui/CopyButton' // ADDED IMPORT
+
 import {
   Target,
   TrendingUp,
@@ -30,8 +34,6 @@ import {
   Edit3,
   ClipboardList
 } from 'lucide-react'
-import { SkeletonList } from '../components/ui/Skeleton'
-import ResumeScore from '../components/ResumeScore'
 
 // Score ring component
 const ScoreRing = ({ score, size = 120, strokeWidth = 8 }) => {
@@ -363,6 +365,9 @@ export default function Enhance() {
   const [jobRole, setJobRole] = useState('')
   const [hasAnalyzed, setHasAnalyzed] = useState(false)
   const [copiedKeyword, setCopiedKeyword] = useState(null)
+  
+  // ADDED: State to hold enhanced text so it can be copied directly on this page
+  const [enhancedText, setEnhancedText] = useState(null)
 
   useEffect(() => {
     fetchResume()
@@ -451,10 +456,11 @@ export default function Enhance() {
 
   const handleEnhanceWithAI = async () => {
     setEnhancing(true)
+    setEnhancedText(null) // Reset in case they are re-running it
     try {
       const apiPreferences = {
         jobRole: jobRole,
-        yearsOfExperience: resume.yearsOfExperience || 0, // Assuming yearsOfExperience is available in resume object
+        yearsOfExperience: resume.yearsOfExperience || 0,
         skills: atsAnalysis?.missingKeywords || [],
         industry: '',
         customInstructions: `Focus on improving: ${atsAnalysis?.improvements?.map(i => i.issue).join(', ') || 'general improvements'}`,
@@ -485,7 +491,10 @@ export default function Enhance() {
 
       toast.success('Resume enhanced successfully!')
       triggerConfetti({ duration: 3000, particleCount: 150, spread: 120 })
-      navigate(`/resume/${resumeId}`)
+      
+      // CHANGED: Instead of navigating away, we display the result here for copying
+      setEnhancedText(enhanceResponse.data.enhancedResume)
+
     } catch (error) {
       toast.error(error.message || 'Failed to enhance resume')
     } finally {
@@ -503,7 +512,6 @@ export default function Enhance() {
     try {
       const response = await enhanceApi.scoreResume(resume.originalText)
       setScoreData(response.data)
-      // Save the score back to the resume history
       await resumeApi.update(resumeId, { atsScore: response.data.overallScore })
       toast.success('Resume scored!')
     } catch (error) {
@@ -607,7 +615,6 @@ export default function Enhance() {
           <div className="space-y-6">
             {/* Score Overview */}
             <div className="grid lg:grid-cols-3 gap-6">
-              {/* Main Score Card */}
               <motion.div
                 initial={{ opacity: 0, scale: 0.95 }}
                 animate={{ opacity: 1, scale: 1 }}
@@ -629,6 +636,7 @@ export default function Enhance() {
                       setAtsAnalysis(null)
                       setComprehensiveAnalysis(null)
                       setActiveTab('overview')
+                      setEnhancedText(null)
                     }}
                     className="mt-4 text-sm text-primary hover:text-primary/80 flex items-center gap-1"
                   >
@@ -646,7 +654,6 @@ export default function Enhance() {
                 </div>
               </motion.div>
 
-              {/* Score Breakdown */}
               <motion.div
                 initial={{ opacity: 0, x: 20 }}
                 animate={{ opacity: 1, x: 0 }}
@@ -1035,6 +1042,39 @@ export default function Enhance() {
                 </div>
               )}
             </motion.div>
+            
+            {/* NEW ADDITION: Display Enhanced Text with Copy Button */}
+            {enhancedText && (
+              <motion.div
+                initial={{ opacity: 0, y: 20 }}
+                animate={{ opacity: 1, y: 0 }}
+                className="mt-8 bg-background/50 border border-border rounded-2xl p-6"
+              >
+                <div className="flex items-center justify-between mb-4">
+                  <h3 className="text-xl font-semibold text-foreground flex items-center gap-2">
+                    <Sparkles className="w-6 h-6 text-primary" />
+                    AI Enhanced Result
+                  </h3>
+                  <button
+                    onClick={() => navigate(`/resume/${resumeId}`)}
+                    className="text-sm text-primary hover:underline flex items-center gap-1"
+                  >
+                    Back to Resume <ArrowRight className="w-4 h-4" />
+                  </button>
+                </div>
+
+                {/* Text Area containing Absolute Copy Button */}
+                <div className="relative bg-muted/30 border border-border rounded-xl p-6 pr-16 min-h-[200px]">
+                  <div className="absolute top-4 right-4">
+                    <CopyButton text={enhancedText} />
+                  </div>
+                  <p className="whitespace-pre-wrap text-foreground/90 font-medium leading-relaxed">
+                    {enhancedText}
+                  </p>
+                </div>
+              </motion.div>
+            )}
+
           </div>
         )}
       </div>
