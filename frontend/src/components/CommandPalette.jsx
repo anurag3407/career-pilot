@@ -90,28 +90,25 @@ const CommandPalette = ({ isOpen, setIsOpen }) => {
 
   const handleSelect = useCallback((action) => {
     navigate(action.path);
+    setRecentActions((prev) => {
+      const next = [
+        {
+          id: action.id,
+          title: action.title,
+          description: action.description,
+          path: action.path,
+        },
+        ...prev.filter((a) => a.id !== action.id),
+      ].slice(0, 5);
 
-    const recentWithoutIcons = [
-      {
-        id: action.id,
-        title: action.title,
-        description: action.description,
-        path: action.path,
-      },
-      ...recentActions.filter((a) => a.id !== action.id),
-    ].slice(0, 5);
-
-    localStorage.setItem(
-      'recentCommands',
-      JSON.stringify(recentWithoutIcons)
-    );
-
-    setRecentActions(recentWithoutIcons);
+      localStorage.setItem('recentCommands', JSON.stringify(next));
+      return next;
+    });
 
     toast.success(`Opening ${action.title}`);
 
     setIsOpen(false);
-  }, [navigate, recentActions, setIsOpen]);
+  }, [navigate, setIsOpen]);
 
   useEffect(() => {
     if (isOpen) {
@@ -160,8 +157,11 @@ const CommandPalette = ({ isOpen, setIsOpen }) => {
   }, [query]);
 
   useEffect(() => {
-    if (selectedIndex >= filteredActions.length) {
-      setSelectedIndex(0);
+    const maxIndex = Math.max(0, filteredActions.length - 1);
+    const nextIndex = Math.max(0, Math.min(selectedIndex, maxIndex));
+
+    if (nextIndex !== selectedIndex) {
+      setSelectedIndex(nextIndex);
     }
   }, [filteredActions.length, selectedIndex]);
 

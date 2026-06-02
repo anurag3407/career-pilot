@@ -262,7 +262,7 @@ export default function CommentSection({ postId, currentUser, onCommentAdded }) 
       if (requestId === requestIdRef.current) {
         setLoading(false);
       }
-      if (loadMore) {
+      if (loadMore && requestId === requestIdRef.current) {
         loadMoreInFlightRef.current = false;
         setIsLoadingMore(false);
       }

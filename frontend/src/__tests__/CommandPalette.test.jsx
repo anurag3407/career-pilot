@@ -50,4 +50,30 @@ describe('CommandPalette', () => {
       expect(setIsOpen).toHaveBeenCalledWith(false)
     })
   })
+
+  test('keeps both recent selections when commands are chosen rapidly', async () => {
+    const setIsOpen = vi.fn()
+
+    render(<CommandPalette isOpen={true} setIsOpen={setIsOpen} />)
+
+    fireEvent.click(screen.getByRole('button', { name: /Create Portfolio/i }))
+    fireEvent.click(screen.getByRole('button', { name: /Connect GitHub/i }))
+
+    await waitFor(() => {
+      expect(JSON.parse(localStorage.getItem('recentCommands'))).toEqual([
+        {
+          id: 2,
+          title: 'Connect GitHub',
+          description: 'Link your GitHub account',
+          path: '/profile',
+        },
+        {
+          id: 1,
+          title: 'Create Portfolio',
+          description: 'Build and manage your portfolio',
+          path: '/profile',
+        },
+      ])
+    })
+  })
 })
