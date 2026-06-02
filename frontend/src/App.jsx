@@ -100,6 +100,7 @@ import CassetteMixtape from './components/portfolio/templates/Cassette_Mixtape/i
 import MagneticDock from './components/portfolio/templates/Magnetic_Dock/index.jsx';
 import Hero from './components/portfolio/templates/Magazine_Editorial/Hero';
 import ColorBlock from './components/portfolio/templates/Color_Block/index.jsx';
+import HighFashion from './components/portfolio/templates/High_Fashion/index.jsx';
 import TestSocialLinks from './pages/TestSocialLinks';
 
 function LoadingScreen({ label }) {
@@ -255,7 +256,8 @@ function AppRoutes() {
         <Route path="/templates/memphis-pop" element={<MemphisPop />} />
         <Route path="/templates/cassette-mixtape" element={<CassetteMixtape />} />
         <Route path="/templates/magnetic-dock" element={<MagneticDock />} />
-        
+        <Route path="/templates/high-fashion" element={<HighFashion />} />
+
         {/* Core Protected Routes */}
         <Route 
   path="/dashboard" 

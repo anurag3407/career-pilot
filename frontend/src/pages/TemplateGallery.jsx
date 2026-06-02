@@ -1,49 +1,3 @@
-import { useState } from "react";
-import { useTheme } from "../context/ThemeContext";
-import Navbar from "../components/Navbar";
-import DeployModal from "../components/portfolio/DeployModal";
-import ThemeSelector from "../components/portfolio/ThemeSelector";
-import HolographicAbout from "../components/portfolio/templates/Holographic/About";
-import CulinaryAbout from "../components/portfolio/templates/Culinary_Restaurant/About";
-import TechStartupHero from "../components/portfolio/templates/Tech_Startup/Hero";
-import GeometricShapesAbout from "../components/portfolio/templates/Geometric_Shapes/About";
-import ChooseAdventurePortfolio from "../components/portfolio/templates/Choose_Adventure/index";
-import WeatherMood from "../components/portfolio/templates/Weather_Mood/index";
-import SwissTypography from "../components/portfolio/templates/Swiss_Typography/index";
-import DesertDunes from "../components/portfolio/templates/Desert_Dunes/index";
-
-/* TemplatePreviewFrame — contains each full portfolio template in a
-   sandboxed scrollable box. The key trick: CSS `transform` on the outer
-   wrapper makes it the "containing block" for any position:fixed children,
-   so a template's fixed navbar stays inside the frame instead of
-   escaping to the top of the viewport and overlapping the page navbar. */
-function TemplatePreviewFrame({ label, badgeColor, children }) {
-  return (
-    <div className="mt-12">
-      <div className="mb-4 flex items-center gap-3 px-1">
-        <span className={`rounded-full px-3 py-1 text-xs font-bold uppercase tracking-widest border ${badgeColor}`}>
-          Preview
-        </span>
-        <h2 className="text-lg font-semibold text-foreground/70">{label}</h2>
-      </div>
-      {/* transform:translate(0) is the critical line — it creates a new
-          containing block so position:fixed elements inside are anchored
-          to this div, not to the viewport. */}
-      <div
-        className="rounded-2xl border border-border"
-        style={{
-          height: 600,
-          overflowY: "auto",
-          overflowX: "hidden",
-          transform: "translate(0)",
-          position: "relative",
-        }}
-      >
-        {children}
-      </div>
-    </div>
-  );
-}
 import React, { useState, useRef, useEffect, Suspense, useMemo } from "react";
 import { templates } from '../data/templates';
 import DeployModal from "../components/portfolio/DeployModal";
@@ -66,11 +20,18 @@ import MagneticDock from "../components/portfolio/templates/Magnetic_Dock/index"
 import Navbar from '../components/Navbar'
 import { X } from "lucide-react";
 import { useSearchParams } from "react-router-dom";
-// import Hero from "../components/portfolio/templates/Holographic/Hero";
-// import ChooseAdventurePortfolio from "../components/portfolio/templates/Choose_Adventure/index";
-// import RetroProjects from "../components/portfolio/templates/2D_Retro_8bit/Projects";
-// import FantasyRPGProjects from "../components/portfolio/templates/Fantasy_RPG/Projects";
+import HolographicAbout from "../components/portfolio/templates/Holographic/About";
+import GeometricShapesAbout from "../components/portfolio/templates/Geometric_Shapes/About";
+import CulinaryAbout from "../components/portfolio/templates/Culinary_Restaurant/About";
+import TechStartupHero from "../components/portfolio/templates/Tech_Startup/Hero";
+import ChooseAdventurePortfolio from "../components/portfolio/templates/Choose_Adventure/index";
+import WeatherMood from "../components/portfolio/templates/Weather_Mood/index";
 import MorphingBlobs from "../components/portfolio/templates/Morphing_Blobs/index";
+import OceanDepths from "../components/portfolio/templates/Ocean_Depths/index";
+import NeonCityscape from "../components/portfolio/templates/Neon_Cityscape/index";
+import PlanetaryOrbit from "../components/portfolio/templates/Planetary_Orbit/index";
+import LowPolyTerrain from "../components/portfolio/templates/Low_Poly_Terrain/index";
+import HighFashion from "../components/portfolio/templates/High_Fashion/index";
 
 
 function FilterSelect({ value, onChange, options, className = "" }) {
@@ -394,11 +355,6 @@ const [hoveredCard, setHoveredCard] = useState(null);
   });
 
   return (
-    <div className="min-h-screen bg-background text-foreground transition-colors duration-300">
-      <Navbar />
-      <div className="p-8 pt-24">
-      <div className="flex items-center mb-8">
-        <h1 className="text-4xl font-bold">Template Gallery</h1>
     <div className="min-h-screen bg-background text-foreground p-8 pt-24 transition-colors duration-300">
       <Navbar />
       
@@ -578,44 +534,31 @@ const [hoveredCard, setHoveredCard] = useState(null);
         <div className="overflow-hidden rounded-2xl border border-cyan-500/20"><TechStartupHero /></div>
       </div>
 
-      {/* Full-template previews — each has its own fixed/sticky navbar.
-          TemplatePreviewFrame creates an isolated scroll container so
-          that navbar stays inside the preview box and never bleeds out. */}
-      <TemplatePreviewFrame
-        label="Choose Adventure Theme — Full Interactive Template"
-        badgeColor="bg-violet-500/20 text-violet-400 border-violet-500/30"
-      >
-        <ChooseAdventurePortfolio />
-      </TemplatePreviewFrame>
-
-      <TemplatePreviewFrame
-        label="Weather Mood Theme — Full Interactive Template"
-        badgeColor="bg-sky-500/20 text-sky-400 border-sky-500/30"
-      >
-        <WeatherMood />
-      </TemplatePreviewFrame>
-
-      <TemplatePreviewFrame
-        label="Swiss Typography — Full Interactive Template"
-        badgeColor="bg-red-500/20 text-red-400 border-red-500/30"
-      >
-        <SwissTypography />
-      </TemplatePreviewFrame>
-
-      <TemplatePreviewFrame
-        label="Desert Dunes — Nature / Organic Template"
-        badgeColor="bg-amber-500/20 text-amber-400 border-amber-500/30"
-      >
-        <DesertDunes />
-      </TemplatePreviewFrame>
-      </div>
-          <span className="rounded-full bg-red-500/20 px-3 py-1 text-xs font-bold uppercase tracking-widest text-red-400 border border-red-500/30">
-            Preview
+      {/* Choose Adventure Theme */}
+      <div className="mt-12">
+        <div className="mb-4 flex items-center gap-3 px-1">
+          <span className="rounded-full bg-violet-500/20 px-3 py-1 text-xs font-bold uppercase tracking-widest text-violet-400 border border-violet-500/30">
+            ⚔ Choose Adventure
           </span>
-          <h2 className="text-lg font-semibold text-foreground/70">Swiss Typography — Full Interactive Template</h2>
+          <h2 className="text-lg font-semibold text-foreground/70">Choose Adventure — Full Interactive Template</h2>
         </div>
-        <div className="overflow-hidden rounded-2xl border border-border">
-          <SwissTypography portfolioData={aiDraft} />
+        <div className="rounded-2xl border border-violet-500/20"
+          style={{ height: 640, overflowY: "auto", overflowX: "hidden", transform: "translate(0)", position: "relative" }}>
+          <ChooseAdventurePortfolio />
+        </div>
+      </div>
+
+      {/* Weather Mood Theme */}
+      <div className="mt-12">
+        <div className="mb-4 flex items-center gap-3 px-1">
+          <span className="rounded-full bg-sky-500/20 px-3 py-1 text-xs font-bold uppercase tracking-widest text-sky-400 border border-sky-500/30">
+            ☁ Weather Mood
+          </span>
+          <h2 className="text-lg font-semibold text-foreground/70">Weather Mood — Full Interactive Template</h2>
+        </div>
+        <div className="rounded-2xl border border-sky-500/20"
+          style={{ height: 640, overflowY: "auto", overflowX: "hidden", transform: "translate(0)", position: "relative" }}>
+          <WeatherMood />
         </div>
       </div>
       {/* Psychedelic Swirl Theme */}
@@ -765,6 +708,8 @@ const [hoveredCard, setHoveredCard] = useState(null);
         </div>
         <div className="rounded-2xl" style={{ height: 640, overflowY: "auto", overflowX: "hidden", transform: "translate(0)", position: "relative", border: "1px solid rgba(139,37,0,.2)" }}>
           <TypewriterEffect />
+        </div>
+      </div>
       {/* Chromatic Glitch — sandboxed fixed-nav frame */}
       <div className="mt-12">
         <div className="mb-4 flex items-center gap-3 px-1">
@@ -792,6 +737,78 @@ const [hoveredCard, setHoveredCard] = useState(null);
         </div>
       </div>
 
+      {/* Ocean Depths — sandboxed fixed-nav frame */}
+      <div className="mt-12">
+        <div className="mb-4 flex items-center gap-3 px-1">
+          <span className="rounded-full bg-cyan-500/20 px-3 py-1 text-xs font-bold uppercase tracking-widest text-cyan-400 border border-cyan-500/30">
+            ≋ Ocean Depths
+          </span>
+          <h2 className="text-lg font-semibold text-foreground/70">Ocean Depths — Bioluminescent 3D/WebGL Portfolio</h2>
+        </div>
+        <div className="rounded-2xl border border-cyan-500/20"
+          style={{ height: 640, overflowY: "auto", overflowX: "hidden", transform: "translate(0)", position: "relative" }}>
+          <OceanDepths />
+        </div>
+      </div>
+
+      {/* Neon Cityscape — sandboxed fixed-nav frame */}
+      <div className="mt-12">
+        <div className="mb-4 flex items-center gap-3 px-1">
+          <span className="rounded-full bg-pink-500/20 px-3 py-1 text-xs font-bold uppercase tracking-widest text-pink-400 border border-pink-500/30">
+            ◈ Neon Cityscape
+          </span>
+          <h2 className="text-lg font-semibold text-foreground/70">Neon Cityscape — Cyberpunk Neon Portfolio</h2>
+        </div>
+        <div className="rounded-2xl border border-pink-500/20"
+          style={{ height: 640, overflowY: "auto", overflowX: "hidden", transform: "translate(0)", position: "relative" }}>
+          <NeonCityscape />
+        </div>
+      </div>
+
+      {/* Planetary Orbit — sandboxed fixed-nav frame */}
+      <div className="mt-12">
+        <div className="mb-4 flex items-center gap-3 px-1">
+          <span className="rounded-full bg-blue-500/20 px-3 py-1 text-xs font-bold uppercase tracking-widest text-blue-400 border border-blue-500/30">
+            ◎ Planetary Orbit
+          </span>
+          <h2 className="text-lg font-semibold text-foreground/70">Planetary Orbit — Solar System Navigation Portfolio</h2>
+        </div>
+        <div className="rounded-2xl border border-blue-500/20"
+          style={{ height: 640, overflowY: "auto", overflowX: "hidden", transform: "translate(0)", position: "relative" }}>
+          <PlanetaryOrbit />
+        </div>
+      </div>
+
+      {/* Low Poly Terrain — sandboxed fixed-nav frame */}
+      <div className="mt-12">
+        <div className="mb-4 flex items-center gap-3 px-1">
+          <span className="rounded-full bg-emerald-500/20 px-3 py-1 text-xs font-bold uppercase tracking-widest text-emerald-400 border border-emerald-500/30">
+            △ Low Poly Terrain
+          </span>
+          <h2 className="text-lg font-semibold text-foreground/70">Low Poly Terrain — Animated Day/Night Cycle Portfolio</h2>
+        </div>
+        <div className="rounded-2xl border border-emerald-500/20"
+          style={{ height: 640, overflowY: "auto", overflowX: "hidden", transform: "translate(0)", position: "relative" }}>
+          <LowPolyTerrain />
+        </div>
+      </div>
+
+      {/* High Fashion — sandboxed fixed-nav frame */}
+      <div className="mt-12">
+        <div className="mb-4 flex items-center gap-3 px-1">
+          <span className="rounded-full px-3 py-1 text-xs font-bold uppercase tracking-widest border" style={{ background: "rgba(201,168,76,.1)", color: "#c9a84c", borderColor: "rgba(201,168,76,.25)" }}>
+            ✦ High Fashion
+          </span>
+          <h2 className="text-lg font-semibold text-foreground/70">High Fashion — Editorial Two-Column Portfolio</h2>
+        </div>
+        <div className="rounded-2xl" style={{ height: 640, overflowY: "auto", overflowX: "hidden", transform: "translate(0)", position: "relative", border: "1px solid rgba(201,168,76,.2)" }}>
+          <HighFashion />
+        </div>
+      </div>
+
+        </div>
+      </div>
     </div>
+  </div>
   );
 }
