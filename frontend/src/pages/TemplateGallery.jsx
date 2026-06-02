@@ -274,7 +274,11 @@ function TemplateCard({ template, hovered, onHover, onLeave, onUse, aiDraft }) {
 const TemplatePreviewModal = ({ templateId, isOpen, onClose, portfolioData }) => {
   const Component = useMemo(() => {
     if (!templateId) return null;
-    return React.lazy(() => import(`../components/portfolio/templates/${templateId}/index.jsx`));
+    return React.lazy(() => 
+      import(`../components/portfolio/templates/${templateId}/index.jsx`).catch(() => 
+        import(`../components/portfolio/templates/${templateId}/Hero.jsx`)
+      )
+    );
   }, [templateId]);
 
   if (!isOpen || !templateId) return null;
@@ -304,7 +308,7 @@ const TemplatePreviewModal = ({ templateId, isOpen, onClose, portfolioData }) =>
             <p className="animate-pulse font-medium tracking-wide text-sm uppercase">Loading interactive preview...</p>
           </div>
         }>
-          {Component && <Component portfolioData={portfolioData} />}
+          {Component && <Component data={portfolioData} portfolioData={portfolioData} />}
         </Suspense>
       </div>
     </div>
