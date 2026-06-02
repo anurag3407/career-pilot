@@ -50,6 +50,7 @@ import { connectDB as baseConnectDB } from './config/database.js';
 import { initJobFetcher } from './services/jobFetcher.js';
 import JobAlert from './models/JobAlert.model.js';
 import { initGitHubSyncCron } from './services/portfolioGitHubSync.js';
+import memoryMonitor from './services/memoryMonitor.js';
 
 const shouldInitGitHubSyncCron =
   process.env.ENABLE_GITHUB_SYNC_CRON !== 'false' &&
@@ -217,6 +218,13 @@ app.get('/health', (req, res) => {
   });
 });
 
+app.get('/health/memory', (req, res) => {
+  const snapshot = memoryMonitor.getSnapshot();
+  const statusCode = snapshot.analysis.status === 'critical' ? 503 : 200;
+
+  res.status(statusCode).json(snapshot);
+});
+
 // Removed broken swagger doc route
 app.get('/metrics', metricsHandler);
 
@@ -265,6 +273,8 @@ const startServer = async () => {
       console.log(`📍 Environment: ${process.env.NODE_ENV || 'development'}`);
       console.log(`🔗 Frontend URL: ${process.env.FRONTEND_URL || 'http://localhost:5173'}`);
     });
+
+    memoryMonitor.start();
 
     try {
       await initializeDefaultChannels();
@@ -333,6 +343,7 @@ startServer();
 // Graceful shutdown
 const shutdown = async (signal) => {
     console.log(`\n📥 Received ${signal}, shutting down gracefully...`);
+    memoryMonitor.stop();
     await redisManager.shutdown();
     console.log('👋 Server shutdown complete');
     process.exit(0);
@@ -347,6 +358,7 @@ process.on("unhandledRejection", (reason) => {
 
 process.on("uncaughtException", (err) => {
   console.error("❌ UNCAUGHT EXCEPTION:", err);
+  memoryMonitor.stop();
   httpServer.close();
   redisManager.shutdown().finally(() => process.exit(1));
   setTimeout(() => process.exit(1), 10000).unref();

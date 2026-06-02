@@ -87,6 +87,33 @@ npm run build
 npm run preview
 ```
 
+## 📈 Backend Memory Monitoring
+
+The backend includes `backend/src/services/memoryMonitor.js` for lightweight
+memory leak detection. It samples `process.memoryUsage()` on a configurable
+interval, keeps a rolling window, and reports healthy, warning, or critical
+diagnostics when heap/RSS usage crosses absolute thresholds or grows
+persistently across the window. The server starts the monitor on boot and
+exposes the current snapshot at `GET /health/memory`.
+
+Useful environment variables:
+
+```bash
+MEMORY_MONITOR_ENABLED=true
+MEMORY_MONITOR_INTERVAL_MS=30000
+MEMORY_MONITOR_WINDOW_SIZE=6
+MEMORY_MONITOR_WARNING_GROWTH_RATE=0.15
+MEMORY_MONITOR_CRITICAL_GROWTH_RATE=0.35
+MEMORY_MONITOR_MAX_HEAP_BYTES=536870912
+MEMORY_MONITOR_MAX_RSS_BYTES=1073741824
+```
+
+Run the focused monitor tests from the backend directory:
+
+```bash
+node --test src/__tests__/memoryMonitor.test.js
+```
+
 ## 🌟 Contributing
 
 We welcome and appreciate contributions from the community! Whether it's reporting bugs, improving documentation, or proposing new features, your help is valuable.
