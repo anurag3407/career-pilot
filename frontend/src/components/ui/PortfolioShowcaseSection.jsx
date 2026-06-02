@@ -35,7 +35,7 @@ export default function PortfolioShowcaseSection() {
   }, [carouselItems.length]);
 
   return (
-    <section className="py-20 bg-zinc-950 relative overflow-hidden">
+    <section className="py-20 bg-background relative overflow-hidden transition-colors duration-300">
       <div className="relative max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
         <motion.div 
           initial={{ opacity: 0, y: 20 }}
@@ -57,18 +57,18 @@ export default function PortfolioShowcaseSection() {
             </span>
           </div>
 
-          <h2 className="text-3xl md:text-4xl font-bold text-white mb-4">
+          <h2 className="text-3xl md:text-4xl font-bold text-foreground mb-4">
             Build Stunning Portfolios in Minutes
           </h2>
 
-          <p className="text-zinc-400 max-w-xl mx-auto">
+          <p className="text-muted-foreground max-w-xl mx-auto">
             From Resume, GitHub, or LinkedIn — deployed instantly
           </p>
         </motion.div>
 
         {/* Carousel */}
         <div className="max-w-xl mx-auto mb-12 relative">
-          <div className="relative w-full h-[220px] overflow-hidden rounded-xl border border-zinc-800 bg-zinc-900/50 p-6 flex flex-col justify-between">
+          <div className="relative w-full h-[280px] sm:h-[220px] overflow-hidden rounded-xl border border-border bg-card shadow-sm p-6 flex flex-col justify-between transition-colors duration-300">
             {carouselItems.map((item, index) => {
               const isActive = index === currentIndex;
               return (
@@ -79,8 +79,8 @@ export default function PortfolioShowcaseSection() {
                   }`}
                 >
                   <div>
-                    <h3 className="text-xl font-semibold text-white mb-2">{item.name}</h3>
-                    <p className="text-zinc-400 text-sm leading-relaxed">
+                    <h3 className="text-xl font-semibold text-foreground mb-2">{item.name}</h3>
+                    <p className="text-muted-foreground text-sm leading-relaxed">
                       {item.description}
                     </p>
                   </div>
@@ -89,7 +89,7 @@ export default function PortfolioShowcaseSection() {
                     {item.skills.map((skill) => (
                       <span
                         key={skill}
-                        className="px-2.5 py-1 text-xs rounded-full border border-zinc-800 bg-zinc-900 text-zinc-400 font-medium"
+                        className="px-2.5 py-1 text-xs rounded-full border border-border bg-muted text-muted-foreground font-medium"
                       >
                         {skill}
                       </span>
@@ -108,7 +108,7 @@ export default function PortfolioShowcaseSection() {
                 onClick={() => setCurrentIndex(index)}
                 aria-label={`Go to slide ${index + 1}`}
                 className={`w-2 h-2 rounded-full transition-all duration-300 ${
-                  index === currentIndex ? "bg-white" : "bg-zinc-800 hover:bg-zinc-700"
+                  index === currentIndex ? "bg-primary w-4" : "bg-muted hover:bg-muted-foreground"
                 }`}
               />
             ))}
@@ -119,7 +119,7 @@ export default function PortfolioShowcaseSection() {
         <div className="text-center">
           <Link
             to="/register"
-            className="group inline-flex items-center justify-center gap-2 px-8 py-4 bg-white text-black font-medium rounded-lg hover:bg-zinc-200 transition-all duration-200"
+            className="group inline-flex items-center justify-center gap-2 px-8 py-4 bg-foreground text-background hover:text-white font-medium rounded-lg hover:bg-muted-foreground/80 transition-all duration-200"
           >
             Build Your Portfolio
             <ArrowRight className="w-4 h-4 group-hover:translate-x-1 transition-transform" />

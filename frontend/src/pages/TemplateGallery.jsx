@@ -116,8 +116,25 @@ const TemplateHeroPreview = ({ templateId, portfolioData }) => {
 };
 
 function TemplateCard({ template, hovered, onHover, onLeave, onUse, aiDraft }) {
+const TemplateHeroPreview = ({ templateId, portfolioData }) => {
+  const Component = useMemo(() => {
+    if (!templateId) return null;
+    return React.lazy(() => import(`../components/portfolio/templates/${templateId}/index.jsx`));
+  }, [templateId]);
+
+  if (!templateId) return null;
+  return (
+    <Suspense fallback={<div className="w-full h-full bg-muted/50" />}>
+      <Component portfolioData={portfolioData} />
+    </Suspense>
+  );
+};
+
+function TemplateCard({ template, hovered, onHover, onLeave, onUse, aiDraft }) {
   return (
     <motion.div
+      onMouseEnter={() => onHover(template.id)}
+      onMouseLeave={onLeave}
       onMouseEnter={() => onHover(template.id)}
       onMouseLeave={onLeave}
       animate={hovered ? "hover" : "rest"}
@@ -140,6 +157,22 @@ function TemplateCard({ template, hovered, onHover, onLeave, onUse, aiDraft }) {
       }}
       className="bg-card rounded-2xl overflow-hidden border border-border flex flex-col justify-between cursor-pointer"
     >
+      <div className="overflow-hidden relative bg-background h-52">
+        {template.isComplete ? (
+          <div className="absolute top-0 left-0 origin-top-left pointer-events-none" style={{ width: '1280px', height: '800px', transform: 'scale(0.3)' }}>
+            <TemplateHeroPreview templateId={template.id} portfolioData={aiDraft} />
+          </div>
+        ) : (
+          <motion.img
+            src={template.image}
+            alt={template.title}
+            className="w-full h-52 object-cover object-top"
+            variants={{
+              rest: { scale: 1, transition: { duration: 0.5, ease: [0.25, 0.46, 0.45, 0.94] } },
+              hover: { scale: 1.08, transition: { type: "spring", stiffness: 200, damping: 25 } },
+            }}
+          />
+        )}
       <div className="overflow-hidden relative bg-background h-52">
         {template.isComplete ? (
           <div className="absolute top-0 left-0 origin-top-left pointer-events-none" style={{ width: '1280px', height: '800px', transform: 'scale(0.3)' }}>
@@ -189,6 +222,8 @@ function TemplateCard({ template, hovered, onHover, onLeave, onUse, aiDraft }) {
 
         <AnimatePresence>
           {hovered && (
+            <motion.div
+              key="cta-group"
             <motion.div
               key="cta-group"
               initial={{ opacity: 0, y: 14 }}
@@ -262,7 +297,51 @@ const TemplatePreviewModal = ({ templateId, isOpen, onClose, portfolioData }) =>
   );
 };
 
+const TemplatePreviewModal = ({ templateId, isOpen, onClose, portfolioData }) => {
+  const Component = useMemo(() => {
+    if (!templateId) return null;
+    return React.lazy(() => import(`../components/portfolio/templates/${templateId}/index.jsx`));
+  }, [templateId]);
+
+  if (!isOpen || !templateId) return null;
+
+  return (
+    <div className="fixed inset-0 z-[100] bg-background/95 backdrop-blur-xl flex flex-col overflow-hidden">
+      <div className="flex items-center justify-between px-6 py-4 bg-card/80 border-b border-border shadow-sm">
+        <div className="flex items-center gap-4">
+          <h2 className="text-xl font-bold bg-clip-text text-transparent bg-gradient-to-r from-cyan-400 to-blue-500">
+            {templateId.replace(/_/g, ' ')} Preview
+          </h2>
+          <span className="px-3 py-1 text-xs font-medium rounded-full bg-cyan-500/10 text-cyan-400 border border-cyan-500/20">
+            Live Demo
+          </span>
+        </div>
+        <button
+          onClick={onClose}
+          className="p-2 text-muted-foreground hover:text-foreground bg-muted hover:bg-accent rounded-xl transition-colors"
+        >
+          <X className="w-5 h-5" />
+        </button>
+      </div>
+      <div className="flex-1 overflow-y-auto relative bg-background">
+        <Suspense fallback={
+          <div className="absolute inset-0 flex flex-col items-center justify-center text-muted-foreground gap-4">
+            <div className="w-8 h-8 border-4 border-cyan-500 border-t-transparent rounded-full animate-spin" />
+            <p className="animate-pulse font-medium tracking-wide text-sm uppercase">Loading interactive preview...</p>
+          </div>
+        }>
+          {Component && <Component portfolioData={portfolioData} />}
+        </Suspense>
+      </div>
+    </div>
+  );
+};
+
 export default function TemplateGallery() {
+const { theme, toggleTheme } = useTheme();
+const [searchParams, setSearchParams] = useSearchParams();
+const previewTemplateId = searchParams.get("preview");
+const [hoveredCard, setHoveredCard] = useState(null);
 const { theme, toggleTheme } = useTheme();
 const [searchParams, setSearchParams] = useSearchParams();
 const previewTemplateId = searchParams.get("preview");
@@ -272,6 +351,23 @@ const [hoveredCard, setHoveredCard] = useState(null);
   const [colorScheme, setColorScheme] = useState("All");
   const [layout, setLayout] = useState("All");
   const [sort, setSort] = useState("Popular");
+  
+  const [aiDraft, setAiDraft] = useState(null);
+
+  useEffect(() => {
+    const draft = localStorage.getItem('ai_portfolio_draft');
+    if (draft) {
+      try {
+        setAiDraft(JSON.parse(draft));
+      } catch(e) {}
+    }
+  }, []);
+
+  const clearDraft = () => {
+    localStorage.removeItem('ai_portfolio_draft');
+    setAiDraft(null);
+  };
+
   
   const [aiDraft, setAiDraft] = useState(null);
 
@@ -320,6 +416,7 @@ const [hoveredCard, setHoveredCard] = useState(null);
     { value: "Minimal", label: "Minimal" },
     { value: "Cards", label: "Cards" },
     { value: "Interactive", label: "Interactive" },
+    { value: "Interactive", label: "Interactive" },
   ];
   const SORT_OPTIONS = [
     { value: "Popular", label: "Popular" },
@@ -328,6 +425,7 @@ const [hoveredCard, setHoveredCard] = useState(null);
   ];
 
   const filteredTemplates = templates.filter((template) => {
+    if (!template.isComplete) return false;
     if (!template.isComplete) return false;
     const matchesCategory = category === "All" || template.category === category;
     const matchesColorScheme = colorScheme === "All" || template.colorScheme === colorScheme;
@@ -343,8 +441,34 @@ const [hoveredCard, setHoveredCard] = useState(null);
   });
 
   return (
+    <div className="min-h-screen bg-background text-foreground transition-colors duration-300">
+      <Navbar />
+      <div className="p-8 pt-24">
+      <div className="flex items-center mb-8">
+        <h1 className="text-4xl font-bold">Template Gallery</h1>
     <div className="min-h-screen bg-background text-foreground p-8 pt-24 transition-colors duration-300">
       <Navbar />
+      
+      {aiDraft && (
+        <div className="mb-8 p-4 rounded-xl bg-gradient-to-r from-emerald-500/10 to-teal-500/10 border border-emerald-500/30 flex items-center justify-between">
+          <div>
+            <h3 className="text-emerald-400 font-bold flex items-center gap-2">
+              <Sparkles className="w-5 h-5" /> ✨ Resume Parsed Successfully!
+            </h3>
+            <p className="text-sm text-muted-foreground mt-1">
+              Your data has been extracted. Select a template below and we'll automatically inject your experience and projects!
+            </p>
+          </div>
+          <button 
+            onClick={clearDraft}
+            className="p-2 hover:bg-emerald-500/20 text-emerald-400 rounded-lg transition-colors"
+            title="Discard Draft"
+          >
+            <X className="w-5 h-5" />
+          </button>
+        </div>
+      )}
+
       
       {aiDraft && (
         <div className="mb-8 p-4 rounded-xl bg-gradient-to-r from-emerald-500/10 to-teal-500/10 border border-emerald-500/30 flex items-center justify-between">
@@ -415,7 +539,18 @@ const [hoveredCard, setHoveredCard] = useState(null);
         </div>
       ) : (
         <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 xl:grid-cols-4 gap-6">
+        <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 xl:grid-cols-4 gap-6">
           {sortedTemplates.map((template) => (
+<TemplateCard
+  key={template.id}
+  template={template}
+  hovered={hoveredCard === template.id}
+  onHover={setHoveredCard}
+  onLeave={() => setHoveredCard(null)}
+  onUse={handleUseTemplate}
+  aiDraft={aiDraft}
+/>
+ ))}
 <TemplateCard
   key={template.id}
   template={template}
@@ -428,6 +563,7 @@ const [hoveredCard, setHoveredCard] = useState(null);
  ))}
         </div>
       )}
+      {/* Deploy Modal */}
 
       <DeployModal
         isOpen={isDeployModalOpen}
@@ -458,18 +594,23 @@ const [hoveredCard, setHoveredCard] = useState(null);
             Preview
           </span>
           <h2 className="text-lg font-semibold text-foreground/70">Liquid Glass Theme</h2>
+          <h2 className="text-lg font-semibold text-foreground/70">Liquid Glass Theme</h2>
         </div>
         <div className="overflow-hidden rounded-2xl border border-border">
+          <LiquidGlass portfolioData={aiDraft} />
           <LiquidGlass portfolioData={aiDraft} />
         </div>
       </div>
 
       {/* Midnight Gradient */}
+      {/* Midnight Gradient */}
       <div className="mt-12">
         <div className="mb-4 flex items-center gap-3 px-1">
           <span className="rounded-full bg-indigo-500/20 px-3 py-1 text-xs font-bold uppercase tracking-widest text-indigo-400 border border-indigo-500/30">
+          <span className="rounded-full bg-indigo-500/20 px-3 py-1 text-xs font-bold uppercase tracking-widest text-indigo-400 border border-indigo-500/30">
             Preview
           </span>
+          <h2 className="text-lg font-semibold text-foreground/70">Midnight Gradient Theme</h2>
           <h2 className="text-lg font-semibold text-foreground/70">Midnight Gradient Theme</h2>
         </div>
         <div className="overflow-hidden rounded-2xl border border-border">
@@ -493,6 +634,7 @@ const [hoveredCard, setHoveredCard] = useState(null);
           <span className="rounded-full bg-red-500/20 px-3 py-1 text-xs font-bold uppercase tracking-widest text-red-400 border border-red-500/30">
             Preview
           </span>
+          <h2 className="text-lg font-semibold text-foreground/70">Swiss Typography — Full Interactive Template</h2>
           <h2 className="text-lg font-semibold text-foreground/70">Swiss Typography — Full Interactive Template</h2>
         </div>
         <div className="overflow-hidden rounded-2xl border border-border">
@@ -567,7 +709,7 @@ const [hoveredCard, setHoveredCard] = useState(null);
           <CassetteMixtape />
         </div>
       </div>
-
+      {/* Magnetic Dock — sandboxed fixed-nav frame */}
       <div className="mt-12">
         <div className="mb-4 flex items-center gap-3 px-1">
           <span className="rounded-full bg-orange-500/20 px-3 py-1 text-xs font-bold uppercase tracking-widest text-orange-400 border border-orange-500/30">
@@ -585,3 +727,4 @@ const [hoveredCard, setHoveredCard] = useState(null);
     </div>
   );
 }
+
