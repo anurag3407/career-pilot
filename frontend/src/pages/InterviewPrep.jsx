@@ -8,6 +8,7 @@ import BodyLanguageTips from '../components/BodyLanguageTips';
 import VoiceToTextButton from '../components/VoiceToTextButton';
 import { interviewApi, uploadApi } from '../services/api';
 import ConfidenceMeter from "../components/ConfidenceMeter";
+import {DEFAULT_PROGRESS,updateDifficulty} from '../utils/interviewDifficulty';
 
 // Device and browser detection utilities
 const isMobileDevice = () => {
@@ -291,6 +292,18 @@ export default function InterviewPrep() {
   const [answersSubmitted, setAnswersSubmitted] = useState([]);
 
   const [overallResults, setOverallResults] = useState(null);
+  const [progressData, setProgressData] = useState(() => {
+
+  const stored =
+    localStorage.getItem(
+      "interviewProgress"
+    );
+
+  return stored
+    ? JSON.parse(stored)
+    : DEFAULT_PROGRESS;
+
+});
   const [expressionSamples, setExpressionSamples] = useState([]);
 
   const videoRef = useRef(null);
@@ -838,6 +851,21 @@ export default function InterviewPrep() {
   setLoading(true);
   try {
     const response = await interviewApi.completeInterview(interviewId);
+    const score = response.data.overallScore;
+    const previousLevel = progressData.level;
+    const updatedProgress = updateDifficulty(score,progressData);
+    localStorage.setItem("interviewProgress",JSON.stringify( updatedProgress));
+    setProgressData(updatedProgress);
+    if(
+ previousLevel !==
+ updatedProgress.level
+){
+ alert(
+   `🎉 Congratulations!
+You reached
+${updatedProgress.level}`
+ );
+}
 
     setOverallResults(response.data);
     setStep('feedback');
@@ -1443,6 +1471,83 @@ export default function InterviewPrep() {
             <h1 className="text-4xl md:text-5xl font-bold text-foreground mb-3">Interview Complete!</h1>
             <p className="text-lg text-muted-foreground">Here's your comprehensive performance analysis</p>
           </motion.div>
+          <motion.div
+  initial={{ opacity: 0, y: 20 }}
+  animate={{ opacity: 1, y: 0 }}
+  transition={{ delay: 0.05 }}
+  className="mb-8"
+>
+  <div className="p-6 rounded-3xl bg-gradient-to-br from-primary/10 to-primary/5 border border-primary/20">
+
+    <h2 className="text-2xl font-bold mb-4">
+      Adaptive Interview Progress
+    </h2>
+
+    <div className="grid md:grid-cols-2 gap-4">
+
+      <div>
+        <p className="text-muted-foreground">
+          Current Level
+        </p>
+
+        <p className="text-xl font-bold">
+          {progressData.level}
+        </p>
+      </div>
+
+      <div>
+        <p className="text-muted-foreground">
+          Average Score
+        </p>
+
+        <p className="text-xl font-bold">
+          {progressData.averageScore}%
+        </p>
+      </div>
+
+      <div>
+        <p className="text-muted-foreground">
+          Interviews Completed
+        </p>
+
+        <p className="text-xl font-bold">
+          {progressData.completedInterviews}
+        </p>
+      </div>
+
+      <div>
+        <p className="text-muted-foreground">
+          Success Streak
+        </p>
+
+        <p className="text-xl font-bold">
+          {progressData.streak}/3
+        </p>
+      </div>
+
+    </div>
+
+    <div className="mt-6">
+
+      <p className="mb-2 text-sm text-muted-foreground">
+        Progress To Next Level
+      </p>
+
+      <div className="w-full h-3 bg-muted rounded-full overflow-hidden">
+
+        <div
+          className="h-full bg-primary rounded-full transition-all duration-500"
+          style={{
+            width: `${progressData.streak * 33}%`
+          }}
+        />
+
+      </div>
+
+    </div>
+
+  </div>
+</motion.div>
 
           <motion.div initial={{ opacity: 0, y: 20 }} animate={{ opacity: 1, y: 0 }} transition={{ delay: 0.1 }} className="mb-8">
             <div className="p-8 rounded-3xl bg-gradient-to-br from-neutral-900/80 to-neutral-900/40 border border-border backdrop-blur-xl">
