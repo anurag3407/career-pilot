@@ -1103,7 +1103,7 @@ export const templates = [
     "category": "Portfolio",
     "colorScheme": "Dark",
     "layout": "Grid",
-    "author": "System",
+    "author": "Akansha02code",
     "views": 1091,
     "rating": 4.5,
     "image": "/template-previews/Liquid_Glass.png",
@@ -2040,11 +2040,12 @@ export const templates = [
     "category": "Portfolio",
     "colorScheme": "Dark",
     "layout": "Grid",
-    "author": "System",
+    "author": "Akansha02code",
     "views": 1168,
     "rating": 4.5,
     "image": "/template-previews/Story_Unfold.png",
-    "createdAt": "2026-05-01"
+    "createdAt": "2026-05-01",
+    "isComplete": true
   },
   {
     "id": "Stripe_Gradient",
