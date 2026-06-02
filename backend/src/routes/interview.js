@@ -12,7 +12,7 @@ const router = express.Router();
 
 const buildInterviewAnalytics = async (uid) => {
     const sessions = await Interview.aggregate([
-        { $match: { odId: uid, status: 'completed' } },
+        { $match: { userId: uid, status: 'completed' } },
         {
             $project: {
                 completedAt: 1,
@@ -78,7 +78,7 @@ router.post('/start', verifyToken, extractAIProvider, aiRateLimiter, validate(st
     }, req.aiProvider);
 
     const interview = new Interview({
-        odId: req.user.uid,
+        userId: req.user.uid,
         jobRole,
         industry,
         experienceLevel,
@@ -104,7 +104,7 @@ router.post('/:id/answer', verifyToken, extractAIProvider, aiRateLimiter, valida
     const { id } = req.params;
     const { questionId, transcript, duration, expressionMetrics } = req.body;
 
-    const interview = await Interview.findOne({ _id: id, odId: req.user.uid });
+    const interview = await Interview.findOne({ _id: id, userId: req.user.uid });
     if (!interview) {
         throw new ApiError(404, 'Interview not found');
     }
@@ -159,7 +159,7 @@ router.post('/:id/answer', verifyToken, extractAIProvider, aiRateLimiter, valida
 router.post('/:id/complete', verifyToken, extractAIProvider, aiRateLimiter, asyncHandler(async (req, res) => {
     const { id } = req.params;
 
-    const interview = await Interview.findOne({ _id: id, odId: req.user.uid });
+    const interview = await Interview.findOne({ _id: id, userId: req.user.uid });
     if (!interview) {
         throw new ApiError(404, 'Interview not found');
     }
@@ -195,7 +195,7 @@ router.post('/:id/complete', verifyToken, extractAIProvider, aiRateLimiter, asyn
 }));
 
 router.get('/history', verifyToken, asyncHandler(async (req, res) => {
-    const interviews = await Interview.find({ odId: req.user.uid })
+    const interviews = await Interview.find({ userId: req.user.uid })
         .sort({ createdAt: -1 })
         .limit(20)
         .select('jobRole industry experienceLevel status overallScore createdAt completedAt duration')
@@ -219,7 +219,7 @@ router.get('/analytics', verifyToken, asyncHandler(async (req, res) => {
 router.get('/:id', verifyToken, asyncHandler(async (req, res) => {
     const { id } = req.params;
 
-    const interview = await Interview.findOne({ _id: id, odId: req.user.uid }).lean();
+    const interview = await Interview.findOne({ _id: id, userId: req.user.uid }).lean();
     if (!interview) {
         throw new ApiError(404, 'Interview not found');
     }
