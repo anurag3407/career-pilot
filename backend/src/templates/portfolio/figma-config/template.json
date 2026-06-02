@@ -1,18 +1,19 @@
 {
   "id": "figma-config",
   "name": "Figma Config",
-  "description": "A vibrant, geometric portfolio theme with multicolor accents, playful cards, and a grid-based project layout.",
+  "description": "A vibrant, geometric portfolio theme inspired by Figma's Config conference — multicolor accents, playful rounded cards, animated shapes, and a responsive grid-based layout.",
   "version": "1.0.0",
   "author": "CareerPilot",
   "category": "portfolio",
-  "tags": ["geometric", "colorful", "modern", "playful", "grid"],
+  "tags": ["geometric", "colorful", "modern", "playful", "grid", "figma", "animated"],
   "fonts": ["DM Sans", "Plus Jakarta Sans"],
   "colors": {
-    "red": "#EF4444",
-    "blue": "#3B82F6",
-    "green": "#22C55E",
-    "purple": "#8B5CF6",
-    "orange": "#F97316"
+    "red": "#F24822",
+    "blue": "#0D99FF",
+    "green": "#14AE5C",
+    "purple": "#9747FF",
+    "orange": "#FF8C00",
+    "yellow": "#FFD900"
   },
   "variables": {
     "name": "Full name",
@@ -25,6 +26,9 @@
     "linkedin": "LinkedIn profile URL",
     "website": "Personal website URL (optional)",
     "avatar": "Profile photo URL",
+    "projects_count": "Total number of projects (used in hero stats)",
+    "experience": "Years of experience (used in hero stats)",
+    "clients": "Number of clients (used in hero stats)",
     "skills": "Array of skill objects { name, category }",
     "projects": "Array of project objects { title, description, tags, url, image, category }",
     "experience": "Array of experience objects { company, role, duration, bullets }",
