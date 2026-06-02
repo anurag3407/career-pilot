@@ -2,6 +2,7 @@ import { useRef } from "react";
 import AppSidebar from "./AppSidebar";
 import FAB from "./FAB";
 import NotificationCenter from "./NotificationCenter";
+import BottomNavBar from "./BottomNavBar";
 import { cn } from "../lib/utils";
 
 export default function AppLayout({ children, className }) {
@@ -20,6 +21,8 @@ export default function AppLayout({ children, className }) {
                 {children}
 
                 <FAB scrollContainerRef={mainRef} />
+
+                <BottomNavBar />
             </main>
         </div>
     );
