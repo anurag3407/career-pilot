@@ -320,13 +320,12 @@ export default function NeonSign() {
       <div className="hidden md:block pt-14 relative z-10">
         <Hero data={data} />
         <StatsBar data={data} />
-
-        <div id="about"><About data={data} /></div>
-        <div id="skills"><Skills data={data} /></div>
-        <div id="projects"><Projects data={data} /></div>
-        <div id="experience"><Experience data={data} /></div>
-        <div id="testimonials"><Testimonials data={data} /></div>
-        <div id="contact"><Contact data={data} /></div>
+        <About data={data} />
+        <Skills data={data} />
+        <Projects data={data} />
+        <Experience data={data} />
+        <Testimonials data={data} />
+        <Contact data={data} />
       </div>
 
       {/* ── Mobile layout — accordion ── */}
