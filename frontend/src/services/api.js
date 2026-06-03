@@ -421,12 +421,12 @@ export const portfolioApi = {
   },
 
   // Deploy portfolio to Cloudflare Pages
-  async deploy({ slug, sections, templateId, title }) {
+  async deploy({ slug, sections, templateId, title, provider, token }) {
     const headers = await getAuthHeaders();
     const response = await fetch(`${API_BASE}/portfolio/deploy`, {
       method: 'POST',
       headers,
-      body: JSON.stringify({ slug, sections, templateId, title })
+      body: JSON.stringify({ slug, sections, templateId, title, provider, token })
     });
     return handleResponse(response);
   }
