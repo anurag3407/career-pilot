@@ -36,8 +36,10 @@ export default function ResumeSuggestionsPanel({
   )
 
   const resumeText = typeof getResumeText === 'function' ? getResumeText() : ''
-  // Roughly empty once markdown punctuation / placeholders are stripped.
-  const isEmpty = !resumeText.replace(/[#|*\-\s]/g, '').replace(/your name/i, '').trim()
+  // Roughly empty once placeholders and markdown punctuation are stripped.
+  // Remove the "Your Name" placeholder BEFORE collapsing whitespace, otherwise
+  // the space is gone and the placeholder regex can never match.
+  const isEmpty = !resumeText.replace(/your name/i, '').replace(/[#|*\-\s]/g, '').trim()
 
   const handleAnalyze = async () => {
     if (isEmpty) {
