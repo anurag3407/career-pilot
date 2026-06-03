@@ -73,9 +73,9 @@ const Contact = ({data}) => {
             ))}
           </div>
           
-          {personal?.email && (
+          {socials?.email && (
             <motion.a 
-              href={`mailto:${personal.email}`}
+              href={`mailto:${socials.email}`}
               initial={{ opacity: 0, y: 20 }}
               whileInView={{ opacity: 1, y: 0 }}
               viewport={{ once: true }}

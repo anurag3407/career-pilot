@@ -48,7 +48,10 @@ const Skills = ({data}) => {
             <div className="grid md:grid-cols-2 gap-6">
               {skills
                 ?.filter(s => s.category === category)
-                .map((skill, index) => (
+                .map((skill, index) => {
+                  const safeLevel = Math.max(0, Math.min(100, Number(skill.level) || 0));
+
+                  return (
                   <motion.div
                     key={skill.name}
                     initial={{ opacity: 0, x: -30 }}
@@ -67,13 +70,13 @@ const Skills = ({data}) => {
                         viewport={{ once: true }}
                         transition={{ delay: catIndex * 0.15 + index * 0.05 + 0.3 }}
                       >
-                        {skill.level}%
+                        {safeLevel}%
                       </motion.span>
                     </div>
                     <div className="w-full bg-gradient-to-r from-amber-100 to-amber-200 rounded-full h-4 shadow-inner overflow-hidden">
                       <motion.div
                         initial={{ width: 0 }}
-                        whileInView={{ width: `${skill.level}%` }}
+                        whileInView={{ width: `${safeLevel}%` }}
                         viewport={{ once: true }}
                         transition={{ duration: 1.2, delay: catIndex * 0.15 + index * 0.05 }}
                         className="bg-gradient-to-r from-amber-500 to-amber-700 h-4 rounded-full shadow-lg relative"
@@ -82,7 +85,7 @@ const Skills = ({data}) => {
                       </motion.div>
                     </div>
                   </motion.div>
-                ))}
+)})}
             </div>
           </motion.div>
         ))}

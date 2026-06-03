@@ -40,7 +40,7 @@ const Experience = ({data}) => {
         <div className="md:hidden space-y-8">
           {experience?.map((exp, index) => (
             <motion.div
-              key={`${exp.company}-${exp.period}`}
+            key={exp.id ?? `${exp.company}-${exp.role}-${exp.period}-${index}`}
               initial={{ opacity: 0, y: 30 }}
               whileInView={{ opacity: 1, y: 0 }}
               viewport={{ once: true }}

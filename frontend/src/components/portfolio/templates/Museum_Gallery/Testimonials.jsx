@@ -37,7 +37,7 @@ const Testimonials = ({data}) => {
         <div className="grid md:grid-cols-2 lg:grid-cols-3 gap-8">
           {testimonials?.map((testimonial, index) => (
             <motion.div
-              key={testimonial.name}
+            key={testimonial.id ?? `${testimonial.name}-${index}`}
               initial={{ opacity: 0, scale: 0.9, y: 30 }}
               whileInView={{ opacity: 1, scale: 1, y: 0 }}
               viewport={{ once: true }}

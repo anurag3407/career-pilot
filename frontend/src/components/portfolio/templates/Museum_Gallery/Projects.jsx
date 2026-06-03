@@ -41,7 +41,9 @@ const Projects = ({data}) => {
         <div className="grid md:grid-cols-2 lg:grid-cols-3 gap-8">
           {projects?.map((project, index) => (
             <motion.div
-              key={project.title}
+            
+            key={project.id ?? `${project.title}-${index}`}
+
               initial={{ opacity: 0, y: 60 }}
               whileInView={{ opacity: 1, y: 0 }}
               viewport={{ once: true }}
@@ -67,10 +69,10 @@ const Projects = ({data}) => {
                 )}
                 
                 <div className="p-6">
-                  <h3 className="text-l md:text-2xl font-bold text-amber-900 mb-3 font-serif group-hover:text-amber-700 transition-colors">
+                  <h3 className="text-lg md:text-2xl font-bold text-amber-900 mb-3 font-serif group-hover:text-amber-700 transition-colors">
                     {project.title}
                   </h3>
-                  <p className="text-gray-600 mb-4 text-s md:text-base line-clamp-3">{project.description}</p>
+                  <p className="text-gray-600 mb-4 text-sm md:text-base line-clamp-3">{project.description}</p>
                   
                   <div className="flex flex-wrap gap-2 mb-5">
                     {project.techStack?.map((tech, i) => (

@@ -13,16 +13,18 @@ import Testimonials from './Testimonials';
 
 
 // Main Component
-const MuseumGallery = () => {
+const MuseumGallery = ({ portfolioData }) => {
+   const templateData = portfolioData ?? data;
+  
   return (
     <div className="min-h-screen bg-amber-50 font-sans">
-      <Hero data={data}/>
-      <About data={data}/>
-      <Skills data={data}/>
-      <Projects data={data}/>
-      <Experience data={data}/>
-      <Testimonials data={data}/>
-      <Contact data={data}/>
+         <Hero data={templateData}/>
+      <About data={templateData}/>
+      <Skills data={templateData}/>
+      <Projects data={templateData}/>
+      <Experience data={templateData}/>
+      <Testimonials data={templateData}/>
+      <Contact data={templateData}/>
     </div>
   );
 };

@@ -90,7 +90,7 @@ const Hero = ({data}) => {
             animate={{ opacity: 1 }}
             transition={{ delay: 0.9, duration: 0.8 }}
           >
-            <a href="#about" className="inline-block">
+            <a href="`#about`" className="inline-block" aria-label="Scroll to About section">
               <motion.div
                 animate={{ y: [0, 10, 0] }}
                 transition={{ duration: 1.5, repeat: Infinity, ease: "easeInOut" }}
