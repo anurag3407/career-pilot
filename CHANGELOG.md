@@ -1,3 +1,16 @@
+# [1.129.0](https://github.com/anurag3407/career-pilot/compare/v1.128.1...v1.129.0) (2026-06-02)
+
+
+### Bug Fixes
+
+* address bull board review comments ([8acbb3a](https://github.com/anurag3407/career-pilot/commit/8acbb3ac4f7aba146dec846c5de92dfdaa3aefba))
+* resolve merge conflicts and address bull board review ([25173d5](https://github.com/anurag3407/career-pilot/commit/25173d5c629eac3fbb424e76aa31638278b45973))
+
+
+### Features
+
+* add secured BullMQ monitoring dashboard ([b5fb101](https://github.com/anurag3407/career-pilot/commit/b5fb10111cb9a4ec5205d8f6ace1f2ca9b7af57b))
+
 ## [1.128.1](https://github.com/anurag3407/career-pilot/compare/v1.128.0...v1.128.1) (2026-06-02)
 
 
