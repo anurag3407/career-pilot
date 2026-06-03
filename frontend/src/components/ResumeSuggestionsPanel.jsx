@@ -50,7 +50,13 @@ export default function ResumeSuggestionsPanel({
     setAiError('')
     try {
       const res = await enhanceApi.getSuggestions(resumeText, targetRole?.trim() || 'Software Engineer')
-      setAiSuggestions(res?.data?.suggestions || 'No suggestions were returned.')
+      // ReactMarkdown requires a string child — normalise array/object responses
+      // to a markdown string before storing.
+      const raw = res?.data?.suggestions
+      const text = typeof raw === 'string'
+        ? raw
+        : Array.isArray(raw) ? raw.filter(Boolean).join('\n') : ''
+      setAiSuggestions(text.trim() || 'No suggestions were returned.')
     } catch (err) {
       const msg = err?.message || 'Failed to generate AI suggestions. Please try again.'
       setAiError(msg)

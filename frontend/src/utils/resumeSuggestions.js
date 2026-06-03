@@ -25,7 +25,10 @@ const WEAK_PHRASES = [
 ]
 
 // A curated set of strong action verbs used to detect weak bullet openers.
+// Includes both past-tense forms (previous roles) and present/base forms
+// (current roles, which recruiters expect to be written in present tense).
 const ACTION_VERBS = new Set([
+  // Past tense
   'accelerated', 'achieved', 'analyzed', 'architected', 'automated', 'boosted',
   'built', 'collaborated', 'coordinated', 'created', 'delivered', 'deployed',
   'designed', 'developed', 'drove', 'engineered', 'established', 'executed',
@@ -34,6 +37,15 @@ const ACTION_VERBS = new Set([
   'modernized', 'negotiated', 'optimized', 'organized', 'overhauled', 'pioneered',
   'produced', 'redesigned', 'reduced', 'refactored', 'resolved', 'scaled',
   'spearheaded', 'streamlined', 'transformed',
+  // Present / base tense
+  'accelerate', 'achieve', 'analyze', 'architect', 'automate', 'boost',
+  'build', 'collaborate', 'coordinate', 'create', 'deliver', 'deploy',
+  'design', 'develop', 'drive', 'engineer', 'establish', 'execute',
+  'generate', 'implement', 'improve', 'increase', 'initiate', 'integrate',
+  'launch', 'lead', 'maintain', 'manage', 'mentor', 'migrate',
+  'modernize', 'negotiate', 'optimize', 'organize', 'overhaul', 'pioneer',
+  'produce', 'redesign', 'reduce', 'refactor', 'resolve', 'scale',
+  'spearhead', 'streamline', 'transform',
 ])
 
 const MIN_SUMMARY_WORDS = 20
