@@ -101,6 +101,7 @@ import MagneticDock from './components/portfolio/templates/Magnetic_Dock/index.j
 import Hero from './components/portfolio/templates/Magazine_Editorial/Hero';
 import ColorBlock from './components/portfolio/templates/Color_Block/index.jsx';
 import TestSocialLinks from './pages/TestSocialLinks';
+import NewspaperFront from './components/portfolio/templates/Newspaper_Front/index.jsx';
 
 function LoadingScreen({ label }) {
   return (
@@ -243,6 +244,7 @@ function AppRoutes() {
         
 
         <Route path="/templates/chatbot" element={<ChatbotPortfolio />} />
+        <Route path="/templates/newspaper-front" element={<NewspaperFront />} />
 
         {/* <Route path="/templates/day-night-cycle" element={<DayNightCycle />} /> */}
         <Route path="/templates/rainforest-canopy" element={<RainforestCanopy />} />
