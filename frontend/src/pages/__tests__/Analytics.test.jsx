@@ -1,12 +1,10 @@
-import { vi, describe, test, expect } from 'vitest';
-import React from 'react';
-import { render, screen, fireEvent } from '@testing-library/react';
+import { render, screen, fireEvent, waitFor } from '@testing-library/react';
 import { BrowserRouter } from 'react-router-dom';
-import '@testing-library/jest-dom';
+import { describe, it, expect, vi } from 'vitest';
 import Analytics from '../Analytics';
 
-// 🛠️ INDUSTRY STANDARD: Intercept the api import and force it to return a successful mock package instantly
-vi.mock('../services/api', () => ({
+// Adjusted mock specifier matching relative nesting directory levels
+vi.mock('../../services/api', () => ({
   interviewApi: {
     getAnalytics: vi.fn(() => Promise.resolve({
       data: {
@@ -19,23 +17,16 @@ vi.mock('../services/api', () => ({
           averageOverallScore: 74,
           averageCommunication: 68,
           averageTechnicalAccuracy: 77,
-          averageConfidence: 72
+          averageConfidence: 72,
+          latestSession: { date: 'May 30', overallScore: 78, communication: 72, technicalAccuracy: 80, confidence: 75 }
         }
       }
     }))
   }
 }));
 
-// Mock ResizeObserver for Recharts graphics
-global.ResizeObserver = class ResizeObserver {
-  constructor() {}
-  observe() {}
-  unobserve() {}
-  disconnect() {}
-};
-
 const renderComponent = () => {
-  render(
+  return render(
     <BrowserRouter>
       <Analytics />
     </BrowserRouter>
@@ -43,21 +34,27 @@ const renderComponent = () => {
 };
 
 describe('Analytics Tab Component Tests', () => {
-  test('renders the Overview tab contents by default', async () => {
+  it('renders the Overview tab contents by default', async () => {
     renderComponent();
-    
-    // Using findByText lets the virtual DOM resolve the mock API call cleanly
+
     expect(await screen.findByText('Overview Trends')).toBeInTheDocument();
-    expect(screen.getByText('Performance over time')).toBeInTheDocument();
+
+    // Async fallback preventing race condition flakiness
+    await waitFor(() => {
+      expect(screen.getByText('Performance over time')).toBeInTheDocument();
+    });
   });
 
-  test('swaps content layouts fluidly when clicking between tab options', async () => {
+  it('swaps content layouts fluidly when clicking between tab options', async () => {
     renderComponent();
 
     const detailedTabButton = await screen.findByText('Detailed Breakdown');
     fireEvent.click(detailedTabButton);
 
-    expect(screen.queryByText('Performance over time')).not.toBeInTheDocument();
-    expect(screen.getByText('Latest session radar')).toBeInTheDocument();
+    // Dynamic assertion waiting block updates safely
+    await waitFor(() => {
+      expect(screen.queryByText('Performance over time')).not.toBeInTheDocument();
+      expect(screen.getByText('Latest session radar')).toBeInTheDocument();
+    });
   });
 });

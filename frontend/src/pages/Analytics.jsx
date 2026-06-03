@@ -40,7 +40,7 @@ export default function Analytics() {
     sessions: [], 
     summary: DEFAULT_SUMMARY 
   });
-   const [loading, setLoading] = useState(true); 
+  const [loading, setLoading] = useState(true); 
   const [error, setError] = useState('');
   const [activeTab, setActiveTab] = useState('overview'); 
 
@@ -98,7 +98,7 @@ export default function Analytics() {
     <div className="min-h-screen bg-background">
       <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-10">
         
-        
+        {/* Header Section */}
         <div className="mb-6 rounded-3xl border border-border bg-card p-8 shadow-sm">
           <div className="flex flex-col gap-6 lg:flex-row lg:items-center lg:justify-between">
             <div>
@@ -121,9 +121,12 @@ export default function Analytics() {
           </div>
         </div>
 
+        {/* View Toggle Tabs - ARIA Accessible */}
         <div className="mb-8 border-b border-border">
-          <div className="flex gap-6">
+          <div className="flex gap-6" role="tablist" aria-label="Analytics Navigation">
             <button
+              role="tab"
+              aria-selected={activeTab === 'overview'}
               onClick={() => setActiveTab('overview')}
               className={`pb-4 text-sm font-black transition-all relative select-none cursor-pointer ${
                 activeTab === 'overview' 
@@ -134,6 +137,8 @@ export default function Analytics() {
               Overview Trends
             </button>
             <button
+              role="tab"
+              aria-selected={activeTab === 'detailed'}
               onClick={() => setActiveTab('detailed')}
               className={`pb-4 text-sm font-black transition-all relative select-none cursor-pointer ${
                 activeTab === 'detailed' 
@@ -146,13 +151,13 @@ export default function Analytics() {
           </div>
         </div>
 
-        
         {loading ? (
           <div className="rounded-3xl border border-border bg-card p-12 text-center text-muted-foreground animate-pulse">
             Loading interactive tracking matrix...
           </div>
         ) : (
           <div>
+            {/* Overview Tab */}
             {activeTab === 'overview' && (
               <div className="grid gap-8 xl:grid-cols-[1.7fr_1fr]">
                 <section className="rounded-3xl border border-border bg-card p-6 shadow-sm">
@@ -200,6 +205,7 @@ export default function Analytics() {
               </div>
             )}
 
+            {/* Detailed Breakdown Tab */}
             {activeTab === 'detailed' && (
               <div className="grid gap-8 xl:grid-cols-[1.2fr_1fr]">
                 <section className="rounded-3xl border border-border bg-card p-6 shadow-sm">
@@ -239,8 +245,9 @@ export default function Analytics() {
 
                   <div className="space-y-4 max-h-[400px] overflow-y-auto pr-1">
                     {hasSessions ? (
-                      sessions.map((session) => (
-                        <div key={session.date} className="rounded-3xl border border-border/70 bg-background/80 p-4">
+                      sessions.map((session, index) => (
+                        // Unique layout key strategy combining value and array location index
+                        <div key={`${session.date}-${index}`} className="rounded-3xl border border-border/70 bg-background/80 p-4">
                           <div className="flex items-center justify-between gap-4">
                             <div>
                               <p className="text-sm font-bold text-foreground">{session.date}</p>
@@ -268,8 +275,9 @@ export default function Analytics() {
                         </div>
                       ))
                     ) : (
+                      // Removed duplicate technical message token block
                       <div className="rounded-3xl border border-border/70 bg-background/80 p-8 text-center text-sm text-muted-foreground">
-                        {error ? error : 'No interview history available yet.'}
+                        Unable to load interview history.
                       </div>
                     )}
                   </div>
