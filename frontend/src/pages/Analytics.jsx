@@ -246,8 +246,8 @@ export default function Analytics() {
                   <div className="space-y-4 max-h-[400px] overflow-y-auto pr-1">
                     {hasSessions ? (
                       sessions.map((session, index) => (
-                        // Unique layout key strategy combining value and array location index
-                        <div key={`${session.date}-${index}`} className="rounded-3xl border border-border/70 bg-background/80 p-4">
+                        // 💡 Unique stable tracking key fix applied here
+                        <div key={session.id || session.sessionId || index} className="rounded-3xl border border-border/70 bg-background/80 p-4">
                           <div className="flex items-center justify-between gap-4">
                             <div>
                               <p className="text-sm font-bold text-foreground">{session.date}</p>
@@ -275,9 +275,9 @@ export default function Analytics() {
                         </div>
                       ))
                     ) : (
-                      // Removed duplicate technical message token block
+                      // 💡 Smart contextual empty-state layout handling error triggers vs blank users
                       <div className="rounded-3xl border border-border/70 bg-background/80 p-8 text-center text-sm text-muted-foreground">
-                        Unable to load interview history.
+                        {error ? 'Unable to load interview history.' : 'No interview history available yet.'}
                       </div>
                     )}
                   </div>
