@@ -22,7 +22,7 @@ export default function Contact() {
     { icon: Github,   href: socials.github,   label: 'GitHub'   },
     { icon: Linkedin, href: socials.linkedin, label: 'LinkedIn' },
     { icon: Twitter,  href: socials.twitter,  label: 'Twitter'  },
-  ];
+  ].filter(({ href }) => Boolean(href));
 
   const credits = [
     { role: 'Director of Engineering', value: personal.name     },
