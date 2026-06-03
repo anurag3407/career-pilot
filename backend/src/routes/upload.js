@@ -48,7 +48,7 @@ router.post('/', verifyToken, handleUpload, validateUpload, asyncHandler(async (
 }));
 
 // Extract text only endpoint (for re-processing)
-router.post('/extract-text', verifyToken, handleUpload, validateUpload, asyncHandler(async (req, res) => {
+router.post('/extract-text', verifyToken, handleUpload, validateUpload, uploadSecurityScanner, asyncHandler(async (req, res) => {
   if (!req.file) {
     throw new ApiError(400, 'No file uploaded');
   }
