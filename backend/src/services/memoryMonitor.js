@@ -26,13 +26,21 @@ const toFiniteNumber = (value, fallback) => {
 
 const normalizeOptions = (options = {}) => {
   const merged = { ...DEFAULT_OPTIONS, ...options };
+  const warningGrowthRate = Math.max(
+    0,
+    toFiniteNumber(merged.warningGrowthRate, DEFAULT_OPTIONS.warningGrowthRate)
+  );
+  const criticalGrowthRate = Math.max(
+    warningGrowthRate,
+    toFiniteNumber(merged.criticalGrowthRate, DEFAULT_OPTIONS.criticalGrowthRate)
+  );
 
   return {
     ...merged,
     intervalMs: Math.max(1, toFiniteNumber(merged.intervalMs, DEFAULT_OPTIONS.intervalMs)),
     windowSize: Math.max(2, Math.trunc(toFiniteNumber(merged.windowSize, DEFAULT_OPTIONS.windowSize))),
-    warningGrowthRate: Math.max(0, toFiniteNumber(merged.warningGrowthRate, DEFAULT_OPTIONS.warningGrowthRate)),
-    criticalGrowthRate: Math.max(0, toFiniteNumber(merged.criticalGrowthRate, DEFAULT_OPTIONS.criticalGrowthRate)),
+    warningGrowthRate,
+    criticalGrowthRate,
     maxHeapUsedBytes: Math.max(1, toFiniteNumber(merged.maxHeapUsedBytes, DEFAULT_OPTIONS.maxHeapUsedBytes)),
     maxRssBytes: Math.max(1, toFiniteNumber(merged.maxRssBytes, DEFAULT_OPTIONS.maxRssBytes)),
   };
@@ -80,6 +88,15 @@ export class MemoryMonitor {
       sample,
       analysis: this.lastAnalysis,
     };
+  }
+
+  safeCollectSample() {
+    try {
+      return this.collectSample();
+    } catch (error) {
+      this.logMonitorError(error);
+      return null;
+    }
   }
 
   analyze() {
@@ -185,8 +202,8 @@ export class MemoryMonitor {
       return this;
     }
 
-    this.collectSample();
-    this.timer = setInterval(() => this.collectSample(), this.options.intervalMs);
+    this.safeCollectSample();
+    this.timer = setInterval(() => this.safeCollectSample(), this.options.intervalMs);
 
     if (typeof this.timer.unref === "function") {
       this.timer.unref();
@@ -227,6 +244,25 @@ export class MemoryMonitor {
         status: analysis.status,
         checks: analysis.checks,
       });
+    }
+  }
+
+  logMonitorError(error) {
+    const logger = this.options.logger || {};
+    const logMethod = typeof logger.error === "function" ? "error" : null;
+
+    try {
+      if (logMethod) {
+        logger[logMethod]("[memory-monitor]", "Memory monitor sampling failed.", {
+          error: error?.message || String(error),
+        });
+        return;
+      }
+
+      console.error("[memory-monitor]", "Memory monitor sampling failed.", error);
+    } catch (loggerError) {
+      console.error("[memory-monitor]", "Memory monitor error logging failed.", loggerError);
+      console.error("[memory-monitor]", "Original memory monitor error:", error);
     }
   }
 }

@@ -66,6 +66,26 @@ describe("memoryMonitor", () => {
     assert.ok(analysis.growthRate.heapUsed >= 0.3);
   });
 
+  test("keeps critical growth threshold at or above warning threshold", () => {
+    const monitor = createMemoryMonitor({
+      warningGrowthRate: 0.5,
+      criticalGrowthRate: 0.1,
+      clock: makeClock(),
+      memoryUsage: makeMemorySequence([
+        { ...baseUsage, rss: 100, heapUsed: 100 },
+        { ...baseUsage, rss: 120, heapUsed: 120 },
+      ]),
+      logger: {},
+    });
+
+    monitor.collectSample();
+    const { analysis } = monitor.collectSample();
+    const snapshot = monitor.getSnapshot();
+
+    assert.equal(snapshot.options.criticalGrowthRate, 0.5);
+    assert.equal(analysis.status, "healthy");
+  });
+
   test("returns critical when absolute thresholds are crossed", () => {
     const monitor = createMemoryMonitor({
       maxHeapUsedBytes: 120,
@@ -97,6 +117,50 @@ describe("memoryMonitor", () => {
 
     monitor.stop();
     assert.equal(monitor.isRunning(), false);
+  });
+
+  test("sampling timer errors are logged without escaping the interval", () => {
+    const originalSetInterval = global.setInterval;
+    const originalClearInterval = global.clearInterval;
+    let intervalCallback;
+    const errors = [];
+
+    global.setInterval = (callback) => {
+      intervalCallback = callback;
+      return { unref() {} };
+    };
+    global.clearInterval = () => {};
+
+    try {
+      const monitor = createMemoryMonitor({
+        intervalMs: 10_000,
+        clock: makeClock(),
+        memoryUsage: () => baseUsage,
+        logger: {
+          error: (...args) => errors.push(args),
+        },
+      });
+
+      let calls = 0;
+      monitor.options.memoryUsage = () => {
+        calls += 1;
+        if (calls === 1) {
+          return baseUsage;
+        }
+        throw new Error("memory unavailable");
+      };
+
+      monitor.start();
+
+      assert.doesNotThrow(() => intervalCallback());
+      assert.equal(errors.length, 1);
+      assert.match(errors[0][2].error, /memory unavailable/);
+
+      monitor.stop();
+    } finally {
+      global.setInterval = originalSetInterval;
+      global.clearInterval = originalClearInterval;
+    }
   });
 
   test("disabled monitors do not start timers", () => {

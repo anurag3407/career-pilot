@@ -340,13 +340,42 @@ const startServer = async () => {
 
 startServer();
 
+const closeHttpServer = () =>
+  new Promise((resolve) => {
+    const forceCloseTimer = setTimeout(() => {
+      console.error('⚠️ HTTP server close timed out; continuing shutdown.');
+      resolve();
+    }, 10000);
+
+    if (typeof forceCloseTimer.unref === 'function') {
+      forceCloseTimer.unref();
+    }
+
+    httpServer.close((error) => {
+      clearTimeout(forceCloseTimer);
+
+      if (error) {
+        console.error('❌ Error while closing HTTP server:', error);
+      }
+
+      resolve();
+    });
+  });
+
 // Graceful shutdown
-const shutdown = async (signal) => {
+const shutdown = async (signal, exitCode = 0) => {
+  try {
     console.log(`\n📥 Received ${signal}, shutting down gracefully...`);
     memoryMonitor.stop();
+    await closeHttpServer();
     await redisManager.shutdown();
     console.log('👋 Server shutdown complete');
-    process.exit(0);
+  } catch (error) {
+    console.error('❌ Error during shutdown:', error);
+    exitCode = exitCode || 1;
+  } finally {
+    process.exit(exitCode);
+  }
 };
 
 process.on('SIGTERM', () => shutdown('SIGTERM'));
@@ -358,10 +387,7 @@ process.on("unhandledRejection", (reason) => {
 
 process.on("uncaughtException", (err) => {
   console.error("❌ UNCAUGHT EXCEPTION:", err);
-  memoryMonitor.stop();
-  httpServer.close();
-  redisManager.shutdown().finally(() => process.exit(1));
-  setTimeout(() => process.exit(1), 10000).unref();
+  shutdown('uncaughtException', 1);
 });
 
 export default app;
