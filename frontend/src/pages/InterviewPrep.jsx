@@ -1608,18 +1608,22 @@ export default function InterviewPrep() {
                       <div className="flex items-center justify-between flex-wrap gap-4 border-b border-border/50 pb-4">
                         <div className="flex items-center gap-3">
                           <div className={`w-12 h-12 rounded-xl flex items-center justify-center font-bold text-lg shadow-sm border ${
-                            evaluationResult.score >= 80
+                            evaluationResult.score === null || evaluationResult.score === undefined
+                              ? 'bg-muted border-border text-muted-foreground'
+                              : evaluationResult.score >= 80
                               ? 'bg-emerald-500/10 border-emerald-500/20 text-emerald-400'
                               : evaluationResult.score >= 60
                               ? 'bg-amber-500/10 border-amber-500/20 text-amber-400'
                               : 'bg-red-500/10 border-red-500/20 text-red-400'
                           }`}>
-                            {evaluationResult.score}
+                            {evaluationResult.score !== null && evaluationResult.score !== undefined ? evaluationResult.score : 'N/A'}
                           </div>
                           <div>
                             <h4 className="font-bold text-foreground">AI Evaluation Score</h4>
                             <p className="text-xs text-muted-foreground">
-                              {evaluationResult.score >= 80 ? 'Excellent solution' : evaluationResult.score >= 60 ? 'Good solution, needs minor changes' : 'Needs significant work'}
+                              {evaluationResult.score === null || evaluationResult.score === undefined
+                                ? 'Could not calculate score'
+                                : evaluationResult.score >= 80 ? 'Excellent solution' : evaluationResult.score >= 60 ? 'Good solution, needs minor changes' : 'Needs significant work'}
                             </p>
                           </div>
                         </div>

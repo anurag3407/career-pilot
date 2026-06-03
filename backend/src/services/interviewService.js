@@ -29,11 +29,12 @@ export const extractJSONObject = (text) => {
  */
 export const validateAIResponse = (parsed) => {
   const fallback = {
-    score: 50,
+    score: null,
     feedback: 'Failed to generate comprehensive review. Please check your submission format.',
     strengths: [],
     improvements: [],
-    complexity: { time: 'N/A', space: 'N/A' }
+    complexity: { time: 'N/A', space: 'N/A' },
+    isFallback: true
   };
 
   if (!parsed || typeof parsed !== 'object') {
@@ -43,7 +44,7 @@ export const validateAIResponse = (parsed) => {
   // Normalize score between 0 and 100
   let score = typeof parsed.score === 'number' ? parsed.score : parseInt(parsed.score, 10);
   if (isNaN(score)) {
-    score = fallback.score;
+    score = null;
   } else {
     score = Math.max(0, Math.min(100, score));
   }
@@ -335,10 +336,23 @@ export const evaluateCodingSubmission = async ({
   // Input Validation
   if (!code || typeof code !== 'string' || !code.trim()) {
     errors.code = 'Code submission cannot be empty';
+  } else if (code.length > 50000) {
+    errors.code = 'Code submission is too large (maximum 50,000 characters)';
   }
 
   if (!question || typeof question !== 'object' || !question.title || !question.description) {
     errors.question = 'A valid question object with a title and description is required';
+  } else {
+    if (typeof question.title !== 'string') {
+      errors.questionTitle = 'Question title must be a string';
+    } else if (question.title.length > 200) {
+      errors.questionTitle = 'Question title is too long (maximum 200 characters)';
+    }
+    if (typeof question.description !== 'string') {
+      errors.questionDescription = 'Question description must be a string';
+    } else if (question.description.length > 10000) {
+      errors.questionDescription = 'Question description is too long (maximum 10,000 characters)';
+    }
   }
 
   const supportedLanguages = ['javascript', 'python', 'java', 'cpp', 'c++'];
@@ -358,7 +372,7 @@ PROBLEM SPECIFICATION:
 Title: ${question.title}
 Description:
 ${question.description}
-${question.constraints ? `Constraints:\n${question.constraints.join('\n')}` : ''}
+${Array.isArray(question.constraints) ? `Constraints:\n${question.constraints.join('\n')}` : ''}
 
 CANDIDATE SUBMISSION:
 Language: ${language}
