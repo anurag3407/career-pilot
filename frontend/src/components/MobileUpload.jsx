@@ -9,11 +9,14 @@
  * @tech React 19, TailwindCSS 4
  */
 
-import { useState, useRef, useCallback } from 'react';
+import { useState, useRef, useCallback } from "react";
 
 // Allowed file types and max size (5MB)
-const ALLOWED_TYPES = ['application/pdf', 'application/msword',
-  'application/vnd.openxmlformats-officedocument.wordprocessingml.document'];
+const ALLOWED_TYPES = [
+  "application/pdf",
+  "application/msword",
+  "application/vnd.openxmlformats-officedocument.wordprocessingml.document",
+];
 const MAX_SIZE_MB = 5;
 const MAX_SIZE_BYTES = MAX_SIZE_MB * 1024 * 1024;
 
@@ -26,7 +29,7 @@ const MAX_SIZE_BYTES = MAX_SIZE_MB * 1024 * 1024;
  */
 function validateFile(file) {
   if (!ALLOWED_TYPES.includes(file.type)) {
-    return 'Only PDF and Word documents (.pdf, .doc, .docx) are allowed.';
+    return "Only PDF and Word documents (.pdf, .doc, .docx) are allowed.";
   }
   if (file.size > MAX_SIZE_BYTES) {
     return `File is too large. Maximum size is ${MAX_SIZE_MB}MB.`;
@@ -74,20 +77,25 @@ export default function MobileUpload({ onFileSelect, disabled = false }) {
    *
    * @param {File} selectedFile - The file the user picked
    */
-  const handleFile = useCallback((selectedFile) => {
-    if (!selectedFile) return;
+  const handleFile = useCallback(
+    (selectedFile) => {
+      if (!selectedFile) return;
 
-    const validationError = validateFile(selectedFile);
-    if (validationError) {
-      setError(validationError);
-      setFile(null);
-      return;
-    }
+      const validationError = validateFile(selectedFile);
+      if (validationError) {
+        setError(validationError);
+        setFile(null);
+        onFileSelect?.(null); // Fix 3: notify parent of invalid file
+        return;
+      }
 
-    setError(null);
-    setFile(selectedFile);
-    onFileSelect?.(selectedFile);
-  }, [onFileSelect]);
+      setError(null);
+      setFile(selectedFile);
+      setUploadProgress(0); // Fix 4: reset progress for new file
+      onFileSelect?.(selectedFile);
+    },
+    [onFileSelect],
+  );
 
   /**
    * Fired when user picks a file from the OS file picker.
@@ -96,7 +104,7 @@ export default function MobileUpload({ onFileSelect, disabled = false }) {
   const handleInputChange = (e) => {
     handleFile(e.target.files?.[0]);
     // Reset input so same file can be re-selected if removed
-    e.target.value = '';
+    e.target.value = "";
   };
 
   /** Opens the file picker when the upload box is tapped/clicked. */
@@ -109,7 +117,7 @@ export default function MobileUpload({ onFileSelect, disabled = false }) {
    * @param {React.KeyboardEvent} e
    */
   const handleKeyDown = (e) => {
-    if (e.key === 'Enter' || e.key === ' ') {
+    if (e.key === "Enter" || e.key === " ") {
       e.preventDefault();
       handleBoxClick();
     }
@@ -141,18 +149,23 @@ export default function MobileUpload({ onFileSelect, disabled = false }) {
    * In a real app, replace this with your actual API call.
    */
   const handleUpload = async () => {
-    if (!file) return;
-    setIsUploading(true);
-    setUploadProgress(0);
+  if (!file) return;
+  setIsUploading(true);
+  setUploadProgress(0);
 
-    // Simulate upload progress (replace with real fetch/axios call)
-    for (let i = 0; i <= 100; i += 10) {
-      await new Promise((r) => setTimeout(r, 80));
-      setUploadProgress(i);
-    }
+  // Fix 5: track if component is still mounted before setting state
+  let cancelled = false;
 
-    setIsUploading(false);
-  };
+  for (let i = 0; i <= 100; i += 10) {
+    await new Promise((r) => setTimeout(r, 80));
+    if (cancelled) return;
+    setUploadProgress(i);
+  }
+
+  if (!cancelled) setIsUploading(false);
+
+  return () => { cancelled = true; };
+};
 
   /** Removes the selected file and resets the component. */
   const handleRemove = () => {
@@ -178,7 +191,6 @@ export default function MobileUpload({ onFileSelect, disabled = false }) {
 
   return (
     <div className="w-full max-w-md mx-auto px-4 py-6 font-sans">
-
       {/* Title */}
       <h2 className="text-xl font-semibold text-gray-800 mb-1">
         Upload Your Resume
@@ -200,19 +212,21 @@ export default function MobileUpload({ onFileSelect, disabled = false }) {
         onDrop={handleDrop}
         data-testid="upload-dropzone"
         className={[
-          'relative flex flex-col items-center justify-center',
-          'min-h-[160px] rounded-2xl border-2 border-dashed',
-          'transition-all duration-200 select-none',
-          'active:scale-[0.98]',
+          "relative flex flex-col items-center justify-center",
+          "min-h-[160px] rounded-2xl border-2 border-dashed",
+          "transition-all duration-200 select-none",
+          "active:scale-[0.98]",
           isDragging
-            ? 'border-blue-500 bg-blue-50 scale-[1.01]'
+            ? "border-blue-500 bg-blue-50 scale-[1.01]"
             : file
-              ? 'border-green-400 bg-green-50'
+              ? "border-green-400 bg-green-50"
               : error
-                ? 'border-red-400 bg-red-50'
-                : 'border-gray-300 bg-gray-50',
-          disabled ? 'opacity-50 cursor-not-allowed' : 'cursor-pointer hover:border-blue-400 hover:bg-blue-50',
-        ].join(' ')}
+                ? "border-red-400 bg-red-50"
+                : "border-gray-300 bg-gray-50",
+          disabled
+            ? "opacity-50 cursor-not-allowed"
+            : "cursor-pointer hover:border-blue-400 hover:bg-blue-50",
+        ].join(" ")}
       >
         {/* Hidden file input */}
         <input
@@ -228,7 +242,7 @@ export default function MobileUpload({ onFileSelect, disabled = false }) {
 
         {/* Icon */}
         <div className="text-4xl mb-2" aria-hidden="true">
-          {file ? '✅' : isDragging ? '📂' : error ? '❌' : '📄'}
+          {file ? "✅" : isDragging ? "📂" : error ? "❌" : "📄"}
         </div>
 
         {/* Text */}
@@ -237,12 +251,14 @@ export default function MobileUpload({ onFileSelect, disabled = false }) {
             <p className="font-medium text-green-700 text-sm truncate max-w-[240px]">
               {file.name}
             </p>
-            <p className="text-xs text-green-600 mt-1">{formatSize(file.size)}</p>
+            <p className="text-xs text-green-600 mt-1">
+              {formatSize(file.size)}
+            </p>
           </div>
         ) : (
           <div className="text-center px-4">
             <p className="font-medium text-gray-700 text-sm">
-              {isDragging ? 'Drop it here!' : 'Tap to choose a file'}
+              {isDragging ? "Drop it here!" : "Tap to choose a file"}
             </p>
             <p className="text-xs text-gray-400 mt-1">or drag and drop</p>
           </div>

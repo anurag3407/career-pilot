@@ -7,7 +7,7 @@
  * @file frontend/src/components/__tests__/MobileUpload.test.jsx
  */
 
-import { describe, it, expect, vi, beforeEach } from 'vitest';
+import { describe, it, expect, vi } from 'vitest';
 import { render, screen, fireEvent, waitFor } from '@testing-library/react';
 import userEvent from '@testing-library/user-event';
 import MobileUpload from '../components/MobileUpload';
