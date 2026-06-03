@@ -34,7 +34,7 @@ export default function NewspaperFront({ portfolioData }) {
   // Adapt skills array from simple strings to richer objects for the UI
   const skills = useMemo(() => {
     let skillsData = dummyData.skills;
-    if (portfolioData?.skills?.length > 0) {
+    if (Array.isArray(portfolioData?.skills) && portfolioData.skills.length > 0) {
       if (typeof portfolioData.skills[0] === 'string') {
         const categories = ["Core", "Technical", "Additional"];
         skillsData = portfolioData.skills.map((s, i) => ({
@@ -52,7 +52,7 @@ export default function NewspaperFront({ portfolioData }) {
   // Adapt projects to ensure they have images and URLs
   const projects = useMemo(() => {
     let projectsData = dummyData.projects;
-    if (portfolioData?.projects?.length > 0) {
+    if (Array.isArray(portfolioData?.projects) && portfolioData.projects.length > 0) {
       projectsData = portfolioData.projects.map((p, i) => ({
         title: p.title || p.name || 'Project',
         description: p.description || '',
@@ -65,8 +65,18 @@ export default function NewspaperFront({ portfolioData }) {
     return projectsData;
   }, [portfolioData?.projects]);
 
-  const experience = portfolioData?.experience?.length > 0 ? portfolioData.experience : dummyData.experience;
-  const testimonials = portfolioData?.testimonials?.length > 0 ? portfolioData.testimonials : dummyData.testimonials;
+  const experience = useMemo(() => {
+    return Array.isArray(portfolioData?.experience) && portfolioData.experience.length > 0 
+      ? portfolioData.experience 
+      : dummyData.experience;
+  }, [portfolioData?.experience]);
+
+  const testimonials = useMemo(() => {
+    return Array.isArray(portfolioData?.testimonials) && portfolioData.testimonials.length > 0 
+      ? portfolioData.testimonials 
+      : dummyData.testimonials;
+  }, [portfolioData?.testimonials]);
+
   const stats = portfolioData?.stats || dummyData.stats;
 
   const data = { personal, socials, skills, projects, experience, testimonials, stats };
