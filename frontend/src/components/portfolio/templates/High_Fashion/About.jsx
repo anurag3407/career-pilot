@@ -1,5 +1,5 @@
 import React, { useRef, useState } from 'react';
-import { motion, useInView, AnimatePresence } from 'framer-motion';
+import { motion, useInView } from 'framer-motion';
 import { MapPin, Github, Linkedin, Twitter, Mail, Award, Sparkles, ArrowRight } from 'lucide-react';
 import data from '../../../../data/dummy_data.json';
 

@@ -1961,11 +1961,12 @@ export const templates = [
     "category": "Portfolio",
     "colorScheme": "Dark",
     "layout": "Grid",
-    "author": "System",
+    "author": "Advik Divekar",
     "views": 1161,
-    "rating": 4.5,
+    "rating": 4.8,
     "image": "/template-previews/Sports_Athletic.png",
-    "createdAt": "2026-05-01"
+    "createdAt": "2026-06-03",
+    "isComplete": true
   },
   {
     "id": "Spotify_Wrapped",

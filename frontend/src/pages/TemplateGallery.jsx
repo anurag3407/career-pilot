@@ -32,6 +32,7 @@ import NeonCityscape from "../components/portfolio/templates/Neon_Cityscape/inde
 import PlanetaryOrbit from "../components/portfolio/templates/Planetary_Orbit/index";
 import LowPolyTerrain from "../components/portfolio/templates/Low_Poly_Terrain/index";
 import HighFashion from "../components/portfolio/templates/High_Fashion/index";
+import SportsAthletic from "../components/portfolio/templates/Sports_Athletic/index";
 
 
 function FilterSelect({ value, onChange, options, className = "" }) {
@@ -803,6 +804,17 @@ const [hoveredCard, setHoveredCard] = useState(null);
         </div>
         <div className="rounded-2xl" style={{ height: 640, overflowY: "auto", overflowX: "hidden", transform: "translate(0)", position: "relative", border: "1px solid rgba(201,168,76,.2)" }}>
           <HighFashion />
+        </div>
+      </div>
+
+      {/* Sports Athletic preview */}
+      <div className="mb-16">
+        <div className="flex items-center gap-3 mb-4 px-1">
+          <span className="text-xs font-bold uppercase tracking-widest text-rose-500">● Sports Athletic</span>
+          <h2 className="text-lg font-semibold text-foreground/70">Sports Athletic — Dark Athletic Portfolio</h2>
+        </div>
+        <div className="rounded-2xl" style={{ height: 640, overflowY: "auto", overflowX: "hidden", transform: "translate(0)", position: "relative", border: "1px solid rgba(225,29,72,.2)" }}>
+          <SportsAthletic />
         </div>
       </div>
 
