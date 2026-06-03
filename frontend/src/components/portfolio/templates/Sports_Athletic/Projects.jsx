@@ -8,62 +8,50 @@ const S = {
   white: '#f8fafc',
   muted: '#94a3b8',
   card: '#111111',
-  cardHover: '#161616',
   border: '#1e1e1e',
   gold: '#f59e0b',
 };
 
 const PROJECTS = [
   {
-    id: '01',
-    title: 'AthletIQ Dashboard',
+    id: '01', title: 'AthletIQ Dashboard',
     desc: 'Real-time performance analytics platform tracking biometrics, training loads, and injury risk for elite athletes. Adopted by 3 national teams.',
     tags: ['React', 'D3.js', 'Node.js', 'WebSockets'],
-    stars: 842,
-    team: 4,
-    status: 'Live',
-    featured: true,
+    stars: 842, team: 4, status: 'Live', featured: true,
     accentColor: S.red,
+    github: 'https://github.com', live: 'https://example.com',
   },
   {
-    id: '02',
-    title: 'Sprint Tracker App',
+    id: '02', title: 'Sprint Tracker App',
     desc: 'Mobile-first GPS tracking app for sprint sessions with heatmaps, pace zones, and personal best alerts.',
     tags: ['React Native', 'GPS API', 'Firebase'],
-    stars: 317,
-    team: 2,
-    status: 'Live',
+    stars: 317, team: 2, status: 'Live',
     accentColor: S.gold,
+    github: 'https://github.com', live: 'https://example.com',
   },
   {
-    id: '03',
-    title: 'Team Formation AI',
+    id: '03', title: 'Team Formation AI',
     desc: 'ML model that generates optimal lineup formations based on opponent analysis and player fitness data.',
     tags: ['Python', 'TensorFlow', 'FastAPI'],
-    stars: 560,
-    team: 3,
-    status: 'Beta',
+    stars: 560, team: 3, status: 'Beta',
     accentColor: '#3b82f6',
+    github: 'https://github.com', live: 'https://example.com',
   },
   {
-    id: '04',
-    title: 'Nutrition Planner',
+    id: '04', title: 'Nutrition Planner',
     desc: 'AI-powered meal and supplement planner calibrated for sports-specific macros and competition calendars.',
     tags: ['Next.js', 'OpenAI', 'Prisma'],
-    stars: 228,
-    team: 2,
-    status: 'Live',
+    stars: 228, team: 2, status: 'Live',
     accentColor: '#22c55e',
+    github: 'https://github.com', live: 'https://example.com',
   },
   {
-    id: '05',
-    title: 'Highlight Reel Generator',
+    id: '05', title: 'Highlight Reel Generator',
     desc: 'Automated video highlight editor that clips peak performance moments using computer vision event detection.',
     tags: ['Python', 'OpenCV', 'FFMPEG'],
-    stars: 193,
-    team: 1,
-    status: 'Open Source',
+    stars: 193, team: 1, status: 'Open Source',
     accentColor: '#a855f7',
+    github: 'https://github.com', live: 'https://example.com',
   },
 ];
 
@@ -74,18 +62,15 @@ function FeaturedCard({ project }) {
     <motion.div
       onHoverStart={() => setHovered(true)} onHoverEnd={() => setHovered(false)}
       whileHover={{ y: -4 }}
+      className="sm:col-span-2"
       style={{
-        gridColumn: 'span 2',
         background: S.card, border: `1px solid ${hovered ? project.accentColor + '50' : S.border}`,
         padding: '2.5rem', cursor: 'pointer', transition: 'border-color 0.25s',
         position: 'relative', overflow: 'hidden',
-      }}
-      className="lg:col-span-2">
+      }}>
 
-      {/* Diagonal accent */}
       <div style={{
-        position: 'absolute', top: 0, right: 0,
-        width: '200px', height: '200px',
+        position: 'absolute', top: 0, right: 0, width: '200px', height: '200px',
         background: `radial-gradient(circle at top right, ${project.accentColor}10, transparent 70%)`,
         pointerEvents: 'none',
       }} />
@@ -130,17 +115,22 @@ function FeaturedCard({ project }) {
         </div>
 
         <div style={{ display: 'flex', flexDirection: 'column', gap: '0.75rem', alignItems: 'flex-end' }}>
+          {/* Fix: render as real links */}
           <div style={{ display: 'flex', gap: '0.5rem' }}>
-            {[<Github size={16} />, <ExternalLink size={16} />].map((icon, i) => (
-              <motion.button key={i}
-                whileHover={{ scale: 1.1, color: S.red }}
+            {[
+              { icon: <Github size={16} />, href: project.github },
+              { icon: <ExternalLink size={16} />, href: project.live },
+            ].map((item, i) => (
+              <motion.a key={i} href={item.href} target="_blank" rel="noreferrer"
+                whileHover={{ scale: 1.1 }}
                 style={{
                   width: '36px', height: '36px', display: 'flex', alignItems: 'center',
                   justifyContent: 'center', background: 'none',
-                  border: `1px solid ${S.border}`, cursor: 'pointer', color: S.muted, transition: 'color 0.2s',
+                  border: `1px solid ${S.border}`, color: S.muted,
+                  textDecoration: 'none', transition: 'color 0.2s',
                 }}>
-                {icon}
-              </motion.button>
+                {item.icon}
+              </motion.a>
             ))}
           </div>
           <div style={{ display: 'flex', gap: '1.25rem' }}>
@@ -182,18 +172,20 @@ function ProjectCard({ project, index }) {
       }}>
 
       <div style={{ display: 'flex', justifyContent: 'space-between', marginBottom: '1rem' }}>
-        <span style={{
-          fontSize: '0.65rem', fontWeight: 800, color: project.accentColor,
-          letterSpacing: '0.2em', textTransform: 'uppercase',
-        }}>
+        <span style={{ fontSize: '0.65rem', fontWeight: 800, color: project.accentColor, letterSpacing: '0.2em', textTransform: 'uppercase' }}>
           #{project.id}
         </span>
+        {/* Fix: real anchor links */}
         <div style={{ display: 'flex', gap: '0.4rem' }}>
-          {[<Github size={14} />, <ExternalLink size={14} />].map((icon, i) => (
-            <motion.button key={i} whileHover={{ color: project.accentColor }}
-              style={{ background: 'none', border: 'none', cursor: 'pointer', color: S.muted, transition: 'color 0.2s', padding: 0 }}>
-              {icon}
-            </motion.button>
+          {[
+            { icon: <Github size={14} />, href: project.github },
+            { icon: <ExternalLink size={14} />, href: project.live },
+          ].map((item, i) => (
+            <motion.a key={i} href={item.href} target="_blank" rel="noreferrer"
+              whileHover={{ color: project.accentColor }}
+              style={{ color: S.muted, textDecoration: 'none', display: 'flex', alignItems: 'center', transition: 'color 0.2s' }}>
+              {item.icon}
+            </motion.a>
           ))}
         </div>
       </div>
@@ -267,7 +259,8 @@ export default function Projects() {
           Off the<br /><span style={{ color: S.red }}>Field</span>
         </motion.h2>
 
-        <div style={{ display: 'grid', gridTemplateColumns: 'repeat(1, 1fr)', gap: '1rem' }} className="sm:grid-cols-2 lg:grid-cols-2">
+        {/* Fix: removed inline gridTemplateColumns so Tailwind sm:grid-cols-2 takes effect */}
+        <div className="grid sm:grid-cols-2" style={{ gap: '1rem' }}>
           <FeaturedCard project={PROJECTS[0]} />
           {PROJECTS.slice(1).map((p, i) => (
             <ProjectCard key={p.id} project={p} index={i} />
