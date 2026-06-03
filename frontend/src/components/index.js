@@ -8,6 +8,7 @@ export { default as Card } from './Card'
 export { default as FileUpload } from './FileUpload'
 export { default as JobAlertModal } from './JobAlertModal'
 export { default as JobAlertsList } from './JobAlertsList'
+export { default as CodeEditor } from './CodeEditor'
 
 // Export skeleton components
 export {

@@ -22,7 +22,7 @@ async function getAuthHeaders() {
       if (aiConfig.provider) headers['X-AI-Provider'] = aiConfig.provider;
       if (aiConfig.apiKey) headers['X-AI-Key'] = decryptKey(aiConfig.apiKey);
       if (aiConfig.model) headers['X-AI-Model'] = aiConfig.model;
-    } catch(e) {}
+    } catch (e) { }
   } else {
     const openRouterKey = localStorage.getItem('openRouterApiKey');
     if (openRouterKey) {
@@ -626,7 +626,7 @@ export const jobTrackerApi = {
     const headers = await getAuthHeaders()
     const body = { status };
     if (notes) body.notes = notes;
-    
+
     const response = await fetch(`${API_BASE}/job-tracker/${jobId}`, {
       method: 'PUT',
       headers,
@@ -1178,6 +1178,16 @@ export const interviewApi = {
     return handleResponse(response)
   },
 
+  async evaluateCoding(data) {
+    const headers = await getAuthHeaders()
+    const response = await fetch(`${API_BASE}/interview/evaluate`, {
+      method: 'POST',
+      headers,
+      body: JSON.stringify(data)
+    })
+    return handleResponse(response)
+  },
+
   async getAnalytics() {
     const headers = await getAuthHeaders()
     const response = await fetch(`${API_BASE}/interview/analytics`, {
@@ -1377,7 +1387,7 @@ export const paymentApi = {
     })
     return handleResponse(response)
   }
-  
+
 }
 // ============ NOTIFICATION PREFERENCES API ============
 export const notificationApi = {
@@ -1428,14 +1438,14 @@ export const analyzerApi = {
       method: 'GET',
       headers
     })
-    
+
     if (!response.ok) {
       throw new Error(`Server error (${response.status})`)
     }
-    
+
     return response.text()
   },
-  
+
   // Note: chat streams directly via SSE, so we'll handle fetch in the component directly
 }
 

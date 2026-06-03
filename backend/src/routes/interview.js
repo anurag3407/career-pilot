@@ -3,7 +3,7 @@ import { verifyToken } from '../middleware/auth.js';
 import { extractAIProvider } from '../middleware/aiKey.js';
 import { asyncHandler, ApiError } from '../middleware/errorHandler.js';
 import Interview from '../models/Interview.model.js';
-import { generateInterviewQuestions, analyzeAnswer, generateOverallFeedback } from '../services/interviewService.js';
+import { generateInterviewQuestions, analyzeAnswer, generateOverallFeedback, evaluateCodingSubmission } from '../services/interviewService.js';
 import { aiRateLimiter } from '../middleware/rateLimiter.js';
 import { validate } from '../middleware/validate.js';
 import { startInterviewSchema, submitAnswerSchema } from '../schemas/interview.schema.js';
@@ -227,6 +227,23 @@ router.get('/:id', verifyToken, asyncHandler(async (req, res) => {
     res.json({
         success: true,
         data: interview
+    });
+}));
+
+router.post('/evaluate', verifyToken, extractAIProvider, aiRateLimiter, asyncHandler(async (req, res) => {
+    const { question, language, code } = req.body;
+
+    const evaluation = await evaluateCodingSubmission({
+        question,
+        language,
+        code
+    }, req.aiProvider);
+
+    res.json({
+        success: true,
+        data: evaluation,
+        provider: req.aiProvider.providerName,
+        providerSource: req.aiProviderSource
     });
 }));
 
