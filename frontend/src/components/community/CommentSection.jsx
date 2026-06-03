@@ -1,11 +1,10 @@
-import { useState, useEffect } from 'react';
+import { useState, useEffect, useCallback, useRef } from 'react';
 import { formatDistanceToNow } from 'date-fns';
 import { communityApi } from '../../services/api';
 import { 
   Heart, 
   MessageCircle, 
   Send, 
-  MoreHorizontal,
   ChevronDown,
   ChevronUp,
   Loader2
@@ -13,6 +12,18 @@ import {
 import toast from 'react-hot-toast';
 import { SkeletonListItems } from '../ui/Skeleton';
 
+/**
+ * Component representing a single comment item, supporting actions like replying, liking,
+ * and displaying child replies recursively.
+ *
+ * @param {object} props - The component properties.
+ * @param {object} props.comment - The comment object to display.
+ * @param {object} props.currentUser - The currently logged-in user object.
+ * @param {function} props.onReply - Function callback called when a reply is submitted.
+ * @param {function} props.onLike - Function callback called when the comment is liked.
+ * @param {number} [props.depth=0] - The indentation depth of the comment in the thread.
+ * @returns {JSX.Element} The rendered comment item.
+ */
 function CommentItem({ comment, currentUser, onReply, onLike, depth = 0 }) {
   const [showReplies, setShowReplies] = useState(depth === 0);
   const [isReplying, setIsReplying] = useState(false);
@@ -23,10 +34,22 @@ function CommentItem({ comment, currentUser, onReply, onLike, depth = 0 }) {
   const isOwn = comment.author?.uid === currentUser?.uid;
   const likeCount = comment.likes?.length || comment.likeCount || 0;
 
+  /**
+   * Helper function to extract and format name initials for display.
+   *
+   * @param {string} name - The user's name.
+   * @returns {string} The formatted initials.
+   */
   const getInitials = (name) => {
     return name?.split(' ').map(n => n[0]).join('').toUpperCase().slice(0, 2) || '??';
   };
 
+  /**
+   * Handles the submission event of a comment reply.
+   *
+   * @param {Event} e - The submission form event.
+   * @returns {Promise<void>}
+   */
   const handleSubmitReply = async (e) => {
     e.preventDefault();
     if (!replyContent.trim() || isSubmitting) return;
@@ -36,7 +59,7 @@ function CommentItem({ comment, currentUser, onReply, onLike, depth = 0 }) {
       await onReply(comment.id, replyContent.trim());
       setReplyContent('');
       setIsReplying(false);
-    } catch (error) {
+    } catch {
       toast.error('Failed to post reply');
     } finally {
       setIsSubmitting(false);
@@ -168,26 +191,59 @@ function CommentItem({ comment, currentUser, onReply, onLike, depth = 0 }) {
   );
 }
 
+/**
+ * Main component representing the full comment section, displaying lists of comments
+ * and providing handlers for liking, replying, and loading more comments.
+ *
+ * @param {object} props - The component properties.
+ * @param {string} props.postId - The ID of the post these comments belong to.
+ * @param {object} props.currentUser - The currently logged-in user.
+ * @param {function} [props.onCommentAdded] - Callback called when a new comment/reply is successfully posted.
+ * @returns {JSX.Element} The rendered comment section.
+ */
 export default function CommentSection({ postId, currentUser, onCommentAdded }) {
   const [comments, setComments] = useState([]);
   const [loading, setLoading] = useState(true);
+  const [isLoadingMore, setIsLoadingMore] = useState(false);
   const [newComment, setNewComment] = useState('');
   const [isSubmitting, setIsSubmitting] = useState(false);
   const [page, setPage] = useState(1);
   const [hasMore, setHasMore] = useState(false);
   const [total, setTotal] = useState(0);
+  const requestIdRef = useRef(0);
+  const loadMoreInFlightRef = useRef(false);
 
-  useEffect(() => {
-    fetchComments();
-  }, [postId]);
+  /**
+   * Fetches comment lists from the community API for the current post.
+   * Prevents duplicate/stale state updates via custom request counters and load status flags.
+   *
+   * @param {boolean} [loadMore=false] - Whether this is a load-more pagination request.
+   * @param {number} [pageToFetch=1] - The page number to fetch from the API.
+   * @returns {Promise<void>}
+   */
+  const fetchComments = useCallback(async (loadMore = false, pageToFetch = 1) => {
+    if (loadMore && loadMoreInFlightRef.current) {
+      return;
+    }
 
-  const fetchComments = async (loadMore = false) => {
+    const requestId = ++requestIdRef.current;
+
+    if (loadMore) {
+      loadMoreInFlightRef.current = true;
+      setIsLoadingMore(true);
+    }
+
     try {
-      if (!loadMore) setLoading(true);
-      
-      const pageToFetch = loadMore ? page + 1 : 1;
+      if (!loadMore) {
+        setLoading(true);
+      }
+
       const data = await communityApi.getComments(postId, pageToFetch);
-      
+
+      if (requestId !== requestIdRef.current) {
+        return;
+      }
+
       if (loadMore) {
         setComments(prev => [...prev, ...data.comments]);
         setPage(pageToFetch);
@@ -198,13 +254,42 @@ export default function CommentSection({ postId, currentUser, onCommentAdded }) 
       
       setTotal(data.pagination.total);
       setHasMore(data.comments.length === 20 && data.pagination.total > pageToFetch * 20);
-    } catch (error) {
-      toast.error('Failed to load comments', { id: `community-comments-load-error-${postId}` });
+    } catch {
+      if (requestId === requestIdRef.current) {
+        toast.error('Failed to load comments', { id: `community-comments-load-error-${postId}` });
+      }
     } finally {
-      setLoading(false);
+      if (requestId === requestIdRef.current) {
+        setLoading(false);
+      }
+      if (loadMore && requestId === requestIdRef.current) {
+        loadMoreInFlightRef.current = false;
+        setIsLoadingMore(false);
+      }
     }
-  };
+  }, [postId]);
 
+  useEffect(() => {
+    setComments([]);
+    setPage(1);
+    setHasMore(false);
+    setTotal(0);
+    setIsLoadingMore(false);
+    loadMoreInFlightRef.current = false;
+    fetchComments(false, 1);
+
+    return () => {
+      requestIdRef.current += 1;
+      loadMoreInFlightRef.current = false;
+    };
+  }, [postId, fetchComments]);
+
+  /**
+   * Handles the submission of a new top-level comment.
+   *
+   * @param {Event} e - The form submission event.
+   * @returns {Promise<void>}
+   */
   const handleSubmitComment = async (e) => {
     e.preventDefault();
     if (!newComment.trim() || isSubmitting) return;
@@ -217,13 +302,20 @@ export default function CommentSection({ postId, currentUser, onCommentAdded }) 
       setTotal(prev => prev + 1);
       onCommentAdded?.();
       toast.success('Comment posted!');
-    } catch (error) {
+    } catch {
       toast.error('Failed to post comment', { id: `community-post-comment-error-${postId}` });
     } finally {
       setIsSubmitting(false);
     }
   };
 
+  /**
+   * Handles posting a reply to a parent comment.
+   *
+   * @param {string} parentCommentId - The ID of the parent comment.
+   * @param {string} content - The reply text content.
+   * @returns {Promise<void>}
+   */
   const handleReply = async (parentCommentId, content) => {
     const data = await communityApi.createComment(postId, { 
       content, 
@@ -245,6 +337,13 @@ export default function CommentSection({ postId, currentUser, onCommentAdded }) 
     onCommentAdded?.();
   };
 
+  /**
+   * Toggles the like status of a comment via the API and updates state locally.
+   * Supports recursively finding and updating replies as well.
+   *
+   * @param {string} commentId - The ID of the comment to like/unlike.
+   * @returns {Promise<void>}
+   */
   const handleLikeComment = async (commentId) => {
     try {
       const data = await communityApi.toggleLikeComment(commentId);
@@ -267,9 +366,22 @@ export default function CommentSection({ postId, currentUser, onCommentAdded }) 
       };
       
       setComments(updateCommentLike);
-    } catch (error) {
+    } catch {
       toast.error('Failed to like comment', { id: `community-like-comment-error-${commentId}` });
     }
+  };
+
+  /**
+   * Triggers fetching the next page of comments if there are more remaining.
+   *
+   * @returns {void}
+   */
+  const handleLoadMore = () => {
+    if (loading || isLoadingMore || loadMoreInFlightRef.current || !hasMore) {
+      return;
+    }
+
+    fetchComments(true, page + 1);
   };
 
   return (
@@ -341,10 +453,14 @@ export default function CommentSection({ postId, currentUser, onCommentAdded }) 
         {hasMore && !loading && (
           <div className="p-4 text-center">
             <button
-              onClick={() => fetchComments(true)}
-              className="text-sm text-primary hover:text-primary/80 font-medium"
+              onClick={handleLoadMore}
+              disabled={isLoadingMore}
+              className="text-sm text-primary hover:text-primary/80 font-medium disabled:cursor-not-allowed disabled:opacity-60"
             >
-              Load more comments ({total - comments.length} remaining)
+              {isLoadingMore
+                ? 'Loading more comments...'
+                : `Load more comments (${total - comments.length} remaining)`
+              }
             </button>
           </div>
         )}

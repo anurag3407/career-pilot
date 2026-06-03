@@ -1,4 +1,4 @@
-import React, { useEffect, useMemo, useRef, useState } from 'react';
+import React, { useCallback, useEffect, useMemo, useRef, useState } from 'react';
 import { useNavigate } from 'react-router-dom';
 import {
   Search,
@@ -10,6 +10,7 @@ import {
   Clock,
 } from 'lucide-react';
 import toast from 'react-hot-toast';
+import KeyboardShortcut from './KeyboardShortcut';
 
 const actions = [
   {
@@ -87,38 +88,82 @@ const CommandPalette = ({ isOpen, setIsOpen }) => {
   const inputRef = useRef(null);
   const containerRef = useRef(null);
 
+  const handleSelect = useCallback((action) => {
+    navigate(action.path);
+    setRecentActions((prev) => {
+      const next = [
+        {
+          id: action.id,
+          title: action.title,
+          description: action.description,
+          path: action.path,
+        },
+        ...prev.filter((a) => a.id !== action.id),
+      ].slice(0, 5);
+
+      localStorage.setItem('recentCommands', JSON.stringify(next));
+      return next;
+    });
+
+    toast.success(`Opening ${action.title}`);
+
+    setIsOpen(false);
+  }, [navigate, setIsOpen]);
+
   useEffect(() => {
     if (isOpen) {
       document.body.style.overflow = 'hidden';
 
-      setTimeout(() => {
+      const focusTimer = setTimeout(() => {
         inputRef.current?.focus();
       }, 50);
 
-      const saved =
-        JSON.parse(localStorage.getItem('recentCommands')) || [];
+      let saved = [];
+      try {
+        saved = JSON.parse(localStorage.getItem('recentCommands')) || [];
+      } catch {
+        saved = [];
+      }
 
       setRecentActions(saved);
+
+      return () => {
+        clearTimeout(focusTimer);
+        document.body.style.overflow = 'auto';
+      };
     } else {
       document.body.style.overflow = 'auto';
       setQuery('');
       setSelectedIndex(0);
     }
-
-    return () => {
-      document.body.style.overflow = 'auto';
-    };
   }, [isOpen]);
 
   const filteredActions = useMemo(() => {
-    if (!query.trim()) {
+    const normalizedQuery = query.trim().toLowerCase();
+
+    if (!normalizedQuery) {
       return actions;
     }
 
+    const queryTokens = normalizedQuery.split(/\s+/).filter(Boolean);
+
     return actions.filter((action) =>
-      action.title.toLowerCase().includes(query.toLowerCase())
+      queryTokens.every((token) =>
+        `${action.title} ${action.description} ${action.path}`
+          .toLowerCase()
+          .includes(token)
+      )
     );
   }, [query]);
+
+  useEffect(() => {
+    const maxIndex = Math.max(0, filteredActions.length - 1);
+    const nextIndex = Math.max(0, Math.min(selectedIndex, maxIndex));
+
+    if (nextIndex !== selectedIndex) {
+      setSelectedIndex(nextIndex);
+    }
+  }, [filteredActions.length, selectedIndex]);
 
   useEffect(() => {
     const handleKeyDown = (e) => {
@@ -159,32 +204,7 @@ const CommandPalette = ({ isOpen, setIsOpen }) => {
 
     return () =>
       window.removeEventListener('keydown', handleKeyDown);
-  }, [isOpen, selectedIndex, filteredActions]);
-
-  const handleSelect = (action) => {
-    navigate(action.path);
-
-    const recentWithoutIcons = [
-      {
-        id: action.id,
-        title: action.title,
-        description: action.description,
-        path: action.path,
-      },
-      ...recentActions.filter((a) => a.id !== action.id),
-    ].slice(0, 5);
-
-    localStorage.setItem(
-      'recentCommands',
-      JSON.stringify(recentWithoutIcons)
-    );
-
-    setRecentActions(recentWithoutIcons);
-
-    toast.success(`Opening ${action.title}`);
-
-    setIsOpen(false);
-  };
+  }, [isOpen, selectedIndex, filteredActions, handleSelect, setIsOpen]);
 
   const handleOutsideClick = (e) => {
     if (
@@ -316,17 +336,7 @@ const CommandPalette = ({ isOpen, setIsOpen }) => {
             <span>↵ Select</span>
           </div>
 
-          <div className="flex items-center gap-2">
-            <kbd className="rounded bg-white/10 px-2 py-1">
-              Ctrl
-            </kbd>
-
-            <span>+</span>
-
-            <kbd className="rounded bg-white/10 px-2 py-1">
-              K
-            </kbd>
-          </div>
+          <KeyboardShortcut keys={['Ctrl', 'K']} />
         </div>
       </div>
     </div>

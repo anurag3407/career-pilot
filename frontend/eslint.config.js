@@ -27,6 +27,8 @@ export default [
       'react-hooks/set-state-in-effect': 'off',
       'react-hooks/immutability': 'off',
       'react-hooks/static-components': 'off',
+      'react-hooks/purity': 'warn',
+      'react-hooks/refs': 'warn',
       'no-empty': 'off',
       'react-hooks/exhaustive-deps': 'warn',
       'no-undef': 'warn',

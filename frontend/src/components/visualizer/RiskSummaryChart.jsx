@@ -1,36 +1,20 @@
-import React, { useEffect, useState } from 'react';
+import { useMemo } from 'react';
 import { CheckCircle2 } from 'lucide-react';
 import { motion } from 'framer-motion';
 
 const RiskSummaryChart = ({ risks }) => {
-  const [dashArrays, setDashArrays] = useState({});
-  const [dashOffsets, setDashOffsets] = useState({});
-
-  if (!risks || risks.length === 0) {
-    return (
-      <div className="bg-white/5 border border-white/10 rounded-2xl p-6 h-full flex flex-col items-center justify-center text-center">
-        <div className="w-16 h-16 rounded-full bg-green-500/20 flex items-center justify-center mb-4 border border-green-500/30">
-          <CheckCircle2 className="w-8 h-8 text-green-400" />
-        </div>
-        <h3 className="text-xl font-bold text-white mb-2">Codebase is Healthy</h3>
-        <p className="text-slate-400 max-w-[200px]">No significant risks or hotspots detected.</p>
-      </div>
-    );
-  }
-
-  const counts = {
-    critical: risks.filter(r => r.severity === 'critical').length,
-    high: risks.filter(r => r.severity === 'high').length,
-    medium: risks.filter(r => r.severity === 'medium').length,
-    low: risks.filter(r => r.severity === 'low').length,
-  };
-
-  const total = risks.length;
+  const total = risks?.length || 0;
   const radius = 60;
   const circumference = 2 * Math.PI * radius;
 
-  // Calculate svg stroke offsets for the donut chart segments
-  useEffect(() => {
+  const counts = {
+    critical: risks?.filter(r => r.severity === 'critical').length || 0,
+    high: risks?.filter(r => r.severity === 'high').length || 0,
+    medium: risks?.filter(r => r.severity === 'medium').length || 0,
+    low: risks?.filter(r => r.severity === 'low').length || 0,
+  };
+
+  const { dashArrays, dashOffsets } = useMemo(() => {
     let offset = 0;
     const arrays = {};
     const offsets = {};
@@ -48,9 +32,20 @@ const RiskSummaryChart = ({ risks }) => {
       }
     });
 
-    setDashArrays(arrays);
-    setDashOffsets(offsets);
-  }, [risks, total, circumference]); // eslint-disable-line react-hooks/exhaustive-deps
+    return { dashArrays: arrays, dashOffsets: offsets };
+  }, [counts.critical, counts.high, counts.medium, counts.low, total, circumference]);
+
+  if (!risks || risks.length === 0) {
+    return (
+      <div className="bg-white/5 border border-white/10 rounded-2xl p-6 h-full flex flex-col items-center justify-center text-center">
+        <div className="w-16 h-16 rounded-full bg-green-500/20 flex items-center justify-center mb-4 border border-green-500/30">
+          <CheckCircle2 className="w-8 h-8 text-green-400" />
+        </div>
+        <h3 className="text-xl font-bold text-white mb-2">Codebase is Healthy</h3>
+        <p className="text-slate-400 max-w-[200px]">No significant risks or hotspots detected.</p>
+      </div>
+    );
+  }
 
   const colors = {
     critical: '#ef4444',

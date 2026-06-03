@@ -146,9 +146,10 @@ export default function Dashboard() {
       console.error('Failed to fetch data:', error)
       setFetchError('Failed to load your dashboard. Please try again.')
       toast.error('Failed to load dashboard data')
-    } finally {
-      if (!canUpdate()) return
+    }
 
+    if (!canUpdate()) return
+    if (isMounted.current && fetchRequestId.current === requestId) {
       setLoading(false)
     }
   }
