@@ -1,59 +1,43 @@
-import React, { useState } from 'react';
-import { cn } from '../../lib/utils'; // Uses the utility file verified in your repository map
+import React from 'react'; // Removed useState since it's no longer needed
+
+// Move the static data outside the component as a constant
+const GOALS = [
+  { id: 1, label: 'Job Applications', current: 15, target: 25, color: 'bg-blue-600' },
+  { id: 2, label: 'Skill Certifications', current: 2, target: 5, color: 'bg-purple-600' },
+  { id: 3, label: 'Coding Problems Solved', current: 45, target: 50, color: 'bg-emerald-600' }
+];
 
 const GoalTracker = ({ className }) => {
-  // Goals array configuration
-  const [goals] = useState([
-    { id: 1, label: 'Job Applications', current: 15, target: 25, color: 'bg-blue-600' },
-    { id: 2, label: 'Skill Certifications', current: 2, target: 5, color: 'bg-purple-600' },
-    { id: 3, label: 'Coding Problems Solved', current: 45, target: 50, color: 'bg-emerald-600' }
-  ]);
-
-  const [errorMessage] = useState('');
-
-  // Safeguards calculation processing against invalid math limits
-  const calculateProgress = (current, target) => {
-    if (!target || target <= 0) return 0;
-    if (current < 0) return 0;
-    const percentage = (current / target) * 100;
-    return percentage > 100 ? 100 : Math.round(percentage);
-  };
-
   return (
-    <div className={cn("p-6 bg-white rounded-xl shadow-sm border border-gray-200 dark:bg-gray-800 dark:border-gray-700 max-w-xl mx-auto my-4", className)}>
-      <div className="mb-4">
-        <h3 className="text-lg font-bold text-gray-900 dark:text-white">Goal Setting & Tracking</h3>
-        <p className="text-xs text-gray-500 dark:text-gray-400">Monitor your weekly technical career milestones</p>
-      </div>
-
-      {errorMessage && (
-        <div className="p-2 mb-4 text-xs text-red-600 bg-red-50 rounded dark:bg-red-900/20 dark:text-red-400">
-          {errorMessage}
-        </div>
-      )}
-
+    <div className={className}>
+      <div class="mb-4"><h2 class="text-lg font-bold text-gray-900 dark:text-white">Weekly Milestones</h2></div>
+      
       <div className="space-y-5">
-        {goals.map((goal) => {
-          const progress = calculateProgress(goal.current, goal.target);
+        {GOALS.map((goal) => {
+          // Calculate percentage safely
+          const percentage = Math.min(Math.round((goal.current / goal.target) * 100), 100);
+          
           return (
-            <div key={goal.id} className="w-full">
-              <div className="flex justify-between items-center mb-1">
-                <span className="text-sm font-medium text-gray-700 dark:text-gray-300">{goal.label}</span>
-                <span className="text-sm font-semibold text-gray-900 dark:text-white">{progress}%</span>
+            <div key={goal.id} className="space-y-2">
+              <div className="flex justify-between text-sm font-medium">
+                <span className="text-gray-700 dark:text-gray-300">{goal.label}</span>
+                <span className="text-gray-500">{percentage}%</span>
               </div>
               
               {/* Progress Bar Track */}
-              <div className="w-full bg-gray-100 rounded-full h-2.5 dark:bg-gray-700">
+              <div className="w-full h-2 bg-gray-200 rounded-full dark:bg-gray-700">
                 <div 
-                  className={cn("h-2.5 rounded-full transition-all duration-500 ease-out", goal.color)} 
-                  style={{ width: `${progress}%` }}
-                ></div>
+                  className={`h-2 rounded-full ${goal.color}`} 
+                  style={{ width: `${percentage}%` }}
+                  role="progressbar"
+                  aria-valuenow={percentage}
+                  aria-valuemin="0"
+                  aria-valuemax="100"
+                />
               </div>
               
-              <div className="flex justify-between items-center mt-1">
-                <p className="text-xs text-gray-400 dark:text-gray-500">
-                  {goal.current} of {goal.target} completed
-                </p>
+              <div className="text-xs text-gray-500 text-right">
+                {goal.current} of {goal.target} completed
               </div>
             </div>
           );
