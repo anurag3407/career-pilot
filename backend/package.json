@@ -12,6 +12,8 @@
   },
   "dependencies": {
     "@anthropic-ai/sdk": "^0.99.0",
+    "@bull-board/api": "^7.1.5",
+    "@bull-board/express": "^7.1.5",
     "@google/generative-ai": "^0.21.0",
     "axe-core": "^4.11.4",
     "axios": "^1.16.1",
@@ -32,7 +34,6 @@
     "marked": "^18.0.3",
     "mongoose": "^9.6.2",
     "multer": "^1.4.5-lts.1",
-    "multer-storage-cloudinary": "^4.0.0",
     "node-cron": "^4.2.1",
     "node-fetch": "^3.3.2",
     "nodemailer": "^8.0.7",
