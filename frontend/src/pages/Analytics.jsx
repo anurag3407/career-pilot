@@ -26,7 +26,6 @@ import {
 } from 'recharts'
 import { interviewApi } from '../services/api'
 
-// 💡 DYNAMIC PRODUCTION CLEANUP: Reverted back to empty dynamic baseline defaults
 const DEFAULT_SUMMARY = {
   count: 0,
   averageOverallScore: 0,
@@ -37,18 +36,13 @@ const DEFAULT_SUMMARY = {
 };
 
 export default function Analytics() {
-  // 💡 DYNAMIC PRODUCTION CLEANUP: Removed the static mock dataset arrays completely
   const [analytics, setAnalytics] = useState({ 
     sessions: [], 
     summary: DEFAULT_SUMMARY 
   });
-  
-  // 💡 DYNAMIC PRODUCTION CLEANUP: Reverted back to true loading state by default
-  const [loading, setLoading] = useState(true); 
+   const [loading, setLoading] = useState(true); 
   const [error, setError] = useState('');
-  
-  // 💡 TRACK ACTIVE TAB STATE
-  const [activeTab, setActiveTab] = useState('overview'); // 'overview' | 'detailed'
+  const [activeTab, setActiveTab] = useState('overview'); 
 
   useEffect(() => {
     const loadAnalytics = async () => {
@@ -104,7 +98,7 @@ export default function Analytics() {
     <div className="min-h-screen bg-background">
       <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-10">
         
-        {/* HEADER BLOCK CARD */}
+        
         <div className="mb-6 rounded-3xl border border-border bg-card p-8 shadow-sm">
           <div className="flex flex-col gap-6 lg:flex-row lg:items-center lg:justify-between">
             <div>
@@ -127,7 +121,6 @@ export default function Analytics() {
           </div>
         </div>
 
-        {/* 💡 TAILWIND NAVIGATION TABS ROW */}
         <div className="mb-8 border-b border-border">
           <div className="flex gap-6">
             <button
@@ -153,14 +146,13 @@ export default function Analytics() {
           </div>
         </div>
 
-        {/* LOADING STATE VIEW CONDITIONAL */}
+        
         {loading ? (
           <div className="rounded-3xl border border-border bg-card p-12 text-center text-muted-foreground animate-pulse">
             Loading interactive tracking matrix...
           </div>
         ) : (
           <div>
-            {/* 💡 TAB 1: OVERVIEW METRICS & TREND PATTERNS */}
             {activeTab === 'overview' && (
               <div className="grid gap-8 xl:grid-cols-[1.7fr_1fr]">
                 <section className="rounded-3xl border border-border bg-card p-6 shadow-sm">
@@ -208,7 +200,6 @@ export default function Analytics() {
               </div>
             )}
 
-            {/* 💡 TAB 2: DETAILED BREAKDOWNS & INDIVIDUAL HISTORY */}
             {activeTab === 'detailed' && (
               <div className="grid gap-8 xl:grid-cols-[1.2fr_1fr]">
                 <section className="rounded-3xl border border-border bg-card p-6 shadow-sm">
