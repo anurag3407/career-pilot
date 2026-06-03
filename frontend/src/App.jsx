@@ -25,6 +25,7 @@ const Analytics = lazy(() => import('./pages/Analytics'));
 const JobSearch = lazy(() => import('./pages/JobSearch'));
 const ResumeBuilder = lazy(() => import('./pages/ResumeBuilder'));
 import TextToResume from './pages/TextToResume';
+import ElevatorPitch from './components/portfolio/templates/Elevator_Pitch';
 import About from './components/portfolio/templates/Tech_Startup/About';
 import ChatbotPortfolio from "./components/portfolio/templates/Chatbot_Portfolio";
 import GamifiedXP from "./components/portfolio/templates/Gamified_XP";
@@ -239,6 +240,7 @@ function AppRoutes() {
 
         {/* Template Gallery Route (Registered at /templates) */}
         <Route path="/templates" element={<TemplateGallery />} />
+        <Route path="/templates/elevator-pitch" element={<ElevatorPitch />} />
 
         
 

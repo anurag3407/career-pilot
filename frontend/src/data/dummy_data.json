@@ -16,7 +16,9 @@
   "stats": {
     "yearsExperience": 5,
     "projectsCompleted": 48,
-    "happyClients": 32
+    "happyClients": 32,
+    "followers": 12500,
+    "appreciations": 45000
   },
   "skills": [
     { "name": "React", "level": 95, "category": "Frontend" },
