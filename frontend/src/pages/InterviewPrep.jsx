@@ -2,12 +2,14 @@ import { triggerConfetti } from '../utils/confetti'
 import { useState, useRef, useEffect } from 'react';
 import { useNavigate } from 'react-router-dom';
 import { motion } from 'framer-motion';
-import { Mic, MicOff, Video, VideoOff, XCircle, CheckCircle, AlertCircle, Volume2, VolumeX, RotateCcw, UserX, Loader2, Sparkles, ArrowRight, Target, TrendingUp, MessageSquare, Eye, Brain, Award, ChevronDown, ChevronUp, Clock, BarChart3, Lightbulb, Zap, Laptop, Smartphone, Chrome, AlertTriangle, FileUp, FileText, X } from 'lucide-react';
+import { Mic, MicOff, Video, VideoOff, XCircle, CheckCircle, AlertCircle, Volume2, VolumeX, RotateCcw, UserX, Loader2, Sparkles, ArrowRight, Target, TrendingUp, MessageSquare, Eye, Brain, Award, ChevronDown, ChevronUp, Clock, BarChart3, Lightbulb, Zap, Laptop, Smartphone, Chrome, AlertTriangle, FileUp, FileText, X, Code, Play, Terminal, Check } from 'lucide-react';
 import Button from '../components/Button';
+import CodeEditor from '../components/CodeEditor';
 import BodyLanguageTips from '../components/BodyLanguageTips';
 import VoiceToTextButton from '../components/VoiceToTextButton';
 import { interviewApi, uploadApi } from '../services/api';
 import ConfidenceMeter from "../components/ConfidenceMeter";
+import toast from 'react-hot-toast';
 
 // Device and browser detection utilities
 const isMobileDevice = () => {
@@ -45,6 +47,65 @@ const EXPERIENCE_LEVELS = [
   { value: 'senior', label: 'Senior Level (6-10 years)' },
   { value: 'lead', label: 'Lead/Principal (10+ years)' }
 ];
+
+const MOCK_CHALLENGE = {
+  id: 'two-sum',
+  title: 'Two Sum',
+  difficulty: 'Easy',
+  difficultyColor: 'text-emerald-400 bg-emerald-500/10 border-emerald-500/20',
+  description: `Given an array of integers \`nums\` and an integer \`target\`, return *indices of the two numbers such that they add up to \`target\`*.
+
+You may assume that each input would have ***exactly* one solution**, and you may not use the *same* element twice.
+
+You can return the answer in any order.`,
+  constraints: [
+    '2 <= nums.length <= 10^4',
+    '-10^9 <= nums[i] <= 10^9',
+    '-10^9 <= target <= 10^9',
+    'Only one valid answer exists.'
+  ],
+  examples: [
+    {
+      input: 'nums = [2,7,11,15], target = 9',
+      output: '[0,1]',
+      explanation: 'Because nums[0] + nums[1] == 9, we return [0, 1].'
+    },
+    {
+      input: 'nums = [3,2,4], target = 6',
+      output: '[1,2]',
+      explanation: 'Because nums[1] + nums[2] == 6, we return [1, 2].'
+    }
+  ],
+  notes: 'A brute force solution would be O(N^2) using nested loops. You can optimize it to O(N) time and O(N) space using a hash map to store the complement of each number.',
+  templates: {
+    javascript: `/**
+ * @param {number[]} nums
+ * @param {number} target
+ * @return {number[]}
+ */
+function twoSum(nums, target) {
+    // Write your code here
+    
+}`,
+    python: `class Solution:
+    def twoSum(self, nums: list[int], target: int) -> list[int]:
+        # Write your code here
+        pass`,
+    java: `class Solution {
+    public int[] twoSum(int[] nums, int target) {
+        // Write your code here
+        return new int[0];
+    }
+}`,
+    cpp: `class Solution {
+public:
+    vector<int> twoSum(vector<int>& nums, int target) {
+        // Write your code here
+        
+    }
+};`
+  }
+};
 
 function QuestionAnalysisCard({ answer, index }) {
   const [expanded, setExpanded] = useState(false);
@@ -253,6 +314,114 @@ export default function InterviewPrep() {
   const [loading, setLoading] = useState(false);
   const [error, setError] = useState('');
 
+  // Coding challenge states
+  const [activeTab, setActiveTab] = useState('mock-interview'); // 'mock-interview' | 'coding-challenge'
+  const [selectedLanguage, setSelectedLanguage] = useState('javascript');
+  const [userCodes, setUserCodes] = useState({
+    'two-sum': {
+      javascript: MOCK_CHALLENGE.templates.javascript,
+      python: MOCK_CHALLENGE.templates.python,
+      java: MOCK_CHALLENGE.templates.java,
+      cpp: MOCK_CHALLENGE.templates.cpp
+    }
+  });
+  const [isRunning, setIsRunning] = useState(false);
+  const [runOutput, setRunOutput] = useState(null);
+  const [submitOutput, setSubmitOutput] = useState(null);
+  const [activeDetailTab, setActiveDetailTab] = useState('description'); // 'description' | 'notes'
+  const [evaluationResult, setEvaluationResult] = useState(null);
+  const [evaluationLoading, setEvaluationLoading] = useState(false);
+  const [evaluationError, setEvaluationError] = useState(null);
+
+  const handleCodeChange = (newCode) => {
+    setUserCodes(prev => ({
+      ...prev,
+      'two-sum': {
+        ...prev['two-sum'],
+        [selectedLanguage]: newCode
+      }
+    }));
+  };
+
+  const handleResetCode = () => {
+    setUserCodes(prev => ({
+      ...prev,
+      'two-sum': {
+        ...prev['two-sum'],
+        [selectedLanguage]: MOCK_CHALLENGE.templates[selectedLanguage]
+      }
+    }));
+  };
+
+  const handleRunCode = () => {
+    setIsRunning(true);
+    setRunOutput('Running code against test cases...\n');
+    setSubmitOutput(null);
+
+    setTimeout(() => {
+      setIsRunning(false);
+      setRunOutput(
+        `[STATUS] Completed\n\n` +
+        `Test Case 1:\n` +
+        `  Input: nums = [2,7,11,15], target = 9\n` +
+        `  Expected: [0,1]\n` +
+        `  Actual: [0,1]\n` +
+        `  Result: Success ✓\n\n` +
+        `Test Case 2:\n` +
+        `  Input: nums = [3,2,4], target = 6\n` +
+        `  Expected: [1,2]\n` +
+        `  Actual: [1,2]\n` +
+        `  Result: Success ✓\n\n` +
+        `All test cases passed successfully!`
+      );
+    }, 1500);
+  };
+
+  const handleSubmitCode = async () => {
+    const trimmedCode = (currentCode || '').trim();
+    if (!trimmedCode) {
+      const errorMsg = 'Code submission cannot be empty';
+      setEvaluationError(errorMsg);
+      toast.error(errorMsg);
+      return;
+    }
+
+    setEvaluationLoading(true);
+    setEvaluationError(null);
+    setEvaluationResult(null);
+    setSubmitOutput('Submitting solution to AI evaluation server...\n');
+    setRunOutput(null);
+
+    try {
+      const response = await interviewApi.evaluateCoding({
+        question: {
+          title: MOCK_CHALLENGE.title,
+          description: MOCK_CHALLENGE.description
+        },
+        language: selectedLanguage,
+        code: trimmedCode
+      });
+
+      if (response && response.success && response.data) {
+        setEvaluationResult(response.data);
+        setSubmitOutput(`[STATUS] AI Evaluation Complete\nScore: ${response.data.score}/100\n`);
+        toast.success('Evaluation complete!');
+      } else {
+        throw new Error('Invalid response structure received from server');
+      }
+    } catch (err) {
+      console.error('Coding submission error:', err);
+      const errMsg = err.message || 'An error occurred during submission evaluation';
+      setEvaluationError(errMsg);
+      setSubmitOutput(`[ERROR] AI Evaluation Failed\nReason: ${errMsg}\n`);
+      toast.error(errMsg);
+    } finally {
+      setEvaluationLoading(false);
+    }
+  };
+
+  const currentCode = userCodes['two-sum'][selectedLanguage] || '';
+
   // Device/browser compatibility state
   const [isMobile, setIsMobile] = useState(false);
   const [isChrome, setIsChrome] = useState(true);
@@ -320,6 +489,14 @@ export default function InterviewPrep() {
     window.addEventListener('resize', handleResize);
     return () => window.removeEventListener('resize', handleResize);
   }, []);
+
+  // Reset outputs and evaluation results when language changes
+  useEffect(() => {
+    setRunOutput(null);
+    setSubmitOutput(null);
+    setEvaluationResult(null);
+    setEvaluationError(null);
+  }, [selectedLanguage]);
 
   useEffect(() => {
     if (step === 'interview') initializeMedia();
@@ -1075,163 +1252,486 @@ export default function InterviewPrep() {
           <div className="absolute bottom-1/4 right-0 w-96 h-96 bg-purple-500/10 rounded-full blur-3xl" />
         </div>
 
-        <div className="relative max-w-2xl mx-auto px-4 sm:px-6 lg:px-8 py-8">
-          <motion.div initial={{ opacity: 0, y: -20 }} animate={{ opacity: 1, y: 0 }} className="text-center mb-10">
-            <div className="inline-flex items-center gap-2 px-4 py-2 rounded-full bg-primary/10 border border-primary/20 text-primary text-sm mb-4">
-              <Sparkles className="w-4 h-4" />
-              AI-Powered Interview Practice
+        <div className={`relative ${activeTab === 'coding-challenge' ? 'max-w-7xl' : 'max-w-2xl'} mx-auto px-4 sm:px-6 lg:px-8 py-8 transition-all duration-300`}>
+          {/* Dynamic Header */}
+          {activeTab === 'mock-interview' ? (
+            <motion.div initial={{ opacity: 0, y: -20 }} animate={{ opacity: 1, y: 0 }} className="text-center mb-8">
+              <div className="inline-flex items-center gap-2 px-4 py-2 rounded-full bg-primary/10 border border-primary/20 text-primary text-sm mb-4">
+                <Sparkles className="w-4 h-4" />
+                AI-Powered Interview Practice
+              </div>
+              <h1 className="text-4xl md:text-5xl font-bold text-foreground mb-3">Interview Prep</h1>
+              <p className="text-lg text-muted-foreground">Practice with AI interviewer, get complete feedback at the end</p>
+            </motion.div>
+          ) : (
+            <motion.div initial={{ opacity: 0, y: -20 }} animate={{ opacity: 1, y: 0 }} className="text-center mb-8">
+              <div className="inline-flex items-center gap-2 px-4 py-2 rounded-full bg-indigo-500/10 border border-indigo-500/20 text-indigo-400 text-sm mb-4">
+                <Code className="w-4 h-4" />
+                Interactive Code Sandbox
+              </div>
+              <h1 className="text-4xl md:text-5xl font-bold text-foreground mb-3">Coding Challenge</h1>
+              <p className="text-lg text-muted-foreground">Solve programming challenges using Monaco Editor with live diagnostics</p>
+            </motion.div>
+          )}
+
+          {/* Mode Switcher Tab Bar */}
+          <div className="flex justify-center mb-8">
+            <div className="bg-card border border-border flex p-1 rounded-xl gap-1">
+              <button
+                type="button"
+                onClick={() => setActiveTab('mock-interview')}
+                className={`flex items-center gap-2 px-5 py-2.5 rounded-lg text-sm font-semibold transition-all cursor-pointer ${
+                  activeTab === 'mock-interview'
+                    ? 'bg-primary text-primary-foreground shadow-md font-bold'
+                    : 'text-muted-foreground hover:text-foreground'
+                }`}
+              >
+                <Mic className="w-4 h-4" />
+                AI Mock Interview
+              </button>
+              <button
+                type="button"
+                onClick={() => setActiveTab('coding-challenge')}
+                className={`flex items-center gap-2 px-5 py-2.5 rounded-lg text-sm font-semibold transition-all cursor-pointer ${
+                  activeTab === 'coding-challenge'
+                    ? 'bg-primary text-primary-foreground shadow-md font-bold'
+                    : 'text-muted-foreground hover:text-foreground'
+                }`}
+              >
+                <Code className="w-4 h-4" />
+                Coding Challenge
+              </button>
             </div>
-            <h1 className="text-4xl md:text-5xl font-bold text-foreground mb-3">Interview Prep</h1>
-            <p className="text-lg text-muted-foreground">Practice with AI interviewer, get complete feedback at the end</p>
-          </motion.div>
+          </div>
 
-          <motion.div initial={{ opacity: 0, y: 20 }} animate={{ opacity: 1, y: 0 }} transition={{ delay: 0.1 }}>
-            <div className="p-8 rounded-3xl glass glow border border-border shadow-2xl relative overflow-hidden">
-              <div className="absolute top-0 right-0 w-64 h-64 bg-primary/5 rounded-full blur-3xl pointer-events-none"></div>
-              <form onSubmit={handleStartInterview} className="space-y-6 relative z-10">
-                <div>
-                  <label className="block text-sm font-medium text-muted-foreground mb-2">Job Role *</label>
-                  <input
-                    type="text"
-                    value={formData.jobRole}
-                    onChange={(e) => setFormData({ ...formData, jobRole: e.target.value })}
-                    placeholder="e.g., Software Engineer, Product Manager"
-                    className="w-full px-4 py-3 bg-card/50 border border-border rounded-xl text-foreground placeholder:text-muted-foreground focus:ring-2 focus:ring-primary focus:border-primary/50 transition-all-300 shadow-sm"
-                    required
-                  />
-                </div>
-
-                <div>
-                  <label className="block text-sm font-medium text-muted-foreground mb-2">Industry *</label>
-                  <select
-                    value={formData.industry}
-                    onChange={(e) => setFormData({ ...formData, industry: e.target.value })}
-                    className="w-full px-4 py-3 bg-muted/50 border border-border rounded-xl text-foreground focus:ring-2 focus:ring-primary"
-                  >
-                    {INDUSTRIES.map(ind => <option key={ind.value} value={ind.value}>{ind.label}</option>)}
-                  </select>
-                </div>
-
-                <div>
-                  <label className="block text-sm font-medium text-muted-foreground mb-2">Experience Level *</label>
-                  <select
-                    value={formData.experienceLevel}
-                    onChange={(e) => setFormData({ ...formData, experienceLevel: e.target.value })}
-                    className="w-full px-4 py-3 bg-muted/50 border border-border rounded-xl text-foreground focus:ring-2 focus:ring-primary"
-                  >
-                    {EXPERIENCE_LEVELS.map(level => <option key={level.value} value={level.value}>{level.label}</option>)}
-                  </select>
-                </div>
-
-                <div>
-                  <label className="block text-sm font-medium text-muted-foreground mb-2">Number of Questions</label>
-                  <div className="flex items-center gap-4">
+          {activeTab === 'mock-interview' ? (
+            <motion.div initial={{ opacity: 0, y: 20 }} animate={{ opacity: 1, y: 0 }} transition={{ delay: 0.1 }}>
+              <div className="p-8 rounded-3xl glass glow border border-border shadow-2xl relative overflow-hidden">
+                <div className="absolute top-0 right-0 w-64 h-64 bg-primary/5 rounded-full blur-3xl pointer-events-none"></div>
+                <form onSubmit={handleStartInterview} className="space-y-6 relative z-10">
+                  <div>
+                    <label className="block text-sm font-medium text-muted-foreground mb-2">Job Role *</label>
                     <input
-                      type="range"
-                      min="2"
-                      max="20"
-                      value={formData.questionCount}
-                      onChange={(e) => setFormData({ ...formData, questionCount: parseInt(e.target.value) })}
-                      className="flex-1 h-2 bg-card rounded-lg appearance-none cursor-pointer accent-indigo-500"
+                      type="text"
+                      value={formData.jobRole}
+                      onChange={(e) => setFormData({ ...formData, jobRole: e.target.value })}
+                      placeholder="e.g., Software Engineer, Product Manager"
+                      className="w-full px-4 py-3 bg-card/50 border border-border rounded-xl text-foreground placeholder:text-muted-foreground focus:ring-2 focus:ring-primary focus:border-primary/50 transition-all-300 shadow-sm"
+                      required
                     />
-                    <span className="w-12 text-center text-lg font-semibold text-primary">{formData.questionCount}</span>
-                  </div>
-                  <p className="text-xs text-muted-foreground mt-2">Choose between 2 to 20 questions for your interview</p>
-                </div>
-
-                {/* Resume Upload Section */}
-                <div className="border-2 border-dashed border-primary/20 rounded-2xl p-6 bg-primary/5 hover:bg-primary/10 transition-colors cursor-pointer relative group">
-                  <div className="flex items-center gap-4 mb-4">
-                    <div className="w-12 h-12 bg-primary/20 rounded-xl flex items-center justify-center group-hover:scale-110 transition-transform">
-                      <FileUp className="w-6 h-6 text-primary" />
-                    </div>
-                    <div>
-                      <h3 className="text-foreground font-bold text-lg">Upload Resume (Optional)</h3>
-                      <p className="text-sm text-muted-foreground">Get personalized questions based on your experience</p>
-                    </div>
                   </div>
 
-                  {!resumeFile ? (
-                    <div className="relative mt-2">
+                  <div>
+                    <label className="block text-sm font-medium text-muted-foreground mb-2">Industry *</label>
+                    <select
+                      value={formData.industry}
+                      onChange={(e) => setFormData({ ...formData, industry: e.target.value })}
+                      className="w-full px-4 py-3 bg-muted/50 border border-border rounded-xl text-foreground focus:ring-2 focus:ring-primary"
+                    >
+                      {INDUSTRIES.map(ind => <option key={ind.value} value={ind.value}>{ind.label}</option>)}
+                    </select>
+                  </div>
+
+                  <div>
+                    <label className="block text-sm font-medium text-muted-foreground mb-2">Experience Level *</label>
+                    <select
+                      value={formData.experienceLevel}
+                      onChange={(e) => setFormData({ ...formData, experienceLevel: e.target.value })}
+                      className="w-full px-4 py-3 bg-muted/50 border border-border rounded-xl text-foreground focus:ring-2 focus:ring-primary"
+                    >
+                      {EXPERIENCE_LEVELS.map(level => <option key={level.value} value={level.value}>{level.label}</option>)}
+                    </select>
+                  </div>
+
+                  <div>
+                    <label className="block text-sm font-medium text-muted-foreground mb-2">Number of Questions</label>
+                    <div className="flex items-center gap-4">
                       <input
-                        ref={resumeInputRef}
-                        type="file"
-                        accept=".pdf"
-                        onChange={handleResumeUpload}
-                        className="absolute inset-0 w-full h-full opacity-0 cursor-pointer"
-                        disabled={resumeLoading}
+                        type="range"
+                        min="2"
+                        max="20"
+                        value={formData.questionCount}
+                        onChange={(e) => setFormData({ ...formData, questionCount: parseInt(e.target.value) })}
+                        className="flex-1 h-2 bg-card rounded-lg appearance-none cursor-pointer accent-indigo-500"
                       />
-                      <div className="flex items-center justify-center gap-2 py-4 px-4 rounded-xl bg-card border border-border group-hover:border-primary/50 transition-colors shadow-sm">
-                        {resumeLoading ? (
-                          <>
-                            <Loader2 className="w-5 h-5 text-primary animate-spin" />
-                            <span className="text-sm font-semibold text-muted-foreground">Extracting text...</span>
-                          </>
-                        ) : (
-                          <>
-                            <FileUp className="w-4 h-4 text-muted-foreground" />
-                            <span className="text-sm text-muted-foreground">Click to upload resume</span>
-                          </>
-                        )}
+                      <span className="w-12 text-center text-lg font-semibold text-primary">{formData.questionCount}</span>
+                    </div>
+                    <p className="text-xs text-muted-foreground mt-2">Choose between 2 to 20 questions for your interview</p>
+                  </div>
+
+                  {/* Resume Upload Section */}
+                  <div className="border-2 border-dashed border-primary/20 rounded-2xl p-6 bg-primary/5 hover:bg-primary/10 transition-colors cursor-pointer relative group">
+                    <div className="flex items-center gap-4 mb-4">
+                      <div className="w-12 h-12 bg-primary/20 rounded-xl flex items-center justify-center group-hover:scale-110 transition-transform">
+                        <FileUp className="w-6 h-6 text-primary" />
+                      </div>
+                      <div>
+                        <h3 className="text-foreground font-bold text-lg">Upload Resume (Optional)</h3>
+                        <p className="text-sm text-muted-foreground">Get personalized questions based on your experience</p>
+                      </div>
+                    </div>
+
+                    {!resumeFile ? (
+                      <div className="relative mt-2">
+                        <input
+                          ref={resumeInputRef}
+                          type="file"
+                          accept=".pdf"
+                          onChange={handleResumeUpload}
+                          className="absolute inset-0 w-full h-full opacity-0 cursor-pointer"
+                          disabled={resumeLoading}
+                        />
+                        <div className="flex items-center justify-center gap-2 py-4 px-4 rounded-xl bg-card border border-border group-hover:border-primary/50 transition-colors shadow-sm">
+                          {resumeLoading ? (
+                            <>
+                              <Loader2 className="w-5 h-5 text-primary animate-spin" />
+                              <span className="text-sm font-semibold text-muted-foreground">Extracting text...</span>
+                            </>
+                          ) : (
+                            <>
+                              <FileUp className="w-4 h-4 text-muted-foreground" />
+                              <span className="text-sm text-muted-foreground">Click to upload resume</span>
+                            </>
+                          )}
+                        </div>
+                      </div>
+                    ) : (
+                      <div className="flex items-center justify-between p-3 rounded-lg bg-emerald-500/10 border border-emerald-500/30">
+                        <div className="flex items-center gap-3 flex-1">
+                          <FileText className="w-5 h-5 text-emerald-400" />
+                          <div className="flex-1">
+                            <p className="text-sm text-emerald-400 font-medium">{resumeFile.name}</p>
+                            {/* Progress bar showing extraction complete */}
+                            <div className="mt-1.5 h-1.5 bg-card rounded-full overflow-hidden">
+                              <div className="h-full bg-emerald-500 rounded-full" style={{ width: '100%' }} />
+                            </div>
+                          </div>
+                        </div>
+                        <button
+                          type="button"
+                          onClick={removeResume}
+                          className="p-1.5 rounded-lg hover:bg-muted transition-colors ml-3"
+                        >
+                          <X className="w-4 h-4 text-muted-foreground" />
+                        </button>
+                      </div>
+                    )}
+
+                    {resumeError && (
+                      <p className="text-xs text-red-400 mt-2">{resumeError}</p>
+                    )}
+
+                    {resumeText && (
+                      <div className="mt-3 flex items-center gap-2 text-xs text-primary">
+                        <Sparkles className="w-3 h-3" />
+                        <span>~40% of questions will be personalized based on your resume</span>
+                      </div>
+                    )}
+                  </div>
+
+                  {error && (
+                    <div className="p-4 rounded-xl bg-red-500/10 border border-red-500/20 flex items-start gap-3">
+                      <AlertCircle className="w-5 h-5 text-red-400 shrink-0 mt-0.5" />
+                      <p className="text-sm text-red-400">{error}</p>
+                    </div>
+                  )}
+
+                  {/* Body language coaching tip */}
+                  <BodyLanguageTips currentQuestionIndex={currentQuestionIndex} />
+
+                  <Button type="submit" disabled={loading} variant="primary" className="w-full !py-4 !text-lg !rounded-xl flex items-center justify-center gap-2">
+                    {loading ? <Loader2 className="w-5 h-5 animate-spin" /> : <Mic className="w-5 h-5" />}
+                    {loading ? 'Generating Questions...' : `Start Interview (${formData.questionCount} Questions)`}
+                  </Button>
+                </form>
+
+                <div className="mt-6 pt-6 border-t border-border">
+                  <p className="text-xs text-muted-foreground text-center">
+                    Questions will be read aloud • Your answers are recorded • Complete feedback at the end
+                  </p>
+                </div>
+              </div>
+            </motion.div>
+          ) : (
+            /* Coding Challenge Split Layout Workspace */
+            <motion.div
+              initial={{ opacity: 0, y: 20 }}
+              animate={{ opacity: 1, y: 0 }}
+              transition={{ delay: 0.1 }}
+              className="grid grid-cols-1 lg:grid-cols-12 gap-6 w-full text-left"
+            >
+              {/* Left Panel: Problem Information */}
+              <div className="lg:col-span-5 flex flex-col gap-4">
+                <div className="p-6 rounded-3xl bg-card border border-border flex flex-col gap-4 h-full min-h-[500px] max-h-[700px] overflow-y-auto">
+                  <div>
+                    <h2 className="text-2xl font-bold text-foreground">{MOCK_CHALLENGE.title}</h2>
+                    <span className={`inline-block px-2.5 py-1 rounded-md text-xs font-semibold mt-2 border ${MOCK_CHALLENGE.difficultyColor}`}>
+                      {MOCK_CHALLENGE.difficulty}
+                    </span>
+                  </div>
+
+                  {/* Tabs for Description/Notes */}
+                  <div className="flex gap-2 border-b border-border pb-1">
+                    <button
+                      type="button"
+                      onClick={() => setActiveDetailTab('description')}
+                      className={`pb-2 px-3 text-sm font-semibold border-b-2 transition-all cursor-pointer ${
+                        activeDetailTab === 'description'
+                          ? 'border-primary text-foreground'
+                          : 'border-transparent text-muted-foreground hover:text-foreground'
+                      }`}
+                    >
+                      Description
+                    </button>
+                    {MOCK_CHALLENGE.notes && (
+                      <button
+                        type="button"
+                        onClick={() => setActiveDetailTab('notes')}
+                        className={`pb-2 px-3 text-sm font-semibold border-b-2 transition-all cursor-pointer ${
+                          activeDetailTab === 'notes'
+                            ? 'border-primary text-foreground'
+                            : 'border-transparent text-muted-foreground hover:text-foreground'
+                        }`}
+                      >
+                        Notes
+                      </button>
+                    )}
+                  </div>
+
+                  {/* Tab Contents */}
+                  {activeDetailTab === 'description' ? (
+                    <div className="space-y-4 text-sm leading-relaxed text-foreground">
+                      <p className="whitespace-pre-line">{MOCK_CHALLENGE.description}</p>
+                      
+                      {/* Examples */}
+                      <div className="space-y-3 pt-2">
+                        <h3 className="font-semibold text-foreground flex items-center gap-2">
+                          <Eye className="w-4 h-4 text-primary" /> Examples
+                        </h3>
+                        {MOCK_CHALLENGE.examples.map((example, idx) => (
+                          <div key={idx} className="p-4 rounded-xl bg-muted/40 border border-border/50 space-y-2">
+                            <p className="font-semibold text-xs text-muted-foreground">Example {idx + 1}:</p>
+                            <div className="font-mono text-xs space-y-1">
+                              <div><span className="text-muted-foreground">Input:</span> {example.input}</div>
+                              <div><span className="text-muted-foreground">Output:</span> {example.output}</div>
+                              {example.explanation && (
+                                <div><span className="text-muted-foreground">Explanation:</span> {example.explanation}</div>
+                              )}
+                            </div>
+                          </div>
+                        ))}
+                      </div>
+
+                      {/* Constraints */}
+                      <div className="space-y-2 pt-2">
+                        <h3 className="font-semibold text-foreground flex items-center gap-2">
+                          <Target className="w-4 h-4 text-primary" /> Constraints
+                        </h3>
+                        <ul className="list-disc pl-5 space-y-1 text-xs font-mono text-muted-foreground">
+                          {MOCK_CHALLENGE.constraints.map((constraint, idx) => (
+                            <li key={idx}>{constraint}</li>
+                          ))}
+                        </ul>
                       </div>
                     </div>
                   ) : (
-                    <div className="flex items-center justify-between p-3 rounded-lg bg-emerald-500/10 border border-emerald-500/30">
-                      <div className="flex items-center gap-3 flex-1">
-                        <FileText className="w-5 h-5 text-emerald-400" />
-                        <div className="flex-1">
-                          <p className="text-sm text-emerald-400 font-medium">{resumeFile.name}</p>
-                          {/* Progress bar showing extraction complete */}
-                          <div className="mt-1.5 h-1.5 bg-card rounded-full overflow-hidden">
-                            <div className="h-full bg-emerald-500 rounded-full" style={{ width: '100%' }} />
-                          </div>
-                        </div>
-                      </div>
-                      <button
-                        type="button"
-                        onClick={removeResume}
-                        className="p-1.5 rounded-lg hover:bg-muted transition-colors ml-3"
-                      >
-                        <X className="w-4 h-4 text-muted-foreground" />
-                      </button>
-                    </div>
-                  )}
-
-                  {resumeError && (
-                    <p className="text-xs text-red-400 mt-2">{resumeError}</p>
-                  )}
-
-                  {resumeText && (
-                    <div className="mt-3 flex items-center gap-2 text-xs text-primary">
-                      <Sparkles className="w-3 h-3" />
-                      <span>~40% of questions will be personalized based on your resume</span>
+                    <div className="p-4 rounded-xl bg-primary/5 border border-primary/20 text-sm leading-relaxed text-foreground">
+                      <p className="whitespace-pre-line">{MOCK_CHALLENGE.notes}</p>
                     </div>
                   )}
                 </div>
-
-                {error && (
-                  <div className="p-4 rounded-xl bg-red-500/10 border border-red-500/20 flex items-start gap-3">
-                    <AlertCircle className="w-5 h-5 text-red-400 shrink-0 mt-0.5" />
-                    <p className="text-sm text-red-400">{error}</p>
-                  </div>
-                )}
-
-                {/* Body language coaching tip */}
-                <BodyLanguageTips currentQuestionIndex={currentQuestionIndex} />
-
-                <Button type="submit" disabled={loading} variant="primary" className="w-full !py-4 !text-lg !rounded-xl flex items-center justify-center gap-2">
-                  {loading ? <Loader2 className="w-5 h-5 animate-spin" /> : <Mic className="w-5 h-5" />}
-                  {loading ? 'Generating Questions...' : `Start Interview (${formData.questionCount} Questions)`}
-                </Button>
-              </form>
-
-              <div className="mt-6 pt-6 border-t border-border">
-                <p className="text-xs text-muted-foreground text-center">
-                  Questions will be read aloud • Your answers are recorded • Complete feedback at the end
-                </p>
               </div>
-            </div>
-          </motion.div>
+
+              {/* Right Panel: Code Workspace */}
+              <div className="lg:col-span-7 flex flex-col gap-4">
+                <div className="p-6 rounded-3xl bg-card border border-border flex flex-col gap-4">
+                  {/* Selector Bar */}
+                  <div className="flex items-center justify-between flex-wrap gap-3">
+                    <div className="flex items-center gap-2">
+                      <label htmlFor="language-select" className="text-xs font-semibold text-muted-foreground uppercase tracking-wide">Language:</label>
+                      <select
+                        id="language-select"
+                        value={selectedLanguage}
+                        onChange={(e) => setSelectedLanguage(e.target.value)}
+                        className="bg-muted border border-border rounded-xl px-3 py-1.5 text-sm text-foreground focus:ring-1 focus:ring-primary focus:outline-none"
+                      >
+                        <option value="javascript">JavaScript</option>
+                        <option value="python">Python</option>
+                        <option value="java">Java</option>
+                        <option value="cpp">C++</option>
+                      </select>
+                    </div>
+                    <button
+                      type="button"
+                      onClick={handleResetCode}
+                      className="flex items-center gap-1.5 px-3 py-1.5 bg-muted hover:bg-muted/80 text-xs font-semibold text-foreground rounded-lg transition-colors cursor-pointer border border-border"
+                    >
+                      <RotateCcw className="w-3.5 h-3.5" />
+                      Reset Code
+                    </button>
+                  </div>
+
+                  {/* Monaco Editor Container */}
+                  <div className="h-[400px] w-full rounded-xl overflow-hidden border border-border">
+                    <CodeEditor
+                      language={selectedLanguage}
+                      code={currentCode}
+                      onChange={handleCodeChange}
+                      readOnly={isRunning || evaluationLoading}
+                    />
+                  </div>
+
+                  {/* Evaluation / Results Placeholder Panel */}
+                  <div className="flex flex-col gap-2">
+                    <h3 className="text-xs font-bold text-muted-foreground uppercase tracking-wider flex items-center gap-1">
+                      <Terminal className="w-3.5 h-3.5" /> Results Panel
+                    </h3>
+                    <div className="bg-slate-950 text-slate-100 p-4 rounded-xl border border-border font-mono text-xs h-[130px] overflow-y-auto leading-relaxed shadow-inner">
+                      {isRunning && (
+                        <div className="flex items-center gap-2 text-indigo-400">
+                          <Loader2 className="w-4 h-4 animate-spin" />
+                          <span>Executing code in test sandbox...</span>
+                        </div>
+                      )}
+                      {evaluationLoading && (
+                        <div className="flex items-center gap-2 text-indigo-400">
+                          <Loader2 className="w-4 h-4 animate-spin" />
+                          <span>Evaluating solution correctness...</span>
+                        </div>
+                      )}
+                      {!isRunning && !evaluationLoading && !runOutput && !submitOutput && (
+                        <span className="text-muted-foreground">Click "Run Code" or "Submit Solution" to view results.</span>
+                      )}
+                      {!isRunning && runOutput && (
+                        <pre className="whitespace-pre-wrap text-emerald-400">{runOutput}</pre>
+                      )}
+                      {!evaluationLoading && submitOutput && (
+                        <pre className="whitespace-pre-wrap text-emerald-400">{submitOutput}</pre>
+                      )}
+                    </div>
+                  </div>
+
+                  {/* Submission Error Banner */}
+                  {evaluationError && (
+                    <div className="p-4 rounded-xl bg-red-500/10 border border-red-500/20 flex items-start gap-3 mt-2">
+                      <AlertCircle className="w-5 h-5 text-red-400 shrink-0 mt-0.5" />
+                      <p className="text-sm text-red-400 font-medium">{evaluationError}</p>
+                    </div>
+                  )}
+
+                  {/* AI Evaluation Report */}
+                  {evaluationResult && (
+                    <motion.div
+                      initial={{ opacity: 0, y: 10 }}
+                      animate={{ opacity: 1, y: 0 }}
+                      className="p-5 rounded-2xl bg-muted/40 border border-border/80 flex flex-col gap-4 mt-2 text-sm text-foreground"
+                    >
+                      <div className="flex items-center justify-between flex-wrap gap-4 border-b border-border/50 pb-4">
+                        <div className="flex items-center gap-3">
+                          <div className={`w-12 h-12 rounded-xl flex items-center justify-center font-bold text-lg shadow-sm border ${
+                            evaluationResult.score >= 80
+                              ? 'bg-emerald-500/10 border-emerald-500/20 text-emerald-400'
+                              : evaluationResult.score >= 60
+                              ? 'bg-amber-500/10 border-amber-500/20 text-amber-400'
+                              : 'bg-red-500/10 border-red-500/20 text-red-400'
+                          }`}>
+                            {evaluationResult.score}
+                          </div>
+                          <div>
+                            <h4 className="font-bold text-foreground">AI Evaluation Score</h4>
+                            <p className="text-xs text-muted-foreground">
+                              {evaluationResult.score >= 80 ? 'Excellent solution' : evaluationResult.score >= 60 ? 'Good solution, needs minor changes' : 'Needs significant work'}
+                            </p>
+                          </div>
+                        </div>
+
+                        {/* Complexity Analysis */}
+                        <div className="flex items-center gap-4 text-xs font-mono">
+                          <div className="px-3 py-1.5 rounded-lg bg-card border border-border">
+                            <span className="text-muted-foreground uppercase mr-1">Time:</span>
+                            <span className="text-primary font-bold">{evaluationResult.complexity?.time || 'N/A'}</span>
+                          </div>
+                          <div className="px-3 py-1.5 rounded-lg bg-card border border-border">
+                            <span className="text-muted-foreground uppercase mr-1">Space:</span>
+                            <span className="text-primary font-bold">{evaluationResult.complexity?.space || 'N/A'}</span>
+                          </div>
+                        </div>
+                      </div>
+
+                      {/* Detailed Feedback Text */}
+                      <div className="space-y-1">
+                        <h5 className="font-semibold text-xs text-muted-foreground uppercase tracking-wider">Detailed Feedback</h5>
+                        <p className="leading-relaxed bg-card/45 p-3 rounded-xl border border-border/50 text-foreground/90 whitespace-pre-line">
+                          {evaluationResult.feedback}
+                        </p>
+                      </div>
+
+                      {/* Strengths & Improvements Lists */}
+                      <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
+                        {/* Strengths */}
+                        <div className="space-y-2">
+                          <h5 className="font-semibold text-xs text-muted-foreground uppercase tracking-wider flex items-center gap-1.5">
+                            <CheckCircle className="w-3.5 h-3.5 text-emerald-400" /> Key Strengths
+                          </h5>
+                          <ul className="space-y-1.5">
+                            {evaluationResult.strengths?.map((strength, idx) => (
+                              <li key={idx} className="text-xs leading-relaxed text-foreground/80 flex items-start gap-2">
+                                <span className="text-emerald-400 shrink-0 mt-0.5">•</span>
+                                <span>{strength}</span>
+                              </li>
+                            ))}
+                            {(!evaluationResult.strengths || evaluationResult.strengths.length === 0) && (
+                              <li className="text-xs text-muted-foreground italic">None noted.</li>
+                            )}
+                          </ul>
+                        </div>
+
+                        {/* Improvements */}
+                        <div className="space-y-2">
+                          <h5 className="font-semibold text-xs text-muted-foreground uppercase tracking-wider flex items-center gap-1.5">
+                            <ArrowRight className="w-3.5 h-3.5 text-amber-400" /> Areas to Develop
+                          </h5>
+                          <ul className="space-y-1.5">
+                            {evaluationResult.improvements?.map((improvement, idx) => (
+                              <li key={idx} className="text-xs leading-relaxed text-foreground/80 flex items-start gap-2">
+                                <span className="text-amber-400 shrink-0 mt-0.5">•</span>
+                                <span>{improvement}</span>
+                              </li>
+                            ))}
+                            {(!evaluationResult.improvements || evaluationResult.improvements.length === 0) && (
+                              <li className="text-xs text-muted-foreground italic">None noted.</li>
+                            )}
+                          </ul>
+                        </div>
+                      </div>
+                    </motion.div>
+                  )}
+
+                  {/* Submit Toolbar */}
+                  <div className="flex justify-end gap-3 pt-2">
+                    <Button
+                      variant="outline"
+                      onClick={handleRunCode}
+                      disabled={isRunning || evaluationLoading}
+                      loading={isRunning}
+                    >
+                      {!isRunning && <Play className="w-4 h-4 mr-2" />}
+                      Run Code
+                    </Button>
+                    <Button
+                      variant="primary"
+                      onClick={handleSubmitCode}
+                      disabled={isRunning || evaluationLoading}
+                      loading={evaluationLoading}
+                    >
+                      {!evaluationLoading && <Check className="w-4 h-4 mr-2" />}
+                      Submit Solution
+                    </Button>
+                  </div>
+                </div>
+              </div>
+            </motion.div>
+          )}
         </div>
       </div>
     );

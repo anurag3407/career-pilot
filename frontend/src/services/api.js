@@ -1178,6 +1178,12 @@ export const interviewApi = {
     return handleResponse(response)
   },
 
+  async evaluateCoding(data) {
+    const headers = await getAuthHeaders()
+    const response = await fetch(`${API_BASE}/interview/evaluate`, {
+      method: 'POST',
+      headers,
+      body: JSON.stringify(data)
   async getAnalytics() {
     const headers = await getAuthHeaders()
     const response = await fetch(`${API_BASE}/interview/analytics`, {

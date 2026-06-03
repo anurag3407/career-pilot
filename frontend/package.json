@@ -12,6 +12,7 @@
   },
   "dependencies": {
     "@hello-pangea/dnd": "^18.0.1",
+    "@monaco-editor/react": "^4.7.0",
     "@radix-ui/react-label": "^2.1.8",
     "@radix-ui/react-slot": "^1.2.4",
     "@tabler/icons-react": "^3.36.1",
@@ -30,6 +31,7 @@
     "html2canvas": "^1.4.1",
     "jspdf": "^4.0.0",
     "lucide-react": "^0.468.0",
+    "monaco-editor": "^0.55.1",
     "motion": "^12.23.26",
     "react": "^19.2.6",
     "react-dom": "^19.2.6",
