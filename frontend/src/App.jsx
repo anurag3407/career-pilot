@@ -255,7 +255,7 @@ function AppRoutes() {
         <Route path="/templates/memphis-pop" element={<MemphisPop />} />
         <Route path="/templates/cassette-mixtape" element={<CassetteMixtape />} />
         <Route path="/templates/magnetic-dock" element={<MagneticDock />} />
-        
+       
         {/* Core Protected Routes */}
         <Route 
   path="/dashboard" 
