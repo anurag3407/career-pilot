@@ -331,6 +331,7 @@ export default function InterviewPrep() {
   const [evaluationLoading, setEvaluationLoading] = useState(false);
   const [evaluationError, setEvaluationError] = useState(null);
   const selectedLanguageRef = useRef(selectedLanguage);
+  const currentCode = userCodes['two-sum'][selectedLanguage] || '';
 
   const handleCodeChange = (newCode) => {
     setUserCodes(prev => ({
@@ -406,7 +407,6 @@ export default function InterviewPrep() {
     }
   };
 
-  const currentCode = userCodes['two-sum'][selectedLanguage] || '';
 
   // Device/browser compatibility state
   const [isMobile, setIsMobile] = useState(false);
