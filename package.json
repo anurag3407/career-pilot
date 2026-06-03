@@ -1,8 +1,7 @@
 {
-  "name": "careerpilot",
-  "private": true,
+  "name": "career-pilot-root",
   "version": "1.0.0",
-  "type": "module",
+  "private": true,
   "scripts": {
     "dev": "vite",
     "build": "vite build",
@@ -59,5 +58,8 @@
     "jsdom": "^29.1.1",
     "vite": "^7.2.4",
     "vitest": "^4.1.7"
+    "build": "npm run build --prefix frontend",
+    "install": "npm install --prefix frontend",
+    "build:portfolio": "npm run build:portfolio --prefix frontend"
   }
 }

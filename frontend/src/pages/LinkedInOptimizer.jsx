@@ -82,6 +82,7 @@ export default function LinkedInOptimizer() {
   const [loading, setLoading] = useState(false)
   const [error, setError] = useState(null)
   const [copiedIndex, setCopiedIndex] = useState(null)
+  const [copiedSkill, setCopiedSkill] = useState(null)
   const [aboutExpanded, setAboutExpanded] = useState(false)
   const [aboutCopied, setAboutCopied] = useState(false)
 
@@ -140,6 +141,32 @@ export default function LinkedInOptimizer() {
         setTimeout(() => setCopiedIndex(null), 2000)
       } catch (fallbackErr) {
         toast.error('Could not copy to clipboard. Please copy manually.')
+      }
+    }
+  }
+
+  const copyKeywordToClipboard = async (keyword) => {
+    try {
+      if (navigator.clipboard && navigator.clipboard.writeText) {
+        await navigator.clipboard.writeText(keyword)
+        setCopiedSkill(keyword)
+        setTimeout(() => setCopiedSkill((current) => (current === keyword ? null : current)), 2000)
+      } else {
+        throw new Error('Clipboard API not supported')
+      }
+    } catch (err) {
+      console.warn('Clipboard write failed:', err)
+      try {
+        const textarea = document.createElement('textarea')
+        textarea.value = keyword
+        document.body.appendChild(textarea)
+        textarea.select()
+        document.execCommand('copy')
+        document.body.removeChild(textarea)
+        setCopiedSkill(keyword)
+        setTimeout(() => setCopiedSkill((current) => (current === keyword ? null : current)), 2000)
+      } catch (fallbackErr) {
+        toast.error('Could not copy keyword to clipboard. Please copy manually.')
       }
     }
   }
@@ -407,13 +434,19 @@ export default function LinkedInOptimizer() {
                           initial={{ opacity: 0, x: 10 }}
                           animate={{ opacity: 1, x: 0 }}
                           transition={{ delay: i * 0.07 }}
-                          className="flex items-start gap-3 p-3 rounded-xl bg-muted/40 border border-border"
+                          onClick={() => copyKeywordToClipboard(item.skill)}
+                          className="relative flex items-start gap-3 p-3 rounded-xl bg-muted/40 border border-border cursor-pointer transition hover:bg-muted/60 hover:border-primary/40"
                         >
                           <span className="w-2 h-2 rounded-full bg-red-400 shrink-0 mt-1.5" />
                           <div>
                             <p className="text-sm font-semibold text-foreground">{item.skill}</p>
                             <p className="text-xs text-muted-foreground mt-0.5">{item.reason}</p>
                           </div>
+                          {copiedSkill === item.skill && (
+                            <span className="pointer-events-none absolute -top-7 right-3 rounded-full bg-green-500/95 px-2 py-1 text-[10px] font-semibold text-white shadow-lg">
+                              Copied!
+                            </span>
+                          )}
                         </motion.div>
                       ))}
                     </div>
