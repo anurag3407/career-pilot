@@ -148,11 +148,17 @@ const themeStyle = THEME_STYLES[theme] || THEME_STYLES.modern;
         });
         
         // Post-process contact info (usually the first paragraph after h1)
-        const content = document.querySelector('.resume-content');
-        if (content.children.length > 1) {
-            const possibleContact = content.children[1];
-            if (possibleContact.tagName === 'P' && (possibleContact.textContent.includes('|') || possibleContact.textContent.includes('@'))) {
-                possibleContact.className = 'contact-info';
+        const firstH1 = document.querySelector('.resume-content h1');
+        if (firstH1) {
+            let next = firstH1.nextElementSibling;
+            while (next) {
+                if (next.tagName === 'P') {
+                    if (next.textContent.includes('|') || next.textContent.includes('@')) {
+                        next.className = 'contact-info';
+                    }
+                    break;
+                }
+                next = next.nextElementSibling;
             }
         }
       </script>
