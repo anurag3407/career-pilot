@@ -96,8 +96,9 @@ console.log('🔧 FRONTEND_URL env var:', process.env.FRONTEND_URL);
 
 // CORS configuration - MUST come before helmet
 const allowedOrigins = [
-  'http://localhost:5173',
-  'http://localhost:3000',
+  ...(process.env.NODE_ENV !== 'production'
+    ? ['http://localhost:5173', 'http://localhost:3000']
+    : []),
   'https://careerpilotyy.netlify.app',  // Hardcoded as fallback
   process.env.FRONTEND_URL,
 ].filter(Boolean).map(url => url.replace(/\/$/, '')); // Remove trailing slashes
