@@ -270,7 +270,7 @@ export const resumeApi = {
     if (!user) throw new Error('Not authenticated')
 
     const token = await user.getIdToken()
-    const response = await fetch(`${API_BASE}/resumes/${resumeId}/download?version=${version}}&theme=${theme}`, {
+    const response = await fetch(`${API_BASE}/resumes/${resumeId}/download?version=${version}&theme=${theme}`, {
       method: 'GET',
       headers: {
         'Authorization': `Bearer ${token}`
