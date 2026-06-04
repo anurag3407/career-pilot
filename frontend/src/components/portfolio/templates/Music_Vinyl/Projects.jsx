@@ -339,7 +339,7 @@ export default function Projects() {
   const genres   = ['All', ...Array.from(new Set(PROJECTS.map(p => p.genre)))];
   const filtered = filter === 'All' ? PROJECTS : PROJECTS.filter(p => p.genre === filter);
 
-  const handleFilterChange = (g: string) => {
+  const handleFilterChange = (g) => {
     setFilter(g);
     const newFiltered = g === 'All' ? PROJECTS : PROJECTS.filter(p => p.genre === g);
     if (!newFiltered.find(p => p.id === activeId)) {
@@ -431,7 +431,7 @@ export default function Projects() {
           {genres.map(g => (
             <button
               key={g}
-              onClick={() => setFilter(g)}
+              onClick={() => handleFilterChange(g)}
               style={{
                 padding:'5px 16px', borderRadius:'999px', cursor:'pointer',
                 fontFamily:'monospace', fontSize:'11px', fontWeight:700,
@@ -449,7 +449,7 @@ export default function Projects() {
 
         {/* ── LAYOUT: sidebar + grid ── */}
         <div style={{ display:'flex', gap:'32px' }}>
-          <TracklistSidebar projects={PROJECTS} activeId={activeId} onSelect={setActiveId} />
+          <TracklistSidebar projects={filtered} activeId={activeId} onSelect={setActiveId} />
 
           {/* grid */}
           <div style={{ flex:1, minWidth:0 }}>
