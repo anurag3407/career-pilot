@@ -96,7 +96,7 @@ export default function SchedulePost({ onClose, onSchedule }) {
             />
             {error && (
               <p className="mt-1.5 flex items-center gap-1 text-xs text-red-400">
-                <AlertCircle className="w-3.5 h-3.5 flex-shrink-0" />
+                <AlertCircle className="w-3.5 h-3.5 shrink-0" />
                 {error}
               </p>
             )}

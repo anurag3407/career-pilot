@@ -9,7 +9,6 @@ import { extractAIProvider } from '../middleware/aiKey.js';
 import { asyncHandler, ApiError } from '../middleware/errorHandler.js';
 import { aiRateLimiter } from '../middleware/rateLimiter.js';
 import { createSSEStream } from '../middleware/stream.js';
-import { getDefaultProvider } from '../config/aiProviders.js';
 import { validate } from '../middleware/validate.js';
 import { genAI } from '../config/genAI.js';
 import {
@@ -25,7 +24,7 @@ const router = express.Router();
 
 // Score a resume and return structured feedback
 // POST /api/enhance/resume-score
-router.post('/resume-score', verifyToken, aiRateLimiter, validate(resumeScoreSchema), asyncHandler(async (req, res) => {
+router.post('/resume-score', verifyToken, extractAIProvider, aiRateLimiter, validate(resumeScoreSchema), asyncHandler(async (req, res) => {
   const { resumeText, jobRole } = req.body;
   const targetRole = jobRole || 'Software Engineer'; // Fallback if not provided
 
@@ -44,7 +43,7 @@ ${resumeText}
 
 Return ONLY valid JSON. No markdown fences, no extra text.`;
 
-    const provider = req.aiProvider || getDefaultProvider();
+    const provider = req.aiProvider;
     const result = await provider.generateContent(prompt);
     let text = result.text.trim();
 
@@ -363,7 +362,7 @@ router.post('/generate-email', verifyToken, extractAIProvider, aiRateLimiter, va
 }));
 
 // Optimize LinkedIn Profile
-router.post('/optimize-linkedin', verifyToken, aiRateLimiter, validate(optimizeLinkedInSchema), asyncHandler(async (req, res) => {
+router.post('/optimize-linkedin', verifyToken, extractAIProvider, aiRateLimiter, validate(optimizeLinkedInSchema), asyncHandler(async (req, res) => {
   const { profileText, targetRole } = req.body;
   const normalizedProfile = typeof profileText === 'string' ? profileText.trim() : '';
   const normalizedRole = typeof targetRole === 'string' ? targetRole.trim() : '';
@@ -376,13 +375,21 @@ router.post('/optimize-linkedin', verifyToken, aiRateLimiter, validate(optimizeL
     throw new ApiError(400, 'Profile text exceeds the allowed limit (max 5000 characters)');
   }
 
-  const result = await optimizeLinkedInProfile(normalizedProfile, normalizedRole);
+  const result = await optimizeLinkedInProfile(normalizedProfile, normalizedRole, req.aiProvider);
   res.json(result);
 }));
 
 // Streaming endpoint for resume enhancement
 router.post('/stream', verifyToken, extractAIProvider, aiRateLimiter, asyncHandler(async (req, res) => {
   const { resumeText, preferences } = req.body;
+  let isAborted = false;
+
+  const markAborted = () => {
+    isAborted = true;
+  };
+
+  req.once('close', markAborted);
+  res.once('close', markAborted);
 
   if (!resumeText || !resumeText.trim()) {
     throw new ApiError(400, 'Resume text is required');
@@ -395,6 +402,7 @@ router.post('/stream', verifyToken, extractAIProvider, aiRateLimiter, asyncHandl
   const stream = createSSEStream(res);
 
   try {
+    if (isAborted) return;
     stream.sendProgress(10, 'Initializing AI model...');
 
     const validatedPreferences = {
@@ -407,7 +415,9 @@ router.post('/stream', verifyToken, extractAIProvider, aiRateLimiter, asyncHandl
 
     stream.sendProgress(20, 'Preparing prompt...');
 
-    const provider = req.aiProvider || getDefaultProvider();
+  if (isAborted) return;
+
+    const provider = req.aiProvider;
     const systemPrompt = getSystemPrompt(
       validatedPreferences.jobRole,
       validatedPreferences.yearsOfExperience,
@@ -421,8 +431,11 @@ router.post('/stream', verifyToken, extractAIProvider, aiRateLimiter, asyncHandl
 
     stream.sendProgress(30, 'Processing resume with AI...');
 
+    if (isAborted) return;
+
     if (!provider.generateContentStream) {
       const result = await provider.generateContent(prompt);
+      if (isAborted) return;
       stream.sendChunk(result.text, true);
       stream.sendDone({ tokensUsed: result.usage });
       stream.endStream();
@@ -434,6 +447,11 @@ router.post('/stream', verifyToken, extractAIProvider, aiRateLimiter, asyncHandl
     let lastProgress = 30;
 
     for await (const chunk of await provider.generateContentStream(prompt)) {
+      if (isAborted) {
+        stream.endStream();
+        return;
+      }
+
       if (chunk.done) {
         tokensUsed = chunk.usage || tokensUsed;
         stream.sendDone({ tokensUsed });
@@ -456,9 +474,15 @@ router.post('/stream', verifyToken, extractAIProvider, aiRateLimiter, asyncHandl
     stream.endStream();
 
   } catch (error) {
+    if (isAborted) {
+      return;
+    }
     console.error('Streaming enhancement error:', error);
     stream.sendError(error.message || 'Failed to enhance resume');
     stream.endStream();
+  } finally {
+    req.off('close', markAborted);
+    res.off('close', markAborted);
   }
 }));
 

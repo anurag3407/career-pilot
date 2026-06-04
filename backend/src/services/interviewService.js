@@ -1,55 +1,8 @@
-import Groq from 'groq-sdk';
-import dotenv from 'dotenv';
-
-dotenv.config();
-
-let groqInstance = null;
-
-const getGroq = () => {
-  if (groqInstance) return groqInstance;
-  if (!process.env.GROQ_API_KEY) {
-    throw new Error("The GROQ_API_KEY environment variable is missing or empty.");
-  }
-  groqInstance = new Groq({ apiKey: process.env.GROQ_API_KEY });
-  return groqInstance;
-const GROQ_API_KEY = process.env.GROQ_API_KEY;
-
-if (!GROQ_API_KEY) {
-  console.warn('⚠️  GROQ_API_KEY is not set — Interview Prep AI features will be unavailable.');
-}
-
-let _groq = null;
-
-const getGroqClient = () => {
-  if (_groq) return _groq;
-  if (!GROQ_API_KEY) {
-    const err = new Error(
-      'Interview AI features are unavailable — GROQ_API_KEY is not configured. ' +
-      'Set it in your .env file.'
-    );
-    err.statusCode = 503;
-    throw err;
-  }
-  _groq = new Groq({ apiKey: GROQ_API_KEY });
-  return _groq;
-};
+import { getDefaultProvider } from '../config/aiProviders.js';
 
 const generateQuestionId = () => `q_${Date.now()}_${Math.random().toString(36).substr(2, 9)}`;
 
-const callGroq = async (prompt) => {
-  const completion = await getGroq().chat.completions.create({
-  const client = getGroqClient();
-  const completion = await client.chat.completions.create({
-    messages: [{ role: 'user', content: prompt }],
-    model: 'llama-3.3-70b-versatile',
-    temperature: 0.7,
-    max_tokens: 4096,
-    response_format: { type: 'json_object' }
-  });
-  return completion.choices[0]?.message?.content || '{}';
-};
-
-export const generateInterviewQuestions = async (preferences) => {
+export const generateInterviewQuestions = async (preferences, aiProvider) => {
   const { jobRole, industry, experienceLevel, questionCount = 10, resumeText } = preferences;
 
   // Build prompt based on whether resume is provided
@@ -114,8 +67,9 @@ Rules:
 6. Generate exactly ${questionCount} questions`;
   }
 
-  const text = await callGroq(prompt);
-  let cleanedText = text.replace(/```json\n?/g, '').replace(/```\n?/g, '').trim();
+  const provider = aiProvider || getDefaultProvider();
+  const result = await provider.generateContent(prompt);
+  let cleanedText = result.text.replace(/```json\n?/g, '').replace(/```\n?/g, '').trim();
   const jsonMatch = cleanedText.match(/\{[\s\S]*\}/);
   if (jsonMatch) {
     cleanedText = jsonMatch[0];
@@ -143,7 +97,7 @@ Rules:
   }));
 };
 
-export const analyzeAnswer = async (question, transcript, duration) => {
+export const analyzeAnswer = async (question, transcript, duration, aiProvider) => {
   const cleanQuestion = String(question || '').replace(/"/g, '\\"').replace(/[\r\n]+/g, ' ');
   const cleanTranscript = String(transcript || '').replace(/"/g, '\\"');
 
@@ -192,8 +146,9 @@ CRITICAL RULES:
 6. Detect filler words: "um", "uh", "like", "you know", "basically", "actually", "so", "I mean"
 7. Score fairly: 90+ = exceptional, 70-89 = good, 50-69 = needs work, <50 = significant gaps`;
 
-  const text = await callGroq(prompt);
-  let cleanedText = text.replace(/```json\n?/g, '').replace(/```\n?/g, '').trim();
+  const provider = aiProvider || getDefaultProvider();
+  const result = await provider.generateContent(prompt);
+  let cleanedText = result.text.replace(/```json\n?/g, '').replace(/```\n?/g, '').trim();
   const jsonMatch = cleanedText.match(/\{[\s\S]*\}/);
   if (jsonMatch) {
     cleanedText = jsonMatch[0];
@@ -211,7 +166,7 @@ CRITICAL RULES:
   }
 };
 
-export const generateOverallFeedback = async (interview) => {
+export const generateOverallFeedback = async (interview, aiProvider) => {
   const answeredQuestions = interview.answers.length;
   const totalQuestions = interview.questions.length;
 
@@ -251,8 +206,9 @@ Return ONLY valid JSON with this structure:
   }
 }`;
 
-  const text = await callGroq(prompt);
-  let cleanedText = text.replace(/```json\n?/g, '').replace(/```\n?/g, '').trim();
+  const provider = aiProvider || getDefaultProvider();
+  const result = await provider.generateContent(prompt);
+  let cleanedText = result.text.replace(/```json\n?/g, '').replace(/```\n?/g, '').trim();
   const jsonMatch = cleanedText.match(/\{[\s\S]*\}/);
   if (jsonMatch) {
     cleanedText = jsonMatch[0];

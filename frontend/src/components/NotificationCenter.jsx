@@ -2,7 +2,7 @@ import { useState, useEffect, useRef } from "react";
 import { motion, AnimatePresence } from "framer-motion";
 import { Bell, BriefcaseBusiness, Mail, XCircle, CheckCheck, X } from "lucide-react";
 import { useNavigate } from "react-router-dom";
-import { useSocket } from "../context/SocketContext";
+import { useSocket } from "../hooks/useSocket";
 import { cn } from "../lib/utils";
 
 function timeAgo(date) {
@@ -100,7 +100,7 @@ export default function NotificationCenter() {
             className="absolute right-0 top-12 w-80 max-h-[480px] flex flex-col rounded-2xl bg-card border border-border shadow-2xl z-50 overflow-hidden"
           >
             {/* Header */}
-            <div className="flex items-center justify-between px-4 py-3 border-b border-border flex-shrink-0">
+            <div className="flex items-center justify-between px-4 py-3 border-b border-border shrink-0">
               <span className="font-bold text-foreground text-sm">Notifications</span>
               {unreadCount > 0 && (
                 <button
@@ -143,7 +143,7 @@ export default function NotificationCenter() {
                       )}
                     >
                       {/* Icon */}
-                      <div className={cn("w-8 h-8 rounded-lg flex items-center justify-center flex-shrink-0 mt-0.5", config.bg)}>
+                      <div className={cn("w-8 h-8 rounded-lg flex items-center justify-center shrink-0 mt-0.5", config.bg)}>
                         <Icon className={cn("w-4 h-4", config.color)} />
                       </div>
                       {/* Content */}
@@ -155,12 +155,13 @@ export default function NotificationCenter() {
                       </div>
                       {/* Unread dot */}
                       {!notif.read && (
-                        <span className="w-2 h-2 rounded-full bg-primary flex-shrink-0 mt-1.5" />
+                        <span className="w-2 h-2 rounded-full bg-primary shrink-0 mt-1.5" />
                       )}
                       {/* Dismiss */}
                       <button
                         onClick={(e) => handleDismiss(e, notif.id)}
                         className="opacity-0 group-hover:opacity-100 absolute right-2 top-2 p-1 rounded-lg hover:bg-muted text-muted-foreground hover:text-foreground transition-all"
+                        aria-label="Dismiss notification"
                       >
                         <X className="w-3 h-3" />
                       </button>

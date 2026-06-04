@@ -16,7 +16,7 @@ const ScoreRing = ({ score }) => {
   const { ring } = getScoreColor(score)
 
   return (
-    <div className="relative flex-shrink-0" style={{ width: size, height: size }}>
+    <div className="relative shrink-0" style={{ width: size, height: size }}>
       <svg className="transform -rotate-90" width={size} height={size}>
         <circle
           strokeWidth={strokeWidth}
@@ -144,7 +144,7 @@ export default function ResumeScore({ data, onRescore }) {
                 transition={{ delay: 0.1 * i }}
                 className="flex items-start gap-3"
               >
-                <CheckCircle className="w-4 h-4 text-primary mt-0.5 flex-shrink-0" />
+                <CheckCircle className="w-4 h-4 text-primary mt-0.5 shrink-0" />
                 <span className="text-foreground text-sm">{tip}</span>
               </motion.li>
             ))}

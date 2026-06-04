@@ -1,14 +1,19 @@
-import React, { useEffect, useState } from 'react';
+import React, { useEffect, useState, useRef } from 'react';
 import { useNavigate, useLocation } from 'react-router-dom';
+import { encryptKey } from '../utils/encryption';
 
 export default function OpenRouterCallback() {
   const navigate = useNavigate();
   const location = useLocation();
   const [status, setStatus] = useState('Processing...');
   const [error, setError] = useState(null);
+  const isProcessing = useRef(false);
 
   useEffect(() => {
+    if (isProcessing.current) return;
+    
     const processCallback = async () => {
+      isProcessing.current = true;
       const searchParams = new URLSearchParams(location.search);
       const code = searchParams.get('code');
       const err = searchParams.get('error');
@@ -49,7 +54,14 @@ export default function OpenRouterCallback() {
 
         const data = await response.json();
         if (data.key) {
-          localStorage.setItem('openRouterApiKey', data.key);
+          const encryptedKey = encryptKey(data.key);
+          localStorage.setItem('openRouterApiKey', encryptedKey);
+          const aiConfig = {
+            provider: 'openrouter',
+            apiKey: encryptedKey,
+            model: ''
+          };
+          localStorage.setItem('aiConfig', JSON.stringify(aiConfig));
           setStatus('Success! Redirecting...');
           setTimeout(() => navigate('/'), 1500);
         } else {

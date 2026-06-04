@@ -1,7 +1,7 @@
 import { useState, useEffect } from 'react'
 import { Link, useLocation } from 'react-router-dom'
-import { useAuth } from '../context/AuthContext'
-import { useTheme } from '../context/ThemeContext'
+import { useAuth } from '../hooks/useAuth'
+import { useTheme } from '../hooks/useTheme'
 import { motion, AnimatePresence } from 'framer-motion'
 import {
   Search,
@@ -36,7 +36,8 @@ export default function Navbar() {
 
   useEffect(() => {
     const handleScroll = () => {
-      setScrolled(window.scrollY > 20)
+      console.log(window.scrollY);
+      setScrolled(window.scrollY>20)
     }
 
     window.addEventListener('scroll', handleScroll)
@@ -72,7 +73,7 @@ export default function Navbar() {
 
   const publicLinks = [
     { path: '/templates', label: 'Templates', icon: Palette },
-    { path: '/#portfolio', label: 'Portfolio', icon: User },
+    { path: '/portfolio', label: 'Portfolio', icon: User },
   ]
 
   const privateLinks = [
@@ -221,7 +222,10 @@ export default function Navbar() {
             {user ? (
               <>
                 {/* Notification Bell */}
-                <button className="relative p-2 rounded-xl bg-muted border border-border hover:bg-accent transition-all">
+                <button
+                  className="relative p-2 rounded-xl bg-muted border border-border hover:bg-accent transition-all"
+                  aria-label="Notifications"
+                >
                   <Bell className="w-5 h-5 text-foreground" />
 
                   {notificationCount > 0 && (
@@ -236,6 +240,8 @@ export default function Navbar() {
                   <button
                     onClick={() => setShowDropdown(!showDropdown)}
                     className="flex items-center gap-2 px-3 py-2 bg-muted border border-border rounded-full hover:bg-accent transition-all"
+                    aria-label="User menu"
+                    aria-expanded={showDropdown}
                   >
                     <div className="w-8 h-8 rounded-full overflow-hidden bg-primary/20 flex items-center justify-center">
                       <img
@@ -313,6 +319,7 @@ export default function Navbar() {
             <button
               onClick={toggleTheme}
               className="p-2 rounded-xl bg-muted border border-border"
+              aria-label="Toggle theme"
             >
               {theme === 'light' ? (
                 <Moon className="w-5 h-5" />
@@ -324,6 +331,8 @@ export default function Navbar() {
             <button
               onClick={() => setMobileMenuOpen(!mobileMenuOpen)}
               className="p-2 rounded-lg hover:bg-muted transition-all"
+              aria-label={mobileMenuOpen ? "Close main navigation menu" : "Open main navigation menu"}
+              aria-expanded={mobileMenuOpen}
             >
               {mobileMenuOpen ? (
                 <X className="w-6 h-6" />
@@ -381,9 +390,9 @@ export default function Navbar() {
                     {label}
                   </Link>
                 ))}
-                    {label}
-                  </Link>
-                ))}
+
+               
+
 
               {user ? (
                 <button
