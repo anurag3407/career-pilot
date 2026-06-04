@@ -1,37 +1,89 @@
 import React, { useState, useRef, useEffect, Suspense, useMemo } from "react";
-import { templates } from '../data/templates';
+import { useTheme } from "../hooks/useTheme";
+import Navbar from "../components/Navbar";
 import DeployModal from "../components/portfolio/DeployModal";
 import ThemeSelector from "../components/portfolio/ThemeSelector";
-import { useTheme } from "../hooks/useTheme";
-import { motion, AnimatePresence } from "framer-motion";
-import { Moon, Sun, ChevronDown, Check, Eye, Star, Sparkles } from "lucide-react";
+import HolographicAbout from "../components/portfolio/templates/Holographic/About";
+import CulinaryAbout from "../components/portfolio/templates/Culinary_Restaurant/About";
+import TechStartupHero from "../components/portfolio/templates/Tech_Startup/Hero";
+import GeometricShapesAbout from "../components/portfolio/templates/Geometric_Shapes/About";
+import ChooseAdventurePortfolio from "../components/portfolio/templates/Choose_Adventure/index";
+import WeatherMood from "../components/portfolio/templates/Weather_Mood/index";
 import SwissTypography from "../components/portfolio/templates/Swiss_Typography/index";
+import DesertDunes from "../components/portfolio/templates/Desert_Dunes/index";
+import { templates } from '../data/templates';
+import { motion, AnimatePresence } from "framer-motion";
+import { Moon, Sun, ChevronDown, Check, Eye, Star, Sparkles, X } from "lucide-react";
 import LiquidGlass from "../components/portfolio/templates/Liquid_Glass/index";
 import MidnightGradient from "../components/portfolio/templates/Midnight_Gradient/index";
 import PlayingCardsPortfolio from "../components/portfolio/templates/Playing_Cards";
 import CherryBlossom from "../components/portfolio/templates/Cherry_Blossom/index";
 import PsychedelicSwirl from "../components/portfolio/templates/Psychedelic_Swirl/index";
-import DesertDunes from "../components/portfolio/templates/Desert_Dunes/index";
 import MemphisPop from "../components/portfolio/templates/Memphis_Pop/index";
 import CassetteMixtape from "../components/portfolio/templates/Cassette_Mixtape/index";
 import TypewriterEffect from "../components/portfolio/templates/Typewriter_Effect/index";
 import ChromaticGlitch from "../components/portfolio/templates/Chromatic_Glitch/index";
 import MagneticDock from "../components/portfolio/templates/Magnetic_Dock/index";
-import Navbar from '../components/Navbar'
-import { X } from "lucide-react";
 import { useSearchParams } from "react-router-dom";
-import HolographicAbout from "../components/portfolio/templates/Holographic/About";
-import GeometricShapesAbout from "../components/portfolio/templates/Geometric_Shapes/About";
-import CulinaryAbout from "../components/portfolio/templates/Culinary_Restaurant/About";
-import TechStartupHero from "../components/portfolio/templates/Tech_Startup/Hero";
-import ChooseAdventurePortfolio from "../components/portfolio/templates/Choose_Adventure/index";
-import WeatherMood from "../components/portfolio/templates/Weather_Mood/index";
 import MorphingBlobs from "../components/portfolio/templates/Morphing_Blobs/index";
 import OceanDepths from "../components/portfolio/templates/Ocean_Depths/index";
 import NeonCityscape from "../components/portfolio/templates/Neon_Cityscape/index";
 import PlanetaryOrbit from "../components/portfolio/templates/Planetary_Orbit/index";
 import LowPolyTerrain from "../components/portfolio/templates/Low_Poly_Terrain/index";
 import HighFashion from "../components/portfolio/templates/High_Fashion/index";
+import SportsAthletic from "../components/portfolio/templates/Sports_Athletic/index";
+
+/* TemplatePreviewFrame — contains each full portfolio template in a
+   sandboxed scrollable box. The key trick: CSS `transform` on the outer
+   wrapper makes it the "containing block" for any position:fixed children,
+   so a template's fixed navbar stays inside the frame instead of
+   escaping to the top of the viewport and overlapping the page navbar. */
+function TemplatePreviewFrame({ label, badgeColor, children }) {
+  return (
+    <div className="mt-12">
+      <div className="mb-4 flex items-center gap-3 px-1">
+        <span className={`rounded-full px-3 py-1 text-xs font-bold uppercase tracking-widest border ${badgeColor}`}>
+          Preview
+        </span>
+        <h2 className="text-lg font-semibold text-foreground/70">{label}</h2>
+      </div>
+      {/* transform:translate(0) is the critical line — it creates a new
+          containing block so position:fixed elements inside are anchored
+          to this div, not to the viewport. */}
+      <div
+        className="rounded-2xl border border-border"
+        style={{
+          height: 600,
+          overflowY: "auto",
+          overflowX: "hidden",
+          transform: "translate(0)",
+          position: "relative",
+        }}
+      >
+        {children}
+      </div>
+    </div>
+  );
+}
+import { templates } from '../data/templates';
+import { motion, AnimatePresence } from "framer-motion";
+import { Moon, Sun, ChevronDown, Check, Eye, Star, Sparkles } from "lucide-react";
+import LiquidGlass from "../components/portfolio/templates/Liquid_Glass/index";
+import MidnightGradient from "../components/portfolio/templates/Midnight_Gradient/index";
+import PlayingCardsPortfolio from "../components/portfolio/templates/Playing_Cards";
+import CherryBlossom from "../components/portfolio/templates/Cherry_Blossom/index";
+import PsychedelicSwirl from "../components/portfolio/templates/Psychedelic_Swirl/index";
+import MemphisPop from "../components/portfolio/templates/Memphis_Pop/index";
+import CassetteMixtape from "../components/portfolio/templates/Cassette_Mixtape/index";
+import TypewriterEffect from "../components/portfolio/templates/Typewriter_Effect/index";
+import ChromaticGlitch from "../components/portfolio/templates/Chromatic_Glitch/index";
+import MagneticDock from "../components/portfolio/templates/Magnetic_Dock/index";
+import { X } from "lucide-react";
+import { useSearchParams } from "react-router-dom";
+// import Hero from "../components/portfolio/templates/Holographic/Hero";
+// import ChooseAdventurePortfolio from "../components/portfolio/templates/Choose_Adventure/index";
+// import RetroProjects from "../components/portfolio/templates/2D_Retro_8bit/Projects";
+// import FantasyRPGProjects from "../components/portfolio/templates/Fantasy_RPG/Projects";
 
 
 function FilterSelect({ value, onChange, options, className = "" }) {
@@ -355,8 +407,10 @@ const [hoveredCard, setHoveredCard] = useState(null);
   });
 
   return (
-    <div className="min-h-screen bg-background text-foreground p-8 pt-24 transition-colors duration-300">
-      <Navbar />
+  <div className="min-h-screen bg-background text-foreground transition-colors duration-300">
+    <Navbar />
+
+    <div className="p-8 pt-24">
       
       {aiDraft && (
         <div className="mb-8 p-4 rounded-xl bg-gradient-to-r from-emerald-500/10 to-teal-500/10 border border-emerald-500/30 flex items-center justify-between">
@@ -534,34 +588,48 @@ const [hoveredCard, setHoveredCard] = useState(null);
         <div className="overflow-hidden rounded-2xl border border-cyan-500/20"><TechStartupHero /></div>
       </div>
 
-      {/* Choose Adventure Theme */}
-      <div className="mt-12">
-        <div className="mb-4 flex items-center gap-3 px-1">
-          <span className="rounded-full bg-violet-500/20 px-3 py-1 text-xs font-bold uppercase tracking-widest text-violet-400 border border-violet-500/30">
-            ⚔ Choose Adventure
-          </span>
-          <h2 className="text-lg font-semibold text-foreground/70">Choose Adventure — Full Interactive Template</h2>
-        </div>
-        <div className="rounded-2xl border border-violet-500/20"
-          style={{ height: 640, overflowY: "auto", overflowX: "hidden", transform: "translate(0)", position: "relative" }}>
-          <ChooseAdventurePortfolio />
-        </div>
-      </div>
+      {/* Full-template previews — each has its own fixed/sticky navbar.
+          TemplatePreviewFrame creates an isolated scroll container so
+          that navbar stays inside the preview box and never bleeds out. */}
+      <TemplatePreviewFrame
+        label="Choose Adventure Theme — Full Interactive Template"
+        badgeColor="bg-violet-500/20 text-violet-400 border-violet-500/30"
+      >
+        <ChooseAdventurePortfolio />
+      </TemplatePreviewFrame>
 
-      {/* Weather Mood Theme */}
+      <TemplatePreviewFrame
+        label="Weather Mood Theme — Full Interactive Template"
+        badgeColor="bg-sky-500/20 text-sky-400 border-sky-500/30"
+      >
+        <WeatherMood />
+      </TemplatePreviewFrame>
+
+      <TemplatePreviewFrame
+        label="Swiss Typography — Full Interactive Template"
+        badgeColor="bg-red-500/20 text-red-400 border-red-500/30"
+      >
+        <SwissTypography />
+      </TemplatePreviewFrame>
+
+      <TemplatePreviewFrame
+        label="Desert Dunes — Nature / Organic Template"
+        badgeColor="bg-amber-500/20 text-amber-400 border-amber-500/30"
+      >
+        <DesertDunes />
+      </TemplatePreviewFrame>
+      </div>
       <div className="mt-12">
-        <div className="mb-4 flex items-center gap-3 px-1">
-          <span className="rounded-full bg-sky-500/20 px-3 py-1 text-xs font-bold uppercase tracking-widest text-sky-400 border border-sky-500/30">
-            ☁ Weather Mood
+        <span className="rounded-full bg-red-500/20 px-3 py-1 text-xs font-bold uppercase tracking-widest text-red-400 border border-red-500/30">
+            Preview
           </span>
-          <h2 className="text-lg font-semibold text-foreground/70">Weather Mood — Full Interactive Template</h2>
+          <h2 className="text-lg font-semibold text-foreground/70">Swiss Typography — Full Interactive Template</h2>
         </div>
-        <div className="rounded-2xl border border-sky-500/20"
-          style={{ height: 640, overflowY: "auto", overflowX: "hidden", transform: "translate(0)", position: "relative" }}>
-          <WeatherMood />
+        <div className="overflow-hidden rounded-2xl border border-border">
+          <SwissTypography portfolioData={aiDraft} />
         </div>
       </div>
-      {/* Psychedelic Swirl Theme */}
+      
       <div className="mt-12">
         <div className="mb-4 flex items-center gap-3 px-1">
           <span className="rounded-full bg-fuchsia-500/20 px-3 py-1 text-xs font-bold uppercase tracking-widest text-fuchsia-400 border border-fuchsia-500/30">
@@ -642,6 +710,9 @@ const [hoveredCard, setHoveredCard] = useState(null);
           className="rounded-2xl border border-fuchsia-500/20"
           style={{ height: 640, overflowY: "auto", overflowX: "hidden", transform: "translate(0)", position: "relative" }}
         >
+          <PsychedelicSwirl />
+</div>
+</div>
       {/* Psychedelic Swirl — sandboxed fixed-nav frame */}
       <div className="mt-12">
         <div className="mb-4 flex items-center gap-3 px-1">
@@ -653,6 +724,9 @@ const [hoveredCard, setHoveredCard] = useState(null);
         <div className="rounded-2xl border border-fuchsia-500/20"
           style={{ height: 640, overflowY: "auto", overflowX: "hidden", transform: "translate(0)", position: "relative" }}>
           <PsychedelicSwirl />
+            </div>
+        <div className="overflow-hidden rounded-2xl border border-border">
+          <MidnightGradient />
         </div>
       </div>
 
@@ -702,14 +776,15 @@ const [hoveredCard, setHoveredCard] = useState(null);
       <div className="mt-12">
         <div className="mb-4 flex items-center gap-3 px-1">
           <span className="rounded-full px-3 py-1 text-xs font-bold uppercase tracking-widest border" style={{ background: "rgba(139,37,0,.1)", color: "#8B2500", borderColor: "rgba(139,37,0,.25)" }}>
-            ▮ Typewriter Effect
+            Typewriter Effect
           </span>
           <h2 className="text-lg font-semibold text-foreground/70">Typewriter Effect — Vintage Paper Full Template</h2>
         </div>
         <div className="rounded-2xl" style={{ height: 640, overflowY: "auto", overflowX: "hidden", transform: "translate(0)", position: "relative", border: "1px solid rgba(139,37,0,.2)" }}>
           <TypewriterEffect />
+          </div>
         </div>
-      </div>
+          
       {/* Chromatic Glitch — sandboxed fixed-nav frame */}
       <div className="mt-12">
         <div className="mb-4 flex items-center gap-3 px-1">
@@ -806,8 +881,19 @@ const [hoveredCard, setHoveredCard] = useState(null);
         </div>
       </div>
 
+      {/* Sports Athletic — sandboxed fixed-nav frame */}
+      <div className="mt-12 mb-16">
+        <div className="mb-4 flex items-center gap-3 px-1">
+          <span className="rounded-full bg-rose-500/20 px-3 py-1 text-xs font-bold uppercase tracking-widest text-rose-400 border border-rose-500/30">
+            ● Sports Athletic
+          </span>
+          <h2 className="text-lg font-semibold text-foreground/70">Sports Athletic — Dark Athletic Portfolio</h2>
+        </div>
+        <div className="rounded-2xl" style={{ height: 640, overflowY: "auto", overflowX: "hidden", transform: "translate(0)", position: "relative", border: "1px solid rgba(225,29,72,.2)" }}>
+          <SportsAthletic />
         </div>
       </div>
+
     </div>
   </div>
   );
