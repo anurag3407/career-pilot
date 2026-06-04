@@ -1,3 +1,10 @@
+# [1.138.0](https://github.com/anurag3407/career-pilot/compare/v1.137.0...v1.138.0) (2026-06-04)
+
+
+### Features
+
+* add interview session replay and history dashboard ([82c52fb](https://github.com/anurag3407/career-pilot/commit/82c52fbf81c9f896ccf769e0a38851bf9ab69d27))
+
 # [1.137.0](https://github.com/anurag3407/career-pilot/compare/v1.136.0...v1.137.0) (2026-06-04)
 
 

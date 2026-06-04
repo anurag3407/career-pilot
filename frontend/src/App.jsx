@@ -42,6 +42,8 @@ const Enhance = lazy(() => import("./pages/Enhance"));
 const ResumeView = lazy(() => import("./pages/ResumeView"));
 const JobAlerts = lazy(() => import("./pages/JobAlerts"));
 const InterviewPrep = lazy(() => import("./pages/InterviewPrep"));
+const InterviewHistory = lazy(() => import("./pages/InterviewHistory"));
+const InterviewReplay = lazy(() => import("./pages/InterviewReplay"));
 const UserProfile = lazy(() => import("./pages/UserProfile"));
 const SecuritySettings = lazy(() => import("./pages/SecuritySettings"));
 const EmailGenerator = lazy(() => import("./pages/EmailGenerator"));
@@ -315,6 +317,27 @@ function AppRoutes() {
   } 
 />
         <Route path="/interview-prep" element={<ProtectedRoute><Suspense fallback={<LoadingScreen label="Loading Interview Prep..." />}><InterviewPrep /></Suspense></ProtectedRoute>} />
+        <Route
+  path="/interview-history"
+  element={
+    <ProtectedRoute>
+      <Suspense fallback={<LoadingScreen label="Loading Interview History..." />}>
+        <InterviewHistory />
+      </Suspense>
+    </ProtectedRoute>
+  }
+/>
+
+<Route
+  path="/interview-history/:id"
+  element={
+    <ProtectedRoute>
+      <Suspense fallback={<LoadingScreen label="Loading Interview Replay..." />}>
+        <InterviewReplay />
+      </Suspense>
+    </ProtectedRoute>
+  }
+/>
         <Route path="/profile" element={<ProtectedRoute><Suspense fallback={<LoadingScreen label="Loading Profile..." />}><UserProfile /></Suspense></ProtectedRoute>} />
         <Route path="/profile/:uid" element={<ProtectedRoute><Suspense fallback={<LoadingScreen label="Loading Profile..." />}><UserProfile /></Suspense></ProtectedRoute>} />
         <Route path="/security" element={<ProtectedRoute><Suspense fallback={<LoadingScreen label="Loading Security Settings..." />}><SecuritySettings /></Suspense></ProtectedRoute>} />
