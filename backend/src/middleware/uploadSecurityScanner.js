@@ -18,6 +18,8 @@ const PDF_MALICIOUS_PATTERNS = [
   { pattern: /\/URI\s+\(javascript:/i, name: 'JavaScript URI' }
 ];
 
+const MAX_SCAN_SIZE = 10 * 1024 * 1024; // 10MB hard limit for the scanner
+
 /**
  * Scans a file for malicious patterns.
  * 
@@ -26,6 +28,15 @@ const PDF_MALICIOUS_PATTERNS = [
  */
 const scanFile = async (filePath) => {
   try {
+    const stats = await fs.stat(filePath);
+    
+    if (stats.size > MAX_SCAN_SIZE) {
+      return {
+        isSafe: false,
+        threats: [`File size (${(stats.size / (1024 * 1024)).toFixed(2)}MB) exceeds security scan limit of 10MB`]
+      };
+    }
+
     const buffer = await fs.readFile(filePath);
     const content = buffer.toString('binary');
     const threatsFound = [];
