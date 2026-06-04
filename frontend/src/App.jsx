@@ -103,6 +103,12 @@ import CassetteMixtape from './components/portfolio/templates/Cassette_Mixtape/i
 import MagneticDock from './components/portfolio/templates/Magnetic_Dock/index.jsx';
 import Hero from './components/portfolio/templates/Magazine_Editorial/Hero';
 import ColorBlock from './components/portfolio/templates/Color_Block/index.jsx';
+const OceanDepths = lazy(() => import('./components/portfolio/templates/Ocean_Depths/index.jsx'));
+const NeonCityscape = lazy(() => import('./components/portfolio/templates/Neon_Cityscape/index.jsx'));
+const PlanetaryOrbit = lazy(() => import('./components/portfolio/templates/Planetary_Orbit/index.jsx'));
+const LowPolyTerrain = lazy(() => import('./components/portfolio/templates/Low_Poly_Terrain/index.jsx'));
+const HighFashion = lazy(() => import('./components/portfolio/templates/High_Fashion/index.jsx'));
+const SportsAthletic = lazy(() => import('./components/portfolio/templates/Sports_Athletic/index.jsx'));
 import TestSocialLinks from './pages/TestSocialLinks';
 
 function LoadingScreen({ label }) {
@@ -258,7 +264,13 @@ function AppRoutes() {
         <Route path="/templates/memphis-pop" element={<MemphisPop />} />
         <Route path="/templates/cassette-mixtape" element={<CassetteMixtape />} />
         <Route path="/templates/magnetic-dock" element={<MagneticDock />} />
-        
+        <Route path="/templates/ocean-depths" element={<OceanDepths />} />
+        <Route path="/templates/neon-cityscape" element={<NeonCityscape />} />
+        <Route path="/templates/planetary-orbit" element={<PlanetaryOrbit />} />
+        <Route path="/templates/low-poly-terrain" element={<LowPolyTerrain />} />
+        <Route path="/templates/high-fashion" element={<HighFashion />} />
+        <Route path="/templates/sports-athletic" element={<SportsAthletic />} />
+
         {/* Core Protected Routes */}
         <Route 
   path="/dashboard" 
