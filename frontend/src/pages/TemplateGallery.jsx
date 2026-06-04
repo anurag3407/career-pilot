@@ -1,5 +1,5 @@
 import React, { useState, useRef, useEffect, Suspense, useMemo } from "react";
-import { templates } from "../data/templates";
+
 import DeployModal from "../components/portfolio/DeployModal";
 import ThemeSelector from "../components/portfolio/ThemeSelector";
 import { useTheme } from "../hooks/useTheme";
@@ -25,6 +25,7 @@ import PlayingCardsPortfolio from "../components/portfolio/templates/Playing_Car
 import CherryBlossom from "../components/portfolio/templates/Cherry_Blossom/index";
 import PsychedelicSwirl from "../components/portfolio/templates/Psychedelic_Swirl/index";
 import DesertDunes from "../components/portfolio/templates/Desert_Dunes/index";
+
 import MemphisPop from "../components/portfolio/templates/Memphis_Pop/index";
 import CassetteMixtape from "../components/portfolio/templates/Cassette_Mixtape/index";
 import TypewriterEffect from "../components/portfolio/templates/Typewriter_Effect/index";
@@ -56,6 +57,7 @@ function TemplatePreviewFrame({ label, badgeColor, children }) {
     </div>
   );
 }
+
 
 /* ─── Filter dropdown ───────────────────────────────────────────────────────── */
 function FilterSelect({ value, onChange, options, className = "" }) {
@@ -372,28 +374,7 @@ export default function TemplateGallery() {
   });
 
   return (
-    <div className="min-h-screen bg-background text-foreground transition-colors duration-300">
-      <Navbar />
 
-      <div className="p-8 pt-24">
-        {/* AI Draft Banner */}
-        {aiDraft && (
-          <div className="mb-8 p-4 rounded-xl bg-gradient-to-r from-emerald-500/10 to-teal-500/10 border border-emerald-500/30 flex items-center justify-between">
-            <div>
-              <h3 className="text-emerald-400 font-bold flex items-center gap-2">
-                <Sparkles className="w-5 h-5" /> ✨ Resume Parsed Successfully!
-              </h3>
-              <p className="text-sm text-muted-foreground mt-1">
-                Your data has been extracted. Select a template below and we'll automatically inject your experience and projects!
-              </p>
-            </div>
-            <button
-              onClick={clearDraft}
-              className="p-2 hover:bg-emerald-500/20 text-emerald-400 rounded-lg transition-colors"
-              title="Discard Draft"
-            >
-              <X className="w-5 h-5" />
-            </button>
           </div>
         )}
 
@@ -498,10 +479,7 @@ export default function TemplateGallery() {
           <LiquidGlass portfolioData={aiDraft} />
         </TemplatePreviewFrame>
 
-        {/* Midnight Gradient */}
-        <TemplatePreviewFrame
-          label="Midnight Gradient Theme"
-          badgeColor="bg-indigo-500/20 text-indigo-400 border-indigo-500/30"
+
         >
           <MidnightGradient />
         </TemplatePreviewFrame>
@@ -530,13 +508,6 @@ export default function TemplateGallery() {
           <CherryBlossom portfolioData={aiDraft} />
         </TemplatePreviewFrame>
 
-        {/* Psychedelic Swirl */}
-        <TemplatePreviewFrame
-          label="Psychedelic Swirl — Retro / Nostalgic Full Template"
-          badgeColor="bg-fuchsia-500/20 text-fuchsia-400 border-fuchsia-500/30"
-        >
-          <PsychedelicSwirl />
-        </TemplatePreviewFrame>
 
         {/* Desert Dunes */}
         <TemplatePreviewFrame
@@ -562,19 +533,7 @@ export default function TemplateGallery() {
           <CassetteMixtape />
         </TemplatePreviewFrame>
 
-        {/* Typewriter Effect */}
-        <TemplatePreviewFrame
-          label="Typewriter Effect — Vintage Paper Full Template"
-          badgeColor="bg-stone-500/20 text-stone-400 border-stone-500/30"
-        >
-          <TypewriterEffect />
-        </TemplatePreviewFrame>
 
-        {/* Chromatic Glitch */}
-        <TemplatePreviewFrame
-          label="Chromatic Glitch — RGB Split / Colorful Full Template"
-          badgeColor="bg-cyan-500/20 text-cyan-400 border-cyan-500/30"
-        >
           <ChromaticGlitch />
         </TemplatePreviewFrame>
 
@@ -586,6 +545,7 @@ export default function TemplateGallery() {
           <MagneticDock />
         </TemplatePreviewFrame>
       </div>
+
     </div>
   );
 }

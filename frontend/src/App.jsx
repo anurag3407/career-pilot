@@ -42,11 +42,14 @@ const Enhance = lazy(() => import("./pages/Enhance"));
 const ResumeView = lazy(() => import("./pages/ResumeView"));
 const JobAlerts = lazy(() => import("./pages/JobAlerts"));
 const InterviewPrep = lazy(() => import("./pages/InterviewPrep"));
+const InterviewHistory = lazy(() => import("./pages/InterviewHistory"));
+const InterviewReplay = lazy(() => import("./pages/InterviewReplay"));
 const UserProfile = lazy(() => import("./pages/UserProfile"));
 const SecuritySettings = lazy(() => import("./pages/SecuritySettings"));
 const EmailGenerator = lazy(() => import("./pages/EmailGenerator"));
 const LinkedInOptimizer = lazy(() => import("./pages/LinkedInOptimizer"));
 const Settings = lazy(() => import("./pages/Settings"));
+const SkillGap = lazy(() => import("./pages/SkillGap"));
 const ResumeHub = lazy(() => import("./pages/hubs/ResumeHub"));
 const JobsHub = lazy(() => import("./pages/hubs/JobsHub"));
 const PortfolioHub = lazy(() => import("./pages/hubs/PortfolioHub"));
@@ -314,11 +317,33 @@ function AppRoutes() {
   } 
 />
         <Route path="/interview-prep" element={<ProtectedRoute><Suspense fallback={<LoadingScreen label="Loading Interview Prep..." />}><InterviewPrep /></Suspense></ProtectedRoute>} />
+        <Route
+  path="/interview-history"
+  element={
+    <ProtectedRoute>
+      <Suspense fallback={<LoadingScreen label="Loading Interview History..." />}>
+        <InterviewHistory />
+      </Suspense>
+    </ProtectedRoute>
+  }
+/>
+
+<Route
+  path="/interview-history/:id"
+  element={
+    <ProtectedRoute>
+      <Suspense fallback={<LoadingScreen label="Loading Interview Replay..." />}>
+        <InterviewReplay />
+      </Suspense>
+    </ProtectedRoute>
+  }
+/>
         <Route path="/profile" element={<ProtectedRoute><Suspense fallback={<LoadingScreen label="Loading Profile..." />}><UserProfile /></Suspense></ProtectedRoute>} />
         <Route path="/profile/:uid" element={<ProtectedRoute><Suspense fallback={<LoadingScreen label="Loading Profile..." />}><UserProfile /></Suspense></ProtectedRoute>} />
         <Route path="/security" element={<ProtectedRoute><Suspense fallback={<LoadingScreen label="Loading Security Settings..." />}><SecuritySettings /></Suspense></ProtectedRoute>} />
         <Route path="/email-generator" element={<ProtectedRoute><Suspense fallback={<LoadingScreen label="Loading Email Generator..." />}><EmailGenerator /></Suspense></ProtectedRoute>} />
         <Route path="/linkedin-optimizer" element={<ProtectedRoute><Suspense fallback={<LoadingScreen label="Loading LinkedIn Optimizer..." />}><LinkedInOptimizer /></Suspense></ProtectedRoute>} />
+        <Route path="/skill-gap" element={<ProtectedRoute><Suspense fallback={<LoadingScreen label="Loading Skill Gap Analyzer..." />}><SkillGap /></Suspense></ProtectedRoute>} />
         <Route path="/deployments" element={<ProtectedRoute><Suspense fallback={<LoadingScreen label="Loading Deployments..." />}><Deployments /></Suspense></ProtectedRoute>} />
         <Route path="/settings" element={<ProtectedRoute><Suspense fallback={<LoadingScreen label="Loading Settings..." />}><Settings /></Suspense></ProtectedRoute>} />
 
