@@ -4,7 +4,8 @@ import { Github, Linkedin, Twitter, Mail, Send } from 'lucide-react';
 
 const ICONS = { github: Github, linkedin: Linkedin, twitter: Twitter, email: Mail };
 
-export default function Contact({ data }) {
+export default function Contact({ data, isMaximized }) {
+  const { socials } = data;
   const ref = useRef(null);
   const inView = useInView(ref, { once: true, margin: '-80px' });
 
@@ -14,12 +15,11 @@ export default function Contact({ data }) {
       initial={{ opacity: 0, y: 30 }}
       animate={inView ? { opacity: 1, y: 0 } : {}}
       transition={{ duration: 0.5 }}
-      className="grid md:grid-cols-2 gap-8 p-8"
+      className="grid md:grid-cols-2 gap-12 max-w-4xl mx-auto py-12 md:py-20 px-4 md:px-6"
     >
-      {/* Socials */}
       <div className="flex flex-col gap-4">
         <h3 className="text-white font-semibold text-lg mb-2">Connect With Me</h3>
-        {Object.entries(data.socials).map(([key, url]) => {
+        {Object.entries(socials ?? {}).map(([key, url]) => {
           const Icon = ICONS[key];
           if (!Icon || !url) return null;
           const href = key === 'email' ? `mailto:${url}` : url;
@@ -38,23 +38,29 @@ export default function Contact({ data }) {
         })}
       </div>
 
-      {/* Form */}
-      <div className="flex flex-col gap-4">
-        <h3 className="text-white font-semibold text-lg mb-2">Send a Message</h3>
+      <div className="flex flex-col justify-center gap-6">
+        <div>
+          <h2 className={`font-bold text-white ${isMaximized ? 'text-4xl mb-6' : 'text-2xl md:text-3xl mb-4'}`}>
+            Let's <span className="text-[#0078D4]">Connect</span>
+          </h2>
+          <p className={`text-white/60 ${isMaximized ? 'text-base' : 'text-sm'}`}>
+            Have a project in mind or just want to say hi? Feel free to reach out.
+          </p>
+        </div>
         <input
           type="text"
           placeholder="Your Name"
-          className="w-full bg-white/5 border border-white/20 rounded-xl px-4 py-2.5 text-white text-sm placeholder-white/30 focus:border-[#0078D4] focus:outline-none transition-colors"
+          className={`w-full bg-white/[0.05] border border-white/20 rounded-xl text-white placeholder-white/30 focus:border-[#0078D4] focus:outline-none transition-all duration-200 ${isMaximized ? 'px-5 py-4 text-base' : 'px-4 py-2.5 text-sm'}`}
         />
         <input
           type="email"
           placeholder="Your Email"
-          className="w-full bg-white/5 border border-white/20 rounded-xl px-4 py-2.5 text-white text-sm placeholder-white/30 focus:border-[#0078D4] focus:outline-none transition-colors"
+          className={`w-full bg-white/[0.05] border border-white/20 rounded-xl text-white placeholder-white/30 focus:border-[#0078D4] focus:outline-none transition-all duration-200 ${isMaximized ? 'px-5 py-4 text-base' : 'px-4 py-2.5 text-sm'}`}
         />
         <textarea
           rows={4}
           placeholder="Your Message"
-          className="w-full bg-white/5 border border-white/20 rounded-xl px-4 py-2.5 text-white text-sm placeholder-white/30 focus:border-[#0078D4] focus:outline-none transition-colors resize-none"
+          className={`w-full bg-white/[0.05] border border-white/20 rounded-xl text-white placeholder-white/25 focus:border-[#0078D4] focus:outline-none transition-all duration-200 resize-none ${isMaximized ? 'px-5 py-4 text-base' : 'px-4 py-3 text-sm'}`}
         />
         <button
           onClick={(e) => e.preventDefault()}

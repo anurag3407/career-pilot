@@ -6,34 +6,37 @@ const item = { hidden: { opacity: 0, y: 30 }, show: { opacity: 1, y: 0, transiti
 
 const SOCIAL_ICONS = { github: Github, linkedin: Linkedin, twitter: Twitter, email: Mail };
 
-export default function Hero({ data }) {
+export default function Hero({ data, isMaximized }) {
   const { personal, socials } = data;
+  
   return (
     <motion.div
       variants={container}
       initial="hidden"
       animate="show"
-      className="relative p-8 md:p-12 text-center"
+      className={`flex flex-col items-center text-center min-h-[60vh] ${isMaximized ? 'gap-6 py-16' : 'gap-4 py-8 px-8'}`}
     >
-      {/* Radial glow behind avatar */}
       <div className="absolute top-1/4 left-1/2 -translate-x-1/2 w-64 h-64 bg-[#0078D4]/20 rounded-full blur-3xl pointer-events-none" />
 
       <motion.div variants={item} className="relative">
         <img
-          src={personal.avatar}
-          alt={personal.name}
-          className="w-28 h-28 md:w-36 md:h-36 rounded-full mx-auto ring-4 ring-[#0078D4]/60 ring-offset-4 ring-offset-transparent object-cover"
+          src={personal?.avatar}
+          alt={personal?.name || 'Profile'}
+          onError={e => { e.target.onerror = null; e.target.src = 'https://via.placeholder.com/150'; }}
+          className={`rounded-full mx-auto object-cover ring-4 ring-[#0078D4]/60 ${isMaximized ? 'w-40 h-40 ring-offset-4' : 'w-28 h-28 ring-offset-2'}`}
         />
       </motion.div>
 
-      <motion.h1 variants={item} className="mt-6 text-3xl md:text-5xl font-bold text-white">
-        {personal.name}
+      <motion.h1 variants={item} className={`font-bold text-white ${isMaximized ? 'text-5xl' : 'text-3xl md:text-4xl'}`}>
+        {personal?.name}
       </motion.h1>
-      <motion.h2 variants={item} className="mt-2 text-lg md:text-xl text-[#0078D4] font-medium">
-        {personal.title}
+      
+      <motion.h2 variants={item} className={`mt-2 text-[#0078D4] font-medium ${isMaximized ? 'text-xl md:text-2xl' : 'text-base md:text-xl'}`}>
+        {personal?.title}
       </motion.h2>
-      <motion.div variants={item} className="mt-3 flex items-center justify-center gap-1.5 text-white/50 text-sm">
-        <MapPin size={14} />{personal.location}
+      
+      <motion.div variants={item} className="mt-3 flex items-center justify-center gap-1.5 text-white/50 text-sm md:text-base">
+        <MapPin size={14} />{personal?.location}
       </motion.div>
 
       <motion.div variants={item} className="mt-6 flex gap-3 justify-center flex-wrap">
@@ -46,7 +49,7 @@ export default function Hero({ data }) {
       </motion.div>
 
       <motion.div variants={item} className="mt-6 flex gap-4 justify-center">
-        {Object.entries(socials).map(([key, url]) => {
+        {Object.entries(socials ?? {}).map(([key, url]) => {
           const Icon = SOCIAL_ICONS[key];
           if (!Icon || !url) return null;
           return (
@@ -57,7 +60,7 @@ export default function Hero({ data }) {
               rel="noreferrer"
               className="p-2 rounded-lg bg-white/10 hover:bg-[#0078D4]/40 border border-white/10 text-white/70 hover:text-white transition-all"
             >
-              <Icon size={16} />
+              <Icon size={isMaximized ? 20 : 16} />
             </a>
           );
         })}
