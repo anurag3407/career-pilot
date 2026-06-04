@@ -11,10 +11,11 @@ export const generatePDF = async (markdownText, options = {}) => {
   const THEME_STYLES = {
   modern: {
     accentColor: '#6366f1',
-    fontFamily: "'Helvetica Neue', Helvetica, Arial, sans-serif",
+    fontFamily: "Inter, 'Helvetica Neue', Helvetica, Arial, sans-serif",
     h1Style: 'text-align: center; font-size: 26px; color: #111;',
     h2Style: 'font-size: 13px; text-transform: uppercase; color: #6366f1; border-bottom: 2px solid #6366f1; padding-bottom: 4px; margin-top: 16px;',
     bodyColor: '#333',
+    atsStrict: false,
   },
   corporate: {
     accentColor: '#1e3a5f',
@@ -22,6 +23,7 @@ export const generatePDF = async (markdownText, options = {}) => {
     h1Style: 'text-align: center; font-size: 24px; color: #1e3a5f;',
     h2Style: 'font-size: 12px; text-transform: uppercase; background: #1e3a5f; color: #fff; padding: 3px 8px; margin-top: 16px;',
     bodyColor: '#222',
+    atsStrict: false,
   },
   compact: {
     accentColor: '#000000',
@@ -33,10 +35,11 @@ export const generatePDF = async (markdownText, options = {}) => {
   },
   creative: {
     accentColor: '#0891b2',
-    fontFamily: "'Trebuchet MS', Arial, sans-serif",
+    fontFamily: "Poppins, 'Trebuchet MS', Arial, sans-serif",
     h1Style: 'text-align: center; font-size: 32px; color: #0891b2; font-weight: 900; letter-spacing: -1px;',
     h2Style: 'font-size: 13px; text-transform: uppercase; color: #0891b2; font-weight: 900; border-left: 4px solid #0891b2; padding-left: 8px; margin-top: 18px;',
     bodyColor: '#333',
+    atsStrict: false,
   },
 }
 
