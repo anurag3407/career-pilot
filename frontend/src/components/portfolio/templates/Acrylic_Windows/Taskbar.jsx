@@ -12,7 +12,19 @@ const TABS = [
   { id: 'contact', icon: Mail, label: 'Contact', file: 'contact.lnk' },
 ];
 
-export default function Taskbar({ windows, onOpen, onFocus, topZ }) {
+/**
+ * Taskbar component displaying icons for all available windows.
+ * Allows opening, restoring, and focusing windows.
+ *
+ * @param {Object} props - Component props.
+ * @param {Array} props.windows - Array of window state objects.
+ * @param {Function} props.onOpen - Callback to open a closed window.
+ * @param {Function} props.onRestore - Callback to restore a minimized window.
+ * @param {Function} props.onFocus - Callback to focus an active window.
+ * @param {number} props.topZ - The highest z-index currently in use.
+ * @returns {JSX.Element} The rendered taskbar.
+ */
+export default function Taskbar({ windows, onOpen, onRestore, onFocus, topZ }) {
   const [time, setTime] = useState('');
 
   useEffect(() => {
@@ -22,10 +34,15 @@ export default function Taskbar({ windows, onOpen, onFocus, topZ }) {
     return () => clearInterval(id);
   }, []);
 
+  /**
+   * Handles clicking an icon on the taskbar.
+   * @param {string} id - The ID of the window clicked.
+   */
   const handleClick = (id) => {
     const win = windows.find(w => w.id === id);
     if (!win) return;
-    if (win.closed || win.minimized) onOpen(id);
+    if (win.closed) onOpen(id);
+    else if (win.minimized) onRestore(id);
     else onFocus(id);
   };
 

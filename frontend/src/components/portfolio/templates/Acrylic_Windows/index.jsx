@@ -22,6 +22,11 @@ const SECTION_MAP = {
   contact: Contact,
 };
 
+/**
+ * Main component for the Acrylic Windows template.
+ * Manages the state and layout of the floating windows interface.
+ * @returns {JSX.Element} The rendered interface.
+ */
 export default function AcrylicWindows() {
   const [isMobile, setIsMobile] = useState(false);
   const [topZ, setTopZ] = useState(20);
@@ -51,24 +56,44 @@ export default function AcrylicWindows() {
     return () => window.removeEventListener('resize', check);
   }, []);
 
+  /**
+   * Brings a window to the front by increasing its z-index.
+   * @param {string} id - The ID of the window to focus.
+   */
   const handleFocus = (id) => {
     const newZ = topZ + 1;
     setTopZ(newZ);
     setWindows(prev => prev.map(w => w.id === id ? { ...w, zIndex: newZ } : w));
   };
 
+  /**
+   * Toggles the minimized state of a window.
+   * @param {string} id - The ID of the window to minimize/unminimize.
+   */
   const handleMinimize = (id) => {
     setWindows(prev => prev.map(w => w.id === id ? { ...w, minimized: !w.minimized, maximized: false } : w));
   };
 
+  /**
+   * Toggles the maximized state of a window.
+   * @param {string} id - The ID of the window to maximize/restore.
+   */
   const handleMaximize = (id) => {
     setWindows(prev => prev.map(w => w.id === id ? { ...w, maximized: !w.maximized, minimized: false } : w));
   };
 
+  /**
+   * Closes a window, hiding it from the screen.
+   * @param {string} id - The ID of the window to close.
+   */
   const handleClose = (id) => {
     setWindows(prev => prev.map(w => w.id === id ? { ...w, closed: true } : w));
   };
 
+  /**
+   * Opens a closed window, centering it on the screen.
+   * @param {string} id - The ID of the window to open.
+   */
   const handleOpen = (id) => {
     const newZ = topZ + 1;
     setTopZ(newZ);
@@ -85,6 +110,22 @@ export default function AcrylicWindows() {
     ));
   };
 
+  /**
+   * Restores a minimized window to its previous position.
+   * @param {string} id - The ID of the window to restore.
+   */
+  const handleRestore = (id) => {
+    const newZ = topZ + 1;
+    setTopZ(newZ);
+    setWindows(prev => prev.map(w => w.id === id ? { ...w, minimized: false, zIndex: newZ } : w));
+  };
+
+  /**
+   * Handles the end of a drag event, updating the window's coordinates.
+   * @param {string} id - The ID of the dragged window.
+   * @param {MouseEvent|TouchEvent|PointerEvent} event - The drag event.
+   * @param {Object} info - The drag offset information.
+   */
   const handleDragEnd = (id, event, info) => {
     setWindows(prev => prev.map(w => w.id === id ? { ...w, x: w.x + info.offset.x, y: w.y + info.offset.y } : w));
   };
@@ -119,7 +160,7 @@ export default function AcrylicWindows() {
             );
           })}
         </div>
-        <Taskbar windows={windows} onOpen={handleOpen} onFocus={handleFocus} />
+        <Taskbar windows={windows} onOpen={handleOpen} onRestore={handleRestore} onFocus={handleFocus} />
       </div>
     );
   }
@@ -160,7 +201,7 @@ export default function AcrylicWindows() {
         </AnimatePresence>
       </div>
 
-      <Taskbar windows={windows} onOpen={handleOpen} onFocus={handleFocus} topZ={topZ} />
+      <Taskbar windows={windows} onOpen={handleOpen} onRestore={handleRestore} onFocus={handleFocus} topZ={topZ} />
     </div>
   );
 }

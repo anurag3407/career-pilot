@@ -18,6 +18,20 @@ const SECTION_MAP = {
   contact: Contact,
 };
 
+/**
+ * Renders an individual draggable, resizable window frame.
+ * @param {Object} props - Component props.
+ * @param {Object} props.win - The window state object.
+ * @param {boolean} props.isMobile - Whether the device is mobile.
+ * @param {Object} props.data - Portfolio data to pass to the inner section.
+ * @param {Function} props.onFocus - Callback when window is clicked.
+ * @param {Function} props.onMinimize - Callback to minimize the window.
+ * @param {Function} props.onMaximize - Callback to maximize the window.
+ * @param {Function} props.onClose - Callback to close the window.
+ * @param {Function} props.onDragEnd - Callback when dragging ends.
+ * @param {number} props.topZ - The current highest z-index.
+ * @returns {JSX.Element} The rendered window frame.
+ */
 export default function WindowFrame({
   win, isMobile, data,
   onFocus, onMinimize, onMaximize, onClose, onDragEnd, topZ
