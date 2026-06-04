@@ -38,8 +38,6 @@ import {
   metricsHandler,
 } from "./middleware/metrics.js";
 import redisManager from './config/redis.js';
-import cookieParser from 'cookie-parser';
-import { csrfProtection } from './middleware/csrfProtection.js';
 
 
 import { initializeSocket } from './config/socket.js';
@@ -210,8 +208,6 @@ app.use('/api/', limiter);
 
 app.use(express.json({ limit: '10mb' }));
 app.use(express.urlencoded({ extended: true, limit: '10mb' }));
-app.use(cookieParser());
-app.use(csrfProtection);
 
 app.get('/health', (req, res) => {
   res.status(200).json({
