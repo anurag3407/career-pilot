@@ -61,3 +61,17 @@ test('rejects unsupported API versions', () => {
   assert.strictEqual(res.statusCode, 400);
   assert.strictEqual(res.body.success, false);
 });
+
+test('rejects malformed API version path', () => {
+  const req = {
+    path: '/api/v1beta/users',
+    headers: {},
+  };
+
+  const res = mockResponse();
+
+  apiVersioning(req, res, () => {});
+
+  assert.strictEqual(res.statusCode, 400);
+  assert.strictEqual(res.body.success, false);
+});
