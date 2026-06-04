@@ -118,9 +118,15 @@ const callEmailService = async (endpoint, data) => {
 // Log initialization status
 if (isExternalServiceConfigured) {
   console.log('📬 Email service configured: Using external Vercel service');
-  console.log(`   URL: ${EMAIL_SERVICE_URL}`);
 } else {
   console.log('📬 Email service: External service not configured, will use local SMTP');
+}
+
+// Validate email config at startup
+if (process.env.NODE_ENV === 'production' && !isExternalServiceConfigured) {
+  if (!process.env.EMAIL_HOST || !process.env.EMAIL_USER || !process.env.EMAIL_PASS) {
+    console.warn('⚠️  Email service disabled in production: missing EMAIL_HOST, EMAIL_USER, or EMAIL_PASS');
+  }
 }
 
 /**
