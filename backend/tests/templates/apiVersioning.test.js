@@ -1,52 +1,63 @@
 import test from 'node:test';
 import assert from 'node:assert';
-import express from 'express';
-import request from 'supertest';
 import { apiVersioning } from '../../src/middleware/apiVersioning.js';
 
-const createApp = () => {
-  const app = express();
+const mockResponse = () => {
+  const res = {};
 
-  app.use(apiVersioning);
+  res.status = (code) => {
+    res.statusCode = code;
+    return res;
+  };
 
-  app.get('/api/v1/test', (req, res) => {
-    res.json({
-      success: true,
-      version: req.apiVersion,
-    });
-  });
+  res.json = (data) => {
+    res.body = data;
+    return res;
+  };
 
-  app.get('/test', (req, res) => {
-    res.json({
-      success: true,
-      version: req.apiVersion,
-    });
-  });
-
-  return app;
+  return res;
 };
 
-test('detects API version from URL path', async () => {
-  const response = await request(createApp()).get('/api/v1/test');
+test('detects API version from URL path', () => {
+  const req = {
+    path: '/api/v1/users',
+    headers: {},
+  };
 
-  assert.strictEqual(response.status, 200);
-  assert.strictEqual(response.body.version, 'v1');
+  const res = mockResponse();
+
+  apiVersioning(req, res, () => {});
+
+  assert.strictEqual(req.apiVersion, 'v1');
 });
 
-test('detects API version from request header', async () => {
-  const response = await request(createApp())
-    .get('/test')
-    .set('Accept-Version', 'v1');
+test('detects API version from request header', () => {
+  const req = {
+    path: '/users',
+    headers: {
+      'accept-version': 'v1',
+    },
+  };
 
-  assert.strictEqual(response.status, 200);
-  assert.strictEqual(response.body.version, 'v1');
+  const res = mockResponse();
+
+  apiVersioning(req, res, () => {});
+
+  assert.strictEqual(req.apiVersion, 'v1');
 });
 
-test('rejects unsupported API versions', async () => {
-  const response = await request(createApp())
-    .get('/test')
-    .set('Accept-Version', 'v2');
+test('rejects unsupported API versions', () => {
+  const req = {
+    path: '/users',
+    headers: {
+      'accept-version': 'v2',
+    },
+  };
 
-  assert.strictEqual(response.status, 400);
-  assert.strictEqual(response.body.success, false);
+  const res = mockResponse();
+
+  apiVersioning(req, res, () => {});
+
+  assert.strictEqual(res.statusCode, 400);
+  assert.strictEqual(res.body.success, false);
 });
