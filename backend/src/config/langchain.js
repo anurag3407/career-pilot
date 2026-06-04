@@ -543,6 +543,71 @@ ${resumeText}`;
   }
 };
 
+// Analyze skill gap between resume and job description
+export const analyzeSkillGap = async (resumeText, jobDescription, aiProvider) => {
+  try {
+    const provider = resolveProvider(aiProvider);
+    const prompt = `You are a career advisor. Given the following resume text and job description, identify:
+
+1. Skills from the job description already present in the resume
+2. Skills from the job description missing from the resume
+3. An overall match score from 0 to 100
+4. Brief learning suggestions for missing skills
+
+IMPORTANT: Return ONLY valid JSON, no markdown code blocks, no explanations.
+
+Return this exact JSON structure:
+{
+  "matchScore": <number 0-100>,
+  "matchedSkills": ["<skill1>", "<skill2>"],
+  "missingSkills": ["<skill1>", "<skill2>"],
+  "suggestions": "<brief paragraph with learning suggestions for the missing skills>"
+}
+
+Rules:
+1. Be thorough in identifying skills - include technical skills, soft skills, tools, and frameworks
+2. The match score should reflect how well the resume covers the job requirements
+3. Suggestions should be specific and actionable with resource recommendations
+4. Compare semantically, not just by exact keyword match (e.g. "React.js" matches "React")
+
+Resume:
+${resumeText}
+
+Job Description:
+${jobDescription}`;
+
+    const providerResult = await provider.generateContent(prompt);
+
+    let analysisData;
+    try {
+      let cleanedText = providerResult.text.replace(/\`\`\`json\n?/g, '').replace(/\`\`\`\n?/g, '').trim();
+      const jsonMatch = cleanedText.match(/\{[\s\S]*\}/);
+      if (jsonMatch) {
+        cleanedText = jsonMatch[0];
+      }
+      analysisData = JSON.parse(cleanedText);
+    } catch (parseError) {
+      console.error('Failed to parse skill gap analysis JSON:', parseError);
+      throw new Error('Failed to parse skill gap analysis results');
+    }
+
+    return {
+      success: true,
+      analysis: {
+        matchScore: Number(analysisData.matchScore) || 0,
+        matchedSkills: Array.isArray(analysisData.matchedSkills) ? analysisData.matchedSkills : [],
+        missingSkills: Array.isArray(analysisData.missingSkills) ? analysisData.missingSkills : [],
+        suggestions: analysisData.suggestions || 'No suggestions available.',
+      },
+      provider: provider.providerName
+    };
+  } catch (error) {
+    if (error.statusCode === 503) throw error;
+    console.error('Error analyzing skill gap:', error);
+    throw new Error(`Failed to analyze skill gap: ${error.message}`);
+  }
+};
+
 // Export power/weak verbs for frontend use
 export const getVerbLists = () => ({
   powerVerbs: POWER_VERBS,
