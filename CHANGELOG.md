@@ -1,3 +1,25 @@
+# [1.149.0](https://github.com/anurag3407/career-pilot/compare/v1.148.0...v1.149.0) (2026-06-04)
+
+
+### Bug Fixes
+
+* add missing imports for HolographicAbout, GeometricShapesAbout, CulinaryAbout, TechStartupHero and Desert_Dunes hooks/icons ([8d2a243](https://github.com/anurag3407/career-pilot/commit/8d2a2435e0d2ed153bdef96d44f642229f056572))
+* close missing div tags in TemplateGallery TypewriterEffect section ([b3a116a](https://github.com/anurag3407/career-pilot/commit/b3a116a5418044c8360af83ceec0b0ce6a382591))
+* mobile layout for High Fashion template - hamburger nav, stacked hero, responsive padding, lookbook overhaul ([0ef20f9](https://github.com/anurag3407/career-pilot/commit/0ef20f963e377aaf4107fff1024192437a11bfc2))
+* remove duplicate concatenated code from TemplateGallery and Watercolor_Artistic ([037ff0d](https://github.com/anurag3407/career-pilot/commit/037ff0d5af1cdd02c85c82fdafc7fd51a4e592f4))
+* remove duplicate concatenated component from Desert_Dunes template ([0f6c9a2](https://github.com/anurag3407/career-pilot/commit/0f6c9a2211d63809c5c22c17c6b708fd0a6c31f7))
+* remove duplicate fontSize key in Color_Block skill bar span ([9e24814](https://github.com/anurag3407/career-pilot/commit/9e24814175a5ddf062ef9ae85a1a6b132bf49eae))
+* repair TemplateGallery JSX - remove orphan fragments, fix div balance, restore missing imports ([1140678](https://github.com/anurag3407/career-pilot/commit/11406781943c3cc9d506439aa0964c9f7df0592a))
+
+
+### Features
+
+* add 4 new portfolio templates + fix author attribution to Advik Divekar ([7f4d708](https://github.com/anurag3407/career-pilot/commit/7f4d708c2bcaa789ae94cd3f1789874299342b99))
+* add Ocean Depths, Neon Cityscape, Planetary Orbit, Low Poly Terrain, High Fashion templates to TemplateGallery ([ac831af](https://github.com/anurag3407/career-pilot/commit/ac831af36689a84c2035cd19070f4617eff4e009))
+* add routes and isComplete flag for 5 new portfolio templates ([2ab6ebe](https://github.com/anurag3407/career-pilot/commit/2ab6ebebff2c4fa5e5ea559100a1938d4c60c15b))
+* implement High Fashion Hero, Projects, Contact, ResumeCTA sections with full editorial design ([9c71ba5](https://github.com/anurag3407/career-pilot/commit/9c71ba5aa112c71f9b0008ebf723181dcff7a5b5))
+* implement TrophyCabinet section for Sports Athletic portfolio template ([df9e97a](https://github.com/anurag3407/career-pilot/commit/df9e97a849a48d2d6675599e399fbee59ea93706))
+
 # [1.148.0](https://github.com/anurag3407/career-pilot/compare/v1.147.0...v1.148.0) (2026-06-04)
 
 
