@@ -226,7 +226,7 @@ function PrintDialog({ onClose, onPrint }) {
 }
 
 /* ─── Download progress dialog ─── */
-function DownloadDialog({ filename, onClose }) {
+function DownloadDialog({ filename, onClose, onComplete }) {
   const [progress, setProgress] = useState(0);
   const [done, setDone] = useState(false);
 
@@ -276,7 +276,7 @@ function DownloadDialog({ filename, onClose }) {
         <div style={{ padding: '4px 8px 8px', display: 'flex', justifyContent: 'flex-end' }}>
           <button
             className="w98-resume-btn"
-            onClick={onClose}
+            onClick={() => { if (done) { onComplete?.(); } onClose(); }}
             style={{ opacity: done ? 1 : 0.5, cursor: done ? 'pointer' : 'default' }}
           >
             {done ? 'Open' : 'Cancel'}
@@ -324,7 +324,8 @@ export default function ResumeCTA() {
       {showDownload && (
         <DownloadDialog
           filename={`${personal.name.replace(/\s/g, '_')}_Resume.pdf`}
-          onClose={() => { setShowDownload(false); setDownloadDone(true); }}
+          onClose={() => setShowDownload(false)}
+          onComplete={() => { setShowDownload(false); setDownloadDone(true); }}
         />
       )}
 
@@ -362,7 +363,8 @@ export default function ResumeCTA() {
             🖨️ Print
           </button>
           <button className="w98-resume-btn" style={{ padding: '3px 10px', minWidth: 'auto', fontSize: '10px' }}
-            onClick={() => window.open(socials.email.replace('@', 'mailto:'), '_blank')}>
+            onClick={() => window.open(`mailto:${socials.email}`)}>
+
             📧 Email
           </button>
           <div style={{ width: '1px', height: '20px', background: W.darkGray, margin: '0 2px' }} />
