@@ -86,7 +86,6 @@ function MiniVinyl({ labelBg, isPlaying }) {
         animation: isPlaying ? 'vinyl-spin 3s linear infinite' : 'none',
       }}
     >
-      <style>{`@keyframes vinyl-spin { to { transform: rotate(360deg); } }`}</style>
       {/* grooves */}
       <div style={{ position:'absolute', inset:'6%', borderRadius:'50%', border:'1px solid rgba(255,255,255,0.06)' }} />
       <div style={{ position:'absolute', inset:'16%', borderRadius:'50%', border:'1px solid rgba(255,255,255,0.04)' }} />
@@ -339,6 +338,14 @@ export default function Projects() {
 
   const genres   = ['All', ...Array.from(new Set(PROJECTS.map(p => p.genre)))];
   const filtered = filter === 'All' ? PROJECTS : PROJECTS.filter(p => p.genre === filter);
+
+  const handleFilterChange = (g: string) => {
+    setFilter(g);
+    const newFiltered = g === 'All' ? PROJECTS : PROJECTS.filter(p => p.genre === g);
+    if (!newFiltered.find(p => p.id === activeId)) {
+      setActiveId(newFiltered[0]?.id ?? PROJECTS[0].id);
+    }
+  };
 
   const hasCatalogUrl = GITHUB_CATALOG_URL && GITHUB_CATALOG_URL !== '#';
 
