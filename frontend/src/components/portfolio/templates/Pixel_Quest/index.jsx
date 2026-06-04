@@ -78,7 +78,7 @@ export default function PixelQuest() {
         <section className="px-4 py-10 border-b-2 border-dashed border-purple-900 max-w-3xl mx-auto w-full">
           <SectionTitle>ABOUT PLAYER</SectionTitle>
           {personal.avatar && (
-            <img src={personal.avatar} alt={personal.name} className="w-20 h-20 mb-4 border-4 border-green-400" />
+            <img loading="lazy" src={personal.avatar} alt={personal.name} className="w-20 h-20 mb-4 border-4 border-green-400" />
           )}
           <p className="text-purple-200 text-sm leading-relaxed">{personal.bio}</p>
           <p className="text-gray-500 text-xs mt-3" style={{ fontFamily: "'Press Start 2P', monospace" }}>

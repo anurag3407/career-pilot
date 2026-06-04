@@ -64,7 +64,7 @@ const { personal, socials, skills, projects, experience, stats, testimonials } =
             >
               <div className="relative">
                 <div className="absolute -inset-4 bg-zinc-600/30 blur-2xl rounded-full"></div>
-                  <img 
+                  <img loading="lazy" 
                   src={personal.avatar} 
                   alt={personal.name} 
                   onError={(e) => { 
@@ -158,7 +158,7 @@ const { personal, socials, skills, projects, experience, stats, testimonials } =
                 >
                   <div className="h-48 overflow-hidden border-b-2 border-zinc-700 relative">
                     <div className="absolute inset-0 bg-zinc-900/50 group-hover:bg-transparent transition-colors z-10"></div>
-                    <img 
+                    <img loading="lazy" 
                       src={project.image} 
                       alt={project.title} 
                       className="w-full h-full object-cover grayscale group-hover:grayscale-0 transition-all duration-500"
@@ -212,7 +212,7 @@ const { personal, socials, skills, projects, experience, stats, testimonials } =
                   </p>
                   
                   <div className="flex items-center gap-4">
-                      <img 
+                      <img loading="lazy" 
                       src={testimonial.avatar} 
                       alt={testimonial.name} 
                       onError={(e) => { 

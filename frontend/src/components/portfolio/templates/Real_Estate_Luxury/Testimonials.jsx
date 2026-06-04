@@ -49,7 +49,7 @@ export default function Testimonials({ data }) {
               </p>
               <div className="relative mt-8 flex items-center gap-4">
                 {testimonial?.avatar ? (
-                  <img
+                  <img loading="lazy"
                     src={testimonial.avatar}
                     alt={testimonial?.name || 'Client portrait'}
                     className="h-10 w-10 rounded-full object-cover ring-1 ring-[#C9A96E]/50"

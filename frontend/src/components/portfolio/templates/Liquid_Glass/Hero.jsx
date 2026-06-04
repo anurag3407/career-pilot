@@ -104,7 +104,7 @@ export default function Hero({ data }) {
           <GlassCard className="p-6 w-full max-w-sm text-center">
             <div className="relative inline-block mb-4">
               <div className="absolute inset-0 rounded-full bg-gradient-to-br from-cyan-400 to-purple-500 blur-md opacity-60" />
-              <img
+              <img loading="lazy"
                 src={data.personal.avatar}
                 alt={data.personal.name}
                 className="relative w-32 h-32 rounded-full object-cover border-2 border-white/30 mx-auto"

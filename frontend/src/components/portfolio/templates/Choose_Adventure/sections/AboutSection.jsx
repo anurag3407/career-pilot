@@ -34,7 +34,7 @@ export default function AboutSection({ data, onChoice }) {
         >
           <div className="flex items-start gap-5 mb-6">
             <div className="w-16 h-16 rounded-xl overflow-hidden ring-2 ring-violet-600/40 shrink-0">
-              <img
+              <img loading="lazy"
                 src={personal.avatar}
                 alt={personal.name}
                 className="w-full h-full object-cover"

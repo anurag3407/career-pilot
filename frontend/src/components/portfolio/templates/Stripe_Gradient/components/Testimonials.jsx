@@ -23,7 +23,7 @@ export default function Testimonials() {
               </p>
 
               <div className="flex items-center gap-4 mt-6">
-                <img
+                <img loading="lazy"
                   src={testimonial.avatar}
                   alt=""
                   className="w-12 h-12 rounded-full"

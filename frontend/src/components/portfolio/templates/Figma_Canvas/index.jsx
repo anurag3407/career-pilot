@@ -170,7 +170,7 @@ function ProjectCard({ project, index }) {
       className="bg-[#1e1e1e] rounded-lg overflow-hidden border border-[#2c2c2c] hover:border-[#3c3c3c] transition-all group"
     >
       <div className="relative overflow-hidden">
-        <img
+        <img loading="lazy"
           src={project.image}
           alt={project.title}
           className="w-full h-36 object-cover transition-transform duration-500 group-hover:scale-105"
@@ -484,7 +484,7 @@ export default function FigmaCanvas() {
             <Share2 size={12} />
             Share
           </button>
-          <img
+          <img loading="lazy"
             src={data.personal.avatar}
             alt="Avatar"
             className="w-7 h-7 rounded-full border-2 border-[#0d99ff] object-cover"
@@ -636,7 +636,7 @@ export default function FigmaCanvas() {
                       className="w-24 h-24 md:w-32 md:h-32 rounded-2xl overflow-hidden mb-6 shadow-lg"
                       style={{ borderColor: FIGMA_PURPLE, borderWidth: '3px', borderStyle: 'solid' }}
                     >
-                      <img
+                      <img loading="lazy"
                         src={data.personal.avatar}
                         alt={data.personal.name}
                         className="w-full h-full object-cover"
@@ -713,7 +713,7 @@ export default function FigmaCanvas() {
                   <div className="flex flex-col md:flex-row gap-8 items-start mt-4">
                     <div className="w-full md:w-48 shrink-0">
                       <div className="relative">
-                        <img
+                        <img loading="lazy"
                           src={data.personal.avatar}
                           alt={data.personal.name}
                           className="w-full aspect-square object-cover rounded-xl"
@@ -936,7 +936,7 @@ export default function FigmaCanvas() {
                           &ldquo;{testimonial.text}&rdquo;
                         </p>
                         <div className="flex items-center gap-3">
-                          <img
+                          <img loading="lazy"
                             src={testimonial.avatar}
                             alt={testimonial.name}
                             className="w-8 h-8 rounded-full object-cover"

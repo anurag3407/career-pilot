@@ -49,7 +49,7 @@ export default function Testimonials({ data }) {
             <Rule className="mb-4" />
             <div className="flex items-center gap-3">
               {t.avatar && (
-                <img
+                <img loading="lazy"
                   src={t.avatar}
                   alt={t.name}
                   className="w-8 h-8 grayscale border border-black object-cover shrink-0"

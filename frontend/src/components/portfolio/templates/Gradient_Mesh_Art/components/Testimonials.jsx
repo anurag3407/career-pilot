@@ -69,7 +69,7 @@ export default function Testimonials() {
 
               {/* user */}
               <div className="mt-6 flex items-center gap-4">
-                <img
+                <img loading="lazy"
                   src={t.avatar}
                   className="w-12 h-12 rounded-full border border-white/10"
                 />

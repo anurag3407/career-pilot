@@ -222,7 +222,7 @@ function About() {
               <div className="md:col-span-1 flex flex-col items-center md:items-start">
                 <div className="relative mb-4">
                   <div className="absolute inset-0 rounded-full bg-purple-500/30 blur-xl" />
-                  <img
+                  <img loading="lazy"
                     src={data.personal.avatar}
                     alt={data.personal.name}
                     className="relative w-32 h-32 rounded-full object-cover border-2 border-purple-500/40"
@@ -348,7 +348,7 @@ function Projects() {
             <motion.div key={index} variants={fadeUp}>
               <VaultCard className="overflow-hidden h-full flex flex-col group hover:border-purple-500/40 transition-all">
                 <div className="relative overflow-hidden">
-                  <img
+                  <img loading="lazy"
                     src={project.image}
                     alt={project.title}
                     className="w-full h-44 object-cover group-hover:scale-105 transition-transform duration-500"
@@ -470,7 +470,7 @@ function Testimonials() {
                   "{t.text}"
                 </p>
                 <div className="flex items-center gap-3 pt-4 border-t border-purple-500/10">
-                  <img
+                  <img loading="lazy"
                     src={t.avatar}
                     alt={t.name}
                     className="w-10 h-10 rounded-full object-cover border border-purple-500/30"

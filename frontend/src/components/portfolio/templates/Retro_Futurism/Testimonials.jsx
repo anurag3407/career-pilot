@@ -24,7 +24,7 @@ export default function Testimonials() {
             </div>
             <p className="text-slate-300 text-xs sm:text-sm italic mb-6 relative z-10">"{test.text}"</p>
             <div className="flex items-center gap-4 relative z-10">
-              <img
+              <img loading="lazy"
                 src={test.avatar}
                 alt={test.name}
                 onError={(event) => {

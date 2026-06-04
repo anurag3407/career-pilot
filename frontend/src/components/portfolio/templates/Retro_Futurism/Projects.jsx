@@ -21,7 +21,7 @@ export default function Projects() {
           <motion.div key={project.id ?? `${project.title}-${project.liveUrl ?? project.githubUrl ?? 'project'}`} whileHover={{ y: -10, scale: 1.02 }} className="bg-slate-900/90 border border-slate-800 hover:border-cyan-400 rounded-xl overflow-hidden transition-all duration-300 shadow-xl hover:shadow-[0_0_25px_rgba(6,182,212,0.4)]">
             <div className="h-56 overflow-hidden relative border-b border-slate-800">
               <div className="absolute inset-0 bg-gradient-to-t from-slate-900 via-transparent to-transparent z-10" />
-              <img
+              <img loading="lazy"
                 src={project.image}
                 alt={project.title}
                 onError={(event) => {

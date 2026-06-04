@@ -553,7 +553,7 @@ function About() {
                 background: C.tape, opacity: 0.8 }} />
               <div style={{ width: 200, height: 200, overflow: 'hidden',
                 border: `3px solid ${C.tape}` }}>
-                <img src={data.personal.avatar} alt={data.personal.name}
+                <img loading="lazy" src={data.personal.avatar} alt={data.personal.name}
                   style={{ width: '100%', height: '100%', objectFit: 'cover',
                     filter: 'sepia(0.15) contrast(1.05)' }} />
               </div>
@@ -800,7 +800,7 @@ function Projects() {
                         flexDirection: 'column', gap: 14 }}>
                         {proj.image && (
                           <div style={{ height: 180, overflow: 'hidden', maxWidth: 420 }}>
-                            <img src={proj.image} alt={proj.title}
+                            <img loading="lazy" src={proj.image} alt={proj.title}
                               style={{ width: '100%', height: '100%', objectFit: 'cover',
                                 filter: 'sepia(0.1)' }} />
                           </div>
@@ -958,7 +958,7 @@ function Testimonials() {
                 <div style={{ display: 'flex', alignItems: 'center', gap: 12 }}>
                   <div style={{ width: 44, height: 44, flexShrink: 0, overflow: 'hidden',
                     border: `2px solid ${col}66`, filter: 'sepia(0.2)' }}>
-                    <img src={t.avatar} alt={t.name}
+                    <img loading="lazy" src={t.avatar} alt={t.name}
                       style={{ width: '100%', height: '100%', objectFit: 'cover' }} />
                   </div>
                   <div>

@@ -439,7 +439,7 @@ export default function FrostedPanels() {
                   "https://images.unsplash.com/photo-1500648767791-00dcc994a43e?w=100&h=100&fit=crop&crop=face"
                 ].map((avatarUrl, idx) => (
                   <div key={idx} className="w-7.5 h-7.5 rounded-full border-2 border-white overflow-hidden shadow-sm">
-                    <img src={avatarUrl} alt="Client avatar" className="w-full h-full object-cover" />
+                    <img loading="lazy" src={avatarUrl} alt="Client avatar" className="w-full h-full object-cover" />
                   </div>
                 ))}
                 <div className="w-7.5 h-7.5 rounded-full border-2 border-white bg-gradient-to-r from-[#6366f1] to-[#4f46e5] flex items-center justify-center text-[8px] font-bold text-white shadow-sm">
@@ -474,7 +474,7 @@ export default function FrostedPanels() {
                 <div className="absolute inset-0 bg-gradient-to-tr from-[#6366f1]/5 via-white/15 to-transparent pointer-events-none rounded-2xl" />
                 <div className="flex items-center gap-3 relative z-10">
                   <div className="relative flex-shrink-0">
-                    <img
+                    <img loading="lazy"
                       src={data.personal.avatar}
                       alt={data.personal.name}
                       className="w-12 h-12 rounded-xl object-cover border-2 border-white/85 shadow-sm"
@@ -608,7 +608,7 @@ export default function FrostedPanels() {
               className="absolute left-2 sm:left-0 bottom-4 w-[170px] sm:w-[280px] h-[220px] sm:h-[350px] bg-white/30 backdrop-blur-2xl border-t border-l border-white/50 border-r border-b border-white/35 rounded-3xl shadow-xl transition-all duration-300 hover:bg-white/35 hover:shadow-2xl p-3 overflow-hidden group/avatar z-10 sm:z-20 hover:z-30"
             >
               <div className="w-full h-full rounded-2xl overflow-hidden relative">
-                <img
+                <img loading="lazy"
                   src={data.personal.avatar}
                   alt={data.personal.name}
                   className="w-full h-full object-cover group-hover/avatar:scale-105 transition-transform duration-500 ease-out scale-100"
@@ -636,7 +636,7 @@ export default function FrostedPanels() {
                 <div className="absolute inset-0 bg-[linear-gradient(to_top,rgba(255,255,255,0.8),transparent_60%)] z-10" />
                 <div className="absolute bottom-0 inset-x-0 h-28 bg-[#6366f1]/10 blur-md rounded-full pointer-events-none" />
                 <div className="absolute bottom-4 inset-x-0 h-24 bg-[#0ea5e9]/15 blur-md rounded-full pointer-events-none" />
-                <img
+                <img loading="lazy"
                   src="https://images.unsplash.com/photo-1464822759023-fed622ff2c3b?w=400&h=500&fit=crop"
                   alt="Scenic peaks reference"
                   className="w-full h-full object-cover opacity-85 hover:scale-105 transition-transform duration-500"
@@ -833,7 +833,7 @@ export default function FrostedPanels() {
               <div className="space-y-4">
                 {/* Project Image Panel */}
                 <div className="h-48 overflow-hidden relative border-b border-slate-100 bg-slate-50">
-                  <img
+                  <img loading="lazy"
                     src={project.image}
                     alt={project.title}
                     className="w-full h-full object-cover group-hover/proj:scale-105 transition-all duration-500 grayscale-[10%] group-hover/proj:grayscale-0"
@@ -999,7 +999,7 @@ export default function FrostedPanels() {
 
               <div className="flex items-center gap-4 pt-4 border-t border-slate-200/40 w-full z-10">
                 <div className="w-12 h-12 rounded-full overflow-hidden border border-slate-250 bg-white shadow-sm">
-                  <img src={test.avatar} alt={test.name} className="w-full h-full object-cover" />
+                  <img loading="lazy" src={test.avatar} alt={test.name} className="w-full h-full object-cover" />
                 </div>
                 <div>
                   <h4 className="text-[#1b1435] font-extrabold text-sm md:text-base">{test.name}</h4>

@@ -40,7 +40,7 @@ export default function Projects({ data }) {
             <motion.div key={index} variants={fadeUp}>
               <GlassCard className="overflow-hidden h-full flex flex-col">
                 <div className="relative overflow-hidden">
-                  <img
+                  <img loading="lazy"
                     src={project.image}
                     alt={project.title}
                     className="w-full h-44 object-cover"

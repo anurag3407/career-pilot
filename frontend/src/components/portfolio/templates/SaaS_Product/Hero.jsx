@@ -91,7 +91,7 @@ export default function Hero({ data }) {
               {(proofAvatars.length ? proofAvatars : [fallbackAvatar, fallbackAvatar, fallbackAvatar]).map(
                 (avatar, index) =>
                   avatar ? (
-                    <img
+                    <img loading="lazy"
                       key={`${avatar}-${index}`}
                       src={avatar}
                       alt={`Client proof ${index + 1}`}
@@ -109,7 +109,7 @@ export default function Hero({ data }) {
           <div className="relative overflow-hidden rounded-[2rem] border border-white/10 bg-[#13131A]/80 p-4 shadow-2xl shadow-indigo-950/40">
             <div className="rounded-3xl border border-white/8 bg-[#0D0D12] p-4">
               {data.personal?.avatar ? (
-                <img
+                <img loading="lazy"
                   src={data.personal.avatar}
                   alt={data.personal?.name || 'Portfolio avatar'}
                   className="h-[28rem] w-full rounded-2xl object-cover"

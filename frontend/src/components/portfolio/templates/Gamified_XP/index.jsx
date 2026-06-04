@@ -127,7 +127,7 @@ export default function GamifiedXP() {
                   transition={{ duration: 0.6 }}
                   className="absolute inset-0 rounded-xl bg-[#d4af37]/20 blur-2xl"
                 />
-                <img
+                <img loading="lazy"
                   src={data.personal.avatar}
                   alt={data.personal.name}
                   className="relative h-[320px] w-full rounded-xl border-2 border-[#d4af37] object-cover shadow-[0_0_24px_rgba(212,175,55,0.45)]"
@@ -184,7 +184,7 @@ export default function GamifiedXP() {
                       style={{ strokeDashoffset: ringOffset }}
                     />
                   </svg>
-                  <img
+                  <img loading="lazy"
                     src={data.personal.avatar}
                     alt={data.personal.name}
                     className="absolute left-1/2 top-1/2 h-28 w-28 -translate-x-1/2 -translate-y-1/2 rounded-full border border-[#6d47a5] object-cover"

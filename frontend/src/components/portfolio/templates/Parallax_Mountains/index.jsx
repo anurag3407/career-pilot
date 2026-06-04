@@ -458,7 +458,7 @@ export default function ParallaxMountains() {
               </p>
 
               <div className="flex items-center gap-4">
-                <img
+                <img loading="lazy"
                   src={testimonial.avatar}
                   alt={testimonial.name}
                   className="w-14 h-14 rounded-full object-cover border-2 border-cyan-400"

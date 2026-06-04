@@ -96,7 +96,7 @@ export default function Hero() {
             <div className="absolute inset-0 bg-gradient-to-tr from-pink-500/20 to-cyan-400/20 blur-2xl rounded-full" />
 
             {/* IMAGE */}
-            <img
+            <img loading="lazy"
               src={data.personal.avatar}
               alt={data.personal.name}
               className="

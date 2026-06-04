@@ -53,7 +53,7 @@ export default function About() {
             <div className="relative">
               <div className="absolute inset-0 bg-white/10 blur-2xl rounded-[2.5rem]" />
 
-              <img
+              <img loading="lazy"
                 src={data.personal.avatar}
                 alt="avatar"
                 className="relative w-[340px] md:w-[420px] rounded-[2.5rem] border border-white/10 shadow-2xl hover:scale-[1.02] transition-transform duration-500"

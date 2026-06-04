@@ -280,7 +280,7 @@ export default function DuotoneBold() {
         {/* Big duotone background image */}
         <div style={{ position: "absolute", inset: 0, zIndex: 0 }}>
           <div className="dt-duotone" style={{ width: "100%", height: "100%" }}>
-            <img src={data.personal.avatar} alt="" style={{ width: "100%", height: "100%", objectFit: "cover", objectPosition: "center top" }} />
+            <img loading="lazy" src={data.personal.avatar} alt="" style={{ width: "100%", height: "100%", objectFit: "cover", objectPosition: "center top" }} />
           </div>
           <div style={{ position: "absolute", inset: 0, background: `linear-gradient(90deg, ${C.dark} 40%, transparent 100%)` }} />
         </div>
@@ -341,7 +341,7 @@ export default function DuotoneBold() {
           <div className="dt-about-grid">
             <FadeIn>
               <div className="dt-avatar-wrap dt-duotone">
-                <img src={data.personal.avatar} alt={data.personal.name} />
+                <img loading="lazy" src={data.personal.avatar} alt={data.personal.name} />
               </div>
               <div style={{ display: "flex", justifyContent: "center", gap: 12, marginTop: 20 }}>
                 {data.socials.github   && <a href={data.socials.github}   className="dt-social" target="_blank" rel="noreferrer"><Github   size={18} /></a>}
@@ -406,7 +406,7 @@ export default function DuotoneBold() {
             {data.projects.map((proj, i) => (
               <motion.div key={i} className="dt-card" initial={{ opacity: 0, y: 28 }} whileInView={{ opacity: 1, y: 0 }} viewport={{ once: true }} transition={{ delay: i * 0.08 }}>
                 <div className={`dt-duotone dt-proj-img`}>
-                  <img src={proj.image} alt={proj.title} style={{ width: "100%", height: "100%", objectFit: "cover" }} />
+                  <img loading="lazy" src={proj.image} alt={proj.title} style={{ width: "100%", height: "100%", objectFit: "cover" }} />
                 </div>
                 <div style={{ padding: "20px 24px 28px" }}>
                   <h3 style={{ fontSize: 17, fontWeight: 700, marginBottom: 8 }}>{proj.title}</h3>
@@ -471,7 +471,7 @@ export default function DuotoneBold() {
                 <p style={{ fontSize: 14, lineHeight: 1.75, color: C.muted, marginBottom: 24 }}>{t.text}</p>
                 <div style={{ display: "flex", alignItems: "center", gap: 14 }}>
                   <div className="dt-duotone" style={{ width: 48, height: 48, borderRadius: "50%", flexShrink: 0 }}>
-                    <img src={t.avatar} alt={t.name} />
+                    <img loading="lazy" src={t.avatar} alt={t.name} />
                   </div>
                   <div>
                     <div style={{ fontSize: 14, fontWeight: 700 }}>{t.name}</div>

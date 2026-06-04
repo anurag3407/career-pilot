@@ -62,7 +62,7 @@ export default function About() {
             <div className="absolute inset-0 bg-gradient-to-tr from-purple-600/30 to-pink-600/30 rounded-3xl blur-2xl group-hover:scale-105 transition-transform duration-500 -z-10" />
 
             <div className="relative overflow-hidden rounded-2xl w-64 h-64 sm:w-80 sm:h-80 mb-6">
-              <img
+              <img loading="lazy"
                 src={personal.avatar || 'https://images.unsplash.com/photo-1507003211169-0a1dd7228f2d?w=400&h=400&fit=crop&crop=face'}
                 alt={personal.name}
                 className="w-full h-full object-cover transform group-hover:scale-110 transition-transform duration-500"

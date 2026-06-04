@@ -35,7 +35,7 @@ export default function Projects({ projects }) {
               >
                 {/* Project Image */}
                 <div className="relative h-44 overflow-hidden">
-                  <img
+                  <img loading="lazy"
                     src={project.image}
                     alt={project.title}
                     className="w-full h-full object-cover group-hover:scale-105 transition-transform duration-500"

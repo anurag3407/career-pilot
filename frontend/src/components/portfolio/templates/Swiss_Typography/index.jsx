@@ -159,7 +159,7 @@ function About() {
       <div className="grid grid-cols-1 md:grid-cols-12">
         <div className="md:col-span-3 px-5 md:px-12 py-8 md:py-12 border-b md:border-b-0 md:border-r border-black flex flex-col gap-6">
           <Label>02 — About</Label>
-          <img
+          <img loading="lazy"
             src={avatar}
             alt={name}
             className="w-20 h-20 md:w-24 md:h-24 grayscale border border-black object-cover"
@@ -414,7 +414,7 @@ function Testimonials() {
             <p className="text-sm text-gray-700 leading-relaxed italic mb-6">{t.text}</p>
             <Rule className="mb-4" />
             <div className="flex items-center gap-3">
-              <img
+              <img loading="lazy"
                 src={t.avatar}
                 alt={t.name}
                 className="w-8 h-8 grayscale border border-black object-cover shrink-0"

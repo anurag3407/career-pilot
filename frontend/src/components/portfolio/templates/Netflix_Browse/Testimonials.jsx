@@ -48,7 +48,7 @@ export default function Testimonials({ testimonials }) {
 
             {/* Author */}
             <div className="flex items-center gap-3 pt-4 border-t border-white/5">
-              <img
+              <img loading="lazy"
                 src={t.avatar}
                 alt={t.name}
                 className="w-10 h-10 rounded-full object-cover border-2 border-[#E50914]/40"

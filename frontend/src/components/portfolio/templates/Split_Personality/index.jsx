@@ -206,7 +206,7 @@ export default function SplitPersonality() {
                 }`} style={{ animationDuration: '14s' }} />
                 
                 <div className={`absolute inset-[6px] rounded-full p-1.5 z-10 ${isDark ? 'bg-[#0a0a0c]' : 'bg-[#f4f5f7]'}`}>
-                  <img 
+                  <img loading="lazy" 
                     src={personal.avatar || "https://images.unsplash.com/photo-1534528741775-53994a69daeb?auto=format&fit=crop&q=80&w=600"} 
                     alt={personal.name} 
                     className="w-full h-full object-cover rounded-full filter grayscale-[4%] transition-transform duration-700 group-hover:scale-[1.04]" 
@@ -297,7 +297,7 @@ export default function SplitPersonality() {
                     : 'bg-white/90 border-neutral-200 shadow-xl hover:border-indigo-500/40 hover:shadow-[0_15px_30px_rgba(99,102,241,0.18)]'
                 }`}>
                   <div className="w-full aspect-video overflow-hidden relative bg-neutral-900">
-                    <img 
+                    <img loading="lazy" 
                       src={project.image || "https://images.unsplash.com/photo-1618005182384-a83a8bd57fbe?w=600&auto=format&fit=crop&q=70"} 
                       alt={project.title} 
                       className="w-full h-full object-cover transition-transform duration-700 group-hover:scale-105 filter grayscale-[8%]"
@@ -357,7 +357,7 @@ export default function SplitPersonality() {
                 <div key={i} className={`p-5 rounded-xl border-2 flex flex-col justify-between space-y-4 ${isDark ? 'bg-[#111115] border-neutral-900' : 'bg-white border-neutral-200'}`}>
                   <p className={`text-xs italic font-medium leading-relaxed ${isDark ? 'text-neutral-300' : 'text-neutral-700'}`}>"{test.text}"</p>
                   <div className="flex items-center gap-3 pt-3 border-t border-neutral-500/10">
-                    <img src={test.avatar} alt={test.name} className="w-8 h-8 rounded-full object-cover" />
+                    <img loading="lazy" src={test.avatar} alt={test.name} className="w-8 h-8 rounded-full object-cover" />
                     <div>
                       <div className="font-black text-xs">{test.name}</div>
                       <div className={`text-[9px] font-bold ${isDark ? 'text-cyan-400' : 'text-indigo-600'}`}>{test.role}</div>

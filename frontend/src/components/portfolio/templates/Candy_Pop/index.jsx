@@ -92,7 +92,7 @@ export default function CandyPop() {
                 animate="animate"
                 className="absolute inset-0 rounded-full bg-gradient-to-br from-pink-400 via-purple-400 to-blue-400 blur-xl opacity-50"
               />
-              <img
+              <img loading="lazy"
                 src={personal.avatar}
                 alt={personal.name}
                 className="w-full h-full rounded-full object-cover relative z-10"
@@ -490,7 +490,7 @@ export default function CandyPop() {
                     transition={{ duration: 0.6 }}
                     className="w-16 h-16 rounded-full bg-gradient-to-br from-pink-300 to-purple-300 p-1 shadow-lg"
                   >
-                    <img
+                    <img loading="lazy"
                       src={testimonial.avatar}
                       alt={testimonial.name}
                       className="w-full h-full rounded-full object-cover"

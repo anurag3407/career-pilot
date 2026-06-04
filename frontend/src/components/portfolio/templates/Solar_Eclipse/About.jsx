@@ -38,7 +38,7 @@ export default function About({ personal, stats }) {
                   boxShadow: '0 0 40px 10px #ff6a0030, 0 0 80px 20px #ff6a0015',
                 }}
               />
-              <img
+              <img loading="lazy"
                 src={personal.avatar}
                 alt={personal.name}
                 className="w-40 h-40 md:w-52 md:h-52 rounded-full object-cover border-2 border-orange-500/30 relative z-10"
