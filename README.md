@@ -46,8 +46,6 @@
 
 ## 🛠️ Quick Start
 
-Follow these steps to set up the project locally.
-
 ### Prerequisites
 - Node.js (v18+ recommended)
 - npm
@@ -87,6 +85,50 @@ npm run build
 # Preview production build locally
 npm run preview
 ```
+
+## 📱 Progressive Web App (PWA)
+
+careerpilot ships as an installable PWA backed by a hand-written service worker
+(no `vite-plugin-pwa`).
+
+**Files**
+
+| File | Purpose |
+|------|---------|
+| `frontend/public/sw.js` | Service worker — caching + offline fallback |
+| `frontend/public/manifest.json` | Web app manifest (name, icons, theme) |
+| `frontend/src/utils/registerSW.js` | Registration helper (production-only) |
+| `frontend/index.html` | Links the manifest + apple-touch-icon |
+
+**Caching strategy (`sw.js`)**
+
+- Navigations (HTML) → **network-first**, falling back to cache then an inline
+  offline page.
+- Same-origin static assets (`js/css/img/fonts`) → **cache-first** with
+  background fill.
+- `/api/*` requests and all cross-origin traffic (Firebase, Razorpay, Google
+  Fonts) → **network-only**, never cached.
+- Cache name is versioned (`careerpilot-v1`); bump `CACHE_VERSION` in `sw.js`
+  whenever the app shell changes to evict stale caches.
+
+**Registration**
+
+The worker is registered **only in production builds** (`import.meta.env.PROD`)
+on the window `load` event, so local `npm run dev` is never affected by SW
+caching. To test it locally, build then preview:
+
+```bash
+cd frontend
+npm run build
+npm run preview
+```
+
+Then open DevTools → **Application → Service Workers** to confirm it is active,
+and toggle **Offline** to verify the fallback.
+
+> **Note:** Icons currently reuse `public/speed.png` as a temporary placeholder.
+> Replace it with dedicated `192×192` and `512×512` PNGs and update
+> `manifest.json` for a production-ready install experience.
 
 ## 🌟 Contributing
 
