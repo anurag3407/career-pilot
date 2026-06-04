@@ -38,6 +38,8 @@ import {
   metricsHandler,
 } from "./middleware/metrics.js";
 import redisManager from './config/redis.js';
+import cookieParser from 'cookie-parser';
+import { csrfProtection } from './middleware/csrfProtection.js';
 
 
 import { initializeSocket } from './config/socket.js';
@@ -74,16 +76,15 @@ import {
 // Configuration validation - Check for required API keys
 // ============================================================================
 if (!process.env.GEMINI_API_KEY) {
-  console.warn('⚠️  GEMINI_API_KEY is not configured - AI features will be unavailable.');
-  console.warn('   Set GEMINI_API_KEY in your .env file to enable Google Gemini features.');
+  console.debug('GEMINI_API_KEY is not configured - AI features will be unavailable.');
 }
 
 if (!process.env.GROQ_API_KEY) {
-  console.warn('⚠️  GROQ_API_KEY is not configured - Groq AI provider will not be available.');
+  console.debug('GROQ_API_KEY is not configured - Groq AI provider will not be available.');
 }
 
 if (!process.env.OPENAI_API_KEY) {
-  console.warn('⚠️  OPENAI_API_KEY is not configured - OpenAI provider will not be available.');
+  console.debug('OPENAI_API_KEY is not configured - OpenAI provider will not be available.');
 }
 
 const app = express();
@@ -209,6 +210,8 @@ app.use('/api/', limiter);
 
 app.use(express.json({ limit: '10mb' }));
 app.use(express.urlencoded({ extended: true, limit: '10mb' }));
+app.use(cookieParser());
+app.use(csrfProtection);
 
 app.get('/health', (req, res) => {
   res.status(200).json({
