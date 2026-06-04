@@ -13,6 +13,7 @@
  *
  * Usage:
  *   MONGODB_URI=<uri> node backend/scripts/migratePasswords.js
+ *   MONGODB_URI=<uri> node backend/scripts/migratePasswords.js --dry-run
  *
  * Run once after deploying the bcrypt fix. Safe to re-run (idempotent).
  */
@@ -22,6 +23,7 @@ import 'dotenv/config';
 
 const BCRYPT_PREFIX_PATTERN = /^\$2[ab]\$/;
 const BATCH_SIZE = 200;
+const DRY_RUN = process.argv.includes('--dry-run');
 
 const userSchema = new mongoose.Schema(
   {
@@ -51,14 +53,18 @@ const run = async () => {
 
   const flushBatch = async () => {
     if (toFlag.length === 0) return;
-    await User.bulkWrite(
-      toFlag.map((id) => ({
-        updateOne: {
-          filter: { _id: id },
-          update: { $set: { requiresPasswordReset: true } },
-        },
-      }))
-    );
+    if (DRY_RUN) {
+      console.log(`  [dry-run] Would flag ${toFlag.length} account(s)`);
+    } else {
+      await User.bulkWrite(
+        toFlag.map((id) => ({
+          updateOne: {
+            filter: { _id: id },
+            update: { $set: { requiresPasswordReset: true } },
+          },
+        }))
+      );
+    }
     toFlag = [];
   };
 
@@ -100,6 +106,7 @@ const run = async () => {
   await flushBatch();
 
   console.log('\n── Migration summary ──────────────────────────────────');
+  if (DRY_RUN) console.log('  Mode: DRY RUN (no changes written)');
   console.log(`  Already hashed   : ${alreadyHashed}`);
   console.log(`  Flagged for reset: ${flagged}`);
   console.log(`  Skipped (no pw)  : ${skipped}`);
