@@ -232,7 +232,16 @@ function SkillBar({ name, level, category, color }) {
     <div ref={ref} style={{ border: `3px solid ${M.black}`, borderRadius: 0, padding: "20px", background: M.white, borderTop: "none", borderLeft: "none" }}>
       <div style={{ display: "flex", justifyContent: "space-between", marginBottom: 8 }}>
         <span style={{ fontSize: 13, fontWeight: 700, textTransform: "uppercase", letterSpacing: 1 }}>{name}</span>
-        <span style={{ fontSize: 18, fontWeight: 800, fontFamily: "'Bebas Neue',sans-serif", color }}>{level}</span>
+        <span
+  style={{
+    fontSize: 18,
+    fontWeight: 800,
+    fontFamily: "'Bebas Neue', sans-serif",
+    color
+  }}
+>
+  {level}
+</span>
       </div>
       <div className="cb-skill-track">
         <div className="cb-skill-fill" style={{ width: inView ? `${level}%` : "0%", background: color }} />
