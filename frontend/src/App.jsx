@@ -21,6 +21,7 @@ import CommandPalette from './components/CommandPalette';
 import BackToTop from './components/BackToTop';
 import Home from './pages/Home';
 const Dashboard = lazy(() => import('./pages/Dashboard'));
+const Analytics = lazy(() => import('./pages/Analytics'));
 const JobSearch = lazy(() => import('./pages/JobSearch'));
 const ResumeBuilder = lazy(() => import('./pages/ResumeBuilder'));
 import TextToResume from './pages/TextToResume';
@@ -47,6 +48,7 @@ const SecuritySettings = lazy(() => import("./pages/SecuritySettings"));
 const EmailGenerator = lazy(() => import("./pages/EmailGenerator"));
 const LinkedInOptimizer = lazy(() => import("./pages/LinkedInOptimizer"));
 const Settings = lazy(() => import("./pages/Settings"));
+const SkillGap = lazy(() => import("./pages/SkillGap"));
 const ResumeHub = lazy(() => import("./pages/hubs/ResumeHub"));
 const JobsHub = lazy(() => import("./pages/hubs/JobsHub"));
 const PortfolioHub = lazy(() => import("./pages/hubs/PortfolioHub"));
@@ -90,7 +92,16 @@ const ProjectVisualizerDashboard = lazy(() => import('./pages/ProjectVisualizer/
 import ScrollToTop from "./components/ScrollToTop";
 import NorthernFjords from './components/portfolio/templates/Northern_Fjords';
 import RainforestCanopy from './components/portfolio/templates/Rainforest_Canopy/index.jsx';
+import DuotoneBold from './components/portfolio/templates/Duotone_Bold/index.jsx';
+import ChromaticGlitch from './components/portfolio/templates/Chromatic_Glitch/index.jsx';
+import SwissTypography from './components/portfolio/templates/Swiss_Typography/index.jsx';
+import DesertDunes from './components/portfolio/templates/Desert_Dunes/index.jsx';
+import PsychedelicSwirl from './components/portfolio/templates/Psychedelic_Swirl/index.jsx';
+import MemphisPop from './components/portfolio/templates/Memphis_Pop/index.jsx';
+import CassetteMixtape from './components/portfolio/templates/Cassette_Mixtape/index.jsx';
+import MagneticDock from './components/portfolio/templates/Magnetic_Dock/index.jsx';
 import Hero from './components/portfolio/templates/Magazine_Editorial/Hero';
+import ColorBlock from './components/portfolio/templates/Color_Block/index.jsx';
 import TestSocialLinks from './pages/TestSocialLinks';
 
 function LoadingScreen({ label }) {
@@ -235,6 +246,7 @@ function AppRoutes() {
 
         <Route path="/templates/chatbot" element={<ChatbotPortfolio />} />
 
+
         {/* Core Protected Routes */}
         <Route 
   path="/dashboard" 
@@ -242,6 +254,16 @@ function AppRoutes() {
     <ProtectedRoute>
       <Suspense fallback={<LoadingScreen label="Loading Dashboard..." />}>
         <Dashboard />
+      </Suspense>
+    </ProtectedRoute>
+  } 
+/>
+        <Route 
+  path="/dashboard/analytics" 
+  element={
+    <ProtectedRoute>
+      <Suspense fallback={<LoadingScreen label="Loading Analytics..." />}>
+        <Analytics />
       </Suspense>
     </ProtectedRoute>
   } 
@@ -288,6 +310,7 @@ function AppRoutes() {
         <Route path="/security" element={<ProtectedRoute><Suspense fallback={<LoadingScreen label="Loading Security Settings..." />}><SecuritySettings /></Suspense></ProtectedRoute>} />
         <Route path="/email-generator" element={<ProtectedRoute><Suspense fallback={<LoadingScreen label="Loading Email Generator..." />}><EmailGenerator /></Suspense></ProtectedRoute>} />
         <Route path="/linkedin-optimizer" element={<ProtectedRoute><Suspense fallback={<LoadingScreen label="Loading LinkedIn Optimizer..." />}><LinkedInOptimizer /></Suspense></ProtectedRoute>} />
+        <Route path="/skill-gap" element={<ProtectedRoute><Suspense fallback={<LoadingScreen label="Loading Skill Gap Analyzer..." />}><SkillGap /></Suspense></ProtectedRoute>} />
         <Route path="/deployments" element={<ProtectedRoute><Suspense fallback={<LoadingScreen label="Loading Deployments..." />}><Deployments /></Suspense></ProtectedRoute>} />
         <Route path="/settings" element={<ProtectedRoute><Suspense fallback={<LoadingScreen label="Loading Settings..." />}><Settings /></Suspense></ProtectedRoute>} />
 
@@ -398,6 +421,7 @@ function AppRoutes() {
 
         {/* Catch-All Route */}
         <Route path="*" element={<NotFound />} />
+        <Route path="/templates/color-block" element={<ColorBlock />} />
       </Routes>
     </BrowserRouter>
   );

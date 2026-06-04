@@ -421,12 +421,12 @@ export const portfolioApi = {
   },
 
   // Deploy portfolio to Cloudflare Pages
-  async deploy({ slug, sections, templateId, title }) {
+  async deploy({ slug, sections, templateId, title, provider, token }) {
     const headers = await getAuthHeaders();
     const response = await fetch(`${API_BASE}/portfolio/deploy`, {
       method: 'POST',
       headers,
-      body: JSON.stringify({ slug, sections, templateId, title })
+      body: JSON.stringify({ slug, sections, templateId, title, provider, token })
     });
     return handleResponse(response);
   }
@@ -550,6 +550,17 @@ export const enhanceApi = {
       method: 'POST',
       headers,
       body: JSON.stringify({ resumeText })
+    })
+    return handleResponse(response)
+  },
+
+  // Analyze skill gap between resume and job description
+  async analyzeSkillGap(resumeText, jobDescription) {
+    const headers = await getAuthHeaders()
+    const response = await fetch(`${API_BASE}/enhance/skill-gap`, {
+      method: 'POST',
+      headers,
+      body: JSON.stringify({ resumeText, jobDescription })
     })
     return handleResponse(response)
   }
@@ -1172,6 +1183,15 @@ export const interviewApi = {
   async getHistory() {
     const headers = await getAuthHeaders()
     const response = await fetch(`${API_BASE}/interview/history`, {
+      method: 'GET',
+      headers
+    })
+    return handleResponse(response)
+  },
+
+  async getAnalytics() {
+    const headers = await getAuthHeaders()
+    const response = await fetch(`${API_BASE}/interview/analytics`, {
       method: 'GET',
       headers
     })
