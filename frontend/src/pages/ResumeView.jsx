@@ -31,6 +31,10 @@ export default function ResumeView() {
   )
 
   useEffect(() => {
+      setSelectedTheme(localStorage.getItem(`resume_theme_${resumeId}`) || 'modern')
+  }, [resumeId])
+
+  useEffect(() => {
     let interval
     if (scoring) {
       interval = setInterval(() => {
@@ -67,13 +71,13 @@ export default function ResumeView() {
   }
 
   useEffect(() => {
-    setResume(response.data)
     fetchResume()
   }, [resumeId])
-
+  
   const fetchResume = async () => {
     try {
       const response = await resumeApi.getById(resumeId)
+      setResume(response.data)
 
       // Set default tab based on available content
       if (!response.data.enhancedText) {
@@ -385,9 +389,14 @@ export default function ResumeView() {
                   content={resume.enhancedText}
                   themeId={selectedTheme}
                 />
+              ) : resume?.originalText ? (
+                <ThemedResumePreview
+                  content={resume.originalText}
+                  themeId={selectedTheme}
+                />
               ) : (
                 <pre className="whitespace-pre-wrap text-xs text-foreground/80 font-mono">
-                  {resume?.originalText}
+                  No content available
                 </pre>
               )}
             </div>
