@@ -2,7 +2,7 @@ import express from 'express';
 import mongoose from 'mongoose';
 import { verifyToken } from '../middleware/auth.js';
 import { asyncHandler, ApiError } from '../middleware/errorHandler.js';
-import { createOrder, verifyPaymentSignature } from '../services/paymentService.js';
+import { createOrder, getOrder, getPayment, verifyPaymentSignature } from '../services/paymentService.js';
 import Proposal from '../models/Proposal.model.js';
 import Challenge from '../models/Challenge.model.js';
 import { FellowshipChatRoom } from '../models/FellowshipChat.model.js';
@@ -89,7 +89,7 @@ router.post('/verify-payment', verifyToken, validate(verifyPaymentSchema), async
         feedback
     } = req.body;
 
-    // Verify signature
+    // Verify signature first
     const isValid = verifyPaymentSignature(
         razorpay_order_id,
         razorpay_payment_id,
@@ -118,6 +118,46 @@ router.post('/verify-payment', verifyToken, validate(verifyPaymentSchema), async
 
     if (proposal.status !== 'pending') {
         throw new ApiError(409, 'Proposal already processed');
+    }
+
+    // Strong payment integrity checks: ensure the Razorpay order/payment pair
+    // belongs to this proposal and matches the expected escrow amount.
+    const [orderDetails, paymentDetails] = await Promise.all([
+        getOrder(razorpay_order_id),
+        getPayment(razorpay_payment_id)
+    ]);
+
+    if (!orderDetails || orderDetails.id !== razorpay_order_id) {
+        throw new ApiError(400, 'Invalid Razorpay order');
+    }
+
+    if (!paymentDetails || paymentDetails.id !== razorpay_payment_id) {
+        throw new ApiError(400, 'Invalid Razorpay payment');
+    }
+
+    if (paymentDetails.order_id !== razorpay_order_id) {
+        throw new ApiError(400, 'Payment does not belong to the provided order');
+    }
+
+    const expectedAmountPaise = Math.round(Number(challenge.price) * 100);
+    if (Number(orderDetails.amount) !== expectedAmountPaise) {
+        throw new ApiError(400, 'Payment amount mismatch');
+    }
+
+    if (orderDetails.notes?.proposalId !== proposalId) {
+        throw new ApiError(400, 'Order metadata mismatch for proposal');
+    }
+
+    if (orderDetails.notes?.challengeId !== challenge._id.toString()) {
+        throw new ApiError(400, 'Order metadata mismatch for challenge');
+    }
+
+    if (orderDetails.notes?.corporateId !== req.user.uid) {
+        throw new ApiError(403, 'Order does not belong to this corporate account');
+    }
+
+    if (paymentDetails.status !== 'captured' && paymentDetails.status !== 'authorized') {
+        throw new ApiError(400, 'Payment is not in a chargeable state');
     }
 
     const updatedProposal = await Proposal.findOneAndUpdate(
