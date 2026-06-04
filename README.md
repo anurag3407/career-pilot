@@ -1,5 +1,5 @@
 <div align="center">
-  <h1>🚀 Career Pilot (AI Resume Builder)</h1>
+  <h1>🚀 Career Pilot</h1>
   <p>An advanced AI-powered Resume Builder application, aimed to help users build their resumes with ease, backed by Modern Web Technologies and Artificial Intelligence.</p>
 </div>
 
@@ -24,10 +24,18 @@
   </table>
 </div>
 
+## 💻 Tech Stack
+
+- **Frontend:** React 19, Vite
+- **Styling & Animations:** TailwindCSS 4, Framer Motion
+- **Authentication & Backend:** Firebase
+- **Core Libraries:** jsPDF, html2canvas, socket.io-client, react-hook-form, @hello-pangea/dnd
+
 ## ✨ Features
 
 - **Modern Tech Stack:** Built with React 19 and Vite for blazing fast development and optimized production builds.
 - **Stunning UI/UX:** Styled using TailwindCSS 4, offering responsive and aesthetically pleasing design.
+- **Accessibility:** Built-in support for Light, Dark, and High Contrast theme modes.
 - **Authentication:** Secure Firebase Authentication integration.
 - **Smooth Animations:** Powered by Framer Motion to provide delightful micro-interactions.
 - **PDF Generation:** Export resumes reliably to PDF with `jsPDF` and `html2canvas`.
@@ -79,6 +87,19 @@ npm run build
 # Preview production build locally
 npm run preview
 ```
+
+## 🌟 Contributing
+
+We welcome and appreciate contributions from the community! Whether it's reporting bugs, improving documentation, or proposing new features, your help is valuable.
+
+To make a contribution:
+1. **Fork** the repository.
+2. **Create a new branch** (`git checkout -b feature/your-feature-name`).
+3. **Commit your changes** (`git commit -m 'Add some feature'`).
+4. **Push to the branch** (`git push origin feature/your-feature-name`).
+5. **Open a Pull Request** against the `main` branch.
+
+Please make sure to read our [Contribution Guidelines](CONTRIBUTION.md) and [Code of Conduct](CODE_OF_CONDUCT.md) before getting started.
 
 ## 🤝 Contributors
 

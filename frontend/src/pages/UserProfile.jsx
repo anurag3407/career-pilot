@@ -13,6 +13,7 @@ import Button from '../components/Button'
 import Input from '../components/Input'
 import AnalysisSkeleton from '../components/github/AnalysisSkeleton'
 import { SkeletonList } from '../components/ui/Skeleton'
+import { getGithubUsername } from '../utils/github'
 
 const AVATAR_GRADIENTS = [
   'from-indigo-500 to-purple-600',
@@ -65,14 +66,31 @@ export default function UserProfile() {
   const fetchAll = async () => {
     setLoading(true)
     try {
-      const [profileRes, statsRes, activityRes] = await Promise.all([
+      const [profileResult, statsResult, activityResult] = await Promise.allSettled([
         isOwnProfile ? userProfileApi.getMyProfile() : userProfileApi.getProfile(targetUid),
         isOwnProfile ? userProfileApi.getMyStats() : userProfileApi.getStats(targetUid),
         isOwnProfile ? userProfileApi.getMyActivity() : userProfileApi.getActivity(targetUid),
       ])
+
+      if (profileResult.status === 'rejected') {
+        throw profileResult.reason
+      }
+
+      const profileRes = profileResult.value
+      const statsRes = statsResult.status === 'fulfilled' ? statsResult.value : { stats: { resumesCreated: 0, interviewsDone: 0 } }
+      const activityRes = activityResult.status === 'fulfilled' ? activityResult.value : { activity: [] }
+
       setProfile(profileRes.profile)
       setStats(statsRes.stats)
       setActivity(activityRes.activity)
+
+      if (statsResult.status === 'rejected') {
+        console.warn('Profile stats fetch failed:', statsResult.reason)
+      }
+
+      if (activityResult.status === 'rejected') {
+        console.warn('Profile activity fetch failed:', activityResult.reason)
+      }
     } catch (err) {
       toast.error('Failed to load profile')
       console.error('Profile fetch failed:', err)
@@ -120,25 +138,26 @@ const isValidGithub = (username) => {
 };
 
   const saveEdit = async () => {
+    const githubUsername = getGithubUsername(form.github)
 
-  if (!isValidWebsite(form.website.trim())) {
-    toast.error("Please enter a valid website URL");
-    return;
-  }
+    if (!isValidWebsite(form.website.trim())) {
+      toast.error("Please enter a valid website URL")
+      return
+    }
 
-  if (!isValidLinkedIn(form.linkedin.trim())) {
-    toast.error("Please enter a valid LinkedIn profile URL");
-    return;
-  }
+    if (!isValidLinkedIn(form.linkedin.trim())) {
+      toast.error("Please enter a valid LinkedIn profile URL")
+      return
+    }
 
-  if (!isValidGithub(form.github.trim())) {
-    toast.error("Invalid GitHub username");
-    return;
-  }
+    if (!isValidGithub(githubUsername)) {
+      toast.error("Invalid GitHub username")
+      return
+    }
 
-  setSaving(true);
+    setSaving(true)
 
-  try {
+    try {
       const res = await userProfileApi.updateMyProfile({
         displayName: form.displayName.trim(),
         bio: form.bio.trim(),
@@ -146,7 +165,7 @@ const isValidGithub = (username) => {
         skills: form.skills.split(',').map(s => s.trim()).filter(Boolean),
         location: form.location.trim(),
         website: form.website.trim(),
-        github: form.github.trim(),
+        github: githubUsername,
         linkedin: form.linkedin.trim(),
       })
       setProfile(res.profile)

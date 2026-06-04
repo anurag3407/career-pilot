@@ -20,7 +20,8 @@ import {
   Sun,
   Moon,
   Palette,
-  ChevronDown
+  ChevronDown,
+  Target
 } from 'lucide-react'
 
 export default function Navbar() {
@@ -36,7 +37,8 @@ export default function Navbar() {
 
   useEffect(() => {
     const handleScroll = () => {
-      setScrolled(window.scrollY > 20)
+      console.log(window.scrollY);
+      setScrolled(window.scrollY>20)
     }
 
     window.addEventListener('scroll', handleScroll)
@@ -85,6 +87,7 @@ export default function Navbar() {
     { path: '/upload', label: 'Resume', icon: FileText },
     { path: '/email-generator', label: 'Emails', icon: Mail },
     { path: '/linkedin-optimizer', label: 'LinkedIn', icon: Linkedin },
+    { path: '/skill-gap', label: 'Skill Gap', icon: Target },
   ]
 
   const searchSuggestions = [
