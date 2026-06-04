@@ -6,7 +6,7 @@ import { ApiError } from '../errorHandler.js';
 
 describe('uploadSecurityScanner middleware', () => {
   test('should pass if no file is uploaded', async () => {
-    const req = {};
+    const req = { file: undefined };
     const res = {};
     const next = mock.fn();
 
