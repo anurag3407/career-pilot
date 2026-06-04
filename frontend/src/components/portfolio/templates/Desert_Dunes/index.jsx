@@ -1,6 +1,24 @@
-import React, { useState, useRef, useEffect } from 'react';
-import { motion, AnimatePresence, useInView, useScroll, useTransform } from 'framer-motion';
-import { Github, Linkedin, Twitter, Mail, MapPin, ExternalLink, Briefcase, ChevronDown, ArrowUpRight, Star, Calendar, Phone, Send, Sun, Wind, Quote } from 'lucide-react';
+import React, { useState, useEffect, useRef } from 'react';
+import { motion, useScroll, useTransform, AnimatePresence, useInView } from 'framer-motion';
+import {
+  Github,
+  Linkedin,
+  Twitter,
+  Mail,
+  MapPin,
+  ExternalLink,
+  Phone,
+  ChevronDown,
+  Star,
+  Quote,
+  Send,
+  Briefcase,
+  Code2,
+  Calendar,
+  ArrowUpRight,
+  Sun,
+  Wind,
+} from 'lucide-react';
 import data from '../../../../data/dummy_data.json';
 
 /* ─────────────────────────────────────────────
@@ -1216,9 +1234,6 @@ function Footer() {
   );
 }
 
-/* ─────────────────────────────────────────────
-   ROOT EXPORT
-───────────────────────────────────────────── */
 export default function DesertDunes() {
   return (
     <>
