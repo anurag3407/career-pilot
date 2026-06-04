@@ -2,6 +2,7 @@ import React, { useState, useRef, useEffect, Suspense, useMemo } from "react";
 import { useTheme } from "../hooks/useTheme";
 import Navbar from "../components/Navbar";
 import DeployModal from "../components/portfolio/DeployModal";
+import PortfolioBuilderModal from "../components/portfolio/PortfolioBuilderModal";
 import ThemeSelector from "../components/portfolio/ThemeSelector";
 import HolographicAbout from "../components/portfolio/templates/Holographic/About";
 import CulinaryAbout from "../components/portfolio/templates/Culinary_Restaurant/About";
@@ -304,10 +305,7 @@ const TemplatePreviewModal = ({ templateId, isOpen, onClose, portfolioData }) =>
 };
 
 export default function TemplateGallery() {
-const { theme, toggleTheme } = useTheme();
-const [searchParams, setSearchParams] = useSearchParams();
-const previewTemplateId = searchParams.get("preview");
-const [hoveredCard, setHoveredCard] = useState(null);
+
 
   const [category, setCategory] = useState("All");
   const [colorScheme, setColorScheme] = useState("All");
@@ -332,6 +330,7 @@ const [hoveredCard, setHoveredCard] = useState(null);
 
   const [selectedTheme, setSelectedTheme] = useState("minimal");
   const [isDeployModalOpen, setIsDeployModalOpen] = useState(false);
+  const [isBuilderModalOpen, setIsBuilderModalOpen] = useState(false);
   const [selectedPortfolioTitle, setSelectedPortfolioTitle] = useState("");
   const [selectedTemplateId, setSelectedTemplateId] = useState("default");
 
@@ -462,20 +461,20 @@ const [hoveredCard, setHoveredCard] = useState(null);
       ) : (
         <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 xl:grid-cols-4 gap-6">
           {sortedTemplates.map((template) => (
-<TemplateCard
-  key={template.id}
-  template={template}
-  hovered={hoveredCard === template.id}
-  onHover={setHoveredCard}
-  onLeave={() => setHoveredCard(null)}
-  onUse={handleUseTemplate}
-  aiDraft={aiDraft}
-/>
- ))}
+
         </div>
       )}
       {/* Deploy Modal */}
 
+      <PortfolioBuilderModal
+        isOpen={isBuilderModalOpen}
+        onClose={() => setIsBuilderModalOpen(false)}
+        portfolioTitle={selectedPortfolioTitle}
+        onProceedToDeploy={(content) => {
+          setIsBuilderModalOpen(false);
+          setIsDeployModalOpen(true);
+        }}
+      />
       <DeployModal
         isOpen={isDeployModalOpen}
         onClose={() => setIsDeployModalOpen(false)}
