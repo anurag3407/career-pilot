@@ -159,8 +159,12 @@ function TabBar({ tabs, active, onSelect }) {
       {tabs.map((tab) => (
         <div
           key={tab.id}
+          role="tab"
+          tabIndex={0}
+          aria-selected={active === tab.id}
           className={`w98-about-tab ${active === tab.id ? 'w98-about-tab-active' : ''}`}
           onClick={() => onSelect(tab.id)}
+          onKeyDown={(e) => { if (e.key === 'Enter' || e.key === ' ') { e.preventDefault(); onSelect(tab.id); } }}
           style={{
             padding: '4px 12px',
             fontFamily: "'MS Sans Serif', Tahoma, Arial, sans-serif",
@@ -471,8 +475,12 @@ export default function About() {
                       {catSkills.map((skill) => (
                         <div
                           key={skill.name}
+                          role="option"
+                          tabIndex={0}
+                          aria-selected={selectedSkill === skill.name}
                           className="w98-list-item"
                           onClick={() => setSelectedSkill(skill.name === selectedSkill ? null : skill.name)}
+                          onKeyDown={(e) => { if (e.key === 'Enter' || e.key === ' ') { e.preventDefault(); setSelectedSkill(skill.name === selectedSkill ? null : skill.name); } }}
                           style={{
                             padding: '3px 8px',
                             fontFamily: "'MS Sans Serif', Tahoma, Arial, sans-serif",
