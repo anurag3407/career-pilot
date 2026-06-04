@@ -46,6 +46,10 @@ export default function Taskbar({ windows, onOpen, onRestore, onFocus, topZ }) {
     else onFocus(id);
   };
 
+  const computedTopZ = typeof topZ === 'number'
+    ? topZ
+    : (windows?.length > 0 ? Math.max(0, ...windows.map(w => w.zIndex || 0)) : 0);
+
   return (
     <motion.nav
       initial={{ y: 80, opacity: 0 }}
@@ -57,7 +61,7 @@ export default function Taskbar({ windows, onOpen, onRestore, onFocus, topZ }) {
         const win = windows.find(w => w.id === id);
         const isOpen = win && !win.closed;
         const isMinimized = win && !win.closed && win.minimized;
-        const isFocused = win && !win.closed && !win.minimized && win.zIndex === topZ;
+        const isFocused = win && !win.closed && !win.minimized && win.zIndex === computedTopZ;
 
         return (
           <div key={id} className="relative group">
