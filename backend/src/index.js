@@ -95,12 +95,30 @@ const PORT = process.env.PORT || 5001;
 console.log('🔧 FRONTEND_URL env var:', process.env.FRONTEND_URL);
 
 // CORS configuration - MUST come before helmet
-const allowedOrigins = [
-  'http://localhost:5173',
-  'http://localhost:3000',
-  'https://careerpilotyy.netlify.app',  // Hardcoded as fallback
-  process.env.FRONTEND_URL,
-].filter(Boolean).map(url => url.replace(/\/$/, '')); // Remove trailing slashes
+// Localhost origins are only trusted outside production. In production the
+// allowed origins come from FRONTEND_URL (plus the known deployed frontend),
+// so a misconfigured deployment fails fast instead of silently trusting
+// developer machine origins.
+const buildAllowedOrigins = () => {
+  const isProduction = process.env.NODE_ENV === 'production';
+
+  if (isProduction && !process.env.FRONTEND_URL) {
+    throw new Error('FRONTEND_URL must be set in production for CORS configuration.');
+  }
+
+  const origins = [
+    'https://careerpilotyy.netlify.app', // known deployed frontend
+    process.env.FRONTEND_URL,
+  ];
+
+  if (!isProduction) {
+    origins.push('http://localhost:5173', 'http://localhost:3000');
+  }
+
+  return origins.filter(Boolean).map(url => url.replace(/\/$/, '')); // Remove trailing slashes
+};
+
+const allowedOrigins = buildAllowedOrigins();
 
 console.log('🔧 Allowed origins:', allowedOrigins);
 
