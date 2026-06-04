@@ -78,7 +78,6 @@ export default function ResumeView() {
     try {
       const response = await resumeApi.getById(resumeId)
       setResume(response.data)
-
       // Set default tab based on available content
       if (!response.data.enhancedText) {
         setPreviewTab('original')
