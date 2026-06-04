@@ -3,6 +3,7 @@ import { Link, useLocation } from 'react-router-dom'
 import { useAuth } from '../hooks/useAuth'
 import { useTheme } from '../hooks/useTheme'
 import { motion, AnimatePresence } from 'framer-motion'
+import ThemeToggle from './ThemeToggle'
 import {
   Search,
   FileText,
@@ -196,28 +197,7 @@ export default function Navbar() {
           {/* Right Side */}
           <div className="hidden md:flex items-center gap-3">
 
-            {/* Theme Toggle */}
-            <button
-              onClick={toggleTheme}
-              className="p-2 rounded-xl bg-muted hover:bg-accent border border-border text-foreground transition-all"
-              aria-label="Toggle theme"
-            >
-              <AnimatePresence mode="wait" initial={false}>
-                <motion.div
-                  key={theme}
-                  initial={{ y: 20, opacity: 0, rotate: 45 }}
-                  animate={{ y: 0, opacity: 1, rotate: 0 }}
-                  exit={{ y: -20, opacity: 0, rotate: -45 }}
-                  transition={{ duration: 0.2 }}
-                >
-                  {theme === 'light' ? (
-                    <Moon className="w-5 h-5" />
-                  ) : (
-                    <Sun className="w-5 h-5" />
-                  )}
-                </motion.div>
-              </AnimatePresence>
-            </button>
+            <ThemeToggle />
 
             {user ? (
               <>
@@ -316,17 +296,7 @@ export default function Navbar() {
           {/* Mobile Menu */}
           <div className="flex items-center gap-2 md:hidden">
 
-            <button
-              onClick={toggleTheme}
-              className="p-2 rounded-xl bg-muted border border-border"
-              aria-label="Toggle theme"
-            >
-              {theme === 'light' ? (
-                <Moon className="w-5 h-5" />
-              ) : (
-                <Sun className="w-5 h-5" />
-              )}
-            </button>
+            <ThemeToggle size="sm" />
 
             <button
               onClick={() => setMobileMenuOpen(!mobileMenuOpen)}

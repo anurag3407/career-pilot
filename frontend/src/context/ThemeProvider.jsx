@@ -14,28 +14,48 @@ export function ThemeProvider({ children }) {
     if (typeof window === 'undefined') return 'light';
     const savedTheme = window.localStorage.getItem('theme');
     if (savedTheme === 'light' || savedTheme === 'dark') return savedTheme;
-    return window.matchMedia?.('(prefers-color-scheme: dark)').matches ? 'dark' : 'light';
+    return 'system';
+  });
+
+  const [resolvedTheme, setResolvedTheme] = useState(() => {
+    if (theme !== 'system') return theme;
+    if (typeof window === 'undefined') return 'light';
+    return window.matchMedia('(prefers-color-scheme: dark)').matches ? 'dark' : 'light';
   });
 
   useLayoutEffect(() => {
     if (typeof window === 'undefined') return;
+    
     const root = window.document.documentElement;
-    const nextTheme = theme === 'dark' ? 'dark' : 'light';
-    root.classList.remove('light', 'dark');
-    root.classList.add(nextTheme);
-    window.localStorage.setItem('theme', nextTheme);
+    const updateTheme = (newTheme) => {
+      const actualTheme = newTheme === 'system'
+        ? (window.matchMedia('(prefers-color-scheme: dark)').matches ? 'dark' : 'light')
+        : newTheme;
+      
+      root.classList.remove('light', 'dark');
+      root.classList.add(actualTheme);
+      setResolvedTheme(actualTheme);
+      window.localStorage.setItem('theme', newTheme);
+    };
+
+    updateTheme(theme);
+
+    if (theme === 'system') {
+      const mediaQuery = window.matchMedia('(prefers-color-scheme: dark)');
+      const handleChange = () => updateTheme('system');
+      mediaQuery.addEventListener('change', handleChange);
+      return () => mediaQuery.removeEventListener('change', handleChange);
+    }
   }, [theme]);
 
-  /**
-   * Toggles the current theme between 'light' and 'dark'.
-   */
   const toggleTheme = () => {
     setTheme((prev) => (prev === 'light' ? 'dark' : 'light'));
   };
 
   return (
-    <ThemeContext.Provider value={{ theme, toggleTheme }}>
+    <ThemeContext.Provider value={{ theme, resolvedTheme, setTheme, toggleTheme }}>
       {children}
     </ThemeContext.Provider>
   );
 }
+
