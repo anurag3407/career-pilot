@@ -1,6 +1,7 @@
 import { z } from 'zod';
 
 const EMPLOYMENT_TYPES = ['full-time', 'part-time', 'contract', 'internship', 'freelance'];
+const CHECK_FREQUENCIES = ['daily', 'every-2-days', 'weekly'];
 
 /**
  * POST /api/job-alerts
@@ -18,6 +19,10 @@ export const createJobAlertSchema = z.object({
     .array(z.enum(EMPLOYMENT_TYPES))
     .optional()
     .default(['full-time']),
+  checkFrequency: z
+    .enum(CHECK_FREQUENCIES)
+    .optional()
+    .default('every-2-days'),
 });
 
 /**
@@ -31,5 +36,6 @@ export const updateJobAlertSchema = z.object({
   salaryMin: z.number().min(0).nullish(),
   salaryMax: z.number().min(0).nullish(),
   employmentType: z.array(z.enum(EMPLOYMENT_TYPES)).optional(),
+  checkFrequency: z.enum(CHECK_FREQUENCIES).optional(),
   isActive: z.boolean().optional(),
 });
