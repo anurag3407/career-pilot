@@ -161,17 +161,19 @@ function TitleBar({ title, icon, active = true, onClose, onMinimize, onMaximize 
         {onMinimize && (
           <button
             onClick={onMinimize}
+            aria-label="Minimise window"
             className="w98-btn"
             style={{
               ...raised,
-              width: '16px', height: '14px',
+              width: '20px', height: '18px',
               background: W.silver,
               cursor: 'pointer',
               display: 'flex', alignItems: 'flex-end', justifyContent: 'center',
-              padding: '0 0 2px 0',
+              padding: '0 0 3px 0',
               fontFamily: "'MS Sans Serif', Tahoma, Arial, sans-serif",
               fontSize: '10px',
               lineHeight: 1,
+              touchAction: 'manipulation',
             }}
           >
             <span style={{ display: 'block', width: '8px', height: '2px', background: '#000', marginBottom: '1px' }} />
@@ -180,13 +182,15 @@ function TitleBar({ title, icon, active = true, onClose, onMinimize, onMaximize 
         {onMaximize && (
           <button
             onClick={onMaximize}
+            aria-label="Maximise window"
             className="w98-btn"
             style={{
               ...raised,
-              width: '16px', height: '14px',
+              width: '20px', height: '18px',
               background: W.silver,
               cursor: 'pointer',
               display: 'flex', alignItems: 'center', justifyContent: 'center',
+              touchAction: 'manipulation',
             }}
           >
             <span style={{
@@ -199,10 +203,11 @@ function TitleBar({ title, icon, active = true, onClose, onMinimize, onMaximize 
         {onClose && (
           <button
             onClick={onClose}
+            aria-label="Close window"
             className="w98-btn"
             style={{
               ...raised,
-              width: '16px', height: '14px',
+              width: '20px', height: '18px',
               background: W.silver,
               cursor: 'pointer',
               display: 'flex', alignItems: 'center', justifyContent: 'center',
@@ -211,6 +216,7 @@ function TitleBar({ title, icon, active = true, onClose, onMinimize, onMaximize 
               fontSize: '11px',
               color: '#000',
               lineHeight: 1,
+              touchAction: 'manipulation',
             }}
           >
             ✕
@@ -319,10 +325,11 @@ function useTypewriter(text, speed = 45, delay = 600) {
 
   useEffect(() => {
     let i = 0;
+    let interval;
     setDisplayed('');
     setDone(false);
     const timeout = setTimeout(() => {
-      const interval = setInterval(() => {
+      interval = setInterval(() => {
         if (i < text.length) {
           setDisplayed(text.slice(0, i + 1));
           i++;
@@ -331,9 +338,8 @@ function useTypewriter(text, speed = 45, delay = 600) {
           clearInterval(interval);
         }
       }, speed);
-      return () => clearInterval(interval);
     }, delay);
-    return () => clearTimeout(timeout);
+    return () => { clearTimeout(timeout); clearInterval(interval); };
   }, [text, speed, delay]);
 
   return { displayed, done };
@@ -751,10 +757,10 @@ export default function Hero() {
                         gap: '4px',
                         flexWrap: 'wrap',
                       }}>
-                        <W98Btn primary onClick={() => window.open(socials.github, '_blank')}>
+                        <W98Btn primary onClick={() => window.open(socials.github, '_blank', 'noopener,noreferrer')}>
                           🐙 GitHub
                         </W98Btn>
-                        <W98Btn onClick={() => window.open(socials.linkedin, '_blank')}>
+                        <W98Btn onClick={() => window.open(socials.linkedin, '_blank', 'noopener,noreferrer')}>
                           💼 LinkedIn
                         </W98Btn>
                         <W98Btn onClick={() => window.open(`mailto:${socials.email}`)}>
