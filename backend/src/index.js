@@ -73,17 +73,19 @@ import {
 // ============================================================================
 // Configuration validation - Check for required API keys
 // ============================================================================
-if (!process.env.GEMINI_API_KEY) {
-  console.warn('⚠️  GEMINI_API_KEY is not configured - AI features will be unavailable.');
-  console.warn('   Set GEMINI_API_KEY in your .env file to enable Google Gemini features.');
-}
+const isDev = process.env.NODE_ENV !== 'production';
 
-if (!process.env.GROQ_API_KEY) {
-  console.warn('⚠️  GROQ_API_KEY is not configured - Groq AI provider will not be available.');
-}
-
-if (!process.env.OPENAI_API_KEY) {
-  console.warn('⚠️  OPENAI_API_KEY is not configured - OpenAI provider will not be available.');
+if (isDev) {
+  if (!process.env.GEMINI_API_KEY) {
+    console.warn('⚠️  GEMINI_API_KEY is not configured - AI features will be unavailable.');
+    console.warn('   Set GEMINI_API_KEY in your .env file to enable Google Gemini features.');
+  }
+  if (!process.env.GROQ_API_KEY) {
+    console.warn('⚠️  GROQ_API_KEY is not configured - Groq AI provider will not be available.');
+  }
+  if (!process.env.OPENAI_API_KEY) {
+    console.warn('⚠️  OPENAI_API_KEY is not configured - OpenAI provider will not be available.');
+  }
 }
 
 const app = express();
@@ -91,8 +93,10 @@ app.use(metricsMiddleware);
 const httpServer = createServer(app);
 const PORT = process.env.PORT || 5001;
 
-// Log FRONTEND_URL for debugging
-console.log('🔧 FRONTEND_URL env var:', process.env.FRONTEND_URL);
+// Log FRONTEND_URL for debugging (dev only)
+if (isDev) {
+  console.log('🔧 FRONTEND_URL env var:', process.env.FRONTEND_URL);
+}
 
 // CORS configuration - MUST come before helmet
 const allowedOrigins = [
@@ -102,7 +106,9 @@ const allowedOrigins = [
   process.env.FRONTEND_URL,
 ].filter(Boolean).map(url => url.replace(/\/$/, '')); // Remove trailing slashes
 
-console.log('🔧 Allowed origins:', allowedOrigins);
+if (isDev) {
+  console.log('🔧 Allowed origins:', allowedOrigins);
+}
 
 app.use(cors({
   origin: function (origin, callback) {
