@@ -401,10 +401,8 @@ const [hoveredCard, setHoveredCard] = useState(null);
   });
 
   return (
-  <div className="min-h-screen bg-background text-foreground transition-colors duration-300">
-    <Navbar />
-
-    <div className="p-8 pt-24">
+    <div className="min-h-screen bg-background text-foreground p-8 pt-24 transition-colors duration-300">
+      <Navbar />
       
       {aiDraft && (
         <div className="mb-8 p-4 rounded-xl bg-gradient-to-r from-emerald-500/10 to-teal-500/10 border border-emerald-500/30 flex items-center justify-between">
@@ -522,6 +520,7 @@ const [hoveredCard, setHoveredCard] = useState(null);
           <h2 className="text-lg font-semibold text-foreground/70">Culinary Restaurant Theme — About Section</h2>
         </div>
         <div className="overflow-hidden rounded-2xl border border-border"><CulinaryAbout /></div>
+      </div>
       <TemplatePreviewModal
         templateId={previewTemplateId}
         isOpen={!!previewTemplateId}
@@ -612,18 +611,8 @@ const [hoveredCard, setHoveredCard] = useState(null);
       >
         <DesertDunes />
       </TemplatePreviewFrame>
-      </div>
-      <div className="mt-12">
-        <span className="rounded-full bg-red-500/20 px-3 py-1 text-xs font-bold uppercase tracking-widest text-red-400 border border-red-500/30">
-            Preview
-          </span>
-          <h2 className="text-lg font-semibold text-foreground/70">Swiss Typography — Full Interactive Template</h2>
-        </div>
-        <div className="overflow-hidden rounded-2xl border border-border">
-          <SwissTypography portfolioData={aiDraft} />
-        </div>
-      </div>
-      
+
+      {/* Psychedelic Swirl Theme */}
       <div className="mt-12">
         <div className="mb-4 flex items-center gap-3 px-1">
           <span className="rounded-full bg-fuchsia-500/20 px-3 py-1 text-xs font-bold uppercase tracking-widest text-fuchsia-400 border border-fuchsia-500/30">
@@ -806,8 +795,6 @@ const [hoveredCard, setHoveredCard] = useState(null);
         </div>
       </div>
 
-            </div>
-      </div>
     </div>
   );
 }
