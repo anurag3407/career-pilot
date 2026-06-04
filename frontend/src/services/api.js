@@ -443,12 +443,12 @@ export const portfolioApi = {
   },
 
   // Deploy portfolio to Cloudflare Pages
-  async deploy({ slug, sections, templateId, title }) {
+  async deploy({ slug, sections, templateId, title, provider, token }) {
     const headers = await getAuthHeaders();
     const response = await fetch(`${API_BASE}/portfolio/deploy`, {
       method: 'POST',
       headers,
-      body: JSON.stringify({ slug, sections, templateId, title })
+      body: JSON.stringify({ slug, sections, templateId, title, provider, token })
     });
     return handleResponse(response);
   }
@@ -571,11 +571,22 @@ export const enhanceApi = {
     const response = await fetch(`${API_BASE}/enhance/resume-score`, {
       method: "POST",
       headers,
-      body: JSON.stringify({ resumeText }),
-    });
-    return handleResponse(response);
+      body: JSON.stringify({ resumeText })
+    })
+    return handleResponse(response)
   },
-};
+
+  // Analyze skill gap between resume and job description
+  async analyzeSkillGap(resumeText, jobDescription) {
+    const headers = await getAuthHeaders()
+    const response = await fetch(`${API_BASE}/enhance/skill-gap`, {
+      method: 'POST',
+      headers,
+      body: JSON.stringify({ resumeText, jobDescription })
+    })
+    return handleResponse(response)
+  }
+}
 
 // ============ AI API ============
 export const aiApi = {

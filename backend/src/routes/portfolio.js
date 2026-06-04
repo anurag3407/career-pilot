@@ -5,9 +5,9 @@ import { verifyToken } from '../middleware/auth.js';
 import { asyncHandler, ApiError } from '../middleware/errorHandler.js';
 import cacheHeaders from '../middleware/cacheHeaders.js';
 import { validateToken as validateCloudflareToken, deploy as cloudflareDeploy } from '../services/deploy/cloudflareDeployer.js';
-import { validateToken as validateGithubToken } from '../services/deploy/githubPagesDeployer.js';
-import { validateToken as validateNetlifyToken } from '../services/deploy/netlifyDeployer.js';
-import { generatePortfolioHtml } from '../services/deploy/portfolioHtmlGenerator.js';
+import { validateToken as validateGithubToken, deploy as githubDeploy } from '../services/deploy/githubPagesDeployer.js';
+import { validateToken as validateNetlifyToken, deploy as netlifyDeploy } from '../services/deploy/netlifyDeployer.js';
+import { buildPortfolioBundle } from '../services/deploy/portfolioHtmlGenerator.js';
 import { validatePortfolioSlug, validatePortfolioContent } from '../middleware/portfolioValidator.js';
 import Portfolio from '../models/Portfolio.model.js';
 import { enhanceSection } from '../services/ai/portfolioContentEnhancer.js';
@@ -167,7 +167,8 @@ const TOKEN_VALIDATORS = {
 };
 
 router.post('/validate-token', verifyToken, asyncHandler(async (req, res) => {
-  const { provider, token } = req.body ?? {};
+  let { provider, token } = req.body ?? {};
+  if (typeof token === 'string') token = token.trim();
 
   if (!provider || !TOKEN_VALIDATORS[provider]) {
     throw new ApiError(400, `provider must be one of: ${Object.keys(TOKEN_VALIDATORS).join(', ')}`);
@@ -184,7 +185,8 @@ router.post('/validate-token', verifyToken, asyncHandler(async (req, res) => {
  * to Cloudflare Pages via the Direct Upload API.
  */
 router.post('/deploy', verifyToken, asyncHandler(async (req, res) => {
-  const { slug, sections, templateId, title } = req.body;
+  let { slug, sections, templateId, title, provider = 'cloudflare', token } = req.body;
+  if (typeof token === 'string') token = token.trim();
   const userId = req.user.uid;
 
   if (!slug || typeof slug !== 'string') {
@@ -195,15 +197,28 @@ router.post('/deploy', verifyToken, asyncHandler(async (req, res) => {
     throw new ApiError(400, 'sections (portfolio data) is required.');
   }
 
-  // Generate self-contained HTML from the portfolio data
-  const { html } = generatePortfolioHtml(sections, templateId || 'default');
+  // Build the deployable React app bundle with the user's data and chosen template
+  let html, assets;
+  try {
+    const bundle = await buildPortfolioBundle(sections, templateId || 'default');
+    html = bundle.html;
+    assets = bundle.assets;
+  } catch (bundleErr) {
+    console.error('Portfolio bundle build error:', bundleErr);
+    throw new ApiError(500, `Failed to build portfolio: ${bundleErr.message}`);
+  }
 
-  // Deploy to Cloudflare Pages
   let deployment;
   try {
-    deployment = await cloudflareDeploy(slug, html);
+    if (provider === 'github') {
+      deployment = await githubDeploy(slug, html, assets, slug, token);
+    } else if (provider === 'netlify') {
+      deployment = await netlifyDeploy(slug, html, assets, slug, token);
+    } else {
+      deployment = await cloudflareDeploy(slug, html, assets);
+    }
   } catch (err) {
-    console.error('Cloudflare deploy error:', err);
+    console.error(`${provider} deploy error:`, err);
     throw new ApiError(502, `Deployment failed: ${err.message}`);
   }
 
@@ -211,7 +226,7 @@ router.post('/deploy', verifyToken, asyncHandler(async (req, res) => {
   try {
     await Portfolio.findOneAndUpdate(
       { userId, slug },
-      { userId, slug, sections, deployedUrl: deployment.url, projectName: deployment.projectName },
+      { userId, slug, sections, deployedUrl: deployment.url, projectName: deployment.projectName || slug },
       { upsert: true, new: true }
     );
   } catch (dbErr) {
@@ -224,8 +239,8 @@ router.post('/deploy', verifyToken, asyncHandler(async (req, res) => {
     message: 'Portfolio deployed successfully!',
     data: {
       url: deployment.url,
-      deploymentId: deployment.deploymentId,
-      projectName: deployment.projectName,
+      deploymentId: deployment.deployId || deployment.commitSha || deployment.deploymentId || null,
+      projectName: deployment.projectName || slug,
     },
   });
 }));
