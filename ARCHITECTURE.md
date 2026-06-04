@@ -19,6 +19,7 @@
 - [Security Architecture](#-security-architecture)
 - [Deployment Architecture](#-deployment-architecture)
 - [Scalability Design](#-scalability-design)
+- [Contributor Module Flow](#contributor-module-flow)
 
 ---
 
@@ -1074,3 +1075,25 @@ Pipeline Stages:
 **Built with scalability, security, and performance in mind.**
 
 </div>
+
+
+```mermaid
+flowchart TD
+    U[User] --> FE[Frontend React + Vite]
+
+    FE --> BE[Backend Express.js + Socket.IO]
+
+    BE --> RS[Resume Services]
+    BE --> JS[Job Fetcher Services]
+    BE --> IS[Interview Services]
+
+    RS --> AI[Gemini AI]
+    IS --> AI
+
+    JS --> API[External Job APIs]
+
+    BE --> MDB[(MongoDB)]
+    BE --> FB[(Firebase Firestore + Storage)]
+
+    BE --> MQ[BullMQ Job Queue]
+```
