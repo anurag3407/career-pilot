@@ -570,6 +570,20 @@ const [hoveredCard, setHoveredCard] = useState(null);
         </div>
       </div>
 
+      {/* Holographic Projects Preview */}
+      <div className="mt-12">
+        <div className="mb-4 flex items-center gap-3 px-1">
+          <span className="rounded-full bg-cyan-500/20 px-3 py-1 text-xs font-bold uppercase tracking-widest text-cyan-400 border border-cyan-500/30">
+            Preview
+          </span>
+          <h2 className="text-lg font-semibold text-foreground/70">Holographic Theme — Projects Section</h2>
+        </div>
+        <div className="overflow-hidden rounded-2xl border border-border">
+          <HolographicProjects />
+        </div>
+      </div>
+
+      {/* Culinary About Preview */}
       <div className="mt-12">
         <div className="mb-4 flex items-center gap-3 px-1">
           <span className="rounded-full bg-cyan-500/20 px-3 py-1 text-xs font-bold uppercase tracking-widest text-cyan-400 border border-cyan-500/30">Preview</span>

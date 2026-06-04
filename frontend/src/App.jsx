@@ -18,7 +18,7 @@ import AppLayout from './components/AppLayout';
 import Footer from './components/ui/Footer';
 
 import CommandPalette from './components/CommandPalette';
-import BackToTop from './components/BackToTop';
+import ScrollToTopButton from './components/ui/ScrollToTopButton';
 import Home from './pages/Home';
 const Dashboard = lazy(() => import('./pages/Dashboard'));
 const Analytics = lazy(() => import('./pages/Analytics'));
@@ -202,7 +202,7 @@ function AppRoutes() {
         />
       )}
       <div className="bg-mesh" />
-      <BackToTop />
+      <ScrollToTopButton />
       <Toaster
         position="top-right"
         toastOptions={{

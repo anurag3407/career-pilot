@@ -1,5 +1,5 @@
 import { useState, useEffect } from 'react'
-import { Link, useLocation } from 'react-router-dom'
+import { Link, useLocation, useNavigate } from 'react-router-dom'
 import { useAuth } from '../hooks/useAuth'
 import { useTheme } from '../hooks/useTheme'
 import { motion, AnimatePresence } from 'framer-motion'
@@ -20,18 +20,29 @@ import {
   Sun,
   Moon,
   Palette,
-  ChevronDown
+  ChevronDown,
+  TrendingUp
 } from 'lucide-react'
+
+// Maps suggestion keywords to specific app routes
+// so e.g. "Resume Builder" goes to /upload instead of /jobs
+const ROUTE_MAP = {
+  'Resume Builder': '/upload',
+  'Interview Questions': '/interview-prep',
+}
 
 export default function Navbar() {
   const { user, logout } = useAuth()
   const { theme, toggleTheme } = useTheme()
   const location = useLocation()
+  const navigate = useNavigate()
 
   const [mobileMenuOpen, setMobileMenuOpen] = useState(false)
   const [scrolled, setScrolled] = useState(false)
   const [searchQuery, setSearchQuery] = useState('')
-  const [showDropdown, setShowDropdown] = useState(false)
+  const [showSearchDropdown, setShowSearchDropdown] = useState(false)
+  const [showUserDropdown, setShowUserDropdown] = useState(false)
+  const [mobileSearchQuery, setMobileSearchQuery] = useState('')
   const [notificationCount] = useState(3)
 
   useEffect(() => {
@@ -39,11 +50,18 @@ export default function Navbar() {
       console.log(window.scrollY);
       setScrolled(window.scrollY>20)
     }
-
     window.addEventListener('scroll', handleScroll)
-
     return () => window.removeEventListener('scroll', handleScroll)
   }, [])
+
+  // Close user dropdown when clicking outside
+  useEffect(() => {
+    const handleClickOutside = () => setShowUserDropdown(false)
+    if (showUserDropdown) {
+      document.addEventListener('click', handleClickOutside)
+    }
+    return () => document.removeEventListener('click', handleClickOutside)
+  }, [showUserDropdown])
 
   const handleLogout = async () => {
     try {
@@ -69,6 +87,45 @@ export default function Navbar() {
     }
   }
 
+  // Core search execution — routes to a specific page or /jobs with ?q=
+  const executeSearch = (query) => {
+    const trimmed = query.trim()
+    if (!trimmed) return
+
+    setShowSearchDropdown(false)
+    setSearchQuery('')
+    setMobileSearchQuery('')
+    setMobileMenuOpen(false)
+
+    const specificRoute = ROUTE_MAP[trimmed]
+    if (specificRoute) {
+      navigate(specificRoute)
+    } else {
+      navigate(`/jobs?q=${encodeURIComponent(trimmed)}`)
+    }
+  }
+
+  // Enter key handler for desktop search
+  const handleSearchKeyDown = (e) => {
+    if (e.key === 'Enter') {
+      executeSearch(searchQuery)
+    }
+  }
+
+  // Enter key handler for mobile search
+  const handleMobileSearchKeyDown = (e) => {
+    if (e.key === 'Enter') {
+      executeSearch(mobileSearchQuery)
+    }
+  }
+
+  // Filter suggestions based on what user has typed
+  const filteredSuggestions = searchSuggestions.filter((s) =>
+    searchQuery.trim() === ''
+      ? true
+      : s.toLowerCase().includes(searchQuery.toLowerCase())
+  )
+
   const isActive = (path) => location.pathname === path
 
   const publicLinks = [
@@ -86,14 +143,6 @@ export default function Navbar() {
     { path: '/upload', label: 'Resume', icon: FileText },
     { path: '/email-generator', label: 'Emails', icon: Mail },
     { path: '/linkedin-optimizer', label: 'LinkedIn', icon: Linkedin },
-  ]
-
-  const searchSuggestions = [
-    'Frontend Developer',
-    'Backend Developer',
-    'Resume Builder',
-    'Interview Questions',
-    'Remote Jobs'
   ]
 
   return (
@@ -131,34 +180,71 @@ export default function Navbar() {
 
             {/* Search Bar */}
             <div className="relative">
-              <div className="flex items-center bg-muted border border-border rounded-xl px-3 py-2 w-72 focus-within:ring-2 focus-within:ring-primary/40 transition-all">
-                <Search className="w-4 h-4 text-muted-foreground mr-2" />
+              <form
+                onSubmit={(e) => {
+                  e.preventDefault()
+                  executeSearch(searchQuery)
+                }}
+              >
+                <div className="flex items-center bg-muted border border-border rounded-xl px-3 py-2 w-72 focus-within:ring-2 focus-within:ring-primary/40 transition-all">
+                  <Search className="w-4 h-4 text-muted-foreground mr-2 shrink-0" />
 
-                <input
-                  type="text"
-                  placeholder="Search anything..."
-                  value={searchQuery}
-                  onChange={(e) => setSearchQuery(e.target.value)}
-                  onFocus={() => setShowDropdown(true)}
-                  onBlur={() => setTimeout(() => setShowDropdown(false), 200)}
-                  className="bg-transparent outline-none text-sm w-full text-foreground placeholder:text-muted-foreground"
-                />
-              </div>
+                  <input
+                    type="text"
+                    placeholder="Search jobs, skills..."
+                    value={searchQuery}
+                    onChange={(e) => setSearchQuery(e.target.value)}
+                    onFocus={() => setShowSearchDropdown(true)}
+                    onBlur={() => setTimeout(() => setShowSearchDropdown(false), 200)}
+                    onKeyDown={handleSearchKeyDown}
+                    className="bg-transparent outline-none text-sm w-full text-foreground placeholder:text-muted-foreground"
+                    aria-label="Search careerpilot"
+                    aria-expanded={showSearchDropdown}
+                    aria-autocomplete="list"
+                    role="combobox"
+                  />
+
+                  {searchQuery && (
+                    <button
+                      type="button"
+                      onClick={() => setSearchQuery('')}
+                      className="ml-1 text-muted-foreground hover:text-foreground transition-colors"
+                      aria-label="Clear search"
+                    >
+                      <X className="w-3.5 h-3.5" />
+                    </button>
+                  )}
+                </div>
+              </form>
 
               {/* Suggestions Dropdown */}
               <AnimatePresence>
-                {showDropdown && (
+                {showSearchDropdown && filteredSuggestions.length > 0 && (
                   <motion.div
                     initial={{ opacity: 0, y: 8 }}
                     animate={{ opacity: 1, y: 0 }}
                     exit={{ opacity: 0, y: 8 }}
-                    className="absolute top-14 left-0 w-full bg-background border border-border rounded-xl shadow-xl overflow-hidden"
+                    transition={{ duration: 0.15 }}
+                    className="absolute top-12 left-0 w-full bg-background border border-border rounded-xl shadow-xl overflow-hidden z-50"
+                    role="listbox"
                   >
-                    {searchSuggestions.map((item, index) => (
+                    <p className="flex items-center gap-1.5 px-4 pt-3 pb-1 text-xs text-muted-foreground font-medium">
+                      <TrendingUp className="w-3 h-3" />
+                      Trending searches
+                    </p>
+                    {filteredSuggestions.map((item) => (
                       <button
-                        key={index}
-                        className="w-full text-left px-4 py-3 hover:bg-muted transition-colors text-sm text-foreground"
+                        key={item}
+                        onMouseDown={(e) => {
+                          // Use onMouseDown so it fires before onBlur hides the dropdown
+                          e.preventDefault()
+                          executeSearch(item)
+                        }}
+                        className="w-full text-left px-4 py-2.5 hover:bg-muted transition-colors text-sm text-foreground flex items-center gap-2"
+                        role="option"
+                        aria-selected={false}
                       >
+                        <Search className="w-3.5 h-3.5 text-muted-foreground shrink-0" />
                         {item}
                       </button>
                     ))}
@@ -235,13 +321,13 @@ export default function Navbar() {
                   )}
                 </button>
 
-                {/* User Dropdown */}
-                <div className="relative">
+                {/* User Dropdown — uses its own separate state */}
+                <div className="relative" onClick={(e) => e.stopPropagation()}>
                   <button
-                    onClick={() => setShowDropdown(!showDropdown)}
+                    onClick={() => setShowUserDropdown((prev) => !prev)}
                     className="flex items-center gap-2 px-3 py-2 bg-muted border border-border rounded-full hover:bg-accent transition-all"
                     aria-label="User menu"
-                    aria-expanded={showDropdown}
+                    aria-expanded={showUserDropdown}
                   >
                     <div className="w-8 h-8 rounded-full overflow-hidden bg-primary/20 flex items-center justify-center">
                       <img
@@ -259,7 +345,7 @@ export default function Navbar() {
                   </button>
 
                   <AnimatePresence>
-                    {showDropdown && (
+                    {showUserDropdown && (
                       <motion.div
                         initial={{ opacity: 0, y: 10 }}
                         animate={{ opacity: 1, y: 0 }}
@@ -268,6 +354,7 @@ export default function Navbar() {
                       >
                         <Link
                           to="/profile"
+                          onClick={() => setShowUserDropdown(false)}
                           className="flex items-center gap-2 px-4 py-3 hover:bg-muted transition-colors text-sm"
                         >
                           <User className="w-4 h-4" />
@@ -276,6 +363,7 @@ export default function Navbar() {
 
                         <Link
                           to="/settings"
+                          onClick={() => setShowUserDropdown(false)}
                           className="flex items-center gap-2 px-4 py-3 hover:bg-muted transition-colors text-sm"
                         >
                           <Palette className="w-4 h-4" />
@@ -313,7 +401,7 @@ export default function Navbar() {
             )}
           </div>
 
-          {/* Mobile Menu */}
+          {/* Mobile Menu Toggle */}
           <div className="flex items-center gap-2 md:hidden">
 
             <button
@@ -356,14 +444,48 @@ export default function Navbar() {
             <div className="px-4 py-6 space-y-3">
 
               {/* Mobile Search */}
-              <div className="flex items-center bg-muted border border-border rounded-xl px-3 py-3">
-                <Search className="w-4 h-4 text-muted-foreground mr-2" />
+              <form
+                onSubmit={(e) => {
+                  e.preventDefault()
+                  executeSearch(mobileSearchQuery)
+                }}
+                className="flex items-center bg-muted border border-border rounded-xl px-3 py-3 focus-within:ring-2 focus-within:ring-primary/40 transition-all"
+              >
+                <Search className="w-4 h-4 text-muted-foreground mr-2 shrink-0" />
 
                 <input
                   type="text"
-                  placeholder="Search..."
-                  className="bg-transparent outline-none text-sm w-full"
+                  placeholder="Search jobs, skills..."
+                  value={mobileSearchQuery}
+                  onChange={(e) => setMobileSearchQuery(e.target.value)}
+                  onKeyDown={handleMobileSearchKeyDown}
+                  className="bg-transparent outline-none text-sm w-full text-foreground placeholder:text-muted-foreground"
+                  aria-label="Search careerpilot"
                 />
+
+                {mobileSearchQuery && (
+                  <button
+                    type="button"
+                    onClick={() => setMobileSearchQuery('')}
+                    className="ml-1 text-muted-foreground hover:text-foreground transition-colors"
+                    aria-label="Clear search"
+                  >
+                    <X className="w-3.5 h-3.5" />
+                  </button>
+                )}
+              </form>
+
+              {/* Mobile Quick Suggestions */}
+              <div className="flex flex-wrap gap-2 pb-1">
+                {searchSuggestions.slice(0, 4).map((s) => (
+                  <button
+                    key={s}
+                    onClick={() => executeSearch(s)}
+                    className="text-xs px-3 py-1.5 rounded-full bg-muted border border-border text-muted-foreground hover:bg-primary/20 hover:text-primary hover:border-primary/30 transition-all"
+                  >
+                    {s}
+                  </button>
+                ))}
               </div>
 
               {publicLinks.map(({ path, label, icon: Icon }) => (
@@ -391,9 +513,6 @@ export default function Navbar() {
                   </Link>
                 ))}
 
-               
-
-
               {user ? (
                 <button
                   onClick={() => {
@@ -409,6 +528,7 @@ export default function Navbar() {
                 <div className="grid grid-cols-2 gap-4">
                   <Link
                     to="/login"
+                    onClick={() => setMobileMenuOpen(false)}
                     className="flex justify-center items-center px-4 py-3 bg-muted rounded-xl font-semibold"
                   >
                     Login
@@ -416,6 +536,7 @@ export default function Navbar() {
 
                   <Link
                     to="/register"
+                    onClick={() => setMobileMenuOpen(false)}
                     className="flex justify-center items-center px-4 py-3 bg-primary text-primary-foreground rounded-xl font-semibold"
                   >
                     Get Started
@@ -429,3 +550,12 @@ export default function Navbar() {
     </nav>
   )
 }
+
+// Trending search suggestions — shown in the dropdown
+const searchSuggestions = [
+  'Frontend Developer',
+  'Backend Developer',
+  'Resume Builder',
+  'Interview Questions',
+  'Remote Jobs',
+]
