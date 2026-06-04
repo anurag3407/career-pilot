@@ -103,6 +103,11 @@ import CassetteMixtape from './components/portfolio/templates/Cassette_Mixtape/i
 import MagneticDock from './components/portfolio/templates/Magnetic_Dock/index.jsx';
 import Hero from './components/portfolio/templates/Magazine_Editorial/Hero';
 import ColorBlock from './components/portfolio/templates/Color_Block/index.jsx';
+import OceanDepths from './components/portfolio/templates/Ocean_Depths/index.jsx';
+import NeonCityscape from './components/portfolio/templates/Neon_Cityscape/index.jsx';
+import PlanetaryOrbit from './components/portfolio/templates/Planetary_Orbit/index.jsx';
+import LowPolyTerrain from './components/portfolio/templates/Low_Poly_Terrain/index.jsx';
+import HighFashion from './components/portfolio/templates/High_Fashion/index.jsx';
 import TestSocialLinks from './pages/TestSocialLinks';
 
 function LoadingScreen({ label }) {
@@ -258,7 +263,12 @@ function AppRoutes() {
         <Route path="/templates/memphis-pop" element={<MemphisPop />} />
         <Route path="/templates/cassette-mixtape" element={<CassetteMixtape />} />
         <Route path="/templates/magnetic-dock" element={<MagneticDock />} />
-        
+        <Route path="/templates/ocean-depths" element={<OceanDepths />} />
+        <Route path="/templates/neon-cityscape" element={<NeonCityscape />} />
+        <Route path="/templates/planetary-orbit" element={<PlanetaryOrbit />} />
+        <Route path="/templates/low-poly-terrain" element={<LowPolyTerrain />} />
+        <Route path="/templates/high-fashion" element={<HighFashion />} />
+
         {/* Core Protected Routes */}
         <Route 
   path="/dashboard" 
