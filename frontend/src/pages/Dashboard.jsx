@@ -2,6 +2,7 @@ import { useState, useEffect, useRef } from 'react'
 import { Link } from 'react-router-dom'
 import toast from 'react-hot-toast'
 import { motion } from 'framer-motion'
+import { usePrefetch } from "../hooks/usePrefetch";
 import {
   FileText,
   Briefcase,
@@ -44,9 +45,16 @@ const STATUS_CONFIG = {
 }
 
 export default function Dashboard() {
+
   const [resumes, setResumes] = useState([])
   const [trackedJobs, setTrackedJobs] = useState([])
   const [loading, setLoading] = useState(true)
+  export default function Dashboard() {
+  const [resumes, setResumes] = useState([])
+  const [trackedJobs, setTrackedJobs] = useState([])
+  const [loading, setLoading] = useState(true)
+
+  const { prefetchResume } = usePrefetch();
   const [fetchError, setFetchError] = useState('')
   const [jobStats, setJobStats] = useState({
     total: 0,
@@ -555,7 +563,7 @@ export default function Dashboard() {
                               <p className="text-sm text-muted-foreground font-semibold">{resume.jobRole || 'General'} • {formatDate(resume.createdAt)}</p>
                             </div>
                             <div className="flex gap-2">
-                              <Link to={`/resume/${resume.id}`}>
+                              <Link to={`/resume/${resume.id}`}   onMouseEnter={prefetchResume}>
                                 <Button variant="ghost" className="!py-2 !px-4 text-xs font-bold">View</Button>
                               </Link>
                               <Link to={`/enhance/${resume.id}`}>

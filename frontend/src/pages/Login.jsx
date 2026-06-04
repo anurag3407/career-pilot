@@ -102,7 +102,14 @@ export default function Login() {
         await twoFactorApi.verify(totpToken)
       }
       toast.success('Verification successful!')
-      navigate('/dashboard')
+
+try {
+  await resumeApi.getAll()
+} catch (err) {
+  console.error('Dashboard prefetch failed', err)
+}
+
+navigate('/dashboard')
     } catch (error) {
       toast.error(error.message || 'Invalid code — please try again')
     } finally {

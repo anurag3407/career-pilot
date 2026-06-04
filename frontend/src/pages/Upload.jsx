@@ -13,7 +13,7 @@ export default function Upload() {
   const uploadControllerRef = useRef(null)
   const redirectTimeoutRef = useRef(null)
 
-  const [_file, setFile] = useState(null)
+const [file, setFile] = useState(null)
   const [loading, setLoading] = useState(false)
   const [uploadComplete, setUploadComplete] = useState(false)
 
@@ -237,6 +237,7 @@ export default function Upload() {
               maxSizeMB={5}
               multiple={false}
             />
+            <ATSPreCheck file={file} />
 
             {loading && (
               <div className="flex flex-col items-center justify-center gap-3 mt-6">

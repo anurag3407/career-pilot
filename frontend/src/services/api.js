@@ -54,6 +54,13 @@ function parseRetryAfter(value) {
   return null
 }
 
+export function getCached(key) {
+  return apiCache.get(key);
+}
+
+export function setCached(key, value) {
+  apiCache.set(key, value);
+}
 // Helper to handle API responses
 
 async function handleResponse(response) {
@@ -168,14 +175,27 @@ export const uploadApi = {
 // ============ RESUME API ============
 export const resumeApi = {
   // Get all resumes
-  async getAll() {
-    const headers = await getAuthHeaders()
-    const response = await fetch(`${API_BASE}/resumes`, {
-      method: 'GET',
-      headers
-    })
-    return handleResponse(response)
-  },
+  // Get all resumes
+async getAll() {
+  const cached = getCached('all-resumes')
+
+  if (cached) {
+    return cached
+  }
+
+  const headers = await getAuthHeaders()
+
+  const response = await fetch(`${API_BASE}/resumes`, {
+    method: 'GET',
+    headers
+  })
+
+  const data = await handleResponse(response)
+
+  setCached('all-resumes', data)
+
+  return data
+},
 
   // Get single resume
   async getById(resumeId) {
@@ -200,25 +220,41 @@ export const resumeApi = {
   },
 
   // Update resume
-  async update(resumeId, data) {
-    const headers = await getAuthHeaders()
-    const response = await fetch(`${API_BASE}/resumes/${resumeId}`, {
-      method: 'PUT',
-      headers,
-      body: JSON.stringify(data)
-    })
-    return handleResponse(response)
-  },
+  // Update resume
+async update(resumeId, data) {
+  const headers = await getAuthHeaders()
+
+  const response = await fetch(`${API_BASE}/resumes/${resumeId}`, {
+    method: 'PUT',
+    headers,
+    body: JSON.stringify(data)
+  })
+
+  const result = await handleResponse(response)
+
+  apiCache.delete('all-resumes')
+  apiCache.delete(`resume-${resumeId}`)
+
+  return result
+},
 
   // Delete resume
-  async delete(resumeId) {
-    const headers = await getAuthHeaders()
-    const response = await fetch(`${API_BASE}/resumes/${resumeId}`, {
-      method: 'DELETE',
-      headers
-    })
-    return handleResponse(response)
-  },
+ // Delete resume
+async delete(resumeId) {
+  const headers = await getAuthHeaders()
+
+  const response = await fetch(`${API_BASE}/resumes/${resumeId}`, {
+    method: 'DELETE',
+    headers
+  })
+
+  const result = await handleResponse(response)
+
+  apiCache.delete('all-resumes')
+  apiCache.delete(`resume-${resumeId}`)
+
+  return result
+},
 
   // Preview LinkedIn profile data before importing
   async previewLinkedIn(url) {
