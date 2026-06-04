@@ -59,7 +59,7 @@ function TokenStatusChip({ status }) {
   );
 }
 
-export default function DeployModal({ isOpen, onClose, portfolioTitle = "My Portfolio", aiDraft, onDeploySuccess }) {
+export default function DeployModal({ isOpen, onClose, portfolioTitle = "My Portfolio", templateId = "default", aiDraft, onDeploySuccess }) {
   // Step workflow: select -> loading -> success -> error
   const [step, setStep] = useState('select');
   const [selectedProvider, setSelectedProvider] = useState('cloudflare'); // default to recommended Cloudflare
@@ -219,12 +219,13 @@ export default function DeployModal({ isOpen, onClose, portfolioTitle = "My Port
         .replace(/^-|-$/g, '') || 'portfolio';
 
       try {
-        // Call the real backend deploy endpoint
         const result = await portfolioApi.deploy({
           slug,
           sections: aiDraft || {},
-          templateId: 'default',
+          templateId,
           title: portfolioTitle,
+          provider: selectedProvider,
+          token: tokenInputs[selectedProvider] || undefined,
         });
 
         // Wait for the terminal animation to finish (at least 3.6s total)

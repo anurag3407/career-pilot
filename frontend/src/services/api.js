@@ -421,12 +421,12 @@ export const portfolioApi = {
   },
 
   // Deploy portfolio to Cloudflare Pages
-  async deploy({ slug, sections, templateId, title }) {
+  async deploy({ slug, sections, templateId, title, provider, token }) {
     const headers = await getAuthHeaders();
     const response = await fetch(`${API_BASE}/portfolio/deploy`, {
       method: 'POST',
       headers,
-      body: JSON.stringify({ slug, sections, templateId, title })
+      body: JSON.stringify({ slug, sections, templateId, title, provider, token })
     });
     return handleResponse(response);
   }
@@ -550,6 +550,17 @@ export const enhanceApi = {
       method: 'POST',
       headers,
       body: JSON.stringify({ resumeText })
+    })
+    return handleResponse(response)
+  },
+
+  // Analyze skill gap between resume and job description
+  async analyzeSkillGap(resumeText, jobDescription) {
+    const headers = await getAuthHeaders()
+    const response = await fetch(`${API_BASE}/enhance/skill-gap`, {
+      method: 'POST',
+      headers,
+      body: JSON.stringify({ resumeText, jobDescription })
     })
     return handleResponse(response)
   }
@@ -1176,6 +1187,15 @@ export const interviewApi = {
       headers
     })
     return handleResponse(response)
+  },
+
+  async getAnalytics() {
+    const headers = await getAuthHeaders()
+    const response = await fetch(`${API_BASE}/interview/analytics`, {
+      method: 'GET',
+      headers
+    })
+    return handleResponse(response)
   }
 }
 
@@ -1428,6 +1448,84 @@ export const analyzerApi = {
   },
   
   // Note: chat streams directly via SSE, so we'll handle fetch in the component directly
+}
+
+// ============ PROJECT VISUALIZER API ============
+export const projectVisualizerApi = {
+  async analyze(repoUrl) {
+    const headers = await getAuthHeaders()
+    const response = await fetch(`${API_BASE}/project-visualizer/analyze`, {
+      method: 'POST',
+      headers,
+      body: JSON.stringify({ repoUrl })
+    })
+    return handleResponse(response)
+  },
+
+  async getAnalysis(sessionId) {
+    const headers = await getAuthHeaders()
+    const response = await fetch(`${API_BASE}/project-visualizer/analysis/${sessionId}`, {
+      method: 'GET',
+      headers
+    })
+    return handleResponse(response)
+  },
+
+  async getFileContent(sessionId, filePath) {
+    const headers = await getAuthHeaders()
+    const response = await fetch(`${API_BASE}/project-visualizer/analysis/${sessionId}/file?path=${encodeURIComponent(filePath)}`, {
+      method: 'GET',
+      headers
+    })
+    if (!response.ok) throw new Error(`Server error (${response.status})`)
+    return response.text()
+  },
+
+  async getContributors(sessionId) {
+    const headers = await getAuthHeaders()
+    const response = await fetch(`${API_BASE}/project-visualizer/analysis/${sessionId}/contributors`, {
+      method: 'GET',
+      headers
+    })
+    return handleResponse(response)
+  },
+
+  async getCommits(sessionId) {
+    const headers = await getAuthHeaders()
+    const response = await fetch(`${API_BASE}/project-visualizer/analysis/${sessionId}/commits`, {
+      method: 'GET',
+      headers
+    })
+    return handleResponse(response)
+  },
+
+  async askModule(sessionId, modulePath, question) {
+    const headers = await getAuthHeaders()
+    const response = await fetch(`${API_BASE}/project-visualizer/analysis/${sessionId}/ask-module`, {
+      method: 'POST',
+      headers,
+      body: JSON.stringify({ modulePath, question })
+    })
+    return handleResponse(response)
+  },
+
+  async getHistory() {
+    const headers = await getAuthHeaders()
+    const response = await fetch(`${API_BASE}/project-visualizer/history`, {
+      method: 'GET',
+      headers
+    })
+    return handleResponse(response)
+  },
+
+  async deleteHistory(id) {
+    const headers = await getAuthHeaders()
+    const response = await fetch(`${API_BASE}/project-visualizer/history/${id}`, {
+      method: 'DELETE',
+      headers
+    })
+    return handleResponse(response)
+  },
 }
 
 export const adminAPI = {

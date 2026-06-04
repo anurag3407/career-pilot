@@ -56,6 +56,7 @@ export default function Dashboard() {
     offered: 0
   })
   const [portfolioCount, setPortfolioCount] = useState(0)
+  const [candidateName, setCandidateName] = useState('')
   const [githubOverview, setGithubOverview] = useState({
     connected: false,
     loading: false,
@@ -106,6 +107,8 @@ export default function Dashboard() {
         userProfileRes?.data?.github ||
         userProfileRes?.github
       )
+      const rawName = userProfileRes?.profile?.name || userProfileRes?.data?.name || userProfileRes?.name || ''
+      setCandidateName(rawName.trim())
 
       if (githubUsername) {
         setGithubOverview({ connected: true, loading: true, stats: null })
@@ -206,7 +209,7 @@ export default function Dashboard() {
         >
           <div className="absolute top-0 right-0 -mr-20 -mt-20 w-64 h-64 bg-primary/10 rounded-full blur-3xl animate-pulse"></div>
           <h1 className="text-4xl md:text-5xl font-black text-foreground mb-3 tracking-tight">
-            Welcome back <span className="gradient-text">Pilot</span>
+            Welcome back{candidateName ? <span className="gradient-text">, {candidateName}</span> : <span className="gradient-text"> Pilot</span>}
           </h1>
           <p className="text-lg text-muted-foreground font-medium max-w-2xl">Your career dashboard is ready. Track applications, enhance resumes, and land your dream job with AI insights.</p>
         </motion.div>
@@ -269,6 +272,7 @@ export default function Dashboard() {
                 { to: '/hub/jobs', icon: Briefcase, label: 'Job Finder', desc: 'Search jobs, set alerts, and track applications.', sub: `${jobStats.total} tracked`, color: 'primary' },
                 { to: '/hub/portfolio', icon: Globe, label: 'Portfolio Builder', desc: 'Sync repos and deploy portfolios instantly.', sub: `${portfolioCount} portfolios`, color: 'secondary' },
                 { to: '/hub/career', icon: GraduationCap, label: 'Career Growth', desc: 'AI mock interviews, email & profile tuning.', sub: '4 tools', color: 'emerald-500', badge: 'AI' },
+                { to: '/dashboard/analytics', icon: TrendingUp, label: 'Interview Analytics', desc: 'Visualize mock interview performance trends and scores.', sub: 'Real-time metrics', color: 'emerald-500', badge: 'AI' },
                 { to: '/hub/community', icon: Users, label: 'Community Hub', desc: 'Group chat, public posts, and direct DMs.', sub: 'Connect', color: 'primary' },
               ].map((hub, idx) => (
                 <motion.div key={idx} variants={itemVariants}>
