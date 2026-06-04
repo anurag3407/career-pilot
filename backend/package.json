@@ -8,7 +8,8 @@
     "start": "node src/index.js",
     "dev": "nodemon src/index.js",
     "lint": "eslint src/",
-    "test": "node --test src/schemas/__tests__/schemas.test.js"
+    "test": "node --test src/schemas/__tests__/schemas.test.js",
+    "test:contracts": "node --test src/__tests__/contracts/api.pact.js"
   },
   "dependencies": {
     "@anthropic-ai/sdk": "^0.99.0",
@@ -52,6 +53,7 @@
     "zod": "^4.4.3"
   },
   "devDependencies": {
+    "@pact-foundation/pact": "^16.5.0",
     "eslint": "^8.57.1",
     "nodemon": "^3.1.7"
   },
