@@ -1,5 +1,5 @@
 import express from 'express';
-import { enhanceResume, generateSummary, suggestImprovements, analyzeATSScore, analyzeResumeComprehensive, analyzeBulletPoints, generateBeforeAfter, getVerbLists, getSystemPrompt } from '../config/langchain.js';
+import { enhanceResume, generateSummary, suggestImprovements, analyzeATSScore, analyzeResumeComprehensive, analyzeBulletPoints, generateBeforeAfter, getVerbLists, getSystemPrompt, analyzeSkillGap } from '../config/langchain.js';
 import { computeATSScore } from '../services/atsScorer.js';
 import { generateEmails } from '../services/emailGeneratorService.js';
 import { predictTrajectory } from '../services/ai/careerTrajectory.js';
@@ -18,6 +18,7 @@ import {
   generateEmailSchema,
   optimizeLinkedInSchema,
   resumeScoreSchema,
+  skillGapSchema,
 } from '../schemas/enhance.schema.js';
 
 const router = express.Router();
@@ -377,6 +378,25 @@ router.post('/optimize-linkedin', verifyToken, extractAIProvider, aiRateLimiter,
 
   const result = await optimizeLinkedInProfile(normalizedProfile, normalizedRole, req.aiProvider);
   res.json(result);
+}));
+
+// Analyze skill gap between resume and job description
+router.post('/skill-gap', verifyToken, extractAIProvider, aiRateLimiter, validate(skillGapSchema), asyncHandler(async (req, res) => {
+  const { resumeText, jobDescription } = req.body;
+
+  try {
+    const result = await analyzeSkillGap(resumeText, jobDescription, req.aiProvider);
+
+    res.json({
+      success: true,
+      data: result.analysis,
+      provider: result.provider,
+      providerSource: req.aiProviderSource
+    });
+  } catch (error) {
+    console.error('Skill gap analysis error:', error);
+    throw new ApiError(500, 'Failed to analyze skill gap. Please try again.');
+  }
 }));
 
 // Streaming endpoint for resume enhancement

@@ -1,7 +1,7 @@
 import { useState, useEffect } from "react";
 import { useNavigate, useLocation } from "react-router-dom";
 import { motion } from "framer-motion";
-import { Brain, ChevronDown } from "lucide-react";
+import { Brain, ChevronDown, Contrast } from "lucide-react";
 
 import {
     LayoutDashboard,
@@ -196,7 +196,9 @@ function UserSection() {
                     !open && animate ? "px-0 justify-center" : "justify-start"
                 )}
             >
-                {theme === 'dark' ? <Sun className="w-5 h-5 shrink-0" /> : <Moon className="w-5 h-5 shrink-0" />}
+                {theme === 'light' ? <Moon className="w-5 h-5 shrink-0" /> : 
+                 theme === 'dark' ? <Contrast className="w-5 h-5 shrink-0" /> : 
+                 <Sun className="w-5 h-5 shrink-0" />}
                 <motion.span
                     animate={{
                         display: animate ? (open ? "inline-block" : "none") : "inline-block",
@@ -205,7 +207,9 @@ function UserSection() {
                     transition={{ duration: 0.2 }}
                     className="text-sm font-semibold whitespace-pre"
                 >
-                    {theme === 'dark' ? 'Light Mode' : 'Dark Mode'}
+                    {theme === 'light' ? 'Dark Mode' : 
+                     theme === 'dark' ? 'High Contrast' : 
+                     'Light Mode'}
                 </motion.span>
             </button>
             <button
