@@ -4,7 +4,7 @@
  * Unit tests for the MobileUpload component.
  * Uses Vitest + React Testing Library (already in the project).
  *
- * @file frontend/src/components/__tests__/MobileUpload.test.jsx
+ * @file frontend/src/__tests__/MobileUpload.test.jsx
  */
 
 import { describe, it, expect, vi } from 'vitest';
@@ -14,13 +14,6 @@ import MobileUpload from '../components/MobileUpload';
 
 // ─── Helpers ──────────────────────────────────────────────────────────────────
 
-/**
- * Creates a fake File object for testing.
- * @param {string} name   - e.g. 'resume.pdf'
- * @param {string} type   - MIME type e.g. 'application/pdf'
- * @param {number} sizeMB - File size in MB
- * @returns {File}
- */
 function makeFile(name, type, sizeMB = 1) {
   const bytes = new Uint8Array(sizeMB * 1024 * 1024);
   return new File([bytes], name, { type });
@@ -29,8 +22,8 @@ function makeFile(name, type, sizeMB = 1) {
 const PDF_FILE  = makeFile('resume.pdf', 'application/pdf', 1);
 const DOCX_FILE = makeFile('resume.docx',
   'application/vnd.openxmlformats-officedocument.wordprocessingml.document', 1);
-const BIG_FILE  = makeFile('huge.pdf', 'application/pdf', 10);  // 10MB — over limit
-const BAD_FILE  = makeFile('photo.png', 'image/png', 1);         // wrong type
+const BIG_FILE  = makeFile('huge.pdf', 'application/pdf', 10);
+const BAD_FILE  = makeFile('photo.png', 'image/png', 1);
 
 // ═══════════════════════════════════════════════════════════════════════════
 // Rendering
@@ -53,6 +46,7 @@ describe('MobileUpload — rendering', () => {
     expect(screen.queryByTestId('upload-button')).not.toBeInTheDocument();
     expect(screen.queryByTestId('remove-button')).not.toBeInTheDocument();
   });
+
 });
 
 // ═══════════════════════════════════════════════════════════════════════════
@@ -79,6 +73,7 @@ describe('MobileUpload — valid file selection', () => {
     await userEvent.upload(screen.getByTestId('file-input'), PDF_FILE);
     expect(onFileSelect).toHaveBeenCalledWith(PDF_FILE);
   });
+
 });
 
 // ═══════════════════════════════════════════════════════════════════════════
@@ -93,30 +88,35 @@ describe('MobileUpload — invalid file rejection', () => {
   });
 
   it('shows an error for a disallowed file type', async () => {
-  render(<MobileUpload />);
-  const dropzone = screen.getByTestId('upload-dropzone');
-
-  // Use drop instead of upload to bypass the accept attribute filter
-  fireEvent.drop(dropzone, { dataTransfer: { files: [BAD_FILE] } });
-
-  await waitFor(() => {
-    expect(screen.getByTestId('error-message')).toHaveTextContent(
-      'Only PDF and Word documents'
-    );
+    render(<MobileUpload />);
+    const dropzone = screen.getByTestId('upload-dropzone');
+    fireEvent.drop(dropzone, { dataTransfer: { files: [BAD_FILE] } });
+    await waitFor(() => {
+      expect(screen.getByTestId('error-message')).toHaveTextContent(
+        'Only PDF and Word documents'
+      );
+    });
   });
-});
-  it('does NOT call onFileSelect for an invalid file', async () => {
+
+  it('calls onFileSelect(null) when validation rejects a file', async () => {
     const onFileSelect = vi.fn();
     render(<MobileUpload onFileSelect={onFileSelect} />);
-    await userEvent.upload(screen.getByTestId('file-input'), BAD_FILE);
-    expect(onFileSelect).not.toHaveBeenCalled();
+    const dropzone = screen.getByTestId('upload-dropzone');
+    fireEvent.drop(dropzone, { dataTransfer: { files: [BAD_FILE] } });
+    await waitFor(() => {
+      expect(onFileSelect).toHaveBeenCalledWith(null);
+    });
   });
 
-  it('does not show the Upload button after an invalid file', async () => {
+  it('does not show the Upload button after validation rejects a file', async () => {
     render(<MobileUpload />);
-    await userEvent.upload(screen.getByTestId('file-input'), BAD_FILE);
-    expect(screen.queryByTestId('upload-button')).not.toBeInTheDocument();
+    const dropzone = screen.getByTestId('upload-dropzone');
+    fireEvent.drop(dropzone, { dataTransfer: { files: [BAD_FILE] } });
+    await waitFor(() => {
+      expect(screen.queryByTestId('upload-button')).not.toBeInTheDocument();
+    });
   });
+
 });
 
 // ═══════════════════════════════════════════════════════════════════════════
@@ -142,6 +142,7 @@ describe('MobileUpload — remove file', () => {
     fireEvent.click(screen.getByTestId('remove-button'));
     expect(onFileSelect).toHaveBeenLastCalledWith(null);
   });
+
 });
 
 // ═══════════════════════════════════════════════════════════════════════════
@@ -152,10 +153,8 @@ describe('MobileUpload — drag and drop', () => {
   it('accepts a valid file dropped onto the box', async () => {
     render(<MobileUpload />);
     const dropzone = screen.getByTestId('upload-dropzone');
-
     fireEvent.dragOver(dropzone);
     fireEvent.drop(dropzone, { dataTransfer: { files: [PDF_FILE] } });
-
     await waitFor(() => {
       expect(screen.getByText('resume.pdf')).toBeInTheDocument();
     });
@@ -164,13 +163,12 @@ describe('MobileUpload — drag and drop', () => {
   it('shows an error when an invalid file is dropped', async () => {
     render(<MobileUpload />);
     const dropzone = screen.getByTestId('upload-dropzone');
-
     fireEvent.drop(dropzone, { dataTransfer: { files: [BAD_FILE] } });
-
     await waitFor(() => {
       expect(screen.getByTestId('error-message')).toBeInTheDocument();
     });
   });
+
 });
 
 // ═══════════════════════════════════════════════════════════════════════════
@@ -188,6 +186,7 @@ describe('MobileUpload — disabled state', () => {
     render(<MobileUpload disabled />);
     expect(screen.getByTestId('file-input')).toBeDisabled();
   });
+
 });
 
 // ═══════════════════════════════════════════════════════════════════════════
@@ -203,13 +202,12 @@ describe('MobileUpload — accessibility', () => {
   });
 
   it('error is announced via role="alert" for screen readers', async () => {
-  render(<MobileUpload />);
-  const dropzone = screen.getByTestId('upload-dropzone');
-
-  fireEvent.drop(dropzone, { dataTransfer: { files: [BAD_FILE] } });
-
-  await waitFor(() => {
-    expect(screen.getByRole('alert')).toBeInTheDocument();
+    render(<MobileUpload />);
+    const dropzone = screen.getByTestId('upload-dropzone');
+    fireEvent.drop(dropzone, { dataTransfer: { files: [BAD_FILE] } });
+    await waitFor(() => {
+      expect(screen.getByRole('alert')).toBeInTheDocument();
+    });
   });
-});
+
 });
