@@ -73,6 +73,13 @@ const STYLES = `
     border-right: 1px solid #808080;
   }
 
+  .w98-cell:focus-visible {
+    outline: 2px solid #000080;
+    outline-offset: -2px;
+    z-index: 1;
+    position: relative;
+  }
+
   .w98-cell-revealed {
     border: 1px solid #808080;
     background: #C0C0C0;
@@ -486,10 +493,15 @@ export default function MinesweeperMinigame() {
                         color,
                         background: bg || undefined,
                       }}
+                      tabIndex={unrevealed && !cell.flagged ? 0 : -1}
                       onClick={() => handleCellClick(r, c)}
                       onContextMenu={(e) => handleRightClick(e, r, c)}
+                      onKeyDown={(e) => {
+                        if (e.key === 'Enter' || e.key === ' ') { e.preventDefault(); handleCellClick(r, c); }
+                        if (e.key === 'f' || e.key === 'F') { e.preventDefault(); handleRightClick(e, r, c); }
+                      }}
                       role="button"
-                      aria-label={unrevealed ? (cell.flagged ? 'Flagged cell' : 'Hidden cell') : (cell.mine ? 'Mine' : `Cell ${content || 'empty'}`)}
+                      aria-label={unrevealed ? (cell.flagged ? 'Flagged cell — press F to unflag' : 'Hidden cell — press Enter to reveal, F to flag') : (cell.mine ? 'Mine' : `Cell ${content || 'empty'}`)}
                     >
                       {content}
                     </div>
