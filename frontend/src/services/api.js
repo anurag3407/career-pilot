@@ -552,6 +552,17 @@ export const enhanceApi = {
       body: JSON.stringify({ resumeText })
     })
     return handleResponse(response)
+  },
+
+  // Analyze skill gap between resume and job description
+  async analyzeSkillGap(resumeText, jobDescription) {
+    const headers = await getAuthHeaders()
+    const response = await fetch(`${API_BASE}/enhance/skill-gap`, {
+      method: 'POST',
+      headers,
+      body: JSON.stringify({ resumeText, jobDescription })
+    })
+    return handleResponse(response)
   }
 }
 
