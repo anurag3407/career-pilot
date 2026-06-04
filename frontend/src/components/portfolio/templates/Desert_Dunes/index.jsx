@@ -1234,9 +1234,6 @@ function Footer() {
   );
 }
 
-/* ─────────────────────────────────────────────
-   ROOT EXPORT
-───────────────────────────────────────────── */
 export default function DesertDunes() {
   return (
     <>

@@ -1,3 +1,37 @@
+# [1.138.0](https://github.com/anurag3407/career-pilot/compare/v1.137.0...v1.138.0) (2026-06-04)
+
+
+### Features
+
+* add interview session replay and history dashboard ([82c52fb](https://github.com/anurag3407/career-pilot/commit/82c52fbf81c9f896ccf769e0a38851bf9ab69d27))
+
+# [1.137.0](https://github.com/anurag3407/career-pilot/compare/v1.136.0...v1.137.0) (2026-06-04)
+
+
+### Features
+
+* add high contrast accessibility theme ([e7f02b9](https://github.com/anurag3407/career-pilot/commit/e7f02b935193aea93809be1df62997b0d522e076))
+
+# [1.136.0](https://github.com/anurag3407/career-pilot/compare/v1.135.0...v1.136.0) (2026-06-04)
+
+
+### Bug Fixes
+
+* **portfolio:** address review comments for cursor spotlight template ([a873c97](https://github.com/anurag3407/career-pilot/commit/a873c97efcb727dc794e7ad93f24f0754bcbc34e))
+
+
+### Features
+
+* complete modular implementation of Zoom Into Work portfolio template ([0f33f5d](https://github.com/anurag3407/career-pilot/commit/0f33f5dc4872ae0274f9823ea89d302c35cbd703))
+* **portfolio:** implement cursor spotlight animated template ([db5f03e](https://github.com/anurag3407/career-pilot/commit/db5f03e13ef418a0300f80e28ce283a260245c28))
+
+# [1.135.0](https://github.com/anurag3407/career-pilot/compare/v1.134.0...v1.135.0) (2026-06-04)
+
+
+### Features
+
+* implement Ocean Depths portfolio template with full underwater scene ([8041748](https://github.com/anurag3407/career-pilot/commit/80417489eb77155cae2dde41de123a85e0dcb85c)), closes [#1863](https://github.com/anurag3407/career-pilot/issues/1863)
+
 # [1.134.0](https://github.com/anurag3407/career-pilot/compare/v1.133.1...v1.134.0) (2026-06-03)
 
 
