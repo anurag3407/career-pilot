@@ -1234,6 +1234,7 @@ function Footer() {
   );
 }
 
+
 export default function DesertDunes() {
   return (
     <>

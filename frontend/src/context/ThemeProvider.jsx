@@ -12,32 +12,14 @@ import { ThemeContext } from './ThemeContext';
 export function ThemeProvider({ children }) {
   const [theme, setThemeState] = useState(() => {
     if (typeof window === 'undefined') return 'light';
-    try {
-      const savedTheme = window.localStorage.getItem('theme');
-      if (savedTheme === 'light' || savedTheme === 'dark' || savedTheme === 'highContrast') return savedTheme;
-    } catch (e) {
-      console.warn('Failed to read from localStorage:', e);
-    }
-    return window.matchMedia?.('(prefers-color-scheme: dark)').matches ? 'dark' : 'light';
+
   });
 
   useLayoutEffect(() => {
     if (typeof window === 'undefined') return;
+    
     const root = window.document.documentElement;
-    
-    root.classList.remove('light', 'dark', 'highContrast');
-    root.classList.add(theme);
-    
-    try {
-      window.localStorage.setItem('theme', theme);
-    } catch (e) {
-      console.warn('Failed to write to localStorage:', e);
-    }
-  }, [theme]);
 
-  /**
-   * Cycles the current theme: light -> dark -> highContrast -> light.
-   */
   const toggleTheme = () => {
     setThemeState((prev) => {
       if (prev === 'light') return 'dark';
@@ -47,8 +29,9 @@ export function ThemeProvider({ children }) {
   };
 
   return (
-    <ThemeContext.Provider value={{ theme, toggleTheme }}>
+    <ThemeContext.Provider value={{ theme, resolvedTheme, setTheme, toggleTheme }}>
       {children}
     </ThemeContext.Provider>
   );
 }
+

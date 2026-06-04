@@ -1,13 +1,70 @@
 import { useState, useEffect } from 'react'
 import { motion } from 'framer-motion'
-import { Bell, Mail, MessageSquare, FileText, Save, Cpu } from 'lucide-react'
+import { Bell, Mail, MessageSquare, FileText, Save, Cpu, Sun, Moon, Monitor, Check } from 'lucide-react'
 import { notificationApi, aiApi } from '../services/api'
 import { encryptKey, decryptKey } from '../utils/encryption'
 import Button from '../components/Button'
 import toast from 'react-hot-toast'
 import { SkeletonList } from '../components/ui/Skeleton'
+import { useTheme } from '../hooks/useTheme'
 
 export default function Settings() {
+  const { theme, setTheme } = useTheme()
+
+  const themeOptions = [
+    {
+      id: 'light',
+      label: 'Light',
+      icon: Sun,
+      desc: 'Clean & bright interface',
+      preview: (
+        <div className="w-full h-16 rounded-lg bg-[#f8fafc] border border-[#e2e8f0] flex flex-col gap-1 p-2">
+          <div className="h-2 w-3/4 rounded bg-[#e2e8f0]" />
+          <div className="h-2 w-1/2 rounded bg-[#e2e8f0]" />
+          <div className="mt-auto flex gap-1">
+            <div className="h-3 w-8 rounded bg-[#0ea5e9]" />
+            <div className="h-3 w-6 rounded bg-[#e2e8f0]" />
+          </div>
+        </div>
+      ),
+    },
+    {
+      id: 'dark',
+      label: 'Dark',
+      icon: Moon,
+      desc: 'Easy on the eyes',
+      preview: (
+        <div className="w-full h-16 rounded-lg bg-[#000000] border border-[#222222] flex flex-col gap-1 p-2">
+          <div className="h-2 w-3/4 rounded bg-[#222222]" />
+          <div className="h-2 w-1/2 rounded bg-[#222222]" />
+          <div className="mt-auto flex gap-1">
+            <div className="h-3 w-8 rounded bg-[#00bfff]" />
+            <div className="h-3 w-6 rounded bg-[#222222]" />
+          </div>
+        </div>
+      ),
+    },
+    {
+      id: 'system',
+      label: 'System',
+      icon: Monitor,
+      desc: 'Follows OS settings',
+      preview: (
+        <div className="w-full h-16 rounded-lg overflow-hidden border border-border flex">
+          <div className="w-1/2 h-full bg-[#f8fafc] p-1 flex flex-col gap-1">
+            <div className="h-1 w-3/4 rounded bg-[#e2e8f0]" />
+            <div className="h-1 w-1/2 rounded bg-[#e2e8f0]" />
+          </div>
+          <div className="w-1/2 h-full bg-[#000000] p-1 flex flex-col gap-1">
+            <div className="h-1 w-3/4 rounded bg-[#222222]" />
+            <div className="h-1 w-1/2 rounded bg-[#222222]" />
+          </div>
+        </div>
+      ),
+    },
+  ]
+
+
   const [preferences, setPreferences] = useState({
     jobAlerts: true,
     directMessages: true,
@@ -165,7 +222,52 @@ export default function Settings() {
       <div className="max-w-2xl mx-auto px-4 py-8">
         <motion.div initial={{ opacity: 0, y: -20 }} animate={{ opacity: 1, y: 0 }}>
           <h1 className="text-3xl font-bold text-foreground mb-2">Settings</h1>
-          <p className="text-muted-foreground mb-8">Manage your email notification preferences</p>
+          <p className="text-muted-foreground mb-8">Manage your preferences and appearance</p>
+
+          {/* ── Theme Appearance ── */}
+          <div className="relative overflow-hidden p-6 rounded-2xl bg-card/80 backdrop-blur-sm border border-border shadow-[0_8px_30px_rgb(0,0,0,0.06)] hover:shadow-xl hover:border-primary/20 transition-all duration-300 space-y-5 mb-8">
+            <h2 className="text-lg font-semibold text-foreground flex items-center gap-2">
+              <Sun className="w-5 h-5 text-amber-400" />
+              Appearance
+            </h2>
+            <p className="text-sm text-muted-foreground">Choose how CareerPilot looks on your device. Your selection is saved and applied automatically.</p>
+
+            <div className="grid grid-cols-2 gap-4">
+              {themeOptions.map(({ id, label, icon: Icon, desc, preview }) => {
+                const isActive = theme === id
+                return (
+                  <motion.button
+                    key={id}
+                    onClick={() => { if (!isActive) setTheme(id) }}
+                    whileHover={{ y: -3 }}
+                    whileTap={{ scale: 0.97 }}
+                    className={`relative flex flex-col gap-3 p-4 rounded-xl border-2 text-left transition-all duration-200 cursor-pointer ${
+                      isActive
+                        ? 'border-primary bg-primary/5 shadow-[0_0_0_4px_rgba(14,165,233,0.12)]'
+                        : 'border-border bg-card hover:border-primary/40'
+                    }`}
+                  >
+                    {isActive && (
+                      <span className="absolute top-3 right-3 w-5 h-5 rounded-full bg-primary flex items-center justify-center">
+                        <Check className="w-3 h-3 text-white" />
+                      </span>
+                    )}
+                    {preview}
+                    <div className="flex items-center gap-2">
+                      <Icon className={`w-4 h-4 ${isActive ? 'text-primary' : 'text-muted-foreground'}`} />
+                      <span className={`text-sm font-semibold ${isActive ? 'text-primary' : 'text-foreground'}`}>{label}</span>
+                    </div>
+                    <p className="text-xs text-muted-foreground">{desc}</p>
+                  </motion.button>
+                )
+              })}
+            </div>
+
+            <div className="pt-1 flex items-center gap-3 text-xs text-muted-foreground border-t border-border">
+              <Monitor className="w-3.5 h-3.5" />
+              Theme preference is persisted across sessions via localStorage.
+            </div>
+          </div>
 
           <div className="relative overflow-hidden p-6 rounded-2xl bg-card/80 backdrop-blur-sm border border-border shadow-[0_8px_30px_rgb(0,0,0,0.06)] hover:shadow-xl hover:border-primary/20 transition-all duration-300 space-y-6">
             <h2 className="text-lg font-semibold text-foreground flex items-center gap-2">
