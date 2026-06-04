@@ -57,7 +57,7 @@ export default function Taskbar({ windows, onOpen, onRestore, onFocus, topZ }) {
       transition={{ duration: 0.5, ease: 'easeOut', delay: 0.3 }}
       className="fixed bottom-3 left-1/2 -translate-x-1/2 z-[50] flex items-center gap-1 px-3 py-2 backdrop-blur-xl bg-white/10 border border-white/20 rounded-2xl shadow-2xl max-w-[calc(100vw-24px)]"
     >
-      {TABS.map(({ id, icon: Icon, file }) => {
+      {TABS.map(({ id, icon: Icon, file, label }) => {
         const win = windows.find(w => w.id === id);
         const isOpen = win && !win.closed;
         const isMinimized = win && !win.closed && win.minimized;
@@ -71,6 +71,7 @@ export default function Taskbar({ windows, onOpen, onRestore, onFocus, topZ }) {
 
             <button
               onClick={() => handleClick(id)}
+              aria-label={label}
               className={`
                 relative p-2.5 rounded-xl transition-all duration-200
                 ${isFocused
@@ -83,7 +84,7 @@ export default function Taskbar({ windows, onOpen, onRestore, onFocus, topZ }) {
                 }
               `}
             >
-              <Icon size={17} />
+              <Icon size={17} aria-hidden="true" />
               {isOpen && (
                 <span className={`absolute -bottom-1 left-1/2 -translate-x-1/2 w-1 h-1 rounded-full ${isFocused ? 'bg-white' : 'bg-white/30'}`} />
               )}

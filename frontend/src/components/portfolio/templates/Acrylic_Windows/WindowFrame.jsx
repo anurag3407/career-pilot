@@ -118,9 +118,10 @@ export default function WindowFrame({
           <button
             onPointerDown={e => e.stopPropagation()}
             onClick={e => { e.stopPropagation(); onMinimize(win.id); }}
+            aria-label="Minimize"
             className="w-7 h-7 flex items-center justify-center rounded text-white/40 hover:bg-white/15 hover:text-white transition-all duration-150"
           >
-            <Minus size={11} />
+            <Minus size={11} aria-hidden="true" />
           </button>
 
           {!isMobile && (
@@ -128,18 +129,20 @@ export default function WindowFrame({
               onPointerDown={e => e.stopPropagation()}
               onClick={e => { e.stopPropagation(); onMaximize(win.id); }}
               title={win.maximized ? "Restore" : "Maximize"}
+              aria-label={win.maximized ? "Restore" : "Maximize"}
               className={`w-7 h-7 flex items-center justify-center rounded text-white/40 hover:text-white transition-all duration-150 ${win.maximized ? 'hover:bg-white/15 bg-white/10' : 'hover:bg-white/15'}`}
             >
-              {win.maximized ? <Minimize2 size={10} /> : <Square size={10} />}
+              {win.maximized ? <Minimize2 size={10} aria-hidden="true" /> : <Square size={10} aria-hidden="true" />}
             </button>
           )}
 
           <button
             onPointerDown={e => e.stopPropagation()}
             onClick={e => { e.stopPropagation(); onClose(win.id); }}
+            aria-label="Close"
             className="w-7 h-7 flex items-center justify-center rounded text-white/40 hover:bg-red-500/90 hover:text-white transition-all duration-150"
           >
-            <X size={11} />
+            <X size={11} aria-hidden="true" />
           </button>
         </div>
       </div>
