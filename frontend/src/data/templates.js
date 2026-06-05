@@ -344,7 +344,7 @@ export const templates = [
     "category": "Portfolio",
     "colorScheme": "Dark",
     "layout": "Grid",
-    "author": "System",
+    "author": "Advik Divekar",
     "views": 1027,
     "rating": 4.5,
     "image": "/template-previews/Choose_Adventure.png",
@@ -996,11 +996,12 @@ export const templates = [
     "category": "Portfolio",
     "colorScheme": "Dark",
     "layout": "Grid",
-    "author": "System",
+    "author": "Advik Divekar",
     "views": 1081,
     "rating": 4.5,
     "image": "/template-previews/High_Fashion.png",
-    "createdAt": "2026-05-01"
+    "createdAt": "2026-05-01",
+    "isComplete": true
   },
   {
     "id": "Holographic",
@@ -1141,11 +1142,12 @@ export const templates = [
     "category": "Portfolio",
     "colorScheme": "Dark",
     "layout": "Grid",
-    "author": "System",
+    "author": "Advik Divekar",
     "views": 1093,
     "rating": 4.5,
     "image": "/template-previews/Low_Poly_Terrain.png",
-    "createdAt": "2026-05-01"
+    "createdAt": "2026-05-01",
+    "isComplete": true
   },
   {
     "id": "MacOS_Desktop",
@@ -1373,11 +1375,12 @@ export const templates = [
     "category": "Portfolio",
     "colorScheme": "Dark",
     "layout": "Grid",
-    "author": "System",
+    "author": "Advik Divekar",
     "views": 1112,
     "rating": 4.5,
     "image": "/template-previews/Neon_Cityscape.png",
-    "createdAt": "2026-05-01"
+    "createdAt": "2026-05-01",
+    "isComplete": true
   },
   {
     "id": "Neon_Noir",
@@ -1493,11 +1496,12 @@ export const templates = [
     "category": "Portfolio",
     "colorScheme": "Dark",
     "layout": "Grid",
-    "author": "System",
+    "author": "Advik Divekar",
     "views": 1122,
     "rating": 4.5,
     "image": "/template-previews/Ocean_Depths.png",
-    "createdAt": "2026-05-01"
+    "createdAt": "2026-05-01",
+    "isComplete": true
   },
   {
     "id": "One_Page_Scroll",
@@ -1627,11 +1631,12 @@ export const templates = [
     "category": "Portfolio",
     "colorScheme": "Dark",
     "layout": "Grid",
-    "author": "System",
+    "author": "Advik Divekar",
     "views": 1133,
     "rating": 4.5,
     "image": "/template-previews/Planetary_Orbit.png",
-    "createdAt": "2026-05-01"
+    "createdAt": "2026-05-01",
+    "isComplete": true
   },
   {
     "id": "Playing_Cards",
@@ -2370,7 +2375,7 @@ export const templates = [
     "category": "Portfolio",
     "colorScheme": "Dark",
     "layout": "Grid",
-    "author": "System",
+    "author": "Advik Divekar",
     "views": 1194,
     "rating": 4.5,
     "image": "/template-previews/Weather_Mood.png",
@@ -2394,11 +2399,12 @@ export const templates = [
     "category": "Portfolio",
     "colorScheme": "Dark",
     "layout": "Grid",
-    "author": "System",
+    "author": "yashitripathi2007",
     "views": 1196,
     "rating": 4.5,
     "image": "/template-previews/Wildflower_Field.png",
-    "createdAt": "2026-05-01"
+    "createdAt": "2026-05-01",
+    "isComplete": true
   },
   {
     "id": "Windows_98",

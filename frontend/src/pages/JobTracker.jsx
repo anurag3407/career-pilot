@@ -19,7 +19,7 @@ import Card from "../components/Card";
 import EmptyJobState from "../components/EmptyJobState";
 import CompanyResearch from "../components/CompanyResearch";
 import { Sparkles } from "lucide-react";
-import { SkeletonDashboard } from "../components/ui/Skeleton.jsx";
+import { SkeletonTracker } from "../components/ui/Skeleton";
 
 const JobTracker = () => {
   const [trackedJobs, setTrackedJobs] = useState([]);
@@ -171,11 +171,7 @@ const JobTracker = () => {
   if (loading) {
     return (
       <Layout>
-        <div className="min-h-screen bg-background py-8 px-4">
-          <div className="max-w-7xl mx-auto">
-            <SkeletonDashboard />
-          </div>
-        </div>
+        <SkeletonTracker />
       </Layout>
     );
   }

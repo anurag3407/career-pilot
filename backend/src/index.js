@@ -6,6 +6,7 @@ dotenv.config();
 import { createServer } from 'http';
 import cors from 'cors';
 import helmet from 'helmet';
+import compressionMiddleware from './middleware/compression.js';
 import rateLimit from 'express-rate-limit';
 import searchRoutes from './routes/search.js';
 import portfolioRoutes from './routes/portfolio.js';
@@ -39,7 +40,6 @@ import {
 } from "./middleware/metrics.js";
 import redisManager from './config/redis.js';
 
-
 import { initializeSocket } from './config/socket.js';
 
 import { initializeDefaultChannels } from './controllers/communityFirebaseController.js';
@@ -69,49 +69,58 @@ import {
   initializeDigestQueue,
   startDigestWorker
 } from './services/weeklyDigestService.js';
+import { getSafeConfig } from './utils/safeConfig.js';
+import { validateEmailConfig } from './utils/emailConfig.js';
 
-// ============================================================================
-// Configuration validation - Check for required API keys
-// ============================================================================
-if (!process.env.GEMINI_API_KEY) {
-  console.warn('⚠️  GEMINI_API_KEY is not configured - AI features will be unavailable.');
-  console.warn('   Set GEMINI_API_KEY in your .env file to enable Google Gemini features.');
+// ==========================================================================
+// Configuration validation - Check for required API keys (dev only)
+// ==========================================================================
+if (process.env.NODE_ENV === 'development') {
+  if (!process.env.GEMINI_API_KEY) {
+    console.warn('⚠️  GEMINI_API_KEY is not configured - AI features will be unavailable.');
+    console.warn('   Set GEMINI_API_KEY in your .env file to enable Google Gemini features.');
+  }
+
+  if (!process.env.GROQ_API_KEY) {
+    console.warn('⚠️  GROQ_API_KEY is not configured - Groq AI provider will not be available.');
+  }
+
+  if (!process.env.OPENAI_API_KEY) {
+    console.warn('⚠️  OPENAI_API_KEY is not configured - OpenAI provider will not be available.');
+  }
 }
-
-if (!process.env.GROQ_API_KEY) {
-  console.warn('⚠️  GROQ_API_KEY is not configured - Groq AI provider will not be available.');
-}
-
-if (!process.env.OPENAI_API_KEY) {
-  console.warn('⚠️  OPENAI_API_KEY is not configured - OpenAI provider will not be available.');
-}
-
 const app = express();
 app.use(metricsMiddleware);
+app.use(compressionMiddleware);
 const httpServer = createServer(app);
 const PORT = process.env.PORT || 5001;
 
-// Log FRONTEND_URL for debugging
-console.log('🔧 FRONTEND_URL env var:', process.env.FRONTEND_URL);
-
+// Log a presence-only configuration summary in development only.
+// Secrets cannot leak into startup logs or aggregated log output.
+if (process.env.NODE_ENV === 'development') {
+  console.log('✓ Config summary:', getSafeConfig(process.env, [
+    'NODE_ENV',
+    'FRONTEND_URL',
+    'EMAIL_SERVICE_URL',
+    'GEMINI_API_KEY',
+    'GROQ_API_KEY',
+    'OPENAI_API_KEY',
+  ]));
+}
 // CORS configuration - MUST come before helmet
 const allowedOrigins = [
   'http://localhost:5173',
   'http://localhost:3000',
-  'https://careerpilotyy.netlify.app',  // Hardcoded as fallback
+  'https://careerpilotyy.netlify.app',
   process.env.FRONTEND_URL,
-].filter(Boolean).map(url => url.replace(/\/$/, '')); // Remove trailing slashes
+].filter(Boolean).map(url => url.replace(/\/$/, ''));
 
 console.log('🔧 Allowed origins:', allowedOrigins);
 
 app.use(cors({
   origin: function (origin, callback) {
-    // Allow requests with no origin (like mobile apps or curl)
     if (!origin) return callback(null, true);
-    
-    // Normalize origin by removing trailing slash
     const normalizedOrigin = origin.replace(/\/$/, '');
-    
     if (allowedOrigins.includes(normalizedOrigin)) {
       callback(null, true);
     } else {
@@ -124,7 +133,6 @@ app.use(cors({
   allowedHeaders: ['Content-Type', 'Authorization', 'X-Requested-With', 'X-AI-Provider', 'X-AI-Key', 'X-AI-Model', 'X-OpenRouter-Key']
 }));
 
-// Helmet security headers - configured to not interfere with CORS
 app.use(helmet({
   crossOriginResourcePolicy: { policy: 'cross-origin' },
   crossOriginOpenerPolicy: { policy: 'same-origin-allow-popups' },
@@ -133,14 +141,14 @@ app.use(helmet({
       defaultSrc: ["'self'"],
       scriptSrc: [
         "'self'",
-        "'unsafe-inline'",       // Required for React inline scripts
+        "'unsafe-inline'",
         "https://apis.google.com",
         "https://accounts.google.com",
         "https://www.gstatic.com",
       ],
       styleSrc: [
         "'self'",
-        "'unsafe-inline'",       // Required for Tailwind/inline styles
+        "'unsafe-inline'",
         "https://fonts.googleapis.com",
       ],
       fontSrc: [
@@ -151,7 +159,7 @@ app.use(helmet({
         "'self'",
         "data:",
         "blob:",
-        "https:",                // Allow all HTTPS images (company logos etc)
+        "https:",
       ],
       connectSrc: [
         "'self'",
@@ -160,8 +168,8 @@ app.use(helmet({
         "https://*.googleapis.com",
         "https://*.firebaseio.com",
         "https://identitytoolkit.googleapis.com",
-        "wss:",                  // WebSocket for Socket.IO
-        "ws:",                   // WebSocket local dev
+        "wss:",
+        "ws:",
       ],
       frameSrc: [
         "'self'",
@@ -172,9 +180,10 @@ app.use(helmet({
     },
   },
 }));
+
 const limiter = rateLimit({
-  windowMs: parseInt(process.env.RATE_LIMIT_WINDOW_MS) || 15 * 60 * 1000, // 15 minutes
-  max: parseInt(process.env.RATE_LIMIT_MAX_REQUESTS) || 1000, // increased for development
+  windowMs: parseInt(process.env.RATE_LIMIT_WINDOW_MS) || 15 * 60 * 1000,
+  max: parseInt(process.env.RATE_LIMIT_MAX_REQUESTS) || 1000,
   standardHeaders: true,
   legacyHeaders: false,
   handler: (req, res, next, options) => {
@@ -218,7 +227,6 @@ app.get('/health', (req, res) => {
   });
 });
 
-// Removed broken swagger doc route
 app.get('/metrics', metricsHandler);
 
 app.use('/api/docs', swaggerUi.serve, swaggerUi.setup(swaggerSpec));
@@ -236,9 +244,7 @@ app.use("/api/upload", inputRoutes);
 app.use("/api/recruiter", recruiterRoutes);
 try {
     const paymentRoutes = (await import('./routes/payments.js')).default;
-
     app.use('/api/payments', paymentRoutes);
-
     console.log('✅ Payment routes loaded');
 } catch (error) {
     console.warn('⚠️ Payment routes disabled:', error.message);
@@ -257,8 +263,19 @@ app.use((req, res) => {
   res.status(404).json({ error: 'Route not found' });
 });
 app.use(globalErrorHandler);
+
 const startServer = async () => {
   try {
+    // Fail fast in production when email is not configured; warn otherwise.
+    // Without this check, missing credentials surface only later as silent
+    // send failures.
+    const emailStatus = validateEmailConfig(process.env);
+    if (emailStatus.enabled) {
+      console.log(`📧 ${emailStatus.message}`);
+    } else {
+      console.warn(`⚠️ ${emailStatus.message}`);
+    }
+
     await connectDB();
 
     httpServer.listen(PORT, () => {
@@ -310,11 +327,9 @@ const startServer = async () => {
 
     try {
       const digestQueueReady = await initializeDigestQueue();
-
       if (digestQueueReady) {
         startDigestWorker();
       }
-
       scheduleWeeklyDigest();
     } catch (digestError) {
       console.warn(
@@ -331,7 +346,6 @@ const startServer = async () => {
 
 startServer();
 
-// Graceful shutdown
 const shutdown = async (signal) => {
     console.log(`\n📥 Received ${signal}, shutting down gracefully...`);
     await redisManager.shutdown();

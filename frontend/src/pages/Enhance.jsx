@@ -2,7 +2,7 @@ import { useState, useEffect } from 'react'
 import { useParams, useNavigate } from 'react-router-dom'
 import toast from 'react-hot-toast'
 import { motion } from 'framer-motion'
-import { resumeApi, enhanceApi } from '../services/api'
+import { resumeApi, enhanceApi, portfolioApi } from '../services/api'
 import { triggerConfetti } from '../utils/confetti'
 import ResumeAnalysisSkeleton from '../components/ui/ResumeAnalysisSkeleton'
 import {
@@ -28,7 +28,8 @@ import {
   Lightbulb,
   Brain,
   Edit3,
-  ClipboardList
+  ClipboardList,
+  Globe
 } from 'lucide-react'
 import { SkeletonList } from '../components/ui/Skeleton'
 import ResumeScore from '../components/ResumeScore'
@@ -354,6 +355,7 @@ export default function Enhance() {
   const [loading, setLoading] = useState(true)
   const [analyzing, setAnalyzing] = useState(false)
   const [enhancing, setEnhancing] = useState(false)
+  const [generatingPortfolio, setGeneratingPortfolio] = useState(false)
   const [scoring, setScoring] = useState(false)
   const [scoreData, setScoreData] = useState(null)
   const [atsAnalysis, setAtsAnalysis] = useState(null)
@@ -362,6 +364,7 @@ export default function Enhance() {
 
   const [jobRole, setJobRole] = useState('')
   const [hasAnalyzed, setHasAnalyzed] = useState(false)
+  const [enhancementComplete, setEnhancementComplete] = useState(false)
   const [copiedKeyword, setCopiedKeyword] = useState(null)
 
   useEffect(() => {
@@ -373,6 +376,7 @@ export default function Enhance() {
     try {
       const response = await resumeApi.getById(resumeId)
       setResume(response.data)
+      setEnhancementComplete(Boolean(response.data.enhancedText))
       if (response.data.jobRole) {
         setJobRole(response.data.jobRole)
       }
@@ -469,6 +473,14 @@ export default function Enhance() {
         preferences: apiPreferences
       })
 
+      setResume((current) => ({
+        ...current,
+        enhancedText: enhanceResponse.data.enhancedResume,
+        jobRole,
+        preferences: apiPreferences
+      }))
+      setEnhancementComplete(true)
+
       // Create a version snapshot for the AI enhanced state
       try {
         await resumeApi.createVersion(resumeId, {
@@ -485,11 +497,28 @@ export default function Enhance() {
 
       toast.success('Resume enhanced successfully!')
       triggerConfetti({ duration: 3000, particleCount: 150, spread: 120 })
-      navigate(`/resume/${resumeId}`)
     } catch (error) {
       toast.error(error.message || 'Failed to enhance resume')
     } finally {
       setEnhancing(false)
+    }
+  }
+
+  const handleGeneratePortfolio = async () => {
+    setGeneratingPortfolio(true)
+    const toastId = toast.loading('Generating portfolio from enhanced resume...')
+
+    try {
+      const response = await portfolioApi.generateFromResume(resumeId)
+      const portfolioData = response.data?.portfolio || response.data
+
+      localStorage.setItem('ai_portfolio_draft', JSON.stringify(portfolioData))
+      toast.success('Portfolio draft generated!', { id: toastId })
+      navigate('/templates')
+    } catch (error) {
+      toast.error(error.message || 'Failed to generate portfolio', { id: toastId })
+    } finally {
+      setGeneratingPortfolio(false)
     }
   }
 
@@ -1007,24 +1036,45 @@ export default function Enhance() {
                     <p className="text-muted-foreground">Let AI optimize your resume based on the analysis above</p>
                   </div>
                 </div>
-                <button
-                  onClick={handleEnhanceWithAI}
-                  disabled={enhancing}
-                  className="w-full md:w-auto px-8 py-4 bg-gradient-to-r from-indigo-600 to-purple-600 text-foreground rounded-xl font-semibold hover:from-primary hover:to-secondary transition-all disabled:opacity-50 disabled:cursor-not-allowed flex items-center justify-center gap-2 shadow-lg shadow-indigo-500/25"
-                >
-                  {enhancing ? (
-                    <>
-                      <RefreshCw className="w-5 h-5 animate-spin" />
-                      Enhancing with AI...
-                    </>
-                  ) : (
-                    <>
-                      <Sparkles className="w-5 h-5" />
-                      Improve with AI
-                      <ArrowRight className="w-5 h-5" />
-                    </>
+                <div className="flex w-full flex-col gap-3 md:w-auto md:flex-row">
+                  {enhancementComplete && (
+                    <button
+                      onClick={handleGeneratePortfolio}
+                      disabled={generatingPortfolio}
+                      className="w-full md:w-auto px-8 py-4 bg-secondary text-secondary-foreground rounded-xl font-semibold hover:bg-secondary/90 transition-all disabled:opacity-50 disabled:cursor-not-allowed flex items-center justify-center gap-2"
+                    >
+                      {generatingPortfolio ? (
+                        <>
+                          <RefreshCw className="w-5 h-5 animate-spin" />
+                          Generating...
+                        </>
+                      ) : (
+                        <>
+                          <Globe className="w-5 h-5" />
+                          Generate Portfolio
+                        </>
+                      )}
+                    </button>
                   )}
-                </button>
+                  <button
+                    onClick={handleEnhanceWithAI}
+                    disabled={enhancing}
+                    className="w-full md:w-auto px-8 py-4 bg-gradient-to-r from-indigo-600 to-purple-600 text-foreground rounded-xl font-semibold hover:from-primary hover:to-secondary transition-all disabled:opacity-50 disabled:cursor-not-allowed flex items-center justify-center gap-2 shadow-lg shadow-indigo-500/25"
+                  >
+                    {enhancing ? (
+                      <>
+                        <RefreshCw className="w-5 h-5 animate-spin" />
+                        Enhancing with AI...
+                      </>
+                    ) : (
+                      <>
+                        <Sparkles className="w-5 h-5" />
+                        Improve with AI
+                        <ArrowRight className="w-5 h-5" />
+                      </>
+                    )}
+                  </button>
+                </div>
               </div>
 
               {enhancing && (

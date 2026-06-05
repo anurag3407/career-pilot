@@ -1,18 +1,32 @@
 import React, { useState, useRef, useEffect, Suspense, useMemo } from "react";
+import { useSearchParams } from "react-router-dom";
+import { motion, AnimatePresence } from "framer-motion";
+import { Moon, Sun, ChevronDown, Check, Eye, Star, Sparkles, X } from "lucide-react";
+
+// Context & Data
+import { useTheme } from "../hooks/useTheme";
+import { templates } from '../data/templates';
+
+// Components
 import { useTheme } from "../hooks/useTheme";
 import Navbar from "../components/Navbar";
 import DeployModal from "../components/portfolio/DeployModal";
 import ThemeSelector from "../components/portfolio/ThemeSelector";
+
+// Individual Section Components
+import AccessibilityReport from "../components/portfolio/AccessibilityReport";
 import HolographicAbout from "../components/portfolio/templates/Holographic/About";
 import CulinaryAbout from "../components/portfolio/templates/Culinary_Restaurant/About";
 import TechStartupHero from "../components/portfolio/templates/Tech_Startup/Hero";
 import GeometricShapesAbout from "../components/portfolio/templates/Geometric_Shapes/About";
+
+// Full Template Components
 import ChooseAdventurePortfolio from "../components/portfolio/templates/Choose_Adventure/index";
 import WeatherMood from "../components/portfolio/templates/Weather_Mood/index";
 import SwissTypography from "../components/portfolio/templates/Swiss_Typography/index";
 import DesertDunes from "../components/portfolio/templates/Desert_Dunes/index";
 import { templates } from '../data/templates';
-import { motion, AnimatePresence } from "framer-motion";
+import { motion as Motion, AnimatePresence } from "framer-motion";
 import { Moon, Sun, ChevronDown, Check, Eye, Star, Sparkles, X } from "lucide-react";
 import LiquidGlass from "../components/portfolio/templates/Liquid_Glass/index";
 import MidnightGradient from "../components/portfolio/templates/Midnight_Gradient/index";
@@ -25,6 +39,13 @@ import TypewriterEffect from "../components/portfolio/templates/Typewriter_Effec
 import ChromaticGlitch from "../components/portfolio/templates/Chromatic_Glitch/index";
 import MagneticDock from "../components/portfolio/templates/Magnetic_Dock/index";
 import { useSearchParams } from "react-router-dom";
+import MorphingBlobs from "../components/portfolio/templates/Morphing_Blobs/index";
+import OceanDepths from "../components/portfolio/templates/Ocean_Depths/index";
+import NeonCityscape from "../components/portfolio/templates/Neon_Cityscape/index";
+import PlanetaryOrbit from "../components/portfolio/templates/Planetary_Orbit/index";
+import LowPolyTerrain from "../components/portfolio/templates/Low_Poly_Terrain/index";
+import HighFashion from "../components/portfolio/templates/High_Fashion/index";
+// import SportsAthletic from "../components/portfolio/templates/Sports_Athletic/index";
 
 /* TemplatePreviewFrame — contains each full portfolio template in a sandboxed scrollable box. */
 function TemplatePreviewFrame({ label, badgeColor, children }) {
@@ -39,7 +60,7 @@ function TemplatePreviewFrame({ label, badgeColor, children }) {
       <div
         className="rounded-2xl border border-border"
         style={{
-          height: 600,
+          height: 640,
           overflowY: "auto",
           overflowX: "hidden",
           transform: "translate(0)",
@@ -89,7 +110,7 @@ function FilterSelect({ value, onChange, options, className = "" }) {
 
       <AnimatePresence>
         {open && (
-          <motion.ul
+          <Motion.ul
             initial={{ opacity: 0, y: -6, scale: 0.97 }}
             animate={{ opacity: 1, y: 0, scale: 1 }}
             exit={{ opacity: 0, y: -6, scale: 0.97 }}
@@ -122,7 +143,7 @@ function FilterSelect({ value, onChange, options, className = "" }) {
                 </li>
               );
             })}
-          </motion.ul>
+          </Motion.ul>
         )}
       </AnimatePresence>
     </div>
@@ -145,7 +166,7 @@ const TemplateHeroPreview = ({ templateId, portfolioData }) => {
 
 function TemplateCard({ template, hovered, onHover, onLeave, onUse, aiDraft }) {
   return (
-    <motion.div
+    <Motion.div
       onMouseEnter={() => onHover(template.id)}
       onMouseLeave={onLeave}
       animate={hovered ? "hover" : "rest"}
@@ -174,7 +195,7 @@ function TemplateCard({ template, hovered, onHover, onLeave, onUse, aiDraft }) {
             <TemplateHeroPreview templateId={template.id} portfolioData={aiDraft} />
           </div>
         ) : (
-          <motion.img
+          <Motion.img
             src={template.image}
             alt={template.title}
             className="w-full h-52 object-cover object-top"
@@ -184,7 +205,7 @@ function TemplateCard({ template, hovered, onHover, onLeave, onUse, aiDraft }) {
             }}
           />
         )}
-        <motion.div
+        <Motion.div
           className="absolute inset-0 bg-gradient-to-t from-black/50 via-transparent to-transparent pointer-events-none"
           variants={{ rest: { opacity: 0 }, hover: { opacity: 1 } }}
           transition={{ duration: 0.3 }}
@@ -214,46 +235,23 @@ function TemplateCard({ template, hovered, onHover, onLeave, onUse, aiDraft }) {
             {template.views.toLocaleString()}
           </span>
         </div>
-
-        <AnimatePresence>
-          {hovered && (
-            <motion.div
-              key="cta-group"
-              initial={{ opacity: 0, y: 14 }}
-              animate={{
-                opacity: 1, y: 0,
-                transition: { type: "spring", stiffness: 340, damping: 26, delay: 0.05 },
-              }}
-              exit={{
-                opacity: 0, y: 10,
-                transition: { duration: 0.16, ease: "easeIn" },
-              }}
-              className="flex gap-2 w-full mt-4"
-            >
-              <button
-                onClick={(e) => { e.stopPropagation(); onUse(template.title, false, template.id); }}
-                className="flex-1 bg-primary text-primary-foreground py-2.5 rounded-xl font-semibold text-sm cursor-pointer hover:scale-[1.02] active:scale-[0.98] transition-transform"
-              >
-                Use Theme
-              </button>
-              <button
-                onClick={(e) => { e.stopPropagation(); onUse(template.id, true, template.id); }}
-                className="flex-1 bg-muted text-foreground border border-border py-2.5 rounded-xl font-semibold text-sm cursor-pointer hover:bg-accent hover:scale-[1.02] active:scale-[0.98] transition-all flex items-center justify-center gap-2"
-              >
-                <Eye className="w-4 h-4" /> Preview
-              </button>
-            </motion.div>
-          )}
-        </AnimatePresence>
+        <div className="flex gap-2">
+          <button onClick={(e) => { e.stopPropagation(); onUse(template.id, true); }} className="flex-1 rounded-xl border border-border bg-card px-4 py-2 text-sm font-medium hover:bg-accent transition-colors">Preview</button>
+          <button onClick={(e) => { e.stopPropagation(); onUse(template.id, false, template.id); }} className="flex-1 rounded-xl bg-cyan-500 text-white px-4 py-2 text-sm font-medium hover:bg-cyan-600 transition-colors">Use Theme</button>
+        </div>
       </div>
-    </motion.div>
+    </Motion.div>
   );
 }
 
 const TemplatePreviewModal = ({ templateId, isOpen, onClose, portfolioData }) => {
-  const Component = useMemo(() => {
+  const Component = React.useMemo(() => {
     if (!templateId) return null;
-    return React.lazy(() => import(`../components/portfolio/templates/${templateId}/index.jsx`));
+    return React.lazy(() => 
+      import(`../components/portfolio/templates/${templateId}/Hero.jsx`).catch(() => 
+        import(`../components/portfolio/templates/${templateId}/index.jsx`)
+      )
+    );
   }, [templateId]);
 
   if (!isOpen || !templateId) return null;
@@ -265,30 +263,146 @@ const TemplatePreviewModal = ({ templateId, isOpen, onClose, portfolioData }) =>
           <h2 className="text-xl font-bold bg-clip-text text-transparent bg-gradient-to-r from-cyan-400 to-blue-500">
             {templateId.replace(/_/g, ' ')} Preview
           </h2>
-          <span className="px-3 py-1 text-xs font-medium rounded-full bg-cyan-500/10 text-cyan-400 border border-cyan-500/20">
-            Live Demo
-          </span>
         </div>
-        <button
-          onClick={onClose}
-          className="p-2 text-muted-foreground hover:text-foreground bg-muted hover:bg-accent rounded-xl transition-colors"
-        >
+        <button onClick={onClose} className="p-2 text-muted-foreground hover:text-foreground bg-muted hover:bg-accent rounded-xl">
           <X className="w-5 h-5" />
         </button>
       </div>
       <div className="flex-1 overflow-y-auto relative bg-background">
-        <Suspense fallback={
-          <div className="absolute inset-0 flex flex-col items-center justify-center text-muted-foreground gap-4">
-            <div className="w-8 h-8 border-4 border-cyan-500 border-t-transparent rounded-full animate-spin" />
-            <p className="animate-pulse font-medium tracking-wide text-sm uppercase">Loading interactive preview...</p>
-          </div>
-        }>
+        <React.Suspense fallback={<div className="p-4 text-center">Loading...</div>}>
           {Component && <Component portfolioData={portfolioData} />}
-        </Suspense>
+        </React.Suspense>
       </div>
     </div>
   );
 };
+            
+  export default function TemplateGallery() {
+  const { theme, toggleTheme } = useTheme();
+  const [searchParams, setSearchParams] = useSearchParams();
+  const previewTemplateId = searchParams.get("preview");
+  const [hoveredCard, setHoveredCard] = useState(null);
+
+    const [category, setCategory] = useState("All");
+    const [colorScheme, setColorScheme] = useState("All");
+  const [layout, setLayout] = useState("All");
+  const [sort, setSort] = useState("Popular");
+    
+  const [aiDraft, setAiDraft] = useState(null);
+  const [isA11yLoading, setIsA11yLoading] = useState(false);
+  const [a11yReport, setA11yReport] = useState(null);
+
+  const runA11yCheck = () => {
+    setIsA11yLoading(true);
+    setTimeout(() => {
+      setA11yReport({
+        score: 82,
+        issues: [
+          { severity: "critical", rule: "Images must have alt text", element: "<img src='hero.png'>", suggestion: "Add a descriptive alt attribute." },
+          { severity: "serious", rule: "Color contrast is insufficient", element: "<div class='text-gray-400 bg-white'>", suggestion: "Increase contrast ratio to at least 4.5:1." },
+          { severity: "moderate", rule: "Heading levels skipped", element: "<h4>", suggestion: "Use <h3> before <h4>." },
+          { severity: "minor", rule: "Redundant link text", element: "<a href='#'>Click here</a>", suggestion: "Use descriptive text for the link." },
+        ],
+      });
+      setIsA11yLoading(false);
+    }, 1500);
+  };
+
+    useEffect(() => {
+      const draft = localStorage.getItem('ai_portfolio_draft');
+      if (draft) {
+        try {
+          setAiDraft(JSON.parse(draft));
+        } catch {}
+      }
+    }, []);
+
+    const clearDraft = () => {
+      localStorage.removeItem('ai_portfolio_draft');
+      setAiDraft(null);
+    };
+
+    const [selectedTheme, setSelectedTheme] = useState("minimal");
+    const [isDeployModalOpen, setIsDeployModalOpen] = useState(false);
+    const [selectedPortfolioTitle, setSelectedPortfolioTitle] = useState("");
+    const [selectedTemplateId, setSelectedTemplateId] = useState("default");
+
+    const handleUseTemplate = (val, isPreview, id = "default") => {
+      if (isPreview) {
+        setSearchParams({ preview: val });
+      } else {
+        setSelectedPortfolioTitle(val);
+        setSelectedTemplateId(id);
+        setIsDeployModalOpen(true);
+      }
+    };
+
+    const CATEGORY_OPTIONS = [
+      { value: "All", label: "All Categories" },
+      { value: "Portfolio", label: "Portfolio" },
+      { value: "Resume", label: "Resume" },
+      { value: "Dashboard", label: "Dashboard" },
+    ];
+    const COLOR_OPTIONS = [
+      { value: "All", label: "All Color Schemes" },
+      { value: "Dark", label: "Dark" },
+      { value: "Light", label: "Light" },
+      { value: "Colorful", label: "Colorful" },
+    ];
+    const LAYOUT_OPTIONS = [
+      { value: "All", label: "All Layouts" },
+      { value: "Grid", label: "Grid" },
+      { value: "Minimal", label: "Minimal" },
+      { value: "Cards", label: "Cards" },
+      { value: "Interactive", label: "Interactive" },
+    ];
+    const SORT_OPTIONS = [
+      { value: "Popular", label: "Popular" },
+      { value: "Newest", label: "Newest" },
+      { value: "Highest Rated", label: "Highest Rated" },
+    ];
+
+    const filteredTemplates = templates.filter((template) => {
+      if (!template.isComplete) return false;
+      const matchesCategory = category === "All" || template.category === category;
+      const matchesColorScheme = colorScheme === "All" || template.colorScheme === colorScheme;
+      const matchesLayout = layout === "All" || template.layout === layout;
+      return matchesCategory && matchesColorScheme && matchesLayout;
+    });
+
+    const sortedTemplates = [...filteredTemplates].sort((a, b) => {
+      if (sort === "Popular") return b.views - a.views;
+      if (sort === "Highest Rated") return b.rating - a.rating;
+      if (sort === "Newest") return new Date(b.createdAt) - new Date(a.createdAt);
+      return 0;
+    });
+
+    return (
+      <div className="min-h-screen bg-background text-foreground transition-colors duration-300">
+        <Navbar />
+        <div className="p-8 pt-24">
+        <div className="flex items-center mb-8">
+          <h1 className="text-4xl font-bold">Template Gallery</h1>
+          
+        {aiDraft && (
+          <div className="mb-8 p-4 rounded-xl bg-gradient-to-r from-emerald-500/10 to-teal-500/10 border border-emerald-500/30 flex items-center justify-between">
+            <div>
+              <h3 className="text-emerald-400 font-bold flex items-center gap-2">
+                <Sparkles className="w-5 h-5" /> ✨ Resume Parsed Successfully!
+              </h3>
+              <p className="text-sm text-muted-foreground mt-1">
+                Your data has been extracted. Select a template below and we'll automatically inject your experience and projects!
+              </p>
+            </div>
+            <button 
+              onClick={clearDraft}
+              className="p-2 hover:bg-emerald-500/20 text-emerald-400 rounded-lg transition-colors"
+              title="Discard Draft"
+            >
+              <X className="w-5 h-5" />
+            </button>
+          </div>
+        )}
 
 export default function TemplateGallery() {
   const { theme, toggleTheme } = useTheme();
@@ -416,6 +530,8 @@ export default function TemplateGallery() {
 
       <div className="p-8 pt-24">
         
+      
+      <div className="p-8 pt-24">
         {aiDraft && (
           <div className="mb-8 p-4 rounded-xl bg-gradient-to-r from-emerald-500/10 to-teal-500/10 border border-emerald-500/30 flex items-center justify-between">
             <div>
@@ -438,6 +554,9 @@ export default function TemplateGallery() {
 
         <div className="flex justify-between items-center mb-8">
           <h1 className="text-4xl font-bold">Template Gallery</h1>
+        <div className="flex justify-between items-center mb-8">
+          <h1 className="text-4xl font-bold">Template Gallery</h1>
+          </div>
           <button
             onClick={toggleTheme}
             className="p-2 rounded-xl bg-muted hover:bg-accent border border-border text-foreground transition-all cursor-pointer overflow-hidden relative group"
@@ -445,6 +564,7 @@ export default function TemplateGallery() {
           >
             <AnimatePresence mode="wait" initial={false}>
               <motion.div
+              <Motion.div
                 key={theme}
                 initial={{ y: 20, opacity: 0, rotate: 45 }}
                 animate={{ y: 0, opacity: 1, rotate: 0 }}
@@ -453,6 +573,7 @@ export default function TemplateGallery() {
               >
                 {theme === "light" ? <Moon className="w-5 h-5" /> : <Sun className="w-5 h-5" />}
               </motion.div>
+              </Motion.div>
             </AnimatePresence>
           </button>
         </div>
@@ -530,6 +651,67 @@ export default function TemplateGallery() {
             <h2 className="text-lg font-semibold text-foreground/70">Holographic Theme — About Section</h2>
           </div>
           <div className="overflow-hidden rounded-2xl border border-border"><HolographicAbout /></div>
+          </div>
+          <ThemeSelector selectedTheme={selectedTheme} onSelectTheme={setSelectedTheme} />
+          <div className="mt-8">
+            <AccessibilityReport
+              isLoading={isA11yLoading}
+              report={a11yReport}
+              onRecheck={runA11yCheck}
+            />
+          </div>
+        </div>
+
+        <div className="flex flex-wrap items-center gap-3 mb-8">
+          <FilterSelect value={category} onChange={setCategory} options={CATEGORY_OPTIONS} />
+          <FilterSelect value={colorScheme} onChange={setColorScheme} options={COLOR_OPTIONS} />
+          <FilterSelect value={layout} onChange={setLayout} options={LAYOUT_OPTIONS} />
+          <FilterSelect value={sort} onChange={setSort} options={SORT_OPTIONS} className="ml-auto" />
+        </div>
+
+        {sortedTemplates.length === 0 ? (
+          <div className="text-center text-muted-foreground mt-12 text-xl">
+            No templates match the selected criteria.
+          </div>
+        ) : (
+          <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 xl:grid-cols-4 gap-6">
+            {sortedTemplates.map((template) => (
+              <TemplateCard
+                key={template.id}
+                template={template}
+                hovered={hoveredCard === template.id}
+                onHover={setHoveredCard}
+                onLeave={() => setHoveredCard(null)}
+                onUse={handleUseTemplate}
+                aiDraft={aiDraft}
+              />
+            ))}
+          </div>
+        )}
+
+        {/* --- SECTION ONLY PREVIEWS --- */}
+        <div className="mt-12">
+          <div className="mb-4 flex items-center gap-3 px-1">
+            <span className="rounded-full bg-cyan-500/20 px-3 py-1 text-xs font-bold uppercase tracking-widest text-cyan-400 border border-cyan-500/30">Preview</span>
+            <h2 className="text-lg font-semibold text-foreground/70">Holographic Theme — About Section</h2>
+          </div>
+          <div className="overflow-hidden rounded-2xl border border-border"><HolographicAbout /></div>
+        </div>
+
+        <div className="mt-12">
+          <div className="mb-4 flex items-center gap-3 px-1">
+            <span className="rounded-full bg-amber-500/20 px-3 py-1 text-xs font-bold uppercase tracking-widest text-amber-400 border border-amber-500/30">Preview</span>
+            <h2 className="text-lg font-semibold text-foreground/70">Geometric Shapes Theme — About Section</h2>
+          </div>
+          <div className="overflow-hidden rounded-2xl border border-border"><GeometricShapesAbout /></div>
+        </div>
+
+        <div className="mt-12">
+          <div className="mb-4 flex items-center gap-3 px-1">
+            <span className="rounded-full bg-amber-500/20 px-3 py-1 text-xs font-bold uppercase tracking-widest text-amber-400 border border-amber-500/30">Preview</span>
+            <h2 className="text-lg font-semibold text-foreground/70">Culinary Restaurant Theme — About Section</h2>
+          </div>
+          <div className="overflow-hidden rounded-2xl border border-border"><CulinaryAbout /></div>
         </div>
 
         <div className="mt-12">
@@ -612,6 +794,227 @@ export default function TemplateGallery() {
           <DesertDunes />
         </TemplatePreviewFrame>
 
+            <span className="rounded-full bg-cyan-500/20 px-3 py-1 text-xs font-bold uppercase tracking-widest text-cyan-400 border border-cyan-500/30">Preview</span>
+            <h2 className="text-lg font-semibold text-foreground/70">Tech Startup Theme — Hero Section</h2>
+          </div>
+          <div className="overflow-hidden rounded-2xl border border-cyan-500/20"><TechStartupHero /></div>
+        </div>
+
+        <div className="mt-12">
+          <div className="mb-4 flex items-center gap-3 px-1">
+            <span className="rounded-full bg-cyan-500/20 px-3 py-1 text-xs font-bold uppercase tracking-widest text-cyan-400 border border-cyan-500/30">Preview</span>
+            <h2 className="text-lg font-semibold text-foreground/70">Liquid Glass Theme</h2>
+          </div>
+          <div className="overflow-hidden rounded-2xl border border-border">
+            <LiquidGlass portfolioData={aiDraft} />
+          </div>
+        </div>
+
+        <div className="flex flex-wrap items-center gap-3 mb-8">
+          <FilterSelect value={category} onChange={setCategory} options={CATEGORY_OPTIONS} />
+          <FilterSelect value={colorScheme} onChange={setColorScheme} options={COLOR_OPTIONS} />
+          <FilterSelect value={layout} onChange={setLayout} options={LAYOUT_OPTIONS} />
+          <FilterSelect value={sort} onChange={setSort} options={SORT_OPTIONS} className="ml-auto" />
+        </div>
+        <div className="overflow-hidden rounded-2xl border border-border"><CulinaryAbout /></div>
+        
+      <TemplatePreviewModal
+        templateId={previewTemplateId}
+        isOpen={!!previewTemplateId}
+        onClose={() => {
+          if (searchParams.has("preview")) {
+            // Check if there is history to go back to, so we pop the preview state cleanly
+            window.history.back();
+          } else {
+            setSearchParams({}, { replace: true });
+          }
+        }}
+        portfolioData={aiDraft}
+      />
+
+        {sortedTemplates.length === 0 ? (
+          <div className="text-center text-muted-foreground mt-12 text-xl">
+            No templates match the selected criteria.
+          </div>
+        ) : (
+          <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 xl:grid-cols-4 gap-6">
+            {sortedTemplates.map((template) => (
+  <TemplateCard
+    key={template.id}
+    template={template}
+    hovered={hoveredCard === template.id}
+    onHover={setHoveredCard}
+    onLeave={() => setHoveredCard(null)}
+    onUse={handleUseTemplate}
+    aiDraft={aiDraft}
+  />
+  ))}
+          </div>
+        )}
+        {/* Deploy Modal */}
+
+        <DeployModal
+          isOpen={isDeployModalOpen}
+          onClose={() => setIsDeployModalOpen(false)}
+          portfolioTitle={selectedPortfolioTitle}
+          templateId={selectedTemplateId}
+          aiDraft={aiDraft}
+          onDeploySuccess={clearDraft}
+        />
+
+        {/* Section-only previews — no internal navbar, plain wrapper is fine */}
+        <div className="mt-12">
+          <div className="mb-4 flex items-center gap-3 px-1">
+            <span className="rounded-full bg-cyan-500/20 px-3 py-1 text-xs font-bold uppercase tracking-widest text-cyan-400 border border-cyan-500/30">Preview</span>
+            <h2 className="text-lg font-semibold text-foreground/70">Holographic Theme — About Section</h2>
+          </div>
+          <div className="overflow-hidden rounded-2xl border border-border"><HolographicAbout /></div>
+        </div>
+
+        <div className="mt-12">
+          <div className="mb-4 flex items-center gap-3 px-1">
+            <span className="rounded-full bg-indigo-500/20 px-3 py-1 text-xs font-bold uppercase tracking-widest text-indigo-400 border border-indigo-500/30">Preview</span>
+            <h2 className="text-lg font-semibold text-foreground/70">Midnight Gradient Theme</h2>
+          </div>
+          <div className="overflow-hidden rounded-2xl border border-border">
+            <MidnightGradient />
+          </div>
+        </div>
+
+        <div className="mt-12">
+          <div className="mb-4 flex items-center gap-3 px-1">
+            <span className="rounded-full bg-emerald-500/20 px-3 py-1 text-xs font-bold uppercase tracking-widest text-emerald-400 border border-emerald-500/30">🃟 NEW — Playing Cards</span>
+            <h2 className="text-lg font-semibold text-foreground/70">Playing Cards Theme — Click to flip, shuffle deck</h2>
+          </div>
+          <div className="overflow-hidden rounded-2xl border border-emerald-500/20">
+            <PlayingCardsPortfolio portfolioData={aiDraft} />
+          </div>
+        </div>
+
+        <div className="mt-12">
+          <div className="mb-4 flex items-center gap-3 px-1">
+            <span className="rounded-full bg-rose-500/20 px-3 py-1 text-xs font-bold uppercase tracking-widest text-rose-400 border border-rose-500/30">🌸 Cherry Blossom</span>
+            <h2 className="text-lg font-semibold text-foreground/70">Cherry Blossom Theme — Digital Spring</h2>
+          </div>
+          <div className="overflow-hidden rounded-2xl border border-rose-500/20">
+            <CherryBlossom portfolioData={aiDraft} />
+          </div>
+        </div>
+
+
+        {/* --- FULL SANDBOXED FRAMED PREVIEWS --- */}
+        <TemplatePreviewFrame
+          label="Choose Adventure Theme — Full Interactive Template"
+          badgeColor="bg-violet-500/20 text-violet-400 border-violet-500/30"
+            <span className="rounded-full bg-amber-500/20 px-3 py-1 text-xs font-bold uppercase tracking-widest text-amber-400 border border-amber-500/30">Preview</span>
+            <h2 className="text-lg font-semibold text-foreground/70">Geometric Shapes Theme — About Section</h2>
+          </div>
+          <div className="overflow-hidden rounded-2xl border border-border"><GeometricShapesAbout /></div>
+        </div>
+
+      <TemplatePreviewFrame
+        label="Desert Dunes — Nature / Organic Template"
+        badgeColor="bg-amber-500/20 text-amber-400 border-amber-500/30"
+      >
+        <DesertDunes />
+      </TemplatePreviewFrame>
+
+      <TemplatePreviewFrame
+        label="Swiss Typography — Full Interactive Template"
+        badgeColor="bg-red-500/20 text-red-400 border-red-500/30"
+      >
+        <SwissTypography portfolioData={aiDraft} />
+      </TemplatePreviewFrame>
+      
+      <div className="mt-12">
+        <div className="mb-4 flex items-center gap-3 px-1">
+          <span className="rounded-full bg-fuchsia-500/20 px-3 py-1 text-xs font-bold uppercase tracking-widest text-fuchsia-400 border border-fuchsia-500/30">
+            ✿ Psychedelic Swirl
+          </span>
+          <h2 className="text-lg font-semibold text-foreground/70">
+            Psychedelic Swirl — Retro / Nostalgic Full Template
+          </h2>
+        </div>
+        <div
+          className="rounded-2xl border border-fuchsia-500/20"
+          style={{ height: 640, overflowY: "auto", overflowX: "hidden", transform: "translate(0)", position: "relative" }}
+        >
+          <ChooseAdventurePortfolio />
+        </TemplatePreviewFrame>
+
+        <TemplatePreviewFrame
+          label="Weather Mood Theme — Full Interactive Template"
+          badgeColor="bg-sky-500/20 text-sky-400 border-sky-500/30"
+        >
+          <WeatherMood />
+        </TemplatePreviewFrame>
+
+        <TemplatePreviewFrame
+          label="Swiss Typography — Full Interactive Template"
+          badgeColor="bg-red-500/20 text-red-400 border-red-500/30"
+        >
+          <SwissTypography portfolioData={aiDraft} />
+        </TemplatePreviewFrame>
+        {/* Liquid Glass */}
+        <div className="mt-12">
+          <div className="mb-4 flex items-center gap-3 px-1">
+            <span className="rounded-full bg-cyan-500/20 px-3 py-1 text-xs font-bold uppercase tracking-widest text-cyan-400 border border-cyan-500/30">
+              Preview
+            </span>
+            <h2 className="text-lg font-semibold text-foreground/70">Liquid Glass Theme</h2>
+          </div>
+          <div className="overflow-hidden rounded-2xl border border-border">
+            <LiquidGlass portfolioData={aiDraft} />
+          </div>
+        </div>
+
+        {/* Midnight Gradient */}
+        <div className="mt-12">
+          <div className="mb-4 flex items-center gap-3 px-1">
+            <span className="rounded-full bg-indigo-500/20 px-3 py-1 text-xs font-bold uppercase tracking-widest text-indigo-400 border border-indigo-500/30">
+              Preview
+            </span>
+            <h2 className="text-lg font-semibold text-foreground/70">Midnight Gradient Theme</h2>
+          </div>
+          <div className="overflow-hidden rounded-2xl border border-border">
+            <MidnightGradient />
+          </div>
+        </div>
+        {/* Playing Cards Theme */}
+        <div className="mt-12">
+          <div className="mb-4 flex items-center gap-3 px-1">
+            <span className="rounded-full bg-emerald-500/20 px-3 py-1 text-xs font-bold uppercase tracking-widest text-emerald-400 border border-emerald-500/30">
+              🃟 NEW — Playing Cards
+            </span>
+            <h2 className="text-lg font-semibold text-foreground/70">Playing Cards Theme — Click to flip, shuffle deck</h2>
+          </div>
+          <div className="overflow-hidden rounded-2xl border border-emerald-500/20">
+            <PlayingCardsPortfolio portfolioData={aiDraft} />
+          </div>
+        </div>
+
+        <div className="mt-12">
+          <div className="mb-4 flex items-center gap-3 px-1">
+            <span className="rounded-full bg-cyan-500/20 px-3 py-1 text-xs font-bold uppercase tracking-widest text-cyan-400 border border-cyan-500/30">Preview</span>
+            <h2 className="text-lg font-semibold text-foreground/70">Tech Startup Theme — Hero Section</h2>
+          </div>
+          <div className="overflow-hidden rounded-2xl border border-cyan-500/20"><TechStartupHero /></div>
+        </div>
+
+        <TemplatePreviewFrame
+          label="Psychedelic Swirl — Retro / Nostalgic Full Template"
+          badgeColor="bg-fuchsia-500/20 text-fuchsia-400 border-fuchsia-500/30"
+        >
+          <PsychedelicSwirl />
+        </TemplatePreviewFrame>
+
+        <TemplatePreviewFrame
+          label="Desert Dunes — Nature / Organic Full Template"
+          badgeColor="bg-amber-500/20 text-amber-400 border-amber-500/30"
+        >
+          <DesertDunes />
+        </TemplatePreviewFrame>
+
         <TemplatePreviewFrame
           label="Memphis Pop — Retro / Nostalgic Full Template"
           badgeColor="bg-yellow-500/20 text-yellow-400 border-yellow-500/30"
@@ -655,6 +1058,205 @@ export default function TemplateGallery() {
         </TemplatePreviewFrame>
 
       </div>
+
+        <TemplatePreviewFrame
+          label="Cassette Mixtape — Retro / Nostalgic Full Template"
+          badgeColor="bg-orange-500/20 text-orange-400 border-orange-500/30"
+        >
+          <CassetteMixtape />
+        </TemplatePreviewFrame>
+
+        <TemplatePreviewFrame
+          label="Typewriter Effect — Vintage Paper Full Template"
+          badgeColor="bg-amber-950/20 text-amber-700 border-amber-900/30"
+        >
+          <TypewriterEffect />
+        </TemplatePreviewFrame>
+
+        <TemplatePreviewFrame
+          label="Chromatic Glitch — RGB Split / Colorful Full Template"
+          badgeColor="bg-cyan-500/20 text-cyan-400 border-cyan-500/30"
+        >
+          <ChromaticGlitch />
+        </TemplatePreviewFrame>
+
+        <TemplatePreviewFrame
+          label="Magnetic Dock — macOS Spring-Physics Navigation"
+          badgeColor="bg-indigo-500/15 text-indigo-400 border-indigo-500/25"
+        >
+          <MagneticDock />
+        </TemplatePreviewFrame>
+
+</div>
+</div>
+        <TemplatePreviewFrame
+          label="Weather Mood Theme — Full Interactive Template"
+          badgeColor="bg-sky-500/20 text-sky-400 border-sky-500/30"
+        >
+          <WeatherMood />
+        </TemplatePreviewFrame>
+
+        <TemplatePreviewFrame
+          label="Swiss Typography — Full Interactive Template"
+          badgeColor="bg-red-500/20 text-red-400 border-red-500/30"
+        >
+          <SwissTypography />
+        </TemplatePreviewFrame>
+
+        <TemplatePreviewFrame
+  label="Desert Dunes — Nature / Organic Template"
+  badgeColor="bg-amber-500/20 text-amber-400 border-amber-500/30"
+>
+  <DesertDunes />
+</TemplatePreviewFrame>
+
+      {/* Typewriter Effect — sandboxed fixed-nav frame */}
+      <div className="mt-12">
+        <div className="mb-4 flex items-center gap-3 px-1">
+          <span className="rounded-full px-3 py-1 text-xs font-bold uppercase tracking-widest border" style={{ background: "rgba(139,37,0,.1)", color: "#8B2500", borderColor: "rgba(139,37,0,.25)" }}>
+            Typewriter Effect
+          </span>
+          <h2 className="text-lg font-semibold text-foreground/70">Typewriter Effect — Vintage Paper Full Template</h2>
+        </div>
+        <div className="rounded-2xl" style={{ height: 640, overflowY: "auto", overflowX: "hidden", transform: "translate(0)", position: "relative", border: "1px solid rgba(139,37,0,.2)" }}>
+          <TypewriterEffect />
+          </div>
+        </div>
+          
+      {/* Chromatic Glitch — sandboxed fixed-nav frame */}
+      <div className="mt-12">
+        <div className="mb-4 flex items-center gap-3 px-1">
+          <span className="rounded-full bg-cyan-500/20 px-3 py-1 text-xs font-bold uppercase tracking-widest text-cyan-400 border border-cyan-500/30">
+            ◈ Chromatic Glitch
+          </span>
+          <h2 className="text-lg font-semibold text-foreground/70">Chromatic Glitch — RGB Split / Colorful Full Template</h2>
+        </div>
+        <div className="rounded-2xl border border-cyan-500/20"
+          style={{ height: 640, overflowY: "auto", overflowX: "hidden", transform: "translate(0)", position: "relative" }}>
+          <ChromaticGlitch />
+        </div>
+      </div>
+      {/* Magnetic Dock — sandboxed fixed-nav frame */}
+      <div className="mt-12">
+        <div className="mb-4 flex items-center gap-3 px-1">
+          <span className="rounded-full bg-indigo-500/15 px-3 py-1 text-xs font-bold uppercase tracking-widest text-indigo-400 border border-indigo-500/25">
+            ⬡ Magnetic Dock
+          </span>
+          <h2 className="text-lg font-semibold text-foreground/70">Magnetic Dock — macOS Spring-Physics Navigation</h2>
+        </div>
+        <div className="rounded-2xl border border-indigo-500/15"
+          style={{ height: 640, overflowY: "auto", overflowX: "hidden", transform: "translate(0)", position: "relative" }}>
+          <MagneticDock />
+        </div>
+      </div>
+
+      {/* Ocean Depths — sandboxed fixed-nav frame */}
+      <div className="mt-12">
+        <div className="mb-4 flex items-center gap-3 px-1">
+          <span className="rounded-full bg-cyan-500/20 px-3 py-1 text-xs font-bold uppercase tracking-widest text-cyan-400 border border-cyan-500/30">
+            ≋ Ocean Depths
+          </span>
+          <h2 className="text-lg font-semibold text-foreground/70">Ocean Depths — Bioluminescent 3D/WebGL Portfolio</h2>
+        </div>
+        <div className="rounded-2xl border border-cyan-500/20"
+          style={{ height: 640, overflowY: "auto", overflowX: "hidden", transform: "translate(0)", position: "relative" }}>
+          <OceanDepths />
+        </div>
+      </div>
+
+      {/* Neon Cityscape — sandboxed fixed-nav frame */}
+      <div className="mt-12">
+        <div className="mb-4 flex items-center gap-3 px-1">
+          <span className="rounded-full bg-pink-500/20 px-3 py-1 text-xs font-bold uppercase tracking-widest text-pink-400 border border-pink-500/30">
+            ◈ Neon Cityscape
+          </span>
+          <h2 className="text-lg font-semibold text-foreground/70">Neon Cityscape — Cyberpunk Neon Portfolio</h2>
+        </div>
+        <div className="rounded-2xl border border-pink-500/20"
+          style={{ height: 640, overflowY: "auto", overflowX: "hidden", transform: "translate(0)", position: "relative" }}>
+          <NeonCityscape />
+        </div>
+      </div>
+
+      {/* Planetary Orbit — sandboxed fixed-nav frame */}
+      <div className="mt-12">
+        <div className="mb-4 flex items-center gap-3 px-1">
+          <span className="rounded-full bg-blue-500/20 px-3 py-1 text-xs font-bold uppercase tracking-widest text-blue-400 border border-blue-500/30">
+            ◎ Planetary Orbit
+          </span>
+          <h2 className="text-lg font-semibold text-foreground/70">Planetary Orbit — Solar System Navigation Portfolio</h2>
+        </div>
+        <div className="rounded-2xl border border-blue-500/20"
+          style={{ height: 640, overflowY: "auto", overflowX: "hidden", transform: "translate(0)", position: "relative" }}>
+          <PlanetaryOrbit />
+        </div>
+      </div>
+
+      {/* Low Poly Terrain — sandboxed fixed-nav frame */}
+      <div className="mt-12">
+        <div className="mb-4 flex items-center gap-3 px-1">
+          <span className="rounded-full bg-emerald-500/20 px-3 py-1 text-xs font-bold uppercase tracking-widest text-emerald-400 border border-emerald-500/30">
+            △ Low Poly Terrain
+          </span>
+          <h2 className="text-lg font-semibold text-foreground/70">Low Poly Terrain — Animated Day/Night Cycle Portfolio</h2>
+        </div>
+        <div className="rounded-2xl border border-emerald-500/20"
+          style={{ height: 640, overflowY: "auto", overflowX: "hidden", transform: "translate(0)", position: "relative" }}>
+          <LowPolyTerrain />
+        </div>
+      </div>
+
+      {/* High Fashion — sandboxed fixed-nav frame */}
+      <div className="mt-12">
+        <div className="mb-4 flex items-center gap-3 px-1">
+          <span className="rounded-full px-3 py-1 text-xs font-bold uppercase tracking-widest border" style={{ background: "rgba(201,168,76,.1)", color: "#c9a84c", borderColor: "rgba(201,168,76,.25)" }}>
+            ✦ High Fashion
+          </span>
+          <h2 className="text-lg font-semibold text-foreground/70">High Fashion — Editorial Two-Column Portfolio</h2>
+        </div>
+        <div className="rounded-2xl" style={{ height: 640, overflowY: "auto", overflowX: "hidden", transform: "translate(0)", position: "relative", border: "1px solid rgba(201,168,76,.2)" }}>
+          <HighFashion />
+        </div>
+      </div>
+
+      {/* Sports Athletic — sandboxed fixed-nav frame */}
+      {/* 
+      <div className="mt-12 mb-16">
+        <div className="mb-4 flex items-center gap-3 px-1">
+          <span className="rounded-full bg-rose-500/20 px-3 py-1 text-xs font-bold uppercase tracking-widest text-rose-400 border border-rose-500/30">
+            ● Sports Athletic
+          </span>
+          <h2 className="text-lg font-semibold text-foreground/70">Sports Athletic — Dark Athletic Portfolio</h2>
+        </div>
+        <div className="rounded-2xl" style={{ height: 640, overflowY: "auto", overflowX: "hidden", transform: "translate(0)", position: "relative", border: "1px solid rgba(225,29,72,.2)" }}>
+          <SportsAthletic />
+        </div>
+      </div>
+      */}
+
+      {/* Modals & Portals */}
+      <DeployModal
+        isOpen={isDeployModalOpen}
+        onClose={() => setIsDeployModalOpen(false)}
+        portfolioTitle={selectedPortfolioTitle}
+        templateId={selectedTemplateId}
+        aiDraft={aiDraft}
+        onDeploySuccess={clearDraft}
+      />
+
+      <TemplatePreviewModal
+        templateId={previewTemplateId}
+        isOpen={!!previewTemplateId}
+        onClose={() => {
+          if (searchParams.has("preview")) {
+            window.history.back();
+          } else {
+            setSearchParams({}, { replace: true });
+          }
+        }}
+        portfolioData={aiDraft}
+      />
     </div>
+  </div>
   );
 }
