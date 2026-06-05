@@ -3,6 +3,8 @@ import OpenAI from 'openai';
 import Groq from 'groq-sdk';
 import dotenv from 'dotenv';
 import { OpenRouterAdapter } from './providers/openrouter.js';
+import { ApiError } from '../middleware/errorHandler.js';
+import { aiCallsCounter } from '../middleware/metrics.js';
 
 dotenv.config();
 
@@ -30,12 +32,19 @@ const DEFAULT_MODELS = {
  */
 class GeminiAdapter {
   constructor(apiKey, modelName) {
+    if (!apiKey) {
+      throw new Error(
+        'Gemini API key is required. ' +
+        'Set GEMINI_API_KEY in your .env file or provide it via the X-AI-Key header.'
+      );
+    }
     const genAI = new GoogleGenerativeAI(apiKey);
     this.model = genAI.getGenerativeModel({ model: modelName || DEFAULT_MODELS.gemini });
     this.providerName = 'gemini';
   }
 
   async generateContent(prompt) {
+    aiCallsCounter.inc({ provider: this.providerName });
     const result = await this.model.generateContent(prompt);
     const response = await result.response;
     const text = response.text();
@@ -49,6 +58,19 @@ class GeminiAdapter {
       : undefined;
     return { text, usage };
   }
+
+  async *generateContentStream(prompt) {
+    const result = await this.model.generateContentStream(prompt);
+    let fullText = '';
+    for await (const chunk of result.stream) {
+      const text = chunk.text();
+      fullText += text;
+      yield { text, fullText };
+    }
+    const response = await result.response;
+    const um = response.usageMetadata;
+    yield { done: true, usage: um ? { prompt: um.promptTokenCount ?? 0, completion: um.candidatesTokenCount ?? 0, total: um.totalTokenCount ?? 0 } : undefined };
+  }
 }
 
 /**
@@ -56,12 +78,19 @@ class GeminiAdapter {
  */
 class OpenAIAdapter {
   constructor(apiKey, modelName) {
+    if (!apiKey) {
+      throw new Error(
+        'OpenAI API key is required. ' +
+        'Set OPENAI_API_KEY in your .env file or provide it via the X-AI-Key header.'
+      );
+    }
     this.client = new OpenAI({ apiKey });
     this.modelName = modelName || DEFAULT_MODELS.openai;
     this.providerName = 'openai';
   }
 
   async generateContent(prompt) {
+    aiCallsCounter.inc({ provider: this.providerName });
     const completion = await this.client.chat.completions.create({
       model: this.modelName,
       messages: [{ role: 'user', content: prompt }],
@@ -77,6 +106,23 @@ class OpenAIAdapter {
       : undefined;
     return { text: completion.choices[0]?.message?.content || '', usage };
   }
+
+  async *generateContentStream(prompt) {
+    const completion = await this.client.chat.completions.create({
+      model: this.modelName,
+      messages: [{ role: 'user', content: prompt }],
+      temperature: 0.7,
+      stream: true,
+    });
+    let fullText = '';
+    for await (const chunk of completion) {
+      const text = chunk.choices[0]?.delta?.content || '';
+      fullText += text;
+      yield { text, fullText };
+    }
+    const u = completion.usage;
+    yield { done: true, usage: u ? { prompt: u.prompt_tokens ?? 0, completion: u.completion_tokens ?? 0, total: u.total_tokens ?? 0 } : undefined };
+  }
 }
 
 
@@ -85,12 +131,19 @@ class OpenAIAdapter {
  */
 class GroqAdapter {
   constructor(apiKey, modelName) {
+    if (!apiKey) {
+      throw new Error(
+        'Groq API key is required. ' +
+        'Set GROQ_API_KEY in your .env file or provide it via the X-AI-Key header.'
+      );
+    }
     this.client = new Groq({ apiKey });
     this.modelName = modelName || DEFAULT_MODELS.groq;
     this.providerName = 'groq';
   }
 
   async generateContent(prompt) {
+    aiCallsCounter.inc({ provider: this.providerName });
     const completion = await this.client.chat.completions.create({
       model: this.modelName,
       messages: [{ role: 'user', content: prompt }],
@@ -106,6 +159,24 @@ class GroqAdapter {
         }
       : undefined;
     return { text: completion.choices[0]?.message?.content || '', usage };
+  }
+
+  async *generateContentStream(prompt) {
+    const completion = await this.client.chat.completions.create({
+      model: this.modelName,
+      messages: [{ role: 'user', content: prompt }],
+      temperature: 0.7,
+      max_tokens: 4096,
+      stream: true,
+    });
+    let fullText = '';
+    for await (const chunk of completion) {
+      const text = chunk.choices[0]?.delta?.content || '';
+      fullText += text;
+      yield { text, fullText };
+    }
+    const u = completion.usage;
+    yield { done: true, usage: u ? { prompt: u.prompt_tokens ?? 0, completion: u.completion_tokens ?? 0, total: u.total_tokens ?? 0 } : undefined };
   }
 }
 
@@ -163,8 +234,11 @@ export function getDefaultProvider() {
 
   const geminiApiKey = process.env.GEMINI_API_KEY;
   if (!geminiApiKey) {
-    console.error('❌ GEMINI_API_KEY is missing. Aborting AI initialization.');
-    throw new Error('GEMINI_API_KEY is required to start the AI services.');
+    throw new ApiError(
+      503,
+      'AI features are unavailable — GEMINI_API_KEY is not configured. ' +
+      'Set it in your .env file or supply your own key via the X-AI-Key header.'
+    );
   }
 
   _defaultProvider = createAIProvider('gemini', geminiApiKey);

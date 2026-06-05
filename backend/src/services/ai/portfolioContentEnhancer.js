@@ -1,10 +1,4 @@
-import { GoogleGenerativeAI } from '@google/generative-ai';
-
-const geminiApiKey = process.env.GEMINI_API_KEY;
-if (!geminiApiKey) {
-  throw new Error('GEMINI_API_KEY environment variable is required');
-}
-const genAI = new GoogleGenerativeAI(geminiApiKey);
+import { aiCallsCounter } from '../../middleware/metrics.js';
 
 const SECTION_PROMPTS = {
   hero: (content) => `
@@ -95,18 +89,21 @@ Respond ONLY with valid JSON in this exact format:
 }`,
 };
 
-export const enhanceSection = async (sectionType, content) => {
+export const enhanceSection = async (sectionType, content, aiProvider) => {
+  if (!aiProvider) {
+    throw new Error('AI Provider is required. Please provide an API key.');
+  }
+
   const promptBuilder = SECTION_PROMPTS[sectionType];
 
   if (!promptBuilder) {
     throw new Error(`Unsupported section type: ${sectionType}. Allowed: hero, projects, about, skills`);
   }
 
-  const model = genAI.getGenerativeModel({ model: 'gemini-2.0-flash' });
   const prompt = promptBuilder(content);
 
-  const result = await model.generateContent(prompt);
-  const responseText = result.response.text();
+  const result = await aiProvider.generateContent(prompt);
+  const responseText = result.text;
 
   const clean = responseText.replace(/```json|```/g, '').trim();
 

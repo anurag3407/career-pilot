@@ -66,6 +66,42 @@ function toSiteNameSlug(raw) {
 }
 
 /**
+ * Verify that a Netlify personal access token is valid.
+ * Uses GET /user — the lightest authenticated Netlify API call.
+ *
+ * @param {string} [token] - Netlify personal access token (falls back to NETLIFY_ACCESS_TOKEN env var)
+ * @returns {Promise<{ valid: boolean, email?: string, slug?: string, reason?: string }>}
+ */
+export async function validateToken(token) {
+  const resolved = token || process.env.NETLIFY_ACCESS_TOKEN;
+  if (!resolved) {
+    return { valid: false, reason: 'A Netlify access token is required.' };
+  }
+
+  let res;
+  try {
+    res = await fetch(`${NETLIFY_API}/user`, { headers: authHeaders(resolved) });
+  } catch (err) {
+    throw new Error(`Netlify token validation request failed: ${err.message}`);
+  }
+
+  if (res.status === 401 || res.status === 403) {
+    return { valid: false, reason: 'Token is invalid or has expired.' };
+  }
+
+  if (!res.ok) {
+    return { valid: false, reason: `Netlify API error ${res.status}.` };
+  }
+
+  const data = await res.json();
+  return {
+    valid: true,
+    email: data.email ?? null,
+    slug: data.slug ?? null,
+  };
+}
+
+/**
  * Deploy an HTML portfolio to Netlify using the file-digest method.
  *
  * @param {string} portfolioId  - Stable identifier used to find an existing site
@@ -78,6 +114,11 @@ function toSiteNameSlug(raw) {
 export async function deploy(portfolioId, htmlContent, assets = {}, siteName, token) {
   assertSafeId(portfolioId, 'portfolioId');
   const resolvedToken = getToken(token);
+
+  const tokenCheck = await validateToken(resolvedToken);
+  if (!tokenCheck.valid) {
+    throw new Error(`Netlify token validation failed: ${tokenCheck.reason}`);
+  }
 
   // Build file map: path → Buffer
   const files = {
@@ -102,18 +143,28 @@ export async function deploy(portfolioId, htmlContent, assets = {}, siteName, to
     throw new Error('Unexpected response from Netlify when listing sites. Check your access token and try again.');
   }
 
-  const prefix = `career-pilot-${portfolioId}`;
+  const prefix = toSiteNameSlug(`cp-${portfolioId}`);
   const existing = allSites.find((s) => s.name && s.name.startsWith(prefix));
 
   if (existing) {
     siteId = existing.id;
   } else {
-    const nameSlug = siteName
-      ? toSiteNameSlug(siteName)
-      : toSiteNameSlug(`career-pilot-${portfolioId}`);
-
-    const newSite = await netlifyRequest('POST', '/sites', { name: nameSlug }, resolvedToken);
-    siteId = newSite.id;
+    const randomSuffix = crypto.randomBytes(3).toString('hex');
+    let nameSlug = siteName ? toSiteNameSlug(siteName) : `${prefix}-${randomSuffix}`;
+    
+    // Fallback: If site name is taken, retry with a random suffix
+    try {
+      const newSite = await netlifyRequest('POST', '/sites', { name: nameSlug }, resolvedToken);
+      siteId = newSite.id;
+    } catch (err) {
+      if (err.message.includes('422')) {
+        nameSlug = `${prefix}-${crypto.randomBytes(4).toString('hex')}`.slice(0, MAX_SITE_NAME_LENGTH);
+        const newSite = await netlifyRequest('POST', '/sites', { name: nameSlug }, resolvedToken);
+        siteId = newSite.id;
+      } else {
+        throw err;
+      }
+    }
   }
 
   // Create a deploy with file digests; Netlify responds with which files are missing

@@ -7,9 +7,9 @@ import {
     MessageCircle,
     User,
     Clock,
-    Loader2,
     ArrowRight
 } from 'lucide-react'
+import { SkeletonPanel } from '../../components/ui/Skeleton'
 
 export default function FellowshipMessages() {
     const navigate = useNavigate()
@@ -45,11 +45,7 @@ export default function FellowshipMessages() {
     }
 
     if (loading) {
-        return (
-            <div className="flex items-center justify-center py-20">
-                <Loader2 className="w-8 h-8 text-emerald-500 animate-spin" />
-            </div>
-        )
+        return <SkeletonPanel rows={4} />
     }
 
     return (

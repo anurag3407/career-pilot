@@ -1,26 +1,8 @@
 import { getDefaultProvider } from './aiProviders.js';
+import { computeATSScore } from '../services/atsScorer.js';
 import dotenv from 'dotenv';
 
 dotenv.config();
-
-const geminiApiKey = process.env.GEMINI_API_KEY;
-if (!geminiApiKey) {
-  console.warn('⚠️  GEMINI_API_KEY is not set — AI features will be unavailable. Non-AI routes are unaffected.');
-}
-
-let _model = null;
-
-const getModel = () => {
-  if (_model) return _model;
-  if (!geminiApiKey) {
-    const err = new Error('AI features are unavailable — GEMINI_API_KEY is not configured.');
-    err.statusCode = 503;
-    throw err;
-  }
-  const genAI = new GoogleGenerativeAI(geminiApiKey);
-  _model = genAI.getGenerativeModel({ model: 'gemini-2.5-flash' });
-  return _model;
-};
 
 // ---------------------------------------------------------------------------
 // Helper: resolve the AI provider to use
@@ -40,7 +22,7 @@ function tokensUsedFromResult(result) {
   };
 }
 
-const getSystemPrompt = (jobRole, yearsOfExperience, skills, industry, customInstructions, profileInfo) => {
+export const getSystemPrompt = (jobRole, yearsOfExperience, skills, industry, customInstructions, profileInfo) => {
   const { fullName, email, phone, linkedinUrl, githubUrl, portfolioUrl } = profileInfo || {};
   const safeSkills = Array.isArray(skills) ? skills : (skills ? [String(skills)] : []);
 
@@ -143,16 +125,13 @@ export const enhanceResume = async (resumeText, preferences, aiProvider) => {
 
     const prompt = `${systemPrompt}\n\nPlease enhance the following resume:\n\n${resumeText}`;
 
-    const result = await getModel().generateContent(prompt);
-    const response = await result.response;
-    const text = response.text();
-    const result = await provider.generateContent(prompt);
+    const providerResult = await provider.generateContent(prompt);
 
     return {
       success: true,
-      enhancedResume: result.text,
+      enhancedResume: providerResult.text,
       provider: provider.providerName,
-      tokensUsed: tokensUsedFromResult(result),
+      tokensUsed: tokensUsedFromResult(providerResult),
     };
   } catch (error) {
     if (error.statusCode === 503) throw error;
@@ -170,14 +149,11 @@ export const generateSummary = async (resumeText, jobRole, aiProvider) => {
 Resume:
 ${resumeText}`;
 
-    const result = await getModel().generateContent(prompt);
-    const response = await result.response;
-    const text = response.text();
-    const result = await provider.generateContent(prompt);
+    const providerResult = await provider.generateContent(prompt);
 
     return {
       success: true,
-      summary: result.text,
+      summary: providerResult.text,
       provider: provider.providerName
     };
   } catch (error) {
@@ -196,14 +172,11 @@ export const suggestImprovements = async (resumeText, jobRole, aiProvider) => {
 Resume:
 ${resumeText}`;
 
-    const result = await getModel().generateContent(prompt);
-    const response = await result.response;
-    const text = response.text();
-    const result = await provider.generateContent(prompt);
+    const providerResult = await provider.generateContent(prompt);
 
     return {
       success: true,
-      suggestions: result.text,
+      suggestions: providerResult.text,
       provider: provider.providerName
     };
   } catch (error) {
@@ -217,22 +190,18 @@ ${resumeText}`;
 export const analyzeATSScore = async (resumeText, jobRole, aiProvider) => {
   try {
     const provider = resolveProvider(aiProvider);
+    
+    // Calculate deterministic score first
+    const deterministicScoring = computeATSScore(resumeText, jobRole);
+
     const prompt = `You are an expert ATS (Applicant Tracking System) analyzer and resume reviewer. Analyze the provided resume for a ${jobRole} position.
 
 IMPORTANT: The current year is 2026. Do NOT flag dates from 2024, 2025, or 2026 as outdated or issues. All recent dates are valid.
 
 IMPORTANT: Return ONLY valid JSON, no markdown code blocks, no explanations, just pure JSON.
 
-Analyze and return the following JSON structure:
+Analyze and return the following JSON structure focusing on qualitative feedback:
 {
-  "atsScore": <number between 0-100>,
-  "scoreBreakdown": {
-    "keywordMatch": <number 0-100>,
-    "formatting": <number 0-100>,
-    "experienceRelevance": <number 0-100>,
-    "skillsAlignment": <number 0-100>,
-    "educationMatch": <number 0-100>
-  },
   "strengths": [
     "<strength 1>",
     "<strength 2>",
@@ -253,47 +222,53 @@ Analyze and return the following JSON structure:
 Rules:
 1. Be specific and actionable in improvements
 2. Provide 4-6 improvement suggestions
-3. Score fairly based on actual resume content
-4. Consider ATS parsing, keyword density, and relevance to ${jobRole}
-5. Missing keywords should be relevant to ${jobRole} position
+3. Missing keywords should be relevant to ${jobRole} position
+4. DO NOT provide numerical scores, only qualitative feedback
 
 Resume:
 ${resumeText}`;
 
-    const result = await getModel().generateContent(prompt);
-    const response = await result.response;
-    const text = response.text();
-    const result = await provider.generateContent(prompt);
+    const providerResult = await provider.generateContent(prompt);
 
     // Parse JSON from response
-    let analysisData;
+    let qualitativeData;
     try {
-      // Remove markdown code blocks if present
-      const cleanedText = result.text.replace(/```json\n?/g, '').replace(/```\n?/g, '').trim();
-      analysisData = JSON.parse(cleanedText);
+      let cleanedText = providerResult.text.replace(/\`\`\`json\n?/g, '').replace(/\`\`\`\n?/g, '').trim();
+      const jsonMatch = cleanedText.match(/\{[\s\S]*\}/);
+      if (jsonMatch) {
+        cleanedText = jsonMatch[0];
+      }
+      qualitativeData = JSON.parse(cleanedText);
     } catch (parseError) {
-      console.error('Failed to parse ATS analysis JSON:', parseError);
-      // Return default structure on parse error
-      analysisData = {
-        atsScore: 50,
-        scoreBreakdown: {
-          keywordMatch: 50,
-          formatting: 50,
-          experienceRelevance: 50,
-          skillsAlignment: 50,
-          educationMatch: 50
-        },
-        strengths: ["Unable to fully analyze - please try again"],
+      console.error('Failed to parse ATS qualitative analysis JSON:', parseError);
+      qualitativeData = {
+        strengths: ["Clear effort shown in formatting"],
         improvements: [{
           category: "General",
-          issue: "Analysis incomplete",
-          suggestion: "Please try analyzing again",
-          priority: "high"
+          issue: "Could not generate full qualitative analysis",
+          suggestion: "Review keywords and formatting guidelines for your industry",
+          priority: "medium"
         }],
         missingKeywords: [],
-        summary: "Unable to complete full analysis. Please try again."
+        summary: "Unable to complete full qualitative analysis."
       };
     }
+
+    // Combine deterministic scores with AI qualitative feedback
+    const analysisData = {
+      atsScore: deterministicScoring.overallScore,
+      scoreBreakdown: {
+        keywordMatch: deterministicScoring.breakdown.keywordMatch,
+        formatting: deterministicScoring.breakdown.formatting,
+        experienceRelevance: deterministicScoring.breakdown.experience,
+        skillsAlignment: deterministicScoring.breakdown.skills,
+        educationMatch: 70 // default fallback
+      },
+      strengths: qualitativeData.strengths || [],
+      improvements: qualitativeData.improvements || [],
+      missingKeywords: qualitativeData.missingKeywords || [],
+      summary: qualitativeData.summary || "Resume analyzed successfully."
+    };
 
     return {
       success: true,
@@ -410,14 +385,15 @@ ANALYSIS RULES:
 Resume to analyze:
 ${resumeText}`;
 
-    const result = await getModel().generateContent(prompt);
-    const response = await result.response;
-    const text = response.text();
-    const result = await provider.generateContent(prompt);
+    const providerResult = await provider.generateContent(prompt);
 
     let analysisData;
     try {
-      const cleanedText = result.text.replace(/```json\n?/g, '').replace(/```\n?/g, '').trim();
+      let cleanedText = providerResult.text.replace(/```json\n?/g, '').replace(/```\n?/g, '').trim();
+      const jsonMatch = cleanedText.match(/\{[\s\S]*\}/);
+      if (jsonMatch) {
+        cleanedText = jsonMatch[0];
+      }
       analysisData = JSON.parse(cleanedText);
     } catch (parseError) {
       console.error('Failed to parse comprehensive analysis JSON:', parseError);
@@ -483,14 +459,15 @@ Rules:
 Resume:
 ${resumeText}`;
 
-    const result = await getModel().generateContent(prompt);
-    const response = await result.response;
-    const text = response.text();
-    const result = await provider.generateContent(prompt);
+    const providerResult = await provider.generateContent(prompt);
 
     let bulletData;
     try {
-      const cleanedText = result.text.replace(/```json\n?/g, '').replace(/```\n?/g, '').trim();
+      let cleanedText = providerResult.text.replace(/```json\n?/g, '').replace(/```\n?/g, '').trim();
+      const jsonMatch = cleanedText.match(/\{[\s\S]*\}/);
+      if (jsonMatch) {
+        cleanedText = jsonMatch[0];
+      }
       bulletData = JSON.parse(cleanedText);
     } catch (parseError) {
       console.error('Failed to parse bullet analysis JSON:', parseError);
@@ -539,14 +516,15 @@ Focus on the 3-5 most impactful changes.
 Original Resume:
 ${resumeText}`;
 
-    const result = await getModel().generateContent(prompt);
-    const response = await result.response;
-    const text = response.text();
-    const result = await provider.generateContent(prompt);
+    const providerResult = await provider.generateContent(prompt);
 
     let comparisonData;
     try {
-      const cleanedText = result.text.replace(/```json\n?/g, '').replace(/```\n?/g, '').trim();
+      let cleanedText = providerResult.text.replace(/```json\n?/g, '').replace(/```\n?/g, '').trim();
+      const jsonMatch = cleanedText.match(/\{[\s\S]*\}/);
+      if (jsonMatch) {
+        cleanedText = jsonMatch[0];
+      }
       comparisonData = JSON.parse(cleanedText);
     } catch (parseError) {
       console.error('Failed to parse comparison JSON:', parseError);
@@ -562,6 +540,71 @@ ${resumeText}`;
     if (error.statusCode === 503) throw error;
     console.error('Error generating comparison:', error);
     throw new Error(`Failed to generate comparison: ${error.message}`);
+  }
+};
+
+// Analyze skill gap between resume and job description
+export const analyzeSkillGap = async (resumeText, jobDescription, aiProvider) => {
+  try {
+    const provider = resolveProvider(aiProvider);
+    const prompt = `You are a career advisor. Given the following resume text and job description, identify:
+
+1. Skills from the job description already present in the resume
+2. Skills from the job description missing from the resume
+3. An overall match score from 0 to 100
+4. Brief learning suggestions for missing skills
+
+IMPORTANT: Return ONLY valid JSON, no markdown code blocks, no explanations.
+
+Return this exact JSON structure:
+{
+  "matchScore": <number 0-100>,
+  "matchedSkills": ["<skill1>", "<skill2>"],
+  "missingSkills": ["<skill1>", "<skill2>"],
+  "suggestions": "<brief paragraph with learning suggestions for the missing skills>"
+}
+
+Rules:
+1. Be thorough in identifying skills - include technical skills, soft skills, tools, and frameworks
+2. The match score should reflect how well the resume covers the job requirements
+3. Suggestions should be specific and actionable with resource recommendations
+4. Compare semantically, not just by exact keyword match (e.g. "React.js" matches "React")
+
+Resume:
+${resumeText}
+
+Job Description:
+${jobDescription}`;
+
+    const providerResult = await provider.generateContent(prompt);
+
+    let analysisData;
+    try {
+      let cleanedText = providerResult.text.replace(/\`\`\`json\n?/g, '').replace(/\`\`\`\n?/g, '').trim();
+      const jsonMatch = cleanedText.match(/\{[\s\S]*\}/);
+      if (jsonMatch) {
+        cleanedText = jsonMatch[0];
+      }
+      analysisData = JSON.parse(cleanedText);
+    } catch (parseError) {
+      console.error('Failed to parse skill gap analysis JSON:', parseError);
+      throw new Error('Failed to parse skill gap analysis results');
+    }
+
+    return {
+      success: true,
+      analysis: {
+        matchScore: Number(analysisData.matchScore) || 0,
+        matchedSkills: Array.isArray(analysisData.matchedSkills) ? analysisData.matchedSkills : [],
+        missingSkills: Array.isArray(analysisData.missingSkills) ? analysisData.missingSkills : [],
+        suggestions: analysisData.suggestions || 'No suggestions available.',
+      },
+      provider: provider.providerName
+    };
+  } catch (error) {
+    if (error.statusCode === 503) throw error;
+    console.error('Error analyzing skill gap:', error);
+    throw new Error(`Failed to analyze skill gap: ${error.message}`);
   }
 };
 

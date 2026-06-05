@@ -16,18 +16,19 @@ import { twoFactorApi } from '../services/api'
 import Button from '../components/Button'
 import Input from '../components/Input'
 import Card from '../components/Card'
+import { SkeletonPage } from '../components/ui/Skeleton'
 
 // ── sub-components ─────────────────────────────────────────────────────────────
 
 function SectionHeader({ icon: Icon, title, description }) {
   return (
     <div className="flex items-start gap-4 mb-6">
-      <div className="p-2.5 rounded-xl bg-indigo-500/10 border border-indigo-500/20 flex-shrink-0">
+      <div className="p-2.5 rounded-xl bg-indigo-500/10 border border-indigo-500/20 shrink-0">
         <Icon className="w-5 h-5 text-indigo-400" />
       </div>
       <div>
-        <h2 className="text-base font-semibold text-white">{title}</h2>
-        <p className="text-sm text-neutral-400 mt-0.5">{description}</p>
+        <h2 className="text-base font-semibold text-foreground">{title}</h2>
+        <p className="text-sm text-muted-foreground mt-0.5">{description}</p>
       </div>
     </div>
   )
@@ -40,7 +41,7 @@ function StatusBadge({ enabled }) {
         inline-flex items-center gap-1.5 px-2.5 py-1 rounded-full text-xs font-medium
         ${enabled
           ? 'bg-emerald-500/10 text-emerald-400 border border-emerald-500/20'
-          : 'bg-neutral-800 text-neutral-400 border border-neutral-700'
+          : 'bg-muted text-muted-foreground border border-neutral-700'
         }
       `}
     >
@@ -66,7 +67,7 @@ function BackupCodeGrid({ codes, onCopy, onDownload }) {
         {codes.map((code, i) => (
           <div
             key={i}
-            className="px-4 py-2.5 rounded-lg bg-neutral-950 border border-neutral-800 font-mono text-sm text-center text-white tracking-widest"
+            className="px-4 py-2.5 rounded-lg bg-card/60 backdrop-blur-sm border border-border font-mono text-sm text-center text-foreground tracking-widest"
           >
             {code}
           </div>
@@ -108,6 +109,9 @@ export default function SecuritySettings() {
   const [disableOpen, setDisableOpen] = useState(false)
   const [disableToken, setDisableToken] = useState('')
   const [disableLoading, setDisableLoading] = useState(false)
+  const [useBackupToDisable, setUseBackupToDisable] = useState(false)
+  const [disableBackupCode, setDisableBackupCode] = useState('')
+  const [disableBackupLoading, setDisableBackupLoading] = useState(false)
 
   // Regenerate confirmation
   const [regenOpen, setRegenOpen] = useState(false)
@@ -187,6 +191,26 @@ export default function SecuritySettings() {
     }
   }
 
+  const handleDisableWithBackup = async (e) => {
+    e.preventDefault()
+    if (!disableBackupCode.trim()) return
+
+    setDisableBackupLoading(true)
+    try {
+      await twoFactorApi.disableWithBackup(disableBackupCode.trim().toUpperCase())
+      setView('disabled')
+      setDisableOpen(false)
+      setDisableBackupCode('')
+      setNewCodes([])
+      setShowCodesFor(null)
+      toast.success('Two-factor authentication disabled')
+    } catch (error) {
+      toast.error(error.message || 'Invalid backup code')
+    } finally {
+      setDisableBackupLoading(false)
+    }
+  }
+
   const handleRegenerate = async (e) => {
     e.preventDefault()
     if (!regenToken.trim()) return
@@ -228,26 +252,21 @@ export default function SecuritySettings() {
   // ── render ──
 
   if (loading) {
-    return (
-      <div className="max-w-2xl mx-auto px-4 py-8">
-        <div className="flex items-center justify-center h-48">
-          <div className="w-8 h-8 border-4 border-neutral-800 border-t-indigo-500 rounded-full animate-spin" />
-        </div>
-      </div>
-    )
+    return <SkeletonPage width="max-w-2xl" rows={3} />
   }
 
   return (
     <div className="max-w-2xl mx-auto px-4 py-8">
       <div className="mb-8">
-        <h1 className="text-2xl font-bold text-white">Account Security</h1>
-        <p className="text-neutral-400 mt-1 text-sm">
+        <h1 className="text-2xl font-bold text-foreground">Account Security</h1>
+        <p className="text-muted-foreground mt-1 text-sm">
           Manage authentication and access settings for your account.
         </p>
       </div>
 
       {/* ── Two-Factor Authentication card ───────────────────────────────────── */}
-      <Card>
+     <Card className="relative overflow-hidden bg-card/80 backdrop-blur-sm border border-border shadow-[0_8px_30px_rgb(0,0,0,0.06)] hover:shadow-xl hover:border-primary/20 transition-all duration-300">
+       <div className="absolute inset-0 bg-gradient-to-br from-sky-300/5 via-cyan-200/5 to-transparent opacity-0 hover:opacity-100 transition-opacity duration-300 pointer-events-none" />
         <div className="flex items-center justify-between mb-6">
           <SectionHeader
             icon={Shield}
@@ -268,10 +287,10 @@ export default function SecuritySettings() {
               ].map(({ icon: Icon, label }) => (
                 <div
                   key={label}
-                  className="flex items-center gap-2.5 p-3 rounded-lg bg-neutral-950 border border-neutral-800"
+                  className="flex items-center gap-2.5 p-3 rounded-lg bg-card/60 backdrop-blur-sm border border-border"
                 >
                   <Icon className="w-4 h-4 text-indigo-400 flex-shrink-0" />
-                  <span className="text-xs text-neutral-300">{label}</span>
+                  <span className="text-xs text-muted-foreground">{label}</span>
                 </div>
               ))}
             </div>
@@ -291,26 +310,26 @@ export default function SecuritySettings() {
         {view === 'setup' && (
           <form onSubmit={handleConfirmSetup}>
             <div className="space-y-6">
-              <div className="flex items-start gap-3 p-4 rounded-xl bg-neutral-950 border border-neutral-800">
-                <span className="w-6 h-6 rounded-full bg-indigo-500 text-white text-xs font-bold flex items-center justify-center flex-shrink-0 mt-0.5">
+              <div className="flex items-start gap-3 p-4 rounded-xl bg-card/60 backdrop-blur-sm border border-border">
+                <span className="w-6 h-6 rounded-full bg-indigo-500 text-foreground text-xs font-bold flex items-center justify-center flex-shrink-0 mt-0.5">
                   1
                 </span>
                 <div>
-                  <p className="text-sm font-medium text-white mb-1">
+                  <p className="text-sm font-medium text-foreground mb-1">
                     Install an authenticator app
                   </p>
-                  <p className="text-xs text-neutral-400">
+                  <p className="text-xs text-muted-foreground">
                     Use Google Authenticator, Authy, or any TOTP-compatible app.
                   </p>
                 </div>
               </div>
 
-              <div className="flex items-start gap-3 p-4 rounded-xl bg-neutral-950 border border-neutral-800">
-                <span className="w-6 h-6 rounded-full bg-indigo-500 text-white text-xs font-bold flex items-center justify-center flex-shrink-0 mt-0.5">
+              <div className="flex items-start gap-3 p-4 rounded-xl bg-card/60 backdrop-blur-sm border border-border">
+                <span className="w-6 h-6 rounded-full bg-indigo-500 text-foreground text-xs font-bold flex items-center justify-center flex-shrink-0 mt-0.5">
                   2
                 </span>
                 <div className="w-full">
-                  <p className="text-sm font-medium text-white mb-3">
+                  <p className="text-sm font-medium text-foreground mb-3">
                     Scan this QR code
                   </p>
                   {qrDataUrl && (
@@ -319,10 +338,10 @@ export default function SecuritySettings() {
                         <img src={qrDataUrl} alt="2FA QR Code" className="w-40 h-40" />
                       </div>
                       <details className="w-full">
-                        <summary className="text-xs text-neutral-500 cursor-pointer select-none hover:text-neutral-300 transition-colors">
+                        <summary className="text-xs text-muted-foreground cursor-pointer select-none hover:text-muted-foreground/80 transition-colors">
                           Can't scan? Enter the key manually
                         </summary>
-                        <p className="mt-2 px-3 py-2 rounded-lg bg-neutral-900 border border-neutral-800 font-mono text-xs text-neutral-300 break-all">
+                        <p className="mt-2 px-3 py-2 rounded-lg bg-neutral-900 border border-border font-mono text-xs text-muted-foreground break-all">
                           {rawSecret}
                         </p>
                       </details>
@@ -331,12 +350,12 @@ export default function SecuritySettings() {
                 </div>
               </div>
 
-              <div className="flex items-start gap-3 p-4 rounded-xl bg-neutral-950 border border-neutral-800">
-                <span className="w-6 h-6 rounded-full bg-indigo-500 text-white text-xs font-bold flex items-center justify-center flex-shrink-0 mt-0.5">
+              <div className="flex items-start gap-3 p-4 rounded-xl bg-card/60 backdrop-blur-sm border border-border">
+                <span className="w-6 h-6 rounded-full bg-indigo-500 text-foreground text-xs font-bold flex items-center justify-center flex-shrink-0 mt-0.5">
                   3
                 </span>
                 <div className="w-full">
-                  <p className="text-sm font-medium text-white mb-3">
+                  <p className="text-sm font-medium text-foreground mb-3">
                     Enter the 6-digit code to confirm
                   </p>
                   <Input
@@ -381,8 +400,8 @@ export default function SecuritySettings() {
           <div className="space-y-4">
             {/* Backup codes just received (after enable or regenerate) */}
             {newCodes.length > 0 && (
-              <div className="p-4 rounded-xl bg-neutral-950 border border-neutral-800">
-                <p className="text-sm font-semibold text-white mb-1">
+              <div className="p-4 rounded-xl bg-card/60 backdrop-blur-sm border border-border">
+                <p className="text-sm font-semibold text-foreground mb-1">
                   {showCodesFor === 'enable' ? 'Your backup codes' : 'New backup codes'}
                 </p>
                 <BackupCodeGrid
@@ -392,7 +411,7 @@ export default function SecuritySettings() {
                 />
                 <button
                   onClick={() => { setNewCodes([]); setShowCodesFor(null) }}
-                  className="mt-3 text-xs text-neutral-500 hover:text-neutral-300 transition-colors"
+                  className="mt-3 text-xs text-muted-foreground hover:text-muted-foreground/80 transition-colors"
                 >
                   I've saved these codes — dismiss
                 </button>
@@ -401,13 +420,13 @@ export default function SecuritySettings() {
 
             {/* Backup codes remaining */}
             {newCodes.length === 0 && (
-              <div className="flex items-center justify-between p-4 rounded-xl bg-neutral-950 border border-neutral-800">
+              <div className="flex items-center justify-between p-4 rounded-xl bg-card/60 backdrop-blur-sm border border-border">
                 <div className="flex items-center gap-3">
-                  <KeyRound className="w-4 h-4 text-neutral-400" />
+                  <KeyRound className="w-4 h-4 text-muted-foreground" />
                   <div>
-                    <p className="text-sm text-white font-medium">Backup codes</p>
-                    <p className="text-xs text-neutral-500">
-                      {backupCodesRemaining} of 8 codes remaining
+                    <p className="text-sm text-foreground font-medium">Backup codes</p>
+                    <p className="text-xs text-muted-foreground">
+                      {backupCodesRemaining} of 10 codes remaining
                     </p>
                   </div>
                 </div>
@@ -420,27 +439,27 @@ export default function SecuritySettings() {
             )}
 
             {/* Regenerate backup codes */}
-            <div className="rounded-xl border border-neutral-800 overflow-hidden">
+            <div className="rounded-xl border border-border overflow-hidden">
               <button
                 type="button"
                 onClick={() => { setRegenOpen(v => !v); setDisableOpen(false) }}
-                className="w-full flex items-center justify-between px-4 py-3.5 bg-neutral-950 hover:bg-neutral-900 transition-colors"
+                className="w-full flex items-center justify-between px-4 py-3.5 bg-card/60 backdrop-blur-sm hover:bg-card/80 transition-colors"
               >
                 <div className="flex items-center gap-2.5">
-                  <RefreshCw className="w-4 h-4 text-neutral-400" />
-                  <span className="text-sm text-white">Regenerate backup codes</span>
+                  <RefreshCw className="w-4 h-4 text-muted-foreground" />
+                  <span className="text-sm text-foreground">Regenerate backup codes</span>
                 </div>
                 {regenOpen
-                  ? <ChevronUp className="w-4 h-4 text-neutral-500" />
-                  : <ChevronDown className="w-4 h-4 text-neutral-500" />
+                  ? <ChevronUp className="w-4 h-4 text-muted-foreground" />
+                  : <ChevronDown className="w-4 h-4 text-muted-foreground" />
                 }
               </button>
               {regenOpen && (
                 <form
                   onSubmit={handleRegenerate}
-                  className="px-4 pb-4 pt-3 border-t border-neutral-800 bg-neutral-950 space-y-3"
+                  className="px-4 pb-4 pt-3 border-t border-border bg-card/60 backdrop-blur-sm space-y-3"
                 >
-                  <p className="text-xs text-neutral-400">
+                  <p className="text-xs text-muted-foreground">
                     This will invalidate your existing codes. Enter your current authenticator code to proceed.
                   </p>
                   <Input
@@ -483,33 +502,84 @@ export default function SecuritySettings() {
                 }
               </button>
               {disableOpen && (
-                <form
-                  onSubmit={handleDisable}
-                  className="px-4 pb-4 pt-3 border-t border-red-500/20 bg-red-500/5 space-y-3"
-                >
-                  <p className="text-xs text-red-400/80">
-                    This will remove 2FA protection from your account. Enter your current authenticator code to confirm.
-                  </p>
-                  <Input
-                    type="text"
-                    name="disableToken"
-                    value={disableToken}
-                    onChange={(e) => setDisableToken(e.target.value.replace(/\D/g, '').slice(0, 6))}
-                    placeholder="6-digit code"
-                    className="font-mono tracking-widest text-center"
-                    maxLength={6}
-                  />
-                  <Button
-                    type="submit"
-                    variant="danger"
-                    size="sm"
-                    loading={disableLoading}
-                    disabled={disableToken.length !== 6}
-                  >
-                    <ShieldOff className="w-4 h-4" />
-                    Disable 2FA
-                  </Button>
-                </form>
+                <div className="px-4 pb-4 pt-3 border-t border-red-500/20 bg-red-500/5 space-y-3">
+                  <div className="flex gap-2 mb-3">
+                    <button
+                      type="button"
+                      onClick={() => { setUseBackupToDisable(false); setDisableToken(''); setDisableBackupCode('') }}
+                      className={`flex-1 py-1.5 px-3 rounded-lg text-xs font-medium transition-colors ${
+                        !useBackupToDisable
+                          ? 'bg-red-500/20 text-red-400 border border-red-500/30'
+                          : 'bg-muted text-muted-foreground border border-neutral-700 hover:bg-muted/80'
+                      }`}
+                    >
+                      Use Authenticator
+                    </button>
+                    <button
+                      type="button"
+                      onClick={() => { setUseBackupToDisable(true); setDisableToken(''); setDisableBackupCode('') }}
+                      className={`flex-1 py-1.5 px-3 rounded-lg text-xs font-medium transition-colors ${
+                        useBackupToDisable
+                          ? 'bg-red-500/20 text-red-400 border border-red-500/30'
+                          : 'bg-muted text-muted-foreground border border-neutral-700 hover:bg-muted/80'
+                      }`}
+                    >
+                      Use Backup Code
+                    </button>
+                  </div>
+
+                  {!useBackupToDisable ? (
+                    <form onSubmit={handleDisable} className="space-y-3">
+                      <p className="text-xs text-red-400/80">
+                        This will remove 2FA protection from your account. Enter your current authenticator code to confirm.
+                      </p>
+                      <Input
+                        type="text"
+                        name="disableToken"
+                        value={disableToken}
+                        onChange={(e) => setDisableToken(e.target.value.replace(/\D/g, '').slice(0, 6))}
+                        placeholder="6-digit code"
+                        className="font-mono tracking-widest text-center"
+                        maxLength={6}
+                      />
+                      <Button
+                        type="submit"
+                        variant="danger"
+                        size="sm"
+                        loading={disableLoading}
+                        disabled={disableToken.length !== 6}
+                      >
+                        <ShieldOff className="w-4 h-4" />
+                        Disable 2FA
+                      </Button>
+                    </form>
+                  ) : (
+                    <form onSubmit={handleDisableWithBackup} className="space-y-3">
+                      <p className="text-xs text-red-400/80">
+                        Lost access to your authenticator? Use a backup code to disable 2FA. This will consume one backup code.
+                      </p>
+                      <Input
+                        type="text"
+                        name="disableBackupCode"
+                        value={disableBackupCode}
+                        onChange={(e) => setDisableBackupCode(e.target.value.toUpperCase().replace(/[^A-F0-9]/g, '').slice(0, 9))}
+                        placeholder="XXXX-XXXX"
+                        className="font-mono tracking-widest text-center"
+                        maxLength={9}
+                      />
+                      <Button
+                        type="submit"
+                        variant="danger"
+                        size="sm"
+                        loading={disableBackupLoading}
+                        disabled={disableBackupCode.replace(/[^A-F0-9]/g, '').length !== 8}
+                      >
+                        <ShieldOff className="w-4 h-4" />
+                        Disable 2FA with Backup Code
+                      </Button>
+                    </form>
+                  )}
+                </div>
               )}
             </div>
           </div>
