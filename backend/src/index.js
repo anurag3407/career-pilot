@@ -88,6 +88,41 @@ if (!process.env.OPENAI_API_KEY) {
   console.warn('⚠️  OPENAI_API_KEY is not configured - OpenAI provider will not be available.');
 }
 
+// Validate and normalize CORS origin URLs
+function validateOriginUrl(url) {
+  if (!url) return null;
+  const trimmed = url.trim();
+  try {
+    const parsed = new URL(trimmed);
+    // Ensure valid protocol
+    if (!['http:', 'https:'].includes(parsed.protocol)) {
+      console.error(`Invalid protocol in origin URL: ${trimmed}`);
+      return null;
+    }
+    // Ensure no pathname, search, or hash
+    if (parsed.pathname !== '/' || parsed.search || parsed.hash) {
+      console.error(`Origin URL must have no path, query, or hash: ${trimmed}`);
+      return null;
+    }
+    // Return normalized origin (no trailing slash)
+    return `${parsed.protocol}//${parsed.host}`;
+  } catch (error) {
+    console.error(`Failed to parse origin URL: ${trimmed}`, error.message);
+    return null;
+  }
+}
+
+// Production safety: FRONTEND_URL must be explicitly set and valid in production
+if (process.env.NODE_ENV === 'production') {
+  if (!process.env.FRONTEND_URL) {
+    throw new Error('FRONTEND_URL environment variable must be set in production');
+  }
+  const validatedFrontendUrl = validateOriginUrl(process.env.FRONTEND_URL);
+  if (!validatedFrontendUrl) {
+    throw new Error('FRONTEND_URL must be a valid origin URL (scheme://host[:port])');
+  }
+}
+
 const app = express();
 app.use(metricsMiddleware);
 app.use(compressionMiddleware);
@@ -110,8 +145,8 @@ const allowedOrigins = [
   'http://localhost:5173',
   'http://localhost:3000',
   'https://careerpilotyy.netlify.app',
-  process.env.FRONTEND_URL,
-].filter(Boolean).map(url => url.replace(/\/$/, ''));
+  validateOriginUrl(process.env.FRONTEND_URL),
+].filter(Boolean);
 
 console.log('🔧 Allowed origins:', allowedOrigins);
 
