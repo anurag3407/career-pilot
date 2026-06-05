@@ -1,7 +1,5 @@
 import React, { useState, useEffect, useRef } from 'react';
 import { motion, useScroll, useTransform, AnimatePresence, useInView } from 'framer-motion';
-import React from 'react';
-import data from '../../../../data/dummy_data.json';
 import {
   Github,
   Linkedin,
@@ -27,38 +25,38 @@ import data from '../../../../data/dummy_data.json';
    DESIGN TOKENS — Desert Dunes palette
 ───────────────────────────────────────────── */
 const C = {
-  sand:             '#F5E6C8',
-  sandLight:        '#FDF6E3',
-  sandMid:          '#E8D5A3',
-  sandDark:         '#C9A96E',
-  terracotta:       '#C1440E',
-  terracottaLight:  '#D4622E',
-  terracottaMid:    '#B8391A',
-  burnt:            '#8B2500',
-  amber:            '#E8A020',
-  amberLight:       '#F5B83D',
-  gold:             '#D4AF37',
-  goldLight:        '#F0CC60',
-  dusk:             '#7A4419',
-  duskDeep:         '#3D1C0A',
-  cream:            '#FBF5E6',
-  warmWhite:        '#FEF9F0',
-  stone:            '#A08060',
-  stoneLight:       '#C4A882',
-  dusty:            '#6B4F35',
-  shadow:           'rgba(61,28,10,0.15)',
-  shadowDeep:       'rgba(61,28,10,0.35)',
+  sand: '#F5E6C8',
+  sandLight: '#FDF6E3',
+  sandMid: '#E8D5A3',
+  sandDark: '#C9A96E',
+  terracotta: '#C1440E',
+  terracottaLight: '#D4622E',
+  terracottaMid: '#B8391A',
+  burnt: '#8B2500',
+  amber: '#E8A020',
+  amberLight: '#F5B83D',
+  gold: '#D4AF37',
+  goldLight: '#F0CC60',
+  dusk: '#7A4419',
+  duskDeep: '#3D1C0A',
+  cream: '#FBF5E6',
+  warmWhite: '#FEF9F0',
+  stone: '#A08060',
+  stoneLight: '#C4A882',
+  dusty: '#6B4F35',
+  shadow: 'rgba(61,28,10,0.15)',
+  shadowDeep: 'rgba(61,28,10,0.35)',
 };
 
 const fontDisplay = "'Georgia', 'Times New Roman', serif";
-const fontSans    = "'Inter', system-ui, sans-serif";
-const fontItalic  = "'Georgia', serif";
+const fontSans = "'Inter', system-ui, sans-serif";
+const fontItalic = "'Georgia', serif";
 
 /* ─────────────────────────────────────────────
    ANIMATION VARIANTS
 ───────────────────────────────────────────── */
 const fadeUp = {
-  hidden:  { opacity: 0, y: 40 },
+  hidden: { opacity: 0, y: 40 },
   visible: (i = 0) => ({
     opacity: 1, y: 0,
     transition: { duration: 0.7, delay: i * 0.1, ease: [0.22, 1, 0.36, 1] },
@@ -66,7 +64,7 @@ const fadeUp = {
 };
 
 const fadeIn = {
-  hidden:  { opacity: 0 },
+  hidden: { opacity: 0 },
   visible: (i = 0) => ({
     opacity: 1,
     transition: { duration: 0.6, delay: i * 0.08, ease: 'easeOut' },
@@ -74,7 +72,7 @@ const fadeIn = {
 };
 
 const slideRight = {
-  hidden:  { opacity: 0, x: -50 },
+  hidden: { opacity: 0, x: -50 },
   visible: (i = 0) => ({
     opacity: 1, x: 0,
     transition: { duration: 0.6, delay: i * 0.1, ease: [0.22, 1, 0.36, 1] },
@@ -628,8 +626,8 @@ function Skills() {
   const categories = [...new Set(data.skills.map((s) => s.category))];
   const catColors = {
     Frontend: { bg: C.terracotta, light: `${C.terracotta}18` },
-    Backend:  { bg: C.amber,      light: `${C.amber}18` },
-    DevOps:   { bg: C.dusk,       light: `${C.dusk}18` },
+    Backend: { bg: C.amber, light: `${C.amber}18` },
+    DevOps: { bg: C.dusk, light: `${C.dusk}18` },
   };
 
   return (
@@ -637,8 +635,10 @@ function Skills() {
       background: `linear-gradient(160deg, ${C.sandLight} 0%, ${C.sand} 100%)`,
       padding: '100px 24px', position: 'relative', overflow: 'hidden',
     }}>
-      <div style={{ position: 'absolute', bottom: 0, left: 0, right: 0, height: 200,
-        background: `linear-gradient(to top, ${C.cream}, transparent)`, pointerEvents: 'none' }} />
+      <div style={{
+        position: 'absolute', bottom: 0, left: 0, right: 0, height: 200,
+        background: `linear-gradient(to top, ${C.cream}, transparent)`, pointerEvents: 'none'
+      }} />
 
       <div style={{ maxWidth: 1200, margin: '0 auto', position: 'relative', zIndex: 2 }}>
         <div style={{ textAlign: 'center', marginBottom: 64 }}>
