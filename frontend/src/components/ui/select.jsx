@@ -78,10 +78,18 @@ export const SelectTrigger = React.forwardRef(({ className, children, ...props }
 
   return (
     <button
-      ref={ref}
-      type="button"
-      onClick={() => setIsOpen(!isOpen)}
-      aria-expanded={isOpen}
+  ref={ref}
+  type="button"
+  role="combobox"
+  aria-haspopup="listbox"
+  aria-expanded={isOpen}
+  onClick={() => setIsOpen(!isOpen)}
+  onKeyDown={(e) => {
+    if (e.key === "Enter" || e.key === " ") {
+      e.preventDefault()
+      setIsOpen(!isOpen)
+    }
+  }}
       className={cn(
         "flex h-10 w-full items-center justify-between rounded-md border border-input bg-background px-3 py-2 text-sm ring-offset-background placeholder:text-muted-foreground focus:outline-none focus:ring-2 focus:ring-ring focus:ring-offset-2 disabled:cursor-not-allowed disabled:opacity-50 text-left transition-all duration-200 select-none",
         isOpen && "ring-2 ring-ring ring-offset-2 border-primary/50",
@@ -124,6 +132,7 @@ export const SelectContent = React.forwardRef(({ className, children, ...props }
     <AnimatePresence>
       {isOpen && (
         <motion.div
+          role="listbox"
           initial={{ opacity: 0, y: -10, scale: 0.97 }}
           animate={{ opacity: 1, y: 4, scale: 1 }}
           exit={{ opacity: 0, y: -10, scale: 0.97 }}
@@ -155,9 +164,11 @@ export const SelectItem = React.forwardRef(({ className, children, value, ...pro
   }, [value, label, registerOption, deregisterOption])
 
   return (
-    <button
-      ref={ref}
-      type="button"
+   <button
+  ref={ref}
+  type="button"
+  role="option"
+  aria-selected={isSelected}
       onClick={() => handleSelect(value)}
       className={cn(
         "relative flex w-full cursor-default select-none items-center rounded-sm py-1.5 pl-8 pr-2 text-sm outline-none hover:bg-accent hover:text-accent-foreground focus:bg-accent focus:text-accent-foreground data-[disabled]:pointer-events-none data-[disabled]:opacity-50 text-left transition-colors duration-150",
