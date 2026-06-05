@@ -1,11 +1,12 @@
 import { useState, useEffect } from 'react'
 import { motion } from 'framer-motion'
-import { Bell, Mail, MessageSquare, FileText, Save, Cpu } from 'lucide-react'
+import { Bell, Mail, MessageSquare, FileText, Save, Cpu, ChevronDown } from 'lucide-react'
 import { notificationApi, aiApi } from '../services/api'
 import { encryptKey, decryptKey } from '../utils/encryption'
 import Button from '../components/Button'
 import toast from 'react-hot-toast'
 import { SkeletonList } from '../components/ui/Skeleton'
+import Select from '../components/Select'
 
 export default function Settings() {
   const [preferences, setPreferences] = useState({
@@ -162,12 +163,12 @@ export default function Settings() {
 
   return (
     <div className="min-h-screen bg-background">
-      <div className="max-w-2xl mx-auto px-4 py-8">
+      <div className="max-w-2xl mx-auto px-4 pt-8 pb-48 md:pb-16">
         <motion.div initial={{ opacity: 0, y: -20 }} animate={{ opacity: 1, y: 0 }}>
           <h1 className="text-3xl font-bold text-foreground mb-2">Settings</h1>
           <p className="text-muted-foreground mb-8">Manage your email notification preferences</p>
 
-          <div className="relative overflow-hidden p-6 rounded-2xl bg-card/80 backdrop-blur-sm border border-border shadow-[0_8px_30px_rgb(0,0,0,0.06)] hover:shadow-xl hover:border-primary/20 transition-all duration-300 space-y-6">
+          <div className="relative p-4 sm:p-6 rounded-2xl bg-card/80 backdrop-blur-sm border border-border shadow-[0_8px_30px_rgb(0,0,0,0.06)] hover:shadow-xl hover:border-primary/20 transition-all duration-300 space-y-6">
             <h2 className="text-lg font-semibold text-foreground flex items-center gap-2">
               <Bell className="w-5 h-5 text-indigo-400" />
               Email Notifications
@@ -229,7 +230,7 @@ export default function Settings() {
             </Button>
           </div>
 
-          <div className="relative overflow-hidden p-6 rounded-2xl bg-card/80 backdrop-blur-sm border border-border shadow-[0_8px_30px_rgb(0,0,0,0.06)] hover:shadow-xl hover:border-primary/20 transition-all duration-300 space-y-6 mt-8">
+          <div className="relative p-4 sm:p-6 rounded-2xl bg-card/80 backdrop-blur-sm border border-border shadow-[0_8px_30px_rgb(0,0,0,0.06)] hover:shadow-xl hover:border-primary/20 transition-all duration-300 space-y-6 mt-8">
             <h2 className="text-lg font-semibold text-foreground flex items-center gap-2">
               <Cpu className="w-5 h-5 text-pink-400" />
               AI Configuration (Bring Your Own Key)
@@ -244,22 +245,23 @@ export default function Settings() {
               <div className="space-y-4">
                 <div>
                   <label className="block text-sm font-medium text-foreground mb-1">Provider</label>
-                  <select
+                  <Select
                     value={aiProvider}
-                    onChange={(e) => {
-                      setAiProvider(e.target.value)
-                      if (e.target.value !== 'openrouter') {
+                    onChange={(val) => {
+                      setAiProvider(val)
+                      if (val !== 'openrouter') {
                         setAiModel('')
                       }
                     }}
-                    className="w-full bg-background border border-border rounded-lg px-4 py-2 text-foreground focus:outline-none focus:border-indigo-500"
-                  >
-                    <option value="">Server Default (Gemini)</option>
-                    <option value="gemini">Google Gemini</option>
-                    <option value="openai">OpenAI</option>
-                    <option value="openrouter">OpenRouter (100+ Models)</option>
-                    <option value="groq">Groq</option>
-                  </select>
+                    placeholder="Server Default (Gemini)"
+                    options={[
+                      { value: '', label: 'Server Default (Gemini)' },
+                      { value: 'gemini', label: 'Google Gemini' },
+                      { value: 'openai', label: 'OpenAI' },
+                      { value: 'openrouter', label: 'OpenRouter (100+ Models)' },
+                      { value: 'groq', label: 'Groq' },
+                    ]}
+                  />
                 </div>
 
                 {aiProvider && (
@@ -270,7 +272,7 @@ export default function Settings() {
                       value={aiKey}
                       onChange={(e) => setAiKey(e.target.value)}
                       placeholder={`Enter your ${aiProvider} API key`}
-                      className="w-full bg-neutral-800 border border-border rounded-lg px-4 py-2 text-foreground focus:outline-none focus:border-indigo-500"
+                      className="w-full bg-background border border-border rounded-lg px-3 py-2.5 text-sm text-foreground placeholder:text-muted-foreground focus:outline-none focus:border-indigo-500 focus:ring-1 focus:ring-indigo-500"
                     />
                   </div>
                 )}
@@ -278,17 +280,16 @@ export default function Settings() {
                 {aiProvider === 'openrouter' && (
                   <div>
                     <label className="block text-sm font-medium text-foreground mb-1">Model Selection</label>
-                    <select
+                    <Select
                       value={aiModel}
-                      onChange={(e) => setAiModel(e.target.value)}
+                      onChange={(val) => setAiModel(val)}
                       disabled={loadingModels}
-                      className="w-full bg-background border border-border rounded-lg px-4 py-2 text-foreground focus:outline-none focus:border-indigo-500"
-                    >
-                      <option value="">Default (gpt-4o-mini)</option>
-                      {aiModelsList.map(m => (
-                        <option key={m.id} value={m.id}>{m.name}</option>
-                      ))}
-                    </select>
+                      placeholder="Default (gpt-4o-mini)"
+                      options={[
+                        { value: '', label: 'Default (gpt-4o-mini)' },
+                        ...aiModelsList.map(m => ({ value: m.id, label: m.name }))
+                      ]}
+                    />
                     {loadingModels && <p className="text-xs text-muted-foreground mt-1">Loading OpenRouter models...</p>}
                   </div>
                 )}
