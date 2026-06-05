@@ -1,4 +1,4 @@
-import React from 'react';
+import React, { useEffect } from 'react';
 import data from '../../../../data/dummy_data.json';
 import Hero from './Hero';
 import About from './About';
@@ -8,14 +8,38 @@ import Experience from './Experience';
 import Testimonials from './Testimonials';
 import Contact from './Contact';
 
+const FONT_STYLESHEET_ID = 'scandinavian-light-fonts';
+const FONT_HREF =
+  'https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700;800&family=Lora:wght@400;500;600&display=swap';
+
 export default function ScandinavianLight() {
+  useEffect(() => {
+    if (typeof document === 'undefined') return;
+    if (document.getElementById(FONT_STYLESHEET_ID)) return;
+
+    const googlePreconnect = document.createElement('link');
+    googlePreconnect.rel = 'preconnect';
+    googlePreconnect.href = 'https://fonts.googleapis.com';
+
+    const gstaticPreconnect = document.createElement('link');
+    gstaticPreconnect.rel = 'preconnect';
+    gstaticPreconnect.href = 'https://fonts.gstatic.com';
+    gstaticPreconnect.crossOrigin = 'anonymous';
+
+    const stylesheet = document.createElement('link');
+    stylesheet.id = FONT_STYLESHEET_ID;
+    stylesheet.rel = 'stylesheet';
+    stylesheet.href = FONT_HREF;
+
+    document.head.append(googlePreconnect, gstaticPreconnect, stylesheet);
+  }, []);
+
   return (
     <div
       className="min-h-screen overflow-hidden bg-[#F7F3EA] text-[#283028]"
       style={{ fontFamily: 'Inter, sans-serif' }}
     >
       <style>{`
-        @import url('https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700;800&family=Lora:wght@400;500;600&display=swap');
         .scandi-serif { font-family: 'Lora', serif; }
         .scandi-wood {
           background-image:
