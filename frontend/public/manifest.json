@@ -1,0 +1,25 @@
+{
+  "name": "careerpilot - AI Job Search Platform",
+  "short_name": "careerpilot",
+  "description": "AI-powered job search platform. Enhance your resume, find perfect matches, and land your dream job faster.",
+  "start_url": "/",
+  "scope": "/",
+  "display": "standalone",
+  "orientation": "portrait",
+  "theme_color": "#000000",
+  "background_color": "#f8fafc",
+  "icons": [
+    {
+      "src": "/speed.png",
+      "sizes": "192x192",
+      "type": "image/png",
+      "purpose": "any maskable"
+    },
+    {
+      "src": "/speed.png",
+      "sizes": "512x512",
+      "type": "image/png",
+      "purpose": "any maskable"
+    }
+  ]
+}
