@@ -25,11 +25,22 @@ const EmailGenerator = () => {
     }
   };
 
-  const copyToClipboard = (text, index) => {
-    navigator.clipboard.writeText(text);
+  const copyToClipboard = async (text, index) => {
+  try {
+    await navigator.clipboard.writeText(text);
+
     setCopiedIndex(index);
-    setTimeout(() => setCopiedIndex(null), 2000);
-  };
+
+    setTimeout(() => {
+      setCopiedIndex(null);
+    }, 2000);
+
+    toast.success("Copied successfully!");
+  } catch (error) {
+    toast.error("Failed to copy");
+    console.error(error);
+  }
+};
 
   return (
     <div className="min-h-screen bg-background">
