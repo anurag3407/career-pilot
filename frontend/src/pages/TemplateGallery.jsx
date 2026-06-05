@@ -369,7 +369,7 @@ const TemplatePreviewModal = ({ templateId, isOpen, onClose, portfolioData }) =>
                 Your data has been extracted. Select a template below and we'll automatically inject your experience and projects!
               </p>
             </div>
-            <button
+            <button 
               onClick={clearDraft}
               className="p-2 hover:bg-emerald-500/20 text-emerald-400 rounded-lg transition-colors"
               title="Discard Draft"
@@ -381,6 +381,7 @@ const TemplatePreviewModal = ({ templateId, isOpen, onClose, portfolioData }) =>
 
         <div className="flex justify-between items-center mb-8">
           <h1 className="text-4xl font-bold">Template Gallery</h1>
+          </div>
           <button
             onClick={toggleTheme}
             className="p-2 rounded-xl bg-muted hover:bg-accent border border-border text-foreground transition-all cursor-pointer overflow-hidden relative group"
@@ -421,20 +422,21 @@ const TemplatePreviewModal = ({ templateId, isOpen, onClose, portfolioData }) =>
           <FilterSelect value={layout} onChange={setLayout} options={LAYOUT_OPTIONS} />
           <FilterSelect value={sort} onChange={setSort} options={SORT_OPTIONS} className="ml-auto" />
         </div>
-
-        <TemplatePreviewModal
-          templateId={previewTemplateId}
-          isOpen={!!previewTemplateId}
-          onClose={() => {
-            if (searchParams.has("preview")) {
-              // Check if there is history to go back to, so we pop the preview state cleanly
-              window.history.back();
-            } else {
-              setSearchParams({}, { replace: true });
-            }
-          }}
-          portfolioData={aiDraft}
-        />
+        <div className="overflow-hidden rounded-2xl border border-border"><CulinaryAbout /></div>
+        
+      <TemplatePreviewModal
+        templateId={previewTemplateId}
+        isOpen={!!previewTemplateId}
+        onClose={() => {
+          if (searchParams.has("preview")) {
+            // Check if there is history to go back to, so we pop the preview state cleanly
+            window.history.back();
+          } else {
+            setSearchParams({}, { replace: true });
+          }
+        }}
+        portfolioData={aiDraft}
+      />
 
         {sortedTemplates.length === 0 ? (
           <div className="text-center text-muted-foreground mt-12 text-xl">
@@ -443,20 +445,20 @@ const TemplatePreviewModal = ({ templateId, isOpen, onClose, portfolioData }) =>
         ) : (
           <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 xl:grid-cols-4 gap-6">
             {sortedTemplates.map((template) => (
-              <TemplateCard
-                key={template.id}
-                template={template}
-                hovered={hoveredCard === template.id}
-                onHover={setHoveredCard}
-                onLeave={() => setHoveredCard(null)}
-                onUse={handleUseTemplate}
-                aiDraft={aiDraft}
-              />
-            ))}
+  <TemplateCard
+    key={template.id}
+    template={template}
+    hovered={hoveredCard === template.id}
+    onHover={setHoveredCard}
+    onLeave={() => setHoveredCard(null)}
+    onUse={handleUseTemplate}
+    aiDraft={aiDraft}
+  />
+  ))}
           </div>
         )}
-
         {/* Deploy Modal */}
+
         <DeployModal
           isOpen={isDeployModalOpen}
           onClose={() => setIsDeployModalOpen(false)}
@@ -539,7 +541,6 @@ const TemplatePreviewModal = ({ templateId, isOpen, onClose, portfolioData }) =>
             <MidnightGradient />
           </div>
         </div>
-
         {/* Playing Cards Theme */}
         <div className="mt-12">
           <div className="mb-4 flex items-center gap-3 px-1">
@@ -561,13 +562,20 @@ const TemplatePreviewModal = ({ templateId, isOpen, onClose, portfolioData }) =>
           <div className="overflow-hidden rounded-2xl border border-cyan-500/20"><TechStartupHero /></div>
         </div>
 
-        {/* Full-template previews — each has its own fixed/sticky navbar.
-            TemplatePreviewFrame creates an isolated scroll container so
-            that navbar stays inside the preview box and never bleeds out. */}
-        <TemplatePreviewFrame
-          label="Choose Adventure Theme — Full Interactive Template"
-          badgeColor="bg-violet-500/20 text-violet-400 border-violet-500/30"
-        />
+      {/* Psychedelic Swirl Theme */}
+      <div className="mt-12">
+        <div className="mb-4 flex items-center gap-3 px-1">
+          <span className="rounded-full bg-fuchsia-500/20 px-3 py-1 text-xs font-bold uppercase tracking-widest text-fuchsia-400 border border-fuchsia-500/30">
+            ✿ NEW — Psychedelic Swirl
+          </span>
+          <h2 className="text-lg font-semibold text-foreground/70">
+            Psychedelic Swirl — Retro / Nostalgic Full Template
+          </h2>
+        </div>
+        <div
+          className="rounded-2xl border border-fuchsia-500/20"
+          style={{ height: 640, overflowY: "auto", overflowX: "hidden", transform: "translate(0)", position: "relative" }}
+        >
           <PsychedelicSwirl />
 </div>
 </div>
@@ -582,109 +590,124 @@ const TemplatePreviewModal = ({ templateId, isOpen, onClose, portfolioData }) =>
           label="Swiss Typography — Full Interactive Template"
           badgeColor="bg-red-500/20 text-red-400 border-red-500/30"
         >
-          <SwissTypography portfolioData={aiDraft} />
+          <SwissTypography />
         </TemplatePreviewFrame>
 
         <TemplatePreviewFrame
-          label="Desert Dunes — Nature / Organic Template"
-          badgeColor="bg-amber-500/20 text-amber-400 border-amber-500/30"
-        >
-          <DesertDunes />
-        </TemplatePreviewFrame>
+  label="Desert Dunes — Nature / Organic Template"
+  badgeColor="bg-amber-500/20 text-amber-400 border-amber-500/30"
+>
+  <DesertDunes />
+</TemplatePreviewFrame>
 
-        {/* Psychedelic Swirl — sandboxed fixed-nav frame */}
-        <div className="mt-12">
-          <div className="mb-4 flex items-center gap-3 px-1">
-            <span className="rounded-full bg-fuchsia-500/20 px-3 py-1 text-xs font-bold uppercase tracking-widest text-fuchsia-400 border border-fuchsia-500/30">
-              ✿ Psychedelic Swirl
-            </span>
-            <h2 className="text-lg font-semibold text-foreground/70">
-              Psychedelic Swirl — Retro / Nostalgic Full Template
-            </h2>
-          </div>
-          <div
-            className="rounded-2xl border border-fuchsia-500/20"
-            style={{ height: 640, overflowY: "auto", overflowX: "hidden", transform: "translate(0)", position: "relative" }}
-          >
-            <PsychedelicSwirl />
+      {/* Typewriter Effect — sandboxed fixed-nav frame */}
+      <div className="mt-12">
+        <div className="mb-4 flex items-center gap-3 px-1">
+          <span className="rounded-full px-3 py-1 text-xs font-bold uppercase tracking-widest border" style={{ background: "rgba(139,37,0,.1)", color: "#8B2500", borderColor: "rgba(139,37,0,.25)" }}>
+            Typewriter Effect
+          </span>
+          <h2 className="text-lg font-semibold text-foreground/70">Typewriter Effect — Vintage Paper Full Template</h2>
+        </div>
+        <div className="rounded-2xl" style={{ height: 640, overflowY: "auto", overflowX: "hidden", transform: "translate(0)", position: "relative", border: "1px solid rgba(139,37,0,.2)" }}>
+          <TypewriterEffect />
           </div>
         </div>
-
-        {/* Desert Dunes Theme */}
-        <div className="mt-12">
-          <div className="mb-4 flex items-center gap-3 px-1">
-            <span className="rounded-full bg-amber-500/20 px-3 py-1 text-xs font-bold uppercase tracking-widest text-amber-400 border border-amber-500/30">
-              🏜 Desert Dunes
-            </span>
-            <h2 className="text-lg font-semibold text-foreground/70">
-              Desert Dunes — Nature / Organic Full Template
-            </h2>
-          </div>
-          <div
-            className="rounded-2xl border border-amber-500/20"
-            style={{ height: 640, overflowY: "auto", overflowX: "hidden", transform: "translate(0)", position: "relative" }}
-          >
-            <DesertDunes />
-          </div>
+          
+      {/* Chromatic Glitch — sandboxed fixed-nav frame */}
+      <div className="mt-12">
+        <div className="mb-4 flex items-center gap-3 px-1">
+          <span className="rounded-full bg-cyan-500/20 px-3 py-1 text-xs font-bold uppercase tracking-widest text-cyan-400 border border-cyan-500/30">
+            ◈ Chromatic Glitch
+          </span>
+          <h2 className="text-lg font-semibold text-foreground/70">Chromatic Glitch — RGB Split / Colorful Full Template</h2>
         </div>
-
-        {/* Memphis Pop Theme */}
-        <div className="mt-12">
-          <div className="mb-4 flex items-center gap-3 px-1">
-            <span className="rounded-full bg-yellow-500/20 px-3 py-1 text-xs font-bold uppercase tracking-widest text-yellow-400 border border-yellow-500/30">
-              ★ Memphis Pop
-            </span>
-            <h2 className="text-lg font-semibold text-foreground/70">
-              Memphis Pop — Retro / Nostalgic Full Template
-            </h2>
-          </div>
-          <div
-            className="rounded-2xl border border-yellow-500/20"
-            style={{ height: 640, overflowY: "auto", overflowX: "hidden", transform: "translate(0)", position: "relative" }}
-          >
-            <MemphisPop />
-          </div>
+        <div className="rounded-2xl border border-cyan-500/20"
+          style={{ height: 640, overflowY: "auto", overflowX: "hidden", transform: "translate(0)", position: "relative" }}>
+          <ChromaticGlitch />
         </div>
-
-        {/* Cherry Blossom Theme */}
-        <div className="mt-12">
-          <div className="mb-4 flex items-center gap-3 px-1">
-            <span className="rounded-full bg-rose-500/20 px-3 py-1 text-xs font-bold uppercase tracking-widest text-rose-400 border border-rose-500/30">
-              🌸 Cherry Blossom
-            </span>
-            <h2 className="text-lg font-semibold text-foreground/70">Cherry Blossom Theme — Digital Spring</h2>
-          </div>
-          <div className="overflow-hidden rounded-2xl border border-rose-500/20">
-            <CherryBlossom portfolioData={aiDraft} />
-          </div>
+      </div>
+      {/* Magnetic Dock — sandboxed fixed-nav frame */}
+      <div className="mt-12">
+        <div className="mb-4 flex items-center gap-3 px-1">
+          <span className="rounded-full bg-indigo-500/15 px-3 py-1 text-xs font-bold uppercase tracking-widest text-indigo-400 border border-indigo-500/25">
+            ⬡ Magnetic Dock
+          </span>
+          <h2 className="text-lg font-semibold text-foreground/70">Magnetic Dock — macOS Spring-Physics Navigation</h2>
         </div>
-
-        {/* Cassette Mixtape — sandboxed fixed-nav frame */}
-        <div className="mt-12">
-          <div className="mb-4 flex items-center gap-3 px-1">
-            <span className="rounded-full bg-orange-500/20 px-3 py-1 text-xs font-bold uppercase tracking-widest text-orange-400 border border-orange-500/30">
-              ▶ Cassette Mixtape
-            </span>
-            <h2 className="text-lg font-semibold text-foreground/70">Cassette Mixtape — Retro / Nostalgic Full Template</h2>
-          </div>
-          <div className="rounded-2xl border border-orange-500/20"
-            style={{ height: 640, overflowY: "auto", overflowX: "hidden", transform: "translate(0)", position: "relative" }}>
-            <CassetteMixtape />
-          </div>
+        <div className="rounded-2xl border border-indigo-500/15"
+          style={{ height: 640, overflowY: "auto", overflowX: "hidden", transform: "translate(0)", position: "relative" }}>
+          <MagneticDock />
         </div>
+      </div>
 
-        {/* Typewriter Effect — sandboxed fixed-nav frame */}
-        <div className="mt-12">
-          <div className="mb-4 flex items-center gap-3 px-1">
-            <span className="rounded-full px-3 py-1 text-xs font-bold uppercase tracking-widest border" style={{ background: "rgba(139,37,0,.1)", color: "#8B2500", borderColor: "rgba(139,37,0,.25)" }}>
-              Typewriter Effect
-            </span>
-            <h2 className="text-lg font-semibold text-foreground/70">Typewriter Effect — Vintage Paper Full Template</h2>
-          </div>
-          <div className="rounded-2xl" style={{ height: 640, overflowY: "auto", overflowX: "hidden", transform: "translate(0)", position: "relative", border: "1px solid rgba(139,37,0,.2)" }}>
-            <TypewriterEffect />
-          </div>
+      {/* Ocean Depths — sandboxed fixed-nav frame */}
+      <div className="mt-12">
+        <div className="mb-4 flex items-center gap-3 px-1">
+          <span className="rounded-full bg-cyan-500/20 px-3 py-1 text-xs font-bold uppercase tracking-widest text-cyan-400 border border-cyan-500/30">
+            ≋ Ocean Depths
+          </span>
+          <h2 className="text-lg font-semibold text-foreground/70">Ocean Depths — Bioluminescent 3D/WebGL Portfolio</h2>
         </div>
+        <div className="rounded-2xl border border-cyan-500/20"
+          style={{ height: 640, overflowY: "auto", overflowX: "hidden", transform: "translate(0)", position: "relative" }}>
+          <OceanDepths />
+        </div>
+      </div>
+
+      {/* Neon Cityscape — sandboxed fixed-nav frame */}
+      <div className="mt-12">
+        <div className="mb-4 flex items-center gap-3 px-1">
+          <span className="rounded-full bg-pink-500/20 px-3 py-1 text-xs font-bold uppercase tracking-widest text-pink-400 border border-pink-500/30">
+            ◈ Neon Cityscape
+          </span>
+          <h2 className="text-lg font-semibold text-foreground/70">Neon Cityscape — Cyberpunk Neon Portfolio</h2>
+        </div>
+        <div className="rounded-2xl border border-pink-500/20"
+          style={{ height: 640, overflowY: "auto", overflowX: "hidden", transform: "translate(0)", position: "relative" }}>
+          <NeonCityscape />
+        </div>
+      </div>
+
+      {/* Planetary Orbit — sandboxed fixed-nav frame */}
+      <div className="mt-12">
+        <div className="mb-4 flex items-center gap-3 px-1">
+          <span className="rounded-full bg-blue-500/20 px-3 py-1 text-xs font-bold uppercase tracking-widest text-blue-400 border border-blue-500/30">
+            ◎ Planetary Orbit
+          </span>
+          <h2 className="text-lg font-semibold text-foreground/70">Planetary Orbit — Solar System Navigation Portfolio</h2>
+        </div>
+        <div className="rounded-2xl border border-blue-500/20"
+          style={{ height: 640, overflowY: "auto", overflowX: "hidden", transform: "translate(0)", position: "relative" }}>
+          <PlanetaryOrbit />
+        </div>
+      </div>
+
+      {/* Low Poly Terrain — sandboxed fixed-nav frame */}
+      <div className="mt-12">
+        <div className="mb-4 flex items-center gap-3 px-1">
+          <span className="rounded-full bg-emerald-500/20 px-3 py-1 text-xs font-bold uppercase tracking-widest text-emerald-400 border border-emerald-500/30">
+            △ Low Poly Terrain
+          </span>
+          <h2 className="text-lg font-semibold text-foreground/70">Low Poly Terrain — Animated Day/Night Cycle Portfolio</h2>
+        </div>
+        <div className="rounded-2xl border border-emerald-500/20"
+          style={{ height: 640, overflowY: "auto", overflowX: "hidden", transform: "translate(0)", position: "relative" }}>
+          <LowPolyTerrain />
+        </div>
+      </div>
+
+      {/* High Fashion — sandboxed fixed-nav frame */}
+      <div className="mt-12">
+        <div className="mb-4 flex items-center gap-3 px-1">
+          <span className="rounded-full px-3 py-1 text-xs font-bold uppercase tracking-widest border" style={{ background: "rgba(201,168,76,.1)", color: "#c9a84c", borderColor: "rgba(201,168,76,.25)" }}>
+            ✦ High Fashion
+          </span>
+          <h2 className="text-lg font-semibold text-foreground/70">High Fashion — Editorial Two-Column Portfolio</h2>
+        </div>
+        <div className="rounded-2xl" style={{ height: 640, overflowY: "auto", overflowX: "hidden", transform: "translate(0)", position: "relative", border: "1px solid rgba(201,168,76,.2)" }}>
+          <HighFashion />
+        </div>
+      </div>
 
       {/* Sports Athletic — sandboxed fixed-nav frame */}
       {/* 
@@ -701,102 +724,7 @@ const TemplatePreviewModal = ({ templateId, isOpen, onClose, portfolioData }) =>
       </div>
       */}
 
-        {/* Magnetic Dock — sandboxed fixed-nav frame */}
-        <div className="mt-12">
-          <div className="mb-4 flex items-center gap-3 px-1">
-            <span className="rounded-full bg-indigo-500/15 px-3 py-1 text-xs font-bold uppercase tracking-widest text-indigo-400 border border-indigo-500/25">
-              ⬡ Magnetic Dock
-            </span>
-            <h2 className="text-lg font-semibold text-foreground/70">Magnetic Dock — macOS Spring-Physics Navigation</h2>
-          </div>
-          <div className="rounded-2xl border border-indigo-500/15"
-            style={{ height: 640, overflowY: "auto", overflowX: "hidden", transform: "translate(0)", position: "relative" }}>
-            <MagneticDock />
-          </div>
-        </div>
-
-        {/* Ocean Depths — sandboxed fixed-nav frame */}
-        <div className="mt-12">
-          <div className="mb-4 flex items-center gap-3 px-1">
-            <span className="rounded-full bg-cyan-500/20 px-3 py-1 text-xs font-bold uppercase tracking-widest text-cyan-400 border border-cyan-500/30">
-              ≋ Ocean Depths
-            </span>
-            <h2 className="text-lg font-semibold text-foreground/70">Ocean Depths — Bioluminescent 3D/WebGL Portfolio</h2>
-          </div>
-          <div className="rounded-2xl border border-cyan-500/20"
-            style={{ height: 640, overflowY: "auto", overflowX: "hidden", transform: "translate(0)", position: "relative" }}>
-            <OceanDepths />
-          </div>
-        </div>
-
-        {/* Neon Cityscape — sandboxed fixed-nav frame */}
-        <div className="mt-12">
-          <div className="mb-4 flex items-center gap-3 px-1">
-            <span className="rounded-full bg-pink-500/20 px-3 py-1 text-xs font-bold uppercase tracking-widest text-pink-400 border border-pink-500/30">
-              ◈ Neon Cityscape
-            </span>
-            <h2 className="text-lg font-semibold text-foreground/70">Neon Cityscape — Cyberpunk Neon Portfolio</h2>
-          </div>
-          <div className="rounded-2xl border border-pink-500/20"
-            style={{ height: 640, overflowY: "auto", overflowX: "hidden", transform: "translate(0)", position: "relative" }}>
-            <NeonCityscape />
-          </div>
-        </div>
-
-        {/* Planetary Orbit — sandboxed fixed-nav frame */}
-        <div className="mt-12">
-          <div className="mb-4 flex items-center gap-3 px-1">
-            <span className="rounded-full bg-blue-500/20 px-3 py-1 text-xs font-bold uppercase tracking-widest text-blue-400 border border-blue-500/30">
-              ◎ Planetary Orbit
-            </span>
-            <h2 className="text-lg font-semibold text-foreground/70">Planetary Orbit — Solar System Navigation Portfolio</h2>
-          </div>
-          <div className="rounded-2xl border border-blue-500/20"
-            style={{ height: 640, overflowY: "auto", overflowX: "hidden", transform: "translate(0)", position: "relative" }}>
-            <PlanetaryOrbit />
-          </div>
-        </div>
-
-        {/* Low Poly Terrain — sandboxed fixed-nav frame */}
-        <div className="mt-12">
-          <div className="mb-4 flex items-center gap-3 px-1">
-            <span className="rounded-full bg-emerald-500/20 px-3 py-1 text-xs font-bold uppercase tracking-widest text-emerald-400 border border-emerald-500/30">
-              △ Low Poly Terrain
-            </span>
-            <h2 className="text-lg font-semibold text-foreground/70">Low Poly Terrain — Animated Day/Night Cycle Portfolio</h2>
-          </div>
-          <div className="rounded-2xl border border-emerald-500/20"
-            style={{ height: 640, overflowY: "auto", overflowX: "hidden", transform: "translate(0)", position: "relative" }}>
-            <LowPolyTerrain />
-          </div>
-        </div>
-
-        {/* High Fashion — sandboxed fixed-nav frame */}
-        <div className="mt-12">
-          <div className="mb-4 flex items-center gap-3 px-1">
-            <span className="rounded-full px-3 py-1 text-xs font-bold uppercase tracking-widest border" style={{ background: "rgba(201,168,76,.1)", color: "#c9a84c", borderColor: "rgba(201,168,76,.25)" }}>
-              ✦ High Fashion
-            </span>
-            <h2 className="text-lg font-semibold text-foreground/70">High Fashion — Editorial Two-Column Portfolio</h2>
-          </div>
-          <div className="rounded-2xl" style={{ height: 640, overflowY: "auto", overflowX: "hidden", transform: "translate(0)", position: "relative", border: "1px solid rgba(201,168,76,.2)" }}>
-            <HighFashion />
-          </div>
-        </div>
-
-        {/* Sports Athletic — sandboxed fixed-nav frame */}
-        <div className="mt-12 mb-16">
-          <div className="mb-4 flex items-center gap-3 px-1">
-            <span className="rounded-full bg-rose-500/20 px-3 py-1 text-xs font-bold uppercase tracking-widest text-rose-400 border border-rose-500/30">
-              ● Sports Athletic
-            </span>
-            <h2 className="text-lg font-semibold text-foreground/70">Sports Athletic — Dark Athletic Portfolio</h2>
-          </div>
-          <div className="rounded-2xl" style={{ height: 640, overflowY: "auto", overflowX: "hidden", transform: "translate(0)", position: "relative", border: "1px solid rgba(225,29,72,.2)" }}>
-            <SportsAthletic />
-          </div>
-        </div>
-
-      </div>
+    </div>
+  </div>
   );
 }
