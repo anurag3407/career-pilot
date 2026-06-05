@@ -1,4 +1,4 @@
-import React, { useState, useRef, useEffect, Suspense, useMemo } from "react";
+
 import { useTheme } from "../hooks/useTheme";
 import Navbar from "../components/Navbar";
 import DeployModal from "../components/portfolio/DeployModal";
@@ -65,25 +65,7 @@ function TemplatePreviewFrame({ label, badgeColor, children }) {
     </div>
   );
 }
-import { templates } from '../data/templates';
-import { motion, AnimatePresence } from "framer-motion";
-import { Moon, Sun, ChevronDown, Check, Eye, Star, Sparkles } from "lucide-react";
-import LiquidGlass from "../components/portfolio/templates/Liquid_Glass/index";
-import MidnightGradient from "../components/portfolio/templates/Midnight_Gradient/index";
-import PlayingCardsPortfolio from "../components/portfolio/templates/Playing_Cards";
-import CherryBlossom from "../components/portfolio/templates/Cherry_Blossom/index";
-import PsychedelicSwirl from "../components/portfolio/templates/Psychedelic_Swirl/index";
-import MemphisPop from "../components/portfolio/templates/Memphis_Pop/index";
-import CassetteMixtape from "../components/portfolio/templates/Cassette_Mixtape/index";
-import TypewriterEffect from "../components/portfolio/templates/Typewriter_Effect/index";
-import ChromaticGlitch from "../components/portfolio/templates/Chromatic_Glitch/index";
-import MagneticDock from "../components/portfolio/templates/Magnetic_Dock/index";
-import { X } from "lucide-react";
-import { useSearchParams } from "react-router-dom";
-// import Hero from "../components/portfolio/templates/Holographic/Hero";
-// import ChooseAdventurePortfolio from "../components/portfolio/templates/Choose_Adventure/index";
-// import RetroProjects from "../components/portfolio/templates/2D_Retro_8bit/Projects";
-// import FantasyRPGProjects from "../components/portfolio/templates/Fantasy_RPG/Projects";
+
 
 
 function FilterSelect({ value, onChange, options, className = "" }) {
@@ -496,10 +478,7 @@ function TemplateCard({ template, hovered, onHover, onLeave, onUse, aiDraft }) {
   });
 
   return (
-  <div className="min-h-screen bg-background text-foreground transition-colors duration-300">
-    <Navbar />
 
-    <div className="p-8 pt-24">
       
       {aiDraft && (
         <div className="mb-8 p-4 rounded-xl bg-gradient-to-r from-emerald-500/10 to-teal-500/10 border border-emerald-500/30 flex items-center justify-between">
@@ -685,7 +664,7 @@ function TemplateCard({ template, hovered, onHover, onLeave, onUse, aiDraft }) {
           <FilterSelect value={sort} onChange={setSort} options={SORT_OPTIONS} className="ml-auto" />
         </div>
         <div className="overflow-hidden rounded-2xl border border-border"><CulinaryAbout /></div>
-        
+
       <TemplatePreviewModal
         templateId={previewTemplateId}
         isOpen={!!previewTemplateId}
@@ -753,18 +732,7 @@ function TemplateCard({ template, hovered, onHover, onLeave, onUse, aiDraft }) {
       >
         <DesertDunes />
       </TemplatePreviewFrame>
-      </div>
-      <div className="mt-12">
-        <span className="rounded-full bg-red-500/20 px-3 py-1 text-xs font-bold uppercase tracking-widest text-red-400 border border-red-500/30">
-            Preview
-          </span>
-          <h2 className="text-lg font-semibold text-foreground/70">Swiss Typography — Full Interactive Template</h2>
-        </div>
-        <div className="overflow-hidden rounded-2xl border border-border">
-          <SwissTypography portfolioData={aiDraft} />
-        </div>
-      </div>
-      
+
       <div className="mt-12">
         <div className="mb-4 flex items-center gap-3 px-1">
           <span className="rounded-full bg-fuchsia-500/20 px-3 py-1 text-xs font-bold uppercase tracking-widest text-fuchsia-400 border border-fuchsia-500/30">
@@ -895,7 +863,7 @@ function TemplateCard({ template, hovered, onHover, onLeave, onUse, aiDraft }) {
           <TypewriterEffect />
           </div>
         </div>
-          
+
       {/* Chromatic Glitch — sandboxed fixed-nav frame */}
       <div className="mt-12">
         <div className="mb-4 flex items-center gap-3 px-1">
@@ -909,6 +877,7 @@ function TemplateCard({ template, hovered, onHover, onLeave, onUse, aiDraft }) {
           <ChromaticGlitch />
         </div>
       </div>
+
       {/* Magnetic Dock — sandboxed fixed-nav frame */}
       <div className="mt-12">
         <div className="mb-4 flex items-center gap-3 px-1">
@@ -923,18 +892,7 @@ function TemplateCard({ template, hovered, onHover, onLeave, onUse, aiDraft }) {
         </div>
       </div>
 
-      {/* Ocean Depths — sandboxed fixed-nav frame */}
-      <div className="mt-12">
-        <div className="mb-4 flex items-center gap-3 px-1">
-          <span className="rounded-full bg-cyan-500/20 px-3 py-1 text-xs font-bold uppercase tracking-widest text-cyan-400 border border-cyan-500/30">
-            ≋ Ocean Depths
-          </span>
-          <h2 className="text-lg font-semibold text-foreground/70">Ocean Depths — Bioluminescent 3D/WebGL Portfolio</h2>
-        </div>
-        <div className="rounded-2xl border border-cyan-500/20"
-          style={{ height: 640, overflowY: "auto", overflowX: "hidden", transform: "translate(0)", position: "relative" }}>
-          <OceanDepths />
-        </div>
+
       </div>
 
       {/* Neon Cityscape — sandboxed fixed-nav frame */}
