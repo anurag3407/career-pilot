@@ -70,6 +70,29 @@ import {
   startDigestWorker
 } from './services/weeklyDigestService.js';
 
+
+// ============================================================================
+// Mongodb
+// ============================================================================
+// MongoDB Migrations
+import { up, database } from 'migrate-mongo';
+
+async function runMigrations() {
+  try {
+    const { db, client } = await database.connect();
+    const migrated = await up(db, client);
+    if (migrated.length > 0) {
+      migrated.forEach(fileName => console.log('✅ Migrated:', fileName));
+    } else {
+      console.log('✅ All migrations already up to date');
+    }
+    await client.close();
+  } catch (err) {
+    console.warn('⚠️ Migration warning:', err.message);
+  }
+}
+
+
 // ============================================================================
 // Configuration validation - Check for required API keys
 // ============================================================================
@@ -257,9 +280,11 @@ app.use((req, res) => {
   res.status(404).json({ error: 'Route not found' });
 });
 app.use(globalErrorHandler);
+
 const startServer = async () => {
   try {
     await connectDB();
+    await runMigrations();
 
     httpServer.listen(PORT, () => {
       console.log(`🚀 Server running on port ${PORT}`);
