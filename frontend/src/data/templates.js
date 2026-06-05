@@ -2386,11 +2386,12 @@ export const templates = [
     "category": "Portfolio",
     "colorScheme": "Dark",
     "layout": "Grid",
-    "author": "System",
+    "author": "yashitripathi2007",
     "views": 1196,
     "rating": 4.5,
     "image": "/template-previews/Wildflower_Field.png",
-    "createdAt": "2026-05-01"
+    "createdAt": "2026-05-01",
+    "isComplete": true
   },
   {
     "id": "Windows_98",
