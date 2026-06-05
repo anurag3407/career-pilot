@@ -14,6 +14,7 @@ export function Select({ children, value, onValueChange, defaultValue }) {
   const [selectedValue, setSelectedValue] = React.useState(value || defaultValue || "")
   const [options, setOptions] = React.useState({})
   const containerRef = React.useRef(null)
+  const listboxId = React.useId()
 
   // Sync selectedValue state with external value prop updates
   React.useEffect(() => {
@@ -62,7 +63,18 @@ export function Select({ children, value, onValueChange, defaultValue }) {
   const selectedLabel = options[selectedValue] || ""
 
   return (
-    <SelectContext.Provider value={{ isOpen, setIsOpen, selectedValue, selectedLabel, registerOption, deregisterOption, handleSelect }}>
+<SelectContext.Provider
+  value={{
+    isOpen,
+    setIsOpen,
+    selectedValue,
+    selectedLabel,
+    registerOption,
+    deregisterOption,
+    handleSelect,
+    listboxId,
+  }}
+>
       <div ref={containerRef} className="relative w-full">
         {children}
       </div>
@@ -74,8 +86,8 @@ export function Select({ children, value, onValueChange, defaultValue }) {
  * The trigger button for opening and closing the Select dropdown.
  */
 export const SelectTrigger = React.forwardRef(({ className, children, ...props }, ref) => {
-  const { isOpen, setIsOpen, selectedLabel } = React.useContext(SelectContext)
-
+const { isOpen, setIsOpen, selectedLabel, listboxId } =
+  React.useContext(SelectContext)
   return (
     <button
   ref={ref}
@@ -83,6 +95,7 @@ export const SelectTrigger = React.forwardRef(({ className, children, ...props }
   role="combobox"
   aria-haspopup="listbox"
   aria-expanded={isOpen}
+  aria-controls={listboxId}
   onClick={() => setIsOpen(!isOpen)}
   onKeyDown={(e) => {
     if (e.key === "Enter" || e.key === " ") {
@@ -126,12 +139,13 @@ SelectValue.displayName = "SelectValue"
  * The animated container showing the list of selectable options.
  */
 export const SelectContent = React.forwardRef(({ className, children, ...props }, ref) => {
-  const { isOpen } = React.useContext(SelectContext)
+const { isOpen, listboxId } = React.useContext(SelectContext)
 
   return (
     <AnimatePresence>
       {isOpen && (
         <motion.div
+          id={listboxId}
           role="listbox"
           initial={{ opacity: 0, y: -10, scale: 0.97 }}
           animate={{ opacity: 1, y: 4, scale: 1 }}
