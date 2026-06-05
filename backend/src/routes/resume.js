@@ -477,8 +477,8 @@ ${text}`;
     
     // Strip markdown fences
     let structuredText = result.text.trim();
-    if (structuredText.startsWith('\`\`\`')) {
-      structuredText = structuredText.replace(/^\`\`\`(?:markdown)?\n?/, '').replace(/\n?\`\`\`$/, '').trim();
+    if (structuredText.startsWith('```')) {
+      structuredText = structuredText.replace(/^```(?:markdown)?\n?/, '').replace(/\n?```$/, '').trim();
     }
     
     const resume = await Resume.create({

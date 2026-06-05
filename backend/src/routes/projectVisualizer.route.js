@@ -31,7 +31,7 @@ router.post('/analyze', verifyToken, ingestLimiter, async (req, res) => {
       return res.status(400).json({ error: 'Valid GitHub repoUrl is required' });
     }
 
-    const match = repoUrl.match(/github\.com\/([^\/]+)\/([^\/]+)/);
+    const match = repoUrl.match(/github\.com\/([^/]+)\/([^/]+)/);
     if (!match) return res.status(400).json({ error: 'Invalid GitHub URL format' });
     
     const owner = match[1];

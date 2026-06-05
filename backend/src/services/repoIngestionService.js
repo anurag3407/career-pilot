@@ -137,7 +137,9 @@ export const buildCodebaseSkeleton = async (files, rootDir) => {
       if (exports.length > 0) {
         skeleton += `  Exports: ${exports.join(', ')}\n`;
       }
-    } catch (e) {}
+    } catch (e) {
+      // Ignore files that cannot be parsed for exports
+    }
     
     skeleton += "\n";
   }

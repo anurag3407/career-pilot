@@ -1,0 +1,29 @@
+{
+  "env": {
+    "node": true,
+    "es2021": true
+  },
+  "extends": [
+    "eslint:recommended"
+  ],
+  "parserOptions": {
+    "ecmaVersion": "latest",
+    "sourceType": "module"
+  },
+  "rules": {
+    "no-unused-vars": ["warn", { "argsIgnorePattern": "^_" }],
+    "no-undef": "error"
+  },
+  "overrides": [
+    {
+      "files": ["src/templates/**/*.js", "src/services/scrapers/**/*.js"],
+      "env": {
+        "browser": true
+      },
+      "globals": {
+        "NodeFilter": "readonly",
+        "IntersectionObserver": "readonly"
+      }
+    }
+  ]
+}

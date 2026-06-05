@@ -233,7 +233,7 @@ ${resumeText}`;
     // Parse JSON from response
     let qualitativeData;
     try {
-      let cleanedText = providerResult.text.replace(/\`\`\`json\n?/g, '').replace(/\`\`\`\n?/g, '').trim();
+      let cleanedText = providerResult.text.replace(/```json\n?/g, '').replace(/```\n?/g, '').trim();
       const jsonMatch = cleanedText.match(/\{[\s\S]*\}/);
       if (jsonMatch) {
         cleanedText = jsonMatch[0];
