@@ -5,6 +5,7 @@ const API_BASE = import.meta.env.VITE_API_BASE || '/api';
 
 // Helper to get auth headers
 async function getAuthHeaders() {
+  console.log("Current User:", auth?.currentUser);
   const user = auth?.currentUser
   if (!user) throw new Error('Not authenticated')
 
@@ -550,6 +551,17 @@ export const enhanceApi = {
       method: 'POST',
       headers,
       body: JSON.stringify({ resumeText })
+    })
+    return handleResponse(response)
+  },
+
+  // Analyze skill gap between resume and job description
+  async analyzeSkillGap(resumeText, jobDescription) {
+    const headers = await getAuthHeaders()
+    const response = await fetch(`${API_BASE}/enhance/skill-gap`, {
+      method: 'POST',
+      headers,
+      body: JSON.stringify({ resumeText, jobDescription })
     })
     return handleResponse(response)
   }

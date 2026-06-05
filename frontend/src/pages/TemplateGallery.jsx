@@ -28,6 +28,13 @@ import CassetteMixtape from "../components/portfolio/templates/Cassette_Mixtape/
 import TypewriterEffect from "../components/portfolio/templates/Typewriter_Effect/index";
 import ChromaticGlitch from "../components/portfolio/templates/Chromatic_Glitch/index";
 import MagneticDock from "../components/portfolio/templates/Magnetic_Dock/index";
+import MorphingBlobs from "../components/portfolio/templates/Morphing_Blobs/index";
+import OceanDepths from "../components/portfolio/templates/Ocean_Depths/index";
+import NeonCityscape from "../components/portfolio/templates/Neon_Cityscape/index";
+import PlanetaryOrbit from "../components/portfolio/templates/Planetary_Orbit/index";
+import LowPolyTerrain from "../components/portfolio/templates/Low_Poly_Terrain/index";
+import HighFashion from "../components/portfolio/templates/High_Fashion/index";
+import SportsAthletic from "../components/portfolio/templates/Sports_Athletic/index";
 
 /* TemplatePreviewFrame — contains each full portfolio template in a
    sandboxed scrollable box. The key trick: CSS `transform` on the outer
@@ -642,6 +649,48 @@ export default function TemplateGallery() {
             badgeColor="bg-indigo-500/20 text-indigo-400 border-indigo-500/30"
           >
             <MagneticDock />
+          </TemplatePreviewFrame>
+
+          <TemplatePreviewFrame
+            label="Ocean Depths Theme — Bioluminescent 3D/WebGL Portfolio"
+            badgeColor="bg-cyan-500/20 text-cyan-400 border-cyan-500/30"
+          >
+            <OceanDepths />
+          </TemplatePreviewFrame>
+
+          <TemplatePreviewFrame
+            label="Neon Cityscape Theme — Cyberpunk Neon Portfolio"
+            badgeColor="bg-pink-500/20 text-pink-400 border-pink-500/30"
+          >
+            <NeonCityscape />
+          </TemplatePreviewFrame>
+
+          <TemplatePreviewFrame
+            label="Planetary Orbit Theme — Solar System Navigation Portfolio"
+            badgeColor="bg-blue-500/20 text-blue-400 border-blue-500/30"
+          >
+            <PlanetaryOrbit />
+          </TemplatePreviewFrame>
+
+          <TemplatePreviewFrame
+            label="Low Poly Terrain Theme — Animated Day/Night Cycle Portfolio"
+            badgeColor="bg-emerald-500/20 text-emerald-400 border-emerald-500/30"
+          >
+            <LowPolyTerrain />
+          </TemplatePreviewFrame>
+
+          <TemplatePreviewFrame
+            label="High Fashion Theme — Editorial Two-Column Portfolio"
+            badgeColor="bg-stone-500/20 text-stone-400 border-stone-500/30"
+          >
+            <HighFashion />
+          </TemplatePreviewFrame>
+
+          <TemplatePreviewFrame
+            label="Sports Athletic Theme — Dark Athletic Portfolio"
+            badgeColor="bg-rose-500/20 text-rose-400 border-rose-500/30"
+          >
+            <SportsAthletic />
           </TemplatePreviewFrame>
 
         </div>

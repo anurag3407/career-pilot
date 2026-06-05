@@ -42,11 +42,14 @@ const Enhance = lazy(() => import("./pages/Enhance"));
 const ResumeView = lazy(() => import("./pages/ResumeView"));
 const JobAlerts = lazy(() => import("./pages/JobAlerts"));
 const InterviewPrep = lazy(() => import("./pages/InterviewPrep"));
+const InterviewHistory = lazy(() => import("./pages/InterviewHistory"));
+const InterviewReplay = lazy(() => import("./pages/InterviewReplay"));
 const UserProfile = lazy(() => import("./pages/UserProfile"));
 const SecuritySettings = lazy(() => import("./pages/SecuritySettings"));
 const EmailGenerator = lazy(() => import("./pages/EmailGenerator"));
 const LinkedInOptimizer = lazy(() => import("./pages/LinkedInOptimizer"));
 const Settings = lazy(() => import("./pages/Settings"));
+const SkillGap = lazy(() => import("./pages/SkillGap"));
 const ResumeHub = lazy(() => import("./pages/hubs/ResumeHub"));
 const JobsHub = lazy(() => import("./pages/hubs/JobsHub"));
 const PortfolioHub = lazy(() => import("./pages/hubs/PortfolioHub"));
@@ -100,6 +103,11 @@ import CassetteMixtape from './components/portfolio/templates/Cassette_Mixtape/i
 import MagneticDock from './components/portfolio/templates/Magnetic_Dock/index.jsx';
 import Hero from './components/portfolio/templates/Magazine_Editorial/Hero';
 import ColorBlock from './components/portfolio/templates/Color_Block/index.jsx';
+import OceanDepths from './components/portfolio/templates/Ocean_Depths/index.jsx';
+import NeonCityscape from './components/portfolio/templates/Neon_Cityscape/index.jsx';
+import PlanetaryOrbit from './components/portfolio/templates/Planetary_Orbit/index.jsx';
+import LowPolyTerrain from './components/portfolio/templates/Low_Poly_Terrain/index.jsx';
+import HighFashion from './components/portfolio/templates/High_Fashion/index.jsx';
 import TestSocialLinks from './pages/TestSocialLinks';
 
 function LoadingScreen({ label }) {
@@ -255,7 +263,12 @@ function AppRoutes() {
         <Route path="/templates/memphis-pop" element={<MemphisPop />} />
         <Route path="/templates/cassette-mixtape" element={<CassetteMixtape />} />
         <Route path="/templates/magnetic-dock" element={<MagneticDock />} />
-        
+        <Route path="/templates/ocean-depths" element={<OceanDepths />} />
+        <Route path="/templates/neon-cityscape" element={<NeonCityscape />} />
+        <Route path="/templates/planetary-orbit" element={<PlanetaryOrbit />} />
+        <Route path="/templates/low-poly-terrain" element={<LowPolyTerrain />} />
+        <Route path="/templates/high-fashion" element={<HighFashion />} />
+
         {/* Core Protected Routes */}
         <Route 
   path="/dashboard" 
@@ -267,15 +280,13 @@ function AppRoutes() {
     </ProtectedRoute>
   } 
 />
-        <Route 
-  path="/dashboard/analytics" 
+        <Route
+  path="/dashboard/analytics"
   element={
-    <ProtectedRoute>
-      <Suspense fallback={<LoadingScreen label="Loading Analytics..." />}>
-        <Analytics />
-      </Suspense>
-    </ProtectedRoute>
-  } 
+    <Suspense fallback={<LoadingScreen label="Loading Analytics..." />}>
+      <Analytics />
+    </Suspense>
+  }
 />
         <Route path="/upload" element={<ProtectedRoute><Suspense fallback={<LoadingScreen label="Loading Upload..." />}><Upload /></Suspense></ProtectedRoute>} />
         <Route 
@@ -314,11 +325,33 @@ function AppRoutes() {
   } 
 />
         <Route path="/interview-prep" element={<ProtectedRoute><Suspense fallback={<LoadingScreen label="Loading Interview Prep..." />}><InterviewPrep /></Suspense></ProtectedRoute>} />
+        <Route
+  path="/interview-history"
+  element={
+    <ProtectedRoute>
+      <Suspense fallback={<LoadingScreen label="Loading Interview History..." />}>
+        <InterviewHistory />
+      </Suspense>
+    </ProtectedRoute>
+  }
+/>
+
+<Route
+  path="/interview-history/:id"
+  element={
+    <ProtectedRoute>
+      <Suspense fallback={<LoadingScreen label="Loading Interview Replay..." />}>
+        <InterviewReplay />
+      </Suspense>
+    </ProtectedRoute>
+  }
+/>
         <Route path="/profile" element={<ProtectedRoute><Suspense fallback={<LoadingScreen label="Loading Profile..." />}><UserProfile /></Suspense></ProtectedRoute>} />
         <Route path="/profile/:uid" element={<ProtectedRoute><Suspense fallback={<LoadingScreen label="Loading Profile..." />}><UserProfile /></Suspense></ProtectedRoute>} />
         <Route path="/security" element={<ProtectedRoute><Suspense fallback={<LoadingScreen label="Loading Security Settings..." />}><SecuritySettings /></Suspense></ProtectedRoute>} />
         <Route path="/email-generator" element={<ProtectedRoute><Suspense fallback={<LoadingScreen label="Loading Email Generator..." />}><EmailGenerator /></Suspense></ProtectedRoute>} />
         <Route path="/linkedin-optimizer" element={<ProtectedRoute><Suspense fallback={<LoadingScreen label="Loading LinkedIn Optimizer..." />}><LinkedInOptimizer /></Suspense></ProtectedRoute>} />
+        <Route path="/skill-gap" element={<ProtectedRoute><Suspense fallback={<LoadingScreen label="Loading Skill Gap Analyzer..." />}><SkillGap /></Suspense></ProtectedRoute>} />
         <Route path="/deployments" element={<ProtectedRoute><Suspense fallback={<LoadingScreen label="Loading Deployments..." />}><Deployments /></Suspense></ProtectedRoute>} />
         <Route path="/settings" element={<ProtectedRoute><Suspense fallback={<LoadingScreen label="Loading Settings..." />}><Settings /></Suspense></ProtectedRoute>} />
 

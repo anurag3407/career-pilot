@@ -12,6 +12,8 @@
   },
   "dependencies": {
     "@anthropic-ai/sdk": "^0.99.0",
+    "@bull-board/api": "^7.1.5",
+    "@bull-board/express": "^7.1.5",
     "@google/generative-ai": "^0.21.0",
     "axe-core": "^4.11.4",
     "axios": "^1.16.1",
