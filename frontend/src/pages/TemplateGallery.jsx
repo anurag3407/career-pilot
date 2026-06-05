@@ -270,7 +270,11 @@ function TemplateCard({ template, hovered, onHover, onLeave, onUse, aiDraft }) {
 const TemplatePreviewModal = ({ templateId, isOpen, onClose, portfolioData }) => {
   const Component = useMemo(() => {
     if (!templateId) return null;
-    return React.lazy(() => import(`../components/portfolio/templates/${templateId}/index.jsx`));
+    return React.lazy(() => 
+      import(`../components/portfolio/templates/${templateId}/Hero.jsx`).catch(() => 
+        import(`../components/portfolio/templates/${templateId}/index.jsx`)
+      )
+    );
   }, [templateId]);
 
   if (!isOpen || !templateId) return null;

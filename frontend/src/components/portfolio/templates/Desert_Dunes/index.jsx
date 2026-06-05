@@ -1,5 +1,6 @@
 import React, { useState, useEffect, useRef } from 'react';
 import { motion, useScroll, useTransform, AnimatePresence, useInView } from 'framer-motion';
+import data from '../../../../data/dummy_data.json';
 import {
   Github,
   Linkedin,
@@ -19,7 +20,6 @@ import {
   Sun,
   Wind,
 } from 'lucide-react';
-import data from '../../../../data/dummy_data.json';
 
 /* â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€
    DESIGN TOKENS â€” Desert Dunes palette
