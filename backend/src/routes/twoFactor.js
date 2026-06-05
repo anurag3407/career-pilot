@@ -3,6 +3,7 @@ import rateLimit from 'express-rate-limit';
 import { asyncHandler, ApiError } from '../middleware/errorHandler.js';
 import { verifyToken } from '../middleware/auth.js';
 import * as twoFactor from '../services/twoFactorService.js';
+import { devDb } from '../utils/devDbFallback.js';
 import { validate } from '../middleware/validate.js';
 import {
   enable2FASchema,
@@ -27,6 +28,10 @@ const verifyLimiter = rateLimit({
 
 // GET /api/auth/2fa/status
 router.get('/status', verifyToken, asyncHandler(async (req, res) => {
+  if (global.useDevDbFallback) {
+    const status = devDb.getTwoFactorStatus(req.user.uid);
+    return res.json({ success: true, ...status });
+  }
   const status = await twoFactor.getStatus(req.user.uid);
   res.json({ success: true, ...status });
 }));

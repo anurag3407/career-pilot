@@ -19,6 +19,7 @@ import admin from '../config/firebase.js';
 import crypto from 'crypto';
 
 const router = express.Router();
+const stateStore = new Map();
 
 // Holds CSRF-protection state params for the LinkedIn OAuth initiation flow (10-min TTL)
 const stateStore = new Map();

@@ -3,6 +3,7 @@ import { verifyToken } from '../middleware/auth.js';
 import { asyncHandler, ApiError } from '../middleware/errorHandler.js';
 import { paginate, paginatedResponse } from '../middleware/paginate.js';
 import Resume from '../models/Resume.model.js';
+import { devDb } from '../utils/devDbFallback.js';
 import ResumeVersion from '../models/ResumeVersion.model.js';
 import ResumeAtsHistory from '../models/ResumeAtsHistory.model.js';
 import { validate } from '../middleware/validate.js';
@@ -33,6 +34,12 @@ const router = express.Router();
 // Get all resumes for a user (paginated)
 router.get('/', verifyToken, paginate(), asyncHandler(async (req, res) => {
   const userId = req.user.uid;
+
+  if (global.useDevDbFallback) {
+    const resumes = devDb.getResumes(userId);
+    return paginatedResponse(res, { data: resumes, total: resumes.length, page: 1, limit: 10 });
+  }
+
   const { page, limit, skip, sort } = req.paginate;
 
   const total = await Resume.countDocuments({ userId });
@@ -69,6 +76,18 @@ router.get('/', verifyToken, paginate(), asyncHandler(async (req, res) => {
 router.get('/:resumeId', verifyToken, asyncHandler(async (req, res) => {
   const { resumeId } = req.params;
   const userId = req.user.uid;
+
+  if (global.useDevDbFallback) {
+    const resumes = devDb.getResumes(userId);
+    const resume = resumes.find(r => r.id === resumeId);
+    if (!resume) {
+      throw new ApiError(404, 'Resume not found');
+    }
+    return res.json({
+      success: true,
+      data: resume
+    });
+  }
 
   const resume = await Resume.findOne({ _id: resumeId, userId }).lean();
 
@@ -114,6 +133,14 @@ router.post('/', verifyToken, validate(createResumeSchema), asyncHandler(async (
 
   if (!originalText) {
     throw new ApiError(400, 'Original text is required');
+  }
+
+  if (global.useDevDbFallback) {
+    const newResume = devDb.createResume(userId, { originalText, enhancedText, jobRole, preferences, title });
+    return res.status(201).json({
+      success: true,
+      data: newResume
+    });
   }
 
   const newResume = await Resume.create({

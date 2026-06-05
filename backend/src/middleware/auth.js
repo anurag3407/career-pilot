@@ -12,6 +12,18 @@ export const verifyToken = async (req, res, next) => {
 
     const token = authHeader.split('Bearer ')[1];
 
+    if ((process.env.DEV_BYPASS_AUTH === 'true' && process.env.NODE_ENV !== 'production') || (process.env.NODE_ENV === 'development' && token === 'dev-token')) {
+      console.log('🔑 Local Development Auth Bypass active');
+      const devEmail = process.env.DEV_USER_EMAIL || 'dev@example.com';
+      req.user = {
+        uid: 'dev-user',
+        email: devEmail,
+        name: 'Developer',
+        emailVerified: true
+      };
+      return next();
+    }
+
     try {
       const decodedToken = await admin.auth().verifyIdToken(token);
 
