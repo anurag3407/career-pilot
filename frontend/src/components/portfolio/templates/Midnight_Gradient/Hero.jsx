@@ -151,7 +151,7 @@ export default function Hero({ data }) {
             {/* Spinning/pulsing neon border */}
             <div className="absolute inset-0 rounded-full bg-gradient-to-tr from-cyan-400 via-blue-500 to-purple-600 animate-spin blur-md opacity-60 group-hover:opacity-80 transition-all duration-500" style={{ animationDuration: '9s' }} />
             <div className="absolute -inset-1 rounded-full bg-gradient-to-r from-cyan-400 via-indigo-500 to-purple-600 blur-lg opacity-40 group-hover:opacity-60 transition-all duration-500" />
-            <img
+            <img alt=" "
               src={data.personal.avatar}
               alt={data.personal.name}
               className="relative w-44 h-44 md:w-52 md:h-52 rounded-full object-cover border-[6px] border-gray-950/90 mx-auto transition-transform duration-500 group-hover:scale-105"

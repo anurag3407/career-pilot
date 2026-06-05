@@ -18,7 +18,7 @@ export default function Projects({ data }) {
               key={`${project.title}-${index}`}
               className="bg-white rounded-3xl overflow-hidden shadow-xl"
             >
-              <img
+              <img alt=" "
                 src={project.image}
                 alt={project.title}
                 loading="lazy"

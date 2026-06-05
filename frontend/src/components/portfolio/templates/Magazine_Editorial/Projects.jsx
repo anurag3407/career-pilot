@@ -263,7 +263,7 @@ function ImgWithFallback({ src, alt, isHovered }) {
   if (failed) return null;
 
   return (
-    <img
+    <img alt=" "
       src={src}
       alt={alt}
       loading="lazy"
@@ -292,7 +292,7 @@ function ProjectImage({ src, alt, index, accent, isHovered }) {
 
       {/* Surface Layer: Remote Fetch */}
       {isValidSrc && (
-        <ImgWithFallback
+        <img alt=" "WithFallback
           key={src} // Dynamic key safely forces a clean state reset when src shifts
           src={src}
           alt={alt}

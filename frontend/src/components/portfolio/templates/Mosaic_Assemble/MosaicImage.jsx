@@ -48,7 +48,7 @@ const MosaicImage = ({ src, alt, rows = 5, cols = 5, className = '' }) => {
       whileInView="show"
       viewport={{ once: true, amount: 0.15 }}
     >
-      <img src={src} alt={alt} className="sr-only" />
+      <img alt=" " src={src} alt={alt} className="sr-only" />
 
       {tiles.map((tile) => {
         return (

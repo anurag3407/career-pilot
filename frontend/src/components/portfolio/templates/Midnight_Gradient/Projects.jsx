@@ -37,7 +37,7 @@ export default function Projects({ data }) {
             <GlowingCard key={project.title} className="flex flex-col h-full overflow-hidden" delay={idx * 0.08}>
               {/* Image Container */}
               <div className="relative overflow-hidden group/img">
-                <img
+                <img alt=" "
                   src={project.image}
                   alt={project.title}
                   className="w-full h-48 object-cover transition-transform duration-500 group-hover/img:scale-108"

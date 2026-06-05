@@ -22,7 +22,7 @@ export default function Projects() {
               }}
               className="overflow-hidden rounded-3xl bg-indigo-500/30 backdrop-blur-xl"
             >
-              <img
+              <img alt=" "
                 src={project.image}
                 alt={project.title}
                 className="w-full h-52 object-cover"

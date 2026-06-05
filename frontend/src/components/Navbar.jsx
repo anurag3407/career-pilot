@@ -115,7 +115,7 @@ export default function Navbar() {
             className="flex items-center gap-2 group"
           >
             <div className="w-12 h-12 flex items-center justify-center rounded-xl overflow-hidden group-hover:scale-105 transition-transform">
-              <img
+              <img alt=" "
                 src="/speed.png"
                 alt="careerpilot logo"
                 className="w-full h-full object-contain"
@@ -245,7 +245,7 @@ export default function Navbar() {
                     aria-expanded={showDropdown}
                   >
                     <div className="w-8 h-8 rounded-full overflow-hidden bg-primary/20 flex items-center justify-center">
-                      <img
+                      <img alt=" "
                         src="/user.svg"
                         alt="User profile"
                         className="w-full h-full object-cover"

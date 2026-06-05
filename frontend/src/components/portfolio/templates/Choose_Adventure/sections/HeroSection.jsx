@@ -37,7 +37,7 @@ export default function HeroSection({ data, onBegin }) {
           animate={{ scale: 1 }}
           transition={{ type: 'spring', stiffness: 200, damping: 18, delay: 0.2 }}
         >
-          <img
+          <img alt=" "
             src={personal.avatar}
             alt={personal.name}
             className="w-full h-full object-cover"

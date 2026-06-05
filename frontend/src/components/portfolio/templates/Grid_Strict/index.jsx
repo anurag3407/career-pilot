@@ -58,7 +58,7 @@ export default function GridStrict() {
             viewport={{ once: true }}
             className="col-span-4 md:col-span-5 h-[400px] border-2 border-black overflow-hidden relative group"
           >
-            <img src={personal.avatar} alt={personal.name} className="w-full h-full object-cover grayscale transition-transform duration-700 group-hover:scale-105 group-hover:grayscale-0" />
+            <img alt=" " src={personal.avatar} alt={personal.name} className="w-full h-full object-cover grayscale transition-transform duration-700 group-hover:scale-105 group-hover:grayscale-0" />
           </motion.div>
           
           <div className="col-span-4 md:col-span-7 flex flex-col justify-between space-y-8 md:space-y-0">
@@ -127,7 +127,7 @@ export default function GridStrict() {
                 className={`col-span-1 border-2 border-black group overflow-hidden ${index % 3 === 0 ? 'md:col-span-12' : 'md:col-span-6'}`}
               >
                 <div className={`relative ${index % 3 === 0 ? 'h-[400px] md:h-[600px]' : 'h-[300px] md:h-[400px]'} border-b-2 border-black overflow-hidden bg-gray-100`}>
-                  <img src={project.image} alt={project.title} className="w-full h-full object-cover grayscale transition-all duration-700 group-hover:scale-105 group-hover:grayscale-0" />
+                  <img alt=" " src={project.image} alt={project.title} className="w-full h-full object-cover grayscale transition-all duration-700 group-hover:scale-105 group-hover:grayscale-0" />
                   <div className="absolute top-4 right-4 flex gap-2">
                     {project.githubUrl && (
                       <a href={project.githubUrl} className="p-3 bg-white border-2 border-black hover:bg-black hover:text-white transition-colors">
@@ -198,7 +198,7 @@ export default function GridStrict() {
                   <p className="text-xl md:text-2xl font-medium leading-relaxed">"{test.text}"</p>
                 </div>
                 <div className="flex items-center gap-4 pt-6 border-t-2 border-black group-hover:border-gray-700">
-                  <img src={test.avatar} alt={test.name} className="w-14 h-14 object-cover border-2 border-black group-hover:border-white" />
+                  <img alt=" " src={test.avatar} alt={test.name} className="w-14 h-14 object-cover border-2 border-black group-hover:border-white" />
                   <div>
                     <h5 className="font-bold uppercase tracking-wider">{test.name}</h5>
                     <p className="text-sm font-bold text-gray-500 group-hover:text-gray-400">{test.role}</p>

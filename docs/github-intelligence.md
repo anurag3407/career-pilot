@@ -607,7 +607,7 @@ POST /api/github/readme/generate
   "data": {
     "assetType": "badge",
     "markdown": "[![Career Pilot](https://img.shields.io/badge/...)](...)",
-    "html": "<img src='...' alt='Career Pilot' />",
+    "html": "<img alt=" " src='...' alt='Career Pilot' />",
     "preview": "https://img.shields.io/badge/..."
   }
 }
@@ -1209,7 +1209,7 @@ const contributorConfig = {
   <tr>
     <td align="center">
       <a href="https://github.com/user1">
-        <img src="https://avatars.githubusercontent.com/u/123" />
+        <img alt=" " src="https://avatars.githubusercontent.com/u/123" />
         <br />
         <sub><b>Developer 1</b></sub>
         <br />

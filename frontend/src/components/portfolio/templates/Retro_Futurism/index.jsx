@@ -26,7 +26,7 @@ export default function RetroFuturismTemplate() {
           <div className="synth-sun" />
           <div className="absolute inset-0 flex items-start justify-center pt-4 sm:pt-4 md:pt-8">
             <div className="w-32 h-32 sm:w-32 sm:h-32 md:w-56 md:h-56 rounded-full p-1 bg-gradient-to-tr from-yellow-400 via-pink-500 to-cyan-400 shadow-[0_0_24px_rgba(236,72,153,0.55)] translate-y-[0.75rem] sm:translate-y-[0.75rem] md:translate-y-[1rem]">
-              <img src={data.personal.avatar} alt="" aria-hidden="true" role="presentation" className="w-full h-full rounded-full object-cover border-3 border-slate-900" />
+              <img alt=" " src={data.personal.avatar} alt="" aria-hidden="true" role="presentation" className="w-full h-full rounded-full object-cover border-3 border-slate-900" />
             </div>
           </div>
         </div>

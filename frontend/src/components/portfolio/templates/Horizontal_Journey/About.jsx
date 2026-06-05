@@ -21,7 +21,7 @@ export default function About({ isMobile = false }) {
           onTouchCancel={() => setActive(false)}
           className="relative mx-auto aspect-square w-1/2 overflow-hidden bg-zinc-900 lg:w-full lg:max-w-none"
         >
-          <img
+          <img alt=" "
             src={data.personal.avatar}
             alt={data.personal.name}
             loading="lazy"

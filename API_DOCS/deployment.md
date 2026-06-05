@@ -222,7 +222,7 @@ POST /api/auth/2fa/setup
 }
 ```
 
-> Display the `qrDataUrl` as an `<img>` for the user to scan with their authenticator app.
+> Display the `qrDataUrl` as an `<img alt=" ">` for the user to scan with their authenticator app.
 
 ---
 

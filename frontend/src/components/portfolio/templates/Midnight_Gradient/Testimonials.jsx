@@ -44,7 +44,7 @@ export default function Testimonials({ data }) {
               
               <div className="flex items-center gap-3.5 pt-4 border-t border-indigo-500/10">
                 {t.avatar && (
-                  <img
+                  <img alt=" "
                     src={t.avatar}
                     alt={t.name}
                     className="w-11 h-11 rounded-full object-cover border border-cyan-500/25"

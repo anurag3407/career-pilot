@@ -51,7 +51,7 @@ export default function Projects() {
           >
             {/* Image Section */}
             <div className="relative aspect-[16/9] w-full overflow-hidden bg-gray-950">
-              <img
+              <img alt=" "
                 src={project.image || 'https://images.unsplash.com/photo-1551288049-bebda4e38f71?w=800&h=450&fit=crop'}
                 alt={project.title}
                 className="w-full h-full object-cover transform group-hover:scale-110 transition-transform duration-700 ease-out"

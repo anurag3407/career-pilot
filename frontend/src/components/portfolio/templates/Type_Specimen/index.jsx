@@ -279,7 +279,7 @@ const About = () => {
           <div className="relative z-10 flex flex-col gap-6">
             <div className="flex items-start gap-6">
               <div className="relative shrink-0">
-                <img
+                <img alt=" "
                   src={personal.avatar}
                   alt={personal.name}
                   className="w-32 h-32 object-cover grayscale"
@@ -625,7 +625,7 @@ const Testimonials = () => {
             </p>
             <Rule />
             <div className="flex items-center gap-4">
-              <img
+              <img alt=" "
                 src={t.avatar}
                 alt={t.name}
                 className="w-12 h-12 object-cover grayscale"

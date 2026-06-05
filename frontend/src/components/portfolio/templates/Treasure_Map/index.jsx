@@ -171,7 +171,7 @@ const About = () => (
             className="relative"
           >
             <div className="w-64 h-64 rounded-full overflow-hidden border-8 border-yellow-700 shadow-2xl">
-              <img
+              <img alt=" "
                 src={data.personal.avatar}
                 alt={data.personal.name}
                 className="w-full h-full object-cover"
@@ -314,7 +314,7 @@ const Projects = () => (
 
             {/* Project Image */}
             <div className="relative h-48 overflow-hidden">
-              <img
+              <img alt=" "
                 src={project.image}
                 alt={project.title}
                 className="w-full h-full object-cover group-hover:scale-110 transition-transform duration-500"
@@ -461,7 +461,7 @@ const Testimonials = () => (
             <p className="text-yellow-800 italic mb-6 leading-relaxed">"{testimonial.text}"</p>
 
             <div className="flex items-center gap-4">
-              <img
+              <img alt=" "
                 src={testimonial.avatar}
                 alt={testimonial.name}
                 className="w-12 h-12 rounded-full border-2 border-yellow-700 object-cover"

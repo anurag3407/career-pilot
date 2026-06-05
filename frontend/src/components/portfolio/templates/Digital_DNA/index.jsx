@@ -115,7 +115,7 @@ export default function DigitalDNA() {
 
         <div className="grid md:grid-cols-2 gap-10 items-center">
           <div className="flex justify-center">
-            <img
+            <img alt=" "
               src={data.personal.avatar}
               alt={data.personal.name}
               className="w-72 h-72 rounded-full object-cover border-4 border-cyan-500"
@@ -177,7 +177,7 @@ export default function DigitalDNA() {
               key={index}
               className="bg-gray-900 rounded-2xl overflow-hidden shadow-lg hover:scale-105 transition"
             >
-              <img
+              <img alt=" "
                 src={project.image}
                 alt={project.title}
                 className="w-full h-48 object-cover"
@@ -271,7 +271,7 @@ export default function DigitalDNA() {
               className="bg-gray-900 p-6 rounded-xl"
             >
               <div className="flex items-center gap-4 mb-4">
-                <img
+                <img alt=" "
                   src={item.avatar}
                   alt={item.name}
                   className="w-14 h-14 rounded-full"

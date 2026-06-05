@@ -62,7 +62,7 @@ export default function MembersList({ channel, onlineUsers }) {
       <div className="relative">
         <div className="w-8 h-8 rounded-full bg-gradient-to-br from-primary to-secondary flex items-center justify-center text-primary-foreground text-xs font-medium">
           {member.avatar ? (
-            <img
+            <img alt=" "
               src={member.avatar}
               alt={member.name}
               className="w-full h-full rounded-full object-cover"

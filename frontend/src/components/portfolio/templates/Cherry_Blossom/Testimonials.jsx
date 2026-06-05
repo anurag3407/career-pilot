@@ -19,7 +19,7 @@ export default function Testimonials({ data }) {
               className="bg-white rounded-3xl p-8 shadow-xl"
             >
               <div className="flex items-center gap-4">
-                <img
+                <img alt=" "
                   src={testimonial.avatar}
                   alt={testimonial.name}
                   loading="lazy"

@@ -556,7 +556,7 @@ function About() {
               background: `conic-gradient(${C.sandDark} 0deg, ${C.amber} 90deg, ${C.terracotta} 180deg, ${C.sandDark} 360deg)`,
               opacity: 0.3,
             }} />
-            <img src={avatar} alt={name} style={{
+            <img alt=" " src={avatar} alt={name} style={{
               width: 260, height: 260, borderRadius: '50%', objectFit: 'cover',
               border: `6px solid ${C.cream}`,
               boxShadow: `0 20px 60px ${C.shadowDeep}, 0 0 0 12px ${C.sandMid}30`,
@@ -778,7 +778,7 @@ function Projects() {
               }}
             >
               <div style={{ position: 'relative', overflow: 'hidden', minHeight: 260 }}>
-                <img src={project.image} alt={project.title} style={{
+                <img alt=" " src={project.image} alt={project.title} style={{
                   width: '100%', height: '100%', objectFit: 'cover',
                   transition: 'transform 0.5s ease',
                   transform: hovered === project.title ? 'scale(1.05)' : 'scale(1)',
@@ -845,7 +845,7 @@ function Projects() {
               }}
             >
               <div style={{ position: 'relative', height: 180, overflow: 'hidden' }}>
-                <img src={project.image} alt={project.title} style={{ width: '100%', height: '100%', objectFit: 'cover' }} />
+                <img alt=" " src={project.image} alt={project.title} style={{ width: '100%', height: '100%', objectFit: 'cover' }} />
                 <div style={{ position: 'absolute', inset: 0, background: `linear-gradient(to top, ${C.duskDeep}, transparent)` }} />
               </div>
               <div style={{ padding: '20px 24px' }}>
@@ -1016,7 +1016,7 @@ function Testimonials() {
                 lineHeight: 1.8, fontStyle: 'italic', marginBottom: 24,
               }}>"{testimonial.text}"</p>
               <div style={{ display: 'flex', alignItems: 'center', gap: 12, borderTop: `1px solid ${C.sandDark}25`, paddingTop: 20 }}>
-                <img src={testimonial.avatar} alt={testimonial.name} style={{
+                <img alt=" " src={testimonial.avatar} alt={testimonial.name} style={{
                   width: 44, height: 44, borderRadius: '50%',
                   border: `2px solid ${C.gold}50`, objectFit: 'cover',
                 }} />

@@ -146,7 +146,7 @@ export default function DragPortfolio() {
               <div className="flex flex-col items-center text-center">
                 <div className="relative group mb-4">
                   <div className="absolute inset-0 rounded-2xl bg-gradient-to-tr from-indigo-500 to-cyan-400 opacity-60 blur-md group-hover:opacity-100 transition-opacity" />
-                  <img 
+                  <img alt=" " 
                     src={personal.avatar || "https://images.unsplash.com/photo-1573496359142-b8d87734a5a2?auto=format&fit=crop&q=80&w=200&h=200"} 
                     alt={personal.name} 
                     className="relative w-20 h-20 rounded-2xl object-cover border-2 border-slate-800"
@@ -261,7 +261,7 @@ export default function DragPortfolio() {
                 <div className="flex flex-col gap-4">
                   {/* Image with zoom and release year tag */}
                   <div className="relative h-40 rounded-xl overflow-hidden border border-white/10 group">
-                    <img 
+                    <img alt=" " 
                       src={projects[activeProjectIdx].image || "https://images.unsplash.com/photo-1618005182384-a83a8bd57fbe?auto=format&fit=crop&q=80&w=400&h=240"} 
                       alt={projects[activeProjectIdx].title} 
                       className="w-full h-full object-cover transition-transform duration-500 group-hover:scale-105"

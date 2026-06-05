@@ -51,7 +51,7 @@ export default function Projects({ projects }) {
 
                 {/* Image */}
                 <div className="relative h-40 overflow-hidden">
-                  <img
+                  <img alt=" "
                     src={project.image}
                     alt={project.title}
                     className="w-full h-full object-cover group-hover:scale-105 transition-transform duration-500"
