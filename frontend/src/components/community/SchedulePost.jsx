@@ -13,9 +13,7 @@ export default function SchedulePost({ onClose, onSchedule }) {
     const oneHourLater = addMinutes(now, 60);
     const minutes = oneHourLater.getMinutes();
     const roundedMinutes = Math.ceil(minutes / 15) * 15;
-
     oneHourLater.setMinutes(roundedMinutes, 0, 0);
-
     return oneHourLater;
   };
 
@@ -38,16 +36,20 @@ export default function SchedulePost({ onClose, onSchedule }) {
       return;
     }
 
-    if (chosen.getTime() <= Date.now() + 5 * 60 * 1000) {
+    // Round comparison to minutes to match UI/input precision
+    const nowRounded = new Date();
+    nowRounded.setSeconds(0, 0);
+
+    if (chosen.getTime() <= nowRounded.getTime() + 5 * 60 * 1000) {
       setError('Please schedule at least 5 minutes into the future.');
       return;
     }
+
 
     onSchedule(chosen.toISOString());
   };
 
   const userTimezone = Intl.DateTimeFormat().resolvedOptions().timeZone;
-
   const formattedPreview = value
     ? format(new Date(value), "EEEE, MMMM d, yyyy 'at' h:mm a")
     : '';
@@ -55,16 +57,12 @@ export default function SchedulePost({ onClose, onSchedule }) {
   return (
     <div className="fixed inset-0 bg-black/60 flex items-center justify-center z-[60] p-4">
       <div className="bg-neutral-900 border border-neutral-700 rounded-xl shadow-2xl w-full max-w-sm">
-        
         {/* Header */}
         <div className="flex items-center justify-between px-5 py-4 border-b border-neutral-800">
           <div className="flex items-center gap-2">
             <Clock className="w-5 h-5 text-indigo-400" />
-            <h3 className="text-base font-semibold text-white">
-              Schedule Post
-            </h3>
+            <h3 className="text-base font-semibold text-white">Schedule Post</h3>
           </div>
-
           <button
             onClick={onClose}
             aria-label="Close schedule picker"
@@ -81,7 +79,6 @@ export default function SchedulePost({ onClose, onSchedule }) {
               <Calendar className="w-4 h-4 inline mr-1.5 -mt-0.5" />
               Publish date &amp; time
             </label>
-
             <input
               type="datetime-local"
               value={value}
@@ -97,10 +94,9 @@ export default function SchedulePost({ onClose, onSchedule }) {
                 ${error ? 'border-red-500' : 'border-neutral-700'}
               `}
             />
-
             {error && (
               <p className="mt-1.5 flex items-center gap-1 text-xs text-red-400">
-                <AlertCircle className="w-3.5 h-3.5 flex-shrink-0" />
+                <AlertCircle className="w-3.5 h-3.5 shrink-0" />
                 {error}
               </p>
             )}
@@ -109,23 +105,15 @@ export default function SchedulePost({ onClose, onSchedule }) {
           {/* Preview */}
           {value && !error && (
             <div className="bg-neutral-800 rounded-lg px-3 py-2.5 space-y-1">
-              <p className="text-xs text-neutral-500">
-                Your post will go live on
-              </p>
-
-              <p className="text-sm font-medium text-indigo-300">
-                {formattedPreview}
-              </p>
-
-              <p className="text-xs text-neutral-500">
-                Timezone: {userTimezone}
-              </p>
+              <p className="text-xs text-neutral-500">Your post will go live on</p>
+              <p className="text-sm font-medium text-indigo-300">{formattedPreview}</p>
+              <p className="text-xs text-neutral-500">Timezone: {userTimezone}</p>
             </div>
           )}
 
           <p className="text-xs text-neutral-500 leading-relaxed">
-            Your post will be saved as a draft and automatically published at
-            the chosen time. You can cancel it any time before it goes live.
+            Your post will be saved as a draft and automatically published at the chosen time.
+            You can cancel it any time before it goes live.
           </p>
         </div>
 
@@ -137,7 +125,6 @@ export default function SchedulePost({ onClose, onSchedule }) {
           >
             Back
           </button>
-
           <button
             onClick={handleConfirm}
             disabled={!value}

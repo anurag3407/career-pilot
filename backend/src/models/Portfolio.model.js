@@ -1,34 +1,16 @@
 import mongoose from 'mongoose';
 
-const portfolioSchema = new mongoose.Schema({
-  userId: {
-    type: String,
-    required: true,
-    index: true
+const portfolioSchema = new mongoose.Schema(
+  {
+    userId: { type: String, required: true },
+    slug: { type: String, required: true },
+    sections: { type: mongoose.Schema.Types.Mixed, default: {} },
+    deployedUrl: { type: String },
+    projectName: { type: String },
   },
-  title: {
-    type: String,
-    required: true,
-    trim: true
-  },
-  description: {
-    type: String,
-    trim: true
-  },
-  deployedUrl: {
-    type: String,
-    trim: true
-  },
-  isDeployed: {
-    type: Boolean,
-    default: false
-  },
-  createdAt: {
-    type: Date,
-    default: Date.now
-  }
-});
+  { timestamps: true }
+);
 
-const Portfolio = mongoose.model('Portfolio', portfolioSchema);
+portfolioSchema.index({ userId: 1, slug: 1 }, { unique: true });
 
-export default Portfolio;
+export default mongoose.model('Portfolio', portfolioSchema);

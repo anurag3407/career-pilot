@@ -54,6 +54,34 @@ const userProfileSchema = new mongoose.Schema({
     maxlength: 200,
     trim: true,
   },
+  projects: [{
+    githubRepoUrl: {
+      type: String,
+      trim: true,
+    },
+    isManuallyEdited: {
+      type: Boolean,
+      default: false,
+    },
+    lastSyncedAt: {
+      type: Date,
+    },
+    autoData: {
+      description: {
+        type: String,
+        default: '',
+      },
+      readme: {
+        type: String,
+        default: '',
+      }
+    }
+  }],
 }, { timestamps: true });
+
+userProfileSchema.index({ uid: 1, updatedAt: -1 }, { background: true });
+userProfileSchema.index({ jobRole: 1 }, { background: true });
+userProfileSchema.index({ location: 1 }, { background: true });
+userProfileSchema.index({ skills: 1 }, { background: true });
 
 export default mongoose.model('UserProfile', userProfileSchema);

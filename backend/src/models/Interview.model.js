@@ -55,5 +55,10 @@ const interviewSchema = new mongoose.Schema({
 }, { timestamps: true });
 
 interviewSchema.index({ odId: 1, createdAt: -1 }, { background: true });
+interviewSchema.index({ odId: 1, status: 1 }, { background: true });
+interviewSchema.index({ odId: 1, jobRole: 1, industry: 1 }, { background: true });
+interviewSchema.index({ odId: 1, overallScore: -1 }, { background: true });
+interviewSchema.index({ odId: 1, status: 1, completedAt: -1 }, { background: true });
+interviewSchema.index({ odId: 1, experienceLevel: 1, createdAt: -1 }, { background: true });
 
 export default mongoose.model('Interview', interviewSchema);

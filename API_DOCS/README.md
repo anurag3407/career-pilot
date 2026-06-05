@@ -4,7 +4,7 @@
 
 **Complete API Reference for AI Resume Builder & Career Platform**
 
-Version: 1.0.0 | Base URL: `http://localhost:5000/api`
+Version: 1.0.0 | Base URL: `http://localhost:5001/api`
 
 </div>
 
@@ -39,7 +39,7 @@ The AI Resume Builder API is a RESTful API that provides endpoints for resume ma
 
 | Environment | URL |
 |-------------|-----|
-| Development | `http://localhost:5000/api` |
+| Development | `http://localhost:5001/api` |
 | Production | `https://api.yourdomain.com/api` |
 
 ### Health Check
@@ -1318,7 +1318,7 @@ GET /api/admin/stats
 ```javascript
 import { io } from 'socket.io-client';
 
-const socket = io('http://localhost:5000', {
+const socket = io('http://localhost:5001', {
   auth: { token: 'firebase_id_token' }
 });
 ```
@@ -1456,7 +1456,7 @@ interface TrackedJob {
 
 ```javascript
 // api.js
-const API_BASE = 'http://localhost:5000/api';
+const API_BASE = 'http://localhost:5001/api';
 
 export const api = {
   async request(endpoint, options = {}) {

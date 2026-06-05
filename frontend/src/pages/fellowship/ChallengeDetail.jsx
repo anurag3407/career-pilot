@@ -16,6 +16,7 @@ import {
     FileText,
     Users
 } from 'lucide-react'
+import { SkeletonPanel } from '../../components/ui/Skeleton'
 
 const CATEGORIES = {
     design: { label: 'Design', icon: '🎨' },
@@ -83,11 +84,7 @@ export default function ChallengeDetail() {
     }
 
     if (loading) {
-        return (
-            <div className="flex items-center justify-center py-20">
-                <Loader2 className="w-8 h-8 text-emerald-500 animate-spin" />
-            </div>
-        )
+        return <SkeletonPanel rows={4} className="max-w-3xl mx-auto" />
     }
 
     if (!challenge) return null
