@@ -35,6 +35,7 @@
 
 - **Modern Tech Stack:** Built with React 19 and Vite for blazing fast development and optimized production builds.
 - **Stunning UI/UX:** Styled using TailwindCSS 4, offering responsive and aesthetically pleasing design.
+- **Accessibility:** Built-in support for Light, Dark, and High Contrast theme modes.
 - **Authentication:** Secure Firebase Authentication integration.
 - **Smooth Animations:** Powered by Framer Motion to provide delightful micro-interactions.
 - **PDF Generation:** Export resumes reliably to PDF with `jsPDF` and `html2canvas`.
