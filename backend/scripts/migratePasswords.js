@@ -10,7 +10,7 @@
 
 const mongoose = require("mongoose");
 const bcrypt = require("bcryptjs");
-const User = require("../models/User"); // adjust path as needed
+const User = require("../src/models/User.model");
 
 // ─── Configuration ────────────────────────────────────────────────────────────
 
@@ -64,7 +64,7 @@ async function validatePasswordsAreHashed() {
  */
 async function rehashWeakPasswords(plaintextMap = {}) {
   // plaintextMap: { userId: plaintextPassword } — only for controlled migrations
-  const users = await User.find({});
+ const users = await User.find({}).select("+password");
   let updated = 0;
   let skipped = 0;
 
@@ -115,7 +115,7 @@ async function dryRun() {
   // Break down by bcrypt cost factor
   const allHashed = await User.find({
     password: { $regex: BCRYPT_HASH_REGEX },
-  }).select("password");
+  }).select("+password");
 
   const costBreakdown = {};
   for (const u of allHashed) {
