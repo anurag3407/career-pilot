@@ -1,3 +1,4 @@
+import Projects from "./Projects";
 import React, { useState, useRef } from "react";
 import { motion, useMotionValue, useTransform, useSpring, AnimatePresence, useInView } from "framer-motion";
 import {
@@ -406,8 +407,8 @@ export default function LiveSatelliteImageryFeed() {
                   <h3 style={{ fontSize: 16, fontWeight: 700, marginBottom: 6 }}>{proj.title}</h3>
                   <p style={{ fontSize: 13, lineHeight: 1.65, color: C.muted, marginBottom: 14 }}>{proj.description}</p>
                   <div style={{ display: "flex", gap: 8 }}>
-                    {proj.liveUrl   && <a href={proj.liveUrl}   target="_blank" rel="noreferrer" className="sat-btn sat-btn-primary" style={{ fontSize: 10, padding: "7px 14px" }}><ExternalLink size={11} /><span>View</span></a>}
-                    {proj.githubUrl && <a href={proj.githubUrl} target="_blank" rel="noreferrer" className="sat-btn sat-btn-ghost"   style={{ fontSize: 10, padding: "7px 14px" }}><Github       size={11} /><span>Code</span></a>}
+                    {proj.liveUrl   && <a href={sanitizeUrl(proj.liveUrl)}   target="_blank" rel="noreferrer" className="sat-btn sat-btn-primary" style={{ fontSize: 10, padding: "7px 14px" }}><ExternalLink size={11} /><span>View</span></a>}
+                    {proj.githubUrl && <a href={sanitizeUrl(proj.githubUrl)} target="_blank" rel="noreferrer" className="sat-btn sat-btn-ghost"   style={{ fontSize: 10, padding: "7px 14px" }}><Github       size={11} /><span>Code</span></a>}
                   </div>
                 </div>
               </motion.div>
