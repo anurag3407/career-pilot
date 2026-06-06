@@ -86,6 +86,7 @@ import RouteErrorBoundary from './components/RouteErrorBoundary';
 
 // Hub Imports
 const GitHubDashboard = lazy(() => import('./pages/GitHubDashboard'));
+const LinkedInDashboard = lazy(() => import('./pages/LinkedInDashboard'));
 const RepoAnalyzerLanding = lazy(() => import('./pages/RepoAnalyzer/Landing'));
 const RepoAnalyzerDashboard = lazy(() => import('./pages/RepoAnalyzer/Dashboard'));
 const RepoAnalyzerWorkspace = lazy(() => import('./pages/RepoAnalyzer/Workspace'));
@@ -387,6 +388,27 @@ function AppRoutes() {
             <ProtectedRoute>
               <Suspense fallback={<div className="flex justify-center items-center h-screen">Loading GitHub Dashboard...</div>}>
                 <GitHubDashboard />
+              </Suspense>
+            </ProtectedRoute>
+          }
+        />
+
+        <Route
+          path="/linkedin-dashboard"
+          element={
+            <ProtectedRoute>
+              <Suspense fallback={<LoadingScreen label="Loading LinkedIn Dashboard..." />}>
+                <LinkedInDashboard />
+              </Suspense>
+            </ProtectedRoute>
+          }
+        />
+        <Route
+          path="/linkedin"
+          element={
+            <ProtectedRoute>
+              <Suspense fallback={<div className="flex justify-center items-center h-screen">Loading LinkedIn Dashboard...</div>}>
+                <LinkedInDashboard />
               </Suspense>
             </ProtectedRoute>
           }

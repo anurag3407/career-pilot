@@ -6,20 +6,24 @@
 /** Base rectangular block */
 export function SkeletonBlock({ className = '' }) {
   return (
-    <div className={`animate-pulse rounded-lg bg-muted-foreground/15 ${className}`} />
-  )
+    <div
+      className={`animate-pulse rounded-lg bg-muted-foreground/15 ${className}`}
+    />
+  );
 }
 
 /** Circular skeleton (avatars, icons) */
 export function SkeletonCircle({ className = '' }) {
   return (
-    <div className={`animate-pulse rounded-full bg-muted-foreground/15 ${className}`} />
-  )
+    <div
+      className={`animate-pulse rounded-full bg-muted-foreground/15 ${className}`}
+    />
+  );
 }
 
 /** Multiple text lines of varying width */
 export function SkeletonText({ lines = 3, className = '' }) {
-  const widths = ['w-3/4', 'w-full', 'w-2/3', 'w-5/6', 'w-1/2']
+  const widths = ['w-3/4', 'w-full', 'w-2/3', 'w-5/6', 'w-1/2'];
   return (
     <div className={`space-y-2 ${className}`}>
       {Array.from({ length: lines }).map((_, i) => (
@@ -29,7 +33,7 @@ export function SkeletonText({ lines = 3, className = '' }) {
         />
       ))}
     </div>
-  )
+  );
 }
 
 /** Card skeleton: avatar + text lines + optional footer */
@@ -45,7 +49,7 @@ export function SkeletonCard({ className = '' }) {
       </div>
       <SkeletonText lines={3} />
     </div>
-  )
+  );
 }
 
 /** Row skeleton for lists / tables */
@@ -59,35 +63,41 @@ export function SkeletonRow({ className = '' }) {
       </div>
       <SkeletonBlock className="h-6 w-20 rounded-xl" />
     </div>
-  )
+  );
 }
 
 /** Stat card skeleton (icon + number + label) */
 export function SkeletonStat({ className = '' }) {
   return (
-    <div className={`p-6 rounded-2xl bg-card border border-border text-center ${className}`}>
+    <div
+      className={`p-6 rounded-2xl bg-card border border-border text-center ${className}`}
+    >
       <SkeletonCircle className="w-12 h-12 mx-auto mb-4" />
       <SkeletonBlock className="h-8 w-12 mx-auto mb-2 rounded" />
       <SkeletonBlock className="h-3 w-16 mx-auto rounded" />
     </div>
-  )
+  );
 }
 
 /** Action card skeleton (icon + title + subtitle) */
 export function SkeletonAction({ className = '' }) {
   return (
-    <div className={`p-5 rounded-2xl bg-card border border-border ${className}`}>
+    <div
+      className={`p-5 rounded-2xl bg-card border border-border ${className}`}
+    >
       <SkeletonCircle className="w-12 h-12 mb-4" />
       <SkeletonBlock className="h-4 w-3/4 mb-2" />
       <SkeletonBlock className="h-3 w-1/2" />
     </div>
-  )
+  );
 }
 
 /** Job card skeleton */
 export function SkeletonJobCard({ className = '' }) {
   return (
-    <div className={`p-6 rounded-xl bg-background/50 border border-border ${className}`}>
+    <div
+      className={`p-6 rounded-xl bg-background/50 border border-border ${className}`}
+    >
       <div className="flex gap-4">
         <SkeletonBlock className="w-14 h-14 rounded-xl flex-shrink-0" />
         <div className="flex-1 space-y-2">
@@ -100,12 +110,9 @@ export function SkeletonJobCard({ className = '' }) {
           </div>
           <SkeletonText lines={2} className="mt-2" />
           <div className="flex gap-2 mt-2">
-          {['w-16', 'w-20', 'w-14'].map((width, i) => (
-  <SkeletonBlock
-    key={i}
-    className={`h-6 ${width} rounded-md`}
-  />
-))}
+            {['w-16', 'w-20', 'w-14'].map((width, i) => (
+              <SkeletonBlock key={i} className={`h-6 ${width} rounded-md`} />
+            ))}
           </div>
         </div>
       </div>
@@ -113,7 +120,7 @@ export function SkeletonJobCard({ className = '' }) {
         <SkeletonBlock className="h-9 w-28 rounded-lg" />
       </div>
     </div>
-  )
+  );
 }
 
 /** Resume row skeleton */
@@ -129,7 +136,7 @@ export function SkeletonResumeRow({ className = '' }) {
         <SkeletonBlock className="h-8 w-20 rounded-lg" />
       </div>
     </div>
-  )
+  );
 }
 
 /** Full-page resume view skeleton */
@@ -175,7 +182,7 @@ export function SkeletonResumeView({ className = '' }) {
         </div>
       </div>
     </div>
-  )
+  );
 }
 
 /** Comment list skeleton */
@@ -195,7 +202,7 @@ export function SkeletonCommentList({ count = 3, className = '' }) {
         </div>
       ))}
     </div>
-  )
+  );
 }
 
 /** Full-page Profile skeleton */
@@ -239,7 +246,7 @@ export function SkeletonProfile({ className = '' }) {
             <SkeletonBlock className="h-6 w-32" />
           </div>
           <div className="rounded-2xl bg-zinc-900/80 border border-zinc-800 divide-y divide-zinc-800">
-            {[1, 2, 3].map(i => (
+            {[1, 2, 3].map((i) => (
               <div key={i} className="p-4 space-y-2">
                 <SkeletonBlock className="h-4 w-1/3" />
                 <SkeletonBlock className="h-3 w-3/4" />
@@ -253,7 +260,7 @@ export function SkeletonProfile({ className = '' }) {
         </div>
       </div>
     </div>
-  )
+  );
 }
 
 /** Job Tracker skeleton */
@@ -269,8 +276,11 @@ export function SkeletonTracker({ className = '' }) {
 
         {/* Stats Row */}
         <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-5 gap-4 mb-8">
-          {[1, 2, 3, 4, 5].map(i => (
-            <div key={i} className="p-6 bg-background/50 border border-border rounded-xl">
+          {[1, 2, 3, 4, 5].map((i) => (
+            <div
+              key={i}
+              className="p-6 bg-background/50 border border-border rounded-xl"
+            >
               <SkeletonBlock className="h-4 w-16 mb-2" />
               <SkeletonBlock className="h-8 w-12" />
             </div>
@@ -279,18 +289,18 @@ export function SkeletonTracker({ className = '' }) {
 
         {/* Filters */}
         <div className="flex gap-2 mb-6">
-       {['w-20', 'w-24', 'w-32', 'w-28', 'w-24'].map((width, i) => (
-  <SkeletonBlock
-    key={i}
-    className={`h-10 ${width} rounded-lg`}
-  />
-))}
+          {['w-20', 'w-24', 'w-32', 'w-28', 'w-24'].map((width, i) => (
+            <SkeletonBlock key={i} className={`h-10 ${width} rounded-lg`} />
+          ))}
         </div>
 
         {/* Job Cards */}
         <div className="space-y-4">
-          {[1, 2, 3].map(i => (
-            <div key={i} className="p-6 bg-background/50 border border-border rounded-xl flex flex-col lg:flex-row gap-4">
+          {[1, 2, 3].map((i) => (
+            <div
+              key={i}
+              className="p-6 bg-background/50 border border-border rounded-xl flex flex-col lg:flex-row gap-4"
+            >
               <div className="flex-1 space-y-3">
                 <div className="flex justify-between">
                   <div className="space-y-2">
@@ -316,7 +326,7 @@ export function SkeletonTracker({ className = '' }) {
         </div>
       </div>
     </div>
-  )
+  );
 }
 
 /** Settings page skeleton */
@@ -342,22 +352,23 @@ export function SkeletonSettings({ className = '' }) {
           <SkeletonBlock className="h-6 w-20 rounded-full" />
         </div>
         <div className="grid grid-cols-1 sm:grid-cols-3 gap-3 mb-6">
-          {[1, 2, 3].map(i => (
+          {[1, 2, 3].map((i) => (
             <SkeletonBlock key={i} className="h-10 rounded-lg" />
           ))}
         </div>
         <SkeletonBlock className="h-10 w-48 rounded-lg" />
       </div>
     </div>
-);}
+  );
+}
 
 // ============ Generic Skeleton Base ============
-export function Skeleton({ className = "" }) {
+export function Skeleton({ className = '' }) {
   return (
     <div
       className={`animate-shimmer rounded-md bg-foreground/10 ${className}`}
       style={{
-        animationDuration: '2s'
+        animationDuration: '2s',
       }}
     />
   );
@@ -489,7 +500,10 @@ export function SkeletonDashboardActions() {
   return (
     <div className="grid grid-cols-2 md:grid-cols-4 lg:grid-cols-7 gap-4">
       {Array.from({ length: 7 }).map((_, i) => (
-        <div key={i} className="p-5 rounded-2xl bg-card border border-border space-y-3">
+        <div
+          key={i}
+          className="p-5 rounded-2xl bg-card border border-border space-y-3"
+        >
           <Skeleton className="h-10 w-10 rounded-lg" />
           <Skeleton className="h-3 w-2/3" />
           <Skeleton className="h-2 w-1/2" />
@@ -525,7 +539,11 @@ export function SkeletonListItems({ count = 4 }) {
 }
 
 // ============ Page Skeletons ============
-export function SkeletonPage({ width = "max-w-6xl", rows = 4, className = "" }) {
+export function SkeletonPage({
+  width = 'max-w-6xl',
+  rows = 4,
+  className = '',
+}) {
   return (
     <div className={`min-h-screen bg-background ${className}`}>
       <div className={`${width} mx-auto px-4 sm:px-6 lg:px-8 py-8`}>
@@ -542,7 +560,7 @@ export function SkeletonPage({ width = "max-w-6xl", rows = 4, className = "" }) 
   );
 }
 
-export function SkeletonPanel({ rows = 3, className = "" }) {
+export function SkeletonPanel({ rows = 3, className = '' }) {
   return (
     <div className={`space-y-4 ${className}`}>
       <Skeleton className="h-8 w-1/3 max-w-xs" />
