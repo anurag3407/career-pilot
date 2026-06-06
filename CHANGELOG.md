@@ -1,3 +1,10 @@
+# [1.173.0](https://github.com/anurag3407/career-pilot/compare/v1.172.0...v1.173.0) (2026-06-06)
+
+
+### Features
+
+* Enhance Project Visualizer with code chat, dependencies scanner, interview prep, and contribution guide ([39026a1](https://github.com/anurag3407/career-pilot/commit/39026a1a0e26afbcec09d3c15973c139dcf946da))
+
 # [1.172.0](https://github.com/anurag3407/career-pilot/compare/v1.171.0...v1.172.0) (2026-06-06)
 
 

@@ -1539,6 +1539,34 @@ export const projectVisualizerApi = {
     })
     return handleResponse(response)
   },
+
+  async explainFile(sessionId, filePath) {
+    const headers = await getAuthHeaders()
+    const response = await fetch(`${API_BASE}/project-visualizer/analysis/${sessionId}/explain-file`, {
+      method: 'POST',
+      headers,
+      body: JSON.stringify({ filePath })
+    })
+    return handleResponse(response)
+  },
+
+  async getInterviewQuestions(sessionId) {
+    const headers = await getAuthHeaders()
+    const response = await fetch(`${API_BASE}/project-visualizer/analysis/${sessionId}/interview-prep`, {
+      method: 'POST',
+      headers
+    })
+    return handleResponse(response)
+  },
+
+  async getContributionGuide(sessionId) {
+    const headers = await getAuthHeaders()
+    const response = await fetch(`${API_BASE}/project-visualizer/analysis/${sessionId}/contribution-guide`, {
+      method: 'POST',
+      headers
+    })
+    return handleResponse(response)
+  },
 }
 
 export const adminAPI = {

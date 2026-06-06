@@ -256,6 +256,7 @@ app.use('/api/search', searchRoutes);
 app.use('/api/ai', aiRoutes);
 app.use('/api/email-tracking', emailTrackingRoutes);
 app.use('/api/analyzer', repoAnalyzerRoutes);
+app.use('/api/project-visualizer', projectVisualizerRoutes);
 app.use('/api/admin', adminRoutes);
 app.use('/api/admin/queues', bullBoardRoutes);
 
