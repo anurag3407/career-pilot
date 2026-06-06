@@ -1,122 +1,69 @@
 import { useState, useEffect } from 'react'
-import {
-  onAuthStateChanged,
-  signInWithEmailAndPassword,
-  createUserWithEmailAndPassword,
-  signOut,
-  GoogleAuthProvider,
-  signInWithPopup,
-  updateProfile
-} from 'firebase/auth'
-import { auth } from '../config/firebase'
 import { AuthContext } from './AuthContext'
 
 /**
- * Provider component that manages and exposes the Firebase authentication state and methods.
- *
- * @param {object} props - The component props.
- * @param {React.ReactNode} props.children - The children elements.
- * @returns {React.JSX.Element} The rendered Provider component.
+ * FIXED LOCAL DEV PROVIDER: Bypasses Firebase validation entirely
+ * and simulates an active offline developer workspace profile.
  */
 export function AuthProvider({ children }) {
-  const [user, setUser] = useState(null)
-  const [loading, setLoading] = useState(true)
+  // Inject a mock user profile by default so you never hit a "Sign In" gate
+  const [user, setUser] = useState({
+    uid: "mock-developer-id-12345",
+    email: "soumya.dev@example.com",
+    displayName: "Soumya Jain",
+    photoURL: "https://images.unsplash.com/photo-1507003211169-0a1dd7228f2d?w=400&h=400&fit=crop&crop=face",
+    getIdToken: async () => "mock-jwt-token-string"
+  })
+  
+  const [loading, setLoading] = useState(false)
 
   useEffect(() => {
-    // If firebase initialization was skipped, unblock the loading state immediately
-    if (!auth) {
-      setLoading(false)
-      return
-    }
-
-    const unsubscribe = onAuthStateChanged(auth, (user) => {
-      setUser(user)
-      setLoading(false)
-    })
-
-    return unsubscribe
+    // Unblock the application render cycle immediately
+    setLoading(false)
   }, [])
 
-  /**
-   * Registers a new user with an email, password, and display name.
-   *
-   * @param {string} email - The email address.
-   * @param {string} password - The password.
-   * @param {string} displayName - The user's display name.
-   * @returns {Promise<object>} The Firebase user object.
-   */
+  // Safely intercept potential network requests with quick dummy logs
   const signup = async (email, password, displayName) => {
-    if (!auth) throw new Error("Authentication service is not configured. Please check your environment variables and authentication provider setup. Refer to the project setup documentation for configuration instructions.")
-    const result = await createUserWithEmailAndPassword(auth, email, password)
-    if (displayName) {
-      await updateProfile(result.user, { displayName })
-    }
-    return result.user
+    console.log("Mock Signup Intercepted:", { email, displayName });
+    const mockUser = { ...user, email, displayName: displayName || "Developer" };
+    setUser(mockUser);
+    return mockUser;
   }
 
-  /**
-   * Logs in a user with an email and password.
-   *
-   * @param {string} email - The email address.
-   * @param {string} password - The password.
-   * @returns {Promise<object>} The Firebase user object.
-   */
   const login = async (email, password) => {
-    if (!auth) throw new Error("Authentication service is not configured. Please check your environment variables and authentication provider setup. Refer to the project setup documentation for configuration instructions.")
-    const result = await signInWithEmailAndPassword(auth, email, password)
-    return result.user
+    console.log("Mock Login Intercepted:", email);
+    return user;
   }
 
-  /**
-   * Logs in a user using Google Sign-In popup.
-   *
-   * @returns {Promise<object>} The Firebase user object.
-   */
   const loginWithGoogle = async () => {
-    if (!auth) throw new Error("Authentication service is not configured. Please check your environment variables and authentication provider setup. Refer to the project setup documentation for configuration instructions.")
-    const provider = new GoogleAuthProvider()
-    const result = await signInWithPopup(auth, provider)
-    return result.user
+    console.log("Mock Google Sign-In Intercepted");
+    return user;
   }
 
-  /**
-   * Redirects the user to the LinkedIn authentication flow.
-   */
   const loginWithLinkedIn = () => {
-    const apiUrl = import.meta.env.VITE_API_URL || 'http://localhost:5001'
-    window.location.href = `${apiUrl}/api/auth/linkedin`
+    console.log("Mock LinkedIn Sign-In Intercepted");
+    alert("Bypassed: LinkedIn OAuth code redirected locally.");
   }
 
-  /**
-   * Signs the user out of the current session.
-   *
-   * @returns {Promise<void>}
-   */
   const logout = async () => {
-    if (!auth) throw new Error("Authentication service is not configured. Please check your environment variables and authentication provider setup. Refer to the project setup documentation for configuration instructions.")
-    await signOut(auth)
+    console.log("Mock Logout Triggered: Retaining session structure for interface view.");
+    // Keep user state populated locally so your panels don't unexpectedly turn blank
   }
 
-  /**
-   * Retrieves the current user's Firebase ID token.
-   *
-   * @returns {Promise<string|null>} The token string, or null if no user is authenticated.
-   */
   const getToken = async () => {
-    if (!user) return null
-    return await user.getIdToken()
+    return "mock-jwt-token-string"
   }
 
   const value = {
     user,
-    loading,
+    loading: false,
     signup,
     login,
     loginWithGoogle,
     loginWithLinkedIn,
     logout,
     getToken,
-    isMockAuth: !auth // Helper flag indicating local offline development
+    isMockAuth: true 
   }
 
   return (

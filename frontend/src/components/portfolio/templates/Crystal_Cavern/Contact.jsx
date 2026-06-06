@@ -1,15 +1,7 @@
 import React from 'react';
 import { motion } from 'framer-motion';
 import { Mail } from 'lucide-react';
-
-const Crystal = ({ className, delay = 0, duration = 5, size = 'w-32 h-32', color = 'from-indigo-500/20 via-purple-500/10 to-emerald-500/20' }) => (
-  <motion.div
-    className={`absolute opacity-40 backdrop-blur-md bg-gradient-to-br ${color} ${size} ${className}`}
-    style={{ clipPath: 'polygon(50% 0%, 100% 25%, 100% 75%, 50% 100%, 0% 75%, 0% 25%)', boxShadow: 'inset 0 0 20px rgba(255,255,255,0.1)' }}
-    animate={{ y: [0, -30, 0], rotate: [0, 15, -15, 0], scale: [1, 1.05, 1] }}
-    transition={{ duration, repeat: Infinity, ease: "easeInOut", delay }}
-  />
-);
+import { Crystal } from './Crystal';
 
 export default function Contact({ socials }) {
   const sectionVariants = {
@@ -37,13 +29,15 @@ export default function Contact({ socials }) {
             <p className="text-slate-400 mb-10 text-lg">
               I'm currently open to new opportunities. Whether you have a question, a project idea, or just want to say hi, I'll try my best to get back to you!
             </p>
-            <a 
-              href={`mailto:${socials.email}`} 
-              className="inline-flex items-center gap-3 px-8 py-4 bg-gradient-to-r from-indigo-500 to-purple-600 hover:from-indigo-400 hover:to-purple-500 text-white rounded-full font-bold transition-all hover:scale-105 shadow-[0_0_20px_rgba(99,102,241,0.3)] hover:shadow-[0_0_30px_rgba(99,102,241,0.5)]"
-            >
-              <Mail size={20} />
-              Say Hello
-            </a>
+            {socials?.email && (
+              <a 
+                href={`mailto:${socials.email}`} 
+                className="inline-flex items-center gap-3 px-8 py-4 bg-gradient-to-r from-indigo-500 to-purple-600 hover:from-indigo-400 hover:to-purple-500 text-white rounded-full font-bold transition-all hover:scale-105 shadow-[0_0_20px_rgba(99,102,241,0.3)] hover:shadow-[0_0_30px_rgba(99,102,241,0.5)]"
+              >
+                <Mail size={20} />
+                Say Hello
+              </a>
+            )}
           </div>
         </div>
       </motion.div>

@@ -3,6 +3,8 @@
  * Main Application Component with Route-based Code Splitting
  * Implements lazy loading for improved performance
  */
+
+import VercelDeploy from "./components/portfolio/templates/Vercel_Deploy/index";
 import React, { useState, useEffect, lazy, Suspense } from 'react';
 import StockTicker from "./components/portfolio/templates/Finance_Corporate/StockTicker";
 import Deployments from './pages/Deployments'
@@ -27,9 +29,8 @@ const ResumeBuilder = lazy(() => import('./pages/ResumeBuilder'));
 import TextToResume from './pages/TextToResume';
 import About from './components/portfolio/templates/Tech_Startup/About';
 import ChatbotPortfolio from "./components/portfolio/templates/Chatbot_Portfolio";
-import GamifiedXP from "./components/portfolio/templates/Gamified_XP";
-import TelescopeZoom from "./components/portfolio/templates/Telescope_Zoom";
-import DayNightCycle from './components/portfolio/templates/Day_Night_Cycle/index.jsx';
+import GlassmorphismTemplate from "./components/portfolio/templates/Glassmorphism/index";
+
 import JobTracker from './pages/JobTracker';
 
 const Community = lazy(() => import('./pages/Community'));
@@ -250,9 +251,8 @@ function AppRoutes() {
         {/* Template Gallery Route (Registered at /templates) */}
         <Route path="/templates" element={<TemplateGallery />} />
 
-        
-
         <Route path="/templates/chatbot" element={<ChatbotPortfolio />} />
+        <Route path="/templates/glassmorphism" element={<GlassmorphismTemplate />} />
 
         {/* <Route path="/templates/day-night-cycle" element={<DayNightCycle />} /> */}
         <Route path="/templates/rainforest-canopy" element={<RainforestCanopy />} />
@@ -272,7 +272,6 @@ function AppRoutes() {
         <Route path="/templates/high-fashion" element={<HighFashion />} />
         <Route path="/templates/dark-mystery" element={<DarkMystery />} />
         <Route path="/templates/dark-mystery-contact" element={<DarkMysteryContact />} />
-
         {/* Core Protected Routes */}
         <Route 
   path="/dashboard" 

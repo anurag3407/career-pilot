@@ -1,4 +1,4 @@
-import React from "react";
+
 import {
   Terminal,
   GitBranch,
@@ -7,31 +7,36 @@ import {
   Rocket,
 } from "lucide-react";
 
+const STATUS = {
+  SUCCESS: "success",
+  RUNNING: "running",
+};
+
 export default function CommandHistory() {
   const commands = [
     {
       icon: <FolderGit2 size={16} />,
       command: "git clone career-pilot",
       output: "Repository cloned successfully.",
-      status: "success",
+      status: STATUS.SUCCESS,
     },
     {
       icon: <GitBranch size={16} />,
       command: "git checkout -b feature/command-history",
       output: "Switched to a new branch.",
-      status: "success",
+      status: STATUS.SUCCESS,
     },
     {
       icon: <Terminal size={16} />,
       command: "npm install",
       output: "Dependencies installed successfully.",
-      status: "success",
+      status: STATUS.SUCCESS,
     },
     {
       icon: <Rocket size={16} />,
       command: "npm run dev",
       output: "Development server running on localhost:5173",
-      status: "running",
+      status: STATUS.RUNNING,
     },
   ];
 
@@ -65,10 +70,14 @@ export default function CommandHistory() {
               </div>
 
               <div className="mt-2 flex items-center gap-2 pl-6 text-zinc-300">
-                {item.status === "success" ? (
+                {item.status === STATUS.SUCCESS ? (
+                  
                   <CheckCircle size={14} className="text-green-500" />
                 ) : (
-                  <span className="h-2 w-2 animate-pulse rounded-full bg-green-500"></span>
+                  <span
+                    aria-hidden="true"
+                    className="h-2 w-2 animate-pulse rounded-full bg-green-500">
+                  </span>
                 )}
                 <span>{item.output}</span>
               </div>
