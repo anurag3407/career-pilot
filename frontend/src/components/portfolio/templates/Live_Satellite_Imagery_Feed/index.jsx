@@ -4,7 +4,8 @@ import {
   Github, Linkedin, Twitter, Mail, ExternalLink,
   Satellite, Compass, Zap, Database, Globe, Radio, MessageSquare
 } from "lucide-react";
-import data from "../../../../data/dummy_data.json";
+import React, { useState, useRef, useContext } from "react";
+import { PortfolioContext } from "../../../../context/PortfolioContext";
 
 const C = {
   bg:     "#0A0E27",
