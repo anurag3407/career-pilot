@@ -67,6 +67,65 @@ export default function ResumeBuilder() {
     { name: '', tech: '', link: '', description: '' }
   ])
   const [skills, setSkills] = useState('')
+  const [resumeScore, setResumeScore] = useState(0)
+  const [recommendedSections, setRecommendedSections] = useState([])
+
+useEffect(() => {
+  const recommendations = []
+
+  if (projects.every(p => !p.name.trim())) {
+    recommendations.push("Projects")
+  }
+
+  if (!skills.trim()) {
+    recommendations.push("Skills")
+  }
+
+  if (education.every(e => !e.school?.trim())) {
+    recommendations.push("Certifications")
+  }
+
+  if (experience.every(e => !e.title?.trim())) {
+    recommendations.push("Volunteer Experience")
+  }
+
+  setRecommendedSections(recommendations)
+}, [projects, skills, education, experience])
+
+useEffect(() => {
+  let score = 0
+
+  if (personal.name && personal.email) {
+    score += 20
+  }
+
+  if (education.some(e => e.school.trim())) {
+    score += 20
+  }
+
+  if (experience.some(e => e.title.trim())) {
+    score += 20
+  }
+
+  if (projects.some(p => p.name.trim())) {
+    score += 20
+  }
+
+  if (skills.trim()) {
+    score += 20
+  }
+
+  setResumeScore(score)
+}, [
+  personal,
+  education,
+  experience,
+  projects,
+  skills
+])
+
+// error state
+const [personalErrors, setPersonalErrors] = useState({})
 
   // ── error state ─────────────────────────────────────────────────────────────
   const [personalErrors,   setPersonalErrors]   = useState({})
@@ -706,6 +765,98 @@ export default function ResumeBuilder() {
         return (
           <div className="space-y-6">
             <h2 className="text-2xl font-semibold mb-6">Preview &amp; Generate</h2>
+            <div className="mb-6 p-4 rounded-xl border border-border bg-background/50">
+  <div className="flex justify-between items-center mb-2">
+    <h3 className="font-semibold">
+      Resume Improvement Progress
+    </h3>
+
+    <span className="text-primary font-bold">
+      {resumeScore}%
+    </span>
+  </div>
+
+  <div className="w-full bg-secondary rounded-full h-3">
+    <div
+      className="bg-primary h-3 rounded-full transition-all duration-500"
+      style={{ width: `${resumeScore}%` }}
+    />
+  </div>
+
+  <div className="mt-4 flex flex-wrap gap-2">
+  <span
+    className={`px-3 py-1 rounded-full text-sm ${
+      resumeScore >= 20
+        ? "bg-green-500/20 text-green-500"
+        : "bg-secondary"
+    }`}
+  >
+    Personal Info
+  </span>
+
+  <span
+    className={`px-3 py-1 rounded-full text-sm ${
+      resumeScore >= 40
+        ? "bg-green-500/20 text-green-500"
+        : "bg-secondary"
+    }`}
+  >
+    Education
+  </span>
+
+  <span
+    className={`px-3 py-1 rounded-full text-sm ${
+      resumeScore >= 60
+        ? "bg-green-500/20 text-green-500"
+        : "bg-secondary"
+    }`}
+  >
+    Experience
+  </span>
+
+  <span
+    className={`px-3 py-1 rounded-full text-sm ${
+      resumeScore >= 80
+        ? "bg-green-500/20 text-green-500"
+        : "bg-secondary"
+    }`}
+  >
+    Projects
+  </span>
+
+  <span
+    className={`px-3 py-1 rounded-full text-sm ${
+      resumeScore >= 100
+        ? "bg-green-500/20 text-green-500"
+        : "bg-secondary"
+    }`}
+  >
+    Skills
+  </span>
+</div>
+
+  <p className="mt-2 text-sm text-muted-foreground">
+    Complete more sections to improve your resume score.
+  </p>
+</div>
+            {recommendedSections.length > 0 && (
+  <div className="mb-6 p-4 rounded-xl border border-border bg-background/50">
+    <h3 className="font-semibold mb-2">
+      Recommended Sections
+    </h3>
+
+    <div className="flex flex-wrap gap-2">
+      {recommendedSections.map(section => (
+        <span
+          key={section}
+          className="px-3 py-1 rounded-full bg-primary/10 text-primary text-sm"
+        >
+          {section}
+        </span>
+      ))}
+    </div>
+  </div>
+)}
             <div className="bg-background border border-border rounded-xl p-6 h-[500px] overflow-y-auto font-mono text-sm whitespace-pre-wrap">
               {generateMarkdown()}
             </div>

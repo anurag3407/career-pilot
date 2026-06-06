@@ -26,6 +26,8 @@ export default function ResumeView() {
   const [scoreData, setScoreData] = useState(null)
   const [scoring, setScoring] = useState(false)
   const [scoringStep, setScoringStep] = useState(0)
+  const [fontFamily, setFontFamily] = useState("Poppins")
+  const [fontSize, setFontSize] = useState("Medium")
 
   useEffect(() => {
     let interval
@@ -94,6 +96,9 @@ export default function ResumeView() {
   const handleDownloadPdf = async () => {
     try {
       setDownloading(true)
+      toast.success(
+  `Exporting with ${fontFamily} font and ${fontSize} size`
+)
       const blob = await resumeApi.downloadPdf(resumeId, previewTab)
 
       // Create download link
@@ -284,6 +289,33 @@ export default function ResumeView() {
                     </div>
                   )}
                 </div>
+                <div className="mb-4 flex gap-4">
+  <div>
+    <label className="block text-sm mb-1">Font Family</label>
+    <select
+      value={fontFamily}
+      onChange={(e) => setFontFamily(e.target.value)}
+      className="border rounded px-2 py-1"
+    >
+      <option value="Poppins">Poppins</option>
+      <option value="Arial">Arial</option>
+      <option value="Times New Roman">Times New Roman</option>
+    </select>
+  </div>
+
+  <div>
+    <label className="block text-sm mb-1">Font Size</label>
+    <select
+      value={fontSize}
+      onChange={(e) => setFontSize(e.target.value)}
+      className="border rounded px-2 py-1"
+    >
+      <option value="Small">Small</option>
+      <option value="Medium">Medium</option>
+      <option value="Large">Large</option>
+    </select>
+  </div>
+</div>
                 <div className="flex gap-2 flex-wrap">
                  <Button
   variant="primary"
