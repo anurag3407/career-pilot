@@ -421,6 +421,18 @@ export const portfolioApi = {
     return handleResponse(response);
   },
 
+  // Generate portfolio JSON from an existing enhanced resume
+  async generateFromResume(resumeId) {
+    const headers = await getAuthHeaders();
+
+    const response = await fetch(`${API_BASE}/portfolio/generate-from-resume/${resumeId}`, {
+      method: 'POST',
+      headers
+    });
+
+    return handleResponse(response);
+  },
+
   // Deploy portfolio to Cloudflare Pages
   async deploy({ slug, sections, templateId, title, provider, token }) {
     const headers = await getAuthHeaders();

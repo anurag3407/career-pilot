@@ -1,15 +1,7 @@
 import React from 'react';
 import { motion } from 'framer-motion';
 import { Github, Linkedin, Twitter, Mail } from 'lucide-react';
-
-const Crystal = ({ className, delay = 0, duration = 5, size = 'w-32 h-32', color = 'from-indigo-500/20 via-purple-500/10 to-emerald-500/20' }) => (
-  <motion.div
-    className={`absolute opacity-40 backdrop-blur-md bg-gradient-to-br ${color} ${size} ${className}`}
-    style={{ clipPath: 'polygon(50% 0%, 100% 25%, 100% 75%, 50% 100%, 0% 75%, 0% 25%)', boxShadow: 'inset 0 0 20px rgba(255,255,255,0.1)' }}
-    animate={{ y: [0, -30, 0], rotate: [0, 15, -15, 0], scale: [1, 1.05, 1] }}
-    transition={{ duration, repeat: Infinity, ease: "easeInOut", delay }}
-  />
-);
+import { Crystal } from './Crystal';
 
 export default function Hero({ personal, socials }) {
   return (
@@ -32,7 +24,7 @@ export default function Hero({ personal, socials }) {
           transition={{ duration: 10, repeat: Infinity, ease: "linear" }}
           className="inline-block mb-4 px-4 py-1.5 rounded-full border border-purple-500/30 bg-purple-500/10 backdrop-blur-sm text-purple-300 text-sm font-medium tracking-wider"
         >
-          {personal.location}
+          {personal?.location}
         </motion.div>
         <motion.h1 
           className="text-5xl md:text-7xl lg:text-8xl font-bold mb-6 tracking-tight text-transparent bg-clip-text bg-gradient-to-r from-emerald-400 via-indigo-400 to-purple-500"
@@ -40,16 +32,16 @@ export default function Hero({ personal, socials }) {
           animate={{ backgroundPosition: ['0% 50%', '100% 50%', '0% 50%'] }}
           transition={{ duration: 8, repeat: Infinity, ease: "linear" }}
         >
-          {personal.name}
+          {personal?.name}
         </motion.h1>
         <p className="text-xl md:text-2xl text-slate-400 font-light mb-10 max-w-2xl mx-auto">
-          {personal.title}
+          {personal?.title}
         </p>
         <div className="flex items-center justify-center gap-6">
-          {socials.github && <a href={socials.github} target="_blank" rel="noreferrer" className="text-slate-400 hover:text-emerald-400 transition-colors"><Github size={28} /></a>}
-          {socials.linkedin && <a href={socials.linkedin} target="_blank" rel="noreferrer" className="text-slate-400 hover:text-indigo-400 transition-colors"><Linkedin size={28} /></a>}
-          {socials.twitter && <a href={socials.twitter} target="_blank" rel="noreferrer" className="text-slate-400 hover:text-purple-400 transition-colors"><Twitter size={28} /></a>}
-          {socials.email && <a href={`mailto:${socials.email}`} className="text-slate-400 hover:text-emerald-400 transition-colors"><Mail size={28} /></a>}
+          {socials?.github && <a href={socials.github} aria-label="GitHub profile" target="_blank" rel="noreferrer" className="text-slate-400 hover:text-emerald-400 transition-colors"><Github size={28} /></a>}
+          {socials?.linkedin && <a href={socials.linkedin} aria-label="LinkedIn profile" target="_blank" rel="noreferrer" className="text-slate-400 hover:text-indigo-400 transition-colors"><Linkedin size={28} /></a>}
+          {socials?.twitter && <a href={socials.twitter} aria-label="Twitter profile" target="_blank" rel="noreferrer" className="text-slate-400 hover:text-purple-400 transition-colors"><Twitter size={28} /></a>}
+          {socials?.email && <a href={`mailto:${socials.email}`} aria-label="Email contact" className="text-slate-400 hover:text-emerald-400 transition-colors"><Mail size={28} /></a>}
         </div>
       </motion.div>
     </section>
