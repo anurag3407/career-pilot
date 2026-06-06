@@ -1,9 +1,11 @@
 import assert from 'assert';
 import fs from 'fs/promises';
 import path from 'path';
+import { fileURLToPath } from 'url';
 import { optimizeBuffer } from '../imageOptimizer.js';
 
-const SAMPLE = path.resolve('tests', 'fixtures', 'sample.jpg');
+const __dirname = path.dirname(fileURLToPath(import.meta.url));
+const SAMPLE = path.resolve(__dirname, '../../../tests/fixtures/sample.jpg');
 
 async function testOptimizeVariants() {
   let buffer;
