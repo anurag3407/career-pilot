@@ -95,6 +95,17 @@ export default function Dashboard() {
     offered: 0
   })
   const [portfolioCount, setPortfolioCount] = useState(0)
+  const careerInsights = {
+  readinessScore: 82,
+  skillGaps: ["System Design", "Cloud Computing"],
+  trendingSkills: ["AI Engineering", "Prompt Engineering", "DevOps"],
+  certifications: ["AWS Cloud Practitioner", "Google Data Analytics"],
+  learningPath: [
+    "Complete Cloud Fundamentals",
+    "Build Real-World Projects",
+    "Practice Mock Interviews"
+  ]
+}
   const [candidateName, setCandidateName] = useState('')
   const [githubOverview, setGithubOverview] = useState({
     connected: false,
@@ -451,6 +462,66 @@ export default function Dashboard() {
                 </div>
               )}
             </motion.div>
+
+            <motion.div variants={itemVariants} className="mb-10">
+  <div className="rounded-2xl bg-card border border-border p-6 shadow-sm">
+    <div className="flex items-center gap-3 mb-5">
+      <GraduationCap className="w-6 h-6 text-primary" />
+      <h2 className="text-xl font-black">
+        Career Growth Insights
+      </h2>
+    </div>
+
+    <div className="grid md:grid-cols-5 gap-4">
+
+      <div className="p-4 rounded-xl border border-border">
+        <p className="text-xs text-muted-foreground">
+          Readiness Score
+        </p>
+        <p className="text-3xl font-black text-emerald-500">
+          {careerInsights.readinessScore}%
+        </p>
+      </div>
+
+      <div className="p-4 rounded-xl border border-border">
+        <p className="text-xs text-muted-foreground">
+          Skill Gaps
+        </p>
+        <p className="font-bold">
+          {careerInsights.skillGaps.join(", ")}
+        </p>
+      </div>
+
+      <div className="p-4 rounded-xl border border-border">
+        <p className="text-xs text-muted-foreground">
+          Trending Skills
+        </p>
+        <p className="font-bold">
+          {careerInsights.trendingSkills.join(", ")}
+        </p>
+      </div>
+
+      <div className="p-4 rounded-xl border border-border">
+        <p className="text-xs text-muted-foreground">
+          Certifications
+        </p>
+        <p className="font-bold">
+          {careerInsights.certifications[0]}
+        </p>
+      </div>
+
+      <div className="p-4 rounded-xl border border-border">
+        <p className="text-xs text-muted-foreground">
+          Learning Path
+        </p>
+        <p className="font-bold">
+          {careerInsights.learningPath[0]}
+        </p>
+      </div>
+
+    </div>
+  </div>
+</motion.div>
 
             <div className="grid lg:grid-cols-2 gap-10">
               {/* Recent Applications */}
