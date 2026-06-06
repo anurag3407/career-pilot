@@ -1,3 +1,41 @@
+import { useEffect } from 'react'
+import { useTranslation } from 'react-i18next'
+import { BrowserRouter, Routes, Route, Navigate } from 'react-router-dom'
+import { Toaster } from 'react-hot-toast'
+import { AuthProvider, useAuth } from './context/AuthContext'
+import { SocketProvider } from './context/SocketContext'
+import { ThemeProvider } from './context/ThemeContext'
+import AppLayout from './components/AppLayout'
+
+import Home from './pages/Home'
+import Login from './pages/Login'
+import Register from './pages/Register'
+import Dashboard from './pages/Dashboard'
+import Upload from './pages/Upload'
+import Enhance from './pages/Enhance'
+import ResumeView from './pages/ResumeView'
+import JobSearch from './pages/JobSearch'
+import JobAlerts from './pages/JobAlerts'
+import JobTracker from './pages/JobTracker'
+import { Community, NotFound } from './pages'
+import InterviewPrep from './pages/InterviewPrep'
+import UserProfile from './pages/UserProfile'
+import EmailGenerator from './pages/EmailGenerator'
+import LinkedInOptimizer from './pages/LinkedInOptimizer'
+import FellowshipLayout from './pages/fellowship/FellowshipLayout'
+import Onboarding from './pages/fellowship/Onboarding'
+import Challenges from './pages/fellowship/Challenges'
+import Settings from './pages/Settings'
+import ChallengeDetail from './pages/fellowship/ChallengeDetail'
+import CreateChallenge from './pages/fellowship/CreateChallenge'
+import MyProposals from './pages/fellowship/MyProposals'
+import MyChallenges from './pages/fellowship/MyChallenges'
+import ChallengeProposals from './pages/fellowship/ChallengeProposals'
+import Verify from './pages/fellowship/Verify'
+import FellowshipMessages from './pages/fellowship/FellowshipMessages'
+import FellowshipChat from './pages/fellowship/FellowshipChat'
+import SecuritySettings from './pages/SecuritySettings'
+import LinkedInCallback from './pages/LinkedInCallback'
 
 /**
  * Main Application Component with Route-based Code Splitting
@@ -467,6 +505,14 @@ function AppRoutes() {
 }
 
 function App() {
+  const { i18n } = useTranslation()
+
+  useEffect(() => {
+    const dir = i18n.dir(i18n.language) || (i18n.language === 'ar' ? 'rtl' : 'ltr')
+    document.documentElement.dir = dir
+    document.documentElement.lang = i18n.language
+  }, [i18n.language])
+
   return (
     <ThemeProvider>
       <AuthProvider>

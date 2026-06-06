@@ -1,6 +1,8 @@
 import { useState, useEffect } from "react";
 import { useNavigate, useLocation } from "react-router-dom";
 import { motion } from "framer-motion";
+import { useTranslation } from "react-i18next";
+import { Brain, ChevronDown } from "lucide-react";
 import { Brain, ChevronDown, Contrast } from "lucide-react";
 import AIProviderIndicator from "./settings/AIProviderIndicator";
 
@@ -123,6 +125,7 @@ function Logo() {
 }
 
 function UserSection() {
+    const { t } = useTranslation();
     const { user, logout } = useAuth();
     const { open, animate, setOpen } = useSidebar();
     const { theme, toggleTheme } = useTheme();
@@ -186,6 +189,27 @@ function UserSection() {
                     transition={{ duration: 0.2 }}
                     className="text-sm font-semibold whitespace-pre"
                 >
+                    {theme === 'dark' ? 'Light Mode' : 'Dark Mode'}
+                </motion.span>
+            </button>
+            <button
+                onClick={handleOpenRouterConnect}
+                className={cn(
+                    "flex items-center gap-3 w-full py-3 px-4 rounded-2xl text-muted-foreground hover:text-foreground hover:bg-muted transition-all cursor-pointer font-bold",
+                    !open && animate && "justify-center"
+                )}
+            >
+                <Zap className={cn("w-5 h-5 shrink-0", openRouterKey && "text-indigo-500")} />
+                <motion.span
+                    animate={{
+                        display: animate ? (open ? "inline-block" : "none") : "inline-block",
+                        opacity: animate ? (open ? 1 : 0) : 1,
+                    }}
+                    transition={{ duration: 0.2 }}
+                    className="text-sm font-bold whitespace-pre"
+                >
+                    {theme === 'dark' ? t('nav.lightMode') : t('nav.darkMode')}
+                    {openRouterKey ? 'OpenRouter Connected' : 'Connect OpenRouter'}
                     {theme === 'light' ? 'Dark Mode' : 
                      theme === 'dark' ? 'High Contrast' : 
                      'Light Mode'}
@@ -211,7 +235,7 @@ function UserSection() {
                     transition={{ duration: 0.2 }}
                     className="text-sm font-semibold whitespace-pre"
                 >
-                    Logout
+                    {t('nav.logout')}
                 </motion.span>
             </button>
         </div>
@@ -219,6 +243,7 @@ function UserSection() {
 }
 
 export default function AppSidebar() {
+    const { t } = useTranslation();
     const [open, setOpen] = useState(false);
 const [openAI, setOpenAI] = useState(false);
 const location = useLocation();
@@ -226,6 +251,59 @@ const location = useLocation();
 useEffect(() => {
     setOpen(false);
 }, [location.pathname]);
+
+    const navLinks = [
+        {
+            label: t("nav.dashboard"),
+            href: "/dashboard",
+            icon: <LayoutDashboard className="w-5 h-5 flex-shrink-0" />,
+        },
+        {
+            label: t("nav.jobs"),
+            href: "/jobs",
+            icon: <Search className="w-5 h-5 flex-shrink-0" />,
+        },
+        {
+            label: t("nav.alerts"),
+            href: "/job-alerts",
+            icon: <Bell className="w-5 h-5 flex-shrink-0" />,
+        },
+        {
+            label: t("nav.interview"),
+            href: "/interview-prep",
+            icon: <Mic className="w-5 h-5 flex-shrink-0" />,
+        },
+        {
+            label: t("nav.fellowship"),
+            href: "/fellowship",
+            icon: <GraduationCap className="w-5 h-5 flex-shrink-0" />,
+        },
+        {
+            label: t("nav.community"),
+            href: "/community",
+            icon: <Users className="w-5 h-5 flex-shrink-0" />,
+        },
+        {
+            label: t("nav.resume"),
+            href: "/upload",
+            icon: <FileText className="w-5 h-5 flex-shrink-0" />,
+        },
+        {
+            label: t("nav.profile"),
+            href: "/profile",
+            icon: <User className="w-5 h-5 flex-shrink-0" />,
+        },
+        {
+            label: t("nav.security"),
+            href: "/security",
+            icon: <ShieldCheck className="w-5 h-5 flex-shrink-0" />,
+        },
+        {
+            label: t("nav.settings"),
+            href: "/settings",
+            icon: <Settings className="w-5 h-5 flex-shrink-0" />,
+        },
+    ];
 
     return (
         <Sidebar open={open} setOpen={setOpen}>
@@ -313,4 +391,5 @@ useEffect(() => {
             </SidebarBody>
         </Sidebar>
     );
+}
 }

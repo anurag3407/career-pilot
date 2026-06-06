@@ -2,6 +2,7 @@ import { useState, useEffect, useRef } from 'react'
 import { Link } from 'react-router-dom'
 import toast from 'react-hot-toast'
 import { motion } from 'framer-motion'
+import { useTranslation } from 'react-i18next'
 import {
   FileText,
   Briefcase,
@@ -76,10 +77,10 @@ function DashboardSkeleton() {
 }
 
 const STATUS_CONFIG = {
-  saved: { label: 'Saved', color: 'bg-muted text-muted-foreground border border-border', icon: Star },
-  applied: { label: 'Applied', color: 'bg-primary/10 text-primary border border-primary/20', icon: Send },
-  interviewing: { label: 'Interviewing', color: 'bg-secondary/10 text-secondary border border-secondary/20', icon: MessageSquare },
-  offered: { label: 'Offered', color: 'bg-emerald-500/10 text-emerald-500 border border-emerald-500/20', icon: CheckCircle2 }
+  saved: { labelKey: 'saved', color: 'bg-muted text-muted-foreground border border-border', icon: Star },
+  applied: { labelKey: 'applied', color: 'bg-primary/10 text-primary border border-primary/20', icon: Send },
+  interviewing: { labelKey: 'interviewing', color: 'bg-secondary/10 text-secondary border border-secondary/20', icon: MessageSquare },
+  offered: { labelKey: 'offers', color: 'bg-emerald-500/10 text-emerald-500 border border-emerald-500/20', icon: CheckCircle2 }
 }
 const portfolioAnalytics = {
   totalVisits: 1245,
@@ -91,6 +92,7 @@ const portfolioAnalytics = {
 }
 
 export default function Dashboard() {
+  const { t, i18n } = useTranslation()
   const [resumes, setResumes] = useState([])
   const [trackedJobs, setTrackedJobs] = useState([])
   const [loading, setLoading] = useState(true)
@@ -202,7 +204,7 @@ export default function Dashboard() {
       if (!canUpdate()) return
 
       console.error('Failed to fetch data:', error)
-      setFetchError('Failed to load your dashboard. Please try again.')
+      setFetchError(t('dashboard.failedToLoadDashboard'))
       toast.error('Failed to load dashboard data')
     } finally {
       if (!canUpdate()) return
@@ -212,7 +214,7 @@ export default function Dashboard() {
   }
 
   const formatDate = (dateString) => {
-    return new Date(dateString).toLocaleDateString('en-US', {
+    return new Date(dateString).toLocaleDateString(i18n.language || 'en-US', {
       month: 'short',
       day: 'numeric'
     })
@@ -267,6 +269,10 @@ export default function Dashboard() {
         >
           <div className="absolute top-0 right-0 -mr-20 -mt-20 w-64 h-64 bg-primary/10 rounded-full blur-3xl animate-pulse"></div>
           <h1 className="text-4xl md:text-5xl font-black text-foreground mb-3 tracking-tight">
+            {t('dashboard.welcome')}
+          </h1>
+          <p className="text-lg text-muted-foreground font-medium">{t('dashboard.subtitle')}</p>
+            Welcome back <span className="gradient-text">Pilot</span>
             Welcome back{candidateName ? <span className="gradient-text">, {candidateName}</span> : <span className="gradient-text"> Pilot</span>}
           </h1>
           <p className="text-lg text-muted-foreground font-medium max-w-2xl">Your career dashboard is ready. Track applications, enhance resumes, and land your dream job with AI insights.</p>
@@ -283,7 +289,7 @@ export default function Dashboard() {
                   onClick={fetchData}
                   className="px-4 py-1.5 bg-destructive text-foreground rounded-lg font-bold hover:opacity-90 transition-opacity"
                 >
-                  Retry
+                  {t('dashboard.retry')}
                 </button>
               </div>
             )}
@@ -291,6 +297,21 @@ export default function Dashboard() {
             {/* Modular Hubs */}
             <motion.div variants={itemVariants} className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 xl:grid-cols-5 gap-5 mb-10">
               {[
+                { to: '/jobs', icon: Search, label: t('nav.jobs'), sub: t('dashboard.findJobsSub'), color: 'primary' },
+                { to: '/job-alerts', icon: Bell, label: t('nav.alerts'), sub: t('dashboard.alertsSub'), color: 'secondary' },
+                { to: '/interview-prep', icon: Mic, label: t('nav.interview'), sub: t('dashboard.interviewSub'), color: 'primary' },
+                { to: '/upload', icon: Sparkles, label: t('dashboard.enhance'), sub: t('dashboard.enhanceSub'), color: 'secondary' },
+                { to: '/job-tracker', icon: Briefcase, label: t('dashboard.stats.saved'), sub: t('dashboard.trackerSub', { count: jobStats.total }), color: 'emerald-500' },
+                { to: '/community', icon: Users, label: t('nav.community'), sub: t('dashboard.communitySub'), color: 'primary' },
+                { to: '/fellowship', icon: GraduationCap, label: t('nav.fellowship'), sub: t('dashboard.fellowshipSub'), color: 'primary', isNew: true },
+              ].map((action, idx) => (
+                <Link key={idx} to={action.to} className="group">
+                  <div className={`relative p-5 rounded-2xl bg-card border border-border overflow-hidden transition-all duration-300 hover:border-${action.color} hover:shadow-xl hover:shadow-${action.color}/5 hover:-translate-y-1`}>
+                    {action.isNew && (
+                      <div className="absolute top-2 right-2 px-1.5 py-0.5 bg-primary/20 rounded text-[9px] text-primary font-black uppercase tracking-wider">{t('dashboard.new')}</div>
+                    )}
+                    <div className={`w-12 h-12 bg-muted rounded-xl flex items-center justify-center mb-4 group-hover:scale-110 transition-transform`}>
+                      <action.icon className={`w-6 h-6 text-foreground group-hover:text-primary transition-colors`} />
                 { to: '/hub/resume', icon: FileText, label: 'Resume Builder', desc: 'Create, parse, and optimize ATS resumes.', sub: `${resumes.length} resumes`, color: 'primary', badge: 'AI' },
                 { to: '/hub/jobs', icon: Briefcase, label: 'Job Finder', desc: 'Search jobs, set alerts, and track applications.', sub: `${jobStats.total} tracked`, color: 'primary' },
                 { to: '/hub/portfolio', icon: Globe, label: 'Portfolio Builder', desc: 'Sync repos and deploy portfolios instantly.', sub: `${portfolioCount} portfolios`, color: 'secondary' },
@@ -338,6 +359,15 @@ export default function Dashboard() {
             {/* Stats Row */}
             <motion.div variants={itemVariants} className="grid grid-cols-2 md:grid-cols-6 gap-5 mb-10">
               {[
+                { icon: Star, value: jobStats.saved, label: t('dashboard.stats.saved'), color: 'text-muted-foreground', bg: 'bg-muted' },
+                { icon: Send, value: jobStats.applied, label: t('dashboard.stats.applied'), color: 'text-primary', bg: 'bg-primary/10' },
+                { icon: MessageSquare, value: jobStats.interviewing, label: t('dashboard.stats.interviewing'), color: 'text-secondary', bg: 'bg-secondary/10' },
+                { icon: CheckCircle2, value: jobStats.offered, label: t('dashboard.stats.offers'), color: 'text-emerald-500', bg: 'bg-emerald-500/10' },
+                { icon: FileText, value: resumes.length, label: t('dashboard.stats.resumes'), color: 'text-primary', bg: 'bg-primary/10' }
+              ].map((stat, idx) => (
+                <div key={idx} className="p-6 rounded-2xl bg-card border border-border text-center hover:border-primary/30 transition-all shadow-sm group">
+                  <div className={`w-12 h-12 ${stat.bg} rounded-xl flex items-center justify-center mx-auto mb-4 group-hover:scale-110 transition-transform`}>
+                    <stat.icon className={`w-6 h-6 ${stat.color}`} />
                 {
                   icon: Star,
                   value: jobStats.saved,
@@ -608,10 +638,10 @@ export default function Dashboard() {
                 <div className="flex justify-between items-center mb-6">
                   <h2 className="text-2xl font-black text-foreground flex items-center gap-3">
                     <Clock className="w-6 h-6 text-primary" />
-                    Recent Applications
+                    {t('dashboard.recentApplications')}
                   </h2>
                   <Link to="/job-tracker" className="group text-primary hover:text-primary/80 text-sm font-bold flex items-center gap-1 transition-all">
-                    View all <ArrowRight className="w-4 h-4 group-hover:translate-x-1 transition-transform" />
+                    {t('dashboard.viewAll')} <ArrowRight className="w-4 h-4 group-hover:translate-x-1 transition-transform" />
                   </Link>
                 </div>
 
@@ -621,6 +651,10 @@ export default function Dashboard() {
                     <div className="w-16 h-16 bg-primary/10 rounded-2xl flex items-center justify-center mx-auto mb-6 relative z-10 animate-bounce">
                       <Briefcase className="w-8 h-8 text-primary" />
                     </div>
+                    <h3 className="text-xl font-bold text-foreground mb-2">{t('dashboard.noApplicationsYet')}</h3>
+                    <p className="text-muted-foreground text-sm mb-6 max-w-xs mx-auto font-medium">{t('dashboard.startSearching')}</p>
+                    <Link to="/jobs">
+                      <Button variant="primary" className="font-bold px-8">{t('dashboard.searchJobs')}</Button>
                     <h3 className="text-xl font-bold text-foreground mb-2 relative z-10">No applications yet</h3>
                     <p className="text-muted-foreground text-sm mb-6 max-w-xs mx-auto font-medium relative z-10">Start searching for jobs to track your applications</p>
                     <Link to="/jobs" className="relative z-10">
@@ -653,6 +687,10 @@ export default function Dashboard() {
                                   </span>
                                 </div>
                               </div>
+                              <span className={`px-3 py-1.5 rounded-xl text-xs font-bold flex items-center gap-2 ${statusConfig.color}`}>
+                                <StatusIcon className="w-3.5 h-3.5" />
+                                {t(`dashboard.stats.${statusConfig.labelKey}`)}
+                              </span>
                             );
                           });
                         } else {
@@ -674,10 +712,10 @@ export default function Dashboard() {
                 <div className="flex justify-between items-center mb-6">
                   <h2 className="text-2xl font-black text-foreground flex items-center gap-3">
                     <FileText className="w-6 h-6 text-primary" />
-                    My Resumes
+                    {t('dashboard.myResumes')}
                   </h2>
                   <Link to="/upload" className="group text-primary hover:text-primary/80 text-sm font-bold flex items-center gap-1 transition-all">
-                    Upload new <Plus className="w-4 h-4 group-hover:rotate-90 transition-transform" />
+                    {t('dashboard.uploadNew')} <Plus className="w-4 h-4 group-hover:rotate-90 transition-transform" />
                   </Link>
                 </div>
 
@@ -687,6 +725,10 @@ export default function Dashboard() {
                     <div className="w-16 h-16 bg-secondary/10 rounded-2xl flex items-center justify-center mx-auto mb-6 relative z-10 animate-bounce">
                       <FileText className="w-8 h-8 text-secondary" />
                     </div>
+                    <h3 className="text-xl font-bold text-foreground mb-2">{t('dashboard.noResumesYet')}</h3>
+                    <p className="text-muted-foreground text-sm mb-6 max-w-xs mx-auto font-medium">{t('dashboard.uploadResumeSub')}</p>
+                    <Link to="/upload">
+                      <Button variant="primary" className="font-bold px-8">{t('dashboard.uploadResume')}</Button>
                     <h3 className="text-xl font-bold text-foreground mb-2 relative z-10">No resumes yet</h3>
                     <p className="text-muted-foreground text-sm mb-6 max-w-xs mx-auto font-medium relative z-10">Upload your resume to get AI-powered enhancements</p>
                     <Link to="/upload" className="relative z-10">
@@ -703,17 +745,17 @@ export default function Dashboard() {
                               <div className="flex items-center gap-3">
                                 <h4 className="text-lg font-bold text-foreground group-hover:text-primary transition-colors">{resume.title}</h4>
                                 {resume.enhancedText && (
-                                  <span className="px-2 py-0.5 bg-primary/10 text-primary border border-primary/20 rounded text-[10px] font-black uppercase tracking-widest animate-pulse">Enhanced</span>
+                                  <span className="px-2 py-0.5 bg-primary/10 text-primary border border-primary/20 rounded text-[10px] font-black uppercase tracking-widest animate-pulse">{t('dashboard.enhanced', 'Enhanced')}</span>
                                 )}
                               </div>
                               <p className="text-sm text-muted-foreground font-semibold">{resume.jobRole || 'General'} • {formatDate(resume.createdAt)}</p>
                             </div>
                             <div className="flex gap-2">
                               <Link to={`/resume/${resume.id}`}>
-                                <Button variant="ghost" className="!py-2 !px-4 text-xs font-bold">View</Button>
+                                <Button variant="ghost" className="!py-2 !px-4 text-xs font-bold">{t('dashboard.view')}</Button>
                               </Link>
                               <Link to={`/enhance/${resume.id}`}>
-                                <Button variant="primary" className="!py-2 !px-4 text-xs font-bold">Enhance</Button>
+                                <Button variant="primary" className="!py-2 !px-4 text-xs font-bold">{t('dashboard.enhance')}</Button>
                               </Link>
                             </div>
                           </div>
@@ -729,13 +771,13 @@ export default function Dashboard() {
             <motion.div variants={itemVariants} className="mt-16">
               <h2 className="text-2xl font-black text-foreground mb-8 flex items-center gap-3">
                 <Zap className="w-6 h-6 text-amber-500 animate-pulse" />
-                Pro Tips for Success
+                {t('dashboard.proTips')}
               </h2>
               <div className="grid md:grid-cols-3 gap-6">
                 {[
-                  { icon: Zap, color: 'amber-500', title: 'Optimize Your Resume', text: 'Use our AI to tailor your resume for each job application' },
-                  { icon: Target, color: 'emerald-500', title: 'Track Everything', text: 'Keep notes and update statuses to stay organized in your job hunt' },
-                  { icon: TrendingUp, color: 'primary', title: 'Follow Up', text: "Don't forget to follow up on applications after a week" }
+                  { icon: Zap, color: 'amber-500', title: t('dashboard.optimizeResumeTitle'), text: t('dashboard.optimizeResumeText') },
+                  { icon: Target, color: 'emerald-500', title: t('dashboard.trackEverythingTitle'), text: t('dashboard.trackEverythingText') },
+                  { icon: TrendingUp, color: 'primary', title: t('dashboard.followUpTitle'), text: t('dashboard.followUpText') }
                 ].map((tip, idx) => (
                   <div key={idx} className="p-8 rounded-[2rem] bg-card border border-border hover:border-primary/30 hover:shadow-xl transition-all group">
                     <div className={`w-14 h-14 bg-muted rounded-2xl flex items-center justify-center mb-6 group-hover:scale-110 transition-transform`}>
@@ -753,4 +795,3 @@ export default function Dashboard() {
     </div>
   )
 }
-
