@@ -258,12 +258,20 @@ export default function LiveSatelliteImageryFeed() {
     document.getElementById(id)?.scrollIntoView({ behavior: "smooth" });
     setActiveSection(id);
   };
-
+  const timerRef = useRef(null);
   const handleSubmit = (e) => {
-    e.preventDefault();
-    setContactState("sending");
-    setTimeout(() => setContactState("done"), 1500);
+  e.preventDefault();
+  setContactState("sending");
+  
+  timerRef.current = setTimeout(() => {
+    setContactState("done");
+  }, 1500);
+};
+  useEffect(() => {
+  return () => {
+    if (timerRef.current) clearTimeout(timerRef.current);
   };
+}, []);
 
   return (
     <div className="sat-root">
