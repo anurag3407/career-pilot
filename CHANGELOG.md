@@ -1,3 +1,20 @@
+# [1.171.0](https://github.com/anurag3407/career-pilot/compare/v1.170.0...v1.171.0) (2026-06-06)
+
+
+### Bug Fixes
+
+* **image-optimizer:** validate widths, formats, and quality options ([cb66797](https://github.com/anurag3407/career-pilot/commit/cb667976df6f46a1eb6a377637afd067f7f44887))
+* **pr-review:** static fs import and improve TemplateGallery accessibility/fallback ([491fcb2](https://github.com/anurag3407/career-pilot/commit/491fcb253be7d923219c5f06ec55ba6e1fcc8ef2))
+* remove sharp-based fallback in tests to avoid circular dependency; require fixture file ([7bc2747](https://github.com/anurag3407/career-pilot/commit/7bc274729b591e6be41f2f90cbf8ccd1afeb52b6))
+* **TemplateGallery:** add keyboard accessibility and declarative image fallback ([f00e27d](https://github.com/anurag3407/career-pilot/commit/f00e27d9d21b462ad55aa0fc3a2da53046673cf4))
+* **TemplateGallery:** restore minimal functional gallery with template browsing ([7836fe5](https://github.com/anurag3407/career-pilot/commit/7836fe52e9c9f1bebea24b5398de7f86bd77c380))
+* use __dirname for test fixture path to avoid CWD-relative failures ([dbbe150](https://github.com/anurag3407/career-pilot/commit/dbbe15038a555d93ae49fa46c0381d61fc8bd568))
+
+
+### Features
+
+* **image-optimizer:** add optimizer service, tests, docs; placeholder TemplateGallery ([3c4bb55](https://github.com/anurag3407/career-pilot/commit/3c4bb55c64fbaf7a38d16ee590b6d0fb3f11f79d))
+
 # [1.170.0](https://github.com/anurag3407/career-pilot/compare/v1.169.0...v1.170.0) (2026-06-06)
 
 
