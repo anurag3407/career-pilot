@@ -16,9 +16,9 @@ export default function CrystalCavernPortfolio() {
       <Hero personal={personal} socials={socials} />
       <div className="max-w-6xl mx-auto px-6 space-y-32 py-20 relative z-10">
         <About personal={personal} />
-        <Skills skills={skills} />
-        <Projects projects={projects} />
-        <Experience experience={experience} />
+        {skills && skills.length > 0 && <Skills skills={skills} />}
+        {projects && projects.length > 0 && <Projects projects={projects} />}
+        {experience && experience.length > 0 && <Experience experience={experience} />}
         {testimonials && testimonials.length > 0 && (
           <Testimonials testimonials={testimonials} />
         )}

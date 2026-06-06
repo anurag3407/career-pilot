@@ -1252,3 +1252,4 @@ export default function DesertDunes() {
     </>
   );
 }
+}

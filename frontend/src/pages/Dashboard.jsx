@@ -28,13 +28,52 @@ import {
 } from 'lucide-react'
 import { resumeApi, jobTrackerApi, portfolioApi, userProfileApi } from '../services/api'
 import Button from '../components/Button'
-import { 
-  SkeletonDashboardActions, 
-  SkeletonStatCards, 
-  SkeletonJobList,
-  SkeletonList 
+import {
+  SkeletonAction,
+  SkeletonStat,
+  SkeletonRow,
+  SkeletonBlock
 } from '../components/ui/Skeleton'
 import { getGithubUsername } from '../utils/github'
+
+function DashboardSkeleton() {
+  return (
+    <div>
+      {/* Quick Actions skeleton */}
+      <div className="grid grid-cols-2 md:grid-cols-4 lg:grid-cols-7 gap-4 mb-10">
+        {Array.from({ length: 7 }).map((_, i) => (
+          <SkeletonAction key={i} />
+        ))}
+      </div>
+
+      {/* Stats Row skeleton */}
+      <div className="grid grid-cols-2 md:grid-cols-5 gap-5 mb-10">
+        {Array.from({ length: 5 }).map((_, i) => (
+          <SkeletonStat key={i} />
+        ))}
+      </div>
+
+      {/* Two-column content skeleton */}
+      <div className="grid lg:grid-cols-2 gap-10">
+        {[0, 1].map((col) => (
+          <div key={col}>
+            <div className="flex justify-between items-center mb-6">
+              <SkeletonBlock className="h-7 w-52" />
+              <SkeletonBlock className="h-4 w-20" />
+            </div>
+            <div className="rounded-[2rem] bg-card border border-border overflow-hidden shadow-sm">
+              <div className="divide-y divide-border">
+                {Array.from({ length: 5 }).map((_, i) => (
+                  <SkeletonRow key={i} />
+                ))}
+              </div>
+            </div>
+          </div>
+        ))}
+      </div>
+    </div>
+  )
+}
 
 const STATUS_CONFIG = {
   saved: { label: 'Saved', color: 'bg-muted text-muted-foreground border border-border', icon: Star },
@@ -56,6 +95,17 @@ export default function Dashboard() {
     offered: 0
   })
   const [portfolioCount, setPortfolioCount] = useState(0)
+  const careerInsights = {
+  readinessScore: 82,
+  skillGaps: ["System Design", "Cloud Computing"],
+  trendingSkills: ["AI Engineering", "Prompt Engineering", "DevOps"],
+  certifications: ["AWS Cloud Practitioner", "Google Data Analytics"],
+  learningPath: [
+    "Complete Cloud Fundamentals",
+    "Build Real-World Projects",
+    "Practice Mock Interviews"
+  ]
+}
   const [candidateName, setCandidateName] = useState('')
   const [githubOverview, setGithubOverview] = useState({
     connected: false,
@@ -215,42 +265,7 @@ export default function Dashboard() {
         </motion.div>
 
         {loading ? (
-          <div className="space-y-10">
-            {/* Quick Actions Skeleton */}
-            <motion.div
-              initial={{ opacity: 0, y: 10 }}
-              animate={{ opacity: 1, y: 0 }}
-              transition={{ duration: 0.4 }}
-            >
-              <SkeletonDashboardActions />
-            </motion.div>
-
-            {/* Stats Skeleton */}
-            <motion.div
-              initial={{ opacity: 0, y: 10 }}
-              animate={{ opacity: 1, y: 0 }}
-              transition={{ duration: 0.4, delay: 0.1 }}
-            >
-              <SkeletonStatCards count={5} />
-            </motion.div>
-
-            {/* Recent Applications & Resumes Skeleton */}
-            <motion.div
-              initial={{ opacity: 0, y: 10 }}
-              animate={{ opacity: 1, y: 0 }}
-              transition={{ duration: 0.4, delay: 0.2 }}
-              className="grid lg:grid-cols-2 gap-10"
-            >
-              <div>
-                <div className="mb-6 h-8 bg-muted rounded-lg w-1/3 animate-pulse" />
-                <SkeletonList count={3} />
-              </div>
-              <div>
-                <div className="mb-6 h-8 bg-muted rounded-lg w-1/3 animate-pulse" />
-                <SkeletonList count={3} />
-              </div>
-            </motion.div>
-          </div>
+          <DashboardSkeleton />
         ) : (
           <motion.div variants={containerVariants} initial="hidden" animate="visible">
             {fetchError && (
@@ -447,6 +462,66 @@ export default function Dashboard() {
                 </div>
               )}
             </motion.div>
+
+            <motion.div variants={itemVariants} className="mb-10">
+  <div className="rounded-2xl bg-card border border-border p-6 shadow-sm">
+    <div className="flex items-center gap-3 mb-5">
+      <GraduationCap className="w-6 h-6 text-primary" />
+      <h2 className="text-xl font-black">
+        Career Growth Insights
+      </h2>
+    </div>
+
+    <div className="grid md:grid-cols-5 gap-4">
+
+      <div className="p-4 rounded-xl border border-border">
+        <p className="text-xs text-muted-foreground">
+          Readiness Score
+        </p>
+        <p className="text-3xl font-black text-emerald-500">
+          {careerInsights.readinessScore}%
+        </p>
+      </div>
+
+      <div className="p-4 rounded-xl border border-border">
+        <p className="text-xs text-muted-foreground">
+          Skill Gaps
+        </p>
+        <p className="font-bold">
+          {careerInsights.skillGaps.join(", ")}
+        </p>
+      </div>
+
+      <div className="p-4 rounded-xl border border-border">
+        <p className="text-xs text-muted-foreground">
+          Trending Skills
+        </p>
+        <p className="font-bold">
+          {careerInsights.trendingSkills.join(", ")}
+        </p>
+      </div>
+
+      <div className="p-4 rounded-xl border border-border">
+        <p className="text-xs text-muted-foreground">
+          Certifications
+        </p>
+        <p className="font-bold">
+          {careerInsights.certifications[0]}
+        </p>
+      </div>
+
+      <div className="p-4 rounded-xl border border-border">
+        <p className="text-xs text-muted-foreground">
+          Learning Path
+        </p>
+        <p className="font-bold">
+          {careerInsights.learningPath[0]}
+        </p>
+      </div>
+
+    </div>
+  </div>
+</motion.div>
 
             <div className="grid lg:grid-cols-2 gap-10">
               {/* Recent Applications */}

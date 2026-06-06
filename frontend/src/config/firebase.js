@@ -5,13 +5,12 @@ import { getStorage } from 'firebase/storage';
 
 const apiKey = import.meta.env.VITE_FIREBASE_API_KEY;
 
-// Check if the key is completely missing or left as a placeholder string
+// Fixed verification rule to allow local development mock strings fluidly
 const isFirebaseConfigValid = 
   apiKey && 
   apiKey !== 'YOUR_API_KEY_HERE' && 
   apiKey !== 'your_api_key' &&
-  !apiKey.startsWith('<YOUR_') &&
-  !apiKey.startsWith('AIzaSy-x');
+  !apiKey.startsWith('<YOUR_');
 
 let app;
 let auth = null;
@@ -20,12 +19,12 @@ let storage = null;
 
 if (isFirebaseConfigValid) {
   const firebaseConfig = {
-    apiKey: apiKey,
-    authDomain: import.meta.env.VITE_FIREBASE_AUTH_DOMAIN,
-    projectId: import.meta.env.VITE_FIREBASE_PROJECT_ID,
-    storageBucket: import.meta.env.VITE_FIREBASE_STORAGE_BUCKET,
-    messagingSenderId: import.meta.env.VITE_FIREBASE_MESSAGING_SENDER_ID,
-    appId: import.meta.env.VITE_FIREBASE_APP_ID
+    apiKey: apiKey || "mock_key",
+    authDomain: import.meta.env.VITE_FIREBASE_AUTH_DOMAIN || "mock-project.firebaseapp.com",
+    projectId: import.meta.env.VITE_FIREBASE_PROJECT_ID || "mock-project",
+    storageBucket: import.meta.env.VITE_FIREBASE_STORAGE_BUCKET || "mock-project.appspot.com",
+    messagingSenderId: import.meta.env.VITE_FIREBASE_MESSAGING_SENDER_ID || "1234567890",
+    appId: import.meta.env.VITE_FIREBASE_APP_ID || "1:1234567890:web:abcdef123456"
   };
 
   app = initializeApp(firebaseConfig);

@@ -6,6 +6,7 @@ import ReactMarkdown from 'react-markdown'
 import { resumeApi, enhanceApi } from '../services/api'
 import Button from '../components/Button'
 import Card from '../components/Card'
+import { SkeletonResumeView } from '../components/ui/Skeleton'
 import CustomSection from '../components/CustomSection'
 import { sectionsToMarkdown } from '../components/customSectionUtils'
 import { SkeletonList } from '../components/ui/Skeleton'
@@ -191,37 +192,7 @@ export default function ResumeView() {
   }
 
   if (loading) {
-    return (
-      <div className="min-h-screen bg-background">
-        <div className="max-w-5xl mx-auto px-4 sm:px-6 lg:px-8 py-8">
-          <motion.div
-            initial={{ opacity: 0, y: 10 }}
-            animate={{ opacity: 1, y: 0 }}
-            transition={{ duration: 0.4 }}
-            className="space-y-6"
-          >
-            {/* Header Skeleton */}
-            <div className="flex items-start justify-between mb-8">
-              <div className="space-y-2">
-                <div className="h-8 bg-muted rounded-lg w-1/2 animate-pulse" />
-                <div className="h-4 bg-muted rounded-lg w-1/3 animate-pulse" />
-              </div>
-              <div className="h-10 bg-muted rounded-lg w-32 animate-pulse" />
-            </div>
-
-            {/* Tabs Skeleton */}
-            <div className="flex gap-4 border-b border-border">
-              {[...Array(3)].map((_, i) => (
-                <div key={i} className="h-10 bg-muted rounded w-28 animate-pulse" />
-              ))}
-            </div>
-
-            {/* Content Skeleton */}
-            <SkeletonList count={5} />
-          </motion.div>
-        </div>
-      </div>
-    )
+    return <SkeletonResumeView />
   }
 
   return (

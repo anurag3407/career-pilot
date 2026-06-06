@@ -239,15 +239,20 @@ export default function Upload() {
             />
 
             {loading && (
-              <div className="flex flex-col items-center justify-center gap-3 mt-6">
-                <div className="relative">
-                  <div className="w-12 h-12 border-2 border-border rounded-full" />
-                  <div className="absolute top-0 left-0 w-12 h-12 border-2 border-transparent border-t-primary rounded-full animate-spin" />
+              <div className="flex flex-col items-center gap-4 mt-6 animate-pulse">
+                {/* Progress bar skeleton */}
+                <div className="w-full h-2 rounded-full bg-muted-foreground/20 overflow-hidden">
+                  <div className="h-full w-2/3 rounded-full bg-primary/40" />
                 </div>
-                <div className="text-center">
-                  <p className="text-foreground font-medium">Processing your resume...</p>
-                  <p className="text-muted-foreground text-sm">Extracting text and preparing analysis</p>
+                {/* File info skeleton */}
+                <div className="flex items-center gap-3 w-full px-4 py-3 rounded-xl bg-muted border border-border">
+                  <div className="w-10 h-10 rounded-lg bg-muted-foreground/20 flex-shrink-0" />
+                  <div className="flex-1 space-y-2">
+                    <div className="h-4 w-2/5 rounded bg-muted-foreground/20" />
+                    <div className="h-3 w-1/3 rounded bg-muted-foreground/15" />
+                  </div>
                 </div>
+                <p className="text-sm text-muted-foreground">Extracting text and preparing analysis…</p>
                 <Button variant="outline" size="sm" onClick={handleCancelUpload}>
                   Cancel upload
                 </Button>

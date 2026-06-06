@@ -72,39 +72,41 @@ import {
 import { getSafeConfig } from './utils/safeConfig.js';
 import { validateEmailConfig } from './utils/emailConfig.js';
 
-// ============================================================================
-// Configuration validation - Check for required API keys
-// ============================================================================
-if (!process.env.GEMINI_API_KEY) {
-  console.warn('⚠️  GEMINI_API_KEY is not configured - AI features will be unavailable.');
-  console.warn('   Set GEMINI_API_KEY in your .env file to enable Google Gemini features.');
-}
+// ==========================================================================
+// Configuration validation - Check for required API keys (dev only)
+// ==========================================================================
+if (process.env.NODE_ENV === 'development') {
+  if (!process.env.GEMINI_API_KEY) {
+    console.warn('⚠️  GEMINI_API_KEY is not configured - AI features will be unavailable.');
+    console.warn('   Set GEMINI_API_KEY in your .env file to enable Google Gemini features.');
+  }
 
-if (!process.env.GROQ_API_KEY) {
-  console.warn('⚠️  GROQ_API_KEY is not configured - Groq AI provider will not be available.');
-}
+  if (!process.env.GROQ_API_KEY) {
+    console.warn('⚠️  GROQ_API_KEY is not configured - Groq AI provider will not be available.');
+  }
 
-if (!process.env.OPENAI_API_KEY) {
-  console.warn('⚠️  OPENAI_API_KEY is not configured - OpenAI provider will not be available.');
+  if (!process.env.OPENAI_API_KEY) {
+    console.warn('⚠️  OPENAI_API_KEY is not configured - OpenAI provider will not be available.');
+  }
 }
-
 const app = express();
 app.use(metricsMiddleware);
 app.use(compressionMiddleware);
 const httpServer = createServer(app);
 const PORT = process.env.PORT || 5001;
 
-// Log a presence-only configuration summary. Raw values are never printed so
-// secrets cannot leak into startup logs or aggregated log output.
-console.log('🔧 Config summary:', getSafeConfig(process.env, [
-  'NODE_ENV',
-  'FRONTEND_URL',
-  'EMAIL_SERVICE_URL',
-  'GEMINI_API_KEY',
-  'GROQ_API_KEY',
-  'OPENAI_API_KEY',
-]));
-
+// Log a presence-only configuration summary in development only.
+// Secrets cannot leak into startup logs or aggregated log output.
+if (process.env.NODE_ENV === 'development') {
+  console.log('✓ Config summary:', getSafeConfig(process.env, [
+    'NODE_ENV',
+    'FRONTEND_URL',
+    'EMAIL_SERVICE_URL',
+    'GEMINI_API_KEY',
+    'GROQ_API_KEY',
+    'OPENAI_API_KEY',
+  ]));
+}
 // CORS configuration - MUST come before helmet
 const allowedOrigins = [
   'http://localhost:5173',
