@@ -3,7 +3,7 @@ import { useSocket } from '../../hooks/useSocket';
 import MessageBubble from './MessageBubble';
 import MessageInput from './MessageInput';
 import { useTheme } from '../../hooks/useTheme';
-import { Hash, Users, Pin, Search, Settings, MoreVertical, Loader2, Sun, Moon } from 'lucide-react';
+import { Hash, Users, Pin, Search, Settings, MoreVertical, Loader2, Sun, Moon, Contrast } from 'lucide-react';
 
 // Skeleton loader component for chat messages
 const MessageSkeleton = ({ isOwn }) => (
@@ -209,9 +209,11 @@ export default function ChatWindow({ channel, messages, currentUser, onOptimisti
           <button
             onClick={toggleTheme}
             className="p-2 text-muted-foreground hover:bg-muted rounded-lg transition-colors"
-            title="Toggle Theme"
+            title={theme === 'light' ? 'Switch to Dark Mode' : theme === 'dark' ? 'Switch to High Contrast' : 'Switch to Light Mode'}
           >
-            {theme === 'dark' ? <Sun className="w-5 h-5" /> : <Moon className="w-5 h-5" />}
+            {theme === 'light' ? <Moon className="w-5 h-5" /> : 
+             theme === 'dark' ? <Contrast className="w-5 h-5" /> : 
+             <Sun className="w-5 h-5" />}
           </button>
           <button className="p-2 text-muted-foreground hover:bg-muted rounded-lg">
             <MoreVertical className="w-5 h-5" />
