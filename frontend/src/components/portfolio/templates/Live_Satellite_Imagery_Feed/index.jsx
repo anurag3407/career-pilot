@@ -245,6 +245,16 @@ function DataMetric({ label, value, unit }) {
     </div>
   );
 }
+const sanitizeUrl = (url) => {
+  if (!url || typeof url !== 'string') return "#";
+  const allowed = ['http:', 'https:', 'mailto:', 'tel:'];
+  try {
+    const parsed = new URL(url, window.location.origin);
+    return allowed.includes(parsed.protocol) ? url : "#";
+  } catch {
+    return "#";
+  }
+};
 
 export default function LiveSatelliteImageryFeed() {
   const [activeSection, setActiveSection] = useState("hero");
