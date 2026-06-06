@@ -5,6 +5,7 @@ import { Zap, GitGraph, Twitter, Linkedin,Instagram } from "lucide-react";
 export default function Footer() {
   const [email, setEmail] = useState("");
   const [status, setStatus] = useState("idle"); // idle, loading, success, error
+  const currentYear = new Date().getFullYear();
 
   const handleSubscribe = async (e) => {
     e.preventDefault();
@@ -188,7 +189,7 @@ export default function Footer() {
 
           {/* Left */}
           <p className="text-sm text-muted-foreground">
-            © {new Date().getFullYear()} careerpilot. All rights reserved.
+            &copy; {currentYear} careerpilot. All rights reserved.
           </p>
 
           {/* Center (socials grouped properly) */}

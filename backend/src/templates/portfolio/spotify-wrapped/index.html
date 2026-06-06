@@ -1,0 +1,187 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+
+  <!-- SEO -->
+  <title>{{name}} • Wrapped</title>
+  <meta name="description" content="Explore {{name}}'s developer journey, top projects, and skills in this Spotify Wrapped-inspired interactive portfolio." />
+
+  <!-- Stylesheet -->
+  <link rel="stylesheet" href="style.css" />
+
+  <!-- Google Fonts: Outfit (main font) & Montserrat (for headings/accents) -->
+  <link rel="preconnect" href="https://fonts.googleapis.com" />
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
+  <link href="https://fonts.googleapis.com/css2?family=Outfit:wght@400;600;700;900&family=Montserrat:wght@800;900&display=swap" rel="stylesheet" />
+</head>
+
+<body>
+
+  <!-- STORIES PROGRESS BARS -->
+  <div class="stories-progress-container" aria-hidden="true">
+    <div class="progress-bar-segment"><div class="progress-bar-fill"></div></div>
+    <div class="progress-bar-segment"><div class="progress-bar-fill"></div></div>
+    <div class="progress-bar-segment"><div class="progress-bar-fill"></div></div>
+    <div class="progress-bar-segment"><div class="progress-bar-fill"></div></div>
+    <div class="progress-bar-segment"><div class="progress-bar-fill"></div></div>
+    <div class="progress-bar-segment"><div class="progress-bar-fill"></div></div>
+  </div>
+
+  <!-- FLOATING MUSIC PLAYER -->
+  <div class="music-player-widget" id="music-player">
+    <button class="player-toggle" id="player-toggle-btn" aria-label="Toggle music player">
+      <span class="music-note-icon">🎵</span>
+      <div class="player-mini-wave" id="mini-wave">
+        <span></span><span></span><span></span>
+      </div>
+    </button>
+    <div class="player-details">
+      <p class="track-title">Lofi Developer Beats</p>
+      <p class="track-artist">Coding Ambient Mix</p>
+      <div class="player-controls">
+        <button id="play-pause-btn" aria-label="Play/Pause">▶</button>
+        <div class="player-progress">
+          <div class="player-progress-fill" id="audio-progress"></div>
+        </div>
+      </div>
+    </div>
+    <audio id="bg-music" loop src="https://www.soundhelix.com/examples/mp3/SoundHelix-Song-8.mp3" preload="none"></audio>
+  </div>
+
+  <!-- MAIN SCROLL CONTAINER -->
+  <main class="scroll-container">
+
+    <!-- HERO CARD -->
+    <section class="card gradient-green" id="card-hero">
+      <div class="grid-overlay"></div>
+      <div class="content">
+        <p class="tag">PORTFOLIO WRAPPED</p>
+        <h1 class="hero-title">
+          Your<br />
+          Developer<br />
+          Journey.
+        </h1>
+        <p class="subtitle">
+          Scroll to explore your highlights.
+        </p>
+        <div class="bounce-arrow" aria-hidden="true">▼</div>
+      </div>
+    </section>
+
+    <!-- PROJECTS STAT CARD -->
+    <section class="card gradient-purple" id="card-projects-count">
+      <div class="grid-overlay"></div>
+      <div class="content">
+        <p class="section-label">PROJECTS BUILT</p>
+        <h2 class="stat-number" data-target="{{projects_count}}">0</h2>
+        <p class="description">
+          Turning ideas into fully functional digital products.
+        </p>
+      </div>
+    </section>
+
+    <!-- EXPERIENCE STAT CARD -->
+    <section class="card gradient-orange" id="card-experience">
+      <div class="grid-overlay"></div>
+      <div class="content">
+        <p class="section-label">YEARS OF EXPERIENCE</p>
+        <h2 class="stat-number" data-target="{{experience_years}}">0</h2>
+        <p class="description">
+          Building, learning, solving bugs, and leveling up.
+        </p>
+      </div>
+    </section>
+
+    <!-- TECH STACK CARD -->
+    <section class="card dark-card" id="card-skills">
+      <div class="grid-overlay"></div>
+      <div class="content">
+        <p class="section-label">MOST USED STACK</p>
+        <div class="tech-grid">
+          {% for skill in skills %}
+          <div class="tech-pill">
+            {{skill}}
+          </div>
+          {% endfor %}
+        </div>
+      </div>
+    </section>
+
+    <!-- PROJECT GALLERY CARD -->
+    <section class="card dark-card" id="card-gallery">
+      <div class="grid-overlay"></div>
+      <div class="content">
+        <p class="section-label">TOP PROJECTS</p>
+        <div class="horizontal-scroll">
+          {% for project in projects %}
+          <article class="project-card">
+            <h3>{{project.title}}</h3>
+            <p>{{project.description}}</p>
+          </article>
+          {% endfor %}
+        </div>
+      </div>
+    </section>
+
+    <!-- SHARE/OUTRO CARD -->
+    <section class="card gradient-share" id="card-share">
+      <div class="grid-overlay"></div>
+      <div class="content">
+        <p class="section-label">YOUR WRAPPED SUMMARY</p>
+        
+        <div class="wrapped-summary-card">
+          <div class="summary-header">
+            <div class="summary-avatar">👨‍💻</div>
+            <div class="summary-meta">
+              <h3>{{name}}</h3>
+              <p>Developer wrapped</p>
+            </div>
+          </div>
+
+          <div class="summary-stats">
+            <div class="summary-stat-row">
+              <span class="stat-lbl">Projects Built:</span>
+              <span class="stat-val" id="summary-projects-val">{{projects_count}}</span>
+            </div>
+            <div class="summary-stat-row">
+              <span class="stat-lbl">Experience:</span>
+              <span class="stat-val" id="summary-exp-val">{{experience_years}} Years</span>
+            </div>
+            <div class="summary-stat-row">
+              <span class="stat-lbl">Top Skill:</span>
+              <span class="stat-val" id="summary-skill-val">Frontend</span>
+            </div>
+          </div>
+
+          <div class="summary-badge">
+            <span class="wrapped-badge-text">2026 DEVELOPER WRAPPED</span>
+          </div>
+        </div>
+
+        <!-- Buttons and social integration -->
+        <div class="share-actions">
+          <a href="mailto:{{email}}" class="share-btn btn-primary" id="email-contact-link">
+            ✉ Contact Me
+          </a>
+          <button class="share-btn btn-secondary" id="download-card-btn">
+            📥 Save Card
+          </button>
+        </div>
+
+        <div class="share-socials">
+          <a href="{{github_url}}" target="_blank" rel="noopener noreferrer" id="github-link">GitHub</a>
+          <a href="{{linkedin_url}}" target="_blank" rel="noopener noreferrer" id="linkedin-link">LinkedIn</a>
+          <a href="{{twitter_url}}" target="_blank" rel="noopener noreferrer" id="twitter-link">Twitter</a>
+        </div>
+      </div>
+    </section>
+
+  </main>
+
+  <!-- Interactive script -->
+  <script src="script.js"></script>
+
+</body>
+</html>

@@ -6,6 +6,7 @@ import ReactMarkdown from 'react-markdown'
 import { resumeApi, enhanceApi } from '../services/api'
 import Button from '../components/Button'
 import Card from '../components/Card'
+import { SkeletonResumeView } from '../components/ui/Skeleton'
 import CustomSection from '../components/CustomSection'
 import { sectionsToMarkdown } from '../components/customSectionUtils'
 import { SkeletonList } from '../components/ui/Skeleton'
@@ -25,6 +26,8 @@ export default function ResumeView() {
   const [scoreData, setScoreData] = useState(null)
   const [scoring, setScoring] = useState(false)
   const [scoringStep, setScoringStep] = useState(0)
+  const [fontFamily, setFontFamily] = useState("Poppins")
+  const [fontSize, setFontSize] = useState("Medium")
 
   useEffect(() => {
     let interval
@@ -93,6 +96,9 @@ export default function ResumeView() {
   const handleDownloadPdf = async () => {
     try {
       setDownloading(true)
+      toast.success(
+  `Exporting with ${fontFamily} font and ${fontSize} size`
+)
       const blob = await resumeApi.downloadPdf(resumeId, previewTab)
 
       // Create download link
@@ -191,37 +197,7 @@ export default function ResumeView() {
   }
 
   if (loading) {
-    return (
-      <div className="min-h-screen bg-background">
-        <div className="max-w-5xl mx-auto px-4 sm:px-6 lg:px-8 py-8">
-          <motion.div
-            initial={{ opacity: 0, y: 10 }}
-            animate={{ opacity: 1, y: 0 }}
-            transition={{ duration: 0.4 }}
-            className="space-y-6"
-          >
-            {/* Header Skeleton */}
-            <div className="flex items-start justify-between mb-8">
-              <div className="space-y-2">
-                <div className="h-8 bg-muted rounded-lg w-1/2 animate-pulse" />
-                <div className="h-4 bg-muted rounded-lg w-1/3 animate-pulse" />
-              </div>
-              <div className="h-10 bg-muted rounded-lg w-32 animate-pulse" />
-            </div>
-
-            {/* Tabs Skeleton */}
-            <div className="flex gap-4 border-b border-border">
-              {[...Array(3)].map((_, i) => (
-                <div key={i} className="h-10 bg-muted rounded w-28 animate-pulse" />
-              ))}
-            </div>
-
-            {/* Content Skeleton */}
-            <SkeletonList count={5} />
-          </motion.div>
-        </div>
-      </div>
-    )
+    return <SkeletonResumeView />
   }
 
   return (
@@ -313,6 +289,33 @@ export default function ResumeView() {
                     </div>
                   )}
                 </div>
+                <div className="mb-4 flex gap-4">
+  <div>
+    <label className="block text-sm mb-1">Font Family</label>
+    <select
+      value={fontFamily}
+      onChange={(e) => setFontFamily(e.target.value)}
+      className="border rounded px-2 py-1"
+    >
+      <option value="Poppins">Poppins</option>
+      <option value="Arial">Arial</option>
+      <option value="Times New Roman">Times New Roman</option>
+    </select>
+  </div>
+
+  <div>
+    <label className="block text-sm mb-1">Font Size</label>
+    <select
+      value={fontSize}
+      onChange={(e) => setFontSize(e.target.value)}
+      className="border rounded px-2 py-1"
+    >
+      <option value="Small">Small</option>
+      <option value="Medium">Medium</option>
+      <option value="Large">Large</option>
+    </select>
+  </div>
+</div>
                 <div className="flex gap-2 flex-wrap">
                  <Button
   variant="primary"

@@ -9,6 +9,8 @@ import Input from '../components/Input'
 import Button from '../components/Button'
 import Card from '../components/Card'
 import { twoFactorApi } from '../services/api'
+import { sendPasswordResetEmail } from 'firebase/auth'
+import { auth } from '../config/firebase'
 
 const validationRules = {
   email: {
@@ -39,6 +41,10 @@ export default function Login() {
   const [totpLoading, setTotpLoading] = useState(false)
   const [googleLoading, setGoogleLoading] = useState(false)
   const [linkedinLoading, setLinkedinLoading] = useState(false)
+  const [forgotPassword, setForgotPassword] = useState(false)
+  const [resetEmail, setResetEmail] = useState('')
+  const [resetMessage, setResetMessage] = useState('')
+  const [resetError, setResetError] = useState('')
 
   const onSubmit = async (data) => {
     try {
@@ -110,6 +116,18 @@ export default function Login() {
     }
   }
 
+  const handlePasswordReset = async (e) => {
+  e.preventDefault()
+  setResetMessage('')
+  setResetError('')
+  try {
+    await sendPasswordResetEmail(auth, resetEmail)
+    setResetMessage('Password reset email sent! Check your inbox.')
+  } catch (error) {
+    setResetError(error.message || 'Failed to send reset email. Please try again.')
+  }
+}
+
   return (
     <div className="min-h-screen bg-background relative overflow-hidden">
       <div className="absolute top-1/4 left-1/4 w-96 h-96 bg-primary/20 rounded-full blur-[120px] pointer-events-none" />
@@ -139,6 +157,46 @@ export default function Login() {
                   error={errors.password?.message}
                   {...register('password', validationRules.password)}
                 />
+
+                {/* Forgot Password Link */}
+                <div className="text-right -mt-2 mb-2">
+                  <button
+                    type="button"
+                    onClick={() => { setForgotPassword(true); setResetMessage(''); setResetError('') }}
+                    className="text-sm text-primary hover:text-primary/80 font-bold underline underline-offset-4 decoration-primary/30"
+                  >
+                    Forgot Password?
+                  </button>
+                </div>
+
+                {/* Forgot Password Form */}
+                {forgotPassword && (
+                  <div className="mb-4 p-4 border border-border/50 rounded-lg bg-card/60">
+                    <h3 className="text-sm font-bold mb-3 text-foreground">Reset your password</h3>
+                    <form onSubmit={handlePasswordReset}>
+                      <Input
+                        label="Email"
+                        type="email"
+                        placeholder="you@example.com"
+                        value={resetEmail}
+                        onChange={(e) => setResetEmail(e.target.value)}
+                        required
+                      />
+                      <Button type="submit" className="w-full mt-2 font-bold">
+                        Send Reset Email
+                      </Button>
+                    </form>
+                    {resetMessage && <p className="text-green-500 text-sm mt-2 font-medium">{resetMessage}</p>}
+                    {resetError && <p className="text-red-500 text-sm mt-2 font-medium">{resetError}</p>}
+                    <button
+                      type="button"
+                      onClick={() => setForgotPassword(false)}
+                      className="text-xs text-muted-foreground mt-2 underline hover:text-foreground transition-colors"
+                    >
+                      Back to Login
+                    </button>
+                  </div>
+                )}
 
                 <Button
                   type="submit"

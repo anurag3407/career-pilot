@@ -3,7 +3,7 @@ import { useNavigate } from 'react-router-dom';
 import { motion, AnimatePresence } from 'framer-motion';
 import {
   GitBranch, Search, Zap, Users, Bot, AlertTriangle, 
-  ArrowRight, History, Loader2, Trash2, Clock, Star, GitFork
+  ArrowRight, History, Loader2, Trash2, Clock, Star, GitFork, Package, BookOpen, BrainCircuit
 } from 'lucide-react';
 import toast from 'react-hot-toast';
 import { useProjectVisualizerStore } from '../../stores/useProjectVisualizerStore';
@@ -83,22 +83,34 @@ const Landing = () => {
       color: "from-cyan-500/20 to-cyan-500/0"
     },
     {
+      title: "Dependency Scanner",
+      desc: "Automatically check packages for vulnerabilities and updates",
+      icon: <Package className="w-6 h-6 text-amber-400" />,
+      color: "from-amber-500/20 to-amber-500/0"
+    },
+    {
+      title: "Codebase Chat",
+      desc: "Context-aware AI chat specifically tied to files and modules",
+      icon: <Bot className="w-6 h-6 text-violet-400" />,
+      color: "from-violet-500/20 to-violet-500/0"
+    },
+    {
+      title: "Interview Prep",
+      desc: "Mock interviews to test your knowledge of the repository",
+      icon: <BrainCircuit className="w-6 h-6 text-red-400" />,
+      color: "from-red-500/20 to-red-500/0"
+    },
+    {
+      title: "Contribution Guide",
+      desc: "Generate comprehensive markdown guides for new contributors",
+      icon: <BookOpen className="w-6 h-6 text-emerald-400" />,
+      color: "from-emerald-500/20 to-emerald-500/0"
+    },
+    {
       title: "Risk & Hotspots",
       desc: "Identify complexity, coupling, and missing tests",
       icon: <AlertTriangle className="w-6 h-6 text-orange-400" />,
       color: "from-orange-500/20 to-orange-500/0"
-    },
-    {
-      title: "Contributor Insights",
-      desc: "Who owns what, activity patterns and history",
-      icon: <Users className="w-6 h-6 text-pink-400" />,
-      color: "from-pink-500/20 to-pink-500/0"
-    },
-    {
-      title: "AI Onboarding",
-      desc: "Ask questions, get starting points for contribution",
-      icon: <Bot className="w-6 h-6 text-violet-400" />,
-      color: "from-violet-500/20 to-violet-500/0"
     }
   ];
 
@@ -196,7 +208,7 @@ const Landing = () => {
         </motion.div>
 
         {/* Feature Grid */}
-        <div className="grid grid-cols-1 md:grid-cols-2 gap-6 max-w-5xl mx-auto mb-24">
+        <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6 max-w-6xl mx-auto mb-24">
           {features.map((feature, i) => (
             <motion.div
               key={i}
