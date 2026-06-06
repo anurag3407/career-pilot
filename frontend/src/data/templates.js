@@ -23,6 +23,7 @@ export const templates = [
   "rating": 5.0,
   "image": "/template-previews/Live_Satellite_Imagery_Feed.png",
   "createdAt": "2026-06-06"
+  "isComplete" : true
 },
   {
     "id": "2D_Retro_8bit",
