@@ -1,4 +1,5 @@
-import React, { useState, useEffect, useRef } from "react";
+import React, { useState, useEffect, useRef, useContext } from "react";
+import { PortfolioContext } from "../../../../context/PortfolioContext";
 import {
   Satellite,
   MapPin,
@@ -16,136 +17,13 @@ import {
   AlertCircle
 } from "lucide-react";
 
-// Default Satellite Imagery Data Feed
-const DEFAULT_SATELLITES = [
-  {
-    id: 1,
-    name: "Pacific Aurora Capture",
-    location: "Pacific Ocean, 45.5°N 122.7°W",
-    region: "Pacific",
-    captureDate: "2026-06-05T14:32:00Z",
-    resolution: "30m",
-    cloudCover: 12,
-    sensor: "Landsat 8 OLI",
-    bands: ["B4", "B3", "B2"],
-    imageUrl: "https://images.unsplash.com/photo-1446776653964-20c1d3a81b06?w=800&h=600&fit=crop",
-    liveUrl: "https://example.com/pacific-aurora",
-    downloadUrl: "https://example.com/download/pacific-aurora.tif",
-    quality: "High Resolution",
-    featured: true,
-    stats: {
-      downloads: 1240,
-      views: 28500,
-      dataSize: "2.4 GB"
-    }
-  },
-  {
-    id: 2,
-    name: "Sahara Desert Thermal",
-    location: "Sahara Desert, 24.2°N 6.8°E",
-    region: "Africa",
-    captureDate: "2026-06-04T10:15:00Z",
-    resolution: "100m",
-    cloudCover: 2,
-    sensor: "Sentinel-2 MSI",
-    bands: ["B11", "B8A", "B4"],
-    imageUrl: "https://images.unsplash.com/photo-1446776877081-d282a0f896e2?w=800&h=600&fit=crop",
-    liveUrl: "https://example.com/sahara-thermal",
-    downloadUrl: "https://example.com/download/sahara-thermal.tif",
-    quality: "High Resolution",
-    featured: false,
-    stats: {
-      downloads: 856,
-      views: 19200,
-      dataSize: "1.8 GB"
-    }
-  },
-  {
-    id: 3,
-    name: "Amazon Forest Monitor",
-    location: "Amazon Basin, -3.5°S 61.2°W",
-    region: "South America",
-    captureDate: "2026-06-05T16:45:00Z",
-    resolution: "10m",
-    cloudCover: 45,
-    sensor: "Sentinel-2A MSI",
-    bands: ["B8", "B4", "B3"],
-    imageUrl: "https://images.unsplash.com/photo-1441974231531-c6227db76b6e?w=800&h=600&fit=crop",
-    liveUrl: "https://example.com/amazon-monitor",
-    downloadUrl: "https://example.com/download/amazon-monitor.tif",
-    quality: "Ultra High Resolution",
-    featured: true,
-    stats: {
-      downloads: 2105,
-      views: 45300,
-      dataSize: "3.2 GB"
-    }
-  },
-  {
-    id: 4,
-    name: "Arctic Ice Coverage",
-    location: "Arctic Region, 78.5°N 5.2°W",
-    region: "Arctic",
-    captureDate: "2026-06-03T08:22:00Z",
-    resolution: "250m",
-    cloudCover: 8,
-    sensor: "MODIS Terra",
-    bands: ["B1", "B2", "B3"],
-    imageUrl: "https://images.unsplash.com/photo-1446776877081-d282a0f896e2?w=800&h=600&fit=crop",
-    liveUrl: "https://example.com/arctic-ice",
-    downloadUrl: "https://example.com/download/arctic-ice.tif",
-    quality: "High Resolution",
-    featured: false,
-    stats: {
-      downloads: 934,
-      views: 22100,
-      dataSize: "1.5 GB"
-    }
-  },
-  {
-    id: 5,
-    name: "Asian Monsoon Activity",
-    location: "Bay of Bengal, 18.3°N 89.5°E",
-    region: "Asia",
-    captureDate: "2026-06-05T12:00:00Z",
-    resolution: "50m",
-    cloudCover: 78,
-    sensor: "Landsat 8 OLI",
-    bands: ["B5", "B4", "B3"],
-    imageUrl: "https://images.unsplash.com/photo-1446776877081-d282a0f896e2?w=800&h=600&fit=crop",
-    liveUrl: "https://example.com/monsoon-activity",
-    downloadUrl: "https://example.com/download/monsoon-activity.tif",
-    quality: "High Resolution",
-    featured: false,
-    stats: {
-      downloads: 567,
-      views: 14800,
-      dataSize: "2.1 GB"
-    }
-  },
-  {
-    id: 6,
-    name: "Mediterranean Algae Bloom",
-    location: "Mediterranean Sea, 37.2°N 25.1°E",
-    region: "Europe",
-    captureDate: "2026-06-04T14:30:00Z",
-    resolution: "30m",
-    cloudCover: 22,
-    sensor: "Sentinel-2B MSI",
-    bands: ["B12", "B11", "B4"],
-    imageUrl: "https://images.unsplash.com/photo-1446776877081-d282a0f896e2?w=800&h=600&fit=crop",
-    liveUrl: "https://example.com/algae-bloom",
-    downloadUrl: "https://example.com/download/algae-bloom.tif",
-    quality: "High Resolution",
-    featured: false,
-    stats: {
-      downloads: 789,
-      views: 18900,
-      dataSize: "2.2 GB"
-    }
-  }
-];
 
+export default function Projects({
+  satellites: propsSatellites, // Keep this if you want to allow manual overrides
+  title = "LIVE SATELLITE FEED",
+  subtitle = "REAL-TIME EARTH OBSERVATION DATABASE"
+}) {
+  const { portfolio } = useContext(PortfolioContext);
 const ensureAbsoluteUrl = (url) => {
   if (!url || url === "#") return "#";
   if (/^https?:\/\//i.test(url)) return url;
@@ -153,7 +31,7 @@ const ensureAbsoluteUrl = (url) => {
 };
 
 export default function Projects({
-  satellites = DEFAULT_SATELLITES,
+  satellites = propsSatellites || portfolio?.projects,
   title = "LIVE SATELLITE FEED",
   subtitle = "REAL-TIME EARTH OBSERVATION DATABASE"
 }) {
@@ -493,6 +371,7 @@ export default function Projects({
               {/* Table rows */}
               <div className="divide-y divide-slate-800/50">
                 {filteredSatellites
+                  .slice()
                   .sort((a, b) => new Date(b.captureDate) - new Date(a.captureDate))
                   .map((sat, idx) => (
                     <div
