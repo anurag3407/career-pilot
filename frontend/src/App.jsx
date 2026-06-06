@@ -419,9 +419,17 @@ function AppRoutes() {
     </BrowserRouter>
   );
 }
-
 function App() {
-  return <Hero />;
+  return (
+    <ThemeProvider>
+      <AuthProvider>
+        <SocketProvider>
+          <AppRoutes />
+        </SocketProvider>
+      </AuthProvider>
+    </ThemeProvider>
+  );
 }
+
 
 export default App;
