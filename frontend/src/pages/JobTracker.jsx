@@ -1,4 +1,4 @@
-import { useState, useEffect } from "react";
+import { useState, useEffect, useRef } from "react";
 import { DragDropContext, Droppable, Draggable } from "@hello-pangea/dnd";
 import { motion } from "framer-motion";
 import { toast } from "react-hot-toast";
@@ -24,6 +24,7 @@ import { SkeletonTracker } from "../components/ui/Skeleton";
 const JobTracker = () => {
   const [trackedJobs, setTrackedJobs] = useState([]);
   const [stats, setStats] = useState(null);
+  const mutationTrackerRef = useRef({});
   const [loading, setLoading] = useState(true);
   const [filterStatus, setFilterStatus] = useState("all");
   const [updateLoading, setUpdateLoading] = useState({});
@@ -110,7 +111,14 @@ const JobTracker = () => {
     }
 
     const newStatus = destination.droppableId;
-    
+    const oldStatus = source.droppableId;
+    const foundJob = trackedJobs.find((j) => j.id === draggableId);
+    const originalJob = foundJob ? JSON.parse(JSON.stringify(foundJob)) : null;
+
+    // Concurrency protection: Generate a unique requestId for this mutation on the job
+    const requestId = Date.now() + Math.random();
+    mutationTrackerRef.current[draggableId] = requestId;
+
     // Optimistic UI update
     setTrackedJobs((prev) =>
       prev.map((job) =>
@@ -120,16 +128,50 @@ const JobTracker = () => {
       ),
     );
 
+    // Optimistic stats update - skip if same-column drag to prevent stat corruption
+    if (oldStatus !== newStatus) {
+      setStats((prev) => {
+        if (!prev) return prev;
+        return {
+          ...prev,
+          [oldStatus]: Math.max(0, (prev[oldStatus] || 0) - 1),
+          [newStatus]: (prev[newStatus] || 0) + 1,
+        };
+      });
+    }
+
     // Backend update
     try {
       await jobTrackerApi.updateStatus(draggableId, newStatus);
       toast.success("Status updated!");
-      fetchStats();
+      // Removed fetchStats() to avoid overwriting newer optimistic state with stale data
     } catch (error) {
       console.error("Error updating status:", error);
       toast.error("Failed to update status");
-      // Revert on failure
-      fetchJobs();
+      
+      // Concurrency protection check: ONLY rollback if this request is still the latest mutation
+      if (mutationTrackerRef.current[draggableId] === requestId) {
+        // Localized atomic revert on failure to prevent concurrent state corruption
+        if (originalJob) {
+          setTrackedJobs((prev) =>
+            prev.map((job) =>
+              job.id === draggableId ? { ...originalJob } : job,
+            ),
+          );
+        }
+        
+        // Revert counters symmetrically on failure - skip if same-column drag
+        if (oldStatus !== newStatus) {
+          setStats((prev) => {
+            if (!prev) return prev;
+            return {
+              ...prev,
+              [newStatus]: Math.max(0, (prev[newStatus] || 0) - 1),
+              [oldStatus]: (prev[oldStatus] || 0) + 1,
+            };
+          });
+        }
+      }
     }
   };
 
