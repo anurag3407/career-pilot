@@ -386,7 +386,7 @@ export default function LiveSatelliteImageryFeed() {
             <h2 className="sat-h2">Featured Imagery</h2>
           </FadeIn>
           <div className="sat-grid-3">
-            {data.projects?.slice(0, 3).map((proj, i) => (
+            {(data.projects || []).slice(0, 3).map((proj, i) => (
               <motion.div key={i} className="sat-card" initial={{ opacity: 0, y: 20 }} whileInView={{ opacity: 1, y: 0 }} viewport={{ once: true }} transition={{ delay: i * 0.07 }}>
                 <div style={{ position: "relative", overflow: "hidden", height: 200, background: `linear-gradient(135deg,rgba(0,217,255,.1),rgba(14,165,233,.05))` }}>
                   {proj.image && <img src={proj.image} alt={proj.title} style={{ width: "100%", height: "100%", objectFit: "cover" }} />}
