@@ -13,10 +13,16 @@ const router = express.Router();
 router.use(verifyToken);
 
 const getPostsForUser = async (uid) => {
-  const snapshot = await db.collection('posts')
-    .where('author.uid', '==', uid)
-    .limit(50)
-    .get();
+  let snapshot;
+  try {
+    snapshot = await db.collection('posts')
+      .where('author.uid', '==', uid)
+      .limit(50)
+      .get();
+  } catch (error) {
+    console.warn('Unable to load profile activity feed:', error.message);
+    return [];
+  }
 
   return snapshot.docs
     .map(doc => ({ id: doc.id, ...doc.data() }))
@@ -33,7 +39,7 @@ const getPostsForUser = async (uid) => {
       title: p.title || '',
       content: p.content || '',
       category: p.category || '',
-      likeCount: (p.likes || []).length,
+      likeCount: Array.isArray(p.likes) ? p.likes.length : (p.likeCount || 0),
       commentCount: p.commentCount || 0,
       createdAt: p.createdAt?.toDate?.() || p.createdAt || null,
     }));
@@ -106,6 +112,9 @@ router.get('/:uid', asyncHandler(async (req, res) => {
 // Get public stats by uid
 router.get('/:uid/stats', asyncHandler(async (req, res) => {
   const uid = req.params.uid;
+  if (uid !== req.user.uid) {
+    throw new ApiError(403, 'Access denied. You can only view your own stats.');
+  }
   const [resumesCreated, interviewsDone] = await Promise.all([
     Resume.countDocuments({ userId: uid }),
     Interview.countDocuments({ odId: uid, status: 'completed' }),

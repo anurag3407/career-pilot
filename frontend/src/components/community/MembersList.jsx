@@ -1,4 +1,25 @@
 import { Circle, Crown, Shield } from 'lucide-react';
+import { motion } from 'framer-motion';
+
+const containerVariants = {
+  hidden: { opacity: 0 },
+  visible: {
+    opacity: 1,
+    transition: {
+      staggerChildren: 0.06,
+      delayChildren: 0.05,
+    },
+  },
+};
+
+const itemVariants = {
+  hidden: { opacity: 0, x: -8 },
+  visible: {
+    opacity: 1,
+    x: 0,
+    transition: { type: 'spring', stiffness: 300, damping: 24 },
+  },
+};
 
 export default function MembersList({ channel, onlineUsers }) {
   const safeOnlineUsers = onlineUsers || [];
@@ -37,12 +58,12 @@ export default function MembersList({ channel, onlineUsers }) {
   };
 
   const MemberItem = ({ member }) => (
-    <div className="flex items-center gap-3 px-3 py-2 hover:bg-muted rounded-lg cursor-pointer">
+    <motion.div variants={itemVariants} className="flex items-center gap-3 px-3 py-2 hover:bg-muted rounded-lg cursor-pointer">
       <div className="relative">
         <div className="w-8 h-8 rounded-full bg-gradient-to-br from-primary to-secondary flex items-center justify-center text-primary-foreground text-xs font-medium">
           {member.avatar ? (
-            <img 
-              src={member.avatar} 
+            <img
+              src={member.avatar}
               alt={member.name}
               className="w-full h-full rounded-full object-cover"
             />
@@ -51,13 +72,13 @@ export default function MembersList({ channel, onlineUsers }) {
           )}
         </div>
         {/* Online Indicator */}
-        <span 
+        <span
           className={`absolute -bottom-0.5 -right-0.5 w-3 h-3 rounded-full border-2 border-background ${
             member.isOnline ? 'bg-green-500' : 'bg-muted-foreground/50'
           }`}
         />
       </div>
-      
+
       <div className="flex-1 min-w-0">
         <div className="flex items-center gap-1.5">
           <span className={`text-sm font-medium truncate ${
@@ -71,7 +92,7 @@ export default function MembersList({ channel, onlineUsers }) {
           <p className="text-xs text-muted-foreground truncate">{member.email}</p>
         )}
       </div>
-    </div>
+    </motion.div>
   );
 
   if (!channel) {
@@ -101,11 +122,16 @@ export default function MembersList({ channel, onlineUsers }) {
               <Circle className="w-2 h-2 fill-green-500 text-green-500" />
               Online — {onlineMembers.length}
             </div>
-            <div className="px-1">
+            <motion.div
+              variants={containerVariants}
+              initial="hidden"
+              animate="visible"
+              className="px-1"
+            >
               {onlineMembers.map(member => (
                 <MemberItem key={member.uid} member={member} />
               ))}
-            </div>
+            </motion.div>
           </div>
         )}
 
@@ -116,11 +142,16 @@ export default function MembersList({ channel, onlineUsers }) {
               <Circle className="w-2 h-2 fill-muted-foreground/50 text-muted-foreground/50" />
               Offline — {offlineMembers.length}
             </div>
-            <div className="px-1">
+            <motion.div
+              variants={containerVariants}
+              initial="hidden"
+              animate="visible"
+              className="px-1"
+            >
               {offlineMembers.map(member => (
                 <MemberItem key={member.uid} member={member} />
               ))}
-            </div>
+            </motion.div>
           </div>
         )}
 

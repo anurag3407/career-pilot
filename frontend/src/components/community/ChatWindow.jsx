@@ -1,25 +1,25 @@
 import { useState, useEffect, useRef, useCallback } from 'react';
-import { useSocket } from '../../context/SocketContext';
+import { useSocket } from '../../hooks/useSocket';
 import MessageBubble from './MessageBubble';
 import MessageInput from './MessageInput';
-import { useTheme } from '../../context/ThemeContext';
-import { Hash, Users, Pin, Search, Settings, MoreVertical, Loader2, Sun, Moon } from 'lucide-react';
+import { useTheme } from '../../hooks/useTheme';
+import { Hash, Users, Pin, Search, Settings, MoreVertical, Loader2, Sun, Moon, Contrast } from 'lucide-react';
 
 // Skeleton loader component for chat messages
 const MessageSkeleton = ({ isOwn }) => (
   <div className={`flex gap-3 ${isOwn ? 'flex-row-reverse' : ''} animate-pulse`}>
     {!isOwn && (
-      <div className="w-9 h-9 rounded-full bg-gradient-to-br from-primary to-secondary flex-shrink-0" />
+      <div className="w-9 h-9 rounded-full bg-foreground/10 shrink-0" />
     )}
     <div className={`flex flex-col gap-1 ${isOwn ? 'items-end' : 'items-start'}`}>
-      {!isOwn && <div className="h-3 w-20 bg-muted-foreground/30 rounded" />}
-      <div className={`rounded-2xl px-4 py-3 ${isOwn ? 'bg-primary/20' : 'bg-card border border-border'}`}>
+      {!isOwn && <div className="h-3 w-20 bg-foreground/10 rounded" />}
+      <div className={`rounded-2xl px-4 py-3 ${isOwn ? 'bg-primary/10' : 'bg-card border border-border'}`}>
         <div className="space-y-2">
-          <div className={`h-3 ${isOwn ? 'w-32' : 'w-48'} bg-muted-foreground/30 rounded`} />
-          <div className={`h-3 ${isOwn ? 'w-24' : 'w-36'} bg-muted-foreground/30 rounded`} />
+          <div className={`h-3 ${isOwn ? 'w-32' : 'w-48'} bg-foreground/10 rounded`} />
+          <div className={`h-3 ${isOwn ? 'w-24' : 'w-36'} bg-foreground/10 rounded`} />
         </div>
       </div>
-      <div className="h-2 w-12 bg-muted rounded mt-1" />
+      <div className="h-2 w-12 bg-foreground/10 mt-1 rounded" />
     </div>
   </div>
 );
@@ -32,9 +32,9 @@ const ChatLoadingSkeleton = () => (
     
     {/* Date separator skeleton */}
     <div className="flex items-center gap-4 my-2 animate-pulse">
-      <div className="flex-1 h-px bg-muted"></div>
-      <div className="h-4 w-28 bg-muted rounded-full"></div>
-      <div className="flex-1 h-px bg-muted"></div>
+      <div className="flex-1 h-px bg-foreground/10"></div>
+      <div className="h-4 w-28 bg-foreground/10 rounded-full"></div>
+      <div className="flex-1 h-px bg-foreground/10"></div>
     </div>
     
     {/* Message skeletons with staggered animation */}
@@ -171,7 +171,7 @@ export default function ChatWindow({ channel, messages, currentUser, onOptimisti
   return (
     <div className="flex-1 flex flex-col h-full">
       {/* Channel Header */}
-      <div className="h-14 px-4 border-b border-border bg-background flex items-center justify-between flex-shrink-0">
+      <div className="h-14 px-4 border-b border-border bg-background flex items-center justify-between shrink-0">
         <div className="flex items-center gap-3">
           <span className="text-xl">{channel.icon || '💬'}</span>
           <div>
@@ -209,9 +209,11 @@ export default function ChatWindow({ channel, messages, currentUser, onOptimisti
           <button
             onClick={toggleTheme}
             className="p-2 text-muted-foreground hover:bg-muted rounded-lg transition-colors"
-            title="Toggle Theme"
+            title={theme === 'light' ? 'Switch to Dark Mode' : theme === 'dark' ? 'Switch to High Contrast' : 'Switch to Light Mode'}
           >
-            {theme === 'dark' ? <Sun className="w-5 h-5" /> : <Moon className="w-5 h-5" />}
+            {theme === 'light' ? <Moon className="w-5 h-5" /> : 
+             theme === 'dark' ? <Contrast className="w-5 h-5" /> : 
+             <Sun className="w-5 h-5" />}
           </button>
           <button className="p-2 text-muted-foreground hover:bg-muted rounded-lg">
             <MoreVertical className="w-5 h-5" />

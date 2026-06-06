@@ -26,6 +26,7 @@ export const enhanceResumeSchema = z.object({
       skills: z.array(z.string()).optional().default([]),
       industry: z.string().optional().default(''),
       customInstructions: z.string().optional().default(''),
+      profileInfo: z.record(z.unknown()).optional().default({}),
     })
     .strict(),
 });
@@ -63,6 +64,15 @@ export const generateEmailSchema = z.object({
 });
 
 /**
+ * POST /api/enhance/resume-score
+ */
+export const resumeScoreSchema = z.object({
+  resumeText: z
+    .string({ required_error: 'resumeText is required' })
+    .min(50, 'resumeText is too short to score meaningfully'),
+});
+
+/**
  * POST /api/enhance/optimize-linkedin
  */
 export const optimizeLinkedInSchema = z.object({
@@ -71,4 +81,16 @@ export const optimizeLinkedInSchema = z.object({
     .min(1, 'profileText cannot be empty')
     .max(5000, 'profileText must not exceed 5000 characters'),
   targetRole: z.string().optional().default(''),
+});
+
+/**
+ * POST /api/enhance/skill-gap
+ */
+export const skillGapSchema = z.object({
+  resumeText: z
+    .string({ required_error: 'resumeText is required' })
+    .min(1, 'resumeText cannot be empty'),
+  jobDescription: z
+    .string({ required_error: 'jobDescription is required' })
+    .min(1, 'jobDescription cannot be empty'),
 });

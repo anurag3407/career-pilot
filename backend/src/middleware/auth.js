@@ -14,6 +14,7 @@ export const verifyToken = async (req, res, next) => {
 
     try {
       const decodedToken = await admin.auth().verifyIdToken(token);
+
       req.user = {
         uid: decodedToken.uid,
         email: decodedToken.email,
@@ -21,28 +22,39 @@ export const verifyToken = async (req, res, next) => {
         picture: decodedToken.picture || null,
         emailVerified: decodedToken.email_verified
       };
+
       next();
     } catch (firebaseError) {
-      // For development, allow bypass if Firebase Admin is not fully configured
-      if (process.env.NODE_ENV === 'development' && firebaseError.code === 'app/no-app') {
-        console.warn('Firebase Admin not configured, allowing request in development mode');
-        // Use DEV_USER_EMAIL from .env for testing, or default
-        const devEmail = process.env.DEV_USER_EMAIL || 'dev@example.com';
-        req.user = {
-          uid: 'dev-user',
-          email: devEmail,
-          name: 'Developer',
-          emailVerified: true
-        };
-        console.log(`   Dev user email: ${devEmail}`);
-        next();
-      } else {
-        throw new ApiError(401, 'Invalid or expired token');
+      if (firebaseError?.code === 'app/no-app') {
+        console.error('Firebase Admin not configured');
+
+        throw new ApiError(
+          500,
+          'Firebase Admin not configured'
+        );
       }
+
+      throw new ApiError(401, 'Invalid or expired token');
     }
   } catch (error) {
     next(error);
   }
+};
+
+// Middleware to restrict access to admin users only.
+// Must be placed after verifyToken in the middleware chain.
+// Admin users are identified by email matching the ADMIN_EMAILS environment variable
+// (comma-separated list). Returns 403 for any authenticated user not on the list.
+export const adminOnly = (req, res, next) => {
+  const adminEmails = (process.env.ADMIN_EMAILS || '')
+    .split(',')
+    .map((e) => e.trim())
+    .filter(Boolean);
+
+  if (!req.user || !adminEmails.includes(req.user.email)) {
+    return next(new ApiError(403, 'Admin access required'));
+  }
+  next();
 };
 
 // Optional auth middleware - doesn't fail if no token
@@ -59,6 +71,7 @@ export const optionalAuth = async (req, res, next) => {
 
     try {
       const decodedToken = await admin.auth().verifyIdToken(token);
+
       req.user = {
         uid: decodedToken.uid,
         email: decodedToken.email,
@@ -66,12 +79,22 @@ export const optionalAuth = async (req, res, next) => {
         picture: decodedToken.picture || null,
         emailVerified: decodedToken.email_verified
       };
+
+      next();
     } catch (error) {
+      if (error?.code === 'app/no-app') {
+        console.error('Firebase Admin not configured');
+
+        throw new ApiError(
+          500,
+          'Firebase Admin not configured'
+        );
+      }
+
       req.user = null;
+      next();
     }
-    next();
   } catch (error) {
-    req.user = null;
-    next();
+    next(error);
   }
 };

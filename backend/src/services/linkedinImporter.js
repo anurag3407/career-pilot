@@ -6,10 +6,50 @@ import { jobsScrapedCounter } from '../middleware/metrics.js';
 
 const PROXYCURL_ENDPOINT = 'https://nubela.co/proxycurl/api/v2/linkedin';
 
+const getMockProfile = (url) => ({
+  name: 'Alex Developer',
+  headline: 'Full-Stack Engineer | React · Node.js · TypeScript',
+  location: 'San Francisco, CA',
+  about:
+    'Passionate software engineer with 4 years of experience building scalable web applications. ' +
+    'Strong background in React, Node.js, and cloud infrastructure.',
+  experience: [
+    {
+      title: 'Senior Software Engineer',
+      company: 'TechCorp',
+      duration: '2022 – Present',
+      description: 'Led migration of monolith to microservices, reducing latency by 40%.',
+    },
+    {
+      title: 'Software Engineer',
+      company: 'StartupXYZ',
+      duration: '2020 – 2022',
+      description: 'Built React dashboard used by 50k+ users.',
+    },
+  ],
+  education: [
+    {
+      school: 'University of California, Berkeley',
+      degree: 'B.S. Computer Science',
+      duration: '2016 – 2020',
+    },
+  ],
+  skills: ['JavaScript', 'TypeScript', 'React', 'Node.js', 'PostgreSQL', 'Docker', 'AWS'],
+  _mock: true,
+  _mockNote: `DEV MODE — set PROXYCURL_API_KEY to fetch the real profile for: ${url}`,
+});
+
 export const scrapeLinkedInProfile = async (url) => {
   const apiKey = process.env.PROXYCURL_API_KEY;
 
   if (!apiKey) {
+    const env = process.env.NODE_ENV;
+    if (env === 'development' || env === 'test') {
+      console.warn(
+        '⚠️  PROXYCURL_API_KEY is not set — returning mock LinkedIn profile (development/test only).'
+      );
+      return getMockProfile(url);
+    }
     throw new Error(
       'LinkedIn import requires a Proxycurl API key. Set PROXYCURL_API_KEY in your .env file. ' +
       'Get a free key (10 credits) at https://proxycurl.com.'
