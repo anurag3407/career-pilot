@@ -189,8 +189,11 @@ function UserSection() {
                     <p className="text-xs text-muted-foreground font-medium truncate">{user.email}</p>
                 </motion.div>
             </div>
-            <button
+            <Button
                 onClick={toggleTheme}
+                aria-label="Toggle theme"
+                variant="ghost"
+                size="default"
                 className={cn(
                     "flex items-center gap-2 px-3 py-2 rounded-lg text-sm font-medium transition-all duration-300 w-full text-muted-foreground hover:text-foreground hover:bg-muted cursor-pointer",
                     !open && animate ? "px-0 justify-center" : "justify-start"
@@ -211,9 +214,12 @@ function UserSection() {
                      theme === 'dark' ? 'High Contrast' : 
                      'Light Mode'}
                 </motion.span>
-            </button>
-            <button
+            </Button>
+            <Button
                 onClick={handleOpenRouterConnect}
+                aria-label="Connect OpenRouter"
+                variant="ghost"
+                size="default"
                 className={cn(
                     "flex items-center gap-3 w-full py-3 px-4 rounded-2xl text-muted-foreground hover:text-foreground hover:bg-muted transition-all cursor-pointer font-bold",
                     !open && animate && "justify-center"
@@ -230,14 +236,17 @@ function UserSection() {
                 >
                     {openRouterKey ? 'OpenRouter Connected' : 'Connect OpenRouter'}
                 </motion.span>
-            </button>
-            <button
+            </Button>
+            <Button
                 onClick={() => {
                     handleLogout();
                     setOpen(false);
                 }}
+                aria-label="Logout"
+                variant="destructive"
+                size="default"
                 className={cn(
-                    "flex items-center gap-2 px-3 py-2 rounded-lg text-sm font-semibold transition-all duration-300 w-full cursor-pointer hover:text-destructive hover:bg-destructive/10",
+                    "flex items-center gap-2 px-3 py-2 rounded-lg text-sm font-semibold transition-all duration-300 w-full cursor-pointer",
                     !open && animate ? "px-0 justify-center" : "justify-start"
                 )}
             >
@@ -252,7 +261,7 @@ function UserSection() {
                 >
                     Logout
                 </motion.span>
-            </button>
+            </Button>
         </div>
     );
 }
