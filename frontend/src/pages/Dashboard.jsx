@@ -81,6 +81,14 @@ const STATUS_CONFIG = {
   interviewing: { label: 'Interviewing', color: 'bg-secondary/10 text-secondary border border-secondary/20', icon: MessageSquare },
   offered: { label: 'Offered', color: 'bg-emerald-500/10 text-emerald-500 border border-emerald-500/20', icon: CheckCircle2 }
 }
+const portfolioAnalytics = {
+  totalVisits: 1245,
+  uniqueVisitors: 876,
+  mostViewedSection: "Projects",
+  deviceStats: "65% Desktop",
+  downloads: 89,
+  weeklyGrowth: "+12%"
+}
 
 export default function Dashboard() {
   const [resumes, setResumes] = useState([])
@@ -520,6 +528,77 @@ export default function Dashboard() {
       </div>
 
     </div>
+  </div>
+</motion.div>
+
+<motion.div variants={itemVariants} className="mb-10">
+  <div className="rounded-2xl bg-card border border-border p-6 shadow-sm">
+
+    <div className="flex items-center gap-3 mb-6">
+      <TrendingUp className="w-6 h-6 text-primary" />
+      <h2 className="text-xl font-black">
+        Portfolio Performance Analytics
+      </h2>
+    </div>
+
+    <div className="grid md:grid-cols-3 lg:grid-cols-6 gap-4">
+
+      <div className="p-4 rounded-xl border border-border">
+        <p className="text-xs text-muted-foreground">
+          Total Visits
+        </p>
+        <p className="text-2xl font-black">
+          {portfolioAnalytics.totalVisits}
+        </p>
+      </div>
+
+      <div className="p-4 rounded-xl border border-border">
+        <p className="text-xs text-muted-foreground">
+          Unique Visitors
+        </p>
+        <p className="text-2xl font-black">
+          {portfolioAnalytics.uniqueVisitors}
+        </p>
+      </div>
+
+      <div className="p-4 rounded-xl border border-border">
+        <p className="text-xs text-muted-foreground">
+          Most Viewed Section
+        </p>
+        <p className="font-bold">
+          {portfolioAnalytics.mostViewedSection}
+        </p>
+      </div>
+
+      <div className="p-4 rounded-xl border border-border">
+        <p className="text-xs text-muted-foreground">
+          Device Stats
+        </p>
+        <p className="font-bold">
+          {portfolioAnalytics.deviceStats}
+        </p>
+      </div>
+
+      <div className="p-4 rounded-xl border border-border">
+        <p className="text-xs text-muted-foreground">
+          Downloads
+        </p>
+        <p className="text-2xl font-black">
+          {portfolioAnalytics.downloads}
+        </p>
+      </div>
+
+      <div className="p-4 rounded-xl border border-border">
+        <p className="text-xs text-muted-foreground">
+          Weekly Growth
+        </p>
+        <p className="text-2xl font-black text-emerald-500">
+          {portfolioAnalytics.weeklyGrowth}
+        </p>
+      </div>
+
+    </div>
+
   </div>
 </motion.div>
 

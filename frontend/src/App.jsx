@@ -86,6 +86,7 @@ import RouteErrorBoundary from './components/RouteErrorBoundary';
 
 // Hub Imports
 const GitHubDashboard = lazy(() => import('./pages/GitHubDashboard'));
+const LinkedInDashboard = lazy(() => import('./pages/LinkedInDashboard'));
 const RepoAnalyzerLanding = lazy(() => import('./pages/RepoAnalyzer/Landing'));
 const RepoAnalyzerDashboard = lazy(() => import('./pages/RepoAnalyzer/Dashboard'));
 const RepoAnalyzerWorkspace = lazy(() => import('./pages/RepoAnalyzer/Workspace'));
@@ -392,36 +393,30 @@ function AppRoutes() {
           }
         />
 
-        <Route 
-  path="/repo-analyzer" 
-  element={
-    <ProtectedRoute>
-      <Suspense fallback={<LoadingScreen label="Loading Analyzer..." />}>
-        <RepoAnalyzerLanding />
-      </Suspense>
-    </ProtectedRoute>
-  } 
-/>
-        <Route 
-  path="/repo-analyzer/dashboard" 
-  element={
-    <ProtectedRoute>
-      <Suspense fallback={<LoadingScreen label="Loading Analyzer Dashboard..." />}>
-        <RepoAnalyzerDashboard />
-      </Suspense>
-    </ProtectedRoute>
-  } 
-/>
-        <Route 
-  path="/repo-analyzer/workspace" 
-  element={
-    <ProtectedRoute>
-      <Suspense fallback={<LoadingScreen label="Loading Analyzer Workspace..." />}>
-        <RepoAnalyzerWorkspace />
-      </Suspense>
-    </ProtectedRoute>
-  } 
-/>
+        <Route
+          path="/linkedin-dashboard"
+          element={
+            <ProtectedRoute>
+              <Suspense fallback={<LoadingScreen label="Loading LinkedIn Dashboard..." />}>
+                <LinkedInDashboard />
+              </Suspense>
+            </ProtectedRoute>
+          }
+        />
+        <Route
+          path="/linkedin"
+          element={
+            <ProtectedRoute>
+              <Suspense fallback={<div className="flex justify-center items-center h-screen">Loading LinkedIn Dashboard...</div>}>
+                <LinkedInDashboard />
+              </Suspense>
+            </ProtectedRoute>
+          }
+        />
+
+        <Route path="/repo-analyzer" element={<Navigate to="/project-visualizer" replace />} />
+        <Route path="/repo-analyzer/dashboard" element={<Navigate to="/project-visualizer" replace />} />
+        <Route path="/repo-analyzer/workspace" element={<Navigate to="/project-visualizer" replace />} />
         <Route 
   path="/project-visualizer" 
   element={

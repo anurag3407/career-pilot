@@ -133,3 +133,123 @@ export const generateSuggestions = async (skeleton, risks, moduleInfo) => {
     return [];
   }
 };
+
+const FILE_CONTEXT_PROMPT = `You are a senior software engineer helping explain code.
+You have been provided with the codebase skeleton and the specific contents of a file.
+Your job is to answer the user's questions about this specific file, explaining how it works, what its dependencies are, and identifying any patterns or potential issues.
+Reference specific line numbers or functions when helpful.`;
+
+export const streamFileChat = async (fileContent, fileName, skeleton, messages, res) => {
+  try {
+    const anthropic = getAnthropicClient();
+    
+    const systemMessage = [
+      {
+        type: "text",
+        text: FILE_CONTEXT_PROMPT,
+      },
+      {
+        type: "text",
+        text: `--- SKELETON ---\n${skeleton}\n\n--- FILE: ${fileName} ---\n${fileContent}`,
+        cache_control: { type: "ephemeral" }
+      }
+    ];
+
+    const stream = await anthropic.messages.create({
+      model: 'claude-3-5-sonnet-20241022',
+      max_tokens: 2048,
+      system: systemMessage,
+      messages: messages,
+      stream: true,
+    });
+
+    res.setHeader('Content-Type', 'text/event-stream');
+    res.setHeader('Cache-Control', 'no-cache');
+    res.setHeader('Connection', 'keep-alive');
+
+    for await (const chunk of stream) {
+      if (chunk.type === 'content_block_delta' && chunk.delta.text) {
+        res.write(`data: ${JSON.stringify({ text: chunk.delta.text })}\n\n`);
+      }
+    }
+    res.write('data: [DONE]\n\n');
+    res.end();
+  } catch (error) {
+    console.error('Anthropic API Error (streamFileChat):', error);
+    if (!res.headersSent) {
+      res.status(500).json({ error: error.message });
+    } else {
+      res.write(`data: {"error": "${error.message}"}\n\n`);
+      res.end();
+    }
+  }
+};
+
+export const explainFile = async (fileContent, fileName) => {
+  try {
+    const anthropic = getAnthropicClient();
+    
+    const response = await anthropic.messages.create({
+      model: 'claude-3-5-sonnet-20241022',
+      max_tokens: 1024,
+      system: "You are a senior engineer. Explain the given file. Return a JSON object (raw, no markdown) with keys: { purpose, keyFunctions, patterns, complexity, dependencies }.",
+      messages: [
+        {
+          role: 'user',
+          content: `File: ${fileName}\n\nContent:\n${fileContent}`
+        }
+      ]
+    });
+    
+    const text = response.content[0].text.trim();
+    const jsonStr = text.replace(/^```(json)?|```$/g, '').trim();
+    return JSON.parse(jsonStr);
+  } catch (error) {
+    console.error('Anthropic API Error (explainFile):', error);
+    return { error: 'Failed to generate explanation.' };
+  }
+};
+
+export const generateInterviewQuestions = async (skeleton, modules, risks) => {
+  try {
+    const anthropic = getAnthropicClient();
+    const response = await anthropic.messages.create({
+      model: 'claude-3-5-sonnet-20241022',
+      max_tokens: 2048,
+      system: "You are a principal engineer designing an interview based on a repository. Return a JSON object (raw, no markdown) with key 'categories' containing an array of category objects { name, questions: [{ question, difficulty, hint, idealAnswer }] }.",
+      messages: [
+        {
+          role: 'user',
+          content: `Skeleton:\n${skeleton}\n\nModules:\n${JSON.stringify(modules)}\n\nRisks:\n${JSON.stringify(risks)}`
+        }
+      ]
+    });
+    const text = response.content[0].text.trim();
+    const jsonStr = text.replace(/^```(json)?|```$/g, '').trim();
+    return JSON.parse(jsonStr);
+  } catch (error) {
+    console.error('Anthropic API Error (generateInterviewQuestions):', error);
+    return { categories: [] };
+  }
+};
+
+export const generateContributionGuide = async (skeleton, readmeContent, modules, github) => {
+  try {
+    const anthropic = getAnthropicClient();
+    const response = await anthropic.messages.create({
+      model: 'claude-3-5-sonnet-20241022',
+      max_tokens: 2500,
+      system: "You are an open source maintainer creating a markdown contribution guide. Based on the skeleton, README, and module data, output a comprehensive markdown guide covering: Project Overview, Tech Stack, Getting Started, Architecture Quick-Start, Coding Conventions, and Good First Contribution Areas.",
+      messages: [
+        {
+          role: 'user',
+          content: `README:\n${readmeContent}\n\nSkeleton:\n${skeleton}\n\nModules:\n${JSON.stringify(modules)}\n\nGitHub Stats:\n${JSON.stringify(github)}`
+        }
+      ]
+    });
+    return response.content[0].text.trim();
+  } catch (error) {
+    console.error('Anthropic API Error (generateContributionGuide):', error);
+    return "Failed to generate contribution guide.";
+  }
+};
