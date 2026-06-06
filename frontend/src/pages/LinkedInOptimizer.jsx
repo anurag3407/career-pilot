@@ -7,6 +7,7 @@ import {
 } from 'lucide-react'
 import { enhanceApi } from '../services/api'
 import { toast } from 'react-hot-toast'
+import Breadcrumb from '../components/Breadcrumb'
 
 const IMPACT_CONFIG = {
   High:   { color: 'text-red-400',    bg: 'bg-red-500/10',    border: 'border-red-500/30'    },
@@ -208,6 +209,7 @@ export default function LinkedInOptimizer() {
       </div>
 
       <div className="relative max-w-6xl mx-auto px-4 sm:px-6 lg:px-8 py-10">
+        <Breadcrumb className="mb-8" />
 
         {/* Header */}
         <motion.div

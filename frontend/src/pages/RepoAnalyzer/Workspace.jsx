@@ -7,6 +7,7 @@ import ChatPanel from '../../components/analyzer/ChatPanel';
 import { useAnalyzerStore } from '../../stores/useAnalyzerStore';
 import { analyzerApi } from '../../services/api';
 import { useNavigate } from 'react-router-dom';
+import Breadcrumb from '../../components/Breadcrumb';
 
 export default function RepoAnalyzerWorkspace() {
   const navigate = useNavigate();
@@ -31,7 +32,10 @@ export default function RepoAnalyzerWorkspace() {
           <div className="p-2 bg-blue-500/10 rounded-lg">
             <GitMerge className="w-5 h-5 text-blue-500" />
           </div>
-          <h1 className="text-lg font-bold">Codebase Analyzer</h1>
+          <div>
+            <h1 className="text-lg font-bold">Codebase Analyzer</h1>
+            <Breadcrumb className="mt-1 text-xs text-slate-400 [&_a:hover]:text-white" />
+          </div>
         </div>
 
         <div className="flex-1 flex justify-center mx-8 relative">

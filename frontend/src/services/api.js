@@ -408,6 +408,21 @@ export const portfolioApi = {
     return handleResponse(response);
   },
 
+  // Check whether a portfolio slug is available for the current user
+  async checkSlug(slug, currentSlug = '') {
+    const headers = await getAuthHeaders()
+    const params = currentSlug
+      ? `?currentSlug=${encodeURIComponent(currentSlug)}`
+      : ''
+
+    const response = await fetch(`${API_BASE}/portfolio/check-slug/${encodeURIComponent(slug)}${params}`, {
+      method: 'GET',
+      headers
+    })
+
+    return handleResponse(response)
+  },
+
   // Extract portfolio JSON from raw resume text
   async extractFromResume(resumeText) {
     const headers = await getAuthHeaders();
@@ -442,6 +457,46 @@ export const portfolioApi = {
       body: JSON.stringify({ slug, sections, templateId, title, provider, token })
     });
     return handleResponse(response);
+  },
+
+  // Update portfolio configuration settings
+  async updateSettings(slug, settings) {
+    const headers = await getAuthHeaders()
+    const response = await fetch(`${API_BASE}/portfolio/${encodeURIComponent(slug)}/settings`, {
+      method: 'PATCH',
+      headers,
+      body: JSON.stringify(settings)
+    })
+
+    return handleResponse(response)
+  },
+
+  // Delete a portfolio
+  async delete(slug) {
+    const headers = await getAuthHeaders()
+    const response = await fetch(`${API_BASE}/portfolio/${encodeURIComponent(slug)}`, {
+      method: 'DELETE',
+      headers
+    })
+
+    return handleResponse(response)
+  },
+
+  // Import a portfolio from a JSON file
+  async importJson(file) {
+    const headers = await getAuthHeaders()
+    delete headers['Content-Type']
+
+    const formData = new FormData()
+    formData.append('file', file)
+
+    const response = await fetch(`${API_BASE}/portfolio/import`, {
+      method: 'POST',
+      headers,
+      body: formData
+    })
+
+    return handleResponse(response)
   }
 }
 
@@ -1462,7 +1517,6 @@ export const analyzerApi = {
   
   // Note: chat streams directly via SSE, so we'll handle fetch in the component directly
 }
-
 // ============ PROJECT VISUALIZER API ============
 export const projectVisualizerApi = {
   async analyze(repoUrl) {
