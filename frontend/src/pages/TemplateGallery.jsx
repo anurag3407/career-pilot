@@ -34,7 +34,7 @@ import LowPolyTerrain from "../components/portfolio/templates/Low_Poly_Terrain/i
 import HighFashion from "../components/portfolio/templates/High_Fashion/index";
 import DarkMysteryResumeCTA from "../components/portfolio/templates/Dark_Mystery/ResumeCTA";
 import DarkMystery from "../components/portfolio/templates/Dark_Mystery/index";
-// import SportsAthletic from "../components/portfolio/templates/Sports_Athletic/index";
+import SportsAthletic from "../components/portfolio/templates/Sports_Athletic/index";
 
 /* TemplatePreviewFrame — contains each full portfolio template in a
    sandboxed scrollable box. The key trick: CSS `transform` on the outer
@@ -757,7 +757,6 @@ const TemplatePreviewModal = ({ templateId, isOpen, onClose, portfolioData }) =>
       </TemplatePreviewFrame>
 
       {/* Sports Athletic — sandboxed fixed-nav frame */}
-      {/* 
       <div className="mt-12 mb-16">
         <div className="mb-4 flex items-center gap-3 px-1">
           <span className="rounded-full bg-rose-500/20 px-3 py-1 text-xs font-bold uppercase tracking-widest text-rose-400 border border-rose-500/30">
@@ -769,7 +768,6 @@ const TemplatePreviewModal = ({ templateId, isOpen, onClose, portfolioData }) =>
           <SportsAthletic />
         </div>
       </div>
-      */}
 
     </div>
   </div>

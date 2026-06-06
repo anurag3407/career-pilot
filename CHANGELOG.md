@@ -1,3 +1,69 @@
+# [1.170.0](https://github.com/anurag3407/career-pilot/compare/v1.169.0...v1.170.0) (2026-06-06)
+
+
+### Features
+
+* **security:** add API key rotation service with pool management and auto-rotation ([fff83ca](https://github.com/anurag3407/career-pilot/commit/fff83ca1c31d2c470109560d8cc8a6423dcccb2f)), closes [#2761](https://github.com/anurag3407/career-pilot/issues/2761)
+
+# [1.169.0](https://github.com/anurag3407/career-pilot/compare/v1.168.0...v1.169.0) (2026-06-06)
+
+
+### Features
+
+* add career growth insights dashboard ([42b0c7d](https://github.com/anurag3407/career-pilot/commit/42b0c7dbb677256d262a3e08696e517e701330fe))
+* add template comparison insights panel ([2a0ca49](https://github.com/anurag3407/career-pilot/commit/2a0ca49410a71d94eafe65fc7830d11bed92b8a8))
+
+# [1.168.0](https://github.com/anurag3407/career-pilot/compare/v1.167.0...v1.168.0) (2026-06-06)
+
+
+### Features
+
+* add SEO optimization assistant to deploy modal ([090d6e1](https://github.com/anurag3407/career-pilot/commit/090d6e12622d158f814ea953c0cfd1eeca1e3d42))
+
+# [1.167.0](https://github.com/anurag3407/career-pilot/compare/v1.166.0...v1.167.0) (2026-06-06)
+
+
+### Bug Fixes
+
+* apply CodeAnt review fixes to ResumeCTA section ([e522743](https://github.com/anurag3407/career-pilot/commit/e5227430c5b4e608726edce1f2eed454c9f40cf0))
+
+
+### Features
+
+* implement ResumeCTA section for Sports Athletic portfolio template ([4df1c10](https://github.com/anurag3407/career-pilot/commit/4df1c10e881172a3f9e139b4ecaf8e5fcf478d15))
+
+# [1.166.0](https://github.com/anurag3407/career-pilot/compare/v1.165.0...v1.166.0) (2026-06-06)
+
+
+### Bug Fixes
+
+* apply CodeAnt review fixes to Contact section ([be8da79](https://github.com/anurag3407/career-pilot/commit/be8da794591e1c09dbf462cab58a25b411f4c923))
+
+
+### Features
+
+* implement Contact section for Sports Athletic portfolio template ([dde15f9](https://github.com/anurag3407/career-pilot/commit/dde15f9311d2ed236e17ab3204da9ecb27670f42))
+
+# [1.165.0](https://github.com/anurag3407/career-pilot/compare/v1.164.0...v1.165.0) (2026-06-06)
+
+
+### Bug Fixes
+
+* apply CodeAnt review fixes to Hero section ([d549565](https://github.com/anurag3407/career-pilot/commit/d5495658bbe60add2807717fda019c5866aec362))
+
+
+### Features
+
+* implement Hero section for Sports Athletic portfolio template ([c35f3ca](https://github.com/anurag3407/career-pilot/commit/c35f3ca8c559ef808f88d32efb367da575beb801))
+
+# [1.164.0](https://github.com/anurag3407/career-pilot/compare/v1.163.1...v1.164.0) (2026-06-06)
+
+
+### Features
+
+* add frontend performance monitoring utility ([187fa92](https://github.com/anurag3407/career-pilot/commit/187fa9274d9773a926ac14a8f4e88d271fa88349))
+* fixed eslint warnings ([4a42bfa](https://github.com/anurag3407/career-pilot/commit/4a42bfa74d986afa38848add98ace52ada183b36))
+
 ## [1.163.1](https://github.com/anurag3407/career-pilot/compare/v1.163.0...v1.163.1) (2026-06-05)
 
 

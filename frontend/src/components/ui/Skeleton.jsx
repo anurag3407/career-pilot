@@ -349,6 +349,7 @@ export function SkeletonSettings({ className = '' }) {
         <SkeletonBlock className="h-10 w-48 rounded-lg" />
       </div>
     </div>
+  );
 }
 
 // ============ Generic Skeleton Base ============
