@@ -35,6 +35,8 @@ import ChromaticGlitch from '../components/portfolio/templates/Chromatic_Glitch/
 import MagneticDock from '../components/portfolio/templates/Magnetic_Dock/index';
 import { useSearchParams } from 'react-router-dom';
 import MorphingBlobs from '../components/portfolio/templates/Morphing_Blobs/index';
+import DarkMysteryResumeCTA from '../components/portfolio/templates/Dark_Mystery/ResumeCTA';
+import DarkMystery from '../components/portfolio/templates/Dark_Mystery/index';
 
 /* TemplatePreviewFrame — contains each full portfolio template in a
    sandboxed scrollable box. The key trick: CSS `transform` on the outer
@@ -1021,6 +1023,27 @@ export default function TemplateGallery() {
           <MagneticDock />
         </div>
       </div>
+
+      <div className="mt-12">
+        <div className="mb-4 flex items-center gap-3 px-1">
+          <span className="rounded-full bg-red-950/40 px-3 py-1 text-xs font-bold uppercase tracking-widest text-red-200/80 border border-red-400/25">
+            Dark Mystery
+          </span>
+          <h2 className="text-lg font-semibold text-foreground/70">
+            Dark Mystery Theme - ResumeCTA Section
+          </h2>
+        </div>
+        <div className="overflow-hidden rounded-2xl border border-red-400/20">
+          <DarkMysteryResumeCTA />
+        </div>
+      </div>
+
+      <TemplatePreviewFrame
+        label="Dark Mystery - Full Template (in progress)"
+        badgeColor="bg-red-950/40 text-red-200/80 border-red-400/25"
+      >
+        <DarkMystery />
+      </TemplatePreviewFrame>
     </div>
   );
 }
