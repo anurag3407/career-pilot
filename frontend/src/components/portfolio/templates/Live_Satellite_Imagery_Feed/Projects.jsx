@@ -18,11 +18,7 @@ import {
 } from "lucide-react";
 
 
-export default function Projects({
-  satellites: propsSatellites, // Keep this if you want to allow manual overrides
-  title = "LIVE SATELLITE FEED",
-  subtitle = "REAL-TIME EARTH OBSERVATION DATABASE"
-}) {
+{
   const { portfolio } = useContext(PortfolioContext);
 const ensureAbsoluteUrl = (url) => {
   if (!url || url === "#") return "#";
@@ -31,7 +27,7 @@ const ensureAbsoluteUrl = (url) => {
 };
 
 export default function Projects({
-  satellites = propsSatellites || portfolio?.projects,
+  satellites = propsSatellites || portfolio?.projects || [],
   title = "LIVE SATELLITE FEED",
   subtitle = "REAL-TIME EARTH OBSERVATION DATABASE"
 }) {
