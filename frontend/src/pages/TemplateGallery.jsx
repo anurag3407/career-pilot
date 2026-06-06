@@ -35,6 +35,14 @@ import ChromaticGlitch from '../components/portfolio/templates/Chromatic_Glitch/
 import MagneticDock from '../components/portfolio/templates/Magnetic_Dock/index';
 import { useSearchParams } from 'react-router-dom';
 import MorphingBlobs from '../components/portfolio/templates/Morphing_Blobs/index';
+import OceanDepths from '../components/portfolio/templates/Ocean_Depths/index';
+import NeonCityscape from '../components/portfolio/templates/Neon_Cityscape/index';
+import PlanetaryOrbit from '../components/portfolio/templates/Planetary_Orbit/index';
+import LowPolyTerrain from '../components/portfolio/templates/Low_Poly_Terrain/index';
+import HighFashion from '../components/portfolio/templates/High_Fashion/index';
+import DarkMysteryResumeCTA from '../components/portfolio/templates/Dark_Mystery/ResumeCTA';
+import DarkMystery from '../components/portfolio/templates/Dark_Mystery/index';
+import SportsAthletic from '../components/portfolio/templates/Sports_Athletic/index';
 
 /* TemplatePreviewFrame — contains each full portfolio template in a
    sandboxed scrollable box. The key trick: CSS `transform` on the outer
@@ -1021,6 +1029,69 @@ export default function TemplateGallery() {
           <MagneticDock />
         </div>
       </div>
+
+      <TemplatePreviewFrame
+        label="Ocean Depths — Bioluminescent 3D/WebGL Portfolio"
+        badgeColor="bg-cyan-500/20 text-cyan-400 border-cyan-500/30"
+      >
+        <OceanDepths />
+      </TemplatePreviewFrame>
+
+      <TemplatePreviewFrame
+        label="Neon Cityscape — Cyberpunk Neon Portfolio"
+        badgeColor="bg-pink-500/20 text-pink-400 border-pink-500/30"
+      >
+        <NeonCityscape />
+      </TemplatePreviewFrame>
+
+      <TemplatePreviewFrame
+        label="Planetary Orbit — Solar System Navigation Portfolio"
+        badgeColor="bg-blue-500/20 text-blue-400 border-blue-500/30"
+      >
+        <PlanetaryOrbit />
+      </TemplatePreviewFrame>
+
+      <TemplatePreviewFrame
+        label="Low Poly Terrain — Animated Day/Night Cycle Portfolio"
+        badgeColor="bg-emerald-500/20 text-emerald-400 border-emerald-500/30"
+      >
+        <LowPolyTerrain />
+      </TemplatePreviewFrame>
+
+      <TemplatePreviewFrame
+        label="High Fashion — Editorial Two-Column Portfolio"
+        badgeColor="bg-yellow-500/20 text-yellow-400 border-yellow-500/30"
+      >
+        <HighFashion />
+      </TemplatePreviewFrame>
+
+      <div className="mt-12">
+        <div className="mb-4 flex items-center gap-3 px-1">
+          <span className="rounded-full bg-red-950/40 px-3 py-1 text-xs font-bold uppercase tracking-widest text-red-200/80 border border-red-400/25">
+            Dark Mystery
+          </span>
+          <h2 className="text-lg font-semibold text-foreground/70">
+            Dark Mystery Theme — ResumeCTA Section
+          </h2>
+        </div>
+        <div className="overflow-hidden rounded-2xl border border-red-400/20">
+          <DarkMysteryResumeCTA />
+        </div>
+      </div>
+
+      <TemplatePreviewFrame
+        label="Dark Mystery — Full Template"
+        badgeColor="bg-red-950/40 text-red-200/80 border-red-400/25"
+      >
+        <DarkMystery />
+      </TemplatePreviewFrame>
+
+      <TemplatePreviewFrame
+        label="Sports Athletic — Dark Athletic Portfolio"
+        badgeColor="bg-rose-500/20 text-rose-400 border-rose-500/30"
+      >
+        <SportsAthletic />
+      </TemplatePreviewFrame>
     </div>
   );
 }
