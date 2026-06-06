@@ -15,12 +15,12 @@ import {
   BookmarkCheck,
   Filter,
   X,
-  Loader2,
   TrendingUp,
   Zap,
   Target,
   Sparkles
 } from 'lucide-react'
+import { SkeletonJobCard } from '../components/ui/Skeleton'
 import { jobsApi, jobTrackerApi } from '../services/api'
 import Button from '../components/Button'
 import MatchScoreBadge from '../components/MatchScoreBadge'
@@ -307,7 +307,7 @@ className="w-full pl-12 pr-10 py-4 bg-muted/50 border border-border rounded-xl t
                   className="!px-8 !py-4 !text-lg !rounded-xl flex items-center gap-2"
                 >
                   {loading ? (
-                    <Loader2 className="w-5 h-5 animate-spin" />
+                    <span className="w-5 h-5 rounded-full border-2 border-primary-foreground/40 border-t-primary-foreground animate-spin inline-block" />
                   ) : (
                     <Search className="w-5 h-5" />
                   )}
@@ -442,13 +442,11 @@ className="w-full pl-12 pr-10 py-4 bg-muted/50 border border-border rounded-xl t
 
         {/* Results Section */}
         {loading ? (
-          <motion.div
-            initial={{ opacity: 0 }}
-            animate={{ opacity: 1 }}
-            className="space-y-4"
-          >
-            <SkeletonJobList count={5} />
-          </motion.div>
+          <div className="space-y-4">
+            {Array.from({ length: 5 }).map((_, i) => (
+              <SkeletonJobCard key={i} />
+            ))}
+          </div>
         ) : hasSearched && jobs.length === 0 ? (
           <motion.div
             initial={{ opacity: 0 }}
