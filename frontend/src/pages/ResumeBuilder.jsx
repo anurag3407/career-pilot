@@ -8,6 +8,7 @@ import {
 import { resumeApi } from '../services/api'
 import { toast } from 'react-hot-toast'
 import { cn } from '@/lib/utils'
+import AchievementEnhancer from "../components/resume/AchievementEnhancer";
 import PhoneInput from '../components/PhoneInput'
 import {
   validatePersonalStep,
@@ -588,14 +589,25 @@ export default function ResumeBuilder() {
                     </div>
 
                     <div className="md:col-span-2">
-                      <label className="block text-sm font-medium mb-1">Description (Bullet points)</label>
-                      <textarea
-                        className="w-full bg-background/50 border border-border rounded-lg px-4 py-2 min-h-[100px] focus:outline-none focus:ring-2 focus:ring-primary/30 transition-colors"
-                        value={exp.description}
-                        onChange={e => updateExp(index, 'description', e.target.value)}
-                        placeholder={`- Developed feature X resulting in Y% improvement\n- Led a team of...`}
-                      />
-                    </div>
+  <label className="block text-sm font-medium mb-1">
+    Description (Bullet points)
+  </label>
+
+  <textarea
+    className="w-full bg-background/50 border border-border rounded-lg px-4 py-2 min-h-[100px] focus:outline-none focus:ring-2 focus:ring-primary/30 transition-colors"
+    value={exp.description}
+    onChange={e => updateExp(index, 'description', e.target.value)}
+    placeholder={`- Developed feature X resulting in Y% improvement\n- Led a team of...`}
+  />
+
+  <AchievementEnhancer
+    value={exp.description}
+    jobRole={targetRole}
+    onApply={(text) =>
+      updateExp(index, "description", text)
+    }
+  />
+</div>
 
                   </div>
                 </div>

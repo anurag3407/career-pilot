@@ -1,3 +1,4 @@
+import { analyzePerformance } from "../utils/interviewAnalyzer";
 import { useEffect, useState } from 'react'
 import { Link } from 'react-router-dom'
 import toast from 'react-hot-toast'
@@ -91,8 +92,11 @@ export default function Analytics() {
     { label: 'Avg. Confidence', value: `${summary.averageConfidence}%`, icon: Sparkles, accent: 'text-amber-500' }
   ]
 
-  const chartData = sessions
+  const chartData = sessions || []
   const hasSessions = sessions.length > 0
+
+  const insights = analyzePerformance(sessions)
+  const improvement = insights.improvement || 0
 
   return (
     <div className="min-h-screen bg-background">
@@ -121,7 +125,7 @@ export default function Analytics() {
           </div>
         </div>
 
-        {/* View Toggle Tabs - ARIA Accessible */}
+        {/* View Toggle Tabs - ARIA Accessible Layout */}
         <div className="mb-8 border-b border-border">
           <div className="flex gap-6" role="tablist" aria-label="Analytics Navigation">
             <button
@@ -156,134 +160,199 @@ export default function Analytics() {
             Loading interactive tracking matrix...
           </div>
         ) : (
-          <div>
-            {/* Overview Tab */}
-            {activeTab === 'overview' && (
-              <div className="grid gap-8 xl:grid-cols-[1.7fr_1fr]">
-                <section className="rounded-3xl border border-border bg-card p-6 shadow-sm">
-                  <div className="flex flex-col gap-3 sm:flex-row sm:items-end sm:justify-between">
-                    <div>
-                      <p className="text-xs font-black uppercase tracking-[0.3em] text-muted-foreground">Trend analysis</p>
-                      <h2 className="mt-2 text-2xl font-black text-foreground">Performance over time</h2>
-                    </div>
-                    <p className="text-sm font-medium text-muted-foreground max-w-xl">
-                      Track overall score, communication, technical accuracy, and confidence across your most recent mock interviews.
-                    </p>
-                  </div>
-
-                  <div className="mt-8 h-[420px]">
-                    <ResponsiveContainer width="100%" height="100%">
-                      <LineChart data={chartData} margin={{ top: 20, right: 20, bottom: 20, left: 0 }}>
-                        <CartesianGrid stroke="#e5e7eb" strokeDasharray="3 3" />
-                        <XAxis dataKey="date" stroke="#94a3b8" tickLine={false} axisLine={false} />
-                        <YAxis domain={[0, 100]} stroke="#94a3b8" tickLine={false} axisLine={false} />
-                        <Tooltip />
-                        <Legend verticalAlign="top" height={36} />
-                        <Line type="monotone" dataKey="overallScore" name="Overall" stroke="#22c55e" strokeWidth={3} dot={{ r: 4 }} />
-                        <Line type="monotone" dataKey="communication" name="Communication" stroke="#60a5fa" strokeWidth={3} dot={{ r: 4 }} />
-                        <Line type="monotone" dataKey="technicalAccuracy" name="Technical" stroke="#f97316" strokeWidth={3} dot={{ r: 4 }} />
-                        <Line type="monotone" dataKey="confidence" name="Confidence" stroke="#facc15" strokeWidth={3} dot={{ r: 4 }} />
-                      </LineChart>
-                    </ResponsiveContainer>
-                  </div>
-                </section>
-
-                <section className="rounded-3xl border border-border bg-card p-6 shadow-sm h-fit">
-                  <h3 className="text-lg font-black text-foreground mb-6">Snapshot insights</h3>
-                  <div className="grid gap-4 sm:grid-cols-2">
-                    {summaryStats.map((stat) => (
-                      <div key={stat.label} className="rounded-3xl border border-border/70 bg-background/80 p-5">
-                        <div className="flex items-center gap-3">
-                          <stat.icon className={`w-5 h-5 ${stat.accent}`} />
-                          <p className="text-xs font-semibold text-muted-foreground uppercase tracking-[0.2em]">{stat.label.replace('Avg. ', '')}</p>
-                        </div>
-                        <p className="mt-5 text-3xl font-black text-foreground">{stat.value}</p>
+          <div className="grid gap-8 lg:grid-cols-[1fr_350px] items-start">
+            
+            {/* Dynamic Tab Switch Render Area */}
+            <div>
+              {/* Overview Tab Content */}
+              {activeTab === 'overview' && (
+                <div className="space-y-8">
+                  <section className="rounded-3xl border border-border bg-card p-6 shadow-sm">
+                    <div className="flex flex-col gap-3 sm:flex-row sm:items-end sm:justify-between">
+                      <div>
+                        <p className="text-xs font-black uppercase tracking-[0.3em] text-muted-foreground">Trend analysis</p>
+                        <h2 className="mt-2 text-2xl font-black text-foreground">Performance over time</h2>
                       </div>
-                    ))}
-                  </div>
-                </section>
-              </div>
-            )}
-
-            {/* Detailed Breakdown Tab */}
-            {activeTab === 'detailed' && (
-              <div className="grid gap-8 xl:grid-cols-[1.2fr_1fr]">
-                <section className="rounded-3xl border border-border bg-card p-6 shadow-sm">
-                  <div className="flex flex-col gap-3 sm:flex-row sm:items-end sm:justify-between">
-                    <div>
-                      <p className="text-xs font-black uppercase tracking-[0.3em] text-muted-foreground">Skill breakdown</p>
-                      <h2 className="mt-2 text-2xl font-black text-foreground">Latest session radar</h2>
+                      <p className="text-sm font-medium text-muted-foreground max-w-xl">
+                        Track overall score, communication, technical accuracy, and confidence across your most recent mock interviews.
+                      </p>
                     </div>
-                    <div className="text-sm font-medium text-muted-foreground">
-                      {latestSession.date} • Overall {latestSession.overallScore}%
+
+                    <div className="mt-8 h-[420px]">
+                      <ResponsiveContainer width="100%" height="100%">
+                        <LineChart data={chartData} margin={{ top: 20, right: 20, bottom: 20, left: 0 }}>
+                          <CartesianGrid stroke="#e5e7eb" strokeDasharray="3 3" />
+                          <XAxis dataKey="date" stroke="#94a3b8" tickLine={false} axisLine={false} />
+                          <YAxis domain={[0, 100]} stroke="#94a3b8" tickLine={false} axisLine={false} />
+                          <Tooltip />
+                          <Legend verticalAlign="top" height={36} />
+                          <Line type="monotone" dataKey="overallScore" name="Overall" stroke="#22c55e" strokeWidth={3} dot={{ r: 4 }} />
+                          <Line type="monotone" dataKey="communication" name="Communication" stroke="#60a5fa" strokeWidth={3} dot={{ r: 4 }} />
+                          <Line type="monotone" dataKey="technicalAccuracy" name="Technical" stroke="#f97316" strokeWidth={3} dot={{ r: 4 }} />
+                          <Line type="monotone" dataKey="confidence" name="Confidence" stroke="#facc15" strokeWidth={3} dot={{ r: 4 }} />
+                        </LineChart>
+                      </ResponsiveContainer>
                     </div>
-                  </div>
+                  </section>
+                </div>
+              )}
 
-                  <div className="mt-8 h-[360px]">
-                    <ResponsiveContainer width="100%" height="100%">
-                      <RadarChart data={radarData} outerRadius="80%">
-                        <PolarGrid stroke="#cbd5e1" />
-                        <PolarAngleAxis dataKey="subject" stroke="#64748b" />
-                        <PolarRadiusAxis angle={30} domain={[0, 100]} />
-                        <Radar name="Latest Session" dataKey="A" stroke="#0ea5e9" fill="#0ea5e9" fillOpacity={0.2} />
-                        <Legend />
-                      </RadarChart>
-                    </ResponsiveContainer>
-                  </div>
-                </section>
-
-                <section className="rounded-3xl border border-border bg-card p-6 shadow-sm">
-                  <div className="flex items-center justify-between mb-6">
-                    <div>
-                      <p className="text-xs font-black uppercase tracking-[0.3em] text-muted-foreground">Recent sessions</p>
-                      <h3 className="mt-2 text-2xl font-black text-foreground">Latest interviews</h3>
+              {/* Detailed Tab Content */}
+              {activeTab === 'detailed' && (
+                <div className="space-y-8">
+                  <section className="rounded-3xl border border-border bg-card p-6 shadow-sm">
+                    <div className="flex flex-col gap-3 sm:flex-row sm:items-end sm:justify-between">
+                      <div>
+                        <p className="text-xs font-black uppercase tracking-[0.3em] text-muted-foreground">Skill breakdown</p>
+                        <h2 className="mt-2 text-2xl font-black text-foreground">Latest session radar</h2>
+                      </div>
+                      <div className="text-sm font-medium text-muted-foreground">
+                        {latestSession.date} • Overall {latestSession.overallScore}%
+                      </div>
                     </div>
-                    <Link to="/interview-prep" className="text-sm font-bold text-primary hover:text-primary/80 transition-colors">
-                      Prep <ArrowRight className="w-4 h-4 inline-block" />
-                    </Link>
-                  </div>
 
-                  <div className="space-y-4 max-h-[400px] overflow-y-auto pr-1">
-                    {hasSessions ? (
-                      sessions.map((session, index) => (
-                        // 💡 Unique stable tracking key fix applied here
-                        <div key={session.id || session.sessionId || index} className="rounded-3xl border border-border/70 bg-background/80 p-4">
-                          <div className="flex items-center justify-between gap-4">
-                            <div>
-                              <p className="text-sm font-bold text-foreground">{session.date}</p>
-                              <p className="text-xs text-muted-foreground">Overall score: {session.overallScore}%</p>
-                            </div>
-                            <div className="text-right">
-                              <p className="text-lg font-black text-foreground">{session.confidence}%</p>
-                              <p className="text-xs text-muted-foreground">Confidence</p>
-                            </div>
-                          </div>
-                          <div className="mt-4 grid gap-3 grid-cols-3">
-                            <div className="rounded-2xl bg-card border border-border p-2 text-center">
-                              <p className="text-[10px] uppercase font-bold text-muted-foreground">Comm</p>
-                              <p className="mt-1 text-sm font-black text-foreground">{session.communication}%</p>
-                            </div>
-                            <div className="rounded-2xl bg-card border border-border p-2 text-center">
-                              <p className="text-[10px] uppercase font-bold text-muted-foreground">Tech</p>
-                              <p className="mt-1 text-sm font-black text-foreground">{session.technicalAccuracy}%</p>
-                            </div>
-                            <div className="rounded-2xl bg-card border border-border p-2 text-center">
-                              <p className="text-[10px] uppercase font-bold text-muted-foreground">Conf</p>
-                              <p className="mt-1 text-sm font-black text-foreground">{session.confidence}%</p>
-                            </div>
-                          </div>
-                        </div>
-                      ))
+                    <div className="mt-8 h-[360px]">
+                      <ResponsiveContainer width="100%" height="100%">
+                        <RadarChart data={radarData} outerRadius="80%">
+                          <PolarGrid stroke="#cbd5e1" />
+                          <PolarAngleAxis dataKey="subject" stroke="#64748b" />
+                          <PolarRadiusAxis angle={30} domain={[0, 100]} />
+                          <Radar name="Latest Session" dataKey="A" stroke="#0ea5e9" fill="#0ea5e9" fillOpacity={0.2} />
+                          <Legend />
+                        </RadarChart>
+                      </ResponsiveContainer>
+                    </div>
+                  </section>
+                </div>
+              )}
+            </div>
+
+            {/* Sidebar Columns - Houses Main Rep Metrics and New Performance Insights */}
+            <aside className="space-y-8">
+              <section className="rounded-3xl border border-border bg-card p-6 shadow-sm">
+                <h3 className="text-lg font-black text-foreground mb-6">Snapshot insights</h3>
+                <div className="grid gap-4 sm:grid-cols-2">
+                  {summaryStats.map((stat) => (
+                    <div key={stat.label} className="rounded-3xl border border-border/70 bg-background/80 p-5">
+                      <div className="flex items-center gap-3">
+                        <stat.icon className={`w-5 h-5 ${stat.accent}`} />
+                        <p className="text-xs font-semibold text-muted-foreground uppercase tracking-[0.3em]">{stat.label.replace('Avg. ', '')}</p>
+                      </div>
+                      <p className="mt-5 text-3xl font-black text-foreground">{stat.value}</p>
+                    </div>
+                  ))}
+                </div>
+              </section>
+
+              <section className="rounded-3xl border border-border bg-card p-6 shadow-sm">
+                <h3 className="text-lg font-black text-foreground mb-6">Personalized Improvement Insights</h3>
+                <div className="space-y-5">
+                  <div>
+                    <h4 className="font-bold text-red-500 mb-2">Weak Areas</h4>
+                    {insights.weaknesses?.length > 0 ? (
+                      <ul className="list-disc ml-5 text-sm space-y-1">
+                        {insights.weaknesses.map((item) => <li key={item}>{item}</li>)}
+                      </ul>
                     ) : (
-                      // 💡 Smart contextual empty-state layout handling error triggers vs blank users
-                      <div className="rounded-3xl border border-border/70 bg-background/80 p-8 text-center text-sm text-muted-foreground">
-                        {error ? 'Unable to load interview history.' : 'No interview history available yet.'}
-                      </div>
+                      <p className="text-sm text-muted-foreground">No major weaknesses detected.</p>
                     )}
                   </div>
-                </section>
-              </div>
-            )}
+
+                  <div>
+                    <h4 className="font-bold text-orange-500 mb-2">Recurring Weaknesses</h4>
+                    {insights.recurringWeaknesses?.length > 0 ? (
+                      <ul className="list-disc ml-5 text-sm space-y-1">
+                        {insights.recurringWeaknesses.map((item) => <li key={item}>{item}</li>)}
+                      </ul>
+                    ) : (
+                      <p className="text-sm text-muted-foreground">No recurring weaknesses detected.</p>
+                    )}
+                  </div>
+
+                  <div>
+                    <h4 className="font-bold text-green-500 mb-2">Strengths</h4>
+                    {insights.strengths?.length > 0 ? (
+                      <ul className="list-disc ml-5 text-sm space-y-1">
+                        {insights.strengths.map((item) => <li key={item}>{item}</li>)}
+                      </ul>
+                    ) : (
+                      <p className="text-sm text-muted-foreground">No strengths identified yet.</p>
+                    )}
+                  </div>
+
+                  <div>
+                    <h4 className="font-bold text-blue-500 mb-2">Recommendations</h4>
+                    {insights.recommendations?.length > 0 ? (
+                      <ul className="list-disc ml-5 text-sm space-y-1">
+                        {insights.recommendations.map((item) => <li key={item}>{item}</li>)}
+                      </ul>
+                    ) : (
+                      <p className="text-sm text-muted-foreground">Keep maintaining your current performance.</p>
+                    )}
+                  </div>
+
+                  <div>
+                    <h4 className="font-bold text-purple-500 mb-2">Progress Tracking</h4>
+                    <p className="text-sm">
+                      Overall Improvement:
+                      <span className="font-bold ml-2">
+                        {Number(improvement) > 0 ? `+${improvement}%` : `${improvement}%`}
+                      </span>
+                    </p>
+                  </div>
+                </div>
+              </section>
+
+              <section className="rounded-3xl border border-border bg-card p-6 shadow-sm">
+                <div className="flex items-center justify-between mb-6">
+                  <div>
+                    <p className="text-xs font-black uppercase tracking-[0.3em] text-muted-foreground">Recent sessions</p>
+                    <h3 className="mt-2 text-2xl font-black text-foreground">Latest interviews</h3>
+                  </div>
+                  <Link to="/interview-prep" className="text-sm font-bold text-primary hover:text-primary/80 transition-colors">
+                    Prep <ArrowRight className="w-4 h-4 inline-block" />
+                  </Link>
+                </div>
+
+                <div className="space-y-4 max-h-[400px] overflow-y-auto pr-1">
+                  {hasSessions ? (
+                    sessions.map((session, index) => (
+                      <div key={session.id || session.sessionId || index} className="rounded-3xl border border-border/70 bg-background/80 p-4">
+                        <div className="flex items-center justify-between gap-4">
+                          <div>
+                            <p className="text-sm font-bold text-foreground">{session.date}</p>
+                            <p className="text-xs text-muted-foreground">Overall score: {session.overallScore}%</p>
+                          </div>
+                          <div className="text-right">
+                            <p className="text-lg font-black text-foreground">{session.confidence}%</p>
+                            <p className="text-xs text-muted-foreground">Confidence</p>
+                          </div>
+                        </div>
+                        <div className="mt-4 grid gap-3 grid-cols-3">
+                          <div className="rounded-2xl bg-card border border-border p-2 text-center">
+                            <p className="text-[10px] uppercase font-bold text-muted-foreground">Comm</p>
+                            <p className="mt-1 text-sm font-black text-foreground">{session.communication}%</p>
+                          </div>
+                          <div className="rounded-2xl bg-card border border-border p-2 text-center">
+                            <p className="text-[10px] uppercase font-bold text-muted-foreground">Tech</p>
+                            <p className="mt-1 text-sm font-black text-foreground">{session.technicalAccuracy}%</p>
+                          </div>
+                          <div className="rounded-2xl bg-card border border-border p-2 text-center">
+                            <p className="text-[10px] uppercase font-bold text-muted-foreground">Conf</p>
+                            <p className="mt-1 text-sm font-black text-foreground">{session.confidence}%</p>
+                          </div>
+                        </div>
+                      </div>
+                    ))
+                  ) : (
+                    <div className="rounded-3xl border border-border/70 bg-background/80 p-8 text-center text-sm text-muted-foreground">
+                      {error ? 'Unable to load interview history.' : 'No interview history available yet.'}
+                    </div>
+                  )}
+                </div>
+              </section>
+            </aside>
+
           </div>
         )}
         
