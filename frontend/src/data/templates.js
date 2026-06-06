@@ -12,6 +12,18 @@ export const templates = [
   "createdAt": "2026-06-05",
   "isComplete": true
 },
+{
+  "id": "Live_Satellite_Imagery_Feed",
+  "title": "Live Satellite Imagery Feed",
+  "category": "Portfolio",
+  "colorScheme": "Light",
+  "layout": "Cards",
+  "author": "Your GitHub Username",
+  "views": 0,
+  "rating": 5.0,
+  "image": "/template-previews/Live_Satellite_Imagery_Feed.png",
+  "createdAt": "2026-06-06"
+},
   {
     "id": "2D_Retro_8bit",
     "title": "2D Retro 8bit",

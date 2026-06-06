@@ -781,6 +781,7 @@ export default function TemplateGallery() {
           <DesertDunes />
         </div>
       </div>
+      
 
       {/* Memphis Pop Theme */}
       <div className="mt-12">
