@@ -205,7 +205,7 @@ function SatelliteDockBar({ activeSection, onNavigate }) {
           boxShadow: `0 24px 64px rgba(0,217,255,.1), 0 0 0 1px ${C.border}`,
         }}
       >
-        {DOCK_ICONS.map((item) => (
+        {DOCK_ICONS((item) => (
           <DockItem
             key={item.id}
             icon={item}
@@ -258,6 +258,8 @@ const sanitizeUrl = (url) => {
 };
 
 export default function LiveSatelliteImageryFeed() {
+  const { portfolio } = useContext(PortfolioContext);
+  const data = portfolio || {};
   const [activeSection, setActiveSection] = useState("hero");
   const [contactState, setContactState] = useState("idle");
   const [form, setForm] = useState({ name: "", email: "", message: "" });
@@ -320,7 +322,7 @@ export default function LiveSatelliteImageryFeed() {
                 { val: "24/7", label: "Monitoring" },
                 { val: "99.9%", label: "Uptime" },
                 { val: "15TB+", label: "Data" },
-              ].map(({ val, label }, i) => (
+              ](({ val, label }, i) => (
                 <div key={i} style={{ textAlign: "center", padding: "16px 8px", borderRight: i < 2 ? `1px solid ${C.border}` : "none" }}>
                   <div style={{ fontSize: "clamp(1.4rem,4vw,2.2rem)", fontWeight: 800, color: C.accent }}>{val}</div>
                   <div style={{ fontSize: 10, color: C.muted, textTransform: "uppercase", letterSpacing: 2, marginTop: 2 }}>{label}</div>
@@ -390,7 +392,7 @@ export default function LiveSatelliteImageryFeed() {
       <hr className="sat-divider" />
 
       {/* ── PROJECTS ── */}
-      <section id="projects" className="sat-sec">
+     <section id="projects" className="sat-sec">
         <div className="sat-max">
           <FadeIn>
             <div className="sat-label">Projects</div>
@@ -414,6 +416,11 @@ export default function LiveSatelliteImageryFeed() {
               </motion.div>
             ))}
           </div>
+          <Projects 
+            satellites={data.projects} 
+            title="Featured Imagery"
+            subtitle="Satellite Imagery Data"
+          />
         </div>
       </section>
 
@@ -451,7 +458,7 @@ export default function LiveSatelliteImageryFeed() {
               { label: "Europe", status: "Operational" },
               { label: "Asia-Pacific", status: "Operational" },
               { label: "South America", status: "Operational" },
-            ].map((region, i) => (
+            ]((region, i) => (
               <motion.div key={i} className="sat-card" initial={{ opacity: 0, y: 12 }} whileInView={{ opacity: 1, y: 0 }} viewport={{ once: true }} transition={{ delay: i * 0.05 }} style={{ padding: "16px 18px", display: "flex", alignItems: "center", justifyContent: "space-between" }}>
                 <span style={{ fontWeight: 500 }}>{region.label}</span>
                 <div style={{ display: "flex", alignItems: "center", gap: 8 }}>
