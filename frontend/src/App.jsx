@@ -108,6 +108,8 @@ import NeonCityscape from './components/portfolio/templates/Neon_Cityscape/index
 import PlanetaryOrbit from './components/portfolio/templates/Planetary_Orbit/index.jsx';
 import LowPolyTerrain from './components/portfolio/templates/Low_Poly_Terrain/index.jsx';
 import HighFashion from './components/portfolio/templates/High_Fashion/index.jsx';
+import DarkMystery from './components/portfolio/templates/Dark_Mystery/index.jsx';
+import DarkMysteryContact from './components/portfolio/templates/Dark_Mystery/Contact.jsx';
 import TestSocialLinks from './pages/TestSocialLinks';
 
 function LoadingScreen({ label }) {
@@ -268,6 +270,8 @@ function AppRoutes() {
         <Route path="/templates/planetary-orbit" element={<PlanetaryOrbit />} />
         <Route path="/templates/low-poly-terrain" element={<LowPolyTerrain />} />
         <Route path="/templates/high-fashion" element={<HighFashion />} />
+        <Route path="/templates/dark-mystery" element={<DarkMystery />} />
+        <Route path="/templates/dark-mystery-contact" element={<DarkMysteryContact />} />
 
         {/* Core Protected Routes */}
         <Route 

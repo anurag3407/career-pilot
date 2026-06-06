@@ -32,6 +32,8 @@ import NeonCityscape from "../components/portfolio/templates/Neon_Cityscape/inde
 import PlanetaryOrbit from "../components/portfolio/templates/Planetary_Orbit/index";
 import LowPolyTerrain from "../components/portfolio/templates/Low_Poly_Terrain/index";
 import HighFashion from "../components/portfolio/templates/High_Fashion/index";
+import DarkMysteryResumeCTA from "../components/portfolio/templates/Dark_Mystery/ResumeCTA";
+import DarkMystery from "../components/portfolio/templates/Dark_Mystery/index";
 // import SportsAthletic from "../components/portfolio/templates/Sports_Athletic/index";
 
 /* TemplatePreviewFrame — contains each full portfolio template in a
@@ -734,6 +736,25 @@ const TemplatePreviewModal = ({ templateId, isOpen, onClose, portfolioData }) =>
           <HighFashion />
         </div>
       </div>
+
+      <div className="mt-12">
+        <div className="mb-4 flex items-center gap-3 px-1">
+          <span className="rounded-full bg-red-950/40 px-3 py-1 text-xs font-bold uppercase tracking-widest text-red-200/80 border border-red-400/25">
+            Dark Mystery
+          </span>
+          <h2 className="text-lg font-semibold text-foreground/70">Dark Mystery Theme — ResumeCTA Section</h2>
+        </div>
+        <div className="overflow-hidden rounded-2xl border border-red-400/20">
+          <DarkMysteryResumeCTA />
+        </div>
+      </div>
+
+      <TemplatePreviewFrame
+        label="Dark Mystery — Full Template (in progress)"
+        badgeColor="bg-red-950/40 text-red-200/80 border-red-400/25"
+      >
+        <DarkMystery />
+      </TemplatePreviewFrame>
 
       {/* Sports Athletic — sandboxed fixed-nav frame */}
       {/* 
