@@ -1,6 +1,7 @@
 import React, { useState, useRef, useEffect, Suspense, useMemo } from 'react';
 import { useTheme } from '../hooks/useTheme';
 import Navbar from '../components/Navbar';
+import Breadcrumb from '../components/Breadcrumb';
 import DeployModal from '../components/portfolio/DeployModal';
 import ThemeSelector from '../components/portfolio/ThemeSelector';
 import HolographicAbout from '../components/portfolio/templates/Holographic/About';
@@ -457,6 +458,8 @@ export default function TemplateGallery() {
       <Navbar />
 
       <div className="p-8 pt-24">
+        <Breadcrumb className="mb-6" />
+
         {aiDraft && (
           <div className="mb-8 p-4 rounded-xl bg-gradient-to-r from-emerald-500/10 to-teal-500/10 border border-emerald-500/30 flex items-center justify-between">
             <div>

@@ -134,8 +134,8 @@ export default function Dashboard() {
   }, [])
 
   const fetchData = async () => {
-    const requestId = fetchRequestId.current + 1
-    fetchRequestId.current = requestId
+    fetchRequestId.current += 1
+    const requestId = fetchRequestId.current
     const canUpdate = () => isMounted.current && fetchRequestId.current === requestId
 
     try {
@@ -205,9 +205,9 @@ export default function Dashboard() {
       setFetchError('Failed to load your dashboard. Please try again.')
       toast.error('Failed to load dashboard data')
     } finally {
-      if (!canUpdate()) return
-
-      setLoading(false)
+      if (canUpdate()) {
+        setLoading(false)
+      }
     }
   }
 

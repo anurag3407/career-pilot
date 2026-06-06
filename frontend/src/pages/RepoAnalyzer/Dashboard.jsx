@@ -5,6 +5,7 @@ import { Github, Loader2, GitMerge, Clock, Search, ExternalLink } from 'lucide-r
 import { analyzerApi } from '../../services/api';
 import { useAnalyzerStore } from '../../stores/useAnalyzerStore';
 import toast from 'react-hot-toast';
+import Breadcrumb from '../../components/Breadcrumb';
 
 export default function RepoAnalyzerDashboard() {
   const [urlInput, setUrlInput] = useState('');
@@ -72,6 +73,7 @@ export default function RepoAnalyzerDashboard() {
   return (
     <div className="min-h-[calc(100vh-4rem)] bg-[#050816] text-white p-6 md:p-10">
       <div className="max-w-5xl mx-auto">
+        <Breadcrumb className="mb-8 text-slate-400 [&_a:hover]:text-white" />
         <div className="mb-12">
           <div className="flex items-center gap-3 mb-6">
             <div className="p-3 bg-blue-500/10 rounded-xl">
