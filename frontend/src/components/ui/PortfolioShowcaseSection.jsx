@@ -68,7 +68,7 @@ export default function PortfolioShowcaseSection() {
 
         {/* Carousel */}
         <div className="max-w-xl mx-auto mb-12 relative">
-          <div className="relative w-full h-[220px] overflow-hidden rounded-xl border border-border bg-card shadow-sm p-6 flex flex-col justify-between transition-colors duration-300">
+          <div className="relative w-full h-[280px] sm:h-[220px] overflow-hidden rounded-xl border border-border bg-card shadow-sm p-6 flex flex-col justify-between transition-colors duration-300">
             {carouselItems.map((item, index) => {
               const isActive = index === currentIndex;
               return (
