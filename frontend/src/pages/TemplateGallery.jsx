@@ -12,7 +12,7 @@ import WeatherMood from "../components/portfolio/templates/Weather_Mood/index";
 import SwissTypography from "../components/portfolio/templates/Swiss_Typography/index";
 import DesertDunes from "../components/portfolio/templates/Desert_Dunes/index";
 import { templates } from '../data/templates';
-import { motion, AnimatePresence } from "framer-motion";
+import { motion as Motion, AnimatePresence } from "framer-motion";
 import { Moon, Sun, ChevronDown, Check, Eye, Star, Sparkles, X } from "lucide-react";
 import LiquidGlass from "../components/portfolio/templates/Liquid_Glass/index";
 import MidnightGradient from "../components/portfolio/templates/Midnight_Gradient/index";
@@ -98,7 +98,7 @@ function FilterSelect({ value, onChange, options, className = "" }) {
 
       <AnimatePresence>
         {open && (
-          <motion.ul
+          <Motion.ul
             initial={{ opacity: 0, y: -6, scale: 0.97 }}
             animate={{ opacity: 1, y: 0, scale: 1 }}
             exit={{ opacity: 0, y: -6, scale: 0.97 }}
@@ -131,7 +131,7 @@ function FilterSelect({ value, onChange, options, className = "" }) {
                 </li>
               );
             })}
-          </motion.ul>
+          </Motion.ul>
         )}
       </AnimatePresence>
     </div>
@@ -154,7 +154,7 @@ const TemplateHeroPreview = ({ templateId, portfolioData }) => {
 
 function TemplateCard({ template, hovered, onHover, onLeave, onUse, aiDraft }) {
   return (
-    <motion.div
+    <Motion.div
       onMouseEnter={() => onHover(template.id)}
       onMouseLeave={onLeave}
       animate={hovered ? "hover" : "rest"}
@@ -183,7 +183,7 @@ function TemplateCard({ template, hovered, onHover, onLeave, onUse, aiDraft }) {
             <TemplateHeroPreview templateId={template.id} portfolioData={aiDraft} />
           </div>
         ) : (
-          <motion.img
+          <Motion.img
             src={template.image}
             alt={template.title}
             className="w-full h-52 object-cover object-top"
@@ -193,7 +193,7 @@ function TemplateCard({ template, hovered, onHover, onLeave, onUse, aiDraft }) {
             }}
           />
         )}
-        <motion.div
+        <Motion.div
           className="absolute inset-0 bg-gradient-to-t from-black/50 via-transparent to-transparent pointer-events-none"
           variants={{ rest: { opacity: 0 }, hover: { opacity: 1 } }}
           transition={{ duration: 0.3 }}
@@ -226,7 +226,7 @@ function TemplateCard({ template, hovered, onHover, onLeave, onUse, aiDraft }) {
 
         <AnimatePresence>
           {hovered && (
-            <motion.div
+            <Motion.div
               key="cta-group"
               initial={{ opacity: 0, y: 14 }}
               animate={{
@@ -251,11 +251,11 @@ function TemplateCard({ template, hovered, onHover, onLeave, onUse, aiDraft }) {
               >
                 <Eye className="w-4 h-4" /> Preview
               </button>
-            </motion.div>
+            </Motion.div>
           )}
         </AnimatePresence>
       </div>
-    </motion.div>
+    </Motion.div>
   );
 }
 
@@ -317,7 +317,7 @@ const [hoveredCard, setHoveredCard] = useState(null);
     if (draft) {
       try {
         setAiDraft(JSON.parse(draft));
-      } catch(e) {}
+      } catch {}
     }
   }, []);
 
@@ -415,7 +415,7 @@ const [hoveredCard, setHoveredCard] = useState(null);
           aria-label="Toggle theme"
         >
           <AnimatePresence mode="wait" initial={false}>
-            <motion.div
+            <Motion.div
               key={theme}
               initial={{ y: 20, opacity: 0, rotate: 45 }}
               animate={{ y: 0, opacity: 1, rotate: 0 }}
@@ -423,7 +423,7 @@ const [hoveredCard, setHoveredCard] = useState(null);
               transition={{ duration: 0.2 }}
             >
               {theme === "light" ? <Moon className="w-5 h-5" /> : <Sun className="w-5 h-5" />}
-            </motion.div>
+            </Motion.div>
           </AnimatePresence>
         </button>
       </div>
