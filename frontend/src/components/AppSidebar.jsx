@@ -1,7 +1,7 @@
 import { useState, useEffect } from "react";
-import { useNavigate } from "react-router-dom";
+import { useNavigate, useLocation } from "react-router-dom";
 import { motion } from "framer-motion";
-import { Brain, ChevronDown } from "lucide-react";
+import { Brain, ChevronDown, Contrast } from "lucide-react";
 
 import {
     LayoutDashboard,
@@ -57,6 +57,11 @@ const navLinks = [
         icon: <Globe className="w-5 h-5 shrink-0" />,
     },
     {
+        label: "Project Visualizer",
+        href: "/project-visualizer",
+        icon: <GitMerge className="w-5 h-5 shrink-0" />,
+    },
+    {
         label: "Career Growth",
         href: "/hub/career",
         icon: <GraduationCap className="w-5 h-5 shrink-0" />,
@@ -80,6 +85,11 @@ const navLinks = [
         label: "Settings",
         href: "/settings",
         icon: <Settings className="w-5 h-5 shrink-0" />,
+    },
+    {
+        label: "Admin Panel",
+        href: "/admin",
+        icon: <ShieldCheck className="w-5 h-5 shrink-0 text-blue-500" />,
     }
 ];
 
@@ -132,10 +142,10 @@ function UserSection() {
         const verifier = generateRandomString();
         sessionStorage.setItem('or_code_verifier', verifier);
         const challenge = await generateCodeChallenge(verifier);
-        
+
         const callbackUrl = `${window.location.origin}/auth/openrouter/callback`;
         const openRouterUrl = `https://openrouter.ai/auth?callback_url=${encodeURIComponent(callbackUrl)}&code_challenge=${challenge}&code_challenge_method=S256`;
-        
+
         window.location.href = openRouterUrl;
     };
 
@@ -186,7 +196,9 @@ function UserSection() {
                     !open && animate ? "px-0 justify-center" : "justify-start"
                 )}
             >
-                {theme === 'dark' ? <Sun className="w-5 h-5 shrink-0" /> : <Moon className="w-5 h-5 shrink-0" />}
+                {theme === 'light' ? <Moon className="w-5 h-5 shrink-0" /> : 
+                 theme === 'dark' ? <Contrast className="w-5 h-5 shrink-0" /> : 
+                 <Sun className="w-5 h-5 shrink-0" />}
                 <motion.span
                     animate={{
                         display: animate ? (open ? "inline-block" : "none") : "inline-block",
@@ -195,7 +207,9 @@ function UserSection() {
                     transition={{ duration: 0.2 }}
                     className="text-sm font-semibold whitespace-pre"
                 >
-                    {theme === 'dark' ? 'Light Mode' : 'Dark Mode'}
+                    {theme === 'light' ? 'Dark Mode' : 
+                     theme === 'dark' ? 'High Contrast' : 
+                     'Light Mode'}
                 </motion.span>
             </button>
             <button
@@ -246,6 +260,11 @@ function UserSection() {
 export default function AppSidebar() {
     const [open, setOpen] = useState(false);
 const [openAI, setOpenAI] = useState(false);
+const location = useLocation();
+
+useEffect(() => {
+    setOpen(false);
+}, [location.pathname]);
 
     return (
         <Sidebar open={open} setOpen={setOpen}>
@@ -317,11 +336,11 @@ const [openAI, setOpenAI] = useState(false);
             }}
             onClick={() => setOpen(false)}
         />
-        
+
         <SidebarLink
             link={{
-                label: "Repo Analyzer",
-                href: "/repo-analyzer",
+                label: "Project Visualizer",
+                href: "/project-visualizer",
                 icon: <GitMerge className="w-4 h-4 shrink-0" />,
             }}
             onClick={() => setOpen(false)}
@@ -334,4 +353,3 @@ const [openAI, setOpenAI] = useState(false);
         </Sidebar>
     );
 }
-

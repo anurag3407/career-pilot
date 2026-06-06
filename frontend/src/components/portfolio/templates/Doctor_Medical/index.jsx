@@ -1,30 +1,36 @@
 import React from 'react';
 import data from '../../../../data/dummy_data.json';
+import Hero from './Hero';
+import About from './About';
+import Skills from './Skills';
+import Experience from './Experience';
+import Projects from './Projects';
+import Testimonials from './Testimonials';
+import Contact from './Contact';
 
-/**
- * Doctor Medical Portfolio Template
- * Category: Professional / Industry
- * Description: Clean medical professional portfolio with health blue and white palette, clean sans-serif fonts, vital-sign-style stat displays.
- */
 export default function DoctorMedical() {
+  // Defensive check: If data hasn't loaded or is missing, fall back to an empty object
+  const safeData = data || {};
+
   return (
-    <div className="min-h-screen bg-gray-950 text-white flex flex-col items-center justify-center p-8 font-sans">
-      <div className="max-w-3xl w-full text-center">
-        <h1 className="text-5xl md:text-7xl font-bold mb-4 bg-gradient-to-r from-cyan-400 to-purple-500 bg-clip-text text-transparent">
-          {data.personal.name}
-        </h1>
-        <p className="text-xl md:text-2xl text-gray-400 mb-8">{data.personal.title}</p>
-        <div className="p-8 border-2 border-dashed border-cyan-500/40 rounded-2xl bg-gray-900/50 backdrop-blur-sm">
-          <span className="inline-block px-3 py-1 rounded-full bg-cyan-500/20 text-cyan-400 text-xs font-bold uppercase tracking-widest mb-4">
-            Professional / Industry
-          </span>
-          <h2 className="text-2xl font-bold text-gray-200 mb-3">Doctor Medical Template</h2>
-          <p className="text-gray-400 mb-6 leading-relaxed">
-            Clean medical professional portfolio with health blue and white palette, clean sans-serif fonts, vital-sign-style stat displays.
-          </p>
-          <p className="text-cyan-400 font-semibold">Open an issue to contribute and build this template!</p>
-        </div>
-      </div>
+    <div className="font-sans antialiased text-slate-800 w-full min-h-screen bg-slate-50">
+      <style>{`
+        @import url('https://fonts.googleapis.com/css2?family=Playfair+Display:wght@400;600;700;800&family=DM+Sans:wght@300;400;500;600;700&display=swap');
+        body { font-family: 'DM Sans', sans-serif; }
+        * { scroll-behavior: smooth; }
+        ::-webkit-scrollbar { width: 6px; }
+        ::-webkit-scrollbar-track { background: #f8fafc; }
+        ::-webkit-scrollbar-thumb { background: #bfdbfe; border-radius: 99px; }
+        ::-webkit-scrollbar-thumb:hover { background: #93c5fd; }
+      `}</style>
+
+      <Hero data={safeData} />
+      <About data={safeData} />
+      <Skills data={safeData} />
+      <Experience data={safeData} />
+      <Projects data={safeData} />
+      <Testimonials data={safeData} />
+      <Contact data={safeData} />
     </div>
   );
 }

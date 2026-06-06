@@ -1,29 +1,28 @@
 import React from 'react';
 import data from '../../../../data/dummy_data.json';
+import Hero from './Hero';
+import About from './About';
+import Skills from './Skills';
+import Projects from './Projects';
+import Experience from './Experience';
+import Testimonials from './Testimonials';
+import Contact from './Contact';
 
-/**
- * Crystal Cavern Portfolio Template
- * Category: 3D / WebGL
- * Description: 3D crystal formations background with light refraction effects and gem-colored accents. Use CSS clip-paths for crystal shapes, prismatic gradient overlays, and shimmer animations.
- */
-export default function CrystalCavern() {
+export default function CrystalCavernPortfolio() {
+  const { personal, socials, skills, projects, experience, testimonials } = data;
+
   return (
-    <div className="min-h-screen bg-gray-950 text-white flex flex-col items-center justify-center p-8 font-sans">
-      <div className="max-w-3xl w-full text-center">
-        <h1 className="text-5xl md:text-7xl font-bold mb-4 bg-gradient-to-r from-cyan-400 to-purple-500 bg-clip-text text-transparent">
-          {data.personal.name}
-        </h1>
-        <p className="text-xl md:text-2xl text-gray-400 mb-8">{data.personal.title}</p>
-        <div className="p-8 border-2 border-dashed border-cyan-500/40 rounded-2xl bg-gray-900/50 backdrop-blur-sm">
-          <span className="inline-block px-3 py-1 rounded-full bg-cyan-500/20 text-cyan-400 text-xs font-bold uppercase tracking-widest mb-4">
-            3D / WebGL
-          </span>
-          <h2 className="text-2xl font-bold text-gray-200 mb-3">Crystal Cavern Template</h2>
-          <p className="text-gray-400 mb-6 leading-relaxed">
-            3D crystal formations background with light refraction effects and gem-colored accents. Use CSS clip-paths for crystal shapes, prismatic gradient overlays, and shimmer animations.
-          </p>
-          <p className="text-cyan-400 font-semibold">Open an issue to contribute and build this template!</p>
-        </div>
+    <div className="min-h-screen bg-slate-950 text-slate-200 font-sans overflow-x-hidden selection:bg-purple-500/30">
+      <Hero personal={personal} socials={socials} />
+      <div className="max-w-6xl mx-auto px-6 space-y-32 py-20 relative z-10">
+        <About personal={personal} />
+        {skills && skills.length > 0 && <Skills skills={skills} />}
+        {projects && projects.length > 0 && <Projects projects={projects} />}
+        {experience && experience.length > 0 && <Experience experience={experience} />}
+        {testimonials && testimonials.length > 0 && (
+          <Testimonials testimonials={testimonials} />
+        )}
+        <Contact socials={socials} />
       </div>
     </div>
   );

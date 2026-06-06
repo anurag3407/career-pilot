@@ -2,7 +2,7 @@ import { useState, useEffect } from 'react'
 import { useParams, useNavigate } from 'react-router-dom'
 import toast from 'react-hot-toast'
 import { motion } from 'framer-motion'
-import { resumeApi, enhanceApi } from '../services/api'
+import { resumeApi, enhanceApi, portfolioApi } from '../services/api'
 import { triggerConfetti } from '../utils/confetti'
 import ResumeAnalysisSkeleton from '../components/ui/ResumeAnalysisSkeleton'
 import {
@@ -28,7 +28,8 @@ import {
   Lightbulb,
   Brain,
   Edit3,
-  ClipboardList
+  ClipboardList,
+  Globe
 } from 'lucide-react'
 import { SkeletonList } from '../components/ui/Skeleton'
 import ResumeScore from '../components/ResumeScore'
@@ -354,6 +355,7 @@ export default function Enhance() {
   const [loading, setLoading] = useState(true)
   const [analyzing, setAnalyzing] = useState(false)
   const [enhancing, setEnhancing] = useState(false)
+  const [generatingPortfolio, setGeneratingPortfolio] = useState(false)
   const [scoring, setScoring] = useState(false)
   const [scoreData, setScoreData] = useState(null)
   const [atsAnalysis, setAtsAnalysis] = useState(null)
@@ -362,6 +364,8 @@ export default function Enhance() {
 
   const [jobRole, setJobRole] = useState('')
   const [hasAnalyzed, setHasAnalyzed] = useState(false)
+  const [enhancementComplete, setEnhancementComplete] = useState(false)
+  const [copiedKeyword, setCopiedKeyword] = useState(null)
 
   useEffect(() => {
     fetchResume()
@@ -372,6 +376,7 @@ export default function Enhance() {
     try {
       const response = await resumeApi.getById(resumeId)
       setResume(response.data)
+      setEnhancementComplete(Boolean(response.data.enhancedText))
       if (response.data.jobRole) {
         setJobRole(response.data.jobRole)
       }
@@ -433,12 +438,27 @@ export default function Enhance() {
     }
   }
 
+  const copyKeywordToClipboard = async (keyword) => {
+    if (!keyword) return
+
+    try {
+      await navigator.clipboard.writeText(keyword)
+      setCopiedKeyword(keyword)
+      setTimeout(() => {
+        setCopiedKeyword((current) => (current === keyword ? null : current))
+      }, 2000)
+    } catch (err) {
+      console.error('Failed to copy keyword:', err)
+      toast.error('Could not copy keyword to clipboard. Please try again.')
+    }
+  }
+
   const handleEnhanceWithAI = async () => {
     setEnhancing(true)
     try {
       const apiPreferences = {
         jobRole: jobRole,
-        yearsOfExperience: 0,
+        yearsOfExperience: resume.yearsOfExperience || 0, // Assuming yearsOfExperience is available in resume object
         skills: atsAnalysis?.missingKeywords || [],
         industry: '',
         customInstructions: `Focus on improving: ${atsAnalysis?.improvements?.map(i => i.issue).join(', ') || 'general improvements'}`,
@@ -452,6 +472,14 @@ export default function Enhance() {
         jobRole: jobRole,
         preferences: apiPreferences
       })
+
+      setResume((current) => ({
+        ...current,
+        enhancedText: enhanceResponse.data.enhancedResume,
+        jobRole,
+        preferences: apiPreferences
+      }))
+      setEnhancementComplete(true)
 
       // Create a version snapshot for the AI enhanced state
       try {
@@ -469,11 +497,28 @@ export default function Enhance() {
 
       toast.success('Resume enhanced successfully!')
       triggerConfetti({ duration: 3000, particleCount: 150, spread: 120 })
-      navigate(`/resume/${resumeId}`)
     } catch (error) {
       toast.error(error.message || 'Failed to enhance resume')
     } finally {
       setEnhancing(false)
+    }
+  }
+
+  const handleGeneratePortfolio = async () => {
+    setGeneratingPortfolio(true)
+    const toastId = toast.loading('Generating portfolio from enhanced resume...')
+
+    try {
+      const response = await portfolioApi.generateFromResume(resumeId)
+      const portfolioData = response.data?.portfolio || response.data
+
+      localStorage.setItem('ai_portfolio_draft', JSON.stringify(portfolioData))
+      toast.success('Portfolio draft generated!', { id: toastId })
+      navigate('/templates')
+    } catch (error) {
+      toast.error(error.message || 'Failed to generate portfolio', { id: toastId })
+    } finally {
+      setGeneratingPortfolio(false)
     }
   }
 
@@ -710,9 +755,15 @@ export default function Enhance() {
                       initial={{ opacity: 0, scale: 0.8 }}
                       animate={{ opacity: 1, scale: 1 }}
                       transition={{ delay: 0.5 + index * 0.05 }}
-                      className="px-3 py-1.5 bg-yellow-500/10 border border-yellow-500/30 text-yellow-400 rounded-lg text-sm"
+                      onClick={() => copyKeywordToClipboard(keyword)}
+                      className="relative cursor-pointer px-3 py-1.5 bg-yellow-500/10 border border-yellow-500/30 text-yellow-400 rounded-lg text-sm transition hover:bg-yellow-500/20 hover:border-yellow-500/50 hover:text-yellow-300"
                     >
-                      {keyword}
+                      <span className="relative z-10">{keyword}</span>
+                      {copiedKeyword === keyword && (
+                        <span className="pointer-events-none absolute -top-7 left-1/2 -translate-x-1/2 rounded-full bg-amber-500/95 px-2 py-1 text-[10px] font-semibold text-white shadow-lg">
+                          Copied!
+                        </span>
+                      )}
                     </motion.span>
                   ))}
                   {(!atsAnalysis.missingKeywords || atsAnalysis.missingKeywords.length === 0) && (
@@ -985,24 +1036,45 @@ export default function Enhance() {
                     <p className="text-muted-foreground">Let AI optimize your resume based on the analysis above</p>
                   </div>
                 </div>
-                <button
-                  onClick={handleEnhanceWithAI}
-                  disabled={enhancing}
-                  className="w-full md:w-auto px-8 py-4 bg-gradient-to-r from-indigo-600 to-purple-600 text-foreground rounded-xl font-semibold hover:from-primary hover:to-secondary transition-all disabled:opacity-50 disabled:cursor-not-allowed flex items-center justify-center gap-2 shadow-lg shadow-indigo-500/25"
-                >
-                  {enhancing ? (
-                    <>
-                      <RefreshCw className="w-5 h-5 animate-spin" />
-                      Enhancing with AI...
-                    </>
-                  ) : (
-                    <>
-                      <Sparkles className="w-5 h-5" />
-                      Improve with AI
-                      <ArrowRight className="w-5 h-5" />
-                    </>
+                <div className="flex w-full flex-col gap-3 md:w-auto md:flex-row">
+                  {enhancementComplete && (
+                    <button
+                      onClick={handleGeneratePortfolio}
+                      disabled={generatingPortfolio}
+                      className="w-full md:w-auto px-8 py-4 bg-secondary text-secondary-foreground rounded-xl font-semibold hover:bg-secondary/90 transition-all disabled:opacity-50 disabled:cursor-not-allowed flex items-center justify-center gap-2"
+                    >
+                      {generatingPortfolio ? (
+                        <>
+                          <RefreshCw className="w-5 h-5 animate-spin" />
+                          Generating...
+                        </>
+                      ) : (
+                        <>
+                          <Globe className="w-5 h-5" />
+                          Generate Portfolio
+                        </>
+                      )}
+                    </button>
                   )}
-                </button>
+                  <button
+                    onClick={handleEnhanceWithAI}
+                    disabled={enhancing}
+                    className="w-full md:w-auto px-8 py-4 bg-gradient-to-r from-indigo-600 to-purple-600 text-foreground rounded-xl font-semibold hover:from-primary hover:to-secondary transition-all disabled:opacity-50 disabled:cursor-not-allowed flex items-center justify-center gap-2 shadow-lg shadow-indigo-500/25"
+                  >
+                    {enhancing ? (
+                      <>
+                        <RefreshCw className="w-5 h-5 animate-spin" />
+                        Enhancing with AI...
+                      </>
+                    ) : (
+                      <>
+                        <Sparkles className="w-5 h-5" />
+                        Improve with AI
+                        <ArrowRight className="w-5 h-5" />
+                      </>
+                    )}
+                  </button>
+                </div>
               </div>
 
               {enhancing && (
