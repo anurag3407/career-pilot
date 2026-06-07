@@ -2327,6 +2327,19 @@ export const templates = [
     "createdAt": "2026-05-01"
   },
   {
+    "id": "Typographic_Wheatpaste_Poster_Wall",
+    "title": "Typographic Wheatpaste Poster Wall",
+    "category": "Portfolio",
+    "colorScheme": "Dark",
+    "layout": "Interactive",
+    "author": "System",
+    "views": 2400,
+    "rating": 4.9,
+    "image": "/template-previews/Typographic_Wheatpaste_Poster_Wall.png",
+    "createdAt": "2026-06-07",
+    "isComplete": true
+  },
+  {
     "id": "VHS_Rewind",
     "title": "VHS Rewind",
     "category": "Portfolio",

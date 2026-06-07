@@ -1,17 +1,35 @@
-import React, { useState, useRef, useEffect, Suspense, useMemo } from 'react';
-import { useTheme } from '../hooks/useTheme';
-import Navbar from '../components/Navbar';
-import DeployModal from '../components/portfolio/DeployModal';
-import ThemeSelector from '../components/portfolio/ThemeSelector';
-import HolographicAbout from '../components/portfolio/templates/Holographic/About';
-import CulinaryAbout from '../components/portfolio/templates/Culinary_Restaurant/About';
-import TechStartupHero from '../components/portfolio/templates/Tech_Startup/Hero';
-import GeometricShapesAbout from '../components/portfolio/templates/Geometric_Shapes/About';
+import React, { useState, useRef, useEffect, Suspense, useMemo } from "react";
+import { useTheme } from "../hooks/useTheme";
+import Navbar from "../components/Navbar";
+import DeployModal from "../components/portfolio/DeployModal";
+import ThemeSelector from "../components/portfolio/ThemeSelector";
+import HolographicAbout from "../components/portfolio/templates/Holographic/About";
+import CulinaryAbout from "../components/portfolio/templates/Culinary_Restaurant/About";
+import TechStartupHero from "../components/portfolio/templates/Tech_Startup/Hero";
+import GeometricShapesAbout from "../components/portfolio/templates/Geometric_Shapes/About";
 import ChooseAdventurePortfolio from '../components/portfolio/templates/Choose_Adventure/index';
-import WeatherMood from '../components/portfolio/templates/Weather_Mood/index';
-import SwissTypography from '../components/portfolio/templates/Swiss_Typography/index';
-import DesertDunes from '../components/portfolio/templates/Desert_Dunes/index';
+import WeatherMood from "../components/portfolio/templates/Weather_Mood/index";
+import SwissTypography from "../components/portfolio/templates/Swiss_Typography/index";
+import DesertDunes from "../components/portfolio/templates/Desert_Dunes/index";
 import { templates } from '../data/templates';
+import { motion, AnimatePresence } from "framer-motion";
+import { Moon, Sun, ChevronDown, Check, Eye, Star, Sparkles, X } from "lucide-react";
+import LiquidGlass from "../components/portfolio/templates/Liquid_Glass/index";
+import MidnightGradient from "../components/portfolio/templates/Midnight_Gradient/index";
+import CherryBlossom from '../components/portfolio/templates/Cherry_Blossom/index';
+import PlayingCardsPortfolio from "../components/portfolio/templates/Playing_Cards";
+import PsychedelicSwirl from "../components/portfolio/templates/Psychedelic_Swirl/index";
+import MemphisPop from '../components/portfolio/templates/Memphis_Pop/index';
+import TypewriterEffect from "../components/portfolio/templates/Typewriter_Effect/index";
+import ChromaticGlitch from "../components/portfolio/templates/Chromatic_Glitch/index";
+import MagneticDock from "../components/portfolio/templates/Magnetic_Dock/index";
+import { useSearchParams } from "react-router-dom";
+import MorphingBlobs from "../components/portfolio/templates/Morphing_Blobs/index";
+import OceanDepths from "../components/portfolio/templates/Ocean_Depths/index";
+import NeonCityscape from "../components/portfolio/templates/Neon_Cityscape/index";
+import PlanetaryOrbit from "../components/portfolio/templates/Planetary_Orbit/index";
+import LowPolyTerrain from "../components/portfolio/templates/Low_Poly_Terrain/index";
+import HighFashion from "../components/portfolio/templates/High_Fashion/index";
 
 
 /* TemplatePreviewFrame — contains each full portfolio template in a
@@ -302,71 +320,60 @@ function TemplateCard({ template, hovered, onHover, onLeave, onUse, aiDraft }) {
   );
 }
 
-const TemplatePreviewModal = ({
-  templateId,
-  isOpen,
-  onClose,
-  portfolioData,
-}) => {
+const TemplatePreviewModal = ({ templateId, isOpen, onClose, portfolioData }) => {
   const Component = useMemo(() => {
     if (!templateId) return null;
-    return React.lazy(
-      () => import(`../components/portfolio/templates/${templateId}/index.jsx`)
-    );
+    return React.lazy(() => import(`../components/portfolio/templates/${templateId}/index.jsx`));
   }, [templateId]);
 
-  if (!isOpen || !templateId) return null;
+  if (!templateId) return null;
 
   return (
-    <div className="fixed inset-0 z-[100] bg-background/95 backdrop-blur-xl flex flex-col overflow-hidden">
-      <div className="flex items-center justify-between px-6 py-4 bg-card/80 border-b border-border shadow-sm">
-        <div className="flex items-center gap-4">
-          <h2 className="text-xl font-bold bg-clip-text text-transparent bg-gradient-to-r from-cyan-400 to-blue-500">
-            {templateId.replace(/_/g, ' ')} Preview
-          </h2>
-          <span className="px-3 py-1 text-xs font-medium rounded-full bg-cyan-500/10 text-cyan-400 border border-cyan-500/20">
-            Live Demo
-          </span>
-        </div>
-        <button
-          onClick={onClose}
-          className="p-2 text-muted-foreground hover:text-foreground bg-muted hover:bg-accent rounded-xl transition-colors"
+    <AnimatePresence>
+      {isOpen && (
+        <motion.div
+          className="fixed inset-0 z-50 flex flex-col bg-background"
+          initial={{ opacity: 0 }}
+          animate={{ opacity: 1 }}
+          exit={{ opacity: 0 }}
         >
-          <X className="w-5 h-5" />
-        </button>
-      </div>
-      <div className="flex-1 overflow-y-auto relative bg-background">
-        <Suspense
-          fallback={
-            <div className="absolute inset-0 flex flex-col items-center justify-center text-muted-foreground gap-4">
-              <div className="w-8 h-8 border-4 border-cyan-500 border-t-transparent rounded-full animate-spin" />
-              <p className="animate-pulse font-medium tracking-wide text-sm uppercase">
-                Loading interactive preview...
-              </p>
-            </div>
-          }
-        >
-          {Component && (
-            <PortfolioProvider portfolioData={portfolioData}>
-              <Component portfolioData={portfolioData} />
-            </PortfolioProvider>
-          )}
-        </Suspense>
-      </div>
-    </div>
+          <div className="flex items-center justify-between px-6 py-3 border-b border-border bg-card shrink-0">
+            <span className="text-sm font-semibold text-foreground/70 uppercase tracking-widest">
+              Preview — {templateId?.replace(/_/g, " ")}
+            </span>
+            <button
+              onClick={onClose}
+              className="p-2 rounded-xl hover:bg-accent text-muted-foreground hover:text-foreground transition-colors"
+            >
+              <X className="w-5 h-5" />
+            </button>
+          </div>
+          <div className="flex-1 overflow-y-auto relative bg-background" style={{ transform: "translate(0)" }}>
+            <Suspense fallback={
+              <div className="absolute inset-0 flex flex-col items-center justify-center text-muted-foreground gap-4">
+                <div className="w-8 h-8 border-4 border-cyan-500 border-t-transparent rounded-full animate-spin" />
+                <p className="animate-pulse font-medium tracking-wide text-sm uppercase">Loading interactive preview...</p>
+              </div>
+            }>
+              {Component && <Component portfolioData={portfolioData} />}
+            </Suspense>
+          </div>
+        </motion.div>
+      )}
+    </AnimatePresence>
   );
 };
 
 export default function TemplateGallery() {
   const { theme, toggleTheme } = useTheme();
   const [searchParams, setSearchParams] = useSearchParams();
-  const previewTemplateId = searchParams.get('preview');
+  const previewTemplateId = searchParams.get("preview");
   const [hoveredCard, setHoveredCard] = useState(null);
 
-  const [category, setCategory] = useState('All');
-  const [colorScheme, setColorScheme] = useState('All');
-  const [layout, setLayout] = useState('All');
-  const [sort, setSort] = useState('Popular');
+  const [category, setCategory] = useState("All");
+  const [colorScheme, setColorScheme] = useState("All");
+  const [layout, setLayout] = useState("All");
+  const [sort, setSort] = useState("Popular");
 
   const [aiDraft, setAiDraft] = useState(null);
 
@@ -375,7 +382,7 @@ export default function TemplateGallery() {
     if (draft) {
       try {
         setAiDraft(JSON.parse(draft));
-      } catch (e) {}
+      } catch(e) {}
     }
   }, []);
 
@@ -384,12 +391,12 @@ export default function TemplateGallery() {
     setAiDraft(null);
   };
 
-  const [selectedTheme, setSelectedTheme] = useState('minimal');
+  const [selectedTheme, setSelectedTheme] = useState("minimal");
   const [isDeployModalOpen, setIsDeployModalOpen] = useState(false);
-  const [selectedPortfolioTitle, setSelectedPortfolioTitle] = useState('');
-  const [selectedTemplateId, setSelectedTemplateId] = useState('default');
+  const [selectedPortfolioTitle, setSelectedPortfolioTitle] = useState("");
+  const [selectedTemplateId, setSelectedTemplateId] = useState("default");
 
-  const handleUseTemplate = (val, isPreview, id = 'default') => {
+  const handleUseTemplate = (val, isPreview, id = "default") => {
     if (isPreview) {
       setSearchParams({ preview: val });
     } else {
@@ -445,7 +452,21 @@ export default function TemplateGallery() {
     <div className="min-h-screen bg-background text-foreground transition-colors duration-300">
       <Navbar />
 
+      <TemplatePreviewModal
+        templateId={previewTemplateId}
+        isOpen={!!previewTemplateId}
+        onClose={() => {
+          if (searchParams.has("preview")) {
+            window.history.back();
+          } else {
+            setSearchParams({}, { replace: true });
+          }
+        }}
+        portfolioData={aiDraft}
+      />
+
       <div className="p-8 pt-24">
+
         {aiDraft && (
           <div className="mb-8 p-4 rounded-xl bg-gradient-to-r from-emerald-500/10 to-teal-500/10 border border-emerald-500/30 flex items-center justify-between">
             <div>
@@ -556,32 +577,233 @@ export default function TemplateGallery() {
             ))}
           </div>
         )}
-        {/* Deploy Modal */}
 
-      <div className="mt-12">
-        <div className="mb-4 flex items-center gap-3 px-1">
-          <span className="rounded-full bg-amber-500/20 px-3 py-1 text-xs font-bold uppercase tracking-widest text-amber-400 border border-amber-500/30">Preview</span>
-          <h2 className="text-lg font-semibold text-foreground/70">Culinary Restaurant Theme — About Section</h2>
+        <DeployModal
+          isOpen={isDeployModalOpen}
+          onClose={() => setIsDeployModalOpen(false)}
+          portfolioTitle={selectedPortfolioTitle}
+          templateId={selectedTemplateId}
+          aiDraft={aiDraft}
+          onDeploySuccess={clearDraft}
+        />
+
+        {/* Section-only previews — no internal navbar, plain wrapper is fine */}
+        <div className="mt-12">
+          <div className="mb-4 flex items-center gap-3 px-1">
+            <span className="rounded-full bg-cyan-500/20 px-3 py-1 text-xs font-bold uppercase tracking-widest text-cyan-400 border border-cyan-500/30">Preview</span>
+            <h2 className="text-lg font-semibold text-foreground/70">Holographic Theme — About Section</h2>
+          </div>
+          <div className="overflow-hidden rounded-2xl border border-border"><HolographicAbout /></div>
         </div>
-        <div className="overflow-hidden rounded-2xl border border-border"><CulinaryAbout /></div>
-      <TemplatePreviewModal
-        templateId={previewTemplateId}
-        isOpen={!!previewTemplateId}
-        onClose={() => {
-          if (searchParams.has("preview")) {
-            // Check if there is history to go back to, so we pop the preview state cleanly
-            window.history.back();
-          } else {
-            setSearchParams({}, { replace: true });
-          }
-        }}
-        portfolioData={aiDraft}
-      />
+
+        <div className="mt-12">
+          <div className="mb-4 flex items-center gap-3 px-1">
+            <span className="rounded-full bg-amber-500/20 px-3 py-1 text-xs font-bold uppercase tracking-widest text-amber-400 border border-amber-500/30">Preview</span>
+            <h2 className="text-lg font-semibold text-foreground/70">Geometric Shapes Theme — About Section</h2>
+          </div>
+          <div className="overflow-hidden rounded-2xl border border-border"><GeometricShapesAbout /></div>
+        </div>
+
+        <TemplatePreviewFrame
+          label="Desert Dunes — Nature / Organic Template"
+          badgeColor="bg-amber-500/20 text-amber-400 border-amber-500/30"
+        >
+          <DesertDunes />
+        </TemplatePreviewFrame>
+
+        <TemplatePreviewFrame
+          label="Weather Mood Theme — Full Interactive Template"
+          badgeColor="bg-sky-500/20 text-sky-400 border-sky-500/30"
+        >
+          <WeatherMood />
+        </TemplatePreviewFrame>
+
+        <TemplatePreviewFrame
+          label="Swiss Typography — Full Interactive Template"
+          badgeColor="bg-red-500/20 text-red-400 border-red-500/30"
+        >
+          <SwissTypography portfolioData={aiDraft} />
+        </TemplatePreviewFrame>
+
+        {/* Liquid Glass */}
+        <div className="mt-12">
+          <div className="mb-4 flex items-center gap-3 px-1">
+            <span className="rounded-full bg-cyan-500/20 px-3 py-1 text-xs font-bold uppercase tracking-widest text-cyan-400 border border-cyan-500/30">
+              Preview
+            </span>
+            <h2 className="text-lg font-semibold text-foreground/70">Liquid Glass Theme</h2>
+          </div>
+          <div className="overflow-hidden rounded-2xl border border-border">
+            <LiquidGlass portfolioData={aiDraft} />
+          </div>
+        </div>
+
+        {/* Midnight Gradient */}
+        <div className="mt-12">
+          <div className="mb-4 flex items-center gap-3 px-1">
+            <span className="rounded-full bg-indigo-500/20 px-3 py-1 text-xs font-bold uppercase tracking-widest text-indigo-400 border border-indigo-500/30">
+              Preview
+            </span>
+            <h2 className="text-lg font-semibold text-foreground/70">Midnight Gradient Theme</h2>
+          </div>
+          <div className="overflow-hidden rounded-2xl border border-border">
+            <MidnightGradient />
+          </div>
+        </div>
+
+        {/* Playing Cards Theme */}
+        <div className="mt-12">
+          <div className="mb-4 flex items-center gap-3 px-1">
+            <span className="rounded-full bg-emerald-500/20 px-3 py-1 text-xs font-bold uppercase tracking-widest text-emerald-400 border border-emerald-500/30">
+              🃟 NEW — Playing Cards
+            </span>
+            <h2 className="text-lg font-semibold text-foreground/70">Playing Cards Theme — Click to flip, shuffle deck</h2>
+          </div>
+          <div className="overflow-hidden rounded-2xl border border-emerald-500/20">
+            <PlayingCardsPortfolio portfolioData={aiDraft} />
+          </div>
+        </div>
+
+        <div className="mt-12">
+          <div className="mb-4 flex items-center gap-3 px-1">
+            <span className="rounded-full bg-cyan-500/20 px-3 py-1 text-xs font-bold uppercase tracking-widest text-cyan-400 border border-cyan-500/30">Preview</span>
+            <h2 className="text-lg font-semibold text-foreground/70">Tech Startup Theme — Hero Section</h2>
+          </div>
+          <div className="overflow-hidden rounded-2xl border border-cyan-500/20"><TechStartupHero /></div>
+        </div>
+
+        {/* Psychedelic Swirl */}
+        <div className="mt-12">
+          <div className="mb-4 flex items-center gap-3 px-1">
+            <span className="rounded-full bg-fuchsia-500/20 px-3 py-1 text-xs font-bold uppercase tracking-widest text-fuchsia-400 border border-fuchsia-500/30">
+              ✿ Psychedelic Swirl
+            </span>
+            <h2 className="text-lg font-semibold text-foreground/70">
+              Psychedelic Swirl — Retro / Nostalgic Full Template
+            </h2>
+          </div>
+          <div
+            className="rounded-2xl border border-fuchsia-500/20"
+            style={{ height: 640, overflowY: "auto", overflowX: "hidden", transform: "translate(0)", position: "relative" }}
+          >
+            <PsychedelicSwirl />
+          </div>
+        </div>
+
+        {/* Typewriter Effect */}
+        <div className="mt-12">
+          <div className="mb-4 flex items-center gap-3 px-1">
+            <span className="rounded-full px-3 py-1 text-xs font-bold uppercase tracking-widest border" style={{ background: "rgba(139,37,0,.1)", color: "#8B2500", borderColor: "rgba(139,37,0,.25)" }}>
+              Typewriter Effect
+            </span>
+            <h2 className="text-lg font-semibold text-foreground/70">Typewriter Effect — Vintage Paper Full Template</h2>
+          </div>
+          <div className="rounded-2xl" style={{ height: 640, overflowY: "auto", overflowX: "hidden", transform: "translate(0)", position: "relative", border: "1px solid rgba(139,37,0,.2)" }}>
+            <TypewriterEffect />
+          </div>
+        </div>
+
+        {/* Chromatic Glitch */}
+        <div className="mt-12">
+          <div className="mb-4 flex items-center gap-3 px-1">
+            <span className="rounded-full bg-cyan-500/20 px-3 py-1 text-xs font-bold uppercase tracking-widest text-cyan-400 border border-cyan-500/30">
+              ◈ Chromatic Glitch
+            </span>
+            <h2 className="text-lg font-semibold text-foreground/70">Chromatic Glitch — RGB Split / Colorful Full Template</h2>
+          </div>
+          <div className="rounded-2xl border border-cyan-500/20"
+            style={{ height: 640, overflowY: "auto", overflowX: "hidden", transform: "translate(0)", position: "relative" }}>
+            <ChromaticGlitch />
+          </div>
+        </div>
+
+        {/* Magnetic Dock */}
+        <div className="mt-12">
+          <div className="mb-4 flex items-center gap-3 px-1">
+            <span className="rounded-full bg-indigo-500/15 px-3 py-1 text-xs font-bold uppercase tracking-widest text-indigo-400 border border-indigo-500/25">
+              ⬡ Magnetic Dock
+            </span>
+            <h2 className="text-lg font-semibold text-foreground/70">Magnetic Dock — macOS Spring-Physics Navigation</h2>
+          </div>
+          <div className="rounded-2xl border border-indigo-500/15"
+            style={{ height: 640, overflowY: "auto", overflowX: "hidden", transform: "translate(0)", position: "relative" }}>
+            <MagneticDock />
+          </div>
+        </div>
+
+        {/* Ocean Depths */}
+        <div className="mt-12">
+          <div className="mb-4 flex items-center gap-3 px-1">
+            <span className="rounded-full bg-cyan-500/20 px-3 py-1 text-xs font-bold uppercase tracking-widest text-cyan-400 border border-cyan-500/30">
+              ≋ Ocean Depths
+            </span>
+            <h2 className="text-lg font-semibold text-foreground/70">Ocean Depths — Bioluminescent 3D/WebGL Portfolio</h2>
+          </div>
+          <div className="rounded-2xl border border-cyan-500/20"
+            style={{ height: 640, overflowY: "auto", overflowX: "hidden", transform: "translate(0)", position: "relative" }}>
+            <OceanDepths />
+          </div>
+        </div>
+
+        {/* Neon Cityscape */}
+        <div className="mt-12">
+          <div className="mb-4 flex items-center gap-3 px-1">
+            <span className="rounded-full bg-pink-500/20 px-3 py-1 text-xs font-bold uppercase tracking-widest text-pink-400 border border-pink-500/30">
+              ◈ Neon Cityscape
+            </span>
+            <h2 className="text-lg font-semibold text-foreground/70">Neon Cityscape — Cyberpunk Neon Portfolio</h2>
+          </div>
+          <div className="rounded-2xl border border-pink-500/20"
+            style={{ height: 640, overflowY: "auto", overflowX: "hidden", transform: "translate(0)", position: "relative" }}>
+            <NeonCityscape />
+          </div>
+        </div>
+
+        {/* Planetary Orbit */}
+        <div className="mt-12">
+          <div className="mb-4 flex items-center gap-3 px-1">
+            <span className="rounded-full bg-blue-500/20 px-3 py-1 text-xs font-bold uppercase tracking-widest text-blue-400 border border-blue-500/30">
+              ◎ Planetary Orbit
+            </span>
+            <h2 className="text-lg font-semibold text-foreground/70">Planetary Orbit — Solar System Navigation Portfolio</h2>
+          </div>
+          <div className="rounded-2xl border border-blue-500/20"
+            style={{ height: 640, overflowY: "auto", overflowX: "hidden", transform: "translate(0)", position: "relative" }}>
+            <PlanetaryOrbit />
+          </div>
+        </div>
+
+        {/* Low Poly Terrain */}
+        <div className="mt-12">
+          <div className="mb-4 flex items-center gap-3 px-1">
+            <span className="rounded-full bg-emerald-500/20 px-3 py-1 text-xs font-bold uppercase tracking-widest text-emerald-400 border border-emerald-500/30">
+              △ Low Poly Terrain
+            </span>
+            <h2 className="text-lg font-semibold text-foreground/70">Low Poly Terrain — Animated Day/Night Cycle Portfolio</h2>
+          </div>
+          <div className="rounded-2xl border border-emerald-500/20"
+            style={{ height: 640, overflowY: "auto", overflowX: "hidden", transform: "translate(0)", position: "relative" }}>
+            <LowPolyTerrain />
+          </div>
+        </div>
+
+        {/* High Fashion */}
+        <div className="mt-12 mb-16">
+          <div className="mb-4 flex items-center gap-3 px-1">
+            <span className="rounded-full px-3 py-1 text-xs font-bold uppercase tracking-widest border" style={{ background: "rgba(201,168,76,.1)", color: "#c9a84c", borderColor: "rgba(201,168,76,.25)" }}>
+              ✦ High Fashion
+            </span>
+            <h2 className="text-lg font-semibold text-foreground/70">High Fashion — Editorial Two-Column Portfolio</h2>
+          </div>
+          <div className="rounded-2xl" style={{ height: 640, overflowY: "auto", overflowX: "hidden", transform: "translate(0)", position: "relative", border: "1px solid rgba(201,168,76,.2)" }}>
+            <HighFashion />
+          </div>
+        </div>
+
       </div>
 
     </div>
-  </div>
-);
+  );
 }
       
        
