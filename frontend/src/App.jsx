@@ -109,6 +109,7 @@ import NeonCityscape from './components/portfolio/templates/Neon_Cityscape/index
 import PlanetaryOrbit from './components/portfolio/templates/Planetary_Orbit/index.jsx';
 import LowPolyTerrain from './components/portfolio/templates/Low_Poly_Terrain/index.jsx';
 import HighFashion from './components/portfolio/templates/High_Fashion/index.jsx';
+import WireframeSkeletonLoadingOnly from './components/portfolio/templates/Wireframe_Skeleton_Loading_Only/index.jsx';
 import TestSocialLinks from './pages/TestSocialLinks';
 
 function LoadingScreen({ label }) {
@@ -269,6 +270,7 @@ function AppRoutes() {
         <Route path="/templates/planetary-orbit" element={<PlanetaryOrbit />} />
         <Route path="/templates/low-poly-terrain" element={<LowPolyTerrain />} />
         <Route path="/templates/high-fashion" element={<HighFashion />} />
+        <Route path="/templates/wireframe-skeleton-loading-only" element={<WireframeSkeletonLoadingOnly />} />
 
         <Route path="/templates/chatbot" element={<ChatbotPortfolio />} /> 
         <Route path="/templates/glassmorphism" element={<GlassmorphismTemplate/>} />

@@ -40,6 +40,7 @@ import NeonCityscape from "../components/portfolio/templates/Neon_Cityscape/inde
 import PlanetaryOrbit from "../components/portfolio/templates/Planetary_Orbit/index";
 import LowPolyTerrain from "../components/portfolio/templates/Low_Poly_Terrain/index";
 import HighFashion from "../components/portfolio/templates/High_Fashion/index";
+import WireframeSkeletonLoadingOnly from "../components/portfolio/templates/Wireframe_Skeleton_Loading_Only/index";
 // import SportsAthletic from "../components/portfolio/templates/Sports_Athletic/index";
 
 /* TemplatePreviewFrame — contains each full portfolio template in a sandboxed scrollable box. */
@@ -679,7 +680,12 @@ export default function TemplateGallery() {
           <SportsAthletic />
         </TemplatePreviewFrame>
         */}
-
+        <TemplatePreviewFrame
+          label="Wireframe Skeleton Loading Only Theme — Blueprint Outline Layout"
+          badgeColor="bg-zinc-800 text-zinc-400 border-zinc-700"
+        >
+          <WireframeSkeletonLoadingOnly portfolioData={aiDraft} />
+        </TemplatePreviewFrame>
         {/* Deploy Modal */}
         <DeployModal
           isOpen={isDeployModalOpen}
