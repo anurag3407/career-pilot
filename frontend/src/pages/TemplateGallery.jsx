@@ -12,6 +12,7 @@ import WeatherMood from "../components/portfolio/templates/Weather_Mood/index";
 import SwissTypography from "../components/portfolio/templates/Swiss_Typography/index";
 import DesertDunes from "../components/portfolio/templates/Desert_Dunes/index";
 import { templates } from '../data/templates';
+import { PortfolioProvider } from "../context/PortfolioContext";
 import { motion, AnimatePresence } from "framer-motion";
 import { Moon, Sun, ChevronDown, Check, Eye, Star, Sparkles, X } from "lucide-react";
 import LiquidGlass from "../components/portfolio/templates/Liquid_Glass/index";
@@ -156,6 +157,30 @@ function FilterSelect({ value, onChange, options, className = "" }) {
   );
 }
 
+class TemplateErrorBoundary extends React.Component {
+  constructor(props) {
+    super(props);
+    this.state = { hasError: false };
+  }
+  static getDerivedStateFromError() {
+    return { hasError: true };
+  }
+  componentDidCatch(error) {
+    // silently swallow per-card render errors so the gallery stays alive
+    console.warn('[TemplateCard] preview render error:', error?.message);
+  }
+  render() {
+    if (this.state.hasError) {
+      return (
+        <div className="w-full h-full bg-muted/30 flex items-center justify-center">
+          <span className="text-[10px] text-muted-foreground uppercase tracking-widest">Preview unavailable</span>
+        </div>
+      );
+    }
+    return this.props.children;
+  }
+}
+
 const TemplateHeroPreview = ({ templateId, portfolioData }) => {
   const Component = useMemo(() => {
     if (!templateId) return null;
@@ -201,7 +226,7 @@ function TemplateCard({ template, hovered, onHover, onLeave, onUse, aiDraft }) {
       className="bg-card rounded-2xl overflow-hidden border border-border flex flex-col justify-between cursor-pointer"
     >
       <div className="overflow-hidden relative bg-background h-52">
-        {template.isComplete ? (
+        {template.renderLive ? (
           <div
             className="absolute top-0 left-0 origin-top-left pointer-events-none"
             style={{
@@ -210,10 +235,12 @@ function TemplateCard({ template, hovered, onHover, onLeave, onUse, aiDraft }) {
               transform: 'scale(0.3)',
             }}
           >
-            <TemplateHeroPreview
-              templateId={template.id}
-              portfolioData={aiDraft}
-            />
+            <TemplateErrorBoundary key={template.id}>
+              <TemplateHeroPreview
+                templateId={template.id}
+                portfolioData={aiDraft}
+              />
+            </TemplateErrorBoundary>
           </div>
         ) : (
           <motion.img
@@ -355,7 +382,11 @@ const TemplatePreviewModal = ({ templateId, isOpen, onClose, portfolioData }) =>
                 <p className="animate-pulse font-medium tracking-wide text-sm uppercase">Loading interactive preview...</p>
               </div>
             }>
-              {Component && <Component portfolioData={portfolioData} />}
+              {Component && (
+                <PortfolioProvider portfolioData={portfolioData}>
+                  <Component portfolioData={portfolioData} />
+                </PortfolioProvider>
+              )}
             </Suspense>
           </div>
         </motion.div>
@@ -363,6 +394,7 @@ const TemplatePreviewModal = ({ templateId, isOpen, onClose, portfolioData }) =>
     </AnimatePresence>
   );
 };
+
 
 export default function TemplateGallery() {
   const { theme, toggleTheme } = useTheme();
@@ -593,7 +625,11 @@ export default function TemplateGallery() {
             <span className="rounded-full bg-cyan-500/20 px-3 py-1 text-xs font-bold uppercase tracking-widest text-cyan-400 border border-cyan-500/30">Preview</span>
             <h2 className="text-lg font-semibold text-foreground/70">Holographic Theme — About Section</h2>
           </div>
-          <div className="overflow-hidden rounded-2xl border border-border"><HolographicAbout /></div>
+          <div className="overflow-hidden rounded-2xl border border-border">
+            <TemplateErrorBoundary key="holographic-about">
+              <HolographicAbout />
+            </TemplateErrorBoundary>
+          </div>
         </div>
 
         <div className="mt-12">
@@ -601,28 +637,38 @@ export default function TemplateGallery() {
             <span className="rounded-full bg-amber-500/20 px-3 py-1 text-xs font-bold uppercase tracking-widest text-amber-400 border border-amber-500/30">Preview</span>
             <h2 className="text-lg font-semibold text-foreground/70">Geometric Shapes Theme — About Section</h2>
           </div>
-          <div className="overflow-hidden rounded-2xl border border-border"><GeometricShapesAbout /></div>
+          <div className="overflow-hidden rounded-2xl border border-border">
+            <TemplateErrorBoundary key="geometric-about">
+              <GeometricShapesAbout />
+            </TemplateErrorBoundary>
+          </div>
         </div>
 
         <TemplatePreviewFrame
           label="Desert Dunes — Nature / Organic Template"
           badgeColor="bg-amber-500/20 text-amber-400 border-amber-500/30"
         >
-          <DesertDunes />
+          <TemplateErrorBoundary key="desert-dunes">
+            <DesertDunes />
+          </TemplateErrorBoundary>
         </TemplatePreviewFrame>
 
         <TemplatePreviewFrame
           label="Weather Mood Theme — Full Interactive Template"
           badgeColor="bg-sky-500/20 text-sky-400 border-sky-500/30"
         >
-          <WeatherMood />
+          <TemplateErrorBoundary key="weather-mood">
+            <WeatherMood />
+          </TemplateErrorBoundary>
         </TemplatePreviewFrame>
 
         <TemplatePreviewFrame
           label="Swiss Typography — Full Interactive Template"
           badgeColor="bg-red-500/20 text-red-400 border-red-500/30"
         >
-          <SwissTypography portfolioData={aiDraft} />
+          <TemplateErrorBoundary key="swiss-typography">
+            <SwissTypography portfolioData={aiDraft} />
+          </TemplateErrorBoundary>
         </TemplatePreviewFrame>
 
         {/* Liquid Glass */}
@@ -634,7 +680,9 @@ export default function TemplateGallery() {
             <h2 className="text-lg font-semibold text-foreground/70">Liquid Glass Theme</h2>
           </div>
           <div className="overflow-hidden rounded-2xl border border-border">
-            <LiquidGlass portfolioData={aiDraft} />
+            <TemplateErrorBoundary key="liquid-glass">
+              <LiquidGlass portfolioData={aiDraft} />
+            </TemplateErrorBoundary>
           </div>
         </div>
 
@@ -647,7 +695,9 @@ export default function TemplateGallery() {
             <h2 className="text-lg font-semibold text-foreground/70">Midnight Gradient Theme</h2>
           </div>
           <div className="overflow-hidden rounded-2xl border border-border">
-            <MidnightGradient />
+            <TemplateErrorBoundary key="midnight-gradient">
+              <MidnightGradient />
+            </TemplateErrorBoundary>
           </div>
         </div>
 
@@ -660,7 +710,9 @@ export default function TemplateGallery() {
             <h2 className="text-lg font-semibold text-foreground/70">Playing Cards Theme — Click to flip, shuffle deck</h2>
           </div>
           <div className="overflow-hidden rounded-2xl border border-emerald-500/20">
-            <PlayingCardsPortfolio portfolioData={aiDraft} />
+            <TemplateErrorBoundary key="playing-cards">
+              <PlayingCardsPortfolio portfolioData={aiDraft} />
+            </TemplateErrorBoundary>
           </div>
         </div>
 
@@ -669,7 +721,11 @@ export default function TemplateGallery() {
             <span className="rounded-full bg-cyan-500/20 px-3 py-1 text-xs font-bold uppercase tracking-widest text-cyan-400 border border-cyan-500/30">Preview</span>
             <h2 className="text-lg font-semibold text-foreground/70">Tech Startup Theme — Hero Section</h2>
           </div>
-          <div className="overflow-hidden rounded-2xl border border-cyan-500/20"><TechStartupHero /></div>
+          <div className="overflow-hidden rounded-2xl border border-cyan-500/20">
+            <TemplateErrorBoundary key="tech-startup">
+              <TechStartupHero />
+            </TemplateErrorBoundary>
+          </div>
         </div>
 
         {/* Psychedelic Swirl */}
@@ -686,7 +742,9 @@ export default function TemplateGallery() {
             className="rounded-2xl border border-fuchsia-500/20"
             style={{ height: 640, overflowY: "auto", overflowX: "hidden", transform: "translate(0)", position: "relative" }}
           >
-            <PsychedelicSwirl />
+            <TemplateErrorBoundary key="psychedelic-swirl">
+              <PsychedelicSwirl />
+            </TemplateErrorBoundary>
           </div>
         </div>
 
@@ -699,7 +757,9 @@ export default function TemplateGallery() {
             <h2 className="text-lg font-semibold text-foreground/70">Typewriter Effect — Vintage Paper Full Template</h2>
           </div>
           <div className="rounded-2xl" style={{ height: 640, overflowY: "auto", overflowX: "hidden", transform: "translate(0)", position: "relative", border: "1px solid rgba(139,37,0,.2)" }}>
-            <TypewriterEffect />
+            <TemplateErrorBoundary key="typewriter-effect">
+              <TypewriterEffect />
+            </TemplateErrorBoundary>
           </div>
         </div>
 
@@ -713,7 +773,9 @@ export default function TemplateGallery() {
           </div>
           <div className="rounded-2xl border border-cyan-500/20"
             style={{ height: 640, overflowY: "auto", overflowX: "hidden", transform: "translate(0)", position: "relative" }}>
-            <ChromaticGlitch />
+            <TemplateErrorBoundary key="chromatic-glitch">
+              <ChromaticGlitch />
+            </TemplateErrorBoundary>
           </div>
         </div>
 
@@ -727,7 +789,9 @@ export default function TemplateGallery() {
           </div>
           <div className="rounded-2xl border border-indigo-500/15"
             style={{ height: 640, overflowY: "auto", overflowX: "hidden", transform: "translate(0)", position: "relative" }}>
-            <MagneticDock />
+            <TemplateErrorBoundary key="magnetic-dock">
+              <MagneticDock />
+            </TemplateErrorBoundary>
           </div>
         </div>
 
@@ -741,7 +805,9 @@ export default function TemplateGallery() {
           </div>
           <div className="rounded-2xl border border-cyan-500/20"
             style={{ height: 640, overflowY: "auto", overflowX: "hidden", transform: "translate(0)", position: "relative" }}>
-            <OceanDepths />
+            <TemplateErrorBoundary key="ocean-depths">
+              <OceanDepths />
+            </TemplateErrorBoundary>
           </div>
         </div>
 
@@ -755,7 +821,9 @@ export default function TemplateGallery() {
           </div>
           <div className="rounded-2xl border border-pink-500/20"
             style={{ height: 640, overflowY: "auto", overflowX: "hidden", transform: "translate(0)", position: "relative" }}>
-            <NeonCityscape />
+            <TemplateErrorBoundary key="neon-cityscape">
+              <NeonCityscape />
+            </TemplateErrorBoundary>
           </div>
         </div>
 
@@ -769,7 +837,9 @@ export default function TemplateGallery() {
           </div>
           <div className="rounded-2xl border border-blue-500/20"
             style={{ height: 640, overflowY: "auto", overflowX: "hidden", transform: "translate(0)", position: "relative" }}>
-            <PlanetaryOrbit />
+            <TemplateErrorBoundary key="planetary-orbit">
+              <PlanetaryOrbit />
+            </TemplateErrorBoundary>
           </div>
         </div>
 
@@ -783,7 +853,9 @@ export default function TemplateGallery() {
           </div>
           <div className="rounded-2xl border border-emerald-500/20"
             style={{ height: 640, overflowY: "auto", overflowX: "hidden", transform: "translate(0)", position: "relative" }}>
-            <LowPolyTerrain />
+            <TemplateErrorBoundary key="low-poly-terrain">
+              <LowPolyTerrain />
+            </TemplateErrorBoundary>
           </div>
         </div>
 
@@ -796,7 +868,9 @@ export default function TemplateGallery() {
             <h2 className="text-lg font-semibold text-foreground/70">High Fashion — Editorial Two-Column Portfolio</h2>
           </div>
           <div className="rounded-2xl" style={{ height: 640, overflowY: "auto", overflowX: "hidden", transform: "translate(0)", position: "relative", border: "1px solid rgba(201,168,76,.2)" }}>
-            <HighFashion />
+            <TemplateErrorBoundary key="high-fashion">
+              <HighFashion />
+            </TemplateErrorBoundary>
           </div>
         </div>
 

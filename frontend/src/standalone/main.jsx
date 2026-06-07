@@ -16,6 +16,7 @@ import '../index.css';
 
 // Explicitly import all complete templates for code-splitting
 const templateMap = {
+  The_Anti_Portfolio_Nothingness_Absolute_Blank: lazy(() => import('../components/portfolio/templates/The_Anti_Portfolio_Nothingness_Absolute_Blank/index.jsx')),
   Cherry_Blossom: lazy(() => import('../components/portfolio/templates/Cherry_Blossom/index.jsx')),
   Swiss_Typography: lazy(() => import('../components/portfolio/templates/Swiss_Typography/index.jsx')),
   Liquid_Glass: lazy(() => import('../components/portfolio/templates/Liquid_Glass/index.jsx')),

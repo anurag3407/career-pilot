@@ -1,7 +1,20 @@
 export const templates = [
-   
-{
-  "id": "Eye_Tracking_Heatmap_Simulation",
+  {
+    "id": "The_Anti_Portfolio_Nothingness_Absolute_Blank",
+    "title": "The Anti-Portfolio: Nothingness Absolute Blank",
+    "category": "Portfolio",
+    "colorScheme": "Light",
+    "layout": "Minimal",
+    "author": "System",
+    "views": 1500,
+    "rating": 4.9,
+    "image": "/template-previews/The_Anti_Portfolio_Nothingness_Absolute_Blank.png",
+    "createdAt": "2026-06-07",
+    "isComplete": true,
+    "renderLive": true
+  },
+  {
+    "id": "Eye_Tracking_Heatmap_Simulation",
   "title": "Eye Tracking Heatmap Simulation",
   "category": "Portfolio",
   "colorScheme": "Dark",
