@@ -1,4 +1,4 @@
-import React, { useState, useEffect } from 'react';
+import React, { useState, useEffect, useContext } from 'react';
 import { motion, AnimatePresence } from 'framer-motion';
 import { 
   Terminal, Cpu, Layers, GitBranch, Share2, 
@@ -6,6 +6,7 @@ import {
   Sparkles, RefreshCw, Eye, ThumbsUp, Code 
 } from 'lucide-react';
 import dummyData from '../../../../data/dummy_data.json';
+import { PortfolioContext } from '../../../../context/PortfolioContext';
 
 /**
  * Wireframe Skeleton Loading Only Theme
@@ -13,7 +14,10 @@ import dummyData from '../../../../data/dummy_data.json';
  * real user data inside a gorgeous wireframe outline with active
  * skeleton loading shimmers and interactive elements.
  */
-export default function WireframeSkeletonLoadingOnly({ portfolioData }) {
+export default function WireframeSkeletonLoadingOnly({ portfolioData: propPortfolioData }) {
+  const contextPortfolioData = useContext(PortfolioContext);
+  const portfolioData = contextPortfolioData || propPortfolioData;
+
   const [activeTab, setActiveTab] = useState('all');
   const [isRefreshing, setIsRefreshing] = useState(false);
   const [loadProgress, setLoadProgress] = useState(100);

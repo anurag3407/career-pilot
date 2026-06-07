@@ -6,6 +6,7 @@ import { Moon, Sun, ChevronDown, Check, Eye, Star, Sparkles, X } from "lucide-re
 // Context & Data
 import { useTheme } from "../hooks/useTheme";
 import { templates } from '../data/templates';
+import { PortfolioContext } from '../context/PortfolioContext';
 
 // Components
 import Navbar from "../components/Navbar";
@@ -155,7 +156,9 @@ const TemplateHeroPreview = ({ templateId, portfolioData }) => {
   if (!templateId) return null;
   return (
     <Suspense fallback={<div className="w-full h-full bg-muted/50" />}>
-      <Component portfolioData={portfolioData} />
+      <PortfolioContext.Provider value={portfolioData}>
+        <Component portfolioData={portfolioData} />
+      </PortfolioContext.Provider>
     </Suspense>
   );
 };
@@ -266,7 +269,11 @@ const TemplatePreviewModal = ({ templateId, isOpen, onClose, portfolioData }) =>
       </div>
       <div className="flex-1 overflow-y-auto relative bg-background">
         <React.Suspense fallback={<div className="p-4 text-center">Loading...</div>}>
-          {Component && <Component portfolioData={portfolioData} />}
+          {Component && (
+            <PortfolioContext.Provider value={portfolioData}>
+              <Component portfolioData={portfolioData} />
+            </PortfolioContext.Provider>
+          )}
         </React.Suspense>
       </div>
     </div>
@@ -684,7 +691,9 @@ export default function TemplateGallery() {
           label="Wireframe Skeleton Loading Only Theme — Blueprint Outline Layout"
           badgeColor="bg-zinc-800 text-zinc-400 border-zinc-700"
         >
-          <WireframeSkeletonLoadingOnly portfolioData={aiDraft} />
+          <PortfolioContext.Provider value={aiDraft}>
+            <WireframeSkeletonLoadingOnly />
+          </PortfolioContext.Provider>
         </TemplatePreviewFrame>
         {/* Deploy Modal */}
         <DeployModal

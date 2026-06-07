@@ -1,6 +1,7 @@
 import React, { lazy, Suspense } from 'react';
 import { createRoot } from 'react-dom/client';
 import '../index.css';
+import { PortfolioContext } from '../context/PortfolioContext';
 
 /**
  * Standalone Portfolio Renderer
@@ -128,7 +129,9 @@ function App() {
 
   return (
     <Suspense fallback={<LoadingScreen />}>
-      <TemplateComponent portfolioData={portfolioData} />
+      <PortfolioContext.Provider value={portfolioData}>
+        <TemplateComponent portfolioData={portfolioData} />
+      </PortfolioContext.Provider>
     </Suspense>
   );
 }
