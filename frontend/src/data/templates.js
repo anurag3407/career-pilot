@@ -1,5 +1,18 @@
 export const templates = [
   {
+    "id": "The_Anti_Portfolio_Nothingness_Absolute_Blank",
+    "title": "The Anti-Portfolio",
+    "category": "Portfolio",
+    "colorScheme": "Light",
+    "layout": "Minimal",
+    "author": "Antigravity",
+    "views": 1337,
+    "rating": 5.0,
+    "image": "/template-previews/The_Anti_Portfolio_Nothingness_Absolute_Blank.png",
+    "createdAt": "2026-06-06",
+    "isComplete": true
+  },
+  {
   "id": "Vercel_Deploy",
   "title": "Vercel Deploy",
   "category": "Portfolio",
