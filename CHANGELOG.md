@@ -1,3 +1,11 @@
+# [1.184.0](https://github.com/anurag3407/career-pilot/compare/v1.183.0...v1.184.0) (2026-06-07)
+
+
+### Features
+
+* add Broken Glass Shards Parallax portfolio template ([#3266](https://github.com/anurag3407/career-pilot/issues/3266)) ([7be2727](https://github.com/anurag3407/career-pilot/commit/7be272733194191934015e5d941e30d7315c43de))
+* add Interactive Table of Elements template ([#3278](https://github.com/anurag3407/career-pilot/issues/3278)) ([707ec27](https://github.com/anurag3407/career-pilot/commit/707ec27c933b49f90429b99815fe48212af1d00d))
+
 # [1.183.0](https://github.com/anurag3407/career-pilot/compare/v1.182.0...v1.183.0) (2026-06-07)
 
 
