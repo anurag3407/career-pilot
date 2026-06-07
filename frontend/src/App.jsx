@@ -32,7 +32,6 @@ import ChatbotPortfolio from "./components/portfolio/templates/Chatbot_Portfolio
 import GlassmorphismTemplate from "./components/portfolio/templates/Glassmorphism/index";
 
 import JobTracker from './pages/JobTracker';
-
 const Community = lazy(() => import('./pages/Community'));
 const Login = lazy(() => import("./pages/Login"));
 const Register = lazy(() => import("./pages/Register"));
@@ -51,6 +50,7 @@ const EmailGenerator = lazy(() => import("./pages/EmailGenerator"));
 const LinkedInOptimizer = lazy(() => import("./pages/LinkedInOptimizer"));
 const Settings = lazy(() => import("./pages/Settings"));
 const SkillGap = lazy(() => import("./pages/SkillGap"));
+import SkillsGapAnalyzer from './components/SkillsGapAnalyzer';
 const ResumeHub = lazy(() => import("./pages/hubs/ResumeHub"));
 const JobsHub = lazy(() => import("./pages/hubs/JobsHub"));
 const PortfolioHub = lazy(() => import("./pages/hubs/PortfolioHub"));
@@ -67,7 +67,6 @@ const MyChallenges = lazy(() => import("./pages/fellowship/MyChallenges"));
 const Verify = lazy(() => import("./pages/fellowship/Verify"));
 const FellowshipMessages = lazy(() => import("./pages/fellowship/FellowshipMessages"));
 const FellowshipChat = lazy(() => import("./pages/fellowship/FellowshipChat"));
-
 
 const AdminLayout = lazy(() => import("./pages/admin/layout/AdminLayout"));
 const AdminDashboard = lazy(() => import("./pages/admin/views/AdminDashboard"));
@@ -124,6 +123,7 @@ function LoadingScreen({ label }) {
 }
 
 
+>>>>>>> upstream/main
 function ProtectedRoute({ children }) {
   const { user, loading } = useAuth();
 
@@ -356,6 +356,7 @@ function AppRoutes() {
         <Route path="/email-generator" element={<ProtectedRoute><Suspense fallback={<LoadingScreen label="Loading Email Generator..." />}><EmailGenerator /></Suspense></ProtectedRoute>} />
         <Route path="/linkedin-optimizer" element={<ProtectedRoute><Suspense fallback={<LoadingScreen label="Loading LinkedIn Optimizer..." />}><LinkedInOptimizer /></Suspense></ProtectedRoute>} />
         <Route path="/skill-gap" element={<ProtectedRoute><Suspense fallback={<LoadingScreen label="Loading Skill Gap Analyzer..." />}><SkillGap /></Suspense></ProtectedRoute>} />
+        <Route path="/skills-gap" element={<ProtectedRoute><SkillsGapAnalyzer /></ProtectedRoute>} />
         <Route path="/deployments" element={<ProtectedRoute><Suspense fallback={<LoadingScreen label="Loading Deployments..." />}><Deployments /></Suspense></ProtectedRoute>} />
         <Route path="/settings" element={<ProtectedRoute><Suspense fallback={<LoadingScreen label="Loading Settings..." />}><Settings /></Suspense></ProtectedRoute>} />
 

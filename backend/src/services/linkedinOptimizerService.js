@@ -49,8 +49,17 @@ export const optimizeLinkedInProfile = async (profileText, targetRole, aiProvide
     - summary: Concise overall feedback.
     `;
 
+    let timer;
     try {
-        const result = await aiProvider.generateContent(prompt);
+        const timeoutPromise = new Promise((_, reject) => {
+            timer = setTimeout(() => reject(new Error('AI Content generation timed out (max 30 seconds)')), 30000);
+        });
+
+        const result = await Promise.race([
+            aiProvider.generateContent(prompt),
+            timeoutPromise
+        ]);
+
         const text = result.text;
 
         // Strip markdown fences the model sometimes wraps output in
@@ -104,5 +113,7 @@ export const optimizeLinkedInProfile = async (profileText, targetRole, aiProvide
     } catch (error) {
         console.error('Error optimizing LinkedIn profile:', error);
         throw new Error('Failed to optimize LinkedIn profile.');
+    } finally {
+        if (timer) clearTimeout(timer);
     }
 };

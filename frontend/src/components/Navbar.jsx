@@ -13,6 +13,7 @@ import {
   User,
   Bell,
   Mail,
+  BrainCircuit,
   Linkedin,
   Users,
   GraduationCap,
@@ -85,6 +86,7 @@ export default function Navbar() {
     { path: '/community', label: 'Community', icon: Users },
     { path: '/upload', label: 'Resume', icon: FileText },
     { path: '/email-generator', label: 'Emails', icon: Mail },
+    { path: '/skills-gap', label: 'Skills Gap', icon: BrainCircuit },
     { path: '/linkedin-optimizer', label: 'LinkedIn', icon: Linkedin },
     { path: '/skill-gap', label: 'Skill Gap', icon: Target },
   ]

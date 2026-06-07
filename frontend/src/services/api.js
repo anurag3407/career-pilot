@@ -560,6 +560,17 @@ export const enhanceApi = {
     return handleResponse(response)
   },
 
+  // Analyze skills gap against a target role
+  async analyzeSkillsGap(data) {
+    const headers = await getAuthHeaders()
+    const response = await fetch(`${API_BASE}/enhance/analyze-skills-gap`, {
+      method: 'POST',
+      headers,
+      body: JSON.stringify(data)
+    })
+    return handleResponse(response)
+  },
+
   // Optimize LinkedIn profile with AI
   async optimizeLinkedIn(data) {
     const headers = await getAuthHeaders()
