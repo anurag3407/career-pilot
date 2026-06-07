@@ -273,7 +273,6 @@ function AppRoutes() {
         <Route path="/templates/low-poly-terrain" element={<LowPolyTerrain />} />
         <Route path="/templates/high-fashion" element={<HighFashion />} />
         <Route path="/templates/typographic-wheatpaste-poster-wall" element={<TypographicWheatpastePosterWall />} />
-        <Route path="/templates/particle-universe" element={<ParticleUniverse />} />
 
         <Route path="/templates/chatbot" element={<ChatbotPortfolio />} /> 
         <Route path="/templates/glassmorphism" element={<GlassmorphismTemplate/>} />
