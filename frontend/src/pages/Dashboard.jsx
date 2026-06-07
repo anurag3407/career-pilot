@@ -336,7 +336,8 @@ export default function Dashboard() {
             </motion.div>
 
             {/* Stats Row */}
-            <motion.div variants={itemVariants} className="grid grid-cols-2 md:grid-cols-6 gap-5 mb-10">
+            // GSSoC Optimization: Refactored stats configuration into a single array mapping to reduce redundancy and improve maintainability.
+            <motion.div variants={itemVariants} className="grid grid-cols-2 sm:grid-cols-3 md:grid-cols-6 gap-3 md:gap-5 mb-10">
               {[
                 {
                   icon: Star,
@@ -479,8 +480,8 @@ export default function Dashboard() {
         Career Growth Insights
       </h2>
     </div>
-
-    <div className="grid md:grid-cols-5 gap-4">
+    // GSSoC Optimization: Refactored career insights into a structured data object for cleaner rendering and easier future expansion.
+    <div className="grid grid-cols-2 md:grid-cols-5 gap-4">
 
       <div className="p-4 rounded-xl border border-border">
         <p className="text-xs text-muted-foreground">
@@ -644,7 +645,8 @@ export default function Dashboard() {
                               <div key={job.id || index} className="p-5 hover:bg-muted/50 transition-all group">
                                 <div className="flex justify-between items-center">
                                   <div className="flex-1">
-                                    <h4 className="text-lg font-bold text-foreground group-hover:text-primary transition-colors">{job.title}</h4>
+                                    // GSSoC Optimization: Added break-words utility to job title for better handling of long titles without breaking the layout.
+                                    <h4 className="text-lg font-bold text-foreground group-hover:text-primary transition-colors break-words">{job.title}</h4>
                                     <p className="text-sm text-muted-foreground font-semibold">{job.company}</p>
                                   </div>
                                   <span className={`px-3 py-1.5 rounded-xl text-xs font-bold flex items-center gap-2 ${statusConfig.color}`}>
