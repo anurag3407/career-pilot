@@ -51,6 +51,7 @@ import { connectDB as baseConnectDB } from './config/database.js';
 import { initJobFetcher } from './services/jobFetcher.js';
 import JobAlert from './models/JobAlert.model.js';
 import { initGitHubSyncCron } from './services/portfolioGitHubSync.js';
+import { initializeEventHandlers } from './services/eventHandlers.js';
 
 const shouldInitGitHubSyncCron =
   process.env.ENABLE_GITHUB_SYNC_CRON !== 'false' &&
@@ -337,6 +338,13 @@ const startServer = async () => {
         '⚠️ Weekly digest scheduler initialization skipped:',
         digestError.message
       );
+    }
+
+    try {
+      initializeEventHandlers();
+      console.log('🏯 Event handlers initialized');
+    } catch (eventError) {
+      console.warn('⚠️ Event handlers initialization skipped:', eventError.message);
     }
 
   } catch (error) {
