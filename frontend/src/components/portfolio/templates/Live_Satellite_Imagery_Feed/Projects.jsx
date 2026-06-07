@@ -367,7 +367,6 @@ export default function Projects({
               {/* Table rows */}
               <div className="divide-y divide-slate-800/50">
                 {filteredSatellites
-                  .slice()
                   .sort((a, b) => new Date(b.captureDate) - new Date(a.captureDate))
                   .map((sat, idx) => (
                     <div
