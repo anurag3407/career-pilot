@@ -628,6 +628,7 @@ export default function TemplateGallery() {
         onClose={() => setIsDeployModalOpen(false)}
         portfolioTitle={selectedPortfolioTitle}
         templateId={selectedTemplateId}
+        selectedTheme={selectedTheme}
         aiDraft={aiDraft}
         onDeploySuccess={clearDraft}
       />
@@ -637,14 +638,14 @@ export default function TemplateGallery() {
         templateId={previewTemplateId}
         isOpen={!!previewTemplateId}
         onClose={() => {
-          if (searchParams.has("preview")) {
-            window.history.back();
-          } else {
-            setSearchParams({}, { replace: true });
-          }
+          // Replaces messy window history backtracks with direct parameter deletes
+          const nextParams = new URLSearchParams(searchParams);
+          nextParams.delete("preview");
+          setSearchParams(nextParams, { replace: true });
         }}
-        portfolioData={aiDraft}
+        portfolioData={aiDraft} // <-- This should sit safely inside the modal tag properties
       />
+      
     </div>
   );
 }

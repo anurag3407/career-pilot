@@ -332,17 +332,25 @@ function Hero({ temp }) {
           <OrnDiv color={color === "#1E2522" ? "#2E4A3F" : color} />
 
           {/* Bio text block */}
-          <motion.p
-            className="relative z-10 font-corm"
-            initial={{opacity:0, y:10}} animate={{opacity:1, y:0}}
-            transition={{duration:.6, delay:.5}}
-            style={{ fontSize:"1.1rem", fontStyle:"italic", color:"#EAE6DBcc",
-              lineHeight:1.8, maxWidth:460 }}
-          >
-            "A thoughtfully curated portfolio collection of premium engineering components,
-            neatly minced logic pipelines, and beautiful structural designs seasoned to
-            absolute perfection."
-          </motion.p>
+          {/* 1. Add this variable right at the top of your Hero component function */}
+const heroIntro = data.personal?.heroIntro || data.personal?.bio || "A thoughtfully curated portfolio collection of premium engineering components.";
+
+{/* 2. Update your JSX block to look like this: */}
+<motion.p
+  className="relative z-10 font-corm"
+  initial={{ opacity: 0, y: 10 }}
+  animate={{ opacity: 1, y: 0 }}
+  transition={{ duration: 0.6, delay: 0.5 }}
+  style={{ 
+    fontSize: "1.1rem", 
+    fontStyle: "italic", 
+    color: "#EAE6DBcc",
+    lineHeight: 1.8, 
+    maxWidth: 460 
+  }}
+>
+  {heroIntro}
+</motion.p>
 
           {/* Action Triggers */}
           <motion.div
@@ -603,7 +611,8 @@ function Skills() {
   }, {});
 
   const levelPct = (lvl) => {
-    const map = { Beginner:30, Intermediate:58, Advanced:78, Expert:92, Master:100 };
+    if (typeof lvl === 'number' || !isNaN(lvl)) return parseInt(lvl, 10);
+    const map = { Beginner: 30, Intermediate: 58, Advanced: 78, Expert: 92, Master: 100 };
     return map[lvl] || 75;
   };
 
@@ -655,7 +664,13 @@ function Skills() {
                     const isChopped = !!chopped[skill.name];
                     const pct = levelPct(skill.level);
                     return (
-                      <div key={idx} className="group/item" onClick={() => setChopped(p => ({ ...p, [skill.name]: !p[skill.name] }))}>
+                      <button
+  key={idx}
+  type="button"
+  className="group/item w-full text-left bg-transparent border-none p-0"
+  onClick={() => setChopped(p => ({ ...p, [skill.name]: !p[skill.name] }))}
+  aria-pressed={isChopped}
+>
                         <div className="flex items-center justify-between gap-2 cursor-pointer select-none mb-2">
                           <div className="flex items-center gap-3 flex-1">
                             {/* Checkbox button styling */}
@@ -695,7 +710,7 @@ function Skills() {
                               transition:"width 1s cubic-bezier(.25,1,.5,1), background .3s" }}
                           />
                         </div>
-                      </div>
+                      </button>
                     );
                   })}
                 </div>
@@ -1082,11 +1097,28 @@ function Contact() {
   const [form, setForm] = useState({ name:"", email:"", subject:"", message:"" });
   const [sent, setSent] = useState(false);
 
+  // Add this ref near the top of your Contact component
+  const timeoutRef = React.useRef(null);
+
   const handleSubmit = (e) => {
     e.preventDefault();
     setSent(true);
-    setTimeout(() => { setSent(false); setForm({ name:"",email:"",subject:"",message:"" }); }, 3500);
+    
+    // Clear any existing active timeout just in case
+    if (timeoutRef.current) clearTimeout(timeoutRef.current);
+
+    timeoutRef.current = setTimeout(() => { 
+      setSent(false); 
+      setForm({ name: "", email: "", subject: "", message: "" }); 
+    }, 3500);
   };
+
+  // Add this hook inside the Contact component to clean up on unmount
+  useEffect(() => {
+    return () => {
+      if (timeoutRef.current) clearTimeout(timeoutRef.current);
+    };
+  }, []);
 
   const inputStyle = {
     fontFamily:"'Cormorant Garamond', serif", fontSize:"1.05rem", color:"#1E2522",
