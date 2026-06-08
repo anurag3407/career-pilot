@@ -10,6 +10,7 @@ import { toast } from 'react-hot-toast'
 import { cn } from '@/lib/utils'
 import AchievementEnhancer from "../components/resume/AchievementEnhancer";
 import PhoneInput from '../components/PhoneInput'
+import ResumeSuggestionsPanel from '../components/ResumeSuggestionsPanel'
 import {
   validatePersonalStep,
   validateEducationStep,
@@ -1152,6 +1153,17 @@ useEffect(() => {
             </motion.div>
           </AnimatePresence>
         </div>
+
+        {/* AI-Powered Resume Improvement Suggestions */}
+        <ResumeSuggestionsPanel
+          personal={personal}
+          education={education}
+          experience={experience}
+          projects={projects}
+          skills={skills}
+          targetRole={targetRole}
+          getResumeText={generateMarkdown}
+        />
 
         {/* Navigation Actions */}
         <div className="mt-8 flex justify-between items-center">
