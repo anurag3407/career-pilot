@@ -1,7 +1,20 @@
 export const templates = [
+  {
+    "id": "Emoji_Only_Hieroglyphic_UI",
+    "title": "Emoji-Only Hieroglyphic UI",
+    "category": "Portfolio",
+    "colorScheme": "Colorful",
+    "layout": "Interactive",
+    "author": "Antigravity",
+    "views": 1850,
+    "rating": 5.0,
+    "image": "/templates/Emoji_Only_Hieroglyphic_UI.png",
+    "createdAt": "2026-06-08",
+    "isComplete": true
+  },
  {
-  "id": "Hidden_Easter_Egg_Scavenger_Hunt",
-  "title": "Hidden Easter Egg Scavenger Hunt",
+   "id": "Hidden_Easter_Egg_Scavenger_Hunt",
+   "title": "Hidden Easter Egg Scavenger Hunt",
   "category": "Portfolio",
   "colorScheme": "Dark",
   "layout": "Interactive",

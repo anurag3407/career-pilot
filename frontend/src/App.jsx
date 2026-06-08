@@ -115,6 +115,7 @@ import TypographicWheatpastePosterWall from './components/portfolio/templates/Ty
 import DigitalManifestoScroll from './components/portfolio/templates/Digital_Manifesto_Scroll/index.jsx';
 import TestSocialLinks from './pages/TestSocialLinks';
 import ZineCollage from './components/portfolio/templates/ZineCollage';
+import EmojiOnlyHieroglyphicUI from './components/portfolio/templates/Emoji_Only_Hieroglyphic_UI/index.jsx';
 
 function LoadingScreen({ label }) {
   return (
@@ -276,6 +277,7 @@ function AppRoutes() {
         <Route path="/templates/high-fashion" element={<HighFashion />} />
         <Route path="/templates/typographic-wheatpaste-poster-wall" element={<TypographicWheatpastePosterWall />} />
         <Route path="/templates/digital-manifesto-scroll" element={<DigitalManifestoScroll />} />
+        <Route path="/templates/emoji-only-hieroglyphic-ui" element={<EmojiOnlyHieroglyphicUI />} />
 
         <Route path="/templates/zine-collage" element={<ZineCollage />} />
         <Route path="/templates/chatbot" element={<ChatbotPortfolio />} /> 
