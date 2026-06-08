@@ -730,7 +730,7 @@ describe('POST /api/enhance', () => {
 | Type | Location |
 |------|----------|
 | API Endpoints | `API_DOCS/README.md` |
-| Architecture | `ARCHITECTURE.md` |
+| Architecture | `ARCHITECTURE.md` (includes [module flow diagram](./ARCHITECTURE.md#-module-flow-diagram)) |
 | Setup/Usage | `README.md` |
 | Code | JSDoc comments |
 | Components | PropTypes + comments |
