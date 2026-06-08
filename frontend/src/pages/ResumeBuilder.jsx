@@ -1,3 +1,5 @@
+import { ResumeConsistencyChecker } from '../utils/resumeChecker';
+import ConsistencyPanel from '../utils/ConsistencyPanel';
 import React, { useRef, useState, useEffect } from 'react'
 import { motion, AnimatePresence } from 'framer-motion'
 import { useNavigate } from 'react-router-dom'
@@ -137,50 +139,73 @@ export default function ResumeBuilder() {
   setClaritySuggestions(suggestions)
 }, [personal, experience, projects])
 
+ // ─────────────────── ATS Keyword Assessment Loop ───────────────────
   useEffect(() => {
-  const keywords = [
-    "React",
-    "JavaScript",
-    "Git",
-    "Node.js",
-    "API",
-    "Leadership",
-    "Teamwork",
-    "Problem Solving"
-  ]
+    const resumeText = `
+      ${personal?.summary || ''}
+      ${skills || ''}
+      ${(projects || []).map(p => p.description).join(" ")}
+      ${(experience || []).map(e => e.description).join(" ")}
+    `.toLowerCase();
 
-  const resumeText = `
-    ${personal.summary}
-    ${skills}
-    ${projects.map(p => p.description).join(" ")}
-    ${experience.map(e => e.description).join(" ")}
-  `.toLowerCase()
+    const foundKeywords = keywords.filter(keyword =>
+      resumeText.includes(keyword.toLowerCase())
+    );
 
-  const foundKeywords = keywords.filter(keyword =>
-    resumeText.includes(keyword.toLowerCase())
-  )
+    const missing = keywords.filter(
+      keyword => !foundKeywords.includes(keyword)
+    );
 
-  const missing = keywords.filter(
-    keyword => !foundKeywords.includes(keyword)
-  )
+    setMissingKeywords(missing);
 
-  setMissingKeywords(missing)
+    if (keywords.length > 0) {
+      setAtsScore(
+        Math.round((foundKeywords.length / keywords.length) * 100)
+      );
+    }
+  }, [personal, skills, projects, experience, keywords]);
 
-  setAtsScore(
-    Math.round(
-      (foundKeywords.length / keywords.length) * 100
-    )
-  )
-}, [
-  personal,
-  skills,
-  projects,
-  experience
-])
+  // ─────────────────── Live Consistency Memoized Engine ───────────────────
+  const activeConsistencyWarnings = React.useMemo(() => {
+    const allExperienceDates = (experience || []).flatMap(exp => [exp.startDate, exp.endDate]);
+    const allEducationDates = (education || []).flatMap(edu => [edu.startDate, edu.endDate]);
+    const aggregatedTimelineDates = [...allExperienceDates, ...allEducationDates];
 
-useEffect(() => {
-  const recommendations = []
+    // Filter out current roles so ongoing present-tense verbs aren't flagged as bugs
+    const pastExperienceBullets = (experience || [])
+      .filter(exp => !exp.current)
+      .map(exp => exp.description || '');
 
+    const projectDescriptions = (projects || []).map(p => p.description || '');
+    const aggregatedTextDescriptions = [...pastExperienceBullets, ...projectDescriptions];
+
+    const dateValidationErrors = ResumeConsistencyChecker.checkDateConsistency(aggregatedTimelineDates);
+    const tenseValidationErrors = ResumeConsistencyChecker.checkTenseConsistency(pastExperienceBullets);
+    const redundancyValidationErrors = ResumeConsistencyChecker.checkDuplicateContent(aggregatedTextDescriptions);
+
+    return [
+      ...dateValidationErrors,
+      ...tenseValidationErrors,
+      ...redundancyValidationErrors
+    ];
+  }, [experience, education, projects]);
+
+  const saveVersion = React.useCallback(() => {
+    const newVersion = {
+      id: Date.now(),
+      timestamp: new Date().toLocaleString(),
+      content: typeof generateMarkdown === 'function' ? generateMarkdown() : "",
+    };
+    setResumeVersions(prev => [newVersion, ...prev]);
+    if (typeof toast !== 'undefined') {
+      toast.success("Resume version layout tracked successfully!");
+    }
+  }, [experience, education, projects, personal, skills, generateMarkdown]);
+
+  // ─────────────────── Automated Recommendations Engine ───────────────────
+  useEffect(() => {
+    const recommendations = [];
+    
   if (projects.every(p => !p.name.trim())) {
     recommendations.push("Projects")
   }
@@ -1152,6 +1177,13 @@ useEffect(() => {
             </motion.div>
           </AnimatePresence>
         </div>
+
+        {/* Drop this safely within your main workspace grid or right before action buttons */}
+<AnimatePresence mode="wait">
+  {currentStep !== 5 && ( // Hide panel on the final pure preview screen
+    <ConsistencyPanel errors={activeConsistencyWarnings} />
+  )}
+</AnimatePresence>
 
         {/* Navigation Actions */}
         <div className="mt-8 flex justify-between items-center">

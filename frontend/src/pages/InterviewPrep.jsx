@@ -10,6 +10,7 @@ import { interviewApi, uploadApi } from '../services/api';
 import ConfidenceMeter from "../components/ConfidenceMeter";
 import {DEFAULT_PROGRESS,updateDifficulty} from '../utils/interviewDifficulty';
 import LearningRecommendations from "../components/LearningRecommendations";
+import CopyButton from '../components/CopyButton';
 
 // Device and browser detection utilities
 const isMobileDevice = () => {
@@ -113,9 +114,12 @@ function QuestionAnalysisCard({ answer, index }) {
             <div className="grid lg:grid-cols-2 gap-4">
               {/* Your Response */}
               <div className="p-4 rounded-xl bg-muted/50 border border-border/50">
-                <div className="flex items-center gap-2 mb-3">
-                  <MessageSquare className="w-4 h-4 text-muted-foreground" />
-                  <p className="text-xs text-muted-foreground uppercase tracking-wide font-medium">Your Response</p>
+                <div className="flex items-center justify-between gap-2 mb-3">
+                  <div className="flex items-center gap-2">
+                    <MessageSquare className="w-4 h-4 text-muted-foreground" />
+                    <p className="text-xs text-muted-foreground uppercase tracking-wide font-medium">Your Response</p>
+                  </div>
+                  <CopyButton text={answer.transcript} label="" size={13} variant="ghost" className="shrink-0" />
                 </div>
                 <p className="text-foreground text-sm leading-relaxed">"{answer.transcript}"</p>
               </div>
@@ -123,9 +127,12 @@ function QuestionAnalysisCard({ answer, index }) {
               {/* Ideal Answer */}
               {analysis.idealAnswer && (
                 <div className="p-4 rounded-xl bg-emerald-500/10 border border-emerald-500/20">
-                  <div className="flex items-center gap-2 mb-3">
-                    <Award className="w-4 h-4 text-emerald-400" />
-                    <p className="text-xs text-emerald-400 uppercase tracking-wide font-medium">Model Answer Example</p>
+                  <div className="flex items-center justify-between gap-2 mb-3">
+                    <div className="flex items-center gap-2">
+                      <Award className="w-4 h-4 text-emerald-400" />
+                      <p className="text-xs text-emerald-400 uppercase tracking-wide font-medium">Model Answer Example</p>
+                    </div>
+                    <CopyButton text={analysis.idealAnswer} label="" size={13} variant="ghost" className="shrink-0 text-emerald-400 hover:text-emerald-300" />
                   </div>
                   <p className="text-foreground text-sm leading-relaxed">{analysis.idealAnswer}</p>
                 </div>
@@ -135,9 +142,12 @@ function QuestionAnalysisCard({ answer, index }) {
             {/* Professional Feedback */}
             {analysis.feedback && (
               <div className="p-4 rounded-xl bg-primary/10 border border-primary/20">
-                <div className="flex items-center gap-2 mb-2">
-                  <Brain className="w-4 h-4 text-primary" />
-                  <p className="text-xs text-primary uppercase tracking-wide font-medium">Professional Assessment</p>
+                <div className="flex items-center justify-between gap-2 mb-2">
+                  <div className="flex items-center gap-2">
+                    <Brain className="w-4 h-4 text-primary" />
+                    <p className="text-xs text-primary uppercase tracking-wide font-medium">Professional Assessment</p>
+                  </div>
+                  <CopyButton text={analysis.feedback} label="" size={13} variant="ghost" className="shrink-0" />
                 </div>
                 <p className="text-foreground text-sm leading-relaxed">{analysis.feedback}</p>
               </div>
@@ -206,8 +216,11 @@ function QuestionAnalysisCard({ answer, index }) {
               <div className="p-4 rounded-xl bg-violet-500/10 border border-violet-500/20">
                 <div className="flex items-start gap-3">
                   <Zap className="w-5 h-5 text-violet-400 shrink-0 mt-0.5" />
-                  <div>
-                    <p className="text-xs text-violet-400 uppercase tracking-wide mb-1 font-medium">Key Takeaway</p>
+                  <div className="flex-1 min-w-0">
+                    <div className="flex items-center justify-between gap-2 mb-1">
+                      <p className="text-xs text-violet-400 uppercase tracking-wide font-medium">Key Takeaway</p>
+                      <CopyButton text={analysis.keyTakeaway} label="" size={13} variant="ghost" className="shrink-0 text-violet-400 hover:text-violet-300" />
+                    </div>
                     <p className="text-foreground text-sm font-medium">{analysis.keyTakeaway}</p>
                   </div>
                 </div>

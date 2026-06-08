@@ -3,6 +3,7 @@ import { Target, Sparkles, CheckCircle, XCircle, TrendingUp, FileText } from 'lu
 import { motion } from 'framer-motion';
 import { enhanceApi, resumeApi } from '../services/api';
 import toast from 'react-hot-toast';
+import CopyButton from '../components/CopyButton';
 
 const SkillGap = () => {
   const [resumes, setResumes] = useState([]);
@@ -262,10 +263,13 @@ const SkillGap = () => {
                 {/* Suggestions */}
                 {results.suggestions && (
                   <div className="bg-card border border-border rounded-xl p-6">
-                    <h3 className="flex items-center gap-2 text-sm font-medium text-foreground mb-4">
-                      <Sparkles className="w-4 h-4 text-primary" />
-                      Learning Suggestions
-                    </h3>
+                    <div className="flex items-center justify-between gap-2 mb-4">
+                      <h3 className="flex items-center gap-2 text-sm font-medium text-foreground">
+                        <Sparkles className="w-4 h-4 text-primary" />
+                        Learning Suggestions
+                      </h3>
+                      <CopyButton text={results.suggestions} label="Copy" size={14} />
+                    </div>
                     <p className="text-sm text-muted-foreground leading-relaxed whitespace-pre-line">
                       {results.suggestions}
                     </p>

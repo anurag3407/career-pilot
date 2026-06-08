@@ -1,5 +1,18 @@
 export const templates = [
-   
+ {
+  "id": "Hidden_Easter_Egg_Scavenger_Hunt",
+  "title": "Hidden Easter Egg Scavenger Hunt",
+  "category": "Portfolio",
+  "colorScheme": "Dark",
+  "layout": "Interactive",
+  "author": "prerendrarahitya1708",
+  "views": 0,
+  "rating": 4.8,
+  "image": "/template-previews/Hidden_Easter_Egg_Scavenger_Hunt.png",
+  "createdAt": "2026-06-07",
+  "isComplete": true
+},
+  
 {
   "id": "Eye_Tracking_Heatmap_Simulation",
   "title": "Eye Tracking Heatmap Simulation",
@@ -429,6 +442,15 @@ export const templates = [
     "createdAt": "2026-05-31",
     "isComplete": true
   },
+
+  {
+    id: "zine-collage",
+    title: "Zine Collage",
+    category: "Brutalist",
+    description: "An asymmetric, high-contrast scrapbook magazine layout featuring heavy ink borders, rotated clipping frames, and retro label-maker accents.",
+    isComplete: true
+  },
+  
   {
     "id": "Cinematic",
     "title": "Cinematic",
@@ -1730,13 +1752,26 @@ export const templates = [
     "isComplete": true
   },
   {
+    "id": "Pokemon_Pokedex_Classic",
+    "title": "Pokemon Pokedex Classic",
+    "category": "Portfolio",
+    "colorScheme": "Dark",
+    "layout": "Interactive",
+    "author": "System",
+    "views": 1135,
+    "rating": 4.7,
+    "image": "/template-previews/Pokemon_Pokedex_Classic.png",
+    "createdAt": "2026-06-08",
+    "isComplete": true
+  },
+  {
     "id": "Polaroid_Memories",
     "title": "Polaroid Memories",
     "category": "Portfolio",
     "colorScheme": "Dark",
     "layout": "Grid",
     "author": "System",
-    "views": 1135,
+    "views": 1136,
     "rating": 4.5,
     "image": "/template-previews/Polaroid_Memories.png",
     "createdAt": "2026-05-01"
@@ -1748,7 +1783,7 @@ export const templates = [
     "colorScheme": "Dark",
     "layout": "Grid",
     "author": "System",
-    "views": 1136,
+    "views": 1137,
     "rating": 4.5,
     "image": "/template-previews/Prismatic_Light.png",
     "createdAt": "2026-05-01"
@@ -2533,6 +2568,31 @@ export const templates = [
     "image": "/template-previews/Zoom_Into_Work.png",
     "createdAt": "2026-05-01"
   },
+
+
+  {
+  id: 'error_404_infinite_gallery',
+  name: 'Error 404 Infinite Gallery',
+  path: 'Error_404_Infinite_Gallery',
+  thumbnail: '/templates/error_404_infinite_gallery.png', 
+  category: 'Special / Error Pages',
+  description: 'An interactive 404 error page wrapped in an infinite smoothly-looping background project showcase.'
+  },
+
+  {
+  "id": "Pokemon_Pokedex_Classic",
+  "title": "Pokemon Pokedex Classic",
+  "category": "Portfolio",
+  "colorScheme": "Dark",
+  "layout": "Interactive",
+  "author": "System",
+  "views": 1135,
+  "rating": 4.7,
+  "image": "/template-previews/Pokemon_Pokedex_Classic.png",
+  "createdAt": "2026-06-08",
+  "isComplete": true
+}
+
   {
     "id": "Wireframe_Skeleton_Loading_Only",
     "title": "Wireframe Skeleton Loading Only",
@@ -2555,5 +2615,18 @@ export const templates = [
     "rating": 4.5,
     "image": "/template-previews/Underground_Bunker_Console.svg",
     "createdAt": "2026-06-06"
+  },
+  {
+    "id": "Digital_Manifesto_Scroll",
+    "title": "Digital Manifesto Scroll",
+    "category": "Portfolio",
+    "colorScheme": "Dark",
+    "layout": "Interactive",
+    "author": "Gurkaran18",
+    "views": 1500,
+    "rating": 5.0,
+    "image": "/template-previews/Digital_Manifesto_Scroll.png",
+    "createdAt": "2026-06-07",
+    "isComplete": true
   }
 ];

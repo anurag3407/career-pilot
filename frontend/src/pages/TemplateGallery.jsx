@@ -42,6 +42,7 @@ import HighFashion from "../components/portfolio/templates/High_Fashion/index";
 import WireframeSkeletonLoadingOnly from "../components/portfolio/templates/Wireframe_Skeleton_Loading_Only/index";
 // import SportsAthletic from "../components/portfolio/templates/Sports_Athletic/index";
 
+import { PortfolioProvider } from '../context/PortfolioContext.jsx';
 
 /* TemplatePreviewFrame — contains each full portfolio template in a
    sandboxed scrollable box. The key trick: CSS `transform` on the outer

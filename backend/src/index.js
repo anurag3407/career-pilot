@@ -5,6 +5,7 @@ dotenv.config();
 
 import { createServer } from 'http';
 import cors from 'cors';
+import { cspHeaders } from './middleware/cspHeaders.js';
 import helmet from 'helmet';
 import compressionMiddleware from './middleware/compression.js';
 import rateLimit from 'express-rate-limit';
@@ -133,6 +134,8 @@ app.use(cors({
   allowedHeaders: ['Content-Type', 'Authorization', 'X-Requested-With', 'X-AI-Provider', 'X-AI-Key', 'X-AI-Model', 'X-OpenRouter-Key']
 }));
 
+// Helmet security headers - configured to not interfere with CORS
+app.use(cspHeaders);
 app.use(helmet({
   crossOriginResourcePolicy: { policy: 'cross-origin' },
   crossOriginOpenerPolicy: { policy: 'same-origin-allow-popups' },

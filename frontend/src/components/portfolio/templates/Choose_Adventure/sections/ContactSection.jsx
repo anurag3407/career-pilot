@@ -14,6 +14,13 @@ export default function ContactSection({ data, onReset }) {
   const [form, setForm] = useState({ name: '', email: '', message: '' });
   const [submitted, setSubmitted] = useState(false);
   const [errors, setErrors] = useState({});
+  const [isSubmitting, setIsSubmitting] = useState(false);
+  const [submissionError, setSubmissionError] = useState('');
+
+  const submitForm = async () => {
+    // Replace with actual API integration when a backend contact endpoint is available.
+    return new Promise((resolve) => setTimeout(resolve, 700));
+  };
 
   const validate = () => {
     const e = {};
@@ -24,15 +31,29 @@ export default function ContactSection({ data, onReset }) {
     return e;
   };
 
-  const handleSubmit = (e) => {
+  const handleSubmit = async (e) => {
     e.preventDefault();
+    if (isSubmitting) return;
+
     const errs = validate();
     if (Object.keys(errs).length > 0) {
       setErrors(errs);
       return;
     }
+
     setErrors({});
-    setSubmitted(true);
+    setSubmissionError('');
+    setIsSubmitting(true);
+
+    try {
+      await submitForm();
+      setSubmitted(true);
+    } catch (error) {
+      console.error('Contact form submission failed:', error);
+      setSubmissionError('Something went wrong. Please try again or email us directly.');
+    } finally {
+      setIsSubmitting(false);
+    }
   };
 
   const handleChange = (field) => (e) => {
@@ -73,6 +94,11 @@ export default function ContactSection({ data, onReset }) {
               </p>
 
               <form onSubmit={handleSubmit} className="space-y-4" noValidate>
+                {submissionError && (
+                  <div className="rounded-xl border border-red-500/30 bg-red-500/10 px-4 py-3 text-sm text-red-200">
+                    {submissionError}
+                  </div>
+                )}
                 <div>
                   <label htmlFor="ca-name" className="block text-xs text-violet-400 mb-1.5 uppercase tracking-wider">Your Name</label>
                   <input
@@ -114,12 +140,14 @@ export default function ContactSection({ data, onReset }) {
 
                 <motion.button
                   type="submit"
-                  whileHover={{ scale: 1.02 }}
-                  whileTap={{ scale: 0.97 }}
-                  className="w-full flex items-center justify-center gap-2 py-3.5 bg-violet-600 hover:bg-violet-500 text-white font-semibold rounded-xl transition-colors shadow-lg shadow-violet-900/30"
+                  whileHover={{ scale: isSubmitting ? 1 : 1.02 }}
+                  whileTap={{ scale: isSubmitting ? 1 : 0.97 }}
+                  disabled={isSubmitting}
+                  aria-busy={isSubmitting}
+                  className="w-full flex items-center justify-center gap-2 py-3.5 bg-violet-600 hover:bg-violet-500 text-white font-semibold rounded-xl transition-colors shadow-lg shadow-violet-900/30 disabled:cursor-not-allowed disabled:opacity-70"
                 >
-                  <Send size={14} />
-                  Send Message
+                  {isSubmitting ? <RotateCcw size={14} className="animate-spin" /> : <Send size={14} />}
+                  {isSubmitting ? 'Sending...' : 'Send Message'}
                 </motion.button>
               </form>
             </>
