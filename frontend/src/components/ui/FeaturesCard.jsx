@@ -49,8 +49,8 @@ export default function FeaturesCards() {
                             description="Practice with AI-powered mock interviews. Get real-time feedback on your answers, body language tips, and performance analytics."
                         />
                         <div className="relative mb-6 border-t border-dashed border-border sm:mb-0">
-                            <div className="absolute inset-0 bg-gradient-to-b from-transparent via-card/50 to-card" />
-                            <div className="aspect-[76/59] p-4 px-6">
+                            <div className="absolute inset-0 bg-linear-to-b from-transparent via-card/50 to-card" />
+                            <div className="aspect-76/59 p-4 px-6">
                                 <InterviewMockup />
                             </div>
                         </div>
@@ -65,8 +65,14 @@ export default function FeaturesCards() {
                         />
                         <div className="p-6 pt-0">
                             <div className="relative mb-6 sm:mb-0">
-                                <div className="absolute -inset-6 bg-gradient-to-r from-transparent via-transparent to-card dark:to-transparent" />
+                                <div className="absolute -inset-6 bg-linear-to-r from-transparent via-transparent to-card dark:to-transparent" />
                                 <FellowshipMockup />
+                                <div className="px-6 pb-6">
+                                    <Link to="/readme-generator" className="inline-flex items-center gap-2 text-sm text-primary hover:underline font-medium">
+                                    <FileText className="w-4 h-4" />
+                                    Try AI README Generator →
+                                    </Link>
+                                </div>
                             </div>
                         </div>
                     </FeatureCard>
@@ -320,7 +326,7 @@ function CircularFeature({ icon: Icon, label, color, className }) {
             transition={{ delay: 0.2 }}
             className={className}
         >
-            <div className="bg-gradient-to-b from-border to-transparent p-px rounded-2xl">
+            <div className="bg-linear-to-b from-border to-transparent p-px rounded-2xl">
                 <div className="bg-card relative flex aspect-square w-fit items-center justify-center rounded-[15px] p-5">
                     <div className={cn(
                         "size-10 md:size-12 rounded-full border-2 flex items-center justify-center",
