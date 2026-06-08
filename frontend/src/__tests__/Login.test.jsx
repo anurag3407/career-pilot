@@ -1,26 +1,34 @@
-import { describe, test, expect, vi } from 'vitest'
 import { render, screen } from '@testing-library/react'
 import { MemoryRouter } from 'react-router-dom'
 import Login from '../pages/Login'
 
-vi.mock('../hooks/useAuth', () => ({
+jest.mock('firebase/auth', () => ({
+  sendPasswordResetEmail: jest.fn(),
+}))
+
+jest.mock('../config/firebase', () => ({
+  auth: {},
+}))
+
+jest.mock('../hooks/useAuth', () => ({
   useAuth: () => ({
-    login: vi.fn(),
-    loginWithGoogle: vi.fn(),
-    loginWithLinkedIn: vi.fn(),
+    login: jest.fn(),
+    loginWithGoogle: jest.fn(),
+    loginWithLinkedIn: jest.fn(),
   }),
 }))
 
-vi.mock('../services/api', () => ({
+jest.mock('../services/api', () => ({
   twoFactorApi: {
-    verify: vi.fn(),
-    verifyBackup: vi.fn(),
+    verify: jest.fn(),
+    verifyBackup: jest.fn(),
   },
 }))
 
-vi.mock('../components/Navbar', () => ({
-    default: () => <div>Mock Navbar</div>,
-  }))
+jest.mock('../components/Navbar', () => ({
+  __esModule: true,
+  default: () => <div>Mock Navbar</div>,
+}))
 
 describe('Login page', () => {
   test('renders sign in form', () => {

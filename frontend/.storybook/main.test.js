@@ -1,5 +1,4 @@
 // frontend/.storybook/main.test.js
-import { describe, it, expect, vi, beforeEach, afterEach } from 'vitest';
 import { visualRegressionUtils } from './test-utils.js';
 
 describe('Visual Regression Testing - Core Logic', () => {
@@ -35,14 +34,14 @@ describe('Visual Regression Testing - Core Logic', () => {
   // Test 2: Retry logic
   describe('retryTest', () => {
     it('should return result on first success', async () => {
-      const mockTest = vi.fn().mockResolvedValue('success');
+      const mockTest = jest.fn().mockResolvedValue('success');
       const result = await visualRegressionUtils.retryTest(mockTest);
       expect(result).toBe('success');
       expect(mockTest).toHaveBeenCalledTimes(1);
     });
 
     it('should retry on failure and eventually succeed', async () => {
-      const mockTest = vi.fn()
+      const mockTest = jest.fn()
         .mockRejectedValueOnce(new Error('fail'))
         .mockResolvedValue('success');
       const result = await visualRegressionUtils.retryTest(mockTest);
@@ -51,13 +50,13 @@ describe('Visual Regression Testing - Core Logic', () => {
     });
 
     it('should throw error after max retries', async () => {
-      const mockTest = vi.fn().mockRejectedValue(new Error('always fails'));
+      const mockTest = jest.fn().mockRejectedValue(new Error('always fails'));
       await expect(visualRegressionUtils.retryTest(mockTest, 3))
         .rejects.toThrow('Test failed after 3 retries');
     });
 
     it('should throw RangeError when retries is 0', async () => {
-      const mockTest = vi.fn().mockResolvedValue('success');
+      const mockTest = jest.fn().mockResolvedValue('success');
       await expect(visualRegressionUtils.retryTest(mockTest, 0))
         .rejects.toBeInstanceOf(RangeError);
       await expect(visualRegressionUtils.retryTest(mockTest, 0))
@@ -65,7 +64,7 @@ describe('Visual Regression Testing - Core Logic', () => {
     });
 
     it('should throw RangeError when retries is negative', async () => {
-      const mockTest = vi.fn().mockResolvedValue('success');
+      const mockTest = jest.fn().mockResolvedValue('success');
       await expect(visualRegressionUtils.retryTest(mockTest, -1))
         .rejects.toBeInstanceOf(RangeError);
       await expect(visualRegressionUtils.retryTest(mockTest, -1))
