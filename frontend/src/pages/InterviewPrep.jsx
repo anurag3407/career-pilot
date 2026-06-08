@@ -336,10 +336,11 @@ export default function InterviewPrep() {
   }, []);
 
   useEffect(() => {
+    const synth = synthRef.current;
     if (step === 'interview') initializeMedia();
     return () => {
       cleanupMedia();
-      if (synthRef.current) synthRef.current.cancel();
+      if (synth) synth.cancel();
     };
   }, [step]);
 
