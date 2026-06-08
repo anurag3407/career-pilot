@@ -1730,6 +1730,7 @@ export const templates = [
     "rating": 4.5,
     "image": "/template-previews/Recipe_Cookbook.png",
     "createdAt": "2026-05-01"
+    
   },
   {
     "id": "Retro_Futurism",

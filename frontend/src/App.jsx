@@ -101,6 +101,8 @@ import MagneticDock from './components/portfolio/templates/Magnetic_Dock/index.j
 import Hero from './components/portfolio/templates/Magazine_Editorial/Hero';
 import ColorBlock from './components/portfolio/templates/Color_Block/index.jsx';
 import TestSocialLinks from './pages/TestSocialLinks';
+import RecipeCookbookPortfolio from './components/portfolio/templates/Recipe_Cookbook/index.jsx';
+
 
 function LoadingScreen({ label }) {
   return (
@@ -255,6 +257,7 @@ function AppRoutes() {
         <Route path="/templates/memphis-pop" element={<MemphisPop />} />
         <Route path="/templates/cassette-mixtape" element={<CassetteMixtape />} />
         <Route path="/templates/magnetic-dock" element={<MagneticDock />} />
+        <Route path="/templates/recipe-cookbook" element={<RecipeCookbookPortfolio />} />
         
         {/* Core Protected Routes */}
         <Route 
