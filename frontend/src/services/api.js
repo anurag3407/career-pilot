@@ -16,6 +16,21 @@ async function getAuthHeaders() {
     'Content-Type': 'application/json'
   }
 
+  // Try the new Zustand store first
+  try {
+    const { useAIConfigStore } = await import('../stores/useAIConfigStore');
+    const aiConfig = useAIConfigStore.getState().getActiveConfig();
+    if (aiConfig) {
+      if (aiConfig.provider) headers['X-AI-Provider'] = aiConfig.provider;
+      if (aiConfig.apiKey) headers['X-AI-Key'] = aiConfig.apiKey;
+      if (aiConfig.model) headers['X-AI-Model'] = aiConfig.model;
+      return headers;
+    }
+  } catch (e) {
+    // Store not available, fall through to legacy
+  }
+
+  // Legacy fallback: read from localStorage directly
   const aiConfigStr = localStorage.getItem('aiConfig');
   if (aiConfigStr) {
     try {
@@ -587,6 +602,17 @@ export const aiApi = {
     const response = await fetch(`${API_BASE}/ai/models?provider=${encodeURIComponent(provider)}`, {
       method: 'GET',
       headers
+    })
+    return handleResponse(response)
+  },
+
+  // Validate an API key against its provider (lightweight, no token usage)
+  async validateKey(provider, apiKey) {
+    const headers = await getAuthHeaders()
+    const response = await fetch(`${API_BASE}/ai/validate-key`, {
+      method: 'POST',
+      headers,
+      body: JSON.stringify({ provider, apiKey })
     })
     return handleResponse(response)
   }
@@ -1535,6 +1561,34 @@ export const projectVisualizerApi = {
     const headers = await getAuthHeaders()
     const response = await fetch(`${API_BASE}/project-visualizer/history/${id}`, {
       method: 'DELETE',
+      headers
+    })
+    return handleResponse(response)
+  },
+
+  async explainFile(sessionId, filePath) {
+    const headers = await getAuthHeaders()
+    const response = await fetch(`${API_BASE}/project-visualizer/analysis/${sessionId}/explain-file`, {
+      method: 'POST',
+      headers,
+      body: JSON.stringify({ filePath })
+    })
+    return handleResponse(response)
+  },
+
+  async getInterviewQuestions(sessionId) {
+    const headers = await getAuthHeaders()
+    const response = await fetch(`${API_BASE}/project-visualizer/analysis/${sessionId}/interview-prep`, {
+      method: 'POST',
+      headers
+    })
+    return handleResponse(response)
+  },
+
+  async getContributionGuide(sessionId) {
+    const headers = await getAuthHeaders()
+    const response = await fetch(`${API_BASE}/project-visualizer/analysis/${sessionId}/contribution-guide`, {
+      method: 'POST',
       headers
     })
     return handleResponse(response)

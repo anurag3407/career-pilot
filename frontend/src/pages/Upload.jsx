@@ -119,7 +119,7 @@ export default function Upload() {
     try {
       const res = await resumeApi.importLinkedIn(normalizeLinkedInUrl(linkedinUrl), linkedinProfile)
       toast.success('LinkedIn profile imported!')
-      navigate(`/enhance/${res.data.id}`)
+      navigate(`/resume/${res.data._id || res.data.id}`)
     } catch (err) {
       toast.error(err.message || 'Failed to import profile')
     } finally {

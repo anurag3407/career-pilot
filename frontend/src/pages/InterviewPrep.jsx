@@ -1502,6 +1502,21 @@ if (communicationTips.length === 0) {
               </div>
             </motion.div>
             <h1 className="text-4xl md:text-5xl font-bold text-foreground mb-3">Interview Complete!</h1>
+
+            <div className="p-6 rounded-2xl bg-primary/10 border border-primary/20 mb-6">
+  <h3 className="text-xl font-bold mb-2">
+    Interview Readiness Score
+  </h3>
+
+  <p className="text-5xl font-bold text-primary">
+    {overallResults.overallScore}%
+  </p>
+
+  <p className="text-muted-foreground mt-2">
+    Based on confidence, communication, and answer quality.
+  </p>
+</div>
+
             <p className="text-lg text-muted-foreground">Here's your comprehensive performance analysis</p>
           </motion.div>
           <motion.div
@@ -1823,6 +1838,45 @@ if (communicationTips.length === 0) {
                 </ul>
               </div>
             </motion.div>
+
+            <motion.div
+  initial={{ opacity: 0, y: 20 }}
+  animate={{ opacity: 1, y: 0 }}
+  transition={{ delay: 0.35 }}
+  className="mb-8"
+>
+  <div className="p-6 rounded-3xl bg-amber-500/10 border border-amber-500/20">
+
+    <h2 className="text-2xl font-bold mb-4">
+      Areas To Improve
+    </h2>
+
+    <p className="text-muted-foreground mb-5">
+      Focus on these areas before your next interview.
+    </p>
+
+    <div className="space-y-3">
+      {overallResults.overallFeedback?.areasToImprove?.map((item, index) => (
+        <div
+          key={index}
+          className="p-4 rounded-xl bg-background/50 border border-border"
+        >
+          <div className="flex items-start gap-3">
+
+            <AlertTriangle className="w-5 h-5 text-amber-400 mt-0.5" />
+
+            <span className="text-foreground">
+              {item}
+            </span>
+
+          </div>
+        </div>
+      ))}
+    </div>
+
+  </div>
+</motion.div>
+
             <LearningRecommendations
   areasToImprove={
     overallResults.overallFeedback?.areasToImprove || []
