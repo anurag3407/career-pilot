@@ -49,12 +49,8 @@ describe('Dashboard Component Test Suite', () => {
     expect(screen.getByText(/0 resumes/i)).toBeInTheDocument();
   });
 
-  test('displays an error message when the dashboard bootstrap fails', async () => {
-    jest.spyOn(console, 'error').mockImplementation(() => {});
-
-    resumeApi.getAll.mockImplementation(() => {
-      throw new Error('API Failure');
-    });
+  test('falls back gracefully when resume API rejects asynchronously', async () => {
+    resumeApi.getAll.mockRejectedValue(new Error('API Failure'));
 
     render(
       <MemoryRouter>
@@ -63,7 +59,11 @@ describe('Dashboard Component Test Suite', () => {
     );
 
     await waitFor(() => {
-      expect(screen.getByText(/failed to load your dashboard/i)).toBeInTheDocument();
+      const heading = screen.getByRole('heading', { name: /welcome back/i });
+      expect(heading).toHaveTextContent(/john doe/i);
     });
+
+    expect(screen.getByText(/0 resumes/i)).toBeInTheDocument();
+    expect(screen.queryByText(/failed to load your dashboard/i)).not.toBeInTheDocument();
   });
 });
