@@ -4,12 +4,21 @@
   "version": "1.0.0",
   "type": "module",
   "scripts": {
-    "dev": "vite",
-    "build": "vite build",
-    "build:portfolio": "vite build --config vite.standalone.config.js",
-    "lint": "eslint .",
-    "preview": "vite preview"
+  "dev": "vite",
+  "build": "vite build",
+  "preview": "vite preview",
+  "test": "jest"
+},
+"jest": {
+  "testEnvironment": "jsdom",
+  "setupFilesAfterFramework": ["@testing-library/jest-dom"],
+  "transform": {
+    "^.+\\.[jt]sx?$": "babel-jest"
   },
+  "moduleNameMapper": {
+    "\\.(css|less|scss|sass|svg|png)$": "<rootDir>/__mocks__/fileMock.js"
+  }
+},
   "dependencies": {
     "@hello-pangea/dnd": "^18.0.1",
     "@radix-ui/react-label": "^2.1.8",
@@ -49,16 +58,25 @@
     "zustand": "^5.0.2"
   },
   "devDependencies": {
+    "@axe-core/react": "^4.11.3",
+    "@babel/core": "^7.29.7",
+    "@babel/preset-env": "^7.29.7",
+    "@babel/preset-react": "^7.29.7",
     "@eslint/js": "^9.39.1",
     "@testing-library/jest-dom": "^6.9.1",
     "@testing-library/react": "^16.3.2",
     "@types/react": "^19.2.5",
     "@types/react-dom": "^19.2.3",
     "@vitejs/plugin-react": "^5.1.1",
+    "axe-core": "^4.12.0",
+    "babel-jest": "^30.4.1",
     "eslint": "^9.39.1",
     "eslint-plugin-react-hooks": "^7.0.1",
     "eslint-plugin-react-refresh": "^0.4.24",
     "globals": "^16.5.0",
+    "jest": "^30.4.2",
+    "jest-axe": "^10.0.0",
+    "jest-environment-jsdom": "^30.4.1",
     "jsdom": "^29.1.1",
     "vite": "^7.2.4",
     "vitest": "^4.1.7"
