@@ -5,8 +5,9 @@ const API_BASE = import.meta.env.VITE_API_BASE || "/api";
 
 // Helper to get auth headers
 async function getAuthHeaders() {
-  const user = auth?.currentUser;
-  if (!user) throw new Error("Not authenticated");
+  console.log("Current User:", auth?.currentUser);
+  const user = auth?.currentUser
+  if (!user) throw new Error('Not authenticated')
 
   const token = await user.getIdToken();
   const headers = {
@@ -14,7 +15,22 @@ async function getAuthHeaders() {
     "Content-Type": "application/json",
   };
 
-  const aiConfigStr = localStorage.getItem("aiConfig");
+  // Try the new Zustand store first
+  try {
+    const { useAIConfigStore } = await import('../stores/useAIConfigStore');
+    const aiConfig = useAIConfigStore.getState().getActiveConfig();
+    if (aiConfig) {
+      if (aiConfig.provider) headers['X-AI-Provider'] = aiConfig.provider;
+      if (aiConfig.apiKey) headers['X-AI-Key'] = aiConfig.apiKey;
+      if (aiConfig.model) headers['X-AI-Model'] = aiConfig.model;
+      return headers;
+    }
+  } catch (e) {
+    // Store not available, fall through to legacy
+  }
+
+  // Legacy fallback: read from localStorage directly
+  const aiConfigStr = localStorage.getItem('aiConfig');
   if (aiConfigStr) {
     try {
       const aiConfig = JSON.parse(aiConfigStr);
@@ -442,6 +458,18 @@ export const portfolioApi = {
     return handleResponse(response);
   },
 
+  // Generate portfolio JSON from an existing enhanced resume
+  async generateFromResume(resumeId) {
+    const headers = await getAuthHeaders();
+
+    const response = await fetch(`${API_BASE}/portfolio/generate-from-resume/${resumeId}`, {
+      method: 'POST',
+      headers
+    });
+
+    return handleResponse(response);
+  },
+
   // Deploy portfolio to Cloudflare Pages
   async deploy({ slug, sections, templateId, title, provider, token }) {
     const headers = await getAuthHeaders();
@@ -592,17 +620,25 @@ export const enhanceApi = {
 export const aiApi = {
   // Get AI models for a specific provider
   async getModels(provider) {
-    const headers = await getAuthHeaders();
-    const response = await fetch(
-      `${API_BASE}/ai/models?provider=${encodeURIComponent(provider)}`,
-      {
-        method: "GET",
-        headers,
-      },
-    );
-    return handleResponse(response);
+    const headers = await getAuthHeaders()
+    const response = await fetch(`${API_BASE}/ai/models?provider=${encodeURIComponent(provider)}`, {
+      method: 'GET',
+      headers
+    })
+    return handleResponse(response)
   },
-};
+
+  // Validate an API key against its provider (lightweight, no token usage)
+  async validateKey(provider, apiKey) {
+    const headers = await getAuthHeaders()
+    const response = await fetch(`${API_BASE}/ai/validate-key`, {
+      method: 'POST',
+      headers,
+      body: JSON.stringify({ provider, apiKey })
+    })
+    return handleResponse(response)
+  }
+}
 
 // Helper to build query params, properly serializing nested objects/arrays
 function buildParams(params) {
@@ -1635,6 +1671,34 @@ export const projectVisualizerApi = {
     const headers = await getAuthHeaders()
     const response = await fetch(`${API_BASE}/project-visualizer/history/${id}`, {
       method: 'DELETE',
+      headers
+    })
+    return handleResponse(response)
+  },
+
+  async explainFile(sessionId, filePath) {
+    const headers = await getAuthHeaders()
+    const response = await fetch(`${API_BASE}/project-visualizer/analysis/${sessionId}/explain-file`, {
+      method: 'POST',
+      headers,
+      body: JSON.stringify({ filePath })
+    })
+    return handleResponse(response)
+  },
+
+  async getInterviewQuestions(sessionId) {
+    const headers = await getAuthHeaders()
+    const response = await fetch(`${API_BASE}/project-visualizer/analysis/${sessionId}/interview-prep`, {
+      method: 'POST',
+      headers
+    })
+    return handleResponse(response)
+  },
+
+  async getContributionGuide(sessionId) {
+    const headers = await getAuthHeaders()
+    const response = await fetch(`${API_BASE}/project-visualizer/analysis/${sessionId}/contribution-guide`, {
+      method: 'POST',
       headers
     })
     return handleResponse(response)

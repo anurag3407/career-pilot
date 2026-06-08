@@ -71,4 +71,111 @@ router.get('/models', verifyToken, async (req, res) => {
     });
 });
 
+// ---------------------------------------------------------------------------
+// POST /ai/validate-key — test if a user-supplied API key is valid
+// Makes a lightweight "list models" call to the provider's API (no tokens used)
+// ---------------------------------------------------------------------------
+router.post('/validate-key', verifyToken, async (req, res) => {
+    const { provider, apiKey } = req.body;
+
+    if (!provider || !apiKey) {
+        return res.status(400).json({
+            success: false,
+            valid: false,
+            error: 'Both provider and apiKey are required'
+        });
+    }
+
+    const normalised = provider.toLowerCase().trim();
+
+    try {
+        let valid = false;
+        let meta = {};
+
+        switch (normalised) {
+            case 'gemini': {
+                // Google AI Studio — list models endpoint (free, no token usage)
+                const response = await fetch(
+                    `https://generativelanguage.googleapis.com/v1/models?key=${encodeURIComponent(apiKey)}`
+                );
+                if (response.ok) {
+                    const data = await response.json();
+                    valid = true;
+                    meta.models = (data.models || []).length;
+                } else if (response.status === 400 || response.status === 403) {
+                    return res.json({ success: true, valid: false, error: 'Invalid API key — check your Gemini key at aistudio.google.com' });
+                } else {
+                    return res.json({ success: true, valid: false, error: `Gemini returned status ${response.status}` });
+                }
+                break;
+            }
+
+            case 'openai': {
+                const response = await fetch('https://api.openai.com/v1/models', {
+                    headers: { 'Authorization': `Bearer ${apiKey}` }
+                });
+                if (response.ok) {
+                    const data = await response.json();
+                    valid = true;
+                    meta.models = (data.data || []).length;
+                } else if (response.status === 401) {
+                    return res.json({ success: true, valid: false, error: 'Invalid API key — check your OpenAI key at platform.openai.com' });
+                } else {
+                    return res.json({ success: true, valid: false, error: `OpenAI returned status ${response.status}` });
+                }
+                break;
+            }
+
+            case 'openrouter': {
+                const response = await fetch('https://openrouter.ai/api/v1/auth/key', {
+                    headers: { 'Authorization': `Bearer ${apiKey}` }
+                });
+                if (response.ok) {
+                    const data = await response.json();
+                    valid = true;
+                    meta.label = data.data?.label || 'API Key';
+                    meta.usage = data.data?.usage;
+                } else if (response.status === 401 || response.status === 403) {
+                    return res.json({ success: true, valid: false, error: 'Invalid API key — check your OpenRouter key at openrouter.ai/keys' });
+                } else {
+                    return res.json({ success: true, valid: false, error: `OpenRouter returned status ${response.status}` });
+                }
+                break;
+            }
+
+            case 'groq': {
+                const response = await fetch('https://api.groq.com/openai/v1/models', {
+                    headers: { 'Authorization': `Bearer ${apiKey}` }
+                });
+                if (response.ok) {
+                    const data = await response.json();
+                    valid = true;
+                    meta.models = (data.data || []).length;
+                } else if (response.status === 401) {
+                    return res.json({ success: true, valid: false, error: 'Invalid API key — check your Groq key at console.groq.com' });
+                } else {
+                    return res.json({ success: true, valid: false, error: `Groq returned status ${response.status}` });
+                }
+                break;
+            }
+
+            default:
+                return res.status(400).json({
+                    success: false,
+                    valid: false,
+                    error: `Unsupported provider "${provider}". Supported: gemini, openai, openrouter, groq`
+                });
+        }
+
+        return res.json({ success: true, valid, meta });
+    } catch (error) {
+        console.error(`Validate key error (${normalised}):`, error.message);
+        return res.status(500).json({
+            success: false,
+            valid: false,
+            error: `Failed to validate key: ${error.message}`
+        });
+    }
+});
+
 export default router;

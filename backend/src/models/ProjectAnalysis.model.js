@@ -45,6 +45,15 @@ const projectAnalysisSchema = new mongoose.Schema({
     lastCommit: Date,
     description: String,
   },
+  dependencies: {
+    manifests: [{ file: String, manager: String }],
+    packages: [{
+      name: String, currentVersion: String, latestVersion: String,
+      status: { type: String, enum: ['up-to-date', 'minor-update', 'major-update', 'critical'] },
+      manager: String
+    }],
+    summary: { total: Number, upToDate: Number, minorUpdates: Number, majorUpdates: Number, critical: Number }
+  },
   lastAnalyzed: { type: Date, default: Date.now },
   expiresAt: { type: Date, default: () => new Date(Date.now() + 24 * 60 * 60 * 1000) },
 }, { timestamps: true });

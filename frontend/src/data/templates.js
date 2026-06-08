@@ -1,4 +1,83 @@
 export const templates = [
+   
+{
+  "id": "Eye_Tracking_Heatmap_Simulation",
+  "title": "Eye Tracking Heatmap Simulation",
+  "category": "Portfolio",
+  "colorScheme": "Dark",
+  "layout": "Fullscreen",
+  "author": "System",
+  "views": 0,
+  "rating": 0,
+  "image": "/template-previews/Eye_Tracking_Heatmap_Simulation.png",
+  "createdAt": "2026-06-07",
+  "isComplete": true
+},
+  {
+    "id": "Live_Satellite_Imagery_Feed",
+    "title": "Live Satellite Imagery Feed",
+    "category": "Portfolio",
+    "colorScheme": "Dark",
+    "layout": "Dashboard",
+    "author": "System",
+    "views": 1300,
+    "rating": 4.9,
+    "image": "/templates/Live_Satellite_Imagery_Feed.png",
+    "createdAt": "2026-06-07",
+    "isComplete": true
+  },
+  {
+    "id": "Broken_Glass_Shards_Parallax",
+    "title": "Broken Glass Shards Parallax",
+    "category": "Portfolio",
+    "colorScheme": "Dark",
+    "layout": "Parallax",
+    "author": "System",
+    "views": 1000,
+    "rating": 5.0,
+    "image": "/templates/Broken_Glass_Shards_Parallax.png",
+    "createdAt": "2026-06-07",
+    "isComplete": true
+  },
+  {
+    "id": "Interactive_Table_of_Elements",
+    "title": "Interactive Table of Elements",
+    "category": "Portfolio",
+    "colorScheme": "Dark",
+    "layout": "Grid",
+    "author": "System",
+    "views": 1000,
+    "rating": 5.0,
+    "image": "/templates/Interactive_Table_of_Elements.png",
+    "createdAt": "2026-06-06",
+    "isComplete": true
+  },
+  {
+    "id": "Audio_First_Sonar_Navigation",
+    "title": "Audio First Sonar Navigation",
+    "category": "Portfolio",
+    "colorScheme": "Dark",
+    "layout": "Cards",
+    "author": "System",
+    "views": 0,
+    "rating": 0,
+    "image": "/template-previews/Audio_First_Sonar_Navigation.png",
+    "createdAt": "2026-06-07",
+    "isComplete": true
+  },
+  {
+    "id": "Vercel_Deploy",
+    "title": "Vercel Deploy",
+    "category": "Portfolio",
+    "colorScheme": "Dark",
+    "layout": "Cards",
+    "author": "Your GitHub Username",
+    "views": 1200,
+    "rating": 4.8,
+    "image": "/template-previews/Vercel_Deploy.png",
+    "createdAt": "2026-06-05",
+    "isComplete": true
+  },
   {
     "id": "2D_Retro_8bit",
     "title": "2D Retro 8bit",
@@ -331,7 +410,7 @@ export const templates = [
     "category": "Portfolio",
     "colorScheme": "Dark",
     "layout": "Grid",
-    "author": "System",
+    "author": "Advik Divekar",
     "views": 1027,
     "rating": 4.5,
     "image": "/template-previews/Choose_Adventure.png",
@@ -983,11 +1062,12 @@ export const templates = [
     "category": "Portfolio",
     "colorScheme": "Dark",
     "layout": "Grid",
-    "author": "System",
+    "author": "Advik Divekar",
     "views": 1081,
     "rating": 4.5,
     "image": "/template-previews/High_Fashion.png",
-    "createdAt": "2026-05-01"
+    "createdAt": "2026-05-01",
+    "isComplete": true
   },
   {
     "id": "Holographic",
@@ -1024,6 +1104,18 @@ export const templates = [
     "rating": 4.5,
     "image": "/template-previews/Infinite_Canvas.png",
     "createdAt": "2026-05-01"
+  },
+  {
+    "id": "Error_404_Infinite_Gallery",
+    "title": "Error 404 Infinite Gallery",
+    "category": "Portfolio",
+    "colorScheme": "Dark",
+    "layout": "Interactive",
+    "author": "System",
+    "views": 1086,
+    "rating": 4.5,
+    "image": "/templates/Error_404_Infinite_Gallery.png",
+    "createdAt": "2026-06-06"
   },
   {
     "id": "Japanese_Zen",
@@ -1128,11 +1220,12 @@ export const templates = [
     "category": "Portfolio",
     "colorScheme": "Dark",
     "layout": "Grid",
-    "author": "System",
+    "author": "Advik Divekar",
     "views": 1093,
     "rating": 4.5,
     "image": "/template-previews/Low_Poly_Terrain.png",
-    "createdAt": "2026-05-01"
+    "createdAt": "2026-05-01",
+    "isComplete": true
   },
   {
     "id": "MacOS_Desktop",
@@ -1360,11 +1453,12 @@ export const templates = [
     "category": "Portfolio",
     "colorScheme": "Dark",
     "layout": "Grid",
-    "author": "System",
+    "author": "Advik Divekar",
     "views": 1112,
     "rating": 4.5,
     "image": "/template-previews/Neon_Cityscape.png",
-    "createdAt": "2026-05-01"
+    "createdAt": "2026-05-01",
+    "isComplete": true
   },
   {
     "id": "Neon_Noir",
@@ -1480,11 +1574,12 @@ export const templates = [
     "category": "Portfolio",
     "colorScheme": "Dark",
     "layout": "Grid",
-    "author": "System",
+    "author": "Advik Divekar",
     "views": 1122,
     "rating": 4.5,
     "image": "/template-previews/Ocean_Depths.png",
-    "createdAt": "2026-05-01"
+    "createdAt": "2026-05-01",
+    "isComplete": true
   },
   {
     "id": "One_Page_Scroll",
@@ -1614,11 +1709,12 @@ export const templates = [
     "category": "Portfolio",
     "colorScheme": "Dark",
     "layout": "Grid",
-    "author": "System",
+    "author": "Advik Divekar",
     "views": 1133,
     "rating": 4.5,
     "image": "/template-previews/Planetary_Orbit.png",
-    "createdAt": "2026-05-01"
+    "createdAt": "2026-05-01",
+    "isComplete": true
   },
   {
     "id": "Playing_Cards",
@@ -2244,6 +2340,19 @@ export const templates = [
     "createdAt": "2026-05-01"
   },
   {
+    "id": "Typographic_Wheatpaste_Poster_Wall",
+    "title": "Typographic Wheatpaste Poster Wall",
+    "category": "Portfolio",
+    "colorScheme": "Dark",
+    "layout": "Interactive",
+    "author": "System",
+    "views": 2400,
+    "rating": 4.9,
+    "image": "/template-previews/Typographic_Wheatpaste_Poster_Wall.png",
+    "createdAt": "2026-06-07",
+    "isComplete": true
+  },
+  {
     "id": "VHS_Rewind",
     "title": "VHS Rewind",
     "category": "Portfolio",
@@ -2357,7 +2466,7 @@ export const templates = [
     "category": "Portfolio",
     "colorScheme": "Dark",
     "layout": "Grid",
-    "author": "System",
+    "author": "Advik Divekar",
     "views": 1194,
     "rating": 4.5,
     "image": "/template-previews/Weather_Mood.png",
@@ -2381,11 +2490,12 @@ export const templates = [
     "category": "Portfolio",
     "colorScheme": "Dark",
     "layout": "Grid",
-    "author": "System",
+    "author": "yashitripathi2007",
     "views": 1196,
     "rating": 4.5,
     "image": "/template-previews/Wildflower_Field.png",
-    "createdAt": "2026-05-01"
+    "createdAt": "2026-05-01",
+    "isComplete": true
   },
   {
     "id": "Windows_98",
@@ -2422,5 +2532,17 @@ export const templates = [
     "rating": 4.5,
     "image": "/template-previews/Zoom_Into_Work.png",
     "createdAt": "2026-05-01"
+  },
+  {
+    "id": "Underground_Bunker_Console",
+    "title": "Underground Bunker Console",
+    "category": "Portfolio",
+    "colorScheme": "Dark",
+    "layout": "Interactive",
+    "author": "System",
+    "views": 0,
+    "rating": 4.5,
+    "image": "/template-previews/Underground_Bunker_Console.svg",
+    "createdAt": "2026-06-06"
   }
 ];
