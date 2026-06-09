@@ -6,11 +6,11 @@ function cn(...inputs) {
   return twMerge(clsx(inputs));
 }
 
-export function Toggle({ 
-  checked = false, 
-  onChange, 
-  disabled = false, 
-  label, 
+export function Toggle({
+  checked = false,
+  onChange,
+  disabled = false,
+  label,
   size = 'medium',
   className
 }) {
@@ -74,7 +74,7 @@ export function Toggle({
         />
       </button>
       {label && (
-        <span 
+        <span
           className={cn(
             "text-sm font-medium select-none text-foreground",
             disabled ? "opacity-50 cursor-not-allowed" : "cursor-pointer"

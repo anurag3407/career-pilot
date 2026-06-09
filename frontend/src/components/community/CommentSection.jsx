@@ -7,10 +7,10 @@ import {
   Send, 
   MoreHorizontal,
   ChevronDown,
-  ChevronUp,
-  Loader2
+  ChevronUp
 } from 'lucide-react';
 import toast from 'react-hot-toast';
+import { SkeletonCommentList } from '../ui/Skeleton';
 
 function CommentItem({ comment, currentUser, onReply, onLike, depth = 0 }) {
   const [showReplies, setShowReplies] = useState(depth === 0);
@@ -46,7 +46,7 @@ function CommentItem({ comment, currentUser, onReply, onLike, depth = 0 }) {
     <div className={`${depth > 0 ? 'ml-8 border-l-2 border-border pl-4' : ''}`}>
       <div className="flex gap-3 py-3">
         {/* Avatar */}
-        <div className="flex-shrink-0">
+        <div className="shrink-0">
           <div className="w-8 h-8 rounded-full bg-gradient-to-br from-primary to-secondary flex items-center justify-center text-primary-foreground text-xs font-medium">
             {comment.author?.avatar ? (
               <img 
@@ -198,7 +198,7 @@ export default function CommentSection({ postId, currentUser, onCommentAdded }) 
       setTotal(data.pagination.total);
       setHasMore(data.comments.length === 20 && data.pagination.total > pageToFetch * 20);
     } catch (error) {
-      toast.error('Failed to load comments');
+      toast.error('Failed to load comments', { id: `community-comments-load-error-${postId}` });
     } finally {
       setLoading(false);
     }
@@ -217,7 +217,7 @@ export default function CommentSection({ postId, currentUser, onCommentAdded }) 
       onCommentAdded?.();
       toast.success('Comment posted!');
     } catch (error) {
-      toast.error('Failed to post comment');
+      toast.error('Failed to post comment', { id: `community-post-comment-error-${postId}` });
     } finally {
       setIsSubmitting(false);
     }
@@ -267,7 +267,7 @@ export default function CommentSection({ postId, currentUser, onCommentAdded }) 
       
       setComments(updateCommentLike);
     } catch (error) {
-      toast.error('Failed to like comment');
+      toast.error('Failed to like comment', { id: `community-like-comment-error-${commentId}` });
     }
   };
 
@@ -276,7 +276,7 @@ export default function CommentSection({ postId, currentUser, onCommentAdded }) 
       {/* Comment Input */}
       <div className="p-4 border-b border-border bg-muted/50">
         <form onSubmit={handleSubmitComment} className="flex gap-2">
-          <div className="w-8 h-8 rounded-full bg-gradient-to-br from-primary to-secondary flex items-center justify-center text-primary-foreground text-xs font-medium flex-shrink-0">
+          <div className="w-8 h-8 rounded-full bg-gradient-to-br from-primary to-secondary flex items-center justify-center text-primary-foreground text-xs font-medium shrink-0">
             {currentUser?.photoURL ? (
               <img 
                 src={currentUser.photoURL} 
@@ -314,9 +314,7 @@ export default function CommentSection({ postId, currentUser, onCommentAdded }) 
       {/* Comments List */}
       <div className="max-h-96 overflow-y-auto">
         {loading ? (
-          <div className="flex items-center justify-center py-8">
-            <Loader2 className="w-6 h-6 animate-spin text-primary" />
-          </div>
+          <SkeletonCommentList count={3} className="py-2" />
         ) : comments.length === 0 ? (
           <div className="text-center py-8 text-muted-foreground">
             <MessageCircle className="w-12 h-12 mx-auto mb-2 text-muted-foreground/60" />

@@ -53,7 +53,7 @@ const PreviewFrame = ({ url, title = "Portfolio Preview" }) => {
       </div>
 
       {/* Preview Container */}
-      <div 
+      <div
         className="relative bg-background border rounded-xl overflow-hidden shadow-lg transition-all duration-500 ease-in-out"
         style={{ width: getFrameWidth(), height: '800px', maxWidth: '100%' }}
       >

@@ -33,11 +33,13 @@ const interviewSchema = new mongoose.Schema({
     questions: [{
         questionId: String,
         question: String,
-        type: { type: String, enum: ['behavioral', 'technical', 'situational', 'general'] },
-        difficulty: { type: String, enum: ['easy', 'medium', 'hard'] }
+        type: { type: String, lowercase: true, trim: true, default: 'general' },
+        difficulty: { type: String, lowercase: true, trim: true, default: 'medium' }
     }],
     answers: [answerSchema],
     status: { type: String, enum: ['in_progress', 'completed', 'abandoned'], default: 'in_progress' },
+    totalQuestionCount: { type: Number, default: 10 },
+    contextSummary: { type: String, default: '' },
     overallScore: { type: Number, default: 0 },
     overallFeedback: {
         summary: String,
@@ -56,5 +58,9 @@ const interviewSchema = new mongoose.Schema({
 
 interviewSchema.index({ odId: 1, createdAt: -1 }, { background: true });
 interviewSchema.index({ odId: 1, status: 1 }, { background: true });
+interviewSchema.index({ odId: 1, jobRole: 1, industry: 1 }, { background: true });
+interviewSchema.index({ odId: 1, overallScore: -1 }, { background: true });
+interviewSchema.index({ odId: 1, status: 1, completedAt: -1 }, { background: true });
+interviewSchema.index({ odId: 1, experienceLevel: 1, createdAt: -1 }, { background: true });
 
 export default mongoose.model('Interview', interviewSchema);

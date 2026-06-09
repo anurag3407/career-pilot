@@ -32,9 +32,9 @@ const Modal = ({
       // Lock body scroll
       const originalStyle = window.getComputedStyle(document.body).overflow;
       document.body.style.overflow = 'hidden';
-      
+
       document.addEventListener('keydown', handleKeyDown);
-      
+
       return () => {
         // Restore body scroll and cleanup listener
         document.body.style.overflow = originalStyle;

@@ -1,10 +1,17 @@
 import { triggerConfetti } from '../utils/confetti'
 import { useState, useRef, useEffect } from 'react';
-import { useNavigate } from 'react-router-dom';
+import { useNavigate, useLocation } from 'react-router-dom';
 import { motion } from 'framer-motion';
 import { Mic, MicOff, Video, VideoOff, XCircle, CheckCircle, AlertCircle, Volume2, VolumeX, RotateCcw, UserX, Loader2, Sparkles, ArrowRight, Target, TrendingUp, MessageSquare, Eye, Brain, Award, ChevronDown, ChevronUp, Clock, BarChart3, Lightbulb, Zap, Laptop, Smartphone, Chrome, AlertTriangle, FileUp, FileText, X } from 'lucide-react';
 import Button from '../components/Button';
-import { interviewApi, uploadApi } from '../services/api';
+import BodyLanguageTips from '../components/BodyLanguageTips';
+import VoiceToTextButton from '../components/VoiceToTextButton';
+import { interviewApi, uploadApi, resumeApi } from '../services/api';
+import ConfidenceMeter from "../components/ConfidenceMeter";
+import {DEFAULT_PROGRESS,updateDifficulty} from '../utils/interviewDifficulty';
+import LearningRecommendations from "../components/LearningRecommendations";
+import CopyButton from '../components/CopyButton';
+import { useAIConfigStore } from '../stores/useAIConfigStore';
 
 // Device and browser detection utilities
 const isMobileDevice = () => {
@@ -65,7 +72,7 @@ function QuestionAnalysisCard({ answer, index }) {
   return (
     <div className="rounded-2xl bg-muted/30 border border-border/50 overflow-hidden transition-all duration-300 hover:border-border/80/50">
       <button onClick={() => setExpanded(!expanded)} className="w-full p-4 flex items-center gap-4 text-left cursor-pointer">
-        <div className="w-10 h-10 rounded-xl bg-violet-500/20 border border-violet-500/30 flex items-center justify-center flex-shrink-0">
+        <div className="w-10 h-10 rounded-xl bg-violet-500/20 border border-violet-500/30 flex items-center justify-center shrink-0">
           <span className="text-violet-400 font-bold text-sm">{index + 1}</span>
         </div>
         <div className="flex-1 min-w-0">
@@ -108,9 +115,12 @@ function QuestionAnalysisCard({ answer, index }) {
             <div className="grid lg:grid-cols-2 gap-4">
               {/* Your Response */}
               <div className="p-4 rounded-xl bg-muted/50 border border-border/50">
-                <div className="flex items-center gap-2 mb-3">
-                  <MessageSquare className="w-4 h-4 text-muted-foreground" />
-                  <p className="text-xs text-muted-foreground uppercase tracking-wide font-medium">Your Response</p>
+                <div className="flex items-center justify-between gap-2 mb-3">
+                  <div className="flex items-center gap-2">
+                    <MessageSquare className="w-4 h-4 text-muted-foreground" />
+                    <p className="text-xs text-muted-foreground uppercase tracking-wide font-medium">Your Response</p>
+                  </div>
+                  <CopyButton text={answer.transcript} label="" size={13} variant="ghost" className="shrink-0" />
                 </div>
                 <p className="text-foreground text-sm leading-relaxed">"{answer.transcript}"</p>
               </div>
@@ -118,9 +128,12 @@ function QuestionAnalysisCard({ answer, index }) {
               {/* Ideal Answer */}
               {analysis.idealAnswer && (
                 <div className="p-4 rounded-xl bg-emerald-500/10 border border-emerald-500/20">
-                  <div className="flex items-center gap-2 mb-3">
-                    <Award className="w-4 h-4 text-emerald-400" />
-                    <p className="text-xs text-emerald-400 uppercase tracking-wide font-medium">Model Answer Example</p>
+                  <div className="flex items-center justify-between gap-2 mb-3">
+                    <div className="flex items-center gap-2">
+                      <Award className="w-4 h-4 text-emerald-400" />
+                      <p className="text-xs text-emerald-400 uppercase tracking-wide font-medium">Model Answer Example</p>
+                    </div>
+                    <CopyButton text={analysis.idealAnswer} label="" size={13} variant="ghost" className="shrink-0 text-emerald-400 hover:text-emerald-300" />
                   </div>
                   <p className="text-foreground text-sm leading-relaxed">{analysis.idealAnswer}</p>
                 </div>
@@ -130,9 +143,12 @@ function QuestionAnalysisCard({ answer, index }) {
             {/* Professional Feedback */}
             {analysis.feedback && (
               <div className="p-4 rounded-xl bg-primary/10 border border-primary/20">
-                <div className="flex items-center gap-2 mb-2">
-                  <Brain className="w-4 h-4 text-primary" />
-                  <p className="text-xs text-primary uppercase tracking-wide font-medium">Professional Assessment</p>
+                <div className="flex items-center justify-between gap-2 mb-2">
+                  <div className="flex items-center gap-2">
+                    <Brain className="w-4 h-4 text-primary" />
+                    <p className="text-xs text-primary uppercase tracking-wide font-medium">Professional Assessment</p>
+                  </div>
+                  <CopyButton text={analysis.feedback} label="" size={13} variant="ghost" className="shrink-0" />
                 </div>
                 <p className="text-foreground text-sm leading-relaxed">{analysis.feedback}</p>
               </div>
@@ -146,7 +162,7 @@ function QuestionAnalysisCard({ answer, index }) {
                   <ul className="space-y-2">
                     {analysis.whatYouDidWell.map((item, i) => (
                       <li key={i} className="flex items-start gap-2 text-foreground text-sm">
-                        <CheckCircle className="w-4 h-4 text-emerald-400 flex-shrink-0 mt-0.5" />
+                        <CheckCircle className="w-4 h-4 text-emerald-400 shrink-0 mt-0.5" />
                         {item}
                       </li>
                     ))}
@@ -160,7 +176,7 @@ function QuestionAnalysisCard({ answer, index }) {
                   <ul className="space-y-2">
                     {analysis.whatWasMissing.map((item, i) => (
                       <li key={i} className="flex items-start gap-2 text-foreground text-sm">
-                        <AlertCircle className="w-4 h-4 text-amber-400 flex-shrink-0 mt-0.5" />
+                        <AlertCircle className="w-4 h-4 text-amber-400 shrink-0 mt-0.5" />
                         {item}
                       </li>
                     ))}
@@ -200,9 +216,12 @@ function QuestionAnalysisCard({ answer, index }) {
             {analysis.keyTakeaway && (
               <div className="p-4 rounded-xl bg-violet-500/10 border border-violet-500/20">
                 <div className="flex items-start gap-3">
-                  <Zap className="w-5 h-5 text-violet-400 flex-shrink-0 mt-0.5" />
-                  <div>
-                    <p className="text-xs text-violet-400 uppercase tracking-wide mb-1 font-medium">Key Takeaway</p>
+                  <Zap className="w-5 h-5 text-violet-400 shrink-0 mt-0.5" />
+                  <div className="flex-1 min-w-0">
+                    <div className="flex items-center justify-between gap-2 mb-1">
+                      <p className="text-xs text-violet-400 uppercase tracking-wide font-medium">Key Takeaway</p>
+                      <CopyButton text={analysis.keyTakeaway} label="" size={13} variant="ghost" className="shrink-0 text-violet-400 hover:text-violet-300" />
+                    </div>
                     <p className="text-foreground text-sm font-medium">{analysis.keyTakeaway}</p>
                   </div>
                 </div>
@@ -216,7 +235,7 @@ function QuestionAnalysisCard({ answer, index }) {
                 <ul className="space-y-2">
                   {analysis.suggestions.map((suggestion, i) => (
                     <li key={i} className="flex items-start gap-2 text-foreground text-sm">
-                      <Lightbulb className="w-4 h-4 text-sky-400 flex-shrink-0 mt-0.5" />
+                      <Lightbulb className="w-4 h-4 text-sky-400 shrink-0 mt-0.5" />
                       {suggestion}
                     </li>
                   ))}
@@ -246,6 +265,7 @@ function QuestionAnalysisCard({ answer, index }) {
 
 export default function InterviewPrep() {
   const navigate = useNavigate();
+  const location = useLocation();
   const [step, setStep] = useState('setup'); // 'setup', 'av-check', 'interview', 'feedback'
   const [loading, setLoading] = useState(false);
   const [error, setError] = useState('');
@@ -262,15 +282,17 @@ export default function InterviewPrep() {
   const avVideoRef = useRef(null);
 
   const [formData, setFormData] = useState({
-    jobRole: '',
+    jobRole: location.state?.jobRole || '',
     industry: 'software_engineering',
     experienceLevel: 'entry',
     questionCount: 10
   });
 
   // Resume upload state
+  const [savedResumes, setSavedResumes] = useState([]);
+  const [selectedResumeId, setSelectedResumeId] = useState(location.state?.resumeId || 'none');
   const [resumeFile, setResumeFile] = useState(null);
-  const [resumeText, setResumeText] = useState('');
+  const [resumeText, setResumeText] = useState(location.state?.resumeText || '');
   const [resumeLoading, setResumeLoading] = useState(false);
   const [resumeError, setResumeError] = useState('');
   const resumeInputRef = useRef(null);
@@ -284,9 +306,25 @@ export default function InterviewPrep() {
   const [audioEnabled, setAudioEnabled] = useState(true);
   const [isSpeaking, setIsSpeaking] = useState(false);
   const [faceVisible, setFaceVisible] = useState(true);
+  const [faceConfidence, setFaceConfidence] = useState(50);
   const [answersSubmitted, setAnswersSubmitted] = useState([]);
+  
+  const [useTextInput, setUseTextInput] = useState(false);
+  const [textAnswer, setTextAnswer] = useState('');
 
   const [overallResults, setOverallResults] = useState(null);
+  const [progressData, setProgressData] = useState(() => {
+
+  const stored =
+    localStorage.getItem(
+      "interviewProgress"
+    );
+
+  return stored
+    ? JSON.parse(stored)
+    : DEFAULT_PROGRESS;
+
+});
   const [expressionSamples, setExpressionSamples] = useState([]);
 
   const videoRef = useRef(null);
@@ -301,6 +339,11 @@ export default function InterviewPrep() {
   const transcriptRef = useRef('');
   const isRecordingRef = useRef(false);
 
+  const visualizerCanvasRef = useRef(null);
+  const audioCtxRef = useRef(null);
+  const analyserRef = useRef(null);
+  const animationFrameIdRef = useRef(null);
+
   // Check device and browser on mount
   useEffect(() => {
     setIsMobile(isMobileDevice());
@@ -311,6 +354,39 @@ export default function InterviewPrep() {
     window.addEventListener('resize', handleResize);
     return () => window.removeEventListener('resize', handleResize);
   }, []);
+
+  // Check BYOK config and fetch saved resumes
+  useEffect(() => {
+    const checkAuthAndFetch = async () => {
+      // Check BYOK
+      const activeConfig = useAIConfigStore.getState().getActiveConfig();
+      const hasStoreKey = !!activeConfig?.apiKey;
+      const legacyConfigStr = localStorage.getItem('aiConfig');
+      let hasLegacyKey = false;
+      try { hasLegacyKey = legacyConfigStr && JSON.parse(legacyConfigStr).apiKey; } catch(e) {}
+      const hasOpenRouterKey = localStorage.getItem('openRouterApiKey');
+      
+      if (!hasStoreKey && !hasLegacyKey && !hasOpenRouterKey) {
+        navigate('/settings?tab=ai&return_url=/interview-prep');
+        return;
+      }
+
+      // Fetch saved resumes
+      try {
+        const response = await resumeApi.getAll();
+        let fetchedResumes = [];
+        if (Array.isArray(response)) fetchedResumes = response;
+        else if (Array.isArray(response.data)) fetchedResumes = response.data;
+        else if (Array.isArray(response.resumes)) fetchedResumes = response.resumes;
+        else if (response.data && Array.isArray(response.data.resumes)) fetchedResumes = response.data.resumes;
+        
+        setSavedResumes(fetchedResumes);
+      } catch (err) {
+        console.error('Failed to fetch saved resumes:', err);
+      }
+    };
+    checkAuthAndFetch();
+  }, [navigate]);
 
   useEffect(() => {
     if (step === 'interview') initializeMedia();
@@ -390,9 +466,18 @@ export default function InterviewPrep() {
 
     setFaceVisible(detected);
     if (detected) {
-      const confidence = Math.min(100, Math.max(40, 50 + skinRatio * 200));
-      setExpressionSamples(prev => [...prev.slice(-60), { confidence, timestamp: Date.now() }]);
-    }
+  const confidence =
+    Math.min(100, Math.max(40, 50 + skinRatio * 200));
+
+  setFaceConfidence(confidence);
+
+  setExpressionSamples(prev => [
+    ...prev.slice(-60),
+    { confidence, timestamp: Date.now() }
+  ]);
+} else {
+  setFaceConfidence(20);
+}
   };
 
   const getAverageMetrics = () => {
@@ -409,6 +494,20 @@ export default function InterviewPrep() {
   };
 
   const cleanupMedia = () => {
+    if (animationFrameIdRef.current) {
+      cancelAnimationFrame(animationFrameIdRef.current);
+      animationFrameIdRef.current = null;
+    }
+    if (audioCtxRef.current) {
+      try {
+        if (audioCtxRef.current.state !== 'closed') {
+          audioCtxRef.current.close();
+        }
+      } catch (e) {}
+      audioCtxRef.current = null;
+    }
+    analyserRef.current = null;
+
     if (mediaStreamRef.current) mediaStreamRef.current.getTracks().forEach(track => track.stop());
     if (recognitionRef.current) try { recognitionRef.current.stop(); } catch (e) { }
     if (timerRef.current) clearInterval(timerRef.current);
@@ -509,6 +608,24 @@ export default function InterviewPrep() {
     }
   };
 
+  const handleResumeSelect = (e) => {
+    const id = e.target.value;
+    setSelectedResumeId(id);
+    if (id === 'none') {
+      setResumeText('');
+      setResumeFile(null);
+    } else if (id === 'upload') {
+      setResumeText('');
+      setResumeFile(null);
+    } else {
+      const selected = savedResumes.find(r => (r._id || r.id) === id);
+      if (selected) {
+        setResumeText(selected.enhancedText || selected.originalText || '');
+        setResumeFile({ name: selected.title || selected.jobRole || 'Saved Resume' });
+      }
+    }
+  };
+
   // Handle resume file selection
   const handleResumeUpload = async (e) => {
     const file = e.target.files?.[0];
@@ -529,6 +646,7 @@ export default function InterviewPrep() {
 
   // Remove uploaded resume
   const removeResume = () => {
+    setSelectedResumeId('none');
     setResumeFile(null);
     setResumeText('');
     setResumeError('');
@@ -586,6 +704,72 @@ export default function InterviewPrep() {
     }
   };
 
+  const startVisualizerDraw = (analyser, canvas) => {
+    const ctx = canvas.getContext('2d');
+    const bufferLength = analyser.frequencyBinCount;
+    const dataArray = new Uint8Array(bufferLength);
+    
+    const dpr = window.devicePixelRatio || 1;
+    canvas.width = canvas.clientWidth * dpr;
+    canvas.height = canvas.clientHeight * dpr;
+    ctx.scale(dpr, dpr);
+
+    const draw = () => {
+      if (!isRecordingRef.current) return;
+      animationFrameIdRef.current = requestAnimationFrame(draw);
+      
+      analyser.getByteTimeDomainData(dataArray);
+      
+      const width = canvas.width / dpr;
+      const height = canvas.height / dpr;
+      
+      ctx.fillStyle = 'rgba(15, 23, 42, 0.2)';
+      ctx.fillRect(0, 0, width, height);
+      
+      ctx.strokeStyle = 'rgba(129, 140, 248, 0.04)';
+      ctx.lineWidth = 1;
+      ctx.beginPath();
+      ctx.moveTo(0, height / 2);
+      ctx.lineTo(width, height / 2);
+      ctx.stroke();
+
+      ctx.lineWidth = 2.5;
+      
+      const gradient = ctx.createLinearGradient(0, 0, width, 0);
+      gradient.addColorStop(0, '#6366f1');
+      gradient.addColorStop(0.5, '#a855f7');
+      gradient.addColorStop(1, '#ec4899');
+      ctx.strokeStyle = gradient;
+      
+      ctx.shadowBlur = 6;
+      ctx.shadowColor = 'rgba(168, 85, 247, 0.4)';
+      
+      ctx.beginPath();
+      
+      const sliceWidth = width / bufferLength;
+      let x = 0;
+      
+      for (let i = 0; i < bufferLength; i++) {
+        const v = dataArray[i] / 128.0;
+        const y = (v * height) / 2;
+        
+        if (i === 0) {
+          ctx.moveTo(x, y);
+        } else {
+          ctx.lineTo(x, y);
+        }
+        
+        x += sliceWidth;
+      }
+      
+      ctx.lineTo(width, height / 2);
+      ctx.stroke();
+      ctx.shadowBlur = 0;
+    };
+    
+    draw();
+  };
+
   const startRecording = () => {
     if (!audioEnabled) {
       setError('Please enable microphone to record your answer');
@@ -608,6 +792,30 @@ export default function InterviewPrep() {
     setError('');
     isRecordingRef.current = true;
     setIsRecording(true);
+
+    // Initialize Audio Visualizer
+    try {
+      if (mediaStreamRef.current) {
+        const audioContext = new (window.AudioContext || window.webkitAudioContext)();
+        audioCtxRef.current = audioContext;
+        
+        const source = audioContext.createMediaStreamSource(mediaStreamRef.current);
+        const analyser = audioContext.createAnalyser();
+        analyser.fftSize = 512;
+        analyserRef.current = analyser;
+        
+        source.connect(analyser);
+        
+        // Start drawing loop after small timeout to allow canvas mount
+        setTimeout(() => {
+          if (visualizerCanvasRef.current) {
+            startVisualizerDraw(analyser, visualizerCanvasRef.current);
+          }
+        }, 100);
+      }
+    } catch (visErr) {
+      console.error('Failed to initialize audio visualizer:', visErr);
+    }
 
     timerRef.current = setInterval(() => {
       setRecordingTime(Math.floor((Date.now() - startTimeRef.current) / 1000));
@@ -653,11 +861,30 @@ export default function InterviewPrep() {
 
   const stopRecording = async () => {
     isRecordingRef.current = false;
+    
+    // Stop audio visualizer
+    if (animationFrameIdRef.current) {
+      cancelAnimationFrame(animationFrameIdRef.current);
+      animationFrameIdRef.current = null;
+    }
+    if (audioCtxRef.current) {
+      try {
+        if (audioCtxRef.current.state !== 'closed') {
+          audioCtxRef.current.close();
+        }
+      } catch (e) {
+        console.error('Error closing AudioContext:', e);
+      }
+      audioCtxRef.current = null;
+    }
+    analyserRef.current = null;
+
     if (recognitionRef.current) try { recognitionRef.current.stop(); } catch (e) { }
     recognitionRef.current = null;
     if (timerRef.current) clearInterval(timerRef.current);
 
     setIsRecording(false);
+    // eslint-disable-next-line
     const duration = Math.floor((Date.now() - startTimeRef.current) / 1000);
     const metrics = getAverageMetrics();
 
@@ -671,7 +898,7 @@ export default function InterviewPrep() {
     setError('');
 
     try {
-      await interviewApi.submitAnswer(interviewId, {
+      const response = await interviewApi.submitAnswer(interviewId, {
         questionId: questions[currentQuestionIndex].questionId,
         transcript: finalTranscript,
         duration,
@@ -680,11 +907,15 @@ export default function InterviewPrep() {
 
       setAnswersSubmitted([...answersSubmitted, { questionIndex: currentQuestionIndex, transcript: finalTranscript }]);
 
-      if (currentQuestionIndex < questions.length - 1) {
+      if (response.data && response.data.questions) {
+        setQuestions(response.data.questions);
+      }
+
+      if (response.data?.answeredCount >= response.data?.totalQuestions || !response.data?.nextQuestion) {
+        completeInterview();
+      } else {
         setCurrentQuestionIndex(prev => prev + 1);
         setTranscript('');
-      } else {
-        completeInterview();
       }
     } catch (err) {
       setError(err.message || 'Failed to submit answer');
@@ -693,10 +924,63 @@ export default function InterviewPrep() {
     }
   };
 
+  const submitTextAnswer = async () => {
+    const finalTranscript = textAnswer.trim();
+    if (!finalTranscript) {
+      setError('Please type your answer before submitting.');
+      return;
+    }
+
+    setLoading(true);
+    setError('');
+
+    try {
+      const response = await interviewApi.submitAnswer(interviewId, {
+        questionId: questions[currentQuestionIndex].questionId,
+        transcript: finalTranscript,
+        duration: 30, // Default for text answers
+        expressionMetrics: { averageConfidence: 0.8, eyeContactPercentage: 80, headMovementStability: 0.8, overallExpressionScore: 80 }
+      });
+
+      setAnswersSubmitted([...answersSubmitted, { questionIndex: currentQuestionIndex, transcript: finalTranscript }]);
+
+      if (response.data && response.data.questions) {
+        setQuestions(response.data.questions);
+      }
+
+      if (response.data?.answeredCount >= response.data?.totalQuestions || !response.data?.nextQuestion) {
+        completeInterview();
+      } else {
+        setCurrentQuestionIndex(prev => prev + 1);
+        setTextAnswer('');
+      }
+    } catch (err) {
+      setError(err.message || 'Failed to submit answer');
+    } finally {
+      setLoading(false);
+    }
+  };
+
+
  const completeInterview = async () => {
   setLoading(true);
   try {
     const response = await interviewApi.completeInterview(interviewId);
+    const score = response.data.overallScore;
+    const previousLevel = progressData.level;
+    const updatedProgress = updateDifficulty(score,progressData);
+    localStorage.setItem("interviewProgress",JSON.stringify( updatedProgress));
+    setProgressData(updatedProgress);
+    if(
+ previousLevel !==
+ updatedProgress.level
+){
+ alert(
+   `🎉 Congratulations!
+You reached
+${updatedProgress.level}`
+ );
+}
 
     setOverallResults(response.data);
     setStep('feedback');
@@ -761,7 +1045,7 @@ export default function InterviewPrep() {
 
             <div className="bg-amber-500/10 border border-amber-500/20 rounded-xl p-4 mb-6">
               <div className="flex items-center gap-3">
-                <Laptop className="w-6 h-6 text-amber-400 flex-shrink-0" />
+                <Laptop className="w-6 h-6 text-amber-400 shrink-0" />
                 <p className="text-amber-300 text-sm text-left">
                   Please open this page on a laptop or desktop computer with a webcam and microphone.
                 </p>
@@ -804,7 +1088,7 @@ export default function InterviewPrep() {
               className="mb-6 bg-amber-500/10 border border-amber-500/30 rounded-xl p-4"
             >
               <div className="flex items-start gap-3">
-                <Chrome className="w-6 h-6 text-amber-400 flex-shrink-0 mt-0.5" />
+                <Chrome className="w-6 h-6 text-amber-400 shrink-0 mt-0.5" />
                 <div>
                   <p className="text-amber-300 font-medium">Chrome Browser Recommended</p>
                   <p className="text-amber-400/70 text-sm mt-1">
@@ -880,7 +1164,7 @@ export default function InterviewPrep() {
 
             {error && (
               <div className="mb-6 p-4 bg-red-500/10 border border-red-500/30 rounded-xl flex items-start gap-3">
-                <AlertCircle className="w-5 h-5 text-red-400 flex-shrink-0 mt-0.5" />
+                <AlertCircle className="w-5 h-5 text-red-400 shrink-0 mt-0.5" />
                 <p className="text-red-400 text-sm">{error}</p>
               </div>
             )}
@@ -945,8 +1229,9 @@ export default function InterviewPrep() {
           </motion.div>
 
           <motion.div initial={{ opacity: 0, y: 20 }} animate={{ opacity: 1, y: 0 }} transition={{ delay: 0.1 }}>
-            <div className="p-6 rounded-2xl bg-background/50 border border-border backdrop-blur-sm">
-              <form onSubmit={handleStartInterview} className="space-y-5">
+            <div className="p-8 rounded-3xl glass glow border border-border shadow-2xl relative overflow-hidden">
+              <div className="absolute top-0 right-0 w-64 h-64 bg-primary/5 rounded-full blur-3xl pointer-events-none"></div>
+              <form onSubmit={handleStartInterview} className="space-y-6 relative z-10">
                 <div>
                   <label className="block text-sm font-medium text-muted-foreground mb-2">Job Role *</label>
                   <input
@@ -954,7 +1239,7 @@ export default function InterviewPrep() {
                     value={formData.jobRole}
                     onChange={(e) => setFormData({ ...formData, jobRole: e.target.value })}
                     placeholder="e.g., Software Engineer, Product Manager"
-                    className="w-full px-4 py-3 bg-muted/50 border border-border rounded-xl text-foreground placeholder:text-muted-foreground focus:ring-2 focus:ring-primary focus:border-transparent transition-all"
+                    className="w-full px-4 py-3 bg-card/50 border border-border rounded-xl text-foreground placeholder:text-muted-foreground focus:ring-2 focus:ring-primary focus:border-primary/50 transition-all-300 shadow-sm"
                     required
                   />
                 </div>
@@ -998,19 +1283,35 @@ export default function InterviewPrep() {
                 </div>
 
                 {/* Resume Upload Section */}
-                <div className="border border-dashed border-border rounded-xl p-5 bg-muted/30">
-                  <div className="flex items-center gap-3 mb-3">
-                    <div className="w-10 h-10 bg-primary/20 rounded-lg flex items-center justify-center">
-                      <FileUp className="w-5 h-5 text-primary" />
+                <div className="border-2 border-dashed border-primary/20 rounded-2xl p-6 bg-primary/5 transition-colors relative group">
+                  <div className="flex items-center gap-4 mb-4">
+                    <div className="w-12 h-12 bg-primary/20 rounded-xl flex items-center justify-center group-hover:scale-110 transition-transform">
+                      <FileUp className="w-6 h-6 text-primary" />
                     </div>
                     <div>
-                      <h3 className="text-foreground font-medium">Upload Resume (Optional)</h3>
-                      <p className="text-xs text-muted-foreground">Get personalized questions based on your experience</p>
+                      <h3 className="text-foreground font-bold text-lg">Resume Context (Optional)</h3>
+                      <p className="text-sm text-muted-foreground">Select or upload a resume to get personalized questions.</p>
                     </div>
                   </div>
 
-                  {!resumeFile ? (
-                    <div className="relative">
+                  <div className="mb-4">
+                    <select
+                      value={selectedResumeId}
+                      onChange={handleResumeSelect}
+                      className="w-full px-4 py-3 bg-card border border-border rounded-xl text-foreground focus:ring-2 focus:ring-primary shadow-sm"
+                    >
+                      <option value="none">-- No Resume --</option>
+                      {savedResumes.map(r => (
+                        <option key={r._id || r.id} value={r._id || r.id}>
+                          {r.title || r.jobRole || 'Saved Resume'}
+                        </option>
+                      ))}
+                      <option value="upload">+ Upload New PDF</option>
+                    </select>
+                  </div>
+
+                  {selectedResumeId === 'upload' && !resumeFile ? (
+                    <div className="relative mt-2 cursor-pointer hover:bg-primary/10 rounded-xl transition-colors">
                       <input
                         ref={resumeInputRef}
                         type="file"
@@ -1019,11 +1320,11 @@ export default function InterviewPrep() {
                         className="absolute inset-0 w-full h-full opacity-0 cursor-pointer"
                         disabled={resumeLoading}
                       />
-                      <div className="flex items-center justify-center gap-2 py-3 px-4 rounded-lg bg-muted/50 border border-border hover:border-primary/50 transition-colors cursor-pointer">
+                      <div className="flex items-center justify-center gap-2 py-4 px-4 rounded-xl bg-card border border-border group-hover:border-primary/50 transition-colors shadow-sm">
                         {resumeLoading ? (
                           <>
-                            <Loader2 className="w-4 h-4 text-primary animate-spin" />
-                            <span className="text-sm text-muted-foreground">Extracting text...</span>
+                            <Loader2 className="w-5 h-5 text-primary animate-spin" />
+                            <span className="text-sm font-semibold text-muted-foreground">Extracting text...</span>
                           </>
                         ) : (
                           <>
@@ -1033,7 +1334,7 @@ export default function InterviewPrep() {
                         )}
                       </div>
                     </div>
-                  ) : (
+                  ) : resumeFile ? (
                     <div className="flex items-center justify-between p-3 rounded-lg bg-emerald-500/10 border border-emerald-500/30">
                       <div className="flex items-center gap-3 flex-1">
                         <FileText className="w-5 h-5 text-emerald-400" />
@@ -1053,7 +1354,7 @@ export default function InterviewPrep() {
                         <X className="w-4 h-4 text-muted-foreground" />
                       </button>
                     </div>
-                  )}
+                  ) : null}
 
                   {resumeError && (
                     <p className="text-xs text-red-400 mt-2">{resumeError}</p>
@@ -1069,10 +1370,13 @@ export default function InterviewPrep() {
 
                 {error && (
                   <div className="p-4 rounded-xl bg-red-500/10 border border-red-500/20 flex items-start gap-3">
-                    <AlertCircle className="w-5 h-5 text-red-400 flex-shrink-0 mt-0.5" />
+                    <AlertCircle className="w-5 h-5 text-red-400 shrink-0 mt-0.5" />
                     <p className="text-sm text-red-400">{error}</p>
                   </div>
                 )}
+
+                {/* Body language coaching tip */}
+                <BodyLanguageTips currentQuestionIndex={currentQuestionIndex} />
 
                 <Button type="submit" disabled={loading} variant="primary" className="w-full !py-4 !text-lg !rounded-xl flex items-center justify-center gap-2">
                   {loading ? <Loader2 className="w-5 h-5 animate-spin" /> : <Mic className="w-5 h-5" />}
@@ -1094,9 +1398,10 @@ export default function InterviewPrep() {
 
   if (step === 'interview') {
     const currentQuestion = questions[currentQuestionIndex];
-    const progress = ((currentQuestionIndex + 1) / questions.length) * 100;
+    const progress = ((currentQuestionIndex + 1) / formData.questionCount) * 100;
 
     return (
+    <>
       <div className="min-h-screen bg-background">
         <div className="fixed inset-0 overflow-hidden pointer-events-none">
           <div className="absolute top-0 left-1/4 w-96 h-96 bg-primary/5 rounded-full blur-3xl" />
@@ -1105,7 +1410,7 @@ export default function InterviewPrep() {
         <div className="relative max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-8">
           <motion.div initial={{ opacity: 0 }} animate={{ opacity: 1 }} className="mb-6">
             <div className="flex justify-between items-center mb-2">
-              <span className="text-sm font-medium text-muted-foreground">Question {currentQuestionIndex + 1} of {questions.length}</span>
+              <span className="text-sm font-medium text-muted-foreground">Question {currentQuestionIndex + 1} of {formData.questionCount}</span>
               <span className="text-sm font-medium text-primary">{Math.round(progress)}%</span>
             </div>
             <div className="w-full h-2 bg-muted rounded-full overflow-hidden">
@@ -1165,7 +1470,7 @@ export default function InterviewPrep() {
             <motion.div initial={{ opacity: 0, x: 20 }} animate={{ opacity: 1, x: 0 }} className="space-y-6">
               <div className="p-6 rounded-2xl bg-background/50 border border-border">
                 <div className="flex items-start gap-3 mb-4">
-                  <div className="w-10 h-10 rounded-xl bg-primary/20 border border-primary/30 flex items-center justify-center flex-shrink-0">
+                  <div className="w-10 h-10 rounded-xl bg-primary/20 border border-primary/30 flex items-center justify-center shrink-0">
                     <span className="text-primary font-bold">{currentQuestionIndex + 1}</span>
                   </div>
                   <div className="flex-1">
@@ -1177,40 +1482,79 @@ export default function InterviewPrep() {
                 </div>
 
                 {isRecording && (
-                  <div className="mt-4 p-4 bg-gradient-to-r from-primary/10 to-secondary/10 border border-primary/20 rounded-xl">
-                    <div className="flex items-center gap-3">
-                      <div className="relative">
-                        <div className="w-10 h-10 rounded-full bg-primary/20 flex items-center justify-center">
-                          <Mic className="w-5 h-5 text-primary" />
+                  <>
+                    <div className="mt-4 p-4 bg-gradient-to-r from-primary/10 to-secondary/10 border border-primary/20 rounded-xl">
+                      <div className="flex items-center gap-3">
+                        <div className="relative">
+                          <div className="w-10 h-10 rounded-full bg-primary/20 flex items-center justify-center">
+                            <Mic className="w-5 h-5 text-primary" />
+                          </div>
+                          <div className="absolute inset-0 rounded-full bg-primary/30 animate-ping" />
                         </div>
-                        <div className="absolute inset-0 rounded-full bg-primary/30 animate-ping" />
-                      </div>
-                      <div>
-                        <p className="text-foreground font-medium">Recording in progress</p>
-                        <p className="text-muted-foreground text-sm">Speak clearly into your microphone</p>
+                        <div>
+                          <p className="text-foreground font-medium">Recording in progress</p>
+                          <p className="text-muted-foreground text-sm">Speak clearly into your microphone</p>
+                        </div>
                       </div>
                     </div>
-                  </div>
+                    <div className="mt-4">
+                        <ConfidenceMeter confidence={faceConfidence} />
+                   </div>
+                    {/* Glowing voice visualizer waveform canvas */}
+                    <div className="mt-4 rounded-xl overflow-hidden border border-border/60 bg-slate-950 p-1 flex items-center justify-center">
+                      <canvas
+                        ref={visualizerCanvasRef}
+                        className="w-full h-24 bg-slate-900 rounded-lg shadow-inner"
+                      />
+                    </div>
+                  </>
                 )}
               </div>
 
               {error && (
                 <div className="p-4 rounded-xl bg-red-500/10 border border-red-500/20 flex items-start gap-3">
-                  <AlertCircle className="w-5 h-5 text-red-400 flex-shrink-0 mt-0.5" />
+                  <AlertCircle className="w-5 h-5 text-red-400 shrink-0 mt-0.5" />
                   <p className="text-sm text-red-400">{error}</p>
                 </div>
               )}
 
-              <div className="flex gap-3">
-                {!isRecording ? (
-                  <Button onClick={startRecording} disabled={loading || isSpeaking} variant="primary" className="flex-1 !py-4 !rounded-xl flex items-center justify-center gap-2">
-                    <Mic className="w-5 h-5" />
-                    {isSpeaking ? 'Wait for question...' : 'Start Recording'}
-                  </Button>
+              {/* Body language coaching tip — rotates each question, dismissible */}
+              <BodyLanguageTips currentQuestionIndex={currentQuestionIndex} />
+
+              <div className="flex gap-3 w-full">
+                {useTextInput ? (
+                  <div className="flex flex-col w-full gap-3">
+                    <textarea
+                      value={textAnswer}
+                      onChange={(e) => setTextAnswer(e.target.value)}
+                      placeholder="Type your answer here..."
+                      className="w-full min-h-[120px] p-4 rounded-xl bg-muted/50 border border-border text-foreground focus:ring-2 focus:ring-primary resize-y"
+                      disabled={loading}
+                    />
+                    <div className="flex gap-3">
+                      <Button onClick={() => setUseTextInput(false)} disabled={loading} variant="outline" className="flex-1 !py-4 !rounded-xl flex items-center justify-center gap-2">
+                        <Mic className="w-4 h-4" /> Use Microphone
+                      </Button>
+                      <Button onClick={submitTextAnswer} disabled={loading || !textAnswer.trim()} variant="primary" className="flex-[2] !py-4 !rounded-xl flex items-center justify-center gap-2">
+                        {loading ? <Loader2 className="w-4 h-4 animate-spin" /> : null}
+                        {loading ? 'Submitting...' : 'Submit Answer'}
+                      </Button>
+                    </div>
+                  </div>
+                ) : !isRecording ? (
+                  <div className="flex w-full gap-3">
+                    <Button onClick={() => setUseTextInput(true)} disabled={loading || isSpeaking} variant="outline" className="flex-1 !py-4 !rounded-xl flex items-center justify-center gap-2">
+                      <FileText className="w-4 h-4" /> Type Answer
+                    </Button>
+                    <Button onClick={startRecording} disabled={loading || isSpeaking} variant="primary" className="flex-[2] !py-4 !rounded-xl flex items-center justify-center gap-2">
+                      <Mic className="w-5 h-5" />
+                      {isSpeaking ? 'Wait for question...' : 'Start Recording'}
+                    </Button>
+                  </div>
                 ) : (
-                  <button onClick={stopRecording} disabled={loading} className="flex-1 py-4 rounded-xl bg-red-500 hover:bg-red-600 text-foreground font-medium flex items-center justify-center gap-2 transition-colors cursor-pointer disabled:opacity-50">
+                  <button onClick={stopRecording} disabled={loading} className="flex-1 w-full py-4 rounded-xl bg-red-500 hover:bg-red-600 text-foreground font-medium flex items-center justify-center gap-2 transition-colors cursor-pointer disabled:opacity-50">
                     <XCircle className="w-5 h-5" />
-                    {loading ? 'Submitting...' : 'Stop & Next'}
+                    {loading ? 'Submitting...' : 'Stop & Submit'}
                   </button>
                 )}
               </div>
@@ -1224,6 +1568,7 @@ export default function InterviewPrep() {
           </div>
         </div>
       </div>
+      </>
     );
   }
 
@@ -1259,6 +1604,38 @@ export default function InterviewPrep() {
     const avgConfidence = overallResults.answers?.reduce((sum, a) => sum + (a.analysis?.confidence || 0), 0) / (overallResults.answers?.length || 1) || 0;
     const totalFillerWords = overallResults.answers?.reduce((sum, a) => sum + (a.analysis?.fillerWords?.count || 0), 0) || 0;
     const expressionScore = overallResults.overallFeedback?.expressionAnalysis?.overallConfidence || 0;
+    const getCommunicationRating = () => {
+  if (avgClarity >= 85 && avgConfidence >= 85) return 'Excellent';
+  if (avgClarity >= 75 && avgConfidence >= 75) return 'Strong';
+  if (avgClarity >= 65 && avgConfidence >= 65) return 'Good';
+  return 'Needs Improvement';
+};
+
+const communicationTips = [];
+
+if (avgConfidence < 70) {
+  communicationTips.push(
+    'Practice speaking more confidently and reduce hesitation.'
+  );
+}
+
+if (avgClarity < 70) {
+  communicationTips.push(
+    'Structure responses using the STAR method.'
+  );
+}
+
+if (totalFillerWords > 5) {
+  communicationTips.push(
+    "Reduce filler words such as 'um', 'uh', and 'like'."
+  );
+}
+
+if (communicationTips.length === 0) {
+  communicationTips.push(
+    'Excellent communication skills. Keep practicing regularly.'
+  );
+}
 
     return (
       <div className="min-h-screen bg-background">
@@ -1279,8 +1656,100 @@ export default function InterviewPrep() {
               </div>
             </motion.div>
             <h1 className="text-4xl md:text-5xl font-bold text-foreground mb-3">Interview Complete!</h1>
+
+            <div className="p-6 rounded-2xl bg-primary/10 border border-primary/20 mb-6">
+  <h3 className="text-xl font-bold mb-2">
+    Interview Readiness Score
+  </h3>
+
+  <p className="text-5xl font-bold text-primary">
+    {overallResults.overallScore}%
+  </p>
+
+  <p className="text-muted-foreground mt-2">
+    Based on confidence, communication, and answer quality.
+  </p>
+</div>
+
             <p className="text-lg text-muted-foreground">Here's your comprehensive performance analysis</p>
           </motion.div>
+          <motion.div
+  initial={{ opacity: 0, y: 20 }}
+  animate={{ opacity: 1, y: 0 }}
+  transition={{ delay: 0.05 }}
+  className="mb-8"
+>
+  <div className="p-6 rounded-3xl bg-gradient-to-br from-primary/10 to-primary/5 border border-primary/20">
+
+    <h2 className="text-2xl font-bold mb-4">
+      Adaptive Interview Progress
+    </h2>
+
+    <div className="grid md:grid-cols-2 gap-4">
+
+      <div>
+        <p className="text-muted-foreground">
+          Current Level
+        </p>
+
+        <p className="text-xl font-bold">
+          {progressData.level}
+        </p>
+      </div>
+
+      <div>
+        <p className="text-muted-foreground">
+          Average Score
+        </p>
+
+        <p className="text-xl font-bold">
+          {progressData.averageScore}%
+        </p>
+      </div>
+
+      <div>
+        <p className="text-muted-foreground">
+          Interviews Completed
+        </p>
+
+        <p className="text-xl font-bold">
+          {progressData.completedInterviews}
+        </p>
+      </div>
+
+      <div>
+        <p className="text-muted-foreground">
+          Success Streak
+        </p>
+
+        <p className="text-xl font-bold">
+          {progressData.streak}/3
+        </p>
+      </div>
+
+    </div>
+
+    <div className="mt-6">
+
+      <p className="mb-2 text-sm text-muted-foreground">
+        Progress To Next Level
+      </p>
+
+      <div className="w-full h-3 bg-muted rounded-full overflow-hidden">
+
+        <div
+          className="h-full bg-primary rounded-full transition-all duration-500"
+          style={{
+            width: `${progressData.streak * 33}%`
+          }}
+        />
+
+      </div>
+
+    </div>
+
+  </div>
+</motion.div>
 
           <motion.div initial={{ opacity: 0, y: 20 }} animate={{ opacity: 1, y: 0 }} transition={{ delay: 0.1 }} className="mb-8">
             <div className="p-8 rounded-3xl bg-gradient-to-br from-neutral-900/80 to-neutral-900/40 border border-border backdrop-blur-xl">
@@ -1389,6 +1858,74 @@ export default function InterviewPrep() {
               </div>
             </div>
           </motion.div>
+          <motion.div
+  initial={{ opacity: 0, y: 20 }}
+  animate={{ opacity: 1, y: 0 }}
+  transition={{ delay: 0.2 }}
+  className="mb-8"
+>
+  <div className="p-8 rounded-3xl bg-background/50 border border-border">
+
+    <h2 className="text-2xl font-bold mb-6">
+      Communication & Confidence Analysis
+    </h2>
+
+    <div className="grid md:grid-cols-4 gap-4 mb-6">
+
+      <div className="p-4 rounded-xl bg-emerald-500/10 border border-emerald-500/20">
+        <p className="text-sm text-muted-foreground">
+          Communication Score
+        </p>
+        <p className="text-3xl font-bold text-emerald-400">
+          {Math.round(avgClarity)}
+        </p>
+      </div>
+
+      <div className="p-4 rounded-xl bg-purple-500/10 border border-purple-500/20">
+        <p className="text-sm text-muted-foreground">
+          Confidence Score
+        </p>
+        <p className="text-3xl font-bold text-purple-400">
+          {Math.round(avgConfidence)}
+        </p>
+      </div>
+
+      <div className="p-4 rounded-xl bg-red-500/10 border border-red-500/20">
+        <p className="text-sm text-muted-foreground">
+          Filler Words
+        </p>
+        <p className="text-3xl font-bold text-red-400">
+          {totalFillerWords}
+        </p>
+      </div>
+
+      <div className="p-4 rounded-xl bg-amber-500/10 border border-amber-500/20">
+        <p className="text-sm text-muted-foreground">
+          Rating
+        </p>
+        <p className="text-xl font-bold text-amber-400">
+          {getCommunicationRating()}
+        </p>
+      </div>
+
+    </div>
+
+    <div className="p-5 rounded-xl bg-primary/10 border border-primary/20">
+      <h3 className="font-semibold mb-3">
+        Communication Improvement Roadmap
+      </h3>
+
+      <ul className="space-y-2">
+        {communicationTips.map((tip, index) => (
+          <li key={index}>
+            • {tip}
+          </li>
+        ))}
+      </ul>
+    </div>
+
+  </div>
+</motion.div>
 
           {overallResults.overallFeedback && (
             <motion.div initial={{ opacity: 0, y: 20 }} animate={{ opacity: 1, y: 0 }} transition={{ delay: 0.2 }} className="mb-8">
@@ -1422,7 +1959,7 @@ export default function InterviewPrep() {
                 <ul className="space-y-3">
                   {overallResults.overallFeedback?.topStrengths?.map((s, i) => (
                     <motion.li initial={{ opacity: 0, x: -10 }} animate={{ opacity: 1, x: 0 }} transition={{ delay: 0.4 + i * 0.1 }} key={i} className="flex items-start gap-3 p-3 rounded-xl bg-emerald-500/10 border border-emerald-500/10">
-                      <div className="w-6 h-6 rounded-full bg-emerald-500/20 flex items-center justify-center flex-shrink-0 mt-0.5">
+                      <div className="w-6 h-6 rounded-full bg-emerald-500/20 flex items-center justify-center shrink-0 mt-0.5">
                         <span className="text-emerald-400 text-sm font-bold">{i + 1}</span>
                       </div>
                       <span className="text-foreground/90">{s}</span>
@@ -1446,7 +1983,7 @@ export default function InterviewPrep() {
                 <ul className="space-y-3">
                   {overallResults.overallFeedback?.areasToImprove?.map((a, i) => (
                     <motion.li initial={{ opacity: 0, x: 10 }} animate={{ opacity: 1, x: 0 }} transition={{ delay: 0.4 + i * 0.1 }} key={i} className="flex items-start gap-3 p-3 rounded-xl bg-amber-500/10 border border-amber-500/10">
-                      <div className="w-6 h-6 rounded-full bg-amber-500/20 flex items-center justify-center flex-shrink-0 mt-0.5">
+                      <div className="w-6 h-6 rounded-full bg-amber-500/20 flex items-center justify-center shrink-0 mt-0.5">
                         <ArrowRight className="w-3 h-3 text-amber-400" />
                       </div>
                       <span className="text-foreground/90">{a}</span>
@@ -1455,6 +1992,50 @@ export default function InterviewPrep() {
                 </ul>
               </div>
             </motion.div>
+
+            <motion.div
+  initial={{ opacity: 0, y: 20 }}
+  animate={{ opacity: 1, y: 0 }}
+  transition={{ delay: 0.35 }}
+  className="mb-8"
+>
+  <div className="p-6 rounded-3xl bg-amber-500/10 border border-amber-500/20">
+
+    <h2 className="text-2xl font-bold mb-4">
+      Areas To Improve
+    </h2>
+
+    <p className="text-muted-foreground mb-5">
+      Focus on these areas before your next interview.
+    </p>
+
+    <div className="space-y-3">
+      {overallResults.overallFeedback?.areasToImprove?.map((item, index) => (
+        <div
+          key={index}
+          className="p-4 rounded-xl bg-background/50 border border-border"
+        >
+          <div className="flex items-start gap-3">
+
+            <AlertTriangle className="w-5 h-5 text-amber-400 mt-0.5" />
+
+            <span className="text-foreground">
+              {item}
+            </span>
+
+          </div>
+        </div>
+      ))}
+    </div>
+
+  </div>
+</motion.div>
+
+            <LearningRecommendations
+  areasToImprove={
+    overallResults.overallFeedback?.areasToImprove || []
+  }
+/>
           </div>
 
           <motion.div initial={{ opacity: 0, y: 20 }} animate={{ opacity: 1, y: 0 }} transition={{ delay: 0.4 }} className="mb-8">
@@ -1493,7 +2074,7 @@ export default function InterviewPrep() {
                     <p className="text-cyan-400/70 text-sm">Insights from facial expression tracking</p>
                   </div>
                 </div>
-                <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
+                <div className="grid grid-cols-1 md:grid-cols-[1.5fr_1fr] gap-6">
                   <div className="p-5 rounded-2xl bg-muted/30 border border-border/50">
                     <div className="flex items-center justify-between mb-4">
                       <span className="text-foreground">Expression Confidence Score</span>
@@ -1549,4 +2130,4 @@ export default function InterviewPrep() {
   }
 
   return null;
-}
+};

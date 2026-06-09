@@ -75,7 +75,6 @@ const compareVerificationCode = (code, stored) => {
     return crypto.timingSafeEqual(Buffer.from(hash, 'hex'), Buffer.from(storedHash, 'hex'));
 };
 
-fellowshipProfileSchema.index({ verificationCodeExpiry: 1 }, { expireAfterSeconds: 0 });
 
 fellowshipProfileSchema.pre('save', function () {
     this.updatedAt = new Date();
@@ -91,6 +90,10 @@ fellowshipProfileSchema.methods.compareVerificationCode = function (code) {
     if (!this.verificationCode) return false;
     return compareVerificationCode(code, this.verificationCode);
 };
+fellowshipProfileSchema.index({ role: 1 }, { background: true });
+fellowshipProfileSchema.index({ role: 1, isVerified: 1 }, { background: true });
+fellowshipProfileSchema.index({ verifiedEmail: 1 }, { background: true, sparse: true });
+fellowshipProfileSchema.index({ skills: 1 }, { background: true });
 
 const FellowshipProfile = mongoose.model('FellowshipProfile', fellowshipProfileSchema);
 

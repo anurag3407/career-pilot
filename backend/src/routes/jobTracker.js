@@ -15,7 +15,7 @@ import {
 function isValidWebUrl(str) {
   try {
     const url = new URL(str);
-    return url.protocol === 'http:' || url.protocol === 'https:';
+    return ['http:', 'https:'].includes(url.protocol);
   } catch {
     return false;
   }

@@ -16,7 +16,7 @@ import {
 import toast from 'react-hot-toast';
 import { jobAlertsApi, jobsApi } from '../services/api';
 import { JobAlertModal, JobAlertsList } from '../components';
-import EmptyState from '../components/EmptyState';
+import { SkeletonStatCards, SkeletonJobList } from '../components/ui/Skeleton'
 
 export default function JobAlerts() {
   const [activeTab, setActiveTab] = useState('alerts'); // 'alerts' | 'search'
@@ -107,20 +107,41 @@ export default function JobAlerts() {
           </div>
 
           {/* Quick Stats */}
-          {stats && (
-            <div className="grid grid-cols-4 gap-4">
+          {loading ? (
+            <motion.div
+              className="grid grid-cols-4 gap-4"
+              variants={{ animate: { transition: { staggerChildren: 0.08 } } }}
+              initial="initial"
+              animate="animate"
+            >
+              <SkeletonStatCards count={4} />
+            </motion.div>
+          ) : stats && (
+            <motion.div
+              className="grid grid-cols-4 gap-4"
+              variants={{ animate: { transition: { staggerChildren: 0.08 } } }}
+              initial="initial"
+              animate="animate"
+            >
               {[
                 { value: stats.totalAlerts || 0, label: 'Total Alerts', color: 'indigo' },
                 { value: stats.activeAlerts || 0, label: 'Active Alerts', color: 'green' },
                 { value: stats.totalJobsFound || 0, label: 'Jobs Found', color: 'purple' },
                 { value: stats.totalEmailsSent || 0, label: 'Emails Sent', color: 'blue' }
               ].map((stat, idx) => (
-                <div key={idx} className={`bg-background/50 border border-border rounded-xl p-4 ${hoverBorderClassMap[stat.color] || 'hover:border-border'} transition-colors`}>
+                <motion.div
+                  key={idx}
+                  variants={{
+                    initial: { opacity: 0, y: 12 },
+                    animate: { opacity: 1, y: 0, transition: { duration: 0.22, ease: 'easeOut' } }
+                  }}
+                  className={`bg-background/50 border border-border rounded-xl p-4 ${hoverBorderClassMap[stat.color] || 'hover:border-border'} transition-colors`}
+                >
                   <div className={`text-3xl font-bold text-foreground`}>{stat.value}</div>
                   <div className="text-muted-foreground text-sm">{stat.label}</div>
-                </div>
+                </motion.div>
               ))}
-            </div>
+            </motion.div>
           )}
         </div>
       </div>
@@ -201,26 +222,40 @@ export default function JobAlerts() {
               </div>
 
               {/* Search Results */}
-              {searchResults.length > 0 && (
+              {searchLoading ? (
+                <SkeletonJobList count={4} />
+              ) : searchResults.length > 0 ? (
                 <div className="space-y-4">
                   <h3 className="text-lg font-semibold text-foreground">
                     Search Results ({searchResults.length} jobs)
                   </h3>
-                  {searchResults.map((job, index) => (
-                    <JobCard key={job.id || index} job={job} index={index} />
-                  ))}
+                  <motion.div
+                    className="space-y-4"
+                    variants={{
+                      animate: { transition: { staggerChildren: 0.07 } }
+                    }}
+                    initial="initial"
+                    animate="animate"
+                  >
+                    {searchResults.map((job, index) => (
+                      <JobCard key={job.id || index} job={job} index={index} />
+                    ))}
+                  </motion.div>
                 </div>
-              )}
+              ) : null}
 
               {/* Empty State */}
               {!searchLoading && searchResults.length === 0 && !searchQuery && (
-                <EmptyState
-                  icon={Search}
-                  title="Search for Jobs"
-                  description="Enter a job title, skill, or company name to find matching opportunities. You can then create an alert to get notified about new matches."
-                  actionLabel="Create Alert"
-                  onAction={() => setIsModalOpen(true)}
-                />
+                <div className="text-center py-16">
+                  <div className="w-20 h-20 bg-muted/50 rounded-full flex items-center justify-center mx-auto mb-4">
+                    <Search className="w-10 h-10 text-muted-foreground" />
+                  </div>
+                  <h3 className="text-lg font-medium text-foreground">Search for Jobs</h3>
+                  <p className="text-muted-foreground mt-2 max-w-md mx-auto">
+                    Enter a job title, skill, or company name to find matching opportunities.
+                    You can then create an alert to get notified about new matches.
+                  </p>
+                </div>
               )}
             </div>
           )}
@@ -253,14 +288,15 @@ function JobCard({ job, index }) {
 
   return (
     <motion.div
-      initial={{ opacity: 0, y: 10 }}
-      animate={{ opacity: 1, y: 0 }}
-      transition={{ delay: index * 0.05 }}
+      variants={{
+        initial: { opacity: 0, y: 12 },
+        animate: { opacity: 1, y: 0, transition: { duration: 0.22, ease: 'easeOut' } }
+      }}
       className="bg-muted/50 rounded-xl border border-border p-5 hover:border-primary/30 transition-all"
     >
       <div className="flex items-start gap-4">
         {/* Company Logo or Initial */}
-        <div className="w-14 h-14 rounded-lg bg-gradient-to-br from-primary to-secondary flex items-center justify-center text-foreground font-bold text-xl flex-shrink-0">
+        <div className="w-14 h-14 rounded-lg bg-gradient-to-br from-primary to-secondary flex items-center justify-center text-foreground font-bold text-xl shrink-0">
           {job.company?.charAt(0) || 'J'}
         </div>
 
@@ -273,7 +309,7 @@ function JobCard({ job, index }) {
             </div>
 
             {/* Action Buttons */}
-            <div className="flex gap-2 flex-shrink-0">
+            <div className="flex gap-2 shrink-0">
               {job.applyLink && (
                 <button
                   onClick={handleApply}

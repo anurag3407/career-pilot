@@ -1,5 +1,4 @@
-import { useContext } from 'react';
-import PortfolioContext from '../../../../context/PortfolioContext';
+import { usePortfolio } from '../../../../context/PortfolioContext';
 import './style.css';
 
 function getInitials(name = '') {
@@ -13,19 +12,22 @@ function getInitials(name = '') {
 }
 
 export default function PureCSSArtGallery() {
-  const { portfolioData } = useContext(PortfolioContext);
+  const { portfolioData } = usePortfolio();
   const {
     personal = {},
-    about = '',
+    about = {},
     skills = [],
     projects = [],
     experience = [],
     education = [],
-    social = {},
+    socials = {},
   } = portfolioData || {};
 
   const featuredProjects = projects.slice(0, 3);
   const featuredExperience = experience.slice(0, 2);
+  const bio = typeof about === 'string' ? about : about.bio;
+  const contactEmail = personal.email || socials.email;
+  const website = personal.website || socials.website || socials.github;
 
   return (
     <main className="pcag-shell">
@@ -34,10 +36,10 @@ export default function PureCSSArtGallery() {
           <p className="pcag-kicker">{personal.location}</p>
           <h1 id="pcag-title">{personal.name}</h1>
           <p className="pcag-title">{personal.title}</p>
-          <p className="pcag-tagline">{personal.tagline || about}</p>
+          <p className="pcag-tagline">{personal.tagline || personal.bio || bio}</p>
           <div className="pcag-contact" aria-label="Contact links">
-            {personal.email && <a href={`mailto:${personal.email}`}>{personal.email}</a>}
-            {personal.website && <a href={personal.website}>{personal.website.replace(/^https?:\/\//, '')}</a>}
+            {contactEmail && <a href={`mailto:${contactEmail}`}>{contactEmail}</a>}
+            {website && <a href={website}>{website.replace(/^https?:\/\//, '')}</a>}
           </div>
         </div>
 
@@ -66,9 +68,9 @@ export default function PureCSSArtGallery() {
               <p>0{index + 1}</p>
               <h2>{project.title}</h2>
               <span>{project.description}</span>
-              {project.tech?.length > 0 && (
+              {(project.techStack || project.tech)?.length > 0 && (
                 <ul>
-                  {project.tech.slice(0, 3).map((tech) => (
+                  {(project.techStack || project.tech).slice(0, 3).map((tech) => (
                     <li key={tech}>{tech}</li>
                   ))}
                 </ul>
@@ -84,7 +86,7 @@ export default function PureCSSArtGallery() {
           <h2>Tools and Materials</h2>
           <div className="pcag-skill-grid">
             {skills.map((skill) => (
-              <span key={skill}>{skill}</span>
+              <span key={skill.name || skill}>{skill.name || skill}</span>
             ))}
           </div>
         </div>
@@ -107,7 +109,7 @@ export default function PureCSSArtGallery() {
         <div className="pcag-panel pcag-panel-small">
           <p className="pcag-kicker">Archive</p>
           <h2>Education</h2>
-          {education.map((item) => (
+          {(education.length ? education : [{ degree: 'Selected Work', school: personal.location, period: personal.title }]).map((item) => (
             <article key={`${item.degree}-${item.school}`}>
               <h3>{item.degree}</h3>
               <p>{item.school}</p>
@@ -115,7 +117,7 @@ export default function PureCSSArtGallery() {
             </article>
           ))}
           <div className="pcag-socials">
-            {Object.entries(social).map(([label, url]) => (
+            {Object.entries(socials).map(([label, url]) => (
               <a href={url} key={label}>
                 {label}
               </a>

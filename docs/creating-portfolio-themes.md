@@ -1,237 +1,364 @@
-# Creating Portfolio Themes
+# 🎨 Creating Portfolio Themes for CareerPilot
 
-This guide explains how to create, test, and submit a new portfolio theme for CareerPilot.
+Welcome contributors!
 
-The key constraint is simple: portfolio themes must be plain HTML and CSS. Do not introduce a build step, bundler, framework, or transpilation pipeline.
+This guide explains how to create and submit custom portfolio themes for the CareerPilot Portfolio Builder.
 
 ---
 
-## Theme Folder Structure
+# 📁 Theme Folder Structure
 
-Create one folder per theme inside `backend/src/templates/portfolio/`.
+All portfolio themes must be placed inside:
 
-Recommended structure:
-
-```text
+```bash
 backend/src/templates/portfolio/
-└── your-theme-name/
-    ├── index.html
-    ├── style.css
-    ├── meta.json
-    ├── preview.png
-    └── README.md
 ```
-
-Required files:
-
-- `index.html` - the theme markup
-- `style.css` - all theme styling
-- `meta.json` - theme metadata used to describe the theme
-- `preview.png` - preview image for the gallery
-
-Optional files:
-
-- `README.md` - notes for maintainers and contributors
-- `script.js` - only if you need small vanilla-JS behavior for the theme
-
-Keep the theme self-contained inside its folder. Do not depend on generated assets or build output.
-
----
-
-## Required Files
-
-### `index.html`
-
-Use semantic HTML and the template variables provided by the portfolio renderer. Keep the markup readable and accessible.
-
-### `style.css`
-
-Use plain CSS only. Keep the theme responsive, maintainable, and scoped to the theme’s own layout.
-
-### `meta.json`
-
-Use this file to describe the theme in the gallery.
 
 Example:
 
+```bash
+backend/src/templates/portfolio/minimal-dark/
+```
+
+Each theme folder must contain:
+
+```bash
+minimal-dark/
+├── index.html
+├── style.css
+├── meta.json
+└── preview.png
+```
+
+---
+
+# 📄 Required Files
+
+## 1. `index.html`
+
+Main portfolio template file.
+
+### Requirements
+
+- Use plain HTML only
+- Support Handlebars template variables
+- Maintain semantic HTML structure
+- Ensure responsive layout
+- Keep markup clean and readable
+
+### Example
+
+```html
+<h1>{{name}}</h1>
+<p>{{title}}</p>
+```
+
+---
+
+## 2. `style.css`
+
+Contains all theme styling.
+
+### Requirements
+
+- Plain CSS only
+- No Tailwind CSS
+- No Bootstrap
+- No SCSS/SASS
+- No external UI frameworks
+- Responsive design required
+
+---
+
+## 3. `meta.json`
+
+Contains theme metadata.
+
+### Example
+
 ```json
 {
-  "name": "TODO: Theme name",
-  "description": "TODO: Brief description of your theme",
-  "version": "1.0.0",
-  "author": "TODO: Your name",
-  "preview": "preview.png",
-  "tags": ["minimal", "developer"],
-  "colors": {
-    "primary": "#000000",
-    "background": "#ffffff",
-    "text": "#111111"
-  }
+  "name": "Minimal Dark",
+  "description": "Clean dark portfolio theme for developers",
+  "author": "your-github-username",
+  "version": "1.0.0"
 }
 ```
 
-### `preview.png`
+### Required Fields
 
-Provide a clear screenshot of the finished theme. The preview should show the main layout, typography, and visual style at a glance.
-
----
-
-## Handlebars Template Variables Available
-
-The starter theme documents the current portfolio variables available to template authors. Use these instead of hard-coding sample content.
-
-### Owner
-
-- `{{portfolio.owner.name}}` - full name of the portfolio owner
-- `{{portfolio.owner.avatar}}` - profile picture URL
-- `{{portfolio.owner.bio}}` - short bio
-- `{{portfolio.owner.location}}` - location
-- `{{portfolio.owner.github}}` - GitHub profile URL
-- `{{portfolio.owner.linkedin}}` - LinkedIn profile URL
-- `{{portfolio.owner.twitter}}` - Twitter profile URL
-- `{{portfolio.owner.website}}` - personal website URL
-
-### Repositories
-
-- `{{repos}}` - array of repositories
-- `{{this.name}}` - repository name
-- `{{this.description}}` - repository description
-- `{{this.url}}` - repository URL
-- `{{this.stars}}` - star count
-- `{{this.language}}` - primary language
-- `{{this.forks}}` - fork count
-
-### Stats
-
-- `{{stats.totalStars}}` - total stars across all repositories
-- `{{stats.totalForks}}` - total forks across all repositories
-- `{{stats.totalRepos}}` - total number of repositories
-- `{{stats.followers}}` - GitHub followers count
-- `{{stats.contributions}}` - total contributions
-
-### Common Helpers
-
-- `{{#if}}` - conditional rendering
-- `{{#each}}` - loop over arrays
-- `{{#unless}}` - inverse conditional rendering
-
-If your theme uses additional placeholders, document them in the theme’s own `README.md` so reviewers can see exactly what the template expects.
+| Field | Description |
+|------|-------------|
+| `name` | Theme display name |
+| `description` | Short description of the theme |
+| `author` | GitHub username |
+| `version` | Theme version |
 
 ---
 
-## Design Guidelines and Constraints
+## 4. `preview.png`
 
-Follow these rules when designing a theme:
+Preview image used in the theme gallery.
 
-- Keep the design responsive on desktop and mobile
-- Use semantic HTML elements such as `header`, `main`, `section`, `article`, and `footer`
-- Preserve accessible labels, focus states, and sufficient color contrast
-- Prefer lightweight CSS effects over heavy scripts
-- Keep the page understandable without JavaScript
-- If you use JavaScript, keep it small, vanilla, and optional
-- Match the theme’s visual style to the content instead of forcing a generic layout
-- Optimize for readability first, then polish
+### Requirements
 
-Do not:
-
-- Add a framework, bundler, or build tool
-- Require npm install, Vite, Webpack, or similar setup steps
-- Depend on external runtime services for core rendering
-- Use unsafe HTML injection patterns
-- Hide essential content behind animations or scripts
+- PNG format only
+- Recommended size: `1280x720`
+- Clear screenshot of the rendered theme
 
 ---
 
-## How to Test Locally
+# 🧩 Available Handlebars Variables
 
-You can test a theme with any static server or by opening the HTML file directly in a browser.
+Themes can use the following Handlebars variables.
 
-Recommended options:
+## Basic Information
 
-1. Serve the theme folder with a simple static server.
-2. Open `index.html` directly in your browser for a quick visual check.
-3. Resize the viewport and verify mobile behavior.
-4. Confirm that the preview image matches the actual layout.
-5. Check that links, buttons, and typography still work with real data.
+```handlebars
+{{name}}
+{{title}}
+{{email}}
+{{phone}}
+{{location}}
+{{bio}}
+```
 
-Example local check:
+---
+
+## Social Links
+
+```handlebars
+{{github}}
+{{linkedin}}
+{{website}}
+{{twitter}}
+```
+
+---
+
+## Skills
+
+```handlebars
+{{#each skills}}
+  <span>{{this}}</span>
+{{/each}}
+```
+
+---
+
+## Projects
+
+```handlebars
+{{#each projects}}
+  <div>
+    <h3>{{title}}</h3>
+    <p>{{description}}</p>
+    <a href="{{link}}">View Project</a>
+  </div>
+{{/each}}
+```
+
+---
+
+## Experience
+
+```handlebars
+{{#each experience}}
+  <div>
+    <h3>{{role}}</h3>
+    <p>{{company}}</p>
+    <p>{{duration}}</p>
+  </div>
+{{/each}}
+```
+
+---
+
+## Education
+
+```handlebars
+{{#each education}}
+  <div>
+    <h3>{{institution}}</h3>
+    <p>{{degree}}</p>
+  </div>
+{{/each}}
+```
+
+---
+
+# 🎯 Design Guidelines
+
+Portfolio themes should be:
+
+- Clean and professional
+- Fully responsive
+- Accessible and readable
+- Lightweight and fast-loading
+- Easy to customize
+
+---
+
+## Recommended Practices
+
+- Use semantic HTML tags
+- Maintain consistent spacing and typography
+- Use CSS variables where appropriate
+- Keep animations subtle
+- Test on multiple screen sizes
+
+---
+
+# 🚫 What NOT to Do
+
+Do NOT:
+
+- Use React, Vue, or Angular
+- Add npm dependencies
+- Use Tailwind CSS
+- Use Bootstrap
+- Add build tools
+- Add server-side code
+- Include unnecessary large assets
+- Hardcode contributor-specific data
+
+Themes must work using only:
+
+- HTML
+- CSS
+- Handlebars variables
+
+---
+
+# 🧪 Testing Your Theme Locally
+
+## 1. Add Theme Folder
+
+Place your theme inside:
 
 ```bash
-cd backend/src/templates/portfolio/your-theme-name
-npx serve .
-```
-
-No build step is required.
-
----
-
-## How to Submit
-
-1. Copy the starter theme from `backend/src/templates/portfolio/_starter`.
-2. Rename the folder to your theme slug.
-3. Replace the starter content with your theme layout and styles.
-4. Fill out `meta.json`.
-5. Replace `preview.png` with a real screenshot.
-6. Document any extra placeholders or behaviors in `README.md`.
-7. Open a pull request against the main branch.
-
-Suggested PR template:
-
-```md
-## Summary
-Add the `your-theme-name` portfolio theme.
-
-## What changed
-- Added new theme folder with `index.html`, `style.css`, `meta.json`, and `preview.png`
-- Documented any theme-specific placeholders or behaviors
-
-## Validation
-- Opened the theme locally in a browser
-- Verified responsive layout on mobile and desktop
-- Confirmed preview image matches the final design
+backend/src/templates/portfolio/
 ```
 
 ---
 
-## Code Review Criteria
+## 2. Verify Required Files
 
-A theme is ready for review when it meets these checks:
+Ensure the following files exist:
 
-- The folder contains all required files
-- The theme works as plain HTML and CSS
-- The layout is responsive and readable
-- The theme uses accessible semantic markup
-- All template variables are documented and used correctly
-- The preview image accurately reflects the submitted theme
-- The theme does not introduce unnecessary complexity or dependencies
-- The theme matches the quality bar of the existing portfolio themes
-
-Reviewers should reject themes that rely on build tooling, obscure the content, or break the plain-file contract.
+- `index.html`
+- `style.css`
+- `meta.json`
+- `preview.png`
 
 ---
 
-## What Not To Do
+## 3. Start the Development Servers
 
-- Do not require any build tools
-- Do not use React, Vue, Svelte, or any other framework for theme rendering
-- Do not add a compile or transpile step
-- Do not depend on generated assets that are not checked in
-- Do not leave `meta.json` incomplete or inconsistent with the theme
-- Do not use `innerHTML` or unsafe templating shortcuts for user content
-- Do not submit a theme without a valid preview image
-- Do not make the theme so complex that it becomes difficult to review or maintain
+Backend:
+
+```bash
+cd backend
+npm run dev
+```
+
+Frontend:
+
+```bash
+cd frontend
+npm run dev
+```
 
 ---
 
-## Quick Checklist
+## 4. Test the Theme
 
-Before opening your PR, confirm that:
+Verify that:
 
-- `index.html` renders the intended layout
-- `style.css` is complete and responsive
-- `meta.json` is filled out and valid JSON
-- `preview.png` clearly shows the theme
-- The theme works without a build step
-- Any extra placeholders are documented
+- The theme renders correctly
+- Layout is responsive
+- Handlebars variables display properly
+- Styles load without issues
+- No assets are broken
 
-If you are unsure whether a design fits the theme system, compare it against the existing starter theme and the shipped portfolio templates in `backend/src/templates/portfolio/`.
+---
+
+# 📤 How to Submit Your Theme
+
+## 1. Fork the Repository
+
+```bash
+git clone https://github.com/YOUR_USERNAME/career-pilot.git
+```
+
+---
+
+## 2. Create a New Branch
+
+```bash
+git checkout -b feat/add-portfolio-theme
+```
+
+---
+
+## 3. Add Your Theme
+
+Place the completed theme folder inside:
+
+```bash
+backend/src/templates/portfolio/
+```
+
+---
+
+## 4. Commit Changes
+
+Example:
+
+```bash
+git commit -m "feat(portfolio): add minimal dark portfolio theme"
+```
+
+---
+
+## 5. Open a Pull Request
+
+Your PR should include:
+
+- Use the repository PR template and complete all relevant sections
+- Theme screenshots
+- `preview.png`
+- Responsive testing confirmation
+- Short explanation of the design
+---
+
+# ✅ Code Review Criteria
+
+Themes will be reviewed based on:
+
+| Criteria | Description |
+|------|-------------|
+| Responsiveness | Works across mobile, tablet, and desktop |
+| Accessibility | Proper readability and contrast |
+| Performance | Lightweight and optimized |
+| Code Quality | Clean HTML and CSS structure |
+| Compatibility | Correct Handlebars variable usage |
+| Visual Quality | Professional and polished design |
+
+---
+
+# 💡 Contributor Tips
+
+- Review existing themes before creating a new one
+- Keep designs unique and maintainable
+- Avoid excessive animations
+- Use consistent spacing and typography
+- Test thoroughly before submitting
+
+---
+
+# 🙌 Thank You
+
+Thank you for contributing to CareerPilot!
+
+Your portfolio themes help users showcase their skills and projects professionally.
