@@ -177,6 +177,16 @@ export default function OfferComparison() {
                 {offers.map((offer, index) => {
                   const rowErrors = fieldErrors[offer.id] || {}
                   const hasRowErrors = Object.keys(rowErrors).length > 0
+                  const fieldIds = {
+                    companyName: `${offer.id}-company-name`,
+                    baseSalary: `${offer.id}-base-salary`,
+                    bonus: `${offer.id}-bonus`,
+                    stockEquity: `${offer.id}-stock-equity`,
+                    benefits: `${offer.id}-benefits`,
+                    location: `${offer.id}-location`,
+                    costOfLivingAdjustment: `${offer.id}-cost-of-living-adjustment`,
+                    workArrangement: `${offer.id}-work-arrangement`
+                  }
 
                   return (
                     <div
@@ -202,11 +212,12 @@ export default function OfferComparison() {
 
                       <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
                         <div className="space-y-2 md:col-span-2">
-                          <label className="text-sm font-medium text-foreground flex items-center gap-2">
+                          <label htmlFor={fieldIds.companyName} className="text-sm font-medium text-foreground flex items-center gap-2">
                             <Building2 className="w-4 h-4 text-primary" />
                             Company Name
                           </label>
                           <Input
+                            id={fieldIds.companyName}
                             value={offer.companyName}
                             onChange={(event) => updateOffer(offer.id, 'companyName', event.target.value)}
                             placeholder="Acme Inc."
@@ -216,8 +227,9 @@ export default function OfferComparison() {
                         </div>
 
                         <div className="space-y-2">
-                          <label className="text-sm font-medium text-foreground">Base Salary</label>
+                          <label htmlFor={fieldIds.baseSalary} className="text-sm font-medium text-foreground">Base Salary</label>
                           <Input
+                            id={fieldIds.baseSalary}
                             type="number"
                             min="0"
                             step="1000"
@@ -230,8 +242,9 @@ export default function OfferComparison() {
                         </div>
 
                         <div className="space-y-2">
-                          <label className="text-sm font-medium text-foreground">Bonus</label>
+                          <label htmlFor={fieldIds.bonus} className="text-sm font-medium text-foreground">Bonus</label>
                           <Input
+                            id={fieldIds.bonus}
                             type="number"
                             min="0"
                             step="1000"
@@ -244,8 +257,9 @@ export default function OfferComparison() {
                         </div>
 
                         <div className="space-y-2">
-                          <label className="text-sm font-medium text-foreground">Stock / Equity</label>
+                          <label htmlFor={fieldIds.stockEquity} className="text-sm font-medium text-foreground">Stock / Equity</label>
                           <Input
+                            id={fieldIds.stockEquity}
                             type="number"
                             min="0"
                             step="1000"
@@ -258,8 +272,9 @@ export default function OfferComparison() {
                         </div>
 
                         <div className="space-y-2">
-                          <label className="text-sm font-medium text-foreground">Benefits</label>
+                          <label htmlFor={fieldIds.benefits} className="text-sm font-medium text-foreground">Benefits</label>
                           <Input
+                            id={fieldIds.benefits}
                             type="number"
                             min="0"
                             step="500"
@@ -272,11 +287,12 @@ export default function OfferComparison() {
                         </div>
 
                         <div className="space-y-2">
-                          <label className="text-sm font-medium text-foreground flex items-center gap-2">
+                          <label htmlFor={fieldIds.location} className="text-sm font-medium text-foreground flex items-center gap-2">
                             <Globe2 className="w-4 h-4 text-primary" />
                             Location
                           </label>
                           <Input
+                            id={fieldIds.location}
                             value={offer.location}
                             onChange={(event) => updateOffer(offer.id, 'location', event.target.value)}
                             placeholder="New York, NY"
@@ -286,8 +302,9 @@ export default function OfferComparison() {
                         </div>
 
                         <div className="space-y-2">
-                          <label className="text-sm font-medium text-foreground">Cost of Living Adjustment (%)</label>
+                          <label htmlFor={fieldIds.costOfLivingAdjustment} className="text-sm font-medium text-foreground">Cost of Living Adjustment (%)</label>
                           <Input
+                            id={fieldIds.costOfLivingAdjustment}
                             type="number"
                             step="1"
                             value={offer.costOfLivingAdjustment}
@@ -300,11 +317,12 @@ export default function OfferComparison() {
                         </div>
 
                         <div className="space-y-2 md:col-span-2">
-                          <label className="text-sm font-medium text-foreground flex items-center gap-2">
+                          <label htmlFor={fieldIds.workArrangement} className="text-sm font-medium text-foreground flex items-center gap-2">
                             <CircleDollarSign className="w-4 h-4 text-primary" />
                             Remote / Hybrid / Onsite
                           </label>
                           <Select
+                            id={fieldIds.workArrangement}
                             value={offer.workArrangement}
                             onChange={(value) => updateOffer(offer.id, 'workArrangement', value)}
                             options={ARRANGEMENT_OPTIONS}
