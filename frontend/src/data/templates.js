@@ -2604,8 +2604,7 @@ export const templates = [
   "image": "/template-previews/Pokemon_Pokedex_Classic.png",
   "createdAt": "2026-06-08",
   "isComplete": true
-}
-
+},
   {
     "id": "Underground_Bunker_Console",
     "title": "Underground Bunker Console",
