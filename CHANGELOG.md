@@ -1,3 +1,10 @@
+# [1.204.0](https://github.com/anurag3407/career-pilot/compare/v1.203.0...v1.204.0) (2026-06-09)
+
+
+### Features
+
+* **portfolio:** add Infinite Zoom Mandelbrot Set template ([114e4e9](https://github.com/anurag3407/career-pilot/commit/114e4e909437fb1f90aed3b687ae0f4b94d513de))
+
 # [1.203.0](https://github.com/anurag3407/career-pilot/compare/v1.202.0...v1.203.0) (2026-06-09)
 
 

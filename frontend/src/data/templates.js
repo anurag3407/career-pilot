@@ -13,6 +13,19 @@ export const templates = [
     "isComplete": true
   },
 {
+  "id": "Infinite_Zoom_Mandelbrot_Set",
+  "title": "Infinite Zoom Mandelbrot Set",
+  "category": "Portfolio",
+  "colorScheme": "Dark",
+  "layout": "Interactive",
+  "author": "System",
+  "views": 0,
+  "rating": 0,
+  "image": "/template-previews/Infinite_Zoom_Mandelbrot_Set.png",
+  "createdAt": "2026-06-09",
+  "isComplete": true
+},
+{
   "id": "Hidden_Easter_Egg_Scavenger_Hunt",
   "title": "Hidden Easter Egg Scavenger Hunt",
   "category": "Portfolio",
