@@ -433,7 +433,7 @@ export default function Projects() {
 
         {/* ── LAYOUT: sidebar + grid ── */}
         <div style={{ display:'flex', gap:'32px' }}>
-          <TracklistSidebar projects={PROJECTS} activeId={activeId} onSelect={setActiveId} />
+          <TracklistSidebar projects={filtered} activeId={activeId} onSelect={setActiveId} />
 
           {/* grid */}
           <div style={{ flex:1, minWidth:0 }}>
