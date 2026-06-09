@@ -35,7 +35,7 @@ const defaultNavigationGroups = [
       { to: '/linkedin-optimizer', label: 'LinkedIn Optimizer', icon: Linkedin },
       { to: '/skill-gap', label: 'Skill Gap', icon: Target },
       { to: '/templates', label: 'Templates', icon: Palette },
-      { to: '/portfolio', label: 'Portfolio', icon: User },
+      { to: '/hub/portfolio', label: 'Portfolio', icon: User },
       { to: '/settings', label: 'Settings', icon: Settings },
     ],
   },

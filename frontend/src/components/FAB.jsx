@@ -12,7 +12,7 @@ export default function FAB({ scrollContainerRef }) {
     {
       label: "Create Portfolio",
       icon: <FileText size={18} />,
-      onClick: () => navigate("/portfolio"),
+      onClick: () => navigate("/hub/portfolio"),
     },
     {
       label: "Upload Resume",
