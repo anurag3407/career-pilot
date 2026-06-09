@@ -1,31 +1,32 @@
-
 const redis = require("redis");
 const crypto = require("crypto");
 
-/**
- * Default session TTL in seconds (1 hour)
- */
 const SESSION_TTL = 3600;
-
-let client;
+let client = null;
+let connectionPromise = null;
 
 /**
- * Initializes and returns the Redis client (singleton).
+ * Initializes and returns the Redis client (singleton with race condition guard).
  * @returns {Promise<RedisClient>}
  */
 async function getRedisClient() {
-  if (!client) {
-    client = redis.createClient({
+  if (client) return client;
+  if (connectionPromise) return connectionPromise;
+
+  connectionPromise = (async () => {
+    const newClient = redis.createClient({
       url: process.env.REDIS_URL || "redis://localhost:6379",
     });
-
-    client.on("error", (err) => {
+    newClient.on("error", (err) => {
       console.error("[SessionManager] Redis Client Error:", err);
     });
+    await newClient.connect();
+    client = newClient;
+    connectionPromise = null;
+    return client;
+  })();
 
-    await client.connect();
-  }
-  return client;
+  return connectionPromise;
 }
 
 /**
@@ -37,17 +38,21 @@ async function getRedisClient() {
 async function createSession(userId, metadata = {}) {
   if (!userId) throw new Error("userId is required to create a session");
 
+  if (typeof metadata !== "object" || metadata === null || Array.isArray(metadata)) {
+    throw new Error("metadata must be a plain object");
+  }
+
   const redisClient = await getRedisClient();
   const token = crypto.randomBytes(32).toString("hex");
-  const sessionKey = `session:${token}`;
 
+  // Spread metadata FIRST so userId and createdAt cannot be overridden
   const sessionData = JSON.stringify({
+    ...metadata,
     userId,
     createdAt: Date.now(),
-    ...metadata,
   });
 
-  await redisClient.set(sessionKey, sessionData, { EX: SESSION_TTL });
+  await redisClient.set(`session:${token}`, sessionData, { EX: SESSION_TTL });
   return token;
 }
 
@@ -55,20 +60,19 @@ async function createSession(userId, metadata = {}) {
  * Validates a session token and returns the session data.
  * @param {string} token - The session token to validate.
  * @returns {Promise<Object>} The session data object.
- * @throws {Error} If the session is invalid or expired.
+ * @throws {Error} If the session is invalid, expired, or data is corrupted.
  */
 async function validateSession(token) {
   if (!token) throw new Error("Token is required for validation");
-
   const redisClient = await getRedisClient();
-  const sessionKey = `session:${token}`;
-  const data = await redisClient.get(sessionKey);
+  const data = await redisClient.get(`session:${token}`);
+  if (!data) throw new Error("Session not found or has expired");
 
-  if (!data) {
-    throw new Error("Session not found or has expired");
+  try {
+    return JSON.parse(data);
+  } catch {
+    throw new Error("Session data is corrupted");
   }
-
-  return JSON.parse(data);
 }
 
 /**
@@ -78,11 +82,8 @@ async function validateSession(token) {
  */
 async function invalidateSession(token) {
   if (!token) throw new Error("Token is required for invalidation");
-
   const redisClient = await getRedisClient();
-  const sessionKey = `session:${token}`;
-  const deleted = await redisClient.del(sessionKey);
-
+  const deleted = await redisClient.del(`session:${token}`);
   return deleted === 1;
 }
 
@@ -93,11 +94,8 @@ async function invalidateSession(token) {
  */
 async function refreshSession(token) {
   if (!token) throw new Error("Token is required to refresh session");
-
   const redisClient = await getRedisClient();
-  const sessionKey = `session:${token}`;
-  const result = await redisClient.expire(sessionKey, SESSION_TTL);
-
+  const result = await redisClient.expire(`session:${token}`, SESSION_TTL);
   return result === 1;
 }
 
@@ -109,13 +107,8 @@ async function disconnect() {
   if (client) {
     await client.quit();
     client = null;
+    connectionPromise = null;
   }
 }
 
-module.exports = {
-  createSession,
-  validateSession,
-  invalidateSession,
-  refreshSession,
-  disconnect,
-};
+module.exports = { createSession, validateSession, invalidateSession, refreshSession, disconnect };
