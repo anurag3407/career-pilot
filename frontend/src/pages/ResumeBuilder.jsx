@@ -1,5 +1,5 @@
 import { ResumeConsistencyChecker } from '../utils/resumeChecker';
-import { ConsistencyPanel } from '../utils/ConsistencyPanel';
+import ConsistencyPanel from '../utils/ConsistencyPanel';
 import React, { useRef, useState, useEffect } from 'react'
 import { motion, AnimatePresence } from 'framer-motion'
 import { useNavigate } from 'react-router-dom'
@@ -189,9 +189,6 @@ export default function ResumeBuilder() {
       ...redundancyValidationErrors
     ];
   }, [experience, education, projects]);
-
-  // ─────────────────── Version Tracking State Control ───────────────────
-  const [resumeVersions, setResumeVersions] = React.useState([]);
 
   const saveVersion = React.useCallback(() => {
     const newVersion = {
