@@ -1,5 +1,5 @@
 import { ResumeConsistencyChecker } from '../utils/resumeChecker';
-import { ConsistencyPanel } from '../utils/ConsistencyPanel';
+import ConsistencyPanel from '../utils/ConsistencyPanel';
 import React, { useRef, useState, useEffect } from 'react'
 import { motion, AnimatePresence } from 'framer-motion'
 import { useNavigate } from 'react-router-dom'
@@ -41,6 +41,17 @@ function FieldError({ msg }) {
     <p className="text-red-500 text-sm mt-1" role="alert">{msg}</p>
   )
 }
+
+const KEYWORDS_LIST = [
+  "React",
+  "JavaScript",
+  "Git",
+  "Node.js",
+  "API",
+  "Leadership",
+  "Teamwork",
+  "Problem Solving"
+];
 
 // ─────────────────── component ───────────────────────────────────────────────
 export default function ResumeBuilder() {
@@ -148,22 +159,22 @@ export default function ResumeBuilder() {
       ${(experience || []).map(e => e.description).join(" ")}
     `.toLowerCase();
 
-    const foundKeywords = keywords.filter(keyword =>
+    const foundKeywords = KEYWORDS_LIST.filter(keyword =>
       resumeText.includes(keyword.toLowerCase())
     );
 
-    const missing = keywords.filter(
+    const missing = KEYWORDS_LIST.filter(
       keyword => !foundKeywords.includes(keyword)
     );
 
     setMissingKeywords(missing);
 
-    if (keywords.length > 0) {
+    if (KEYWORDS_LIST.length > 0) {
       setAtsScore(
-        Math.round((foundKeywords.length / keywords.length) * 100)
+        Math.round((foundKeywords.length / KEYWORDS_LIST.length) * 100)
       );
     }
-  }, [personal, skills, projects, experience, keywords]);
+  }, [personal, skills, projects, experience]);
 
   // ─────────────────── Live Consistency Memoized Engine ───────────────────
   const activeConsistencyWarnings = React.useMemo(() => {
@@ -191,7 +202,6 @@ export default function ResumeBuilder() {
   }, [experience, education, projects]);
 
   // ─────────────────── Version Tracking State Control ───────────────────
-  const [resumeVersions, setResumeVersions] = React.useState([]);
 
   const saveVersion = React.useCallback(() => {
     const newVersion = {
@@ -203,7 +213,12 @@ export default function ResumeBuilder() {
     if (typeof toast !== 'undefined') {
       toast.success("Resume version layout tracked successfully!");
     }
-  }, [experience, education, projects, personal, skills, generateMarkdown]);
+  }, [generateMarkdown]);
+
+  const restoreVersion = React.useCallback((version) => {
+    setSelectedVersion(version);
+    toast.success(`Restored version from ${version.timestamp}`);
+  }, []);
 
   // ─────────────────── Automated Recommendations Engine ───────────────────
   useEffect(() => {
@@ -218,11 +233,11 @@ export default function ResumeBuilder() {
     }
 
     if (education.every(e => !e.school?.trim())) {
-      recommendations.push("Certifications")
+      recommendations.push("Education")
     }
 
     if (experience.every(e => !e.title?.trim())) {
-      recommendations.push("Volunteer Experience")
+      recommendations.push("Experience")
     }
 
     setRecommendedSections(recommendations)
@@ -408,22 +423,6 @@ export default function ResumeBuilder() {
     try {
       setIsSubmitting(true)
       const markdown = generateMarkdown()
-      const restoreVersion = (version) => {
-        setSelectedVersion(version)
-
-        toast.success(
-          `Restored version from ${version.timestamp}`
-        )
-      }
-      const saveVersion = () => {
-        const newVersion = {
-          id: Date.now(),
-          timestamp: new Date().toLocaleString(),
-          content: generateMarkdown(),
-        }
-
-        setResumeVersions(prev => [newVersion, ...prev])
-      }
       const response = await resumeApi.create({
         originalText: markdown,
         jobRole: targetRole || 'Software Engineer',
@@ -1105,8 +1104,20 @@ export default function ResumeBuilder() {
               )}
             </div>
 
+            {selectedVersion && (
+              <div className="flex justify-between items-center bg-primary/10 border border-primary/20 p-3 rounded-lg mb-4">
+                <span className="text-sm font-medium">Viewing restored version from {selectedVersion.timestamp}</span>
+                <button
+                  onClick={() => setSelectedVersion(null)}
+                  className="px-3 py-1 rounded bg-primary text-primary-foreground text-xs font-semibold hover:bg-primary/95"
+                >
+                  Reset to Current Draft
+                </button>
+              </div>
+            )}
+
             <div className="bg-background border border-border rounded-xl p-6 h-[500px] overflow-y-auto font-mono text-sm whitespace-pre-wrap">
-              {generateMarkdown()}
+              {selectedVersion ? selectedVersion.content : generateMarkdown()}
             </div>
           </div>
         )

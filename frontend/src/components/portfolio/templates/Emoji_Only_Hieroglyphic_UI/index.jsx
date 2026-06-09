@@ -236,6 +236,16 @@ export default function EmojiOnlyHieroglyphicUI() {
   // Contact Form State
   const [formState, setFormState] = useState({ name: '', email: '', message: '' });
   const [formSent, setFormSent] = useState(false);
+  const contactTimerRef = useRef(null);
+
+  // Clear contact timer on unmount
+  useEffect(() => {
+    return () => {
+      if (contactTimerRef.current) {
+        clearTimeout(contactTimerRef.current);
+      }
+    };
+  }, []);
 
   // Monitor Scroll for Go-To-Top button
   useEffect(() => {
@@ -257,7 +267,10 @@ export default function EmojiOnlyHieroglyphicUI() {
   const handleContactSubmit = (e) => {
     e.preventDefault();
     setFormSent(true);
-    setTimeout(() => {
+    if (contactTimerRef.current) {
+      clearTimeout(contactTimerRef.current);
+    }
+    contactTimerRef.current = setTimeout(() => {
       setFormSent(false);
       setFormState({ name: '', email: '', message: '' });
     }, 3000);
@@ -285,6 +298,7 @@ export default function EmojiOnlyHieroglyphicUI() {
           whileTap={{ scale: 0.9 }}
           className="w-16 h-16 rounded-full bg-gradient-to-br from-yellow-600 via-yellow-500 to-amber-700 border-2 border-gold flex items-center justify-center cursor-pointer shadow-[0_0_20px_var(--gold-glow)] relative overflow-hidden group"
           title={decoded ? "Activate Hieroglyphs Mode" : "Activate Rosetta Stone Translation"}
+          aria-label={decoded ? "Activate Hieroglyphs Mode" : "Activate Rosetta Stone Translation"}
         >
           {/* Glowing Aura */}
           <div className="absolute inset-0 bg-yellow-400 opacity-0 group-hover:opacity-25 transition-opacity duration-300" />
@@ -313,6 +327,7 @@ export default function EmojiOnlyHieroglyphicUI() {
             exit={{ opacity: 0, y: 10 }}
             onClick={() => window.scrollTo({ top: 0, behavior: 'smooth' })}
             className="fixed bottom-6 left-6 z-50 w-10 h-10 rounded-lg bg-basalt-alt border border-gold/40 flex items-center justify-center text-gold cursor-pointer hover:border-gold hover:bg-basalt transition-all shadow"
+            aria-label="Scroll to top"
           >
             <ArrowUp size={16} />
           </motion.button>
@@ -506,7 +521,7 @@ export default function EmojiOnlyHieroglyphicUI() {
                 { url: data.socials?.github, icon: Github, col: '#f3dfa2', name: 'github' },
                 { url: data.socials?.linkedin, icon: Linkedin, col: '#0f2b5c', name: 'linkedin' },
                 { url: data.socials?.twitter, icon: Twitter, col: '#38A0C0', name: 'twitter' },
-                { url: `mailto:${data.socials?.email}`, icon: Mail, col: '#d4af37', name: 'email' },
+                { url: data.socials?.email ? `mailto:${data.socials.email}` : null, icon: Mail, col: '#d4af37', name: 'email' },
               ].filter(s => s.url).map((s, idx) => (
                 <a
                   key={idx}
@@ -514,6 +529,7 @@ export default function EmojiOnlyHieroglyphicUI() {
                   target="_blank"
                   rel="noopener noreferrer"
                   className="w-10 h-10 rounded-full border border-gold/30 flex items-center justify-center bg-basalt-alt text-gold hover:border-gold hover:text-white transition-all shadow group relative"
+                  aria-label={s.name}
                 >
                   <s.icon size={15} />
                   
@@ -873,10 +889,11 @@ export default function EmojiOnlyHieroglyphicUI() {
                 {/* Papyrus-like form field borders */}
                 <form onSubmit={handleContactSubmit} className="space-y-4">
                   <div>
-                    <label className="text-[10px] font-mono tracking-widest text-gold block mb-1 uppercase">
+                    <label htmlFor="scribe-name" className="text-[10px] font-mono tracking-widest text-gold block mb-1 uppercase">
                       {decoded ? 'Scribe Name (--name)' : '𓀀 Name'}
                     </label>
                     <input
+                      id="scribe-name"
                       type="text"
                       required
                       placeholder={decoded ? "Your name..." : "𓀀 ..."}
@@ -886,10 +903,11 @@ export default function EmojiOnlyHieroglyphicUI() {
                     />
                   </div>
                   <div>
-                    <label className="text-[10px] font-mono tracking-widest text-gold block mb-1 uppercase">
+                    <label htmlFor="signal-email" className="text-[10px] font-mono tracking-widest text-gold block mb-1 uppercase">
                       {decoded ? 'Signal Frequency (--email)' : '𓅓 Email'}
                     </label>
                     <input
+                      id="signal-email"
                       type="email"
                       required
                       placeholder={decoded ? "Your email..." : "𓅓 ..."}
@@ -899,10 +917,11 @@ export default function EmojiOnlyHieroglyphicUI() {
                     />
                   </div>
                   <div>
-                    <label className="text-[10px] font-mono tracking-widest text-gold block mb-1 uppercase">
+                    <label htmlFor="inscription-message" className="text-[10px] font-mono tracking-widest text-gold block mb-1 uppercase">
                       {decoded ? 'Inscription Scroll (--message)' : '📜 Message'}
                     </label>
                     <textarea
+                      id="inscription-message"
                       required
                       rows={4}
                       placeholder={decoded ? "Write scroll..." : "📜 ..."}
