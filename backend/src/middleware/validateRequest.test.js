@@ -1,5 +1,7 @@
-const validateRequest = require('./validateRequest');
+const { describe, it, mock } = require('node:test');
+const assert = require('node:assert');
 const { z } = require('zod');
+const validateRequest = require('./validateRequest');
 
 describe('validateRequest Middleware', () => {
   // A dummy schema for testing
@@ -15,35 +17,40 @@ describe('validateRequest Middleware', () => {
   it('should call next() without errors if the payload is completely valid', async () => {
     const req = { body: { email: 'test@example.com', age: 25 }, query: {}, params: {} };
     const res = {};
-    const next = jest.fn(); // Mock the next function
+    const next = mock.fn(); // Node's native mock function
 
     await middleware(req, res, next);
 
-    expect(next).toHaveBeenCalledTimes(1);
-    expect(next).toHaveBeenCalledWith(); // Called without arguments (success)
+    assert.strictEqual(next.mock.calls.length, 1, 'next() should be called once');
+    assert.strictEqual(next.mock.calls[0].arguments.length, 0, 'next() should be called with no arguments');
   });
 
   it('should return a 400 status and formatted errors if validation fails', async () => {
     const req = { body: { email: 'not-an-email', age: 15 }, query: {}, params: {} };
     
-    // Mock the Express response object
+    // Mock the Express response object using Node's mock API
     const res = {
-      status: jest.fn().mockReturnThis(),
-      json: jest.fn(),
+      status: mock.fn(() => res),
+      json: mock.fn(),
     };
-    const next = jest.fn();
+    const next = mock.fn();
 
     await middleware(req, res, next);
 
-    expect(res.status).toHaveBeenCalledWith(400);
-    expect(res.json).toHaveBeenCalledWith(expect.objectContaining({
-      status: 'error',
-      message: 'Validation failed',
-      errors: expect.arrayContaining([
-        expect.objectContaining({ field: 'email', location: 'body' }),
-        expect.objectContaining({ field: 'age', location: 'body' })
-      ])
-    }));
-    expect(next).not.toHaveBeenCalled(); // Should not proceed to the next middleware
+    assert.strictEqual(res.status.mock.calls[0].arguments[0], 400);
+    
+    const jsonResponse = res.json.mock.calls[0].arguments[0];
+    assert.strictEqual(jsonResponse.status, 'error');
+    assert.strictEqual(jsonResponse.message, 'Validation failed');
+    
+    // Assert specific formatting 
+    const hasEmailError = jsonResponse.errors.some(e => e.field === 'email' && e.location === 'body');
+    const hasAgeError = jsonResponse.errors.some(e => e.field === 'age' && e.location === 'body');
+    
+    assert.ok(hasEmailError, 'Response should contain email error');
+    assert.ok(hasAgeError, 'Response should contain age error');
+    
+    // next() should not proceed
+    assert.strictEqual(next.mock.calls.length, 0, 'next() should not be called');
   });
 });

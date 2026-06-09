@@ -15,23 +15,21 @@ const validateRequest = (schema) => async (req, res, next) => {
       params: req.params,
     });
 
-    // Reassign sanitized data back to the request object
-    req.body = parsed.body || req.body;
-    req.query = parsed.query || req.query;
-    req.params = parsed.params || req.params;
+    // Reassign sanitized data back to the request object using nullish coalescing
+    req.body = parsed.body ?? req.body;
+    req.query = parsed.query ?? req.query;
+    req.params = parsed.params ?? req.params;
 
     return next();
   } catch (error) {
-    // Intercept validation failures and format details cleanly
-    // Also check error.name in case of monorepo dependency duplication
-    if (error instanceof ZodError || error.name === 'ZodError') {
+    // Intercept validation failures safely using optional chaining for error.name
+    if (error instanceof ZodError || error?.name === 'ZodError') {
       
-      // Safely grab the array, whether Zod stored it in .issues or .errors
       const validationErrors = error.issues || error.errors || [];
         
       const formattedErrors = validationErrors.map((err) => ({
-        location: err.path[0], // e.g., 'body' or 'query'
-        field: err.path.slice(1).join('.'), // e.g., 'email' or 'profile.firstName'
+        location: err.path[0], 
+        field: err.path.slice(1).join('.'), 
         message: err.message,
       }));
 
