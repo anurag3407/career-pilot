@@ -8,7 +8,7 @@
     "start": "node src/index.js",
     "dev": "nodemon src/index.js",
     "lint": "eslint src/",
-    "test": "node --test src/schemas/__tests__/schemas.test.js"
+    "test": "node --test src/__tests__/cicdDetector.test.js src/__tests__/jobFetcher.perf.test.js src/__tests__/screenshotService.test.js src/__tests__/mailService.test.js src/schemas/__tests__/schemas.test.js src/schemas/__tests__/emailTracker.test.js src/services/__tests__/apiKeyRotation.test.js src/services/__tests__/imageOptimizer.test.js src/services/__tests__/keywordOptimizer.test.js src/services/__tests__/repoScanner.test.js src/services/__tests__/resumeJobMatcher.test.js src/utils/__tests__/emailConfig.test.js src/utils/__tests__/safeConfig.test.js"
   },
   "dependencies": {
     "@anthropic-ai/sdk": "^0.99.0",
