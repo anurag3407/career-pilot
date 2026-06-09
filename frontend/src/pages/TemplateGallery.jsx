@@ -12,25 +12,7 @@ import WeatherMood from "../components/portfolio/templates/Weather_Mood/index";
 import SwissTypography from "../components/portfolio/templates/Swiss_Typography/index";
 import DesertDunes from "../components/portfolio/templates/Desert_Dunes/index";
 import { templates } from '../data/templates';
-import { motion, AnimatePresence } from "framer-motion";
-import { Moon, Sun, ChevronDown, Check, Eye, Star, Sparkles, X } from "lucide-react";
-import LiquidGlass from "../components/portfolio/templates/Liquid_Glass/index";
-import MidnightGradient from "../components/portfolio/templates/Midnight_Gradient/index";
-import CherryBlossom from '../components/portfolio/templates/Cherry_Blossom/index';
-import PlayingCardsPortfolio from "../components/portfolio/templates/Playing_Cards";
-import PsychedelicSwirl from "../components/portfolio/templates/Psychedelic_Swirl/index";
-import MemphisPop from '../components/portfolio/templates/Memphis_Pop/index';
-import TypewriterEffect from "../components/portfolio/templates/Typewriter_Effect/index";
-import ChromaticGlitch from "../components/portfolio/templates/Chromatic_Glitch/index";
-import MagneticDock from "../components/portfolio/templates/Magnetic_Dock/index";
-import { useSearchParams } from "react-router-dom";
-import MorphingBlobs from "../components/portfolio/templates/Morphing_Blobs/index";
-import OceanDepths from "../components/portfolio/templates/Ocean_Depths/index";
-import NeonCityscape from "../components/portfolio/templates/Neon_Cityscape/index";
-import PlanetaryOrbit from "../components/portfolio/templates/Planetary_Orbit/index";
-import LowPolyTerrain from "../components/portfolio/templates/Low_Poly_Terrain/index";
-import HighFashion from "../components/portfolio/templates/High_Fashion/index";
-import { PortfolioProvider } from '../context/PortfolioContext.jsx';
+
 
 /* TemplatePreviewFrame — contains each full portfolio template in a
    sandboxed scrollable box. The key trick: CSS `transform` on the outer
@@ -801,6 +783,7 @@ export default function TemplateGallery() {
         </div>
 
       </div>
+
 
     </div>
   );

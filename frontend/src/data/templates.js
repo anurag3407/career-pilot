@@ -1,7 +1,5 @@
 export const templates = [
-{
-  "id": "Anonymous_Whistleblower_Drop_Box",
-  "title": "Anonymous Whistleblower Drop Box",
+
   "category": "Portfolio",
   "colorScheme": "Dark",
   "layout": "Interactive",
