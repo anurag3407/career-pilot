@@ -24,6 +24,7 @@ import {
 import { jobsApi, jobTrackerApi } from '../services/api'
 import Button from '../components/Button'
 import EmptyState from '../components/EmptyState'
+import MatchScoreBadge from '../components/MatchScoreBadge'
 
 const JOB_TYPES = ['All Types', 'Full-time', 'Part-time', 'Contract', 'Internship', 'Remote']
 const EXPERIENCE_LEVELS = ['All Levels', 'Entry Level', 'Mid Level', 'Senior Level', 'Lead/Manager']
@@ -381,9 +382,12 @@ className="w-full pl-12 pr-10 py-4 bg-muted/50 border border-border rounded-xl t
                         </div>
 
                         <div className="flex-1">
-                          <h3 className="text-lg font-semibold text-foreground group-hover:text-primary transition-colors">
-                            {job.job_title || job.title}
-                          </h3>
+                          <div className="flex flex-wrap items-center gap-3">
+                            <h3 className="text-lg font-semibold text-foreground group-hover:text-primary transition-colors">
+                              {job.job_title || job.title}
+                            </h3>
+                            <MatchScoreBadge score={job.matchScore ?? job.match_score} />
+                          </div>
                           <p className="text-muted-foreground font-medium">
                             {job.employer_name || job.company}
                           </p>

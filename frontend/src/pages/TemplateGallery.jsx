@@ -1,45 +1,49 @@
 import { useState } from "react";
 import DeployModal from "../components/portfolio/DeployModal";
+import portfolioTemplates from "../data/templates";
+
+const galleryTemplates = [
+  ...portfolioTemplates,
+  {
+    id: "modern-portfolio",
+    title: "Modern Portfolio",
+    category: "Portfolio",
+    colorScheme: "Dark",
+    layout: "Grid",
+    author: "Alex Johnson",
+    views: 1200,
+    rating: 4.8,
+    image: "https://picsum.photos/400/200?1",
+    createdAt: "2026-05-10",
+  },
+  {
+    id: "minimal-resume",
+    title: "Minimal Resume",
+    category: "Resume",
+    colorScheme: "Light",
+    layout: "Minimal",
+    author: "Sarah Lee",
+    views: 980,
+    rating: 4.6,
+    image: "https://picsum.photos/400/200?2",
+    createdAt: "2026-05-18",
+  },
+  {
+    id: "creative-dashboard",
+    title: "Creative Dashboard",
+    category: "Dashboard",
+    colorScheme: "Colorful",
+    layout: "Cards",
+    author: "Michael",
+    views: 2100,
+    rating: 4.9,
+    image: "https://picsum.photos/400/200?3",
+    createdAt: "2026-05-15",
+  },
+];
 
 export default function TemplateGallery() {
-  const templates = [
-    {
-      id: 1,
-      title: "Modern Portfolio",
-      category: "Portfolio",
-      colorScheme: "Dark",
-      layout: "Grid",
-      author: "Alex Johnson",
-      views: 1200,
-      rating: 4.8,
-      image: "https://picsum.photos/400/200?1",
-      createdAt: "2026-05-10",
-    },
-    {
-      id: 2,
-      title: "Minimal Resume",
-      category: "Resume",
-      colorScheme: "Light",
-      layout: "Minimal",
-      author: "Sarah Lee",
-      views: 980,
-      rating: 4.6,
-      image: "https://picsum.photos/400/200?2",
-      createdAt: "2026-05-18",
-    },
-    {
-      id: 3,
-      title: "Creative Dashboard",
-      category: "Dashboard",
-      colorScheme: "Colorful",
-      layout: "Cards",
-      author: "Michael",
-      views: 2100,
-      rating: 4.9,
-      image: "https://picsum.photos/400/200?3",
-      createdAt: "2026-05-15",
-    },
-  ];
+  const templates = galleryTemplates;
 
   // State for filtering and sorting
   const [category, setCategory] = useState("All");
@@ -107,6 +111,7 @@ export default function TemplateGallery() {
           <option value="Grid">Grid</option>
           <option value="Minimal">Minimal</option>
           <option value="Cards">Cards</option>
+          <option value="Gallery">Gallery</option>
         </select>
 
         {/* Sort Selector */}
