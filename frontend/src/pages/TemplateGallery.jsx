@@ -175,6 +175,12 @@ const TemplateHeroPreview = ({ templateId, portfolioData }) => {
 };
 
 function TemplateCard({ template, hovered, onHover, onLeave, onUse, aiDraft }) {
+  const title = template.title || template.name || 'Untitled Template';
+  const author = template.author || 'System';
+  const rating = Number.isFinite(Number(template.rating)) ? Number(template.rating) : 0;
+  const views = Number.isFinite(Number(template.views)) ? Number(template.views) : 0;
+  const image = template.image || template.thumbnail || '/template-previews/Modern-Portfolio.png';
+
   return (
     <motion.div
       onMouseEnter={() => onHover(template.id)}
@@ -217,8 +223,8 @@ function TemplateCard({ template, hovered, onHover, onLeave, onUse, aiDraft }) {
           </div>
         ) : (
           <motion.img
-            src={template.image}
-            alt={template.title}
+            src={image}
+            alt={title}
             className="w-full h-52 object-cover object-top"
             variants={{
               rest: {
@@ -241,16 +247,16 @@ function TemplateCard({ template, hovered, onHover, onLeave, onUse, aiDraft }) {
 
       <div className="p-5 flex-1">
         <h2 className="text-2xl font-semibold text-foreground">
-          {template.title}
+          {title}
         </h2>
         <p className="text-muted-foreground mt-1 text-sm">
-          By {template.author}
+          By {author}
         </p>
         <div className="flex flex-wrap gap-2 mt-3">
-          {[template.category, template.colorScheme, template.layout].map(
-            (tag) => (
+          {[template.category, template.colorScheme, template.layout].filter(Boolean).map(
+            (tag, tagIndex) => (
               <span
-                key={tag}
+                key={`${tag}-${tagIndex}`}
                 className="text-xs bg-muted text-muted-foreground px-2.5 py-1 rounded-full"
               >
                 {tag}
@@ -264,11 +270,11 @@ function TemplateCard({ template, hovered, onHover, onLeave, onUse, aiDraft }) {
         <div className="flex justify-between text-sm text-muted-foreground mb-4">
           <span className="flex items-center gap-1.5">
             <Star className="w-3.5 h-3.5 text-amber-400 fill-amber-400" />
-            {template.rating}
+            {rating.toFixed(1)}
           </span>
           <span className="flex items-center gap-1.5">
             <Eye className="w-3.5 h-3.5" />
-            {template.views.toLocaleString()}
+            {views.toLocaleString()}
           </span>
         </div>
 
@@ -442,8 +448,8 @@ export default function TemplateGallery() {
   });
 
   const sortedTemplates = [...filteredTemplates].sort((a, b) => {
-    if (sort === 'Popular') return b.views - a.views;
-    if (sort === 'Highest Rated') return b.rating - a.rating;
+    if (sort === 'Popular') return (Number(b.views) || 0) - (Number(a.views) || 0);
+    if (sort === 'Highest Rated') return (Number(b.rating) || 0) - (Number(a.rating) || 0);
     if (sort === 'Newest') return new Date(b.createdAt) - new Date(a.createdAt);
     return 0;
   });

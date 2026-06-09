@@ -2437,18 +2437,6 @@ export const templates = [
     "createdAt": "2026-05-01"
   },
   {
-    "id": "Vercel_Deploy",
-    "title": "Vercel Deploy",
-    "category": "Portfolio",
-    "colorScheme": "Dark",
-    "layout": "Grid",
-    "author": "System",
-    "views": 1188,
-    "rating": 4.5,
-    "image": "/template-previews/Vercel_Deploy.png",
-    "createdAt": "2026-05-01"
-  },
-  {
     "id": "Vintage_Newspaper",
     "title": "Vintage Newspaper",
     "category": "Portfolio",
@@ -2591,20 +2579,6 @@ export const templates = [
   category: 'Special / Error Pages',
   description: 'An interactive 404 error page wrapped in an infinite smoothly-looping background project showcase.'
   },
-
-  {
-  "id": "Pokemon_Pokedex_Classic",
-  "title": "Pokemon Pokedex Classic",
-  "category": "Portfolio",
-  "colorScheme": "Dark",
-  "layout": "Interactive",
-  "author": "System",
-  "views": 1135,
-  "rating": 4.7,
-  "image": "/template-previews/Pokemon_Pokedex_Classic.png",
-  "createdAt": "2026-06-08",
-  "isComplete": true
-},
 
   {
     "id": "Underground_Bunker_Console",
