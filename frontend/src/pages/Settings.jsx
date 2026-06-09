@@ -57,7 +57,7 @@ export default function Settings() {
       className={`relative w-12 h-6 rounded-full transition-colors cursor-pointer ${value ? 'bg-indigo-500' : 'bg-muted'
         }`}
     >
-      <span className={`absolute top-1 w-4 h-4 bg-white rounded-full transition-all ${value ? 'left-7' : 'left-1'
+      <span className={`absolute top-1 w-4 h-4 bg-background rounded-full transition-all ${value ? 'left-7' : 'left-1'
         }`} />
     </button>
   )

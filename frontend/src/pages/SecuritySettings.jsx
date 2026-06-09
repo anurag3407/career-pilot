@@ -334,7 +334,7 @@ export default function SecuritySettings() {
                   </p>
                   {qrDataUrl && (
                     <div className="flex flex-col items-center gap-3">
-                      <div className="p-3 bg-white rounded-xl inline-block">
+                      <div className="p-3 bg-background border border-border rounded-xl inline-block">
                         <img src={qrDataUrl} alt="2FA QR Code" className="w-40 h-40" />
                       </div>
                       <details className="w-full">

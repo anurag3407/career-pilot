@@ -76,9 +76,9 @@ export default function OpenRouterCallback() {
   }, [location, navigate]);
 
   return (
-    <div className="flex items-center justify-center min-h-screen bg-gray-50 dark:bg-gray-900">
-      <div className="p-8 bg-white dark:bg-gray-800 rounded-lg shadow-lg text-center max-w-md w-full">
-        <h2 className="text-2xl font-bold mb-6 text-gray-900 dark:text-white">OpenRouter Authorization</h2>
+    <div className="flex items-center justify-center min-h-screen bg-background">
+      <div className="p-8 bg-card border border-border rounded-lg shadow-lg text-center max-w-md w-full">
+        <h2 className="text-2xl font-bold mb-6 text-foreground">OpenRouter Authorization</h2>
         {error ? (
           <div className="text-red-500 mb-4">
             <p className="mb-4">{error}</p>
@@ -90,7 +90,7 @@ export default function OpenRouterCallback() {
             </button>
           </div>
         ) : (
-          <div className="text-gray-600 dark:text-gray-300">
+          <div className="text-muted-foreground">
             <p className="mb-6 text-lg">{status}</p>
             <div className="flex justify-center">
               <div className="animate-spin rounded-full h-10 w-10 border-b-2 border-indigo-600"></div>

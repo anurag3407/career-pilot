@@ -8,7 +8,7 @@ const DragHandle = () => {
         {[...Array(6)].map((_, index) => (
           <span
             key={index}
-            className="w-1 h-1 bg-gray-500 rounded-full"
+            className="w-1 h-1 bg-muted-foreground rounded-full"
           ></span>
         ))}
       </div>

@@ -12,13 +12,13 @@ export const GlassCard = ({
 
   const variants = {
     default:
-      "bg-white/10 dark:bg-black/20 border-white/20 shadow-lg",
+      "bg-card/50 border-border/60 shadow-lg",
 
     highlighted:
-      "bg-white/20 dark:bg-black/30 border-cyan-400/30 shadow-2xl",
+      "bg-card/70 border-primary/20 shadow-2xl",
 
     interactive:
-      "bg-white/10 dark:bg-black/20 border-white/20 hover:scale-[1.02] hover:shadow-xl cursor-pointer",
+      "bg-card/50 border-border/60 hover:scale-[1.02] hover:shadow-xl hover:border-primary/30 cursor-pointer",
   };
 
   return (

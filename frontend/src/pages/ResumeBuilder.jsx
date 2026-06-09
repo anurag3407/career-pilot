@@ -1325,7 +1325,7 @@ useEffect(() => {
         </div>
 
         {/* Content Area */}
-        <div className="flex-1 bg-card/50 backdrop-blur-xl border border-white/5 rounded-3xl p-6 sm:p-8 shadow-2xl relative overflow-hidden">
+        <div className="flex-1 bg-card/50 backdrop-blur-xl border border-border/60 rounded-3xl p-6 sm:p-8 shadow-2xl relative overflow-hidden">
           <div className="absolute -top-40 -right-40 w-80 h-80 bg-primary/10 rounded-full blur-3xl opacity-50 pointer-events-none" />
           <div className="absolute -bottom-40 -left-40 w-80 h-80 bg-blue-500/10 rounded-full blur-3xl opacity-50 pointer-events-none" />
 
@@ -1368,7 +1368,7 @@ useEffect(() => {
             >
               {isSubmitting ? (
                 <>
-                  <div className="w-4 h-4 border-2 border-white/20 border-t-white rounded-full animate-spin" />
+                  <div className="w-4 h-4 border-2 border-foreground/20 border-t-foreground rounded-full animate-spin" />
                   Generating...
                 </>
               ) : (
@@ -1380,7 +1380,7 @@ useEffect(() => {
           ) : (
             <button
               onClick={handleNext}
-              className="px-6 py-2.5 rounded-full bg-white text-black hover:bg-gray-200 hover:scale-105 active:scale-95 transition-all shadow-lg flex items-center gap-2 font-medium"
+              className="px-6 py-2.5 rounded-full bg-card text-foreground border border-border hover:bg-muted hover:scale-105 active:scale-95 transition-all shadow-lg flex items-center gap-2 font-medium"
             >
               Next <ArrowRight className="w-4 h-4" />
             </button>

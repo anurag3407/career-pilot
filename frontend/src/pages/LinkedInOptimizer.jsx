@@ -284,7 +284,7 @@ export default function LinkedInOptimizer() {
             >
               {loading ? (
                 <>
-                  <div className="w-5 h-5 border-2 border-white border-t-transparent rounded-full animate-spin" />
+                  <div className="w-5 h-5 border-2 border-foreground/30 border-t-transparent rounded-full animate-spin" />
                   Analyzing your profile...
                 </>
               ) : (

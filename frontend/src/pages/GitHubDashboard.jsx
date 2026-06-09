@@ -111,10 +111,10 @@ export default function GitHubDashboard() {
               initial={{ opacity: 0, y: 20 }}
               animate={{ opacity: 1, y: 0 }}
               exit={{ opacity: 0, scale: 0.95 }}
-              className="bg-card/50 backdrop-blur-xl border border-white/10 rounded-3xl overflow-hidden shadow-2xl relative"
+              className="bg-card/50 backdrop-blur-xl border border-border/60 rounded-3xl overflow-hidden shadow-2xl relative"
             >
               {/* Profile Header */}
-              <div className="p-8 md:p-10 border-b border-white/5 flex flex-col md:flex-row items-center md:items-start gap-8">
+              <div className="p-8 md:p-10 border-b border-border/40 flex flex-col md:flex-row items-center md:items-start gap-8">
                 <img 
                   src={profile.avatar_url} 
                   alt={profile.name} 
@@ -203,7 +203,7 @@ export default function GitHubDashboard() {
                   </div>
                 )}
 
-                <div className="pt-6 border-t border-white/10 flex justify-end">
+                <div className="pt-6 border-t border-border/40 flex justify-end">
                   <button
                     onClick={handleImport}
                     disabled={isImporting}
