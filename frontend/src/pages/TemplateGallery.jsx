@@ -30,7 +30,7 @@ import NeonCityscape from "../components/portfolio/templates/Neon_Cityscape/inde
 import PlanetaryOrbit from "../components/portfolio/templates/Planetary_Orbit/index";
 import LowPolyTerrain from "../components/portfolio/templates/Low_Poly_Terrain/index";
 import HighFashion from "../components/portfolio/templates/High_Fashion/index";
-
+import { PortfolioProvider } from '../context/PortfolioContext.jsx';
 
 /* TemplatePreviewFrame — contains each full portfolio template in a
    sandboxed scrollable box. The key trick: CSS `transform` on the outer

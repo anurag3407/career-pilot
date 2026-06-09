@@ -33,6 +33,7 @@ import {
 } from 'lucide-react'
 import { SkeletonList } from '../components/ui/Skeleton'
 import ResumeScore from '../components/ResumeScore'
+import CopyButton from '../components/CopyButton'
 
 // Score ring component
 const ScoreRing = ({ score, size = 120, strokeWidth = 8 }) => {
@@ -283,9 +284,12 @@ const BulletAnalysisCard = ({ bullet, index }) => {
             </div>
           )}
           <div className="bg-primary/10 border border-primary/30 rounded-lg p-3">
-            <div className="flex items-center gap-2 mb-2">
-              <Sparkles className="w-4 h-4 text-primary" />
-              <span className="text-xs text-primary font-medium">Improved Version</span>
+            <div className="flex items-center justify-between gap-2 mb-2">
+              <div className="flex items-center gap-2">
+                <Sparkles className="w-4 h-4 text-primary" />
+                <span className="text-xs text-primary font-medium">Improved Version</span>
+              </div>
+              <CopyButton text={bullet.improved} label="" size={13} variant="ghost" className="shrink-0" />
             </div>
             <p className="text-sm text-foreground">{bullet.improved}</p>
           </div>
@@ -703,10 +707,13 @@ export default function Enhance() {
               transition={{ delay: 0.3 }}
               className="bg-background/50 border border-border rounded-2xl p-6"
             >
-              <h3 className="text-lg font-semibold text-foreground mb-3 flex items-center gap-2">
-                <AlertCircle className="w-5 h-5 text-primary" />
-                Analysis Summary
-              </h3>
+              <div className="flex items-center justify-between gap-2 mb-3">
+                <h3 className="text-lg font-semibold text-foreground flex items-center gap-2">
+                  <AlertCircle className="w-5 h-5 text-primary" />
+                  Analysis Summary
+                </h3>
+                <CopyButton text={atsAnalysis.summary} label="Copy" size={14} />
+              </div>
               <p className="text-foreground leading-relaxed">{atsAnalysis.summary}</p>
             </motion.div>
 

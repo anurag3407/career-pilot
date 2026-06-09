@@ -1,3 +1,5 @@
+import { ResumeConsistencyChecker } from '../utils/resumeChecker';
+import ConsistencyPanel from '../utils/ConsistencyPanel';
 import React, { useRef, useState, useEffect } from 'react'
 import { motion, AnimatePresence } from 'framer-motion'
 import { useNavigate } from 'react-router-dom'
@@ -77,7 +79,8 @@ export default function ResumeBuilder() {
   const [missingKeywords, setMissingKeywords] = useState([])
   const [resumeVersions, setResumeVersions] = useState([])
   const [selectedVersion, setSelectedVersion] = useState(null)
-
+  
+  const [recommendedSkills, setRecommendedSkills] = useState([])
   useEffect(() => {
   const suggestions = []
   let score = 100
@@ -137,6 +140,7 @@ export default function ResumeBuilder() {
   setClaritySuggestions(suggestions)
 }, [personal, experience, projects])
 
+ // ─────────────────── ATS Keyword Assessment Loop ───────────────────
   useEffect(() => {
   const keywords = [
     "React",
@@ -148,6 +152,35 @@ export default function ResumeBuilder() {
     "Teamwork",
     "Problem Solving"
   ]
+
+  const prioritySkills = [
+  "React",
+  "JavaScript",
+  "Node.js",
+  "API",
+  "Git",
+  "Leadership",
+  "Problem Solving",
+  "Teamwork"
+]
+
+const missing = keywords.filter(
+  keyword => !foundKeywords.includes(keyword)
+)
+
+setMissingKeywords(missing)
+
+const suggestions = prioritySkills.filter(
+  skill => missing.includes(skill)
+)
+
+setRecommendedSkills(
+  suggestions.slice(0, 4)
+)
+
+setRecommendedSkills(
+  suggestions.slice(0, 4)
+)
 
   const resumeText = `
     ${personal.summary}
@@ -161,16 +194,20 @@ export default function ResumeBuilder() {
   )
 
   const missing = keywords.filter(
-    keyword => !foundKeywords.includes(keyword)
-  )
+  keyword => !foundKeywords.includes(keyword)
+)
 
-  setMissingKeywords(missing)
+setMissingKeywords(missing)
 
-  setAtsScore(
-    Math.round(
-      (foundKeywords.length / keywords.length) * 100
-    )
+setRecommendedSkills(
+  missing.slice(0, 4)
+)
+
+setAtsScore(
+  Math.round(
+    (foundKeywords.length / keywords.length) * 100
   )
+)
 }, [
   personal,
   skills,
@@ -180,7 +217,71 @@ export default function ResumeBuilder() {
 
 useEffect(() => {
   const recommendations = []
+    const resumeText = `
+      ${personal?.summary || ''}
+      ${skills || ''}
+      ${(projects || []).map(p => p.description).join(" ")}
+      ${(experience || []).map(e => e.description).join(" ")}
+    `.toLowerCase();
 
+    const foundKeywords = keywords.filter(keyword =>
+      resumeText.includes(keyword.toLowerCase())
+    );
+
+    const missing = keywords.filter(
+      keyword => !foundKeywords.includes(keyword)
+    );
+
+    setMissingKeywords(missing);
+
+    if (keywords.length > 0) {
+      setAtsScore(
+        Math.round((foundKeywords.length / keywords.length) * 100)
+      );
+    }
+  }, [personal, skills, projects, experience, keywords]);
+
+  // ─────────────────── Live Consistency Memoized Engine ───────────────────
+  const activeConsistencyWarnings = React.useMemo(() => {
+    const allExperienceDates = (experience || []).flatMap(exp => [exp.startDate, exp.endDate]);
+    const allEducationDates = (education || []).flatMap(edu => [edu.startDate, edu.endDate]);
+    const aggregatedTimelineDates = [...allExperienceDates, ...allEducationDates];
+
+    // Filter out current roles so ongoing present-tense verbs aren't flagged as bugs
+    const pastExperienceBullets = (experience || [])
+      .filter(exp => !exp.current)
+      .map(exp => exp.description || '');
+
+    const projectDescriptions = (projects || []).map(p => p.description || '');
+    const aggregatedTextDescriptions = [...pastExperienceBullets, ...projectDescriptions];
+
+    const dateValidationErrors = ResumeConsistencyChecker.checkDateConsistency(aggregatedTimelineDates);
+    const tenseValidationErrors = ResumeConsistencyChecker.checkTenseConsistency(pastExperienceBullets);
+    const redundancyValidationErrors = ResumeConsistencyChecker.checkDuplicateContent(aggregatedTextDescriptions);
+
+    return [
+      ...dateValidationErrors,
+      ...tenseValidationErrors,
+      ...redundancyValidationErrors
+    ];
+  }, [experience, education, projects]);
+
+  const saveVersion = React.useCallback(() => {
+    const newVersion = {
+      id: Date.now(),
+      timestamp: new Date().toLocaleString(),
+      content: typeof generateMarkdown === 'function' ? generateMarkdown() : "",
+    };
+    setResumeVersions(prev => [newVersion, ...prev]);
+    if (typeof toast !== 'undefined') {
+      toast.success("Resume version layout tracked successfully!");
+    }
+  }, [experience, education, projects, personal, skills, generateMarkdown]);
+
+  // ─────────────────── Automated Recommendations Engine ───────────────────
+  useEffect(() => {
+    const recommendations = [];
+    
   if (projects.every(p => !p.name.trim())) {
     recommendations.push("Projects")
   }
@@ -896,6 +997,82 @@ useEffect(() => {
     Save Version
   </button>
 </div>
+
+<div className="mb-6 p-4 rounded-xl border border-border bg-background/50">
+
+  <div className="flex justify-between items-center mb-2">
+    <h3 className="font-semibold">
+      Skill Gap Analysis
+    </h3>
+
+    <div className="mt-2">
+  <span
+    className={`px-3 py-1 rounded-full text-sm ${
+      atsScore >= 80
+        ? "bg-green-500/20 text-green-500"
+        : atsScore >= 60
+        ? "bg-yellow-500/20 text-yellow-500"
+        : "bg-red-500/20 text-red-500"
+    }`}
+  >
+    {atsScore >= 80
+      ? "Strong Match"
+      : atsScore >= 60
+      ? "Moderate Gap"
+      : "High Skill Gap"}
+  </span>
+</div>
+
+    <span className="text-primary font-bold">
+      {atsScore}% Match
+    </span>
+  </div>
+
+  <div className="w-full bg-secondary rounded-full h-3">
+    <div
+      className="bg-primary h-3 rounded-full transition-all duration-500"
+      style={{ width: `${atsScore}%` }}
+    />
+  </div>
+
+  {recommendedSkills.length > 0 && (
+  <div className="mt-4">
+    <h4 className="font-medium mb-2">
+      Recommended Skills to Learn
+    </h4>
+
+    <div className="flex flex-wrap gap-2">
+      {recommendedSkills.map(skill => (
+        <span
+          key={skill}
+          className="px-3 py-1 rounded-full bg-green-500/20 text-green-400 text-sm"
+        >
+          {skill}
+        </span>
+      ))}
+    </div>
+  </div>
+)}
+
+  <div className="mt-4">
+    <h4 className="font-medium mb-2">
+      Missing Skills
+    </h4>
+
+    <div className="flex flex-wrap gap-2">
+      {missingKeywords.map(skill => (
+        <span
+          key={skill}
+          className="px-3 py-1 rounded-full bg-red-500/20 text-red-400 text-sm"
+        >
+          {skill}
+        </span>
+      ))}
+    </div>
+  </div>
+
+</div>
+
 <div className="mb-6 p-4 rounded-xl border border-border bg-background/50">
   <div className="flex justify-between items-center mb-2">
     <h3 className="font-semibold">
@@ -927,6 +1104,19 @@ useEffect(() => {
       </ul>
     </div>
   )}
+</div>
+<div className="mb-6 p-4 rounded-xl border border-border bg-background/50">
+  <h3 className="font-semibold mb-3">
+    Section Completion Status
+  </h3>
+
+  <div className="space-y-2">
+    <div>{personal.name && personal.email ? "✅" : "❌"} Personal Info</div>
+    <div>{education.some(e => e.school) ? "✅" : "❌"} Education</div>
+    <div>{experience.some(e => e.title) ? "✅" : "❌"} Experience</div>
+    <div>{projects.some(p => p.name) ? "✅" : "❌"} Projects</div>
+    <div>{skills.trim() ? "✅" : "❌"} Skills</div>
+  </div>
 </div>
             <div className="mb-6 p-4 rounded-xl border border-border bg-background/50">
   <div className="flex justify-between items-center mb-2">
@@ -1152,6 +1342,13 @@ useEffect(() => {
             </motion.div>
           </AnimatePresence>
         </div>
+
+        {/* Drop this safely within your main workspace grid or right before action buttons */}
+<AnimatePresence mode="wait">
+  {currentStep !== 5 && ( // Hide panel on the final pure preview screen
+    <ConsistencyPanel errors={activeConsistencyWarnings} />
+  )}
+</AnimatePresence>
 
         {/* Navigation Actions */}
         <div className="mt-8 flex justify-between items-center">

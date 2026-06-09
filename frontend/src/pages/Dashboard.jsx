@@ -294,7 +294,8 @@ export default function Dashboard() {
                 { to: '/hub/resume', icon: FileText, label: 'Resume Builder', desc: 'Create, parse, and optimize ATS resumes.', sub: `${resumes.length} resumes`, color: 'primary', badge: 'AI' },
                 { to: '/hub/jobs', icon: Briefcase, label: 'Job Finder', desc: 'Search jobs, set alerts, and track applications.', sub: `${jobStats.total} tracked`, color: 'primary' },
                 { to: '/hub/portfolio', icon: Globe, label: 'Portfolio Builder', desc: 'Sync repos and deploy portfolios instantly.', sub: `${portfolioCount} portfolios`, color: 'secondary' },
-                { to: '/hub/career', icon: GraduationCap, label: 'Career Growth', desc: 'AI mock interviews, email & profile tuning.', sub: '4 tools', color: 'emerald-500', badge: 'AI' },
+                { to: '/hub/career', icon: GraduationCap, label: 'Career Growth', desc: 'Email & profile tuning tools.', sub: 'Growth tools', color: 'emerald-500', badge: 'AI' },
+                { to: '/interview-prep', icon: Mic, label: 'AI Mock Interview', desc: 'Practice with AI and get real-time feedback.', sub: 'Practice', color: 'primary', badge: 'AI' },
                 { to: '/dashboard/analytics', icon: TrendingUp, label: 'Interview Analytics', desc: 'Visualize mock interview performance trends and scores.', sub: 'Real-time metrics', color: 'emerald-500', badge: 'AI' },
                 { to: '/hub/community', icon: Users, label: 'Community Hub', desc: 'Group chat, public posts, and direct DMs.', sub: 'Connect', color: 'primary' },
               ].map((hub, idx) => (

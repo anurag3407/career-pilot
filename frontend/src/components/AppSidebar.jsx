@@ -1,7 +1,7 @@
 import { useState, useEffect } from "react";
 import { useNavigate, useLocation } from "react-router-dom";
 import { motion } from "framer-motion";
-import { Brain, ChevronDown, Contrast } from "lucide-react";
+import { Brain, ChevronDown, Contrast, LineChart } from "lucide-react";
 import AIProviderIndicator from "./settings/AIProviderIndicator";
 
 import {
@@ -41,6 +41,11 @@ const navLinks = [
         label: "Dashboard",
         href: "/dashboard",
         icon: <LayoutDashboard className="w-5 h-5 shrink-0" />,
+    },
+    {
+        label: "ATS Dashboard",
+        href: "/ats-dashboard",
+        icon: <LineChart className="w-5 h-5 shrink-0" />,
     },
     {
         label: "Resume Builder",

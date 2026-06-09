@@ -634,6 +634,71 @@ function buildParams(params) {
   return usp
 }
 
+// ============ INTERVIEW API ============
+export const interviewApi = {
+  // Start a new interview
+  async startInterview(data) {
+    const headers = await getAuthHeaders();
+    const response = await fetch(`${API_BASE}/interview/start`, {
+      method: 'POST',
+      headers,
+      body: JSON.stringify(data)
+    });
+    return handleResponse(response);
+  },
+
+  // Submit an answer for a specific question
+  async submitAnswer(interviewId, data) {
+    const headers = await getAuthHeaders();
+    const response = await fetch(`${API_BASE}/interview/${interviewId}/answer`, {
+      method: 'POST',
+      headers,
+      body: JSON.stringify(data)
+    });
+    return handleResponse(response);
+  },
+
+  // Complete an interview and generate overall feedback
+  async completeInterview(interviewId) {
+    const headers = await getAuthHeaders();
+    const response = await fetch(`${API_BASE}/interview/${interviewId}/complete`, {
+      method: 'POST',
+      headers
+    });
+    return handleResponse(response);
+  },
+
+  // Get interview history
+  async getHistory() {
+    const headers = await getAuthHeaders();
+    const response = await fetch(`${API_BASE}/interview/history`, {
+      method: 'GET',
+      headers
+    });
+    return handleResponse(response);
+  },
+
+  // Get interview analytics
+  async getAnalytics() {
+    const headers = await getAuthHeaders();
+    const response = await fetch(`${API_BASE}/interview/analytics`, {
+      method: 'GET',
+      headers
+    });
+    return handleResponse(response);
+  },
+
+  // Get single interview by ID
+  async getById(id) {
+    const headers = await getAuthHeaders();
+    const response = await fetch(`${API_BASE}/interview/${id}`, {
+      method: 'GET',
+      headers
+    });
+    return handleResponse(response);
+  }
+};
+
 // ============ JOBS API ============
 export const jobsApi = {
   // Search jobs with query
@@ -1175,64 +1240,6 @@ export const fellowshipApi = {
       method: 'POST',
       headers,
       body: JSON.stringify({ content })
-    })
-    return handleResponse(response)
-  }
-}
-
-export const interviewApi = {
-  async startInterview(formData) {
-    const headers = await getAuthHeaders()
-    const response = await fetch(`${API_BASE}/interview/start`, {
-      method: 'POST',
-      headers,
-      body: JSON.stringify(formData)
-    })
-    return handleResponse(response)
-  },
-
-  async submitAnswer(interviewId, data) {
-    const headers = await getAuthHeaders()
-    const response = await fetch(`${API_BASE}/interview/${interviewId}/answer`, {
-      method: 'POST',
-      headers,
-      body: JSON.stringify(data)
-    })
-    return handleResponse(response)
-  },
-
-  async completeInterview(interviewId) {
-    const headers = await getAuthHeaders()
-    const response = await fetch(`${API_BASE}/interview/${interviewId}/complete`, {
-      method: 'POST',
-      headers
-    })
-    return handleResponse(response)
-  },
-
-  async getInterview(interviewId) {
-    const headers = await getAuthHeaders()
-    const response = await fetch(`${API_BASE}/interview/${interviewId}`, {
-      method: 'GET',
-      headers
-    })
-    return handleResponse(response)
-  },
-
-  async getHistory() {
-    const headers = await getAuthHeaders()
-    const response = await fetch(`${API_BASE}/interview/history`, {
-      method: 'GET',
-      headers
-    })
-    return handleResponse(response)
-  },
-
-  async getAnalytics() {
-    const headers = await getAuthHeaders()
-    const response = await fetch(`${API_BASE}/interview/analytics`, {
-      method: 'GET',
-      headers
     })
     return handleResponse(response)
   }

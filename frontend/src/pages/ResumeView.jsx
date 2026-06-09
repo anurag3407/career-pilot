@@ -19,7 +19,7 @@ export default function ResumeView() {
   const navigate = useNavigate()
 
   const [resume, setResume] = useState(null)
-  const [loading, setLoading] = useState(false)
+  const [loading, setLoading] = useState(true)
   const [downloading, setDownloading] = useState(false)
   const [activeTab, setActiveTab] = useState('preview') // 'preview' | 'versions' | 'ats'
   const [previewTab, setPreviewTab] = useState('enhanced') // 'enhanced' | 'original'
@@ -215,6 +215,16 @@ export default function ResumeView() {
             </p>
           </div>
           <div className="flex gap-2">
+            <Link 
+              to="/interview-prep" 
+              state={{ 
+                resumeId: resumeId, 
+                resumeText: resume?.enhancedText || resume?.originalText,
+                jobRole: resume?.jobRole
+              }}
+            >
+              <Button variant="secondary">Practice Interview</Button>
+            </Link>
             <Link to={`/enhance/${resumeId}`}>
               <Button variant="primary">
                 {resume?.enhancedText ? 'Re-enhance' : 'Enhance'}
