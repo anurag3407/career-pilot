@@ -1,15 +1,13 @@
-import "@testing-library/jest-dom/vitest";
 import { render, screen } from "@testing-library/react";
 import userEvent from "@testing-library/user-event";
-import { describe, test, expect, vi, beforeEach } from "vitest";
 import AppSidebar from "../AppSidebar";
 
-const mockNavigate = vi.fn();
-const mockLogout = vi.fn();
-const mockToggleTheme = vi.fn();
-const mockSetOpen = vi.fn();
+const mockNavigate = jest.fn();
+const mockLogout = jest.fn();
+const mockToggleTheme = jest.fn();
+const mockSetOpen = jest.fn();
 
-vi.mock("react-router-dom", () => ({
+jest.mock("react-router-dom", () => ({
   useNavigate: () => mockNavigate,
   useLocation: () => ({
     pathname: "/dashboard",
@@ -21,7 +19,7 @@ vi.mock("react-router-dom", () => ({
   ),
 }));
 
-vi.mock("../../hooks/useAuth", () => ({
+jest.mock("../../hooks/useAuth", () => ({
   useAuth: () => ({
     user: {
       displayName: "John Doe",
@@ -31,14 +29,14 @@ vi.mock("../../hooks/useAuth", () => ({
   }),
 }));
 
-vi.mock("../../hooks/useTheme", () => ({
+jest.mock("../../hooks/useTheme", () => ({
   useTheme: () => ({
     theme: "light",
     toggleTheme: mockToggleTheme,
   }),
 }));
 
-vi.mock("../../hooks/useSidebar", () => ({
+jest.mock("../../hooks/useSidebar", () => ({
   useSidebar: () => ({
     open: true,
     animate: false,
@@ -46,19 +44,20 @@ vi.mock("../../hooks/useSidebar", () => ({
   }),
 }));
 
-vi.mock("../settings/AIProviderIndicator", () => ({
+jest.mock("../settings/AIProviderIndicator", () => ({
+  __esModule: true,
   default: () => <div>AI Provider Indicator</div>,
 }));
 
-vi.mock("framer-motion", () => ({
+jest.mock("framer-motion", () => ({
   motion: {
-    div: ({ children, ...props }) => <div {...props}>{children}</div>,
-    span: ({ children, ...props }) => <span {...props}>{children}</span>,
+    div: ({ children, initial, animate, exit, transition, ...props }) => <div {...props}>{children}</div>,
+    span: ({ children, initial, animate, exit, transition, ...props }) => <span {...props}>{children}</span>,
   },
   AnimatePresence: ({ children }) => <>{children}</>,
 }));
 
-vi.mock("../ui/Sidebar", () => ({
+jest.mock("../ui/Sidebar", () => ({
   Sidebar: ({ children }) => <div>{children}</div>,
 
   SidebarBody: ({ children }) => (
@@ -74,7 +73,7 @@ vi.mock("../ui/Sidebar", () => ({
 
 describe("AppSidebar", () => {
   beforeEach(() => {
-    vi.clearAllMocks();
+    jest.clearAllMocks();
   });
 
   test("renders primary navigation links", () => {

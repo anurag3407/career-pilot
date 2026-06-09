@@ -5,28 +5,29 @@ import { jobsApi, jobTrackerApi } from '../services/api'
 import toast from 'react-hot-toast'
 
 // Mock react-hot-toast
-vi.mock('react-hot-toast', () => ({
-  default: {
-    success: vi.fn(),
-    error: vi.fn(),
-    custom: vi.fn(),
-  },
+jest.mock('react-hot-toast', () => ({
+  __esModule: true,
+  default: Object.assign(jest.fn(), {
+    success: jest.fn(),
+    error: jest.fn(),
+    custom: jest.fn(),
+  }),
 }))
 
 // Mock API services
-vi.mock('../services/api', () => ({
+jest.mock('../services/api', () => ({
   jobsApi: {
-    search: vi.fn(),
+    search: jest.fn(),
   },
   jobTrackerApi: {
-    getAll: vi.fn(() => Promise.resolve({ trackedJobs: [] })),
-    track: vi.fn(),
+    getAll: jest.fn(() => Promise.resolve({ trackedJobs: [] })),
+    track: jest.fn(),
   },
 }))
 
 describe('JobSearch page', () => {
   beforeEach(() => {
-    vi.clearAllMocks()
+    jest.clearAllMocks()
   })
 
   test('renders JobSearch page components', async () => {

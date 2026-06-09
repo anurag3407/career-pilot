@@ -1,5 +1,3 @@
-import { describe, test, expect, beforeEach } from "vitest";
-
 import {
   startMeasure,
   endMeasure,
@@ -44,5 +42,36 @@ describe("performanceMonitor", () => {
     clearMetrics();
 
     expect(Object.keys(getMetrics())).toHaveLength(0);
+  });
+
+  test("clears only tracked performance labels", () => {
+    startMeasure("scoped");
+    endMeasure("scoped");
+
+    const originalPerformance = global.performance;
+    const clearMarksSpy = jest.fn();
+    const clearMeasuresSpy = jest.fn();
+
+    Object.defineProperty(global, "performance", {
+      configurable: true,
+      writable: true,
+      value: {
+        clearMarks: clearMarksSpy,
+        clearMeasures: clearMeasuresSpy,
+      },
+    });
+
+    try {
+      clearMetrics();
+
+      expect(clearMarksSpy.mock.calls).toEqual([["scoped-start"], ["scoped-end"]]);
+      expect(clearMeasuresSpy.mock.calls).toEqual([["scoped"]]);
+    } finally {
+      Object.defineProperty(global, "performance", {
+        configurable: true,
+        writable: true,
+        value: originalPerformance,
+      });
+    }
   });
 });
