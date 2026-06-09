@@ -100,7 +100,7 @@ router.post('/start', verifyToken, extractAIProvider, aiRateLimiter, validate(st
     });
 }));
 
-router.post('/:id/answer', verifyToken, extractAIProvider, aiRateLimiter, validate(submitAnswerSchema), asyncHandler(async (req, res) => {
+router.post('/:id([0-9a-fA-F]{24})/answer', verifyToken, extractAIProvider, aiRateLimiter, validate(submitAnswerSchema), asyncHandler(async (req, res) => {
     const { id } = req.params;
     const { questionId, transcript, duration, expressionMetrics } = req.body;
 
@@ -156,7 +156,11 @@ router.post('/:id/answer', verifyToken, extractAIProvider, aiRateLimiter, valida
     });
 }));
 
-router.post('/:id/complete', verifyToken, extractAIProvider, aiRateLimiter, asyncHandler(async (req, res) => {
+router.post('/:id/answer', verifyToken, asyncHandler(async (req, res) => {
+    throw new ApiError(400, 'Invalid interview ID format');
+}));
+
+router.post('/:id([0-9a-fA-F]{24})/complete', verifyToken, extractAIProvider, aiRateLimiter, asyncHandler(async (req, res) => {
     const { id } = req.params;
 
     const interview = await Interview.findOne({ _id: id, odId: req.user.uid });
@@ -194,6 +198,10 @@ router.post('/:id/complete', verifyToken, extractAIProvider, aiRateLimiter, asyn
     });
 }));
 
+router.post('/:id/complete', verifyToken, asyncHandler(async (req, res) => {
+    throw new ApiError(400, 'Invalid interview ID format');
+}));
+
 router.get('/history', verifyToken, asyncHandler(async (req, res) => {
     const interviews = await Interview.find({ odId: req.user.uid })
         .sort({ createdAt: -1 })
@@ -216,7 +224,7 @@ router.get('/analytics', verifyToken, asyncHandler(async (req, res) => {
     });
 }));
 
-router.get('/:id', verifyToken, asyncHandler(async (req, res) => {
+router.get('/:id([0-9a-fA-F]{24})', verifyToken, asyncHandler(async (req, res) => {
     const { id } = req.params;
 
     const interview = await Interview.findOne({ _id: id, odId: req.user.uid }).lean();
@@ -228,6 +236,10 @@ router.get('/:id', verifyToken, asyncHandler(async (req, res) => {
         success: true,
         data: interview
     });
+}));
+
+router.get('/:id', verifyToken, asyncHandler(async (req, res) => {
+    throw new ApiError(400, 'Invalid interview ID format');
 }));
 
 export default router;
