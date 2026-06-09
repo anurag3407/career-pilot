@@ -1,15 +1,17 @@
 import { triggerConfetti } from '../utils/confetti'
 import { useState, useRef, useEffect } from 'react';
-import { useNavigate } from 'react-router-dom';
+import { useNavigate, useLocation } from 'react-router-dom';
 import { motion } from 'framer-motion';
 import { Mic, MicOff, Video, VideoOff, XCircle, CheckCircle, AlertCircle, Volume2, VolumeX, RotateCcw, UserX, Loader2, Sparkles, ArrowRight, Target, TrendingUp, MessageSquare, Eye, Brain, Award, ChevronDown, ChevronUp, Clock, BarChart3, Lightbulb, Zap, Laptop, Smartphone, Chrome, AlertTriangle, FileUp, FileText, X } from 'lucide-react';
 import Button from '../components/Button';
 import BodyLanguageTips from '../components/BodyLanguageTips';
 import VoiceToTextButton from '../components/VoiceToTextButton';
-import { interviewApi, uploadApi } from '../services/api';
+import { interviewApi, uploadApi, resumeApi } from '../services/api';
 import ConfidenceMeter from "../components/ConfidenceMeter";
 import {DEFAULT_PROGRESS,updateDifficulty} from '../utils/interviewDifficulty';
 import LearningRecommendations from "../components/LearningRecommendations";
+import CopyButton from '../components/CopyButton';
+import { useAIConfigStore } from '../stores/useAIConfigStore';
 
 // Device and browser detection utilities
 const isMobileDevice = () => {
@@ -113,9 +115,12 @@ function QuestionAnalysisCard({ answer, index }) {
             <div className="grid lg:grid-cols-2 gap-4">
               {/* Your Response */}
               <div className="p-4 rounded-xl bg-muted/50 border border-border/50">
-                <div className="flex items-center gap-2 mb-3">
-                  <MessageSquare className="w-4 h-4 text-muted-foreground" />
-                  <p className="text-xs text-muted-foreground uppercase tracking-wide font-medium">Your Response</p>
+                <div className="flex items-center justify-between gap-2 mb-3">
+                  <div className="flex items-center gap-2">
+                    <MessageSquare className="w-4 h-4 text-muted-foreground" />
+                    <p className="text-xs text-muted-foreground uppercase tracking-wide font-medium">Your Response</p>
+                  </div>
+                  <CopyButton text={answer.transcript} label="" size={13} variant="ghost" className="shrink-0" />
                 </div>
                 <p className="text-foreground text-sm leading-relaxed">"{answer.transcript}"</p>
               </div>
@@ -123,9 +128,12 @@ function QuestionAnalysisCard({ answer, index }) {
               {/* Ideal Answer */}
               {analysis.idealAnswer && (
                 <div className="p-4 rounded-xl bg-emerald-500/10 border border-emerald-500/20">
-                  <div className="flex items-center gap-2 mb-3">
-                    <Award className="w-4 h-4 text-emerald-400" />
-                    <p className="text-xs text-emerald-400 uppercase tracking-wide font-medium">Model Answer Example</p>
+                  <div className="flex items-center justify-between gap-2 mb-3">
+                    <div className="flex items-center gap-2">
+                      <Award className="w-4 h-4 text-emerald-400" />
+                      <p className="text-xs text-emerald-400 uppercase tracking-wide font-medium">Model Answer Example</p>
+                    </div>
+                    <CopyButton text={analysis.idealAnswer} label="" size={13} variant="ghost" className="shrink-0 text-emerald-400 hover:text-emerald-300" />
                   </div>
                   <p className="text-foreground text-sm leading-relaxed">{analysis.idealAnswer}</p>
                 </div>
@@ -135,9 +143,12 @@ function QuestionAnalysisCard({ answer, index }) {
             {/* Professional Feedback */}
             {analysis.feedback && (
               <div className="p-4 rounded-xl bg-primary/10 border border-primary/20">
-                <div className="flex items-center gap-2 mb-2">
-                  <Brain className="w-4 h-4 text-primary" />
-                  <p className="text-xs text-primary uppercase tracking-wide font-medium">Professional Assessment</p>
+                <div className="flex items-center justify-between gap-2 mb-2">
+                  <div className="flex items-center gap-2">
+                    <Brain className="w-4 h-4 text-primary" />
+                    <p className="text-xs text-primary uppercase tracking-wide font-medium">Professional Assessment</p>
+                  </div>
+                  <CopyButton text={analysis.feedback} label="" size={13} variant="ghost" className="shrink-0" />
                 </div>
                 <p className="text-foreground text-sm leading-relaxed">{analysis.feedback}</p>
               </div>
@@ -206,8 +217,11 @@ function QuestionAnalysisCard({ answer, index }) {
               <div className="p-4 rounded-xl bg-violet-500/10 border border-violet-500/20">
                 <div className="flex items-start gap-3">
                   <Zap className="w-5 h-5 text-violet-400 shrink-0 mt-0.5" />
-                  <div>
-                    <p className="text-xs text-violet-400 uppercase tracking-wide mb-1 font-medium">Key Takeaway</p>
+                  <div className="flex-1 min-w-0">
+                    <div className="flex items-center justify-between gap-2 mb-1">
+                      <p className="text-xs text-violet-400 uppercase tracking-wide font-medium">Key Takeaway</p>
+                      <CopyButton text={analysis.keyTakeaway} label="" size={13} variant="ghost" className="shrink-0 text-violet-400 hover:text-violet-300" />
+                    </div>
                     <p className="text-foreground text-sm font-medium">{analysis.keyTakeaway}</p>
                   </div>
                 </div>
@@ -251,6 +265,7 @@ function QuestionAnalysisCard({ answer, index }) {
 
 export default function InterviewPrep() {
   const navigate = useNavigate();
+  const location = useLocation();
   const [step, setStep] = useState('setup'); // 'setup', 'av-check', 'interview', 'feedback'
   const [loading, setLoading] = useState(false);
   const [error, setError] = useState('');
@@ -267,15 +282,17 @@ export default function InterviewPrep() {
   const avVideoRef = useRef(null);
 
   const [formData, setFormData] = useState({
-    jobRole: '',
+    jobRole: location.state?.jobRole || '',
     industry: 'software_engineering',
     experienceLevel: 'entry',
     questionCount: 10
   });
 
   // Resume upload state
+  const [savedResumes, setSavedResumes] = useState([]);
+  const [selectedResumeId, setSelectedResumeId] = useState(location.state?.resumeId || 'none');
   const [resumeFile, setResumeFile] = useState(null);
-  const [resumeText, setResumeText] = useState('');
+  const [resumeText, setResumeText] = useState(location.state?.resumeText || '');
   const [resumeLoading, setResumeLoading] = useState(false);
   const [resumeError, setResumeError] = useState('');
   const resumeInputRef = useRef(null);
@@ -291,6 +308,9 @@ export default function InterviewPrep() {
   const [faceVisible, setFaceVisible] = useState(true);
   const [faceConfidence, setFaceConfidence] = useState(50);
   const [answersSubmitted, setAnswersSubmitted] = useState([]);
+  
+  const [useTextInput, setUseTextInput] = useState(false);
+  const [textAnswer, setTextAnswer] = useState('');
 
   const [overallResults, setOverallResults] = useState(null);
   const [progressData, setProgressData] = useState(() => {
@@ -334,6 +354,39 @@ export default function InterviewPrep() {
     window.addEventListener('resize', handleResize);
     return () => window.removeEventListener('resize', handleResize);
   }, []);
+
+  // Check BYOK config and fetch saved resumes
+  useEffect(() => {
+    const checkAuthAndFetch = async () => {
+      // Check BYOK
+      const activeConfig = useAIConfigStore.getState().getActiveConfig();
+      const hasStoreKey = !!activeConfig?.apiKey;
+      const legacyConfigStr = localStorage.getItem('aiConfig');
+      let hasLegacyKey = false;
+      try { hasLegacyKey = legacyConfigStr && JSON.parse(legacyConfigStr).apiKey; } catch(e) {}
+      const hasOpenRouterKey = localStorage.getItem('openRouterApiKey');
+      
+      if (!hasStoreKey && !hasLegacyKey && !hasOpenRouterKey) {
+        navigate('/settings?tab=ai&return_url=/interview-prep');
+        return;
+      }
+
+      // Fetch saved resumes
+      try {
+        const response = await resumeApi.getAll();
+        let fetchedResumes = [];
+        if (Array.isArray(response)) fetchedResumes = response;
+        else if (Array.isArray(response.data)) fetchedResumes = response.data;
+        else if (Array.isArray(response.resumes)) fetchedResumes = response.resumes;
+        else if (response.data && Array.isArray(response.data.resumes)) fetchedResumes = response.data.resumes;
+        
+        setSavedResumes(fetchedResumes);
+      } catch (err) {
+        console.error('Failed to fetch saved resumes:', err);
+      }
+    };
+    checkAuthAndFetch();
+  }, [navigate]);
 
   useEffect(() => {
     if (step === 'interview') initializeMedia();
@@ -555,6 +608,24 @@ export default function InterviewPrep() {
     }
   };
 
+  const handleResumeSelect = (e) => {
+    const id = e.target.value;
+    setSelectedResumeId(id);
+    if (id === 'none') {
+      setResumeText('');
+      setResumeFile(null);
+    } else if (id === 'upload') {
+      setResumeText('');
+      setResumeFile(null);
+    } else {
+      const selected = savedResumes.find(r => (r._id || r.id) === id);
+      if (selected) {
+        setResumeText(selected.enhancedText || selected.originalText || '');
+        setResumeFile({ name: selected.title || selected.jobRole || 'Saved Resume' });
+      }
+    }
+  };
+
   // Handle resume file selection
   const handleResumeUpload = async (e) => {
     const file = e.target.files?.[0];
@@ -575,6 +646,7 @@ export default function InterviewPrep() {
 
   // Remove uploaded resume
   const removeResume = () => {
+    setSelectedResumeId('none');
     setResumeFile(null);
     setResumeText('');
     setResumeError('');
@@ -826,7 +898,7 @@ export default function InterviewPrep() {
     setError('');
 
     try {
-      await interviewApi.submitAnswer(interviewId, {
+      const response = await interviewApi.submitAnswer(interviewId, {
         questionId: questions[currentQuestionIndex].questionId,
         transcript: finalTranscript,
         duration,
@@ -835,11 +907,15 @@ export default function InterviewPrep() {
 
       setAnswersSubmitted([...answersSubmitted, { questionIndex: currentQuestionIndex, transcript: finalTranscript }]);
 
-      if (currentQuestionIndex < questions.length - 1) {
+      if (response.data && response.data.questions) {
+        setQuestions(response.data.questions);
+      }
+
+      if (response.data?.answeredCount >= response.data?.totalQuestions || !response.data?.nextQuestion) {
+        completeInterview();
+      } else {
         setCurrentQuestionIndex(prev => prev + 1);
         setTranscript('');
-      } else {
-        completeInterview();
       }
     } catch (err) {
       setError(err.message || 'Failed to submit answer');
@@ -847,6 +923,44 @@ export default function InterviewPrep() {
       setLoading(false);
     }
   };
+
+  const submitTextAnswer = async () => {
+    const finalTranscript = textAnswer.trim();
+    if (!finalTranscript) {
+      setError('Please type your answer before submitting.');
+      return;
+    }
+
+    setLoading(true);
+    setError('');
+
+    try {
+      const response = await interviewApi.submitAnswer(interviewId, {
+        questionId: questions[currentQuestionIndex].questionId,
+        transcript: finalTranscript,
+        duration: 30, // Default for text answers
+        expressionMetrics: { averageConfidence: 0.8, eyeContactPercentage: 80, headMovementStability: 0.8, overallExpressionScore: 80 }
+      });
+
+      setAnswersSubmitted([...answersSubmitted, { questionIndex: currentQuestionIndex, transcript: finalTranscript }]);
+
+      if (response.data && response.data.questions) {
+        setQuestions(response.data.questions);
+      }
+
+      if (response.data?.answeredCount >= response.data?.totalQuestions || !response.data?.nextQuestion) {
+        completeInterview();
+      } else {
+        setCurrentQuestionIndex(prev => prev + 1);
+        setTextAnswer('');
+      }
+    } catch (err) {
+      setError(err.message || 'Failed to submit answer');
+    } finally {
+      setLoading(false);
+    }
+  };
+
 
  const completeInterview = async () => {
   setLoading(true);
@@ -1169,19 +1283,35 @@ ${updatedProgress.level}`
                 </div>
 
                 {/* Resume Upload Section */}
-                <div className="border-2 border-dashed border-primary/20 rounded-2xl p-6 bg-primary/5 hover:bg-primary/10 transition-colors cursor-pointer relative group">
+                <div className="border-2 border-dashed border-primary/20 rounded-2xl p-6 bg-primary/5 transition-colors relative group">
                   <div className="flex items-center gap-4 mb-4">
                     <div className="w-12 h-12 bg-primary/20 rounded-xl flex items-center justify-center group-hover:scale-110 transition-transform">
                       <FileUp className="w-6 h-6 text-primary" />
                     </div>
                     <div>
-                      <h3 className="text-foreground font-bold text-lg">Upload Resume (Optional)</h3>
-                      <p className="text-sm text-muted-foreground">Get personalized questions based on your experience</p>
+                      <h3 className="text-foreground font-bold text-lg">Resume Context (Optional)</h3>
+                      <p className="text-sm text-muted-foreground">Select or upload a resume to get personalized questions.</p>
                     </div>
                   </div>
 
-                  {!resumeFile ? (
-                    <div className="relative mt-2">
+                  <div className="mb-4">
+                    <select
+                      value={selectedResumeId}
+                      onChange={handleResumeSelect}
+                      className="w-full px-4 py-3 bg-card border border-border rounded-xl text-foreground focus:ring-2 focus:ring-primary shadow-sm"
+                    >
+                      <option value="none">-- No Resume --</option>
+                      {savedResumes.map(r => (
+                        <option key={r._id || r.id} value={r._id || r.id}>
+                          {r.title || r.jobRole || 'Saved Resume'}
+                        </option>
+                      ))}
+                      <option value="upload">+ Upload New PDF</option>
+                    </select>
+                  </div>
+
+                  {selectedResumeId === 'upload' && !resumeFile ? (
+                    <div className="relative mt-2 cursor-pointer hover:bg-primary/10 rounded-xl transition-colors">
                       <input
                         ref={resumeInputRef}
                         type="file"
@@ -1204,7 +1334,7 @@ ${updatedProgress.level}`
                         )}
                       </div>
                     </div>
-                  ) : (
+                  ) : resumeFile ? (
                     <div className="flex items-center justify-between p-3 rounded-lg bg-emerald-500/10 border border-emerald-500/30">
                       <div className="flex items-center gap-3 flex-1">
                         <FileText className="w-5 h-5 text-emerald-400" />
@@ -1224,7 +1354,7 @@ ${updatedProgress.level}`
                         <X className="w-4 h-4 text-muted-foreground" />
                       </button>
                     </div>
-                  )}
+                  ) : null}
 
                   {resumeError && (
                     <p className="text-xs text-red-400 mt-2">{resumeError}</p>
@@ -1268,7 +1398,7 @@ ${updatedProgress.level}`
 
   if (step === 'interview') {
     const currentQuestion = questions[currentQuestionIndex];
-    const progress = ((currentQuestionIndex + 1) / questions.length) * 100;
+    const progress = ((currentQuestionIndex + 1) / formData.questionCount) * 100;
 
     return (
     <>
@@ -1280,7 +1410,7 @@ ${updatedProgress.level}`
         <div className="relative max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-8">
           <motion.div initial={{ opacity: 0 }} animate={{ opacity: 1 }} className="mb-6">
             <div className="flex justify-between items-center mb-2">
-              <span className="text-sm font-medium text-muted-foreground">Question {currentQuestionIndex + 1} of {questions.length}</span>
+              <span className="text-sm font-medium text-muted-foreground">Question {currentQuestionIndex + 1} of {formData.questionCount}</span>
               <span className="text-sm font-medium text-primary">{Math.round(progress)}%</span>
             </div>
             <div className="w-full h-2 bg-muted rounded-full overflow-hidden">
@@ -1391,14 +1521,38 @@ ${updatedProgress.level}`
               {/* Body language coaching tip — rotates each question, dismissible */}
               <BodyLanguageTips currentQuestionIndex={currentQuestionIndex} />
 
-              <div className="flex gap-3">
-                {!isRecording ? (
-                  <Button onClick={startRecording} disabled={loading || isSpeaking} variant="primary" className="flex-1 !py-4 !rounded-xl flex items-center justify-center gap-2">
-                    <Mic className="w-5 h-5" />
-                    {isSpeaking ? 'Wait for question...' : 'Start Recording'}
-                  </Button>
+              <div className="flex gap-3 w-full">
+                {useTextInput ? (
+                  <div className="flex flex-col w-full gap-3">
+                    <textarea
+                      value={textAnswer}
+                      onChange={(e) => setTextAnswer(e.target.value)}
+                      placeholder="Type your answer here..."
+                      className="w-full min-h-[120px] p-4 rounded-xl bg-muted/50 border border-border text-foreground focus:ring-2 focus:ring-primary resize-y"
+                      disabled={loading}
+                    />
+                    <div className="flex gap-3">
+                      <Button onClick={() => setUseTextInput(false)} disabled={loading} variant="outline" className="flex-1 !py-4 !rounded-xl flex items-center justify-center gap-2">
+                        <Mic className="w-4 h-4" /> Use Microphone
+                      </Button>
+                      <Button onClick={submitTextAnswer} disabled={loading || !textAnswer.trim()} variant="primary" className="flex-[2] !py-4 !rounded-xl flex items-center justify-center gap-2">
+                        {loading ? <Loader2 className="w-4 h-4 animate-spin" /> : null}
+                        {loading ? 'Submitting...' : 'Submit Answer'}
+                      </Button>
+                    </div>
+                  </div>
+                ) : !isRecording ? (
+                  <div className="flex w-full gap-3">
+                    <Button onClick={() => setUseTextInput(true)} disabled={loading || isSpeaking} variant="outline" className="flex-1 !py-4 !rounded-xl flex items-center justify-center gap-2">
+                      <FileText className="w-4 h-4" /> Type Answer
+                    </Button>
+                    <Button onClick={startRecording} disabled={loading || isSpeaking} variant="primary" className="flex-[2] !py-4 !rounded-xl flex items-center justify-center gap-2">
+                      <Mic className="w-5 h-5" />
+                      {isSpeaking ? 'Wait for question...' : 'Start Recording'}
+                    </Button>
+                  </div>
                 ) : (
-                  <button onClick={stopRecording} disabled={loading} className="flex-1 py-4 rounded-xl bg-red-500 hover:bg-red-600 text-foreground font-medium flex items-center justify-center gap-2 transition-colors cursor-pointer disabled:opacity-50">
+                  <button onClick={stopRecording} disabled={loading} className="flex-1 w-full py-4 rounded-xl bg-red-500 hover:bg-red-600 text-foreground font-medium flex items-center justify-center gap-2 transition-colors cursor-pointer disabled:opacity-50">
                     <XCircle className="w-5 h-5" />
                     {loading ? 'Submitting...' : 'Stop & Submit'}
                   </button>
@@ -1502,6 +1656,21 @@ if (communicationTips.length === 0) {
               </div>
             </motion.div>
             <h1 className="text-4xl md:text-5xl font-bold text-foreground mb-3">Interview Complete!</h1>
+
+            <div className="p-6 rounded-2xl bg-primary/10 border border-primary/20 mb-6">
+  <h3 className="text-xl font-bold mb-2">
+    Interview Readiness Score
+  </h3>
+
+  <p className="text-5xl font-bold text-primary">
+    {overallResults.overallScore}%
+  </p>
+
+  <p className="text-muted-foreground mt-2">
+    Based on confidence, communication, and answer quality.
+  </p>
+</div>
+
             <p className="text-lg text-muted-foreground">Here's your comprehensive performance analysis</p>
           </motion.div>
           <motion.div
@@ -1823,6 +1992,45 @@ if (communicationTips.length === 0) {
                 </ul>
               </div>
             </motion.div>
+
+            <motion.div
+  initial={{ opacity: 0, y: 20 }}
+  animate={{ opacity: 1, y: 0 }}
+  transition={{ delay: 0.35 }}
+  className="mb-8"
+>
+  <div className="p-6 rounded-3xl bg-amber-500/10 border border-amber-500/20">
+
+    <h2 className="text-2xl font-bold mb-4">
+      Areas To Improve
+    </h2>
+
+    <p className="text-muted-foreground mb-5">
+      Focus on these areas before your next interview.
+    </p>
+
+    <div className="space-y-3">
+      {overallResults.overallFeedback?.areasToImprove?.map((item, index) => (
+        <div
+          key={index}
+          className="p-4 rounded-xl bg-background/50 border border-border"
+        >
+          <div className="flex items-start gap-3">
+
+            <AlertTriangle className="w-5 h-5 text-amber-400 mt-0.5" />
+
+            <span className="text-foreground">
+              {item}
+            </span>
+
+          </div>
+        </div>
+      ))}
+    </div>
+
+  </div>
+</motion.div>
+
             <LearningRecommendations
   areasToImprove={
     overallResults.overallFeedback?.areasToImprove || []

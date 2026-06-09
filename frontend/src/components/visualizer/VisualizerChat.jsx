@@ -54,17 +54,26 @@ const VisualizerChat = () => {
       const token = await auth.currentUser?.getIdToken();
       if (!token) throw new Error('Not authenticated');
 
-      const response = await fetch(`${API_BASE}/project-visualizer/analysis/${sessionId}/chat`, {
+      let endpoint = `${API_BASE}/project-visualizer/analysis/${sessionId}/chat`;
+      let bodyData = { 
+        messages: [...messages, newMessage].slice(-5), 
+        chatMode 
+      };
+
+      // Detect if we're asking about a specific file
+      const fileMatch = newMessage.content.match(/\[Context: I am looking at file '(.*?)'\]/);
+      if (fileMatch) {
+        endpoint = `${API_BASE}/project-visualizer/analysis/${sessionId}/file-chat`;
+        bodyData.filePath = fileMatch[1];
+      }
+
+      const response = await fetch(endpoint, {
         method: 'POST',
         headers: {
           'Content-Type': 'application/json',
           'Authorization': `Bearer ${token}`
         },
-        // We only send the recent context to avoid token bloat
-        body: JSON.stringify({ 
-          messages: [...messages, newMessage].slice(-5), 
-          chatMode 
-        })
+        body: JSON.stringify(bodyData)
       });
 
       if (!response.ok) throw new Error('Network response was not ok');

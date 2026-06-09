@@ -1,7 +1,7 @@
 import React from 'react';
 import { motion } from 'framer-motion';
 import { Quote } from 'lucide-react';
-import { SectionHeading } from './shared';
+import { SectionHeading } from './Shared';
 import data from '../../../../data/dummy_data.json';
 
 export default function Testimonials() {

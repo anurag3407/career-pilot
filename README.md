@@ -1,9 +1,188 @@
 <div align="center">
   <h1>🚀 Career Pilot</h1>
-  <p>An advanced AI-powered Resume Builder application, aimed to help users build their resumes with ease, backed by Modern Web Technologies and Artificial Intelligence.</p>
+  <p>An AI-powered resume builder and career toolkit that helps users create resumes, prepare for interviews, search jobs, and launch developer portfolios.</p>
 </div>
 
-## 👨‍💻 Maintainers
+<div align="center" style="max-width:900px; margin:12px auto;">
+  <p style="margin-bottom:10px; text-align:center; font-size:1.05rem; color:var(--text-color, #e6edf3);">
+    Full-stack web app combining modern frontend and backend tooling
+  </p>
+  <p style="display:flex; gap:12px; justify-content:center; flex-wrap:wrap; margin:8px 0;">
+    <img src="https://img.shields.io/badge/Node.js-20-green?logo=node.js&logoColor=white" alt="Node.js" />
+    <img src="https://img.shields.io/badge/Express-4.18-lightgrey?logo=express&logoColor=black" alt="Express" />
+    <img src="https://img.shields.io/badge/MongoDB-6.0-darkgreen?logo=mongodb&logoColor=white" alt="MongoDB" />
+    <img src="https://img.shields.io/badge/Redis-7.0-d9932e?logo=redis&logoColor=white" alt="Redis" />
+    <img src="https://img.shields.io/badge/Socket.IO-4-cyan?logo=socket.io&logoColor=white" alt="Socket.IO" />
+    <img src="https://img.shields.io/badge/React-19-blue?logo=react&logoColor=white" alt="React" />
+    <img src="https://img.shields.io/badge/Vite-7.3.5-brightgreen?logo=vite&logoColor=white" alt="Vite" />
+    <img src="https://img.shields.io/badge/TailwindCSS-4-skyblue?logo=tailwindcss&logoColor=white" alt="TailwindCSS" />
+  </p>
+</div>
+
+## Overview
+
+Career Pilot is a full-stack application for job seekers and developers, combining AI-powered resume building, interview preparation, job discovery, portfolio publishing, and real-time collaboration.
+
+This repository includes a React + Vite frontend, an Express backend, Firebase authentication, AI integrations, job search APIs, and portfolio deployment workflows.
+
+## Table of Contents
+
+- [Overview](#overview)
+- [Why This Project](#why-this-project)
+- [Key Features](#key-features)
+- [Getting Started](#getting-started)
+- [Environment Setup](#environment-setup)
+- [Project Structure](#project-structure)
+- [Roadmap](#roadmap)
+- [Contributing](#contributing)
+- [Maintainers](#maintainers)
+- [License](#license)
+
+## Why This Project
+
+- Helps users create strong resumes quickly using AI guidance.
+- Supports interview preparation and portfolio building in one unified product.
+- Provides real-time collaboration and notification workflows.
+- Built with modular frontend/backend architecture that is ideal for contributors.
+
+## Key Features
+
+- AI resume creation, improvement, and formatting.
+- PDF export and resume download.
+- Firebase authentication and auth session handling.
+- Job search powered by RapidAPI JSearch.
+- Portfolio templates with deploy-ready publishing flows.
+- Real-time updates and collaboration via Socket.IO.
+- Responsive UI built with TailwindCSS and Framer Motion.
+- Admin and community tools for job seekers and teams.
+
+## Getting Started
+
+### Prerequisites
+
+- Node.js 20+
+- npm 10+ (or Yarn / pnpm)
+- MongoDB
+- Redis
+- Firebase project and service account
+- Optional: Cloudinary account for media storage
+
+### Install dependencies
+
+```bash
+cd career-pilot
+npm install
+cd backend
+npm install
+cd ../frontend
+npm install
+```
+
+### Run locally
+
+```bash
+# Backend
+cd career-pilot/backend
+npm run dev
+
+# Frontend
+cd ../frontend
+npm run dev
+```
+
+### Testing
+
+Add or update tests in `backend/tests`, `frontend/tests`, and root-level test utilities. Run any existing test scripts from the relevant package directories.
+
+## Environment Setup
+
+Use `backend/.env.example`, `frontend/.env.example`, and `docs/environment-setup.md` for complete environment configuration.
+
+### Required variables (summary)
+
+#### Backend
+- `PORT` - API server port
+- `MONGODB_URI` - MongoDB connection string
+- `REDIS_URL` - Redis connection string
+- `OPENAI_API_KEY` - OpenAI API key
+- `RAPIDAPI_KEY` - RapidAPI key for job search
+- `FIREBASE_PROJECT_ID` - Firebase project ID
+- `FIREBASE_SERVICE_ACCOUNT_PATH` - Service account JSON path
+- `FRONTEND_URL` - Frontend origin for CORS
+
+#### Frontend
+- `VITE_API_URL` - Backend base URL
+- `VITE_FIREBASE_API_KEY` - Firebase client API key
+- `VITE_FIREBASE_PROJECT_ID` - Firebase project ID
+- `VITE_FIREBASE_AUTH_DOMAIN` - Firebase auth domain
+- `VITE_FIREBASE_STORAGE_BUCKET` - Firebase storage bucket
+
+> For the complete environment variable list, see `backend/.env.example`, `frontend/.env.example`, and `docs/environment-setup.md`.
+
+## Project Structure
+
+```text
+career-pilot/
+├── backend/               # Express API, AI integrations, auth, jobs, scheduler, portfolio deployment
+├── frontend/              # React + Vite app, resume builder, dashboard, portfolio templates
+├── docs/                  # Setup guides and environment documentation
+├── CONTRIBUTION.md        # Contribution guidelines
+├── CODE_OF_CONDUCT.md    # Community behavior policy
+├── LICENSE               # Project license
+└── README.md             # Project overview and onboarding
+```
+
+## Roadmap
+
+- Improve resume generation prompts and AI content quality.
+- Expand interview prep flows with more question categories.
+- Add more portfolio templates and publishing options.
+- Strengthen end-to-end test coverage.
+- Improve documentation for contributors and deploy workflows.
+
+### Good first issues
+
+- Documentation improvements for setup or environment variables.
+- Fixing UI/UX issues on the dashboard or resume builder.
+- Backend bug fixes around authentication and job search.
+- Code quality and linting improvements.
+
+If you are part of GSSoC or a first-time contributor, add a comment to an issue or open a discussion to request mentorship.
+
+## Contributing
+
+We welcome contributions from developers of all levels.
+
+### Contribution flow
+
+1. Fork the repository.
+2. Create a feature branch: `git checkout -b feature/your-feature`.
+3. Make your changes and commit with a descriptive message.
+4. Push the branch and open a PR against `main`.
+
+### Recommended branch names
+
+- `feature/<short-description>`
+- `fix/<short-description>`
+- `docs/<short-description>`
+
+### PR checklist
+
+- [ ] The change is described clearly in the PR title and description.
+- [ ] Code passes linting and local tests.
+- [ ] Environment setup steps are documented if needed.
+- [ ] Any breaking changes are noted.
+
+### GSoC / community contributors
+
+- Start with issues labeled as good first issue or help wanted.
+- Check `CONTRIBUTION.md` and `CODE_OF_CONDUCT.md` before contributing.
+- Ask questions by opening an issue or commenting on an existing one.
+- If you want a feature idea, ask for a mentor review on a draft PR.
+
+See [CONTRIBUTION.md](CONTRIBUTION.md) for full contribution details.
+
+## Maintainers
 
 <div align="center">
   <table>
@@ -24,91 +203,6 @@
   </table>
 </div>
 
-## 💻 Tech Stack
+## License
 
-- **Frontend:** React 19, Vite
-- **Styling & Animations:** TailwindCSS 4, Framer Motion
-- **Authentication & Backend:** Firebase
-- **Core Libraries:** jsPDF, html2canvas, socket.io-client, react-hook-form, @hello-pangea/dnd
-
-## ✨ Features
-
-- **Modern Tech Stack:** Built with React 19 and Vite for blazing fast development and optimized production builds.
-- **Stunning UI/UX:** Styled using TailwindCSS 4, offering responsive and aesthetically pleasing design.
-- **Accessibility:** Built-in support for Light, Dark, and High Contrast theme modes.
-- **Authentication:** Secure Firebase Authentication integration.
-- **Smooth Animations:** Powered by Framer Motion to provide delightful micro-interactions.
-- **PDF Generation:** Export resumes reliably to PDF with `jsPDF` and `html2canvas`.
-- **Drag & Drop:** Intuitive drag and drop interfaces using `@hello-pangea/dnd` and `react-dropzone`.
-- **Real-time Collaboration:** Powered by `socket.io-client` for seamless live updates.
-- **Markdown Support:** Enhanced text editing and formatting via `react-markdown`.
-- **Form Management:** Robust form handling with `react-hook-form` and validation capabilities.
-
-## 🛠️ Quick Start
-
-Follow these steps to set up the project locally.
-
-### Prerequisites
-- Node.js (v18+ recommended)
-- npm
-
-### Installation
-
-```bash
-# Clone the repository
-git clone https://github.com/anurag3407/career-pilot.git
-
-# Navigate to the project directory
-cd career-pilot
-
-# Install frontend dependencies
-npm install
-```
-
-### Environment Setup
-
-Copy the example environment file and add your configuration details.
-
-```bash
-cp .env.example .env
-```
-
-Ensure you configure the `.env` file with your **Backend API** and **Firebase** credentials as per `.env.example`.
-
-### Running the App
-
-```bash
-# Start development server
-npm run dev
-
-# Build for production
-npm run build
-
-# Preview production build locally
-npm run preview
-```
-
-## 🌟 Contributing
-
-We welcome and appreciate contributions from the community! Whether it's reporting bugs, improving documentation, or proposing new features, your help is valuable.
-
-To make a contribution:
-1. **Fork** the repository.
-2. **Create a new branch** (`git checkout -b feature/your-feature-name`).
-3. **Commit your changes** (`git commit -m 'Add some feature'`).
-4. **Push to the branch** (`git push origin feature/your-feature-name`).
-5. **Open a Pull Request** against the `main` branch.
-
-Please make sure to read our [Contribution Guidelines](CONTRIBUTION.md) and [Code of Conduct](CODE_OF_CONDUCT.md) before getting started.
-
-## 🤝 Contributors
-
-Thank you to everyone who has contributed to making **Career Pilot** better! 
-
-<a href="https://github.com/anurag3407/career-pilot/graphs/contributors">
-  <img src="https://contrib.rocks/image?repo=anurag3407/career-pilot" alt="Contributors" />
-</a>
-
-## 📄 License
-
-This project is open-source. Please check the `LICENSE` file for more details.
+This project is open-source and licensed under the terms in the `LICENSE` file.

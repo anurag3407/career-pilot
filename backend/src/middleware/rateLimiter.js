@@ -72,5 +72,5 @@ export const aiRateLimiter = rateLimit({
       resetAt
     });
   },
-  skip: (req) => !req.user
+  skip: (req) => !req.user || req.aiProviderSource === 'user_header' || req.aiProviderSource === 'user_openrouter_pkce'
 });
