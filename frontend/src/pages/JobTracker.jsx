@@ -505,17 +505,73 @@ const JobTracker = () => {
 
           {/* Kanban Board */}
           {trackedJobs.length === 0 ? (
-            <Card className="p-12 text-center bg-background/50 border-border">
-              <div className="max-w-md mx-auto">
-                <Briefcase className="w-16 h-16 text-muted-foreground/80 mx-auto mb-4" />
-                <h3 className="text-xl font-semibold text-foreground mb-2">
+            <Card className="p-12 text-center bg-background/30 backdrop-blur-md border border-border/60 rounded-3xl relative overflow-hidden group">
+              {/* Background gradient decorative glow spots */}
+              <div className="absolute -top-12 -left-12 w-40 h-40 bg-primary/5 rounded-full blur-3xl pointer-events-none group-hover:bg-primary/10 transition-all duration-700" />
+              <div className="absolute -bottom-12 -right-12 w-40 h-40 bg-secondary/5 rounded-full blur-3xl pointer-events-none group-hover:bg-secondary/10 transition-all duration-700" />
+              
+              <div className="max-w-md mx-auto relative z-10">
+                {/* Modern Vector Empty State Illustration */}
+                <svg
+                  className="w-48 h-48 mx-auto mb-6 drop-shadow-[0_0_15px_rgba(99,102,241,0.15)] group-hover:scale-105 transition-transform duration-500 ease-out"
+                  viewBox="0 0 200 200"
+                  fill="none"
+                  xmlns="http://www.w3.org/2000/svg"
+                >
+                  <defs>
+                    <linearGradient id="glowGrad" x1="0%" y1="0%" x2="100%" y2="100%">
+                      <stop offset="0%" stopColor="#6366f1" stopOpacity="0.4" />
+                      <stop offset="100%" stopColor="#a855f7" stopOpacity="0" />
+                    </linearGradient>
+                    <linearGradient id="cardGrad" x1="0%" y1="0%" x2="100%" y2="100%">
+                      <stop offset="0%" stopColor="#818cf8" stopOpacity="0.15" />
+                      <stop offset="100%" stopColor="#c084fc" stopOpacity="0.03" />
+                    </linearGradient>
+                    <linearGradient id="lineGrad" x1="0%" y1="0%" x2="100%" y2="0%">
+                      <stop offset="0%" stopColor="#4f46e5" stopOpacity="0.4" />
+                      <stop offset="100%" stopColor="#06b6d4" stopOpacity="0.4" />
+                    </linearGradient>
+                  </defs>
+
+                  <circle cx="100" cy="100" r="70" fill="url(#glowGrad)" />
+
+                  <path d="M50 100 H150 M100 50 V150" stroke="#6366f1" strokeOpacity="0.1" strokeDasharray="3 3" />
+                  <circle cx="100" cy="100" r="50" stroke="#a855f7" strokeOpacity="0.08" strokeDasharray="5 5" />
+
+                  <rect x="45" y="70" width="45" height="55" rx="8" fill="url(#cardGrad)" stroke="#6366f1" strokeOpacity="0.3" strokeWidth="1" />
+                  <rect x="53" y="80" width="20" height="4" rx="2" fill="#818cf8" fillOpacity="0.6" />
+                  <rect x="53" y="90" width="28" height="3" rx="1.5" fill="#94a3b8" fillOpacity="0.3" />
+                  <rect x="53" y="98" width="18" height="3" rx="1.5" fill="#94a3b8" fillOpacity="0.3" />
+
+                  <rect x="110" y="85" width="45" height="55" rx="8" fill="url(#cardGrad)" stroke="#c084fc" strokeOpacity="0.3" strokeWidth="1" />
+                  <rect x="118" y="95" width="24" height="4" rx="2" fill="#c084fc" fillOpacity="0.6" />
+                  <rect x="118" y="105" width="28" height="3" rx="1.5" fill="#94a3b8" fillOpacity="0.3" />
+                  <rect x="118" y="113" width="16" height="3" rx="1.5" fill="#94a3b8" fillOpacity="0.3" />
+
+                  <g transform="translate(10, -5)">
+                    <line x1="120" y1="120" x2="145" y2="145" stroke="url(#lineGrad)" strokeWidth="4.5" strokeLinecap="round" />
+                    <line x1="120" y1="120" x2="145" y2="145" stroke="#06b6d4" strokeWidth="2" strokeLinecap="round" strokeOpacity="0.8" />
+                    
+                    <circle cx="105" cy="105" r="22" fill="#0f172a" fillOpacity="0.4" stroke="url(#lineGrad)" strokeWidth="3" />
+                    <circle cx="105" cy="105" r="22" stroke="#06b6d4" strokeWidth="1" strokeOpacity="0.8" />
+                    
+                    <path d="M93 93 A 16 16 0 0 1 117 93" stroke="#ffffff" strokeWidth="1.5" strokeLinecap="round" strokeOpacity="0.6" />
+                  </g>
+
+                  <path d="M40 50 L42 55 L47 57 L42 59 L40 64 L38 59 L33 57 L38 55 Z" fill="#6366f1" fillOpacity="0.7" />
+                  <path d="M160 65 L161 68 L164 69 L161 70 L160 73 L159 70 L156 69 L159 68 Z" fill="#06b6d4" fillOpacity="0.8" />
+                  <path d="M145 160 L146 162 L148 163 L146 164 L145 166 L144 164 L142 163 L144 162 Z" fill="#a855f7" fillOpacity="0.6" />
+                </svg>
+
+                <h3 className="text-2xl font-bold text-foreground mb-2 tracking-tight group-hover:text-primary transition-colors duration-300">
                   No Tracked Jobs Yet
                 </h3>
-                <p className="text-muted-foreground mb-6">
-                  Start tracking jobs from the job search page
+                <p className="text-muted-foreground mb-6 text-sm max-w-xs mx-auto">
+                  Your job tracking board is empty. Discover and track opportunities to kickstart your journey!
                 </p>
                 <Button
                   onClick={() => (window.location.href = "/jobs")}
+                  variant="gradient"
                   className="mx-auto"
                 >
                   <Plus className="w-5 h-5 mr-2" />
