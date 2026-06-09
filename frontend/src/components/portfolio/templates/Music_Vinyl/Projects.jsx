@@ -74,7 +74,14 @@ const GENRE_COLORS = {
   'AI/ML':      { text: '#f87171', bg: 'rgba(153,27,27,0.3)', border: 'rgba(153,27,27,0.6)' },
 };
 
-// ── Mini vinyl record ────────────────────────────────────────────────────────────
+/**
+ * Renders a mini vinyl record SVG with concentric groove rings,
+ * a coloured center label, and an optional CSS spin animation.
+ *
+ * @param {string}  labelBg   - Background colour (hex/rgb) for the center label.
+ * @param {boolean} isPlaying - When true, the record spins via CSS animation.
+ * @returns {JSX.Element} A circular vinyl record div.
+ */
 function MiniVinyl({ labelBg, isPlaying }) {
   return (
     <div
@@ -86,6 +93,7 @@ function MiniVinyl({ labelBg, isPlaying }) {
         animation: isPlaying ? 'vinyl-spin 3s linear infinite' : 'none',
       }}
     >
+      <style>{`@keyframes vinyl-spin { to { transform: rotate(360deg); } }`}</style>
       {/* grooves */}
       <div style={{ position:'absolute', inset:'6%', borderRadius:'50%', border:'1px solid rgba(255,255,255,0.06)' }} />
       <div style={{ position:'absolute', inset:'16%', borderRadius:'50%', border:'1px solid rgba(255,255,255,0.04)' }} />
@@ -108,14 +116,32 @@ function MiniVinyl({ labelBg, isPlaying }) {
   );
 }
 
-// ── Single project card ──────────────────────────────────────────────────────────
+/**
+ * Displays a single project as a vinyl track card.
+ *
+ * Shows a spinning {@link MiniVinyl}, track number, genre badge, project title,
+ * description, tech-stack tags, duration, and action buttons (GitHub + Live).
+ * Hover state lifts the card with an amber glow shadow.
+ *
+ * @param {Object}   project              - Project data object.
+ * @param {number}   project.id           - Unique project identifier.
+ * @param {string}   project.trackNumber  - Vinyl side label, e.g. "A1".
+ * @param {string}   project.title        - Project display name.
+ * @param {string}   project.subtitle     - Short one-line descriptor.
+ * @param {string}   project.genre        - Genre/category string used for colour lookup.
+ * @param {string}   project.description  - Full project description paragraph.
+ * @param {string[]} project.tags         - Technology/library tags.
+ * @param {number}   project.stars        - GitHub star count to display.
+ * @param {string}   project.duration     - Time taken, e.g. "6 weeks".
+ * @param {string}   project.liveUrl      - Live demo URL ('#' disables the button).
+ * @param {string}   project.repoUrl      - GitHub repo URL ('#' disables the button).
+ * @param {string}   project.labelBg      - CSS colour for the vinyl center label.
+ * @returns {JSX.Element} A styled project card.
+ */
 function TrackCard({ project }) {
   const [playing, setPlaying] = useState(false);
   const [hovered, setHovered] = useState(false);
   const gc = GENRE_COLORS[project.genre] || GENRE_COLORS['Full-Stack'];
-
-  const hasRepo = project.repoUrl && project.repoUrl !== '#';
-  const hasLive = project.liveUrl && project.liveUrl !== '#';
 
   return (
     <div
@@ -213,82 +239,39 @@ function TrackCard({ project }) {
           <span style={{ fontSize:'11px', fontFamily:'monospace' }}>{project.duration}</span>
         </div>
         <div style={{ display:'flex', alignItems:'center', gap:'6px' }}>
-
-          {/* GitHub — semantic <a> when URL exists, disabled <button> otherwise */}
-          {hasRepo ? (
-            <a
-              href={project.repoUrl}
-              target="_blank"
-              rel="noopener noreferrer"
-              aria-label="View repository on GitHub"
-              style={{
-                width:'26px', height:'26px', borderRadius:'50%',
-                background:'rgba(28,20,14,0.9)', border:'1px solid rgba(120,53,15,0.45)',
-                display:'flex', alignItems:'center', justifyContent:'center',
-                textDecoration:'none',
-              }}
-            >
-              <Github style={{ width:'12px', height:'12px', color:'#fbbf24' }} />
-            </a>
-          ) : (
-            <button
-              type="button"
-              disabled
-              aria-disabled="true"
-              aria-label="Repository not available"
-              style={{
-                width:'26px', height:'26px', borderRadius:'50%',
-                background:'rgba(28,20,14,0.9)', border:'1px solid rgba(120,53,15,0.45)',
-                display:'flex', alignItems:'center', justifyContent:'center',
-                cursor:'not-allowed', opacity:0.45,
-              }}
-            >
-              <Github style={{ width:'12px', height:'12px', color:'#fbbf24' }} />
-            </button>
-          )}
-
-          {/* Listen Live — semantic <a> when URL exists, disabled <button> otherwise */}
-          {hasLive ? (
-            <a
-              href={project.liveUrl}
-              target="_blank"
-              rel="noopener noreferrer"
-              style={{
-                display:'flex', alignItems:'center', gap:'5px',
-                padding:'5px 12px', background:'#d97706', borderRadius:'999px',
-                textDecoration:'none',
-              }}
-            >
-              <span style={{ fontSize:'10px', fontWeight:700, color:'#0a0502', fontFamily:'sans-serif', textTransform:'uppercase', letterSpacing:'0.06em' }}>
-                Listen Live
-              </span>
-              <ExternalLink style={{ width:'9px', height:'9px', color:'#0a0502' }} />
-            </a>
-          ) : (
-            <button
-              type="button"
-              disabled
-              aria-disabled="true"
-              style={{
-                display:'flex', alignItems:'center', gap:'5px',
-                padding:'5px 12px', background:'rgba(120,53,15,0.35)', borderRadius:'999px',
-                border:'none', cursor:'not-allowed', opacity:0.5,
-              }}
-            >
-              <span style={{ fontSize:'10px', fontWeight:700, color:'#fbbf24', fontFamily:'sans-serif', textTransform:'uppercase', letterSpacing:'0.06em' }}>
-                Listen Live
-              </span>
-              <ExternalLink style={{ width:'9px', height:'9px', color:'#fbbf24' }} />
-            </button>
-          )}
-
+          {/* GitHub */}
+          <div style={{
+            width:'26px', height:'26px', borderRadius:'50%',
+            background:'rgba(28,20,14,0.9)', border:'1px solid rgba(120,53,15,0.45)',
+            display:'flex', alignItems:'center', justifyContent:'center',
+          }}>
+            <Github style={{ width:'12px', height:'12px', color:'#fbbf24' }} />
+          </div>
+          {/* Live btn */}
+          <div style={{
+            display:'flex', alignItems:'center', gap:'5px',
+            padding:'5px 12px', background:'#d97706', borderRadius:'999px', cursor:'pointer',
+          }}>
+            <span style={{ fontSize:'10px', fontWeight:700, color:'#0a0502', fontFamily:'sans-serif', textTransform:'uppercase', letterSpacing:'0.06em' }}>
+              Listen Live
+            </span>
+            <ExternalLink style={{ width:'9px', height:'9px', color:'#0a0502' }} />
+          </div>
         </div>
       </div>
     </div>
   );
 }
 
-// ── Desktop sidebar ──────────────────────────────────────────────────────────────
+/**
+ * Desktop-only sidebar that renders all projects as a clickable track listing,
+ * styled after vinyl record liner notes. Visible only on `lg` screens and above.
+ *
+ * @param {Object[]}  projects         - Full list of project objects to display.
+ * @param {number}    activeId         - ID of the currently selected project.
+ * @param {Function}  onSelect         - Callback invoked with the selected project ID.
+ * @returns {JSX.Element} A vertical nav list of track entries.
+ */
 function TracklistSidebar({ projects, activeId, onSelect }) {
   return (
     <div className="hidden lg:flex flex-col gap-1 shrink-0" style={{ width:'220px' }}>
@@ -328,26 +311,27 @@ function TracklistSidebar({ projects, activeId, onSelect }) {
   );
 }
 
-// ── Main section ─────────────────────────────────────────────────────────────────
-
-const GITHUB_CATALOG_URL = 'https://github.com';
-
+/**
+ * Projects section for the Music Vinyl portfolio theme.
+ *
+ * Renders a full-viewport dark section with:
+ * - A spinning hero vinyl and gradient heading.
+ * - Genre filter pills (All / Full-Stack / Backend / Frontend / AI/ML).
+ * - A responsive project card grid (1 col → 2 col on md+).
+ * - A desktop track-listing sidebar (lg+).
+ * - A footer CTA linking to the full GitHub catalog.
+ *
+ * All background colours are applied via inline styles to ensure correct
+ * rendering regardless of Tailwind's JIT purge configuration.
+ *
+ * @returns {JSX.Element} The full Projects section element.
+ */
 export default function Projects() {
   const [activeId, setActiveId] = useState(PROJECTS[0].id);
   const [filter, setFilter]     = useState('All');
 
   const genres   = ['All', ...Array.from(new Set(PROJECTS.map(p => p.genre)))];
   const filtered = filter === 'All' ? PROJECTS : PROJECTS.filter(p => p.genre === filter);
-
-  const handleFilterChange = (g) => {
-    setFilter(g);
-    const newFiltered = g === 'All' ? PROJECTS : PROJECTS.filter(p => p.genre === g);
-    if (!newFiltered.find(p => p.id === activeId)) {
-      setActiveId(newFiltered[0]?.id ?? PROJECTS[0].id);
-    }
-  };
-
-  const hasCatalogUrl = GITHUB_CATALOG_URL && GITHUB_CATALOG_URL !== '#';
 
   return (
     <section
@@ -431,7 +415,7 @@ export default function Projects() {
           {genres.map(g => (
             <button
               key={g}
-              onClick={() => handleFilterChange(g)}
+              onClick={() => setFilter(g)}
               style={{
                 padding:'5px 16px', borderRadius:'999px', cursor:'pointer',
                 fontFamily:'monospace', fontSize:'11px', fontWeight:700,
@@ -449,7 +433,7 @@ export default function Projects() {
 
         {/* ── LAYOUT: sidebar + grid ── */}
         <div style={{ display:'flex', gap:'32px' }}>
-          <TracklistSidebar projects={filtered} activeId={activeId} onSelect={setActiveId} />
+          <TracklistSidebar projects={PROJECTS} activeId={activeId} onSelect={setActiveId} />
 
           {/* grid */}
           <div style={{ flex:1, minWidth:0 }}>
@@ -487,48 +471,22 @@ export default function Projects() {
             <Layers style={{ width:'16px', height:'16px' }} />
             <span style={{ fontFamily:'sans-serif', fontSize:'13px' }}>{PROJECTS.length} tracks pressed &amp; mastered</span>
           </div>
-
-          {/* Footer CTA — semantic <a> when URL exists, disabled <button> otherwise */}
-          {hasCatalogUrl ? (
-            <a
-              href={GITHUB_CATALOG_URL}
-              target="_blank"
-              rel="noopener noreferrer"
-              style={{
-                display:'flex', alignItems:'center', gap:'8px',
-                padding:'10px 20px',
-                border:'1px solid rgba(217,119,6,0.5)', borderRadius:'999px',
-                color:'#fbbf24', textDecoration:'none',
-                fontFamily:'sans-serif', fontSize:'12px', fontWeight:700,
-                textTransform:'uppercase', letterSpacing:'0.08em',
-                transition:'all 0.15s',
-              }}
-            >
-              <Github style={{ width:'14px', height:'14px' }} />
-              <span>Full Catalog on GitHub</span>
-              <ExternalLink style={{ width:'12px', height:'12px', opacity:0.7 }} />
-            </a>
-          ) : (
-            <button
-              type="button"
-              disabled
-              aria-disabled="true"
-              style={{
-                display:'flex', alignItems:'center', gap:'8px',
-                padding:'10px 20px',
-                border:'1px solid rgba(120,53,15,0.3)', borderRadius:'999px',
-                color:'rgba(253,186,74,0.4)', background:'transparent',
-                fontFamily:'sans-serif', fontSize:'12px', fontWeight:700,
-                textTransform:'uppercase', letterSpacing:'0.08em',
-                cursor:'not-allowed', opacity:0.5,
-              }}
-            >
-              <Github style={{ width:'14px', height:'14px' }} />
-              <span>Full Catalog on GitHub</span>
-              <ExternalLink style={{ width:'12px', height:'12px', opacity:0.7 }} />
-            </button>
-          )}
-
+          <a
+            href="#"
+            style={{
+              display:'flex', alignItems:'center', gap:'8px',
+              padding:'10px 20px',
+              border:'1px solid rgba(217,119,6,0.5)', borderRadius:'999px',
+              color:'#fbbf24', textDecoration:'none',
+              fontFamily:'sans-serif', fontSize:'12px', fontWeight:700,
+              textTransform:'uppercase', letterSpacing:'0.08em',
+              transition:'all 0.15s',
+            }}
+          >
+            <Github style={{ width:'14px', height:'14px' }} />
+            <span>Full Catalog on GitHub</span>
+            <ExternalLink style={{ width:'12px', height:'12px', opacity:0.7 }} />
+          </a>
         </div>
 
       </div>
