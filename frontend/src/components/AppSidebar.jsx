@@ -43,6 +43,11 @@ const navLinks = [
         icon: <LayoutDashboard className="w-5 h-5 shrink-0" />,
     },
     {
+        label: "ATS Dashboard",
+        href: "/ats-dashboard",
+        icon: <LineChart className="w-5 h-5 shrink-0" />,
+    },
+    {
         label: "Resume Builder",
         href: "/hub/resume",
         icon: <FileText className="w-5 h-5 shrink-0" />,

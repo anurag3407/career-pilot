@@ -1752,13 +1752,26 @@ export const templates = [
     "isComplete": true
   },
   {
+    "id": "Pokemon_Pokedex_Classic",
+    "title": "Pokemon Pokedex Classic",
+    "category": "Portfolio",
+    "colorScheme": "Dark",
+    "layout": "Interactive",
+    "author": "System",
+    "views": 1135,
+    "rating": 4.7,
+    "image": "/template-previews/Pokemon_Pokedex_Classic.png",
+    "createdAt": "2026-06-08",
+    "isComplete": true
+  },
+  {
     "id": "Polaroid_Memories",
     "title": "Polaroid Memories",
     "category": "Portfolio",
     "colorScheme": "Dark",
     "layout": "Grid",
     "author": "System",
-    "views": 1135,
+    "views": 1136,
     "rating": 4.5,
     "image": "/template-previews/Polaroid_Memories.png",
     "createdAt": "2026-05-01"
@@ -1770,7 +1783,7 @@ export const templates = [
     "colorScheme": "Dark",
     "layout": "Grid",
     "author": "System",
-    "views": 1136,
+    "views": 1137,
     "rating": 4.5,
     "image": "/template-previews/Prismatic_Light.png",
     "createdAt": "2026-05-01"
@@ -2555,6 +2568,31 @@ export const templates = [
     "image": "/template-previews/Zoom_Into_Work.png",
     "createdAt": "2026-05-01"
   },
+
+
+  {
+  id: 'error_404_infinite_gallery',
+  name: 'Error 404 Infinite Gallery',
+  path: 'Error_404_Infinite_Gallery',
+  thumbnail: '/templates/error_404_infinite_gallery.png', 
+  category: 'Special / Error Pages',
+  description: 'An interactive 404 error page wrapped in an infinite smoothly-looping background project showcase.'
+  },
+
+  {
+  "id": "Pokemon_Pokedex_Classic",
+  "title": "Pokemon Pokedex Classic",
+  "category": "Portfolio",
+  "colorScheme": "Dark",
+  "layout": "Interactive",
+  "author": "System",
+  "views": 1135,
+  "rating": 4.7,
+  "image": "/template-previews/Pokemon_Pokedex_Classic.png",
+  "createdAt": "2026-06-08",
+  "isComplete": true
+}
+
   {
     "id": "Underground_Bunker_Console",
     "title": "Underground Bunker Console",
