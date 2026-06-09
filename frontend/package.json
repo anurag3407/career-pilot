@@ -15,7 +15,7 @@
     "@radix-ui/react-label": "^2.1.8",
     "@radix-ui/react-slot": "^1.2.4",
     "@tabler/icons-react": "^3.36.1",
-    "@tailwindcss/vite": "^4.1.18",
+    "@tailwindcss/postcss": "^4.3.0",
     "@xyflow/react": "^12.10.2",
     "canvas-confetti": "^1.9.4",
     "chart.js": "^4.5.1",

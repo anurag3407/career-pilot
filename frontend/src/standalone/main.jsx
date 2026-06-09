@@ -1,6 +1,7 @@
 import React, { lazy, Suspense } from 'react';
 import { createRoot } from 'react-dom/client';
 import '../index.css';
+import { PortfolioContext } from '../context/PortfolioContext';
 
 /**
  * Standalone Portfolio Renderer
@@ -21,6 +22,7 @@ const templateMap = {
   Liquid_Glass: lazy(() => import('../components/portfolio/templates/Liquid_Glass/index.jsx')),
   Midnight_Gradient: lazy(() => import('../components/portfolio/templates/Midnight_Gradient/index.jsx')),
   Playing_Cards: lazy(() => import('../components/portfolio/templates/Playing_Cards/index.jsx')),
+  Wireframe_Skeleton_Loading_Only: lazy(() => import('../components/portfolio/templates/Wireframe_Skeleton_Loading_Only/index.jsx')),
 };
 
 function mapContactToSocials(portfolioData) {
@@ -127,7 +129,9 @@ function App() {
 
   return (
     <Suspense fallback={<LoadingScreen />}>
-      <TemplateComponent portfolioData={portfolioData} />
+      <PortfolioContext.Provider value={portfolioData}>
+        <TemplateComponent portfolioData={portfolioData} />
+      </PortfolioContext.Provider>
     </Suspense>
   );
 }

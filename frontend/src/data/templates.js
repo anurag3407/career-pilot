@@ -2594,6 +2594,17 @@ export const templates = [
 },
 
   {
+    "id": "Wireframe_Skeleton_Loading_Only",
+    "title": "Wireframe Skeleton Loading Only",
+    "category": "Portfolio",
+    "colorScheme": "Dark",
+    "layout": "Grid",
+    "author": "Antigravity",
+    "views": 3275,
+    "rating": 5.0,
+    "image": "/template-previews/Wireframe_Skeleton_Loading_Only.png",
+    "createdAt": "2026-06-07",
+    "isComplete": true
     "id": "Underground_Bunker_Console",
     "title": "Underground Bunker Console",
     "category": "Portfolio",
