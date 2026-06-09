@@ -33,7 +33,8 @@ export default function Select({
   multiSelect = false,
   disabled = false,
   className = '',
-  name
+  name,
+  id
 }) {
   const normalizedOptions = useMemo(() => options.map(normalizeOption), [options])
   const isMulti = multiple || multiSelect || Array.isArray(value)
@@ -194,6 +195,7 @@ export default function Select({
       <button
         type="button"
         name={name}
+        id={id}
         disabled={disabled}
         onClick={() => setIsOpen(open => !open)}
         aria-haspopup="listbox"

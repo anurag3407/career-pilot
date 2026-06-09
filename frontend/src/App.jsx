@@ -25,6 +25,7 @@ import Home from './pages/Home';
 const Dashboard = lazy(() => import('./pages/Dashboard'));
 const Analytics = lazy(() => import('./pages/Analytics'));
 const JobSearch = lazy(() => import('./pages/JobSearch'));
+const OfferComparison = lazy(() => import('./pages/OfferComparison'));
 const ResumeBuilder = lazy(() => import('./pages/ResumeBuilder'));
 import TextToResume from './pages/TextToResume';
 import About from './components/portfolio/templates/Tech_Startup/About';
@@ -323,6 +324,16 @@ function AppRoutes() {
     </ProtectedRoute>
   } 
 />
+        <Route
+          path="/job-offer-comparison"
+          element={
+            <ProtectedRoute>
+              <Suspense fallback={<LoadingScreen label="Loading Offer Comparison..." />}>
+                <OfferComparison />
+              </Suspense>
+            </ProtectedRoute>
+          }
+        />
         <Route path="/job-alerts" element={<ProtectedRoute><Suspense fallback={<LoadingScreen label="Loading Job Alerts..." />}><JobAlerts /></Suspense></ProtectedRoute>} />
         <Route path="/job-tracker" element={<ProtectedRoute><Suspense fallback={<LoadingScreen label="Loading Job Tracker..." />}><JobTracker /></Suspense></ProtectedRoute>} />
         <Route 
