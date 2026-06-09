@@ -2542,8 +2542,9 @@ export const templates = [
     "author": "System",
     "views": 1195,
     "rating": 4.5,
-    "image": "/template-previews/Whitespace_Luxury.png",
-    "createdAt": "2026-05-01"
+    "image": "/template-previews/Whitespace-Luxury.png",
+    "createdAt": "2026-05-01",
+    "isComplete": true
   },
   {
     "id": "Wildflower_Field",
