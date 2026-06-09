@@ -1,14 +1,124 @@
+# [1.198.0](https://github.com/anurag3407/career-pilot/compare/v1.197.1...v1.198.0) (2026-06-08)
+
+
+### Features
+
+* add skeleton loaders for JobTracker and ResumeView ([1e23514](https://github.com/anurag3407/career-pilot/commit/1e2351486fca0ea7dcac310c54c2761b78ea452e))
+
+## [1.197.1](https://github.com/anurag3407/career-pilot/compare/v1.197.0...v1.197.1) (2026-06-08)
+
+
+### Bug Fixes
+
+* enable upgrade insecure requests only in production ([51728ff](https://github.com/anurag3407/career-pilot/commit/51728fff2c187d2fe54397c8998041e0f9c2af01))
+* resolve CSP middleware merge conflict ([e85ed6d](https://github.com/anurag3407/career-pilot/commit/e85ed6df17fc2ac272ee73c5229fc42d13b26515))
+
+# [1.197.0](https://github.com/anurag3407/career-pilot/compare/v1.196.0...v1.197.0) (2026-06-08)
+
+
+### Features
+
+* implement smart prefetching for job listings ([8e24e8b](https://github.com/anurag3407/career-pilot/commit/8e24e8bd6fd8b21b1b7b4f36b18d7e9c8f981888))
+
+# [1.196.0](https://github.com/anurag3407/career-pilot/compare/v1.195.0...v1.196.0) (2026-06-08)
+
+
+### Features
+
+* add classic pokedex template and cleanup unneeded files ([4d99d31](https://github.com/anurag3407/career-pilot/commit/4d99d316a67d174792c803cb9d47e69eba9e7bf9))
+
+# [1.1.0](https://github.com/krishsoni-hub/career-pilot-krishhub/compare/v1.0.0...v1.1.0) (2026-06-08)
+
+
+### Bug Fixes
+
+* add loading/error feedback to contact form ([cc559ba](https://github.com/krishsoni-hub/career-pilot-krishhub/commit/cc559ba2c8fa0fdf5f963964612a9316e98e5cce))
+* added missing imports in TemplateGallery and Desert Dunes template ([ba4d7e6](https://github.com/krishsoni-hub/career-pilot-krishhub/commit/ba4d7e65d2c0c2def915f3bfe2c636b26084a226))
+* **ai-engine:** improve matcher tokenization and response validation ([e1ead03](https://github.com/krishsoni-hub/career-pilot-krishhub/commit/e1ead03203fba2185bd15553ff4ce6cac4ca19f7))
+* correct case-sensitive import paths in Zoom_Into_Work template (./shared -> ./Shared) ([2eccf47](https://github.com/krishsoni-hub/career-pilot-krishhub/commit/2eccf47526883830cdf26b516fe1b0bd2daf3727))
+* correct import path in Doctor_Medical template (./Projects -> ./projects) ([a3ce676](https://github.com/krishsoni-hub/career-pilot-krishhub/commit/a3ce67622a4cbd088239afb09c78e0005c97c7b9))
+* discard invalid offline status updates ([b84dc1b](https://github.com/krishsoni-hub/career-pilot-krishhub/commit/b84dc1b72b98327d52aa0b5450b06f7972a21009))
+* make Job Tracker offline sync resilient ([dd2fc33](https://github.com/krishsoni-hub/career-pilot-krishhub/commit/dd2fc33f84daf357114a143c4780989f6cc28c7e))
+* match doctor projects import casing ([374b07a](https://github.com/krishsoni-hub/career-pilot-krishhub/commit/374b07aae4ead350c9df66cebab996f7e49e8ec4))
+* match zoom template shared import casing ([10f2114](https://github.com/krishsoni-hub/career-pilot-krishhub/commit/10f2114cf79c7ff25d48af4531d64b6914bd61df))
+* preserve offline tracker updates during sync ([0b161ba](https://github.com/krishsoni-hub/career-pilot-krishhub/commit/0b161bad4720e3a3619fe967c773cdc2ddf602cf))
+* resolve coderabbit review comments ([f593b18](https://github.com/krishsoni-hub/career-pilot-krishhub/commit/f593b189f56326d3a7161c3ee8ccf388c5c2d7fe))
+* resolve merge conflict with upstream main ([c93c199](https://github.com/krishsoni-hub/career-pilot-krishhub/commit/c93c19935290a9402aa165171db4bae98c51f27d))
+* resolve react-hooks/purity lint error in Digital_Manifesto_Scroll template ([734c82d](https://github.com/krishsoni-hub/career-pilot-krishhub/commit/734c82d4eac0123a89819759410d12fedebb9e06))
+* restore frontend ci after upstream sync ([ca62225](https://github.com/krishsoni-hub/career-pilot-krishhub/commit/ca622254246bbc7ba7a4ee644a0aa2d15575db8d))
+* retain retryable offline status updates ([9e3e41c](https://github.com/krishsoni-hub/career-pilot-krishhub/commit/9e3e41c65d49309e58beffe3aaa16523dc578c33))
+* sync package-lock.json with package.json ([534a0dc](https://github.com/krishsoni-hub/career-pilot-krishhub/commit/534a0dc574d217c84cd72368bf08b95532bd4573))
+* tighten Job Tracker offline cache handling ([1f99ce7](https://github.com/krishsoni-hub/career-pilot-krishhub/commit/1f99ce7d97ddf8d556f92c11eebceef3e3196080))
+
+
+### Features
+
+* add achievement impact analyzer ([3404c84](https://github.com/krishsoni-hub/career-pilot-krishhub/commit/3404c8445f7f19c66e8973e299d8d52e36a7a7f8))
+* add AI resume score breakdown dashboard ([0446570](https://github.com/krishsoni-hub/career-pilot-krishhub/commit/0446570b566ea1a6620e596dacf57bc96a7c36ff))
+* add Audio_First_Sonar_Navigation portfolio template ([93ce191](https://github.com/krishsoni-hub/career-pilot-krishhub/commit/93ce191520215e9cc24bd57f423f88b4461394ee)), closes [#3257](https://github.com/krishsoni-hub/career-pilot-krishhub/issues/3257)
+* add Broken Glass Shards Parallax portfolio template ([#3266](https://github.com/krishsoni-hub/career-pilot-krishhub/issues/3266)) ([7be2727](https://github.com/krishsoni-hub/career-pilot-krishhub/commit/7be272733194191934015e5d941e30d7315c43de))
+* add classic pokedex template and cleanup unneeded files ([4d99d31](https://github.com/krishsoni-hub/career-pilot-krishhub/commit/4d99d316a67d174792c803cb9d47e69eba9e7bf9))
+* add Error 404 Infinite Gallery template [#3262](https://github.com/krishsoni-hub/career-pilot-krishhub/issues/3262) ([85acfe2](https://github.com/krishsoni-hub/career-pilot-krishhub/commit/85acfe2adcf71cc24ba4312d6b9806305cb842d2))
+* add Eye Tracking Heatmap Simulation portfolio template ([7f67468](https://github.com/krishsoni-hub/career-pilot-krishhub/commit/7f67468376eb80566ebb23c9e9658bdfa17826c7))
+* Add Hidden Easter Egg Scavenger Hunt portfolio template [#3270](https://github.com/krishsoni-hub/career-pilot-krishhub/issues/3270) ([d4f19d7](https://github.com/krishsoni-hub/career-pilot-krishhub/commit/d4f19d76f8cf49e547306fb7413136f88b1981fc))
+* add Interactive Table of Elements template ([#3278](https://github.com/krishsoni-hub/career-pilot-krishhub/issues/3278)) ([707ec27](https://github.com/krishsoni-hub/career-pilot-krishhub/commit/707ec27c933b49f90429b99815fe48212af1d00d))
+* add interview readiness status and goal dashboard ([aae8839](https://github.com/krishsoni-hub/career-pilot-krishhub/commit/aae8839cf76c5f4231b259694bb4801842e297d5))
+* add offline support for job tracker ([#32](https://github.com/krishsoni-hub/career-pilot-krishhub/issues/32)) ([8d39463](https://github.com/krishsoni-hub/career-pilot-krishhub/commit/8d39463c64c905fb7f24a18b5d40bb0effaacbe9))
+* add personalized portfolio theme recommendation engine ([0dca938](https://github.com/krishsoni-hub/career-pilot-krishhub/commit/0dca9384a8a9be06ab1767ac8f5fa07d8b257fac))
+* add portfolio analytics dashboard ([8d510b8](https://github.com/krishsoni-hub/career-pilot-krishhub/commit/8d510b87b986a06f9353b48143ee75abb5b0c4d9))
+* add real-time ATS keyword optimization assistant ([a364fca](https://github.com/krishsoni-hub/career-pilot-krishhub/commit/a364fca35a9bb3a469ada9a53c73aca6dd15fe89))
+* add resume content readability analyzer ([f786f2b](https://github.com/krishsoni-hub/career-pilot-krishhub/commit/f786f2be9dd62f72f53dbdd2c35f8a5d53b201f6))
+* add resume improvement progress tracker ([3f1d779](https://github.com/krishsoni-hub/career-pilot-krishhub/commit/3f1d7791d9fcdbdbcc87432ee467f6842c6c2f80))
+* add resume PDF export customization options ([d33989c](https://github.com/krishsoni-hub/career-pilot-krishhub/commit/d33989c38fc6d266951e167c4796b070fc873b3e))
+* add resume version history and restore system ([8fb5bf4](https://github.com/krishsoni-hub/career-pilot-krishhub/commit/8fb5bf43df4c26e180e1ca799cff577c16b03514))
+* add smart resume content consistency checker [#3351](https://github.com/krishsoni-hub/career-pilot-krishhub/issues/3351) ([85ce056](https://github.com/krishsoni-hub/career-pilot-krishhub/commit/85ce056ee40b6b6e5b2ad375aa53b322c7595e3c))
+* add smart resume section recommendations ([2c8e2df](https://github.com/krishsoni-hub/career-pilot-krishhub/commit/2c8e2df096deab015b6bae0d4d8b3735e9617066))
+* Add top-level AppErrorBoundary to catch unhandled route errors ([8a056d2](https://github.com/krishsoni-hub/career-pilot-krishhub/commit/8a056d21873219bd4f7f4527a0576a6ce5c913ec)), closes [#1011](https://github.com/krishsoni-hub/career-pilot-krishhub/issues/1011)
+* **ai-engine:** implement resume-job description matching service with intelligent skill gap analysis ([09cbc50](https://github.com/krishsoni-hub/career-pilot-krishhub/commit/09cbc509e519b82ea8f5eacba8e97269530f9c9a))
+* ATS Intelligence Engine UI – score card, dashboard route, backend scoring ([09e83a2](https://github.com/krishsoni-hub/career-pilot-krishhub/commit/09e83a23fae506f7a9180c20731dad2bd6c734fb))
+* implement brutalist zine collage portfolio template [#3258](https://github.com/krishsoni-hub/career-pilot-krishhub/issues/3258) ([5a8330f](https://github.com/krishsoni-hub/career-pilot-krishhub/commit/5a8330fbf357f0a87d25e942484e75fc8e9673c5))
+* implement Digital Manifesto Scroll portfolio template ([35820e5](https://github.com/krishsoni-hub/career-pilot-krishhub/commit/35820e5056bc279e7eca519a317dcfda0f9fedb0))
+* **portfolio:** add About section for Origami Paper theme ([3f08a1a](https://github.com/krishsoni-hub/career-pilot-krishhub/commit/3f08a1a29cca8895eb26d3e7f36401d7e21b38f5))
+* **security:** add dependency security scanner CI workflow (closes [#2770](https://github.com/krishsoni-hub/career-pilot-krishhub/issues/2770)) ([0b6bcbc](https://github.com/krishsoni-hub/career-pilot-krishhub/commit/0b6bcbcbeea67d8fa976ddb15b2dae42a32bd7df))
+* **terminal-cli:** Create Terminal CLI Theme: ResumeCTA Section ([aec8a97](https://github.com/krishsoni-hub/career-pilot-krishhub/commit/aec8a97c4fb04358d5a50005d6f9ffdf639896a0))
+* Underground Bunker Console portfolio template for [#3279](https://github.com/krishsoni-hub/career-pilot-krishhub/issues/3279) ([5c6360b](https://github.com/krishsoni-hub/career-pilot-krishhub/commit/5c6360b8891552ae4380cfd0e9552cce1bc1e2f1))
+
+# [1.195.0](https://github.com/anurag3407/career-pilot/compare/v1.194.0...v1.195.0) (2026-06-08)
+
+
+### Features
+
+* ATS Intelligence Engine UI – score card, dashboard route, backend scoring ([09e83a2](https://github.com/anurag3407/career-pilot/commit/09e83a23fae506f7a9180c20731dad2bd6c734fb))
+
 # [1.194.0](https://github.com/anurag3407/career-pilot/compare/v1.193.0...v1.194.0) (2026-06-08)
 
 
 ### Bug Fixes
 
+* resolve merge conflict with upstream main ([c93c199](https://github.com/krishsoni-hub/career-pilot-krishhub/commit/c93c19935290a9402aa165171db4bae98c51f27d))
+* sync package-lock.json with package.json ([534a0dc](https://github.com/krishsoni-hub/career-pilot-krishhub/commit/534a0dc574d217c84cd72368bf08b95532bd4573))
 * added missing imports in TemplateGallery and Desert Dunes template ([ba4d7e6](https://github.com/anurag3407/career-pilot/commit/ba4d7e65d2c0c2def915f3bfe2c636b26084a226))
 * **ai-engine:** improve matcher tokenization and response validation ([e1ead03](https://github.com/anurag3407/career-pilot/commit/e1ead03203fba2185bd15553ff4ce6cac4ca19f7))
 
 
 ### Features
 
+* add achievement impact analyzer ([3404c84](https://github.com/krishsoni-hub/career-pilot-krishhub/commit/3404c8445f7f19c66e8973e299d8d52e36a7a7f8))
+* add AI resume score breakdown dashboard ([0446570](https://github.com/krishsoni-hub/career-pilot-krishhub/commit/0446570b566ea1a6620e596dacf57bc96a7c36ff))
+* add classic pokedex template and cleanup unneeded files ([4d99d31](https://github.com/krishsoni-hub/career-pilot-krishhub/commit/4d99d316a67d174792c803cb9d47e69eba9e7bf9))
+* add Error 404 Infinite Gallery template [#3262](https://github.com/krishsoni-hub/career-pilot-krishhub/issues/3262) ([85acfe2](https://github.com/krishsoni-hub/career-pilot-krishhub/commit/85acfe2adcf71cc24ba4312d6b9806305cb842d2))
+* add Eye Tracking Heatmap Simulation portfolio template ([7f67468](https://github.com/krishsoni-hub/career-pilot-krishhub/commit/7f67468376eb80566ebb23c9e9658bdfa17826c7))
+* add personalized portfolio theme recommendation engine ([0dca938](https://github.com/krishsoni-hub/career-pilot-krishhub/commit/0dca9384a8a9be06ab1767ac8f5fa07d8b257fac))
+* add portfolio analytics dashboard ([8d510b8](https://github.com/krishsoni-hub/career-pilot-krishhub/commit/8d510b87b986a06f9353b48143ee75abb5b0c4d9))
+* add real-time ATS keyword optimization assistant ([a364fca](https://github.com/krishsoni-hub/career-pilot-krishhub/commit/a364fca35a9bb3a469ada9a53c73aca6dd15fe89))
+* add resume content readability analyzer ([f786f2b](https://github.com/krishsoni-hub/career-pilot-krishhub/commit/f786f2be9dd62f72f53dbdd2c35f8a5d53b201f6))
+* add resume improvement progress tracker ([3f1d779](https://github.com/krishsoni-hub/career-pilot-krishhub/commit/3f1d7791d9fcdbdbcc87432ee467f6842c6c2f80))
+* add resume PDF export customization options ([d33989c](https://github.com/krishsoni-hub/career-pilot-krishhub/commit/d33989c38fc6d266951e167c4796b070fc873b3e))
+* add resume version history and restore system ([8fb5bf4](https://github.com/krishsoni-hub/career-pilot-krishhub/commit/8fb5bf43df4c26e180e1ca799cff577c16b03514))
+* add smart resume section recommendations ([2c8e2df](https://github.com/krishsoni-hub/career-pilot-krishhub/commit/2c8e2df096deab015b6bae0d4d8b3735e9617066))
+* **terminal-cli:** Create Terminal CLI Theme: ResumeCTA Section ([aec8a97](https://github.com/krishsoni-hub/career-pilot-krishhub/commit/aec8a97c4fb04358d5a50005d6f9ffdf639896a0))
+
+# [1.1.0](https://github.com/krishsoni-hub/career-pilot-krishhub/compare/v1.0.0...v1.1.0) (2026-06-07)
 * **ai-engine:** implement resume-job description matching service with intelligent skill gap analysis ([09cbc50](https://github.com/anurag3407/career-pilot/commit/09cbc509e519b82ea8f5eacba8e97269530f9c9a))
 
 # 1.0.0 (2026-06-08)
@@ -16,6 +126,8 @@
 
 ### Bug Fixes
 
+* resolve merge conflict with upstream main ([c93c199](https://github.com/krishsoni-hub/career-pilot-krishhub/commit/c93c19935290a9402aa165171db4bae98c51f27d))
+* sync package-lock.json with package.json ([534a0dc](https://github.com/krishsoni-hub/career-pilot-krishhub/commit/534a0dc574d217c84cd72368bf08b95532bd4573))
 * **2d-retro-8bit:** sanitize external links to prevent relative route redirection page not found ([e9190e8](https://github.com/manaswi3/career-pilot-M/commit/e9190e8349a3bef4cc97166340af6c384a0ca0db))
 * add accessibility state for philosophy cards ([bee33be](https://github.com/manaswi3/career-pilot-M/commit/bee33be916d9dab9414402afab7ffcc16413a250))
 * add accessible labels to icon-only submit buttons ([72a349f](https://github.com/manaswi3/career-pilot-M/commit/72a349f096dfb284e28361f154a355da35e8f135))
@@ -306,6 +418,19 @@
 
 ### Features
 
+* add achievement impact analyzer ([3404c84](https://github.com/krishsoni-hub/career-pilot-krishhub/commit/3404c8445f7f19c66e8973e299d8d52e36a7a7f8))
+* add AI resume score breakdown dashboard ([0446570](https://github.com/krishsoni-hub/career-pilot-krishhub/commit/0446570b566ea1a6620e596dacf57bc96a7c36ff))
+* add Error 404 Infinite Gallery template [#3262](https://github.com/krishsoni-hub/career-pilot-krishhub/issues/3262) ([85acfe2](https://github.com/krishsoni-hub/career-pilot-krishhub/commit/85acfe2adcf71cc24ba4312d6b9806305cb842d2))
+* add Eye Tracking Heatmap Simulation portfolio template ([7f67468](https://github.com/krishsoni-hub/career-pilot-krishhub/commit/7f67468376eb80566ebb23c9e9658bdfa17826c7))
+* add personalized portfolio theme recommendation engine ([0dca938](https://github.com/krishsoni-hub/career-pilot-krishhub/commit/0dca9384a8a9be06ab1767ac8f5fa07d8b257fac))
+* add portfolio analytics dashboard ([8d510b8](https://github.com/krishsoni-hub/career-pilot-krishhub/commit/8d510b87b986a06f9353b48143ee75abb5b0c4d9))
+* add real-time ATS keyword optimization assistant ([a364fca](https://github.com/krishsoni-hub/career-pilot-krishhub/commit/a364fca35a9bb3a469ada9a53c73aca6dd15fe89))
+* add resume content readability analyzer ([f786f2b](https://github.com/krishsoni-hub/career-pilot-krishhub/commit/f786f2be9dd62f72f53dbdd2c35f8a5d53b201f6))
+* add resume improvement progress tracker ([3f1d779](https://github.com/krishsoni-hub/career-pilot-krishhub/commit/3f1d7791d9fcdbdbcc87432ee467f6842c6c2f80))
+* add resume PDF export customization options ([d33989c](https://github.com/krishsoni-hub/career-pilot-krishhub/commit/d33989c38fc6d266951e167c4796b070fc873b3e))
+* add resume version history and restore system ([8fb5bf4](https://github.com/krishsoni-hub/career-pilot-krishhub/commit/8fb5bf43df4c26e180e1ca799cff577c16b03514))
+* add smart resume section recommendations ([2c8e2df](https://github.com/krishsoni-hub/career-pilot-krishhub/commit/2c8e2df096deab015b6bae0d4d8b3735e9617066))
+* **terminal-cli:** Create Terminal CLI Theme: ResumeCTA Section ([aec8a97](https://github.com/krishsoni-hub/career-pilot-krishhub/commit/aec8a97c4fb04358d5a50005d6f9ffdf639896a0))
 * **2d-retro-8bit:** add live preview of RetroProjects inside Template Gallery ([09abb36](https://github.com/manaswi3/career-pilot-M/commit/09abb360ea13ff60f1e40c3907b01d55bc70fa19))
 * **2d-retro-8bit:** implement high-fidelity interactive projects section and fix pre-existing compilation bugs ([be98899](https://github.com/manaswi3/career-pilot-M/commit/be988992d6c9e0db6ec7710184650d5d057c3125))
 * add 150 new portfolio template folders, dummy_data.json, and issue batch files ([8fbd5e1](https://github.com/manaswi3/career-pilot-M/commit/8fbd5e19a058b6b08b97d14ba7c6479ab27bf867))

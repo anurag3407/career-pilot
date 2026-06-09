@@ -202,7 +202,6 @@ export default function ResumeBuilder() {
   }, [experience, education, projects]);
 
   // ─────────────────── Version Tracking State Control ───────────────────
-
   const saveVersion = React.useCallback(() => {
     const newVersion = {
       id: Date.now(),
