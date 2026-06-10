@@ -15,6 +15,11 @@ const LazyTemplateFrame = ({
 
     if (!node) return;
 
+    if (typeof IntersectionObserver === "undefined") {
+      setIsVisible(true);
+      return undefined;
+    }
+
     const observer = new IntersectionObserver(
       ([entry]) => {
         if (!entry.isIntersecting) return;

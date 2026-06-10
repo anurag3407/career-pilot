@@ -61,7 +61,7 @@ function TemplatePreviewFrame({ label, badgeColor, children }) {
           position: 'relative',
         }}
       >
-        <LazyTemplateFrame>
+        <LazyTemplateFrame placeholderHeight={600}>
           {children}
         </LazyTemplateFrame>
       </div>
@@ -611,18 +611,14 @@ export default function TemplateGallery() {
           label="Weather Mood Theme — Full Interactive Template"
           badgeColor="bg-sky-500/20 text-sky-400 border-sky-500/30"
         >
-          <LazyTemplateFrame>
-            <WeatherMood />
-          </LazyTemplateFrame>
+          <WeatherMood />
         </TemplatePreviewFrame>
 
         <TemplatePreviewFrame
           label="Swiss Typography — Full Interactive Template"
           badgeColor="bg-red-500/20 text-red-400 border-red-500/30"
         >
-          <LazyTemplateFrame>
-            <SwissTypography portfolioData={aiDraft} />
-          </LazyTemplateFrame>
+          <SwissTypography portfolioData={aiDraft} />
         </TemplatePreviewFrame>
 
         {/* Liquid Glass */}
