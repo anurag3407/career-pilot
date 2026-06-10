@@ -1,16 +1,7 @@
-
-/**
- * Main Application Component with Route-based Code Splitting
- * Implements lazy loading for improved performance
- */
-import CoverLetter from "./pages/CoverLetter";
-import VercelDeploy from "./components/portfolio/templates/Vercel_Deploy/index";
-import React, { useState, useEffect, lazy, Suspense } from 'react';
-import StockTicker from "./components/portfolio/templates/Finance_Corporate/StockTicker";
-import Deployments from './pages/Deployments'
+import { useState, useEffect } from 'react';
+import Deployments from './pages/Deployments';
 import TemplateGallery from "./pages/TemplateGallery";
-import TemplatePreviewOnly from "./pages/TemplatePreviewOnly";
-
+import ToastManager from "./components/ToastManager";
 import { BrowserRouter, Routes, Route, Navigate } from 'react-router-dom';
 import { Toaster } from 'react-hot-toast';
 import { AuthProvider } from './context/AuthProvider';
@@ -19,115 +10,40 @@ import { SocketProvider } from './context/SocketProvider';
 import { ThemeProvider } from './context/ThemeProvider';
 import AppLayout from './components/AppLayout';
 import Footer from './components/ui/Footer';
-
 import CommandPalette from './components/CommandPalette';
 import BackToTop from './components/BackToTop';
 import Home from './pages/Home';
-const Dashboard = lazy(() => import('./pages/Dashboard'));
-const Analytics = lazy(() => import('./pages/Analytics'));
-const JobSearch = lazy(() => import('./pages/JobSearch'));
-const ResumeBuilder = lazy(() => import('./pages/ResumeBuilder'));
-import TextToResume from './pages/TextToResume';
-import About from './components/portfolio/templates/Tech_Startup/About';
-import ChatbotPortfolio from "./components/portfolio/templates/Chatbot_Portfolio";
-import GlassmorphismTemplate from "./components/portfolio/templates/Glassmorphism/index";
-
+import Login from './pages/Login';
+import Register from './pages/Register';
+import Dashboard from './pages/Dashboard';
+import Upload from './pages/Upload';
+import Enhance from './pages/Enhance';
+import ResumeView from './pages/ResumeView';
+import JobSearch from './pages/JobSearch';
+import JobAlerts from './pages/JobAlerts';
 import JobTracker from './pages/JobTracker';
-
-const Community = lazy(() => import('./pages/Community'));
-const Login = lazy(() => import("./pages/Login"));
-const Register = lazy(() => import("./pages/Register"));
-const LinkedInCallback = lazy(() => import("./pages/LinkedInCallback"));
-const OpenRouterCallback = lazy(() => import("./pages/OpenRouterCallback"));
-const Upload = lazy(() => import("./pages/Upload"));
-const Enhance = lazy(() => import("./pages/Enhance"));
-const ResumeView = lazy(() => import("./pages/ResumeView"));
-const JobAlerts = lazy(() => import("./pages/JobAlerts"));
-const InterviewPrep = lazy(() => import("./pages/InterviewPrep"));
-const InterviewHistory = lazy(() => import("./pages/InterviewHistory"));
-const InterviewReplay = lazy(() => import("./pages/InterviewReplay"));
-const UserProfile = lazy(() => import("./pages/UserProfile"));
-const SecuritySettings = lazy(() => import("./pages/SecuritySettings"));
-const EmailGenerator = lazy(() => import("./pages/EmailGenerator"));
-const LinkedInOptimizer = lazy(() => import("./pages/LinkedInOptimizer"));
-const Settings = lazy(() => import("./pages/Settings"));
-const SkillGap = lazy(() => import("./pages/SkillGap"));
-const ResumeHub = lazy(() => import("./pages/hubs/ResumeHub"));
-const JobsHub = lazy(() => import("./pages/hubs/JobsHub"));
-const PortfolioHub = lazy(() => import("./pages/hubs/PortfolioHub"));
-const CareerGrowthHub = lazy(() => import("./pages/hubs/CareerGrowthHub"));
-const CommunityHub = lazy(() => import("./pages/hubs/CommunityHub"));
-const FellowshipLayout = lazy(() => import("./pages/fellowship/FellowshipLayout"));
-const Challenges = lazy(() => import("./pages/fellowship/Challenges"));
-const Onboarding = lazy(() => import("./pages/fellowship/Onboarding"));
-const ChallengeDetail = lazy(() => import("./pages/fellowship/ChallengeDetail"));
-const ChallengeProposals = lazy(() => import("./pages/fellowship/ChallengeProposals"));
-const CreateChallenge = lazy(() => import("./pages/fellowship/CreateChallenge"));
-const MyProposals = lazy(() => import("./pages/fellowship/MyProposals"));
-const MyChallenges = lazy(() => import("./pages/fellowship/MyChallenges"));
-const Verify = lazy(() => import("./pages/fellowship/Verify"));
-const FellowshipMessages = lazy(() => import("./pages/fellowship/FellowshipMessages"));
-const FellowshipChat = lazy(() => import("./pages/fellowship/FellowshipChat"));
-
-
-const AdminLayout = lazy(() => import("./pages/admin/layout/AdminLayout"));
-const AdminDashboard = lazy(() => import("./pages/admin/views/AdminDashboard"));
-const AdminUsers = lazy(() => import("./pages/admin/views/AdminUsers"));
-
-import { NotFound } from './pages';
-
-const PrivacyPolicy = lazy(() => import('./pages/PrivacyPolicy'));
-const TermsOfService = lazy(() => import('./pages/TermsOfService'));
-const CookiePolicy = lazy(() => import('./pages/CookiePolicy'));
-
-
-import LegalPageErrorBoundary from './components/LegalPageErrorBoundary';
-import RouteErrorBoundary from './components/RouteErrorBoundary';
-
-
-// Hub Imports
-const GitHubDashboard = lazy(() => import('./pages/GitHubDashboard'));
-const LinkedInDashboard = lazy(() => import('./pages/LinkedInDashboard'));
-const RepoAnalyzerLanding = lazy(() => import('./pages/RepoAnalyzer/Landing'));
-const RepoAnalyzerDashboard = lazy(() => import('./pages/RepoAnalyzer/Dashboard'));
-const RepoAnalyzerWorkspace = lazy(() => import('./pages/RepoAnalyzer/Workspace'));
-const ProjectVisualizerLanding = lazy(() => import('./pages/ProjectVisualizer/Landing'));
-const ProjectVisualizerDashboard = lazy(() => import('./pages/ProjectVisualizer/Dashboard'));
-import ScrollToTop from "./components/ScrollToTop";
-import NorthernFjords from './components/portfolio/templates/Northern_Fjords';
-import RainforestCanopy from './components/portfolio/templates/Rainforest_Canopy/index.jsx';
-import DuotoneBold from './components/portfolio/templates/Duotone_Bold/index.jsx';
-import ChromaticGlitch from './components/portfolio/templates/Chromatic_Glitch/index.jsx';
-import SwissTypography from './components/portfolio/templates/Swiss_Typography/index.jsx';
-import DesertDunes from './components/portfolio/templates/Desert_Dunes/index.jsx';
-import PsychedelicSwirl from './components/portfolio/templates/Psychedelic_Swirl/index.jsx';
-import MemphisPop from './components/portfolio/templates/Memphis_Pop/index.jsx';
-import HiddenEasterEggScavengerHunt from './components/portfolio/templates/Hidden_Easter_Egg_Scavenger_Hunt/index.jsx';
-import CassetteMixtape from './components/portfolio/templates/Cassette_Mixtape/index.jsx';
-import MagneticDock from './components/portfolio/templates/Magnetic_Dock/index.jsx';
-import Hero from './components/portfolio/templates/Magazine_Editorial/Hero';
-import ColorBlock from './components/portfolio/templates/Color_Block/index.jsx';
-import OceanDepths from './components/portfolio/templates/Ocean_Depths/index.jsx';
-import NeonCityscape from './components/portfolio/templates/Neon_Cityscape/index.jsx';
-import PlanetaryOrbit from './components/portfolio/templates/Planetary_Orbit/index.jsx';
-import LowPolyTerrain from './components/portfolio/templates/Low_Poly_Terrain/index.jsx';
-import HighFashion from './components/portfolio/templates/High_Fashion/index.jsx';
-import TypographicWheatpastePosterWall from './components/portfolio/templates/Typographic_Wheatpaste_Poster_Wall/index.jsx';
-import DigitalManifestoScroll from './components/portfolio/templates/Digital_Manifesto_Scroll/index.jsx';
-import TestSocialLinks from './pages/TestSocialLinks';
-import ZineCollage from './components/portfolio/templates/ZineCollage';
-
-function LoadingScreen({ label }) {
-  return (
-    <div className="min-h-screen flex items-center justify-center bg-background">
-      <div className="flex flex-col items-center gap-4">
-        <div className="w-12 h-12 border-4 border-muted border-t-primary rounded-full animate-spin"></div>
-        <p className="text-muted-foreground font-medium">{label}</p>
-      </div>
-    </div>
-  );
-}
-
+import { Community, NotFound } from './pages';
+import InterviewPrep from './pages/InterviewPrep';
+import UserProfile from './pages/UserProfile';
+import EmailGenerator from './pages/EmailGenerator';
+import LinkedInOptimizer from './pages/LinkedInOptimizer';
+import FellowshipLayout from './pages/fellowship/FellowshipLayout';
+import Onboarding from './pages/fellowship/Onboarding';
+import Challenges from './pages/fellowship/Challenges';
+import Settings from './pages/Settings';
+import ChallengeDetail from './pages/fellowship/ChallengeDetail';
+import CreateChallenge from './pages/fellowship/CreateChallenge';
+import MyProposals from './pages/fellowship/MyProposals';
+import MyChallenges from './pages/fellowship/MyChallenges';
+import ChallengeProposals from './pages/fellowship/ChallengeProposals';
+import Verify from './pages/fellowship/Verify';
+import FellowshipMessages from './pages/fellowship/FellowshipMessages';
+import FellowshipChat from './pages/fellowship/FellowshipChat';
+import SecuritySettings from './pages/SecuritySettings';
+import LinkedInCallback from './pages/LinkedInCallback';
+import PrivacyPolicy from './pages/PrivacyPolicy';
+import TermsOfService from './pages/TermsOfService';
+import CookiePolicy from './pages/CookiePolicy';
 
 function ProtectedRoute({ children }) {
   const { user, loading } = useAuth();
@@ -149,7 +65,6 @@ function ProtectedRoute({ children }) {
 
   return <AppLayout>{children}</AppLayout>;
 }
-
 
 function PublicRoute({ children }) {
   const { user, loading } = useAuth();
@@ -477,11 +392,109 @@ function AppRoutes() {
 }
 
 function App() {
+  const [isCommandPaletteOpen, setIsCommandPaletteOpen] = useState(false);
+  const isAuthenticated = localStorage.getItem('firebase:authUser') !== null;
+
+  useEffect(() => {
+    if (!isAuthenticated) return;
+    const handleKeyDown = (e) => {
+      if ((e.metaKey || e.ctrlKey) && e.key.toLowerCase() === 'k') {
+        e.preventDefault();
+        setIsCommandPaletteOpen((prev) => !prev);
+      }
+    };
+    window.addEventListener('keydown', handleKeyDown);
+    return () => window.removeEventListener('keydown', handleKeyDown);
+  }, [isAuthenticated]);
+
   return (
     <ThemeProvider>
       <AuthProvider>
         <SocketProvider>
-          <AppRoutes />
+          {/* ToastManager wraps everything so any child can call useToast() */}
+          <ToastManager position="top-right">
+            <BrowserRouter>
+              <div className="bg-mesh" />
+              {isAuthenticated && (
+                <CommandPalette
+                  isOpen={isCommandPaletteOpen}
+                  setIsOpen={setIsCommandPaletteOpen}
+                />
+              )}
+              {/* react-hot-toast kept for existing toast.success/error calls elsewhere */}
+              <Toaster
+                position="top-right"
+                toastOptions={{
+                  duration: 3000,
+                  className: "careerpilot-toast",
+                  style: {
+                    background: "var(--card)",
+                    color: "var(--foreground)",
+                    borderRadius: "var(--radius)",
+                    border: "1px solid var(--border)",
+                    backdropFilter: "blur(8px)",
+                  },
+                  success: {
+                    iconTheme: { primary: "#10B981", secondary: "#fff" },
+                  },
+                  error: {
+                    iconTheme: { primary: "#EF4444", secondary: "#fff" },
+                  },
+                }}
+              />
+              <Routes>
+                {/* Public Routes */}
+                <Route path="/" element={<PublicRoute><Home /></PublicRoute>} />
+                <Route path="/login" element={<PublicRoute><Login /></PublicRoute>} />
+                <Route path="/register" element={<PublicRoute><Register /></PublicRoute>} />
+                <Route path="/auth/linkedin/callback" element={<PublicRoute><LinkedInCallback /></PublicRoute>} />
+
+                {/* Legal Pages (Public) */}
+                <Route path="/privacy" element={<PrivacyPolicy />} />
+                <Route path="/terms" element={<TermsOfService />} />
+                <Route path="/cookies" element={<CookiePolicy />} />
+
+                {/* Template Gallery */}
+                <Route path="/templates" element={<TemplateGallery />} />
+
+                {/* Core Protected Routes */}
+                <Route path="/dashboard" element={<ProtectedRoute><Dashboard /></ProtectedRoute>} />
+                <Route path="/upload" element={<ProtectedRoute><Upload /></ProtectedRoute>} />
+                <Route path="/enhance/:resumeId" element={<ProtectedRoute><Enhance /></ProtectedRoute>} />
+                <Route path="/resume/:resumeId" element={<ProtectedRoute><ResumeView /></ProtectedRoute>} />
+                <Route path="/jobs" element={<ProtectedRoute><JobSearch /></ProtectedRoute>} />
+                <Route path="/job-alerts" element={<ProtectedRoute><JobAlerts /></ProtectedRoute>} />
+                <Route path="/job-tracker" element={<ProtectedRoute><JobTracker /></ProtectedRoute>} />
+                <Route path="/community" element={<ProtectedRoute><Community /></ProtectedRoute>} />
+                <Route path="/interview-prep" element={<ProtectedRoute><InterviewPrep /></ProtectedRoute>} />
+                <Route path="/profile" element={<ProtectedRoute><UserProfile /></ProtectedRoute>} />
+                <Route path="/profile/:uid" element={<ProtectedRoute><UserProfile /></ProtectedRoute>} />
+                <Route path="/security" element={<ProtectedRoute><SecuritySettings /></ProtectedRoute>} />
+                <Route path="/email-generator" element={<ProtectedRoute><EmailGenerator /></ProtectedRoute>} />
+                <Route path="/linkedin-optimizer" element={<ProtectedRoute><LinkedInOptimizer /></ProtectedRoute>} />
+                <Route path="/deployments" element={<ProtectedRoute><Deployments /></ProtectedRoute>} />
+                <Route path="/settings" element={<ProtectedRoute><Settings /></ProtectedRoute>} />
+
+                {/* Nested Fellowship Routes */}
+                <Route path="/fellowship" element={<ProtectedRoute><FellowshipLayout /></ProtectedRoute>}>
+                  <Route index element={<Challenges />} />
+                  <Route path="onboarding" element={<Onboarding />} />
+                  <Route path="challenges" element={<Challenges />} />
+                  <Route path="challenges/:id" element={<ChallengeDetail />} />
+                  <Route path="challenges/:id/proposals" element={<ChallengeProposals />} />
+                  <Route path="create-challenge" element={<CreateChallenge />} />
+                  <Route path="my-proposals" element={<MyProposals />} />
+                  <Route path="my-challenges" element={<MyChallenges />} />
+                  <Route path="verify" element={<Verify />} />
+                  <Route path="messages" element={<FellowshipMessages />} />
+                  <Route path="messages/:roomId" element={<FellowshipChat />} />
+                </Route>
+
+                {/* Catch-All */}
+                <Route path="*" element={<NotFound />} />
+              </Routes>
+            </BrowserRouter>
+          </ToastManager>
         </SocketProvider>
       </AuthProvider>
     </ThemeProvider>
