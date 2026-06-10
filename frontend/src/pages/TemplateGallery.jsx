@@ -30,7 +30,7 @@ import NeonCityscape from "../components/portfolio/templates/Neon_Cityscape/inde
 import PlanetaryOrbit from "../components/portfolio/templates/Planetary_Orbit/index";
 import LowPolyTerrain from "../components/portfolio/templates/Low_Poly_Terrain/index";
 import HighFashion from "../components/portfolio/templates/High_Fashion/index";
-
+import LazyTemplateFrame from "../components/portfolio/LazyTemplateFrame";
 
 /* TemplatePreviewFrame — contains each full portfolio template in a
    sandboxed scrollable box. The key trick: CSS `transform` on the outer
@@ -61,7 +61,9 @@ function TemplatePreviewFrame({ label, badgeColor, children }) {
           position: 'relative',
         }}
       >
-        {children}
+        <LazyTemplateFrame>
+          {children}
+        </LazyTemplateFrame>
       </div>
     </div>
   );
@@ -604,25 +606,23 @@ export default function TemplateGallery() {
           <div className="overflow-hidden rounded-2xl border border-border"><GeometricShapesAbout /></div>
         </div>
 
-        <TemplatePreviewFrame
-          label="Desert Dunes — Nature / Organic Template"
-          badgeColor="bg-amber-500/20 text-amber-400 border-amber-500/30"
-        >
-          <DesertDunes />
-        </TemplatePreviewFrame>
-
+        
         <TemplatePreviewFrame
           label="Weather Mood Theme — Full Interactive Template"
           badgeColor="bg-sky-500/20 text-sky-400 border-sky-500/30"
         >
-          <WeatherMood />
+          <LazyTemplateFrame>
+            <WeatherMood />
+          </LazyTemplateFrame>
         </TemplatePreviewFrame>
 
         <TemplatePreviewFrame
           label="Swiss Typography — Full Interactive Template"
           badgeColor="bg-red-500/20 text-red-400 border-red-500/30"
         >
-          <SwissTypography portfolioData={aiDraft} />
+          <LazyTemplateFrame>
+            <SwissTypography portfolioData={aiDraft} />
+          </LazyTemplateFrame>
         </TemplatePreviewFrame>
 
         {/* Liquid Glass */}
@@ -634,7 +634,9 @@ export default function TemplateGallery() {
             <h2 className="text-lg font-semibold text-foreground/70">Liquid Glass Theme</h2>
           </div>
           <div className="overflow-hidden rounded-2xl border border-border">
-            <LiquidGlass portfolioData={aiDraft} />
+            <LazyTemplateFrame>
+              <LiquidGlass portfolioData={aiDraft} />
+            </LazyTemplateFrame>
           </div>
         </div>
 
@@ -647,7 +649,9 @@ export default function TemplateGallery() {
             <h2 className="text-lg font-semibold text-foreground/70">Midnight Gradient Theme</h2>
           </div>
           <div className="overflow-hidden rounded-2xl border border-border">
-            <MidnightGradient />
+            <LazyTemplateFrame>
+              <MidnightGradient />
+            </LazyTemplateFrame>
           </div>
         </div>
 
@@ -660,7 +664,9 @@ export default function TemplateGallery() {
             <h2 className="text-lg font-semibold text-foreground/70">Playing Cards Theme — Click to flip, shuffle deck</h2>
           </div>
           <div className="overflow-hidden rounded-2xl border border-emerald-500/20">
-            <PlayingCardsPortfolio portfolioData={aiDraft} />
+            <LazyTemplateFrame>
+              <PlayingCardsPortfolio portfolioData={aiDraft} />
+            </LazyTemplateFrame>
           </div>
         </div>
 
@@ -686,7 +692,9 @@ export default function TemplateGallery() {
             className="rounded-2xl border border-fuchsia-500/20"
             style={{ height: 640, overflowY: "auto", overflowX: "hidden", transform: "translate(0)", position: "relative" }}
           >
-            <PsychedelicSwirl />
+            <LazyTemplateFrame>
+              <PsychedelicSwirl />
+</LazyTemplateFrame>
           </div>
         </div>
 
@@ -699,7 +707,9 @@ export default function TemplateGallery() {
             <h2 className="text-lg font-semibold text-foreground/70">Typewriter Effect — Vintage Paper Full Template</h2>
           </div>
           <div className="rounded-2xl" style={{ height: 640, overflowY: "auto", overflowX: "hidden", transform: "translate(0)", position: "relative", border: "1px solid rgba(139,37,0,.2)" }}>
-            <TypewriterEffect />
+            <LazyTemplateFrame>
+              <TypewriterEffect />
+            </LazyTemplateFrame>
           </div>
         </div>
 
@@ -713,7 +723,9 @@ export default function TemplateGallery() {
           </div>
           <div className="rounded-2xl border border-cyan-500/20"
             style={{ height: 640, overflowY: "auto", overflowX: "hidden", transform: "translate(0)", position: "relative" }}>
-            <ChromaticGlitch />
+            <LazyTemplateFrame>
+              <ChromaticGlitch />
+            </LazyTemplateFrame>
           </div>
         </div>
 
@@ -727,7 +739,9 @@ export default function TemplateGallery() {
           </div>
           <div className="rounded-2xl border border-indigo-500/15"
             style={{ height: 640, overflowY: "auto", overflowX: "hidden", transform: "translate(0)", position: "relative" }}>
-            <MagneticDock />
+            <LazyTemplateFrame>
+              <MagneticDock />
+            </LazyTemplateFrame>
           </div>
         </div>
 
@@ -741,7 +755,9 @@ export default function TemplateGallery() {
           </div>
           <div className="rounded-2xl border border-cyan-500/20"
             style={{ height: 640, overflowY: "auto", overflowX: "hidden", transform: "translate(0)", position: "relative" }}>
-            <OceanDepths />
+            <LazyTemplateFrame>
+              <OceanDepths />
+            </LazyTemplateFrame>
           </div>
         </div>
 
@@ -755,7 +771,9 @@ export default function TemplateGallery() {
           </div>
           <div className="rounded-2xl border border-pink-500/20"
             style={{ height: 640, overflowY: "auto", overflowX: "hidden", transform: "translate(0)", position: "relative" }}>
-            <NeonCityscape />
+            <LazyTemplateFrame>
+              <NeonCityscape />
+            </LazyTemplateFrame>
           </div>
         </div>
 
@@ -769,7 +787,9 @@ export default function TemplateGallery() {
           </div>
           <div className="rounded-2xl border border-blue-500/20"
             style={{ height: 640, overflowY: "auto", overflowX: "hidden", transform: "translate(0)", position: "relative" }}>
-            <PlanetaryOrbit />
+            <LazyTemplateFrame>
+              <PlanetaryOrbit />
+            </LazyTemplateFrame>
           </div>
         </div>
 
@@ -783,7 +803,9 @@ export default function TemplateGallery() {
           </div>
           <div className="rounded-2xl border border-emerald-500/20"
             style={{ height: 640, overflowY: "auto", overflowX: "hidden", transform: "translate(0)", position: "relative" }}>
-            <LowPolyTerrain />
+            <LazyTemplateFrame>
+              <LowPolyTerrain />
+            </LazyTemplateFrame>
           </div>
         </div>
 
@@ -796,7 +818,9 @@ export default function TemplateGallery() {
             <h2 className="text-lg font-semibold text-foreground/70">High Fashion — Editorial Two-Column Portfolio</h2>
           </div>
           <div className="rounded-2xl" style={{ height: 640, overflowY: "auto", overflowX: "hidden", transform: "translate(0)", position: "relative", border: "1px solid rgba(201,168,76,.2)" }}>
-            <HighFashion />
+            <LazyTemplateFrame>
+              <HighFashion />
+            </LazyTemplateFrame>
           </div>
         </div>
 
