@@ -1,4 +1,17 @@
 export const templates = [
+  {
+    "id": "Magnifying_Glass_Hidden_Reveal",
+    "title": "Magnifying Glass Hidden Reveal",
+    "category": "Portfolio",
+    "colorScheme": "Light",
+    "layout": "Interactive",
+    "author": "ShaktiShrey-01",
+    "views": 0,
+    "rating": 0,
+    "image": "/template-previews/Magnifying_Glass_Hidden_Reveal.png",
+    "createdAt": "2026-06-10",
+    "isComplete": true
+  },
 {
   "id": "Anonymous_Whistleblower_Drop_Box",
   "title": "Anonymous Whistleblower Drop Box",
