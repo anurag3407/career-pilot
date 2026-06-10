@@ -244,55 +244,71 @@ export const processAlert = async (alertData) => {
             return { success: true, newJobs: 0 };
         }
 
-        // Bulk upsert: one $in lookup + one insertMany instead of N findOne calls
-        const jobsToSend = await bulkUpsertJobs(fetchedJobs, JobListing, async (newDocs) => {
-            // Batch Firebase sync for newly cached jobs
-            await Promise.allSettled(
-                newDocs.map(doc => {
-                    const obj = typeof doc.toObject === 'function' ? doc.toObject() : doc;
-                    return saveJobListingToFirebase(obj);
-                })
-            );
-            console.log(`💾 Cached and synced ${newDocs.length} new job(s) to Firebase`);
+        // Bulk upsert: one $in lookup + one insertMany instead of N findOne calls 
+       const jobsToSend = await bulkUpsertJobs(fetchedJobs, JobListing, async (newDocs) => {
+    // Batch Firebase sync for newly cached jobs
+    await Promise.allSettled(
+        newDocs.map(doc => {
+            const obj = typeof doc.toObject === 'function' ? doc.toObject() : doc;
+            return saveJobListingToFirebase(obj);
+        })
+    );
+    console.log(`💾 Cached and synced ${newDocs.length} new job(s) to Firebase`);
+});
+
+// Fetch previously sent job IDs for this alert/user
+const sentJobIds = new Set(
+    await NotificationLog.distinct('externalJobId', {
+        userId,
+        alertId,
+        emailStatus: 'sent'
+    })
+);
+
+// Filter out already-sent jobs
+const uniqueJobsToSend = jobsToSend.filter(
+    job => !sentJobIds.has(job.externalId)
+);
+
+console.log(
+    `📧 Sending ${uniqueJobsToSend.length} new jobs to user (${jobsToSend.length - uniqueJobsToSend.length} duplicates filtered)`
+);
+
+// Always send email if there are NEW jobs
+if (uniqueJobsToSend.length > 0) {
+    try {
+        // Use the current email from the database to ensure accuracy
+        const recipientEmail = currentEmail;
+        const recipientName = alertExists.userName || userName || 'Job Seeker';
+
+        console.log(`\n${'='.repeat(60)}`);
+        console.log(`📧 SENDING EMAIL NOW`);
+        console.log(`${'='.repeat(60)}`);
+        console.log(`📬 To: ${recipientEmail}`);
+        console.log(`👤 Name: ${recipientName}`);
+        console.log(`🎯 Alert: "${title}"`);
+        console.log(`📊 Jobs Count: ${uniqueJobsToSend.length}`);
+        console.log(`${'='.repeat(60)}\n`);
+
+        // Emit socket event to user about new jobs found
+        emitNewJobsFound(userId, {
+            alertId,
+            alertTitle: title,
+            jobCount: uniqueJobsToSend.length,
+            jobs: uniqueJobsToSend.map(job => ({
+                title: job.title,
+                company: job.company,
+                location: job.location,
+                applyLink: job.applyLink
+            }))
         });
-
-        console.log(`📧 Sending ${jobsToSend.length} jobs to user (deduplication DISABLED)`);
-
-        // Always send email if there are jobs
-        if (jobsToSend.length > 0) {
-            try {
-                // Use the current email from the database to ensure accuracy
-                const recipientEmail = currentEmail;
-                const recipientName = alertExists.userName || userName || 'Job Seeker';
-
-                console.log(`\n${'='.repeat(60)}`);
-                console.log(`📧 SENDING EMAIL NOW`);
-                console.log(`${'='.repeat(60)}`);
-                console.log(`📬 To: ${recipientEmail}`);
-                console.log(`👤 Name: ${recipientName}`);
-                console.log(`🎯 Alert: "${title}"`);
-                console.log(`📊 Jobs Count: ${jobsToSend.length}`);
-                console.log(`${'='.repeat(60)}\n`);
-
-                // Emit socket event to user about new jobs found
-                emitNewJobsFound(userId, {
-                    alertId,
-                    alertTitle: title,
-                    jobCount: jobsToSend.length,
-                    jobs: jobsToSend.map(job => ({
-                        title: job.title,
-                        company: job.company,
-                        location: job.location,
-                        applyLink: job.applyLink
-                    }))
-                });
 
                 console.log(`⏳ Calling email service...`);
                 const emailResult = await sendJobAlertEmail({
                     userEmail: recipientEmail,
                     userName: recipientName,
                     alertTitle: title,
-                    jobs: jobsToSend
+                    jobs: uniqueJobsToSend
                 });
                 console.log(`✅ Email service call completed!`);
 
@@ -300,20 +316,20 @@ export const processAlert = async (alertData) => {
                 console.log(`✅✅✅ EMAIL SENT SUCCESSFULLY! ✅✅✅`);
                 console.log(`📧 Message ID: ${emailResult.messageId}`);
                 console.log(`📬 Recipient: ${recipientEmail}`);
-                console.log(`📊 Jobs Sent: ${jobsToSend.length}`);
+                console.log(`📊 Jobs Sent: ${uniqueJobsToSend.length}`);
                 console.log(`${'🎉'.repeat(30)}\n`);
 
                 // Emit socket event confirming email was sent
                 emitEmailSent(userId, {
                     alertId,
                     alertTitle: title,
-                    jobCount: jobsToSend.length,
+                    jobCount: uniqueJobsToSend.length,
                     recipientEmail,
                     messageId: emailResult.messageId
                 });
 
                 // Log all notifications
-                const notificationPromises = jobsToSend.map(async job => {
+                const notificationPromises = uniqueJobsToSend.map(async job => {
                     try {
                         const notification = await NotificationLog.create({
                             userId,
@@ -324,7 +340,7 @@ export const processAlert = async (alertData) => {
                             emailMessageId: emailResult.messageId
                         });
 
-                        // Save to Firebase (convert ObjectIds to strings)
+                        // Save to Firebase (convert ObjectIds to strings) 
                         try {
                             await saveNotificationToFirebase({
                                 ...notification.toObject(),
@@ -336,7 +352,7 @@ export const processAlert = async (alertData) => {
                             console.warn('⚠️  Could not save notification to Firebase:', fbError.message);
                         }
                     } catch (err) {
-                        // Handle duplicate key error gracefully
+                        // Handle duplicate key error gracefully 
                         if (err.code !== 11000) throw err;
                     }
                 });
@@ -347,12 +363,12 @@ export const processAlert = async (alertData) => {
                 await JobAlert.findByIdAndUpdate(alertId, {
                     lastCheckedAt: new Date(),
                     $inc: {
-                        totalJobsFound: jobsToSend.length,
+                        totalJobsFound: uniqueJobsToSend.length,
                         totalEmailsSent: 1
                     }
                 });
 
-                console.log(`✉️ Email sent with ${jobsToSend.length} jobs`);
+                console.log(`✉️ Email sent with ${uniqueJobsToSend.length} jobs`);
                 consecutiveFailures = 0; // Reset on success
 
             } catch (emailError) {
@@ -366,7 +382,7 @@ export const processAlert = async (alertData) => {
                 });
 
                 // Log failed notifications
-                await Promise.all(jobsToSend.map(job =>
+                await Promise.all(uniqueJobsToSend.map(job =>
                     NotificationLog.create({
                         userId,
                         alertId,
@@ -379,7 +395,7 @@ export const processAlert = async (alertData) => {
             }
         }
 
-        return { success: true, newJobs: jobsToSend.length };
+        return { success: true, newJobs: uniqueJobsToSend.length };
 
     } catch (error) {
         console.error(`❌ Error processing alert ${alertId}:`, error.message);
