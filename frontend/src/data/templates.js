@@ -2422,5 +2422,18 @@ export const templates = [
     "rating": 4.5,
     "image": "/template-previews/Zoom_Into_Work.png",
     "createdAt": "2026-05-01"
+  },
+  {
+    "id": "Blank_Canvas_Scratch_to_Reveal",
+    "title": "Blank Canvas (Scratch to Reveal)",
+    "category": "Portfolio",
+    "colorScheme": "Dark",
+    "layout": "Interactive",
+    "author": "System",
+    "views": 1824,
+    "rating": 4.9,
+    "image": "/templates/Blank_Canvas_Scratch_to_Reveal.png",
+    "createdAt": "2026-06-10",
+    "isComplete": true
   }
 ];
