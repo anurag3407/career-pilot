@@ -13,18 +13,26 @@ async function getRedisClient() {
   if (client) return client;
   if (connectionPromise) return connectionPromise;
 
-  connectionPromise = (async () => {
-    const newClient = redis.createClient({
-      url: process.env.REDIS_URL || "redis://localhost:6379",
-    });
-    newClient.on("error", (err) => {
-      console.error("[SessionManager] Redis Client Error:", err);
-    });
+connectionPromise = (async () => {
+  const newClient = redis.createClient({
+    url: process.env.REDIS_URL || "redis://localhost:6379",
+  });
+
+  newClient.on("error", (err) => {
+    console.error("[SessionManager] Redis Client Error:", err);
+  });
+
+  try {
     await newClient.connect();
     client = newClient;
     connectionPromise = null;
     return client;
-  })();
+  } catch (err) {
+    client = null;
+    connectionPromise = null;   // ← reset so next call retries fresh
+    throw err;
+  }
+})();
 
   return connectionPromise;
 }
