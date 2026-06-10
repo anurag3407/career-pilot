@@ -127,7 +127,7 @@ jobs:
         uses: actions/checkout@v4
 
       - name: Run OSV Scanner
-        uses: google/osv-scanner-action@v1.8.0
+        uses: google/osv-scanner-action@v1.7.0
         continue-on-error: true
         with:
           scan-args: |-
