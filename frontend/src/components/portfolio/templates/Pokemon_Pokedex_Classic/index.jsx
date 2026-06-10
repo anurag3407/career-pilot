@@ -1,8 +1,10 @@
+import { usePortfolio } from "../../../../context/PortfolioContext";
 import React, { useMemo, useState } from "react";
 import { motion, AnimatePresence } from "framer-motion";
-import data from "../../../../data/dummy_data.json";
 
 const PokemonPokedexClassic = ({ portfolioData }) => {
+  const { portfolioData: data } = usePortfolio();
+
   /* ── Data Handling ─────────────────────────────────────────────────────── */
   const mergedData = useMemo(() => {
     const projects = portfolioData?.projects || data.projects || [];

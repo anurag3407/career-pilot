@@ -1,7 +1,7 @@
+import { usePortfolio } from "../../../../context/PortfolioContext";
 import React, { useState, useRef } from "react";
 import { motion, AnimatePresence, useInView, useScroll, useTransform } from "framer-motion";
 import { Github, Linkedin, Twitter, Mail, ExternalLink, ChevronDown, MapPin, Briefcase, Star } from "lucide-react";
-import data from "../../../../data/dummy_data.json";
 
 const C = {
   night:   "#0A0014",
@@ -19,6 +19,8 @@ const C = {
 };
 
 function GlobalStyles() {
+  const { portfolioData: data } = usePortfolio();
+
   return (
     <style>{`
       @import url('https://fonts.googleapis.com/css2?family=Playfair+Display:ital,wght@0,400;0,600;0,700;0,900;1,400;1,700&family=Raleway:wght@300;400;500;600;700&display=swap');
@@ -178,6 +180,8 @@ function GlobalStyles() {
 
 /* Animated sunset sky SVG */
 function SunsetSky() {
+  const { portfolioData: data } = usePortfolio();
+
   return (
     <svg viewBox="0 0 1440 600" preserveAspectRatio="xMidYMid slice"
       style={{ position: "absolute", inset: 0, width: "100%", height: "100%", zIndex: 0 }}>
@@ -230,6 +234,8 @@ function SunsetSky() {
 }
 
 function FadeIn({ children, delay = 0, className = "", style = {} }) {
+  const { portfolioData: data } = usePortfolio();
+
   const ref = useRef(null);
   const inView = useInView(ref, { once: true, margin: "-80px" });
   return (
@@ -242,6 +248,8 @@ function FadeIn({ children, delay = 0, className = "", style = {} }) {
 }
 
 function SkillBar({ name, level, category }) {
+  const { portfolioData: data } = usePortfolio();
+
   const ref = useRef(null);
   const inView = useInView(ref, { once: true });
   return (
@@ -259,6 +267,8 @@ function SkillBar({ name, level, category }) {
 }
 
 export default function SunsetWarm() {
+  const { portfolioData: data } = usePortfolio();
+
   const [menuOpen, setMenuOpen] = useState(false);
   const [contactState, setContactState] = useState("idle");
   const [form, setForm] = useState({ name: "", email: "", message: "" });

@@ -1,5 +1,5 @@
+import { usePortfolio } from "../../../../context/PortfolioContext";
 import React from 'react';
-import data from '../../../../data/dummy_data.json';
 import Navbar from './Navbar';
 import Hero from './Hero';
 import About from './About';
@@ -9,6 +9,8 @@ import Experience from './Experience';
 import Contact from './Contact';
 
 export default function UndergroundBunkerConsole() {
+  const { portfolioData: data } = usePortfolio();
+
   return (
     <div style={{ backgroundColor: '#0a0a0a', color: '#33ff33', fontFamily: '"JetBrains Mono", "Courier New", monospace', minHeight: '100vh' }}>
       <style>{`

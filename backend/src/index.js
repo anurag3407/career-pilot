@@ -21,7 +21,7 @@ import jobAlertRoutes from './routes/jobAlerts.js';
 import communityRoutes from './routes/community.js';
 import fellowshipRoutes from './routes/fellowships.js';
 import interviewRoutes from './routes/interview.js';
-
+import gdprRoutes from './routes/gdpr.js';
 import userProfileRoutes from './routes/userProfile.js';
 import twoFactorRoutes from './routes/twoFactor.js';
 import aiRoutes from './routes/ai.js';
@@ -52,6 +52,7 @@ import { connectDB as baseConnectDB } from './config/database.js';
 import { initJobFetcher } from './services/jobFetcher.js';
 import JobAlert from './models/JobAlert.model.js';
 import { initGitHubSyncCron } from './services/portfolioGitHubSync.js';
+import coverLetterRoutes from "./routes/coverLetter.js";
 
 const shouldInitGitHubSyncCron =
   process.env.ENABLE_GITHUB_SYNC_CRON !== 'false' &&
@@ -237,6 +238,7 @@ app.use('/api/auth', authRoutes);
 app.use('/api/upload', uploadRoutes);
 app.use('/api/resumes', resumeRoutes);
 app.use('/api/enhance', enhanceRoutes);
+app.use("/api/cover-letter", coverLetterRoutes);
 app.use('/api/fetchjobs', jobsRoutes);
 app.use('/api/job-tracker', jobTrackerRoutes);
 app.use('/api/job-alerts', jobAlertRoutes);
@@ -254,6 +256,7 @@ try {
 }
 app.use('/api/portfolio', portfolioRoutes);
 app.use('/api/user-profiles', userProfileRoutes);
+app.use('/api/gdpr', gdprRoutes);
 app.use('/api/auth/2fa', twoFactorRoutes);
 app.use('/api/search', searchRoutes);
 app.use('/api/ai', aiRoutes);

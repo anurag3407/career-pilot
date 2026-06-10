@@ -1,0 +1,60 @@
+services:
+
+    mongodb: 
+        image: mongo:6.0
+        container_name: mongodb_container
+        ports:
+            - 27017:27017
+        volumes:
+            - mongo_data:/data/db
+        networks:
+            - career_pilot_network
+    redis:
+        image: redis:7-alpine
+        container_name: redis_container
+        ports:
+            - 6379:6379
+        networks:
+            - career_pilot_network
+    backend: 
+        build:
+            context: ./backend
+            target: development
+        container_name: backend_container
+        ports:
+            - 5001:5001
+        volumes:
+            - ./backend:/usr/src/app
+            - /usr/src/app/node_modules
+        environment:
+            - NODE_ENV=development
+            - MONGODB_URI=mongodb://mongodb:27017/career_pilot
+            - REDIS_URL=redis://redis:6379
+            - GROQ_API_KEY=${GROQ_API_KEY}
+        depends_on:
+            - mongodb
+            - redis
+        networks:
+            - career_pilot_network
+    frontend: 
+        build:
+            context: ./frontend
+            target: development
+        container_name: frontend_container
+        environment:
+            - IS_DOCKER=true
+        ports: 
+            - 5173:5173
+        volumes:
+            - ./frontend:/usr/src/app
+            - /usr/src/app/node_modules
+        depends_on:
+            - backend
+        networks:
+            - career_pilot_network
+volumes:
+    mongo_data:
+        driver: local
+networks:
+  career_pilot_network:
+    driver: bridge
