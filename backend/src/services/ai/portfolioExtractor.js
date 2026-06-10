@@ -24,6 +24,13 @@ export const extractPortfolioData = async (resumeText, aiProvider) => {
             "subtitle": "User's full name",
             "tagline": "One sentence summary"
           },
+          "contact": {
+            "email": "Email address if found, otherwise empty string",
+            "linkedin": "LinkedIn URL if found, otherwise empty string",
+            "github": "GitHub URL if found, otherwise empty string",
+            "portfolio": "Personal website URL if found, otherwise empty string",
+            "phone": "Phone number if found, otherwise empty string"
+          },
           "about": {
             "bio": "A 2-3 sentence professional bio"
           },
@@ -39,7 +46,8 @@ export const extractPortfolioData = async (resumeText, aiProvider) => {
             {
               "title": "Project Name",
               "description": "Short project description",
-              "technologies": ["Tech 1", "Tech 2"]
+              "technologies": ["Tech 1", "Tech 2"],
+              "link": "Project URL if found, otherwise empty string"
             }
           ],
           "skills": ["Skill 1", "Skill 2", "Skill 3"]

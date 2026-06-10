@@ -16,7 +16,7 @@ import { twoFactorApi } from '../services/api'
 import Button from '../components/Button'
 import Input from '../components/Input'
 import Card from '../components/Card'
-import { SkeletonPage } from '../components/ui/Skeleton'
+import { SkeletonSettings } from '../components/ui/Skeleton'
 
 // ── sub-components ─────────────────────────────────────────────────────────────
 
@@ -252,7 +252,7 @@ export default function SecuritySettings() {
   // ── render ──
 
   if (loading) {
-    return <SkeletonPage width="max-w-2xl" rows={3} />
+    return <SkeletonSettings />
   }
 
   return (

@@ -1,4 +1,6 @@
-import React, { useRef, useState } from 'react'
+import { ResumeConsistencyChecker } from '../utils/resumeChecker';
+import ConsistencyPanel from '../utils/ConsistencyPanel';
+import React, { useRef, useState, useEffect } from 'react'
 import { motion, AnimatePresence } from 'framer-motion'
 import { useNavigate } from 'react-router-dom'
 import {
@@ -8,6 +10,7 @@ import {
 import { resumeApi } from '../services/api'
 import { toast } from 'react-hot-toast'
 import { cn } from '@/lib/utils'
+import AchievementEnhancer from "../components/resume/AchievementEnhancer";
 import PhoneInput from '../components/PhoneInput'
 import {
   validatePersonalStep,
@@ -47,6 +50,10 @@ export default function ResumeBuilder() {
   const [currentStep, setCurrentStep] = useState(0)
   const [isSubmitting, setIsSubmitting] = useState(false)
   const [targetRole, setTargetRole]   = useState('')
+  const [readabilityScore, setReadabilityScore] = useState(0)
+  const [claritySuggestions, setClaritySuggestions] = useState([])
+  const [achievementScore, setAchievementScore] = useState(0)
+  const [achievementSuggestions, setAchievementSuggestions] = useState([])
 
   // ── form state ──────────────────────────────────────────────────────────────
   const [personal, setPersonal] = useState({
@@ -66,6 +73,197 @@ export default function ResumeBuilder() {
     { name: '', tech: '', link: '', description: '' }
   ])
   const [skills, setSkills] = useState('')
+  const [resumeScore, setResumeScore] = useState(0)
+  const [recommendedSections, setRecommendedSections] = useState([])
+  const [atsScore, setAtsScore] = useState(0)
+  const [missingKeywords, setMissingKeywords] = useState([])
+  const [resumeVersions, setResumeVersions] = useState([])
+  const [selectedVersion, setSelectedVersion] = useState(null)
+  
+  const [recommendedSkills, setRecommendedSkills] = useState([])
+  useEffect(() => {
+  const suggestions = []
+  let score = 100
+
+  const descriptions = experience.map(exp => exp.description).join(" ")
+
+  if (!/\d+%|\d+\+|\$\d+/g.test(descriptions)) {
+    score -= 25
+    suggestions.push("Add measurable metrics such as percentages, revenue, or growth numbers.")
+  }
+
+  if (!/(led|developed|implemented|created|optimized|improved)/i.test(descriptions)) {
+    score -= 20
+    suggestions.push("Use stronger action verbs to describe achievements.")
+  }
+
+  if (descriptions.length < 100) {
+    score -= 15
+    suggestions.push("Provide more detailed achievement descriptions.")
+  }
+
+  if (!/(resulted|increased|reduced|improved|achieved)/i.test(descriptions)) {
+    score -= 20
+    suggestions.push("Highlight outcomes and business impact.")
+  }
+
+  setAchievementScore(Math.max(score, 0))
+  setAchievementSuggestions(suggestions)
+}, [experience])
+
+  useEffect(() => {
+  const content = [
+    personal.summary,
+    ...experience.map(e => e.description),
+    ...projects.map(p => p.description)
+  ].join(' ')
+
+  let score = 100
+  const suggestions = []
+
+  if (content.length < 100) {
+    score -= 20
+    suggestions.push("Add more descriptive content.")
+  }
+
+  if (content.includes("was") || content.includes("were")) {
+    score -= 10
+    suggestions.push("Reduce passive voice usage.")
+  }
+
+  if (!content.match(/developed|built|created|led|implemented/i)) {
+    score -= 15
+    suggestions.push("Use stronger action verbs.")
+  }
+
+  setReadabilityScore(Math.max(score, 0))
+  setClaritySuggestions(suggestions)
+}, [personal, experience, projects])
+
+ // ─────────────────── ATS Keyword Assessment Loop ───────────────────
+  useEffect(() => {
+    const keywords = [
+      "React", "JavaScript", "Git", "Node.js",
+      "API", "Leadership", "Teamwork", "Problem Solving"
+    ]
+
+    const resumeText = `
+      ${personal.summary}
+      ${skills}
+      ${projects.map(p => p.description).join(" ")}
+      ${experience.map(e => e.description).join(" ")}
+    `.toLowerCase()
+
+    const foundKeywords = keywords.filter(keyword =>
+      resumeText.includes(keyword.toLowerCase())
+    )
+
+    const missing = keywords.filter(
+      keyword => !foundKeywords.includes(keyword)
+    )
+
+    setMissingKeywords(missing)
+    setRecommendedSkills(missing.slice(0, 4))
+
+    if (keywords.length > 0) {
+      setAtsScore(
+        Math.round((foundKeywords.length / keywords.length) * 100)
+      )
+    }
+  }, [personal, skills, projects, experience])
+
+  // ─────────────────── Live Consistency Memoized Engine ───────────────────
+  const activeConsistencyWarnings = React.useMemo(() => {
+    const allExperienceDates = (experience || []).flatMap(exp => [exp.startDate, exp.endDate]);
+    const allEducationDates = (education || []).flatMap(edu => [edu.startDate, edu.endDate]);
+    const aggregatedTimelineDates = [...allExperienceDates, ...allEducationDates];
+
+    // Filter out current roles so ongoing present-tense verbs aren't flagged as bugs
+    const pastExperienceBullets = (experience || [])
+      .filter(exp => !exp.current)
+      .map(exp => exp.description || '');
+
+    const projectDescriptions = (projects || []).map(p => p.description || '');
+    const aggregatedTextDescriptions = [...pastExperienceBullets, ...projectDescriptions];
+
+    const dateValidationErrors = ResumeConsistencyChecker.checkDateConsistency(aggregatedTimelineDates);
+    const tenseValidationErrors = ResumeConsistencyChecker.checkTenseConsistency(pastExperienceBullets);
+    const redundancyValidationErrors = ResumeConsistencyChecker.checkDuplicateContent(aggregatedTextDescriptions);
+
+    return [
+      ...dateValidationErrors,
+      ...tenseValidationErrors,
+      ...redundancyValidationErrors
+    ];
+  }, [experience, education, projects]);
+
+  const saveVersion = React.useCallback(() => {
+    const newVersion = {
+      id: Date.now(),
+      timestamp: new Date().toLocaleString(),
+      content: typeof generateMarkdown === 'function' ? generateMarkdown() : "",
+    };
+    setResumeVersions(prev => [newVersion, ...prev]);
+    if (typeof toast !== 'undefined') {
+      toast.success("Resume version layout tracked successfully!");
+    }
+  }, [experience, education, projects, personal, skills, generateMarkdown]);
+
+  // ─────────────────── Automated Recommendations Engine ───────────────────
+  useEffect(() => {
+    const recommendations = [];
+    
+  if (projects.every(p => !p.name.trim())) {
+    recommendations.push("Projects")
+  }
+
+  if (!skills.trim()) {
+    recommendations.push("Skills")
+  }
+
+  if (education.every(e => !e.school?.trim())) {
+    recommendations.push("Certifications")
+  }
+
+  if (experience.every(e => !e.title?.trim())) {
+    recommendations.push("Volunteer Experience")
+  }
+
+  setRecommendedSections(recommendations)
+}, [projects, skills, education, experience])
+
+useEffect(() => {
+  let score = 0
+
+  if (personal.name && personal.email) {
+    score += 20
+  }
+
+  if (education.some(e => e.school.trim())) {
+    score += 20
+  }
+
+  if (experience.some(e => e.title.trim())) {
+    score += 20
+  }
+
+  if (projects.some(p => p.name.trim())) {
+    score += 20
+  }
+
+  if (skills.trim()) {
+    score += 20
+  }
+
+  setResumeScore(score)
+}, [
+  personal,
+  education,
+  experience,
+  projects,
+  skills
+])
+
 
   // ── error state ─────────────────────────────────────────────────────────────
   const [personalErrors,   setPersonalErrors]   = useState({})
@@ -214,6 +412,22 @@ export default function ResumeBuilder() {
     try {
       setIsSubmitting(true)
       const markdown = generateMarkdown()
+      const restoreVersion = (version) => {
+  setSelectedVersion(version)
+
+  toast.success(
+    `Restored version from ${version.timestamp}`
+  )
+}
+      const saveVersion = () => {
+  const newVersion = {
+    id: Date.now(),
+    timestamp: new Date().toLocaleString(),
+    content: generateMarkdown(),
+  }
+
+  setResumeVersions(prev => [newVersion, ...prev])
+}
       const response = await resumeApi.create({
         originalText: markdown,
         jobRole: targetRole || 'Software Engineer',
@@ -588,14 +802,25 @@ export default function ResumeBuilder() {
                     </div>
 
                     <div className="md:col-span-2">
-                      <label className="block text-sm font-medium mb-1">Description (Bullet points)</label>
-                      <textarea
-                        className="w-full bg-background/50 border border-border rounded-lg px-4 py-2 min-h-[100px] focus:outline-none focus:ring-2 focus:ring-primary/30 transition-colors"
-                        value={exp.description}
-                        onChange={e => updateExp(index, 'description', e.target.value)}
-                        placeholder={`- Developed feature X resulting in Y% improvement\n- Led a team of...`}
-                      />
-                    </div>
+  <label className="block text-sm font-medium mb-1">
+    Description (Bullet points)
+  </label>
+
+  <textarea
+    className="w-full bg-background/50 border border-border rounded-lg px-4 py-2 min-h-[100px] focus:outline-none focus:ring-2 focus:ring-primary/30 transition-colors"
+    value={exp.description}
+    onChange={e => updateExp(index, 'description', e.target.value)}
+    placeholder={`- Developed feature X resulting in Y% improvement\n- Led a team of...`}
+  />
+
+  <AchievementEnhancer
+    value={exp.description}
+    jobRole={targetRole}
+    onApply={(text) =>
+      updateExp(index, "description", text)
+    }
+  />
+</div>
 
                   </div>
                 </div>
@@ -692,11 +917,295 @@ export default function ResumeBuilder() {
       /* ── Step 5: Preview ── */
       case 5:
         return (
+
           <div className="space-y-6">
             <h2 className="text-2xl font-semibold mb-6">Preview &amp; Generate</h2>
-            <div className="bg-background border border-border rounded-xl p-6 h-[500px] overflow-y-auto font-mono text-sm whitespace-pre-wrap">
-              {generateMarkdown()}
-            </div>
+            <div className="flex justify-end mb-4">
+  <button
+    onClick={saveVersion}
+    className="px-4 py-2 rounded-lg bg-primary text-primary-foreground"
+  >
+    Save Version
+  </button>
+</div>
+
+<div className="mb-6 p-4 rounded-xl border border-border bg-background/50">
+
+  <div className="flex justify-between items-center mb-2">
+    <h3 className="font-semibold">
+      Skill Gap Analysis
+    </h3>
+
+    <div className="mt-2">
+  <span
+    className={`px-3 py-1 rounded-full text-sm ${
+      atsScore >= 80
+        ? "bg-green-500/20 text-green-500"
+        : atsScore >= 60
+        ? "bg-yellow-500/20 text-yellow-500"
+        : "bg-red-500/20 text-red-500"
+    }`}
+  >
+    {atsScore >= 80
+      ? "Strong Match"
+      : atsScore >= 60
+      ? "Moderate Gap"
+      : "High Skill Gap"}
+  </span>
+</div>
+
+    <span className="text-primary font-bold">
+      {atsScore}% Match
+    </span>
+  </div>
+
+  <div className="w-full bg-secondary rounded-full h-3">
+    <div
+      className="bg-primary h-3 rounded-full transition-all duration-500"
+      style={{ width: `${atsScore}%` }}
+    />
+  </div>
+
+  {recommendedSkills.length > 0 && (
+  <div className="mt-4">
+    <h4 className="font-medium mb-2">
+      Recommended Skills to Learn
+    </h4>
+
+    <div className="flex flex-wrap gap-2">
+      {recommendedSkills.map(skill => (
+        <span
+          key={skill}
+          className="px-3 py-1 rounded-full bg-green-500/20 text-green-400 text-sm"
+        >
+          {skill}
+        </span>
+      ))}
+    </div>
+  </div>
+)}
+
+  <div className="mt-4">
+    <h4 className="font-medium mb-2">
+      Missing Skills
+    </h4>
+
+    <div className="flex flex-wrap gap-2">
+      {missingKeywords.map(skill => (
+        <span
+          key={skill}
+          className="px-3 py-1 rounded-full bg-red-500/20 text-red-400 text-sm"
+        >
+          {skill}
+        </span>
+      ))}
+    </div>
+  </div>
+
+</div>
+
+<div className="mb-6 p-4 rounded-xl border border-border bg-background/50">
+  <div className="flex justify-between items-center mb-2">
+    <h3 className="font-semibold">
+      Achievement Impact Score
+    </h3>
+
+    <span className="text-primary font-bold">
+      {achievementScore}/100
+    </span>
+  </div>
+
+  <div className="w-full bg-secondary rounded-full h-3">
+    <div
+      className="bg-primary h-3 rounded-full transition-all"
+      style={{ width: `${achievementScore}%` }}
+    />
+  </div>
+
+  {achievementSuggestions.length > 0 && (
+    <div className="mt-4">
+      <h4 className="font-medium mb-2">
+        Improvement Suggestions
+      </h4>
+
+      <ul className="list-disc list-inside text-sm text-muted-foreground">
+        {achievementSuggestions.map((item, index) => (
+          <li key={index}>{item}</li>
+        ))}
+      </ul>
+    </div>
+  )}
+</div>
+<div className="mb-6 p-4 rounded-xl border border-border bg-background/50">
+  <h3 className="font-semibold mb-3">
+    Section Completion Status
+  </h3>
+
+  <div className="space-y-2">
+    <div>{personal.name && personal.email ? "✅" : "❌"} Personal Info</div>
+    <div>{education.some(e => e.school) ? "✅" : "❌"} Education</div>
+    <div>{experience.some(e => e.title) ? "✅" : "❌"} Experience</div>
+    <div>{projects.some(p => p.name) ? "✅" : "❌"} Projects</div>
+    <div>{skills.trim() ? "✅" : "❌"} Skills</div>
+  </div>
+</div>
+            <div className="mb-6 p-4 rounded-xl border border-border bg-background/50">
+  <div className="flex justify-between items-center mb-2">
+    <h3 className="font-semibold">
+      Resume Improvement Progress
+    </h3>
+
+    <span className="text-primary font-bold">
+      {resumeScore}%
+    </span>
+  </div>
+
+  <div className="w-full bg-secondary rounded-full h-3">
+    <div
+      className="bg-primary h-3 rounded-full transition-all duration-500"
+      style={{ width: `${resumeScore}%` }}
+    />
+  </div>
+
+  <div className="mt-4 flex flex-wrap gap-2">
+  <span
+    className={`px-3 py-1 rounded-full text-sm ${
+      resumeScore >= 20
+        ? "bg-green-500/20 text-green-500"
+        : "bg-secondary"
+    }`}
+  >
+    Personal Info
+  </span>
+
+  <span
+    className={`px-3 py-1 rounded-full text-sm ${
+      resumeScore >= 40
+        ? "bg-green-500/20 text-green-500"
+        : "bg-secondary"
+    }`}
+  >
+    Education
+  </span>
+
+  <span
+    className={`px-3 py-1 rounded-full text-sm ${
+      resumeScore >= 60
+        ? "bg-green-500/20 text-green-500"
+        : "bg-secondary"
+    }`}
+  >
+    Experience
+  </span>
+
+  <span
+    className={`px-3 py-1 rounded-full text-sm ${
+      resumeScore >= 80
+        ? "bg-green-500/20 text-green-500"
+        : "bg-secondary"
+    }`}
+  >
+    Projects
+  </span>
+
+  <span
+    className={`px-3 py-1 rounded-full text-sm ${
+      resumeScore >= 100
+        ? "bg-green-500/20 text-green-500"
+        : "bg-secondary"
+    }`}
+  >
+    Skills
+  </span>
+</div>
+
+  <p className="mt-2 text-sm text-muted-foreground">
+    Complete more sections to improve your resume score.
+  </p>
+</div>
+            {recommendedSections.length > 0 && (
+  <div className="mb-6 p-4 rounded-xl border border-border bg-background/50">
+    <h3 className="font-semibold mb-2">
+      Recommended Sections
+    </h3>
+
+    <div className="flex flex-wrap gap-2">
+      {recommendedSections.map(section => (
+        <span
+          key={section}
+          className="px-3 py-1 rounded-full bg-primary/10 text-primary text-sm"
+        >
+          {section}
+        </span>
+      ))}
+    </div>
+  </div>
+)}
+
+{resumeVersions.length > 0 && (
+  <div className="mb-6 p-4 rounded-xl border border-border bg-background/50">
+    <h3 className="font-semibold mb-3">
+      Resume Version History
+    </h3>
+
+    <div className="space-y-2">
+      {resumeVersions.map(version => (
+        <div
+          key={version.id}
+          className="flex justify-between items-center p-2 rounded-lg bg-background"
+        >
+          <span className="text-sm">
+            {version.timestamp}
+          </span>
+
+          <button
+            onClick={() => restoreVersion(version)}
+            className="text-primary text-sm font-medium"
+          >
+            Restore
+          </button>
+        </div>
+      ))}
+    </div>
+  </div>
+)}
+
+<div className="mb-6 p-4 rounded-xl border border-border bg-background/50">
+  <div className="flex justify-between items-center mb-2">
+    <h3 className="font-semibold">
+      Resume Readability Score
+    </h3>
+
+    <span className="text-primary font-bold">
+      {readabilityScore}/100
+    </span>
+  </div>
+
+  <div className="w-full bg-secondary rounded-full h-3">
+    <div
+      className="bg-primary h-3 rounded-full transition-all"
+      style={{ width: `${readabilityScore}%` }}
+    />
+  </div>
+
+  {claritySuggestions.length > 0 && (
+    <div className="mt-4">
+      <h4 className="font-medium mb-2">
+        Suggestions
+      </h4>
+
+      <ul className="list-disc list-inside text-sm text-muted-foreground">
+        {claritySuggestions.map((tip, index) => (
+          <li key={index}>{tip}</li>
+        ))}
+      </ul>
+    </div>
+  )}
+</div>
+
+<div className="bg-background border border-border rounded-xl p-6 h-[500px] overflow-y-auto font-mono text-sm whitespace-pre-wrap">
+  {generateMarkdown()}
+</div>
           </div>
         )
 
@@ -764,6 +1273,13 @@ export default function ResumeBuilder() {
             </motion.div>
           </AnimatePresence>
         </div>
+
+        {/* Drop this safely within your main workspace grid or right before action buttons */}
+<AnimatePresence mode="wait">
+  {currentStep !== 5 && ( // Hide panel on the final pure preview screen
+    <ConsistencyPanel errors={activeConsistencyWarnings} />
+  )}
+</AnimatePresence>
 
         {/* Navigation Actions */}
         <div className="mt-8 flex justify-between items-center">

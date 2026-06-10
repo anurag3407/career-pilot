@@ -3,10 +3,13 @@
  * Main Application Component with Route-based Code Splitting
  * Implements lazy loading for improved performance
  */
+import CoverLetter from "./pages/CoverLetter";
+import VercelDeploy from "./components/portfolio/templates/Vercel_Deploy/index";
 import React, { useState, useEffect, lazy, Suspense } from 'react';
 import StockTicker from "./components/portfolio/templates/Finance_Corporate/StockTicker";
 import Deployments from './pages/Deployments'
 import TemplateGallery from "./pages/TemplateGallery";
+import TemplatePreviewOnly from "./pages/TemplatePreviewOnly";
 
 import { BrowserRouter, Routes, Route, Navigate } from 'react-router-dom';
 import { Toaster } from 'react-hot-toast';
@@ -27,9 +30,8 @@ const ResumeBuilder = lazy(() => import('./pages/ResumeBuilder'));
 import TextToResume from './pages/TextToResume';
 import About from './components/portfolio/templates/Tech_Startup/About';
 import ChatbotPortfolio from "./components/portfolio/templates/Chatbot_Portfolio";
-import GamifiedXP from "./components/portfolio/templates/Gamified_XP";
-import TelescopeZoom from "./components/portfolio/templates/Telescope_Zoom";
-import DayNightCycle from './components/portfolio/templates/Day_Night_Cycle/index.jsx';
+import GlassmorphismTemplate from "./components/portfolio/templates/Glassmorphism/index";
+
 import JobTracker from './pages/JobTracker';
 
 const Community = lazy(() => import('./pages/Community'));
@@ -42,11 +44,14 @@ const Enhance = lazy(() => import("./pages/Enhance"));
 const ResumeView = lazy(() => import("./pages/ResumeView"));
 const JobAlerts = lazy(() => import("./pages/JobAlerts"));
 const InterviewPrep = lazy(() => import("./pages/InterviewPrep"));
+const InterviewHistory = lazy(() => import("./pages/InterviewHistory"));
+const InterviewReplay = lazy(() => import("./pages/InterviewReplay"));
 const UserProfile = lazy(() => import("./pages/UserProfile"));
 const SecuritySettings = lazy(() => import("./pages/SecuritySettings"));
 const EmailGenerator = lazy(() => import("./pages/EmailGenerator"));
 const LinkedInOptimizer = lazy(() => import("./pages/LinkedInOptimizer"));
 const Settings = lazy(() => import("./pages/Settings"));
+const SkillGap = lazy(() => import("./pages/SkillGap"));
 const ResumeHub = lazy(() => import("./pages/hubs/ResumeHub"));
 const JobsHub = lazy(() => import("./pages/hubs/JobsHub"));
 const PortfolioHub = lazy(() => import("./pages/hubs/PortfolioHub"));
@@ -82,6 +87,7 @@ import RouteErrorBoundary from './components/RouteErrorBoundary';
 
 // Hub Imports
 const GitHubDashboard = lazy(() => import('./pages/GitHubDashboard'));
+const LinkedInDashboard = lazy(() => import('./pages/LinkedInDashboard'));
 const RepoAnalyzerLanding = lazy(() => import('./pages/RepoAnalyzer/Landing'));
 const RepoAnalyzerDashboard = lazy(() => import('./pages/RepoAnalyzer/Dashboard'));
 const RepoAnalyzerWorkspace = lazy(() => import('./pages/RepoAnalyzer/Workspace'));
@@ -90,8 +96,26 @@ const ProjectVisualizerDashboard = lazy(() => import('./pages/ProjectVisualizer/
 import ScrollToTop from "./components/ScrollToTop";
 import NorthernFjords from './components/portfolio/templates/Northern_Fjords';
 import RainforestCanopy from './components/portfolio/templates/Rainforest_Canopy/index.jsx';
+import DuotoneBold from './components/portfolio/templates/Duotone_Bold/index.jsx';
+import ChromaticGlitch from './components/portfolio/templates/Chromatic_Glitch/index.jsx';
+import SwissTypography from './components/portfolio/templates/Swiss_Typography/index.jsx';
+import DesertDunes from './components/portfolio/templates/Desert_Dunes/index.jsx';
+import PsychedelicSwirl from './components/portfolio/templates/Psychedelic_Swirl/index.jsx';
+import MemphisPop from './components/portfolio/templates/Memphis_Pop/index.jsx';
+import HiddenEasterEggScavengerHunt from './components/portfolio/templates/Hidden_Easter_Egg_Scavenger_Hunt/index.jsx';
+import CassetteMixtape from './components/portfolio/templates/Cassette_Mixtape/index.jsx';
+import MagneticDock from './components/portfolio/templates/Magnetic_Dock/index.jsx';
 import Hero from './components/portfolio/templates/Magazine_Editorial/Hero';
+import ColorBlock from './components/portfolio/templates/Color_Block/index.jsx';
+import OceanDepths from './components/portfolio/templates/Ocean_Depths/index.jsx';
+import NeonCityscape from './components/portfolio/templates/Neon_Cityscape/index.jsx';
+import PlanetaryOrbit from './components/portfolio/templates/Planetary_Orbit/index.jsx';
+import LowPolyTerrain from './components/portfolio/templates/Low_Poly_Terrain/index.jsx';
+import HighFashion from './components/portfolio/templates/High_Fashion/index.jsx';
+import TypographicWheatpastePosterWall from './components/portfolio/templates/Typographic_Wheatpaste_Poster_Wall/index.jsx';
+import DigitalManifestoScroll from './components/portfolio/templates/Digital_Manifesto_Scroll/index.jsx';
 import TestSocialLinks from './pages/TestSocialLinks';
+import ZineCollage from './components/portfolio/templates/ZineCollage';
 
 function LoadingScreen({ label }) {
   return (
@@ -230,15 +254,35 @@ function AppRoutes() {
 
         {/* Template Gallery Route (Registered at /templates) */}
         <Route path="/templates" element={<TemplateGallery />} />
-
+        <Route path="/preview/:templateId" element={<TemplatePreviewOnly />} />
+        <Route path="/cover-letter" element={<CoverLetter />} />
         
 
-        <Route path="/templates/chatbot" element={<ChatbotPortfolio />} />
+               {/* <Route path="/templates/day-night-cycle" element={<DayNightCycle />} /> */}
 
-        {/* <Route path="/templates/day-night-cycle" element={<DayNightCycle />} /> */}
         <Route path="/templates/rainforest-canopy" element={<RainforestCanopy />} />
         <Route path="/templates/northern-fjords" element={<NorthernFjords />} />
-        
+        <Route path="/templates/duotone-bold" element={<DuotoneBold />} />
+        <Route path="/templates/chromatic-glitch" element={<ChromaticGlitch />} />
+        <Route path="/templates/swiss-typography" element={<SwissTypography />} />
+      
+        <Route path="/templates/desert-dunes" element={<DesertDunes />} />
+        <Route path="/templates/psychedelic-swirl" element={<PsychedelicSwirl />} />
+        <Route path="/templates/memphis-pop" element={<MemphisPop />} />
+        <Route path="/templates/cassette-mixtape" element={<CassetteMixtape />} />
+        <Route path="/templates/hidden-easter-egg-scavenger-hunt" element={<HiddenEasterEggScavengerHunt />} />
+        <Route path="/templates/magnetic-dock" element={<MagneticDock />} />
+        <Route path="/templates/ocean-depths" element={<OceanDepths />} />
+        <Route path="/templates/neon-cityscape" element={<NeonCityscape />} />
+        <Route path="/templates/planetary-orbit" element={<PlanetaryOrbit />} />
+        <Route path="/templates/low-poly-terrain" element={<LowPolyTerrain />} />
+        <Route path="/templates/high-fashion" element={<HighFashion />} />
+        <Route path="/templates/typographic-wheatpaste-poster-wall" element={<TypographicWheatpastePosterWall />} />
+        <Route path="/templates/digital-manifesto-scroll" element={<DigitalManifestoScroll />} />
+
+        <Route path="/templates/zine-collage" element={<ZineCollage />} />
+        <Route path="/templates/chatbot" element={<ChatbotPortfolio />} /> 
+        <Route path="/templates/glassmorphism" element={<GlassmorphismTemplate/>} />
         {/* Core Protected Routes */}
         <Route 
   path="/dashboard" 
@@ -250,15 +294,13 @@ function AppRoutes() {
     </ProtectedRoute>
   } 
 />
-        <Route 
-  path="/dashboard/analytics" 
+        <Route
+  path="/dashboard/analytics"
   element={
-    <ProtectedRoute>
-      <Suspense fallback={<LoadingScreen label="Loading Analytics..." />}>
-        <Analytics />
-      </Suspense>
-    </ProtectedRoute>
-  } 
+    <Suspense fallback={<LoadingScreen label="Loading Analytics..." />}>
+      <Analytics />
+    </Suspense>
+  }
 />
         <Route path="/upload" element={<ProtectedRoute><Suspense fallback={<LoadingScreen label="Loading Upload..." />}><Upload /></Suspense></ProtectedRoute>} />
         <Route 
@@ -297,11 +339,33 @@ function AppRoutes() {
   } 
 />
         <Route path="/interview-prep" element={<ProtectedRoute><Suspense fallback={<LoadingScreen label="Loading Interview Prep..." />}><InterviewPrep /></Suspense></ProtectedRoute>} />
+        <Route
+  path="/interview-history"
+  element={
+    <ProtectedRoute>
+      <Suspense fallback={<LoadingScreen label="Loading Interview History..." />}>
+        <InterviewHistory />
+      </Suspense>
+    </ProtectedRoute>
+  }
+/>
+
+<Route
+  path="/interview-history/:id"
+  element={
+    <ProtectedRoute>
+      <Suspense fallback={<LoadingScreen label="Loading Interview Replay..." />}>
+        <InterviewReplay />
+      </Suspense>
+    </ProtectedRoute>
+  }
+/>
         <Route path="/profile" element={<ProtectedRoute><Suspense fallback={<LoadingScreen label="Loading Profile..." />}><UserProfile /></Suspense></ProtectedRoute>} />
         <Route path="/profile/:uid" element={<ProtectedRoute><Suspense fallback={<LoadingScreen label="Loading Profile..." />}><UserProfile /></Suspense></ProtectedRoute>} />
         <Route path="/security" element={<ProtectedRoute><Suspense fallback={<LoadingScreen label="Loading Security Settings..." />}><SecuritySettings /></Suspense></ProtectedRoute>} />
         <Route path="/email-generator" element={<ProtectedRoute><Suspense fallback={<LoadingScreen label="Loading Email Generator..." />}><EmailGenerator /></Suspense></ProtectedRoute>} />
         <Route path="/linkedin-optimizer" element={<ProtectedRoute><Suspense fallback={<LoadingScreen label="Loading LinkedIn Optimizer..." />}><LinkedInOptimizer /></Suspense></ProtectedRoute>} />
+        <Route path="/skill-gap" element={<ProtectedRoute><Suspense fallback={<LoadingScreen label="Loading Skill Gap Analyzer..." />}><SkillGap /></Suspense></ProtectedRoute>} />
         <Route path="/deployments" element={<ProtectedRoute><Suspense fallback={<LoadingScreen label="Loading Deployments..." />}><Deployments /></Suspense></ProtectedRoute>} />
         <Route path="/settings" element={<ProtectedRoute><Suspense fallback={<LoadingScreen label="Loading Settings..." />}><Settings /></Suspense></ProtectedRoute>} />
 
@@ -339,36 +403,30 @@ function AppRoutes() {
           }
         />
 
-        <Route 
-  path="/repo-analyzer" 
-  element={
-    <ProtectedRoute>
-      <Suspense fallback={<LoadingScreen label="Loading Analyzer..." />}>
-        <RepoAnalyzerLanding />
-      </Suspense>
-    </ProtectedRoute>
-  } 
-/>
-        <Route 
-  path="/repo-analyzer/dashboard" 
-  element={
-    <ProtectedRoute>
-      <Suspense fallback={<LoadingScreen label="Loading Analyzer Dashboard..." />}>
-        <RepoAnalyzerDashboard />
-      </Suspense>
-    </ProtectedRoute>
-  } 
-/>
-        <Route 
-  path="/repo-analyzer/workspace" 
-  element={
-    <ProtectedRoute>
-      <Suspense fallback={<LoadingScreen label="Loading Analyzer Workspace..." />}>
-        <RepoAnalyzerWorkspace />
-      </Suspense>
-    </ProtectedRoute>
-  } 
-/>
+        <Route
+          path="/linkedin-dashboard"
+          element={
+            <ProtectedRoute>
+              <Suspense fallback={<LoadingScreen label="Loading LinkedIn Dashboard..." />}>
+                <LinkedInDashboard />
+              </Suspense>
+            </ProtectedRoute>
+          }
+        />
+        <Route
+          path="/linkedin"
+          element={
+            <ProtectedRoute>
+              <Suspense fallback={<div className="flex justify-center items-center h-screen">Loading LinkedIn Dashboard...</div>}>
+                <LinkedInDashboard />
+              </Suspense>
+            </ProtectedRoute>
+          }
+        />
+
+        <Route path="/repo-analyzer" element={<Navigate to="/project-visualizer" replace />} />
+        <Route path="/repo-analyzer/dashboard" element={<Navigate to="/project-visualizer" replace />} />
+        <Route path="/repo-analyzer/workspace" element={<Navigate to="/project-visualizer" replace />} />
         <Route 
   path="/project-visualizer" 
   element={
@@ -412,6 +470,7 @@ function AppRoutes() {
 
         {/* Catch-All Route */}
         <Route path="*" element={<NotFound />} />
+        <Route path="/templates/color-block" element={<ColorBlock />} />
       </Routes>
     </BrowserRouter>
   );

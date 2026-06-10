@@ -33,11 +33,13 @@ const interviewSchema = new mongoose.Schema({
     questions: [{
         questionId: String,
         question: String,
-        type: { type: String, enum: ['behavioral', 'technical', 'situational', 'general'] },
-        difficulty: { type: String, enum: ['easy', 'medium', 'hard'] }
+        type: { type: String, lowercase: true, trim: true, default: 'general' },
+        difficulty: { type: String, lowercase: true, trim: true, default: 'medium' }
     }],
     answers: [answerSchema],
     status: { type: String, enum: ['in_progress', 'completed', 'abandoned'], default: 'in_progress' },
+    totalQuestionCount: { type: Number, default: 10 },
+    contextSummary: { type: String, default: '' },
     overallScore: { type: Number, default: 0 },
     overallFeedback: {
         summary: String,
