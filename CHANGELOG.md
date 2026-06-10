@@ -1,3 +1,10 @@
+## [1.211.2](https://github.com/anurag3407/career-pilot/compare/v1.211.1...v1.211.2) (2026-06-10)
+
+
+### Bug Fixes
+
+* add 50,000 char limit on resumeText to prevent API credit drain & DoS ([2f8b092](https://github.com/anurag3407/career-pilot/commit/2f8b092d2be4dcab0b9e7bdb54ec4afa244e58ea))
+
 ## [1.211.1](https://github.com/anurag3407/career-pilot/compare/v1.211.0...v1.211.1) (2026-06-10)
 
 
