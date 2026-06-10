@@ -119,7 +119,10 @@ const SkillGap = () => {
                   Select Resume
                 </label>
                 {loadingResumes ? (
-                  <div className="h-10 bg-muted animate-pulse rounded-lg" />
+                  <div className="flex items-center gap-2 h-10 px-4 bg-muted/40 border border-border animate-pulse rounded-lg text-sm text-muted-foreground">
+                    <div className="w-4 h-4 border-2 border-primary border-t-transparent rounded-full animate-spin" />
+                    Loading resumes...
+                  </div>
                 ) : resumes.length === 0 ? (
                   <p className="text-sm text-muted-foreground">
                     No resumes found. Please upload a resume first.
@@ -191,15 +194,21 @@ const SkillGap = () => {
             )}
 
             {loading && (
-              <div className="bg-card border border-border rounded-xl p-8 space-y-4">
-                <div className="h-6 bg-muted animate-pulse rounded w-1/3 mx-auto" />
-                <div className="h-20 bg-muted animate-pulse rounded" />
-                <div className="h-4 bg-muted animate-pulse rounded w-2/3" />
-                <div className="h-4 bg-muted animate-pulse rounded w-1/2" />
-                <div className="grid grid-cols-2 gap-3 mt-4">
-                  {[1,2,3,4].map(i => (
-                    <div key={i} className="h-8 bg-muted animate-pulse rounded-full" />
-                  ))}
+              <div className="space-y-4">
+                <div className="flex items-center gap-3 px-5 py-4 bg-primary/5 border border-primary/20 rounded-xl animate-pulse">
+                  <div className="w-5 h-5 border-2 border-primary border-t-transparent rounded-full animate-spin shrink-0" />
+                  <p className="text-sm text-primary font-medium">Analyzing skill gap... Please wait...</p>
+                </div>
+                <div className="bg-card border border-border rounded-xl p-8 space-y-4">
+                  <div className="h-6 bg-muted animate-pulse rounded w-1/3 mx-auto" />
+                  <div className="h-20 bg-muted animate-pulse rounded" />
+                  <div className="h-4 bg-muted animate-pulse rounded w-2/3" />
+                  <div className="h-4 bg-muted animate-pulse rounded w-1/2" />
+                  <div className="grid grid-cols-2 gap-3 mt-4">
+                    {[1,2,3,4].map(i => (
+                      <div key={i} className="h-8 bg-muted animate-pulse rounded-full" />
+                    ))}
+                  </div>
                 </div>
               </div>
             )}

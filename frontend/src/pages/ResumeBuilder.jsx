@@ -450,20 +450,7 @@ useEffect(() => {
     return md
   }
 
-  const restoreVersion = (version) => {
-    setSelectedVersion(version)
-    toast.success(`Restored version from ${version.timestamp}`)
-  }
 
-  const saveVersion = React.useCallback(() => {
-    const newVersion = {
-      id: Date.now(),
-      timestamp: new Date().toLocaleString(),
-      content: generateMarkdown(),
-    };
-    setResumeVersions(prev => [newVersion, ...prev]);
-    toast.success("Resume version layout tracked successfully!");
-  }, [experience, education, projects, personal, skills, generateMarkdown]);
 
   const handleGenerate = async () => {
     try {

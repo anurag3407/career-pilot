@@ -128,9 +128,14 @@ const EmailGenerator = () => {
         </motion.div>
 
         {loading ? (
-          <div className="space-y-8 animate-pulse">
-            <Skeleton className="h-8 w-64 bg-foreground/10" />
-            <div className="bg-primary/5 p-6 rounded-2xl border border-primary/20">
+          <div className="space-y-6">
+            <div className="flex items-center gap-3 px-5 py-4 bg-primary/5 border border-primary/20 rounded-xl animate-pulse">
+              <div className="w-5 h-5 border-2 border-primary border-t-transparent rounded-full animate-spin shrink-0" />
+              <p className="text-sm text-primary font-medium">Crafting email options... Please wait...</p>
+            </div>
+            <div className="space-y-8 animate-pulse">
+              <Skeleton className="h-8 w-64 bg-foreground/10" />
+              <div className="bg-primary/5 p-6 rounded-2xl border border-primary/20">
               <Skeleton className="h-6 w-48 mb-4 bg-foreground/10" />
               <div className="space-y-3">
                 {[1, 2, 3].map(i => (
@@ -143,6 +148,7 @@ const EmailGenerator = () => {
                 <Skeleton key={i} className="h-64 w-full rounded-2xl bg-foreground/10" />
               ))}
             </div>
+          </div>
           </div>
         ) : results && (
           <motion.div

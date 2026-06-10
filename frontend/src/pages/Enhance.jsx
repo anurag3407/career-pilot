@@ -675,6 +675,10 @@ export default function Enhance() {
             transition={{ duration: 0.4 }}
             className="space-y-8"
           >
+            <div className="flex items-center gap-3 px-4 py-3 bg-primary/5 border border-primary/20 rounded-xl mb-6 animate-pulse">
+              <div className="w-4 h-4 border-2 border-primary border-t-transparent rounded-full animate-spin shrink-0" />
+              <p className="text-sm text-primary font-medium">Loading resume analysis... Please wait...</p>
+            </div>
             <div className="mb-8 space-y-3">
               <div className="h-4 bg-muted rounded-lg w-32 animate-pulse" />
               <div className="h-10 bg-muted rounded-lg w-2/3 animate-pulse" />

@@ -459,10 +459,16 @@ className="w-full pl-12 pr-10 py-4 bg-muted/50 border border-border rounded-xl t
 
         {/* Results Section */}
         {loading ? (
-          <div className="space-y-4">
-            {Array.from({ length: 5 }).map((_, i) => (
-              <SkeletonJobCard key={i} />
-            ))}
+          <div className="space-y-6">
+            <div className="flex items-center gap-3 px-4 py-3 bg-primary/5 border border-primary/20 rounded-xl animate-pulse">
+              <div className="w-4 h-4 border-2 border-primary border-t-transparent rounded-full animate-spin shrink-0" />
+              <p className="text-sm text-primary font-medium">Searching for matching jobs... Please wait...</p>
+            </div>
+            <div className="space-y-4">
+              {Array.from({ length: 5 }).map((_, i) => (
+                <SkeletonJobCard key={i} />
+              ))}
+            </div>
           </div>
         ) : hasSearched && jobs.length === 0 ? (
           <motion.div
