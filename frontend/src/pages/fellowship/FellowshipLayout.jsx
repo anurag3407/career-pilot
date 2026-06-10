@@ -7,6 +7,7 @@ import {
     FileText,
     FolderKanban,
     PlusCircle,
+    Home,
     GraduationCap,
     Building2,
     ShieldCheck,
@@ -34,7 +35,6 @@ export default function FellowshipLayout() {
     const [loading, setLoading] = useState(true)
     const [error, setError] = useState('')
     const [sidebarOpen, setSidebarOpen] = useState(false)
-    const closeSidebar = () => setSidebarOpen(false)
 
     useEffect(() => {
         if (!user) {
@@ -43,10 +43,6 @@ export default function FellowshipLayout() {
         }
         loadProfile()
     }, [user])
-
-    useEffect(() => {
-        closeSidebar()
-    }, [location.pathname])
 
     const loadProfile = async () => {
         setLoading(true)
@@ -109,11 +105,7 @@ export default function FellowshipLayout() {
     const SidebarContent = () => (
         <div className="flex h-full flex-col">
             <div className="flex h-16 items-center border-b border-border px-6">
-                <NavLink
-                    to="/fellowship/challenges"
-                    onClick={closeSidebar}
-                    className="flex items-center gap-2"
-                >
+                <NavLink to="/fellowship/challenges" className="flex items-center gap-2">
                     <div className="flex h-8 w-8 items-center justify-center rounded-lg bg-emerald-600">
                         <Briefcase className="h-5 w-5 text-foreground" />
                     </div>
@@ -138,7 +130,7 @@ export default function FellowshipLayout() {
                     </div>
 
                     {profile.role === 'student' && !profile.isVerified && (
-                        <NavLink to="/fellowship/verify" onClick={closeSidebar}>
+                        <NavLink to="/fellowship/verify" onClick={() => setSidebarOpen(false)}>
                             <div className="mt-2 flex items-center gap-2 rounded-lg bg-amber-950 px-3 py-2 text-sm text-amber-300 cursor-pointer hover:bg-amber-900 transition-colors">
                                 <ShieldCheck className="h-4 w-4" />
                                 Verify to Apply →
@@ -153,7 +145,7 @@ export default function FellowshipLayout() {
                     <NavLink
                         key={item.href}
                         to={item.href}
-                        onClick={closeSidebar}
+                        onClick={() => setSidebarOpen(false)}
                         className={({ isActive }) => `flex items-center gap-3 rounded-lg px-3 py-2.5 text-sm font-medium transition-colors ${isActive
                             ? 'bg-emerald-600 text-foreground'
                             : 'text-muted-foreground hover:bg-muted hover:text-foreground'
@@ -168,7 +160,7 @@ export default function FellowshipLayout() {
 
                 <NavLink
                     to="/dashboard"
-                    onClick={closeSidebar}
+                    onClick={() => setSidebarOpen(false)}
                     className="flex items-center gap-3 rounded-lg px-3 py-2.5 text-sm font-medium text-muted-foreground hover:bg-muted hover:text-foreground transition-colors"
                 >
                     <Sparkles className="h-5 w-5" />
@@ -198,16 +190,8 @@ export default function FellowshipLayout() {
 
             {sidebarOpen && (
                 <div className="fixed inset-0 z-50 lg:hidden">
-                    <div className="absolute inset-0 bg-background/50" onClick={closeSidebar} />
-                    <aside className="absolute left-0 top-0 h-full w-64 bg-background shadow-xl">
-                        <button
-                            type="button"
-                            aria-label="Close sidebar"
-                            onClick={closeSidebar}
-                            className="absolute right-3 top-3 rounded-md p-2 text-muted-foreground transition-colors hover:bg-muted hover:text-foreground"
-                        >
-                            <X className="h-5 w-5" />
-                        </button>
+                    <div className="absolute inset-0 bg-background/50" onClick={() => setSidebarOpen(false)} />
+                    <aside className="absolute left-0 top-0 h-full w-64 bg-background">
                         <SidebarContent />
                     </aside>
                 </div>
