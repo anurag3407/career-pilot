@@ -1,7 +1,7 @@
+import { usePortfolio } from "../../../../context/PortfolioContext";
 import React, { useRef, useState, useCallback, useEffect } from 'react';
 import { motion, AnimatePresence, useInView, useScroll, useTransform } from 'framer-motion';
 import { Github, Linkedin, Twitter, Mail, MapPin, ExternalLink, Briefcase, Code2, ChevronDown, Quote, Send, User, Layers, Sun, Moon } from 'lucide-react';
-import data from '../../../../data/dummy_data.json';
 
 /* ── Low-poly colour system ────────────────────────────────────────── */
 const POLY = {
@@ -26,6 +26,8 @@ const POLY = {
 
 /* ── Low-poly SVG terrain background ──────────────────────────────── */
 function TerrainBackground({ dayProgress }) {
+  const { portfolioData: data } = usePortfolio();
+
   /* dayProgress 0→1: dawn→day→dusk→night */
   const skyTop    = dayProgress < 0.5
     ? lerpColor('#1e3f6e', '#87ceeb', dayProgress * 2)
@@ -148,6 +150,8 @@ function useSunCycle() {
 
 /* ── Fade section ──────────────────────────────────────────────────── */
 function FadeSection({ children, className = '', delay = 0 }) {
+  const { portfolioData: data } = usePortfolio();
+
   const ref = useRef(null);
   const inView = useInView(ref, { once: true, margin: '-60px' });
   return (
@@ -161,6 +165,8 @@ function FadeSection({ children, className = '', delay = 0 }) {
 
 /* ── Section heading ───────────────────────────────────────────────── */
 function SectionHeading({ icon: Icon, title }) {
+  const { portfolioData: data } = usePortfolio();
+
   return (
     <div className="flex items-center gap-3 mb-10">
       <div className="p-2.5 rounded-xl" style={{ background: 'rgba(61,107,61,0.15)', border: '1px solid rgba(61,107,61,0.4)' }}>
@@ -174,6 +180,8 @@ function SectionHeading({ icon: Icon, title }) {
 
 /* ── Skill bar ─────────────────────────────────────────────────────── */
 function SkillBar({ name, level, category, delay }) {
+  const { portfolioData: data } = usePortfolio();
+
   const ref = useRef(null);
   const inView = useInView(ref, { once: true });
   const catColor = { Frontend: '#4a90d9', Backend: '#3d6b3d', DevOps: '#b8860b', Design: '#c04a4a' };
@@ -199,6 +207,8 @@ function SkillBar({ name, level, category, delay }) {
 
 /* ── Project card ──────────────────────────────────────────────────── */
 function ProjectCard({ project, index }) {
+  const { portfolioData: data } = usePortfolio();
+
   const [hovered, setHovered] = useState(false);
   return (
     <FadeSection delay={index * 0.1}>
@@ -247,6 +257,8 @@ function ProjectCard({ project, index }) {
 
 /* ── Contact form ──────────────────────────────────────────────────── */
 function ContactForm() {
+  const { portfolioData: data } = usePortfolio();
+
   const [form, setForm] = useState({ name: '', email: '', message: '' });
   const [sent, setSent] = useState(false);
   const inputStyle = {
@@ -287,6 +299,8 @@ function ContactForm() {
    MAIN COMPONENT
 ═══════════════════════════════════════════════════════════════════════ */
 export default function LowPolyTerrain() {
+  const { portfolioData: data } = usePortfolio();
+
   const containerRef = useRef(null);
   const { scrollYProgress } = useScroll({ target: containerRef });
   const heroParallax = useTransform(scrollYProgress, [0, 0.3], [0, -60]);

@@ -1,3 +1,4 @@
+import { usePortfolio } from "../../../../context/PortfolioContext";
 import React, { useState, useEffect, useRef } from "react";
 import { motion, AnimatePresence, useMotionValue, useSpring, useInView } from "framer-motion";
 import {
@@ -18,11 +19,12 @@ import {
   MessageSquare,
   Globe
 } from "lucide-react";
-import data from "../../../../data/dummy_data.json";
 import "./styles.css";
 
 // ─── Sub-Component: Magnetic Button Physics ──────────────────────────────────
 function Magnetic({ children }) {
+  const { portfolioData: data } = usePortfolio();
+
   const ref = useRef(null);
   const [position, setPosition] = useState({ x: 0, y: 0 });
 
@@ -60,6 +62,8 @@ function Magnetic({ children }) {
 
 // ─── Sub-Component: Split Text Staggered Letter Animation ────────────────────
 function SplitText({ text, className = "", delay = 0 }) {
+  const { portfolioData: data } = usePortfolio();
+
   const letters = Array.from(text);
   
   const containerVariants = {
@@ -108,6 +112,8 @@ function SplitText({ text, className = "", delay = 0 }) {
 
 // ─── Sub-Component: Split Words Paragraph Animation ──────────────────────────
 function SplitWords({ text, className = "", delay = 0 }) {
+  const { portfolioData: data } = usePortfolio();
+
   const words = text.split(" ");
   
   const containerVariants = {
@@ -150,6 +156,8 @@ function SplitWords({ text, className = "", delay = 0 }) {
 
 // ─── Sub-Component: Dynamic Number Counter ───────────────────────────────────
 function Counter({ value, duration = 1.8, delay = 0 }) {
+  const { portfolioData: data } = usePortfolio();
+
   const [count, setCount] = useState(0);
   const ref = useRef(null);
   const isInView = useInView(ref, { once: true, margin: "-5%" });
@@ -239,6 +247,8 @@ const testimonials = data.testimonials || [];
 
 // ─── Main Export ──────────────────────────────────────────────────────────────
 export default function MonoElegant() {
+  const { portfolioData: data } = usePortfolio();
+
   const [isNoir, setIsNoir] = useState(true);
   const [activeSection, setActiveSection] = useState("hero");
   const [mobileMenuOpen, setMobileMenuOpen] = useState(false);
@@ -1023,6 +1033,8 @@ export default function MonoElegant() {
 
 // ─── Sub-Component: Projects Showcase ───
 function ProjectsGrid({ projects }) {
+  const { portfolioData: data } = usePortfolio();
+
   const [activeFilter, setActiveFilter] = useState("All");
 
   // Unique list of tags
@@ -1143,6 +1155,8 @@ function ProjectsGrid({ projects }) {
 
 // ─── Sub-Component: Testimonials Slider ───
 function TestimonialsCarousel({ testimonials }) {
+  const { portfolioData: data } = usePortfolio();
+
   const [activeIndex, setActiveIndex] = useState(0);
   const current = testimonials[activeIndex];
 

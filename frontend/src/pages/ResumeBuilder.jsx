@@ -142,104 +142,35 @@ export default function ResumeBuilder() {
 
  // ─────────────────── ATS Keyword Assessment Loop ───────────────────
   useEffect(() => {
-  const keywords = [
-    "React",
-    "JavaScript",
-    "Git",
-    "Node.js",
-    "API",
-    "Leadership",
-    "Teamwork",
-    "Problem Solving"
-  ]
+    const keywords = [
+      "React", "JavaScript", "Git", "Node.js",
+      "API", "Leadership", "Teamwork", "Problem Solving"
+    ]
 
-  const prioritySkills = [
-  "React",
-  "JavaScript",
-  "Node.js",
-  "API",
-  "Git",
-  "Leadership",
-  "Problem Solving",
-  "Teamwork"
-]
-
-const missing = keywords.filter(
-  keyword => !foundKeywords.includes(keyword)
-)
-
-setMissingKeywords(missing)
-
-const suggestions = prioritySkills.filter(
-  skill => missing.includes(skill)
-)
-
-setRecommendedSkills(
-  suggestions.slice(0, 4)
-)
-
-setRecommendedSkills(
-  suggestions.slice(0, 4)
-)
-
-  const resumeText = `
-    ${personal.summary}
-    ${skills}
-    ${projects.map(p => p.description).join(" ")}
-    ${experience.map(e => e.description).join(" ")}
-  `.toLowerCase()
-
-  const foundKeywords = keywords.filter(keyword =>
-    resumeText.includes(keyword.toLowerCase())
-  )
-
-  const missing = keywords.filter(
-  keyword => !foundKeywords.includes(keyword)
-)
-
-setMissingKeywords(missing)
-
-setRecommendedSkills(
-  missing.slice(0, 4)
-)
-
-setAtsScore(
-  Math.round(
-    (foundKeywords.length / keywords.length) * 100
-  )
-)
-}, [
-  personal,
-  skills,
-  projects,
-  experience
-])
-
-useEffect(() => {
-  const recommendations = []
     const resumeText = `
-      ${personal?.summary || ''}
-      ${skills || ''}
-      ${(projects || []).map(p => p.description).join(" ")}
-      ${(experience || []).map(e => e.description).join(" ")}
-    `.toLowerCase();
+      ${personal.summary}
+      ${skills}
+      ${projects.map(p => p.description).join(" ")}
+      ${experience.map(e => e.description).join(" ")}
+    `.toLowerCase()
 
     const foundKeywords = keywords.filter(keyword =>
       resumeText.includes(keyword.toLowerCase())
-    );
+    )
 
     const missing = keywords.filter(
       keyword => !foundKeywords.includes(keyword)
-    );
+    )
 
-    setMissingKeywords(missing);
+    setMissingKeywords(missing)
+    setRecommendedSkills(missing.slice(0, 4))
 
     if (keywords.length > 0) {
       setAtsScore(
         Math.round((foundKeywords.length / keywords.length) * 100)
-      );
+      )
     }
-  }, [personal, skills, projects, experience, keywords]);
+  }, [personal, skills, projects, experience])
 
   // ─────────────────── Live Consistency Memoized Engine ───────────────────
   const activeConsistencyWarnings = React.useMemo(() => {

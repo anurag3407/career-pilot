@@ -169,10 +169,12 @@ function AppRoutes() {
 
         {/* Template Gallery Route (Registered at /templates) */}
         <Route path="/templates" element={<TemplateGallery />} />
-
+        <Route path="/preview/:templateId" element={<TemplatePreviewOnly />} />
+        <Route path="/cover-letter" element={<CoverLetter />} />
         
 
                {/* <Route path="/templates/day-night-cycle" element={<DayNightCycle />} /> */}
+
         <Route path="/templates/rainforest-canopy" element={<RainforestCanopy />} />
         <Route path="/templates/northern-fjords" element={<NorthernFjords />} />
         <Route path="/templates/duotone-bold" element={<DuotoneBold />} />

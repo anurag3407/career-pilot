@@ -5,48 +5,58 @@ const API_BASE = import.meta.env.VITE_API_BASE || '/api';
 
 // Helper to get auth headers
 async function getAuthHeaders() {
-  console.log("Current User:", auth?.currentUser);
-  const user = auth?.currentUser
-  if (!user) throw new Error('Not authenticated')
+const user = auth?.currentUser
 
+if (!user) {
+  throw new Error('Not authenticated')
+}
 
-  const token = await user.getIdToken()
-  const headers = {
-    'Authorization': `Bearer ${token}`,
-    'Content-Type': 'application/json'
+const token = await user.getIdToken()
+
+const headers = {
+  Authorization: `Bearer ${token}`,
+  'Content-Type': 'application/json'
+}
+
+// Try the new Zustand store first
+try {
+  const { useAIConfigStore } = await import('../stores/useAIConfigStore')
+
+  const aiConfig = useAIConfigStore.getState().getActiveConfig()
+
+  if (aiConfig) {
+    if (aiConfig.provider) headers['X-AI-Provider'] = aiConfig.provider
+    if (aiConfig.apiKey) headers['X-AI-Key'] = aiConfig.apiKey
+    if (aiConfig.model) headers['X-AI-Model'] = aiConfig.model
+
+    return headers
   }
+} catch (e) {
+  // Store not available, fall through to legacy
+}
 
-  // Try the new Zustand store first
+// Legacy fallback
+const aiConfigStr = localStorage.getItem('aiConfig')
+
+if (aiConfigStr) {
   try {
-    const { useAIConfigStore } = await import('../stores/useAIConfigStore');
-    const aiConfig = useAIConfigStore.getState().getActiveConfig();
-    if (aiConfig) {
-      if (aiConfig.provider) headers['X-AI-Provider'] = aiConfig.provider;
-      if (aiConfig.apiKey) headers['X-AI-Key'] = aiConfig.apiKey;
-      if (aiConfig.model) headers['X-AI-Model'] = aiConfig.model;
-      return headers;
-    }
+    const aiConfig = JSON.parse(aiConfigStr)
+
+    if (aiConfig.provider) headers['X-AI-Provider'] = aiConfig.provider
+    if (aiConfig.apiKey) headers['X-AI-Key'] = decryptKey(aiConfig.apiKey)
+    if (aiConfig.model) headers['X-AI-Model'] = aiConfig.model
   } catch (e) {
-    // Store not available, fall through to legacy
+    console.error(e)
   }
+} else {
+  const openRouterKey = localStorage.getItem('openRouterApiKey')
 
-  // Legacy fallback: read from localStorage directly
-  const aiConfigStr = localStorage.getItem('aiConfig');
-  if (aiConfigStr) {
-    try {
-      const aiConfig = JSON.parse(aiConfigStr);
-      if (aiConfig.provider) headers['X-AI-Provider'] = aiConfig.provider;
-      if (aiConfig.apiKey) headers['X-AI-Key'] = decryptKey(aiConfig.apiKey);
-      if (aiConfig.model) headers['X-AI-Model'] = aiConfig.model;
-    } catch(e) {}
-  } else {
-    const openRouterKey = localStorage.getItem('openRouterApiKey');
-    if (openRouterKey) {
-      headers['X-OpenRouter-Key'] = decryptKey(openRouterKey);
-    }
+  if (openRouterKey) {
+    headers['X-OpenRouter-Key'] = decryptKey(openRouterKey)
   }
-
-  return headers
+}
+  
+return headers
 }
 
 // Helper to parse numeric header values

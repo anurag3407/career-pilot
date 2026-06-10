@@ -1,7 +1,7 @@
+import { usePortfolio } from "../../../../context/PortfolioContext";
 import React, { useRef } from 'react';
 import { motion, useScroll, useTransform } from 'framer-motion';
 import { Github, Linkedin, Mail, Twitter, ExternalLink } from 'lucide-react';
-import dummyData from '../../../../data/dummy_data.json';
 
 const THEME = {
   bg: '#0a0a0f',
@@ -18,6 +18,8 @@ const THEME = {
 
 // SHARDS BACKGROUND — Replaces the orbs with actual polygonal glass shards
 const FloatingShards = () => {
+  const { portfolioData: dummyData } = usePortfolio();
+
   const { scrollYProgress } = useScroll();
   const y1 = useTransform(scrollYProgress, [0, 1], [0, -300]);
   const y2 = useTransform(scrollYProgress, [0, 1], [0, 400]);
@@ -74,6 +76,8 @@ const FloatingShards = () => {
 };
 
 function ContentPanel({ children, delay = 0, className = '', style = {} }) {
+  const { portfolioData: dummyData } = usePortfolio();
+
   return (
     <motion.div
       initial={{ opacity: 0, y: 50, filter: 'blur(10px)' }}
@@ -116,6 +120,8 @@ function ContentPanel({ children, delay = 0, className = '', style = {} }) {
 }
 
 const BrokenGlassShardsParallax = ({ portfolioData }) => {
+  const { portfolioData: dummyData } = usePortfolio();
+
   const data = portfolioData || dummyData;
   const containerRef = useRef(null);
 

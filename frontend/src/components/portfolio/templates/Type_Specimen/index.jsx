@@ -1,3 +1,4 @@
+import { usePortfolio } from "../../../../context/PortfolioContext";
 import { motion, useScroll, useTransform } from "framer-motion";
 import { useEffect, useRef, useState } from "react";
 import {
@@ -5,7 +6,6 @@ import {
   ExternalLink, Briefcase, Code2, Star, Send,
   ChevronDown, Award, Users, Layers, ArrowRight,
 } from "lucide-react";
-import data from "../../../../data/dummy_data.json";
 
 // ─── Palette ────────────────────────────────────────────────────────────────
 const c = {
@@ -47,6 +47,8 @@ const SpecimenTag = ({ children }) => (
 
 // ─── NAV ─────────────────────────────────────────────────────────────────────
 const Nav = () => {
+  const { portfolioData: data } = usePortfolio();
+
   const links = ["about", "skills", "projects", "experience", "testimonials", "contact"];
   const [scrolled, setScrolled] = useState(false);
 
@@ -113,6 +115,8 @@ const Nav = () => {
 
 // ─── HERO ─────────────────────────────────────────────────────────────────────
 const Hero = () => {
+  const { portfolioData: data } = usePortfolio();
+
   const { personal, socials, stats } = data;
   const ref = useRef(null);
   const { scrollYProgress } = useScroll({ target: ref, offset: ["start start", "end start"] });
@@ -249,6 +253,8 @@ const Hero = () => {
 
 // ─── ABOUT ───────────────────────────────────────────────────────────────────
 const About = () => {
+  const { portfolioData: data } = usePortfolio();
+
   const { personal, stats } = data;
 
   const capabilities = [
@@ -344,6 +350,8 @@ const About = () => {
 
 // ─── SKILLS ──────────────────────────────────────────────────────────────────
 const Skills = () => {
+  const { portfolioData: data } = usePortfolio();
+
   const { skills } = data;
   const categories = [...new Set(skills.map((s) => s.category))];
 
@@ -414,6 +422,8 @@ const Skills = () => {
 
 // ─── PROJECTS ────────────────────────────────────────────────────────────────
 const Projects = () => {
+  const { portfolioData: data } = usePortfolio();
+
   const { projects } = data;
 
   return (
@@ -517,6 +527,8 @@ const Projects = () => {
 
 // ─── EXPERIENCE ──────────────────────────────────────────────────────────────
 const Experience = () => {
+  const { portfolioData: data } = usePortfolio();
+
   const { experience } = data;
 
   return (
@@ -589,6 +601,8 @@ const Experience = () => {
 
 // ─── TESTIMONIALS ────────────────────────────────────────────────────────────
 const Testimonials = () => {
+  const { portfolioData: data } = usePortfolio();
+
   const { testimonials } = data;
 
   return (
@@ -647,6 +661,8 @@ const Testimonials = () => {
 
 // ─── CONTACT ─────────────────────────────────────────────────────────────────
 const Contact = () => {
+  const { portfolioData: data } = usePortfolio();
+
   const { socials, personal } = data;
 
   const handleSubmit = (e) => {
@@ -786,6 +802,8 @@ const Contact = () => {
 
 // ─── ROOT ────────────────────────────────────────────────────────────────────
 export default function TypeSpecimen() {
+  const { portfolioData: data } = usePortfolio();
+
   return (
     <div className="min-h-screen font-sans" style={{ background: c.bg }}>
       <Nav />
