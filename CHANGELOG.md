@@ -1,3 +1,36 @@
+# [1.207.0](https://github.com/anurag3407/career-pilot/compare/v1.206.1...v1.207.0) (2026-06-10)
+
+
+### Bug Fixes
+
+* address review feedback for streaming enhancement ([ce1fa36](https://github.com/anurag3407/career-pilot/commit/ce1fa36e6d2bf5e928b2f98f4cd88b09e44b9c40))
+
+
+### Features
+
+* add real-time AI resume enhancement streaming UI ([e8d6005](https://github.com/anurag3407/career-pilot/commit/e8d600511fd705b0e3292797a56aa0ea1585533a))
+
+## [1.206.1](https://github.com/anurag3407/career-pilot/compare/v1.206.0...v1.206.1) (2026-06-10)
+
+
+### Bug Fixes
+
+* remove unauthenticated request bypass from aiRateLimiter ([9e41a14](https://github.com/anurag3407/career-pilot/commit/9e41a14e9948f1e7d2dbe3b97db0539caedac441)), closes [#3379](https://github.com/anurag3407/career-pilot/issues/3379)
+
+# [1.206.0](https://github.com/anurag3407/career-pilot/compare/v1.205.0...v1.206.0) (2026-06-09)
+
+
+### Features
+
+* add AI cover letter generator using Groq API ([#3289](https://github.com/anurag3407/career-pilot/issues/3289)) ([a2b2a5e](https://github.com/anurag3407/career-pilot/commit/a2b2a5e48362b381cdc5a2584b1f7b3b858a499b))
+
+# [1.205.0](https://github.com/anurag3407/career-pilot/compare/v1.204.0...v1.205.0) (2026-06-09)
+
+
+### Features
+
+* **portfolio:** add Anonymous Whistleblower Drop Box template ([5551cc7](https://github.com/anurag3407/career-pilot/commit/5551cc75221b7be4fcfc983d638a5b96152f75dc))
+
 # [1.204.0](https://github.com/anurag3407/career-pilot/compare/v1.203.0...v1.204.0) (2026-06-09)
 
 

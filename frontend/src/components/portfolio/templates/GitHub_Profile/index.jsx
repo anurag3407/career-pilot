@@ -1,3 +1,4 @@
+import { usePortfolio } from "../../../../context/PortfolioContext";
 import React, { useState } from 'react';
 import { motion } from 'framer-motion';
 import { 
@@ -5,9 +6,10 @@ import {
   Book, GitFork, Circle, Twitter, Linkedin, Github, 
   Briefcase, MessageSquare, Smile, Code, BookOpen
 } from 'lucide-react';
-import data from '../../../../data/dummy_data.json';
 
 export default function GitHubProfile() {
+  const { portfolioData: data } = usePortfolio();
+
   const [activeTab, setActiveTab] = useState('overview');
   
   // Helper to get random language colors

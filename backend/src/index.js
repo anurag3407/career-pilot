@@ -52,6 +52,7 @@ import { connectDB as baseConnectDB } from './config/database.js';
 import { initJobFetcher } from './services/jobFetcher.js';
 import JobAlert from './models/JobAlert.model.js';
 import { initGitHubSyncCron } from './services/portfolioGitHubSync.js';
+import coverLetterRoutes from "./routes/coverLetter.js";
 
 const shouldInitGitHubSyncCron =
   process.env.ENABLE_GITHUB_SYNC_CRON !== 'false' &&
@@ -237,6 +238,7 @@ app.use('/api/auth', authRoutes);
 app.use('/api/upload', uploadRoutes);
 app.use('/api/resumes', resumeRoutes);
 app.use('/api/enhance', enhanceRoutes);
+app.use("/api/cover-letter", coverLetterRoutes);
 app.use('/api/fetchjobs', jobsRoutes);
 app.use('/api/job-tracker', jobTrackerRoutes);
 app.use('/api/job-alerts', jobAlertRoutes);

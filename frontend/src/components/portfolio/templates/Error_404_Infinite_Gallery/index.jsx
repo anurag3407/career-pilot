@@ -1,8 +1,10 @@
+import { usePortfolio } from "../../../../context/PortfolioContext";
 ﻿import React, { useMemo } from 'react';
 import { motion } from 'framer-motion';
-import dummyData from "../../../../data/dummy_data.json";
 
 const Error404InfiniteGallery = ({ portfolioData }) => {
+  const { portfolioData: dummyData } = usePortfolio();
+
   // Merge provided portfolioData with dummy fallbacks
   const data = useMemo(() => {
     const projects = portfolioData?.projects || dummyData.projects || [];

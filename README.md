@@ -1,6 +1,6 @@
 <div align="center">
   <h1>🚀 Career Pilot</h1>
-  <p>An AI-powered resume builder and career toolkit that helps users create resumes, prepare for interviews, search jobs, and launch developer portfolios.</p>
+  <p>An AI-powered resume builder and career toolkit that helps users create resumes, prepare for interviews, search jobs, and launch developer portfolios. </p>
 </div>
 
 <div align="center" style="max-width:900px; margin:12px auto;">
@@ -19,19 +19,24 @@
   </p>
 </div>
 
-## Overview
+## How It Works (Overview)
 
-Career Pilot is a full-stack application for job seekers and developers, combining AI-powered resume building, interview preparation, job discovery, portfolio publishing, and real-time collaboration.
-
-This repository includes a React + Vite frontend, an Express backend, Firebase authentication, AI integrations, job search APIs, and portfolio deployment workflows.
+1. User registers / logs in using Firebase Authentication  
+2. User enters the Career Pilot dashboard  
+3. User selects or creates a resume template  
+4. User edits resume sections (Education, Skills, Experience, etc.)  
+5. Drag & drop support allows easy section rearrangement  
+6. AI features assist in improving resume content  
+7. User previews final resume in real time  
+8. Resume is exported as PDF using jsPDF + html2canvas  
 
 ## Table of Contents
 
-- [Overview](#overview)
+- [How It Works](#how-it-works-overview)
 - [Why This Project](#why-this-project)
 - [Key Features](#key-features)
 - [Getting Started](#getting-started)
-- [Environment Setup](#environment-setup)
+- [Environment Variables](#environment-variables)
 - [Project Structure](#project-structure)
 - [Roadmap](#roadmap)
 - [Contributing](#contributing)
@@ -94,42 +99,38 @@ npm run dev
 
 Add or update tests in `backend/tests`, `frontend/tests`, and root-level test utilities. Run any existing test scripts from the relevant package directories.
 
-## Environment Setup
 
-Use `backend/.env.example`, `frontend/.env.example`, and `docs/environment-setup.md` for complete environment configuration.
+## Environment Variables
 
-### Required variables (summary)
+The project requires separate environment configuration for backend and frontend.
 
-#### Backend
-- `PORT` - API server port
-- `MONGODB_URI` - MongoDB connection string
-- `REDIS_URL` - Redis connection string
-- `OPENAI_API_KEY` - OpenAI API key
-- `RAPIDAPI_KEY` - RapidAPI key for job search
-- `FIREBASE_PROJECT_ID` - Firebase project ID
-- `FIREBASE_SERVICE_ACCOUNT_PATH` - Service account JSON path
-- `FRONTEND_URL` - Frontend origin for CORS
+### Backend (.env)
+- PORT – Server port
+- MONGODB_URI – MongoDB connection string
+- REDIS_URL – Redis connection string
+- OPENAI_API_KEY – AI integration key
+- RAPIDAPI_KEY – Job search API key
+- FIREBASE_PROJECT_ID – Firebase project ID
+- FIREBASE_SERVICE_ACCOUNT_PATH – Firebase admin SDK file path
+- FRONTEND_URL – Frontend URL for CORS
 
-#### Frontend
-- `VITE_API_URL` - Backend base URL
-- `VITE_FIREBASE_API_KEY` - Firebase client API key
-- `VITE_FIREBASE_PROJECT_ID` - Firebase project ID
-- `VITE_FIREBASE_AUTH_DOMAIN` - Firebase auth domain
-- `VITE_FIREBASE_STORAGE_BUCKET` - Firebase storage bucket
-
-> For the complete environment variable list, see `backend/.env.example`, `frontend/.env.example`, and `docs/environment-setup.md`.
+### Frontend (.env)
+- VITE_API_URL – Backend API URL
+- VITE_FIREBASE_API_KEY – Firebase API key
+- VITE_FIREBASE_PROJECT_ID – Firebase project ID
+- VITE_FIREBASE_AUTH_DOMAIN – Firebase auth domain
+- VITE_FIREBASE_STORAGE_BUCKET – Firebase storage bucket
 
 ## Project Structure
 
 ```text
 career-pilot/
-├── backend/               # Express API, AI integrations, auth, jobs, scheduler, portfolio deployment
-├── frontend/              # React + Vite app, resume builder, dashboard, portfolio templates
-├── docs/                  # Setup guides and environment documentation
-├── CONTRIBUTION.md        # Contribution guidelines
-├── CODE_OF_CONDUCT.md    # Community behavior policy
-├── LICENSE               # Project license
-└── README.md             # Project overview and onboarding
+├── backend/        # Express backend (APIs, auth, AI, jobs, portfolio)
+├── frontend/       # React + Vite frontend (UI, resume builder, dashboard)
+├── docs/           # Documentation and setup guides
+├── CONTRIBUTION.md # Contribution guidelines
+├── CODE_OF_CONDUCT.md
+└── LICENSE
 ```
 
 ## Roadmap
@@ -139,6 +140,14 @@ career-pilot/
 - Add more portfolio templates and publishing options.
 - Strengthen end-to-end test coverage.
 - Improve documentation for contributors and deploy workflows.
+
+
+## 🧠 Project Notes
+
+- Project is currently in development stage  
+- No live deployment available yet  
+- Firebase configuration is required to run locally  
+
 
 ### Good first issues
 
