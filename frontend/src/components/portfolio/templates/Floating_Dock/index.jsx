@@ -1,3 +1,4 @@
+import { usePortfolio } from "../../../../context/PortfolioContext";
 import { useEffect, useRef, useState } from "react";
 import { motion, useScroll, useTransform, useInView, AnimatePresence } from "framer-motion";
 import {
@@ -6,7 +7,6 @@ import {
   MapPin, Phone, Send, ChevronDown, ArrowUpRight, Code2,
   Sparkles, Award, TrendingUp, Users
 } from "lucide-react";
-import data from "../../../../data/dummy_data.json";
 
 // ─── Helpers ────────────────────────────────────────────────────────────────
 const safe = (obj, ...keys) => {
@@ -30,6 +30,8 @@ const stagger = { hidden: {}, visible: { transition: { staggerChildren: 0.08 } }
 
 // ─── Animated Section Wrapper ────────────────────────────────────────────────
 function Section({ id, children, className = "" }) {
+  const { portfolioData: data } = usePortfolio();
+
   const ref = useRef(null);
   const inView = useInView(ref, { once: true, margin: "-80px" });
   return (
@@ -48,6 +50,8 @@ function Section({ id, children, className = "" }) {
 
 // ─── Glass Card ──────────────────────────────────────────────────────────────
 function GlassCard({ children, className = "", hover = true }) {
+  const { portfolioData: data } = usePortfolio();
+
   return (
     <motion.div
       whileHover={hover ? { y: -4, scale: 1.01 } : {}}
@@ -67,6 +71,8 @@ function GlassCard({ children, className = "", hover = true }) {
 
 // ─── Glow Orb ────────────────────────────────────────────────────────────────
 function GlowOrb({ className = "", color = "cyan" }) {
+  const { portfolioData: data } = usePortfolio();
+
   const colors = {
     cyan: "bg-cyan-500/20",
     violet: "bg-violet-500/20",
@@ -82,6 +88,8 @@ function GlowOrb({ className = "", color = "cyan" }) {
 
 // ─── Section Title ───────────────────────────────────────────────────────────
 function SectionTitle({ label, title, subtitle }) {
+  const { portfolioData: data } = usePortfolio();
+
   return (
     <motion.div variants={fadeUp} className="text-center mb-16 space-y-3">
       <span className="inline-flex items-center gap-2 px-4 py-1.5 rounded-full border border-cyan-500/30 bg-cyan-500/10 text-cyan-400 text-xs font-semibold tracking-widest uppercase">
@@ -106,6 +114,8 @@ const NAV_ITEMS = [
 ];
 
 function FloatingNav({ activeSection }) {
+  const { portfolioData: data } = usePortfolio();
+
   const scrollTo = (id) => {
     document.getElementById(id)?.scrollIntoView({ behavior: "smooth" });
   };
@@ -164,6 +174,8 @@ const socialIconMap = { github: Github, linkedin: Linkedin, twitter: Twitter, we
 
 // ─── HERO ────────────────────────────────────────────────────────────────────
 function Hero() {
+  const { portfolioData: data } = usePortfolio();
+
   const { scrollY } = useScroll();
   const y = useTransform(scrollY, [0, 500], [0, 120]);
   const opacity = useTransform(scrollY, [0, 300], [1, 0]);
@@ -319,6 +331,8 @@ function Hero() {
 
 // ─── STATS ───────────────────────────────────────────────────────────────────
 function StatsBar() {
+  const { portfolioData: data } = usePortfolio();
+
   const stats = arr(safe(data, "stats"));
   if (!stats.length) return null;
 
@@ -357,6 +371,8 @@ function StatsBar() {
 
 // ─── ABOUT ───────────────────────────────────────────────────────────────────
 function About() {
+  const { portfolioData: data } = usePortfolio();
+
   const personal = safe(data, "personal") ?? {};
   return (
     <Section id="about" className="py-24 px-6">
@@ -438,6 +454,8 @@ function About() {
 
 // ─── SKILLS ──────────────────────────────────────────────────────────────────
 function Skills() {
+  const { portfolioData: data } = usePortfolio();
+
   const skills = arr(safe(data, "skills"));
 
   return (
@@ -481,6 +499,8 @@ function Skills() {
 
 // ─── PROJECTS ────────────────────────────────────────────────────────────────
 function Projects() {
+  const { portfolioData: data } = usePortfolio();
+
   const projects = arr(safe(data, "projects"));
 
   return (
@@ -567,6 +587,8 @@ function Projects() {
 
 // ─── EXPERIENCE ──────────────────────────────────────────────────────────────
 function Experience() {
+  const { portfolioData: data } = usePortfolio();
+
   const experience = arr(safe(data, "experience"));
 
   return (
@@ -625,6 +647,8 @@ function Experience() {
 
 // ─── TESTIMONIALS ────────────────────────────────────────────────────────────
 function Testimonials() {
+  const { portfolioData: data } = usePortfolio();
+
   const testimonials = arr(safe(data, "testimonials"));
   if (!testimonials.length) return null;
 
@@ -681,6 +705,8 @@ function Testimonials() {
 
 // ─── CONTACT / FOOTER ────────────────────────────────────────────────────────
 function Contact() {
+  const { portfolioData: data } = usePortfolio();
+
   const personal = safe(data, "personal") ?? {};
   const socials = arr(safe(data, "socials"));
   const [form, setForm] = useState({ name: "", email: "", message: "" });
@@ -828,6 +854,8 @@ function Contact() {
 
 // ─── ROOT EXPORT ─────────────────────────────────────────────────────────────
 export default function FloatingDock() {
+  const { portfolioData: data } = usePortfolio();
+
   const [activeSection, setActiveSection] = useState("hero");
 
   useEffect(() => {

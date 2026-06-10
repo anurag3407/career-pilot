@@ -1,4 +1,5 @@
 export const templates = [
+
   {
     "id": "Emoji_Only_Hieroglyphic_UI",
     "title": "Emoji-Only Hieroglyphic UI",
@@ -12,9 +13,37 @@ export const templates = [
     "createdAt": "2026-06-08",
     "isComplete": true
   },
- {
-   "id": "Hidden_Easter_Egg_Scavenger_Hunt",
-   "title": "Hidden Easter Egg Scavenger Hunt",
+
+{
+  "id": "Anonymous_Whistleblower_Drop_Box",
+  "title": "Anonymous Whistleblower Drop Box",
+  "category": "Portfolio",
+  "colorScheme": "Dark",
+  "layout": "Interactive",
+  "author": "System",
+  "views": 0,
+  "rating": 0,
+  "image": "/template-previews/Anonymous_Whistleblower_Drop_Box.png",
+  "createdAt": "2026-06-01",
+  "isComplete": true
+},
+{
+  "id": "Infinite_Zoom_Mandelbrot_Set",
+  "title": "Infinite Zoom Mandelbrot Set",
+  "category": "Portfolio",
+  "colorScheme": "Dark",
+  "layout": "Interactive",
+  "author": "System",
+  "views": 0,
+  "rating": 0,
+  "image": "/template-previews/Infinite_Zoom_Mandelbrot_Set.png",
+  "createdAt": "2026-06-09",
+  "isComplete": true
+},
+{
+  "id": "Hidden_Easter_Egg_Scavenger_Hunt",
+  "title": "Hidden Easter Egg Scavenger Hunt",
+
   "category": "Portfolio",
   "colorScheme": "Dark",
   "layout": "Interactive",
@@ -457,11 +486,18 @@ export const templates = [
   },
 
   {
-    id: "zine-collage",
-    title: "Zine Collage",
-    category: "Brutalist",
-    description: "An asymmetric, high-contrast scrapbook magazine layout featuring heavy ink borders, rotated clipping frames, and retro label-maker accents.",
-    isComplete: true
+    "id": "ZineCollage",
+    "title": "Zine Collage",
+    "category": "Portfolio",
+    "colorScheme": "Colorful",
+    "layout": "Grid",
+    "author": "System",
+    "views": 1200,
+    "rating": 4.8,
+    "image": "/template-previews/Zine_Collage.png",
+    "createdAt": "2026-06-08",
+    "description": "An asymmetric, high-contrast scrapbook magazine layout featuring heavy ink borders, rotated clipping frames, and retro label-maker accents.",
+    "isComplete": true
   },
   
   {
@@ -2592,6 +2628,7 @@ export const templates = [
   description: 'An interactive 404 error page wrapped in an infinite smoothly-looping background project showcase.'
   },
 
+
   {
   "id": "Pokemon_Pokedex_Classic",
   "title": "Pokemon Pokedex Classic",
@@ -2605,6 +2642,7 @@ export const templates = [
   "createdAt": "2026-06-08",
   "isComplete": true
 },
+
   {
     "id": "Underground_Bunker_Console",
     "title": "Underground Bunker Console",

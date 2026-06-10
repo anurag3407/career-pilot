@@ -1,3 +1,4 @@
+import { usePortfolio } from "../../../../context/PortfolioContext";
 import React, { useState, useEffect } from "react";
 import { motion, AnimatePresence } from "framer-motion";
 import {
@@ -6,10 +7,11 @@ import {
   Zap, Star, Send, ArrowUp, Menu, X, Terminal,
   GitBranch, Activity, Package, Globe, Code2, Layers
 } from "lucide-react";
-import data from "../../../../data/dummy_data.json";
 
 // ── Badge ─────────────────────────────────────────────────────────────────────
 function Badge({ status = "ready", size = "sm" }) {
+  const { portfolioData: data } = usePortfolio();
+
   const map = {
     ready:    { label: "Ready",    cls: "bg-emerald-500/20 text-emerald-400 border-emerald-500/40" },
     building: { label: "Building", cls: "bg-amber-500/20  text-amber-400  border-amber-500/40"  },
@@ -26,6 +28,8 @@ function Badge({ status = "ready", size = "sm" }) {
 
 // ── Navbar ────────────────────────────────────────────────────────────────────
 function Navbar() {
+  const { portfolioData: data } = usePortfolio();
+
   const [scrolled, setScrolled] = useState(false);
   const [open, setOpen] = useState(false);
   useEffect(() => {
@@ -78,6 +82,8 @@ function Navbar() {
 
 // ── Hero ──────────────────────────────────────────────────────────────────────
 function TerminalLine({ children, color = "text-emerald-400", delay = 0 }) {
+  const { portfolioData: data } = usePortfolio();
+
   const [show, setShow] = useState(false);
   useEffect(() => { const t = setTimeout(() => setShow(true), delay); return () => clearTimeout(t); }, [delay]);
   return (
@@ -89,6 +95,8 @@ function TerminalLine({ children, color = "text-emerald-400", delay = 0 }) {
 }
 
 function Hero() {
+  const { portfolioData: data } = usePortfolio();
+
   const name = data.personal?.name ?? "Your Name";
   const title = data.personal?.title ?? "Full Stack Developer";
   const bio = data.personal?.bio ?? "Building things for the web.";
@@ -264,6 +272,8 @@ function Hero() {
 
 // ── Section heading ───────────────────────────────────────────────────────────
 function SectionHeading({ file }) {
+  const { portfolioData: data } = usePortfolio();
+
   return (
     <motion.div initial={{ opacity: 0, y: 10 }} whileInView={{ opacity: 1, y: 0 }} viewport={{ once: true }}
       className="flex items-center gap-3 mb-10">
@@ -276,6 +286,8 @@ function SectionHeading({ file }) {
 
 // ── About ─────────────────────────────────────────────────────────────────────
 function About() {
+  const { portfolioData: data } = usePortfolio();
+
   return (
     <section id="about" className="bg-zinc-950 py-20 px-4 sm:px-6 border-t border-zinc-900">
       <div className="max-w-7xl mx-auto">
@@ -344,6 +356,8 @@ function About() {
 
 // ── Skills ────────────────────────────────────────────────────────────────────
 function Skills() {
+  const { portfolioData: data } = usePortfolio();
+
   const skills = data.skills ?? [];
   const cats = [...new Set(skills.map(s => s.category).filter(Boolean))];
   return (
@@ -385,6 +399,8 @@ function Skills() {
 // ── Projects ──────────────────────────────────────────────────────────────────
 const STATUSES = ["ready","ready","ready","building","error"];
 function Projects() {
+  const { portfolioData: data } = usePortfolio();
+
   const projects = data.projects ?? [];
   return (
     <section id="projects" className="bg-zinc-950 py-20 px-4 sm:px-6 border-t border-zinc-900">
@@ -433,6 +449,8 @@ function Projects() {
 
 // ── Experience ────────────────────────────────────────────────────────────────
 function Experience() {
+  const { portfolioData: data } = usePortfolio();
+
   const experience = data.experience ?? [];
   return (
     <section id="experience" className="bg-black py-20 px-4 sm:px-6 border-t border-zinc-900">
@@ -465,6 +483,8 @@ function Experience() {
 
 // ── Testimonials ──────────────────────────────────────────────────────────────
 function Testimonials() {
+  const { portfolioData: data } = usePortfolio();
+
   const testimonials = data.testimonials ?? [];
   return (
     <section id="testimonials" className="bg-zinc-950 py-20 px-4 sm:px-6 border-t border-zinc-900">
@@ -497,6 +517,8 @@ function Testimonials() {
 
 // ── Contact ───────────────────────────────────────────────────────────────────
 function Contact() {
+  const { portfolioData: data } = usePortfolio();
+
   const [form, setForm] = useState({ name: "", email: "", message: "" });
   const [sent, setSent] = useState(false);
   const submit = (e) => { e.preventDefault(); setSent(true); setTimeout(() => setSent(false), 3000); setForm({ name:"", email:"", message:"" }); };
@@ -575,6 +597,8 @@ function Contact() {
 
 // ── Footer ────────────────────────────────────────────────────────────────────
 function Footer() {
+  const { portfolioData: data } = usePortfolio();
+
   return (
     <footer className="bg-zinc-950 border-t border-zinc-900 py-6 px-4 sm:px-6">
       <div className="max-w-7xl mx-auto flex flex-wrap items-center justify-between gap-4">
@@ -596,6 +620,8 @@ function Footer() {
 
 // ── Root ──────────────────────────────────────────────────────────────────────
 export default function VercelDeploy({ portfolioData }) {
+  const { portfolioData: data } = usePortfolio();
+
   return (
     <div className="bg-black min-h-screen">
       <Navbar/>

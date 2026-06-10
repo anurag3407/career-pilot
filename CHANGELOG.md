@@ -1,3 +1,105 @@
+# [1.207.0](https://github.com/anurag3407/career-pilot/compare/v1.206.1...v1.207.0) (2026-06-10)
+
+
+### Bug Fixes
+
+* address review feedback for streaming enhancement ([ce1fa36](https://github.com/anurag3407/career-pilot/commit/ce1fa36e6d2bf5e928b2f98f4cd88b09e44b9c40))
+
+
+### Features
+
+* add real-time AI resume enhancement streaming UI ([e8d6005](https://github.com/anurag3407/career-pilot/commit/e8d600511fd705b0e3292797a56aa0ea1585533a))
+
+## [1.206.1](https://github.com/anurag3407/career-pilot/compare/v1.206.0...v1.206.1) (2026-06-10)
+
+
+### Bug Fixes
+
+* remove unauthenticated request bypass from aiRateLimiter ([9e41a14](https://github.com/anurag3407/career-pilot/commit/9e41a14e9948f1e7d2dbe3b97db0539caedac441)), closes [#3379](https://github.com/anurag3407/career-pilot/issues/3379)
+
+# [1.206.0](https://github.com/anurag3407/career-pilot/compare/v1.205.0...v1.206.0) (2026-06-09)
+
+
+### Features
+
+* add AI cover letter generator using Groq API ([#3289](https://github.com/anurag3407/career-pilot/issues/3289)) ([a2b2a5e](https://github.com/anurag3407/career-pilot/commit/a2b2a5e48362b381cdc5a2584b1f7b3b858a499b))
+
+# [1.205.0](https://github.com/anurag3407/career-pilot/compare/v1.204.0...v1.205.0) (2026-06-09)
+
+
+### Features
+
+* **portfolio:** add Anonymous Whistleblower Drop Box template ([5551cc7](https://github.com/anurag3407/career-pilot/commit/5551cc75221b7be4fcfc983d638a5b96152f75dc))
+
+# [1.204.0](https://github.com/anurag3407/career-pilot/compare/v1.203.0...v1.204.0) (2026-06-09)
+
+
+### Features
+
+* **portfolio:** add Infinite Zoom Mandelbrot Set template ([114e4e9](https://github.com/anurag3407/career-pilot/commit/114e4e909437fb1f90aed3b687ae0f4b94d513de))
+
+# [1.203.0](https://github.com/anurag3407/career-pilot/compare/v1.202.0...v1.203.0) (2026-06-09)
+
+
+### Bug Fixes
+
+* **ai-engine:** personalize fallback career recommendations ([f988c19](https://github.com/anurag3407/career-pilot/commit/f988c19cefbb0d8201e6d1f61f138fafb3a511e5))
+
+
+### Features
+
+* **ai-engine:** add career path suggester service ([3179578](https://github.com/anurag3407/career-pilot/commit/31795783b63e1961b45f1a3d470f4412dc57910b))
+
+# [1.202.0](https://github.com/anurag3407/career-pilot/compare/v1.201.0...v1.202.0) (2026-06-09)
+
+
+### Features
+
+* add resume section completion tracker and milestones ([#3347](https://github.com/anurag3407/career-pilot/issues/3347)) ([7ceed2c](https://github.com/anurag3407/career-pilot/commit/7ceed2c414fa8a91142ccb2d6df570e38730a403))
+
+# [1.201.0](https://github.com/anurag3407/career-pilot/compare/v1.200.0...v1.201.0) (2026-06-09)
+
+
+### Features
+
+* added AI assisted mock interview with LLM memory ([0fe5623](https://github.com/anurag3407/career-pilot/commit/0fe5623fbbd4ab3e157b6d864a122388ee3d5508))
+* added AI assisted mock interview with LLM memory and camera with mic assisted feature. ([38dda1d](https://github.com/anurag3407/career-pilot/commit/38dda1dabc61616185c2e43855cf2df4bc5fc1e6))
+
+# [1.200.0](https://github.com/anurag3407/career-pilot/compare/v1.199.0...v1.200.0) (2026-06-09)
+
+
+### Features
+
+* add skill gap visualization dashboard ([2e5fc9c](https://github.com/anurag3407/career-pilot/commit/2e5fc9cb2be5c6878cd126bae1be6e799a78efdb))
+
+# [1.199.0](https://github.com/anurag3407/career-pilot/compare/v1.198.2...v1.199.0) (2026-06-09)
+
+
+### Bug Fixes
+
+* remove invalid recommended skills calculation ([2d7c292](https://github.com/anurag3407/career-pilot/commit/2d7c2923aefeb4dce73a78ea8bfd76f792058104))
+
+
+### Features
+
+* add recommended skills learning suggestions in skill gap analysis ([8d933d4](https://github.com/anurag3407/career-pilot/commit/8d933d431c008111036f302ee1c2bce04147716f))
+
+## [1.198.2](https://github.com/anurag3407/career-pilot/compare/v1.198.1...v1.198.2) (2026-06-09)
+
+
+### Bug Fixes
+
+* **backend:** add fallback routes to return HTTP 400 for malformed interview IDs ([779de78](https://github.com/anurag3407/career-pilot/commit/779de78e8992997c3463324b46de38b44ccfca38))
+* **backend:** restrict interview id routes to valid ObjectIds to prevent route shadowing ([e95bbb5](https://github.com/anurag3407/career-pilot/commit/e95bbb5c90c718f28e8f1294e542a2fb28bf9f3f))
+
+## [1.198.1](https://github.com/anurag3407/career-pilot/compare/v1.198.0...v1.198.1) (2026-06-09)
+
+
+### Bug Fixes
+
+* add missing LineChart import in AppSidebar.jsx ([c623a8e](https://github.com/anurag3407/career-pilot/commit/c623a8e668271372df9b50924d069dda481642c8))
+* resolve syntax error and duplicate entries in templates.js ([087dcf4](https://github.com/anurag3407/career-pilot/commit/087dcf4028a8094439307935678b560d89ed58ae))
+
 # [1.198.0](https://github.com/anurag3407/career-pilot/compare/v1.197.1...v1.198.0) (2026-06-08)
 
 

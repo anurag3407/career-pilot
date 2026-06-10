@@ -90,7 +90,8 @@ export default function ResumeBuilder() {
   const [missingKeywords, setMissingKeywords] = useState([])
   const [resumeVersions, setResumeVersions] = useState([])
   const [selectedVersion, setSelectedVersion] = useState(null)
-
+  
+  const [recommendedSkills, setRecommendedSkills] = useState([])
   useEffect(() => {
     const suggestions = []
     let score = 100
@@ -152,22 +153,28 @@ export default function ResumeBuilder() {
 
   // ─────────────────── ATS Keyword Assessment Loop ───────────────────
   useEffect(() => {
+    const keywords = [
+      "React", "JavaScript", "Git", "Node.js",
+      "API", "Leadership", "Teamwork", "Problem Solving"
+    ]
+
     const resumeText = `
-      ${personal?.summary || ''}
-      ${skills || ''}
-      ${(projects || []).map(p => p.description).join(" ")}
-      ${(experience || []).map(e => e.description).join(" ")}
-    `.toLowerCase();
+      ${personal.summary}
+      ${skills}
+      ${projects.map(p => p.description).join(" ")}
+      ${experience.map(e => e.description).join(" ")}
+    `.toLowerCase()
 
     const foundKeywords = KEYWORDS_LIST.filter(keyword =>
       resumeText.includes(keyword.toLowerCase())
-    );
+    )
 
     const missing = KEYWORDS_LIST.filter(
       keyword => !foundKeywords.includes(keyword)
-    );
+    )
 
-    setMissingKeywords(missing);
+    setMissingKeywords(missing)
+    setRecommendedSkills(missing.slice(0, 4))
 
     if (KEYWORDS_LIST.length > 0) {
       setAtsScore(

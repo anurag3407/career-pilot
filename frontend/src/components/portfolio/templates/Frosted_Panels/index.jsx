@@ -1,3 +1,4 @@
+import { usePortfolio } from "../../../../context/PortfolioContext";
 import React, { useState, useEffect } from 'react';
 import { motion, AnimatePresence } from 'framer-motion';
 import {
@@ -34,7 +35,6 @@ import {
   CalendarDays,
   Phone
 } from 'lucide-react';
-import data from '../../../../data/dummy_data.json';
 
 /**
  * Frosted Panels Portfolio Template (Glass / Modern UI)
@@ -47,6 +47,8 @@ import data from '../../../../data/dummy_data.json';
  * - Background connection: Absolute background panels connecting the user's flow
  */
 export default function FrostedPanels() {
+  const { portfolioData: data } = usePortfolio();
+
   const [activeSection, setActiveSection] = useState('home');
   const [hoveredLink, setHoveredLink] = useState(null);
   const [mobileMenuOpen, setMobileMenuOpen] = useState(false);

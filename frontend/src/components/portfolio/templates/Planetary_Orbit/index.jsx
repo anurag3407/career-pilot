@@ -1,7 +1,7 @@
+import { usePortfolio } from "../../../../context/PortfolioContext";
 import React, { useRef, useState, useCallback, useEffect } from 'react';
 import { motion, AnimatePresence, useInView } from 'framer-motion';
 import { Github, Linkedin, Twitter, Mail, MapPin, ExternalLink, Briefcase, Code2, Quote, Send, User, Layers, Star, ChevronLeft, ChevronRight } from 'lucide-react';
-import data from '../../../../data/dummy_data.json';
 
 /* ── Space palette ─────────────────────────────────────────────────── */
 const SPACE = {
@@ -27,6 +27,8 @@ const PLANETS = [
 
 /* ── Starfield ─────────────────────────────────────────────────────── */
 function Starfield({ count = 180 }) {
+  const { portfolioData: data } = usePortfolio();
+
   const stars = Array.from({ length: count }, (_, i) => ({
     x: (i * 137.5) % 100,
     y: (i * 93.7) % 100,
@@ -50,6 +52,8 @@ function Starfield({ count = 180 }) {
 
 /* ── Solar system navigator ────────────────────────────────────────── */
 function SolarSystem({ activeSection, onNavigate }) {
+  const { portfolioData: data } = usePortfolio();
+
   const [hoveredPlanet, setHoveredPlanet] = useState(null);
   const size = 760;
   const cx = size / 2;
@@ -157,6 +161,8 @@ function SolarSystem({ activeSection, onNavigate }) {
 
 /* ── Fade section ──────────────────────────────────────────────────── */
 function FadeSection({ children, className = '', delay = 0 }) {
+  const { portfolioData: data } = usePortfolio();
+
   const ref = useRef(null);
   const inView = useInView(ref, { once: true, margin: '-60px' });
   return (
@@ -170,6 +176,8 @@ function FadeSection({ children, className = '', delay = 0 }) {
 
 /* ── Section heading ───────────────────────────────────────────────── */
 function SectionHeading({ icon: Icon, title, planet }) {
+  const { portfolioData: data } = usePortfolio();
+
   const p = PLANETS.find(p => p.id === planet) || PLANETS[0];
   return (
     <div className="flex items-center gap-3 mb-10">
@@ -185,6 +193,8 @@ function SectionHeading({ icon: Icon, title, planet }) {
 
 /* ── Skill bar ─────────────────────────────────────────────────────── */
 function SkillBar({ name, level, category, delay }) {
+  const { portfolioData: data } = usePortfolio();
+
   const ref = useRef(null);
   const inView = useInView(ref, { once: true });
   const catColor = { Frontend: '#4fc3f7', Backend: '#81c784', DevOps: '#ffb74d', Design: '#f48fb1' };
@@ -210,6 +220,8 @@ function SkillBar({ name, level, category, delay }) {
 
 /* ── Project card ──────────────────────────────────────────────────── */
 function ProjectCard({ project, index }) {
+  const { portfolioData: data } = usePortfolio();
+
   const [hovered, setHovered] = useState(false);
   const p = PLANETS[2]; // projects planet
   const c = p.color;
@@ -258,6 +270,8 @@ function ProjectCard({ project, index }) {
 
 /* ── Contact form ──────────────────────────────────────────────────── */
 function ContactForm() {
+  const { portfolioData: data } = usePortfolio();
+
   const [form, setForm] = useState({ name: '', email: '', message: '' });
   const [sent, setSent] = useState(false);
   const c = PLANETS[5].color;
@@ -300,6 +314,8 @@ function ContactForm() {
    MAIN COMPONENT
 ═══════════════════════════════════════════════════════════════════════ */
 export default function PlanetaryOrbit() {
+  const { portfolioData: data } = usePortfolio();
+
   const [activeSection, setActiveSection] = useState('about');
 
   const scrollTo = useCallback((id) => {

@@ -1,10 +1,10 @@
+import { usePortfolio } from "../../../../context/PortfolioContext";
 import React, { useState, useRef, useEffect } from "react";
 import { motion, AnimatePresence, useInView } from "framer-motion";
 import {
   Github, Linkedin, Twitter, Mail, ExternalLink,
   Volume2, Mic, Radio, Music, Headphones
 } from "lucide-react";
-import data from "../../../../data/dummy_data.json";
 
 const C = {
   bg:     "#0A0A12",
@@ -28,6 +28,8 @@ const SONAR_ITEMS = [
 ];
 
 function GlobalStyles() {
+  const { portfolioData: data } = usePortfolio();
+
   return (
     <style>{`
       @import url('https://fonts.googleapis.com/css2?family=Space+Grotesk:wght@300;400;500;600;700&family=Inter:wght@300;400;500;600;700&display=swap');
@@ -117,6 +119,8 @@ function GlobalStyles() {
 }
 
 function SonarPulsingCircle({ color = C.accent, size = 80, duration = 2 }) {
+  const { portfolioData: data } = usePortfolio();
+
   return (
     <div style={{ position: "relative", width: size, height: size }}>
       {[0, 1, 2].map((i) => (
@@ -139,6 +143,8 @@ function SonarPulsingCircle({ color = C.accent, size = 80, duration = 2 }) {
 }
 
 function AudioBars({ style = {} }) {
+  const { portfolioData: data } = usePortfolio();
+
   const bars = [0.6, 1, 0.8, 1.2, 0.7, 1.1, 0.5, 0.9, 1.3, 0.6];
   return (
     <div style={{ display: "flex", alignItems: "flex-end", gap: 3, height: 48, ...style }}>
@@ -155,6 +161,8 @@ function AudioBars({ style = {} }) {
 }
 
 function SonarNav({ activeSection, onNavigate }) {
+  const { portfolioData: data } = usePortfolio();
+
   const [hoveredId, setHoveredId] = useState(null);
 
   return (
@@ -235,6 +243,8 @@ function SonarNav({ activeSection, onNavigate }) {
 }
 
 function FadeIn({ children, delay = 0, className = "", style = {} }) {
+  const { portfolioData: data } = usePortfolio();
+
   const ref = useRef(null);
   const inView = useInView(ref, { once: true, margin: "-80px" });
   return (
@@ -247,6 +257,8 @@ function FadeIn({ children, delay = 0, className = "", style = {} }) {
 }
 
 function SkillBar({ name, level, category }) {
+  const { portfolioData: data } = usePortfolio();
+
   const ref = useRef(null);
   const inView = useInView(ref, { once: true });
   return (
@@ -264,6 +276,8 @@ function SkillBar({ name, level, category }) {
 }
 
 export default function AudioFirstSonarNavigation() {
+  const { portfolioData: data } = usePortfolio();
+
   const [activeSection, setActiveSection] = useState("hero");
   const [contactState, setContactState] = useState("idle");
   const [form, setForm] = useState({ name: "", email: "", message: "" });
