@@ -39,7 +39,12 @@ import { getGithubUsername } from '../utils/github'
 function DashboardSkeleton() {
   return (
     <div>
-      <div className="flex items-center gap-3 px-4 py-3 bg-primary/5 border border-primary/20 rounded-xl mb-6 animate-pulse">
+      <div 
+        role="status" 
+        aria-live="polite" 
+        aria-busy="true" 
+        className="flex items-center gap-3 px-4 py-3 bg-primary/5 border border-primary/20 rounded-xl mb-6 animate-pulse"
+      >
         <div className="w-4 h-4 border-2 border-primary border-t-transparent rounded-full animate-spin shrink-0" />
         <p className="text-sm text-primary font-medium">Loading your dashboard data... Please wait...</p>
       </div>
