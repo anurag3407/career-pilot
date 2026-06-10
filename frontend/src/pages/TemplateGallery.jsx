@@ -32,6 +32,8 @@ import LowPolyTerrain from "../components/portfolio/templates/Low_Poly_Terrain/i
 import HighFashion from "../components/portfolio/templates/High_Fashion/index";
 import LazyTemplateFrame from "../components/portfolio/LazyTemplateFrame";
 
+const TEMPLATE_PREVIEW_HEIGHT = 600;
+
 /* TemplatePreviewFrame — contains each full portfolio template in a
    sandboxed scrollable box. The key trick: CSS `transform` on the outer
    wrapper makes it the "containing block" for any position:fixed children,
@@ -54,14 +56,14 @@ function TemplatePreviewFrame({ label, badgeColor, children }) {
       <div
         className="rounded-2xl border border-border"
         style={{
-          height: 600,
+          height: TEMPLATE_PREVIEW_HEIGHT,
           overflowY: 'auto',
           overflowX: 'hidden',
           transform: 'translate(0)',
           position: 'relative',
         }}
       >
-        <LazyTemplateFrame placeholderHeight={600}>
+        <LazyTemplateFrame placeholderHeight={TEMPLATE_PREVIEW_HEIGHT}>
           {children}
         </LazyTemplateFrame>
       </div>
