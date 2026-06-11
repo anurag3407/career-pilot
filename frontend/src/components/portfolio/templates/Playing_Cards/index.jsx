@@ -1,3 +1,4 @@
+import { usePortfolio } from "../../../../context/PortfolioContext";
 import React, { useState, useEffect } from 'react';
 import { motion } from 'framer-motion';
 import Hero from './Hero';
@@ -7,9 +8,10 @@ import Projects from './Projects';
 import Experience from './Experience';
 import Testimonials from './Testimonials';
 import Contact from './Contact';
-import dummyData from '../../../../data/dummy_data.json';
 
 const PlayingCardsPortfolio = ({ portfolioData }) => {
+  const { portfolioData: dummyData } = usePortfolio();
+
   const [isLoaded, setIsLoaded] = useState(false);
   const [activeSection, setActiveSection] = useState('home');
 

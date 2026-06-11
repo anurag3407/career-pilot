@@ -10,4 +10,21 @@ export { default as Footer } from './Footer'
 export { default as GradientBorder, GlowCard } from './GradientBorder'
 export { AnimatedGradientText, AnimatedLetters, TypewriterText, FadeInText } from './AnimatedText'
 export { default as AnimatedCounter } from './AnimatedCounter'
+// Skeleton UI primitives
+export {
+  SkeletonBlock,
+  SkeletonCircle,
+  SkeletonText,
+  SkeletonCard,
+  SkeletonRow,
+  SkeletonStat,
+  SkeletonAction,
+  SkeletonJobCard,
+  SkeletonResumeRow,
+  SkeletonResumeView,
+  SkeletonCommentList,
+  SkeletonProfile,
+  SkeletonTracker,
+  SkeletonSettings,
+} from './Skeleton'
 export { Select, SelectTrigger, SelectValue, SelectContent, SelectItem } from './select'

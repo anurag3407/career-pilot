@@ -1,6 +1,5 @@
 import { useState, useEffect } from "react";
 import { DragDropContext, Droppable, Draggable } from "@hello-pangea/dnd";
-import { motion } from "framer-motion";
 import { toast } from "react-hot-toast";
 import {
   Briefcase,
@@ -10,16 +9,26 @@ import {
   Trash2,
   ExternalLink,
   Plus,
-  Filter,
+  RefreshCw,
+  Sparkles,
+  WifiOff,
 } from "lucide-react";
 import Layout from "../components/Layout";
 import { jobTrackerApi } from "../services/api";
+import { auth } from "../config/firebase";
 import Button from "../components/Button";
 import Card from "../components/Card";
-import EmptyJobState from "../components/EmptyJobState";
 import CompanyResearch from "../components/CompanyResearch";
-import { Sparkles } from "lucide-react";
-import { SkeletonDashboard } from "../components/ui/Skeleton.jsx";
+import { SkeletonTracker } from "../components/ui/Skeleton";
+import {
+  calculateJobStats,
+  getQueuedStatusUpdates,
+  loadJobTrackerSnapshot,
+  queueStatusUpdate,
+  removeQueuedStatusUpdates,
+  saveJobTrackerStats,
+  saveJobTrackerSnapshot,
+} from "../utils/jobTrackerOffline";
 
 const JobTracker = () => {
   const [trackedJobs, setTrackedJobs] = useState([]);
@@ -28,6 +37,13 @@ const JobTracker = () => {
   const [filterStatus, setFilterStatus] = useState("all");
   const [updateLoading, setUpdateLoading] = useState({});
   const [researchCompany, setResearchCompany] = useState(null);
+  const [isOffline, setIsOffline] = useState(
+    typeof navigator !== "undefined" ? !navigator.onLine : false,
+  );
+  const [lastSyncedAt, setLastSyncedAt] = useState(null);
+  const [pendingSyncCount, setPendingSyncCount] = useState(0);
+
+  const currentUserId = auth?.currentUser?.uid || "anonymous";
 
   const statusOptions = [
     {
@@ -52,14 +68,82 @@ const JobTracker = () => {
     fetchStats();
   }, []);
 
+  useEffect(() => {
+    const updateConnectionState = () => {
+      setIsOffline(!navigator.onLine);
+    };
+
+    const handleOnline = async () => {
+      setIsOffline(false);
+      await syncPendingStatusUpdates();
+      await fetchJobs();
+      await fetchStats();
+    };
+
+    const handleOffline = () => {
+      setIsOffline(true);
+    };
+
+    setPendingSyncCount(getQueuedStatusUpdates(currentUserId).length);
+    window.addEventListener("online", handleOnline);
+    window.addEventListener("offline", handleOffline);
+    updateConnectionState();
+
+    return () => {
+      window.removeEventListener("online", handleOnline);
+      window.removeEventListener("offline", handleOffline);
+    };
+  }, [currentUserId]);
+
+  const isNetworkError = (error) => {
+    return (
+      isOffline ||
+      !navigator.onLine ||
+      error?.name === "TypeError" ||
+      error?.message?.toLowerCase().includes("failed to fetch")
+    );
+  };
+
+  const isUnrecoverableStatusUpdateError = (error) => {
+    return [400, 404, 422].includes(error?.status);
+  };
+
+  const loadCachedTrackerData = () => {
+    const snapshot = loadJobTrackerSnapshot(currentUserId);
+    if (!snapshot) return false;
+
+    const cachedJobs = snapshot.trackedJobs || [];
+    setTrackedJobs(cachedJobs);
+    setStats(snapshot.stats || calculateJobStats(cachedJobs));
+    setLastSyncedAt(snapshot.lastSyncedAt || null);
+    return true;
+  };
+
+  const persistTrackerSnapshot = (jobs, nextStats = null) => {
+    const snapshot = saveJobTrackerSnapshot(currentUserId, jobs, nextStats);
+    setLastSyncedAt(snapshot.lastSyncedAt);
+    return snapshot;
+  };
+
   const fetchJobs = async () => {
     try {
       setLoading(true);
       const data = await jobTrackerApi.getAll();
-      setTrackedJobs(data.trackedJobs || []);
+      const jobs = data.trackedJobs || [];
+      setTrackedJobs(jobs);
+      persistTrackerSnapshot(jobs, calculateJobStats(jobs));
+      setIsOffline(false);
     } catch (error) {
       console.error("Error fetching jobs:", error);
-      toast.error("Failed to load tracked jobs", { id: "tracked-jobs-load-error" });
+      const hasCachedData = loadCachedTrackerData();
+      if (hasCachedData) {
+        setIsOffline(true);
+        toast("Showing saved Job Tracker data while offline", {
+          id: "tracked-jobs-offline-cache",
+        });
+      } else {
+        toast.error("Failed to load tracked jobs", { id: "tracked-jobs-load-error" });
+      }
     } finally {
       setLoading(false);
     }
@@ -69,29 +153,108 @@ const JobTracker = () => {
     try {
       const data = await jobTrackerApi.getStats();
       setStats(data.stats);
+      const snapshot = saveJobTrackerStats(currentUserId, data.stats);
+      setLastSyncedAt(snapshot.lastSyncedAt);
     } catch (error) {
       console.error("Error fetching stats:", error);
+      const snapshot = loadJobTrackerSnapshot(currentUserId);
+      if (snapshot?.stats) {
+        setStats(snapshot.stats);
+      }
+    }
+  };
+
+  const queueOfflineStatusChange = (jobId, newStatus, jobsSnapshot) => {
+    const updatedJobs = jobsSnapshot.map((job) =>
+      job.id === jobId
+        ? { ...job, status: newStatus, updatedAt: new Date().toISOString() }
+        : job,
+    );
+    const offlineStats = calculateJobStats(updatedJobs);
+    const queue = queueStatusUpdate(currentUserId, jobId, newStatus);
+
+    setTrackedJobs(updatedJobs);
+    setStats(offlineStats);
+    setPendingSyncCount(queue.length);
+    setIsOffline(true);
+    persistTrackerSnapshot(updatedJobs, offlineStats);
+    toast.success("Status saved offline. It will sync when you reconnect.", {
+      id: `tracked-job-offline-update-${jobId}`,
+    });
+  };
+
+  const syncPendingStatusUpdates = async () => {
+    const queuedUpdates = getQueuedStatusUpdates(currentUserId);
+    if (!queuedUpdates.length || !navigator.onLine) {
+      setPendingSyncCount(queuedUpdates.length);
+      return;
+    }
+
+    const syncedIds = [];
+    let failedCount = 0;
+    let discardedCount = 0;
+    let stoppedForNetwork = false;
+
+    for (const update of queuedUpdates) {
+      try {
+        await jobTrackerApi.updateStatus(update.jobId, update.status);
+        syncedIds.push(update.id);
+      } catch (error) {
+        console.error("Error syncing offline job update:", error);
+        if (isNetworkError(error)) {
+          stoppedForNetwork = true;
+          break;
+        }
+        if (isUnrecoverableStatusUpdateError(error)) {
+          discardedCount += 1;
+          syncedIds.push(update.id);
+        } else {
+          failedCount += 1;
+        }
+      }
+    }
+
+    const remainingUpdates = syncedIds.length
+      ? removeQueuedStatusUpdates(currentUserId, syncedIds)
+      : queuedUpdates;
+
+    setPendingSyncCount(remainingUpdates.length);
+
+    if (failedCount) {
+      toast.error("Some offline updates could not be synced and will be retried");
+    } else if (discardedCount) {
+      toast.error("Some offline updates could not be applied");
+    } else if (syncedIds.length && !stoppedForNetwork) {
+      toast.success("Offline Job Tracker changes synced", {
+        id: "tracked-job-offline-sync",
+      });
     }
   };
 
   const handleStatusUpdate = async (jobId, newStatus) => {
+    const previousJobs = trackedJobs;
+
     try {
       setUpdateLoading((prev) => ({ ...prev, [jobId]: true }));
       await jobTrackerApi.updateStatus(jobId, newStatus);
 
-      setTrackedJobs((prev) =>
-        prev.map((job) =>
+      const updatedJobs = previousJobs.map((job) =>
           job.id === jobId
             ? { ...job, status: newStatus, updatedAt: new Date() }
             : job,
-        ),
       );
+      setTrackedJobs(updatedJobs);
+      persistTrackerSnapshot(updatedJobs, calculateJobStats(updatedJobs));
 
       toast.success("Status updated!");
       fetchStats();
     } catch (error) {
       console.error("Error updating status:", error);
-      toast.error("Failed to update status", { id: `tracked-job-update-error-${jobId}` });
+      if (isNetworkError(error)) {
+        queueOfflineStatusChange(jobId, newStatus, previousJobs);
+      } else {
+        toast.error("Failed to update status", { id: `tracked-job-update-error-${jobId}` });
+      }
     } finally {
       setUpdateLoading((prev) => ({ ...prev, [jobId]: false }));
     }
@@ -110,15 +273,18 @@ const JobTracker = () => {
     }
 
     const newStatus = destination.droppableId;
+    const previousJobs = trackedJobs;
+    const updatedJobs = previousJobs.map((job) =>
+      job.id === draggableId
+        ? { ...job, status: newStatus, updatedAt: new Date().toISOString() }
+        : job,
+    );
     
     // Optimistic UI update
-    setTrackedJobs((prev) =>
-      prev.map((job) =>
-        job.id === draggableId
-          ? { ...job, status: newStatus, updatedAt: new Date() }
-          : job,
-      ),
-    );
+    const updatedStats = calculateJobStats(updatedJobs);
+    setTrackedJobs(updatedJobs);
+    setStats(updatedStats);
+    persistTrackerSnapshot(updatedJobs, updatedStats);
 
     // Backend update
     try {
@@ -127,9 +293,15 @@ const JobTracker = () => {
       fetchStats();
     } catch (error) {
       console.error("Error updating status:", error);
-      toast.error("Failed to update status");
-      // Revert on failure
-      fetchJobs();
+      if (isNetworkError(error)) {
+        queueOfflineStatusChange(draggableId, newStatus, previousJobs);
+      } else {
+        toast.error("Failed to update status");
+        const previousStats = calculateJobStats(previousJobs);
+        setTrackedJobs(previousJobs);
+        setStats(previousStats);
+        persistTrackerSnapshot(previousJobs, previousStats);
+      }
     }
   };
 
@@ -144,7 +316,9 @@ const JobTracker = () => {
 
     try {
       await jobTrackerApi.delete(jobId);
-      setTrackedJobs((prev) => prev.filter((job) => job.id !== jobId));
+      const updatedJobs = trackedJobs.filter((job) => job.id !== jobId);
+      setTrackedJobs(updatedJobs);
+      persistTrackerSnapshot(updatedJobs, calculateJobStats(updatedJobs));
       toast.success("Job removed from tracker");
       fetchStats();
     } catch (error) {
@@ -168,14 +342,20 @@ const JobTracker = () => {
     });
   };
 
+  const formatDateTime = (date) => {
+    if (!date) return "not synced yet";
+    return new Date(date).toLocaleString("en-US", {
+      month: "short",
+      day: "numeric",
+      hour: "numeric",
+      minute: "2-digit",
+    });
+  };
+
   if (loading) {
     return (
       <Layout>
-        <div className="min-h-screen bg-background py-8 px-4">
-          <div className="max-w-7xl mx-auto">
-            <SkeletonDashboard />
-          </div>
-        </div>
+        <SkeletonTracker />
       </Layout>
     );
   }
@@ -193,6 +373,41 @@ const JobTracker = () => {
               Track your job applications in one place
             </p>
           </div>
+
+          {(isOffline || pendingSyncCount > 0) && (
+            <Card className="mb-6 border-amber-500/40 bg-amber-500/10 p-4">
+              <div className="flex flex-col gap-3 sm:flex-row sm:items-center sm:justify-between">
+                <div className="flex items-start gap-3">
+                  <WifiOff className="mt-0.5 h-5 w-5 text-amber-500" />
+                  <div>
+                    <p className="font-semibold text-foreground">
+                      {isOffline ? "Offline mode" : "Pending offline sync"}
+                    </p>
+                    <p className="text-sm text-muted-foreground">
+                      Showing saved tracker data from {formatDateTime(lastSyncedAt)}.
+                      {pendingSyncCount > 0
+                        ? ` ${pendingSyncCount} status update${pendingSyncCount > 1 ? "s are" : " is"} waiting to sync.`
+                        : ""}
+                    </p>
+                  </div>
+                </div>
+                <Button
+                  type="button"
+                  variant="outline"
+                  onClick={async () => {
+                    await syncPendingStatusUpdates();
+                    await fetchJobs();
+                    await fetchStats();
+                  }}
+                  disabled={isOffline}
+                  className="shrink-0"
+                >
+                  <RefreshCw className="mr-2 h-4 w-4" />
+                  Retry Sync
+                </Button>
+              </div>
+            </Card>
+          )}
 
           {/* Stats Cards */}
           {stats && (
