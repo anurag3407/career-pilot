@@ -1,9 +1,11 @@
+import { usePortfolio } from "../../../../context/PortfolioContext";
 import React from 'react';
 import { motion } from 'framer-motion';
 import { Github, Linkedin, Twitter, Mail, ExternalLink, Briefcase, Award } from 'lucide-react';
-import data from '../../../../data/dummy_data.json';
 
 export default function CharcoalSketch() {
+  const { portfolioData: data } = usePortfolio();
+
 const { personal, socials, skills, projects, experience, stats, testimonials } = data;
   return (
     <div className="min-h-screen bg-zinc-900 text-zinc-300 font-mono overflow-x-hidden selection:bg-zinc-700 selection:text-white">

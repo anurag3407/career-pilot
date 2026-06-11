@@ -6,15 +6,6 @@
 
 ---
 
-## Problem Statement
-
-The frontend was experiencing significant UI/UX lag under concurrent 
-usage. Lighthouse audits revealed a Performance score of 25/100 with 
-an LCP of 5.49s (rated "Poor") on the production-equivalent build, 
-making the application feel slow and unresponsive to users.
-
----
-
 ## Baseline Metrics (Before — Dev Build)
 
 | Metric | Value | Rating |
@@ -26,6 +17,16 @@ making the application feel slow and unresponsive to users.
 | Accessibility | 85/100 | 🟡 Needs Work |
 | Best Practices | 77/100 | 🟡 Needs Work |
 | SEO | 92/100 | 🟢 Good |
+
+---
+
+## Problem Statement
+
+The frontend was experiencing significant UI/UX lag under concurrent 
+usage. Lighthouse audits revealed a Performance score of 25/100 with 
+an LCP of 5.49s (rated "Poor") on the production-equivalent build, 
+making the application feel slow and unresponsive to users.
+
 
 ---
 

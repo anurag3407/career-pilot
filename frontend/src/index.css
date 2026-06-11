@@ -71,6 +71,30 @@
   --ring: #00bfff;
 }
 
+.highContrast {
+  /* High Contrast Theme Design Tokens (WCAG AAA) */
+  --background: #000000;
+  --secondary-bg: #000000;
+  --foreground: #ffffff;
+  --card: #000000;
+  --card-foreground: #ffffff;
+  --popover: #000000;
+  --popover-foreground: #ffffff;
+  --primary: #ffff00;
+  --primary-foreground: #000000;
+  --secondary: #00ffff;
+  --secondary-foreground: #000000;
+  --muted: #000000;
+  --muted-foreground: #ffffff;
+  --accent: #ffff00;
+  --accent-foreground: #000000;
+  --destructive: #ff0000;
+  --destructive-foreground: #ffffff;
+  --border: #ffffff;
+  --input: #ffffff;
+  --ring: #ffff00;
+}
+
 /* Base Styles */
 * {
   box-sizing: border-box;
