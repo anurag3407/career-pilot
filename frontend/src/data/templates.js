@@ -15,16 +15,16 @@ export const templates = [
   },
 
 {
-  "id": "Anonymous_Whistleblower_Drop_Box",
-  "title": "Anonymous Whistleblower Drop Box",
+  "id": "Captcha_Solver_Portfolio_Gate",
+  "title": "Captcha Solver Portfolio Gate",
   "category": "Portfolio",
   "colorScheme": "Dark",
   "layout": "Interactive",
   "author": "System",
   "views": 0,
   "rating": 0,
-  "image": "/template-previews/Anonymous_Whistleblower_Drop_Box.png",
-  "createdAt": "2026-06-01",
+  "image": "/template-previews/Captcha_Solver_Portfolio_Gate.png",
+  "createdAt": "2026-06-09",
   "isComplete": true
 },
 {
@@ -192,6 +192,19 @@ export const templates = [
     "rating": 4.5,
     "image": "/template-previews/Acrylic_Windows.png",
     "createdAt": "2026-05-01"
+  },
+  {
+    "id": "Transparent_Desktop_Overlay_OS",
+    "title": "Transparent Desktop Overlay OS",
+    "category": "Portfolio",
+    "colorScheme": "Dark",
+    "layout": "Interactive",
+    "author": "System",
+    "views": 1500,
+    "rating": 5.0,
+    "image": "/templates/Transparent_Desktop_Overlay_OS.png",
+    "createdAt": "2026-06-09",
+    "isComplete": true
   },
   {
     "id": "Advent_Calendar",
@@ -882,10 +895,10 @@ export const templates = [
     "colorScheme": "Dark",
     "layout": "Grid",
     "author": "System",
-    "views": 1060,
-    "rating": 4.5,
+    "views": 99999,
+    "rating": 5.0,
     "image": "/template-previews/F1_Racing.png",
-    "createdAt": "2026-05-01"
+    "createdAt": "2026-12-31"
   },
   {
     "id": "Fantasy_RPG",
@@ -2666,6 +2679,19 @@ export const templates = [
     "rating": 5.0,
     "image": "/template-previews/Digital_Manifesto_Scroll.png",
     "createdAt": "2026-06-07",
+    "isComplete": true
+  },
+  {
+    "id": "Cloud_Nine_Aerial_Skyscape",
+    "title": "Cloud Nine Aerial Skyscape",
+    "category": "Portfolio",
+    "colorScheme": "Light",
+    "layout": "Grid",
+    "author": "System",
+    "views": 1000,
+    "rating": 5.0,
+    "image": "/template-previews/Cloud_Nine_Aerial_Skyscape.png",
+    "createdAt": "2026-06-10",
     "isComplete": true
   }
 ];

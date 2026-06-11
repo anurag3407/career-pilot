@@ -285,6 +285,7 @@ function AppRoutes() {
         <Route path="/templates/zine-collage" element={<ZineCollage />} />
         <Route path="/templates/chatbot" element={<ChatbotPortfolio />} /> 
         <Route path="/templates/glassmorphism" element={<GlassmorphismTemplate/>} />
+        <Route path="/templates/transparent-desktop-overlay-os" element={<TransparentDesktopOverlayOS />} />
         {/* Core Protected Routes */}
         <Route 
   path="/dashboard" 

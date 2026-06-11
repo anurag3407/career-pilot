@@ -154,15 +154,21 @@ export default function ResumeBuilder() {
   // ─────────────────── ATS Keyword Assessment Loop ───────────────────
   useEffect(() => {
     const keywords = [
-      "React", "JavaScript", "Git", "Node.js",
-      "API", "Leadership", "Teamwork", "Problem Solving"
+      "React",
+      "JavaScript",
+      "Git",
+      "Node.js",
+      "API",
+      "Leadership",
+      "Teamwork",
+      "Problem Solving"
     ]
 
     const resumeText = `
-      ${personal.summary}
-      ${skills}
-      ${projects.map(p => p.description).join(" ")}
-      ${experience.map(e => e.description).join(" ")}
+      ${personal?.summary || ''}
+      ${skills || ''}
+      ${(projects || []).map(p => p.description || '').join(" ")}
+      ${(experience || []).map(e => e.description || '').join(" ")}
     `.toLowerCase()
 
     const foundKeywords = KEYWORDS_LIST.filter(keyword =>
@@ -172,9 +178,22 @@ export default function ResumeBuilder() {
     const missing = KEYWORDS_LIST.filter(
       keyword => !foundKeywords.includes(keyword)
     )
+  )
+}, [
+  personal,
+  skills,
+  projects,
+  experience,
+  keywords,
+  foundKeywords.length
+])
 
-    setMissingKeywords(missing)
-    setRecommendedSkills(missing.slice(0, 4))
+// ─────────────────── CONSOLIDATED ATS ASSESSMENT LOOP ───────────────────
+useEffect(() => {
+  // 1. Gather all inputs into a clean string representation
+  const resumeText = `${personal?.summary || ''} ${skills?.join(' ') || ''} ${
+    projects?.map(p => `${p.title} ${p.description}`).join(' ') || ''
+  } ${experience?.map(e => `${e.role} ${e.description}`).join(' ') || ''}`.toLowerCase();
 
     if (KEYWORDS_LIST.length > 0) {
       setAtsScore(
@@ -224,6 +243,13 @@ export default function ResumeBuilder() {
   const restoreVersion = React.useCallback((version) => {
     setSelectedVersion(version);
     toast.success(`Restored version from ${version.timestamp}`);
+  }, []);
+
+  const restoreVersion = React.useCallback((version) => {
+    setSelectedVersion(version);
+    if (typeof toast !== 'undefined') {
+      toast.success(`Restored version from ${version.timestamp}`);
+    }
   }, []);
 
   // ─────────────────── Automated Recommendations Engine ───────────────────
@@ -425,6 +451,7 @@ export default function ResumeBuilder() {
     return md
   }
 
+
   const handleGenerate = async () => {
     try {
       setIsSubmitting(true)
@@ -446,14 +473,14 @@ export default function ResumeBuilder() {
   // ── shared input class builder ────────────────────────────────────────────────
   const inputCls = (errorKey, errors = personalErrors) =>
     cn(
-      'w-full bg-background/50 border rounded-xl px-4 py-2 transition-colors',
+      'w-full bg-muted border rounded-xl px-4 py-2 transition-colors',
       'focus:outline-none focus:ring-2 focus:ring-primary/30',
       errors?.[errorKey] ? 'border-red-500 focus:ring-red-400/30' : 'border-border'
     )
 
   const inputClsArr = (errors) => (errorKey) =>
     cn(
-      'w-full bg-background/50 border rounded-lg px-4 py-2 transition-colors',
+      'w-full bg-muted border rounded-lg px-4 py-2 transition-colors',
       'focus:outline-none focus:ring-2 focus:ring-primary/30',
       errors?.[errorKey] ? 'border-red-500 focus:ring-red-400/30' : 'border-border'
     )
@@ -580,7 +607,7 @@ export default function ResumeBuilder() {
               <label className="block text-sm font-medium mb-1" htmlFor="summary">Professional Summary</label>
               <textarea
                 id="summary"
-                className="w-full bg-background/50 border border-border rounded-xl px-4 py-2 min-h-[100px] focus:outline-none focus:ring-2 focus:ring-primary/30 transition-colors"
+                className="w-full bg-muted border border-border rounded-xl px-4 py-2 min-h-[100px] focus:outline-none focus:ring-2 focus:ring-primary/30 transition-colors"
                 value={personal.summary}
                 onChange={e => updatePersonal('summary', e.target.value)}
                 placeholder="A brief summary of your professional background..."
@@ -852,7 +879,7 @@ export default function ResumeBuilder() {
                     <label className="block text-sm font-medium mb-1">Project Name</label>
                     <input
                       type="text"
-                      className="w-full bg-background/50 border border-border rounded-lg px-4 py-2 focus:outline-none focus:ring-2 focus:ring-primary/30 transition-colors"
+                      className="w-full bg-muted border border-border rounded-lg px-4 py-2 focus:outline-none focus:ring-2 focus:ring-primary/30 transition-colors"
                       value={proj.name}
                       onChange={e => { const n = [...projects]; n[index].name = e.target.value; setProjects(n) }}
                       placeholder="E-commerce App"
@@ -862,7 +889,7 @@ export default function ResumeBuilder() {
                     <label className="block text-sm font-medium mb-1">Technologies Used</label>
                     <input
                       type="text"
-                      className="w-full bg-background/50 border border-border rounded-lg px-4 py-2 focus:outline-none focus:ring-2 focus:ring-primary/30 transition-colors"
+                      className="w-full bg-muted border border-border rounded-lg px-4 py-2 focus:outline-none focus:ring-2 focus:ring-primary/30 transition-colors"
                       value={proj.tech}
                       onChange={e => { const n = [...projects]; n[index].tech = e.target.value; setProjects(n) }}
                       placeholder="React, Node.js, MongoDB"
@@ -872,7 +899,7 @@ export default function ResumeBuilder() {
                     <label className="block text-sm font-medium mb-1">Link (Optional)</label>
                     <input
                       type="url"
-                      className="w-full bg-background/50 border border-border rounded-lg px-4 py-2 focus:outline-none focus:ring-2 focus:ring-primary/30 transition-colors"
+                      className="w-full bg-muted border border-border rounded-lg px-4 py-2 focus:outline-none focus:ring-2 focus:ring-primary/30 transition-colors"
                       value={proj.link}
                       onChange={e => { const n = [...projects]; n[index].link = e.target.value; setProjects(n) }}
                       placeholder="https://github.com/..."
@@ -881,7 +908,7 @@ export default function ResumeBuilder() {
                   <div className="md:col-span-2">
                     <label className="block text-sm font-medium mb-1">Description (Bullet points)</label>
                     <textarea
-                      className="w-full bg-background/50 border border-border rounded-lg px-4 py-2 min-h-[100px] focus:outline-none focus:ring-2 focus:ring-primary/30 transition-colors"
+                      className="w-full bg-muted border border-border rounded-lg px-4 py-2 min-h-[100px] focus:outline-none focus:ring-2 focus:ring-primary/30 transition-colors"
                       value={proj.description}
                       onChange={e => { const n = [...projects]; n[index].description = e.target.value; setProjects(n) }}
                       placeholder="- Built a full-stack application..."
@@ -905,7 +932,7 @@ export default function ResumeBuilder() {
               <label className="block text-sm font-medium mb-1" htmlFor="skills">Technical Skills &amp; Competencies</label>
               <textarea
                 id="skills"
-                className="w-full bg-background/50 border border-border rounded-xl px-4 py-2 min-h-[150px] focus:outline-none focus:ring-2 focus:ring-primary/30 transition-colors"
+                className="w-full bg-muted border border-border rounded-xl px-4 py-2 min-h-[150px] focus:outline-none focus:ring-2 focus:ring-primary/30 transition-colors"
                 value={skills}
                 onChange={e => setSkills(e.target.value)}
                 placeholder={'**Languages:** JavaScript, Python, Java\n**Frameworks:** React, Node.js, Express\n**Tools:** Git, Docker, AWS'}
@@ -1140,7 +1167,7 @@ export default function ResumeBuilder() {
 
         {/* Header */}
         <div className="mb-8">
-          <h1 className="text-3xl font-bold bg-clip-text text-transparent bg-gradient-to-r from-white to-white/60">
+          <h1 className="text-3xl font-bold text-foreground">
             Resume Builder
           </h1>
           <p className="text-muted-foreground mt-2">Build a professional resume from scratch.</p>
@@ -1175,7 +1202,7 @@ export default function ResumeBuilder() {
         </div>
 
         {/* Content Area */}
-        <div className="flex-1 bg-card/50 backdrop-blur-xl border border-white/5 rounded-3xl p-6 sm:p-8 shadow-2xl relative overflow-hidden">
+        <div className="flex-1 bg-card backdrop-blur-xl border border-border rounded-3xl p-6 sm:p-8 shadow-2xl relative overflow-hidden">
           <div className="absolute -top-40 -right-40 w-80 h-80 bg-primary/10 rounded-full blur-3xl opacity-50 pointer-events-none" />
           <div className="absolute -bottom-40 -left-40 w-80 h-80 bg-blue-500/10 rounded-full blur-3xl opacity-50 pointer-events-none" />
 
@@ -1230,7 +1257,7 @@ export default function ResumeBuilder() {
           ) : (
             <button
               onClick={handleNext}
-              className="px-6 py-2.5 rounded-full bg-white text-black hover:bg-gray-200 hover:scale-105 active:scale-95 transition-all shadow-lg flex items-center gap-2 font-medium"
+              className="px-6 py-2.5 rounded-full bg-foreground text-background hover:bg-foreground/90 hover:scale-105 active:scale-95 transition-all shadow-lg flex items-center gap-2 font-medium"
             >
               Next <ArrowRight className="w-4 h-4" />
             </button>

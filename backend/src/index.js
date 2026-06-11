@@ -21,7 +21,7 @@ import jobAlertRoutes from './routes/jobAlerts.js';
 import communityRoutes from './routes/community.js';
 import fellowshipRoutes from './routes/fellowships.js';
 import interviewRoutes from './routes/interview.js';
-
+import gdprRoutes from './routes/gdpr.js';
 import userProfileRoutes from './routes/userProfile.js';
 import twoFactorRoutes from './routes/twoFactor.js';
 import aiRoutes from './routes/ai.js';
@@ -256,6 +256,7 @@ try {
 }
 app.use('/api/portfolio', portfolioRoutes);
 app.use('/api/user-profiles', userProfileRoutes);
+app.use('/api/gdpr', gdprRoutes);
 app.use('/api/auth/2fa', twoFactorRoutes);
 app.use('/api/search', searchRoutes);
 app.use('/api/ai', aiRoutes);
