@@ -298,12 +298,12 @@ export const resumeApi = {
   },
 
   // Download resume as PDF
-  async downloadPdf(resumeId, version = 'enhanced') {
+  async downloadPdf(resumeId, version = 'enhanced', theme = 'modern') {
     const user = auth?.currentUser
     if (!user) throw new Error('Not authenticated')
 
     const token = await user.getIdToken()
-    const response = await fetch(`${API_BASE}/resumes/${resumeId}/download?version=${version}`, {
+    const response = await fetch(`${API_BASE}/resumes/${resumeId}/download?version=${version}&theme=${theme}`, {
       method: 'GET',
       headers: {
         'Authorization': `Bearer ${token}`

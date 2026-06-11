@@ -1,0 +1,38 @@
+export const RESUME_THEMES = {
+  modern: {
+    id: 'modern',
+    name: 'Modern Minimal',
+    description: 'Clean lines, minimal color',
+    accent: '#6366f1',
+    fontFamily: 'Inter, sans-serif',
+    headingStyle: 'border-b-2 border-indigo-500',
+    nameSize: 'text-3xl',
+  },
+  corporate: {
+    id: 'corporate',
+    name: 'Corporate',
+    description: 'Traditional professional look',
+    accent: '#1e3a5f',
+    fontFamily: 'Georgia, serif',
+    headingStyle: 'bg-blue-900 text-white px-2',
+    nameSize: 'text-2xl',
+  },
+  compact: {
+    id: 'compact',
+    name: 'Compact ATS',
+    description: 'ATS-optimized, dense layout',
+    accent: '#000000',
+    fontFamily: 'Arial, sans-serif',
+    headingStyle: 'border-b border-black uppercase tracking-widest',
+    nameSize: 'text-xl',
+  },
+  creative: {
+    id: 'creative',
+    name: 'Creative',
+    description: 'Bold sidebar, portfolio-style',
+    accent: '#0891b2',
+    fontFamily: 'Poppins, sans-serif',
+    headingStyle: 'text-cyan-600 font-black uppercase',
+    nameSize: 'text-4xl font-black',
+  },
+}
