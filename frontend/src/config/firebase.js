@@ -41,7 +41,7 @@ if (isFirebaseConfigValid) {
   storage = getStorage(app);
 } else {
   console.warn(
-    "⚠️ careerpilot: Firebase API key is missing or unconfigured. " +
+    "[careerpilot config]: Firebase API key is missing or unconfigured. " +
     "Authentication, database operations, and storage features are offline. " +
     "Create a valid local .env file to enable these integrations."
   );
