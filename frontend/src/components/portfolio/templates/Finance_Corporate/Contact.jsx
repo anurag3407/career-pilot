@@ -1,7 +1,6 @@
 import React, { useState } from 'react';
 import { motion } from 'framer-motion';
-import { MapPin, Phone, Mail, Linkedin, Twitter, Github, Send, Briefcase } from 'lucide-react';
-import dummyData from '../../../../data/dummy_data.json';
+import { MapPin, Phone, Mail, Linkedin, Twitter, Github, Send, Briefcase, ArrowRight } from 'lucide-react';
 
 /* ──────────────────────────────────────────────────────────────
    Premium Finance Corporate Background
@@ -70,9 +69,10 @@ const BackgroundGlow = () => (
   </div>
 );
 
-export default function Contact() {
-  const { socials, personal } = dummyData;
+export default function Contact({ personal, socials }) {
   const [hoveredInput, setHoveredInput] = useState(null);
+
+  if (!personal && (!socials || socials.length === 0)) return null;
 
   const containerVariants = {
     hidden: { opacity: 0 },
@@ -90,6 +90,23 @@ export default function Contact() {
       transition: { duration: 0.6, ease: [0.16, 1, 0.3, 1] }
     }
   };
+
+  const socialIcons = {
+    linkedin: <Linkedin className="w-4 h-4" />,
+    github: <Github className="w-4 h-4" />,
+    twitter: <Twitter className="w-4 h-4" />
+  };
+
+  const contactItems = [];
+  if (personal?.email) {
+    contactItems.push({ icon: Mail, label: 'Email', value: personal.email, href: `mailto:${personal.email}` });
+  }
+  if (personal?.phone) {
+    contactItems.push({ icon: Phone, label: 'Phone', value: personal.phone, href: `tel:${personal.phone.replace(/[^0-9+]/g, '')}` });
+  }
+  if (personal?.location) {
+    contactItems.push({ icon: MapPin, label: 'Headquarters', value: personal.location, href: `https://www.google.com/maps/search/?api=1&query=${encodeURIComponent(personal.location)}` });
+  }
 
   return (
     <section 
@@ -136,11 +153,7 @@ export default function Contact() {
                 <h3 className="text-xl font-medium text-white mb-10 tracking-wide">Direct Contact</h3>
                 
                 <div className="space-y-8">
-                  {[
-                    { icon: Mail, label: 'Email', value: socials.email, href: `mailto:${socials.email}` },
-                    { icon: Phone, label: 'Phone', value: '+1 (800) 555-0199', href: 'tel:+18005550199' },
-                    { icon: MapPin, label: 'Headquarters', value: personal.location, href: `https://www.google.com/maps/search/?api=1&query=${encodeURIComponent(personal.location)}` }
-                  ].map((item, idx) => (
+                  {contactItems.map((item, idx) => (
                     <a
                       key={idx}
                       href={item.href}
@@ -160,25 +173,26 @@ export default function Contact() {
                 </div>
               </div>
 
-              <div className="mt-16 pt-8 border-t border-neutral-800 flex items-center gap-4">
-                {[
-                  { icon: Linkedin, href: socials.linkedin, name: "LinkedIn" },
-                  { icon: Twitter, href: socials.twitter, name: "Twitter" },
-                  { icon: Github, href: socials.github, name: "GitHub" }
-                ].map((social, idx) => (
-                  <a
-                    key={idx}
-                    href={social.href}
-                    target="_blank"
-                    rel="noopener noreferrer"
-                    aria-label={social.name}
-                    title={social.name}
-                    className="p-3 text-neutral-400 hover:text-white hover:bg-neutral-800 rounded-lg transition-colors"
-                  >
-                    <social.icon className="w-4 h-4" />
-                  </a>
-                ))}
-              </div>
+              {socials && socials.length > 0 && (
+                <div className="mt-16 pt-8 border-t border-neutral-800 flex items-center gap-4">
+                  {socials.map((social, idx) => {
+                    const platformName = social.platform || '';
+                    return (
+                      <a
+                        key={idx}
+                        href={social.url}
+                        target="_blank"
+                        rel="noopener noreferrer"
+                        aria-label={platformName}
+                        title={platformName}
+                        className="p-3 text-neutral-400 hover:text-white hover:bg-neutral-800 rounded-lg transition-colors"
+                      >
+                        {socialIcons[platformName.toLowerCase()] || <ArrowRight className="w-4 h-4" />}
+                      </a>
+                    );
+                  })}
+                </div>
+              )}
             </div>
           </motion.div>
 
