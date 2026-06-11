@@ -22,6 +22,8 @@ const validationRules = {
   },
   password: {
     required: 'Password is required',
+    validate: (value) =>
+      value === value.trim() || 'Password cannot start or end with spaces',
   },
 }
 
