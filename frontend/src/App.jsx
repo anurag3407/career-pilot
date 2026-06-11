@@ -90,6 +90,7 @@ const ProjectVisualizerDashboard = lazy(() => import('./pages/ProjectVisualizer/
 import ScrollToTop from "./components/ScrollToTop";
 import NorthernFjords from './components/portfolio/templates/Northern_Fjords';
 import RainforestCanopy from './components/portfolio/templates/Rainforest_Canopy/index.jsx';
+import YouTuberVlogsphereChannel from './components/portfolio/templates/YouTuber_Vlogsphere_Channel/index.jsx';
 import Hero from './components/portfolio/templates/Magazine_Editorial/Hero';
 import TestSocialLinks from './pages/TestSocialLinks';
 
@@ -238,6 +239,7 @@ function AppRoutes() {
         {/* <Route path="/templates/day-night-cycle" element={<DayNightCycle />} /> */}
         <Route path="/templates/rainforest-canopy" element={<RainforestCanopy />} />
         <Route path="/templates/northern-fjords" element={<NorthernFjords />} />
+        <Route path="/templates/youtuber-vlogsphere-channel" element={<YouTuberVlogsphereChannel />} />
         
         {/* Core Protected Routes */}
         <Route 
