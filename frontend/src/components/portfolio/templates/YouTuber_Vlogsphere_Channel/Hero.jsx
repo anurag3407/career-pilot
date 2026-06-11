@@ -8,6 +8,20 @@ const fadeInUp = {
 };
 
 const Hero = ({ data }) => {
+  const safeName = typeof data.personal.name === 'string' ? data.personal.name : 'Content Creator';
+  const handle = safeName.toLowerCase().replace(/\s+/g, '');
+  const subscriberCount = data.stats?.subscribers || '1.2M';
+  const videoCount = data.stats?.videos || '500';
+
+  const safeAvatarUrl = (url) => {
+    if (!url) return 'https://images.unsplash.com/photo-1507003211169-0a1dd7228f2d?w=200&h=200&fit=crop&crop=faces';
+    const normalized = String(url);
+    if (!/^https?:\/\//i.test(normalized)) {
+      return 'https://images.unsplash.com/photo-1507003211169-0a1dd7228f2d?w=200&h=200&fit=crop&crop=faces';
+    }
+    return normalized;
+  };
+
   return (
     <motion.div initial="initial" animate="animate" variants={fadeInUp} className="bg-[#0f0f0f]">
       {/* Banner */}
@@ -21,25 +35,25 @@ const Hero = ({ data }) => {
           {/* Avatar */}
           <div className="flex-shrink-0">
             <img
-              src={data.personal.avatar}
-              alt={data.personal.name}
+              src={safeAvatarUrl(data.personal.avatar)}
+              alt={safeName}
               className="w-32 h-32 md:w-40 md:h-40 rounded-full border-4 border-[#0f0f0f] object-cover"
             />
           </div>
 
           {/* Info */}
           <div className="flex-1 text-center md:text-left">
-            <h1 className="text-2xl md:text-4xl font-bold text-white">{data.personal.name}</h1>
-            <p className="text-gray-400 mt-1">@{data.personal.name.toLowerCase().replace(/\s+/g, '')}</p>
+            <h1 className="text-2xl md:text-4xl font-bold text-white">{safeName}</h1>
+            <p className="text-gray-400 mt-1">@{handle}</p>
             
             <div className="flex flex-wrap justify-center md:justify-start gap-6 mt-4 text-gray-400">
               <div className="flex items-center gap-2">
                 <Users size={18} />
-                <span>1.2M subscribers</span>
+                <span>{subscriberCount} subscribers</span>
               </div>
               <div className="flex items-center gap-2">
                 <Video size={18} />
-                <span>500 videos</span>
+                <span>{videoCount} videos</span>
               </div>
               <div className="flex items-center gap-2">
                 <MapPin size={18} />

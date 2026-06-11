@@ -1426,7 +1426,7 @@ export const templates = [
     "colorScheme": "Dark",
     "layout": "Grid",
     "author": "System",
-    "views": 1118,
+    "views": 1119,
     "rating": 4.5,
     "image": "/template-previews/YouTuber_Vlogsphere_Channel.png",
     "createdAt": "2026-05-01",

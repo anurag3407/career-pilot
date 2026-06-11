@@ -11,6 +11,10 @@ const Contact = ({ data }) => {
   const [formSubmitted, setFormSubmitted] = useState(false);
   const timeoutRef = useRef(null);
 
+  const safeEmail = typeof data.socials?.email === 'string' ? data.socials.email : 'business@example.com';
+  const safeLocation = typeof data.personal?.location === 'string' ? data.personal.location : 'San Francisco, CA';
+  const safePhone = typeof data.socials?.phone === 'string' ? data.socials.phone : '+1 (555) 123-4567';
+
   const handleSubmit = (e) => {
     e.preventDefault();
     setFormSubmitted(true);
@@ -40,7 +44,7 @@ const Contact = ({ data }) => {
             </div>
             <div>
               <p className="text-gray-400 text-sm">Email</p>
-              <p className="text-white font-semibold">{data.socials.email || 'business@example.com'}</p>
+              <p className="text-white font-semibold">{safeEmail}</p>
             </div>
           </div>
 
@@ -50,7 +54,7 @@ const Contact = ({ data }) => {
             </div>
             <div>
               <p className="text-gray-400 text-sm">Phone</p>
-              <p className="text-white font-semibold">+1 (555) 123-4567</p>
+              <p className="text-white font-semibold">{safePhone}</p>
             </div>
           </div>
 
@@ -60,7 +64,7 @@ const Contact = ({ data }) => {
             </div>
             <div>
               <p className="text-gray-400 text-sm">Location</p>
-              <p className="text-white font-semibold">{data.personal.location}</p>
+              <p className="text-white font-semibold">{safeLocation}</p>
             </div>
           </div>
         </div>
@@ -74,8 +78,9 @@ const Contact = ({ data }) => {
           ) : (
             <form onSubmit={handleSubmit} className="space-y-4">
               <div>
-                <label className="block text-gray-400 text-sm mb-2">Name</label>
+                <label htmlFor="contact-name" className="block text-gray-400 text-sm mb-2">Name</label>
                 <input
+                  id="contact-name"
                   type="text"
                   required
                   className="w-full bg-[#0f0f0f] border border-gray-700 text-white px-4 py-3 rounded-lg focus:outline-none focus:border-red-500"
@@ -83,8 +88,9 @@ const Contact = ({ data }) => {
                 />
               </div>
               <div>
-                <label className="block text-gray-400 text-sm mb-2">Email</label>
+                <label htmlFor="contact-email" className="block text-gray-400 text-sm mb-2">Email</label>
                 <input
+                  id="contact-email"
                   type="email"
                   required
                   className="w-full bg-[#0f0f0f] border border-gray-700 text-white px-4 py-3 rounded-lg focus:outline-none focus:border-red-500"
@@ -92,8 +98,9 @@ const Contact = ({ data }) => {
                 />
               </div>
               <div>
-                <label className="block text-gray-400 text-sm mb-2">Message</label>
+                <label htmlFor="contact-message" className="block text-gray-400 text-sm mb-2">Message</label>
                 <textarea
+                  id="contact-message"
                   required
                   rows={4}
                   className="w-full bg-[#0f0f0f] border border-gray-700 text-white px-4 py-3 rounded-lg focus:outline-none focus:border-red-500 resize-none"

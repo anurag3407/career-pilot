@@ -8,12 +8,22 @@ const fadeInUp = {
 };
 
 const SocialLinks = ({ data }) => {
+  const safeUrl = (url) => {
+    if (!url || url === '#') return '#';
+    const normalized = String(url);
+    if (!/^https?:\/\//i.test(normalized)) {
+      return '#';
+    }
+    return normalized;
+  };
+
+  const safeSocials = data.socials || {};
   const socials = [
-    { icon: Youtube, label: 'YouTube', url: '#' },
-    { icon: Instagram, label: 'Instagram', url: data.socials.instagram || '#' },
-    { icon: Linkedin, label: 'LinkedIn', url: data.socials.linkedin || '#' },
-    { icon: Twitter, label: 'Twitter', url: data.socials.twitter || '#' },
-    { icon: Facebook, label: 'Facebook', url: '#' },
+    { icon: Youtube, label: 'YouTube', url: safeUrl(safeSocials.youtube) },
+    { icon: Instagram, label: 'Instagram', url: safeUrl(safeSocials.instagram) },
+    { icon: Linkedin, label: 'LinkedIn', url: safeUrl(safeSocials.linkedin) },
+    { icon: Twitter, label: 'Twitter', url: safeUrl(safeSocials.twitter) },
+    { icon: Facebook, label: 'Facebook', url: safeUrl(safeSocials.facebook) },
   ];
 
   return (

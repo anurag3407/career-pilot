@@ -9,10 +9,10 @@ const fadeInUp = {
 
 const Stats = ({ data }) => {
   const stats = [
-    { icon: Users, value: '1.2M', label: 'Subscribers' },
-    { icon: Eye, value: '500M', label: 'Total Views' },
-    { icon: Video, value: '500', label: 'Videos' },
-    { icon: Clock, value: '10K', label: 'Watch Hours' },
+    { icon: Users, value: data.stats?.subscribers || '1.2M', label: 'Subscribers' },
+    { icon: Eye, value: data.stats?.totalViews || '500M', label: 'Total Views' },
+    { icon: Video, value: data.stats?.videos || '500', label: 'Videos' },
+    { icon: Clock, value: data.stats?.watchHours || '10K', label: 'Watch Hours' },
   ];
 
   return (

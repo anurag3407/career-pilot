@@ -10,11 +10,11 @@ import SocialLinks from './SocialLinks';
 import Contact from './Contact';
 
 const YouTuberVlogsphereChannel = ({ portfolioData }) => {
-  // Merge portfolio data with dummy data
+  // Merge AI extracted data with dummy data fallbacks for visual completeness
   const personal = {
     ...dummyData.personal,
-    ...(portfolioData?.hero?.subtitle && { name: portfolioData.hero.subtitle }),
-    ...(portfolioData?.hero?.title && { title: portfolioData.hero.title }),
+    ...(portfolioData?.hero?.title && { name: portfolioData.hero.title }),
+    ...(portfolioData?.hero?.subtitle && { title: portfolioData.hero.subtitle }),
     ...(portfolioData?.hero?.tagline && { tagline: portfolioData.hero.tagline }),
     ...(portfolioData?.about?.bio && { bio: portfolioData.about.bio }),
   };
@@ -28,13 +28,14 @@ const YouTuberVlogsphereChannel = ({ portfolioData }) => {
   }
 
   // Adapt projects
-  let projects = dummyData.projects;
+  const safeDummyProjects = Array.isArray(dummyData.projects) ? dummyData.projects : [];
+  let projects = safeDummyProjects;
   if (Array.isArray(portfolioData?.projects) && portfolioData.projects.length > 0) {
     projects = portfolioData.projects.map((p, i) => ({
       title: p.title || p.name || 'Project',
       description: p.description || '',
       techStack: p.technologies || p.techStack || [],
-      image: p.image || dummyData.projects[i % dummyData.projects.length].image,
+      image: p.image || (safeDummyProjects[i % safeDummyProjects.length]?.image || 'https://images.unsplash.com/photo-1478737270239-2f02b77fc618?w=800&h=450&fit=crop'),
       liveUrl: p.liveUrl || '#',
       githubUrl: p.githubUrl || '#',
     }));
@@ -52,7 +53,7 @@ const YouTuberVlogsphereChannel = ({ portfolioData }) => {
       : dummyData.testimonials;
   }, [portfolioData?.testimonials]);
 
-  const stats = portfolioData?.stats || dummyData.stats;
+  const stats = { ...dummyData.stats, ...portfolioData?.stats };
 
   const data = { personal, socials, skills, projects, experience, testimonials, stats };
 
