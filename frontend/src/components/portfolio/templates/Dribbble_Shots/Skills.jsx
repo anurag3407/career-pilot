@@ -1,7 +1,7 @@
 import { useRef } from "react";
 import { motion, useInView } from "framer-motion";
 import { Zap } from "lucide-react";
-import SectionLabel from "./SectionLabel";
+import SectionLabel from "./Sectionlabel";
 import data from "../../../../data/dummy_data.json";
 
 export default function Skills() {
