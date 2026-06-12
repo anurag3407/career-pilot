@@ -2666,6 +2666,19 @@ export const templates = [
     "createdAt": "2026-06-06"
   },
   {
+    "id": "One_Pixel_Master",
+    "title": "One Pixel Master",
+    "category": "Portfolio",
+    "colorScheme": "Light",
+    "layout": "Minimal",
+    "author": "mallya-m",
+    "views": 0,
+    "rating": 0,
+    "image": "/template-previews/One_Pixel_Master.png",
+    "createdAt": "2026-06-13",
+    "isComplete": true
+  },
+  {
     "id": "Digital_Manifesto_Scroll",
     "title": "Digital Manifesto Scroll",
     "category": "Portfolio",
