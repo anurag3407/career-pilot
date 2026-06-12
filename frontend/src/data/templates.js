@@ -2664,5 +2664,16 @@ export const templates = [
     "image": "/template-previews/Cloud_Nine_Aerial_Skyscape.png",
     "createdAt": "2026-06-10",
     "isComplete": true
+  },
+
+  {
+    "id": "micro-interactions-hover-only",
+    "title": "Micro-Interactions Hover Only",
+    "category": "Interactive",
+    "description": "An ultra-sleek, modern interface emphasizing rich CSS transition feedback, sliding tracking underlines, and expanding detail blocks.",
+    "image": "/templates/micro-interactions-hover.png",
+    "isComplete": true
   }
+
 ];
+

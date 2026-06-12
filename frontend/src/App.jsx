@@ -3,6 +3,7 @@
  * Main Application Component with Route-based Code Splitting
  * Implements lazy loading for improved performance
  */
+import MicroInteractionsHoverOnly from './components/portfolio/templates/Micro_Interactions_Hover_Only/index.jsx';
 import CoverLetter from "./pages/CoverLetter";
 import VercelDeploy from "./components/portfolio/templates/Vercel_Deploy/index";
 import React, { useState, useEffect, lazy, Suspense } from 'react';
@@ -266,7 +267,7 @@ function AppRoutes() {
         <Route path="/templates/duotone-bold" element={<DuotoneBold />} />
         <Route path="/templates/chromatic-glitch" element={<ChromaticGlitch />} />
         <Route path="/templates/swiss-typography" element={<SwissTypography />} />
-      
+        <Route path="/templates/micro-interactions-hover-only" element={<MicroInteractionsHoverOnly />} />
         <Route path="/templates/desert-dunes" element={<DesertDunes />} />
         <Route path="/templates/psychedelic-swirl" element={<PsychedelicSwirl />} />
         <Route path="/templates/memphis-pop" element={<MemphisPop />} />
