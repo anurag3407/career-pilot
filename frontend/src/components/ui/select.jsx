@@ -14,6 +14,7 @@ export function Select({ children, value, onValueChange, defaultValue }) {
   const [selectedValue, setSelectedValue] = React.useState(value || defaultValue || "")
   const [options, setOptions] = React.useState({})
   const containerRef = React.useRef(null)
+  const listboxId = React.useId()
 
   // Sync selectedValue state with external value prop updates
   React.useEffect(() => {
@@ -62,7 +63,18 @@ export function Select({ children, value, onValueChange, defaultValue }) {
   const selectedLabel = options[selectedValue] || ""
 
   return (
-    <SelectContext.Provider value={{ isOpen, setIsOpen, selectedValue, selectedLabel, registerOption, deregisterOption, handleSelect }}>
+<SelectContext.Provider
+  value={{
+    isOpen,
+    setIsOpen,
+    selectedValue,
+    selectedLabel,
+    registerOption,
+    deregisterOption,
+    handleSelect,
+    listboxId,
+  }}
+>
       <div ref={containerRef} className="relative w-full">
         {children}
       </div>
@@ -74,14 +86,23 @@ export function Select({ children, value, onValueChange, defaultValue }) {
  * The trigger button for opening and closing the Select dropdown.
  */
 export const SelectTrigger = React.forwardRef(({ className, children, ...props }, ref) => {
-  const { isOpen, setIsOpen, selectedLabel } = React.useContext(SelectContext)
-
+const { isOpen, setIsOpen, selectedLabel, listboxId } =
+  React.useContext(SelectContext)
   return (
     <button
-      ref={ref}
-      type="button"
-      onClick={() => setIsOpen(!isOpen)}
-      aria-expanded={isOpen}
+  ref={ref}
+  type="button"
+  role="combobox"
+  aria-haspopup="listbox"
+  aria-expanded={isOpen}
+  aria-controls={listboxId}
+  onClick={() => setIsOpen(!isOpen)}
+  onKeyDown={(e) => {
+    if (e.key === "Enter" || e.key === " ") {
+      e.preventDefault()
+      setIsOpen(!isOpen)
+    }
+  }}
       className={cn(
         "flex h-10 w-full items-center justify-between rounded-md border border-input bg-background px-3 py-2 text-sm ring-offset-background placeholder:text-muted-foreground focus:outline-none focus:ring-2 focus:ring-ring focus:ring-offset-2 disabled:cursor-not-allowed disabled:opacity-50 text-left transition-all duration-200 select-none",
         isOpen && "ring-2 ring-ring ring-offset-2 border-primary/50",
@@ -118,12 +139,14 @@ SelectValue.displayName = "SelectValue"
  * The animated container showing the list of selectable options.
  */
 export const SelectContent = React.forwardRef(({ className, children, ...props }, ref) => {
-  const { isOpen } = React.useContext(SelectContext)
+const { isOpen, listboxId } = React.useContext(SelectContext)
 
   return (
     <AnimatePresence>
       {isOpen && (
         <motion.div
+          id={listboxId}
+          role="listbox"
           initial={{ opacity: 0, y: -10, scale: 0.97 }}
           animate={{ opacity: 1, y: 4, scale: 1 }}
           exit={{ opacity: 0, y: -10, scale: 0.97 }}
@@ -155,9 +178,11 @@ export const SelectItem = React.forwardRef(({ className, children, value, ...pro
   }, [value, label, registerOption, deregisterOption])
 
   return (
-    <button
-      ref={ref}
-      type="button"
+   <button
+  ref={ref}
+  type="button"
+  role="option"
+  aria-selected={isSelected}
       onClick={() => handleSelect(value)}
       className={cn(
         "relative flex w-full cursor-default select-none items-center rounded-sm py-1.5 pl-8 pr-2 text-sm outline-none hover:bg-accent hover:text-accent-foreground focus:bg-accent focus:text-accent-foreground data-[disabled]:pointer-events-none data-[disabled]:opacity-50 text-left transition-colors duration-150",
