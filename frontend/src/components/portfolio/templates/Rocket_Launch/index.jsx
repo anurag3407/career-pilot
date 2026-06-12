@@ -1,6 +1,6 @@
+import { usePortfolio } from "../../../../context/PortfolioContext";
 import React from 'react';
 import { useScroll } from 'framer-motion';
-import data from '../../../../data/dummy_data.json';
 
 import RocketBackground from './RocketBackground';
 import Hero from './Hero';
@@ -11,6 +11,8 @@ import Experience from './Experience';
 import Contact from './Contact';
 
 export default function RocketLaunchPortfolio() {
+  const { portfolioData: data } = usePortfolio();
+
   const { scrollYProgress } = useScroll();
 
   return (

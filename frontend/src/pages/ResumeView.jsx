@@ -215,6 +215,16 @@ export default function ResumeView() {
             </p>
           </div>
           <div className="flex gap-2">
+            <Link 
+              to="/interview-prep" 
+              state={{ 
+                resumeId: resumeId, 
+                resumeText: resume?.enhancedText || resume?.originalText,
+                jobRole: resume?.jobRole
+              }}
+            >
+              <Button variant="secondary">Practice Interview</Button>
+            </Link>
             <Link to={`/enhance/${resumeId}`}>
               <Button variant="primary">
                 {resume?.enhancedText ? 'Re-enhance' : 'Enhance'}

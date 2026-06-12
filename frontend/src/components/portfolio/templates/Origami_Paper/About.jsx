@@ -1,5 +1,5 @@
 import { useState } from "react";
-import { MapPin, Mail, Phone, Fold, Heart, Star } from "lucide-react";
+import { MapPin, Mail, Phone, Heart, Star } from "lucide-react";
 
 const FoldDecoration = ({ className = "" }) => (
   <div className={`absolute ${className}`}>

@@ -1,5 +1,44 @@
 export const templates = [
- {
+  {
+    "id": "ASCII_Art_Terminal_Code",
+    "title": "ASCII Art Terminal Code",
+    "category": "Portfolio",
+    "colorScheme": "Dark",
+    "layout": "Interactive",
+    "author": "Raman Kumar",
+    "views": 2800,
+    "rating": 4.9,
+    "image": "/template-previews/ASCII_Art_Terminal_Code.png",
+    "createdAt": "2026-06-12",
+    isComplete: true
+},
+{
+    id: "Forensic_Investigator_Desk",
+    title: "Forensic Investigator Desk",
+    category: "Portfolio",
+    colorScheme: "Dark",
+    layout: "Interactive",
+    author: "ShaktiShrey-01",
+    views: 0,
+    rating: 0,
+    image: "/template-previews/Forensic_investigator_desk.png", 
+    createdAt: "2026-06-11",
+    isComplete: true
+},
+{
+  "id": "Fake_WebOS_Operating_System",
+  "title": "Fake WebOS Operating System",
+  "category": "Portfolio",
+  "colorScheme": "Dark",
+  "layout": "Interactive",
+  "author": "System",
+  "views": 0,
+  "rating": 4.9,
+  "image": "/templates/Fake_WebOS_Operating_System.png",
+  "createdAt": "2026-06-09",
+  "isComplete": true
+},
+{
   "id": "Hidden_Easter_Egg_Scavenger_Hunt",
   "title": "Hidden Easter Egg Scavenger Hunt",
   "category": "Portfolio",
@@ -150,6 +189,19 @@ export const templates = [
     "rating": 4.5,
     "image": "/template-previews/Acrylic_Windows.png",
     "createdAt": "2026-05-01"
+  },
+  {
+    "id": "Transparent_Desktop_Overlay_OS",
+    "title": "Transparent Desktop Overlay OS",
+    "category": "Portfolio",
+    "colorScheme": "Dark",
+    "layout": "Interactive",
+    "author": "System",
+    "views": 1500,
+    "rating": 5.0,
+    "image": "/templates/Transparent_Desktop_Overlay_OS.png",
+    "createdAt": "2026-06-09",
+    "isComplete": true
   },
   {
     "id": "Advent_Calendar",
@@ -444,9 +496,16 @@ export const templates = [
   },
 
   {
-    id: "zine-collage",
+    id: "ZineCollage",
     title: "Zine Collage",
-    category: "Brutalist",
+    category: "Portfolio",
+    colorScheme: "Colorful",
+    layout: "Grid",
+    author: "System",
+    views: 1200,
+    rating: 4.8,
+    image: "/template-previews/Zine_Collage.png",
+    createdAt: "2026-06-08",
     description: "An asymmetric, high-contrast scrapbook magazine layout featuring heavy ink borders, rotated clipping frames, and retro label-maker accents.",
     isComplete: true
   },
@@ -833,10 +892,10 @@ export const templates = [
     "colorScheme": "Dark",
     "layout": "Grid",
     "author": "System",
-    "views": 1060,
-    "rating": 4.5,
+    "views": 99999,
+    "rating": 5.0,
     "image": "/template-previews/F1_Racing.png",
-    "createdAt": "2026-05-01"
+    "createdAt": "2026-12-31"
   },
   {
     "id": "Fantasy_RPG",
@@ -2581,19 +2640,7 @@ export const templates = [
   description: 'An interactive 404 error page wrapped in an infinite smoothly-looping background project showcase.'
   },
 
-  {
-  "id": "Pokemon_Pokedex_Classic",
-  "title": "Pokemon Pokedex Classic",
-  "category": "Portfolio",
-  "colorScheme": "Dark",
-  "layout": "Interactive",
-  "author": "System",
-  "views": 1135,
-  "rating": 4.7,
-  "image": "/template-previews/Pokemon_Pokedex_Classic.png",
-  "createdAt": "2026-06-08",
-  "isComplete": true
-}
+
 
   {
     "id": "Underground_Bunker_Console",
@@ -2619,5 +2666,32 @@ export const templates = [
     "image": "/template-previews/Digital_Manifesto_Scroll.png",
     "createdAt": "2026-06-07",
     "isComplete": true
+  },
+  {
+    "id": "Cloud_Nine_Aerial_Skyscape",
+    "title": "Cloud Nine Aerial Skyscape",
+    "category": "Portfolio",
+    "colorScheme": "Light",
+    "layout": "Grid",
+    "author": "System",
+    "views": 1000,
+    "rating": 5.0,
+    "image": "/template-previews/Cloud_Nine_Aerial_Skyscape.png",
+    "createdAt": "2026-06-10",
+    "isComplete": true
+  },
+  {
+    "id": "Origami_Unfold_Step_Animation",
+    "title": "Origami Unfold Step Animation",
+    "category": "Portfolio",
+    "colorScheme": "Colorful",
+    "layout": "Interactive",
+    "author": "System",
+    "views": 1800,
+    "rating": 5.0,
+    "image": "/templates/Origami_Unfold_Step_Animation.png",
+    "createdAt": "2026-06-12",
+    "isComplete": true
   }
 ];
+

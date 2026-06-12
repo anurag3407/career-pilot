@@ -1,5 +1,5 @@
+import { usePortfolio } from "../../../../context/PortfolioContext";
 import React from 'react';
-import data from '../../../../data/dummy_data.json';
 import Hero from './Hero';
 import About from './About';
 import Skills from './Skills';
@@ -9,6 +9,8 @@ import Testimonials from './Testimonials';
 import Contact from './Contact';
 
 export default function DoctorMedical() {
+  const { portfolioData: data } = usePortfolio();
+
   // Defensive check: If data hasn't loaded or is missing, fall back to an empty object
   const safeData = data || {};
 

@@ -1,7 +1,7 @@
+import { usePortfolio } from "../../../../context/PortfolioContext";
 import React, { useState, useEffect } from 'react';
 import { motion, AnimatePresence } from 'framer-motion';
 import { Menu, X, ChevronUp } from 'lucide-react';
-import data from '../../../../data/dummy_data.json';
 
 import Hero from './Hero';
 import About from './About';
@@ -12,6 +12,8 @@ import Testimonials from './Testimonials';
 import Contact from './Contact';
 
 export default function DarkMeshGradient() {
+  const { portfolioData: data } = usePortfolio();
+
   const [isMobileMenuOpen, setIsMobileMenuOpen] = useState(false);
   const [activeSection, setActiveSection] = useState('home');
   const [showScrollTop, setShowScrollTop] = useState(false);

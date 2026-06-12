@@ -1,3 +1,4 @@
+import { usePortfolio } from "../../../../context/PortfolioContext";
 import React, { useState } from 'react';
 import { motion } from 'framer-motion';
 import {
@@ -10,7 +11,6 @@ import {
   ArrowUpRight,
   Phone,
 } from 'lucide-react';
-import data from '../../../../data/dummy_data.json';
 
 const ACCENT = '#E63946';
 
@@ -25,10 +25,14 @@ const fadeUp = {
 
 /* ── Tiny helpers ──────────────────────────────────────── */
 function Rule({ className = '' }) {
+  const { portfolioData: data } = usePortfolio();
+
   return <div className={`h-px bg-black w-full ${className}`} />;
 }
 
 function Label({ children }) {
+  const { portfolioData: data } = usePortfolio();
+
   return (
     <span className="text-[10px] md:text-xs font-black tracking-[0.22em] uppercase" style={{ color: ACCENT }}>
       {children}
@@ -38,6 +42,8 @@ function Label({ children }) {
 
 /* ── Hero ────────────────────────────────────────────────── */
 function Hero() {
+  const { portfolioData: data } = usePortfolio();
+
   const { name, title, location } = data.personal;
   const { github, linkedin, twitter, email } = data.socials;
   const { yearsExperience, projectsCompleted, happyClients } = data.stats;
@@ -152,6 +158,8 @@ function Hero() {
 
 /* ── About ───────────────────────────────────────────────── */
 function About() {
+  const { portfolioData: data } = usePortfolio();
+
   const { bio, avatar, name } = data.personal;
 
   return (
@@ -187,6 +195,8 @@ function About() {
 
 /* ── Skills ──────────────────────────────────────────────── */
 function Skills() {
+  const { portfolioData: data } = usePortfolio();
+
   const categories = [...new Set(data.skills.map((s) => s.category))];
 
   return (
@@ -250,6 +260,8 @@ function Skills() {
 
 /* ── Projects ────────────────────────────────────────────── */
 function Projects() {
+  const { portfolioData: data } = usePortfolio();
+
   const [hovered, setHovered] = useState(null);
 
   return (
@@ -349,6 +361,8 @@ function Projects() {
 
 /* ── Experience ──────────────────────────────────────────── */
 function Experience() {
+  const { portfolioData: data } = usePortfolio();
+
   return (
     <section className="border-b border-black">
       <div className="grid grid-cols-1 md:grid-cols-12">
@@ -391,6 +405,8 @@ function Experience() {
 
 /* ── Testimonials ────────────────────────────────────────── */
 function Testimonials() {
+  const { portfolioData: data } = usePortfolio();
+
   return (
     <section className="border-b border-black">
       <div className="px-5 md:px-12 py-3 border-b border-black">
@@ -436,6 +452,8 @@ function Testimonials() {
 
 /* ── Contact ─────────────────────────────────────────────── */
 function Contact() {
+  const { portfolioData: data } = usePortfolio();
+
   const { email, phone } = data.personal;
   const { github, linkedin, twitter } = data.socials;
 
@@ -510,6 +528,8 @@ function Contact() {
 
 /* ── Footer ──────────────────────────────────────────────── */
 function Footer() {
+  const { portfolioData: data } = usePortfolio();
+
   const { name } = data.personal;
   return (
     <footer className="border-t border-black px-5 md:px-12 py-4 flex flex-col sm:flex-row items-center justify-between gap-2">
@@ -523,6 +543,8 @@ function Footer() {
 
 /* ── Root export ─────────────────────────────────────────── */
 export default function SwissTypography() {
+  const { portfolioData: data } = usePortfolio();
+
   return (
     <div
       className="min-h-screen bg-white text-black"

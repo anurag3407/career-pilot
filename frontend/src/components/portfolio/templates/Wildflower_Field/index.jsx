@@ -1,3 +1,4 @@
+import { usePortfolio } from "../../../../context/PortfolioContext";
 /**
  * Wildflower Field — Portfolio Template
  * A watercolor-inspired, botanical portfolio with soft spring palette,
@@ -7,7 +8,6 @@
  */
 
 import { useEffect } from "react";
-import data from "../../../../data/dummy_data.json";
 
 import NavBar from "./NavBar";
 import HeroSection from "./HeroSection";
@@ -19,6 +19,8 @@ import TestimonialsSection from "./TestimonialsSection";
 import ContactSection from "./ContactSection";
 
 export default function WildflowerField() {
+  const { portfolioData: data } = usePortfolio();
+
   // Inject Google Fonts (Playfair Display + Cormorant Garamond)
   useEffect(() => {
     const linkId = "wildflower-fonts";

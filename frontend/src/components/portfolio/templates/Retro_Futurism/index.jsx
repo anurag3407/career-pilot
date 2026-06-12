@@ -1,5 +1,5 @@
+import { usePortfolio } from "../../../../context/PortfolioContext";
 import React from 'react';
-import data from '../../../../data/dummy_data.json';
 import './styles.css';
 
 import Hero from './Hero';
@@ -11,6 +11,8 @@ import Testimonials from './Testimonials';
 import Contact from './Contact';
 
 export default function RetroFuturismTemplate() {
+  const { portfolioData: data } = usePortfolio();
+
   return (
     <div className="relative min-h-screen text-slate-300 font-mono selection:bg-fuchsia-500 selection:text-white bg-slate-950 overflow-x-hidden">
       {/* BACKGROUND LAYERS */}

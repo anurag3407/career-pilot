@@ -6,6 +6,9 @@ import Projects from './Projects';
 import Contact from './Contact';
 import RunwayLookbook from './RunwayLookbook';
 import ResumeCTA from './ResumeCTA';
+import Experience from './Experience';
+import Skills from './Skills';
+import Testimonials from './Testimonials';
 
 const F = {
   bg: '#faf9f7', dark: '#0a0a0a', charcoal: '#1a1a1a',
@@ -13,12 +16,15 @@ const F = {
 };
 
 const NAV_LINKS = [
-  { id: 'hero',     label: 'Home' },
-  { id: 'about',    label: 'About' },
-  { id: 'lookbook', label: 'Lookbook' },
-  { id: 'projects', label: 'Projects' },
-  { id: 'contact',  label: 'Contact' },
-  { id: 'resume',   label: 'Resume' },
+  { id: 'hero',         label: 'Home' },
+  { id: 'about',        label: 'About' },
+  { id: 'experience',   label: 'Experience' },
+  { id: 'skills',       label: 'Atelier' },
+  { id: 'lookbook',     label: 'Lookbook' },
+  { id: 'projects',     label: 'Projects' },
+  { id: 'testimonials', label: 'Voices' },
+  { id: 'contact',      label: 'Contact' },
+  { id: 'resume',       label: 'Resume' },
 ];
 
 function NavBar({ active, onNav }) {
@@ -134,8 +140,11 @@ export default function HighFashion() {
       <NavBar active={active} onNav={scrollTo} />
       <section id="hf-hero"><Hero /></section>
       <section id="hf-about"><About /></section>
+      <section id="hf-experience"><Experience /></section>
+      <section id="hf-skills"><Skills /></section>
       <section id="hf-lookbook"><RunwayLookbook /></section>
       <section id="hf-projects"><Projects /></section>
+      <section id="hf-testimonials"><Testimonials /></section>
       <section id="hf-contact"><Contact /></section>
       <section id="hf-resume"><ResumeCTA /></section>
     </div>

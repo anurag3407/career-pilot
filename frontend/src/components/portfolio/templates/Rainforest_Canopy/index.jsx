@@ -1,3 +1,4 @@
+import { usePortfolio } from "../../../../context/PortfolioContext";
 import { useRef } from "react";
 import { motion, useScroll, useTransform } from "framer-motion";
 import {
@@ -9,9 +10,10 @@ import {
   ExternalLink,
   Leaf,
 } from "lucide-react";
-import data from "../../../../data/dummy_data.json";
 
 function LeafSVG({ className, style }) {
+  const { portfolioData: data } = usePortfolio();
+
   return (
     <svg viewBox="0 0 100 120" className={className} style={style} fill="currentColor">
       <path d="M50 0 C20 20 0 50 10 80 C20 110 50 120 50 120 C50 120 80 110 90 80 C100 50 80 20 50 0Z" />
@@ -20,6 +22,8 @@ function LeafSVG({ className, style }) {
 }
 
 function BirdSVG({ className, style }) {
+  const { portfolioData: data } = usePortfolio();
+
   return (
     <svg viewBox="0 0 80 40" className={className} style={style} fill="currentColor">
       <path d="M40 20 C30 10 10 5 0 10 C10 15 20 18 30 20 C20 22 10 25 0 30 C10 35 30 30 40 20Z" />
@@ -56,6 +60,8 @@ const BIRDS = Array.from({ length: 5 }, (_, i) => ({
 }));
 
 export default function RainforestCanopy() {
+  const { portfolioData: data } = usePortfolio();
+
   const containerRef = useRef(null);
   const { scrollYProgress } = useScroll();
   const canopyY = useTransform(scrollYProgress, [0, 1], [0, -60]);
@@ -389,6 +395,8 @@ export default function RainforestCanopy() {
 }
 
 function ForestCard({ title, children }) {
+  const { portfolioData: data } = usePortfolio();
+
   return (
     <motion.section
       initial={{ opacity: 0, y: 30 }}

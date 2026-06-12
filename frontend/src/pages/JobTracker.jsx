@@ -12,6 +12,9 @@ import {
   RefreshCw,
   Sparkles,
   WifiOff,
+  StickyNote,
+  Send,
+  X,
 } from "lucide-react";
 import Layout from "../components/Layout";
 import { jobTrackerApi } from "../services/api";
@@ -42,6 +45,8 @@ const JobTracker = () => {
   );
   const [lastSyncedAt, setLastSyncedAt] = useState(null);
   const [pendingSyncCount, setPendingSyncCount] = useState(0);
+  const [noteEditing, setNoteEditing] = useState(null); // jobId or null
+  const [noteText, setNoteText] = useState("");
 
   const currentUserId = auth?.currentUser?.uid || "anonymous";
 
@@ -324,6 +329,35 @@ const JobTracker = () => {
     } catch (error) {
       console.error("Error deleting job:", error);
       toast.error("Failed to remove job", { id: `tracked-job-delete-error-${jobId}` });
+    }
+  };
+
+  const handleSaveNote = async (jobId, noteContent) => {
+    const trimmed = noteContent.trim();
+    if (!trimmed) {
+      setNoteEditing(null);
+      setNoteText("");
+      return;
+    }
+    try {
+      const job = trackedJobs.find((j) => j.id === jobId);
+      if (!job) return;
+      await jobTrackerApi.updateStatus(jobId, job.status, trimmed);
+      const newNote = { content: trimmed, createdAt: new Date().toISOString() };
+      const updatedJobs = trackedJobs.map((j) =>
+        j.id === jobId
+          ? { ...j, notes: [...(j.notes || []), newNote] }
+          : j,
+      );
+      setTrackedJobs(updatedJobs);
+      persistTrackerSnapshot(updatedJobs, calculateJobStats(updatedJobs));
+      toast.success("Note saved!");
+    } catch (error) {
+      console.error("Error saving note:", error);
+      toast.error("Failed to save note");
+    } finally {
+      setNoteEditing(null);
+      setNoteText("");
     }
   };
 
@@ -616,7 +650,103 @@ const JobTracker = () => {
                                         >
                                           <Sparkles className="w-3 h-3" /> AI Research
                                         </button>
+                                        {/* Notes toggle button */}
+                                        <button
+                                          onClick={(e) => {
+                                            e.stopPropagation();
+                                            if (noteEditing === job.id) {
+                                              setNoteEditing(null);
+                                              setNoteText("");
+                                            } else {
+                                              setNoteEditing(job.id);
+                                              setNoteText("");
+                                            }
+                                          }}
+                                          title={noteEditing === job.id ? "Close notes" : "Add a note"}
+                                          className={`relative shrink-0 p-1.5 rounded-md text-[11px] font-bold transition-colors flex items-center justify-center gap-1 ${
+                                            noteEditing === job.id
+                                              ? "bg-amber-500/20 text-amber-500"
+                                              : (job.notes?.length > 0)
+                                              ? "bg-amber-500/10 text-amber-500 hover:bg-amber-500/20"
+                                              : "bg-muted/60 text-muted-foreground hover:bg-muted hover:text-foreground"
+                                          }`}
+                                        >
+                                          <StickyNote className="w-3.5 h-3.5" />
+                                          {job.notes?.length > 0 && noteEditing !== job.id && (
+                                            <span className="absolute -top-1.5 -right-1.5 min-w-[14px] h-[14px] bg-amber-500 text-white text-[9px] font-black rounded-full flex items-center justify-center px-0.5">
+                                              {job.notes.length}
+                                            </span>
+                                          )}
+                                        </button>
                                       </div>
+
+                                      {/* Inline notes panel */}
+                                      {noteEditing === job.id && (
+                                        <div
+                                          onMouseDown={(e) => e.stopPropagation()}
+                                          onClick={(e) => e.stopPropagation()}
+                                          className="mt-3 pt-3 border-t border-amber-500/20"
+                                        >
+                                          {/* Previous notes list */}
+                                          {job.notes?.length > 0 && (
+                                            <div className="mb-2 space-y-1.5 max-h-28 overflow-y-auto pr-1 scrollbar-thin scrollbar-thumb-border scrollbar-track-transparent">
+                                              {[...job.notes].reverse().map((note, ni) => (
+                                                <div
+                                                  key={ni}
+                                                  className="text-[11px] bg-amber-500/5 border border-amber-500/15 rounded-lg px-2.5 py-1.5"
+                                                >
+                                                  <p className="text-foreground/80 leading-relaxed">{note.content}</p>
+                                                  <p className="text-muted-foreground/50 mt-0.5">
+                                                    {new Date(note.createdAt).toLocaleDateString("en-US", {
+                                                      month: "short",
+                                                      day: "numeric",
+                                                    })}
+                                                  </p>
+                                                </div>
+                                              ))}
+                                            </div>
+                                          )}
+
+                                          {/* New note input */}
+                                          <div className="flex gap-1.5">
+                                            <textarea
+                                              autoFocus
+                                              rows={2}
+                                              value={noteText}
+                                              onChange={(e) => setNoteText(e.target.value)}
+                                              onKeyDown={(e) => {
+                                                if (e.key === "Enter" && (e.metaKey || e.ctrlKey)) {
+                                                  e.preventDefault();
+                                                  handleSaveNote(job.id, noteText);
+                                                }
+                                                if (e.key === "Escape") {
+                                                  setNoteEditing(null);
+                                                  setNoteText("");
+                                                }
+                                              }}
+                                              placeholder="Add a note... (⌘↵ to save)"
+                                              className="flex-1 text-[11px] bg-background border border-amber-500/30 focus:border-amber-500/60 rounded-lg px-2.5 py-1.5 text-foreground placeholder:text-muted-foreground/40 resize-none outline-none transition-colors"
+                                            />
+                                            <div className="flex flex-col gap-1">
+                                              <button
+                                                onClick={() => handleSaveNote(job.id, noteText)}
+                                                disabled={!noteText.trim()}
+                                                title="Save note (⌘↵)"
+                                                className="p-1.5 bg-amber-500 hover:bg-amber-600 disabled:opacity-40 text-white rounded-lg transition-colors flex items-center justify-center"
+                                              >
+                                                <Send className="w-3 h-3" />
+                                              </button>
+                                              <button
+                                                onClick={() => { setNoteEditing(null); setNoteText(""); }}
+                                                title="Cancel"
+                                                className="p-1.5 bg-muted hover:bg-muted/80 text-muted-foreground rounded-lg transition-colors flex items-center justify-center"
+                                              >
+                                                <X className="w-3 h-3" />
+                                              </button>
+                                            </div>
+                                          </div>
+                                        </div>
+                                      )}
                                     </Card>
                                   </div>
                                 )}

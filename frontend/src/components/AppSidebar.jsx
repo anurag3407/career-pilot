@@ -1,7 +1,7 @@
 import { useState, useEffect } from "react";
 import { useNavigate, useLocation } from "react-router-dom";
 import { motion } from "framer-motion";
-import { Brain, ChevronDown, Contrast } from "lucide-react";
+import { Brain, ChevronDown, Contrast, LineChart } from "lucide-react";
 import AIProviderIndicator from "./settings/AIProviderIndicator";
 
 import {
