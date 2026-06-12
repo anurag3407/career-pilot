@@ -131,13 +131,27 @@ cd frontend
 
 # Install dependencies
 npm install
+```
 
 # Create environment file
 copy .env.example .env
 
-# Edit .env with your Firebase config
+Open `frontend/.env` and fill in your actual Firebase credentials.
+You can get these from the [Firebase Console](https://console.firebase.google.com/) → **Project Settings → Your Apps → SDK Setup and configuration**:
 
-# Start development server
+```env
+VITE_FIREBASE_API_KEY=your_actual_api_key
+VITE_FIREBASE_AUTH_DOMAIN=your_project.firebaseapp.com
+VITE_FIREBASE_PROJECT_ID=your_project_id
+VITE_FIREBASE_STORAGE_BUCKET=your_project.appspot.com
+VITE_FIREBASE_MESSAGING_SENDER_ID=your_sender_id
+VITE_FIREBASE_APP_ID=your_app_id
+```
+
+> 💡 **Don't have a Firebase project yet?** Create one for free at [https://console.firebase.google.com/](https://console.firebase.google.com/). Enable **Authentication** and **Firestore Database** for full functionality.
+
+```bash
+# Start development server (after setting up .env)
 npm run dev
 ```
 

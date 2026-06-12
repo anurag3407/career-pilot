@@ -85,10 +85,10 @@ npm install
 
 ### Run locally
 
-```bash
-# Backend
-cd career-pilot/backend
-npm run dev
+### Prerequisites
+- Node.js (v18+ recommended)
+- npm
+- A [Firebase project](https://console.firebase.google.com/) (for Authentication & Database features)
 
 # Frontend
 cd ../frontend
@@ -102,38 +102,45 @@ Add or update tests in `backend/tests`, `frontend/tests`, and root-level test ut
 
 ## Environment Variables
 
-The project requires separate environment configuration for backend and frontend.
+> ⚠️ **This step is required before running the app.** Skipping it will cause Firebase-related console warnings and disable authentication/database features.
 
-### Backend (.env)
-- PORT – Server port
-- MONGODB_URI – MongoDB connection string
-- REDIS_URL – Redis connection string
-- OPENAI_API_KEY – AI integration key
-- RAPIDAPI_KEY – Job search API key
-- FIREBASE_PROJECT_ID – Firebase project ID
-- FIREBASE_SERVICE_ACCOUNT_PATH – Firebase admin SDK file path
-- FRONTEND_URL – Frontend URL for CORS
+**1. Set up the frontend `.env` file:**
 
-### Frontend (.env)
-- VITE_API_URL – Backend API URL
-- VITE_FIREBASE_API_KEY – Firebase API key
-- VITE_FIREBASE_PROJECT_ID – Firebase project ID
-- VITE_FIREBASE_AUTH_DOMAIN – Firebase auth domain
-- VITE_FIREBASE_STORAGE_BUCKET – Firebase storage bucket
+```bash
+# Navigate to the frontend folder
+cd frontend
 
-## Project Structure
-
-```text
-career-pilot/
-├── backend/        # Express backend (APIs, auth, AI, jobs, portfolio)
-├── frontend/       # React + Vite frontend (UI, resume builder, dashboard)
-├── docs/           # Documentation and setup guides
-├── CONTRIBUTION.md # Contribution guidelines
-├── CODE_OF_CONDUCT.md
-└── LICENSE
+# Copy the example environment file
+cp .env.example .env
 ```
 
-## Roadmap
+Open `frontend/.env` and fill in your Firebase project credentials. You can find these in the [Firebase Console](https://console.firebase.google.com/) under **Project Settings → Your Apps → SDK Setup and configuration**:
+
+```env
+VITE_FIREBASE_API_KEY=your_actual_api_key
+VITE_FIREBASE_AUTH_DOMAIN=your_project.firebaseapp.com
+VITE_FIREBASE_PROJECT_ID=your_project_id
+VITE_FIREBASE_STORAGE_BUCKET=your_project.appspot.com
+VITE_FIREBASE_MESSAGING_SENDER_ID=your_sender_id
+VITE_FIREBASE_APP_ID=your_app_id
+```
+
+**2. (Optional) Set up the backend `.env` file:**
+
+```bash
+# From the root of the project
+cd backend
+cp .env.example .env
+# Edit .env with your backend credentials
+```
+
+### Installing Dependencies
+
+```bash
+# Install frontend dependencies
+cd frontend
+npm install
+```
 
 - Improve resume generation prompts and AI content quality.
 - Expand interview prep flows with more question categories.
@@ -141,8 +148,17 @@ career-pilot/
 - Strengthen end-to-end test coverage.
 - Improve documentation for contributors and deploy workflows.
 
+```bash
+# From the frontend directory
+# Start development server
+npm run dev
+```
 
-## 🧠 Project Notes
+The app will be available at **http://localhost:5173**.
+
+```bash
+# Build for production
+npm run build
 
 - Project is currently in development stage  
 - No live deployment available yet  
