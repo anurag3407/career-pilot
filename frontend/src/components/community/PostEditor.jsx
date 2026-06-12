@@ -141,6 +141,58 @@ export default function PostEditor({ onClose, onSubmit, editPost = null }) {
       ...(scheduledAt && { scheduledAt }),
     };
   };
+const [pollQuestion, setPollQuestion] = useState('');
+
+const [pollOptions, setPollOptions] = useState([
+  '',
+  ''
+]);
+
+
+ const newBuildPostData = () => {
+  const normalizedOptions = pollOptions
+    .map(option => option.trim())
+    .filter(Boolean);
+
+  const trimmedQuestion = pollQuestion.trim();
+
+  const isValidPoll =
+    trimmedQuestion.length > 0 &&
+    normalizedOptions.length >= 2;
+
+  return {
+    title: title.trim(),
+    content: content.trim(),
+    category,
+    tags: tags.split(',').map(t => t.trim()).filter(Boolean),
+
+    ...(showPoll && isValidPoll && {
+      poll: {
+        question: trimmedQuestion,
+        options: normalizedOptions
+      }
+    }),
+
+    ...(scheduledAt && { scheduledAt })
+  };
+};
+
+  return {
+    title: title.trim(),
+    content: content.trim(),
+    category,
+    tags: tags.split(',').map(t => t.trim()).filter(Boolean),
+
+    ...(showPoll && {
+      poll: {
+        question: pollQuestion.trim(),
+        options: validOptions
+      }
+    }),
+
+    ...(scheduledAt && { scheduledAt })
+  };
+};
 
   const handleSubmit = async (e) => {
     e.preventDefault();
@@ -148,7 +200,7 @@ export default function PostEditor({ onClose, onSubmit, editPost = null }) {
     setLoading(true);
     setError('');
     try {
-      await onSubmit(buildPostData());
+      await onSubmit(newBuildPostData());
     } catch (err) {
       console.error('Failed to submit post:', err);
       setError(err.message || 'Failed to submit post');
@@ -180,7 +232,7 @@ const removePollOption = (index) => {
     const updated = pollOptions.filter((_, i) => i !== index);
     setPollOptions(updated);
   }
-};
+
   return (
     <div className="fixed inset-0 bg-background/80 flex items-center justify-center z-50 p-4">
       <div className="bg-card border border-border rounded-xl shadow-xl max-w-2xl w-full max-h-[90vh] overflow-hidden flex flex-col">
@@ -198,7 +250,7 @@ const removePollOption = (index) => {
         </div>
 
         {/* Form */}
-        <form onSubmit={handleSubmit} className="flex-1 overflow-y-auto">
+        <form onSubmit={handleSubmit} className="flex-1 overflow-y-auto"/>
           <div className="p-6 space-y-5">
             {/* Title */}
             <div>
@@ -542,15 +594,13 @@ const removePollOption = (index) => {
               </button>
             </div>
           </div>
-        </form>
-      </div>
 
+      </div>
+)
       {showScheduler && (
         <SchedulePost
           onClose={() => setShowScheduler(false)}
           onSchedule={handleScheduleConfirm}
         />
       )}
-    </div>
-  );
-}
+    }
