@@ -1,5 +1,4 @@
-import React from 'react';
-import { motion } from 'framer-motion';
+
 import { Github, Linkedin, Twitter, Mail, ChevronDown } from 'lucide-react';
 import { AmbientBackground } from './Shared';
 import data from '../../../../data/dummy_data.json';
@@ -27,7 +26,7 @@ export default function Hero() {
             transition={{ duration: 0.8, type: "spring", bounce: 0.4 }}
             className="relative group z-10"
           >
-            <div className="absolute -inset-2 bg-gradient-to-r from-cyan-500 to-indigo-500 rounded-full blur-md opacity-40 group-hover:opacity-100 transition duration-500"></div>
+            <div className="absolute -inset-2 bg-linear-to-r from-cyan-500 to-indigo-500 rounded-full blur-md opacity-40 group-hover:opacity-100 transition duration-500"></div>
             <img 
               src={data.personal.avatar} 
               alt={data.personal.name}
@@ -49,7 +48,7 @@ export default function Hero() {
           initial={{ opacity: 0 }}
           animate={{ opacity: 1 }}
           transition={{ duration: 0.5, delay: 0.4 }}
-          className="text-xl md:text-3xl text-transparent bg-clip-text bg-gradient-to-r from-zinc-300 to-zinc-500 font-light mb-8 max-w-2xl"
+          className="text-xl md:text-3xl text-transparent bg-clip-text bg-linear-to-r from-zinc-300 to-zinc-500 font-light mb-8 max-w-2xl"
         >
           {data.personal.title}
         </motion.p>

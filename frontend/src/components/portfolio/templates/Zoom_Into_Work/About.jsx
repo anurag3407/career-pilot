@@ -1,5 +1,4 @@
-import React from 'react';
-import { motion } from 'framer-motion';
+
 import { User, MapPin, Briefcase } from 'lucide-react';
 import { SectionHeading, AnimatedCounter } from './Shared';
 import data from '../../../../data/dummy_data.json';
@@ -15,7 +14,7 @@ export default function About() {
         <motion.div 
           whileHover={{ scale: 1.01 }}
           transition={{ type: "spring", stiffness: 300 }}
-          className="bg-zinc-900/40 border border-zinc-800/60 p-8 md:p-12 rounded-[2rem] shadow-xl backdrop-blur-sm hover:shadow-[0_0_40px_rgba(6,182,212,0.1)] transition-shadow duration-500"
+          className="bg-zinc-900/40 border border-zinc-800/60 p-8 md:p-12 rounded-4xl shadow-xl backdrop-blur-sm hover:shadow-[0_0_40px_rgba(6,182,212,0.1)] transition-shadow duration-500"
         >
           <motion.p 
             initial={{ opacity: 0, y: 20 }}

@@ -1,5 +1,4 @@
-import React from 'react';
-import { motion } from 'framer-motion';
+
 import { Briefcase } from 'lucide-react';
 import { SectionHeading } from './Shared';
 import data from '../../../../data/dummy_data.json';
@@ -9,7 +8,7 @@ export default function Experience() {
     <section className="py-24 bg-zinc-950 px-4 relative z-10 overflow-hidden border-t border-zinc-900">
       <div className="max-w-4xl mx-auto relative z-10">
         <SectionHeading icon={Briefcase}>Experience</SectionHeading>
-        <div className="space-y-12 relative before:absolute before:inset-0 before:ml-5 before:-translate-x-px md:before:mx-auto md:before:translate-x-0 before:h-full before:w-0.5 before:bg-gradient-to-b before:from-transparent before:via-zinc-800 before:to-transparent">
+        <div className="space-y-12 relative before:absolute before:inset-0 before:ml-5 before:-translate-x-px md:before:mx-auto md:before:translate-x-0 before:h-full before:w-0.5 before:bg-linear-to-b before:from-transparent before:via-zinc-800 before:to-transparent">
           {data.experience.map((exp, index) => (
             <motion.div 
               initial={{ opacity: 0, y: 20 }}

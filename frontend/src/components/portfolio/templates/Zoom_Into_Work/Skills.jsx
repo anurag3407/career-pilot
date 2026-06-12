@@ -1,5 +1,4 @@
-import React from 'react';
-import { motion } from 'framer-motion';
+
 import { Terminal, Code2 } from 'lucide-react';
 import { SectionHeading } from './Shared';
 import data from '../../../../data/dummy_data.json';
@@ -31,7 +30,7 @@ export default function Skills() {
               }}
               className="flex items-center gap-4 p-4 bg-zinc-900/50 rounded-2xl border border-zinc-800 hover:border-cyan-500/40 transition-all cursor-crosshair shadow-md"
             >
-              <div className="p-3 bg-zinc-800/80 rounded-xl text-cyan-400 flex-shrink-0">
+              <div className="p-3 bg-zinc-800/80 rounded-xl text-cyan-400 shrink-0">
                 <Code2 size={20} />
               </div>
               <div>
