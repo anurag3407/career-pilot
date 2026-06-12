@@ -3,8 +3,11 @@ import { motion } from 'framer-motion';
 import { Radio, Mic, Headset, MessageSquare } from 'lucide-react';
 
 export default function Testimonials({ data }) {
-  const testimonials = data?.testimonials;
+  let testimonials = data?.testimonials;
   if (!testimonials || testimonials.length === 0) return null;
+  if (typeof testimonials === 'string') {
+    testimonials = [{ author: "Colleague", content: testimonials, role: "Team Member" }];
+  }
 
   return (
     <section id="testimonials" className="relative py-20 bg-[#070709] border-b border-neutral-900 text-white overflow-hidden selection:bg-[#E10600] selection:text-white">

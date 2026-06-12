@@ -1,3 +1,121 @@
+# [1.224.0](https://github.com/anurag3407/career-pilot/compare/v1.223.0...v1.224.0) (2026-06-12)
+
+
+### Bug Fixes
+
+* address codeant-ai review comments ([02c9270](https://github.com/anurag3407/career-pilot/commit/02c92705c32d8775b0621e04b3701d583521454b))
+* address coderabbitai review comments ([1bea4ec](https://github.com/anurag3407/career-pilot/commit/1bea4ecb6b7f99498b77874fbe95fce7db68d053))
+* resolve case-sensitive import error for SectionLabel on Linux runner ([75e56a4](https://github.com/anurag3407/career-pilot/commit/75e56a408f8b102e3b619ff2beb457709a07d350))
+* resolve duplicate Clock import error breaking the build ([144f696](https://github.com/anurag3407/career-pilot/commit/144f696192e9fffd4587f07fafb06d532d15846d))
+* resolve remaining case-sensitive import errors for SectionLabel ([039c432](https://github.com/anurag3407/career-pilot/commit/039c4328f0287fb52600e4e22ecda81118d26f68))
+
+
+### Features
+
+* implement interview history and replay dashboards ([#434](https://github.com/anurag3407/career-pilot/issues/434)) ([7d08f8a](https://github.com/anurag3407/career-pilot/commit/7d08f8a8bdf2a525cd08c7e200eb49123fd60f3f))
+
+# [1.223.0](https://github.com/anurag3407/career-pilot/compare/v1.222.0...v1.223.0) (2026-06-12)
+
+
+### Features
+
+* add notes functionality to Job Tracker cards ([6237a7a](https://github.com/anurag3407/career-pilot/commit/6237a7a79a77f73a1ecae164c9b3acea1fff4ddd))
+
+# [1.222.0](https://github.com/anurag3407/career-pilot/compare/v1.221.0...v1.222.0) (2026-06-11)
+
+
+### Bug Fixes
+
+* address bot review feedback for null checks and node:test runner ([7dfa7d6](https://github.com/anurag3407/career-pilot/commit/7dfa7d6d4e7311ca1006a522765f82b7692fee39))
+
+
+### Features
+
+* add robust Zod request validation middleware with unit tests ([a9388fb](https://github.com/anurag3407/career-pilot/commit/a9388fbc66f71636200cb44e1343ab1c083c01a5))
+
+# [1.221.0](https://github.com/anurag3407/career-pilot/compare/v1.220.0...v1.221.0) (2026-06-11)
+
+
+### Features
+
+* **templates:** forensic-template ([7a8aae5](https://github.com/anurag3407/career-pilot/commit/7a8aae5c527aadcc699ea559cfa9723ed888bf23))
+
+# [1.220.0](https://github.com/anurag3407/career-pilot/compare/v1.219.0...v1.220.0) (2026-06-11)
+
+
+### Features
+
+* implement complete modular Dribbble Shots portfolio template [#1906](https://github.com/anurag3407/career-pilot/issues/1906) ([b724392](https://github.com/anurag3407/career-pilot/commit/b724392352906e7af22fc56325768c776c759d20))
+
+# [1.219.0](https://github.com/anurag3407/career-pilot/compare/v1.218.1...v1.219.0) (2026-06-11)
+
+
+### Features
+
+* add Fake WebOS Operating System portfolio template ([68fa90a](https://github.com/anurag3407/career-pilot/commit/68fa90af5629ecdb45847b5b4936dda003b3bedf))
+
+## [1.218.1](https://github.com/anurag3407/career-pilot/compare/v1.218.0...v1.218.1) (2026-06-11)
+
+
+### Bug Fixes
+
+* reject passwords with leading or trailing spaces in Login and Register ([d4e6ad7](https://github.com/anurag3407/career-pilot/commit/d4e6ad7715af6b8a07fb726d4d07c17afbd731e5))
+
+# [1.218.0](https://github.com/anurag3407/career-pilot/compare/v1.217.0...v1.218.0) (2026-06-11)
+
+
+### Bug Fixes
+
+* add portfolioApi.update, stable React keys, and fix useEffect deps in SectionEditor ([9b6fa34](https://github.com/anurag3407/career-pilot/commit/9b6fa34a1de04d56723d267cff31f1eb96bde11c))
+
+
+### Features
+
+* add SectionEditor modal component for portfolio section editing ([a1a6083](https://github.com/anurag3407/career-pilot/commit/a1a60834e288c3adfc75aa94d1f68b9e9b78d3b9))
+
+# [1.217.0](https://github.com/anurag3407/career-pilot/compare/v1.216.0...v1.217.0) (2026-06-11)
+
+
+### Features
+
+* **portfolio:** add Captcha Solver Portfolio Gate template ([9ed5f53](https://github.com/anurag3407/career-pilot/commit/9ed5f534a3880eb1fdf0315f517220417e646636))
+
+# [1.216.0](https://github.com/anurag3407/career-pilot/compare/v1.215.1...v1.216.0) (2026-06-11)
+
+
+### Features
+
+* **portfolio:** add Morse Code Flashing Decoder template ([844016a](https://github.com/anurag3407/career-pilot/commit/844016a3eb14b1bddbff8ccbfcb65b68c01578a3))
+
+## [1.215.1](https://github.com/anurag3407/career-pilot/compare/v1.215.0...v1.215.1) (2026-06-11)
+
+
+### Bug Fixes
+
+* remove extra closing brace causing syntax error in Enhance.jsx ([17cb643](https://github.com/anurag3407/career-pilot/commit/17cb6436952610d658fc16bba85ed2cb5d88ae87))
+* resolve merge conflict, keep upstream closing brace style ([e4cb662](https://github.com/anurag3407/career-pilot/commit/e4cb662492f61a529449c6398ed036851abefcb7))
+
+# [1.215.0](https://github.com/anurag3407/career-pilot/compare/v1.214.0...v1.215.0) (2026-06-11)
+
+
+### Features
+
+* add Astronaut Spacesuit Helmet HUD template ([#3214](https://github.com/anurag3407/career-pilot/issues/3214)) ([4d15b36](https://github.com/anurag3407/career-pilot/commit/4d15b36e0b15690a80a7d404921e239bee8bee34))
+
+# [1.214.0](https://github.com/anurag3407/career-pilot/compare/v1.213.1...v1.214.0) (2026-06-10)
+
+
+### Features
+
+* enhance template gallery with robust fallback data and live loading previews ([01955e9](https://github.com/anurag3407/career-pilot/commit/01955e93052c32919a4d3d23331a5b56761273c3))
+
+## [1.213.1](https://github.com/anurag3407/career-pilot/compare/v1.213.0...v1.213.1) (2026-06-10)
+
+
+### Bug Fixes
+
+* **security:** remove debug error-reporting script from index.html ([494f874](https://github.com/anurag3407/career-pilot/commit/494f8742243cc3b187ab0ced8806e00ea67e870a))
+
 # [1.213.0](https://github.com/anurag3407/career-pilot/compare/v1.212.0...v1.213.0) (2026-06-10)
 
 

@@ -624,7 +624,7 @@ export default function Enhance() {
   } finally {
     setEnhancing(false)
   }
-  }
+}
 
   const handleGeneratePortfolio = async () => {
     setGeneratingPortfolio(true)
