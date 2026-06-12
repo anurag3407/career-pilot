@@ -1,7 +1,7 @@
+import { usePortfolio } from "../../../../context/PortfolioContext";
 import React, { useState, useRef, useEffect } from "react";
 import { motion, AnimatePresence, useInView } from "framer-motion";
 import { Github, Linkedin, Twitter, Mail, ExternalLink, ChevronDown } from "lucide-react";
-import data from "../../../../data/dummy_data.json";
 
 const C = {
   paper:  "#F5F0E8",
@@ -17,6 +17,8 @@ const C = {
 };
 
 function GlobalStyles() {
+  const { portfolioData: data } = usePortfolio();
+
   return (
     <style>{`
       @import url('https://fonts.googleapis.com/css2?family=Special+Elite&family=Courier+Prime:ital,wght@0,400;0,700;1,400&display=swap');
@@ -210,6 +212,8 @@ function useTypewriter(text, speed = 35, startDelay = 0) {
 
 /* Typewriter that triggers on viewport entry */
 function ViewportTypewriter({ text, speed = 28, style = {}, className = "" }) {
+  const { portfolioData: data } = usePortfolio();
+
   const ref = useRef(null);
   const inView = useInView(ref, { once: true, margin: "-60px" });
   const [displayed, setDisplayed] = useState("");
@@ -235,6 +239,8 @@ function ViewportTypewriter({ text, speed = 28, style = {}, className = "" }) {
 }
 
 function FadeIn({ children, delay = 0, className = "", style = {} }) {
+  const { portfolioData: data } = usePortfolio();
+
   const ref = useRef(null);
   const inView = useInView(ref, { once: true, margin: "-80px" });
   return (
@@ -247,6 +253,8 @@ function FadeIn({ children, delay = 0, className = "", style = {} }) {
 }
 
 function SkillBar({ name, level, category }) {
+  const { portfolioData: data } = usePortfolio();
+
   const ref = useRef(null);
   const inView = useInView(ref, { once: true });
   return (
@@ -264,6 +272,8 @@ function SkillBar({ name, level, category }) {
 }
 
 export default function TypewriterEffect() {
+  const { portfolioData: data } = usePortfolio();
+
   const [menuOpen, setMenuOpen] = useState(false);
   const [contactState, setContactState] = useState("idle");
   const [form, setForm] = useState({ name: "", email: "", message: "" });

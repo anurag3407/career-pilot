@@ -1,7 +1,7 @@
+import { usePortfolio } from "../../../../context/PortfolioContext";
 import { useContext, useEffect, useRef, useState, useCallback } from "react";
 import { motion, useMotionValue, useSpring, animate } from "framer-motion";
 import { Github, Linkedin, Twitter, Mail, MapPin, ExternalLink, Eye, Zap, Star } from "lucide-react";
-import data from "../../../../data/dummy_data.json";
 
 // ---------------------------------------------------------------------------
 // Heatmap blob engine
@@ -63,6 +63,8 @@ function useHeatmap(canvasRef) {
 // Scanpath cursor dot
 // ---------------------------------------------------------------------------
 function CursorDot({ x, y }) {
+  const { portfolioData: data } = usePortfolio();
+
   const springX = useSpring(x, { stiffness: 300, damping: 28 });
   const springY = useSpring(y, { stiffness: 300, damping: 28 });
   return (
@@ -84,6 +86,8 @@ function CursorDot({ x, y }) {
 // Section label chip
 // ---------------------------------------------------------------------------
 function Chip({ children }) {
+  const { portfolioData: data } = usePortfolio();
+
   return (
     <span className="inline-flex items-center gap-1.5 px-3 py-1 rounded-full text-xs font-mono tracking-widest uppercase bg-white/5 border border-white/10 text-slate-400">
       <Eye size={10} />
@@ -96,6 +100,8 @@ function Chip({ children }) {
 // Skill bar
 // ---------------------------------------------------------------------------
 function SkillBar({ name, level, delay }) {
+  const { portfolioData: data } = usePortfolio();
+
   return (
     <motion.div
       initial={{ opacity: 0, x: -20 }}
@@ -125,6 +131,8 @@ function SkillBar({ name, level, delay }) {
 // Project card
 // ---------------------------------------------------------------------------
 function ProjectCard({ project, index }) {
+  const { portfolioData: data } = usePortfolio();
+
   return (
     <motion.div
       initial={{ opacity: 0, y: 40 }}
@@ -186,6 +194,8 @@ function ProjectCard({ project, index }) {
 // Testimonial card
 // ---------------------------------------------------------------------------
 function TestimonialCard({ item, index }) {
+  const { portfolioData: data } = usePortfolio();
+
   return (
     <motion.div
       initial={{ opacity: 0, scale: 0.95 }}
@@ -213,6 +223,8 @@ function TestimonialCard({ item, index }) {
 // Main template
 // ---------------------------------------------------------------------------
 export default function EyeTrackingHeatmapSimulation() {
+  const { portfolioData: data } = usePortfolio();
+
   const canvasRef = useRef(null);
   const addPoint = useHeatmap(canvasRef);
 

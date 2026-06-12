@@ -1,3 +1,4 @@
+import { usePortfolio } from "../../../../context/PortfolioContext";
 import { motion } from "framer-motion";
 import {
   Github,
@@ -15,7 +16,6 @@ import {
   Users,
   Layers,
 } from "lucide-react";
-import data from "../../../../data/dummy_data.json";
 
 const neu = {
   raised: "bg-[#e0e5ec] shadow-[6px_6px_14px_#b8bec7,-6px_-6px_14px_#ffffff] rounded-2xl",
@@ -47,6 +47,8 @@ const SectionHeading = ({ icon: Icon, title, subtitle }) => (
 );
 
 const Hero = () => {
+  const { portfolioData: data } = usePortfolio();
+
   const { personal, socials, stats } = data;
   const socialLinks = [
     { icon: Github, href: socials.github, label: "GitHub" },
@@ -122,6 +124,8 @@ const Hero = () => {
 };
 
 const About = () => {
+  const { portfolioData: data } = usePortfolio();
+
   const { personal, stats } = data;
   const capabilities = [
     { iconKey: "Award", label: `${stats.yearsExperience}+ Years Experience` },
@@ -172,6 +176,8 @@ const About = () => {
 };
 
 const Skills = () => {
+  const { portfolioData: data } = usePortfolio();
+
   const { skills } = data;
   const categories = [...new Set(skills.map((s) => s.category))];
 
@@ -213,6 +219,8 @@ const Skills = () => {
 };
 
 const Projects = () => {
+  const { portfolioData: data } = usePortfolio();
+
   const { projects } = data;
   return (
     <section id="projects" className="bg-[#e0e5ec] py-24 px-6 scroll-mt-20">
@@ -253,6 +261,8 @@ const Projects = () => {
 };
 
 const Experience = () => {
+  const { portfolioData: data } = usePortfolio();
+
   const { experience } = data;
   return (
     <section id="experience" className="bg-[#e0e5ec] py-24 px-6 scroll-mt-20">
@@ -288,6 +298,8 @@ const Experience = () => {
 };
 
 const Testimonials = () => {
+  const { portfolioData: data } = usePortfolio();
+
   const { testimonials } = data;
   return (
     <section id="testimonials" className="bg-[#e0e5ec] py-24 px-6 scroll-mt-20">
@@ -314,6 +326,8 @@ const Testimonials = () => {
 };
 
 const Contact = () => {
+  const { portfolioData: data } = usePortfolio();
+
   const { socials, personal } = data;
 
   const handleSubmit = (e) => {
@@ -377,6 +391,8 @@ const Contact = () => {
 };
 
 const Nav = () => {
+  const { portfolioData: data } = usePortfolio();
+
   const links = ["about", "skills", "projects", "experience", "testimonials", "contact"];
   return (
     <nav className="sticky top-0 z-50 bg-[#e0e5ec]/80 backdrop-blur-md shadow-[0_2px_12px_#b8bec7] px-6 py-4">
@@ -398,6 +414,8 @@ const Nav = () => {
 };
 
 export default function SoftNeumorphic() {
+  const { portfolioData: data } = usePortfolio();
+
   return (
     <div className="min-h-screen bg-[#e0e5ec] font-sans">
       <Nav />

@@ -58,6 +58,11 @@ Project maintainers are responsible for clarifying standards of acceptable behav
 
 ## Getting Started
 
+> Note:
+> This document provides the complete setup requirements for contributors who want to run the full application locally, including backend services, AI integrations, and job-search features.
+>
+> If you are making documentation changes or working on limited frontend tasks, not all of the services listed below may be required. See CONTRIBUTING.md for a simplified onboarding guide.
+
 ### Prerequisites
 
 Before contributing, ensure you have:
@@ -65,6 +70,7 @@ Before contributing, ensure you have:
 - **Node.js** 18.0 or higher
 - **npm** or **yarn** package manager
 - **Git** for version control
+- **A GitHub account**
 - **MongoDB** (local or Atlas account)
 - **Redis** (local or cloud instance)
 - **Firebase** project (for authentication)

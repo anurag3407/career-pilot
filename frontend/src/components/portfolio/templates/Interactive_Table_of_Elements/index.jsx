@@ -1,6 +1,6 @@
+import { usePortfolio } from "../../../../context/PortfolioContext";
 import React, { useState, useEffect } from 'react';
 import { motion, AnimatePresence } from 'framer-motion';
-import dummyData from '../../../../data/dummy_data.json';
 import {
   Code,
   Briefcase,
@@ -126,6 +126,8 @@ const generateElements = (data) => {
    ELEMENT CARD
 ───────────────────────────────────────────── */
 const ElementCard = ({ element, onClick, isSelected }) => {
+  const { portfolioData: dummyData } = usePortfolio();
+
   const color = C.categories[element.category] || C.highlight;
   
   return (
@@ -173,6 +175,8 @@ const ElementCard = ({ element, onClick, isSelected }) => {
    DETAILS PANEL
 ───────────────────────────────────────────── */
 const DetailsPanel = ({ element, onClose }) => {
+  const { portfolioData: dummyData } = usePortfolio();
+
   if (!element) return null;
   const color = C.categories[element.category];
 
@@ -266,6 +270,8 @@ const DetailsPanel = ({ element, onClose }) => {
 };
 
 export default function InteractiveTablePortfolio({ portfolioData }) {
+  const { portfolioData: dummyData } = usePortfolio();
+
   
   const data = {
     personal: { ...dummyData.personal, ...portfolioData?.personal },
