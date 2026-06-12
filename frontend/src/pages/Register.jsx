@@ -36,6 +36,8 @@ export default function Register() {
     if (!formData.email) newErrors.email = 'Email is required'
     if (!formData.password) {
       newErrors.password = 'Password is required'
+    } else if (formData.password !== formData.password.trim()) {
+      newErrors.password = 'Password cannot start or end with spaces'
     } else if (formData.password.length < 6) {
       newErrors.password = 'Password must be at least 6 characters'
     }

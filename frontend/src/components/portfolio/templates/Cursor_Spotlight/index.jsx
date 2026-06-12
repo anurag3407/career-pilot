@@ -1,6 +1,6 @@
+import { usePortfolio } from "../../../../context/PortfolioContext";
 import React, { useState, useEffect } from 'react';
 import { motion } from 'framer-motion';
-import data from '../../../../data/dummy_data.json';
 
 import { AmbientBackground, SpotlightOverlay } from './Background';
 import Hero from './Hero';
@@ -12,6 +12,8 @@ import Contact from './Contact';
 
 // Isolated sub-component prevents full-page re-renders on mouse move
 const SpotlightAndCursor = ({ isTouchDevice }) => {
+  const { portfolioData: data } = usePortfolio();
+
   const [mousePosition, setMousePosition] = useState({ 
     x: typeof window !== 'undefined' ? window.innerWidth / 2 : 0, 
     y: typeof window !== 'undefined' ? window.innerHeight / 2 : 0 
@@ -51,6 +53,8 @@ const SpotlightAndCursor = ({ isTouchDevice }) => {
 };
 
 export default function CursorSpotlightPortfolio() {
+  const { portfolioData: data } = usePortfolio();
+
   const [isTouchDevice, setIsTouchDevice] = useState(false);
 
   useEffect(() => {

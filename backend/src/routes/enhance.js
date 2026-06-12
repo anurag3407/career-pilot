@@ -171,6 +171,10 @@ router.post('/summary', verifyToken, extractAIProvider, aiRateLimiter, validate(
     throw new ApiError(400, 'Resume text is required');
   }
 
+  if (resumeText.length > 50000) {
+    throw new ApiError(413, 'Payload Too Large: Resume text exceeds maximum allowed length.');
+  }
+
   if (!jobRole) {
     throw new ApiError(400, 'Job role is required');
   }

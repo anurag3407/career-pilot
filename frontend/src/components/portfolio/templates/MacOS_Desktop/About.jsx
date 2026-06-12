@@ -1,10 +1,16 @@
 import React from 'react';
 
-export default function About() {
+export default function About({ data }) {
+  if (!data?.personal?.about) return null;
+
   return (
-    <div className="w-full min-h-[400px] flex items-center justify-center border-2 border-dashed border-gray-300 rounded-xl p-8">
-      <h2 className="text-2xl font-bold text-gray-500">MacOS_Desktop Theme - About Section</h2>
-      <p className="mt-4 text-gray-400">Implementation pending. Open an issue to contribute!</p>
+    <div className="p-6 border-t border-gray-200 dark:border-white/10 mt-4">
+      <h3 className="text-xl font-bold mb-4 text-gray-900 dark:text-white">About Me</h3>
+      <div className="prose dark:prose-invert max-w-none text-gray-700 dark:text-gray-300">
+        <p className="whitespace-pre-line leading-relaxed">
+          {data.personal.about}
+        </p>
+      </div>
     </div>
   );
 }

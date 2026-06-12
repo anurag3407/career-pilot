@@ -1,6 +1,6 @@
+import { usePortfolio } from "../../../../context/PortfolioContext";
 import React, { useState, useEffect, useRef } from 'react';
 import { motion, AnimatePresence, useScroll, useTransform, useInView } from 'framer-motion';
-import data from '../../../../data/dummy_data.json';
 import {
   Github,
   Linkedin,
@@ -85,6 +85,8 @@ const slideRight = {
    SVG DUNE DIVIDERS
 ───────────────────────────────────────────── */
 function DuneDivider({ fill = C.sand, flip = false }) {
+  const { portfolioData: data } = usePortfolio();
+
   return (
     <div style={{ lineHeight: 0, transform: flip ? 'rotate(180deg)' : 'none' }}>
       <svg
@@ -103,6 +105,8 @@ function DuneDivider({ fill = C.sand, flip = false }) {
 }
 
 function DuneDividerTall({ fill = C.sand }) {
+  const { portfolioData: data } = usePortfolio();
+
   return (
     <div style={{ lineHeight: 0 }}>
       <svg
@@ -172,6 +176,8 @@ const globalCSS = `
 `;
 
 function GlobalStyles() {
+  const { portfolioData: data } = usePortfolio();
+
   return <style>{globalCSS}</style>;
 }
 
@@ -179,6 +185,8 @@ function GlobalStyles() {
    HEAT SHIMMER OVERLAY
 ───────────────────────────────────────────── */
 function HeatShimmer() {
+  const { portfolioData: data } = usePortfolio();
+
   const dustSeeds = useRef(
     Array.from({ length: 8 }, () => ({
       w: Math.random() * 4 + 2,
@@ -255,6 +263,8 @@ function HeatShimmer() {
    SECTION LABEL
 ───────────────────────────────────────────── */
 function SectionLabel({ children, light = false }) {
+  const { portfolioData: data } = usePortfolio();
+
   return (
     <motion.div
       variants={fadeIn}
@@ -293,7 +303,9 @@ function SectionLabel({ children, light = false }) {
 /* ─────────────────────────────────────────────
    NAV
 ───────────────────────────────────────────── */
-function Nav({ data }) {
+function Nav() {
+  const { portfolioData: data } = usePortfolio();
+
   const [open, setOpen] = useState(false);
   const [scrolled, setScrolled] = useState(false);
 
@@ -503,6 +515,8 @@ function Nav({ data }) {
    HERO
 ───────────────────────────────────────────── */
 function Hero() {
+  const { portfolioData: data } = usePortfolio();
+
   const { name, title, location, bio } = data.personal;
   const { github, linkedin, twitter, email } = data.socials;
   const { yearsExperience, projectsCompleted, happyClients } = data.stats;
@@ -907,6 +921,8 @@ function Hero() {
    ABOUT
 ───────────────────────────────────────────── */
 function About() {
+  const { portfolioData: data } = usePortfolio();
+
   const { name, bio, avatar, location } = data.personal;
   const email = data.personal.email || data.socials.email;
   const phone = data.personal.phone;
@@ -1073,6 +1089,8 @@ function About() {
    SKILLS
 ───────────────────────────────────────────── */
 function Skills() {
+  const { portfolioData: data } = usePortfolio();
+
   const ref = useRef(null);
   const inView = useInView(ref, { once: true, margin: '-80px' });
 
@@ -1311,6 +1329,8 @@ function Skills() {
    PROJECTS
 ───────────────────────────────────────────── */
 function Projects() {
+  const { portfolioData: data } = usePortfolio();
+
   const ref = useRef(null);
   const inView = useInView(ref, { once: true, margin: '-80px' });
   const [hovered, setHovered] = useState(null);
@@ -1724,6 +1744,8 @@ function Projects() {
    EXPERIENCE
 ───────────────────────────────────────────── */
 function Experience() {
+  const { portfolioData: data } = usePortfolio();
+
   const ref = useRef(null);
   const inView = useInView(ref, { once: true, margin: '-80px' });
 
@@ -1936,6 +1958,8 @@ function Experience() {
    TESTIMONIALS
 ───────────────────────────────────────────── */
 function Testimonials() {
+  const { portfolioData: data } = usePortfolio();
+
   const ref = useRef(null);
   const inView = useInView(ref, { once: true, margin: '-80px' });
 
@@ -2103,6 +2127,8 @@ function Testimonials() {
    CONTACT
 ───────────────────────────────────────────── */
 function Contact() {
+  const { portfolioData: data } = usePortfolio();
+
   const ref = useRef(null);
   const inView = useInView(ref, { once: true, margin: '-80px' });
   const [form, setForm] = useState({ name: '', email: '', message: '' });
@@ -2455,6 +2481,8 @@ function Contact() {
    FOOTER
 ───────────────────────────────────────────── */
 function Footer() {
+  const { portfolioData: data } = usePortfolio();
+
   return (
     <footer
       style={{
@@ -2526,6 +2554,8 @@ function Footer() {
 }
 
 export default function DesertDunes() {
+  const { portfolioData: data } = usePortfolio();
+
   return (
     <>
       <GlobalStyles />
