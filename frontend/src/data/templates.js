@@ -1,5 +1,136 @@
 export const templates = [
   {
+    "id": "ASCII_Art_Terminal_Code",
+    "title": "ASCII Art Terminal Code",
+    "category": "Portfolio",
+    "colorScheme": "Dark",
+    "layout": "Interactive",
+    "author": "Raman Kumar",
+    "views": 2800,
+    "rating": 4.9,
+    "image": "/template-previews/ASCII_Art_Terminal_Code.png",
+    "createdAt": "2026-06-12",
+    isComplete: true
+},
+{
+    id: "Forensic_Investigator_Desk",
+    title: "Forensic Investigator Desk",
+    category: "Portfolio",
+    colorScheme: "Dark",
+    layout: "Interactive",
+    author: "ShaktiShrey-01",
+    views: 0,
+    rating: 0,
+    image: "/template-previews/Forensic_investigator_desk.png", 
+    createdAt: "2026-06-11",
+    isComplete: true
+},
+{
+  "id": "Fake_WebOS_Operating_System",
+  "title": "Fake WebOS Operating System",
+  "category": "Portfolio",
+  "colorScheme": "Dark",
+  "layout": "Interactive",
+  "author": "System",
+  "views": 0,
+  "rating": 4.9,
+  "image": "/templates/Fake_WebOS_Operating_System.png",
+  "createdAt": "2026-06-09",
+  "isComplete": true
+},
+{
+  "id": "Hidden_Easter_Egg_Scavenger_Hunt",
+  "title": "Hidden Easter Egg Scavenger Hunt",
+  "category": "Portfolio",
+  "colorScheme": "Dark",
+  "layout": "Interactive",
+  "author": "prerendrarahitya1708",
+  "views": 0,
+  "rating": 4.8,
+  "image": "/template-previews/Hidden_Easter_Egg_Scavenger_Hunt.png",
+  "createdAt": "2026-06-07",
+  "isComplete": true
+},
+  
+{
+  "id": "Eye_Tracking_Heatmap_Simulation",
+  "title": "Eye Tracking Heatmap Simulation",
+  "category": "Portfolio",
+  "colorScheme": "Dark",
+  "layout": "Fullscreen",
+  "author": "System",
+  "views": 0,
+  "rating": 0,
+  "image": "/template-previews/Eye_Tracking_Heatmap_Simulation.png",
+  "createdAt": "2026-06-07",
+  "isComplete": true
+},
+  {
+    "id": "Live_Satellite_Imagery_Feed",
+    "title": "Live Satellite Imagery Feed",
+    "category": "Portfolio",
+    "colorScheme": "Dark",
+    "layout": "Dashboard",
+    "author": "System",
+    "views": 1300,
+    "rating": 4.9,
+    "image": "/templates/Live_Satellite_Imagery_Feed.png",
+    "createdAt": "2026-06-07",
+    "isComplete": true
+  },
+  {
+    "id": "Broken_Glass_Shards_Parallax",
+    "title": "Broken Glass Shards Parallax",
+    "category": "Portfolio",
+    "colorScheme": "Dark",
+    "layout": "Parallax",
+    "author": "System",
+    "views": 1000,
+    "rating": 5.0,
+    "image": "/templates/Broken_Glass_Shards_Parallax.png",
+    "createdAt": "2026-06-07",
+    "isComplete": true
+  },
+  {
+    "id": "Interactive_Table_of_Elements",
+    "title": "Interactive Table of Elements",
+    "category": "Portfolio",
+    "colorScheme": "Dark",
+    "layout": "Grid",
+    "author": "System",
+    "views": 1000,
+    "rating": 5.0,
+    "image": "/templates/Interactive_Table_of_Elements.png",
+    "createdAt": "2026-06-06",
+    "isComplete": true
+  },
+  {
+    "id": "Audio_First_Sonar_Navigation",
+    "title": "Audio First Sonar Navigation",
+    "category": "Portfolio",
+    "colorScheme": "Dark",
+    "layout": "Cards",
+    "author": "System",
+    "views": 0,
+    "rating": 0,
+    "image": "/template-previews/Audio_First_Sonar_Navigation.png",
+    "createdAt": "2026-06-07",
+    "isComplete": true
+  },
+  {
+    "id": "Vercel_Deploy",
+    "title": "Vercel Deploy",
+    "category": "Portfolio",
+    "colorScheme": "Dark",
+    "layout": "Cards",
+    "author": "Your GitHub Username",
+    "views": 1200,
+    "rating": 4.8,
+    "image": "/template-previews/Vercel_Deploy.png",
+    "createdAt": "2026-06-05",
+    "isComplete": true
+  },
+  {
     "id": "2D_Retro_8bit",
     "title": "2D Retro 8bit",
     "category": "Portfolio",
@@ -58,6 +189,19 @@ export const templates = [
     "rating": 4.5,
     "image": "/template-previews/Acrylic_Windows.png",
     "createdAt": "2026-05-01"
+  },
+  {
+    "id": "Transparent_Desktop_Overlay_OS",
+    "title": "Transparent Desktop Overlay OS",
+    "category": "Portfolio",
+    "colorScheme": "Dark",
+    "layout": "Interactive",
+    "author": "System",
+    "views": 1500,
+    "rating": 5.0,
+    "image": "/templates/Transparent_Desktop_Overlay_OS.png",
+    "createdAt": "2026-06-09",
+    "isComplete": true
   },
   {
     "id": "Advent_Calendar",
@@ -256,12 +400,13 @@ export const templates = [
     "title": "Cassette Mixtape",
     "category": "Portfolio",
     "colorScheme": "Dark",
-    "layout": "Grid",
-    "author": "System",
-    "views": 1021,
-    "rating": 4.5,
+    "layout": "Interactive",
+    "author": "Advik Divekar",
+    "views": 2500,
+    "rating": 4.9,
     "image": "/template-previews/Cassette_Mixtape.png",
-    "createdAt": "2026-05-01"
+    "createdAt": "2026-05-31",
+    "isComplete": true
   },
   {
     "id": "Ceramic_Minimal",
@@ -330,7 +475,7 @@ export const templates = [
     "category": "Portfolio",
     "colorScheme": "Dark",
     "layout": "Grid",
-    "author": "System",
+    "author": "Advik Divekar",
     "views": 1027,
     "rating": 4.5,
     "image": "/template-previews/Choose_Adventure.png",
@@ -340,14 +485,31 @@ export const templates = [
     "id": "Chromatic_Glitch",
     "title": "Chromatic Glitch",
     "category": "Portfolio",
-    "colorScheme": "Dark",
-    "layout": "Grid",
-    "author": "System",
-    "views": 1028,
-    "rating": 4.5,
+    "colorScheme": "Colorful",
+    "layout": "Interactive",
+    "author": "Advik Divekar",
+    "views": 2700,
+    "rating": 4.9,
     "image": "/template-previews/Chromatic_Glitch.png",
-    "createdAt": "2026-05-01"
+    "createdAt": "2026-05-31",
+    "isComplete": true
   },
+
+  {
+    id: "ZineCollage",
+    title: "Zine Collage",
+    category: "Portfolio",
+    colorScheme: "Colorful",
+    layout: "Grid",
+    author: "System",
+    views: 1200,
+    rating: 4.8,
+    image: "/template-previews/Zine_Collage.png",
+    createdAt: "2026-06-08",
+    description: "An asymmetric, high-contrast scrapbook magazine layout featuring heavy ink borders, rotated clipping frames, and retro label-maker accents.",
+    isComplete: true
+  },
+  
   {
     "id": "Cinematic",
     "title": "Cinematic",
@@ -376,13 +538,14 @@ export const templates = [
     "id": "Color_Block",
     "title": "Color Block",
     "category": "Portfolio",
-    "colorScheme": "Dark",
-    "layout": "Grid",
-    "author": "System",
-    "views": 1031,
-    "rating": 4.5,
+    "colorScheme": "Colorful",
+    "layout": "Interactive",
+    "author": "Advik Divekar",
+    "views": 2650,
+    "rating": 4.9,
     "image": "/template-previews/Color_Block.png",
-    "createdAt": "2026-05-01"
+    "createdAt": "2026-05-31",
+    "isComplete": true
   },
   {
     "id": "Comic_Book",
@@ -581,12 +744,13 @@ export const templates = [
     "title": "Desert Dunes",
     "category": "Portfolio",
     "colorScheme": "Dark",
-    "layout": "Grid",
-    "author": "System",
-    "views": 1048,
-    "rating": 4.5,
+    "layout": "Interactive",
+    "author": "Advik Divekar",
+    "views": 2200,
+    "rating": 4.9,
     "image": "/template-previews/Desert_Dunes.png",
-    "createdAt": "2026-05-01"
+    "createdAt": "2026-05-31",
+    "isComplete": true
   },
   {
     "id": "Developer_IDE",
@@ -665,12 +829,13 @@ export const templates = [
     "title": "Duotone Bold",
     "category": "Portfolio",
     "colorScheme": "Dark",
-    "layout": "Grid",
-    "author": "System",
-    "views": 1055,
-    "rating": 4.5,
+    "layout": "Interactive",
+    "author": "Advik Divekar",
+    "views": 2550,
+    "rating": 4.9,
     "image": "/template-previews/Duotone_Bold.png",
-    "createdAt": "2026-05-01"
+    "createdAt": "2026-05-31",
+    "isComplete": true
   },
   {
     "id": "Ecommerce_Style",
@@ -727,10 +892,10 @@ export const templates = [
     "colorScheme": "Dark",
     "layout": "Grid",
     "author": "System",
-    "views": 1060,
-    "rating": 4.5,
+    "views": 99999,
+    "rating": 5.0,
     "image": "/template-previews/F1_Racing.png",
-    "createdAt": "2026-05-01"
+    "createdAt": "2026-12-31"
   },
   {
     "id": "Fantasy_RPG",
@@ -978,11 +1143,12 @@ export const templates = [
     "category": "Portfolio",
     "colorScheme": "Dark",
     "layout": "Grid",
-    "author": "System",
+    "author": "Advik Divekar",
     "views": 1081,
     "rating": 4.5,
     "image": "/template-previews/High_Fashion.png",
-    "createdAt": "2026-05-01"
+    "createdAt": "2026-05-01",
+    "isComplete": true
   },
   {
     "id": "Holographic",
@@ -1019,6 +1185,18 @@ export const templates = [
     "rating": 4.5,
     "image": "/template-previews/Infinite_Canvas.png",
     "createdAt": "2026-05-01"
+  },
+  {
+    "id": "Error_404_Infinite_Gallery",
+    "title": "Error 404 Infinite Gallery",
+    "category": "Portfolio",
+    "colorScheme": "Dark",
+    "layout": "Interactive",
+    "author": "System",
+    "views": 1086,
+    "rating": 4.5,
+    "image": "/templates/Error_404_Infinite_Gallery.png",
+    "createdAt": "2026-06-06"
   },
   {
     "id": "Japanese_Zen",
@@ -1102,7 +1280,8 @@ export const templates = [
     "views": 1091,
     "rating": 4.5,
     "image": "/template-previews/Liquid_Glass.png",
-    "createdAt": "2026-05-01"
+    "createdAt": "2026-05-01",
+    "isComplete": true
   },
   {
     "id": "Liquid_Morph",
@@ -1122,11 +1301,12 @@ export const templates = [
     "category": "Portfolio",
     "colorScheme": "Dark",
     "layout": "Grid",
-    "author": "System",
+    "author": "Advik Divekar",
     "views": 1093,
     "rating": 4.5,
     "image": "/template-previews/Low_Poly_Terrain.png",
-    "createdAt": "2026-05-01"
+    "createdAt": "2026-05-01",
+    "isComplete": true
   },
   {
     "id": "MacOS_Desktop",
@@ -1157,12 +1337,13 @@ export const templates = [
     "title": "Magnetic Dock",
     "category": "Portfolio",
     "colorScheme": "Dark",
-    "layout": "Grid",
-    "author": "System",
-    "views": 1096,
-    "rating": 4.5,
+    "layout": "Interactive",
+    "author": "Advik Divekar",
+    "views": 3100,
+    "rating": 4.9,
     "image": "/template-previews/Magnetic_Dock.png",
-    "createdAt": "2026-05-01"
+    "createdAt": "2026-05-31",
+    "isComplete": true
   },
   {
     "id": "Matte_Clay",
@@ -1204,13 +1385,14 @@ export const templates = [
     "id": "Memphis_Pop",
     "title": "Memphis Pop",
     "category": "Portfolio",
-    "colorScheme": "Dark",
-    "layout": "Grid",
-    "author": "System",
-    "views": 1100,
-    "rating": 4.5,
+    "colorScheme": "Colorful",
+    "layout": "Interactive",
+    "author": "Advik Divekar",
+    "views": 2600,
+    "rating": 4.9,
     "image": "/template-previews/Memphis_Pop.png",
-    "createdAt": "2026-05-01"
+    "createdAt": "2026-05-31",
+    "isComplete": true
   },
   {
     "id": "Midnight_Gradient",
@@ -1222,7 +1404,8 @@ export const templates = [
     "views": 1101,
     "rating": 4.5,
     "image": "/template-previews/Midnight_Gradient.png",
-    "createdAt": "2026-05-01"
+    "createdAt": "2026-05-01",
+    "isComplete": true
   },
   {
     "id": "Minimalist_White",
@@ -1265,12 +1448,13 @@ export const templates = [
     "title": "Morphing Blobs",
     "category": "Portfolio",
     "colorScheme": "Dark",
-    "layout": "Grid",
-    "author": "System",
-    "views": 1105,
-    "rating": 4.5,
+    "layout": "Interactive",
+    "author": "Advik Divekar",
+    "views": 2700,
+    "rating": 4.9,
     "image": "/template-previews/Morphing_Blobs.png",
-    "createdAt": "2026-05-01"
+    "createdAt": "2026-05-31",
+    "isComplete": true
   },
   {
     "id": "Mosaic_Assemble",
@@ -1350,11 +1534,12 @@ export const templates = [
     "category": "Portfolio",
     "colorScheme": "Dark",
     "layout": "Grid",
-    "author": "System",
+    "author": "Advik Divekar",
     "views": 1112,
     "rating": 4.5,
     "image": "/template-previews/Neon_Cityscape.png",
-    "createdAt": "2026-05-01"
+    "createdAt": "2026-05-01",
+    "isComplete": true
   },
   {
     "id": "Neon_Noir",
@@ -1470,23 +1655,25 @@ export const templates = [
     "category": "Portfolio",
     "colorScheme": "Dark",
     "layout": "Grid",
-    "author": "System",
+    "author": "Advik Divekar",
     "views": 1122,
     "rating": 4.5,
     "image": "/template-previews/Ocean_Depths.png",
-    "createdAt": "2026-05-01"
+    "createdAt": "2026-05-01",
+    "isComplete": true
   },
   {
     "id": "One_Page_Scroll",
     "title": "One Page Scroll",
     "category": "Portfolio",
-    "colorScheme": "Dark",
-    "layout": "Grid",
-    "author": "System",
-    "views": 1123,
-    "rating": 4.5,
+    "colorScheme": "Light",
+    "layout": "Minimal",
+    "author": "Advik Divekar",
+    "views": 2600,
+    "rating": 4.9,
     "image": "/template-previews/One_Page_Scroll.png",
-    "createdAt": "2026-05-01"
+    "createdAt": "2026-05-31",
+    "isComplete": true
   },
   {
     "id": "Origami_Paper",
@@ -1593,6 +1780,7 @@ export const templates = [
     "author": "System",
     "views": 1132,
     "rating": 4.5,
+    "isComplete": true,
     "image": "/template-previews/Pixel_Quest.png",
     "createdAt": "2026-05-01"
   },
@@ -1602,11 +1790,12 @@ export const templates = [
     "category": "Portfolio",
     "colorScheme": "Dark",
     "layout": "Grid",
-    "author": "System",
+    "author": "Advik Divekar",
     "views": 1133,
     "rating": 4.5,
     "image": "/template-previews/Planetary_Orbit.png",
-    "createdAt": "2026-05-01"
+    "createdAt": "2026-05-01",
+    "isComplete": true
   },
   {
     "id": "Playing_Cards",
@@ -1618,7 +1807,21 @@ export const templates = [
     "views": 1134,
     "rating": 4.5,
     "image": "/template-previews/Playing_Cards.png",
-    "createdAt": "2026-05-01"
+    "createdAt": "2026-05-01",
+    "isComplete": true
+  },
+  {
+    "id": "Pokemon_Pokedex_Classic",
+    "title": "Pokemon Pokedex Classic",
+    "category": "Portfolio",
+    "colorScheme": "Dark",
+    "layout": "Interactive",
+    "author": "System",
+    "views": 1135,
+    "rating": 4.7,
+    "image": "/template-previews/Pokemon_Pokedex_Classic.png",
+    "createdAt": "2026-06-08",
+    "isComplete": true
   },
   {
     "id": "Polaroid_Memories",
@@ -1627,7 +1830,7 @@ export const templates = [
     "colorScheme": "Dark",
     "layout": "Grid",
     "author": "System",
-    "views": 1135,
+    "views": 1136,
     "rating": 4.5,
     "image": "/template-previews/Polaroid_Memories.png",
     "createdAt": "2026-05-01"
@@ -1639,7 +1842,7 @@ export const templates = [
     "colorScheme": "Dark",
     "layout": "Grid",
     "author": "System",
-    "views": 1136,
+    "views": 1137,
     "rating": 4.5,
     "image": "/template-previews/Prismatic_Light.png",
     "createdAt": "2026-05-01"
@@ -1648,13 +1851,14 @@ export const templates = [
     "id": "Psychedelic_Swirl",
     "title": "Psychedelic Swirl",
     "category": "Portfolio",
-    "colorScheme": "Dark",
-    "layout": "Grid",
-    "author": "System",
-    "views": 1137,
-    "rating": 4.5,
+    "colorScheme": "Colorful",
+    "layout": "Interactive",
+    "author": "Advik Divekar",
+    "views": 2400,
+    "rating": 4.9,
     "image": "/template-previews/Psychedelic_Swirl.png",
-    "createdAt": "2026-05-01"
+    "createdAt": "2026-05-31",
+    "isComplete": true
   },
   {
     "id": "Quiz_Reveal",
@@ -1672,13 +1876,14 @@ export const templates = [
     "id": "Rainbow_Gradient",
     "title": "Rainbow Gradient",
     "category": "Portfolio",
-    "colorScheme": "Dark",
-    "layout": "Grid",
-    "author": "System",
-    "views": 1139,
-    "rating": 4.5,
+    "colorScheme": "Colorful",
+    "layout": "Interactive",
+    "author": "Advik Divekar",
+    "views": 2900,
+    "rating": 4.9,
     "image": "/template-previews/Rainbow_Gradient.png",
-    "createdAt": "2026-05-01"
+    "createdAt": "2026-05-31",
+    "isComplete": true
   },
   {
     "id": "Rainforest_Canopy",
@@ -1834,7 +2039,8 @@ export const templates = [
     "views": 1152,
     "rating": 4.5,
     "image": "/template-previews/Shadow_Layers.png",
-    "createdAt": "2026-05-01"
+    "createdAt": "2026-05-01",
+    "isComplete": true
   },
   {
     "id": "Silk_Flow",
@@ -1853,12 +2059,13 @@ export const templates = [
     "title": "Smoke Mist",
     "category": "Portfolio",
     "colorScheme": "Dark",
-    "layout": "Grid",
-    "author": "System",
-    "views": 1154,
-    "rating": 4.5,
+    "layout": "Interactive",
+    "author": "Advik Divekar",
+    "views": 2450,
+    "rating": 4.9,
     "image": "/template-previews/Smoke_Mist.png",
-    "createdAt": "2026-05-01"
+    "createdAt": "2026-05-31",
+    "isComplete": true
   },
   {
     "id": "Snowfall_Winter",
@@ -1882,7 +2089,8 @@ export const templates = [
   "views": 1156,
   "rating": 4.5,
   "image": "/template-previews/Soft-Neumorphic.png",
-  "createdAt": "2026-05-01"
+  "createdAt": "2026-05-01",
+  "isComplete": true
 },
   {
     "id": "Solar_Eclipse",
@@ -2044,25 +2252,27 @@ export const templates = [
     "id": "Sunset_Warm",
     "title": "Sunset Warm",
     "category": "Portfolio",
-    "colorScheme": "Dark",
-    "layout": "Grid",
-    "author": "System",
-    "views": 1170,
-    "rating": 4.5,
+    "colorScheme": "Colorful",
+    "layout": "Interactive",
+    "author": "Advik Divekar",
+    "views": 2800,
+    "rating": 4.9,
     "image": "/template-previews/Sunset_Warm.png",
-    "createdAt": "2026-05-01"
+    "createdAt": "2026-05-31",
+    "isComplete": true
   },
   {
     "id": "Swiss_Typography",
     "title": "Swiss Typography",
     "category": "Portfolio",
     "colorScheme": "Dark",
-    "layout": "Grid",
-    "author": "System",
-    "views": 1171,
-    "rating": 4.5,
+    "layout": "Interactive",
+    "author": "Advik Divekar",
+    "views": 2300,
+    "rating": 4.9,
     "image": "/template-previews/Swiss_Typography.png",
-    "createdAt": "2026-05-01"
+    "createdAt": "2026-05-31",
+    "isComplete": true
   },
   {
     "id": "Tech_Startup",
@@ -2165,12 +2375,13 @@ export const templates = [
     "title": "Twilight Horizon",
     "category": "Portfolio",
     "colorScheme": "Dark",
-    "layout": "Grid",
-    "author": "System",
-    "views": 1180,
-    "rating": 4.5,
+    "layout": "Interactive",
+    "author": "Advik Divekar",
+    "views": 2750,
+    "rating": 4.9,
     "image": "/template-previews/Twilight_Horizon.png",
-    "createdAt": "2026-05-01"
+    "createdAt": "2026-05-31",
+    "isComplete": true
   },
   {
     "id": "Twitter_Profile",
@@ -2190,23 +2401,25 @@ export const templates = [
     "category": "Portfolio",
     "colorScheme": "Dark",
     "layout": "Grid",
-    "author": "System",
+    "author": "Akanhsa02code",
     "views": 1182,
     "rating": 4.5,
-    "image": "/template-previews/Type_Specimen.png",
-    "createdAt": "2026-05-01"
+    "image": "/template-previews/Type-Specimen.png",
+    "createdAt": "2026-05-01",
+    "isComplete": true
   },
   {
     "id": "Typewriter_Effect",
     "title": "Typewriter Effect",
     "category": "Portfolio",
-    "colorScheme": "Dark",
-    "layout": "Grid",
-    "author": "System",
-    "views": 1183,
-    "rating": 4.5,
+    "colorScheme": "Light",
+    "layout": "Interactive",
+    "author": "Advik Divekar",
+    "views": 2850,
+    "rating": 4.9,
     "image": "/template-previews/Typewriter_Effect.png",
-    "createdAt": "2026-05-01"
+    "createdAt": "2026-05-31",
+    "isComplete": true
   },
   {
     "id": "Typographic_Heavy",
@@ -2219,6 +2432,19 @@ export const templates = [
     "rating": 4.5,
     "image": "/template-previews/Typographic_Heavy.png",
     "createdAt": "2026-05-01"
+  },
+  {
+    "id": "Typographic_Wheatpaste_Poster_Wall",
+    "title": "Typographic Wheatpaste Poster Wall",
+    "category": "Portfolio",
+    "colorScheme": "Dark",
+    "layout": "Interactive",
+    "author": "System",
+    "views": 2400,
+    "rating": 4.9,
+    "image": "/template-previews/Typographic_Wheatpaste_Poster_Wall.png",
+    "createdAt": "2026-06-07",
+    "isComplete": true
   },
   {
     "id": "VHS_Rewind",
@@ -2334,7 +2560,7 @@ export const templates = [
     "category": "Portfolio",
     "colorScheme": "Dark",
     "layout": "Grid",
-    "author": "System",
+    "author": "Advik Divekar",
     "views": 1194,
     "rating": 4.5,
     "image": "/template-previews/Weather_Mood.png",
@@ -2358,11 +2584,12 @@ export const templates = [
     "category": "Portfolio",
     "colorScheme": "Dark",
     "layout": "Grid",
-    "author": "System",
+    "author": "yashitripathi2007",
     "views": 1196,
     "rating": 4.5,
     "image": "/template-previews/Wildflower_Field.png",
-    "createdAt": "2026-05-01"
+    "createdAt": "2026-05-01",
+    "isComplete": true
   },
   {
     "id": "Windows_98",
@@ -2399,5 +2626,56 @@ export const templates = [
     "rating": 4.5,
     "image": "/template-previews/Zoom_Into_Work.png",
     "createdAt": "2026-05-01"
+  },
+
+
+  {
+  id: 'error_404_infinite_gallery',
+  name: 'Error 404 Infinite Gallery',
+  path: 'Error_404_Infinite_Gallery',
+  thumbnail: '/templates/error_404_infinite_gallery.png', 
+  category: 'Special / Error Pages',
+  description: 'An interactive 404 error page wrapped in an infinite smoothly-looping background project showcase.'
+  },
+
+
+
+  {
+    "id": "Underground_Bunker_Console",
+    "title": "Underground Bunker Console",
+    "category": "Portfolio",
+    "colorScheme": "Dark",
+    "layout": "Interactive",
+    "author": "System",
+    "views": 0,
+    "rating": 4.5,
+    "image": "/template-previews/Underground_Bunker_Console.svg",
+    "createdAt": "2026-06-06"
+  },
+  {
+    "id": "Digital_Manifesto_Scroll",
+    "title": "Digital Manifesto Scroll",
+    "category": "Portfolio",
+    "colorScheme": "Dark",
+    "layout": "Interactive",
+    "author": "Gurkaran18",
+    "views": 1500,
+    "rating": 5.0,
+    "image": "/template-previews/Digital_Manifesto_Scroll.png",
+    "createdAt": "2026-06-07",
+    "isComplete": true
+  },
+  {
+    "id": "Cloud_Nine_Aerial_Skyscape",
+    "title": "Cloud Nine Aerial Skyscape",
+    "category": "Portfolio",
+    "colorScheme": "Light",
+    "layout": "Grid",
+    "author": "System",
+    "views": 1000,
+    "rating": 5.0,
+    "image": "/template-previews/Cloud_Nine_Aerial_Skyscape.png",
+    "createdAt": "2026-06-10",
+    "isComplete": true
   }
 ];

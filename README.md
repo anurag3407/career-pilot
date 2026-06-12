@@ -1,68 +1,106 @@
 <div align="center">
   <h1>🚀 Career Pilot</h1>
-  <p>An advanced AI-powered Resume Builder application, aimed to help users build their resumes with ease, backed by Modern Web Technologies and Artificial Intelligence.</p>
+  <p>An AI-powered resume builder and career toolkit that helps users create resumes, prepare for interviews, search jobs, and launch developer portfolios. </p>
 </div>
 
-## 👨‍💻 Maintainers
-
-<div align="center">
-  <table>
-    <tr>
-      <td align="center">
-        <a href="https://github.com/anurag3407">
-          <img src="https://github.com/anurag3407.png" width="100" style="border-radius: 50%;" alt="anurag3407"/><br />
-          <sub><b>anurag3407</b></sub>
-        </a>
-      </td>
-      <td align="center">
-        <a href="https://github.com/Mohnish27-dev">
-          <img src="https://github.com/Mohnish27-dev.png" width="100" style="border-radius: 50%;" alt="Mohnish27-dev"/><br />
-          <sub><b>Mohnish27-dev</b></sub>
-        </a>
-      </td>
-    </tr>
-  </table>
+<div align="center" style="max-width:900px; margin:12px auto;">
+  <p style="margin-bottom:10px; text-align:center; font-size:1.05rem; color:var(--text-color, #e6edf3);">
+    Full-stack web app combining modern frontend and backend tooling
+  </p>
+  <p style="display:flex; gap:12px; justify-content:center; flex-wrap:wrap; margin:8px 0;">
+    <img src="https://img.shields.io/badge/Node.js-20-green?logo=node.js&logoColor=white" alt="Node.js" />
+    <img src="https://img.shields.io/badge/Express-4.18-lightgrey?logo=express&logoColor=black" alt="Express" />
+    <img src="https://img.shields.io/badge/MongoDB-6.0-darkgreen?logo=mongodb&logoColor=white" alt="MongoDB" />
+    <img src="https://img.shields.io/badge/Redis-7.0-d9932e?logo=redis&logoColor=white" alt="Redis" />
+    <img src="https://img.shields.io/badge/Socket.IO-4-cyan?logo=socket.io&logoColor=white" alt="Socket.IO" />
+    <img src="https://img.shields.io/badge/React-19-blue?logo=react&logoColor=white" alt="React" />
+    <img src="https://img.shields.io/badge/Vite-7.3.5-brightgreen?logo=vite&logoColor=white" alt="Vite" />
+    <img src="https://img.shields.io/badge/TailwindCSS-4-skyblue?logo=tailwindcss&logoColor=white" alt="TailwindCSS" />
+  </p>
 </div>
 
-## 💻 Tech Stack
+## How It Works (Overview)
 
-- **Frontend:** React 19, Vite
-- **Styling & Animations:** TailwindCSS 4, Framer Motion
-- **Authentication & Backend:** Firebase
-- **Core Libraries:** jsPDF, html2canvas, socket.io-client, react-hook-form, @hello-pangea/dnd
+1. User registers / logs in using Firebase Authentication  
+2. User enters the Career Pilot dashboard  
+3. User selects or creates a resume template  
+4. User edits resume sections (Education, Skills, Experience, etc.)  
+5. Drag & drop support allows easy section rearrangement  
+6. AI features assist in improving resume content  
+7. User previews final resume in real time  
+8. Resume is exported as PDF using jsPDF + html2canvas  
 
-## ✨ Features
+## Table of Contents
 
-- **Modern Tech Stack:** Built with React 19 and Vite for blazing fast development and optimized production builds.
-- **Stunning UI/UX:** Styled using TailwindCSS 4, offering responsive and aesthetically pleasing design.
-- **Authentication:** Secure Firebase Authentication integration.
-- **Smooth Animations:** Powered by Framer Motion to provide delightful micro-interactions.
-- **PDF Generation:** Export resumes reliably to PDF with `jsPDF` and `html2canvas`.
-- **Drag & Drop:** Intuitive drag and drop interfaces using `@hello-pangea/dnd` and `react-dropzone`.
-- **Real-time Collaboration:** Powered by `socket.io-client` for seamless live updates.
-- **Markdown Support:** Enhanced text editing and formatting via `react-markdown`.
-- **Form Management:** Robust form handling with `react-hook-form` and validation capabilities.
+- [How It Works](#how-it-works-overview)
+- [Why This Project](#why-this-project)
+- [Key Features](#key-features)
+- [Getting Started](#getting-started)
+- [Environment Variables](#environment-variables)
+- [Project Structure](#project-structure)
+- [Roadmap](#roadmap)
+- [Contributing](#contributing)
+- [Maintainers](#maintainers)
+- [License](#license)
 
-## 🛠️ Quick Start
+## Why This Project
 
-Follow these steps to set up the project locally.
+- Helps users create strong resumes quickly using AI guidance.
+- Supports interview preparation and portfolio building in one unified product.
+- Provides real-time collaboration and notification workflows.
+- Built with modular frontend/backend architecture that is ideal for contributors.
+
+## Key Features
+
+- AI resume creation, improvement, and formatting.
+- PDF export and resume download.
+- Firebase authentication and auth session handling.
+- Job search powered by RapidAPI JSearch.
+- Portfolio templates with deploy-ready publishing flows.
+- Real-time updates and collaboration via Socket.IO.
+- Responsive UI built with TailwindCSS and Framer Motion.
+- Admin and community tools for job seekers and teams.
+
+## Getting Started
+
+### Prerequisites
+
+- Node.js 20+
+- npm 10+ (or Yarn / pnpm)
+- MongoDB
+- Redis
+- Firebase project and service account
+- Optional: Cloudinary account for media storage
+
+### Install dependencies
+
+```bash
+cd career-pilot
+npm install
+cd backend
+npm install
+cd ../frontend
+npm install
+```
+
+### Run locally
 
 ### Prerequisites
 - Node.js (v18+ recommended)
 - npm
 - A [Firebase project](https://console.firebase.google.com/) (for Authentication & Database features)
 
-### Installation
-
-```bash
-# Clone the repository
-git clone https://github.com/anurag3407/career-pilot.git
-
-# Navigate to the project directory
-cd career-pilot
+# Frontend
+cd ../frontend
+npm run dev
 ```
 
-### Environment Setup
+### Testing
+
+Add or update tests in `backend/tests`, `frontend/tests`, and root-level test utilities. Run any existing test scripts from the relevant package directories.
+
+
+## Environment Variables
 
 > ⚠️ **This step is required before running the app.** Skipping it will cause Firebase-related console warnings and disable authentication/database features.
 
@@ -104,7 +142,11 @@ cd frontend
 npm install
 ```
 
-### Running the App
+- Improve resume generation prompts and AI content quality.
+- Expand interview prep flows with more question categories.
+- Add more portfolio templates and publishing options.
+- Strengthen end-to-end test coverage.
+- Improve documentation for contributors and deploy workflows.
 
 ```bash
 # From the frontend directory
@@ -118,31 +160,74 @@ The app will be available at **http://localhost:5173**.
 # Build for production
 npm run build
 
-# Preview production build locally
-npm run preview
-```
+- Project is currently in development stage  
+- No live deployment available yet  
+- Firebase configuration is required to run locally  
 
-## 🌟 Contributing
 
-We welcome and appreciate contributions from the community! Whether it's reporting bugs, improving documentation, or proposing new features, your help is valuable.
+### Good first issues
 
-To make a contribution:
-1. **Fork** the repository.
-2. **Create a new branch** (`git checkout -b feature/your-feature-name`).
-3. **Commit your changes** (`git commit -m 'Add some feature'`).
-4. **Push to the branch** (`git push origin feature/your-feature-name`).
-5. **Open a Pull Request** against the `main` branch.
+- Documentation improvements for setup or environment variables.
+- Fixing UI/UX issues on the dashboard or resume builder.
+- Backend bug fixes around authentication and job search.
+- Code quality and linting improvements.
 
-Please make sure to read our [Contribution Guidelines](CONTRIBUTION.md) and [Code of Conduct](CODE_OF_CONDUCT.md) before getting started.
+If you are part of GSSoC or a first-time contributor, add a comment to an issue or open a discussion to request mentorship.
 
-## 🤝 Contributors
+## Contributing
 
-Thank you to everyone who has contributed to making **Career Pilot** better! 
+We welcome contributions from developers of all levels.
 
-<a href="https://github.com/anurag3407/career-pilot/graphs/contributors">
-  <img src="https://contrib.rocks/image?repo=anurag3407/career-pilot" alt="Contributors" />
-</a>
+### Contribution flow
 
-## 📄 License
+1. Fork the repository.
+2. Create a feature branch: `git checkout -b feature/your-feature`.
+3. Make your changes and commit with a descriptive message.
+4. Push the branch and open a PR against `main`.
 
-This project is open-source. Please check the `LICENSE` file for more details.
+### Recommended branch names
+
+- `feature/<short-description>`
+- `fix/<short-description>`
+- `docs/<short-description>`
+
+### PR checklist
+
+- [ ] The change is described clearly in the PR title and description.
+- [ ] Code passes linting and local tests.
+- [ ] Environment setup steps are documented if needed.
+- [ ] Any breaking changes are noted.
+
+### GSoC / community contributors
+
+- Start with issues labeled as good first issue or help wanted.
+- Check `CONTRIBUTION.md` and `CODE_OF_CONDUCT.md` before contributing.
+- Ask questions by opening an issue or commenting on an existing one.
+- If you want a feature idea, ask for a mentor review on a draft PR.
+
+See [CONTRIBUTION.md](CONTRIBUTION.md) for full contribution details.
+
+## Maintainers
+
+<div align="center">
+  <table>
+    <tr>
+      <td align="center">
+        <a href="https://github.com/anurag3407">
+          <img src="https://github.com/anurag3407.png" width="100" style="border-radius: 50%;" alt="anurag3407"/><br />
+          <sub><b>anurag3407</b></sub>
+        </a>
+      </td>
+      <td align="center">
+        <a href="https://github.com/Mohnish27-dev">
+          <img src="https://github.com/Mohnish27-dev.png" width="100" style="border-radius: 50%;" alt="Mohnish27-dev"/><br />
+          <sub><b>Mohnish27-dev</b></sub>
+        </a>
+      </td>
+    </tr>
+  </table>
+</div>
+
+## License
+
+This project is open-source and licensed under the terms in the `LICENSE` file.

@@ -1,30 +1,41 @@
+import { usePortfolio } from "../../../../context/PortfolioContext";
 import React from 'react';
-import data from '../../../../data/dummy_data.json';
+import { ScrollReveal } from './ScrollReveal';
+import Hero from './Hero';
+import About from './About';
+import Skills from './Skills';
+import Projects from './Projects';
+import Experience from './Experience';
+import Testimonials from './Testimonials';
+import Contact from './Contact';
 
-/**
- * Depth Reveal Portfolio Template
- * Category: Scroll-Triggered
- * Description: Cards emerge from the depth (z-axis) as user scrolls down. Start scaled down and blurred, then pop to full size. Staggered reveal timing.
- */
-export default function DepthReveal() {
+const DepthReveal = () => {
+  const { portfolioData: data } = usePortfolio();
+
   return (
-    <div className="min-h-screen bg-gray-950 text-white flex flex-col items-center justify-center p-8 font-sans">
-      <div className="max-w-3xl w-full text-center">
-        <h1 className="text-5xl md:text-7xl font-bold mb-4 bg-gradient-to-r from-cyan-400 to-purple-500 bg-clip-text text-transparent">
-          {data.personal.name}
-        </h1>
-        <p className="text-xl md:text-2xl text-gray-400 mb-8">{data.personal.title}</p>
-        <div className="p-8 border-2 border-dashed border-cyan-500/40 rounded-2xl bg-gray-900/50 backdrop-blur-sm">
-          <span className="inline-block px-3 py-1 rounded-full bg-cyan-500/20 text-cyan-400 text-xs font-bold uppercase tracking-widest mb-4">
-            Scroll-Triggered
-          </span>
-          <h2 className="text-2xl font-bold text-gray-200 mb-3">Depth Reveal Template</h2>
-          <p className="text-gray-400 mb-6 leading-relaxed">
-            Cards emerge from the depth (z-axis) as user scrolls down. Start scaled down and blurred, then pop to full size. Staggered reveal timing.
-          </p>
-          <p className="text-cyan-400 font-semibold">Open an issue to contribute and build this template!</p>
-        </div>
-      </div>
+    <div className="bg-slate-950 text-white min-h-screen font-sans overflow-x-hidden [perspective:1200px]">
+      <Hero data={data.personal} socials={data.socials} />
+
+      <ScrollReveal depth="extreme" delay={0.03} sectionIndex={0}>
+        <About data={data.personal} stats={data.stats} />
+      </ScrollReveal>
+      <ScrollReveal depth="heavy" delay={0.06} sectionIndex={1}>
+        <Skills skills={data.skills} />
+      </ScrollReveal>
+      <ScrollReveal depth="extreme" delay={0.07} sectionIndex={2}>
+        <Projects projects={data.projects} />
+      </ScrollReveal>
+      <ScrollReveal depth="heavy" delay={0.06} sectionIndex={3}>
+        <Experience experience={data.experience} />
+      </ScrollReveal>
+      <ScrollReveal depth="heavy" delay={0.06} sectionIndex={4}>
+        <Testimonials testimonials={data.testimonials} />
+      </ScrollReveal>
+      <ScrollReveal depth="extreme" delay={0.06} sectionIndex={5}>
+        <Contact data={data.personal} socials={data.socials} />
+      </ScrollReveal>
     </div>
   );
-}
+};
+
+export default DepthReveal;

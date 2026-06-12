@@ -1,30 +1,36 @@
+import { usePortfolio } from "../../../../context/PortfolioContext";
 import React from 'react';
-import data from '../../../../data/dummy_data.json';
+import { useScroll } from 'framer-motion';
 
-/**
- * Rocket Launch Portfolio Template
- * Category: Scroll-Triggered
- * Description: Start at a launchpad, scroll launches a rocket through atmosphere layers (ground, sky, space). Each layer is a portfolio section. Smoke/fire effects.
- */
-export default function RocketLaunch() {
+import RocketBackground from './RocketBackground';
+import Hero from './Hero';
+import About from './About';
+import Skills from './Skills';
+import Projects from './Projects';
+import Experience from './Experience';
+import Contact from './Contact';
+
+export default function RocketLaunchPortfolio() {
+  const { portfolioData: data } = usePortfolio();
+
+  const { scrollYProgress } = useScroll();
+
   return (
-    <div className="min-h-screen bg-gray-950 text-white flex flex-col items-center justify-center p-8 font-sans">
-      <div className="max-w-3xl w-full text-center">
-        <h1 className="text-5xl md:text-7xl font-bold mb-4 bg-gradient-to-r from-cyan-400 to-purple-500 bg-clip-text text-transparent">
-          {data.personal.name}
-        </h1>
-        <p className="text-xl md:text-2xl text-gray-400 mb-8">{data.personal.title}</p>
-        <div className="p-8 border-2 border-dashed border-cyan-500/40 rounded-2xl bg-gray-900/50 backdrop-blur-sm">
-          <span className="inline-block px-3 py-1 rounded-full bg-cyan-500/20 text-cyan-400 text-xs font-bold uppercase tracking-widest mb-4">
-            Scroll-Triggered
-          </span>
-          <h2 className="text-2xl font-bold text-gray-200 mb-3">Rocket Launch Template</h2>
-          <p className="text-gray-400 mb-6 leading-relaxed">
-            Start at a launchpad, scroll launches a rocket through atmosphere layers (ground, sky, space). Each layer is a portfolio section. Smoke/fire effects.
-          </p>
-          <p className="text-cyan-400 font-semibold">Open an issue to contribute and build this template!</p>
-        </div>
+    <div className="relative w-full bg-black text-slate-100 font-sans selection:bg-orange-500/30 overflow-x-hidden">
+      
+      {/* FIXED BACKGROUND ROCKET AND STARS */}
+      <RocketBackground scrollYProgress={scrollYProgress} />
+
+      {/* FOREGROUND PORTFOLIO CONTENT */}
+      <div className="relative z-10 w-full px-6 md:px-16 lg:px-28 pb-32">
+        <Hero personal={data?.personal} socials={data?.socials} />
+        <About personal={data?.personal} />
+        <Skills skills={data?.skills} />
+        <Projects projects={data?.projects} />
+        <Experience experience={data?.experience} />
+        <Contact personal={data?.personal} socials={data?.socials} />
       </div>
+      
     </div>
   );
 }

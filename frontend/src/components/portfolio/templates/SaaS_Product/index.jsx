@@ -1,5 +1,5 @@
+import { usePortfolio } from "../../../../context/PortfolioContext";
 import React from 'react';
-import data from '../../../../data/dummy_data.json';
 import Navbar from './Navbar';
 import Hero from './Hero';
 import StatsBar from './StatsBar';
@@ -12,6 +12,8 @@ import CTABanner from './CTABanner';
 import Contact from './Contact';
 
 export default function SaaSProduct() {
+  const { portfolioData: data } = usePortfolio();
+
   return (
     <div
       style={{
