@@ -140,72 +140,43 @@ export default function ResumeBuilder() {
   setClaritySuggestions(suggestions)
 }, [personal, experience, projects])
 
-  // ─────────────────── ATS Keyword Assessment Loop ───────────────────
+  // ─────────────────── CONSOLIDATED ATS ASSESSMENT LOOP ───────────────────
   useEffect(() => {
-    const keywords = [
-      "React",
-      "JavaScript",
-      "Git",
-      "Node.js",
-      "API",
-      "Leadership",
-      "Teamwork",
-      "Problem Solving"
-    ]
+    // 1. Gather all inputs into a clean string representation
+    const resumeText = `${personal?.summary || ''} ${skills || ''} ${
+      projects?.map(p => `${p.name || ''} ${p.description || ''}`).join(' ') || ''
+    } ${experience?.map(e => `${e.title || ''} ${e.description || ''}`).join(' ') || ''}`.toLowerCase();
 
-    const resumeText = `
-      ${personal?.summary || ''}
-      ${skills || ''}
-      ${(projects || []).map(p => p.description || '').join(" ")}
-      ${(experience || []).map(e => e.description || '').join(" ")}
-    `.toLowerCase()
+    // 2. Define assessment target keywords
+    const baseKeywords = ["react", "node.js", "javascript", "typescript", "python", "docker", "aws", "git", "ci/cd", "rest api"];
+    const prioritySkills = ["docker", "kubernetes", "ci/cd", "aws", "linux"];
 
-    const foundKeywords = keywords.filter(keyword =>
-      resumeText.includes(keyword.toLowerCase())
-    )
+    const escapeRegExp = (str) => str.replace(/[.*+?^${}()|[\]\\]/g, '\\$&');
+    const hasKeyword = (keyword) => {
+      const escaped = escapeRegExp(keyword.toLowerCase());
+      const regex = new RegExp(`(?:^|[^a-z0-9])${escaped}(?:$|[^a-z0-9])`, 'i');
+      return regex.test(resumeText);
+    };
 
-  setAtsScore(
-    Math.round(
-      (foundKeywords.length / keywords.length) * 100
-    )
-  )
-}, [
-  personal,
-  skills,
-  projects,
-  experience,
-  keywords,
-  foundKeywords.length
-])
+    const found = baseKeywords.filter(keyword => hasKeyword(keyword));
+    const missing = baseKeywords.filter(keyword => !hasKeyword(keyword));
 
-// ─────────────────── CONSOLIDATED ATS ASSESSMENT LOOP ───────────────────
-useEffect(() => {
-  // 1. Gather all inputs into a clean string representation
-  const resumeText = `${personal?.summary || ''} ${skills?.join(' ') || ''} ${
-    projects?.map(p => `${p.title} ${p.description}`).join(' ') || ''
-  } ${experience?.map(e => `${e.role} ${e.description}`).join(' ') || ''}`.toLowerCase();
+    // 3. State update calculations
+    setMissingKeywords(missing);
+    
+    // Prioritize missing crucial devops/infrastructure skills first in recommendation
+    const recommendations = Array.from(
+      new Set([
+        ...prioritySkills.filter(sk => !hasKeyword(sk)),
+        ...missing
+      ])
+    ).slice(0, 4);
+    setRecommendedSkills(recommendations);
 
-  // 2. Define assessment target keywords (moved to component/effect scope correctly)
-  const baseKeywords = ["react", "node.js", "javascript", "typescript", "python", "docker", "aws", "git", "ci/cd", "rest api"];
-  const prioritySkills = ["docker", "kubernetes", "ci/cd", "aws", "linux"];
+    const score = baseKeywords.length > 0 ? Math.round((found.length / baseKeywords.length) * 100) : 0;
+    setAtsScore(score);
 
-  const found = baseKeywords.filter(keyword => resumeText.includes(keyword));
-  const missing = baseKeywords.filter(keyword => !resumeText.includes(keyword));
-
-  // 3. State update calculations
-  setMissingKeywords(missing);
-  
-  // Prioritize missing crucial devops/infrastructure skills first in recommendation
-  const recommendations = [
-    ...prioritySkills.filter(sk => !found.includes(sk)),
-    ...missing
-  ].slice(0, 4);
-  setRecommendedSkills(recommendations);
-
-  const score = baseKeywords.length > 0 ? Math.round((found.length / baseKeywords.length) * 100) : 0;
-  setAtsScore(score);
-
-}, [personal, skills, projects, experience]); // Removed out-of-scope internal variables!
+  }, [personal, skills, projects, experience]);
 
   // ─────────────────── Live Consistency Memoized Engine ───────────────────
   const activeConsistencyWarnings = React.useMemo(() => {

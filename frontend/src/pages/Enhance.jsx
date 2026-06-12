@@ -617,6 +617,7 @@ export default function Enhance() {
       }))
 
       setEnhancementComplete(true)
+      setActiveTab('enhanced')
 
   } catch (error) {
     console.error(error)
@@ -930,7 +931,8 @@ export default function Enhance() {
                     { id: 'overview', label: 'Section Grades', icon: BarChart3 },
                     { id: 'bullets', label: 'Bullet Analysis', icon: Edit3 },
                     { id: 'tips', label: 'Senior Tips', icon: Lightbulb },
-                    { id: 'score', label: 'Resume Score', icon: ClipboardList }
+                    { id: 'score', label: 'Resume Score', icon: ClipboardList },
+                    ...(enhancementComplete ? [{ id: 'enhanced', label: 'Enhanced Resume', icon: Sparkles }] : [])
                   ].map(tab => (
                     <button
                       key={tab.id}
@@ -945,6 +947,32 @@ export default function Enhance() {
                     </button>
                   ))}
                 </motion.div>
+
+                {/* Enhanced Resume Tab */}
+                {activeTab === 'enhanced' && (
+                  <motion.div
+                    initial={{ opacity: 0, y: 20 }}
+                    animate={{ opacity: 1, y: 0 }}
+                    className="space-y-4"
+                  >
+                    <div className="flex items-center justify-between bg-muted/30 border border-border rounded-xl p-4">
+                      <div className="flex items-center gap-3">
+                        <div className="w-10 h-10 bg-primary/20 rounded-lg flex items-center justify-center">
+                          <Sparkles className="w-5 h-5 text-primary" />
+                        </div>
+                        <div>
+                          <h3 className="font-semibold text-foreground">AI Optimized Resume</h3>
+                          <p className="text-muted-foreground text-xs">Tailored for {jobRole} position</p>
+                        </div>
+                      </div>
+                      <CopyButton text={resume?.enhancedText || ''} label="Copy Resume" size={14} />
+                    </div>
+
+                    <div className="relative bg-muted/10 border border-border rounded-2xl p-6 font-mono text-sm leading-relaxed text-foreground/90 max-h-[600px] overflow-y-auto whitespace-pre-wrap shadow-inner scrollbar-thin scrollbar-thumb-primary/20 scrollbar-track-transparent">
+                      {resume?.enhancedText}
+                    </div>
+                  </motion.div>
+                )}
 
                 {/* Section Grades Tab */}
                 {activeTab === 'overview' && (
