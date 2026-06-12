@@ -13,6 +13,11 @@ import {
 // These functions detect resume skills, infer the job-related career focus,
 // and return complementary skill recommendations.
 
+/**
+ * SkillGap - Analyzes skill gaps between resume and job requirements
+ * Identifies missing skills and provides personalized learning recommendations
+ * @returns {JSX.Element} Skill gap analysis UI with recommendations
+ */
 const SkillGap = () => {
   const [resumes, setResumes] = useState([]);
   const [selectedResumeId, setSelectedResumeId] = useState('');

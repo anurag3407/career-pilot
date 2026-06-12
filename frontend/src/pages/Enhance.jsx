@@ -38,7 +38,14 @@ import { SkeletonList } from '../components/ui/Skeleton'
 import ResumeScore from '../components/ResumeScore'
 import CopyButton from '../components/CopyButton'
 
-// Score ring component
+/**
+ * ScoreRing - Circular progress indicator showing ATS score
+ * @param {Object} props - Component props
+ * @param {number} props.score - Score value (0-100)
+ * @param {number} [props.size=120] - SVG dimensions in pixels
+ * @param {number} [props.strokeWidth=8] - Circle stroke width
+ * @returns {JSX.Element} Animated circular score display
+ */
 const ScoreRing = ({ score, size = 120, strokeWidth = 8 }) => {
   const radius = (size - strokeWidth) / 2
   const circumference = radius * 2 * Math.PI
@@ -92,7 +99,14 @@ const ScoreRing = ({ score, size = 120, strokeWidth = 8 }) => {
   )
 }
 
-// Score breakdown bar
+/**
+ * ScoreBar - Animated horizontal progress bar with label
+ * @param {Object} props - Component props
+ * @param {string} props.label - Label for the score metric
+ * @param {number} props.score - Score value (0-100)
+ * @param {number} [props.delay=0] - Animation delay in seconds
+ * @returns {JSX.Element} Animated progress bar component
+ */
 const ScoreBar = ({ label, score, delay = 0 }) => {
   const getBarColor = (score) => {
     if (score >= 80) return 'bg-green-500'
@@ -119,7 +133,13 @@ const ScoreBar = ({ label, score, delay = 0 }) => {
   )
 }
 
-// Improvement card
+/**
+ * ImprovementCard - Card displaying resume improvement suggestion
+ * @param {Object} props - Component props
+ * @param {Object} props.improvement - Improvement suggestion data
+ * @param {number} props.index - Card index for animation
+ * @returns {JSX.Element} Expandable improvement suggestion card
+ */
 const ImprovementCard = ({ improvement, index }) => {
   const [expanded, setExpanded] = useState(false)
 
@@ -175,7 +195,14 @@ const ImprovementCard = ({ improvement, index }) => {
   )
 }
 
-// Section Grade Card Component
+/**
+ * SectionGradeCard - Displays grade and feedback for resume section
+ * @param {Object} props - Component props
+ * @param {string} props.section - Section name (e.g., 'Experience', 'Skills')
+ * @param {Object} props.data - Section grade and feedback data
+ * @param {React.Component} props.icon - Icon component to display
+ * @returns {JSX.Element} Section feedback card with grade
+ */
 const SectionGradeCard = ({ section, data, icon: Icon }) => {
   const getGradeColor = (grade) => {
     switch (grade) {
@@ -218,7 +245,13 @@ const SectionGradeCard = ({ section, data, icon: Icon }) => {
   )
 }
 
-// Bullet Analysis Card Component
+/**
+ * BulletAnalysisCard - Card analyzing individual resume bullet point
+ * @param {Object} props - Component props
+ * @param {Object} props.bullet - Bullet point analysis data
+ * @param {number} props.index - Bullet index for key and animation
+ * @returns {JSX.Element} Bullet point analysis card
+ */
 const BulletAnalysisCard = ({ bullet, index }) => {
   const [expanded, setExpanded] = useState(false)
 
@@ -354,6 +387,10 @@ const SeniorTipCard = ({ tip, index }) => {
   )
 }
 
+/**
+ * Enhance - Resume enhancement and analysis page with ATS scoring
+ * @returns {JSX.Element} Resume analysis UI with scores and improvement suggestions
+ */
 export default function Enhance() {
   const { resumeId } = useParams()
   const navigate = useNavigate()

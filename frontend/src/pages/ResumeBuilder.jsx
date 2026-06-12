@@ -29,12 +29,22 @@ const STEPS = [
 ]
 
 // ─────────────────── small helpers ───────────────────────────────────────────
-/** Red border class when an error exists for a field key. */
+/**
+ * errBorder - Returns CSS class for field error state
+ * @param {Object} errors - Error object containing field error messages
+ * @param {string} key - Field key to check for errors
+ * @returns {string} CSS class for border styling based on error state
+ */
 function errBorder(errors, key) {
   return errors?.[key] ? 'border-red-500 focus:ring-red-400/30' : 'border-border'
 }
 
-/** Inline error message below a field. */
+/**
+ * FieldError - Inline error message component
+ * @param {Object} props - Component props
+ * @param {string} props.msg - Error message text to display
+ * @returns {JSX.Element|null} Error message element or null if no message
+ */
 function FieldError({ msg }) {
   if (!msg) return null
   return (
@@ -43,6 +53,10 @@ function FieldError({ msg }) {
 }
 
 // ─────────────────── component ───────────────────────────────────────────────
+/**
+ * ResumeBuilder - Multi-step resume creation and enhancement wizard
+ * @returns {JSX.Element} Resume builder UI with step navigation and form validation
+ */
 export default function ResumeBuilder() {
   const navigate   = useNavigate()
   const firstErrRef = useRef(null)

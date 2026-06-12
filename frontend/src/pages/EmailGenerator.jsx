@@ -5,6 +5,11 @@ import { enhanceApi } from '../services/api';
 import { Skeleton } from '../components/ui/Skeleton';
 import toast from 'react-hot-toast';
 
+/**
+ * EmailGenerator - AI-powered email generator for job applications
+ * Generates personalized cover letters and cold emails based on resume and job description
+ * @returns {JSX.Element} Email generator UI with form and generated email outputs
+ */
 const EmailGenerator = () => {
   const [formData, setFormData] = useState({ resume: '', jobDesc: '', tone: 'Professional' });
   const [results, setResults] = useState(null);

@@ -40,6 +40,10 @@ const POPULAR_SEARCHES = [
   'DevOps Engineer'
 ]
 
+/**
+ * JobSearch - Job search and filtering page with saved jobs tracking
+ * @returns {JSX.Element} Job search UI with filters and saved jobs management
+ */
 export default function JobSearch() {
   const [searchParams, setSearchParams] = useSearchParams()
   const { prefetchJobSearch, getCachedJobSearch } = usePrefetch()

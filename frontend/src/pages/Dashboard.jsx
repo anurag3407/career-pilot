@@ -36,6 +36,10 @@ import {
 } from '../components/ui/Skeleton'
 import { getGithubUsername } from '../utils/github'
 
+/**
+ * DashboardSkeleton - Loading placeholder for dashboard data
+ * @returns {JSX.Element} Skeleton UI with animated loading states
+ */
 function DashboardSkeleton() {
   return (
     <div>
@@ -99,6 +103,10 @@ const portfolioAnalytics = {
   weeklyGrowth: "+12%"
 }
 
+/**
+ * Dashboard - Main user dashboard displaying resumes, job tracker, and portfolio analytics
+ * @returns {JSX.Element} Dashboard UI with resume list, job stats, and analytics
+ */
 export default function Dashboard() {
   const [resumes, setResumes] = useState([])
   const [trackedJobs, setTrackedJobs] = useState([])

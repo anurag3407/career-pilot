@@ -14,6 +14,14 @@ const IMPACT_CONFIG = {
   Low:    { color: 'text-green-400',  bg: 'bg-green-500/10',  border: 'border-green-500/30'  },
 }
 
+/**
+ * ScoreRing - Circular score indicator for LinkedIn profile metrics
+ * @param {Object} props - Component props
+ * @param {number} props.score - Score value (0-100)
+ * @param {string} props.label - Label text below score
+ * @param {string} [props.size='md'] - Size variant ('md' or 'lg')
+ * @returns {JSX.Element} Animated circular score display
+ */
 function ScoreRing({ score, label, size = 'md' }) {
   const safeScore = isNaN(Number(score)) ? 0 : Math.max(0, Math.min(100, Math.round(Number(score))))
   const r = size === 'lg' ? 44 : 28
@@ -52,6 +60,15 @@ function ScoreRing({ score, label, size = 'md' }) {
   )
 }
 
+/**
+ * HeadlineCard - Card displaying a suggested LinkedIn headline
+ * @param {Object} props - Component props
+ * @param {string} props.headline - Suggested headline text
+ * @param {number} props.index - Headline index for numbering
+ * @param {string} props.copied - Currently copied headline ID
+ * @param {Function} props.onCopy - Callback when copy button clicked
+ * @returns {JSX.Element} Headline suggestion card with copy button
+ */
 function HeadlineCard({ headline, index, copied, onCopy }) {
   return (
     <motion.div
@@ -75,6 +92,11 @@ function HeadlineCard({ headline, index, copied, onCopy }) {
   )
 }
 
+/**
+ * LinkedInOptimizer - LinkedIn profile optimization with AI suggestions
+ * Generates optimized headlines and profile improvements based on user profile and target role
+ * @returns {JSX.Element} LinkedIn optimizer UI with suggestions and copy functionality
+ */
 export default function LinkedInOptimizer() {
   const [profileText, setProfileText] = useState('')
   const [targetRole, setTargetRole] = useState('')
