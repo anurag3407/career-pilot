@@ -36,9 +36,22 @@ import {
 } from '../components/ui/Skeleton'
 import { getGithubUsername } from '../utils/github'
 
+/**
+ * DashboardSkeleton - Loading placeholder for dashboard data
+ * @returns {JSX.Element} Skeleton UI with animated loading states
+ */
 function DashboardSkeleton() {
   return (
     <div>
+      <div 
+        role="status" 
+        aria-live="polite" 
+        aria-busy="true" 
+        className="flex items-center gap-3 px-4 py-3 bg-primary/5 border border-primary/20 rounded-xl mb-6 animate-pulse"
+      >
+        <div className="w-4 h-4 border-2 border-primary border-t-transparent rounded-full animate-spin shrink-0" />
+        <p className="text-sm text-primary font-medium">Loading your dashboard data... Please wait...</p>
+      </div>
       {/* Quick Actions skeleton */}
       <div className="grid grid-cols-2 md:grid-cols-4 lg:grid-cols-7 gap-4 mb-10">
         {Array.from({ length: 7 }).map((_, i) => (
@@ -90,6 +103,10 @@ const portfolioAnalytics = {
   weeklyGrowth: "+12%"
 }
 
+/**
+ * Dashboard - Main user dashboard displaying resumes, job tracker, and portfolio analytics
+ * @returns {JSX.Element} Dashboard UI with resume list, job stats, and analytics
+ */
 export default function Dashboard() {
   const [resumes, setResumes] = useState([])
   const [trackedJobs, setTrackedJobs] = useState([])
