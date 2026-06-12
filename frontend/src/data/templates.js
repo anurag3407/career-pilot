@@ -2627,6 +2627,19 @@ export const templates = [
     "createdAt": "2026-06-06"
   },
   {
+    "id": "Bouncing_DVD_Logo",
+    "title": "Bouncing DVD Logo",
+    "category": "Portfolio",
+    "colorScheme": "Dark",
+    "layout": "Interactive",
+    "author": "mallya-m",
+    "views": 0,
+    "rating": 0,
+    "image": "/template-previews/Bouncing_DVD_Logo.png",
+    "createdAt": "2026-06-13",
+    "isComplete": true
+  },
+  {
     "id": "Digital_Manifesto_Scroll",
     "title": "Digital Manifesto Scroll",
     "category": "Portfolio",
@@ -2640,3 +2653,4 @@ export const templates = [
     "isComplete": true
   }
 ];
+
