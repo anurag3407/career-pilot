@@ -1,4 +1,5 @@
 import { io } from 'socket.io-client';
+import { createSocketOptions } from './socketOptions.js';
 import { auth } from '../config/firebase';
 
 const SOCKET_URL = import.meta.env.VITE_API_URL || 'http://localhost:5001';
@@ -18,14 +19,48 @@ export const initializeSocket = async () => {
 
   const token = await user.getIdToken();
 
-  socket = io(SOCKET_URL, {
-    auth: { token },
-    transports: ['websocket', 'polling'],
-    reconnection: true,
-    reconnectionAttempts: 5,
-    reconnectionDelay: 1000,
-    timeout: 10000
+  socket = io(SOCKET_URL, createSocketOptions(token));
+
+  socket.on('connect', () => {
+  const engine = socket.io.engine;
+  const initialTransport = engine.transport.name;
+
+  if (import.meta.env.DEV) {
+    console.info(`🔌 Socket connected using ${initialTransport}`);
+  }
+
+  engine.once('upgrade', (transport) => {
+    if (import.meta.env.DEV) {
+      console.info(
+        `⬆️ Socket transport upgraded from ${initialTransport} ` +
+          `to ${transport.name}`
+      );
+    }
   });
+});
+
+socket.io.on('reconnect_attempt', (attempt) => {
+  if (import.meta.env.DEV) {
+    console.info(`🔄 Socket reconnection attempt ${attempt}`);
+  }
+});
+
+socket.io.on('reconnect', (attempt) => {
+  if (import.meta.env.DEV) {
+    console.info(
+      `✅ Socket reconnected after ${attempt} attempt(s) ` +
+        `using ${socket.io.engine.transport.name}`
+    );
+  }
+});
+
+socket.io.on('reconnect_error', (error) => {
+  console.warn('Socket reconnection error:', error.message);
+});
+
+socket.io.on('reconnect_failed', () => {
+  console.error('Socket reconnection attempts exhausted');
+});
 
   socket.on('connect_error', (error) => {
     console.error('❌ Socket connection error:', error.message);
