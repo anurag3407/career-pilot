@@ -1,30 +1,17 @@
 export const templates = [
   {
-    "id": "ASCII_Art_Terminal_Code",
-    "title": "ASCII Art Terminal Code",
+    "id": "Text_to_Speech_Narrator_Drive",
+    "title": "Text-to-Speech Narrator Drive",
     "category": "Portfolio",
     "colorScheme": "Dark",
     "layout": "Interactive",
-    "author": "Raman Kumar",
-    "views": 2800,
+    "author": "System",
+    "views": 0,
     "rating": 4.9,
-    "image": "/template-previews/ASCII_Art_Terminal_Code.png",
-    "createdAt": "2026-06-12",
-    isComplete: true
-},
-{
-    id: "Forensic_Investigator_Desk",
-    title: "Forensic Investigator Desk",
-    category: "Portfolio",
-    colorScheme: "Dark",
-    layout: "Interactive",
-    author: "ShaktiShrey-01",
-    views: 0,
-    rating: 0,
-    image: "/template-previews/Forensic_investigator_desk.png", 
-    createdAt: "2026-06-11",
-    isComplete: true
-},
+    "image": "/templates/Text_to_Speech_Narrator_Drive.png",
+    "createdAt": "2026-06-09",
+    "isComplete": true
+  },
 {
   "id": "Fake_WebOS_Operating_System",
   "title": "Fake WebOS Operating System",
