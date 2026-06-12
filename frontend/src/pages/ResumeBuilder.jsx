@@ -151,17 +151,26 @@ export default function ResumeBuilder() {
     const baseKeywords = ["react", "node.js", "javascript", "typescript", "python", "docker", "aws", "git", "ci/cd", "rest api"];
     const prioritySkills = ["docker", "kubernetes", "ci/cd", "aws", "linux"];
 
-    const found = baseKeywords.filter(keyword => resumeText.includes(keyword));
-    const missing = baseKeywords.filter(keyword => !resumeText.includes(keyword));
+    const escapeRegExp = (str) => str.replace(/[.*+?^${}()|[\]\\]/g, '\\$&');
+    const hasKeyword = (keyword) => {
+      const escaped = escapeRegExp(keyword.toLowerCase());
+      const regex = new RegExp(`(?:^|[^a-z0-9])${escaped}(?:$|[^a-z0-9])`, 'i');
+      return regex.test(resumeText);
+    };
+
+    const found = baseKeywords.filter(keyword => hasKeyword(keyword));
+    const missing = baseKeywords.filter(keyword => !hasKeyword(keyword));
 
     // 3. State update calculations
     setMissingKeywords(missing);
     
     // Prioritize missing crucial devops/infrastructure skills first in recommendation
-    const recommendations = [
-      ...prioritySkills.filter(sk => !found.includes(sk)),
-      ...missing
-    ].slice(0, 4);
+    const recommendations = Array.from(
+      new Set([
+        ...prioritySkills.filter(sk => !hasKeyword(sk)),
+        ...missing
+      ])
+    ).slice(0, 4);
     setRecommendedSkills(recommendations);
 
     const score = baseKeywords.length > 0 ? Math.round((found.length / baseKeywords.length) * 100) : 0;

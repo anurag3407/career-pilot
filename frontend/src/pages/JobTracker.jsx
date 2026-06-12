@@ -1,4 +1,5 @@
 import { useState, useEffect } from "react";
+import { useNavigate } from "react-router-dom";
 import { DragDropContext, Droppable, Draggable } from "@hello-pangea/dnd";
 import { toast } from "react-hot-toast";
 import {
@@ -34,6 +35,7 @@ import {
 } from "../utils/jobTrackerOffline";
 
 const JobTracker = () => {
+  const navigate = useNavigate();
   const [trackedJobs, setTrackedJobs] = useState([]);
   const [stats, setStats] = useState(null);
   const [loading, setLoading] = useState(true);
@@ -551,6 +553,7 @@ const JobTracker = () => {
                   viewBox="0 0 200 200"
                   fill="none"
                   xmlns="http://www.w3.org/2000/svg"
+                  aria-hidden="true"
                 >
                   <defs>
                     <linearGradient id="glowGrad" x1="0%" y1="0%" x2="100%" y2="100%">
@@ -604,7 +607,7 @@ const JobTracker = () => {
                   Your job tracking board is empty. Discover and track opportunities to kickstart your journey!
                 </p>
                 <Button
-                  onClick={() => (window.location.href = "/jobs")}
+                  onClick={() => navigate("/jobs")}
                   variant="gradient"
                   className="mx-auto"
                 >
