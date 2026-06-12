@@ -86,7 +86,7 @@ if (!process.env.OPENAI_API_KEY) {
 const app = express();
 app.use(metricsMiddleware);
 const httpServer = createServer(app);
-const PORT = process.env.PORT || 5001;
+const PORT = process.env.PORT || 5000;
 
 // Log FRONTEND_URL for debugging
 console.log('🔧 FRONTEND_URL env var:', process.env.FRONTEND_URL);
