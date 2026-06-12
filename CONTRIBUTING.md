@@ -37,11 +37,24 @@ Please be constructive, professional, and collaborative in all discussions and c
 
 Before contributing, make sure you have:
 
+#### Basic Requirements
+
 - Node.js (v18 or later)
 - npm
 - Git
 - A GitHub account
-- Firebase credentials (if required for local testing)
+
+#### Additional Requirements
+
+Depending on the area you contribute to, additional services may be required:
+
+- Firebase credentials (authentication and local testing)
+- MongoDB (database-related features)
+- Redis (caching and background services)
+- AI provider API keys (OpenAI / Gemini / Groq)
+- RapidAPI key (job-search-related features)
+
+> Note: For complete backend setup instructions and environment configuration, refer to CONTRIBUTION.md.
 
 ---
 

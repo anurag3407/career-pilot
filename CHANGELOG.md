@@ -1,3 +1,43 @@
+# [1.222.0](https://github.com/anurag3407/career-pilot/compare/v1.221.0...v1.222.0) (2026-06-11)
+
+
+### Bug Fixes
+
+* address bot review feedback for null checks and node:test runner ([7dfa7d6](https://github.com/anurag3407/career-pilot/commit/7dfa7d6d4e7311ca1006a522765f82b7692fee39))
+
+
+### Features
+
+* add robust Zod request validation middleware with unit tests ([a9388fb](https://github.com/anurag3407/career-pilot/commit/a9388fbc66f71636200cb44e1343ab1c083c01a5))
+
+# [1.221.0](https://github.com/anurag3407/career-pilot/compare/v1.220.0...v1.221.0) (2026-06-11)
+
+
+### Features
+
+* **templates:** forensic-template ([7a8aae5](https://github.com/anurag3407/career-pilot/commit/7a8aae5c527aadcc699ea559cfa9723ed888bf23))
+
+# [1.220.0](https://github.com/anurag3407/career-pilot/compare/v1.219.0...v1.220.0) (2026-06-11)
+
+
+### Features
+
+* implement complete modular Dribbble Shots portfolio template [#1906](https://github.com/anurag3407/career-pilot/issues/1906) ([b724392](https://github.com/anurag3407/career-pilot/commit/b724392352906e7af22fc56325768c776c759d20))
+
+# [1.219.0](https://github.com/anurag3407/career-pilot/compare/v1.218.1...v1.219.0) (2026-06-11)
+
+
+### Features
+
+* add Fake WebOS Operating System portfolio template ([68fa90a](https://github.com/anurag3407/career-pilot/commit/68fa90af5629ecdb45847b5b4936dda003b3bedf))
+
+## [1.218.1](https://github.com/anurag3407/career-pilot/compare/v1.218.0...v1.218.1) (2026-06-11)
+
+
+### Bug Fixes
+
+* reject passwords with leading or trailing spaces in Login and Register ([d4e6ad7](https://github.com/anurag3407/career-pilot/commit/d4e6ad7715af6b8a07fb726d4d07c17afbd731e5))
+
 # [1.218.0](https://github.com/anurag3407/career-pilot/compare/v1.217.0...v1.218.0) (2026-06-11)
 
 
