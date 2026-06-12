@@ -601,7 +601,7 @@ export default function Enhance() {
           }
         }
       }
-      
+
       // Save final enhanced text
       await resumeApi.update(resumeId, {
         enhancedText: streamedResume,
@@ -624,7 +624,7 @@ export default function Enhance() {
   } finally {
     setEnhancing(false)
   }
-}
+  }
 
   const handleGeneratePortfolio = async () => {
     setGeneratingPortfolio(true)
@@ -736,7 +736,7 @@ export default function Enhance() {
                 onChange={(e) => setJobRole(e.target.value)}
                 placeholder="e.g., Senior Software Engineer, Product Manager, Data Scientist"
                 className="flex-1 px-4 py-3 bg-muted/50 border border-border rounded-xl text-foreground placeholder:text-muted-foreground focus:ring-2 focus:ring-primary focus:border-transparent"
-                onKeyPress={(e) => e.key === 'Enter' && handleAnalyze()}
+                onKeyDown={(e) => e.key === 'Enter' && handleAnalyze()}
               />
               <button
                 onClick={handleAnalyze}
@@ -1213,205 +1213,202 @@ export default function Enhance() {
           </div>
         )}
       </div>
-      
-  {(streamedText || enhancing) && (
-  <div
-    className="
-      fixed
-      bottom-6
-      right-6
-      z-50
-      w-[92vw]
-      md:w-[620px]
-      h-[78vh]
-      rounded-[28px]
-      border
-      border-white/10
-      bg-[#070B1A]/95
-      backdrop-blur-2xl
-      shadow-[0_0_60px_rgba(0,0,0,0.6)]
-      overflow-hidden
-      flex
-      flex-col
-      animate-in
-      fade-in
-      slide-in-from-bottom-4
-      duration-300
-    "
-  >
-    {/* Top Glow */}
-    <div className="absolute inset-x-0 top-0 h-24 bg-gradient-to-r from-cyan-500/10 via-violet-500/10 to-fuchsia-500/10 blur-3xl pointer-events-none" />
 
-    {/* Header */}
-    <div className="relative flex items-center justify-between px-6 py-5 border-b border-white/10">
-      <div className="flex items-center gap-4">
+      {(streamedText || enhancing) && (
         <div
           className="
-            h-12
-            w-12
-            rounded-2xl
-            bg-gradient-to-br
-            from-cyan-400
-            via-blue-500
-            to-violet-600
+            fixed
+            bottom-6
+            right-6
+            z-50
+            w-[92vw]
+            md:w-[620px]
+            h-[78vh]
+            rounded-[28px]
+            border
+            border-white/10
+            bg-[#070B1A]/95
+            backdrop-blur-2xl
+            shadow-[0_0_60px_rgba(0,0,0,0.6)]
+            overflow-hidden
             flex
-            items-center
-            justify-center
-            shadow-lg
+            flex-col
+            animate-in
+            fade-in
+            slide-in-from-bottom-4
+            duration-300
           "
         >
-          <span className="text-xl">✨</span>
-        </div>
+          {/* Top Glow */}
+          <div className="absolute inset-x-0 top-0 h-24 bg-gradient-to-r from-cyan-500/10 via-violet-500/10 to-fuchsia-500/10 blur-3xl pointer-events-none" />
 
-        <div>
-          <h2 className="text-xl font-bold text-white tracking-tight">
-            AI Resume Enhancement
-          </h2>
+          {/* Header */}
+          <div className="relative flex items-center justify-between px-6 py-5 border-b border-white/10">
+            <div className="flex items-center gap-4">
+              <div
+                className="
+                  h-12
+                  w-12
+                  rounded-2xl
+                  bg-gradient-to-br
+                  from-cyan-400
+                  via-blue-500
+                  to-violet-600
+                  flex
+                  items-center
+                  justify-center
+                  shadow-lg
+                "
+              >
+                <span className="text-xl">✨</span>
+              </div>
 
-          <p className="text-sm text-gray-400">
-            Real-time streaming optimization powered by AI
-          </p>
-        </div>
-      </div>
+              <div>
+                <h2 className="text-xl font-bold text-white tracking-tight">
+                  AI Resume Enhancement
+                </h2>
+                <p className="text-sm text-gray-400">
+                  Real-time streaming optimization powered by AI
+                </p>
+              </div>
+            </div>
 
-      <div className="flex items-center gap-3">
-        {enhancing ? (
+            <div className="flex items-center gap-3">
+              {enhancing ? (
+                <div
+                  className="
+                    flex
+                    items-center
+                    gap-2
+                    rounded-full
+                    border
+                    border-emerald-500/20
+                    bg-emerald-500/10
+                    px-3
+                    py-1.5
+                    text-sm
+                    text-emerald-300
+                  "
+                >
+                  <span className="h-2 w-2 rounded-full bg-emerald-400 animate-pulse" />
+                  Streaming
+                </div>
+              ) : (
+                <div
+                  className="
+                    rounded-full
+                    border
+                    border-cyan-500/20
+                    bg-cyan-500/10
+                    px-3
+                    py-1.5
+                    text-sm
+                    text-cyan-300
+                  "
+                >
+                  Complete
+                </div>
+              )}
+            </div>
+          </div>
+
+          {/* Stream Body */}
+          <div
+            ref={streamContainerRef}
+            className="
+              relative
+              flex-1
+              overflow-y-auto
+              px-6
+              py-6
+              scroll-smooth
+            "
+          >
+            {/* Background Grid */}
+            <div className="absolute inset-0 opacity-[0.03] bg-[linear-gradient(to_right,#fff_1px,transparent_1px),linear-gradient(to_bottom,#fff_1px,transparent_1px)] bg-[size:40px_40px] pointer-events-none" />
+
+            <div
+              className="
+                relative
+                prose
+                prose-invert
+                max-w-none
+                prose-headings:text-white
+                prose-p:text-gray-300
+                prose-strong:text-cyan-300
+                prose-li:text-gray-300
+                prose-code:text-cyan-300
+                prose-pre:bg-black/30
+                prose-pre:border
+                prose-pre:border-white/10
+                prose-blockquote:border-cyan-500
+                prose-blockquote:text-gray-300
+              "
+            >
+              <ReactMarkdown>
+                {streamedText || 'Initializing enhancement stream...'}
+              </ReactMarkdown>
+
+              {enhancing && (
+                <span
+                  className="
+                    inline-block
+                    ml-1
+                    text-cyan-300
+                    animate-pulse
+                    text-lg
+                  "
+                >
+                  ▋
+                </span>
+              )}
+            </div>
+          </div>
+
+          {/* Footer */}
           <div
             className="
+              border-t
+              border-white/10
+              px-6
+              py-4
               flex
               items-center
-              gap-2
-              rounded-full
-              border
-              border-emerald-500/20
-              bg-emerald-500/10
-              px-3
-              py-1.5
-              text-sm
-              text-emerald-300
+              justify-between
+              bg-white/[0.02]
             "
           >
-            <span className="h-2 w-2 rounded-full bg-emerald-400 animate-pulse" />
+            <div className="flex items-center gap-3 text-sm text-gray-400">
+              <div className="h-2 w-2 rounded-full bg-cyan-400 animate-pulse" />
+              {enhancing
+                ? 'Generating optimized resume sections in real time'
+                : 'Enhancement completed successfully'}
+            </div>
 
-            Streaming
+            <div className="flex items-center gap-3">
+              {!enhancing && (
+                <button
+                  onClick={() => setStreamedText('')}
+                  className="
+                    rounded-xl
+                    border
+                    border-white/10
+                    bg-white/5
+                    px-4
+                    py-2
+                    text-sm
+                    text-white
+                    transition-all
+                    hover:bg-white/10
+                  "
+                >
+                  Close
+                </button>
+              )}
+            </div>
           </div>
-        ) : (
-          <div
-            className="
-              rounded-full
-              border
-              border-cyan-500/20
-              bg-cyan-500/10
-              px-3
-              py-1.5
-              text-sm
-              text-cyan-300
-            "
-          >
-            Complete
-          </div>
-        )}
-      </div>
-    </div>
-
-    {/* Stream Body */}
-    <div
-      ref={streamContainerRef}
-      className="
-        relative
-        flex-1
-        overflow-y-auto
-        px-6
-        py-6
-        scroll-smooth
-      "
-    >
-      {/* Background Grid */}
-      <div className="absolute inset-0 opacity-[0.03] bg-[linear-gradient(to_right,#fff_1px,transparent_1px),linear-gradient(to_bottom,#fff_1px,transparent_1px)] bg-[size:40px_40px] pointer-events-none" />
-
-      <div
-        className="
-          relative
-          prose
-          prose-invert
-          max-w-none
-          prose-headings:text-white
-          prose-p:text-gray-300
-          prose-strong:text-cyan-300
-          prose-li:text-gray-300
-          prose-code:text-cyan-300
-          prose-pre:bg-black/30
-          prose-pre:border
-          prose-pre:border-white/10
-          prose-blockquote:border-cyan-500
-          prose-blockquote:text-gray-300
-        "
-      >
-        <ReactMarkdown>
-          {streamedText || 'Initializing enhancement stream...'}
-        </ReactMarkdown>
-
-        {enhancing && (
-          <span
-            className="
-              inline-block
-              ml-1
-              text-cyan-300
-              animate-pulse
-              text-lg
-            "
-          >
-            ▋
-          </span>
-        )}
-      </div>
-    </div>
-
-    {/* Footer */}
-    <div
-      className="
-        border-t
-        border-white/10
-        px-6
-        py-4
-        flex
-        items-center
-        justify-between
-        bg-white/[0.02]
-      "
-    >
-      <div className="flex items-center gap-3 text-sm text-gray-400">
-        <div className="h-2 w-2 rounded-full bg-cyan-400 animate-pulse" />
-
-        {enhancing
-          ? 'Generating optimized resume sections in real time'
-          : 'Enhancement completed successfully'}
-      </div>
-
-      <div className="flex items-center gap-3">
-        {!enhancing && (
-          <button
-            onClick={() => setStreamedText('')}
-            className="
-              rounded-xl
-              border
-              border-white/10
-              bg-white/5
-              px-4
-              py-2
-              text-sm
-              text-white
-              transition-all
-              hover:bg-white/10
-            "
-          >
-            Close
-          </button>
-        )}
-      </div>
-    </div>
-  </div>
-)}
+        </div>
+      )}
     </div>
   )
 }

@@ -1,5 +1,18 @@
 export const templates = [
   {
+  "id": "Virtual_Reality_Room_360",
+  "title": "Virtual Reality Room 360",
+  "category": "Portfolio",
+  "colorScheme": "Dark",
+  "layout": "Interactive",
+  "author": "ShaktiShrey-01",
+  "views": 0,
+  "rating": 0,
+  "image": "/template-previews/Virtual_Reality_Room_360.png",
+  "createdAt": "2026-06-12",
+  "isComplete": true
+},
+  {
     id: "Forensic_Investigator_Desk",
     title: "Forensic Investigator Desk",
     category: "Portfolio",
