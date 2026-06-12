@@ -1,0 +1,171 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+
+  <!-- SEO -->
+  <title>{{NAME}} — Designer &amp; Engineer Portfolio</title>
+  <meta name="description" content="{{NAME}}'s creative design &amp; engineering portfolio." />
+  <meta property="og:title" content="{{NAME}} — Portfolio" />
+  <meta property="og:description" content="{{NAME}} — {{ROLE}}" />
+  <meta property="og:type" content="website" />
+
+  <!-- Poppins Font for Playful, Rounded Typography -->
+  <link rel="preconnect" href="https://fonts.googleapis.com" />
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
+  <link href="https://fonts.googleapis.com/css2?family=Poppins:wght@300;400;500;600;700&display=swap" rel="stylesheet" />
+
+  <!-- Theme Stylesheet -->
+  <link rel="stylesheet" href="style.css" />
+</head>
+<body>
+
+  <!-- Navigation -->
+  <nav id="navbar" role="navigation" aria-label="Main navigation">
+    <a href="#hero" class="nav-logo" aria-label="Home">
+      {{INITIALS}}<span class="dot">.</span>
+    </a>
+
+    <button id="nav-toggle" aria-controls="nav-links" aria-expanded="false" aria-label="Toggle navigation">
+      <span></span><span></span><span></span>
+    </button>
+
+    <ul class="nav-links" id="nav-links" role="list">
+      <li><a href="#about" id="nav-about" aria-label="About section">About</a></li>
+      <li><a href="#skills" id="nav-skills" aria-label="Skills section">Skills</a></li>
+      <li><a href="#projects" id="nav-projects" aria-label="Projects section">Work</a></li>
+      <li><a href="#experience" id="nav-experience" aria-label="Experience section">Experience</a></li>
+      <li><a href="#contact" class="nav-cta" id="nav-contact" aria-label="Contact section">Hire Me</a></li>
+    </ul>
+  </nav>
+
+  <!-- Hero Section -->
+  <section id="hero" aria-label="Hero introduction">
+    <div class="hero-inner">
+      <div class="badge-accent">Available for work</div>
+      <h1 class="hero-title">{{NAME}}</h1>
+      <p class="hero-role">{{ROLE}}</p>
+      <p class="hero-tagline">{{TAGLINE}}</p>
+      <div class="btn-group">
+        <a href="#about" class="btn btn-primary">Explore Portfolio</a>
+        <a href="#contact" class="btn btn-outline">Let's Talk</a>
+      </div>
+    </div>
+  </section>
+
+  <!-- About Section -->
+  <section id="about" aria-label="About me">
+    <div class="inner">
+      <div class="about-card">
+        <div class="about-avatar-container">
+          <img src="{{AVATAR_URL}}" alt="{{NAME}}" class="about-avatar">
+        </div>
+        <div class="about-info">
+          <h2 class="about-title">Design with Intent, Code with Precision</h2>
+          <p class="about-text">{{ABOUT_PARA_1}}</p>
+          <p class="about-text">{{ABOUT_PARA_2}}</p>
+          
+          <div class="stats-grid" aria-label="Key highlights">
+            <div class="stat-item">
+              <span class="stat-value">{{STAT_1_VALUE}}</span>
+              <span class="stat-label">{{STAT_1_LABEL}}</span>
+            </div>
+            <div class="stat-item">
+              <span class="stat-value">{{STAT_2_VALUE}}</span>
+              <span class="stat-label">{{STAT_2_LABEL}}</span>
+            </div>
+            <div class="stat-item">
+              <span class="stat-value">{{STAT_3_VALUE}}</span>
+              <span class="stat-label">{{STAT_3_LABEL}}</span>
+            </div>
+          </div>
+        </div>
+      </div>
+    </div>
+  </section>
+
+  <!-- Skills Section -->
+  <section id="skills" aria-label="Skills &amp; Expertise">
+    <div class="inner">
+      <div class="section-header center">
+        <h2 class="section-title">My Toolbox</h2>
+        <p class="section-subtitle">Skills, frameworks, and tools I use to bring ideas to life.</p>
+      </div>
+
+      <div class="skills-grid" id="skills-grid">
+        <!-- Injected dynamically by script.js -->
+      </div>
+    </div>
+  </section>
+
+  <!-- Projects Masonry Grid (Dribbble Shot Layout) -->
+  <section id="projects" aria-label="Portfolio projects">
+    <div class="inner">
+      <div class="section-header">
+        <h2 class="section-title">Featured Shots</h2>
+        <p class="section-subtitle">A collection of custom-crafted user interfaces and code experiments.</p>
+      </div>
+
+      <div class="projects-masonry" id="projects-grid">
+        <!-- Injected dynamically by script.js -->
+      </div>
+    </div>
+  </section>
+
+  <!-- Experience Section -->
+  <section id="experience" aria-label="Work history">
+    <div class="inner">
+      <div class="section-header">
+        <h2 class="section-title">Work Experience</h2>
+        <p class="section-subtitle">A timeline of my professional journey in design and tech.</p>
+      </div>
+
+      <div class="timeline" id="timeline">
+        <!-- Injected dynamically by script.js -->
+      </div>
+    </div>
+  </section>
+
+  <!-- Contact Section -->
+  <section id="contact" aria-label="Get in touch">
+    <div class="inner">
+      <div class="contact-card">
+        <h2 class="contact-title">Let's work together.</h2>
+        <p class="contact-desc">Whether you're looking to hire, collaborate on a project, or just want to say hello—I'd love to connect.</p>
+        
+        <div class="btn-group">
+          <a href="mailto:{{EMAIL}}" class="btn btn-accent btn-large" id="contact-email-btn">
+            Let's Connect
+          </a>
+          <a href="https://example.com/resume.pdf" target="_blank" rel="noopener noreferrer" class="btn btn-outline btn-large" id="contact-resume-btn" download>
+            Download Resume
+          </a>
+        </div>
+
+        <div class="social-links" aria-label="Social connections">
+          <a href="{{GITHUB_URL}}" target="_blank" rel="noopener noreferrer" id="contact-github-link">GitHub ↗</a>
+          <a href="{{LINKEDIN_URL}}" target="_blank" rel="noopener noreferrer" id="contact-linkedin-link">LinkedIn ↗</a>
+          <a href="{{TWITTER_URL}}" target="_blank" rel="noopener noreferrer" id="contact-twitter-link">Twitter ↗</a>
+        </div>
+      </div>
+    </div>
+  </section>
+
+  <!-- Footer -->
+  <footer role="contentinfo">
+    <div class="footer-inner">
+      <p>© <span id="year"></span> {{NAME}}. All rights reserved.</p>
+      <p class="footer-brand">Made with CareerPilot</p>
+    </div>
+  </footer>
+
+  <!-- Scroll to top button -->
+  <button id="scroll-top" class="scroll-top-btn" aria-label="Scroll to top" title="Back to top">
+    <svg width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round"><polyline points="18 15 12 9 6 15"></polyline></svg>
+  </button>
+
+  <!-- Dynamic Logic Script -->
+  <script src="script.js"></script>
+</body>
+</html>
