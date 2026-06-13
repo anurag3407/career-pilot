@@ -2627,6 +2627,19 @@ export const templates = [
     "createdAt": "2026-06-06"
   },
   {
+    "id": "Audio_Visualizer_Frequency",
+    "title": "Audio Visualizer Frequency",
+    "category": "Portfolio",
+    "colorScheme": "Dark",
+    "layout": "Interactive",
+    "author": "mallya-m",
+    "views": 0,
+    "rating": 0,
+    "image": "/template-previews/Audio_Visualizer_Frequency.png",
+    "createdAt": "2026-06-12",
+    "isComplete": true
+  },
+  {
     "id": "Digital_Manifesto_Scroll",
     "title": "Digital Manifesto Scroll",
     "category": "Portfolio",
