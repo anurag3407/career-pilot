@@ -1,8 +1,42 @@
 import React, { useState, useRef, useEffect, Suspense, useMemo } from "react";
+import { useSearchParams } from "react-router-dom";
+import { motion, AnimatePresence } from "framer-motion";
+import { Moon, Sun, ChevronDown, Check, Eye, Star, Sparkles, X } from "lucide-react";
+
+// Context / Hooks
+import { useTheme } from "../hooks/useTheme";
+
+// Core Layout Components
 import { useTheme } from "../hooks/useTheme";
 import Navbar from "../components/Navbar";
 import DeployModal from "../components/portfolio/DeployModal";
 import ThemeSelector from "../components/portfolio/ThemeSelector";
+
+// Data
+import { templates } from '../data/templates';
+
+// Individual Section Previews
+import HolographicAbout from "../components/portfolio/templates/Holographic/About";
+import GeometricShapesAbout from "../components/portfolio/templates/Geometric_Shapes/About";
+import CulinaryAbout from "../components/portfolio/templates/Culinary_Restaurant/About";
+import TechStartupHero from "../components/portfolio/templates/Tech_Startup/Hero";
+
+
+// Full Interactive Template Previews
+import ChooseAdventurePortfolio from "../components/portfolio/templates/Choose_Adventure/index";
+import GeometricShapesAbout from "../components/portfolio/templates/Geometric_Shapes/About";
+import ChooseAdventurePortfolio from '../components/portfolio/templates/Choose_Adventure/index';
+import WeatherMood from "../components/portfolio/templates/Weather_Mood/index";
+import SwissTypography from "../components/portfolio/templates/Swiss_Typography/index";
+import LiquidGlass from "../components/portfolio/templates/Liquid_Glass/index";
+import MidnightGradient from "../components/portfolio/templates/Midnight_Gradient/index";
+import PlayingCardsPortfolio from "../components/portfolio/templates/Playing_Cards";
+import CherryBlossom from "../components/portfolio/templates/Cherry_Blossom/index";
+import PsychedelicSwirl from "../components/portfolio/templates/Psychedelic_Swirl/index";
+import DesertDunes from "../components/portfolio/templates/Desert_Dunes/index";
+import MemphisPop from "../components/portfolio/templates/Memphis_Pop/index";
+import CassetteMixtape from "../components/portfolio/templates/Cassette_Mixtape/index";
+import RecipeCookbookPortfolio from "../components/portfolio/templates/Recipe_Cookbook/index";
 import { templates } from '../data/templates';
 import { motion, AnimatePresence } from "framer-motion";
 import { Moon, Sun, ChevronDown, Check, Eye, Star, Sparkles, X } from "lucide-react";
@@ -10,10 +44,8 @@ import { useSearchParams } from "react-router-dom";
 import { PortfolioProvider } from '../context/PortfolioContext.jsx';
 
 /* TemplatePreviewFrame — contains each full portfolio template in a
-   sandboxed scrollable box. The key trick: CSS `transform` on the outer
-   wrapper makes it the "containing block" for any position:fixed children,
-   so a template's fixed navbar stays inside the frame instead of
-   escaping to the top of the viewport and overlapping the page navbar. */
+   sandboxed scrollable box. The CSS `transform` on the outer wrapper 
+   makes it the "containing block" for any position:fixed children. */
 function TemplatePreviewFrame({ label, badgeColor, children }) {
   return (
     <div className="mt-12">
@@ -25,17 +57,14 @@ function TemplatePreviewFrame({ label, badgeColor, children }) {
         </span>
         <h2 className="text-lg font-semibold text-foreground/70">{label}</h2>
       </div>
-      {/* transform:translate(0) is the critical line — it creates a new
-          containing block so position:fixed elements inside are anchored
-          to this div, not to the viewport. */}
       <div
         className="rounded-2xl border border-border"
         style={{
-          height: 600,
-          overflowY: 'auto',
-          overflowX: 'hidden',
-          transform: 'translate(0)',
-          position: 'relative',
+          height: 640,
+          overflowY: "auto",
+          overflowX: "hidden",
+          transform: "translate(0)",
+          position: "relative",
         }}
       >
         {children}
@@ -43,11 +72,6 @@ function TemplatePreviewFrame({ label, badgeColor, children }) {
     </div>
   );
 }
-// import Hero from "../components/portfolio/templates/Holographic/Hero";
-// import ChooseAdventurePortfolio from "../components/portfolio/templates/Choose_Adventure/index";
-// import RetroProjects from "../components/portfolio/templates/2D_Retro_8bit/Projects";
-// import FantasyRPGProjects from "../components/portfolio/templates/Fantasy_RPG/Projects";
-
 
 function FilterSelect({ value, onChange, options, className = "" }) {
   const [open, setOpen] = useState(false);
@@ -374,6 +398,11 @@ export default function TemplateGallery() {
 
   const [aiDraft, setAiDraft] = useState(null);
 
+  const [selectedTheme, setSelectedTheme] = useState("minimal");
+  const [isDeployModalOpen, setIsDeployModalOpen] = useState(false);
+  const [selectedPortfolioTitle, setSelectedPortfolioTitle] = useState("");
+  const [selectedTemplateId, setSelectedTemplateId] = useState("default");
+
   useEffect(() => {
     const draft = localStorage.getItem('ai_portfolio_draft');
     if (draft) {
@@ -387,11 +416,6 @@ export default function TemplateGallery() {
     localStorage.removeItem('ai_portfolio_draft');
     setAiDraft(null);
   };
-
-  const [selectedTheme, setSelectedTheme] = useState("minimal");
-  const [isDeployModalOpen, setIsDeployModalOpen] = useState(false);
-  const [selectedPortfolioTitle, setSelectedPortfolioTitle] = useState("");
-  const [selectedTemplateId, setSelectedTemplateId] = useState("default");
 
   const handleUseTemplate = (val, isPreview, id = "default") => {
     if (isPreview) {
@@ -587,6 +611,30 @@ export default function TemplateGallery() {
 
       </div>
 
+      {/* Deploy Overlay Modal */}
+      <DeployModal
+        isOpen={isDeployModalOpen}
+        onClose={() => setIsDeployModalOpen(false)}
+        portfolioTitle={selectedPortfolioTitle}
+        templateId={selectedTemplateId}
+        selectedTheme={selectedTheme}
+        aiDraft={aiDraft}
+        onDeploySuccess={clearDraft}
+      />
+
+      {/* Full Live Dynamic Sandbox Interactive Preview Overlay */}
+      <TemplatePreviewModal
+        templateId={previewTemplateId}
+        isOpen={!!previewTemplateId}
+        onClose={() => {
+          // Replaces messy window history backtracks with direct parameter deletes
+          const nextParams = new URLSearchParams(searchParams);
+          nextParams.delete("preview");
+          setSearchParams(nextParams, { replace: true });
+        }}
+        portfolioData={aiDraft} // <-- This should sit safely inside the modal tag properties
+      />
+      
     </div>
   );
 }
