@@ -8,7 +8,7 @@
     Full-stack web app combining modern frontend and backend tooling
   </p>
   <p style="display:flex; gap:12px; justify-content:center; flex-wrap:wrap; margin:8px 0;">
-    <img src="https://img.shields.io/badge/Node.js-20-green?logo=node.js&logoColor=white" alt="Node.js" />
+    <img src="https://img.shields.io/badge/Node.js-18%2B-green?logo=node.js&logoColor=white" alt="Node.js" />
     <img src="https://img.shields.io/badge/Express-4.18-lightgrey?logo=express&logoColor=black" alt="Express" />
     <img src="https://img.shields.io/badge/MongoDB-6.0-darkgreen?logo=mongodb&logoColor=white" alt="MongoDB" />
     <img src="https://img.shields.io/badge/Redis-7.0-d9932e?logo=redis&logoColor=white" alt="Redis" />
@@ -65,7 +65,7 @@
 
 ### Prerequisites
 
-- Node.js 20+
+- Node.js 18.0 or higher
 - npm 10+ (or Yarn / pnpm)
 - MongoDB
 - Redis

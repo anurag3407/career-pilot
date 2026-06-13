@@ -1,5 +1,57 @@
 export const templates = [
   {
+    "id": "IKEA_Assembly_Manual",
+    "title": "IKEA Assembly Manual",
+    "category": "Portfolio",
+    "colorScheme": "Light",
+    "layout": "Interactive",
+    "author": "System",
+    "views": 0,
+    "rating": 0,
+    "image": "/templates/IKEA_Assembly_Manual.png",
+    "createdAt": "2026-06-13",
+    "isComplete": true
+  },
+    "id": "Endless_Runner_Minigame",
+    "title": "Endless Runner Minigame",
+    "category": "Portfolio",
+    "colorScheme": "Dark",
+    "layout": "Interactive",
+    "author": "ShaktiShrey-01",
+    "views": 0,
+    "rating": 0,
+    "image": "/template-previews/Endless_Runner_Minigame.png",
+    "createdAt": "2026-06-12",
+    isComplete: true
+}
+,
+  {
+    "id": "Fluid_Simulation_3D_WebGL",
+    "title": "Fluid Simulation 3D WebGL",
+    "category": "Portfolio",
+    "colorScheme": "Dark",
+    "layout": "Interactive",
+    "author": "kashviporwal-byte",
+    "views": 0,
+    "rating": 0,
+    "image": "/templates/Fluid_Simulation_3D_WebGL.png",
+    "createdAt": "2026-06-13",
+    "isComplete": true
+  },
+  {
+    "id": "ASCII_Art_Terminal_Code",
+    "title": "ASCII Art Terminal Code",
+    "category": "Portfolio",
+    "colorScheme": "Dark",
+    "layout": "Interactive",
+    "author": "Raman Kumar",
+    "views": 2800,
+    "rating": 4.9,
+    "image": "/template-previews/ASCII_Art_Terminal_Code.png",
+    "createdAt": "2026-06-12",
+    isComplete: true
+},
+{
     id: "Forensic_Investigator_Desk",
     title: "Forensic Investigator Desk",
     category: "Portfolio",
@@ -11,7 +63,7 @@ export const templates = [
     image: "/template-previews/Forensic_investigator_desk.png", 
     createdAt: "2026-06-11",
     isComplete: true
-  },
+},
 {
   "id": "Fake_WebOS_Operating_System",
   "title": "Fake WebOS Operating System",
@@ -2672,6 +2724,30 @@ export const templates = [
     "category": "Interactive",
     "description": "An ultra-sleek, modern interface emphasizing rich CSS transition feedback, sliding tracking underlines, and expanding detail blocks.",
     "image": "/templates/micro-interactions-hover.png",
+  {
+    "id": "Origami_Unfold_Step_Animation",
+    "title": "Origami Unfold Step Animation",
+    "category": "Portfolio",
+    "colorScheme": "Colorful",
+    "layout": "Interactive",
+    "author": "System",
+    "views": 1800,
+    "rating": 5.0,
+    "image": "/templates/Origami_Unfold_Step_Animation.png",
+    "createdAt": "2026-06-12",
+    "isComplete": true
+  },
+  {
+    "id": "Commercial_Pilot_Cockpit",
+    "title": "Commercial Pilot Cockpit",
+    "category": "Portfolio",
+    "colorScheme": "Dark",
+    "layout": "Interactive",
+    "author": "System",
+    "views": 2500,
+    "rating": 5.0,
+    "image": "/templates/Commercial_Pilot_Cockpit.png",
+    "createdAt": "2026-06-12",
     "isComplete": true
   }
 
