@@ -14,6 +14,15 @@ const answerSchema = new mongoose.Schema({
         fillerWords: {
             count: { type: Number, default: 0 },
             words: [String]
+        },
+        whatYouDidWell: [String],
+        whatWasMissing: [String],
+        idealAnswer: { type: String, default: '' },
+        keyTakeaway: { type: String, default: '' },
+        communicationStyle: {
+            pace: { type: String, default: '' },
+            structure: { type: String, default: '' },
+            specificity: { type: String, default: '' }
         }
     },
     expressionMetrics: {

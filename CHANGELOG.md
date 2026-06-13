@@ -1,3 +1,38 @@
+# [1.233.0](https://github.com/anurag3407/career-pilot/compare/v1.232.1...v1.233.0) (2026-06-13)
+
+
+### Bug Fixes
+
+* resolve templates syntax error ([211c5e8](https://github.com/anurag3407/career-pilot/commit/211c5e864f0cada9d137b88a43bd8c910d030903))
+
+
+### Features
+
+* add Accordion Fold Brochure portfolio template ([18d2728](https://github.com/anurag3407/career-pilot/commit/18d2728af1325b0615b3241eb021e9defa910d44))
+
+## [1.232.1](https://github.com/anurag3407/career-pilot/compare/v1.232.0...v1.232.1) (2026-06-13)
+
+
+### Bug Fixes
+
+* add missing AI feedback fields to answerSchema ([#3484](https://github.com/anurag3407/career-pilot/issues/3484)) ([80e0d56](https://github.com/anurag3407/career-pilot/commit/80e0d56c65d777d8903b00059111786935556b92))
+
+# [1.232.0](https://github.com/anurag3407/career-pilot/compare/v1.231.1...v1.232.0) (2026-06-13)
+
+
+### Features
+
+* Add Autumn Forest Leaf Fall portfolio template ([#3185](https://github.com/anurag3407/career-pilot/issues/3185)) ([1b7e5a4](https://github.com/anurag3407/career-pilot/commit/1b7e5a47ce7ed26885dcd741d5386f4deea9f62c))
+
+## [1.231.1](https://github.com/anurag3407/career-pilot/compare/v1.231.0...v1.231.1) (2026-06-13)
+
+
+### Bug Fixes
+
+* **socket:** add polling fallback for blocked websockets ([0a0b494](https://github.com/anurag3407/career-pilot/commit/0a0b4940184c8ab06866f8fe6b66870abde291f7))
+* **socket:** address connection lifecycle review ([cf4c82c](https://github.com/anurag3407/career-pilot/commit/cf4c82c7197bed031217abc0621b78f2f713dca8))
+* **socket:** avoid user identifiers in transport logs ([e0e9d93](https://github.com/anurag3407/career-pilot/commit/e0e9d93791f895a52e054fa4867cb00a7f00d0a2))
+
 # [1.231.0](https://github.com/anurag3407/career-pilot/compare/v1.230.0...v1.231.0) (2026-06-13)
 
 

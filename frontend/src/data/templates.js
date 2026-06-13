@@ -53,6 +53,19 @@ export const templates = [
     "isComplete": true
   },
   {
+    "id": "Git_Commit_History_Tree",
+    "title": "Git Commit History Tree",
+    "category": "Portfolio",
+    "colorScheme": "Dark",
+    "layout": "Interactive",
+    "author": "Raman Kumar",
+    "views": 50000,
+    "rating": 5.0,
+    "image": "/template-previews/Git_Commit_History_Tree.png",
+    "createdAt": "2026-06-13",
+    "isComplete": true
+  },
+  {
     "id": "Fluid_Simulation_3D_WebGL",
     "title": "Fluid Simulation 3D WebGL",
     "category": "Portfolio",
@@ -560,7 +573,7 @@ export const templates = [
     "createdAt": "2026-05-31",
     "isComplete": true
   },
-
+  
   {
     id: "ZineCollage",
     title: "Zine Collage",
@@ -573,6 +586,11 @@ export const templates = [
     image: "/template-previews/Zine_Collage.png",
     createdAt: "2026-06-08",
     description: "An asymmetric, high-contrast scrapbook magazine layout featuring heavy ink borders, rotated clipping frames, and retro label-maker accents.",
+    author: "System",
+    views: 0,
+    rating: 4.5,
+    image: "/template-previews/Zine_Collage.png",
+    createdAt: "2026-06-01",
     isComplete: true
   },
   
@@ -2731,6 +2749,21 @@ export const templates = [
     "createdAt": "2026-06-07",
     "isComplete": true
   },
+
+  {
+    id: "Accordion_Fold_Brochure",
+    title: "Accordion Fold Brochure",
+    category: "Portfolio",
+    colorScheme: "Light",
+    layout: "Brochure",
+    author: "virakshi",
+    views: 0,
+    rating: 4.5,
+    image: "/template-previews/Accordion_Fold_Brochure.png",
+    createdAt: "2026-06-13",
+    isComplete: true
+  },
+
   {
     "id": "Cloud_Nine_Aerial_Skyscape",
     "title": "Cloud Nine Aerial Skyscape",
@@ -2780,6 +2813,19 @@ export const templates = [
     "views": 3200,
     "rating": 5.0,
     "image": "/templates/Book_Page_Flip_3D_Render.png",
+    "createdAt": "2026-06-13",
+    "isComplete": true
+  },
+  {
+    "id": "Autumn_Forest_Leaf_Fall",
+    "title": "Autumn Forest Leaf Fall",
+    "category": "Portfolio",
+    "colorScheme": "Dark",
+    "layout": "Interactive",
+    "author": "Antigravity",
+    "views": 0,
+    "rating": 0,
+    "image": "/templates/Autumn_Forest_Leaf_Fall.png",
     "createdAt": "2026-06-13",
     "isComplete": true
   }
