@@ -286,6 +286,8 @@ function AppRoutes() {
         <Route path="/templates/chatbot" element={<ChatbotPortfolio />} /> 
         <Route path="/templates/glassmorphism" element={<GlassmorphismTemplate/>} />
         <Route path="/templates/transparent-desktop-overlay-os" element={<TransparentDesktopOverlayOS />} />
+        <Route path="/templates/origami-unfold-step-animation" element={<Origami_Unfold_Step_Animation />} />
+        <Route path="/templates/commercial-pilot-cockpit" element={<Commercial_Pilot_Cockpit />} />
         {/* Core Protected Routes */}
         <Route 
   path="/dashboard" 

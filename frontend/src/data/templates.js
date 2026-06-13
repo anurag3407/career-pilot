@@ -15,6 +15,19 @@ export const templates = [
   },
 
   {
+    "id": "Fluid_Simulation_3D_WebGL",
+    "title": "Fluid Simulation 3D WebGL",
+    "category": "Portfolio",
+    "colorScheme": "Dark",
+    "layout": "Interactive",
+    "author": "kashviporwal-byte",
+    "views": 0,
+    "rating": 0,
+    "image": "/templates/Fluid_Simulation_3D_WebGL.png",
+    "createdAt": "2026-06-13",
+    "isComplete": true
+  },
+  {
     "id": "ASCII_Art_Terminal_Code",
     "title": "ASCII Art Terminal Code",
     "category": "Portfolio",
@@ -2706,5 +2719,32 @@ export const templates = [
     "image": "/template-previews/Cloud_Nine_Aerial_Skyscape.png",
     "createdAt": "2026-06-10",
     "isComplete": true
+  },
+  {
+    "id": "Origami_Unfold_Step_Animation",
+    "title": "Origami Unfold Step Animation",
+    "category": "Portfolio",
+    "colorScheme": "Colorful",
+    "layout": "Interactive",
+    "author": "System",
+    "views": 1800,
+    "rating": 5.0,
+    "image": "/templates/Origami_Unfold_Step_Animation.png",
+    "createdAt": "2026-06-12",
+    "isComplete": true
+  },
+  {
+    "id": "Commercial_Pilot_Cockpit",
+    "title": "Commercial Pilot Cockpit",
+    "category": "Portfolio",
+    "colorScheme": "Dark",
+    "layout": "Interactive",
+    "author": "System",
+    "views": 2500,
+    "rating": 5.0,
+    "image": "/templates/Commercial_Pilot_Cockpit.png",
+    "createdAt": "2026-06-12",
+    "isComplete": true
   }
 ];
+
