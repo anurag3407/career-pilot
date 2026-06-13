@@ -186,12 +186,13 @@ export async function deploy(portfolioId, htmlContent, assets = {}) {
   const tmpDir = await fs.mkdtemp(path.join(os.tmpdir(), `deploy-${projectName}-`));
   
   try {
-    // 2. Sanitize and write HTML
-    const sanitizedHtml = sanitizeHtml(
-      Buffer.isBuffer(htmlContent) ? htmlContent.toString('utf8') : htmlContent
-    );
+    // 2. Write HTML — skip sanitization for React app bundles (they contain
+    //    trusted <script type="module"> tags that must not be stripped)
+    const htmlString = Buffer.isBuffer(htmlContent) ? htmlContent.toString('utf8') : htmlContent;
+    const isReactBundle = htmlString.includes('__PORTFOLIO_DATA__') || htmlString.includes('type="module"');
+    const finalHtml = isReactBundle ? htmlString : sanitizeHtml(htmlString);
     
-    await fs.writeFile(path.join(tmpDir, 'index.html'), sanitizedHtml);
+    await fs.writeFile(path.join(tmpDir, 'index.html'), finalHtml);
     
     // 3. Write additional assets
     for (const [assetPath, content] of Object.entries(assets)) {

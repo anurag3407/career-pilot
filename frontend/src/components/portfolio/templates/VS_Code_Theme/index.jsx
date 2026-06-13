@@ -1,3 +1,4 @@
+import { usePortfolio } from "../../../../context/PortfolioContext";
 import React from 'react';
 import { motion } from 'framer-motion';
 import {
@@ -27,7 +28,6 @@ import {
   User,
   Zap,
 } from 'lucide-react';
-import data from '../../../../data/dummy_data.json';
 
 const sectionFiles = [
   { id: 'hero', file: 'hero.jsx', icon: FileCode2, accent: 'text-[#4fc1ff]' },
@@ -93,6 +93,8 @@ function getSocialHref(key, value) {
 }
 
 function CodeLine({ number, children }) {
+  const { portfolioData: data } = usePortfolio();
+
   return (
     <div className="grid grid-cols-[2.25rem_1fr] gap-4 text-sm leading-7 sm:text-[15px]">
       <span className="select-none text-right font-mono text-[#6e7681]">{number}</span>
@@ -102,6 +104,8 @@ function CodeLine({ number, children }) {
 }
 
 function SectionTitle({ file, title, icon }) {
+  const { portfolioData: data } = usePortfolio();
+
   return (
     <div className="mb-6 flex flex-wrap items-end justify-between gap-4">
       <div>
@@ -116,6 +120,8 @@ function SectionTitle({ file, title, icon }) {
 }
 
 export default function VSCodeTheme() {
+  const { portfolioData: data } = usePortfolio();
+
   const skillsByCategory = data.skills.reduce((groups, skill) => {
     const category = skill.category || 'Core';
     return { ...groups, [category]: [...(groups[category] || []), skill] };

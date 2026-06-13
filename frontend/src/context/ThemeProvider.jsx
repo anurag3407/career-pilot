@@ -10,27 +10,40 @@ import { ThemeContext } from './ThemeContext';
  * @returns {React.JSX.Element} The rendered Provider component.
  */
 export function ThemeProvider({ children }) {
-  const [theme, setTheme] = useState(() => {
+  const [theme, setThemeState] = useState(() => {
     if (typeof window === 'undefined') return 'light';
-    const savedTheme = window.localStorage.getItem('theme');
-    if (savedTheme === 'light' || savedTheme === 'dark') return savedTheme;
+    try {
+      const savedTheme = window.localStorage.getItem('theme');
+      if (savedTheme === 'light' || savedTheme === 'dark' || savedTheme === 'highContrast') return savedTheme;
+    } catch (e) {
+      console.warn('Failed to read from localStorage:', e);
+    }
     return window.matchMedia?.('(prefers-color-scheme: dark)').matches ? 'dark' : 'light';
   });
 
   useLayoutEffect(() => {
     if (typeof window === 'undefined') return;
     const root = window.document.documentElement;
-    const nextTheme = theme === 'dark' ? 'dark' : 'light';
-    root.classList.remove('light', 'dark');
-    root.classList.add(nextTheme);
-    window.localStorage.setItem('theme', nextTheme);
+    
+    root.classList.remove('light', 'dark', 'highContrast');
+    root.classList.add(theme);
+    
+    try {
+      window.localStorage.setItem('theme', theme);
+    } catch (e) {
+      console.warn('Failed to write to localStorage:', e);
+    }
   }, [theme]);
 
   /**
-   * Toggles the current theme between 'light' and 'dark'.
+   * Cycles the current theme: light -> dark -> highContrast -> light.
    */
   const toggleTheme = () => {
-    setTheme((prev) => (prev === 'light' ? 'dark' : 'light'));
+    setThemeState((prev) => {
+      if (prev === 'light') return 'dark';
+      if (prev === 'dark') return 'highContrast';
+      return 'light';
+    });
   };
 
   return (
