@@ -40,9 +40,7 @@ export const templates = [
     "isComplete": true
   },
   {
-    "image": "/template-previews/Endless_Runner_Minigame.png",
-    "createdAt": "2026-06-12",
-    isComplete: true
+   
     "image": "/template-previews/Endless_Runner_Minigame.png",
     "createdAt": "2026-06-12",
     "isComplete": true
