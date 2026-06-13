@@ -35,6 +35,14 @@ export const templates = [
     "author": "ShaktiShrey-01",
     "views": 0,
     "rating": 0,
+    "image": "/template-previews/Forensic_investigator_desk.png", 
+    "createdAt": "2026-06-11",
+    "isComplete": true
+  },
+  {
+    "image": "/template-previews/Endless_Runner_Minigame.png",
+    "createdAt": "2026-06-12",
+    isComplete: true
     "image": "/template-previews/Endless_Runner_Minigame.png",
     "createdAt": "2026-06-12",
     "isComplete": true
@@ -560,7 +568,7 @@ export const templates = [
     "createdAt": "2026-05-31",
     "isComplete": true
   },
-
+  
   {
     id: "ZineCollage",
     title: "Zine Collage",
@@ -573,6 +581,11 @@ export const templates = [
     image: "/template-previews/Zine_Collage.png",
     createdAt: "2026-06-08",
     description: "An asymmetric, high-contrast scrapbook magazine layout featuring heavy ink borders, rotated clipping frames, and retro label-maker accents.",
+    author: "System",
+    views: 0,
+    rating: 4.5,
+    image: "/template-previews/Zine_Collage.png",
+    createdAt: "2026-06-01",
     isComplete: true
   },
   
@@ -2731,6 +2744,21 @@ export const templates = [
     "createdAt": "2026-06-07",
     "isComplete": true
   },
+
+  {
+    id: "Accordion_Fold_Brochure",
+    title: "Accordion Fold Brochure",
+    category: "Portfolio",
+    colorScheme: "Light",
+    layout: "Brochure",
+    author: "virakshi",
+    views: 0,
+    rating: 4.5,
+    image: "/template-previews/Accordion_Fold_Brochure.png",
+    createdAt: "2026-06-13",
+    isComplete: true
+  },
+
   {
     "id": "Cloud_Nine_Aerial_Skyscape",
     "title": "Cloud Nine Aerial Skyscape",
