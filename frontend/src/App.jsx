@@ -116,6 +116,7 @@ import TypographicWheatpastePosterWall from './components/portfolio/templates/Ty
 import DigitalManifestoScroll from './components/portfolio/templates/Digital_Manifesto_Scroll/index.jsx';
 import TestSocialLinks from './pages/TestSocialLinks';
 import ZineCollage from './components/portfolio/templates/ZineCollage';
+import EmojiOnlyHieroglyphicUI from './components/portfolio/templates/Emoji_Only_Hieroglyphic_UI/index.jsx';
 import TransparentDesktopOverlayOS from './components/portfolio/templates/Transparent_Desktop_Overlay_OS/index.jsx';
 import Commercial_Pilot_Cockpit from './components/portfolio/templates/Commercial_Pilot_Cockpit/index.jsx';
 import Book_Page_Flip_3D_Render from './components/portfolio/templates/Book_Page_Flip_3D_Render/index.jsx';
@@ -283,6 +284,7 @@ function AppRoutes() {
         <Route path="/templates/high-fashion" element={<HighFashion />} />
         <Route path="/templates/typographic-wheatpaste-poster-wall" element={<TypographicWheatpastePosterWall />} />
         <Route path="/templates/digital-manifesto-scroll" element={<DigitalManifestoScroll />} />
+        <Route path="/templates/emoji-only-hieroglyphic-ui" element={<EmojiOnlyHieroglyphicUI />} />
 
         <Route path="/templates/zine-collage" element={<ZineCollage />} />
         <Route path="/templates/chatbot" element={<ChatbotPortfolio />} /> 

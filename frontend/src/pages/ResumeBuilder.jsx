@@ -20,12 +20,12 @@ import {
 } from '../utils/resumeValidation'
 
 const STEPS = [
-  { id: 'personal',   title: 'Personal Info', icon: User },
-  { id: 'education',  title: 'Education',     icon: GraduationCap },
-  { id: 'experience', title: 'Experience',    icon: Briefcase },
-  { id: 'projects',   title: 'Projects',      icon: Code },
-  { id: 'skills',     title: 'Skills',        icon: Star },
-  { id: 'preview',    title: 'Preview',       icon: FileText },
+  { id: 'personal', title: 'Personal Info', icon: User },
+  { id: 'education', title: 'Education', icon: GraduationCap },
+  { id: 'experience', title: 'Experience', icon: Briefcase },
+  { id: 'projects', title: 'Projects', icon: Code },
+  { id: 'skills', title: 'Skills', icon: Star },
+  { id: 'preview', title: 'Preview', icon: FileText },
 ]
 
 // ─────────────────── small helpers ───────────────────────────────────────────
@@ -42,14 +42,25 @@ function FieldError({ msg }) {
   )
 }
 
+const KEYWORDS_LIST = [
+  "React",
+  "JavaScript",
+  "Git",
+  "Node.js",
+  "API",
+  "Leadership",
+  "Teamwork",
+  "Problem Solving"
+];
+
 // ─────────────────── component ───────────────────────────────────────────────
 export default function ResumeBuilder() {
-  const navigate   = useNavigate()
+  const navigate = useNavigate()
   const firstErrRef = useRef(null)
 
   const [currentStep, setCurrentStep] = useState(0)
   const [isSubmitting, setIsSubmitting] = useState(false)
-  const [targetRole, setTargetRole]   = useState('')
+  const [targetRole, setTargetRole] = useState('')
   const [readabilityScore, setReadabilityScore] = useState(0)
   const [claritySuggestions, setClaritySuggestions] = useState([])
   const [achievementScore, setAchievementScore] = useState(0)
@@ -60,7 +71,7 @@ export default function ResumeBuilder() {
     name: '', email: '', phone: '', linkedin: '', github: '', portfolio: '', summary: '',
   })
   // phone is stored split: country code + digit string
-  const [phoneCode,   setPhoneCode]   = useState('+91')
+  const [phoneCode, setPhoneCode] = useState('+91')
   const [phoneDigits, setPhoneDigits] = useState('')
 
   const [education, setEducation] = useState([
@@ -82,63 +93,63 @@ export default function ResumeBuilder() {
   
   const [recommendedSkills, setRecommendedSkills] = useState([])
   useEffect(() => {
-  const suggestions = []
-  let score = 100
+    const suggestions = []
+    let score = 100
 
-  const descriptions = experience.map(exp => exp.description).join(" ")
+    const descriptions = experience.map(exp => exp.description).join(" ")
 
-  if (!/\d+%|\d+\+|\$\d+/g.test(descriptions)) {
-    score -= 25
-    suggestions.push("Add measurable metrics such as percentages, revenue, or growth numbers.")
-  }
+    if (!/\d+%|\d+\+|\$\d+/g.test(descriptions)) {
+      score -= 25
+      suggestions.push("Add measurable metrics such as percentages, revenue, or growth numbers.")
+    }
 
-  if (!/(led|developed|implemented|created|optimized|improved)/i.test(descriptions)) {
-    score -= 20
-    suggestions.push("Use stronger action verbs to describe achievements.")
-  }
+    if (!/(led|developed|implemented|created|optimized|improved)/i.test(descriptions)) {
+      score -= 20
+      suggestions.push("Use stronger action verbs to describe achievements.")
+    }
 
-  if (descriptions.length < 100) {
-    score -= 15
-    suggestions.push("Provide more detailed achievement descriptions.")
-  }
+    if (descriptions.length < 100) {
+      score -= 15
+      suggestions.push("Provide more detailed achievement descriptions.")
+    }
 
-  if (!/(resulted|increased|reduced|improved|achieved)/i.test(descriptions)) {
-    score -= 20
-    suggestions.push("Highlight outcomes and business impact.")
-  }
+    if (!/(resulted|increased|reduced|improved|achieved)/i.test(descriptions)) {
+      score -= 20
+      suggestions.push("Highlight outcomes and business impact.")
+    }
 
-  setAchievementScore(Math.max(score, 0))
-  setAchievementSuggestions(suggestions)
-}, [experience])
+    setAchievementScore(Math.max(score, 0))
+    setAchievementSuggestions(suggestions)
+  }, [experience])
 
   useEffect(() => {
-  const content = [
-    personal.summary,
-    ...experience.map(e => e.description),
-    ...projects.map(p => p.description)
-  ].join(' ')
+    const content = [
+      personal.summary,
+      ...experience.map(e => e.description),
+      ...projects.map(p => p.description)
+    ].join(' ')
 
-  let score = 100
-  const suggestions = []
+    let score = 100
+    const suggestions = []
 
-  if (content.length < 100) {
-    score -= 20
-    suggestions.push("Add more descriptive content.")
-  }
+    if (content.length < 100) {
+      score -= 20
+      suggestions.push("Add more descriptive content.")
+    }
 
-  if (content.includes("was") || content.includes("were")) {
-    score -= 10
-    suggestions.push("Reduce passive voice usage.")
-  }
+    if (content.includes("was") || content.includes("were")) {
+      score -= 10
+      suggestions.push("Reduce passive voice usage.")
+    }
 
-  if (!content.match(/developed|built|created|led|implemented/i)) {
-    score -= 15
-    suggestions.push("Use stronger action verbs.")
-  }
+    if (!content.match(/developed|built|created|led|implemented/i)) {
+      score -= 15
+      suggestions.push("Use stronger action verbs.")
+    }
 
-  setReadabilityScore(Math.max(score, 0))
-  setClaritySuggestions(suggestions)
-}, [personal, experience, projects])
+    setReadabilityScore(Math.max(score, 0))
+    setClaritySuggestions(suggestions)
+  }, [personal, experience, projects])
 
   // ─────────────────── ATS Keyword Assessment Loop ───────────────────
   useEffect(() => {
@@ -160,13 +171,12 @@ export default function ResumeBuilder() {
       ${(experience || []).map(e => e.description || '').join(" ")}
     `.toLowerCase()
 
-    const foundKeywords = keywords.filter(keyword =>
+    const foundKeywords = KEYWORDS_LIST.filter(keyword =>
       resumeText.includes(keyword.toLowerCase())
     )
 
-  setAtsScore(
-    Math.round(
-      (foundKeywords.length / keywords.length) * 100
+    const missing = KEYWORDS_LIST.filter(
+      keyword => !foundKeywords.includes(keyword)
     )
   )
 }, [
@@ -185,27 +195,12 @@ useEffect(() => {
     projects?.map(p => `${p.title} ${p.description}`).join(' ') || ''
   } ${experience?.map(e => `${e.role} ${e.description}`).join(' ') || ''}`.toLowerCase();
 
-  // 2. Define assessment target keywords (moved to component/effect scope correctly)
-  const baseKeywords = ["react", "node.js", "javascript", "typescript", "python", "docker", "aws", "git", "ci/cd", "rest api"];
-  const prioritySkills = ["docker", "kubernetes", "ci/cd", "aws", "linux"];
-
-  const found = baseKeywords.filter(keyword => resumeText.includes(keyword));
-  const missing = baseKeywords.filter(keyword => !resumeText.includes(keyword));
-
-  // 3. State update calculations
-  setMissingKeywords(missing);
-  
-  // Prioritize missing crucial devops/infrastructure skills first in recommendation
-  const recommendations = [
-    ...prioritySkills.filter(sk => !found.includes(sk)),
-    ...missing
-  ].slice(0, 4);
-  setRecommendedSkills(recommendations);
-
-  const score = baseKeywords.length > 0 ? Math.round((found.length / baseKeywords.length) * 100) : 0;
-  setAtsScore(score);
-
-}, [personal, skills, projects, experience]); // Removed out-of-scope internal variables!
+    if (KEYWORDS_LIST.length > 0) {
+      setAtsScore(
+        Math.round((foundKeywords.length / KEYWORDS_LIST.length) * 100)
+      );
+    }
+  }, [personal, skills, projects, experience]);
 
   // ─────────────────── Live Consistency Memoized Engine ───────────────────
   const activeConsistencyWarnings = React.useMemo(() => {
@@ -232,6 +227,7 @@ useEffect(() => {
     ];
   }, [experience, education, projects]);
 
+  // ─────────────────── Version Tracking State Control ───────────────────
   const saveVersion = React.useCallback(() => {
     const newVersion = {
       id: Date.now(),
@@ -242,7 +238,12 @@ useEffect(() => {
     if (typeof toast !== 'undefined') {
       toast.success("Resume version layout tracked successfully!");
     }
-  }, [experience, education, projects, personal, skills, generateMarkdown]);
+  }, [generateMarkdown]);
+
+  const restoreVersion = React.useCallback((version) => {
+    setSelectedVersion(version);
+    toast.success(`Restored version from ${version.timestamp}`);
+  }, []);
 
   const restoreVersion = React.useCallback((version) => {
     setSelectedVersion(version);
@@ -254,62 +255,62 @@ useEffect(() => {
   // ─────────────────── Automated Recommendations Engine ───────────────────
   useEffect(() => {
     const recommendations = [];
-    
-  if (projects.every(p => !p.name.trim())) {
-    recommendations.push("Projects")
-  }
 
-  if (!skills.trim()) {
-    recommendations.push("Skills")
-  }
+    if (projects.every(p => !p.name.trim())) {
+      recommendations.push("Projects")
+    }
 
-  if (education.every(e => !e.school?.trim())) {
-    recommendations.push("Certifications")
-  }
+    if (!skills.trim()) {
+      recommendations.push("Skills")
+    }
 
-  if (experience.every(e => !e.title?.trim())) {
-    recommendations.push("Volunteer Experience")
-  }
+    if (education.every(e => !e.school?.trim())) {
+      recommendations.push("Education")
+    }
 
-  setRecommendedSections(recommendations)
-}, [projects, skills, education, experience])
+    if (experience.every(e => !e.title?.trim())) {
+      recommendations.push("Experience")
+    }
 
-useEffect(() => {
-  let score = 0
+    setRecommendedSections(recommendations)
+  }, [projects, skills, education, experience])
 
-  if (personal.name && personal.email) {
-    score += 20
-  }
+  useEffect(() => {
+    let score = 0
 
-  if (education.some(e => e.school.trim())) {
-    score += 20
-  }
+    if (personal.name && personal.email) {
+      score += 20
+    }
 
-  if (experience.some(e => e.title.trim())) {
-    score += 20
-  }
+    if (education.some(e => e.school.trim())) {
+      score += 20
+    }
 
-  if (projects.some(p => p.name.trim())) {
-    score += 20
-  }
+    if (experience.some(e => e.title.trim())) {
+      score += 20
+    }
 
-  if (skills.trim()) {
-    score += 20
-  }
+    if (projects.some(p => p.name.trim())) {
+      score += 20
+    }
 
-  setResumeScore(score)
-}, [
-  personal,
-  education,
-  experience,
-  projects,
-  skills
-])
+    if (skills.trim()) {
+      score += 20
+    }
+
+    setResumeScore(score)
+  }, [
+    personal,
+    education,
+    experience,
+    projects,
+    skills
+  ])
 
 
   // ── error state ─────────────────────────────────────────────────────────────
-  const [personalErrors,   setPersonalErrors]   = useState({})
-  const [educationErrors,  setEducationErrors]  = useState([])   // array per entry
+  const [personalErrors, setPersonalErrors] = useState({})
+  const [educationErrors, setEducationErrors] = useState([])   // array per entry
   const [experienceErrors, setExperienceErrors] = useState([])   // array per entry
 
   // ── helpers: update array entries immutably ─────────────────────────────────
@@ -348,14 +349,14 @@ useEffect(() => {
   }
 
   // ── list management ──────────────────────────────────────────────────────────
-  const addEducation    = () => setEducation(p => [...p, { school: '', degree: '', field: '', startDate: '', endDate: '', gpa: '', description: '' }])
-  const removeEducation = i  => { setEducation(p => p.filter((_, idx) => idx !== i)); setEducationErrors(p => p.filter((_, idx) => idx !== i)) }
+  const addEducation = () => setEducation(p => [...p, { school: '', degree: '', field: '', startDate: '', endDate: '', gpa: '', description: '' }])
+  const removeEducation = i => { setEducation(p => p.filter((_, idx) => idx !== i)); setEducationErrors(p => p.filter((_, idx) => idx !== i)) }
 
-  const addExperience    = () => setExperience(p => [...p, { title: '', company: '', location: '', startDate: '', endDate: '', current: false, description: '' }])
-  const removeExperience = i  => { setExperience(p => p.filter((_, idx) => idx !== i)); setExperienceErrors(p => p.filter((_, idx) => idx !== i)) }
+  const addExperience = () => setExperience(p => [...p, { title: '', company: '', location: '', startDate: '', endDate: '', current: false, description: '' }])
+  const removeExperience = i => { setExperience(p => p.filter((_, idx) => idx !== i)); setExperienceErrors(p => p.filter((_, idx) => idx !== i)) }
 
-  const addProject    = () => setProjects(p => [...p, { name: '', tech: '', link: '', description: '' }])
-  const removeProject = i  => setProjects(p => p.filter((_, idx) => idx !== i))
+  const addProject = () => setProjects(p => [...p, { name: '', tech: '', link: '', description: '' }])
+  const removeProject = i => setProjects(p => p.filter((_, idx) => idx !== i))
 
   // ── step validation ──────────────────────────────────────────────────────────
   function validateCurrentStep() {
@@ -402,10 +403,10 @@ useEffect(() => {
     let md = `# ${personal.name || 'Your Name'}\n\n`
 
     const contact = []
-    if (personal.email)     contact.push(`[${personal.email}](mailto:${personal.email})`)
-    if (fullPhone)          contact.push(fullPhone)
-    if (personal.linkedin)  contact.push(`[LinkedIn](${personal.linkedin})`)
-    if (personal.github)    contact.push(`[GitHub](${personal.github})`)
+    if (personal.email) contact.push(`[${personal.email}](mailto:${personal.email})`)
+    if (fullPhone) contact.push(fullPhone)
+    if (personal.linkedin) contact.push(`[LinkedIn](${personal.linkedin})`)
+    if (personal.github) contact.push(`[GitHub](${personal.github})`)
     if (personal.portfolio) contact.push(`[Portfolio](${personal.portfolio})`)
     md += `${contact.join(' | ')}\n\n`
 
@@ -455,11 +456,10 @@ useEffect(() => {
     try {
       setIsSubmitting(true)
       const markdown = generateMarkdown()
-
       const response = await resumeApi.create({
         originalText: markdown,
         jobRole: targetRole || 'Software Engineer',
-        title:   `${personal.name || 'My'} Resume - ${new Date().toLocaleDateString()}`,
+        title: `${personal.name || 'My'} Resume - ${new Date().toLocaleDateString()}`,
       })
       toast.success('Resume created successfully!')
       navigate(`/enhance/${response.data.id}`)
@@ -830,25 +830,25 @@ useEffect(() => {
                     </div>
 
                     <div className="md:col-span-2">
-  <label className="block text-sm font-medium mb-1">
-    Description (Bullet points)
-  </label>
+                      <label className="block text-sm font-medium mb-1">
+                        Description (Bullet points)
+                      </label>
 
-  <textarea
-    className="w-full bg-muted border border-border rounded-lg px-4 py-2 min-h-[100px] focus:outline-none focus:ring-2 focus:ring-primary/30 transition-colors"
-    value={exp.description}
-    onChange={e => updateExp(index, 'description', e.target.value)}
-    placeholder={`- Developed feature X resulting in Y% improvement\n- Led a team of...`}
-  />
+                      <textarea
+                        className="w-full bg-background/50 border border-border rounded-lg px-4 py-2 min-h-[100px] focus:outline-none focus:ring-2 focus:ring-primary/30 transition-colors"
+                        value={exp.description}
+                        onChange={e => updateExp(index, 'description', e.target.value)}
+                        placeholder={`- Developed feature X resulting in Y% improvement\n- Led a team of...`}
+                      />
 
-  <AchievementEnhancer
-    value={exp.description}
-    jobRole={targetRole}
-    onApply={(text) =>
-      updateExp(index, "description", text)
-    }
-  />
-</div>
+                      <AchievementEnhancer
+                        value={exp.description}
+                        jobRole={targetRole}
+                        onApply={(text) =>
+                          updateExp(index, "description", text)
+                        }
+                      />
+                    </div>
 
                   </div>
                 </div>
@@ -949,291 +949,209 @@ useEffect(() => {
           <div className="space-y-6">
             <h2 className="text-2xl font-semibold mb-6">Preview &amp; Generate</h2>
             <div className="flex justify-end mb-4">
-  <button
-    onClick={saveVersion}
-    className="px-4 py-2 rounded-lg bg-primary text-primary-foreground"
-  >
-    Save Version
-  </button>
-</div>
+              <button
+                onClick={saveVersion}
+                className="px-4 py-2 rounded-lg bg-primary text-primary-foreground"
+              >
+                Save Version
+              </button>
+            </div>
+            <div className="mb-6 p-4 rounded-xl border border-border bg-background/50">
+              <div className="flex justify-between items-center mb-2">
+                <h3 className="font-semibold">
+                  Achievement Impact Score
+                </h3>
 
-<div className="mb-6 p-4 rounded-xl border border-border bg-muted">
+                <span className="text-primary font-bold">
+                  {achievementScore}/100
+                </span>
+              </div>
 
-  <div className="flex justify-between items-center mb-2">
-    <h3 className="font-semibold">
-      Skill Gap Analysis
-    </h3>
+              <div className="w-full bg-secondary rounded-full h-3">
+                <div
+                  className="bg-primary h-3 rounded-full transition-all"
+                  style={{ width: `${achievementScore}%` }}
+                />
+              </div>
 
-    <div className="mt-2">
-  <span
-    className={`px-3 py-1 rounded-full text-sm ${
-      atsScore >= 80
-        ? "bg-green-500/20 text-green-500"
-        : atsScore >= 60
-        ? "bg-yellow-500/20 text-yellow-500"
-        : "bg-red-500/20 text-red-500"
-    }`}
-  >
-    {atsScore >= 80
-      ? "Strong Match"
-      : atsScore >= 60
-      ? "Moderate Gap"
-      : "High Skill Gap"}
-  </span>
-</div>
+              {achievementSuggestions.length > 0 && (
+                <div className="mt-4">
+                  <h4 className="font-medium mb-2">
+                    Improvement Suggestions
+                  </h4>
 
-    <span className="text-primary font-bold">
-      {atsScore}% Match
-    </span>
-  </div>
+                  <ul className="list-disc list-inside text-sm text-muted-foreground">
+                    {achievementSuggestions.map((item, index) => (
+                      <li key={index}>{item}</li>
+                    ))}
+                  </ul>
+                </div>
+              )}
+            </div>
+            <div className="mb-6 p-4 rounded-xl border border-border bg-background/50">
+              <div className="flex justify-between items-center mb-2">
+                <h3 className="font-semibold">
+                  Resume Improvement Progress
+                </h3>
 
-  <div className="w-full bg-secondary rounded-full h-3">
-    <div
-      className="bg-primary h-3 rounded-full transition-all duration-500"
-      style={{ width: `${atsScore}%` }}
-    />
-  </div>
+                <span className="text-primary font-bold">
+                  {resumeScore}%
+                </span>
+              </div>
 
-  {recommendedSkills.length > 0 && (
-  <div className="mt-4">
-    <h4 className="font-medium mb-2">
-      Recommended Skills to Learn
-    </h4>
+              <div className="w-full bg-secondary rounded-full h-3">
+                <div
+                  className="bg-primary h-3 rounded-full transition-all duration-500"
+                  style={{ width: `${resumeScore}%` }}
+                />
+              </div>
 
-    <div className="flex flex-wrap gap-2">
-      {recommendedSkills.map(skill => (
-        <span
-          key={skill}
-          className="px-3 py-1 rounded-full bg-green-500/20 text-green-400 text-sm"
-        >
-          {skill}
-        </span>
-      ))}
-    </div>
-  </div>
-)}
+              <div className="mt-4 flex flex-wrap gap-2">
+                <span
+                  className={`px-3 py-1 rounded-full text-sm ${resumeScore >= 20
+                      ? "bg-green-500/20 text-green-500"
+                      : "bg-secondary"
+                    }`}
+                >
+                  Personal Info
+                </span>
 
-  <div className="mt-4">
-    <h4 className="font-medium mb-2">
-      Missing Skills
-    </h4>
+                <span
+                  className={`px-3 py-1 rounded-full text-sm ${resumeScore >= 40
+                      ? "bg-green-500/20 text-green-500"
+                      : "bg-secondary"
+                    }`}
+                >
+                  Education
+                </span>
 
-    <div className="flex flex-wrap gap-2">
-      {missingKeywords.map(skill => (
-        <span
-          key={skill}
-          className="px-3 py-1 rounded-full bg-red-500/20 text-red-400 text-sm"
-        >
-          {skill}
-        </span>
-      ))}
-    </div>
-  </div>
+                <span
+                  className={`px-3 py-1 rounded-full text-sm ${resumeScore >= 60
+                      ? "bg-green-500/20 text-green-500"
+                      : "bg-secondary"
+                    }`}
+                >
+                  Experience
+                </span>
 
-</div>
+                <span
+                  className={`px-3 py-1 rounded-full text-sm ${resumeScore >= 80
+                      ? "bg-green-500/20 text-green-500"
+                      : "bg-secondary"
+                    }`}
+                >
+                  Projects
+                </span>
 
-<div className="mb-6 p-4 rounded-xl border border-border bg-muted">
-  <div className="flex justify-between items-center mb-2">
-    <h3 className="font-semibold">
-      Achievement Impact Score
-    </h3>
+                <span
+                  className={`px-3 py-1 rounded-full text-sm ${resumeScore >= 100
+                      ? "bg-green-500/20 text-green-500"
+                      : "bg-secondary"
+                    }`}
+                >
+                  Skills
+                </span>
+              </div>
 
-    <span className="text-primary font-bold">
-      {achievementScore}/100
-    </span>
-  </div>
-
-  <div className="w-full bg-secondary rounded-full h-3">
-    <div
-      className="bg-primary h-3 rounded-full transition-all"
-      style={{ width: `${achievementScore}%` }}
-    />
-  </div>
-
-  {achievementSuggestions.length > 0 && (
-    <div className="mt-4">
-      <h4 className="font-medium mb-2">
-        Improvement Suggestions
-      </h4>
-
-      <ul className="list-disc list-inside text-sm text-muted-foreground">
-        {achievementSuggestions.map((item, index) => (
-          <li key={index}>{item}</li>
-        ))}
-      </ul>
-    </div>
-  )}
-</div>
-<div className="mb-6 p-4 rounded-xl border border-border bg-muted">
-  <h3 className="font-semibold mb-3">
-    Section Completion Status
-  </h3>
-
-  <div className="space-y-2">
-    <div>{personal.name && personal.email ? "✅" : "❌"} Personal Info</div>
-    <div>{education.some(e => e.school) ? "✅" : "❌"} Education</div>
-    <div>{experience.some(e => e.title) ? "✅" : "❌"} Experience</div>
-    <div>{projects.some(p => p.name) ? "✅" : "❌"} Projects</div>
-    <div>{skills.trim() ? "✅" : "❌"} Skills</div>
-  </div>
-</div>
-            <div className="mb-6 p-4 rounded-xl border border-border bg-muted">
-  <div className="flex justify-between items-center mb-2">
-    <h3 className="font-semibold">
-      Resume Improvement Progress
-    </h3>
-
-    <span className="text-primary font-bold">
-      {resumeScore}%
-    </span>
-  </div>
-
-  <div className="w-full bg-secondary rounded-full h-3">
-    <div
-      className="bg-primary h-3 rounded-full transition-all duration-500"
-      style={{ width: `${resumeScore}%` }}
-    />
-  </div>
-
-  <div className="mt-4 flex flex-wrap gap-2">
-  <span
-    className={`px-3 py-1 rounded-full text-sm ${
-      resumeScore >= 20
-        ? "bg-green-500/20 text-green-500"
-        : "bg-secondary"
-    }`}
-  >
-    Personal Info
-  </span>
-
-  <span
-    className={`px-3 py-1 rounded-full text-sm ${
-      resumeScore >= 40
-        ? "bg-green-500/20 text-green-500"
-        : "bg-secondary"
-    }`}
-  >
-    Education
-  </span>
-
-  <span
-    className={`px-3 py-1 rounded-full text-sm ${
-      resumeScore >= 60
-        ? "bg-green-500/20 text-green-500"
-        : "bg-secondary"
-    }`}
-  >
-    Experience
-  </span>
-
-  <span
-    className={`px-3 py-1 rounded-full text-sm ${
-      resumeScore >= 80
-        ? "bg-green-500/20 text-green-500"
-        : "bg-secondary"
-    }`}
-  >
-    Projects
-  </span>
-
-  <span
-    className={`px-3 py-1 rounded-full text-sm ${
-      resumeScore >= 100
-        ? "bg-green-500/20 text-green-500"
-        : "bg-secondary"
-    }`}
-  >
-    Skills
-  </span>
-</div>
-
-  <p className="mt-2 text-sm text-muted-foreground">
-    Complete more sections to improve your resume score.
-  </p>
-</div>
+              <p className="mt-2 text-sm text-muted-foreground">
+                Complete more sections to improve your resume score.
+              </p>
+            </div>
             {recommendedSections.length > 0 && (
-  <div className="mb-6 p-4 rounded-xl border border-border bg-muted">
-    <h3 className="font-semibold mb-2">
-      Recommended Sections
-    </h3>
+              <div className="mb-6 p-4 rounded-xl border border-border bg-background/50">
+                <h3 className="font-semibold mb-2">
+                  Recommended Sections
+                </h3>
 
-    <div className="flex flex-wrap gap-2">
-      {recommendedSections.map(section => (
-        <span
-          key={section}
-          className="px-3 py-1 rounded-full bg-primary/10 text-primary text-sm"
-        >
-          {section}
-        </span>
-      ))}
-    </div>
-  </div>
-)}
+                <div className="flex flex-wrap gap-2">
+                  {recommendedSections.map(section => (
+                    <span
+                      key={section}
+                      className="px-3 py-1 rounded-full bg-primary/10 text-primary text-sm"
+                    >
+                      {section}
+                    </span>
+                  ))}
+                </div>
+              </div>
+            )}
 
-{resumeVersions.length > 0 && (
-  <div className="mb-6 p-4 rounded-xl border border-border bg-muted">
-    <h3 className="font-semibold mb-3">
-      Resume Version History
-    </h3>
+            {resumeVersions.length > 0 && (
+              <div className="mb-6 p-4 rounded-xl border border-border bg-background/50">
+                <h3 className="font-semibold mb-3">
+                  Resume Version History
+                </h3>
 
-    <div className="space-y-2">
-      {resumeVersions.map(version => (
-        <div
-          key={version.id}
-          className="flex justify-between items-center p-2 rounded-lg bg-background"
-        >
-          <span className="text-sm">
-            {version.timestamp}
-          </span>
+                <div className="space-y-2">
+                  {resumeVersions.map(version => (
+                    <div
+                      key={version.id}
+                      className="flex justify-between items-center p-2 rounded-lg bg-background"
+                    >
+                      <span className="text-sm">
+                        {version.timestamp}
+                      </span>
 
-          <button
-            onClick={() => restoreVersion(version)}
-            className="text-primary text-sm font-medium"
-          >
-            Restore
-          </button>
-        </div>
-      ))}
-    </div>
-  </div>
-)}
+                      <button
+                        onClick={() => restoreVersion(version)}
+                        className="text-primary text-sm font-medium"
+                      >
+                        Restore
+                      </button>
+                    </div>
+                  ))}
+                </div>
+              </div>
+            )}
 
-<div className="mb-6 p-4 rounded-xl border border-border bg-muted">
-  <div className="flex justify-between items-center mb-2">
-    <h3 className="font-semibold">
-      Resume Readability Score
-    </h3>
+            <div className="mb-6 p-4 rounded-xl border border-border bg-background/50">
+              <div className="flex justify-between items-center mb-2">
+                <h3 className="font-semibold">
+                  Resume Readability Score
+                </h3>
 
-    <span className="text-primary font-bold">
-      {readabilityScore}/100
-    </span>
-  </div>
+                <span className="text-primary font-bold">
+                  {readabilityScore}/100
+                </span>
+              </div>
 
-  <div className="w-full bg-secondary rounded-full h-3">
-    <div
-      className="bg-primary h-3 rounded-full transition-all"
-      style={{ width: `${readabilityScore}%` }}
-    />
-  </div>
+              <div className="w-full bg-secondary rounded-full h-3">
+                <div
+                  className="bg-primary h-3 rounded-full transition-all"
+                  style={{ width: `${readabilityScore}%` }}
+                />
+              </div>
 
-  {claritySuggestions.length > 0 && (
-    <div className="mt-4">
-      <h4 className="font-medium mb-2">
-        Suggestions
-      </h4>
+              {claritySuggestions.length > 0 && (
+                <div className="mt-4">
+                  <h4 className="font-medium mb-2">
+                    Suggestions
+                  </h4>
 
-      <ul className="list-disc list-inside text-sm text-muted-foreground">
-        {claritySuggestions.map((tip, index) => (
-          <li key={index}>{tip}</li>
-        ))}
-      </ul>
-    </div>
-  )}
-</div>
+                  <ul className="list-disc list-inside text-sm text-muted-foreground">
+                    {claritySuggestions.map((tip, index) => (
+                      <li key={index}>{tip}</li>
+                    ))}
+                  </ul>
+                </div>
+              )}
+            </div>
 
-<div className="bg-background border border-border rounded-xl p-6 h-[500px] overflow-y-auto font-mono text-sm whitespace-pre-wrap">
-  {generateMarkdown()}
-</div>
+            {selectedVersion && (
+              <div className="flex justify-between items-center bg-primary/10 border border-primary/20 p-3 rounded-lg mb-4">
+                <span className="text-sm font-medium">Viewing restored version from {selectedVersion.timestamp}</span>
+                <button
+                  onClick={() => setSelectedVersion(null)}
+                  className="px-3 py-1 rounded bg-primary text-primary-foreground text-xs font-semibold hover:bg-primary/95"
+                >
+                  Reset to Current Draft
+                </button>
+              </div>
+            )}
+
+            <div className="bg-background border border-border rounded-xl p-6 h-[500px] overflow-y-auto font-mono text-sm whitespace-pre-wrap">
+              {selectedVersion ? selectedVersion.content : generateMarkdown()}
+            </div>
           </div>
         )
 
@@ -1259,16 +1177,16 @@ useEffect(() => {
         <div className="mb-8 flex items-center justify-between relative">
           <div className="absolute left-0 top-1/2 w-full h-0.5 bg-border -z-10 transform -translate-y-1/2" />
           {STEPS.map((step, index) => {
-            const isActive    = index === currentStep
+            const isActive = index === currentStep
             const isCompleted = index < currentStep
-            const StepIcon    = step.icon
+            const StepIcon = step.icon
             return (
               <div key={step.id} className="flex flex-col items-center">
                 <div className={cn(
                   'w-10 h-10 rounded-full flex items-center justify-center border-2 transition-colors',
-                  isActive    ? 'bg-primary border-primary text-primary-foreground' :
-                  isCompleted ? 'bg-primary/20 border-primary text-primary' :
-                                'bg-background border-border text-muted-foreground'
+                  isActive ? 'bg-primary border-primary text-primary-foreground' :
+                    isCompleted ? 'bg-primary/20 border-primary text-primary' :
+                      'bg-background border-border text-muted-foreground'
                 )}>
                   {isCompleted ? <CheckCircle className="w-5 h-5" /> : <StepIcon className="w-5 h-5" />}
                 </div>
@@ -1303,11 +1221,11 @@ useEffect(() => {
         </div>
 
         {/* Drop this safely within your main workspace grid or right before action buttons */}
-<AnimatePresence mode="wait">
-  {currentStep !== 5 && ( // Hide panel on the final pure preview screen
-    <ConsistencyPanel errors={activeConsistencyWarnings} />
-  )}
-</AnimatePresence>
+        <AnimatePresence mode="wait">
+          {currentStep !== 5 && ( // Hide panel on the final pure preview screen
+            <ConsistencyPanel errors={activeConsistencyWarnings} />
+          )}
+        </AnimatePresence>
 
         {/* Navigation Actions */}
         <div className="mt-8 flex justify-between items-center">

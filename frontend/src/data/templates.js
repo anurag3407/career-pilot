@@ -1,5 +1,19 @@
 export const templates = [
 
+  {
+    "id": "Emoji_Only_Hieroglyphic_UI",
+    "title": "Emoji-Only Hieroglyphic UI",
+    "category": "Portfolio",
+    "colorScheme": "Colorful",
+    "layout": "Interactive",
+    "author": "yashvi-3106",
+    "views": 1850,
+    "rating": 5.0,
+    "image": "/templates/Emoji_Only_Hieroglyphic_UI.png",
+    "createdAt": "2026-06-08",
+    "isComplete": true
+  },
+
 {
   "id": "Virtual_Reality_Room_360",
   "title": "Virtual Reality Room 360",
@@ -100,6 +114,7 @@ export const templates = [
 {
   "id": "Hidden_Easter_Egg_Scavenger_Hunt",
   "title": "Hidden Easter Egg Scavenger Hunt",
+
   "category": "Portfolio",
   "colorScheme": "Dark",
   "layout": "Interactive",
@@ -555,18 +570,18 @@ export const templates = [
   },
 
   {
-    id: "ZineCollage",
-    title: "Zine Collage",
-    category: "Portfolio",
-    colorScheme: "Colorful",
-    layout: "Grid",
-    author: "System",
-    views: 1200,
-    rating: 4.8,
-    image: "/template-previews/Zine_Collage.png",
-    createdAt: "2026-06-08",
-    description: "An asymmetric, high-contrast scrapbook magazine layout featuring heavy ink borders, rotated clipping frames, and retro label-maker accents.",
-    isComplete: true
+    "id": "ZineCollage",
+    "title": "Zine Collage",
+    "category": "Portfolio",
+    "colorScheme": "Colorful",
+    "layout": "Grid",
+    "author": "System",
+    "views": 1200,
+    "rating": 4.8,
+    "image": "/template-previews/Zine_Collage.png",
+    "createdAt": "2026-06-08",
+    "description": "An asymmetric, high-contrast scrapbook magazine layout featuring heavy ink borders, rotated clipping frames, and retro label-maker accents.",
+    "isComplete": true
   },
   
   {
@@ -2698,6 +2713,19 @@ export const templates = [
   },
 
 
+  {
+  "id": "Pokemon_Pokedex_Classic",
+  "title": "Pokemon Pokedex Classic",
+  "category": "Portfolio",
+  "colorScheme": "Dark",
+  "layout": "Interactive",
+  "author": "System",
+  "views": 1135,
+  "rating": 4.7,
+  "image": "/template-previews/Pokemon_Pokedex_Classic.png",
+  "createdAt": "2026-06-08",
+  "isComplete": true
+},
 
   {
     "id": "Underground_Bunker_Console",
