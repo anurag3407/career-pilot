@@ -1,3 +1,12 @@
+## [1.231.1](https://github.com/anurag3407/career-pilot/compare/v1.231.0...v1.231.1) (2026-06-13)
+
+
+### Bug Fixes
+
+* **socket:** add polling fallback for blocked websockets ([0a0b494](https://github.com/anurag3407/career-pilot/commit/0a0b4940184c8ab06866f8fe6b66870abde291f7))
+* **socket:** address connection lifecycle review ([cf4c82c](https://github.com/anurag3407/career-pilot/commit/cf4c82c7197bed031217abc0621b78f2f713dca8))
+* **socket:** avoid user identifiers in transport logs ([e0e9d93](https://github.com/anurag3407/career-pilot/commit/e0e9d93791f895a52e054fa4867cb00a7f00d0a2))
+
 # [1.231.0](https://github.com/anurag3407/career-pilot/compare/v1.230.0...v1.231.0) (2026-06-13)
 
 
