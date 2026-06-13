@@ -32,6 +32,14 @@ import LowPolyTerrain from "../components/portfolio/templates/Low_Poly_Terrain/i
 import HighFashion from "../components/portfolio/templates/High_Fashion/index";
 import { PortfolioProvider } from '../context/PortfolioContext.jsx';
 
+const templateImporters = {
+  'zine-collage': () => import('../components/portfolio/templates/ZineCollage.jsx'),
+};
+
+function getTemplateImporter(templateId) {
+  return templateImporters[templateId] || (() => import(`../components/portfolio/templates/${templateId}/index.jsx`));
+}
+
 /* TemplatePreviewFrame — contains each full portfolio template in a
    sandboxed scrollable box. The key trick: CSS `transform` on the outer
    wrapper makes it the "containing block" for any position:fixed children,
@@ -159,9 +167,7 @@ function FilterSelect({ value, onChange, options, className = "" }) {
 const TemplateHeroPreview = ({ templateId, portfolioData }) => {
   const Component = useMemo(() => {
     if (!templateId) return null;
-    return React.lazy(
-      () => import(`../components/portfolio/templates/${templateId}/index.jsx`)
-    );
+    return React.lazy(getTemplateImporter(templateId));
   }, [templateId]);
 
   if (!templateId) return null;
@@ -329,7 +335,7 @@ function TemplateCard({ template, hovered, onHover, onLeave, onUse, aiDraft }) {
 const TemplatePreviewModal = ({ templateId, isOpen, onClose, portfolioData }) => {
   const Component = useMemo(() => {
     if (!templateId) return null;
-    return React.lazy(() => import(`../components/portfolio/templates/${templateId}/index.jsx`));
+    return React.lazy(getTemplateImporter(templateId));
   }, [templateId]);
 
   if (!templateId) return null;
