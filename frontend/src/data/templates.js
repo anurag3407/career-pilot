@@ -1,5 +1,18 @@
 export const templates = [
   {
+    "id": "Virtual_Reality_Room_360",
+    "title": "Virtual Reality Room 360",
+    "category": "Portfolio",
+    "colorScheme": "Dark",
+    "layout": "Interactive",
+    "author": "ShaktiShrey-01",
+    "views": 0,
+    "rating": 0,
+    "image": "/template-previews/Virtual_Reality_Room_360.png",
+    "createdAt": "2026-06-12",
+    "isComplete": true
+  },
+  {
     "id": "Forensic_Investigator_Desk",
     "title": "Forensic Investigator Desk",
     "category": "Portfolio",
@@ -12,46 +25,84 @@ export const templates = [
     "createdAt": "2026-06-11",
     "isComplete": true
   },
-{
-  "id": "Fake_WebOS_Operating_System",
-  "title": "Fake WebOS Operating System",
-  "category": "Portfolio",
-  "colorScheme": "Dark",
-  "layout": "Interactive",
-  "author": "System",
-  "views": 0,
-  "rating": 4.9,
-  "image": "/templates/Fake_WebOS_Operating_System.png",
-  "createdAt": "2026-06-09",
-  "isComplete": true
-},
-{
-  "id": "Hidden_Easter_Egg_Scavenger_Hunt",
-  "title": "Hidden Easter Egg Scavenger Hunt",
-  "category": "Portfolio",
-  "colorScheme": "Dark",
-  "layout": "Interactive",
-  "author": "prerendrarahitya1708",
-  "views": 0,
-  "rating": 4.8,
-  "image": "/template-previews/Hidden_Easter_Egg_Scavenger_Hunt.png",
-  "createdAt": "2026-06-07",
-  "isComplete": true
-},
-  
-{
-  "id": "Eye_Tracking_Heatmap_Simulation",
-  "title": "Eye Tracking Heatmap Simulation",
-  "category": "Portfolio",
-  "colorScheme": "Dark",
-  "layout": "Fullscreen",
-  "author": "System",
-  "views": 0,
-  "rating": 0,
-  "image": "/template-previews/Eye_Tracking_Heatmap_Simulation.png",
-  "createdAt": "2026-06-07",
-  "isComplete": true
-},
+  {
+    "id": "IKEA_Assembly_Manual",
+    "title": "IKEA Assembly Manual",
+    "category": "Portfolio",
+    "colorScheme": "Light",
+    "layout": "Interactive",
+    "author": "System",
+    "views": 0,
+    "rating": 0,
+    "image": "/templates/IKEA_Assembly_Manual.png",
+    "createdAt": "2026-06-13",
+    "isComplete": true
+  },
+  {
+    "id": "Endless_Runner_Minigame",
+    "title": "Endless Runner Minigame",
+    "category": "Portfolio",
+    "colorScheme": "Dark",
+    "layout": "Interactive",
+    "author": "ShaktiShrey-01",
+    "views": 0,
+    "rating": 0,
+    "image": "/template-previews/Endless_Runner_Minigame.png",
+    "createdAt": "2026-06-12",
+    "isComplete": true
+  },
+  {
+    "id": "Fluid_Simulation_3D_WebGL",
+    "title": "Fluid Simulation 3D WebGL",
+    "category": "Portfolio",
+    "colorScheme": "Dark",
+    "layout": "Interactive",
+    "author": "kashviporwal-byte",
+    "views": 0,
+    "rating": 0,
+    "image": "/templates/Fluid_Simulation_3D_WebGL.png",
+    "createdAt": "2026-06-13",
+    "isComplete": true
+  },
+  {
+    "id": "Fake_WebOS_Operating_System",
+    "title": "Fake WebOS Operating System",
+    "category": "Portfolio",
+    "colorScheme": "Dark",
+    "layout": "Interactive",
+    "author": "System",
+    "views": 0,
+    "rating": 4.9,
+    "image": "/templates/Fake_WebOS_Operating_System.png",
+    "createdAt": "2026-06-09",
+    "isComplete": true
+  },
+  {
+    "id": "Hidden_Easter_Egg_Scavenger_Hunt",
+    "title": "Hidden Easter Egg Scavenger Hunt",
+    "category": "Portfolio",
+    "colorScheme": "Dark",
+    "layout": "Interactive",
+    "author": "prerendrarahitya1708",
+    "views": 0,
+    "rating": 4.8,
+    "image": "/template-previews/Hidden_Easter_Egg_Scavenger_Hunt.png",
+    "createdAt": "2026-06-07",
+    "isComplete": true
+  },
+  {
+    "id": "Eye_Tracking_Heatmap_Simulation",
+    "title": "Eye Tracking Heatmap Simulation",
+    "category": "Portfolio",
+    "colorScheme": "Dark",
+    "layout": "Fullscreen",
+    "author": "System",
+    "views": 0,
+    "rating": 0,
+    "image": "/template-previews/Eye_Tracking_Heatmap_Simulation.png",
+    "createdAt": "2026-06-07",
+    "isComplete": true
+  },
   {
     "id": "Live_Satellite_Imagery_Feed",
     "title": "Live Satellite Imagery Feed",
@@ -481,7 +532,6 @@ export const templates = [
     "createdAt": "2026-05-31",
     "isComplete": true
   },
-
   {
     "id": "ZineCollage",
     "title": "Zine Collage",
@@ -496,7 +546,6 @@ export const templates = [
     "description": "An asymmetric, high-contrast scrapbook magazine layout featuring heavy ink borders, rotated clipping frames, and retro label-maker accents.",
     "isComplete": true
   },
-  
   {
     "id": "Cinematic",
     "title": "Cinematic",
@@ -2067,18 +2116,18 @@ export const templates = [
     "createdAt": "2026-05-01"
   },
   {
-  "id": "Soft_Neumorphic",
-  "title": "Soft Neumorphic",
-  "category": "Portfolio",
-  "colorScheme": "Light",
-  "layout": "Minimal",
-  "author": "Akansha02code",
-  "views": 1156,
-  "rating": 4.5,
-  "image": "/template-previews/Soft-Neumorphic.png",
-  "createdAt": "2026-05-01",
-  "isComplete": true
-},
+    "id": "Soft_Neumorphic",
+    "title": "Soft Neumorphic",
+    "category": "Portfolio",
+    "colorScheme": "Light",
+    "layout": "Minimal",
+    "author": "Akansha02code",
+    "views": 1156,
+    "rating": 4.5,
+    "image": "/template-previews/Soft-Neumorphic.png",
+    "createdAt": "2026-05-01",
+    "isComplete": true
+  },
   {
     "id": "Solar_Eclipse",
     "title": "Solar Eclipse",
@@ -2614,17 +2663,14 @@ export const templates = [
     "image": "/template-previews/Zoom_Into_Work.png",
     "createdAt": "2026-05-01"
   },
-
-
   {
-  "id": "error_404_infinite_gallery",
-  "name": "Error 404 Infinite Gallery",
-  "path": "Error_404_Infinite_Gallery",
-  "thumbnail": "/templates/error_404_infinite_gallery.png",
-  "category": "Special / Error Pages",
-  "description": "An interactive 404 error page wrapped in an infinite smoothly-looping background project showcase."
+    "id": "error_404_infinite_gallery",
+    "name": "Error 404 Infinite Gallery",
+    "path": "Error_404_Infinite_Gallery",
+    "thumbnail": "/templates/error_404_infinite_gallery.png",
+    "category": "Special / Error Pages",
+    "description": "An interactive 404 error page wrapped in an infinite smoothly-looping background project showcase."
   },
-  
   {
     "id": "Underground_Bunker_Console",
     "title": "Underground Bunker Console",
@@ -2695,6 +2741,19 @@ export const templates = [
     "rating": 5.0,
     "image": "/templates/Commercial_Pilot_Cockpit.png",
     "createdAt": "2026-06-12",
+    "isComplete": true
+  },
+  {
+    "id": "Book_Page_Flip_3D_Render",
+    "title": "Book Page Flip 3D Render",
+    "category": "Portfolio",
+    "colorScheme": "Dark",
+    "layout": "Interactive",
+    "author": "System",
+    "views": 3200,
+    "rating": 5.0,
+    "image": "/templates/Book_Page_Flip_3D_Render.png",
+    "createdAt": "2026-06-13",
     "isComplete": true
   }
 ];
