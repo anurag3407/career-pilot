@@ -71,20 +71,10 @@ Return ONLY valid JSON. No markdown fences, no extra text.`;
       qualitativeData = JSON.parse(text);
     } catch (parseErr) {
       console.error('Resume score JSON parse error:', parseErr, 'Raw text:', text);
-      qualitativeData = {
-        sections: {
-          summary: { feedback: 'Consider making your summary more impactful.' },
-          skills: { feedback: 'Ensure skills match the target job description.' },
-          experience: { feedback: 'Use strong action verbs and metrics.' },
-          education: { feedback: 'Include relevant coursework or GPA if applicable.' },
-          projects: { feedback: 'Detail the technologies used and outcomes.' }
-        },
-        topSuggestions: [
-          'Add more quantifiable metrics to your experience.',
-          'Tailor keywords to the specific job role.',
-          'Ensure formatting is clean and easy to read.'
-        ]
-      };
+      throw new ApiError(
+        502,
+        'AI service returned an invalid response. Please try again in a moment.'
+      );
     }
 
     // 3. Map into the format expected by the frontend
