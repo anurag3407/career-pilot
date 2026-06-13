@@ -14,6 +14,19 @@ export const templates = [
   "isComplete": true
 },
   {
+    "id": "Forensic_Investigator_Desk",
+    "title": "Forensic Investigator Desk",
+    "category": "Portfolio",
+    "colorScheme": "Dark",
+    "layout": "Interactive",
+    "author": "ShaktiShrey-01",
+    "views": 0,
+    "rating": 0,
+    "image": "/template-previews/Forensic_investigator_desk.png",
+    "createdAt": "2026-06-11",
+    "isComplete": true
+  },
+  {
     "id": "IKEA_Assembly_Manual",
     "title": "IKEA Assembly Manual",
     "category": "Portfolio",
@@ -2812,6 +2825,15 @@ export const templates = [
     "isComplete": true
   },
   {
+    "id": "Crossword_Puzzle_Word_Fill",
+    "title": "Crossword Puzzle Word Fill",
+    "category": "Portfolio",
+    "colorScheme": "Dark",
+    "layout": "Crossword_Puzzle_Word_Fill",
+    "author": "System",
+    "views": 1050,
+    "rating": 4.8,
+    "image": "/template-previews/crossword_puzzle_word_fill.png",
     "id": "Autumn_Forest_Leaf_Fall",
     "title": "Autumn Forest Leaf Fall",
     "category": "Portfolio",
