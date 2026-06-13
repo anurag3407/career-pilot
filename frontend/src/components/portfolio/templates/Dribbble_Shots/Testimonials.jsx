@@ -1,7 +1,7 @@
 import { useEffect, useRef, useState } from "react";
 import { motion, AnimatePresence, useInView } from "framer-motion";
 import { Star } from "lucide-react";
-import SectionLabel from "./Sectionlabel";
+import SectionLabel from "./SectionLabel";
 import data from "../../../../data/dummy_data.json";
 
 export default function Testimonials() {

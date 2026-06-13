@@ -1,7 +1,7 @@
 import { useRef, useState } from "react";
 import { motion, AnimatePresence, useInView } from "framer-motion";
 import { Heart, Bookmark, Eye, Github, ExternalLink } from "lucide-react";
-import SectionLabel from "./Sectionlabel";
+import SectionLabel from "./SectionLabel";
 import data from "../../../../data/dummy_data.json";
 
 export default function Projects() {

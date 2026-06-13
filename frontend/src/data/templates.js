@@ -483,18 +483,18 @@ export const templates = [
   },
 
   {
-    id: "ZineCollage",
-    title: "Zine Collage",
-    category: "Portfolio",
-    colorScheme: "Colorful",
-    layout: "Grid",
-    author: "System",
-    views: 1200,
-    rating: 4.8,
-    image: "/template-previews/Zine_Collage.png",
-    createdAt: "2026-06-08",
-    description: "An asymmetric, high-contrast scrapbook magazine layout featuring heavy ink borders, rotated clipping frames, and retro label-maker accents.",
-    isComplete: true
+    "id": "ZineCollage",
+    "title": "Zine Collage",
+    "category": "Portfolio",
+    "colorScheme": "Colorful",
+    "layout": "Grid",
+    "author": "System",
+    "views": 1200,
+    "rating": 4.8,
+    "image": "/template-previews/Zine_Collage.png",
+    "createdAt": "2026-06-08",
+    "description": "An asymmetric, high-contrast scrapbook magazine layout featuring heavy ink borders, rotated clipping frames, and retro label-maker accents.",
+    "isComplete": true
   },
   
   {
@@ -2663,7 +2663,6 @@ export const templates = [
     "createdAt": "2026-06-10",
     "isComplete": true
   },
-
   {
     "id": "micro-interactions-hover-only",
     "title": "Micro-Interactions Hover Only",
@@ -2671,7 +2670,31 @@ export const templates = [
     "description": "An ultra-sleek, modern interface emphasizing rich CSS transition feedback, sliding tracking underlines, and expanding detail blocks.",
     "image": "/templates/micro-interactions-hover.png",
     "isComplete": true
+  },
+  {
+    "id": "Origami_Unfold_Step_Animation",
+    "title": "Origami Unfold Step Animation",
+    "category": "Portfolio",
+    "colorScheme": "Colorful",
+    "layout": "Interactive",
+    "author": "System",
+    "views": 1800,
+    "rating": 5.0,
+    "image": "/templates/Origami_Unfold_Step_Animation.png",
+    "createdAt": "2026-06-12",
+    "isComplete": true
+  },
+  {
+    "id": "Commercial_Pilot_Cockpit",
+    "title": "Commercial Pilot Cockpit",
+    "category": "Portfolio",
+    "colorScheme": "Dark",
+    "layout": "Interactive",
+    "author": "System",
+    "views": 2500,
+    "rating": 5.0,
+    "image": "/templates/Commercial_Pilot_Cockpit.png",
+    "createdAt": "2026-06-12",
+    "isComplete": true
   }
-
 ];
-
