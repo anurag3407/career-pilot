@@ -28,6 +28,7 @@ export const templates = [
     "createdAt": "2026-06-13",
     "isComplete": true
   },
+  {
     "id": "Endless_Runner_Minigame",
     "title": "Endless Runner Minigame",
     "category": "Portfolio",
@@ -40,6 +41,7 @@ export const templates = [
     "createdAt": "2026-06-11",
     "isComplete": true
   },
+  {
     "image": "/template-previews/Endless_Runner_Minigame.png",
     "createdAt": "2026-06-12",
     isComplete: true
@@ -2455,6 +2457,19 @@ export const templates = [
     "createdAt": "2026-05-01"
   },
   {
+    "id": "Typing_Speed_Test_Tracker",
+    "title": "Typing Speed Test Tracker",
+    "category": "Portfolio",
+    "colorScheme": "Dark",
+    "layout": "Dashboard",
+    "author": "System",
+    "views": 0,
+    "rating": 0,
+    "image": "/templates/Typing_Speed_Test_Tracker.png",
+    "createdAt": "2026-06-13",
+    "isComplete": true
+  },
+  {
     "id": "Type_Specimen",
     "title": "Type Specimen",
     "category": "Portfolio",
@@ -2777,4 +2792,3 @@ export const templates = [
     "isComplete": true
   }
 ];
-
