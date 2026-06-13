@@ -1,16 +1,16 @@
 export const templates = [
   {
-    id: "Forensic_Investigator_Desk",
-    title: "Forensic Investigator Desk",
-    category: "Portfolio",
-    colorScheme: "Dark",
-    layout: "Interactive",
-    author: "ShaktiShrey-01",
-    views: 0,
-    rating: 0,
-    image: "/template-previews/Forensic_investigator_desk.png", 
-    createdAt: "2026-06-11",
-    isComplete: true
+    "id": "Forensic_Investigator_Desk",
+    "title": "Forensic Investigator Desk",
+    "category": "Portfolio",
+    "colorScheme": "Dark",
+    "layout": "Interactive",
+    "author": "ShaktiShrey-01",
+    "views": 0,
+    "rating": 0,
+    "image": "/template-previews/Forensic_investigator_desk.png",
+    "createdAt": "2026-06-11",
+    "isComplete": true
   },
 {
   "id": "Fake_WebOS_Operating_System",
@@ -2617,16 +2617,14 @@ export const templates = [
 
 
   {
-  id: 'error_404_infinite_gallery',
-  name: 'Error 404 Infinite Gallery',
-  path: 'Error_404_Infinite_Gallery',
-  thumbnail: '/templates/error_404_infinite_gallery.png', 
-  category: 'Special / Error Pages',
-  description: 'An interactive 404 error page wrapped in an infinite smoothly-looping background project showcase.'
+  "id": "error_404_infinite_gallery",
+  "name": "Error 404 Infinite Gallery",
+  "path": "Error_404_Infinite_Gallery",
+  "thumbnail": "/templates/error_404_infinite_gallery.png",
+  "category": "Special / Error Pages",
+  "description": "An interactive 404 error page wrapped in an infinite smoothly-looping background project showcase."
   },
-
-
-
+  
   {
     "id": "Underground_Bunker_Console",
     "title": "Underground Bunker Console",
