@@ -10,8 +10,8 @@ const fadeInUp = {
 const Hero = ({ data }) => {
   const safeName = typeof data.personal.name === 'string' ? data.personal.name : 'Content Creator';
   const handle = safeName.toLowerCase().replace(/\s+/g, '');
-  const subscriberCount = data.stats?.subscribers || '1.2M';
-  const videoCount = data.stats?.videos || '500';
+  const subscriberCount = data.stats?.subscribers ?? '1.2M';
+  const videoCount = data.stats?.videos ?? '500';
 
   const safeAvatarUrl = (url) => {
     if (!url) return 'https://images.unsplash.com/photo-1507003211169-0a1dd7228f2d?w=200&h=200&fit=crop&crop=faces';

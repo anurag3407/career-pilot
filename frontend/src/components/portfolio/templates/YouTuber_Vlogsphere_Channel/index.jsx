@@ -13,13 +13,14 @@ const YouTuberVlogsphereChannel = ({ portfolioData }) => {
   // Merge AI extracted data with dummy data fallbacks for visual completeness
   const personal = {
     ...dummyData.personal,
-    ...(portfolioData?.hero?.title && { name: portfolioData.hero.title }),
-    ...(portfolioData?.hero?.subtitle && { title: portfolioData.hero.subtitle }),
+    ...portfolioData?.personal,
+    ...(portfolioData?.hero?.subtitle && { name: portfolioData.hero.subtitle }),
+    ...(portfolioData?.hero?.title && { title: portfolioData.hero.title }),
     ...(portfolioData?.hero?.tagline && { tagline: portfolioData.hero.tagline }),
     ...(portfolioData?.about?.bio && { bio: portfolioData.about.bio }),
   };
 
-  const socials = { ...dummyData.socials, ...portfolioData?.socials };
+  const socials = { ...dummyData.socials, ...portfolioData?.contact, ...portfolioData?.socials };
 
   // Adapt skills array if needed
   let skills = dummyData.skills;
@@ -32,6 +33,7 @@ const YouTuberVlogsphereChannel = ({ portfolioData }) => {
   let projects = safeDummyProjects;
   if (Array.isArray(portfolioData?.projects) && portfolioData.projects.length > 0) {
     projects = portfolioData.projects.map((p, i) => ({
+      ...p, // Preserve all original fields (duration, views, publishedAt, etc.)
       title: p.title || p.name || 'Project',
       description: p.description || '',
       techStack: p.technologies || p.techStack || [],

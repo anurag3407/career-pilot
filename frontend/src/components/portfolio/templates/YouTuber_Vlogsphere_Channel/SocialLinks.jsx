@@ -31,18 +31,26 @@ const SocialLinks = ({ data }) => {
       <h2 className="text-2xl md:text-3xl font-bold text-white mb-6">Follow Me</h2>
       
       <div className="grid grid-cols-2 sm:grid-cols-3 md:grid-cols-5 gap-4">
-        {socials.map((social, idx) => (
-          <a
-            key={idx}
-            href={social.url}
-            target="_blank"
-            rel="noopener noreferrer"
-            className="bg-[#212121] hover:bg-[#303030] rounded-xl p-6 text-center transition"
-          >
-            <social.icon size={32} className="mx-auto text-white mb-2" />
-            <p className="text-white font-semibold">{social.label}</p>
-          </a>
-        ))}
+        {socials.map((social, idx) => {
+          const href = social.url;
+          const isValid = href !== '#';
+          const Component = isValid ? 'a' : 'div';
+          
+          return (
+            <Component
+              key={idx}
+              {...(isValid && {
+                href,
+                target: '_blank',
+                rel: 'noopener noreferrer'
+              })}
+              className={`bg-[#212121] ${isValid ? 'hover:bg-[#303030] cursor-pointer' : 'opacity-70 cursor-default'} rounded-xl p-6 text-center transition`}
+            >
+              <social.icon size={32} className="mx-auto text-white mb-2" />
+              <p className="text-white font-semibold">{social.label}</p>
+            </Component>
+          );
+        })}
       </div>
     </motion.div>
   );

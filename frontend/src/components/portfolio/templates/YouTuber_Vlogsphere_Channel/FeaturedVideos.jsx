@@ -23,9 +23,21 @@ const FeaturedVideos = ({ data }) => {
 
   const safeProjects = Array.isArray(data.projects) && data.projects.length > 0 ? data.projects : [];
 
-  const formatDuration = (minutes) => {
-    const mins = Math.floor(minutes || 10);
-    const secs = Math.floor(Math.random() * 60).toString().padStart(2, '0');
+  // Simple deterministic hash function
+  const hash = (input) => {
+    const str = String(input);
+    let hashVal = 0;
+    for (let i = 0; i < str.length; i++) {
+      const char = str.charCodeAt(i);
+      hashVal = (hashVal << 5) - hashVal + char;
+      hashVal = hashVal & hashVal; // Convert to 32-bit integer
+    }
+    return Math.abs(hashVal);
+  };
+
+  const formatDuration = (minutes, videoKey) => {
+    const mins = Math.floor(minutes ?? 10);
+    const secs = (hash(videoKey || 'default') % 60).toString().padStart(2, '0');
     return `${mins}:${secs}`;
   };
 
@@ -61,13 +73,13 @@ const FeaturedVideos = ({ data }) => {
                 <PlayCircle size={64} className="text-white" />
               </div>
               <div className="absolute bottom-2 right-2 bg-black/80 text-white text-xs px-2 py-1 rounded">
-                {typeof project.duration === 'number' ? formatDuration(project.duration) : formatDuration()}
+                {typeof project.duration === 'number' ? formatDuration(project.duration, project.title || idx) : formatDuration(undefined, project.title || idx)}
               </div>
             </div>
             <div className="p-4">
               <h3 className="text-white font-semibold line-clamp-2">{safeTitle(project.title)}</h3>
               <p className="text-gray-400 text-sm mt-2">
-                {project.views ? `${project.views} views` : formatViews(idx)} • {project.publishedAt || formatDate(idx)}
+                {project.views != null ? `${project.views} views` : formatViews(idx)} • {project.publishedAt != null ? project.publishedAt : formatDate(idx)}
               </p>
             </div>
           </motion.div>

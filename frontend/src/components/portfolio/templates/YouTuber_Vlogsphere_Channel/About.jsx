@@ -8,7 +8,10 @@ const fadeInUp = {
 
 const About = ({ data }) => {
   const safeBio = typeof data.personal.bio === 'string' ? data.personal.bio : 'Welcome to my channel!';
-  const safeYearsExperience = typeof data.stats.yearsExperience === 'number' ? data.stats.yearsExperience : 5;
+  
+  // Normalize and validate yearsExperience: parse numeric strings, ensure finite, non-negative
+  const parsedYears = Number(data.stats.yearsExperience);
+  const safeYearsExperience = Number.isFinite(parsedYears) && parsedYears >= 0 ? parsedYears : 5;
 
   return (
     <motion.div initial="initial" animate="animate" variants={fadeInUp} className="max-w-7xl mx-auto px-4 py-12">

@@ -1679,7 +1679,7 @@ export const templates = [
     "rating": 4.5,
     "image": "/template-previews/Newspaper_Front.png",
     "createdAt": "2026-05-01",
-    "isComplete": true
+    "isComplete": false
   },
   {
     "id": "YouTuber_Vlogsphere_Channel",
