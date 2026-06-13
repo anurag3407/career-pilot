@@ -86,18 +86,21 @@ export default function Login() {
   }
 
   const handleLinkedInLogin = () => {
-    if (!loginWithLinkedIn) {
-      toast.error('LinkedIn login integration is not configured.')
-      return
-    }
-    setLinkedinLoading(true)
-    try {
-      loginWithLinkedIn()
-    } catch (error) {
-      toast.error(error.message || 'Failed to login with LinkedIn')
-      setLinkedinLoading(false)
-    }
+  if (!loginWithLinkedIn) {
+    toast.error('LinkedIn login integration is not configured.')
+    return
   }
+
+  setLinkedinLoading(true)
+
+  try {
+    loginWithLinkedIn()
+  } catch (error) {
+    toast.error(error.message || 'Failed to login with LinkedIn')
+  } finally {
+    setLinkedinLoading(false)
+  }
+}
 
   const handleTotpSubmit = async (e) => {
     e.preventDefault()
