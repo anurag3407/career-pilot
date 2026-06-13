@@ -98,6 +98,9 @@ export const SidebarBody = (props) => {
 export const DesktopSidebar = ({
     className,
     children,
+    open: _open,
+    setOpen: _setOpen,
+    animate: _animate,
     ...props
 }) => {
     const { open, setOpen, animate } = useSidebarInternal();
@@ -134,6 +137,9 @@ export const DesktopSidebar = ({
 export const MobileSidebar = ({
     className,
     children,
+    open: _open,
+    setOpen: _setOpen,
+    animate: _animate,
     ...props
 }) => {
     const { open, setOpen } = useSidebarInternal();
