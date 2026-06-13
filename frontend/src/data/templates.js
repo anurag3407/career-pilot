@@ -14,6 +14,51 @@ export const templates = [
     "isComplete": true
   },
 
+{
+  "id": "Virtual_Reality_Room_360",
+  "title": "Virtual Reality Room 360",
+  "category": "Portfolio",
+  "colorScheme": "Dark",
+  "layout": "Interactive",
+  "author": "ShaktiShrey-01",
+  "views": 0,
+  "rating": 0,
+  "image": "/template-previews/Virtual_Reality_Room_360.png",
+  "createdAt": "2026-06-12",
+  "isComplete": true
+},
+  {
+    "id": "Forensic_Investigator_Desk",
+    "title": "Forensic Investigator Desk",
+    "id": "IKEA_Assembly_Manual",
+    "title": "IKEA Assembly Manual",
+    "category": "Portfolio",
+    "colorScheme": "Light",
+    "layout": "Interactive",
+    "author": "System",
+    "views": 0,
+    "rating": 0,
+    "image": "/templates/IKEA_Assembly_Manual.png",
+    "createdAt": "2026-06-13",
+    "isComplete": true
+  },
+    "id": "Endless_Runner_Minigame",
+    "title": "Endless Runner Minigame",
+    "category": "Portfolio",
+    "colorScheme": "Dark",
+    "layout": "Interactive",
+    "author": "ShaktiShrey-01",
+    "views": 0,
+    "rating": 0,
+    "image": "/template-previews/Forensic_investigator_desk.png", 
+    "createdAt": "2026-06-11",
+    "isComplete": true
+  },
+    "image": "/template-previews/Endless_Runner_Minigame.png",
+    "createdAt": "2026-06-12",
+    isComplete: true
+}
+,
   {
     "id": "Fluid_Simulation_3D_WebGL",
     "title": "Fluid Simulation 3D WebGL",
@@ -2744,6 +2789,19 @@ export const templates = [
     "rating": 5.0,
     "image": "/templates/Commercial_Pilot_Cockpit.png",
     "createdAt": "2026-06-12",
+    "isComplete": true
+  },
+  {
+    "id": "Book_Page_Flip_3D_Render",
+    "title": "Book Page Flip 3D Render",
+    "category": "Portfolio",
+    "colorScheme": "Dark",
+    "layout": "Interactive",
+    "author": "System",
+    "views": 3200,
+    "rating": 5.0,
+    "image": "/templates/Book_Page_Flip_3D_Render.png",
+    "createdAt": "2026-06-13",
     "isComplete": true
   }
 ];

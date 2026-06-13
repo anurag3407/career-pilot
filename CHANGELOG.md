@@ -1,3 +1,31 @@
+# [1.231.0](https://github.com/anurag3407/career-pilot/compare/v1.230.0...v1.231.0) (2026-06-13)
+
+
+### Features
+
+* Add Image Export for Resume Previews (Fixes [#3515](https://github.com/anurag3407/career-pilot/issues/3515)) ([7745d5c](https://github.com/anurag3407/career-pilot/commit/7745d5c2fefba9e69f0c19086a2b102222303c2c))
+
+# [1.230.0](https://github.com/anurag3407/career-pilot/compare/v1.229.0...v1.230.0) (2026-06-13)
+
+
+### Features
+
+* **portfolio:** add Book_Page_Flip_3D_Render portfolio template ([ea7d25b](https://github.com/anurag3407/career-pilot/commit/ea7d25b2ce227b41d6e19e6da2308881e2b27e86))
+
+# [1.229.0](https://github.com/anurag3407/career-pilot/compare/v1.228.0...v1.229.0) (2026-06-13)
+
+
+### Features
+
+* add IKEA Assembly Manual portfolio template ([3558afc](https://github.com/anurag3407/career-pilot/commit/3558afc97d67ebea2a582f290fcfc8c43c830681))
+
+# [1.228.0](https://github.com/anurag3407/career-pilot/compare/v1.227.0...v1.228.0) (2026-06-13)
+
+
+### Features
+
+* implement endless runner minigame portfolio template ([5b0af76](https://github.com/anurag3407/career-pilot/commit/5b0af7696113a1cd74b944ad35eab2cc06f561f9))
+
 # [1.227.0](https://github.com/anurag3407/career-pilot/compare/v1.226.0...v1.227.0) (2026-06-12)
 
 
