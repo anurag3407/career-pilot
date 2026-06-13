@@ -1,5 +1,19 @@
 export const templates = [
   {
+    "id": "Endless_Runner_Minigame",
+    "title": "Endless Runner Minigame",
+    "category": "Portfolio",
+    "colorScheme": "Dark",
+    "layout": "Interactive",
+    "author": "ShaktiShrey-01",
+    "views": 0,
+    "rating": 0,
+    "image": "/template-previews/Endless_Runner_Minigame.png",
+    "createdAt": "2026-06-12",
+    isComplete: true
+}
+,
+  {
     "id": "ASCII_Art_Terminal_Code",
     "title": "ASCII Art Terminal Code",
     "category": "Portfolio",
