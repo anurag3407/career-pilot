@@ -1,5 +1,7 @@
 import 'dotenv/config';
 import express from 'express';
+import collaborationRoutes from './routes/collaboration.js';
+
 import dotenv from "dotenv";
 dotenv.config();
 
@@ -249,7 +251,8 @@ app.use("/api/upload", inputRoutes);
 app.use("/api/recruiter", recruiterRoutes);
 try {
     const paymentRoutes = (await import('./routes/payments.js')).default;
-    app.use('/api/payments', paymentRoutes);
+    app.use('/api/collaboration', collaborationRoutes);
+app.use('/api/payments', paymentRoutes);
     console.log('✅ Payment routes loaded');
 } catch (error) {
     console.warn('⚠️ Payment routes disabled:', error.message);
