@@ -1,3 +1,65 @@
+## [1.239.1](https://github.com/anurag3407/career-pilot/compare/v1.239.0...v1.239.1) (2026-06-14)
+
+
+### Bug Fixes
+
+* **frontend:** LinkedIn import section theme compatibility and templates syntax error ([05484b3](https://github.com/anurag3407/career-pilot/commit/05484b3960343340aca4ead878837b97d9e48035))
+
+# [1.239.0](https://github.com/anurag3407/career-pilot/compare/v1.238.0...v1.239.0) (2026-06-14)
+
+
+### Features
+
+* Add Michelin Star Chef Plating template ([#3194](https://github.com/anurag3407/career-pilot/issues/3194)) ([752e0a5](https://github.com/anurag3407/career-pilot/commit/752e0a553ca7f3c1d4ee59c29b1ceeec650b9d58))
+* add Sommelier Wine Cellar Racks portfolio template ([#3215](https://github.com/anurag3407/career-pilot/issues/3215)) ([c811e7a](https://github.com/anurag3407/career-pilot/commit/c811e7a0f0ae744714b3b08a4a9caad52446427d))
+
+# [1.238.0](https://github.com/anurag3407/career-pilot/compare/v1.237.0...v1.238.0) (2026-06-14)
+
+
+### Bug Fixes
+
+* resolve templates.js merge conflict ([72ed22c](https://github.com/anurag3407/career-pilot/commit/72ed22c683203bfc5f29649ed0c4bf6db9d70ab4))
+
+
+### Features
+
+* add Physics Engine Gravity Drop portfolio template ([3bd87b1](https://github.com/anurag3407/career-pilot/commit/3bd87b14d371dfcfca5de9576d0009d7dee0f4aa))
+
+# [1.237.0](https://github.com/anurag3407/career-pilot/compare/v1.236.0...v1.237.0) (2026-06-14)
+
+
+### Features
+
+* implement crossword puzzle word fill portfolio template with global context binding ([90c1c3f](https://github.com/anurag3407/career-pilot/commit/90c1c3f648dcfdeecc256b55a661649483f47f9b))
+
+# [1.236.0](https://github.com/anurag3407/career-pilot/compare/v1.235.0...v1.236.0) (2026-06-14)
+
+
+### Features
+
+* **portfolio:** add Zen Bamboo Forest Wind template (closes [#3172](https://github.com/anurag3407/career-pilot/issues/3172)) ([511e792](https://github.com/anurag3407/career-pilot/commit/511e792cc3088f50852222d0f19d681c551cca31))
+
+# [1.235.0](https://github.com/anurag3407/career-pilot/compare/v1.234.0...v1.235.0) (2026-06-13)
+
+
+### Features
+
+* add Cartographer Antiquity Map Room template (fixes [#3212](https://github.com/anurag3407/career-pilot/issues/3212)) ([3ce340f](https://github.com/anurag3407/career-pilot/commit/3ce340f339dc013a84ae26fd420411d739aa34fb))
+
+# [1.234.0](https://github.com/anurag3407/career-pilot/compare/v1.233.0...v1.234.0) (2026-06-13)
+
+
+### Bug Fixes
+
+* resolve merge conflict in LinkedInOptimizer ([325cb93](https://github.com/anurag3407/career-pilot/commit/325cb9346729a40a51cc0be395616b7016f3cd90))
+* resolve syntax error in templates data ([88eab63](https://github.com/anurag3407/career-pilot/commit/88eab634009508566675ea9fd033c3574700a1d2))
+* resolve templates data syntax issue ([0a80f8e](https://github.com/anurag3407/career-pilot/commit/0a80f8ec0629f481b99fdf23071563385d94332b))
+
+
+### Features
+
+* update website favicon ([33c9a55](https://github.com/anurag3407/career-pilot/commit/33c9a55852222b5163995e820fd373cfd4a8b102))
+
 # [1.233.0](https://github.com/anurag3407/career-pilot/compare/v1.232.1...v1.233.0) (2026-06-13)
 
 
