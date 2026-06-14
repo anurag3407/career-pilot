@@ -1,5 +1,18 @@
 export const templates = [
   {
+    id: "Inspired_Chris_Otto",
+    title: "Inspired Chris Otto",
+    category: "Portfolio",
+    colorScheme: "Dark",
+    layout: "Scroll",
+    author: "Anurag3407",
+    views: 0,
+    rating: 5.0,
+    image: "/template-previews/Inspired_Chris_Otto.png",
+    createdAt: "2026-06-15",
+    isComplete: true
+  },
+  {
     id: "Sommelier_Wine_Cellar_Racks",
     title: "Sommelier Wine Cellar Racks",
     category: "Portfolio",
