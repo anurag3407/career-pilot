@@ -11,7 +11,7 @@ import Contact from './Contact';
 
 const normalizeSkills = (skills, fallbackSkills) => {
   if (!Array.isArray(skills) || skills.length === 0) {
-    return fallbackSkills;
+    return [...fallbackSkills];
   }
 
   if (typeof skills[0] === 'string') {
@@ -35,7 +35,7 @@ const normalizeSkills = (skills, fallbackSkills) => {
 
 const normalizeProjects = (projects, fallbackProjects) => {
   if (!Array.isArray(projects) || projects.length === 0) {
-    return fallbackProjects;
+    return [...fallbackProjects];
   }
 
   return projects.map((project, index) => {
@@ -51,8 +51,8 @@ const normalizeProjects = (projects, fallbackProjects) => {
         fallback.techStack ||
         fallback.technologies ||
         [],
-      liveUrl: project.liveUrl || '#',
-      githubUrl: project.githubUrl || '#',
+      liveUrl: project.liveUrl || '',
+      githubUrl: project.githubUrl || '',
     };
   });
 };
@@ -63,7 +63,8 @@ const normalizeProjects = (projects, fallbackProjects) => {
  * Description: 1920s Art Deco style with gold foil on black, geometric fan patterns, Gatsby-era elegance. Luxury serif fonts, symmetrical ornamental borders.
  */
 export default function ArtDecoGold({ portfolioData }) {
-  const { portfolioData: contextData } = usePortfolio();
+  const context = usePortfolio();
+  const contextData = context?.portfolioData;
 
   const source = portfolioData || contextData || {};
   const hero = source.hero || {};
