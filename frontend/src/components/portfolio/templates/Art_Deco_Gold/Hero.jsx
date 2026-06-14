@@ -7,21 +7,30 @@ export default function Hero({ data }) {
   const stats = data?.stats || {};
   const socials = data?.socials || {};
 
-  const hasEmail =
-    typeof socials.email === 'string' &&
-    socials.email.trim().length > 0;
+  const email =
+    typeof socials.email === 'string'
+      ? socials.email.trim()
+      : '';
+
+  const hasEmail = email.length > 0;
+
+  const toCount = (value) => {
+    const n = Number(value);
+
+    return Number.isFinite(n) ? n : 0;
+  };
 
   const statItems = [
     {
-      value: `${Number(stats.yearsExperience || 0)}+`,
+      value: `${toCount(stats.yearsExperience)}+`,
       label: 'Years',
     },
     {
-      value: `${Number(stats.projectsCompleted || 0)}+`,
+      value: `${toCount(stats.projectsCompleted)}+`,
       label: 'Projects',
     },
     {
-      value: `${Number(stats.happyClients || 0)}+`,
+      value: `${toCount(stats.happyClients)}+`,
       label: 'Clients',
     },
   ];
@@ -68,7 +77,7 @@ export default function Hero({ data }) {
           <div className="mt-10 flex flex-col items-center justify-center gap-4 sm:flex-row">
             {hasEmail && (
               <a
-                href={`mailto:${socials.email}`}
+                href={`mailto:${email}`}
                 className="inline-flex items-center justify-center gap-2 rounded-full bg-amber-200 px-7 py-3 text-sm font-semibold uppercase tracking-[0.18em] text-slate-950 shadow-[0_18px_50px_rgba(245,158,11,0.18)] transition hover:bg-amber-300"
               >
                 <Mail size={16} />
