@@ -150,11 +150,9 @@ export default function Audio_Visualizer_Frequency({ portfolioData }) {
         <div style={{
           fontSize: "18px",
           fontWeight: "800",
-          background: `linear-gradient(90deg, ${c1}, ${c2})`,
-          WebkitBackgroundClip: "text",
-          WebkitTextFillColor: "transparent",
-          transition: "background 2s",
-          letterSpacing: "-0.02em",
+          bcolor: c1,
+          transition: "color 2s",
+          letterSpacing: "-0.02em",   
         }}>
           {name.split(" ")[0]}
         </div>
@@ -254,10 +252,9 @@ export default function Audio_Visualizer_Frequency({ portfolioData }) {
                 lineHeight: "1",
                 letterSpacing: "-0.03em",
                 marginBottom: "16px",
-                background: `linear-gradient(135deg, #fff 40%, ${c2})`,
-                WebkitBackgroundClip: "text",
-                WebkitTextFillColor: "transparent",
-                transition: "background 2s",
+                color: "#fff",
+                textShadow: `0 0 60px ${c1}66`,
+                transition: "text-shadow 2s",
               }}>
                 {name}
               </h1>
@@ -286,10 +283,8 @@ export default function Audio_Visualizer_Frequency({ portfolioData }) {
                     <div style={{
                       fontSize: "32px",
                       fontWeight: "900",
-                      background: `linear-gradient(90deg, ${c1}, ${c2})`,
-                      WebkitBackgroundClip: "text",
-                      WebkitTextFillColor: "transparent",
-                      transition: "background 2s",
+                      color: c1,
+                      transition: "color 2s",
                     }}>{s.value}</div>
                     <div style={{ fontSize: "11px", color: "#666", textTransform: "uppercase", letterSpacing: "0.1em" }}>{s.label}</div>
                   </div>
@@ -591,10 +586,9 @@ function SectionHeading({ label, c1, c2 }) {
         fontWeight: "900",
         letterSpacing: "-0.03em",
         margin: "0",
-        background: `linear-gradient(135deg, #fff, ${c2})`,
-        WebkitBackgroundClip: "text",
-        WebkitTextFillColor: "transparent",
-        transition: "background 2s",
+        color: "#fff",
+        textShadow: `0 0 40px ${c2}44`,
+        transition: "text-shadow 2s",
       }}>{label}</h2>
     </div>
   );
