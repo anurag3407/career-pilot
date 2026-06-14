@@ -1,4 +1,6 @@
+import { usePortfolio } from "../../../../context/PortfolioContext";
 import React from 'react';
+ main
 import Hero from './Hero';
 import About from './About';
 import Skills from './Skills';
@@ -6,6 +8,8 @@ import Projects from './Projects';
 import Experience from './Experience';
 import Testimonials from './Testimonials';
 import Contact from './Contact';
+
+ main
 
 /**
  * Kinetic Type Portfolio Template
@@ -22,6 +26,8 @@ import Contact from './Contact';
  * - Contact: Contact form and social links
  */
 export default function KineticType() {
+  const { portfolioData: data } = usePortfolio();
+
   return (
     <div className="bg-gradient-to-b from-gray-950 via-gray-900 to-gray-950 text-white overflow-hidden">
       <Hero />

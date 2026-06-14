@@ -45,7 +45,7 @@ export const extractAIProvider = async (req, res, next) => {
       return next();
     }
 
-    // --- Case 2: No custom headers – reject request ---
+    // --- Case 2: No custom headers – reject gracefully ---
     return res.status(403).json({
       success: false,
       error: 'API key is required. Please add your API key in Settings to use this feature.',

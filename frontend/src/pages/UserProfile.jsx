@@ -11,8 +11,10 @@ import { useAuth } from '../hooks/useAuth'
 import { userProfileApi } from '../services/api'
 import Button from '../components/Button'
 import Input from '../components/Input'
+import { SkeletonProfile } from '../components/ui/Skeleton'
 import AnalysisSkeleton from '../components/github/AnalysisSkeleton'
 import { SkeletonList } from '../components/ui/Skeleton'
+import { getGithubUsername } from '../utils/github'
 
 const AVATAR_GRADIENTS = [
   'from-indigo-500 to-purple-600',
@@ -65,14 +67,31 @@ export default function UserProfile() {
   const fetchAll = async () => {
     setLoading(true)
     try {
-      const [profileRes, statsRes, activityRes] = await Promise.all([
+      const [profileResult, statsResult, activityResult] = await Promise.allSettled([
         isOwnProfile ? userProfileApi.getMyProfile() : userProfileApi.getProfile(targetUid),
         isOwnProfile ? userProfileApi.getMyStats() : userProfileApi.getStats(targetUid),
         isOwnProfile ? userProfileApi.getMyActivity() : userProfileApi.getActivity(targetUid),
       ])
+
+      if (profileResult.status === 'rejected') {
+        throw profileResult.reason
+      }
+
+      const profileRes = profileResult.value
+      const statsRes = statsResult.status === 'fulfilled' ? statsResult.value : { stats: { resumesCreated: 0, interviewsDone: 0 } }
+      const activityRes = activityResult.status === 'fulfilled' ? activityResult.value : { activity: [] }
+
       setProfile(profileRes.profile)
       setStats(statsRes.stats)
       setActivity(activityRes.activity)
+
+      if (statsResult.status === 'rejected') {
+        console.warn('Profile stats fetch failed:', statsResult.reason)
+      }
+
+      if (activityResult.status === 'rejected') {
+        console.warn('Profile activity fetch failed:', activityResult.reason)
+      }
     } catch (err) {
       toast.error('Failed to load profile')
       console.error('Profile fetch failed:', err)
@@ -96,9 +115,49 @@ export default function UserProfile() {
   }
 
   const cancelEdit = () => setEditing(false)
+  const isValidWebsite = (url) => {
+  if (!url) return true;
+
+  try {
+    new URL(url.startsWith("http") ? url : `https://${url}`);
+    return true;
+  } catch {
+    return false;
+  }
+};
+
+const isValidLinkedIn = (url) => {
+  if (!url) return true;
+
+  return /^https?:\/\/(www\.)?linkedin\.com\/in\/.+$/i.test(url);
+};
+
+const isValidGithub = (username) => {
+  if (!username) return true;
+
+  return /^[a-zA-Z0-9-]+$/.test(username);
+};
 
   const saveEdit = async () => {
+    const githubUsername = getGithubUsername(form.github)
+
+    if (!isValidWebsite(form.website.trim())) {
+      toast.error("Please enter a valid website URL")
+      return
+    }
+
+    if (!isValidLinkedIn(form.linkedin.trim())) {
+      toast.error("Please enter a valid LinkedIn profile URL")
+      return
+    }
+
+    if (!isValidGithub(githubUsername)) {
+      toast.error("Invalid GitHub username")
+      return
+    }
+
     setSaving(true)
+
     try {
       const res = await userProfileApi.updateMyProfile({
         displayName: form.displayName.trim(),
@@ -107,7 +166,7 @@ export default function UserProfile() {
         skills: form.skills.split(',').map(s => s.trim()).filter(Boolean),
         location: form.location.trim(),
         website: form.website.trim(),
-        github: form.github.trim(),
+        github: githubUsername,
         linkedin: form.linkedin.trim(),
       })
       setProfile(res.profile)
@@ -142,43 +201,7 @@ export default function UserProfile() {
     url.startsWith('http') ? url : `https://${url}`
 
   if (loading) {
-    return (
-      <div className="min-h-screen bg-background">
-        <div className="relative max-w-3xl mx-auto px-4 sm:px-6 lg:px-8 py-8">
-          <motion.div
-            initial={{ opacity: 0, y: 10 }}
-            animate={{ opacity: 1, y: 0 }}
-            transition={{ duration: 0.4 }}
-            className="space-y-6"
-          >
-            {/* Profile Header Skeleton */}
-            <div className="rounded-2xl bg-card border border-border p-6 space-y-4">
-              <div className="flex items-start gap-5">
-                <div className="w-20 h-20 rounded-2xl bg-muted animate-pulse shrink-0" />
-                <div className="flex-1 space-y-3">
-                  <div className="h-6 bg-muted rounded-lg w-1/2 animate-pulse" />
-                  <div className="h-4 bg-muted rounded-lg w-1/3 animate-pulse" />
-                  <div className="h-4 bg-muted rounded-lg w-1/4 animate-pulse" />
-                </div>
-              </div>
-            </div>
-
-            {/* Stats Skeleton */}
-            <div className="grid grid-cols-3 gap-4">
-              {[...Array(3)].map((_, i) => (
-                <div key={i} className="rounded-lg bg-card border border-border p-4 space-y-2">
-                  <div className="h-3 bg-muted rounded w-2/3 animate-pulse" />
-                  <div className="h-8 bg-muted rounded w-1/2 animate-pulse" />
-                </div>
-              ))}
-            </div>
-
-            {/* Activity Skeleton */}
-            <SkeletonList count={3} />
-          </motion.div>
-        </div>
-      </div>
-    )
+    return <SkeletonProfile />
   }
 
   return (
@@ -435,6 +458,9 @@ export default function UserProfile() {
             </motion.div>
           )}
 
+          {!editing && (
+             <> 
+
           {/* Stats */}
           <motion.div variants={itemVariants} className="grid grid-cols-2 gap-4">
             <div className="relative overflow-hidden rounded-2xl bg-card/80 backdrop-blur-sm border border-sky-500/10 shadow-[0_8px_30px_rgb(0,0,0,0.06)] hover:shadow-xl hover:border-primary/20 transition-all duration-300 p-5 text-center">
@@ -531,6 +557,8 @@ export default function UserProfile() {
               </div>
             )}
           </motion.div>
+          </>
+          )}
         </motion.div>
       </div>
     </div>

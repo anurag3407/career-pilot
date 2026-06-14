@@ -1,457 +1,217 @@
 <div align="center">
-  <img src="docs/assets/banner.png" alt="Career Pilot Banner" width="100%" style="border-radius: 12px; margin-bottom: 20px;" />
-  <br />
-  <h1>🌐 Career Pilot</h1>
-  <p>
-    <strong>An intelligent, AI-powered career platform that revolutionizes the job hunting experience through automated resume enhancement, intelligent job matching, AI mock interviews, corporate fellowships, and community-driven networking.</strong>
-  </p>
+  <h1>🚀 Career Pilot</h1>
+  <p>An AI-powered resume builder and career toolkit that helps users create resumes, prepare for interviews, search jobs, and launch developer portfolios. </p>
+</div>
 
-  <p align="center"> 
-    <a href="https://github.com/anurag3407/career-pilot/blob/main/LICENSE">
-      <img src="https://img.shields.io/badge/License-MIT-0052CC?style=for-the-badge&logo=opensourceinitiative&logoColor=white" alt="License" />
-    </a>
-    <img src="https://img.shields.io/badge/Node.js-18+-0066FF?style=for-the-badge&logo=node.js&logoColor=white" alt="Node.js" />
-    <img src="https://img.shields.io/badge/React-19-1A75FF?style=for-the-badge&logo=react&logoColor=white" alt="React" />
-    <img src="https://img.shields.io/badge/Firebase-Firestore-3385FF?style=for-the-badge&logo=firebase&logoColor=white" alt="Firebase" />
-    <img src="https://img.shields.io/badge/AI-Gemini_2.5-4D94FF?style=for-the-badge&logo=google&logoColor=white" alt="Gemini AI" />
-    <img src="https://img.shields.io/badge/Payments-Razorpay-66A3FF?style=for-the-badge&logo=razorpay&logoColor=white" alt="Razorpay" />
+<div align="center" style="max-width:900px; margin:12px auto;">
+  <p style="margin-bottom:10px; text-align:center; font-size:1.05rem; color:var(--text-color, #e6edf3);">
+    Full-stack web app combining modern frontend and backend tooling
   </p>
-
-  <p align="center">
-    <a href="#-features">Features</a> • 
-    <a href="#-tech-stack">Tech Stack</a> • 
-    <a href="#-getting-started">Getting Started</a> • 
-    <a href="#-api-reference">API Reference</a> • 
-    <a href="#-contributing">Contributing</a>
+  <p style="display:flex; gap:12px; justify-content:center; flex-wrap:wrap; margin:8px 0;">
+    <img src="https://img.shields.io/badge/Node.js-18%2B-green?logo=node.js&logoColor=white" alt="Node.js" />
+    <img src="https://img.shields.io/badge/Express-4.18-lightgrey?logo=express&logoColor=black" alt="Express" />
+    <img src="https://img.shields.io/badge/MongoDB-6.0-darkgreen?logo=mongodb&logoColor=white" alt="MongoDB" />
+    <img src="https://img.shields.io/badge/Redis-7.0-d9932e?logo=redis&logoColor=white" alt="Redis" />
+    <img src="https://img.shields.io/badge/Socket.IO-4-cyan?logo=socket.io&logoColor=white" alt="Socket.IO" />
+    <img src="https://img.shields.io/badge/React-19-blue?logo=react&logoColor=white" alt="React" />
+    <img src="https://img.shields.io/badge/Vite-7.3.5-brightgreen?logo=vite&logoColor=white" alt="Vite" />
+    <img src="https://img.shields.io/badge/TailwindCSS-4-skyblue?logo=tailwindcss&logoColor=white" alt="TailwindCSS" />
   </p>
 </div>
 
-<br />
+## How It Works (Overview)
 
----
+1. User registers / logs in using Firebase Authentication  
+2. User enters the Career Pilot dashboard  
+3. User selects or creates a resume template  
+4. User edits resume sections (Education, Skills, Experience, etc.)  
+5. Drag & drop support allows easy section rearrangement  
+6. AI features assist in improving resume content  
+7. User previews final resume in real time  
+8. Resume is exported as PDF using jsPDF + html2canvas  
 
-## 🌟 Overview
+## Table of Contents
 
-The **AI Resume Builder & Career Platform** is a comprehensive full-stack application designed to streamline and enhance the job search process. By leveraging cutting-edge AI technology (Google Gemini 2.5), real-time communication via Socket.IO, and intelligent automation through BullMQ job queues, this platform provides job seekers with powerful tools to succeed.
+- [How It Works](#how-it-works-overview)
+- [Why This Project](#why-this-project)
+- [Key Features](#key-features)
+- [Getting Started](#getting-started)
+- [Environment Variables](#environment-variables)
+- [Project Structure](#project-structure)
+- [Roadmap](#roadmap)
+- [Contributing](#contributing)
+- [Maintainers](#maintainers)
+- [License](#license)
 
----
+## Why This Project
 
-## 📸 Project Preview
+- Helps users create strong resumes quickly using AI guidance.
+- Supports interview preparation and portfolio building in one unified product.
+- Provides real-time collaboration and notification workflows.
+- Built with modular frontend/backend architecture that is ideal for contributors.
 
-### Home Page
+## Key Features
 
-![](docs/images/home_page.png)
+- AI resume creation, improvement, and formatting.
+- PDF export and resume download.
+- Firebase authentication and auth session handling.
+- Job search powered by RapidAPI JSearch.
+- Portfolio templates with deploy-ready publishing flows.
+- Real-time updates and collaboration via Socket.IO.
+- Responsive UI built with TailwindCSS and Framer Motion.
+- Admin and community tools for job seekers and teams.
 
-### Resume Enhancement
-
-![](docs/images/resume_enhancer.png)
-
-### Community Platform
-
-![](docs/images/community_board.png)
-
-### Authentication
-
-![](docs/images/signup_page.png)
-
-### Job Tracker
-
-![](docs/images/job_tracker.png)
-
-### Mock Interview
-
-![](docs/images/mock_interview.png)
-
----
-
-## 💡 Our Solution
-
-We solve the modern job seeker's most painful challenges:
-
-<table>
-  <tr>
-    <td width="50%">
-      <h3>💎 Resume Optimization</h3>
-      <p>AI-powered resume enhancement using Google Gemini 2.5 with ATS scoring and Harvard-format templates.</p>
-    </td>
-    <td width="50%">
-      <h3>🧊 Information Overload</h3>
-      <p>Smart job alerts with customizable filters (keywords, location, salary, employment type) delivered via real-time sockets.</p>
-    </td>
-  </tr>
-  <tr>
-    <td width="50%">
-      <h3>📈 Application Tracking</h3>
-      <p>Visual Kanban-style job tracker with status management from Saved all the way to Offered.</p>
-    </td>
-    <td width="50%">
-      <h3>🌐 Isolation & Networking</h3>
-      <p>Real-time community platform with channels, posts, direct messaging, and presence indicators.</p>
-    </td>
-  </tr>
-  <tr>
-    <td width="50%">
-      <h3>📘 Skill Gaps & Portfolios</h3>
-      <p>AI-generated improvement suggestions, LinkedIn optimizations, and a drag-and-drop Portfolio Builder.</p>
-    </td>
-    <td width="50%">
-      <h3>⚡ Time Consumption</h3>
-      <p>Automated job fetching, bulk processing via queues, and one-click resume downloads.</p>
-    </td>
-  </tr>
-</table>
-
----
-
-## ✨ Core Features
-
-<details>
-<summary><b>🤖 AI-Powered Resume Enhancement</b></summary>
-<br>
-
-- **Smart Resume Enhancement**: Transform ordinary resumes into ATS-optimized documents
-- **Professional Summary Generation**: AI-crafted summaries tailored to target roles
-- **Improvement Suggestions**: Actionable recommendations to strengthen your resume
-- **ATS Score Analysis**: Get compatibility scores with detailed feedback
-- **Harvard Template Formatting**: Industry-standard resume formatting
-      </details>
-
-<details>
-<summary><b>🎓 Career Pilot Fellowships</b></summary>
-<br>
-
-- **Corporate Challenges**: Companies post real-world challenges for students
-- **Student Proposals**: Students submit proposals with cover letters and pricing
-- **Escrow Payments**: Razorpay integration for secure payments until completion
-- **Real-time Chat**: Direct messaging between corporate and students
-      </details>
-
-<details>
-<summary><b>🎤 AI Interview Prep</b></summary>
-<br>
-
-- **Mock Interviews**: AI-powered interview simulations
-- **Role-Specific Questions**: Tailored questions based on target role
-- **Real-time Feedback**: Instant AI evaluation of responses
-- **Multi-Round Support**: Technical, behavioral, and HR round simulations
-      </details>
-
-<details>
-<summary><b>🖼️ Portfolio Builder & GitHub Intelligence</b></summary>
-<br>
-
-- **AI Section Enhancement**: Enhance your portfolio's hero, projects, and about sections using Gemini AI
-- **LinkedIn Profile Optimizer**: AI-generated headline rewrites and skills gap analysis vs. industry peers
-- **Theme Selector**: Choose from multiple portfolio themes to match your personal brand
-- **LinkedIn OAuth**: Sign in with LinkedIn and auto-import profile data
-      </details>
-
----
-
-## 🛠 Tech Stack
-
-<table>
-  <tr>
-    <th>Frontend</th>
-    <th>Backend</th>
-    <th>Infrastructure</th>
-  </tr>
-  <tr>
-    <td valign="top">
-      <ul>
-        <li><b>React 19</b></li>
-        <li><b>Vite 7</b></li>
-        <li><b>TailwindCSS 4</b></li>
-        <li><b>Framer Motion</b></li>
-        <li><b>Socket.IO Client</b></li>
-        <li><b>Zustand</b></li>
-      </ul>
-    </td>
-    <td valign="top">
-      <ul>
-        <li><b>Node.js 18+</b></li>
-        <li><b>Express.js</b></li>
-        <li><b>MongoDB + Mongoose</b></li>
-        <li><b>BullMQ + IORedis</b></li>
-        <li><b>Google Gemini AI</b></li>
-        <li><b>Razorpay API</b></li>
-      </ul>
-    </td>
-    <td valign="top">
-      <ul>
-        <li><b>Firebase Auth</b></li>
-        <li><b>MongoDB Atlas</b></li>
-        <li><b>Redis</b></li>
-        <li><b>RapidAPI (JSearch)</b></li>
-        <li><b>Netlify</b></li>
-      </ul>
-    </td>
-  </tr>
-</table>
-
----
-
-## 🚀 Getting Started
+## Getting Started
 
 ### Prerequisites
 
-Before running the project locally, make sure you have:
+- Node.js 18.0 or higher
+- npm 10+ (or Yarn / pnpm)
+- MongoDB
+- Redis
+- Firebase project and service account
+- Optional: Cloudinary account for media storage
 
-- Node.js 18+
-- MongoDB instance (local or MongoDB Atlas)
-- Redis server
-- Firebase project configuration
-- Google Gemini API key
-
----
-
-## 📦 Installation
-
-### 1. Clone the Repository
+### Install dependencies
 
 ```bash
-git clone https://github.com/anurag3407/career-pilot.git
 cd career-pilot
-```
-
----
-
-### 2. Install Backend Dependencies
-
-```bash
+npm install
 cd backend
 npm install
-```
-
----
-
-### 3. Install Frontend Dependencies
-
-```bash
 cd ../frontend
 npm install
 ```
 
----
-
-## ⚙️ Environment Variables
-
-Create a `.env` file inside the `backend` directory and configure:
-
-```env
-PORT=5001
-MONGODB_URI=your_mongodb_uri
-REDIS_HOST=localhost
-REDIS_PORT=6379
-GEMINI_API_KEY=your_api_key
-RAZORPAY_KEY_ID=your_key
-RAZORPAY_KEY_SECRET=your_secret
-```
-
-You may also need a `.env` file inside the `frontend` directory depending on your local setup.
-
----
-
-## ▶️ Running the Application
-
-Open two terminals.
-
-### Terminal 1 — Backend
+### Run locally
 
 ```bash
-cd backend
+# Backend
+cd career-pilot/backend
+npm run dev
+
+# Frontend
+cd ../frontend
 npm run dev
 ```
 
-Backend runs on:
+### Testing
 
-```text
-http://localhost:5001
-```
+Add or update tests in `backend/tests`, `frontend/tests`, and root-level test utilities. Run any existing test scripts from the relevant package directories.
 
-### Terminal 2 — Frontend
 
-```bash
-cd frontend
-npm run dev
-```
+## Environment Variables
 
-After starting both servers:
+The project requires separate environment configuration for backend and frontend.
 
-- Frontend runs on: `http://localhost:5173`
-- Backend runs on: `http://localhost:5001`
+### Backend (.env)
+- PORT – Server port
+- MONGODB_URI – MongoDB connection string
+- REDIS_URL – Redis connection string
+- OPENAI_API_KEY – AI integration key
+- RAPIDAPI_KEY – Job search API key
+- FIREBASE_PROJECT_ID – Firebase project ID
+- FIREBASE_SERVICE_ACCOUNT_PATH – Firebase admin SDK file path
+- FRONTEND_URL – Frontend URL for CORS
 
----
+### Frontend (.env)
+- VITE_API_URL – Backend API URL
+- VITE_FIREBASE_API_KEY – Firebase API key
+- VITE_FIREBASE_PROJECT_ID – Firebase project ID
+- VITE_FIREBASE_AUTH_DOMAIN – Firebase auth domain
+- VITE_FIREBASE_STORAGE_BUCKET – Firebase storage bucket
 
-### Verify Installation
-
-After starting both frontend and backend servers:
-
-- Open `http://localhost:5173`
-- Verify the frontend loads successfully
-- Check backend logs for database/API connection errors
-- Ensure Firebase and MongoDB connections initialize correctly
-
----
-
-## 📜 Available Scripts
-
-### Frontend
-
-```bash
-npm run dev
-npm run build
-npm run lint
-```
-
-### Backend
-
-```bash
-npm run dev
-npm start
-```
-
-## 📂 Project Structure & Architecture
-
-<details>
-<summary><b>View Directory Structure</b></summary>
-<br>
+## Project Structure
 
 ```text
 career-pilot/
-├── backend/
-│   ├── src/
-│   │   ├── config/          # Firebase, AI, Socket, DB setup
-│   │   ├── controllers/     # Route logic
-│   │   ├── middleware/      # Auth, Rate limiting, Uploads
-│   │   ├── models/          # Mongoose Schemas (User, Job, Resume)
-│   │   ├── routes/          # Express Routers
-│   │   └── services/        # BullMQ Queues, Emails, Integrations
-├── frontend/
-│   ├── src/
-│   │   ├── components/      # UI, Community, Portfolio
-│   │   ├── context/         # Auth & Socket contexts
-│   │   ├── hooks/           # Custom React hooks
-│   │   ├── pages/           # Route views
-│   │   └── services/        # API and Socket instances
-└── firebase/                # Security Rules & Indexes
+├── backend/        # Express backend (APIs, auth, AI, jobs, portfolio)
+├── frontend/       # React + Vite frontend (UI, resume builder, dashboard)
+├── docs/           # Documentation and setup guides
+├── CONTRIBUTION.md # Contribution guidelines
+├── CODE_OF_CONDUCT.md
+└── LICENSE
 ```
 
-</details>
+## Roadmap
 
-New contributors should read **[ARCHITECTURE.md](./ARCHITECTURE.md)** early, as it includes high-level system diagrams, data-flow charts, and security notes.
-
----
-
-## 📖 Developer Guides & Extended Documentation
-
-To help you get familiar with the advanced subsystems of Career Pilot, we have provided detailed technical guides in the `docs` directory:
-
-* 🛠️ **[Environment Setup](./docs/environment-setup.md)**: Standard walkthrough for local environment variables, DB configurations, and cluster parameters.
-* 🤖 **[AI Features & Integration](./docs/ai-features.md)**: Deep-dive into Gemini prompt engineering, Harvard resume heuristics, and ATS scoring systems.
-* 📦 **[Portfolio Architecture](./docs/portfolio-architecture.md)**: Overview of the dynamic landing page renderer, metadata structures, and theme systems.
-* 🎨 **[Creating Portfolio Themes](./docs/creating-portfolio-themes.md)**: Step-by-step developer tutorial on creating custom portfolio aesthetics.
-* 🐙 **[GitHub Intelligence](./docs/github-intelligence.md)**: Inside look at how the system crawls repositories, parses metadata, and evaluates developer portfolios.
-* ⚡ **[Redis Lifecycle & Connection Tuning](./docs/redis-connection-lifecycle-issue.md)**: Advanced troubleshooting guide for Redis subscription channels and job queues.
-* 🌐 **[CDN & Assets Setup](./docs/cdn-setup.md)**: Cloudflare cache settings and optimal static asset delivery.
-* 🚀 **[Deployment Setup](./docs/deployment-setup.md)**: Production configurations for Vercel, Netlify, and server hosting.
-* 📘 **[User Guide](./docs/user-guide.md)**: Full-featured guide explaining product usage and workflow patterns.
-
----
+- Improve resume generation prompts and AI content quality.
+- Expand interview prep flows with more question categories.
+- Add more portfolio templates and publishing options.
+- Strengthen end-to-end test coverage.
+- Improve documentation for contributors and deploy workflows.
 
 
-## 🔌 API Reference
+## 🧠 Project Notes
 
-<details>
-<summary><b>View API Routes & Examples</b></summary>
-<br>
+- Project is currently in development stage  
+- No live deployment available yet  
+- Firebase configuration is required to run locally  
 
-Most endpoints require a Firebase ID Token passed as an `Authorization` header.
 
-### Authentication
+### Good first issues
 
-```bash
-# Verify Token
-GET /api/auth/verify
-```
+- Documentation improvements for setup or environment variables.
+- Fixing UI/UX issues on the dashboard or resume builder.
+- Backend bug fixes around authentication and job search.
+- Code quality and linting improvements.
 
-### Resumes & AI
+If you are part of GSSoC or a first-time contributor, add a comment to an issue or open a discussion to request mentorship.
 
-```bash
-# Upload PDF
-POST /api/upload
+## Contributing
 
-# Enhance Resume via Gemini AI
-POST /api/enhance
-Content-Type: application/json
-{
-  "resumeText": "...",
-  "jobRole": "Frontend Engineer"
-}
+We welcome contributions from developers of all levels.
 
-# ATS Analysis
-POST /api/enhance/ats-analysis
-```
+### Contribution flow
 
-### Job Tracking & Alerts
+1. Fork the repository.
+2. Create a feature branch: `git checkout -b feature/your-feature`.
+3. Make your changes and commit with a descriptive message.
+4. Push the branch and open a PR against `main`.
 
-```bash
-# Create Job Alert
-POST /api/job-alerts
+### Recommended branch names
 
-# Track Application Pipeline
-POST /api/job-tracker
-```
+- `feature/<short-description>`
+- `fix/<short-description>`
+- `docs/<short-description>`
 
-For complete documentation, see the [API Reference Guide](./API_DOCS/README.md).
+### PR checklist
 
-</details>
+- [ ] The change is described clearly in the PR title and description.
+- [ ] Code passes linting and local tests.
+- [ ] Environment setup steps are documented if needed.
+- [ ] Any breaking changes are noted.
 
----
+### GSoC / community contributors
 
-## 🛠️ Troubleshooting Guide
+- Start with issues labeled as good first issue or help wanted.
+- Check `CONTRIBUTION.md` and `CODE_OF_CONDUCT.md` before contributing.
+- Ask questions by opening an issue or commenting on an existing one.
+- If you want a feature idea, ask for a mentor review on a draft PR.
 
-<details>
-<summary><b>View Solutions to Common Issues</b></summary>
-<br>
+See [CONTRIBUTION.md](CONTRIBUTION.md) for full contribution details.
 
-### MongoDB Connection Error (`MongoServerSelectionError`)
+## Maintainers
 
-- Verify your `MONGODB_URI` in backend `.env`
-- Ensure MongoDB service is running
-- Check IP whitelist if using MongoDB Atlas
+<div align="center">
+  <table>
+    <tr>
+      <td align="center">
+        <a href="https://github.com/anurag3407">
+          <img src="https://github.com/anurag3407.png" width="100" style="border-radius: 50%;" alt="anurag3407"/><br />
+          <sub><b>anurag3407</b></sub>
+        </a>
+      </td>
+      <td align="center">
+        <a href="https://github.com/Mohnish27-dev">
+          <img src="https://github.com/Mohnish27-dev.png" width="100" style="border-radius: 50%;" alt="Mohnish27-dev"/><br />
+          <sub><b>Mohnish27-dev</b></sub>
+        </a>
+      </td>
+    </tr>
+  </table>
+</div>
 
-### Redis Connection Error (`ECONNREFUSED 127.0.0.1:6379`)
+## License
 
-- Ensure Redis server is installed and running
-- Verify `REDIS_HOST` and `REDIS_PORT`
-
-### Port Already in Use (`EADDRINUSE`)
-
-- Change the `PORT` value in `.env`
-- Stop other Node instances: `killall node` (Mac/Linux)
-      </details>
-
----
-
-## 🤝 Contributing
-
-We welcome contributions! Please see our [CONTRIBUTION.md](./CONTRIBUTION.md) for the Development Setup, Pull Request Process, and Coding Standards.
-
-## 💙 Thank You Contributors
-
-Thank you to all the amazing contributors who have helped improve this project. <br></br>
-
-<a href="https://github.com/anurag3407/career-pilot/graphs/contributors">
-  <img src="https://contrib.rocks/image?repo=anurag3407/career-pilot" />
-</a>
-
-Your efforts, pull requests, ideas, and support make this project better every day and help grow an incredible open-source community 🚀
-
----
-
-## 📄 License
-
-This project is licensed under the MIT License - see the [LICENSE](LICENSE) file for details.
-
-<br />
+This project is open-source and licensed under the terms in the `LICENSE` file.

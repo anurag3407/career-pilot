@@ -1,30 +1,67 @@
-import React from 'react';
-import data from '../../../../data/dummy_data.json';
-
+import { usePortfolio } from "../../../../context/PortfolioContext";
 /**
- * Wildflower Field Portfolio Template
- * Category: Nature / Organic
- * Description: Illustrated wildflower meadow with watercolor style flowers, spring color palette (yellows, pinks, greens). Hand-drawn aesthetic, organic shapes.
+ * Wildflower Field — Portfolio Template
+ * A watercolor-inspired, botanical portfolio with soft spring palette,
+ * floating flowers, organic shapes, and elegant serif typography.
+ *
+ * Folder: frontend/src/components/portfolio/templates/Wildflower_Field/
  */
+
+import { useEffect } from "react";
+
+import NavBar from "./NavBar";
+import HeroSection from "./HeroSection";
+import AboutSection from "./AboutSection";
+import SkillsSection from "./SkillsSection";
+import ProjectsSection from "./ProjectsSection";
+import ExperienceSection from "./ExperienceSection";
+import TestimonialsSection from "./TestimonialsSection";
+import ContactSection from "./ContactSection";
+
 export default function WildflowerField() {
+  const { portfolioData: data } = usePortfolio();
+
+  // Inject Google Fonts (Playfair Display + Cormorant Garamond)
+  useEffect(() => {
+    const linkId = "wildflower-fonts";
+    if (!document.getElementById(linkId)) {
+      const link = document.createElement("link");
+      link.id = linkId;
+      link.rel = "stylesheet";
+      link.href =
+        "https://fonts.googleapis.com/css2?family=Playfair+Display:ital,wght@0,400;0,600;0,700;0,900;1,400;1,600&family=Cormorant+Garamond:ital,wght@0,300;0,400;0,500;0,600;1,300;1,400;1,500&display=swap";
+      document.head.appendChild(link);
+    }
+
+    // Smooth scroll behavior for the whole page
+    document.documentElement.style.scrollBehavior = "smooth";
+    return () => {
+      document.documentElement.style.scrollBehavior = "";
+    };
+  }, []);
+
   return (
-    <div className="min-h-screen bg-gray-950 text-white flex flex-col items-center justify-center p-8 font-sans">
-      <div className="max-w-3xl w-full text-center">
-        <h1 className="text-5xl md:text-7xl font-bold mb-4 bg-gradient-to-r from-cyan-400 to-purple-500 bg-clip-text text-transparent">
-          {data.personal.name}
-        </h1>
-        <p className="text-xl md:text-2xl text-gray-400 mb-8">{data.personal.title}</p>
-        <div className="p-8 border-2 border-dashed border-cyan-500/40 rounded-2xl bg-gray-900/50 backdrop-blur-sm">
-          <span className="inline-block px-3 py-1 rounded-full bg-cyan-500/20 text-cyan-400 text-xs font-bold uppercase tracking-widest mb-4">
-            Nature / Organic
-          </span>
-          <h2 className="text-2xl font-bold text-gray-200 mb-3">Wildflower Field Template</h2>
-          <p className="text-gray-400 mb-6 leading-relaxed">
-            Illustrated wildflower meadow with watercolor style flowers, spring color palette (yellows, pinks, greens). Hand-drawn aesthetic, organic shapes.
-          </p>
-          <p className="text-cyan-400 font-semibold">Open an issue to contribute and build this template!</p>
-        </div>
-      </div>
+    <div
+      className="min-h-screen w-full"
+      style={{
+        fontFamily: "'Cormorant Garamond', 'Georgia', serif",
+        background: "#fdf6f0",
+        overflowX: "hidden",
+      }}
+    >
+      {/* Floating navigation */}
+      <NavBar name={data.personal.name} />
+
+      {/* Page sections */}
+      <main>
+        <HeroSection data={data} />
+        <AboutSection data={data} />
+        <SkillsSection data={data} />
+        <ProjectsSection data={data} />
+        <ExperienceSection data={data} />
+        <TestimonialsSection data={data} />
+        <ContactSection data={data} />
+      </main>
     </div>
   );
 }
