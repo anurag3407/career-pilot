@@ -115,6 +115,8 @@ import HighFashion from './components/portfolio/templates/High_Fashion/index.jsx
 import TypographicWheatpastePosterWall from './components/portfolio/templates/Typographic_Wheatpaste_Poster_Wall/index.jsx';
 import DigitalManifestoScroll from './components/portfolio/templates/Digital_Manifesto_Scroll/index.jsx';
 import TestSocialLinks from './pages/TestSocialLinks';
+import RecipeCookbookPortfolio from './components/portfolio/templates/Recipe_Cookbook/index.jsx';
+
 import ZineCollage from './components/portfolio/templates/ZineCollage';
 import TransparentDesktopOverlayOS from './components/portfolio/templates/Transparent_Desktop_Overlay_OS/index.jsx';
 import Commercial_Pilot_Cockpit from './components/portfolio/templates/Commercial_Pilot_Cockpit/index.jsx';
@@ -278,6 +280,8 @@ function AppRoutes() {
         <Route path="/templates/cassette-mixtape" element={<CassetteMixtape />} />
         <Route path="/templates/hidden-easter-egg-scavenger-hunt" element={<HiddenEasterEggScavengerHunt />} />
         <Route path="/templates/magnetic-dock" element={<MagneticDock />} />
+        <Route path="/templates/recipe-cookbook" element={<RecipeCookbookPortfolio />} />
+        
         <Route path="/templates/ocean-depths" element={<OceanDepths />} />
         <Route path="/templates/neon-cityscape" element={<NeonCityscape />} />
         <Route path="/templates/planetary-orbit" element={<PlanetaryOrbit />} />
