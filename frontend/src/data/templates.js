@@ -1,5 +1,18 @@
 export const templates = [
   {
+    id: "Hogwarts_Marauder_s_Map",
+    title: "Hogwarts Marauder's Map",
+    category: "Portfolio",
+    colorScheme: "Vintage",
+    layout: "Interactive",
+    author: "System",
+    views: 9999,
+    rating: 5.0,
+    image: "/templates/Hogwarts_Marauder_s_Map.png",
+    createdAt: "2026-06-15",
+    isComplete: true
+  },
+  {
     id: "Sommelier_Wine_Cellar_Racks",
     title: "Sommelier Wine Cellar Racks",
     category: "Portfolio",
