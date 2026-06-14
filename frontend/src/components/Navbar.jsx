@@ -60,7 +60,11 @@ export default function Navbar() {
     setSearchDropdownOpen(true)
   }
 
-  const handleSearchBlur = () => {
+  const handleSearchBlur = (event) => {
+    if (searchRef.current && searchRef.current.contains(event.relatedTarget)) {
+      return
+    }
+
     if (searchTimeoutRef.current) {
       clearTimeout(searchTimeoutRef.current)
     }
@@ -195,7 +199,11 @@ export default function Navbar() {
           <div className="hidden lg:flex items-center gap-2">
 
             {/* Search Bar */}
-            <div ref={searchRef} className="relative">
+            <div
+              ref={searchRef}
+              className="relative"
+              onBlur={handleSearchBlur}
+            >
               <div className="flex items-center bg-muted border border-border rounded-xl px-3 py-2 w-72 focus-within:ring-2 focus-within:ring-primary/40 transition-all">
                 <Search className="w-4 h-4 text-muted-foreground mr-2" />
 
@@ -205,7 +213,6 @@ export default function Navbar() {
                   value={searchQuery}
                   onChange={(e) => setSearchQuery(e.target.value)}
                   onFocus={openSearchDropdown}
-                  onBlur={handleSearchBlur}
                   className="bg-transparent outline-none text-sm w-full text-foreground placeholder:text-muted-foreground"
                 />
               </div>

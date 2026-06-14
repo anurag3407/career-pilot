@@ -148,4 +148,36 @@ describe('Navbar component dropdowns', () => {
       expect(screen.queryByText('Profile')).not.toBeInTheDocument()
     })
   })
+
+  test('tabbing from search input to suggestion button keeps dropdown open, and tabbing out closes it', async () => {
+    render(
+      <MemoryRouter>
+        <Navbar />
+      </MemoryRouter>
+    )
+
+    const searchInput = screen.getByPlaceholderText('Search anything...')
+    
+    // Focus search -> search dropdown opens
+    fireEvent.focus(searchInput)
+    const suggestionButton = screen.getByText('Frontend Developer')
+    expect(suggestionButton).toBeInTheDocument()
+
+    // Move focus to the suggestion button (simulating Tab key)
+    fireEvent.blur(searchInput, { relatedTarget: suggestionButton })
+    fireEvent.focus(suggestionButton)
+
+    // Suggestion dropdown should still be open
+    expect(screen.getByText('Frontend Developer')).toBeInTheDocument()
+
+    // Tab out of the suggestion button to document body or somewhere outside
+    const outsideElement = document.createElement('button')
+    document.body.appendChild(outsideElement)
+    fireEvent.blur(suggestionButton, { relatedTarget: outsideElement })
+    
+    await waitFor(() => {
+      expect(screen.queryByText('Frontend Developer')).not.toBeInTheDocument()
+    })
+    document.body.removeChild(outsideElement)
+  })
 })
