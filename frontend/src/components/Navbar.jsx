@@ -39,6 +39,7 @@ export default function Navbar() {
 
   const searchRef = useRef(null)
   const profileRef = useRef(null)
+  const searchTimeoutRef = useRef(null)
 
   const openProfile = () => {
     setSearchDropdownOpen(false)
@@ -51,8 +52,22 @@ export default function Navbar() {
   }
 
   const openSearchDropdown = () => {
+    if (searchTimeoutRef.current) {
+      clearTimeout(searchTimeoutRef.current)
+      searchTimeoutRef.current = null
+    }
     setProfileDropdownOpen(false)
     setSearchDropdownOpen(true)
+  }
+
+  const handleSearchBlur = () => {
+    if (searchTimeoutRef.current) {
+      clearTimeout(searchTimeoutRef.current)
+    }
+    searchTimeoutRef.current = setTimeout(() => {
+      setSearchDropdownOpen(false)
+      searchTimeoutRef.current = null
+    }, 200)
   }
 
   useEffect(() => {
@@ -78,6 +93,9 @@ export default function Navbar() {
     return () => {
       document.removeEventListener('mousedown', handleOutsideClick)
       document.removeEventListener('keydown', handleKeyDown)
+      if (searchTimeoutRef.current) {
+        clearTimeout(searchTimeoutRef.current)
+      }
     }
   }, [])
 
@@ -187,7 +205,7 @@ export default function Navbar() {
                   value={searchQuery}
                   onChange={(e) => setSearchQuery(e.target.value)}
                   onFocus={openSearchDropdown}
-                  onBlur={() => setTimeout(() => setSearchDropdownOpen(false), 200)}
+                  onBlur={handleSearchBlur}
                   className="bg-transparent outline-none text-sm w-full text-foreground placeholder:text-muted-foreground"
                 />
               </div>
