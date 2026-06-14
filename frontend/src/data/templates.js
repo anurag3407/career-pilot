@@ -1,5 +1,18 @@
 export const templates = [
   {
+    "id": "Master_Tailor_Measuring_Tape",
+    "title": "Master Tailor Measuring Tape",
+    "category": "Portfolio",
+    "colorScheme": "Light",
+    "layout": "Interactive",
+    "author": "System",
+    "views": 999999,
+    "rating": 5.0,
+    "image": "/templates/Master_Tailor_Measuring_Tape.png",
+    "createdAt": "2026-06-14",
+    "isComplete": true
+  },
+  {
     "id": "Zen_Bamboo_Forest_Wind",
     "title": "Zen Bamboo Forest Wind",
     "category": "Portfolio",
