@@ -8,47 +8,56 @@ const fadeInUp = {
 };
 
 const SocialLinks = ({ data }) => {
+  const safeSocials = data.socials || {};
+
   const safeUrl = (url) => {
-    if (!url || url === '#') return '#';
+    if (!url) return '#';
     const normalized = String(url);
     if (!/^https?:\/\//i.test(normalized)) {
-      return '#';
+      return `https://${normalized}`;
     }
     return normalized;
   };
 
-  const safeSocials = data.socials || {};
   const socials = [
-    { icon: Youtube, label: 'YouTube', url: safeUrl(safeSocials.youtube) },
-    { icon: Instagram, label: 'Instagram', url: safeUrl(safeSocials.instagram) },
-    { icon: Linkedin, label: 'LinkedIn', url: safeUrl(safeSocials.linkedin) },
-    { icon: Twitter, label: 'Twitter', url: safeUrl(safeSocials.twitter) },
-    { icon: Facebook, label: 'Facebook', url: safeUrl(safeSocials.facebook) },
+    { icon: Youtube, label: 'YouTube', url: safeSocials.youtube || safeSocials.youtubeChannel, color: 'text-red-500 hover:text-red-400' },
+    { icon: Instagram, label: 'Instagram', url: safeSocials.instagram, color: 'text-pink-500 hover:text-pink-400' },
+    { icon: Linkedin, label: 'LinkedIn', url: safeSocials.linkedin, color: 'text-blue-500 hover:text-blue-400' },
+    { icon: Twitter, label: 'Twitter', url: safeSocials.twitter, color: 'text-sky-500 hover:text-sky-400' },
+    { icon: Facebook, label: 'Facebook', url: safeSocials.facebook, color: 'text-blue-600 hover:text-blue-500' },
   ];
 
   return (
     <motion.div initial="initial" animate="animate" variants={fadeInUp} className="max-w-7xl mx-auto px-4 py-12">
-      <h2 className="text-2xl md:text-3xl font-bold text-white mb-6">Follow Me</h2>
-      
-      <div className="grid grid-cols-2 sm:grid-cols-3 md:grid-cols-5 gap-4">
+      <h2 className="text-2xl md:text-3xl font-bold text-white mb-6">Connect With Me</h2>
+      <div className="flex flex-wrap justify-center gap-6">
         {socials.map((social, idx) => {
-          const href = social.url;
+          const href = safeUrl(social.url);
           const isValid = href !== '#';
-          const Component = isValid ? 'a' : 'div';
-          
+
+          if (isValid) {
+            return (
+              <a
+                key={idx}
+                href={href}
+                target="_blank"
+                rel="noopener noreferrer"
+                className={`flex flex-col items-center gap-2 p-4 rounded-xl bg-[#212121] hover:bg-[#303030] transition ${social.color}`}
+              >
+                <social.icon size={32} />
+                <span className="text-gray-300">{social.label}</span>
+              </a>
+            );
+          }
+
           return (
-            <Component
+            <div
               key={idx}
-              {...(isValid && {
-                href,
-                target: '_blank',
-                rel: 'noopener noreferrer'
-              })}
-              className={`bg-[#212121] ${isValid ? 'hover:bg-[#303030] cursor-pointer' : 'opacity-70 cursor-default'} rounded-xl p-6 text-center transition`}
+              className={`flex flex-col items-center gap-2 p-4 rounded-xl bg-[#212121] opacity-70 cursor-default ${social.color}`}
             >
-              <social.icon size={32} className="mx-auto text-white mb-2" />
-              <p className="text-white font-semibold">{social.label}</p>
-            </Component>
+              <social.icon size={32} />
+              <span className="text-gray-300">{social.label}</span>
+            </div>
           );
         })}
       </div>
