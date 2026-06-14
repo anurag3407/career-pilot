@@ -1,7 +1,7 @@
+import { usePortfolio } from "../../../../context/PortfolioContext";
 import React, { useState, useRef, useMemo } from "react";
 import { motion, AnimatePresence, useInView, useScroll, useTransform } from "framer-motion";
 import { Github, Linkedin, Twitter, Mail, ExternalLink, ChevronDown, Star } from "lucide-react";
-import data from "../../../../data/dummy_data.json";
 
 const C = {
   night:  "#03040A",
@@ -39,6 +39,8 @@ function generateStars(count) {
 const STARS = generateStars(80);
 
 function GlobalStyles() {
+  const { portfolioData: data } = usePortfolio();
+
   return (
     <style>{`
       @import url('https://fonts.googleapis.com/css2?family=Cormorant+Garamond:ital,wght@0,300;0,400;0,600;0,700;1,300;1,400;1,600&family=DM+Sans:wght@300;400;500;600&display=swap');
@@ -182,6 +184,8 @@ function GlobalStyles() {
 }
 
 function FadeIn({ children, delay = 0, className = "", style = {} }) {
+  const { portfolioData: data } = usePortfolio();
+
   const ref = useRef(null);
   const inView = useInView(ref, { once: true, margin: "-80px" });
   return (
@@ -194,6 +198,8 @@ function FadeIn({ children, delay = 0, className = "", style = {} }) {
 }
 
 function SkillBar({ name, level, category }) {
+  const { portfolioData: data } = usePortfolio();
+
   const ref = useRef(null);
   const inView = useInView(ref, { once: true });
   return (
@@ -211,6 +217,8 @@ function SkillBar({ name, level, category }) {
 }
 
 export default function TwilightHorizon() {
+  const { portfolioData: data } = usePortfolio();
+
   const [menuOpen, setMenuOpen] = useState(false);
   const [contactState, setContactState] = useState("idle");
   const [form, setForm] = useState({ name: "", email: "", message: "" });

@@ -1,5 +1,5 @@
+import { usePortfolio } from "../../../../context/PortfolioContext";
 import React from 'react';
-import dummyData from '../../../../data/dummy_data.json';
 
 // Section imports
 import Hero from './Hero';
@@ -11,6 +11,8 @@ import Testimonials from './Testimonials';
 import Contact from './Contact';
 
 export default function LiquidGlass({ portfolioData }) {
+  const { portfolioData: dummyData } = usePortfolio();
+
   // Merge AI data with dummyData
   const personal = {
     ...dummyData.personal,

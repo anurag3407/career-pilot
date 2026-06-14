@@ -3,6 +3,7 @@ import AppSidebar from "./AppSidebar";
 import MobileNav from "./MobileNav";
 import FAB from "./FAB";
 import NotificationCenter from "./NotificationCenter";
+import MissingApiKeyModal from "./settings/MissingApiKeyModal";
 import { cn } from "../lib/utils";
 
 export default function AppLayout({ children, className }) {
@@ -25,6 +26,7 @@ export default function AppLayout({ children, className }) {
                 <FAB scrollContainerRef={mainRef} />
             </main>
             <MobileNav />
+            <MissingApiKeyModal />
         </div>
     );
 }

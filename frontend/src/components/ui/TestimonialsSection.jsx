@@ -71,7 +71,7 @@ export default function TestimonialsSection() {
           whileInView={{ opacity: 1, y: 0 }}
           transition={{ duration: 0.8, delay: 0.1, ease: [0.16, 1, 0.3, 1] }}
           viewport={{ once: true }}
-          className="flex flex-col items-center justify-center max-w-[540px] mx-auto mb-16"
+          className="flex flex-col items-center justify-center max-w-135 mx-auto mb-16"
         >
           <div className="flex justify-center">
             <div className="border border-border bg-card/50 py-1.5 px-5 rounded-full text-muted-foreground text-xs font-bold uppercase tracking-widest">
@@ -89,7 +89,7 @@ export default function TestimonialsSection() {
           </p>
         </motion.div>
 
-        <div className="flex justify-center gap-6 mt-10 [mask-image:linear-gradient(to_bottom,transparent,black_10%,black_90%,transparent)] max-h-[800px] overflow-hidden">
+        <div className="flex justify-center gap-6 mt-10 mask-[linear-gradient(to_bottom,transparent,black_10%,black_90%,transparent)] max-h-200 overflow-hidden">
           <TestimonialsColumn testimonials={firstColumn} duration={25} />
           <TestimonialsColumn testimonials={secondColumn} className="hidden md:block" duration={35} />
           <TestimonialsColumn testimonials={thirdColumn} className="hidden lg:block" duration={30} />
