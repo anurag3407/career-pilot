@@ -1,3 +1,11 @@
+# [1.239.0](https://github.com/anurag3407/career-pilot/compare/v1.238.0...v1.239.0) (2026-06-14)
+
+
+### Features
+
+* Add Michelin Star Chef Plating template ([#3194](https://github.com/anurag3407/career-pilot/issues/3194)) ([752e0a5](https://github.com/anurag3407/career-pilot/commit/752e0a553ca7f3c1d4ee59c29b1ceeec650b9d58))
+* add Sommelier Wine Cellar Racks portfolio template ([#3215](https://github.com/anurag3407/career-pilot/issues/3215)) ([c811e7a](https://github.com/anurag3407/career-pilot/commit/c811e7a0f0ae744714b3b08a4a9caad52446427d))
+
 # [1.238.0](https://github.com/anurag3407/career-pilot/compare/v1.237.0...v1.238.0) (2026-06-14)
 
 

@@ -1,5 +1,32 @@
 export const templates = [
   {
+    id: "Sommelier_Wine_Cellar_Racks",
+    title: "Sommelier Wine Cellar Racks",
+    category: "Portfolio",
+    colorScheme: "Dark",
+    layout: "Interactive",
+    author: "System",
+    views: 999999,
+    rating: 5.0,
+    image: "/templates/Sommelier_Wine_Cellar_Racks.png",
+    createdAt: "2026-06-14",
+    isComplete: true
+  },
+  {
+    id: "Michelin_Star_Chef_Plating",
+    title: "Michelin Star Chef Plating",
+    category: "Portfolio",
+    colorScheme: "Dark",
+    layout: "Interactive",
+    author: "System",
+    views: 0,
+    rating: 5.0,
+    image: "/templates/Michelin_Star_Chef_Plating.png",
+    createdAt: "2026-06-14",
+    isComplete: true
+  },
+
+  {
     "id": "Zen_Bamboo_Forest_Wind",
     "title": "Zen Bamboo Forest Wind",
     "category": "Portfolio",
@@ -107,6 +134,19 @@ export const templates = [
 },
 
   {
+    "id": "Vercel_Deploy",
+    "title": "Vercel Deploy",
+    "category": "Portfolio",
+    "colorScheme": "Dark",
+    "layout": "Interactive",
+    "author": "System",
+    "views": 0,
+    "rating": 5.0,
+    "image": "/template-previews/Vercel_Deploy.png",
+    "createdAt": "2026-06-14",
+    "isComplete": true
+  },
+  {
   "id": "Virtual_Reality_Room_360",
   "title": "Virtual Reality Room 360",
   "category": "Portfolio",
@@ -159,6 +199,10 @@ export const templates = [
     "isComplete": true
   },
 
+    "image": "/template-previews/Endless_Runner_Minigame.png",
+    "createdAt": "2026-06-12",
+    "isComplete": true
+  },
   {
     "id": "Git_Commit_History_Tree",
     "title": "Git Commit History Tree",
