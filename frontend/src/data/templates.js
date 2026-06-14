@@ -1324,6 +1324,18 @@ rating: 4.8,
     "createdAt": "2026-05-01"
   },
   {
+    "id": "Minimal_Dark_Fluid",
+    "title": "Minimal Dark Fluid",
+    "category": "Portfolio",
+    "colorScheme": "Dark",
+    "layout": "List",
+    "author": "System",
+    "views": 0,
+    "rating": 5.0,
+    "image": "/template-previews/Minimal_Dark_Fluid.png",
+    "createdAt": "2026-06-14"
+  },
+  {
     "id": "Glassmorphism",
     "title": "Glassmorphism",
     "category": "Portfolio",
