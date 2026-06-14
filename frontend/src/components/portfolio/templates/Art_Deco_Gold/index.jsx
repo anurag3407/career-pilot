@@ -28,7 +28,10 @@ const normalizeSkills = (skills, fallbackSkills) => {
     .filter((skill) => skill && skill.name)
     .map((skill) => ({
       name: skill.name,
-      level: typeof skill.level === 'number' ? skill.level : 80,
+      level:
+        typeof skill.level === 'number'
+          ? Math.min(100, Math.max(0, skill.level))
+          : 80,
       category: skill.category || 'Skill',
     }));
 };
@@ -48,6 +51,12 @@ const normalizeProjects = (projects, fallbackProjects) => {
       techStack:
         project.technologies ||
         project.techStack ||
+        (typeof project.tech === 'string'
+          ? project.tech
+              .split(',')
+              .map((item) => item.trim())
+              .filter(Boolean)
+          : null) ||
         fallback.techStack ||
         fallback.technologies ||
         [],
@@ -60,7 +69,8 @@ const normalizeProjects = (projects, fallbackProjects) => {
 /**
  * Art Deco Gold Portfolio Template
  * Category: Retro / Nostalgic
- * Description: 1920s Art Deco style with gold foil on black, geometric fan patterns, Gatsby-era elegance. Luxury serif fonts, symmetrical ornamental borders.
+ * Description: 1920s Art Deco style with gold foil on black, geometric fan patterns,
+ * Gatsby-era elegance. Luxury serif fonts, symmetrical ornamental borders.
  */
 export default function ArtDecoGold({ portfolioData }) {
   const context = usePortfolio();
@@ -89,7 +99,10 @@ export default function ArtDecoGold({ portfolioData }) {
     ...(source.stats || {}),
   };
 
-  const skills = normalizeSkills(source.skills, fallbackData.skills);
+  const skills = normalizeSkills(
+    source.skills,
+    fallbackData.skills
+  );
 
   const projects = normalizeProjects(
     source.projects,
