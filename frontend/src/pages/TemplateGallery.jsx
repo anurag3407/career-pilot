@@ -1,41 +1,13 @@
-import React, { useState, useRef, useEffect, Suspense, useMemo } from 'react';
-import { useTheme } from '../hooks/useTheme';
-import Navbar from '../components/Navbar';
-import DeployModal from '../components/portfolio/DeployModal';
-import ThemeSelector from '../components/portfolio/ThemeSelector';
-import HolographicAbout from '../components/portfolio/templates/Holographic/About';
-import CulinaryAbout from '../components/portfolio/templates/Culinary_Restaurant/About';
-import TechStartupHero from '../components/portfolio/templates/Tech_Startup/Hero';
-import GeometricShapesAbout from '../components/portfolio/templates/Geometric_Shapes/About';
-import ChooseAdventurePortfolio from '../components/portfolio/templates/Choose_Adventure/index';
-import WeatherMood from '../components/portfolio/templates/Weather_Mood/index';
-import SwissTypography from '../components/portfolio/templates/Swiss_Typography/index';
-import DesertDunes from '../components/portfolio/templates/Desert_Dunes/index';
+import React, { useState, useRef, useEffect, Suspense, useMemo } from "react";
+import { useTheme } from "../hooks/useTheme";
+import Navbar from "../components/Navbar";
+import DeployModal from "../components/portfolio/DeployModal";
+import ThemeSelector from "../components/portfolio/ThemeSelector";
 import { templates } from '../data/templates';
-import { PortfolioProvider } from '../context/PortfolioContext';
-import { motion, AnimatePresence } from 'framer-motion';
-import {
-  Moon,
-  Sun,
-  ChevronDown,
-  Check,
-  Eye,
-  Star,
-  Sparkles,
-  X,
-} from 'lucide-react';
-import LiquidGlass from '../components/portfolio/templates/Liquid_Glass/index';
-import MidnightGradient from '../components/portfolio/templates/Midnight_Gradient/index';
-import PlayingCardsPortfolio from '../components/portfolio/templates/Playing_Cards';
-import CherryBlossom from '../components/portfolio/templates/Cherry_Blossom/index';
-import PsychedelicSwirl from '../components/portfolio/templates/Psychedelic_Swirl/index';
-import MemphisPop from '../components/portfolio/templates/Memphis_Pop/index';
-import CassetteMixtape from '../components/portfolio/templates/Cassette_Mixtape/index';
-import TypewriterEffect from '../components/portfolio/templates/Typewriter_Effect/index';
-import ChromaticGlitch from '../components/portfolio/templates/Chromatic_Glitch/index';
-import MagneticDock from '../components/portfolio/templates/Magnetic_Dock/index';
-import { useSearchParams } from 'react-router-dom';
-import MorphingBlobs from '../components/portfolio/templates/Morphing_Blobs/index';
+import { motion, AnimatePresence } from "framer-motion";
+import { Moon, Sun, ChevronDown, Check, Eye, Star, Sparkles, X } from "lucide-react";
+import { useSearchParams } from "react-router-dom";
+import { PortfolioProvider } from '../context/PortfolioContext.jsx';
 
 /* TemplatePreviewFrame — contains each full portfolio template in a
    sandboxed scrollable box. The key trick: CSS `transform` on the outer
@@ -161,25 +133,36 @@ function FilterSelect({ value, onChange, options, className = "" }) {
   );
 }
 
-const TemplateHeroPreview = ({ templateId, portfolioData }) => {
-  const Component = useMemo(() => {
-    if (!templateId) return null;
-    return React.lazy(
-      () => import(`../components/portfolio/templates/${templateId}/index.jsx`)
-    );
-  }, [templateId]);
 
-  if (!templateId) return null;
-  return (
-    <Suspense fallback={<div className="w-full h-full bg-muted/50" />}>
-      <PortfolioProvider portfolioData={portfolioData}>
-        <Component portfolioData={portfolioData} />
-      </PortfolioProvider>
-    </Suspense>
-  );
-};
+function useInView(options = {}) {
+  const [inView, setInView] = useState(false);
+  const ref = useRef(null);
+
+  useEffect(() => {
+    if (!ref.current) return;
+    const observer = new IntersectionObserver(([entry]) => {
+      setInView(entry.isIntersecting);
+    }, options);
+    observer.observe(ref.current);
+    return () => observer.disconnect();
+  }, [options.rootMargin, options.threshold]);
+
+  return [ref, inView];
+}
 
 function TemplateCard({ template, hovered, onHover, onLeave, onUse, aiDraft }) {
+  const [ref, inView] = useInView({ threshold: 0 });
+  const [iframeLoaded, setIframeLoaded] = useState(false);
+
+  const shouldRenderIframe = inView || hovered;
+
+  // Reset iframe loaded state when it unmounts
+  useEffect(() => {
+    if (!shouldRenderIframe) {
+      setIframeLoaded(false);
+    }
+  }, [shouldRenderIframe]);
+
   return (
     <motion.div
       onMouseEnter={() => onHover(template.id)}
@@ -204,41 +187,50 @@ function TemplateCard({ template, hovered, onHover, onLeave, onUse, aiDraft }) {
         },
       }}
       className="bg-card rounded-2xl overflow-hidden border border-border flex flex-col justify-between cursor-pointer"
+      ref={ref}
     >
-      <div className="overflow-hidden relative bg-background h-52">
-        {template.isComplete ? (
+      <div className="overflow-hidden relative bg-background aspect-[16/10]">
+        
+        {/* Layer 0: Sleek Fallback Placeholder / Loading Screen */}
+        <div className="absolute inset-0 flex flex-col items-center justify-center bg-gradient-to-br from-neutral-900 to-black p-6 text-center z-0">
+           {!iframeLoaded ? (
+             <div className="flex flex-col items-center gap-3">
+               <div className="w-8 h-8 border-2 border-cyan-400 border-t-transparent rounded-full animate-spin" />
+               <span className="text-xs text-cyan-300 font-mono uppercase tracking-widest animate-pulse">Loading Hero Section</span>
+             </div>
+           ) : (
+             <>
+                <Sparkles className="w-8 h-8 text-primary mb-3 opacity-50" />
+                <h3 className="text-lg font-semibold text-white/80 font-mono tracking-tight">{template.title}</h3>
+             </>
+           )}
+        </div>
+
+        {/* Layer 1: Live iframe — loads when in view to provide an always-visible hero section */}
+        {shouldRenderIframe && (
           <div
-            className="absolute top-0 left-0 origin-top-left pointer-events-none"
+            className="absolute top-0 left-0 origin-top-left pointer-events-none z-20"
             style={{
-              width: '1280px',
-              height: '800px',
-              transform: 'scale(0.3)',
+              width: '500%',
+              height: '500%',
+              transform: 'scale(0.2)',
+              opacity: iframeLoaded ? 1 : 0,
+              transition: 'opacity 0.6s ease-in-out',
             }}
           >
-            <TemplateHeroPreview
-              templateId={template.id}
-              portfolioData={aiDraft}
+            <iframe
+              src={`/preview/${template.id}`}
+              className="w-full h-full border-none pointer-events-none bg-background"
+              title={template.title}
+              sandbox="allow-scripts allow-same-origin"
+              onLoad={() => setIframeLoaded(true)}
             />
           </div>
-        ) : (
-          <motion.img
-            src={template.image}
-            alt={template.title}
-            className="w-full h-52 object-cover object-top"
-            variants={{
-              rest: {
-                scale: 1,
-                transition: { duration: 0.5, ease: [0.25, 0.46, 0.45, 0.94] },
-              },
-              hover: {
-                scale: 1.08,
-                transition: { type: 'spring', stiffness: 200, damping: 25 },
-              },
-            }}
-          />
         )}
+
+        {/* Gradient overlay on hover */}
         <motion.div
-          className="absolute inset-0 bg-gradient-to-t from-black/50 via-transparent to-transparent pointer-events-none"
+          className="absolute inset-0 bg-gradient-to-t from-black/50 via-transparent to-transparent pointer-events-none z-30"
           variants={{ rest: { opacity: 0 }, hover: { opacity: 1 } }}
           transition={{ duration: 0.3 }}
         />
@@ -269,11 +261,11 @@ function TemplateCard({ template, hovered, onHover, onLeave, onUse, aiDraft }) {
         <div className="flex justify-between text-sm text-muted-foreground mb-4">
           <span className="flex items-center gap-1.5">
             <Star className="w-3.5 h-3.5 text-amber-400 fill-amber-400" />
-            {template.rating}
+            {template.rating || 0}
           </span>
           <span className="flex items-center gap-1.5">
             <Eye className="w-3.5 h-3.5" />
-            {template.views.toLocaleString()}
+            {(template.views || 0).toLocaleString()}
           </span>
         </div>
 
@@ -325,71 +317,60 @@ function TemplateCard({ template, hovered, onHover, onLeave, onUse, aiDraft }) {
   );
 }
 
-const TemplatePreviewModal = ({
-  templateId,
-  isOpen,
-  onClose,
-  portfolioData,
-}) => {
+const TemplatePreviewModal = ({ templateId, isOpen, onClose, portfolioData }) => {
   const Component = useMemo(() => {
     if (!templateId) return null;
-    return React.lazy(
-      () => import(`../components/portfolio/templates/${templateId}/index.jsx`)
-    );
+    return React.lazy(() => import(`../components/portfolio/templates/${templateId}/index.jsx`));
   }, [templateId]);
 
-  if (!isOpen || !templateId) return null;
+  if (!templateId) return null;
 
   return (
-    <div className="fixed inset-0 z-[100] bg-background/95 backdrop-blur-xl flex flex-col overflow-hidden">
-      <div className="flex items-center justify-between px-6 py-4 bg-card/80 border-b border-border shadow-sm">
-        <div className="flex items-center gap-4">
-          <h2 className="text-xl font-bold bg-clip-text text-transparent bg-gradient-to-r from-cyan-400 to-blue-500">
-            {templateId.replace(/_/g, ' ')} Preview
-          </h2>
-          <span className="px-3 py-1 text-xs font-medium rounded-full bg-cyan-500/10 text-cyan-400 border border-cyan-500/20">
-            Live Demo
-          </span>
-        </div>
-        <button
-          onClick={onClose}
-          className="p-2 text-muted-foreground hover:text-foreground bg-muted hover:bg-accent rounded-xl transition-colors"
+    <AnimatePresence>
+      {isOpen && (
+        <motion.div
+          className="fixed inset-0 z-50 flex flex-col bg-background"
+          initial={{ opacity: 0 }}
+          animate={{ opacity: 1 }}
+          exit={{ opacity: 0 }}
         >
-          <X className="w-5 h-5" />
-        </button>
-      </div>
-      <div className="flex-1 overflow-y-auto relative bg-background">
-        <Suspense
-          fallback={
-            <div className="absolute inset-0 flex flex-col items-center justify-center text-muted-foreground gap-4">
-              <div className="w-8 h-8 border-4 border-cyan-500 border-t-transparent rounded-full animate-spin" />
-              <p className="animate-pulse font-medium tracking-wide text-sm uppercase">
-                Loading interactive preview...
-              </p>
-            </div>
-          }
-        >
-          {Component && (
-            <PortfolioProvider portfolioData={portfolioData}>
-              <Component portfolioData={portfolioData} />
-            </PortfolioProvider>
-          )}
-        </Suspense>
-      </div>
-    </div>
+          <div className="flex items-center justify-between px-6 py-3 border-b border-border bg-card shrink-0">
+            <span className="text-sm font-semibold text-foreground/70 uppercase tracking-widest">
+              Preview — {templateId?.replace(/_/g, " ")}
+            </span>
+            <button
+              onClick={onClose}
+              className="p-2 rounded-xl hover:bg-accent text-muted-foreground hover:text-foreground transition-colors"
+            >
+              <X className="w-5 h-5" />
+            </button>
+          </div>
+          <div className="flex-1 overflow-y-auto relative bg-background" style={{ transform: "translate(0)" }}>
+            <Suspense fallback={
+              <div className="absolute inset-0 flex flex-col items-center justify-center text-muted-foreground gap-4">
+                <div className="w-8 h-8 border-4 border-cyan-500 border-t-transparent rounded-full animate-spin" />
+                <p className="animate-pulse font-medium tracking-wide text-sm uppercase">Loading interactive preview...</p>
+              </div>
+            }>
+              {Component && <Component portfolioData={portfolioData} />}
+            </Suspense>
+          </div>
+        </motion.div>
+      )}
+    </AnimatePresence>
   );
 };
 
 export default function TemplateGallery() {
   const { theme, toggleTheme } = useTheme();
   const [searchParams, setSearchParams] = useSearchParams();
-  const previewTemplateId = searchParams.get('preview');
+  const previewTemplateId = searchParams.get("preview");
   const [hoveredCard, setHoveredCard] = useState(null);
 
-  const [category, setCategory] = useState('All');
-  const [colorScheme, setColorScheme] = useState('All');
-  const [layout, setLayout] = useState('All');
-  const [sort, setSort] = useState('Popular');
+  const [category, setCategory] = useState("All");
+  const [colorScheme, setColorScheme] = useState("All");
+  const [layout, setLayout] = useState("All");
+  const [sort, setSort] = useState("Popular");
 
   const [aiDraft, setAiDraft] = useState(null);
 
@@ -398,7 +379,7 @@ export default function TemplateGallery() {
     if (draft) {
       try {
         setAiDraft(JSON.parse(draft));
-      } catch (e) {}
+      } catch(e) {}
     }
   }, []);
 
@@ -407,12 +388,12 @@ export default function TemplateGallery() {
     setAiDraft(null);
   };
 
-  const [selectedTheme, setSelectedTheme] = useState('minimal');
+  const [selectedTheme, setSelectedTheme] = useState("minimal");
   const [isDeployModalOpen, setIsDeployModalOpen] = useState(false);
-  const [selectedPortfolioTitle, setSelectedPortfolioTitle] = useState('');
-  const [selectedTemplateId, setSelectedTemplateId] = useState('default');
+  const [selectedPortfolioTitle, setSelectedPortfolioTitle] = useState("");
+  const [selectedTemplateId, setSelectedTemplateId] = useState("default");
 
-  const handleUseTemplate = (val, isPreview, id = 'default') => {
+  const handleUseTemplate = (val, isPreview, id = "default") => {
     if (isPreview) {
       setSearchParams({ preview: val });
     } else {
@@ -448,7 +429,6 @@ export default function TemplateGallery() {
   ];
 
   const filteredTemplates = templates.filter((template) => {
-    if (!template.isComplete) return false;
     const matchesCategory =
       category === 'All' || template.category === category;
     const matchesColorScheme =
@@ -468,7 +448,21 @@ export default function TemplateGallery() {
     <div className="min-h-screen bg-background text-foreground transition-colors duration-300">
       <Navbar />
 
+      <TemplatePreviewModal
+        templateId={previewTemplateId}
+        isOpen={!!previewTemplateId}
+        onClose={() => {
+          if (searchParams.has("preview")) {
+            window.history.back();
+          } else {
+            setSearchParams({}, { replace: true });
+          }
+        }}
+        portfolioData={aiDraft}
+      />
+
       <div className="p-8 pt-24">
+
         {aiDraft && (
           <div className="mb-8 p-4 rounded-xl bg-gradient-to-r from-emerald-500/10 to-teal-500/10 border border-emerald-500/30 flex items-center justify-between">
             <div>
@@ -579,31 +573,22 @@ export default function TemplateGallery() {
             ))}
           </div>
         )}
-        {/* Deploy Modal */}
 
-      <div className="mt-12">
-        <div className="mb-4 flex items-center gap-3 px-1">
-          <span className="rounded-full bg-amber-500/20 px-3 py-1 text-xs font-bold uppercase tracking-widest text-amber-400 border border-amber-500/30">Preview</span>
-          <h2 className="text-lg font-semibold text-foreground/70">Culinary Restaurant Theme — About Section</h2>
-        </div>
-        <div className="overflow-hidden rounded-2xl border border-border"><CulinaryAbout /></div>
-      <TemplatePreviewModal
-        templateId={previewTemplateId}
-        isOpen={!!previewTemplateId}
-        onClose={() => {
-          if (searchParams.has("preview")) {
-            // Check if there is history to go back to, so we pop the preview state cleanly
-            window.history.back();
-          } else {
-            setSearchParams({}, { replace: true });
-          }
-        }}
-        portfolioData={aiDraft}
-      />
+        <DeployModal
+          isOpen={isDeployModalOpen}
+          onClose={() => setIsDeployModalOpen(false)}
+          portfolioTitle={selectedPortfolioTitle}
+          templateId={selectedTemplateId}
+          aiDraft={aiDraft}
+          onDeploySuccess={clearDraft}
+        />
+
+
+
       </div>
+
     </div>
-  </div>
-);
+  );
 }
       
        

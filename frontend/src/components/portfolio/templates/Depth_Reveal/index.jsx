@@ -1,5 +1,5 @@
+import { usePortfolio } from "../../../../context/PortfolioContext";
 import React from 'react';
-import data from '../../../../data/dummy_data.json';
 import { ScrollReveal } from './ScrollReveal';
 import Hero from './Hero';
 import About from './About';
@@ -10,6 +10,8 @@ import Testimonials from './Testimonials';
 import Contact from './Contact';
 
 const DepthReveal = () => {
+  const { portfolioData: data } = usePortfolio();
+
   return (
     <div className="bg-slate-950 text-white min-h-screen font-sans overflow-x-hidden [perspective:1200px]">
       <Hero data={data.personal} socials={data.socials} />

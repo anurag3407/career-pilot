@@ -1,7 +1,7 @@
 import { useState, useEffect } from "react";
 import { useNavigate, useLocation } from "react-router-dom";
 import { motion } from "framer-motion";
-import { Brain, ChevronDown, Contrast } from "lucide-react";
+import { Brain, ChevronDown, Contrast, LineChart } from "lucide-react";
 import AIProviderIndicator from "./settings/AIProviderIndicator";
 
 import {
@@ -43,6 +43,11 @@ const navLinks = [
         icon: <LayoutDashboard className="w-5 h-5 shrink-0" />,
     },
     {
+        label: "ATS Dashboard",
+        href: "/ats-dashboard",
+        icon: <LineChart className="w-5 h-5 shrink-0" />,
+    },
+    {
         label: "Resume Builder",
         href: "/hub/resume",
         icon: <FileText className="w-5 h-5 shrink-0" />,
@@ -56,11 +61,6 @@ const navLinks = [
         label: "Portfolio Builder",
         href: "/hub/portfolio",
         icon: <Globe className="w-5 h-5 shrink-0" />,
-    },
-    {
-        label: "Project Visualizer",
-        href: "/project-visualizer",
-        icon: <GitMerge className="w-5 h-5 shrink-0" />,
     },
     {
         label: "Career Growth",
@@ -272,6 +272,15 @@ useEffect(() => {
                                 transition={{ duration: 0.3 }}
                                 className="overflow-hidden ml-4 flex flex-col gap-1"
                             >
+                                <SidebarLink
+                                    link={{
+                                        label: "Cold Outreach",
+                                        href: "/outreach",
+                                        icon: <Mail className="w-4 h-4 shrink-0" />,
+                                    }}
+                                    onClick={() => setOpen(false)}
+                                />
+
                                 <SidebarLink
                                     link={{
                                         label: "Skill Gap Analyzer",
