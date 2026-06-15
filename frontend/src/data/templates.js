@@ -105,16 +105,16 @@ export const templates = [
     "isComplete": true
   },
   {
-    "id": "Vercel_Deploy",
-    "title": "Vercel Deploy",
+    "id": "Audio_Visualizer_Frequency",
+    "title": "Audio Visualizer Frequency",
     "category": "Portfolio",
     "colorScheme": "Dark",
-    "layout": "Cards",
-    "author": "Your GitHub Username",
-    "views": 1200,
-    "rating": 4.8,
-    "image": "/template-previews/Vercel_Deploy.png",
-    "createdAt": "2026-06-05",
+    "layout": "Interactive",
+    "author": "mallya-m",
+    "views": 0,
+    "rating": 0,
+    "image": "/template-previews/Audio_Visualizer_Frequency.png",
+    "createdAt": "2026-06-12",
     "isComplete": true
   },
   {
