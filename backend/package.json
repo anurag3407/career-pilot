@@ -8,7 +8,7 @@
     "start": "node src/index.js",
     "dev": "nodemon src/index.js",
     "lint": "eslint src/",
-    "test": "node --test src/schemas/__tests__/schemas.test.js"
+    "test": "node --test src/schemas/__tests__/schemas.test.js src/config/__tests__/socketOptions.test.js"
   },
   "dependencies": {
     "@anthropic-ai/sdk": "^0.99.0",
@@ -58,7 +58,10 @@
   },
   "devDependencies": {
     "eslint": "^8.57.1",
-    "nodemon": "^3.1.7"
+    "ioredis-mock": "^8.13.1",
+    "mongodb-memory-server": "^11.2.0",
+    "nodemon": "^3.1.7",
+    "redis-memory-server": "^0.16.1"
   },
   "engines": {
     "node": ">=18.0.0"

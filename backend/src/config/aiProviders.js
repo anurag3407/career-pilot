@@ -232,12 +232,24 @@ let _defaultProvider = null;
 export function getDefaultProvider() {
   if (_defaultProvider) return _defaultProvider;
 
+  const groqApiKey = process.env.GROQ_API_KEY;
+  if (groqApiKey && groqApiKey.startsWith('gsk_')) {
+    _defaultProvider = createAIProvider('groq', groqApiKey);
+    return _defaultProvider;
+  }
+
+  const openaiApiKey = process.env.OPENAI_API_KEY;
+  if (openaiApiKey && openaiApiKey.startsWith('sk-')) {
+    _defaultProvider = createAIProvider('openai', openaiApiKey);
+    return _defaultProvider;
+  }
+
   const geminiApiKey = process.env.GEMINI_API_KEY;
   if (!geminiApiKey) {
     throw new ApiError(
       503,
-      'AI features are unavailable — GEMINI_API_KEY is not configured. ' +
-      'Set it in your .env file or supply your own key via the X-AI-Key header.'
+      'AI features are unavailable — Neither OPENAI_API_KEY nor GEMINI_API_KEY is configured. ' +
+      'Set one in your .env file or supply your own key via the X-AI-Key header.'
     );
   }
 

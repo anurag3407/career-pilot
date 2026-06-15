@@ -3,6 +3,8 @@ import express from 'express';
 import dotenv from "dotenv";
 dotenv.config();
 
+import redisManager from './config/redis.js';
+
 import { createServer } from 'http';
 import cors from 'cors';
 import { cspHeaders } from './middleware/cspHeaders.js';
@@ -33,13 +35,13 @@ import bullBoardRoutes from './routes/bullBoard.js';
 
 import inputRoutes from'./routes/input.route.js';
 import recruiterRoutes from '../src/routes/recruiter.routes.js';
+import outreachRoutes from './routes/outreach.route.js';
 
 import { globalErrorHandler } from './middleware/globalErrorHandler.js';
 import {
   metricsMiddleware,
   metricsHandler,
 } from "./middleware/metrics.js";
-import redisManager from './config/redis.js';
 
 import { initializeSocket } from './config/socket.js';
 
@@ -71,6 +73,7 @@ import {
   initializeDigestQueue,
   startDigestWorker
 } from './services/weeklyDigestService.js';
+import { startOutreachWorker } from './services/outreachQueue.js';
 import { getSafeConfig } from './utils/safeConfig.js';
 import { validateEmailConfig } from './utils/emailConfig.js';
 
@@ -247,6 +250,7 @@ app.use('/api/fellowship', fellowshipRoutes);
 app.use('/api/interview', interviewRoutes);
 app.use("/api/upload", inputRoutes);
 app.use("/api/recruiter", recruiterRoutes);
+app.use("/api/outreach", outreachRoutes);
 try {
     const paymentRoutes = (await import('./routes/payments.js')).default;
     app.use('/api/payments', paymentRoutes);
@@ -343,6 +347,12 @@ const startServer = async () => {
         '⚠️ Weekly digest scheduler initialization skipped:',
         digestError.message
       );
+    }
+
+    try {
+      startOutreachWorker();
+    } catch (outreachErr) {
+      console.warn('⚠️ Outreach worker initialization skipped:', outreachErr.message);
     }
 
   } catch (error) {
