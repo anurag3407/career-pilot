@@ -1,31 +1,102 @@
+import React from "react";
 import { usePortfolio } from "../../../../context/PortfolioContext";
-import React from 'react';
 
 /**
  * Scandinavian Light Portfolio Template
  * Category: Minimal / Clean
- * Description: Scandinavian design with warm whites, soft shadows, wood-grain texture accents, rounded friendly shapes. Cozy, hygge-inspired minimal feel.
+ * Description: Scandinavian design with warm whites, soft shadows,
+ * wood-grain texture accents, rounded friendly shapes.
+ * Cozy, hygge-inspired minimal feel.
  */
 export default function ScandinavianLight() {
   const { portfolioData: data } = usePortfolio();
 
   return (
-    <div className="min-h-screen bg-gray-950 text-white flex flex-col items-center justify-center p-8 font-sans">
-      <div className="max-w-3xl w-full text-center">
-        <h1 className="text-5xl md:text-7xl font-bold mb-4 bg-gradient-to-r from-cyan-400 to-purple-500 bg-clip-text text-transparent">
-          {data.personal.name}
+    <div
+      style={{
+        minHeight: "100vh",
+        background: "#f8f6f2",
+        display: "flex",
+        alignItems: "center",
+        justifyContent: "center",
+        padding: "2rem",
+      }}
+    >
+      <div
+        style={{
+          maxWidth: "800px",
+          width: "100%",
+          background: "#ffffff",
+          borderRadius: "24px",
+          padding: "3rem",
+          boxShadow: "0 10px 30px rgba(0,0,0,0.08)",
+          textAlign: "center",
+        }}
+      >
+        <h1
+          style={{
+            fontSize: "3rem",
+            marginBottom: "0.5rem",
+            color: "#222",
+          }}
+        >
+          {data?.personal?.name || "Your Name"}
         </h1>
-        <p className="text-xl md:text-2xl text-gray-400 mb-8">{data.personal.title}</p>
-        <div className="p-8 border-2 border-dashed border-cyan-500/40 rounded-2xl bg-gray-900/50 backdrop-blur-sm">
-          <span className="inline-block px-3 py-1 rounded-full bg-cyan-500/20 text-cyan-400 text-xs font-bold uppercase tracking-widest mb-4">
-            Minimal / Clean
-          </span>
-          <h2 className="text-2xl font-bold text-gray-200 mb-3">Scandinavian Light Template</h2>
-          <p className="text-gray-400 mb-6 leading-relaxed">
-            Scandinavian design with warm whites, soft shadows, wood-grain texture accents, rounded friendly shapes. Cozy, hygge-inspired minimal feel.
-          </p>
-          <p className="text-cyan-400 font-semibold">Open an issue to contribute and build this template!</p>
+
+        <h2
+          style={{
+            fontSize: "1.25rem",
+            fontWeight: "400",
+            color: "#666",
+            marginBottom: "2rem",
+          }}
+        >
+          {data?.personal?.title || "Your Title"}
+        </h2>
+
+        <div
+          style={{
+            display: "inline-block",
+            padding: "0.5rem 1rem",
+            borderRadius: "999px",
+            background: "#f0ece5",
+            color: "#7a6a58",
+            marginBottom: "1.5rem",
+          }}
+        >
+          Minimal / Clean
         </div>
+
+        <h3
+          style={{
+            fontSize: "1.75rem",
+            color: "#333",
+            marginBottom: "1rem",
+          }}
+        >
+          Scandinavian Light Template
+        </h3>
+
+        <p
+          style={{
+            color: "#555",
+            lineHeight: 1.7,
+            marginBottom: "2rem",
+          }}
+        >
+          Scandinavian design with warm whites, soft shadows, wood-grain
+          texture accents, rounded friendly shapes. Cozy, hygge-inspired
+          minimal feel.
+        </p>
+
+        <p
+          style={{
+            color: "#888",
+            fontSize: "0.95rem",
+          }}
+        >
+          Open an issue to contribute and build this template!
+        </p>
       </div>
     </div>
   );
