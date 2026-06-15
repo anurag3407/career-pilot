@@ -229,8 +229,16 @@ export const useAIConfigStore = create((set, get) => ({
    * Returns null if no active provider is configured.
    */
   getActiveConfig: () => {
-    const { activeProvider, providers } = get();
-    if (!activeProvider) return null;
+    let { activeProvider, providers } = get();
+    
+    if (!activeProvider) {
+      const configuredProviders = Object.keys(providers).filter((key) => !!providers[key]?.apiKey);
+      if (configuredProviders.length > 0) {
+        activeProvider = configuredProviders[0];
+      } else {
+        return null;
+      }
+    }
 
     const entry = providers[activeProvider];
     if (!entry || !entry.apiKey) return null;

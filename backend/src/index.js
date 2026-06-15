@@ -1,7 +1,11 @@
 import 'dotenv/config';
 import express from 'express';
+import collaborationRoutes from './routes/collaboration.js';
+
 import dotenv from "dotenv";
 dotenv.config();
+
+import redisManager from './config/redis.js';
 
 import { createServer } from 'http';
 import cors from 'cors';
@@ -33,13 +37,13 @@ import bullBoardRoutes from './routes/bullBoard.js';
 
 import inputRoutes from'./routes/input.route.js';
 import recruiterRoutes from '../src/routes/recruiter.routes.js';
+import outreachRoutes from './routes/outreach.route.js';
 
 import { globalErrorHandler } from './middleware/globalErrorHandler.js';
 import {
   metricsMiddleware,
   metricsHandler,
 } from "./middleware/metrics.js";
-import redisManager from './config/redis.js';
 
 import { initializeSocket } from './config/socket.js';
 
@@ -71,6 +75,7 @@ import {
   initializeDigestQueue,
   startDigestWorker
 } from './services/weeklyDigestService.js';
+import { startOutreachWorker } from './services/outreachQueue.js';
 import { getSafeConfig } from './utils/safeConfig.js';
 import { validateEmailConfig } from './utils/emailConfig.js';
 
@@ -91,6 +96,42 @@ if (process.env.NODE_ENV === 'development') {
     console.warn('⚠️  OPENAI_API_KEY is not configured - OpenAI provider will not be available.');
   }
 }
+
+// Validate and normalize CORS origin URLs
+function validateOriginUrl(url) {
+  if (!url) return null;
+  const trimmed = url.trim();
+  try {
+    const parsed = new URL(trimmed);
+    // Ensure valid protocol
+    if (!['http:', 'https:'].includes(parsed.protocol)) {
+      console.error(`Invalid protocol in origin URL: ${trimmed}`);
+      return null;
+    }
+    // Ensure no pathname, search, or hash
+    if (parsed.pathname !== '/' || parsed.search || parsed.hash) {
+      console.error(`Origin URL must have no path, query, or hash: ${trimmed}`);
+      return null;
+    }
+    // Return normalized origin (no trailing slash)
+    return `${parsed.protocol}//${parsed.host}`;
+  } catch (error) {
+    console.error(`Failed to parse origin URL: ${trimmed}`, error.message);
+    return null;
+  }
+}
+
+// Production safety: FRONTEND_URL must be explicitly set and valid in production
+if (process.env.NODE_ENV === 'production') {
+  if (!process.env.FRONTEND_URL) {
+    throw new Error('FRONTEND_URL environment variable must be set in production');
+  }
+  const validatedFrontendUrl = validateOriginUrl(process.env.FRONTEND_URL);
+  if (!validatedFrontendUrl) {
+    throw new Error('FRONTEND_URL must be a valid origin URL (scheme://host[:port])');
+  }
+}
+
 const app = express();
 app.use(metricsMiddleware);
 app.use(compressionMiddleware);
@@ -114,8 +155,8 @@ const allowedOrigins = [
   'http://localhost:5173',
   'http://localhost:3000',
   'https://careerpilotyy.netlify.app',
-  process.env.FRONTEND_URL,
-].filter(Boolean).map(url => url.replace(/\/$/, ''));
+  validateOriginUrl(process.env.FRONTEND_URL),
+].filter(Boolean);
 
 console.log('🔧 Allowed origins:', allowedOrigins);
 
@@ -247,9 +288,11 @@ app.use('/api/fellowship', fellowshipRoutes);
 app.use('/api/interview', interviewRoutes);
 app.use("/api/upload", inputRoutes);
 app.use("/api/recruiter", recruiterRoutes);
+app.use("/api/outreach", outreachRoutes);
 try {
     const paymentRoutes = (await import('./routes/payments.js')).default;
-    app.use('/api/payments', paymentRoutes);
+    app.use('/api/collaboration', collaborationRoutes);
+app.use('/api/payments', paymentRoutes);
     console.log('✅ Payment routes loaded');
 } catch (error) {
     console.warn('⚠️ Payment routes disabled:', error.message);
@@ -343,6 +386,12 @@ const startServer = async () => {
         '⚠️ Weekly digest scheduler initialization skipped:',
         digestError.message
       );
+    }
+
+    try {
+      startOutreachWorker();
+    } catch (outreachErr) {
+      console.warn('⚠️ Outreach worker initialization skipped:', outreachErr.message);
     }
 
   } catch (error) {

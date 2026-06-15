@@ -1,5 +1,19 @@
 export const templates = [
   {
+    id: "Typewriter_Keystroke_Sequence",
+    title: "Typewriter Keystroke Sequence",
+    category: "Portfolio",
+    colorScheme: "Light",
+    layout: "Scroll",
+    author: "Raman Kumar",
+    views: 9999990,
+    rating: 5.0,
+    image: "/template-previews/Typewriter_Keystroke_Sequence.png",
+    createdAt: "2026-06-15",
+    description: "A vintage typewriter portfolio where your career story is typed live on old manuscript paper — complete with keystroke animations, ink smudges, diary entries, and folded letters.",
+    isComplete: true
+  },
+  {
     id: "Sommelier_Wine_Cellar_Racks",
     title: "Sommelier Wine Cellar Racks",
     category: "Portfolio",
@@ -2897,7 +2911,6 @@ export const templates = [
     "createdAt": "2026-06-07",
     "isComplete": true
   },
-
   {
     id: "Accordion_Fold_Brochure",
     title: "Accordion Fold Brochure",
@@ -2973,7 +2986,9 @@ export const templates = [
     "author": "System",
     "views": 1050,
     "rating": 4.8,
-    "image": "/template-previews/crossword_puzzle_word_fill.png",
+    "image": "/template-previews/crossword_puzzle_word_fill.png"
+  },
+  {
     "id": "Autumn_Forest_Leaf_Fall",
     "title": "Autumn Forest Leaf Fall",
     "category": "Portfolio",
@@ -2985,6 +3000,19 @@ export const templates = [
     "image": "/templates/Autumn_Forest_Leaf_Fall.png",
     "createdAt": "2026-06-13",
     "isComplete": true
+  },
+  {
+  "id": "Cyber_Security_Red_Team",
+  "title": "Cyber Security Red Team",
+  "category": "Portfolio",
+  "colorScheme": "Dark",
+  "layout": "Dashboard",
+  "author": "Ayush Srivastava",
+  "views": 0,
+  "rating": 5.0,
+  "image": "/templates/Cyber_Security_Red_Team.png",
+  "createdAt": "2026-06-14",
+  "isComplete": true
   }
 ];
 
