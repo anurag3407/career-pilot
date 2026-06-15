@@ -36,10 +36,10 @@ const C = {
 };
 
 const SKILL_ICONS = [
-  <Layout size={24} />, 
-  <Terminal size={24} />, 
-  <Database size={24} />, 
-  <Settings size={24} />
+  <Layout size={24} key="layout" />, 
+  <Terminal size={24} key="terminal" />, 
+  <Database size={24} key="database" />, 
+  <Settings size={24} key="settings" />
 ];
 
 /* ─────────────────────────────────────────────
