@@ -153,13 +153,16 @@ function useInView(options = {}) {
 function TemplateCard({ template, hovered, onHover, onLeave, onUse, aiDraft }) {
   const [ref, inView] = useInView({ threshold: 0 });
   const [iframeLoaded, setIframeLoaded] = useState(false);
+  const [iframeError, setIframeError] = useState(false);
 
+  // Determine if iframe should be rendered (in view or hovered)
   const shouldRenderIframe = inView || hovered;
 
-  // Reset iframe loaded state when it unmounts
+  // Reset iframe states when it unmounts or when we stop rendering it
   useEffect(() => {
     if (!shouldRenderIframe) {
       setIframeLoaded(false);
+      setIframeError(false);
     }
   }, [shouldRenderIframe]);
 
@@ -193,17 +196,19 @@ function TemplateCard({ template, hovered, onHover, onLeave, onUse, aiDraft }) {
         
         {/* Layer 0: Sleek Fallback Placeholder / Loading Screen */}
         <div className="absolute inset-0 flex flex-col items-center justify-center bg-gradient-to-br from-neutral-900 to-black p-6 text-center z-0">
-           {!iframeLoaded ? (
-             <div className="flex flex-col items-center gap-3">
-               <div className="w-8 h-8 border-2 border-cyan-400 border-t-transparent rounded-full animate-spin" />
-               <span className="text-xs text-cyan-300 font-mono uppercase tracking-widest animate-pulse">Loading Hero Section</span>
-             </div>
-           ) : (
-             <>
-                <Sparkles className="w-8 h-8 text-primary mb-3 opacity-50" />
-                <h3 className="text-lg font-semibold text-white/80 font-mono tracking-tight">{template.title}</h3>
-             </>
-           )}
+          {!iframeLoaded && !iframeError ? (
+            <div className="flex flex-col items-center gap-3">
+              <div className="w-8 h-8 border-2 border-cyan-400 border-t-transparent rounded-full animate-spin" />
+              <span className="text-xs text-cyan-300 font-mono uppercase tracking-widest animate-pulse">Loading Hero Section</span>
+            </div>
+          ) : iframeError ? (
+            <img src={template.image} alt={template.title} className="max-w-full h-auto object-cover" />
+          ) : (
+            <>
+              <Sparkles className="w-8 h-8 text-primary mb-3 opacity-50" />
+              <h3 className="text-lg font-semibold text-white/80 font-mono tracking-tight">{template.title}</h3>
+            </>
+          )}
         </div>
 
         {/* Layer 1: Live iframe — loads when in view to provide an always-visible hero section */}
@@ -224,6 +229,10 @@ function TemplateCard({ template, hovered, onHover, onLeave, onUse, aiDraft }) {
               title={template.title}
               sandbox="allow-scripts allow-same-origin"
               onLoad={() => setIframeLoaded(true)}
+              onError={() => {
+                setIframeLoaded(true);
+                setIframeError(true);
+              }}
             />
           </div>
         )}
@@ -236,26 +245,28 @@ function TemplateCard({ template, hovered, onHover, onLeave, onUse, aiDraft }) {
         />
       </div>
 
-      <div className="p-5 flex-1">
-        <h2 className="text-2xl font-semibold text-foreground">
-          {template.title}
-        </h2>
-        <p className="text-muted-foreground mt-1 text-sm">
-          By {template.author}
-        </p>
-        <div className="flex flex-wrap gap-2 mt-3">
-          {[template.category, template.colorScheme, template.layout].map(
-            (tag) => (
-              <span
-                key={tag}
-                className="text-xs bg-muted text-muted-foreground px-2.5 py-1 rounded-full"
-              >
-                {tag}
-              </span>
-            )
-          )}
-        </div>
-      </div>
+          <div className="p-5 flex-1">
+            {/* Defensive rendering with fallbacks */}
+            <h2 className="text-2xl font-semibold text-foreground">
+              {template?.title ?? 'Untitled'}
+            </h2>
+            <p className="text-muted-foreground mt-1 text-sm">
+              By {template?.author ?? 'Unknown'}
+            </p>
+            <div className="flex flex-wrap gap-2 mt-3">
+              {/* Ensure tags are defined; use fallback strings */}
+              {[template?.category ?? 'Misc', template?.colorScheme ?? 'Default', template?.layout ?? 'Default'].map(
+                (tag, idx) => (
+                  <span
+                    key={`tag-${idx}`}
+                    className="text-xs bg-muted text-muted-foreground px-2.5 py-1 rounded-full"
+                  >
+                    {tag}
+                  </span>
+                )
+              )}
+            </div>
+          </div>
 
       <div className="px-5 pb-5">
         <div className="flex justify-between text-sm text-muted-foreground mb-4">
@@ -590,11 +601,11 @@ export default function TemplateGallery() {
           </div>
         ) : (
           <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 xl:grid-cols-4 gap-6">
-            {sortedTemplates.map((template) => (
+            {sortedTemplates.map((template, index) => (
               <TemplateCard
-                key={template.id}
+                key={`${template.id ?? 'template'}-${index}`}
                 template={template}
-                hovered={hoveredCard === template.id}
+                hovered={hoveredCard === `${template.id ?? 'template'}-${index}`}
                 onHover={setHoveredCard}
                 onLeave={() => setHoveredCard(null)}
                 onUse={handleUseTemplate}

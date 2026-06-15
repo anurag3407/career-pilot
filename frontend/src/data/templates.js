@@ -67,19 +67,6 @@ export const templates = [
   "isComplete": true
 },
 {
-  "id": "Forensic_Investigator_Desk",
-  "title": "Forensic Investigator Desk",
-  "category": "Portfolio",
-  "colorScheme": "Dark",
-  "layout": "Interactive",
-  "author": "ShaktiShrey-01",
-  "views": 0,
-  "rating": 0,
-  "image": "/template-previews/Forensic_investigator_desk.png",
-  "createdAt": "2026-06-11",
-  "isComplete": true
-},
-{
   "id": "IKEA_Assembly_Manual",
   "title": "IKEA Assembly Manual",
   "category": "Portfolio",
@@ -247,25 +234,6 @@ export const templates = [
     "rating": 0,
     "image": "/template-previews/Audio_First_Sonar_Navigation.png",
     "createdAt": "2026-06-07",
-    "isComplete": true
-  },
-
-
-
-
-
-
-  {
-    "id": "Vercel_Deploy",
-    "title": "Vercel Deploy",
-    "category": "Portfolio",
-    "colorScheme": "Dark",
-    "layout": "Cards",
-    "author": "Your GitHub Username",
-    "views": 1200,
-    "rating": 4.8,
-    "image": "/template-previews/Vercel_Deploy.png",
-    "createdAt": "2026-06-05",
     "isComplete": true
   },
   {
