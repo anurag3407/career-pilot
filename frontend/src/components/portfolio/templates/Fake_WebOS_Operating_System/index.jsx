@@ -432,7 +432,7 @@ function AppContent({ appId, data }) {
 }
 
 /* ─── Clock ─────────────────────────────────────────────── */
-function Clock() {
+function ClockWidget() {
   const [time, setTime] = useState(new Date());
   useEffect(() => { const t = setInterval(() => setTime(new Date()), 1000); return () => clearInterval(t); }, []);
   return (
@@ -508,7 +508,7 @@ export default function FakeWebOSOperatingSystem() {
             <Wifi size={12} color={C.muted} />
             <Battery size={12} color={C.muted} />
             <Volume2 size={12} color={C.muted} />
-            <Clock />
+            <ClockWidget />
           </div>
         </div>
 

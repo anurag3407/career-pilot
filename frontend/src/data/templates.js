@@ -104,6 +104,12 @@ export const templates = [
     "createdAt": "2026-06-07",
     "isComplete": true
   },
+
+
+
+
+
+
   {
     "id": "Vercel_Deploy",
     "title": "Vercel Deploy",
@@ -481,7 +487,7 @@ export const templates = [
     "createdAt": "2026-05-31",
     "isComplete": true
   },
-
+  
   {
     id: "ZineCollage",
     title: "Zine Collage",
@@ -2653,6 +2659,20 @@ export const templates = [
     "isComplete": true
   },
   {
+    id: "Accordion_Fold_Brochure",
+    title: "Accordion Fold Brochure",
+    category: "Portfolio",
+    colorScheme: "Light",
+    layout: "Brochure",
+    author: "virakshi",
+    views: 0,
+    rating: 4.5,
+    image: "/template-previews/Accordion_Fold_Brochure.png",
+    createdAt: "2026-06-13",
+    isComplete: true
+  },
+
+  {
     "id": "Cloud_Nine_Aerial_Skyscape",
     "title": "Cloud Nine Aerial Skyscape",
     "category": "Portfolio",
@@ -2664,5 +2684,82 @@ export const templates = [
     "image": "/template-previews/Cloud_Nine_Aerial_Skyscape.png",
     "createdAt": "2026-06-10",
     "isComplete": true
+  },
+  {
+    "id": "Origami_Unfold_Step_Animation",
+    "title": "Origami Unfold Step Animation",
+    "category": "Portfolio",
+    "colorScheme": "Colorful",
+    "layout": "Interactive",
+    "author": "System",
+    "views": 1800,
+    "rating": 5.0,
+    "image": "/templates/Origami_Unfold_Step_Animation.png",
+    "createdAt": "2026-06-12",
+    "isComplete": true
+  },
+  {
+    "id": "Commercial_Pilot_Cockpit",
+    "title": "Commercial Pilot Cockpit",
+    "category": "Portfolio",
+    "colorScheme": "Dark",
+    "layout": "Interactive",
+    "author": "System",
+    "views": 2500,
+    "rating": 5.0,
+    "image": "/templates/Commercial_Pilot_Cockpit.png",
+    "createdAt": "2026-06-12",
+    "isComplete": true
+  },
+  {
+    "id": "Book_Page_Flip_3D_Render",
+    "title": "Book Page Flip 3D Render",
+    "category": "Portfolio",
+    "colorScheme": "Dark",
+    "layout": "Interactive",
+    "author": "System",
+    "views": 3200,
+    "rating": 5.0,
+    "image": "/templates/Book_Page_Flip_3D_Render.png",
+    "createdAt": "2026-06-13",
+    "isComplete": true
+  },
+  {
+    "id": "Crossword_Puzzle_Word_Fill",
+    "title": "Crossword Puzzle Word Fill",
+    "category": "Portfolio",
+    "colorScheme": "Dark",
+    "layout": "Crossword_Puzzle_Word_Fill",
+    "author": "System",
+    "views": 1050,
+    "rating": 4.8,
+    "image": "/template-previews/crossword_puzzle_word_fill.png"
+  },
+  {
+    "id": "Autumn_Forest_Leaf_Fall",
+    "title": "Autumn Forest Leaf Fall",
+    "category": "Portfolio",
+    "colorScheme": "Dark",
+    "layout": "Interactive",
+    "author": "Antigravity",
+    "views": 0,
+    "rating": 0,
+    "image": "/templates/Autumn_Forest_Leaf_Fall.png",
+    "createdAt": "2026-06-13",
+    "isComplete": true
+  },
+  {
+  "id": "Cyber_Security_Red_Team",
+  "title": "Cyber Security Red Team",
+  "category": "Portfolio",
+  "colorScheme": "Dark",
+  "layout": "Dashboard",
+  "author": "Ayush Srivastava",
+  "views": 0,
+  "rating": 5.0,
+  "image": "/templates/Cyber_Security_Red_Team.png",
+  "createdAt": "2026-06-14",
+  "isComplete": true
   }
 ];
+

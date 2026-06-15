@@ -10,6 +10,12 @@ async function getAuthHeaders() {
 const user = auth?.currentUser
 
 if (!user) {
+  if (import.meta.env.DEV) {
+    return {
+      Authorization: `Bearer mock-dev-token`,
+      'Content-Type': 'application/json'
+    }
+  }
   throw new Error('Not authenticated')
 }
 
@@ -156,10 +162,9 @@ export const uploadApi = {
   // Upload PDF and extract text
   async uploadPdf(file, options = {}) {
     const user = auth?.currentUser
-    if (!user) throw new Error('Not authenticated')
+    if (!user && !import.meta.env.DEV) throw new Error('Not authenticated')
 
-
-    const token = await user.getIdToken()
+    const token = user ? await user.getIdToken() : 'mock-dev-token'
     const formData = new FormData()
     formData.append('resume', file)
 
@@ -178,10 +183,9 @@ export const uploadApi = {
   // Extract text from PDF (re-process)
   async extractText(file, options = {}) {
     const user = auth?.currentUser
-    if (!user) throw new Error('Not authenticated')
+    if (!user && !import.meta.env.DEV) throw new Error('Not authenticated')
 
-
-    const token = await user.getIdToken()
+    const token = user ? await user.getIdToken() : 'mock-dev-token'
     const formData = new FormData()
     formData.append('resume', file)
 
@@ -300,9 +304,9 @@ export const resumeApi = {
   // Download resume as PDF
   async downloadPdf(resumeId, version = 'enhanced') {
     const user = auth?.currentUser
-    if (!user) throw new Error('Not authenticated')
+    if (!user && !import.meta.env.DEV) throw new Error('Not authenticated')
 
-    const token = await user.getIdToken()
+    const token = user ? await user.getIdToken() : 'mock-dev-token'
     const response = await fetch(`${API_BASE}/resumes/${resumeId}/download?version=${version}`, {
       method: 'GET',
       headers: {

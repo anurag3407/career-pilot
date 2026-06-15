@@ -39,7 +39,7 @@ Before contributing, make sure you have:
 
 #### Basic Requirements
 
-- Node.js (v18 or later)
+- Node.js 18.0 or higher
 - npm
 - Git
 - A GitHub account
