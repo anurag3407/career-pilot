@@ -66,11 +66,11 @@ export default function AIProviderSetup() {
               </>
             ) : (
               <>
-                Using{' '}
+                No{' '}
                 <span className="font-semibold text-foreground">
-                  Server Default
+                  API Key Found
                 </span>{' '}
-                <span className="text-muted-foreground/70">(Gemini)</span>
+                <span className="text-muted-foreground/70">(configure your own API keys to use AI features)</span>
               </>
             )}
           </p>

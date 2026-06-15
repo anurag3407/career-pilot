@@ -8,8 +8,9 @@ import Skills from './Skills';
 import Testimonials from './Testimonials';
 import Contact from './Contact';
 
-export default function Template() {
-  const { portfolioData: data } = usePortfolio();
+export default function Template({ portfolioData }) {
+  const { portfolioData: contextData } = usePortfolio();
+  const data = portfolioData || contextData;
   if (!data) return null;
 
   return (

@@ -1,103 +1,62 @@
-import React from "react";
+import React, { useEffect } from 'react';
+import data from '../../../../data/dummy_data.json';
+import Hero from './Hero';
+import About from './About';
+import Skills from './Skills';
+import Projects from './Projects';
+import Experience from './Experience';
+import Testimonials from './Testimonials';
+import Contact from './Contact';
+
+const FONT_STYLESHEET_ID = 'scandinavian-light-fonts';
+const FONT_HREF =
+  'https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700;800&family=Lora:wght@400;500;600&display=swap';
 import { usePortfolio } from "../../../../context/PortfolioContext";
 
-/**
- * Scandinavian Light Portfolio Template
- * Category: Minimal / Clean
- * Description: Scandinavian design with warm whites, soft shadows,
- * wood-grain texture accents, rounded friendly shapes.
- * Cozy, hygge-inspired minimal feel.
- */
 export default function ScandinavianLight() {
+  useEffect(() => {
+    if (typeof document === 'undefined') return;
+    if (document.getElementById(FONT_STYLESHEET_ID)) return;
+
+    const googlePreconnect = document.createElement('link');
+    googlePreconnect.rel = 'preconnect';
+    googlePreconnect.href = 'https://fonts.googleapis.com';
+
+    const gstaticPreconnect = document.createElement('link');
+    gstaticPreconnect.rel = 'preconnect';
+    gstaticPreconnect.href = 'https://fonts.gstatic.com';
+    gstaticPreconnect.crossOrigin = 'anonymous';
+
+    const stylesheet = document.createElement('link');
+    stylesheet.id = FONT_STYLESHEET_ID;
+    stylesheet.rel = 'stylesheet';
+    stylesheet.href = FONT_HREF;
+
+    document.head.append(googlePreconnect, gstaticPreconnect, stylesheet);
+  }, []);
   const { portfolioData: data } = usePortfolio();
 
   return (
     <div
-      style={{
-        minHeight: "100vh",
-        background: "#f8f6f2",
-        display: "flex",
-        alignItems: "center",
-        justifyContent: "center",
-        padding: "2rem",
-      }}
+      className="min-h-screen overflow-hidden bg-[#F7F3EA] text-[#283028]"
+      style={{ fontFamily: 'Inter, sans-serif' }}
     >
-      <div
-        style={{
-          maxWidth: "800px",
-          width: "100%",
-          background: "#ffffff",
-          borderRadius: "24px",
-          padding: "3rem",
-          boxShadow: "0 10px 30px rgba(0,0,0,0.08)",
-          textAlign: "center",
-        }}
-      >
-        <h1
-          style={{
-            fontSize: "3rem",
-            marginBottom: "0.5rem",
-            color: "#222",
-          }}
-        >
-          {data?.personal?.name || "Your Name"}
-        </h1>
-
-        <h2
-          style={{
-            fontSize: "1.25rem",
-            fontWeight: "400",
-            color: "#666",
-            marginBottom: "2rem",
-          }}
-        >
-          {data?.personal?.title || "Your Title"}
-        </h2>
-
-        <div
-          style={{
-            display: "inline-block",
-            padding: "0.5rem 1rem",
-            borderRadius: "999px",
-            background: "#f0ece5",
-            color: "#7a6a58",
-            marginBottom: "1.5rem",
-          }}
-        >
-          Minimal / Clean
-        </div>
-
-        <h3
-          style={{
-            fontSize: "1.75rem",
-            color: "#333",
-            marginBottom: "1rem",
-          }}
-        >
-          Scandinavian Light Template
-        </h3>
-
-        <p
-          style={{
-            color: "#555",
-            lineHeight: 1.7,
-            marginBottom: "2rem",
-          }}
-        >
-          Scandinavian design with warm whites, soft shadows, wood-grain
-          texture accents, rounded friendly shapes. Cozy, hygge-inspired
-          minimal feel.
-        </p>
-
-        <p
-          style={{
-            color: "#888",
-            fontSize: "0.95rem",
-          }}
-        >
-          Open an issue to contribute and build this template!
-        </p>
-      </div>
+      <style>{`
+        .scandi-serif { font-family: 'Lora', serif; }
+        .scandi-wood {
+          background-image:
+            linear-gradient(115deg, rgba(177, 126, 82, 0.12) 0 1px, transparent 1px),
+            linear-gradient(65deg, rgba(143, 165, 138, 0.10) 0 1px, transparent 1px);
+          background-size: 34px 34px, 48px 48px;
+        }
+      `}</style>
+      <Hero data={data} />
+      <About data={data} />
+      <Skills data={data} />
+      <Projects data={data} />
+      <Experience data={data} />
+      <Testimonials data={data} />
+      <Contact data={data} />
     </div>
   );
 }

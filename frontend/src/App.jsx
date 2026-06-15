@@ -34,6 +34,7 @@ import GlassmorphismTemplate from "./components/portfolio/templates/Glassmorphis
 
 import JobTracker from './pages/JobTracker';
 
+const Outreach = lazy(() => import('./pages/Outreach'));
 const Community = lazy(() => import('./pages/Community'));
 const Login = lazy(() => import("./pages/Login"));
 const Register = lazy(() => import("./pages/Register"));
@@ -116,6 +117,12 @@ import TypographicWheatpastePosterWall from './components/portfolio/templates/Ty
 import DigitalManifestoScroll from './components/portfolio/templates/Digital_Manifesto_Scroll/index.jsx';
 import TestSocialLinks from './pages/TestSocialLinks';
 import ZineCollage from './components/portfolio/templates/ZineCollage';
+import TransparentDesktopOverlayOS from './components/portfolio/templates/Transparent_Desktop_Overlay_OS/index.jsx';
+import Commercial_Pilot_Cockpit from './components/portfolio/templates/Commercial_Pilot_Cockpit/index.jsx';
+import Book_Page_Flip_3D_Render from './components/portfolio/templates/Book_Page_Flip_3D_Render/index.jsx';
+import IKEA_Assembly_Manual from './components/portfolio/templates/IKEA_Assembly_Manual/index.jsx';
+import MichelinStarChefPlating from './components/portfolio/templates/Michelin_Star_Chef_Plating/index.jsx';
+import SommelierWineCellarRacks from './components/portfolio/templates/Sommelier_Wine_Cellar_Racks/index.jsx';
 
 function LoadingScreen({ label }) {
   return (
@@ -283,6 +290,12 @@ function AppRoutes() {
         <Route path="/templates/zine-collage" element={<ZineCollage />} />
         <Route path="/templates/chatbot" element={<ChatbotPortfolio />} /> 
         <Route path="/templates/glassmorphism" element={<GlassmorphismTemplate/>} />
+        <Route path="/templates/transparent-desktop-overlay-os" element={<TransparentDesktopOverlayOS />} />
+        <Route path="/templates/commercial-pilot-cockpit" element={<Commercial_Pilot_Cockpit />} />
+        <Route path="/templates/book-page-flip-3d-render" element={<Book_Page_Flip_3D_Render />} />
+        <Route path="/templates/ikea-assembly-manual" element={<IKEA_Assembly_Manual />} />
+        <Route path="/templates/michelin-star-chef-plating" element={<MichelinStarChefPlating />} />
+        <Route path="/templates/sommelier-wine-cellar-racks" element={<SommelierWineCellarRacks />} />
         {/* Core Protected Routes */}
         <Route 
   path="/dashboard" 
@@ -304,7 +317,8 @@ function AppRoutes() {
 />
         <Route path="/upload" element={<ProtectedRoute><Suspense fallback={<LoadingScreen label="Loading Upload..." />}><Upload /></Suspense></ProtectedRoute>} />
         <Route 
-  path="/resume-builder" 
+  path="/shared/:shareToken" element={<SharedResumeView />} />
+          <Route path="/resume-builder" 
   element={
     <ProtectedRoute>
       <Suspense fallback={<LoadingScreen label="Loading Resume Builder..." />}>
@@ -315,7 +329,8 @@ function AppRoutes() {
 />
         <Route path="/text-to-resume" element={<ProtectedRoute><Suspense fallback={<LoadingScreen label="Loading Text to Resume..." />}><TextToResume /></Suspense></ProtectedRoute>} />
         <Route path="/enhance/:resumeId" element={<ProtectedRoute><Suspense fallback={<LoadingScreen label="Loading Resume Enhancer..." />}><Enhance /></Suspense></ProtectedRoute>} />
-        <Route path="/resume/:resumeId" element={<ProtectedRoute><Suspense fallback={<LoadingScreen label="Loading Resume..." />}><ResumeView /></Suspense></ProtectedRoute>} />
+        <Route path="/shared/:shareToken" element={<SharedResumeView />} />
+          <Route path="/resume/:resumeId" element={<ProtectedRoute><Suspense fallback={<LoadingScreen label="Loading Resume..." />}><ResumeView /></Suspense></ProtectedRoute>} />
         <Route 
   path="/jobs" 
   element={
@@ -328,6 +343,7 @@ function AppRoutes() {
 />
         <Route path="/job-alerts" element={<ProtectedRoute><Suspense fallback={<LoadingScreen label="Loading Job Alerts..." />}><JobAlerts /></Suspense></ProtectedRoute>} />
         <Route path="/job-tracker" element={<ProtectedRoute><Suspense fallback={<LoadingScreen label="Loading Job Tracker..." />}><JobTracker /></Suspense></ProtectedRoute>} />
+        <Route path="/outreach" element={<ProtectedRoute><Suspense fallback={<LoadingScreen label="Loading Outreach..." />}><Outreach /></Suspense></ProtectedRoute>} />
         <Route 
   path="/community" 
   element={
