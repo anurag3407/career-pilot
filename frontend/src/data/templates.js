@@ -105,6 +105,19 @@ export const templates = [
     "isComplete": true
   },
   {
+  "id": "AquaticBioluminescent",
+  "title": "Aquatic Bioluminescent",
+  "category": "Portfolio",
+  "colorScheme": "Ocean",
+  "layout": "Fullscreen",
+  "author": "mallya-m",
+  "views": 0,
+  "rating": 0,
+  "image": "/template-previews/AquaticBioluminescent.png",
+  "createdAt": "2026-06-16",
+  "isComplete": true
+  },
+  {
     "id": "Vercel_Deploy",
     "title": "Vercel Deploy",
     "category": "Portfolio",
