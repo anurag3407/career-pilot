@@ -1119,9 +1119,9 @@ export default function Bouncing_DVD_Logo({ portfolioData }) {
       let hitX=false,hitY=false;
       x+=vx; y+=vy;
       if(x<=0){x=0;vx=Math.abs(vx);hitX=true;}
-      if(x+LOGO_W>=W){x=W-LOGO_W;vx=-Math.abs(vx);hitX=true;}
+      if(x+LOGO_W>=W){x=Math.max(0,W-LOGO_W);vx=-Math.abs(vx);hitX=true;}
       if(y<=0){y=0;vy=Math.abs(vy);hitY=true;}
-      if(y+LOGO_H>=H){y=H-LOGO_H;vy=-Math.abs(vy);hitY=true;}
+      if(y+LOGO_H>=H){y=Math.max(0,H-LOGO_H);vy=-Math.abs(vy);hitY=true;}
 
       if(hitX||hitY){
         const ni=(colorIdxRef.current+1)%PALETTE.length;
