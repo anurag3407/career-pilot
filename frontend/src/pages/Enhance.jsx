@@ -475,6 +475,12 @@ export default function Enhance() {
     const user = auth?.currentUser
 
     if (!user) {
+      if (import.meta.env.DEV) {
+        return {
+          Authorization: `Bearer mock-dev-token`,
+          'Content-Type': 'application/json',
+        }
+      }
       throw new Error('Not authenticated')
     }
 
