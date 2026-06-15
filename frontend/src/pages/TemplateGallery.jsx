@@ -354,7 +354,6 @@ export default function TemplateGallery() {
     localStorage.removeItem('ai_portfolio_draft');
     setAiDraft(null);
   };
-
   const [selectedTheme, setSelectedTheme] = useState("minimal");
   const [isDeployModalOpen, setIsDeployModalOpen] = useState(false);
   const [selectedPortfolioTitle, setSelectedPortfolioTitle] = useState("");
@@ -401,7 +400,14 @@ export default function TemplateGallery() {
     const matchesColorScheme =
       colorScheme === 'All' || template.colorScheme === colorScheme;
     const matchesLayout = layout === 'All' || template.layout === layout;
-    return matchesCategory && matchesColorScheme && matchesLayout;
+    const q = search.toLowerCase().trim();
+    const matchesSearch = !q ||
+      template.title?.toLowerCase().includes(q) ||
+      template.author?.toLowerCase().includes(q) ||
+      template.colorScheme?.toLowerCase().includes(q) ||
+      template.layout?.toLowerCase().includes(q) ||
+      template.category?.toLowerCase().includes(q);
+    return matchesCategory && matchesColorScheme && matchesLayout && matchesSearch;
   });
 
   const sortedTemplates = [...filteredTemplates].sort((a, b) => {
@@ -548,8 +554,17 @@ export default function TemplateGallery() {
         </div>
 
         {sortedTemplates.length === 0 ? (
-          <div className="text-center text-muted-foreground mt-12 text-xl">
-            No templates match the selected criteria.
+          <div className="text-center text-muted-foreground mt-12">
+            <div className="text-4xl mb-4">🔍</div>
+            <div className="text-xl font-semibold mb-2">No templates found</div>
+            <div className="text-sm">
+              {search ? `No results for "${search}" — try a different keyword` : "No templates match the selected filters"}
+            </div>
+            {search && (
+              <button onClick={() => setSearch("")} className="mt-4 text-cyan-400 hover:text-cyan-300 text-sm underline">
+                Clear search
+              </button>
+            )}
           </div>
         ) : (
           <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 xl:grid-cols-4 gap-6">
