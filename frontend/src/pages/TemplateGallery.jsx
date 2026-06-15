@@ -409,13 +409,22 @@ export default function TemplateGallery() {
       template.category?.toLowerCase().includes(q);
     return matchesCategory && matchesColorScheme && matchesLayout && matchesSearch;
   });
-
+  console.log("Search:", search);
+  console.log("Templates:", filteredTemplates.length);
+  
   const sortedTemplates = [...filteredTemplates].sort((a, b) => {
-    if (sort === 'Popular') return b.views - a.views;
-    if (sort === 'Highest Rated') return b.rating - a.rating;
-    if (sort === 'Newest') return new Date(b.createdAt) - new Date(a.createdAt);
-    return 0;
+  if (sort === 'Popular') return b.views - a.views;
+  if (sort === 'Highest Rated') return b.rating - a.rating;
+  if (sort === 'Newest') return new Date(b.createdAt) - new Date(a.createdAt);
+  return 0;
   });
+
+  console.log(
+    "Vercel cards:",
+    sortedTemplates.filter(
+      (t) => t.title === "Vercel Deploy"
+    ).length
+  );
 
   return (
     <div className="min-h-screen bg-background text-foreground transition-colors duration-300">
