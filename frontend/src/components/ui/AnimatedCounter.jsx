@@ -27,7 +27,6 @@ function easeOutCubic(t) {
  */
 export default function AnimatedCounter({ value, duration = 2000 }) {
   const [display, setDisplay] = useState("0");
-  const [, setTrigger] = useState(0); // Dummy state to force re-render if needed, but not used here
   const ref = useRef(null);
   const rafId = useRef(null);
   const hasAnimatedRef = useRef(false);

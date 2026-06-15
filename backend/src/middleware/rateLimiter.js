@@ -72,5 +72,7 @@ export const aiRateLimiter = rateLimit({
       resetAt
     });
   },
-  skip: (req) => !req.user
+// Skip limiting only when the user supplies their own API key (they pay for their own quota).
+// Do NOT skip unauthenticated requests — they must still be rate-limited by IP.
+  skip: (req) => req.aiProviderSource === 'user_header' || req.aiProviderSource === 'user_openrouter_pkce'
 });

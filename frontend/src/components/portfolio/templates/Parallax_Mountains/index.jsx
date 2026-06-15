@@ -1,3 +1,4 @@
+import { usePortfolio } from "../../../../context/PortfolioContext";
 import React from "react";
 import {
   motion,
@@ -14,9 +15,10 @@ import {
   MapPin,
 } from "lucide-react";
 
-import data from "../../../../data/dummy_data.json";
 
 export default function ParallaxMountains() {
+  const { portfolioData: data } = usePortfolio();
+
   const { scrollYProgress } = useScroll();
 
   const sky = useTransform(

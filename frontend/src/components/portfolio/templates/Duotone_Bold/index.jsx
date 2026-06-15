@@ -1,7 +1,7 @@
+import { usePortfolio } from "../../../../context/PortfolioContext";
 import React, { useState, useRef } from "react";
 import { motion, AnimatePresence, useInView, useScroll, useTransform } from "framer-motion";
 import { Github, Linkedin, Twitter, Mail, ExternalLink, ArrowRight, MapPin, Briefcase, Calendar } from "lucide-react";
-import data from "../../../../data/dummy_data.json";
 
 /* Duotone palette: dark indigo + electric orange */
 const C = {
@@ -16,6 +16,8 @@ const C = {
 };
 
 function GlobalStyles() {
+  const { portfolioData: data } = usePortfolio();
+
   return (
     <style>{`
       @import url('https://fonts.googleapis.com/css2?family=Syne:wght@400;500;600;700;800&family=Syne+Mono&display=swap');
@@ -183,6 +185,8 @@ function GlobalStyles() {
 }
 
 function FadeIn({ children, delay = 0, className = "", style = {} }) {
+  const { portfolioData: data } = usePortfolio();
+
   const ref = useRef(null);
   const inView = useInView(ref, { once: true, margin: "-80px" });
   return (
@@ -195,6 +199,8 @@ function FadeIn({ children, delay = 0, className = "", style = {} }) {
 }
 
 function SkillBar({ name, level, category }) {
+  const { portfolioData: data } = usePortfolio();
+
   const ref = useRef(null);
   const inView = useInView(ref, { once: true });
   return (
@@ -212,6 +218,8 @@ function SkillBar({ name, level, category }) {
 }
 
 export default function DuotoneBold() {
+  const { portfolioData: data } = usePortfolio();
+
   const [menuOpen, setMenuOpen] = useState(false);
   const [contactState, setContactState] = useState("idle");
   const [form, setForm] = useState({ name: "", email: "", message: "" });
