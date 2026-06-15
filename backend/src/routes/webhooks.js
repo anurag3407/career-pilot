@@ -17,6 +17,13 @@ export const services = {
 const router = express.Router();
 
 /**
+ * Escapes regex metacharacters in a user-controlled string to prevent regex injection.
+ */
+const escapeRegExp = (string) => {
+  return string.replace(/[.*+?^${}()|[\]\\]/g, '\\$&');
+};
+
+/**
  * Validates the GitHub x-hub-signature-256 header using HMAC-SHA256.
  * Checks against the local GITHUB_WEBHOOK_SECRET environment variable.
  */
@@ -24,10 +31,14 @@ const verifySignature = (req) => {
   const signature = req.headers['x-hub-signature-256'];
   const secret = process.env.GITHUB_WEBHOOK_SECRET;
 
-  // If secret is not set, we skip signature validation (primarily for local development/testing)
+  // Fail closed in production if secret is not set, allow bypass only in dev/test
   if (!secret) {
-    console.warn('⚠️ GITHUB_WEBHOOK_SECRET is not configured. Skipping signature verification.');
-    return true;
+    if (process.env.NODE_ENV === 'development' || process.env.NODE_ENV === 'test') {
+      console.warn('⚠️ GITHUB_WEBHOOK_SECRET is not configured. Skipping signature verification (dev/test only).');
+      return true;
+    }
+    console.error('❌ GITHUB_WEBHOOK_SECRET is not configured. Rejecting webhook request.');
+    return false;
   }
 
   if (!signature) {
@@ -91,6 +102,7 @@ router.post('/github', async (req, res) => {
     }
 
     const normalizedRepoUrl = repoUrl.trim().replace(/\/$/, '').toLowerCase();
+    const escapedRepoUrl = escapeRegExp(normalizedRepoUrl);
 
     // Query for all active analysis files matching this repo url (exact, with .git suffix, or stripped)
     const analyses = await ProjectAnalysis.find({
@@ -98,7 +110,7 @@ router.post('/github', async (req, res) => {
         { repoUrl: repoUrl },
         { repoUrl: repoUrl + '.git' },
         { repoUrl: repoUrl.replace(/\/$/, '') },
-        { repoUrl: { $regex: new RegExp(`^${normalizedRepoUrl}(\\.git)?$`, 'i') } }
+        { repoUrl: { $regex: new RegExp(`^${escapedRepoUrl}(\\.git)?$`, 'i') } }
       ]
     });
 
@@ -114,26 +126,31 @@ router.post('/github', async (req, res) => {
 
     // Run scans asynchronously in the background for each matching analysis record
     for (const analysis of analyses) {
-      analysis.status = 'analyzing';
-      await analysis.save();
-
       const userId = analysis.userId;
-
-      // Broadcast start of scan
-      try {
-        const io = socketConfig.getIO();
-        io.to(`user:${userId}`).emit('repo_updated', {
-          repoUrl: analysis.repoUrl,
-          status: 'analyzing',
-          message: 'GitHub push detected, auto-scanning repository...'
-        });
-      } catch (err) {
-        console.warn(`Failed to emit socket status for user ${userId}:`, err.message);
-      }
 
       // Background process wrapped in immediate execution
       (async () => {
         try {
+          // Perform the initial database status update inside the async block for per-record isolation
+          analysis.status = 'analyzing';
+          try {
+            await analysis.save();
+          } catch (saveErr) {
+            console.error(`❌ Failed to save initial status 'analyzing' for user ${userId}:`, saveErr);
+          }
+
+          // Broadcast start of scan
+          try {
+            const io = socketConfig.getIO();
+            io.to(`user:${userId}`).emit('repo_updated', {
+              repoUrl: analysis.repoUrl,
+              status: 'analyzing',
+              message: 'GitHub push detected, auto-scanning repository...'
+            });
+          } catch (err) {
+            console.warn(`Failed to emit socket status for user ${userId}:`, err.message);
+          }
+
           console.log(`🚀 Auto-scan started in background for user ${userId} on ${analysis.repoUrl}`);
           
           const match = analysis.repoUrl.match(/github\.com\/([^/]+)\/([^/]+)/);
@@ -177,14 +194,23 @@ router.post('/github', async (req, res) => {
           analysis.dependencies = analysisResult.dependencies;
           analysis.lastAnalyzed = new Date();
           analysis.expiresAt = new Date(Date.now() + 24 * 60 * 60 * 1000); // Refresh analysis document expiration TTL
-          await analysis.save();
+          
+          try {
+            await analysis.save();
+          } catch (saveErr) {
+            console.error(`❌ Failed to save final status 'complete' for user ${userId}:`, saveErr);
+          }
 
           // Upsert entry in user's RepoAnalysisHistory
-          await RepoAnalysisHistory.findOneAndUpdate(
-            { userId, repoUrl: analysis.repoUrl },
-            { lastAnalyzed: new Date() },
-            { upsert: true }
-          );
+          try {
+            await RepoAnalysisHistory.findOneAndUpdate(
+              { userId, repoUrl: analysis.repoUrl },
+              { lastAnalyzed: new Date() },
+              { upsert: true }
+            );
+          } catch (historyErr) {
+            console.error(`❌ Failed to update RepoAnalysisHistory for user ${userId}:`, historyErr);
+          }
 
           // Broadcast success status
           try {
@@ -203,8 +229,12 @@ router.post('/github', async (req, res) => {
         } catch (error) {
           console.error(`❌ Auto-scan failed for user ${userId} on ${analysis.repoUrl}:`, error);
 
-          analysis.status = 'failed';
-          await analysis.save();
+          try {
+            analysis.status = 'failed';
+            await analysis.save();
+          } catch (saveErr) {
+            console.error(`❌ Failed to save final status 'failed' for user ${userId}:`, saveErr);
+          }
 
           // Broadcast failure status
           try {

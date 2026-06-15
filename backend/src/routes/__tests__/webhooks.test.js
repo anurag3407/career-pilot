@@ -173,3 +173,31 @@ test('GitHub Webhook - push event with matching repo triggers background scan', 
   mockSug.mock.restore();
   mockHistoryUpdate.mock.restore();
 });
+
+test('GitHub Webhook - fails closed in production when GITHUB_WEBHOOK_SECRET is missing', async () => {
+  const originalSecret = process.env.GITHUB_WEBHOOK_SECRET;
+  const originalNodeEnv = process.env.NODE_ENV;
+  delete process.env.GITHUB_WEBHOOK_SECRET;
+  process.env.NODE_ENV = 'production';
+
+  try {
+    const req = {
+      method: 'POST',
+      url: '/github',
+      headers: {
+        'x-github-event': 'ping'
+      },
+      body: { zen: 'test' }
+    };
+    const res = createMockResponse();
+    const next = mock.fn();
+
+    await webhookRouter(req, res, next);
+
+    assert.strictEqual(res.statusCode, 401);
+    assert.deepEqual(res.body, { error: 'Invalid signature' });
+  } finally {
+    process.env.GITHUB_WEBHOOK_SECRET = originalSecret;
+    process.env.NODE_ENV = originalNodeEnv;
+  }
+});

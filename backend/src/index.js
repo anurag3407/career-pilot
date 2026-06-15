@@ -227,7 +227,9 @@ app.use('/api/', limiter);
 app.use(express.json({
   limit: '10mb',
   verify: (req, res, buf) => {
-    req.rawBody = buf;
+    if (req.originalUrl && req.originalUrl.startsWith('/api/webhooks')) {
+      req.rawBody = buf;
+    }
   }
 }));
 app.use(express.urlencoded({ extended: true, limit: '10mb' }));
