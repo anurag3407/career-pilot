@@ -495,16 +495,42 @@ export default function BlankCanvasReveal({ portfolioData }) {
   }
 
   let projects = dummyData.projects;
-  if (portfolioData?.projects?.length > 0) {
-    projects = portfolioData.projects.map((p, i) => ({
-      title: p.title || p.name || 'Project',
-      description: p.description || '',
-      techStack: p.technologies || p.techStack || [],
-      image: p.image || dummyData.projects[i % dummyData.projects.length].image,
-      liveUrl: p.liveUrl || '#',
-      githubUrl: p.githubUrl || '#'
-    }));
-  }
+
+if (portfolioData?.projects?.length > 0) {
+  projects = portfolioData.projects
+    .map((p, i) => {
+      const techCount = (p.technologies || p.techStack || []).length;
+
+      const score =
+        (p.description?.length || 0) +
+        techCount * 10 +
+        (p.liveUrl ? 20 : 0) +
+        (p.githubUrl ? 15 : 0);
+
+      return {
+        title: p.title || p.name || "Project",
+        description: p.description || "",
+        techStack: p.technologies || p.techStack || [],
+        image:
+          p.image ||
+          dummyData.projects[i % dummyData.projects.length].image,
+        liveUrl: p.liveUrl || "#",
+        githubUrl: p.githubUrl || "#",
+        highlightScore: score,
+        featured: false,
+      };
+    })
+    .sort((a, b) => b.highlightScore - a.highlightScore);
+
+  projects = projects.map((project, index) => ({
+    ...project,
+    featured: index < 3,
+  }));
+}
+
+const featuredProjects = projects.filter(
+  (project) => project.featured
+);
 
   const experience = portfolioData?.experience?.length > 0 ? portfolioData.experience : dummyData.experience;
   const testimonials = portfolioData?.testimonials?.length > 0 ? portfolioData.testimonials : dummyData.testimonials;
