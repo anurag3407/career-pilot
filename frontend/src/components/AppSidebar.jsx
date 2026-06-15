@@ -279,6 +279,15 @@ useEffect(() => {
                             >
                                 <SidebarLink
                                     link={{
+                                        label: "Cold Outreach",
+                                        href: "/outreach",
+                                        icon: <Mail className="w-4 h-4 shrink-0" />,
+                                    }}
+                                    onClick={() => setOpen(false)}
+                                />
+
+                                <SidebarLink
+                                    link={{
                                         label: "Skill Gap Analyzer",
                                         href: "/skill-gap",
                                         icon: <Brain className="w-4 h-4 shrink-0" />,

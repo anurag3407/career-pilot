@@ -1,5 +1,46 @@
 export const templates = [
   {
+    id: "Typewriter_Keystroke_Sequence",
+    title: "Typewriter Keystroke Sequence",
+    category: "Portfolio",
+    colorScheme: "Light",
+    layout: "Scroll",
+    author: "Raman Kumar",
+    views: 9999990,
+    rating: 5.0,
+    image: "/template-previews/Typewriter_Keystroke_Sequence.png",
+    createdAt: "2026-06-15",
+    description: "A vintage typewriter portfolio where your career story is typed live on old manuscript paper — complete with keystroke animations, ink smudges, diary entries, and folded letters.",
+    isComplete: true
+  },
+  {
+    id: "Sommelier_Wine_Cellar_Racks",
+    title: "Sommelier Wine Cellar Racks",
+    category: "Portfolio",
+    colorScheme: "Dark",
+    layout: "Interactive",
+    author: "System",
+    views: 999999,
+    rating: 5.0,
+    image: "/templates/Sommelier_Wine_Cellar_Racks.png",
+    createdAt: "2026-06-14",
+    isComplete: true
+  },
+  {
+    id: "Michelin_Star_Chef_Plating",
+    title: "Michelin Star Chef Plating",
+    category: "Portfolio",
+    colorScheme: "Dark",
+    layout: "Interactive",
+    author: "System",
+    views: 0,
+    rating: 5.0,
+    image: "/templates/Michelin_Star_Chef_Plating.png",
+    createdAt: "2026-06-14",
+    isComplete: true
+  },
+
+  {
     "id": "Zen_Bamboo_Forest_Wind",
     "title": "Zen Bamboo Forest Wind",
     "category": "Portfolio",
@@ -107,9 +148,19 @@ export const templates = [
 },
 
   {
-  "id": "Vercel_Deploy",
-  "title": "Vercel Deploy",
-{
+    "id": "Vercel_Deploy",
+    "title": "Vercel Deploy",
+    "category": "Portfolio",
+    "colorScheme": "Dark",
+    "layout": "Interactive",
+    "author": "System",
+    "views": 0,
+    "rating": 5.0,
+    "image": "/template-previews/Vercel_Deploy.png",
+    "createdAt": "2026-06-14",
+    "isComplete": true
+  },
+  {
   "id": "Virtual_Reality_Room_360",
   "title": "Virtual Reality Room 360",
   "category": "Portfolio",
@@ -157,20 +208,9 @@ export const templates = [
     "author": "ShaktiShrey-01",
     "views": 0,
     "rating": 0,
-    "image": "/template-previews/Forensic_investigator_desk.png", 
-    "createdAt": "2026-06-11",
-    "isComplete": true
-  },
-  {
-    "image": "/template-previews/Endless_Runner_Minigame.png",
-    "createdAt": "2026-06-12",
-    isComplete: true
-},
-    isComplete: true,
     "image": "/template-previews/Endless_Runner_Minigame.png",
     "createdAt": "2026-06-12",
     "isComplete": true
-    "isComplete": true,
   },
   {
     "id": "Git_Commit_History_Tree",
@@ -2946,7 +2986,9 @@ export const templates = [
     "author": "System",
     "views": 1050,
     "rating": 4.8,
-    "image": "/template-previews/crossword_puzzle_word_fill.png",
+    "image": "/template-previews/crossword_puzzle_word_fill.png"
+  },
+  {
     "id": "Autumn_Forest_Leaf_Fall",
     "title": "Autumn Forest Leaf Fall",
     "category": "Portfolio",

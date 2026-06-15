@@ -2,6 +2,18 @@ import React from 'react';
 import { Send, Heart, MapPin, Mail } from 'lucide-react';
 
 export default function Contact({ personal, socials }) {
+  const socialsArray = socials
+    ? (Array.isArray(socials)
+      ? socials
+      : Object.entries(socials)
+          .filter(([_, url]) => !!url)
+          .map(([platform, url]) => ({
+            platform: platform.charAt(0).toUpperCase() + platform.slice(1),
+            url: url
+          }))
+      )
+    : [];
+
   return (
     <>
       <style>{`
@@ -17,8 +29,8 @@ export default function Contact({ personal, socials }) {
         <div className="max-w-4xl w-full relative z-10 transform rotate-[1deg] hover:rotate-0 transition-transform duration-500">
           
           {/* Tape */}
-          <div className="absolute -top-4 left-10 w-32 h-8 bg-yellow-200/50 backdrop-blur-sm -rotate-3 z-20 mix-blend-screen" />
-          <div className="absolute -bottom-4 right-10 w-32 h-8 bg-yellow-200/50 backdrop-blur-sm -rotate-3 z-20 mix-blend-screen" />
+          <div className="absolute -top-4 left-10 w-32 h-8 bg-yellow-200/55 backdrop-blur-sm -rotate-3 z-20 mix-blend-screen" />
+          <div className="absolute -bottom-4 right-10 w-32 h-8 bg-yellow-200/55 backdrop-blur-sm -rotate-3 z-20 mix-blend-screen" />
 
           {/* Postcard */}
           <div className="bg-[#fffdf5] w-full rounded-sm shadow-[8px_16px_32px_rgba(0,0,0,0.5)] border-[1.5px] border-[#d4b896] flex flex-col md:flex-row overflow-hidden relative">
@@ -68,15 +80,15 @@ export default function Contact({ personal, socials }) {
                   <span className="sb-hand text-[24px] text-[#4a3828]">{personal?.email || 'hello@example.com'}</span>
                 </div>
                 <div className="border-b-[1.5px] border-[#d4b896] pb-1 flex flex-wrap gap-4 items-center">
-                  {(socials || []).map((s, i) => (
+                  {socialsArray.map((s, i) => (
                     <a key={i} href={s.url} target="_blank" rel="noreferrer" className="sb-hand text-[22px] text-[#3f51b5] hover:text-[#e05a3a] font-bold">
                       {s.platform}
                     </a>
                   ))}
-                  {(!socials || socials.length === 0) && (
+                  {socialsArray.length === 0 && (
                     <div className="flex items-center gap-2">
                       <MapPin size={18} className="text-[#a07850]" />
-                      <span className="sb-hand text-[24px] text-[#4a3828]">San Francisco, CA</span>
+                      <span className="sb-hand text-[24px] text-[#4a3828]">{personal?.location || 'San Francisco, CA'}</span>
                     </div>
                   )}
                 </div>
