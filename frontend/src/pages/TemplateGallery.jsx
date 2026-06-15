@@ -150,7 +150,7 @@ function useInView(options = {}) {
   return [ref, inView];
 }
 
-function TemplateCard({ template, hovered, onHover, onLeave, onUse, aiDraft }) {
+function TemplateCard({ template, hovered, onHover, onLeave, onUse, aiDraft, index }) {
   const [ref, inView] = useInView({ threshold: 0 });
   const [iframeLoaded, setIframeLoaded] = useState(false);
   const [iframeError, setIframeError] = useState(false);
@@ -168,7 +168,7 @@ function TemplateCard({ template, hovered, onHover, onLeave, onUse, aiDraft }) {
 
   return (
     <motion.div
-      onMouseEnter={() => onHover(template.id)}
+      onMouseEnter={() => onHover(`${template.id ?? 'template'}-${index}`)}
       onMouseLeave={onLeave}
       animate={hovered ? 'hover' : 'rest'}
       initial="rest"
@@ -604,6 +604,7 @@ export default function TemplateGallery() {
             {sortedTemplates.map((template, index) => (
               <TemplateCard
                 key={`${template.id ?? 'template'}-${index}`}
+                index={index}
                 template={template}
                 hovered={hoveredCard === `${template.id ?? 'template'}-${index}`}
                 onHover={setHoveredCard}
