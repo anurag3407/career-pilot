@@ -1,5 +1,6 @@
 import express from 'express';
 import crypto from 'crypto';
+import rateLimit from 'express-rate-limit';
 import { verifyToken } from '../middleware/auth.js';
 import { asyncHandler, ApiError } from '../middleware/errorHandler.js';
 import FellowshipProfile from '../models/FellowshipProfile.model.js';
@@ -11,7 +12,36 @@ import { sanitizeMessageContent } from '../utils/sanitizeMessage.js';
 
 const router = express.Router();
 
+// Max 5 code-check attempts per 15 minutes per user UID.
+// The 6-digit code space (900,000 possibilities) is exhaustible within the
+// 10-minute expiry window without this limit — keyed by UID after verifyToken runs.
+const verifyCodeLimiter = rateLimit({
+  windowMs: 15 * 60 * 1000,
+  max: 5,
+  keyGenerator: (req) => req.user?.uid || req.ip,
+  standardHeaders: true,
+  legacyHeaders: false,
+  handler: (req, res) =>
+    res.status(429).json({
+      success: false,
+      error: 'Too many attempts. Please request a new code and try again in 15 minutes.',
+    }),
+});
 
+// Max 3 verification emails per hour per user UID to prevent email bombing
+// and SMTP quota exhaustion on arbitrary targets.
+const sendEmailLimiter = rateLimit({
+  windowMs: 60 * 60 * 1000,
+  max: 3,
+  keyGenerator: (req) => req.user?.uid || req.ip,
+  standardHeaders: true,
+  legacyHeaders: false,
+  handler: (req, res) =>
+    res.status(429).json({
+      success: false,
+      error: 'Too many verification emails sent. Please wait before requesting another.',
+    }),
+});
 
 const ACADEMIC_DOMAINS = ['.edu', '.ac.in', '.edu.in', '.edu.au', '.ac.uk', '.edu.pk'];
 
@@ -70,7 +100,7 @@ router.post('/profile', verifyToken, asyncHandler(async (req, res) => {
     });
 }));
 
-router.post('/verify/send-email', verifyToken, asyncHandler(async (req, res) => {
+router.post('/verify/send-email', verifyToken, sendEmailLimiter, asyncHandler(async (req, res) => {
     const { email } = req.body;
 
     if (!email) {
@@ -107,7 +137,7 @@ router.post('/verify/send-email', verifyToken, asyncHandler(async (req, res) => 
     });
 }));
 
-router.post('/verify/confirm', verifyToken, asyncHandler(async (req, res) => {
+router.post('/verify/confirm', verifyToken, verifyCodeLimiter, asyncHandler(async (req, res) => {
     const { code } = req.body;
 
     if (!code) {
@@ -539,36 +569,33 @@ router.get('/chat/rooms/:roomId/messages', verifyToken, asyncHandler(async (req,
 }));
 
 router.post('/chat/rooms/:roomId/messages', verifyToken, asyncHandler(async (req, res) => {
-    const room = await FellowshipChatRoom.findById(req.params.roomId);
-    if (!room) {
-        throw new ApiError(404, 'Chat room not found');
-    }
+  const room = await FellowshipChatRoom.findById(req.params.roomId);
+  if (!room) throw new ApiError(404, 'Chat room not found');
 
-    if (room.studentId !== req.user.uid && room.corporateId !== req.user.uid) {
-        throw new ApiError(403, 'Access denied');
-    }
+  if (room.studentId !== req.user.uid && room.corporateId !== req.user.uid) {
+    throw new ApiError(403, 'Access denied');
+  }
 
-    const { content } = req.body;
-    const sanitizedContent = sanitizeMessageContent(content);
-    if (!sanitizedContent) {
-        throw new ApiError(400, 'Message content is required');
-    }
+  const { content } = req.body;
+  const sanitizedContent = sanitizeMessageContent(content); // keep ONE version
+  if (!sanitizedContent) throw new ApiError(400, 'Message content is required');
 
-    const profile = await FellowshipProfile.findOne({ userId: req.user.uid });
+  const profile = await FellowshipProfile.findOne({ userId: req.user.uid });
 
-    const message = await FellowshipMessage.create({
-        roomId: room._id,
-        senderId: req.user.uid,
-        senderName: req.user.name || 'User',
-        senderRole: profile?.role || 'student',
-        content: sanitizedContent
-    });
+  const message = await FellowshipMessage.create({
+    roomId: room._id,
+    senderId: req.user.uid,
+    senderName: req.user.name || 'User',
+    senderRole: profile?.role || 'student',
+    content: sanitizedContent
+  });
 
-    room.lastMessageAt = new Date();
-    await room.save();
+  room.lastMessageAt = new Date();
+  await room.save();
 
-    res.status(201).json({ success: true, data: message });
+  res.status(201).json({ success: true, data: message });
 }));
+
 
 router.get('/stats', verifyToken, asyncHandler(async (req, res) => {
     const profile = await FellowshipProfile.findOne({ userId: req.user.uid }).lean();

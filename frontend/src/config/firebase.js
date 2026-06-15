@@ -5,10 +5,11 @@ import { getStorage } from 'firebase/storage';
 
 const apiKey = import.meta.env.VITE_FIREBASE_API_KEY;
 
-// Check if the key is completely missing or left as a placeholder string
+// Cleaned up validation check to accept genuine keys starting with AIzaSy
 const isFirebaseConfigValid = 
   apiKey && 
   apiKey !== 'YOUR_API_KEY_HERE' && 
+  apiKey !== 'your_api_key' &&
   !apiKey.startsWith('<YOUR_');
 
 let app;
@@ -17,14 +18,22 @@ let db = null;
 let storage = null;
 
 if (isFirebaseConfigValid) {
+  // const firebaseConfig = {
+  //   apiKey: apiKey,
+  //   authDomain: import.meta.env.VITE_FIREBASE_AUTH_DOMAIN,
+  //   projectId: import.meta.env.VITE_FIREBASE_PROJECT_ID,
+  //   storageBucket: import.meta.env.VITE_FIREBASE_STORAGE_BUCKET,
+  //   messagingSenderId: import.meta.env.VITE_FIREBASE_MESSAGING_SENDER_ID,
+  //   appId: import.meta.env.VITE_FIREBASE_APP_ID
+  // };
   const firebaseConfig = {
-    apiKey: apiKey,
-    authDomain: import.meta.env.VITE_FIREBASE_AUTH_DOMAIN,
-    projectId: import.meta.env.VITE_FIREBASE_PROJECT_ID,
-    storageBucket: import.meta.env.VITE_FIREBASE_STORAGE_BUCKET,
-    messagingSenderId: import.meta.env.VITE_FIREBASE_MESSAGING_SENDER_ID,
-    appId: import.meta.env.VITE_FIREBASE_APP_ID
-  };
+  apiKey: import.meta.env.VITE_FIREBASE_API_KEY,
+  authDomain: import.meta.env.VITE_FIREBASE_AUTH_DOMAIN,
+  projectId: import.meta.env.VITE_FIREBASE_PROJECT_ID,
+  storageBucket: import.meta.env.VITE_FIREBASE_STORAGE_BUCKET,
+  messagingSenderId: import.meta.env.VITE_FIREBASE_MESSAGING_SENDER_ID,
+  appId: import.meta.env.VITE_FIREBASE_APP_ID,
+};
 
   app = initializeApp(firebaseConfig);
   auth = getAuth(app);

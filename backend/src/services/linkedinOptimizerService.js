@@ -1,25 +1,10 @@
-import { GoogleGenerativeAI } from '@google/generative-ai';
-import dotenv from 'dotenv';
 import { aiCallsCounter } from '../middleware/metrics.js';
 
-dotenv.config();
-
-// Lazy singleton — avoids crashing unrelated routes if the key is absent
-const geminiApiKey = process.env.GEMINI_API_KEY;
-let modelInstance = null;
-
-const getModel = () => {
-    if (!geminiApiKey) {
-        throw new Error('GEMINI_API_KEY is required for LinkedIn optimization.');
+export const optimizeLinkedInProfile = async (profileText, targetRole, aiProvider) => {
+    if (!aiProvider) {
+        throw new Error('AI Provider is required. Please provide an API key.');
     }
-    if (!modelInstance) {
-        const genAI = new GoogleGenerativeAI(geminiApiKey);
-        modelInstance = genAI.getGenerativeModel({ model: 'gemini-2.5-flash' });
-    }
-    return modelInstance;
-};
 
-export const optimizeLinkedInProfile = async (profileText, targetRole) => {
     const prompt = `
     You are a world-class LinkedIn profile coach and career strategist. Analyze the following LinkedIn profile text and provide comprehensive optimization suggestions.
 
@@ -65,10 +50,8 @@ export const optimizeLinkedInProfile = async (profileText, targetRole) => {
     `;
 
     try {
-        aiCallsCounter.inc({ provider: "gemini" });
-        const result = await getModel().generateContent(prompt);
-        const response = await result.response;
-        const text = response.text();
+        const result = await aiProvider.generateContent(prompt);
+        const text = result.text;
 
         // Strip markdown fences the model sometimes wraps output in
         const cleanedText = text.replace(/```json\n?/g, '').replace(/```\n?/g, '').trim();

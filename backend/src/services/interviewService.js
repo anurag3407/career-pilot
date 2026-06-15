@@ -98,9 +98,22 @@ export const analyzeAnswer = async (question, transcript, duration, aiProvider) 
   const provider = aiProvider || getDefaultProvider();
   const prompt = `You are a senior interview coach at a top tech company, providing detailed professional feedback on a candidate's interview response.
 
-QUESTION ASKED: "${question}"
+  const prompt = `You are a senior interview coach at a top tech company, providing detailed professional feedback on a candidate's interview response and maintaining the flow of the interview.
 
-CANDIDATE'S RESPONSE: "${transcript}"
+PREVIOUS INTERVIEW CONTEXT (Summary of what has been discussed so far):
+<context>
+${cleanContext || "This is the first question of the interview."}
+</context>
+
+QUESTION ASKED (Question ${questionIndex} of ${totalQuestionCount}): 
+<question>
+${cleanQuestion}
+</question>
+
+CANDIDATE'S RESPONSE: 
+<candidate_response>
+${cleanTranscript}
+</candidate_response>
 
 RESPONSE DURATION: ${duration} seconds
 
@@ -123,11 +136,18 @@ Analyze this response thoroughly and return ONLY valid JSON with this exact stru
     "count": <number of filler words detected>,
     "words": ["<filler word 1>", "<filler word 2>"]
   },
-  "keyTakeaway": "<One sentence summary of the most important thing to improve for next time>"
+  "keyTakeaway": "<One sentence summary of the most important thing to improve for next time>",
+  "newContextSummary": "<Provide a brief, updated summary (2-3 sentences) of the interview so far. Include key points from previous context and this new response. This helps the AI remember the conversation state.>",
+  ${needsNextQuestion ? `"nextQuestion": {
+    "question": "<Generate the next logical interview question based on the context and the candidate's last answer. It can be a follow-up or move to a new topic>",
+    "type": "<behavioral/technical/situational/general/resume-based>",
+    "difficulty": "<easy/medium/hard>",
+    "source": "<context/general>"
+  }` : `"nextQuestion": null`}
 }
 
 CRITICAL RULES:
-1. Be professional, specific, and actionable - avoid generic feedback
+01. Be professional, specific, and actionable - avoid generic feedback
 2. The idealAnswer should be a complete example answer, not just tips
 3. Identify concrete strengths and gaps in the response
 4. For whatWasMissing, focus on content gaps, not delivery
