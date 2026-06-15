@@ -1,3 +1,10 @@
+## [1.248.1](https://github.com/anurag3407/career-pilot/compare/v1.248.0...v1.248.1) (2026-06-15)
+
+
+### Bug Fixes
+
+* improve modal keyboard accessibility and focus management ([8872add](https://github.com/anurag3407/career-pilot/commit/8872addfcc82d0b6cdfca200304c36d11292d3d9))
+
 # [1.248.0](https://github.com/anurag3407/career-pilot/compare/v1.247.0...v1.248.0) (2026-06-15)
 
 
