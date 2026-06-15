@@ -2591,7 +2591,7 @@ export const templates = [
   "image": "/template-previews/Pokemon_Pokedex_Classic.png",
   "createdAt": "2026-06-08",
   "isComplete": true
-}
+},
 
   {
     "id": "Underground_Bunker_Console",
@@ -2617,5 +2617,20 @@ export const templates = [
     "image": "/template-previews/Digital_Manifesto_Scroll.png",
     "createdAt": "2026-06-07",
     "isComplete": true
-  }
+  },
+
+{
+  "id": "Interactive_Table_of_Elements",
+  "title": "Interactive Table of Elements",
+  "category": "Portfolio",
+  "colorScheme": "Dark",
+  "layout": "Interactive",
+  "author": "krishsoni-hub",
+  "views": 0,
+  "rating": 5.0,
+  "image": "/template-previews/Interactive_Table_of_Elements.png",
+  "createdAt": "2026-06-16",
+  "isComplete": true
+},
+
 ];
