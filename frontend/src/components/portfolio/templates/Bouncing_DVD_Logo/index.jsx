@@ -930,8 +930,11 @@ function ExperienceContent({ experience, color }) {
             <div
               onMouseEnter={()=>setHov(i)} onMouseLeave={()=>setHov(null)}
               style={{
-                padding:"14px 18px",background:"#080e1c",border:`1px solid ${hov===i?color+"66":color+"1a"}`,
-                borderRadius:7,transition:"all .2s",cursor:"default",
+                padding:"14px 18px",
+                border:`1px solid ${hov===i?color+"66":color+"1a"}`,
+                borderRadius:7,
+                transition:"all .2s",
+                cursor:"default",
                 boxShadow:hov===i?`0 0 24px ${color}22`:"none",
                 background:hov===i?`${color}0a`:"#080e1c",
               }}
