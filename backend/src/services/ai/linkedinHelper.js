@@ -4,7 +4,7 @@ export const generateHeadline = async (portfolioData, aiProvider) => {
     if (!aiProvider) {
         throw new Error("AI Provider is required. Please provide an API key.");
     }
-    
+
     try {
         const prompt = `
         You are an expert personal branding coach. Based on the following portfolio data, generate 5 distinct, highly optimized LinkedIn headlines. Each headline must be no longer than 120 characters. 

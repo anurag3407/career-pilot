@@ -1,30 +1,43 @@
+import { usePortfolio } from "../../../../context/PortfolioContext";
 import React from 'react';
-import data from '../../../../data/dummy_data.json';
+import GlobalBackground from './GlobalBackground';
+import LavaAnimate from './LavaAnimate';
 
-/**
- * Volcanic Forge Portfolio Template
- * Category: Nature / Organic
- * Description: Volcanic/lava theme with molten orange and red gradients, cracked earth textures, ember particle effects. Dark basalt backgrounds with glowing magma.
- */
-export default function VolcanicForge() {
+import Hero from './components/Hero';
+import About from './components/About';
+import Skills from './components/Skills';
+import Projects from './components/Projects';
+import Experience from './components/Experience';
+import Contact from './components/Contact';
+
+export default function VolcanicForgeTemplate() {
+  const { portfolioData: data } = usePortfolio();
+
+  const { personal, socials, skills, projects, experience, stats } = data;
+
   return (
-    <div className="min-h-screen bg-gray-950 text-white flex flex-col items-center justify-center p-8 font-sans">
-      <div className="max-w-3xl w-full text-center">
-        <h1 className="text-5xl md:text-7xl font-bold mb-4 bg-gradient-to-r from-cyan-400 to-purple-500 bg-clip-text text-transparent">
-          {data.personal.name}
-        </h1>
-        <p className="text-xl md:text-2xl text-gray-400 mb-8">{data.personal.title}</p>
-        <div className="p-8 border-2 border-dashed border-cyan-500/40 rounded-2xl bg-gray-900/50 backdrop-blur-sm">
-          <span className="inline-block px-3 py-1 rounded-full bg-cyan-500/20 text-cyan-400 text-xs font-bold uppercase tracking-widest mb-4">
-            Nature / Organic
-          </span>
-          <h2 className="text-2xl font-bold text-gray-200 mb-3">Volcanic Forge Template</h2>
-          <p className="text-gray-400 mb-6 leading-relaxed">
-            Volcanic/lava theme with molten orange and red gradients, cracked earth textures, ember particle effects. Dark basalt backgrounds with glowing magma.
-          </p>
-          <p className="text-cyan-400 font-semibold">Open an issue to contribute and build this template!</p>
-        </div>
-      </div>
+    <div className="min-h-screen bg-stone-950 text-stone-200 font-sans selection:bg-orange-500/30 selection:text-orange-200 overflow-x-hidden relative">
+      <GlobalBackground />
+
+      <main className="container mx-auto px-6 md:px-12 lg:px-24">
+        <LavaAnimate className="!flex w-full" particleCount={90} formedDelay={1800} meltAmount={4}>
+          <Hero personal={personal} socials={socials} />
+        </LavaAnimate>
+
+        <About personal={personal} stats={stats} skills={skills} />
+        
+        <Skills skills={skills} />
+
+        <Projects projects={projects} />
+
+        <Experience experience={experience} />
+
+        <Contact email={socials.email} location={personal.location} />
+      </main>
+
+      <footer className="py-8 text-center text-stone-600 text-sm border-t border-stone-900 relative z-10 bg-stone-950/80 backdrop-blur-md">
+        <p>© {new Date().getFullYear()} {personal.name}. Forged with Volcanic Template.</p>
+      </footer>
     </div>
   );
 }

@@ -11,6 +11,8 @@ import Contact from './Contact';
 const FONT_STYLESHEET_ID = 'scandinavian-light-fonts';
 const FONT_HREF =
   'https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700;800&family=Lora:wght@400;500;600&display=swap';
+import { usePortfolio } from "../../../../context/PortfolioContext";
+import React from 'react';
 
 export default function ScandinavianLight() {
   useEffect(() => {
@@ -33,6 +35,7 @@ export default function ScandinavianLight() {
 
     document.head.append(googlePreconnect, gstaticPreconnect, stylesheet);
   }, []);
+  const { portfolioData: data } = usePortfolio();
 
   return (
     <div

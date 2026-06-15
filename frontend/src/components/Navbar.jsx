@@ -20,8 +20,10 @@ import {
   Sun,
   Moon,
   Palette,
-  ChevronDown
+  ChevronDown,
+  Target
 } from 'lucide-react'
+import AIProviderSelector from './AIProviderSelector'
 
 export default function Navbar() {
   const { user, logout } = useAuth()
@@ -36,7 +38,7 @@ export default function Navbar() {
 
   useEffect(() => {
     const handleScroll = () => {
-      setScrolled(window.scrollY > 20)
+      setScrolled(window.scrollY>20)
     }
 
     window.addEventListener('scroll', handleScroll)
@@ -85,6 +87,7 @@ export default function Navbar() {
     { path: '/upload', label: 'Resume', icon: FileText },
     { path: '/email-generator', label: 'Emails', icon: Mail },
     { path: '/linkedin-optimizer', label: 'LinkedIn', icon: Linkedin },
+    { path: '/skill-gap', label: 'Skill Gap', icon: Target },
   ]
 
   const searchSuggestions = [
@@ -194,6 +197,9 @@ export default function Navbar() {
 
           {/* Right Side */}
           <div className="hidden md:flex items-center gap-3">
+            
+            {/* AI Provider Selector */}
+            <AIProviderSelector />
 
             {/* Theme Toggle */}
             <button
@@ -314,7 +320,7 @@ export default function Navbar() {
 
           {/* Mobile Menu */}
           <div className="flex items-center gap-2 md:hidden">
-
+            <AIProviderSelector />
             <button
               onClick={toggleTheme}
               className="p-2 rounded-xl bg-muted border border-border"

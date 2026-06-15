@@ -1,3 +1,4 @@
+import { Link } from "react-router-dom";
 import { motion } from "framer-motion";
 import { cn } from "@/lib/utils";
 import {
@@ -15,7 +16,9 @@ import {
     Users,
     MessageSquare,
     Hash,
-    Send
+    Send,
+    Laptop,
+    Palette
 } from "lucide-react";
 
 export default function FeaturesCards() {
@@ -47,8 +50,8 @@ export default function FeaturesCards() {
                             description="Practice with AI-powered mock interviews. Get real-time feedback on your answers, body language tips, and performance analytics."
                         />
                         <div className="relative mb-6 border-t border-dashed border-border sm:mb-0">
-                            <div className="absolute inset-0 bg-gradient-to-b from-transparent via-card/50 to-card" />
-                            <div className="aspect-[76/59] p-4 px-6">
+                            <div className="absolute inset-0 bg-linear-to-b from-transparent via-card/50 to-card" />
+                            <div className="aspect-76/59 p-4 px-6">
                                 <InterviewMockup />
                             </div>
                         </div>
@@ -63,8 +66,14 @@ export default function FeaturesCards() {
                         />
                         <div className="p-6 pt-0">
                             <div className="relative mb-6 sm:mb-0">
-                                <div className="absolute -inset-6 bg-gradient-to-r from-transparent via-transparent to-card" />
+                                <div className="absolute -inset-6 bg-linear-to-r from-transparent via-transparent to-card dark:to-transparent" />
                                 <FellowshipMockup />
+                                <div className="px-6 pb-6">
+                                    <Link to="/readme-generator" className="inline-flex items-center gap-2 text-sm text-primary hover:underline font-medium">
+                                    <FileText className="w-4 h-4" />
+                                    Try AI README Generator →
+                                    </Link>
+                                </div>
                             </div>
                         </div>
                     </FeatureCard>
@@ -229,7 +238,7 @@ function InterviewMockup() {
                         whileInView={{ width: "60%" }}
                         viewport={{ once: true }}
                         transition={{ delay: 0.8, duration: 1 }}
-                        className="h-1 bg-gradient-to-r from-primary to-secondary rounded-full"
+                        className="h-1 bg-linear-to-r from-primary to-secondary rounded-full"
                     />
                 </div>
             </div>
@@ -240,10 +249,10 @@ function InterviewMockup() {
 // Fellowship Mockup Visual
 function FellowshipMockup() {
     const challenges = [
-        { title: "Build AI Dashboard", company: "TechCorp", bounty: "$500", icon: "💻", type: "Development" },
-        { title: "Market Research Report", company: "StartupX", bounty: "$300", icon: "📊", type: "Research" },
-        { title: "UI Redesign", company: "DesignCo", bounty: "$400", icon: "🎨", type: "Design" },
-    ];
+    { title: "Build AI Dashboard", company: "TechCorp", bounty: "$500", icon: "laptop", type: "Development" },
+    { title: "Market Research Report", company: "StartupX", bounty: "$300", icon: "barchart", type: "Research" },
+    { title: "UI Redesign", company: "DesignCo", bounty: "$400", icon: "palette", type: "Design" },
+];
 
     return (
         <div className="space-y-2">
@@ -279,19 +288,22 @@ function FellowshipMockup() {
                     whileInView={{ opacity: 1, x: 0 }}
                     viewport={{ once: true }}
                     transition={{ delay: 0.4 + idx * 0.1 }}
-                    className="flex items-center gap-3 p-3 bg-muted/50 rounded-lg border border-border hover:border-primary/50 transition-colors"
+                    className="flex items-center gap-3 p-3 bg-muted/50 rounded-lg border border-border hover:border-primary/50 transition-colors dark:bg-zinc-800/80"
                 >
-                    <div className="w-10 h-10 rounded-lg bg-card flex items-center justify-center text-lg border border-border">
-                        {challenge.icon}
-                    </div>
+                    <div className="w-10 h-10 rounded-lg flex items-center justify-center border" style={{backgroundColor: 'rgba(56,189,248,0.15)', borderColor: 'rgba(56,189,248,0.4)', boxShadow: '0 0 8px rgba(56,189,248,0.3)'}}>
+    {challenge.icon === "laptop" && <Laptop className="w-5 h-5" style={{color: '#38BDF8'}} />}
+    {challenge.icon === "barchart" && <BarChart3 className="w-5 h-5" style={{color: '#38BDF8'}} />}
+    {challenge.icon === "palette" && <Palette className="w-5 h-5" style={{color: '#38BDF8'}} />}
+</div>
                     <div className="flex-1 min-w-0">
                         <p className="text-sm text-foreground font-medium truncate">{challenge.title}</p>
                         <p className="text-xs text-muted-foreground">{challenge.company} • {challenge.type}</p>
                     </div>
-                    <div className="flex items-center gap-1.5 px-2 py-1 bg-emerald-500/10 rounded-full border border-emerald-500/20">
-                        <DollarSign className="w-3 h-3 text-emerald-600 dark:text-emerald-400" />
-                        <span className="text-xs text-emerald-600 dark:text-emerald-400 font-medium">{challenge.bounty}</span>
-                    </div>
+                    <div className="flex items-center gap-1.5 px-2 py-1 rounded-full border" style={{borderColor: 'rgba(250,204,21,0.5)', backgroundColor: 'rgba(250,204,21,0.15)', boxShadow: '0 0 8px rgba(250,204,21,0.4)'}}>
+                         <DollarSign className="w-3 h-3" style={{color: '#FACC15'}} />
+                        <span className="text-xs font-semibold" style={{color: '#FACC15'}}>{challenge.bounty}</span>
+</div>
+
                 </motion.div>
             ))}
         </div>
@@ -315,7 +327,7 @@ function CircularFeature({ icon: Icon, label, color, className }) {
             transition={{ delay: 0.2 }}
             className={className}
         >
-            <div className="bg-gradient-to-b from-border to-transparent p-px rounded-2xl">
+            <div className="bg-linear-to-b from-border to-transparent p-px rounded-2xl">
                 <div className="bg-card relative flex aspect-square w-fit items-center justify-center rounded-[15px] p-5">
                     <div className={cn(
                         "size-10 md:size-12 rounded-full border-2 flex items-center justify-center",
