@@ -102,18 +102,11 @@ export default function Dashboard() {
     interviewing: 0,
     offered: 0
   })
-  const [portfolioCount, setPortfolioCount] = useState(0)
-  const careerInsights = {
-  readinessScore: 82,
-  skillGaps: ["System Design", "Cloud Computing"],
-  trendingSkills: ["AI Engineering", "Prompt Engineering", "DevOps"],
-  certifications: ["AWS Cloud Practitioner", "Google Data Analytics"],
-  learningPath: [
-    "Complete Cloud Fundamentals",
-    "Build Real-World Projects",
-    "Practice Mock Interviews"
-  ]
-}
+  const [portfolioCount, setPortfolioCount] = useState(0);
+
+
+  const [careerInsights, setCareerInsights] = useState(null);
+  
   const [candidateName, setCandidateName] = useState('')
   const [githubOverview, setGithubOverview] = useState({
     connected: false,
@@ -481,7 +474,8 @@ export default function Dashboard() {
       </h2>
     </div>
 
-    <div className="grid md:grid-cols-5 gap-4">
+    {careerInsights ? (
+      <div className="grid md:grid-cols-5 gap-4">
 
       <div className="p-4 rounded-xl border border-border">
         <p className="text-xs text-muted-foreground">
@@ -528,11 +522,23 @@ export default function Dashboard() {
         </p>
       </div>
 
-    </div>
+      </div>
+) : (
+  <div className="flex flex-col items-center justify-center py-10 text-center">
+    <GraduationCap className="w-10 h-10 text-muted-foreground opacity-50 mx-auto mb-3" />
+    <p className="font-bold text-foreground">No career insights yet</p>
+    <p className="text-sm text-muted-foreground mt-1">Complete your profile to unlock personalized insights</p>
+    <Link to="/profile">
+      <Button variant="primary" className="mt-4 font-bold px-6">Complete Profile</Button>
+    </Link>
+  </div>
+)}
+
   </div>
 </motion.div>
 
 <motion.div variants={itemVariants} className="mb-10">
+  
   <div className="rounded-2xl bg-card border border-border p-6 shadow-sm">
 
     <div className="flex items-center gap-3 mb-6">
@@ -542,7 +548,33 @@ export default function Dashboard() {
       </h2>
     </div>
 
-    <div className="grid md:grid-cols-3 lg:grid-cols-6 gap-4">
+     
+    {portfolioCount === 0 ? (
+
+<div className="flex flex-col items-center justify-center rounded-2xl border border-border py-12 text-center">
+
+  <TrendingUp className="w-10 h-10 text-muted-foreground mb-4" />
+
+  <h3 className="text-xl font-bold">
+    No portfolio analytics yet
+  </h3>
+
+  <p className="text-sm text-muted-foreground mt-2 mb-5">
+    Create your portfolio to start tracking performance.
+  </p>
+
+  <Link to="/hub/portfolio">
+    <Button variant="primary">
+      Create Portfolio
+    </Button>
+  </Link>
+
+</div>
+
+) : (
+
+<div className="grid md:grid-cols-3 lg:grid-cols-6 gap-4">
+         
 
       <div className="p-4 rounded-xl border border-border">
         <p className="text-xs text-muted-foreground">
@@ -599,6 +631,8 @@ export default function Dashboard() {
       </div>
 
     </div>
+
+    )}
 
   </div>
 </motion.div>
