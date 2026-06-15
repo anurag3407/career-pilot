@@ -1,3 +1,10 @@
+# [1.244.0](https://github.com/anurag3407/career-pilot/compare/v1.243.0...v1.244.0) (2026-06-15)
+
+
+### Features
+
+* add resume collaboration & feedback system ([#3338](https://github.com/anurag3407/career-pilot/issues/3338)) ([9fd1735](https://github.com/anurag3407/career-pilot/commit/9fd173598f60b052474d0ad909682399250c7f36))
+
 # [1.243.0](https://github.com/anurag3407/career-pilot/compare/v1.242.0...v1.243.0) (2026-06-15)
 
 
