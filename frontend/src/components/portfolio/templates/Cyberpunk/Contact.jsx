@@ -8,7 +8,7 @@ import {
   Send,
 } from "lucide-react";
 
-export default function Contact() {
+export default function Contact({ personal, socials }) {
   return (
     <section className="relative overflow-hidden bg-[#070b14] py-20 px-6 md:px-12">
       
@@ -53,7 +53,7 @@ export default function Contact() {
                 <div>
                   <p className="text-sm text-gray-400">Email</p>
                   <h3 className="text-lg font-semibold text-white">
-                    cyberpunk@example.com
+                    {personal?.email || "cyberpunk@example.com"}
                   </h3>
                 </div>
               </div>
@@ -68,7 +68,7 @@ export default function Contact() {
                 <div>
                   <p className="text-sm text-gray-400">Phone</p>
                   <h3 className="text-lg font-semibold text-white">
-                    +91 98765 43210
+                    {personal?.phone || "+91 98765 43210"}
                   </h3>
                 </div>
               </div>
@@ -83,7 +83,7 @@ export default function Contact() {
                 <div>
                   <p className="text-sm text-gray-400">Location</p>
                   <h3 className="text-lg font-semibold text-white">
-                    Neo Tokyo, Cyber District
+                    {personal?.location || "Neo Tokyo, Cyber District"}
                   </h3>
                 </div>
               </div>
@@ -91,19 +91,27 @@ export default function Contact() {
 
             {/* Social Icons */}
             <div className="flex gap-4 pt-4">
-              <a
-                href="#"
-                className="rounded-2xl border border-cyan-400/20 bg-white/5 p-4 text-cyan-400 transition-all duration-300 hover:scale-110 hover:shadow-[0_0_20px_rgba(0,255,255,0.5)]"
-              >
-                <Github size={22} />
-              </a>
+              {socials?.github && (
+                <a
+                  href={socials.github}
+                  target="_blank"
+                  rel="noopener noreferrer"
+                  className="rounded-2xl border border-cyan-400/20 bg-white/5 p-4 text-cyan-400 transition-all duration-300 hover:scale-110 hover:shadow-[0_0_20px_rgba(0,255,255,0.5)]"
+                >
+                  <Github size={22} />
+                </a>
+              )}
 
-              <a
-                href="#"
-                className="rounded-2xl border border-pink-400/20 bg-white/5 p-4 text-pink-400 transition-all duration-300 hover:scale-110 hover:shadow-[0_0_20px_rgba(255,0,200,0.5)]"
-              >
-                <Linkedin size={22} />
-              </a>
+              {socials?.linkedin && (
+                <a
+                  href={socials.linkedin}
+                  target="_blank"
+                  rel="noopener noreferrer"
+                  className="rounded-2xl border border-pink-400/20 bg-white/5 p-4 text-pink-400 transition-all duration-300 hover:scale-110 hover:shadow-[0_0_20px_rgba(255,0,200,0.5)]"
+                >
+                  <Linkedin size={22} />
+                </a>
+              )}
             </div>
           </div>
 
