@@ -1,4 +1,5 @@
 import { useState, useEffect, useRef } from "react";
+import { usePortfolio, normalizePortfolioData } from "../../../../context/PortfolioContext.jsx";
 
 const defaultData = {
   name: "Alex Rivera",
@@ -8,12 +9,12 @@ const defaultData = {
   github: "https://github.com",
   linkedin: "https://linkedin.com",
   location: "San Francisco, CA",
-  bio: "Passionate developer with 5+ years of experience crafting beautiful, performant web applications. I love turning complex problems into elegant solutions.",
+  bio: "Passionate developer with 5+ years of experience crafting beautiful, performant web applications.",
   skills: ["React", "TypeScript", "Node.js", "Python", "AWS", "Docker", "GraphQL", "Rust"],
   projects: [
-    { title: "NeuralLink", description: "AI analytics platform processing 10M+ events/day with sub-100ms response.", tech: ["Python", "TensorFlow", "React"] },
-    { title: "QuantumDB", description: "Distributed database with sub-millisecond query times at any scale.", tech: ["Rust", "Kafka", "PostgreSQL"] },
-    { title: "StellarAPI", description: "Open-source REST framework with 5K+ GitHub stars and 80K weekly downloads.", tech: ["Node.js", "TypeScript", "Docker"] },
+    { title: "NeuralLink", description: "AI analytics platform processing 10M+ events/day.", tech: ["Python", "TensorFlow", "React"] },
+    { title: "QuantumDB", description: "Distributed database with sub-millisecond query times.", tech: ["Rust", "Kafka", "PostgreSQL"] },
+    { title: "StellarAPI", description: "Open-source REST framework with 5K+ GitHub stars.", tech: ["Node.js", "TypeScript", "Docker"] },
   ],
   experience: [
     { company: "Google", role: "Senior Software Engineer", period: "2022 — Present" },
@@ -23,76 +24,70 @@ const defaultData = {
   stats: [{ label: "Years Exp", value: "5+" }, { label: "Projects", value: "48+" }, { label: "Clients", value: "32+" }],
 };
 
+function generateParticles(count) {
+  return Array.from({ length: count }, (_, i) => ({
+    id: i,
+    x: Math.random() * 100,
+    y: Math.random() * 100,
+    size: Math.random() * 4 + 1,
+    speedX: (Math.random() - 0.5) * 0.3,
+    speedY: (Math.random() - 0.5) * 0.2 - 0.1,
+    opacity: Math.random() * 0.6 + 0.2,
+    color: Math.random() > 0.5 ? "#00FFD1" : Math.random() > 0.5 ? "#0EA5E9" : "#7C3AED",
+    pulse: Math.random() * Math.PI * 2,
+    pulseSpeed: Math.random() * 2 + 0.5,
+  }));
+}
+
+const PARTICLES = generateParticles(80);
 const SECTIONS = ["home", "about", "skills", "projects", "experience", "contact"];
 
-function Blob({ cx, cy, r, color, speed, offset }) {
-  const [pos, setPos] = useState({ x: cx, y: cy });
-  const timeRef = useRef(0);
+export default function One_Pixel_Master({ portfolioData }) {
+  const ctx = usePortfolio();
+  const raw = portfolioData || ctx?.portfolioData || {};
+  const normalized = normalizePortfolioData(raw);
+  const d = Object.keys(normalized).length > 2 ? normalized : null;
+
+  const name = d?.personal?.name || defaultData.name;
+  const title = d?.personal?.title || defaultData.title;
+  const subtitle = d?.personal?.tagline || defaultData.subtitle;
+  const bio = d?.personal?.bio || defaultData.bio;
+  const email = d?.socials?.email || defaultData.email;
+  const github = d?.socials?.github || defaultData.github;
+  const linkedin = d?.socials?.linkedin || defaultData.linkedin;
+  const location = d?.personal?.location || defaultData.location;
+  const rawSkills = d?.skills || defaultData.skills;
+  const skills = Array.isArray(rawSkills) ? rawSkills.map(s => typeof s === "string" ? s : s.name) : defaultData.skills;
+  const projects = d?.projects || defaultData.projects;
+  const experience = d?.experience || defaultData.experience;
+  const stats = d?.stats ? Object.entries(d.stats).slice(0, 3).map(([k, v]) => ({ label: k, value: v })) : defaultData.stats;
+
+  const [active, setActive] = useState("home");
+  const [time, setTime] = useState(0);
+  const [particles, setParticles] = useState(PARTICLES);
+  const [mouse, setMouse] = useState({ x: 50, y: 50 });
+  const [hoveredSkill, setHoveredSkill] = useState(null);
+  const [hoveredProject, setHoveredProject] = useState(null);
   const rafRef = useRef(null);
 
   useEffect(() => {
     const animate = (t) => {
-      timeRef.current = t / 1000;
-      const s = timeRef.current * speed + offset;
-      setPos({
-        x: cx + Math.sin(s * 0.7) * 15 + Math.cos(s * 0.3) * 10,
-        y: cy + Math.cos(s * 0.5) * 12 + Math.sin(s * 0.8) * 8,
-      });
+      const s = t / 1000;
+      setTime(s);
+      setParticles(prev => prev.map(p => {
+        let nx = p.x + p.speedX;
+        let ny = p.y + p.speedY;
+        if (nx < 0) nx = 100;
+        if (nx > 100) nx = 0;
+        if (ny < 0) ny = 100;
+        if (ny > 100) ny = 0;
+        return { ...p, x: nx, y: ny };
+      }));
       rafRef.current = requestAnimationFrame(animate);
     };
     rafRef.current = requestAnimationFrame(animate);
     return () => cancelAnimationFrame(rafRef.current);
-  }, [cx, cy, speed, offset]);
-
-  return (
-    <div style={{
-      position: "absolute",
-      left: `${pos.x}%`,
-      top: `${pos.y}%`,
-      width: `${r * 2}px`,
-      height: `${r * 2}px`,
-      transform: "translate(-50%, -50%)",
-      borderRadius: "50%",
-      background: color,
-      filter: "blur(60px)",
-      opacity: 0.5,
-      transition: "left 0.1s ease, top 0.1s ease",
-      pointerEvents: "none",
-    }} />
-  );
-}
-
-const BLOBS = [
-  { cx: 20, cy: 30, r: 200, color: "#7C3AED", speed: 0.4, offset: 0 },
-  { cx: 75, cy: 20, r: 180, color: "#2563EB", speed: 0.3, offset: 2 },
-  { cx: 50, cy: 70, r: 220, color: "#EC4899", speed: 0.5, offset: 4 },
-  { cx: 85, cy: 60, r: 160, color: "#0EA5E9", speed: 0.35, offset: 1 },
-  { cx: 15, cy: 75, r: 170, color: "#8B5CF6", speed: 0.45, offset: 3 },
-];
-
-const CARD_COLORS = ["#7C3AED", "#2563EB", "#EC4899"];
-
-export default function One_Pixel_Master({ portfolioData }) {
-  const data = portfolioData || defaultData;
-  const [active, setActive] = useState("home");
-  const [hoveredProject, setHoveredProject] = useState(null);
-  const [hoveredSkill, setHoveredSkill] = useState(null);
-  const [mouse, setMouse] = useState({ x: 50, y: 50 });
-
-  const name = data.name || defaultData.name;
-  const title = data.title || defaultData.title;
-  const subtitle = data.subtitle || defaultData.subtitle;
-  const bio = data.bio || defaultData.bio;
-  const skills = Array.isArray(data.skills)
-    ? data.skills.map(s => typeof s === "string" ? s : s.name)
-    : defaultData.skills;
-  const projects = data.projects || defaultData.projects;
-  const experience = data.experience || defaultData.experience;
-  const stats = data.stats || defaultData.stats;
-  const email = data.email || defaultData.email;
-  const github = data.github || defaultData.github;
-  const linkedin = data.linkedin || defaultData.linkedin;
-  const location = data.location || defaultData.location;
+  }, []);
 
   const handleMouseMove = (e) => {
     const rect = e.currentTarget.getBoundingClientRect();
@@ -102,40 +97,70 @@ export default function One_Pixel_Master({ portfolioData }) {
     });
   };
 
+  const ACCENT = "#00FFD1";
+  const ACCENT2 = "#0EA5E9";
+  const BG = "#020B18";
+
   return (
     <div
       onMouseMove={handleMouseMove}
       style={{
         fontFamily: "'Inter', 'Helvetica Neue', sans-serif",
-        background: "#030712",
+        background: BG,
         minHeight: "100vh",
         color: "#fff",
         position: "relative",
         overflowX: "hidden",
       }}
     >
-      {/* Animated blobs background */}
-      <div style={{ position: "fixed", inset: 0, overflow: "hidden", zIndex: 0, pointerEvents: "none" }}>
-        {BLOBS.map((b, i) => <Blob key={i} {...b} />)}
-        {/* Glass overlay */}
-        <div style={{
-          position: "absolute",
-          inset: 0,
-          backdropFilter: "blur(80px)",
-          background: "rgba(3,7,18,0.6)",
-        }} />
-        {/* Mouse light */}
-        <div style={{
-          position: "absolute",
-          left: `${mouse.x}%`,
-          top: `${mouse.y}%`,
-          width: "600px",
-          height: "600px",
-          transform: "translate(-50%,-50%)",
-          background: "radial-gradient(circle, rgba(124,58,237,0.08) 0%, transparent 70%)",
-          pointerEvents: "none",
-          transition: "left 0.3s ease, top 0.3s ease",
-        }} />
+      {/* Ocean depth gradient */}
+      <div style={{
+        position: "fixed",
+        inset: 0,
+        background: `
+          radial-gradient(ellipse at ${mouse.x}% ${mouse.y}%, rgba(0,255,209,0.06) 0%, transparent 40%),
+          radial-gradient(ellipse at 20% 80%, rgba(14,165,233,0.08) 0%, transparent 50%),
+          radial-gradient(ellipse at 80% 20%, rgba(124,58,237,0.06) 0%, transparent 40%),
+          linear-gradient(180deg, #020B18 0%, #041525 50%, #020B18 100%)
+        `,
+        transition: "background 0.5s ease",
+        zIndex: 0,
+        pointerEvents: "none",
+      }} />
+
+      {/* Animated bioluminescent particles */}
+      <div style={{ position: "fixed", inset: 0, zIndex: 1, pointerEvents: "none", overflow: "hidden" }}>
+        {particles.map(p => {
+          const pulse = 0.5 + 0.5 * Math.sin(time * p.pulseSpeed + p.pulse);
+          return (
+            <div key={p.id} style={{
+              position: "absolute",
+              left: `${p.x}%`,
+              top: `${p.y}%`,
+              width: `${p.size + pulse * 2}px`,
+              height: `${p.size + pulse * 2}px`,
+              borderRadius: "50%",
+              background: p.color,
+              opacity: p.opacity * (0.4 + pulse * 0.6),
+              boxShadow: `0 0 ${6 + pulse * 8}px ${p.color}`,
+              transform: "translate(-50%,-50%)",
+              transition: "width 0.1s, height 0.1s",
+            }} />
+          );
+        })}
+
+        {/* Caustic light rays */}
+        {[0, 1, 2, 3].map(i => (
+          <div key={i} style={{
+            position: "absolute",
+            top: 0,
+            left: `${15 + i * 20 + Math.sin(time * 0.3 + i) * 5}%`,
+            width: "2px",
+            height: "100%",
+            background: `linear-gradient(180deg, transparent, rgba(0,255,209,${0.03 + 0.02 * Math.sin(time * 0.5 + i)}), transparent)`,
+            transform: `skewX(${Math.sin(time * 0.2 + i) * 3}deg)`,
+          }} />
+        ))}
       </div>
 
       {/* Nav */}
@@ -147,17 +172,18 @@ export default function One_Pixel_Master({ portfolioData }) {
         justifyContent: "space-between",
         alignItems: "center",
         padding: "20px 48px",
-        background: "rgba(3,7,18,0.7)",
-        backdropFilter: "blur(24px)",
-        borderBottom: "1px solid rgba(255,255,255,0.06)",
+        background: "rgba(2,11,24,0.85)",
+        backdropFilter: "blur(20px)",
+        borderBottom: "1px solid rgba(0,255,209,0.08)",
       }}>
         <div style={{
-          fontSize: "15px",
+          fontSize: "16px",
           fontWeight: "800",
-          color: "#fff",
-          letterSpacing: "-0.02em",
+          color: ACCENT,
+          letterSpacing: "-0.01em",
+          textShadow: `0 0 20px ${ACCENT}66`,
         }}>
-          <span style={{ color: "#7C3AED" }}>✦</span> {name.split(" ")[0]}
+          ◈ {name.split(" ")[0]}
         </div>
         <div style={{ display: "flex", gap: "4px" }}>
           {SECTIONS.map(s => (
@@ -165,15 +191,16 @@ export default function One_Pixel_Master({ portfolioData }) {
               padding: "8px 18px",
               borderRadius: "100px",
               border: "none",
-              background: active === s ? "rgba(124,58,237,0.2)" : "transparent",
-              color: active === s ? "#A78BFA" : "rgba(255,255,255,0.4)",
+              background: active === s ? `rgba(0,255,209,0.1)` : "transparent",
+              color: active === s ? ACCENT : "rgba(255,255,255,0.35)",
               fontSize: "12px",
               fontWeight: "600",
               cursor: "pointer",
               textTransform: "capitalize",
-              letterSpacing: "0.03em",
+              letterSpacing: "0.05em",
+              outline: active === s ? `1px solid rgba(0,255,209,0.3)` : "none",
               transition: "all 0.2s",
-              outline: active === s ? "1px solid rgba(124,58,237,0.4)" : "none",
+              textShadow: active === s ? `0 0 12px ${ACCENT}88` : "none",
             }}>
               {s}
             </button>
@@ -181,111 +208,108 @@ export default function One_Pixel_Master({ portfolioData }) {
         </div>
       </nav>
 
-      <div style={{ position: "relative", zIndex: 1 }}>
+      <div style={{ position: "relative", zIndex: 2 }}>
 
         {/* HOME */}
         {active === "home" && (
-          <div style={{
-            minHeight: "90vh",
-            display: "flex",
-            flexDirection: "column",
-            justifyContent: "center",
-            padding: "80px",
-          }}>
+          <div style={{ minHeight: "90vh", display: "flex", flexDirection: "column", justifyContent: "center", padding: "80px" }}>
+
             <div style={{
-              fontSize: "11px",
+              fontSize: "10px",
               fontWeight: "700",
-              letterSpacing: "0.25em",
+              letterSpacing: "0.3em",
               textTransform: "uppercase",
-              color: "#7C3AED",
+              color: ACCENT,
               marginBottom: "24px",
               display: "flex",
               alignItems: "center",
               gap: "12px",
+              textShadow: `0 0 16px ${ACCENT}`,
             }}>
-              <div style={{ width: "32px", height: "1px", background: "#7C3AED" }} />
-              Portfolio — {new Date().getFullYear()}
+              <div style={{ width: "40px", height: "1px", background: `linear-gradient(90deg, transparent, ${ACCENT})` }} />
+              Deep Ocean Portfolio — {new Date().getFullYear()}
             </div>
 
             <h1 style={{
-              fontSize: "clamp(56px, 9vw, 112px)",
+              fontSize: "clamp(60px, 10vw, 120px)",
               fontWeight: "900",
               letterSpacing: "-0.04em",
-              lineHeight: "0.95",
-              margin: "0 0 24px",
+              lineHeight: "0.92",
+              margin: "0 0 32px",
               color: "#fff",
-              textShadow: "0 0 120px rgba(124,58,237,0.4)",
+              textShadow: `0 0 80px rgba(0,255,209,0.2), 0 0 160px rgba(14,165,233,0.1)`,
             }}>
               {name.split(" ").map((word, i) => (
-                <span key={i} style={{
-                  display: "block",
-                  color: i === 0 ? "#fff" : "rgba(255,255,255,0.4)",
-                }}>
+                <span key={i} style={{ display: "block", color: i === 0 ? "#fff" : "rgba(255,255,255,0.35)" }}>
                   {word}
                 </span>
               ))}
             </h1>
 
-            <div style={{
-              display: "flex",
-              alignItems: "center",
-              gap: "16px",
-              marginBottom: "16px",
-            }}>
-              <div style={{ width: "48px", height: "1px", background: "rgba(255,255,255,0.2)" }} />
-              <p style={{ fontSize: "16px", color: "rgba(255,255,255,0.5)", fontWeight: "400", margin: 0 }}>{title}</p>
-            </div>
+            <p style={{ fontSize: "15px", color: "rgba(255,255,255,0.45)", marginBottom: "8px", letterSpacing: "0.02em" }}>
+              {title}
+            </p>
+            <p style={{ fontSize: "13px", color: "rgba(255,255,255,0.2)", fontStyle: "italic", marginBottom: "56px" }}>
+              "{subtitle}"
+            </p>
 
-            <p style={{
-              fontSize: "13px",
-              color: "rgba(255,255,255,0.25)",
-              fontStyle: "italic",
-              marginBottom: "56px",
-              marginLeft: "64px",
-            }}>"{subtitle}"</p>
-
-            <div style={{ display: "flex", gap: "40px", marginBottom: "56px" }}>
+            <div style={{ display: "flex", gap: "48px", marginBottom: "56px" }}>
               {stats.map((s, i) => (
-                <div key={i} style={{ display: "flex", flexDirection: "column", gap: "4px" }}>
-                  <span style={{ fontSize: "40px", fontWeight: "900", color: "#fff", letterSpacing: "-0.04em", lineHeight: 1 }}>{s.value}</span>
-                  <span style={{ fontSize: "10px", color: "rgba(255,255,255,0.3)", textTransform: "uppercase", letterSpacing: "0.15em" }}>{s.label}</span>
+                <div key={i}>
+                  <div style={{ fontSize: "44px", fontWeight: "900", color: "#fff", letterSpacing: "-0.04em", lineHeight: 1, textShadow: `0 0 30px ${ACCENT}44` }}>{s.value}</div>
+                  <div style={{ fontSize: "10px", color: "rgba(255,255,255,0.25)", textTransform: "uppercase", letterSpacing: "0.2em", marginTop: "4px" }}>{s.label}</div>
                 </div>
               ))}
             </div>
 
-            <div style={{ display: "flex", gap: "12px" }}>
+            <div style={{ display: "flex", gap: "16px" }}>
               <button onClick={() => setActive("projects")} style={{
-                padding: "16px 36px",
+                padding: "16px 40px",
                 borderRadius: "100px",
-                border: "none",
-                background: "linear-gradient(135deg, #7C3AED, #2563EB)",
-                color: "#fff",
+                border: `1px solid ${ACCENT}44`,
+                background: `rgba(0,255,209,0.08)`,
+                color: ACCENT,
                 fontSize: "14px",
                 fontWeight: "700",
                 cursor: "pointer",
-                boxShadow: "0 0 40px rgba(124,58,237,0.4)",
-                letterSpacing: "0.02em",
-                transition: "box-shadow 0.3s, transform 0.2s",
+                letterSpacing: "0.05em",
+                boxShadow: `0 0 24px rgba(0,255,209,0.15), inset 0 0 24px rgba(0,255,209,0.05)`,
+                transition: "all 0.3s",
               }}
-                onMouseEnter={e => { e.target.style.boxShadow = "0 0 60px rgba(124,58,237,0.7)"; e.target.style.transform = "translateY(-2px)"; }}
-                onMouseLeave={e => { e.target.style.boxShadow = "0 0 40px rgba(124,58,237,0.4)"; e.target.style.transform = "translateY(0)"; }}
+                onMouseEnter={e => { e.target.style.boxShadow = `0 0 40px rgba(0,255,209,0.4), inset 0 0 40px rgba(0,255,209,0.1)`; e.target.style.transform = "translateY(-2px)"; }}
+                onMouseLeave={e => { e.target.style.boxShadow = `0 0 24px rgba(0,255,209,0.15), inset 0 0 24px rgba(0,255,209,0.05)`; e.target.style.transform = "translateY(0)"; }}
               >
-                View My Work ✦
+                View My Work ◈
               </button>
               <button onClick={() => setActive("contact")} style={{
-                padding: "16px 36px",
+                padding: "16px 40px",
                 borderRadius: "100px",
-                border: "1px solid rgba(255,255,255,0.12)",
-                background: "rgba(255,255,255,0.04)",
-                color: "rgba(255,255,255,0.6)",
+                border: "1px solid rgba(255,255,255,0.1)",
+                background: "transparent",
+                color: "rgba(255,255,255,0.4)",
                 fontSize: "14px",
                 fontWeight: "700",
                 cursor: "pointer",
-                backdropFilter: "blur(8px)",
-                letterSpacing: "0.02em",
+                letterSpacing: "0.05em",
               }}>
                 Get In Touch
               </button>
+            </div>
+
+            {/* Depth indicator */}
+            <div style={{
+              position: "absolute",
+              right: "48px",
+              top: "50%",
+              transform: "translateY(-50%)",
+              display: "flex",
+              flexDirection: "column",
+              alignItems: "center",
+              gap: "8px",
+            }}>
+              <div style={{ fontSize: "9px", color: "rgba(0,255,209,0.4)", letterSpacing: "0.2em", textTransform: "uppercase", writingMode: "vertical-rl" }}>DEPTH</div>
+              <div style={{ width: "1px", height: "120px", background: `linear-gradient(180deg, ${ACCENT}44, transparent)` }} />
+              <div style={{ fontSize: "9px", color: "rgba(0,255,209,0.4)", letterSpacing: "0.1em" }}>∞</div>
             </div>
           </div>
         )}
@@ -293,18 +317,18 @@ export default function One_Pixel_Master({ portfolioData }) {
         {/* ABOUT */}
         {active === "about" && (
           <div style={{ padding: "80px", maxWidth: "800px" }}>
-            <SHead n="01" t="About" />
-            <p style={{ fontSize: "20px", lineHeight: "1.9", color: "rgba(255,255,255,0.65)", marginBottom: "48px", maxWidth: "600px" }}>{bio}</p>
-            <div style={{ display: "grid", gridTemplateColumns: "1fr 1fr", gap: "1px", background: "rgba(255,255,255,0.06)", borderRadius: "16px", overflow: "hidden" }}>
+            <OceanHead n="01" t="About" accent={ACCENT} time={time} />
+            <p style={{ fontSize: "20px", lineHeight: "1.9", color: "rgba(255,255,255,0.6)", marginBottom: "48px", maxWidth: "600px" }}>{bio}</p>
+            <div style={{ display: "grid", gridTemplateColumns: "1fr 1fr", gap: "1px", background: `rgba(0,255,209,0.06)`, borderRadius: "16px", overflow: "hidden" }}>
               {[
-                { icon: "📍", label: "Location", value: location },
-                { icon: "✉️", label: "Email", value: email },
-                { icon: "🐙", label: "GitHub", value: github },
-                { icon: "💼", label: "LinkedIn", value: linkedin },
+                { label: "Location", value: location },
+                { label: "Email", value: email },
+                { label: "GitHub", value: github },
+                { label: "LinkedIn", value: linkedin },
               ].map((item, i) => (
-                <div key={i} style={{ padding: "28px", background: "rgba(3,7,18,0.95)" }}>
-                  <div style={{ fontSize: "10px", color: "#7C3AED", letterSpacing: "0.15em", textTransform: "uppercase", fontWeight: "700", marginBottom: "8px" }}>{item.icon} {item.label}</div>
-                  <div style={{ fontSize: "13px", color: "rgba(255,255,255,0.6)", fontWeight: "400" }}>{item.value}</div>
+                <div key={i} style={{ padding: "28px", background: "rgba(2,11,24,0.98)" }}>
+                  <div style={{ fontSize: "10px", color: ACCENT, letterSpacing: "0.15em", textTransform: "uppercase", fontWeight: "700", marginBottom: "8px", textShadow: `0 0 8px ${ACCENT}44` }}>{item.label}</div>
+                  <div style={{ fontSize: "13px", color: "rgba(255,255,255,0.5)" }}>{item.value}</div>
                 </div>
               ))}
             </div>
@@ -314,7 +338,7 @@ export default function One_Pixel_Master({ portfolioData }) {
         {/* SKILLS */}
         {active === "skills" && (
           <div style={{ padding: "80px", maxWidth: "800px" }}>
-            <SHead n="02" t="Skills" />
+            <OceanHead n="02" t="Skills" accent={ACCENT} time={time} />
             <div style={{ display: "flex", flexWrap: "wrap", gap: "12px" }}>
               {skills.map((skill, i) => (
                 <div key={i}
@@ -323,17 +347,18 @@ export default function One_Pixel_Master({ portfolioData }) {
                   style={{
                     padding: "12px 24px",
                     borderRadius: "100px",
-                    border: "1px solid",
-                    borderColor: hoveredSkill === i ? "#7C3AED" : "rgba(255,255,255,0.08)",
-                    background: hoveredSkill === i ? "rgba(124,58,237,0.15)" : "rgba(255,255,255,0.03)",
-                    color: hoveredSkill === i ? "#A78BFA" : "rgba(255,255,255,0.5)",
+                    border: `1px solid`,
+                    borderColor: hoveredSkill === i ? ACCENT : "rgba(0,255,209,0.12)",
+                    background: hoveredSkill === i ? "rgba(0,255,209,0.08)" : "rgba(0,255,209,0.03)",
+                    color: hoveredSkill === i ? ACCENT : "rgba(255,255,255,0.4)",
                     fontSize: "13px",
                     fontWeight: "600",
                     cursor: "default",
                     transition: "all 0.2s",
-                    backdropFilter: "blur(8px)",
+                    boxShadow: hoveredSkill === i ? `0 0 20px rgba(0,255,209,0.2)` : "none",
+                    textShadow: hoveredSkill === i ? `0 0 12px ${ACCENT}66` : "none",
                   }}>
-                  {hoveredSkill === i ? "✦ " : ""}{skill}
+                  {hoveredSkill === i ? "◈ " : ""}{skill}
                 </div>
               ))}
             </div>
@@ -343,44 +368,43 @@ export default function One_Pixel_Master({ portfolioData }) {
         {/* PROJECTS */}
         {active === "projects" && (
           <div style={{ padding: "80px", maxWidth: "900px" }}>
-            <SHead n="03" t="Projects" />
-            <div style={{ display: "flex", flexDirection: "column", gap: "2px", borderRadius: "16px", overflow: "hidden" }}>
-              {projects.map((p, i) => {
-                const hovered = hoveredProject === i;
-                const accent = CARD_COLORS[i % CARD_COLORS.length];
-                return (
-                  <div key={i}
-                    onMouseEnter={() => setHoveredProject(i)}
-                    onMouseLeave={() => setHoveredProject(null)}
-                    style={{
-                      padding: "36px 40px",
-                      background: hovered ? `rgba(${accent === "#7C3AED" ? "124,58,237" : accent === "#2563EB" ? "37,99,235" : "236,72,153"},0.1)` : "rgba(255,255,255,0.02)",
-                      borderLeft: hovered ? `3px solid ${accent}` : "3px solid transparent",
-                      transition: "all 0.25s",
-                      cursor: "default",
-                    }}
-                  >
-                    <div style={{ display: "flex", justifyContent: "space-between", alignItems: "flex-start", marginBottom: "12px" }}>
-                      <div style={{ fontSize: "24px", fontWeight: "800", color: hovered ? "#fff" : "rgba(255,255,255,0.7)", letterSpacing: "-0.02em", transition: "color 0.2s" }}>{p.title}</div>
-                      <span style={{ fontSize: "11px", color: accent, fontWeight: "700" }}>0{i + 1}</span>
+            <OceanHead n="03" t="Projects" accent={ACCENT} time={time} />
+            <div style={{ display: "flex", flexDirection: "column", gap: "2px" }}>
+              {projects.map((p, i) => (
+                <div key={i}
+                  onMouseEnter={() => setHoveredProject(i)}
+                  onMouseLeave={() => setHoveredProject(null)}
+                  style={{
+                    padding: "36px",
+                    background: hoveredProject === i ? "rgba(0,255,209,0.04)" : "rgba(255,255,255,0.01)",
+                    borderLeft: hoveredProject === i ? `2px solid ${ACCENT}` : "2px solid transparent",
+                    transition: "all 0.25s",
+                    cursor: "default",
+                    boxShadow: hoveredProject === i ? `inset 0 0 60px rgba(0,255,209,0.03)` : "none",
+                  }}
+                >
+                  <div style={{ display: "flex", justifyContent: "space-between", marginBottom: "12px" }}>
+                    <div style={{ fontSize: "24px", fontWeight: "800", color: hoveredProject === i ? "#fff" : "rgba(255,255,255,0.6)", letterSpacing: "-0.02em", transition: "color 0.2s", textShadow: hoveredProject === i ? `0 0 30px rgba(0,255,209,0.2)` : "none" }}>
+                      {p.title}
                     </div>
-                    <p style={{ fontSize: "14px", color: "rgba(255,255,255,0.4)", lineHeight: "1.7", marginBottom: "16px" }}>{p.description}</p>
-                    <div style={{ display: "flex", gap: "8px" }}>
-                      {(Array.isArray(p.tech) ? p.tech : [p.tech]).map((t, j) => (
-                        <span key={j} style={{
-                          padding: "4px 12px",
-                          borderRadius: "100px",
-                          fontSize: "11px",
-                          fontWeight: "600",
-                          background: `${accent}18`,
-                          color: accent,
-                          border: `1px solid ${accent}30`,
-                        }}>{t}</span>
-                      ))}
-                    </div>
+                    <span style={{ fontSize: "11px", color: ACCENT, fontWeight: "700", textShadow: `0 0 8px ${ACCENT}44` }}>0{i + 1}</span>
                   </div>
-                );
-              })}
+                  <p style={{ fontSize: "14px", color: "rgba(255,255,255,0.35)", lineHeight: "1.7", marginBottom: "16px" }}>{p.description}</p>
+                  <div style={{ display: "flex", gap: "8px", flexWrap: "wrap" }}>
+                    {(Array.isArray(p.tech) ? p.tech : p.techStack || []).map((t, j) => (
+                      <span key={j} style={{
+                        padding: "4px 12px",
+                        borderRadius: "100px",
+                        fontSize: "11px",
+                        fontWeight: "600",
+                        background: `rgba(0,255,209,0.06)`,
+                        color: ACCENT,
+                        border: `1px solid rgba(0,255,209,0.15)`,
+                      }}>{t}</span>
+                    ))}
+                  </div>
+                </div>
+              ))}
             </div>
           </div>
         )}
@@ -388,20 +412,22 @@ export default function One_Pixel_Master({ portfolioData }) {
         {/* EXPERIENCE */}
         {active === "experience" && (
           <div style={{ padding: "80px", maxWidth: "800px" }}>
-            <SHead n="04" t="Experience" />
+            <OceanHead n="04" t="Experience" accent={ACCENT} time={time} />
             {experience.map((e, i) => (
               <div key={i} style={{
                 padding: "32px 0",
-                borderBottom: "1px solid rgba(255,255,255,0.04)",
+                borderBottom: "1px solid rgba(0,255,209,0.06)",
                 display: "flex",
                 justifyContent: "space-between",
                 alignItems: "center",
               }}>
                 <div>
-                  <div style={{ fontSize: "11px", color: "#7C3AED", letterSpacing: "0.12em", textTransform: "uppercase", fontWeight: "700", marginBottom: "8px" }}>✦ {e.company}</div>
+                  <div style={{ fontSize: "10px", color: ACCENT, letterSpacing: "0.15em", textTransform: "uppercase", fontWeight: "700", marginBottom: "8px", textShadow: `0 0 8px ${ACCENT}44` }}>
+                    ◈ {e.company}
+                  </div>
                   <div style={{ fontSize: "22px", fontWeight: "700", color: "#fff", letterSpacing: "-0.02em" }}>{e.role}</div>
                 </div>
-                <div style={{ fontSize: "12px", color: "rgba(255,255,255,0.25)", fontWeight: "500" }}>{e.period}</div>
+                <div style={{ fontSize: "12px", color: "rgba(255,255,255,0.2)", fontWeight: "500" }}>{e.period}</div>
               </div>
             ))}
           </div>
@@ -410,11 +436,11 @@ export default function One_Pixel_Master({ portfolioData }) {
         {/* CONTACT */}
         {active === "contact" && (
           <div style={{ padding: "80px", maxWidth: "600px" }}>
-            <SHead n="05" t="Contact" />
-            <p style={{ fontSize: "18px", color: "rgba(255,255,255,0.4)", marginBottom: "48px", lineHeight: "1.7", maxWidth: "440px" }}>
+            <OceanHead n="05" t="Contact" accent={ACCENT} time={time} />
+            <p style={{ fontSize: "18px", color: "rgba(255,255,255,0.35)", marginBottom: "48px", lineHeight: "1.7", maxWidth: "440px" }}>
               Open to interesting projects, collaborations, or a good technical conversation.
             </p>
-            <div style={{ display: "flex", flexDirection: "column", gap: "2px", borderRadius: "16px", overflow: "hidden" }}>
+            <div style={{ display: "flex", flexDirection: "column", gap: "1px", background: `rgba(0,255,209,0.06)`, borderRadius: "16px", overflow: "hidden" }}>
               {[
                 { label: "Email", value: email },
                 { label: "GitHub", value: github },
@@ -426,14 +452,14 @@ export default function One_Pixel_Master({ portfolioData }) {
                   justifyContent: "space-between",
                   alignItems: "center",
                   padding: "22px 28px",
-                  background: "rgba(255,255,255,0.02)",
+                  background: "rgba(2,11,24,0.98)",
                   transition: "background 0.2s",
                 }}
-                  onMouseEnter={e => { e.currentTarget.style.background = "rgba(124,58,237,0.08)"; }}
-                  onMouseLeave={e => { e.currentTarget.style.background = "rgba(255,255,255,0.02)"; }}
+                  onMouseEnter={e => { e.currentTarget.style.background = `rgba(0,255,209,0.04)`; }}
+                  onMouseLeave={e => { e.currentTarget.style.background = "rgba(2,11,24,0.98)"; }}
                 >
-                  <span style={{ fontSize: "10px", color: "#7C3AED", textTransform: "uppercase", letterSpacing: "0.15em", fontWeight: "700" }}>{item.label}</span>
-                  <span style={{ fontSize: "13px", color: "rgba(255,255,255,0.5)" }}>{item.value}</span>
+                  <span style={{ fontSize: "10px", color: ACCENT, textTransform: "uppercase", letterSpacing: "0.2em", fontWeight: "700", textShadow: `0 0 8px ${ACCENT}44` }}>{item.label}</span>
+                  <span style={{ fontSize: "13px", color: "rgba(255,255,255,0.4)" }}>{item.value}</span>
                 </div>
               ))}
             </div>
@@ -445,13 +471,14 @@ export default function One_Pixel_Master({ portfolioData }) {
   );
 }
 
-function SHead({ n, t }) {
+function OceanHead({ n, t, accent, time }) {
   return (
     <div style={{ marginBottom: "56px" }}>
-      <div style={{ fontSize: "10px", color: "#7C3AED", letterSpacing: "0.25em", textTransform: "uppercase", fontWeight: "700", marginBottom: "8px" }}>
-        ✦ {n} — Introduction
+      <div style={{ fontSize: "10px", color: accent, letterSpacing: "0.25em", textTransform: "uppercase", fontWeight: "700", marginBottom: "12px", display: "flex", alignItems: "center", gap: "12px", textShadow: `0 0 12px ${accent}` }}>
+        <div style={{ width: `${24 + Math.sin(time * 1.5) * 8}px`, height: "1px", background: `linear-gradient(90deg, transparent, ${accent})`, transition: "width 0.1s" }} />
+        {n} — Introduction
       </div>
-      <h2 style={{ fontSize: "56px", fontWeight: "900", letterSpacing: "-0.04em", color: "#fff", margin: 0, textShadow: "0 0 60px rgba(124,58,237,0.3)" }}>{t}</h2>
+      <h2 style={{ fontSize: "56px", fontWeight: "900", letterSpacing: "-0.04em", color: "#fff", margin: 0, textShadow: `0 0 60px rgba(0,255,209,0.15)` }}>{t}</h2>
     </div>
   );
 }
