@@ -409,8 +409,6 @@ export default function TemplateGallery() {
       template.category?.toLowerCase().includes(q);
     return matchesCategory && matchesColorScheme && matchesLayout && matchesSearch;
   });
-  console.log("Search:", search);
-  console.log("Templates:", filteredTemplates.length);
   
   const sortedTemplates = [...filteredTemplates].sort((a, b) => {
   if (sort === 'Popular') return b.views - a.views;

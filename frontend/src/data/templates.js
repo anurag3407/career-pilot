@@ -105,7 +105,7 @@ export const templates = [
     "isComplete": true
   },
   {
-    "id": "Vercel_Deploy",
+    "id": "Vercel_Deploy_v1",
     "title": "Vercel Deploy",
     "category": "Portfolio",
     "colorScheme": "Dark",
@@ -2457,7 +2457,7 @@ export const templates = [
     "createdAt": "2026-05-01"
   },
   {
-    "id": "Vercel_Deploy",
+    "id": "Vercel_Deploy_v2",
     "title": "Vercel Deploy",
     "category": "Portfolio",
     "colorScheme": "Dark",
