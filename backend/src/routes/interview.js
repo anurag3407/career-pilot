@@ -10,57 +10,6 @@ import { startInterviewSchema, submitAnswerSchema } from '../schemas/interview.s
 
 const router = express.Router();
 
-const buildInterviewAnalytics = async (uid) => {
-    const sessions = await Interview.aggregate([
-        { $match: { odId: uid, status: 'completed' } },
-        {
-            $project: {
-                completedAt: 1,
-                overallScore: 1,
-                communication: { $avg: '$answers.analysis.clarity' },
-                technicalAccuracy: { $avg: '$answers.analysis.relevance' },
-                confidence: { $avg: '$answers.expressionMetrics.averageConfidence' }
-            }
-        },
-        { $sort: { completedAt: 1 } },
-        {
-            $project: {
-                date: { $dateToString: { format: '%Y-%m-%d', date: '$completedAt' } },
-                overallScore: { $round: [{ $ifNull: ['$overallScore', 0] }, 0] },
-                communication: { $round: [{ $ifNull: ['$communication', 0] }, 0] },
-                technicalAccuracy: { $round: [{ $ifNull: ['$technicalAccuracy', 0] }, 0] },
-                confidence: { $round: [{ $ifNull: ['$confidence', 0] }, 0] }
-            }
-        }
-    ]);
-
-    const summary = {
-        count: sessions.length,
-        averageOverallScore: 0,
-        averageCommunication: 0,
-        averageTechnicalAccuracy: 0,
-        averageConfidence: 0
-    };
-
-    if (sessions.length > 0) {
-        const totals = sessions.reduce((acc, session) => {
-            acc.overallScore += session.overallScore;
-            acc.communication += session.communication;
-            acc.technicalAccuracy += session.technicalAccuracy;
-            acc.confidence += session.confidence;
-            return acc;
-        }, { overallScore: 0, communication: 0, technicalAccuracy: 0, confidence: 0 });
-
-        summary.averageOverallScore = Math.round(totals.overallScore / sessions.length);
-        summary.averageCommunication = Math.round(totals.communication / sessions.length);
-        summary.averageTechnicalAccuracy = Math.round(totals.technicalAccuracy / sessions.length);
-        summary.averageConfidence = Math.round(totals.confidence / sessions.length);
-        summary.latestSession = sessions[sessions.length - 1];
-    }
-
-    return { sessions, summary };
-};
-
 router.post('/start', verifyToken, extractAIProvider, aiRateLimiter, validate(startInterviewSchema), asyncHandler(async (req, res) => {
     const { jobRole, industry, experienceLevel, questionCount, resumeText } = req.body;
 
@@ -103,7 +52,7 @@ router.post('/start', verifyToken, extractAIProvider, aiRateLimiter, validate(st
     });
 }));
 
-router.post('/:id([0-9a-fA-F]{24})/answer', verifyToken, extractAIProvider, aiRateLimiter, validate(submitAnswerSchema), asyncHandler(async (req, res) => {
+router.post('/:id/answer', verifyToken, extractAIProvider, aiRateLimiter, validate(submitAnswerSchema), asyncHandler(async (req, res) => {
     const { id } = req.params;
     const { questionId, transcript, duration, expressionMetrics } = req.body;
 
@@ -126,15 +75,7 @@ router.post('/:id([0-9a-fA-F]{24})/answer', verifyToken, extractAIProvider, aiRa
         throw new ApiError(400, 'Question already answered');
     }
 
-    const analysis = await analyzeAnswer(
-        question.question, 
-        transcript, 
-        duration, 
-        req.aiProvider, 
-        interview.contextSummary, 
-        interview.answers.length + 1, 
-        interview.totalQuestionCount
-    );
+    const analysis = await analyzeAnswer(question.question, transcript, duration, req.aiProvider);
 
     const answer = {
         questionId,
@@ -189,11 +130,7 @@ router.post('/:id([0-9a-fA-F]{24})/answer', verifyToken, extractAIProvider, aiRa
     });
 }));
 
-router.post('/:id/answer', verifyToken, asyncHandler(async (req, res) => {
-    throw new ApiError(400, 'Invalid interview ID format');
-}));
-
-router.post('/:id([0-9a-fA-F]{24})/complete', verifyToken, extractAIProvider, aiRateLimiter, asyncHandler(async (req, res) => {
+router.post('/:id/complete', verifyToken, extractAIProvider, aiRateLimiter, asyncHandler(async (req, res) => {
     const { id } = req.params;
 
     const interview = await Interview.findOne({ _id: id, odId: req.user.uid });
