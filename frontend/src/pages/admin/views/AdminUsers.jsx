@@ -3,6 +3,7 @@ import { adminAPI } from '../../../services/api';
 import toast from 'react-hot-toast';
 import { formatDistanceToNow } from 'date-fns';
 import { ChevronLeft, ChevronRight, User as UserIcon } from 'lucide-react';
+import Card from '../../../components/Card';
 
 const AdminUsers = () => {
   const [users, setUsers] = useState([]);
@@ -39,7 +40,7 @@ const AdminUsers = () => {
         </div>
       </div>
 
-      <div className="bg-white dark:bg-gray-800 rounded-xl shadow-sm border border-gray-100 dark:border-gray-700 overflow-hidden">
+      <Card variant="compact" className="overflow-hidden p-0">
         <div className="overflow-x-auto">
           <table className="w-full text-left border-collapse">
             <thead>
@@ -125,7 +126,7 @@ const AdminUsers = () => {
             </div>
           </div>
         )}
-      </div>
+      </Card>
     </div>
   );
 };
