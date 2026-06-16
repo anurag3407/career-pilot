@@ -194,19 +194,6 @@ export const templates = [
     "author": "ShaktiShrey-01",
     "views": 0,
     "rating": 0,
-    "image": "/template-previews/Forensic_investigator_desk.png", 
-    "createdAt": "2026-06-11",
-    "isComplete": true
-  },
-  {
-    "id": "Endless_Runner_Minigame",
-    "title": "Endless Runner Minigame",
-    "category": "Portfolio",
-    "colorScheme": "Dark",
-    "layout": "Interactive",
-    "author": "ShaktiShrey-01",
-    "views": 0,
-    "rating": 0,
     "image": "/template-previews/Endless_Runner_Minigame.png",
     "createdAt": "2026-06-12",
     "isComplete": true
@@ -2738,18 +2725,6 @@ export const templates = [
     "views": 1187,
     "rating": 4.5,
     "image": "/template-previews/Vaporwave.png",
-    "createdAt": "2026-05-01"
-  },
-  {
-    "id": "Vercel_Deploy",
-    "title": "Vercel Deploy",
-    "category": "Portfolio",
-    "colorScheme": "Dark",
-    "layout": "Grid",
-    "author": "System",
-    "views": 1188,
-    "rating": 4.5,
-    "image": "/template-previews/Vercel_Deploy.png",
     "createdAt": "2026-05-01"
   },
   {
