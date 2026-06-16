@@ -121,7 +121,7 @@ export default function Onboarding() {
                 bio: bio.trim() || null
             })
             
-            const cleanupKeys = ['onboarding_step', 'onboarding_companyName', 'onboarding_collegeName', 'onboarding_bio', 'onboarding_email', 'onboarding_code'];
+            const cleanupKeys = ['step', 'companyName', 'collegeName', 'bio', 'email'].map(k => `onboarding_${k}_${userId}`);
             cleanupKeys.forEach(k => localStorage.removeItem(k));
             
             navigate('/fellowship/challenges')

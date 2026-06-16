@@ -1593,3 +1593,16 @@ export const projectVisualizerApi = {
     return handleResponse(response);
   }
 };
+export const adminAPI = {
+  async getStats() {
+    const headers = await getAuthHeaders();
+    const response = await fetch(`${API_BASE}/admin/stats`, { headers });
+    return handleResponse(response);
+  },
+
+  async getUsers(page = 1, limit = 10) {
+    const headers = await getAuthHeaders();
+    const response = await fetch(`${API_BASE}/admin/users?page=${page}&limit=${limit}`, { headers });
+    return handleResponse(response);
+  }
+};

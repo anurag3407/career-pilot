@@ -225,6 +225,11 @@ The JSON object must have exactly the following keys and structure:
   try {
     const provider = req.aiProvider;
     const result = await provider.generateContent(prompt);
+    
+    if (!result || typeof result.text !== 'string') {
+      throw new Error('Invalid response structure from AI provider');
+    }
+    
     let text = result.text.trim();
 
     // Strip markdown JSON fences
