@@ -97,13 +97,21 @@ Rules:
   }));
 };
 
-export const analyzeAnswer = async (question, transcript, duration, aiProvider) => {
+export const analyzeAnswer = async (question, transcript, duration, aiProvider, contextSummary = '', questionIndex = 1, totalQuestionCount = 10) => {
   const cleanQuestion = String(question || '').replace(/"/g, '\\"').replace(/[\r\n]+/g, ' ');
   const cleanTranscript = String(transcript || '').replace(/"/g, '\\"');
+  const cleanContext = String(contextSummary || '').replace(/"/g, '\\"');
 
-  const prompt = `You are a senior interview coach at a top tech company, providing detailed professional feedback on a candidate's interview response.
+  const needsNextQuestion = questionIndex < totalQuestionCount;
 
-QUESTION ASKED: 
+  const prompt = `You are a senior interview coach at a top tech company, providing detailed professional feedback on a candidate's interview response and maintaining the flow of the interview.
+
+PREVIOUS INTERVIEW CONTEXT (Summary of what has been discussed so far):
+<context>
+${cleanContext || "This is the first question of the interview."}
+</context>
+
+QUESTION ASKED (Question ${questionIndex} of ${totalQuestionCount}): 
 <question>
 ${cleanQuestion}
 </question>
@@ -134,7 +142,14 @@ Analyze this response thoroughly and return ONLY valid JSON with this exact stru
     "count": <number of filler words detected>,
     "words": ["<filler word 1>", "<filler word 2>"]
   },
-  "keyTakeaway": "<One sentence summary of the most important thing to improve for next time>"
+  "keyTakeaway": "<One sentence summary of the most important thing to improve for next time>",
+  "newContextSummary": "<Provide a brief, updated summary (2-3 sentences) of the interview so far. Include key points from previous context and this new response. This helps the AI remember the conversation state.>",
+  ${needsNextQuestion ? `"nextQuestion": {
+    "question": "<Generate the next logical interview question based on the context and the candidate's last answer. It can be a follow-up or move to a new topic>",
+    "type": "<behavioral/technical/situational/general/resume-based>",
+    "difficulty": "<easy/medium/hard>",
+    "source": "<context/general>"
+  }` : `"nextQuestion": null`}
 }
 
 CRITICAL RULES:
@@ -144,7 +159,8 @@ CRITICAL RULES:
 4. Identify concrete strengths and gaps in the response
 5. For whatWasMissing, focus on content gaps, not delivery
 6. Detect filler words: "um", "uh", "like", "you know", "basically", "actually", "so", "I mean"
-7. Score fairly: 90+ = exceptional, 70-89 = good, 50-69 = needs work, <50 = significant gaps`;
+7. Score fairly: 90+ = exceptional, 70-89 = good, 50-69 = needs work, <50 = significant gaps
+8. The newContextSummary should accurately capture the flow of the conversation so far.`;
 
   const provider = aiProvider || getDefaultProvider();
   const result = await provider.generateContent(prompt);

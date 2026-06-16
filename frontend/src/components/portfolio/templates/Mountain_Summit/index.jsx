@@ -1,10 +1,10 @@
+import { usePortfolio } from "../../../../context/PortfolioContext";
 import React, { useState, useEffect } from 'react';
 import { motion } from 'framer-motion';
 import {
   MapPin, Mail, Github, Linkedin, Twitter, ExternalLink,
   Mountain, Wind, Star, ChevronDown, Award, Briefcase, User
 } from 'lucide-react';
-import data from '../../../../data/dummy_data.json';
 
 const fadeUp = {
   hidden: { opacity: 0, y: 40 },
@@ -134,7 +134,9 @@ const About = ({ data }) => (
 );
 
 // Skills Section
-const Skills = ({ data }) => {
+const Skills = () => {
+  const { portfolioData: data } = usePortfolio();
+
   const categories = [...new Set(data.skills.map(s => s.category))];
   return (
     <section id="skills" className="py-24 bg-amber-50 text-stone-800 relative">
@@ -344,6 +346,8 @@ const Contact = ({ data }) => (
 
 // Main Component
 export default function MountainSummit() {
+  const { portfolioData: data } = usePortfolio();
+
   const [scrollProgress, setScrollProgress] = useState(0);
 
   useEffect(() => {

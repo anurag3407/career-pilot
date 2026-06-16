@@ -1,4 +1,6 @@
 import express from 'express';
+import rateLimit from 'express-rate-limit';
+import { asyncHandler } from '../middleware/errorHandler.js';
 import bcrypt from 'bcryptjs';
 import { asyncHandler, ApiError } from '../middleware/errorHandler.js';
 import { verifyToken } from '../middleware/auth.js';
@@ -17,6 +19,19 @@ import { exchangeCodeForToken, getLinkedInAuthUrl, getLinkedInProfile } from '..
 import User from '../models/User.model.js';
 import admin from '../config/firebase.js';
 import crypto from 'crypto';
+
+// Rate limiter for the one-time LinkedIn token exchange endpoint.
+// 10 attempts per minute per IP prevents any realistic brute-force window
+// while still accommodating legitimate OAuth retries.
+const linkedinTokenExchangeLimiter = rateLimit({
+  windowMs: 60 * 1000,
+  max: 10,
+  standardHeaders: true,
+  legacyHeaders: false,
+  handler: (_req, res) => {
+    res.status(429).json({ success: false, error: 'Too many requests. Please try again later.' });
+  },
+});
 
 const router = express.Router();
 
@@ -160,7 +175,7 @@ setInterval(() => {
   }
 }, 10 * 60 * 1000).unref();
 
-
+// Sweep expired linkedInTokenStore entries every 60 seconds
 
 // Verify token endpoint — loginProtection tracks failed attempts per IP
 // and locks out after 5 consecutive failures for 15 minutes.
@@ -308,9 +323,15 @@ router.get('/linkedin/callback', asyncHandler(async (req, res) => {
   res.redirect(`${frontendUrl}/auth/linkedin/callback?code=${exchangeCode}`);
 }));
 
+// One-time token exchange endpoint — the frontend calls this immediately after the OAuth
+// redirect to retrieve the Firebase custom token without it appearing in a URL,
+// server access log, browser history, or Referer header.
+// No verifyToken here — the user is mid-authentication and has no Firebase token yet.
+// The exchange code (192-bit entropy, 60-sec TTL, single-use) is the security boundary.
+
 // One-time token exchange endpoint — frontend calls this after LinkedIn OAuth redirect
 // instead of receiving the Firebase custom token in the URL.
-router.get('/linkedin/token/:code', asyncHandler(async (req, res) => {
+router.get('/linkedin/token/:code', linkedinTokenExchangeLimiter, asyncHandler(async (req, res) => {
   const { code } = req.params;
   const entry = tokenStore.get(code);
   if (!entry || Date.now() > entry.expiresAt) {

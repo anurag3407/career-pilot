@@ -1,3 +1,4 @@
+import { usePortfolio } from "../../../../context/PortfolioContext";
 import React, { useState, useRef, useCallback, useEffect } from 'react';
 import { motion, AnimatePresence } from 'framer-motion';
 import {
@@ -8,7 +9,6 @@ import {
   Briefcase, Star, Quote, Send, Layers, Code2,
   Sparkles, Globe, Calendar, Maximize
 } from 'lucide-react';
-import data from '../../../../data/dummy_data.json';
 
 const ALLOWED_PROTOCOLS = ['http:', 'https:', 'mailto:'];
 const safeUrl = (url) => {
@@ -47,6 +47,8 @@ const tools = [
 ];
 
 function FigmaLogo() {
+  const { portfolioData: data } = usePortfolio();
+
   return (
     <svg width="20" height="30" viewBox="0 0 38 57" fill="none" xmlns="http://www.w3.org/2000/svg">
       <path d="M19 28.5C19 23.2533 23.2533 19 28.5 19C33.7467 19 38 23.2533 38 28.5C38 33.7467 33.7467 38 28.5 38C23.2533 38 19 33.7467 19 28.5Z" fill="#1ABCFE"/>
@@ -59,6 +61,8 @@ function FigmaLogo() {
 }
 
 function ToolbarButton({ icon: Icon, label, isActive, onClick }) {
+  const { portfolioData: data } = usePortfolio();
+
   return (
     <button
       onClick={onClick}
@@ -75,6 +79,8 @@ function ToolbarButton({ icon: Icon, label, isActive, onClick }) {
 }
 
 function CanvasFrame({ id, label, color, children, isSelected, onClick, style }) {
+  const { portfolioData: data } = usePortfolio();
+
   return (
     <div
       id={`frame-${id}`}
@@ -113,6 +119,8 @@ function CanvasFrame({ id, label, color, children, isSelected, onClick, style })
 }
 
 function LayerItem({ label, color, isSelected, isVisible, onClick, onToggleVisibility, hasChildren = false, isExpanded = true, onToggleExpanded, depth = 0 }) {
+  const { portfolioData: data } = usePortfolio();
+
   return (
     <div
       className={`flex items-center gap-1.5 px-2 py-1 text-xs cursor-pointer transition-colors rounded-sm ${
@@ -144,6 +152,8 @@ function LayerItem({ label, color, isSelected, isVisible, onClick, onToggleVisib
 }
 
 function SkillBar({ name, level, color }) {
+  const { portfolioData: data } = usePortfolio();
+
   return (
     <div className="flex items-center gap-2">
       <span className="text-xs text-[#b3b3b3] w-24 truncate">{name}</span>
@@ -162,6 +172,8 @@ function SkillBar({ name, level, color }) {
 }
 
 function ProjectCard({ project, index }) {
+  const { portfolioData: data } = usePortfolio();
+
   const colors = [FIGMA_BLUE, FIGMA_PURPLE, FIGMA_GREEN, FIGMA_ORANGE];
   const color = colors[index % colors.length];
 
@@ -228,6 +240,8 @@ const MAX_ZOOM = 3;
 const ZOOM_SENSITIVITY = 0.001;
 
 export default function FigmaCanvas() {
+  const { portfolioData: data } = usePortfolio();
+
   const [activeTool, setActiveTool] = useState(0);
   const [selectedFrame, setSelectedFrame] = useState('hero');
   const [showLayers, setShowLayers] = useState(true);
