@@ -178,10 +178,21 @@ export default function Navbar() {
                   placeholder="Search anything..."
                   value={searchQuery}
                   onChange={(e) => setSearchQuery(e.target.value)}
-                  onFocus={() => openSearchDropdown()}
+                  onFocus={() => {
+                    if (searchBlurTimeoutRef.current) {
+                      clearTimeout(searchBlurTimeoutRef.current)
+                      searchBlurTimeoutRef.current = null
+                    }
+                    openSearchDropdown()
+                  }}
                   onBlur={() => {
-                    // Use setTimeout with proper state isolation - no race condition
-                    setTimeout(() => setSearchDropdownOpen(false), 200)
+                    if (searchBlurTimeoutRef.current) {
+                      clearTimeout(searchBlurTimeoutRef.current)
+                    }
+                    searchBlurTimeoutRef.current = setTimeout(() => {
+                      setSearchDropdownOpen(false)
+                      searchBlurTimeoutRef.current = null
+                    }, 200)
                   }}
                   className="bg-transparent outline-none text-sm w-full text-foreground placeholder:text-muted-foreground"
                 />
