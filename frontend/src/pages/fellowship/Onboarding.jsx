@@ -1,6 +1,7 @@
 import { useState } from 'react'
 import { useNavigate } from 'react-router-dom'
 import { useAuth } from '../../hooks/useAuth'
+import { useLocalStorage } from '../../hooks/useLocalStorage'
 import { fellowshipApi } from '../../services/api'
 import toast from 'react-hot-toast'
 import { motion } from 'framer-motion'
@@ -20,11 +21,12 @@ const MotionButton = motion.button
 export default function Onboarding() {
     const { user } = useAuth()
     const navigate = useNavigate()
-    const [step, setStep] = useState('role')
-    const [companyName, setCompanyName] = useState('')
-    const [collegeName, setCollegeName] = useState('')
-    const [bio, setBio] = useState('')
-    const [email, setEmail] = useState(user?.email || '')
+    const userId = user?._id || 'anon'
+    const [step, setStep] = useLocalStorage(`onboarding_step_${userId}`, 'role')
+    const [companyName, setCompanyName] = useLocalStorage(`onboarding_companyName_${userId}`, '')
+    const [collegeName, setCollegeName] = useLocalStorage(`onboarding_collegeName_${userId}`, '')
+    const [bio, setBio] = useLocalStorage(`onboarding_bio_${userId}`, '')
+    const [email, setEmail] = useLocalStorage(`onboarding_email_${userId}`, user?.email || '')
     const [verificationCode, setVerificationCode] = useState('')
     const [loading, setLoading] = useState(false)
 
@@ -50,7 +52,12 @@ export default function Onboarding() {
                 bio: bio.trim() || null
             })
             toast.success('Profile created!')
+            
             navigate('/fellowship/challenges')
+            setTimeout(() => {
+                const cleanupKeys = ['step', 'companyName', 'collegeName', 'bio', 'email'].map(k => `onboarding_${k}_${userId}`);
+                cleanupKeys.forEach(k => localStorage.removeItem(k));
+            }, 100);
         } catch (error) {
             toast.error(error.message || 'Failed to save profile')
         } finally {
@@ -92,7 +99,12 @@ export default function Onboarding() {
             await fellowshipApi.confirmVerification(verificationCode)
             toast.success('Verified successfully!')
             setStep('success')
-            setTimeout(() => navigate('/fellowship/challenges'), 1500)
+            
+            setTimeout(() => {
+                const cleanupKeys = ['step', 'companyName', 'collegeName', 'bio', 'email'].map(k => `onboarding_${k}_${userId}`);
+                cleanupKeys.forEach(k => localStorage.removeItem(k));
+                navigate('/fellowship/challenges')
+            }, 1500)
         } catch (error) {
             toast.error(error.message || 'Invalid code')
         } finally {
@@ -108,6 +120,10 @@ export default function Onboarding() {
                 collegeName: collegeName.trim() || null,
                 bio: bio.trim() || null
             })
+            
+            const cleanupKeys = ['step', 'companyName', 'collegeName', 'bio', 'email'].map(k => `onboarding_${k}_${userId}`);
+            cleanupKeys.forEach(k => localStorage.removeItem(k));
+            
             navigate('/fellowship/challenges')
         } catch (error) {
             toast.error(error.message || 'Failed to save profile')

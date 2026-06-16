@@ -292,8 +292,8 @@ useEffect(() => {
 
                                 <SidebarLink
                                     link={{
-                                        label: "Career Trajectory",
-                                        href: "/career-path",
+                                        label: "Career Simulator",
+                                        href: "/career-simulator",
                                         icon: <Brain className="w-4 h-4 shrink-0" />,
                                     }}
                                     onClick={() => setOpen(false)}

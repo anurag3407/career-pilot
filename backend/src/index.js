@@ -38,6 +38,7 @@ import bullBoardRoutes from './routes/bullBoard.js';
 import inputRoutes from'./routes/input.route.js';
 import recruiterRoutes from '../src/routes/recruiter.routes.js';
 import outreachRoutes from './routes/outreach.route.js';
+import careerSimulationRoutes from './routes/careerSimulation.js';
 
 import { globalErrorHandler } from './middleware/globalErrorHandler.js';
 import {
@@ -304,10 +305,7 @@ app.use('/api/auth/2fa', twoFactorRoutes);
 app.use('/api/search', searchRoutes);
 app.use('/api/ai', aiRoutes);
 app.use('/api/email-tracking', emailTrackingRoutes);
-app.use('/api/analyzer', repoAnalyzerRoutes);
-app.use('/api/project-visualizer', projectVisualizerRoutes);
-app.use('/api/admin', adminRoutes);
-app.use('/api/admin/queues', bullBoardRoutes);
+app.use('/api/career-simulations', careerSimulationRoutes);
 
 app.use((req, res) => {
   res.status(404).json({ error: 'Route not found' });

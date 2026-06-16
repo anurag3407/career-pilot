@@ -1488,150 +1488,111 @@ export const notificationApi = {
   }
 }
 
-// ============ ANALYZER API ============
-export const analyzerApi = {
-  async ingest(repoUrl) {
+// ============ CAREER SIMULATION API ============
+export const careerSimulationApi = {
+  async getAll() {
     const headers = await getAuthHeaders()
-    const response = await fetch(`${API_BASE}/analyzer/ingest`, {
+    const response = await fetch(`${API_BASE}/career-simulations`, {
+      method: 'GET',
+      headers
+    })
+    return handleResponse(response)
+  },
+
+  async getById(id) {
+    const headers = await getAuthHeaders()
+    const response = await fetch(`${API_BASE}/career-simulations/${id}`, {
+      method: 'GET',
+      headers
+    })
+    return handleResponse(response)
+  },
+
+  async create(data) {
+    const headers = await getAuthHeaders()
+    const response = await fetch(`${API_BASE}/career-simulations`, {
       method: 'POST',
       headers,
-      body: JSON.stringify({ repoUrl })
+      body: JSON.stringify(data)
     })
     return handleResponse(response)
   },
 
-  async getHistory() {
+  async delete(id) {
     const headers = await getAuthHeaders()
-    const response = await fetch(`${API_BASE}/analyzer/history`, {
-      method: 'GET',
-      headers
-    })
-    return handleResponse(response)
-  },
-
-  async getFileContent(sessionId, filePath) {
-    const headers = await getAuthHeaders()
-    const response = await fetch(`${API_BASE}/analyzer/file-content?sessionId=${encodeURIComponent(sessionId)}&filePath=${encodeURIComponent(filePath)}`, {
-      method: 'GET',
-      headers
-    })
-    
-    if (!response.ok) {
-      throw new Error(`Server error (${response.status})`)
-    }
-    
-    return response.text()
-  },
-  
-  // Note: chat streams directly via SSE, so we'll handle fetch in the component directly
-}
-
-// ============ PROJECT VISUALIZER API ============
-export const projectVisualizerApi = {
-  async analyze(repoUrl) {
-    const headers = await getAuthHeaders()
-    const response = await fetch(`${API_BASE}/project-visualizer/analyze`, {
-      method: 'POST',
-      headers,
-      body: JSON.stringify({ repoUrl })
-    })
-    return handleResponse(response)
-  },
-
-  async getAnalysis(sessionId) {
-    const headers = await getAuthHeaders()
-    const response = await fetch(`${API_BASE}/project-visualizer/analysis/${sessionId}`, {
-      method: 'GET',
-      headers
-    })
-    return handleResponse(response)
-  },
-
-  async getFileContent(sessionId, filePath) {
-    const headers = await getAuthHeaders()
-    const response = await fetch(`${API_BASE}/project-visualizer/analysis/${sessionId}/file?path=${encodeURIComponent(filePath)}`, {
-      method: 'GET',
-      headers
-    })
-    if (!response.ok) throw new Error(`Server error (${response.status})`)
-    return response.text()
-  },
-
-  async getContributors(sessionId) {
-    const headers = await getAuthHeaders()
-    const response = await fetch(`${API_BASE}/project-visualizer/analysis/${sessionId}/contributors`, {
-      method: 'GET',
-      headers
-    })
-    return handleResponse(response)
-  },
-
-  async getCommits(sessionId) {
-    const headers = await getAuthHeaders()
-    const response = await fetch(`${API_BASE}/project-visualizer/analysis/${sessionId}/commits`, {
-      method: 'GET',
-      headers
-    })
-    return handleResponse(response)
-  },
-
-  async askModule(sessionId, modulePath, question) {
-    const headers = await getAuthHeaders()
-    const response = await fetch(`${API_BASE}/project-visualizer/analysis/${sessionId}/ask-module`, {
-      method: 'POST',
-      headers,
-      body: JSON.stringify({ modulePath, question })
-    })
-    return handleResponse(response)
-  },
-
-  async getHistory() {
-    const headers = await getAuthHeaders()
-    const response = await fetch(`${API_BASE}/project-visualizer/history`, {
-      method: 'GET',
-      headers
-    })
-    return handleResponse(response)
-  },
-
-  async deleteHistory(id) {
-    const headers = await getAuthHeaders()
-    const response = await fetch(`${API_BASE}/project-visualizer/history/${id}`, {
+    const response = await fetch(`${API_BASE}/career-simulations/${id}`, {
       method: 'DELETE',
       headers
     })
     return handleResponse(response)
   },
 
-  async explainFile(sessionId, filePath) {
+  async getStats() {
     const headers = await getAuthHeaders()
-    const response = await fetch(`${API_BASE}/project-visualizer/analysis/${sessionId}/explain-file`, {
-      method: 'POST',
-      headers,
-      body: JSON.stringify({ filePath })
-    })
-    return handleResponse(response)
-  },
-
-  async getInterviewQuestions(sessionId) {
-    const headers = await getAuthHeaders()
-    const response = await fetch(`${API_BASE}/project-visualizer/analysis/${sessionId}/interview-prep`, {
-      method: 'POST',
+    const response = await fetch(`${API_BASE}/career-simulations/stats`, {
+      method: 'GET',
       headers
     })
     return handleResponse(response)
-  },
-
-  async getContributionGuide(sessionId) {
-    const headers = await getAuthHeaders()
-    const response = await fetch(`${API_BASE}/project-visualizer/analysis/${sessionId}/contribution-guide`, {
-      method: 'POST',
-      headers
-    })
-    return handleResponse(response)
-  },
+  }
 }
 
+export const analyzerApi = {
+  async getHistory() {
+    const headers = await getAuthHeaders();
+    const response = await fetch(`${API_BASE}/analyzer/history`, {
+      method: 'GET',
+      headers
+    });
+    return handleResponse(response);
+  },
+  async ingest(url) {
+    const headers = await getAuthHeaders();
+    const response = await fetch(`${API_BASE}/analyzer/ingest`, {
+      method: 'POST',
+      headers,
+      body: JSON.stringify({ url })
+    });
+    return handleResponse(response);
+  }
+};
+
+export const projectVisualizerApi = {
+  async getAnalysis(id) {
+    const headers = await getAuthHeaders();
+    const response = await fetch(`${API_BASE}/project-visualizer/analysis/${id}`, { method: 'GET', headers });
+    return handleResponse(response);
+  },
+  async getContributors(id) {
+    const headers = await getAuthHeaders();
+    const response = await fetch(`${API_BASE}/project-visualizer/contributors/${id}`, { method: 'GET', headers });
+    return handleResponse(response);
+  },
+  async getCommits(id) {
+    const headers = await getAuthHeaders();
+    const response = await fetch(`${API_BASE}/project-visualizer/commits/${id}`, { method: 'GET', headers });
+    return handleResponse(response);
+  },
+  async getHistory() {
+    const headers = await getAuthHeaders();
+    const response = await fetch(`${API_BASE}/project-visualizer/history`, { method: 'GET', headers });
+    return handleResponse(response);
+  },
+  async deleteHistory(id) {
+    const headers = await getAuthHeaders();
+    const response = await fetch(`${API_BASE}/project-visualizer/history/${id}`, { method: 'DELETE', headers });
+    return handleResponse(response);
+  },
+  async analyze(url) {
+    const headers = await getAuthHeaders();
+    const response = await fetch(`${API_BASE}/project-visualizer/analyze`, {
+      method: 'POST',
+      headers,
+      body: JSON.stringify({ url })
+    });
+    return handleResponse(response);
+  }
+};
 export const adminAPI = {
   async getStats() {
     const headers = await getAuthHeaders();

@@ -13,6 +13,7 @@
 import { test, describe } from 'node:test';
 import assert from 'node:assert/strict';
 import { z } from 'zod';
+import { startCareerSimulationSchema } from '../careerSimulation.schema.js';
 
 // ─── Auth ────────────────────────────────────────────────────────────────────
 import {
@@ -50,7 +51,7 @@ describe('auth.schema — updateNotificationPrefsSchema', () => {
 });
 
 describe('auth.schema — registerSchema', () => {
-  const valid = { name: 'Alice Example', email: 'alice@example.com', password: 'Passw0rdTest' };
+  const valid = { name: 'Alice Example', email: 'alice@example.com', password: 'Valid123Mock' };
 
   test('accepts a fully valid registration body', () => {
     const result = registerSchema.safeParse(valid);
@@ -197,7 +198,7 @@ describe('auth.schema — forgotPasswordSchema', () => {
 });
 
 describe('auth.schema — resetPasswordSchema', () => {
-  const valid = { token: 'a'.repeat(64), newPassword: 'Passw0rdTest' };
+  const valid = { token: 'a'.repeat(64), newPassword: 'Valid123Mock' };
 
   test('accepts a valid reset payload', () => {
     const result = resetPasswordSchema.safeParse(valid);
@@ -205,7 +206,7 @@ describe('auth.schema — resetPasswordSchema', () => {
   });
 
   test('rejects a missing token', () => {
-    const result = resetPasswordSchema.safeParse({ newPassword: 'Passw0rdTest' });
+    const result = resetPasswordSchema.safeParse({ newPassword: 'Valid123Mock' });
     assert.ok(!result.success);
     assert.ok(result.error.issues.some((e) => e.path[0] === 'token'));
   });
@@ -799,5 +800,43 @@ describe('validate middleware', () => {
       assert.equal(req.query.name, 'Bob');
       done();
     });
+  });
+});
+
+describe('careerSimulation.schema — startCareerSimulationSchema', () => {
+  test('accepts valid input', () => {
+    const result = startCareerSimulationSchema.safeParse({
+      resumeId: '60c72b2f9b1d8b2badcf5012',
+      jobRole: 'Frontend Developer',
+      experienceLevel: 'entry'
+    });
+    assert.ok(result.success);
+  });
+
+  test('rejects invalid resumeId', () => {
+    const result = startCareerSimulationSchema.safeParse({
+      resumeId: 'invalid-id',
+      jobRole: 'Frontend Developer',
+      experienceLevel: 'entry'
+    });
+    assert.ok(!result.success);
+  });
+
+  test('rejects invalid experienceLevel', () => {
+    const result = startCareerSimulationSchema.safeParse({
+      resumeId: '60c72b2f9b1d8b2badcf5012',
+      jobRole: 'Frontend Developer',
+      experienceLevel: 'super-senior'
+    });
+    assert.ok(!result.success);
+  });
+
+  test('rejects empty jobRole', () => {
+    const result = startCareerSimulationSchema.safeParse({
+      resumeId: '60c72b2f9b1d8b2badcf5012',
+      jobRole: '',
+      experienceLevel: 'entry'
+    });
+    assert.ok(!result.success);
   });
 });
