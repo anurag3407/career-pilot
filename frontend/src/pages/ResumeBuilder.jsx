@@ -12,12 +12,14 @@ import { toast } from 'react-hot-toast'
 import { cn } from '@/lib/utils'
 import AchievementEnhancer from "../components/resume/AchievementEnhancer";
 import PhoneInput from '../components/PhoneInput'
+import { getSectionOrderSuggestions } from "../utils/sectionReorderAnalyzer";
 import {
   validatePersonalStep,
   validateEducationStep,
   validateExperienceStep,
   hasErrors,
 } from '../utils/resumeValidation'
+import { analyzeResumeTone } from "../utils/toneAnalyzer";
 
 const STEPS = [
   { id: 'personal',   title: 'Personal Info', icon: User },
@@ -54,6 +56,10 @@ export default function ResumeBuilder() {
   const [claritySuggestions, setClaritySuggestions] = useState([])
   const [achievementScore, setAchievementScore] = useState(0)
   const [achievementSuggestions, setAchievementSuggestions] = useState([])
+  const [toneScore, setToneScore] = useState(100)
+  const [toneSuggestions, setToneSuggestions] = useState([])
+  const [sectionSuggestions, setSectionSuggestions] = useState([]);
+  
 
   // ── form state ──────────────────────────────────────────────────────────────
   const [personal, setPersonal] = useState({
@@ -81,6 +87,33 @@ export default function ResumeBuilder() {
   const [selectedVersion, setSelectedVersion] = useState(null)
   
   const [recommendedSkills, setRecommendedSkills] = useState([])
+  const [profileScore, setProfileScore] = useState(0)
+  const [recommendedCertifications, setRecommendedCertifications] = useState([])
+  const [profileIssues, setProfileIssues] = useState([])
+  const [impactScores, setImpactScores] = useState({
+  experience: 0,
+  projects: 0,
+  skills: 0,
+  education: 0,
+  achievements: 0
+})
+const [careerGoals, setCareerGoals] = useState([
+  {
+    title: "Complete Resume",
+    completed: false
+  },
+  {
+    title: "Add Projects",
+    completed: false
+  },
+  {
+    title: "Improve ATS Score",
+    completed: false
+  }
+])
+
+const [goalProgress, setGoalProgress] = useState(0)
+
   useEffect(() => {
   const suggestions = []
   let score = 100
@@ -140,50 +173,267 @@ export default function ResumeBuilder() {
   setClaritySuggestions(suggestions)
 }, [personal, experience, projects])
 
-  // ─────────────────── ATS Keyword Assessment Loop ───────────────────
-  useEffect(() => {
-    const keywords = [
-      "React",
-      "JavaScript",
-      "Git",
-      "Node.js",
-      "API",
-      "Leadership",
-      "Teamwork",
-      "Problem Solving"
-    ]
+useEffect(() => {
+  const content = [
+    personal.summary,
+    ...experience.map(e => e.description),
+    ...projects.map(p => p.description)
+  ].join(" ").toLowerCase()
 
-    const resumeText = `
-      ${personal?.summary || ''}
-      ${skills || ''}
-      ${(projects || []).map(p => p.description || '').join(" ")}
-      ${(experience || []).map(e => e.description || '').join(" ")}
-    `.toLowerCase()
+  let score = 100
+  const suggestions = []
 
-    const foundKeywords = keywords.filter(keyword =>
-      resumeText.includes(keyword.toLowerCase())
+  const weakPhrases = {
+    "helped": "contributed to",
+    "worked on": "developed",
+    "stuff": "tasks",
+    "things": "responsibilities",
+    "awesome": "exceptional",
+    "cool": "innovative"
+  }
+
+  Object.entries(weakPhrases).forEach(([weak, professional]) => {
+    if (content.includes(weak)) {
+      score -= 10
+      suggestions.push(
+        `Replace "${weak}" with "${professional}"`
+      )
+    }
+  })
+
+  if (
+    !content.match(
+      /developed|implemented|created|led|optimized|improved/i
     )
+  ) {
+    score -= 15
+    suggestions.push(
+      "Use stronger professional action verbs."
+    )
+  }
 
-  setAtsScore(
+  setToneScore(Math.max(score, 0))
+  setToneSuggestions(suggestions)
+}, [personal, experience, projects])
+
+useEffect(() => {
+  setImpactScores({
+    experience:
+      experience.some(
+        e =>
+          e.description &&
+          e.description.length > 50
+      )
+        ? 90
+        : 40,
+
+    projects:
+      projects.some(
+        p =>
+          p.description &&
+          p.description.length > 50
+      )
+        ? 80
+        : 30,
+
+    skills:
+      skills.trim().length > 20
+        ? 75
+        : 25,
+
+    education:
+      education.some(e => e.school)
+        ? 70
+        : 20,
+
+    achievements:
+      achievementScore
+  })
+}, [
+  experience,
+  projects,
+  skills,
+  education,
+  achievementScore
+])
+
+useEffect(() => {
+  const updatedGoals = [
+    {
+      title: "Complete Resume",
+      completed: resumeScore >= 100
+    },
+    {
+      title: "Add Projects",
+      completed: projects.some(
+        p => p.name.trim()
+      )
+    },
+    {
+      title: "Improve ATS Score",
+      completed: atsScore >= 80
+    }
+  ]
+
+  setCareerGoals(updatedGoals)
+
+  const completed =
+    updatedGoals.filter(
+      g => g.completed
+    ).length
+
+  setGoalProgress(
     Math.round(
-      (foundKeywords.length / keywords.length) * 100
+      (completed / updatedGoals.length) * 100
     )
   )
-}, [
-  personal,
-  skills,
-  projects,
-  experience,
-  keywords,
-  foundKeywords.length
-])
+}, [resumeScore, projects, atsScore])
+
+useEffect(() => {
+  let score = 100
+  const issues = []
+
+  if (!personal.linkedin) {
+    score -= 30
+    issues.push("LinkedIn profile missing")
+  }
+
+  if (!personal.github) {
+    score -= 30
+    issues.push("GitHub profile missing")
+  }
+
+  if (!personal.portfolio) {
+    score -= 20
+    issues.push("Portfolio website missing")
+  }
+
+  if (
+    personal.linkedin &&
+    !personal.linkedin.includes("linkedin.com")
+  ) {
+    score -= 10
+    issues.push("Invalid LinkedIn URL")
+  }
+
+  if (
+    personal.github &&
+    !personal.github.includes("github.com")
+  ) {
+    score -= 10
+    issues.push("Invalid GitHub URL")
+  }
+
+  setProfileScore(Math.max(score, 0))
+  setProfileIssues(issues)
+}, [personal])
+
+const normalizedSkills = React.useMemo(() => {
+  if (typeof skills === "string") {
+    return skills.split(",").map(skill => skill.trim()).filter(Boolean);
+  }
+  if (Array.isArray(skills)) {
+    return skills
+      .map(skill => String(skill).trim())
+      .filter(Boolean);
+  }
+  return [];
+}, [skills]);
 
 // ─────────────────── CONSOLIDATED ATS ASSESSMENT LOOP ───────────────────
 useEffect(() => {
+  const certs = []
+
+  const role = targetRole.toLowerCase()
+  const skillText = skills.toLowerCase()
+
+  // Frontend
+  if (
+    role.includes("frontend") ||
+    skillText.includes("react") ||
+    skillText.includes("javascript")
+  ) {
+    certs.push(
+      "Meta Front-End Developer Professional Certificate"
+    )
+  }
+
+  // Backend
+  if (
+    role.includes("backend") ||
+    skillText.includes("node") ||
+    skillText.includes("express")
+  ) {
+    certs.push(
+      "IBM Back-End Development Professional Certificate"
+    )
+  }
+
+  // Full Stack
+  if (
+    role.includes("full stack")
+  ) {
+    certs.push(
+      "IBM Full Stack Software Developer Professional Certificate"
+    )
+  }
+
+  // Data Science
+  if (
+    role.includes("data scientist") ||
+    role.includes("data analyst") ||
+    skillText.includes("python")
+  ) {
+    certs.push(
+      "Google Data Analytics Professional Certificate"
+    )
+
+    certs.push(
+      "IBM Data Science Professional Certificate"
+    )
+  }
+
+  // Cloud
+  if (
+    role.includes("cloud") ||
+    skillText.includes("aws")
+  ) {
+    certs.push(
+      "AWS Certified Cloud Practitioner"
+    )
+  }
+
+  // DevOps
+  if (
+    role.includes("devops") ||
+    skillText.includes("docker")
+  ) {
+    certs.push(
+      "Docker Certified Associate"
+    )
+
+    certs.push(
+      "AWS DevOps Engineer"
+    )
+  }
+
+  // Cyber Security
+  if (
+    role.includes("security") ||
+    role.includes("cyber")
+  ) {
+    certs.push(
+      "CompTIA Security+"
+    )
+  }
+
+  setRecommendedCertifications([...new Set(certs)])
+}, [targetRole, skills])
+useEffect(() => {
   // 1. Gather all inputs into a clean string representation
-  const resumeText = `${personal?.summary || ''} ${skills?.join(' ') || ''} ${
-    projects?.map(p => `${p.title} ${p.description}`).join(' ') || ''
-  } ${experience?.map(e => `${e.role} ${e.description}`).join(' ') || ''}`.toLowerCase();
+  const resumeText = `${personal?.summary || ''} ${normalizedSkills.join(' ')} ${
+  projects?.map(p => `${p.name} ${p.description}`).join(' ') || ''
+} ${experience?.map(e => `${e.title} ${e.description}`).join(' ') || ''}`.toLowerCase();
 
   // 2. Define assessment target keywords (moved to component/effect scope correctly)
   const baseKeywords = ["react", "node.js", "javascript", "typescript", "python", "docker", "aws", "git", "ci/cd", "rest api"];
@@ -205,8 +455,7 @@ useEffect(() => {
   const score = baseKeywords.length > 0 ? Math.round((found.length / baseKeywords.length) * 100) : 0;
   setAtsScore(score);
 
-}, [personal, skills, projects, experience]); // Removed out-of-scope internal variables!
-
+}, [personal, normalizedSkills, projects, experience]);
   // ─────────────────── Live Consistency Memoized Engine ───────────────────
   const activeConsistencyWarnings = React.useMemo(() => {
     const allExperienceDates = (experience || []).flatMap(exp => [exp.startDate, exp.endDate]);
@@ -231,18 +480,6 @@ useEffect(() => {
       ...redundancyValidationErrors
     ];
   }, [experience, education, projects]);
-
-  const saveVersion = React.useCallback(() => {
-    const newVersion = {
-      id: Date.now(),
-      timestamp: new Date().toLocaleString(),
-      content: typeof generateMarkdown === 'function' ? generateMarkdown() : "",
-    };
-    setResumeVersions(prev => [newVersion, ...prev]);
-    if (typeof toast !== 'undefined') {
-      toast.success("Resume version layout tracked successfully!");
-    }
-  }, [experience, education, projects, personal, skills, generateMarkdown]);
 
   const restoreVersion = React.useCallback((version) => {
     setSelectedVersion(version);
@@ -450,6 +687,17 @@ useEffect(() => {
     return md
   }
 
+  const saveVersion = React.useCallback(() => {
+    const newVersion = {
+      id: Date.now(),
+      timestamp: new Date().toLocaleString(),
+      content: typeof generateMarkdown === 'function' ? generateMarkdown() : "",
+    };
+    setResumeVersions(prev => [newVersion, ...prev]);
+    if (typeof toast !== 'undefined') {
+      toast.success("Resume version layout tracked successfully!");
+    }
+  }, [experience, education, projects, personal, skills, generateMarkdown]);
 
   const handleGenerate = async () => {
     try {
@@ -600,6 +848,23 @@ useEffect(() => {
                 />
                 <FieldError msg={personalErrors.github} />
               </div>
+            </div>
+
+            {/* Portfolio */}
+            <div>
+              <label className="block text-sm font-medium mb-1">
+                Portfolio URL
+              </label>
+
+              <input
+                type="url"
+                className={inputCls('portfolio')}
+                value={personal.portfolio}
+                onChange={e =>
+                  updatePersonal('portfolio', e.target.value)
+                }
+                placeholder="https://yourportfolio.com"
+              />
             </div>
 
             {/* Summary */}
@@ -982,6 +1247,33 @@ useEffect(() => {
   </span>
 </div>
 
+<div className="mb-6 p-4 rounded-xl border border-border bg-muted">
+
+  <h3 className="font-semibold mb-3">
+    Smart Certification Recommendations
+  </h3>
+
+  {recommendedCertifications.length > 0 ? (
+    <div className="flex flex-wrap gap-2">
+
+      {recommendedCertifications.map(cert => (
+        <span
+          key={cert}
+          className="px-3 py-1 rounded-full bg-blue-500/20 text-blue-400 text-sm"
+        >
+          {cert}
+        </span>
+      ))}
+
+    </div>
+  ) : (
+    <p className="text-sm text-muted-foreground">
+      Add skills and target role to receive certification recommendations.
+    </p>
+  )}
+
+</div>
+
     <span className="text-primary font-bold">
       {atsScore}% Match
     </span>
@@ -1010,6 +1302,20 @@ useEffect(() => {
         </span>
       ))}
     </div>
+  </div>
+)}
+
+{sectionSuggestions.length > 0 && (
+  <div className="mb-6 p-4 rounded-xl border border-border bg-muted">
+    <h3 className="font-semibold mb-3">
+      Resume Section Reordering Suggestions
+    </h3>
+
+    <ul className="list-disc list-inside text-sm text-muted-foreground">
+      {sectionSuggestions.map((item, index) => (
+        <li key={index}>{item}</li>
+      ))}
+    </ul>
   </div>
 )}
 
@@ -1201,6 +1507,92 @@ useEffect(() => {
 <div className="mb-6 p-4 rounded-xl border border-border bg-muted">
   <div className="flex justify-between items-center mb-2">
     <h3 className="font-semibold">
+      Portfolio Social Profile Score
+    </h3>
+
+    <span className="text-primary font-bold">
+      {profileScore}/100
+    </span>
+  </div>
+
+  <div className="w-full bg-secondary rounded-full h-3">
+    <div
+      className="bg-primary h-3 rounded-full"
+      style={{ width: `${profileScore}%` }}
+    />
+  </div>
+
+  {profileIssues.length > 0 && (
+    <div className="mt-4">
+      <h4 className="font-medium mb-2">
+        Optimization Suggestions
+      </h4>
+
+      <ul className="list-disc list-inside text-sm text-muted-foreground">
+        {profileIssues.map((issue, index) => (
+          <li key={index}>{issue}</li>
+        ))}
+      </ul>
+    </div>
+  )}
+</div>
+
+<div className="mt-4 flex flex-wrap gap-2">
+
+  {personal.linkedin && (
+    <span className="px-2 py-1 bg-green-500/20 text-green-500 rounded">
+      LinkedIn Added
+    </span>
+  )}
+
+  {personal.github && (
+    <span className="px-2 py-1 bg-green-500/20 text-green-500 rounded">
+      GitHub Added
+    </span>
+  )}
+
+  {personal.portfolio && (
+    <span className="px-2 py-1 bg-green-500/20 text-green-500 rounded">
+      Portfolio Added
+    </span>
+  )}
+
+</div>
+
+<div className="mb-6 p-4 rounded-xl border border-border bg-muted">
+  <h3 className="font-semibold mb-4">
+    Resume Content Impact Score
+  </h3>
+
+  {Object.entries(impactScores).map(
+    ([section, score]) => (
+      <div key={section} className="mb-4">
+        <div className="flex justify-between mb-1">
+          <span className="capitalize">
+            {section}
+          </span>
+
+          <span className="font-medium">
+            {score}/100
+          </span>
+        </div>
+
+        <div className="w-full bg-secondary rounded-full h-2">
+          <div
+            className="bg-primary h-2 rounded-full"
+            style={{
+              width: `${score}%`
+            }}
+          />
+        </div>
+      </div>
+    )
+  )}
+</div>
+
+<div className="mb-6 p-4 rounded-xl border border-border bg-muted">
+  <div className="flex justify-between items-center mb-2">
+    <h3 className="font-semibold">
       Resume Readability Score
     </h3>
 
@@ -1229,6 +1621,93 @@ useEffect(() => {
       </ul>
     </div>
   )}
+</div>
+
+<div className="mb-6 p-4 rounded-xl border border-border bg-muted">
+  <div className="flex justify-between items-center mb-2">
+    <h3 className="font-semibold">
+      Resume Language Tone Analyzer
+    </h3>
+
+    <span className="text-primary font-bold">
+      {toneScore}/100
+    </span>
+  </div>
+
+  <div className="w-full bg-secondary rounded-full h-3">
+    <div
+      className="bg-primary h-3 rounded-full"
+      style={{ width: `${toneScore}%` }}
+    />
+  </div>
+
+  {toneSuggestions.length > 0 && (
+    <div className="mt-4">
+      <h4 className="font-medium mb-2">
+        Professional Tone Suggestions
+      </h4>
+
+      <ul className="list-disc list-inside text-sm text-muted-foreground">
+        {toneSuggestions.map((tip, index) => (
+          <li key={index}>{tip}</li>
+        ))}
+      </ul>
+    </div>
+  )}
+</div>
+
+{activeConsistencyWarnings.some(
+  item => item.type === "duplicate"
+) && (
+  <div className="mb-6 p-4 rounded-xl border border-yellow-500 bg-yellow-500/10">
+    <h3 className="font-semibold mb-3">
+      Duplicate Information Detector
+    </h3>
+
+    <ul className="space-y-2">
+      {activeConsistencyWarnings
+        .filter(
+          item => item.type === "duplicate"
+        )
+        .map((item, index) => (
+          <li
+            key={index}
+            className="text-sm text-yellow-400"
+          >
+            • {item.message}
+          </li>
+        ))}
+    </ul>
+  </div>
+)}
+
+<div className="mb-6 p-4 rounded-xl border border-border bg-muted">
+  <div className="flex justify-between items-center mb-2">
+    <h3 className="font-semibold">
+      Career Goal Progress Tracker
+    </h3>
+
+    <span className="text-primary font-bold">
+      {goalProgress}%
+    </span>
+  </div>
+
+  <div className="w-full bg-secondary rounded-full h-3">
+    <div
+      className="bg-primary h-3 rounded-full"
+      style={{
+        width: `${goalProgress}%`
+      }}
+    />
+  </div>
+
+  <div className="mt-4 space-y-2">
+    {careerGoals.map((goal, index) => (
+      <div key={index}>
+        {goal.completed ? "✅" : "⭕"} {goal.title}
+      </div>
+    ))}
+  </div>
 </div>
 
 <div className="bg-background border border-border rounded-xl p-6 h-[500px] overflow-y-auto font-mono text-sm whitespace-pre-wrap">

@@ -1,3 +1,140 @@
+## [1.248.2](https://github.com/anurag3407/career-pilot/compare/v1.248.1...v1.248.2) (2026-06-16)
+
+
+### Bug Fixes
+
+* resolve ATS score runtime crashes in ResumeBuilder ([2f5c679](https://github.com/anurag3407/career-pilot/commit/2f5c6798be5933024c17bdd6c4006663fbcba796))
+
+## [1.248.1](https://github.com/anurag3407/career-pilot/compare/v1.248.0...v1.248.1) (2026-06-15)
+
+
+### Bug Fixes
+
+* improve modal keyboard accessibility and focus management ([8872add](https://github.com/anurag3407/career-pilot/commit/8872addfcc82d0b6cdfca200304c36d11292d3d9))
+
+# [1.248.0](https://github.com/anurag3407/career-pilot/compare/v1.247.0...v1.248.0) (2026-06-15)
+
+
+### Bug Fixes
+
+* remove duplicate React import ([83bf86d](https://github.com/anurag3407/career-pilot/commit/83bf86d603d67241595231de9d22f0f2aa8738bb))
+
+
+### Features
+
+* add portfolio content quality analyzer ([165b398](https://github.com/anurag3407/career-pilot/commit/165b3983ec014fcb18f07febd9507fdaa15b475e))
+
+# [1.247.0](https://github.com/anurag3407/career-pilot/compare/v1.246.1...v1.247.0) (2026-06-15)
+
+
+### Features
+
+* add portfolio project highlight recommendations ([255429b](https://github.com/anurag3407/career-pilot/commit/255429b1adb94b2f997d4061b0a3ad3fdc11972c))
+* add smart certification recommendation assistant ([168a95a](https://github.com/anurag3407/career-pilot/commit/168a95ab27a7a34cbd40be9c412416a9ab24ef0e))
+
+## [1.246.1](https://github.com/anurag3407/career-pilot/compare/v1.246.0...v1.246.1) (2026-06-15)
+
+
+### Bug Fixes
+
+* theme variables, scrollbar cleanup, and glow effects in index.css ([4c7a80c](https://github.com/anurag3407/career-pilot/commit/4c7a80c2549d25c11c46e8c16a242e42ea422feb))
+
+# [1.246.0](https://github.com/anurag3407/career-pilot/compare/v1.245.0...v1.246.0) (2026-06-15)
+
+
+### Features
+
+* add staging deployment github action [#2791](https://github.com/anurag3407/career-pilot/issues/2791) ([8ad39c9](https://github.com/anurag3407/career-pilot/commit/8ad39c9437ae0af0b5be579e183626b086adaa58))
+* add staging deployment workflow [#2791](https://github.com/anurag3407/career-pilot/issues/2791) ([2ce6491](https://github.com/anurag3407/career-pilot/commit/2ce6491c103c83f53a67c27b80604c67f2d5ce28))
+* add staging deployment workflow [#2791](https://github.com/anurag3407/career-pilot/issues/2791) ([158999f](https://github.com/anurag3407/career-pilot/commit/158999f8b81a30b7a44f89ac0f485e84c9a7affc))
+
+# [1.245.0](https://github.com/anurag3407/career-pilot/compare/v1.244.3...v1.245.0) (2026-06-15)
+
+
+### Bug Fixes
+
+* load Scandinavian template fonts from head ([93188a9](https://github.com/anurag3407/career-pilot/commit/93188a983468d35316736916029ca409e5fffef9))
+* polish Scandinavian Light template robustness ([96459d5](https://github.com/anurag3407/career-pilot/commit/96459d5b5eb102e236a34750af53dc8b60e5dbe0))
+* validate Scandinavian project links ([f3b3442](https://github.com/anurag3407/career-pilot/commit/f3b34420684762b9621446f5cdbfe767a9d31f8a))
+
+
+### Features
+
+* add Scandinavian Light portfolio template ([#1911](https://github.com/anurag3407/career-pilot/issues/1911)) ([05af3d8](https://github.com/anurag3407/career-pilot/commit/05af3d8941740dacb50b6041efa87b9b186f9723))
+
+## [1.244.3](https://github.com/anurag3407/career-pilot/compare/v1.244.2...v1.244.3) (2026-06-15)
+
+
+### Bug Fixes
+
+* **cors:** validate FRONTEND_URL origin format and enforce in production ([6e79d24](https://github.com/anurag3407/career-pilot/commit/6e79d2451d75ad1d3dc693eb58fe118fe3f92bb5))
+
+## [1.244.2](https://github.com/anurag3407/career-pilot/compare/v1.244.1...v1.244.2) (2026-06-15)
+
+
+### Bug Fixes
+
+* **security:** rate-limit LinkedIn token exchange endpoint ([#1256](https://github.com/anurag3407/career-pilot/issues/1256)) ([c9531fc](https://github.com/anurag3407/career-pilot/commit/c9531fc65924e179cb11b51e39775074c9b56dc1))
+
+## [1.244.1](https://github.com/anurag3407/career-pilot/compare/v1.244.0...v1.244.1) (2026-06-15)
+
+
+### Bug Fixes
+
+* remove duplicate Project Visualizer sidebar entry ([f377278](https://github.com/anurag3407/career-pilot/commit/f377278055a80ebc41f5b18db124ee8f7d7e8b3c))
+
+# [1.244.0](https://github.com/anurag3407/career-pilot/compare/v1.243.0...v1.244.0) (2026-06-15)
+
+
+### Features
+
+* add resume collaboration & feedback system ([#3338](https://github.com/anurag3407/career-pilot/issues/3338)) ([9fd1735](https://github.com/anurag3407/career-pilot/commit/9fd173598f60b052474d0ad909682399250c7f36))
+
+# [1.243.0](https://github.com/anurag3407/career-pilot/compare/v1.242.0...v1.243.0) (2026-06-15)
+
+
+### Bug Fixes
+
+* **portfolio:** correct Cyber Security Red Team preview path ([b38bb39](https://github.com/anurag3407/career-pilot/commit/b38bb39f9e8fe17458fa512dca1dacab33dbc640))
+
+
+### Features
+
+* **portfolio:** add Cyber Security Red Team template ([4330a52](https://github.com/anurag3407/career-pilot/commit/4330a529a4cfba0a2b6cc5f216fdacb9f9edeb17))
+
+# [1.242.0](https://github.com/anurag3407/career-pilot/compare/v1.241.0...v1.242.0) (2026-06-14)
+
+
+### Features
+
+* add resume section reordering suggestions ([88f5c1c](https://github.com/anurag3407/career-pilot/commit/88f5c1cd6695d73952c7595624a25550904ac74f))
+
+# [1.241.0](https://github.com/anurag3407/career-pilot/compare/v1.240.0...v1.241.0) (2026-06-14)
+
+
+### Bug Fixes
+
+* resolve Expected ',' got ':' syntax error in templates.js ([ba57756](https://github.com/anurag3407/career-pilot/commit/ba577569cf546986855741fdde79de2c5eb1cd06))
+* resolve syntax error introduced by upstream sync ([5040806](https://github.com/anurag3407/career-pilot/commit/504080648b89b84211bf91655884efa4a4b64675))
+* resolve templates.js build error ([267ac27](https://github.com/anurag3407/career-pilot/commit/267ac2724fd91aba91c54a5ad2031eeb093ac46d))
+
+
+### Features
+
+* implement AI cold outreach generator with Groq integration and robust rate limit fallback ([b5b1e82](https://github.com/anurag3407/career-pilot/commit/b5b1e825b91911af175239f47f7ed9c371c83f6a))
+
+# [1.240.0](https://github.com/anurag3407/career-pilot/compare/v1.239.2...v1.240.0) (2026-06-14)
+
+
+### Features
+
+* add career goal progress tracker dashboard ([7af33eb](https://github.com/anurag3407/career-pilot/commit/7af33eb29150587000b384d84d92a842e2ed7ceb))
+* add portfolio loading performance insights dashboard ([3731654](https://github.com/anurag3407/career-pilot/commit/3731654bcc7caaba06c34ac740280774f232308a))
+* add portfolio social profile optimization assistant ([bc2e4e7](https://github.com/anurag3407/career-pilot/commit/bc2e4e723cb09735d5725c15a47780124bf3fa49))
+* add resume content impact score analytics ([f1a01cd](https://github.com/anurag3407/career-pilot/commit/f1a01cda911c04729acf42310c12cc8a294d555d))
+* add resume duplicate information detector ([df96eb0](https://github.com/anurag3407/career-pilot/commit/df96eb0924ddbd58c678e11c4de4f6e657193e5e))
+* add resume language tone analyzer with professional writing feedback ([5a34064](https://github.com/anurag3407/career-pilot/commit/5a340640209fd0cfc1ada800b7e6f65991d0fa96))
+
 ## [1.239.2](https://github.com/anurag3407/career-pilot/compare/v1.239.1...v1.239.2) (2026-06-14)
 
 

@@ -63,11 +63,6 @@ const navLinks = [
         icon: <Globe className="w-5 h-5 shrink-0" />,
     },
     {
-        label: "Project Visualizer",
-        href: "/project-visualizer",
-        icon: <GitMerge className="w-5 h-5 shrink-0" />,
-    },
-    {
         label: "Career Growth",
         href: "/hub/career",
         icon: <GraduationCap className="w-5 h-5 shrink-0" />,
@@ -277,6 +272,15 @@ useEffect(() => {
                                 transition={{ duration: 0.3 }}
                                 className="overflow-hidden ml-4 flex flex-col gap-1"
                             >
+                                <SidebarLink
+                                    link={{
+                                        label: "Cold Outreach",
+                                        href: "/outreach",
+                                        icon: <Mail className="w-4 h-4 shrink-0" />,
+                                    }}
+                                    onClick={() => setOpen(false)}
+                                />
+
                                 <SidebarLink
                                     link={{
                                         label: "Skill Gap Analyzer",
