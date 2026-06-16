@@ -1,5 +1,5 @@
 import React, { useEffect } from 'react';
-import data from '../../../../data/dummy_data.json';
+import dummyData from '../../../../data/dummy_data.json';
 import Hero from './Hero';
 import About from './About';
 import Skills from './Skills';
@@ -12,7 +12,6 @@ const FONT_STYLESHEET_ID = 'scandinavian-light-fonts';
 const FONT_HREF =
   'https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700;800&family=Lora:wght@400;500;600&display=swap';
 import { usePortfolio } from "../../../../context/PortfolioContext";
-import React from 'react';
 
 export default function ScandinavianLight() {
   useEffect(() => {

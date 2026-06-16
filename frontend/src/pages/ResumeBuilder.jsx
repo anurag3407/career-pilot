@@ -88,6 +88,7 @@ export default function ResumeBuilder() {
   
   const [recommendedSkills, setRecommendedSkills] = useState([])
   const [profileScore, setProfileScore] = useState(0)
+  const [recommendedCertifications, setRecommendedCertifications] = useState([])
   const [profileIssues, setProfileIssues] = useState([])
   const [impactScores, setImpactScores] = useState({
   experience: 0,
@@ -327,46 +328,110 @@ useEffect(() => {
   setProfileIssues(issues)
 }, [personal])
 
-  // ─────────────────── ATS Keyword Assessment Loop ───────────────────
-  useEffect(() => {
-    const keywords = [
-      "React",
-      "JavaScript",
-      "Git",
-      "Node.js",
-      "API",
-      "Leadership",
-      "Teamwork",
-      "Problem Solving"
-    ]
-
-    const resumeText = `
-      ${personal?.summary || ''}
-      ${skills || ''}
-      ${(projects || []).map(p => p.description || '').join(" ")}
-      ${(experience || []).map(e => e.description || '').join(" ")}
-    `.toLowerCase()
-
-    const foundKeywords = keywords.filter(keyword =>
-      resumeText.includes(keyword.toLowerCase())
-    )
-
-  setAtsScore(
-    Math.round(
-      (foundKeywords.length / keywords.length) * 100
-    )
-  )
-}, [
-  personal,
-  skills,
-  projects,
-  experience
-])
+const normalizedSkills = React.useMemo(() => {
+  if (typeof skills === "string") {
+    return skills.split(",").map(skill => skill.trim()).filter(Boolean);
+  }
+  if (Array.isArray(skills)) {
+    return skills
+      .map(skill => String(skill).trim())
+      .filter(Boolean);
+  }
+  return [];
+}, [skills]);
 
 // ─────────────────── CONSOLIDATED ATS ASSESSMENT LOOP ───────────────────
 useEffect(() => {
+  const certs = []
+
+  const role = targetRole.toLowerCase()
+  const skillText = skills.toLowerCase()
+
+  // Frontend
+  if (
+    role.includes("frontend") ||
+    skillText.includes("react") ||
+    skillText.includes("javascript")
+  ) {
+    certs.push(
+      "Meta Front-End Developer Professional Certificate"
+    )
+  }
+
+  // Backend
+  if (
+    role.includes("backend") ||
+    skillText.includes("node") ||
+    skillText.includes("express")
+  ) {
+    certs.push(
+      "IBM Back-End Development Professional Certificate"
+    )
+  }
+
+  // Full Stack
+  if (
+    role.includes("full stack")
+  ) {
+    certs.push(
+      "IBM Full Stack Software Developer Professional Certificate"
+    )
+  }
+
+  // Data Science
+  if (
+    role.includes("data scientist") ||
+    role.includes("data analyst") ||
+    skillText.includes("python")
+  ) {
+    certs.push(
+      "Google Data Analytics Professional Certificate"
+    )
+
+    certs.push(
+      "IBM Data Science Professional Certificate"
+    )
+  }
+
+  // Cloud
+  if (
+    role.includes("cloud") ||
+    skillText.includes("aws")
+  ) {
+    certs.push(
+      "AWS Certified Cloud Practitioner"
+    )
+  }
+
+  // DevOps
+  if (
+    role.includes("devops") ||
+    skillText.includes("docker")
+  ) {
+    certs.push(
+      "Docker Certified Associate"
+    )
+
+    certs.push(
+      "AWS DevOps Engineer"
+    )
+  }
+
+  // Cyber Security
+  if (
+    role.includes("security") ||
+    role.includes("cyber")
+  ) {
+    certs.push(
+      "CompTIA Security+"
+    )
+  }
+
+  setRecommendedCertifications([...new Set(certs)])
+}, [targetRole, skills])
+useEffect(() => {
   // 1. Gather all inputs into a clean string representation
-  const resumeText = `${personal?.summary || ''} ${skills || ''} ${
+  const resumeText = `${personal?.summary || ''} ${normalizedSkills.join(' ')} ${
   projects?.map(p => `${p.name} ${p.description}`).join(' ') || ''
 } ${experience?.map(e => `${e.title} ${e.description}`).join(' ') || ''}`.toLowerCase();
 
@@ -390,8 +455,7 @@ useEffect(() => {
   const score = baseKeywords.length > 0 ? Math.round((found.length / baseKeywords.length) * 100) : 0;
   setAtsScore(score);
 
-}, [personal, skills, projects, experience]); // Removed out-of-scope internal variables!
-
+}, [personal, normalizedSkills, projects, experience]);
   // ─────────────────── Live Consistency Memoized Engine ───────────────────
   const activeConsistencyWarnings = React.useMemo(() => {
     const allExperienceDates = (experience || []).flatMap(exp => [exp.startDate, exp.endDate]);
@@ -416,18 +480,6 @@ useEffect(() => {
       ...redundancyValidationErrors
     ];
   }, [experience, education, projects]);
-
-  const saveVersion = React.useCallback(() => {
-    const newVersion = {
-      id: Date.now(),
-      timestamp: new Date().toLocaleString(),
-      content: typeof generateMarkdown === 'function' ? generateMarkdown() : "",
-    };
-    setResumeVersions(prev => [newVersion, ...prev]);
-    if (typeof toast !== 'undefined') {
-      toast.success("Resume version layout tracked successfully!");
-    }
-  }, [experience, education, projects, personal, skills, generateMarkdown]);
 
   const restoreVersion = React.useCallback((version) => {
     setSelectedVersion(version);
@@ -635,6 +687,17 @@ useEffect(() => {
     return md
   }
 
+  const saveVersion = React.useCallback(() => {
+    const newVersion = {
+      id: Date.now(),
+      timestamp: new Date().toLocaleString(),
+      content: typeof generateMarkdown === 'function' ? generateMarkdown() : "",
+    };
+    setResumeVersions(prev => [newVersion, ...prev]);
+    if (typeof toast !== 'undefined') {
+      toast.success("Resume version layout tracked successfully!");
+    }
+  }, [experience, education, projects, personal, skills, generateMarkdown]);
 
   const handleGenerate = async () => {
     try {
@@ -1182,6 +1245,33 @@ useEffect(() => {
       ? "Moderate Gap"
       : "High Skill Gap"}
   </span>
+</div>
+
+<div className="mb-6 p-4 rounded-xl border border-border bg-muted">
+
+  <h3 className="font-semibold mb-3">
+    Smart Certification Recommendations
+  </h3>
+
+  {recommendedCertifications.length > 0 ? (
+    <div className="flex flex-wrap gap-2">
+
+      {recommendedCertifications.map(cert => (
+        <span
+          key={cert}
+          className="px-3 py-1 rounded-full bg-blue-500/20 text-blue-400 text-sm"
+        >
+          {cert}
+        </span>
+      ))}
+
+    </div>
+  ) : (
+    <p className="text-sm text-muted-foreground">
+      Add skills and target role to receive certification recommendations.
+    </p>
+  )}
+
 </div>
 
     <span className="text-primary font-bold">

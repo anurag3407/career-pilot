@@ -1,3 +1,44 @@
+## [1.248.2](https://github.com/anurag3407/career-pilot/compare/v1.248.1...v1.248.2) (2026-06-16)
+
+
+### Bug Fixes
+
+* resolve ATS score runtime crashes in ResumeBuilder ([2f5c679](https://github.com/anurag3407/career-pilot/commit/2f5c6798be5933024c17bdd6c4006663fbcba796))
+
+## [1.248.1](https://github.com/anurag3407/career-pilot/compare/v1.248.0...v1.248.1) (2026-06-15)
+
+
+### Bug Fixes
+
+* improve modal keyboard accessibility and focus management ([8872add](https://github.com/anurag3407/career-pilot/commit/8872addfcc82d0b6cdfca200304c36d11292d3d9))
+
+# [1.248.0](https://github.com/anurag3407/career-pilot/compare/v1.247.0...v1.248.0) (2026-06-15)
+
+
+### Bug Fixes
+
+* remove duplicate React import ([83bf86d](https://github.com/anurag3407/career-pilot/commit/83bf86d603d67241595231de9d22f0f2aa8738bb))
+
+
+### Features
+
+* add portfolio content quality analyzer ([165b398](https://github.com/anurag3407/career-pilot/commit/165b3983ec014fcb18f07febd9507fdaa15b475e))
+
+# [1.247.0](https://github.com/anurag3407/career-pilot/compare/v1.246.1...v1.247.0) (2026-06-15)
+
+
+### Features
+
+* add portfolio project highlight recommendations ([255429b](https://github.com/anurag3407/career-pilot/commit/255429b1adb94b2f997d4061b0a3ad3fdc11972c))
+* add smart certification recommendation assistant ([168a95a](https://github.com/anurag3407/career-pilot/commit/168a95ab27a7a34cbd40be9c412416a9ab24ef0e))
+
+## [1.246.1](https://github.com/anurag3407/career-pilot/compare/v1.246.0...v1.246.1) (2026-06-15)
+
+
+### Bug Fixes
+
+* theme variables, scrollbar cleanup, and glow effects in index.css ([4c7a80c](https://github.com/anurag3407/career-pilot/commit/4c7a80c2549d25c11c46e8c16a242e42ea422feb))
+
 # [1.246.0](https://github.com/anurag3407/career-pilot/compare/v1.245.0...v1.246.0) (2026-06-15)
 
 
