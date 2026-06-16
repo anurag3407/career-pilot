@@ -4,12 +4,10 @@ import { usePortfolio, normalizePortfolioData } from "../../../../context/Portfo
 // ─── Pixel Storm Portfolio Template ───────────────────────────────────────────
 // A living CRT terminal — pixel rain assembles your identity, then glitches
 // into generative art. Scanlines, chromatic aberration, perpetual motion.
-
 const PALETTE = [
   "#00ff41", "#00e5ff", "#ff00ff", "#ffea00",
   "#ff4444", "#7b2fff", "#00ffaa", "#ff6b00",
 ];
-
 function randomInt(min, max) {
   return Math.floor(Math.random() * (max - min + 1)) + min;
 }
