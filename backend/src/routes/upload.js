@@ -8,6 +8,13 @@ import { asyncHandler, ApiError } from '../middleware/errorHandler.js';
 import { validateUpload } from '../middleware/uploadValidator.js';
 
 const router = express.Router();
+const parseWithTimeout = (buffer, ms = 8000) =>
+  Promise.race([
+    pdfParse(buffer),
+    new Promise((_, reject) =>
+      setTimeout(() => reject(new Error('PDF parsing timed out')), ms)
+    )
+  ]);
 
 // Upload and extract text from PDF
 router.post('/', verifyToken, handleUpload, validateUpload, asyncHandler(async (req, res) => {
@@ -16,7 +23,7 @@ router.post('/', verifyToken, handleUpload, validateUpload, asyncHandler(async (
   }
   try {
     const fileBuffer = await fs.readFile(req.file.path);
-    const pdfData = await pdfParse(fileBuffer);
+    const pdfData = await parseWithTimeout(fileBuffer);
     const resumeId = uuidv4();
 
     res.json({
@@ -54,7 +61,7 @@ router.post('/extract-text', verifyToken, handleUpload, validateUpload, asyncHan
   }
   try {
     const fileBuffer = await fs.readFile(req.file.path);
-    const pdfData = await pdfParse(fileBuffer);
+    const pdfData = await parseWithTimeout(fileBuffer);
 
     res.json({
       success: true,
