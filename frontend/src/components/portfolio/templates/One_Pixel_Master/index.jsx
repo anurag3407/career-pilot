@@ -197,9 +197,9 @@ export default function OnePixelMaster({ portfolioData }) {
   const SECTIONS = [
     { id: "home", label: "Home" },
     { id: "about", label: "About" },
-    { id: "skills", label: "Skills" },
-    { id: "projects", label: "Projects" },
-    { id: "experience", label: "Experience" },
+    ...(skills.length > 0 ? [{ id: "skills", label: "Skills" }] : []),
+    ...(projects.length > 0 ? [{ id: "projects", label: "Projects" }] : []),
+    ...(experience.length > 0 ? [{ id: "experience", label: "Experience" }] : []),
     { id: "contact", label: "Contact" },
   ];
 
@@ -212,13 +212,22 @@ export default function OnePixelMaster({ portfolioData }) {
   ], [name]);
 
   useEffect(() => {
+    setBootLines([]);
     let i = 0;
+    let timeoutId = null;
     const interval = setInterval(() => {
-      if (i >= BOOT_LINES.length) { clearInterval(interval); setTimeout(() => setBooted(true), 300); return; }
+      if (i >= BOOT_LINES.length) {
+        clearInterval(interval);
+        timeoutId = setTimeout(() => setBooted(true), 300);
+        return;
+      }
       setBootLines(prev => [...prev, BOOT_LINES[i]]);
       i++;
     }, 380);
-    return () => clearInterval(interval);
+    return () => {
+      clearInterval(interval);
+      if (timeoutId) clearTimeout(timeoutId);
+    };
   }, [BOOT_LINES]);
 
   // Active section tracker on scroll
@@ -333,7 +342,8 @@ export default function OnePixelMaster({ portfolioData }) {
                     const col = PALETTE[(i + 2) % PALETTE.length];
                     const pname = proj.name || proj.title || `Project ${i + 1}`;
                     const pdesc = proj.description || proj.desc || "";
-                    const plink = proj.link || proj.url || proj.github || "";
+                    const rawlink = proj.link || proj.url || proj.github || "";
+                    const plink = /^https?:\/\//i.test(rawlink) ? rawlink : rawlink ? `https://${rawlink}` : "";
                     return (
                       <PixelCard key={i} color={col} delay={i * 80}>
                         <div style={{ fontSize: 10, letterSpacing: 3, color: `${col}88`, marginBottom: 8 }}>PROJECT_{String(i + 1).padStart(3, "0")}</div>
