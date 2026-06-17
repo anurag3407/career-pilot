@@ -92,10 +92,27 @@ export const templates = [
   rating: 0,
   image: "/template-previews/Virtual_Reality_Room_360.png",
   createdAt: "2026-06-12",
+  isComplete: true,
+  },
+  {
+    id: "Vercel_Deploy",
   isComplete: true
   },
   {
   id: "Vercel_Deploy",
+createdAt: "2026-06-12",
+isComplete: true,
+},
+
+{
+id: "Vercel_Deploy",
+title: "Vercel Deploy",
+category: "Portfolio",
+colorScheme: "Dark",
+layout: "Cards",
+author: "Your GitHub Username",
+views: 1200,
+rating: 4.8,
   "title": "Vercel Deploy",
   "category": "Portfolio",
   "colorScheme": "Dark",

@@ -1,6 +1,5 @@
 import express from 'express';
 import rateLimit from 'express-rate-limit';
-import { asyncHandler } from '../middleware/errorHandler.js';
 import bcrypt from 'bcryptjs';
 import { asyncHandler, ApiError } from '../middleware/errorHandler.js';
 import { verifyToken } from '../middleware/auth.js';

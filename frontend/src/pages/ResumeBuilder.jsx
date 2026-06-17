@@ -328,41 +328,17 @@ useEffect(() => {
   setProfileIssues(issues)
 }, [personal])
 
-  // ─────────────────── ATS Keyword Assessment Loop ───────────────────
-  useEffect(() => {
-    const keywords = [
-      "React",
-      "JavaScript",
-      "Git",
-      "Node.js",
-      "API",
-      "Leadership",
-      "Teamwork",
-      "Problem Solving"
-    ]
-
-    const resumeText = `
-      ${personal?.summary || ''}
-      ${skills || ''}
-      ${(projects || []).map(p => p.description || '').join(" ")}
-      ${(experience || []).map(e => e.description || '').join(" ")}
-    `.toLowerCase()
-
-    const foundKeywords = keywords.filter(keyword =>
-      resumeText.includes(keyword.toLowerCase())
-    )
-
-  setAtsScore(
-    Math.round(
-      (foundKeywords.length / keywords.length) * 100
-    )
-  )
-}, [
-  personal,
-  skills,
-  projects,
-  experience
-])
+const normalizedSkills = React.useMemo(() => {
+  if (typeof skills === "string") {
+    return skills.split(",").map(skill => skill.trim()).filter(Boolean);
+  }
+  if (Array.isArray(skills)) {
+    return skills
+      .map(skill => String(skill).trim())
+      .filter(Boolean);
+  }
+  return [];
+}, [skills]);
 
 // ─────────────────── CONSOLIDATED ATS ASSESSMENT LOOP ───────────────────
 useEffect(() => {
@@ -455,7 +431,7 @@ useEffect(() => {
 }, [targetRole, skills])
 useEffect(() => {
   // 1. Gather all inputs into a clean string representation
-  const resumeText = `${personal?.summary || ''} ${skills || ''} ${
+  const resumeText = `${personal?.summary || ''} ${normalizedSkills.join(' ')} ${
   projects?.map(p => `${p.name} ${p.description}`).join(' ') || ''
 } ${experience?.map(e => `${e.title} ${e.description}`).join(' ') || ''}`.toLowerCase();
 
@@ -479,8 +455,7 @@ useEffect(() => {
   const score = baseKeywords.length > 0 ? Math.round((found.length / baseKeywords.length) * 100) : 0;
   setAtsScore(score);
 
-}, [personal, skills, projects, experience]); // Removed out-of-scope internal variables!
-
+}, [personal, normalizedSkills, projects, experience]);
   // ─────────────────── Live Consistency Memoized Engine ───────────────────
   const activeConsistencyWarnings = React.useMemo(() => {
     const allExperienceDates = (experience || []).flatMap(exp => [exp.startDate, exp.endDate]);
