@@ -96,7 +96,6 @@ export function AuthProvider({ children }) {
   const loginWithGitHub = async () => {
     if (!auth) throw new Error("Authentication service is not configured. Please check your environment variables and authentication provider setup. Refer to the project setup documentation for configuration instructions.")
     const provider = new GithubAuthProvider()
-    provider.addScope('read:user')
     provider.addScope('user:email')
     const result = await signInWithPopup(auth, provider)
     return result.user
