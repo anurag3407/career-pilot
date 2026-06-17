@@ -1,5 +1,6 @@
 import React, { useState, useEffect } from 'react';
-import { Home, User, Briefcase, LayoutGrid, FileText, Mail, Sun, ChevronDown, Layers } from 'lucide-react';
+import { Home, User, Briefcase, LayoutGrid, FileText, Mail, Sun, Moon, ChevronDown, Layers } from 'lucide-react';
+import { useTheme } from '../../../../../../hooks/useTheme';
 
 const Navbar = ({ activeTab, setActiveTab, name }) => {
   const [firstName, lastName] = (name || 'Dev Patel').split(' ');
@@ -17,6 +18,8 @@ const Navbar = ({ activeTab, setActiveTab, name }) => {
     e.stopPropagation();
     setActiveTab(id);
   };
+
+  const { theme, toggleTheme } = useTheme();
 
   return (
     <nav className="flex items-center justify-between px-6 py-4 rounded-[32px] sticky top-8 z-50 shadow-2xl transition-all font-sans" style={{ backgroundColor: 'rgba(19, 22, 31, 0.85)', backdropFilter: 'blur(16px)', border: '1px solid rgba(255,255,255,0.05)' }}>
@@ -52,8 +55,12 @@ const Navbar = ({ activeTab, setActiveTab, name }) => {
 
       {/* Right side - Theme / Hire me */}
       <div className="flex items-center gap-4">
-        <button className="p-2.5 rounded-full transition-colors hover:bg-white/10" style={{ backgroundColor: '#0E1018', border: '1px solid rgba(255,255,255,0.05)' }}>
-          <Sun size={18} className="text-slate-300" />
+        <button 
+          onClick={toggleTheme}
+          className="p-2.5 rounded-full transition-colors hover:bg-white/10" 
+          style={{ backgroundColor: '#0E1018', border: '1px solid rgba(255,255,255,0.05)' }}
+        >
+          {theme === 'dark' ? <Sun size={18} className="text-slate-300" /> : <Moon size={18} className="text-slate-300" />}
         </button>
         <a 
           href="#contact"

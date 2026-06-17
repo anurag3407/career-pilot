@@ -3,7 +3,8 @@ import { Phone, Copy, Linkedin, Github, MessageCircle } from 'lucide-react';
 import { motion } from 'framer-motion';
 
 const Sidebar = ({ data, theme }) => {
-  const { personalInfo, contactInfo, socialLinks } = data || {};
+  const { personalInfo, contactInfo } = data || {};
+  const socials = data?.socials || data?.socialLinks || {};
 
   // Typewriter animation variants
   const sentence = {
@@ -79,17 +80,13 @@ const Sidebar = ({ data, theme }) => {
 
       {/* Social Links - Dark Mode Sleek Icons */}
       <div className="flex gap-3 justify-center sm:justify-start w-full">
-        {socialLinks?.linkedin && (
-          <a href={socialLinks.linkedin} target="_blank" rel="noopener noreferrer" className="p-3 rounded-xl transition-all hover:bg-[#1E2330] hover:-translate-y-1" style={{ backgroundColor: '#0E1018', border: `1px solid ${theme.border}` }}>
-            <Linkedin size={22} className="text-slate-400 hover:text-blue-500 transition-colors" />
-          </a>
-        )}
-        {socialLinks?.github && (
-          <a href={socialLinks.github} target="_blank" rel="noopener noreferrer" className="p-3 rounded-xl transition-all hover:bg-[#1E2330] hover:-translate-y-1" style={{ backgroundColor: '#0E1018', border: `1px solid ${theme.border}` }}>
-            <Github size={22} className="text-slate-400 hover:text-white transition-colors" />
-          </a>
-        )}
-        <a href="#" target="_blank" rel="noopener noreferrer" className="p-3 rounded-xl transition-all hover:bg-[#1E2330] hover:-translate-y-1" style={{ backgroundColor: '#0E1018', border: `1px solid ${theme.border}` }}>
+        <a href={socials?.linkedin || "#"} target="_blank" rel="noopener noreferrer" className="p-3 rounded-xl transition-all hover:bg-[#1E2330] hover:-translate-y-1" style={{ backgroundColor: '#0E1018', border: `1px solid ${theme.border}` }}>
+          <Linkedin size={22} className="text-slate-400 hover:text-blue-500 transition-colors" />
+        </a>
+        <a href={socials?.github || "#"} target="_blank" rel="noopener noreferrer" className="p-3 rounded-xl transition-all hover:bg-[#1E2330] hover:-translate-y-1" style={{ backgroundColor: '#0E1018', border: `1px solid ${theme.border}` }}>
+          <Github size={22} className="text-slate-400 hover:text-white transition-colors" />
+        </a>
+        <a href={socials?.leetcode || "#"} target="_blank" rel="noopener noreferrer" className="p-3 rounded-xl transition-all hover:bg-[#1E2330] hover:-translate-y-1" style={{ backgroundColor: '#0E1018', border: `1px solid ${theme.border}` }}>
           {/* Custom SVG for LeetCode since lucide-react doesn't have it */}
           <svg viewBox="0 0 24 24" fill="currentColor" width="22" height="22" className="text-slate-400 hover:text-[#FFA116] transition-colors">
             <path d="M16.102 17.93l-2.697 2.607c-.466.467-1.111.662-1.823.662s-1.357-.195-1.824-.662l-4.332-4.363c-.467-.467-.702-1.15-.702-1.863s.235-1.357.702-1.824l4.319-4.38c.467-.467 1.125-.645 1.837-.645s1.357.195 1.823.662l2.697 2.606c.514.515 1.365.497 1.9-.038.535-.536.553-1.387.039-1.901l-2.606-2.696c-1.087-1.087-2.553-1.631-4.04-1.631-1.488 0-2.954.544-4.041 1.631l-4.318 4.38c-1.087 1.087-1.631 2.553-1.631 4.04 0 1.487.544 2.953 1.631 4.04l4.332 4.363c1.087 1.087 2.553 1.631 4.041 1.631 1.487 0 2.953-.544 4.04-1.631l2.697-2.607c.514-.514.496-1.365-.039-1.9-.535-.535-1.386-.553-1.9-.039zM20.811 13.01H10.666c-.702 0-1.27.604-1.27 1.346s.568 1.346 1.27 1.346h10.145c.701 0 1.27-.604 1.27-1.346s-.569-1.346-1.27-1.346z"/>
