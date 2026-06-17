@@ -16,15 +16,17 @@ export const generatePDF = async (markdownText, options = {}) => {
 
   // Convert markdown to HTML
   const htmlContent = marked.parse(markdownText);
-  const structuredData = generateStructuredData(options.portfolio || {});
-const jsonLd = JSON.stringify(structuredData, null, 2)
-  .replace(/<\/script>/gi, '<\\/script>');
-
-const jsonLdScript = `
-<script type="application/ld+json">
-${jsonLd}
-</script>
-`;
+  const jsonLdScript =
+    options.portfolio && Object.keys(options.portfolio).length > 0
+      ? (() => {
+          const structuredData = generateStructuredData(options.portfolio);
+          const jsonLd = JSON.stringify(structuredData, null, 2).replace(
+            /<\/script>/gi,
+            '<\\/script>'
+          );
+          return `<script type="application/ld+json">\n${jsonLd}\n</script>`;
+        })()
+      : '';
   // Read full HTML structure with styles
   const fullHtml = `
     <!DOCTYPE html>
@@ -133,7 +135,7 @@ ${jsonLd}
 
   // Launch puppeteer
   const browser = await puppeteer.launch({
-    headless: 'new', // Use new headless mode
+    headless: true,
     args: ['--no-sandbox', '--disable-setuid-sandbox']
   });
 

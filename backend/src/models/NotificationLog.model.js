@@ -50,5 +50,7 @@ notificationLogSchema.index({ alertId: 1, jobListingId: 1 }, { background: true 
 notificationLogSchema.index({ userId: 1, sentAt: -1 }, { background: true });
 notificationLogSchema.index({ emailStatus: 1, sentAt: -1 }, { background: true });
 notificationLogSchema.index({ alertId: 1, sentAt: -1 }, { background: true });
+notificationLogSchema.index({ userId: 1, externalJobId: 1 }, { background: true });
+notificationLogSchema.index({ userId: 1, alertId: 1, sentAt: -1 }, { background: true });
 
 export default mongoose.model('NotificationLog', notificationLogSchema);

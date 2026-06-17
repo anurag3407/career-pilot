@@ -1,4 +1,5 @@
 import express from 'express';
+import mongoose from 'mongoose';
 import { verifyToken } from '../middleware/auth.js';
 import { asyncHandler, ApiError } from '../middleware/errorHandler.js';
 import { createOrder, verifyPaymentSignature } from '../services/paymentService.js';
@@ -203,37 +204,30 @@ router.post('/verify-payment', verifyToken, validate(verifyPaymentSchema), async
 router.post('/release-funds/:roomId', verifyToken, asyncHandler(async (req, res) => {
     const { roomId } = req.params;
 
-    // Find the chat room
-    const chatRoom = await FellowshipChatRoom.findById(roomId);
-    if (!chatRoom) {
-        throw new ApiError(404, 'Chat room not found');
+    const session = await mongoose.startSession();
+    session.startTransaction();
+    let chatRoom;
+    let challenge;
+    try {
+        chatRoom = await FellowshipChatRoom.findOneAndUpdate(
+            { _id: roomId, corporateId: req.user.uid, paymentStatus: 'escrow' },
+            { $set: { paymentStatus: 'released', releasedAt: new Date(), status: 'closed' } },
+            { new: true, session }
+        );
+        if (!chatRoom) throw new ApiError(400, 'Cannot release funds or access denied');
+
+        challenge = await Challenge.findById(chatRoom.challengeId).session(session);
+        if (!challenge) throw new ApiError(404, 'Challenge not found');
+        challenge.status = 'completed';
+        await challenge.save({ session });
+
+        await session.commitTransaction();
+    } catch (err) {
+        await session.abortTransaction();
+        throw err;
+    } finally {
+        session.endSession();
     }
-
-    // Verify user is the corporate (only corporate can release funds)
-    if (chatRoom.corporateId?.toString() !== req.user.uid) {
-        throw new ApiError(403, 'Only the company can release funds');
-    }
-
-    // Check payment status
-    if (chatRoom.paymentStatus !== 'escrow') {
-        throw new ApiError(400, `Cannot release funds. Current status: ${chatRoom.paymentStatus}`);
-    }
-
-    // Find the challenge
-    const challenge = await Challenge.findById(chatRoom.challengeId);
-    if (!challenge) {
-        throw new ApiError(404, 'Challenge not found');
-    }
-
-    // Update chat room - release funds and close chat
-    chatRoom.paymentStatus = 'released';
-    chatRoom.releasedAt = new Date();
-    chatRoom.status = 'closed';
-    await chatRoom.save();
-
-    // Update challenge status to completed
-    challenge.status = 'completed';
-    await challenge.save();
 
     console.log('✅ Funds released and challenge completed:', {
         roomId: chatRoom._id,
