@@ -644,7 +644,6 @@ for (const part of parts) {
   } finally {
     setEnhancing(false)
   }
-    }
 }
 
   const handleGeneratePortfolio = async () => {
@@ -684,8 +683,7 @@ for (const part of parts) {
     } finally {
       setScoring(false)
     }
-  }
-
+}
   if (loading) {
     return (
       <div className="min-h-screen bg-background">
