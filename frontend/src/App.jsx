@@ -123,7 +123,8 @@ import Book_Page_Flip_3D_Render from './components/portfolio/templates/Book_Page
 import IKEA_Assembly_Manual from './components/portfolio/templates/IKEA_Assembly_Manual/index.jsx';
 import MichelinStarChefPlating from './components/portfolio/templates/Michelin_Star_Chef_Plating/index.jsx';
 import SommelierWineCellarRacks from './components/portfolio/templates/Sommelier_Wine_Cellar_Racks/index.jsx';
-import SharedResumeView from './pages/SharedResumeView.jsx'
+import HogwartsMaraudersMap from './components/portfolio/templates/Hogwarts_Marauder_s_Map/index.jsx';
+import SharedResumeView from './pages/SharedResumeView.jsx';
 
 function LoadingScreen({ label }) {
   return (
@@ -297,6 +298,7 @@ function AppRoutes() {
         <Route path="/templates/ikea-assembly-manual" element={<IKEA_Assembly_Manual />} />
         <Route path="/templates/michelin-star-chef-plating" element={<MichelinStarChefPlating />} />
         <Route path="/templates/sommelier-wine-cellar-racks" element={<SommelierWineCellarRacks />} />
+        <Route path="/templates/hogwarts-marauders-map" element={<HogwartsMaraudersMap />} />
         {/* Core Protected Routes */}
         <Route 
   path="/dashboard" 
@@ -317,8 +319,6 @@ function AppRoutes() {
   }
 />
         <Route path="/upload" element={<ProtectedRoute><Suspense fallback={<LoadingScreen label="Loading Upload..." />}><Upload /></Suspense></ProtectedRoute>} />
-        <Route 
-  path="/shared/:shareToken" element={<SharedResumeView />} />
           <Route path="/resume-builder" 
   element={
     <ProtectedRoute>
