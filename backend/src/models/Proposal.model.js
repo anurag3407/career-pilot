@@ -47,6 +47,14 @@ const proposalSchema = new mongoose.Schema({
         type: String,
         default: null
     },
+    collaborators: [{
+        type: String,
+        index: true
+    }],
+    version: {
+        type: Number,
+        default: 0
+    },
     createdAt: {
         type: Date,
         default: Date.now
@@ -64,8 +72,9 @@ proposalSchema.index({ challengeId: 1, createdAt: -1 }, { background: true });
 proposalSchema.index({ challengeId: 1, status: 1 }, { background: true });
 proposalSchema.index({ challengeId: 1, status: 1, createdAt: -1 }, { background: true });
 
-proposalSchema.pre('save', function () {
+proposalSchema.pre('save', function (next) {
     this.updatedAt = new Date();
+    next();
 });
 
 const Proposal = mongoose.model('Proposal', proposalSchema);
