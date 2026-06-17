@@ -5,12 +5,32 @@ const Navbar = ({ name }) => {
   const [firstName, lastName] = (name || 'Dev Patel').split(' ');
   const [activeHash, setActiveHash] = useState('#home');
 
+  const navItems = [
+    { id: '#home', label: 'Home' },
+    { id: '#services', label: 'Services' },
+    { id: '#works', label: 'Works' },
+    { id: '#blogs', label: 'Blogs' },
+    { id: '#contact', label: "Let's Talk" }
+  ];
+
   useEffect(() => {
-    const handleHashChange = () => {
-      setActiveHash(window.location.hash || '#home');
-    };
-    window.addEventListener('hashchange', handleHashChange);
-    return () => window.removeEventListener('hashchange', handleHashChange);
+    const observer = new IntersectionObserver(
+      (entries) => {
+        entries.forEach((entry) => {
+          if (entry.isIntersecting) {
+            setActiveHash('#' + entry.target.id);
+          }
+        });
+      },
+      { rootMargin: '-20% 0px -60% 0px' }
+    );
+
+    navItems.forEach((item) => {
+      const el = document.querySelector(item.id);
+      if (el) observer.observe(el);
+    });
+
+    return () => observer.disconnect();
   }, []);
 
   const handleNavClick = (e, id) => {
@@ -19,17 +39,8 @@ const Navbar = ({ name }) => {
     if (element) {
       element.scrollIntoView({ behavior: 'smooth', block: 'start' });
       setActiveHash(id);
-      window.history.pushState(null, '', id);
     }
   };
-
-  const navItems = [
-    { id: '#home', label: 'Home' },
-    { id: '#services', label: 'Services' },
-    { id: '#works', label: 'Works' },
-    { id: '#blogs', label: 'Blogs' },
-    { id: '#contact', label: "Let's Talk" }
-  ];
 
   return (
     <nav className="flex items-center justify-between px-6 py-4 rounded-[32px] sticky top-8 z-50 shadow-2xl transition-all font-sans" style={{ backgroundColor: 'rgba(19, 22, 31, 0.85)', backdropFilter: 'blur(16px)', border: '1px solid rgba(255,255,255,0.05)' }}>
@@ -48,7 +59,7 @@ const Navbar = ({ name }) => {
       {/* Desktop Menu */}
       <div className="hidden lg:flex items-center gap-1 p-1 rounded-full" style={{ backgroundColor: '#0E1018', border: '1px solid rgba(255,255,255,0.02)' }}>
         {navItems.map((item) => {
-          const isActive = activeHash === item.id || (activeHash === '' && item.id === '#home');
+          const isActive = activeHash === item.id;
           return (
             <a
               key={item.id}
