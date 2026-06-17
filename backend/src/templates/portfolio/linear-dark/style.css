@@ -38,3 +38,35 @@ body {
   overflow-x:hidden;
 }
 
+.mesh-background {
+
+position:fixed;
+
+inset:0;
+
+z-index:-1;
+
+background:
+radial-gradient(
+circle at 20% 20%,
+rgba(94,106,210,.28),
+transparent 40%
+),
+radial-gradient(
+circle at 80% 30%,
+rgba(245,166,35,.15),
+transparent 35%
+),
+radial-gradient(
+circle at 50% 80%,
+rgba(94,106,210,.18),
+transparent 40%
+);
+
+}
+
+.mesh-background {
+
+filter: blur(60px);
+
+}
