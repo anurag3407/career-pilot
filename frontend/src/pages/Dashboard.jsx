@@ -43,6 +43,33 @@ const STATUS_CONFIG = {
   offered: { label: 'Offered', color: 'bg-emerald-500/10 text-emerald-500 border border-emerald-500/20', icon: CheckCircle2 }
 }
 
+const hubColorMap = {
+  "emerald-500": { 
+    bg: "bg-emerald-500/10", 
+    text: "text-emerald-500", 
+    border: "border-emerald-500/20",
+    hoverBg: "group-hover:bg-emerald-500/15" 
+  },
+  "purple-500": { 
+    bg: "bg-purple-500/10", 
+    text: "text-purple-500", 
+    border: "border-purple-500/20",
+    hoverBg: "group-hover:bg-purple-500/15"
+  },
+  "primary": { 
+    bg: "bg-primary/10", 
+    text: "text-primary", 
+    border: "border-primary/20",
+    hoverBg: "group-hover:bg-primary/15"
+  },
+  "secondary": { 
+    bg: "bg-secondary/10", 
+    text: "text-secondary", 
+    border: "border-secondary/20",
+    hoverBg: "group-hover:bg-secondary/15"
+  }
+};
+
 export default function Dashboard() {
   const [resumes, setResumes] = useState([])
   const [trackedJobs, setTrackedJobs] = useState([])
@@ -290,8 +317,8 @@ export default function Dashboard() {
 
                       <div>
                         {/* Icon */}
-                        <div className={`w-14 h-14 bg-${hub.color}/10 border border-${hub.color}/20 rounded-2xl flex items-center justify-center mb-5 group-hover:scale-110 group-hover:bg-${hub.color}/15 transition-all duration-300`}>
-                          <hub.icon className={`w-7 h-7 text-${hub.color}`} />
+                        <div className={`w-14 h-14 ${hubColorMap[hub.color]?.bg || 'bg-primary/10'} border ${hubColorMap[hub.color]?.border || 'border-primary/20'} rounded-2xl flex items-center justify-center mb-5 group-hover:scale-110 ${hubColorMap[hub.color]?.hoverBg || 'group-hover:bg-primary/15'} transition-all duration-300`}>
+                          <hub.icon className={`w-7 h-7 ${hubColorMap[hub.color]?.text || 'text-primary'}`} />
                         </div>
                         
                         {/* Content */}
