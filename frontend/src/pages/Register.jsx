@@ -6,6 +6,7 @@ import Navbar from '../components/Navbar'
 import Input from '../components/Input'
 import Button from '../components/Button'
 import Card from '../components/Card'
+import PasswordStrength from '../components/PasswordStrength'
 
 export default function Register() {
   const navigate = useNavigate()
@@ -120,6 +121,7 @@ export default function Register() {
               error={errors.password}
               required
             />
+            <PasswordStrength password={formData.password} />
 
             <Input
               label="Confirm Password"
