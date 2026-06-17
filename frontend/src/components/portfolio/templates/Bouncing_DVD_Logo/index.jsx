@@ -30,7 +30,7 @@ const PALETTE = ["#FF006E","#FF8500","#FFD60A","#06FFB4","#00D4FF","#7C3AED","#F
 const LOGO_W = 240;
 const LOGO_H = 108;
 const CORNER_THRESH = 14;
-const BASE_SPEED = 3.4;
+const BASE_SPEED = 6.5;
 const KONAMI = ["ArrowUp","ArrowUp","ArrowDown","ArrowDown","ArrowLeft","ArrowRight","ArrowLeft","ArrowRight","b","a"];
 
 const SKILL_CATEGORIES = {
