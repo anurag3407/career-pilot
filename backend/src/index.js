@@ -136,7 +136,7 @@ const app = express();
 app.use(metricsMiddleware);
 app.use(compressionMiddleware);
 const httpServer = createServer(app);
-const PORT = process.env.PORT || 5001;
+const PORT = process.env.PORT || 5000;
 
 // Log a presence-only configuration summary in development only.
 // Secrets cannot leak into startup logs or aggregated log output.
