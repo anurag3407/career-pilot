@@ -9,9 +9,9 @@ export default function PasswordStrength({ password }) {
     let score = 0;
     if (pwd.length >= 8) score++;
     if (pwd.length >= 12) score++;
+    if (/[a-z]/.test(pwd)) score++;
     if (/[A-Z]/.test(pwd)) score++;
     if (/[0-9]/.test(pwd)) score++;
-    if (/[^A-Za-z0-9]/.test(pwd)) score++;
     return score;
   };
 
@@ -29,9 +29,9 @@ export default function PasswordStrength({ password }) {
 
   const tips = [];
   if (password.length < 8) tips.push("8+ characters");
+  if (!/[a-z]/.test(password)) tips.push("lowercase letter");
   if (!/[A-Z]/.test(password)) tips.push("uppercase letter");
   if (!/[0-9]/.test(password)) tips.push("number");
-  if (!/[^A-Za-z0-9]/.test(password)) tips.push("special character");
 
   return (
     <div style={{ marginTop: "-8px", marginBottom: "16px" }}>
