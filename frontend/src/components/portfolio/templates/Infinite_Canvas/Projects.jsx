@@ -1,5 +1,4 @@
 import React from "react";
-import { motion } from "framer-motion";
 import {
   FolderKanban,
   ExternalLink,
@@ -121,10 +120,22 @@ export default function Projects({ data }) {
         </svg>
 
         {projects.map((project, index) => {
-          const position =
+          const basePosition =
             PROJECT_POSITIONS[
               index % PROJECT_POSITIONS.length
             ];
+
+          const cycle = Math.floor(
+            index / PROJECT_POSITIONS.length
+          );
+
+          const position = {
+            ...basePosition,
+            top: `${
+              parseInt(basePosition.top, 10) +
+              cycle * 1800
+            }px`,
+          };
 
           const image =
             project?.image ||
@@ -136,9 +147,13 @@ export default function Projects({ data }) {
             ? project.techStack
             : [];
 
+          const repoLink =
+            project?.githubUrl ||
+            project?.repoUrl;
+
           return (
             <div
-              key={project?.title || index}
+              key={`${project?.title || "project"}-${index}`}
               className="absolute w-[420px]"
               style={{
                 left: position.left,
@@ -168,7 +183,7 @@ export default function Projects({ data }) {
                   <div className="flex flex-wrap gap-2 mb-6">
                     {techStack.map((tech) => (
                       <span
-                        key={`${project?.title}-${tech}`}
+                        key={`${project?.title}-${tech}-${index}`}
                         className="px-3 py-1 rounded-full text-xs bg-cyan-500/10 border border-cyan-500/20 text-cyan-300"
                       >
                         {tech}
@@ -190,9 +205,9 @@ export default function Projects({ data }) {
                     </a>
                   )}
 
-                  {project?.githubUrl && (
+                  {repoLink && (
                     <a
-                      href={project.githubUrl}
+                      href={repoLink}
                       target="_blank"
                       rel="noreferrer"
                       className="flex items-center gap-2 px-4 py-2 rounded-xl border border-white/10 bg-white/5"
@@ -221,9 +236,13 @@ export default function Projects({ data }) {
             ? project.techStack
             : [];
 
+          const repoLink =
+            project?.githubUrl ||
+            project?.repoUrl;
+
           return (
             <CanvasCard
-              key={project?.title || index}
+              key={`${project?.title || "project"}-${index}`}
               delay={index * 0.05}
             >
               <img
@@ -245,7 +264,7 @@ export default function Projects({ data }) {
                 <div className="flex flex-wrap gap-2 mb-5">
                   {techStack.map((tech) => (
                     <span
-                      key={`${project?.title}-${tech}`}
+                      key={`${project?.title}-${tech}-${index}`}
                       className="px-3 py-1 rounded-full text-xs bg-cyan-500/10 border border-cyan-500/20 text-cyan-300"
                     >
                       {tech}
@@ -253,6 +272,32 @@ export default function Projects({ data }) {
                   ))}
                 </div>
               )}
+
+              <div className="flex gap-3 flex-wrap">
+                {project?.liveUrl && (
+                  <a
+                    href={project.liveUrl}
+                    target="_blank"
+                    rel="noreferrer"
+                    className="flex items-center gap-2 px-4 py-2 rounded-xl bg-cyan-500 text-black font-semibold"
+                  >
+                    <ExternalLink size={16} />
+                    Live
+                  </a>
+                )}
+
+                {repoLink && (
+                  <a
+                    href={repoLink}
+                    target="_blank"
+                    rel="noreferrer"
+                    className="flex items-center gap-2 px-4 py-2 rounded-xl border border-white/10 bg-white/5"
+                  >
+                    <Github size={16} />
+                    Code
+                  </a>
+                )}
+              </div>
             </CanvasCard>
           );
         })}
