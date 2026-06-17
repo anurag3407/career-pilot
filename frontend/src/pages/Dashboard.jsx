@@ -28,6 +28,7 @@ import {
 } from 'lucide-react'
 import { resumeApi, jobTrackerApi, portfolioApi, userProfileApi } from '../services/api'
 import Button from '../components/Button'
+import JobApplicationSuccessInsights from '../components/JobApplicationSuccessInsights'
 import {
   SkeletonAction,
   SkeletonStat,
@@ -411,6 +412,10 @@ export default function Dashboard() {
                   </motion.div>
                 );
               })}
+            </motion.div>
+
+            <motion.div variants={itemVariants} className="mb-10">
+              <JobApplicationSuccessInsights />
             </motion.div>
 
             {/* GitHub Overview */}
