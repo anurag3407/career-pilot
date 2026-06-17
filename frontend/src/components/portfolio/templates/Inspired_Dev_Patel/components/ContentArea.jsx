@@ -43,7 +43,7 @@ const SKILL_LOGOS = [
   'https://cdn.jsdelivr.net/gh/devicons/devicon/icons/csharp/csharp-original.svg',
 ];
 
-const ContentArea = ({ data, theme }) => {
+const ContentArea = ({ activeTab, data, theme }) => {
   const { projects, stats } = data || {};
 
   // Animations
