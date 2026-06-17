@@ -1,5 +1,18 @@
 export const templates = [
   {
+    "id": "Text_to_Speech_Narrator_Drive",
+    "title": "Text to Speech Narrator Drive",
+    "category": "Portfolio",
+    "colorScheme": "Dark",
+    "layout": "Interactive",
+    "author": "System",
+    "views": 0,
+    "rating": 5.0,
+    "image": "\template-previews\Text_to_Speech_Narrator_Drive.png",
+    "createdAt": "2026-06-17",
+    "isComplete": true
+  },
+  {
     "id": "ASCII_Art_Terminal_Code",
     "title": "ASCII Art Terminal Code",
     "category": "Portfolio",

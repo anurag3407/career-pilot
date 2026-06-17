@@ -31,7 +31,7 @@ import TextToResume from './pages/TextToResume';
 import About from './components/portfolio/templates/Tech_Startup/About';
 import ChatbotPortfolio from "./components/portfolio/templates/Chatbot_Portfolio";
 import GlassmorphismTemplate from "./components/portfolio/templates/Glassmorphism/index";
-
+import ChooseYourFighter from './components/portfolio/templates/Choose_Your_Fighter_Character_Select/index.jsx';
 import JobTracker from './pages/JobTracker';
 
 const Community = lazy(() => import('./pages/Community'));
@@ -118,7 +118,7 @@ import TestSocialLinks from './pages/TestSocialLinks';
 import ZineCollage from './components/portfolio/templates/ZineCollage';
 import TransparentDesktopOverlayOS from './components/portfolio/templates/Transparent_Desktop_Overlay_OS/index.jsx';
 import Origami_Unfold_Step_Animation from './components/portfolio/templates/Origami_Unfold_Step_Animation/index.jsx';
-
+import TextToSpeechNarratorDrive from './components/portfolio/templates/Text_to_Speech_Narrator_Drive/index.jsx';
 function LoadingScreen({ label }) {
   return (
     <div className="min-h-screen flex items-center justify-center bg-background">
@@ -281,13 +281,14 @@ function AppRoutes() {
         <Route path="/templates/high-fashion" element={<HighFashion />} />
         <Route path="/templates/typographic-wheatpaste-poster-wall" element={<TypographicWheatpastePosterWall />} />
         <Route path="/templates/digital-manifesto-scroll" element={<DigitalManifestoScroll />} />
-
+<Route path="/templates/choose-your-fighter-character-select" element={<ChooseYourFighter />} />
         <Route path="/templates/zine-collage" element={<ZineCollage />} />
         <Route path="/templates/chatbot" element={<ChatbotPortfolio />} /> 
         <Route path="/templates/glassmorphism" element={<GlassmorphismTemplate/>} />
         <Route path="/templates/transparent-desktop-overlay-os" element={<TransparentDesktopOverlayOS />} />
         <Route path="/templates/origami-unfold-step-animation" element={<Origami_Unfold_Step_Animation />} />
         {/* Core Protected Routes */}
+        <Route path="/templates/text-to-speech-narrator-drive" element={<TextToSpeechNarratorDrive />} />
         <Route 
   path="/dashboard" 
   element={
