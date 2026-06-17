@@ -1,3 +1,4 @@
+import { usePortfolio } from "../../../../context/PortfolioContext";
 import React from "react";
 import { motion } from "framer-motion";
 import {
@@ -9,7 +10,6 @@ import {
   MapPin,
   Sparkles,
 } from "lucide-react";
-import data from "../../../../data/dummy_data.json";
 
 const staggerContainer = {
   hidden: {},
@@ -34,6 +34,8 @@ const floatMotion = {
 };
 
 export default function SpringBounce() {
+  const { portfolioData: data } = usePortfolio();
+
   const skillCategories = data.skills.reduce((acc, skill) => {
     acc[skill.category] = acc[skill.category] || [];
     acc[skill.category].push(skill);

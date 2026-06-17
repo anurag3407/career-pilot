@@ -1,6 +1,6 @@
+import { usePortfolio } from "../../../../context/PortfolioContext";
 import React from 'react';
 import { motion } from 'framer-motion';
-import data from '../../../../data/dummy_data.json';
 
 /**
  * Medium Article Portfolio Template
@@ -13,6 +13,8 @@ const fadeUp = {
 };
 
 export default function MediumArticle() {
+  const { portfolioData: data } = usePortfolio();
+
   return (
     <div className="min-h-screen bg-white text-zinc-800">
       <div className="max-w-3xl mx-auto px-4 sm:px-6 lg:px-8 py-16">

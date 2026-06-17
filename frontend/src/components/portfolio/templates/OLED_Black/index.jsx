@@ -1,5 +1,5 @@
+import { usePortfolio } from "../../../../context/PortfolioContext";
 import React from 'react';
-import data from '../../../../data/dummy_data.json';
 import Hero from './Hero';
 import About from './About';
 import Skills from './Skills';
@@ -9,6 +9,8 @@ import Testimonials from './Testimonials';
 import Contact from './Contact';
 
 export default function OLED_Black_Portfolio() {
+  const { portfolioData: data } = usePortfolio();
+
   const { personal, socials, skills, projects, experience, testimonials, stats } = data;
 
   return (

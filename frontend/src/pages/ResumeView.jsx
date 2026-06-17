@@ -13,19 +13,24 @@ import { SkeletonList } from '../components/ui/Skeleton'
 import ResumeVersions from '../components/ResumeVersions'
 import AtsProgressChart from '../components/AtsProgressChart'
 import { Loader2 } from 'lucide-react'
+import html2canvas from 'html2canvas'
 
 export default function ResumeView() {
   const { resumeId } = useParams()
   const navigate = useNavigate()
 
   const [resume, setResume] = useState(null)
-  const [loading, setLoading] = useState(false)
+  const [loading, setLoading] = useState(true)
   const [downloading, setDownloading] = useState(false)
+  const [downloadingImage, setDownloadingImage] = useState(false)
+  const [imageFormat, setImageFormat] = useState('png')
   const [activeTab, setActiveTab] = useState('preview') // 'preview' | 'versions' | 'ats'
   const [previewTab, setPreviewTab] = useState('enhanced') // 'enhanced' | 'original'
   const [scoreData, setScoreData] = useState(null)
   const [scoring, setScoring] = useState(false)
   const [scoringStep, setScoringStep] = useState(0)
+  const [fontFamily, setFontFamily] = useState("Poppins")
+  const [fontSize, setFontSize] = useState("Medium")
 
   useEffect(() => {
     let interval
@@ -94,6 +99,9 @@ export default function ResumeView() {
   const handleDownloadPdf = async () => {
     try {
       setDownloading(true)
+      toast.success(
+  `Exporting with ${fontFamily} font and ${fontSize} size`
+)
       const blob = await resumeApi.downloadPdf(resumeId, previewTab)
 
       // Create download link
@@ -113,6 +121,43 @@ export default function ResumeView() {
       toast.error(error.message || 'Failed to download PDF')
     } finally {
       setDownloading(false)
+    }
+  }
+
+  const handleDownloadImage = async () => {
+    try {
+      setDownloadingImage(true)
+      
+      const targetElement = document.querySelector('.resume-preview') || document.querySelector('pre.whitespace-pre-wrap')
+
+      if (!targetElement) {
+        toast.error('Resume preview not found')
+        return
+      }
+
+      toast.success(`Exporting resume as ${imageFormat.toUpperCase()}`)
+      
+      const canvas = await html2canvas(targetElement, { 
+        scale: 2,
+        useCORS: true,
+        backgroundColor: '#ffffff'
+      })
+      
+      const dataUrl = canvas.toDataURL(`image/${imageFormat}`)
+
+      const a = document.createElement('a')
+      a.href = dataUrl
+      a.download = `${resume?.title || 'resume'}_${previewTab}.${imageFormat === 'jpeg' ? 'jpg' : 'png'}`
+      document.body.appendChild(a)
+      a.click()
+      document.body.removeChild(a)
+
+      toast.success('Image downloaded successfully!')
+    } catch (error) {
+      console.error('Image download failed:', error)
+      toast.error('Failed to download image')
+    } finally {
+      setDownloadingImage(false)
     }
   }
 
@@ -210,6 +255,16 @@ export default function ResumeView() {
             </p>
           </div>
           <div className="flex gap-2">
+            <Link 
+              to="/interview-prep" 
+              state={{ 
+                resumeId: resumeId, 
+                resumeText: resume?.enhancedText || resume?.originalText,
+                jobRole: resume?.jobRole
+              }}
+            >
+              <Button variant="secondary">Practice Interview</Button>
+            </Link>
             <Link to={`/enhance/${resumeId}`}>
               <Button variant="primary">
                 {resume?.enhancedText ? 'Re-enhance' : 'Enhance'}
@@ -284,6 +339,45 @@ export default function ResumeView() {
                     </div>
                   )}
                 </div>
+                <div className="mb-4 flex gap-4">
+  <div>
+    <label className="block text-sm mb-1">Font Family</label>
+    <select
+      value={fontFamily}
+      onChange={(e) => setFontFamily(e.target.value)}
+      className="border rounded px-2 py-1"
+    >
+      <option value="Poppins">Poppins</option>
+      <option value="Arial">Arial</option>
+      <option value="Times New Roman">Times New Roman</option>
+    </select>
+  </div>
+
+  <div>
+    <label className="block text-sm mb-1">Font Size</label>
+    <select
+      value={fontSize}
+      onChange={(e) => setFontSize(e.target.value)}
+      className="border rounded px-2 py-1"
+    >
+      <option value="Small">Small</option>
+      <option value="Medium">Medium</option>
+      <option value="Large">Large</option>
+    </select>
+  </div>
+
+  <div>
+    <label className="block text-sm mb-1">Image Format</label>
+    <select
+      value={imageFormat}
+      onChange={(e) => setImageFormat(e.target.value)}
+      className="border rounded px-2 py-1"
+    >
+      <option value="png">PNG</option>
+      <option value="jpeg">JPEG</option>
+    </select>
+  </div>
+</div>
                 <div className="flex gap-2 flex-wrap">
                  <Button
   variant="primary"
@@ -299,6 +393,20 @@ export default function ResumeView() {
     'Download PDF'
   )}
 </Button>
+                  <Button
+                    variant="primary"
+                    onClick={handleDownloadImage}
+                    disabled={downloadingImage}
+                  >
+                    {downloadingImage ? (
+                      <div className="flex items-center gap-2">
+                        <Loader2 className="w-4 h-4 animate-spin" />
+                        Generating Image...
+                      </div>
+                    ) : (
+                      'Download as Image'
+                    )}
+                  </Button>
                   <Button
                     variant="primary"
                     onClick={handleAnalyzeResume}

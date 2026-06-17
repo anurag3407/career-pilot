@@ -1,10 +1,17 @@
 import React from 'react';
 
-export default function About() {
+export default function About({ data }) {
+  if (!data || !data.personal || !data.personal.about) return null;
+
   return (
-    <div className="w-full min-h-[400px] flex items-center justify-center border-2 border-dashed border-gray-300 rounded-xl p-8">
-      <h2 className="text-2xl font-bold text-gray-500">Minimalist_White Theme - About Section</h2>
-      <p className="mt-4 text-gray-400">Implementation pending. Open an issue to contribute!</p>
-    </div>
+    <section className="py-24 px-6 bg-white text-gray-900 border-t border-gray-100">
+      <div className="max-w-3xl mx-auto text-center">
+        <h2 className="text-3xl md:text-4xl font-light mb-8 tracking-wide">About Me</h2>
+        <div className="w-12 h-px bg-gray-300 mx-auto mb-12"></div>
+        <p className="text-lg text-gray-500 font-light leading-relaxed text-justify md:text-center">
+          {data.personal.about}
+        </p>
+      </div>
+    </section>
   );
 }
