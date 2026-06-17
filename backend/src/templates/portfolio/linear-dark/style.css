@@ -1,0 +1,40 @@
+:root {
+
+--bg: #0A0A0F;
+
+--surface: rgba(255,255,255,0.04);
+
+--border: rgba(255,255,255,0.08);
+
+--primary: #5E6AD2;
+
+--accent: #F5A623;
+
+--text: #F5F7FA;
+
+--muted: #9CA3AF;
+
+--radius: 18px;
+
+}
+
+* {
+  margin:0;
+  padding:0;
+  box-sizing:border-box;
+}
+
+body {
+
+  background:#0A0A0F;
+
+  color:white;
+
+  font-family:
+    Inter,
+    "DM Sans",
+    sans-serif;
+
+  overflow-x:hidden;
+}
+
