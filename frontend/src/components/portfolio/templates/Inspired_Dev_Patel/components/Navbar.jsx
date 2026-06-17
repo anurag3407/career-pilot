@@ -1,73 +1,27 @@
 import React, { useState, useEffect } from 'react';
 import { Home, User, Briefcase, LayoutGrid, FileText, Mail, Sun, ChevronDown, Layers } from 'lucide-react';
 
-const Navbar = ({ name }) => {
+const Navbar = ({ activeTab, setActiveTab, name }) => {
   const [firstName, lastName] = (name || 'Dev Patel').split(' ');
-  const [activeHash, setActiveHash] = useState('#home');
 
   const navItems = [
-    { id: '#home', label: 'Home' },
-    { id: '#services', label: 'Services' },
-    { id: '#works', label: 'Works' },
-    { id: '#blogs', label: 'Blogs' },
-    { id: '#contact', label: "Let's Talk" }
+    { id: 'Home', label: 'Home' },
+    { id: 'Services', label: 'Services' },
+    { id: 'Works', label: 'Works' },
+    { id: 'Blogs', label: 'Blogs' },
+    { id: 'Contact', label: "Let's Talk" }
   ];
-
-  useEffect(() => {
-    const observer = new IntersectionObserver(
-      (entries) => {
-        entries.forEach((entry) => {
-          if (entry.isIntersecting) {
-            setActiveHash('#' + entry.target.id);
-          }
-        });
-      },
-      { rootMargin: '-20% 0px -60% 0px' }
-    );
-
-    navItems.forEach((item) => {
-      const el = document.querySelector(item.id);
-      if (el) observer.observe(el);
-    });
-
-    return () => observer.disconnect();
-  }, []);
 
   const handleNavClick = (e, id) => {
     e.preventDefault();
     e.stopPropagation();
-    const element = document.querySelector(id);
-    if (element) {
-      // Find the scrollable container. Career-pilot uses flex-1 overflow-y-auto on main
-      const container = element.closest('.overflow-y-auto') || document.querySelector('main') || window;
-      
-      const offset = 120; // Accounts for sticky navbar
-      
-      if (container !== window) {
-        const containerTop = container.getBoundingClientRect().top;
-        const elementTop = element.getBoundingClientRect().top;
-        const targetPos = container.scrollTop + (elementTop - containerTop) - offset;
-        
-        container.scrollTo({
-          top: targetPos,
-          behavior: 'smooth'
-        });
-      } else {
-        const bodyRect = document.body.getBoundingClientRect().top;
-        const elementRect = element.getBoundingClientRect().top;
-        window.scrollTo({
-          top: (elementRect - bodyRect) - offset,
-          behavior: 'smooth'
-        });
-      }
-      setActiveHash(id);
-    }
+    setActiveTab(id);
   };
 
   return (
     <nav className="flex items-center justify-between px-6 py-4 rounded-[32px] sticky top-8 z-50 shadow-2xl transition-all font-sans" style={{ backgroundColor: 'rgba(19, 22, 31, 0.85)', backdropFilter: 'blur(16px)', border: '1px solid rgba(255,255,255,0.05)' }}>
       {/* Logo */}
-      <div className="flex items-center gap-3 cursor-pointer" onClick={(e) => handleNavClick(e, '#home')}>
+      <div className="flex items-center gap-3 cursor-pointer" onClick={(e) => handleNavClick(e, 'Home')}>
         <div className="flex gap-1">
           <div className="w-2 h-6 bg-white rounded-sm"></div>
           <div className="w-2 h-6 bg-white/50 rounded-sm"></div>
@@ -81,7 +35,7 @@ const Navbar = ({ name }) => {
       {/* Desktop Menu */}
       <div className="hidden lg:flex items-center gap-1 p-1 rounded-full" style={{ backgroundColor: '#0E1018', border: '1px solid rgba(255,255,255,0.02)' }}>
         {navItems.map((item) => {
-          const isActive = activeHash === item.id;
+          const isActive = activeTab === item.id;
           return (
             <button
               type="button"
