@@ -1,6 +1,6 @@
 /**
  * PasswordStrength — live password strength indicator for Register page.
- * Shows a segmented bar + label: Weak / Fair / Strong / Very Strong
+ * Shows a segmented bar + label: Very Weak / Weak / Fair / Strong / Very Strong
  */
 export default function PasswordStrength({ password }) {
   if (!password) return null;
@@ -18,7 +18,7 @@ export default function PasswordStrength({ password }) {
   const score = getStrength(password);
 
   const levels = [
-    { label: "Weak",      color: "#ef4444", segments: 1 },
+    { label: "Very Weak", color: "#dc2626", segments: 1 },
     { label: "Weak",      color: "#ef4444", segments: 1 },
     { label: "Fair",      color: "#f97316", segments: 2 },
     { label: "Strong",    color: "#22c55e", segments: 3 },
@@ -26,6 +26,7 @@ export default function PasswordStrength({ password }) {
   ];
 
   const current = levels[Math.min(score, 4)];
+
   const tips = [];
   if (password.length < 8) tips.push("8+ characters");
   if (!/[A-Z]/.test(password)) tips.push("uppercase letter");
@@ -34,7 +35,6 @@ export default function PasswordStrength({ password }) {
 
   return (
     <div style={{ marginTop: "-8px", marginBottom: "16px" }}>
-      {/* Segmented bar */}
       <div style={{ display: "flex", gap: "4px", marginBottom: "6px" }}>
         {[1, 2, 3, 4].map((seg) => (
           <div
@@ -49,8 +49,6 @@ export default function PasswordStrength({ password }) {
           />
         ))}
       </div>
-
-      {/* Label + tips */}
       <div style={{ display: "flex", justifyContent: "space-between", alignItems: "center" }}>
         <span style={{
           fontSize: "11px",
@@ -61,7 +59,7 @@ export default function PasswordStrength({ password }) {
         }}>
           {current.label}
         </span>
-        {tips.length > 0 && score < 4 && (
+        {tips.length > 0 && (
           <span style={{ fontSize: "10px", color: "#9ca3af" }}>
             Add: {tips.slice(0, 2).join(", ")}
           </span>
