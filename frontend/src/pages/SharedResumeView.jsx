@@ -60,7 +60,7 @@ export default function SharedResumeView() {
           <h2 className="font-semibold mb-2">All Comments ({comments.length})</h2>
           {comments.length === 0 && <p className="text-sm text-gray-400">No feedback yet.</p>}
           {comments.map(c => (
-            <div key={c._id} className={\`mb-3 p-2 rounded border text-sm \${c.resolved ? 'opacity-50 bg-green-50' : ''}\`}>
+            <div key={c._id} className={`mb-3 p-2 rounded border text-sm ${c.resolved ? 'opacity-50 bg-green-50' : ''}`}>
               <span className="font-medium">{c.authorName || c.authorEmail}</span>
               <span className="ml-2 text-xs bg-gray-100 text-gray-500 px-1 rounded">{c.section}</span>
               {c.resolved && <span className="ml-2 text-xs text-green-600">✓ resolved</span>}
