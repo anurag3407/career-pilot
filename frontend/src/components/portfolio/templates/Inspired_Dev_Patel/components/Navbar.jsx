@@ -37,7 +37,16 @@ const Navbar = ({ name }) => {
     e.preventDefault();
     const element = document.querySelector(id);
     if (element) {
-      element.scrollIntoView({ behavior: 'smooth', block: 'start' });
+      const offset = 120; // Accounts for the sticky navbar
+      const bodyRect = document.body.getBoundingClientRect().top;
+      const elementRect = element.getBoundingClientRect().top;
+      const elementPosition = elementRect - bodyRect;
+      const offsetPosition = elementPosition - offset;
+
+      window.scrollTo({
+        top: offsetPosition,
+        behavior: 'smooth'
+      });
       setActiveHash(id);
     }
   };
@@ -61,15 +70,14 @@ const Navbar = ({ name }) => {
         {navItems.map((item) => {
           const isActive = activeHash === item.id;
           return (
-            <a
+            <button
               key={item.id}
-              href={item.id}
               onClick={(e) => handleNavClick(e, item.id)}
               className={`px-6 py-2.5 rounded-full text-sm font-bold transition-all duration-300 ${isActive ? 'text-white' : 'text-slate-400 hover:text-slate-200'}`}
               style={{ backgroundColor: isActive ? '#1A1F2C' : 'transparent', boxShadow: isActive ? '0 4px 12px rgba(0,0,0,0.5)' : 'none' }}
             >
               {item.label}
-            </a>
+            </button>
           );
         })}
       </div>
