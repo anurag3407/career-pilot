@@ -150,7 +150,7 @@ export default function Audio_Visualizer_Frequency({ portfolioData }) {
         <div style={{
           fontSize: "18px",
           fontWeight: "800",
-          bcolor: c1,
+          color: c1,
           transition: "color 2s",
           letterSpacing: "-0.02em",   
         }}>
@@ -536,33 +536,7 @@ export default function Audio_Visualizer_Frequency({ portfolioData }) {
 
       </div>
 
-      {/* Visualizer footer bar */}
-      <div style={{
-        position: "fixed",
-        bottom: 0,
-        left: 0,
-        right: 0,
-        height: "48px",
-        display: "flex",
-        alignItems: "flex-end",
-        gap: "1px",
-        padding: "0 40px",
-        background: "rgba(5,5,5,0.9)",
-        borderTop: "1px solid rgba(255,255,255,0.04)",
-        overflow: "hidden",
-      }}>
-        {bars.map((h, i) => (
-          <div key={i} style={{
-            flex: 1,
-            height: `${Math.min(h * 0.4, 36)}px`,
-            background: `linear-gradient(to top, ${c1}88, ${c2}44)`,
-            borderRadius: "2px 2px 0 0",
-            transition: "height 0.1s ease, background 2s ease",
-          }} />
-        ))}
-      </div>
-
-      <div style={{ height: "60px" }} />
+      <div style={{ height: "24px" }} />
     </div>
   );
 }
