@@ -3,6 +3,7 @@
  * Main Application Component with Route-based Code Splitting
  * Implements lazy loading for improved performance
  */
+import SharedResumeView from "./pages/SharedResumeView";
 import CoverLetter from "./pages/CoverLetter";
 import VercelDeploy from "./components/portfolio/templates/Vercel_Deploy/index";
 import React, { useState, useEffect, lazy, Suspense } from 'react';
@@ -329,7 +330,6 @@ function AppRoutes() {
 />
         <Route path="/text-to-resume" element={<ProtectedRoute><Suspense fallback={<LoadingScreen label="Loading Text to Resume..." />}><TextToResume /></Suspense></ProtectedRoute>} />
         <Route path="/enhance/:resumeId" element={<ProtectedRoute><Suspense fallback={<LoadingScreen label="Loading Resume Enhancer..." />}><Enhance /></Suspense></ProtectedRoute>} />
-        <Route path="/shared/:shareToken" element={<SharedResumeView />} />
           <Route path="/resume/:resumeId" element={<ProtectedRoute><Suspense fallback={<LoadingScreen label="Loading Resume..." />}><ResumeView /></Suspense></ProtectedRoute>} />
         <Route 
   path="/jobs" 
