@@ -14,11 +14,13 @@ function HexBolt({ className = '' }) {
 
 export default function Hero({ data }) {
   const { personal = {}, socials = {}, stats = {} } = data || {};
+  const isSafeUrl = (url = '') =>
+    /^(https?:|mailto:)/i.test(url);
   const socialLinks = [
     { name: 'github', href: socials.github, icon: Github },
     { name: 'linkedin', href: socials.linkedin, icon: Linkedin },
     { name: 'twitter', href: socials.twitter, icon: Twitter },
-  ].filter((item) => item.href);
+  ].filter((item) => item.href && isSafeUrl(item.href));
 
   return (
     <motion.section

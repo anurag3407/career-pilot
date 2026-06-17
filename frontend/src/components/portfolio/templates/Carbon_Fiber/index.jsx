@@ -1,5 +1,4 @@
 import React from 'react';
-import data from '../../../../data/dummy_data.json';
 import Hero from './Hero';
 import About from './About';
 import Skills from './Skills';
@@ -8,7 +7,8 @@ import Projects from './Projects';
 import Testimonials from './Testimonials';
 import Contact from './Contact';
 
-export default function CarbonFiber() {
+export default function CarbonFiber({portfolioData}) {
+  const data = portfolioData || {};
   return (
     <div className="relative min-h-screen overflow-hidden bg-[#080808] text-white font-sans selection:bg-slate-300 selection:text-slate-950">
       {/* True carbon fiber weave — tight 45/135 crosshatch */}

@@ -41,47 +41,82 @@ export default function Contact({ data }) {
 
           <div className="mt-10 grid gap-3 sm:grid-cols-2">
             {[
-              { href: `mailto:${socials.email}`, icon: Mail, label: 'Email', sub: socials.email },
-              { href: socials.linkedin, icon: Linkedin, label: 'LinkedIn', sub: 'Connect professionally' },
-              { href: socials.github, icon: Github, label: 'GitHub', sub: 'View source and projects' },
-              { href: socials.twitter, icon: Twitter, label: 'Twitter', sub: 'Follow updates' },
-            ].map(({ href, icon: Icon, label, sub }) => (
-              <a
-                key={label}
-                href={href}
-                target={label !== 'Email' ? '_blank' : undefined}
-                rel="noreferrer"
-                className="group relative rounded-sm border border-slate-700/50 bg-[#0a0a0a] px-5 py-4 transition hover:border-slate-400/50 hover:bg-[#111] shadow-[inset_0_1px_0_rgba(255,255,255,0.04)]"
-              >
-                <div className="absolute inset-y-0 left-0 w-[2px] bg-gradient-to-b from-slate-300/50 via-slate-500/20 to-transparent opacity-0 group-hover:opacity-100 transition-opacity" />
-                <div className="flex items-center gap-3">
-                  <Icon className="h-4 w-4 text-slate-400 group-hover:text-slate-200 transition-colors" />
-                  <span className="text-sm font-bold bg-gradient-to-r from-gray-200 to-slate-100 bg-clip-text text-transparent">{label}</span>
-                </div>
-                <p className="mt-2 text-xs text-slate-600 group-hover:text-slate-500 transition-colors">{sub}</p>
-              </a>
-            ))}
+              {
+                href: socials.email ? `mailto:${socials.email}` : null,
+                icon: Mail,
+                label: 'Email',
+                sub: socials.email,
+              },
+              {
+                href: socials.linkedin,
+                icon: Linkedin,
+                label: 'LinkedIn',
+                sub: 'Connect professionally',
+              },
+              {
+                href: socials.github,
+                icon: Github,
+                label: 'GitHub',
+                sub: 'View source and projects',
+              },
+              {
+                href: socials.twitter,
+                icon: Twitter,
+                label: 'Twitter',
+                sub: 'Follow updates',
+              },
+            ]
+              .filter((item) => item.href)
+              .map(({ href, icon: Icon, label, sub }) => (
+                <a
+                  key={label}
+                  href={href}
+                  target={label !== 'Email' ? '_blank' : undefined}
+                  rel="noreferrer"
+                  className="group relative rounded-sm border border-slate-700/50 bg-[#0a0a0a] px-5 py-4 transition hover:border-slate-400/50 hover:bg-[#111] shadow-[inset_0_1px_0_rgba(255,255,255,0.04)]"
+                >
+                  <div className="absolute inset-y-0 left-0 w-[2px] bg-gradient-to-b from-slate-300/50 via-slate-500/20 to-transparent opacity-0 group-hover:opacity-100 transition-opacity" />
+
+                  <div className="flex items-center gap-3">
+                    <Icon className="h-4 w-4 text-slate-400 group-hover:text-slate-200 transition-colors" />
+                    <span className="text-sm font-bold bg-gradient-to-r from-gray-200 to-slate-100 bg-clip-text text-transparent">
+                      {label}
+                    </span>
+                  </div>
+
+                  <p className="mt-2 text-xs text-slate-600 group-hover:text-slate-500 transition-colors">
+                    {sub}
+                  </p>
+                </a>
+              ))}
           </div>
         </div>
 
-        {/* Quick note panel */}
         <div className="relative rounded-sm border border-slate-600/50 bg-[#0a0a0a] p-8 shadow-[inset_0_1px_0_rgba(255,255,255,0.05)]">
           <div className="absolute inset-x-0 top-0 h-[2px] bg-gradient-to-r from-transparent via-slate-300/50 to-transparent" />
           <div className="absolute inset-y-0 left-0 w-[2px] bg-gradient-to-b from-slate-300/50 via-slate-500/20 to-transparent" />
+
           <div className="inline-flex items-center gap-2 rounded-none border border-slate-700/50 bg-[#111] px-3 py-1.5 text-[10px] uppercase tracking-[0.3em] text-slate-500">
             Quick Note
           </div>
-          <h3 className="mt-4 text-xl font-bold bg-gradient-to-r from-gray-100 to-slate-200 bg-clip-text text-transparent tracking-tight">Send a fast email</h3>
+
+          <h3 className="mt-4 text-xl font-bold bg-gradient-to-r from-gray-100 to-slate-200 bg-clip-text text-transparent tracking-tight">
+            Send a fast email
+          </h3>
+
           <p className="mt-4 text-sm leading-7 text-slate-500">
             I'm available for freelance contracts, full-time work, and product collaborations. Expect a quick response from a teammate who values clarity and quality.
           </p>
-          <a
-            href={`mailto:${socials.email}`}
-            className="mt-8 inline-flex items-center justify-center gap-2 rounded-sm border border-slate-300/70 bg-gradient-to-b from-gray-300 via-gray-200 to-gray-300 px-6 py-3 text-xs font-black uppercase tracking-[0.2em] text-slate-900 transition hover:from-gray-200 hover:via-slate-100 hover:to-gray-200 hover:shadow-[0_6px_20px_rgba(192,192,192,0.4)] shadow-[0_2px_12px_rgba(192,192,192,0.2),inset_0_1px_0_rgba(255,255,255,0.8)]"
-          >
-            <Send className="h-3.5 w-3.5" />
-            Email me
-          </a>
+
+          {socials.email && (
+            <a
+              href={`mailto:${socials.email}`}
+              className="mt-8 inline-flex items-center justify-center gap-2 rounded-sm border border-slate-300/70 bg-gradient-to-b from-gray-300 via-gray-200 to-gray-300 px-6 py-3 text-xs font-black uppercase tracking-[0.2em] text-slate-900 transition hover:from-gray-200 hover:via-slate-100 hover:to-gray-200 hover:shadow-[0_6px_20px_rgba(192,192,192,0.4)] shadow-[0_2px_12px_rgba(192,192,192,0.2),inset_0_1px_0_rgba(255,255,255,0.8)]"
+            >
+              <Send className="h-3.5 w-3.5" />
+              Email me
+            </a>
+          )}
         </div>
       </div>
     </motion.section>
