@@ -1,101 +1,142 @@
 import React from "react";
-import { motion } from "framer-motion";
+import { motion, useReducedMotion } from "framer-motion";
 
 export default function CanvasBackground() {
+  const prefersReducedMotion = useReducedMotion();
+
   return (
     <>
-      {/* Grid Background */}
+      {/* Grid */}
       <div
-        className="fixed inset-0 opacity-[0.08] pointer-events-none"
+        aria-hidden="true"
+        className="fixed inset-0 pointer-events-none opacity-[0.06]"
         style={{
           backgroundImage: `
-            linear-gradient(to right, rgba(255,255,255,0.12) 1px, transparent 1px),
-            linear-gradient(to bottom, rgba(255,255,255,0.12) 1px, transparent 1px)
+            linear-gradient(to right, rgba(255,255,255,0.15) 1px, transparent 1px),
+            linear-gradient(to bottom, rgba(255,255,255,0.15) 1px, transparent 1px)
           `,
           backgroundSize: "80px 80px",
         }}
       />
 
-      {/* Gradient Glow 1 */}
-      <motion.div
-        animate={{
-          x: [0, 80, -50, 0],
-          y: [0, -40, 50, 0],
+      {/* Dot Pattern */}
+      <div
+        aria-hidden="true"
+        className="fixed inset-0 pointer-events-none opacity-[0.03]"
+        style={{
+          backgroundImage:
+            "radial-gradient(circle, white 1px, transparent 1px)",
+          backgroundSize: "40px 40px",
         }}
-        transition={{
-          duration: 20,
-          repeat: Infinity,
-          ease: "linear",
-        }}
-        className="fixed top-20 left-10 w-96 h-96 rounded-full bg-cyan-500/10 blur-[140px] pointer-events-none"
       />
 
-      {/* Gradient Glow 2 */}
+      {/* Glow 1 */}
       <motion.div
-        animate={{
-          x: [0, -100, 60, 0],
-          y: [0, 60, -80, 0],
-        }}
+        aria-hidden="true"
+        animate={
+          prefersReducedMotion
+            ? {}
+            : {
+                x: [0, 60, -40, 0],
+                y: [0, -40, 30, 0],
+              }
+        }
         transition={{
-          duration: 24,
+          duration: 22,
           repeat: Infinity,
           ease: "linear",
         }}
-        className="fixed bottom-20 right-10 w-[30rem] h-[30rem] rounded-full bg-purple-500/10 blur-[160px] pointer-events-none"
+        className="fixed top-20 left-10 w-[28rem] h-[28rem] rounded-full bg-cyan-500/10 blur-[140px] pointer-events-none"
+      />
+
+      {/* Glow 2 */}
+      <motion.div
+        aria-hidden="true"
+        animate={
+          prefersReducedMotion
+            ? {}
+            : {
+                x: [0, -70, 50, 0],
+                y: [0, 40, -50, 0],
+              }
+        }
+        transition={{
+          duration: 28,
+          repeat: Infinity,
+          ease: "linear",
+        }}
+        className="fixed bottom-20 right-10 w-[30rem] h-[30rem] rounded-full bg-purple-500/10 blur-[150px] pointer-events-none"
       />
 
       {/* Floating Dots */}
-      {Array.from({ length: 25 }).map((_, i) => (
-        <motion.div
-          key={i}
-          className="fixed w-1.5 h-1.5 bg-cyan-400/30 rounded-full pointer-events-none"
-          style={{
-            left: `${(i * 7) % 100}%`,
-            top: `${(i * 13) % 100}%`,
-          }}
-          animate={{
-            y: [0, -15, 0],
-            opacity: [0.2, 0.8, 0.2],
-          }}
-          transition={{
-            duration: 3 + (i % 5),
-            repeat: Infinity,
-            delay: i * 0.2,
-          }}
-        />
-      ))}
+      {!prefersReducedMotion &&
+        Array.from({ length: 18 }).map((_, index) => (
+          <motion.div
+            key={index}
+            aria-hidden="true"
+            className="fixed w-2 h-2 rounded-full bg-cyan-400/30 pointer-events-none"
+            style={{
+              left: `${(index * 11) % 100}%`,
+              top: `${(index * 17) % 100}%`,
+            }}
+            animate={{
+              y: [0, -12, 0],
+              opacity: [0.2, 0.7, 0.2],
+            }}
+            transition={{
+              duration: 3 + (index % 4),
+              repeat: Infinity,
+              delay: index * 0.15,
+            }}
+          />
+        ))}
 
-      {/* Whiteboard Connection Lines */}
-      <svg className="fixed inset-0 w-full h-full pointer-events-none opacity-[0.05]">
+      {/* Canvas Accent Lines */}
+      <svg
+        aria-hidden="true"
+        className="fixed inset-0 w-full h-full pointer-events-none opacity-[0.04]"
+      >
         <line
-          x1="15%"
+          x1="10%"
           y1="20%"
-          x2="45%"
+          x2="35%"
+          y2="30%"
+          stroke="white"
+          strokeWidth="1"
+        />
+
+        <line
+          x1="35%"
+          y1="30%"
+          x2="65%"
+          y2="18%"
+          stroke="white"
+          strokeWidth="1"
+        />
+
+        <line
+          x1="65%"
+          y1="18%"
+          x2="85%"
           y2="35%"
           stroke="white"
           strokeWidth="1"
         />
+
         <line
-          x1="45%"
-          y1="35%"
-          x2="70%"
-          y2="20%"
+          x1="20%"
+          y1="70%"
+          x2="55%"
+          y2="80%"
           stroke="white"
           strokeWidth="1"
         />
+
         <line
-          x1="30%"
-          y1="60%"
-          x2="60%"
-          y2="75%"
-          stroke="white"
-          strokeWidth="1"
-        />
-        <line
-          x1="60%"
-          y1="75%"
+          x1="55%"
+          y1="80%"
           x2="85%"
-          y2="55%"
+          y2="60%"
           stroke="white"
           strokeWidth="1"
         />

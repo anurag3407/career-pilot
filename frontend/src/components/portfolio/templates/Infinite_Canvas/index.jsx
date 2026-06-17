@@ -10,13 +10,6 @@ import Testimonials from "./Testimonials";
 import Contact from "./Contact";
 import CanvasBackground from "./CanvasBackground";
 
-/**
- * Infinite Canvas Portfolio Template
- * Category: Scroll-Triggered
- * Description:
- * Infinite scrolling canvas with projects placed at various
- * spatial positions. Feels like navigating a digital whiteboard.
- */
 export default function InfiniteCanvas() {
   const { portfolioData: data } = usePortfolio();
 
@@ -24,29 +17,38 @@ export default function InfiniteCanvas() {
     <div className="relative min-h-screen overflow-x-hidden bg-[#030712] text-white">
       <CanvasBackground />
 
-      {/* Canvas Container */}
-      <div className="relative w-full min-h-[5200px]">
+      <main className="relative z-10">
         {/* Hero */}
-        <Hero data={data} />
+        <section>
+          <Hero data={data} />
+        </section>
 
-        {/* About */}
-        <About data={data} />
+        {/* About + Skills */}
+        <section className="max-w-7xl mx-auto px-6 py-24">
+          <div className="grid grid-cols-1 lg:grid-cols-2 gap-8 items-start">
+            <About data={data} />
+            <Skills data={data} />
+          </div>
+        </section>
 
-        {/* Skills */}
-        <Skills data={data} />
+        {/* Infinite Canvas Projects */}
+        <section className="max-w-7xl mx-auto px-6 py-24">
+          <Projects data={data} />
+        </section>
 
-        {/* Projects */}
-        <Projects data={data} />
-
-        {/* Experience */}
-        <Experience data={data} />
-
-        {/* Testimonials */}
-        <Testimonials data={data} />
+        {/* Experience + Testimonials */}
+        <section className="max-w-7xl mx-auto px-6 py-24">
+          <div className="grid grid-cols-1 xl:grid-cols-2 gap-8 items-start">
+            <Experience data={data} />
+            <Testimonials data={data} />
+          </div>
+        </section>
 
         {/* Contact */}
-        <Contact data={data} />
-      </div>
+        <section className="max-w-6xl mx-auto px-6 py-24">
+          <Contact data={data} />
+        </section>
+      </main>
     </div>
   );
 }

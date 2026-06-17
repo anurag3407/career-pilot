@@ -1,150 +1,262 @@
 import React from "react";
 import { motion } from "framer-motion";
-import { ExternalLink, Github, FolderKanban } from "lucide-react";
+import {
+  FolderKanban,
+  ExternalLink,
+  Github,
+} from "lucide-react";
 import CanvasCard from "./CanvasCard";
 
-export default function Projects({ data }) {
-  const { projects } = data;
+const PROJECT_POSITIONS = [
+  { left: "5%", top: "0px", rotate: -3 },
+  { left: "55%", top: "180px", rotate: 2 },
+  { left: "15%", top: "520px", rotate: -2 },
+  { left: "60%", top: "780px", rotate: 3 },
+  { left: "8%", top: "1180px", rotate: -1 },
+  { left: "55%", top: "1450px", rotate: 2 },
+];
 
-  const positions = [
-    "left-[6%] top-0",
-    "right-[8%] top-[180px]",
-    "left-[28%] top-[420px]",
-    "right-[22%] top-[640px]",
-    "left-[10%] top-[900px]",
-    "right-[10%] top-[1180px]",
-  ];
+export default function Projects({ data }) {
+  const projects = Array.isArray(data?.projects)
+    ? data.projects
+    : [];
+
+  if (projects.length === 0) {
+    return (
+      <CanvasCard>
+        <div className="text-center py-12">
+          <FolderKanban
+            size={48}
+            className="mx-auto mb-4 text-cyan-400"
+          />
+
+          <h2 className="text-3xl font-bold mb-3">
+            Projects Canvas
+          </h2>
+
+          <p className="text-gray-400">
+            No projects available.
+          </p>
+        </div>
+      </CanvasCard>
+    );
+  }
 
   return (
-    <div className="absolute top-[1450px] left-0 w-full min-h-[1700px]">
-      <motion.div
-        initial={{ opacity: 0 }}
-        whileInView={{ opacity: 1 }}
-        viewport={{ once: true }}
-        className="absolute left-1/2 -translate-x-1/2 -top-20 text-center"
-      >
-        <div className="flex items-center justify-center gap-3 mb-3">
-          <FolderKanban className="text-cyan-400" size={24} />
-          <h2 className="text-4xl font-black">Projects Canvas</h2>
+    <div>
+      <div className="text-center mb-16">
+        <div className="flex justify-center items-center gap-3 mb-4">
+          <FolderKanban
+            size={28}
+            className="text-cyan-400"
+          />
+
+          <h2 className="text-4xl md:text-5xl font-black">
+            Infinite Canvas
+          </h2>
         </div>
 
-        <p className="text-gray-400 max-w-xl">
-          Explore projects placed across the infinite workspace.
+        <p className="max-w-2xl mx-auto text-gray-400">
+          Explore projects placed across a connected
+          whiteboard-inspired workspace.
         </p>
-      </motion.div>
+      </div>
 
-      {projects.map((project, index) => {
-        const position = positions[index % positions.length];
-        const rotation =
-          index % 2 === 0
-            ? (index % 4) + 1
-            : -((index % 4) + 1);
+      {/* Desktop Canvas */}
+      <div className="hidden lg:block relative min-h-[1900px]">
+        {/* Connection Lines */}
+        <svg
+          className="absolute inset-0 w-full h-full pointer-events-none opacity-20"
+          aria-hidden="true"
+        >
+          <line
+            x1="25%"
+            y1="120"
+            x2="68%"
+            y2="320"
+            stroke="white"
+            strokeWidth="1"
+            strokeDasharray="8 8"
+          />
 
-        return (
-          <div
-            key={project.title}
-            className={`absolute ${position} w-[90%] md:w-[420px]`}
-          >
-            <CanvasCard
-              delay={index * 0.08}
-              rotate={rotation}
+          <line
+            x1="68%"
+            y1="320"
+            x2="30%"
+            y2="650"
+            stroke="white"
+            strokeWidth="1"
+            strokeDasharray="8 8"
+          />
+
+          <line
+            x1="30%"
+            y1="650"
+            x2="72%"
+            y2="920"
+            stroke="white"
+            strokeWidth="1"
+            strokeDasharray="8 8"
+          />
+
+          <line
+            x1="72%"
+            y1="920"
+            x2="25%"
+            y2="1320"
+            stroke="white"
+            strokeWidth="1"
+            strokeDasharray="8 8"
+          />
+
+          <line
+            x1="25%"
+            y1="1320"
+            x2="72%"
+            y2="1580"
+            stroke="white"
+            strokeWidth="1"
+            strokeDasharray="8 8"
+          />
+        </svg>
+
+        {projects.map((project, index) => {
+          const position =
+            PROJECT_POSITIONS[
+              index % PROJECT_POSITIONS.length
+            ];
+
+          const image =
+            project?.image ||
+            "https://placehold.co/800x450?text=Project";
+
+          const techStack = Array.isArray(
+            project?.techStack
+          )
+            ? project.techStack
+            : [];
+
+          return (
+            <div
+              key={project?.title || index}
+              className="absolute w-[420px]"
+              style={{
+                left: position.left,
+                top: position.top,
+              }}
             >
-              <motion.img
-                initial={{ opacity: 0, scale: 0.95 }}
-                whileInView={{ opacity: 1, scale: 1 }}
-                viewport={{ once: true }}
-                transition={{ duration: 0.6 }}
-                src={project.image}
-                alt={project.title}
+              <CanvasCard
+                rotate={position.rotate}
+                delay={index * 0.08}
+              >
+                <img
+                  src={image}
+                  alt={project?.title || "Project"}
+                  className="w-full h-52 object-cover rounded-2xl mb-5"
+                />
+
+                <h3 className="text-2xl font-bold mb-3">
+                  {project?.title || "Untitled Project"}
+                </h3>
+
+                <p className="text-gray-400 leading-7 mb-5">
+                  {project?.description ||
+                    "No description available."}
+                </p>
+
+                {techStack.length > 0 && (
+                  <div className="flex flex-wrap gap-2 mb-6">
+                    {techStack.map((tech) => (
+                      <span
+                        key={`${project?.title}-${tech}`}
+                        className="px-3 py-1 rounded-full text-xs bg-cyan-500/10 border border-cyan-500/20 text-cyan-300"
+                      >
+                        {tech}
+                      </span>
+                    ))}
+                  </div>
+                )}
+
+                <div className="flex gap-3 flex-wrap">
+                  {project?.liveUrl && (
+                    <a
+                      href={project.liveUrl}
+                      target="_blank"
+                      rel="noreferrer"
+                      className="flex items-center gap-2 px-4 py-2 rounded-xl bg-cyan-500 text-black font-semibold"
+                    >
+                      <ExternalLink size={16} />
+                      Live
+                    </a>
+                  )}
+
+                  {project?.githubUrl && (
+                    <a
+                      href={project.githubUrl}
+                      target="_blank"
+                      rel="noreferrer"
+                      className="flex items-center gap-2 px-4 py-2 rounded-xl border border-white/10 bg-white/5"
+                    >
+                      <Github size={16} />
+                      Code
+                    </a>
+                  )}
+                </div>
+              </CanvasCard>
+            </div>
+          );
+        })}
+      </div>
+
+      {/* Mobile + Tablet */}
+      <div className="lg:hidden space-y-6">
+        {projects.map((project, index) => {
+          const image =
+            project?.image ||
+            "https://placehold.co/800x450?text=Project";
+
+          const techStack = Array.isArray(
+            project?.techStack
+          )
+            ? project.techStack
+            : [];
+
+          return (
+            <CanvasCard
+              key={project?.title || index}
+              delay={index * 0.05}
+            >
+              <img
+                src={image}
+                alt={project?.title || "Project"}
                 className="w-full h-52 object-cover rounded-2xl mb-5"
               />
 
               <h3 className="text-2xl font-bold mb-3">
-                {project.title}
+                {project?.title || "Untitled Project"}
               </h3>
 
-              <p className="text-gray-400 leading-7 mb-5">
-                {project.description}
+              <p className="text-gray-400 mb-5">
+                {project?.description ||
+                  "No description available."}
               </p>
 
-              <div className="flex flex-wrap gap-2 mb-6">
-                {project.techStack?.map((tech) => (
-                  <span
-                    key={tech}
-                    className="px-3 py-1 rounded-full text-xs bg-white/5 border border-white/10 text-cyan-300"
-                  >
-                    {tech}
-                  </span>
-                ))}
-              </div>
-
-              <div className="flex items-center gap-3">
-                <a
-                  href={project.liveUrl}
-                  target="_blank"
-                  rel="noreferrer"
-                  className="flex items-center gap-2 px-4 py-2 rounded-xl bg-cyan-500 text-black font-semibold hover:scale-105 transition"
-                >
-                  <ExternalLink size={16} />
-                  Live Demo
-                </a>
-
-                <a
-                  href={project.githubUrl}
-                  target="_blank"
-                  rel="noreferrer"
-                  className="flex items-center gap-2 px-4 py-2 rounded-xl border border-white/10 bg-white/5 hover:bg-white/10 transition"
-                >
-                  <Github size={16} />
-                  Code
-                </a>
-              </div>
+              {techStack.length > 0 && (
+                <div className="flex flex-wrap gap-2 mb-5">
+                  {techStack.map((tech) => (
+                    <span
+                      key={`${project?.title}-${tech}`}
+                      className="px-3 py-1 rounded-full text-xs bg-cyan-500/10 border border-cyan-500/20 text-cyan-300"
+                    >
+                      {tech}
+                    </span>
+                  ))}
+                </div>
+              )}
             </CanvasCard>
-          </div>
-        );
-      })}
-
-      <svg className="absolute inset-0 w-full h-full pointer-events-none opacity-10">
-        <line
-          x1="25%"
-          y1="120"
-          x2="75%"
-          y2="350"
-          stroke="white"
-          strokeWidth="1"
-          strokeDasharray="6 6"
-        />
-
-        <line
-          x1="75%"
-          y1="350"
-          x2="35%"
-          y2="700"
-          stroke="white"
-          strokeWidth="1"
-          strokeDasharray="6 6"
-        />
-
-        <line
-          x1="35%"
-          y1="700"
-          x2="70%"
-          y2="1050"
-          stroke="white"
-          strokeWidth="1"
-          strokeDasharray="6 6"
-        />
-
-        <line
-          x1="70%"
-          y1="1050"
-          x2="25%"
-          y2="1400"
-          stroke="white"
-          strokeWidth="1"
-          strokeDasharray="6 6"
-        />
-      </svg>
+          );
+        })}
+      </div>
     </div>
   );
 }

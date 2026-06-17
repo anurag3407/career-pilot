@@ -10,73 +10,64 @@ import {
 import CanvasCard from "./CanvasCard";
 
 export default function Contact({ data }) {
-  const { personal, socials } = data;
+  const { personal = {}, socials = {} } = data || {};
 
-  const links = [
+  const socialLinks = [
     {
-      icon: Github,
       label: "GitHub",
-      href: socials.github,
+      href: socials?.github,
+      icon: Github,
     },
     {
-      icon: Linkedin,
       label: "LinkedIn",
-      href: socials.linkedin,
+      href: socials?.linkedin,
+      icon: Linkedin,
     },
     {
-      icon: Twitter,
       label: "Twitter",
-      href: socials.twitter,
+      href: socials?.twitter,
+      icon: Twitter,
     },
-    {
-      icon: Mail,
-      label: "Email",
-      href: `mailto:${socials.email}`,
-    },
-  ];
+  ].filter((item) => Boolean(item.href));
 
   return (
-    <div className="absolute top-[4300px] left-1/2 -translate-x-1/2 w-[92%] md:w-[900px] pb-32">
-      <CanvasCard delay={0.4}>
-        <div className="text-center">
-          <motion.h2
-            initial={{
-              opacity: 0,
-              y: 20,
-            }}
-            whileInView={{
-              opacity: 1,
-              y: 0,
-            }}
-            viewport={{
-              once: true,
-            }}
-            transition={{
-              duration: 0.6,
-            }}
-            className="text-4xl md:text-5xl font-black mb-4"
-          >
-            Let's Build Something Great
-          </motion.h2>
+    <CanvasCard delay={0.3}>
+      <div className="text-center">
+        <motion.h2
+          initial={{
+            opacity: 0,
+            y: 20,
+          }}
+          whileInView={{
+            opacity: 1,
+            y: 0,
+          }}
+          viewport={{
+            once: true,
+          }}
+          transition={{
+            duration: 0.6,
+          }}
+          className="text-4xl md:text-5xl font-black mb-4"
+        >
+          Let's Work Together
+        </motion.h2>
 
-          <p className="text-gray-400 max-w-2xl mx-auto leading-8 mb-10">
-            Interested in collaborating, hiring, or discussing a project?
-            I'm always open to meaningful conversations and exciting ideas.
-          </p>
+        <p className="max-w-2xl mx-auto text-gray-400 leading-8 mb-10">
+          Open to collaborations, freelance opportunities,
+          product discussions, and ambitious ideas.
+        </p>
 
-          <div className="grid grid-cols-2 md:grid-cols-4 gap-4 mb-12">
-            {links.map((item, index) => {
-              const Icon = item.icon;
+        {socialLinks.length > 0 && (
+          <div className="grid grid-cols-1 sm:grid-cols-3 gap-4 mb-10">
+            {socialLinks.map((link, index) => {
+              const Icon = link.icon;
 
               return (
                 <motion.a
-                  key={item.label}
-                  href={item.href}
-                  target={
-                    item.label === "Email"
-                      ? "_self"
-                      : "_blank"
-                  }
+                  key={link.label}
+                  href={link.href}
+                  target="_blank"
                   rel="noreferrer"
                   initial={{
                     opacity: 0,
@@ -90,10 +81,10 @@ export default function Contact({ data }) {
                     once: true,
                   }}
                   transition={{
-                    delay: index * 0.1,
+                    delay: index * 0.08,
                   }}
                   whileHover={{
-                    y: -5,
+                    y: -4,
                   }}
                   className="rounded-2xl border border-white/10 bg-white/[0.03] p-5 flex flex-col items-center gap-3 hover:border-cyan-400/30 transition"
                 >
@@ -102,38 +93,58 @@ export default function Contact({ data }) {
                     className="text-cyan-400"
                   />
 
-                  <span className="text-sm font-medium">
-                    {item.label}
-                  </span>
+                  <span>{link.label}</span>
                 </motion.a>
               );
             })}
           </div>
+        )}
 
-          <a
+        {socials?.email && (
+          <motion.a
             href={`mailto:${socials.email}`}
-            className="inline-flex items-center gap-3 px-7 py-4 rounded-2xl bg-cyan-500 text-black font-bold hover:scale-105 transition"
+            initial={{
+              opacity: 0,
+              scale: 0.95,
+            }}
+            whileInView={{
+              opacity: 1,
+              scale: 1,
+            }}
+            viewport={{
+              once: true,
+            }}
+            transition={{
+              duration: 0.5,
+            }}
+            className="inline-flex items-center gap-3 px-6 py-4 rounded-2xl bg-cyan-500 text-black font-bold hover:scale-105 transition-transform"
           >
             <Mail size={18} />
             Contact Me
             <ArrowUpRight size={18} />
-          </a>
+          </motion.a>
+        )}
 
-          <div className="mt-12 pt-8 border-t border-white/10">
-            <h3 className="text-xl font-bold mb-2">
-              {personal.name}
-            </h3>
+        <div className="mt-12 pt-8 border-t border-white/10">
+          <h3 className="text-xl font-bold">
+            {personal?.name || "Portfolio Owner"}
+          </h3>
 
-            <p className="text-gray-500">
-              {personal.title}
+          <p className="text-gray-400 mt-2">
+            {personal?.title || "Professional"}
+          </p>
+
+          {socials?.email && (
+            <p className="text-gray-500 mt-3">
+              {socials.email}
             </p>
+          )}
 
-            <p className="text-gray-600 text-sm mt-4">
-              © {new Date().getFullYear()} • Infinite Canvas Portfolio
-            </p>
-          </div>
+          <p className="text-gray-600 text-sm mt-6">
+            © {new Date().getFullYear()} · Infinite Canvas Portfolio
+          </p>
         </div>
-      </CanvasCard>
-    </div>
+      </div>
+    </CanvasCard>
   );
 }
