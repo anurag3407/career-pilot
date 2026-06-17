@@ -28,7 +28,7 @@ import { useSearchParams } from "react-router-dom";
 import MorphingBlobs from "../components/portfolio/templates/Morphing_Blobs/index";
 import InteractiveTableOfElements from "../components/portfolio/templates/Interactive_Table_of_Elements/index";
 import BrokenGlassShardsParallax from "../components/portfolio/templates/Broken_Glass_Shards_Parallax/index";
-
+import InspiredDevPatel from "../components/portfolio/templates/Inspired_Dev_Patel/index";
 /* TemplatePreviewFrame — contains each full portfolio template in a
    sandboxed scrollable box. The key trick: CSS `transform` on the outer
    wrapper makes it the "containing block" for any position:fixed children,
@@ -814,6 +814,20 @@ const [hoveredCard, setHoveredCard] = useState(null);
         <div className="rounded-2xl border border-fuchsia-500/15"
           style={{ height: 640, overflowY: "auto", overflowX: "hidden", transform: "translate(0)", position: "relative" }}>
           <BrokenGlassShardsParallax />
+        </div>
+      </div>
+
+      {/* Inspired Dev Patel — sandboxed fixed-nav frame */}
+      <div className="mt-12">
+        <div className="mb-4 flex items-center gap-3 px-1">
+          <span className="rounded-full bg-blue-500/15 px-3 py-1 text-xs font-bold uppercase tracking-widest text-blue-400 border border-blue-500/25">
+            🔵 Dev Patel Inspired
+          </span>
+          <h2 className="text-lg font-semibold text-foreground/70">Inspired by Dev Patel — Sleek Dark Bento Portfolio</h2>
+        </div>
+        <div className="rounded-2xl border border-blue-500/15"
+          style={{ height: 640, overflowY: "auto", overflowX: "hidden", transform: "translate(0)", position: "relative", backgroundColor: "#0E1018" }}>
+          <InspiredDevPatel />
         </div>
       </div>
 

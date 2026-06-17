@@ -1,5 +1,18 @@
 export const templates = [
   {
+    "id": "Inspired_Dev_Patel",
+    "title": "Dev Patel Inspired",
+    "category": "Portfolio",
+    "colorScheme": "Dark / Blue Accent",
+    "layout": "Bento Grid",
+    "author": "System",
+    "views": 1200,
+    "rating": 5.0,
+    "image": "/templates/Inspired_Dev_Patel.png",
+    "createdAt": "2026-06-17",
+    "isComplete": true
+  },
+  {
     "id": "Broken_Glass_Shards_Parallax",
     "title": "Broken Glass Shards Parallax",
     "category": "Portfolio",
