@@ -35,18 +35,31 @@ const Navbar = ({ name }) => {
 
   const handleNavClick = (e, id) => {
     e.preventDefault();
+    e.stopPropagation();
     const element = document.querySelector(id);
     if (element) {
-      const offset = 120; // Accounts for the sticky navbar
-      const bodyRect = document.body.getBoundingClientRect().top;
-      const elementRect = element.getBoundingClientRect().top;
-      const elementPosition = elementRect - bodyRect;
-      const offsetPosition = elementPosition - offset;
-
-      window.scrollTo({
-        top: offsetPosition,
-        behavior: 'smooth'
-      });
+      // Find the scrollable container. Career-pilot uses flex-1 overflow-y-auto on main
+      const container = element.closest('.overflow-y-auto') || document.querySelector('main') || window;
+      
+      const offset = 120; // Accounts for sticky navbar
+      
+      if (container !== window) {
+        const containerTop = container.getBoundingClientRect().top;
+        const elementTop = element.getBoundingClientRect().top;
+        const targetPos = container.scrollTop + (elementTop - containerTop) - offset;
+        
+        container.scrollTo({
+          top: targetPos,
+          behavior: 'smooth'
+        });
+      } else {
+        const bodyRect = document.body.getBoundingClientRect().top;
+        const elementRect = element.getBoundingClientRect().top;
+        window.scrollTo({
+          top: (elementRect - bodyRect) - offset,
+          behavior: 'smooth'
+        });
+      }
       setActiveHash(id);
     }
   };
@@ -71,6 +84,7 @@ const Navbar = ({ name }) => {
           const isActive = activeHash === item.id;
           return (
             <button
+              type="button"
               key={item.id}
               onClick={(e) => handleNavClick(e, item.id)}
               className={`px-6 py-2.5 rounded-full text-sm font-bold transition-all duration-300 ${isActive ? 'text-white' : 'text-slate-400 hover:text-slate-200'}`}
