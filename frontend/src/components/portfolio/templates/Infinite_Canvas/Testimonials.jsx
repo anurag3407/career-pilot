@@ -75,9 +75,11 @@ export default function Testimonials({ data }) {
                     testimonial?.name ||
                     "Testimonial Author"
                   }
+                  loading="lazy"
+                  decoding="async"
+                  referrerPolicy="no-referrer"
                   className="w-14 h-14 rounded-full object-cover border border-white/10 flex-shrink-0"
                 />
-
                 <div className="flex-1 min-w-0">
                   <div className="flex justify-between items-start gap-3">
                     <div>

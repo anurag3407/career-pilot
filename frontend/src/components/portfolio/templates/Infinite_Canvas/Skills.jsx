@@ -57,9 +57,9 @@ export default function Skills({ data }) {
                 </div>
 
                 <div className="space-y-4">
-                  {categorySkills.map((skill) => (
+                  {categorySkills.map((skill, index) => (
                     <motion.div
-                      key={`${category}-${skill.name}`}
+                      key={`${category}-${skill.name}-${index}`}
                       initial={{
                         opacity: 0,
                         x: 25,

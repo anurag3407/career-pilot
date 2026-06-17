@@ -49,7 +49,7 @@ export default function CanvasCard({
         ${className}
       `}
       style={{
-        transform: `rotate(${rotate}deg)`,
+        rotate,
       }}
     >
       {/* Subtle Glow */}

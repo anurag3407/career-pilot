@@ -8,7 +8,19 @@ import {
   ArrowUpRight,
 } from "lucide-react";
 import CanvasCard from "./CanvasCard";
+const sanitizeUrl = (url) => {
+  try {
+    const parsed = new URL(url);
 
+    return ["http:", "https:"].includes(
+      parsed.protocol
+    )
+      ? url
+      : "#";
+  } catch {
+    return "#";
+  }
+};
 export default function Contact({ data }) {
   const { personal = {}, socials = {} } = data || {};
 
@@ -66,7 +78,7 @@ export default function Contact({ data }) {
               return (
                 <motion.a
                   key={link.label}
-                  href={link.href}
+                  href={sanitizeUrl(link.href)}
                   target="_blank"
                   rel="noreferrer"
                   initial={{
