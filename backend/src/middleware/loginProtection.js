@@ -37,12 +37,28 @@ const handleFailure = async (ip, email, currentAttempts) => {
   }
 };
 
-const handleSuccess = async (ip, email) => {
+import LoginLog from '../models/LoginLog.model.js';
+
+const handleSuccess = async (ip, email, userAgent) => {
+  // Reset lockout
   await LoginAttempt.findOneAndUpdate(
     { ip },
     { attempts: 0, lockoutUntil: null, email },
     { upsert: true }
   );
+
+  // Track persistent login history
+  if (email) {
+    try {
+      await LoginLog.create({
+        email,
+        ip,
+        userAgent: userAgent || 'Unknown'
+      });
+    } catch (err) {
+      console.error('Failed to log successful login:', err.message);
+    }
+  }
 };
 
 export const loginProtection = async (req, res, next) => {
@@ -68,13 +84,16 @@ export const loginProtection = async (req, res, next) => {
     const originalJson = res.json.bind(res);
     res.json = function (body) {
       const statusCode = res.statusCode;
+      const userAgent = req.headers['user-agent'];
 
       if (statusCode === 401) {
         handleFailure(ip, email, currentAttempts).catch(
           (err) => console.error('loginProtection failure tracking error:', err.message)
         );
-      } else if (statusCode >= 200 && statusCode < 300 && currentAttempts > 0) {
-        handleSuccess(ip, email).catch(
+      } else if (statusCode >= 200 && statusCode < 300) {
+        // We now call handleSuccess on EVERY successful login to track it in LoginLog,
+        // not just when resetting currentAttempts > 0.
+        handleSuccess(ip, email, userAgent).catch(
           (err) => console.error('loginProtection success tracking error:', err.message)
         );
       }

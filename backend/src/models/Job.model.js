@@ -65,5 +65,11 @@ jobSchema.index({ title: 'text', company: 'text', description: 'text' });
 jobSchema.index({ isActive: 1, createdAt: -1 });
 jobSchema.index({ 'location.city': 1, jobType: 1 });
 jobSchema.index({ 'location.country': 1, jobType: 1 });
+jobSchema.index({ requiredSkills: 1 }, { background: true });
+jobSchema.index({ isActive: 1, experienceLevel: 1, createdAt: -1 }, { background: true });
+jobSchema.index({ isActive: 1, employmentType: 1, createdAt: -1 }, { background: true });
+jobSchema.index({ jobType: 1, experienceLevel: 1, isActive: 1 }, { background: true });
+jobSchema.index({ expiresAt: 1 }, { background: true });
+jobSchema.index({ 'salary.min': 1, 'salary.max': 1 }, { background: true });
 
 export default mongoose.model('Job', jobSchema);

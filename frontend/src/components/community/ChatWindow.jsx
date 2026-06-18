@@ -1,15 +1,15 @@
 import { useState, useEffect, useRef, useCallback } from 'react';
-import { useSocket } from '../../context/SocketContext';
+import { useSocket } from '../../hooks/useSocket';
 import MessageBubble from './MessageBubble';
 import MessageInput from './MessageInput';
-import { useTheme } from '../../context/ThemeContext';
-import { Hash, Users, Pin, Search, Settings, MoreVertical, Loader2, Sun, Moon } from 'lucide-react';
+import { useTheme } from '../../hooks/useTheme';
+import { Hash, Users, Pin, Search, Settings, MoreVertical, Loader2, Sun, Moon, Contrast } from 'lucide-react';
 
 // Skeleton loader component for chat messages
 const MessageSkeleton = ({ isOwn }) => (
   <div className={`flex gap-3 ${isOwn ? 'flex-row-reverse' : ''} animate-pulse`}>
     {!isOwn && (
-      <div className="w-9 h-9 rounded-full bg-foreground/10 flex-shrink-0" />
+      <div className="w-9 h-9 rounded-full bg-foreground/10 shrink-0" />
     )}
     <div className={`flex flex-col gap-1 ${isOwn ? 'items-end' : 'items-start'}`}>
       {!isOwn && <div className="h-3 w-20 bg-foreground/10 rounded" />}
@@ -171,7 +171,7 @@ export default function ChatWindow({ channel, messages, currentUser, onOptimisti
   return (
     <div className="flex-1 flex flex-col h-full">
       {/* Channel Header */}
-      <div className="h-14 px-4 border-b border-border bg-background flex items-center justify-between flex-shrink-0">
+      <div className="h-14 px-4 border-b border-border bg-background flex items-center justify-between shrink-0">
         <div className="flex items-center gap-3">
           <span className="text-xl">{channel.icon || '💬'}</span>
           <div>
@@ -209,9 +209,11 @@ export default function ChatWindow({ channel, messages, currentUser, onOptimisti
           <button
             onClick={toggleTheme}
             className="p-2 text-muted-foreground hover:bg-muted rounded-lg transition-colors"
-            title="Toggle Theme"
+            title={theme === 'light' ? 'Switch to Dark Mode' : theme === 'dark' ? 'Switch to High Contrast' : 'Switch to Light Mode'}
           >
-            {theme === 'dark' ? <Sun className="w-5 h-5" /> : <Moon className="w-5 h-5" />}
+            {theme === 'light' ? <Moon className="w-5 h-5" /> : 
+             theme === 'dark' ? <Contrast className="w-5 h-5" /> : 
+             <Sun className="w-5 h-5" />}
           </button>
           <button className="p-2 text-muted-foreground hover:bg-muted rounded-lg">
             <MoreVertical className="w-5 h-5" />

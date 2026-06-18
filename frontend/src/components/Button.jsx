@@ -10,6 +10,7 @@ export default function Button({
   loading = false,
   onClick,
   className = "",
+  ...props
 }) {
   const baseStyles =
     "inline-flex items-center justify-center gap-2 font-black tracking-wide transition-all duration-300 disabled:opacity-50 disabled:cursor-not-allowed cursor-pointer rounded-2xl";
@@ -43,6 +44,7 @@ export default function Button({
       whileTap={disabled || loading ? {} : { scale: 0.97 }}
       transition={{ type: "spring", stiffness: 400, damping: 20 }}
       className={cn(baseStyles, variants[variant], sizes[size], className)}
+      {...props}
     >
       {loading ? (
         <>

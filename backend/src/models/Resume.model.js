@@ -18,6 +18,10 @@ const resumeSchema = new mongoose.Schema({
         type: String,
         default: null
     },
+    atsScore: {
+        type: Number,
+        default: null
+    },
     preferences: {
         yearsOfExperience: {
             type: Number,
@@ -38,7 +42,7 @@ const resumeSchema = new mongoose.Schema({
     },
     title: {
         type: String,
-        default: function() {
+        default: function () {
             return `Resume - ${new Date().toISOString().slice(0, 10)}`;
         }
     },
@@ -53,10 +57,12 @@ const resumeSchema = new mongoose.Schema({
     }
 });
 
-// Index for faster queries
 resumeSchema.index({ userId: 1, createdAt: -1 }, { background: true });
-// Text index for global search
 resumeSchema.index({ originalText: 'text', enhancedText: 'text' }, { background: true });
+resumeSchema.index({ userId: 1, jobRole: 1 }, { background: true });
+resumeSchema.index({ userId: 1, lastModified: -1 }, { background: true });
+// Index on ATS score for leaderboard / analytics queries
+resumeSchema.index({ userId: 1, atsScore: -1 }, { background: true });
 
 const Resume = mongoose.model('Resume', resumeSchema);
 

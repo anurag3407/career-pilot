@@ -6,12 +6,12 @@
 
 const SkeletonBlock = ({ className = '' }) => (
   <div
-    className={`bg-gray-200 dark:bg-gray-700 rounded ${className}`}
+    className={`bg-muted rounded ${className}`}
   />
 );
 
 const ProfileCardSkeleton = () => (
-  <div className="animate-pulse bg-white dark:bg-gray-800 rounded-2xl p-6 shadow-sm flex flex-col items-center gap-4">
+  <div className="animate-pulse bg-card border border-border rounded-2xl p-6 shadow-sm flex flex-col items-center gap-4">
     <SkeletonBlock className="w-24 h-24 rounded-full" />
     <SkeletonBlock className="h-5 w-36" />
     <SkeletonBlock className="h-4 w-24" />
@@ -24,14 +24,14 @@ const ProfileCardSkeleton = () => (
 );
 
 const StatCardSkeleton = () => (
-  <div className="animate-pulse bg-white dark:bg-gray-800 rounded-xl p-4 shadow-sm flex flex-col gap-2">
+  <div className="animate-pulse bg-card border border-border rounded-xl p-4 shadow-sm flex flex-col gap-2">
     <SkeletonBlock className="h-4 w-16" />
     <SkeletonBlock className="h-7 w-10" />
   </div>
 );
 
 const RepoCardSkeleton = () => (
-  <div className="animate-pulse bg-white dark:bg-gray-800 rounded-xl p-5 shadow-sm flex flex-col gap-3">
+  <div className="animate-pulse bg-card border border-border rounded-xl p-5 shadow-sm flex flex-col gap-3">
     <SkeletonBlock className="h-5 w-3/4" />
     <div className="flex flex-col gap-2">
       <SkeletonBlock className="h-3 w-full" />
