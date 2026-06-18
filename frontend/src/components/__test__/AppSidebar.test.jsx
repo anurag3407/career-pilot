@@ -79,19 +79,19 @@ describe("AppSidebar", () => {
 
   test("renders primary navigation links", () => {
     render(<AppSidebar />);
-
+  
     expect(
-      screen.getByRole("button", { name: /dashboard/i })
+      screen.getByRole("button", { name: /^dashboard$/i })
     ).toBeInTheDocument();
-
+  
     expect(
       screen.getByRole("button", { name: /resume builder/i })
     ).toBeInTheDocument();
-
+  
     expect(
       screen.getByRole("button", { name: /job finder/i })
     ).toBeInTheDocument();
-
+  
     expect(
       screen.getByRole("button", { name: /settings/i })
     ).toBeInTheDocument();
