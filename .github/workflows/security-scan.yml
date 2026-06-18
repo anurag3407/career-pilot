@@ -128,7 +128,6 @@ jobs:
 
       - name: Run OSV Scanner
         uses: google/osv-scanner-action/osv-scanner-action@v1.9.2
-        uses: google/osv-scanner-action/osv-scanner-action@19ec1116569a47416e11a45848722b1af31a857b # v1.9.0
         continue-on-error: true
         with:
           scan-args: |-
