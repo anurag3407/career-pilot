@@ -1,7 +1,7 @@
 import React, { useRef } from 'react';
 import { motion, useScroll, useTransform } from 'framer-motion';
 import { Star, ExternalLink, Github } from 'lucide-react';
-import { SectionHeading } from './shared';
+import { SectionHeading } from './Shared';
 import data from '../../../../data/dummy_data.json';
 
 function ProjectCard({ project, index, projectsLength, scrollYProgress, step }) {

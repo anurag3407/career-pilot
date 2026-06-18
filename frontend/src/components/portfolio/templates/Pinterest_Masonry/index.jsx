@@ -1,3 +1,4 @@
+import { usePortfolio } from "../../../../context/PortfolioContext";
 import React, { useState, useEffect } from 'react';
 import data from '../../../../data/dummy_data.json';
 import { motion, AnimatePresence } from 'framer-motion';
@@ -7,7 +8,6 @@ import {
   Linkedin, Twitter, Mail, MapPin, Briefcase, 
   ExternalLink, Calendar, Star, TrendingUp
 } from 'lucide-react';
-import defaultData from '../../../../data/dummy_data.json';
 
 // Hook to determine number of columns based on screen width
 function useColumns() {
@@ -35,6 +35,8 @@ function useColumns() {
  * Description: Pinterest-style masonry grid layout with varied-height cards. Infinite scroll simulation and pin-style project cards.
  */
 export default function PinterestMasonry({ data: propData }) {
+  const { portfolioData: defaultData } = usePortfolio();
+
   const data = propData || defaultData;
   const [activeCategory, setActiveCategory] = useState('All Pins');
 
@@ -188,6 +190,8 @@ export default function PinterestMasonry({ data: propData }) {
 // Pin Dispatcher
 // ---------------------------------------------------------
 function PinRenderer({ pin, data }) {
+  const { portfolioData: defaultData } = usePortfolio();
+
   switch (pin.type) {
     case 'profile': return <ProfilePin pin={pin} />;
     case 'project': return <ProjectPin pin={pin} data={data} />;
@@ -204,6 +208,8 @@ function PinRenderer({ pin, data }) {
 // ---------------------------------------------------------
 
 function ProfilePin({ pin }) {
+  const { portfolioData: defaultData } = usePortfolio();
+
   return (
     <div className="bg-[#f0f0f0] rounded-3xl p-8 flex flex-col items-center text-center shadow-sm relative overflow-hidden group">
       {/* Decorative blurred background */}
@@ -256,6 +262,8 @@ function ProfilePin({ pin }) {
 }
 
 function ProjectPin({ pin, data }) {
+  const { portfolioData: defaultData } = usePortfolio();
+
   // Stably decide aspect ratio based on deterministic pin ID to avoid random layout changes on hover/render
   const isImageTall = pin.id.charCodeAt(pin.id.length - 1) % 2 === 0;
 
@@ -310,6 +318,8 @@ function ProjectPin({ pin, data }) {
 }
 
 function ExperiencePin({ pin }) {
+  const { portfolioData: defaultData } = usePortfolio();
+
   return (
     <div className="bg-[#fff3cd] rounded-3xl p-6 shadow-sm group hover:shadow-md transition-shadow cursor-pointer">
       <div className="w-12 h-12 bg-white rounded-2xl flex items-center justify-center shadow-sm mb-4 text-amber-600 group-hover:rotate-6 transition-transform">
@@ -328,6 +338,8 @@ function ExperiencePin({ pin }) {
 }
 
 function TestimonialPin({ pin }) {
+  const { portfolioData: defaultData } = usePortfolio();
+
   return (
     <div className="bg-[#e9f5ff] rounded-3xl p-6 shadow-sm group hover:shadow-md transition-shadow">
       <div className="text-blue-400 mb-4 opacity-50">
@@ -348,6 +360,8 @@ function TestimonialPin({ pin }) {
 }
 
 function SkillPin({ pin }) {
+  const { portfolioData: defaultData } = usePortfolio();
+
   return (
     <div className="bg-gray-100 rounded-3xl p-6 shadow-sm">
       <div className="flex items-center justify-between mb-5">
@@ -376,6 +390,8 @@ function SkillPin({ pin }) {
 }
 
 function ContactPin({ pin }) {
+  const { portfolioData: defaultData } = usePortfolio();
+
   return (
     <div className="bg-[#111111] text-white rounded-3xl p-6 shadow-sm flex flex-col items-center text-center">
       <div className="w-16 h-16 bg-[#e60023] rounded-full flex items-center justify-center mb-4 text-white shadow-lg">

@@ -11,8 +11,65 @@ export default function PortfolioHub() {
   const [portfolios, setPortfolios] = useState([])
   const [loading, setLoading] = useState(true)
   const [isUploading, setIsUploading] = useState(false)
+  const [recommendedTheme, setRecommendedTheme] = useState('')
+  const [themeInsights, setThemeInsights] = useState([])
   const fileInputRef = useRef(null)
   const navigate = useNavigate()
+
+  useEffect(() => {
+  const draft = localStorage.getItem('ai_portfolio_draft')
+
+  if (!draft) return
+
+  const data = JSON.parse(draft)
+
+  let theme = 'Modern'
+  let insights = []
+
+  const role =
+    data.role ||
+    data.profession ||
+    ''
+
+  if (
+    role.toLowerCase().includes('developer')
+  ) {
+    theme = 'Developer Pro'
+
+    insights = [
+      'Best for software engineers',
+      'Highlights GitHub projects',
+      'Technical skill focused'
+    ]
+  }
+
+  else if (
+    role.toLowerCase().includes('designer')
+  ) {
+    theme = 'Creative Portfolio'
+
+    insights = [
+      'Visual-first layout',
+      'Showcases design work',
+      'Modern gallery sections'
+    ]
+  }
+
+  else if (
+    role.toLowerCase().includes('marketing')
+  ) {
+    theme = 'Business Elite'
+
+    insights = [
+      'Professional presentation',
+      'Case study focused',
+      'Client-ready structure'
+    ]
+  }
+
+  setRecommendedTheme(theme)
+  setThemeInsights(insights)
+}, [])
 
   useEffect(() => {
     const fetchPortfolios = async () => {
@@ -127,6 +184,83 @@ export default function PortfolioHub() {
           <div className="absolute -top-24 -right-24 w-48 h-48 bg-primary/10 rounded-full blur-3xl group-hover:bg-primary/20 transition-colors pointer-events-none" />
         </div>
       </div>
+
+      {recommendedTheme && (
+  <div className="col-span-full mb-6">
+    <div className="p-6 rounded-2xl border border-border bg-card">
+
+      <h2 className="text-xl font-bold mb-2">
+        Recommended Theme
+      </h2>
+
+      <p className="text-muted-foreground mb-4">
+        Based on your profession and portfolio content.
+      </p>
+
+      <div className="inline-flex px-4 py-2 rounded-full bg-primary/10 text-primary font-medium">
+        {recommendedTheme}
+      </div>
+
+      <div className="mt-4 space-y-2">
+        {themeInsights.map((item, index) => (
+          <div
+            key={index}
+            className="text-sm text-muted-foreground"
+          >
+            ✓ {item}
+          </div>
+        ))}
+      </div>
+
+    </div>
+  </div>
+)}
+
+{recommendedTheme && (
+  <div className="col-span-full mb-6">
+    <div className="p-6 rounded-2xl border border-border bg-card">
+
+      <h2 className="text-xl font-bold mb-4">
+        Theme Comparison
+      </h2>
+
+      <div className="grid md:grid-cols-3 gap-4">
+
+        <div className="p-4 rounded-xl border border-primary bg-primary/5">
+          <h3 className="font-semibold">
+            {recommendedTheme}
+          </h3>
+
+          <p className="text-sm text-muted-foreground mt-2">
+            Recommended for your profile
+          </p>
+        </div>
+
+        <div className="p-4 rounded-xl border border-border">
+          <h3 className="font-semibold">
+            Modern
+          </h3>
+
+          <p className="text-sm text-muted-foreground mt-2">
+            Clean and minimal layout
+          </p>
+        </div>
+
+        <div className="p-4 rounded-xl border border-border">
+          <h3 className="font-semibold">
+            Creative
+          </h3>
+
+          <p className="text-sm text-muted-foreground mt-2">
+            Portfolio showcase layout
+          </p>
+        </div>
+
+      </div>
+
+    </div>
+  </div>
+)}
 
       <ToolCard
         to="/templates"

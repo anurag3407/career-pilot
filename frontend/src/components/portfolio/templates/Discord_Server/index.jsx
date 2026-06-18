@@ -1,6 +1,6 @@
+import { usePortfolio } from "../../../../context/PortfolioContext";
 import React, { useState } from 'react';
 import { AnimatePresence, motion } from 'framer-motion';
-import data from '../../../../data/dummy_data.json';
 import ServerSidebar from './ServerSidebar';
 import ChannelSidebar from './ChannelSidebar';
 import ChatHeader from './ChatHeader';
@@ -28,6 +28,8 @@ const channelLabels = {
 };
 
 export default function DiscordServer() {
+  const { portfolioData: data } = usePortfolio();
+
   const [activeChannel, setActiveChannel] = useState('welcome');
   const [mobileMenuOpen, setMobileMenuOpen] = useState(false);
 

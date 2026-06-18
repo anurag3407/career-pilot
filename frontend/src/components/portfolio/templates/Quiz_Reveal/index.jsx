@@ -1,3 +1,4 @@
+import { usePortfolio } from "../../../../context/PortfolioContext";
 import React, { useCallback, useEffect, useRef, useState } from 'react';
 import { AnimatePresence, motion as Motion } from 'framer-motion';
 import {
@@ -25,7 +26,6 @@ import {
   UserRound,
   Zap,
 } from 'lucide-react';
-import data from '../../../../data/dummy_data.json';
 
 const sectionMeta = [
   { id: 'hero', title: 'Hero', icon: Sparkles },
@@ -92,6 +92,8 @@ const sanitizeExternalUrl = (url) => {
 };
 
 function GlassPanel({ children, className = '' }) {
+  const { portfolioData: data } = usePortfolio();
+
   return (
     <div className={`w-full max-w-full rounded-2xl border border-white/10 bg-white/[0.06] shadow-2xl shadow-cyan-950/30 backdrop-blur-xl sm:rounded-[1.75rem] ${className}`}>
       {children}
@@ -100,6 +102,8 @@ function GlassPanel({ children, className = '' }) {
 }
 
 function EmptyState({ label }) {
+  const { portfolioData: data } = usePortfolio();
+
   return (
     <div className="rounded-2xl border border-dashed border-white/15 bg-white/[0.04] p-5 text-sm text-slate-400">
       {label} will appear here when portfolio data is available.
@@ -108,6 +112,8 @@ function EmptyState({ label }) {
 }
 
 function ProgressTracker({ unlockedCount, activeQuestion, totalQuestions }) {
+  const { portfolioData: data } = usePortfolio();
+
   const progress = Math.round(((unlockedCount - 1) / totalQuestions) * 100);
 
   return (
@@ -173,6 +179,8 @@ function ProgressTracker({ unlockedCount, activeQuestion, totalQuestions }) {
 }
 
 function QuizCard({ question, questionIndex, totalQuestions, disabled, onCorrect, resetSignal }) {
+  const { portfolioData: data } = usePortfolio();
+
   const [selected, setSelected] = useState('');
   const [isCorrect, setIsCorrect] = useState(null);
   const unlockTimeoutRef = useRef(null);
@@ -315,6 +323,8 @@ function QuizCard({ question, questionIndex, totalQuestions, disabled, onCorrect
 }
 
 function LockedOverlay({ title }) {
+  const { portfolioData: data } = usePortfolio();
+
   return (
     <div className="relative z-10 flex min-h-36 flex-col items-center justify-center rounded-2xl border border-dashed border-white/10 bg-slate-950/60 p-4 text-center sm:min-h-40 sm:rounded-3xl sm:p-6">
       <div className="grid h-14 w-14 place-items-center rounded-2xl border border-fuchsia-300/30 bg-fuchsia-300/10 text-fuchsia-100 shadow-lg shadow-fuchsia-500/10">
@@ -329,6 +339,8 @@ function LockedOverlay({ title }) {
 }
 
 function RevealSection({ id, title, icon: Icon, index, unlocked, children }) {
+  const { portfolioData: data } = usePortfolio();
+
   return (
     <Motion.section
       id={id}
@@ -374,6 +386,8 @@ function RevealSection({ id, title, icon: Icon, index, unlocked, children }) {
 }
 
 function StatTile({ value, label }) {
+  const { portfolioData: data } = usePortfolio();
+
   return (
     <div className="rounded-2xl border border-white/10 bg-white/[0.05] p-3 text-center">
       <div className="text-xl font-black text-white">{value ?? '0'}+</div>
@@ -383,6 +397,8 @@ function StatTile({ value, label }) {
 }
 
 function Hero({ personal, stats }) {
+  const { portfolioData: data } = usePortfolio();
+
   return (
     <div className="grid gap-7 lg:grid-cols-[1.1fr_0.9fr] lg:items-center">
       <div>
@@ -433,6 +449,8 @@ function Hero({ personal, stats }) {
 }
 
 function About({ personal }) {
+  const { portfolioData: data } = usePortfolio();
+
   return (
     <div className="grid gap-5 md:grid-cols-[0.85fr_1.15fr] md:items-center">
       {personal?.avatar ? (
@@ -462,6 +480,8 @@ function About({ personal }) {
 }
 
 function Skills({ skills }) {
+  const { portfolioData: data } = usePortfolio();
+
   if (!skills.length) return <EmptyState label="Skills" />;
 
   const grouped = skills.reduce((acc, skill) => {
@@ -504,6 +524,8 @@ function Skills({ skills }) {
 }
 
 function Projects({ projects }) {
+  const { portfolioData: data } = usePortfolio();
+
   if (!projects.length) return <EmptyState label="Projects" />;
 
   return (
@@ -516,6 +538,8 @@ function Projects({ projects }) {
 }
 
 function ProjectCard({ project, index }) {
+  const { portfolioData: data } = usePortfolio();
+
   const liveUrl = sanitizeExternalUrl(project.liveUrl);
   const githubUrl = sanitizeExternalUrl(project.githubUrl);
 
@@ -568,6 +592,8 @@ function ProjectCard({ project, index }) {
 }
 
 function Experience({ experience }) {
+  const { portfolioData: data } = usePortfolio();
+
   if (!experience.length) return <EmptyState label="Experience" />;
 
   return (
@@ -593,6 +619,8 @@ function Experience({ experience }) {
 }
 
 function Testimonials({ testimonials }) {
+  const { portfolioData: data } = usePortfolio();
+
   if (!testimonials.length) return <EmptyState label="Testimonials" />;
 
   return (
@@ -630,6 +658,8 @@ function Testimonials({ testimonials }) {
 }
 
 function Contact({ personal, socials }) {
+  const { portfolioData: data } = usePortfolio();
+
   const links = [
     { label: 'Email', value: socials?.email, href: sanitizeExternalUrl(socials?.email ? `mailto:${socials.email}` : ''), icon: Mail },
     { label: 'GitHub', value: socials?.github, href: sanitizeExternalUrl(socials?.github), icon: Github },
@@ -668,6 +698,8 @@ function Contact({ personal, socials }) {
 }
 
 export default function QuizReveal() {
+  const { portfolioData: data } = usePortfolio();
+
   const portfolio = data || {};
   const personal = portfolio.personal || {};
   const socials = portfolio.socials || {};

@@ -1,6 +1,7 @@
 import React, { useState, useRef, useEffect } from 'react';
 import { motion, AnimatePresence } from 'framer-motion';
-import { Bot, Send, Search, ShieldAlert, Sparkles, ChevronDown, ChevronUp, Loader2 } from 'lucide-react';
+import { Loader2, MessageSquare, Send, Bot, User, Sparkles, Wand2, Search, ShieldAlert, ChevronDown, ChevronUp } from 'lucide-react';
+import { useAuth } from '../../hooks/useAuth';
 import ReactMarkdown from 'react-markdown';
 import remarkGfm from 'remark-gfm';
 import { cn } from '../../lib/utils';
@@ -15,10 +16,13 @@ const VisualizerChat = () => {
     messages, setMessages, addMessage,
     chatMode, setChatMode,
     isStreaming, setIsStreaming,
-    sessionId, selectedModule
+    sessionId, selectedModule,
+    isSocketReady
   } = useProjectVisualizerStore();
   
   const [input, setInput] = useState('');
+  const [isLoading, setIsLoading] = useState(false);
+  const { getToken } = useAuth();
   const messagesEndRef = useRef(null);
   const inputRef = useRef(null);
 
@@ -51,20 +55,29 @@ const VisualizerChat = () => {
     setIsStreaming(true);
 
     try {
-      const token = await auth.currentUser?.getIdToken();
-      if (!token) throw new Error('Not authenticated');
+      const token = await getToken();
+      if (!token && !import.meta.env.DEV) throw new Error('Not authenticated');
 
-      const response = await fetch(`${API_BASE}/project-visualizer/analysis/${sessionId}/chat`, {
+      let endpoint = `${API_BASE}/project-visualizer/analysis/${sessionId}/chat`;
+      let bodyData = { 
+        messages: [...messages, newMessage].slice(-5), 
+        chatMode 
+      };
+
+      // Detect if we're asking about a specific file
+      const fileMatch = newMessage.content.match(/\[Context: I am looking at file '(.*?)'\]/);
+      if (fileMatch) {
+        endpoint = `${API_BASE}/project-visualizer/analysis/${sessionId}/file-chat`;
+        bodyData.filePath = fileMatch[1];
+      }
+
+      const response = await fetch(endpoint, {
         method: 'POST',
         headers: {
           'Content-Type': 'application/json',
           'Authorization': `Bearer ${token}`
         },
-        // We only send the recent context to avoid token bloat
-        body: JSON.stringify({ 
-          messages: [...messages, newMessage].slice(-5), 
-          chatMode 
-        })
+        body: JSON.stringify(bodyData)
       });
 
       if (!response.ok) throw new Error('Network response was not ok');

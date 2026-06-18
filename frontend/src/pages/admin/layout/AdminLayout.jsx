@@ -18,9 +18,8 @@ const AdminLayout = () => {
   const links = [
     { to: '/admin', icon: LayoutDashboard, label: 'Dashboard', end: true },
     { to: '/admin/users', icon: Users, label: 'Users' },
-    // Mock routes for future expansion
-    { to: '/admin/jobs', icon: Briefcase, label: 'Jobs' },
-    { to: '/admin/resumes', icon: FileText, label: 'Resumes' },
+    { to: '/admin/logins', icon: Briefcase, label: 'Logins' },
+    { to: '/admin/bugs', icon: FileText, label: 'Bug Reports' },
     { to: '/admin/fellowships', icon: Globe, label: 'Fellowships' },
   ];
 
