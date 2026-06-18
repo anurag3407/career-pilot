@@ -361,8 +361,21 @@ router.post('/challenges/:id/apply', verifyToken, asyncHandler(async (req, res) 
         throw new ApiError(400, 'Cover letter must be at least 100 characters');
     }
 
-    if (!proposedPrice || proposedPrice < 500) {
-        throw new ApiError(400, 'Minimum proposed price is ₹500');
+    // Proposal amount validation (stored in INR, not paise)
+    const MIN_INR = 100;
+    const MAX_INR = 500000;
+    const proposedAmount = Number(req.body.proposedAmount || req.body.price || req.body.amount);
+    const effectiveAmount = Number.isFinite(proposedAmount) && proposedAmount > 0
+        ? proposedAmount
+        : Number(proposedPrice);
+    if (!effectiveAmount || isNaN(effectiveAmount)) {
+        throw new ApiError(400, 'Proposed amount is required.');
+    }
+    if (effectiveAmount < MIN_INR) {
+        throw new ApiError(400, `Minimum proposal amount is ₹${MIN_INR}.`);
+    }
+    if (effectiveAmount > MAX_INR) {
+        throw new ApiError(400, `Maximum proposal amount is ₹${MAX_INR}.`);
     }
 
     if (!estimatedDays || estimatedDays < 1) {
