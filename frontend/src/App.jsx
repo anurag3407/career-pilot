@@ -510,7 +510,6 @@ function AppRoutes() {
     </BrowserRouter>
   );
 }
-
 function App() {
   return (
     <ThemeProvider>
@@ -522,5 +521,6 @@ function App() {
     </ThemeProvider>
   );
 }
+
 
 export default App;
