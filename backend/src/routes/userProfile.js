@@ -1,6 +1,10 @@
 import express from 'express';
 import { asyncHandler, ApiError } from '../middleware/errorHandler.js';
 import { verifyToken } from '../middleware/auth.js';
+import {
+  cacheResponse,
+  invalidateCacheNamespace,
+} from '../middleware/cacheLayer.js';
 import UserProfile from '../models/UserProfile.model.js';
 import Resume from '../models/Resume.model.js';
 import Interview from '../models/Interview.model.js';
@@ -11,6 +15,21 @@ import { updateProfileSchema, setAvatarSchema } from '../schemas/userProfile.sch
 const router = express.Router();
 
 router.use(verifyToken);
+
+const PROFILE_CACHE_NAMESPACE = 'user-profile';
+const PROFILE_CACHE_TTL_SECONDS = 120;
+
+const profileCache = cacheResponse({
+  namespace: PROFILE_CACHE_NAMESPACE,
+  ttlSeconds: PROFILE_CACHE_TTL_SECONDS,
+  scopeBuilder: (req) => req.params.uid ?? req.user.uid,
+});
+
+const invalidateProfileCache = (uid) =>
+  invalidateCacheNamespace({
+    namespace: PROFILE_CACHE_NAMESPACE,
+    scope: uid,
+  });
 
 const getPostsForUser = async (uid) => {
   let snapshot;
@@ -46,7 +65,7 @@ const getPostsForUser = async (uid) => {
 };
 
 // Get or create own profile
-router.get('/me', asyncHandler(async (req, res) => {
+router.get('/me', profileCache, asyncHandler(async (req, res) => {
   const uid = req.user.uid;
   let profile = await UserProfile.findOne({ uid });
   if (!profile) {
@@ -122,6 +141,7 @@ router.put('/me', validate(updateProfileSchema), asyncHandler(async (req, res) =
     { $set: update },
     { new: true, upsert: true }
   );
+  await invalidateProfileCache(uid);
   res.json({ success: true, profile });
 }));
 
@@ -135,6 +155,7 @@ router.post('/me/avatar', validate(setAvatarSchema), asyncHandler(async (req, re
     { $set: { avatarUrl } },
     { new: true, upsert: true }
   );
+  await invalidateProfileCache(uid);
   res.json({ success: true, profile });
 }));
 
@@ -146,6 +167,7 @@ router.delete('/me/avatar', asyncHandler(async (req, res) => {
     { $set: { avatarUrl: '' } },
     { new: true, upsert: true }
   );
+  await invalidateProfileCache(uid);
   res.json({ success: true, profile });
 }));
 
@@ -166,7 +188,7 @@ router.get('/me/activity', asyncHandler(async (req, res) => {
 }));
 
 // Get public profile by uid
-router.get('/:uid', asyncHandler(async (req, res) => {
+router.get('/:uid', profileCache, asyncHandler(async (req, res) => {
   const profile = await UserProfile.findOne({ uid: req.params.uid });
   if (!profile) throw new ApiError(404, 'Profile not found');
   res.json({ success: true, profile });
