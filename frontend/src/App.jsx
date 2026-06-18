@@ -129,6 +129,7 @@ import SharedResumeView from './pages/SharedResumeView.jsx'
 import MinimalDarkFluid from './components/portfolio/templates/Minimal_Dark_Fluid/index.jsx';
 import TerminalSkills from './components/portfolio/templates/Terminal_Skills/index.jsx';
 import ChiragChrgTheme from './components/portfolio/templates/ChiragChrg_Theme/index.jsx';
+import InspiredDevJadiya from "./components/portfolio/templates/Inspired_Dev_Jadiya";
 
 function LoadingScreen({ label }) {
   return (
@@ -268,6 +269,7 @@ function AppRoutes() {
         {/* Template Gallery Route (Registered at /templates) */}
         <Route path="/templates" element={<TemplateGallery />} />
         <Route path="/preview/:templateId" element={<TemplatePreviewOnly />} />
+        <Route path="/preview-inspired-dev-jadiya" element={<InspiredDevJadiya />} />
         <Route path="/cover-letter" element={<CoverLetter />} />
         
 
