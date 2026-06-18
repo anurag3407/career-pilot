@@ -15,6 +15,10 @@ import {
   invalidateCacheNamespace,
 } from '../cacheLayer.js';
 
+import {
+  cacheProfileResponse,
+} from '../../services/profileCache.js';
+
 const flushAsyncWork = async () => {
   await new Promise((resolve) => {
     setImmediate(resolve);
@@ -778,6 +782,39 @@ afterEach(async () => {
             );
           }
         });
+
+        test('bypasses profile caching when ignored query parameters are present', async () => {
+  const req = createRequest({
+    originalUrl:
+      '/api/user-profiles/me?unused=value',
+  });
+
+  req.query = {
+    unused: 'value',
+  };
+
+  const res = createResponse();
+
+  let nextCallCount = 0;
+
+  await cacheProfileResponse(
+    req,
+    res,
+    () => {
+      nextCallCount += 1;
+    },
+  );
+
+  assert.equal(
+    res.get(CACHE_HEADER),
+    'BYPASS',
+  );
+
+  assert.equal(
+    nextCallCount,
+    1,
+  );
+});
 
         test('honors explicit client cache bypass headers', async () => {
           const req =
