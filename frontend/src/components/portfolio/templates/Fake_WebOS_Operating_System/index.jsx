@@ -4,7 +4,7 @@ import {
   User, FolderOpen, Code2, Briefcase, MessageSquare, Mail,
   Github, Linkedin, Twitter, ExternalLink, X, Minus, Maximize2,
   ChevronRight, Terminal, Wifi, Battery, Volume2, Search,
-  Star, Clock, Settings, Globe, FileText, Award, MapPin,
+  Star, Settings, Globe, FileText, Award, MapPin,
 } from "lucide-react";
 import { usePortfolio } from "../../../../context/PortfolioContext";
 
