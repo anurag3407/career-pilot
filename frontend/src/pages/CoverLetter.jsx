@@ -27,8 +27,12 @@ const CoverLetter = () => {
     const fetchResumes = async () => {
       try {
         const response = await resumeApi.getAll();
-        const list = response.data || response.resumes || [];
-        setSavedResumes(list);
+        let fetchedResumes = [];
+        if (Array.isArray(response)) fetchedResumes = response;
+        else if (Array.isArray(response.data)) fetchedResumes = response.data;
+        else if (Array.isArray(response.resumes)) fetchedResumes = response.resumes;
+        else if (response.data && Array.isArray(response.data.resumes)) fetchedResumes = response.data.resumes;
+        setSavedResumes(fetchedResumes);
       } catch (error) {
         console.error("Failed to fetch saved resumes:", error);
       } finally {
