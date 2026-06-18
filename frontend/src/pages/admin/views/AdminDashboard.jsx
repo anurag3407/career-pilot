@@ -1,6 +1,7 @@
 import React, { useState, useEffect } from 'react';
 import { Users, FileText, Briefcase, Globe } from 'lucide-react';
 import AdminStatCard from '../components/AdminStatCard';
+import Card from '../../../components/Card';
 import { adminAPI } from '../../../services/api';
 import toast from 'react-hot-toast';
 
@@ -72,12 +73,12 @@ const AdminDashboard = () => {
       </div>
 
       {/* Placeholder for future activity feed */}
-      <div className="bg-white dark:bg-gray-800 rounded-xl p-6 shadow-sm border border-gray-100 dark:border-gray-700 mt-8">
+      <Card variant="compact" className="mt-8">
         <h3 className="text-lg font-semibold text-gray-900 dark:text-white mb-4">Recent System Activity</h3>
         <div className="text-center py-12 text-gray-500 dark:text-gray-400">
           Activity logging will appear here.
         </div>
-      </div>
+      </Card>
     </div>
   );
 };
