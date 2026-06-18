@@ -1,3 +1,10 @@
+## [1.250.1](https://github.com/anurag3407/career-pilot/compare/v1.250.0...v1.250.1) (2026-06-18)
+
+
+### Bug Fixes
+
+* remove duplicate ENABLE_DB_PROFILING definition ([#4168](https://github.com/anurag3407/career-pilot/issues/4168)) ([53407a0](https://github.com/anurag3407/career-pilot/commit/53407a061bb87aff2ee5089534a2ab59e515b6f4))
+
 # [1.250.0](https://github.com/anurag3407/career-pilot/compare/v1.249.0...v1.250.0) (2026-06-17)
 
 
