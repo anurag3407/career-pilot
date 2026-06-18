@@ -39,7 +39,7 @@
     "multer-storage-cloudinary": "^4.0.0",
     "node-cron": "^4.2.1",
     "node-fetch": "^3.3.2",
-    "nodemailer": "^8.0.7",
+    "nodemailer": "^9.0.1",
     "openai": "^6.38.0",
     "pdf-parse": "^1.1.4",
     "pdfkit": "^0.17.2",
