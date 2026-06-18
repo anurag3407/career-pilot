@@ -72,6 +72,7 @@ password: yup
   const [resetError, setResetError] = useState('')
 
 
+
   const {
     register,
     handleSubmit,
@@ -79,6 +80,54 @@ password: yup
   } = useForm({
     resolver: yupResolver(schema),
   })
+
+  const handleChange = (e) => {
+    const { name, value } = e.target
+    setFormData((prev) => ({
+      ...prev,
+      [name]: value
+    }))
+    if (errors[name]) {
+      setErrors((prev) => ({
+        ...prev,
+        [name]: ''
+      }))
+    }
+  }
+
+  const validateForm = () => {
+  const newErrors = {}
+
+  // Email validation
+  if (!formData.email.trim()) {
+    newErrors.email = 'Email is required'
+  } else if (
+    !/^[A-Z0-9._%+-]+@[A-Z0-9.-]+\.[A-Z]{2,}$/i.test(formData.email)
+  ) {
+    newErrors.email = 'Please enter a valid email address'
+  }
+
+  // Password validation
+  if (!formData.password.trim()) {
+    newErrors.password = 'Password is required'
+  } else if (formData.password.length < 8) {
+    newErrors.password = 'Password must be at least 8 characters'
+  } else if (!/(?=.*[A-Z])/.test(formData.password)) {
+    newErrors.password = 'Password must contain at least one uppercase letter'
+  } else if (!/(?=.*[a-z])/.test(formData.password)) {
+    newErrors.password = 'Password must contain at least one lowercase letter'
+  } else if (!/(?=.*\d)/.test(formData.password)) {
+    newErrors.password = 'Password must contain at least one number'
+  }
+
+  setErrors(newErrors)
+  return Object.keys(newErrors).length === 0
+}
+
+  const handleSubmit = async (e) => {
+    e.preventDefault()
+    if (!validateForm()) return
+
 
   const onSubmit = async (data) => {
     setLoading(true)

@@ -6,29 +6,43 @@ import toast from 'react-hot-toast'
 export default function FileUpload({ onFileSelect, disabled = false, maxSizeMB = 5 }) {
   const maxSizeBytes = maxSizeMB * 1024 * 1024
 
-  const onDrop = useCallback((acceptedFiles, rejectedFiles) => {
-    if (rejectedFiles && rejectedFiles.length > 0) {
-      rejectedFiles.forEach((file) => {
-        if (file.file.size > maxSizeBytes) {
-          const fileSizeMB = (file.file.size / (1024 * 1024)).toFixed(2)
-          toast.error(
-            `File "${file.file.name}" (${fileSizeMB}MB) exceeds the maximum limit of ${maxSizeMB}MB`
-          )
-        }
-      })
-      return
-    }
+ const onDrop = useCallback((acceptedFiles, rejectedFiles) => {
+  if (rejectedFiles && rejectedFiles.length > 0) {
+    rejectedFiles.forEach((file) => {
+      const errorCode = file.errors?.[0]?.code
 
-    if (acceptedFiles.length > 0) {
-      onFileSelect(acceptedFiles[0])
-    }
-  }, [onFileSelect, maxSizeBytes, maxSizeMB])
+      if (errorCode === 'file-too-large') {
+        toast.error(
+          `File size exceeds ${maxSizeMB}MB limit`
+        )
+      } else if (errorCode === 'file-invalid-type') {
+        toast.error(
+          'Only PDF files are allowed'
+        )
+      } else {
+        toast.error(
+          'Invalid file selected'
+        )
+      }
+    })
+    return
+  }
+
+  if (!acceptedFiles || acceptedFiles.length === 0) {
+    toast.error('Please select a resume file')
+    return
+  }
+
+  onFileSelect(acceptedFiles[0])
+}, [onFileSelect, maxSizeBytes, maxSizeMB]), [onFileSelect, maxSizeBytes, maxSizeMB]
 
   const { getRootProps, getInputProps, isDragActive } = useDropzone({
     onDrop,
     accept: {
-      'application/pdf': ['.pdf']
-    },
+  'application/pdf': ['.pdf'],
+  'application/msword': ['.doc'],
+  'application/vnd.openxmlformats-officedocument.wordprocessingml.document': ['.docx']
+},
     maxFiles: 1,
     maxSize: maxSizeBytes,
     disabled
@@ -65,7 +79,7 @@ export default function FileUpload({ onFileSelect, disabled = false, maxSizeMB =
             <p className="text-sm text-muted-foreground mb-4">or click to browse</p>
             <div className="inline-flex items-center gap-2 px-4 py-2 bg-muted rounded-lg">
               <FileText className="w-4 h-4 text-muted-foreground" />
-              <span className="text-xs text-muted-foreground">PDF files only • Max {maxSizeMB}MB</span>
+              <span className="text-xs text-muted-foreground">PDF, DOC, DOCX • Max {maxSizeMB}MB</span>
             </div>
           </>
         )}
