@@ -1,5 +1,19 @@
 export const templates = [
   {
+    id: "Inspired_Bhupendra_Singh",
+    title: "Bhupendra Singh Inspired",
+    category: "Portfolio",
+    colorScheme: "Dark",
+    layout: "Scroll",
+    author: "Anurag3407",
+    views: 0,
+    rating: 5.0,
+    image: "/template-previews/Inspired_Bhupendra_Singh.png",
+    createdAt: "2026-06-18",
+    description: "A sleek, modern dark-themed developer portfolio featuring framer-motion scroll animations, responsive grid layouts, and glassmorphic elements inspired by Bhupendra Singh.",
+    isComplete: true
+  },
+  {
     id: "Typewriter_Keystroke_Sequence",
     title: "Typewriter Keystroke Sequence",
     category: "Portfolio",
