@@ -37,6 +37,7 @@ import bullBoardRoutes from './routes/bullBoard.js';
 
 import inputRoutes from'./routes/input.route.js';
 import recruiterRoutes from '../src/routes/recruiter.routes.js';
+import webhookRoutes from './routes/webhooks.js';
 import outreachRoutes from './routes/outreach.route.js';
 import bugsRoutes from './routes/bugs.js';
 
@@ -264,7 +265,14 @@ const limiter = rateLimit({
 });
 app.use('/api/', limiter);
 
-app.use(express.json({ limit: '10mb' }));
+app.use(express.json({
+  limit: '10mb',
+  verify: (req, res, buf) => {
+    if (req.originalUrl && req.originalUrl.startsWith('/api/webhooks')) {
+      req.rawBody = buf;
+    }
+  }
+}));
 app.use(express.urlencoded({ extended: true, limit: '10mb' }));
 
 app.get('/health', (req, res) => {
@@ -309,6 +317,7 @@ app.use('/api/ai', aiRoutes);
 app.use('/api/email-tracking', emailTrackingRoutes);
 app.use('/api/analyzer', repoAnalyzerRoutes);
 app.use('/api/project-visualizer', projectVisualizerRoutes);
+app.use('/api/webhooks', webhookRoutes);
 app.use('/api/admin', adminRoutes);
 app.use('/api/admin/queues', bullBoardRoutes);
 

@@ -8,7 +8,7 @@
     "start": "node src/index.js",
     "dev": "nodemon src/index.js",
     "lint": "eslint src/",
-    "test": "node --test src/schemas/__tests__/schemas.test.js src/config/__tests__/socketOptions.test.js"
+    "test": "node --test src/schemas/__tests__/schemas.test.js src/config/__tests__/socketOptions.test.js src/routes/__tests__/webhooks.test.js"
   },
   "dependencies": {
     "@anthropic-ai/sdk": "^0.99.0",
