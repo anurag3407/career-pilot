@@ -75,6 +75,9 @@ router.post('/', verifyToken, handleUpload, validateUpload, asyncHandler(async (
     });
   } catch (error) {
     console.error('PDF parsing error:', error);
+    if (error.message === 'PDF parsing timed out') {
+      throw new ApiError(408, 'PDF parsing timed out. Please try a smaller or simpler file.');
+    }
     throw new ApiError(400, 'Failed to parse PDF. Please ensure the file is a valid PDF document.');
   } finally {
     if (req.file && req.file.path) {
@@ -105,6 +108,9 @@ router.post('/extract-text', verifyToken, handleUpload, validateUpload, asyncHan
     });
   } catch (error) {
     console.error('PDF text extraction error:', error);
+    if (error.message === 'PDF parsing timed out') {
+      throw new ApiError(408, 'PDF parsing timed out. Please try a smaller or simpler file.');
+    }
     throw new ApiError(400, 'Failed to extract text from PDF');
   } finally {
     if (req.file && req.file.path) {
