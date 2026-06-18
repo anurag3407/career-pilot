@@ -1,5 +1,6 @@
 import express from 'express';
 import { generateHeadline } from '../services/ai/linkedinHelper.js';
+import { generateCareerRoadmap } from '../services/ai/careerRoadmap.js';
 import { verifyToken } from '../middleware/auth.js';
 import { extractAIProvider } from '../middleware/aiKey.js';
 const router = express.Router();
@@ -27,6 +28,32 @@ router.post('/linkedin-headline', verifyToken, extractAIProvider, async (req, re
         res.status(500).json({
             success: false,
             error: 'Failed to generate headlines'
+        });
+    }
+});
+
+router.post('/career-roadmap', verifyToken, extractAIProvider, async (req, res) => {
+    try {
+        const { targetCareer } = req.body;
+
+        if (!targetCareer) {
+            return res.status(400).json({
+                success: false,
+                error: 'Target career is required'
+            });
+        }
+
+        const roadmap = await generateCareerRoadmap(targetCareer, req.aiProvider);
+
+        res.status(200).json({
+            success: true,
+            roadmap
+        });
+    } catch (error) {
+        console.error('Career Roadmap Generation Error:', error);
+        res.status(500).json({
+            success: false,
+            error: 'Failed to generate career roadmap'
         });
     }
 });

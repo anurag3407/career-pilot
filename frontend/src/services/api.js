@@ -636,13 +636,13 @@ export const aiApi = {
     return handleResponse(response)
   },
 
-  // Validate an API key against its provider (lightweight, no token usage)
-  async validateKey(provider, apiKey) {
+  // Generate career roadmap
+  async generateRoadmap(targetCareer) {
     const headers = await getAuthHeaders()
-    const response = await fetch(`${API_BASE}/ai/validate-key`, {
+    const response = await fetch(`${API_BASE}/ai/career-roadmap`, {
       method: 'POST',
       headers,
-      body: JSON.stringify({ provider, apiKey })
+      body: JSON.stringify({ targetCareer })
     })
     return handleResponse(response)
   }

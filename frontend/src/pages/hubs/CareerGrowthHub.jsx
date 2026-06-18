@@ -41,6 +41,14 @@ export default function CareerGrowthHub() {
         badge="AI"
         color="primary"
       />
+      <ToolCard
+        to="/roadmap"
+        icon={Sparkles}
+        title="Career Roadmap Generator"
+        description="Generate a personalized, year-by-year timeline and roadmap to reach your dream career."
+        badge="New AI"
+        color="secondary"
+      />
 
       {/* Static premium tips section */}
       <div className="col-span-full mt-8 p-6 rounded-2xl bg-card border border-border">

@@ -52,6 +52,7 @@ const SecuritySettings = lazy(() => import("./pages/SecuritySettings"));
 const EmailGenerator = lazy(() => import("./pages/EmailGenerator"));
 const LinkedInOptimizer = lazy(() => import("./pages/LinkedInOptimizer"));
 const Settings = lazy(() => import("./pages/Settings"));
+const CareerRoadmap = lazy(() => import("./pages/CareerRoadmap"));
 const SkillGap = lazy(() => import("./pages/SkillGap"));
 const ResumeHub = lazy(() => import("./pages/hubs/ResumeHub"));
 const JobsHub = lazy(() => import("./pages/hubs/JobsHub"));
@@ -395,6 +396,7 @@ function AppRoutes() {
         <Route path="/skill-gap" element={<ProtectedRoute><Suspense fallback={<LoadingScreen label="Loading Skill Gap Analyzer..." />}><SkillGap /></Suspense></ProtectedRoute>} />
         <Route path="/deployments" element={<ProtectedRoute><Suspense fallback={<LoadingScreen label="Loading Deployments..." />}><Deployments /></Suspense></ProtectedRoute>} />
         <Route path="/settings" element={<ProtectedRoute><Suspense fallback={<LoadingScreen label="Loading Settings..." />}><Settings /></Suspense></ProtectedRoute>} />
+        <Route path="/roadmap" element={<ProtectedRoute><Suspense fallback={<LoadingScreen label="Loading Roadmap..." />}><CareerRoadmap /></Suspense></ProtectedRoute>} />
 
         
         {/* Admin Routes */}
