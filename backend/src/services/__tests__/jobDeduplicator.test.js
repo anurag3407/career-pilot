@@ -10,7 +10,8 @@ const createJob = (overrides = {}) => ({
   company: 'Acme Technologies',
   location: 'Jaipur',
   employmentType: 'full-time',
-  applyLink: 'https://jobs.example.com/apply/job-1',
+  applyLink:
+    'https://jobs.example.com/apply/job-1',
   postedAt: '2026-06-15T00:00:00.000Z',
   ...overrides,
 });
@@ -54,11 +55,13 @@ describe('jobDeduplicator', () => {
   describe('exact identity matching', () => {
     test('deduplicates records with the same source-scoped external ID', () => {
       const firstJob = createJob({
-        descriptionSnippet: 'Build backend services.',
+        descriptionSnippet:
+          'Build backend services.',
       });
 
       const secondJob = createJob({
-        title: 'Completely Different Display Title',
+        title:
+          'Completely Different Display Title',
         description:
           'Build reliable backend services and APIs.',
       });
@@ -69,7 +72,10 @@ describe('jobDeduplicator', () => {
       ]);
 
       assert.equal(result.jobs.length, 1);
-      assert.equal(result.stats.duplicatesRemoved, 1);
+      assert.equal(
+        result.stats.duplicatesRemoved,
+        1,
+      );
       assert.equal(result.stats.exactMatches, 1);
       assert.equal(result.stats.fuzzyMatches, 0);
       assert.equal(
@@ -99,7 +105,10 @@ describe('jobDeduplicator', () => {
       ]);
 
       assert.equal(result.jobs.length, 2);
-      assert.equal(result.stats.duplicatesRemoved, 0);
+      assert.equal(
+        result.stats.duplicatesRemoved,
+        0,
+      );
     });
 
     test('deduplicates canonical URLs that differ only by tracking data', () => {
@@ -120,7 +129,10 @@ describe('jobDeduplicator', () => {
 
       assert.equal(result.jobs.length, 1);
       assert.equal(result.stats.exactMatches, 1);
-      assert.equal(result.stats.duplicatesRemoved, 1);
+      assert.equal(
+        result.stats.duplicatesRemoved,
+        1,
+      );
     });
 
     test('preserves meaningful URL parameters when identifying jobs', () => {
@@ -139,7 +151,60 @@ describe('jobDeduplicator', () => {
       ]);
 
       assert.equal(result.jobs.length, 2);
-      assert.equal(result.stats.duplicatesRemoved, 0);
+      assert.equal(
+        result.stats.duplicatesRemoved,
+        0,
+      );
+    });
+
+    test('preserves punctuation in source-scoped external IDs', () => {
+      const result = deduplicateJobs([
+        createJob({
+          source: 'rapidapi',
+          externalId: 'job/123',
+          title: 'Backend Engineer',
+          company: 'First Company',
+          applyLink:
+            'https://jobs.example.com/backend-123',
+        }),
+        createJob({
+          source: 'rapidapi',
+          externalId: 'job.123',
+          title: 'Data Scientist',
+          company: 'Second Company',
+          applyLink:
+            'https://jobs.example.com/data-123',
+        }),
+      ]);
+
+      assert.equal(result.jobs.length, 2);
+      assert.equal(
+        result.stats.duplicatesRemoved,
+        0,
+      );
+    });
+
+    test('falls back to a valid URL when an earlier URL field is malformed', () => {
+      const canonicalJobUrl =
+        'https://jobs.example.com/openings/500';
+
+      const result = deduplicateJobs([
+        createJob({
+          source: 'rapidapi',
+          externalId: 'rapid-500',
+          applyLink: '#',
+          sourceUrl:
+            `${canonicalJobUrl}?utm_source=rapidapi`,
+        }),
+        createJob({
+          source: 'linkedin',
+          externalId: 'linkedin-500',
+          applyLink: canonicalJobUrl,
+        }),
+      ]);
+
+      assert.equal(result.jobs.length, 1);
+      assert.equal(result.stats.exactMatches, 1);
     });
   });
 
@@ -158,14 +223,18 @@ describe('jobDeduplicator', () => {
           source: 'linkedin',
           externalId: 'linkedin-1',
           title: 'Senior Backend Engineer',
-          company: 'Example Systems Private Limited',
+          company:
+            'Example Systems Private Limited',
           applyLink:
             'https://linkedin.example.com/jobs/linkedin-1',
         }),
       ]);
 
       assert.equal(result.jobs.length, 1);
-      assert.equal(result.stats.duplicatesRemoved, 1);
+      assert.equal(
+        result.stats.duplicatesRemoved,
+        1,
+      );
       assert.equal(result.stats.exactMatches, 1);
     });
 
@@ -196,7 +265,10 @@ describe('jobDeduplicator', () => {
 
       assert.equal(result.jobs.length, 1);
       assert.equal(result.stats.fuzzyMatches, 1);
-      assert.equal(result.stats.candidateComparisons, 1);
+      assert.equal(
+        result.stats.candidateComparisons,
+        1,
+      );
     });
 
     test('groups common remote-work location labels', () => {
@@ -220,7 +292,10 @@ describe('jobDeduplicator', () => {
       ]);
 
       assert.equal(result.jobs.length, 1);
-      assert.equal(result.stats.duplicatesRemoved, 1);
+      assert.equal(
+        result.stats.duplicatesRemoved,
+        1,
+      );
     });
   });
 
@@ -243,7 +318,37 @@ describe('jobDeduplicator', () => {
       ]);
 
       assert.equal(result.jobs.length, 2);
-      assert.equal(result.stats.duplicatesRemoved, 0);
+      assert.equal(
+        result.stats.duplicatesRemoved,
+        0,
+      );
+    });
+
+    test('keeps jurisdiction-limited remote roles separate', () => {
+      const result = deduplicateJobs([
+        createJob({
+          source: 'rapidapi',
+          externalId: 'remote-us',
+          location: 'Remote - US',
+          isRemote: true,
+          applyLink:
+            'https://jobs.example.com/remote-us',
+        }),
+        createJob({
+          source: 'linkedin',
+          externalId: 'remote-canada',
+          location: 'Remote Canada',
+          isRemote: true,
+          applyLink:
+            'https://jobs.example.com/remote-canada',
+        }),
+      ]);
+
+      assert.equal(result.jobs.length, 2);
+      assert.equal(
+        result.stats.duplicatesRemoved,
+        0,
+      );
     });
 
     test('keeps internship and full-time vacancies separate', () => {
@@ -266,7 +371,10 @@ describe('jobDeduplicator', () => {
       ]);
 
       assert.equal(result.jobs.length, 2);
-      assert.equal(result.stats.duplicatesRemoved, 0);
+      assert.equal(
+        result.stats.duplicatesRemoved,
+        0,
+      );
     });
 
     test('keeps vacancies in different known locations separate', () => {
@@ -287,7 +395,10 @@ describe('jobDeduplicator', () => {
       ]);
 
       assert.equal(result.jobs.length, 2);
-      assert.equal(result.stats.duplicatesRemoved, 0);
+      assert.equal(
+        result.stats.duplicatesRemoved,
+        0,
+      );
     });
 
     test('keeps conflicting employment types separate', () => {
@@ -308,7 +419,10 @@ describe('jobDeduplicator', () => {
       ]);
 
       assert.equal(result.jobs.length, 2);
-      assert.equal(result.stats.duplicatesRemoved, 0);
+      assert.equal(
+        result.stats.duplicatesRemoved,
+        0,
+      );
     });
 
     test('does not merge repostings outside the date tolerance', () => {
@@ -316,21 +430,26 @@ describe('jobDeduplicator', () => {
         createJob({
           source: 'rapidapi',
           externalId: 'old-posting',
-          postedAt: '2026-01-01T00:00:00.000Z',
+          postedAt:
+            '2026-01-01T00:00:00.000Z',
           applyLink:
             'https://rapid.example.com/old-posting',
         }),
         createJob({
           source: 'linkedin',
           externalId: 'new-posting',
-          postedAt: '2026-06-15T00:00:00.000Z',
+          postedAt:
+            '2026-06-15T00:00:00.000Z',
           applyLink:
             'https://linkedin.example.com/new-posting',
         }),
       ]);
 
       assert.equal(result.jobs.length, 2);
-      assert.equal(result.stats.duplicatesRemoved, 0);
+      assert.equal(
+        result.stats.duplicatesRemoved,
+        0,
+      );
     });
   });
 
@@ -338,7 +457,8 @@ describe('jobDeduplicator', () => {
     test('selects and enriches the most complete duplicate record', () => {
       const firstJob = createJob({
         skills: ['Node.js', 'MongoDB'],
-        descriptionSnippet: 'Backend development role.',
+        descriptionSnippet:
+          'Backend development role.',
       });
 
       const secondJob = createJob({
@@ -360,21 +480,49 @@ describe('jobDeduplicator', () => {
       ]);
 
       assert.equal(result.jobs.length, 1);
+
       assert.deepEqual(
         result.jobs[0].skills,
         ['MongoDB', 'Redis', 'Node.js'],
       );
+
       assert.equal(
         result.jobs[0].description,
         secondJob.description,
       );
+
       assert.deepEqual(
         result.jobs[0].salary,
         secondJob.salary,
       );
+
       assert.equal(
         result.jobs[0].descriptionSnippet,
         firstJob.descriptionSnippet,
+      );
+    });
+
+    test('handles circular objects and BigInt array items safely', () => {
+      const circularValue = {};
+      circularValue.self = circularValue;
+
+      const firstJob = createJob({
+        skills: [1n],
+      });
+
+      const secondJob = createJob({
+        skills: [circularValue],
+      });
+
+      const result = deduplicateJobs([
+        firstJob,
+        secondJob,
+      ]);
+
+      assert.equal(result.jobs.length, 1);
+      assert.equal(
+        result.jobs[0].skills.length,
+        2,
       );
     });
 
@@ -389,15 +537,34 @@ describe('jobDeduplicator', () => {
 
       const originalFirstJob =
         structuredClone(firstJob);
+
       const originalSecondJob =
         structuredClone(secondJob);
 
-      deduplicateJobs([firstJob, secondJob]);
+      deduplicateJobs([
+        firstJob,
+        secondJob,
+      ]);
 
-      assert.deepEqual(firstJob, originalFirstJob);
-      assert.deepEqual(secondJob, originalSecondJob);
-      assert.deepEqual(firstJob.skills, ['Node.js']);
-      assert.deepEqual(secondJob.skills, ['Redis']);
+      assert.deepEqual(
+        firstJob,
+        originalFirstJob,
+      );
+
+      assert.deepEqual(
+        secondJob,
+        originalSecondJob,
+      );
+
+      assert.deepEqual(
+        firstJob.skills,
+        ['Node.js'],
+      );
+
+      assert.deepEqual(
+        secondJob.skills,
+        ['Redis'],
+      );
     });
 
     test('handles malformed records, URLs, and dates without crashing', () => {
@@ -415,12 +582,27 @@ describe('jobDeduplicator', () => {
       ]);
 
       assert.equal(result.jobs.length, 1);
-      assert.deepEqual(result.jobs[0], malformedJob);
-      assert.notStrictEqual(result.jobs[0], malformedJob);
+
+      assert.deepEqual(
+        result.jobs[0],
+        malformedJob,
+      );
+
+      assert.notStrictEqual(
+        result.jobs[0],
+        malformedJob,
+      );
+
       assert.equal(result.stats.inputCount, 3);
       assert.equal(result.stats.outputCount, 1);
-      assert.equal(result.stats.unmatchableCount, 3);
-      assert.equal(result.stats.duplicatesRemoved, 0);
+      assert.equal(
+        result.stats.unmatchableCount,
+        3,
+      );
+      assert.equal(
+        result.stats.duplicatesRemoved,
+        0,
+      );
     });
 
     test('preserves the position of the first occurrence', () => {
@@ -466,18 +648,22 @@ describe('jobDeduplicator', () => {
       ]);
 
       assert.equal(result.jobs.length, 3);
+
       assert.equal(
         result.jobs[0].externalId,
         'first-unique',
       );
+
       assert.equal(
         result.jobs[1].externalId,
         'duplicate-id',
       );
+
       assert.equal(
         result.jobs[1].description,
         richerDuplicate.description,
       );
+
       assert.equal(
         result.jobs[2].externalId,
         'final-unique',
@@ -489,7 +675,11 @@ describe('jobDeduplicator', () => {
     test('uses indexed candidate selection for a large dataset', () => {
       const jobs = [];
 
-      for (let index = 0; index < 1000; index += 1) {
+      for (
+        let index = 0;
+        index < 1000;
+        index += 1
+      ) {
         const company = `Company ${index}`;
 
         jobs.push(
@@ -512,18 +702,71 @@ describe('jobDeduplicator', () => {
         );
       }
 
-      const result = deduplicateJobs(jobs, {
-        titleSimilarityThreshold: 0.6,
-      });
+      const result = deduplicateJobs(
+        jobs,
+        {
+          titleSimilarityThreshold: 0.6,
+        },
+      );
 
-      assert.equal(result.stats.inputCount, 2000);
-      assert.equal(result.stats.outputCount, 1000);
-      assert.equal(result.stats.duplicatesRemoved, 1000);
-      assert.equal(result.stats.fuzzyMatches, 1000);
+      assert.equal(
+        result.stats.inputCount,
+        2000,
+      );
+
+      assert.equal(
+        result.stats.outputCount,
+        1000,
+      );
+
+      assert.equal(
+        result.stats.duplicatesRemoved,
+        1000,
+      );
+
+      assert.equal(
+        result.stats.fuzzyMatches,
+        1000,
+      );
 
       assert.ok(
-        result.stats.candidateComparisons <= 1000,
+        result.stats.candidateComparisons <=
+          1000,
         `expected at most 1000 candidate comparisons, received ${result.stats.candidateComparisons}`,
+      );
+    });
+
+    test('caps fuzzy comparisons for high-frequency generic titles', () => {
+      const jobs = Array.from(
+        {
+          length: 1000,
+        },
+        (_, index) =>
+          createJob({
+            source: `provider-${index}`,
+            externalId:
+              `generic-${index}`,
+            title:
+              `Software Engineer Specialty ${index}`,
+            company:
+              'Large Technology Company',
+            applyLink:
+              `https://jobs.example.com/generic-${index}`,
+          }),
+      );
+
+      const result =
+        deduplicateJobs(jobs);
+
+      assert.equal(
+        result.jobs.length,
+        1000,
+      );
+
+      assert.ok(
+        result.stats.candidateComparisons <=
+          1000 * 250,
+        `expected fuzzy comparisons to be capped, received ${result.stats.candidateComparisons}`,
       );
     });
   });

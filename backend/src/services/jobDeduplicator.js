@@ -3,6 +3,12 @@ const DEFAULT_OPTIONS = Object.freeze({
   postedAtToleranceDays: 14,
 });
 
+const MAX_FUZZY_BUCKET_SIZE = 250;
+const MAX_FUZZY_CANDIDATES = 250;
+
+const REMOTE_PREFIX_PATTERN =
+  /^(?:remote|work from home|wfh|home based)(?:\s+|$)/;
+
 const TRACKING_QUERY_PARAMETERS = new Set([
   'campaign',
   'fbclid',
@@ -121,16 +127,24 @@ const normalizeCompany = (company) => {
  * @returns {string} Normalized location.
  */
 const normalizeLocation = (location, isRemote = false) => {
-  if (isRemote) {
-    return 'remote';
-  }
-
   const normalized = normalizeText(location);
 
-  if (
-    /\b(?:remote|work from home|wfh|home based)\b/.test(normalized)
-  ) {
-    return 'remote';
+  if (!normalized) {
+    return isRemote ? 'remote' : '';
+  }
+
+  if (REMOTE_PREFIX_PATTERN.test(normalized)) {
+    const qualifier = normalized
+      .replace(REMOTE_PREFIX_PATTERN, '')
+      .trim();
+
+    return qualifier
+      ? `remote ${qualifier}`
+      : 'remote';
+  }
+
+  if (isRemote) {
+    return `remote ${normalized}`;
   }
 
   return normalized;
@@ -420,7 +434,12 @@ const areDatesCompatible = (
  */
 const buildSourceIdKey = (job) => {
   const source = normalizeText(job.source);
-  const externalId = normalizeText(job.externalId);
+
+  const externalId =
+    job.externalId === null ||
+    job.externalId === undefined
+      ? ''
+      : String(job.externalId).trim();
 
   if (!source || !externalId) {
     return null;
@@ -435,13 +454,22 @@ const buildSourceIdKey = (job) => {
  * @param {object} job Job record.
  * @returns {string|null} Canonical URL.
  */
-const buildUrlKey = (job) =>
-  canonicalizeUrl(
-    job.applyLink ??
-    job.applicationUrl ??
-    job.jobUrl ??
+const buildUrlKey = (job) => {
+  for (const value of [
+    job.applyLink,
+    job.applicationUrl,
+    job.jobUrl,
     job.sourceUrl,
-  );
+  ]) {
+    const canonicalUrl = canonicalizeUrl(value);
+
+    if (canonicalUrl) {
+      return canonicalUrl;
+    }
+  }
+
+  return null;
+};
 
 /**
  * Build an exact normalized content key.
@@ -583,13 +611,43 @@ const mergeArrays = (firstValue, secondValue) => {
   ];
 
   const seen = new Set();
+  const fallbackObjectIds = new WeakMap();
+
+  let nextFallbackObjectId = 0;
+
   const result = [];
 
   for (const item of combined) {
-    const identity =
-      typeof item === 'string'
-        ? `string:${normalizeText(item)}`
-        : `value:${JSON.stringify(item)}`;
+    let identity;
+
+    if (typeof item === 'string') {
+      identity = `string:${normalizeText(item)}`;
+    } else {
+      try {
+        const serialized = JSON.stringify(item);
+
+        identity =
+          serialized === undefined
+            ? `${typeof item}:${String(item)}`
+            : `value:${serialized}`;
+      } catch {
+        if (item && typeof item === 'object') {
+          if (!fallbackObjectIds.has(item)) {
+            fallbackObjectIds.set(
+              item,
+              nextFallbackObjectId,
+            );
+
+            nextFallbackObjectId += 1;
+          }
+
+          identity =
+            `reference:${fallbackObjectIds.get(item)}`;
+        } else {
+          identity = `${typeof item}:${String(item)}`;
+        }
+      }
+    }
 
     if (!seen.has(identity)) {
       seen.add(identity);
@@ -756,7 +814,12 @@ const isLikelyDuplicate = (firstJob, secondJob, options) => {
  * @param {string|null} key Lookup key.
  * @param {number} outputIndex Output-array index.
  */
-const addToSetIndex = (index, key, outputIndex) => {
+const addToSetIndex = (
+  index,
+  key,
+  outputIndex,
+  maxSize = Infinity,
+) => {
   if (!key) {
     return;
   }
@@ -765,7 +828,17 @@ const addToSetIndex = (index, key, outputIndex) => {
     index.set(key, new Set());
   }
 
-  index.get(key).add(outputIndex);
+  const bucket = index.get(key);
+
+  bucket.delete(outputIndex);
+  bucket.add(outputIndex);
+
+  while (bucket.size > maxSize) {
+    const oldestOutputIndex =
+      bucket.values().next().value;
+
+    bucket.delete(oldestOutputIndex);
+  }
 };
 
 /**
@@ -881,6 +954,7 @@ export const deduplicateJobs = (jobs, options = {}) => {
         candidateIndex,
         `${company}|${token}`,
         outputIndex,
+        MAX_FUZZY_BUCKET_SIZE,
       );
     }
   };
@@ -962,7 +1036,8 @@ export const deduplicateJobs = (jobs, options = {}) => {
 
       const orderedCandidates =
         [...candidateOutputIndices]
-          .sort((first, second) => first - second);
+          .sort((first, second) => first - second)
+          .slice(0, MAX_FUZZY_CANDIDATES);
 
       for (const candidateOutputIndex of orderedCandidates) {
         stats.candidateComparisons += 1;
