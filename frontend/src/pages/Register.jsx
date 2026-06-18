@@ -26,6 +26,7 @@ export default function Register() {
     setErrors(prev => ({ ...prev, [name]: '' }))
   }
 
+<<<<<<< HEAD
   const validate = () => {
     const newErrors = {}
     if (!formData.name.trim()) {
@@ -46,7 +47,52 @@ export default function Register() {
     }
     setErrors(newErrors)
     return Object.keys(newErrors).length === 0
+=======
+ const validate = () => {
+  const newErrors = {}
+
+  // Name validation
+  if (!formData.name.trim()) {
+    newErrors.name = 'Name is required'
+  } else if (formData.name.trim().length < 3) {
+    newErrors.name = 'Name must be at least 3 characters'
+  } else if (!/^[a-zA-Z\s]+$/.test(formData.name)) {
+    newErrors.name = 'Name can only contain letters and spaces'
+>>>>>>> 3998dc21 (Add validation for authentication and resume forms)
   }
+
+  // Email validation
+  if (!formData.email.trim()) {
+    newErrors.email = 'Email is required'
+  } else if (
+    !/^[A-Z0-9._%+-]+@[A-Z0-9.-]+\.[A-Z]{2,}$/i.test(formData.email)
+  ) {
+    newErrors.email = 'Please enter a valid email address'
+  }
+
+  // Password validation
+  if (!formData.password) {
+    newErrors.password = 'Password is required'
+  } else if (formData.password.length < 8) {
+    newErrors.password = 'Password must be at least 8 characters'
+  } else if (!/(?=.*[A-Z])/.test(formData.password)) {
+    newErrors.password = 'Password must contain at least one uppercase letter'
+  } else if (!/(?=.*[a-z])/.test(formData.password)) {
+    newErrors.password = 'Password must contain at least one lowercase letter'
+  } else if (!/(?=.*\d)/.test(formData.password)) {
+    newErrors.password = 'Password must contain at least one number'
+  }
+
+  // Confirm password validation
+  if (!formData.confirmPassword) {
+    newErrors.confirmPassword = 'Please confirm your password'
+  } else if (formData.password !== formData.confirmPassword) {
+    newErrors.confirmPassword = 'Passwords do not match'
+  }
+
+  setErrors(newErrors)
+  return Object.keys(newErrors).length === 0
+}
 
   const handleSubmit = async (e) => {
     e.preventDefault()

@@ -12,7 +12,11 @@
     "test": "vitest run"
   },
   "dependencies": {
+
+    "@hookform/resolvers": "^5.4.0",
+
     "@hello-pangea/dnd": "^18.0.1",
+
     "@radix-ui/react-label": "^2.1.8",
     "@radix-ui/react-slot": "^1.2.4",
     "@tabler/icons-react": "^3.36.1",
@@ -37,7 +41,7 @@
     "react": "^19.2.6",
     "react-dom": "^19.2.6",
     "react-dropzone": "^14.3.5",
-    "react-hook-form": "^7.54.2",
+    "react-hook-form": "^7.76.1",
     "react-hot-toast": "^2.4.1",
     "react-markdown": "^9.1.0",
     "react-pageflip": "^2.0.3",
@@ -48,6 +52,7 @@
     "socket.io-client": "^4.2.0",
     "tailwind-merge": "^3.4.0",
     "tailwindcss": "^4.1.18",
+    "yup": "^1.7.1",
     "zustand": "^5.0.2"
   },
   "devDependencies": {
