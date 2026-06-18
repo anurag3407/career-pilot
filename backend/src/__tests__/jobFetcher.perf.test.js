@@ -421,7 +421,7 @@ const makeMockModel = (
 };
 
 describe(
-  'bulkUpsertJobs â€” query count invariant',
+  'bulkUpsertJobs - query count invariant',
   () => {
     test('20 all-new jobs use one find and one insertMany call', async () => {
       const jobs = makeJobs(20);
@@ -531,7 +531,7 @@ describe(
 );
 
 describe(
-  'bulkUpsertJobs â€” batch size cap',
+  'bulkUpsertJobs - batch size cap',
   () => {
     test('processes only 25 of 30 supplied jobs', async () => {
       const jobs = makeJobs(30);
@@ -578,7 +578,7 @@ describe(
 );
 
 describe(
-  'bulkUpsertJobs â€” return value and persistence identity',
+  'bulkUpsertJobs - return value and persistence identity',
   () => {
     test('each returned job has a MongoDB ID', async () => {
       const jobs = makeJobs(5);
@@ -816,7 +816,7 @@ describe(
 );
 
 describe(
-  'bulkUpsertJobs â€” duplicate key handling',
+  'bulkUpsertJobs - duplicate key handling',
   () => {
     test('recovers records after a concurrent duplicate-key race', async () => {
       const jobs = makeJobs(5);
@@ -905,7 +905,7 @@ describe(
 );
 
 describe(
-  'bulkUpsertJobs â€” onNewJobs callback',
+  'bulkUpsertJobs - onNewJobs callback',
   () => {
     test('calls onNewJobs once with newly inserted documents', async () => {
       const jobs = makeJobs(5);
