@@ -152,21 +152,26 @@ export default function ResumeView() {
               Last modified: {formatDate(resume?.lastModified || resume?.createdAt)}
             </p>
           </div>
-          <div className="flex gap-2">
+         <div className="flex flex-col sm:flex-row gap-3 w-full sm:w-auto">
             <Link to={`/enhance/${resumeId}`}>
               <Button variant="primary">
                 {resume?.enhancedText ? 'Re-enhance' : 'Enhance'}
               </Button>
             </Link>
             <Link to="/dashboard">
-              <Button variant="outline">Back to Dashboard</Button>
+             <Button
+  variant="outline"
+  className="w-full sm:w-auto rounded-xl px-5 py-3 font-semibold"
+>
+  Back to Dashboard
+</Button>
             </Link>
           </div>
         </div>
 
         {/* Tab Navigation */}
         <div className="border-b border-border mb-6">
-          <nav className="flex gap-8">
+         <nav className="flex flex-wrap gap-4 sm:gap-8 overflow-x-auto scrollbar-hide">
             {resume?.enhancedText && (
               <button
                 onClick={() => setActiveTab('enhanced')}
@@ -191,21 +196,24 @@ export default function ResumeView() {
         </div>
 
         {/* Content */}
-        <Card>
+        <Card className="rounded-2xl shadow-xl">
           <div className="flex flex-col sm:flex-row justify-between items-start sm:items-center gap-4 mb-4">
             <h2 className="text-lg font-medium text-foreground">
               {activeTab === 'enhanced' ? 'AI-Enhanced Resume' : 'Original Resume'}
             </h2>
-            <div className="flex gap-2 flex-wrap">
-              <Button
-                variant="primary"
+           <div className="flex flex-wrap gap-3 w-full sm:w-auto">
+            <Button
+  variant="primary"
+  className="w-full sm:w-auto rounded-xl px-5 py-3 font-semibold shadow-md hover:scale-[1.02] transition-all duration-300"
+
                 onClick={handleDownloadPdf}
                 disabled={downloading}
               >
                 {downloading ? 'Downloading...' : 'Download PDF'}
               </Button>
-              <Button
-                variant="secondary"
+             <Button
+  variant="secondary"
+  className="w-full sm:w-auto rounded-xl"
                 onClick={() =>
                   handleCopy(
                     activeTab === 'enhanced'
@@ -232,8 +240,7 @@ export default function ResumeView() {
               )}
             </div>
           </div>
-
-          <div className="bg-card border border-border/40 rounded-lg p-6 min-h-96 overflow-auto shadow-lg" style={{ maxWidth: '210mm', margin: '0 auto' }}>
+<div className="bg-card border border-border/40 rounded-2xl p-4 sm:p-6 min-h-[500px] overflow-auto shadow-2xl transition-all duration-300" style={{ maxWidth: '210mm', margin: '0 auto' }}>
             {activeTab === 'enhanced' && resume?.enhancedText ? (
               <div className="resume-preview max-w-none text-foreground text-sm leading-tight">
                 <ReactMarkdown
@@ -300,7 +307,7 @@ export default function ResumeView() {
 
         {/* Metadata */}
         {resume?.preferences && Object.keys(resume.preferences).length > 0 && (
-          <Card className="mt-6">
+          <Card className="mt-6 rounded-2xl shadow-lg">
             <h3 className="text-lg font-medium text-foreground mb-4">Enhancement Settings Used</h3>
             <div className="grid sm:grid-cols-2 gap-4 text-sm">
               {resume.jobRole && (
@@ -358,7 +365,7 @@ export default function ResumeView() {
         )}
 
         {/* ── Custom Sections ─────────────────────────────────────────────── */}
-        <Card className="mt-6">
+        <Card className="mt-6 rounded-2xl shadow-lg">
           <CustomSection
             sections={customSections}
             onSectionsChange={handleSectionsChange}
