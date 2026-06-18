@@ -257,15 +257,8 @@ export default function InspiredDevJadiya() {
   // Use fallbacks automatically to keep compilation safe in preview environments
   let data = fallbackPortfolioData;
 
-  try {
-    // If the local React app has usePortfolio defined, dynamically evaluate it
-    const hookInstance = typeof usePortfolio !== 'undefined' ? usePortfolio() : null;
-    if (hookInstance && hookInstance.portfolioData) {
-      data = hookInstance.portfolioData;
-    }
-  } catch (err) {
-    // Isolated compile failsafe caught gracefully
-  }
+  const hookInstance = usePortfolio?.();
+  const data = hookInstance?.portfolioData || fallbackPortfolioData;
 
   const [theme, setTheme] = useState('tokyonight');
   const [activeItem, setActiveItem] = useState({ section: 'home', index: 0 });
@@ -389,8 +382,7 @@ export default function InspiredDevJadiya() {
   const style = getThemeClasses();
 
   return (
-    <div className={`min-h-screen ${style.bg} ${style.textBody} font-mono flex flex-col justify-between selection:${style.bgSelection}`}>
-      
+<div className={`min-h-screen ${style.bg} ${style.textBody} font-mono flex flex-col justify-between selection:bg-[#163356] selection:text-white`}>      
       {/* Visual Terminal Bar Header */}
       <header className={`px-4 py-2 border-b ${style.borderMuted} flex justify-between items-center text-xs text-center md:text-left`}>
         <div className="flex items-center gap-4">
@@ -503,8 +495,10 @@ export default function InspiredDevJadiya() {
                 >
                   <span className="font-bold">{proj.name}</span>
                   <div className="flex gap-1">
-                    {proj.tech.slice(0, 2).map((t, idx) => (
-                      <span key={idx} className={`text-[9px] px-1 border ${style.borderMuted} ${style.textMuted}`}>
+                    {(proj.tech || proj.techStack || []).slice(0, 2).map((t, idx) => (
+                      <span
+                        key={idx}
+                        className={`text-[9px] px-1 border ${style.borderMuted} ${style.textMuted}`}>
                         {t}
                       </span>
                     ))}
@@ -641,8 +635,21 @@ export default function InspiredDevJadiya() {
                   This technology/capability is registered inside the primary development environment with the status <span className="text-emerald-500 font-bold">ACTIVE</span>. Fully integrated and utilized across multiple production architectures and active systems.
                 </p>
                 <div className={`mt-4 p-4 border ${style.borderMuted} bg-[#03060a] space-y-1 text-xs`}>
-                  <div><span className="text-slate-500">Path:</span> <span className={style.textHighlight}>/env/tools/{skills[activeItem.index].toLowerCase().replace(/[^a-z0-9]/g, '_')}</span></div>
-                  <div><span className="text-slate-500">Integration:</span> 100% Core Competence Verified</div>
+                <div>
+                  <span className="text-slate-500">Path:</span>{" "}
+                  <span className={style.textHighlight}>
+                    /env/tools/
+                    {(typeof skills?.[activeItem?.index] === "string"
+                      ? skills[activeItem.index]
+                      : skills?.[activeItem?.index]?.name || "unknown")
+                      .toLowerCase()
+                      .replace(/[^a-z0-9]/g, "_")}
+                  </span>
+                  </div>
+
+                  <div>
+                    <span className="text-slate-500">Integration:</span> 100% Core Competence Verified
+                  </div>
                 </div>
               </div>
             )}
