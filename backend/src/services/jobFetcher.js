@@ -4,6 +4,7 @@ import JobAlert from '../models/JobAlert.model.js';
 import JobListing from '../models/JobListing.model.js';
 import NotificationLog from '../models/NotificationLog.model.js';
 import { searchJobs } from './rapidApiService.js';
+import { deduplicateJobs } from './jobDeduplicator.js';
 import { sendJobAlertEmail } from './mailService.js';
 import scraperRegistry from './scrapers/index.js';
 import {
@@ -244,8 +245,19 @@ export const processAlert = async (alertData) => {
             return { success: true, newJobs: 0 };
         }
 
+        const {
+          jobs: deduplicatedJobs,
+          stats: deduplicationStats,
+        } = deduplicateJobs(fetchedJobs);
+
+        console.log(
+          ` Job deduplication: ${deduplicationStats.inputCount} input, ` +
+          `${deduplicationStats.outputCount} unique, ` +
+          `${deduplicationStats.duplicatesRemoved} duplicate(s) removed`,
+        );
+
         // Bulk upsert: one $in lookup + one insertMany instead of N findOne calls
-        const jobsToSend = await bulkUpsertJobs(fetchedJobs, JobListing, async (newDocs) => {
+        const jobsToSend = await bulkUpsertJobs(deduplicatedJobs, JobListing, async (newDocs) => {
             // Batch Firebase sync for newly cached jobs
             await Promise.allSettled(
                 newDocs.map(doc => {
@@ -256,7 +268,10 @@ export const processAlert = async (alertData) => {
             console.log(`💾 Cached and synced ${newDocs.length} new job(s) to Firebase`);
         });
 
-        console.log(`📧 Sending ${jobsToSend.length} jobs to user (deduplication DISABLED)`);
+        console.log(
+          ` Sending ${jobsToSend.length} unique jobs to user ` +
+          `(${deduplicationStats.duplicatesRemoved} duplicate(s) removed)`,
+        );
 
         // Always send email if there are jobs
         if (jobsToSend.length > 0) {
