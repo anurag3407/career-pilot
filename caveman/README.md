@@ -21,7 +21,7 @@ Auto-clarity rule: caveman drops to normal prose for security warnings, irrevers
 
 ## How to invoke
 
-```
+```bash
 /caveman              # full mode (default)
 /caveman lite         # lighter compression
 /caveman ultra        # extreme compression
