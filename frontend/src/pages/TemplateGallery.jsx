@@ -27,6 +27,7 @@ import MagneticDock from "../components/portfolio/templates/Magnetic_Dock/index"
 import { useSearchParams } from "react-router-dom";
 import MorphingBlobs from "../components/portfolio/templates/Morphing_Blobs/index";
 import InspiredClydeDSouza from "../components/portfolio/templates/Inspired_Clyde_DSouza/index";
+import InspiredDelba from "../components/portfolio/templates/Inspired_Delba/index";
 
 /* TemplatePreviewFrame — contains each full portfolio template in a
    sandboxed scrollable box. The key trick: CSS `transform` on the outer
@@ -799,6 +800,20 @@ const [hoveredCard, setHoveredCard] = useState(null);
         <div className="rounded-2xl border border-emerald-500/15"
           style={{ height: 640, overflowY: "auto", overflowX: "hidden", transform: "translate(0)", position: "relative", backgroundColor: "#f9fafb" }}>
           <InspiredClydeDSouza />
+        </div>
+      </div>
+
+      {/* Inspired Delba - sandboxed fixed-nav frame */}
+      <div className="mt-12">
+        <div className="mb-4 flex items-center gap-3 px-1">
+          <span className="rounded-full bg-slate-500/15 px-3 py-1 text-xs font-bold uppercase tracking-widest text-slate-500 border border-slate-500/25">
+            ✨ Delba Inspired
+          </span>
+          <h2 className="text-lg font-semibold text-foreground/70">Inspired by Delba - Minimalist Typography</h2>
+        </div>
+        <div className="rounded-2xl border border-slate-500/15"
+          style={{ height: 640, overflowY: "auto", overflowX: "hidden", transform: "translate(0)", position: "relative", backgroundColor: "#FAFAFA" }}>
+          <InspiredDelba />
         </div>
       </div>
 
