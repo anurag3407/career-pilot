@@ -618,14 +618,6 @@ export default function TemplateGallery() {
           <InspiredDelba />
         </div>
       </div>
-          </span>
-          <h2 className="text-lg font-semibold text-foreground/70">Inspired by Delba - Minimalist Typography</h2>
-        </div>
-        <div className="rounded-2xl border border-slate-500/15"
-          style={{ height: 640, overflowY: "auto", overflowX: "hidden", transform: "translate(0)", position: "relative", backgroundColor: "#FAFAFA" }}>
-          <InspiredDelba />
-        </div>
-      </div>
 
       {/* Inspired Claudia Freitas - sandboxed fixed-nav frame */}
       <div className="mt-12">
