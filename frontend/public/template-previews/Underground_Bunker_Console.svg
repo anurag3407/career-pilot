@@ -1,0 +1,42 @@
+<svg xmlns="http://www.w3.org/2000/svg" width="640" height="360" viewBox="0 0 640 360">
+  <rect width="640" height="360" fill="#0a0a0a"/>
+  <rect x="0" y="0" width="640" height="360" fill="url(#scanlines)" opacity="0.05"/>
+  <defs>
+    <pattern id="scanlines" width="4" height="4" patternUnits="userSpaceOnUse">
+      <rect width="4" height="2" fill="rgba(51,255,51,0.1)"/>
+    </pattern>
+    <linearGradient id="header" x1="0" y1="0" x2="1" y2="0">
+      <stop offset="0%" stop-color="#33ff33" stop-opacity="0.8"/>
+      <stop offset="100%" stop-color="#33ff33" stop-opacity="0"/>
+    </linearGradient>
+  </defs>
+
+  <!-- Terminal header -->
+  <rect x="0" y="0" width="640" height="1" fill="#33ff33" opacity="0.3"/>
+  <text x="20" y="28" font-family="monospace" font-size="10" fill="#ff6600">&#x25B6; BUNKER_OS v2026.6</text>
+  <text x="540" y="28" font-family="monospace" font-size="10" fill="#333">TERMINAL</text>
+
+  <!-- Avatar circle -->
+  <circle cx="60" cy="130" r="32" fill="none" stroke="#33ff33" stroke-width="1.5" opacity="0.6"/>
+
+  <!-- Hero text -->
+  <text x="110" y="120" font-family="monospace" font-size="13" fill="#ff6600">&gt; USER_PROFILE: Alex Rivera_</text>
+  <text x="110" y="142" font-family="monospace" font-size="12" fill="#666">&gt; DESIGNATION: Full Stack Developer</text>
+  <text x="110" y="164" font-family="monospace" font-size="11" fill="#444">&gt; BIO: Passionate developer with 5+ years...</text>
+
+  <!-- Buttons -->
+  <rect x="20" y="190" width="130" height="28" fill="none" stroke="#33ff33" stroke-width="1" opacity="0.5"/>
+  <text x="35" y="209" font-family="monospace" font-size="9" fill="#33ff33">&#x25B6; VIEW MISSIONS</text>
+
+  <!-- Dossier section -->
+  <text x="20" y="260" font-family="monospace" font-size="10" fill="#ff6600">&#x25B6; DOSSIER_FILE</text>
+  <rect x="20" y="270" width="600" height="1" fill="#33ff33" opacity="0.1"/>
+  <text x="20" y="290" font-family="monospace" font-size="9" fill="#555">// PERSONNEL_RECORD</text>
+  <text x="20" y="308" font-family="monospace" font-size="9" fill="#444">Bio text line 1 — occupation and specialization details.</text>
+  <text x="20" y="322" font-family="monospace" font-size="9" fill="#444">Location and background information.</text>
+
+  <!-- Progress bars -->
+  <rect x="20" y="340" width="200" height="4" fill="#1a1a1a"/>
+  <rect x="20" y="340" width="160" height="4" fill="#33ff33"/>
+  <text x="230" y="344" font-family="monospace" font-size="8" fill="#555">React 95%</text>
+</svg>
