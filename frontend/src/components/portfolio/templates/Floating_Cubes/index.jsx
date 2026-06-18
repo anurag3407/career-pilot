@@ -1,30 +1,58 @@
 import React from 'react';
-import data from '../../../../data/dummy_data.json';
+import { motion } from 'framer-motion';
 
-/**
- * Floating Cubes Portfolio Template
- * Category: 3D / WebGL
- * Description: Randomly floating translucent cubes with glassmorphism info panels. CSS 3D transforms for cube rotation, backdrop-blur for glass effect.
- */
-export default function FloatingCubes() {
+// Imports
+import Hero from './Hero';
+import About from './About';
+import Skills from './Skills';
+import Projects from './Projects';
+import Experience from './Experience';
+import Testimonials from './Testimonials';
+import Contact from './Contact';
+
+const FloatingCubesBackground = () => {
+  const cubes = Array.from({ length: 20 });
   return (
-    <div className="min-h-screen bg-gray-950 text-white flex flex-col items-center justify-center p-8 font-sans">
-      <div className="max-w-3xl w-full text-center">
-        <h1 className="text-5xl md:text-7xl font-bold mb-4 bg-gradient-to-r from-cyan-400 to-purple-500 bg-clip-text text-transparent">
-          {data.personal.name}
-        </h1>
-        <p className="text-xl md:text-2xl text-gray-400 mb-8">{data.personal.title}</p>
-        <div className="p-8 border-2 border-dashed border-cyan-500/40 rounded-2xl bg-gray-900/50 backdrop-blur-sm">
-          <span className="inline-block px-3 py-1 rounded-full bg-cyan-500/20 text-cyan-400 text-xs font-bold uppercase tracking-widest mb-4">
-            3D / WebGL
-          </span>
-          <h2 className="text-2xl font-bold text-gray-200 mb-3">Floating Cubes Template</h2>
-          <p className="text-gray-400 mb-6 leading-relaxed">
-            Randomly floating translucent cubes with glassmorphism info panels. CSS 3D transforms for cube rotation, backdrop-blur for glass effect.
-          </p>
-          <p className="text-cyan-400 font-semibold">Open an issue to contribute and build this template!</p>
-        </div>
-      </div>
+    <div className="fixed inset-0 overflow-hidden pointer-events-none z-0 bg-gradient-to-br from-indigo-950 via-purple-900 to-slate-950" style={{ perspective: '1000px' }}>
+      {cubes.map((_, i) => (
+        <motion.div
+          key={i}
+          className="absolute bg-white/5 border border-white/20 backdrop-blur-md rounded-2xl shadow-[0_0_30px_rgba(255,255,255,0.1)]"
+          style={{
+            width: Math.random() * 120 + 40,
+            height: Math.random() * 120 + 40,
+            left: `${Math.random() * 100}vw`,
+            top: `${Math.random() * 100}vh`,
+          }}
+          animate={{
+            y: [0, -800, 0],
+            x: [0, Math.random() * 300 - 150, 0],
+            rotateX: [0, 720],
+            rotateY: [0, 360],
+            rotateZ: [0, 180]
+          }}
+          transition={{
+            duration: Math.random() * 25 + 20,
+            repeat: Infinity,
+            ease: "linear",
+          }}
+        />
+      ))}
+    </div>
+  );
+};
+
+export default function FloatingCubesPortfolio() {
+  return (
+    <div className="bg-slate-950 min-h-screen text-slate-50 font-sans selection:bg-cyan-400 selection:text-slate-900 overflow-x-hidden">
+      <FloatingCubesBackground />
+      <Hero />
+      <About />
+      <Skills />
+      <Projects />
+      <Experience />
+      <Testimonials />
+      <Contact />
     </div>
   );
 }

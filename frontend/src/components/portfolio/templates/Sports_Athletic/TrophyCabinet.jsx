@@ -76,6 +76,7 @@ function TrophyCard({ trophy, index }) {
         position: 'relative', overflow: 'hidden',
       }}>
 
+      {/* Spotlight glow */}
       <motion.div
         animate={{ opacity: hovered ? 1 : 0 }}
         transition={{ duration: 0.3 }}
@@ -84,6 +85,7 @@ function TrophyCard({ trophy, index }) {
           background: `radial-gradient(ellipse at top, ${trophy.color}08, transparent 70%)`,
         }} />
 
+      {/* Year tag */}
       <div style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'center', marginBottom: '1.25rem' }}>
         <span style={{
           fontSize: '0.62rem', fontWeight: 800, letterSpacing: '0.18em',
@@ -96,6 +98,7 @@ function TrophyCard({ trophy, index }) {
         <span style={{ fontSize: '0.72rem', fontWeight: 700, color: S.muted }}>{trophy.year}</span>
       </div>
 
+      {/* Icon */}
       <motion.div
         animate={{ scale: hovered ? 1.1 : 1, color: hovered ? trophy.color : S.muted }}
         transition={{ duration: 0.25 }}
@@ -103,6 +106,7 @@ function TrophyCard({ trophy, index }) {
         {trophy.icon}
       </motion.div>
 
+      {/* Content */}
       <h3 style={{
         fontSize: '0.9rem', fontWeight: 900, color: S.white,
         textTransform: 'uppercase', letterSpacing: '0.04em', marginBottom: '0.3rem',
@@ -116,6 +120,7 @@ function TrophyCard({ trophy, index }) {
         {trophy.desc}
       </p>
 
+      {/* Bottom accent bar */}
       <motion.div
         animate={{ scaleX: hovered ? 1 : 0 }}
         transition={{ duration: 0.35 }}
@@ -140,6 +145,7 @@ export default function TrophyCabinet() {
     <section ref={ref} style={{ background: S.bg, padding: '5rem 0', fontFamily: "'Inter', sans-serif" }}>
       <div style={{ maxWidth: '1200px', margin: '0 auto', padding: '0 1.25rem' }}>
 
+        {/* Section header */}
         <motion.div
           initial={{ opacity: 0, x: -20 }} animate={inView ? { opacity: 1, x: 0 } : {}}
           style={{ display: 'flex', alignItems: 'center', gap: '0.75rem', marginBottom: '1rem' }}>
@@ -173,8 +179,10 @@ export default function TrophyCabinet() {
         <motion.div
           initial={{ opacity: 0, y: 16 }} animate={inView ? { opacity: 1, y: 0 } : {}}
           transition={{ delay: 0.25 }}
-          className="grid grid-cols-2 md:grid-cols-4"
-          style={{ marginBottom: '3rem', border: `1px solid ${S.border}`, overflow: 'hidden' }}>
+          style={{
+            display: 'flex', gap: '1px', marginBottom: '3rem',
+            border: `1px solid ${S.border}`, overflow: 'hidden',
+          }}>
           {[
             { count: goldCount, tier: 'Gold', color: S.gold },
             { count: silverCount, tier: 'Silver', color: S.silver },
@@ -182,9 +190,8 @@ export default function TrophyCabinet() {
             { count: HALL_STATS[0].value, tier: 'Total Titles', color: S.red },
           ].map((m, i) => (
             <div key={i} style={{
-              padding: '1.25rem 1rem', background: S.card, textAlign: 'center',
+              flex: 1, padding: '1.25rem 1rem', background: S.card, textAlign: 'center',
               borderRight: i < 3 ? `1px solid ${S.border}` : 'none',
-              borderBottom: i < 2 ? `1px solid ${S.border}` : 'none',
             }}>
               <div style={{ fontSize: '1.75rem', fontWeight: 900, color: m.color, lineHeight: 1 }}>
                 {m.count}
@@ -196,19 +203,21 @@ export default function TrophyCabinet() {
           ))}
         </motion.div>
 
-        <div className="grid sm:grid-cols-2 lg:grid-cols-3" style={{ gap: '1rem' }}>
+        {/* Trophy grid */}
+        <div style={{ display: 'grid', gap: '1rem' }} className="sm:grid-cols-2 lg:grid-cols-3">
           {TROPHIES.map((trophy, i) => (
             <TrophyCard key={trophy.id} trophy={trophy} index={i} />
           ))}
         </div>
 
+        {/* Stats row */}
         <motion.div
           initial={{ opacity: 0, y: 20 }} animate={inView ? { opacity: 1, y: 0 } : {}}
           transition={{ delay: 0.6 }}
-          className="grid grid-cols-2 md:grid-cols-4"
           style={{
-            marginTop: '3rem', padding: '0',
+            marginTop: '3rem', padding: '2rem',
             background: S.card, border: `1px solid ${S.border}`,
+            display: 'grid', gridTemplateColumns: 'repeat(4, 1fr)', gap: '1px',
           }}>
           {HALL_STATS.map((stat, i) => (
             <div key={i} style={{
@@ -225,6 +234,7 @@ export default function TrophyCabinet() {
           ))}
         </motion.div>
 
+        {/* Closing tagline */}
         <motion.div
           initial={{ opacity: 0 }} animate={inView ? { opacity: 1 } : {}}
           transition={{ delay: 0.75 }}

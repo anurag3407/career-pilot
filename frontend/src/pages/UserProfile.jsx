@@ -1,19 +1,22 @@
-import { useState, useEffect } from 'react'
+import { useState, useEffect, useRef } from 'react'
 import { useParams, Link } from 'react-router-dom'
 import toast from 'react-hot-toast'
 import { motion } from 'framer-motion'
 import {
   MapPin, Globe, Github, Linkedin, Pencil, Save, X,
   FileText, Mic, Heart, MessageSquare, Calendar,
-  Plus, ExternalLink
+  Plus, ExternalLink, Camera, Loader2, Briefcase,
+  GraduationCap, Phone, Cake, Star
 } from 'lucide-react'
 import { useAuth } from '../hooks/useAuth'
 import { userProfileApi } from '../services/api'
 import Button from '../components/Button'
 import Input from '../components/Input'
+import { SkeletonProfile } from '../components/ui/Skeleton'
 import AnalysisSkeleton from '../components/github/AnalysisSkeleton'
 import { SkeletonList } from '../components/ui/Skeleton'
 import { getGithubUsername } from '../utils/github'
+import { uploadAvatar } from '../utils/avatarUpload'
 
 const AVATAR_GRADIENTS = [
   'from-indigo-500 to-purple-600',
@@ -48,6 +51,10 @@ export default function UserProfile() {
   const [saving, setSaving] = useState(false)
   // When true the GitHub repository analysis skeleton will show
   const [isRepoAnalyzing, setIsRepoAnalyzing] = useState(false)
+  // Avatar upload state
+  const [avatarUploading, setAvatarUploading] = useState(false)
+  const [avatarProgress, setAvatarProgress] = useState(0)
+  const avatarInputRef = useRef(null)
   const [form, setForm] = useState({
     displayName: '',
     bio: '',
@@ -57,6 +64,17 @@ export default function UserProfile() {
     website: '',
     github: '',
     linkedin: '',
+    // New personal-info fields
+    phone: '',
+    headline: '',
+    dateOfBirth: '',
+    gender: '',
+    company: '',
+    yearsOfExperience: '',
+    collegeStudent: false,
+    openToWork: false,
+    languages: '',
+    resumeHeadline: '',
   })
 
   useEffect(() => {
@@ -109,11 +127,65 @@ export default function UserProfile() {
       website: profile?.website || '',
       github: profile?.github || '',
       linkedin: profile?.linkedin || '',
+      // New personal-info fields
+      phone: profile?.phone || '',
+      headline: profile?.headline || '',
+      dateOfBirth: profile?.dateOfBirth
+        ? new Date(profile.dateOfBirth).toISOString().slice(0, 10)
+        : '',
+      gender: profile?.gender || '',
+      company: profile?.company || '',
+      yearsOfExperience:
+        profile?.yearsOfExperience != null ? String(profile.yearsOfExperience) : '',
+      collegeStudent: !!profile?.collegeStudent,
+      openToWork: !!profile?.openToWork,
+      languages: (profile?.languages || []).join(', '),
+      resumeHeadline: profile?.resumeHeadline || '',
     })
     setEditing(true)
   }
 
   const cancelEdit = () => setEditing(false)
+
+  // ─── Avatar upload ──────────────────────────────────────────────────────────
+  const handleAvatarPick = () => avatarInputRef.current?.click()
+
+  const handleAvatarChange = async (e) => {
+    const file = e.target.files?.[0]
+    // Always reset the input so the same file can be picked again
+    e.target.value = ''
+    if (!file) return
+
+    setAvatarUploading(true)
+    setAvatarProgress(0)
+    const toastId = toast.loading('Uploading avatar…')
+    try {
+      const url = await uploadAvatar(file, user?.uid, (pct) => setAvatarProgress(pct))
+      // Persist the URL on the profile
+      const res = await userProfileApi.setMyAvatar(url)
+      setProfile(res.profile)
+      toast.success('Avatar updated', { id: toastId })
+    } catch (err) {
+      toast.error(err.message || 'Failed to upload avatar', { id: toastId })
+    } finally {
+      setAvatarUploading(false)
+      setAvatarProgress(0)
+    }
+  }
+
+  const handleAvatarRemove = async () => {
+    setAvatarUploading(true)
+    const toastId = toast.loading('Removing avatar…')
+    try {
+      const res = await userProfileApi.deleteMyAvatar()
+      setProfile(res.profile)
+      toast.success('Avatar removed', { id: toastId })
+    } catch (err) {
+      toast.error(err.message || 'Failed to remove avatar', { id: toastId })
+    } finally {
+      setAvatarUploading(false)
+    }
+  }
   const isValidWebsite = (url) => {
   if (!url) return true;
 
@@ -155,6 +227,18 @@ const isValidGithub = (username) => {
       return
     }
 
+    // Validate yearsOfExperience if provided
+    const yoeRaw = form.yearsOfExperience.trim()
+    let yearsOfExperience = undefined
+    if (yoeRaw !== '') {
+      const n = Number(yoeRaw)
+      if (!Number.isInteger(n) || n < 0 || n > 80) {
+        toast.error('Years of experience must be a whole number between 0 and 80')
+        return
+      }
+      yearsOfExperience = n
+    }
+
     setSaving(true)
 
     try {
@@ -167,6 +251,17 @@ const isValidGithub = (username) => {
         website: form.website.trim(),
         github: githubUsername,
         linkedin: form.linkedin.trim(),
+        // New personal-info fields
+        phone: form.phone.trim(),
+        headline: form.headline.trim(),
+        dateOfBirth: form.dateOfBirth || null,
+        gender: form.gender || '',
+        company: form.company.trim(),
+        yearsOfExperience,
+        collegeStudent: form.collegeStudent,
+        openToWork: form.openToWork,
+        languages: form.languages.split(',').map(l => l.trim()).filter(Boolean),
+        resumeHeadline: form.resumeHeadline.trim(),
       })
       setProfile(res.profile)
       setEditing(false)
@@ -200,43 +295,7 @@ const isValidGithub = (username) => {
     url.startsWith('http') ? url : `https://${url}`
 
   if (loading) {
-    return (
-      <div className="min-h-screen bg-background">
-        <div className="relative max-w-3xl mx-auto px-4 sm:px-6 lg:px-8 py-8">
-          <motion.div
-            initial={{ opacity: 0, y: 10 }}
-            animate={{ opacity: 1, y: 0 }}
-            transition={{ duration: 0.4 }}
-            className="space-y-6"
-          >
-            {/* Profile Header Skeleton */}
-            <div className="rounded-2xl bg-card border border-border p-6 space-y-4">
-              <div className="flex items-start gap-5">
-                <div className="w-20 h-20 rounded-2xl bg-muted animate-pulse shrink-0" />
-                <div className="flex-1 space-y-3">
-                  <div className="h-6 bg-muted rounded-lg w-1/2 animate-pulse" />
-                  <div className="h-4 bg-muted rounded-lg w-1/3 animate-pulse" />
-                  <div className="h-4 bg-muted rounded-lg w-1/4 animate-pulse" />
-                </div>
-              </div>
-            </div>
-
-            {/* Stats Skeleton */}
-            <div className="grid grid-cols-3 gap-4">
-              {[...Array(3)].map((_, i) => (
-                <div key={i} className="rounded-lg bg-card border border-border p-4 space-y-2">
-                  <div className="h-3 bg-muted rounded w-2/3 animate-pulse" />
-                  <div className="h-8 bg-muted rounded w-1/2 animate-pulse" />
-                </div>
-              ))}
-            </div>
-
-            {/* Activity Skeleton */}
-            <SkeletonList count={3} />
-          </motion.div>
-        </div>
-      </div>
-    )
+    return <SkeletonProfile />
   }
 
   return (
@@ -258,10 +317,63 @@ const isValidGithub = (username) => {
             variants={itemVariants}
             className="relative overflow-hidden rounded-2xl bg-card/80 backdrop-blur-sm border border-border shadow-[0_8px_30px_rgb(0,0,0,0.06)] hover:shadow-xl hover:border-primary/20 transition-all duration-300 p-6">
             <div className="flex flex-col sm:flex-row items-start gap-5">
-             <div className="w-20 h-20 rounded-3xl bg-gradient-to-br from-sky-100 to-cyan-100 border border-sky-200 flex items-center justify-center shadow-sm flex-shrink-0">
-  <span className="text-3xl font-bold bg-gradient-to-br from-sky-500 to-cyan-500 bg-clip-text text-transparent">
-    {initials}
-  </span>
+             <div className="relative flex-shrink-0 group">
+  <div className="w-20 h-20 rounded-3xl overflow-hidden border border-sky-200 bg-gradient-to-br from-sky-100 to-cyan-100 flex items-center justify-center shadow-sm">
+    {profile?.avatarUrl ? (
+      <img
+        src={profile.avatarUrl}
+        alt={displayName}
+        className="w-full h-full object-cover"
+      />
+    ) : (
+      <span className="text-3xl font-bold bg-gradient-to-br from-sky-500 to-cyan-500 bg-clip-text text-transparent">
+        {initials}
+      </span>
+    )}
+  </div>
+
+  {/* Upload progress overlay */}
+  {avatarUploading && (
+    <div className="absolute inset-0 rounded-3xl bg-background/70 backdrop-blur-sm flex flex-col items-center justify-center">
+      <Loader2 className="w-5 h-5 text-sky-500 animate-spin" />
+      {avatarProgress > 0 && (
+        <span className="text-[10px] font-medium text-sky-600 mt-0.5">{avatarProgress}%</span>
+      )}
+    </div>
+  )}
+
+  {/* Avatar controls — only on own profile */}
+  {isOwnProfile && !avatarUploading && (
+    <div className="absolute -bottom-1 -right-1 flex gap-1">
+      <button
+        type="button"
+        onClick={handleAvatarPick}
+        title="Upload photo"
+        className="w-7 h-7 rounded-full bg-sky-500 hover:bg-sky-600 text-white flex items-center justify-center shadow-md ring-2 ring-background transition-colors"
+      >
+        <Camera className="w-3.5 h-3.5" />
+      </button>
+      {profile?.avatarUrl && (
+        <button
+          type="button"
+          onClick={handleAvatarRemove}
+          title="Remove photo"
+          className="w-7 h-7 rounded-full bg-rose-500 hover:bg-rose-600 text-white flex items-center justify-center shadow-md ring-2 ring-background transition-colors"
+        >
+          <X className="w-3.5 h-3.5" />
+        </button>
+      )}
+    </div>
+  )}
+
+  {/* Hidden file input */}
+  <input
+    ref={avatarInputRef}
+    type="file"
+    accept="image/jpeg,image/png,image/webp,image/gif"
+    onChange={handleAvatarChange}
+    className="hidden"
+  />
 </div>
 
               <div className="flex-1 min-w-0">
@@ -279,9 +391,31 @@ const isValidGithub = (username) => {
                   </div>
                 ) : (
                   <>
-                    <h1 className="text-2xl font-bold text-foreground">{displayName}</h1>
-                    {profile?.jobRole && (
-                      <p className="text-sky-400 font-medium mt-0.5">{profile.jobRole}</p>
+                    <div className="flex items-center gap-2 flex-wrap">
+                      <h1 className="text-2xl font-bold text-foreground">{displayName}</h1>
+                      {profile?.openToWork && (
+                        <span className="inline-flex items-center gap-1 px-2 py-0.5 rounded-full bg-emerald-500/10 border border-emerald-500/30 text-emerald-500 text-xs font-medium">
+                          <Briefcase className="w-3 h-3" />
+                          Open to work
+                        </span>
+                      )}
+                      {profile?.collegeStudent && (
+                        <span className="inline-flex items-center gap-1 px-2 py-0.5 rounded-full bg-indigo-500/10 border border-indigo-500/30 text-indigo-400 text-xs font-medium">
+                          <GraduationCap className="w-3 h-3" />
+                          Student
+                        </span>
+                      )}
+                    </div>
+                    {(profile?.jobRole || profile?.headline) && (
+                      <p className="text-sky-400 font-medium mt-0.5">
+                        {profile?.headline || profile.jobRole}
+                      </p>
+                    )}
+                    {profile?.company && (
+                      <p className="flex items-center gap-1.5 text-sm text-muted-foreground mt-1">
+                        <Briefcase className="w-3.5 h-3.5 flex-shrink-0" />
+                        {profile.company}
+                      </p>
                     )}
                     {profile?.location && (
                       <p className="flex items-center gap-1.5 text-sm text-muted-foreground mt-1">
@@ -361,6 +495,7 @@ const isValidGithub = (username) => {
 
             {/* Edit extra fields */}
             {editing && (
+              <>
               <div className="mt-4 grid sm:grid-cols-2 gap-x-4">
                 <Input
                   label="Job Role"
@@ -417,6 +552,144 @@ const isValidGithub = (username) => {
                   placeholder="https://linkedin.com/in/..."
                 />
               </div>
+
+              {/* New personal-info fields */}
+              <div className="mt-4 pt-4 border-t border-border">
+                <p className="text-xs font-semibold text-muted-foreground uppercase tracking-wider mb-3">
+                  Personal Info
+                </p>
+                <div className="grid sm:grid-cols-2 gap-x-4">
+                  <Input
+                    label="Headline"
+                    name="headline"
+                    value={form.headline}
+                    maxLength={120}
+                    onChange={(e) =>
+                      setForm((f) => ({ ...f, headline: e.target.value }))
+                    }
+                    placeholder="e.g. Senior Frontend Engineer"
+                  />
+                  <Input
+                    label="Phone"
+                    name="phone"
+                    value={form.phone}
+                    maxLength={30}
+                    onChange={(e) =>
+                      setForm((f) => ({ ...f, phone: e.target.value }))
+                    }
+                    placeholder="+1 555 0100"
+                  />
+                  <Input
+                    label="Company"
+                    name="company"
+                    value={form.company}
+                    maxLength={100}
+                    onChange={(e) =>
+                      setForm((f) => ({ ...f, company: e.target.value }))
+                    }
+                    placeholder="Current employer"
+                  />
+                  <Input
+                    label="Years of Experience"
+                    name="yearsOfExperience"
+                    type="number"
+                    min="0"
+                    max="80"
+                    value={form.yearsOfExperience}
+                    onChange={(e) =>
+                      setForm((f) => ({ ...f, yearsOfExperience: e.target.value }))
+                    }
+                    placeholder="e.g. 5"
+                  />
+                  <div className="mb-4">
+                    <label className="block text-sm font-medium text-foreground mb-1.5">
+                      Date of Birth
+                    </label>
+                    <input
+                      type="date"
+                      value={form.dateOfBirth}
+                      max={new Date().toISOString().slice(0, 10)}
+                      onChange={(e) =>
+                        setForm((f) => ({ ...f, dateOfBirth: e.target.value }))
+                      }
+                      className="w-full px-4 py-2.5 rounded-lg bg-background border border-border text-foreground placeholder:text-muted-foreground focus:outline-none focus:ring-2 focus:ring-sky-500/50 focus:border-sky-500 transition-all duration-200"
+                    />
+                  </div>
+                  <div className="mb-4">
+                    <label className="block text-sm font-medium text-foreground mb-1.5">
+                      Gender
+                    </label>
+                    <select
+                      value={form.gender}
+                      onChange={(e) =>
+                        setForm((f) => ({ ...f, gender: e.target.value }))
+                      }
+                      className="w-full px-4 py-2.5 rounded-lg bg-background border border-border text-foreground focus:outline-none focus:ring-2 focus:ring-sky-500/50 focus:border-sky-500 transition-all duration-200"
+                    >
+                      <option value="">Prefer not to say</option>
+                      <option value="male">Male</option>
+                      <option value="female">Female</option>
+                      <option value="non-binary">Non-binary</option>
+                      <option value="other">Other</option>
+                    </select>
+                  </div>
+                  <Input
+                    label="Languages (comma-separated)"
+                    name="languages"
+                    value={form.languages}
+                    onChange={(e) =>
+                      setForm((f) => ({ ...f, languages: e.target.value }))
+                    }
+                    placeholder="e.g. English, Hindi"
+                  />
+                  <div className="sm:col-span-2">
+                    <label className="block text-sm font-medium text-foreground mb-1.5">
+                      Resume Headline
+                    </label>
+                    <textarea
+                      value={form.resumeHeadline}
+                      maxLength={300}
+                      rows={2}
+                      onChange={(e) =>
+                        setForm((f) => ({ ...f, resumeHeadline: e.target.value }))
+                      }
+                      placeholder="Short tagline for your resume"
+                      className="w-full px-4 py-2.5 rounded-lg bg-background border border-border text-foreground placeholder:text-muted-foreground focus:outline-none focus:ring-2 focus:ring-sky-500/50 focus:border-sky-500 resize-none transition-all duration-200"
+                    />
+                  </div>
+
+                  {/* Toggles */}
+                  <label className="flex items-center gap-3 cursor-pointer select-none sm:col-span-2 mt-1">
+                    <input
+                      type="checkbox"
+                      checked={form.openToWork}
+                      onChange={(e) =>
+                        setForm((f) => ({ ...f, openToWork: e.target.checked }))
+                      }
+                      className="w-4 h-4 rounded border-border text-sky-500 focus:ring-sky-500/50"
+                    />
+                    <span className="text-sm text-foreground flex items-center gap-1.5">
+                      <Briefcase className="w-4 h-4 text-muted-foreground" />
+                      Open to work
+                    </span>
+                  </label>
+                  <label className="flex items-center gap-3 cursor-pointer select-none sm:col-span-2">
+                    <input
+                      type="checkbox"
+                      checked={form.collegeStudent}
+                      onChange={(e) =>
+                        setForm((f) => ({ ...f, collegeStudent: e.target.checked }))
+                      }
+                      className="w-4 h-4 rounded border-border text-sky-500 focus:ring-sky-500/50"
+                    />
+                    <span className="text-sm text-foreground flex items-center gap-1.5">
+                      <GraduationCap className="w-4 h-4 text-muted-foreground" />
+                      College student
+                    </span>
+                  </label>
+                </div>
+              </div>
+              </>
             )}
 
             {/* External links (view mode) */}
@@ -470,6 +743,79 @@ const isValidGithub = (username) => {
             </motion.div>
           )}
           </motion.div>
+
+          {/* Personal info (view mode) */}
+          {!editing && (profile?.resumeHeadline || profile?.phone ||
+            profile?.dateOfBirth || profile?.gender ||
+            profile?.yearsOfExperience != null ||
+            profile?.languages?.length > 0) && (
+            <motion.div
+              variants={itemVariants}
+              className="rounded-2xl bg-card/80 backdrop-blur-sm border border-border shadow-[0_8px_30px_rgb(0,0,0,0.06)] p-6"
+            >
+              <h2 className="text-xs font-semibold text-muted-foreground uppercase tracking-wider mb-4">
+                About
+              </h2>
+              <div className="grid sm:grid-cols-2 gap-x-6 gap-y-3">
+                {profile?.resumeHeadline && (
+                  <div className="sm:col-span-2">
+                    <p className="text-sm text-foreground leading-relaxed">
+                      {profile.resumeHeadline}
+                    </p>
+                  </div>
+                )}
+                {profile?.phone && (
+                  <div className="flex items-center gap-2 text-sm">
+                    <Phone className="w-4 h-4 text-muted-foreground flex-shrink-0" />
+                    <span className="text-muted-foreground">Phone:</span>
+                    <span className="text-foreground">{profile.phone}</span>
+                  </div>
+                )}
+                {profile?.dateOfBirth && (
+                  <div className="flex items-center gap-2 text-sm">
+                    <Cake className="w-4 h-4 text-muted-foreground flex-shrink-0" />
+                    <span className="text-muted-foreground">Born:</span>
+                    <span className="text-foreground">{formatDate(profile.dateOfBirth)}</span>
+                  </div>
+                )}
+                {profile?.gender && (
+                  <div className="flex items-center gap-2 text-sm">
+                    <Star className="w-4 h-4 text-muted-foreground flex-shrink-0" />
+                    <span className="text-muted-foreground">Gender:</span>
+                    <span className="text-foreground capitalize">
+                      {profile.gender === 'prefer-not-to-say' ? 'Prefer not to say' : profile.gender}
+                    </span>
+                  </div>
+                )}
+                {profile?.yearsOfExperience != null && (
+                  <div className="flex items-center gap-2 text-sm">
+                    <Briefcase className="w-4 h-4 text-muted-foreground flex-shrink-0" />
+                    <span className="text-muted-foreground">Experience:</span>
+                    <span className="text-foreground">
+                      {profile.yearsOfExperience} {profile.yearsOfExperience === 1 ? 'year' : 'years'}
+                    </span>
+                  </div>
+                )}
+              </div>
+              {profile?.languages?.length > 0 && (
+                <div className="mt-4 pt-4 border-t border-border">
+                  <p className="text-xs font-semibold text-muted-foreground uppercase tracking-wider mb-2">
+                    Languages
+                  </p>
+                  <div className="flex flex-wrap gap-2">
+                    {profile.languages.map((lang, i) => (
+                      <span
+                        key={i}
+                        className="px-2.5 py-1 bg-muted/60 border border-border text-foreground rounded-full text-xs font-medium"
+                      >
+                        {lang}
+                      </span>
+                    ))}
+                  </div>
+                </div>
+              )}
+            </motion.div>
+          )}
 
           {/* Skills */}
           {!editing && profile?.skills?.length > 0 && (
