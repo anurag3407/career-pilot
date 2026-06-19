@@ -100,3 +100,34 @@ letter-spacing:-0.06em;
 color:var(--primary);
 
 } 
+.project-card {
+
+background:
+rgba(255,255,255,.03);
+
+backdrop-filter:
+blur(18px);
+
+border:
+1px solid rgba(255,255,255,.08);
+
+border-radius:20px;
+
+padding:24px;
+
+transition:.3s ease;
+
+}
+.project-card:hover {
+
+transform:
+translateY(-6px);
+
+border-color:
+rgba(94,106,210,.4);
+
+box-shadow:
+0 0 40px
+rgba(94,106,210,.15);
+
+}
