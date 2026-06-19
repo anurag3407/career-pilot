@@ -58,6 +58,11 @@ Project maintainers are responsible for clarifying standards of acceptable behav
 
 ## Getting Started
 
+> Note:
+> This document provides the complete setup requirements for contributors who want to run the full application locally, including backend services, AI integrations, and job-search features.
+>
+> If you are making documentation changes or working on limited frontend tasks, not all of the services listed below may be required. See CONTRIBUTING.md for a simplified onboarding guide.
+
 ### Prerequisites
 
 Before contributing, ensure you have:
@@ -65,10 +70,11 @@ Before contributing, ensure you have:
 - **Node.js** 18.0 or higher
 - **npm** or **yarn** package manager
 - **Git** for version control
+- **A GitHub account**
 - **MongoDB** (local or Atlas account)
 - **Redis** (local or cloud instance)
 - **Firebase** project (for authentication)
-- **Google Gemini API** key
+- **AI provider API keys** (OpenAI / Gemini / Groq as needed)
 - **RapidAPI** key (for job search)
 
 ### Fork and Clone
@@ -78,14 +84,14 @@ Before contributing, ensure you have:
 2. **Clone your fork:**
 
 ```bash
-git clone https://github.com/YOUR_USERNAME/ai-resume-builder.git
-cd ai-resume-builder
+git clone https://github.com/YOUR_USERNAME/career-pilot.git
+cd career-pilot
 ```
 
 1. **Add upstream remote:**
 
 ```bash
-git remote add upstream https://github.com/ORIGINAL_OWNER/ai-resume-builder.git
+git remote add upstream https://github.com/anurag3407/career-pilot.git
 ```
 
 1. **Keep your fork synced:**
@@ -109,7 +115,7 @@ cd backend
 npm install
 
 # Create environment file
-cp .env.example .env
+copy .env.example .env
 
 # Edit .env with your credentials
 # See README.md for required variables
@@ -127,7 +133,7 @@ cd frontend
 npm install
 
 # Create environment file
-cp .env.example .env
+copy .env.example .env
 
 # Edit .env with your Firebase config
 
@@ -137,7 +143,7 @@ npm run dev
 
 ### 3. Verify Setup
 
-- Backend health check: `http://localhost:5000/health`
+- Backend health check: `http://localhost:5001/health`
 - Frontend: `http://localhost:5173`
 - Login with a test account to verify authentication
 

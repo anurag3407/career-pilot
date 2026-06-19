@@ -1,3 +1,4 @@
+import { usePortfolio } from "../../../../context/PortfolioContext";
 import { useState, useRef, useEffect } from 'react';
 import { motion, useInView, AnimatePresence } from 'framer-motion';
 import {
@@ -5,7 +6,6 @@ import {
   Star, Menu, X, Send, CheckCircle, ChevronDown, Search,
   Code2, Server, Layers, Palette, Trophy, Gift, Eye, EyeOff,
 } from 'lucide-react';
-import data from '../../../../data/dummy_data.json';
 
 /* ── Design tokens ─────────────────────────────────────────────── */
 const C = {
@@ -41,6 +41,8 @@ const EGGS = [
 
 /* ── Global CSS ────────────────────────────────────────────────── */
 function GlobalStyles() {
+  const { portfolioData: data } = usePortfolio();
+
   return (
     <style>{`
       @keyframes eh-float {
@@ -151,6 +153,8 @@ function GlobalStyles() {
 
 /* ── Floating decoration eggs ──────────────────────────────────── */
 function FloatingEgg({ emoji, style }) {
+  const { portfolioData: data } = usePortfolio();
+
   return (
     <div className="eh-float" style={{
       position: 'absolute', fontSize: '2rem', pointerEvents: 'none',
@@ -163,6 +167,8 @@ function FloatingEgg({ emoji, style }) {
 
 /* ── Egg counter HUD ───────────────────────────────────────────── */
 function EggCounter({ found, total, onClick }) {
+  const { portfolioData: data } = usePortfolio();
+
   return (
     <motion.div
       initial={{ x: 80, opacity: 0 }}
@@ -202,6 +208,8 @@ function EggCounter({ found, total, onClick }) {
 
 /* ── Victory modal ─────────────────────────────────────────────── */
 function VictoryModal({ onClose }) {
+  const { portfolioData: data } = usePortfolio();
+
   return (
     <motion.div
       initial={{ opacity: 0 }} animate={{ opacity: 1 }} exit={{ opacity: 0 }}
@@ -250,6 +258,8 @@ function VictoryModal({ onClose }) {
 
 /* ── Clue toast ────────────────────────────────────────────────── */
 function ClueToast({ clue, egg, onClose }) {
+  const { portfolioData: data } = usePortfolio();
+
   useEffect(() => {
     const t = setTimeout(onClose, 3500);
     return () => clearTimeout(t);
@@ -283,6 +293,8 @@ function ClueToast({ clue, egg, onClose }) {
 
 /* ── Hidden egg component ──────────────────────────────────────── */
 function HiddenEgg({ eggId, foundEggs, onFind }) {
+  const { portfolioData: data } = usePortfolio();
+
   const egg = EGGS.find(e => e.id === eggId);
   const isFound = foundEggs.includes(eggId);
 
@@ -301,6 +313,8 @@ function HiddenEgg({ eggId, foundEggs, onFind }) {
 
 /* ── Section label ─────────────────────────────────────────────── */
 function SectionLabel({ title, color = C.gold, dark = true }) {
+  const { portfolioData: data } = usePortfolio();
+
   return (
     <div style={{ marginBottom: 48 }}>
       <div style={{ display: 'flex', alignItems: 'center', gap: 14, marginBottom: 12 }}>
@@ -321,6 +335,8 @@ function SectionLabel({ title, color = C.gold, dark = true }) {
 
 /* ── Nav ───────────────────────────────────────────────────────── */
 function Nav({ foundCount }) {
+  const { portfolioData: data } = usePortfolio();
+
   const [open, setOpen] = useState(false);
   const links = ['About', 'Skills', 'Projects', 'Experience', 'Contact'];
 
@@ -416,6 +432,8 @@ function Nav({ foundCount }) {
 
 /* ── Hero ──────────────────────────────────────────────────────── */
 function Hero({ foundEggs, onFind }) {
+  const { portfolioData: data } = usePortfolio();
+
   return (
     <section id="hero" style={{
       minHeight: '100vh', background: C.bg,
@@ -563,6 +581,8 @@ function Hero({ foundEggs, onFind }) {
 
 /* ── About ─────────────────────────────────────────────────────── */
 function About({ foundEggs, onFind }) {
+  const { portfolioData: data } = usePortfolio();
+
   const ref = useRef(null);
   const inView = useInView(ref, { once: true, margin: '-80px' });
 
@@ -655,6 +675,8 @@ function About({ foundEggs, onFind }) {
 
 /* ── Skills ────────────────────────────────────────────────────── */
 function Skills({ foundEggs, onFind }) {
+  const { portfolioData: data } = usePortfolio();
+
   const ref = useRef(null);
   const inView = useInView(ref, { once: true, margin: '-80px' });
 
@@ -747,6 +769,8 @@ function Skills({ foundEggs, onFind }) {
 
 /* ── Projects ──────────────────────────────────────────────────── */
 function Projects({ foundEggs, onFind }) {
+  const { portfolioData: data } = usePortfolio();
+
   const ref = useRef(null);
   const inView = useInView(ref, { once: true, margin: '-80px' });
 
@@ -824,6 +848,8 @@ function Projects({ foundEggs, onFind }) {
 
 /* ── Experience ────────────────────────────────────────────────── */
 function Experience({ foundEggs, onFind }) {
+  const { portfolioData: data } = usePortfolio();
+
   const ref = useRef(null);
   const inView = useInView(ref, { once: true, margin: '-80px' });
   const expColors = [C.gold, C.pink, C.blue, C.purple, C.orange];
@@ -892,6 +918,8 @@ function Experience({ foundEggs, onFind }) {
 
 /* ── Testimonials ──────────────────────────────────────────────── */
 function Testimonials() {
+  const { portfolioData: data } = usePortfolio();
+
   const ref = useRef(null);
   const inView = useInView(ref, { once: true, margin: '-80px' });
 
@@ -952,6 +980,8 @@ function Testimonials() {
 
 /* ── Contact ───────────────────────────────────────────────────── */
 function Contact({ foundEggs, onFind }) {
+  const { portfolioData: data } = usePortfolio();
+
   const ref = useRef(null);
   const inView = useInView(ref, { once: true, margin: '-80px' });
   const [form, setForm] = useState({ name: '', email: '', message: '' });
@@ -1063,6 +1093,8 @@ function Contact({ foundEggs, onFind }) {
 
 /* ── Footer ────────────────────────────────────────────────────── */
 function Footer({ foundEggs }) {
+  const { portfolioData: data } = usePortfolio();
+
   return (
     <footer style={{ background: '#0A120A', borderTop: '2px solid #1A2E1A',
       padding: '40px 24px 28px', textAlign: 'center', position: 'relative', overflow: 'hidden' }}>
@@ -1110,6 +1142,8 @@ function Footer({ foundEggs }) {
 
 /* ── Scoreboard panel ──────────────────────────────────────────── */
 function Scoreboard({ foundEggs, show, onClose }) {
+  const { portfolioData: data } = usePortfolio();
+
   return (
     <AnimatePresence>
       {show && (
@@ -1169,6 +1203,8 @@ function Scoreboard({ foundEggs, show, onClose }) {
 
 /* ── Root ──────────────────────────────────────────────────────── */
 export default function HiddenEasterEggScavengerHunt() {
+  const { portfolioData: data } = usePortfolio();
+
   const [foundEggs, setFoundEggs]       = useState([]);
   const [toastEgg, setToastEgg]         = useState(null);
   const [showVictory, setShowVictory]   = useState(false);

@@ -1,7 +1,7 @@
+import { usePortfolio } from "../../../../context/PortfolioContext";
 import React, { useState, useCallback } from 'react';
 import { AnimatePresence, motion } from 'framer-motion';
 
-import data from '../../../../data/dummy_data.json';
 import HeroSection from './sections/HeroSection';
 import AboutSection from './sections/AboutSection';
 import SkillsSection from './sections/SkillsSection';
@@ -27,6 +27,8 @@ const SECTIONS = {
 };
 
 export default function ChooseAdventurePortfolio() {
+  const { portfolioData: data } = usePortfolio();
+
   const [scene, setScene] = useState('hero');
 
   const navigate = useCallback((next) => {

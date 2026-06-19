@@ -1,8 +1,6 @@
-import React, { useState, useEffect, useMemo, useContext } from 'react';
+import { usePortfolio } from "../../../../context/PortfolioContext";
+import React, { useState, useEffect } from 'react';
 import { motion, AnimatePresence } from 'framer-motion';
-// Pulling global PortfolioContext state wrapper
-import { PortfolioContext } from '../../../../context/PortfolioContext';
-import dummyData from '../../../../data/dummy_data.json';
 import {
   Briefcase,
   User,
@@ -115,7 +113,9 @@ const generateElements = (data) => {
    ELEMENT CARD COMPONENT
 ───────────────────────────────────────────── */
 const ElementCard = ({ element, onClick, isSelected }) => {
-  const color = CATEGORY_COLORS[element.category] || '#38bdf8';
+  const { portfolioData: dummyData } = usePortfolio();
+
+  const color = C.categories[element.category] || C.highlight;
   
   return (
     <motion.div
@@ -157,6 +157,8 @@ const ElementCard = ({ element, onClick, isSelected }) => {
    DETAILS VIEW PANEL
 ───────────────────────────────────────────── */
 const DetailsPanel = ({ element, onClose }) => {
+  const { portfolioData: dummyData } = usePortfolio();
+
   if (!element) return null;
   const color = CATEGORY_COLORS[element.category] || '#38bdf8';
 
@@ -247,12 +249,9 @@ const DetailsPanel = ({ element, onClose }) => {
   );
 };
 
-/* ─────────────────────────────────────────────
-   MAIN COMPONENT HOOK INTERFACE
-───────────────────────────────────────────── */
-export default function InteractiveTablePortfolio() {
-  // Access dynamic structural states directly via context hook pipeline
-  const { portfolioData } = useContext(PortfolioContext);
+export default function InteractiveTablePortfolio({ portfolioData }) {
+  const { portfolioData: dummyData } = usePortfolio();
+
   
   const data = useMemo(() => ({
     personal: { ...dummyData?.personal, ...portfolioData?.personal },

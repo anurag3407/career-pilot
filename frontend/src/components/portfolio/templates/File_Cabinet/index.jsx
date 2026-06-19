@@ -1,5 +1,5 @@
+import { usePortfolio } from "../../../../context/PortfolioContext";
 import React from 'react';
-import data from '../../../../data/dummy_data.json';
 
 /**
  * File Cabinet Portfolio Template
@@ -7,6 +7,8 @@ import data from '../../../../data/dummy_data.json';
  * Description: Physical file cabinet UI with metal drawer pulls, click drawers to slide open revealing tabbed project folders inside. Office skeuomorphic design.
  */
 export default function FileCabinet() {
+  const { portfolioData: data } = usePortfolio();
+
   return (
     <div className="min-h-screen bg-gray-950 text-white flex flex-col items-center justify-center p-8 font-sans">
       <div className="max-w-3xl w-full text-center">
