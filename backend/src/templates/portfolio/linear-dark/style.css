@@ -70,3 +70,33 @@ transparent 40%
 filter: blur(60px);
 
 }
+
+.hero {
+
+min-height:100vh;
+
+display:flex;
+
+flex-direction:column;
+
+justify-content:center;
+
+}
+.hero h1 {
+
+font-size:clamp(
+3rem,
+8vw,
+7rem
+);
+
+line-height:1;
+
+letter-spacing:-0.06em;
+
+} 
+.hero-role {
+
+color:var(--primary);
+
+} 
