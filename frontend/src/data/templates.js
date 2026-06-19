@@ -1907,7 +1907,21 @@ rating: 4.8,
     "views": 1117,
     "rating": 4.5,
     "image": "/template-previews/Newspaper_Front.png",
-    "createdAt": "2026-05-01"
+    "createdAt": "2026-05-01",
+    "isComplete": false
+  },
+  {
+    "id": "YouTuber_Vlogsphere_Channel",
+    "title": "YouTuber Vlogsphere Channel",
+    "category": "Portfolio",
+    "colorScheme": "Dark",
+    "layout": "Grid",
+    "author": "System",
+    "views": 1119,
+    "rating": 4.5,
+    "image": "/template-previews/YouTuber_Vlogsphere_Channel.png",
+    "createdAt": "2026-05-01",
+    "isComplete": true
   },
   {
     "id": "Northern_Fjords",
@@ -2788,18 +2802,6 @@ rating: 4.8,
     "views": 1187,
     "rating": 4.5,
     "image": "/template-previews/Vaporwave.png",
-    "createdAt": "2026-05-01"
-  },
-  {
-    "id": "Vercel_Deploy",
-    "title": "Vercel Deploy",
-    "category": "Portfolio",
-    "colorScheme": "Dark",
-    "layout": "Grid",
-    "author": "System",
-    "views": 1188,
-    "rating": 4.5,
-    "image": "/template-previews/Vercel_Deploy.png",
     "createdAt": "2026-05-01"
   },
   {
