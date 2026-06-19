@@ -60,6 +60,7 @@ export function AuthProvider({ children }) {
     if (displayName) {
       await updateProfile(result.user, { displayName })
     }
+    localStorage.setItem("isFirstTime_" + result.user.uid, "true")
     return result.user
   }
 

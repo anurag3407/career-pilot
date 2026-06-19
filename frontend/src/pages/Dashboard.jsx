@@ -1,4 +1,4 @@
-import { useState, useEffect, useRef } from 'react'
+import { useState, useEffect, useRef, useContext } from 'react'
 import { Link } from 'react-router-dom'
 import toast from 'react-hot-toast'
 import { motion } from 'framer-motion'
@@ -37,6 +37,8 @@ import {
   SkeletonBlock
 } from '../components/ui/Skeleton'
 import { getGithubUsername } from '../utils/github'
+import { AuthContext } from '../context/AuthContext'
+import OnboardingModal from '../components/OnboardingModal'
 
 function DashboardSkeleton() {
   return (
@@ -87,6 +89,8 @@ const STATUS_CONFIG = {
 // Section is gated behind portfolioCount > 0 in the JSX below.
 
 export default function Dashboard() {
+  const { user } = useContext(AuthContext)
+  const [showOnboarding, setShowOnboarding] = useState(false)
   const [resumes, setResumes] = useState([])
   const [trackedJobs, setTrackedJobs] = useState([])
   const [loading, setLoading] = useState(true)
@@ -108,6 +112,19 @@ export default function Dashboard() {
   })
   const fetchRequestId = useRef(0)
   const isMounted = useRef(false)
+
+  useEffect(() => {
+    if (user && localStorage.getItem("isFirstTime_" + user.uid) === "true") {
+      setShowOnboarding(true)
+    }
+  }, [user])
+
+  const handleOnboardingComplete = () => {
+    if (user) {
+      localStorage.removeItem("isFirstTime_" + user.uid)
+    }
+    setShowOnboarding(false)
+  }
 
   useEffect(() => {
     isMounted.current = true
@@ -244,7 +261,9 @@ export default function Dashboard() {
   }
 
   return (
-    <div className="min-h-screen bg-background">
+    <>
+      {showOnboarding && <OnboardingModal onComplete={handleOnboardingComplete} />}
+      <div className="min-h-screen bg-background">
       <div className="relative max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-10">
         <motion.div
           initial={{ opacity: 0, x: -20 }}
@@ -671,6 +690,7 @@ export default function Dashboard() {
         )}
       </div>
     </div>
+    </>
   )
 }
 
