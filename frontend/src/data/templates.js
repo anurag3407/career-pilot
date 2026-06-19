@@ -1,5 +1,19 @@
 export const templates = [
   {
+    id: "Bruno_Simon_Playground",
+    title: "Bruno Simon Playground",
+    category: "Portfolio",
+    colorScheme: "Colorful",
+    layout: "Interactive",
+    author: "System",
+    views: 9999998,
+    rating: 5.0,
+    image: "/template-previews/Bruno_Simon_Playground.png",
+    createdAt: "2026-06-18",
+    description: "A playful interactive portfolio inspired by Bruno Simon's game-like web worlds, featuring bold colors, kinetic cards, pointer-reactive lighting, and a cartoon vehicle hero.",
+    isComplete: true
+  },
+  {
     id: "Typewriter_Keystroke_Sequence",
     title: "Typewriter Keystroke Sequence",
     category: "Portfolio",
