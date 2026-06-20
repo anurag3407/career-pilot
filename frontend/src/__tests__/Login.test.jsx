@@ -22,6 +22,12 @@ vi.mock('../components/Navbar', () => ({
     default: () => <div>Mock Navbar</div>,
   }))
 
+vi.mock('../config/firebase', () => ({
+  auth: {},
+  db: {},
+  storage: {}
+}))
+
 describe('Login page', () => {
   test('renders sign in form', () => {
     render(

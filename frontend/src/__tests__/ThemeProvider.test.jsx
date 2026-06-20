@@ -15,7 +15,16 @@ const TestComponent = () => {
 
 describe('ThemeProvider', () => {
   beforeEach(() => {
-    window.localStorage.clear();
+    if (window.localStorage) {
+      window.localStorage.clear();
+    } else {
+      window.localStorage = {
+        getItem: vi.fn(),
+        setItem: vi.fn(),
+        removeItem: vi.fn(),
+        clear: vi.fn()
+      };
+    }
     // Mock matchMedia
     Object.defineProperty(window, 'matchMedia', {
       writable: true,
@@ -80,9 +89,16 @@ describe('ThemeProvider', () => {
   });
 
   test('handles localStorage errors gracefully', () => {
-    const getItemSpy = vi.spyOn(Storage.prototype, 'getItem').mockImplementation(() => {
-      throw new Error('Access denied');
-    });
+    let getItemSpy;
+    if (window.localStorage && typeof Storage !== 'undefined' && window.localStorage instanceof Storage) {
+      getItemSpy = vi.spyOn(Storage.prototype, 'getItem').mockImplementation(() => {
+        throw new Error('Access denied');
+      });
+    } else {
+      getItemSpy = vi.spyOn(window.localStorage, 'getItem').mockImplementation(() => {
+        throw new Error('Access denied');
+      });
+    }
     
     const consoleWarnSpy = vi.spyOn(console, 'warn').mockImplementation(() => {});
 

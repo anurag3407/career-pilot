@@ -1,4 +1,6 @@
 import { useState, useCallback, useRef } from "react";
+import DOMPurify from 'dompurify';
+import { marked } from 'marked';
 
 const SAMPLE_PROMPT_PLACEHOLDER = `Describe your project...
 e.g. "A React dashboard for tracking crypto portfolios with live price updates, charts, and portfolio analytics."`;
@@ -33,38 +35,6 @@ Pull requests are welcome!
 MIT
 `;
 
-function renderMarkdown(md) {
-  let html = md
-    .replace(/&/g, "&amp;").replace(/</g, "&lt;").replace(/>/g, "&gt;")
-    // Code blocks
-    .replace(/```(\w*)\n?([\s\S]*?)```/g, (_, lang, code) =>
-      `<pre class="code-block"><code class="lang-${lang}">${code.trim()}</code></pre>`)
-    // Inline code
-    .replace(/`([^`]+)`/g, '<code class="inline-code">$1</code>')
-    // Headers
-    .replace(/^### (.+)$/gm, '<h3>$1</h3>')
-    .replace(/^## (.+)$/gm, '<h2>$1</h2>')
-    .replace(/^# (.+)$/gm, '<h1>$1</h1>')
-    // Bold + italic
-    .replace(/\*\*\*(.+?)\*\*\*/g, '<strong><em>$1</em></strong>')
-    .replace(/\*\*(.+?)\*\*/g, '<strong>$1</strong>')
-    .replace(/\*(.+?)\*/g, '<em>$1</em>')
-    // Blockquote
-    .replace(/^> (.+)$/gm, '<blockquote>$1</blockquote>')
-    // Unordered list
-    .replace(/^- (.+)$/gm, '<li>$1</li>')
-    .replace(/(<li>[\s\S]*?<\/li>)(\n(?!<li>)|$)/g, '<ul>$1</ul>')
-    // Horizontal rule
-    .replace(/^---$/gm, '<hr/>')
-    // Links
-    .replace(/\[([^\]]+)\]\(([^)]+)\)/g, '<a href="$2" target="_blank" rel="noopener">$1</a>')
-    // Paragraphs (double newline)
-    .replace(/\n\n+/g, '</p><p>')
-    // Single newlines
-    .replace(/\n/g, '<br/>');
-
-  return `<p>${html}</p>`;
-}
 
 export default function ReadmeGenerator() {
   const [prompt, setPrompt] = useState("");
@@ -497,7 +467,7 @@ Return ONLY the raw markdown content, no explanations.`
             </div>
             <div
               className="preview-pane"
-              dangerouslySetInnerHTML={{ __html: renderMarkdown(markdown) }}
+              dangerouslySetInnerHTML={{ __html: DOMPurify.sanitize(marked.parse(markdown)) }}
             />
           </div>
         )}

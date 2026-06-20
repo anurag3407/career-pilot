@@ -81,7 +81,7 @@ describe("AppSidebar", () => {
     render(<AppSidebar />);
 
     expect(
-      screen.getByRole("button", { name: /dashboard/i })
+      screen.getByRole("button", { name: /^dashboard$/i })
     ).toBeInTheDocument();
 
     expect(
