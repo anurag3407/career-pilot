@@ -61,7 +61,7 @@ Return ONLY valid JSON. No markdown fences, no extra text.`;
     if (text.startsWith('```')) {
       text = text.replace(/^```(?:json)?\n?/, '').replace(/\n?```$/, '').trim();
     }
-    
+
     // Attempt extra extraction
     const jsonMatch = text.match(/\{[\s\S]*\}/);
     if (jsonMatch) text = jsonMatch[0];
@@ -71,45 +71,35 @@ Return ONLY valid JSON. No markdown fences, no extra text.`;
       qualitativeData = JSON.parse(text);
     } catch (parseErr) {
       console.error('Resume score JSON parse error:', parseErr, 'Raw text:', text);
-      qualitativeData = {
-        sections: {
-          summary: { feedback: 'Consider making your summary more impactful.' },
-          skills: { feedback: 'Ensure skills match the target job description.' },
-          experience: { feedback: 'Use strong action verbs and metrics.' },
-          education: { feedback: 'Include relevant coursework or GPA if applicable.' },
-          projects: { feedback: 'Detail the technologies used and outcomes.' }
-        },
-        topSuggestions: [
-          'Add more quantifiable metrics to your experience.',
-          'Tailor keywords to the specific job role.',
-          'Ensure formatting is clean and easy to read.'
-        ]
-      };
+      throw new ApiError(
+        502,
+        'AI service returned an invalid response. Please try again in a moment.'
+      );
     }
 
     // 3. Map into the format expected by the frontend
     const scoreData = {
       overallScore: deterministicScoring.overallScore,
       sections: {
-        summary: { 
-          score: deterministicScoring.breakdown.formatting, 
-          feedback: qualitativeData.sections?.summary?.feedback || 'Good formatting.' 
+        summary: {
+          score: deterministicScoring.breakdown.formatting,
+          feedback: qualitativeData.sections?.summary?.feedback || 'Good formatting.'
         },
-        skills: { 
-          score: deterministicScoring.breakdown.skills, 
-          feedback: qualitativeData.sections?.skills?.feedback || 'Include more role-specific skills.' 
+        skills: {
+          score: deterministicScoring.breakdown.skills,
+          feedback: qualitativeData.sections?.skills?.feedback || 'Include more role-specific skills.'
         },
-        experience: { 
-          score: deterministicScoring.breakdown.experience, 
-          feedback: qualitativeData.sections?.experience?.feedback || 'Add metrics.' 
+        experience: {
+          score: deterministicScoring.breakdown.experience,
+          feedback: qualitativeData.sections?.experience?.feedback || 'Add metrics.'
         },
-        education: { 
+        education: {
           score: 80, // Default good score for education
-          feedback: qualitativeData.sections?.education?.feedback || 'Good.' 
+          feedback: qualitativeData.sections?.education?.feedback || 'Good.'
         },
-        projects: { 
-          score: deterministicScoring.breakdown.keywordMatch, 
-          feedback: qualitativeData.sections?.projects?.feedback || 'Good.' 
+        projects: {
+          score: deterministicScoring.breakdown.keywordMatch,
+          feedback: qualitativeData.sections?.projects?.feedback || 'Good.'
         }
       },
       topSuggestions: qualitativeData.topSuggestions || [
@@ -456,7 +446,7 @@ router.post('/stream', verifyToken, extractAIProvider, aiRateLimiter, asyncHandl
 
     stream.sendProgress(20, 'Preparing prompt...');
 
-  if (isAborted) return;
+    if (isAborted) return;
 
     const provider = req.aiProvider;
     const systemPrompt = getSystemPrompt(
@@ -558,16 +548,16 @@ router.post('/career-trajectory', verifyToken, extractAIProvider, aiRateLimiter,
     // Filter to valid non-empty strings only, cap each skill at 50 chars, limit to 10 skills
     skills: hasSkills
       ? skills
-          .filter((s) => typeof s === 'string' && s.trim().length > 0)
-          .map((s) => s.trim().slice(0, 50))
-          .slice(0, 10)
+        .filter((s) => typeof s === 'string' && s.trim().length > 0)
+        .map((s) => s.trim().slice(0, 50))
+        .slice(0, 10)
       : [],
 
     // Reject NaN, Infinity, and negative values — clamp to safe range [0, 50]
     yearsOfExperience:
       typeof yearsOfExperience === 'number' &&
-      Number.isFinite(yearsOfExperience) &&
-      yearsOfExperience >= 0
+        Number.isFinite(yearsOfExperience) &&
+        yearsOfExperience >= 0
         ? Math.min(Math.floor(yearsOfExperience), 50)
         : 0,
 
