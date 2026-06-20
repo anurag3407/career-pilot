@@ -1,3 +1,4 @@
+import { usePortfolio } from "../../../../context/PortfolioContext";
 import React, { useRef, useEffect, useState } from 'react';
 import { motion, useScroll, useTransform } from 'framer-motion';
 import {
@@ -20,7 +21,6 @@ import {
   BookOpen,
   Sparkles,
 } from 'lucide-react';
-import data from '../../../../data/dummy_data.json';
 
 const fadeUp = {
   hidden: { opacity: 0, y: 30 },
@@ -32,6 +32,8 @@ const stagger = {
 };
 
 function GraphBackground() {
+  const { portfolioData: data } = usePortfolio();
+
   const canvasRef = useRef(null);
 
   useEffect(() => {
@@ -105,6 +107,8 @@ function GraphBackground() {
 }
 
 function VaultCard({ children, className = '', glow = false }) {
+  const { portfolioData: data } = usePortfolio();
+
   return (
     <div
       className={`relative rounded-xl border border-purple-500/20 bg-[#0d0d14]/80 backdrop-blur-sm ${
@@ -118,6 +122,8 @@ function VaultCard({ children, className = '', glow = false }) {
 }
 
 function NoteLink({ children, icon: Icon }) {
+  const { portfolioData: data } = usePortfolio();
+
   return (
     <span className="inline-flex items-center gap-1.5 px-2 py-0.5 rounded bg-purple-500/10 border border-purple-500/20 text-purple-300 text-xs font-mono">
       {Icon && <Icon size={10} />}
@@ -127,6 +133,8 @@ function NoteLink({ children, icon: Icon }) {
 }
 
 function Hero() {
+  const { portfolioData: data } = usePortfolio();
+
   return (
     <section className="relative min-h-screen flex items-center justify-center px-6 py-24 overflow-hidden">
       <GraphBackground />
@@ -201,6 +209,8 @@ function Hero() {
 }
 
 function About() {
+  const { portfolioData: data } = usePortfolio();
+
   return (
     <section className="relative px-6 py-24">
       <motion.div
@@ -267,6 +277,8 @@ function About() {
 }
 
 function Skills() {
+  const { portfolioData: data } = usePortfolio();
+
   const categories = [...new Set(data.skills.map((s) => s.category))];
 
   return (
@@ -325,6 +337,8 @@ function Skills() {
 }
 
 function Projects() {
+  const { portfolioData: data } = usePortfolio();
+
   return (
     <section className="relative px-6 py-24">
       <motion.div
@@ -398,6 +412,8 @@ function Projects() {
 }
 
 function Experience() {
+  const { portfolioData: data } = usePortfolio();
+
   return (
     <section className="relative px-6 py-24">
       <motion.div
@@ -443,6 +459,8 @@ function Experience() {
 }
 
 function Testimonials() {
+  const { portfolioData: data } = usePortfolio();
+
   return (
     <section className="relative px-6 py-24">
       <motion.div
@@ -490,6 +508,8 @@ function Testimonials() {
 }
 
 function Contact() {
+  const { portfolioData: data } = usePortfolio();
+
   return (
     <section className="relative px-6 py-24">
       <motion.div
@@ -568,6 +588,8 @@ function Contact() {
 }
 
 export default function ObsidianVault() {
+  const { portfolioData: data } = usePortfolio();
+
   return (
     <div className="min-h-screen bg-[#0a0a0f] text-white font-sans relative overflow-x-hidden">
       <div className="fixed inset-0 pointer-events-none">

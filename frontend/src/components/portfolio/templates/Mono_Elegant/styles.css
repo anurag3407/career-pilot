@@ -1,0 +1,303 @@
+@import url('https://fonts.googleapis.com/css2?family=Cormorant+Garamond:ital,wght@0,300;0,400;0,500;0,600;0,700;1,300;1,400;1,500&family=Plus+Jakarta+Sans:wght@200;300;400;500;600;700;800&display=swap');
+
+.mono-elegant-wrapper {
+  /* Default Theme: Noir (Dark) */
+  --mono-bg: #0a0a0a;
+  --mono-bg-rgb: 10, 10, 10;
+  --mono-text: #f5f5f5;
+  --mono-text-muted: #a3a3a3;
+  --mono-border: rgba(255, 255, 255, 0.08);
+  --mono-border-strong: rgba(255, 255, 255, 0.25);
+  --mono-card: #121212;
+  --mono-card-rgb: 18, 18, 18;
+  --mono-accent: #ffffff;
+  --mono-accent-rgb: 255, 255, 255;
+  --mono-accent-muted: #d4d4d4;
+  --mono-hover-bg: rgba(255, 255, 255, 0.05);
+  --mono-scrollbar-thumb: #404040;
+  --mono-scrollbar-track: #171717;
+}
+
+.mono-elegant-wrapper.theme-blanc {
+  /* Blanc (Light) Theme Override */
+  --mono-bg: #fcfcfc;
+  --mono-bg-rgb: 252, 252, 252;
+  --mono-text: #171717;
+  --mono-text-muted: #737373;
+  --mono-border: rgba(0, 0, 0, 0.08);
+  --mono-border-strong: rgba(0, 0, 0, 0.25);
+  --mono-card: #f4f4f5;
+  --mono-card-rgb: 244, 244, 245;
+  --mono-accent: #000000;
+  --mono-accent-rgb: 0, 0, 0;
+  --mono-accent-muted: #262626;
+  --mono-hover-bg: rgba(0, 0, 0, 0.04);
+  --mono-scrollbar-thumb: #d4d4d4;
+  --mono-scrollbar-track: #f5f5f5;
+}
+
+/* Base styling scoped to our template wrapper */
+.mono-elegant-wrapper {
+  background-color: var(--mono-bg);
+  color: var(--mono-text);
+  font-family: 'Plus Jakarta Sans', system-ui, -apple-system, sans-serif;
+  transition: background-color 0.5s cubic-bezier(0.4, 0, 0.2, 1), 
+              color 0.5s cubic-bezier(0.4, 0, 0.2, 1), 
+              border-color 0.5s cubic-bezier(0.4, 0, 0.2, 1);
+}
+
+/* Hide default cursor inside wrapper on desktop when custom cursor is active */
+@media (min-width: 1024px) {
+  .mono-elegant-wrapper.has-custom-cursor {
+    cursor: none !important;
+  }
+  .mono-elegant-wrapper.has-custom-cursor a,
+  .mono-elegant-wrapper.has-custom-cursor button,
+  .mono-elegant-wrapper.has-custom-cursor input,
+  .mono-elegant-wrapper.has-custom-cursor textarea,
+  .mono-elegant-wrapper.has-custom-cursor select,
+  .mono-elegant-wrapper.has-custom-cursor [role="button"] {
+    cursor: none !important;
+  }
+}
+
+.mono-font-serif {
+  font-family: 'Cormorant Garamond', Georgia, serif;
+}
+
+.mono-font-sans {
+  font-family: 'Plus Jakarta Sans', system-ui, -apple-system, sans-serif;
+}
+
+/* Custom selection styling */
+.mono-elegant-wrapper ::selection {
+  background-color: var(--mono-accent);
+  color: var(--mono-bg);
+}
+
+/* Custom Scrollbar for our content */
+.mono-elegant-wrapper::-webkit-scrollbar {
+  width: 8px;
+  height: 8px;
+}
+
+.mono-elegant-wrapper::-webkit-scrollbar-track {
+  background: var(--mono-scrollbar-track);
+}
+
+.mono-elegant-wrapper::-webkit-scrollbar-thumb {
+  background: var(--mono-scrollbar-thumb);
+  border-radius: 4px;
+}
+
+.mono-elegant-wrapper::-webkit-scrollbar-thumb:hover {
+  background: var(--mono-text-muted);
+}
+
+/* Custom Cursor Follower */
+.mono-cursor-dot {
+  width: 6px;
+  height: 6px;
+  background-color: var(--mono-accent);
+  position: fixed;
+  top: 0;
+  left: 0;
+  border-radius: 50%;
+  pointer-events: none;
+  z-index: 9999;
+  transform: translate(-50%, -50%);
+  transition: width 0.2s ease, height 0.2s ease, background-color 0.3s ease;
+}
+
+.mono-cursor-ring {
+  width: 38px;
+  height: 38px;
+  border: 1px solid rgba(var(--mono-accent-rgb), 0.3);
+  position: fixed;
+  top: 0;
+  left: 0;
+  border-radius: 50%;
+  pointer-events: none;
+  z-index: 9998;
+  transform: translate(-50%, -50%);
+  transition: width 0.2s cubic-bezier(0.16, 1, 0.3, 1), 
+              height 0.2 cubic-bezier(0.16, 1, 0.3, 1), 
+              background-color 0.2s ease,
+              border-color 0.3s ease;
+}
+
+/* Hover active state for custom cursor */
+.mono-cursor-ring.active {
+  width: 54px;
+  height: 54px;
+  border-color: rgba(var(--mono-accent-rgb), 0.7);
+  background-color: rgba(var(--mono-accent-rgb), 0.04);
+}
+
+/* Split Character Reveal Utility */
+.mono-char-overflow {
+  overflow: hidden;
+  display: inline-block;
+  vertical-align: bottom;
+}
+
+/* Grayscale Image Hover Effects */
+.mono-image-container {
+  overflow: hidden;
+  position: relative;
+  background-color: var(--mono-card);
+}
+
+.mono-image-gray {
+  filter: grayscale(100%) contrast(1.05) brightness(0.95);
+  transition: filter 0.6s cubic-bezier(0.4, 0, 0.2, 1), 
+              transform 0.6s cubic-bezier(0.4, 0, 0.2, 1);
+}
+
+.mono-image-container:hover .mono-image-gray {
+  filter: grayscale(100%) contrast(1.15) brightness(1.05);
+  transform: scale(1.04);
+}
+
+/* Borders and lines */
+.mono-border {
+  border-color: var(--mono-border);
+}
+
+.mono-border-strong {
+  border-color: var(--mono-border-strong);
+}
+
+.mono-card {
+  background-color: var(--mono-card);
+  border: 1px solid var(--mono-border);
+  position: relative;
+  transition: border-color 0.4s ease, background-color 0.5s ease;
+}
+
+.mono-card:hover {
+  border-color: rgba(var(--mono-accent-rgb), 0.15);
+}
+
+/* Animated Border Drawing on Card Hover */
+.mono-hover-border {
+  position: absolute;
+  background-color: var(--mono-accent);
+  transition: transform 0.4s cubic-bezier(0.16, 1, 0.3, 1);
+}
+
+.mono-hover-border-top {
+  top: 0; left: 0; right: 0; height: 1px;
+  transform: scaleX(0); transform-origin: left;
+}
+
+.mono-hover-border-right {
+  top: 0; bottom: 0; right: 0; width: 1px;
+  transform: scaleY(0); transform-origin: top;
+}
+
+.mono-hover-border-bottom {
+  bottom: 0; left: 0; right: 0; height: 1px;
+  transform: scaleX(0); transform-origin: right;
+}
+
+.mono-hover-border-left {
+  top: 0; bottom: 0; left: 0; width: 1px;
+  transform: scaleY(0); transform-origin: bottom;
+}
+
+.mono-card:hover .mono-hover-border-top { transform: scaleX(1); }
+.mono-card:hover .mono-hover-border-right { transform: scaleY(1); transition-delay: 0.1s; }
+.mono-card:hover .mono-hover-border-bottom { transform: scaleX(1); transition-delay: 0.2s; }
+.mono-card:hover .mono-hover-border-left { transform: scaleY(1); transition-delay: 0.3s; }
+
+/* Decorative Wireframe Grids */
+.mono-grid-bg {
+  background-size: 50px 50px;
+  background-image: 
+    linear-gradient(to right, var(--mono-border) 1px, transparent 1px),
+    linear-gradient(to bottom, var(--mono-border) 1px, transparent 1px);
+}
+
+/* Keyframe Animations */
+@keyframes rotate-slow {
+  0% { transform: rotate(0deg); }
+  100% { transform: rotate(360deg); }
+}
+
+.mono-rotate-slow {
+  animation: rotate-slow 160s linear infinite;
+}
+
+/* Button styles */
+.mono-btn-primary {
+  background-color: var(--mono-accent);
+  color: var(--mono-bg);
+  font-weight: 500;
+  position: relative;
+  overflow: hidden;
+  transition: opacity 0.3s ease;
+}
+
+.mono-btn-primary::before {
+  content: '';
+  position: absolute;
+  top: 0; left: -100%; width: 100%; height: 100%;
+  background: linear-gradient(90deg, transparent, rgba(var(--mono-accent-rgb), 0.15), transparent);
+  transition: left 0.5s ease;
+}
+
+.mono-btn-primary:hover::before {
+  left: 100%;
+}
+
+.mono-btn-secondary {
+  background-color: transparent;
+  color: var(--mono-text);
+  border: 1px solid var(--mono-border-strong);
+  font-weight: 500;
+  transition: background-color 0.3s ease, border-color 0.3s ease;
+}
+
+.mono-btn-secondary:hover {
+  background-color: var(--mono-hover-bg);
+  border-color: var(--mono-accent);
+}
+
+/* Styled line inputs */
+.mono-input {
+  background-color: transparent;
+  border-bottom: 1px solid var(--mono-border-strong);
+  color: var(--mono-text);
+  transition: border-color 0.3s ease;
+}
+
+.mono-input:focus {
+  border-color: var(--mono-accent);
+  outline: none;
+}
+
+/* Navigation Links */
+.mono-nav-link {
+  position: relative;
+  font-weight: 300;
+  transition: color 0.3s ease;
+}
+
+.mono-nav-link::after {
+  content: '';
+  position: absolute;
+  width: 100%;
+  transform: scaleX(0);
+  height: 1px;
+  bottom: -2px;
+  left: 0;
+  background-color: var(--mono-accent);
+  transform-origin: bottom right;
+  transition: transform 0.35s cubic-bezier(0.16, 1, 0.3, 1);
+}
+
+.mono-nav-link:hover::after {
+  transform: scaleX(1);
+  transform-origin: bottom left;
+}

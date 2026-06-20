@@ -28,13 +28,54 @@ import {
 } from 'lucide-react'
 import { resumeApi, jobTrackerApi, portfolioApi, userProfileApi } from '../services/api'
 import Button from '../components/Button'
-import { 
-  SkeletonDashboardActions, 
-  SkeletonStatCards, 
-  SkeletonJobList,
-  SkeletonList 
+import PortfolioGrammarAssistant from '../components/PortfolioGrammarAssistant'
+import JobApplicationSuccessInsights from '../components/JobApplicationSuccessInsights'
+import {
+  SkeletonAction,
+  SkeletonStat,
+  SkeletonRow,
+  SkeletonBlock
 } from '../components/ui/Skeleton'
 import { getGithubUsername } from '../utils/github'
+
+function DashboardSkeleton() {
+  return (
+    <div>
+      {/* Quick Actions skeleton */}
+      <div className="grid grid-cols-2 md:grid-cols-4 lg:grid-cols-7 gap-4 mb-10">
+        {Array.from({ length: 7 }).map((_, i) => (
+          <SkeletonAction key={i} />
+        ))}
+      </div>
+
+      {/* Stats Row skeleton */}
+      <div className="grid grid-cols-2 md:grid-cols-5 gap-5 mb-10">
+        {Array.from({ length: 5 }).map((_, i) => (
+          <SkeletonStat key={i} />
+        ))}
+      </div>
+
+      {/* Two-column content skeleton */}
+      <div className="grid lg:grid-cols-2 gap-10">
+        {[0, 1].map((col) => (
+          <div key={col}>
+            <div className="flex justify-between items-center mb-6">
+              <SkeletonBlock className="h-7 w-52" />
+              <SkeletonBlock className="h-4 w-20" />
+            </div>
+            <div className="rounded-[2rem] bg-card border border-border overflow-hidden shadow-sm">
+              <div className="divide-y divide-border">
+                {Array.from({ length: 5 }).map((_, i) => (
+                  <SkeletonRow key={i} />
+                ))}
+              </div>
+            </div>
+          </div>
+        ))}
+      </div>
+    </div>
+  )
+}
 
 const STATUS_CONFIG = {
   saved: { label: 'Saved', color: 'bg-muted text-muted-foreground border border-border', icon: Star },
@@ -42,6 +83,8 @@ const STATUS_CONFIG = {
   interviewing: { label: 'Interviewing', color: 'bg-secondary/10 text-secondary border border-secondary/20', icon: MessageSquare },
   offered: { label: 'Offered', color: 'bg-emerald-500/10 text-emerald-500 border border-emerald-500/20', icon: CheckCircle2 }
 }
+// portfolioAnalytics intentionally removed — no real API exists yet.
+// Section is gated behind portfolioCount > 0 in the JSX below.
 
 export default function Dashboard() {
   const [resumes, setResumes] = useState([])
@@ -56,6 +99,7 @@ export default function Dashboard() {
     offered: 0
   })
   const [portfolioCount, setPortfolioCount] = useState(0)
+  // careerInsights: no real API yet — section is gated behind resumes.length > 0
   const [candidateName, setCandidateName] = useState('')
   const [githubOverview, setGithubOverview] = useState({
     connected: false,
@@ -147,9 +191,9 @@ export default function Dashboard() {
       setFetchError('Failed to load your dashboard. Please try again.')
       toast.error('Failed to load dashboard data')
     } finally {
-      if (!canUpdate()) return
-
-      setLoading(false)
+      if (canUpdate()) {
+        setLoading(false)
+      }
     }
   }
 
@@ -215,42 +259,7 @@ export default function Dashboard() {
         </motion.div>
 
         {loading ? (
-          <div className="space-y-10">
-            {/* Quick Actions Skeleton */}
-            <motion.div
-              initial={{ opacity: 0, y: 10 }}
-              animate={{ opacity: 1, y: 0 }}
-              transition={{ duration: 0.4 }}
-            >
-              <SkeletonDashboardActions />
-            </motion.div>
-
-            {/* Stats Skeleton */}
-            <motion.div
-              initial={{ opacity: 0, y: 10 }}
-              animate={{ opacity: 1, y: 0 }}
-              transition={{ duration: 0.4, delay: 0.1 }}
-            >
-              <SkeletonStatCards count={5} />
-            </motion.div>
-
-            {/* Recent Applications & Resumes Skeleton */}
-            <motion.div
-              initial={{ opacity: 0, y: 10 }}
-              animate={{ opacity: 1, y: 0 }}
-              transition={{ duration: 0.4, delay: 0.2 }}
-              className="grid lg:grid-cols-2 gap-10"
-            >
-              <div>
-                <div className="mb-6 h-8 bg-muted rounded-lg w-1/3 animate-pulse" />
-                <SkeletonList count={3} />
-              </div>
-              <div>
-                <div className="mb-6 h-8 bg-muted rounded-lg w-1/3 animate-pulse" />
-                <SkeletonList count={3} />
-              </div>
-            </motion.div>
-          </div>
+          <DashboardSkeleton />
         ) : (
           <motion.div variants={containerVariants} initial="hidden" animate="visible">
             {fetchError && (
@@ -271,7 +280,9 @@ export default function Dashboard() {
                 { to: '/hub/resume', icon: FileText, label: 'Resume Builder', desc: 'Create, parse, and optimize ATS resumes.', sub: `${resumes.length} resumes`, color: 'primary', badge: 'AI' },
                 { to: '/hub/jobs', icon: Briefcase, label: 'Job Finder', desc: 'Search jobs, set alerts, and track applications.', sub: `${jobStats.total} tracked`, color: 'primary' },
                 { to: '/hub/portfolio', icon: Globe, label: 'Portfolio Builder', desc: 'Sync repos and deploy portfolios instantly.', sub: `${portfolioCount} portfolios`, color: 'secondary' },
-                { to: '/hub/career', icon: GraduationCap, label: 'Career Growth', desc: 'AI mock interviews, email & profile tuning.', sub: '4 tools', color: 'emerald-500', badge: 'AI' },
+                { to: '/hub/career', icon: GraduationCap, label: 'Career Growth', desc: 'Email & profile tuning tools.', sub: 'Growth tools', color: 'emerald-500', badge: 'AI' },
+                { to: '/interview-prep', icon: Mic, label: 'AI Mock Interview', desc: 'Practice with AI and get real-time feedback.', sub: 'Practice', color: 'primary', badge: 'AI' },
+                { to: '/dashboard/analytics', icon: TrendingUp, label: 'Interview Analytics', desc: 'Visualize mock interview performance trends and scores.', sub: 'Real-time metrics', color: 'emerald-500', badge: 'AI' },
                 { to: '/hub/community', icon: Users, label: 'Community Hub', desc: 'Group chat, public posts, and direct DMs.', sub: 'Connect', color: 'primary' },
               ].map((hub, idx) => (
                 <motion.div key={idx} variants={itemVariants}>
@@ -388,6 +399,10 @@ export default function Dashboard() {
               })}
             </motion.div>
 
+            <motion.div variants={itemVariants} className="mb-10">
+              <JobApplicationSuccessInsights />
+            </motion.div>
+
             {/* GitHub Overview */}
             <motion.div variants={itemVariants} className="mb-10">
               {githubOverview.connected ? (
@@ -446,6 +461,66 @@ export default function Dashboard() {
                 </div>
               )}
             </motion.div>
+
+            <motion.div variants={itemVariants} className="mb-10">
+  <div className="rounded-2xl bg-card border border-border p-6 shadow-sm">
+    <div className="flex items-center gap-3 mb-5">
+      <GraduationCap className="w-6 h-6 text-primary" />
+      <h2 className="text-xl font-black">
+        Career Growth Insights
+      </h2>
+    </div>
+
+    {resumes.length > 0 ? (
+      <div className="p-6 rounded-xl border border-dashed border-border bg-muted/20 text-center">
+        <GraduationCap className="w-10 h-10 text-muted-foreground mx-auto mb-3 opacity-50" />
+        <p className="text-sm font-bold text-muted-foreground mb-1">AI Career Insights Coming Soon</p>
+        <p className="text-xs text-muted-foreground max-w-xs mx-auto">
+          Personalized readiness score, skill gap analysis, and trending skills will appear here once our AI analyses your resume.
+        </p>
+      </div>
+    ) : (
+      <div className="p-6 rounded-xl border border-dashed border-primary/20 bg-primary/5 text-center">
+        <GraduationCap className="w-10 h-10 text-primary mx-auto mb-3 opacity-60" />
+        <p className="text-sm font-bold text-foreground mb-1">Upload a Resume to Unlock Insights</p>
+        <p className="text-xs text-muted-foreground max-w-xs mx-auto mb-4">
+          Your readiness score, skill gaps, and personalised learning path will be generated once you add a resume.
+        </p>
+        <Link
+          to="/upload"
+          className="inline-flex items-center gap-2 px-4 py-2 bg-primary text-primary-foreground rounded-xl text-xs font-black hover:bg-primary/90 transition-colors"
+        >
+          Upload Resume <ArrowRight className="w-3.5 h-3.5" />
+        </Link>
+      </div>
+    )}
+  </div>
+</motion.div>
+
+{portfolioCount > 0 && (
+  <motion.div variants={itemVariants} className="mb-10">
+    <div className="rounded-2xl bg-card border border-border p-6 shadow-sm">
+      <div className="flex items-center gap-3 mb-6">
+        <TrendingUp className="w-6 h-6 text-primary" />
+        <h2 className="text-xl font-black">
+          Portfolio Performance Analytics
+        </h2>
+      </div>
+
+      <div className="p-6 rounded-xl border border-dashed border-border bg-muted/20 text-center">
+        <TrendingUp className="w-10 h-10 text-muted-foreground mx-auto mb-3 opacity-50" />
+        <p className="text-sm font-bold text-muted-foreground mb-1">Analytics Tracking Coming Soon</p>
+        <p className="text-xs text-muted-foreground max-w-sm mx-auto">
+          Real visit counts, unique visitors, and weekly growth metrics will be tracked once portfolio analytics are enabled.
+        </p>
+      </div>
+    </div>
+  </motion.div>
+)}
+
+<motion.div variants={itemVariants} className="mb-10">
+  <PortfolioGrammarAssistant />
+</motion.div>
 
             <div className="grid lg:grid-cols-2 gap-10">
               {/* Recent Applications */}

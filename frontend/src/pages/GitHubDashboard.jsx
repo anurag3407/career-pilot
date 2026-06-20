@@ -46,7 +46,7 @@ export default function GitHubDashboard() {
       setIsImporting(true)
       const response = await resumeApi.importGitHub(username.trim(), profile)
       toast.success('GitHub profile imported as resume!')
-      navigate(`/enhance/${response.data.id}`)
+      navigate(`/resume/${response.data._id || response.data.id}`)
     } catch (error) {
       toast.error(error.message || 'Failed to import GitHub profile')
     } finally {

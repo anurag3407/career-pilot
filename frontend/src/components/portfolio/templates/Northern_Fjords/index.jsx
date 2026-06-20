@@ -1,7 +1,9 @@
+import { usePortfolio } from "../../../../context/PortfolioContext";
 import React from "react";
-import data from "../../../../data/dummy_data.json";
 
 export default function NorthernFjords() {
+  const { portfolioData: data } = usePortfolio();
+
   return (
     <div className="bg-[#0b1b2b] text-white min-h-screen">
 

@@ -1,36 +1,70 @@
 import { auth } from '../config/firebase'
 import { decryptKey } from '../utils/encryption'
 
+export const apiEvents = new EventTarget();
+
 const API_BASE = import.meta.env.VITE_API_BASE || '/api';
 
 // Helper to get auth headers
 async function getAuthHeaders() {
-  const user = auth?.currentUser
-  if (!user) throw new Error('Not authenticated')
+const user = auth?.currentUser
 
-
-  const token = await user.getIdToken()
-  const headers = {
-    'Authorization': `Bearer ${token}`,
-    'Content-Type': 'application/json'
-  }
-
-  const aiConfigStr = localStorage.getItem('aiConfig');
-  if (aiConfigStr) {
-    try {
-      const aiConfig = JSON.parse(aiConfigStr);
-      if (aiConfig.provider) headers['X-AI-Provider'] = aiConfig.provider;
-      if (aiConfig.apiKey) headers['X-AI-Key'] = decryptKey(aiConfig.apiKey);
-      if (aiConfig.model) headers['X-AI-Model'] = aiConfig.model;
-    } catch(e) {}
-  } else {
-    const openRouterKey = localStorage.getItem('openRouterApiKey');
-    if (openRouterKey) {
-      headers['X-OpenRouter-Key'] = decryptKey(openRouterKey);
+if (!user) {
+  if (import.meta.env.DEV) {
+    return {
+      Authorization: `Bearer mock-dev-token`,
+      'Content-Type': 'application/json'
     }
   }
+  throw new Error('Not authenticated')
+}
 
-  return headers
+const token = await user.getIdToken()
+
+const headers = {
+  Authorization: `Bearer ${token}`,
+  'Content-Type': 'application/json'
+}
+
+// Try the new Zustand store first
+try {
+  const { useAIConfigStore } = await import('../stores/useAIConfigStore')
+
+  const aiConfig = useAIConfigStore.getState().getActiveConfig()
+
+  if (aiConfig) {
+    if (aiConfig.provider) headers['X-AI-Provider'] = aiConfig.provider
+    if (aiConfig.apiKey) headers['X-AI-Key'] = aiConfig.apiKey
+    if (aiConfig.model) headers['X-AI-Model'] = aiConfig.model
+
+    return headers
+  }
+} catch (e) {
+  // Store not available, fall through to legacy
+}
+
+// Legacy fallback
+const aiConfigStr = localStorage.getItem('aiConfig')
+
+if (aiConfigStr) {
+  try {
+    const aiConfig = JSON.parse(aiConfigStr)
+
+    if (aiConfig.provider) headers['X-AI-Provider'] = aiConfig.provider
+    if (aiConfig.apiKey) headers['X-AI-Key'] = decryptKey(aiConfig.apiKey)
+    if (aiConfig.model) headers['X-AI-Model'] = aiConfig.model
+  } catch (e) {
+    console.error(e)
+  }
+} else {
+  const openRouterKey = localStorage.getItem('openRouterApiKey')
+
+  if (openRouterKey) {
+    headers['X-OpenRouter-Key'] = decryptKey(openRouterKey)
+  }
+}
+  
+return headers
 }
 
 // Helper to parse numeric header values
@@ -90,6 +124,11 @@ async function handleResponse(response) {
       };
     }
 
+    if (data && data.requireApiKey) {
+      error.requireApiKey = true;
+      apiEvents.dispatchEvent(new CustomEvent('missingApiKey'));
+    }
+
     throw error;
   }
 
@@ -123,10 +162,9 @@ export const uploadApi = {
   // Upload PDF and extract text
   async uploadPdf(file, options = {}) {
     const user = auth?.currentUser
-    if (!user) throw new Error('Not authenticated')
+    if (!user && !import.meta.env.DEV) throw new Error('Not authenticated')
 
-
-    const token = await user.getIdToken()
+    const token = user ? await user.getIdToken() : 'mock-dev-token'
     const formData = new FormData()
     formData.append('resume', file)
 
@@ -145,10 +183,9 @@ export const uploadApi = {
   // Extract text from PDF (re-process)
   async extractText(file, options = {}) {
     const user = auth?.currentUser
-    if (!user) throw new Error('Not authenticated')
+    if (!user && !import.meta.env.DEV) throw new Error('Not authenticated')
 
-
-    const token = await user.getIdToken()
+    const token = user ? await user.getIdToken() : 'mock-dev-token'
     const formData = new FormData()
     formData.append('resume', file)
 
@@ -210,6 +247,17 @@ export const resumeApi = {
     return handleResponse(response)
   },
 
+  // Reorder sections
+  async reorderSections(resumeId, sectionOrder) {
+    const headers = await getAuthHeaders()
+    const response = await fetch(`${API_BASE}/resumes/${resumeId}/reorder`, {
+      method: 'PUT',
+      headers,
+      body: JSON.stringify({ sectionOrder })
+    })
+    return handleResponse(response)
+  },
+
   // Delete resume
   async delete(resumeId) {
     const headers = await getAuthHeaders()
@@ -267,9 +315,9 @@ export const resumeApi = {
   // Download resume as PDF
   async downloadPdf(resumeId, version = 'enhanced') {
     const user = auth?.currentUser
-    if (!user) throw new Error('Not authenticated')
+    if (!user && !import.meta.env.DEV) throw new Error('Not authenticated')
 
-    const token = await user.getIdToken()
+    const token = user ? await user.getIdToken() : 'mock-dev-token'
     const response = await fetch(`${API_BASE}/resumes/${resumeId}/download?version=${version}`, {
       method: 'GET',
       headers: {
@@ -420,13 +468,34 @@ export const portfolioApi = {
     return handleResponse(response);
   },
 
+  // Generate portfolio JSON from an existing enhanced resume
+  async generateFromResume(resumeId) {
+    const headers = await getAuthHeaders();
+
+    const response = await fetch(`${API_BASE}/portfolio/generate-from-resume/${resumeId}`, {
+      method: 'POST',
+      headers
+    });
+
+    return handleResponse(response);
+  },
+  // Update portfolio section data
+  async update(portfolioId, data) {
+    const headers = await getAuthHeaders();
+    const response = await fetch(`${API_BASE}/portfolio/${portfolioId}`, {
+      method: 'PUT',
+      headers,
+      body: JSON.stringify(data)
+    });
+    return handleResponse(response);
+  },
   // Deploy portfolio to Cloudflare Pages
-  async deploy({ slug, sections, templateId, title }) {
+  async deploy({ slug, sections, templateId, title, provider, token }) {
     const headers = await getAuthHeaders();
     const response = await fetch(`${API_BASE}/portfolio/deploy`, {
       method: 'POST',
       headers,
-      body: JSON.stringify({ slug, sections, templateId, title })
+      body: JSON.stringify({ slug, sections, templateId, title, provider, token })
     });
     return handleResponse(response);
   }
@@ -552,6 +621,17 @@ export const enhanceApi = {
       body: JSON.stringify({ resumeText })
     })
     return handleResponse(response)
+  },
+
+  // Analyze skill gap between resume and job description
+  async analyzeSkillGap(resumeText, jobDescription) {
+    const headers = await getAuthHeaders()
+    const response = await fetch(`${API_BASE}/enhance/skill-gap`, {
+      method: 'POST',
+      headers,
+      body: JSON.stringify({ resumeText, jobDescription })
+    })
+    return handleResponse(response)
   }
 }
 
@@ -563,6 +643,17 @@ export const aiApi = {
     const response = await fetch(`${API_BASE}/ai/models?provider=${encodeURIComponent(provider)}`, {
       method: 'GET',
       headers
+    })
+    return handleResponse(response)
+  },
+
+  // Validate an API key against its provider (lightweight, no token usage)
+  async validateKey(provider, apiKey) {
+    const headers = await getAuthHeaders()
+    const response = await fetch(`${API_BASE}/ai/validate-key`, {
+      method: 'POST',
+      headers,
+      body: JSON.stringify({ provider, apiKey })
     })
     return handleResponse(response)
   }
@@ -583,6 +674,71 @@ function buildParams(params) {
   }
   return usp
 }
+
+// ============ INTERVIEW API ============
+export const interviewApi = {
+  // Start a new interview
+  async startInterview(data) {
+    const headers = await getAuthHeaders();
+    const response = await fetch(`${API_BASE}/interview/start`, {
+      method: 'POST',
+      headers,
+      body: JSON.stringify(data)
+    });
+    return handleResponse(response);
+  },
+
+  // Submit an answer for a specific question
+  async submitAnswer(interviewId, data) {
+    const headers = await getAuthHeaders();
+    const response = await fetch(`${API_BASE}/interview/${interviewId}/answer`, {
+      method: 'POST',
+      headers,
+      body: JSON.stringify(data)
+    });
+    return handleResponse(response);
+  },
+
+  // Complete an interview and generate overall feedback
+  async completeInterview(interviewId) {
+    const headers = await getAuthHeaders();
+    const response = await fetch(`${API_BASE}/interview/${interviewId}/complete`, {
+      method: 'POST',
+      headers
+    });
+    return handleResponse(response);
+  },
+
+  // Get interview history
+  async getHistory() {
+    const headers = await getAuthHeaders();
+    const response = await fetch(`${API_BASE}/interview/history`, {
+      method: 'GET',
+      headers
+    });
+    return handleResponse(response);
+  },
+
+  // Get interview analytics
+  async getAnalytics() {
+    const headers = await getAuthHeaders();
+    const response = await fetch(`${API_BASE}/interview/analytics`, {
+      method: 'GET',
+      headers
+    });
+    return handleResponse(response);
+  },
+
+  // Get single interview by ID
+  async getById(id) {
+    const headers = await getAuthHeaders();
+    const response = await fetch(`${API_BASE}/interview/${id}`, {
+      method: 'GET',
+      headers
+    });
+    return handleResponse(response);
+  }
+};
 
 // ============ JOBS API ============
 export const jobsApi = {
@@ -1130,55 +1286,6 @@ export const fellowshipApi = {
   }
 }
 
-export const interviewApi = {
-  async startInterview(formData) {
-    const headers = await getAuthHeaders()
-    const response = await fetch(`${API_BASE}/interview/start`, {
-      method: 'POST',
-      headers,
-      body: JSON.stringify(formData)
-    })
-    return handleResponse(response)
-  },
-
-  async submitAnswer(interviewId, data) {
-    const headers = await getAuthHeaders()
-    const response = await fetch(`${API_BASE}/interview/${interviewId}/answer`, {
-      method: 'POST',
-      headers,
-      body: JSON.stringify(data)
-    })
-    return handleResponse(response)
-  },
-
-  async completeInterview(interviewId) {
-    const headers = await getAuthHeaders()
-    const response = await fetch(`${API_BASE}/interview/${interviewId}/complete`, {
-      method: 'POST',
-      headers
-    })
-    return handleResponse(response)
-  },
-
-  async getInterview(interviewId) {
-    const headers = await getAuthHeaders()
-    const response = await fetch(`${API_BASE}/interview/${interviewId}`, {
-      method: 'GET',
-      headers
-    })
-    return handleResponse(response)
-  },
-
-  async getHistory() {
-    const headers = await getAuthHeaders()
-    const response = await fetch(`${API_BASE}/interview/history`, {
-      method: 'GET',
-      headers
-    })
-    return handleResponse(response)
-  }
-}
-
 // ============ USER PROFILE API ============
 export const userProfileApi = {
   async getMyProfile() {
@@ -1206,6 +1313,22 @@ export const userProfileApi = {
   async getMyActivity() {
     const headers = await getAuthHeaders()
     const response = await fetch(`${API_BASE}/user-profiles/me/activity`, { method: 'GET', headers })
+    return handleResponse(response)
+  },
+
+  async setMyAvatar(avatarUrl) {
+    const headers = await getAuthHeaders()
+    const response = await fetch(`${API_BASE}/user-profiles/me/avatar`, {
+      method: 'POST',
+      headers,
+      body: JSON.stringify({ avatarUrl })
+    })
+    return handleResponse(response)
+  },
+
+  async deleteMyAvatar() {
+    const headers = await getAuthHeaders()
+    const response = await fetch(`${API_BASE}/user-profiles/me/avatar`, { method: 'DELETE', headers })
     return handleResponse(response)
   },
 
@@ -1506,6 +1629,34 @@ export const projectVisualizerApi = {
     })
     return handleResponse(response)
   },
+
+  async explainFile(sessionId, filePath) {
+    const headers = await getAuthHeaders()
+    const response = await fetch(`${API_BASE}/project-visualizer/analysis/${sessionId}/explain-file`, {
+      method: 'POST',
+      headers,
+      body: JSON.stringify({ filePath })
+    })
+    return handleResponse(response)
+  },
+
+  async getInterviewQuestions(sessionId) {
+    const headers = await getAuthHeaders()
+    const response = await fetch(`${API_BASE}/project-visualizer/analysis/${sessionId}/interview-prep`, {
+      method: 'POST',
+      headers
+    })
+    return handleResponse(response)
+  },
+
+  async getContributionGuide(sessionId) {
+    const headers = await getAuthHeaders()
+    const response = await fetch(`${API_BASE}/project-visualizer/analysis/${sessionId}/contribution-guide`, {
+      method: 'POST',
+      headers
+    })
+    return handleResponse(response)
+  },
 }
 
 export const adminAPI = {
@@ -1518,6 +1669,30 @@ export const adminAPI = {
   async getUsers(page = 1, limit = 10) {
     const headers = await getAuthHeaders();
     const response = await fetch(`${API_BASE}/admin/users?page=${page}&limit=${limit}`, { headers });
+    return handleResponse(response);
+  },
+
+  async getLogins(page = 1, limit = 20) {
+    const headers = await getAuthHeaders();
+    const response = await fetch(`${API_BASE}/admin/logins?page=${page}&limit=${limit}`, { headers });
+    return handleResponse(response);
+  }
+};
+
+export const bugsApi = {
+  async submitBug(title, description) {
+    const headers = await getAuthHeaders();
+    const response = await fetch(`${API_BASE}/bugs`, {
+      method: 'POST',
+      headers,
+      body: JSON.stringify({ title, description })
+    });
+    return handleResponse(response);
+  },
+
+  async getBugs(page = 1, limit = 20) {
+    const headers = await getAuthHeaders();
+    const response = await fetch(`${API_BASE}/bugs?page=${page}&limit=${limit}`, { headers });
     return handleResponse(response);
   }
 };

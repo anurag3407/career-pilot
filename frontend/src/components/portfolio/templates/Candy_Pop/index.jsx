@@ -1,7 +1,7 @@
+import { usePortfolio } from "../../../../context/PortfolioContext";
 import React from 'react';
 import { motion } from 'framer-motion';
 import { Github, Linkedin, Twitter, Mail, ExternalLink, Calendar, Award, Users, Star, Heart, Sparkles, ArrowRight, MapPin, Phone } from 'lucide-react';
-import data from '../../../../data/dummy_data.json';
 
 /**
  * Candy Pop Portfolio Template
@@ -9,6 +9,8 @@ import data from '../../../../data/dummy_data.json';
  * Description: Candy/bubblegum pastel colors with soft pinks, mints, lavenders, and baby blues. Rounded bubbly shapes, playful sans-serif fonts.
  */
 export default function CandyPop() {
+  const { portfolioData: data } = usePortfolio();
+
   const { personal, socials, skills, projects, experience, testimonials, stats } = data;
 
   const fadeInUp = {

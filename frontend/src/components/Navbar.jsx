@@ -20,8 +20,10 @@ import {
   Sun,
   Moon,
   Palette,
-  ChevronDown
+  ChevronDown,
+  Target
 } from 'lucide-react'
+import AIProviderSelector from './AIProviderSelector'
 
 export default function Navbar() {
   const { user, logout } = useAuth()
@@ -32,11 +34,11 @@ export default function Navbar() {
   const [scrolled, setScrolled] = useState(false)
   const [searchQuery, setSearchQuery] = useState('')
   const [showDropdown, setShowDropdown] = useState(false)
-  const [notificationCount] = useState(3)
+  // notificationCount: set to 0 until a real notifications API is wired up
+  const [notificationCount] = useState(0)
 
   useEffect(() => {
     const handleScroll = () => {
-      console.log(window.scrollY);
       setScrolled(window.scrollY>20)
     }
 
@@ -86,6 +88,7 @@ export default function Navbar() {
     { path: '/upload', label: 'Resume', icon: FileText },
     { path: '/email-generator', label: 'Emails', icon: Mail },
     { path: '/linkedin-optimizer', label: 'LinkedIn', icon: Linkedin },
+    { path: '/skill-gap', label: 'Skill Gap', icon: Target },
   ]
 
   const searchSuggestions = [
@@ -195,6 +198,9 @@ export default function Navbar() {
 
           {/* Right Side */}
           <div className="hidden md:flex items-center gap-3">
+            
+            {/* AI Provider Selector */}
+            <AIProviderSelector />
 
             {/* Theme Toggle */}
             <button
@@ -315,7 +321,7 @@ export default function Navbar() {
 
           {/* Mobile Menu */}
           <div className="flex items-center gap-2 md:hidden">
-
+            <AIProviderSelector />
             <button
               onClick={toggleTheme}
               className="p-2 rounded-xl bg-muted border border-border"

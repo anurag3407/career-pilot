@@ -1,10 +1,11 @@
+import { usePortfolio } from "../../../../context/PortfolioContext";
 import React from 'react';
+import data from '../../../../data/dummy_data.json';
 import { motion } from 'framer-motion';
 import { 
   Github, Linkedin, Twitter, Mail, MapPin, 
   ExternalLink, Code2, Briefcase, Award 
 } from 'lucide-react';
-import defaultData from '../../../../data/dummy_data.json';
 
 /**
  * Stable hash for deterministic randomness (prevents layout shifts on re-renders)
@@ -26,6 +27,8 @@ const getStableRandom = (seed, min, max) => {
 };
 
 export default function PolaroidMemories({ data: propData }) {
+  const { portfolioData: defaultData } = usePortfolio();
+
   const data = propData || defaultData;
 
   return (
@@ -236,6 +239,8 @@ export default function PolaroidMemories({ data: propData }) {
 // ============================================================================
 
 function Polaroid({ image, caption, rotation, delay = 0, isHero = false, className = "", children }) {
+  const { portfolioData: defaultData } = usePortfolio();
+
   return (
     <motion.div
       initial={{ opacity: 0, y: 60, rotate: rotation - 15, scale: 0.9 }}
@@ -270,6 +275,8 @@ function Polaroid({ image, caption, rotation, delay = 0, isHero = false, classNa
 }
 
 function StickyNote({ children, color = "bg-yellow-100", rotation = 0, delay = 0, pinType = "tape", className = "" }) {
+  const { portfolioData: defaultData } = usePortfolio();
+
   return (
     <motion.div
       initial={{ opacity: 0, scale: 0.8, rotate: rotation - 10 }}
@@ -300,6 +307,8 @@ function StickyNote({ children, color = "bg-yellow-100", rotation = 0, delay = 0
 }
 
 function SectionTitle({ title, icon, rotation = 0 }) {
+  const { portfolioData: defaultData } = usePortfolio();
+
   return (
     <motion.div 
       initial={{ opacity: 0, y: -20 }}

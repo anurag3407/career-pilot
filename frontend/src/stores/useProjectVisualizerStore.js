@@ -18,6 +18,8 @@ export const useProjectVisualizerStore = create(
       risks: [],
       suggestions: [],
       architectureSummary: '',
+      dependencies: null,
+      
       
       // GitHub enrichment
       github: null,
@@ -54,6 +56,7 @@ export const useProjectVisualizerStore = create(
         suggestions: data.suggestions,
         architectureSummary: data.architectureSummary,
         github: data.github,
+        dependencies: data.dependencies,
         status: 'complete',
       }),
       
@@ -81,6 +84,7 @@ export const useProjectVisualizerStore = create(
         stats: null, modules: [], fileGraph: { nodes: [], edges: [] },
         moduleGraph: { nodes: [], edges: [] }, risks: [], suggestions: [],
         architectureSummary: '', github: null, contributors: [], commits: [],
+        dependencies: null,
         viewMode: 'modules', selectedModule: null, selectedFile: null,
         fileContent: '', searchQuery: '', activeTab: 'architecture',
         inspectorOpen: false, chatExpanded: false,
@@ -107,6 +111,7 @@ export const useProjectVisualizerStore = create(
         suggestions: state.suggestions,
         architectureSummary: state.architectureSummary,
         github: state.github,
+        dependencies: state.dependencies,
         activeTab: state.activeTab,
         messages: state.messages,
       }),
