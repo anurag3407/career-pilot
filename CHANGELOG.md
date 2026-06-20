@@ -1,3 +1,10 @@
+# [1.254.0](https://github.com/anurag3407/career-pilot/compare/v1.253.0...v1.254.0) (2026-06-20)
+
+
+### Features
+
+* add portfolio template preview component ([#4222](https://github.com/anurag3407/career-pilot/issues/4222)) ([7298376](https://github.com/anurag3407/career-pilot/commit/72983762f5def5fb4981bec37ccea9e17878d4c5))
+
 # [1.253.0](https://github.com/anurag3407/career-pilot/compare/v1.252.0...v1.253.0) (2026-06-20)
 
 
