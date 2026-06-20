@@ -119,14 +119,8 @@ isComplete: true,
 },
 
 {
-id: "Vercel_Deploy",
-title: "Vercel Deploy",
-category: "Portfolio",
-colorScheme: "Dark",
-layout: "Cards",
-author: "Your GitHub Username",
-views: 1200,
-rating: 4.8,
+  
+  "id": "Vercel_Deploy",
   "title": "Vercel Deploy",
   "category": "Portfolio",
   "colorScheme": "Dark",
