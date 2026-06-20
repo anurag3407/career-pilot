@@ -247,6 +247,17 @@ export const resumeApi = {
     return handleResponse(response)
   },
 
+  // Reorder sections
+  async reorderSections(resumeId, sectionOrder) {
+    const headers = await getAuthHeaders()
+    const response = await fetch(`${API_BASE}/resumes/${resumeId}/reorder`, {
+      method: 'PUT',
+      headers,
+      body: JSON.stringify({ sectionOrder })
+    })
+    return handleResponse(response)
+  },
+
   // Delete resume
   async delete(resumeId) {
     const headers = await getAuthHeaders()
@@ -1305,6 +1316,22 @@ export const userProfileApi = {
     return handleResponse(response)
   },
 
+  async setMyAvatar(avatarUrl) {
+    const headers = await getAuthHeaders()
+    const response = await fetch(`${API_BASE}/user-profiles/me/avatar`, {
+      method: 'POST',
+      headers,
+      body: JSON.stringify({ avatarUrl })
+    })
+    return handleResponse(response)
+  },
+
+  async deleteMyAvatar() {
+    const headers = await getAuthHeaders()
+    const response = await fetch(`${API_BASE}/user-profiles/me/avatar`, { method: 'DELETE', headers })
+    return handleResponse(response)
+  },
+
   async getProfile(uid) {
     const headers = await getAuthHeaders()
     const response = await fetch(`${API_BASE}/user-profiles/${uid}`, { method: 'GET', headers })
@@ -1642,6 +1669,30 @@ export const adminAPI = {
   async getUsers(page = 1, limit = 10) {
     const headers = await getAuthHeaders();
     const response = await fetch(`${API_BASE}/admin/users?page=${page}&limit=${limit}`, { headers });
+    return handleResponse(response);
+  },
+
+  async getLogins(page = 1, limit = 20) {
+    const headers = await getAuthHeaders();
+    const response = await fetch(`${API_BASE}/admin/logins?page=${page}&limit=${limit}`, { headers });
+    return handleResponse(response);
+  }
+};
+
+export const bugsApi = {
+  async submitBug(title, description) {
+    const headers = await getAuthHeaders();
+    const response = await fetch(`${API_BASE}/bugs`, {
+      method: 'POST',
+      headers,
+      body: JSON.stringify({ title, description })
+    });
+    return handleResponse(response);
+  },
+
+  async getBugs(page = 1, limit = 20) {
+    const headers = await getAuthHeaders();
+    const response = await fetch(`${API_BASE}/bugs?page=${page}&limit=${limit}`, { headers });
     return handleResponse(response);
   }
 };

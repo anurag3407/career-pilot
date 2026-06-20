@@ -1,5 +1,6 @@
 import { usePortfolio } from "../../../../context/PortfolioContext";
 import React, { useState, useEffect } from 'react';
+import data from '../../../../data/dummy_data.json';
 import { motion } from 'framer-motion';
 import Hero from './Hero';
 import About from './About';
