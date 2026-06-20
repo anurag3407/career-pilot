@@ -258,7 +258,7 @@ export default function InspiredDevJadiya() {
   let data = fallbackPortfolioData;
 
   const hookInstance = usePortfolio?.();
-  const data = hookInstance?.portfolioData || fallbackPortfolioData;
+  data = hookInstance?.portfolioData || fallbackPortfolioData;
 
   const [theme, setTheme] = useState('tokyonight');
   const [activeItem, setActiveItem] = useState({ section: 'home', index: 0 });

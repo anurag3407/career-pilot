@@ -185,7 +185,7 @@ router.put('/:resumeId', verifyToken, validate(updateResumeSchema), asyncHandler
   const userId = req.user.uid;
   const updates = req.body;
 
-  const allowedUpdates = ['originalText', 'enhancedText', 'jobRole', 'atsScore', 'preferences', 'title', 'pdfUrl'];
+  const allowedUpdates = ['originalText', 'enhancedText', 'jobRole', 'atsScore', 'preferences', 'title', 'pdfUrl', 'sectionOrder'];
   const updateData = {};
   for (const key of allowedUpdates) {
     if (updates[key] !== undefined) updateData[key] = updates[key];
@@ -198,6 +198,55 @@ router.put('/:resumeId', verifyToken, validate(updateResumeSchema), asyncHandler
   const updatedResume = await Resume.findOneAndUpdate(
     { _id: resumeId, userId },
     { $set: updateData },
+    { new: true, runValidators: true }
+  ).lean();
+
+  if (!updatedResume) {
+    throw new ApiError(404, 'Resume not found');
+  }
+
+  res.json({
+    success: true,
+    data: {
+      id: updatedResume._id.toString(),
+      ...updatedResume,
+      _id: undefined
+    }
+  });
+}));
+
+/**
+ * @swagger
+ * /api/resumes/{resumeId}/reorder:
+ *   put:
+ *     summary: Reorder resume sections
+ *     parameters:
+ *       - in: path
+ *         name: resumeId
+ *         required: true
+ *     requestBody:
+ *       required: true
+ *       content:
+ *         application/json:
+ *           schema:
+ *             type: object
+ *     responses:
+ *       200:
+ *         description: Success
+ */
+// Reorder sections
+router.put('/:resumeId/reorder', verifyToken, asyncHandler(async (req, res) => {
+  const { resumeId } = req.params;
+  const userId = req.user.uid;
+  const { sectionOrder } = req.body;
+
+  if (!sectionOrder || !Array.isArray(sectionOrder)) {
+    throw new ApiError(400, 'Invalid section order');
+  }
+
+  const updatedResume = await Resume.findOneAndUpdate(
+    { _id: resumeId, userId },
+    { $set: { sectionOrder } },
     { new: true, runValidators: true }
   ).lean();
 
