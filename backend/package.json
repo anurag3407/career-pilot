@@ -8,7 +8,7 @@
     "start": "node src/index.js",
     "dev": "nodemon src/index.js",
     "lint": "eslint src/",
-   "test": "node --experimental-vm-modules node_modules/jest/bin/jest.js"
+    "test": "node --test"
   },
   "dependencies": {
     "@anthropic-ai/sdk": "^0.99.0",

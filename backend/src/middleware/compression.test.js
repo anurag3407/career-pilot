@@ -1,4 +1,5 @@
-import { describe, it, expect } from 'vitest';
+import { describe, it } from 'node:test';
+import assert from 'node:assert';
 import request from 'supertest';
 import express from 'express';
 import compressionMiddleware from './compression.js';
@@ -14,20 +15,20 @@ describe('Compression Middleware', () => {
     const res = await request(app)
       .get('/test')
       .set('Accept-Encoding', 'gzip');
-    expect(res.headers['content-encoding']).toBe('gzip');
+    assert.strictEqual(res.headers['content-encoding'], 'gzip');
   });
 
   it('should skip compression when x-no-compression header is set', async () => {
     const res = await request(app)
       .get('/test')
       .set('x-no-compression', 'true');
-    expect(res.headers['content-encoding']).toBeUndefined();
+    assert.strictEqual(res.headers['content-encoding'], undefined);
   });
 
   it('should return valid JSON after decompression', async () => {
     const res = await request(app)
       .get('/test')
       .set('Accept-Encoding', 'gzip');
-    expect(res.body).toHaveProperty('data');
+    assert.ok('data' in res.body);
   });
 });
