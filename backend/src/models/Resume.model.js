@@ -49,6 +49,10 @@ const resumeSchema = new mongoose.Schema({
     pdfUrl: {
         type: String,
         default: null
+    },
+    sectionOrder: {
+        type: [String],
+        default: ['education', 'experience', 'projects', 'skills']
     }
 }, {
     timestamps: {
