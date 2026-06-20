@@ -3,6 +3,7 @@ import OpenAI from 'openai';
 import Groq from 'groq-sdk';
 import dotenv from 'dotenv';
 import { OpenRouterAdapter } from './providers/openrouter.js';
+import { RequestyAdapter } from './providers/requesty.js';
 import { ApiError } from '../middleware/errorHandler.js';
 import { aiCallsCounter } from '../middleware/metrics.js';
 
@@ -11,13 +12,14 @@ dotenv.config();
 // ---------------------------------------------------------------------------
 // Supported provider identifiers
 // ---------------------------------------------------------------------------
-export const SUPPORTED_PROVIDERS = ['gemini', 'openai', 'openrouter', 'groq'];
+export const SUPPORTED_PROVIDERS = ['gemini', 'openai', 'openrouter', 'requesty', 'groq'];
 
 // Default model names per provider (used when caller doesn't specify one)
 const DEFAULT_MODELS = {
   gemini: 'gemini-2.5-flash',
   openai: 'gpt-4o-mini',
   openrouter: 'openai/gpt-4o-mini',   // OpenRouter uses "org/model" format
+  requesty: 'openai/gpt-4o-mini',     // Requesty uses "org/model" format
   groq: 'llama-3.3-70b-versatile',
 };
 
@@ -202,6 +204,8 @@ export function createAIProvider(provider, apiKey, modelName) {
       return new OpenAIAdapter(apiKey, modelName);
     case 'openrouter':
       return new OpenRouterAdapter(apiKey, modelName);
+    case 'requesty':
+      return new RequestyAdapter(apiKey, modelName);
     case 'groq':
       return new GroqAdapter(apiKey, modelName);
     default:

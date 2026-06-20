@@ -271,8 +271,10 @@ describe('resume.schema — updateResumeSchema', () => {
   });
 
   test('rejects empty object', () => {
+    // customSections defaults to [] so the schema now accepts {} but the
+    // downstream `.refine` check still rejects (no field to update).
     const result = updateResumeSchema.safeParse({});
-    assert.ok(!result.success);
+    assert.ok(!result.success, 'empty object should be rejected by the .refine()');
   });
 });
 
