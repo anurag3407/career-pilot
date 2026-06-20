@@ -5,6 +5,7 @@ import {
   createUserWithEmailAndPassword,
   signOut,
   GoogleAuthProvider,
+  GithubAuthProvider,
   signInWithPopup,
   updateProfile
 } from 'firebase/auth'
@@ -107,6 +108,19 @@ export function AuthProvider({ children }) {
   }
 
   /**
+   * Logs in a user using GitHub Sign-In popup.
+   *
+   * @returns {Promise<object>} The Firebase user object.
+   */
+  const loginWithGitHub = async () => {
+    if (!auth) throw new Error("Authentication service is not configured. Please check your environment variables and authentication provider setup. Refer to the project setup documentation for configuration instructions.")
+    const provider = new GithubAuthProvider()
+    provider.addScope('user:email')
+    const result = await signInWithPopup(auth, provider)
+    return result.user
+  }
+
+  /**
    * Signs the user out of the current session.
    *
    * @returns {Promise<void>}
@@ -133,6 +147,7 @@ export function AuthProvider({ children }) {
     login,
     loginWithGoogle,
     loginWithLinkedIn,
+    loginWithGitHub,
     logout,
     getToken,
     isMockAuth: !auth // Helper flag indicating local offline development

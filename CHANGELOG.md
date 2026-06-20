@@ -1,3 +1,32 @@
+# [1.253.0](https://github.com/anurag3407/career-pilot/compare/v1.252.0...v1.253.0) (2026-06-20)
+
+
+### Features
+
+* add AI-powered resume bullet point enhancer ([#4221](https://github.com/anurag3407/career-pilot/issues/4221)) ([1b35e32](https://github.com/anurag3407/career-pilot/commit/1b35e32c5eb3a92645ee61c1af53787ec44c47e0))
+
+# [1.252.0](https://github.com/anurag3407/career-pilot/compare/v1.251.1...v1.252.0) (2026-06-20)
+
+
+### Features
+
+* add GitHub OAuth sign-in to Login and Register pages ([#4183](https://github.com/anurag3407/career-pilot/issues/4183)) ([26cc7e1](https://github.com/anurag3407/career-pilot/commit/26cc7e175b887a7cac4ec31ccf85918e7c1645c6))
+
+## [1.251.1](https://github.com/anurag3407/career-pilot/compare/v1.251.0...v1.251.1) (2026-06-20)
+
+
+### Bug Fixes
+
+* use AppErrorBoundary at application root ([#4233](https://github.com/anurag3407/career-pilot/issues/4233)) ([63ebb9e](https://github.com/anurag3407/career-pilot/commit/63ebb9e6fd38b97193e218ba433b53d2d210c016))
+
+# [1.251.0](https://github.com/anurag3407/career-pilot/compare/v1.250.1...v1.251.0) (2026-06-20)
+
+
+### Features
+
+* implement drag and drop section reordering ([#4154](https://github.com/anurag3407/career-pilot/issues/4154)) ([#4234](https://github.com/anurag3407/career-pilot/issues/4234)) ([acded03](https://github.com/anurag3407/career-pilot/commit/acded03ed12a6cf8ae2b81ddab708c20cc41bdec))
+* **portfolio:** implement Art Deco Gold template ([#1944](https://github.com/anurag3407/career-pilot/issues/1944)) ([#4066](https://github.com/anurag3407/career-pilot/issues/4066)) ([8dc90d5](https://github.com/anurag3407/career-pilot/commit/8dc90d50686a089c1d1e5ae078920ee72502ef20))
+
 ## [1.250.1](https://github.com/anurag3407/career-pilot/compare/v1.250.0...v1.250.1) (2026-06-18)
 
 
