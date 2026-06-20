@@ -1,4 +1,5 @@
 import express from 'express';
+import rateLimit from 'express-rate-limit';
 import bcrypt from 'bcryptjs';
 import { asyncHandler, ApiError } from '../middleware/errorHandler.js';
 import { verifyToken } from '../middleware/auth.js';
@@ -18,14 +19,54 @@ import User from '../models/User.model.js';
 import admin from '../config/firebase.js';
 import crypto from 'crypto';
 
+// Rate limiter for the one-time LinkedIn token exchange endpoint.
+// 10 attempts per minute per IP prevents any realistic brute-force window
+// while still accommodating legitimate OAuth retries.
+const linkedinTokenExchangeLimiter = rateLimit({
+  windowMs: 60 * 1000,
+  max: 10,
+  standardHeaders: true,
+  legacyHeaders: false,
+  handler: (_req, res) => {
+    res.status(429).json({ success: false, error: 'Too many requests. Please try again later.' });
+  },
+});
+
 const router = express.Router();
+
+// Max 10 registrations per hour per IP — slows bulk account creation
+const registerLimiter = rateLimit({
+  windowMs: 60 * 60 * 1000,
+  max: 10,
+  standardHeaders: true,
+  legacyHeaders: false,
+  handler: (_req, res) =>
+    res.status(429).json({
+      success: false,
+      error: 'Too many registration attempts from this IP. Please try again later.',
+    }),
+});
+
+// Max 5 password reset requests per hour per IP — prevents email bombing
+const forgotPasswordLimiter = rateLimit({
+  windowMs: 60 * 60 * 1000,
+  max: 5,
+  standardHeaders: true,
+  legacyHeaders: false,
+  handler: (_req, res) =>
+    res.status(429).json({
+      success: false,
+      error: 'Too many password reset requests. Please try again in an hour.',
+    }),
+});
+
 
 // Holds CSRF-protection state params for the LinkedIn OAuth initiation flow (10-min TTL)
 const stateStore = new Map();
 const tokenStore = new Map();       // one-time LinkedIn token exchange store
 const passwordResetStore = new Map(); // one-time password reset token store (1h TTL)
 
-router.post('/register', validate(registerSchema), asyncHandler(async (req, res) => {
+router.post('/register', registerLimiter, validate(registerSchema), asyncHandler(async (req, res) => {
   const { email, name, password } = req.body;
 
   const existingUser = await User.findOne({ email });
@@ -99,7 +140,7 @@ router.post('/login', loginProtection, validate(loginSchema), asyncHandler(async
 }));
 
 // Always returns 200 regardless of whether the email exists, to prevent enumeration.
-router.post('/forgot-password', validate(forgotPasswordSchema), asyncHandler(async (req, res) => {
+router.post('/forgot-password', forgotPasswordLimiter, validate(forgotPasswordSchema), asyncHandler(async (req, res) => {
   const { email } = req.body;
 
   const user = await User.findOne({ email });
@@ -316,7 +357,7 @@ router.get('/linkedin/callback', asyncHandler(async (req, res) => {
 
 // One-time token exchange endpoint — frontend calls this after LinkedIn OAuth redirect
 // instead of receiving the Firebase custom token in the URL.
-router.get('/linkedin/token/:code', asyncHandler(async (req, res) => {
+router.get('/linkedin/token/:code', linkedinTokenExchangeLimiter, asyncHandler(async (req, res) => {
   const { code } = req.params;
   const entry = tokenStore.get(code);
   if (!entry || Date.now() > entry.expiresAt) {

@@ -1,5 +1,33 @@
 export const templates = [
   {
+    id: "Bruno_Simon_Playground",
+    title: "Bruno Simon Playground",
+    category: "Portfolio",
+    colorScheme: "Colorful",
+    layout: "Interactive",
+    author: "System",
+    views: 9999998,
+    rating: 5.0,
+    image: "/template-previews/Bruno_Simon_Playground.png",
+    createdAt: "2026-06-18",
+    description: "A playful interactive portfolio inspired by Bruno Simon's game-like web worlds, featuring bold colors, kinetic cards, pointer-reactive lighting, and a cartoon vehicle hero.",
+    isComplete: true
+  },
+  {
+    id: "Typewriter_Keystroke_Sequence",
+    title: "Typewriter Keystroke Sequence",
+    category: "Portfolio",
+    colorScheme: "Light",
+    layout: "Scroll",
+    author: "Raman Kumar",
+    views: 9999990,
+    rating: 5.0,
+    image: "/template-previews/Typewriter_Keystroke_Sequence.png",
+    createdAt: "2026-06-15",
+    description: "A vintage typewriter portfolio where your career story is typed live on old manuscript paper — complete with keystroke animations, ink smudges, diary entries, and folded letters.",
+    isComplete: true
+  },
+  {
     id: "Sommelier_Wine_Cellar_Racks",
     title: "Sommelier Wine Cellar Racks",
     category: "Portfolio",
@@ -68,7 +96,37 @@ export const templates = [
 },
 
   {
-  "id": "Vercel_Deploy",
+  id: "Virtual_Reality_Room_360",
+  title: "Virtual Reality Room 360",
+  category: "Portfolio",
+  colorScheme: "Dark",
+  layout: "Interactive",
+  author: "ShaktiShrey-01",
+  views: 0,
+  rating: 0,
+  image: "/template-previews/Virtual_Reality_Room_360.png",
+  createdAt: "2026-06-12",
+  isComplete: true,
+  },
+  {
+    id: "Vercel_Deploy",
+  isComplete: true
+  },
+  {
+  id: "Vercel_Deploy",
+createdAt: "2026-06-12",
+isComplete: true,
+},
+
+{
+id: "Vercel_Deploy",
+title: "Vercel Deploy",
+category: "Portfolio",
+colorScheme: "Dark",
+layout: "Cards",
+author: "Your GitHub Username",
+views: 1200,
+rating: 4.8,
   "title": "Vercel Deploy",
   "category": "Portfolio",
   "colorScheme": "Dark",
@@ -160,57 +218,46 @@ export const templates = [
   "isComplete": true
 },
   {
-    "id": "Forensic_Investigator_Desk",
-    "title": "Forensic Investigator Desk",
-    "category": "Portfolio",
-    "colorScheme": "Dark",
-    "layout": "Interactive",
-    "author": "ShaktiShrey-01",
-    "views": 0,
-    "rating": 0,
-    "image": "/template-previews/Forensic_investigator_desk.png",
-    "createdAt": "2026-06-11",
-    "isComplete": true
-  },
-  {
-    "id": "IKEA_Assembly_Manual",
-    "title": "IKEA Assembly Manual",
-    "category": "Portfolio",
-    "colorScheme": "Light",
-    "layout": "Interactive",
-    "author": "System",
-    "views": 0,
-    "rating": 0,
-    "image": "/templates/IKEA_Assembly_Manual.png",
-    "createdAt": "2026-06-13",
-    "isComplete": true
-  },
-  {
-    "id": "Endless_Runner_Minigame",
-    "title": "Endless Runner Minigame",
-    "category": "Portfolio",
-    "colorScheme": "Dark",
-    "layout": "Interactive",
-    "author": "ShaktiShrey-01",
-    "views": 0,
-    "rating": 0,
-    "image": "/template-previews/Endless_Runner_Minigame.png",
-    "createdAt": "2026-06-12",
-    "isComplete": true
-  },
-  {
-    "id": "Git_Commit_History_Tree",
-    "title": "Git Commit History Tree",
-    "category": "Portfolio",
-    "colorScheme": "Dark",
-    "layout": "Interactive",
-    "author": "Raman Kumar",
-    "views": 50000,
-    "rating": 5.0,
-    "image": "/template-previews/Git_Commit_History_Tree.png",
-    "createdAt": "2026-06-13",
-    "isComplete": true
-  },
+  id: "Forensic_Investigator_Desk",
+  title: "Forensic Investigator Desk",
+  category: "Portfolio",
+  colorScheme: "Dark",
+  layout: "Interactive",
+  author: "ShaktiShrey-01",
+  views: 0,
+  rating: 0,
+  image: "/template-previews/Forensic_investigator_desk.png",
+  createdAt: "2026-06-11",
+  isComplete: true
+},
+
+{
+  id: "IKEA_Assembly_Manual",
+  title: "IKEA Assembly Manual",
+  category: "Portfolio",
+  colorScheme: "Light",
+  layout: "Interactive",
+  author: "System",
+  views: 0,
+  rating: 0,
+  image: "/templates/IKEA_Assembly_Manual.png",
+  createdAt: "2026-06-13",
+  isComplete: true
+},
+
+{
+  id: "Endless_Runner_Minigame",
+  title: "Endless Runner Minigame",
+  category: "Portfolio",
+  colorScheme: "Dark",
+  layout: "Interactive",
+  author: "ShaktiShrey-01",
+  views: 0,
+  rating: 0,
+  image: "/template-previews/Endless_Runner_Minigame.png",
+  createdAt: "2026-06-12",
+  isComplete: true
+},
   {
     "id": "Fluid_Simulation_3D_WebGL",
     "title": "Fluid Simulation 3D WebGL",
@@ -342,12 +389,6 @@ export const templates = [
     "createdAt": "2026-06-07",
     "isComplete": true
   },
-
-
-
-
-
-
   {
     "id": "Vercel_Deploy",
     "title": "Vercel Deploy",
@@ -504,7 +545,8 @@ export const templates = [
     "views": 1010,
     "rating": 4.5,
     "image": "/template-previews/Art_Deco_Gold.png",
-    "createdAt": "2026-05-01"
+    "createdAt": "2026-05-01",
+    "isComplete": true
   },
   {
     "id": "Aurora_Sky",
@@ -1295,6 +1337,42 @@ export const templates = [
     "rating": 4.5,
     "image": "/template-previews/GitHub_Profile.png",
     "createdAt": "2026-05-01"
+  },
+  {
+    "id": "Minimal_Dark_Fluid",
+    "title": "Minimal Dark Fluid",
+    "category": "Portfolio",
+    "colorScheme": "Dark",
+    "layout": "List",
+    "author": "System",
+    "views": 0,
+    "rating": 5.0,
+    "image": "/template-previews/Minimal_Dark_Fluid.png",
+    "createdAt": "2026-06-14"
+  },
+  {
+    "id": "Terminal_Skills",
+    "title": "Terminal Skills",
+    "category": "Portfolio",
+    "colorScheme": "Dark",
+    "layout": "Grid",
+    "author": "System",
+    "views": 99999999,
+    "rating": 5.0,
+    "image": "/template-previews/Terminal_Skills.png",
+    "createdAt": "2026-06-15"
+  },
+  {
+    "id": "ChiragChrg_Theme",
+    "title": "ChiragChrg Theme",
+    "category": "Portfolio",
+    "colorScheme": "Dark",
+    "layout": "Single Page",
+    "author": "System",
+    "views": 999999990,
+    "rating": 5.0,
+    "image": "/template-previews/ChiragChrg_Theme.png",
+    "createdAt": "2026-06-15"
   },
   {
     "id": "Glassmorphism",
@@ -2896,7 +2974,6 @@ export const templates = [
     "createdAt": "2026-06-07",
     "isComplete": true
   },
-
   {
     id: "Accordion_Fold_Brochure",
     title: "Accordion Fold Brochure",
@@ -2986,6 +3063,19 @@ export const templates = [
     "image": "/templates/Autumn_Forest_Leaf_Fall.png",
     "createdAt": "2026-06-13",
     "isComplete": true
+  },
+  {
+  "id": "Cyber_Security_Red_Team",
+  "title": "Cyber Security Red Team",
+  "category": "Portfolio",
+  "colorScheme": "Dark",
+  "layout": "Dashboard",
+  "author": "Ayush Srivastava",
+  "views": 0,
+  "rating": 5.0,
+  "image": "/templates/Cyber_Security_Red_Team.png",
+  "createdAt": "2026-06-14",
+  "isComplete": true
   }
 ];
 
