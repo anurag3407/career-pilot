@@ -31,6 +31,7 @@ import Button from '../components/Button'
 import PortfolioGrammarAssistant from '../components/PortfolioGrammarAssistant'
 import JobApplicationSuccessInsights from '../components/JobApplicationSuccessInsights'
 import ResumeBulletEnhancer from '../components/ResumeBulletEnhancer'
+import PortfolioTemplatePreview from '../components/PortfolioTemplatePreview'
 import {
   SkeletonAction,
   SkeletonStat,
@@ -524,6 +525,7 @@ export default function Dashboard() {
 </motion.div>
 
 <motion.div variants={itemVariants} className="mb-10">
+  <PortfolioTemplatePreview />
   <PortfolioGrammarAssistant />
 </motion.div>
 
