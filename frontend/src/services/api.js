@@ -247,6 +247,17 @@ export const resumeApi = {
     return handleResponse(response)
   },
 
+  // Reorder sections
+  async reorderSections(resumeId, sectionOrder) {
+    const headers = await getAuthHeaders()
+    const response = await fetch(`${API_BASE}/resumes/${resumeId}/reorder`, {
+      method: 'PUT',
+      headers,
+      body: JSON.stringify({ sectionOrder })
+    })
+    return handleResponse(response)
+  },
+
   // Delete resume
   async delete(resumeId) {
     const headers = await getAuthHeaders()

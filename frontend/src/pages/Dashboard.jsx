@@ -191,9 +191,9 @@ export default function Dashboard() {
       setFetchError('Failed to load your dashboard. Please try again.')
       toast.error('Failed to load dashboard data')
     } finally {
-      if (!canUpdate()) return
-
-      setLoading(false)
+      if (canUpdate()) {
+        setLoading(false)
+      }
     }
   }
 
