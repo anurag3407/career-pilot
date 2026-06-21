@@ -16,16 +16,15 @@ import Button from "../Button";
 
 export function KanbanColumn({ status, columnJobs, handleDelete, setResearchCompany, noteEditing, setNoteEditing, noteText, setNoteText, updateLoading, handleSaveNote, formatDate }) {
   return (
-                  return (
-                    <div key={status.value} className="shrink-0 w-80 bg-muted/20 rounded-2xl p-4 flex flex-col snap-start border border-border/40 shadow-sm">
-                      <div className="flex items-center justify-between mb-4 px-2">
-                        <h3 className="font-bold flex items-center gap-2 text-foreground text-sm uppercase tracking-wider">
-                          <span>{status.icon}</span> {status.label}
-                        </h3>
-                        <span className="bg-background px-2.5 py-0.5 rounded-full text-xs font-black border border-border text-muted-foreground">
-                          {columnJobs.length}
-                        </span>
-                      </div>
+    <div key={status.value} className="shrink-0 w-80 bg-muted/20 rounded-2xl p-4 flex flex-col snap-start border border-border/40 shadow-sm">
+      <div className="flex items-center justify-between mb-4 px-2">
+        <h3 className="font-bold flex items-center gap-2 text-foreground text-sm uppercase tracking-wider">
+          <span>{status.icon}</span> {status.label}
+        </h3>
+        <span className="bg-background px-2.5 py-0.5 rounded-full text-xs font-black border border-border text-muted-foreground">
+          {columnJobs.length}
+        </span>
+      </div>
 
                       <Droppable droppableId={status.value}>
                         {(provided, snapshot) => (
@@ -216,15 +215,6 @@ export function KanbanColumn({ status, columnJobs, handleDelete, setResearchComp
                         )}
                       </Droppable>
                     </div>
-                  );
-                })}
-              </div>
-            </DragDropContext>
-          )}
-        </div>
-      </div>
-      {researchCompany && (
-        <CompanyResearch
   );
 }
 
