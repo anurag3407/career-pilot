@@ -1,7 +1,7 @@
+import { usePortfolio } from "../../../../context/PortfolioContext";
 import React, { useState, useRef } from "react";
 import { motion, AnimatePresence, useInView } from "framer-motion";
 import { Github, Linkedin, Twitter, Mail, ExternalLink, ChevronDown } from "lucide-react";
-import data from "../../../../data/dummy_data.json";
 
 const C = {
   bg:     "#08080F",
@@ -18,6 +18,8 @@ const C = {
 };
 
 function GlobalStyles() {
+  const { portfolioData: data } = usePortfolio();
+
   return (
     <style>{`
       @import url('https://fonts.googleapis.com/css2?family=Plus+Jakarta+Sans:wght@300;400;500;600;700;800&display=swap');
@@ -194,6 +196,8 @@ function GlobalStyles() {
 }
 
 function FadeIn({ children, delay = 0, className = "", style = {} }) {
+  const { portfolioData: data } = usePortfolio();
+
   const ref = useRef(null);
   const inView = useInView(ref, { once: true, margin: "-80px" });
   return (
@@ -206,6 +210,8 @@ function FadeIn({ children, delay = 0, className = "", style = {} }) {
 }
 
 function SkillBar({ name, level, category }) {
+  const { portfolioData: data } = usePortfolio();
+
   const ref = useRef(null);
   const inView = useInView(ref, { once: true });
   return (
@@ -223,6 +229,8 @@ function SkillBar({ name, level, category }) {
 }
 
 export default function MorphingBlobs() {
+  const { portfolioData: data } = usePortfolio();
+
   const [menuOpen, setMenuOpen] = useState(false);
   const [contactState, setContactState] = useState("idle");
   const [form, setForm] = useState({ name: "", email: "", message: "" });

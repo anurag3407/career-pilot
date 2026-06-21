@@ -1,7 +1,7 @@
+import { usePortfolio } from "../../../../context/PortfolioContext";
 import React, { useState, useRef } from "react";
 import { motion, AnimatePresence, useInView } from "framer-motion";
 import { Github, Linkedin, Twitter, Mail, ExternalLink, ChevronDown } from "lucide-react";
-import data from "../../../../data/dummy_data.json";
 
 /* ROYGBIV — one color per section */
 const RAINBOW = [
@@ -15,6 +15,8 @@ const RAINBOW = [
 ];
 
 function GlobalStyles() {
+  const { portfolioData: data } = usePortfolio();
+
   return (
     <style>{`
       @import url('https://fonts.googleapis.com/css2?family=Outfit:wght@300;400;500;600;700;800;900&display=swap');
@@ -127,6 +129,8 @@ function GlobalStyles() {
 }
 
 function FadeIn({ children, delay = 0, className = "", style = {} }) {
+  const { portfolioData: data } = usePortfolio();
+
   const ref = useRef(null);
   const inView = useInView(ref, { once: true, margin: "-80px" });
   return (
@@ -139,6 +143,8 @@ function FadeIn({ children, delay = 0, className = "", style = {} }) {
 }
 
 function SkillBar({ name, level, category, color }) {
+  const { portfolioData: data } = usePortfolio();
+
   const ref = useRef(null);
   const inView = useInView(ref, { once: true });
   return (
@@ -159,6 +165,8 @@ function SkillBar({ name, level, category, color }) {
 
 /* Animated spinning rainbow ring */
 function RainbowRing({ size = 180, thickness = 4 }) {
+  const { portfolioData: data } = usePortfolio();
+
   return (
     <div style={{ position: "relative", width: size, height: size, margin: "0 auto" }}>
       <div style={{
@@ -174,6 +182,8 @@ function RainbowRing({ size = 180, thickness = 4 }) {
 }
 
 export default function RainbowGradient() {
+  const { portfolioData: data } = usePortfolio();
+
   const [menuOpen, setMenuOpen] = useState(false);
   const [contactState, setContactState] = useState("idle");
   const [form, setForm] = useState({ name: "", email: "", message: "" });

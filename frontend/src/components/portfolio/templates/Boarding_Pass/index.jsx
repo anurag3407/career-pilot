@@ -1,5 +1,4 @@
-import React, { useEffect } from 'react';
-import data from '../../../../data/dummy_data.json';
+
 
 // Import all boarding pass components
 import Hero from './Hero';
@@ -10,10 +9,7 @@ import Experience from './Experience';
 import Testimonials from './Testimonials';
 
 export default function BoardingPass() {
-  // Ensure the page starts at top
-  useEffect(() => {
-    window.scrollTo(0, 0);
-  }, []);
+
 
   return (
     <div className="min-h-screen bg-[#f3f4f6] text-stone-900 font-sans selection:bg-blue-200 selection:text-blue-900 overflow-x-hidden">

@@ -1,3 +1,4 @@
+import { usePortfolio } from "../../../../context/PortfolioContext";
 import { useState, useRef } from 'react';
 import { motion, useInView, AnimatePresence } from 'framer-motion';
 import {
@@ -5,7 +6,6 @@ import {
   Star, Menu, X, Send, CheckCircle, ChevronDown,
   Code2, Server, Layers, Palette,
 } from 'lucide-react';
-import data from '../../../../data/dummy_data.json';
 
 /* ── Design Tokens ─────────────────────────────────────────────── */
 const C = {
@@ -36,6 +36,8 @@ const catMeta = {
 
 /* ── Global CSS ────────────────────────────────────────────────── */
 function GlobalStyles() {
+  const { portfolioData: data } = usePortfolio();
+
   return (
     <style>{`
       @keyframes mp-spin   { to { transform: rotate(360deg); } }
@@ -150,6 +152,8 @@ function GlobalStyles() {
 
 /* ── Squiggle SVG line ─────────────────────────────────────────── */
 function Squiggle({ width = 180, color = '#0A0A0A', strokeWidth = 3, style = {} }) {
+  const { portfolioData: data } = usePortfolio();
+
   const amp = 7, step = 20, waves = Math.ceil(width / step);
   let d = `M0,${amp}`;
   for (let i = 0; i < waves; i++) {
@@ -167,6 +171,8 @@ function Squiggle({ width = 180, color = '#0A0A0A', strokeWidth = 3, style = {} 
 
 /* ── Zigzag section divider ────────────────────────────────────── */
 function ZigzagDivider({ fromBg, toBg, h = 18 }) {
+  const { portfolioData: data } = usePortfolio();
+
   const W = 1440, teeth = 60, tw = W / teeth;
   let d = 'M0,0';
   for (let i = 0; i < teeth; i++) d += ` L${(i + 0.5) * tw},${h} L${(i + 1) * tw},0`;
@@ -183,14 +189,20 @@ function ZigzagDivider({ fromBg, toBg, h = 18 }) {
 
 /* ── Geometric decorations (position: absolute) ────────────────── */
 function Dot({ size = 18, color = C.pink, style = {} }) {
+  const { portfolioData: data } = usePortfolio();
+
   return <div style={{ width: size, height: size, borderRadius: '50%', background: color,
     border: `2px solid ${C.black}`, position: 'absolute', pointerEvents: 'none', ...style }} />;
 }
 function Box({ size = 20, color = C.yellow, style = {} }) {
+  const { portfolioData: data } = usePortfolio();
+
   return <div style={{ width: size, height: size, background: color,
     border: `2px solid ${C.black}`, position: 'absolute', pointerEvents: 'none', ...style }} />;
 }
 function Tri({ size = 24, color = C.blue, style = {} }) {
+  const { portfolioData: data } = usePortfolio();
+
   return (
     <svg width={size} height={size * 0.9} viewBox="0 0 24 22"
       style={{ position: 'absolute', pointerEvents: 'none', ...style }}>
@@ -199,6 +211,8 @@ function Tri({ size = 24, color = C.blue, style = {} }) {
   );
 }
 function StarShape({ size = 24, color = C.red, style = {}, className = '' }) {
+  const { portfolioData: data } = usePortfolio();
+
   return (
     <svg width={size} height={size} viewBox="0 0 24 24"
       className={className} style={{ position: 'absolute', pointerEvents: 'none', ...style }}>
@@ -208,6 +222,8 @@ function StarShape({ size = 24, color = C.red, style = {}, className = '' }) {
   );
 }
 function Diamond({ size = 20, color = C.teal, style = {} }) {
+  const { portfolioData: data } = usePortfolio();
+
   return (
     <svg width={size} height={size * 1.2} viewBox="0 0 20 24"
       style={{ position: 'absolute', pointerEvents: 'none', ...style }}>
@@ -216,6 +232,8 @@ function Diamond({ size = 20, color = C.teal, style = {} }) {
   );
 }
 function Cross({ size = 20, color = C.orange, style = {} }) {
+  const { portfolioData: data } = usePortfolio();
+
   return (
     <svg width={size} height={size} viewBox="0 0 24 24"
       style={{ position: 'absolute', pointerEvents: 'none', ...style }}>
@@ -224,6 +242,8 @@ function Cross({ size = 20, color = C.orange, style = {} }) {
   );
 }
 function CircleOutline({ size = 28, color = C.purple, style = {} }) {
+  const { portfolioData: data } = usePortfolio();
+
   return (
     <svg width={size} height={size} viewBox="0 0 28 28"
       style={{ position: 'absolute', pointerEvents: 'none', ...style }}>
@@ -234,6 +254,8 @@ function CircleOutline({ size = 28, color = C.purple, style = {} }) {
 
 /* ── Section Heading ───────────────────────────────────────────── */
 function SectionHeading({ title, accent = C.yellow, dark = false }) {
+  const { portfolioData: data } = usePortfolio();
+
   const ref = useRef(null);
   const inView = useInView(ref, { once: true, margin: '-60px' });
   return (
@@ -256,6 +278,8 @@ function SectionHeading({ title, accent = C.yellow, dark = false }) {
 
 /* ── Nav ───────────────────────────────────────────────────────── */
 function Nav() {
+  const { portfolioData: data } = usePortfolio();
+
   const [open, setOpen] = useState(false);
   const links = ['About', 'Skills', 'Projects', 'Experience', 'Contact'];
 
@@ -328,6 +352,8 @@ function Nav() {
 
 /* ── Hero ──────────────────────────────────────────────────────── */
 function Hero() {
+  const { portfolioData: data } = usePortfolio();
+
   const socials = [
     { Icon: Github,   href: data.socials.github,           color: C.black },
     { Icon: Linkedin, href: data.socials.linkedin,          color: C.blue  },
@@ -466,6 +492,8 @@ function Hero() {
 
 /* ── About ─────────────────────────────────────────────────────── */
 function About() {
+  const { portfolioData: data } = usePortfolio();
+
   const ref = useRef(null);
   const inView = useInView(ref, { once: true, margin: '-80px' });
 
@@ -542,6 +570,8 @@ function About() {
 
 /* ── Skills ────────────────────────────────────────────────────── */
 function Skills() {
+  const { portfolioData: data } = usePortfolio();
+
   const ref = useRef(null);
   const inView = useInView(ref, { once: true, margin: '-80px' });
 
@@ -622,6 +652,8 @@ function Skills() {
 
 /* ── Projects ──────────────────────────────────────────────────── */
 function Projects() {
+  const { portfolioData: data } = usePortfolio();
+
   const ref = useRef(null);
   const inView = useInView(ref, { once: true, margin: '-80px' });
   const featured = data.projects[0];
@@ -732,6 +764,8 @@ function Projects() {
 
 /* ── Experience ────────────────────────────────────────────────── */
 function Experience() {
+  const { portfolioData: data } = usePortfolio();
+
   const ref = useRef(null);
   const inView = useInView(ref, { once: true, margin: '-80px' });
   const dotColors = [C.yellow, C.pink, C.teal, C.lime];
@@ -794,6 +828,8 @@ function Experience() {
 
 /* ── Testimonials ──────────────────────────────────────────────── */
 function Testimonials() {
+  const { portfolioData: data } = usePortfolio();
+
   const ref = useRef(null);
   const inView = useInView(ref, { once: true, margin: '-80px' });
 
@@ -851,6 +887,8 @@ function Testimonials() {
 
 /* ── Contact ───────────────────────────────────────────────────── */
 function Contact() {
+  const { portfolioData: data } = usePortfolio();
+
   const ref = useRef(null);
   const inView = useInView(ref, { once: true, margin: '-80px' });
   const [form, setForm] = useState({ name: '', email: '', message: '' });
@@ -955,6 +993,8 @@ function Contact() {
 
 /* ── Footer ────────────────────────────────────────────────────── */
 function Footer() {
+  const { portfolioData: data } = usePortfolio();
+
   return (
     <footer style={{ background: C.black, borderTop: `4px solid ${C.yellow}`,
       padding: '36px 24px 28px', position: 'relative', overflow: 'hidden' }}>
@@ -985,6 +1025,8 @@ function Footer() {
 
 /* ── Root ──────────────────────────────────────────────────────── */
 export default function MemphisPop() {
+  const { portfolioData: data } = usePortfolio();
+
   return (
     <>
       <GlobalStyles />

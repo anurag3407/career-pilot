@@ -1,4 +1,4 @@
-import React, { useRef, useEffect } from 'react';
+import React, { useRef, useEffect, useState } from 'react';
 import { motion, useInView, useMotionValue, animate, useTransform } from 'framer-motion';
 
 export const AnimatedCounter = ({ from = 0, to, suffix = "" }) => {
@@ -56,35 +56,53 @@ export const SectionHeading = ({ children, icon: Icon, className = "flex items-c
   );
 };
 
-export const AmbientBackground = () => (
-  <div className="absolute inset-0 overflow-hidden pointer-events-none select-none z-0">
-    <div className="absolute top-[-10%] left-[-10%] w-[40vw] h-[40vw] rounded-full bg-indigo-600/10 blur-[120px] mix-blend-screen animate-[pulse_8s_ease-in-out_infinite]" />
-    <div className="absolute bottom-[-10%] right-[-10%] w-[40vw] h-[40vw] rounded-full bg-cyan-600/10 blur-[120px] mix-blend-screen animate-[pulse_10s_ease-in-out_infinite]" />
-    
-    {[...Array(6)].map((_, i) => (
-      <motion.div
-        key={i}
-        animate={{
-          y: [0, Math.random() * 100 - 50, 0],
-          x: [0, Math.random() * 100 - 50, 0],
-          scale: [1, 1.2, 1],
-          opacity: [0.3, 0.6, 0.3]
-        }}
-        transition={{
-          duration: 6 + Math.random() * 4,
-          repeat: Infinity,
-          ease: "easeInOut",
-          delay: Math.random() * 2
-        }}
-        className="absolute rounded-full blur-3xl mix-blend-screen"
-        style={{
-          top: `${20 + Math.random() * 60}%`,
-          left: `${20 + Math.random() * 60}%`,
-          width: `${100 + Math.random() * 150}px`,
-          height: `${100 + Math.random() * 150}px`,
-          backgroundColor: i % 2 === 0 ? 'rgba(6, 182, 212, 0.1)' : 'rgba(99, 102, 241, 0.1)'
-        }}
-      />
-    ))}
-  </div>
-);
+export const AmbientBackground = () => {
+  const [blobs, setBlobs] = useState([]);
+
+  useEffect(() => {
+    const generated = [...Array(6)].map((_, i) => ({
+      y: Math.random() * 100 - 50,
+      x: Math.random() * 100 - 50,
+      duration: 6 + Math.random() * 4,
+      delay: Math.random() * 2,
+      top: 20 + Math.random() * 60,
+      left: 20 + Math.random() * 60,
+      size: 100 + Math.random() * 150,
+      bg: i % 2 === 0 ? 'rgba(6, 182, 212, 0.1)' : 'rgba(99, 102, 241, 0.1)'
+    }));
+    setBlobs(generated);
+  }, []);
+
+  return (
+    <div className="absolute inset-0 overflow-hidden pointer-events-none select-none z-0">
+      <div className="absolute top-[-10%] left-[-10%] w-[40vw] h-[40vw] rounded-full bg-indigo-600/10 blur-[120px] mix-blend-screen animate-[pulse_8s_ease-in-out_infinite]" />
+      <div className="absolute bottom-[-10%] right-[-10%] w-[40vw] h-[40vw] rounded-full bg-cyan-600/10 blur-[120px] mix-blend-screen animate-[pulse_10s_ease-in-out_infinite]" />
+
+      {blobs.map((b, i) => (
+        <motion.div
+          key={i}
+          animate={{
+            y: [0, b.y, 0],
+            x: [0, b.x, 0],
+            scale: [1, 1.2, 1],
+            opacity: [0.3, 0.6, 0.3]
+          }}
+          transition={{
+            duration: b.duration,
+            repeat: Infinity,
+            ease: 'easeInOut',
+            delay: b.delay
+          }}
+          className="absolute rounded-full blur-3xl mix-blend-screen"
+          style={{
+            top: `${b.top}%`,
+            left: `${b.left}%`,
+            width: `${b.size}px`,
+            height: `${b.size}px`,
+            backgroundColor: b.bg
+          }}
+        />
+      ))}
+    </div>
+  );
+};

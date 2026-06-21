@@ -2,6 +2,7 @@ import fs from 'fs/promises';
 import path from 'path';
 import os from 'os';
 import { cloneRepo, sessions } from './repoIngestionService.js';
+import { analyzeDependencies } from './dependencyAnalyzer.js';
 
 const IGNORED_DIRS = new Set([
   'node_modules', '.git', 'dist', 'build', '.next', '__pycache__', 
@@ -385,6 +386,8 @@ export const analyzeRepo = async (repoUrl, userId) => {
     
     const skeleton = await buildCodebaseSkeleton(files, tempDir);
     
+    const dependencies = await analyzeDependencies(tempDir);
+    
     sessions.set(sessionId, { repoPath: tempDir, skeleton, modules });
     
     const stats = {
@@ -404,7 +407,8 @@ export const analyzeRepo = async (repoUrl, userId) => {
       fileGraph,
       moduleGraph,
       risks,
-      skeleton
+      skeleton,
+      dependencies
     };
   } catch (error) {
     console.error('❌ Error analyzing repo:', error);

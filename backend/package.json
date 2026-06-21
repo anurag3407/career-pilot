@@ -8,7 +8,7 @@
     "start": "node src/index.js",
     "dev": "nodemon src/index.js",
     "lint": "eslint src/",
-    "test": "node --test src/schemas/__tests__/schemas.test.js"
+    "test": "node --test src/schemas/__tests__/schemas.test.js src/schemas/__tests__/interview-extended.test.js src/services/__tests__/jdParser.test.js src/services/__tests__/interview-coding.test.js src/services/__tests__/transcription.test.js src/config/__tests__/socketOptions.test.js"
   },
   "dependencies": {
     "@anthropic-ai/sdk": "^0.99.0",
@@ -19,7 +19,9 @@
     "axios": "^1.16.1",
     "bcryptjs": "^2.4.3",
     "bullmq": "^5.66.4",
+    "cheerio": "1.2.0",
     "cloudinary": "^2.10.0",
+    "compression": "^1.8.1",
     "cookie-parser": "^1.4.7",
     "cors": "^2.8.5",
     "dotenv": "^16.4.5",
@@ -33,7 +35,8 @@
     "jsdom": "^29.1.1",
     "marked": "^18.0.3",
     "mongoose": "^9.6.2",
-    "multer": "^1.4.5-lts.1",
+    "multer": "^2.1.1",
+    "multer-storage-cloudinary": "^4.0.0",
     "node-cron": "^4.2.1",
     "node-fetch": "^3.3.2",
     "nodemailer": "^8.0.7",
@@ -44,6 +47,8 @@
     "puppeteer": "^24.43.1",
     "qrcode": "^1.5.4",
     "razorpay": "^2.9.6",
+    "semver": "^7.8.2",
+    "sharp": "^0.32.6",
     "socket.io": "^4.8.3",
     "speakeasy": "^2.0.0",
     "swagger-jsdoc": "^6.2.8",
@@ -53,7 +58,10 @@
   },
   "devDependencies": {
     "eslint": "^8.57.1",
-    "nodemon": "^3.1.7"
+    "ioredis-mock": "^8.13.1",
+    "mongodb-memory-server": "^11.2.0",
+    "nodemon": "^3.1.7",
+    "redis-memory-server": "^0.16.1"
   },
   "engines": {
     "node": ">=18.0.0"

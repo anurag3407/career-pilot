@@ -6,25 +6,33 @@ import ReactMarkdown from 'react-markdown'
 import { resumeApi, enhanceApi } from '../services/api'
 import Button from '../components/Button'
 import Card from '../components/Card'
+import { SkeletonResumeView } from '../components/ui/Skeleton'
 import CustomSection from '../components/CustomSection'
 import { sectionsToMarkdown } from '../components/customSectionUtils'
 import { SkeletonList } from '../components/ui/Skeleton'
 import ResumeVersions from '../components/ResumeVersions'
 import AtsProgressChart from '../components/AtsProgressChart'
+import ResumeTranslator from '../components/resume/ResumeTranslator'
+import ResumeTailor from '../components/resume/ResumeTailor'
 import { Loader2 } from 'lucide-react'
+import html2canvas from 'html2canvas'
 
 export default function ResumeView() {
   const { resumeId } = useParams()
   const navigate = useNavigate()
 
   const [resume, setResume] = useState(null)
-  const [loading, setLoading] = useState(false)
+  const [loading, setLoading] = useState(true)
   const [downloading, setDownloading] = useState(false)
+  const [downloadingImage, setDownloadingImage] = useState(false)
+  const [imageFormat, setImageFormat] = useState('png')
   const [activeTab, setActiveTab] = useState('preview') // 'preview' | 'versions' | 'ats'
   const [previewTab, setPreviewTab] = useState('enhanced') // 'enhanced' | 'original'
   const [scoreData, setScoreData] = useState(null)
   const [scoring, setScoring] = useState(false)
   const [scoringStep, setScoringStep] = useState(0)
+  const [fontFamily, setFontFamily] = useState("Poppins")
+  const [fontSize, setFontSize] = useState("Medium")
 
   useEffect(() => {
     let interval
@@ -93,6 +101,9 @@ export default function ResumeView() {
   const handleDownloadPdf = async () => {
     try {
       setDownloading(true)
+      toast.success(
+  `Exporting with ${fontFamily} font and ${fontSize} size`
+)
       const blob = await resumeApi.downloadPdf(resumeId, previewTab)
 
       // Create download link
@@ -113,6 +124,66 @@ export default function ResumeView() {
     } finally {
       setDownloading(false)
     }
+  }
+
+  const handleDownloadImage = async () => {
+    try {
+      setDownloadingImage(true)
+
+      const targetElement = document.querySelector('.resume-preview') || document.querySelector('pre.whitespace-pre-wrap')
+
+      if (!targetElement) {
+        toast.error('Resume preview not found')
+        return
+      }
+
+      toast.success(`Exporting resume as ${imageFormat.toUpperCase()}`)
+
+      const canvas = await html2canvas(targetElement, {
+        scale: 2,
+        useCORS: true,
+        backgroundColor: '#ffffff'
+      })
+
+      const dataUrl = canvas.toDataURL(`image/${imageFormat}`)
+
+      const a = document.createElement('a')
+      a.href = dataUrl
+      a.download = `${resume?.title || 'resume'}_${previewTab}.${imageFormat === 'jpeg' ? 'jpg' : 'png'}`
+      document.body.appendChild(a)
+      a.click()
+      document.body.removeChild(a)
+
+      toast.success('Image downloaded successfully!')
+    } catch (error) {
+      console.error('Image download failed:', error)
+      toast.error('Failed to download image')
+    } finally {
+      setDownloadingImage(false)
+    }
+  }
+
+  // Download the resume as plain text. Useful for ATS systems and quick
+  // copy-paste into other tools (LinkedIn, application portals, email).
+  const handleDownloadTxt = () => {
+    const text =
+      previewTab === 'enhanced'
+        ? resume?.enhancedText
+        : resume?.originalText
+    if (!text || !text.trim()) {
+      toast.error('No resume text to export')
+      return
+    }
+    const blob = new Blob([text], { type: 'text/plain;charset=utf-8' })
+    const url = URL.createObjectURL(blob)
+    const a = document.createElement('a')
+    a.href = url
+    a.download = `${resume?.title || 'resume'}_${previewTab}.txt`
+    document.body.appendChild(a)
+    a.click()
+    document.body.removeChild(a)
+    URL.revokeObjectURL(url)
+    toast.success('Text file downloaded')
   }
 
   const handleAnalyzeResume = async () => {
@@ -191,37 +262,7 @@ export default function ResumeView() {
   }
 
   if (loading) {
-    return (
-      <div className="min-h-screen bg-background">
-        <div className="max-w-5xl mx-auto px-4 sm:px-6 lg:px-8 py-8">
-          <motion.div
-            initial={{ opacity: 0, y: 10 }}
-            animate={{ opacity: 1, y: 0 }}
-            transition={{ duration: 0.4 }}
-            className="space-y-6"
-          >
-            {/* Header Skeleton */}
-            <div className="flex items-start justify-between mb-8">
-              <div className="space-y-2">
-                <div className="h-8 bg-muted rounded-lg w-1/2 animate-pulse" />
-                <div className="h-4 bg-muted rounded-lg w-1/3 animate-pulse" />
-              </div>
-              <div className="h-10 bg-muted rounded-lg w-32 animate-pulse" />
-            </div>
-
-            {/* Tabs Skeleton */}
-            <div className="flex gap-4 border-b border-border">
-              {[...Array(3)].map((_, i) => (
-                <div key={i} className="h-10 bg-muted rounded w-28 animate-pulse" />
-              ))}
-            </div>
-
-            {/* Content Skeleton */}
-            <SkeletonList count={5} />
-          </motion.div>
-        </div>
-      </div>
-    )
+    return <SkeletonResumeView />
   }
 
   return (
@@ -239,10 +280,23 @@ export default function ResumeView() {
             </p>
           </div>
           <div className="flex gap-2">
+            <Link 
+              to="/interview-prep" 
+              state={{ 
+                resumeId: resumeId, 
+                resumeText: resume?.enhancedText || resume?.originalText,
+                jobRole: resume?.jobRole
+              }}
+            >
+              <Button variant="secondary">Practice Interview</Button>
+            </Link>
             <Link to={`/enhance/${resumeId}`}>
               <Button variant="primary">
                 {resume?.enhancedText ? 'Re-enhance' : 'Enhance'}
               </Button>
+            </Link>
+            <Link to={`/resume-templates?resumeId=${resumeId}`}>
+              <Button variant="secondary">Templates</Button>
             </Link>
             <Link to="/dashboard">
               <Button variant="outline">Back to Dashboard</Button>
@@ -313,6 +367,45 @@ export default function ResumeView() {
                     </div>
                   )}
                 </div>
+                <div className="mb-4 flex gap-4">
+  <div>
+    <label className="block text-sm mb-1">Font Family</label>
+    <select
+      value={fontFamily}
+      onChange={(e) => setFontFamily(e.target.value)}
+      className="border rounded px-2 py-1"
+    >
+      <option value="Poppins">Poppins</option>
+      <option value="Arial">Arial</option>
+      <option value="Times New Roman">Times New Roman</option>
+    </select>
+  </div>
+
+  <div>
+    <label className="block text-sm mb-1">Font Size</label>
+    <select
+      value={fontSize}
+      onChange={(e) => setFontSize(e.target.value)}
+      className="border rounded px-2 py-1"
+    >
+      <option value="Small">Small</option>
+      <option value="Medium">Medium</option>
+      <option value="Large">Large</option>
+    </select>
+  </div>
+
+  <div>
+    <label className="block text-sm mb-1">Image Format</label>
+    <select
+      value={imageFormat}
+      onChange={(e) => setImageFormat(e.target.value)}
+      className="border rounded px-2 py-1"
+    >
+      <option value="png">PNG</option>
+      <option value="jpeg">JPEG</option>
+    </select>
+  </div>
+</div>
                 <div className="flex gap-2 flex-wrap">
                  <Button
   variant="primary"
@@ -328,6 +421,52 @@ export default function ResumeView() {
     'Download PDF'
   )}
 </Button>
+                  <Button
+                    variant="primary"
+                    onClick={handleDownloadImage}
+                    disabled={downloadingImage}
+                  >
+                    {downloadingImage ? (
+                      <div className="flex items-center gap-2">
+                        <Loader2 className="w-4 h-4 animate-spin" />
+                        Generating Image...
+                      </div>
+                    ) : (
+                      'Download as Image'
+                    )}
+                  </Button>
+                  <Button
+                    variant="outline"
+                    onClick={handleDownloadTxt}
+                  >
+                    Download .txt
+                  </Button>
+                  <ResumeTranslator
+                    resumeText={
+                      previewTab === 'enhanced'
+                        ? resume?.enhancedText
+                        : resume?.originalText
+                    }
+                    onTranslated={(text) => {
+                      // Update the in-memory copy so the user can immediately
+                      // download the translation or copy it. The persisted
+                      // resume on the server is unchanged.
+                      setResume(prev => ({ ...(prev || {}), enhancedText: text }))
+                      toast.success('Preview updated to translated version')
+                    }}
+                  />
+                  <ResumeTailor
+                    resumeText={
+                      previewTab === 'enhanced'
+                        ? resume?.enhancedText
+                        : resume?.originalText
+                    }
+                    jobRole={resume?.jobRole}
+                    onTailored={(text) => {
+                      setResume(prev => ({ ...(prev || {}), enhancedText: text }))
+                      toast.success('Resume tailored to this job')
+                    }}
+                  />
                   <Button
                     variant="primary"
                     onClick={handleAnalyzeResume}

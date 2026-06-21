@@ -1,7 +1,7 @@
+import { usePortfolio } from "../../../../context/PortfolioContext";
 import React, { useState } from 'react';
 import { motion as Motion, AnimatePresence } from 'framer-motion';
 import { ChevronDown, Menu, X } from 'lucide-react';
-import data from '../../../../data/dummy_data.json';
 
 import Hero from './Hero';
 import StatsBar from './StatsBar';
@@ -132,6 +132,8 @@ const NAV_LINKS = ['ABOUT', 'SKILLS', 'PROJECTS', 'EXPERIENCE', 'TESTIMONIALS', 
 
 /* ─── Navbar ─── */
 function NeonNav({ menuOpen, setMenuOpen }) {
+  const { portfolioData: data } = usePortfolio();
+
   return (
     <nav
       className="fixed top-0 left-0 right-0 z-50 flex items-center justify-between px-6 py-3 border-b border-white/5"
@@ -204,6 +206,8 @@ function NeonNav({ menuOpen, setMenuOpen }) {
 
 /* ─── Mobile menu ─── */
 function MobileMenu({ open, onClose }) {
+  const { portfolioData: data } = usePortfolio();
+
   return (
     <AnimatePresence>
       {open && (
@@ -245,6 +249,8 @@ function MobileMenu({ open, onClose }) {
 
 /* ─── Mobile accordion sections ─── */
 function MobileAccordion({ sectionId, label, color, children }) {
+  const { portfolioData: data } = usePortfolio();
+
   const [open, setOpen] = useState(false);
   return (
     <div
@@ -294,6 +300,8 @@ function MobileAccordion({ sectionId, label, color, children }) {
 
 /* ─── Main export ─── */
 export default function NeonSign() {
+  const { portfolioData: data } = usePortfolio();
+
   const [menuOpen, setMenuOpen] = useState(false);
 
   return (

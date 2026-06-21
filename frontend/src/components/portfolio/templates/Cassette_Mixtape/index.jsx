@@ -1,3 +1,4 @@
+import { usePortfolio } from "../../../../context/PortfolioContext";
 import { useState, useRef } from 'react';
 import { motion, useInView, useScroll, useTransform, AnimatePresence } from 'framer-motion';
 import {
@@ -5,7 +6,6 @@ import {
   Play, Pause, Star, Menu, X, Send, CheckCircle, ChevronDown,
   Code2, Server, Layers, Palette, Music, Rewind, FastForward,
 } from 'lucide-react';
-import data from '../../../../data/dummy_data.json';
 
 /* ── Design tokens ─────────────────────────────────────────────── */
 const C = {
@@ -32,6 +32,8 @@ const DURATIONS = ['3:47','4:12','2:58','5:03','3:22','4:47'];
 
 /* ── Global CSS ────────────────────────────────────────────────── */
 function GlobalStyles() {
+  const { portfolioData: data } = usePortfolio();
+
   return (
     <style>{`
       @keyframes cm-reel {
@@ -141,6 +143,8 @@ function GlobalStyles() {
 
 /* ── Cassette tape SVG illustration ───────────────────────────── */
 function CassetteSVG({ width = 480, playing = false, label = '', subtitle = '' }) {
+  const { portfolioData: data } = usePortfolio();
+
   const h = Math.round(width * 0.64);
   const lx = width * 0.08, ly = h * 0.07, lw = width * 0.84, lh = h * 0.38;
   const wy = h * 0.53, wry = h * 0.2;
@@ -252,6 +256,8 @@ function CassetteSVG({ width = 480, playing = false, label = '', subtitle = '' }
 
 /* ── EQ bars (playing animation) ──────────────────────────────── */
 function EQBars({ color = C.orange, count = 5 }) {
+  const { portfolioData: data } = usePortfolio();
+
   const classes = ['cm-eq1','cm-eq2','cm-eq3','cm-eq4','cm-eq5'];
   return (
     <div style={{ display: 'flex', alignItems: 'flex-end', gap: 3, height: 24 }}>
@@ -267,6 +273,8 @@ function EQBars({ color = C.orange, count = 5 }) {
 
 /* ── Tape reel decoration ──────────────────────────────────────── */
 function TapeReelDecor({ size = 60, style = {} }) {
+  const { portfolioData: data } = usePortfolio();
+
   const c = size / 2;
   return (
     <svg width={size} height={size} viewBox={`0 0 ${size} ${size}`}
@@ -289,6 +297,8 @@ function TapeReelDecor({ size = 60, style = {} }) {
 
 /* ── Side label strip ──────────────────────────────────────────── */
 function SideLabel({ side = 'A', title, dark = true }) {
+  const { portfolioData: data } = usePortfolio();
+
   return (
     <div style={{ display: 'flex', alignItems: 'center', gap: 16, marginBottom: 44 }}>
       <div style={{
@@ -315,6 +325,8 @@ function SideLabel({ side = 'A', title, dark = true }) {
 
 /* ── Nav ───────────────────────────────────────────────────────── */
 function Nav() {
+  const { portfolioData: data } = usePortfolio();
+
   const [open, setOpen] = useState(false);
   const links = ['About','Skills','Projects','Experience','Contact'];
 
@@ -392,6 +404,8 @@ function Nav() {
 
 /* ── Hero ──────────────────────────────────────────────────────── */
 function Hero() {
+  const { portfolioData: data } = usePortfolio();
+
   const [playing, setPlaying] = useState(false);
   const { scrollYProgress } = useScroll();
   const y = useTransform(scrollYProgress, [0, 0.3], [0, -40]);
@@ -535,6 +549,8 @@ function Hero() {
 
 /* ── About ─────────────────────────────────────────────────────── */
 function About() {
+  const { portfolioData: data } = usePortfolio();
+
   const ref = useRef(null);
   const inView = useInView(ref, { once: true, margin: '-80px' });
 
@@ -626,6 +642,8 @@ function About() {
 
 /* ── Skills ────────────────────────────────────────────────────── */
 function Skills() {
+  const { portfolioData: data } = usePortfolio();
+
   const ref = useRef(null);
   const inView = useInView(ref, { once: true, margin: '-80px' });
 
@@ -723,6 +741,8 @@ function Skills() {
 
 /* ── Projects — Track List ─────────────────────────────────────── */
 function Projects() {
+  const { portfolioData: data } = usePortfolio();
+
   const ref = useRef(null);
   const inView = useInView(ref, { once: true, margin: '-80px' });
   const [activeTrack, setActiveTrack] = useState(null);
@@ -853,6 +873,8 @@ function Projects() {
 
 /* ── Experience ────────────────────────────────────────────────── */
 function Experience() {
+  const { portfolioData: data } = usePortfolio();
+
   const ref = useRef(null);
   const inView = useInView(ref, { once: true, margin: '-80px' });
   const colors = [C.orange, C.teal, C.gold, C.burg];
@@ -915,6 +937,8 @@ function Experience() {
 
 /* ── Testimonials — Liner Notes ────────────────────────────────── */
 function Testimonials() {
+  const { portfolioData: data } = usePortfolio();
+
   const ref = useRef(null);
   const inView = useInView(ref, { once: true, margin: '-80px' });
 
@@ -979,6 +1003,8 @@ function Testimonials() {
 
 /* ── Contact ───────────────────────────────────────────────────── */
 function Contact() {
+  const { portfolioData: data } = usePortfolio();
+
   const ref = useRef(null);
   const inView = useInView(ref, { once: true, margin: '-80px' });
   const [form, setForm] = useState({ name: '', email: '', message: '' });
@@ -1107,6 +1133,8 @@ function Contact() {
 
 /* ── Footer ────────────────────────────────────────────────────── */
 function Footer() {
+  const { portfolioData: data } = usePortfolio();
+
   return (
     <footer style={{ background: '#100A04', borderTop: `2px solid ${C.tape}`,
       padding: '32px 24px 24px', fontFamily: C.mono, position: 'relative', overflow: 'hidden' }}>
@@ -1135,6 +1163,8 @@ function Footer() {
 
 /* ── Root ──────────────────────────────────────────────────────── */
 export default function CassetteMixtape() {
+  const { portfolioData: data } = usePortfolio();
+
   return (
     <>
       <GlobalStyles />

@@ -10,6 +10,7 @@ import { validateToken as validateNetlifyToken, deploy as netlifyDeploy } from '
 import { buildPortfolioBundle } from '../services/deploy/portfolioHtmlGenerator.js';
 import { validatePortfolioSlug, validatePortfolioContent } from '../middleware/portfolioValidator.js';
 import Portfolio from '../models/Portfolio.model.js';
+import Resume from '../models/Resume.model.js';
 import { enhanceSection } from '../services/ai/portfolioContentEnhancer.js';
 import { extractPortfolioData } from '../services/ai/portfolioExtractor.js';
 import { extractAIProvider } from '../middleware/aiKey.js';
@@ -36,6 +37,30 @@ router.post('/extract-from-resume', verifyToken, extractAIProvider, asyncHandler
 
   const extractedData = await extractPortfolioData(resumeText, req.aiProvider);
   
+  res.json({
+    success: true,
+    data: extractedData
+  });
+}));
+
+// @route   POST /api/portfolio/generate-from-resume/:resumeId
+// @desc    Generates portfolio JSON from an enhanced resume
+// @access  Private
+router.post('/generate-from-resume/:resumeId', verifyToken, extractAIProvider, asyncHandler(async (req, res) => {
+  const { resumeId } = req.params;
+  const userId = req.user.uid;
+
+  const resume = await Resume.findOne({ _id: resumeId, userId }).lean();
+  if (!resume) {
+    throw new ApiError(404, 'Resume not found');
+  }
+
+  if (!resume.enhancedText) {
+    throw new ApiError(400, 'Enhance this resume before generating a portfolio');
+  }
+
+  const extractedData = await extractPortfolioData(resume.enhancedText, req.aiProvider);
+
   res.json({
     success: true,
     data: extractedData
@@ -390,12 +415,19 @@ router.put('/:slug', verifyToken, validatePortfolioSlug, validatePortfolioConten
   if (!portfolio) {
     throw new ApiError(404, `Portfolio "${slug}" not found.`);
   }
+res.status(200).json({
+  success: true,
+  message: 'Portfolio updated successfully.',
+  data: portfolio,
+});
+
 
   res.status(200).json({
     success: true,
     message: 'Portfolio updated successfully.',
     data: portfolio,
   });
+  
 }));
 
 /**

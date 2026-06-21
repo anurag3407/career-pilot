@@ -5,6 +5,7 @@ import toast from 'react-hot-toast';
 import confetti from 'canvas-confetti';
 import { auth } from '../../config/firebase';
 import { portfolioApi } from '../../services/api';
+import { useAuth } from '../../hooks/useAuth';
 
 // Hey there, code reviewer or fellow builder!
 // We defined some custom metadata here for each hosting platform.
@@ -62,6 +63,7 @@ function TokenStatusChip({ status }) {
 export default function DeployModal({ isOpen, onClose, portfolioTitle = "My Portfolio", templateId = "default", aiDraft, onDeploySuccess }) {
   // Step workflow: select -> loading -> success -> error
   const [step, setStep] = useState('select');
+  const { getToken } = useAuth();
   const [selectedProvider, setSelectedProvider] = useState('cloudflare'); // default to recommended Cloudflare
   const [visibleLogs, setVisibleLogs] = useState([]);
   const [deployedUrl, setDeployedUrl] = useState('');
@@ -170,15 +172,14 @@ export default function DeployModal({ isOpen, onClose, portfolioTitle = "My Port
   const handleCheckToken = async (providerId) => {
     setTokenStatuses((prev) => ({ ...prev, [providerId]: 'checking' }));
     try {
-      const user = auth.currentUser;
-      if (!user) throw new Error('Not authenticated');
-      const idToken = await user.getIdToken();
+      const token = await getToken();
+      if (!token && !import.meta.env.DEV) throw new Error('Not authenticated');
 
       const provider = PROVIDERS.find((p) => p.id === providerId);
       const res = await fetch('/api/portfolio/validate-token', {
         method: 'POST',
         headers: {
-          Authorization: `Bearer ${idToken}`,
+          Authorization: `Bearer ${token}`,
           'Content-Type': 'application/json',
         },
         body: JSON.stringify({
@@ -285,6 +286,29 @@ export default function DeployModal({ isOpen, onClose, portfolioTitle = "My Port
   const selectedProviderMeta = PROVIDERS.find((p) => p.id === selectedProvider);
   const isTokenValidated = !selectedProviderMeta?.needsToken || tokenStatuses[selectedProvider]?.valid === true;
 
+  const seoChecks = [
+  {
+    label: "Portfolio Title",
+    passed: portfolioTitle && portfolioTitle.trim().length > 5,
+  },
+  {
+    label: "Template Selected",
+    passed: templateId && templateId !== "default",
+  },
+  {
+    label: "Portfolio Content",
+    passed: aiDraft && Object.keys(aiDraft).length > 0,
+  },
+  {
+    label: "SEO Friendly Title",
+    passed: portfolioTitle?.length >= 10,
+  },
+];
+
+const seoScore = Math.round(
+  (seoChecks.filter((item) => item.passed).length / seoChecks.length) * 100
+);
+
   if (!isOpen) return null;
 
   return (
@@ -351,6 +375,12 @@ export default function DeployModal({ isOpen, onClose, portfolioTitle = "My Port
                   className="space-y-5"
                 >
                   <p className="text-xs text-zinc-400 text-left leading-relaxed">
+                    <div className="flex items-center gap-2">
+  <span className="px-3 py-1 rounded-full bg-indigo-500/10 border border-indigo-500/30 text-indigo-400 text-[10px] font-bold uppercase">
+    Readiness Score: {seoScore}%
+  </span>
+</div>
+                    
                     Choose your cloud deployment target. We will compile your clean production assets, bundle stylesheets, and provision a live SSL subdomain.
                   </p>
 
@@ -454,6 +484,47 @@ export default function DeployModal({ isOpen, onClose, portfolioTitle = "My Port
                       </div>
                     </div>
                   </div>
+
+                  {/* SEO Optimization Assistant */}
+<div className="bg-zinc-900/60 border border-zinc-800 rounded-2xl p-4 space-y-3">
+  <div className="flex items-center justify-between">
+    <h4 className="text-sm font-semibold text-zinc-100">
+      SEO Optimization Assistant
+    </h4>
+
+    <span className="text-xs font-bold text-indigo-400">
+      {seoScore}/100
+    </span>
+  </div>
+
+  <div className="space-y-2">
+    {seoChecks.map((check, index) => (
+      <div
+        key={index}
+        className="flex items-center justify-between text-xs"
+      >
+        <span className="text-zinc-300">{check.label}</span>
+
+        <span
+          className={
+            check.passed
+              ? "text-emerald-400"
+              : "text-amber-400"
+          }
+        >
+          {check.passed ? "✓" : "⚠"}
+        </span>
+      </div>
+    ))}
+  </div>
+
+  <div className="pt-2 border-t border-zinc-800">
+    <p className="text-[11px] text-zinc-400">
+      Improve portfolio discoverability by using descriptive titles,
+      complete content sections, and SEO-friendly metadata.
+    </p>
+  </div>
+</div>
 
                   {/* Submit Action */}
                   <button

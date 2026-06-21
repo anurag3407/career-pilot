@@ -1,8 +1,11 @@
-import { useState, useEffect } from 'react'
+import { useState, useEffect, useRef } from 'react'
 import { useParams, useNavigate } from 'react-router-dom'
 import toast from 'react-hot-toast'
 import { motion } from 'framer-motion'
-import { resumeApi, enhanceApi } from '../services/api'
+import { resumeApi, enhanceApi, portfolioApi } from '../services/api'
+import { auth } from '../config/firebase'
+import { decryptKey } from '../utils/encryption'
+import ReactMarkdown from 'react-markdown'
 import { triggerConfetti } from '../utils/confetti'
 import ResumeAnalysisSkeleton from '../components/ui/ResumeAnalysisSkeleton'
 import {
@@ -28,10 +31,12 @@ import {
   Lightbulb,
   Brain,
   Edit3,
-  ClipboardList
+  ClipboardList,
+  Globe
 } from 'lucide-react'
 import { SkeletonList } from '../components/ui/Skeleton'
 import ResumeScore from '../components/ResumeScore'
+import CopyButton from '../components/CopyButton'
 
 // Score ring component
 const ScoreRing = ({ score, size = 120, strokeWidth = 8 }) => {
@@ -282,9 +287,12 @@ const BulletAnalysisCard = ({ bullet, index }) => {
             </div>
           )}
           <div className="bg-primary/10 border border-primary/30 rounded-lg p-3">
-            <div className="flex items-center gap-2 mb-2">
-              <Sparkles className="w-4 h-4 text-primary" />
-              <span className="text-xs text-primary font-medium">Improved Version</span>
+            <div className="flex items-center justify-between gap-2 mb-2">
+              <div className="flex items-center gap-2">
+                <Sparkles className="w-4 h-4 text-primary" />
+                <span className="text-xs text-primary font-medium">Improved Version</span>
+              </div>
+              <CopyButton text={bullet.improved} label="" size={13} variant="ghost" className="shrink-0" />
             </div>
             <p className="text-sm text-foreground">{bullet.improved}</p>
           </div>
@@ -349,11 +357,14 @@ const SeniorTipCard = ({ tip, index }) => {
 export default function Enhance() {
   const { resumeId } = useParams()
   const navigate = useNavigate()
-
+  const streamContainerRef = useRef(null)
   const [resume, setResume] = useState(null)
   const [loading, setLoading] = useState(true)
   const [analyzing, setAnalyzing] = useState(false)
   const [enhancing, setEnhancing] = useState(false)
+
+  const [streamedText, setStreamedText] = useState('')
+  const [generatingPortfolio, setGeneratingPortfolio] = useState(false)
   const [scoring, setScoring] = useState(false)
   const [scoreData, setScoreData] = useState(null)
   const [atsAnalysis, setAtsAnalysis] = useState(null)
@@ -362,6 +373,7 @@ export default function Enhance() {
 
   const [jobRole, setJobRole] = useState('')
   const [hasAnalyzed, setHasAnalyzed] = useState(false)
+  const [enhancementComplete, setEnhancementComplete] = useState(false)
   const [copiedKeyword, setCopiedKeyword] = useState(null)
 
   useEffect(() => {
@@ -369,10 +381,20 @@ export default function Enhance() {
     // eslint-disable-next-line react-hooks/exhaustive-deps
   }, [resumeId])
 
+  useEffect(() => {
+    if (streamContainerRef.current) {
+      streamContainerRef.current.scrollTo({
+        top: streamContainerRef.current.scrollHeight,
+        behavior: 'smooth',
+      })
+    }
+  }, [streamedText])
+
   const fetchResume = async () => {
     try {
       const response = await resumeApi.getById(resumeId)
       setResume(response.data)
+      setEnhancementComplete(Boolean(response.data.enhancedText))
       if (response.data.jobRole) {
         setJobRole(response.data.jobRole)
       }
@@ -449,47 +471,182 @@ export default function Enhance() {
     }
   }
 
+  async function getAuthHeaders() {
+    const user = auth?.currentUser
+
+    if (!user) {
+      if (import.meta.env.DEV) {
+        return {
+          Authorization: `Bearer mock-dev-token`,
+          'Content-Type': 'application/json',
+        }
+      }
+      throw new Error('Not authenticated')
+    }
+
+    const token = await user.getIdToken()
+
+    return {
+      Authorization: `Bearer ${token}`,
+      'Content-Type': 'application/json',
+    }
+  }
+
   const handleEnhanceWithAI = async () => {
     setEnhancing(true)
+
     try {
       const apiPreferences = {
         jobRole: jobRole,
-        yearsOfExperience: resume.yearsOfExperience || 0, // Assuming yearsOfExperience is available in resume object
+        yearsOfExperience: resume?.yearsOfExperience ?? 0,
         skills: atsAnalysis?.missingKeywords || [],
         industry: '',
-        customInstructions: `Focus on improving: ${atsAnalysis?.improvements?.map(i => i.issue).join(', ') || 'general improvements'}`,
+        customInstructions: `Focus on improving: ${
+          atsAnalysis?.improvements?.map(i => i.issue).join(', ') ||
+          'general improvements'
+        }`,
         profileInfo: {}
       }
 
-      const enhanceResponse = await enhanceApi.enhance(resume.originalText, apiPreferences)
+      // Reset streamed content
+      let streamedResume = ''
 
+      const headers = await getAuthHeaders()
+      const aiConfigStr = localStorage.getItem('aiConfig')
+
+      if (aiConfigStr) {
+        try {
+          const aiConfig = JSON.parse(aiConfigStr)
+
+          if (aiConfig.provider) {
+            headers['X-AI-Provider'] = aiConfig.provider
+          }
+
+          if (aiConfig.apiKey) {
+            headers['X-AI-Key'] = decryptKey(aiConfig.apiKey)
+          }
+
+          if (aiConfig.model) {
+            headers['X-AI-Model'] = aiConfig.model
+          }
+        } catch (e) {
+          console.error(e)
+        }
+      }
+
+      const response = await fetch('/api/enhance/stream', {
+        method: 'POST',
+        headers,
+        body: JSON.stringify({
+          resumeText: resume.originalText,
+          preferences: apiPreferences,
+        }),
+      })
+
+      if (!response.ok) {
+        throw new Error('Failed to start enhancement stream')
+      }
+
+      if (!response.body) {
+        throw new Error('Streaming not supported')
+      }
+
+      const reader = response.body.getReader()
+      const decoder = new TextDecoder()
+
+      let done = false
+      let buffer = ''
+
+      while (!done) {
+        const { value, done: doneReading } = await reader.read()
+
+        done = doneReading
+
+        const chunkValue = decoder.decode(value || new Uint8Array(), {
+          stream: !done,
+        })
+        buffer += chunkValue
+
+        const parts = buffer.split('\n\n')
+
+        buffer = parts.pop() || ''
+
+        for (const part of parts) {
+          const lines = part.split('\n')
+
+          for (const line of lines) {
+            if (!line.startsWith('data:')) continue
+
+            const data = line.replace('data:', '').trim()
+
+            if (!data) continue
+
+            // Ignore completion marker
+            if (data === '[DONE]') {
+              continue
+            }
+
+            let parsed
+
+            try {
+              parsed = JSON.parse(data)
+            } catch {
+              streamedResume += data
+              setStreamedText(streamedResume)
+              continue
+            }
+
+            if (parsed.type === 'error') {
+              throw new Error(parsed.message || 'Streaming failed')
+            }
+
+            if (parsed.type === 'chunk' && parsed.content) {
+              streamedResume += parsed.content
+              setStreamedText(streamedResume)
+            }
+          }
+        }
+      }
+      
+      // Save final enhanced text
       await resumeApi.update(resumeId, {
-        enhancedText: enhanceResponse.data.enhancedResume,
+        enhancedText: streamedResume,
         jobRole: jobRole,
         preferences: apiPreferences
       })
 
-      // Create a version snapshot for the AI enhanced state
-      try {
-        await resumeApi.createVersion(resumeId, {
-          title: `AI Enhanced for ${jobRole}`,
-          originalText: resume.originalText,
-          enhancedText: enhanceResponse.data.enhancedResume,
-          jobRole: jobRole,
-          atsScore: atsAnalysis?.atsScore || null,
-          tags: ['AI-Enhanced', jobRole]
-        })
-      } catch (versionErr) {
-        console.error('Failed to auto-save version snapshot for AI enhancement:', versionErr)
-      }
+      setResume((current) => ({
+        ...current,
+        enhancedText: streamedResume,
+        jobRole,
+        preferences: apiPreferences
+      }))
 
-      toast.success('Resume enhanced successfully!')
-      triggerConfetti({ duration: 3000, particleCount: 150, spread: 120 })
-      navigate(`/resume/${resumeId}`)
+      setEnhancementComplete(true)
+
+  } catch (error) {
+    console.error(error)
+    toast.error(error.message || 'Failed to enhance resume')
+  } finally {
+    setEnhancing(false)
+  }
+}
+
+  const handleGeneratePortfolio = async () => {
+    setGeneratingPortfolio(true)
+    const toastId = toast.loading('Generating portfolio from enhanced resume...')
+
+    try {
+      const response = await portfolioApi.generateFromResume(resumeId)
+      const portfolioData = response.data?.portfolio || response.data
+
+      localStorage.setItem('ai_portfolio_draft', JSON.stringify(portfolioData))
+      toast.success('Portfolio draft generated!', { id: toastId })
+      navigate('/templates')
     } catch (error) {
-      toast.error(error.message || 'Failed to enhance resume')
+      toast.error(error.message || 'Failed to generate portfolio', { id: toastId })
     } finally {
-      setEnhancing(false)
+      setGeneratingPortfolio(false)
     }
   }
 
@@ -512,8 +669,7 @@ export default function Enhance() {
     } finally {
       setScoring(false)
     }
-  }
-
+}
   if (loading) {
     return (
       <div className="min-h-screen bg-background">
@@ -674,10 +830,13 @@ export default function Enhance() {
               transition={{ delay: 0.3 }}
               className="bg-background/50 border border-border rounded-2xl p-6"
             >
-              <h3 className="text-lg font-semibold text-foreground mb-3 flex items-center gap-2">
-                <AlertCircle className="w-5 h-5 text-primary" />
-                Analysis Summary
-              </h3>
+              <div className="flex items-center justify-between gap-2 mb-3">
+                <h3 className="text-lg font-semibold text-foreground flex items-center gap-2">
+                  <AlertCircle className="w-5 h-5 text-primary" />
+                  Analysis Summary
+                </h3>
+                <CopyButton text={atsAnalysis.summary} label="Copy" size={14} />
+              </div>
               <p className="text-foreground leading-relaxed">{atsAnalysis.summary}</p>
             </motion.div>
 
@@ -1007,24 +1166,45 @@ export default function Enhance() {
                     <p className="text-muted-foreground">Let AI optimize your resume based on the analysis above</p>
                   </div>
                 </div>
-                <button
-                  onClick={handleEnhanceWithAI}
-                  disabled={enhancing}
-                  className="w-full md:w-auto px-8 py-4 bg-gradient-to-r from-indigo-600 to-purple-600 text-foreground rounded-xl font-semibold hover:from-primary hover:to-secondary transition-all disabled:opacity-50 disabled:cursor-not-allowed flex items-center justify-center gap-2 shadow-lg shadow-indigo-500/25"
-                >
-                  {enhancing ? (
-                    <>
-                      <RefreshCw className="w-5 h-5 animate-spin" />
-                      Enhancing with AI...
-                    </>
-                  ) : (
-                    <>
-                      <Sparkles className="w-5 h-5" />
-                      Improve with AI
-                      <ArrowRight className="w-5 h-5" />
-                    </>
+                <div className="flex w-full flex-col gap-3 md:w-auto md:flex-row">
+                  {enhancementComplete && (
+                    <button
+                      onClick={handleGeneratePortfolio}
+                      disabled={generatingPortfolio}
+                      className="w-full md:w-auto px-8 py-4 bg-secondary text-secondary-foreground rounded-xl font-semibold hover:bg-secondary/90 transition-all disabled:opacity-50 disabled:cursor-not-allowed flex items-center justify-center gap-2"
+                    >
+                      {generatingPortfolio ? (
+                        <>
+                          <RefreshCw className="w-5 h-5 animate-spin" />
+                          Generating...
+                        </>
+                      ) : (
+                        <>
+                          <Globe className="w-5 h-5" />
+                          Generate Portfolio
+                        </>
+                      )}
+                    </button>
                   )}
-                </button>
+                  <button
+                    onClick={handleEnhanceWithAI}
+                    disabled={enhancing}
+                    className="w-full md:w-auto px-8 py-4 bg-gradient-to-r from-indigo-600 to-purple-600 text-foreground rounded-xl font-semibold hover:from-primary hover:to-secondary transition-all disabled:opacity-50 disabled:cursor-not-allowed flex items-center justify-center gap-2 shadow-lg shadow-indigo-500/25"
+                  >
+                    {enhancing ? (
+                      <>
+                        <RefreshCw className="w-5 h-5 animate-spin" />
+                        Enhancing with AI...
+                      </>
+                    ) : (
+                      <>
+                        <Sparkles className="w-5 h-5" />
+                        Improve with AI
+                        <ArrowRight className="w-5 h-5" />
+                      </>
+                    )}
+                  </button>
+                </div>
               </div>
 
               {enhancing && (
@@ -1038,6 +1218,205 @@ export default function Enhance() {
           </div>
         )}
       </div>
+      
+  {(streamedText || enhancing) && (
+  <div
+    className="
+      fixed
+      bottom-6
+      right-6
+      z-50
+      w-[92vw]
+      md:w-[620px]
+      h-[78vh]
+      rounded-[28px]
+      border
+      border-white/10
+      bg-[#070B1A]/95
+      backdrop-blur-2xl
+      shadow-[0_0_60px_rgba(0,0,0,0.6)]
+      overflow-hidden
+      flex
+      flex-col
+      animate-in
+      fade-in
+      slide-in-from-bottom-4
+      duration-300
+    "
+  >
+    {/* Top Glow */}
+    <div className="absolute inset-x-0 top-0 h-24 bg-gradient-to-r from-cyan-500/10 via-violet-500/10 to-fuchsia-500/10 blur-3xl pointer-events-none" />
+
+    {/* Header */}
+    <div className="relative flex items-center justify-between px-6 py-5 border-b border-white/10">
+      <div className="flex items-center gap-4">
+        <div
+          className="
+            h-12
+            w-12
+            rounded-2xl
+            bg-gradient-to-br
+            from-cyan-400
+            via-blue-500
+            to-violet-600
+            flex
+            items-center
+            justify-center
+            shadow-lg
+          "
+        >
+          <span className="text-xl">✨</span>
+        </div>
+
+        <div>
+          <h2 className="text-xl font-bold text-white tracking-tight">
+            AI Resume Enhancement
+          </h2>
+
+          <p className="text-sm text-gray-400">
+            Real-time streaming optimization powered by AI
+          </p>
+        </div>
+      </div>
+
+      <div className="flex items-center gap-3">
+        {enhancing ? (
+          <div
+            className="
+              flex
+              items-center
+              gap-2
+              rounded-full
+              border
+              border-emerald-500/20
+              bg-emerald-500/10
+              px-3
+              py-1.5
+              text-sm
+              text-emerald-300
+            "
+          >
+            <span className="h-2 w-2 rounded-full bg-emerald-400 animate-pulse" />
+
+            Streaming
+          </div>
+        ) : (
+          <div
+            className="
+              rounded-full
+              border
+              border-cyan-500/20
+              bg-cyan-500/10
+              px-3
+              py-1.5
+              text-sm
+              text-cyan-300
+            "
+          >
+            Complete
+          </div>
+        )}
+      </div>
+    </div>
+
+    {/* Stream Body */}
+    <div
+      ref={streamContainerRef}
+      className="
+        relative
+        flex-1
+        overflow-y-auto
+        px-6
+        py-6
+        scroll-smooth
+      "
+    >
+      {/* Background Grid */}
+      <div className="absolute inset-0 opacity-[0.03] bg-[linear-gradient(to_right,#fff_1px,transparent_1px),linear-gradient(to_bottom,#fff_1px,transparent_1px)] bg-[size:40px_40px] pointer-events-none" />
+
+      <div
+        className="
+          relative
+          prose
+          prose-invert
+          max-w-none
+          prose-headings:text-white
+          prose-p:text-gray-300
+          prose-strong:text-cyan-300
+          prose-li:text-gray-300
+          prose-code:text-cyan-300
+          prose-pre:bg-black/30
+          prose-pre:border
+          prose-pre:border-white/10
+          prose-blockquote:border-cyan-500
+          prose-blockquote:text-gray-300
+        "
+      >
+        <ReactMarkdown>
+          {streamedText || 'Initializing enhancement stream...'}
+        </ReactMarkdown>
+
+        {enhancing && (
+          <span
+            className="
+              inline-block
+              ml-1
+              text-cyan-300
+              animate-pulse
+              text-lg
+            "
+          >
+            ▋
+          </span>
+        )}
+      </div>
+    </div>
+
+    {/* Footer */}
+    <div
+      className="
+        border-t
+        border-white/10
+        px-6
+        py-4
+        flex
+        items-center
+        justify-between
+        bg-white/[0.02]
+      "
+    >
+      <div className="flex items-center gap-3 text-sm text-gray-400">
+        <div className="h-2 w-2 rounded-full bg-cyan-400 animate-pulse" />
+
+        {enhancing
+          ? 'Generating optimized resume sections in real time'
+          : 'Enhancement completed successfully'}
+      </div>
+
+      <div className="flex items-center gap-3">
+        {!enhancing && (
+          <button
+            onClick={() => setStreamedText('')}
+            className="
+              rounded-xl
+              border
+              border-white/10
+              bg-white/5
+              px-4
+              py-2
+              text-sm
+              text-white
+              transition-all
+              hover:bg-white/10
+            "
+          >
+            Close
+          </button>
+        )}
+      </div>
+    </div>
+  </div>
+)}
     </div>
   )
 }

@@ -1,7 +1,7 @@
 import React from 'react';
 import { motion } from 'framer-motion';
 import { Github, Linkedin, Twitter, Mail, ChevronDown } from 'lucide-react';
-import { AmbientBackground } from './shared';
+import { AmbientBackground } from './Shared';
 import data from '../../../../data/dummy_data.json';
 
 export default function Hero() {

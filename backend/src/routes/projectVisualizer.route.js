@@ -3,8 +3,9 @@ import rateLimit from 'express-rate-limit';
 import { verifyToken } from '../middleware/auth.js';
 import { aiRateLimiter } from '../middleware/rateLimiter.js';
 import { analyzeRepo } from '../services/analysisService.js';
+import { runActivityAnalyzer } from '../services/activityService.js';
 import { enrichWithGitHubData } from '../services/githubEnricherService.js';
-import { generateArchitectureSummary, generateSuggestions, streamChat } from '../services/anthropicChatService.js';
+import { generateArchitectureSummary, generateSuggestions, streamChat, streamFileChat, explainFile, generateInterviewQuestions, generateContributionGuide } from '../services/anthropicChatService.js';
 import ProjectAnalysis from '../models/ProjectAnalysis.model.js';
 import { sessions } from '../services/repoIngestionService.js';
 import fs from 'fs/promises';
@@ -74,6 +75,7 @@ router.post('/analyze', verifyToken, ingestLimiter, async (req, res) => {
       suggestions: suggestions,
       architectureSummary: architectureSummary,
       github: githubData.metadata,
+      dependencies: analysisResult.dependencies,
       lastAnalyzed: new Date(),
     };
     
@@ -226,6 +228,119 @@ router.post('/analysis/:sessionId/ask-module', verifyToken, aiRateLimiter, async
     await streamChat(session.skeleton, messages, 'onboarding', res);
   } catch (error) {
     res.status(500).json({ error: 'Failed to process module question' });
+  }
+});
+
+router.post('/analysis/:sessionId/explain-file', verifyToken, aiRateLimiter, async (req, res) => {
+  try {
+    const { sessionId } = req.params;
+    const { filePath } = req.body;
+    if (!filePath) return res.status(400).json({ error: 'filePath is required' });
+    
+    const session = sessions.get(sessionId);
+    if (!session) return res.status(404).json({ error: 'Session not found or expired' });
+    
+    const absolutePath = path.join(session.repoPath, filePath);
+    const content = await fs.readFile(absolutePath, 'utf-8');
+    
+    const explanation = await explainFile(content, filePath);
+    res.json(explanation);
+  } catch (error) {
+    res.status(500).json({ error: 'Failed to explain file' });
+  }
+});
+
+router.post('/analysis/:sessionId/file-chat', verifyToken, aiRateLimiter, async (req, res) => {
+  try {
+    const { sessionId } = req.params;
+    const { filePath, messages } = req.body;
+    if (!filePath || !messages) return res.status(400).json({ error: 'filePath and messages are required' });
+    
+    const session = sessions.get(sessionId);
+    if (!session) return res.status(404).json({ error: 'Session not found or expired' });
+    
+    const absolutePath = path.join(session.repoPath, filePath);
+    const content = await fs.readFile(absolutePath, 'utf-8');
+    
+    await streamFileChat(content, filePath, session.skeleton, messages, res);
+  } catch (error) {
+    res.status(500).json({ error: 'Failed to process file chat' });
+  }
+});
+
+router.post('/analysis/:sessionId/interview-prep', verifyToken, aiRateLimiter, async (req, res) => {
+  try {
+    const { sessionId } = req.params;
+    const session = sessions.get(sessionId);
+    if (!session) return res.status(404).json({ error: 'Session not found or expired' });
+    
+    const analysis = await ProjectAnalysis.findOne({ sessionId });
+    if (!analysis) return res.status(404).json({ error: 'Analysis not found' });
+    
+    const questions = await generateInterviewQuestions(session.skeleton, session.modules, analysis.risks);
+    res.json(questions);
+  } catch (error) {
+    res.status(500).json({ error: 'Failed to generate interview questions' });
+  }
+});
+
+router.post('/analysis/:sessionId/contribution-guide', verifyToken, aiRateLimiter, async (req, res) => {
+  try {
+    const { sessionId } = req.params;
+    const session = sessions.get(sessionId);
+    if (!session) return res.status(404).json({ error: 'Session not found or expired' });
+    
+    const analysis = await ProjectAnalysis.findOne({ sessionId });
+    if (!analysis) return res.status(404).json({ error: 'Analysis not found' });
+    
+    let readmeContent = 'No README found.';
+    try {
+      readmeContent = await fs.readFile(path.join(session.repoPath, 'README.md'), 'utf-8');
+    } catch(e) {}
+    
+    const guide = await generateContributionGuide(session.skeleton, readmeContent, session.modules, analysis.github);
+    res.json({ guide });
+  } catch (error) {
+    res.status(500).json({ error: 'Failed to generate contribution guide' });
+  }
+});
+
+router.get('/analysis/:sessionId/activity', verifyToken, aiRateLimiter, async (req, res) => {
+  try {
+    const { sessionId } = req.params;
+    const detail = req.query.detail === '1' || req.query.detail === 'true';
+
+    // Confirm the session belongs to the requesting user.
+    const analysis = await ProjectAnalysis.findOne({ sessionId });
+    if (!analysis) return res.status(404).json({ error: 'Analysis not found' });
+    if (analysis.userId !== req.user.uid) return res.status(403).json({ error: 'Access denied' });
+
+    // The cloned repo lives in a temp dir for ~2 hours; read from there.
+    const session = sessions.get(sessionId);
+    if (!session || !session.repoPath) {
+      return res.status(410).json({
+        error: 'Repository files are no longer available. Please re-run the analysis.',
+      });
+    }
+
+    // Allow per-request override of the AI provider (mirrors the
+    // X-AI-Provider / X-AI-Key / X-AI-Model headers used elsewhere).
+    const provider = req.headers['x-ai-provider'] || req.query.provider || undefined;
+    const apiKey = req.headers['x-ai-key'] || req.query.apiKey || undefined;
+    const model = req.headers['x-ai-model'] || req.query.model || undefined;
+
+    const payload = await runActivityAnalyzer(session.repoPath, {
+      provider,
+      apiKey,
+      model,
+      weeks: 52,
+      detail,
+    });
+
+    res.json(payload);
+  } catch (error) {
+    console.error('Activity Error:', error);
+    res.status(500).json({ error: 'Failed to compute activity: ' + error.message });
   }
 });
 
