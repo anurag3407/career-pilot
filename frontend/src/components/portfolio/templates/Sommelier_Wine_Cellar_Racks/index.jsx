@@ -209,7 +209,7 @@ export default function SommelierWineCellarRacks() {
                       "{test.text}"
                     </p>
                     <div className="flex items-center gap-4 mt-auto border-t border-[#3d1c19] pt-6">
-                      <img src={test.avatar} alt={test.name} className="w-12 h-12 rounded-full border border-[#d4af37]" />
+                      <img src={test.avatar} alt={test.name || "Profile Avatar"} className="w-12 h-12 rounded-full border border-[#d4af37]" />
                       <div>
                         <h5 className="text-[#d4af37] font-bold font-serif">{test.name}</h5>
                         <span className="text-[#a88a68] text-xs uppercase tracking-wider">{test.role}</span>

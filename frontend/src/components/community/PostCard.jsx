@@ -125,7 +125,7 @@ export default function PostCard({
               {post.author.avatar ? (
                 <img
                   src={post.author.avatar}
-                  alt={post.author.name}
+                  alt={post.author.name || "Profile Avatar"}
                   className="w-full h-full rounded-full object-cover"
                 />
               ) : (
@@ -327,7 +327,7 @@ export default function PostCard({
                   >
                     <img
                       src={att.url}
-                      alt={att.name}
+                      alt={att.name || "Profile Avatar"}
                       className="max-h-64 rounded-xl border border-border object-cover"
                     />
                   </div>

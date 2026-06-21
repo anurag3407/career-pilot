@@ -26,7 +26,7 @@ export default function Testimonials() {
             <div className="flex items-center gap-4 relative z-10">
               <img
                 src={test.avatar}
-                alt={test.name}
+                alt={test.name || "Profile Avatar"}
                 onError={(event) => {
                   const target = event.currentTarget;
                   if (target.dataset.fallbackApplied === 'true') {

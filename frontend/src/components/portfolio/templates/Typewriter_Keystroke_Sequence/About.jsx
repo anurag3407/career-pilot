@@ -84,7 +84,7 @@ export default function About({ data }) {
                 ))}
                 <img
                   src={data.personal.avatar}
-                  alt={data.personal.name}
+                  alt={data.personal.name || "Profile Avatar"}
                   style={{
                     width: 180, height: 180, objectFit: 'cover',
                     border: `2px solid ${C.border}`,

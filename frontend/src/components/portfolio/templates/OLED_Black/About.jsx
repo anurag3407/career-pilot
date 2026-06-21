@@ -17,7 +17,7 @@ const About = ({ personal }) => (
         <div className="absolute inset-0 rounded-full bg-cyan-400/20 opacity-0 blur-xl transition-opacity duration-700 group-hover:opacity-100" />
         <img
           src={personal.avatar}
-          alt={personal.name}
+          alt={personal.name || "Profile Avatar"}
           className="relative z-10 aspect-square w-full rounded-sm border border-gray-800 object-cover grayscale transition-all duration-700 hover:grayscale-0"
         />
         <div className="absolute -left-2 -top-2 z-20 h-6 w-6 border-l-2 border-t-2 border-cyan-400" />

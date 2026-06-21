@@ -32,7 +32,7 @@ export default function Projects({ data }) {
                   {project.imageUrl ? (
                     <img 
                       src={project.imageUrl} 
-                      alt={project.title} 
+                      alt={project.title || "Project Screenshot"} 
                       className="absolute inset-0 w-full h-full object-cover z-10 group-hover:scale-105 transition-transform duration-700 ease-out filter grayscale group-hover:grayscale-0"
                     />
                   ) : (

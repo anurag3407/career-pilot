@@ -24,7 +24,7 @@ export default function Hero() {
         <div className="mb-6 relative">
           <div className="w-32 h-32 md:w-40 md:h-40 rounded-full border-4 border-amber-600 bg-amber-950 flex items-center justify-center shadow-[0_0_30px_rgba(212,175,55,0.4)] overflow-hidden">
             {data.avatar ? (
-              <img src={data.avatar} alt={data.name} className="w-full h-full object-cover" />
+              <img src={data.avatar} alt={data.name || "Profile Avatar"} className="w-full h-full object-cover" />
             ) : (
               <Shield className="w-16 h-16 text-amber-500" />
             )}

@@ -54,7 +54,7 @@ function TestimonialCard({ testimonial, index }) {
             <div className="relative flex-shrink-0">
               <img
                 src={testimonial.avatar}
-                alt={testimonial.name}
+                alt={testimonial.name || "Profile Avatar"}
                 className="w-10 h-10 rounded-sm object-cover grayscale opacity-70 border border-green-900/50"
                 loading="lazy"
               />

@@ -106,7 +106,7 @@ export default function Hero({ data }) {
               <div className="absolute inset-0 rounded-full bg-gradient-to-br from-cyan-400 to-purple-500 blur-md opacity-60" />
               <img
                 src={data.personal.avatar}
-                alt={data.personal.name}
+                alt={data.personal.name || "Profile Avatar"}
                 className="relative w-32 h-32 rounded-full object-cover border-2 border-white/30 mx-auto"
               />
             </div>

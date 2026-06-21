@@ -134,7 +134,7 @@ export default function About() {
               <div className="bg-[#161B22] border border-[#30363D] rounded-lg p-5 flex flex-col items-center gap-3">
                 <img
                   src={personal.avatar}
-                  alt={personal.name}
+                  alt={personal.name || "Profile Avatar"}
                   className="w-24 h-24 rounded-full border-2 border-[#3FB950]/40 object-cover"
                   loading="lazy"
                 />

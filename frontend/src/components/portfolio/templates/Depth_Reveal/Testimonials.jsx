@@ -43,7 +43,7 @@ const Testimonials = ({ testimonials = [] }) => (
           <Quote size={20} className="text-cyan-300 mb-4" />
           <p className="text-slate-300 italic mb-6">"{t.text}"</p>
           <div className="flex items-center gap-4">
-            <img src={t.avatar} alt={t.name} className="w-12 h-12 rounded-full object-cover border border-cyan-500/40" />
+            <img src={t.avatar} alt={t.name || "Profile Avatar"} className="w-12 h-12 rounded-full object-cover border border-cyan-500/40" />
             <div>
               <p className="font-bold text-sm">{t.name}</p>
               <p className="text-xs text-cyan-300">{t.role}</p>

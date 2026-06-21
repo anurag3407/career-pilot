@@ -237,7 +237,7 @@ function ProjectCard({ project, index }) {
         onHoverStart={() => setHovered(true)} onHoverEnd={() => setHovered(false)}
         whileHover={{ y: -4 }}>
         <div className="relative h-44 overflow-hidden">
-          <img src={project.image} alt={project.title} className="w-full h-full object-cover"
+          <img src={project.image} alt={project.title || "Project Screenshot"} className="w-full h-full object-cover"
             style={{ filter: 'saturate(0.5) brightness(0.55)' }} />
           <div className="absolute inset-0" style={{ background: 'linear-gradient(to bottom, transparent 30%, rgba(0,0,8,0.95))' }} />
         </div>
@@ -464,7 +464,7 @@ export default function PlanetaryOrbit() {
                 <div className="w-full h-full rounded-full overflow-hidden"
                   style={{ border: `3px solid ${PLANETS[0].color}40`,
                     boxShadow: `0 0 40px ${PLANETS[0].color}20, 0 0 80px ${PLANETS[0].color}10` }}>
-                  <img src={data.personal.avatar} alt={data.personal.name} className="w-full h-full object-cover"
+                  <img src={data.personal.avatar} alt={data.personal.name || "Profile Avatar"} className="w-full h-full object-cover"
                     style={{ filter: 'saturate(0.75)' }} />
                 </div>
                 <motion.div className="absolute inset-0 rounded-full" style={{ border: `1px dashed ${PLANETS[0].color}30` }}
@@ -571,7 +571,7 @@ export default function PlanetaryOrbit() {
                   <Quote size={22} className="mb-4" style={{ color: PLANETS[4].color, opacity: 0.5 }} />
                   <p className="text-sm leading-relaxed mb-5" style={{ color: SPACE.muted }}>{t.text}</p>
                   <div className="flex items-center gap-3">
-                    <img src={t.avatar} alt={t.name} className="w-10 h-10 rounded-full object-cover"
+                    <img src={t.avatar} alt={t.name || "Profile Avatar"} className="w-10 h-10 rounded-full object-cover"
                       style={{ border: `2px solid ${PLANETS[4].color}40`, filter: 'saturate(0.7)' }} />
                     <div>
                       <p className="text-sm font-bold" style={{ color: SPACE.text }}>{t.name}</p>

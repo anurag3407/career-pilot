@@ -219,7 +219,7 @@ function ProfilePin({ pin }) {
       
       <div className="relative z-10">
         <div className="w-32 h-32 rounded-full overflow-hidden mb-6 mx-auto border-4 border-white shadow-lg">
-          <img src={pin.avatar} alt={pin.name} className="w-full h-full object-cover" />
+          <img src={pin.avatar} alt={pin.name || "Profile Avatar"} className="w-full h-full object-cover" />
         </div>
         <h1 className="text-3xl font-bold mb-2">{pin.name}</h1>
         <p className="text-[#767676] mb-4 font-medium">{pin.title}</p>
@@ -272,7 +272,7 @@ function ProjectPin({ pin, data }) {
       <div className="relative rounded-2xl overflow-hidden mb-2 shadow-sm bg-gray-100">
         <img 
           src={pin.image} 
-          alt={pin.title} 
+          alt={pin.title || "Project Screenshot"} 
           className={`w-full object-cover transition-transform duration-500 group-hover:scale-105 ${isImageTall ? 'aspect-[3/4]' : 'aspect-square'}`}
         />
         
@@ -349,7 +349,7 @@ function TestimonialPin({ pin }) {
         "{pin.text}"
       </p>
       <div className="flex items-center gap-3">
-        <img src={pin.avatar} alt={pin.name} className="w-12 h-12 rounded-full object-cover shadow-sm group-hover:scale-110 transition-transform" />
+        <img src={pin.avatar} alt={pin.name || "Profile Avatar"} className="w-12 h-12 rounded-full object-cover shadow-sm group-hover:scale-110 transition-transform" />
         <div>
           <div className="font-bold text-[15px]">{pin.name}</div>
           <div className="text-[13px] text-gray-600">{pin.role}</div>

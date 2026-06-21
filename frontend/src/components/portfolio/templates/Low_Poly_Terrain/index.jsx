@@ -223,7 +223,7 @@ function ProjectCard({ project, index }) {
         onHoverStart={() => setHovered(true)} onHoverEnd={() => setHovered(false)}
         whileHover={{ y: -4 }}>
         <div className="relative h-44 overflow-hidden">
-          <img src={project.image} alt={project.title} className="w-full h-full object-cover" />
+          <img src={project.image} alt={project.title || "Project Screenshot"} className="w-full h-full object-cover" />
           <div className="absolute inset-0" style={{ background: 'linear-gradient(to bottom, transparent 40%, rgba(255,255,255,0.9))' }} />
         </div>
         <div className="p-5">
@@ -458,7 +458,7 @@ export default function LowPolyTerrain() {
                 <div className="w-full h-full rounded-2xl overflow-hidden"
                   style={{ border: '3px solid rgba(61,107,61,0.35)',
                     boxShadow: '0 8px 40px rgba(61,107,61,0.2)' }}>
-                  <img src={data.personal.avatar} alt={data.personal.name} className="w-full h-full object-cover" />
+                  <img src={data.personal.avatar} alt={data.personal.name || "Profile Avatar"} className="w-full h-full object-cover" />
                 </div>
                 <div className="absolute -bottom-3 -right-3 flex items-center gap-1.5 px-3 py-1.5 rounded-xl text-xs font-semibold"
                   style={{ background: cardBg, border: cardBorder, color: POLY.accent, backdropFilter: 'blur(8px)' }}>
@@ -562,7 +562,7 @@ export default function LowPolyTerrain() {
                   <Quote size={22} className="mb-4" style={{ color: POLY.accent, opacity: 0.4 }} />
                   <p className="text-sm leading-relaxed mb-5" style={{ color: isDay ? '#3a5a3a' : '#7a9a7a' }}>{t.text}</p>
                   <div className="flex items-center gap-3">
-                    <img src={t.avatar} alt={t.name} className="w-10 h-10 rounded-full object-cover"
+                    <img src={t.avatar} alt={t.name || "Profile Avatar"} className="w-10 h-10 rounded-full object-cover"
                       style={{ border: '2px solid rgba(61,107,61,0.3)' }} />
                     <div>
                       <p className="text-sm font-bold" style={{ color: textColor }}>{t.name}</p>

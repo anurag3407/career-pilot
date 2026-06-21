@@ -1,3 +1,4 @@
+import crypto from 'crypto';
 import { getDefaultProvider } from '../config/aiProviders.js';
 import QuestionBank from '../models/QuestionBank.model.js';
 
@@ -35,7 +36,7 @@ const QUESTIONS_PER_COMBO = 10;
  */
 const normalizeCompany = (name) => String(name || '').trim().toLowerCase();
 
-const generateQuestionId = () => `q_${Date.now()}_${Math.random().toString(36).slice(2, 11)}`;
+const generateQuestionId = () => crypto.randomUUID();
 
 /**
  * Ask the LLM to produce a JSON array of N interview questions tailored to the

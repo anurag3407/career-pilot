@@ -107,7 +107,7 @@ export default function SpringBounce() {
               <div className="absolute -left-10 top-10 h-24 w-24 rounded-full bg-emerald-200/50 blur-2xl" />
               <div className="absolute -right-10 bottom-14 h-24 w-24 rounded-full bg-lime-200/60 blur-2xl" />
               <div className="flex flex-col items-center gap-5 text-center">
-                <img src={data.personal.avatar} alt={data.personal.name} className="h-40 w-40 rounded-full border-4 border-white object-cover shadow-xl shadow-emerald-200/40" />
+                <img src={data.personal.avatar} alt={data.personal.name || "Profile Avatar"} className="h-40 w-40 rounded-full border-4 border-white object-cover shadow-xl shadow-emerald-200/40" />
                 <div>
                   <p className="text-sm uppercase tracking-[0.3em] text-emerald-700">Premium Creator</p>
                   <h2 className="mt-3 text-3xl font-semibold text-slate-950">{data.personal.name}</h2>
@@ -240,7 +240,7 @@ export default function SpringBounce() {
                     className="rounded-[1.75rem] border border-slate-100 bg-emerald-50/80 p-6 shadow-sm shadow-emerald-100/60"
                   >
                     <div className="flex items-center gap-4">
-                      <img src={testimonial.avatar} alt={testimonial.name} className="h-14 w-14 rounded-full object-cover shadow-inner shadow-slate-200/60" />
+                      <img src={testimonial.avatar} alt={testimonial.name || "Profile Avatar"} className="h-14 w-14 rounded-full object-cover shadow-inner shadow-slate-200/60" />
                       <div>
                         <p className="font-semibold text-slate-950">{testimonial.name}</p>
                         <p className="text-sm text-slate-600">{testimonial.role}</p>
@@ -275,7 +275,7 @@ export default function SpringBounce() {
                 className="group overflow-hidden rounded-[2rem] border border-emerald-100 bg-white shadow-[0_20px_70px_rgba(34,197,94,0.1)]"
               >
                 <div className="relative h-56 overflow-hidden bg-slate-100">
-                  <img src={project.image} alt={project.title} className="h-full w-full object-cover transition duration-500 group-hover:scale-105" />
+                  <img src={project.image} alt={project.title || "Project Screenshot"} className="h-full w-full object-cover transition duration-500 group-hover:scale-105" />
                 </div>
                 <div className="space-y-4 p-6">
                   <div className="flex items-center justify-between gap-4">

@@ -602,7 +602,7 @@ function About({ foundEggs, onFind }) {
             <div style={{ position: 'relative', display: 'inline-block' }}>
               <div style={{ width: 200, height: 200, borderRadius: '50%', overflow: 'hidden',
                 border: `4px solid ${C.pink}`, boxShadow: `0 0 0 8px ${C.pink}22` }}>
-                <img src={data.personal.avatar} alt={data.personal.name}
+                <img src={data.personal.avatar} alt={data.personal.name || "Profile Avatar"}
                   style={{ width: '100%', height: '100%', objectFit: 'cover' }} />
               </div>
               {/* Hidden egg on avatar */}
@@ -802,7 +802,7 @@ function Projects({ foundEggs, onFind }) {
                 {proj.image && (
                   <div style={{ height: 160, overflow: 'hidden', borderRadius: 12,
                     marginBottom: 16, border: `1px solid ${col}22` }}>
-                    <img src={proj.image} alt={proj.title}
+                    <img src={proj.image} alt={proj.title || "Project Screenshot"}
                       style={{ width: '100%', height: '100%', objectFit: 'cover',
                         transition: 'transform 0.4s' }}
                       onMouseEnter={e => e.currentTarget.style.transform = 'scale(1.05)'}
@@ -958,7 +958,7 @@ function Testimonials() {
                 </p>
 
                 <div style={{ display: 'flex', alignItems: 'center', gap: 12 }}>
-                  <img src={t.avatar} alt={t.name}
+                  <img src={t.avatar} alt={t.name || "Profile Avatar"}
                     style={{ width: 46, height: 46, borderRadius: '50%', objectFit: 'cover',
                       border: `2px solid ${col}66`, flexShrink: 0 }} />
                   <div>

@@ -122,7 +122,7 @@ export default function Hero({ data }) {
             >
               <div className="relative w-64 h-64 md:w-80 md:h-80 xl:w-96 xl:h-96 rounded-3xl overflow-hidden shadow-2xl shadow-blue-200/60 border-4 border-white">
                 {personal?.avatar ? (
-                  <img src={personal.avatar} alt={personal.name} className="w-full h-full object-cover" />
+                  <img src={personal.avatar} alt={personal.name || "Profile Avatar"} className="w-full h-full object-cover" />
                 ) : (
                   <div className="w-full h-full bg-gradient-to-br from-blue-100 to-blue-200 flex items-center justify-center">
                     <svg viewBox="0 0 24 24" fill="none" className="w-32 h-32 text-blue-300" stroke="currentColor" strokeWidth="1">

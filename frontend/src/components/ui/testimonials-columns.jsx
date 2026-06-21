@@ -30,7 +30,7 @@ export const TestimonialsColumn = (props) => {
                                                  width={48}
                                                  height={48}
                                                  src={image}
-                                                 alt={name}
+                                                 alt={name || "Profile Avatar"}
                                                  className="h-12 w-12 rounded-full object-cover border-2 border-border relative z-10"
                                              />
                                          </div>

@@ -755,7 +755,7 @@ function Portfolio({ data }) {
           {personal.avatar ? (
             <img
               src={personal.avatar}
-              alt={personal.name}
+              alt={personal.name || "Profile Avatar"}
               style={{ width: "100%", height: "100%", borderRadius: "50%", objectFit: "cover" }}
             />
           ) : (

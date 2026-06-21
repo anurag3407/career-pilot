@@ -106,7 +106,7 @@ const About = ({ data }) => (
       <motion.div initial="hidden" whileInView="visible" viewport={{ once: true }} variants={stagger}
         className="grid md:grid-cols-2 gap-12 items-center">
         <motion.div variants={fadeUp}>
-          <img src={data.personal.avatar} alt={data.personal.name}
+          <img src={data.personal.avatar} alt={data.personal.name || "Profile Avatar"}
             className="w-72 h-72 rounded-2xl object-cover mx-auto shadow-2xl border-4 border-amber-700/30" />
         </motion.div>
         <motion.div variants={fadeUp}>
@@ -195,7 +195,7 @@ const Projects = ({ data }) => (
               className="bg-stone-700/60 border border-stone-600/40 rounded-2xl overflow-hidden hover:border-amber-500/50 transition-all group hover:-translate-y-1">
               {project.image && (
                 <div className="h-44 overflow-hidden">
-                  <img src={project.image} alt={project.title} className="w-full h-full object-cover group-hover:scale-105 transition-transform duration-500" />
+                  <img src={project.image} alt={project.title || "Project Screenshot"} className="w-full h-full object-cover group-hover:scale-105 transition-transform duration-500" />
                 </div>
               )}
               <div className="p-5">
@@ -284,7 +284,7 @@ const Testimonials = ({ data }) => (
               </div>
               <p className="text-sky-100 text-sm leading-relaxed mb-6 italic">"{t.text}"</p>
               <div className="flex items-center gap-3">
-                <img src={t.avatar} alt={t.name} className="w-10 h-10 rounded-full object-cover border-2 border-sky-500/40" />
+                <img src={t.avatar} alt={t.name || "Profile Avatar"} className="w-10 h-10 rounded-full object-cover border-2 border-sky-500/40" />
                 <div>
                   <div className="font-semibold text-white text-sm">{t.name}</div>
                   <div className="text-sky-400 text-xs">{t.role}</div>

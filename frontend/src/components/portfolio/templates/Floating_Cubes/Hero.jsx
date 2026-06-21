@@ -19,7 +19,7 @@ const Hero = () => (
         <div className="absolute inset-0 bg-cyan-400/20 blur-3xl rounded-full" />
         <img 
           src={data.personal.avatar} 
-          alt={data.personal.name} 
+          alt={data.personal.name || "Profile Avatar"} 
           className="w-40 h-40 object-cover rounded-[2rem] border-2 border-white/30 shadow-2xl relative z-10"
         />
       </motion.div>

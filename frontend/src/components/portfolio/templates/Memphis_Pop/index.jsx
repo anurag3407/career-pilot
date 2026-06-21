@@ -517,7 +517,7 @@ function About() {
             transition={{ duration: 0.6 }} className="mp-about-col">
             <div style={{ width: 200, height: 200, border: `4px solid ${C.black}`,
               boxShadow: hs(8), flexShrink: 0, overflow: 'hidden' }}>
-              <img src={data.personal.avatar} alt={data.personal.name}
+              <img src={data.personal.avatar} alt={data.personal.name || "Profile Avatar"}
                 style={{ width: '100%', height: '100%', objectFit: 'cover' }} />
             </div>
             <div style={{ display: 'flex', flexDirection: 'column', gap: 8, alignItems: 'center' }}>
@@ -677,7 +677,7 @@ function Projects() {
           transition={{ duration: 0.6 }}
           className="mp-card mp-featured" style={{ marginBottom: 28 }}>
           <div className="mp-featured-img">
-            <img src={featured.image} alt={featured.title}
+            <img src={featured.image} alt={featured.title || "Project Screenshot"}
               style={{ width: '100%', height: '100%', objectFit: 'cover', display: 'block', transition: 'transform 0.4s' }}
               onMouseEnter={e => e.currentTarget.style.transform = 'scale(1.05)'}
               onMouseLeave={e => e.currentTarget.style.transform = 'scale(1)'} />
@@ -724,7 +724,7 @@ function Projects() {
               transition={{ delay: 0.12 + i * 0.09, duration: 0.5 }}
               className="mp-card" style={{ overflow: 'hidden' }}>
               <div style={{ height: 185, overflow: 'hidden' }}>
-                <img src={proj.image} alt={proj.title}
+                <img src={proj.image} alt={proj.title || "Project Screenshot"}
                   style={{ width: '100%', height: '100%', objectFit: 'cover', transition: 'transform 0.35s', display: 'block' }}
                   onMouseEnter={e => e.currentTarget.style.transform = 'scale(1.07)'}
                   onMouseLeave={e => e.currentTarget.style.transform = 'scale(1)'} />
@@ -868,7 +868,7 @@ function Testimonials() {
                 <div style={{ display: 'flex', alignItems: 'center', gap: 12 }}>
                   <div style={{ width: 46, height: 46, flexShrink: 0, overflow: 'hidden',
                     border: `3px solid ${C.black}`, boxShadow: hs(3, accent) }}>
-                    <img src={t.avatar} alt={t.name}
+                    <img src={t.avatar} alt={t.name || "Profile Avatar"}
                       style={{ width: '100%', height: '100%', objectFit: 'cover' }} />
                   </div>
                   <div>

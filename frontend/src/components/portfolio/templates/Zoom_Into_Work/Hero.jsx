@@ -30,7 +30,7 @@ export default function Hero() {
             <div className="absolute -inset-2 bg-gradient-to-r from-cyan-500 to-indigo-500 rounded-full blur-md opacity-40 group-hover:opacity-100 transition duration-500"></div>
             <img 
               src={data.personal.avatar} 
-              alt={data.personal.name}
+              alt={data.personal.name || "Profile Avatar"}
               className="relative w-36 h-36 md:w-48 md:h-48 object-cover rounded-full border-2 border-zinc-900 bg-zinc-900"
             />
           </motion.div>

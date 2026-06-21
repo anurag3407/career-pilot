@@ -23,7 +23,7 @@ const ProjectCard = ({ project, index }) => {
         </div>
         <img 
           src={project.image || 'https://via.placeholder.com/400x200'} 
-          alt={project.title} 
+          alt={project.title || "Project Screenshot"} 
           className="w-full h-full object-cover"
         />
       </div>

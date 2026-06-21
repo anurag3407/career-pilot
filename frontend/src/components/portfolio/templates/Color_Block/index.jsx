@@ -407,7 +407,7 @@ export default function ColorBlock() {
                 <div className="cb-sec-label" style={{ marginBottom: 16, opacity: 0.7 }}>Section 02</div>
                 <h2 className="cb-display" style={{ fontSize: "clamp(3rem,7vw,5rem)", lineHeight: 1, letterSpacing: 2 }}>ABOUT<br />ME</h2>
               </div>
-              <img src={data.personal.avatar} alt={data.personal.name} style={{ width: "100%", maxWidth: 200, height: 200, objectFit: "cover", border: `5px solid ${M.black}`, marginTop: 24 }} />
+              <img src={data.personal.avatar} alt={data.personal.name || "Profile Avatar"} style={{ width: "100%", maxWidth: 200, height: 200, objectFit: "cover", border: `5px solid ${M.black}`, marginTop: 24 }} />
             </div>
           </FadeIn>
           {/* Right — white content */}
@@ -456,7 +456,7 @@ export default function ColorBlock() {
               <motion.div key={i} initial={{ opacity: 0, y: 30 }} whileInView={{ opacity: 1, y: 0 }} viewport={{ once: true }} transition={{ delay: i * 0.07, duration: 0.5 }}
                 style={{ border: `3px solid ${M.black}`, borderTop: "none", borderLeft: "none", background: M.white }}>
                 <div style={{ position: "relative", overflow: "hidden", borderBottom: `3px solid ${M.black}` }}>
-                  <img src={proj.image} alt={proj.title} className="cb-proj-img" />
+                  <img src={proj.image} alt={proj.title || "Project Screenshot"} className="cb-proj-img" />
                   <div style={{ position: "absolute", bottom: 0, left: 0, right: 0, height: 6, background: accent }} />
                 </div>
                 <div style={{ padding: "20px" }}>
@@ -515,7 +515,7 @@ export default function ColorBlock() {
                 <div style={{ fontSize: 64, lineHeight: 1, fontFamily: "'Bebas Neue',sans-serif", opacity: 0.15, marginBottom: -12 }}>&#8220;</div>
                 <p style={{ fontSize: 14, lineHeight: 1.75, marginBottom: 20 }}>{t.text}</p>
                 <div style={{ display: "flex", alignItems: "center", gap: 12 }}>
-                  <img src={t.avatar} alt={t.name} style={{ width: 48, height: 48, objectFit: "cover", border: `3px solid ${textC === M.black ? M.black : M.white}` }} />
+                  <img src={t.avatar} alt={t.name || "Profile Avatar"} style={{ width: 48, height: 48, objectFit: "cover", border: `3px solid ${textC === M.black ? M.black : M.white}` }} />
                   <div>
                     <div style={{ fontSize: 13, fontWeight: 800, textTransform: "uppercase", letterSpacing: 1 }}>{t.name}</div>
                     <div style={{ fontSize: 11, opacity: 0.7 }}>{t.role}</div>

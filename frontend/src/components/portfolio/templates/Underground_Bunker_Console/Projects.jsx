@@ -61,7 +61,7 @@ export default function Projects({ data }) {
                     )}
                   </div>
                   {proj.image && (
-                    <img src={proj.image} alt={proj.title}
+                    <img src={proj.image} alt={proj.title || "Project Screenshot"}
                       style={{
                         width: 140, height: 100, objectFit: 'cover',
                         border: '1px solid rgba(51,255,51,0.15)',

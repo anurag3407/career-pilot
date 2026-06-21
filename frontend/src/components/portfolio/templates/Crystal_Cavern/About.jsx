@@ -25,7 +25,7 @@ export default function About({ personal }) {
               animate={{ rotate: [0, 10, 0, -10, 0] }}
               transition={{ duration: 10, repeat: Infinity, ease: "linear" }}
             />
-            <img src={personal.avatar} alt={personal.name} className="w-full h-full object-cover rounded-2xl relative z-10 border border-slate-700/50 shadow-xl" />
+            <img src={personal.avatar} alt={personal.name || "Profile Avatar"} className="w-full h-full object-cover rounded-2xl relative z-10 border border-slate-700/50 shadow-xl" />
           </div>
           <div className="flex-1">
             <p className="text-lg text-slate-300 leading-relaxed bg-slate-900/40 p-6 rounded-2xl border border-slate-800 backdrop-blur-sm">

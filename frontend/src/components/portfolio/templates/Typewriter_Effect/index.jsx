@@ -402,7 +402,7 @@ export default function TypewriterEffect() {
           <div className="tw-about-grid">
             <FadeIn>
               <div style={{ textAlign: "center" }}>
-                <img src={data.personal.avatar} alt={data.personal.name} style={{ width: 180, height: 180, borderRadius: 0, objectFit: "cover", border: `2px solid ${C.border}`, filter: "sepia(15%) saturate(.85)", marginBottom: 16 }} />
+                <img src={data.personal.avatar} alt={data.personal.name || "Profile Avatar"} style={{ width: 180, height: 180, borderRadius: 0, objectFit: "cover", border: `2px solid ${C.border}`, filter: "sepia(15%) saturate(.85)", marginBottom: 16 }} />
                 <div style={{ display: "flex", justifyContent: "center", gap: 8 }}>
                   {data.socials.github   && <a href={data.socials.github}   className="tw-social" target="_blank" rel="noreferrer"><Github   size={16} /></a>}
                   {data.socials.linkedin && <a href={data.socials.linkedin} className="tw-social" target="_blank" rel="noreferrer"><Linkedin size={16} /></a>}
@@ -456,7 +456,7 @@ export default function TypewriterEffect() {
             {data.projects.map((proj, i) => (
               <motion.div key={i} className="tw-card" initial={{ opacity: 0, y: 20 }} whileInView={{ opacity: 1, y: 0 }} viewport={{ once: true }} transition={{ delay: i * 0.08 }}>
                 <div style={{ position: "relative", overflow: "hidden" }}>
-                  <img src={proj.image} alt={proj.title} className="tw-proj-img" />
+                  <img src={proj.image} alt={proj.title || "Project Screenshot"} className="tw-proj-img" />
                   <div style={{ position: "absolute", top: 8, left: 8, background: C.ribbon, color: C.white, fontSize: 9, padding: "2px 8px", letterSpacing: 1 }}>{i < 9 ? `0${i+1}` : i+1}</div>
                 </div>
                 <div style={{ padding: "16px 18px 20px" }}>
@@ -519,7 +519,7 @@ export default function TypewriterEffect() {
                 <div style={{ fontSize: 32, color: C.ribbon, opacity: 0.15, lineHeight: 1, marginBottom: -4 }}>&#8220;</div>
                 <p style={{ fontSize: 13, lineHeight: 1.75, color: C.mid, marginBottom: 18, fontStyle: "italic" }}>{t.text}</p>
                 <div style={{ display: "flex", alignItems: "center", gap: 12 }}>
-                  <img src={t.avatar} alt={t.name} style={{ width: 40, height: 40, borderRadius: 0, objectFit: "cover", border: `1px solid ${C.border}`, filter: "sepia(20%)" }} />
+                  <img src={t.avatar} alt={t.name || "Profile Avatar"} style={{ width: 40, height: 40, borderRadius: 0, objectFit: "cover", border: `1px solid ${C.border}`, filter: "sepia(20%)" }} />
                   <div>
                     <div style={{ fontSize: 13, fontWeight: 700, color: C.ink }}>{t.name}</div>
                     <div style={{ fontSize: 11, color: C.muted }}>{t.role}</div>

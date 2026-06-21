@@ -326,7 +326,7 @@ export default function RainbowGradient() {
           <div className="rg-about-grid">
             <FadeIn>
               <div style={{ width: 240, height: 240, margin: "0 auto", borderRadius: 16, overflow: "hidden", padding: 3, background: `linear-gradient(135deg,${RAINBOW[1].color},${RAINBOW[2].color})` }}>
-                <img src={data.personal.avatar} alt={data.personal.name} style={{ width: "100%", height: "100%", objectFit: "cover", borderRadius: 14, display: "block" }} />
+                <img src={data.personal.avatar} alt={data.personal.name || "Profile Avatar"} style={{ width: "100%", height: "100%", objectFit: "cover", borderRadius: 14, display: "block" }} />
               </div>
               <div style={{ display: "flex", justifyContent: "center", gap: 10, marginTop: 20 }}>
                 {data.socials.github   && <a href={data.socials.github}   className="rg-social" target="_blank" rel="noreferrer" style={{ borderColor: `${RAINBOW[1].color}30`, color: RAINBOW[1].color }}><Github   size={18} /></a>}
@@ -388,7 +388,7 @@ export default function RainbowGradient() {
                 onMouseEnter={e => { e.currentTarget.style.borderColor = `${RAINBOW[i % RAINBOW.length].color}60`; e.currentTarget.style.transform = "translateY(-4px)"; e.currentTarget.style.boxShadow = `0 16px 40px ${RAINBOW[i%RAINBOW.length].color}15`; }}
                 onMouseLeave={e => { e.currentTarget.style.borderColor = `${RAINBOW[3].color}25`; e.currentTarget.style.transform = "none"; e.currentTarget.style.boxShadow = "none"; }}>
                 <div style={{ position: "relative", overflow: "hidden" }}>
-                  <img src={proj.image} alt={proj.title} className="rg-proj-img" />
+                  <img src={proj.image} alt={proj.title || "Project Screenshot"} className="rg-proj-img" />
                   <div style={{ position: "absolute", bottom: 0, left: 0, right: 0, height: 4, background: `linear-gradient(90deg,${RAINBOW[i%RAINBOW.length].color},${RAINBOW[(i+1)%RAINBOW.length].color})` }} />
                 </div>
                 <div style={{ padding: "20px 22px 24px" }}>
@@ -458,7 +458,7 @@ export default function RainbowGradient() {
                 <div style={{ fontSize: 48, lineHeight: 1, color: RAINBOW[5].color, opacity: 0.2, fontWeight: 800, marginBottom: -8 }}>&#8220;</div>
                 <p style={{ fontSize: 14, lineHeight: 1.75, color: "rgba(248,248,255,.7)", marginBottom: 20 }}>{t.text}</p>
                 <div style={{ display: "flex", alignItems: "center", gap: 12 }}>
-                  <img src={t.avatar} alt={t.name} style={{ width: 44, height: 44, borderRadius: "50%", objectFit: "cover", border: `2px solid ${RAINBOW[5].color}` }} />
+                  <img src={t.avatar} alt={t.name || "Profile Avatar"} style={{ width: 44, height: 44, borderRadius: "50%", objectFit: "cover", border: `2px solid ${RAINBOW[5].color}` }} />
                   <div>
                     <div style={{ fontSize: 14, fontWeight: 600 }}>{t.name}</div>
                     <div style={{ fontSize: 11, color: RAINBOW[5].color }}>{t.role}</div>

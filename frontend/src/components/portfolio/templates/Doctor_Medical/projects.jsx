@@ -35,7 +35,7 @@ export default function Projects({ data }) {
             >
               <div className="h-44 bg-gradient-to-br from-blue-100 via-sky-100 to-teal-50 relative overflow-hidden flex items-center justify-center">
                 {project.image ? (
-                  <img src={project.image} alt={project.title} className="w-full h-full object-cover" />
+                  <img src={project.image} alt={project.title || "Project Screenshot"} className="w-full h-full object-cover" />
                 ) : (
                   <>
                     <div className="absolute inset-0 opacity-20">

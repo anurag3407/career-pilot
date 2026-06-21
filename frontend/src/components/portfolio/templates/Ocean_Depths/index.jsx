@@ -202,7 +202,7 @@ function ProjectCard({ project, index }) {
         whileHover={{ y: -4 }}
       >
         <div className="relative h-44 overflow-hidden">
-          <img src={project.image} alt={project.title} className="w-full h-full object-cover" style={{ filter: 'saturate(0.7) brightness(0.6)' }} />
+          <img src={project.image} alt={project.title || "Project Screenshot"} className="w-full h-full object-cover" style={{ filter: 'saturate(0.7) brightness(0.6)' }} />
           <div className="absolute inset-0" style={{ background: 'linear-gradient(to bottom, transparent 40%, rgba(4,13,26,0.95))' }} />
           <motion.div
             className="absolute inset-0"
@@ -253,7 +253,7 @@ function TestimonialCard({ testimonial, index }) {
         <Quote size={28} className="mb-4 opacity-40" style={{ color: OCEAN.glow }} />
         <p className="text-sm leading-relaxed mb-5" style={{ color: '#9abfcc' }}>{testimonial.text}</p>
         <div className="flex items-center gap-3">
-          <img src={testimonial.avatar} alt={testimonial.name} className="w-10 h-10 rounded-full object-cover" style={{ border: `2px solid rgba(0,229,255,0.3)`, filter: 'saturate(0.8)' }} />
+          <img src={testimonial.avatar} alt={testimonial.name || "Profile Avatar"} className="w-10 h-10 rounded-full object-cover" style={{ border: `2px solid rgba(0,229,255,0.3)`, filter: 'saturate(0.8)' }} />
           <div>
             <p className="text-sm font-semibold" style={{ color: '#e0f7fa' }}>{testimonial.name}</p>
             <p className="text-xs" style={{ color: '#5a8fa0' }}>{testimonial.role}</p>
@@ -515,7 +515,7 @@ export default function OceanDepths() {
                   border: '2px solid rgba(0,229,255,0.25)',
                   boxShadow: `0 0 50px rgba(0,229,255,0.15), 0 20px 60px rgba(0,0,0,0.6)`,
                 }}>
-                  <img src={data.personal.avatar} alt={data.personal.name} className="w-full h-full object-cover" style={{ filter: 'saturate(0.75)' }} />
+                  <img src={data.personal.avatar} alt={data.personal.name || "Profile Avatar"} className="w-full h-full object-cover" style={{ filter: 'saturate(0.75)' }} />
                   <div className="absolute inset-0" style={{ background: 'linear-gradient(135deg, rgba(0,229,255,0.05), rgba(57,255,159,0.05))' }} />
                 </div>
                 <div className="absolute -bottom-3 -right-3 md:right-8 flex items-center gap-2 px-4 py-2 rounded-xl text-xs font-semibold"

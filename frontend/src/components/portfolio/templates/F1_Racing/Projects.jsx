@@ -321,7 +321,7 @@ function AssetImage({ src, alt, style, className, fallback = null }) {
   return (
     <img
       src={src}
-      alt={alt}
+      alt={alt || "Image"}
       className={className}
       style= {style}
       onError={() => setFailed(true)}

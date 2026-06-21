@@ -510,7 +510,7 @@ export default function TransparentDesktopOverlayOS() {
                   <div className="w-full md:w-48 flex flex-col items-center shrink-0">
                     <div className="relative w-32 h-32 rounded-3xl overflow-hidden border border-white/20 bg-slate-900 shadow-xl group mb-4">
                       {avatar ? (
-                        <img src={avatar} alt={name} className="w-full h-full object-cover" />
+                        <img src={avatar} alt={name || "Profile Avatar"} className="w-full h-full object-cover" />
                       ) : (
                         <div className="w-full h-full flex items-center justify-center bg-indigo-950 text-indigo-200">
                           <User className="w-12 h-12" />
@@ -610,7 +610,7 @@ export default function TransparentDesktopOverlayOS() {
                           <div className="h-32 w-full overflow-hidden border-b border-white/5 relative">
                             <img
                               src={project.image}
-                              alt={project.title}
+                              alt={project.title || "Project Screenshot"}
                               className="w-full h-full object-cover group-hover:scale-105 transition-transform duration-500 opacity-80 group-hover:opacity-100"
                             />
                             <div className="absolute inset-0 bg-gradient-to-t from-slate-950/80 to-transparent opacity-60" />
@@ -799,7 +799,7 @@ export default function TransparentDesktopOverlayOS() {
                         </p>
                         <div className="mt-4 flex items-center space-x-3.5">
                           {testi.avatar && (
-                            <img src={testi.avatar} alt={testi.name} className="w-9 h-9 rounded-xl object-cover border border-white/10" />
+                            <img src={testi.avatar} alt={testi.name || "Profile Avatar"} className="w-9 h-9 rounded-xl object-cover border border-white/10" />
                           )}
                           <div>
                             <h4 className="text-xs font-bold text-white">{testi.name}</h4>
@@ -973,7 +973,7 @@ export default function TransparentDesktopOverlayOS() {
             <div className="p-4 rounded-xl border border-white/10 bg-slate-900/20 backdrop-blur-md flex items-center space-x-4">
               <div className="w-14 h-14 rounded-2xl overflow-hidden border border-white/10 shrink-0">
                 {avatar ? (
-                  <img src={avatar} alt={name} className="w-full h-full object-cover" />
+                  <img src={avatar} alt={name || "Profile Avatar"} className="w-full h-full object-cover" />
                 ) : (
                   <div className="w-full h-full flex items-center justify-center bg-indigo-950 text-indigo-300">
                     <User className="w-6 h-6" />

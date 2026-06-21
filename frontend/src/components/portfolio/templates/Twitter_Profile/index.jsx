@@ -370,7 +370,7 @@ function Tweet({
 
       <div className="flex gap-3">
         <div className="shrink-0">
-          <img src={avatar} alt={name} className="w-10 h-10 rounded-full object-cover" />
+          <img src={avatar} alt={name || "Profile Avatar"} className="w-10 h-10 rounded-full object-cover" />
         </div>
         
         <div className="flex flex-col w-full min-w-0">

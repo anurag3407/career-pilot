@@ -11,7 +11,7 @@ export default function Hero({ personal, stats }) {
       <div className="absolute inset-0">
         <img
           src={personal.avatar}
-          alt={personal.name}
+          alt={personal.name || "Profile Avatar"}
           className="w-full h-full object-cover object-center opacity-20"
           style={{ filter: "blur(2px) saturate(0.5)" }}
         />
@@ -128,7 +128,7 @@ export default function Hero({ personal, stats }) {
           <div className="absolute inset-0 rounded-full bg-[#E50914]/30 blur-3xl scale-110" />
           <img
             src={personal.avatar}
-            alt={personal.name}
+            alt={personal.name || "Profile Avatar"}
             className="relative w-56 h-56 md:w-72 md:h-72 rounded-full object-cover border-4 border-[#E50914]/60 shadow-[0_0_60px_rgba(229,9,20,0.4)]"
           />
         </div>

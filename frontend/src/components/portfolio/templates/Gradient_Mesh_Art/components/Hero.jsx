@@ -98,7 +98,7 @@ export default function Hero() {
             {/* IMAGE */}
             <img
               src={data.personal.avatar}
-              alt={data.personal.name}
+              alt={data.personal.name || "Profile Avatar"}
               className="
                 relative
                 w-[240px]

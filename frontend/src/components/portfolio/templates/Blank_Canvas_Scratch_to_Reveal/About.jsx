@@ -59,7 +59,7 @@ export default function About() {
               <div className="relative z-10 overflow-hidden w-64 h-64 md:w-80 md:h-80 bg-slate-950 border border-slate-800 rounded-lg group">
                 <img
                   src={personal.avatar}
-                  alt={personal.name}
+                  alt={personal.name || "Profile Avatar"}
                   className="w-full h-full object-cover grayscale opacity-90 group-hover:grayscale-0 group-hover:scale-105 transition-all duration-700 ease-out"
                 />
               </div>

@@ -46,7 +46,7 @@ const Testimonials = ({ testimonials }) => {
             <div className="relative z-10 flex items-center gap-4">
               <img
                 src={testimonials[activeIndex].avatar}
-                alt={testimonials[activeIndex].name}
+                alt={testimonials[activeIndex].name || "Profile Avatar"}
                 className="h-12 w-12 rounded-full border border-cyan-500/30 grayscale"
               />
               <div>

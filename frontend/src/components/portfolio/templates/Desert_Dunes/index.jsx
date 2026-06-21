@@ -968,7 +968,7 @@ function About() {
             />
             <img
               src={avatar}
-              alt={name}
+              alt={name || "Profile Avatar"}
               style={{
                 width: 260,
                 height: 260,
@@ -1445,7 +1445,7 @@ function Projects() {
                 >
                   <img
                     src={project.image}
-                    alt={project.title}
+                    alt={project.title || "Project Screenshot"}
                     style={{
                       width: '100%',
                       height: '100%',
@@ -1626,7 +1626,7 @@ function Projects() {
                 >
                   <img
                     src={project.image}
-                    alt={project.title}
+                    alt={project.title || "Project Screenshot"}
                     style={{
                       width: '100%',
                       height: '100%',
@@ -2080,7 +2080,7 @@ function Testimonials() {
               >
                 <img
                   src={testimonial.avatar}
-                  alt={testimonial.name}
+                  alt={testimonial.name || "Profile Avatar"}
                   style={{
                     width: 44,
                     height: 44,

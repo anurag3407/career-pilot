@@ -245,7 +245,7 @@ const ZenBambooForestWind = () => {
                       className="aspect-[4/3] w-full"
                     >
                       <div className="absolute inset-0 bg-[#2C3E35]/20 group-hover:bg-transparent transition-colors duration-700 z-10 mix-blend-overlay"></div>
-                      <img src={project.image} alt={project.title} className="w-full h-full object-cover filter sepia-[0.2] group-hover:sepia-0 transition-all duration-700" />
+                      <img src={project.image} alt={project.title || "Project Screenshot"} className="w-full h-full object-cover filter sepia-[0.2] group-hover:sepia-0 transition-all duration-700" />
                     </motion.div>
                   </div>
                   

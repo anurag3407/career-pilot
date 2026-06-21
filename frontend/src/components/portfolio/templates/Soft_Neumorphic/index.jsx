@@ -101,7 +101,7 @@ const Hero = () => {
         <motion.div className="flex flex-col items-center gap-8" {...fadeUp(0.2)}>
           <div className={`p-3 ${neu.circle}`}>
             <div className={`p-2 ${neu.circle}`}>
-              <img src={personal.avatar} alt={personal.name} className="w-48 h-48 md:w-56 md:h-56 rounded-full object-cover" />
+              <img src={personal.avatar} alt={personal.name || "Profile Avatar"} className="w-48 h-48 md:w-56 md:h-56 rounded-full object-cover" />
             </div>
           </div>
           <div className="grid grid-cols-3 gap-4 w-full">
@@ -141,7 +141,7 @@ const About = () => {
         <div className="grid md:grid-cols-2 gap-10 items-center">
           <motion.div {...fadeUp(0.1)}>
             <div className={`${neu.raised} p-6 flex flex-col items-center gap-5`}>
-              <img src={personal.avatar} alt={personal.name} className="w-36 h-36 rounded-full object-cover shadow-[4px_4px_12px_#b8bec7,-4px_-4px_12px_#ffffff]" />
+              <img src={personal.avatar} alt={personal.name || "Profile Avatar"} className="w-36 h-36 rounded-full object-cover shadow-[4px_4px_12px_#b8bec7,-4px_-4px_12px_#ffffff]" />
               <div className="text-center">
                 <h3 className="text-xl font-bold text-gray-600 font-serif">{personal.name}</h3>
                 <p className="text-sm text-indigo-400 mt-1">{personal.title}</p>
@@ -230,7 +230,7 @@ const Projects = () => {
           {projects.map((project, i) => (
             <motion.div key={project.title} {...fadeUp(i * 0.08)} className={`${neu.raised} overflow-hidden flex flex-col group`}>
               <div className="relative overflow-hidden rounded-t-2xl h-44">
-                <img src={project.image} alt={project.title} className="w-full h-full object-cover transition-transform duration-500 group-hover:scale-105" />
+                <img src={project.image} alt={project.title || "Project Screenshot"} className="w-full h-full object-cover transition-transform duration-500 group-hover:scale-105" />
                 <div className="absolute inset-0 bg-gradient-to-t from-[#e0e5ec]/80 to-transparent" />
               </div>
               <div className="p-5 flex flex-col flex-1 gap-3">
@@ -311,7 +311,7 @@ const Testimonials = () => {
               <div className={`w-10 h-10 flex items-center justify-center ${neu.inset} text-indigo-300 text-2xl font-serif`}>"</div>
               <p className="text-gray-500 leading-relaxed text-sm flex-1 italic">"{t.text}"</p>
               <div className="flex items-center gap-4">
-                <img src={t.avatar} alt={t.name} className="w-12 h-12 rounded-full object-cover shadow-[3px_3px_8px_#b8bec7,-3px_-3px_8px_#ffffff]" />
+                <img src={t.avatar} alt={t.name || "Profile Avatar"} className="w-12 h-12 rounded-full object-cover shadow-[3px_3px_8px_#b8bec7,-3px_-3px_8px_#ffffff]" />
                 <div>
                   <p className="font-semibold text-gray-600 text-sm">{t.name}</p>
                   <p className="text-xs text-indigo-400">{t.role}</p>

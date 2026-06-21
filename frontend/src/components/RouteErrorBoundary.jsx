@@ -3,7 +3,7 @@ import React from 'react';
 class RouteErrorBoundary extends React.Component {
   constructor(props) {
     super(props);
-    this.state = { hasError: false, error: null, errorInfo: null };
+    this.state = { hasError: false, error: null, errorInfo: null, retryCount: 0 };
   }
 
   static getDerivedStateFromError(error) {
@@ -14,6 +14,16 @@ class RouteErrorBoundary extends React.Component {
     this.setState({ error, errorInfo });
     console.error('RouteErrorBoundary caught an error:', error, errorInfo);
   }
+
+  handleRetry = () => {
+    window.stop(); // Cancel existing in-flight fetches cleanly
+    this.setState(prev => ({
+      hasError: false,
+      error: null,
+      errorInfo: null,
+      retryCount: prev.retryCount + 1
+    }));
+  };
 
   render() {
     if (this.state.hasError) {
@@ -34,17 +44,17 @@ class RouteErrorBoundary extends React.Component {
             </div>
 
             <button
-              onClick={() => window.location.reload()}
+              onClick={this.handleRetry}
               className="mt-6 px-6 py-3 bg-red-500 hover:bg-red-600 text-white rounded-xl font-semibold transition-colors"
             >
-              Reload Page
+              Try again
             </button>
           </div>
         </div>
       );
     }
 
-    return this.props.children;
+    return <React.Fragment key={this.state.retryCount}>{this.props.children}</React.Fragment>;
   }
 }
 

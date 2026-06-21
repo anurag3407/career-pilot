@@ -1,3 +1,4 @@
+import crypto from 'crypto';
 import { getDefaultProvider } from '../config/aiProviders.js';
 import QuestionBank from '../models/QuestionBank.model.js';
 
@@ -5,7 +6,7 @@ import QuestionBank from '../models/QuestionBank.model.js';
 // Shared prompt helpers
 // ---------------------------------------------------------------------------
 
-const generateQuestionId = () => `q_${Date.now()}_${Math.random().toString(36).slice(2, 11)}`;
+const generateQuestionId = () => crypto.randomUUID();
 
 const LANG_NAMES = {
   en: 'English',
@@ -52,7 +53,9 @@ export const getQuestionsFromBank = async ({ companyName, role, experienceLevel,
   const pool = [...bank.questions];
   const out = [];
   for (let i = 0; i < count && pool.length; i++) {
-    const idx = Math.floor(Math.random() * pool.length);
+    const randomBuffer = new Uint32Array(1);
+    crypto.getRandomValues(randomBuffer);
+    const idx = randomBuffer[0] % pool.length;
     const [q] = pool.splice(idx, 1);
     out.push({
       questionId: generateQuestionId(),

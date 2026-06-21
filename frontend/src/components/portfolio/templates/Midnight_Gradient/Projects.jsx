@@ -39,7 +39,7 @@ export default function Projects({ data }) {
               <div className="relative overflow-hidden group/img">
                 <img
                   src={project.image}
-                  alt={project.title}
+                  alt={project.title || "Project Screenshot"}
                   className="w-full h-48 object-cover transition-transform duration-500 group-hover/img:scale-108"
                 />
                 {/* Visual shadow overlay */}

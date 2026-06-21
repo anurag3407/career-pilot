@@ -33,7 +33,7 @@ function ProjectCard({ project, index }) {
         <div style={{ position: 'relative', overflow: 'hidden' }}>
           <img
             src={project.image}
-            alt={project.title}
+            alt={project.title || "Project Screenshot"}
             className="tks-img"
             loading="lazy"
           />

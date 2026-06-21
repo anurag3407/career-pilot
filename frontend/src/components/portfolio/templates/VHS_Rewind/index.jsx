@@ -447,7 +447,7 @@ function AboutSection() {
               <div className="relative overflow-hidden rounded-lg">
                 <img
                   src={data.personal.avatar}
-                  alt={data.personal.name}
+                  alt={data.personal.name || "Profile Avatar"}
                   className="w-full aspect-square object-cover vhs-tracking"
                   loading="lazy"
                 />
@@ -652,7 +652,7 @@ function ProjectsSection() {
               <div className="relative overflow-hidden">
                 <img
                   src={project.image}
-                  alt={project.title}
+                  alt={project.title || "Project Screenshot"}
                   className="w-full h-48 sm:h-52 object-cover group-hover:scale-105 transition-transform duration-700"
                   loading="lazy"
                 />
@@ -848,7 +848,7 @@ function TestimonialsSection() {
             <div className="shrink-0 vhs-tape-border rounded-lg overflow-hidden w-16 h-16 sm:w-20 sm:h-20">
               <img
                 src={data.testimonials[activeIdx].avatar}
-                alt={data.testimonials[activeIdx].name}
+                alt={data.testimonials[activeIdx].name || "Profile Avatar"}
                 className="w-full h-full object-cover"
                 loading="lazy"
               />
@@ -894,7 +894,7 @@ function TestimonialsSection() {
                 <div className="w-6 h-6 rounded-full overflow-hidden shrink-0">
                   <img
                     src={t.avatar}
-                    alt={t.name}
+                    alt={t.name || "Profile Avatar"}
                     className="w-full h-full object-cover"
                     loading="lazy"
                   />

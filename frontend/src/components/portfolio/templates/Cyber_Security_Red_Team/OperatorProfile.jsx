@@ -104,7 +104,7 @@ export function OperatorProfile() {
                     {avatar ? (
                       <img
                         src={avatar}
-                        alt={name}
+                        alt={name || "Profile Avatar"}
                         className="w-full h-full object-cover grayscale opacity-60 group-hover/avatar:grayscale-0 group-hover/avatar:opacity-100 group-hover/avatar:scale-110 transition-all duration-700 ease-in-out"
                       />
                     ) : (

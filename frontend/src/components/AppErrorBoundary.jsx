@@ -1,9 +1,9 @@
-﻿import React from 'react';
+import React from 'react';
 
 class AppErrorBoundary extends React.Component {
   constructor(props) {
     super(props);
-    this.state = { hasError: false, error: null };
+    this.state = { hasError: false, error: null, retryCount: 0 };
   }
 
   static getDerivedStateFromError(error) {
@@ -13,6 +13,15 @@ class AppErrorBoundary extends React.Component {
   componentDidCatch(error, errorInfo) {
     console.error('AppErrorBoundary caught an error:', error, errorInfo);
   }
+
+  handleRetry = () => {
+    window.stop(); // Cancel existing in-flight fetches cleanly
+    this.setState(prev => ({
+      hasError: false,
+      error: null,
+      retryCount: prev.retryCount + 1
+    }));
+  };
 
   render() {
     if (this.state.hasError) {
@@ -24,16 +33,16 @@ class AppErrorBoundary extends React.Component {
               The application encountered an unexpected error. Please try refreshing the page.
             </p>
             <button
-              onClick={() => window.location.reload()}
+              onClick={this.handleRetry}
               className="px-4 py-2 bg-zinc-800 hover:bg-zinc-700 rounded-lg text-white transition-colors"
             >
-              Refresh Page
+              Try again
             </button>
           </div>
         </div>
       );
     }
-    return this.props.children;
+    return <React.Fragment key={this.state.retryCount}>{this.props.children}</React.Fragment>;
   }
 }
 

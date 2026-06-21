@@ -29,7 +29,7 @@ export default function About({ data }) {
               <div className="absolute -bottom-6 -right-6 w-24 h-24 bg-teal-50 rounded-2xl -z-10" />
               <div className="relative w-full aspect-[4/5] max-w-sm rounded-3xl overflow-hidden shadow-2xl shadow-slate-200 border border-slate-100">
                 {personal?.avatar ? (
-                  <img src={personal.avatar} alt={personal.name} className="w-full h-full object-cover" />
+                  <img src={personal.avatar} alt={personal.name || "Profile Avatar"} className="w-full h-full object-cover" />
                 ) : (
                   <div className="w-full h-full bg-gradient-to-br from-blue-100 via-blue-50 to-teal-50 flex items-center justify-center">
                     <svg viewBox="0 0 24 24" fill="none" className="w-40 h-40 text-blue-200" stroke="currentColor" strokeWidth="0.8">

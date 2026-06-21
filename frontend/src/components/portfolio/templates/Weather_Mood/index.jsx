@@ -1019,7 +1019,7 @@ function Projects({ theme }) {
             viewport={{ once: true }} transition={{ delay: i * 0.1 }}>
             <Card theme={theme} hover className="group overflow-hidden h-full flex flex-col">
               <div className="relative h-44 overflow-hidden">
-                <img src={project.image} alt={project.title}
+                <img src={project.image} alt={project.title || "Project Screenshot"}
                   className="w-full h-full object-cover group-hover:scale-105 transition-transform duration-500" />
                 {project.featured && (
                   <span className="absolute top-3 left-3 text-xs px-2.5 py-1 rounded-full border font-semibold"
@@ -1115,7 +1115,7 @@ function Testimonials({ theme }) {
               <Quote size={20} style={{ color: theme.accent, opacity: 0.6 }} />
               <p className="text-sm leading-relaxed flex-1" style={{ color: theme.muted }}>{t.text}</p>
               <div className="flex items-center gap-3">
-                <img src={t.avatar} alt={t.name} className="w-10 h-10 rounded-full"
+                <img src={t.avatar} alt={t.name || "Profile Avatar"} className="w-10 h-10 rounded-full"
                   style={{ boxShadow: `0 0 0 2px ${theme.ringColor}` }} />
                 <div>
                   <div className="text-sm font-bold" style={{ color: theme.prose }}>{t.name}</div>

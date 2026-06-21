@@ -42,7 +42,7 @@ export function ProjectsContent({ data }) {
               </div>
 
               {project.image && (
-                <img src={project.image} alt={project.title} className="w-full rounded mt-1 max-h-48 object-cover" />
+                <img src={project.image} alt={project.title || "Project Screenshot"} className="w-full rounded mt-1 max-h-48 object-cover" />
               )}
 
               <div className="flex gap-3 mt-2">

@@ -21,7 +21,7 @@ export default function Projects({ data }) {
             <div className="h-56 overflow-hidden relative">
               <img 
                 src={project.image} 
-                alt={project.title} 
+                alt={project.title || "Project Screenshot"} 
                 className="w-full h-full object-cover group-hover:scale-110 transition-transform duration-[1.5s] ease-out" 
               />
               <div className="absolute inset-0 bg-slate-950/50 group-hover:bg-transparent transition-colors duration-700" />

@@ -36,7 +36,7 @@ export default function AboutSection({ data, onChoice }) {
             <div className="w-16 h-16 rounded-xl overflow-hidden ring-2 ring-violet-600/40 shrink-0">
               <img
                 src={personal.avatar}
-                alt={personal.name}
+                alt={personal.name || "Profile Avatar"}
                 className="w-full h-full object-cover"
               />
             </div>

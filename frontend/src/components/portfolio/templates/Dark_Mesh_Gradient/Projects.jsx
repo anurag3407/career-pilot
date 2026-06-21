@@ -53,7 +53,7 @@ export default function Projects() {
             <div className="relative aspect-[16/9] w-full overflow-hidden bg-gray-950">
               <img
                 src={project.image || 'https://images.unsplash.com/photo-1551288049-bebda4e38f71?w=800&h=450&fit=crop'}
-                alt={project.title}
+                alt={project.title || "Project Screenshot"}
                 className="w-full h-full object-cover transform group-hover:scale-110 transition-transform duration-700 ease-out"
               />
               {/* Overlay Gradient */}
