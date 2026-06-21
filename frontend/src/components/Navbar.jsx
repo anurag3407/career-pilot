@@ -3,6 +3,7 @@ import { Link, useLocation } from 'react-router-dom'
 import { useAuth } from '../hooks/useAuth'
 import { useTheme } from '../hooks/useTheme'
 import { motion, AnimatePresence } from 'framer-motion'
+import logger from '../utils/logger';
 import {
   Search,
   FileText,
@@ -50,7 +51,7 @@ export default function Navbar() {
     try {
       await logout()
     } catch (error) {
-      console.error('Logout error:', error)
+      logger.error('Logout error:', error);
     }
   }
 

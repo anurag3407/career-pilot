@@ -4,6 +4,7 @@ import { motion } from 'framer-motion';
 import { enhanceApi } from '../services/api';
 import { Skeleton } from '../components/ui/Skeleton';
 import toast from 'react-hot-toast';
+import logger from '../utils/logger';
 
 const EmailGenerator = () => {
   const [formData, setFormData] = useState({ resume: '', jobDesc: '', tone: 'Professional' });
@@ -18,7 +19,7 @@ const EmailGenerator = () => {
       const response = await enhanceApi.generateEmail(formData);
       setResults(response);
     } catch (error) {
-      console.error("Error generating emails:", error);
+      logger.error('Error generating emails:', error);
       toast.error("Failed to generate emails. Please try again.");
     } finally {
       setLoading(false);

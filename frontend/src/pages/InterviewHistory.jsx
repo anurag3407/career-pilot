@@ -1,6 +1,7 @@
 import { useEffect, useState } from "react";
 import { useNavigate } from "react-router-dom";
 import { interviewApi } from "../services/api";
+import logger from '../utils/logger';
 
 export default function InterviewHistory() {
   const [history, setHistory] = useState([]);
@@ -15,8 +16,6 @@ export default function InterviewHistory() {
   const loadHistory = async () => {
     try {
       const response = await interviewApi.getHistory();
-
-      console.log("History Response:", response);
 
       setHistory(response.data || []);
     } catch (error) {

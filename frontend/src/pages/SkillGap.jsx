@@ -4,7 +4,7 @@ import { motion } from 'framer-motion';
 import { enhanceApi, resumeApi } from '../services/api';
 import toast from 'react-hot-toast';
 import CopyButton from '../components/CopyButton';
-
+import logger from '../utils/logger';
 const SkillGap = () => {
   const [resumes, setResumes] = useState([]);
   const [selectedResumeId, setSelectedResumeId] = useState('');
@@ -58,7 +58,7 @@ const SkillGap = () => {
       const response = await enhanceApi.analyzeSkillGap(resumeText, jobDescription);
       setResults(response.data);
     } catch (error) {
-      console.error('Skill gap analysis error:', error);
+      logger.error('Skill gap analysis error:', error);
       toast.error(error.message || 'Failed to analyze skill gap. Please try again.');
     } finally {
       setLoading(false);

@@ -1,6 +1,6 @@
 import { useCallback, useEffect, useRef } from 'react';
 import { jobsApi } from '../services/api';
-
+import logger from '../utils/logger';
 // Global cache to persist across component remounts
 // Format: { '{"query":"...","filters":{...}}': { data, timestamp } | 'IN_FLIGHT' }
 const prefetchCache = new Map();
@@ -53,7 +53,7 @@ export function usePrefetch() {
       .catch(error => {
         // Clear cache so it can be retried later
         prefetchCache.delete(cacheKey);
-        console.warn('Prefetch failed for query:', query, error);
+        logger.warn('Prefetch failed for query:', query, error);
         return null;
       });
 

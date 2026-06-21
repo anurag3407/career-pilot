@@ -1,7 +1,7 @@
 import React, { useState } from 'react';
 import { motion, AnimatePresence } from 'framer-motion';
 import { ExternalLink, Github, Code2, ChevronRight, ChevronLeft } from 'lucide-react';
-
+import logger from '../../../../utils/logger';
 export default function ProjectsSection({ data, onChoice }) {
   const projects = data.projects ?? [];
   const [activeIndex, setActiveIndex] = useState(0);

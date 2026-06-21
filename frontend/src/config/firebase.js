@@ -2,7 +2,7 @@ import { initializeApp } from 'firebase/app';
 import { getAuth } from 'firebase/auth';
 import { getFirestore } from 'firebase/firestore';
 import { getStorage } from 'firebase/storage';
-
+import logger from '../utils/logger';
 const apiKey = import.meta.env.VITE_FIREBASE_API_KEY;
 
 // Check if the key is completely missing or left as a placeholder string
@@ -41,10 +41,10 @@ if (isFirebaseConfigValid) {
   db = getFirestore(app);
   storage = getStorage(app);
 } else {
-  console.warn(
-    "⚠️ careerpilot: Firebase API key is missing or unconfigured. " +
-    "Authentication, database operations, and storage features are offline. " +
-    "Create a valid local .env file to enable these integrations."
+  logger.warn(
+    'careerpilot: Firebase API key is missing or unconfigured. ' +
+    'Authentication, database operations, and storage features are offline. ' +
+    'Create a valid local .env file to enable these integrations.'
   );
 }
 

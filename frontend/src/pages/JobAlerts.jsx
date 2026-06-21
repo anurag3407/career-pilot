@@ -1,5 +1,6 @@
 import { useState, useEffect } from 'react';
 import { motion } from 'framer-motion';
+import logger from '../utils/logger';
 import {
   Bell,
   Plus,
@@ -43,7 +44,7 @@ export default function JobAlerts() {
       const response = await jobAlertsApi.getStats();
       setStats(response.stats);
     } catch (err) {
-      console.error('Failed to fetch stats:', err);
+      logger.error('Failed to fetch stats:', err);
     } finally {
       setLoading(false);
     }

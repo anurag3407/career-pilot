@@ -1,7 +1,7 @@
 import React, { Suspense, useMemo, useEffect, useState } from 'react';
 import { useParams } from 'react-router-dom';
 import { PortfolioProvider } from '../context/PortfolioContext';
-
+import logger from '../utils/logger';
 export default function TemplatePreviewOnly() {
   const { templateId } = useParams();
   const [portfolioData, setPortfolioData] = useState(null);
@@ -13,7 +13,7 @@ export default function TemplatePreviewOnly() {
       try {
         setPortfolioData(JSON.parse(draft));
       } catch (e) {
-        console.error('Error parsing ai_portfolio_draft', e);
+        logger.error('Error parsing ai_portfolio_draft', e);
       }
     }
     

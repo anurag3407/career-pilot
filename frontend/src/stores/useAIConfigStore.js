@@ -1,6 +1,6 @@
 import { create } from 'zustand';
 import { encryptKey, decryptKey } from '../utils/encryption';
-
+import logger from '../utils/logger';
 // ---------------------------------------------------------------------------
 // Provider metadata – UI labels, default models, key URLs, etc.
 // ---------------------------------------------------------------------------
@@ -64,7 +64,7 @@ const persist = (state) => {
     };
     localStorage.setItem(STORAGE_KEY, JSON.stringify(serializable));
   } catch (e) {
-    console.error('[useAIConfigStore] Failed to persist:', e);
+    logger.error('[useAIConfigStore] Failed to persist:', e);
   }
 };
 
@@ -116,7 +116,7 @@ const migrateFromLegacy = () => {
 
     return migrated;
   } catch (e) {
-    console.error('[useAIConfigStore] Legacy migration failed:', e);
+    logger.error('[useAIConfigStore] Legacy migration failed:', e);
     return null;
   }
 };
@@ -144,7 +144,7 @@ const hydrate = () => {
       return migrated;
     }
   } catch (e) {
-    console.error('[useAIConfigStore] Hydration failed:', e);
+    logger.error('[useAIConfigStore] Hydration failed:', e);
   }
 
   return defaults;

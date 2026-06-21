@@ -8,6 +8,7 @@ import { decryptKey } from '../utils/encryption'
 import ReactMarkdown from 'react-markdown'
 import { triggerConfetti } from '../utils/confetti'
 import ResumeAnalysisSkeleton from '../components/ui/ResumeAnalysisSkeleton'
+import logger from '../utils/logger';
 import {
   Target,
   TrendingUp,
@@ -445,7 +446,7 @@ export default function Enhance() {
           improvementsCount: atsResponse.data?.improvements?.length || 0
         })
       } catch (err) {
-        console.error('Failed to log ATS score run:', err)
+        logger.error('Failed to log ATS score run:', err);
       }
 
       toast.success('Senior-level analysis complete!')
@@ -466,7 +467,7 @@ const copyKeywordToClipboard = async (keyword) => {
       setCopiedKeyword((current) => (current === keyword ? null : current))
     }, 2000)
   } catch (err) {
-    console.error('Failed to copy keyword:', err)
+    logger.error('Failed to copy keyword:', err)
     toast.error('Could not copy keyword to clipboard. Please try again.')
   }
 }
@@ -524,7 +525,7 @@ if (aiConfigStr) {
       headers['X-AI-Model'] = aiConfig.model
     }
   } catch (e) {
-    console.error(e)
+    logger.error('enhance operation failed:', e);
   }
 }
 
@@ -627,7 +628,7 @@ for (const part of parts) {
         tags: ['AI-Enhanced', jobRole]
       })
     } catch (versionErr) {
-      console.error('Failed to save version snapshot:', versionErr)
+      logger.error('Failed to save version snapshot:', versionErr);
     }
 
     toast.success('Resume enhanced successfully!')
@@ -639,12 +640,11 @@ for (const part of parts) {
     })
 
   } catch (error) {
-    console.error(error)
+    logger.error('enhance failed:', error);
     toast.error(error.message || 'Failed to enhance resume')
   } finally {
     setEnhancing(false)
   }
-    }
 }
 
   const handleGeneratePortfolio = async () => {

@@ -1,5 +1,5 @@
 import { useState, useRef } from "react";
-
+import logger from '../utils/logger';
 const TONES = ["formal", "conversational", "enthusiastic"];
 const API_URL = import.meta.env.VITE_API_URL || "http://localhost:5001";
 
@@ -66,7 +66,7 @@ const CoverLetter = () => {
       setResumeText(text);
       setStep(2); // ← advance only after successful extraction
     } catch (err) {
-      console.error(err);
+      logger.error('cover letter generation failed:', err);
       setError(err.message || "Failed to read resume. Please try a .txt file.");
       setResumeFile(null);
       setResumeText("");

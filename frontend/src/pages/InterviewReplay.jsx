@@ -1,3 +1,4 @@
+import logger from '../utils/logger';
 import { useEffect, useState } from "react";
 import { useParams } from "react-router-dom";
 import { interviewApi } from "../services/api";
@@ -15,11 +16,9 @@ export default function InterviewReplay() {
     try {
       const response = await interviewApi.getInterview(id);
 
-      console.log("Interview Details:", response);
-
       setInterview(response.data);
     } catch (error) {
-      console.error(error);
+      logger.error('failed to load interview replay:', error);
     }
   };
 

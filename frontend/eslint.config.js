@@ -30,7 +30,8 @@ export default [
       'no-empty': 'off',
       'react-hooks/exhaustive-deps': 'warn',
       'no-undef': 'warn',
-      'react-compiler/react-compiler': 'off'
+      'react-compiler/react-compiler': 'off',
+      'no-console': ['warn', { allow: ['warn', 'error'] }],
     },
   },
 ]

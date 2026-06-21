@@ -46,9 +46,7 @@ export default function Analytics() {
       setLoading(true)
       setError('')
       try {
-        const response = await interviewApi.getAnalytics()
-        console.log("Analytics Response:", response)
-        console.log("Analytics Data:", response.data)
+        const response = await interviewApi.getAnalytics();
         const payload = response.data || { sessions: [], summary: DEFAULT_SUMMARY }
         setAnalytics({
           sessions: Array.isArray(payload.sessions) ? payload.sessions : [],

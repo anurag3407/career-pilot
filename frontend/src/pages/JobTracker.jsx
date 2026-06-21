@@ -1,6 +1,7 @@
 import { useState, useEffect } from "react";
 import { DragDropContext, Droppable, Draggable } from "@hello-pangea/dnd";
 import { toast } from "react-hot-toast";
+import logger from '../utils/logger';
 import {
   Briefcase,
   MapPin,
@@ -249,7 +250,7 @@ const JobTracker = () => {
       toast.success("Status updated!");
       fetchStats();
     } catch (error) {
-      console.error("Error updating status:", error);
+      logger.error('Error updating status:', error); 
       if (isNetworkError(error)) {
         queueOfflineStatusChange(jobId, newStatus, previousJobs);
       } else {
@@ -292,7 +293,7 @@ const JobTracker = () => {
       toast.success("Status updated!");
       fetchStats();
     } catch (error) {
-      console.error("Error updating status:", error);
+      logger.error('Error updating status:', error); 
       if (isNetworkError(error)) {
         queueOfflineStatusChange(draggableId, newStatus, previousJobs);
       } else {
@@ -322,7 +323,7 @@ const JobTracker = () => {
       toast.success("Job removed from tracker");
       fetchStats();
     } catch (error) {
-      console.error("Error deleting job:", error);
+      logger.error('Error deleting job:', error);
       toast.error("Failed to remove job", { id: `tracked-job-delete-error-${jobId}` });
     }
   };

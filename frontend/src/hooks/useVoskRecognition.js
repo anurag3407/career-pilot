@@ -1,5 +1,5 @@
 import { useState, useRef, useCallback, useEffect } from 'react';
-
+import logger from '../utils/logger';
 let voskModule = null;
 let voskModel = null;
 
@@ -37,7 +37,7 @@ export const useVoskRecognition = () => {
             setIsLoading(false);
             return true;
         } catch (err) {
-            console.error('Vosk initialization error:', err);
+            logger.error('Vosk initialization error:', err);
             setError('Failed to load speech model. Using fallback.');
             setIsLoading(false);
             return false;
@@ -97,7 +97,7 @@ export const useVoskRecognition = () => {
             setIsListening(true);
             return true;
         } catch (err) {
-            console.error('Start listening error:', err);
+            logger.error('Start listening error:', err);
             setError('Failed to start speech recognition.');
             return false;
         }
@@ -112,7 +112,7 @@ export const useVoskRecognition = () => {
         if (audioContextRef.current) {
             // Check if audioContext is open before closing to avoid errors
             if (audioContextRef.current.state !== 'closed') {
-                audioContextRef.current.close().catch(err => console.error("Error closing AudioContext:", err));
+                audioContextRef.current.close().catch(err => logger.error('Error closing AudioContext:', err));
             }
             audioContextRef.current = null;
         }

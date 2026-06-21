@@ -2,6 +2,7 @@ import { useState, useRef, useCallback } from 'react';
 import { X, Image as ImageIcon, Hash, Send, Clock, FileText, Link as LinkIcon } from 'lucide-react';
 import { format } from 'date-fns';
 import SchedulePost from './SchedulePost';
+import logger from '../../utils/logger';
 
 const CATEGORIES = [
   { value: 'discussion', label: '💬 Discussion' },
@@ -150,7 +151,7 @@ export default function PostEditor({ onClose, onSubmit, editPost = null }) {
     try {
       await onSubmit(buildPostData());
     } catch (err) {
-      console.error('Failed to submit post:', err);
+      logger.error('Failed to submit post:', err);
       setError(err.message || 'Failed to submit post');
     } finally {
       setLoading(false);

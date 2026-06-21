@@ -3,6 +3,7 @@ import remarkGfm from 'remark-gfm';
 import { useState } from 'react';
 import { useSocket } from '../../hooks/useSocket';
 import { useAuth } from '../../hooks/useAuth';
+import logger from '../../utils/logger';
 import { 
   MoreHorizontal, 
   Reply, 
@@ -88,7 +89,7 @@ export default function MessageBubble({ message, isOwn, showAvatar, channelId, o
         }
       }
     } catch (error) {
-      console.error('Failed to copy message:', error);
+      logger.error('Failed to copy message:', error);
     }
   };
 

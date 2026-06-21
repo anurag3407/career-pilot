@@ -1,6 +1,6 @@
 import { io } from 'socket.io-client';
 import { auth } from '../config/firebase';
-
+import logger from '../utils/logger';
 const SOCKET_URL = import.meta.env.VITE_API_URL || 'http://localhost:5001';
 
 let socket = null;
@@ -12,7 +12,7 @@ export const initializeSocket = async () => {
 
   const user = auth.currentUser;
   if (!user) {
-    console.warn('Cannot initialize socket: No authenticated user');
+    logger.warn('Cannot initialize socket: No authenticated user');
     return null;
   }
 
@@ -28,11 +28,11 @@ export const initializeSocket = async () => {
   });
 
   socket.on('connect_error', (error) => {
-    console.error('❌ Socket connection error:', error.message);
+    logger.error('Socket connection error:', error.message);
   });
 
   socket.on('error', (error) => {
-    console.error('Socket error:', error);
+    logger.error('Socket error:', error);
   });
 
   return socket;

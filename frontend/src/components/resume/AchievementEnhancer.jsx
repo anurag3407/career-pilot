@@ -8,7 +8,6 @@ export default function AchievementEnhancer({
   const [loading, setLoading] = useState(false);
 
   const handleEnhance = async () => {
-    console.log("Enhance clicked");
   };
 
   return (

@@ -15,7 +15,7 @@ import { SkeletonProfile } from '../components/ui/Skeleton'
 import AnalysisSkeleton from '../components/github/AnalysisSkeleton'
 import { SkeletonList } from '../components/ui/Skeleton'
 import { getGithubUsername } from '../utils/github'
-
+import logger from '../utils/logger';
 const AVATAR_GRADIENTS = [
   'from-indigo-500 to-purple-600',
   'from-sky-500 to-indigo-600',
@@ -86,15 +86,15 @@ export default function UserProfile() {
       setActivity(activityRes.activity)
 
       if (statsResult.status === 'rejected') {
-        console.warn('Profile stats fetch failed:', statsResult.reason)
+        logger.warn('Profile stats fetch failed:', statsResult.reason);
       }
 
       if (activityResult.status === 'rejected') {
-        console.warn('Profile activity fetch failed:', activityResult.reason)
+        logger.warn('Profile activity fetch failed:', activityResult.reason);
       }
     } catch (err) {
       toast.error('Failed to load profile')
-      console.error('Profile fetch failed:', err)
+      logger.error('Profile fetch failed:', err);
     } finally {
       setLoading(false)
     }

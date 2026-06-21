@@ -7,6 +7,7 @@ import {
 } from 'lucide-react'
 import { jobTrackerApi } from '../services/api'
 import { SkeletonList } from './ui/Skeleton'
+import logger from '../utils/logger';
 
 export default function CompanyResearch({ companyName, industry = '', onClose }) {
   const [loading, setLoading] = useState(true)
@@ -27,7 +28,7 @@ export default function CompanyResearch({ companyName, industry = '', onClose })
           throw new Error('Invalid response structure')
         }
       } catch (err) {
-        console.error('Failed to load company research:', err)
+        logger.error('Failed to load company research:', err);
         setError('Could not retrieve company details. Please try again.')
       } finally {
         setLoading(false)

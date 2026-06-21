@@ -18,6 +18,7 @@ import ToolCard from '../../components/ToolCard';
 import { Link } from 'react-router-dom';
 import { motion } from 'framer-motion';
 import toast from 'react-hot-toast';
+import logger from '../../utils/logger';
 
 
 export default function ResumeHub() {
@@ -39,7 +40,7 @@ export default function ResumeHub() {
           : res.resumes || res.data?.resumes || [];
         setResumes(fetchedResumes);
       } catch {
-        console.error('Failed to fetch resumes');
+        logger.error('Failed to fetch resumes');
       } finally {
         setLoading(false);
       }
