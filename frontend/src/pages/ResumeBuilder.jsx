@@ -5,19 +5,23 @@ import { motion, AnimatePresence } from 'framer-motion'
 import { useNavigate } from 'react-router-dom'
 import {
   ArrowLeft, ArrowRight, CheckCircle, Plus, Trash2,
-  Save, FileText, User, Briefcase, GraduationCap, Code, Star
+  Save, FileText, User, Briefcase, GraduationCap, Code, Star, GripVertical,
+  LayoutTemplate
 } from 'lucide-react'
+import { DragDropContext, Droppable, Draggable } from '@hello-pangea/dnd'
 import { resumeApi } from '../services/api'
 import { toast } from 'react-hot-toast'
 import { cn } from '@/lib/utils'
 import AchievementEnhancer from "../components/resume/AchievementEnhancer";
 import PhoneInput from '../components/PhoneInput'
+import { getSectionOrderSuggestions } from "../utils/sectionReorderAnalyzer";
 import {
   validatePersonalStep,
   validateEducationStep,
   validateExperienceStep,
   hasErrors,
 } from '../utils/resumeValidation'
+import { analyzeResumeTone } from "../utils/toneAnalyzer";
 
 const STEPS = [
   { id: 'personal',   title: 'Personal Info', icon: User },
@@ -54,6 +58,10 @@ export default function ResumeBuilder() {
   const [claritySuggestions, setClaritySuggestions] = useState([])
   const [achievementScore, setAchievementScore] = useState(0)
   const [achievementSuggestions, setAchievementSuggestions] = useState([])
+  const [toneScore, setToneScore] = useState(100)
+  const [toneSuggestions, setToneSuggestions] = useState([])
+  const [sectionSuggestions, setSectionSuggestions] = useState([]);
+  
 
   // ── form state ──────────────────────────────────────────────────────────────
   const [personal, setPersonal] = useState({
@@ -73,6 +81,7 @@ export default function ResumeBuilder() {
     { name: '', tech: '', link: '', description: '' }
   ])
   const [skills, setSkills] = useState('')
+  const [sectionOrder, setSectionOrder] = useState(['education', 'experience', 'projects', 'skills'])
   const [resumeScore, setResumeScore] = useState(0)
   const [recommendedSections, setRecommendedSections] = useState([])
   const [atsScore, setAtsScore] = useState(0)
@@ -81,6 +90,33 @@ export default function ResumeBuilder() {
   const [selectedVersion, setSelectedVersion] = useState(null)
   
   const [recommendedSkills, setRecommendedSkills] = useState([])
+  const [profileScore, setProfileScore] = useState(0)
+  const [recommendedCertifications, setRecommendedCertifications] = useState([])
+  const [profileIssues, setProfileIssues] = useState([])
+  const [impactScores, setImpactScores] = useState({
+  experience: 0,
+  projects: 0,
+  skills: 0,
+  education: 0,
+  achievements: 0
+})
+const [careerGoals, setCareerGoals] = useState([
+  {
+    title: "Complete Resume",
+    completed: false
+  },
+  {
+    title: "Add Projects",
+    completed: false
+  },
+  {
+    title: "Improve ATS Score",
+    completed: false
+  }
+])
+
+const [goalProgress, setGoalProgress] = useState(0)
+
   useEffect(() => {
   const suggestions = []
   let score = 100
@@ -140,38 +176,289 @@ export default function ResumeBuilder() {
   setClaritySuggestions(suggestions)
 }, [personal, experience, projects])
 
- // ─────────────────── ATS Keyword Assessment Loop ───────────────────
-  useEffect(() => {
-    const keywords = [
-      "React", "JavaScript", "Git", "Node.js",
-      "API", "Leadership", "Teamwork", "Problem Solving"
-    ]
+useEffect(() => {
+  const content = [
+    personal.summary,
+    ...experience.map(e => e.description),
+    ...projects.map(p => p.description)
+  ].join(" ").toLowerCase()
 
-    const resumeText = `
-      ${personal.summary}
-      ${skills}
-      ${projects.map(p => p.description).join(" ")}
-      ${experience.map(e => e.description).join(" ")}
-    `.toLowerCase()
+  let score = 100
+  const suggestions = []
 
-    const foundKeywords = keywords.filter(keyword =>
-      resumeText.includes(keyword.toLowerCase())
-    )
+  const weakPhrases = {
+    "helped": "contributed to",
+    "worked on": "developed",
+    "stuff": "tasks",
+    "things": "responsibilities",
+    "awesome": "exceptional",
+    "cool": "innovative"
+  }
 
-    const missing = keywords.filter(
-      keyword => !foundKeywords.includes(keyword)
-    )
-
-    setMissingKeywords(missing)
-    setRecommendedSkills(missing.slice(0, 4))
-
-    if (keywords.length > 0) {
-      setAtsScore(
-        Math.round((foundKeywords.length / keywords.length) * 100)
+  Object.entries(weakPhrases).forEach(([weak, professional]) => {
+    if (content.includes(weak)) {
+      score -= 10
+      suggestions.push(
+        `Replace "${weak}" with "${professional}"`
       )
     }
-  }, [personal, skills, projects, experience])
+  })
 
+  if (
+    !content.match(
+      /developed|implemented|created|led|optimized|improved/i
+    )
+  ) {
+    score -= 15
+    suggestions.push(
+      "Use stronger professional action verbs."
+    )
+  }
+
+  setToneScore(Math.max(score, 0))
+  setToneSuggestions(suggestions)
+}, [personal, experience, projects])
+
+useEffect(() => {
+  setImpactScores({
+    experience:
+      experience.some(
+        e =>
+          e.description &&
+          e.description.length > 50
+      )
+        ? 90
+        : 40,
+
+    projects:
+      projects.some(
+        p =>
+          p.description &&
+          p.description.length > 50
+      )
+        ? 80
+        : 30,
+
+    skills:
+      skills.trim().length > 20
+        ? 75
+        : 25,
+
+    education:
+      education.some(e => e.school)
+        ? 70
+        : 20,
+
+    achievements:
+      achievementScore
+  })
+}, [
+  experience,
+  projects,
+  skills,
+  education,
+  achievementScore
+])
+
+useEffect(() => {
+  const updatedGoals = [
+    {
+      title: "Complete Resume",
+      completed: resumeScore >= 100
+    },
+    {
+      title: "Add Projects",
+      completed: projects.some(
+        p => p.name.trim()
+      )
+    },
+    {
+      title: "Improve ATS Score",
+      completed: atsScore >= 80
+    }
+  ]
+
+  setCareerGoals(updatedGoals)
+
+  const completed =
+    updatedGoals.filter(
+      g => g.completed
+    ).length
+
+  setGoalProgress(
+    Math.round(
+      (completed / updatedGoals.length) * 100
+    )
+  )
+}, [resumeScore, projects, atsScore])
+
+useEffect(() => {
+  let score = 100
+  const issues = []
+
+  if (!personal.linkedin) {
+    score -= 30
+    issues.push("LinkedIn profile missing")
+  }
+
+  if (!personal.github) {
+    score -= 30
+    issues.push("GitHub profile missing")
+  }
+
+  if (!personal.portfolio) {
+    score -= 20
+    issues.push("Portfolio website missing")
+  }
+
+  if (
+    personal.linkedin &&
+    !personal.linkedin.includes("linkedin.com")
+  ) {
+    score -= 10
+    issues.push("Invalid LinkedIn URL")
+  }
+
+  if (
+    personal.github &&
+    !personal.github.includes("github.com")
+  ) {
+    score -= 10
+    issues.push("Invalid GitHub URL")
+  }
+
+  setProfileScore(Math.max(score, 0))
+  setProfileIssues(issues)
+}, [personal])
+
+const normalizedSkills = React.useMemo(() => {
+  if (typeof skills === "string") {
+    return skills.split(",").map(skill => skill.trim()).filter(Boolean);
+  }
+  if (Array.isArray(skills)) {
+    return skills
+      .map(skill => String(skill).trim())
+      .filter(Boolean);
+  }
+  return [];
+}, [skills]);
+
+// ─────────────────── CONSOLIDATED ATS ASSESSMENT LOOP ───────────────────
+useEffect(() => {
+  const certs = []
+
+  const role = targetRole.toLowerCase()
+  const skillText = skills.toLowerCase()
+
+  // Frontend
+  if (
+    role.includes("frontend") ||
+    skillText.includes("react") ||
+    skillText.includes("javascript")
+  ) {
+    certs.push(
+      "Meta Front-End Developer Professional Certificate"
+    )
+  }
+
+  // Backend
+  if (
+    role.includes("backend") ||
+    skillText.includes("node") ||
+    skillText.includes("express")
+  ) {
+    certs.push(
+      "IBM Back-End Development Professional Certificate"
+    )
+  }
+
+  // Full Stack
+  if (
+    role.includes("full stack")
+  ) {
+    certs.push(
+      "IBM Full Stack Software Developer Professional Certificate"
+    )
+  }
+
+  // Data Science
+  if (
+    role.includes("data scientist") ||
+    role.includes("data analyst") ||
+    skillText.includes("python")
+  ) {
+    certs.push(
+      "Google Data Analytics Professional Certificate"
+    )
+
+    certs.push(
+      "IBM Data Science Professional Certificate"
+    )
+  }
+
+  // Cloud
+  if (
+    role.includes("cloud") ||
+    skillText.includes("aws")
+  ) {
+    certs.push(
+      "AWS Certified Cloud Practitioner"
+    )
+  }
+
+  // DevOps
+  if (
+    role.includes("devops") ||
+    skillText.includes("docker")
+  ) {
+    certs.push(
+      "Docker Certified Associate"
+    )
+
+    certs.push(
+      "AWS DevOps Engineer"
+    )
+  }
+
+  // Cyber Security
+  if (
+    role.includes("security") ||
+    role.includes("cyber")
+  ) {
+    certs.push(
+      "CompTIA Security+"
+    )
+  }
+
+  setRecommendedCertifications([...new Set(certs)])
+}, [targetRole, skills])
+useEffect(() => {
+  // 1. Gather all inputs into a clean string representation
+  const resumeText = `${personal?.summary || ''} ${normalizedSkills.join(' ')} ${
+  projects?.map(p => `${p.name} ${p.description}`).join(' ') || ''
+} ${experience?.map(e => `${e.title} ${e.description}`).join(' ') || ''}`.toLowerCase();
+
+  // 2. Define assessment target keywords (moved to component/effect scope correctly)
+  const baseKeywords = ["react", "node.js", "javascript", "typescript", "python", "docker", "aws", "git", "ci/cd", "rest api"];
+  const prioritySkills = ["docker", "kubernetes", "ci/cd", "aws", "linux"];
+
+  const found = baseKeywords.filter(keyword => resumeText.includes(keyword));
+  const missing = baseKeywords.filter(keyword => !resumeText.includes(keyword));
+
+  // 3. State update calculations
+  setMissingKeywords(missing);
+  
+  // Prioritize missing crucial devops/infrastructure skills first in recommendation
+  const recommendations = [
+    ...prioritySkills.filter(sk => !found.includes(sk)),
+    ...missing
+  ].slice(0, 4);
+  setRecommendedSkills(recommendations);
+
+  const score = baseKeywords.length > 0 ? Math.round((found.length / baseKeywords.length) * 100) : 0;
+  setAtsScore(score);
+
+}, [personal, normalizedSkills, projects, experience]);
   // ─────────────────── Live Consistency Memoized Engine ───────────────────
   const activeConsistencyWarnings = React.useMemo(() => {
     const allExperienceDates = (experience || []).flatMap(exp => [exp.startDate, exp.endDate]);
@@ -197,17 +484,12 @@ export default function ResumeBuilder() {
     ];
   }, [experience, education, projects]);
 
-  const saveVersion = React.useCallback(() => {
-    const newVersion = {
-      id: Date.now(),
-      timestamp: new Date().toLocaleString(),
-      content: typeof generateMarkdown === 'function' ? generateMarkdown() : "",
-    };
-    setResumeVersions(prev => [newVersion, ...prev]);
+  const restoreVersion = React.useCallback((version) => {
+    setSelectedVersion(version);
     if (typeof toast !== 'undefined') {
-      toast.success("Resume version layout tracked successfully!");
+      toast.success(`Restored version from ${version.timestamp}`);
     }
-  }, [experience, education, projects, personal, skills, generateMarkdown]);
+  }, []);
 
   // ─────────────────── Automated Recommendations Engine ───────────────────
   useEffect(() => {
@@ -353,6 +635,51 @@ useEffect(() => {
 
   const handlePrev = () => setCurrentStep(s => Math.max(s - 1, 0))
 
+  const onDragEnd = (result) => {
+    if (!result.destination) return;
+    const { source, destination, type } = result;
+
+    if (type === 'sections') {
+      const newOrder = Array.from(sectionOrder);
+      const [removed] = newOrder.splice(source.index, 1);
+      newOrder.splice(destination.index, 0, removed);
+      setSectionOrder(newOrder);
+      return;
+    }
+
+    if (type === 'education') {
+      const newEdu = Array.from(education);
+      const [removed] = newEdu.splice(source.index, 1);
+      newEdu.splice(destination.index, 0, removed);
+      setEducation(newEdu);
+      const newErrors = Array.from(educationErrors);
+      const [removedErr] = newErrors.splice(source.index, 1);
+      newErrors.splice(destination.index, 0, removedErr);
+      setEducationErrors(newErrors);
+      return;
+    }
+
+    if (type === 'experience') {
+      const newExp = Array.from(experience);
+      const [removed] = newExp.splice(source.index, 1);
+      newExp.splice(destination.index, 0, removed);
+      setExperience(newExp);
+      const newErrors = Array.from(experienceErrors);
+      const [removedErr] = newErrors.splice(source.index, 1);
+      newErrors.splice(destination.index, 0, removedErr);
+      setExperienceErrors(newErrors);
+      return;
+    }
+
+    if (type === 'projects') {
+      const newProj = Array.from(projects);
+      const [removed] = newProj.splice(source.index, 1);
+      newProj.splice(destination.index, 0, removed);
+      setProjects(newProj);
+      return;
+    }
+  }
+
   // ── markdown preview & generate ──────────────────────────────────────────────
   const generateMarkdown = () => {
     // Compose full phone string
@@ -365,73 +692,75 @@ useEffect(() => {
     if (personal.linkedin)  contact.push(`[LinkedIn](${personal.linkedin})`)
     if (personal.github)    contact.push(`[GitHub](${personal.github})`)
     if (personal.portfolio) contact.push(`[Portfolio](${personal.portfolio})`)
-    md += `${contact.join(' | ')}\n\n`
+    if (contact.length > 0) md += `${contact.join(' | ')}\n\n`
 
     if (personal.summary) md += `## SUMMARY\n\n${personal.summary}\n\n`
 
-    if (education.some(e => e.school)) {
-      md += `## EDUCATION\n\n`
-      education.forEach(e => {
-        if (!e.school) return
-        md += `**${e.degree}${e.field ? ' in ' + e.field : ''}** | ${e.school} | ${e.startDate} - ${e.endDate}\n`
-        if (e.gpa) md += `- GPA: ${e.gpa}\n`
-        if (e.description) md += `- ${e.description}\n`
-        md += '\n'
-      })
+    const renderSection = (section) => {
+      let sectionMd = ''
+      if (section === 'education' && education.some(e => e.school)) {
+        sectionMd += `## EDUCATION\n\n`
+        education.forEach(e => {
+          if (!e.school) return
+          sectionMd += `**${e.degree}${e.field ? ' in ' + e.field : ''}** | ${e.school} | ${e.startDate} - ${e.endDate}\n`
+          if (e.gpa) sectionMd += `- GPA: ${e.gpa}\n`
+          if (e.description) sectionMd += `- ${e.description}\n`
+          sectionMd += '\n'
+        })
+      } else if (section === 'experience' && experience.some(e => e.title)) {
+        sectionMd += `## EXPERIENCE\n\n`
+        experience.forEach(e => {
+          if (!e.title) return
+          sectionMd += `**${e.title}** | ${e.company} | ${e.location} | ${e.startDate} - ${e.current ? 'Present' : e.endDate}\n`
+          const bullets = e.description.split('\n').filter(b => b.trim())
+          bullets.forEach(b => { sectionMd += `- ${b.replace(/^- /, '').trim()}\n` })
+          sectionMd += '\n'
+        })
+      } else if (section === 'projects' && projects.some(p => p.name)) {
+        sectionMd += `## PROJECTS\n\n`
+        projects.forEach(p => {
+          if (!p.name) return
+          sectionMd += `**${p.name}** | ${p.tech}\n`
+          const bullets = p.description.split('\n').filter(b => b.trim())
+          bullets.forEach(b => { sectionMd += `- ${b.replace(/^- /, '').trim()}\n` })
+          if (p.link) sectionMd += `- [Project Link](${p.link})\n`
+          sectionMd += '\n'
+        })
+      } else if (section === 'skills' && skills) {
+        sectionMd += `## SKILLS\n\n${skills}\n\n`
+      }
+      return sectionMd
     }
 
-    if (experience.some(e => e.title)) {
-      md += `## EXPERIENCE\n\n`
-      experience.forEach(e => {
-        if (!e.title) return
-        md += `**${e.title}** | ${e.company} | ${e.location} | ${e.startDate} - ${e.current ? 'Present' : e.endDate}\n`
-        const bullets = e.description.split('\n').filter(b => b.trim())
-        bullets.forEach(b => { md += `- ${b.replace(/^- /, '').trim()}\n` })
-        md += '\n'
-      })
-    }
-
-    if (projects.some(p => p.name)) {
-      md += `## PROJECTS\n\n`
-      projects.forEach(p => {
-        if (!p.name) return
-        md += `**${p.name}** | ${p.tech}\n`
-        const bullets = p.description.split('\n').filter(b => b.trim())
-        bullets.forEach(b => { md += `- ${b.replace(/^- /, '').trim()}\n` })
-        if (p.link) md += `- [Project Link](${p.link})\n`
-        md += '\n'
-      })
-    }
-
-    if (skills) md += `## SKILLS\n\n${skills}\n\n`
+    sectionOrder.forEach(section => {
+      md += renderSection(section)
+    })
 
     return md
   }
+
+  const saveVersion = React.useCallback(() => {
+    const newVersion = {
+      id: Date.now(),
+      timestamp: new Date().toLocaleString(),
+      content: typeof generateMarkdown === 'function' ? generateMarkdown() : "",
+    };
+    setResumeVersions(prev => [newVersion, ...prev]);
+    if (typeof toast !== 'undefined') {
+      toast.success("Resume version layout tracked successfully!");
+    }
+  }, [experience, education, projects, personal, skills, generateMarkdown]);
 
   const handleGenerate = async () => {
     try {
       setIsSubmitting(true)
       const markdown = generateMarkdown()
-      const restoreVersion = (version) => {
-  setSelectedVersion(version)
 
-  toast.success(
-    `Restored version from ${version.timestamp}`
-  )
-}
-      const saveVersion = () => {
-  const newVersion = {
-    id: Date.now(),
-    timestamp: new Date().toLocaleString(),
-    content: generateMarkdown(),
-  }
-
-  setResumeVersions(prev => [newVersion, ...prev])
-}
       const response = await resumeApi.create({
         originalText: markdown,
         jobRole: targetRole || 'Software Engineer',
         title:   `${personal.name || 'My'} Resume - ${new Date().toLocaleDateString()}`,
+        sectionOrder: sectionOrder
       })
       toast.success('Resume created successfully!')
       navigate(`/enhance/${response.data.id}`)
@@ -445,14 +774,14 @@ useEffect(() => {
   // ── shared input class builder ────────────────────────────────────────────────
   const inputCls = (errorKey, errors = personalErrors) =>
     cn(
-      'w-full bg-background/50 border rounded-xl px-4 py-2 transition-colors',
+      'w-full bg-muted border rounded-xl px-4 py-2 transition-colors',
       'focus:outline-none focus:ring-2 focus:ring-primary/30',
       errors?.[errorKey] ? 'border-red-500 focus:ring-red-400/30' : 'border-border'
     )
 
   const inputClsArr = (errors) => (errorKey) =>
     cn(
-      'w-full bg-background/50 border rounded-lg px-4 py-2 transition-colors',
+      'w-full bg-muted border rounded-lg px-4 py-2 transition-colors',
       'focus:outline-none focus:ring-2 focus:ring-primary/30',
       errors?.[errorKey] ? 'border-red-500 focus:ring-red-400/30' : 'border-border'
     )
@@ -574,15 +903,37 @@ useEffect(() => {
               </div>
             </div>
 
+            {/* Portfolio */}
+            <div>
+              <label className="block text-sm font-medium mb-1">
+                Portfolio URL
+              </label>
+
+              <input
+                type="url"
+                className={inputCls('portfolio')}
+                value={personal.portfolio}
+                onChange={e =>
+                  updatePersonal('portfolio', e.target.value)
+                }
+                placeholder="https://yourportfolio.com"
+              />
+            </div>
+
             {/* Summary */}
             <div className="pt-2">
               <label className="block text-sm font-medium mb-1" htmlFor="summary">Professional Summary</label>
               <textarea
                 id="summary"
-                className="w-full bg-background/50 border border-border rounded-xl px-4 py-2 min-h-[100px] focus:outline-none focus:ring-2 focus:ring-primary/30 transition-colors"
+                className="w-full bg-muted border border-border rounded-xl px-4 py-2 min-h-[100px] focus:outline-none focus:ring-2 focus:ring-primary/30 transition-colors"
                 value={personal.summary}
                 onChange={e => updatePersonal('summary', e.target.value)}
                 placeholder="A brief summary of your professional background..."
+              />
+              <AchievementEnhancer
+                value={personal.summary}
+                jobRole={targetRole}
+                onApply={(text) => updatePersonal('summary', text)}
               />
             </div>
           </div>
@@ -593,104 +944,117 @@ useEffect(() => {
         return (
           <div className="space-y-6">
             <h2 className="text-2xl font-semibold mb-6">Education</h2>
-            {education.map((edu, index) => {
-              const errs = educationErrors[index] || {}
-              const ic = inputClsArr(errs)
-              return (
-                <div key={index} className="bg-background/30 p-5 rounded-xl border border-border relative">
-                  <button
-                    onClick={() => removeEducation(index)}
-                    className="absolute top-4 right-4 text-muted-foreground hover:text-red-500 transition-colors"
-                    aria-label="Remove education entry"
-                  >
-                    <Trash2 className="w-4 h-4" />
-                  </button>
-                  <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
-
-                    <div>
-                      <label className="block text-sm font-medium mb-1">
-                        School <span className="text-red-500">*</span>
-                      </label>
-                      <input
-                        type="text"
-                        className={ic('school')}
-                        value={edu.school}
-                        onChange={e => updateEdu(index, 'school', e.target.value)}
-                        placeholder="University Name"
-                        aria-invalid={!!errs.school}
-                      />
-                      <FieldError msg={errs.school} />
-                    </div>
-
-                    <div>
-                      <label className="block text-sm font-medium mb-1">
-                        Degree <span className="text-red-500">*</span>
-                      </label>
-                      <input
-                        type="text"
-                        className={ic('degree')}
-                        value={edu.degree}
-                        onChange={e => updateEdu(index, 'degree', e.target.value)}
-                        placeholder="B.S., M.S., etc."
-                        aria-invalid={!!errs.degree}
-                      />
-                      <FieldError msg={errs.degree} />
-                    </div>
-
-                    <div>
-                      <label className="block text-sm font-medium mb-1">Field of Study</label>
-                      <input
-                        type="text"
-                        className={ic('field')}
-                        value={edu.field}
-                        onChange={e => updateEdu(index, 'field', e.target.value)}
-                        placeholder="Computer Science"
-                      />
-                    </div>
-
-                    <div>
-                      <label className="block text-sm font-medium mb-1">GPA (Optional)</label>
-                      <input
-                        type="text"
-                        className={ic('gpa')}
-                        value={edu.gpa}
-                        onChange={e => updateEdu(index, 'gpa', e.target.value)}
-                        placeholder="3.8/4.0"
-                      />
-                    </div>
-
-                    <div>
-                      <label className="block text-sm font-medium mb-1">
-                        Start Date <span className="text-red-500">*</span>
-                      </label>
-                      <input
-                        type="month"
-                        className={ic('startDate')}
-                        value={edu.startDate}
-                        onChange={e => updateEdu(index, 'startDate', e.target.value)}
-                        aria-invalid={!!errs.startDate}
-                      />
-                      <FieldError msg={errs.startDate} />
-                    </div>
-
-                    <div>
-                      <label className="block text-sm font-medium mb-1">
-                        End Date <span className="text-red-500">*</span>
-                      </label>
-                      <input
-                        type="month"
-                        className={ic('endDate')}
-                        value={edu.endDate}
-                        onChange={e => updateEdu(index, 'endDate', e.target.value)}
-                        aria-invalid={!!errs.endDate}
-                      />
-                      <FieldError msg={errs.endDate} />
-                    </div>
-
+            <DragDropContext onDragEnd={onDragEnd}>
+              <Droppable droppableId="education" type="education">
+                {(provided) => (
+                  <div {...provided.droppableProps} ref={provided.innerRef} className="space-y-4">
+                    {education.map((edu, index) => {
+                      const errs = educationErrors[index] || {}
+                      const ic = inputClsArr(errs)
+                      return (
+                        <Draggable key={`edu-${index}`} draggableId={`edu-${index}`} index={index}>
+                          {(provided) => (
+                            <div
+                              ref={provided.innerRef}
+                              {...provided.draggableProps}
+                              className="bg-background/30 p-5 rounded-xl border border-border relative"
+                            >
+                              <div {...provided.dragHandleProps} className="absolute top-4 left-4 text-muted-foreground hover:text-foreground cursor-grab">
+                                <GripVertical className="w-4 h-4" />
+                              </div>
+                              <button
+                                onClick={() => removeEducation(index)}
+                                className="absolute top-4 right-4 text-muted-foreground hover:text-red-500 transition-colors"
+                                aria-label="Remove education entry"
+                              >
+                                <Trash2 className="w-4 h-4" />
+                              </button>
+                              <div className="grid grid-cols-1 md:grid-cols-2 gap-4 mt-6">
+                                <div>
+                                  <label className="block text-sm font-medium mb-1">
+                                    School <span className="text-red-500">*</span>
+                                  </label>
+                                  <input
+                                    type="text"
+                                    className={ic('school')}
+                                    value={edu.school}
+                                    onChange={e => updateEdu(index, 'school', e.target.value)}
+                                    placeholder="University Name"
+                                    aria-invalid={!!errs.school}
+                                  />
+                                  <FieldError msg={errs.school} />
+                                </div>
+                                <div>
+                                  <label className="block text-sm font-medium mb-1">
+                                    Degree <span className="text-red-500">*</span>
+                                  </label>
+                                  <input
+                                    type="text"
+                                    className={ic('degree')}
+                                    value={edu.degree}
+                                    onChange={e => updateEdu(index, 'degree', e.target.value)}
+                                    placeholder="B.S., M.S., etc."
+                                    aria-invalid={!!errs.degree}
+                                  />
+                                  <FieldError msg={errs.degree} />
+                                </div>
+                                <div>
+                                  <label className="block text-sm font-medium mb-1">Field of Study</label>
+                                  <input
+                                    type="text"
+                                    className={ic('field')}
+                                    value={edu.field}
+                                    onChange={e => updateEdu(index, 'field', e.target.value)}
+                                    placeholder="Computer Science"
+                                  />
+                                </div>
+                                <div>
+                                  <label className="block text-sm font-medium mb-1">GPA (Optional)</label>
+                                  <input
+                                    type="text"
+                                    className={ic('gpa')}
+                                    value={edu.gpa}
+                                    onChange={e => updateEdu(index, 'gpa', e.target.value)}
+                                    placeholder="3.8/4.0"
+                                  />
+                                </div>
+                                <div>
+                                  <label className="block text-sm font-medium mb-1">
+                                    Start Date <span className="text-red-500">*</span>
+                                  </label>
+                                  <input
+                                    type="month"
+                                    className={ic('startDate')}
+                                    value={edu.startDate}
+                                    onChange={e => updateEdu(index, 'startDate', e.target.value)}
+                                    aria-invalid={!!errs.startDate}
+                                  />
+                                  <FieldError msg={errs.startDate} />
+                                </div>
+                                <div>
+                                  <label className="block text-sm font-medium mb-1">
+                                    End Date <span className="text-red-500">*</span>
+                                  </label>
+                                  <input
+                                    type="month"
+                                    className={ic('endDate')}
+                                    value={edu.endDate}
+                                    onChange={e => updateEdu(index, 'endDate', e.target.value)}
+                                    aria-invalid={!!errs.endDate}
+                                  />
+                                  <FieldError msg={errs.endDate} />
+                                </div>
+                              </div>
+                            </div>
+                          )}
+                        </Draggable>
+                      )
+                    })}
+                    {provided.placeholder}
                   </div>
-                </div>
-              )
-            })}
+                )}
+              </Droppable>
+            </DragDropContext>
             <button onClick={addEducation} className="flex items-center gap-2 text-primary hover:text-primary/80 transition-colors">
               <Plus className="w-4 h-4" /> Add Education
             </button>
@@ -702,130 +1066,139 @@ useEffect(() => {
         return (
           <div className="space-y-6">
             <h2 className="text-2xl font-semibold mb-6">Experience</h2>
-            {experience.map((exp, index) => {
-              const errs = experienceErrors[index] || {}
-              const ic = inputClsArr(errs)
-              return (
-                <div key={index} className="bg-background/30 p-5 rounded-xl border border-border relative">
-                  <button
-                    onClick={() => removeExperience(index)}
-                    className="absolute top-4 right-4 text-muted-foreground hover:text-red-500 transition-colors"
-                    aria-label="Remove experience entry"
-                  >
-                    <Trash2 className="w-4 h-4" />
-                  </button>
-                  <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
-
-                    <div>
-                      <label className="block text-sm font-medium mb-1">
-                        Job Title <span className="text-red-500">*</span>
-                      </label>
-                      <input
-                        type="text"
-                        className={ic('title')}
-                        value={exp.title}
-                        onChange={e => updateExp(index, 'title', e.target.value)}
-                        placeholder="Software Engineer"
-                        aria-invalid={!!errs.title}
-                      />
-                      <FieldError msg={errs.title} />
-                    </div>
-
-                    <div>
-                      <label className="block text-sm font-medium mb-1">
-                        Company <span className="text-red-500">*</span>
-                      </label>
-                      <input
-                        type="text"
-                        className={ic('company')}
-                        value={exp.company}
-                        onChange={e => updateExp(index, 'company', e.target.value)}
-                        placeholder="Tech Corp"
-                        aria-invalid={!!errs.company}
-                      />
-                      <FieldError msg={errs.company} />
-                    </div>
-
-                    <div>
-                      <label className="block text-sm font-medium mb-1">Location</label>
-                      <input
-                        type="text"
-                        className={ic('location')}
-                        value={exp.location}
-                        onChange={e => updateExp(index, 'location', e.target.value)}
-                        placeholder="San Francisco, CA"
-                      />
-                    </div>
-
-                    {/* Date row */}
-                    <div className="flex items-start gap-4 md:col-span-2">
-                      <div className="flex-1">
-                        <label className="block text-sm font-medium mb-1">
-                          Start Date <span className="text-red-500">*</span>
-                        </label>
-                        <input
-                          type="month"
-                          className={ic('startDate')}
-                          value={exp.startDate}
-                          onChange={e => updateExp(index, 'startDate', e.target.value)}
-                          aria-invalid={!!errs.startDate}
-                        />
-                        <FieldError msg={errs.startDate} />
-                      </div>
-                      <div className="flex-1">
-                        <label className="block text-sm font-medium mb-1">End Date</label>
-                        <input
-                          type="month"
-                          disabled={exp.current}
-                          className={cn(ic('endDate'), 'disabled:opacity-50 disabled:cursor-not-allowed')}
-                          value={exp.current ? '' : exp.endDate}
-                          onChange={e => updateExp(index, 'endDate', e.target.value)}
-                          aria-invalid={!!errs.endDate}
-                        />
-                        <FieldError msg={errs.endDate} />
-                      </div>
-                    </div>
-
-                    {/* Currently working here */}
-                    <div className="md:col-span-2 flex items-center gap-2">
-                      <input
-                        type="checkbox"
-                        id={`current-${index}`}
-                        checked={exp.current}
-                        onChange={e => {
-                          updateExp(index, 'current', e.target.checked)
-                          if (e.target.checked) updateExp(index, 'endDate', '')
-                        }}
-                        className="rounded border-border accent-primary"
-                      />
-                      <label htmlFor={`current-${index}`} className="text-sm">I currently work here</label>
-                    </div>
-
-                    <div className="md:col-span-2">
-  <label className="block text-sm font-medium mb-1">
-    Description (Bullet points)
-  </label>
-
-  <textarea
-    className="w-full bg-background/50 border border-border rounded-lg px-4 py-2 min-h-[100px] focus:outline-none focus:ring-2 focus:ring-primary/30 transition-colors"
-    value={exp.description}
-    onChange={e => updateExp(index, 'description', e.target.value)}
-    placeholder={`- Developed feature X resulting in Y% improvement\n- Led a team of...`}
-  />
-
-  <AchievementEnhancer
-    value={exp.description}
-    jobRole={targetRole}
-    onApply={(text) =>
-      updateExp(index, "description", text)
-    }
-  />
-</div>
-
+            <DragDropContext onDragEnd={onDragEnd}>
+              <Droppable droppableId="experience" type="experience">
+                {(provided) => (
+                  <div {...provided.droppableProps} ref={provided.innerRef} className="space-y-4">
+                    {experience.map((exp, index) => {
+                      const errs = experienceErrors[index] || {}
+                      const ic = inputClsArr(errs)
+                      return (
+                        <Draggable key={`exp-${index}`} draggableId={`exp-${index}`} index={index}>
+                          {(provided) => (
+                            <div
+                              ref={provided.innerRef}
+                              {...provided.draggableProps}
+                              className="bg-background/30 p-5 rounded-xl border border-border relative"
+                            >
+                              <div {...provided.dragHandleProps} className="absolute top-4 left-4 text-muted-foreground hover:text-foreground cursor-grab">
+                                <GripVertical className="w-4 h-4" />
+                              </div>
+                              <button
+                                onClick={() => removeExperience(index)}
+                                className="absolute top-4 right-4 text-muted-foreground hover:text-red-500 transition-colors"
+                                aria-label="Remove experience entry"
+                              >
+                                <Trash2 className="w-4 h-4" />
+                              </button>
+                              <div className="grid grid-cols-1 md:grid-cols-2 gap-4 mt-6">
+                                <div>
+                                  <label className="block text-sm font-medium mb-1">
+                                    Job Title <span className="text-red-500">*</span>
+                                  </label>
+                                  <input
+                                    type="text"
+                                    className={ic('title')}
+                                    value={exp.title}
+                                    onChange={e => updateExp(index, 'title', e.target.value)}
+                                    placeholder="Software Engineer"
+                                    aria-invalid={!!errs.title}
+                                  />
+                                  <FieldError msg={errs.title} />
+                                </div>
+                                <div>
+                                  <label className="block text-sm font-medium mb-1">
+                                    Company <span className="text-red-500">*</span>
+                                  </label>
+                                  <input
+                                    type="text"
+                                    className={ic('company')}
+                                    value={exp.company}
+                                    onChange={e => updateExp(index, 'company', e.target.value)}
+                                    placeholder="Tech Corp"
+                                    aria-invalid={!!errs.company}
+                                  />
+                                  <FieldError msg={errs.company} />
+                                </div>
+                                <div>
+                                  <label className="block text-sm font-medium mb-1">Location</label>
+                                  <input
+                                    type="text"
+                                    className={ic('location')}
+                                    value={exp.location}
+                                    onChange={e => updateExp(index, 'location', e.target.value)}
+                                    placeholder="San Francisco, CA"
+                                  />
+                                </div>
+                                <div className="flex items-start gap-4 md:col-span-2">
+                                  <div className="flex-1">
+                                    <label className="block text-sm font-medium mb-1">
+                                      Start Date <span className="text-red-500">*</span>
+                                    </label>
+                                    <input
+                                      type="month"
+                                      className={ic('startDate')}
+                                      value={exp.startDate}
+                                      onChange={e => updateExp(index, 'startDate', e.target.value)}
+                                      aria-invalid={!!errs.startDate}
+                                    />
+                                    <FieldError msg={errs.startDate} />
+                                  </div>
+                                  <div className="flex-1">
+                                    <label className="block text-sm font-medium mb-1">End Date</label>
+                                    <input
+                                      type="month"
+                                      disabled={exp.current}
+                                      className={cn(ic('endDate'), 'disabled:opacity-50 disabled:cursor-not-allowed')}
+                                      value={exp.current ? '' : exp.endDate}
+                                      onChange={e => updateExp(index, 'endDate', e.target.value)}
+                                      aria-invalid={!!errs.endDate}
+                                    />
+                                    <FieldError msg={errs.endDate} />
+                                  </div>
+                                </div>
+                                <div className="md:col-span-2 flex items-center gap-2">
+                                  <input
+                                    type="checkbox"
+                                    id={`current-${index}`}
+                                    checked={exp.current}
+                                    onChange={e => {
+                                      updateExp(index, 'current', e.target.checked)
+                                      if (e.target.checked) updateExp(index, 'endDate', '')
+                                    }}
+                                    className="rounded border-border accent-primary"
+                                  />
+                                  <label htmlFor={`current-${index}`} className="text-sm">I currently work here</label>
+                                </div>
+                                <div className="md:col-span-2">
+                                  <label className="block text-sm font-medium mb-1">
+                                    Description (Bullet points)
+                                  </label>
+                                  <textarea
+                                    className="w-full bg-muted border border-border rounded-lg px-4 py-2 min-h-[100px] focus:outline-none focus:ring-2 focus:ring-primary/30 transition-colors"
+                                    value={exp.description}
+                                    onChange={e => updateExp(index, 'description', e.target.value)}
+                                    placeholder={`- Developed feature X resulting in Y% improvement\n- Led a team of...`}
+                                  />
+                                  <AchievementEnhancer
+                                    value={exp.description}
+                                    jobRole={targetRole}
+                                    onApply={(text) =>
+                                      updateExp(index, "description", text)
+                                    }
+                                  />
+                                </div>
+                              </div>
+                            </div>
+                          )}
+                        </Draggable>
+                      )
+                    })}
+                    {provided.placeholder}
                   </div>
-                </div>
-              )
-            })}
+                )}
+              </Droppable>
+            </DragDropContext>
             <button onClick={addExperience} className="flex items-center gap-2 text-primary hover:text-primary/80 transition-colors">
               <Plus className="w-4 h-4" /> Add Experience
             </button>
@@ -837,58 +1210,78 @@ useEffect(() => {
         return (
           <div className="space-y-6">
             <h2 className="text-2xl font-semibold mb-6">Projects</h2>
-            {projects.map((proj, index) => (
-              <div key={index} className="bg-background/30 p-5 rounded-xl border border-border relative">
-                <button
-                  onClick={() => removeProject(index)}
-                  className="absolute top-4 right-4 text-muted-foreground hover:text-red-500 transition-colors"
-                  aria-label="Remove project"
-                >
-                  <Trash2 className="w-4 h-4" />
-                </button>
-                <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
-                  <div>
-                    <label className="block text-sm font-medium mb-1">Project Name</label>
-                    <input
-                      type="text"
-                      className="w-full bg-background/50 border border-border rounded-lg px-4 py-2 focus:outline-none focus:ring-2 focus:ring-primary/30 transition-colors"
-                      value={proj.name}
-                      onChange={e => { const n = [...projects]; n[index].name = e.target.value; setProjects(n) }}
-                      placeholder="E-commerce App"
-                    />
+            <DragDropContext onDragEnd={onDragEnd}>
+              <Droppable droppableId="projects" type="projects">
+                {(provided) => (
+                  <div {...provided.droppableProps} ref={provided.innerRef} className="space-y-4">
+                    {projects.map((proj, index) => (
+                      <Draggable key={`proj-${index}`} draggableId={`proj-${index}`} index={index}>
+                        {(provided) => (
+                          <div
+                            ref={provided.innerRef}
+                            {...provided.draggableProps}
+                            className="bg-background/30 p-5 rounded-xl border border-border relative"
+                          >
+                            <div {...provided.dragHandleProps} className="absolute top-4 left-4 text-muted-foreground hover:text-foreground cursor-grab">
+                              <GripVertical className="w-4 h-4" />
+                            </div>
+                            <button
+                              onClick={() => removeProject(index)}
+                              className="absolute top-4 right-4 text-muted-foreground hover:text-red-500 transition-colors"
+                              aria-label="Remove project"
+                            >
+                              <Trash2 className="w-4 h-4" />
+                            </button>
+                            <div className="grid grid-cols-1 md:grid-cols-2 gap-4 mt-6">
+                              <div>
+                                <label className="block text-sm font-medium mb-1">Project Name</label>
+                                <input
+                                  type="text"
+                                  className="w-full bg-muted border border-border rounded-lg px-4 py-2 focus:outline-none focus:ring-2 focus:ring-primary/30 transition-colors"
+                                  value={proj.name}
+                                  onChange={e => { const n = [...projects]; n[index].name = e.target.value; setProjects(n) }}
+                                  placeholder="E-commerce App"
+                                />
+                              </div>
+                              <div>
+                                <label className="block text-sm font-medium mb-1">Technologies Used</label>
+                                <input
+                                  type="text"
+                                  className="w-full bg-muted border border-border rounded-lg px-4 py-2 focus:outline-none focus:ring-2 focus:ring-primary/30 transition-colors"
+                                  value={proj.tech}
+                                  onChange={e => { const n = [...projects]; n[index].tech = e.target.value; setProjects(n) }}
+                                  placeholder="React, Node.js, MongoDB"
+                                />
+                              </div>
+                              <div className="md:col-span-2">
+                                <label className="block text-sm font-medium mb-1">Link (Optional)</label>
+                                <input
+                                  type="url"
+                                  className="w-full bg-muted border border-border rounded-lg px-4 py-2 focus:outline-none focus:ring-2 focus:ring-primary/30 transition-colors"
+                                  value={proj.link}
+                                  onChange={e => { const n = [...projects]; n[index].link = e.target.value; setProjects(n) }}
+                                  placeholder="https://github.com/..."
+                                />
+                              </div>
+                              <div className="md:col-span-2">
+                                <label className="block text-sm font-medium mb-1">Description (Bullet points)</label>
+                                <textarea
+                                  className="w-full bg-muted border border-border rounded-lg px-4 py-2 min-h-[100px] focus:outline-none focus:ring-2 focus:ring-primary/30 transition-colors"
+                                  value={proj.description}
+                                  onChange={e => { const n = [...projects]; n[index].description = e.target.value; setProjects(n) }}
+                                  placeholder="- Built a full-stack application..."
+                                />
+                              </div>
+                            </div>
+                          </div>
+                        )}
+                      </Draggable>
+                    ))}
+                    {provided.placeholder}
                   </div>
-                  <div>
-                    <label className="block text-sm font-medium mb-1">Technologies Used</label>
-                    <input
-                      type="text"
-                      className="w-full bg-background/50 border border-border rounded-lg px-4 py-2 focus:outline-none focus:ring-2 focus:ring-primary/30 transition-colors"
-                      value={proj.tech}
-                      onChange={e => { const n = [...projects]; n[index].tech = e.target.value; setProjects(n) }}
-                      placeholder="React, Node.js, MongoDB"
-                    />
-                  </div>
-                  <div className="md:col-span-2">
-                    <label className="block text-sm font-medium mb-1">Link (Optional)</label>
-                    <input
-                      type="url"
-                      className="w-full bg-background/50 border border-border rounded-lg px-4 py-2 focus:outline-none focus:ring-2 focus:ring-primary/30 transition-colors"
-                      value={proj.link}
-                      onChange={e => { const n = [...projects]; n[index].link = e.target.value; setProjects(n) }}
-                      placeholder="https://github.com/..."
-                    />
-                  </div>
-                  <div className="md:col-span-2">
-                    <label className="block text-sm font-medium mb-1">Description (Bullet points)</label>
-                    <textarea
-                      className="w-full bg-background/50 border border-border rounded-lg px-4 py-2 min-h-[100px] focus:outline-none focus:ring-2 focus:ring-primary/30 transition-colors"
-                      value={proj.description}
-                      onChange={e => { const n = [...projects]; n[index].description = e.target.value; setProjects(n) }}
-                      placeholder="- Built a full-stack application..."
-                    />
-                  </div>
-                </div>
-              </div>
-            ))}
+                )}
+              </Droppable>
+            </DragDropContext>
             <button onClick={addProject} className="flex items-center gap-2 text-primary hover:text-primary/80 transition-colors">
               <Plus className="w-4 h-4" /> Add Project
             </button>
@@ -904,7 +1297,7 @@ useEffect(() => {
               <label className="block text-sm font-medium mb-1" htmlFor="skills">Technical Skills &amp; Competencies</label>
               <textarea
                 id="skills"
-                className="w-full bg-background/50 border border-border rounded-xl px-4 py-2 min-h-[150px] focus:outline-none focus:ring-2 focus:ring-primary/30 transition-colors"
+                className="w-full bg-muted border border-border rounded-xl px-4 py-2 min-h-[150px] focus:outline-none focus:ring-2 focus:ring-primary/30 transition-colors"
                 value={skills}
                 onChange={e => setSkills(e.target.value)}
                 placeholder={'**Languages:** JavaScript, Python, Java\n**Frameworks:** React, Node.js, Express\n**Tools:** Git, Docker, AWS'}
@@ -920,6 +1313,36 @@ useEffect(() => {
 
           <div className="space-y-6">
             <h2 className="text-2xl font-semibold mb-6">Preview &amp; Generate</h2>
+
+            <div className="mb-6 p-4 rounded-xl border border-border bg-muted">
+              <h3 className="font-semibold mb-3">Reorder Sections</h3>
+              <DragDropContext onDragEnd={onDragEnd}>
+                <Droppable droppableId="sections" type="sections">
+                  {(provided) => (
+                    <div {...provided.droppableProps} ref={provided.innerRef} className="space-y-2">
+                      {sectionOrder.map((section, index) => (
+                        <Draggable key={section} draggableId={section} index={index}>
+                          {(provided) => (
+                            <div
+                              ref={provided.innerRef}
+                              {...provided.draggableProps}
+                              className="flex items-center gap-2 p-3 bg-background border border-border rounded-lg"
+                            >
+                              <div {...provided.dragHandleProps} className="cursor-grab text-muted-foreground hover:text-foreground">
+                                <GripVertical className="w-5 h-5" />
+                              </div>
+                              <span className="capitalize font-medium">{section}</span>
+                            </div>
+                          )}
+                        </Draggable>
+                      ))}
+                      {provided.placeholder}
+                    </div>
+                  )}
+                </Droppable>
+              </DragDropContext>
+            </div>
+
             <div className="flex justify-end mb-4">
   <button
     onClick={saveVersion}
@@ -929,7 +1352,7 @@ useEffect(() => {
   </button>
 </div>
 
-<div className="mb-6 p-4 rounded-xl border border-border bg-background/50">
+<div className="mb-6 p-4 rounded-xl border border-border bg-muted">
 
   <div className="flex justify-between items-center mb-2">
     <h3 className="font-semibold">
@@ -952,6 +1375,33 @@ useEffect(() => {
       ? "Moderate Gap"
       : "High Skill Gap"}
   </span>
+</div>
+
+<div className="mb-6 p-4 rounded-xl border border-border bg-muted">
+
+  <h3 className="font-semibold mb-3">
+    Smart Certification Recommendations
+  </h3>
+
+  {recommendedCertifications.length > 0 ? (
+    <div className="flex flex-wrap gap-2">
+
+      {recommendedCertifications.map(cert => (
+        <span
+          key={cert}
+          className="px-3 py-1 rounded-full bg-blue-500/20 text-blue-400 text-sm"
+        >
+          {cert}
+        </span>
+      ))}
+
+    </div>
+  ) : (
+    <p className="text-sm text-muted-foreground">
+      Add skills and target role to receive certification recommendations.
+    </p>
+  )}
+
 </div>
 
     <span className="text-primary font-bold">
@@ -985,6 +1435,20 @@ useEffect(() => {
   </div>
 )}
 
+{sectionSuggestions.length > 0 && (
+  <div className="mb-6 p-4 rounded-xl border border-border bg-muted">
+    <h3 className="font-semibold mb-3">
+      Resume Section Reordering Suggestions
+    </h3>
+
+    <ul className="list-disc list-inside text-sm text-muted-foreground">
+      {sectionSuggestions.map((item, index) => (
+        <li key={index}>{item}</li>
+      ))}
+    </ul>
+  </div>
+)}
+
   <div className="mt-4">
     <h4 className="font-medium mb-2">
       Missing Skills
@@ -1004,7 +1468,7 @@ useEffect(() => {
 
 </div>
 
-<div className="mb-6 p-4 rounded-xl border border-border bg-background/50">
+<div className="mb-6 p-4 rounded-xl border border-border bg-muted">
   <div className="flex justify-between items-center mb-2">
     <h3 className="font-semibold">
       Achievement Impact Score
@@ -1036,7 +1500,7 @@ useEffect(() => {
     </div>
   )}
 </div>
-<div className="mb-6 p-4 rounded-xl border border-border bg-background/50">
+<div className="mb-6 p-4 rounded-xl border border-border bg-muted">
   <h3 className="font-semibold mb-3">
     Section Completion Status
   </h3>
@@ -1049,7 +1513,7 @@ useEffect(() => {
     <div>{skills.trim() ? "✅" : "❌"} Skills</div>
   </div>
 </div>
-            <div className="mb-6 p-4 rounded-xl border border-border bg-background/50">
+            <div className="mb-6 p-4 rounded-xl border border-border bg-muted">
   <div className="flex justify-between items-center mb-2">
     <h3 className="font-semibold">
       Resume Improvement Progress
@@ -1124,7 +1588,7 @@ useEffect(() => {
   </p>
 </div>
             {recommendedSections.length > 0 && (
-  <div className="mb-6 p-4 rounded-xl border border-border bg-background/50">
+  <div className="mb-6 p-4 rounded-xl border border-border bg-muted">
     <h3 className="font-semibold mb-2">
       Recommended Sections
     </h3>
@@ -1143,7 +1607,7 @@ useEffect(() => {
 )}
 
 {resumeVersions.length > 0 && (
-  <div className="mb-6 p-4 rounded-xl border border-border bg-background/50">
+  <div className="mb-6 p-4 rounded-xl border border-border bg-muted">
     <h3 className="font-semibold mb-3">
       Resume Version History
     </h3>
@@ -1170,7 +1634,93 @@ useEffect(() => {
   </div>
 )}
 
-<div className="mb-6 p-4 rounded-xl border border-border bg-background/50">
+<div className="mb-6 p-4 rounded-xl border border-border bg-muted">
+  <div className="flex justify-between items-center mb-2">
+    <h3 className="font-semibold">
+      Portfolio Social Profile Score
+    </h3>
+
+    <span className="text-primary font-bold">
+      {profileScore}/100
+    </span>
+  </div>
+
+  <div className="w-full bg-secondary rounded-full h-3">
+    <div
+      className="bg-primary h-3 rounded-full"
+      style={{ width: `${profileScore}%` }}
+    />
+  </div>
+
+  {profileIssues.length > 0 && (
+    <div className="mt-4">
+      <h4 className="font-medium mb-2">
+        Optimization Suggestions
+      </h4>
+
+      <ul className="list-disc list-inside text-sm text-muted-foreground">
+        {profileIssues.map((issue, index) => (
+          <li key={index}>{issue}</li>
+        ))}
+      </ul>
+    </div>
+  )}
+</div>
+
+<div className="mt-4 flex flex-wrap gap-2">
+
+  {personal.linkedin && (
+    <span className="px-2 py-1 bg-green-500/20 text-green-500 rounded">
+      LinkedIn Added
+    </span>
+  )}
+
+  {personal.github && (
+    <span className="px-2 py-1 bg-green-500/20 text-green-500 rounded">
+      GitHub Added
+    </span>
+  )}
+
+  {personal.portfolio && (
+    <span className="px-2 py-1 bg-green-500/20 text-green-500 rounded">
+      Portfolio Added
+    </span>
+  )}
+
+</div>
+
+<div className="mb-6 p-4 rounded-xl border border-border bg-muted">
+  <h3 className="font-semibold mb-4">
+    Resume Content Impact Score
+  </h3>
+
+  {Object.entries(impactScores).map(
+    ([section, score]) => (
+      <div key={section} className="mb-4">
+        <div className="flex justify-between mb-1">
+          <span className="capitalize">
+            {section}
+          </span>
+
+          <span className="font-medium">
+            {score}/100
+          </span>
+        </div>
+
+        <div className="w-full bg-secondary rounded-full h-2">
+          <div
+            className="bg-primary h-2 rounded-full"
+            style={{
+              width: `${score}%`
+            }}
+          />
+        </div>
+      </div>
+    )
+  )}
+</div>
+
+<div className="mb-6 p-4 rounded-xl border border-border bg-muted">
   <div className="flex justify-between items-center mb-2">
     <h3 className="font-semibold">
       Resume Readability Score
@@ -1203,6 +1753,93 @@ useEffect(() => {
   )}
 </div>
 
+<div className="mb-6 p-4 rounded-xl border border-border bg-muted">
+  <div className="flex justify-between items-center mb-2">
+    <h3 className="font-semibold">
+      Resume Language Tone Analyzer
+    </h3>
+
+    <span className="text-primary font-bold">
+      {toneScore}/100
+    </span>
+  </div>
+
+  <div className="w-full bg-secondary rounded-full h-3">
+    <div
+      className="bg-primary h-3 rounded-full"
+      style={{ width: `${toneScore}%` }}
+    />
+  </div>
+
+  {toneSuggestions.length > 0 && (
+    <div className="mt-4">
+      <h4 className="font-medium mb-2">
+        Professional Tone Suggestions
+      </h4>
+
+      <ul className="list-disc list-inside text-sm text-muted-foreground">
+        {toneSuggestions.map((tip, index) => (
+          <li key={index}>{tip}</li>
+        ))}
+      </ul>
+    </div>
+  )}
+</div>
+
+{activeConsistencyWarnings.some(
+  item => item.type === "duplicate"
+) && (
+  <div className="mb-6 p-4 rounded-xl border border-yellow-500 bg-yellow-500/10">
+    <h3 className="font-semibold mb-3">
+      Duplicate Information Detector
+    </h3>
+
+    <ul className="space-y-2">
+      {activeConsistencyWarnings
+        .filter(
+          item => item.type === "duplicate"
+        )
+        .map((item, index) => (
+          <li
+            key={index}
+            className="text-sm text-yellow-400"
+          >
+            • {item.message}
+          </li>
+        ))}
+    </ul>
+  </div>
+)}
+
+<div className="mb-6 p-4 rounded-xl border border-border bg-muted">
+  <div className="flex justify-between items-center mb-2">
+    <h3 className="font-semibold">
+      Career Goal Progress Tracker
+    </h3>
+
+    <span className="text-primary font-bold">
+      {goalProgress}%
+    </span>
+  </div>
+
+  <div className="w-full bg-secondary rounded-full h-3">
+    <div
+      className="bg-primary h-3 rounded-full"
+      style={{
+        width: `${goalProgress}%`
+      }}
+    />
+  </div>
+
+  <div className="mt-4 space-y-2">
+    {careerGoals.map((goal, index) => (
+      <div key={index}>
+        {goal.completed ? "✅" : "⭕"} {goal.title}
+      </div>
+    ))}
+  </div>
+</div>
+
 <div className="bg-background border border-border rounded-xl p-6 h-[500px] overflow-y-auto font-mono text-sm whitespace-pre-wrap">
   {generateMarkdown()}
 </div>
@@ -1221,7 +1858,7 @@ useEffect(() => {
 
         {/* Header */}
         <div className="mb-8">
-          <h1 className="text-3xl font-bold bg-clip-text text-transparent bg-gradient-to-r from-white to-white/60">
+          <h1 className="text-3xl font-bold text-foreground">
             Resume Builder
           </h1>
           <p className="text-muted-foreground mt-2">Build a professional resume from scratch.</p>
@@ -1256,7 +1893,7 @@ useEffect(() => {
         </div>
 
         {/* Content Area */}
-        <div className="flex-1 bg-card/50 backdrop-blur-xl border border-white/5 rounded-3xl p-6 sm:p-8 shadow-2xl relative overflow-hidden">
+        <div className="flex-1 bg-card backdrop-blur-xl border border-border rounded-3xl p-6 sm:p-8 shadow-2xl relative overflow-hidden">
           <div className="absolute -top-40 -right-40 w-80 h-80 bg-primary/10 rounded-full blur-3xl opacity-50 pointer-events-none" />
           <div className="absolute -bottom-40 -left-40 w-80 h-80 bg-blue-500/10 rounded-full blur-3xl opacity-50 pointer-events-none" />
 
@@ -1282,7 +1919,7 @@ useEffect(() => {
 </AnimatePresence>
 
         {/* Navigation Actions */}
-        <div className="mt-8 flex justify-between items-center">
+        <div className="mt-8 flex flex-wrap justify-between items-center gap-3">
           <button
             onClick={handlePrev}
             disabled={currentStep === 0}
@@ -1292,26 +1929,64 @@ useEffect(() => {
           </button>
 
           {currentStep === STEPS.length - 1 ? (
-            <button
-              onClick={handleGenerate}
-              disabled={isSubmitting}
-              className="px-6 py-2.5 rounded-full bg-primary text-primary-foreground hover:bg-primary/90 hover:scale-105 active:scale-95 disabled:opacity-50 disabled:hover:scale-100 transition-all shadow-lg shadow-primary/25 flex items-center gap-2 font-medium"
-            >
-              {isSubmitting ? (
-                <>
-                  <div className="w-4 h-4 border-2 border-white/20 border-t-white rounded-full animate-spin" />
-                  Generating...
-                </>
-              ) : (
-                <>
-                  <Save className="w-4 h-4" /> Generate &amp; Enhance
-                </>
-              )}
-            </button>
+            <div className="flex flex-wrap gap-2">
+              <button
+                onClick={() => navigate('/resume-templates', {
+                  state: {
+                    builderData: {
+                      personal,
+                      experience: (experience || []).filter(e => e.title || e.company)
+                        .map(e => ({
+                          role: e.title,
+                          company: e.company,
+                          period: [e.startDate, e.current ? 'Present' : e.endDate]
+                            .filter(Boolean).join(' – ') || undefined,
+                          location: e.location,
+                          description: e.description,
+                        })),
+                      education: (education || []).filter(e => e.school || e.degree)
+                        .map(e => ({
+                          degree: e.degree,
+                          institution: e.school,
+                          period: [e.startDate, e.endDate].filter(Boolean).join(' – ') || undefined,
+                          location: e.location,
+                          description: e.field,
+                        })),
+                      projects: (projects || []).filter(p => p.name).map(p => ({
+                        title: p.name,
+                        description: p.description,
+                        techStack: p.tech ? p.tech.split(',').map(s => s.trim()).filter(Boolean) : [],
+                        link: p.link,
+                      })),
+                      skills: skills ? skills.split(/[,\n]/).map(s => s.trim()).filter(Boolean) : [],
+                    }
+                  }
+                })}
+                className="px-6 py-2.5 rounded-full bg-secondary text-secondary-foreground hover:bg-secondary/80 transition-all flex items-center gap-2 font-medium border border-border"
+              >
+                <LayoutTemplate className="w-4 h-4" /> Choose Resume Template
+              </button>
+              <button
+                onClick={handleGenerate}
+                disabled={isSubmitting}
+                className="px-6 py-2.5 rounded-full bg-primary text-primary-foreground hover:bg-primary/90 hover:scale-105 active:scale-95 disabled:opacity-50 disabled:hover:scale-100 transition-all shadow-lg shadow-primary/25 flex items-center gap-2 font-medium"
+              >
+                {isSubmitting ? (
+                  <>
+                    <div className="w-4 h-4 border-2 border-white/20 border-t-white rounded-full animate-spin" />
+                    Generating...
+                  </>
+                ) : (
+                  <>
+                    <Save className="w-4 h-4" /> Generate &amp; Enhance
+                  </>
+                )}
+              </button>
+            </div>
           ) : (
             <button
               onClick={handleNext}
-              className="px-6 py-2.5 rounded-full bg-white text-black hover:bg-gray-200 hover:scale-105 active:scale-95 transition-all shadow-lg flex items-center gap-2 font-medium"
+              className="px-6 py-2.5 rounded-full bg-foreground text-background hover:bg-foreground/90 hover:scale-105 active:scale-95 transition-all shadow-lg flex items-center gap-2 font-medium"
             >
               Next <ArrowRight className="w-4 h-4" />
             </button>

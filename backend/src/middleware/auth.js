@@ -4,6 +4,18 @@ import { ApiError } from './errorHandler.js';
 // Middleware to verify Firebase ID token
 export const verifyToken = async (req, res, next) => {
   try {
+    // Development bypass
+    if (process.env.NODE_ENV === 'development' && process.env.DEV_BYPASS_AUTH === 'true') {
+      req.user = {
+        uid: process.env.DEV_USER_UID || 'dev-user-001',
+        email: process.env.DEV_USER_EMAIL || 'dev@example.com',
+        name: 'Local Dev User',
+        picture: null,
+        emailVerified: true
+      };
+      return next();
+    }
+
     const authHeader = req.headers.authorization;
 
     if (!authHeader || !authHeader.startsWith('Bearer ')) {
@@ -60,6 +72,18 @@ export const adminOnly = (req, res, next) => {
 // Optional auth middleware - doesn't fail if no token
 export const optionalAuth = async (req, res, next) => {
   try {
+    // Development bypass
+    if (process.env.NODE_ENV === 'development' && process.env.DEV_BYPASS_AUTH === 'true') {
+      req.user = {
+        uid: process.env.DEV_USER_UID || 'dev-user-001',
+        email: process.env.DEV_USER_EMAIL || 'dev@example.com',
+        name: 'Local Dev User',
+        picture: null,
+        emailVerified: true
+      };
+      return next();
+    }
+
     const authHeader = req.headers.authorization;
 
     if (!authHeader || !authHeader.startsWith('Bearer ')) {

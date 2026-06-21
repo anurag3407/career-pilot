@@ -208,10 +208,10 @@ export function SkeletonCommentList({ count = 3, className = '' }) {
 /** Full-page Profile skeleton */
 export function SkeletonProfile({ className = '' }) {
   return (
-    <div className={`min-h-screen bg-black ${className}`}>
+    <div className={`min-h-screen bg-background ${className}`}>
       <div className="max-w-3xl mx-auto px-4 sm:px-6 lg:px-8 py-8 space-y-6">
         {/* Profile Header */}
-        <div className="rounded-2xl bg-zinc-900/80 border border-zinc-800 p-6">
+        <div className="rounded-2xl bg-card border border-border p-6">
           <div className="flex flex-col sm:flex-row items-start gap-5">
             <SkeletonCircle className="w-20 h-20 rounded-2xl flex-shrink-0" />
             <div className="flex-1 space-y-3 w-full">
@@ -221,19 +221,19 @@ export function SkeletonProfile({ className = '' }) {
             </div>
             <SkeletonBlock className="h-9 w-28 rounded-lg self-start" />
           </div>
-          <div className="mt-5 pt-5 border-t border-zinc-800">
+          <div className="mt-5 pt-5 border-t border-border">
             <SkeletonText lines={2} />
           </div>
         </div>
 
         {/* Stats */}
         <div className="grid grid-cols-2 gap-4">
-          <div className="rounded-2xl bg-zinc-900/80 border border-zinc-800 p-5">
+          <div className="rounded-2xl bg-card border border-border p-5">
             <SkeletonCircle className="w-10 h-10 mx-auto mb-2 rounded-xl" />
             <SkeletonBlock className="h-8 w-16 mx-auto mb-1" />
             <SkeletonBlock className="h-3 w-24 mx-auto" />
           </div>
-          <div className="rounded-2xl bg-zinc-900/80 border border-zinc-800 p-5">
+          <div className="rounded-2xl bg-card border border-border p-5">
             <SkeletonCircle className="w-10 h-10 mx-auto mb-2 rounded-xl" />
             <SkeletonBlock className="h-8 w-16 mx-auto mb-1" />
             <SkeletonBlock className="h-3 w-24 mx-auto" />
@@ -245,7 +245,7 @@ export function SkeletonProfile({ className = '' }) {
           <div className="flex justify-between items-center mb-4">
             <SkeletonBlock className="h-6 w-32" />
           </div>
-          <div className="rounded-2xl bg-zinc-900/80 border border-zinc-800 divide-y divide-zinc-800">
+          <div className="rounded-2xl bg-card border border-border divide-y divide-border">
             {[1, 2, 3].map((i) => (
               <div key={i} className="p-4 space-y-2">
                 <SkeletonBlock className="h-4 w-1/3" />

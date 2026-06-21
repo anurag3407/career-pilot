@@ -7,7 +7,7 @@ import { templates } from '../data/templates';
 import { motion, AnimatePresence } from "framer-motion";
 import { Moon, Sun, ChevronDown, Check, Eye, Star, Sparkles, X } from "lucide-react";
 import { useSearchParams } from "react-router-dom";
-import { PortfolioProvider } from '../context/PortfolioContext.jsx';
+
 
 /* TemplatePreviewFrame — contains each full portfolio template in a
    sandboxed scrollable box. The key trick: CSS `transform` on the outer
@@ -134,7 +134,35 @@ function FilterSelect({ value, onChange, options, className = "" }) {
 }
 
 
+function useInView(options = {}) {
+  const [inView, setInView] = useState(false);
+  const ref = useRef(null);
+
+  useEffect(() => {
+    if (!ref.current) return;
+    const observer = new IntersectionObserver(([entry]) => {
+      setInView(entry.isIntersecting);
+    }, options);
+    observer.observe(ref.current);
+    return () => observer.disconnect();
+  }, [options.rootMargin, options.threshold]);
+
+  return [ref, inView];
+}
+
 function TemplateCard({ template, hovered, onHover, onLeave, onUse, aiDraft }) {
+  const [ref, inView] = useInView({ threshold: 0 });
+  const [iframeLoaded, setIframeLoaded] = useState(false);
+
+  const shouldRenderIframe = inView || hovered;
+
+  // Reset iframe loaded state when it unmounts
+  useEffect(() => {
+    if (!shouldRenderIframe) {
+      setIframeLoaded(false);
+    }
+  }, [shouldRenderIframe]);
+
   return (
     <motion.div
       onMouseEnter={() => onHover(template.id)}
@@ -159,44 +187,50 @@ function TemplateCard({ template, hovered, onHover, onLeave, onUse, aiDraft }) {
         },
       }}
       className="bg-card rounded-2xl overflow-hidden border border-border flex flex-col justify-between cursor-pointer"
+      ref={ref}
     >
-      <div className="overflow-hidden relative bg-background h-52">
-        {template.isComplete ? (
+      <div className="overflow-hidden relative bg-background aspect-[16/10]">
+        
+        {/* Layer 0: Sleek Fallback Placeholder / Loading Screen */}
+        <div className="absolute inset-0 flex flex-col items-center justify-center bg-gradient-to-br from-neutral-900 to-black p-6 text-center z-0">
+           {!iframeLoaded ? (
+             <div className="flex flex-col items-center gap-3">
+               <div className="w-8 h-8 border-2 border-cyan-400 border-t-transparent rounded-full animate-spin" />
+               <span className="text-xs text-cyan-300 font-mono uppercase tracking-widest animate-pulse">Loading Hero Section</span>
+             </div>
+           ) : (
+             <>
+                <Sparkles className="w-8 h-8 text-primary mb-3 opacity-50" />
+                <h3 className="text-lg font-semibold text-white/80 font-mono tracking-tight">{template.title}</h3>
+             </>
+           )}
+        </div>
+
+        {/* Layer 1: Live iframe — loads when in view to provide an always-visible hero section */}
+        {shouldRenderIframe && (
           <div
-            className="absolute top-0 left-0 origin-top-left pointer-events-none"
+            className="absolute top-0 left-0 origin-top-left pointer-events-none z-20"
             style={{
-              width: '1280px',
-              height: '800px',
-              transform: 'scale(0.3)',
+              width: '500%',
+              height: '500%',
+              transform: 'scale(0.2)',
+              opacity: iframeLoaded ? 1 : 0,
+              transition: 'opacity 0.6s ease-in-out',
             }}
           >
             <iframe
               src={`/preview/${template.id}`}
-              className="w-full h-full border-none pointer-events-none"
+              className="w-full h-full border-none pointer-events-none bg-background"
               title={template.title}
-              loading="lazy"
               sandbox="allow-scripts allow-same-origin"
+              onLoad={() => setIframeLoaded(true)}
             />
           </div>
-        ) : (
-          <motion.img
-            src={template.image}
-            alt={template.title}
-            className="w-full h-52 object-cover object-top"
-            variants={{
-              rest: {
-                scale: 1,
-                transition: { duration: 0.5, ease: [0.25, 0.46, 0.45, 0.94] },
-              },
-              hover: {
-                scale: 1.08,
-                transition: { type: 'spring', stiffness: 200, damping: 25 },
-              },
-            }}
-          />
         )}
+
+        {/* Gradient overlay on hover */}
         <motion.div
-          className="absolute inset-0 bg-gradient-to-t from-black/50 via-transparent to-transparent pointer-events-none"
+          className="absolute inset-0 bg-gradient-to-t from-black/50 via-transparent to-transparent pointer-events-none z-30"
           variants={{ rest: { opacity: 0 }, hover: { opacity: 1 } }}
           transition={{ duration: 0.3 }}
         />
@@ -337,6 +371,7 @@ export default function TemplateGallery() {
   const [colorScheme, setColorScheme] = useState("All");
   const [layout, setLayout] = useState("All");
   const [sort, setSort] = useState("Popular");
+  const [search, setSearch] = useState("");
 
   const [aiDraft, setAiDraft] = useState(null);
 
@@ -353,7 +388,6 @@ export default function TemplateGallery() {
     localStorage.removeItem('ai_portfolio_draft');
     setAiDraft(null);
   };
-
   const [selectedTheme, setSelectedTheme] = useState("minimal");
   const [isDeployModalOpen, setIsDeployModalOpen] = useState(false);
   const [selectedPortfolioTitle, setSelectedPortfolioTitle] = useState("");
@@ -400,15 +434,29 @@ export default function TemplateGallery() {
     const matchesColorScheme =
       colorScheme === 'All' || template.colorScheme === colorScheme;
     const matchesLayout = layout === 'All' || template.layout === layout;
-    return matchesCategory && matchesColorScheme && matchesLayout;
+    const q = search.toLowerCase().trim();
+    const matchesSearch = !q ||
+      template.title?.toLowerCase().includes(q) ||
+      template.author?.toLowerCase().includes(q) ||
+      template.colorScheme?.toLowerCase().includes(q) ||
+      template.layout?.toLowerCase().includes(q) ||
+      template.category?.toLowerCase().includes(q);
+    return matchesCategory && matchesColorScheme && matchesLayout && matchesSearch;
+  });
+  
+  const sortedTemplates = [...filteredTemplates].sort((a, b) => {
+  if (sort === 'Popular') return b.views - a.views;
+  if (sort === 'Highest Rated') return b.rating - a.rating;
+  if (sort === 'Newest') return new Date(b.createdAt) - new Date(a.createdAt);
+  return 0;
   });
 
-  const sortedTemplates = [...filteredTemplates].sort((a, b) => {
-    if (sort === 'Popular') return b.views - a.views;
-    if (sort === 'Highest Rated') return b.rating - a.rating;
-    if (sort === 'Newest') return new Date(b.createdAt) - new Date(a.createdAt);
-    return 0;
-  });
+  console.log(
+    "Vercel cards:",
+    sortedTemplates.filter(
+      (t) => t.title === "Vercel Deploy"
+    ).length
+  );
 
   return (
     <div className="min-h-screen bg-background text-foreground transition-colors duration-300">
@@ -496,6 +544,32 @@ export default function TemplateGallery() {
           />
         </div>
 
+        <div className="mb-4">
+          <div className="relative">
+            <input
+              type="text"
+              value={search}
+              onChange={e => setSearch(e.target.value)}
+              placeholder="Search templates... e.g. Cyberpunk, Minimal, Dark"
+              className="w-full px-5 py-3.5 pl-12 rounded-2xl border border-border bg-card text-foreground placeholder:text-muted-foreground focus:outline-none focus:ring-2 focus:ring-cyan-500/40 focus:border-cyan-500/60 transition-all text-sm"
+            />
+            <svg
+              className="absolute left-4 top-1/2 -translate-y-1/2 w-4 h-4 text-muted-foreground"
+              fill="none" stroke="currentColor" viewBox="0 0 24 24"
+            >
+              <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M21 21l-6-6m2-5a7 7 0 11-14 0 7 7 0 0114 0z" />
+            </svg>
+            {search && (
+              <button
+                onClick={() => setSearch("")}
+                className="absolute right-4 top-1/2 -translate-y-1/2 text-muted-foreground hover:text-foreground transition-colors"
+              >
+                <X className="w-4 h-4" />
+              </button>
+            )}
+          </div>
+        </div>
+
         <div className="flex flex-wrap items-center gap-3 mb-8">
           <FilterSelect
             value={category}
@@ -521,8 +595,17 @@ export default function TemplateGallery() {
         </div>
 
         {sortedTemplates.length === 0 ? (
-          <div className="text-center text-muted-foreground mt-12 text-xl">
-            No templates match the selected criteria.
+          <div className="text-center text-muted-foreground mt-12">
+            <div className="text-4xl mb-4">🔍</div>
+            <div className="text-xl font-semibold mb-2">No templates found</div>
+            <div className="text-sm">
+              {search ? `No results for "${search}" — try a different keyword` : "No templates match the selected filters"}
+            </div>
+            {search && (
+              <button onClick={() => setSearch("")} className="mt-4 text-cyan-400 hover:text-cyan-300 text-sm underline">
+                Clear search
+              </button>
+            )}
           </div>
         ) : (
           <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 xl:grid-cols-4 gap-6">
@@ -551,6 +634,34 @@ export default function TemplateGallery() {
 
 
 
+      </div>
+
+      {/* Inspired Clyde DSouza - sandboxed fixed-nav frame */}
+      <div className="mt-12">
+        <div className="mb-4 flex items-center gap-3 px-1">
+          <span className="rounded-full bg-emerald-500/15 px-3 py-1 text-xs font-bold uppercase tracking-widest text-emerald-500 border border-emerald-500/25">
+            🧑 Clyde D'Souza Inspired
+          </span>
+          <h2 className="text-lg font-semibold text-foreground/70">Inspired by Clyde D'Souza - Vibrant Split Pane</h2>
+        </div>
+        <div className="rounded-2xl border border-emerald-500/15"
+          style={{ height: 640, overflowY: "auto", overflowX: "hidden", transform: "translate(0)", position: "relative", backgroundColor: "#f9fafb" }}>
+          <InspiredClydeDSouza />
+        </div>
+      </div>
+
+      {/* Inspired Delba - sandboxed fixed-nav frame */}
+      <div className="mt-12">
+        <div className="mb-4 flex items-center gap-3 px-1">
+          <span className="rounded-full bg-slate-500/15 px-3 py-1 text-xs font-bold uppercase tracking-widest text-slate-500 border border-slate-500/25">
+            ✨ Delba Inspired
+          </span>
+          <h2 className="text-lg font-semibold text-foreground/70">Inspired by Delba - Minimalist Typography</h2>
+        </div>
+        <div className="rounded-2xl border border-slate-500/15"
+          style={{ height: 640, overflowY: "auto", overflowX: "hidden", transform: "translate(0)", position: "relative", backgroundColor: "#FAFAFA" }}>
+          <InspiredDelba />
+        </div>
       </div>
 
     </div>

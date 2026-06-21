@@ -3,8 +3,13 @@ import { motion } from 'framer-motion';
 import { Settings, Cpu, Zap, Activity } from 'lucide-react';
 
 export default function Skills({ data }) {
-  const skills = data?.skills;
+  let skills = data?.skills;
   if (!skills || skills.length === 0) return null;
+  if (typeof skills === 'string') {
+    skills = skills.split(',').map(s => ({ name: s.trim() })).filter(s => s.name);
+  } else if (Array.isArray(skills)) {
+    skills = skills.map(s => typeof s === 'string' ? { name: s } : s);
+  }
 
   // Icons mapping based on skill index or type if available
   const getIcon = (index) => {

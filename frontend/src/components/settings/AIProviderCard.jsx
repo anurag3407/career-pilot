@@ -10,6 +10,7 @@ import {
   XCircle,
   Loader2,
   Sparkles,
+  Trash2,
 } from 'lucide-react';
 import toast from 'react-hot-toast';
 import { cn } from '../../lib/utils';
@@ -23,6 +24,7 @@ export default function AIProviderCard({ providerId, isActive, onActivate }) {
   const setProviderKey = useAIConfigStore((s) => s.setProviderKey);
   const setProviderModel = useAIConfigStore((s) => s.setProviderModel);
   const markValidated = useAIConfigStore((s) => s.markValidated);
+  const removeProvider = useAIConfigStore((s) => s.removeProvider);
 
   const [expanded, setExpanded] = useState(false);
   const [showKey, setShowKey] = useState(false);
@@ -113,6 +115,13 @@ export default function AIProviderCard({ providerId, isActive, onActivate }) {
     } finally {
       setIsValidating(false);
     }
+  };
+
+  const handleDelete = () => {
+    removeProvider(providerId);
+    setApiKey('');
+    setValidationResult(null);
+    toast.success(`${meta.name} key removed`);
   };
 
   // ---- Status dot ----
@@ -300,39 +309,51 @@ export default function AIProviderCard({ providerId, isActive, onActivate }) {
                   <ExternalLink className="h-3 w-3" />
                 </a>
 
-                {/* Validate & Save Button */}
-                <button
-                  onClick={handleValidate}
-                  disabled={isValidating || !apiKey.trim()}
-                  className={cn(
-                    'inline-flex items-center gap-2 rounded-lg px-4 py-2 text-sm font-semibold transition-all duration-200',
-                    'bg-primary text-primary-foreground hover:bg-primary/90',
-                    'disabled:cursor-not-allowed disabled:opacity-50',
-                    'focus:outline-none focus:ring-2 focus:ring-primary/50 focus:ring-offset-2 focus:ring-offset-card'
+                {/* Action Buttons */}
+                <div className="flex items-center gap-2">
+                  {hasKey && (
+                    <button
+                      onClick={handleDelete}
+                      className="inline-flex items-center justify-center p-2 rounded-lg text-red-400 hover:text-red-300 hover:bg-red-400/10 transition-colors"
+                      title="Delete API Key"
+                    >
+                      <Trash2 className="h-4 w-4" />
+                    </button>
                   )}
-                >
-                  {isValidating ? (
-                    <>
-                      <Loader2 className="h-4 w-4 animate-spin" />
-                      Validating…
-                    </>
-                  ) : validationResult === 'success' ? (
-                    <>
-                      <CheckCircle2 className="h-4 w-4 text-green-400" />
-                      Saved!
-                    </>
-                  ) : validationResult === 'error' ? (
-                    <>
-                      <XCircle className="h-4 w-4 text-red-400" />
-                      Failed
-                    </>
-                  ) : (
-                    <>
-                      <Key className="h-4 w-4" />
-                      Validate & Save
-                    </>
-                  )}
-                </button>
+                  {/* Validate & Save Button */}
+                  <button
+                    onClick={handleValidate}
+                    disabled={isValidating || !apiKey.trim()}
+                    className={cn(
+                      'inline-flex items-center gap-2 rounded-lg px-4 py-2 text-sm font-semibold transition-all duration-200',
+                      'bg-primary text-primary-foreground hover:bg-primary/90',
+                      'disabled:cursor-not-allowed disabled:opacity-50',
+                      'focus:outline-none focus:ring-2 focus:ring-primary/50 focus:ring-offset-2 focus:ring-offset-card'
+                    )}
+                  >
+                    {isValidating ? (
+                      <>
+                        <Loader2 className="h-4 w-4 animate-spin" />
+                        Validating…
+                      </>
+                    ) : validationResult === 'success' ? (
+                      <>
+                        <CheckCircle2 className="h-4 w-4 text-green-400" />
+                        Saved!
+                      </>
+                    ) : validationResult === 'error' ? (
+                      <>
+                        <XCircle className="h-4 w-4 text-red-400" />
+                        Failed
+                      </>
+                    ) : (
+                      <>
+                        <Key className="h-4 w-4" />
+                        Validate & Save
+                      </>
+                    )}
+                  </button>
+                </div>
               </div>
 
               {/* Validation result feedback */}
