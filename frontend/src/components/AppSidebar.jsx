@@ -223,6 +223,7 @@ export default function AppSidebar() {
     const [open, setOpen] = useState(false);
     const [openAI, setOpenAI] = useState(false);
     const [isBugModalOpen, setIsBugModalOpen] = useState(false);
+    const animate = true;
     const location = useLocation();
 
     useEffect(() => {
