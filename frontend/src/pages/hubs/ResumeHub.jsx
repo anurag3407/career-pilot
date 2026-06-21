@@ -1,44 +1,71 @@
-import { useState, useEffect } from 'react'
-import { FileText, Upload, Sparkles, Linkedin, BarChart3, LayoutTemplate, Eye, FileDown, PlusCircle, Github, TextSelect } from 'lucide-react'
-import { resumeApi } from '../../services/api'
-import HubLayout from '../../components/HubLayout'
-import ToolCard from '../../components/ToolCard'
-import { Link } from 'react-router-dom'
-import { motion } from 'framer-motion'
-import toast from 'react-hot-toast'
+import { useState, useEffect } from 'react';
+import {
+  FileText,
+  Upload,
+  Sparkles,
+  Linkedin,
+  BarChart3,
+  LayoutTemplate,
+  Eye,
+  FileDown,
+  PlusCircle,
+  Github,
+  TextSelect,
+} from 'lucide-react';
+import { resumeApi } from '../../services/api';
+import HubLayout from '../../components/HubLayout';
+import ToolCard from '../../components/ToolCard';
+import { Link } from 'react-router-dom';
+import { motion } from 'framer-motion';
+import toast from 'react-hot-toast';
+
 
 export default function ResumeHub() {
   const [resumes, setResumes] = useState([])
   const [loading, setLoading] = useState(true)
+  const [fontFamily, setFontFamily] = useState("Poppins")
+  const [fontSize, setFontSize] = useState("Medium")
+  const [colorTheme, setColorTheme] = useState("Blue")
+  const [headerStyle, setHeaderStyle] = useState("Modern")
+  const [pageMargin, setPageMargin] = useState("Normal")
+  const [sectionSpacing, setSectionSpacing] = useState("Medium")
 
   useEffect(() => {
     const fetchResumes = async () => {
       try {
-        const res = await resumeApi.getAll()
-        const fetchedResumes = Array.isArray(res.data) ? res.data : (res.resumes || res.data?.resumes || [])
-        setResumes(fetchedResumes)
+        const res = await resumeApi.getAll();
+        const fetchedResumes = Array.isArray(res.data)
+          ? res.data
+          : res.resumes || res.data?.resumes || [];
+        setResumes(fetchedResumes);
       } catch {
-        console.error('Failed to fetch resumes')
+        console.error('Failed to fetch resumes');
       } finally {
-        setLoading(false)
+        setLoading(false);
       }
-    }
-    fetchResumes()
-  }, [])
+    };
+    fetchResumes();
+  }, []);
 
   const handleDelete = async (id) => {
     try {
-      await resumeApi.delete(id)
-      setResumes(prev => prev.filter(r => r._id !== id))
-      toast.success('Resume deleted')
+      await resumeApi.delete(id);
+      setResumes((prev) => prev.filter((r) => r._id !== id));
+      toast.success('Resume deleted');
     } catch {
-      toast.error('Failed to delete resume')
+      toast.error('Failed to delete resume');
     }
-  }
+  };
 
   const stats = [
-    { icon: FileText, value: resumes.length, label: 'Resumes', color: 'text-primary', bg: 'bg-primary/10' },
-  ]
+    {
+      icon: FileText,
+      value: resumes.length,
+      label: 'Resumes',
+      color: 'text-primary',
+      bg: 'bg-primary/10',
+    },
+  ];
 
   return (
     <HubLayout
@@ -87,7 +114,7 @@ export default function ResumeHub() {
         color="secondary"
       />
       <ToolCard
-        to="/upload"
+        to="/linkedin-dashboard"
         icon={Linkedin}
         title="LinkedIn Import"
         description="Import your LinkedIn profile and convert it into a polished resume instantly."
@@ -135,7 +162,10 @@ export default function ResumeHub() {
                     <FileText className="w-5 h-5 text-primary" />
                   </div>
                   <span className="text-xs text-muted-foreground font-medium">
-                    {new Date(resume.createdAt).toLocaleDateString('en-US', { month: 'short', day: 'numeric' })}
+                    {new Date(resume.createdAt).toLocaleDateString('en-US', {
+                      month: 'short',
+                      day: 'numeric',
+                    })}
                   </span>
                 </div>
                 <h3 className="font-bold text-foreground mb-1 truncate">
@@ -153,7 +183,11 @@ export default function ResumeHub() {
                 </div>
                 <div className="flex items-center gap-2">
                   <Link
-                    to={resume.enhancedText ? `/enhance/${resume._id}` : `/resume/${resume._id}`}
+                    to={
+                      resume.enhancedText
+                        ? `/enhance/${resume._id}`
+                        : `/resume/${resume._id}`
+                    }
                     className="flex-1 text-center text-xs font-semibold px-3 py-2 rounded-lg bg-primary/10 text-primary hover:bg-primary/20 transition-colors"
                   >
                     <Eye className="w-3.5 h-3.5 inline mr-1" />
@@ -172,5 +206,5 @@ export default function ResumeHub() {
         </div>
       )}
     </HubLayout>
-  )
+  );
 }

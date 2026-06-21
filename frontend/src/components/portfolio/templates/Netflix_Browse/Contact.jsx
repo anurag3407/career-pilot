@@ -3,16 +3,30 @@ import { motion } from "framer-motion";
 import { Mail, Github, Linkedin, Twitter, Send, CheckCircle } from "lucide-react";
 
 export default function Contact({ personal, socials }) {
-  const [sent, setSent] = useState(false);
-  const [form, setForm] = useState({ name: "", email: "", message: "" });
+ const [sent, setSent] = useState(false);
+ const [loading, setLoading] = useState(false);
+ const [form, setForm] = useState({ name: "", email: "", message: "" });
+  const handleSubmit = async (e) => {
+  e.preventDefault();
 
-  const handleSubmit = (e) => {
-    e.preventDefault();
-    // Simulate send
+  try {
+    setLoading(true);
+
+    // Simulate send delay
+    await new Promise((resolve) => setTimeout(resolve, 2000));
+
     setSent(true);
     setTimeout(() => setSent(false), 4000);
+
     setForm({ name: "", email: "", message: "" });
-  };
+
+  } catch (error) {
+    console.log(error);
+
+  } finally {
+    setLoading(false);
+  }
+};
 
   return (
     <section id="contact" className="py-16 px-4 md:px-12">
@@ -85,12 +99,22 @@ export default function Contact({ personal, socials }) {
                 />
               </div>
               <button
-                type="submit"
-                className="w-full flex items-center justify-center gap-2 px-6 py-3 bg-[#E50914] text-white font-bold text-sm rounded-lg hover:bg-red-700 transition-colors shadow-[0_0_20px_rgba(229,9,20,0.3)]"
-              >
-                <Send className="w-4 h-4" />
-                Send Message
-              </button>
+  type="submit"
+  disabled={loading}
+  className="w-full flex items-center justify-center gap-2 px-6 py-3 bg-[#E50914] text-white font-bold text-sm rounded-lg hover:bg-red-700 transition-colors shadow-[0_0_20px_rgba(229,9,20,0.3)] disabled:opacity-50 disabled:cursor-not-allowed"
+>
+  {loading ? (
+    <>
+      <div className="w-4 h-4 border-2 border-white border-t-transparent rounded-full animate-spin"></div>
+      Sending...
+    </>
+  ) : (
+    <>
+      <Send className="w-4 h-4" />
+      Send Message
+    </>
+  )}
+</button>
             </form>
           )}
         </motion.div>

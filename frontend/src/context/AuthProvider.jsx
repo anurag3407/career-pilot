@@ -5,6 +5,7 @@ import {
   createUserWithEmailAndPassword,
   signOut,
   GoogleAuthProvider,
+  GithubAuthProvider,
   signInWithPopup,
   updateProfile
 } from 'firebase/auth'
@@ -24,9 +25,18 @@ export function AuthProvider({ children }) {
 
   useEffect(() => {
     // If firebase initialization was skipped, unblock the loading state immediately
+    // and provide a mock user for local development.
     if (!auth) {
-      setLoading(false)
-      return
+      if (import.meta.env.DEV) {
+        setUser({
+          uid: 'dev-user-001',
+          email: 'dev@example.com',
+          displayName: 'Local Dev User',
+          getIdToken: async () => 'mock-dev-token'
+        });
+      }
+      setLoading(false);
+      return;
     }
 
     const unsubscribe = onAuthStateChanged(auth, (user) => {
@@ -46,7 +56,7 @@ export function AuthProvider({ children }) {
    * @returns {Promise<object>} The Firebase user object.
    */
   const signup = async (email, password, displayName) => {
-    if (!auth) throw new Error('Authentication service is currently unconfigured.')
+    if (!auth) throw new Error("Authentication service is not configured. Please check your environment variables and authentication provider setup. Refer to the project setup documentation for configuration instructions.")
     const result = await createUserWithEmailAndPassword(auth, email, password)
     if (displayName) {
       await updateProfile(result.user, { displayName })
@@ -62,7 +72,17 @@ export function AuthProvider({ children }) {
    * @returns {Promise<object>} The Firebase user object.
    */
   const login = async (email, password) => {
-    if (!auth) throw new Error('Authentication service is currently unconfigured.')
+    if (!auth && import.meta.env.DEV) {
+      const mockUser = {
+        uid: 'dev-user-001',
+        email: 'dev@example.com',
+        displayName: 'Local Dev User',
+        getIdToken: async () => 'mock-dev-token'
+      };
+      setUser(mockUser);
+      return mockUser;
+    }
+    if (!auth) throw new Error("Authentication service is not configured. Please check your environment variables and authentication provider setup. Refer to the project setup documentation for configuration instructions.")
     const result = await signInWithEmailAndPassword(auth, email, password)
     return result.user
   }
@@ -73,7 +93,7 @@ export function AuthProvider({ children }) {
    * @returns {Promise<object>} The Firebase user object.
    */
   const loginWithGoogle = async () => {
-    if (!auth) throw new Error('Authentication service is currently unconfigured.')
+    if (!auth) throw new Error("Authentication service is not configured. Please check your environment variables and authentication provider setup. Refer to the project setup documentation for configuration instructions.")
     const provider = new GoogleAuthProvider()
     const result = await signInWithPopup(auth, provider)
     return result.user
@@ -83,8 +103,21 @@ export function AuthProvider({ children }) {
    * Redirects the user to the LinkedIn authentication flow.
    */
   const loginWithLinkedIn = () => {
-    const apiUrl = import.meta.env.VITE_API_URL || 'http://localhost:5001'
+    const apiUrl = import.meta.env.VITE_API_URL || 'http://localhost:5000'
     window.location.href = `${apiUrl}/api/auth/linkedin`
+  }
+
+  /**
+   * Logs in a user using GitHub Sign-In popup.
+   *
+   * @returns {Promise<object>} The Firebase user object.
+   */
+  const loginWithGitHub = async () => {
+    if (!auth) throw new Error("Authentication service is not configured. Please check your environment variables and authentication provider setup. Refer to the project setup documentation for configuration instructions.")
+    const provider = new GithubAuthProvider()
+    provider.addScope('user:email')
+    const result = await signInWithPopup(auth, provider)
+    return result.user
   }
 
   /**
@@ -93,7 +126,7 @@ export function AuthProvider({ children }) {
    * @returns {Promise<void>}
    */
   const logout = async () => {
-    if (!auth) throw new Error('Authentication service is currently unconfigured.')
+    if (!auth) throw new Error("Authentication service is not configured. Please check your environment variables and authentication provider setup. Refer to the project setup documentation for configuration instructions.")
     await signOut(auth)
   }
 
@@ -114,6 +147,7 @@ export function AuthProvider({ children }) {
     login,
     loginWithGoogle,
     loginWithLinkedIn,
+    loginWithGitHub,
     logout,
     getToken,
     isMockAuth: !auth // Helper flag indicating local offline development

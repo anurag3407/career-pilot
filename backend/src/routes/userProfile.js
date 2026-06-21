@@ -6,17 +6,23 @@ import Resume from '../models/Resume.model.js';
 import Interview from '../models/Interview.model.js';
 import { db } from '../config/firebase.js';
 import { validate } from '../middleware/validate.js';
-import { updateProfileSchema } from '../schemas/userProfile.schema.js';
+import { updateProfileSchema, setAvatarSchema } from '../schemas/userProfile.schema.js';
 
 const router = express.Router();
 
 router.use(verifyToken);
 
 const getPostsForUser = async (uid) => {
-  const snapshot = await db.collection('posts')
-    .where('author.uid', '==', uid)
-    .limit(50)
-    .get();
+  let snapshot;
+  try {
+    snapshot = await db.collection('posts')
+      .where('author.uid', '==', uid)
+      .limit(50)
+      .get();
+  } catch (error) {
+    console.warn('Unable to load profile activity feed:', error.message);
+    return [];
+  }
 
   return snapshot.docs
     .map(doc => ({ id: doc.id, ...doc.data() }))
@@ -33,7 +39,7 @@ const getPostsForUser = async (uid) => {
       title: p.title || '',
       content: p.content || '',
       category: p.category || '',
-      likeCount: (p.likes || []).length,
+      likeCount: Array.isArray(p.likes) ? p.likes.length : (p.likeCount || 0),
       commentCount: p.commentCount || 0,
       createdAt: p.createdAt?.toDate?.() || p.createdAt || null,
     }));
@@ -56,9 +62,14 @@ router.get('/me', asyncHandler(async (req, res) => {
 // Update own profile
 router.put('/me', validate(updateProfileSchema), asyncHandler(async (req, res) => {
   const uid = req.user.uid;
-  const { displayName, bio, jobRole, skills, location, website, github, linkedin } = req.body;
+  const {
+    displayName, bio, jobRole, skills, location, website, github, linkedin,
+    avatarUrl, phone, headline, dateOfBirth, gender, company, yearsOfExperience,
+    collegeStudent, openToWork, education, languages, resumeHeadline,
+  } = req.body;
 
   const update = {};
+  // --- Existing fields ---
   if (displayName !== undefined) update.displayName = String(displayName).slice(0, 100);
   if (bio !== undefined) update.bio = String(bio).slice(0, 500);
   if (jobRole !== undefined) update.jobRole = String(jobRole).slice(0, 100);
@@ -72,9 +83,67 @@ router.put('/me', validate(updateProfileSchema), asyncHandler(async (req, res) =
   if (github !== undefined) update.github = String(github).slice(0, 100);
   if (linkedin !== undefined) update.linkedin = String(linkedin).slice(0, 200);
 
+  // --- New personal-info fields ---
+  if (avatarUrl !== undefined) update.avatarUrl = String(avatarUrl).slice(0, 500);
+  if (phone !== undefined) update.phone = String(phone).slice(0, 30);
+  if (headline !== undefined) update.headline = String(headline).slice(0, 120);
+  if (dateOfBirth !== undefined) update.dateOfBirth = dateOfBirth;
+  if (gender !== undefined) update.gender = gender;
+  if (company !== undefined) update.company = String(company).slice(0, 100);
+  if (yearsOfExperience !== undefined) update.yearsOfExperience = yearsOfExperience;
+  if (collegeStudent !== undefined) update.collegeStudent = Boolean(collegeStudent);
+  if (openToWork !== undefined) update.openToWork = Boolean(openToWork);
+  if (resumeHeadline !== undefined) update.resumeHeadline = String(resumeHeadline).slice(0, 300);
+
+  if (education !== undefined) {
+    update.education = Array.isArray(education)
+      ? education.slice(0, 20).map(e => ({
+        institution: String(e.institution || '').slice(0, 150),
+        degree: String(e.degree || '').slice(0, 100),
+        field: String(e.field || '').slice(0, 100),
+        startYear: typeof e.startYear === 'number' ? e.startYear : undefined,
+        endYear: typeof e.endYear === 'number' ? e.endYear : undefined,
+      })).filter(e => e.institution || e.degree)
+      : [];
+    // Strip undefined keys so Mongoose doesn't store them
+    update.education = update.education.map(e =>
+      Object.fromEntries(Object.entries(e).filter(([, v]) => v !== undefined))
+    );
+  }
+
+  if (languages !== undefined) {
+    update.languages = Array.isArray(languages)
+      ? languages.slice(0, 20).map(l => String(l).trim()).filter(Boolean)
+      : [];
+  }
+
   const profile = await UserProfile.findOneAndUpdate(
     { uid },
     { $set: update },
+    { new: true, upsert: true }
+  );
+  res.json({ success: true, profile });
+}));
+
+// Set avatar URL (client uploads to Firebase Storage, then persists the URL here)
+router.post('/me/avatar', validate(setAvatarSchema), asyncHandler(async (req, res) => {
+  const uid = req.user.uid;
+  const { avatarUrl } = req.body;
+
+  const profile = await UserProfile.findOneAndUpdate(
+    { uid },
+    { $set: { avatarUrl } },
+    { new: true, upsert: true }
+  );
+  res.json({ success: true, profile });
+}));
+
+// Remove avatar
+router.delete('/me/avatar', asyncHandler(async (req, res) => {
+  const uid = req.user.uid;
+  const profile = await UserProfile.findOneAndUpdate(
+    { uid },
+    { $set: { avatarUrl: '' } },
     { new: true, upsert: true }
   );
   res.json({ success: true, profile });

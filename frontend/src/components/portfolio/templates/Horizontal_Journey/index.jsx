@@ -1,30 +1,116 @@
-import React from 'react';
-import data from '../../../../data/dummy_data.json';
+import React, { useEffect, useRef, useState } from 'react';
+import { motion, MotionConfig, useScroll, useTransform } from 'framer-motion';
+import { ArrowRight } from 'lucide-react';
+import Hero from './Hero';
+import About from './About';
+import Skills from './Skills';
+import ProjectsSection from './Projects';
+import ExperienceSection from './Experience';
+import TestimonialsSection from './Testimonials';
+import Contact from './Contact';
 
-/**
- * Horizontal Journey Portfolio Template
- * Category: Scroll-Triggered
- * Description: Horizontal scrolling portfolio like a filmstrip timeline. Vertical scroll input translates to horizontal movement. Each project is a full-width slide.
- */
-export default function HorizontalJourney() {
+// ----------------------------------------------------------------------
+// DESKTOP: Horizontal Scroll-Jacking Filmstrip
+// ----------------------------------------------------------------------
+function DesktopJourneyShell({ isMobile }) {
+  const containerRef = useRef(null);
+  
+  // 7 Fixed Slides total
+  const totalSlides = 7;
+  const containerHeight = `${totalSlides * 100}vh`;
+  const trackWidth = `${totalSlides * 100}vw`;
+  
+  // Translation math: Move left by (Total Slides - 1) viewports
+  const endTranslation = `-${(totalSlides - 1) * 100}vw`;
+
+  const { scrollYProgress } = useScroll({
+    target: containerRef,
+    offset: ['start start', 'end end'],
+  });
+
+  const xTransform = useTransform(scrollYProgress, [0, 1], ['0vw', endTranslation]);
+
   return (
-    <div className="min-h-screen bg-gray-950 text-white flex flex-col items-center justify-center p-8 font-sans">
-      <div className="max-w-3xl w-full text-center">
-        <h1 className="text-5xl md:text-7xl font-bold mb-4 bg-gradient-to-r from-cyan-400 to-purple-500 bg-clip-text text-transparent">
-          {data.personal.name}
-        </h1>
-        <p className="text-xl md:text-2xl text-gray-400 mb-8">{data.personal.title}</p>
-        <div className="p-8 border-2 border-dashed border-cyan-500/40 rounded-2xl bg-gray-900/50 backdrop-blur-sm">
-          <span className="inline-block px-3 py-1 rounded-full bg-cyan-500/20 text-cyan-400 text-xs font-bold uppercase tracking-widest mb-4">
-            Scroll-Triggered
-          </span>
-          <h2 className="text-2xl font-bold text-gray-200 mb-3">Horizontal Journey Template</h2>
-          <p className="text-gray-400 mb-6 leading-relaxed">
-            Horizontal scrolling portfolio like a filmstrip timeline. Vertical scroll input translates to horizontal movement. Each project is a full-width slide.
-          </p>
-          <p className="text-cyan-400 font-semibold">Open an issue to contribute and build this template!</p>
+    <div
+      ref={containerRef}
+      style={{ height: containerHeight }}
+      className="relative bg-zinc-950 font-sans text-zinc-100 selection:bg-zinc-100 selection:text-zinc-950 overscroll-none"
+    >
+      <div className="sticky top-0 flex h-[100dvh] w-full items-center overflow-hidden bg-zinc-950 pointer-events-none">
+        
+        {/* Top Progress Bar */}
+        <motion.div
+          className="absolute top-0 left-0 z-50 h-1 origin-left bg-zinc-100"
+          style={{ scaleX: scrollYProgress, width: '100%' }}
+        />
+
+        {/* Translating Track */}
+        <motion.div
+          style={{ x: xTransform, width: trackWidth }}
+          className="flex h-full will-change-transform transform-gpu pointer-events-auto"
+        >
+          <Hero isMobile={isMobile} />
+          <About isMobile={isMobile} />
+          <Skills isMobile={isMobile} />
+          <ProjectsSection isMobile={isMobile} />
+          <ExperienceSection isMobile={isMobile} />
+          <TestimonialsSection isMobile={isMobile} />
+          <Contact isMobile={isMobile} />
+        </motion.div>
+
+        {/* Persistent Scroll hint */}
+        <div className="absolute right-4 bottom-4 z-40 rounded border border-zinc-800 bg-zinc-950/90 px-2 py-1 font-mono text-[9px] text-zinc-600 lg:right-8 lg:bottom-8 lg:border-none lg:text-sm animate-pulse">
+          <div className="flex items-center gap-1 lg:gap-2 text-zinc-300">
+            Scroll Page to Proceed <ArrowRight size={12} className="lg:h-4 lg:w-4" />
+          </div>
         </div>
       </div>
     </div>
+  );
+}
+
+// ----------------------------------------------------------------------
+// MOBILE: Native Vertical Stack (Guaranteed perfect scrolling)
+// ----------------------------------------------------------------------
+function MobileJourneyShell({ isMobile }) {
+  // We use standard HTML flow for mobile. No scroll-jacking. No translation. 
+  // It just scrolls up and down naturally like a normal website.
+  return (
+    <div className="flex flex-col w-full min-h-screen bg-zinc-950 text-zinc-100 selection:bg-zinc-100 selection:text-zinc-950 font-sans overflow-x-hidden">
+      <Hero isMobile={isMobile} />
+      <About isMobile={isMobile} />
+      <Skills isMobile={isMobile} />
+      <ProjectsSection isMobile={isMobile} />
+      <ExperienceSection isMobile={isMobile} />
+      <TestimonialsSection isMobile={isMobile} />
+      <Contact isMobile={isMobile} />
+    </div>
+  );
+}
+
+
+// --- MAIN EXPORT COMPONENT ---
+
+export default function HorizontalJourney() {
+  const [isMobile, setIsMobile] = useState(false);
+
+  useEffect(() => {
+    const mediaQuery = window.matchMedia('(max-width: 767px)'); // Standard md breakpoint
+
+    const updateMobileState = () => {
+      setIsMobile(mediaQuery.matches);
+    };
+
+    updateMobileState();
+    mediaQuery.addEventListener('change', updateMobileState);
+
+    return () => mediaQuery.removeEventListener('change', updateMobileState);
+  }, []);
+
+  return (
+    // Always use the desktop horizontal shell so vertical scroll drives horizontal movement on all devices
+    <MotionConfig reducedMotion="never">
+      <DesktopJourneyShell isMobile={isMobile} />
+    </MotionConfig>
   );
 }

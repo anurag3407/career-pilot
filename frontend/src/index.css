@@ -25,6 +25,7 @@
 :root {
   /* Light Theme Design Tokens */
   --background: #f8fafc;
+  --background-rgb: 248, 250, 252;
   --secondary-bg: #ffffff;
   --foreground: #0f172a;
   --card: #ffffff;
@@ -32,6 +33,7 @@
   --popover: #ffffff;
   --popover-foreground: #0f172a;
   --primary: #0ea5e9;
+  --primary-rgb: 14, 165, 233;
   --primary-foreground: #ffffff;
   --secondary: #6366f1;
   --secondary-foreground: #ffffff;
@@ -48,27 +50,55 @@
 }
 
 .dark {
-  /* Dark Theme Design Tokens */
-  --background: #050816;
-  --secondary-bg: #0b1120;
+  /* Pitch Dark Theme Design Tokens */
+  --background: #000000;
+  --background-rgb: 0, 0, 0;
+  --secondary-bg: #09090b;
   --foreground: #ffffff;
-  --card: rgba(255, 255, 255, 0.04);
+  --card: #050505;
   --card-foreground: #ffffff;
-  --popover: #0b1120;
+  --popover: #0a0a0a;
   --popover-foreground: #ffffff;
   --primary: #00bfff;
+  --primary-rgb: 0, 191, 255;
   --primary-foreground: #ffffff;
   --secondary: #7c3aed;
   --secondary-foreground: #ffffff;
-  --muted: #0b1120;
-  --muted-foreground: #b3b8c5;
-  --accent: rgba(255, 255, 255, 0.04);
+  --muted: #111111;
+  --muted-foreground: #a1a1aa;
+  --accent: #111111;
   --accent-foreground: #ffffff;
   --destructive: #ef4444;
   --destructive-foreground: #ffffff;
-  --border: rgba(255, 255, 255, 0.08);
-  --input: rgba(255, 255, 255, 0.08);
+  --border: #222222;
+  --input: #222222;
   --ring: #00bfff;
+}
+
+.highContrast {
+  /* High Contrast Theme Design Tokens (WCAG AAA) */
+  --background: #000000;
+  --background-rgb: 0, 0, 0;
+  --secondary-bg: #000000;
+  --foreground: #ffffff;
+  --card: #000000;
+  --card-foreground: #ffffff;
+  --popover: #000000;
+  --popover-foreground: #ffffff;
+  --primary: #ffff00;
+  --primary-rgb: 255, 255, 0;
+  --primary-foreground: #000000;
+  --secondary: #00ffff;
+  --secondary-foreground: #000000;
+  --muted: #000000;
+  --muted-foreground: #ffffff;
+  --accent: #ffff00;
+  --accent-foreground: #000000;
+  --destructive: #ff0000;
+  --destructive-foreground: #ffffff;
+  --border: #ffffff;
+  --input: #ffffff;
+  --ring: #ffff00;
 }
 
 /* Base Styles */
@@ -83,6 +113,7 @@
 
 html {
   scroll-behavior: smooth;
+  scroll-padding-top: 5.5rem;
 }
 
 body {
@@ -101,25 +132,7 @@ body {
   overflow-x: hidden;
 }
 
-/* Custom Scrollbar */
-::-webkit-scrollbar {
-  width: 10px;
-  height: 10px;
-}
 
-::-webkit-scrollbar-track {
-  background: var(--background);
-}
-
-::-webkit-scrollbar-thumb {
-  background: var(--muted-foreground);
-  border: 3px solid var(--background);
-  border-radius: 10px;
-}
-
-::-webkit-scrollbar-thumb:hover {
-  background: var(--primary);
-}
 
 /* Selection */
 ::selection {
@@ -129,11 +142,11 @@ body {
 
 /* Glow Effects */
 .glow {
-  box-shadow: 0 0 20px rgba(0, 191, 255, 0.15);
+  box-shadow: 0 0 20px rgba(var(--primary-rgb), 0.15);
 }
 
 .dark .glow {
-  box-shadow: 0 0 30px rgba(0, 191, 255, 0.2);
+  box-shadow: 0 0 30px rgba(var(--primary-rgb), 0.2);
 }
 
 /* Glass Effect */
@@ -246,7 +259,7 @@ body {
 .premium-card:hover {
   border-color: var(--primary);
   transform: translateY(-4px) scale(1.01);
-  box-shadow: 0 12px 40px -12px rgba(0, 191, 255, 0.25);
+  box-shadow: 0 12px 40px -12px rgba(var(--primary-rgb), 0.25);
 }
 
 @keyframes toast-slide-in {
@@ -348,7 +361,7 @@ body {
   }
 
   .glass-card {
-    background: rgba(var(--background), 0.7);
+    background: rgba(var(--background-rgb), 0.7);
     backdrop-filter: blur(12px);
     border: 1px solid var(--border);
   }
@@ -357,7 +370,7 @@ body {
 /* Modern Scrollbar */
 ::-webkit-scrollbar {
   width: 7px;
-    height: 7px;
+  height: 7px;
 }
 
 ::-webkit-scrollbar-track {
@@ -367,12 +380,62 @@ body {
 ::-webkit-scrollbar-thumb {
   background: linear-gradient(
     180deg,
-    #06b6d4,
-    #8b5cf6
+    var(--primary),
+    var(--secondary)
   );
   border-radius: 999px;
 }
 
 ::-webkit-scrollbar-thumb:hover {
   opacity: 0.8;
+}
+/* ======================================== */
+/* PLAYING CARDS TEMPLATE CUSTOM STYLES     */
+/* ======================================== */
+
+/* 3D Card Flip Animations */
+.perspective-1000 {
+  perspective: 1000px;
+}
+
+.backface-hidden {
+  backface-visibility: hidden;
+  -webkit-backface-visibility: hidden;
+}
+
+.rotate-y-180 {
+  transform: rotateY(180deg);
+}
+
+/* Card Shuffle Animation */
+@keyframes shuffle {
+  0% {
+    transform: translateX(0) rotate(0deg);
+  }
+  25% {
+    transform: translateX(-10px) rotate(-5deg);
+  }
+  50% {
+    transform: translateX(10px) rotate(5deg);
+  }
+  75% {
+    transform: translateX(-5px) rotate(-2deg);
+  }
+  100% {
+    transform: translateX(0) rotate(0deg);
+  }
+}
+
+.shuffle-animation {
+  animation: shuffle 0.3s ease-in-out;
+}
+
+/* Card hover effect */
+.card-hover {
+  transition: all 0.3s cubic-bezier(0.4, 0, 0.2, 1);
+}
+
+.card-hover:hover {
+  transform: translateY(-8px);
+  box-shadow: 0 20px 40px -12px rgba(0, 0, 0, 0.3);
 }

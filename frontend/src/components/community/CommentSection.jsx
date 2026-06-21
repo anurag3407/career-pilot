@@ -7,11 +7,10 @@ import {
   Send, 
   MoreHorizontal,
   ChevronDown,
-  ChevronUp,
-  Loader2
+  ChevronUp
 } from 'lucide-react';
 import toast from 'react-hot-toast';
-import { SkeletonListItems } from '../ui/Skeleton';
+import { SkeletonCommentList } from '../ui/Skeleton';
 
 function CommentItem({ comment, currentUser, onReply, onLike, depth = 0 }) {
   const [showReplies, setShowReplies] = useState(depth === 0);
@@ -315,9 +314,7 @@ export default function CommentSection({ postId, currentUser, onCommentAdded }) 
       {/* Comments List */}
       <div className="max-h-96 overflow-y-auto">
         {loading ? (
-          <div className="px-4 py-4">
-            <SkeletonListItems count={3} />
-          </div>
+          <SkeletonCommentList count={3} className="py-2" />
         ) : comments.length === 0 ? (
           <div className="text-center py-8 text-muted-foreground">
             <MessageCircle className="w-12 h-12 mx-auto mb-2 text-muted-foreground/60" />

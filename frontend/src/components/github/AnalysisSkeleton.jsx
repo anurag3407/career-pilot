@@ -1,18 +1,18 @@
 const SkeletonBlock = ({ className = '' }) => (
   <div
-    className={`bg-gray-200 dark:bg-gray-700 rounded ${className}`}
+    className={`bg-muted rounded ${className}`}
   />
 );
 
 const GaugeSkeleton = () => (
-  <div className="animate-pulse bg-white dark:bg-gray-800 rounded-2xl p-6 shadow-sm flex flex-col items-center gap-4">
+  <div className="animate-pulse bg-card border border-border rounded-2xl p-6 shadow-sm flex flex-col items-center gap-4">
     <SkeletonBlock className="w-32 h-32 rounded-full" />
     <SkeletonBlock className="h-5 w-40" />
   </div>
 );
 
 const TechStackSkeleton = () => (
-  <div className="animate-pulse bg-white dark:bg-gray-800 rounded-2xl p-6 shadow-sm">
+  <div className="animate-pulse bg-card border border-border rounded-2xl p-6 shadow-sm">
     <SkeletonBlock className="h-5 w-40 mb-6" />
 
     <div className="grid grid-cols-2 sm:grid-cols-4 gap-4">
@@ -27,7 +27,7 @@ const TechStackSkeleton = () => (
 );
 
 const HeatmapSkeleton = () => (
-  <div className="bg-white dark:bg-gray-800 rounded-2xl p-6 shadow-sm">
+  <div className="bg-card border border-border rounded-2xl p-6 shadow-sm">
     <SkeletonBlock className="h-5 w-36 mb-6" />
 
     <div className="grid grid-cols-12 gap-2">
@@ -42,7 +42,7 @@ const HeatmapSkeleton = () => (
 );
 
 const ContributorsSkeleton = () => (
-  <div className="animate-pulse bg-white dark:bg-gray-800 rounded-2xl p-6 shadow-sm">
+  <div className="animate-pulse bg-card border border-border rounded-2xl p-6 shadow-sm">
     <SkeletonBlock className="h-5 w-44 mb-6" />
 
     <div className="flex gap-3 flex-wrap">

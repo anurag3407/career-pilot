@@ -2,12 +2,12 @@ import Navbar from '../components/Navbar'
 import HeroSection from '../components/ui/HeroSection'
 import FeaturesSection, { AdditionalFeatures } from '../components/ui/FeaturesSection'
 import PortfolioShowcaseSection from '../components/ui/PortfolioShowcaseSection'
+import ProjectVisualizerSection from '../components/ui/ProjectVisualizerSection'
 import HowItWorksSection from '../components/ui/HowItWorksSection'
 import TestimonialsSection from '../components/ui/TestimonialsSection'
 import CTASection from '../components/ui/CTASection'
 import Footer from '../components/ui/Footer'
 import { StackedCircularFooter } from '../components/ui/stacked-circular-footer'
-import PolygonMorph from '../components/portfolio/templates/Geometric_Shapes/PolygonMorph';
 
 export default function Home() {
   return (
@@ -16,7 +16,6 @@ export default function Home() {
 
       {/* Hero Section with World Map */}
       <HeroSection />
-      <PolygonMorph />
 
       {/* Main Features Section - Bento Grid */}
       <section id="features" className="relative overflow-hidden">
@@ -33,6 +32,9 @@ export default function Home() {
 
       {/* Portfolio Showcase Section */}
       <PortfolioShowcaseSection />
+
+      {/* Project Visualizer Section */}
+      <ProjectVisualizerSection />
 
       {/* How It Works Section */}
       <HowItWorksSection />

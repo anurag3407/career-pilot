@@ -163,6 +163,53 @@ ${resumeText}`;
   }
 };
 
+/**
+ * Translate a resume into a target language while preserving formatting,
+ * section headers, dates, technical terms, and proper-noun company /
+ * school / product names. The output should be a ready-to-render copy of
+ * the resume, NOT a literal line-by-line translation.
+ *
+ * @param {string} resumeText  - Resume content (markdown or plain text)
+ * @param {string} targetLang  - Target language (e.g. "Spanish", "French", "Mandarin Chinese")
+ * @param {string} sourceLang  - Optional source language; defaults to "auto-detect"
+ * @param {object} aiProvider  - Optional provider injected by middleware
+ */
+export const translateResume = async (resumeText, targetLang, sourceLang = 'auto-detect', aiProvider) => {
+  try {
+    const provider = resolveProvider(aiProvider);
+    const prompt = `You are a professional resume translator. Translate the following resume into ${targetLang}${sourceLang === 'auto-detect' ? '' : ` from ${sourceLang}`}.
+
+CRITICAL RULES:
+1. Preserve the original formatting (markdown, bullet points, headers) exactly.
+2. Do NOT translate: company names, school/university names, product names, technical proper nouns, programming language / framework names (e.g. React, PostgreSQL, AWS), or job titles that are typically English-only.
+3. Translate dates into the most natural format for the target locale (e.g. "Jan 2022 – Present" → target-locale equivalent).
+4. Localize currency symbols and units where appropriate.
+5. Keep email addresses, URLs, phone numbers, and GitHub/LinkedIn handles exactly as they appear.
+6. Output ONLY the translated resume — no preamble, no explanation, no code fences.
+
+Resume:
+${resumeText}`;
+
+    const providerResult = await provider.generateContent(prompt);
+    // Strip accidental code fences the LLM may add
+    const cleaned = String(providerResult.text || '')
+      .replace(/^```[a-z]*\n?/i, '')
+      .replace(/\n?```\s*$/i, '')
+      .trim();
+    return {
+      success: true,
+      translatedText: cleaned,
+      targetLanguage: targetLang,
+      sourceLanguage: sourceLang,
+      provider: provider.providerName,
+    };
+  } catch (error) {
+    if (error.statusCode === 503) throw error;
+    console.error('Error translating resume:', error);
+    throw new Error(`Failed to translate resume: ${error.message}`);
+  }
+};
+
 // Function to suggest improvements
 export const suggestImprovements = async (resumeText, jobRole, aiProvider) => {
   try {
@@ -543,8 +590,148 @@ ${resumeText}`;
   }
 };
 
+// Analyze skill gap between resume and job description
+export const analyzeSkillGap = async (resumeText, jobDescription, aiProvider) => {
+  try {
+    const provider = resolveProvider(aiProvider);
+    const prompt = `You are a career advisor. Given the following resume text and job description, identify:
+
+1. Skills from the job description already present in the resume
+2. Skills from the job description missing from the resume
+3. An overall match score from 0 to 100
+4. Brief learning suggestions for missing skills
+
+IMPORTANT: Return ONLY valid JSON, no markdown code blocks, no explanations.
+
+Return this exact JSON structure:
+{
+  "matchScore": <number 0-100>,
+  "matchedSkills": ["<skill1>", "<skill2>"],
+  "missingSkills": ["<skill1>", "<skill2>"],
+  "suggestions": "<brief paragraph with learning suggestions for the missing skills>"
+}
+
+Rules:
+1. Be thorough in identifying skills - include technical skills, soft skills, tools, and frameworks
+2. The match score should reflect how well the resume covers the job requirements
+3. Suggestions should be specific and actionable with resource recommendations
+4. Compare semantically, not just by exact keyword match (e.g. "React.js" matches "React")
+
+Resume:
+${resumeText}
+
+Job Description:
+${jobDescription}`;
+
+    const providerResult = await provider.generateContent(prompt);
+
+    let analysisData;
+    try {
+      let cleanedText = providerResult.text.replace(/\`\`\`json\n?/g, '').replace(/\`\`\`\n?/g, '').trim();
+      const jsonMatch = cleanedText.match(/\{[\s\S]*\}/);
+      if (jsonMatch) {
+        cleanedText = jsonMatch[0];
+      }
+      analysisData = JSON.parse(cleanedText);
+    } catch (parseError) {
+      console.error('Failed to parse skill gap analysis JSON:', parseError);
+      throw new Error('Failed to parse skill gap analysis results');
+    }
+
+    return {
+      success: true,
+      analysis: {
+        matchScore: Number(analysisData.matchScore) || 0,
+        matchedSkills: Array.isArray(analysisData.matchedSkills) ? analysisData.matchedSkills : [],
+        missingSkills: Array.isArray(analysisData.missingSkills) ? analysisData.missingSkills : [],
+        suggestions: analysisData.suggestions || 'No suggestions available.',
+      },
+      provider: provider.providerName
+    };
+  } catch (error) {
+    if (error.statusCode === 503) throw error;
+    console.error('Error analyzing skill gap:', error);
+    throw new Error(`Failed to analyze skill gap: ${error.message}`);
+  }
+};
+
+// Export power/weak verbs for frontend use
+
+
+/**
+ * One-Click Resume Tailor.
+ *
+ * Takes a resume + job description and returns an updated resume
+ * tailored to the JD. The output is a full rewrite of the resume text
+ * — not just keyword suggestions — with:
+ *   - Title matched to the JD's role
+ *   - Summary rewritten to mirror JD's key requirements
+ *   - Experience bullets reordered to lead with the most relevant achievements
+ *   - Skills section extended with JD-relevant skills the candidate has
+ *   - Power verbs and quantified impact preferred
+ *
+ * The returned `tailoredText` is a drop-in replacement for the
+ * resume's `enhancedText` (markdown format).
+ *
+ * @param {string} resumeText
+ * @param {string} jobDescription
+ * @param {string} [jobRole] - target job title (optional)
+ * @param {object} [aiProvider]
+ */
+export const tailorResume = async (resumeText, jobDescription, jobRole, aiProvider) => {
+  try {
+    const provider = resolveProvider(aiProvider);
+    const prompt = `You are an expert resume tailor. Rewrite the provided resume so it is perfectly tailored to the target job description below. Output ONLY the rewritten resume in markdown — no preamble, no explanation, no code fences.
+
+RULES:
+1. Keep ALL factual content (companies, dates, schools, tech stack, locations) exactly as in the original. Do NOT fabricate experience.
+2. Lead with a 2–3 sentence summary that mirrors the JD's top 3 requirements.
+3. Reorder experience bullets within each role so the most JD-relevant achievements come first.
+4. Replace weak verbs (e.g. "helped", "worked on") with strong action verbs (e.g. "led", "architected", "drove").
+5. Add quantifiable impact wherever the original has any numbers; keep numbers verbatim if present.
+6. Extend the Skills section with JD-relevant skills that the candidate's experience already supports. Do NOT invent skills the candidate does not have.
+7. Use markdown: ## for section headings, **bold** for role/company, - for bullets. Match the original resume's heading style.
+8. Preserve the candidate's name, contact info, and education order.
+
+Target job title: ${jobRole || '(not specified)'}
+
+Target job description:
+${jobDescription}
+
+Original resume:
+${resumeText}`;
+
+    const providerResult = await provider.generateContent(prompt);
+    const tailored = String(providerResult.text || '')
+      .replace(/^```[a-z]*\n?/i, '')
+      .replace(/\n?```\s*$/i, '')
+      .trim();
+
+    return {
+      success: true,
+      tailoredText: tailored,
+      provider: provider.providerName,
+    };
+  } catch (error) {
+    if (error.statusCode === 503) throw error;
+    console.error('Error tailoring resume:', error);
+    throw new Error(`Failed to tailor resume: ${error.message}`);
+  }
+};
+
 // Export power/weak verbs for frontend use
 export const getVerbLists = () => ({
-  powerVerbs: POWER_VERBS,
-  weakVerbs: WEAK_VERBS
+  powerVerbs: [
+    'Achieved', 'Architected', 'Automated', 'Boosted', 'Built', 'Championed',
+    'Coached', 'Consolidated', 'Crafted', 'Cut', 'Delivered', 'Designed',
+    'Drove', 'Engineered', 'Established', 'Expanded', 'Generated', 'Implemented',
+    'Improved', 'Increased', 'Initiated', 'Launched', 'Led', 'Mentored',
+    'Modernized', 'Negotiated', 'Optimized', 'Orchestrated', 'Owned', 'Pioneered',
+    'Reduced', 'Refactored', 'Resolved', 'Scaled', 'Shipped', 'Spearheaded',
+    'Streamlined', 'Transformed', 'Unified', 'Validated',
+  ],
+  weakVerbs: [
+    'Was', 'Did', 'Made', 'Got', 'Had', 'Worked on', 'Helped', 'Tried',
+    'Used', 'Involved in', 'Responsible for', 'Duties included', 'Various',
+  ],
 });

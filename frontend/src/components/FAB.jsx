@@ -1,31 +1,33 @@
 import { useState, useEffect } from "react";
 import { motion, AnimatePresence } from "framer-motion";
 import { Plus, FileText, Briefcase, Search, Mic } from "lucide-react";
+import { useNavigate } from "react-router-dom";
 
 export default function FAB({ scrollContainerRef }) {
   const [isOpen, setIsOpen] = useState(false);
   const [isVisible, setIsVisible] = useState(true);
+  const navigate = useNavigate();
 
   const actions = [
     {
       label: "Create Portfolio",
       icon: <FileText size={18} />,
-      onClick: () => console.log("Create Portfolio"),
+      onClick: () => navigate("/portfolio"),
     },
     {
       label: "Upload Resume",
       icon: <Briefcase size={18} />,
-      onClick: () => console.log("Upload Resume"),
+      onClick: () => navigate("/upload"),
     },
     {
       label: "Search Jobs",
       icon: <Search size={18} />,
-      onClick: () => console.log("Search Jobs"),
+      onClick: () => navigate("/jobs"),
     },
     {
       label: "Start Interview",
       icon: <Mic size={18} />,
-      onClick: () => console.log("Start Interview"),
+      onClick: () => navigate("/interview"),
     },
   ];
 

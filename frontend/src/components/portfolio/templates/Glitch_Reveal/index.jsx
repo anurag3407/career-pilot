@@ -1,5 +1,5 @@
+import { usePortfolio } from "../../../../context/PortfolioContext";
 import React from 'react';
-import data from '../../../../data/dummy_data.json';
 import Hero from './Hero';
 import About from './About';
 import Skills from './Skills';
@@ -9,6 +9,8 @@ import Testimonials from './Testimonials';
 import Contact from './Contact';
 
 export default function GlitchRevealPortfolio() {
+  const { portfolioData: data } = usePortfolio();
+
   return (
     <div className="min-h-screen bg-zinc-950 selection:bg-cyan-500 selection:text-zinc-950 font-sans overflow-x-hidden relative">
       <style dangerouslySetInnerHTML={{__html: `
