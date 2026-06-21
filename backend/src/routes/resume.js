@@ -388,7 +388,7 @@ router.post('/import/linkedin', verifyToken, asyncHandler(async (req, res) => {
 router.get('/:resumeId/download', verifyToken, validate(downloadResumeQuerySchema, 'query'), asyncHandler(async (req, res) => {
   const { resumeId } = req.params;
   const userId = req.user.uid;
-  const { version = 'enhanced', paperSize = 'A4' } = req.query;
+  const { version = 'enhanced', paperSize = 'A4', theme = 'modern' } = req.query;
 
   const resume = await Resume.findById(resumeId).lean();
 
@@ -413,10 +413,11 @@ router.get('/:resumeId/download', verifyToken, validate(downloadResumeQuerySchem
   try {
     const pdfBuffer = await generatePDF(textContent, {
       format: paperSize === 'Letter' ? 'Letter' : 'A4',
-      title: resume.title || 'Resume'
+      title: resume.title || 'Resume',
+      theme
     });
 
-    const filename = `${resume.title || 'resume'}_${version}.pdf`.replace(/[^a-zA-Z0-9_.-]/g, '_');
+    const filename = `${resume.title || 'resume'}_${version}_${theme}.pdf`.replace(/[^a-zA-Z0-9_.-]/g, '_');
     
     res.setHeader('Content-Type', 'application/pdf');
     res.setHeader('Content-Disposition', `attachment; filename="${filename}"`);

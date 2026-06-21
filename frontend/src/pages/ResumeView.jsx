@@ -2,7 +2,6 @@ import { useState, useEffect } from 'react'
 import { useParams, Link, useNavigate } from 'react-router-dom'
 import { motion } from 'framer-motion'
 import toast from 'react-hot-toast'
-import ReactMarkdown from 'react-markdown'
 import { resumeApi, enhanceApi } from '../services/api'
 import Button from '../components/Button'
 import Card from '../components/Card'
@@ -15,6 +14,8 @@ import AtsProgressChart from '../components/AtsProgressChart'
 import ResumeTranslator from '../components/resume/ResumeTranslator'
 import ResumeTailor from '../components/resume/ResumeTailor'
 import { Loader2 } from 'lucide-react'
+import ThemeSelector from '../components/resume/ThemeSelector'
+import ThemedResumePreview from '../components/resume/ThemedResumePreview'
 import html2canvas from 'html2canvas'
 
 export default function ResumeView() {
@@ -31,6 +32,13 @@ export default function ResumeView() {
   const [scoreData, setScoreData] = useState(null)
   const [scoring, setScoring] = useState(false)
   const [scoringStep, setScoringStep] = useState(0)
+  const [selectedTheme, setSelectedTheme] = useState(
+    () => localStorage.getItem(`resume_theme_${resumeId}`) || 'modern'
+  )
+
+  useEffect(() => {
+      setSelectedTheme(localStorage.getItem(`resume_theme_${resumeId}`) || 'modern')
+  }, [resumeId])
   const [fontFamily, setFontFamily] = useState("Poppins")
   const [fontSize, setFontSize] = useState("Medium")
 
@@ -55,7 +63,12 @@ export default function ResumeView() {
       return []
     }
   })
-
+  
+  const handleThemeChange = (themeId) => {
+    setSelectedTheme(themeId)
+    localStorage.setItem(`resume_theme_${resumeId}`, themeId)
+  }
+  
   const handleSectionsChange = (sections) => {
     setCustomSections(sections)
     try {
@@ -68,12 +81,11 @@ export default function ResumeView() {
   useEffect(() => {
     fetchResume()
   }, [resumeId])
-
+  
   const fetchResume = async () => {
     try {
       const response = await resumeApi.getById(resumeId)
       setResume(response.data)
-
       // Set default tab based on available content
       if (!response.data.enhancedText) {
         setPreviewTab('original')
@@ -98,12 +110,14 @@ export default function ResumeView() {
     }
   }
 
+
   const handleDownloadPdf = async () => {
     try {
       setDownloading(true)
+      const blob = await resumeApi.downloadPdf(resumeId, previewTab, selectedTheme)
       toast.success(
-  `Exporting with ${fontFamily} font and ${fontSize} size`
-)
+        `Exporting with ${fontFamily} font and ${fontSize} size`
+      )
       const blob = await resumeApi.downloadPdf(resumeId, previewTab)
 
       // Create download link
@@ -502,70 +516,30 @@ export default function ResumeView() {
                   )}
                 </div>
               </div>
+              
+            {/* Theme Selector */}
+            <ThemeSelector selected={selectedTheme} onChange={handleThemeChange} />
 
-              <div className="bg-card border border-border/40 rounded-lg p-6 min-h-96 overflow-auto shadow-lg" style={{ maxWidth: '210mm', margin: '0 auto' }}>
-                {previewTab === 'enhanced' && resume?.enhancedText ? (
-                  <div className="resume-preview max-w-none text-foreground text-sm leading-tight">
-                    <ReactMarkdown
-                      components={{
-                        h1: ({ node, ...props }) => (
-                          <div className="text-foreground text-center py-2 px-4 mb-1 text-2xl font-bold border-b-2 border-black">
-                            {props.children}
-                          </div>
-                        ),
-                        h2: ({ node, ...props }) => (
-                          <h2 className="text-xs font-bold text-foreground border-b border-black pb-0.5 mt-3 mb-1 uppercase tracking-wide">
-                            {props.children}
-                          </h2>
-                        ),
-                        h3: ({ node, ...props }) => (
-                          <h3 className="text-xs font-bold text-foreground mt-1.5 mb-0.5">
-                            {props.children}
-                          </h3>
-                        ),
-                        p: ({ node, ...props }) => (
-                          <p className="text-xs text-foreground mb-0.5 leading-snug">
-                            {props.children}
-                          </p>
-                        ),
-                        ul: ({ node, ...props }) => (
-                          <ul className="list-none pl-0 space-y-0 mb-1">
-                            {props.children}
-                          </ul>
-                        ),
-                        li: ({ node, ...props }) => (
-                          <li className="text-xs text-foreground flex items-start gap-1 leading-snug">
-                            <span className="text-muted-foreground">◦</span>
-                            <span>{props.children}</span>
-                          </li>
-                        ),
-                        strong: ({ node, ...props }) => (
-                          <strong className="font-bold text-foreground">
-                            {props.children}
-                          </strong>
-                        ),
-                        em: ({ node, ...props }) => (
-                          <em className="text-muted-foreground text-xs font-normal">
-                            {props.children}
-                          </em>
-                        ),
-                        hr: () => null,
-                        a: ({ node, ...props }) => (
-                          <a className="text-blue-600 hover:underline text-xs" href={props.href} target="_blank" rel="noopener noreferrer">
-                            {props.children}
-                          </a>
-                        ),
-                      }}
-                    >
-                      {resume.enhancedText}
-                    </ReactMarkdown>
-                  </div>
-                ) : (
-                  <pre className="whitespace-pre-wrap text-xs text-foreground/80 font-mono">
-                    {resume?.originalText}
-                  </pre>
-                )}
-              </div>
+            {/* Live Preview */}
+            <div className="bg-card border border-border/40 rounded-lg p-6 min-h-96 overflow-auto shadow-lg"
+              style={{ maxWidth: '210mm', margin: '0 auto' }}>
+              {previewTab === 'enhanced' && resume?.enhancedText ? (
+                <ThemedResumePreview
+                  content={resume.enhancedText}
+                  themeId={selectedTheme}
+                />
+              ) : resume?.originalText ? (
+                <ThemedResumePreview
+                  content={resume.originalText}
+                  themeId={selectedTheme}
+                />
+              ) : (
+                <pre className="whitespace-pre-wrap text-xs text-foreground/80 font-mono">
+                  No content available
+                </pre>
+              )}
+            </div>
+
             </Card>
 
             {/* Animated Scanner Loader during AI Scoring */}

@@ -8,11 +8,48 @@ import { generateStructuredData } from '../utils/structuredDataGenerator.js';
  * @returns {Buffer} - The generated PDF buffer.
  */
 export const generatePDF = async (markdownText, options = {}) => {
-  const { 
-    format = 'A4', 
-    title = 'Resume',
-    themeColor = '#2563eb' 
-  } = options;
+  const THEME_STYLES = {
+  modern: {
+    accentColor: '#6366f1',
+    fontFamily: "Inter, 'Helvetica Neue', Helvetica, Arial, sans-serif",
+    h1Style: 'text-align: center; font-size: 26px; color: #111;',
+    h2Style: 'font-size: 13px; text-transform: uppercase; color: #6366f1; border-bottom: 2px solid #6366f1; padding-bottom: 4px; margin-top: 16px;',
+    bodyColor: '#333',
+    atsStrict: false,
+  },
+  corporate: {
+    accentColor: '#1e3a5f',
+    fontFamily: "Georgia, 'Times New Roman', serif",
+    h1Style: 'text-align: center; font-size: 24px; color: #1e3a5f;',
+    h2Style: 'font-size: 12px; text-transform: uppercase; background: #1e3a5f; color: #fff; padding: 3px 8px; margin-top: 16px;',
+    bodyColor: '#222',
+    atsStrict: false,
+  },
+  compact: {
+    accentColor: '#000000',
+    fontFamily: "Arial, Helvetica, sans-serif",
+    h1Style: 'text-align: center; font-size: 20px; color: #000; letter-spacing: 1px;',
+    h2Style: 'font-size: 11px; text-transform: uppercase; letter-spacing: 2px; border-bottom: 1px solid #000; padding-bottom: 2px; margin-top: 12px;',
+    bodyColor: '#111',
+    atsStrict: true,
+  },
+  creative: {
+    accentColor: '#0891b2',
+    fontFamily: "Poppins, 'Trebuchet MS', Arial, sans-serif",
+    h1Style: 'text-align: center; font-size: 32px; color: #0891b2; font-weight: 900; letter-spacing: -1px;',
+    h2Style: 'font-size: 13px; text-transform: uppercase; color: #0891b2; font-weight: 900; border-left: 4px solid #0891b2; padding-left: 8px; margin-top: 18px;',
+    bodyColor: '#333',
+    atsStrict: false,
+  },
+}
+
+const { 
+  format = 'A4', 
+  title = 'Resume',
+  theme = 'modern'
+} = options;
+
+const themeStyle = THEME_STYLES[theme] || THEME_STYLES.modern;
 
   // Convert markdown to HTML
   const htmlContent = marked.parse(markdownText);
@@ -36,30 +73,19 @@ export const generatePDF = async (markdownText, options = {}) => {
       <title>${title}</title>
       ${jsonLdScript}
       <style>
-        :root {
-          --theme-color: ${themeColor};
-        }
         body {
-          font-family: 'Helvetica Neue', Helvetica, Arial, sans-serif;
+          font-family: ${themeStyle.fontFamily};
           line-height: 1.5;
-          color: #333;
+          color: ${themeStyle.bodyColor};
           margin: 0;
           padding: 0;
         }
-        /* Typography */
         h1 {
-          font-size: 24px;
+          ${themeStyle.h1Style}
           margin-bottom: 8px;
-          color: #000;
-          text-align: center;
         }
         h2 {
-          font-size: 14px;
-          text-transform: uppercase;
-          color: var(--theme-color);
-          border-bottom: 1px solid #ccc;
-          padding-bottom: 4px;
-          margin-top: 16px;
+          ${themeStyle.h2Style}
           margin-bottom: 10px;
         }
         h3 {
@@ -83,14 +109,13 @@ export const generatePDF = async (markdownText, options = {}) => {
           margin-bottom: 4px;
         }
         a {
-          color: var(--theme-color);
+          color: ${themeStyle.accentColor};
           text-decoration: none;
         }
         strong {
           font-weight: 600;
           color: #000;
         }
-        /* Contact info styling */
         .contact-info {
           text-align: center;
           font-size: 10px;
@@ -100,8 +125,6 @@ export const generatePDF = async (markdownText, options = {}) => {
         .contact-info a {
           color: #555;
         }
-        
-        /* Layout */
         .resume-content {
           max-width: 100%;
         }
@@ -109,6 +132,10 @@ export const generatePDF = async (markdownText, options = {}) => {
     </head>
     <body>
       <div class="resume-content">
+        ${themeStyle.atsStrict ? `
+          <div style="text-align:center; font-size:9px; color:#888; margin-bottom:8px;">
+            ATS-Optimized Format — Single column, no graphics
+          </div>` : ''}
         ${htmlContent}
       </div>
       <script>
@@ -121,11 +148,17 @@ export const generatePDF = async (markdownText, options = {}) => {
         });
         
         // Post-process contact info (usually the first paragraph after h1)
-        const content = document.querySelector('.resume-content');
-        if (content.children.length > 1) {
-            const possibleContact = content.children[1];
-            if (possibleContact.tagName === 'P' && (possibleContact.textContent.includes('|') || possibleContact.textContent.includes('@'))) {
-                possibleContact.className = 'contact-info';
+        const firstH1 = document.querySelector('.resume-content h1');
+        if (firstH1) {
+            let next = firstH1.nextElementSibling;
+            while (next) {
+                if (next.tagName === 'P') {
+                    if (next.textContent.includes('|') || next.textContent.includes('@')) {
+                        next.className = 'contact-info';
+                    }
+                    break;
+                }
+                next = next.nextElementSibling;
             }
         }
       </script>

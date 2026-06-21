@@ -58,6 +58,8 @@ export const updateResumeSchema = z
  */
 export const downloadResumeQuerySchema = z.object({
   version: z.enum(['enhanced', 'original']).optional().default('enhanced'),
+  paperSize: z.enum(['A4', 'Letter']).optional(),
+  theme: z.enum(['modern', 'corporate', 'compact', 'creative']).optional(),
 });
 
 /**
