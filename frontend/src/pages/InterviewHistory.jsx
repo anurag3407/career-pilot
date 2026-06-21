@@ -1,9 +1,10 @@
+
 import React, { useEffect, useState, useMemo } from "react";
 import { useNavigate, Link } from "react-router-dom";
 import { interviewApi } from "../services/api";
 import { LineChart, Line, XAxis, YAxis, CartesianGrid, Tooltip, ResponsiveContainer } from "recharts";
 import { format, subDays, isAfter } from "date-fns";
-import { Calendar, Briefcase, Clock, Trophy, ChevronRight, FilterX } from "lucide-react";
+import { Calendar, Briefcase, Clock, Trophy, ChevronRight, FilterX, Trash2 } from "lucide-react";
 
 export default function InterviewHistory() {
   const [history, setHistory] = useState([]);
@@ -29,6 +30,29 @@ export default function InterviewHistory() {
       console.error(error);
     } finally {
       setLoading(false);
+    }
+  };
+
+  const handleDelete = async (e, id) => {
+    e.preventDefault(); 
+    e.stopPropagation();
+    
+    const isConfirmed = window.confirm(
+      'Are you sure you want to delete this interview session? Recordings and feedback cannot be recovered.'
+    );
+    
+    if (!isConfirmed) return;
+
+    try {
+      await interviewApi.deleteInterview(id);
+      
+      // Optimistic state update: Remove session from history immediately
+      // This will cascade down to useMemo hooks and automatically update the chart and stats
+      setHistory(prevHistory => prevHistory.filter(session => session._id !== id));
+      
+    } catch (error) {
+      console.error('Failed to delete interview:', error);
+      alert('Failed to delete the interview. Please try again.');
     }
   };
 
@@ -179,31 +203,42 @@ export default function InterviewHistory() {
                 </div>
               ) : (
                 [...filteredHistory].reverse().map((session) => (
-                  <Link
-                    key={session._id}
-                    to={`/interview-history/${session._id}`}
-                    className="block bg-card border border-border hover:border-primary/50 hover:shadow-md transition-all rounded-xl p-4 cursor-pointer group"
-                  >
-                    <div className="flex justify-between items-start mb-2">
-                      <h4 className="font-semibold text-foreground text-sm leading-tight group-hover:text-primary transition-colors line-clamp-1 flex-1 pr-2">
-                        {session.jobRole || "General Interview"}
-                      </h4>
-                      <div className={`shrink-0 px-2 py-0.5 rounded text-xs font-bold border ${getScoreBadgeColor(session.overallScore || 0)}`}>
-                        {session.overallScore || 0}%
+                  <div key={session._id} className="relative group">
+                    <Link
+                      to={`/interview-history/${session._id}`}
+                      className="block bg-card border border-border hover:border-primary/50 hover:shadow-md transition-all rounded-xl p-4 cursor-pointer"
+                    >
+                      <div className="flex justify-between items-start mb-2">
+                        <h4 className="font-semibold text-foreground text-sm leading-tight group-hover:text-primary transition-colors line-clamp-1 flex-1 pr-2">
+                          {session.jobRole || "General Interview"}
+                        </h4>
+                        <div className={`shrink-0 px-2 py-0.5 rounded text-xs font-bold border ${getScoreBadgeColor(session.overallScore || 0)}`}>
+                          {session.overallScore || 0}%
+                        </div>
                       </div>
-                    </div>
-                    
-                    <div className="flex items-center gap-3 text-xs text-muted-foreground">
-                      <div className="flex items-center gap-1">
-                        <Calendar className="w-3.5 h-3.5" />
-                        <span>{format(new Date(session.completedAt || session.createdAt), "MMM d, yyyy")}</span>
+                      
+                      <div className="flex items-center gap-3 text-xs text-muted-foreground">
+                        <div className="flex items-center gap-1">
+                          <Calendar className="w-3.5 h-3.5" />
+                          <span>{format(new Date(session.completedAt || session.createdAt), "MMM d, yyyy")}</span>
+                        </div>
+                        <div className="flex items-center gap-1">
+                          <Clock className="w-3.5 h-3.5" />
+                          <span>{Math.round((session.duration || 0) / 60)}m</span>
+                        </div>
                       </div>
-                      <div className="flex items-center gap-1">
-                        <Clock className="w-3.5 h-3.5" />
-                        <span>{Math.round((session.duration || 0) / 60)}m</span>
-                      </div>
-                    </div>
-                  </Link>
+                    </Link>
+
+                    {/* Absolute positioned delete button, appears on hover */}
+                    <button 
+                      onClick={(e) => handleDelete(e, session._id)}
+                      className="absolute bottom-3 right-3 p-1.5 bg-red-50 text-red-600 dark:bg-red-900/20 dark:text-red-400 rounded-md opacity-0 group-hover:opacity-100 transition-opacity duration-200 hover:bg-red-100 dark:hover:bg-red-900/40 outline-none z-10"
+                      aria-label="Delete interview"
+                      title="Delete interview session"
+                    >
+                      <Trash2 className="w-4 h-4" />
+                    </button>
+                  </div>
                 ))
               )}
             </div>

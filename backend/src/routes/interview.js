@@ -1,3 +1,4 @@
+
 import express from 'express';
 import multer from 'multer';
 import { verifyToken } from '../middleware/auth.js';
@@ -25,7 +26,7 @@ import {
     runCodeSchema
 } from '../schemas/interview.schema.js';
 import { parseJdFromUrl, parseJdFromText } from '../services/jdParser.service.js';
-import { uploadAudioBuffer } from '../services/upload.service.js';
+import { uploadAudioBuffer, deleteAudioByUrl } from '../services/upload.service.js';
 
 const router = express.Router();
 
@@ -575,6 +576,42 @@ router.get('/:id([0-9a-fA-F]{24})', verifyToken, asyncHandler(async (req, res) =
 }));
 
 router.get('/:id', verifyToken, asyncHandler(async (req, res) => {
+    throw new ApiError(400, 'Invalid interview ID format');
+}));
+
+// ---------------------------------------------------------------------------
+// DELETE /api/interview/:id  (Remove mock interview & audio)
+// ---------------------------------------------------------------------------
+router.delete('/:id([0-9a-fA-F]{24})', verifyToken, asyncHandler(async (req, res) => {
+    const { id } = req.params;
+
+    // Ensure it belongs to the authenticated user using odId
+    const interview = await Interview.findOne({ _id: id, odId: req.user.uid });
+    
+    if (!interview) {
+        throw new ApiError(404, 'Interview not found');
+    }
+
+    // Attempt to delete any associated audio URLs on Cloudinary
+    if (interview.answers && interview.answers.length > 0) {
+        const audioUrls = interview.answers.map(a => a.audioUrl).filter(Boolean);
+        if (audioUrls.length > 0) {
+            await Promise.all(audioUrls.map(url => deleteAudioByUrl(url).catch(err => {
+                console.warn('Non-fatal error deleting audio during interview cleanup:', err);
+            })));
+        }
+    }
+
+    // Delete document from DB
+    await interview.deleteOne();
+    
+    res.json({ 
+        success: true, 
+        data: { deletedId: id } 
+    });
+}));
+
+router.delete('/:id', verifyToken, asyncHandler(async (req, res) => {
     throw new ApiError(400, 'Invalid interview ID format');
 }));
 

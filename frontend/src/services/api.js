@@ -154,7 +154,7 @@ export const authApi = {
       headers
     })
     return handleResponse(response)
-  }
+  },
 }
 
 // ============ UPLOAD API ============
@@ -840,6 +840,16 @@ export const interviewApi = {
       method: 'POST',
       headers,
       body: JSON.stringify({ jobRole, industry, language })
+    });
+    return handleResponse(response);
+  },
+
+  // Delete an interview session
+  async deleteInterview(id) {
+    const headers = await getAuthHeaders();
+    const response = await fetch(`${API_BASE}/interview/${id}`, {
+      method: 'DELETE',
+      headers
     });
     return handleResponse(response);
   }
