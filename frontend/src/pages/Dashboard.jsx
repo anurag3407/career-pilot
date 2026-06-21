@@ -30,6 +30,9 @@ import { resumeApi, jobTrackerApi, portfolioApi, userProfileApi } from '../servi
 import Button from '../components/Button'
 import PortfolioGrammarAssistant from '../components/PortfolioGrammarAssistant'
 import JobApplicationSuccessInsights from '../components/JobApplicationSuccessInsights'
+import ResumeBulletEnhancer from '../components/ResumeBulletEnhancer'
+import PortfolioTemplatePreview from '../components/PortfolioTemplatePreview'
+import ResumeIndustryOptimizer from '../components/ResumeIndustryOptimizer'
 import {
   SkeletonAction,
   SkeletonStat,
@@ -521,6 +524,31 @@ export default function Dashboard() {
 <motion.div variants={itemVariants} className="mb-10">
   <PortfolioGrammarAssistant />
 </motion.div>
+
+<motion.div variants={itemVariants} className="mb-10">
+  <PortfolioTemplatePreview />
+</motion.div>
+
+<motion.div variants={itemVariants} className="mb-10">
+  <ResumeBulletEnhancer />
+</motion.div>
+
+<motion.div variants={itemVariants} className="mb-10">
+  <ResumeIndustryOptimizer />
+</motion.div>
+
+  <PortfolioGrammarAssistant />
+</motion.div>
+
+<motion.div variants={itemVariants} className="mb-10">
+  <PortfolioGrammarAssistant />
+</motion.div>
+
+<motion.div variants={itemVariants} className="mb-10">
+  <ResumeBulletEnhancer />
+</motion.div>
+
+<div className="grid lg:grid-cols-2 gap-10"></div>
 
             <div className="grid lg:grid-cols-2 gap-10">
               {/* Recent Applications */}

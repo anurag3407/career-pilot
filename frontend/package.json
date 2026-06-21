@@ -13,6 +13,7 @@
   },
   "dependencies": {
     "@hello-pangea/dnd": "^18.0.1",
+    "@monaco-editor/react": "^4.7.0",
     "@radix-ui/react-label": "^2.1.8",
     "@radix-ui/react-slot": "^1.2.4",
     "@tabler/icons-react": "^3.36.1",
@@ -27,6 +28,7 @@
     "crypto-js": "^4.2.0",
     "dagre": "^0.8.5",
     "date-fns": "^4.1.0",
+    "docx": "^9.7.1",
     "dotted-map": "^2.2.3",
     "firebase": "^11.1.0",
     "framer-motion": "^12.40.0",

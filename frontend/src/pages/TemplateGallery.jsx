@@ -375,6 +375,7 @@ export default function TemplateGallery() {
   const [colorScheme, setColorScheme] = useState("All");
   const [layout, setLayout] = useState("All");
   const [sort, setSort] = useState("Popular");
+  const [search, setSearch] = useState("");
 
   const [aiDraft, setAiDraft] = useState(null);
 
@@ -391,7 +392,6 @@ export default function TemplateGallery() {
     localStorage.removeItem('ai_portfolio_draft');
     setAiDraft(null);
   };
-
   const [selectedTheme, setSelectedTheme] = useState("minimal");
   const [isDeployModalOpen, setIsDeployModalOpen] = useState(false);
   const [selectedPortfolioTitle, setSelectedPortfolioTitle] = useState("");
@@ -438,15 +438,29 @@ export default function TemplateGallery() {
     const matchesColorScheme =
       colorScheme === 'All' || template.colorScheme === colorScheme;
     const matchesLayout = layout === 'All' || template.layout === layout;
-    return matchesCategory && matchesColorScheme && matchesLayout;
+    const q = search.toLowerCase().trim();
+    const matchesSearch = !q ||
+      template.title?.toLowerCase().includes(q) ||
+      template.author?.toLowerCase().includes(q) ||
+      template.colorScheme?.toLowerCase().includes(q) ||
+      template.layout?.toLowerCase().includes(q) ||
+      template.category?.toLowerCase().includes(q);
+    return matchesCategory && matchesColorScheme && matchesLayout && matchesSearch;
+  });
+  
+  const sortedTemplates = [...filteredTemplates].sort((a, b) => {
+  if (sort === 'Popular') return b.views - a.views;
+  if (sort === 'Highest Rated') return b.rating - a.rating;
+  if (sort === 'Newest') return new Date(b.createdAt) - new Date(a.createdAt);
+  return 0;
   });
 
-  const sortedTemplates = [...filteredTemplates].sort((a, b) => {
-    if (sort === 'Popular') return b.views - a.views;
-    if (sort === 'Highest Rated') return b.rating - a.rating;
-    if (sort === 'Newest') return new Date(b.createdAt) - new Date(a.createdAt);
-    return 0;
-  });
+  console.log(
+    "Vercel cards:",
+    sortedTemplates.filter(
+      (t) => t.title === "Vercel Deploy"
+    ).length
+  );
 
   return (
     <div className="min-h-screen bg-background text-foreground transition-colors duration-300">
@@ -534,6 +548,32 @@ export default function TemplateGallery() {
           />
         </div>
 
+        <div className="mb-4">
+          <div className="relative">
+            <input
+              type="text"
+              value={search}
+              onChange={e => setSearch(e.target.value)}
+              placeholder="Search templates... e.g. Cyberpunk, Minimal, Dark"
+              className="w-full px-5 py-3.5 pl-12 rounded-2xl border border-border bg-card text-foreground placeholder:text-muted-foreground focus:outline-none focus:ring-2 focus:ring-cyan-500/40 focus:border-cyan-500/60 transition-all text-sm"
+            />
+            <svg
+              className="absolute left-4 top-1/2 -translate-y-1/2 w-4 h-4 text-muted-foreground"
+              fill="none" stroke="currentColor" viewBox="0 0 24 24"
+            >
+              <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M21 21l-6-6m2-5a7 7 0 11-14 0 7 7 0 0114 0z" />
+            </svg>
+            {search && (
+              <button
+                onClick={() => setSearch("")}
+                className="absolute right-4 top-1/2 -translate-y-1/2 text-muted-foreground hover:text-foreground transition-colors"
+              >
+                <X className="w-4 h-4" />
+              </button>
+            )}
+          </div>
+        </div>
+
         <div className="flex flex-wrap items-center gap-3 mb-8">
           <FilterSelect
             value={category}
@@ -559,8 +599,17 @@ export default function TemplateGallery() {
         </div>
 
         {sortedTemplates.length === 0 ? (
-          <div className="text-center text-muted-foreground mt-12 text-xl">
-            No templates match the selected criteria.
+          <div className="text-center text-muted-foreground mt-12">
+            <div className="text-4xl mb-4">🔍</div>
+            <div className="text-xl font-semibold mb-2">No templates found</div>
+            <div className="text-sm">
+              {search ? `No results for "${search}" — try a different keyword` : "No templates match the selected filters"}
+            </div>
+            {search && (
+              <button onClick={() => setSearch("")} className="mt-4 text-cyan-400 hover:text-cyan-300 text-sm underline">
+                Clear search
+              </button>
+            )}
           </div>
         ) : (
           <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 xl:grid-cols-4 gap-6">

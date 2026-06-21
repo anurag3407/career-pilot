@@ -5,8 +5,10 @@ import { motion, AnimatePresence } from 'framer-motion'
 import { useNavigate } from 'react-router-dom'
 import {
   ArrowLeft, ArrowRight, CheckCircle, Plus, Trash2,
-  Save, FileText, User, Briefcase, GraduationCap, Code, Star
+  Save, FileText, User, Briefcase, GraduationCap, Code, Star, GripVertical,
+  LayoutTemplate
 } from 'lucide-react'
+import { DragDropContext, Droppable, Draggable } from '@hello-pangea/dnd'
 import { resumeApi } from '../services/api'
 import { toast } from 'react-hot-toast'
 import { cn } from '@/lib/utils'
@@ -79,6 +81,7 @@ export default function ResumeBuilder() {
     { name: '', tech: '', link: '', description: '' }
   ])
   const [skills, setSkills] = useState('')
+  const [sectionOrder, setSectionOrder] = useState(['education', 'experience', 'projects', 'skills'])
   const [resumeScore, setResumeScore] = useState(0)
   const [recommendedSections, setRecommendedSections] = useState([])
   const [atsScore, setAtsScore] = useState(0)
@@ -632,6 +635,51 @@ useEffect(() => {
 
   const handlePrev = () => setCurrentStep(s => Math.max(s - 1, 0))
 
+  const onDragEnd = (result) => {
+    if (!result.destination) return;
+    const { source, destination, type } = result;
+
+    if (type === 'sections') {
+      const newOrder = Array.from(sectionOrder);
+      const [removed] = newOrder.splice(source.index, 1);
+      newOrder.splice(destination.index, 0, removed);
+      setSectionOrder(newOrder);
+      return;
+    }
+
+    if (type === 'education') {
+      const newEdu = Array.from(education);
+      const [removed] = newEdu.splice(source.index, 1);
+      newEdu.splice(destination.index, 0, removed);
+      setEducation(newEdu);
+      const newErrors = Array.from(educationErrors);
+      const [removedErr] = newErrors.splice(source.index, 1);
+      newErrors.splice(destination.index, 0, removedErr);
+      setEducationErrors(newErrors);
+      return;
+    }
+
+    if (type === 'experience') {
+      const newExp = Array.from(experience);
+      const [removed] = newExp.splice(source.index, 1);
+      newExp.splice(destination.index, 0, removed);
+      setExperience(newExp);
+      const newErrors = Array.from(experienceErrors);
+      const [removedErr] = newErrors.splice(source.index, 1);
+      newErrors.splice(destination.index, 0, removedErr);
+      setExperienceErrors(newErrors);
+      return;
+    }
+
+    if (type === 'projects') {
+      const newProj = Array.from(projects);
+      const [removed] = newProj.splice(source.index, 1);
+      newProj.splice(destination.index, 0, removed);
+      setProjects(newProj);
+      return;
+    }
+  }
+
   // ── markdown preview & generate ──────────────────────────────────────────────
   const generateMarkdown = () => {
     // Compose full phone string
@@ -644,45 +692,49 @@ useEffect(() => {
     if (personal.linkedin)  contact.push(`[LinkedIn](${personal.linkedin})`)
     if (personal.github)    contact.push(`[GitHub](${personal.github})`)
     if (personal.portfolio) contact.push(`[Portfolio](${personal.portfolio})`)
-    md += `${contact.join(' | ')}\n\n`
+    if (contact.length > 0) md += `${contact.join(' | ')}\n\n`
 
     if (personal.summary) md += `## SUMMARY\n\n${personal.summary}\n\n`
 
-    if (education.some(e => e.school)) {
-      md += `## EDUCATION\n\n`
-      education.forEach(e => {
-        if (!e.school) return
-        md += `**${e.degree}${e.field ? ' in ' + e.field : ''}** | ${e.school} | ${e.startDate} - ${e.endDate}\n`
-        if (e.gpa) md += `- GPA: ${e.gpa}\n`
-        if (e.description) md += `- ${e.description}\n`
-        md += '\n'
-      })
+    const renderSection = (section) => {
+      let sectionMd = ''
+      if (section === 'education' && education.some(e => e.school)) {
+        sectionMd += `## EDUCATION\n\n`
+        education.forEach(e => {
+          if (!e.school) return
+          sectionMd += `**${e.degree}${e.field ? ' in ' + e.field : ''}** | ${e.school} | ${e.startDate} - ${e.endDate}\n`
+          if (e.gpa) sectionMd += `- GPA: ${e.gpa}\n`
+          if (e.description) sectionMd += `- ${e.description}\n`
+          sectionMd += '\n'
+        })
+      } else if (section === 'experience' && experience.some(e => e.title)) {
+        sectionMd += `## EXPERIENCE\n\n`
+        experience.forEach(e => {
+          if (!e.title) return
+          sectionMd += `**${e.title}** | ${e.company} | ${e.location} | ${e.startDate} - ${e.current ? 'Present' : e.endDate}\n`
+          const bullets = e.description.split('\n').filter(b => b.trim())
+          bullets.forEach(b => { sectionMd += `- ${b.replace(/^- /, '').trim()}\n` })
+          sectionMd += '\n'
+        })
+      } else if (section === 'projects' && projects.some(p => p.name)) {
+        sectionMd += `## PROJECTS\n\n`
+        projects.forEach(p => {
+          if (!p.name) return
+          sectionMd += `**${p.name}** | ${p.tech}\n`
+          const bullets = p.description.split('\n').filter(b => b.trim())
+          bullets.forEach(b => { sectionMd += `- ${b.replace(/^- /, '').trim()}\n` })
+          if (p.link) sectionMd += `- [Project Link](${p.link})\n`
+          sectionMd += '\n'
+        })
+      } else if (section === 'skills' && skills) {
+        sectionMd += `## SKILLS\n\n${skills}\n\n`
+      }
+      return sectionMd
     }
 
-    if (experience.some(e => e.title)) {
-      md += `## EXPERIENCE\n\n`
-      experience.forEach(e => {
-        if (!e.title) return
-        md += `**${e.title}** | ${e.company} | ${e.location} | ${e.startDate} - ${e.current ? 'Present' : e.endDate}\n`
-        const bullets = e.description.split('\n').filter(b => b.trim())
-        bullets.forEach(b => { md += `- ${b.replace(/^- /, '').trim()}\n` })
-        md += '\n'
-      })
-    }
-
-    if (projects.some(p => p.name)) {
-      md += `## PROJECTS\n\n`
-      projects.forEach(p => {
-        if (!p.name) return
-        md += `**${p.name}** | ${p.tech}\n`
-        const bullets = p.description.split('\n').filter(b => b.trim())
-        bullets.forEach(b => { md += `- ${b.replace(/^- /, '').trim()}\n` })
-        if (p.link) md += `- [Project Link](${p.link})\n`
-        md += '\n'
-      })
-    }
-
-    if (skills) md += `## SKILLS\n\n${skills}\n\n`
+    sectionOrder.forEach(section => {
+      md += renderSection(section)
+    })
 
     return md
   }
@@ -708,6 +760,7 @@ useEffect(() => {
         originalText: markdown,
         jobRole: targetRole || 'Software Engineer',
         title:   `${personal.name || 'My'} Resume - ${new Date().toLocaleDateString()}`,
+        sectionOrder: sectionOrder
       })
       toast.success('Resume created successfully!')
       navigate(`/enhance/${response.data.id}`)
@@ -877,6 +930,11 @@ useEffect(() => {
                 onChange={e => updatePersonal('summary', e.target.value)}
                 placeholder="A brief summary of your professional background..."
               />
+              <AchievementEnhancer
+                value={personal.summary}
+                jobRole={targetRole}
+                onApply={(text) => updatePersonal('summary', text)}
+              />
             </div>
           </div>
         )
@@ -886,104 +944,117 @@ useEffect(() => {
         return (
           <div className="space-y-6">
             <h2 className="text-2xl font-semibold mb-6">Education</h2>
-            {education.map((edu, index) => {
-              const errs = educationErrors[index] || {}
-              const ic = inputClsArr(errs)
-              return (
-                <div key={index} className="bg-background/30 p-5 rounded-xl border border-border relative">
-                  <button
-                    onClick={() => removeEducation(index)}
-                    className="absolute top-4 right-4 text-muted-foreground hover:text-red-500 transition-colors"
-                    aria-label="Remove education entry"
-                  >
-                    <Trash2 className="w-4 h-4" />
-                  </button>
-                  <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
-
-                    <div>
-                      <label className="block text-sm font-medium mb-1">
-                        School <span className="text-red-500">*</span>
-                      </label>
-                      <input
-                        type="text"
-                        className={ic('school')}
-                        value={edu.school}
-                        onChange={e => updateEdu(index, 'school', e.target.value)}
-                        placeholder="University Name"
-                        aria-invalid={!!errs.school}
-                      />
-                      <FieldError msg={errs.school} />
-                    </div>
-
-                    <div>
-                      <label className="block text-sm font-medium mb-1">
-                        Degree <span className="text-red-500">*</span>
-                      </label>
-                      <input
-                        type="text"
-                        className={ic('degree')}
-                        value={edu.degree}
-                        onChange={e => updateEdu(index, 'degree', e.target.value)}
-                        placeholder="B.S., M.S., etc."
-                        aria-invalid={!!errs.degree}
-                      />
-                      <FieldError msg={errs.degree} />
-                    </div>
-
-                    <div>
-                      <label className="block text-sm font-medium mb-1">Field of Study</label>
-                      <input
-                        type="text"
-                        className={ic('field')}
-                        value={edu.field}
-                        onChange={e => updateEdu(index, 'field', e.target.value)}
-                        placeholder="Computer Science"
-                      />
-                    </div>
-
-                    <div>
-                      <label className="block text-sm font-medium mb-1">GPA (Optional)</label>
-                      <input
-                        type="text"
-                        className={ic('gpa')}
-                        value={edu.gpa}
-                        onChange={e => updateEdu(index, 'gpa', e.target.value)}
-                        placeholder="3.8/4.0"
-                      />
-                    </div>
-
-                    <div>
-                      <label className="block text-sm font-medium mb-1">
-                        Start Date <span className="text-red-500">*</span>
-                      </label>
-                      <input
-                        type="month"
-                        className={ic('startDate')}
-                        value={edu.startDate}
-                        onChange={e => updateEdu(index, 'startDate', e.target.value)}
-                        aria-invalid={!!errs.startDate}
-                      />
-                      <FieldError msg={errs.startDate} />
-                    </div>
-
-                    <div>
-                      <label className="block text-sm font-medium mb-1">
-                        End Date <span className="text-red-500">*</span>
-                      </label>
-                      <input
-                        type="month"
-                        className={ic('endDate')}
-                        value={edu.endDate}
-                        onChange={e => updateEdu(index, 'endDate', e.target.value)}
-                        aria-invalid={!!errs.endDate}
-                      />
-                      <FieldError msg={errs.endDate} />
-                    </div>
-
+            <DragDropContext onDragEnd={onDragEnd}>
+              <Droppable droppableId="education" type="education">
+                {(provided) => (
+                  <div {...provided.droppableProps} ref={provided.innerRef} className="space-y-4">
+                    {education.map((edu, index) => {
+                      const errs = educationErrors[index] || {}
+                      const ic = inputClsArr(errs)
+                      return (
+                        <Draggable key={`edu-${index}`} draggableId={`edu-${index}`} index={index}>
+                          {(provided) => (
+                            <div
+                              ref={provided.innerRef}
+                              {...provided.draggableProps}
+                              className="bg-background/30 p-5 rounded-xl border border-border relative"
+                            >
+                              <div {...provided.dragHandleProps} className="absolute top-4 left-4 text-muted-foreground hover:text-foreground cursor-grab">
+                                <GripVertical className="w-4 h-4" />
+                              </div>
+                              <button
+                                onClick={() => removeEducation(index)}
+                                className="absolute top-4 right-4 text-muted-foreground hover:text-red-500 transition-colors"
+                                aria-label="Remove education entry"
+                              >
+                                <Trash2 className="w-4 h-4" />
+                              </button>
+                              <div className="grid grid-cols-1 md:grid-cols-2 gap-4 mt-6">
+                                <div>
+                                  <label className="block text-sm font-medium mb-1">
+                                    School <span className="text-red-500">*</span>
+                                  </label>
+                                  <input
+                                    type="text"
+                                    className={ic('school')}
+                                    value={edu.school}
+                                    onChange={e => updateEdu(index, 'school', e.target.value)}
+                                    placeholder="University Name"
+                                    aria-invalid={!!errs.school}
+                                  />
+                                  <FieldError msg={errs.school} />
+                                </div>
+                                <div>
+                                  <label className="block text-sm font-medium mb-1">
+                                    Degree <span className="text-red-500">*</span>
+                                  </label>
+                                  <input
+                                    type="text"
+                                    className={ic('degree')}
+                                    value={edu.degree}
+                                    onChange={e => updateEdu(index, 'degree', e.target.value)}
+                                    placeholder="B.S., M.S., etc."
+                                    aria-invalid={!!errs.degree}
+                                  />
+                                  <FieldError msg={errs.degree} />
+                                </div>
+                                <div>
+                                  <label className="block text-sm font-medium mb-1">Field of Study</label>
+                                  <input
+                                    type="text"
+                                    className={ic('field')}
+                                    value={edu.field}
+                                    onChange={e => updateEdu(index, 'field', e.target.value)}
+                                    placeholder="Computer Science"
+                                  />
+                                </div>
+                                <div>
+                                  <label className="block text-sm font-medium mb-1">GPA (Optional)</label>
+                                  <input
+                                    type="text"
+                                    className={ic('gpa')}
+                                    value={edu.gpa}
+                                    onChange={e => updateEdu(index, 'gpa', e.target.value)}
+                                    placeholder="3.8/4.0"
+                                  />
+                                </div>
+                                <div>
+                                  <label className="block text-sm font-medium mb-1">
+                                    Start Date <span className="text-red-500">*</span>
+                                  </label>
+                                  <input
+                                    type="month"
+                                    className={ic('startDate')}
+                                    value={edu.startDate}
+                                    onChange={e => updateEdu(index, 'startDate', e.target.value)}
+                                    aria-invalid={!!errs.startDate}
+                                  />
+                                  <FieldError msg={errs.startDate} />
+                                </div>
+                                <div>
+                                  <label className="block text-sm font-medium mb-1">
+                                    End Date <span className="text-red-500">*</span>
+                                  </label>
+                                  <input
+                                    type="month"
+                                    className={ic('endDate')}
+                                    value={edu.endDate}
+                                    onChange={e => updateEdu(index, 'endDate', e.target.value)}
+                                    aria-invalid={!!errs.endDate}
+                                  />
+                                  <FieldError msg={errs.endDate} />
+                                </div>
+                              </div>
+                            </div>
+                          )}
+                        </Draggable>
+                      )
+                    })}
+                    {provided.placeholder}
                   </div>
-                </div>
-              )
-            })}
+                )}
+              </Droppable>
+            </DragDropContext>
             <button onClick={addEducation} className="flex items-center gap-2 text-primary hover:text-primary/80 transition-colors">
               <Plus className="w-4 h-4" /> Add Education
             </button>
@@ -995,130 +1066,139 @@ useEffect(() => {
         return (
           <div className="space-y-6">
             <h2 className="text-2xl font-semibold mb-6">Experience</h2>
-            {experience.map((exp, index) => {
-              const errs = experienceErrors[index] || {}
-              const ic = inputClsArr(errs)
-              return (
-                <div key={index} className="bg-background/30 p-5 rounded-xl border border-border relative">
-                  <button
-                    onClick={() => removeExperience(index)}
-                    className="absolute top-4 right-4 text-muted-foreground hover:text-red-500 transition-colors"
-                    aria-label="Remove experience entry"
-                  >
-                    <Trash2 className="w-4 h-4" />
-                  </button>
-                  <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
-
-                    <div>
-                      <label className="block text-sm font-medium mb-1">
-                        Job Title <span className="text-red-500">*</span>
-                      </label>
-                      <input
-                        type="text"
-                        className={ic('title')}
-                        value={exp.title}
-                        onChange={e => updateExp(index, 'title', e.target.value)}
-                        placeholder="Software Engineer"
-                        aria-invalid={!!errs.title}
-                      />
-                      <FieldError msg={errs.title} />
-                    </div>
-
-                    <div>
-                      <label className="block text-sm font-medium mb-1">
-                        Company <span className="text-red-500">*</span>
-                      </label>
-                      <input
-                        type="text"
-                        className={ic('company')}
-                        value={exp.company}
-                        onChange={e => updateExp(index, 'company', e.target.value)}
-                        placeholder="Tech Corp"
-                        aria-invalid={!!errs.company}
-                      />
-                      <FieldError msg={errs.company} />
-                    </div>
-
-                    <div>
-                      <label className="block text-sm font-medium mb-1">Location</label>
-                      <input
-                        type="text"
-                        className={ic('location')}
-                        value={exp.location}
-                        onChange={e => updateExp(index, 'location', e.target.value)}
-                        placeholder="San Francisco, CA"
-                      />
-                    </div>
-
-                    {/* Date row */}
-                    <div className="flex items-start gap-4 md:col-span-2">
-                      <div className="flex-1">
-                        <label className="block text-sm font-medium mb-1">
-                          Start Date <span className="text-red-500">*</span>
-                        </label>
-                        <input
-                          type="month"
-                          className={ic('startDate')}
-                          value={exp.startDate}
-                          onChange={e => updateExp(index, 'startDate', e.target.value)}
-                          aria-invalid={!!errs.startDate}
-                        />
-                        <FieldError msg={errs.startDate} />
-                      </div>
-                      <div className="flex-1">
-                        <label className="block text-sm font-medium mb-1">End Date</label>
-                        <input
-                          type="month"
-                          disabled={exp.current}
-                          className={cn(ic('endDate'), 'disabled:opacity-50 disabled:cursor-not-allowed')}
-                          value={exp.current ? '' : exp.endDate}
-                          onChange={e => updateExp(index, 'endDate', e.target.value)}
-                          aria-invalid={!!errs.endDate}
-                        />
-                        <FieldError msg={errs.endDate} />
-                      </div>
-                    </div>
-
-                    {/* Currently working here */}
-                    <div className="md:col-span-2 flex items-center gap-2">
-                      <input
-                        type="checkbox"
-                        id={`current-${index}`}
-                        checked={exp.current}
-                        onChange={e => {
-                          updateExp(index, 'current', e.target.checked)
-                          if (e.target.checked) updateExp(index, 'endDate', '')
-                        }}
-                        className="rounded border-border accent-primary"
-                      />
-                      <label htmlFor={`current-${index}`} className="text-sm">I currently work here</label>
-                    </div>
-
-                    <div className="md:col-span-2">
-  <label className="block text-sm font-medium mb-1">
-    Description (Bullet points)
-  </label>
-
-  <textarea
-    className="w-full bg-muted border border-border rounded-lg px-4 py-2 min-h-[100px] focus:outline-none focus:ring-2 focus:ring-primary/30 transition-colors"
-    value={exp.description}
-    onChange={e => updateExp(index, 'description', e.target.value)}
-    placeholder={`- Developed feature X resulting in Y% improvement\n- Led a team of...`}
-  />
-
-  <AchievementEnhancer
-    value={exp.description}
-    jobRole={targetRole}
-    onApply={(text) =>
-      updateExp(index, "description", text)
-    }
-  />
-</div>
-
+            <DragDropContext onDragEnd={onDragEnd}>
+              <Droppable droppableId="experience" type="experience">
+                {(provided) => (
+                  <div {...provided.droppableProps} ref={provided.innerRef} className="space-y-4">
+                    {experience.map((exp, index) => {
+                      const errs = experienceErrors[index] || {}
+                      const ic = inputClsArr(errs)
+                      return (
+                        <Draggable key={`exp-${index}`} draggableId={`exp-${index}`} index={index}>
+                          {(provided) => (
+                            <div
+                              ref={provided.innerRef}
+                              {...provided.draggableProps}
+                              className="bg-background/30 p-5 rounded-xl border border-border relative"
+                            >
+                              <div {...provided.dragHandleProps} className="absolute top-4 left-4 text-muted-foreground hover:text-foreground cursor-grab">
+                                <GripVertical className="w-4 h-4" />
+                              </div>
+                              <button
+                                onClick={() => removeExperience(index)}
+                                className="absolute top-4 right-4 text-muted-foreground hover:text-red-500 transition-colors"
+                                aria-label="Remove experience entry"
+                              >
+                                <Trash2 className="w-4 h-4" />
+                              </button>
+                              <div className="grid grid-cols-1 md:grid-cols-2 gap-4 mt-6">
+                                <div>
+                                  <label className="block text-sm font-medium mb-1">
+                                    Job Title <span className="text-red-500">*</span>
+                                  </label>
+                                  <input
+                                    type="text"
+                                    className={ic('title')}
+                                    value={exp.title}
+                                    onChange={e => updateExp(index, 'title', e.target.value)}
+                                    placeholder="Software Engineer"
+                                    aria-invalid={!!errs.title}
+                                  />
+                                  <FieldError msg={errs.title} />
+                                </div>
+                                <div>
+                                  <label className="block text-sm font-medium mb-1">
+                                    Company <span className="text-red-500">*</span>
+                                  </label>
+                                  <input
+                                    type="text"
+                                    className={ic('company')}
+                                    value={exp.company}
+                                    onChange={e => updateExp(index, 'company', e.target.value)}
+                                    placeholder="Tech Corp"
+                                    aria-invalid={!!errs.company}
+                                  />
+                                  <FieldError msg={errs.company} />
+                                </div>
+                                <div>
+                                  <label className="block text-sm font-medium mb-1">Location</label>
+                                  <input
+                                    type="text"
+                                    className={ic('location')}
+                                    value={exp.location}
+                                    onChange={e => updateExp(index, 'location', e.target.value)}
+                                    placeholder="San Francisco, CA"
+                                  />
+                                </div>
+                                <div className="flex items-start gap-4 md:col-span-2">
+                                  <div className="flex-1">
+                                    <label className="block text-sm font-medium mb-1">
+                                      Start Date <span className="text-red-500">*</span>
+                                    </label>
+                                    <input
+                                      type="month"
+                                      className={ic('startDate')}
+                                      value={exp.startDate}
+                                      onChange={e => updateExp(index, 'startDate', e.target.value)}
+                                      aria-invalid={!!errs.startDate}
+                                    />
+                                    <FieldError msg={errs.startDate} />
+                                  </div>
+                                  <div className="flex-1">
+                                    <label className="block text-sm font-medium mb-1">End Date</label>
+                                    <input
+                                      type="month"
+                                      disabled={exp.current}
+                                      className={cn(ic('endDate'), 'disabled:opacity-50 disabled:cursor-not-allowed')}
+                                      value={exp.current ? '' : exp.endDate}
+                                      onChange={e => updateExp(index, 'endDate', e.target.value)}
+                                      aria-invalid={!!errs.endDate}
+                                    />
+                                    <FieldError msg={errs.endDate} />
+                                  </div>
+                                </div>
+                                <div className="md:col-span-2 flex items-center gap-2">
+                                  <input
+                                    type="checkbox"
+                                    id={`current-${index}`}
+                                    checked={exp.current}
+                                    onChange={e => {
+                                      updateExp(index, 'current', e.target.checked)
+                                      if (e.target.checked) updateExp(index, 'endDate', '')
+                                    }}
+                                    className="rounded border-border accent-primary"
+                                  />
+                                  <label htmlFor={`current-${index}`} className="text-sm">I currently work here</label>
+                                </div>
+                                <div className="md:col-span-2">
+                                  <label className="block text-sm font-medium mb-1">
+                                    Description (Bullet points)
+                                  </label>
+                                  <textarea
+                                    className="w-full bg-muted border border-border rounded-lg px-4 py-2 min-h-[100px] focus:outline-none focus:ring-2 focus:ring-primary/30 transition-colors"
+                                    value={exp.description}
+                                    onChange={e => updateExp(index, 'description', e.target.value)}
+                                    placeholder={`- Developed feature X resulting in Y% improvement\n- Led a team of...`}
+                                  />
+                                  <AchievementEnhancer
+                                    value={exp.description}
+                                    jobRole={targetRole}
+                                    onApply={(text) =>
+                                      updateExp(index, "description", text)
+                                    }
+                                  />
+                                </div>
+                              </div>
+                            </div>
+                          )}
+                        </Draggable>
+                      )
+                    })}
+                    {provided.placeholder}
                   </div>
-                </div>
-              )
-            })}
+                )}
+              </Droppable>
+            </DragDropContext>
             <button onClick={addExperience} className="flex items-center gap-2 text-primary hover:text-primary/80 transition-colors">
               <Plus className="w-4 h-4" /> Add Experience
             </button>
@@ -1130,58 +1210,78 @@ useEffect(() => {
         return (
           <div className="space-y-6">
             <h2 className="text-2xl font-semibold mb-6">Projects</h2>
-            {projects.map((proj, index) => (
-              <div key={index} className="bg-background/30 p-5 rounded-xl border border-border relative">
-                <button
-                  onClick={() => removeProject(index)}
-                  className="absolute top-4 right-4 text-muted-foreground hover:text-red-500 transition-colors"
-                  aria-label="Remove project"
-                >
-                  <Trash2 className="w-4 h-4" />
-                </button>
-                <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
-                  <div>
-                    <label className="block text-sm font-medium mb-1">Project Name</label>
-                    <input
-                      type="text"
-                      className="w-full bg-muted border border-border rounded-lg px-4 py-2 focus:outline-none focus:ring-2 focus:ring-primary/30 transition-colors"
-                      value={proj.name}
-                      onChange={e => { const n = [...projects]; n[index].name = e.target.value; setProjects(n) }}
-                      placeholder="E-commerce App"
-                    />
+            <DragDropContext onDragEnd={onDragEnd}>
+              <Droppable droppableId="projects" type="projects">
+                {(provided) => (
+                  <div {...provided.droppableProps} ref={provided.innerRef} className="space-y-4">
+                    {projects.map((proj, index) => (
+                      <Draggable key={`proj-${index}`} draggableId={`proj-${index}`} index={index}>
+                        {(provided) => (
+                          <div
+                            ref={provided.innerRef}
+                            {...provided.draggableProps}
+                            className="bg-background/30 p-5 rounded-xl border border-border relative"
+                          >
+                            <div {...provided.dragHandleProps} className="absolute top-4 left-4 text-muted-foreground hover:text-foreground cursor-grab">
+                              <GripVertical className="w-4 h-4" />
+                            </div>
+                            <button
+                              onClick={() => removeProject(index)}
+                              className="absolute top-4 right-4 text-muted-foreground hover:text-red-500 transition-colors"
+                              aria-label="Remove project"
+                            >
+                              <Trash2 className="w-4 h-4" />
+                            </button>
+                            <div className="grid grid-cols-1 md:grid-cols-2 gap-4 mt-6">
+                              <div>
+                                <label className="block text-sm font-medium mb-1">Project Name</label>
+                                <input
+                                  type="text"
+                                  className="w-full bg-muted border border-border rounded-lg px-4 py-2 focus:outline-none focus:ring-2 focus:ring-primary/30 transition-colors"
+                                  value={proj.name}
+                                  onChange={e => { const n = [...projects]; n[index].name = e.target.value; setProjects(n) }}
+                                  placeholder="E-commerce App"
+                                />
+                              </div>
+                              <div>
+                                <label className="block text-sm font-medium mb-1">Technologies Used</label>
+                                <input
+                                  type="text"
+                                  className="w-full bg-muted border border-border rounded-lg px-4 py-2 focus:outline-none focus:ring-2 focus:ring-primary/30 transition-colors"
+                                  value={proj.tech}
+                                  onChange={e => { const n = [...projects]; n[index].tech = e.target.value; setProjects(n) }}
+                                  placeholder="React, Node.js, MongoDB"
+                                />
+                              </div>
+                              <div className="md:col-span-2">
+                                <label className="block text-sm font-medium mb-1">Link (Optional)</label>
+                                <input
+                                  type="url"
+                                  className="w-full bg-muted border border-border rounded-lg px-4 py-2 focus:outline-none focus:ring-2 focus:ring-primary/30 transition-colors"
+                                  value={proj.link}
+                                  onChange={e => { const n = [...projects]; n[index].link = e.target.value; setProjects(n) }}
+                                  placeholder="https://github.com/..."
+                                />
+                              </div>
+                              <div className="md:col-span-2">
+                                <label className="block text-sm font-medium mb-1">Description (Bullet points)</label>
+                                <textarea
+                                  className="w-full bg-muted border border-border rounded-lg px-4 py-2 min-h-[100px] focus:outline-none focus:ring-2 focus:ring-primary/30 transition-colors"
+                                  value={proj.description}
+                                  onChange={e => { const n = [...projects]; n[index].description = e.target.value; setProjects(n) }}
+                                  placeholder="- Built a full-stack application..."
+                                />
+                              </div>
+                            </div>
+                          </div>
+                        )}
+                      </Draggable>
+                    ))}
+                    {provided.placeholder}
                   </div>
-                  <div>
-                    <label className="block text-sm font-medium mb-1">Technologies Used</label>
-                    <input
-                      type="text"
-                      className="w-full bg-muted border border-border rounded-lg px-4 py-2 focus:outline-none focus:ring-2 focus:ring-primary/30 transition-colors"
-                      value={proj.tech}
-                      onChange={e => { const n = [...projects]; n[index].tech = e.target.value; setProjects(n) }}
-                      placeholder="React, Node.js, MongoDB"
-                    />
-                  </div>
-                  <div className="md:col-span-2">
-                    <label className="block text-sm font-medium mb-1">Link (Optional)</label>
-                    <input
-                      type="url"
-                      className="w-full bg-muted border border-border rounded-lg px-4 py-2 focus:outline-none focus:ring-2 focus:ring-primary/30 transition-colors"
-                      value={proj.link}
-                      onChange={e => { const n = [...projects]; n[index].link = e.target.value; setProjects(n) }}
-                      placeholder="https://github.com/..."
-                    />
-                  </div>
-                  <div className="md:col-span-2">
-                    <label className="block text-sm font-medium mb-1">Description (Bullet points)</label>
-                    <textarea
-                      className="w-full bg-muted border border-border rounded-lg px-4 py-2 min-h-[100px] focus:outline-none focus:ring-2 focus:ring-primary/30 transition-colors"
-                      value={proj.description}
-                      onChange={e => { const n = [...projects]; n[index].description = e.target.value; setProjects(n) }}
-                      placeholder="- Built a full-stack application..."
-                    />
-                  </div>
-                </div>
-              </div>
-            ))}
+                )}
+              </Droppable>
+            </DragDropContext>
             <button onClick={addProject} className="flex items-center gap-2 text-primary hover:text-primary/80 transition-colors">
               <Plus className="w-4 h-4" /> Add Project
             </button>
@@ -1213,6 +1313,36 @@ useEffect(() => {
 
           <div className="space-y-6">
             <h2 className="text-2xl font-semibold mb-6">Preview &amp; Generate</h2>
+
+            <div className="mb-6 p-4 rounded-xl border border-border bg-muted">
+              <h3 className="font-semibold mb-3">Reorder Sections</h3>
+              <DragDropContext onDragEnd={onDragEnd}>
+                <Droppable droppableId="sections" type="sections">
+                  {(provided) => (
+                    <div {...provided.droppableProps} ref={provided.innerRef} className="space-y-2">
+                      {sectionOrder.map((section, index) => (
+                        <Draggable key={section} draggableId={section} index={index}>
+                          {(provided) => (
+                            <div
+                              ref={provided.innerRef}
+                              {...provided.draggableProps}
+                              className="flex items-center gap-2 p-3 bg-background border border-border rounded-lg"
+                            >
+                              <div {...provided.dragHandleProps} className="cursor-grab text-muted-foreground hover:text-foreground">
+                                <GripVertical className="w-5 h-5" />
+                              </div>
+                              <span className="capitalize font-medium">{section}</span>
+                            </div>
+                          )}
+                        </Draggable>
+                      ))}
+                      {provided.placeholder}
+                    </div>
+                  )}
+                </Droppable>
+              </DragDropContext>
+            </div>
+
             <div className="flex justify-end mb-4">
   <button
     onClick={saveVersion}
@@ -1789,7 +1919,7 @@ useEffect(() => {
 </AnimatePresence>
 
         {/* Navigation Actions */}
-        <div className="mt-8 flex justify-between items-center">
+        <div className="mt-8 flex flex-wrap justify-between items-center gap-3">
           <button
             onClick={handlePrev}
             disabled={currentStep === 0}
@@ -1799,22 +1929,60 @@ useEffect(() => {
           </button>
 
           {currentStep === STEPS.length - 1 ? (
-            <button
-              onClick={handleGenerate}
-              disabled={isSubmitting}
-              className="px-6 py-2.5 rounded-full bg-primary text-primary-foreground hover:bg-primary/90 hover:scale-105 active:scale-95 disabled:opacity-50 disabled:hover:scale-100 transition-all shadow-lg shadow-primary/25 flex items-center gap-2 font-medium"
-            >
-              {isSubmitting ? (
-                <>
-                  <div className="w-4 h-4 border-2 border-white/20 border-t-white rounded-full animate-spin" />
-                  Generating...
-                </>
-              ) : (
-                <>
-                  <Save className="w-4 h-4" /> Generate &amp; Enhance
-                </>
-              )}
-            </button>
+            <div className="flex flex-wrap gap-2">
+              <button
+                onClick={() => navigate('/resume-templates', {
+                  state: {
+                    builderData: {
+                      personal,
+                      experience: (experience || []).filter(e => e.title || e.company)
+                        .map(e => ({
+                          role: e.title,
+                          company: e.company,
+                          period: [e.startDate, e.current ? 'Present' : e.endDate]
+                            .filter(Boolean).join(' – ') || undefined,
+                          location: e.location,
+                          description: e.description,
+                        })),
+                      education: (education || []).filter(e => e.school || e.degree)
+                        .map(e => ({
+                          degree: e.degree,
+                          institution: e.school,
+                          period: [e.startDate, e.endDate].filter(Boolean).join(' – ') || undefined,
+                          location: e.location,
+                          description: e.field,
+                        })),
+                      projects: (projects || []).filter(p => p.name).map(p => ({
+                        title: p.name,
+                        description: p.description,
+                        techStack: p.tech ? p.tech.split(',').map(s => s.trim()).filter(Boolean) : [],
+                        link: p.link,
+                      })),
+                      skills: skills ? skills.split(/[,\n]/).map(s => s.trim()).filter(Boolean) : [],
+                    }
+                  }
+                })}
+                className="px-6 py-2.5 rounded-full bg-secondary text-secondary-foreground hover:bg-secondary/80 transition-all flex items-center gap-2 font-medium border border-border"
+              >
+                <LayoutTemplate className="w-4 h-4" /> Choose Resume Template
+              </button>
+              <button
+                onClick={handleGenerate}
+                disabled={isSubmitting}
+                className="px-6 py-2.5 rounded-full bg-primary text-primary-foreground hover:bg-primary/90 hover:scale-105 active:scale-95 disabled:opacity-50 disabled:hover:scale-100 transition-all shadow-lg shadow-primary/25 flex items-center gap-2 font-medium"
+              >
+                {isSubmitting ? (
+                  <>
+                    <div className="w-4 h-4 border-2 border-white/20 border-t-white rounded-full animate-spin" />
+                    Generating...
+                  </>
+                ) : (
+                  <>
+                    <Save className="w-4 h-4" /> Generate &amp; Enhance
+                  </>
+                )}
+              </button>
+            </div>
           ) : (
             <button
               onClick={handleNext}
