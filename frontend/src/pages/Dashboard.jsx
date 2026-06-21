@@ -537,18 +537,7 @@ export default function Dashboard() {
   <ResumeIndustryOptimizer />
 </motion.div>
 
-  <PortfolioGrammarAssistant />
-</motion.div>
 
-<motion.div variants={itemVariants} className="mb-10">
-  <PortfolioGrammarAssistant />
-</motion.div>
-
-<motion.div variants={itemVariants} className="mb-10">
-  <ResumeBulletEnhancer />
-</motion.div>
-
-<div className="grid lg:grid-cols-2 gap-10"></div>
 
             <div className="grid lg:grid-cols-2 gap-10">
               {/* Recent Applications */}
