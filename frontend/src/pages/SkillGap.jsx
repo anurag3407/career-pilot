@@ -5,6 +5,15 @@ import { enhanceApi, resumeApi } from '../services/api';
 import toast from 'react-hot-toast';
 import CopyButton from '../components/CopyButton';
 import logger from '../utils/logger';
+import {
+  extractSkillsFromText,
+  inferCareerFocus,
+  getSkillSynergyInsights
+} from '../utils/skillSynergy';
+// Utility helpers for Skill Synergy Insights.
+// These functions detect resume skills, infer the job-related career focus,
+// and return complementary skill recommendations.
+
 const SkillGap = () => {
   const [resumes, setResumes] = useState([]);
   const [selectedResumeId, setSelectedResumeId] = useState('');
@@ -12,6 +21,11 @@ const SkillGap = () => {
   const [loading, setLoading] = useState(false);
   const [loadingResumes, setLoadingResumes] = useState(true);
   const [results, setResults] = useState(null);
+  const [careerFocus, setCareerFocus] = useState('General Career Growth');
+  const [synergyInsights, setSynergyInsights] = useState([]);
+  const [detectedSkills, setDetectedSkills] = useState([]);
+  // detectedSkills is the inferred set of skills from the resume text
+  // careerFocus is the role/category inferred from the job description.
 
   useEffect(() => {
     const fetchResumes = async () => {
@@ -57,6 +71,13 @@ const SkillGap = () => {
 
       const response = await enhanceApi.analyzeSkillGap(resumeText, jobDescription);
       setResults(response.data);
+
+      // Build the Skill Synergy Insights using resume skills and job focus.
+      const parsedSkills = extractSkillsFromText(resumeText);
+      setDetectedSkills(parsedSkills);
+      const inferredCareerFocus = inferCareerFocus(jobDescription);
+      setCareerFocus(inferredCareerFocus);
+      setSynergyInsights(getSkillSynergyInsights(parsedSkills, inferredCareerFocus));
     } catch (error) {
       logger.error('Skill gap analysis error:', error);
       toast.error(error.message || 'Failed to analyze skill gap. Please try again.');
@@ -240,6 +261,24 @@ const SkillGap = () => {
                   </div>
                 )}
 
+                {detectedSkills.length > 0 && (
+                  <div className="bg-card border border-border rounded-xl p-6">
+                    <h3 className="text-sm font-medium text-foreground mb-3">
+                      Detected Profile Skills
+                    </h3>
+                    <div className="flex flex-wrap gap-2">
+                      {detectedSkills.map((skill, idx) => (
+                        <span
+                          key={idx}
+                          className="px-3 py-1.5 text-sm bg-slate-500/10 text-slate-300 border border-slate-500/20 rounded-full"
+                        >
+                          {skill}
+                        </span>
+                      ))}
+                    </div>
+                  </div>
+                )}
+
                 {/* Missing Skills */}
                 {results.missingSkills.length > 0 && (
                   <div className="bg-card border border-border rounded-xl p-6">
@@ -257,6 +296,56 @@ const SkillGap = () => {
                         </span>
                       ))}
                     </div>
+                  </div>
+                )}
+
+                {synergyInsights.length > 0 ? (
+                  <div className="bg-card border border-border rounded-xl p-6">
+                    <div className="flex items-center justify-between gap-2 mb-4">
+                      <div>
+                        <h3 className="text-sm font-medium text-foreground">
+                          Skill Synergy Insights
+                        </h3>
+                        <p className="text-sm text-muted-foreground mt-1">
+                          Complementary skills recommended for your current profile and career focus.
+                        </p>
+                        <p className="text-sm text-muted-foreground mt-1">
+                          Primary focus: <span className="font-medium text-foreground">{careerFocus}</span>
+                        </p>
+                      </div>
+                      <CopyButton
+                        text={synergyInsights.map((item) => `${item.skill}: ${item.description}`).join('\n')}
+                        label="Copy"
+                        size={14}
+                      />
+                    </div>
+                    <div className="grid gap-4">
+                      {synergyInsights.map((item, index) => (
+                        <div
+                          key={index}
+                          className="rounded-2xl border border-border p-4 bg-background/70"
+                        >
+                          <div className="flex items-center justify-between gap-4">
+                            <p className="font-semibold text-foreground">{item.skill}</p>
+                            <span className="text-[11px] uppercase tracking-[0.24em] text-muted-foreground">
+                              {item.source}
+                            </span>
+                          </div>
+                          <p className="mt-2 text-sm text-muted-foreground">
+                            {item.description}
+                          </p>
+                        </div>
+                      ))}
+                    </div>
+                  </div>
+                ) : (
+                  <div className="bg-card border border-border rounded-xl p-6">
+                    <h3 className="text-sm font-medium text-foreground mb-3">
+                      Skill Synergy Insights
+                    </h3>
+                    <p className="text-sm text-muted-foreground">
+                      No tailored synergy recommendations were detected from your resume skills. Try adding more explicit skills like Python, SQL, or Data Analysis to get better insights.
+                    </p>
                   </div>
                 )}
 

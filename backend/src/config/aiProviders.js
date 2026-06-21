@@ -3,6 +3,7 @@ import OpenAI from 'openai';
 import Groq from 'groq-sdk';
 import dotenv from 'dotenv';
 import { OpenRouterAdapter } from './providers/openrouter.js';
+import { RequestyAdapter } from './providers/requesty.js';
 import { ApiError } from '../middleware/errorHandler.js';
 import { aiCallsCounter } from '../middleware/metrics.js';
 
@@ -11,13 +12,14 @@ dotenv.config();
 // ---------------------------------------------------------------------------
 // Supported provider identifiers
 // ---------------------------------------------------------------------------
-export const SUPPORTED_PROVIDERS = ['gemini', 'openai', 'openrouter', 'groq'];
+export const SUPPORTED_PROVIDERS = ['gemini', 'openai', 'openrouter', 'requesty', 'groq'];
 
 // Default model names per provider (used when caller doesn't specify one)
 const DEFAULT_MODELS = {
   gemini: 'gemini-2.5-flash',
   openai: 'gpt-4o-mini',
   openrouter: 'openai/gpt-4o-mini',   // OpenRouter uses "org/model" format
+  requesty: 'openai/gpt-4o-mini',     // Requesty uses "org/model" format
   groq: 'llama-3.3-70b-versatile',
 };
 
@@ -202,6 +204,8 @@ export function createAIProvider(provider, apiKey, modelName) {
       return new OpenAIAdapter(apiKey, modelName);
     case 'openrouter':
       return new OpenRouterAdapter(apiKey, modelName);
+    case 'requesty':
+      return new RequestyAdapter(apiKey, modelName);
     case 'groq':
       return new GroqAdapter(apiKey, modelName);
     default:
@@ -232,12 +236,24 @@ let _defaultProvider = null;
 export function getDefaultProvider() {
   if (_defaultProvider) return _defaultProvider;
 
+  const groqApiKey = process.env.GROQ_API_KEY;
+  if (groqApiKey && groqApiKey.startsWith('gsk_')) {
+    _defaultProvider = createAIProvider('groq', groqApiKey);
+    return _defaultProvider;
+  }
+
+  const openaiApiKey = process.env.OPENAI_API_KEY;
+  if (openaiApiKey && openaiApiKey.startsWith('sk-')) {
+    _defaultProvider = createAIProvider('openai', openaiApiKey);
+    return _defaultProvider;
+  }
+
   const geminiApiKey = process.env.GEMINI_API_KEY;
   if (!geminiApiKey) {
     throw new ApiError(
       503,
-      'AI features are unavailable — GEMINI_API_KEY is not configured. ' +
-      'Set it in your .env file or supply your own key via the X-AI-Key header.'
+      'AI features are unavailable — Neither OPENAI_API_KEY nor GEMINI_API_KEY is configured. ' +
+      'Set one in your .env file or supply your own key via the X-AI-Key header.'
     );
   }
 

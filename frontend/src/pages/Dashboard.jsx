@@ -29,6 +29,11 @@ import {
 } from 'lucide-react'
 import { resumeApi, jobTrackerApi, portfolioApi, userProfileApi } from '../services/api'
 import Button from '../components/Button'
+import PortfolioGrammarAssistant from '../components/PortfolioGrammarAssistant'
+import JobApplicationSuccessInsights from '../components/JobApplicationSuccessInsights'
+import ResumeBulletEnhancer from '../components/ResumeBulletEnhancer'
+import PortfolioTemplatePreview from '../components/PortfolioTemplatePreview'
+import ResumeIndustryOptimizer from '../components/ResumeIndustryOptimizer'
 import {
   SkeletonAction,
   SkeletonStat,
@@ -82,14 +87,8 @@ const STATUS_CONFIG = {
   interviewing: { label: 'Interviewing', color: 'bg-secondary/10 text-secondary border border-secondary/20', icon: MessageSquare },
   offered: { label: 'Offered', color: 'bg-emerald-500/10 text-emerald-500 border border-emerald-500/20', icon: CheckCircle2 }
 }
-const portfolioAnalytics = {
-  totalVisits: 1245,
-  uniqueVisitors: 876,
-  mostViewedSection: "Projects",
-  deviceStats: "65% Desktop",
-  downloads: 89,
-  weeklyGrowth: "+12%"
-}
+// portfolioAnalytics intentionally removed — no real API exists yet.
+// Section is gated behind portfolioCount > 0 in the JSX below.
 
 export default function Dashboard() {
   const [resumes, setResumes] = useState([])
@@ -104,17 +103,7 @@ export default function Dashboard() {
     offered: 0
   })
   const [portfolioCount, setPortfolioCount] = useState(0)
-  const careerInsights = {
-  readinessScore: 82,
-  skillGaps: ["System Design", "Cloud Computing"],
-  trendingSkills: ["AI Engineering", "Prompt Engineering", "DevOps"],
-  certifications: ["AWS Cloud Practitioner", "Google Data Analytics"],
-  learningPath: [
-    "Complete Cloud Fundamentals",
-    "Build Real-World Projects",
-    "Practice Mock Interviews"
-  ]
-}
+  // careerInsights: no real API yet — section is gated behind resumes.length > 0
   const [candidateName, setCandidateName] = useState('')
   const [githubOverview, setGithubOverview] = useState({
     connected: false,
@@ -206,9 +195,9 @@ export default function Dashboard() {
       setFetchError('Failed to load your dashboard. Please try again.')
       toast.error('Failed to load dashboard data')
     } finally {
-      if (!canUpdate()) return
-
-      setLoading(false)
+      if (canUpdate()) {
+        setLoading(false)
+      }
     }
   }
 
@@ -414,6 +403,10 @@ export default function Dashboard() {
               })}
             </motion.div>
 
+            <motion.div variants={itemVariants} className="mb-10">
+              <JobApplicationSuccessInsights />
+            </motion.div>
+
             {/* GitHub Overview */}
             <motion.div variants={itemVariants} className="mb-10">
               {githubOverview.connected ? (
@@ -482,127 +475,81 @@ export default function Dashboard() {
       </h2>
     </div>
 
-    <div className="grid md:grid-cols-5 gap-4">
-
-      <div className="p-4 rounded-xl border border-border">
-        <p className="text-xs text-muted-foreground">
-          Readiness Score
-        </p>
-        <p className="text-3xl font-black text-emerald-500">
-          {careerInsights.readinessScore}%
+    {resumes.length > 0 ? (
+      <div className="p-6 rounded-xl border border-dashed border-border bg-muted/20 text-center">
+        <GraduationCap className="w-10 h-10 text-muted-foreground mx-auto mb-3 opacity-50" />
+        <p className="text-sm font-bold text-muted-foreground mb-1">AI Career Insights Coming Soon</p>
+        <p className="text-xs text-muted-foreground max-w-xs mx-auto">
+          Personalized readiness score, skill gap analysis, and trending skills will appear here once our AI analyses your resume.
         </p>
       </div>
-
-      <div className="p-4 rounded-xl border border-border">
-        <p className="text-xs text-muted-foreground">
-          Skill Gaps
+    ) : (
+      <div className="p-6 rounded-xl border border-dashed border-primary/20 bg-primary/5 text-center">
+        <GraduationCap className="w-10 h-10 text-primary mx-auto mb-3 opacity-60" />
+        <p className="text-sm font-bold text-foreground mb-1">Upload a Resume to Unlock Insights</p>
+        <p className="text-xs text-muted-foreground max-w-xs mx-auto mb-4">
+          Your readiness score, skill gaps, and personalised learning path will be generated once you add a resume.
         </p>
-        <p className="font-bold">
-          {careerInsights.skillGaps.join(", ")}
-        </p>
+        <Link
+          to="/upload"
+          className="inline-flex items-center gap-2 px-4 py-2 bg-primary text-primary-foreground rounded-xl text-xs font-black hover:bg-primary/90 transition-colors"
+        >
+          Upload Resume <ArrowRight className="w-3.5 h-3.5" />
+        </Link>
       </div>
-
-      <div className="p-4 rounded-xl border border-border">
-        <p className="text-xs text-muted-foreground">
-          Trending Skills
-        </p>
-        <p className="font-bold">
-          {careerInsights.trendingSkills.join(", ")}
-        </p>
-      </div>
-
-      <div className="p-4 rounded-xl border border-border">
-        <p className="text-xs text-muted-foreground">
-          Certifications
-        </p>
-        <p className="font-bold">
-          {careerInsights.certifications[0]}
-        </p>
-      </div>
-
-      <div className="p-4 rounded-xl border border-border">
-        <p className="text-xs text-muted-foreground">
-          Learning Path
-        </p>
-        <p className="font-bold">
-          {careerInsights.learningPath[0]}
-        </p>
-      </div>
-
-    </div>
+    )}
   </div>
+</motion.div>
+
+{portfolioCount > 0 && (
+  <motion.div variants={itemVariants} className="mb-10">
+    <div className="rounded-2xl bg-card border border-border p-6 shadow-sm">
+      <div className="flex items-center gap-3 mb-6">
+        <TrendingUp className="w-6 h-6 text-primary" />
+        <h2 className="text-xl font-black">
+          Portfolio Performance Analytics
+        </h2>
+      </div>
+
+      <div className="p-6 rounded-xl border border-dashed border-border bg-muted/20 text-center">
+        <TrendingUp className="w-10 h-10 text-muted-foreground mx-auto mb-3 opacity-50" />
+        <p className="text-sm font-bold text-muted-foreground mb-1">Analytics Tracking Coming Soon</p>
+        <p className="text-xs text-muted-foreground max-w-sm mx-auto">
+          Real visit counts, unique visitors, and weekly growth metrics will be tracked once portfolio analytics are enabled.
+        </p>
+      </div>
+    </div>
+  </motion.div>
+)}
+
+<motion.div variants={itemVariants} className="mb-10">
+  <PortfolioGrammarAssistant />
 </motion.div>
 
 <motion.div variants={itemVariants} className="mb-10">
-  <div className="rounded-2xl bg-card border border-border p-6 shadow-sm">
-
-    <div className="flex items-center gap-3 mb-6">
-      <TrendingUp className="w-6 h-6 text-primary" />
-      <h2 className="text-xl font-black">
-        Portfolio Performance Analytics
-      </h2>
-    </div>
-
-    <div className="grid md:grid-cols-3 lg:grid-cols-6 gap-4">
-
-      <div className="p-4 rounded-xl border border-border">
-        <p className="text-xs text-muted-foreground">
-          Total Visits
-        </p>
-        <p className="text-2xl font-black">
-          {portfolioAnalytics.totalVisits}
-        </p>
-      </div>
-
-      <div className="p-4 rounded-xl border border-border">
-        <p className="text-xs text-muted-foreground">
-          Unique Visitors
-        </p>
-        <p className="text-2xl font-black">
-          {portfolioAnalytics.uniqueVisitors}
-        </p>
-      </div>
-
-      <div className="p-4 rounded-xl border border-border">
-        <p className="text-xs text-muted-foreground">
-          Most Viewed Section
-        </p>
-        <p className="font-bold">
-          {portfolioAnalytics.mostViewedSection}
-        </p>
-      </div>
-
-      <div className="p-4 rounded-xl border border-border">
-        <p className="text-xs text-muted-foreground">
-          Device Stats
-        </p>
-        <p className="font-bold">
-          {portfolioAnalytics.deviceStats}
-        </p>
-      </div>
-
-      <div className="p-4 rounded-xl border border-border">
-        <p className="text-xs text-muted-foreground">
-          Downloads
-        </p>
-        <p className="text-2xl font-black">
-          {portfolioAnalytics.downloads}
-        </p>
-      </div>
-
-      <div className="p-4 rounded-xl border border-border">
-        <p className="text-xs text-muted-foreground">
-          Weekly Growth
-        </p>
-        <p className="text-2xl font-black text-emerald-500">
-          {portfolioAnalytics.weeklyGrowth}
-        </p>
-      </div>
-
-    </div>
-
-  </div>
+  <PortfolioTemplatePreview />
 </motion.div>
+
+<motion.div variants={itemVariants} className="mb-10">
+  <ResumeBulletEnhancer />
+</motion.div>
+
+<motion.div variants={itemVariants} className="mb-10">
+  <ResumeIndustryOptimizer />
+</motion.div>
+
+  <PortfolioGrammarAssistant />
+</motion.div>
+
+<motion.div variants={itemVariants} className="mb-10">
+  <PortfolioGrammarAssistant />
+</motion.div>
+
+<motion.div variants={itemVariants} className="mb-10">
+  <ResumeBulletEnhancer />
+</motion.div>
+
+<div className="grid lg:grid-cols-2 gap-10"></div>
 
             <div className="grid lg:grid-cols-2 gap-10">
               {/* Recent Applications */}

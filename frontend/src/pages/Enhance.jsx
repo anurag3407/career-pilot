@@ -383,13 +383,13 @@ export default function Enhance() {
   }, [resumeId])
 
   useEffect(() => {
-  if (streamContainerRef.current) {
-    streamContainerRef.current.scrollTo({
-      top: streamContainerRef.current.scrollHeight,
-      behavior: 'smooth',
-    })
-  }
-}, [streamedText])
+    if (streamContainerRef.current) {
+      streamContainerRef.current.scrollTo({
+        top: streamContainerRef.current.scrollHeight,
+        behavior: 'smooth',
+      })
+    }
+  }, [streamedText])
 
   const fetchResume = async () => {
     try {
@@ -469,57 +469,71 @@ const copyKeywordToClipboard = async (keyword) => {
   } catch (err) {
     logger.error('Failed to copy keyword:', err)
     toast.error('Could not copy keyword to clipboard. Please try again.')
+  const copyKeywordToClipboard = async (keyword) => {
+    if (!keyword) return
+
+    try {
+      await navigator.clipboard.writeText(keyword)
+      setCopiedKeyword(keyword)
+      setTimeout(() => {
+        setCopiedKeyword((current) => (current === keyword ? null : current))
+      }, 2000)
+    } catch (err) {
+      console.error('Failed to copy keyword:', err)
+      toast.error('Could not copy keyword to clipboard. Please try again.')
+    }
   }
-}
 
-async function getAuthHeaders() {
-  const user = auth?.currentUser
+  async function getAuthHeaders() {
+    const user = auth?.currentUser
 
-  if (!user) {
-    throw new Error('Not authenticated')
+    if (!user) {
+      if (import.meta.env.DEV) {
+        return {
+          Authorization: `Bearer mock-dev-token`,
+          'Content-Type': 'application/json',
+        }
+      }
+      throw new Error('Not authenticated')
+    }
+
+    const token = await user.getIdToken()
+
+    return {
+      Authorization: `Bearer ${token}`,
+      'Content-Type': 'application/json',
+    }
   }
-
-  const token = await user.getIdToken()
-
-  return {
-    Authorization: `Bearer ${token}`,
-    'Content-Type': 'application/json',
-  }
-}
 
   const handleEnhanceWithAI = async () => {
-setEnhancing(true)
+    setEnhancing(true)
 
-try {
-  const apiPreferences = {
-    jobRole: jobRole,
-    yearsOfExperience: resume?.yearsOfExperience ?? 0,
-    skills: atsAnalysis?.missingKeywords || [],
-    industry: '',
-    customInstructions: `Focus on improving: ${
-      atsAnalysis?.improvements?.map(i => i.issue).join(', ') ||
-      'general improvements'
-    }`,
-    profileInfo: {}
-  }
+    try {
+      const apiPreferences = {
+        jobRole: jobRole,
+        yearsOfExperience: resume?.yearsOfExperience ?? 0,
+        skills: atsAnalysis?.missingKeywords || [],
+        industry: '',
+        customInstructions: `Focus on improving: ${
+          atsAnalysis?.improvements?.map(i => i.issue).join(', ') ||
+          'general improvements'
+        }`,
+        profileInfo: {}
+      }
 
-    // Reset streamed content
-    let streamedResume = ''
+      // Reset streamed content
+      let streamedResume = ''
 
-    const headers = await getAuthHeaders()
-const aiConfigStr = localStorage.getItem('aiConfig')
+      const headers = await getAuthHeaders()
+      const aiConfigStr = localStorage.getItem('aiConfig')
 
-if (aiConfigStr) {
-  try {
-    const aiConfig = JSON.parse(aiConfigStr)
+      if (aiConfigStr) {
+        try {
+          const aiConfig = JSON.parse(aiConfigStr)
 
-    if (aiConfig.provider) {
-      headers['X-AI-Provider'] = aiConfig.provider
-    }
-
-    if (aiConfig.apiKey) {
-      headers['X-AI-Key'] = decryptKey(aiConfig.apiKey)
-    }
+          if (aiConfig.provider) {
+            headers['X-AI-Provider'] = aiConfig.provider
+          }
 
     if (aiConfig.model) {
       headers['X-AI-Model'] = aiConfig.model
@@ -528,116 +542,110 @@ if (aiConfigStr) {
     logger.error('enhance operation failed:', e);
   }
 }
+          if (aiConfig.apiKey) {
+            headers['X-AI-Key'] = decryptKey(aiConfig.apiKey)
+          }
 
-const response = await fetch('/api/enhance/stream', {
-  method: 'POST',
-  headers,
-  body: JSON.stringify({
-    resumeText: resume.originalText,
-    preferences: apiPreferences,
-  }),
-})
+          if (aiConfig.model) {
+            headers['X-AI-Model'] = aiConfig.model
+          }
+        } catch (e) {
+          console.error(e)
+        }
+      }
 
-    if (!response.ok) {
-      throw new Error('Failed to start enhancement stream')
-    }
-
-    if (!response.body) {
-      throw new Error('Streaming not supported')
-    }
-
-    const reader = response.body.getReader()
-    const decoder = new TextDecoder()
-
-    let done = false
-    let buffer = ''
-
-    while (!done) {
-      const { value, done: doneReading } = await reader.read()
-
-      done = doneReading
-
-      const chunkValue = decoder.decode(value || new Uint8Array(), {
-        stream: !done,
+      const response = await fetch('/api/enhance/stream', {
+        method: 'POST',
+        headers,
+        body: JSON.stringify({
+          resumeText: resume.originalText,
+          preferences: apiPreferences,
+        }),
       })
-      buffer += chunkValue
 
-const parts = buffer.split('\n\n')
+      if (!response.ok) {
+        throw new Error('Failed to start enhancement stream')
+      }
 
-buffer = parts.pop() || ''
+      if (!response.body) {
+        throw new Error('Streaming not supported')
+      }
 
-for (const part of parts) {
-  const lines = part.split('\n')
+      const reader = response.body.getReader()
+      const decoder = new TextDecoder()
 
-  for (const line of lines) {
-    if (!line.startsWith('data:')) continue
+      let done = false
+      let buffer = ''
 
-    const data = line.replace('data:', '').trim()
+      while (!done) {
+        const { value, done: doneReading } = await reader.read()
 
-    if (!data) continue
+        done = doneReading
 
-    // Ignore completion marker
-    if (data === '[DONE]') {
-      continue
-    }
+        const chunkValue = decoder.decode(value || new Uint8Array(), {
+          stream: !done,
+        })
+        buffer += chunkValue
 
-    let parsed
+        const parts = buffer.split('\n\n')
 
-    try {
-      parsed = JSON.parse(data)
-    } catch {
-      streamedResume += data
-      setStreamedText(streamedResume)
-      continue
-    }
+        buffer = parts.pop() || ''
 
-    if (parsed.type === 'error') {
-      throw new Error(parsed.message || 'Streaming failed')
-    }
+        for (const part of parts) {
+          const lines = part.split('\n')
 
-    if (parsed.type === 'chunk' && parsed.content) {
-      streamedResume += parsed.content
-      setStreamedText(streamedResume)
-    }
-  }
-}
-}
-    // Save final enhanced text
-    await resumeApi.update(resumeId, {
-      enhancedText: streamedResume,
-      jobRole: jobRole,
-      preferences: apiPreferences
-    })
+          for (const line of lines) {
+            if (!line.startsWith('data:')) continue
 
-    setResume((current) => ({
-      ...current,
-      enhancedText: streamedResume,
-      jobRole,
-      preferences: apiPreferences
-    }))
+            const data = line.replace('data:', '').trim()
 
-    setEnhancementComplete(true)
+            if (!data) continue
 
-    try {
-      await resumeApi.createVersion(resumeId, {
-        title: `AI Enhanced for ${jobRole}`,
-        originalText: resume.originalText,
+            // Ignore completion marker
+            if (data === '[DONE]') {
+              continue
+            }
+
+            let parsed
+
+            try {
+              parsed = JSON.parse(data)
+            } catch {
+              streamedResume += data
+              setStreamedText(streamedResume)
+              continue
+            }
+
+            if (parsed.type === 'error') {
+              throw new Error(parsed.message || 'Streaming failed')
+            }
+
+            if (parsed.type === 'chunk' && parsed.content) {
+              streamedResume += parsed.content
+              setStreamedText(streamedResume)
+            }
+          }
+        }
+      }
+      
+      // Save final enhanced text
+      await resumeApi.update(resumeId, {
         enhancedText: streamedResume,
         jobRole: jobRole,
-        atsScore: atsAnalysis?.atsScore || null,
-        tags: ['AI-Enhanced', jobRole]
+        preferences: apiPreferences
       })
     } catch (versionErr) {
       logger.error('Failed to save version snapshot:', versionErr);
     }
 
-    toast.success('Resume enhanced successfully!')
+      setResume((current) => ({
+        ...current,
+        enhancedText: streamedResume,
+        jobRole,
+        preferences: apiPreferences
+      }))
 
-    triggerConfetti({
-      duration: 3000,
-      particleCount: 150,
-      spread: 120
-    })
+      setEnhancementComplete(true)
 
   } catch (error) {
     logger.error('enhance failed:', error);
@@ -684,8 +692,7 @@ for (const part of parts) {
     } finally {
       setScoring(false)
     }
-  }
-
+}
   if (loading) {
     return (
       <div className="min-h-screen bg-background">

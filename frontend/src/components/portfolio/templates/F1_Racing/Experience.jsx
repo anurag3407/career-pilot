@@ -3,8 +3,13 @@ import { motion } from 'framer-motion';
 import { Calendar, MapPin, Flag, ChevronRight, Gauge } from 'lucide-react';
 
 export default function Experience({ data }) {
-  const experience = data?.experience;
+  let experience = data?.experience;
   if (!experience || experience.length === 0) return null;
+  if (typeof experience === 'string') {
+    experience = [{ title: "Role", company: "Company", description: experience }];
+  } else if (!Array.isArray(experience)) {
+    return null;
+  }
 
   return (
     <section id="experience" className="relative py-20 bg-[#070709] text-white overflow-hidden selection:bg-[#E10600] selection:text-white">
@@ -50,7 +55,7 @@ export default function Experience({ data }) {
                 <div className="flex justify-between items-start mb-4">
                   <div>
                     <h3 className="text-xl font-bold font-mono tracking-tight text-white uppercase group-hover:text-[#E10600] transition-colors">
-                      {exp.title}
+                      {exp.title || exp.role}
                     </h3>
                     <div className="text-sm font-mono text-neutral-400 mt-1 flex items-center gap-2 uppercase tracking-wider">
                       <Flag className="w-3.5 h-3.5" />
@@ -62,7 +67,7 @@ export default function Experience({ data }) {
                 <div className="flex flex-wrap items-center gap-4 text-[10px] font-mono text-neutral-500 uppercase tracking-widest mb-4">
                   <div className="flex items-center gap-1.5">
                     <Calendar className="w-3 h-3 text-neutral-400" />
-                    <span>{exp.startDate} - {exp.endDate || 'Present'}</span>
+                    <span>{exp.duration || `${exp.startDate || ''} - ${exp.endDate || 'Present'}`}</span>
                   </div>
                   {exp.location && (
                     <div className="flex items-center gap-1.5">
@@ -76,9 +81,9 @@ export default function Experience({ data }) {
                   {exp.description}
                 </p>
 
-                {exp.highlights && exp.highlights.length > 0 && (
+                {(Array.isArray(exp.highlights) ? exp.highlights : typeof exp.highlights === 'string' ? [exp.highlights] : []).length > 0 && (
                   <ul className="space-y-2 mt-4 border-t border-neutral-800 pt-4">
-                    {exp.highlights.map((highlight, i) => (
+                    {(Array.isArray(exp.highlights) ? exp.highlights : typeof exp.highlights === 'string' ? [exp.highlights] : []).map((highlight, i) => (
                       <li key={i} className="text-xs text-neutral-300 flex items-start gap-2">
                         <ChevronRight className="w-3.5 h-3.5 text-[#E10600] flex-shrink-0 mt-0.5" />
                         <span>{highlight}</span>

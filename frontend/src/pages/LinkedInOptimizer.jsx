@@ -298,6 +298,31 @@ export default function LinkedInOptimizer() {
         </motion.div>
 
         {/* Results */}
+        {loading && (
+          <div className="mt-8 space-y-6">
+            <div className="flex items-center gap-3 px-5 py-4 bg-blue-500/5 border border-blue-500/20 rounded-xl animate-pulse" role="status" aria-live="polite">
+              <div className="w-5 h-5 border-2 border-blue-500 border-t-transparent rounded-full animate-spin shrink-0" />
+              <p className="text-sm text-blue-400 font-medium">Optimizing your LinkedIn profile... Please wait...</p>
+            </div>
+            <div className="grid grid-cols-1 md:grid-cols-2 gap-4 animate-pulse">
+              <div className="bg-card/50 border border-border rounded-2xl p-6 h-48 space-y-4">
+                <div className="h-5 bg-muted rounded w-1/2" />
+                <div className="h-20 bg-muted rounded" />
+              </div>
+              <div className="bg-card/50 border border-border rounded-2xl p-6 h-48 space-y-4">
+                <div className="h-5 bg-muted rounded w-1/2" />
+                <div className="h-20 bg-muted rounded" />
+              </div>
+            </div>
+            <div className="bg-card/50 border border-border rounded-2xl p-6 h-64 space-y-4 animate-pulse">
+              <div className="h-5 bg-muted rounded w-1/3" />
+              <div className="h-4 bg-muted rounded w-full" />
+              <div className="h-4 bg-muted rounded w-5/6" />
+              <div className="h-4 bg-muted rounded w-2/3" />
+            </div>
+          </div>
+        )}
+
         <AnimatePresence>
           {results && (
             <motion.div

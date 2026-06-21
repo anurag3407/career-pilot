@@ -33,7 +33,7 @@ const AdminDashboard = () => {
   if (loading) {
     return (
       <div className="flex items-center justify-center h-64">
-        <div className="animate-spin rounded-full h-12 w-12 border-b-2 border-blue-600"></div>
+        <div className="animate-spin rounded-full h-12 w-12 border-b-2 border-primary"></div>
       </div>
     );
   }
@@ -41,8 +41,8 @@ const AdminDashboard = () => {
   return (
     <div className="space-y-6">
       <div>
-        <h1 className="text-2xl font-bold text-gray-900 dark:text-white">Admin Dashboard</h1>
-        <p className="text-gray-500 dark:text-gray-400 mt-1">Overview of system activity and metrics.</p>
+        <h1 className="text-2xl font-bold text-foreground">Admin Dashboard</h1>
+        <p className="text-muted-foreground mt-1">Overview of system activity and metrics.</p>
       </div>
 
       <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-6">
@@ -73,9 +73,9 @@ const AdminDashboard = () => {
       </div>
 
       {/* Placeholder for future activity feed */}
-      <div className="bg-white dark:bg-gray-800 rounded-xl p-6 shadow-sm border border-gray-100 dark:border-gray-700 mt-8">
-        <h3 className="text-lg font-semibold text-gray-900 dark:text-white mb-4">Recent System Activity</h3>
-        <div className="text-center py-12 text-gray-500 dark:text-gray-400">
+      <div className="bg-card rounded-xl p-6 shadow-sm border border-border mt-8">
+        <h3 className="text-lg font-semibold text-foreground mb-4">Recent System Activity</h3>
+        <div className="text-center py-12 text-muted-foreground">
           Activity logging will appear here.
         </div>
       </div>

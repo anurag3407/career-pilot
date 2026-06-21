@@ -6,6 +6,7 @@ import confetti from 'canvas-confetti';
 import { auth } from '../../config/firebase';
 import { portfolioApi } from '../../services/api';
 import logger from '../../utils/logger';
+import { useAuth } from '../../hooks/useAuth';
 
 // Hey there, code reviewer or fellow builder!
 // We defined some custom metadata here for each hosting platform.
@@ -63,6 +64,7 @@ function TokenStatusChip({ status }) {
 export default function DeployModal({ isOpen, onClose, portfolioTitle = "My Portfolio", templateId = "default", aiDraft, onDeploySuccess }) {
   // Step workflow: select -> loading -> success -> error
   const [step, setStep] = useState('select');
+  const { getToken } = useAuth();
   const [selectedProvider, setSelectedProvider] = useState('cloudflare'); // default to recommended Cloudflare
   const [visibleLogs, setVisibleLogs] = useState([]);
   const [deployedUrl, setDeployedUrl] = useState('');
@@ -171,15 +173,14 @@ export default function DeployModal({ isOpen, onClose, portfolioTitle = "My Port
   const handleCheckToken = async (providerId) => {
     setTokenStatuses((prev) => ({ ...prev, [providerId]: 'checking' }));
     try {
-      const user = auth.currentUser;
-      if (!user) throw new Error('Not authenticated');
-      const idToken = await user.getIdToken();
+      const token = await getToken();
+      if (!token && !import.meta.env.DEV) throw new Error('Not authenticated');
 
       const provider = PROVIDERS.find((p) => p.id === providerId);
       const res = await fetch('/api/portfolio/validate-token', {
         method: 'POST',
         headers: {
-          Authorization: `Bearer ${idToken}`,
+          Authorization: `Bearer ${token}`,
           'Content-Type': 'application/json',
         },
         body: JSON.stringify({

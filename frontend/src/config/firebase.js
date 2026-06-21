@@ -5,13 +5,12 @@ import { getStorage } from 'firebase/storage';
 import logger from '../utils/logger';
 const apiKey = import.meta.env.VITE_FIREBASE_API_KEY;
 
-// Check if the key is completely missing or left as a placeholder string
+// Cleaned up validation check to accept genuine keys starting with AIzaSy
 const isFirebaseConfigValid = 
   apiKey && 
   apiKey !== 'YOUR_API_KEY_HERE' && 
   apiKey !== 'your_api_key' &&
-  !apiKey.startsWith('<YOUR_') &&
-  !apiKey.startsWith('AIzaSy-x');
+  !apiKey.startsWith('<YOUR_');
 
 let app;
 let auth = null;
