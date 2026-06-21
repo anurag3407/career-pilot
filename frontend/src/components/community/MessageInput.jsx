@@ -1,5 +1,6 @@
 import { useState, useRef, useEffect } from 'react';
 import { useSocket } from '../../hooks/useSocket';
+import logger from '../../utils/logger';
 import { 
   Send, 
   Smile, 
@@ -39,7 +40,7 @@ export default function MessageInput({ channelId, channelName, onTyping, replyTo
     if (!content.trim() && attachments.length === 0) return;
     
     if (!isConnected) {
-      console.error('Socket not connected, cannot send message');
+      logger.error('Socket not connected, cannot send message');
       return;
     }
 

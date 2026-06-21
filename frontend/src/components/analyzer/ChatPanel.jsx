@@ -3,6 +3,7 @@ import { Send, User, Bot, Loader2, ShieldAlert } from 'lucide-react';
 import ReactMarkdown from 'react-markdown';
 import { useAnalyzerStore } from '../../stores/useAnalyzerStore';
 import { auth } from '../../config/firebase';
+import logger from '../../utils/logger';
 
 const API_BASE = import.meta.env.VITE_API_BASE || '/api';
 

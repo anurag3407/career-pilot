@@ -6,7 +6,7 @@ import ToolCard from '../../components/ToolCard'
 import { Link, useNavigate } from 'react-router-dom'
 import { motion } from 'framer-motion'
 import toast from 'react-hot-toast'
-
+import logger from '../../utils/logger';
 export default function PortfolioHub() {
   const [portfolios, setPortfolios] = useState([])
   const [loading, setLoading] = useState(true)
@@ -78,7 +78,7 @@ export default function PortfolioHub() {
         const items = res.portfolios || res.data?.portfolios || res.data || []
         setPortfolios(items)
       } catch (err) {
-        console.error('Failed to fetch portfolios in PortfolioHub', err)
+        logger.error('Failed to fetch portfolios in PortfolioHub', err);
       } finally {
         setLoading(false)
       }
@@ -121,7 +121,7 @@ export default function PortfolioHub() {
       // 4. Redirect to templates
       navigate('/templates');
     } catch (err) {
-      console.error('Upload error:', err);
+      logger.error('Upload error:', err);
       toast.error(err.message || 'Failed to process resume.', { id: loadingToast });
     } finally {
       setIsUploading(false);

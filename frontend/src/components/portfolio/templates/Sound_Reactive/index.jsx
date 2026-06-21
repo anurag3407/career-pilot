@@ -1,6 +1,7 @@
 import { usePortfolio } from "../../../../context/PortfolioContext";
 import React, { useState, useEffect, useRef } from 'react';
 import { motion, useMotionValue, useSpring, useTransform } from 'framer-motion';
+import logger from '../../../../utils/logger';
 import { 
   Mic, MicOff, ExternalLink, Github, Linkedin, Mail, Twitter, 
   ChevronDown, Award, Briefcase, User, Code, Volume2, Sparkles
@@ -117,7 +118,7 @@ export default function SoundReactive() {
       setIsListening(true);
       drawVisualizer();
     } catch (err) {
-      console.error("Error accessing microphone:", err);
+      logger.error('Error accessing microphone:', err);
       alert("Could not access microphone. Please allow microphone permissions.");
     }
   };

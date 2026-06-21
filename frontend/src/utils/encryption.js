@@ -1,6 +1,6 @@
 import CryptoJS from 'crypto-js';
 import { auth } from '../config/firebase';
-
+import logger from './logger';
 const getSecretKey = () => {
   const user = auth?.currentUser;
   // Fallback secret if user is not fully loaded
@@ -13,7 +13,7 @@ export const encryptKey = (plainTextKey) => {
     const secret = getSecretKey();
     return CryptoJS.AES.encrypt(plainTextKey, secret).toString();
   } catch (error) {
-    console.error('Encryption failed:', error);
+    logger.error('Encryption failed:', error);
     return null;
   }
 };

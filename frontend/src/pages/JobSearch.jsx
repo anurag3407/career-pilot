@@ -3,6 +3,7 @@ import { Link, useSearchParams } from 'react-router-dom'
 import toast from 'react-hot-toast'
 import { motion, AnimatePresence } from 'framer-motion'
 import { formatDistanceToNow } from 'date-fns'
+import logger from '../utils/logger';
 import {
   Search,
   MapPin,
@@ -103,7 +104,7 @@ export default function JobSearch() {
       const savedIds = new Set((response.trackedJobs || []).map(j => j.jobId))
       setSavedJobs(savedIds)
     } catch (error) {
-      console.error('Failed to load saved jobs:', error)
+      logger.error('Failed to load saved jobs:', error);
     }
   }
 

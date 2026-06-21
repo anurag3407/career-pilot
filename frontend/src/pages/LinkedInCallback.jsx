@@ -9,6 +9,7 @@ import Input from '../components/Input'
 import Button from '../components/Button'
 import Card from '../components/Card'
 import { twoFactorApi } from '../services/api'
+import logger from '../utils/logger';
 
 export default function LinkedInCallback() {
     const [searchParams] = useSearchParams()
@@ -72,7 +73,7 @@ useEffect(() => {
         navigate('/dashboard')
     }
 } catch (err) {
-    console.error('Custom token sign-in failed:', err)
+    logger.error('Custom token sign-in failed:', err);
 
     toast.error('Failed to sign in. Please try again.')
 
@@ -107,7 +108,7 @@ handleCallback()
         try {
             await signOut(auth)
         } catch (e) {
-            console.error('Signout error:', e)
+            logger.error('Signout error:', e);
         }
         navigate('/login')
     }

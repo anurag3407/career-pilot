@@ -1,6 +1,7 @@
 import React, { Suspense, useMemo, useEffect, useState } from 'react';
 import { useParams } from 'react-router-dom';
 import { PortfolioProvider } from '../context/PortfolioContext';
+import logger from '../utils/logger';
 
 /**
  * Fallback portfolio data so templates never receive null/undefined.
@@ -168,6 +169,13 @@ export default function TemplatePreviewOnly() {
   const [missingInfo, setMissingInfo] = useState([]);
 
   useEffect(() => {
+    // Read the draft data from localStorage
+    const draft = localStorage.getItem('ai_portfolio_draft');
+    if (draft) {
+      try {
+        setPortfolioData(JSON.parse(draft));
+      } catch (e) {
+        logger.error('Error parsing ai_portfolio_draft', e);
     // Read the draft data from localStorage — merge with fallback so no field is missing
     try {
       const draft = localStorage.getItem('ai_portfolio_draft');

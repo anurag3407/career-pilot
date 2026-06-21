@@ -1,4 +1,5 @@
 import React, { useState, useEffect, useRef } from 'react';
+import logger from '../../../../utils/logger';
 import {
   Compass,
   Radio,

@@ -8,6 +8,7 @@ import { decryptKey } from '../utils/encryption'
 import ReactMarkdown from 'react-markdown'
 import { triggerConfetti } from '../utils/confetti'
 import ResumeAnalysisSkeleton from '../components/ui/ResumeAnalysisSkeleton'
+import logger from '../utils/logger';
 import {
   Target,
   TrendingUp,
@@ -445,7 +446,7 @@ export default function Enhance() {
           improvementsCount: atsResponse.data?.improvements?.length || 0
         })
       } catch (err) {
-        console.error('Failed to log ATS score run:', err)
+        logger.error('Failed to log ATS score run:', err);
       }
 
       toast.success('Senior-level analysis complete!')
@@ -456,6 +457,18 @@ export default function Enhance() {
     }
   }
 
+const copyKeywordToClipboard = async (keyword) => {
+  if (!keyword) return
+
+  try {
+    await navigator.clipboard.writeText(keyword)
+    setCopiedKeyword(keyword)
+    setTimeout(() => {
+      setCopiedKeyword((current) => (current === keyword ? null : current))
+    }, 2000)
+  } catch (err) {
+    logger.error('Failed to copy keyword:', err)
+    toast.error('Could not copy keyword to clipboard. Please try again.')
   const copyKeywordToClipboard = async (keyword) => {
     if (!keyword) return
 
@@ -522,6 +535,13 @@ export default function Enhance() {
             headers['X-AI-Provider'] = aiConfig.provider
           }
 
+    if (aiConfig.model) {
+      headers['X-AI-Model'] = aiConfig.model
+    }
+  } catch (e) {
+    logger.error('enhance operation failed:', e);
+  }
+}
           if (aiConfig.apiKey) {
             headers['X-AI-Key'] = decryptKey(aiConfig.apiKey)
           }
@@ -614,6 +634,9 @@ export default function Enhance() {
         jobRole: jobRole,
         preferences: apiPreferences
       })
+    } catch (versionErr) {
+      logger.error('Failed to save version snapshot:', versionErr);
+    }
 
       setResume((current) => ({
         ...current,
@@ -625,7 +648,7 @@ export default function Enhance() {
       setEnhancementComplete(true)
 
   } catch (error) {
-    console.error(error)
+    logger.error('enhance failed:', error);
     toast.error(error.message || 'Failed to enhance resume')
   } finally {
     setEnhancing(false)

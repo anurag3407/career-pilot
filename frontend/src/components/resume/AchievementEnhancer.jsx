@@ -20,6 +20,7 @@ export default function AchievementEnhancer({ value, jobRole, onApply }) {
   const [suggestion, setSuggestion] = useState(null)
 
   const handleEnhance = async () => {
+  };
     if (!value || !value.trim()) {
       toast.error('Add some bullet points first')
       return

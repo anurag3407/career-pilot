@@ -1,5 +1,5 @@
 // frontend/src/utils/performanceMonitor.js
-
+import logger from './logger';
 const metrics = new Map();
 
 export const startMeasure = (label) => {
@@ -15,7 +15,7 @@ export const startMeasure = (label) => {
     performance.mark(`${label}-start`);
     return true;
   } catch (error) {
-    console.error("Performance monitoring start failed:", error);
+    logger.error('Performance monitoring start failed:', error);
     return false;
   }
 };
@@ -47,7 +47,7 @@ export const endMeasure = (label) => {
 
     return duration;
   } catch (error) {
-    console.error("Performance monitoring end failed:", error);
+    logger.error('Performance monitoring end failed:', error);
     return null;
   }
 };

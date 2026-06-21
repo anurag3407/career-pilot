@@ -15,6 +15,7 @@ import AtsProgressChart from '../components/AtsProgressChart'
 import ResumeTranslator from '../components/resume/ResumeTranslator'
 import ResumeTailor from '../components/resume/ResumeTailor'
 import { Loader2 } from 'lucide-react'
+import logger from '../utils/logger';
 import html2canvas from 'html2canvas'
 
 export default function ResumeView() {
@@ -93,7 +94,7 @@ export default function ResumeView() {
       await navigator.clipboard.writeText(text)
       toast.success('Copied to clipboard!')
     } catch (error) {
-      console.error('Clipboard copy failed:', error)
+      logger.error('Clipboard copy failed:', error);
       toast.error('Failed to copy to clipboard')
     }
   }
@@ -225,10 +226,10 @@ export default function ResumeView() {
           improvementsCount: result.data.topSuggestions?.length || 0
         })
       } catch (historyErr) {
-        console.error('Failed to log ATS score run:', historyErr)
+        logger.error('Failed to log ATS score run:', historyErr);
       }
     } catch (error) {
-      console.error('Resume analysis error:', error)
+      logger.error('Resume analysis error:', error);
 
       if (error.message === 'Not authenticated') {
         toast.error('Session expired. Please log in again.')

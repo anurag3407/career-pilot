@@ -1,6 +1,7 @@
 import React, { useEffect, useState, useMemo } from "react";
 import { useNavigate, Link } from "react-router-dom";
 import { interviewApi } from "../services/api";
+import logger from '../utils/logger';
 import { LineChart, Line, XAxis, YAxis, CartesianGrid, Tooltip, ResponsiveContainer } from "recharts";
 import { format, subDays, isAfter } from "date-fns";
 import { Calendar, Briefcase, Clock, Trophy, ChevronRight, FilterX } from "lucide-react";
@@ -24,6 +25,7 @@ export default function InterviewHistory() {
     try {
       setLoading(true);
       const response = await interviewApi.getHistory();
+
       setHistory(response.data || []);
     } catch (error) {
       console.error(error);

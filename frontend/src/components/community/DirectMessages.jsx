@@ -4,6 +4,7 @@ import { useSocket } from '../../hooks/useSocket';
 import { communityApi } from '../../services/api';
 import { formatDistanceToNow } from 'date-fns';
 import { Search, Plus, Circle, X } from 'lucide-react';
+import logger from '../../utils/logger';
 
 export default function DirectMessages() {
   const { user } = useAuth();
@@ -23,7 +24,7 @@ export default function DirectMessages() {
       const data = await communityApi.getConversations();
       setConversations(data.conversations);
     } catch (error) {
-      console.error('Failed to fetch conversations:', error);
+      logger.error('Failed to fetch conversations:', error);
     } finally {
       setLoading(false);
     }
@@ -61,7 +62,7 @@ export default function DirectMessages() {
       const data = await communityApi.getConversationMessages(conversationId);
       setMessages(data.messages);
     } catch (error) {
-      console.error('Failed to fetch messages:', error);
+      logger.error('Failed to fetch messages:', error);
     }
   };
 

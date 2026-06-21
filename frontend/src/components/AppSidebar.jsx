@@ -3,6 +3,7 @@ import { useNavigate, useLocation } from "react-router-dom";
 import { motion } from "framer-motion";
 import { Brain, ChevronDown, Contrast, LineChart, Bug } from "lucide-react";
 import AIProviderIndicator from "./settings/AIProviderIndicator";
+import logger from '../utils/logger';
 import ReportBugModal from "./ReportBugModal";
 
 import {
@@ -134,7 +135,7 @@ function UserSection() {
             await logout();
             navigate("/login");
         } catch (error) {
-            console.error("Logout error:", error);
+            logger.error('Logout error:', error);
         }
     };
 

@@ -4,6 +4,7 @@ import { motion } from 'framer-motion';
 import { enhanceApi, resumeApi } from '../services/api';
 import toast from 'react-hot-toast';
 import CopyButton from '../components/CopyButton';
+import logger from '../utils/logger';
 import {
   extractSkillsFromText,
   inferCareerFocus,
@@ -78,7 +79,7 @@ const SkillGap = () => {
       setCareerFocus(inferredCareerFocus);
       setSynergyInsights(getSkillSynergyInsights(parsedSkills, inferredCareerFocus));
     } catch (error) {
-      console.error('Skill gap analysis error:', error);
+      logger.error('Skill gap analysis error:', error);
       toast.error(error.message || 'Failed to analyze skill gap. Please try again.');
     } finally {
       setLoading(false);

@@ -2,6 +2,7 @@ import { useRef, useMemo, useState, useEffect } from "react";
 import { motion } from "framer-motion";
 import DottedMap from "dotted-map";
 import { useTheme } from "../../hooks/useTheme";
+import logger from '../../utils/logger';
 
 // Cache the computed map globally so it runs only once per app session
 let cachedSvgMap = null;
@@ -37,7 +38,7 @@ const dotColor = isDark ? "#ffffff" : "#000000";
       });
       return cachedSvgMap;
     } catch (error) {
-      console.error("WorldMap error:", error);
+      logger.error('WorldMap error:', error);
       return null;
     }
 }, [isMounted, dotColor]);

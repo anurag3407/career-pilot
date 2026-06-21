@@ -7,6 +7,7 @@ import remarkGfm from 'remark-gfm';
 import { cn } from '../../lib/utils';
 import { useProjectVisualizerStore } from '../../stores/useProjectVisualizerStore';
 import { auth } from '../../config/firebase';
+import logger from '../../utils/logger';
 
 const API_BASE = import.meta.env.VITE_API_BASE || '/api';
 
@@ -114,7 +115,7 @@ const VisualizerChat = () => {
                 });
               }
             } catch (e) {
-              console.warn('Failed to parse SSE chunk', dataStr);
+              logger.warn('Failed to parse SSE chunk', dataStr);
             }
           }
         }

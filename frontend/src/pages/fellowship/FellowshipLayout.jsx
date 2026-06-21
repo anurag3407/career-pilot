@@ -2,6 +2,7 @@ import { useState, useEffect } from 'react'
 import { Outlet, NavLink, useNavigate, useLocation } from 'react-router-dom'
 import { useAuth } from '../../hooks/useAuth'
 import { fellowshipApi } from '../../services/api'
+import logger from '../../../utils/logger';
 import {
     Briefcase,
     FileText,
@@ -58,7 +59,7 @@ export default function FellowshipLayout() {
                 navigate('/fellowship/my-challenges')
             }
         } catch (error) {
-            console.error('Error loading profile:', error)
+            logger.error('Error loading profile:', error);
             setError('Failed to load fellowship profile. Please try again.')
         } finally {
             setLoading(false)

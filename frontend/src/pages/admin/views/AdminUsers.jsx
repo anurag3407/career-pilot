@@ -3,7 +3,7 @@ import { adminAPI } from '../../../services/api';
 import toast from 'react-hot-toast';
 import { formatDistanceToNow } from 'date-fns';
 import { ChevronLeft, ChevronRight, User as UserIcon } from 'lucide-react';
-
+import logger from '../../../utils/logger';
 const AdminUsers = () => {
   const [users, setUsers] = useState([]);
   const [loading, setLoading] = useState(true);
@@ -23,7 +23,7 @@ const AdminUsers = () => {
       setTotalPages(data.totalPages);
       setTotalUsers(data.totalUsers);
     } catch (error) {
-      console.error('Failed to fetch users:', error);
+      logger.error('Failed to fetch users:', error);
       toast.error('Failed to load user list');
     } finally {
       setLoading(false);

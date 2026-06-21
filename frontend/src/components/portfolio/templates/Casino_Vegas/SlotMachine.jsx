@@ -1,6 +1,7 @@
 import React, { useState, useEffect, useRef } from "react";
 import { motion as Motion, AnimatePresence } from "framer-motion";
 import confetti from "canvas-confetti";
+import logger from '../../../../utils/logger';
 import {
   Sparkles,
   Trophy,
@@ -223,7 +224,7 @@ export default function SlotMachine() {
         });
       }
     } catch (err) {
-      console.warn("Web Audio Synthesis failed:", err);
+      logger.warn('Web Audio Synthesis failed:', err);
     }
   };
 

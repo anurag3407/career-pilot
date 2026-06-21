@@ -1,13 +1,13 @@
 import { ScanLine } from 'lucide-react'
 import { useNavigate } from 'react-router-dom'
 import { useState } from 'react'
-
+import logger from '../../utils/logger';
 const RepoCard = ({ owner, repo, name, description, language, stars, forks, isPrivate }) => {
   const navigate = useNavigate()
   const [isScanning, setIsScanning] = useState(false)
 
   if (!owner || !repo) {
-    console.error('RepoCard: owner and repo props are required')
+    logger.error('RepoCard: owner and repo props are required');
     return null
   }
 

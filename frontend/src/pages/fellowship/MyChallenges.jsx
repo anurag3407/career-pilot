@@ -3,6 +3,7 @@ import { useNavigate, useOutletContext } from 'react-router-dom'
 import { fellowshipApi } from '../../services/api'
 import toast from 'react-hot-toast'
 import { motion } from 'framer-motion'
+import logger from '../../../utils/logger';
 import {
     FolderKanban,
     Plus,
@@ -45,7 +46,7 @@ export default function MyChallenges() {
             const response = await fellowshipApi.getMyChallenges()
             setChallenges(response.data)
         } catch (error) {
-            console.error('Failed to load challenges:', error)
+            logger.error('Failed to load challenges:', error);
         } finally {
             setLoading(false)
         }

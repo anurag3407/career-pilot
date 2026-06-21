@@ -1,6 +1,7 @@
 import { useState } from "react";
 import { motion } from "framer-motion";
 import { Mail, Github, Linkedin, Twitter, Send, CheckCircle } from "lucide-react";
+import logger from '../../../../utils/logger';
 
 export default function Contact({ personal, socials }) {
  const [sent, setSent] = useState(false);

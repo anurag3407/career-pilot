@@ -1,5 +1,5 @@
 import { useState, useEffect, useRef, useCallback } from 'react';
-
+import logger from '../utils/logger';
 let faceLandmarksDetectionPromise = null;
 
 const loadTensorFlow = async () => {
@@ -100,7 +100,7 @@ export const useFaceDetection = (videoRef, isActive = false) => {
             setModelReady(true);
             setIsLoading(false);
         } catch (err) {
-            console.error('Failed to initialize face detector:', err);
+            logger.error('Failed to initialize face detector:', err);
             setError('Failed to load face detection model');
             setIsLoading(false);
         }
@@ -128,7 +128,7 @@ export const useFaceDetection = (videoRef, isActive = false) => {
 
             setMetrics(newMetrics);
         } catch (err) {
-            console.error('Face detection error:', err);
+            logger.error('Face detection error:', err);
         }
 
         animationFrameRef.current = requestAnimationFrame(detectFace);

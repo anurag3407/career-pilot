@@ -5,7 +5,7 @@ import HubLayout from '../../components/HubLayout'
 import ToolCard from '../../components/ToolCard'
 import { Link } from 'react-router-dom'
 import { motion } from 'framer-motion'
-
+import logger from '../../utils/logger';
 const STATUS_CONFIG = {
   saved: { label: 'Saved', color: 'bg-muted text-muted-foreground border border-border', icon: Star },
   applied: { label: 'Applied', color: 'bg-primary/10 text-primary border border-primary/20', icon: Send },
@@ -40,7 +40,7 @@ export default function JobsHub() {
         }
         setJobStats(stats)
       } catch (err) {
-        console.error('Failed to fetch jobs in JobsHub', err)
+        logger.error('Failed to fetch jobs in JobsHub', err);
       } finally {
         setLoading(false)
       }

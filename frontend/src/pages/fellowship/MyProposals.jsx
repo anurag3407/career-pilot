@@ -3,6 +3,7 @@ import { useOutletContext, useNavigate } from 'react-router-dom'
 import { fellowshipApi } from '../../services/api'
 import toast from 'react-hot-toast'
 import { motion } from 'framer-motion'
+import logger from '../../../utils/logger';
 import {
     FileText,
     Clock,
@@ -53,7 +54,7 @@ export default function MyProposals() {
             const response = await fellowshipApi.getMyProposals()
             setProposals(response.data)
         } catch (error) {
-            console.error('Failed to load proposals:', error)
+            logger.error('Failed to load proposals:', error);
         } finally {
             setLoading(false)
         }

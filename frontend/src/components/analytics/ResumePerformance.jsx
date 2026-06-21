@@ -2,7 +2,7 @@ import React, { useEffect, useMemo, useRef, useState } from 'react';
 import { Chart, registerables } from 'chart.js';
 import { motion } from 'framer-motion';
 import { ArrowUpRight, Download, Eye, Share2, RefreshCcw, AlertTriangle } from 'lucide-react';
-
+import logger from '../../utils/logger';
 Chart.register(...registerables);
 
 const MOCK_PERFORMANCE_HISTORY = Array.from({ length: 30 }, (_, index) => {

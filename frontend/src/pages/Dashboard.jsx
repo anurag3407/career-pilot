@@ -2,6 +2,7 @@ import { useState, useEffect, useRef } from 'react'
 import { Link } from 'react-router-dom'
 import toast from 'react-hot-toast'
 import { motion } from 'framer-motion'
+import logger from '../utils/logger';
 import {
   FileText,
   Briefcase,
@@ -190,7 +191,7 @@ export default function Dashboard() {
     } catch (error) {
       if (!canUpdate()) return
 
-      console.error('Failed to fetch data:', error)
+      logger.error('Failed to fetch data:', error)
       setFetchError('Failed to load your dashboard. Please try again.')
       toast.error('Failed to load dashboard data')
     } finally {

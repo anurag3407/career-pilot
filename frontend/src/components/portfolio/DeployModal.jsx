@@ -5,6 +5,7 @@ import toast from 'react-hot-toast';
 import confetti from 'canvas-confetti';
 import { auth } from '../../config/firebase';
 import { portfolioApi } from '../../services/api';
+import logger from '../../utils/logger';
 import { useAuth } from '../../hooks/useAuth';
 
 // Hey there, code reviewer or fellow builder!
@@ -240,7 +241,7 @@ export default function DeployModal({ isOpen, onClose, portfolioTitle = "My Port
         }, 3600);
 
       } catch (err) {
-        console.error('Deploy error:', err);
+        logger.error('Deploy error:', err);
         // Wait for animation before showing error
         deployTimeoutRef.current = setTimeout(() => {
           setErrorMessage(err.message || 'Deployment failed. Please try again.');
@@ -261,7 +262,7 @@ export default function DeployModal({ isOpen, onClose, portfolioTitle = "My Port
       toast.success('Link copied! Go share your craft. 📋');
       setTimeout(() => setCopied(false), 2000);
     } catch (err) {
-      console.error('Failed to copy: ', err);
+      logger.error('Failed to copy:', err);
       toast.error('Failed to copy to clipboard.');
     }
   };

@@ -1,5 +1,6 @@
 import { auth } from '../config/firebase'
 import { decryptKey } from '../utils/encryption'
+import logger from '../utils/logger';
 
 export const apiEvents = new EventTarget();
 
@@ -54,7 +55,7 @@ if (aiConfigStr) {
     if (aiConfig.apiKey) headers['X-AI-Key'] = decryptKey(aiConfig.apiKey)
     if (aiConfig.model) headers['X-AI-Model'] = aiConfig.model
   } catch (e) {
-    console.error(e)
+    logger.error('api error:', e);
   }
 } else {
   const openRouterKey = localStorage.getItem('openRouterApiKey')

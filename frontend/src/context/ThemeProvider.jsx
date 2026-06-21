@@ -1,6 +1,6 @@
 import { useState, useLayoutEffect } from 'react';
 import { ThemeContext } from './ThemeContext';
-
+import logger from '../utils/logger';
 /**
  * Provider component that manages the application theme (light or dark)
  * and persists the setting across browser sessions.
@@ -16,7 +16,7 @@ export function ThemeProvider({ children }) {
       const savedTheme = window.localStorage.getItem('theme');
       if (savedTheme === 'light' || savedTheme === 'dark' || savedTheme === 'highContrast') return savedTheme;
     } catch (e) {
-      console.warn('Failed to read from localStorage:', e);
+      logger.warn('Failed to read from localStorage:', e);
     }
     return window.matchMedia?.('(prefers-color-scheme: dark)').matches ? 'dark' : 'light';
   });
@@ -31,7 +31,7 @@ export function ThemeProvider({ children }) {
     try {
       window.localStorage.setItem('theme', theme);
     } catch (e) {
-      console.warn('Failed to write to localStorage:', e);
+      logger.warn('Failed to write to localStorage:', e);
     }
   }, [theme]);
 

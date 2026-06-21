@@ -3,6 +3,7 @@ import { useNavigate, useOutletContext } from 'react-router-dom'
 import { fellowshipApi } from '../../services/api'
 import toast from 'react-hot-toast'
 import { motion } from 'framer-motion'
+import logger from '../../../utils/logger';
 import {
     MessageCircle,
     User,
@@ -26,7 +27,7 @@ export default function FellowshipMessages() {
             const response = await fellowshipApi.getChatRooms()
             setRooms(response.data)
         } catch (error) {
-            console.error('Failed to load chat rooms:', error)
+            logger.error('Failed to load chat rooms:', error);
         } finally {
             setLoading(false)
         }

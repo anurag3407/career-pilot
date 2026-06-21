@@ -14,6 +14,7 @@ import CopyButton from '../components/CopyButton';
 import QuestionAnalysisCard from '../components/interview/QuestionAnalysisCard';
 import AvatarInterviewer from '../components/interview/AvatarInterviewer';
 import { useAIConfigStore } from '../stores/useAIConfigStore';
+import logger from '../utils/logger';
 import { SUPPORTED_LANGUAGES, getLanguage, DEFAULT_LANGUAGE_CODE } from '../constants/languages';
 import { captureCardToBlob, downloadBlob, shareImage, buildShareCaption } from '../utils/shareCard';
 
@@ -237,7 +238,7 @@ export default function InterviewPrep() {
         
         setSavedResumes(fetchedResumes);
       } catch (err) {
-        console.error('Failed to fetch saved resumes:', err);
+        logger.error('Failed to fetch saved resumes:', err);
       }
     };
     checkAuthAndFetch();
@@ -466,7 +467,7 @@ export default function InterviewPrep() {
 
       return true;
     } catch (err) {
-      console.error('A/V check failed:', err);
+      logger.error('A/V check failed:', err);
       setAvVideoWorking(false);
       setAvAudioWorking(false);
       setError('Could not access camera/microphone. Please allow access and try again.');
@@ -494,7 +495,7 @@ export default function InterviewPrep() {
       setResumeLoading(false);
       return extractedText.trim();
     } catch (err) {
-      console.error('PDF extraction failed:', err);
+      logger.error('PDF extraction failed:', err);
       setResumeError(err.message || 'Failed to extract text from PDF. Please try a different file.');
       setResumeLoading(false);
       return '';
@@ -816,7 +817,7 @@ export default function InterviewPrep() {
         }, 100);
       }
     } catch (visErr) {
-      console.error('Failed to initialize audio visualizer:', visErr);
+      logger.error('Failed to initialize audio visualizer:', visErr);
     }
 
     timerRef.current = setInterval(() => {
@@ -893,7 +894,7 @@ export default function InterviewPrep() {
           audioCtxRef.current.close();
         }
       } catch (e) {
-        console.error('Error closing AudioContext:', e);
+        logger.error('Error closing AudioContext:', e);
       }
       audioCtxRef.current = null;
     }

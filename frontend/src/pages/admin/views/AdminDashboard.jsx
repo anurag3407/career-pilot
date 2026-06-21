@@ -3,6 +3,7 @@ import { Users, FileText, Briefcase, Globe } from 'lucide-react';
 import AdminStatCard from '../components/AdminStatCard';
 import { adminAPI } from '../../../services/api';
 import toast from 'react-hot-toast';
+import logger from '../../../utils/logger';
 
 const AdminDashboard = () => {
   const [stats, setStats] = useState({
@@ -19,7 +20,7 @@ const AdminDashboard = () => {
         const data = await adminAPI.getStats();
         setStats(data);
       } catch (error) {
-        console.error('Failed to fetch admin stats:', error);
+        logger.error('Failed to fetch admin stats:', error);
         toast.error('Failed to load dashboard statistics');
       } finally {
         setLoading(false);

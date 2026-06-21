@@ -5,6 +5,7 @@ import {
   GitBranch, Search, Zap, Users, Bot, AlertTriangle, 
   ArrowRight, History, Loader2, Trash2, Clock, Star, GitFork, Package, BookOpen, BrainCircuit
 } from 'lucide-react';
+import logger from '../../utils/logger';
 import toast from 'react-hot-toast';
 import { useProjectVisualizerStore } from '../../stores/useProjectVisualizerStore';
 import { projectVisualizerApi } from '../../services/api';
@@ -31,7 +32,7 @@ const Landing = () => {
         setHistory(data);
       }
     } catch (e) {
-      console.warn("Failed to load history");
+      logger.warn('Failed to load history');
     } finally {
       setIsLoadingHistory(false);
     }

@@ -7,7 +7,7 @@ import {
 } from 'lucide-react'
 import { enhanceApi } from '../services/api'
 import { toast } from 'react-hot-toast'
-
+import logger from '../utils/logger';
 const IMPACT_CONFIG = {
   High:   { color: 'text-red-400',    bg: 'bg-red-500/10',    border: 'border-red-500/30'    },
   Medium: { color: 'text-yellow-400', bg: 'bg-yellow-500/10', border: 'border-yellow-500/30' },
@@ -111,7 +111,7 @@ export default function LinkedInOptimizer() {
       })
       setResults(response)
     } catch (err) {
-      console.error('LinkedIn optimization error:', err)
+      logger.error('LinkedIn optimization error:', err);
       setError(err.message || 'Failed to optimize your profile. Please try again.')
     } finally {
       setLoading(false)
@@ -128,7 +128,7 @@ export default function LinkedInOptimizer() {
         throw new Error('Clipboard API not supported')
       }
     } catch (err) {
-      console.warn('Clipboard write failed:', err)
+      logger.warn('Clipboard write failed:', err);
       // Fallback selection copy
       try {
         const textarea = document.createElement('textarea')
@@ -155,7 +155,7 @@ export default function LinkedInOptimizer() {
         throw new Error('Clipboard API not supported')
       }
     } catch (err) {
-      console.warn('Clipboard write failed:', err)
+      logger.warn('Clipboard write failed:', err);
       try {
         const textarea = document.createElement('textarea')
         textarea.value = keyword
@@ -182,7 +182,7 @@ export default function LinkedInOptimizer() {
         throw new Error('Clipboard API not supported')
       }
     } catch (err) {
-      console.warn('Clipboard write failed:', err)
+      logger.warn('Clipboard write failed:', err);
       // Fallback selection copy
       try {
         const textarea = document.createElement('textarea')
