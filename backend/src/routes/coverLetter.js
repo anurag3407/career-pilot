@@ -1,12 +1,28 @@
 import express from "express";
+import rateLimit from "express-rate-limit";
 import { generateCoverLetter, extractResumeFromPDF } from "../services/coverLetterService.js";
+import { verifyToken } from "../middleware/auth.js";
 import PDFDocument from "pdfkit";
 
 const router = express.Router();
 
+// Max 10 cover-letter AI requests per user per 15 minutes to prevent quota abuse
+const coverLetterLimiter = rateLimit({
+  windowMs: 15 * 60 * 1000,
+  max: 10,
+  keyGenerator: (req) => req.user?.uid || req.ip,
+  standardHeaders: true,
+  legacyHeaders: false,
+  handler: (_req, res) =>
+    res.status(429).json({
+      success: false,
+      error: "Too many cover letter requests. Please wait before trying again.",
+    }),
+});
+
 // POST /api/cover-letter/extract-resume
 // Accepts base64 PDF and extracts resume text using Groq
-router.post("/extract-resume", async (req, res) => {
+router.post("/extract-resume", verifyToken, coverLetterLimiter, async (req, res) => {
   try {
     const { base64PDF } = req.body;
     if (!base64PDF) {
@@ -21,7 +37,7 @@ router.post("/extract-resume", async (req, res) => {
 });
 
 // POST /api/cover-letter/generate-text
-router.post("/generate-text", async (req, res) => {
+router.post("/generate-text", verifyToken, coverLetterLimiter, async (req, res) => {
   try {
     const { resumeText, jobDescription, companyName, hiringManager, tone } = req.body;
 
@@ -45,7 +61,7 @@ router.post("/generate-text", async (req, res) => {
 });
 
 // POST /api/cover-letter/download-pdf
-router.post("/download-pdf", async (req, res) => {
+router.post("/download-pdf", verifyToken, async (req, res) => {
   try {
     const { coverLetter, candidateName = "Candidate" } = req.body;
     if (!coverLetter) {

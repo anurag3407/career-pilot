@@ -163,6 +163,9 @@ const FALLBACK_PORTFOLIO = {
 export default function TemplatePreviewOnly() {
   const { templateId } = useParams();
   const [portfolioData, setPortfolioData] = useState(FALLBACK_PORTFOLIO);
+  const [qualityScore, setQualityScore] = useState(100);
+  const [qualitySuggestions, setQualitySuggestions] = useState([]);
+  const [missingInfo, setMissingInfo] = useState([]);
 
   useEffect(() => {
     // Read the draft data from localStorage — merge with fallback so no field is missing
@@ -198,6 +201,74 @@ export default function TemplatePreviewOnly() {
     return () => window.removeEventListener('message', handleMessage);
   }, []);
 
+  useEffect(() => {
+  let score = 100;
+  const suggestions = [];
+  const missing = [];
+
+  const aboutText =
+    portfolioData?.personal?.bio ||
+    portfolioData?.personalInfo?.bio ||
+    "";
+
+  if (aboutText.length < 100) {
+    score -= 15;
+    suggestions.push(
+      "Expand your About section with more details."
+    );
+  }
+
+  portfolioData.projects?.forEach((project) => {
+
+    if (!project.description) {
+      score -= 15;
+      missing.push(
+        `${project.title}: Description missing`
+      );
+    }
+
+    if (
+      project.description &&
+      project.description.length < 60
+    ) {
+      score -= 10;
+      suggestions.push(
+        `${project.title}: Description is too short`
+      );
+    }
+
+    if (!project.liveUrl || project.liveUrl === "#") {
+      score -= 5;
+      missing.push(
+        `${project.title}: Live Demo URL missing`
+      );
+    }
+
+    if (!project.githubUrl || project.githubUrl === "#") {
+      score -= 5;
+      missing.push(
+        `${project.title}: GitHub URL missing`
+      );
+    }
+
+    const hasMetric =
+      /\d+%|\d+\+|\d+ users|\d+ downloads/i.test(
+        project.description || ""
+      );
+
+    if (!hasMetric) {
+      suggestions.push(
+        `${project.title}: Add measurable results`
+      );
+    }
+  });
+
+  setQualityScore(Math.max(score, 0));
+  setQualitySuggestions(suggestions);
+  setMissingInfo(missing);
+
+}, [portfolioData]);
+
   const Component = useMemo(() => {
     if (!templateId) return null;
     return React.lazy(() =>
@@ -214,7 +285,12 @@ export default function TemplatePreviewOnly() {
   return (
     <Suspense fallback={<div className="w-full h-full min-h-screen bg-black flex items-center justify-center text-white font-mono">Loading Template...</div>}>
       <PortfolioProvider portfolioData={portfolioData}>
-        <Component portfolioData={portfolioData} />
+        <Component
+  portfolioData={portfolioData}
+  qualityScore={qualityScore}
+  qualitySuggestions={qualitySuggestions}
+  missingInfo={missingInfo}
+/>
       </PortfolioProvider>
     </Suspense>
   );

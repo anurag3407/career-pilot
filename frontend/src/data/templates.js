@@ -104,23 +104,33 @@ export const templates = [
     "createdAt": "2026-06-07",
     "isComplete": true
   },
-
-
-
-
-
-
+  {
+    "id": "Audio_Visualizer_Frequency",
+    "title": "Audio Visualizer Frequency",
+    "id": "Vercel_Deploy_v1",
+  "id": "AquaticBioluminescent",
+  "title": "Aquatic Bioluminescent",
+  "category": "Portfolio",
+  "colorScheme": "Ocean",
+  "layout": "Fullscreen",
+  "author": "mallya-m",
+  "views": 0,
+  "rating": 0,
+  "image": "/template-previews/AquaticBioluminescent.png",
+  "createdAt": "2026-06-16",
+  "isComplete": true
+  },
   {
     "id": "Vercel_Deploy",
     "title": "Vercel Deploy",
     "category": "Portfolio",
     "colorScheme": "Dark",
-    "layout": "Cards",
-    "author": "Your GitHub Username",
-    "views": 1200,
-    "rating": 4.8,
-    "image": "/template-previews/Vercel_Deploy.png",
-    "createdAt": "2026-06-05",
+    "layout": "Interactive",
+    "author": "mallya-m",
+    "views": 0,
+    "rating": 0,
+    "image": "/template-previews/Audio_Visualizer_Frequency.png",
+    "createdAt": "2026-06-12",
     "isComplete": true
   },
   {
@@ -266,7 +276,8 @@ export const templates = [
     "views": 1010,
     "rating": 4.5,
     "image": "/template-previews/Art_Deco_Gold.png",
-    "createdAt": "2026-05-01"
+    "createdAt": "2026-05-01",
+    "isComplete": true
   },
   {
     "id": "Aurora_Sky",
@@ -1057,6 +1068,42 @@ export const templates = [
     "rating": 4.5,
     "image": "/template-previews/GitHub_Profile.png",
     "createdAt": "2026-05-01"
+  },
+  {
+    "id": "Minimal_Dark_Fluid",
+    "title": "Minimal Dark Fluid",
+    "category": "Portfolio",
+    "colorScheme": "Dark",
+    "layout": "List",
+    "author": "System",
+    "views": 0,
+    "rating": 5.0,
+    "image": "/template-previews/Minimal_Dark_Fluid.png",
+    "createdAt": "2026-06-14"
+  },
+  {
+    "id": "Terminal_Skills",
+    "title": "Terminal Skills",
+    "category": "Portfolio",
+    "colorScheme": "Dark",
+    "layout": "Grid",
+    "author": "System",
+    "views": 99999999,
+    "rating": 5.0,
+    "image": "/template-previews/Terminal_Skills.png",
+    "createdAt": "2026-06-15"
+  },
+  {
+    "id": "ChiragChrg_Theme",
+    "title": "ChiragChrg Theme",
+    "category": "Portfolio",
+    "colorScheme": "Dark",
+    "layout": "Single Page",
+    "author": "System",
+    "views": 999999990,
+    "rating": 5.0,
+    "image": "/template-previews/ChiragChrg_Theme.png",
+    "createdAt": "2026-06-15"
   },
   {
     "id": "Glassmorphism",
@@ -2476,7 +2523,7 @@ export const templates = [
     "createdAt": "2026-05-01"
   },
   {
-    "id": "Vercel_Deploy",
+    "id": "Vercel_Deploy_v2",
     "title": "Vercel Deploy",
     "category": "Portfolio",
     "colorScheme": "Dark",
@@ -2644,6 +2691,28 @@ export const templates = [
     "rating": 4.5,
     "image": "/template-previews/Underground_Bunker_Console.svg",
     "createdAt": "2026-06-06"
+  },
+  {
+    "id": "Bouncing_DVD_Logo",
+    "title": "Bouncing DVD Logo",
+    "category": "Portfolio",
+    "colorScheme": "Dark",
+    "layout": "Interactive",
+    "author": "mallya-m",
+    "views": 0,
+    "rating": 0,
+    "image": "/template-previews/Bouncing_DVD_Logo.png",
+    "id": "One_Pixel_Master",
+    "title": "One Pixel Master",
+    "category": "Portfolio",
+    "colorScheme": "Light",
+    "layout": "Minimal",
+    "author": "mallya-m",
+    "views": 0,
+    "rating": 0,
+    "image": "/template-previews/One_Pixel_Master.png",
+    "createdAt": "2026-06-13",
+    "isComplete": true
   },
   {
     "id": "Digital_Manifesto_Scroll",
