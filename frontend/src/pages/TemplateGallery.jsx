@@ -7,7 +7,7 @@ import { templates } from '../data/templates';
 import { motion, AnimatePresence } from "framer-motion";
 import { Moon, Sun, ChevronDown, Check, Eye, Star, Sparkles, X } from "lucide-react";
 import { useSearchParams } from "react-router-dom";
-import { PortfolioProvider } from '../context/PortfolioContext.jsx';
+
 
 /* TemplatePreviewFrame — contains each full portfolio template in a
    sandboxed scrollable box. The key trick: CSS `transform` on the outer
@@ -134,7 +134,35 @@ function FilterSelect({ value, onChange, options, className = "" }) {
 }
 
 
+function useInView(options = {}) {
+  const [inView, setInView] = useState(false);
+  const ref = useRef(null);
+
+  useEffect(() => {
+    if (!ref.current) return;
+    const observer = new IntersectionObserver(([entry]) => {
+      setInView(entry.isIntersecting);
+    }, options);
+    observer.observe(ref.current);
+    return () => observer.disconnect();
+  }, [options.rootMargin, options.threshold]);
+
+  return [ref, inView];
+}
+
 function TemplateCard({ template, hovered, onHover, onLeave, onUse, aiDraft }) {
+  const [ref, inView] = useInView({ threshold: 0 });
+  const [iframeLoaded, setIframeLoaded] = useState(false);
+
+  const shouldRenderIframe = inView || hovered;
+
+  // Reset iframe loaded state when it unmounts
+  useEffect(() => {
+    if (!shouldRenderIframe) {
+      setIframeLoaded(false);
+    }
+  }, [shouldRenderIframe]);
+
   return (
     <motion.div
       onMouseEnter={() => onHover(template.id)}
@@ -159,44 +187,50 @@ function TemplateCard({ template, hovered, onHover, onLeave, onUse, aiDraft }) {
         },
       }}
       className="bg-card rounded-2xl overflow-hidden border border-border flex flex-col justify-between cursor-pointer"
+      ref={ref}
     >
-      <div className="overflow-hidden relative bg-background h-52">
-        {template.isComplete ? (
+      <div className="overflow-hidden relative bg-background aspect-[16/10]">
+        
+        {/* Layer 0: Sleek Fallback Placeholder / Loading Screen */}
+        <div className="absolute inset-0 flex flex-col items-center justify-center bg-gradient-to-br from-neutral-900 to-black p-6 text-center z-0">
+           {!iframeLoaded ? (
+             <div className="flex flex-col items-center gap-3">
+               <div className="w-8 h-8 border-2 border-cyan-400 border-t-transparent rounded-full animate-spin" />
+               <span className="text-xs text-cyan-300 font-mono uppercase tracking-widest animate-pulse">Loading Hero Section</span>
+             </div>
+           ) : (
+             <>
+                <Sparkles className="w-8 h-8 text-primary mb-3 opacity-50" />
+                <h3 className="text-lg font-semibold text-white/80 font-mono tracking-tight">{template.title}</h3>
+             </>
+           )}
+        </div>
+
+        {/* Layer 1: Live iframe — loads when in view to provide an always-visible hero section */}
+        {shouldRenderIframe && (
           <div
-            className="absolute top-0 left-0 origin-top-left pointer-events-none"
+            className="absolute top-0 left-0 origin-top-left pointer-events-none z-20"
             style={{
-              width: '1280px',
-              height: '800px',
-              transform: 'scale(0.3)',
+              width: '500%',
+              height: '500%',
+              transform: 'scale(0.2)',
+              opacity: iframeLoaded ? 1 : 0,
+              transition: 'opacity 0.6s ease-in-out',
             }}
           >
             <iframe
               src={`/preview/${template.id}`}
-              className="w-full h-full border-none pointer-events-none"
+              className="w-full h-full border-none pointer-events-none bg-background"
               title={template.title}
-              loading="lazy"
               sandbox="allow-scripts allow-same-origin"
+              onLoad={() => setIframeLoaded(true)}
             />
           </div>
-        ) : (
-          <motion.img
-            src={template.image}
-            alt={template.title}
-            className="w-full h-52 object-cover object-top"
-            variants={{
-              rest: {
-                scale: 1,
-                transition: { duration: 0.5, ease: [0.25, 0.46, 0.45, 0.94] },
-              },
-              hover: {
-                scale: 1.08,
-                transition: { type: 'spring', stiffness: 200, damping: 25 },
-              },
-            }}
-          />
         )}
+
+        {/* Gradient overlay on hover */}
         <motion.div
-          className="absolute inset-0 bg-gradient-to-t from-black/50 via-transparent to-transparent pointer-events-none"
+          className="absolute inset-0 bg-gradient-to-t from-black/50 via-transparent to-transparent pointer-events-none z-30"
           variants={{ rest: { opacity: 0 }, hover: { opacity: 1 } }}
           transition={{ duration: 0.3 }}
         />
@@ -600,6 +634,34 @@ export default function TemplateGallery() {
 
 
 
+      </div>
+
+      {/* Inspired Clyde DSouza - sandboxed fixed-nav frame */}
+      <div className="mt-12">
+        <div className="mb-4 flex items-center gap-3 px-1">
+          <span className="rounded-full bg-emerald-500/15 px-3 py-1 text-xs font-bold uppercase tracking-widest text-emerald-500 border border-emerald-500/25">
+            🧑 Clyde D'Souza Inspired
+          </span>
+          <h2 className="text-lg font-semibold text-foreground/70">Inspired by Clyde D'Souza - Vibrant Split Pane</h2>
+        </div>
+        <div className="rounded-2xl border border-emerald-500/15"
+          style={{ height: 640, overflowY: "auto", overflowX: "hidden", transform: "translate(0)", position: "relative", backgroundColor: "#f9fafb" }}>
+          <InspiredClydeDSouza />
+        </div>
+      </div>
+
+      {/* Inspired Delba - sandboxed fixed-nav frame */}
+      <div className="mt-12">
+        <div className="mb-4 flex items-center gap-3 px-1">
+          <span className="rounded-full bg-slate-500/15 px-3 py-1 text-xs font-bold uppercase tracking-widest text-slate-500 border border-slate-500/25">
+            ✨ Delba Inspired
+          </span>
+          <h2 className="text-lg font-semibold text-foreground/70">Inspired by Delba - Minimalist Typography</h2>
+        </div>
+        <div className="rounded-2xl border border-slate-500/15"
+          style={{ height: 640, overflowY: "auto", overflowX: "hidden", transform: "translate(0)", position: "relative", backgroundColor: "#FAFAFA" }}>
+          <InspiredDelba />
+        </div>
       </div>
 
     </div>

@@ -1,8 +1,9 @@
 import { useState, useEffect } from "react";
 import { useNavigate, useLocation } from "react-router-dom";
 import { motion } from "framer-motion";
-import { Brain, ChevronDown, Contrast, LineChart } from "lucide-react";
+import { Brain, ChevronDown, Contrast, LineChart, Bug } from "lucide-react";
 import AIProviderIndicator from "./settings/AIProviderIndicator";
+import ReportBugModal from "./ReportBugModal";
 
 import {
     LayoutDashboard,
@@ -61,11 +62,6 @@ const navLinks = [
         label: "Portfolio Builder",
         href: "/hub/portfolio",
         icon: <Globe className="w-5 h-5 shrink-0" />,
-    },
-    {
-        label: "Project Visualizer",
-        href: "/project-visualizer",
-        icon: <GitMerge className="w-5 h-5 shrink-0" />,
     },
     {
         label: "Career Growth",
@@ -225,101 +221,136 @@ function UserSection() {
 
 export default function AppSidebar() {
     const [open, setOpen] = useState(false);
-const [openAI, setOpenAI] = useState(false);
-const location = useLocation();
+    const [openAI, setOpenAI] = useState(false);
+    const [isBugModalOpen, setIsBugModalOpen] = useState(false);
+    const location = useLocation();
 
-useEffect(() => {
-    setOpen(false);
-}, [location.pathname]);
+    useEffect(() => {
+        setOpen(false);
+    }, [location.pathname]);
 
     return (
-        <Sidebar open={open} setOpen={setOpen}>
-            <SidebarBody className="justify-between gap-4 bg-card border-r border-border overflow-hidden">
-                <div className="flex min-h-0 flex-1 flex-col overflow-hidden">
-                    <Logo />
-                    <SidebarDivider />
-                    <div className="min-h-0 flex-1 overflow-y-auto overflow-x-hidden pr-1">
-                        <div className="flex flex-col gap-1">
-                            {navLinks.map((link) => (
-                                <SidebarLink
-                                    key={link.href}
-                                    link={link}
-                                    onClick={() => setOpen(false)}
-                                    className="text-muted-foreground hover:text-foreground hover:bg-muted font-semibold transition-all rounded-xl"
-                                />
-                            ))}
-                        </div>
-                        {/* AI Tools Collapsible */}
-                        <div className="mt-2">
-                            <button
-                                onClick={() => setOpenAI(!openAI)}
-                                className="flex items-center justify-between w-full px-4 py-3 rounded-xl text-muted-foreground hover:text-foreground hover:bg-muted font-semibold transition-all"
-                            >
-                                <div className="flex items-center gap-3">
-                                    <Brain className="w-5 h-5 shrink-0" />
-                                    <span>AI Tools</span>
-                                </div>
+        <>
+            <Sidebar open={open} setOpen={setOpen}>
+                <SidebarBody className="justify-between gap-4 bg-card border-r border-border overflow-hidden">
+                    <div className="flex min-h-0 flex-1 flex-col overflow-hidden">
+                        <Logo />
+                        <SidebarDivider />
+                        <div className="min-h-0 flex-1 overflow-y-auto overflow-x-hidden pr-1">
+                            <div className="flex flex-col gap-1">
+                                {navLinks.map((link) => (
+                                    <SidebarLink
+                                        key={link.href}
+                                        link={link}
+                                        onClick={() => setOpen(false)}
+                                        className="text-muted-foreground hover:text-foreground hover:bg-muted font-semibold transition-all rounded-xl"
+                                    />
+                                ))}
+                            </div>
+                            {/* AI Tools Collapsible */}
+                            <div className="mt-2">
+                                <button
+                                    onClick={() => setOpenAI(!openAI)}
+                                    className="flex items-center justify-between w-full px-4 py-3 rounded-xl text-muted-foreground hover:text-foreground hover:bg-muted font-semibold transition-all"
+                                >
+                                    <div className="flex items-center gap-3">
+                                        <Brain className="w-5 h-5 shrink-0" />
+                                        <span>AI Tools</span>
+                                    </div>
 
-                                <ChevronDown
-                                    className={cn(
-                                        "w-4 h-4 transition-transform duration-300",
-                                        openAI && "rotate-180"
-                                    )}
-                                />
-                            </button>
+                                    <ChevronDown
+                                        className={cn(
+                                            "w-4 h-4 transition-transform duration-300",
+                                            openAI && "rotate-180"
+                                        )}
+                                    />
+                                </button>
 
-                            <motion.div
-                                initial={false}
-                                animate={{
-                                    height: openAI ? "auto" : 0,
-                                    opacity: openAI ? 1 : 0,
-                                }}
-                                transition={{ duration: 0.3 }}
-                                className="overflow-hidden ml-4 flex flex-col gap-1"
-                            >
-                                <SidebarLink
-                                    link={{
-                                        label: "Skill Gap Analyzer",
-                                        href: "/skill-gap",
-                                        icon: <Brain className="w-4 h-4 shrink-0" />,
+                                <motion.div
+                                    initial={false}
+                                    animate={{
+                                        height: openAI ? "auto" : 0,
+                                        opacity: openAI ? 1 : 0,
                                     }}
-                                    onClick={() => setOpen(false)}
-                                />
+                                    transition={{ duration: 0.3 }}
+                                    className="overflow-hidden ml-4 flex flex-col gap-1"
+                                >
+                                    <SidebarLink
+                                        link={{
+                                            label: "Cold Outreach",
+                                            href: "/outreach",
+                                            icon: <Mail className="w-4 h-4 shrink-0" />,
+                                        }}
+                                        onClick={() => setOpen(false)}
+                                    />
+                                    <SidebarLink
+                                        link={{
+                                            label: "Skill Gap Analyzer",
+                                            href: "/skill-gap",
+                                            icon: <Brain className="w-4 h-4 shrink-0" />,
+                                        }}
+                                        onClick={() => setOpen(false)}
+                                    />
 
-                                <SidebarLink
-                                    link={{
-                                        label: "Career Trajectory",
-                                        href: "/career-path",
-                                        icon: <Brain className="w-4 h-4 shrink-0" />,
-                                    }}
-                                    onClick={() => setOpen(false)}
-                                />
+                                    <SidebarLink
+                                        link={{
+                                            label: "Career Trajectory",
+                                            href: "/career-path",
+                                            icon: <Brain className="w-4 h-4 shrink-0" />,
+                                        }}
+                                        onClick={() => setOpen(false)}
+                                    />
 
-                                <SidebarLink
-                                    link={{
-                                        label: "Salary Estimator",
-                                        href: "/salary-estimate",
-                                        icon: <Brain className="w-4 h-4 shrink-0" />,
-                                    }}
-                                    onClick={() => setOpen(false)}
-                                />
+                                    <SidebarLink
+                                        link={{
+                                            label: "Salary Estimator",
+                                            href: "/salary-estimate",
+                                            icon: <Brain className="w-4 h-4 shrink-0" />,
+                                        }}
+                                        onClick={() => setOpen(false)}
+                                    />
 
-                                <SidebarLink
-                                    link={{
-                                        label: "Project Visualizer",
-                                        href: "/project-visualizer",
-                                        icon: <GitMerge className="w-4 h-4 shrink-0" />,
-                                    }}
-                                    onClick={() => setOpen(false)}
-                                />
-                            </motion.div>
+                                    <SidebarLink
+                                        link={{
+                                            label: "Project Visualizer",
+                                            href: "/project-visualizer",
+                                            icon: <GitMerge className="w-4 h-4 shrink-0" />,
+                                        }}
+                                        onClick={() => setOpen(false)}
+                                    />
+                                </motion.div>
+                            </div>
                         </div>
                     </div>
-                </div>
-                <div className="shrink-0">
-                    <UserSection />
-                </div>
-            </SidebarBody>
-        </Sidebar>
+                    <div className="shrink-0 space-y-2">
+                        <button
+                            onClick={() => setIsBugModalOpen(true)}
+                            className={cn(
+                                "flex items-center gap-2 px-3 py-2.5 rounded-xl text-sm font-semibold transition-all duration-300 w-full cursor-pointer text-red-500 bg-red-500/10 hover:bg-red-500/20",
+                                !open && animate ? "px-0 justify-center" : "justify-start"
+                            )}
+                        >
+                            <Bug className="w-5 h-5 shrink-0" />
+                            <motion.span
+                                animate={{
+                                    display: animate ? (open ? "inline-block" : "none") : "inline-block",
+                                    opacity: animate ? (open ? 1 : 0) : 1,
+                                }}
+                                transition={{ duration: 0.2 }}
+                                className="whitespace-pre"
+                            >
+                                Report a Bug
+                            </motion.span>
+                        </button>
+                        <UserSection />
+                    </div>
+                </SidebarBody>
+            </Sidebar>
+
+            <ReportBugModal 
+                isOpen={isBugModalOpen} 
+                onClose={() => setIsBugModalOpen(false)} 
+            />
+        </>
     );
 }

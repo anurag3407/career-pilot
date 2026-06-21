@@ -19,6 +19,16 @@ const Modal = ({
   size = 'md',
 }) => {
   const modalRef = useRef(null);
+  const previousFocusedElement = useRef(null);
+
+  const titleId = React.useId();
+  const descriptionId = React.useId();
+
+  useEffect(() => {
+    if (isOpen) {
+      previousFocusedElement.current = document.activeElement;
+    }
+  }, [isOpen]);
 
   // Handle body scroll lock and escape key
   useEffect(() => {
@@ -36,9 +46,12 @@ const Modal = ({
       document.addEventListener('keydown', handleKeyDown);
 
       return () => {
-        // Restore body scroll and cleanup listener
         document.body.style.overflow = originalStyle;
         document.removeEventListener('keydown', handleKeyDown);
+
+        if (previousFocusedElement.current) {
+          previousFocusedElement.current.focus();
+        }
       };
     }
   }, [isOpen, onClose]);
@@ -47,38 +60,37 @@ const Modal = ({
   useEffect(() => {
     if (!isOpen || !modalRef.current) return;
 
-    const focusableElementsString =
-      'a[href], area[href], input:not([disabled]), select:not([disabled]), textarea:not([disabled]), button:not([disabled]), iframe, object, embed, [tabindex="0"], [contenteditable]';
-    let focusableElements = modalRef.current.querySelectorAll(focusableElementsString);
-    focusableElements = Array.prototype.slice.call(focusableElements);
-
-    if (focusableElements.length === 0) return;
+    const focusableElements =
+      modalRef.current.querySelectorAll(
+        'button:not([disabled]), [href], input:not([disabled]), select:not([disabled]), textarea:not([disabled]), [tabindex]:not([tabindex="-1"])'
+      );
 
     const firstElement = focusableElements[0];
-    const lastElement = focusableElements[focusableElements.length - 1];
+    const lastElement =
+      focusableElements[focusableElements.length - 1];
 
-    const handleTabKey = (e) => {
+    firstElement?.focus();
+
+    const handleTab = (e) => {
       if (e.key !== 'Tab') return;
 
       if (e.shiftKey) {
         if (document.activeElement === firstElement) {
           e.preventDefault();
-          lastElement.focus();
+          lastElement?.focus();
         }
       } else {
         if (document.activeElement === lastElement) {
           e.preventDefault();
-          firstElement.focus();
+          firstElement?.focus();
         }
       }
     };
 
-    // Focus the first element initially
-    firstElement.focus();
+    document.addEventListener('keydown', handleTab);
 
-    document.addEventListener('keydown', handleTabKey);
     return () => {
-      document.removeEventListener('keydown', handleTabKey);
+      document.removeEventListener('keydown', handleTab);
     };
   }, [isOpen]);
 
@@ -104,8 +116,10 @@ const Modal = ({
           {/* Modal Content */}
           <motion.div
             ref={modalRef}
-            aria-modal="true"
             role="dialog"
+            aria-modal="true"
+            aria-labelledby={title ? titleId : undefined}
+            aria-describedby={description ? descriptionId : undefined}
             initial={{ opacity: 0, scale: 0.95 }}
             animate={{ opacity: 1, scale: 1 }}
             exit={{ opacity: 0, scale: 0.95 }}
@@ -116,12 +130,18 @@ const Modal = ({
             <div className="flex items-center justify-between px-6 py-4 border-b border-gray-100 dark:border-gray-800">
               <div>
                 {title && (
-                  <h2 className="text-xl font-semibold text-gray-900 dark:text-white">
+                  <h2
+                    id={titleId}
+                    className="text-xl font-semibold text-gray-900 dark:text-white"
+                  >
                     {title}
                   </h2>
                 )}
                 {description && (
-                  <p className="text-sm text-gray-500 dark:text-gray-400 mt-1">
+                  <p
+                    id={descriptionId}
+                    className="text-sm text-gray-500 dark:text-gray-400 mt-1"
+                  >
                     {description}
                   </p>
                 )}

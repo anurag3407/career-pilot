@@ -1,0 +1,91 @@
+{
+  "personal": {
+    "name": "Jordan Lee",
+    "title": "Senior Full Stack Engineer",
+    "summary": "Senior software engineer with 8+ years of experience building scalable web applications, mentoring cross-functional teams, and shipping high-impact products across frontend, backend, and cloud infrastructure.",
+    "email": "jordan.lee@example.com",
+    "phone": "+1 (555) 123-4567",
+    "location": "San Francisco, CA",
+    "website": "https://jordanlee.dev",
+    "linkedin": "https://linkedin.com/in/jordanlee",
+    "github": "https://github.com/jordanlee"
+  },
+  "experience": [
+    {
+      "role": "Senior Full Stack Engineer",
+      "company": "CloudScale Labs",
+      "period": "2022 - Present",
+      "location": "Remote",
+      "bullets": [
+        "Led architecture for a customer analytics platform used by 120K+ monthly active users.",
+        "Reduced page load times by 42% through code splitting, query optimization, and bundle audits.",
+        "Mentored 4 engineers and introduced testing standards that cut regression bugs by 30%."
+      ]
+    },
+    {
+      "role": "Frontend Engineer",
+      "company": "ProductForge",
+      "period": "2019 - 2022",
+      "location": "New York, NY",
+      "bullets": [
+        "Built reusable design system components adopted across 3 internal products.",
+        "Partnered with product and design to ship onboarding improvements that increased activation by 18%.",
+        "Implemented dashboards and reporting flows using React, TypeScript, and Chart.js."
+      ]
+    },
+    {
+      "role": "Software Engineer",
+      "company": "Northstar Digital",
+      "period": "2017 - 2019",
+      "location": "Boston, MA",
+      "bullets": [
+        "Developed full-stack features for B2B SaaS clients using Node.js, PostgreSQL, and React.",
+        "Created internal tooling that reduced support turnaround time by 25%.",
+        "Collaborated with QA and customer success to prioritize and resolve production issues."
+      ]
+    }
+  ],
+  "education": [
+    {
+      "degree": "B.S. in Computer Science",
+      "institution": "University of California, Berkeley",
+      "period": "2013 - 2017",
+      "location": "Berkeley, CA",
+      "description": "Focused on distributed systems, databases, and human-computer interaction."
+    }
+  ],
+  "projects": [
+    {
+      "title": "OpsSight Dashboard",
+      "description": "Real-time operations dashboard with alerting, anomaly detection, and executive-ready reporting views.",
+      "techStack": ["React", "TypeScript", "Node.js", "PostgreSQL"],
+      "link": "https://example.com/opssight"
+    },
+    {
+      "title": "Interview Prep Assistant",
+      "description": "AI-assisted coaching tool that generates mock interviews, tracks improvements, and summarizes strengths by role.",
+      "techStack": ["React", "Python", "OpenAI", "Firebase"],
+      "link": "https://example.com/interview-prep"
+    }
+  ],
+  "skills": [
+    { "name": "React", "level": "Expert", "category": "Frontend" },
+    { "name": "TypeScript", "level": "Advanced", "category": "Frontend" },
+    { "name": "Node.js", "level": "Advanced", "category": "Backend" },
+    { "name": "PostgreSQL", "level": "Advanced", "category": "Database" },
+    { "name": "AWS", "level": "Intermediate", "category": "Cloud" },
+    { "name": "Docker", "level": "Intermediate", "category": "DevOps" }
+  ],
+  "certifications": [
+    {
+      "name": "AWS Certified Solutions Architect",
+      "issuer": "Amazon Web Services",
+      "year": "2023"
+    },
+    {
+      "name": "Professional Scrum Master I",
+      "issuer": "Scrum.org",
+      "year": "2022"
+    }
+  ]
+}

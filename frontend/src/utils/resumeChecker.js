@@ -55,27 +55,71 @@ export class ResumeConsistencyChecker {
     return errors;
   }
 
-  static checkDuplicateContent(textEntries = []) {
-    const errors = [];
-    const seenHashes = new Map();
+static checkDuplicateContent(textEntries = []) {
+  const errors = [];
+  const seenEntries = [];
 
-    textEntries.forEach(bullet => {
-      if (!bullet) return;
-      const normalized = bullet.trim().toLowerCase().replace(NORMALIZE_REGEX, '');
-      if (normalized.length < MIN_BULLET_LENGTH) return;
+  textEntries.forEach((text, index) => {
+    if (!text) return;
 
-      if (seenHashes.has(normalized)) {
+    const normalized = text
+      .trim()
+      .toLowerCase()
+      .replace(NORMALIZE_REGEX, '');
+
+    if (normalized.length < MIN_BULLET_LENGTH) return;
+
+    const exactMatch = seenEntries.find(
+      entry => entry.normalized === normalized
+    );
+
+    if (exactMatch) {
+      errors.push({
+        type: 'duplicate',
+        message: `Duplicate content detected between entry ${
+          exactMatch.index + 1
+        } and entry ${index + 1}. Consider consolidating similar information.`,
+        severity: 'warning',
+        offendingText: text
+      });
+
+      return;
+    }
+
+    const words = new Set(normalized.split(/\s+/));
+
+    for (const entry of seenEntries) {
+      const previousWords = new Set(
+        entry.normalized.split(/\s+/)
+      );
+
+      const commonWords = [...words].filter(word =>
+        previousWords.has(word)
+      );
+
+      const similarity =
+        commonWords.length /
+        Math.max(words.size, previousWords.size);
+
+      if (similarity > 0.8) {
         errors.push({
           type: 'duplicate',
-          message: 'Identical phrasing schema flagged across entries. Vary your action text descriptions to expand overall lexical scanning impact scores.',
+          message:
+            'Highly similar content detected. Consider merging repeated achievements or descriptions.',
           severity: 'warning',
-          offendingText: bullet
+          offendingText: text
         });
-      } else {
-        seenHashes.set(normalized, true);
-      }
-    });
 
-    return errors;
-  }
+        break;
+      }
+    }
+
+    seenEntries.push({
+      normalized,
+      index
+    });
+  });
+
+  return errors;
+}
 }

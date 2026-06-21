@@ -12,7 +12,10 @@ import { sectionsToMarkdown } from '../components/customSectionUtils'
 import { SkeletonList } from '../components/ui/Skeleton'
 import ResumeVersions from '../components/ResumeVersions'
 import AtsProgressChart from '../components/AtsProgressChart'
+import ResumeTranslator from '../components/resume/ResumeTranslator'
+import ResumeTailor from '../components/resume/ResumeTailor'
 import { Loader2 } from 'lucide-react'
+import html2canvas from 'html2canvas'
 
 export default function ResumeView() {
   const { resumeId } = useParams()
@@ -21,6 +24,8 @@ export default function ResumeView() {
   const [resume, setResume] = useState(null)
   const [loading, setLoading] = useState(true)
   const [downloading, setDownloading] = useState(false)
+  const [downloadingImage, setDownloadingImage] = useState(false)
+  const [imageFormat, setImageFormat] = useState('png')
   const [activeTab, setActiveTab] = useState('preview') // 'preview' | 'versions' | 'ats'
   const [previewTab, setPreviewTab] = useState('enhanced') // 'enhanced' | 'original'
   const [scoreData, setScoreData] = useState(null)
@@ -119,6 +124,66 @@ export default function ResumeView() {
     } finally {
       setDownloading(false)
     }
+  }
+
+  const handleDownloadImage = async () => {
+    try {
+      setDownloadingImage(true)
+
+      const targetElement = document.querySelector('.resume-preview') || document.querySelector('pre.whitespace-pre-wrap')
+
+      if (!targetElement) {
+        toast.error('Resume preview not found')
+        return
+      }
+
+      toast.success(`Exporting resume as ${imageFormat.toUpperCase()}`)
+
+      const canvas = await html2canvas(targetElement, {
+        scale: 2,
+        useCORS: true,
+        backgroundColor: '#ffffff'
+      })
+
+      const dataUrl = canvas.toDataURL(`image/${imageFormat}`)
+
+      const a = document.createElement('a')
+      a.href = dataUrl
+      a.download = `${resume?.title || 'resume'}_${previewTab}.${imageFormat === 'jpeg' ? 'jpg' : 'png'}`
+      document.body.appendChild(a)
+      a.click()
+      document.body.removeChild(a)
+
+      toast.success('Image downloaded successfully!')
+    } catch (error) {
+      console.error('Image download failed:', error)
+      toast.error('Failed to download image')
+    } finally {
+      setDownloadingImage(false)
+    }
+  }
+
+  // Download the resume as plain text. Useful for ATS systems and quick
+  // copy-paste into other tools (LinkedIn, application portals, email).
+  const handleDownloadTxt = () => {
+    const text =
+      previewTab === 'enhanced'
+        ? resume?.enhancedText
+        : resume?.originalText
+    if (!text || !text.trim()) {
+      toast.error('No resume text to export')
+      return
+    }
+    const blob = new Blob([text], { type: 'text/plain;charset=utf-8' })
+    const url = URL.createObjectURL(blob)
+    const a = document.createElement('a')
+    a.href = url
+    a.download = `${resume?.title || 'resume'}_${previewTab}.txt`
+    document.body.appendChild(a)
+    a.click()
+    document.body.removeChild(a)
+    URL.revokeObjectURL(url)
+    toast.success('Text file downloaded')
   }
 
   const handleAnalyzeResume = async () => {
@@ -230,6 +295,9 @@ export default function ResumeView() {
                 {resume?.enhancedText ? 'Re-enhance' : 'Enhance'}
               </Button>
             </Link>
+            <Link to={`/resume-templates?resumeId=${resumeId}`}>
+              <Button variant="secondary">Templates</Button>
+            </Link>
             <Link to="/dashboard">
               <Button variant="outline">Back to Dashboard</Button>
             </Link>
@@ -325,6 +393,18 @@ export default function ResumeView() {
       <option value="Large">Large</option>
     </select>
   </div>
+
+  <div>
+    <label className="block text-sm mb-1">Image Format</label>
+    <select
+      value={imageFormat}
+      onChange={(e) => setImageFormat(e.target.value)}
+      className="border rounded px-2 py-1"
+    >
+      <option value="png">PNG</option>
+      <option value="jpeg">JPEG</option>
+    </select>
+  </div>
 </div>
                 <div className="flex gap-2 flex-wrap">
                  <Button
@@ -341,6 +421,52 @@ export default function ResumeView() {
     'Download PDF'
   )}
 </Button>
+                  <Button
+                    variant="primary"
+                    onClick={handleDownloadImage}
+                    disabled={downloadingImage}
+                  >
+                    {downloadingImage ? (
+                      <div className="flex items-center gap-2">
+                        <Loader2 className="w-4 h-4 animate-spin" />
+                        Generating Image...
+                      </div>
+                    ) : (
+                      'Download as Image'
+                    )}
+                  </Button>
+                  <Button
+                    variant="outline"
+                    onClick={handleDownloadTxt}
+                  >
+                    Download .txt
+                  </Button>
+                  <ResumeTranslator
+                    resumeText={
+                      previewTab === 'enhanced'
+                        ? resume?.enhancedText
+                        : resume?.originalText
+                    }
+                    onTranslated={(text) => {
+                      // Update the in-memory copy so the user can immediately
+                      // download the translation or copy it. The persisted
+                      // resume on the server is unchanged.
+                      setResume(prev => ({ ...(prev || {}), enhancedText: text }))
+                      toast.success('Preview updated to translated version')
+                    }}
+                  />
+                  <ResumeTailor
+                    resumeText={
+                      previewTab === 'enhanced'
+                        ? resume?.enhancedText
+                        : resume?.originalText
+                    }
+                    jobRole={resume?.jobRole}
+                    onTailored={(text) => {
+                      setResume(prev => ({ ...(prev || {}), enhancedText: text }))
+                      toast.success('Resume tailored to this job')
+                    }}
+                  />
                   <Button
                     variant="primary"
                     onClick={handleAnalyzeResume}

@@ -1,6 +1,7 @@
 import React, { useState, useRef, useEffect } from 'react';
 import { motion, AnimatePresence } from 'framer-motion';
-import { Bot, Send, Search, ShieldAlert, Sparkles, ChevronDown, ChevronUp, Loader2 } from 'lucide-react';
+import { Loader2, MessageSquare, Send, Bot, User, Sparkles, Wand2, Search, ShieldAlert, ChevronDown, ChevronUp } from 'lucide-react';
+import { useAuth } from '../../hooks/useAuth';
 import ReactMarkdown from 'react-markdown';
 import remarkGfm from 'remark-gfm';
 import { cn } from '../../lib/utils';
@@ -15,10 +16,13 @@ const VisualizerChat = () => {
     messages, setMessages, addMessage,
     chatMode, setChatMode,
     isStreaming, setIsStreaming,
-    sessionId, selectedModule
+    sessionId, selectedModule,
+    isSocketReady
   } = useProjectVisualizerStore();
   
   const [input, setInput] = useState('');
+  const [isLoading, setIsLoading] = useState(false);
+  const { getToken } = useAuth();
   const messagesEndRef = useRef(null);
   const inputRef = useRef(null);
 
@@ -51,8 +55,8 @@ const VisualizerChat = () => {
     setIsStreaming(true);
 
     try {
-      const token = await auth.currentUser?.getIdToken();
-      if (!token) throw new Error('Not authenticated');
+      const token = await getToken();
+      if (!token && !import.meta.env.DEV) throw new Error('Not authenticated');
 
       let endpoint = `${API_BASE}/project-visualizer/analysis/${sessionId}/chat`;
       let bodyData = { 
