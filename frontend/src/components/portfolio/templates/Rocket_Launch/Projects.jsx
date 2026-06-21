@@ -19,7 +19,7 @@ export default function Projects({ projects }) {
               <div className="absolute inset-0 bg-gradient-to-tr from-orange-600 to-yellow-500 opacity-0 group-hover:opacity-60 blur-2xl transition-opacity duration-700" />
               <FreeFadeIn xOffset={index % 2 === 0 ? -30 : 30}>
                 <img 
-                  src={project.image} alt={project.title} 
+                  src={project.image} alt={project.title || "Project Screenshot"} 
                   className="relative w-full h-64 md:h-96 object-cover opacity-50 group-hover:opacity-100 group-hover:scale-[1.02] transition-all duration-700 rounded-lg border border-transparent group-hover:border-orange-500/50" 
                 />
               </FreeFadeIn>

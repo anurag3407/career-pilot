@@ -128,7 +128,7 @@ export default function MessageBubble({ message, isOwn, showAvatar, channelId, o
           {message.sender.avatar ? (
             <img 
               src={message.sender.avatar} 
-              alt={message.sender.name}
+              alt={message.sender.name || "Profile Avatar"}
               className="w-full h-full rounded-full object-cover"
             />
           ) : (
@@ -221,7 +221,7 @@ export default function MessageBubble({ message, isOwn, showAvatar, channelId, o
                   {attachment.type?.startsWith('image/') ? (
                     <img 
                       src={attachment.url} 
-                      alt={attachment.name}
+                      alt={attachment.name || "Profile Avatar"}
                       className="max-w-xs rounded-lg"
                     />
                   ) : (

@@ -279,7 +279,7 @@ function Hero({ personal, stats, socials }) {
                 border: `2px solid ${T.indigo}`, boxShadow: `0 0 20px ${T.indigo}88`,
                 animation: 'spin 8s linear infinite',
               }} />
-              <img src={personal.avatar} alt={personal.name}
+              <img src={personal.avatar} alt={personal.name || "Profile Avatar"}
                 style={{ width: 110, height: 110, borderRadius: '50%', objectFit: 'cover', display: 'block' }} />
             </div>
             <div style={{
@@ -356,7 +356,7 @@ function Hero({ personal, stats, socials }) {
             border: `2px solid ${T.indigo}`, boxShadow: `0 0 24px ${T.indigo}88`,
             animation: 'spin 8s linear infinite',
           }} />
-          <img src={personal.avatar} alt={personal.name}
+          <img src={personal.avatar} alt={personal.name || "Profile Avatar"}
             style={{ width: 160, height: 160, borderRadius: '50%', objectFit: 'cover', display: 'block' }} />
         </div>
         <div style={{
@@ -511,7 +511,7 @@ function ProjectCard({ project, index, inView }) {
       }}
     >
       <div style={{ position: 'relative', height: 180, overflow: 'hidden' }}>
-        <img src={project.image} alt={project.title}
+        <img src={project.image} alt={project.title || "Project Screenshot"}
           style={{ width: '100%', height: '100%', objectFit: 'cover', filter: hovered ? 'brightness(0.7)' : 'brightness(0.5) saturate(0.6)', transition: 'filter 0.3s' }} />
         <div style={{ position: 'absolute', inset: 0, background: `linear-gradient(180deg,transparent 30%,${T.bg})` }} />
         <div style={{
@@ -621,7 +621,7 @@ function Testimonials({ testimonials }) {
                 "{testimonials[active].text}"
               </p>
               <div style={{ display: 'flex', alignItems: 'center', gap: 14 }}>
-                <img src={testimonials[active].avatar} alt={testimonials[active].name}
+                <img src={testimonials[active].avatar} alt={testimonials[active].name || "Profile Avatar"}
                   style={{ width: 44, height: 44, borderRadius: '50%', objectFit: 'cover', border: `2px solid ${T.indigo}`, flexShrink: 0 }} />
                 <div>
                   <div style={{ fontFamily: 'Orbitron, monospace', fontSize: '0.8rem', color: T.text }}>{testimonials[active].name}</div>

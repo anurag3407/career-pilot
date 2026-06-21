@@ -18,7 +18,7 @@ export default function Testimonials() {
             <div className="absolute top-0 right-0 p-4 opacity-10 font-serif text-6xl text-fuchsia-500 group-hover:text-cyan-500 transition-colors">"</div>
             <p className="text-zinc-300 font-mono text-sm italic mb-6 relative z-10">"{test.text}"</p>
             <div className="flex items-center gap-4">
-              <img src={test.avatar} alt={test.name} className="w-12 h-12 rounded-full border border-cyan-500 grayscale group-hover:grayscale-0 transition-all" />
+              <img src={test.avatar} alt={test.name || "Profile Avatar"} className="w-12 h-12 rounded-full border border-cyan-500 grayscale group-hover:grayscale-0 transition-all" />
               <div>
                 <h4 className="text-white font-bold uppercase vibrate-hover inline-block cursor-crosshair">{test.name}</h4>
                 <p className="text-cyan-400 text-xs font-mono">{test.role}</p>

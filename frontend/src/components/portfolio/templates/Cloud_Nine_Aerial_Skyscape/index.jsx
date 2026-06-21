@@ -39,7 +39,7 @@ const CloudNineAerialSkyscape = () => {
             <div className="absolute inset-0 rounded-full border-4 border-sky-300 border-dashed animate-[spin_10s_linear_infinite] opacity-50"></div>
             <img 
               src={personal.avatar || "https://github.com/identicons/default.png"} 
-              alt={personal.name} 
+              alt={personal.name || "Profile Avatar"} 
               className="w-full h-full rounded-full object-cover"
             />
           </div>
@@ -149,7 +149,7 @@ const CloudNineAerialSkyscape = () => {
                       <div className="absolute inset-0 bg-sky-900/20 group-hover:bg-transparent transition-colors z-10"></div>
                       <img 
                         src={project.image} 
-                        alt={project.title} 
+                        alt={project.title || "Project Screenshot"} 
                         className="w-full h-full object-cover transform group-hover:scale-105 transition-transform duration-500"
                       />
                     </div>

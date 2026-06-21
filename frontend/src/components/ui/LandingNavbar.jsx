@@ -11,7 +11,7 @@ export default function LandingNavbar() {
       <nav className="fixed top-0 left-0 right-0 w-full z-50 bg-white/30 backdrop-blur-md border-b border-white/20 shadow-sm">
         <div className="w-full max-w-7xl mx-auto px-8 py-4 flex items-center justify-between">
           <Link to="/" className="text-2xl font-semibold text-gray-900 flex items-center gap-2">
-            <img src="/speed.png" alt="logo" className="w-8 h-8 object-contain" />
+            <img src="/speed.png" alt="Career Pilot logo" className="w-8 h-8 object-contain" />
             careerpilot
           </Link>
           

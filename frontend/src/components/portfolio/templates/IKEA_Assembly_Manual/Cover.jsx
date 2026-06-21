@@ -19,7 +19,7 @@ export default function Cover() {
       </h2>
       <div className="w-full max-w-sm border-2 border-black h-48 md:h-64 flex items-center justify-center bg-[#f4f4f0] mb-8 overflow-hidden relative">
         {portfolioData?.personal?.avatar ? (
-          <img src={portfolioData.personal.avatar} alt={name} className="w-full h-full object-cover grayscale" />
+          <img src={portfolioData.personal.avatar} alt={name || "Profile Avatar"} className="w-full h-full object-cover grayscale" />
         ) : (
           <span className="text-4xl font-black uppercase">FIGURE 1</span>
         )}

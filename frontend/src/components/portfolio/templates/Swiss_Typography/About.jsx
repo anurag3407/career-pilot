@@ -31,7 +31,7 @@ export default function About({ data }) {
           {avatar && (
             <img
               src={avatar}
-              alt={name}
+              alt={name || "Profile Avatar"}
               className="w-20 h-20 md:w-24 md:h-24 grayscale border border-black object-cover"
               onError={(e) => {
                 e.currentTarget.style.display = 'none';

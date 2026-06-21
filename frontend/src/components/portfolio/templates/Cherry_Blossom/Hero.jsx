@@ -95,7 +95,7 @@ export default function Hero({ data }) {
 
           <img
             src={personal.avatar}
-            alt={personal.name}
+            alt={personal.name || "Profile Avatar"}
             className="relative z-10 w-72 h-72 md:w-80 md:h-80 object-cover rounded-full border-8 border-white shadow-2xl"
           />
         </motion.div>

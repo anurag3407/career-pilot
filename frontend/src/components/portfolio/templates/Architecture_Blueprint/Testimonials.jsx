@@ -56,7 +56,7 @@ export default function Testimonials() {
 
               <div className="flex items-center gap-4 border-t border-cyan-900/50 pt-6">
                 {testimonial.image ? (
-                  <img src={testimonial.image} alt={testimonial.name} className="w-12 h-12 rounded-none border border-cyan-500/50 p-1 object-cover grayscale group-hover:grayscale-0 transition-all" />
+                  <img src={testimonial.image} alt={testimonial.name || "Profile Avatar"} className="w-12 h-12 rounded-none border border-cyan-500/50 p-1 object-cover grayscale group-hover:grayscale-0 transition-all" />
                 ) : (
                   <div className="w-12 h-12 rounded-none border border-cyan-500/50 p-1 flex items-center justify-center bg-cyan-950/40">
                     <MessageSquare className="w-5 h-5 text-cyan-600" />

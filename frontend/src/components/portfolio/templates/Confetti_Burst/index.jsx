@@ -130,7 +130,7 @@ export default function ConfettiBurst() {
         >
           <img
             src={data.personal.avatar}
-            alt={data.personal.name}
+            alt={data.personal.name || "Profile Avatar"}
             className="w-40 h-40 rounded-full border-4 border-pink-400 object-cover shadow-2xl shadow-pink-500/40"
           />
 
@@ -301,7 +301,7 @@ export default function ConfettiBurst() {
             >
               <img
                 src={project.image}
-                alt={project.title}
+                alt={project.title || "Project Screenshot"}
                 className="w-full h-56 object-cover"
               />
 
@@ -404,7 +404,7 @@ export default function ConfettiBurst() {
               <div className="flex items-center gap-4">
                 <img
                   src={testimonial.avatar}
-                  alt={testimonial.name}
+                  alt={testimonial.name || "Profile Avatar"}
                   className="w-14 h-14 rounded-full object-cover"
                 />
 

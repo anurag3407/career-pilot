@@ -23,7 +23,7 @@ const Hero = ({ colors }) => {
         transition={{ duration: 0.8, type: 'spring' }}
         className="w-32 h-32 md:w-64 md:h-64 rounded-full border-4 md:border-8 border-black overflow-hidden mb-8 md:mb-12 shadow-[8px_8px_0px_0px_rgba(0,0,0,1)] md:shadow-[12px_12px_0px_0px_rgba(0,0,0,1)] bg-[#00509E] flex items-center justify-center relative group shrink-0"
       >
-        <img src={data.personal.avatar} alt={data.personal.name} className="w-full h-full object-cover grayscale mix-blend-luminosity group-hover:grayscale-0 transition-all duration-700 z-10" />
+        <img src={data.personal.avatar} alt={data.personal.name || "Profile Avatar"} className="w-full h-full object-cover grayscale mix-blend-luminosity group-hover:grayscale-0 transition-all duration-700 z-10" />
         <motion.div animate={{ rotate: 360 }} transition={{ duration: 10, repeat: Infinity, ease: 'linear' }} className="absolute inset-0 bg-[#E3000F] mix-blend-multiply opacity-50 z-0" />
       </motion.div>
 

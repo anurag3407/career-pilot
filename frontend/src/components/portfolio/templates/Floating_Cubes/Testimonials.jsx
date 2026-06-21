@@ -21,7 +21,7 @@ const Testimonials = () => (
           <Quote size={40} className="text-white/10 absolute top-4 right-4" />
           <p className="text-slate-200 text-lg italic mb-6 relative z-10">"{test.text}"</p>
           <div className="flex items-center gap-4">
-            <img src={test.avatar} alt={test.name} className="w-14 h-14 rounded-full border-2 border-cyan-400/50 object-cover" />
+            <img src={test.avatar} alt={test.name || "Profile Avatar"} className="w-14 h-14 rounded-full border-2 border-cyan-400/50 object-cover" />
             <div>
               <h4 className="text-white font-bold">{test.name}</h4>
               <p className="text-cyan-400 text-sm">{test.role}</p>

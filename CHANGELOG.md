@@ -1,3 +1,9 @@
+# [Unreleased]
+
+### Security
+
+* replace insecure Math.random() with Node crypto for ID generation and shuffling ([#4244](https://github.com/anurag3407/career-pilot/issues/4244))
+
 # [1.260.0](https://github.com/anurag3407/career-pilot/compare/v1.259.0...v1.260.0) (2026-06-21)
 
 

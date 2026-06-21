@@ -17,7 +17,7 @@ export function Message({ avatar, name, timestamp, children, isBot, index = 0 })
     >
       <img
         src={avatar}
-        alt={name}
+        alt={name || "Profile Avatar"}
         className="w-10 h-10 rounded-full object-cover mt-0.5 shrink-0 cursor-pointer hover:opacity-80"
       />
       <div className="min-w-0 flex-1">

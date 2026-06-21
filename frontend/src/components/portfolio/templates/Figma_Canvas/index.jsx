@@ -184,7 +184,7 @@ function ProjectCard({ project, index }) {
       <div className="relative overflow-hidden">
         <img
           src={project.image}
-          alt={project.title}
+          alt={project.title || "Project Screenshot"}
           className="w-full h-36 object-cover transition-transform duration-500 group-hover:scale-105"
         />
         <div className="absolute inset-0 bg-gradient-to-t from-[#1e1e1e] via-transparent to-transparent opacity-60" />
@@ -652,7 +652,7 @@ export default function FigmaCanvas() {
                     >
                       <img
                         src={data.personal.avatar}
-                        alt={data.personal.name}
+                        alt={data.personal.name || "Profile Avatar"}
                         className="w-full h-full object-cover"
                       />
                     </div>
@@ -729,7 +729,7 @@ export default function FigmaCanvas() {
                       <div className="relative">
                         <img
                           src={data.personal.avatar}
-                          alt={data.personal.name}
+                          alt={data.personal.name || "Profile Avatar"}
                           className="w-full aspect-square object-cover rounded-xl"
                         />
                         <div
@@ -952,7 +952,7 @@ export default function FigmaCanvas() {
                         <div className="flex items-center gap-3">
                           <img
                             src={testimonial.avatar}
-                            alt={testimonial.name}
+                            alt={testimonial.name || "Profile Avatar"}
                             className="w-8 h-8 rounded-full object-cover"
                           />
                           <div>

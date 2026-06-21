@@ -39,7 +39,7 @@ export default function HeroSection({ data, onBegin }) {
         >
           <img
             src={personal.avatar}
-            alt={personal.name}
+            alt={personal.name || "Profile Avatar"}
             className="w-full h-full object-cover"
             onError={(e) => {
               e.target.style.display = 'none';

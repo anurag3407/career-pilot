@@ -45,14 +45,16 @@ export class BaseScraper {
             'Upgrade-Insecure-Requests': '1',
             ...options.headers
         };
+        this.uaIndex = 0;
     }
 
     /**
-     * Rotates and retrieves a random modern browser User-Agent.
+     * Rotates and retrieves a deterministic round-robin modern browser User-Agent.
      * @returns {string} User-Agent string
      */
     generateUserAgent() {
-        const index = Math.floor(Math.random() * USER_AGENTS.length);
+        const index = this.uaIndex % USER_AGENTS.length;
+        this.uaIndex++;
         return USER_AGENTS[index];
     }
 

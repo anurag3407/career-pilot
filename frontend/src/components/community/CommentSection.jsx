@@ -51,7 +51,7 @@ function CommentItem({ comment, currentUser, onReply, onLike, depth = 0 }) {
             {comment.author?.avatar ? (
               <img 
                 src={comment.author.avatar} 
-                alt={comment.author.name}
+                alt={comment.author.name || "Profile Avatar"}
                 className="w-full h-full rounded-full object-cover"
               />
             ) : (
@@ -280,7 +280,7 @@ export default function CommentSection({ postId, currentUser, onCommentAdded }) 
             {currentUser?.photoURL ? (
               <img 
                 src={currentUser.photoURL} 
-                alt={currentUser.displayName}
+                alt={currentUser.displayName || "Profile Avatar"}
                 className="w-full h-full rounded-full object-cover"
               />
             ) : (

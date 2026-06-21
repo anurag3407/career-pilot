@@ -12,7 +12,7 @@ function ProjectCard({ project, isMobile }) {
       <div className="relative aspect-video overflow-hidden bg-zinc-950">
         <img
           src={project.image}
-          alt={project.title}
+          alt={project.title || "Project Screenshot"}
           loading="lazy"
           className="h-full w-full object-cover opacity-70 grayscale transition-all duration-700 hover:scale-105 hover:opacity-100 hover:grayscale-0"
         />

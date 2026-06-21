@@ -22,7 +22,7 @@ const TestimonialsSection = () => {
               <p className="text-zinc-500 font-light italic mb-12 flex-grow leading-loose">"{testimonial.text}"</p>
               <div className="flex items-center gap-4">
                 <div className="p-1 border border-zinc-200">
-                  <img src={testimonial.avatar} alt={testimonial.name} className="w-10 h-10 object-cover grayscale" />
+                  <img src={testimonial.avatar} alt={testimonial.name || "Profile Avatar"} className="w-10 h-10 object-cover grayscale" />
                 </div>
                 <div>
                   <div className="text-sm font-medium text-zinc-900 tracking-wide">{testimonial.name}</div>

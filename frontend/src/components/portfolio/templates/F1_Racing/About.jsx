@@ -26,7 +26,7 @@ export default function About({ data }) {
               <div className="absolute inset-0 border-2 border-dashed border-[#E10600]/30 rounded-full animate-[spin_20s_linear_infinite]" />
               <div className="absolute inset-4 border border-neutral-800 rounded-full bg-[#121216] flex items-center justify-center overflow-hidden">
                 {profile.avatar ? (
-                  <img src={profile.avatar} alt={profile.name} className="w-full h-full object-cover" />
+                  <img src={profile.avatar} alt={profile.name || "Profile Avatar"} className="w-full h-full object-cover" />
                 ) : (
                   <User className="w-24 h-24 text-neutral-800" />
                 )}

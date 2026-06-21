@@ -23,7 +23,7 @@ export default function About({ isMobile = false }) {
         >
           <img
             src={data.personal.avatar}
-            alt={data.personal.name}
+            alt={data.personal.name || "Profile Avatar"}
             loading="lazy"
             className={`h-full w-full object-cover transition-all duration-700 ${active ? 'grayscale-0 saturate-150 contrast-110' : 'grayscale'}`}
           />

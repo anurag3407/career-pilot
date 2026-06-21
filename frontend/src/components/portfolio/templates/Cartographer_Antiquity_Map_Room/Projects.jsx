@@ -31,7 +31,7 @@ export default function Projects({ data }) {
               
               <div className="aspect-video w-full bg-[#e8dac1] mb-6 overflow-hidden border border-[#c4a482] sepia-[0.3]">
                 {project.image ? (
-                  <img src={project.image} alt={project.title} className="w-full h-full object-cover mix-blend-multiply opacity-80 group-hover:opacity-100 group-hover:scale-105 transition-all duration-500" />
+                  <img src={project.image} alt={project.title || "Project Screenshot"} className="w-full h-full object-cover mix-blend-multiply opacity-80 group-hover:opacity-100 group-hover:scale-105 transition-all duration-500" />
                 ) : (
                   <div className="w-full h-full flex items-center justify-center">
                     <span className="text-[#8d6e63] italic font-serif">No Sketch Available</span>

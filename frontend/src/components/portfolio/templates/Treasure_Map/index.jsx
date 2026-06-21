@@ -175,7 +175,7 @@ const About = () => (
             <div className="w-64 h-64 rounded-full overflow-hidden border-8 border-yellow-700 shadow-2xl">
               <img
                 src={data.personal.avatar}
-                alt={data.personal.name}
+                alt={data.personal.name || "Profile Avatar"}
                 className="w-full h-full object-cover"
               />
             </div>
@@ -320,7 +320,7 @@ const Projects = () => (
             <div className="relative h-48 overflow-hidden">
               <img
                 src={project.image}
-                alt={project.title}
+                alt={project.title || "Project Screenshot"}
                 className="w-full h-full object-cover group-hover:scale-110 transition-transform duration-500"
               />
               <div className="absolute inset-0 bg-black bg-opacity-40 group-hover:bg-opacity-20 transition-all" />
@@ -467,7 +467,7 @@ const Testimonials = () => (
             <div className="flex items-center gap-4">
               <img
                 src={testimonial.avatar}
-                alt={testimonial.name}
+                alt={testimonial.name || "Profile Avatar"}
                 className="w-12 h-12 rounded-full border-2 border-yellow-700 object-cover"
               />
               <div>

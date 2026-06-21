@@ -23,7 +23,7 @@ export default function Projects() {
               <div className="absolute inset-0 bg-gradient-to-t from-slate-900 via-transparent to-transparent z-10" />
               <img
                 src={project.image}
-                alt={project.title}
+                alt={project.title || "Project Screenshot"}
                 onError={(event) => {
                   const target = event.currentTarget;
                   if (target.dataset.fallbackApplied === 'true') {

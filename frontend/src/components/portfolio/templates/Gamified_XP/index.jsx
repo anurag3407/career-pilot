@@ -133,7 +133,7 @@ export default function GamifiedXP() {
                 />
                 <img
                   src={data.personal.avatar}
-                  alt={data.personal.name}
+                  alt={data.personal.name || "Profile Avatar"}
                   className="relative h-[320px] w-full rounded-xl border-2 border-[#d4af37] object-cover shadow-[0_0_24px_rgba(212,175,55,0.45)]"
                 />
               </div>
@@ -190,7 +190,7 @@ export default function GamifiedXP() {
                   </svg>
                   <img
                     src={data.personal.avatar}
-                    alt={data.personal.name}
+                    alt={data.personal.name || "Profile Avatar"}
                     className="absolute left-1/2 top-1/2 h-28 w-28 -translate-x-1/2 -translate-y-1/2 rounded-full border border-[#6d47a5] object-cover"
                   />
                 </div>

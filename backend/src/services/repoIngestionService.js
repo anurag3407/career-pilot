@@ -1,3 +1,4 @@
+import crypto from 'crypto';
 import { execFile } from 'child_process';
 import { promisify } from 'util';
 import fs from 'fs/promises';
@@ -9,7 +10,7 @@ const execFileAsync = promisify(execFile);
 export const sessions = new Map();
 
 export const cloneRepo = async (repoUrl) => {
-  const sessionId = Date.now().toString(36) + Math.random().toString(36).substring(2);
+  const sessionId = crypto.randomUUID();
   const tempDir = path.join(os.tmpdir(), `repo-analyzer-${sessionId}`);
 
   // Full history is required by the time-series activity feature

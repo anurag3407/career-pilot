@@ -42,7 +42,7 @@ export default function Projects({ data }) {
                 <div className="relative overflow-hidden">
                   <img
                     src={project.image}
-                    alt={project.title}
+                    alt={project.title || "Project Screenshot"}
                     className="w-full h-44 object-cover"
                   />
                   <div className="absolute inset-0 bg-gradient-to-t from-black/60 to-transparent" />

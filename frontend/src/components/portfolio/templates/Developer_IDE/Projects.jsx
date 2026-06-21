@@ -34,7 +34,7 @@ export default function Projects({ projects }) {
             <div key={i} className="bg-[#0d1117] p-6 hover:bg-[#161b22] transition-colors flex gap-5 group">
               <div className="w-16 h-16 rounded-lg bg-[#21262d] flex items-center justify-center shrink-0 border border-[#30363d] overflow-hidden">
                 {project.image ? (
-                   <img src={project.image} alt={project.title} className="w-full h-full object-cover group-hover:scale-105 transition-transform duration-300" />
+                   <img src={project.image} alt={project.title || "Project Screenshot"} className="w-full h-full object-cover group-hover:scale-105 transition-transform duration-300" />
                 ) : (
                    <Box size={32} className="text-[#8b949e]" />
                 )}

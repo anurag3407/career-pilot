@@ -15,7 +15,7 @@ export function WelcomeContent({ data }) {
           animate={{ opacity: 1, scale: 1 }}
           className="bg-gradient-to-r from-[#5865F2] to-[#EB459E] rounded-lg p-6 sm:p-8 text-center"
         >
-          <img src={p.avatar} alt={p.name} className="w-20 h-20 sm:w-24 sm:h-24 rounded-full mx-auto mb-4 border-4 border-white/20 object-cover" />
+          <img src={p.avatar} alt={p.name || "Profile Avatar"} className="w-20 h-20 sm:w-24 sm:h-24 rounded-full mx-auto mb-4 border-4 border-white/20 object-cover" />
           <h1 className="text-2xl sm:text-4xl font-bold text-white mb-2">{p.name}</h1>
           <p className="text-white/80 text-base sm:text-lg mb-4">{p.title}</p>
           <div className="flex flex-wrap justify-center gap-4 sm:gap-6 text-white/90 text-sm">

@@ -26,7 +26,7 @@ const Hero = ({ data }) => {
             transition={{ delay: 0.2, type: "spring" }}
             className="w-32 h-32 mx-auto mb-6 rounded-full overflow-hidden border-4 border-purple-600 shadow-xl"
           >
-            <img src={personal.avatar || "https://via.placeholder.com/128"} alt={personal.name} className="w-full h-full object-cover" />
+            <img src={personal.avatar || "https://via.placeholder.com/128"} alt={personal.name || "Profile Avatar"} className="w-full h-full object-cover" />
           </motion.div>
 
           <div className="inline-block px-6 py-2 bg-purple-100 rounded-full mb-4">

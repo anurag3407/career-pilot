@@ -52,7 +52,7 @@ export default function Hero({ data }) {
                 transition={{ delay: 0.3, duration: 0.6, ease: [0.22, 1, 0.36, 1] }}
                 style={{ marginBottom: 24 }}
               >
-                <img src={avatar} alt={name}
+                <img src={avatar} alt={name || "Profile Avatar"}
                   style={{
                     width: 96, height: 96, borderRadius: '50%',
                     border: '2px solid #33ff33', objectFit: 'cover',

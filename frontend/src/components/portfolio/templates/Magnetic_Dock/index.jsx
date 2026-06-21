@@ -317,7 +317,7 @@ export default function MagneticDock() {
       <section id="hero" className="md-sec" style={{ minHeight: "100vh", display: "flex", alignItems: "center", justifyContent: "center", textAlign: "center" }}>
         <div className="md-max">
           <motion.div initial={{ opacity: 0, scale: 0.8 }} animate={{ opacity: 1, scale: 1 }} transition={{ duration: 0.5 }} style={{ marginBottom: 24 }}>
-            <img src={data.personal.avatar} alt={data.personal.name} style={{ width: 80, height: 80, borderRadius: "50%", objectFit: "cover", border: `3px solid ${C.accent}`, margin: "0 auto 16px", display: "block" }} />
+            <img src={data.personal.avatar} alt={data.personal.name || "Profile Avatar"} style={{ width: 80, height: 80, borderRadius: "50%", objectFit: "cover", border: `3px solid ${C.accent}`, margin: "0 auto 16px", display: "block" }} />
           </motion.div>
           <motion.h1 initial={{ opacity: 0, y: 32 }} animate={{ opacity: 1, y: 0 }} transition={{ duration: 0.7, delay: 0.1 }}
             style={{ fontSize: "clamp(2.5rem,9vw,6rem)", fontWeight: 800, lineHeight: 1, marginBottom: 12, letterSpacing: -2 }}>
@@ -369,7 +369,7 @@ export default function MagneticDock() {
           <div className="md-about-grid">
             <FadeIn>
               <div className="md-avatar">
-                <img src={data.personal.avatar} alt={data.personal.name} style={{ width: "100%", height: "100%", objectFit: "cover", borderRadius: 14, display: "block" }} />
+                <img src={data.personal.avatar} alt={data.personal.name || "Profile Avatar"} style={{ width: "100%", height: "100%", objectFit: "cover", borderRadius: 14, display: "block" }} />
               </div>
               <div style={{ display: "flex", justifyContent: "center", gap: 12, marginTop: 20 }}>
                 {data.socials.github   && <a href={data.socials.github}   className="md-social" target="_blank" rel="noreferrer"><Github   size={18} /></a>}
@@ -423,7 +423,7 @@ export default function MagneticDock() {
             {data.projects.map((proj, i) => (
               <motion.div key={i} className="md-card" initial={{ opacity: 0, y: 20 }} whileInView={{ opacity: 1, y: 0 }} viewport={{ once: true }} transition={{ delay: i * 0.07 }}>
                 <div style={{ position: "relative", overflow: "hidden" }}>
-                  <img src={proj.image} alt={proj.title} className="md-proj-img" />
+                  <img src={proj.image} alt={proj.title || "Project Screenshot"} className="md-proj-img" />
                   <div style={{ position: "absolute", inset: 0, background: `linear-gradient(180deg,transparent 40%,${C.bg}EE 100%)` }} />
                 </div>
                 <div style={{ padding: "18px 20px 22px" }}>
@@ -487,7 +487,7 @@ export default function MagneticDock() {
                 style={{ padding: 24 }}>
                 <p style={{ fontSize: 14, lineHeight: 1.75, color: C.muted, marginBottom: 18 }}>"{t.text}"</p>
                 <div style={{ display: "flex", alignItems: "center", gap: 12 }}>
-                  <img src={t.avatar} alt={t.name} style={{ width: 40, height: 40, borderRadius: "50%", objectFit: "cover", border: `2px solid ${C.border}` }} />
+                  <img src={t.avatar} alt={t.name || "Profile Avatar"} style={{ width: 40, height: 40, borderRadius: "50%", objectFit: "cover", border: `2px solid ${C.border}` }} />
                   <div>
                     <div style={{ fontSize: 13, fontWeight: 700 }}>{t.name}</div>
                     <div style={{ fontSize: 11, color: C.muted }}>{t.role}</div>

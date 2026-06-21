@@ -392,7 +392,7 @@ export default function SunsetWarm() {
           <div className="sw-about-grid">
             <FadeIn>
               <div className="sw-avatar" style={{ background: `linear-gradient(135deg,${C.orange},${C.pink})`, padding: 3, borderRadius: 20 }}>
-                <img src={data.personal.avatar} alt={data.personal.name} style={{ width: "100%", height: "100%", objectFit: "cover", borderRadius: 18, display: "block" }} />
+                <img src={data.personal.avatar} alt={data.personal.name || "Profile Avatar"} style={{ width: "100%", height: "100%", objectFit: "cover", borderRadius: 18, display: "block" }} />
               </div>
               <div style={{ display: "flex", justifyContent: "center", gap: 12, marginTop: 20 }}>
                 {data.socials.github   && <a href={data.socials.github}   className="sw-social" target="_blank" rel="noreferrer"><Github   size={18} /></a>}
@@ -456,7 +456,7 @@ export default function SunsetWarm() {
             {data.projects.map((proj, i) => (
               <motion.div key={i} className="sw-card" initial={{ opacity: 0, y: 28 }} whileInView={{ opacity: 1, y: 0 }} viewport={{ once: true }} transition={{ delay: i * 0.08 }}>
                 <div style={{ position: "relative", overflow: "hidden" }}>
-                  <img src={proj.image} alt={proj.title} className="sw-proj-img sw-golden" />
+                  <img src={proj.image} alt={proj.title || "Project Screenshot"} className="sw-proj-img sw-golden" />
                   <div style={{ position: "absolute", inset: 0, background: `linear-gradient(180deg,transparent 50%,${C.night}CC 100%)` }} />
                   <div style={{ position: "absolute", bottom: 12, left: 16, right: 16, display: "flex", flexWrap: "wrap", gap: 4 }}>
                     {proj.techStack.slice(0, 3).map((t, j) => <span key={j} className="sw-tag" style={{ fontSize: 9 }}>{t}</span>)}
@@ -523,7 +523,7 @@ export default function SunsetWarm() {
                 </div>
                 <p className="sw-serif" style={{ fontSize: 15, lineHeight: 1.75, fontStyle: "italic", color: "rgba(255,245,238,.8)", marginBottom: 20 }}>"{t.text}"</p>
                 <div style={{ display: "flex", alignItems: "center", gap: 12 }}>
-                  <img src={t.avatar} alt={t.name} style={{ width: 44, height: 44, borderRadius: "50%", objectFit: "cover", border: `2px solid ${C.orange}` }} />
+                  <img src={t.avatar} alt={t.name || "Profile Avatar"} style={{ width: 44, height: 44, borderRadius: "50%", objectFit: "cover", border: `2px solid ${C.orange}` }} />
                   <div>
                     <div style={{ fontSize: 14, fontWeight: 600 }}>{t.name}</div>
                     <div style={{ fontSize: 11, color: C.muted }}>{t.role}</div>

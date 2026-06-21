@@ -15,7 +15,7 @@ export default function About({ data }) {
           <div className="w-64 h-64 md:w-full aspect-square bg-gradient-to-br from-indigo-500 via-purple-500 to-cyan-500 p-1 shadow-[0_0_40px_rgba(99,102,241,0.3)] liquid-shape overflow-hidden">
             <img 
               src={data.personal.avatar} 
-              alt={data.personal.name} 
+              alt={data.personal.name || "Profile Avatar"} 
               // Fix: Removed double liquid-shape, added object-cover, and hover-only filters
               className="w-full h-full object-cover transition-all duration-500 hover:mix-blend-luminosity hover:brightness-110 hover:scale-105 cursor-crosshair"
             />

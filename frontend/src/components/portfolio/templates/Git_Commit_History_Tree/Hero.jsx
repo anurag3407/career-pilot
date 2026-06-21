@@ -165,7 +165,7 @@ export default function Hero() {
                 <div className="relative">
                   <img
                     src={personal.avatar}
-                    alt={personal.name}
+                    alt={personal.name || "Profile Avatar"}
                     className="w-16 h-16 rounded-full border-2 border-[#3FB950]/50 object-cover"
                     loading="eager"
                   />

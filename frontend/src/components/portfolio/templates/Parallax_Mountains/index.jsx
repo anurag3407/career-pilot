@@ -462,7 +462,7 @@ export default function ParallaxMountains() {
               <div className="flex items-center gap-4">
                 <img
                   src={testimonial.avatar}
-                  alt={testimonial.name}
+                  alt={testimonial.name || "Profile Avatar"}
                   className="w-14 h-14 rounded-full object-cover border-2 border-cyan-400"
                 />
 

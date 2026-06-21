@@ -314,7 +314,7 @@ export default function AccordionFoldBrochure({ portfolioData } = {}) {
                   <div className="absolute -inset-3 rounded-full border border-[#cbbba1]/70" />
                   <img
                     src={data.avatar}
-                    alt={data.name}
+                    alt={data.name || "Profile Avatar"}
                     className="w-32 h-32 md:w-36 md:h-36 rounded-full object-cover shadow-lg ring-4 ring-white"
                   />
                 </div>
@@ -469,7 +469,7 @@ export default function AccordionFoldBrochure({ portfolioData } = {}) {
                     >
                       <img
                         src={p.image}
-                        alt={p.title}
+                        alt={p.title || "Project Screenshot"}
                         className="w-full h-full object-cover transition-transform duration-700 ease-out group-hover:scale-110"
                       />
                       <div className="absolute inset-0 bg-gradient-to-t from-black/35 via-black/0 to-black/0" />

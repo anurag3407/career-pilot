@@ -42,7 +42,7 @@ const Projects = ({ projects = [] }) => (
             <span className="text-[10px] md:text-xs font-semibold tracking-wider uppercase text-cyan-300">Case Study {i + 1}</span>
             <span className="text-[10px] md:text-xs text-slate-500">Featured Build</span>
           </div>
-          <img src={proj.image} alt={proj.title} className="w-full h-28 md:h-40 object-cover rounded-lg mb-3 md:mb-4" />
+          <img src={proj.image} alt={proj.title || "Project Screenshot"} className="w-full h-28 md:h-40 object-cover rounded-lg mb-3 md:mb-4" />
           <h3 className="text-lg md:text-xl font-bold mb-2">{proj.title}</h3>
           <p className="text-slate-400 text-sm mb-3 md:mb-4 line-clamp-3 md:line-clamp-4">{proj.description}</p>
 

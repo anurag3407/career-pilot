@@ -308,7 +308,7 @@ function ProjectCard({ project, index }) {
         <div style={{ position: "relative", height: 110, overflow: "hidden" }}>
           <img
             src={project.image}
-            alt={project.title}
+            alt={project.title || "Project Screenshot"}
             style={{
               width: "100%",
               height: "100%",
@@ -505,7 +505,7 @@ function TestimonialCard({ t, index }) {
         {t.avatar ? (
           <img
             src={t.avatar}
-            alt={t.name}
+            alt={t.name || "Profile Avatar"}
             style={{
               width: 32,
               height: 32,

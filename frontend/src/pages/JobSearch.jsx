@@ -515,7 +515,7 @@ className="w-full pl-12 pr-10 py-4 bg-muted/50 border border-border rounded-xl t
                           {job.employer_logo ? (
                             <img
                               src={job.employer_logo}
-                              alt={job.employer_name}
+                              alt={job.employer_name || "Profile Avatar"}
                               className="w-10 h-10 object-contain rounded"
                               onError={(e) => {
                                 e.target.style.display = 'none'

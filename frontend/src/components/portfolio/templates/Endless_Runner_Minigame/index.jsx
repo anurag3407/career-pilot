@@ -670,7 +670,7 @@ function Projects() {
         {projects.map((p, i) => (
           <div className="erm-project-card" key={p.title || i}>
             <div className="erm-project-img-wrap">
-              <img className="erm-project-img" src={p.image} alt={p.title} loading="lazy" />
+              <img className="erm-project-img" src={p.image} alt={p.title || "Project Screenshot"} loading="lazy" />
               <span className="erm-project-badge">STAGE {String(i + 1).padStart(2, '0')}</span>
             </div>
             <div className="erm-project-body">
@@ -732,7 +732,7 @@ function Testimonials() {
           <div className="erm-test-card" key={i}>
             <p className="erm-test-quote">{t.text}</p>
             <div className="erm-test-author">
-              <img className="erm-test-avatar" src={t.avatar} alt={t.name} />
+              <img className="erm-test-avatar" src={t.avatar} alt={t.name || "Profile Avatar"} />
               <div>
                 <div className="erm-test-name">{t.name}</div>
                 <div className="erm-test-role">{t.role}</div>
@@ -801,7 +801,7 @@ export default function EndlessRunnerMinigame() {
                 {/* ── AVATAR INTEGRATION ── */}
                 {personal.avatar && (
                   <div className="erm-hero-avatar-wrap">
-                    <img src={personal.avatar} alt={personal.name} className="erm-hero-avatar" />
+                    <img src={personal.avatar} alt={personal.name || "Profile Avatar"} className="erm-hero-avatar" />
                   </div>
                 )}
 

@@ -20,7 +20,7 @@ export default function Projects({ data }) {
             >
               <img
                 src={project.image}
-                alt={project.title}
+                alt={project.title || "Project Screenshot"}
                 loading="lazy"
                 className="w-full h-52 object-cover"
               />

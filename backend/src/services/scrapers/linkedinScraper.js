@@ -1,3 +1,4 @@
+import crypto from 'crypto';
 import path from 'path';
 import os from 'os';
 import puppeteer from 'puppeteer';
@@ -404,7 +405,7 @@ export class LinkedInScraper extends BaseScraper {
                         }
 
                         // Human-like pause between detail page navigations
-                        await this.sleep(1200 + Math.random() * 800);
+                        await this.sleep(1200 + (crypto.randomBytes(4).readUInt32LE() / 0xFFFFFFFF) * 800);
                     } catch (detailErr) {
                         this.log(`Skipping detail fetch for "${job.title}": ${detailErr.message}`, 'warn');
                     }

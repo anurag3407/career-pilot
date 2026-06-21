@@ -121,7 +121,7 @@ export default function DigitalDNA() {
           <div className="flex justify-center">
             <img
               src={data.personal.avatar}
-              alt={data.personal.name}
+              alt={data.personal.name || "Profile Avatar"}
               className="w-72 h-72 rounded-full object-cover border-4 border-cyan-500"
             />
           </div>
@@ -183,7 +183,7 @@ export default function DigitalDNA() {
             >
               <img
                 src={project.image}
-                alt={project.title}
+                alt={project.title || "Project Screenshot"}
                 className="w-full h-48 object-cover"
               />
 
@@ -277,7 +277,7 @@ export default function DigitalDNA() {
               <div className="flex items-center gap-4 mb-4">
                 <img
                   src={item.avatar}
-                  alt={item.name}
+                  alt={item.name || "Profile Avatar"}
                   className="w-14 h-14 rounded-full"
                 />
 

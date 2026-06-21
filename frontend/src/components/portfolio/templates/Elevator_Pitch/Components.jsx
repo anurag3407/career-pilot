@@ -50,7 +50,7 @@ export const Hero = ({ personal, socials }) => {
       <div className="relative inline-block">
         <img 
           src={personal.avatar} 
-          alt={personal.name} 
+          alt={personal.name || "Profile Avatar"} 
           className="w-32 h-32 md:w-40 md:h-40 rounded-full border-4 border-zinc-700 object-cover shadow-xl"
         />
         <motion.div 
@@ -99,7 +99,7 @@ export const ProjectCard = ({ project }) => {
       <div className="aspect-video overflow-hidden bg-zinc-950">
         <img 
           src={project.image} 
-          alt={project.title} 
+          alt={project.title || "Project Screenshot"} 
           className="w-full h-full object-cover group-hover:scale-105 transition-transform duration-500 opacity-80 group-hover:opacity-100"
           loading="lazy"
         />

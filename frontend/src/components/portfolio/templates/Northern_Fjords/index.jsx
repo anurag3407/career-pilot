@@ -56,7 +56,7 @@ export default function NorthernFjords() {
         <div className="grid md:grid-cols-3 gap-6">
           {data.projects.map((project, i) => (
             <div key={i} className="bg-white/5 rounded-xl overflow-hidden">
-              <img src={project.image} className="h-40 w-full object-cover" />
+              <img alt="" src={project.image} className="h-40 w-full object-cover" />
               <div className="p-4">
                 <h3 className="font-bold">{project.title}</h3>
                 <p className="text-gray-400 text-sm mt-2">

@@ -131,7 +131,7 @@ function PlatformBadge({ platform, customIcon, size = 28 }) {
         return (
             <img
                 src={customIcon}
-                alt={platform}
+                alt={platform || "Image"}
                 style={{ width: size, height: size }}
                 className="rounded-md object-contain shrink-0"
             />

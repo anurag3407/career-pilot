@@ -205,7 +205,7 @@ function Hero() {
         >
           <div className="w-28 h-28 md:w-36 md:h-36 rounded-full border-2 border-cyan-500/40 overflow-hidden mx-auto shadow-[0_0_40px_rgba(6,182,212,0.3)]">
             {personal.avatar ? (
-              <img src={personal.avatar} alt={personal.name} className="w-full h-full object-cover" />
+              <img src={personal.avatar} alt={personal.name || "Profile Avatar"} className="w-full h-full object-cover" />
             ) : (
               <div className="w-full h-full bg-gradient-to-br from-cyan-500/30 to-violet-500/30 flex items-center justify-center text-4xl font-black text-white">
                 {(personal.name ?? "P")[0]}
@@ -384,7 +384,7 @@ function About() {
           <motion.div variants={fadeUp} className="relative">
             <div className="aspect-square max-w-sm mx-auto rounded-3xl overflow-hidden border border-white/10 shadow-[0_0_60px_rgba(6,182,212,0.15)]">
               {personal.avatar ? (
-                <img src={personal.avatar} alt={personal.name} className="w-full h-full object-cover" />
+                <img src={personal.avatar} alt={personal.name || "Profile Avatar"} className="w-full h-full object-cover" />
               ) : (
                 <div className="w-full h-full bg-gradient-to-br from-cyan-500/20 via-violet-500/20 to-transparent flex items-center justify-center text-8xl font-black text-white/20">
                   {(personal.name ?? "P")[0]}
@@ -523,7 +523,7 @@ function Projects() {
                   {/* Image */}
                   <div className="relative aspect-video overflow-hidden rounded-t-2xl bg-gradient-to-br from-cyan-500/10 to-violet-500/10">
                     {image ? (
-                      <img src={image} alt={title} className="w-full h-full object-cover group-hover:scale-105 transition-transform duration-500" />
+                      <img src={image} alt={title || "Project Screenshot"} className="w-full h-full object-cover group-hover:scale-105 transition-transform duration-500" />
                     ) : (
                       <div className="w-full h-full flex items-center justify-center">
                         <Code2 size={40} className="text-white/10" />
@@ -683,7 +683,7 @@ function Testimonials() {
                   <div className="flex items-center gap-3">
                     <div className="w-10 h-10 rounded-full overflow-hidden border border-white/10 bg-gradient-to-br from-cyan-500/30 to-violet-500/30 flex items-center justify-center flex-shrink-0">
                       {avatar ? (
-                        <img src={avatar} alt={name} className="w-full h-full object-cover" />
+                        <img src={avatar} alt={name || "Profile Avatar"} className="w-full h-full object-cover" />
                       ) : (
                         <span className="text-white/60 font-bold text-sm">{name[0]}</span>
                       )}

@@ -21,7 +21,7 @@ export default function About({ data }) {
             <div className="flex justify-center">
               <img
                 src={personal.avatar}
-                alt={personal.name}
+                alt={personal.name || "Profile Avatar"}
                 className="w-64 h-64 object-cover rounded-3xl shadow-xl"
               />
             </div>

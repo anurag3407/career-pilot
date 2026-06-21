@@ -64,7 +64,7 @@ export default function About() {
             <div className="relative overflow-hidden rounded-2xl w-64 h-64 sm:w-80 sm:h-80 mb-6">
               <img
                 src={personal.avatar || 'https://images.unsplash.com/photo-1507003211169-0a1dd7228f2d?w=400&h=400&fit=crop&crop=face'}
-                alt={personal.name}
+                alt={personal.name || "Profile Avatar"}
                 className="w-full h-full object-cover transform group-hover:scale-110 transition-transform duration-500"
               />
               <div className="absolute inset-0 bg-gradient-to-t from-gray-950 via-transparent to-transparent opacity-60" />

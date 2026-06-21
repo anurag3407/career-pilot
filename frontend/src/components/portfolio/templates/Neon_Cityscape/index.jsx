@@ -198,7 +198,7 @@ function ProjectCard({ project, index }) {
         onHoverStart={() => setHovered(true)} onHoverEnd={() => setHovered(false)}
         whileHover={{ y: -4 }}>
         <div className="relative h-44 overflow-hidden">
-          <img src={project.image} alt={project.title} className="w-full h-full object-cover"
+          <img src={project.image} alt={project.title || "Project Screenshot"} className="w-full h-full object-cover"
             style={{ filter: `saturate(0.3) brightness(0.5) hue-rotate(${index % 2 === 0 ? '300deg' : '180deg'})` }} />
           <div className="absolute inset-0" style={{ background: `linear-gradient(to bottom, transparent 30%, ${NEON.dark}f0)` }} />
           <motion.div className="absolute inset-0" style={{ background: `${accent}10` }}
@@ -246,7 +246,7 @@ function TestimonialCard({ testimonial, index }) {
         <Quote size={24} className="mb-4" style={{ color: NEON.purple, opacity: 0.5 }} />
         <p className="text-sm leading-relaxed mb-5" style={{ color: NEON.muted }}>{testimonial.text}</p>
         <div className="flex items-center gap-3">
-          <img src={testimonial.avatar} alt={testimonial.name} className="w-10 h-10 rounded-full object-cover"
+          <img src={testimonial.avatar} alt={testimonial.name || "Profile Avatar"} className="w-10 h-10 rounded-full object-cover"
             style={{ border: `2px solid ${NEON.purple}50`, filter: 'saturate(0.5) hue-rotate(280deg)' }} />
           <div>
             <p className="text-sm font-bold" style={{ color: NEON.text }}>{testimonial.name}</p>
@@ -483,7 +483,7 @@ export default function NeonCityscape() {
               <div className="relative w-56 h-56 md:w-72 md:h-72 mx-auto">
                 <div className="w-full h-full rounded-2xl overflow-hidden"
                   style={{ border: `2px solid ${NEON.pink}40`, boxShadow: `0 0 40px ${NEON.pink}20, 0 0 80px ${NEON.cyan}10` }}>
-                  <img src={data.personal.avatar} alt={data.personal.name} className="w-full h-full object-cover"
+                  <img src={data.personal.avatar} alt={data.personal.name || "Profile Avatar"} className="w-full h-full object-cover"
                     style={{ filter: 'saturate(0.4) hue-rotate(280deg) brightness(0.8)' }} />
                   <div className="absolute inset-0"
                     style={{ backgroundImage: 'repeating-linear-gradient(0deg, rgba(0,0,0,0.2) 0px, rgba(0,0,0,0.2) 1px, transparent 1px, transparent 3px)' }} />
