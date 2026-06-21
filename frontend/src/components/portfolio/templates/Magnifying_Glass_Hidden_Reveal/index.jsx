@@ -325,7 +325,7 @@ const MagnifyingGlassHiddenReveal = () => {
                     <div className="mb-6 rounded-2xl overflow-hidden h-44">
                       <img
                         src={project.image}
-                        alt={project.title}
+                        alt={project.title || "Project Screenshot"}
                         className={`w-full h-full object-cover transition-all duration-300 ${
                           isRevealed ? "" : "grayscale opacity-50"
                         }`}
@@ -415,7 +415,7 @@ const MagnifyingGlassHiddenReveal = () => {
                     {t.avatar ? (
                       <img
                         src={t.avatar}
-                        alt={t.name}
+                        alt={t.name || "Profile Avatar"}
                         className={`w-12 h-12 rounded-full object-cover ${
                           isRevealed ? "" : "grayscale opacity-60"
                         }`}

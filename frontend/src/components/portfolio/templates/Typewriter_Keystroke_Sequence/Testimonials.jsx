@@ -29,7 +29,7 @@ function LetterCard({ testimonial, index }) {
         {testimonial.avatar && (
           <img
             src={testimonial.avatar}
-            alt={testimonial.name}
+            alt={testimonial.name || "Profile Avatar"}
             style={{
               width: 40, height: 40,
               objectFit: 'cover',

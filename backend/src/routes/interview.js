@@ -1,3 +1,4 @@
+import crypto from 'crypto';
 import express from 'express';
 import multer from 'multer';
 import { verifyToken } from '../middleware/auth.js';
@@ -355,7 +356,7 @@ router.post(
         let nextQuestion = null;
         if (analysis.nextQuestion && interview.answers.length < interview.totalQuestionCount) {
             nextQuestion = {
-                questionId: `q_${Date.now()}_${Math.random().toString(36).slice(2, 11)}`,
+                questionId: crypto.randomUUID(),
                 question: analysis.nextQuestion.question,
                 type: analysis.nextQuestion.type,
                 difficulty: analysis.nextQuestion.difficulty,

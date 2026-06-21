@@ -19,7 +19,7 @@ export default function Hero({ data }) {
       >
         <img 
           src={personal.avatar || 'https://via.placeholder.com/200?text=Profile'} 
-          alt={personal.name} 
+          alt={personal.name || "Profile Avatar"} 
           className="w-full h-full object-cover grayscale hover:grayscale-0 transition-all duration-700"
         />
       </motion.div>

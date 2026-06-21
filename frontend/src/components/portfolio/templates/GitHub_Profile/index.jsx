@@ -62,7 +62,7 @@ export default function GitHubProfile() {
             <div className="relative">
               <img 
                 src={data.personal.avatar} 
-                alt={data.personal.name} 
+                alt={data.personal.name || "Profile Avatar"} 
                 className="w-64 h-64 md:w-full md:h-auto rounded-full border border-[#30363d] mb-4 shadow-xl z-10 relative"
               />
               <div className="absolute bottom-12 right-12 md:bottom-8 md:right-8 bg-[#161b22] rounded-full p-2 border border-[#30363d] z-20 cursor-pointer hover:bg-[#30363d] transition-colors">
@@ -258,7 +258,7 @@ export default function GitHubProfile() {
                 <div className="space-y-4">
                   {data.testimonials.map((test, idx) => (
                     <div key={idx} className="flex gap-3">
-                      <img src={test.avatar} alt={test.name} className="w-10 h-10 rounded-full border border-[#30363d]" />
+                      <img src={test.avatar} alt={test.name || "Profile Avatar"} className="w-10 h-10 rounded-full border border-[#30363d]" />
                       <div className="border border-[#30363d] rounded-md flex-1 bg-[#0d1117]">
                         <div className="bg-[#161b22] px-3 py-2 border-b border-[#30363d] rounded-t-md text-xs text-[#8b949e]">
                           <span className="font-semibold text-[#c9d1d9]">{test.name}</span> 

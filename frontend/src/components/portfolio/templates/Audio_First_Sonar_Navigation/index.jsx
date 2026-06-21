@@ -324,7 +324,7 @@ export default function AudioFirstSonarNavigation() {
           </div>
 
           <motion.div initial={{ opacity: 0, y: 24 }} animate={{ opacity: 1, y: 0 }} transition={{ duration: 0.5 }} style={{ textAlign: "center", marginBottom: 24 }}>
-            <img src={data.personal.avatar} alt={data.personal.name} style={{ width: 90, height: 90, borderRadius: "50%", objectFit: "cover", border: `3px solid ${C.accent}`, margin: "0 auto", display: "block", boxShadow: `0 0 24px ${C.accent}40` }} />
+            <img src={data.personal.avatar} alt={data.personal.name || "Profile Avatar"} style={{ width: 90, height: 90, borderRadius: "50%", objectFit: "cover", border: `3px solid ${C.accent}`, margin: "0 auto", display: "block", boxShadow: `0 0 24px ${C.accent}40` }} />
           </motion.div>
           <motion.h1 initial={{ opacity: 0, y: 36 }} animate={{ opacity: 1, y: 0 }} transition={{ duration: 0.7, delay: 0.1 }}
             style={{ fontSize: "clamp(2.8rem,10vw,7rem)", fontWeight: 800, lineHeight: 1, marginBottom: 16, letterSpacing: -3, textAlign: "center" }}>
@@ -380,7 +380,7 @@ export default function AudioFirstSonarNavigation() {
                 <div style={{ position: "relative" }}>
                   <SonarPulsingCircle size={180} color={C.accent} duration={3} />
                   <div style={{ position: "absolute", top: "50%", left: "50%", transform: "translate(-50%,-50%)" }}>
-                    <img src={data.personal.avatar} alt={data.personal.name} style={{ width: 120, height: 120, borderRadius: "50%", objectFit: "cover", border: `3px solid ${C.accent}` }} />
+                    <img src={data.personal.avatar} alt={data.personal.name || "Profile Avatar"} style={{ width: 120, height: 120, borderRadius: "50%", objectFit: "cover", border: `3px solid ${C.accent}` }} />
                   </div>
                 </div>
                 <div style={{ display: "flex", gap: 10 }}>
@@ -434,7 +434,7 @@ export default function AudioFirstSonarNavigation() {
             {data.projects.map((proj, i) => (
               <motion.div key={i} className="asn-card" initial={{ opacity: 0, y: 20 }} whileInView={{ opacity: 1, y: 0 }} viewport={{ once: true }} transition={{ delay: i * 0.07 }}>
                 <div style={{ position: "relative", overflow: "hidden" }}>
-                  <img src={proj.image} alt={proj.title} style={{ width: "100%", height: 200, objectFit: "cover", display: "block" }} />
+                  <img src={proj.image} alt={proj.title || "Project Screenshot"} style={{ width: "100%", height: 200, objectFit: "cover", display: "block" }} />
                   <div style={{ position: "absolute", inset: 0, background: `linear-gradient(180deg,transparent 40%,${C.bg}EE 100%)` }} />
                   <div style={{ position: "absolute", top: 12, right: 12 }}>
                     <AudioBars style={{ height: 28 }} />
@@ -502,7 +502,7 @@ export default function AudioFirstSonarNavigation() {
                 </div>
                 <p style={{ fontSize: 14, lineHeight: 1.75, color: C.muted, marginBottom: 18 }}>"{t.text}"</p>
                 <div style={{ display: "flex", alignItems: "center", gap: 12 }}>
-                  <img src={t.avatar} alt={t.name} style={{ width: 40, height: 40, borderRadius: "50%", objectFit: "cover", border: `2px solid ${C.border}` }} />
+                  <img src={t.avatar} alt={t.name || "Profile Avatar"} style={{ width: 40, height: 40, borderRadius: "50%", objectFit: "cover", border: `2px solid ${C.border}` }} />
                   <div>
                     <div style={{ fontSize: 13, fontWeight: 700 }}>{t.name}</div>
                     <div style={{ fontSize: 11, color: C.muted }}>{t.role}</div>

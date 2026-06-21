@@ -311,7 +311,7 @@ export default function OnePageScroll() {
           <div className="ops-about-grid">
             <FadeIn>
               <div style={{ textAlign: "center" }}>
-                <img src={data.personal.avatar} alt={data.personal.name} style={{ width: 160, height: 160, borderRadius: "50%", objectFit: "cover", border: `3px solid ${C.accent}`, marginBottom: 16 }} />
+                <img src={data.personal.avatar} alt={data.personal.name || "Profile Avatar"} style={{ width: 160, height: 160, borderRadius: "50%", objectFit: "cover", border: `3px solid ${C.accent}`, marginBottom: 16 }} />
                 <div style={{ display: "flex", justifyContent: "center", gap: 10 }}>
                   {data.socials.github   && <a href={data.socials.github}   className="ops-social" target="_blank" rel="noreferrer"><Github   size={16} /></a>}
                   {data.socials.linkedin && <a href={data.socials.linkedin} className="ops-social" target="_blank" rel="noreferrer"><Linkedin size={16} /></a>}
@@ -360,7 +360,7 @@ export default function OnePageScroll() {
           <div className="ops-proj-grid">
             {data.projects.map((proj, i) => (
               <motion.div key={i} className="ops-card" initial={{ opacity: 0, y: 20 }} whileInView={{ opacity: 1, y: 0 }} viewport={{ once: true }} transition={{ delay: i * 0.07 }}>
-                <img src={proj.image} alt={proj.title} className="ops-proj-img" />
+                <img src={proj.image} alt={proj.title || "Project Screenshot"} className="ops-proj-img" />
                 <div style={{ padding: "16px 18px 20px" }}>
                   <h3 style={{ fontSize: 15, fontWeight: 700, marginBottom: 6 }}>{proj.title}</h3>
                   <p style={{ fontSize: 12, lineHeight: 1.6, color: C.mid, marginBottom: 12 }}>{proj.description}</p>
@@ -412,7 +412,7 @@ export default function OnePageScroll() {
                 style={{ padding: "24px" }}>
                 <p style={{ fontSize: 14, lineHeight: 1.75, color: C.mid, marginBottom: 20 }}>"{t.text}"</p>
                 <div style={{ display: "flex", alignItems: "center", gap: 12 }}>
-                  <img src={t.avatar} alt={t.name} style={{ width: 40, height: 40, borderRadius: "50%", objectFit: "cover", border: `2px solid ${C.border}` }} />
+                  <img src={t.avatar} alt={t.name || "Profile Avatar"} style={{ width: 40, height: 40, borderRadius: "50%", objectFit: "cover", border: `2px solid ${C.border}` }} />
                   <div>
                     <div style={{ fontSize: 13, fontWeight: 700 }}>{t.name}</div>
                     <div style={{ fontSize: 11, color: C.muted }}>{t.role}</div>

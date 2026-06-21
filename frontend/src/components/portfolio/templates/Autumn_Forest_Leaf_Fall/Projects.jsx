@@ -29,7 +29,7 @@ export default function Projects({ projects }) {
               <div className="absolute inset-0 bg-amber-900/20 group-hover:bg-transparent transition-colors z-10" />
               <img 
                 src={project.image || 'https://via.placeholder.com/600x400?text=Project+Image'} 
-                alt={project.title} 
+                alt={project.title || "Project Screenshot"} 
                 className="w-full h-full object-cover grayscale group-hover:grayscale-0 group-hover:scale-105 transition-all duration-700"
               />
             </div>

@@ -169,7 +169,7 @@ function About() {
           <Label>02 — About</Label>
           <img
             src={avatar}
-            alt={name}
+            alt={name || "Profile Avatar"}
             className="w-20 h-20 md:w-24 md:h-24 grayscale border border-black object-cover"
             onError={(e) => {
               e.currentTarget.style.display = 'none';
@@ -432,7 +432,7 @@ function Testimonials() {
             <div className="flex items-center gap-3">
               <img
                 src={t.avatar}
-                alt={t.name}
+                alt={t.name || "Profile Avatar"}
                 className="w-8 h-8 grayscale border border-black object-cover shrink-0"
                 onError={(e) => {
                   e.currentTarget.style.display = 'none';

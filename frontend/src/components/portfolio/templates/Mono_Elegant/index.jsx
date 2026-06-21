@@ -648,7 +648,7 @@ export default function MonoElegant() {
               <div className="mono-image-container border mono-border p-2">
                 <img 
                   src={personal.avatar} 
-                  alt={personal.name} 
+                  alt={personal.name || "Profile Avatar"} 
                   className="mono-image-gray w-full aspect-square object-cover"
                 />
               </div>
@@ -1091,7 +1091,7 @@ function ProjectsGrid({ projects }) {
                 <div className="mono-image-container aspect-video border-b mono-border">
                   <img
                     src={project.image}
-                    alt={project.title}
+                    alt={project.title || "Project Screenshot"}
                     className="mono-image-gray w-full h-full object-cover"
                   />
                   {project.liveUrl && (
@@ -1194,7 +1194,7 @@ function TestimonialsCarousel({ testimonials }) {
             <div className="w-12 h-12 rounded-full overflow-hidden border border-neutral-300 dark:border-neutral-800">
               <img 
                 src={current.avatar} 
-                alt={current.name} 
+                alt={current.name || "Profile Avatar"} 
                 className="mono-image-gray w-full h-full object-cover"
               />
             </div>

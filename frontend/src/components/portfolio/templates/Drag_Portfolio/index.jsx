@@ -150,7 +150,7 @@ export default function DragPortfolio() {
                   <div className="absolute inset-0 rounded-2xl bg-gradient-to-tr from-indigo-500 to-cyan-400 opacity-60 blur-md group-hover:opacity-100 transition-opacity" />
                   <img 
                     src={personal.avatar || "https://images.unsplash.com/photo-1573496359142-b8d87734a5a2?auto=format&fit=crop&q=80&w=200&h=200"} 
-                    alt={personal.name} 
+                    alt={personal.name || "Profile Avatar"} 
                     className="relative w-20 h-20 rounded-2xl object-cover border-2 border-slate-800"
                   />
                   <span className="absolute -bottom-1 -right-1 flex h-4 w-4">
@@ -265,7 +265,7 @@ export default function DragPortfolio() {
                   <div className="relative h-40 rounded-xl overflow-hidden border border-white/10 group">
                     <img 
                       src={projects[activeProjectIdx].image || "https://images.unsplash.com/photo-1618005182384-a83a8bd57fbe?auto=format&fit=crop&q=80&w=400&h=240"} 
-                      alt={projects[activeProjectIdx].title} 
+                      alt={projects[activeProjectIdx].title || "Project Screenshot"} 
                       className="w-full h-full object-cover transition-transform duration-500 group-hover:scale-105"
                     />
                     <div className="absolute inset-0 bg-gradient-to-t from-[#030712] via-[#030712]/40 to-transparent" />

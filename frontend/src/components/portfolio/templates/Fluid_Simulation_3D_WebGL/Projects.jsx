@@ -68,7 +68,7 @@ export default function Projects({ data }) {
                 <div className="h-44 w-full relative overflow-hidden bg-slate-950">
                   <img
                     src={image}
-                    alt={title}
+                    alt={title || "Project Screenshot"}
                     className="w-full h-full object-cover opacity-80 group-hover:opacity-95 group-hover:scale-105 transition-all duration-500"
                     loading="lazy"
                   />

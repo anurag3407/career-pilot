@@ -869,7 +869,7 @@ export default function MorseCodeFlashingDecoder() {
           <Reveal delay={0.1}>
             <div className="mcd-about-grid">
               <div className="mcd-avatar-wrap">
-                <img src={personal.avatar} alt={personal.name} className="mcd-avatar" />
+                <img src={personal.avatar} alt={personal.name || "Profile Avatar"} className="mcd-avatar" />
                 <div className="mcd-avatar-frame" />
               </div>
               <div>
@@ -980,7 +980,7 @@ export default function MorseCodeFlashingDecoder() {
               <Reveal key={i} delay={i * 0.07}>
                 <div className="mcd-project-card">
                   {p.image && (
-                    <img src={p.image} alt={p.title} className="mcd-project-img" />
+                    <img src={p.image} alt={p.title || "Project Screenshot"} className="mcd-project-img" />
                   )}
                   <div className="mcd-project-body">
                     <div className="mcd-project-id">FILE_{String(i + 1).padStart(3, "0")}</div>
@@ -1060,7 +1060,7 @@ export default function MorseCodeFlashingDecoder() {
                   <p className="mcd-test-text">{t.text}</p>
                   <div className="mcd-test-author">
                     {t.avatar && (
-                      <img src={t.avatar} alt={t.name} className="mcd-test-avatar" />
+                      <img src={t.avatar} alt={t.name || "Profile Avatar"} className="mcd-test-avatar" />
                     )}
                     <div>
                       <div className="mcd-test-name">{t.name}</div>

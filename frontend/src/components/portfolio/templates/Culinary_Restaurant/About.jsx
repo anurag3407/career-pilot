@@ -94,7 +94,7 @@ export default function About() {
             <div className="relative overflow-hidden bg-[#111111] border border-[#222222]">
               <img
                 src="https://images.unsplash.com/photo-1577219491135-ce391730fb2c?auto=format&fit=crop&q=80&w=900"
-                alt={CHEF_STORY.name}
+                alt={CHEF_STORY.name || "Profile Avatar"}
                 className="w-full h-[520px] object-cover opacity-90"
               />
               <div className="absolute inset-0 bg-gradient-to-t from-[#0a0a0a] via-[#0a0a0a]/20 to-transparent" />

@@ -16,7 +16,7 @@ export default function About() {
       <div className="grid md:grid-cols-3 gap-12 items-center">
         <div className="md:col-span-1 relative group cursor-crosshair">
           <div className="absolute inset-0 bg-gradient-to-tr from-cyan-500 to-fuchsia-500 blur-xl opacity-20 group-hover:opacity-50 transition-opacity animate-pulse" />
-          <img src={data.personal.avatar} alt={data.personal.name} className="relative w-full aspect-square object-cover grayscale group-hover:grayscale-0 transition-all duration-300 border border-zinc-800 vibrate-hover" />
+          <img src={data.personal.avatar} alt={data.personal.name || "Profile Avatar"} className="relative w-full aspect-square object-cover grayscale group-hover:grayscale-0 transition-all duration-300 border border-zinc-800 vibrate-hover" />
           <div className="absolute top-0 left-0 w-4 h-4 border-t-2 border-l-2 border-cyan-500" />
           <div className="absolute bottom-0 right-0 w-4 h-4 border-b-2 border-r-2 border-fuchsia-500" />
         </div>

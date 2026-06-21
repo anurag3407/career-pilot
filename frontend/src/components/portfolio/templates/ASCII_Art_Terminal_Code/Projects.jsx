@@ -73,7 +73,7 @@ function ProjectCard({ project, index, isOpen, onToggle }) {
                     </div>
                     <img
                       src={project.image}
-                      alt={project.title}
+                      alt={project.title || "Project Screenshot"}
                       className="w-full h-40 object-cover opacity-70 hover:opacity-90 transition-opacity"
                       loading="lazy"
                     />

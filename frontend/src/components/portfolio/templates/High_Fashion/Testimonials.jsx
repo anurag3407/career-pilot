@@ -63,7 +63,7 @@ export default function Testimonials() {
               
               <div className="flex items-center gap-4 mt-4">
                 <div className="w-12 h-12 rounded-full overflow-hidden" style={{ border: `1px solid ${F.gold}` }}>
-                  <img src={data.testimonials[current].avatar} alt={data.testimonials[current].name} className="w-full h-full object-cover" />
+                  <img src={data.testimonials[current].avatar} alt={data.testimonials[current].name || "Profile Avatar"} className="w-full h-full object-cover" />
                 </div>
                 <div className="text-left">
                   <p className="text-sm font-black uppercase tracking-widest" style={{ color: F.goldLight }}>

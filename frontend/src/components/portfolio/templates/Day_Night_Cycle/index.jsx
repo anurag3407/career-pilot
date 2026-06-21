@@ -135,7 +135,7 @@ export default function DayNightCycle() {
         {/* HERO */}
         <motion.section initial={{ opacity:0, y:40 }} animate={{ opacity:1, y:0 }} transition={{ duration:1 }}
           className="text-center mb-20">
-          <img src={data.personal.avatar} alt={data.personal.name}
+          <img src={data.personal.avatar} alt={data.personal.name || "Profile Avatar"}
             className={`w-28 h-28 rounded-full object-cover mx-auto mb-6 border-4 shadow-xl ${isNight ? "border-blue-400 shadow-blue-400/30" : "border-yellow-400 shadow-yellow-400/30"}`}
           />
           <h1 className={`text-4xl sm:text-6xl font-bold mb-3 tracking-tight ${textClass}`}>{data.personal.name}</h1>
@@ -212,7 +212,7 @@ export default function DayNightCycle() {
               <motion.div key={p.title} initial={{ opacity:0, y:20 }} whileInView={{ opacity:1, y:0 }}
                 transition={{ delay: i*0.08 }} viewport={{ once:true }}
                 className={`rounded-xl border overflow-hidden ${cardClass}`}>
-                <img src={p.image} alt={p.title} className="w-full h-36 object-cover" />
+                <img src={p.image} alt={p.title || "Project Screenshot"} className="w-full h-36 object-cover" />
                 <div className="p-4">
                   <h3 className={`font-bold text-sm mb-2 ${textClass}`}>{p.title}</h3>
                   <p className={`text-xs leading-relaxed mb-3 ${subClass}`}>{p.description}</p>
@@ -264,7 +264,7 @@ export default function DayNightCycle() {
                 className={`p-4 rounded-xl border ${cardClass}`}>
                 <p className={`text-xs italic leading-relaxed mb-4 ${subClass}`}>"{t.text}"</p>
                 <div className="flex items-center gap-3">
-                  <img src={t.avatar} alt={t.name} className="w-9 h-9 rounded-full object-cover" />
+                  <img src={t.avatar} alt={t.name || "Profile Avatar"} className="w-9 h-9 rounded-full object-cover" />
                   <div>
                     <div className={`text-xs font-bold ${textClass}`}>{t.name}</div>
                     <div className={`text-xs ${subClass}`}>{t.role}</div>

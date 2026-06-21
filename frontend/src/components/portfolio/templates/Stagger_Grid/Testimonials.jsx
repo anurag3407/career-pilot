@@ -23,7 +23,7 @@ export const Testimonials = () => {
               <Quote className="absolute top-8 right-8 text-zinc-200 w-16 h-16 -z-0" />
               <p className="text-zinc-700 text-lg relative z-10 italic mb-8">"{test.text}"</p>
               <div className="flex items-center gap-4 relative z-10">
-                <img src={test.avatar} alt={test.name} className="w-14 h-14 rounded-full object-cover border-2 border-indigo-100" />
+                <img src={test.avatar} alt={test.name || "Profile Avatar"} className="w-14 h-14 rounded-full object-cover border-2 border-indigo-100" />
                 <div>
                   <h4 className="font-bold text-zinc-900">{test.name}</h4>
                   <p className="text-sm text-indigo-600 font-medium">{test.role}</p>

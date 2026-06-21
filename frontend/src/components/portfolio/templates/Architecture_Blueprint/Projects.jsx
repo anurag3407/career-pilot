@@ -52,7 +52,7 @@ export default function Projects() {
                     {project.image ? (
                       <img 
                         src={project.image} 
-                        alt={project.title} 
+                        alt={project.title || "Project Screenshot"} 
                         className="w-full h-full object-cover filter grayscale group-hover:grayscale-0 group-hover:scale-105 transition-all duration-700"
                       />
                     ) : (

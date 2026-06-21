@@ -68,7 +68,7 @@ const { personal, socials, skills, projects, experience, stats, testimonials } =
                 <div className="absolute -inset-4 bg-zinc-600/30 blur-2xl rounded-full"></div>
                   <img 
                   src={personal.avatar} 
-                  alt={personal.name} 
+                  alt={personal.name || "Profile Avatar"} 
                   onError={(e) => { 
                     e.currentTarget.src = `https://ui-avatars.com/api/?name=${encodeURIComponent(personal.name)}&background=27272a&color=a1a1aa`; 
                   }}
@@ -162,7 +162,7 @@ const { personal, socials, skills, projects, experience, stats, testimonials } =
                     <div className="absolute inset-0 bg-zinc-900/50 group-hover:bg-transparent transition-colors z-10"></div>
                     <img 
                       src={project.image} 
-                      alt={project.title} 
+                      alt={project.title || "Project Screenshot"} 
                       className="w-full h-full object-cover grayscale group-hover:grayscale-0 transition-all duration-500"
                     />
                   </div>
@@ -216,7 +216,7 @@ const { personal, socials, skills, projects, experience, stats, testimonials } =
                   <div className="flex items-center gap-4">
                       <img 
                       src={testimonial.avatar} 
-                      alt={testimonial.name} 
+                      alt={testimonial.name || "Profile Avatar"} 
                       onError={(e) => { 
                         e.currentTarget.src = `https://ui-avatars.com/api/?name=${encodeURIComponent(testimonial.name)}&background=27272a&color=a1a1aa`; 
                       }}

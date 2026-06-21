@@ -34,7 +34,7 @@ function ProjectCard({ project, index, projectsLength, scrollYProgress, step }) 
           <div className="relative overflow-hidden rounded-2xl h-56 sm:h-72 lg:h-[420px] bg-zinc-800">
             <img
               src={project.image || 'https://images.unsplash.com/photo-1555066931-4365d14bab8c?auto=format&fit=crop&q=80'}
-              alt={project.title}
+              alt={project.title || "Project Screenshot"}
               className="object-cover w-full h-full transform group-hover:scale-110 transition-transform duration-[1.5s] ease-out"
             />
             <div className="absolute inset-0 bg-gradient-to-t from-zinc-950/90 via-zinc-950/20 to-transparent opacity-60 group-hover:opacity-90 transition-opacity duration-500" />

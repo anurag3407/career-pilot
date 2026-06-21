@@ -704,7 +704,7 @@ function About() {
               background: `${C.surface} padding-box, ${RAINBOW} border-box`,
               padding: 4,
             }}>
-              <img src={data.personal.avatar} alt={data.personal.name}
+              <img src={data.personal.avatar} alt={data.personal.name || "Profile Avatar"}
                 style={{ width: '100%', height: '100%', borderRadius: '50%', objectFit: 'cover' }} />
             </div>
             <div className="psych-about-links">
@@ -870,7 +870,7 @@ function Projects() {
           transition={{ duration: 0.7 }}
           className="psych-card psych-featured-card">
           <div className="psych-featured-img">
-            <img src={featured.image} alt={featured.title}
+            <img src={featured.image} alt={featured.title || "Project Screenshot"}
               style={{ width: '100%', height: '100%', objectFit: 'cover',
                 transition: 'transform 0.5s ease', display: 'block' }}
               onMouseEnter={e => e.currentTarget.style.transform = 'scale(1.06)'}
@@ -926,7 +926,7 @@ function Projects() {
               transition={{ delay: 0.15 + i * 0.1, duration: 0.6 }}
               className="psych-card" style={{ borderRadius: 20, overflow: 'hidden' }}>
               <div style={{ height: 200, overflow: 'hidden' }}>
-                <img src={proj.image} alt={proj.title}
+                <img src={proj.image} alt={proj.title || "Project Screenshot"}
                   style={{ width: '100%', height: '100%', objectFit: 'cover',
                     transition: 'transform 0.4s' }}
                   onMouseEnter={e => e.currentTarget.style.transform = 'scale(1.08)'}
@@ -1095,7 +1095,7 @@ function Testimonials() {
                     boxShadow: `0 0 15px ${col}55`,
                     overflow: 'hidden',
                   }}>
-                    <img src={t.avatar} alt={t.name}
+                    <img src={t.avatar} alt={t.name || "Profile Avatar"}
                       style={{ width: '100%', height: '100%', objectFit: 'cover' }} />
                   </div>
                   <div>

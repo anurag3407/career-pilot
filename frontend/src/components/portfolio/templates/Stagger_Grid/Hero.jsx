@@ -51,7 +51,7 @@ export const Hero = () => {
               transition={{ duration: 8, repeat: Infinity, ease: "easeInOut" }}
               style={{ transform: "translateZ(-20px)" }}
             />
-            <img src={data.personal.avatar} alt={data.personal.name} className="relative w-64 h-64 md:w-96 md:h-96 object-cover border-4 border-white shadow-2xl p-2 bg-white" style={{ borderRadius: 'inherit', transform: "translateZ(20px)" }} />
+            <img src={data.personal.avatar} alt={data.personal.name || "Profile Avatar"} className="relative w-64 h-64 md:w-96 md:h-96 object-cover border-4 border-white shadow-2xl p-2 bg-white" style={{ borderRadius: 'inherit', transform: "translateZ(20px)" }} />
           </motion.div>
         </div>
       </div>

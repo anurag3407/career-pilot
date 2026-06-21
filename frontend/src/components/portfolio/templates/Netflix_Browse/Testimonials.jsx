@@ -50,7 +50,7 @@ export default function Testimonials({ testimonials }) {
             <div className="flex items-center gap-3 pt-4 border-t border-white/5">
               <img
                 src={t.avatar}
-                alt={t.name}
+                alt={t.name || "Profile Avatar"}
                 className="w-10 h-10 rounded-full object-cover border-2 border-[#E50914]/40"
               />
               <div>

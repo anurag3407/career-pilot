@@ -461,7 +461,7 @@ export default function ChromaticGlitch() {
           <div className="cg-about-grid">
             <FadeIn>
               <div className="cg-avatar-wrap cg-rgb-img" style={{ animation: "cg-border-glow 3s ease-in-out infinite" }}>
-                <img src={data.personal.avatar} alt={data.personal.name} style={{ width: "100%", height: "100%", objectFit: "cover", display: "block" }} />
+                <img src={data.personal.avatar} alt={data.personal.name || "Profile Avatar"} style={{ width: "100%", height: "100%", objectFit: "cover", display: "block" }} />
                 <div style={{ position: "absolute", inset: 0, pointerEvents: "none", background: "linear-gradient(135deg,rgba(255,0,64,.15) 0%,transparent 50%,rgba(0,255,255,.15) 100%)", mixBlendMode: "screen" }} />
               </div>
               <div style={{ display: "flex", justifyContent: "center", gap: 12, marginTop: 20 }}>
@@ -534,7 +534,7 @@ export default function ChromaticGlitch() {
             {data.projects.map((proj, i) => (
               <motion.div key={i} className="cg-card" initial={{ opacity: 0, y: 30 }} whileInView={{ opacity: 1, y: 0 }} viewport={{ once: true }} transition={{ delay: i * 0.08, duration: 0.5 }} style={{ overflow: "hidden" }}>
                 <div className="cg-rgb-img" style={{ position: "relative", overflow: "hidden" }}>
-                  <img src={proj.image} alt={proj.title} className="cg-proj-img" />
+                  <img src={proj.image} alt={proj.title || "Project Screenshot"} className="cg-proj-img" />
                   <div style={{ position: "absolute", inset: 0, background: "linear-gradient(180deg,transparent 50%,rgba(8,0,16,.95) 100%)" }} />
                   <div style={{ position: "absolute", inset: 0, background: "repeating-linear-gradient(0deg,transparent,transparent 3px,rgba(0,255,255,.03) 3px,rgba(0,255,255,.03) 4px)", pointerEvents: "none" }} />
                 </div>
@@ -603,7 +603,7 @@ export default function ChromaticGlitch() {
                 <div className="cg-mono" style={{ fontSize: 48, lineHeight: 1, color: "#00ffff", opacity: 0.2, marginBottom: -10 }}>&#8220;</div>
                 <p style={{ fontSize: 14, lineHeight: 1.75, color: "rgba(224,224,255,.7)", marginBottom: 20 }}>{t.text}</p>
                 <div style={{ display: "flex", alignItems: "center", gap: 12 }}>
-                  <img src={t.avatar} alt={t.name} style={{ width: 40, height: 40, borderRadius: "50%", border: "2px solid rgba(0,255,255,.3)", objectFit: "cover" }} />
+                  <img src={t.avatar} alt={t.name || "Profile Avatar"} style={{ width: 40, height: 40, borderRadius: "50%", border: "2px solid rgba(0,255,255,.3)", objectFit: "cover" }} />
                   <div>
                     <div style={{ fontSize: 13, fontWeight: 600 }}>{t.name}</div>
                     <div className="cg-mono" style={{ fontSize: 10, color: "#ff00ff", letterSpacing: 1 }}>{t.role}</div>

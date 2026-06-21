@@ -52,7 +52,7 @@ function TestimonialCard({ review, delay }) {
         <div className="mt-auto pt-5 border-t border-[#1A1A1A]/50 flex items-center gap-4">
           <img
             src={review.avatar || "/placeholder-avatar.png"}
-            alt={review.name}
+            alt={review.name || "Profile Avatar"}
             className="w-10 h-10 rounded-full grayscale border border-[#333] group-hover:grayscale-0 transition-all duration-300"
           />
           <div>

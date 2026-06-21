@@ -48,7 +48,7 @@ export default function Projects({ data }) {
               <div style={{ position: 'relative', overflow: 'hidden', height: 180 }}>
                 <img
                   src={project.image}
-                  alt={project.title}
+                  alt={project.title || "Project Screenshot"}
                   style={{ width: '100%', height: '100%', objectFit: 'cover', transition: 'transform 0.4s ease' }}
                   onMouseOver={e => (e.currentTarget.style.transform = 'scale(1.06)')}
                   onMouseOut={e => (e.currentTarget.style.transform = 'scale(1)')}

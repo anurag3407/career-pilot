@@ -1,4 +1,5 @@
 import { triggerConfetti } from '../utils/confetti'
+import toast from 'react-hot-toast';
 import { useState, useRef, useEffect, lazy, Suspense } from 'react';
 import { useNavigate, useLocation } from 'react-router-dom';
 import { motion } from 'framer-motion';
@@ -1032,12 +1033,14 @@ export default function InterviewPrep() {
     if(
  previousLevel !==
  updatedProgress.level
-){
- alert(
-   `🎉 Congratulations!
-You reached
-${updatedProgress.level}`
- );
+ ){
+  toast.success(`🎉 Congratulations! You reached ${updatedProgress.level}`, {
+    duration: 4000,
+    ariaProps: {
+      role: 'status',
+      'aria-live': 'polite',
+    },
+  });
 }
 
     setOverallResults(response.data);

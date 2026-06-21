@@ -66,7 +66,7 @@ export default function Testimonials({ data }) {
               <div style={{ display: 'flex', alignItems: 'center', gap: 12 }}>
                 <img
                   src={t.avatar}
-                  alt={t.name}
+                  alt={t.name || "Profile Avatar"}
                   style={{ width: 44, height: 44, borderRadius: '50%', objectFit: 'cover', border: '2px solid #DBEAFE', flexShrink: 0 }}
                 />
                 <div>

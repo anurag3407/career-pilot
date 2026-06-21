@@ -1,3 +1,4 @@
+import crypto from 'crypto';
 import OpenAI from 'openai';
 import { aiCallsCounter } from '../../middleware/metrics.js';
 
@@ -14,7 +15,7 @@ const withRetry = async (fn, maxRetries = 3, baseDelayMs = 1000) => {
       if (error?.status === 429 && attempt < maxRetries - 1) {
         attempt++;
         // Exponential backoff with jitter
-        const delay = baseDelayMs * Math.pow(2, attempt) + Math.random() * 500;
+        const delay = baseDelayMs * Math.pow(2, attempt) + (crypto.randomBytes(4).readUInt32LE() / 0xFFFFFFFF) * 500;
         console.warn(`Requesty rate limit hit. Retrying in ${Math.round(delay)}ms... (Attempt ${attempt}/${maxRetries - 1})`);
         await sleep(delay);
       } else {

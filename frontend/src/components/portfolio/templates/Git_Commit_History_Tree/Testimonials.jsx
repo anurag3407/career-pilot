@@ -76,7 +76,7 @@ function PRCard({ testimonial, index, inView }) {
           {testimonial.avatar ? (
             <img
               src={testimonial.avatar}
-              alt={testimonial.name}
+              alt={testimonial.name || "Profile Avatar"}
               className="w-9 h-9 rounded-full border border-[#30363D] object-cover"
               loading="lazy"
             />

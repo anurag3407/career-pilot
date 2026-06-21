@@ -71,7 +71,7 @@ export default function ChannelSidebar({ activeChannel, setActiveChannel, name, 
       {/* User Panel */}
       <div className="h-[52px] bg-[#232428] px-2 flex items-center gap-2">
         <div className="relative">
-          <img src={avatar} alt={name} className="w-8 h-8 rounded-full object-cover" />
+          <img src={avatar} alt={name || "Profile Avatar"} className="w-8 h-8 rounded-full object-cover" />
           <div className="absolute -bottom-0.5 -right-0.5 w-3.5 h-3.5 bg-[#23A559] rounded-full border-[3px] border-[#232428]" />
         </div>
         <div className="flex-1 min-w-0">

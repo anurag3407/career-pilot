@@ -234,7 +234,7 @@ function About() {
                   <div className="absolute inset-0 rounded-full bg-purple-500/30 blur-xl" />
                   <img
                     src={data.personal.avatar}
-                    alt={data.personal.name}
+                    alt={data.personal.name || "Profile Avatar"}
                     className="relative w-32 h-32 rounded-full object-cover border-2 border-purple-500/40"
                   />
                 </div>
@@ -364,7 +364,7 @@ function Projects() {
                 <div className="relative overflow-hidden">
                   <img
                     src={project.image}
-                    alt={project.title}
+                    alt={project.title || "Project Screenshot"}
                     className="w-full h-44 object-cover group-hover:scale-105 transition-transform duration-500"
                   />
                   <div className="absolute inset-0 bg-gradient-to-t from-[#0d0d14] via-transparent to-transparent" />
@@ -490,7 +490,7 @@ function Testimonials() {
                 <div className="flex items-center gap-3 pt-4 border-t border-purple-500/10">
                   <img
                     src={t.avatar}
-                    alt={t.name}
+                    alt={t.name || "Profile Avatar"}
                     className="w-10 h-10 rounded-full object-cover border border-purple-500/30"
                   />
                   <div>

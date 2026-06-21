@@ -1,3 +1,4 @@
+import crypto from 'crypto';
 import puppeteer from 'puppeteer';
 import { BaseScraper } from './BaseScraper.js';
 
@@ -82,8 +83,8 @@ export class NaukriScraper extends BaseScraper {
                     await page.waitForSelector('#usernameField', { timeout: 10000 });
                     
                     // human-like typing speeds to prevent trigger blocks
-                    await page.type('#usernameField', this.options.username, { delay: 80 + Math.random() * 100 });
-                    await page.type('#passwordField', this.options.password, { delay: 80 + Math.random() * 100 });
+                    await page.type('#usernameField', this.options.username, { delay: 80 + (crypto.randomBytes(4).readUInt32LE() / 0xFFFFFFFF) * 100 });
+                    await page.type('#passwordField', this.options.password, { delay: 80 + (crypto.randomBytes(4).readUInt32LE() / 0xFFFFFFFF) * 100 });
                     
                     this.log('Typing submitted. Triggering login navigation...');
                     await Promise.all([
@@ -247,7 +248,7 @@ export class NaukriScraper extends BaseScraper {
                         }
 
                         // Human-like pause delay between full detail requests
-                        await this.sleep(1000 + Math.random() * 1000);
+                        await this.sleep(1000 + (crypto.randomBytes(4).readUInt32LE() / 0xFFFFFFFF) * 1000);
                     } catch (detailErr) {
                         this.log(`Skipping full details for "${job.title}": ${detailErr.message}`, 'warn');
                     }

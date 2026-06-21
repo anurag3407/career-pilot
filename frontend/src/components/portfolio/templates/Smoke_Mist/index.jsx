@@ -370,7 +370,7 @@ export default function SmokeMist() {
           <div className="sm-about-grid">
             <FogReveal>
               <div className="sm-avatar" style={{ animation: "sm-glow-pulse 4s ease-in-out infinite" }}>
-                <img src={data.personal.avatar} alt={data.personal.name} style={{ width: "100%", height: "100%", objectFit: "cover", display: "block" }} />
+                <img src={data.personal.avatar} alt={data.personal.name || "Profile Avatar"} style={{ width: "100%", height: "100%", objectFit: "cover", display: "block" }} />
               </div>
               <div style={{ display: "flex", justifyContent: "center", gap: 12, marginTop: 20 }}>
                 {data.socials.github   && <a href={data.socials.github}   className="sm-social" target="_blank" rel="noreferrer"><Github   size={18} /></a>}
@@ -424,7 +424,7 @@ export default function SmokeMist() {
             {data.projects.map((proj, i) => (
               <motion.div key={i} className="sm-card" initial={{ opacity: 0, y: 28, filter: "blur(6px)" }} whileInView={{ opacity: 1, y: 0, filter: "blur(0px)" }} viewport={{ once: true }} transition={{ delay: i * 0.1, duration: 0.8 }}>
                 <div style={{ position: "relative", overflow: "hidden" }}>
-                  <img src={proj.image} alt={proj.title} className="sm-proj-img" />
+                  <img src={proj.image} alt={proj.title || "Project Screenshot"} className="sm-proj-img" />
                   <div style={{ position: "absolute", inset: 0, background: `linear-gradient(180deg,transparent 40%,${C.bg}DD 100%)` }} />
                 </div>
                 <div style={{ padding: "20px 22px 24px" }}>
@@ -489,7 +489,7 @@ export default function SmokeMist() {
                 <div style={{ fontSize: 42, lineHeight: 1, color: C.accent, opacity: 0.15, fontFamily: "'Cinzel',serif", marginBottom: -8 }}>&#8220;</div>
                 <p style={{ fontSize: 14, lineHeight: 1.8, color: C.ghost, marginBottom: 20, fontStyle: "italic" }}>{t.text}</p>
                 <div style={{ display: "flex", alignItems: "center", gap: 14 }}>
-                  <img src={t.avatar} alt={t.name} style={{ width: 44, height: 44, borderRadius: "50%", objectFit: "cover", border: `1px solid ${C.border}`, filter: "saturate(.6)" }} />
+                  <img src={t.avatar} alt={t.name || "Profile Avatar"} style={{ width: 44, height: 44, borderRadius: "50%", objectFit: "cover", border: `1px solid ${C.border}`, filter: "saturate(.6)" }} />
                   <div>
                     <div style={{ fontSize: 13, fontWeight: 600 }}>{t.name}</div>
                     <div style={{ fontSize: 11, color: C.muted }}>{t.role}</div>

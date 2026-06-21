@@ -140,7 +140,7 @@ export default function DirectMessages() {
                       {otherUser?.avatar ? (
                         <img 
                           src={otherUser.avatar} 
-                          alt={otherUser.name}
+                          alt={otherUser.name || "Profile Avatar"}
                           className="w-full h-full rounded-full object-cover"
                         />
                       ) : (

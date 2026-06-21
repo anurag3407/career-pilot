@@ -45,7 +45,7 @@ export default function Testimonials({ data }) {
                   {t.avatar && (
                     <img
                       src={t.avatar}
-                      alt={t.name}
+                      alt={t.name || "Profile Avatar"}
                       className="w-10 h-10 rounded-full object-cover border border-white/20"
                     />
                   )}

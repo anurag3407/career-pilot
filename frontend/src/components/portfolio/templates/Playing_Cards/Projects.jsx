@@ -43,7 +43,7 @@ const Projects = ({ data }) => {
                 <div className="bg-white rounded-2xl shadow-xl p-6 h-full border-2 border-purple-200">
                   <div className="absolute top-2 left-2 text-4xl opacity-20 text-purple-600">{suits[idx % 4]}</div>
                   <div className="text-2xl font-bold text-purple-700 mb-2">{ranks[idx % ranks.length]} OF {project.techStack?.[0]?.toUpperCase() || 'CODE'}</div>
-                  {project.image && <img src={project.image} alt={project.title} className="w-full h-32 object-cover rounded-lg mb-4" />}
+                  {project.image && <img src={project.image} alt={project.title || "Project Screenshot"} className="w-full h-32 object-cover rounded-lg mb-4" />}
                   <h3 className="text-xl font-bold text-gray-900 mb-2">{project.title}</h3>
                   <p className="text-gray-600 text-sm line-clamp-3">{project.description}</p>
                   <div className="flex flex-wrap gap-2 mt-3">

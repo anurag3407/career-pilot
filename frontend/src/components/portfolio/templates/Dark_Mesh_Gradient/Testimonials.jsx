@@ -69,7 +69,7 @@ export default function Testimonials() {
               <div className="relative w-12 h-12 rounded-full overflow-hidden border border-white/10 group-hover:border-pink-500/40 transition-colors">
                 <img
                   src={testimonial.avatar || fallbackAvatar}
-                  alt={testimonial.name}
+                  alt={testimonial.name || "Profile Avatar"}
                   className="w-full h-full object-cover"
                 />
               </div>

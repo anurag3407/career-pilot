@@ -29,7 +29,7 @@ export default function Projects({ projects }) {
               
               <div className="w-full h-48 mb-4 border border-cyan-900/50 overflow-hidden relative group-hover:border-cyan-500/30">
                 <div className="absolute inset-0 bg-cyan-950/50 z-10 group-hover:bg-transparent transition-colors mix-blend-overlay" />
-                <img src={project.image} alt={project.title} className="w-full h-full object-cover grayscale group-hover:grayscale-0 transition-all scale-105 group-hover:scale-100 duration-500" />
+                <img src={project.image} alt={project.title || "Project Screenshot"} className="w-full h-full object-cover grayscale group-hover:grayscale-0 transition-all scale-105 group-hover:scale-100 duration-500" />
               </div>
               
               <div className="flex items-center justify-between border-b border-cyan-900/50 pb-3 mb-3">

@@ -24,7 +24,7 @@ export default function Projects() {
             >
               <img
                 src={project.image}
-                alt={project.title}
+                alt={project.title || "Project Screenshot"}
                 className="w-full h-52 object-cover"
               />
 

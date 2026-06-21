@@ -34,7 +34,7 @@ export default function Testimonials() {
               <div className="flex items-center gap-3 pt-4 border-t border-white/5">
                 <img
                   src={t.avatar || `https://api.dicebear.com/7.x/shapes/svg?seed=${t.name}`}
-                  alt={t.name}
+                  alt={t.name || "Profile Avatar"}
                   className="w-10 h-10 rounded-xl object-cover border border-white/10"
                 />
                 <div>

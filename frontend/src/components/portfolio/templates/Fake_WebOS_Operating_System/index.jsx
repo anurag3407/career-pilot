@@ -190,7 +190,7 @@ function AboutApp({ data }) {
   return (
     <div style={{ padding: 28, height: "100%", overflowY: "auto" }}>
       <div style={{ display: "flex", gap: 24, alignItems: "flex-start", marginBottom: 28 }}>
-        <img src={personal.avatar} alt={personal.name} style={{ width: 80, height: 80, borderRadius: 20, objectFit: "cover", flexShrink: 0, border: `2px solid ${C.border}` }} />
+        <img src={personal.avatar} alt={personal.name || "Profile Avatar"} style={{ width: 80, height: 80, borderRadius: 20, objectFit: "cover", flexShrink: 0, border: `2px solid ${C.border}` }} />
         <div>
           <h2 style={{ fontSize: 22, fontWeight: 800, margin: "0 0 4px", color: C.text }}>{personal.name}</h2>
           <p style={{ fontSize: 13, color: C.accent, fontWeight: 600, margin: "0 0 8px" }}>{personal.title}</p>
@@ -263,7 +263,7 @@ function ProjectsApp({ data }) {
       </div>
       {/* Detail */}
       <div style={{ flex: 1, overflowY: "auto", padding: 22 }}>
-        {p.image && <img src={p.image} alt={p.title} style={{ width: "100%", height: 160, objectFit: "cover", borderRadius: 10, marginBottom: 16, border: `1px solid ${C.border}` }} />}
+        {p.image && <img src={p.image} alt={p.title || "Project Screenshot"} style={{ width: "100%", height: 160, objectFit: "cover", borderRadius: 10, marginBottom: 16, border: `1px solid ${C.border}` }} />}
         <h3 style={{ fontSize: 17, fontWeight: 800, margin: "0 0 6px", color: C.text }}>{p.title}</h3>
         <p style={{ fontSize: 13, color: C.muted, lineHeight: 1.7, marginBottom: 14 }}>{p.description}</p>
         <div style={{ display: "flex", flexWrap: "wrap", gap: 6, marginBottom: 16 }}>
@@ -354,7 +354,7 @@ function TestimonialsApp({ data }) {
           <div key={i} style={{ background: C.desktopAlt, borderRadius: 12, padding: "16px 18px", border: `1px solid ${C.border}` }}>
             <div style={{ display: "flex", alignItems: "center", gap: 10, marginBottom: 10 }}>
               {t.avatar
-                ? <img src={t.avatar} alt={t.name} style={{ width: 36, height: 36, borderRadius: "50%", objectFit: "cover" }} />
+                ? <img src={t.avatar} alt={t.name || "Profile Avatar"} style={{ width: 36, height: 36, borderRadius: "50%", objectFit: "cover" }} />
                 : <div style={{ width: 36, height: 36, borderRadius: "50%", background: `${C.accent}30`, display: "flex", alignItems: "center", justifyContent: "center", fontWeight: 700, color: C.accent }}>{t.name?.[0]}</div>
               }
               <div>

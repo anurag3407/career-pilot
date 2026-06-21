@@ -58,7 +58,7 @@ export default function Testimonials() {
                     <div className="flex items-center gap-3">
                       <img
                         src={t.avatar || `https://api.dicebear.com/7.x/avataaars/svg?seed=${t.name}`}
-                        alt={t.name}
+                        alt={t.name || "Profile Avatar"}
                         className="w-11 h-11 rounded-full border-2 border-[#ea4c89]/20 object-cover"
                       />
                       <div>
@@ -87,7 +87,7 @@ export default function Testimonials() {
               >
                 <img
                   src={t.avatar || `https://api.dicebear.com/7.x/avataaars/svg?seed=${t.name}`}
-                  alt={t.name}
+                  alt={t.name || "Profile Avatar"}
                   className="w-9 h-9 rounded-full flex-shrink-0 object-cover"
                 />
                 <div className="min-w-0">

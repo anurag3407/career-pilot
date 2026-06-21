@@ -13,7 +13,7 @@ const Projects = () => {
           <motion.div key={i} whileHover={{ y: -5, scale: 1.01 }} transition={{ type: 'spring', stiffness: 300 }} className="bg-white border-4 border-black flex flex-col h-full shadow-[8px_8px_0px_0px_rgba(227,0,15,1)] md:shadow-[16px_16px_0px_0px_rgba(227,0,15,1)] group">
             <div className="overflow-hidden border-b-4 border-black relative">
               <motion.div className="absolute inset-0 bg-[#FFD700] mix-blend-color opacity-0 group-hover:opacity-50 transition-opacity z-10 pointer-events-none" />
-              <img src={project.image} alt={project.title} className="w-full h-48 md:h-64 object-cover grayscale group-hover:grayscale-0 transition-all duration-500 transform group-hover:scale-105" />
+              <img src={project.image} alt={project.title || "Project Screenshot"} className="w-full h-48 md:h-64 object-cover grayscale group-hover:grayscale-0 transition-all duration-500 transform group-hover:scale-105" />
             </div>
             <div className="p-5 md:p-8 flex flex-col flex-grow">
               <h3 className="text-2xl md:text-4xl font-black uppercase mb-3 md:mb-4">{project.title}</h3>

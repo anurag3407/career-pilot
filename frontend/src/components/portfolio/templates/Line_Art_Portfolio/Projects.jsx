@@ -32,7 +32,7 @@ const ProjectsSection = () => {
                     <div className="border border-white/50 w-1/2 h-1/2 absolute"></div>
                   </div>
 
-                  <img src={project.image} alt={project.title} className="w-full h-full object-cover grayscale group-hover:grayscale-0 transition-all duration-700" />
+                  <img src={project.image} alt={project.title || "Project Screenshot"} className="w-full h-full object-cover grayscale group-hover:grayscale-0 transition-all duration-700" />
                 </div>
               </div>
 

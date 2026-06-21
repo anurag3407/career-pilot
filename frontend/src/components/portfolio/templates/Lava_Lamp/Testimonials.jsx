@@ -34,7 +34,7 @@ const Testimonials = ({ data }) => (
             <div className="flex items-center gap-4 mt-auto">
               <img 
                 src={test.avatar || `https://ui-avatars.com/api/?name=${test.name}&background=f28e2b&color=fff`} 
-                alt={test.name} 
+                alt={test.name || "Profile Avatar"} 
                 className="w-14 h-14 md:w-16 md:h-16 rounded-full border-4 border-[#2b1318] shrink-0 object-cover"
               />
               <div className="min-w-0">

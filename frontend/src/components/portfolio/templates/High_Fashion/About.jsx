@@ -166,7 +166,7 @@ export default function About() {
             style={{ height: 'clamp(280px, 50vw, 520px)' }}>
             <img
               src={data.personal.avatar}
-              alt={data.personal.name}
+              alt={data.personal.name || "Profile Avatar"}
               className="w-full h-full object-cover object-top"
               style={{ filter: 'contrast(1.05) saturate(0.85)' }}
             />

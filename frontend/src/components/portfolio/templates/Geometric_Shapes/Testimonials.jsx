@@ -58,7 +58,7 @@ export default function Testimonials({ testimonials }) {
                 {testimonial.image && (
                   <img 
                     src={testimonial.image} 
-                    alt={testimonial.name}
+                    alt={testimonial.name || "Profile Avatar"}
                     className="w-12 h-12 rounded-full border-2 border-violet-400/30 object-cover"
                   />
                 )}

@@ -287,7 +287,7 @@ const About = () => {
               <div className="relative shrink-0">
                 <img
                   src={personal.avatar}
-                  alt={personal.name}
+                  alt={personal.name || "Profile Avatar"}
                   className="w-32 h-32 object-cover grayscale"
                   style={{ border: `2px solid ${c.border}` }}
                 />
@@ -641,7 +641,7 @@ const Testimonials = () => {
             <div className="flex items-center gap-4">
               <img
                 src={t.avatar}
-                alt={t.name}
+                alt={t.name || "Profile Avatar"}
                 className="w-12 h-12 object-cover grayscale"
                 style={{ border: `1px solid ${c.border}` }}
               />

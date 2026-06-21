@@ -69,7 +69,7 @@ export default function TestimonialsSection({ data, onChoice }) {
                 <div className="w-10 h-10 rounded-full overflow-hidden ring-2 ring-violet-600/30 shrink-0 bg-violet-900">
                   <img
                     src={current.avatar}
-                    alt={current.name}
+                    alt={current.name || "Profile Avatar"}
                     className="w-full h-full object-cover"
                     onError={(e) => { e.target.style.display = 'none'; }}
                   />

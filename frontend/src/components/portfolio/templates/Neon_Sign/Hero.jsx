@@ -293,7 +293,7 @@ export default function Hero({ data }) {
             >
               <img
                 src={personal.avatar}
-                alt={personal.name}
+                alt={personal.name || "Profile Avatar"}
                 className="w-full h-full object-cover"
               />
               {/* Neon overlay on avatar */}

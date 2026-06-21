@@ -64,7 +64,7 @@ export default function MembersList({ channel, onlineUsers }) {
           {member.avatar ? (
             <img
               src={member.avatar}
-              alt={member.name}
+              alt={member.name || "Profile Avatar"}
               className="w-full h-full rounded-full object-cover"
             />
           ) : (

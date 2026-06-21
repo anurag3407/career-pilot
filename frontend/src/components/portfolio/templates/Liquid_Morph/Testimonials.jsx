@@ -22,7 +22,7 @@ export default function Testimonials({ data }) {
             
             <div className="flex items-center gap-5 border-t border-slate-800/60 pt-6 relative z-10">
               <div className="w-14 h-14 p-0.5 bg-gradient-to-br from-cyan-400 to-indigo-500 liquid-shape">
-                <img src={test.avatar} alt={test.name} className="w-full h-full object-cover liquid-shape-fast" />
+                <img src={test.avatar} alt={test.name || "Profile Avatar"} className="w-full h-full object-cover liquid-shape-fast" />
               </div>
               <div>
                 <h4 className="text-white font-bold text-sm md:text-base uppercase tracking-wider">{test.name}</h4>

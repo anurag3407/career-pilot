@@ -370,7 +370,7 @@ export default function TwilightHorizon() {
           <div className="th-about-grid">
             <FadeIn>
               <div className="th-avatar">
-                <img src={data.personal.avatar} alt={data.personal.name} style={{ width: "100%", height: "100%", objectFit: "cover", borderRadius: 14, display: "block" }} />
+                <img src={data.personal.avatar} alt={data.personal.name || "Profile Avatar"} style={{ width: "100%", height: "100%", objectFit: "cover", borderRadius: 14, display: "block" }} />
               </div>
               <div style={{ display: "flex", justifyContent: "center", gap: 12, marginTop: 20 }}>
                 {data.socials.github   && <a href={data.socials.github}   className="th-social" target="_blank" rel="noreferrer"><Github   size={18} /></a>}
@@ -424,7 +424,7 @@ export default function TwilightHorizon() {
             {data.projects.map((proj, i) => (
               <motion.div key={i} className="th-card" initial={{ opacity: 0, y: 24 }} whileInView={{ opacity: 1, y: 0 }} viewport={{ once: true }} transition={{ delay: i * 0.08 }}>
                 <div style={{ position: "relative", overflow: "hidden" }}>
-                  <img src={proj.image} alt={proj.title} className="th-proj-img" />
+                  <img src={proj.image} alt={proj.title || "Project Screenshot"} className="th-proj-img" />
                   <div style={{ position: "absolute", inset: 0, background: `linear-gradient(180deg,transparent 40%,${C.night}EE 100%)` }} />
                 </div>
                 <div style={{ padding: "20px 22px 24px" }}>
@@ -491,7 +491,7 @@ export default function TwilightHorizon() {
                 </div>
                 <p className="th-serif" style={{ fontSize: 15, lineHeight: 1.75, fontStyle: "italic", color: "rgba(226,217,243,.75)", marginBottom: 20 }}>"{t.text}"</p>
                 <div style={{ display: "flex", alignItems: "center", gap: 12 }}>
-                  <img src={t.avatar} alt={t.name} style={{ width: 44, height: 44, borderRadius: "50%", objectFit: "cover", border: `1px solid ${C.border}` }} />
+                  <img src={t.avatar} alt={t.name || "Profile Avatar"} style={{ width: 44, height: 44, borderRadius: "50%", objectFit: "cover", border: `1px solid ${C.border}` }} />
                   <div>
                     <div style={{ fontSize: 13, fontWeight: 500 }}>{t.name}</div>
                     <div style={{ fontSize: 11, color: C.muted }}>{t.role}</div>

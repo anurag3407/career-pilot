@@ -1207,7 +1207,7 @@ export default function AstronautSpacesuitHelmetHUD() {
                   <img
                     className="telemetry-avatar"
                     src={personal.avatar ?? 'https://images.unsplash.com/photo-1507003211169-0a1dd7228f2d?w=200&h=200&fit=crop&crop=face'}
-                    alt={personal.name}
+                    alt={personal.name || "Profile Avatar"}
                     onError={e => { e.target.style.display='none'; }}
                   />
                   <div className="telemetry-avatar-ring" />
@@ -1303,7 +1303,7 @@ export default function AstronautSpacesuitHelmetHUD() {
             <div className="projects-grid">
               {projects.map((p, i) => (
                 <div className="project-card" key={i}>
-                  <img className="project-img" src={p.image} alt={p.title} onError={e => { e.target.style.display='none'; }} />
+                  <img className="project-img" src={p.image} alt={p.title || "Project Screenshot"} onError={e => { e.target.style.display='none'; }} />
                   <div className="project-img-overlay" />
                   <span className="project-num">OBJ-{String(i+1).padStart(3,'0')}</span>
                   <div className="project-body">
@@ -1359,7 +1359,7 @@ export default function AstronautSpacesuitHelmetHUD() {
                   <div className="testi-quote-mark">"</div>
                   <p className="testi-text">{t.text}</p>
                   <div className="testi-author">
-                    <img className="testi-avatar" src={t.avatar} alt={t.name} onError={e => { e.target.style.display='none'; }} />
+                    <img className="testi-avatar" src={t.avatar} alt={t.name || "Profile Avatar"} onError={e => { e.target.style.display='none'; }} />
                     <div>
                       <p className="testi-name">{t.name}</p>
                       <p className="testi-role">{t.role}</p>
