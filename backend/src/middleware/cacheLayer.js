@@ -701,8 +701,13 @@ export const cacheResponse = ({
 
               Promise.resolve(
                 writePromise,
-              ).catch(() => {
-                // Cache persistence is fail-open.
+              ).catch((error) => {
+                console.debug('[cacheLayer] Failed to persist cache response', {
+                  namespace,
+                  method: req.method,
+                  path: req.path,
+                  error: error instanceof Error ? error.message : String(error),
+                });
               });
             } catch {
               // Synchronous Redis failures are fail-open.
