@@ -6,12 +6,17 @@ export const verifyToken = async (req, res, next) => {
   try {
     // Development bypass
     if (process.env.NODE_ENV === 'development' && process.env.DEV_BYPASS_AUTH === 'true') {
+      const adminEmails = (process.env.ADMIN_EMAILS || '')
+        .split(',')
+        .map((e) => e.trim())
+        .filter(Boolean);
       req.user = {
         uid: process.env.DEV_USER_UID || 'dev-user-001',
         email: process.env.DEV_USER_EMAIL || 'dev@example.com',
         name: 'Local Dev User',
         picture: null,
-        emailVerified: true
+        emailVerified: true,
+        isAdmin: adminEmails.includes(process.env.DEV_USER_EMAIL || 'dev@example.com')
       };
       return next();
     }
@@ -27,12 +32,18 @@ export const verifyToken = async (req, res, next) => {
     try {
       const decodedToken = await admin.auth().verifyIdToken(token);
 
+      const adminEmails = (process.env.ADMIN_EMAILS || '')
+        .split(',')
+        .map((e) => e.trim())
+        .filter(Boolean);
+
       req.user = {
         uid: decodedToken.uid,
         email: decodedToken.email,
         name: decodedToken.name || decodedToken.email?.split('@')[0],
         picture: decodedToken.picture || null,
-        emailVerified: decodedToken.email_verified
+        emailVerified: decodedToken.email_verified,
+        isAdmin: adminEmails.includes(decodedToken.email)
       };
 
       next();
@@ -74,12 +85,17 @@ export const optionalAuth = async (req, res, next) => {
   try {
     // Development bypass
     if (process.env.NODE_ENV === 'development' && process.env.DEV_BYPASS_AUTH === 'true') {
+      const adminEmails = (process.env.ADMIN_EMAILS || '')
+        .split(',')
+        .map((e) => e.trim())
+        .filter(Boolean);
       req.user = {
         uid: process.env.DEV_USER_UID || 'dev-user-001',
         email: process.env.DEV_USER_EMAIL || 'dev@example.com',
         name: 'Local Dev User',
         picture: null,
-        emailVerified: true
+        emailVerified: true,
+        isAdmin: adminEmails.includes(process.env.DEV_USER_EMAIL || 'dev@example.com')
       };
       return next();
     }
@@ -96,12 +112,18 @@ export const optionalAuth = async (req, res, next) => {
     try {
       const decodedToken = await admin.auth().verifyIdToken(token);
 
+      const adminEmails = (process.env.ADMIN_EMAILS || '')
+        .split(',')
+        .map((e) => e.trim())
+        .filter(Boolean);
+
       req.user = {
         uid: decodedToken.uid,
         email: decodedToken.email,
         name: decodedToken.name || decodedToken.email?.split('@')[0],
         picture: decodedToken.picture || null,
-        emailVerified: decodedToken.email_verified
+        emailVerified: decodedToken.email_verified,
+        isAdmin: adminEmails.includes(decodedToken.email)
       };
 
       next();
