@@ -4,7 +4,7 @@ import { X, Bug, Loader2 } from 'lucide-react';
 import toast from 'react-hot-toast';
 import { bugsApi } from '../services/api';
 
-export default function ReportBugModal({ isOpen, onClose }) {
+export default function ReportBugModal({ isOpen, onClose, currentUrl }) {
   const [title, setTitle] = useState('');
   const [description, setDescription] = useState('');
   const [isSubmitting, setIsSubmitting] = useState(false);
