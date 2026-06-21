@@ -8,15 +8,16 @@ export const verifyToken = async (req, res, next) => {
     if (process.env.NODE_ENV === 'development' && process.env.DEV_BYPASS_AUTH === 'true') {
       const adminEmails = (process.env.ADMIN_EMAILS || '')
         .split(',')
-        .map((e) => e.trim())
+        .map((e) => e.trim().toLowerCase())
         .filter(Boolean);
+      const devEmail = (process.env.DEV_USER_EMAIL || 'dev@example.com').toLowerCase();
       req.user = {
         uid: process.env.DEV_USER_UID || 'dev-user-001',
         email: process.env.DEV_USER_EMAIL || 'dev@example.com',
         name: 'Local Dev User',
         picture: null,
         emailVerified: true,
-        isAdmin: adminEmails.includes(process.env.DEV_USER_EMAIL || 'dev@example.com')
+        isAdmin: adminEmails.includes(devEmail)
       };
       return next();
     }
@@ -34,16 +35,18 @@ export const verifyToken = async (req, res, next) => {
 
       const adminEmails = (process.env.ADMIN_EMAILS || '')
         .split(',')
-        .map((e) => e.trim())
+        .map((e) => e.trim().toLowerCase())
         .filter(Boolean);
+
+      const emailLower = decodedToken.email?.toLowerCase();
 
       req.user = {
         uid: decodedToken.uid,
         email: decodedToken.email,
         name: decodedToken.name || decodedToken.email?.split('@')[0],
         picture: decodedToken.picture || null,
-        emailVerified: decodedToken.email_verified,
-        isAdmin: adminEmails.includes(decodedToken.email)
+        emailVerified: !!decodedToken.email_verified,
+        isAdmin: !!decodedToken.email_verified && adminEmails.includes(emailLower)
       };
 
       next();
@@ -71,10 +74,10 @@ export const verifyToken = async (req, res, next) => {
 export const adminOnly = (req, res, next) => {
   const adminEmails = (process.env.ADMIN_EMAILS || '')
     .split(',')
-    .map((e) => e.trim())
+    .map((e) => e.trim().toLowerCase())
     .filter(Boolean);
 
-  if (!req.user || !adminEmails.includes(req.user.email)) {
+  if (!req.user || !req.user.emailVerified || !adminEmails.includes(req.user.email?.toLowerCase())) {
     return next(new ApiError(403, 'Admin access required'));
   }
   next();
@@ -87,15 +90,16 @@ export const optionalAuth = async (req, res, next) => {
     if (process.env.NODE_ENV === 'development' && process.env.DEV_BYPASS_AUTH === 'true') {
       const adminEmails = (process.env.ADMIN_EMAILS || '')
         .split(',')
-        .map((e) => e.trim())
+        .map((e) => e.trim().toLowerCase())
         .filter(Boolean);
+      const devEmail = (process.env.DEV_USER_EMAIL || 'dev@example.com').toLowerCase();
       req.user = {
         uid: process.env.DEV_USER_UID || 'dev-user-001',
         email: process.env.DEV_USER_EMAIL || 'dev@example.com',
         name: 'Local Dev User',
         picture: null,
         emailVerified: true,
-        isAdmin: adminEmails.includes(process.env.DEV_USER_EMAIL || 'dev@example.com')
+        isAdmin: adminEmails.includes(devEmail)
       };
       return next();
     }
@@ -114,16 +118,18 @@ export const optionalAuth = async (req, res, next) => {
 
       const adminEmails = (process.env.ADMIN_EMAILS || '')
         .split(',')
-        .map((e) => e.trim())
+        .map((e) => e.trim().toLowerCase())
         .filter(Boolean);
+
+      const emailLower = decodedToken.email?.toLowerCase();
 
       req.user = {
         uid: decodedToken.uid,
         email: decodedToken.email,
         name: decodedToken.name || decodedToken.email?.split('@')[0],
         picture: decodedToken.picture || null,
-        emailVerified: decodedToken.email_verified,
-        isAdmin: adminEmails.includes(decodedToken.email)
+        emailVerified: !!decodedToken.email_verified,
+        isAdmin: !!decodedToken.email_verified && adminEmails.includes(emailLower)
       };
 
       next();
