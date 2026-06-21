@@ -65,7 +65,7 @@ export default function About({ data }) {
               >
                 <img
                   src={personal.avatar}
-                  alt={personal.name}
+                  alt={personal.name || "Profile Avatar"}
                   className="w-full h-full object-cover"
                 />
               </div>

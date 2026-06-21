@@ -1140,7 +1140,7 @@ function About() {
               <TapeCorner corner="tr" />
               <img
                 src={avatar}
-                alt={name}
+                alt={name || "Profile Avatar"}
                 style={{
                   width: '100%',
                   aspectRatio: '1/1',
@@ -1705,7 +1705,7 @@ function Projects() {
               <div style={{ position: 'relative', height: 200, overflow: 'hidden' }}>
                 <img
                   src={project.image}
-                  alt={project.title}
+                  alt={project.title || "Project Screenshot"}
                   style={{
                     width: '100%', height: '100%', objectFit: 'cover',
                     filter: 'sepia(20%) contrast(1.1) brightness(0.95)',
@@ -1945,7 +1945,7 @@ function Testimonials() {
                 <div style={{ position: 'relative', flexShrink: 0 }}>
                   <img
                     src={t.avatar}
-                    alt={t.name}
+                    alt={t.name || "Profile Avatar"}
                     style={{
                       width: 48, height: 48, borderRadius: '50%',
                       objectFit: 'cover',

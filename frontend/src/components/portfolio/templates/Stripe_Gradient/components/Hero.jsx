@@ -38,7 +38,7 @@ export default function Hero() {
       >
         <img
           src={data.personal.avatar}
-          alt={data.personal.name}
+          alt={data.personal.name || "Profile Avatar"}
           className="w-32 h-32 rounded-full mx-auto border-4 border-white/20 shadow-2xl"
         />
 

@@ -28,7 +28,7 @@ export default function Projects() {
             >
               <div className="h-48 bg-gradient-to-br from-teal-100 to-blue-100 relative overflow-hidden flex items-center justify-center">
                 {project.image ? (
-                  <img src={project.image} alt={project.title} className="w-full h-full object-cover group-hover:scale-105 transition-transform duration-500" />
+                  <img src={project.image} alt={project.title || "Project Screenshot"} className="w-full h-full object-cover group-hover:scale-105 transition-transform duration-500" />
                 ) : (
                   <div className="text-teal-300 font-bold text-4xl opacity-50">{project.title.charAt(0)}</div>
                 )}

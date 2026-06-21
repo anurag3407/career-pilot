@@ -350,7 +350,7 @@ export default function MorphingBlobs() {
           <div className="mb-about-grid">
             <FadeIn>
               <div className="mb-avatar">
-                <img src={data.personal.avatar} alt={data.personal.name} style={{ width: "100%", height: "100%", objectFit: "cover", borderRadius: 18, display: "block" }} />
+                <img src={data.personal.avatar} alt={data.personal.name || "Profile Avatar"} style={{ width: "100%", height: "100%", objectFit: "cover", borderRadius: 18, display: "block" }} />
               </div>
               <div style={{ display: "flex", justifyContent: "center", gap: 12, marginTop: 20 }}>
                 {data.socials.github   && <a href={data.socials.github}   className="mb-social" target="_blank" rel="noreferrer"><Github   size={18} /></a>}
@@ -405,7 +405,7 @@ export default function MorphingBlobs() {
               <motion.div key={i} className="mb-glass" initial={{ opacity: 0, y: 24 }} whileInView={{ opacity: 1, y: 0 }} viewport={{ once: true }} transition={{ delay: i * 0.08 }}
                 style={{ overflow: "hidden" }}>
                 <div style={{ position: "relative", overflow: "hidden" }}>
-                  <img src={proj.image} alt={proj.title} className="mb-proj-img" />
+                  <img src={proj.image} alt={proj.title || "Project Screenshot"} className="mb-proj-img" />
                   <div style={{ position: "absolute", inset: 0, background: `linear-gradient(180deg,transparent 40%,${C.bg}EE 100%)` }} />
                 </div>
                 <div style={{ padding: "20px 22px 24px" }}>
@@ -470,7 +470,7 @@ export default function MorphingBlobs() {
                 <div style={{ fontSize: 42, lineHeight: 1, color: C.accent, opacity: 0.15, fontWeight: 800, marginBottom: -8 }}>&#8220;</div>
                 <p style={{ fontSize: 14, lineHeight: 1.8, color: C.muted, marginBottom: 20 }}>{t.text}</p>
                 <div style={{ display: "flex", alignItems: "center", gap: 12 }}>
-                  <img src={t.avatar} alt={t.name} style={{ width: 44, height: 44, borderRadius: "50%", objectFit: "cover", border: `2px solid rgba(168,85,247,.3)` }} />
+                  <img src={t.avatar} alt={t.name || "Profile Avatar"} style={{ width: 44, height: 44, borderRadius: "50%", objectFit: "cover", border: `2px solid rgba(168,85,247,.3)` }} />
                   <div>
                     <div style={{ fontSize: 14, fontWeight: 600 }}>{t.name}</div>
                     <div style={{ fontSize: 11, color: C.muted }}>{t.role}</div>

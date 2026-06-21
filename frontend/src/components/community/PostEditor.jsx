@@ -366,7 +366,7 @@ const removePollOption = (index) => {
                   <div className="relative group inline-block">
                     <img
                       src={imagePreview}
-                      alt={imageFile.name}
+                      alt={imageFile.name || "Profile Avatar"}
                       className="max-h-48 rounded-xl border border-border object-cover"
                     />
                     <button

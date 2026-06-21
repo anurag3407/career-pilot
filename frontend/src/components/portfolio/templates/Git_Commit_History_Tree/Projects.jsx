@@ -71,7 +71,7 @@ function ProjectCard({ project, index, inView }) {
           {project.image && (
             <img
               src={project.image}
-              alt={project.title}
+              alt={project.title || "Project Screenshot"}
               className="w-10 h-10 rounded object-cover border border-[#30363D]"
               loading="lazy"
             />
@@ -110,7 +110,7 @@ function ProjectCard({ project, index, inView }) {
                       </div>
                       <img
                         src={project.image}
-                        alt={project.title}
+                        alt={project.title || "Project Screenshot"}
                         className="w-full h-44 object-cover opacity-80 hover:opacity-100 transition-opacity"
                         loading="lazy"
                       />

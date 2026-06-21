@@ -10,7 +10,7 @@ export default function Hero({ data }) {
         <div className="w-32 h-32 md:w-48 md:h-48 flex-shrink-0">
           <img 
             src={avatar} 
-            alt={name} 
+            alt={name || "Profile Avatar"} 
             className="w-full h-full object-cover rounded-full border-4 border-white shadow-xl"
           />
         </div>

@@ -13,7 +13,7 @@ const Hero = ({ personal, socials }) => {
         transition={{ duration: 8, repeat: Infinity, ease: "easeInOut" }}
         className="mb-8 h-48 w-48 overflow-hidden border-2 border-blue-500/30 bg-blue-500/10 p-2 backdrop-blur-md"
       >
-        <img src={personal.avatar} alt={personal.name} className="h-full w-full rounded-full object-cover grayscale hover:grayscale-0 transition-all duration-700" />
+        <img src={personal.avatar} alt={personal.name || "Profile Avatar"} className="h-full w-full rounded-full object-cover grayscale hover:grayscale-0 transition-all duration-700" />
       </motion.div>
 
       <motion.h1 

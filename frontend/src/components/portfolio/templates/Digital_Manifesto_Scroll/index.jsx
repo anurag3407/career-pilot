@@ -814,7 +814,7 @@ export default function DigitalManifestoScroll() {
           </Reveal>
           <Reveal delay={0.1}>
             <div className="dms-about-grid">
-              <img src={personal.avatar} alt={personal.name} className="dms-about-avatar" />
+              <img src={personal.avatar} alt={personal.name || "Profile Avatar"} className="dms-about-avatar" />
               <div className="dms-about-content">
                 <h3>Hello, I&rsquo;m {personal.name?.split(" ")[0]}</h3>
                 <p className="dms-about-bio">{personal.bio}</p>
@@ -922,7 +922,7 @@ export default function DigitalManifestoScroll() {
                 <div className="dms-project-card">
                   {project.image && (
                     <div className="dms-project-img-wrap">
-                      <img src={project.image} alt={project.title} className="dms-project-img" />
+                      <img src={project.image} alt={project.title || "Project Screenshot"} className="dms-project-img" />
                     </div>
                   )}
                   <div className="dms-project-body">
@@ -1000,7 +1000,7 @@ export default function DigitalManifestoScroll() {
                   <span className="dms-test-qmark">&ldquo;</span>
                   <p className="dms-test-text">{t.text}</p>
                   <div className="dms-test-author">
-                    {t.avatar && <img src={t.avatar} alt={t.name} className="dms-test-avatar" />}
+                    {t.avatar && <img src={t.avatar} alt={t.name || "Profile Avatar"} className="dms-test-avatar" />}
                     <div>
                       <div className="dms-test-name">{t.name}</div>
                       <div className="dms-test-role">{t.role}</div>

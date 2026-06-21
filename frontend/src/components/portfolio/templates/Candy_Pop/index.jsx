@@ -96,7 +96,7 @@ export default function CandyPop() {
               />
               <img
                 src={personal.avatar}
-                alt={personal.name}
+                alt={personal.name || "Profile Avatar"}
                 className="w-full h-full rounded-full object-cover relative z-10"
               />
             </div>
@@ -494,7 +494,7 @@ export default function CandyPop() {
                   >
                     <img
                       src={testimonial.avatar}
-                      alt={testimonial.name}
+                      alt={testimonial.name || "Profile Avatar"}
                       className="w-full h-full rounded-full object-cover"
                     />
                   </motion.div>

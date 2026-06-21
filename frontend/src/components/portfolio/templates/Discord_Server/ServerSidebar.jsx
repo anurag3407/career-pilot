@@ -18,7 +18,7 @@ export default function ServerSidebar({ avatar, name, forceShow = false }) {
         whileHover={{ borderRadius: '35%' }}
         className="w-12 h-12 rounded-[50%] overflow-hidden cursor-pointer mb-1 ring-2 ring-[#5865F2] transition-all duration-200"
       >
-        <img src={avatar} alt={name} className="w-full h-full object-cover" />
+        <img src={avatar} alt={name || "Profile Avatar"} className="w-full h-full object-cover" />
       </motion.div>
 
       <div className="w-8 h-[2px] bg-[#35363C] rounded-full mb-1" />

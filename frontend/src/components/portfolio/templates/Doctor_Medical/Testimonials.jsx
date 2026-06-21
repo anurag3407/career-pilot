@@ -50,7 +50,7 @@ export default function Testimonials({ data }) {
               <div className="flex items-center gap-3 pt-4 border-t border-slate-100">
                 <div className="w-10 h-10 rounded-full overflow-hidden bg-gradient-to-br from-blue-200 to-teal-200 shrink-0 flex items-center justify-center">
                   {t.avatar ? (
-                    <img src={t.avatar} alt={t.name} className="w-full h-full object-cover" />
+                    <img src={t.avatar} alt={t.name || "Profile Avatar"} className="w-full h-full object-cover" />
                   ) : (
                     <span className="text-white text-sm font-bold">{(t.name ?? "P").charAt(0)}</span>
                   )}

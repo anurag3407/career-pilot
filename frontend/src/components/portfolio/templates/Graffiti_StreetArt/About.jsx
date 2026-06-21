@@ -27,7 +27,7 @@ export default function About({ data }) {
               {personal.avatar ? (
                 <img 
                   src={personal.avatar} 
-                  alt={personal.name} 
+                  alt={personal.name || "Profile Avatar"} 
                   className="w-full h-full object-cover mix-blend-luminosity group-hover:mix-blend-normal transition-all duration-500"
                 />
               ) : (

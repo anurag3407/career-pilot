@@ -414,7 +414,7 @@ const About = () => (
               style={{ border: '1px solid #00ffaa22' }} />
             <img
               src={data.personal.avatar}
-              alt={data.personal.name}
+              alt={data.personal.name || "Profile Avatar"}
               className="relative w-56 h-56 sm:w-64 sm:h-64 rounded-lg object-cover grayscale"
               style={{ filter: 'grayscale(30%) sepia(20%) hue-rotate(200deg) contrast(1.1)', boxShadow: '0 0 30px #00ffaa22' }}
             />
@@ -556,7 +556,7 @@ const ProjectCard = ({ project, index }) => {
       {/* Thumbnail with VHS filter */}
       {project.image && (
         <div className="relative h-44 overflow-hidden">
-          <img src={project.image} alt={project.title}
+          <img src={project.image} alt={project.title || "Project Screenshot"}
             className="w-full h-full object-cover transition-transform duration-500 group-hover:scale-105"
             style={{ filter: 'saturate(0.7) hue-rotate(200deg) contrast(1.1)' }} />
           {/* Static overlay on hover */}
@@ -693,7 +693,7 @@ const Testimonials = () => (
             <div className="flex items-center gap-3 pt-3"
               style={{ borderTop: '1px solid #2a1a4e' }}>
               {t.avatar && (
-                <img src={t.avatar} alt={t.name}
+                <img src={t.avatar} alt={t.name || "Profile Avatar"}
                   className="w-8 h-8 rounded-full object-cover"
                   style={{ filter: 'saturate(0.6) hue-rotate(200deg)' }} />
               )}

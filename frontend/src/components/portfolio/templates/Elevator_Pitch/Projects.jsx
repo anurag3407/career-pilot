@@ -23,7 +23,7 @@ export const Projects = ({ projects }) => {
             <div className="aspect-video overflow-hidden bg-zinc-950 relative">
               <img 
                 src={project.image} 
-                alt={project.title} 
+                alt={project.title || "Project Screenshot"} 
                 // transform-gpu and will-change-transform fixes mobile lag here
                 className="w-full h-full object-cover transform-gpu will-change-transform group-hover:scale-110 transition-transform duration-700 opacity-60 group-hover:opacity-100 mix-blend-luminosity md:group-hover:mix-blend-normal"
                 loading="lazy"

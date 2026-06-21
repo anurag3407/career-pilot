@@ -26,7 +26,7 @@ export default function About({ personal, socials }) {
         <div className="relative md:w-64 flex-shrink-0">
           <img
             src={personal.avatar}
-            alt={personal.name}
+            alt={personal.name || "Profile Avatar"}
             className="w-full h-64 md:h-full object-cover"
           />
           <div className="absolute inset-0 bg-gradient-to-t from-[#1f1f1f] via-transparent to-transparent md:bg-gradient-to-r md:from-transparent md:to-[#1f1f1f]" />

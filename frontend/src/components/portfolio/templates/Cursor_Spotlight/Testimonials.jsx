@@ -20,7 +20,7 @@ const Testimonials = ({ testimonials }) => {
           >
             <p className="mb-8 text-sm italic text-zinc-300">"{test.text}"</p>
             <div className="flex items-center gap-4">
-              <img src={test.avatar} alt={test.name} className="h-10 w-10 rounded-full grayscale" />
+              <img src={test.avatar} alt={test.name || "Profile Avatar"} className="h-10 w-10 rounded-full grayscale" />
               <div>
                 <h4 className="text-sm font-bold text-white">{test.name}</h4>
                 <span className="text-xs text-zinc-500">{test.role}</span>

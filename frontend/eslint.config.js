@@ -2,10 +2,12 @@ import js from '@eslint/js'
 import globals from 'globals'
 import reactHooks from 'eslint-plugin-react-hooks'
 import reactRefresh from 'eslint-plugin-react-refresh'
+import jsxA11y from 'eslint-plugin-jsx-a11y'
 
 export default [
   { ignores: ['dist'] },
   js.configs.recommended,
+  jsxA11y.flatConfigs.recommended,
   {
     files: ['**/*.{js,jsx}'],
     languageOptions: {
@@ -30,7 +32,8 @@ export default [
       'no-empty': 'off',
       'react-hooks/exhaustive-deps': 'warn',
       'no-undef': 'warn',
-      'react-compiler/react-compiler': 'off'
+      'react-compiler/react-compiler': 'off',
+      'jsx-a11y/alt-text': 'error'
     },
   },
 ]

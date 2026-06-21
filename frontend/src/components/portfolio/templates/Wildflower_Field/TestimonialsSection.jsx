@@ -138,7 +138,7 @@ function TestimonialCard({ testimonial, index }) {
           <div className="relative flex-shrink-0">
             <img
               src={testimonial.avatar}
-              alt={testimonial.name}
+              alt={testimonial.name || "Profile Avatar"}
               className="w-11 h-11 rounded-full object-cover"
               style={{
                 border: `2px solid ${style.quoteColor}70`,

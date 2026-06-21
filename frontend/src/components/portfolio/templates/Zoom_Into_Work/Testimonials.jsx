@@ -19,7 +19,7 @@ export default function Testimonials() {
               <Quote className="absolute top-6 right-6 text-zinc-800 group-hover:text-indigo-500/30 transition-colors duration-500" size={48} />
               <p className="text-zinc-300 text-lg italic mb-8 relative z-10">"{test.text}"</p>
               <div className="flex items-center gap-4 relative z-10">
-                <img src={test.avatar} alt={test.name} className="w-12 h-12 rounded-full object-cover border-2 border-zinc-700" />
+                <img src={test.avatar} alt={test.name || "Profile Avatar"} className="w-12 h-12 rounded-full object-cover border-2 border-zinc-700" />
                 <div>
                   <h4 className="text-white font-bold">{test.name}</h4>
                   <p className="text-sm text-zinc-500">{test.role}</p>

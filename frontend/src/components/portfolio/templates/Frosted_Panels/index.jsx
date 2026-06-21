@@ -478,7 +478,7 @@ export default function FrostedPanels() {
                   <div className="relative flex-shrink-0">
                     <img
                       src={data.personal.avatar}
-                      alt={data.personal.name}
+                      alt={data.personal.name || "Profile Avatar"}
                       className="w-12 h-12 rounded-xl object-cover border-2 border-white/85 shadow-sm"
                     />
                     <span className="absolute -bottom-0.5 -right-0.5 w-3 h-3 rounded-full bg-green-400 border-2 border-white shadow-sm" />
@@ -612,7 +612,7 @@ export default function FrostedPanels() {
               <div className="w-full h-full rounded-2xl overflow-hidden relative">
                 <img
                   src={data.personal.avatar}
-                  alt={data.personal.name}
+                  alt={data.personal.name || "Profile Avatar"}
                   className="w-full h-full object-cover group-hover/avatar:scale-105 transition-transform duration-500 ease-out scale-100"
                 />
                 <div className="absolute inset-0 bg-gradient-to-t from-[#dde4f2]/40 via-transparent to-transparent opacity-60" />
@@ -837,7 +837,7 @@ export default function FrostedPanels() {
                 <div className="h-48 overflow-hidden relative border-b border-slate-100 bg-slate-50">
                   <img
                     src={project.image}
-                    alt={project.title}
+                    alt={project.title || "Project Screenshot"}
                     className="w-full h-full object-cover group-hover/proj:scale-105 transition-all duration-500 grayscale-[10%] group-hover/proj:grayscale-0"
                   />
                   <div className="absolute inset-0 bg-[linear-gradient(to_top,rgba(255,255,255,0.9),transparent_60%)]" />
@@ -1001,7 +1001,7 @@ export default function FrostedPanels() {
 
               <div className="flex items-center gap-4 pt-4 border-t border-slate-200/40 w-full z-10">
                 <div className="w-12 h-12 rounded-full overflow-hidden border border-slate-250 bg-white shadow-sm">
-                  <img src={test.avatar} alt={test.name} className="w-full h-full object-cover" />
+                  <img src={test.avatar} alt={test.name || "Profile Avatar"} className="w-full h-full object-cover" />
                 </div>
                 <div>
                   <h4 className="text-[#1b1435] font-extrabold text-sm md:text-base">{test.name}</h4>

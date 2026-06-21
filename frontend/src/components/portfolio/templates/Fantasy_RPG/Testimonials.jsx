@@ -90,7 +90,7 @@ export default function Testimonials() {
                 <div className="flex items-center gap-4 pt-6 border-t border-amber-900/40 mt-auto">
                   <div className="w-12 h-12 rounded-full bg-amber-950 border-2 border-amber-600 flex items-center justify-center shadow-[0_0_10px_rgba(212,175,55,0.3)] overflow-hidden">
                     {testimonial.image ? (
-                      <img src={testimonial.image} alt={testimonial.name} className="w-full h-full object-cover" />
+                      <img src={testimonial.image} alt={testimonial.name || "Profile Avatar"} className="w-full h-full object-cover" />
                     ) : (
                       <Award className="w-6 h-6 text-amber-500" />
                     )}

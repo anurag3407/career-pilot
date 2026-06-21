@@ -14,7 +14,7 @@ function TestimonialCard({ test, isMobile }) {
         "{test.text}"
       </p>
       <div className="mt-auto flex items-center gap-3 border-t border-zinc-800 pt-4">
-        <img src={test.avatar} alt={test.name} loading="lazy" className="h-10 w-10 rounded-full grayscale transition-all duration-300 group-hover:grayscale-0 group-hover:saturate-125 lg:h-14 lg:w-14" />
+        <img src={test.avatar} alt={test.name || "Profile Avatar"} loading="lazy" className="h-10 w-10 rounded-full grayscale transition-all duration-300 group-hover:grayscale-0 group-hover:saturate-125 lg:h-14 lg:w-14" />
         <div>
           <div className="text-xs font-bold text-zinc-100 lg:text-lg">{test.name}</div>
           <div className="mt-0.5 font-mono text-[9px] text-zinc-500 lg:text-sm">{test.role}</div>

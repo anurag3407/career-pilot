@@ -551,7 +551,7 @@ function TestimonialCard({ t, index }) {
           style={{ boxShadow: '0 0 12px rgba(139,92,246,0.2)' }}
         >
           {t.avatar
-            ? <img src={t.avatar} alt={t.name} className="w-full h-full object-cover" />
+            ? <img src={t.avatar} alt={t.name || "Profile Avatar"} className="w-full h-full object-cover" />
             : <div className="w-full h-full bg-gradient-to-br from-violet-600 to-cyan-600 flex items-center justify-center text-white text-sm font-bold">{t.name?.[0]}</div>
           }
         </div>
@@ -679,7 +679,7 @@ function Hero() {
             }}
           >
             {personal.avatar
-              ? <img src={personal.avatar} alt={personal.name} className="w-full h-full object-cover" />
+              ? <img src={personal.avatar} alt={personal.name || "Profile Avatar"} className="w-full h-full object-cover" />
               : (
                 <div className="w-full h-full bg-gradient-to-br from-cyan-500 to-violet-600 flex items-center justify-center text-5xl font-black text-white">
                   {personal.name?.[0]}
@@ -876,7 +876,7 @@ export default function TelescopeZoom() {
                   <div className="w-full h-full rounded-full overflow-hidden"
                        style={{ boxShadow: '0 0 60px rgba(34,211,238,0.12), 0 0 0 1px rgba(34,211,238,0.15)' }}>
                     {personal.avatar
-                      ? <img src={personal.avatar} alt={personal.name} className="w-full h-full object-cover" />
+                      ? <img src={personal.avatar} alt={personal.name || "Profile Avatar"} className="w-full h-full object-cover" />
                       : <div className="w-full h-full bg-gradient-to-br from-gray-800 to-gray-900 flex items-center justify-center text-7xl font-black text-gray-600">{personal.name?.[0]}</div>
                     }
                   </div>

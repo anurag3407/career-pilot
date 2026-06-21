@@ -205,7 +205,7 @@ export default function AppleShowcase() {
               <div className="absolute inset-0 bg-gradient-to-t from-black via-transparent to-black/20 z-10 pointer-events-none" />
               <img 
                 src={personal.avatar} 
-                alt={personal.name} 
+                alt={personal.name || "Profile Avatar"} 
                 className="w-full h-full object-cover grayscale opacity-90 group-hover:grayscale-0 group-hover:opacity-100 transition-all duration-700 scale-105 group-hover:scale-100"
               />
             </div>
@@ -484,7 +484,7 @@ export default function AppleShowcase() {
                     <div className="w-full flex-1 overflow-hidden relative bg-black rounded-b-xl flex items-center justify-center">
                       <img 
                         src={project.image} 
-                        alt={project.title} 
+                        alt={project.title || "Project Screenshot"} 
                         className="w-full h-full object-cover opacity-80 hover:opacity-100 transition-opacity duration-500"
                       />
                     </div>
@@ -658,7 +658,7 @@ export default function AppleShowcase() {
                 <div className="flex items-center gap-3 border-t border-neutral-900 pt-6 mt-auto">
                   <img 
                     src={test.avatar} 
-                    alt={test.name} 
+                    alt={test.name || "Profile Avatar"} 
                     className="w-10 h-10 rounded-full object-cover border border-neutral-800 bg-neutral-900"
                   />
                   <div>

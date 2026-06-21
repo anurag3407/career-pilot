@@ -322,7 +322,7 @@ const isValidGithub = (username) => {
     {profile?.avatarUrl ? (
       <img
         src={profile.avatarUrl}
-        alt={displayName}
+        alt={displayName || "Profile Avatar"}
         className="w-full h-full object-cover"
       />
     ) : (

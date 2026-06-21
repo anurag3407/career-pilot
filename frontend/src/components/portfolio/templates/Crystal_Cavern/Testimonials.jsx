@@ -30,7 +30,7 @@ export default function Testimonials({ testimonials = [] }) {
               <div className="flex items-center gap-4">
                 <img 
                   src={test.avatar} 
-                  alt={test.name}
+                  alt={test.name || "Profile Avatar"}
                   onError={(e) => { e.currentTarget.src = 'https://ui-avatars.com/api/?name=' + encodeURIComponent(test.name || 'U'); e.currentTarget.onerror = null; }}
                   className="w-12 h-12 rounded-full object-cover border border-indigo-500/30" 
                 />

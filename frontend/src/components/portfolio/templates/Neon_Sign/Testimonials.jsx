@@ -111,7 +111,7 @@ export default function Testimonials({ data }) {
                   >
                     <img
                       src={testimonial.avatar}
-                      alt={testimonial.name}
+                      alt={testimonial.name || "Profile Avatar"}
                       className="w-full h-full object-cover"
                     />
                   </div>

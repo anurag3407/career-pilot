@@ -46,7 +46,7 @@ export default function Testimonials({ testimonials = [] }) {
             <div className="flex-shrink-0 flex flex-col items-center">
               <div className="w-24 h-24 bg-neutral-900 border-4 border-black p-1 shadow-[4px_4px_0px_0px_#00f0ff] mb-4 overflow-hidden relative">
                 {testimonials[activeIndex].avatar ? (
-                  <img src={testimonials[activeIndex].avatar} alt={testimonials[activeIndex].name} className="w-full h-full object-cover pixelated grayscale hover:grayscale-0 transition-all" style={{ imageRendering: 'pixelated' }} />
+                  <img src={testimonials[activeIndex].avatar} alt={testimonials[activeIndex].name || "Profile Avatar"} className="w-full h-full object-cover pixelated grayscale hover:grayscale-0 transition-all" style={{ imageRendering: 'pixelated' }} />
                 ) : (
                   <div className="w-full h-full bg-black flex items-center justify-center">
                     <User className="w-12 h-12 text-[#00f0ff]" />

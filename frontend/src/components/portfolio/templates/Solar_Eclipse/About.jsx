@@ -40,7 +40,7 @@ export default function About({ personal, stats }) {
               />
               <img
                 src={personal.avatar}
-                alt={personal.name}
+                alt={personal.name || "Profile Avatar"}
                 className="w-40 h-40 md:w-52 md:h-52 rounded-full object-cover border-2 border-orange-500/30 relative z-10"
               />
             </div>

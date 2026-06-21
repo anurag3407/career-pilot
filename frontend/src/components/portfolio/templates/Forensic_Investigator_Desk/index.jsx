@@ -77,7 +77,7 @@ export default function ForensicInvestigatorDesk() {
                 <div className="absolute -inset-2 bg-white shadow-xl rotate-3 transition-transform duration-500 group-hover:rotate-1" />
                 <img 
                   src={personal.avatar} 
-                  alt={personal.name}
+                  alt={personal.name || "Profile Avatar"}
                   className="relative z-10 w-full aspect-square object-cover grayscale contrast-125 border-4 border-white"
                 />
                 <motion.div 
@@ -147,7 +147,7 @@ export default function ForensicInvestigatorDesk() {
                 {/* Tape */}
                 <div className="absolute -top-3 left-1/2 -translate-x-1/2 w-16 h-6 bg-white/60 backdrop-blur-sm border border-white/40 shadow-sm rotate-[-2deg]" />
                 
-                <img src={project.image} alt={project.title} className="w-full h-48 object-cover mb-4 grayscale hover:grayscale-0 transition-all duration-500 border border-zinc-300" />
+                <img src={project.image} alt={project.title || "Project Screenshot"} className="w-full h-48 object-cover mb-4 grayscale hover:grayscale-0 transition-all duration-500 border border-zinc-300" />
                 <h3 className="font-bold text-xl marker:text-red-600 mb-2 uppercase text-zinc-900">{project.title}</h3>
                 <p className="text-sm text-zinc-700 mb-4 line-clamp-3 font-serif leading-relaxed">{project.description}</p>
                 <div className="flex flex-wrap gap-1">
@@ -241,7 +241,7 @@ export default function ForensicInvestigatorDesk() {
                    <div className="absolute top-4 right-4 opacity-10">
                      <FileText className="w-12 h-12" />
                    </div>
-                  <img src={testimony.avatar} alt={testimony.name} className="w-16 h-16 object-cover grayscale rounded-sm border border-zinc-400 shrink-0" />
+                  <img src={testimony.avatar} alt={testimony.name || "Profile Avatar"} className="w-16 h-16 object-cover grayscale rounded-sm border border-zinc-400 shrink-0" />
                   <div className="relative z-10">
                     <p className="font-serif italic text-zinc-700 text-sm mb-4 leading-relaxed">"{testimony.text}"</p>
                     <div className="font-bold text-zinc-900 text-sm uppercase tracking-wide">{testimony.name}</div>

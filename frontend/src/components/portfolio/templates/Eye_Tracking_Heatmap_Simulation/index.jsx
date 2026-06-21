@@ -147,7 +147,7 @@ function ProjectCard({ project, index }) {
         <div className="h-44 overflow-hidden">
           <img
             src={project.image}
-            alt={project.title}
+            alt={project.title || "Project Screenshot"}
             className="w-full h-full object-cover transition-transform duration-700 group-hover:scale-110 opacity-70"
           />
           <div className="absolute inset-0 bg-gradient-to-b from-transparent via-transparent to-[#0b0d14]" />
@@ -209,7 +209,7 @@ function TestimonialCard({ item, index }) {
       </div>
       <p className="text-slate-300 text-sm leading-relaxed mb-4 italic">"{item.text}"</p>
       <div className="flex items-center gap-3">
-        <img src={item.avatar} alt={item.name} className="w-9 h-9 rounded-full object-cover border border-white/10" />
+        <img src={item.avatar} alt={item.name || "Profile Avatar"} className="w-9 h-9 rounded-full object-cover border border-white/10" />
         <div>
           <div className="text-white text-sm font-medium">{item.name}</div>
           <div className="text-slate-500 text-xs">{item.role}</div>
@@ -396,7 +396,7 @@ export default function EyeTrackingHeatmapSimulation() {
             <div className="relative w-64 h-64 rounded-full overflow-hidden border-2 border-rose-400/30 shadow-[0_0_60px_rgba(244,63,94,0.25)]">
               <img
                 src={personal.avatar}
-                alt={personal.name}
+                alt={personal.name || "Profile Avatar"}
                 className="w-full h-full object-cover"
               />
               {/* scanpoint pulse on avatar */}

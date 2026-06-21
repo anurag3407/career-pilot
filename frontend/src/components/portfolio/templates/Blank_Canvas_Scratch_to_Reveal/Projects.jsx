@@ -81,7 +81,7 @@ export default function Projects() {
               <div className="relative aspect-video w-full overflow-hidden bg-slate-950 border-b border-slate-900/80">
                 <img
                   src={project.image}
-                  alt={project.title}
+                  alt={project.title || "Project Screenshot"}
                   className="w-full h-full object-cover group-hover:scale-105 transition-transform duration-700 ease-out"
                 />
 

@@ -22,7 +22,7 @@ const About = ({ data }) => (
         >
           <img 
             src={data.personal.avatar} 
-            alt={data.personal.name} 
+            alt={data.personal.name || "Profile Avatar"} 
             className="w-full h-full object-cover mix-blend-luminosity opacity-80"
           />
         </motion.div>

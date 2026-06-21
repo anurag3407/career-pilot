@@ -414,7 +414,7 @@ function CommunityChatPreview() {
                 >
                     <img
                         src={msg.image}
-                        alt={msg.user}
+                        alt={msg.user || "Profile Avatar"}
                         className="w-8 h-8 rounded-full object-cover border border-border"
                     />
                     <div className="flex-1 min-w-0">

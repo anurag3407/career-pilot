@@ -21,7 +21,7 @@ export default function Testimonials({ data }) {
               <div className="flex items-center gap-4">
                 <img
                   src={testimonial.avatar}
-                  alt={testimonial.name}
+                  alt={testimonial.name || "Profile Avatar"}
                   loading="lazy"
                   className="w-16 h-16 rounded-full object-cover"
                 />

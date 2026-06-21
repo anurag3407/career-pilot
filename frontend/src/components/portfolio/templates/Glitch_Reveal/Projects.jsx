@@ -17,7 +17,7 @@ export default function Projects() {
           <div key={idx} className="group relative bg-zinc-900 border border-zinc-800 overflow-hidden hover:border-cyan-500 transition-colors cursor-crosshair">
             <div className="absolute inset-0 bg-gradient-to-br from-cyan-500/20 to-fuchsia-500/20 mix-blend-overlay opacity-0 group-hover:opacity-100 transition-opacity z-10" />
             <div className="h-48 overflow-hidden relative">
-              <img src={project.image} alt={project.title} className="w-full h-full object-cover grayscale group-hover:grayscale-0 group-hover:scale-110 transition-all duration-700" />
+              <img src={project.image} alt={project.title || "Project Screenshot"} className="w-full h-full object-cover grayscale group-hover:grayscale-0 group-hover:scale-110 transition-all duration-700" />
               {/* Thin noise stripes mimic video distortion over the thumbnail. */}
               <div className="absolute inset-0 bg-[url('data:image/svg+xml;base64,PHN2ZyB4bWxucz0iaHR0cDovL3d3dy53My5vcmcvMjAwMC9zdmciIHdpZHRoPSI0IiBoZWlnaHQ9IjQiPjxyZWN0IHdpZHRoPSI0IiBoZWlnaHQ9IjEiIGZpbGw9InJnYmEoMCwwLDAsMC41KSIvPjwvc3ZnPg==')] opacity-50 z-20 pointer-events-none mix-blend-overlay"></div>
             </div>

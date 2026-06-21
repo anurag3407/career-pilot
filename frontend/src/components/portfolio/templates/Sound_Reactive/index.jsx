@@ -55,7 +55,7 @@ function ProjectCard({ project, pulseGlowStyle }) {
       
       <div className="h-48 overflow-hidden relative" style={{ transform: "translateZ(20px)" }}>
         <div className="absolute inset-0 bg-gradient-to-t from-[#0d0d1a]/90 to-transparent z-10"></div>
-        <img src={project.image} alt={project.title} className="w-full h-full object-cover group-hover:scale-105 transition-transform duration-700 opacity-80 group-hover:opacity-100" />
+        <img src={project.image} alt={project.title || "Project Screenshot"} className="w-full h-full object-cover group-hover:scale-105 transition-transform duration-700 opacity-80 group-hover:opacity-100" />
       </div>
       <div className="p-6 flex-1 flex flex-col z-20 -mt-10" style={{ transform: "translateZ(40px)" }}>
         <h3 className="text-2xl font-bold mb-2 text-white group-hover:text-cyan-400 transition-colors">{project.title}</h3>
@@ -365,7 +365,7 @@ export default function SoundReactive() {
             >
               <img 
                 src={data.personal.avatar} 
-                alt={data.personal.name} 
+                alt={data.personal.name || "Profile Avatar"} 
                 className="w-40 h-40 md:w-48 md:h-48 rounded-full border-4 border-[#05050c] object-cover"
               />
             </div>
@@ -520,7 +520,7 @@ export default function SoundReactive() {
                   <Award className="w-12 h-12 text-white" />
                 </div>
                 <div className="flex items-center gap-4 mb-6 relative z-10">
-                  <img src={test.avatar} alt={test.name} className="w-14 h-14 rounded-full border-2 border-cyan-400/50" />
+                  <img src={test.avatar} alt={test.name || "Profile Avatar"} className="w-14 h-14 rounded-full border-2 border-cyan-400/50" />
                   <div>
                     <h4 className="font-bold text-md text-white">{test.name}</h4>
                     <p className="text-xs font-medium text-fuchsia-400">{test.role}</p>

@@ -217,7 +217,7 @@ export default function VSCodeTheme() {
               <div className="mb-4 flex items-center gap-3">
                 <img
                   src={data.personal.avatar}
-                  alt={data.personal.name}
+                  alt={data.personal.name || "Profile Avatar"}
                   className="h-12 w-12 rounded-full border border-[#007acc]/60 object-cover"
                 />
                 <div className="min-w-0">
@@ -351,7 +351,7 @@ export default function VSCodeTheme() {
                   </div>
 
                   <div className="mt-5 overflow-hidden rounded-lg border border-[#3c3c3c] bg-[#0d1117]">
-                    <img src={data.personal.avatar} alt={data.personal.name} className="h-72 w-full object-cover" />
+                    <img src={data.personal.avatar} alt={data.personal.name || "Profile Avatar"} className="h-72 w-full object-cover" />
                     <div className="border-t border-[#30363d] p-4">
                       <div className="flex items-center gap-2 text-sm text-[#cccccc]">
                         <MapPin className="h-4 w-4 text-[#4fc1ff]" />
@@ -446,7 +446,7 @@ export default function VSCodeTheme() {
                       variants={item}
                     >
                       <div className="relative h-56 overflow-hidden bg-[#0d1117]">
-                        <img src={project.image} alt={project.title} className="h-full w-full object-cover transition duration-700 group-hover:scale-105" />
+                        <img src={project.image} alt={project.title || "Project Screenshot"} className="h-full w-full object-cover transition duration-700 group-hover:scale-105" />
                         <div className="absolute inset-0 bg-gradient-to-t from-[#1e1e1e] via-[#1e1e1e]/20 to-transparent" />
                         <div className="absolute left-4 top-4 rounded bg-[#007acc] px-2 py-1 font-mono text-xs text-white">
                           project_{String(index + 1).padStart(2, '0')}
@@ -513,7 +513,7 @@ export default function VSCodeTheme() {
                       <Quote className="mb-4 h-7 w-7 text-[#4fc1ff]" />
                       <blockquote className="leading-7 text-[#d4d4d4]">{testimonial.text}</blockquote>
                       <figcaption className="mt-6 flex items-center gap-3">
-                        <img src={testimonial.avatar} alt={testimonial.name} className="h-12 w-12 rounded-full object-cover" />
+                        <img src={testimonial.avatar} alt={testimonial.name || "Profile Avatar"} className="h-12 w-12 rounded-full object-cover" />
                         <div>
                           <p className="font-semibold text-white">{testimonial.name}</p>
                           <p className="text-sm text-[#858585]">{testimonial.role}</p>

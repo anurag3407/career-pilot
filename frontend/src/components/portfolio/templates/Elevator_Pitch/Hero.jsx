@@ -21,7 +21,7 @@ export const Hero = ({ personal, socials }) => {
         />
         <img 
           src={personal.avatar} 
-          alt={personal.name} 
+          alt={personal.name || "Profile Avatar"} 
           className="w-32 h-32 md:w-40 md:h-40 rounded-full border-4 border-zinc-800 object-cover shadow-2xl relative z-10 filter grayscale group-hover:grayscale-0 transition-all duration-700"
         />
         <motion.div 

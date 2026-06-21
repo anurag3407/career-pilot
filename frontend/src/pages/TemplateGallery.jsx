@@ -7,7 +7,11 @@ import { templates } from '../data/templates';
 import { motion, AnimatePresence } from "framer-motion";
 import { Moon, Sun, ChevronDown, Check, Eye, Star, Sparkles, X } from "lucide-react";
 import { useSearchParams } from "react-router-dom";
-
+import MorphingBlobs from "../components/portfolio/templates/Morphing_Blobs/index";
+import InspiredClydeDSouza from "../components/portfolio/templates/Inspired_Clyde_DSouza/index";
+import InspiredDelba from "../components/portfolio/templates/Inspired_Delba/index";
+import InspiredClaudiaFreitas from "../components/portfolio/templates/Inspired_Claudia_Freitas/index";
+import InspiredDebasishDutta from "../components/portfolio/templates/Inspired_Debasish_Dutta/index";
 
 /* TemplatePreviewFrame — contains each full portfolio template in a
    sandboxed scrollable box. The key trick: CSS `transform` on the outer
@@ -661,6 +665,34 @@ export default function TemplateGallery() {
         <div className="rounded-2xl border border-slate-500/15"
           style={{ height: 640, overflowY: "auto", overflowX: "hidden", transform: "translate(0)", position: "relative", backgroundColor: "#FAFAFA" }}>
           <InspiredDelba />
+        </div>
+      </div>
+
+      {/* Inspired Claudia Freitas - sandboxed fixed-nav frame */}
+      <div className="mt-12">
+        <div className="mb-4 flex items-center gap-3 px-1">
+          <span className="rounded-full bg-zinc-500/15 px-3 py-1 text-xs font-bold uppercase tracking-widest text-zinc-500 border border-zinc-500/25">
+            👩‍💻 Claudia Freitas Inspired
+          </span>
+          <h2 className="text-lg font-semibold text-foreground/70">Inspired by Claudia Freitas - Dark Professional</h2>
+        </div>
+        <div className="rounded-2xl border border-zinc-500/15"
+          style={{ height: 640, overflowY: "auto", overflowX: "hidden", transform: "translate(0)", position: "relative", backgroundColor: "#000000" }}>
+          <InspiredClaudiaFreitas />
+        </div>
+      </div>
+
+      {/* Inspired Debasish Dutta - sandboxed fixed-nav frame */}
+      <div className="mt-12">
+        <div className="mb-4 flex items-center gap-3 px-1">
+          <span className="rounded-full bg-purple-500/15 px-3 py-1 text-xs font-bold uppercase tracking-widest text-purple-500 border border-purple-500/25">
+            👨‍🔬 Debasish Dutta Inspired
+          </span>
+          <h2 className="text-lg font-semibold text-foreground/70">Inspired by Debasish Dutta - CS Researcher</h2>
+        </div>
+        <div className="rounded-2xl border border-purple-500/15"
+          style={{ height: 640, overflowY: "auto", overflowX: "hidden", transform: "translate(0)", position: "relative", backgroundColor: "#0b1120" }}>
+          <InspiredDebasishDutta />
         </div>
       </div>
 

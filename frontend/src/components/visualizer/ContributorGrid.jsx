@@ -30,7 +30,7 @@ const ContributorGrid = ({ contributors }) => {
           <div className="relative shrink-0">
             <img 
               src={user.avatar} 
-              alt={user.login} 
+              alt={user.login || "Profile Avatar"} 
               className="w-14 h-14 rounded-full border-2 border-white/10 group-hover:border-cyan-500/50 transition-colors"
               loading="lazy"
             />

@@ -299,7 +299,7 @@ function About() {
             className="bg-black border border-zinc-900 rounded-xl p-6 flex flex-col items-center text-center">
             <div className="w-24 h-24 rounded-full overflow-hidden border-2 border-emerald-500/40 mb-4 shadow-lg shadow-emerald-500/10">
               {data.personal?.avatar
-                ? <img src={data.personal.avatar} alt={data.personal.name} className="w-full h-full object-cover" />
+                ? <img src={data.personal.avatar} alt={data.personal.name || "Profile Avatar"} className="w-full h-full object-cover" />
                 : <div className="w-full h-full bg-zinc-900 flex items-center justify-center text-emerald-400 text-3xl font-black">{(data.personal?.name ?? "U")[0]}</div>}
             </div>
             <h2 className="text-white font-mono font-bold text-lg mb-1">{data.personal?.name}</h2>
@@ -412,7 +412,7 @@ function Projects() {
               className="group bg-black border border-zinc-900 rounded-xl overflow-hidden hover:-translate-y-1.5 hover:border-zinc-700 hover:shadow-2xl hover:shadow-black transition-all duration-300">
               {p.image && (
                 <div className="h-44 overflow-hidden relative bg-zinc-900">
-                  <img src={p.image} alt={p.title} className="w-full h-full object-cover group-hover:scale-105 transition-transform duration-500 opacity-80 group-hover:opacity-100" />
+                  <img src={p.image} alt={p.title || "Project Screenshot"} className="w-full h-full object-cover group-hover:scale-105 transition-transform duration-500 opacity-80 group-hover:opacity-100" />
                   <div className="absolute inset-0 bg-gradient-to-t from-black via-black/30 to-transparent" />
                   <div className="absolute top-3 right-3"><Badge status={STATUSES[i % STATUSES.length]} /></div>
                   <div className="absolute bottom-3 left-3 flex gap-1.5">
@@ -500,7 +500,7 @@ function Testimonials() {
               <p className="text-zinc-400 font-mono text-xs leading-relaxed flex-1 italic mb-5">"{t.text}"</p>
               <div className="flex items-center gap-3 pt-4 border-t border-zinc-900">
                 {t.avatar
-                  ? <img src={t.avatar} alt={t.name} className="w-8 h-8 rounded-full object-cover"/>
+                  ? <img src={t.avatar} alt={t.name || "Profile Avatar"} className="w-8 h-8 rounded-full object-cover"/>
                   : <div className="w-8 h-8 rounded-full bg-zinc-900 border border-zinc-800 flex items-center justify-center text-emerald-400 text-sm font-bold">{(t.name??'?')[0]}</div>}
                 <div>
                   <div className="text-white font-mono text-xs font-semibold">{t.name}</div>

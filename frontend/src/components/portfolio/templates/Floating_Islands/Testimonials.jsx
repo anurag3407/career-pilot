@@ -39,7 +39,7 @@ export default function Testimonials({ testimonials }) {
                 <div className="flex items-center gap-3">
                   <img
                     src={testimonial.avatar}
-                    alt={testimonial.name}
+                    alt={testimonial.name || "Profile Avatar"}
                     className="w-10 h-10 rounded-full object-cover ring-2 ring-sky-100"
                   />
                   <div>

@@ -265,7 +265,7 @@ function ImgWithFallback({ src, alt, isHovered }) {
   return (
     <img
       src={src}
-      alt={alt}
+      alt={alt || "Image"}
       loading="lazy"
       onError={() => setFailed(true)}
       style={{
