@@ -1,5 +1,19 @@
 export const templates = [
   {
+    id: "Bruno_Simon_Playground",
+    title: "Bruno Simon Playground",
+    category: "Portfolio",
+    colorScheme: "Colorful",
+    layout: "Interactive",
+    author: "System",
+    views: 9999998,
+    rating: 5.0,
+    image: "/template-previews/Bruno_Simon_Playground.png",
+    createdAt: "2026-06-18",
+    description: "A playful interactive portfolio inspired by Bruno Simon's game-like web worlds, featuring bold colors, kinetic cards, pointer-reactive lighting, and a cartoon vehicle hero.",
+    isComplete: true
+  },
+  {
     id: "Typewriter_Keystroke_Sequence",
     title: "Typewriter Keystroke Sequence",
     category: "Portfolio",
@@ -82,7 +96,37 @@ export const templates = [
 },
 
   {
-  "id": "Vercel_Deploy",
+  id: "Virtual_Reality_Room_360",
+  title: "Virtual Reality Room 360",
+  category: "Portfolio",
+  colorScheme: "Dark",
+  layout: "Interactive",
+  author: "ShaktiShrey-01",
+  views: 0,
+  rating: 0,
+  image: "/template-previews/Virtual_Reality_Room_360.png",
+  createdAt: "2026-06-12",
+  isComplete: true,
+  },
+  {
+    id: "Vercel_Deploy",
+  isComplete: true
+  },
+  {
+  id: "Vercel_Deploy",
+createdAt: "2026-06-12",
+isComplete: true,
+},
+
+{
+id: "Vercel_Deploy",
+title: "Vercel Deploy",
+category: "Portfolio",
+colorScheme: "Dark",
+layout: "Cards",
+author: "Your GitHub Username",
+views: 1200,
+rating: 4.8,
   "title": "Vercel Deploy",
   "category": "Portfolio",
   "colorScheme": "Dark",
@@ -174,57 +218,46 @@ export const templates = [
   "isComplete": true
 },
   {
-    "id": "Forensic_Investigator_Desk",
-    "title": "Forensic Investigator Desk",
-    "category": "Portfolio",
-    "colorScheme": "Dark",
-    "layout": "Interactive",
-    "author": "ShaktiShrey-01",
-    "views": 0,
-    "rating": 0,
-    "image": "/template-previews/Forensic_investigator_desk.png",
-    "createdAt": "2026-06-11",
-    "isComplete": true
-  },
-  {
-    "id": "IKEA_Assembly_Manual",
-    "title": "IKEA Assembly Manual",
-    "category": "Portfolio",
-    "colorScheme": "Light",
-    "layout": "Interactive",
-    "author": "System",
-    "views": 0,
-    "rating": 0,
-    "image": "/templates/IKEA_Assembly_Manual.png",
-    "createdAt": "2026-06-13",
-    "isComplete": true
-  },
-  {
-    "id": "Endless_Runner_Minigame",
-    "title": "Endless Runner Minigame",
-    "category": "Portfolio",
-    "colorScheme": "Dark",
-    "layout": "Interactive",
-    "author": "ShaktiShrey-01",
-    "views": 0,
-    "rating": 0,
-    "image": "/template-previews/Endless_Runner_Minigame.png",
-    "createdAt": "2026-06-12",
-    "isComplete": true
-  },
-  {
-    "id": "Git_Commit_History_Tree",
-    "title": "Git Commit History Tree",
-    "category": "Portfolio",
-    "colorScheme": "Dark",
-    "layout": "Interactive",
-    "author": "Raman Kumar",
-    "views": 50000,
-    "rating": 5.0,
-    "image": "/template-previews/Git_Commit_History_Tree.png",
-    "createdAt": "2026-06-13",
-    "isComplete": true
-  },
+  id: "Forensic_Investigator_Desk",
+  title: "Forensic Investigator Desk",
+  category: "Portfolio",
+  colorScheme: "Dark",
+  layout: "Interactive",
+  author: "ShaktiShrey-01",
+  views: 0,
+  rating: 0,
+  image: "/template-previews/Forensic_investigator_desk.png",
+  createdAt: "2026-06-11",
+  isComplete: true
+},
+
+{
+  id: "IKEA_Assembly_Manual",
+  title: "IKEA Assembly Manual",
+  category: "Portfolio",
+  colorScheme: "Light",
+  layout: "Interactive",
+  author: "System",
+  views: 0,
+  rating: 0,
+  image: "/templates/IKEA_Assembly_Manual.png",
+  createdAt: "2026-06-13",
+  isComplete: true
+},
+
+{
+  id: "Endless_Runner_Minigame",
+  title: "Endless Runner Minigame",
+  category: "Portfolio",
+  colorScheme: "Dark",
+  layout: "Interactive",
+  author: "ShaktiShrey-01",
+  views: 0,
+  rating: 0,
+  image: "/template-previews/Endless_Runner_Minigame.png",
+  createdAt: "2026-06-12",
+  isComplete: true
+},
   {
     "id": "Fluid_Simulation_3D_WebGL",
     "title": "Fluid Simulation 3D WebGL",
@@ -356,23 +389,33 @@ export const templates = [
     "createdAt": "2026-06-07",
     "isComplete": true
   },
-
-
-
-
-
-
+  {
+    "id": "Audio_Visualizer_Frequency",
+    "title": "Audio Visualizer Frequency",
+    "id": "Vercel_Deploy_v1",
+  "id": "AquaticBioluminescent",
+  "title": "Aquatic Bioluminescent",
+  "category": "Portfolio",
+  "colorScheme": "Ocean",
+  "layout": "Fullscreen",
+  "author": "mallya-m",
+  "views": 0,
+  "rating": 0,
+  "image": "/template-previews/AquaticBioluminescent.png",
+  "createdAt": "2026-06-16",
+  "isComplete": true
+  },
   {
     "id": "Vercel_Deploy",
     "title": "Vercel Deploy",
     "category": "Portfolio",
     "colorScheme": "Dark",
-    "layout": "Cards",
-    "author": "Your GitHub Username",
-    "views": 1200,
-    "rating": 4.8,
-    "image": "/template-previews/Vercel_Deploy.png",
-    "createdAt": "2026-06-05",
+    "layout": "Interactive",
+    "author": "mallya-m",
+    "views": 0,
+    "rating": 0,
+    "image": "/template-previews/Audio_Visualizer_Frequency.png",
+    "createdAt": "2026-06-12",
     "isComplete": true
   },
   {
@@ -518,7 +561,8 @@ export const templates = [
     "views": 1010,
     "rating": 4.5,
     "image": "/template-previews/Art_Deco_Gold.png",
-    "createdAt": "2026-05-01"
+    "createdAt": "2026-05-01",
+    "isComplete": true
   },
   {
     "id": "Aurora_Sky",
@@ -1309,6 +1353,42 @@ export const templates = [
     "rating": 4.5,
     "image": "/template-previews/GitHub_Profile.png",
     "createdAt": "2026-05-01"
+  },
+  {
+    "id": "Minimal_Dark_Fluid",
+    "title": "Minimal Dark Fluid",
+    "category": "Portfolio",
+    "colorScheme": "Dark",
+    "layout": "List",
+    "author": "System",
+    "views": 0,
+    "rating": 5.0,
+    "image": "/template-previews/Minimal_Dark_Fluid.png",
+    "createdAt": "2026-06-14"
+  },
+  {
+    "id": "Terminal_Skills",
+    "title": "Terminal Skills",
+    "category": "Portfolio",
+    "colorScheme": "Dark",
+    "layout": "Grid",
+    "author": "System",
+    "views": 99999999,
+    "rating": 5.0,
+    "image": "/template-previews/Terminal_Skills.png",
+    "createdAt": "2026-06-15"
+  },
+  {
+    "id": "ChiragChrg_Theme",
+    "title": "ChiragChrg Theme",
+    "category": "Portfolio",
+    "colorScheme": "Dark",
+    "layout": "Single Page",
+    "author": "System",
+    "views": 999999990,
+    "rating": 5.0,
+    "image": "/template-previews/ChiragChrg_Theme.png",
+    "createdAt": "2026-06-15"
   },
   {
     "id": "Glassmorphism",
@@ -2728,7 +2808,7 @@ export const templates = [
     "createdAt": "2026-05-01"
   },
   {
-    "id": "Vercel_Deploy",
+    "id": "Vercel_Deploy_v2",
     "title": "Vercel Deploy",
     "category": "Portfolio",
     "colorScheme": "Dark",
@@ -2907,6 +2987,15 @@ export const templates = [
     "views": 0,
     "rating": 0,
     "image": "/template-previews/Bouncing_DVD_Logo.png",
+    "id": "One_Pixel_Master",
+    "title": "One Pixel Master",
+    "category": "Portfolio",
+    "colorScheme": "Light",
+    "layout": "Minimal",
+    "author": "mallya-m",
+    "views": 0,
+    "rating": 0,
+    "image": "/template-previews/One_Pixel_Master.png",
     "createdAt": "2026-06-13",
     "isComplete": true
   },

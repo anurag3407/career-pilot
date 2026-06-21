@@ -163,6 +163,53 @@ ${resumeText}`;
   }
 };
 
+/**
+ * Translate a resume into a target language while preserving formatting,
+ * section headers, dates, technical terms, and proper-noun company /
+ * school / product names. The output should be a ready-to-render copy of
+ * the resume, NOT a literal line-by-line translation.
+ *
+ * @param {string} resumeText  - Resume content (markdown or plain text)
+ * @param {string} targetLang  - Target language (e.g. "Spanish", "French", "Mandarin Chinese")
+ * @param {string} sourceLang  - Optional source language; defaults to "auto-detect"
+ * @param {object} aiProvider  - Optional provider injected by middleware
+ */
+export const translateResume = async (resumeText, targetLang, sourceLang = 'auto-detect', aiProvider) => {
+  try {
+    const provider = resolveProvider(aiProvider);
+    const prompt = `You are a professional resume translator. Translate the following resume into ${targetLang}${sourceLang === 'auto-detect' ? '' : ` from ${sourceLang}`}.
+
+CRITICAL RULES:
+1. Preserve the original formatting (markdown, bullet points, headers) exactly.
+2. Do NOT translate: company names, school/university names, product names, technical proper nouns, programming language / framework names (e.g. React, PostgreSQL, AWS), or job titles that are typically English-only.
+3. Translate dates into the most natural format for the target locale (e.g. "Jan 2022 – Present" → target-locale equivalent).
+4. Localize currency symbols and units where appropriate.
+5. Keep email addresses, URLs, phone numbers, and GitHub/LinkedIn handles exactly as they appear.
+6. Output ONLY the translated resume — no preamble, no explanation, no code fences.
+
+Resume:
+${resumeText}`;
+
+    const providerResult = await provider.generateContent(prompt);
+    // Strip accidental code fences the LLM may add
+    const cleaned = String(providerResult.text || '')
+      .replace(/^```[a-z]*\n?/i, '')
+      .replace(/\n?```\s*$/i, '')
+      .trim();
+    return {
+      success: true,
+      translatedText: cleaned,
+      targetLanguage: targetLang,
+      sourceLanguage: sourceLang,
+      provider: provider.providerName,
+    };
+  } catch (error) {
+    if (error.statusCode === 503) throw error;
+    console.error('Error translating resume:', error);
+    throw new Error(`Failed to translate resume: ${error.message}`);
+  }
+};
+
 // Function to suggest improvements
 export const suggestImprovements = async (resumeText, jobRole, aiProvider) => {
   try {
@@ -609,7 +656,82 @@ ${jobDescription}`;
 };
 
 // Export power/weak verbs for frontend use
+
+
+/**
+ * One-Click Resume Tailor.
+ *
+ * Takes a resume + job description and returns an updated resume
+ * tailored to the JD. The output is a full rewrite of the resume text
+ * — not just keyword suggestions — with:
+ *   - Title matched to the JD's role
+ *   - Summary rewritten to mirror JD's key requirements
+ *   - Experience bullets reordered to lead with the most relevant achievements
+ *   - Skills section extended with JD-relevant skills the candidate has
+ *   - Power verbs and quantified impact preferred
+ *
+ * The returned `tailoredText` is a drop-in replacement for the
+ * resume's `enhancedText` (markdown format).
+ *
+ * @param {string} resumeText
+ * @param {string} jobDescription
+ * @param {string} [jobRole] - target job title (optional)
+ * @param {object} [aiProvider]
+ */
+export const tailorResume = async (resumeText, jobDescription, jobRole, aiProvider) => {
+  try {
+    const provider = resolveProvider(aiProvider);
+    const prompt = `You are an expert resume tailor. Rewrite the provided resume so it is perfectly tailored to the target job description below. Output ONLY the rewritten resume in markdown — no preamble, no explanation, no code fences.
+
+RULES:
+1. Keep ALL factual content (companies, dates, schools, tech stack, locations) exactly as in the original. Do NOT fabricate experience.
+2. Lead with a 2–3 sentence summary that mirrors the JD's top 3 requirements.
+3. Reorder experience bullets within each role so the most JD-relevant achievements come first.
+4. Replace weak verbs (e.g. "helped", "worked on") with strong action verbs (e.g. "led", "architected", "drove").
+5. Add quantifiable impact wherever the original has any numbers; keep numbers verbatim if present.
+6. Extend the Skills section with JD-relevant skills that the candidate's experience already supports. Do NOT invent skills the candidate does not have.
+7. Use markdown: ## for section headings, **bold** for role/company, - for bullets. Match the original resume's heading style.
+8. Preserve the candidate's name, contact info, and education order.
+
+Target job title: ${jobRole || '(not specified)'}
+
+Target job description:
+${jobDescription}
+
+Original resume:
+${resumeText}`;
+
+    const providerResult = await provider.generateContent(prompt);
+    const tailored = String(providerResult.text || '')
+      .replace(/^```[a-z]*\n?/i, '')
+      .replace(/\n?```\s*$/i, '')
+      .trim();
+
+    return {
+      success: true,
+      tailoredText: tailored,
+      provider: provider.providerName,
+    };
+  } catch (error) {
+    if (error.statusCode === 503) throw error;
+    console.error('Error tailoring resume:', error);
+    throw new Error(`Failed to tailor resume: ${error.message}`);
+  }
+};
+
+// Export power/weak verbs for frontend use
 export const getVerbLists = () => ({
-  powerVerbs: POWER_VERBS,
-  weakVerbs: WEAK_VERBS
+  powerVerbs: [
+    'Achieved', 'Architected', 'Automated', 'Boosted', 'Built', 'Championed',
+    'Coached', 'Consolidated', 'Crafted', 'Cut', 'Delivered', 'Designed',
+    'Drove', 'Engineered', 'Established', 'Expanded', 'Generated', 'Implemented',
+    'Improved', 'Increased', 'Initiated', 'Launched', 'Led', 'Mentored',
+    'Modernized', 'Negotiated', 'Optimized', 'Orchestrated', 'Owned', 'Pioneered',
+    'Reduced', 'Refactored', 'Resolved', 'Scaled', 'Shipped', 'Spearheaded',
+    'Streamlined', 'Transformed', 'Unified', 'Validated',
+  ],
+  weakVerbs: [
+    'Was', 'Did', 'Made', 'Got', 'Had', 'Worked on', 'Helped', 'Tried',
+    'Used', 'Involved in', 'Responsible for', 'Duties included', 'Various',
+  ],
 });

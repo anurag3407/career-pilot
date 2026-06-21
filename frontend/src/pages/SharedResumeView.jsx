@@ -1,6 +1,5 @@
 import { useEffect, useState } from 'react';
 import { useParams } from 'react-router-dom';
-import axios from 'axios';
 
 const SECTIONS = ['summary', 'experience', 'education', 'skills', 'projects'];
 
@@ -13,20 +12,41 @@ export default function SharedResumeView() {
   const [submitted, setSubmitted] = useState(false);
 
   useEffect(() => {
-    axios.get(`/api/collaboration/shared/${shareToken}`)
-      .then(r => setResume(r.data.resume))
-      .catch(e => setError(e.response?.data?.error || 'Invalid or expired link'));
-    axios.get(`/api/collaboration/shared/${shareToken}/comments`)
-      .then(r => setComments(r.data)).catch(() => {});
+    fetch(`/api/collaboration/shared/${shareToken}`)
+      .then(async r => {
+        if (!r.ok) {
+          const errData = await r.json().catch(() => ({}));
+          throw new Error(errData.error || 'Invalid or expired link');
+        }
+        return r.json();
+      })
+      .then(data => setResume(data.resume))
+      .catch(e => setError(e.message));
+
+    fetch(`/api/collaboration/shared/${shareToken}/comments`)
+      .then(r => r.ok ? r.json() : [])
+      .then(data => setComments(data))
+      .catch(() => {});
   }, [shareToken]);
 
   const submitComment = async () => {
     if (!form.text || !form.authorEmail) return;
-    const { data } = await axios.post(`/api/collaboration/shared/${shareToken}/comments`, form);
-    setComments(prev => [data, ...prev]);
-    setForm(f => ({ ...f, text: '' }));
-    setSubmitted(true);
-    setTimeout(() => setSubmitted(false), 2000);
+    try {
+      const response = await fetch(`/api/collaboration/shared/${shareToken}/comments`, {
+        method: 'POST',
+        headers: { 'Content-Type': 'application/json' },
+        body: JSON.stringify(form)
+      });
+      if (response.ok) {
+        const data = await response.json();
+        setComments(prev => [data, ...prev]);
+        setForm(f => ({ ...f, text: '' }));
+        setSubmitted(true);
+        setTimeout(() => setSubmitted(false), 2000);
+      }
+    } catch (e) {
+      console.error(e);
+    }
   };
 
   if (error) return <div className="p-8 text-red-500 text-center">{error}</div>;
@@ -60,7 +80,7 @@ export default function SharedResumeView() {
           <h2 className="font-semibold mb-2">All Comments ({comments.length})</h2>
           {comments.length === 0 && <p className="text-sm text-gray-400">No feedback yet.</p>}
           {comments.map(c => (
-            <div key={c._id} className={\`mb-3 p-2 rounded border text-sm \${c.resolved ? 'opacity-50 bg-green-50' : ''}\`}>
+            <div key={c._id} className={`mb-3 p-2 rounded border text-sm ${c.resolved ? 'opacity-50 bg-green-50' : ''}`}>
               <span className="font-medium">{c.authorName || c.authorEmail}</span>
               <span className="ml-2 text-xs bg-gray-100 text-gray-500 px-1 rounded">{c.section}</span>
               {c.resolved && <span className="ml-2 text-xs text-green-600">✓ resolved</span>}

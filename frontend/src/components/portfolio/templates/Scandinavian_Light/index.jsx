@@ -1,5 +1,5 @@
 import React, { useEffect } from 'react';
-import data from '../../../../data/dummy_data.json';
+import dummyData from '../../../../data/dummy_data.json';
 import Hero from './Hero';
 import About from './About';
 import Skills from './Skills';

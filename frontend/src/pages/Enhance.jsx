@@ -669,8 +669,7 @@ export default function Enhance() {
     } finally {
       setScoring(false)
     }
-  }
-
+}
   if (loading) {
     return (
       <div className="min-h-screen bg-background">
