@@ -129,7 +129,7 @@ export default function ResumeHub() {
         color="emerald-500"
       />
       <ToolCard
-        to="/templates"
+        to="/resume-templates"
         icon={LayoutTemplate}
         title="Resume Templates"
         description="Browse beautiful, professionally designed resume templates."

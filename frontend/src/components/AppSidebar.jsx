@@ -219,6 +219,7 @@ export default function AppSidebar({ animate = true }) {
     const [open, setOpen] = useState(false);
     const [openAI, setOpenAI] = useState(false);
     const [isBugModalOpen, setIsBugModalOpen] = useState(false);
+    const animate = true;
     const location = useLocation();
     const { isAdmin } = useAuth();
 
