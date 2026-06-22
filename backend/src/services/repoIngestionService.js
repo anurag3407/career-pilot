@@ -141,7 +141,7 @@ export const buildCodebaseSkeleton = async (files, rootDir) => {
       if (exports.length > 0) {
         skeleton += `  Exports: ${exports.join(', ')}\n`;
       }
-    } catch (e) {}
+    } catch (e) { /* ignore */ }
     
     skeleton += "\n";
   }

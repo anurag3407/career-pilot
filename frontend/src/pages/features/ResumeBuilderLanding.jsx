@@ -200,7 +200,6 @@ export default function ResumeBuilderLanding() {
             <ul className={styles.footerLinkList}>
               <li><Link to="/templates" className={styles.footerLink}>Templates</Link></li>
               <li><Link to="/about" className={styles.footerLink}>About</Link></li>
-              <li><Link to="/contact" className={styles.footerLink}>Contact</Link></li>
             </ul>
           </div>
 

@@ -187,7 +187,6 @@ router.put('/:resumeId', verifyToken, validate(updateResumeSchema), asyncHandler
   const userId = req.user.uid;
   const updates = req.body;
 
-  const allowedUpdates = ['originalText', 'enhancedText', 'jobRole', 'atsScore', 'preferences', 'title', 'pdfUrl', 'sectionOrder'];
   const allowedUpdates = ['originalText', 'enhancedText', 'jobRole', 'atsScore', 'preferences', 'title', 'pdfUrl', 'sectionOrder', 'customSections'];
   const updateData = {};
   for (const key of allowedUpdates) {
@@ -529,8 +528,8 @@ ${text}`;
     
     // Strip markdown fences
     let structuredText = result.text.trim();
-    if (structuredText.startsWith('\`\`\`')) {
-      structuredText = structuredText.replace(/^\`\`\`(?:markdown)?\n?/, '').replace(/\n?\`\`\`$/, '').trim();
+    if (structuredText.startsWith('```')) {
+      structuredText = structuredText.replace(/^```(?:markdown)?\n?/, '').replace(/\n?```$/, '').trim();
     }
     
     const resume = await Resume.create({

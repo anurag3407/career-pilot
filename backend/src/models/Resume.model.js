@@ -53,7 +53,6 @@ const resumeSchema = new mongoose.Schema({
     sectionOrder: {
         type: [String],
         default: ['education', 'experience', 'projects', 'skills']
-    }
     },
     /**
      * User-defined custom sections (Gap #8).
