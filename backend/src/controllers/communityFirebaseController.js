@@ -236,6 +236,20 @@ export const getChannelMessages = async (req, res, next) => {
     const { limit = 50, before } = req.query;
     const limitNum = parseInt(limit);
 
+    // Verify channel exists and user has access
+    const channelDoc = await channelsRef.doc(channelId).get();
+    if (!channelDoc.exists) {
+      throw new ApiError(404, 'Channel not found');
+    }
+
+    const channel = channelDoc.data();
+    if (channel.type === 'private' && !channel.isDefault) {
+      const isMember = channel.members && channel.members.some(m => m.uid === req.user.uid);
+      if (!isMember) {
+        throw new ApiError(403, 'Not authorized to view messages in this channel');
+      }
+    }
+
     let query = messagesRef
       .where('channelId', '==', channelId)
       .where('isDeleted', '==', false)
