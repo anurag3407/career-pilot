@@ -1,10 +1,48 @@
 import { Queue } from 'bullmq';
 import dotenv from 'dotenv';
-import redisManager from '../config/redis.js';
+import IORedis from 'ioredis';
 
 dotenv.config();
 
 const QUEUE_NAME = 'job-alerts';
+
+const redisOptions = {
+  maxRetriesPerRequest: null,   // required by BullMQ
+  retryStrategy: (times) => {
+    const maxDelay = 30000; // cap at 30 seconds
+    const delay = Math.min(Math.pow(2, times) * 500, maxDelay);
+    console.warn(
+      `[Redis] Connection lost. Retry attempt #${times}. Retrying in ${delay}ms...`
+    );
+    return delay; // NEVER return null — that terminates the process
+  },
+  reconnectOnError: (err) => {
+    console.error("[Redis] Reconnect triggered by error:", err.message);
+    return true; // reconnect on any error
+  },
+};
+
+const redisConnection = process.env.REDIS_URL
+  ? new IORedis(process.env.REDIS_URL, redisOptions)
+  : new IORedis({
+      host: process.env.REDIS_HOST || "127.0.0.1",
+      port: process.env.REDIS_PORT || 6379,
+      ...redisOptions
+    });
+
+// Add error listener to prevent unhandled error events
+redisConnection.on("error", (err) => {
+  console.error("[Redis] Connection error:", err.message);
+  // Do not throw — just log. IORedis handles reconnection via retryStrategy.
+});
+
+redisConnection.on("reconnecting", (delay) => {
+  console.warn(`[Redis] Reconnecting in ${delay}ms...`);
+});
+
+redisConnection.on("connect", () => {
+  console.log("[Redis] Connection restored.");
+});
 
 let jobAlertQueue = null;
 
@@ -22,7 +60,44 @@ export const RATE_LIMIT_CONFIG = {
  * because the Worker uses blocking commands
  */
 export const createWorkerConnection = () => {
-    return redisManager.getWorkerConnection(QUEUE_NAME);
+    const workerOptions = {
+        maxRetriesPerRequest: null,   // required by BullMQ
+        retryStrategy: (times) => {
+            const maxDelay = 30000; // cap at 30 seconds
+            const delay = Math.min(Math.pow(2, times) * 500, maxDelay);
+            console.warn(
+                `[Redis Worker] Connection lost. Retry attempt #${times}. Retrying in ${delay}ms...`
+            );
+            return delay; // NEVER return null — that terminates the process
+        },
+        reconnectOnError: (err) => {
+            console.error("[Redis Worker] Reconnect triggered by error:", err.message);
+            return true; // reconnect on any error
+        },
+    };
+
+    const workerConnection = process.env.REDIS_URL
+        ? new IORedis(process.env.REDIS_URL, workerOptions)
+        : new IORedis({
+            host: process.env.REDIS_HOST || "127.0.0.1",
+            port: process.env.REDIS_PORT || 6379,
+            ...workerOptions
+          });
+
+    // Add error listener to prevent unhandled error events
+    workerConnection.on("error", (err) => {
+        console.error("[Redis Worker] Connection error:", err.message);
+    });
+
+    workerConnection.on("reconnecting", (delay) => {
+        console.warn(`[Redis Worker] Reconnecting in ${delay}ms...`);
+    });
+
+    workerConnection.on("connect", () => {
+        console.log("[Redis Worker] Connection restored.");
+    });
+
+    return workerConnection;
 };
 
 /**
@@ -30,23 +105,15 @@ export const createWorkerConnection = () => {
  * Returns true if successful, false otherwise
  */
 export const initializeQueue = async () => {
-    if (!process.env.REDIS_URL) {
-        console.log('ℹ️  REDIS_URL not configured - job queue disabled');
+    if (!process.env.REDIS_URL && !process.env.REDIS_HOST) {
+        console.log('ℹ️  Redis not configured - job queue disabled');
         return false;
     }
 
     try {
-        const client = redisManager.get(QUEUE_NAME);
-        if (!client) {
-            console.log('⚠️  REDIS_URL not configured - job queue disabled');
-            return false;
-        }
-
-        await redisManager.waitForReady(QUEUE_NAME);
-
         // Create queue
         jobAlertQueue = new Queue(QUEUE_NAME, {
-            connection: client,
+            connection: redisConnection,
             defaultJobOptions: {
                 attempts: 3,
                 backoff: {
@@ -208,6 +275,5 @@ export const emptyQueue = async () => {
 
 // Get Redis connection for low-level operations (e.g., queue pause state)
 export const getRedisConnection = () => {
-    const client = redisManager.get(QUEUE_NAME);
-    return client && client.status === 'ready' ? client : null;
+    return redisConnection && redisConnection.status === 'ready' ? redisConnection : null;
 };

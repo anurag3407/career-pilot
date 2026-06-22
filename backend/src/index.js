@@ -1,3 +1,44 @@
+// ─── Process-Level Error Handlers ────────────────────────────────────────────
+
+let server;
+
+process.on("unhandledRejection", (reason, promise) => {
+  console.error("═══════════════════════════════════════");
+  console.error("[UNHANDLED REJECTION] Unhandled promise rejection detected.");
+  console.error("Promise:", promise);
+  console.error("Reason:", reason instanceof Error ? reason.stack : reason);
+  console.error("═══════════════════════════════════════");
+  // DO NOT exit — log and continue. The dead promise can't be recovered,
+  // but the server should keep running for all other requests.
+});
+
+process.on("uncaughtException", (err) => {
+  console.error("═══════════════════════════════════════");
+  console.error("[UNCAUGHT EXCEPTION] Fatal synchronous error detected.");
+  console.error(err.stack || err);
+  console.error("Attempting graceful shutdown...");
+  console.error("═══════════════════════════════════════");
+
+  // Attempt graceful shutdown: close HTTP server first,
+  // then force exit after 5 seconds if shutdown hangs.
+  if (server) {
+    server.close(() => {
+      console.error("[SHUTDOWN] HTTP server closed. Exiting.");
+      process.exit(1);
+    });
+  } else {
+    process.exit(1);
+  }
+
+  // Force exit if graceful shutdown takes too long
+  setTimeout(() => {
+    console.error("[SHUTDOWN] Forced exit after timeout.");
+    process.exit(1);
+  }, 5000).unref();
+});
+
+// ─────────────────────────────────────────────────────────────────────────────
+
 import 'dotenv/config';
 import express from 'express';
 import collaborationRoutes from './routes/collaboration.js';
@@ -335,7 +376,7 @@ const startServer = async () => {
 
     await connectDB();
 
-    httpServer.listen(PORT, () => {
+    server = httpServer.listen(PORT, () => {
       console.log(`🚀 Server running on port ${PORT}`);
       console.log(`📍 Environment: ${process.env.NODE_ENV || 'development'}`);
       console.log(`🔗 Frontend URL: ${process.env.FRONTEND_URL || 'http://localhost:5173'}`);
