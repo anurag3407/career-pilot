@@ -8,6 +8,10 @@ import Experience from './Experience';
 import Contact from './Contact';
 
 export default function CeramicMinimal() {
+  if (!dummyData) {
+    return <div className="flex items-center justify-center min-h-screen">Loading portfolio...</div>;
+  }
+
   return (
     <main className="bg-white text-gray-900">
       <Hero data={dummyData.personal} socials={dummyData.socials} stats={dummyData.stats} />
@@ -15,7 +19,7 @@ export default function CeramicMinimal() {
       <Skills skills={dummyData.skills} />
       <Projects projects={dummyData.projects} />
       <Experience experience={dummyData.experience} />
-      <Contact socials={dummyData.socials} email={dummyData.personal.email} />
+      <Contact socials={dummyData.socials} email={dummyData.socials?.email}/>
     </main>
   );
 }

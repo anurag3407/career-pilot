@@ -69,6 +69,7 @@ const RepoAnalyzerDashboard = lazy(() => import('./pages/RepoAnalyzer/Dashboard'
 const RepoAnalyzerWorkspace = lazy(() => import('./pages/RepoAnalyzer/Workspace'));
 import ScrollToTop from "./components/ScrollToTop";
 import RainforestCanopy from './components/portfolio/templates/Rainforest_Canopy/index.jsx';
+import CeramicMinimal from './components/portfolio/templates/Ceramic_Minimal/index.jsx';
 import TestSocialLinks from './pages/TestSocialLinks';
 
 function ProtectedRoute({ children }) {
@@ -181,6 +182,7 @@ function AppRoutes() {
         <Route path="/templates/chatbot" element={<ChatbotPortfolio />} />
         <Route path="/templates/day-night-cycle" element={<DayNightCycle />} />
         <Route path="/templates/rainforest-canopy" element={<RainforestCanopy />} />
+        <Route path="/templates/ceramic-minimal" element={<CeramicMinimal />} />
         {/* Core Protected Routes */}
         <Route 
   path="/dashboard" 
