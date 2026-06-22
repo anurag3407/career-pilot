@@ -302,7 +302,7 @@ return loadedMigrations;
 
       const applied = await migrations
         .find({})
-        .sort({ appliedAt: -1 })
+        .sort({ appliedAt: -1, _id: -1 })
         .limit(steps)
         .toArray();
 
