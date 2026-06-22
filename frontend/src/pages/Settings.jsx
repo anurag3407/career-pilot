@@ -14,6 +14,19 @@ const tabs = [
   { id: 'notifications', label: 'Notifications', icon: Bell },
 ]
 
+const Toggle = ({ value, onChange }) => (
+  <button
+    role="switch"
+    aria-checked={value}
+    onClick={() => onChange(!value)}
+    className={`relative w-12 h-6 rounded-full transition-colors cursor-pointer ${value ? 'bg-indigo-500' : 'bg-muted'
+      }`}
+  >
+    <span className={`absolute top-1 w-4 h-4 bg-white rounded-full transition-all ${value ? 'left-7' : 'left-1'
+      }`} />
+  </button>
+)
+
 export default function Settings() {
   const [activeTab, setActiveTab] = useState('ai-providers')
   const [preferences, setPreferences] = useState({
@@ -51,18 +64,6 @@ export default function Settings() {
     }
   }
 
-  const Toggle = ({ value, onChange }) => (
-    <button
-      role="switch"
-      aria-checked={value}
-      onClick={() => onChange(!value)}
-      className={`relative w-12 h-6 rounded-full transition-colors cursor-pointer ${value ? 'bg-indigo-500' : 'bg-muted'
-        }`}
-    >
-      <span className={`absolute top-1 w-4 h-4 bg-white rounded-full transition-all ${value ? 'left-7' : 'left-1'
-        }`} />
-    </button>
-  )
 
   if (loading) return (
     <div className="min-h-screen bg-background">
