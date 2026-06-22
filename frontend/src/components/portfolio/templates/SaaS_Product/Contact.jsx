@@ -76,3 +76,4 @@ export default function Contact({ data }) {
     </footer>
   );
 }
+

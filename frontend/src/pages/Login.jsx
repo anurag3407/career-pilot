@@ -1,5 +1,6 @@
 import { useState } from 'react'
 import { Link, useNavigate } from 'react-router-dom'
+import { useForm } from 'react-hook-form'
 import toast from 'react-hot-toast'
 import { ShieldCheck } from 'lucide-react'
 import { useAuth } from '../hooks/useAuth'
@@ -8,102 +9,80 @@ import Input from '../components/Input'
 import Button from '../components/Button'
 import Card from '../components/Card'
 import { twoFactorApi } from '../services/api'
+import { sendPasswordResetEmail } from 'firebase/auth'
+import { auth } from '../config/firebase'
+
+const validationRules = {
+  email: {
+    required: 'Email is required',
+    pattern: {
+      value: /\S+@\S+\.\S+/,
+      message: 'Invalid email address',
+    },
+  },
+  password: {
+    required: 'Password is required',
+    validate: (value) =>
+      value === value.trim() || 'Password cannot start or end with spaces',
+  },
+}
 
 export default function Login() {
   const navigate = useNavigate()
-  const { login, loginWithGoogle, loginWithLinkedIn } = useAuth()
+  const { login, loginWithGoogle, loginWithLinkedIn, loginWithGitHub } = useAuth()
 
-  const [formData, setFormData] = useState({ email: '', password: '' })
-  const [loading, setLoading] = useState(false)
-  const [errors, setErrors] = useState({})
+  const {
+    register,
+    handleSubmit,
+    formState: { errors, isSubmitting },
+  } = useForm()
+
   const [step, setStep] = useState('credentials')
   const [totpToken, setTotpToken] = useState('')
   const [useBackup, setUseBackup] = useState(false)
   const [totpLoading, setTotpLoading] = useState(false)
+  const [googleLoading, setGoogleLoading] = useState(false)
+  const [linkedinLoading, setLinkedinLoading] = useState(false)
+  const [githubLoading, setGithubLoading] = useState(false)
+  const [forgotPassword, setForgotPassword] = useState(false)
+  const [resetEmail, setResetEmail] = useState('')
+  const [resetMessage, setResetMessage] = useState('')
+  const [resetError, setResetError] = useState('')
 
-  const handleChange = (e) => {
-    const { name, value } = e.target
-    setFormData((prev) => ({
-      ...prev,
-      [name]: value
-    }))
-    if (errors[name]) {
-      setErrors((prev) => ({
-        ...prev,
-        [name]: ''
-      }))
-    }
-  }
-
-  const validateForm = () => {
-    const newErrors = {}
-    if (!formData.email) {
-      newErrors.email = 'Email is required'
-    } else if (!/\S+@\S+\.\S+/.test(formData.email)) {
-      newErrors.email = 'Invalid email address'
-    }
-    if (!formData.password) {
-      newErrors.password = 'Password is required'
-    }
-    setErrors(newErrors)
-    return Object.keys(newErrors).length === 0
-  }
-
-  const handleSubmit = async (e) => {
-    e.preventDefault()
-    if (!validateForm()) return
-
-    setLoading(true)
+  const onSubmit = async (data) => {
     try {
-      // 1. Primary authentication via Firebase
-      await login(formData.email, formData.password)
-
-      // 2. Check with backend if two-factor is enabled for this user
+      await login(data.email, data.password)
       try {
         const statusRes = await twoFactorApi.getStatus()
         if (statusRes.enabled) {
           setStep('totp')
-          setLoading(false)
           return
         }
-      } catch (_) {
-        // 2FA status check failed — proceed without 2FA
-      }
-
+      } catch (_) {}
       toast.success('Signed in successfully!')
       navigate('/dashboard')
     } catch (error) {
-      console.error('Login error:', error)
       toast.error(error.message || 'Failed to sign in. Please check your credentials.')
-    } finally {
-      setLoading(false)
     }
   }
 
   const handleGoogleLogin = async () => {
-    setLoading(true)
+    setGoogleLoading(true)
     try {
       await loginWithGoogle()
-
-      // Check with backend if two-factor is enabled
       try {
         const statusRes = await twoFactorApi.getStatus()
         if (statusRes.enabled) {
           setStep('totp')
-          setLoading(false)
           return
         }
-      } catch (_) {
-        // 2FA status check failed — proceed without 2FA
-      }
-
+      } catch (_) {}
       toast.success('Signed in with Google!')
       navigate('/dashboard')
     } catch (error) {
-      console.error('Google login error:', error)
       toast.error(error.message || 'Failed to sign in with Google')
     } finally {
-      setLoading(false)
+      setGoogleLoading(false)
     }
   }
 
@@ -112,22 +91,38 @@ export default function Login() {
       toast.error('LinkedIn login integration is not configured.')
       return
     }
-    setLoading(true)
+    setLinkedinLoading(true)
     try {
-      // loginWithLinkedIn triggers a full-page redirect to LinkedIn OAuth
       loginWithLinkedIn()
-      // We don't toast or navigate here as the page is redirecting
     } catch (error) {
-      console.error('LinkedIn login error:', error)
       toast.error(error.message || 'Failed to login with LinkedIn')
-      setLoading(false)
+      setLinkedinLoading(false)
+    }
+  }
+
+  const handleGitHubLogin = async () => {
+    setGithubLoading(true)
+    try {
+      await loginWithGitHub()
+      try {
+        const statusRes = await twoFactorApi.getStatus()
+        if (statusRes.enabled) {
+          setStep('totp')
+          return
+        }
+      } catch (_) {}
+      toast.success('Signed in with GitHub!')
+      navigate('/dashboard')
+    } catch (error) {
+      toast.error(error.message || 'Failed to sign in with GitHub')
+    } finally {
+      setGithubLoading(false)
     }
   }
 
   const handleTotpSubmit = async (e) => {
     e.preventDefault()
     if (!totpToken.trim()) return
-
     setTotpLoading(true)
     try {
       if (useBackup) {
@@ -144,12 +139,23 @@ export default function Login() {
     }
   }
 
+  const handlePasswordReset = async (e) => {
+  e.preventDefault()
+  setResetMessage('')
+  setResetError('')
+  try {
+    await sendPasswordResetEmail(auth, resetEmail)
+    setResetMessage('Password reset email sent! Check your inbox.')
+  } catch (error) {
+    setResetError(error.message || 'Failed to send reset email. Please try again.')
+  }
+}
+
   return (
     <div className="min-h-screen bg-background relative overflow-hidden">
-      {/* Background Effect */}
       <div className="absolute top-1/4 left-1/4 w-96 h-96 bg-primary/20 rounded-full blur-[120px] pointer-events-none" />
       <div className="absolute bottom-1/4 right-1/4 w-96 h-96 bg-secondary/20 rounded-full blur-[120px] pointer-events-none" />
-      
+
       <Navbar />
 
       <div className="max-w-md mx-auto pt-24 md:pt-32 px-4 relative z-10">
@@ -157,33 +163,67 @@ export default function Login() {
           {step === 'credentials' ? (
             <>
               <h1 className="text-3xl font-black text-center mb-8 text-foreground tracking-tight">Welcome Back</h1>
-              
-              <form onSubmit={handleSubmit}>
+
+              <form onSubmit={handleSubmit(onSubmit)} noValidate>
                 <Input
                   label="Email"
                   type="email"
-                  name="email"
-                  value={formData.email}
-                  onChange={handleChange}
                   placeholder="you@example.com"
-                  error={errors.email}
-                  required
+                  error={errors.email?.message}
+                  {...register('email', validationRules.email)}
                 />
-                
+
                 <Input
                   label="Password"
                   type="password"
-                  name="password"
-                  value={formData.password}
-                  onChange={handleChange}
                   placeholder="••••••••"
-                  error={errors.password}
-                  required
+                  error={errors.password?.message}
+                  {...register('password', validationRules.password)}
                 />
-                
-                <Button 
-                  type="submit" 
-                  loading={loading}
+
+                {/* Forgot Password Link */}
+                <div className="text-right -mt-2 mb-2">
+                  <button
+                    type="button"
+                    onClick={() => { setForgotPassword(true); setResetMessage(''); setResetError('') }}
+                    className="text-sm text-primary hover:text-primary/80 font-bold underline underline-offset-4 decoration-primary/30"
+                  >
+                    Forgot Password?
+                  </button>
+                </div>
+
+                {/* Forgot Password Form */}
+                {forgotPassword && (
+                  <div className="mb-4 p-4 border border-border/50 rounded-lg bg-card/60">
+                    <h3 className="text-sm font-bold mb-3 text-foreground">Reset your password</h3>
+                    <form onSubmit={handlePasswordReset}>
+                      <Input
+                        label="Email"
+                        type="email"
+                        placeholder="you@example.com"
+                        value={resetEmail}
+                        onChange={(e) => setResetEmail(e.target.value)}
+                        required
+                      />
+                      <Button type="submit" className="w-full mt-2 font-bold">
+                        Send Reset Email
+                      </Button>
+                    </form>
+                    {resetMessage && <p className="text-green-500 text-sm mt-2 font-medium">{resetMessage}</p>}
+                    {resetError && <p className="text-red-500 text-sm mt-2 font-medium">{resetError}</p>}
+                    <button
+                      type="button"
+                      onClick={() => setForgotPassword(false)}
+                      className="text-xs text-muted-foreground mt-2 underline hover:text-foreground transition-colors"
+                    >
+                      Back to Login
+                    </button>
+                  </div>
+                )}
+
+                <Button
+                  type="submit"
+                  loading={isSubmitting}
                   className="w-full mt-4 font-bold"
                 >
                   Sign In
@@ -198,12 +238,13 @@ export default function Login() {
                   <span className="px-4 bg-card text-muted-foreground font-bold tracking-widest uppercase text-xs">Or continue with</span>
                 </div>
               </div>
-              
-              <div className="grid grid-cols-2 gap-3">
-                <Button 
-                  variant="outline" 
+
+              <div className="grid grid-cols-3 gap-3">
+                <Button
+                  variant="outline"
                   onClick={handleGoogleLogin}
-                  disabled={loading}
+                  disabled={googleLoading}
+                  loading={googleLoading}
                   className="w-full font-bold"
                 >
                   <svg className="w-5 h-5 mr-1" viewBox="0 0 24 24">
@@ -214,11 +255,24 @@ export default function Login() {
                   </svg>
                   Google
                 </Button>
+                <Button
+                  variant="outline"
+                  onClick={handleGitHubLogin}
+                  disabled={githubLoading}
+                  loading={githubLoading}
+                  className="w-full font-bold"
+                >
+                  <svg className="w-5 h-5 mr-1" viewBox="0 0 24 24" fill="currentColor">
+                    <path d="M12 0C5.37 0 0 5.37 0 12c0 5.31 3.435 9.795 8.205 11.385.6.105.825-.255.825-.57 0-.285-.015-1.23-.015-2.235-3.015.555-3.795-.735-4.035-1.41-.135-.345-.72-1.41-1.23-1.695-.42-.225-1.02-.78-.015-.795.945-.015 1.62.87 1.845 1.23 1.08 1.815 2.805 1.305 3.495.99.105-.78.42-1.305.765-1.605-2.67-.3-5.46-1.335-5.46-5.925 0-1.305.465-2.385 1.23-3.225-.12-.3-.54-1.53.12-3.18 0 0 1.005-.315 3.3 1.23.96-.27 1.98-.405 3-.405s2.04.135 3 .405c2.295-1.56 3.3-1.23 3.3-1.23.66 1.65.24 2.88.12 3.18.765.84 1.23 1.905 1.23 3.225 0 4.605-2.805 5.625-5.475 5.925.435.375.81 1.095.81 2.22 0 1.605-.015 2.895-.015 3.3 0 .315.225.69.825.57A12.02 12.02 0 0 0 24 12c0-6.63-5.37-12-12-12z"/>
+                  </svg>
+                  GitHub
+                </Button>
 
                 <Button
                   variant="outline"
                   onClick={handleLinkedInLogin}
-                  disabled={loading}
+                  disabled={linkedinLoading}
+                  loading={linkedinLoading}
                   className="w-full font-bold"
                 >
                   <svg className="w-5 h-5 mr-1" viewBox="0 0 24 24" fill="currentColor">
@@ -241,9 +295,7 @@ export default function Login() {
                 <div className="p-3 rounded-full bg-primary/10 border border-primary/20 mb-4">
                   <ShieldCheck className="w-6 h-6 text-primary" />
                 </div>
-                <h1 className="text-2xl font-bold text-center text-foreground">
-                  Two-Factor Verification
-                </h1>
+                <h1 className="text-2xl font-bold text-center text-foreground">Two-Factor Verification</h1>
                 <p className="text-muted-foreground text-sm text-center mt-2 font-medium">
                   {useBackup
                     ? 'Enter one of your backup codes to continue.'
@@ -255,9 +307,14 @@ export default function Login() {
                 <Input
                   label={useBackup ? 'Backup code' : 'Authenticator code'}
                   type="text"
-                  name="totpToken"
                   value={totpToken}
-                  onChange={(e) => setTotpToken(useBackup ? e.target.value.toUpperCase() : e.target.value.replace(/\D/g, '').slice(0, 6))}
+                  onChange={(e) =>
+                    setTotpToken(
+                      useBackup
+                        ? e.target.value.toUpperCase()
+                        : e.target.value.replace(/\D/g, '').slice(0, 6)
+                    )
+                  }
                   placeholder={useBackup ? 'XXXX-XXXX' : '000000'}
                   className="font-mono tracking-widest text-center text-lg font-bold"
                   maxLength={useBackup ? 9 : 6}
@@ -267,7 +324,11 @@ export default function Login() {
                 <Button
                   type="submit"
                   loading={totpLoading}
-                  disabled={useBackup ? totpToken.replace(/[^A-Z0-9]/g, '').length !== 8 : totpToken.length !== 6}
+                  disabled={
+                    useBackup
+                      ? totpToken.replace(/[^A-Z0-9]/g, '').length !== 8
+                      : totpToken.length !== 6
+                  }
                   className="w-full mt-4 font-bold"
                 >
                   Verify &amp; Sign In
@@ -277,7 +338,7 @@ export default function Login() {
               <button
                 type="button"
                 onClick={() => {
-                  setUseBackup(v => !v)
+                  setUseBackup((v) => !v)
                   setTotpToken('')
                 }}
                 className="w-full text-center text-sm text-muted-foreground hover:text-foreground transition-colors mt-4 font-bold"

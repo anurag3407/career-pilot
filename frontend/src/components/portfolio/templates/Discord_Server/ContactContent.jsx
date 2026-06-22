@@ -72,3 +72,4 @@ export function ContactContent({ data }) {
     </div>
   );
 }
+

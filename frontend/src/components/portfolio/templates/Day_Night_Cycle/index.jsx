@@ -1,7 +1,7 @@
+import { usePortfolio } from "../../../../context/PortfolioContext";
 import { useState, useEffect } from "react";
 import { motion, AnimatePresence } from "framer-motion";
 import { Github, Linkedin, Twitter, Mail, MapPin, ExternalLink, Sun, Moon } from "lucide-react";
-import data from "../../../../data/dummy_data.json";
 
 const SKY_STAGES = [
   { hour: 0,  from: "#0a0a1a", to: "#0d0d2b", stars: 1,   sunY: 110, moonY: 20,  label: "Midnight"  },
@@ -46,6 +46,8 @@ const STARS = Array.from({ length: 80 }, (_, i) => ({
 }));
 
 export default function DayNightCycle() {
+  const { portfolioData: data } = usePortfolio();
+
   const [hour, setHour] = useState(14);
   const [dragging, setDragging] = useState(false);
   const sky = getSkyState(hour);
@@ -299,6 +301,8 @@ export default function DayNightCycle() {
 }
 
 function Card({ title, children, cardClass, textClass, accentClass }) {
+  const { portfolioData: data } = usePortfolio();
+
   return (
     <motion.section initial={{ opacity:0, y:30 }} whileInView={{ opacity:1, y:0 }}
       viewport={{ once:true }} transition={{ duration:0.6 }}

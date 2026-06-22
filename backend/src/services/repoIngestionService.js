@@ -11,8 +11,12 @@ export const sessions = new Map();
 export const cloneRepo = async (repoUrl) => {
   const sessionId = Date.now().toString(36) + Math.random().toString(36).substring(2);
   const tempDir = path.join(os.tmpdir(), `repo-analyzer-${sessionId}`);
-  
-  await execFileAsync('git', ['clone', '--depth', '1', repoUrl, tempDir]);
+
+  // Full history is required by the time-series activity feature
+  // (backend/src/services/activityService.js). A shallow clone
+  // (`--depth 1`) would make `git log` return only the most recent
+  // commit, breaking weekly aggregation.
+  await execFileAsync('git', ['clone', repoUrl, tempDir]);
   return { sessionId, tempDir };
 };
 
@@ -70,7 +74,7 @@ export const buildReactFlowGraph = async (files, rootDir) => {
     
     nodes.push({
       id,
-      type: 'analyzerNode',
+      type: 'fileNode',
       position: { x: 0, y: 0 },
       data: {
         label: path.basename(file),
@@ -79,6 +83,8 @@ export const buildReactFlowGraph = async (files, rootDir) => {
       }
     });
   }
+  
+  const fileEdgesSet = new Set();
   
   for (const file of files) {
     const sourceId = pathToId.get(file);
@@ -90,13 +96,18 @@ export const buildReactFlowGraph = async (files, rootDir) => {
       
       if (possibleTargets.length > 0) {
         const targetId = pathToId.get(possibleTargets[0]);
-        edges.push({
-          id: `e-${sourceId}-${targetId}`,
-          source: sourceId,
-          target: targetId,
-          animated: true,
-          style: { stroke: '#475569', strokeWidth: 1.5 }
-        });
+        const edgeId = `e-${sourceId}-${targetId}`;
+        
+        if (!fileEdgesSet.has(edgeId)) {
+          fileEdgesSet.add(edgeId);
+          edges.push({
+            id: edgeId,
+            source: sourceId,
+            target: targetId,
+            animated: true,
+            style: { stroke: '#475569', strokeWidth: 1.5 }
+          });
+        }
       }
     }
   }

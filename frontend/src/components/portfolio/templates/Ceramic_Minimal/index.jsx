@@ -3,6 +3,8 @@ import { motion } from "framer-motion";
 import data from "../../../../data/dummy_data.json";
 
 export default function CeramicMinimal() {
+  const { portfolioData: data } = usePortfolio();
+
   return (
     <div className="bg-[#F6F1EB] text-[#3e3a37] min-h-screen">
 

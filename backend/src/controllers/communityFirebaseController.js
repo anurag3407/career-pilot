@@ -95,7 +95,11 @@ export const createChannel = async (req, res, next) => {
   try {
     const { name, description, type = 'public', category = 'general', icon } = req.body;
 
-    const channelName = name.toLowerCase().replace(/\s+/g, '-');
+    if (typeof name !== 'string' || !name.trim()) {
+      throw new ApiError(400, 'Channel name is required');
+    }
+
+    const channelName = name.trim().toLowerCase().replace(/\s+/g, '-');
 
     // Check if channel name exists
     const existingSnapshot = await channelsRef.where('name', '==', channelName).get();
