@@ -15,6 +15,8 @@ import {
   StickyNote,
   Send,
   X,
+  Download, 
+} from "lucide-react";
 } from "lucide-react";
 import Layout from "../components/Layout";
 import { jobTrackerApi } from "../services/api";
@@ -385,6 +387,37 @@ const JobTracker = () => {
       minute: "2-digit",
     });
   };
+  const exportToCSV = () => {
+    if (!trackedJobs || trackedJobs.length === 0) {
+      toast.error("No tracked jobs available to export");
+      return;
+    }
+
+    const headers = ["Job Title", "Company", "Status", "Location", "Salary", "Date Added", "Apply Link"];
+    
+    const rows = trackedJobs.map(job => [
+      `"${(job.title || '').replace(/"/g, '""')}"`,
+      `"${(job.company || '').replace(/"/g, '""')}"`,
+      `"${job.status || ''}"`,
+      `"${(job.location || '').replace(/"/g, '""')}"`,
+      `"${(job.salary || '').replace(/"/g, '""')}"`,
+      `"${job.createdAt ? new Date(job.createdAt).toLocaleDateString() : 'N/A'}"`,
+      `"${job.applyLink || ''}"`
+    ]);
+
+    const csvContent = [headers.join(","), ...rows.map(e => e.join(","))].join("\n");
+
+    const blob = new Blob([csvContent], { type: 'text/csv;charset=utf-8;' });
+    const url = URL.createObjectURL(blob);
+    const link = document.createElement("a");
+    link.setAttribute("href", url);
+    link.setAttribute("download", `career_pilot_jobs_${new Date().toISOString().split('T')[0]}.csv`);
+    document.body.appendChild(link);
+    link.click();
+    document.body.removeChild(link);
+    
+    toast.success("CSV file downloaded successfully!");
+  };
 
   if (loading) {
     return (
@@ -406,6 +439,19 @@ const JobTracker = () => {
             <p className="text-muted-foreground">
               Track your job applications in one place
             </p>
+          </div>
+          {/*  CSV Action Button */}
+            {trackedJobs.length > 0 && (
+              <Button
+                type="button"
+                variant="outline"
+                onClick={exportToCSV}
+                className="flex items-center gap-2 border-border hover:bg-muted self-start md:self-auto"
+              >
+                <Download className="w-4 h-4 text-primary" />
+                <span>Export CSV</span>
+              </Button>
+            )}
           </div>
 
           {(isOffline || pendingSyncCount > 0) && (
