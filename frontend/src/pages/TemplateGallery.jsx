@@ -477,50 +477,29 @@ export default function TemplateGallery() {
 
       <div className="p-8 pt-24">
 
-        {aiDraft && (
-          <div className="mb-8 p-4 rounded-xl bg-gradient-to-r from-emerald-500/10 to-teal-500/10 border border-emerald-500/30 flex items-center justify-between">
-            <div>
-              <h3 className="text-emerald-400 font-bold flex items-center gap-2">
-                <Sparkles className="w-5 h-5" /> ✨ Resume Parsed Successfully!
-              </h3>
-              <p className="text-sm text-muted-foreground mt-1">
-                Your data has been extracted. Select a template below and we'll
-                automatically inject your experience and projects!
-              </p>
-            </div>
-            <button
-              onClick={clearDraft}
-              className="p-2 hover:bg-emerald-500/20 text-emerald-400 rounded-lg transition-colors"
-              title="Discard Draft"
-            >
-              <X className="w-5 h-5" />
-            </button>
-          </div>
-        )}
+      {/* Midnight Gradient */}
+      <div className="mt-12">
+        <div className="mb-4 flex items-center gap-3 px-1">
+          <span className="rounded-full bg-indigo-500/20 px-3 py-1 text-xs font-bold uppercase tracking-widest text-indigo-400 border border-indigo-500/30">
+            Preview
+          </span>
+          <h2 className="text-lg font-semibold text-foreground/70">Midnight Gradient Theme</h2>
+        </div>
+        <div className="overflow-hidden rounded-2xl border border-border">
+          <MidnightGradient />
+        </div>
+      </div>
 
-        <div className="flex justify-between items-center mb-8">
-          <h1 className="text-4xl font-bold">Template Gallery</h1>
-          <button
-            onClick={toggleTheme}
-            className="p-2 rounded-xl bg-muted hover:bg-accent border border-border text-foreground transition-all cursor-pointer overflow-hidden relative group"
-            aria-label="Toggle theme"
-          >
-            <AnimatePresence mode="wait" initial={false}>
-              <motion.div
-                key={theme}
-                initial={{ y: 20, opacity: 0, rotate: 45 }}
-                animate={{ y: 0, opacity: 1, rotate: 0 }}
-                exit={{ y: -20, opacity: 0, rotate: -45 }}
-                transition={{ duration: 0.2 }}
-              >
-                {theme === 'light' ? (
-                  <Moon className="w-5 h-5" />
-                ) : (
-                  <Sun className="w-5 h-5" />
-                )}
-              </motion.div>
-            </AnimatePresence>
-          </button>
+      {/* Playing Cards Theme */}
+      <div className="mt-12">
+        <div className="mb-4 flex items-center gap-3 px-1">
+          <span className="rounded-full bg-emerald-500/20 px-3 py-1 text-xs font-bold uppercase tracking-widest text-emerald-400 border border-emerald-500/30">
+            🃟 NEW — Playing Cards
+          </span>
+          <h2 className="text-lg font-semibold text-foreground/70">Playing Cards Theme — Click to flip, shuffle deck</h2>
+        </div>
+        <div className="overflow-hidden rounded-2xl border border-emerald-500/20">
+          <PlayingCardsPortfolio portfolioData={aiDraft} />
         </div>
 
         <div className="mb-8 rounded-2xl border border-border bg-card p-5">
