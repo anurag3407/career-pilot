@@ -160,10 +160,45 @@ export const bulkUpsertJobs = async (fetchedJobs, JobModel, onNewJobs) => {
         .map(job => ({ ...job, _id: existingMap.get(job.externalId)?._id }))
         .filter(j => j._id != null);
 };
+/**
+ * Filter out jobs that have already been sent to this user for this alert.
+ *
+ * @param {string} userId
+ * @param {string} alertId
+ * @param {object[]} jobs
+ * @returns {Promise<object[]>}
+ */
+const filterUnsentJobsForUser = async (userId, alertId, jobs) => {
+    if (!userId || !alertId || !Array.isArray(jobs) || jobs.length === 0) {
+        return [];
+    }
 
+    const jobIds = jobs
+        .map(job => job._id)
+        .filter(Boolean);
+
+    if (jobIds.length === 0) {
+        return jobs;
+    }
+
+    const sentLogs = await NotificationLog.find({
+        userId,
+        jobListingId: { $in: jobIds },
+        emailStatus: 'sent'
+    })
+        .select('jobListingId')
+        .lean();
+
+    const sentJobIds = new Set(
+        sentLogs.map(log => String(log.jobListingId))
+    );
+
+    return jobs.filter(job => !sentJobIds.has(String(job._id)));
+};
 /**
  * Process a single job alert - fetch jobs and send notifications
  */
+
 export const processAlert = async (alertData) => {
     const { alertId, userId, userEmail, userName, title, keywords, location, remoteOnly, employmentType } = alertData;
 
@@ -255,11 +290,17 @@ export const processAlert = async (alertData) => {
             );
             console.log(`💾 Cached and synced ${newDocs.length} new job(s) to Firebase`);
         });
+        const unsentJobs = await filterUnsentJobsForUser(userId, alertId, jobsToSend);
+        console.log(`📧 Sending ${unsentJobs.length} new jobs to user after deduplication`);
 
-        console.log(`📧 Sending ${jobsToSend.length} jobs to user (deduplication DISABLED)`);
+        if (jobsToSend.length > 0 && unsentJobs.length === 0) {
+            console.log('📭 No new jobs to email after deduplication');
+            await JobAlert.findByIdAndUpdate(alertId, { lastCheckedAt: new Date() });
+            return { success: true, newJobs: 0, skipped: true };
+        }
 
         // Always send email if there are jobs
-        if (jobsToSend.length > 0) {
+        if (unsentJobs.length > 0) {
             try {
                 // Use the current email from the database to ensure accuracy
                 const recipientEmail = currentEmail;
@@ -271,15 +312,15 @@ export const processAlert = async (alertData) => {
                 console.log(`📬 To: ${recipientEmail}`);
                 console.log(`👤 Name: ${recipientName}`);
                 console.log(`🎯 Alert: "${title}"`);
-                console.log(`📊 Jobs Count: ${jobsToSend.length}`);
+                console.log(`📊 Jobs Count: ${unsentJobs.length}`);
                 console.log(`${'='.repeat(60)}\n`);
 
                 // Emit socket event to user about new jobs found
                 emitNewJobsFound(userId, {
                     alertId,
                     alertTitle: title,
-                    jobCount: jobsToSend.length,
-                    jobs: jobsToSend.map(job => ({
+                    jobCount: unsentJobs.length,
+                    jobs: unsentJobs.map(job => ({
                         title: job.title,
                         company: job.company,
                         location: job.location,
@@ -292,7 +333,7 @@ export const processAlert = async (alertData) => {
                     userEmail: recipientEmail,
                     userName: recipientName,
                     alertTitle: title,
-                    jobs: jobsToSend
+                    jobs: unsentJobs
                 });
                 console.log(`✅ Email service call completed!`);
 
@@ -300,30 +341,42 @@ export const processAlert = async (alertData) => {
                 console.log(`✅✅✅ EMAIL SENT SUCCESSFULLY! ✅✅✅`);
                 console.log(`📧 Message ID: ${emailResult.messageId}`);
                 console.log(`📬 Recipient: ${recipientEmail}`);
-                console.log(`📊 Jobs Sent: ${jobsToSend.length}`);
+                console.log(`📊 Jobs Sent: ${unsentJobs.length}`);
                 console.log(`${'🎉'.repeat(30)}\n`);
 
                 // Emit socket event confirming email was sent
                 emitEmailSent(userId, {
                     alertId,
                     alertTitle: title,
-                    jobCount: jobsToSend.length,
+                    jobCount: unsentJobs.length,
                     recipientEmail,
                     messageId: emailResult.messageId
                 });
 
                 // Log all notifications
-                const notificationPromises = jobsToSend.map(async job => {
+                const notificationPromises = unsentJobs.map(async job => {
                     try {
-                        const notification = await NotificationLog.create({
-                            userId,
-                            alertId,
-                            jobListingId: job._id,
-                            externalJobId: job.externalId,
-                            emailStatus: 'sent',
-                            emailMessageId: emailResult.messageId
-                        });
-
+                        const notification = await NotificationLog.findOneAndUpdate(
+                            {
+                                userId,
+                                jobListingId: job._id
+                            },
+                            {
+                                $set: {
+                                    alertId,
+                                    externalJobId: job.externalId,
+                                    emailStatus: 'sent',
+                                    emailMessageId: emailResult.messageId,
+                                    errorMessage: null,
+                                    sentAt: new Date()
+                                }
+                            },
+                            {
+                                upsert: true,
+                                new: true,
+                                setDefaultsOnInsert: true
+                            }
+                        );
                         // Save to Firebase (convert ObjectIds to strings)
                         try {
                             await saveNotificationToFirebase({
@@ -347,12 +400,12 @@ export const processAlert = async (alertData) => {
                 await JobAlert.findByIdAndUpdate(alertId, {
                     lastCheckedAt: new Date(),
                     $inc: {
-                        totalJobsFound: jobsToSend.length,
+                        totalJobsFound: unsentJobs.length,
                         totalEmailsSent: 1
                     }
                 });
 
-                console.log(`✉️ Email sent with ${jobsToSend.length} jobs`);
+                console.log(`✉️ Email sent with ${unsentJobs.length} jobs`);
                 consecutiveFailures = 0; // Reset on success
 
             } catch (emailError) {
@@ -366,7 +419,7 @@ export const processAlert = async (alertData) => {
                 });
 
                 // Log failed notifications
-                await Promise.all(jobsToSend.map(job =>
+                await Promise.all(unsentJobs.map(job =>
                     NotificationLog.create({
                         userId,
                         alertId,
@@ -379,7 +432,7 @@ export const processAlert = async (alertData) => {
             }
         }
 
-        return { success: true, newJobs: jobsToSend.length };
+        return { success: true, newJobs: unsentJobs.length };
 
     } catch (error) {
         console.error(`❌ Error processing alert ${alertId}:`, error.message);
@@ -499,9 +552,9 @@ export const startWorker = () => {
     console.log('👷 Job Alert Worker started and listening for jobs...');
     console.log('   Concurrency:', RATE_LIMIT_CONFIG.maxConcurrent);
     console.log('   Rate limit:', RATE_LIMIT_CONFIG.maxRequestsPerMinute, 'requests/minute');
-    
+
     // Worker is already autorunning.
-    
+
     return worker;
 };
 
@@ -516,7 +569,7 @@ export const scheduleAlertChecks = () => {
     if (isDevelopment && testInterval) {
         // Parse interval (e.g., '10s' -> 10000ms, '5m' -> 300000ms)
         let intervalMs = 10000; // default 10 seconds
-        
+
         if (testInterval.endsWith('s')) {
             intervalMs = parseInt(testInterval) * 1000;
         } else if (testInterval.endsWith('m')) {
@@ -547,8 +600,8 @@ export const scheduleAlertChecks = () => {
     // PRODUCTION MODE: Run every 24 hours at midnight (0 0 * * *)
     // Custom schedule can be set via ALERT_CRON_SCHEDULE env var
     const schedule = process.env.ALERT_CRON_SCHEDULE || '0 0 */2 * *'; // Default: every 2 days at midnight
-    
-console.log(`🏭 PRODUCTION MODE: Job alerts scheduled with cron: ${schedule} (runs every 2 days)`);
+
+    console.log(`🏭 PRODUCTION MODE: Job alerts scheduled with cron: ${schedule} (runs every 2 days)`);
     cron.schedule(schedule, async () => {
         console.log('\n⏰ [PROD] Scheduled job alert check starting...');
 
@@ -631,13 +684,13 @@ const runAlertCheck = async () => {
 
         // PROCESS DIRECTLY - Don't use queue/worker (they're broken)
         console.log('\n🚀 PROCESSING ALERTS DIRECTLY (BYPASSING QUEUE)...\n');
-        
+
         for (const alert of activeAlerts) {
             try {
                 console.log(`\n${'='.repeat(60)}`);
                 console.log(`📧 Processing: "${alert.title}" → ${alert.userEmail}`);
                 console.log(`${'='.repeat(60)}\n`);
-                
+
                 const result = await processAlert({
                     alertId: alert._id.toString(),
                     userId: alert.userId,
@@ -649,17 +702,17 @@ const runAlertCheck = async () => {
                     remoteOnly: alert.remoteOnly,
                     employmentType: alert.employmentType
                 });
-                
+
                 console.log(`\n✅ Alert processed: ${result.newJobs || 0} jobs sent\n`);
-                
+
                 // Add delay between requests to respect rate limits
                 await new Promise(resolve => setTimeout(resolve, RATE_LIMIT_CONFIG.delayBetweenJobs));
-                
+
             } catch (err) {
                 console.error(`❌ Failed to process alert ${alert.title}:`, err.message);
             }
         }
-        
+
         console.log('\n✅ All alerts processed!\n');
 
     } catch (error) {
