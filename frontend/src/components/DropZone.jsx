@@ -1,4 +1,4 @@
-import { useCallback, useState } from 'react'
+import { useCallback, useState, useRef, useEffect } from 'react'
 import { useDropzone } from 'react-dropzone'
 import { Upload, FileText, X, CheckCircle, AlertCircle } from 'lucide-react'
 import toast from 'react-hot-toast'
@@ -13,18 +13,48 @@ export default function DropZone({
   const [previews, setPreviews] = useState([])
   const [uploadProgress, setUploadProgress] = useState({})
 
-  const simulateProgress = (fileName) => {
+  const intervalsRef = useRef({})
+
+  const simulateProgress = useCallback((fileName) => {
     let progress = 0
     setUploadProgress((prev) => ({ ...prev, [fileName]: 0 }))
+
+    if (intervalsRef.current[fileName]) {
+      clearInterval(intervalsRef.current[fileName])
+    }
+
     const interval = setInterval(() => {
       progress += Math.floor(Math.random() * 15) + 5
       if (progress >= 100) {
         progress = 100
         clearInterval(interval)
+        delete intervalsRef.current[fileName]
       }
-      setUploadProgress((prev) => ({ ...prev, [fileName]: progress }))
+      setUploadProgress((prev) => {
+        if (prev[fileName] === undefined) {
+          clearInterval(interval)
+          delete intervalsRef.current[fileName]
+          return prev
+        }
+        return { ...prev, [fileName]: progress }
+      })
     }, 150)
-  }
+
+    intervalsRef.current[fileName] = interval
+  }, [])
+
+  const removeFile = useCallback((fileName) => {
+    if (intervalsRef.current[fileName]) {
+      clearInterval(intervalsRef.current[fileName])
+      delete intervalsRef.current[fileName]
+    }
+    setPreviews((prev) => prev.filter((p) => p.name !== fileName))
+    setUploadProgress((prev) => {
+      const updated = { ...prev }
+      delete updated[fileName]
+      return updated
+    })
+  }, [])
 
   const onDrop = useCallback(
     (acceptedFiles, rejectedFiles) => {
@@ -60,17 +90,18 @@ export default function DropZone({
         onFileSelect(acceptedFiles[0])
       }
     },
-    [onFileSelect, maxSizeMB, maxSizeBytes, multiple]
+    [onFileSelect, maxSizeMB, maxSizeBytes, multiple, simulateProgress]
   )
 
-  const removeFile = (fileName) => {
-    setPreviews((prev) => prev.filter((p) => p.name !== fileName))
-    setUploadProgress((prev) => {
-      const updated = { ...prev }
-      delete updated[fileName]
-      return updated
-    })
-  }
+  useEffect(() => {
+    return () => {
+      // eslint-disable-next-line react-hooks/exhaustive-deps
+      const activeIntervals = intervalsRef.current
+      Object.keys(activeIntervals).forEach((fileName) => {
+        clearInterval(activeIntervals[fileName])
+      })
+    }
+  }, [])
 
   const { getRootProps, getInputProps, isDragActive, isDragReject } = useDropzone({
     onDrop,
