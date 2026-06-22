@@ -2,6 +2,7 @@ import { useResume } from '../../../../context/ResumeContext'
 import Section from '../../shared/Section'
 import ExperienceRow from '../../shared/ExperienceRow'
 import ProjectCard from '../../shared/ProjectCard'
+import OrderedSections from '../../shared/OrderedSections'
 
 /**
  * CleanSingle — the most ATS-safe single-column possible. Pure semantic
@@ -10,6 +11,78 @@ import ProjectCard from '../../shared/ProjectCard'
  */
 export default function CleanSingle() {
   const { personal, experience, education, projects, skills, certifications } = useResume()
+
+  const nodes = {
+    summary: personal.summary ? (
+      <Section title="Summary" accent="#000000" uppercase={false}>
+        <p style={{ margin: 0, color: '#000000' }}>{personal.summary}</p>
+      </Section>
+    ) : null,
+
+    experience: experience.length > 0 ? (
+      <Section title="Experience" accent="#000000" uppercase={false}>
+        {experience.map((e, i) => (
+          <ExperienceRow
+            key={i}
+            exp={e}
+            roleColor="#000000"
+            companyColor="#000000"
+            periodColor="#000000"
+            bulletColor="#000000"
+            fontSize="11pt"
+          />
+        ))}
+      </Section>
+    ) : null,
+
+    education: education.length > 0 ? (
+      <Section title="Education" accent="#000000" uppercase={false}>
+        {education.map((e, i) => (
+          <ExperienceRow
+            key={i}
+            exp={{ ...e, role: e.institution, company: e.degree, bullets: [] }}
+            roleColor="#000000"
+            companyColor="#000000"
+            periodColor="#000000"
+            bulletColor="#000000"
+            fontSize="11pt"
+          />
+        ))}
+      </Section>
+    ) : null,
+
+    projects: projects.length > 0 ? (
+      <Section title="Projects" accent="#000000" uppercase={false}>
+        {projects.map((p, i) => (
+          <ProjectCard
+            key={i}
+            project={p}
+            titleColor="#000000"
+            descColor="#000000"
+            techColor="#000000"
+            linkColor="#000000"
+            fontSize="11pt"
+          />
+        ))}
+      </Section>
+    ) : null,
+
+    skills: skills.length > 0 ? (
+      <Section title="Skills" accent="#000000" uppercase={false}>
+        <div style={{ color: '#000000' }}>{skills.map((s) => s.name).join(', ')}</div>
+      </Section>
+    ) : null,
+
+    certifications: certifications.length > 0 ? (
+      <Section title="Certifications" accent="#000000" uppercase={false}>
+        {certifications.map((c, i) => (
+          <div key={i} style={{ marginBottom: '1mm' }}>
+            {c.name}{c.issuer ? ` — ${c.issuer}` : ''}{c.year ? ` (${c.year})` : ''}
+          </div>
+        ))}
+      </Section>
+    ) : null,
+  }
 
   return (
     <div
@@ -25,6 +98,7 @@ export default function CleanSingle() {
         lineHeight: 1.5,
       }}
     >
+      {/* ── Header (fixed) ── */}
       <header style={{ marginBottom: '6mm' }}>
         <h1 style={{ margin: 0, fontSize: '20pt', fontWeight: 700, color: '#000000' }}>
           {personal.name || 'Your Name'}
@@ -37,84 +111,12 @@ export default function CleanSingle() {
         </div>
       </header>
 
-      {personal.summary && (
-        <section style={{ marginBottom: '6mm' }}>
-          <h2 style={{ fontSize: '12pt', fontWeight: 700, margin: '0 0 2mm', color: '#000000' }}>Summary</h2>
-          <p style={{ margin: 0 }}>{personal.summary}</p>
-        </section>
-      )}
-
-      {experience.length > 0 && (
-        <section style={{ marginBottom: '6mm' }}>
-          <h2 style={{ fontSize: '12pt', fontWeight: 700, margin: '0 0 2mm', color: '#000000' }}>Experience</h2>
-          {experience.map((e, i) => (
-            <div key={i} style={{ marginBottom: '4mm' }}>
-              <div style={{ display: 'flex', justifyContent: 'space-between' }}>
-                <strong>{e.role}</strong>
-                {e.period && <span style={{ fontSize: '10pt' }}>{e.period}</span>}
-              </div>
-              <div style={{ fontSize: '10.5pt' }}>
-                {[e.company, e.location].filter(Boolean).join(', ')}
-              </div>
-              {e.bullets.length > 0 && (
-                <ul style={{ margin: '1mm 0 0', paddingLeft: '5mm' }}>
-                  {e.bullets.map((b, j) => (
-                    <li key={j} style={{ marginBottom: '0.5mm' }}>{b}</li>
-                  ))}
-                </ul>
-              )}
-            </div>
-          ))}
-        </section>
-      )}
-
-      {education.length > 0 && (
-        <section style={{ marginBottom: '6mm' }}>
-          <h2 style={{ fontSize: '12pt', fontWeight: 700, margin: '0 0 2mm', color: '#000000' }}>Education</h2>
-          {education.map((e, i) => (
-            <div key={i} style={{ marginBottom: '3mm' }}>
-              <div style={{ display: 'flex', justifyContent: 'space-between' }}>
-                <strong>{e.institution}</strong>
-                {e.period && <span style={{ fontSize: '10pt' }}>{e.period}</span>}
-              </div>
-              <div>{e.degree}</div>
-            </div>
-          ))}
-        </section>
-      )}
-
-      {projects.length > 0 && (
-        <section style={{ marginBottom: '6mm' }}>
-          <h2 style={{ fontSize: '12pt', fontWeight: 700, margin: '0 0 2mm', color: '#000000' }}>Projects</h2>
-          {projects.map((p, i) => (
-            <div key={i} style={{ marginBottom: '3mm' }}>
-              <strong>{p.title}</strong>
-              {p.description && <div style={{ fontSize: '10pt' }}>{p.description}</div>}
-              {p.techStack.length > 0 && (
-                <div style={{ fontSize: '9.5pt' }}>Tech: {p.techStack.join(', ')}</div>
-              )}
-            </div>
-          ))}
-        </section>
-      )}
-
-      {skills.length > 0 && (
-        <section style={{ marginBottom: '6mm' }}>
-          <h2 style={{ fontSize: '12pt', fontWeight: 700, margin: '0 0 2mm', color: '#000000' }}>Skills</h2>
-          <div>{skills.map((s) => s.name).join(', ')}</div>
-        </section>
-      )}
-
-      {certifications.length > 0 && (
-        <section>
-          <h2 style={{ fontSize: '12pt', fontWeight: 700, margin: '0 0 2mm', color: '#000000' }}>Certifications</h2>
-          {certifications.map((c, i) => (
-            <div key={i} style={{ marginBottom: '1mm' }}>
-              {c.name}{c.issuer ? ` — ${c.issuer}` : ''}{c.year ? ` (${c.year})` : ''}
-            </div>
-          ))}
-        </section>
-      )}
+      {/* ── Body sections (drag-and-drop order honored here) ── */}
+      <OrderedSections
+        nodes={nodes}
+        sectionProps={{ accent: '#000000', uppercase: false }}
+        customBodyStyle={{ color: '#000000' }}
+      />
     </div>
   )
 }

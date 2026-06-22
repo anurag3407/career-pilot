@@ -2,6 +2,7 @@ import { useResume } from '../../../../context/ResumeContext'
 import Section from '../../shared/Section'
 import ExperienceRow from '../../shared/ExperienceRow'
 import Avatar from '../../shared/Avatar'
+import OrderedSections from '../../shared/OrderedSections'
 
 /**
  * SeniorLeader — large initials/portrait plus dense experience.
@@ -9,6 +10,70 @@ import Avatar from '../../shared/Avatar'
  */
 export default function SeniorLeader() {
   const { personal, experience, education, projects, skills, certifications } = useResume()
+
+  const nodes = {
+    summary: personal.summary ? (
+      <Section title="Summary" accent="#1f2937" variant="plain" spacing="Compact" uppercase={false}>
+        <p style={{ margin: 0, fontStyle: 'italic', color: '#1f2937' }}>{personal.summary}</p>
+      </Section>
+    ) : null,
+
+    experience: experience.length > 0 ? (
+      <Section title="Experience" accent="#1f2937" uppercase={false}>
+        {experience.map((e, i) => (
+          <ExperienceRow
+            key={i}
+            exp={e}
+            roleColor="#1f2937"
+            companyColor="#57534e"
+            periodColor="#57534e"
+            bulletColor="#1f2937"
+            fontSize="10.5pt"
+          />
+        ))}
+      </Section>
+    ) : null,
+
+    education: education.length > 0 ? (
+      <Section title="Education" accent="#1f2937" uppercase={false}>
+        {education.map((e, i) => (
+          <div key={i} style={{ marginBottom: '2mm' }}>
+            <strong>{e.degree}</strong> — {e.institution}
+            {e.period && <span style={{ color: '#57534e' }}> · {e.period}</span>}
+          </div>
+        ))}
+      </Section>
+    ) : null,
+
+    projects: projects.length > 0 ? (
+      <Section title="Selected Engagements" accent="#1f2937" uppercase={false}>
+        {projects.map((p, i) => (
+          <div key={i} style={{ marginBottom: '3mm' }}>
+            <strong>{p.title}</strong>
+            {p.description && <div style={{ color: '#1f2937' }}>{p.description}</div>}
+          </div>
+        ))}
+      </Section>
+    ) : null,
+
+    skills: skills.length > 0 ? (
+      <Section title="Core Competencies" accent="#1f2937" uppercase={false}>
+        <div style={{ color: '#1f2937', lineHeight: 1.7 }}>{skills.map((s) => s.name).join(' · ')}</div>
+      </Section>
+    ) : null,
+
+    certifications: certifications.length > 0 ? (
+      <Section title="Certifications" accent="#1f2937" uppercase={false}>
+        {certifications.map((c, i) => (
+          <div key={i} style={{ marginBottom: '1.5mm' }}>
+            <strong>{c.name}</strong>
+            {c.issuer && <span> · {c.issuer}</span>}
+            {c.year && <span style={{ color: '#57534e' }}> · {c.year}</span>}
+          </div>
+        ))}
+      </Section>
+    ) : null,
+  }
 
   return (
     <div
@@ -24,7 +89,7 @@ export default function SeniorLeader() {
         lineHeight: 1.55,
       }}
     >
-      {/* ── Hero block ── */}
+      {/* ── Hero block (fixed) ── */}
       <header
         style={{
           display: 'grid',
@@ -56,74 +121,12 @@ export default function SeniorLeader() {
         </div>
       </header>
 
-      {personal.summary && (
-        <Section title="Summary" accent="#1f2937" variant="plain" spacing="Compact">
-          <p style={{ margin: 0, fontStyle: 'italic', color: '#1f2937' }}>{personal.summary}</p>
-        </Section>
-      )}
-
-      {experience.length > 0 && (
-        <Section title="Experience" accent="#1f2937">
-          {experience.map((e, i) => (
-            <div key={i} style={{ marginBottom: '5mm' }}>
-              <div style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'baseline' }}>
-                <strong style={{ fontSize: '12pt', color: '#1f2937' }}>{e.role}</strong>
-                {e.period && <span style={{ fontSize: '10pt', color: '#57534e', fontStyle: 'italic' }}>{e.period}</span>}
-              </div>
-              <div style={{ fontSize: '10.5pt', color: '#57534e', fontStyle: 'italic' }}>
-                {[e.company, e.location].filter(Boolean).join(', ')}
-              </div>
-              {e.bullets.length > 0 && (
-                <ul style={{ margin: '1.5mm 0 0', paddingLeft: '5mm', color: '#1f2937' }}>
-                  {e.bullets.map((b, j) => (
-                    <li key={j} style={{ marginBottom: '1mm' }}>{b}</li>
-                  ))}
-                </ul>
-              )}
-            </div>
-          ))}
-        </Section>
-      )}
-
-      {education.length > 0 && (
-        <Section title="Education" accent="#1f2937">
-          {education.map((e, i) => (
-            <div key={i} style={{ marginBottom: '2mm' }}>
-              <strong>{e.degree}</strong> — {e.institution}
-              {e.period && <span style={{ color: '#57534e' }}> · {e.period}</span>}
-            </div>
-          ))}
-        </Section>
-      )}
-
-      {projects.length > 0 && (
-        <Section title="Selected Engagements" accent="#1f2937">
-          {projects.map((p, i) => (
-            <div key={i} style={{ marginBottom: '3mm' }}>
-              <strong>{p.title}</strong>
-              {p.description && <div style={{ color: '#1f2937' }}>{p.description}</div>}
-            </div>
-          ))}
-        </Section>
-      )}
-
-      {skills.length > 0 && (
-        <Section title="Core Competencies" accent="#1f2937">
-          <div style={{ color: '#1f2937', lineHeight: 1.7 }}>{skills.map((s) => s.name).join(' · ')}</div>
-        </Section>
-      )}
-
-      {certifications.length > 0 && (
-        <Section title="Certifications" accent="#1f2937">
-          {certifications.map((c, i) => (
-            <div key={i} style={{ marginBottom: '1.5mm' }}>
-              <strong>{c.name}</strong>
-              {c.issuer && <span> · {c.issuer}</span>}
-              {c.year && <span style={{ color: '#57534e' }}> · {c.year}</span>}
-            </div>
-          ))}
-        </Section>
-      )}
+      {/* ── Body sections (drag-and-drop order honored here) ── */}
+      <OrderedSections
+        nodes={nodes}
+        sectionProps={{ accent: '#1f2937', uppercase: false }}
+        customBodyStyle={{ color: '#1f2937' }}
+      />
     </div>
   )
 }

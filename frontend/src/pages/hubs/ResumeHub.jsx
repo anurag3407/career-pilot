@@ -121,6 +121,14 @@ export default function ResumeHub() {
         color="primary"
       />
       <ToolCard
+        to="/linkedin-optimizer"
+        icon={Linkedin}
+        title="LinkedIn Optimizer"
+        description="Optimize your LinkedIn headline, bio, and descriptions with high-impact keywords."
+        badge="AI"
+        color="primary"
+      />
+      <ToolCard
         to="/upload"
         icon={BarChart3}
         title="ATS Score Analyzer"

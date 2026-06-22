@@ -140,10 +140,15 @@ export default function ResumeRoast() {
         ) : (
           <div className="space-y-5">
             <ShareCard result={result} jobRole={jobRole} />
-            <div className="flex justify-center">
+            <div className="flex flex-col sm:flex-row justify-center gap-4">
               <Button onClick={startOver} variant="outline" size="lg">
                 🔥 Roast another
               </Button>
+              <Link to="/hub/resume">
+                <Button size="lg" className="w-full sm:w-auto bg-primary hover:bg-primary/90 text-primary-foreground font-bold shadow-lg">
+                  🛠 Fix this with the Builder
+                </Button>
+              </Link>
             </div>
           </div>
         )}

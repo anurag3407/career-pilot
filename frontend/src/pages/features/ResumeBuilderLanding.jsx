@@ -8,6 +8,8 @@ import {
   FileText, Type, Github, Sparkles, BarChart, 
   Layout, Linkedin, Download, Mic, Briefcase, Play
 } from 'lucide-react';
+import { Quote } from '../../components/ui/demo';
+import { ImageComparisonDemo } from '../../components/ui/image-comparison-demo';
 
 const iconMap = {
   FileText, Type, Github, Sparkles, BarChart, Layout, Linkedin, Download, Mic, Briefcase
@@ -86,6 +88,10 @@ export default function ResumeBuilderLanding() {
           </div>
         </section>
 
+        <section className={`${styles.section} ${styles.container}`}>
+          <Quote />
+        </section>
+
         {/* Feature Showcase (Gradient Spotlight Cards) */}
         <section className={`${styles.section} ${styles.container}`}>
           <h2 className={`${styles.displayMd} ${styles.showcaseHeader}`}>
@@ -116,13 +122,7 @@ export default function ResumeBuilderLanding() {
 
         {/* Video / Mockup Section */}
         <section id="demo" className={`${styles.section} ${styles.container}`}>
-          <div className={styles.cardMockupTile} style={{ minHeight: '600px', display: 'flex', alignItems: 'center', justifyContent: 'center', flexDirection: 'column' }}>
-            <div className={styles.buttonIconCircular} style={{ width: '80px', height: '80px', marginBottom: '24px' }}>
-              <Play fill="currentColor" size={32} style={{ marginLeft: '6px' }} />
-            </div>
-            <h2 className={styles.displayMd}>{config.video.heading}</h2>
-            <p className={styles.bodyMuted}>{config.video.subheading}</p>
-          </div>
+          <ImageComparisonDemo />
         </section>
 
         {/* How It Works */}

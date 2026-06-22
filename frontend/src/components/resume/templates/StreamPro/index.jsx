@@ -3,6 +3,7 @@ import Section from '../../shared/Section'
 import ExperienceRow from '../../shared/ExperienceRow'
 import ProjectCard from '../../shared/ProjectCard'
 import ContactRow from '../../shared/ContactRow'
+import OrderedSections from '../../shared/OrderedSections'
 
 /**
  * StreamPro — two-column with section icons in the sidebar. A tighter
@@ -20,6 +21,45 @@ const ICONS = {
 export default function StreamPro() {
   const { personal, experience, education, projects, skills, certifications } = useResume()
 
+  const nodes = {
+    summary: personal.summary ? (
+      <Section title="Summary" accent="#0f766e" uppercase={false}>
+        <p style={{ margin: 0, color: '#334155' }}>{personal.summary}</p>
+      </Section>
+    ) : null,
+
+    experience: experience.length > 0 ? (
+      <Section title="Experience" accent="#0f766e" uppercase={false}>
+        {experience.map((e, i) => (
+          <ExperienceRow
+            key={i}
+            exp={e}
+            roleColor="#0f172a"
+            companyColor="#0f766e"
+            periodColor="#6b7280"
+            bulletColor="#334155"
+            fontSize="10pt"
+          />
+        ))}
+      </Section>
+    ) : null,
+
+    projects: projects.length > 0 ? (
+      <Section title="Projects" accent="#0f766e" uppercase={false}>
+        {projects.map((p, i) => (
+          <ProjectCard
+            key={i}
+            project={p}
+            titleColor="#0f172a"
+            descColor="#334155"
+            techColor="#0f766e"
+            fontSize="10pt"
+          />
+        ))}
+      </Section>
+    ) : null,
+  }
+
   return (
     <div
       className="resume-export-root"
@@ -35,7 +75,7 @@ export default function StreamPro() {
         gridTemplateColumns: '62mm 1fr',
       }}
     >
-      {/* ── Sidebar ── */}
+      {/* ── Sidebar (fixed header slot) ── */}
       <aside
         style={{
           background: '#f0fdfa',
@@ -113,35 +153,12 @@ export default function StreamPro() {
 
       {/* ── Main ── */}
       <main style={{ padding: '14mm 12mm' }}>
-        {personal.summary && (
-          <Section title="Summary" accent="#0f766e">
-            <p style={{ margin: 0, color: '#334155' }}>{personal.summary}</p>
-          </Section>
-        )}
-
-        {experience.length > 0 && (
-          <Section title="Experience" accent="#0f766e">
-            {experience.map((e, i) => (
-              <ExperienceRow
-                key={i}
-                exp={e}
-                roleColor="#0f172a"
-                companyColor="#0f766e"
-                periodColor="#6b7280"
-                bulletColor="#334155"
-                fontSize="10pt"
-              />
-            ))}
-          </Section>
-        )}
-
-        {projects.length > 0 && (
-          <Section title="Projects" accent="#0f766e">
-            {projects.map((p, i) => (
-              <ProjectCard key={i} project={p} titleColor="#0f172a" descColor="#334155" techColor="#0f766e" fontSize="10pt" />
-            ))}
-          </Section>
-        )}
+        {/* ── Body sections (drag-and-drop order honored here) ── */}
+        <OrderedSections
+          nodes={nodes}
+          sectionProps={{ accent: '#0f766e', uppercase: false }}
+          customBodyStyle={{ color: '#334155' }}
+        />
       </main>
     </div>
   )

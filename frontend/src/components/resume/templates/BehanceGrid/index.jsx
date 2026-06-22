@@ -1,5 +1,6 @@
 import { useResume } from '../../../../context/ResumeContext'
 import Section from '../../shared/Section'
+import OrderedSections from '../../shared/OrderedSections'
 
 /**
  * BehanceGrid — project thumbnails in a 2x2 grid. Visual-first for
@@ -15,6 +16,38 @@ export default function BehanceGrid() {
     gridItems.push(p || { title: '—', description: '' })
   }
 
+  const nodes = {
+    summary: personal.summary ? (
+      <Section title="About" accent="#7c3aed" uppercase={false}>
+        <p style={{ margin: 0, color: '#374151' }}>{personal.summary}</p>
+      </Section>
+    ) : null,
+
+    skills: skills.length > 0 ? (
+      <Section title="Skills" accent="#7c3aed" uppercase={false}>
+        <div style={{ display: 'flex', flexWrap: 'wrap', gap: '1mm' }}>
+          {skills.map((s, i) => (
+            <span key={i} style={{ fontSize: '8.5pt', padding: '0.5mm 2mm', background: '#ede9fe', color: '#5b21b6', borderRadius: 12, fontWeight: 500 }}>
+              {s.name}
+            </span>
+          ))}
+        </div>
+      </Section>
+    ) : null,
+
+    education: education.length > 0 ? (
+      <Section title="Education" accent="#7c3aed" uppercase={false}>
+        {education.map((e, i) => (
+          <div key={i} style={{ marginBottom: '2mm' }}>
+            <strong>{e.degree}</strong>
+            <div style={{ color: '#7c3aed', fontSize: '9pt' }}>{e.institution}</div>
+            <div style={{ color: '#6b7280', fontSize: '8.5pt' }}>{e.period}</div>
+          </div>
+        ))}
+      </Section>
+    ) : null,
+  }
+
   return (
     <div
       className="resume-export-root"
@@ -28,7 +61,7 @@ export default function BehanceGrid() {
         lineHeight: 1.5,
       }}
     >
-      {/* ── Header ── */}
+      {/* ── Header (fixed) ── */}
       <header style={{ padding: '12mm 16mm 6mm' }}>
         <h1 style={{ margin: 0, fontSize: '28pt', fontWeight: 700, color: '#1f2937', letterSpacing: '-0.5px' }}>
           {personal.name || 'Your Name'}
@@ -47,7 +80,7 @@ export default function BehanceGrid() {
         </div>
       </header>
 
-      {/* ── Project grid ── */}
+      {/* ── Project grid (fixed header slot) ── */}
       {projects.length > 0 && (
         <section style={{ padding: '0 16mm 6mm' }}>
           <div style={{ display: 'grid', gridTemplateColumns: '1fr 1fr', gap: '3mm' }}>
@@ -103,8 +136,8 @@ export default function BehanceGrid() {
       )}
 
       <div style={{ padding: '0 16mm 12mm', display: 'grid', gridTemplateColumns: '1fr 1fr', gap: '8mm' }}>
-        {experience.length > 0 && (
-          <Section title="Experience" accent="#7c3aed">
+        {experience.length > 0 ? (
+          <Section title="Experience" accent="#7c3aed" uppercase={false}>
             {experience.map((e, i) => (
               <div key={i} style={{ marginBottom: '3mm' }}>
                 <div style={{ display: 'flex', justifyContent: 'space-between' }}>
@@ -124,38 +157,17 @@ export default function BehanceGrid() {
               </div>
             ))}
           </Section>
+        ) : (
+          <div />
         )}
 
         <div>
-          {personal.summary && (
-            <Section title="About" accent="#7c3aed">
-              <p style={{ margin: 0, color: '#374151' }}>{personal.summary}</p>
-            </Section>
-          )}
-
-          {skills.length > 0 && (
-            <Section title="Skills" accent="#7c3aed">
-              <div style={{ display: 'flex', flexWrap: 'wrap', gap: '1mm' }}>
-                {skills.map((s, i) => (
-                  <span key={i} style={{ fontSize: '8.5pt', padding: '0.5mm 2mm', background: '#ede9fe', color: '#5b21b6', borderRadius: 12, fontWeight: 500 }}>
-                    {s.name}
-                  </span>
-                ))}
-              </div>
-            </Section>
-          )}
-
-          {education.length > 0 && (
-            <Section title="Education" accent="#7c3aed">
-              {education.map((e, i) => (
-                <div key={i} style={{ marginBottom: '2mm' }}>
-                  <strong>{e.degree}</strong>
-                  <div style={{ color: '#7c3aed', fontSize: '9pt' }}>{e.institution}</div>
-                  <div style={{ color: '#6b7280', fontSize: '8.5pt' }}>{e.period}</div>
-                </div>
-              ))}
-            </Section>
-          )}
+          {/* ── Body sections (drag-and-drop order honored here) ── */}
+          <OrderedSections
+            nodes={nodes}
+            sectionProps={{ accent: '#7c3aed', uppercase: false }}
+            customBodyStyle={{ color: '#374151' }}
+          />
         </div>
       </div>
     </div>

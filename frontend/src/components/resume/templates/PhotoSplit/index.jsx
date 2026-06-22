@@ -2,12 +2,52 @@ import { useResume } from '../../../../context/ResumeContext'
 import Section from '../../shared/Section'
 import ExperienceRow from '../../shared/ExperienceRow'
 import Avatar from '../../shared/Avatar'
+import OrderedSections from '../../shared/OrderedSections'
 
 /**
  * PhotoSplit — 50/50 split, photo left, content right.
  */
 export default function PhotoSplit() {
   const { personal, experience, education, projects, skills, certifications } = useResume()
+
+  const nodes = {
+    summary: personal.summary ? (
+      <Section title="About" accent="#7c3aed" uppercase={false}>
+        <p style={{ margin: 0, color: '#374151' }}>{personal.summary}</p>
+      </Section>
+    ) : null,
+
+    experience: experience.length > 0 ? (
+      <Section title="Experience" accent="#7c3aed" uppercase={false}>
+        {experience.map((e, i) => (
+          <ExperienceRow
+            key={i}
+            exp={e}
+            roleColor="#1f2937"
+            companyColor="#7c3aed"
+            periodColor="#6b7280"
+            bulletColor="#374151"
+            fontSize="10pt"
+          />
+        ))}
+      </Section>
+    ) : null,
+
+    projects: projects.length > 0 ? (
+      <Section title="Projects" accent="#7c3aed" uppercase={false}>
+        {projects.map((p, i) => (
+          <div key={i} style={{ marginBottom: '3mm' }}>
+            <strong>{p.title}</strong>
+            {p.description && <div style={{ color: '#374151' }}>{p.description}</div>}
+            {p.techStack.length > 0 && (
+              <div style={{ color: '#7c3aed', fontSize: '8.5pt' }}>{p.techStack.join(' · ')}</div>
+            )}
+            {p.link && <div style={{ color: '#7c3aed', fontSize: '8.5pt' }}>{p.link}</div>}
+          </div>
+        ))}
+      </Section>
+    ) : null,
+  }
 
   return (
     <div
@@ -24,7 +64,7 @@ export default function PhotoSplit() {
         gridTemplateColumns: '95mm 1fr',
       }}
     >
-      {/* ── Left photo + sidebar ── */}
+      {/* ── Left photo + sidebar (fixed header slot) ── */}
       <aside style={{ background: '#f5f3ff', padding: '10mm 8mm', display: 'flex', flexDirection: 'column', alignItems: 'center' }}>
         <Avatar sizeMm={60} accent="#7c3aed" bg="#ddd6fe" fontSize="32pt" style={{ marginBottom: '6mm' }} />
         <h1 style={{ margin: 0, fontSize: '20pt', fontWeight: 700, color: '#1f2937', letterSpacing: '-0.5px', textAlign: 'center' }}>
@@ -90,44 +130,14 @@ export default function PhotoSplit() {
         )}
       </aside>
 
-      {/* ── Main content ── */}
+      {/* ── Main content (order-aware body) ── */}
       <main style={{ padding: '10mm 14mm' }}>
-        {personal.summary && (
-          <Section title="About" accent="#7c3aed">
-            <p style={{ margin: 0, color: '#374151' }}>{personal.summary}</p>
-          </Section>
-        )}
-
-        {experience.length > 0 && (
-          <Section title="Experience" accent="#7c3aed">
-            {experience.map((e, i) => (
-              <ExperienceRow
-                key={i}
-                exp={e}
-                roleColor="#1f2937"
-                companyColor="#7c3aed"
-                periodColor="#6b7280"
-                bulletColor="#374151"
-                fontSize="10pt"
-              />
-            ))}
-          </Section>
-        )}
-
-        {projects.length > 0 && (
-          <Section title="Projects" accent="#7c3aed">
-            {projects.map((p, i) => (
-              <div key={i} style={{ marginBottom: '3mm' }}>
-                <strong>{p.title}</strong>
-                {p.description && <div style={{ color: '#374151' }}>{p.description}</div>}
-                {p.techStack.length > 0 && (
-                  <div style={{ color: '#7c3aed', fontSize: '8.5pt' }}>{p.techStack.join(' · ')}</div>
-                )}
-                {p.link && <div style={{ color: '#7c3aed', fontSize: '8.5pt' }}>{p.link}</div>}
-              </div>
-            ))}
-          </Section>
-        )}
+        {/* ── Body sections (drag-and-drop order honored here) ── */}
+        <OrderedSections
+          nodes={nodes}
+          sectionProps={{ accent: '#7c3aed', uppercase: false }}
+          customBodyStyle={{ color: '#374151' }}
+        />
       </main>
     </div>
   )

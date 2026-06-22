@@ -1,6 +1,7 @@
 import { useResume } from '../../../../context/ResumeContext'
 import Section from '../../shared/Section'
 import ExperienceRow from '../../shared/ExperienceRow'
+import OrderedSections from '../../shared/OrderedSections'
 
 /**
  * StackOverflow — reputation-driven engineer template. Score chips and a
@@ -13,6 +14,50 @@ export default function StackOverflow() {
   const goldCount = Math.min(skills.length, 4)
   const silverCount = Math.min(skills.length - 4, 8)
   const bronzeCount = Math.max(0, skills.length - 12)
+
+  const nodes = {
+    summary: personal.summary ? (
+      <Section title="About" accent="#0074cc" uppercase={false}>
+        <p style={{ margin: 0, color: '#232629' }}>{personal.summary}</p>
+      </Section>
+    ) : null,
+
+    experience: experience.length > 0 ? (
+      <Section title="Developer Story" accent="#0074cc" uppercase={false}>
+        {experience.map((e, i) => (
+          <ExperienceRow
+            key={i}
+            exp={e}
+            roleColor="#0c0d0e"
+            companyColor="#0074cc"
+            periodColor="#6a737c"
+            bulletColor="#232629"
+            fontSize="10pt"
+          />
+        ))}
+      </Section>
+    ) : null,
+
+    projects: projects.length > 0 ? (
+      <Section title="Featured Projects" accent="#0074cc" uppercase={false}>
+        {projects.map((p, i) => (
+          <div key={i} style={{ marginBottom: '3mm' }}>
+            <strong>{p.title}</strong>
+            {p.description && <div style={{ color: '#232629' }}>{p.description}</div>}
+            {p.techStack.length > 0 && (
+              <div style={{ display: 'flex', flexWrap: 'wrap', gap: '1mm', marginTop: '1mm' }}>
+                {p.techStack.map((t) => (
+                  <span key={t} style={{ fontSize: '8pt', padding: '0.4mm 1.5mm', background: '#e1ecf4', color: '#39739d', borderRadius: 2 }}>
+                    {t}
+                  </span>
+                ))}
+              </div>
+            )}
+          </div>
+        ))}
+      </Section>
+    ) : null,
+  }
 
   return (
     <div
@@ -31,7 +76,7 @@ export default function StackOverflow() {
         gap: '6mm',
       }}
     >
-      {/* ── Left column ── */}
+      {/* ── Left column (fixed header slot) ── */}
       <aside style={{ borderRight: '0.5pt solid #d6d9dc', paddingRight: '5mm' }}>
         <div style={{ display: 'flex', alignItems: 'center', gap: '3mm', marginBottom: '4mm' }}>
           <div
@@ -124,47 +169,12 @@ export default function StackOverflow() {
 
       {/* ── Main ── */}
       <main>
-        {personal.summary && (
-          <Section title="About" accent="#0074cc">
-            <p style={{ margin: 0, color: '#232629' }}>{personal.summary}</p>
-          </Section>
-        )}
-
-        {experience.length > 0 && (
-          <Section title="Developer Story" accent="#0074cc">
-            {experience.map((e, i) => (
-              <ExperienceRow
-                key={i}
-                exp={e}
-                roleColor="#0c0d0e"
-                companyColor="#0074cc"
-                periodColor="#6a737c"
-                bulletColor="#232629"
-                fontSize="10pt"
-              />
-            ))}
-          </Section>
-        )}
-
-        {projects.length > 0 && (
-          <Section title="Featured Projects" accent="#0074cc">
-            {projects.map((p, i) => (
-              <div key={i} style={{ marginBottom: '3mm' }}>
-                <strong>{p.title}</strong>
-                {p.description && <div style={{ color: '#232629' }}>{p.description}</div>}
-                {p.techStack.length > 0 && (
-                  <div style={{ display: 'flex', flexWrap: 'wrap', gap: '1mm', marginTop: '1mm' }}>
-                    {p.techStack.map((t) => (
-                      <span key={t} style={{ fontSize: '8pt', padding: '0.4mm 1.5mm', background: '#e1ecf4', color: '#39739d', borderRadius: 2 }}>
-                        {t}
-                      </span>
-                    ))}
-                  </div>
-                )}
-              </div>
-            ))}
-          </Section>
-        )}
+        {/* ── Body sections (drag-and-drop order honored here) ── */}
+        <OrderedSections
+          nodes={nodes}
+          sectionProps={{ accent: '#0074cc', uppercase: false }}
+          customBodyStyle={{ color: '#232629' }}
+        />
       </main>
     </div>
   )

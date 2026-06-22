@@ -39,6 +39,7 @@ export default function FeatureLandingPage({ config }) {
           primaryCtaLink={primaryCtaLink}
           secondaryCtaText={config.hero.secondaryCta.text}
           secondaryCtaLink={config.hero.secondaryCta.href}
+          tertiaryCta={config.hero.tertiaryCta}
           stats={config.hero.stats}
           illustration={config.Illustration ? <config.Illustration /> : null}
         />

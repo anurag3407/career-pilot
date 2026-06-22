@@ -1,6 +1,7 @@
 import { useResume } from '../../../../context/ResumeContext'
 import Section from '../../shared/Section'
 import ExperienceRow from '../../shared/ExperienceRow'
+import OrderedSections from '../../shared/OrderedSections'
 
 /**
  * RoadmapTimeline — horizontal product roadmap across the header, then
@@ -11,6 +12,80 @@ export default function RoadmapTimeline() {
 
   // Use first 5 experience entries as roadmap phases
   const phases = experience.slice(0, 5)
+
+  const nodes = {
+    summary: personal.summary ? (
+      <Section title="About" accent="#4338ca" uppercase={false}>
+        <p style={{ margin: 0, color: '#334155' }}>{personal.summary}</p>
+      </Section>
+    ) : null,
+
+    experience: experience.length > 0 ? (
+      <Section title="Experience" accent="#4338ca" uppercase={false}>
+        {experience.map((e, i) => (
+          <ExperienceRow
+            key={i}
+            exp={e}
+            roleColor="#0f172a"
+            companyColor="#4338ca"
+            periodColor="#6b7280"
+            bulletColor="#334155"
+            fontSize="10pt"
+          />
+        ))}
+      </Section>
+    ) : null,
+
+    skills: skills.length > 0 ? (
+      <Section title="Skills" accent="#4338ca" uppercase={false}>
+        <div style={{ display: 'flex', flexWrap: 'wrap', gap: '1mm' }}>
+          {skills.map((s, i) => (
+            <span key={i} style={{ fontSize: '9pt', padding: '0.5mm 2mm', background: '#e0e7ff', color: '#1e1b4b', borderRadius: 8, fontWeight: 500 }}>
+              {s.name}
+            </span>
+          ))}
+        </div>
+      </Section>
+    ) : null,
+
+    projects: projects.length > 0 ? (
+      <Section title="Projects Shipped" accent="#4338ca" uppercase={false}>
+        {projects.map((p, i) => (
+          <div key={i} style={{ marginBottom: '3mm' }}>
+            <strong>{p.title}</strong>
+            {p.description && <div style={{ color: '#334155' }}>{p.description}</div>}
+            {p.techStack.length > 0 && (
+              <div style={{ color: '#4338ca', fontSize: '8.5pt' }}>{p.techStack.join(' · ')}</div>
+            )}
+          </div>
+        ))}
+      </Section>
+    ) : null,
+
+    education: education.length > 0 ? (
+      <Section title="Education" accent="#4338ca" uppercase={false}>
+        {education.map((e, i) => (
+          <div key={i} style={{ marginBottom: '2mm' }}>
+            <strong>{e.institution}</strong>
+            {e.degree && <span> · {e.degree}</span>}
+            {e.period && <span style={{ color: '#6b7280' }}> · {e.period}</span>}
+          </div>
+        ))}
+      </Section>
+    ) : null,
+
+    certifications: certifications.length > 0 ? (
+      <Section title="Certifications" accent="#4338ca" uppercase={false}>
+        {certifications.map((c, i) => (
+          <div key={i} style={{ marginBottom: '1.5mm' }}>
+            <strong>{c.name}</strong>
+            {c.issuer && <span> · {c.issuer}</span>}
+            {c.year && <span style={{ color: '#6b7280' }}> · {c.year}</span>}
+          </div>
+        ))}
+      </Section>
+    ) : null,
+  }
 
   return (
     <div
@@ -25,7 +100,7 @@ export default function RoadmapTimeline() {
         lineHeight: 1.5,
       }}
     >
-      {/* ── Header ── */}
+      {/* ── Header (fixed) ── */}
       <header style={{ padding: '14mm 18mm 6mm' }}>
         <h1 style={{ margin: 0, fontSize: '26pt', fontWeight: 700, letterSpacing: '-0.5px' }}>
           {personal.name || 'Your Name'}
@@ -43,7 +118,7 @@ export default function RoadmapTimeline() {
         </div>
       </header>
 
-      {/* ── Roadmap ── */}
+      {/* ── Roadmap (fixed header slot) ── */}
       <section style={{ padding: '4mm 18mm', background: '#eef2ff' }}>
         <div style={{ fontSize: '9pt', textTransform: 'uppercase', letterSpacing: '1.5px', color: '#4338ca', marginBottom: '4mm', fontWeight: 700 }}>
           Product Roadmap
@@ -87,77 +162,12 @@ export default function RoadmapTimeline() {
       </section>
 
       <div style={{ padding: '6mm 18mm 12mm' }}>
-        {personal.summary && (
-          <Section title="About" accent="#4338ca">
-            <p style={{ margin: 0, color: '#334155' }}>{personal.summary}</p>
-          </Section>
-        )}
-
-        {experience.length > 0 && (
-          <Section title="Experience" accent="#4338ca">
-            {experience.map((e, i) => (
-              <ExperienceRow
-                key={i}
-                exp={e}
-                roleColor="#0f172a"
-                companyColor="#4338ca"
-                periodColor="#6b7280"
-                bulletColor="#334155"
-                fontSize="10pt"
-              />
-            ))}
-          </Section>
-        )}
-
-        {skills.length > 0 && (
-          <Section title="Skills" accent="#4338ca">
-            <div style={{ display: 'flex', flexWrap: 'wrap', gap: '1mm' }}>
-              {skills.map((s, i) => (
-                <span key={i} style={{ fontSize: '9pt', padding: '0.5mm 2mm', background: '#e0e7ff', color: '#1e1b4b', borderRadius: 8, fontWeight: 500 }}>
-                  {s.name}
-                </span>
-              ))}
-            </div>
-          </Section>
-        )}
-
-        {projects.length > 0 && (
-          <Section title="Projects Shipped" accent="#4338ca">
-            {projects.map((p, i) => (
-              <div key={i} style={{ marginBottom: '3mm' }}>
-                <strong>{p.title}</strong>
-                {p.description && <div style={{ color: '#334155' }}>{p.description}</div>}
-                {p.techStack.length > 0 && (
-                  <div style={{ color: '#4338ca', fontSize: '8.5pt' }}>{p.techStack.join(' · ')}</div>
-                )}
-              </div>
-            ))}
-          </Section>
-        )}
-
-        {education.length > 0 && (
-          <Section title="Education" accent="#4338ca">
-            {education.map((e, i) => (
-              <div key={i} style={{ marginBottom: '2mm' }}>
-                <strong>{e.institution}</strong>
-                {e.degree && <span> · {e.degree}</span>}
-                {e.period && <span style={{ color: '#6b7280' }}> · {e.period}</span>}
-              </div>
-            ))}
-          </Section>
-        )}
-
-        {certifications.length > 0 && (
-          <Section title="Certifications" accent="#4338ca">
-            {certifications.map((c, i) => (
-              <div key={i} style={{ marginBottom: '1.5mm' }}>
-                <strong>{c.name}</strong>
-                {c.issuer && <span> · {c.issuer}</span>}
-                {c.year && <span style={{ color: '#6b7280' }}> · {c.year}</span>}
-              </div>
-            ))}
-          </Section>
-        )}
+        {/* ── Body sections (drag-and-drop order honored here) ── */}
+        <OrderedSections
+          nodes={nodes}
+          sectionProps={{ accent: '#4338ca', uppercase: false }}
+          customBodyStyle={{ color: '#334155' }}
+        />
       </div>
     </div>
   )

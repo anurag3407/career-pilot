@@ -34,7 +34,6 @@ import GlassmorphismTemplate from "./components/portfolio/templates/Glassmorphis
 
 import JobTracker from './pages/JobTracker';
 
-const Outreach = lazy(() => import('./pages/Outreach'));
 const Community = lazy(() => import('./pages/Community'));
 const Login = lazy(() => import("./pages/Login"));
 const Register = lazy(() => import("./pages/Register"));
@@ -51,7 +50,6 @@ const InterviewHistory = lazy(() => import("./pages/InterviewHistory"));
 const InterviewReplay = lazy(() => import("./pages/InterviewReplay"));
 const UserProfile = lazy(() => import("./pages/UserProfile"));
 const SecuritySettings = lazy(() => import("./pages/SecuritySettings"));
-const EmailGenerator = lazy(() => import("./pages/EmailGenerator"));
 const LinkedInOptimizer = lazy(() => import("./pages/LinkedInOptimizer"));
 const Settings = lazy(() => import("./pages/Settings"));
 const ResumeRoast = lazy(() => import('./pages/ResumeRoast'));
@@ -111,6 +109,7 @@ const GithubPortfolioLanding = lazy(() => import('./pages/features/GithubPortfol
 const ProjectVisualizerLanding = lazy(() => import('./pages/features/ProjectVisualizerLanding'));
 const JobFinderLanding = lazy(() => import('./pages/features/JobFinderLanding'));
 const MockInterviewLanding = lazy(() => import('./pages/features/MockInterviewLanding'));
+const RecruitersLanding = lazy(() => import('./pages/features/RecruitersLanding'));
 
 import ScrollToTop from "./components/ScrollToTop";
 import NorthernFjords from './components/portfolio/templates/Northern_Fjords';
@@ -283,6 +282,7 @@ function AppRoutes() {
         <Route path="/project-visualizer" element={<Suspense fallback={<LoadingScreen label="Loading..." />}><ProjectVisualizerLanding /></Suspense>} />
         <Route path="/job-finder" element={<Suspense fallback={<LoadingScreen label="Loading..." />}><JobFinderLanding /></Suspense>} />
         <Route path="/mock-interview" element={<Suspense fallback={<LoadingScreen label="Loading..." />}><MockInterviewLanding /></Suspense>} />
+        <Route path="/recruiters" element={<Suspense fallback={<LoadingScreen label="Loading..." />}><RecruitersLanding /></Suspense>} />
 
         {/* Legacy Landing Redirects */}
         <Route path="/resume-builder-landing" element={<Navigate to="/resume-builder" replace />} />
@@ -398,7 +398,6 @@ function AppRoutes() {
         <Route path="/jobs" element={<Navigate to="/job-finder/search" replace />} />
         <Route path="/job-alerts" element={<ProtectedRoute><Suspense fallback={<LoadingScreen label="Loading Job Alerts..." />}><JobAlerts /></Suspense></ProtectedRoute>} />
         <Route path="/job-tracker" element={<ProtectedRoute><Suspense fallback={<LoadingScreen label="Loading Job Tracker..." />}><JobTracker /></Suspense></ProtectedRoute>} />
-        <Route path="/outreach" element={<ProtectedRoute><Suspense fallback={<LoadingScreen label="Loading Outreach..." />}><Outreach /></Suspense></ProtectedRoute>} />
         <Route
           path="/community"
           element={
@@ -436,7 +435,6 @@ function AppRoutes() {
         <Route path="/profile" element={<ProtectedRoute><Suspense fallback={<LoadingScreen label="Loading Profile..." />}><UserProfile /></Suspense></ProtectedRoute>} />
         <Route path="/profile/:uid" element={<ProtectedRoute><Suspense fallback={<LoadingScreen label="Loading Profile..." />}><UserProfile /></Suspense></ProtectedRoute>} />
         <Route path="/security" element={<ProtectedRoute><Suspense fallback={<LoadingScreen label="Loading Security Settings..." />}><SecuritySettings /></Suspense></ProtectedRoute>} />
-        <Route path="/email-generator" element={<ProtectedRoute><Suspense fallback={<LoadingScreen label="Loading Email Generator..." />}><EmailGenerator /></Suspense></ProtectedRoute>} />
         <Route path="/linkedin-optimizer" element={<ProtectedRoute><Suspense fallback={<LoadingScreen label="Loading LinkedIn Optimizer..." />}><LinkedInOptimizer /></Suspense></ProtectedRoute>} />
         <Route path="/skill-gap" element={<ProtectedRoute><Suspense fallback={<LoadingScreen label="Loading Skill Gap Analyzer..." />}><SkillGap /></Suspense></ProtectedRoute>} />
         <Route path="/deployments" element={<ProtectedRoute><Suspense fallback={<LoadingScreen label="Loading Deployments..." />}><Deployments /></Suspense></ProtectedRoute>} />

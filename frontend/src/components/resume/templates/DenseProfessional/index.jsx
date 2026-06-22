@@ -1,12 +1,51 @@
 import { useResume } from '../../../../context/ResumeContext'
 import Section from '../../shared/Section'
 import ExperienceRow from '../../shared/ExperienceRow'
+import OrderedSections from '../../shared/OrderedSections'
 
 /**
  * DenseProfessional — 9pt sans, info-packed two-column. Maximum density.
  */
 export default function DenseProfessional() {
   const { personal, experience, education, projects, skills, certifications } = useResume()
+
+  const nodes = {
+    summary: personal.summary ? (
+      <Section title="Summary" accent="#1f2937" headingSize="9.5pt" spacing="Compact" uppercase={false}>
+        <p style={{ margin: 0, color: '#374151' }}>{personal.summary}</p>
+      </Section>
+    ) : null,
+
+    experience: experience.length > 0 ? (
+      <Section title="Experience" accent="#1f2937" headingSize="9.5pt" uppercase={false}>
+        {experience.map((e, i) => (
+          <ExperienceRow
+            key={i}
+            exp={e}
+            roleColor="#1f2937"
+            companyColor="#1f2937"
+            periodColor="#6b7280"
+            bulletColor="#374151"
+            fontSize="9pt"
+          />
+        ))}
+      </Section>
+    ) : null,
+
+    projects: projects.length > 0 ? (
+      <Section title="Projects" accent="#1f2937" headingSize="9.5pt" uppercase={false}>
+        {projects.map((p, i) => (
+          <div key={i} style={{ marginBottom: '2.5mm' }}>
+            <strong style={{ fontSize: '9pt' }}>{p.title}</strong>
+            {p.description && <div style={{ color: '#374151' }}>{p.description}</div>}
+            {p.techStack.length > 0 && (
+              <div style={{ color: '#6b7280', fontSize: '7.5pt' }}>{p.techStack.join(' · ')}</div>
+            )}
+          </div>
+        ))}
+      </Section>
+    ) : null,
+  }
 
   return (
     <div
@@ -25,7 +64,7 @@ export default function DenseProfessional() {
         gap: '5mm',
       }}
     >
-      {/* ── Sidebar ── */}
+      {/* ── Sidebar (acts as a fixed header slot) ── */}
       <aside style={{ borderRight: '0.5pt solid #e5e7eb', paddingRight: '4mm' }}>
         <h1 style={{ margin: 0, fontSize: '15pt', fontWeight: 700, color: '#1f2937', letterSpacing: '-0.3px', lineHeight: 1.15 }}>
           {personal.name || 'Your Name'}
@@ -90,48 +129,12 @@ export default function DenseProfessional() {
 
       {/* ── Main ── */}
       <main>
-        {personal.summary && (
-          <Section title="Summary" accent="#1f2937" headingSize="9.5pt" spacing="Compact">
-            <p style={{ margin: 0, color: '#374151' }}>{personal.summary}</p>
-          </Section>
-        )}
-
-        {experience.length > 0 && (
-          <Section title="Experience" accent="#1f2937" headingSize="9.5pt">
-            {experience.map((e, i) => (
-              <div key={i} style={{ marginBottom: '3.5mm' }}>
-                <div style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'baseline' }}>
-                  <strong style={{ fontSize: '9.5pt', color: '#1f2937' }}>{e.role}</strong>
-                  {e.period && <span style={{ fontSize: '8pt', color: '#6b7280' }}>{e.period}</span>}
-                </div>
-                <div style={{ fontSize: '9pt', color: '#1f2937', fontWeight: 500 }}>
-                  {[e.company, e.location].filter(Boolean).join(' · ')}
-                </div>
-                {e.bullets.length > 0 && (
-                  <ul style={{ margin: '1mm 0 0', paddingLeft: '4mm', color: '#374151' }}>
-                    {e.bullets.map((b, j) => (
-                      <li key={j} style={{ marginBottom: '0.4mm' }}>{b}</li>
-                    ))}
-                  </ul>
-                )}
-              </div>
-            ))}
-          </Section>
-        )}
-
-        {projects.length > 0 && (
-          <Section title="Projects" accent="#1f2937" headingSize="9.5pt">
-            {projects.map((p, i) => (
-              <div key={i} style={{ marginBottom: '2.5mm' }}>
-                <strong style={{ fontSize: '9pt' }}>{p.title}</strong>
-                {p.description && <div style={{ color: '#374151' }}>{p.description}</div>}
-                {p.techStack.length > 0 && (
-                  <div style={{ color: '#6b7280', fontSize: '7.5pt' }}>{p.techStack.join(' · ')}</div>
-                )}
-              </div>
-            ))}
-          </Section>
-        )}
+        {/* ── Body sections (drag-and-drop order honored here) ── */}
+        <OrderedSections
+          nodes={nodes}
+          sectionProps={{ accent: '#1f2937', uppercase: false }}
+          customBodyStyle={{ color: '#374151' }}
+        />
       </main>
     </div>
   )

@@ -13,6 +13,7 @@ export default function FeatureLandingHero({
   secondaryCtaText = "Watch Demo",
   primaryCtaLink = "/register",
   secondaryCtaLink = "#demo",
+  tertiaryCta = null,
   stats = [
     { label: "Active Users", value: "10K+" },
     { label: "Success Rate", value: "95%" },
@@ -85,6 +86,14 @@ export default function FeatureLandingHero({
                 <Play className="mr-2 h-5 w-5" />
                 {secondaryCtaText}
               </a>
+              {tertiaryCta && (
+                <Link
+                  to={tertiaryCta.href}
+                  className="inline-flex items-center justify-center rounded-xl bg-secondary px-8 py-4 text-base font-semibold text-secondary-foreground shadow-lg shadow-secondary/30 transition-all hover:bg-secondary/90 hover:shadow-secondary/50 hover:-translate-y-0.5"
+                >
+                  {tertiaryCta.text}
+                </Link>
+              )}
             </motion.div>
 
             {/* Stats Strip */}

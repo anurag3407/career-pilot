@@ -2,6 +2,7 @@ import { useResume } from '../../../../context/ResumeContext'
 import Section from '../../shared/Section'
 import ExperienceRow from '../../shared/ExperienceRow'
 import SkillBar from '../../shared/SkillBar'
+import OrderedSections from '../../shared/OrderedSections'
 
 /**
  * BerlinTwoCol — heavy left sidebar with skills heatmap. Berlin-startup
@@ -9,6 +10,44 @@ import SkillBar from '../../shared/SkillBar'
  */
 export default function BerlinTwoCol() {
   const { personal, experience, education, projects, skills, certifications } = useResume()
+
+  const nodes = {
+    summary: personal.summary ? (
+      <Section title="Profile" accent="#b45309" uppercase={false}>
+        <p style={{ margin: 0, color: '#334155' }}>{personal.summary}</p>
+      </Section>
+    ) : null,
+
+    experience: experience.length > 0 ? (
+      <Section title="Experience" accent="#b45309" uppercase={false}>
+        {experience.map((e, i) => (
+          <ExperienceRow
+            key={i}
+            exp={e}
+            roleColor="#0f172a"
+            companyColor="#b45309"
+            periodColor="#6b7280"
+            bulletColor="#334155"
+            fontSize="10pt"
+          />
+        ))}
+      </Section>
+    ) : null,
+
+    projects: projects.length > 0 ? (
+      <Section title="Projects" accent="#b45309" uppercase={false}>
+        {projects.map((p, i) => (
+          <div key={i} style={{ marginBottom: '3mm' }}>
+            <strong>{p.title}</strong>
+            {p.description && <div style={{ color: '#334155' }}>{p.description}</div>}
+            {p.techStack.length > 0 && (
+              <div style={{ color: '#b45309', fontSize: '8.5pt' }}>{p.techStack.join(' · ')}</div>
+            )}
+          </div>
+        ))}
+      </Section>
+    ) : null,
+  }
 
   return (
     <div
@@ -25,7 +64,7 @@ export default function BerlinTwoCol() {
         gridTemplateColumns: '78mm 1fr',
       }}
     >
-      {/* ── Sidebar ── */}
+      {/* ── Sidebar (acts as a fixed header slot) ── */}
       <aside
         style={{
           background: '#fffbeb',
@@ -98,41 +137,12 @@ export default function BerlinTwoCol() {
 
       {/* ── Main ── */}
       <main style={{ padding: '14mm 12mm' }}>
-        {personal.summary && (
-          <Section title="Profile" accent="#b45309">
-            <p style={{ margin: 0, color: '#334155' }}>{personal.summary}</p>
-          </Section>
-        )}
-
-        {experience.length > 0 && (
-          <Section title="Experience" accent="#b45309">
-            {experience.map((e, i) => (
-              <ExperienceRow
-                key={i}
-                exp={e}
-                roleColor="#0f172a"
-                companyColor="#b45309"
-                periodColor="#6b7280"
-                bulletColor="#334155"
-                fontSize="10pt"
-              />
-            ))}
-          </Section>
-        )}
-
-        {projects.length > 0 && (
-          <Section title="Projects" accent="#b45309">
-            {projects.map((p, i) => (
-              <div key={i} style={{ marginBottom: '3mm' }}>
-                <strong>{p.title}</strong>
-                {p.description && <div style={{ color: '#334155' }}>{p.description}</div>}
-                {p.techStack.length > 0 && (
-                  <div style={{ color: '#b45309', fontSize: '8.5pt' }}>{p.techStack.join(' · ')}</div>
-                )}
-              </div>
-            ))}
-          </Section>
-        )}
+        {/* ── Body sections (drag-and-drop order honored here) ── */}
+        <OrderedSections
+          nodes={nodes}
+          sectionProps={{ accent: '#b45309', uppercase: false }}
+          customBodyStyle={{ color: '#334155' }}
+        />
       </main>
     </div>
   )

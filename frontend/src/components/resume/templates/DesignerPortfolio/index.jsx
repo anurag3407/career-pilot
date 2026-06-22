@@ -1,4 +1,5 @@
 import { useResume } from '../../../../context/ResumeContext'
+import OrderedSections from '../../shared/OrderedSections'
 
 /**
  * DesignerPortfolio — visual-forward resume template for designers and
@@ -7,6 +8,67 @@ import { useResume } from '../../../../context/ResumeContext'
 export default function DesignerPortfolio() {
   const { personal, experience, education, projects, skills, certifications } =
     useResume()
+
+  const nodes = {
+    summary: personal.summary ? (
+      <p style={{ margin: '0 0 7mm', fontSize: '11pt', color: '#374151', lineHeight: 1.6 }}>
+        {personal.summary}
+      </p>
+    ) : null,
+
+    experience: experience.length > 0 ? (
+      <section style={{ marginBottom: '7mm' }}>
+        <h2 style={sectionHeadingStyle}>Experience</h2>
+        {experience.map((e, i) => (
+          <article key={i} style={{ marginBottom: '5mm' }}>
+            <div style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'baseline' }}>
+              <h3 style={{ margin: 0, fontSize: '11pt', fontWeight: 700, color: '#831843' }}>
+                {e.role}
+              </h3>
+              {e.period && (
+                <span style={{ fontSize: '9pt', color: '#9ca3af' }}>{e.period}</span>
+              )}
+            </div>
+            <div style={{ fontSize: '10pt', color: '#be185d', fontWeight: 500 }}>
+              {e.company}{e.location ? ` · ${e.location}` : ''}
+            </div>
+            {e.bullets.length > 0 && (
+              <ul style={{ margin: '2mm 0 0', paddingLeft: '5mm', color: '#374151' }}>
+                {e.bullets.map((b, j) => (
+                  <li key={j} style={{ marginBottom: '1mm' }}>{b}</li>
+                ))}
+              </ul>
+            )}
+          </article>
+        ))}
+      </section>
+    ) : null,
+
+    education: education.length > 0 ? (
+      <section style={{ marginBottom: '7mm' }}>
+        <h2 style={sectionHeadingStyle}>Education</h2>
+        {education.map((e, i) => (
+          <div key={i} style={{ marginBottom: '2mm' }}>
+            <strong>{e.degree}</strong> — {e.institution}
+            {e.period && <span style={{ color: '#9ca3af' }}> · {e.period}</span>}
+          </div>
+        ))}
+      </section>
+    ) : null,
+
+    certifications: certifications.length > 0 ? (
+      <section>
+        <h2 style={sectionHeadingStyle}>Certifications</h2>
+        {certifications.map((c, i) => (
+          <div key={i} style={{ marginBottom: '2mm' }}>
+            <strong>{c.name}</strong>
+            {c.issuer && <span> · {c.issuer}</span>}
+            {c.year && <span style={{ color: '#9ca3af' }}> · {c.year}</span>}
+          </div>
+        ))}
+      </section>
+    ) : null,
+  }
 
   return (
     <div
@@ -21,7 +83,7 @@ export default function DesignerPortfolio() {
         lineHeight: 1.5,
       }}
     >
-      {/* ── Hero band ── */}
+      {/* ── Hero band (fixed) ── */}
       <header
         style={{
           background: 'linear-gradient(135deg, #db2777 0%, #be185d 60%, #9d174d 100%)',
@@ -49,69 +111,16 @@ export default function DesignerPortfolio() {
       </header>
 
       <div style={{ padding: '8mm 18mm 10mm', display: 'grid', gridTemplateColumns: '1fr 70mm', gap: '8mm' }}>
-        {/* ── Left: experience + skills ── */}
+        {/* ── Left: experience + skills (order-aware body) ── */}
         <main>
-          {personal.summary && (
-            <p style={{ margin: '0 0 7mm', fontSize: '11pt', color: '#374151', lineHeight: 1.6 }}>
-              {personal.summary}
-            </p>
-          )}
-
-          {experience.length > 0 && (
-            <section style={{ marginBottom: '7mm' }}>
-              <h2 style={sectionHeadingStyle}>Experience</h2>
-              {experience.map((e, i) => (
-                <article key={i} style={{ marginBottom: '5mm' }}>
-                  <div style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'baseline' }}>
-                    <h3 style={{ margin: 0, fontSize: '11pt', fontWeight: 700, color: '#831843' }}>
-                      {e.role}
-                    </h3>
-                    {e.period && (
-                      <span style={{ fontSize: '9pt', color: '#9ca3af' }}>{e.period}</span>
-                    )}
-                  </div>
-                  <div style={{ fontSize: '10pt', color: '#be185d', fontWeight: 500 }}>
-                    {e.company}{e.location ? ` · ${e.location}` : ''}
-                  </div>
-                  {e.bullets.length > 0 && (
-                    <ul style={{ margin: '2mm 0 0', paddingLeft: '5mm', color: '#374151' }}>
-                      {e.bullets.map((b, j) => (
-                        <li key={j} style={{ marginBottom: '1mm' }}>{b}</li>
-                      ))}
-                    </ul>
-                  )}
-                </article>
-              ))}
-            </section>
-          )}
-
-          {education.length > 0 && (
-            <section style={{ marginBottom: '7mm' }}>
-              <h2 style={sectionHeadingStyle}>Education</h2>
-              {education.map((e, i) => (
-                <div key={i} style={{ marginBottom: '2mm' }}>
-                  <strong>{e.degree}</strong> — {e.institution}
-                  {e.period && <span style={{ color: '#9ca3af' }}> · {e.period}</span>}
-                </div>
-              ))}
-            </section>
-          )}
-
-          {certifications.length > 0 && (
-            <section>
-              <h2 style={sectionHeadingStyle}>Certifications</h2>
-              {certifications.map((c, i) => (
-                <div key={i} style={{ marginBottom: '2mm' }}>
-                  <strong>{c.name}</strong>
-                  {c.issuer && <span> · {c.issuer}</span>}
-                  {c.year && <span style={{ color: '#9ca3af' }}> · {c.year}</span>}
-                </div>
-              ))}
-            </section>
-          )}
+          <OrderedSections
+            nodes={nodes}
+            sectionProps={{ accent: '#be185d', uppercase: false }}
+            customBodyStyle={{ color: '#374151' }}
+          />
         </main>
 
-        {/* ── Right: skills + projects ── */}
+        {/* ── Right: skills + projects (fixed header slot) ── */}
         <aside>
           {skills.length > 0 && (
             <section style={{ marginBottom: '7mm' }}>
