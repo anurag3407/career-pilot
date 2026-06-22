@@ -56,7 +56,7 @@ router.get(
       tokenUsage,
       twoFactor
     ] = await Promise.all([
-      UserProfile.findOne({ uid }).lean(),
+      UserProfile.findOne({ uid }).select('+phone +dateOfBirth +gender').lean(),
       Resume.find({ userId: uid }).lean(),
       Portfolio.find({ userId: uid }).lean(),
       TrackedJob.find({ userId: uid }).lean(),

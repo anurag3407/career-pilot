@@ -52,7 +52,7 @@ const getPostsForUser = async (uid) => {
 // Get or create own profile
 router.get('/me', cacheProfileResponse, asyncHandler(async (req, res) => {
   const uid = req.user.uid;
-  let profile = await UserProfile.findOne({ uid });
+  let profile = await UserProfile.findOne({ uid }).select('+phone +dateOfBirth +gender');
   if (!profile) {
     profile = await UserProfile.create({
       uid,
@@ -125,7 +125,8 @@ router.put('/me', validate(updateProfileSchema), asyncHandler(async (req, res) =
     { uid },
     { $set: update },
     { new: true, upsert: true }
-  );
+  ).select('+phone +dateOfBirth +gender');
+
   await invalidateProfileCache(uid);
   res.json({ success: true, profile });
 }));
@@ -139,7 +140,8 @@ router.post('/me/avatar', validate(setAvatarSchema), asyncHandler(async (req, re
     { uid },
     { $set: { avatarUrl } },
     { new: true, upsert: true }
-  );
+  ).select('+phone +dateOfBirth +gender');
+
   await invalidateProfileCache(uid);
   res.json({ success: true, profile });
 }));
@@ -151,7 +153,8 @@ router.delete('/me/avatar', asyncHandler(async (req, res) => {
     { uid },
     { $set: { avatarUrl: '' } },
     { new: true, upsert: true }
-  );
+  ).select('+phone +dateOfBirth +gender');
+
   await invalidateProfileCache(uid);
   res.json({ success: true, profile });
 }));

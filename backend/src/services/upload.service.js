@@ -11,9 +11,9 @@
  *   - uploadFile(buffer, fileName): legacy raw upload — unchanged.
  */
 
-const cloudinary = require('../config/cloudinary');
+import cloudinary from '../config/cloudinary.js';
 
-async function uploadFile(buffer, fileName) {
+export async function uploadFile(buffer, fileName) {
   return new Promise((resolve, reject) => {
     cloudinary.uploader.upload_stream(
       {
@@ -33,7 +33,7 @@ async function uploadFile(buffer, fileName) {
  * Upload an audio buffer (captured by MediaRecorder on the client). Uses
  * resource_type 'video' so the URL can be streamed by an <audio> element.
  */
-async function uploadAudioBuffer(file) {
+export async function uploadAudioBuffer(file) {
   return new Promise((resolve, reject) => {
     const folder = 'interview-audio';
     const publicId = `${file.fieldname || 'audio'}-${Date.now()}`;
@@ -55,6 +55,4 @@ async function uploadAudioBuffer(file) {
   });
 }
 
-module.exports = uploadFile;
-module.exports.uploadFile = uploadFile;
-module.exports.uploadAudioBuffer = uploadAudioBuffer;
+export default uploadFile;

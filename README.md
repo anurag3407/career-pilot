@@ -22,7 +22,7 @@
     <img src="https://img.shields.io/badge/Multi--AI-OpenAI%20%7C%20Anthropic%20%7C%20Groq%20%7C%20Gemini-7c3aed" alt="Multi-AI"/>
   </p>
   <p>
-    Documentation · <a href="#-community">Discord</a> · License: <a href="LICENSE">MIT</a> · Built with ❤️ by the Career Pilot community
+    Documentation · <a href="https://discord.gg/dpDMVywS">Discord</a> · License: <a href="LICENSE">MIT</a> · Built with ❤️ by the Career Pilot community
   </p>
 </div>
 
@@ -578,6 +578,12 @@ See [CONTRIBUTING.md](CONTRIBUTING.md) and [CODE_OF_CONDUCT.md](CODE_OF_CONDUCT.
           <sub><b>Mohnish27-dev</b></sub>
         </a>
       </td>
+      <td align="center">
+        <a href="https://github.com/Kaushal00Vaid">
+          <img src="https://github.com/Kaushal00Vaid.png" width="100" style="border-radius: 50%;" alt="Kaushal00Vaid"/><br />
+          <sub><b>Kaushal00Vaid</b></sub>
+        </a>
+      </td>
     </tr>
   </table>
 </div>
@@ -586,7 +592,7 @@ See [CONTRIBUTING.md](CONTRIBUTING.md) and [CODE_OF_CONDUCT.md](CODE_OF_CONDUCT.
 
 ## 💬 Community
 
-- 💬 Discord — coming soon
+- 💬 [Discord Community](https://discord.gg/dpDMVywS) — Join our server to chat, ask questions, and share ideas!
 - 🐛 [GitHub Issues](https://github.com/anurag3407/career-pilot/issues)
 - 📚 [Full Documentation](docs/PROJECT_DOCUMENTATION.md)
 - 🌟 Star the repo to follow releases

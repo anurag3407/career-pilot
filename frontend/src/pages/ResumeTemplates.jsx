@@ -4,7 +4,7 @@ import toast from 'react-hot-toast'
 import { motion, AnimatePresence } from 'framer-motion'
 import {
   ChevronLeft, Download, Loader2, FileText, Sparkles, RefreshCw, FileType2,
-  Search, Filter, X, Camera, Upload as UploadIcon,
+  Search, Filter, X, Camera, Upload as UploadIcon, AlertTriangle,
 } from 'lucide-react'
 
 import {
@@ -21,6 +21,7 @@ import {
   ResumeProvider,
   normalizeResumeData,
 } from '../context/ResumeContext'
+import { ORDER_AWARE_TEMPLATE_IDS } from '../components/resume/shared/OrderedSections'
 import LayoutControls, { DEFAULT_LAYOUT } from '../components/resume/LayoutControls'
 
 // ─── Lazy template loader (matches portfolio template gallery pattern) ────────
@@ -70,13 +71,24 @@ export default function ResumeTemplates() {
           return
         }
 
-        // Priority 2: ?resumeId= query param (from ResumeView)
+        // Priority 2: ?resumeId= query param (from ResumeView / Enhance)
         const resumeId = searchParams.get('resumeId')
         if (resumeId) {
           const res = await resumeApi.getById(resumeId)
-          const text = res.resume?.enhancedText || res.resume?.originalText || ''
+          // getById returns { success, data: {...resume} }. (Older code read
+          // res.resume, which is undefined — keep a fallback for safety.)
+          const record = res.data || res.resume || {}
+          const text = record.enhancedText || record.originalText || ''
+          // sectionOrder + customSections live on the resume record, not in the
+          // markdown — merge them in so the drag-and-drop order set in Enhance
+          // is honored by order-aware templates.
+          const parsed = splitMarkdownIntoResume(text, record.title) || {}
           if (!cancelled) {
-            setResumeData(splitMarkdownIntoResume(text, res.resume?.title))
+            setResumeData({
+              ...parsed,
+              sectionOrder: record.sectionOrder || parsed.sectionOrder,
+              customSections: record.customSections || parsed.customSections,
+            })
             setLoadingData(false)
           }
           return
@@ -273,11 +285,34 @@ export default function ResumeTemplates() {
     }
   }
 
+  // Warn only when it matters: the user has a non-default section order (or
+  // custom sections) AND the chosen template renders a fixed layout.
+  const KNOWN_KEYS = ['education', 'experience', 'projects', 'skills', 'certifications']
+  const projectedOrder = (normalized.sectionOrder || []).filter((k) => KNOWN_KEYS.includes(k)).join(',')
+  const userReordered =
+    (projectedOrder.length > 0 &&
+      projectedOrder !== 'education,experience,projects,skills' &&
+      projectedOrder !== 'education,experience,projects,skills,certifications') ||
+    (normalized.customSections?.length > 0)
+  const showOrderGuard =
+    Boolean(selectedId) && userReordered && !ORDER_AWARE_TEMPLATE_IDS.has(selectedBaseId)
+
   // ─── Render: gallery vs. preview ─────────────────────────────────────────
   return (
     <ResumeProvider value={dataWithLayout}>
       <div className="min-h-screen bg-background">
         <div className="max-w-7xl mx-auto px-4 py-6 sm:py-8">
+          {showOrderGuard && (
+            <div className="mb-4 flex items-start gap-3 rounded-xl border border-amber-500/30 bg-amber-500/10 px-4 py-3 text-sm text-amber-700 dark:text-amber-300">
+              <AlertTriangle className="w-4 h-4 mt-0.5 shrink-0" />
+              <span>
+                <strong>{selectedEntry?.label || 'This template'}</strong> uses a fixed section layout, so your
+                custom section order{normalized.customSections?.length ? ' and custom sections' : ''} won&apos;t be
+                applied here. Choose an <strong>order-aware</strong> template (e.g. <strong>Ivy League</strong>) to
+                see them reflected.
+              </span>
+            </div>
+          )}
           <AnimatePresence mode="wait">
             {!selectedId ? (
               <GalleryView

@@ -3,143 +3,221 @@ import { motion } from "framer-motion";
 import { Link } from "react-router-dom";
 import { ArrowRight, GitBranch, Network, Zap, ShieldAlert } from "lucide-react";
 
+const features = [
+  {
+    icon: Network,
+    color: "text-cyan-400",
+    bg: "bg-cyan-500/10 border-cyan-500/20",
+    title: "Architecture Maps",
+    desc: "Interactive visual graphs of your codebase modules.",
+  },
+  {
+    icon: ShieldAlert,
+    color: "text-orange-400",
+    bg: "bg-orange-500/10 border-orange-500/20",
+    title: "Risk Hotspots",
+    desc: "Detect complexity and coupling instantly.",
+  },
+  {
+    icon: Zap,
+    color: "text-violet-400",
+    bg: "bg-violet-500/10 border-violet-500/20",
+    title: "AI Onboarding",
+    desc: "Chat with an AI that knows your architecture.",
+  },
+];
+
+const nodes = [
+  {
+    pos: "left-8 top-10",
+    border: "border-cyan-500/60",
+    bar: "bg-cyan-400",
+    glow: "shadow-[0_0_24px_rgba(34,211,238,0.25)]",
+    w: "w-24",
+    delay: 0.2,
+  },
+  {
+    pos: "right-10 top-28",
+    border: "border-violet-500/60",
+    bar: "bg-violet-400",
+    glow: "shadow-[0_0_24px_rgba(139,92,246,0.25)]",
+    w: "w-20",
+    delay: 0.45,
+  },
+  {
+    pos: "left-20 bottom-12",
+    border: "border-orange-500/60",
+    bar: "bg-orange-400",
+    glow: "shadow-[0_0_24px_rgba(249,115,22,0.25)]",
+    w: "w-28",
+    delay: 0.7,
+  },
+];
+
 export default function ProjectVisualizerSection() {
-  const features = [
-    {
-      icon: <Network className="w-5 h-5 text-cyan-400" />,
-      title: "Architecture Maps",
-      desc: "Interactive visual graphs of your codebase modules."
-    },
-    {
-      icon: <ShieldAlert className="w-5 h-5 text-orange-400" />,
-      title: "Risk Hotspots",
-      desc: "Detect complexity and coupling instantly."
-    },
-    {
-      icon: <Zap className="w-5 h-5 text-violet-400" />,
-      title: "AI Onboarding",
-      desc: "Chat with an AI that knows your architecture."
-    }
-  ];
-
   return (
-    <section className="py-24 relative overflow-hidden bg-background">
-      {/* Background Gradients */}
-      <div className="absolute top-0 left-1/2 -translate-x-1/2 w-full max-w-3xl h-[400px] bg-gradient-to-b from-cyan-500/10 to-violet-500/5 blur-3xl pointer-events-none" />
+    <section className="relative overflow-hidden bg-background py-28">
+      {/* Background */}
+      <div className="pointer-events-none absolute inset-0">
+        <div className="absolute left-1/2 top-0 h-[420px] w-full max-w-3xl -translate-x-1/2 bg-linear-to-b from-cyan-500/10 to-violet-500/5 blur-3xl" />
+        <div className="premium-grid absolute inset-0 opacity-30" />
+      </div>
 
-      <div className="relative max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
-        <div className="grid grid-cols-1 lg:grid-cols-2 gap-16 items-center">
-          
-          {/* Text Content */}
-          <motion.div 
+      <div className="relative z-10 mx-auto max-w-7xl px-4 sm:px-6 lg:px-8">
+        <div className="grid items-center gap-16 lg:grid-cols-2">
+          {/* ── Copy ─────────────────────────────────── */}
+          <motion.div
             initial={{ opacity: 0, x: -30 }}
             whileInView={{ opacity: 1, x: 0 }}
             viewport={{ once: true }}
-            transition={{ duration: 0.6 }}
-            className="text-left"
+            transition={{ duration: 0.7, ease: [0.16, 1, 0.3, 1] }}
           >
-            <div className="inline-flex items-center gap-2 px-3 py-1 rounded-full bg-violet-500/10 border border-violet-500/20 text-violet-500 text-sm font-medium mb-6">
-              <GitBranch className="w-4 h-4" />
+            <div className="inline-flex items-center gap-2 rounded-full border border-violet-500/20 bg-violet-500/10 px-4 py-1.5 text-sm font-bold text-violet-400 backdrop-blur-md">
+              <GitBranch className="h-4 w-4" />
               Project Visualizer
             </div>
-            
-            <h2 className="text-3xl md:text-5xl font-bold text-foreground mb-6 leading-tight">
-              Understand Any Repo in <span className="text-transparent bg-clip-text bg-gradient-to-r from-cyan-400 to-violet-500">Seconds</span>
+
+            <h2 className="mt-7 text-4xl font-black leading-[1.1] tracking-tight text-foreground md:text-5xl">
+              Understand any repo in{" "}
+              <span className="bg-linear-to-r from-cyan-400 to-violet-500 bg-clip-text text-transparent">
+                seconds
+              </span>
             </h2>
-            
-            <p className="text-muted-foreground text-lg mb-8 leading-relaxed max-w-lg">
-              Paste a GitHub URL and let our AI engine instantly build a dynamic, visual architecture map. Explore modules, dependencies, and risks without cloning a single file.
+
+            <p className="mt-6 max-w-lg text-lg font-medium leading-relaxed text-muted-foreground">
+              Paste a GitHub URL and let our AI engine instantly build a dynamic,
+              visual architecture map. Explore modules, dependencies, and risks
+              without cloning a single file.
             </p>
 
-            <div className="space-y-6 mb-10">
-              {features.map((feature, i) => (
-                <div key={i} className="flex items-start gap-4">
-                  <div className="p-2 rounded-lg bg-muted border border-border shrink-0">
-                    {feature.icon}
+            <div className="mt-10 space-y-3">
+              {features.map((f, i) => (
+                <motion.div
+                  key={f.title}
+                  initial={{ opacity: 0, x: -20 }}
+                  whileInView={{ opacity: 1, x: 0 }}
+                  viewport={{ once: true }}
+                  transition={{ delay: 0.1 + i * 0.1, duration: 0.5 }}
+                  className="group flex items-start gap-4 rounded-2xl border border-border bg-card/40 p-4 backdrop-blur-md transition-all duration-300 hover:border-primary/30 hover:bg-card/70"
+                >
+                  <div
+                    className={`flex h-11 w-11 shrink-0 items-center justify-center rounded-xl border ${f.bg} transition-transform duration-300 group-hover:scale-110`}
+                  >
+                    <f.icon className={`h-5 w-5 ${f.color}`} />
                   </div>
                   <div>
-                    <h4 className="font-semibold text-foreground">{feature.title}</h4>
-                    <p className="text-sm text-muted-foreground">{feature.desc}</p>
+                    <h4 className="font-bold text-foreground">{f.title}</h4>
+                    <p className="text-sm text-muted-foreground">{f.desc}</p>
                   </div>
-                </div>
+                </motion.div>
               ))}
             </div>
 
             <Link
               to="/project-visualizer"
-              className="group inline-flex items-center justify-center gap-2 px-8 py-4 bg-foreground text-background hover:text-white font-medium rounded-lg hover:bg-muted-foreground/80 transition-all duration-200 shadow-xl"
+              className="group mt-10 inline-flex items-center justify-center gap-2 rounded-2xl bg-foreground px-8 py-4 font-bold text-background shadow-xl transition-all duration-300 hover:-translate-y-0.5"
             >
               Try Visualizer Now
-              <ArrowRight className="w-4 h-4 group-hover:translate-x-1 transition-transform" />
+              <ArrowRight className="h-4 w-4 transition-transform group-hover:translate-x-1" />
             </Link>
           </motion.div>
 
-          {/* Visual Showcase (Mockup) */}
-          <motion.div 
+          {/* ── Visual graph mockup ──────────────────── */}
+          <motion.div
             initial={{ opacity: 0, x: 30 }}
             whileInView={{ opacity: 1, x: 0 }}
             viewport={{ once: true }}
-            transition={{ duration: 0.6, delay: 0.2 }}
+            transition={{ duration: 0.7, delay: 0.15, ease: [0.16, 1, 0.3, 1] }}
             className="relative"
           >
-            <div className="aspect-[4/3] rounded-2xl bg-[#0f172a] border border-slate-800 shadow-2xl overflow-hidden relative flex flex-col">
-              {/* Window Header */}
-              <div className="h-10 bg-[#0a0f1c] border-b border-slate-800 flex items-center px-4 gap-2">
-                <div className="flex gap-1.5">
-                  <div className="w-3 h-3 rounded-full bg-red-500/80"></div>
-                  <div className="w-3 h-3 rounded-full bg-yellow-500/80"></div>
-                  <div className="w-3 h-3 rounded-full bg-green-500/80"></div>
-                </div>
-                <div className="mx-auto bg-slate-800/50 px-3 py-1 rounded text-[10px] font-mono text-slate-400 border border-slate-700/50">
+            <div className="absolute -inset-6 -z-10 rounded-[2.5rem] bg-linear-to-tr from-cyan-500/20 to-violet-500/20 blur-[80px]" />
+
+            <div className="relative flex aspect-[4/3] flex-col overflow-hidden rounded-3xl border border-slate-800 bg-[#0b1120] shadow-2xl">
+              {/* Window header */}
+              <div className="flex h-11 items-center gap-2 border-b border-slate-800 bg-[#0a0f1c] px-4">
+                <span className="h-3 w-3 rounded-full bg-red-500/80" />
+                <span className="h-3 w-3 rounded-full bg-yellow-500/80" />
+                <span className="h-3 w-3 rounded-full bg-green-500/80" />
+                <div className="mx-auto rounded border border-slate-700/50 bg-slate-800/50 px-3 py-1 font-mono text-[10px] text-slate-400">
                   github.com/facebook/react
                 </div>
               </div>
-              
-              {/* Mockup Body */}
-              <div className="flex-1 p-6 relative">
-                {/* Node 1 */}
-                <div className="absolute top-10 left-10 w-32 bg-[#1e293b] border border-cyan-500/50 rounded-lg p-3 shadow-[0_0_15px_rgba(34,211,238,0.15)]">
-                  <div className="w-6 h-1 bg-cyan-400 rounded-full mb-2"></div>
-                  <div className="h-2 w-20 bg-slate-600 rounded-full mb-1.5"></div>
-                  <div className="h-2 w-12 bg-slate-700 rounded-full"></div>
-                </div>
-                
-                {/* Node 2 */}
-                <div className="absolute top-32 right-12 w-32 bg-[#1e293b] border border-violet-500/50 rounded-lg p-3 shadow-[0_0_15px_rgba(139,92,246,0.15)]">
-                  <div className="w-6 h-1 bg-violet-400 rounded-full mb-2"></div>
-                  <div className="h-2 w-16 bg-slate-600 rounded-full mb-1.5"></div>
-                  <div className="h-2 w-10 bg-slate-700 rounded-full"></div>
-                </div>
-                
-                {/* Node 3 */}
-                <div className="absolute bottom-12 left-24 w-32 bg-[#1e293b] border border-orange-500/50 rounded-lg p-3 shadow-[0_0_15px_rgba(249,115,22,0.15)]">
-                  <div className="w-6 h-1 bg-orange-400 rounded-full mb-2"></div>
-                  <div className="h-2 w-24 bg-slate-600 rounded-full mb-1.5"></div>
-                  <div className="h-2 w-14 bg-slate-700 rounded-full"></div>
-                </div>
 
-                {/* SVG Connections */}
-                <svg className="absolute inset-0 w-full h-full pointer-events-none" style={{ zIndex: 0 }}>
-                  <path d="M 160 80 Q 250 80 280 150" fill="none" stroke="#334155" strokeWidth="2" strokeDasharray="4 4" />
-                  <path d="M 120 120 Q 120 180 150 250" fill="none" stroke="#334155" strokeWidth="2" strokeDasharray="4 4" />
+              {/* Graph body */}
+              <div className="relative flex-1 p-6">
+                {/* Animated connection paths */}
+                <svg
+                  className="pointer-events-none absolute inset-0 h-full w-full"
+                  style={{ zIndex: 0 }}
+                >
+                  <defs>
+                    <linearGradient id="pv-line" x1="0" y1="0" x2="1" y2="1">
+                      <stop offset="0%" stopColor="#22d3ee" />
+                      <stop offset="100%" stopColor="#8b5cf6" />
+                    </linearGradient>
+                  </defs>
+                  {[
+                    "M 110 70 Q 230 70 300 150",
+                    "M 90 110 Q 90 200 160 270",
+                  ].map((d, i) => (
+                    <motion.path
+                      key={i}
+                      d={d}
+                      fill="none"
+                      stroke="url(#pv-line)"
+                      strokeWidth="2"
+                      strokeDasharray="5 5"
+                      initial={{ pathLength: 0, opacity: 0 }}
+                      whileInView={{ pathLength: 1, opacity: 0.7 }}
+                      viewport={{ once: true }}
+                      transition={{ duration: 1.2, delay: 0.5 + i * 0.3 }}
+                    />
+                  ))}
                 </svg>
-                
-                {/* Overlay Chat bubble */}
-                <div className="absolute bottom-6 right-6 max-w-[200px] bg-slate-800/90 backdrop-blur border border-slate-700 rounded-xl p-3 shadow-xl">
-                  <div className="flex gap-2 items-start">
-                    <Zap className="w-4 h-4 text-cyan-400 mt-0.5 shrink-0" />
-                    <p className="text-xs text-slate-300 leading-relaxed">
-                      The core reconciler module seems heavily coupled. Consider reviewing dependencies.
+
+                {/* Nodes */}
+                {nodes.map((n, i) => (
+                  <motion.div
+                    key={i}
+                    initial={{ opacity: 0, scale: 0.8 }}
+                    whileInView={{ opacity: 1, scale: 1 }}
+                    viewport={{ once: true }}
+                    transition={{
+                      type: "spring",
+                      stiffness: 300,
+                      damping: 18,
+                      delay: n.delay,
+                    }}
+                    className={`absolute ${n.pos} ${n.w} rounded-lg border ${n.border} ${n.glow} bg-[#1e293b] p-3`}
+                  >
+                    <div className={`mb-2 h-1 w-6 rounded-full ${n.bar}`} />
+                    <div className="mb-1.5 h-2 w-full rounded-full bg-slate-600" />
+                    <div className="h-2 w-2/3 rounded-full bg-slate-700" />
+                  </motion.div>
+                ))}
+
+                {/* AI chat bubble */}
+                <motion.div
+                  initial={{ opacity: 0, y: 16 }}
+                  whileInView={{ opacity: 1, y: 0 }}
+                  viewport={{ once: true }}
+                  transition={{ delay: 1.1, duration: 0.5 }}
+                  className="absolute bottom-6 right-6 max-w-[210px] rounded-xl border border-slate-700 bg-slate-800/90 p-3 shadow-xl backdrop-blur"
+                >
+                  <div className="flex items-start gap-2">
+                    <span className="relative mt-0.5 flex h-4 w-4 shrink-0">
+                      <span className="absolute inline-flex h-full w-full animate-ping rounded-full bg-cyan-400 opacity-60" />
+                      <Zap className="relative h-4 w-4 text-cyan-400" />
+                    </span>
+                    <p className="text-xs leading-relaxed text-slate-300">
+                      The core reconciler module seems heavily coupled. Consider
+                      reviewing dependencies.
                     </p>
                   </div>
-                </div>
+                </motion.div>
               </div>
             </div>
-
-            {/* Decorative blurs */}
-            <div className="absolute -z-10 top-1/2 left-1/2 -translate-x-1/2 -translate-y-1/2 w-full h-full bg-gradient-to-tr from-cyan-500/20 to-violet-500/20 blur-[80px] rounded-full" />
           </motion.div>
-
         </div>
       </div>
     </section>

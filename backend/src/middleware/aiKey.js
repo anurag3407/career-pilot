@@ -52,6 +52,8 @@ export const extractAIProvider = async (req, res, next) => {
     if (envProvider === 'gemini') envKey = process.env.GEMINI_API_KEY;
     else if (envProvider === 'openai') envKey = process.env.OPENAI_API_KEY;
     else if (envProvider === 'groq') envKey = process.env.GROQ_API_KEY;
+    else if (envProvider === 'openrouter') envKey = process.env.OPENROUTER_API_KEY;
+    else if (envProvider === 'requesty') envKey = process.env.REQUESTY_API_KEY;
 
     if (envKey) {
       req.aiProvider = AIProviderFactory.create(envProvider, envKey);

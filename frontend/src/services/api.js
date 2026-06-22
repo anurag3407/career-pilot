@@ -26,6 +26,16 @@ const headers = {
   'Content-Type': 'application/json'
 }
 
+// Inject GitHub BYOK token if present (PAT stored in encrypted localStorage)
+try {
+  const { useGithubConfigStore } = await import('../stores/useGithubConfigStore')
+  const ghState = useGithubConfigStore.getState()
+  const decryptedPat = ghState.getDecryptedToken()
+  if (decryptedPat) headers['X-GitHub-Token'] = decryptedPat
+} catch (e) {
+  // store not yet available
+}
+
 // Try the new Zustand store first
 try {
   const { useAIConfigStore } = await import('../stores/useAIConfigStore')
@@ -63,7 +73,7 @@ if (aiConfigStr) {
     headers['X-OpenRouter-Key'] = decryptKey(openRouterKey)
   }
 }
-  
+
 return headers
 }
 
@@ -655,6 +665,138 @@ export const enhanceApi = {
     })
     return handleResponse(response)
   }
+}
+
+// ============ Resume Roast API ============
+export const roastApi = {
+  // Create a new roast
+  async create({ resumeText, jobRole = '', isPublic = false }) {
+    const headers = await getAuthHeaders()
+    const response = await fetch(`${API_BASE}/roast`, {
+      method: 'POST',
+      headers,
+      body: JSON.stringify({ resumeText, jobRole, isPublic })
+    })
+    return handleResponse(response)
+  },
+
+  // List user's roast history
+  async getHistory(limit = 20) {
+    const headers = await getAuthHeaders()
+    const response = await fetch(`${API_BASE}/roast/history?limit=${limit}`, {
+      headers
+    })
+    return handleResponse(response)
+  },
+
+  // Fetch a single roast by id
+  async getById(id) {
+    const headers = await getAuthHeaders()
+    const response = await fetch(`${API_BASE}/roast/${id}`, { headers })
+    return handleResponse(response)
+  },
+
+  // Fetch a public roast by share token
+  async getByShareToken(token) {
+    const response = await fetch(`${API_BASE}/roast/share/${token}`)
+    return handleResponse(response)
+  },
+
+  // Delete a roast
+  async remove(id) {
+    const headers = await getAuthHeaders()
+    const response = await fetch(`${API_BASE}/roast/${id}`, {
+      method: 'DELETE',
+      headers
+    })
+    return handleResponse(response)
+  }
+}
+
+// ============ GitHub Portfolio Builder API ============
+export const githubPortfolioApi = {
+  async listRepos(username, token) {
+    const headers = await getAuthHeaders()
+    const response = await fetch(`${API_BASE}/portfolio/github/repos`, {
+      method: 'POST',
+      headers,
+      body: JSON.stringify({ username, token }),
+    })
+    return handleResponse(response)
+  },
+
+  async validateToken(token) {
+    const headers = await getAuthHeaders()
+    const response = await fetch(`${API_BASE}/portfolio/github/validate-token`, {
+      method: 'POST',
+      headers,
+      body: JSON.stringify({ token }),
+    })
+    return handleResponse(response)
+  },
+
+  async build({ username, token, selectedRepos, templateSlug, isPublic }) {
+    const headers = await getAuthHeaders()
+    const response = await fetch(`${API_BASE}/portfolio/github/build`, {
+      method: 'POST',
+      headers,
+      body: JSON.stringify({ username, token, selectedRepos, templateSlug, isPublic }),
+    })
+    return handleResponse(response)
+  },
+
+  async getHistory(limit = 20) {
+    const headers = await getAuthHeaders()
+    const response = await fetch(`${API_BASE}/portfolio/github/history?limit=${limit}`, {
+      headers,
+    })
+    return handleResponse(response)
+  },
+
+  async getById(id) {
+    const headers = await getAuthHeaders()
+    const response = await fetch(`${API_BASE}/portfolio/github/${id}`, { headers })
+    return handleResponse(response)
+  },
+
+  async remove(id) {
+    const headers = await getAuthHeaders()
+    const response = await fetch(`${API_BASE}/portfolio/github/${id}`, {
+      method: 'DELETE',
+      headers,
+    })
+    return handleResponse(response)
+  },
+}
+
+// ============ GitHub OAuth API ============
+export const githubAuthApi = {
+  // Start the OAuth flow — returns the GitHub consent URL + state.
+  async start() {
+    const headers = await getAuthHeaders()
+    const response = await fetch(`${API_BASE}/auth/github/start`, {
+      method: 'POST',
+      headers,
+    })
+    return handleResponse(response)
+  },
+
+  // Inspect current connection status (server-side encrypted token presence)
+  async status() {
+    const headers = await getAuthHeaders()
+    const response = await fetch(`${API_BASE}/auth/github/status`, { headers })
+    return handleResponse(response)
+  },
+
+  // Disconnect — wipes the stored encrypted token
+  async disconnect() {
+    const headers = await getAuthHeaders()
+    const response = await fetch(`${API_BASE}/auth/github/disconnect`, {
+      method: 'DELETE',
+      headers,
+    })
+    return handleResponse(response)
+  },
 }
 
 // ============ AI API ============

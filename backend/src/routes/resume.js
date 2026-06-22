@@ -187,6 +187,7 @@ router.put('/:resumeId', verifyToken, validate(updateResumeSchema), asyncHandler
   const userId = req.user.uid;
   const updates = req.body;
 
+  const allowedUpdates = ['originalText', 'enhancedText', 'jobRole', 'atsScore', 'preferences', 'title', 'pdfUrl', 'sectionOrder'];
   const allowedUpdates = ['originalText', 'enhancedText', 'jobRole', 'atsScore', 'preferences', 'title', 'pdfUrl', 'sectionOrder', 'customSections'];
   const updateData = {};
   for (const key of allowedUpdates) {

@@ -63,6 +63,7 @@ const handleSuccess = async (ip, email, userAgent) => {
 
 export const loginProtection = async (req, res, next) => {
   const ip = req.ip || req.socket.remoteAddress;
+  const isLoginRoute = (req.originalUrl || req.path || '').endsWith('/login') && req.method === 'POST';
 
   try {
     const record = await LoginAttempt.findOne({ ip });
@@ -75,7 +76,7 @@ export const loginProtection = async (req, res, next) => {
       });
     }
 
-    const email = getEmailFromToken(req.headers.authorization) || record?.email;
+    const email = req.body?.email || getEmailFromToken(req.headers.authorization) || record?.email;
     const currentAttempts = record?.attempts ?? 0;
 
     // Intercept res.json to observe the outcome without modifying verifyToken.
@@ -85,17 +86,19 @@ export const loginProtection = async (req, res, next) => {
     res.json = function (body) {
       const statusCode = res.statusCode;
       const userAgent = req.headers['user-agent'];
+      const resolvedEmail = body?.user?.email || req.body?.email || email;
 
-      if (statusCode === 401) {
-        handleFailure(ip, email, currentAttempts).catch(
-          (err) => console.error('loginProtection failure tracking error:', err.message)
-        );
-      } else if (statusCode >= 200 && statusCode < 300) {
-        // We now call handleSuccess on EVERY successful login to track it in LoginLog,
-        // not just when resetting currentAttempts > 0.
-        handleSuccess(ip, email, userAgent).catch(
-          (err) => console.error('loginProtection success tracking error:', err.message)
-        );
+      if (isLoginRoute) {
+        if (statusCode === 401) {
+          handleFailure(ip, resolvedEmail, currentAttempts).catch(
+            (err) => console.error('loginProtection failure tracking error:', err.message)
+          );
+        } else if (statusCode >= 200 && statusCode < 300) {
+          // We call handleSuccess on successful logins to reset attempts and log history
+          handleSuccess(ip, resolvedEmail, userAgent).catch(
+            (err) => console.error('loginProtection success tracking error:', err.message)
+          );
+        }
       }
 
       return originalJson(body);

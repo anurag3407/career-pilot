@@ -21,12 +21,15 @@ vi.mock("react-router-dom", () => ({
   ),
 }));
 
+let mockIsAdmin = false;
+
 vi.mock("../../hooks/useAuth", () => ({
   useAuth: () => ({
     user: {
       displayName: "John Doe",
       email: "john@example.com",
     },
+    isAdmin: mockIsAdmin,
     logout: mockLogout,
   }),
 }));
@@ -75,13 +78,14 @@ vi.mock("../ui/Sidebar", () => ({
 describe("AppSidebar", () => {
   beforeEach(() => {
     vi.clearAllMocks();
+    mockIsAdmin = false;
   });
 
   test("renders primary navigation links", () => {
     render(<AppSidebar />);
 
     expect(
-      screen.getByRole("button", { name: /dashboard/i })
+      screen.getByRole("button", { name: /^dashboard$/i })
     ).toBeInTheDocument();
 
     expect(
@@ -169,6 +173,24 @@ describe("AppSidebar", () => {
 
     expect(
       screen.getByText(/ai provider indicator/i)
+    ).toBeInTheDocument();
+  });
+
+  test("hides Admin Panel link for non-admin users", () => {
+    mockIsAdmin = false;
+    render(<AppSidebar />);
+
+    expect(
+      screen.queryByRole("button", { name: /admin panel/i })
+    ).not.toBeInTheDocument();
+  });
+
+  test("renders Admin Panel link for admin users", () => {
+    mockIsAdmin = true;
+    render(<AppSidebar />);
+
+    expect(
+      screen.getByRole("button", { name: /admin panel/i })
     ).toBeInTheDocument();
   });
 });
