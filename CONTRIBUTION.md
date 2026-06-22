@@ -559,52 +559,37 @@ Mockups, examples, or references
 ```
 backend/src/
 ├── index.js              # Entry point - start here
-├── config/               # Configuration files
-│   ├── firebase.js       # Firebase Admin setup
-│   ├── langchain.js      # AI configuration
-│   └── socket.js         # Socket.IO setup
-├── controllers/          # Route handlers
-├── middleware/            # Express middleware
-│   ├── cmsAuth.js        # CMS API key auth
-│   └── portfolioValidator.js # Portfolio content validation
-├── models/               # Mongoose schemas
-│   ├── Portfolio.model.js # Portfolio data
-│   ├── Deployment.model.js # Deploy history
-│   └── ...
+├── config/               # Firebase, Redis, Socket.IO, AI providers, Swagger
+├── controllers/          # Route handlers (community, jobs, input, recruiter)
+├── middleware/           # Auth, rate limiting, uploads, portfolio validation
+├── models/               # Mongoose schemas (User, Resume, Portfolio, Fellowship, Job, ...)
 ├── routes/               # API route definitions
-│   ├── portfolio.js      # Portfolio CRUD + deploy
-│   ├── portfolioCMS.js   # Headless CMS API
-│   ├── github.js         # GitHub intelligence
-│   ├── webhooks.js       # Deploy provider webhooks
+│   ├── auth.js
+│   ├── resume.js
+│   ├── interview.js
+│   ├── jobAlerts.js
+│   ├── jobTracker.js
+│   ├── jobsRoute.js
+│   ├── community.js
+│   ├── fellowships.js
+│   ├── portfolio.js
+│   ├── repoAnalyzer.js
+│   ├── projectVisualizer.route.js
+│   ├── enhance.js
+│   ├── upload.js
 │   └── ...
 ├── services/             # Business logic
-│   ├── ai/               # AI career tools
-│   │   ├── skillGapAnalyzer.js
-│   │   ├── careerTrajectory.js
-│   │   ├── salaryEstimator.js
-│   │   └── projectDescriptionWriter.js
-│   ├── deploy/           # Deployment providers
-│   │   ├── cloudflareDeployer.js
-│   │   ├── githubPagesDeployer.js
-│   │   ├── netlifyDeployer.js
-│   │   ├── vercelDeployer.js
-│   │   └── deployerFactory.js
-│   ├── github/           # GitHub analysis
-│   │   ├── repoDeepScanner.js
-│   │   ├── techStackDetector.js
-│   │   ├── commitHeatmap.js
-│   │   ├── repoHealthScorer.js
-│   │   ├── codebaseExplainer.js
-│   │   └── readmeAssetEngine.js
+│   ├── ai/               # Career trajectory, LinkedIn helper, portfolio AI helpers
+│   ├── deploy/           # Cloudflare, GitHub Pages, Netlify deployers
+│   ├── scrapers/         # Job board scrapers and registry
+│   ├── interviewService.js
+│   ├── jobFetcher.js
+│   ├── jobAlertQueue.js
+│   ├── repoIngestionService.js
+│   ├── firebaseDataService.js
+│   ├── socketServiceFirebase.js
 │   └── ...
-├── templates/            # Portfolio themes
-│   └── portfolio/
-│       ├── _starter/     # Starter kit for contributors
-│       ├── minimal-dark/
-│       ├── developer-pro/
-│       ├── creative-gradient/
-│       └── ...
-└── utils/                # Helper functions
+└── utils/                # Shared helpers (queue manager, job search, etc.)
 ```
 
 ### Frontend Structure
@@ -615,37 +600,28 @@ frontend/src/
 ├── main.jsx              # Entry point
 ├── components/           # Reusable components
 │   ├── ui/               # Generic UI components
-│   ├── community/        # Community-specific components
-│   ├── portfolio/        # Portfolio builder components
-│   │   ├── PortfolioCard.jsx
-│   │   ├── SectionEditor.jsx
-│   │   ├── ThemeSelector.jsx
-│   │   ├── DeployModal.jsx
-│   │   └── ...
-│   ├── github/           # GitHub intelligence components
-│   │   ├── RepoCard.jsx
-│   │   ├── ContributionHeatmap.jsx
-│   │   ├── HealthScoreGauge.jsx
-│   │   └── ...
-│   └── ai/               # AI tools components
-│       ├── CareerTrajectoryChart.jsx
-│       └── LinkedInHeadlineGenerator.jsx
-├── config/               # Configuration
-├── context/              # React context providers
+│   ├── community/        # Community posts, chat, comments
+│   ├── portfolio/        # Portfolio builder and templates
+│   ├── github/           # GitHub intelligence widgets
+│   ├── ai/               # AI tooling UI
+│   ├── analyzer/         # Repo analysis UI
+│   └── visualizer/       # Project visualizer UI
+├── config/               # Firebase and client configuration
+├── context/              # React context providers (Auth, Socket, ...)
 ├── hooks/                # Custom React hooks
 ├── pages/                # Page components
-│   ├── Portfolio.jsx
-│   ├── PortfolioEditor.jsx
-│   ├── GitHubDashboard.jsx
-│   ├── RepoAnalysis.jsx
-│   ├── SkillGap.jsx
-│   ├── CareerPath.jsx
-│   ├── SalaryEstimate.jsx
-│   ├── Deployments.jsx
+│   ├── Dashboard.jsx
+│   ├── JobSearch.jsx
+│   ├── JobTracker.jsx
+│   ├── InterviewPrep.jsx
+│   ├── ResumeBuilder.jsx
 │   ├── TemplateGallery.jsx
-│   ├── admin/            # Admin-only pages
-│   └── fellowship/       # Fellowship pages
-├── services/             # API service layer
+│   ├── Deployments.jsx
+│   ├── RepoAnalyzer/     # Repository analysis workspace
+│   ├── ProjectVisualizer/
+│   ├── fellowship/       # Fellowship onboarding, challenges, chat
+│   └── admin/
+├── services/             # API client layer
 └── lib/                  # Utility functions
 ```
 
@@ -656,15 +632,17 @@ frontend/src/
 | `backend/src/index.js` | Server initialization, route registration |
 | `backend/src/routes/*.js` | API endpoint definitions |
 | `backend/src/services/*.js` | Core business logic |
-| `backend/src/services/deploy/` | All deployment provider integrations |
-| `backend/src/services/github/` | GitHub analysis and intelligence |
-| `backend/src/services/ai/` | AI-powered career tools |
-| `backend/src/templates/portfolio/` | Portfolio theme templates |
+| `backend/src/services/deploy/` | Portfolio deployment provider integrations |
+| `backend/src/services/ai/` | AI-powered resume and career helpers |
+| `backend/src/services/repoIngestionService.js` | Repository analysis ingestion |
+| `backend/src/routes/fellowships.js` | Fellowship program APIs |
+| `backend/src/routes/repoAnalyzer.js` | Repo analyzer APIs |
 | `frontend/src/App.jsx` | Application routing |
 | `frontend/src/services/api.js` | API client functions |
 | `frontend/src/context/*.jsx` | Global state management |
+| `frontend/src/pages/fellowship/` | Fellowship user flows |
+| `frontend/src/pages/RepoAnalyzer/` | Repo analyzer UI |
 | `frontend/src/components/portfolio/` | Portfolio builder UI |
-| `frontend/src/components/github/` | GitHub intelligence UI |
 
 ---
 
