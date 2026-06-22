@@ -1,0 +1,13 @@
+{
+  "name": "Clean White",
+  "description": "A clean, light-mode portfolio theme with maximum readability. Elegant serif headings meet crisp sans-serif body text on a pure white canvas.",
+  "version": "1.0.0",
+  "author": "career-pilot contributors",
+  "preview": "preview.png",
+  "tags": ["light", "minimal", "clean", "serif", "professional", "print-friendly"],
+  "colors": {
+    "primary": "#1a1a1a",
+    "background": "#ffffff",
+    "text": "#374151"
+  }
+}
