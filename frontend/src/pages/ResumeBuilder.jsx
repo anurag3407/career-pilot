@@ -117,6 +117,76 @@ const [careerGoals, setCareerGoals] = useState([
 
 const [goalProgress, setGoalProgress] = useState(0)
 
+  const [hasDraft, setHasDraft] = useState(false)
+  const [hasUnsavedChanges, setHasUnsavedChanges] = useState(false)
+  const [draftContent, setDraftContent] = useState(null)
+
+  useEffect(() => {
+    const saved = localStorage.getItem("resumeBuilderDraft");
+    if (saved) {
+      try {
+        const draft = JSON.parse(saved);
+        setDraftContent(draft);
+        setHasDraft(true);
+      } catch (e) {
+        console.error("Failed to parse draft", e);
+      }
+    }
+  }, []);
+
+  useEffect(() => {
+    if (hasDraft) return; 
+
+    const draft = {
+      personalInfo: personal,
+      phoneCode,
+      phoneDigits,
+      education,
+      experience,
+      projects,
+      skills,
+      currentStep,
+      targetRole
+    };
+    localStorage.setItem("resumeBuilderDraft", JSON.stringify(draft));
+    
+    const isDirty = personal.name || education[0].school || experience[0].title || projects[0].name || skills;
+    setHasUnsavedChanges(!!isDirty);
+  }, [personal, phoneCode, phoneDigits, education, experience, projects, skills, currentStep, targetRole, hasDraft]);
+
+  useEffect(() => {
+    const handleBeforeUnload = (e) => {
+      if (hasUnsavedChanges) {
+        e.preventDefault();
+        e.returnValue = "";
+      }
+    };
+    window.addEventListener("beforeunload", handleBeforeUnload);
+    return () => window.removeEventListener("beforeunload", handleBeforeUnload);
+  }, [hasUnsavedChanges]);
+
+  const restoreDraft = () => {
+    if (draftContent) {
+      if (draftContent.personalInfo) setPersonal(draftContent.personalInfo);
+      if (draftContent.phoneCode) setPhoneCode(draftContent.phoneCode);
+      if (draftContent.phoneDigits) setPhoneDigits(draftContent.phoneDigits);
+      if (draftContent.education) setEducation(draftContent.education);
+      if (draftContent.experience) setExperience(draftContent.experience);
+      if (draftContent.projects) setProjects(draftContent.projects);
+      if (draftContent.skills !== undefined) setSkills(draftContent.skills);
+      if (draftContent.currentStep !== undefined) setCurrentStep(draftContent.currentStep);
+      if (draftContent.targetRole !== undefined) setTargetRole(draftContent.targetRole);
+    }
+    setHasDraft(false);
+    setDraftContent(null);
+  };
+
+  const clearDraft = () => {
+    localStorage.removeItem("resumeBuilderDraft");
+    setHasDraft(false);
+    setDraftContent(null);
+  };
+
   useEffect(() => {
   const suggestions = []
   let score = 100
@@ -762,6 +832,10 @@ useEffect(() => {
         title:   `${personal.name || 'My'} Resume - ${new Date().toLocaleDateString()}`,
         sectionOrder: sectionOrder
       })
+
+      localStorage.removeItem("resumeBuilderDraft")
+      setHasUnsavedChanges(false)
+
       toast.success('Resume created successfully!')
       navigate(`/enhance/${response.data.id}`)
     } catch (error) {
@@ -1863,6 +1937,24 @@ useEffect(() => {
           </h1>
           <p className="text-muted-foreground mt-2">Build a professional resume from scratch.</p>
         </div>
+
+        {/* Draft Notification */}
+        {hasDraft && (
+          <div className="bg-primary/10 border border-primary/20 rounded-xl p-4 mb-8 flex flex-col sm:flex-row items-center justify-between gap-4">
+            <div>
+              <h3 className="font-semibold text-primary">Unsaved Draft Detected</h3>
+              <p className="text-sm text-primary/80">You have a resume draft in progress. Would you like to restore it?</p>
+            </div>
+            <div className="flex gap-3">
+              <button onClick={clearDraft} className="px-4 py-2 text-sm rounded-lg border border-primary/20 text-primary hover:bg-primary/10 transition-colors">
+                Start fresh
+              </button>
+              <button onClick={restoreDraft} className="px-4 py-2 text-sm rounded-lg bg-primary text-primary-foreground hover:bg-primary/90 transition-colors shadow-sm">
+                Continue editing
+              </button>
+            </div>
+          </div>
+        )}
 
         {/* Progress Stepper */}
         <div className="mb-8 flex items-center justify-between relative">
