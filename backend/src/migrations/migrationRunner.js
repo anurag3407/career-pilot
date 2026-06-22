@@ -98,6 +98,53 @@ export function createMigrationRunner({
     await locks.deleteOne({ _id: MIGRATION_LOCK_ID, owner });
   }
 
+  async function extendLock() {
+  const result = await locks.updateOne(
+    {
+      _id: MIGRATION_LOCK_ID,
+      owner,
+    },
+    {
+      $set: {
+        expiresAt: new Date(Date.now() + lockTtlMs),
+        updatedAt: now(),
+      },
+    }
+  );
+
+  if (result.matchedCount !== 1) {
+    throw new MigrationError('Migration lock ownership was lost');
+  }
+}
+
+function startLockHeartbeat() {
+  let heartbeatError = null;
+
+  const interval = setInterval(async () => {
+    try {
+      await extendLock();
+    } catch (error) {
+      heartbeatError = error;
+      logger.error?.('Migration lock heartbeat failed', {
+        error: error.message,
+      });
+    }
+  }, Math.max(1000, Math.floor(lockTtlMs / 3)));
+
+  interval.unref?.();
+
+  return {
+    assertHealthy() {
+      if (heartbeatError) {
+        throw heartbeatError;
+      }
+    },
+    stop() {
+      clearInterval(interval);
+    },
+  };
+}
+
   async function loadMigrationFiles() {
     let entries;
 
@@ -120,23 +167,35 @@ export function createMigrationRunner({
       .filter((name) => /^\d{3,}-.+\.js$/.test(name))
       .sort();
 
-    return Promise.all(
-      files.map(async (fileName) => {
-        const filePath = path.join(migrationsDir, fileName);
-        const imported = await import(pathToFileURL(filePath).href);
-        const migration = imported.default || imported;
+    const loadedMigrations = await Promise.all(
+  files.map(async (fileName) => {
+    const filePath = path.join(migrationsDir, fileName);
+    const imported = await import(pathToFileURL(filePath).href);
+    const migration = imported.default || imported;
 
-        validateMigration(migration, fileName);
+    validateMigration(migration, fileName);
 
-        return {
-          id: migration.id || fileName.replace(/\.js$/, ''),
-          description: migration.description || '',
-          fileName,
-          up: migration.up,
-          down: migration.down,
-        };
-      })
-    );
+    return {
+      id: migration.id || fileName.replace(/\.js$/, ''),
+      description: migration.description || '',
+      fileName,
+      up: migration.up,
+      down: migration.down,
+    };
+  })
+);
+
+const seenIds = new Set();
+
+for (const migration of loadedMigrations) {
+  if (seenIds.has(migration.id)) {
+    throw new MigrationError(`Duplicate migration id detected: ${migration.id}`);
+  }
+
+  seenIds.add(migration.id);
+}
+
+return loadedMigrations;
   }
 
   function validateMigration(migration, fileName) {
@@ -178,6 +237,7 @@ export function createMigrationRunner({
   async function up({ dryRun = false } = {}) {
     await ensureIndexes();
     await acquireLock();
+    const heartbeat = startLockHeartbeat();
 
     const applied = [];
     const skipped = [];
@@ -200,7 +260,9 @@ export function createMigrationRunner({
         const startedAt = now();
 
         try {
-          await migration.up(db);
+            heartbeat.assertHealthy();
+            await migration.up(db);
+            heartbeat.assertHealthy();
 
           await migrations.insertOne({
             id: migration.id,
@@ -211,6 +273,7 @@ export function createMigrationRunner({
           });
 
           applied.push(migration.id);
+          appliedIds.add(migration.id);
         } catch (error) {
           throw new MigrationError(`Migration ${migration.id} failed`, {
             migrationId: migration.id,
@@ -221,13 +284,15 @@ export function createMigrationRunner({
 
       return { applied, skipped, dryRun };
     } finally {
-      await releaseLock();
+        heartbeat.stop();
+        await releaseLock();
     }
   }
 
   async function down({ steps = 1, dryRun = false } = {}) {
     await ensureIndexes();
     await acquireLock();
+    const heartbeat = startLockHeartbeat();
 
     const reverted = [];
 
@@ -253,14 +318,17 @@ export function createMigrationRunner({
           continue;
         }
 
+        heartbeat.assertHealthy();
         await migration.down(db);
+        heartbeat.assertHealthy();
         await migrations.deleteOne({ id: record.id });
         reverted.push(record.id);
       }
 
       return { reverted, dryRun };
     } finally {
-      await releaseLock();
+        heartbeat.stop();
+        await releaseLock();
     }
   }
 
@@ -273,15 +341,24 @@ export function createMigrationRunner({
   };
 }
 
+function parsePositiveInteger(value, optionName) {
+  const parsed = Number(value);
+
+  if (!Number.isInteger(parsed) || parsed < 1) {
+    throw new MigrationError(`${optionName} must be a positive integer`);
+  }
+
+  return parsed;
+}
+
 function parseArgs(argv) {
   const command = argv[2] || 'status';
+  const stepsArg = argv.find((arg) => arg.startsWith('--steps='))?.split('=')[1] || '1';
 
   return {
     command,
     dryRun: argv.includes('--dry-run'),
-    steps: Number(
-      argv.find((arg) => arg.startsWith('--steps='))?.split('=')[1] || 1
-    ),
+    steps: parsePositiveInteger(stepsArg, '--steps'),
   };
 }
 
