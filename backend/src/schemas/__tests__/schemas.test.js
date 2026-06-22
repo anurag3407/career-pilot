@@ -595,6 +595,7 @@ describe('jobAlerts.schema — createJobAlertSchema', () => {
     assert.deepEqual(result.data.keywords, []);
     assert.deepEqual(result.data.employmentType, ['full-time']);
     assert.equal(result.data.remoteOnly, false);
+    assert.equal(result.data.checkFrequency, 'every-2-days');
   });
 
   test('rejects empty title', () => {
@@ -606,6 +607,22 @@ describe('jobAlerts.schema — createJobAlertSchema', () => {
     const result = createJobAlertSchema.safeParse({
       title: 'Jobs',
       employmentType: ['full-time', 'ninja'],
+    });
+    assert.ok(!result.success);
+  });
+
+  test('accepts valid checkFrequency', () => {
+    const result = createJobAlertSchema.safeParse({
+      title: 'Jobs',
+      checkFrequency: 'weekly',
+    });
+    assert.ok(result.success);
+    assert.equal(result.data.checkFrequency, 'weekly');
+  });
+
+  test('rejects invalid checkFrequency', () => {
+    const result = updateJobAlertSchema.safeParse({
+      checkFrequency: 'hourly',
     });
     assert.ok(!result.success);
   });

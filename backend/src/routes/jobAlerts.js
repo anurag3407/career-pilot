@@ -135,15 +135,16 @@ router.post('/', verifyToken, validate(createJobAlertSchema), asyncHandler(async
         console.warn('⚠️  Could not save user to Firebase:', fbError.message);
     }
 
-    const {
-        title,
-        keywords = [],
-        location = '',
-        remoteOnly = false,
-        salaryMin = null,
-        salaryMax = null,
-        employmentType = ['full-time']
-    } = req.body;
+  const {
+            title,
+            keywords = [],
+            location = '',
+            remoteOnly = false,
+            salaryMin = null,
+            salaryMax = null,
+            employmentType = ['full-time'],
+            checkFrequency = 'every-2-days'
+        } = req.body;
 
     // Validation
     if (!title || title.trim().length === 0) {
@@ -173,10 +174,11 @@ router.post('/', verifyToken, validate(createJobAlertSchema), asyncHandler(async
         salaryMin,
         salaryMax,
         employmentType,
+        checkFrequency,
         isActive: true
-    });
+         });
 
-    // Save to Firebase
+    // Save to Firebase (checkFrequency is included via alert.toObject())
     try {
         await saveJobAlertToFirebase(alert.toObject());
     } catch (fbError) {
@@ -212,8 +214,9 @@ router.put('/:id', verifyToken, validate(updateJobAlertSchema), asyncHandler(asy
         salaryMin,
         salaryMax,
         employmentType,
+        checkFrequency,
         isActive
-    } = req.body;
+        } = req.body;
 
     // Update fields if provided
     if (title !== undefined) alert.title = title.trim();
@@ -223,11 +226,14 @@ router.put('/:id', verifyToken, validate(updateJobAlertSchema), asyncHandler(asy
     if (salaryMin !== undefined) alert.salaryMin = salaryMin;
     if (salaryMax !== undefined) alert.salaryMax = salaryMax;
     if (employmentType !== undefined) alert.employmentType = employmentType;
+    if (checkFrequency !== undefined) {
+        alert.checkFrequency = checkFrequency;
+    }
     if (isActive !== undefined) alert.isActive = isActive;
 
     await alert.save();
 
-    // Update in Firebase
+    // Update in Firebase (checkFrequency is included via alert.toObject())
     try {
         await saveJobAlertToFirebase(alert.toObject());
     } catch (fbError) {
