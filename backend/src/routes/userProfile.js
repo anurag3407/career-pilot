@@ -1,6 +1,10 @@
 import express from 'express';
 import { asyncHandler, ApiError } from '../middleware/errorHandler.js';
 import { verifyToken } from '../middleware/auth.js';
+import {
+  cacheProfileResponse,
+  invalidateProfileCache,
+} from '../services/profileCache.js';
 import UserProfile from '../models/UserProfile.model.js';
 import Resume from '../models/Resume.model.js';
 import Interview from '../models/Interview.model.js';
@@ -46,7 +50,7 @@ const getPostsForUser = async (uid) => {
 };
 
 // Get or create own profile
-router.get('/me', asyncHandler(async (req, res) => {
+router.get('/me', cacheProfileResponse, asyncHandler(async (req, res) => {
   const uid = req.user.uid;
   let profile = await UserProfile.findOne({ uid }).select('+phone +dateOfBirth +gender');
   if (!profile) {
@@ -122,6 +126,8 @@ router.put('/me', validate(updateProfileSchema), asyncHandler(async (req, res) =
     { $set: update },
     { new: true, upsert: true }
   ).select('+phone +dateOfBirth +gender');
+
+  await invalidateProfileCache(uid);
   res.json({ success: true, profile });
 }));
 
@@ -135,6 +141,8 @@ router.post('/me/avatar', validate(setAvatarSchema), asyncHandler(async (req, re
     { $set: { avatarUrl } },
     { new: true, upsert: true }
   ).select('+phone +dateOfBirth +gender');
+
+  await invalidateProfileCache(uid);
   res.json({ success: true, profile });
 }));
 
@@ -146,6 +154,8 @@ router.delete('/me/avatar', asyncHandler(async (req, res) => {
     { $set: { avatarUrl: '' } },
     { new: true, upsert: true }
   ).select('+phone +dateOfBirth +gender');
+
+  await invalidateProfileCache(uid);
   res.json({ success: true, profile });
 }));
 
@@ -166,7 +176,7 @@ router.get('/me/activity', asyncHandler(async (req, res) => {
 }));
 
 // Get public profile by uid
-router.get('/:uid', asyncHandler(async (req, res) => {
+router.get('/:uid', cacheProfileResponse, asyncHandler(async (req, res) => {
   const profile = await UserProfile.findOne({ uid: req.params.uid });
   if (!profile) throw new ApiError(404, 'Profile not found');
   res.json({ success: true, profile });

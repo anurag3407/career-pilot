@@ -1,3 +1,10 @@
+# [1.263.0](https://github.com/anurag3407/career-pilot/compare/v1.262.0...v1.263.0) (2026-06-22)
+
+
+### Features
+
+* **cache:** add resilient Redis API response caching layer ([#4192](https://github.com/anurag3407/career-pilot/issues/4192)) ([e59df87](https://github.com/anurag3407/career-pilot/commit/e59df8733e63b010eef63e763600e065a588cb85))
+
 # [1.262.0](https://github.com/anurag3407/career-pilot/compare/v1.261.0...v1.262.0) (2026-06-22)
 
 
