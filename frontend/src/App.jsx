@@ -1,3 +1,6 @@
+import Hero from "./components/portfolio/templates/Watercolor_Artistic/Hero";
+import About from "./components/portfolio/templates/Watercolor_Artistic/About";
+import Contact from "./components/portfolio/templates/Watercolor_Artistic/Contact";
 
 /**
  * Main Application Component with Route-based Code Splitting
@@ -570,13 +573,11 @@ function AppRoutes() {
 
 function App() {
   return (
-    <ThemeProvider>
-      <AuthProvider>
-        <SocketProvider>
-          <AppRoutes />
-        </SocketProvider>
-      </AuthProvider>
-    </ThemeProvider>
+    <>
+      <Hero />
+      <About />
+      <Contact />
+    </>
   );
 }
 
