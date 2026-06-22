@@ -122,6 +122,7 @@ import DesertDunes from './components/portfolio/templates/Desert_Dunes/index.jsx
 import PsychedelicSwirl from './components/portfolio/templates/Psychedelic_Swirl/index.jsx';
 import MemphisPop from './components/portfolio/templates/Memphis_Pop/index.jsx';
 import HiddenEasterEggScavengerHunt from './components/portfolio/templates/Hidden_Easter_Egg_Scavenger_Hunt/index.jsx';
+import ApiaristBeekeeperHive from './components/portfolio/templates/Apiarist_Beekeeper_Hive/index.jsx';
 import CassetteMixtape from './components/portfolio/templates/Cassette_Mixtape/index.jsx';
 import MagneticDock from './components/portfolio/templates/Magnetic_Dock/index.jsx';
 import Hero from './components/portfolio/templates/Magazine_Editorial/Hero';
@@ -316,6 +317,7 @@ function AppRoutes() {
         <Route path="/templates/memphis-pop" element={<MemphisPop />} />
         <Route path="/templates/cassette-mixtape" element={<CassetteMixtape />} />
         <Route path="/templates/hidden-easter-egg-scavenger-hunt" element={<HiddenEasterEggScavengerHunt />} />
+        <Route path="/templates/apiarist-beekeeper-hive" element={<ApiaristBeekeeperHive />} />
         <Route path="/templates/magnetic-dock" element={<MagneticDock />} />
         <Route path="/templates/ocean-depths" element={<OceanDepths />} />
         <Route path="/templates/neon-cityscape" element={<NeonCityscape />} />
