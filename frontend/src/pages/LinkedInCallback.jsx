@@ -19,6 +19,30 @@ export default function LinkedInCallback() {
     const [useBackup, setUseBackup] = useState(false)
     const [totpLoading, setTotpLoading] = useState(false)
 
+    useEffect(() => {
+        const handleCallback = async () => {
+            const code = searchParams.get('code')
+            const error = searchParams.get('error')
+
+            if (error) {
+                const messages = {
+                    linkedin_denied: 'LinkedIn sign-in was cancelled.',
+                    linkedin_invalid_state: 'Invalid session. Please try again.',
+                    linkedin_token_failed: 'Could not connect to LinkedIn. Please try again.',
+                    linkedin_profile_failed: 'Could not fetch your LinkedIn profile. Please try again.',
+                };
+
+                toast.error(messages[error] || 'LinkedIn sign-in failed.')
+                navigate('/login')
+                return
+            }
+            if(!code) {
+
+            if (!code) {
+                toast.error('Something went wrong. Please try again.')
+                navigate('/login')
+                return
+            }
 useEffect(() => {
     const handleCallback = async () => {
         const code = searchParams.get('code')
@@ -43,6 +67,9 @@ useEffect(() => {
             return
         }
 
+        handleCallback()
+    }, [])};
+    }, [searchParams, navigate]) // Added dependencies
         try {
     setStatus('Completing sign-in...')
 
@@ -85,9 +112,9 @@ handleCallback()
 
     const handleTotpSubmit = async (e) => {
         e.preventDefault()
-        if (!totpToken.trim()) return
+        if (!totpToken.trim()) return;
 
-        setTotpLoading(true)
+        setTotpLoading(true);
         try {
             if (useBackup) {
                 await twoFactorApi.verifyBackup(totpToken)
@@ -110,7 +137,7 @@ handleCallback()
             console.error('Signout error:', e)
         }
         navigate('/login')
-    }
+    
 
     if (step === 'loading') {
         return (
@@ -118,10 +145,12 @@ handleCallback()
               <div className="text-center">
                 <div className="w-8 h-8 border-2 border-indigo-500 border-t-transparent rounded-full animate-spin mx-auto mb-4" />
                 <p className="text-neutral-400 text-sm">{status}</p>
+                </div>
               </div>
-            </div>
         )
     }
+  
+  
 
     return (
         <div className="min-h-screen bg-background relative overflow-hidden">
@@ -192,4 +221,5 @@ handleCallback()
           </div>
         </div>
     )
+  }
 }

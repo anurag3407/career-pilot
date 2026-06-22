@@ -474,6 +474,7 @@ export default function PostCard({
           }
         />
       )}
+      </div>
     </article>
   );
 }

@@ -420,10 +420,35 @@ router.get('/linkedin/callback', asyncHandler(async (req, res) => {
   const customToken = await admin.auth().createCustomToken(firebaseUid, { linkedinId });
 
   // Store token in one-time exchange store (60s TTL) instead of passing in URL
-  const exchangeCode = crypto.randomBytes(16).toString('hex');
-  tokenStore.set(exchangeCode, { token: customToken, isNew: !mongoUser, expiresAt: Date.now() + 60000 });
+  const newExchangeCode = crypto.randomBytes(16).toString('hex');
+  tokenStore.set(newExchangeCode, { token: customToken, isNew: !mongoUser, expiresAt: Date.now() + 60000 });
 
-  res.redirect(`${frontendUrl}/auth/linkedin/callback?code=${exchangeCode}`);
+  res.redirect(`${frontendUrl}/auth/linkedin/callback?code=${newExchangeCode}`);
+}));
+
+// One-time token exchange endpoint — the frontend calls this immediately after the OAuth
+// redirect to retrieve the Firebase custom token without it appearing in a URL,
+// server access log, browser history, or Referer header.
+// No verifyToken here — the user is mid-authentication and has no Firebase token yet.
+// The exchange code (192-bit entropy, 60-sec TTL, single-use) is the security boundary.
+router.get('/linkedin/token', asyncHandler(async (req, res) => {
+  res.set('Cache-Control', 'no-store');
+  res.set('Pragma', 'no-cache');
+
+  const { code } = req.query;
+
+  if (!code || typeof code !== 'string') {
+    return res.status(400).json({ success: false, error: 'Exchange code is required' });
+  }
+
+  const entry = linkedInTokenStore.get(code);
+
+  if (!entry || Date.now() > entry.expiresAt) {
+    linkedInTokenStore.delete(code);
+    return res.status(400).json({ success: false, error: 'Invalid or expired exchange code' });
+  }
+
+  linkedInTokenStore.delete(code);
 }));
 
 // One-time token exchange endpoint — the frontend calls this immediately after the OAuth
