@@ -7,6 +7,15 @@ import portfolioGithubRoutes from './routes/portfolioGithub.js';
 import dotenv from "dotenv";
 dotenv.config();
 
+import { checkDevAuthBypassGuard } from './utils/securityGuard.js';
+
+try {
+  checkDevAuthBypassGuard();
+} catch (error) {
+  console.error(error.message);
+  process.exit(1);
+}
+
 import redisManager from './config/redis.js';
 
 import { createServer } from 'http';

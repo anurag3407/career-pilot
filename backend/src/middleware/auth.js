@@ -5,7 +5,8 @@ import { ApiError } from './errorHandler.js';
 export const verifyToken = async (req, res, next) => {
   try {
     // Development bypass
-    if (process.env.NODE_ENV === 'development' && process.env.DEV_BYPASS_AUTH === 'true') {
+    if (process.env.NODE_ENV === 'development' && process.argv.includes('--dev-bypass-auth')) {
+      console.warn('⚠️ WARNING: Development auth bypass is active. This must never be used in production.');
       const adminEmails = (process.env.ADMIN_EMAILS || '')
         .split(',')
         .map((e) => e.trim().toLowerCase())
@@ -87,7 +88,8 @@ export const adminOnly = (req, res, next) => {
 export const optionalAuth = async (req, res, next) => {
   try {
     // Development bypass
-    if (process.env.NODE_ENV === 'development' && process.env.DEV_BYPASS_AUTH === 'true') {
+    if (process.env.NODE_ENV === 'development' && process.argv.includes('--dev-bypass-auth')) {
+      console.warn('⚠️ WARNING: Development auth bypass is active. This must never be used in production.');
       const adminEmails = (process.env.ADMIN_EMAILS || '')
         .split(',')
         .map((e) => e.trim().toLowerCase())
