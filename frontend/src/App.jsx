@@ -560,9 +560,9 @@ function AppRoutes() {
         <Route path="/test-social-links" element={<Suspense fallback={<LoadingScreen label="Loading Test Social Links..." />}><TestSocialLinks /></Suspense>} />
 
 
+        <Route path="/templates/color-block" element={<ColorBlock />} />
         {/* Catch-All Route */}
         <Route path="*" element={<NotFound />} />
-        <Route path="/templates/color-block" element={<ColorBlock />} />
       </Routes>
     </BrowserRouter>
   );
