@@ -1,5 +1,6 @@
 import { useState, useEffect } from 'react';
 import { motion } from 'framer-motion';
+import { DragDropContext, Droppable, Draggable } from '@hello-pangea/dnd';
 import {
     Bell,
     BellOff,
@@ -11,7 +12,8 @@ import {
     Clock,
     Briefcase,
     Loader2,
-    AlertCircle
+    AlertCircle,
+    GripVertical
 } from 'lucide-react';
 import { SkeletonList } from './ui/Skeleton';
 import toast from 'react-hot-toast';
@@ -66,7 +68,6 @@ export default function JobAlertsList() {
 
     const handleDelete = async (alertId) => {
         if (!confirm('Are you sure you want to delete this alert?')) return;
-
         try {
             await jobAlertsApi.delete(alertId);
             setAlerts(prev => prev.filter(alert => alert._id !== alertId));
@@ -98,6 +99,26 @@ export default function JobAlertsList() {
         setEditingAlert(null);
     };
 
+    // Reorder alerts after drag ends
+    const handleDragEnd = async (result) => {
+        if (!result.destination) return;
+        if (result.destination.index === result.source.index) return;
+
+        const reordered = Array.from(alerts);
+        const [moved] = reordered.splice(result.source.index, 1);
+        reordered.splice(result.destination.index, 0, moved);
+        setAlerts(reordered);
+
+        try {
+            await jobAlertsApi.reorder(reordered.map(a => a._id));
+            toast.success('Alert order updated');
+        } catch (err) {
+            toast.error('Failed to save alert order');
+            // Revert on failure
+            fetchAlerts();
+        }
+    };
+
     const formatDate = (date) => {
         if (!date) return 'Never';
         return new Date(date).toLocaleDateString('en-US', {
@@ -107,17 +128,6 @@ export default function JobAlertsList() {
             minute: '2-digit'
         });
     };
-
-    if (loading) {
-        return (
-            <div className="flex items-center justify-center py-12">
-                <div className="relative">
-                    <div className="w-8 h-8 border-2 border-border rounded-full" />
-                    <div className="absolute top-0 left-0 w-8 h-8 border-2 border-transparent border-t-primary rounded-full animate-spin" />
-                </div>
-            </div>
-        );
-    }
 
     if (error) {
         return (
@@ -169,141 +179,164 @@ export default function JobAlertsList() {
                     </button>
                 </div>
             ) : (
-                <div className="space-y-4">
-                    {/* 1-indexed list display */}
-                    {alerts.map((alert, index) => (
-                        <motion.div
-                            key={alert._id}
-                            initial={{ opacity: 0, y: 10 }}
-                            animate={{ opacity: 1, y: 0 }}
-                            transition={{ delay: index * 0.05 }}
-                            className={`bg-card rounded-xl border p-5 transition-all hover:border-primary/50 ${alert.isActive ? 'border-border shadow-sm' : 'border-border opacity-60'
-                                }`}
-                        >
-                            <div className="flex items-start justify-between">
-                                <div className="flex items-start gap-4">
-                                    {/* 1-indexed alert number */}
-                                    <div className={`w-10 h-10 rounded-lg flex items-center justify-center text-sm font-bold ${alert.isActive
-                                            ? 'bg-gradient-to-br from-primary to-secondary text-primary-foreground'
-                                            : 'bg-muted text-muted-foreground'
-                                        }`}>
-                                        {index + 1}
-                                    </div>
+                <DragDropContext onDragEnd={handleDragEnd}>
+                    <Droppable droppableId="job-alerts-list">
+                        {(provided, snapshot) => (
+                            <div
+                                ref={provided.innerRef}
+                                {...provided.droppableProps}
+                                className={`space-y-4 transition-colors rounded-xl ${snapshot.isDraggingOver ? 'bg-primary/5' : ''}`}
+                            >
+                                {alerts.map((alert, index) => (
+                                    <Draggable key={alert._id} draggableId={alert._id} index={index}>
+                                        {(provided, snapshot) => (
+                                            <div
+                                                ref={provided.innerRef}
+                                                {...provided.draggableProps}
+                                                style={provided.draggableProps.style}
+                                                className={`bg-card rounded-xl border p-5 transition-all hover:border-primary/50 ${
+                                                    alert.isActive ? 'border-border shadow-sm' : 'border-border opacity-60'
+                                                } ${snapshot.isDragging ? 'shadow-2xl scale-[1.02] border-primary/60 rotate-[0.5deg]' : ''}`}
+                                            >
+                                                <div className="flex items-start justify-between">
+                                                    <div className="flex items-start gap-4">
+                                                        {/* Drag Handle */}
+                                                        <button
+                                                            type="button"
+                                                            {...provided.dragHandleProps}
+                                                            className="mt-1 p-1 text-muted-foreground hover:text-primary cursor-grab active:cursor-grabbing rounded transition-colors"
+                                                            aria-label="Drag to reorder"
+                                                        >
+                                                            <GripVertical className="w-5 h-5" />
+                                                        </button>
 
-                                    <div>
-                                        <div className="flex items-center gap-3">
-                                            <h3 className="font-semibold text-foreground text-lg">{alert.title}</h3>
-                                            {!alert.isActive && (
-                                                <span className="px-2 py-0.5 rounded-full text-xs font-medium bg-muted text-muted-foreground">
-                                                    Paused
-                                                </span>
-                                            )}
-                                        </div>
+                                                        {/* Alert Number */}
+                                                        <div className={`w-10 h-10 rounded-lg flex items-center justify-center text-sm font-bold ${
+                                                            alert.isActive
+                                                                ? 'bg-gradient-to-br from-primary to-secondary text-primary-foreground'
+                                                                : 'bg-muted text-muted-foreground'
+                                                        }`}>
+                                                            {index + 1}
+                                                        </div>
 
-                                        <div className="flex flex-wrap items-center gap-4 mt-2 text-sm text-muted-foreground">
-                                            {alert.location && (
-                                                <span className="flex items-center gap-1">
-                                                    <MapPin className="w-4 h-4" />
-                                                    {alert.location}
-                                                </span>
-                                            )}
-                                            {alert.remoteOnly && (
-                                                <span className="px-2 py-0.5 bg-green-500/20 text-green-400 border border-green-500/30 rounded-full text-xs">
-                                                    Remote Only
-                                                </span>
-                                            )}
-                                            {alert.employmentType?.length > 0 && (
-                                                <span className="flex items-center gap-1">
-                                                    <Briefcase className="w-4 h-4" />
-                                                    {alert.employmentType.join(', ')}
-                                                </span>
-                                            )}
-                                        </div>
+                                                        <div>
+                                                            <div className="flex items-center gap-3">
+                                                                <h3 className="font-semibold text-foreground text-lg">{alert.title}</h3>
+                                                                {!alert.isActive && (
+                                                                    <span className="px-2 py-0.5 rounded-full text-xs font-medium bg-muted text-muted-foreground">
+                                                                        Paused
+                                                                    </span>
+                                                                )}
+                                                            </div>
 
-                                        {alert.keywords?.length > 0 && (
-                                            <div className="flex flex-wrap gap-1.5 mt-3">
-                                                {alert.keywords.map((kw, i) => (
-                                                    <span
-                                                        key={i}
-                                                        className="px-2 py-1 bg-primary/10 text-primary border border-primary/20 rounded text-xs font-medium"
-                                                    >
-                                                        {kw}
-                                                    </span>
-                                                ))}
+                                                            <div className="flex flex-wrap items-center gap-4 mt-2 text-sm text-muted-foreground">
+                                                                {alert.location && (
+                                                                    <span className="flex items-center gap-1">
+                                                                        <MapPin className="w-4 h-4" />
+                                                                        {alert.location}
+                                                                    </span>
+                                                                )}
+                                                                {alert.remoteOnly && (
+                                                                    <span className="px-2 py-0.5 bg-green-500/20 text-green-400 border border-green-500/30 rounded-full text-xs">
+                                                                        Remote Only
+                                                                    </span>
+                                                                )}
+                                                                {alert.employmentType?.length > 0 && (
+                                                                    <span className="flex items-center gap-1">
+                                                                        <Briefcase className="w-4 h-4" />
+                                                                        {alert.employmentType.join(', ')}
+                                                                    </span>
+                                                                )}
+                                                            </div>
+
+                                                            {alert.keywords?.length > 0 && (
+                                                                <div className="flex flex-wrap gap-1.5 mt-3">
+                                                                    {alert.keywords.map((kw, i) => (
+                                                                        <span
+                                                                            key={i}
+                                                                            className="px-2 py-1 bg-primary/10 text-primary border border-primary/20 rounded text-xs font-medium"
+                                                                        >
+                                                                            {kw}
+                                                                        </span>
+                                                                    ))}
+                                                                </div>
+                                                            )}
+
+                                                            <div className="flex items-center gap-4 mt-3 text-xs text-muted-foreground">
+                                                                <span className="flex items-center gap-1">
+                                                                    <Clock className="w-3 h-3" />
+                                                                    Last checked: {formatDate(alert.lastCheckedAt)}
+                                                                </span>
+                                                                <span>{alert.totalJobsFound || 0} jobs found</span>
+                                                            </div>
+                                                        </div>
+                                                    </div>
+
+                                                    {/* Actions */}
+                                                    <div className="flex items-center gap-2">
+                                                        <Tooltip content="Test alert now">
+                                                            <button
+                                                                onClick={() => handleTest(alert._id)}
+                                                                disabled={testingId === alert._id}
+                                                                className="p-2 text-muted-foreground hover:text-emerald-500 hover:bg-emerald-500/10 rounded-lg transition-colors disabled:opacity-50"
+                                                                aria-label="Test alert now"
+                                                            >
+                                                                {testingId === alert._id ? (
+                                                                    <Loader2 className="w-5 h-5 animate-spin" />
+                                                                ) : (
+                                                                    <Play className="w-5 h-5" />
+                                                                )}
+                                                            </button>
+                                                        </Tooltip>
+
+                                                        <Tooltip content={alert.isActive ? 'Pause alert' : 'Activate alert'}>
+                                                            <button
+                                                                onClick={() => handleToggle(alert._id)}
+                                                                className={`p-2 rounded-lg transition-colors ${
+                                                                    alert.isActive
+                                                                        ? 'text-muted-foreground hover:text-amber-500 hover:bg-amber-500/10'
+                                                                        : 'text-amber-500 hover:bg-amber-500/10'
+                                                                }`}
+                                                                aria-label={alert.isActive ? 'Pause alert' : 'Activate alert'}
+                                                            >
+                                                                {alert.isActive ? (
+                                                                    <BellOff className="w-5 h-5" />
+                                                                ) : (
+                                                                    <Bell className="w-5 h-5" />
+                                                                )}
+                                                            </button>
+                                                        </Tooltip>
+
+                                                        <Tooltip content="Edit alert">
+                                                            <button
+                                                                onClick={() => handleEdit(alert)}
+                                                                className="p-2 text-muted-foreground hover:text-primary hover:bg-primary/10 rounded-lg transition-colors"
+                                                                aria-label="Edit alert"
+                                                            >
+                                                                <Edit2 className="w-5 h-5" />
+                                                            </button>
+                                                        </Tooltip>
+
+                                                        <Tooltip content="Delete alert">
+                                                            <button
+                                                                onClick={() => handleDelete(alert._id)}
+                                                                className="p-2 text-muted-foreground hover:text-destructive hover:bg-destructive/10 rounded-lg transition-colors"
+                                                                aria-label="Delete alert"
+                                                            >
+                                                                <Trash2 className="w-5 h-5" />
+                                                            </button>
+                                                        </Tooltip>
+                                                    </div>
+                                                </div>
                                             </div>
                                         )}
-
-                                        <div className="flex items-center gap-4 mt-3 text-xs text-muted-foreground">
-                                            <span className="flex items-center gap-1">
-                                                <Clock className="w-3 h-3" />
-                                                Last checked: {formatDate(alert.lastCheckedAt)}
-                                            </span>
-                                            <span>
-                                                {alert.totalJobsFound || 0} jobs found
-                                            </span>
-                                        </div>
-                                    </div>
-                                </div>
-
-                                {/* Actions */}
-<div className="flex items-center gap-2">
-    <Tooltip content="Test alert now">
-        <button
-            onClick={() => handleTest(alert._id)}
-            disabled={testingId === alert._id}
-            className="p-2 text-muted-foreground hover:text-emerald-500 hover:bg-emerald-500/10 rounded-lg transition-colors disabled:opacity-50"
-            aria-label="Test alert now"
-        >
-            {testingId === alert._id ? (
-                <Loader2 className="w-5 h-5 animate-spin" />
-            ) : (
-                <Play className="w-5 h-5" />
-            )}
-        </button>
-    </Tooltip>
-
-    <Tooltip content={alert.isActive ? 'Pause alert' : 'Activate alert'}>
-        <button
-            onClick={() => handleToggle(alert._id)}
-            className={`p-2 rounded-lg transition-colors ${
-                alert.isActive
-                    ? 'text-muted-foreground hover:text-amber-500 hover:bg-amber-500/10'
-                    : 'text-amber-500 hover:bg-amber-500/10'
-            }`}
-            aria-label={alert.isActive ? 'Pause alert' : 'Activate alert'}
-        >
-            {alert.isActive ? (
-                <BellOff className="w-5 h-5" />
-            ) : (
-                <Bell className="w-5 h-5" />
-            )}
-        </button>
-    </Tooltip>
-
-    <Tooltip content="Edit alert">
-        <button
-            onClick={() => handleEdit(alert)}
-            className="p-2 text-muted-foreground hover:text-primary hover:bg-primary/10 rounded-lg transition-colors"
-            aria-label="Edit alert"
-        >
-            <Edit2 className="w-5 h-5" />
-        </button>
-    </Tooltip>
-
-    <Tooltip content="Delete alert">
-        <button
-            onClick={() => handleDelete(alert._id)}
-            className="p-2 text-muted-foreground hover:text-destructive hover:bg-destructive/10 rounded-lg transition-colors"
-            aria-label="Delete alert"
-        >
-            <Trash2 className="w-5 h-5" />
-        </button>
-    </Tooltip>
-</div>
+                                    </Draggable>
+                                ))}
+                                {provided.placeholder}
                             </div>
-                        </motion.div>
-                    ))}
-                </div>
+                        )}
+                    </Droppable>
+                </DragDropContext>
             )}
 
             {/* Modal */}

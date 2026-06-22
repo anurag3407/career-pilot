@@ -1152,6 +1152,17 @@ export const jobAlertsApi = {
       headers
     })
     return handleResponse(response)
+  },
+
+  // Reorder job alerts
+  async reorder(alertIds) {
+    const headers = await getAuthHeaders()
+    const response = await fetch(`${API_BASE}/job-alerts/reorder`, {
+      method: 'POST',
+      headers,
+      body: JSON.stringify({ alertIds })
+    })
+    return handleResponse(response)
   }
 }
 
