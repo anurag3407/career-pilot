@@ -1,61 +1,69 @@
-import React, { useMemo } from 'react';
+import React, { useMemo } from "react";
+import { motion } from "framer-motion";
 
-export default function Skills({ skills }) {
-  // Group skills by category
-  const groupedSkills = useMemo(() => {
-    return skills.reduce((acc, skill) => {
-      if (!acc[skill.category]) {
-        acc[skill.category] = [];
-      }
-      acc[skill.category].push(skill);
-      return acc;
-    }, {});
-  }, [skills]);
+export default function Skills({ skills = [] }) {
+const groupedSkills = useMemo(() => {
+return skills.reduce((acc, skill) => {
+if (!acc[skill.category]) acc[skill.category] = [];
+acc[skill.category].push(skill);
+return acc;
+}, {});
+}, [skills]);
 
-  return (
-    <section id="skills" className="py-20 px-4 sm:px-6 lg:px-8 bg-white">
-      <div className="max-w-4xl mx-auto">
-        {/* Section Title */}
-        <h2 className="text-3xl sm:text-4xl md:text-5xl font-bold mb-12 text-gray-900">
-          Skills & Expertise
-        </h2>
+return ( <section
+   id="skills"
+   className="py-24 px-4 sm:px-6 lg:px-8 bg-gradient-to-br from-[#faf8f5] via-[#f5f1ed] to-[#ede7de]"
+ > <div className="max-w-6xl mx-auto"> <h2 className="text-5xl font-bold mb-16 text-[#3e3a37]">
+Skills & Expertise </h2>
 
-        {/* Skills by Category */}
-        <div className="space-y-12">
-          {Object.entries(groupedSkills).map(([category, categorySkills]) => (
-            <div key={category}>
-              {/* Category Title */}
-              <h3 className="text-lg sm:text-xl font-semibold text-gray-900 mb-6">
-                {category}
-              </h3>
+    <div className="space-y-12">
+      {Object.entries(groupedSkills).map(([category, categorySkills]) => (
+        <div
+          key={category}
+          className="rounded-3xl p-8"
+          style={{
+            background:
+              "linear-gradient(135deg, rgba(255,255,255,0.6) 0%, rgba(240,235,230,0.4) 100%)",
+            boxShadow: "0 12px 40px rgba(199,167,127,0.12)",
+          }}
+        >
+          <h3 className="text-2xl font-semibold mb-8 text-[#8b6f47]">
+            {category}
+          </h3>
 
-              {/* Skills Grid */}
-              <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-4">
-                {categorySkills.map((skill) => (
-                  <div
-                    key={skill.name}
-                    className="p-4 border border-gray-200 rounded-lg bg-gray-50"
-                  >
-                    {/* Skill Name */}
-                    <div className="flex justify-between items-center mb-3">
-                      <h4 className="font-medium text-gray-900">{skill.name}</h4>
-                      <span className="text-sm text-gray-600">{skill.level}%</span>
-                    </div>
+          <div className="space-y-6">
+            {categorySkills.map((skill) => (
+              <div key={skill.name}>
+                <div className="flex justify-between mb-2">
+                  <span className="font-medium text-[#3e3a37]">
+                    {skill.name}
+                  </span>
+                  <span className="text-[#8b6f47]">
+                    {skill.level}%
+                  </span>
+                </div>
 
-                    {/* Progress Bar */}
-                    <div className="w-full bg-gray-200 rounded-full h-2">
-                      <div
-                        className="bg-gray-900 h-2 rounded-full"
-                        style={{ width: `${skill.level}%` }}
-                      />
-                    </div>
-                  </div>
-                ))}
+                <div className="h-3 bg-[#e8ddd6] rounded-full overflow-hidden">
+                  <motion.div
+                    initial={{ width: 0 }}
+                    whileInView={{ width: `${skill.level}%` }}
+                    transition={{ duration: 1 }}
+                    className="h-full rounded-full"
+                    style={{
+                      background:
+                        "linear-gradient(90deg,#c7a77f,#b8956a)",
+                    }}
+                  />
+                </div>
               </div>
-            </div>
-          ))}
+            ))}
+          </div>
         </div>
-      </div>
-    </section>
-  );
+      ))}
+    </div>
+  </div>
+</section>
+
+
+);
 }

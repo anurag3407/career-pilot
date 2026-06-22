@@ -1,7 +1,11 @@
 import React from 'react';
 import { motion } from 'framer-motion';
 
-export default function Hero({ data, socials, stats }) {
+export default function Hero({
+  data = {},
+  socials = {},
+  stats = {},
+}) { 
   const containerVariants = {
     hidden: { opacity: 0 },
     visible: {
@@ -54,8 +58,8 @@ export default function Hero({ data, socials, stats }) {
               boxShadow: '0 20px 60px rgba(199, 167, 127, 0.2), inset 0 2px 4px rgba(255,255,255,0.5)'
             }}>
               <img
-                src={data.avatar}
-                alt={data.name}
+                src={data?.avatar || "https://via.placeholder.com/300"}
+                alt={data?.name || "Profile"}
                 className="w-full h-full object-cover"
               />
             </div>
@@ -65,21 +69,21 @@ export default function Hero({ data, socials, stats }) {
         {/* Name */}
         <motion.div variants={itemVariants} className="text-center mb-6">
           <h1 className="text-5xl sm:text-6xl md:text-7xl font-bold bg-gradient-to-br from-[#3e3a37] via-[#5a4f47] to-[#3e3a37] bg-clip-text text-transparent mb-2 leading-tight">
-            {data.name}
+            {data?.name || "Portfolio Owner"}
           </h1>
         </motion.div>
 
         {/* Title with elegant color */}
         <motion.div variants={itemVariants} className="text-center mb-6">
           <p className="text-xl sm:text-2xl md:text-3xl text-[#8b6f47] font-light tracking-wide">
-            {data.title}
+            {data?.title || "Developer"}
           </p>
         </motion.div>
 
         {/* Tagline */}
         <motion.div variants={itemVariants} className="text-center mb-12 max-w-2xl mx-auto">
           <p className="text-lg sm:text-xl text-[#7a6f66] leading-relaxed font-light">
-            {data.tagline}
+            {data?.tagline || ""}
           </p>
         </motion.div>
 

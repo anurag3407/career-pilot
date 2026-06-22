@@ -1,75 +1,53 @@
-import React from 'react';
+import React from "react";
+import { Github, Linkedin, Twitter, Mail } from "lucide-react";
 
-export default function Contact({ socials, email }) {
-  return (
-    <section id="contact" className="py-20 px-4 sm:px-6 lg:px-8 bg-gray-900 text-white">
-      <div className="max-w-3xl mx-auto text-center">
-        {/* Section Title */}
-        <h2 className="text-3xl sm:text-4xl md:text-5xl font-bold mb-6 text-white">
-          Get in Touch
-        </h2>
+export default function Contact({ socials = {} }) {
+return ( <section
+   id="contact"
+   className="py-24 px-4 sm:px-6 lg:px-8 bg-gradient-to-br from-[#f5f1ed] to-[#ece6e0]"
+ >
+<div
+className="max-w-4xl mx-auto text-center rounded-[40px] p-12"
+style={{
+background:
+"linear-gradient(135deg, rgba(255,255,255,0.7) 0%, rgba(240,235,230,0.5) 100%)",
+boxShadow: "0 12px 40px rgba(199,167,127,0.15)",
+}}
+> <h2 className="text-5xl font-bold text-[#3e3a37] mb-6">
+Let's Create Something Beautiful </h2>
 
-        {/* Subtitle */}
-        <p className="text-lg sm:text-xl text-gray-300 mb-12 max-w-2xl mx-auto">
-          I'm always open to new opportunities and interesting conversations. Reach out and let's talk!
-        </p>
+    <p className="text-[#7a6f66] text-lg mb-10">
+      Open for collaborations, freelance projects,
+      and meaningful conversations.
+    </p>
 
-        {/* Email CTA */}
-        {email && (
-          <div className="mb-12">
-            <a
-              href={`mailto:${email}`}
-              className="inline-block px-8 py-4 bg-white text-gray-900 rounded-lg font-semibold text-lg hover:bg-gray-100 transition-colors"
-            >
-              Send me an Email
-            </a>
-          </div>
-        )}
+    <a
+      href={`mailto:${socials.email}`}
+      className="inline-flex items-center gap-3 px-8 py-4 rounded-full text-white font-semibold"
+      style={{
+        background:
+          "linear-gradient(135deg,#c7a77f,#b8956a)",
+      }}
+    >
+      <Mail size={18} />
+      Contact Me
+    </a>
 
-        {/* Social Links */}
-        <div className="flex flex-wrap gap-6 justify-center">
-          {socials.github && (
-            <a
-              href={socials.github}
-              target="_blank"
-              rel="noopener noreferrer"
-              aria-label="GitHub"
-              className="text-gray-300 hover:text-white text-base sm:text-lg font-medium"
-            >
-              GitHub
-            </a>
-          )}
-          {socials.linkedin && (
-            <a
-              href={socials.linkedin}
-              target="_blank"
-              rel="noopener noreferrer"
-              aria-label="LinkedIn"
-              className="text-gray-300 hover:text-white text-base sm:text-lg font-medium"
-            >
-              LinkedIn
-            </a>
-          )}
-          {socials.twitter && (
-            <a
-              href={socials.twitter}
-              target="_blank"
-              rel="noopener noreferrer"
-              aria-label="Twitter"
-              className="text-gray-300 hover:text-white text-base sm:text-lg font-medium"
-            >
-              Twitter
-            </a>
-          )}
-        </div>
+    <div className="flex justify-center gap-8 mt-10">
+      <a href={socials.github}>
+        <Github className="text-[#8b6f47]" />
+      </a>
 
-        {/* Footer */}
-        <div className="mt-16 pt-8 border-t border-gray-700">
-          <p className="text-gray-400 text-sm">
-            © 2026. Built with React & Tailwind CSS.
-          </p>
-        </div>
-      </div>
-    </section>
-  );
+      <a href={socials.linkedin}>
+        <Linkedin className="text-[#8b6f47]" />
+      </a>
+
+      <a href={socials.twitter}>
+        <Twitter className="text-[#8b6f47]" />
+      </a>
+    </div>
+  </div>
+</section>
+
+);
 }

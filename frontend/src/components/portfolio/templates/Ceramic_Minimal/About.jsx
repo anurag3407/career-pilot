@@ -1,7 +1,7 @@
 import React from 'react';
 import { motion } from 'framer-motion';
 
-export default function About({ data }) {
+export default function About({ data = {} }) {
   const containerVariants = {
     hidden: { opacity: 0 },
     visible: {

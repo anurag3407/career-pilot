@@ -1,7 +1,7 @@
 import React, { useState } from 'react';
 import { motion } from 'framer-motion';
 
-export default function Projects({ projects }) {
+export default function Projects({ projects = [] }) {
   const [hoveredIdx, setHoveredIdx] = useState(null);
 
   const containerVariants = {
