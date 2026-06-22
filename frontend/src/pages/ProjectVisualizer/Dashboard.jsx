@@ -139,13 +139,13 @@ const Dashboard = () => {
 
   if (error) {
     return (
-      <div className="min-h-screen bg-[#050505] flex flex-col items-center justify-center p-4">
+      <div className="min-h-screen bg-background flex flex-col items-center justify-center p-4">
         <AlertCircle className="w-16 h-16 text-red-500 mb-6" />
-        <h2 className="text-2xl font-bold text-white mb-2">Analysis Error</h2>
-        <p className="text-slate-400 mb-8 max-w-md text-center">{error}</p>
+        <h2 className="text-2xl font-bold text-foreground mb-2">Analysis Error</h2>
+        <p className="text-muted-foreground mb-8 max-w-md text-center">{error}</p>
         <button 
           onClick={() => navigate('/project-visualizer')}
-          className="px-6 py-3 bg-white/10 hover:bg-white/20 text-white rounded-xl transition-colors"
+          className="px-6 py-3 bg-card border border-border hover:bg-accent text-foreground rounded-xl transition-colors"
         >
           Back to Visualizer
         </button>
@@ -166,35 +166,35 @@ const Dashboard = () => {
   ];
 
   return (
-    <div className="min-h-screen bg-[#050505] text-white flex flex-col overflow-hidden font-sans">
+    <div className="min-h-screen bg-background text-foreground flex flex-col overflow-hidden font-sans">
       
       {/* Header */}
-      <header className="shrink-0 bg-[#0a0f1c] border-b border-white/5 py-4 px-6 flex flex-col md:flex-row md:items-center justify-between gap-4 sticky top-0 z-30 shadow-xl">
+      <header className="shrink-0 bg-card border-b border-border py-4 px-6 flex flex-col md:flex-row md:items-center justify-between gap-4 sticky top-0 z-30 shadow-xl">
         <div className="flex flex-col gap-2">
           <button 
             onClick={() => navigate('/project-visualizer')}
-            className="flex items-center gap-1.5 text-sm font-medium text-slate-400 hover:text-white transition-colors group w-max"
+            className="flex items-center gap-1.5 text-sm font-medium text-muted-foreground hover:text-foreground transition-colors group w-max"
           >
             <ArrowLeft className="w-4 h-4 group-hover:-translate-x-1 transition-transform" />
             Back to Search
           </button>
           
           <div className="flex items-center gap-3 mt-1">
-            <div className="p-2 bg-gradient-to-br from-cyan-500/20 to-violet-500/20 rounded-lg border border-white/10 shadow-inner">
+            <div className="p-2 bg-gradient-to-br from-cyan-500/20 to-violet-500/20 rounded-lg border border-border shadow-inner">
               <GitBranch className="w-6 h-6 text-cyan-400" />
             </div>
             <div>
               <h1 className="text-xl font-bold tracking-tight">
-                <span className="text-slate-400 font-medium">{repoOwner}</span>
-                <span className="text-slate-500 mx-1">/</span>
-                <span className="text-transparent bg-clip-text bg-gradient-to-r from-white to-slate-300">{repoName}</span>
+                <span className="text-muted-foreground font-medium">{repoOwner}</span>
+                <span className="text-muted-foreground opacity-50 mx-1">/</span>
+                <span className="text-foreground">{repoName}</span>
               </h1>
             </div>
           </div>
         </div>
 
         {/* Tab Navigation */}
-        <div className="flex items-center p-1 bg-black/40 rounded-xl border border-white/5 overflow-x-auto custom-scrollbar md:w-auto w-full">
+        <div className="flex items-center p-1 bg-muted rounded-xl border border-border overflow-x-auto custom-scrollbar md:w-auto w-full">
           {tabs.map(tab => (
             <button
               key={tab.id}
@@ -202,8 +202,8 @@ const Dashboard = () => {
               className={cn(
                 "relative flex items-center gap-2 px-5 py-2.5 rounded-lg text-sm font-medium transition-all duration-300 shrink-0",
                 activeTab === tab.id 
-                  ? "text-white shadow-sm" 
-                  : "text-slate-400 hover:text-slate-200 hover:bg-white/5"
+                  ? "text-foreground shadow-sm" 
+                  : "text-muted-foreground hover:text-foreground hover:bg-accent"
               )}
             >
               {activeTab === tab.id && (
@@ -219,7 +219,7 @@ const Dashboard = () => {
               {tab.count !== undefined && (
                 <span className={cn(
                   "relative z-10 ml-1.5 px-2 py-0.5 rounded-full text-[10px] font-bold",
-                  activeTab === tab.id ? "bg-white/20" : "bg-white/10"
+                  activeTab === tab.id ? "bg-background" : "bg-card"
                 )}>
                   {tab.count}
                 </span>
@@ -248,18 +248,18 @@ const Dashboard = () => {
                 <LanguageBar languages={github?.languages} />
                 
                 {architectureSummary && (
-                   <div className="bg-white/5 border border-white/10 rounded-2xl p-6 relative overflow-hidden group">
+                   <div className="bg-card border border-border rounded-2xl p-6 relative overflow-hidden group">
                      <div className="absolute top-0 right-0 w-64 h-64 bg-violet-500/5 rounded-full blur-3xl pointer-events-none" />
-                     <h3 className="text-lg font-semibold text-white mb-3 flex items-center gap-2">
+                     <h3 className="text-lg font-semibold text-foreground mb-3 flex items-center gap-2">
                        <Sparkles className="w-5 h-5 text-violet-400" /> AI Architecture Summary
                      </h3>
-                     <p className="text-slate-300 leading-relaxed max-w-5xl whitespace-pre-wrap text-sm">
+                     <p className="text-muted-foreground leading-relaxed max-w-5xl whitespace-pre-wrap text-sm">
                        {architectureSummary}
                      </p>
                    </div>
                 )}
                 
-                <div className="flex-1 min-h-[600px] rounded-2xl overflow-hidden shadow-2xl border border-white/10">
+                <div className="flex-1 min-h-[600px] rounded-2xl overflow-hidden shadow-2xl border border-border">
                   <ArchitectureCanvas />
                 </div>
               </motion.div>
@@ -276,27 +276,27 @@ const Dashboard = () => {
                 className="h-full flex flex-col"
               >
                 <div className="flex items-center justify-between mb-6">
-                  <h2 className="text-2xl font-bold text-white flex items-center gap-3">
+                  <h2 className="text-2xl font-bold text-foreground flex items-center gap-3">
                     <Grid3X3 className="w-6 h-6 text-violet-400" />
                     Project Modules ({modules?.length || 0})
                   </h2>
                   <div className="relative">
-                    <Search className="absolute left-3 top-1/2 -translate-y-1/2 w-4 h-4 text-slate-500" />
+                    <Search className="absolute left-3 top-1/2 -translate-y-1/2 w-4 h-4 text-muted-foreground" />
                     <input
                       type="text"
                       placeholder="Search modules..."
                       value={moduleSearch}
                       onChange={(e) => setModuleSearch(e.target.value)}
-                      className="pl-9 pr-4 py-2 rounded-xl bg-white/5 border border-white/10 text-white placeholder-slate-500 focus:outline-none focus:border-violet-500/50 transition-colors w-64"
+                      className="pl-9 pr-4 py-2 rounded-xl bg-card border border-border text-foreground placeholder-muted-foreground focus:outline-none focus:border-violet-500/50 transition-colors w-64"
                     />
                   </div>
                 </div>
 
-                <div className="bg-white/5 border border-white/10 rounded-2xl overflow-hidden flex-1">
+                <div className="bg-card border border-border rounded-2xl overflow-hidden flex-1">
                   <div className="overflow-x-auto h-full custom-scrollbar">
                     <table className="w-full text-left border-collapse">
                       <thead>
-                        <tr className="bg-white/5 text-slate-400 text-sm font-medium border-b border-white/10">
+                        <tr className="bg-muted/50 text-muted-foreground text-sm font-medium border-b border-border">
                           <th className="p-4 whitespace-nowrap">Module Name</th>
                           <th className="p-4 whitespace-nowrap">Path</th>
                           <th className="p-4 whitespace-nowrap">Type</th>
@@ -305,7 +305,7 @@ const Dashboard = () => {
                           <th className="p-4 whitespace-nowrap text-right">Dependencies</th>
                         </tr>
                       </thead>
-                      <tbody className="divide-y divide-white/5">
+                      <tbody className="divide-y divide-border">
                         {filteredModules.map(mod => (
                           <tr 
                             key={mod.name}
@@ -313,30 +313,30 @@ const Dashboard = () => {
                               setSelectedModule(mod);
                               setInspectorOpen(true);
                             }}
-                            className="hover:bg-white/5 transition-colors cursor-pointer group"
+                            className="hover:bg-accent transition-colors cursor-pointer group"
                           >
                             <td className="p-4">
                               <div className="flex items-center gap-3">
-                                <Box className="w-5 h-5 text-slate-500 group-hover:text-violet-400 transition-colors" />
-                                <span className="font-semibold text-white">{mod.name}</span>
+                                <Box className="w-5 h-5 text-muted-foreground group-hover:text-violet-400 transition-colors" />
+                                <span className="font-semibold text-foreground">{mod.name}</span>
                               </div>
                             </td>
-                            <td className="p-4 text-slate-400 font-mono text-xs">{mod.path}</td>
+                            <td className="p-4 text-muted-foreground font-mono text-xs">{mod.path}</td>
                             <td className="p-4">
-                              <span className="px-2.5 py-1 rounded-full bg-slate-800 text-slate-300 text-xs font-bold uppercase tracking-wider">
+                              <span className="px-2.5 py-1 rounded-full bg-muted text-foreground text-xs font-bold uppercase tracking-wider">
                                 {mod.type}
                               </span>
                             </td>
-                            <td className="p-4 text-right text-slate-300 font-medium">{mod.fileCount}</td>
-                            <td className="p-4 text-right text-slate-400">{mod.loc.toLocaleString()}</td>
-                            <td className="p-4 text-right text-slate-400">
+                            <td className="p-4 text-right text-foreground font-medium">{mod.fileCount}</td>
+                            <td className="p-4 text-right text-muted-foreground">{mod.loc.toLocaleString()}</td>
+                            <td className="p-4 text-right text-muted-foreground">
                               {mod.dependencies ? mod.dependencies.length : 0}
                             </td>
                           </tr>
                         ))}
                         {filteredModules.length === 0 && (
                           <tr>
-                            <td colSpan="6" className="p-8 text-center text-slate-500">
+                            <td colSpan="6" className="p-8 text-center text-muted-foreground">
                               No modules found matching your search.
                             </td>
                           </tr>
@@ -365,8 +365,8 @@ const Dashboard = () => {
                   </div>
                   
                   {/* AI Suggestions */}
-                  <div className="lg:col-span-2 bg-white/5 border border-white/10 rounded-2xl p-6">
-                    <h3 className="text-lg font-semibold text-white mb-6 flex items-center gap-2">
+                  <div className="lg:col-span-2 bg-card border border-border rounded-2xl p-6">
+                    <h3 className="text-lg font-semibold text-foreground mb-6 flex items-center gap-2">
                       <Sparkles className="w-5 h-5 text-violet-400" /> AI Improvement Suggestions
                     </h3>
                     
@@ -377,7 +377,7 @@ const Dashboard = () => {
                         ))}
                       </div>
                     ) : (
-                      <div className="h-40 flex items-center justify-center text-slate-500 border border-dashed border-white/10 rounded-xl">
+                      <div className="h-40 flex items-center justify-center text-muted-foreground border border-dashed border-border rounded-xl">
                         No AI suggestions generated for this repository.
                       </div>
                     )}
@@ -387,12 +387,12 @@ const Dashboard = () => {
                 {/* Detailed Risks List */}
                 <div className="mt-4">
                   <div className="flex items-center justify-between mb-6">
-                    <h3 className="text-xl font-bold text-white flex items-center gap-2">
+                    <h3 className="text-xl font-bold text-foreground flex items-center gap-2">
                       <AlertTriangle className="w-5 h-5 text-orange-400" />
                       Detailed Hotspots ({filteredRisks.length})
                     </h3>
                     
-                    <div className="flex items-center gap-2 bg-black/30 p-1 rounded-lg border border-white/10">
+                    <div className="flex items-center gap-2 bg-muted p-1 rounded-lg border border-border">
                       {['all', 'critical', 'high', 'medium', 'low'].map(f => (
                         <button
                           key={f}
@@ -400,8 +400,8 @@ const Dashboard = () => {
                           className={cn(
                             "px-3 py-1.5 rounded-md text-xs font-bold uppercase tracking-wider transition-colors",
                             riskFilter === f 
-                              ? "bg-white/10 text-white" 
-                              : "text-slate-500 hover:text-slate-300"
+                              ? "bg-card text-foreground shadow-sm" 
+                              : "text-muted-foreground hover:text-foreground"
                           )}
                         >
                           {f}
@@ -417,9 +417,9 @@ const Dashboard = () => {
                       ))}
                     </div>
                   ) : (
-                    <div className="bg-white/5 border border-white/10 rounded-2xl p-12 text-center flex flex-col items-center justify-center">
+                    <div className="bg-card border border-border rounded-2xl p-12 text-center flex flex-col items-center justify-center">
                       <CheckCircle2 className="w-12 h-12 text-green-500/50 mb-4" />
-                      <p className="text-slate-400">No risks matching the selected filter.</p>
+                      <p className="text-muted-foreground">No risks matching the selected filter.</p>
                     </div>
                   )}
                 </div>
@@ -438,7 +438,7 @@ const Dashboard = () => {
               >
                 <div className="grid grid-cols-1 lg:grid-cols-3 gap-6">
                   <div className="lg:col-span-2">
-                    <h2 className="text-2xl font-bold text-white mb-6 flex items-center gap-3">
+                    <h2 className="text-2xl font-bold text-foreground mb-6 flex items-center gap-3">
                       <Users className="w-6 h-6 text-pink-400" />
                       Top Contributors
                     </h2>
