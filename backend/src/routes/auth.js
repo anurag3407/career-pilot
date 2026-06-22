@@ -17,7 +17,84 @@ import { sendPasswordResetEmail } from '../services/mailService.js';
 import { exchangeCodeForToken, getLinkedInAuthUrl, getLinkedInProfile } from '../services/linkedinService.js';
 import User from '../models/User.model.js';
 import admin from '../config/firebase.js';
+import GithubToken from '../models/GithubToken.model.js';
 import crypto from 'crypto';
+
+// ---------------------------------------------------------------------------
+// GitHub OAuth App (portfolio + private repos)
+// ---------------------------------------------------------------------------
+// Mirrors the LinkedIn flow: state is checked, code is exchanged for an
+// access_token, the token is encrypted at rest in the GithubToken model, and
+// the frontend is told it succeeded via redirect. Scopes requested are
+// `read:user repo` so we can read profile + private repos for the portfolio
+// builder.
+const githubExchangeLimiter = rateLimit({
+  windowMs: 60 * 1000,
+  max: 10,
+  standardHeaders: true,
+  legacyHeaders: false,
+});
+
+const GITHUB_OAUTH_SCOPES = 'read:user repo';
+const getGithubAuthUrl = (state) => {
+  const clientId = process.env.GITHUB_CLIENT_ID;
+  if (!clientId) {
+    throw new Error('GITHUB_CLIENT_ID is not configured');
+  }
+  const redirectUri =
+    process.env.GITHUB_OAUTH_REDIRECT_URI ||
+    `${process.env.FRONTEND_URL || 'http://localhost:5173'}/api/auth/github/callback`;
+  const params = new URLSearchParams({
+    client_id: clientId,
+    redirect_uri: redirectUri,
+    scope: GITHUB_OAUTH_SCOPES,
+    state,
+    allow_signup: 'true',
+  });
+  return `https://github.com/login/oauth/authorize?${params.toString()}`;
+};
+
+const exchangeGithubCode = async (code) => {
+  const clientId = process.env.GITHUB_CLIENT_ID;
+  const clientSecret = process.env.GITHUB_CLIENT_SECRET;
+  if (!clientId || !clientSecret) {
+    throw new Error('GitHub OAuth client credentials are not configured');
+  }
+  const response = await fetch('https://github.com/login/oauth/access_token', {
+    method: 'POST',
+    headers: {
+      Accept: 'application/json',
+      'Content-Type': 'application/json',
+    },
+    body: JSON.stringify({
+      client_id: clientId,
+      client_secret: clientSecret,
+      code,
+    }),
+  });
+  if (!response.ok) {
+    throw new Error(`GitHub token exchange failed: ${response.statusText}`);
+  }
+  const data = await response.json();
+  if (data.error) {
+    throw new Error(`GitHub OAuth error: ${data.error_description || data.error}`);
+  }
+  return data;
+};
+
+const fetchGithubUser = async (accessToken) => {
+  const response = await fetch('https://api.github.com/user', {
+    headers: {
+      Authorization: `Bearer ${accessToken}`,
+      Accept: 'application/vnd.github.v3+json',
+      'User-Agent': 'Career-Pilot-Backend',
+    },
+  });
+  if (!response.ok) {
+    throw new Error(`Failed to fetch GitHub user: ${response.statusText}`);
+  }
+  return response.json();
+};
 
 // Rate limiter for the one-time LinkedIn token exchange endpoint.
 // 10 attempts per minute per IP prevents any realistic brute-force window
@@ -366,6 +443,119 @@ router.get('/linkedin/token/:code', linkedinTokenExchangeLimiter, asyncHandler(a
   }
   tokenStore.delete(code);
   res.json({ success: true, token: entry.token, isNew: entry.isNew });
+}));
+
+// =============================================================================
+// GitHub OAuth — connect a GitHub account so the portfolio builder can access
+// private repos and lift the 60 req/hr public rate limit.
+// =============================================================================
+//
+// `state` is required. The frontend first calls POST /api/auth/github/start
+// (authenticated, returns a state token). The browser is then redirected to
+// GitHub's consent screen. On callback we verify state, exchange the code,
+// encrypt the access token at rest, and bounce back to the frontend.
+const githubStateStore = new Map();
+
+router.post('/github/start', verifyToken, asyncHandler(async (req, res) => {
+  const state = crypto.randomBytes(24).toString('hex');
+  githubStateStore.set(state, {
+    userId: req.user.uid,
+    expiresAt: Date.now() + 10 * 60 * 1000,
+  });
+
+  try {
+    const authUrl = getGithubAuthUrl(state);
+    res.json({ success: true, authUrl, state });
+  } catch (err) {
+    throw new ApiError(500, err.message);
+  }
+}));
+
+router.get('/github/callback', githubExchangeLimiter, asyncHandler(async (req, res) => {
+  const { code, state, error } = req.query;
+  const frontendUrl = process.env.FRONTEND_URL || 'http://localhost:5173';
+
+  if (error) {
+    console.error('GitHub OAuth error from provider:', error);
+    return res.redirect(`${frontendUrl}/auth/github/callback?error=${encodeURIComponent(String(error))}`);
+  }
+
+  const stored = githubStateStore.get(String(state));
+  if (!stored || Date.now() > stored.expiresAt) {
+    githubStateStore.delete(state);
+    return res.redirect(`${frontendUrl}/auth/github/callback?error=invalid_state`);
+  }
+  githubStateStore.delete(state);
+  const { userId } = stored;
+
+  let tokenData;
+  try {
+    tokenData = await exchangeGithubCode(String(code));
+  } catch (err) {
+    console.error('GitHub token exchange failed:', err.message);
+    return res.redirect(`${frontendUrl}/auth/github/callback?error=token_failed`);
+  }
+
+  const accessToken = tokenData.access_token;
+  if (!accessToken) {
+    return res.redirect(`${frontendUrl}/auth/github/callback?error=no_access_token`);
+  }
+
+  let profile;
+  try {
+    profile = await fetchGithubUser(accessToken);
+  } catch (err) {
+    console.error('Failed to fetch GitHub user:', err.message);
+    return res.redirect(`${frontendUrl}/auth/github/callback?error=profile_failed`);
+  }
+
+  // Encrypt and store at rest
+  const encrypted = GithubToken.encryptToken(accessToken);
+  await GithubToken.findOneAndUpdate(
+    { userId, provider: 'github-oauth-app' },
+    {
+      ...encrypted,
+      scopes: tokenData.scope || GITHUB_OAUTH_SCOPES,
+      githubLogin: profile.login,
+      lastUsedAt: new Date(),
+    },
+    { upsert: true, new: true, setDefaultsOnInsert: true }
+  );
+
+  res.redirect(
+    `${frontendUrl}/auth/github/callback?success=1&login=${encodeURIComponent(profile.login)}`
+  );
+}));
+
+// Disconnect — remove the stored OAuth token
+router.delete('/github/disconnect', verifyToken, asyncHandler(async (req, res) => {
+  const result = await GithubToken.deleteOne({
+    userId: req.user.uid,
+    provider: 'github-oauth-app',
+  });
+  res.json({ success: true, deleted: result.deletedCount > 0 });
+}));
+
+// Inspect connection status — used by the frontend Settings card
+router.get('/github/status', verifyToken, asyncHandler(async (req, res) => {
+  const record = await GithubToken.findOne({
+    userId: req.user.uid,
+    provider: 'github-oauth-app',
+  })
+    .select('githubLogin scopes lastUsedAt createdAt updatedAt')
+    .lean();
+
+  if (!record) {
+    return res.json({ success: true, connected: false });
+  }
+  res.json({
+    success: true,
+    connected: true,
+    githubLogin: record.githubLogin,
+    scopes: record.scopes,
+    lastUsedAt: record.lastUsedAt,
+    connectedAt: record.createdAt,
+  });
 }));
 
 export default router;

@@ -66,6 +66,7 @@ const userProfileSchema = new mongoose.Schema({
     default: '',
     maxlength: 30,
     trim: true,
+    select: false,
   },
   // Short tagline shown under the display name
   headline: {
@@ -77,11 +78,13 @@ const userProfileSchema = new mongoose.Schema({
   dateOfBirth: {
     type: Date,
     default: null,
+    select: false,
   },
   gender: {
     type: String,
     enum: ['male', 'female', 'non-binary', 'prefer-not-to-say', 'other', ''],
     default: '',
+    select: false,
   },
   // Current employer / company
   company: {

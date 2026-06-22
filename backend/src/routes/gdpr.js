@@ -5,6 +5,9 @@ import { asyncHandler } from '../middleware/errorHandler.js';
 import UserProfile from '../models/UserProfile.model.js';
 import Resume from '../models/Resume.model.js';
 import Portfolio from '../models/Portfolio.model.js';
+import {
+  invalidateProfileCache,
+} from '../services/profileCache.js';
 import TrackedJob from '../models/TrackedJob.model.js';
 import Interview from '../models/Interview.model.js';
 
@@ -53,7 +56,7 @@ router.get(
       tokenUsage,
       twoFactor
     ] = await Promise.all([
-      UserProfile.findOne({ uid }).lean(),
+      UserProfile.findOne({ uid }).select('+phone +dateOfBirth +gender').lean(),
       Resume.find({ userId: uid }).lean(),
       Portfolio.find({ userId: uid }).lean(),
       TrackedJob.find({ userId: uid }).lean(),
@@ -145,6 +148,8 @@ router.delete(
       TokenUsage.deleteMany({ userId: uid }),
       TwoFactor.deleteOne({ uid })
     ]);
+
+    await invalidateProfileCache(uid);
 
     res.status(200).json({
       success: true,
