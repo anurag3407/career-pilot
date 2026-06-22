@@ -254,10 +254,10 @@ export const initializeDigestQueue = async () => {
     weeklyDigestQueue = new Queue(QUEUE_NAME, {
       connection: redisConnection,
       defaultJobOptions: {
-        attempts: 3,
+        attempts: 5,
         backoff: {
           type: 'exponential',
-          delay: 10000 // Start at 10 s; grows to 40 s on 3rd attempt
+          delay: 2000
         },
         removeOnComplete: {
           age: 24 * 3600,  // Keep completed jobs 24 h for monitoring
@@ -352,15 +352,32 @@ export const startDigestWorker = () => {
     if (result?.skipped) {
       console.log(`[WeeklyDigest] ⏭️  Job ${job.id} skipped: ${result.reason}`);
     } else {
-      console.log(`[WeeklyDigest] ✅ Job ${job.id} completed for ${result?.email}`);
+      console.log(`[BullMQ] ✅ Completed | ${job.queueName} | ID: ${job.id}`);
     }
   });
 
-  worker.on('failed', (job, error) => {
+  worker.on('failed', async (job, error) => {
     console.error(
-      `[WeeklyDigest] ❌ Job ${job?.id} failed (attempt ${job?.attemptsMade}/${job?.opts?.attempts}):`,
-      error.message
+      `[BullMQ] ❌ Failed | ${job.queueName} | ID: ${job.id} | Attempt ${job.attemptsMade}/${job.opts.attempts}`,
+      { data: job.data, error: error.message }
     );
+
+    if (job.attemptsMade >= job.opts.attempts) {
+      console.error(`[DLQ] ☠️ Permanently failed | ID: ${job.id}`, {
+        queue: job.queueName,
+        data: job.data,
+        error: error.message,
+        failedAt: new Date().toISOString(),
+      });
+      const dlq = new Queue('dead-letter', { connection: workerConnection });
+      await dlq.add('failed-job', {
+        originalQueue: job.queueName,
+        jobId: job.id,
+        data: job.data,
+        error: error.message,
+        failedAt: new Date().toISOString(),
+      });
+    }
   });
 
   worker.on('error', (error) => {
@@ -411,7 +428,12 @@ export const sendWeeklyDigests = async () => {
         opts: {
           jobId: `digest-${user._id.toString()}-${weekKey}`,
           // Stagger jobs by 500 ms each to spread Gemini API pressure
-          delay: index * 500
+          delay: index * 500,
+          attempts: 5,
+          backoff: {
+            type: 'exponential',
+            delay: 2000
+          }
         }
       }));
 

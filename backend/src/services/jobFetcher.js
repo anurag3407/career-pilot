@@ -1,5 +1,5 @@
 import cron from 'node-cron';
-import { Worker } from 'bullmq';
+import { Worker, Queue } from 'bullmq';
 import JobAlert from '../models/JobAlert.model.js';
 import JobListing from '../models/JobListing.model.js';
 import NotificationLog from '../models/NotificationLog.model.js';
@@ -460,16 +460,32 @@ export const startWorker = () => {
         }
     );
 
-    worker.on('completed', (job, result) => {
-        console.log(`\n🎉 Job ${job.id} completed successfully!`);
-        console.log(`   New jobs found: ${result?.newJobs || 0}`);
-        console.log(`   Skipped: ${result?.skipped ? 'Yes' : 'No'}`);
+    worker.on('completed', (job) => {
+        console.log(`[BullMQ] ✅ Completed | ${job.queueName} | ID: ${job.id}`);
     });
 
-    worker.on('failed', (job, error) => {
-        console.error(`\n💥 Job ${job.id} FAILED:`);
-        console.error(`   Error: ${error.message}`);
-        console.error(`   Stack:`, error.stack);
+    worker.on('failed', async (job, error) => {
+        console.error(
+            `[BullMQ] ❌ Failed | ${job.queueName} | ID: ${job.id} | Attempt ${job.attemptsMade}/${job.opts.attempts}`,
+            { data: job.data, error: error.message }
+        );
+
+        if (job.attemptsMade >= job.opts.attempts) {
+            console.error(`[DLQ] ☠️ Permanently failed | ID: ${job.id}`, {
+                queue: job.queueName,
+                data: job.data,
+                error: error.message,
+                failedAt: new Date().toISOString(),
+            });
+            const dlq = new Queue('dead-letter', { connection: workerConnection });
+            await dlq.add('failed-job', {
+                originalQueue: job.queueName,
+                jobId: job.id,
+                data: job.data,
+                error: error.message,
+                failedAt: new Date().toISOString(),
+            });
+        }
     });
 
     worker.on('error', (error) => {
