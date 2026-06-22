@@ -269,11 +269,9 @@ export default function Navbar() {
                   exit={{ y: -20, opacity: 0, rotate: -45 }}
                   transition={{ duration: 0.2 }}
                 >
-                  {theme === 'light' ? (
-                    <Moon className="w-5 h-5" />
-                  ) : (
-                    <Sun className="w-5 h-5" />
-                  )}
+                  {theme === 'light' && <Moon className="w-5 h-5" />}
+                  {theme === 'dark' && <Sun className="w-5 h-5" />}
+                  {theme === 'highContrast' && <Palette className="w-5 h-5" />}
                 </motion.div>
               </AnimatePresence>
             </button>
