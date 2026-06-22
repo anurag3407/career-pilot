@@ -719,6 +719,109 @@ ${resumeText}`;
   }
 };
 
+// ---------------------------------------------------------------------------
+// Resume Roast — comedic but honest critique
+// ---------------------------------------------------------------------------
+
+const ROAST_JSON_SHAPE = `{
+  "tagline": "<one-line witty verdict, <=120 chars>",
+  "ratings": {
+    "buzzwordDensity": <integer 1-5>,
+    "actionVerbs": <integer 1-5>,
+    "quantifiedAchievements": <integer 1-5>,
+    "formatting": <integer 1-5>
+  },
+  "roast": "<3-paragraph comedic critique with constructive punchlines. Plain text, no markdown.>",
+  "silverLinings": ["<positive 1>", "<positive 2>", "<positive 3>"],
+  "quickWins": ["<actionable fix 1>", "<actionable fix 2>", "<actionable fix 3>", "<actionable fix 4>", "<actionable fix 5>"],
+  "emoji": "<single emoji like 🔥 💀 🌟 🤡 ✨>"
+}`;
+
+/**
+ * Generate a comedic-but-honest resume roast with star ratings.
+ *
+ * Combines the deterministic ATS score with an LLM-generated critique.
+ * The LLM is constrained to strict JSON so the frontend can render
+ * structured ratings and a share card.
+ *
+ * @param {string} resumeText - Resume plain-text or markdown
+ * @param {string} jobRole - Target role (optional, improves critique)
+ * @param {object} aiProvider - Injected AI adapter from middleware
+ * @param {object} deterministicScoring - Pre-computed output of computeATSScore()
+ */
+export const generateRoast = async (resumeText, jobRole, aiProvider, deterministicScoring) => {
+  const provider = resolveProvider(aiProvider);
+
+  const roleClause = jobRole ? `for a ${jobRole} position` : 'for general tech roles';
+  const baselineClause = deterministicScoring
+    ? `Baseline deterministic ATS score: ${deterministicScoring.overallScore}/100
+- Formatting: ${deterministicScoring.breakdown.formatting}/100
+- Keyword match: ${deterministicScoring.breakdown.keywordMatch}/100
+- Experience: ${deterministicScoring.breakdown.experience}/100
+- Skills: ${deterministicScoring.breakdown.skills}/100
+- Sections found: ${(deterministicScoring.sectionsFound || []).join(', ') || 'none'}`
+    : '';
+
+  const prompt = `You are "Harsh But Fair" — a stand-up comedian who moonlights as a senior recruiter.
+Roast this resume ${roleClause}. Be witty, brutal, but ALWAYS end with 3 silver linings and 5 quick wins.
+Never punch down on protected characteristics (race, gender, age, disability, religion). Punch at the resume.
+
+${baselineClause}
+
+Rate these four axes 1-5 stars:
+- buzzwordDensity (5 = pristine, 1 = "synergy ninja guru rockstar")
+- actionVerbs (5 = "Architected, Shipped, Scaled", 1 = "Was responsible for duties")
+- quantifiedAchievements (5 = "increased revenue 32%", 1 = no numbers anywhere)
+- formatting (5 = scannable bullets + dates, 1 = wall of text)
+
+Resume:
+"""
+${resumeText.slice(0, 12000)}
+"""
+
+Return ONLY valid JSON matching this exact shape (no markdown fences, no commentary):
+${ROAST_JSON_SHAPE}`;
+
+  const providerResult = await provider.generateContent(prompt);
+  let text = String(providerResult.text || '').trim();
+
+  // Robust JSON extraction
+  if (text.startsWith('```')) {
+    text = text.replace(/^```(?:json)?\n?/i, '').replace(/\n?```\s*$/i, '').trim();
+  }
+  const jsonMatch = text.match(/\{[\s\S]*\}/);
+  if (jsonMatch) text = jsonMatch[0];
+
+  let parsed;
+  try {
+    parsed = JSON.parse(text);
+  } catch (err) {
+    console.error('[generateRoast] JSON parse error:', err.message, 'Raw:', text.slice(0, 400));
+    throw new Error('AI returned an invalid roast response. Please try again.');
+  }
+
+  // Defensive normalisation — clamp ratings to 1-5, ensure arrays
+  const clamp = (n) => Math.min(5, Math.max(1, Number(n) || 1));
+  return {
+    tagline: String(parsed.tagline || 'Your resume walked into a bar... and the bartender skipped it.').slice(0, 200),
+    ratings: {
+      buzzwordDensity: clamp(parsed.ratings?.buzzwordDensity),
+      actionVerbs: clamp(parsed.ratings?.actionVerbs),
+      quantifiedAchievements: clamp(parsed.ratings?.quantifiedAchievements),
+      formatting: clamp(parsed.ratings?.formatting),
+    },
+    roast: String(parsed.roast || '').trim(),
+    silverLinings: Array.isArray(parsed.silverLinings)
+      ? parsed.silverLinings.slice(0, 5).map(String)
+      : [],
+    quickWins: Array.isArray(parsed.quickWins)
+      ? parsed.quickWins.slice(0, 7).map(String)
+      : [],
+    emoji: String(parsed.emoji || '🔥').slice(0, 4),
+    provider: provider.providerName,
+  };
+};
+
 // Export power/weak verbs for frontend use
 export const getVerbLists = () => ({
   powerVerbs: [

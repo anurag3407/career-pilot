@@ -7,7 +7,7 @@ export function buildTemplateData({
   experience, education, projects, skills,
   sectionOrder, customSections,
 }) {
-  const fullPhone = phoneDigits ? `${phoneCode} ${phoneDigits}` : (personal?.phone || '')
+  const fullPhone = (phoneCode && phoneDigits) ? `${phoneCode} ${phoneDigits}` : (personal?.phone || '')
 
   return {
     targetRole,

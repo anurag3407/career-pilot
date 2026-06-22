@@ -254,9 +254,6 @@ function Dynamic3DCanvas({ themeColor }) {
 }
 
 export default function InspiredDevJadiya() {
-  // Use fallbacks automatically to keep compilation safe in preview environments
-  let data = fallbackPortfolioData;
-
   const hookInstance = usePortfolio?.();
   data = hookInstance?.portfolioData || fallbackPortfolioData;
 

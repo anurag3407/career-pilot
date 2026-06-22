@@ -756,7 +756,7 @@ describe('POST /api/enhance', () => {
 
 - **GitHub Issues:** Bug reports and feature requests
 - **Discussions:** General questions and ideas
-- **Discord:** Real-time chat with contributors
+- **Discord:** Real-time chat with contributors. [Join our Discord](https://discord.gg/dpDMVywS)
 
 ### Recognition
 

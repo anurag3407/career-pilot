@@ -47,6 +47,20 @@ export function useResumeInsights({ personal, targetRole, education, experience,
   ])
   const [goalProgress, setGoalProgress] = useState(0)
 
+  // ── Normalized skills (handles skills as either a comma string or an array) ─
+  // Moved above every effect that depends on it — several effects below
+  // previously called .trim()/.toLowerCase() directly on the raw `skills`
+  // prop, which crashes if `skills` is ever an array instead of a string.
+  const normalizedSkills = useMemo(() => {
+    if (typeof skills === "string") {
+      return skills.split(",").map(skill => skill.trim()).filter(Boolean)
+    }
+    if (Array.isArray(skills)) {
+      return skills.map(skill => String(skill).trim()).filter(Boolean)
+    }
+    return []
+  }, [skills])
+
   // ── Achievement impact score ──────────────────────────────────────────────
   useEffect(() => {
     const suggestions = []
@@ -149,11 +163,11 @@ export function useResumeInsights({ personal, targetRole, education, experience,
     setImpactScores({
       experience: experience.some(e => e.description && e.description.length > 50) ? 90 : 40,
       projects: projects.some(p => p.description && p.description.length > 50) ? 80 : 30,
-      skills: skills.trim().length > 20 ? 75 : 25,
+      skills: normalizedSkills.join(' ').trim().length > 20 ? 75 : 25,
       education: education.some(e => e.school) ? 70 : 20,
       achievements: achievementScore
     })
-  }, [experience, projects, skills, education, achievementScore])
+  }, [experience, projects, normalizedSkills, education, achievementScore])
 
   // ── Career goal progress ──────────────────────────────────────────────────
   useEffect(() => {
@@ -184,21 +198,11 @@ export function useResumeInsights({ personal, targetRole, education, experience,
     setProfileIssues(issues)
   }, [personal])
 
-  const normalizedSkills = useMemo(() => {
-    if (typeof skills === "string") {
-      return skills.split(",").map(skill => skill.trim()).filter(Boolean)
-    }
-    if (Array.isArray(skills)) {
-      return skills.map(skill => String(skill).trim()).filter(Boolean)
-    }
-    return []
-  }, [skills])
-
   // ── Certification recommendations ─────────────────────────────────────────
   useEffect(() => {
     const certs = []
-    const role = targetRole.toLowerCase()
-    const skillText = skills.toLowerCase()
+    const role = (targetRole || '').toLowerCase()
+    const skillText = normalizedSkills.join(' ').toLowerCase()
 
     if (role.includes("frontend") || skillText.includes("react") || skillText.includes("javascript")) {
       certs.push("Meta Front-End Developer Professional Certificate")
@@ -225,7 +229,7 @@ export function useResumeInsights({ personal, targetRole, education, experience,
     }
 
     setRecommendedCertifications([...new Set(certs)])
-  }, [targetRole, skills])
+  }, [targetRole, normalizedSkills])
 
   // ── Consolidated ATS assessment ───────────────────────────────────────────
   useEffect(() => {
@@ -283,12 +287,12 @@ export function useResumeInsights({ personal, targetRole, education, experience,
     const recommendations = []
 
     if (projects.every(p => !p.name.trim())) recommendations.push("Projects")
-    if (!skills.trim()) recommendations.push("Skills")
+    if (normalizedSkills.length === 0) recommendations.push("Skills")
     if (education.every(e => !e.school?.trim())) recommendations.push("Certifications")
     if (experience.every(e => !e.title?.trim())) recommendations.push("Volunteer Experience")
 
     setRecommendedSections(recommendations)
-  }, [projects, skills, education, experience])
+  }, [projects, normalizedSkills, education, experience])
 
   // ── Overall completion score ──────────────────────────────────────────────
   useEffect(() => {
@@ -297,9 +301,9 @@ export function useResumeInsights({ personal, targetRole, education, experience,
     if (education.some(e => e.school.trim())) score += 20
     if (experience.some(e => e.title.trim())) score += 20
     if (projects.some(p => p.name.trim())) score += 20
-    if (skills.trim()) score += 20
+    if (normalizedSkills.length > 0) score += 20
     setResumeScore(score)
-  }, [personal, education, experience, projects, skills])
+  }, [personal, education, experience, projects, normalizedSkills])
 
   return {
     readabilityScore, claritySuggestions,

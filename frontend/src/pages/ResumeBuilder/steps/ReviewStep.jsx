@@ -184,8 +184,8 @@ export default function ReviewStep({
     </h3>
 
     <ul className="list-disc list-inside text-sm text-muted-foreground">
-      {sectionSuggestions.map((item, index) => (
-        <li key={index}>{item}</li>
+      {sectionSuggestions.map((item) => (
+        <li key={item}>{item}</li>
       ))}
     </ul>
   </div>

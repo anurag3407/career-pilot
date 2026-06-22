@@ -87,13 +87,9 @@ const navLinks = [
         label: "Settings",
         href: "/settings",
         icon: <Settings className="w-5 h-5 shrink-0" />,
-    },
-    {
-        label: "Admin Panel",
-        href: "/admin",
-        icon: <ShieldCheck className="w-5 h-5 shrink-0 text-blue-500" />,
     }
 ];
+
 
 
 function Logo() {
@@ -109,8 +105,8 @@ function Logo() {
             </div>
             <motion.div
                 animate={{
-                    display: animate ? (open ? "flex" : "none") : "flex",
-                    opacity: animate ? (open ? 1 : 0) : 1,
+                    display: open ? "inline-block" : "none",
+                    opacity: open ? 1 : 0,
                 }}
                 transition={{ duration: 0.2 }}
                 className="flex items-center gap-2"
@@ -176,9 +172,9 @@ function UserSection() {
                     !open && animate ? "px-0 justify-center" : "justify-start"
                 )}
             >
-                {theme === 'light' ? <Moon className="w-5 h-5 shrink-0" /> : 
-                 theme === 'dark' ? <Contrast className="w-5 h-5 shrink-0" /> : 
-                 <Sun className="w-5 h-5 shrink-0" />}
+                {theme === 'light' ? <Moon className="w-5 h-5 shrink-0" /> :
+                    theme === 'dark' ? <Contrast className="w-5 h-5 shrink-0" /> :
+                        <Sun className="w-5 h-5 shrink-0" />}
                 <motion.span
                     animate={{
                         display: animate ? (open ? "inline-block" : "none") : "inline-block",
@@ -187,9 +183,9 @@ function UserSection() {
                     transition={{ duration: 0.2 }}
                     className="text-sm font-semibold whitespace-pre"
                 >
-                    {theme === 'light' ? 'Dark Mode' : 
-                     theme === 'dark' ? 'High Contrast' : 
-                     'Light Mode'}
+                    {theme === 'light' ? 'Dark Mode' :
+                        theme === 'dark' ? 'High Contrast' :
+                            'Light Mode'}
                 </motion.span>
             </button>
             <AIProviderIndicator open={open} animate={animate} />
@@ -219,27 +215,41 @@ function UserSection() {
     );
 }
 
-export default function AppSidebar() {
+export default function AppSidebar({ animate = true }) {
     const [open, setOpen] = useState(false);
     const [openAI, setOpenAI] = useState(false);
     const [isBugModalOpen, setIsBugModalOpen] = useState(false);
     const animate = true;
     const location = useLocation();
+    const { isAdmin } = useAuth();
 
     useEffect(() => {
         setOpen(false);
     }, [location.pathname]);
 
+    const filteredNavLinks = [
+        ...navLinks,
+        ...(isAdmin
+            ? [
+                  {
+                      label: "Admin Panel",
+                      href: "/admin",
+                      icon: <ShieldCheck className="w-5 h-5 shrink-0 text-blue-500" />,
+                  },
+              ]
+            : []),
+    ];
+
     return (
         <>
-            <Sidebar open={open} setOpen={setOpen}>
+            <Sidebar open={open} setOpen={setOpen} animate={animate}>
                 <SidebarBody className="justify-between gap-4 bg-card border-r border-border overflow-hidden">
                     <div className="flex min-h-0 flex-1 flex-col overflow-hidden">
                         <Logo />
                         <SidebarDivider />
                         <div className="min-h-0 flex-1 overflow-y-auto overflow-x-hidden pr-1">
                             <div className="flex flex-col gap-1">
-                                {navLinks.map((link) => (
+                                {filteredNavLinks.map((link) => (
                                     <SidebarLink
                                         key={link.href}
                                         link={link}
