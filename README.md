@@ -364,6 +364,744 @@ career-pilot/
 - **Frontend** — React 19, Vite 7, TailwindCSS 4, Framer Motion, React Router 7, Zustand, React Query, Monaco Editor, Recharts, @hello-pangea/dnd, react-hot-toast, Lucide Icons
 - **Infra** — Firebase (Auth + Firestore + Storage), Redis (queues + rate limit + pub/sub), MongoDB, Prometheus metrics
 
+### API Documentation with Examples
+
+All protected routes under `/api/*` require a valid Firebase ID token. The base URL for local development is `http://localhost:5000`.
+
+#### Authentication
+
+Protected endpoints expect a Firebase ID token in the `Authorization` header:
+
+```http
+Authorization: Bearer <firebase_id_token>
+```
+
+**How to obtain a Firebase ID token**
+
+1. Sign in through the CareerPilot frontend (Firebase Auth — email/password or Google).
+2. From the browser console (while logged in), the client calls `auth.currentUser.getIdToken()` (see `frontend/src/services/api.js`).
+3. For server-side or cURL testing, use the [Firebase Auth REST API](https://firebase.google.com/docs/reference/rest/auth) `signInWithPassword` or `signInWithIdp` to exchange credentials for an `idToken`, or copy a token from your browser’s Network tab on any authenticated API request.
+
+Tokens expire after about one hour; call `getIdToken(true)` in the client to refresh before expiry.
+
+**Verify token**
+
+```bash
+curl -s -X POST http://localhost:5000/api/auth/verify \
+  -H "Authorization: Bearer YOUR_FIREBASE_ID_TOKEN" \
+  -H "Content-Type: application/json"
+```
+
+Success (`200`):
+
+```json
+{
+  "success": true,
+  "user": {
+    "uid": "abc123firebaseUid",
+    "email": "jane.doe@example.com",
+    "name": "Jane Doe",
+    "picture": "https://lh3.googleusercontent.com/a/example",
+    "emailVerified": true
+  }
+}
+```
+
+**Get profile**
+
+```bash
+curl -s http://localhost:5000/api/auth/profile \
+  -H "Authorization: Bearer YOUR_FIREBASE_ID_TOKEN"
+```
+
+Success (`200`): same `user` object shape as verify.
+
+---
+
+#### Health Check (no auth)
+
+| Method | URL |
+| ------ | --- |
+| `GET` | `/health` |
+
+```bash
+curl -s http://localhost:5000/health
+```
+
+Success (`200`):
+
+```json
+{
+  "status": "OK",
+  "timestamp": "2026-05-22T10:30:00.000Z",
+  "environment": "development"
+}
+```
+
+---
+
+#### Upload
+
+| Method | URL | Auth |
+| ------ | --- | ---- |
+| `POST` | `/api/upload` | Required |
+| `POST` | `/api/upload/extract-text` | Required |
+
+**Headers:** `Authorization: Bearer <token>` — do not set `Content-Type` manually; use `multipart/form-data` with field name `resume`.
+
+```bash
+curl -s -X POST http://localhost:5000/api/upload \
+  -H "Authorization: Bearer YOUR_FIREBASE_ID_TOKEN" \
+  -F "resume=@/path/to/resume.pdf"
+```
+
+Success (`200`):
+
+```json
+{
+  "success": true,
+  "data": {
+    "resumeId": "f47ac10b-58cc-4372-a567-0e02b2c3d479",
+    "originalFilename": "jane_doe_resume.pdf",
+    "size": 245760,
+    "extractedText": "Jane Doe\nSoftware Engineer\n...",
+    "pageCount": 2,
+    "metadata": {
+      "info": {},
+      "uploadedAt": "2026-05-22T10:30:00.000Z"
+    }
+  }
+}
+```
+
+---
+
+#### Resume Management
+
+| Method | URL | Auth |
+| ------ | --- | ---- |
+| `GET` | `/api/resumes` | Required |
+| `GET` | `/api/resumes/:resumeId` | Required |
+| `POST` | `/api/resumes` | Required |
+
+**List resumes** — optional query: `?page=1&limit=10&sort=-createdAt`
+
+```bash
+curl -s "http://localhost:5000/api/resumes?page=1&limit=10" \
+  -H "Authorization: Bearer YOUR_FIREBASE_ID_TOKEN"
+```
+
+Success (`200`):
+
+```json
+{
+  "success": true,
+  "data": [
+    {
+      "id": "665a1b2c3d4e5f6789012345",
+      "userId": "abc123firebaseUid",
+      "title": "Resume - 5/22/2026",
+      "originalText": "Jane Doe\nSoftware Engineer...",
+      "enhancedText": null,
+      "jobRole": "Senior Software Engineer",
+      "preferences": {},
+      "createdAt": "2026-05-22T09:00:00.000Z"
+    }
+  ],
+  "meta": {
+    "total": 1,
+    "page": 1,
+    "limit": 10,
+    "totalPages": 1,
+    "hasNextPage": false,
+    "hasPrevPage": false
+  }
+}
+```
+
+**Create resume**
+
+```bash
+curl -s -X POST http://localhost:5000/api/resumes \
+  -H "Authorization: Bearer YOUR_FIREBASE_ID_TOKEN" \
+  -H "Content-Type: application/json" \
+  -d '{
+    "originalText": "Jane Doe\nSoftware Engineer with 5 years experience in React and Node.js...",
+    "jobRole": "Senior Software Engineer",
+    "title": "Backend-focused resume"
+  }'
+```
+
+Success (`201`):
+
+```json
+{
+  "success": true,
+  "data": {
+    "id": "665a1b2c3d4e5f6789012345",
+    "userId": "abc123firebaseUid",
+    "originalText": "Jane Doe\nSoftware Engineer...",
+    "enhancedText": null,
+    "jobRole": "Senior Software Engineer",
+    "preferences": {},
+    "title": "Backend-focused resume",
+    "pdfUrl": null,
+    "createdAt": "2026-05-22T10:30:00.000Z",
+    "lastModified": "2026-05-22T10:30:00.000Z"
+  }
+}
+```
+
+---
+
+#### AI Enhancement
+
+| Method | URL | Auth | Rate limit |
+| ------ | --- | ---- | ---------- |
+| `POST` | `/api/enhance` | Required | AI daily limit |
+| `POST` | `/api/enhance/summary` | Required | AI daily limit |
+| `POST` | `/api/enhance/suggestions` | Required | AI daily limit |
+| `POST` | `/api/enhance/ats-analysis` | Required | AI daily limit |
+| `POST` | `/api/enhance/resume-score` | Required | AI daily limit |
+| `POST` | `/api/enhance/generate-email` | Required | AI daily limit |
+| `POST` | `/api/enhance/optimize-linkedin` | Required | AI daily limit |
+| `GET` | `/api/enhance/verb-lists` | Required | — |
+
+**Enhance resume** — `POST /api/enhance`
+
+```bash
+curl -s -X POST http://localhost:5000/api/enhance \
+  -H "Authorization: Bearer YOUR_FIREBASE_ID_TOKEN" \
+  -H "Content-Type: application/json" \
+  -d '{
+    "resumeText": "Jane Doe\nSoftware Engineer\nExperience: Built REST APIs with Node.js and Express...",
+    "preferences": {
+      "jobRole": "Senior Backend Engineer",
+      "yearsOfExperience": 5,
+      "skills": ["Node.js", "PostgreSQL", "AWS"],
+      "industry": "Technology",
+      "customInstructions": "Emphasize leadership and system design"
+    }
+  }'
+```
+
+Success (`200`):
+
+```json
+{
+  "success": true,
+  "data": {
+    "enhancedResume": "# Jane Doe\n\n## Professional Summary\n...",
+    "tokensUsed": { "prompt": 1200, "completion": 800, "total": 2000 },
+    "provider": "gemini",
+    "providerSource": "env",
+    "processedAt": "2026-05-22T10:30:00.000Z"
+  }
+}
+```
+
+**Generate summary** — `POST /api/enhance/summary`
+
+Request body: `{ "resumeText": "...", "jobRole": "Senior Backend Engineer" }`
+
+Success (`200`):
+
+```json
+{
+  "success": true,
+  "data": {
+    "summary": "Results-driven backend engineer with 5+ years...",
+    "provider": "gemini",
+    "providerSource": "env"
+  }
+}
+```
+
+**ATS analysis** — `POST /api/enhance/ats-analysis`
+
+Success (`200`):
+
+```json
+{
+  "success": true,
+  "data": {
+    "atsScore": 78,
+    "scoreBreakdown": {
+      "keywordMatch": 82,
+      "formatting": 75,
+      "experienceRelevance": 80,
+      "skillsAlignment": 76,
+      "educationMatch": 70
+    },
+    "strengths": ["Strong Node.js experience", "Clear section headings"],
+    "improvements": [
+      {
+        "category": "Keywords",
+        "issue": "Missing cloud platform keywords",
+        "suggestion": "Add AWS or GCP in skills section",
+        "priority": "high"
+      }
+    ],
+    "missingKeywords": ["Kubernetes", "CI/CD"],
+    "summary": "Solid backend resume with room to improve keyword density."
+  },
+  "provider": "gemini",
+  "providerSource": "env"
+}
+```
+
+**Resume score** — `POST /api/enhance/resume-score` (minimum 50 characters in `resumeText`)
+
+Success (`200`):
+
+```json
+{
+  "success": true,
+  "data": {
+    "overallScore": 72,
+    "sections": {
+      "summary": { "score": 65, "feedback": "Add a stronger opening line." },
+      "skills": { "score": 80, "feedback": "Skills align well with target role." },
+      "experience": { "score": 75, "feedback": "Quantify impact with metrics." },
+      "education": { "score": 70, "feedback": "Education section is complete." },
+      "projects": { "score": 68, "feedback": "Highlight technical stack per project." }
+    },
+    "topSuggestions": [
+      "Add measurable outcomes to bullet points",
+      "Include role-specific keywords in summary",
+      "List cloud and DevOps tools explicitly"
+    ]
+  }
+}
+```
+
+**Generate application email** — `POST /api/enhance/generate-email`
+
+Request body:
+
+```json
+{
+  "resume": "Jane Doe — 5 years Node.js experience...",
+  "jobDesc": "We are hiring a Senior Backend Engineer to build scalable APIs...",
+  "tone": "Professional"
+}
+```
+
+Allowed `tone` values: `Professional`, `Friendly`, `Formal`, `Casual`.
+
+Success (`200`):
+
+```json
+{
+  "success": true,
+  "subjectLines": ["Application for Senior Backend Engineer — Jane Doe"],
+  "variants": [
+    { "tone": "Professional", "body": "Dear Hiring Manager,\n\nI am writing to apply..." }
+  ],
+  "provider": "gemini",
+  "providerSource": "env"
+}
+```
+
+**Optimize LinkedIn profile** — `POST /api/enhance/optimize-linkedin`
+
+> Note: This endpoint returns the optimization object at the **root** of the JSON body (no `success` wrapper).
+
+```bash
+curl -s -X POST http://localhost:5000/api/enhance/optimize-linkedin \
+  -H "Authorization: Bearer YOUR_FIREBASE_ID_TOKEN" \
+  -H "Content-Type: application/json" \
+  -d '{
+    "profileText": "Jane Doe | Software Engineer | Building scalable APIs...",
+    "targetRole": "Senior Backend Engineer"
+  }'
+```
+
+Success (`200`):
+
+```json
+{
+  "overallScore": 72,
+  "scoreBreakdown": { "headline": 60, "about": 70, "skills": 75, "overall": 72 },
+  "headlineSuggestions": [
+    "Senior Backend Engineer | Node.js & AWS | Delivering scalable APIs"
+  ],
+  "aboutRewrite": "I am a backend engineer passionate about...",
+  "strengthsFound": ["Clear technical focus", "Relevant stack keywords"],
+  "quickWins": [{ "action": "Add 3–5 industry hashtags to About", "impact": "High" }],
+  "skillsGapVsPeers": [{ "skill": "Kubernetes", "reason": "Common among senior backend peers" }],
+  "summary": "Strong technical profile; headline and About need more role-specific keywords."
+}
+```
+
+---
+
+#### Job Search
+
+| Method | URL | Auth |
+| ------ | --- | ---- |
+| `GET` | `/api/fetchjobs` | Required |
+
+**Query parameters:** `query` (required), `jobType`, `experienceLevel`, `location`
+
+```bash
+curl -s "http://localhost:5000/api/fetchjobs?query=software%20engineer&location=remote" \
+  -H "Authorization: Bearer YOUR_FIREBASE_ID_TOKEN"
+```
+
+Success (`200`):
+
+```json
+{
+  "success": true,
+  "message": "Jobs fetched successfully",
+  "data": [
+    {
+      "job_title": "Senior Software Engineer",
+      "employer_name": "Acme Corp",
+      "job_city": "San Francisco",
+      "job_country": "US",
+      "job_apply_link": "https://example.com/apply/123"
+    }
+  ],
+  "count": 1
+}
+```
+
+---
+
+#### Job Alerts
+
+| Method | URL | Auth |
+| ------ | --- | ---- |
+| `GET` | `/api/job-alerts` | Required |
+| `POST` | `/api/job-alerts` | Required |
+| `GET` | `/api/job-alerts/stats/summary` | Required |
+
+**Create alert** — `POST /api/job-alerts`
+
+```bash
+curl -s -X POST http://localhost:5000/api/job-alerts \
+  -H "Authorization: Bearer YOUR_FIREBASE_ID_TOKEN" \
+  -H "Content-Type: application/json" \
+  -d '{
+    "title": "Remote React roles",
+    "keywords": ["React", "TypeScript", "frontend"],
+    "location": "United States",
+    "remoteOnly": true,
+    "salaryMin": 90000,
+    "salaryMax": 150000,
+    "employmentType": ["full-time"]
+  }'
+```
+
+Success (`201`):
+
+```json
+{
+  "success": true,
+  "message": "Job alert created successfully",
+  "alert": {
+    "_id": "665a1b2c3d4e5f6789012346",
+    "userId": "abc123firebaseUid",
+    "title": "Remote React roles",
+    "keywords": ["React", "TypeScript", "frontend"],
+    "location": "United States",
+    "remoteOnly": true,
+    "isActive": true
+  }
+}
+```
+
+---
+
+#### Job Tracker
+
+| Method | URL | Auth |
+| ------ | --- | ---- |
+| `GET` | `/api/job-tracker` | Required |
+| `POST` | `/api/job-tracker` | Required |
+| `PUT` | `/api/job-tracker/:trackerId` | Required |
+| `GET` | `/api/job-tracker/stats` | Required |
+
+**Track a job** — `POST /api/job-tracker`
+
+```bash
+curl -s -X POST http://localhost:5000/api/job-tracker \
+  -H "Authorization: Bearer YOUR_FIREBASE_ID_TOKEN" \
+  -H "Content-Type: application/json" \
+  -d '{
+    "title": "Senior Backend Engineer",
+    "company": "Acme Corp",
+    "location": "Remote",
+    "jobType": "Full-time",
+    "salary": "$120k–$150k",
+    "applyLink": "https://example.com/jobs/123",
+    "status": "saved"
+  }'
+```
+
+Valid `status` values: `saved`, `applied`, `interviewing`, `offered`, `rejected`.
+
+Success (`201`):
+
+```json
+{
+  "success": true,
+  "message": "Job tracked successfully",
+  "data": {
+    "id": "665a1b2c3d4e5f6789012347",
+    "userId": "abc123firebaseUid",
+    "title": "Senior Backend Engineer",
+    "company": "Acme Corp",
+    "location": "Remote",
+    "status": "saved",
+    "notes": [],
+    "createdAt": "2026-05-22T10:30:00.000Z"
+  }
+}
+```
+
+**Update status** — `PUT /api/job-tracker/:trackerId`
+
+```bash
+curl -s -X PUT http://localhost:5000/api/job-tracker/665a1b2c3d4e5f6789012347 \
+  -H "Authorization: Bearer YOUR_FIREBASE_ID_TOKEN" \
+  -H "Content-Type: application/json" \
+  -d '{ "status": "applied", "notes": "Submitted via company careers page" }'
+```
+
+---
+
+#### Interview Prep
+
+| Method | URL | Auth |
+| ------ | --- | ---- |
+| `POST` | `/api/interview/start` | Required |
+| `POST` | `/api/interview/:id/answer` | Required |
+| `POST` | `/api/interview/:id/complete` | Required |
+| `GET` | `/api/interview/history` | Required |
+
+**Start interview** — `POST /api/interview/start`
+
+```bash
+curl -s -X POST http://localhost:5000/api/interview/start \
+  -H "Authorization: Bearer YOUR_FIREBASE_ID_TOKEN" \
+  -H "Content-Type: application/json" \
+  -d '{
+    "jobRole": "Senior Backend Engineer",
+    "industry": "Technology",
+    "experienceLevel": "Mid-Senior",
+    "questionCount": 5,
+    "resumeText": "Optional resume context for tailored questions"
+  }'
+```
+
+Success (`200`):
+
+```json
+{
+  "success": true,
+  "data": {
+    "interviewId": "665a1b2c3d4e5f6789012348",
+    "questions": [
+      {
+        "questionId": "q_1716378900000_a3f9k2m1x",
+        "question": "Describe how you designed a scalable REST API.",
+        "type": "technical",
+        "difficulty": "medium",
+        "source": "general"
+      }
+    ]
+  }
+}
+```
+
+**Submit answer** — `POST /api/interview/:id/answer`
+
+```json
+{
+  "questionId": "q_1716378900000_a3f9k2m1x",
+  "transcript": "In my last role I led the migration to a microservices architecture...",
+  "duration": 120,
+  "expressionMetrics": {
+    "averageConfidence": 0.85,
+    "eyeContactPercentage": 78,
+    "headMovementStability": 0.9,
+    "overallExpressionScore": 82
+  }
+}
+```
+
+Success (`200`):
+
+```json
+{
+  "success": true,
+  "data": {
+    "questionId": "q_1716378900000_a3f9k2m1x",
+    "analysis": {
+      "relevance": 85,
+      "clarity": 78,
+      "confidence": 80,
+      "feedback": "You addressed the architecture question directly with a clear narrative. Adding latency and scale metrics would strengthen the impact.",
+      "whatYouDidWell": ["Used a concrete project example", "Explained trade-offs between monolith and microservices"],
+      "whatWasMissing": ["Specific throughput or latency numbers", "How you measured success post-migration"],
+      "suggestions": [
+        "Open with a one-sentence summary of the system scale",
+        "Quantify performance improvements with before/after metrics",
+        "Mention team size and your specific ownership"
+      ],
+      "idealAnswer": "At Acme Corp I led a migration from a monolithic Node.js API to six microservices, reducing p99 latency from 800ms to 220ms while supporting 3x traffic growth.",
+      "communicationStyle": {
+        "pace": "appropriate",
+        "structure": "well-organized",
+        "specificity": "somewhat specific"
+      },
+      "fillerWords": {
+        "count": 2,
+        "words": ["um", "like"]
+      },
+      "keyTakeaway": "Lead with measurable outcomes, then walk through architecture decisions."
+    },
+    "answeredCount": 1,
+    "totalQuestions": 5
+  }
+}
+```
+
+---
+
+#### Payments (Fellowships / Razorpay)
+
+| Method | URL | Auth |
+| ------ | --- | ---- |
+| `POST` | `/api/payments/create-order` | Required |
+| `POST` | `/api/payments/verify-payment` | Required |
+| `POST` | `/api/payments/release-funds/:roomId` | Required |
+| `GET` | `/api/payments/status/:roomId` | Required |
+
+**Create order** (corporate challenge owner only):
+
+```bash
+curl -s -X POST http://localhost:5000/api/payments/create-order \
+  -H "Authorization: Bearer YOUR_FIREBASE_ID_TOKEN" \
+  -H "Content-Type: application/json" \
+  -d '{ "proposalId": "665a1b2c3d4e5f6789012349" }'
+```
+
+Success (`200`):
+
+```json
+{
+  "success": true,
+  "data": {
+    "orderId": "order_Mxxxxxxxxxxxx",
+    "amount": 500000,
+    "currency": "INR",
+    "keyId": "rzp_test_xxxxxxxxxxxxx",
+    "proposalId": "665a1b2c3d4e5f6789012349",
+    "challengeTitle": "Build a student dashboard",
+    "studentName": "Alex Student"
+  }
+}
+```
+
+> `amount` is in paise (500000 = ₹5,000).
+
+---
+
+#### Error Response Reference
+
+Thrown errors are handled by the global error middleware (`backend/src/middleware/globalErrorHandler.js`), which returns:
+
+```json
+{
+  "success": false,
+  "message": "Human-readable error message"
+}
+```
+
+`ApiError` instances (auth failures, missing fields, not-found resources, etc.) use the same shape — the error text is in `message`, not `error`.
+
+**Zod validation** (`backend/src/middleware/validate.js`) responds directly with `400` and a different structure:
+
+```json
+{
+  "success": false,
+  "error": "Validation failed",
+  "details": [
+    { "field": "preferences.jobRole", "message": "preferences.jobRole cannot be empty" }
+  ]
+}
+```
+
+| Status | Meaning | Example |
+| ------ | ------- | ------- |
+| **400** Bad Request | Missing or invalid fields (via `ApiError`) | `{ "success": false, "message": "Resume text is required" }` |
+| **400** Validation failed | Zod schema rejection (see structure above) | `{ "success": false, "error": "Validation failed", "details": [...] }` |
+| **401** Unauthorized | Missing, malformed, or expired Firebase token | `{ "success": false, "message": "No token provided" }` or `{ "success": false, "message": "Invalid or expired token" }` |
+| **429** Rate limit exceeded | Global `/api/` limit or AI daily limit (20 requests / 24h per user) | See below |
+| **500** Internal Server Error | Unhandled failure or AI processing error | `{ "success": false, "message": "Failed to enhance resume. Please try again." }` |
+
+**401 — missing token**
+
+```bash
+curl -s http://localhost:5000/api/auth/profile
+```
+
+```json
+{
+  "success": false,
+  "message": "No token provided"
+}
+```
+
+**429 — global API rate limit** (`backend/src/index.js`)
+
+Response headers include `Retry-After`, `X-RateLimit-Limit`, `X-RateLimit-Remaining`, and `X-RateLimit-Reset`.
+
+```json
+{
+  "success": false,
+  "error": "Too many requests, please try again later.",
+  "message": {
+    "error": "Too many requests, please try again later."
+  }
+}
+```
+
+Example response headers:
+
+```http
+HTTP/1.1 429 Too Many Requests
+Retry-After: 847
+X-RateLimit-Limit: 1000
+X-RateLimit-Remaining: 0
+X-RateLimit-Reset: 1716378900
+```
+
+**429 — AI endpoint daily limit** (`backend/src/middleware/rateLimiter.js`)
+
+```json
+{
+  "success": false,
+  "error": "Daily limit reached",
+  "limit": 20,
+  "remaining": 0,
+  "resetAt": "2026-05-23T10:30:00.000Z"
+}
+```
+
+**500 — server error**
+
+```json
+{
+  "success": false,
+  "message": "Failed to enhance resume. Please try again."
+}
+```
+
 ---
 
 ## 🌐 Real-time, Queues & Background Work
