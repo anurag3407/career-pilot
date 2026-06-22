@@ -25,7 +25,7 @@ const CATEGORIES = [
 
 export default function CreateChallenge() {
     const navigate = useNavigate()
-    const { profile } = useOutletContext()
+    useOutletContext()
     const [title, setTitle] = useState('')
     const [description, setDescription] = useState('')
     const [category, setCategory] = useState('design')
