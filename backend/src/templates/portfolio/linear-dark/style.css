@@ -131,3 +131,33 @@ box-shadow:
 rgba(94,106,210,.15);
 
 }
+.project-status {
+
+display:inline-flex;
+
+align-items:center;
+
+gap:8px;
+
+}
+.project-status::before {
+
+content:"";
+
+width:8px;
+
+height:8px;
+
+border-radius:50%;
+
+}
+.shipped::before {
+
+background:#10B981;
+
+}
+.building::before {
+
+background:#F5A623;
+
+}
