@@ -181,12 +181,17 @@ export default function Dashboard() {
         setGithubOverview({ connected: false, loading: false, stats: null })
       }
 
+      // Ensure jobs is a valid array before calculating metrics to prevent runtime TypeErrors
+      const validJobs = Array.isArray(jobs) ? jobs : [];
+
+      // Enforce strict typecasting (Number) on metric lengths to prevent loose-typing 
+      // string concatenation vulnerabilities during data synchronization workflows.
       const stats = {
-        total: jobs.length,
-        saved: jobs.filter(j => j.status === 'saved').length,
-        applied: jobs.filter(j => j.status === 'applied').length,
-        interviewing: jobs.filter(j => j.status === 'interviewing').length,
-        offered: jobs.filter(j => j.status === 'offered').length
+        total: Number(validJobs.length || 0),
+        saved: Number(validJobs.filter(j => j.status === 'saved').length || 0),
+        applied: Number(validJobs.filter(j => j.status === 'applied').length || 0),
+        interviewing: Number(validJobs.filter(j => j.status === 'interviewing').length || 0),
+        offered: Number(validJobs.filter(j => j.status === 'offered').length || 0)
       }
       setJobStats(stats)
     } catch (error) {
