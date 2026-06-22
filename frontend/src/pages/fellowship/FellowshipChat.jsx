@@ -277,7 +277,12 @@ export default function FellowshipChat() {
                 </div>
             )}
 
-            <div className="flex-1 overflow-y-auto py-4 space-y-4">
+            <div
+                className="flex-1 overflow-y-auto py-4 space-y-4"
+                role="log"
+                aria-live="polite"
+                aria-label="Chat messages"
+            >
                 {messages.length === 0 ? (
                     <div className="flex flex-col items-center justify-center h-full text-muted-foreground">
                         <MessageCircle className="w-12 h-12 mb-3" />
