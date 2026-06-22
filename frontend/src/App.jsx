@@ -132,6 +132,7 @@ import PlanetaryOrbit from './components/portfolio/templates/Planetary_Orbit/ind
 import LowPolyTerrain from './components/portfolio/templates/Low_Poly_Terrain/index.jsx';
 import HighFashion from './components/portfolio/templates/High_Fashion/index.jsx';
 import TypographicWheatpastePosterWall from './components/portfolio/templates/Typographic_Wheatpaste_Poster_Wall/index.jsx';
+import ParticleUniverse from './components/portfolio/templates/Particle_Universe/index.jsx';
 import DigitalManifestoScroll from './components/portfolio/templates/Digital_Manifesto_Scroll/index.jsx';
 import TestSocialLinks from './pages/TestSocialLinks';
 import ZineCollage from './components/portfolio/templates/ZineCollage';
