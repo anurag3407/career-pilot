@@ -68,6 +68,10 @@ temp/
 .parcel-cache/
 .eslintcache
 
+# Generated lint outputs
+frontend/lint_output.txt
+frontend/lint_results.txt
+
 # Misc
 *.pdf
 !resume.pdf
