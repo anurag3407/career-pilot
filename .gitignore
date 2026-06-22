@@ -79,3 +79,8 @@ node_modules/
 .env.*
 
 *issues
+
+
+# Backup files
+*.bak
+*.bak2
