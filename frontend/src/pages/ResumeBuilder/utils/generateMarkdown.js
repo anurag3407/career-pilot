@@ -36,7 +36,7 @@ export function generateMarkdown({
       experience.forEach(e => {
         if (!e.title) return
         sectionMd += `**${e.title}** | ${e.company} | ${e.location} | ${e.startDate} - ${e.current ? 'Present' : e.endDate}\n`
-        const bullets = e.description.split('\n').filter(b => b.trim())
+        const bullets = (e.description || '').split('\n').filter(b => b.trim())
         bullets.forEach(b => { sectionMd += `- ${b.replace(/^- /, '').trim()}\n` })
         sectionMd += '\n'
       })
@@ -45,7 +45,7 @@ export function generateMarkdown({
       projects.forEach(p => {
         if (!p.name) return
         sectionMd += `**${p.name}** | ${p.tech}\n`
-        const bullets = p.description.split('\n').filter(b => b.trim())
+        const bullets = (p.description || '').split('\n').filter(b => b.trim())
         bullets.forEach(b => { sectionMd += `- ${b.replace(/^- /, '').trim()}\n` })
         if (p.link) sectionMd += `- [Project Link](${p.link})\n`
         sectionMd += '\n'

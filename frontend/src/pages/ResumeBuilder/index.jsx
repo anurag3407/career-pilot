@@ -4,7 +4,6 @@ import { ArrowLeft, ArrowRight, Save, FileText, User, Briefcase, GraduationCap, 
 import { resumeApi } from '../../services/api'
 import { toast } from 'react-hot-toast'
 import ConsistencyPanel from '../../utils/ConsistencyPanel'
-
 import { useResumeWizard } from './hooks/useResumeWizard'
 import { useResumeInsights } from './hooks/useResumeInsights'
 import { useResumeAutosave } from './hooks/useResumeAutosave'
@@ -22,7 +21,6 @@ const ProjectsStep = lazy(() => import('./steps/ProjectsStep'))
 const SkillsStep = lazy(() => import('./steps/SkillsStep'))
 const CustomSectionsStep = lazy(() => import('./steps/CustomSectionsStep'))
 const ReviewStep = lazy(() => import('./steps/ReviewStep'))
-
 const STEPS = [
   { id: 'personal', title: 'Personal Info', icon: User, Component: PersonalStep },
   { id: 'education', title: 'Education', icon: GraduationCap, Component: EducationStep },
@@ -32,7 +30,6 @@ const STEPS = [
   { id: 'custom', title: 'Custom Sections', icon: Layers, Component: CustomSectionsStep },
   { id: 'preview', title: 'Preview', icon: FileText, Component: ReviewStep },
 ]
-
 export default function ResumeBuilder() {
   const wizard = useResumeWizard()
   const insights = useResumeInsights({
@@ -57,7 +54,7 @@ export default function ResumeBuilder() {
   const handleRestoreDraft = () => autosave.restoreDraft((draft) => {
     if (draft.targetRole !== undefined) setTargetRole(draft.targetRole)
     if (draft.personal) setPersonal(draft.personal)
-    if (draft.phoneCode) setPhoneCode(draft.phoneCode)
+    if (draft.phoneCode !== undefined) setPhoneCode(draft.phoneCode)
     if (draft.phoneDigits !== undefined) setPhoneDigits(draft.phoneDigits)
     if (draft.education) setEducation(draft.education)
     if (draft.experience) setExperience(draft.experience)
@@ -126,7 +123,6 @@ export default function ResumeBuilder() {
         {autosave.restoreAvailable && (
           <DraftBanner onRestore={handleRestoreDraft} onDismiss={autosave.dismissDraft} />
         )}
-
         <WizardStepper steps={STEPS} currentStep={currentStep} />
 
         <div className="flex-1 bg-card backdrop-blur-xl border border-border rounded-3xl p-6 sm:p-8 shadow-2xl relative overflow-hidden">
@@ -156,12 +152,17 @@ export default function ResumeBuilder() {
           >
             <ArrowLeft className="w-4 h-4" /> Back
           </button>
-
           {isLastStep ? (
             <div className="flex flex-wrap gap-2">
               <button
                 onClick={() => navigate('/resume-templates', {
-                  state: { builderData: buildTemplateData({ personal, experience, education, projects, skills }) }
+                  state: {
+                    builderData: buildTemplateData({
+                      targetRole, personal, phoneCode, phoneDigits,
+                      education, experience, projects, skills,
+                      sectionOrder, customSections,
+                    })
+                  }
                 })}
                 className="px-6 py-2.5 rounded-full bg-secondary text-secondary-foreground hover:bg-secondary/80 transition-all flex items-center gap-2 font-medium border border-border"
               >
@@ -192,7 +193,6 @@ export default function ResumeBuilder() {
             </button>
           )}
         </div>
-
       </div>
     </div>
   )

@@ -40,7 +40,11 @@ export default function ProjectsStep({
                             type="text"
                             className="w-full bg-muted border border-border rounded-lg px-4 py-2 focus:outline-none focus:ring-2 focus:ring-primary/30 transition-colors"
                             value={proj.name}
-                            onChange={e => { const n = [...projects]; n[index].name = e.target.value; setProjects(n) }}
+                            onChange={e =>
+                              setProjects(prev =>
+                                prev.map((p, i) => (i === index ? { ...p, name: e.target.value } : p))
+                              )
+                            }
                             placeholder="E-commerce App"
                           />
                         </div>
@@ -50,7 +54,11 @@ export default function ProjectsStep({
                             type="text"
                             className="w-full bg-muted border border-border rounded-lg px-4 py-2 focus:outline-none focus:ring-2 focus:ring-primary/30 transition-colors"
                             value={proj.tech}
-                            onChange={e => { const n = [...projects]; n[index].tech = e.target.value; setProjects(n) }}
+                            onChange={e =>
+                              setProjects(prev =>
+                                prev.map((p, i) => (i === index ? { ...p, tech: e.target.value } : p))
+                              )
+                            }
                             placeholder="React, Node.js, MongoDB"
                           />
                         </div>
@@ -60,7 +68,11 @@ export default function ProjectsStep({
                             type="url"
                             className="w-full bg-muted border border-border rounded-lg px-4 py-2 focus:outline-none focus:ring-2 focus:ring-primary/30 transition-colors"
                             value={proj.link}
-                            onChange={e => { const n = [...projects]; n[index].link = e.target.value; setProjects(n) }}
+                            onChange={e =>
+                              setProjects(prev =>
+                                prev.map((p, i) => (i === index ? { ...p, link: e.target.value } : p))
+                              )
+                            }
                             placeholder="https://github.com/..."
                           />
                         </div>
@@ -69,7 +81,11 @@ export default function ProjectsStep({
                           <textarea
                             className="w-full bg-muted border border-border rounded-lg px-4 py-2 min-h-[100px] focus:outline-none focus:ring-2 focus:ring-primary/30 transition-colors"
                             value={proj.description}
-                            onChange={e => { const n = [...projects]; n[index].description = e.target.value; setProjects(n) }}
+                            onChange={e =>
+                              setProjects(prev =>
+                                prev.map((p, i) => (i === index ? { ...p, description: e.target.value } : p))
+                              )
+                            }
                             placeholder="- Built a full-stack application..."
                           />
                         </div>

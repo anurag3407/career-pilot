@@ -35,7 +35,7 @@ export default function PersonalStep({
             aria-invalid={!!personalErrors.name}
             aria-describedby={personalErrors.name ? 'name-error' : undefined}
           />
-          <FieldError msg={personalErrors.name} />
+          <FieldError id="name-error" msg={personalErrors.name} />
         </div>
 
         {/* Target Job Role */}
@@ -54,8 +54,9 @@ export default function PersonalStep({
             }}
             placeholder="Software Engineer"
             aria-invalid={!!personalErrors.targetRole}
+            aria-describedby={personalErrors.targetRole ? 'targetRole-error' : undefined}
           />
-          <FieldError msg={personalErrors.targetRole} />
+          <FieldError id="targetRole-error" msg={personalErrors.targetRole} />
         </div>
 
         {/* Email */}
@@ -71,8 +72,9 @@ export default function PersonalStep({
             onChange={e => updatePersonal('email', e.target.value)}
             placeholder="john@example.com"
             aria-invalid={!!personalErrors.email}
+            aria-describedby={personalErrors.email ? 'email-error' : undefined}
           />
-          <FieldError msg={personalErrors.email} />
+          <FieldError id="email-error" msg={personalErrors.email} />
         </div>
 
         {/* Phone */}
@@ -106,8 +108,9 @@ export default function PersonalStep({
             onChange={e => updatePersonal('linkedin', e.target.value)}
             placeholder="https://www.linkedin.com/in/johndoe"
             aria-invalid={!!personalErrors.linkedin}
+            aria-describedby={personalErrors.linkedin ? 'linkedin-error' : undefined}
           />
-          <FieldError msg={personalErrors.linkedin} />
+          <FieldError id="linkedin-error" msg={personalErrors.linkedin} />
         </div>
 
         {/* GitHub */}
@@ -121,18 +124,20 @@ export default function PersonalStep({
             onChange={e => updatePersonal('github', e.target.value)}
             placeholder="https://github.com/johndoe"
             aria-invalid={!!personalErrors.github}
+            aria-describedby={personalErrors.github ? 'github-error' : undefined}
           />
-          <FieldError msg={personalErrors.github} />
+          <FieldError id="github-error" msg={personalErrors.github} />
         </div>
       </div>
 
       {/* Portfolio */}
       <div>
-        <label className="block text-sm font-medium mb-1">
+        <label className="block text-sm font-medium mb-1" htmlFor="portfolio">
           Portfolio URL
         </label>
 
         <input
+          id="portfolio"
           type="url"
           className={inputCls('portfolio')}
           value={personal.portfolio}
@@ -140,7 +145,10 @@ export default function PersonalStep({
             updatePersonal('portfolio', e.target.value)
           }
           placeholder="https://yourportfolio.com"
+          aria-invalid={!!personalErrors.portfolio}
+          aria-describedby={personalErrors.portfolio ? 'portfolio-error' : undefined}
         />
+        <FieldError id="portfolio-error" msg={personalErrors.portfolio} />
       </div>
 
       {/* Summary */}

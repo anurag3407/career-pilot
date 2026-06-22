@@ -8,7 +8,7 @@ export function createOnDragEnd({
   sectionOrder, setSectionOrder,
   education, setEducation, educationErrors, setEducationErrors,
   experience, setExperience, experienceErrors, setExperienceErrors,
-  projects, setProjects,
+  projects, setProjects, projectErrors, setProjectErrors,
 }) {
   return function onDragEnd(result) {
     if (!result.destination) return
@@ -51,6 +51,12 @@ export function createOnDragEnd({
       const [removed] = newProj.splice(source.index, 1)
       newProj.splice(destination.index, 0, removed)
       setProjects(newProj)
+      if (projectErrors && setProjectErrors) {
+        const newProjectErrors = Array.from(projectErrors)
+        const [removedErr] = newProjectErrors.splice(source.index, 1)
+        newProjectErrors.splice(destination.index, 0, removedErr)
+        setProjectErrors(newProjectErrors)
+      }
       return
     }
   }

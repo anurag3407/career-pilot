@@ -6,10 +6,10 @@ export function errBorder(errors, key) {
 }
 
 /** Inline error message below a field. */
-export function FieldError({ msg }) {
+export function FieldError({ msg, id }) {
   if (!msg) return null
   return (
-    <p className="text-red-500 text-sm mt-1" role="alert">{msg}</p>
+    <p id={id} className="text-red-500 text-sm mt-1" role="alert">{msg}</p>
   )
 }
 

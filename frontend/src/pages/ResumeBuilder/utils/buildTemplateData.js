@@ -2,9 +2,16 @@
  * Builds the `builderData` payload handed off to /resume-templates
  * when the user clicks "Choose Resume Template".
  */
-export function buildTemplateData({ personal, experience, education, projects, skills }) {
+export function buildTemplateData({
+  targetRole, personal, phoneCode, phoneDigits,
+  experience, education, projects, skills,
+  sectionOrder, customSections,
+}) {
+  const fullPhone = phoneDigits ? `${phoneCode} ${phoneDigits}` : (personal?.phone || '')
+
   return {
-    personal,
+    targetRole,
+    personal: { ...personal, phone: fullPhone },
     experience: (experience || []).filter(e => e.title || e.company)
       .map(e => ({
         role: e.title,
@@ -29,5 +36,7 @@ export function buildTemplateData({ personal, experience, education, projects, s
       link: p.link,
     })),
     skills: skills ? skills.split(/[,\n]/).map(s => s.trim()).filter(Boolean) : [],
+    sectionOrder,
+    customSections: (customSections || []).filter(s => s.title),
   }
 }

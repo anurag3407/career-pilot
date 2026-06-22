@@ -82,7 +82,12 @@ export default function ReviewStep({
       Skill Gap Analysis
     </h3>
 
-    <div className="mt-2">
+    <span className="text-primary font-bold">
+      {atsScore}% Match
+    </span>
+  </div>
+
+  <div className="mt-2">
   <span
     className={`px-3 py-1 rounded-full text-sm ${
       atsScore >= 80
@@ -98,6 +103,51 @@ export default function ReviewStep({
       ? "Moderate Gap"
       : "High Skill Gap"}
   </span>
+</div>
+
+  <div className="w-full bg-secondary rounded-full h-3">
+    <div
+      className="bg-primary h-3 rounded-full transition-all duration-500"
+      style={{ width: `${atsScore}%` }}
+    />
+  </div>
+
+  {recommendedSkills.length > 0 && (
+  <div className="mt-4">
+    <h4 className="font-medium mb-2">
+      Recommended Skills to Learn
+    </h4>
+
+    <div className="flex flex-wrap gap-2">
+      {recommendedSkills.map(skill => (
+        <span
+          key={skill}
+          className="px-3 py-1 rounded-full bg-green-500/20 text-green-400 text-sm"
+        >
+          {skill}
+        </span>
+      ))}
+    </div>
+  </div>
+)}
+
+  <div className="mt-4">
+    <h4 className="font-medium mb-2">
+      Missing Skills
+    </h4>
+
+    <div className="flex flex-wrap gap-2">
+      {missingKeywords.map(skill => (
+        <span
+          key={skill}
+          className="px-3 py-1 rounded-full bg-red-500/20 text-red-400 text-sm"
+        >
+          {skill}
+        </span>
+      ))}
+    </div>
+  </div>
+
 </div>
 
 <div className="mb-6 p-4 rounded-xl border border-border bg-muted">
@@ -127,37 +177,6 @@ export default function ReviewStep({
 
 </div>
 
-    <span className="text-primary font-bold">
-      {atsScore}% Match
-    </span>
-  </div>
-
-  <div className="w-full bg-secondary rounded-full h-3">
-    <div
-      className="bg-primary h-3 rounded-full transition-all duration-500"
-      style={{ width: `${atsScore}%` }}
-    />
-  </div>
-
-  {recommendedSkills.length > 0 && (
-  <div className="mt-4">
-    <h4 className="font-medium mb-2">
-      Recommended Skills to Learn
-    </h4>
-
-    <div className="flex flex-wrap gap-2">
-      {recommendedSkills.map(skill => (
-        <span
-          key={skill}
-          className="px-3 py-1 rounded-full bg-green-500/20 text-green-400 text-sm"
-        >
-          {skill}
-        </span>
-      ))}
-    </div>
-  </div>
-)}
-
 {sectionSuggestions.length > 0 && (
   <div className="mb-6 p-4 rounded-xl border border-border bg-muted">
     <h3 className="font-semibold mb-3">
@@ -171,25 +190,6 @@ export default function ReviewStep({
     </ul>
   </div>
 )}
-
-  <div className="mt-4">
-    <h4 className="font-medium mb-2">
-      Missing Skills
-    </h4>
-
-    <div className="flex flex-wrap gap-2">
-      {missingKeywords.map(skill => (
-        <span
-          key={skill}
-          className="px-3 py-1 rounded-full bg-red-500/20 text-red-400 text-sm"
-        >
-          {skill}
-        </span>
-      ))}
-    </div>
-  </div>
-
-</div>
 
 <div className="mb-6 p-4 rounded-xl border border-border bg-muted">
   <div className="flex justify-between items-center mb-2">
