@@ -313,7 +313,7 @@ router.get('/profile', verifyToken, asyncHandler(async (req, res) => {
 
 // Get notification preferences
 router.get('/notification-preferences', verifyToken, asyncHandler(async (req, res) => {
-  const user = await User.findOne({ email: req.user.email });
+  let user = await User.findOne({ email: req.user.email });
 
   const preferences = user?.notificationPreferences || {
     jobAlerts: true,
