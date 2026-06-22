@@ -21,7 +21,7 @@ export default function Contact({ personal, socials }) {
     setForm({ name: "", email: "", message: "" });
 
   } catch (error) {
-    console.log(error);
+    console.error(error);
 
   } finally {
     setLoading(false);
