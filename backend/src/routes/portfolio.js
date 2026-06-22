@@ -88,8 +88,26 @@ const assertValidPortfolioSlug = (slug) => {
   }
 };
 
-// In-memory fallback for testing without a database
+// In-memory fallback was historically used when MongoDB was disconnected.
+// This can silently drop data or cause split-brain behavior across instances, so it is now opt-in.
 const inMemoryStore = new Map();
+
+const isMongoConnected = () => mongoose.connection.readyState === 1;
+
+const allowInMemoryPortfolioVersioning = () => {
+  const enabled = String(process.env.ALLOW_PORTFOLIO_INMEMORY_VERSIONING || '').toLowerCase() === 'true';
+  const nonProd = process.env.NODE_ENV !== 'production';
+  return enabled && nonProd;
+};
+
+const assertPortfolioVersioningPersistenceAvailable = () => {
+  if (isMongoConnected()) return;
+  if (allowInMemoryPortfolioVersioning()) return;
+  throw new ApiError(
+    503,
+    'Portfolio versioning is temporarily unavailable because the database connection is down. Please try again later.',
+  );
+};
 
 // Helper to reconstruct full state from versions
 const reconstructVersion = async (portfolioId, targetVersionNumber, isConnected) => {
@@ -446,7 +464,8 @@ router.post('/:id/save', verifyToken, asyncHandler(async (req, res) => {
     throw new ApiError(400, 'Content is required for saving.');
   }
 
-  const isConnected = mongoose.connection.readyState === 1;
+  assertPortfolioVersioningPersistenceAvailable();
+  const isConnected = isMongoConnected();
   let latestVersion;
 
   if (isConnected) {
@@ -548,7 +567,8 @@ router.get('/:id/versions', verifyToken, asyncHandler(async (req, res) => {
     throw new ApiError(403, 'Unauthorized access to version history.');
   }
 
-  const isConnected = mongoose.connection.readyState === 1;
+  assertPortfolioVersioningPersistenceAvailable();
+  const isConnected = isMongoConnected();
 
   let versions;
   if (isConnected) {
@@ -580,7 +600,8 @@ router.post('/:id/restore/:versionId', verifyToken, asyncHandler(async (req, res
     throw new ApiError(403, 'Unauthorized access to restore this portfolio.');
   }
 
-  const isConnected = mongoose.connection.readyState === 1;
+  assertPortfolioVersioningPersistenceAvailable();
+  const isConnected = isMongoConnected();
 
   let versionToRestore;
   if (isConnected) {
