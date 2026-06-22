@@ -17,11 +17,20 @@ import { sendWeeklyDigestEmail } from './mailService.js';
 const __filename = fileURLToPath(import.meta.url);
 const __dirname = path.dirname(__filename);
 
-const genAI = new GoogleGenerativeAI(process.env.GEMINI_API_KEY);
+// Initialize Gemini AI with validation
+const GEMINI_API_KEY = process.env.GEMINI_API_KEY;
+let genAI = null;
+let model = null;
 
-const model = genAI.getGenerativeModel({
-  model: 'gemini-2.5-flash'
-});
+if (!GEMINI_API_KEY) {
+  console.warn('⚠️  GEMINI_API_KEY is not configured. Weekly digest generation will use fallback behavior.');
+  console.warn('   Set GEMINI_API_KEY in your .env file to enable AI-powered digest summaries.');
+} else {
+  genAI = new GoogleGenerativeAI(GEMINI_API_KEY);
+  model = genAI.getGenerativeModel({
+    model: 'gemini-2.5-flash'
+  });
+}
 
 // ---------------------------------------------------------------------------
 // Queue state — mirrors the pattern in jobAlertQueue.js
@@ -53,6 +62,11 @@ const escapeHtml = (unsafe = '') => {
 
 const generateWeeklyInsights = async (user, trackedJobs) => {
   try {
+    if (!model) {
+      console.warn('⚠️ Gemini AI is not configured. Using fallback digest generation.');
+      throw new Error('Gemini API is not configured');
+    }
+
     const recentJobs = trackedJobs.slice(0, 5);
 
     const prompt = `

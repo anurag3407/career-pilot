@@ -1,4 +1,5 @@
 import { Server } from 'socket.io';
+import { createSocketOptions } from './socketOptions.js';
 import { socketAuthMiddleware } from '../middleware/socketAuth.js';
 import { setupSocketHandlers } from '../services/socketServiceFirebase.js';
 import { presenceService } from '../services/presenceService.js';
@@ -6,23 +7,35 @@ import { presenceService } from '../services/presenceService.js';
 let io = null;
 
 export const initializeSocket = (server) => {
-  io = new Server(server, {
-    cors: {
-      origin: process.env.FRONTEND_URL || 'http://localhost:5173',
-      methods: ['GET', 'POST'],
-      credentials: true
-    },
-    pingTimeout: 60000,
-    pingInterval: 25000,
-    transports: ['websocket', 'polling']
+  io = new Server(server, createSocketOptions());
+  io.engine.on('connection_error', (error) => {
+  console.error('❌ Socket transport connection error:', {
+    code: error.code,
+    message: error.message,
+    transport: error.req?._query?.transport || 'unknown'
   });
+});
 
   // Authentication middleware
   io.use(socketAuthMiddleware);
 
   // Connection handler
   io.on('connection', async (socket) => {
-    console.log(`✅ User connected: ${socket.user.name} (${socket.user.uid})`);
+    const initialTransport = socket.conn.transport.name;
+
+if (process.env.NODE_ENV !== 'production') {
+  console.log(
+    `🔌 Socket connected using ${initialTransport} ` +
+      `(socketId=${socket.id})`
+  );
+
+  socket.conn.once('upgrade', (transport) => {
+    console.log(
+      `⬆️ Socket transport upgraded from ${initialTransport} ` +
+        `to ${transport.name} (socketId=${socket.id})`
+    );
+  });
+}
 
     // Track user presence
     try {

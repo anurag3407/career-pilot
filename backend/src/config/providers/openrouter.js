@@ -29,6 +29,12 @@ const withRetry = async (fn, maxRetries = 3, baseDelayMs = 1000) => {
  */
 export class OpenRouterAdapter {
   constructor(apiKey, modelName) {
+    if (!apiKey) {
+      throw new Error(
+        'OpenRouter API key is required. ' +
+        'Set OPENROUTER_API_KEY in your .env file or provide it via the X-OpenRouter-Key header.'
+      );
+    }
     this.client = new OpenAI({
       apiKey,
       baseURL: 'https://openrouter.ai/api/v1',

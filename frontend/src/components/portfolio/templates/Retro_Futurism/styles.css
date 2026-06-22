@@ -1,0 +1,213 @@
+@property --shift {
+  syntax: "<number>";
+  inherits: false;
+  initial-value: 0;
+}
+
+:root {
+  --sun-1: #facc15; 
+  --sun-2: #ec4899; 
+  --grid-color: #f0abfc; 
+  --grid-glow: #c026d3; 
+}
+
+/* --- THE MOON --- */
+.synth-sun {
+  width: min(55vmin, 500px);
+  aspect-ratio: 1;
+  border-radius: 50%;
+  position: relative;
+  filter: drop-shadow(0 0 6rem rgba(236, 72, 153, 0.7));
+}
+
+.synth-sun::after {
+  content: "";
+  position: absolute;
+  inset: 0;
+  border-radius: inherit;
+  background-image: linear-gradient(to bottom, var(--sun-1), var(--sun-2) 60%);
+  mask: linear-gradient(to top, 
+    #000 calc(1% + (3.5% * var(--shift))), 0%, #0000 calc(8% + (2.8% * var(--shift))), 0%, 
+    #000 calc(9% + (3.5% * var(--shift))), 0%, #0000 calc(15% + (2.8% * var(--shift))), 0%, 
+    #000 calc(16% + (3.5% * var(--shift))), 0%, #0000 calc(21% + (2.8% * var(--shift))), 0%, 
+    #000 calc(22% + (3.5% * var(--shift))), 0%, #0000 calc(26% + (2.8% * var(--shift))), 0%, 
+    #000 calc(27% + (3.5% * var(--shift))), 0%, #0000 calc(30% + (2.8% * var(--shift))), 0%, 
+    #000 calc(31% + (3.5% * var(--shift))), 0%, #0000 calc(33% + (2.8% * var(--shift))), 0%, 
+    #000 calc(34% + (3.5% * var(--shift))), 0%, #0000 calc(35% + (2.8% * var(--shift))), 0%, 
+    #000 calc(56% + (2.5% * var(--shift)))
+  );
+  mask-size: 100% 120%;
+  -webkit-mask: linear-gradient(to top, 
+    #000 calc(1% + (3.5% * var(--shift))), 0%, #0000 calc(8% + (2.8% * var(--shift))), 0%, 
+    #000 calc(9% + (3.5% * var(--shift))), 0%, #0000 calc(15% + (2.8% * var(--shift))), 0%, 
+    #000 calc(16% + (3.5% * var(--shift))), 0%, #0000 calc(21% + (2.8% * var(--shift))), 0%, 
+    #000 calc(22% + (3.5% * var(--shift))), 0%, #0000 calc(26% + (2.8% * var(--shift))), 0%, 
+    #000 calc(27% + (3.5% * var(--shift))), 0%, #0000 calc(30% + (2.8% * var(--shift))), 0%, 
+    #000 calc(31% + (3.5% * var(--shift))), 0%, #0000 calc(33% + (2.8% * var(--shift))), 0%, 
+    #000 calc(34% + (3.5% * var(--shift))), 0%, #0000 calc(35% + (2.8% * var(--shift))), 0%, 
+    #000 calc(56% + (2.5% * var(--shift)))
+  );
+  -webkit-mask-size: 100% 120%;
+  animation: sun-shift 4s linear infinite;
+}
+
+@keyframes sun-shift {
+  from { --shift: 1; }
+  to { --shift: 3.8; }
+}
+
+/* --- THE HERO ROAD (GRID) --- */
+.hero-road {
+  position: absolute;
+  bottom: 0;
+  left: 0;
+  right: 0;
+  height: 55vh;
+  perspective: 1000px;
+  mask-image: linear-gradient(to bottom, transparent 0%, black 25%);
+  -webkit-mask-image: linear-gradient(to bottom, transparent 0%, black 25%);
+}
+
+.hero-road-inner {
+  position: absolute;
+  inset: -100% -100% 0 -100%;
+  transform-origin: bottom center;
+  transform: rotateX(75deg);
+  background-image: 
+    linear-gradient(to right, var(--grid-color) 2px, transparent 2px),
+    linear-gradient(to bottom, var(--grid-color) 2px, transparent 2px);
+  background-size: 60px 60px;
+  animation: road-move 1s linear infinite;
+  box-shadow: inset 0 0 100px var(--grid-glow);
+}
+
+@keyframes road-move {
+  0% { background-position: 0 0; }
+  100% { background-position: 0 60px; }
+}
+
+/* --- WIND SWAY TREES (GLOBAL) --- */
+.tree-sway-left {
+  transform-origin: bottom center;
+  animation: sway-left 6s ease-in-out infinite alternate;
+}
+.tree-sway-right {
+  transform-origin: bottom center;
+  animation: sway-right 7s ease-in-out infinite alternate;
+}
+
+.tree-anchor-left {
+  transform-origin: bottom left;
+}
+
+.tree-anchor-right {
+  transform-origin: bottom right;
+}
+
+@keyframes sway-left {
+  0% { transform: translateX(-1px) rotate(-2deg); }
+  100% { transform: translateX(1px) rotate(4deg); }
+}
+@keyframes sway-right {
+  0% { transform: translateX(1px) scaleX(-1) rotate(3deg); }
+  100% { transform: translateX(-1px) scaleX(-1) rotate(-3deg); }
+}
+
+/* --- NIGHT TIME PURPLE PARTICLES --- */
+.purple-dust-1 {
+  background-image: radial-gradient(circle, #c084fc 1px, transparent 1px);
+  background-size: 60px 60px;
+  animation: dust-drift-1 25s linear infinite;
+  opacity: 0.4;
+}
+.purple-dust-2 {
+  background-image: radial-gradient(circle, #e879f9 1.5px, transparent 1.5px);
+  background-size: 100px 100px;
+  animation: dust-drift-2 35s linear infinite;
+  opacity: 0.3;
+}
+.purple-dust-3 {
+  background-image: radial-gradient(circle, #f0abfc 2px, transparent 2px);
+  background-size: 150px 150px;
+  animation: dust-drift-3 45s linear infinite;
+  opacity: 0.2;
+}
+
+@keyframes dust-drift-1 {
+  0% { background-position: 0 0; }
+  100% { background-position: 0 -600px; }
+}
+@keyframes dust-drift-2 {
+  0% { background-position: 0 0; }
+  100% { background-position: 0 -1000px; }
+}
+@keyframes dust-drift-3 {
+  0% { background-position: 0 0; }
+  100% { background-position: 0 -1500px; }
+}
+
+@media (max-width: 640px) {
+  .hero-road {
+    height: 44vh;
+  }
+
+  .hero-road-inner {
+    background-size: 34px 34px;
+  }
+
+  .synth-sun {
+    width: min(68vmin, 300px);
+  }
+
+  .tree-anchor-left {
+    left: 0.5rem;
+  }
+
+  .tree-anchor-right {
+    right: 0.5rem;
+  }
+
+  .tree-sway-left {
+    width: 6rem;
+  }
+
+  .tree-sway-right {
+    width: 5rem;
+  }
+
+  .tree-sway-left,
+  .tree-sway-right {
+    animation-duration: 9s;
+  }
+}
+
+.tree-right-offset {
+  transform: translateX(-0.5rem);
+}
+
+@media (prefers-reduced-motion: reduce) {
+  .synth-sun::after,
+  .hero-road-inner {
+    animation: none !important;
+  }
+
+  .tree-sway-left {
+    animation-duration: 12s !important;
+  }
+
+  .tree-sway-right {
+    animation-duration: 14s !important;
+  }
+
+  .purple-dust-1 {
+    animation-duration: 60s !important;
+  }
+
+  .purple-dust-2 {
+    animation-duration: 80s !important;
+  }
+
+  .purple-dust-3 {
+    animation-duration: 100s !important;
+  }
+}
