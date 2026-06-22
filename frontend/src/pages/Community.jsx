@@ -425,12 +425,12 @@ function CreateChannelModal({ onClose, onCreate }) {
   };
 
   const categories = [
-    { value: 'general', label: '💬 General' },
-    { value: 'job-hunting', label: '🔍 Job Hunting' },
-    { value: 'interview-prep', label: '🎯 Interview Prep' },
-    { value: 'resume-tips', label: '📄 Resume Tips' },
-    { value: 'networking', label: '🤝 Networking' },
-    { value: 'other', label: '📌 Other' }
+    { value: 'general', label: 'General' },
+    { value: 'job-hunting', label: 'Job Hunting' },
+    { value: 'interview-prep', label: 'Interview Prep' },
+    { value: 'resume-tips', label: 'Resume Tips' },
+    { value: 'networking', label: 'Networking' },
+    { value: 'other', label: 'Other' }
   ];
 
   return (
