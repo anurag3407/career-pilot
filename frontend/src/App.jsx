@@ -141,6 +141,8 @@ import Book_Page_Flip_3D_Render from './components/portfolio/templates/Book_Page
 import IKEA_Assembly_Manual from './components/portfolio/templates/IKEA_Assembly_Manual/index.jsx';
 import MichelinStarChefPlating from './components/portfolio/templates/Michelin_Star_Chef_Plating/index.jsx';
 import SommelierWineCellarRacks from './components/portfolio/templates/Sommelier_Wine_Cellar_Racks/index.jsx';
+// import SharedResumeView from './pages/SharedResumeView.jsx'
+import SharedResumeView from './pages/SharedResumeView.jsx'
 import MinimalDarkFluid from './components/portfolio/templates/Minimal_Dark_Fluid/index.jsx';
 import TerminalSkills from './components/portfolio/templates/Terminal_Skills/index.jsx';
 import ChiragChrgTheme from './components/portfolio/templates/ChiragChrg_Theme/index.jsx';
@@ -461,6 +463,17 @@ function AppRoutes() {
           <Route path="logins" element={<AdminLogins />} />
           <Route path="bugs" element={<AdminBugs />} />
         </Route>
+            <AdminRoute>
+              <Suspense fallback={<LoadingScreen label="Loading Admin..." />}>
+                <AdminLayout />
+              </Suspense>
+            </AdminRoute>
+          }>
+            <Route index element={<AdminDashboard />} />
+            <Route path="users" element={<AdminUsers />} />
+            <Route path="logins" element={<AdminLogins />} />
+            <Route path="bugs" element={<AdminBugs />} />
+          </Route>
 
         {/* Hub Routes */}
         <Route path="/hub/resume" element={<ProtectedRoute><Suspense fallback={<LoadingScreen label="Loading Resume Hub..." />}><ResumeHub /></Suspense></ProtectedRoute>} />

@@ -1,0 +1,7 @@
+User-agent: *
+Allow: /
+Disallow: /admin
+Disallow: /auth/
+Disallow: /api/
+
+Sitemap: https://careerpilot.app/sitemap.xml

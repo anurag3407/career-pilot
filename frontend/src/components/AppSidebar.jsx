@@ -322,6 +322,18 @@ export default function AppSidebar({ animate = true }) {
 
                                     <SidebarLink
                                         link={{
+
+                                    <SidebarLink
+                                        link={{
+                                            label: "Salary Estimator",
+                                            href: "/salary-estimate",
+                                            icon: <Brain className="w-4 h-4 shrink-0" />,
+                                        }}
+                                        onClick={() => setOpen(false)}
+                                    />
+
+                                    <SidebarLink
+                                        link={{
                                             label: "Project Visualizer",
                                             href: "/project-visualizer",
                                             icon: <GitMerge className="w-4 h-4 shrink-0" />,
@@ -337,6 +349,7 @@ export default function AppSidebar({ animate = true }) {
                             onClick={() => setIsBugModalOpen(true)}
                             className={cn(
                                 "flex items-center gap-2 px-3 py-2.5 rounded-xl text-sm font-semibold transition-all duration-300 w-full cursor-pointer text-red-500 bg-red-500/10 hover:bg-red-500/20",
+                                !open && animate ? "px-0 justify-center" : "justify-start")}
                                 !open && animate ? "px-0 justify-center" : "justify-start"
                             )}
                         >
@@ -357,6 +370,9 @@ export default function AppSidebar({ animate = true }) {
                 </SidebarBody>
             </Sidebar>
 
+            <ReportBugModal
+                isOpen={isBugModalOpen}
+                onClose={() => setIsBugModalOpen(false)}
             <ReportBugModal 
                 isOpen={isBugModalOpen} 
                 onClose={() => setIsBugModalOpen(false)} 

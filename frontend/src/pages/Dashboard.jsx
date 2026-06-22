@@ -499,7 +499,40 @@ export default function Dashboard() {
         <p className="text-xs text-muted-foreground max-w-sm mx-auto">
           Real visit counts, unique visitors, and weekly growth metrics will be tracked once portfolio analytics are enabled.
         </p>
+        <Link
+          to="/upload"
+          className="inline-flex items-center gap-2 px-4 py-2 bg-primary text-primary-foreground rounded-xl text-xs font-black hover:bg-primary/90 transition-colors"
+        >
+          Upload Resume <ArrowRight className="w-3.5 h-3.5" />
+        </Link>
       </div>
+    )}
+  </div>
+</motion.div>
+
+{portfolioCount > 0 && (
+  <motion.div variants={itemVariants} className="mb-10">
+    <div className="rounded-2xl bg-card border border-border p-6 shadow-sm">
+      <div className="flex items-center gap-3 mb-6">
+        <TrendingUp className="w-6 h-6 text-primary" />
+        <h2 className="text-xl font-black">
+          Portfolio Performance Analytics
+        </h2>
+      </div>
+
+      <div className="p-6 rounded-xl border border-dashed border-border bg-muted/20 text-center">
+        <TrendingUp className="w-10 h-10 text-muted-foreground mx-auto mb-3 opacity-50" />
+        <p className="text-sm font-bold text-muted-foreground mb-1">Analytics Tracking Coming Soon</p>
+        <p className="text-xs text-muted-foreground max-w-sm mx-auto">
+          Real visit counts, unique visitors, and weekly growth metrics will be tracked once portfolio analytics are enabled.
+        </p>
+      </div>
+    </div>
+  </motion.div>
+)}
+
+<motion.div variants={itemVariants} className="mb-10">
+  <PortfolioGrammarAssistant />
     </div>
   </motion.div>
 )}

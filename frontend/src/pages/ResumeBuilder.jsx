@@ -5,6 +5,7 @@ import { motion, AnimatePresence } from 'framer-motion'
 import { useNavigate } from 'react-router-dom'
 import {
   ArrowLeft, ArrowRight, CheckCircle, Plus, Trash2,
+  Save, FileText, User, Briefcase, GraduationCap, Code, Star, GripVertical
   Save, FileText, User, Briefcase, GraduationCap, Code, Star, GripVertical,
   LayoutTemplate
 } from 'lucide-react'
