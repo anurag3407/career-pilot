@@ -161,3 +161,18 @@ background:#10B981;
 background:#F5A623;
 
 }
+.shortcut-badge {
+
+padding:4px 10px;
+
+border-radius:999px;
+
+font-size:12px;
+
+background:
+rgba(255,255,255,.04);
+
+border:
+1px solid rgba(255,255,255,.08);
+
+}
