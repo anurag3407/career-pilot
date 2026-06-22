@@ -16,17 +16,19 @@ const NotFound = () => {
     let currentLine = 0;
     let currentChar = 0;
     const typingInterval = setInterval(() => {
-      if (currentLine < fullText.length) {
-        if (currentChar < fullText[currentLine].length) {
-          setTerminalText(prev => prev + fullText[currentLine][currentChar]);
-          currentChar++;
-        } else {
-          setTerminalText(prev => prev + '\n');
-          currentLine++;
-          currentChar = 0;
-        }
-      } else {
+      if (currentLine >= fullText.length) {
         clearInterval(typingInterval);
+        return;
+      }
+      const line = fullText[currentLine];
+      if (currentChar < line.length) {
+        const char = line[currentChar];
+        setTerminalText(prev => prev + char);
+        currentChar++;
+      } else {
+        setTerminalText(prev => prev + '\n');
+        currentLine++;
+        currentChar = 0;
       }
     }, 50);
 
