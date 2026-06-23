@@ -154,6 +154,32 @@ const fillPlaceholders = () => {
       if (updated !== current) element.setAttribute(attr, updated);
     });
   });
+
+  if (document.title) {
+    let updatedTitle = document.title;
+    Object.entries(map).forEach(([placeholder, replacement]) => {
+      updatedTitle = updatedTitle.split(placeholder).join(replacement);
+    });
+    if (updatedTitle !== document.title) document.title = updatedTitle;
+  }
+
+  const headPlaceholders = [
+    'meta[name="description"]',
+    'meta[property="og:title"]',
+    'meta[property="og:description"]',
+  ];
+
+  headPlaceholders.forEach((selector) => {
+    const element = document.querySelector(selector);
+    if (!element) return;
+    const current = element.getAttribute("content");
+    if (!current) return;
+    let updated = current;
+    Object.entries(map).forEach(([placeholder, replacement]) => {
+      updated = updated.split(placeholder).join(replacement);
+    });
+    if (updated !== current) element.setAttribute("content", updated);
+  });
 };
 
 /* Render skills section content */
