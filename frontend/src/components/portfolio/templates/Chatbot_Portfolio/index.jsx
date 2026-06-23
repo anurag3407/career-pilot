@@ -1,8 +1,10 @@
+import { usePortfolio } from "../../../../context/PortfolioContext";
 import React, { useState, useRef, useEffect } from "react";
-import data from "../../../../data/dummy_data.json";
 import { Send, Sparkles } from "lucide-react";
 
 export default function ChatbotPortfolio() {
+  const { portfolioData: data } = usePortfolio();
+
   const [messages, setMessages] = useState([
     {
       type: "bot",

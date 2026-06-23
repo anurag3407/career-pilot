@@ -91,9 +91,29 @@
        FOOTER SECTION
        ====================== -->
   <footer>
-    <!-- TODO: Add your footer content here -->
-    <p>Built with career-pilot</p>
+    <div class="footer-container">
+      <p>&copy; <span id="current-year"></span> {{portfolio.owner.name}}. All rights reserved.</p>
+      
+      <div class="footer-socials">
+        {{#if portfolio.owner.github}}
+          <a href="{{portfolio.owner.github}}" target="_blank" rel="noopener noreferrer">GitHub</a>
+        {{/if}}
+        {{#if portfolio.owner.linkedin}}
+          <a href="{{portfolio.owner.linkedin}}" target="_blank" rel="noopener noreferrer">LinkedIn</a>
+        {{/if}}
+        {{#if portfolio.owner.twitter}}
+          <a href="{{portfolio.owner.twitter}}" target="_blank" rel="noopener noreferrer">Twitter</a>
+        {{/if}}
+      </div>
+      <p class="built-with">
+        Built with <a href="{{portfolio.owner.github}}" target="_blank" rel="noopener noreferrer"><strong>Career-Pilot</strong></a>
+      </p>
+    </div>
+
   </footer>
 
+  <script>
+    document.getElementById('current-year').textContent = new Date().getFullYear();
+  </script>
 </body>
 </html>

@@ -5,11 +5,13 @@ import {
   createUserWithEmailAndPassword,
   signOut,
   GoogleAuthProvider,
+  GithubAuthProvider,
   signInWithPopup,
   updateProfile
 } from 'firebase/auth'
 import { auth } from '../config/firebase'
 import { AuthContext } from './AuthContext'
+import { authApi } from '../services/api'
 
 /**
  * Provider component that manages and exposes the Firebase authentication state and methods.
@@ -24,13 +26,42 @@ export function AuthProvider({ children }) {
 
   useEffect(() => {
     // If firebase initialization was skipped, unblock the loading state immediately
+    // and provide a mock user for local development.
     if (!auth) {
-      setLoading(false)
-      return
+      if (import.meta.env.DEV) {
+        setUser({
+          uid: 'dev-user-001',
+          email: 'dev@example.com',
+          displayName: 'Local Dev User',
+          isAdmin: true,
+          getIdToken: async () => 'mock-dev-token'
+        });
+      }
+      setLoading(false);
+      return;
     }
 
-    const unsubscribe = onAuthStateChanged(auth, (user) => {
-      setUser(user)
+    const unsubscribe = onAuthStateChanged(auth, async (firebaseUser) => {
+      if (firebaseUser) {
+        setLoading(true)
+        try {
+          const response = await authApi.getProfile()
+          if (response?.success && response?.user) {
+            firebaseUser.isAdmin = !!response.user.isAdmin
+            if (response.user.name) {
+              firebaseUser.displayName = response.user.name
+            }
+          } else {
+            firebaseUser.isAdmin = false
+          }
+        } catch (error) {
+          console.error('Failed to fetch user profile for admin check:', error)
+          firebaseUser.isAdmin = false
+        }
+        setUser(firebaseUser)
+      } else {
+        setUser(null)
+      }
       setLoading(false)
     })
 
@@ -62,6 +93,16 @@ export function AuthProvider({ children }) {
    * @returns {Promise<object>} The Firebase user object.
    */
   const login = async (email, password) => {
+    if (!auth && import.meta.env.DEV) {
+      const mockUser = {
+        uid: 'dev-user-001',
+        email: 'dev@example.com',
+        displayName: 'Local Dev User',
+        getIdToken: async () => 'mock-dev-token'
+      };
+      setUser(mockUser);
+      return mockUser;
+    }
     if (!auth) throw new Error("Authentication service is not configured. Please check your environment variables and authentication provider setup. Refer to the project setup documentation for configuration instructions.")
     const result = await signInWithEmailAndPassword(auth, email, password)
     return result.user
@@ -83,8 +124,21 @@ export function AuthProvider({ children }) {
    * Redirects the user to the LinkedIn authentication flow.
    */
   const loginWithLinkedIn = () => {
-    const apiUrl = import.meta.env.VITE_API_URL || 'http://localhost:5001'
+    const apiUrl = import.meta.env.VITE_API_URL || 'http://localhost:5000'
     window.location.href = `${apiUrl}/api/auth/linkedin`
+  }
+
+  /**
+   * Logs in a user using GitHub Sign-In popup.
+   *
+   * @returns {Promise<object>} The Firebase user object.
+   */
+  const loginWithGitHub = async () => {
+    if (!auth) throw new Error("Authentication service is not configured. Please check your environment variables and authentication provider setup. Refer to the project setup documentation for configuration instructions.")
+    const provider = new GithubAuthProvider()
+    provider.addScope('user:email')
+    const result = await signInWithPopup(auth, provider)
+    return result.user
   }
 
   /**
@@ -110,10 +164,12 @@ export function AuthProvider({ children }) {
   const value = {
     user,
     loading,
+    isAdmin: loading ? undefined : (user?.isAdmin ?? false),
     signup,
     login,
     loginWithGoogle,
     loginWithLinkedIn,
+    loginWithGitHub,
     logout,
     getToken,
     isMockAuth: !auth // Helper flag indicating local offline development
