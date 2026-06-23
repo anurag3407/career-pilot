@@ -45,6 +45,15 @@ router.post("/generate-text", coverLetterLimiter, async (req, res) => {
       return res.status(400).json({ error: "resumeText and jobDescription are required" });
     }
 
+    // Guard against oversized payloads reaching the AI provider (DoS / API-credit drain)
+    if (resumeText.length > 50_000) {
+      return res.status(413).json({ error: "resumeText is too long (max 50,000 characters)" });
+    }
+
+    if (jobDescription.length > 10_000) {
+      return res.status(413).json({ error: "jobDescription is too long (max 10,000 characters)" });
+    }
+
     const coverLetter = await generateCoverLetter({
       resumeText,
       jobDescription,
