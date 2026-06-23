@@ -36,6 +36,7 @@ import PortfolioTemplatePreview from '../components/PortfolioTemplatePreview'
 import ResumeIndustryOptimizer from '../components/ResumeIndustryOptimizer'
 import ResumeSectionStrengthAnalyzer from '../components/ResumeSectionStrengthAnalyzer'
 import PortfolioProjectCarousel from '../components/PortfolioProjectCarousel'
+import ResumeKeywordDensityInsights from '../components/ResumeKeywordDensityInsights'
 import {
   SkeletonAction,
   SkeletonStat,
@@ -528,6 +529,10 @@ export default function Dashboard() {
 
 <motion.div variants={itemVariants} className="mb-10">
   <PortfolioProjectCarousel />
+</motion.div>
+
+<motion.div variants={itemVariants} className="mb-10">
+  <ResumeKeywordDensityInsights />
 </motion.div>
 
             <div className="grid lg:grid-cols-2 gap-10">
