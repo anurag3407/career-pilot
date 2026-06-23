@@ -1,5 +1,7 @@
 import { useResume } from '../../../../context/ResumeContext'
 import TimelineNode from '../../shared/TimelineNode'
+import Section from '../../shared/Section'
+import OrderedSections from '../../shared/OrderedSections'
 
 /**
  * GitCommit — commit-log timeline on the left for experience entries.
@@ -16,6 +18,114 @@ export default function GitCommit() {
     return h.toString(16).slice(0, 7).padEnd(7, '0')
   }
 
+  const nodes = {
+    summary: personal.summary ? (
+      <Section title="$ cat about.md" accent="#10b981" uppercase={false}>
+        <p style={{ margin: 0, color: '#cbd5e1' }}>{personal.summary}</p>
+      </Section>
+    ) : null,
+
+    skills: skills.length > 0 ? (
+      <Section title="$ ls skills/" accent="#10b981" uppercase={false}>
+        <div style={{ display: 'flex', flexWrap: 'wrap', gap: '1.5mm' }}>
+          {skills.map((s, i) => (
+            <span
+              key={i}
+              style={{
+                fontSize: '8.5pt',
+                padding: '0.5mm 2mm',
+                background: '#064e3b',
+                color: '#6ee7b7',
+                borderRadius: 3,
+              }}
+            >
+              {s.name}
+            </span>
+          ))}
+        </div>
+      </Section>
+    ) : null,
+
+    experience: experience.length > 0 ? (
+      <Section title="$ git log --oneline --all" accent="#10b981" uppercase={false}>
+        {experience.map((e, i) => (
+          <div
+            key={i}
+            style={{
+              display: 'grid',
+              gridTemplateColumns: '6mm 1fr',
+              gap: '3mm',
+              marginBottom: '4mm',
+            }}
+          >
+            <TimelineNode first={i === 0} last={i === experience.length - 1} accent="#10b981" rail="#1e293b" />
+            <article>
+              <div style={{ display: 'flex', gap: '2mm', alignItems: 'baseline', flexWrap: 'wrap' }}>
+                <span style={{ color: '#10b981', fontWeight: 700 }}>{fakeHash(`${e.role}${e.company}`)}</span>
+                <span style={{ color: '#94a3b8' }}>({e.period || 'current'})</span>
+                <strong style={{ color: '#f1f5f9', fontSize: '10pt' }}>{e.role}</strong>
+              </div>
+              <div style={{ color: '#94a3b8', fontSize: '9pt', marginTop: '1mm' }}>
+                Authored at <span style={{ color: '#6ee7b7' }}>{e.company}</span>{e.location ? ` · ${e.location}` : ''}
+              </div>
+              {e.bullets.length > 0 && (
+                <div style={{ marginTop: '2mm', color: '#cbd5e1' }}>
+                  <div style={{ color: '#64748b', fontSize: '8.5pt' }}>// changes:</div>
+                  <ul style={{ margin: '1mm 0 0', paddingLeft: '5mm', color: '#cbd5e1' }}>
+                    {e.bullets.map((b, j) => (
+                      <li key={j} style={{ marginBottom: '0.5mm' }}>{b}</li>
+                    ))}
+                  </ul>
+                </div>
+              )}
+            </article>
+          </div>
+        ))}
+      </Section>
+    ) : null,
+
+    projects: projects.length > 0 ? (
+      <Section title="$ ls projects/" accent="#10b981" uppercase={false}>
+        {projects.map((p, i) => (
+          <div key={i} style={{ marginBottom: '3mm' }}>
+            <strong style={{ color: '#f1f5f9' }}>{p.title}</strong>
+            {p.description && <div style={{ color: '#cbd5e1' }}>{p.description}</div>}
+            {p.techStack.length > 0 && (
+              <div style={{ color: '#6ee7b7', fontSize: '8.5pt' }}>{p.techStack.join(' · ')}</div>
+            )}
+            {p.link && (
+              <div style={{ color: '#10b981', fontSize: '8.5pt' }}>{p.link}</div>
+            )}
+          </div>
+        ))}
+      </Section>
+    ) : null,
+
+    education: education.length > 0 ? (
+      <Section title="$ cat education.json" accent="#10b981" uppercase={false}>
+        {education.map((e, i) => (
+          <div key={i} style={{ marginBottom: '2mm' }}>
+            <strong style={{ color: '#f1f5f9' }}>{e.degree}</strong>
+            <div style={{ color: '#6ee7b7' }}>{e.institution}</div>
+            <div style={{ color: '#64748b', fontSize: '8.5pt' }}>{[e.period, e.location].filter(Boolean).join(' · ')}</div>
+          </div>
+        ))}
+      </Section>
+    ) : null,
+
+    certifications: certifications.length > 0 ? (
+      <Section title="$ cat certs.json" accent="#10b981" uppercase={false}>
+        {certifications.map((c, i) => (
+          <div key={i} style={{ marginBottom: '1.5mm', fontSize: '9pt' }}>
+            <strong style={{ color: '#f1f5f9' }}>{c.name}</strong>
+            {c.issuer && <span style={{ color: '#94a3b8' }}> · {c.issuer}</span>}
+            {c.year && <span style={{ color: '#64748b' }}> ({c.year})</span>}
+          </div>
+        ))}
+      </Section>
+    ) : null,
+  }
+
   return (
     <div
       className="resume-export-root"
@@ -30,7 +140,7 @@ export default function GitCommit() {
         lineHeight: 1.5,
       }}
     >
-      {/* ── Header ── */}
+      {/* ── Header (fixed) ── */}
       <header
         style={{
           background: '#020617',
@@ -58,122 +168,12 @@ export default function GitCommit() {
         </div>
       </header>
 
-      {personal.summary && (
-        <Section title="$ cat about.md" accent="#10b981">
-          <p style={{ margin: 0, color: '#cbd5e1' }}>{personal.summary}</p>
-        </Section>
-      )}
-
-      {skills.length > 0 && (
-        <Section title="$ ls skills/" accent="#10b981">
-          <div style={{ display: 'flex', flexWrap: 'wrap', gap: '1.5mm' }}>
-            {skills.map((s, i) => (
-              <span
-                key={i}
-                style={{
-                  fontSize: '8.5pt',
-                  padding: '0.5mm 2mm',
-                  background: '#064e3b',
-                  color: '#6ee7b7',
-                  borderRadius: 3,
-                }}
-              >
-                {s.name}
-              </span>
-            ))}
-          </div>
-        </Section>
-      )}
-
-      {experience.length > 0 && (
-        <Section title="$ git log --oneline --all" accent="#10b981">
-          {experience.map((e, i) => (
-            <div
-              key={i}
-              style={{
-                display: 'grid',
-                gridTemplateColumns: '6mm 1fr',
-                gap: '3mm',
-                marginBottom: '4mm',
-              }}
-            >
-              <TimelineNode first={i === 0} last={i === experience.length - 1} accent="#10b981" rail="#1e293b" />
-              <article>
-                <div style={{ display: 'flex', gap: '2mm', alignItems: 'baseline', flexWrap: 'wrap' }}>
-                  <span style={{ color: '#10b981', fontWeight: 700 }}>{fakeHash(`${e.role}${e.company}`)}</span>
-                  <span style={{ color: '#94a3b8' }}>({e.period || 'current'})</span>
-                  <strong style={{ color: '#f1f5f9', fontSize: '10pt' }}>{e.role}</strong>
-                </div>
-                <div style={{ color: '#94a3b8', fontSize: '9pt', marginTop: '1mm' }}>
-                  Authored at <span style={{ color: '#6ee7b7' }}>{e.company}</span>{e.location ? ` · ${e.location}` : ''}
-                </div>
-                {e.bullets.length > 0 && (
-                  <div style={{ marginTop: '2mm', color: '#cbd5e1' }}>
-                    <div style={{ color: '#64748b', fontSize: '8.5pt' }}>// changes:</div>
-                    <ul style={{ margin: '1mm 0 0', paddingLeft: '5mm', color: '#cbd5e1' }}>
-                      {e.bullets.map((b, j) => (
-                        <li key={j} style={{ marginBottom: '0.5mm' }}>{b}</li>
-                      ))}
-                    </ul>
-                  </div>
-                )}
-              </article>
-            </div>
-          ))}
-        </Section>
-      )}
-
-      {projects.length > 0 && (
-        <Section title="$ ls projects/" accent="#10b981">
-          {projects.map((p, i) => (
-            <div key={i} style={{ marginBottom: '3mm' }}>
-              <strong style={{ color: '#f1f5f9' }}>{p.title}</strong>
-              {p.description && <div style={{ color: '#cbd5e1' }}>{p.description}</div>}
-              {p.techStack.length > 0 && (
-                <div style={{ color: '#6ee7b7', fontSize: '8.5pt' }}>{p.techStack.join(' · ')}</div>
-              )}
-              {p.link && (
-                <div style={{ color: '#10b981', fontSize: '8.5pt' }}>{p.link}</div>
-              )}
-            </div>
-          ))}
-        </Section>
-      )}
-
-      <div style={{ display: 'grid', gridTemplateColumns: '1fr 1fr', gap: '6mm' }}>
-        {education.length > 0 && (
-          <Section title="$ cat education.json" accent="#10b981">
-            {education.map((e, i) => (
-              <div key={i} style={{ marginBottom: '2mm' }}>
-                <strong style={{ color: '#f1f5f9' }}>{e.degree}</strong>
-                <div style={{ color: '#6ee7b7' }}>{e.institution}</div>
-                <div style={{ color: '#64748b', fontSize: '8.5pt' }}>{[e.period, e.location].filter(Boolean).join(' · ')}</div>
-              </div>
-            ))}
-          </Section>
-        )}
-
-        {certifications.length > 0 && (
-          <Section title="$ cat certs.json" accent="#10b981">
-            {certifications.map((c, i) => (
-              <div key={i} style={{ marginBottom: '1.5mm', fontSize: '9pt' }}>
-                <strong style={{ color: '#f1f5f9' }}>{c.name}</strong>
-                {c.issuer && <span style={{ color: '#94a3b8' }}> · {c.issuer}</span>}
-                {c.year && <span style={{ color: '#64748b' }}> ({c.year})</span>}
-              </div>
-            ))}
-          </Section>
-        )}
-      </div>
+      {/* ── Body sections (drag-and-drop order honored here) ── */}
+      <OrderedSections
+        nodes={nodes}
+        sectionProps={{ accent: '#10b981', uppercase: false }}
+        customBodyStyle={{ color: '#cbd5e1' }}
+      />
     </div>
-  )
-}
-
-function Section({ title, accent, children }) {
-  return (
-    <section style={{ marginBottom: '5mm' }}>
-      <h2 style={{ fontSize: '9.5pt', color: accent, fontWeight: 700, margin: '0 0 2mm' }}>{title}</h2>
-      {children}
-    </section>
   )
 }

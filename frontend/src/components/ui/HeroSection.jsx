@@ -18,6 +18,8 @@ import {
   useReducedMotion,
 } from "framer-motion";
 import AnimatedCounter from "./AnimatedCounter";
+import DotPattern from "./dot-pattern-1";
+import { PatternText } from "./pattern-text";
 
 const DeferredWorldMap = lazy(() => import("./WorldMap"));
 const DeferredFeaturesCard = lazy(() => import("./FeaturesCard"));
@@ -205,14 +207,24 @@ export default function HeroSection() {
             </div>
           </motion.div>
 
-          {/* Headline */}
           <motion.h1
             variants={rise}
-            className="mt-8 text-5xl font-bold leading-[1.04] tracking-tight text-foreground md:text-8xl"
+            className="mt-8 flex flex-col items-center justify-center text-5xl font-bold leading-[1.04] tracking-tight text-foreground md:text-8xl"
           >
-            <span className="block">Land your dream job</span>
-            <span className="block">
-              with <span className="gradient-text-animated">careerpilot</span>
+            <span className="block text-center">Land your dream job with</span>
+            <span className="block mt-6 relative flex flex-wrap items-center justify-center gap-4 md:gap-6">
+              <div
+                aria-hidden="true"
+                className="pointer-events-none absolute -top-10 left-1/2 size-full -translate-x-1/2 rounded-full bg-[radial-gradient(ellipse_at_center,--theme(--color-foreground/.1),transparent_50%)] blur-[30px]"
+              />
+              <span className="relative inline-flex items-center justify-center border border-red-500 px-6 py-2 md:px-8 md:py-4">
+                <DotPattern width={5} height={5} />
+                <div className="absolute -left-1.5 -top-1.5 h-3 w-3 bg-red-500 text-white" />
+                <div className="absolute -bottom-1.5 -left-1.5 h-3 w-3 bg-red-500 text-white" />
+                <div className="absolute -right-1.5 -top-1.5 h-3 w-3 bg-red-500 text-white" />
+                <div className="absolute -bottom-1.5 -right-1.5 h-3 w-3 bg-red-500 text-white" />
+                <PatternText text="CAREERPILOT" className="relative z-20" />
+              </span>
             </span>
           </motion.h1>
 

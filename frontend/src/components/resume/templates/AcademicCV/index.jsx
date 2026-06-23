@@ -1,12 +1,83 @@
 import { useResume } from '../../../../context/ResumeContext'
 import Section from '../../shared/Section'
+import OrderedSections from '../../shared/OrderedSections'
 
 /**
  * AcademicCV — long-form academic CV with publications, grants, and
  * teaching sections. Single-column, dense metadata.
+ *
+ * The static publication / grants / teaching / service / presentations
+ * blocks are emitted as a fixed header slot so they appear above the
+ * order-aware body (summary + education + experience + projects +
+ * skills + certifications).
  */
 export default function AcademicCV() {
-  const { personal, education, experience } = useResume()
+  const { personal, experience, education, projects, skills, certifications } = useResume()
+
+  const nodes = {
+    summary: personal.summary ? (
+      <Section title="Research Interests" accent="#4338ca" spacing="Compact" uppercase={false}>
+        <p style={{ margin: 0, color: '#1e1b4b' }}>{personal.summary}</p>
+      </Section>
+    ) : null,
+
+    education: education.length > 0 ? (
+      <Section title="Education" accent="#4338ca" spacing="Compact" uppercase={false}>
+        {education.map((e, i) => (
+          <div key={i} style={{ marginBottom: '2mm' }}>
+            <div style={{ display: 'flex', justifyContent: 'space-between' }}>
+              <strong>{e.degree}</strong>
+              {e.period && <span style={{ color: '#6b7280' }}>{e.period}</span>}
+            </div>
+            <div style={{ fontStyle: 'italic', color: '#4338ca' }}>{e.institution}</div>
+            {e.description && <div style={{ fontSize: '9.5pt', color: '#6b7280', marginTop: '1mm' }}>{e.description}</div>}
+          </div>
+        ))}
+      </Section>
+    ) : null,
+
+    experience: experience.length > 0 ? (
+      <Section title="Academic Appointments" accent="#4338ca" spacing="Compact" uppercase={false}>
+        {experience.map((e, i) => (
+          <div key={i} style={{ marginBottom: '2mm' }}>
+            <div style={{ display: 'flex', justifyContent: 'space-between' }}>
+              <strong>{e.role}</strong>
+              {e.period && <span style={{ color: '#6b7280' }}>{e.period}</span>}
+            </div>
+            <div style={{ fontStyle: 'italic', color: '#4338ca' }}>{e.company}{e.location ? `, ${e.location}` : ''}</div>
+          </div>
+        ))}
+      </Section>
+    ) : null,
+
+    projects: projects.length > 0 ? (
+      <Section title="Selected Projects" accent="#4338ca" spacing="Compact" uppercase={false}>
+        {projects.map((p, i) => (
+          <div key={i} style={{ marginBottom: '2mm' }}>
+            <strong>{p.title}</strong>
+            {p.description && <div style={{ fontStyle: 'italic', color: '#4338ca' }}>{p.description}</div>}
+          </div>
+        ))}
+      </Section>
+    ) : null,
+
+    skills: skills.length > 0 ? (
+      <Section title="Technical Skills" accent="#4338ca" spacing="Compact" uppercase={false}>
+        <div style={{ color: '#1e1b4b' }}>{skills.map((s) => s.name).join(' · ')}</div>
+      </Section>
+    ) : null,
+
+    certifications: certifications.length > 0 ? (
+      <Section title="Professional Memberships" accent="#4338ca" spacing="Compact" uppercase={false}>
+        {certifications.map((c, i) => (
+          <div key={i} style={{ marginBottom: '1.5mm' }}>
+            <strong>{c.name}</strong>
+            {c.issuer && <span style={{ color: '#6b7280' }}> · {c.issuer}</span>}
+          </div>
+        ))}
+      </Section>
+    ) : null,
+  }
 
   return (
     <div
@@ -22,6 +93,7 @@ export default function AcademicCV() {
         lineHeight: 1.45,
       }}
     >
+      {/* ── Header (fixed) ── */}
       <header style={{ marginBottom: '6mm' }}>
         <h1 style={{ margin: 0, fontSize: '22pt', fontWeight: 700, color: '#1e1b4b' }}>
           {personal.name || 'Your Name'}
@@ -34,66 +106,54 @@ export default function AcademicCV() {
         </div>
       </header>
 
-      <Section title="Academic Appointments" accent="#4338ca" spacing="Compact">
-        {experience.slice(0, 2).map((e, i) => (
-          <div key={i} style={{ marginBottom: '2mm' }}>
-            <div style={{ display: 'flex', justifyContent: 'space-between' }}>
-              <strong>{e.role}</strong>
-              {e.period && <span style={{ color: '#6b7280' }}>{e.period}</span>}
-            </div>
-            <div style={{ fontStyle: 'italic', color: '#4338ca' }}>{e.company}{e.location ? `, ${e.location}` : ''}</div>
-          </div>
-        ))}
-      </Section>
+      {/* ── Body sections (drag-and-drop order honored here) ── */}
+      <OrderedSections
+        nodes={nodes}
+        sectionProps={{ accent: '#4338ca', spacing: 'Compact', uppercase: false }}
+        customBodyStyle={{ color: '#1e1b4b' }}
+        header={
+          <>
+            <Section title="Publications" accent="#4338ca" spacing="Compact" uppercase={false}>
+              <ol style={{ margin: 0, paddingLeft: '5mm' }}>
+                <li style={{ marginBottom: '1.5mm' }}>Author, A. (2024). "Title of Paper." <em>Journal of Research</em>, 12(3), 45-67.</li>
+                <li style={{ marginBottom: '1.5mm' }}>Author, A., &amp; Co-Author, B. (2023). "Title of Paper." <em>Journal of Research</em>, 11(2), 12-34.</li>
+                <li style={{ marginBottom: '1.5mm' }}>Author, A. (2022). "Title of Paper." <em>Conference Proceedings</em>, 2022, 100-115.</li>
+              </ol>
+            </Section>
 
-      <Section title="Education" accent="#4338ca" spacing="Compact">
-        {education.map((e, i) => (
-          <div key={i} style={{ marginBottom: '2mm' }}>
-            <div style={{ display: 'flex', justifyContent: 'space-between' }}>
-              <strong>{e.degree}</strong>
-              {e.period && <span style={{ color: '#6b7280' }}>{e.period}</span>}
-            </div>
-            <div style={{ fontStyle: 'italic', color: '#4338ca' }}>{e.institution}</div>
-            {e.description && <div style={{ fontSize: '9.5pt', color: '#6b7280', marginTop: '1mm' }}>{e.description}</div>}
-          </div>
-        ))}
-      </Section>
+            <Section title="Grants & Fellowships" accent="#4338ca" spacing="Compact" uppercase={false}>
+              <ul style={{ margin: 0, paddingLeft: '5mm' }}>
+                <li style={{ marginBottom: '1.5mm' }}>NSF Grant #XXXXX — "$XX,XXX" (2023-2025). Role: PI.</li>
+                <li style={{ marginBottom: '1.5mm' }}>University Research Fellowship — "$X,XXX" (2022). Role: Sole PI.</li>
+              </ul>
+            </Section>
 
-      <Section title="Publications" accent="#4338ca" spacing="Compact">
-        <ol style={{ margin: 0, paddingLeft: '5mm' }}>
-          <li style={{ marginBottom: '1.5mm' }}>Author, A. (2024). "Title of Paper." <em>Journal of Research</em>, 12(3), 45-67.</li>
-          <li style={{ marginBottom: '1.5mm' }}>Author, A., & Co-Author, B. (2023). "Title of Paper." <em>Journal of Research</em>, 11(2), 12-34.</li>
-          <li style={{ marginBottom: '1.5mm' }}>Author, A. (2022). "Title of Paper." <em>Conference Proceedings</em>, 2022, 100-115.</li>
-        </ol>
-      </Section>
+            <Section title="Teaching Experience" accent="#4338ca" spacing="Compact" uppercase={false}>
+              <ul style={{ margin: 0, paddingLeft: '5mm' }}>
+                <li style={{ marginBottom: '1.5mm' }}>Graduate Seminar — "Topic Title" (Spring 2024, 2025)</li>
+                <li style={{ marginBottom: '1.5mm' }}>Undergraduate Course — "Topic Title" (Fall 2022, 2023, 2024)</li>
+              </ul>
+            </Section>
+          </>
+        }
+        footer={
+          <>
+            <Section title="Service" accent="#4338ca" spacing="Compact" uppercase={false}>
+              <ul style={{ margin: 0, paddingLeft: '5mm' }}>
+                <li style={{ marginBottom: '1.5mm' }}>Editorial board, <em>Journal of Research</em> (2023-present).</li>
+                <li style={{ marginBottom: '1.5mm' }}>Committee member, University Faculty Senate (2022-2024).</li>
+              </ul>
+            </Section>
 
-      <Section title="Grants & Fellowships" accent="#4338ca" spacing="Compact">
-        <ul style={{ margin: 0, paddingLeft: '5mm' }}>
-          <li style={{ marginBottom: '1.5mm' }}>NSF Grant #XXXXX — "$XX,XXX" (2023-2025). Role: PI.</li>
-          <li style={{ marginBottom: '1.5mm' }}>University Research Fellowship — "$X,XXX" (2022). Role: Sole PI.</li>
-        </ul>
-      </Section>
-
-      <Section title="Teaching Experience" accent="#4338ca" spacing="Compact">
-        <ul style={{ margin: 0, paddingLeft: '5mm' }}>
-          <li style={{ marginBottom: '1.5mm' }}>Graduate Seminar — "Topic Title" (Spring 2024, 2025)</li>
-          <li style={{ marginBottom: '1.5mm' }}>Undergraduate Course — "Topic Title" (Fall 2022, 2023, 2024)</li>
-        </ul>
-      </Section>
-
-      <Section title="Service" accent="#4338ca" spacing="Compact">
-        <ul style={{ margin: 0, paddingLeft: '5mm' }}>
-          <li style={{ marginBottom: '1.5mm' }}>Editorial board, <em>Journal of Research</em> (2023-present).</li>
-          <li style={{ marginBottom: '1.5mm' }}>Committee member, University Faculty Senate (2022-2024).</li>
-        </ul>
-      </Section>
-
-      <Section title="Presentations" accent="#4338ca" spacing="Compact">
-        <ul style={{ margin: 0, paddingLeft: '5mm' }}>
-          <li style={{ marginBottom: '1.5mm' }}>"Title of Talk." Annual Conference. City, State. (2024).</li>
-          <li style={{ marginBottom: '1.5mm' }}>"Title of Talk." Annual Conference. City, State. (2023).</li>
-        </ul>
-      </Section>
+            <Section title="Presentations" accent="#4338ca" spacing="Compact" uppercase={false}>
+              <ul style={{ margin: 0, paddingLeft: '5mm' }}>
+                <li style={{ marginBottom: '1.5mm' }}>"Title of Talk." Annual Conference. City, State. (2024).</li>
+                <li style={{ marginBottom: '1.5mm' }}>"Title of Talk." Annual Conference. City, State. (2023).</li>
+              </ul>
+            </Section>
+          </>
+        }
+      />
     </div>
   )
 }

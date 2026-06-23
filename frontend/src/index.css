@@ -1,5 +1,25 @@
 @import "tailwindcss";
 
+@theme inline {
+  --animate-shadanim: shadanim 15s linear infinite;
+  --animate-scanline: scanline 3s linear infinite;
+}
+
+@keyframes shadanim {
+  0% {
+    background-position: 100% -100%;
+  }
+}
+
+@keyframes scanline {
+  0% {
+    transform: translateY(-100%);
+  }
+  100% {
+    transform: translateY(100%);
+  }
+}
+
 @theme {
   --color-background: var(--background);
   --color-foreground: var(--foreground);
@@ -347,6 +367,18 @@ body {
     font-weight: 600;
     transition: all 0.3s cubic-bezier(0.4, 0, 0.2, 1);
     color: var(--muted-foreground);
+  }
+
+  @keyframes shine {
+    0% {
+      background-position: 100%;
+    }
+    100% {
+      background-position: -100%;
+    }
+  }
+  .animate-shine {
+    animation: shine 5s linear infinite;
   }
 
   .nav-link-active {

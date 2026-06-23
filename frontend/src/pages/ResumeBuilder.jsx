@@ -1959,6 +1959,10 @@ useEffect(() => {
                         link: p.link,
                       })),
                       skills: normalizedSkills,
+                      // Carry the drag-and-drop section order so the template
+                      // renders sections in the order chosen in the builder.
+                      sectionOrder,
+                      customSections: [],
                     }
                   }
                 })}

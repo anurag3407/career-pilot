@@ -1,4 +1,4 @@
-import { FileText, Palette, Flame, Github, Network, Briefcase, Mic } from 'lucide-react';
+import { FileText, Palette, Flame, Github, Network, Briefcase, Mic, Users } from 'lucide-react';
 import * as Ill from '../components/landing/illustrations';
 
 export const FEATURES = [
@@ -117,6 +117,7 @@ export const FEATURES = [
       description: 'A brutally honest AI review of your resume against your target role. Fast, gamified, and actionable.',
       primaryCta: { text: 'Roast my resume', to: '/resume-roast/analyze' },
       secondaryCta: { text: 'How it works', href: '#demo' },
+      tertiaryCta: { text: 'Skip to Builder', href: '/hub/resume' },
       stats: [{ value: '30s', label: 'Analysis time' }, { value: '100+', label: 'Data points checked' }],
     },
     showcase: {
@@ -311,6 +312,50 @@ export const FEATURES = [
       { name: 'Emily R.', role: 'UX Designer', metric: '95% Confidence', quote: 'The mock interviews were incredibly realistic. The feedback helped me fix habits I didn’t even know I had.', avatar: 'https://api.dicebear.com/7.x/avataaars/svg?seed=Emily', rating: 5 },
     ] },
     cta: { headline: 'Don’t practice on the real thing.', subtext: 'Hone your skills with AI.', ctaText: 'Start mock interview', ctaTo: '/mock-interview/practice' },
+  },
+  {
+    slug: 'recruiters',
+    name: 'Recruiter Pipeline',
+    icon: Users,
+    size: 'medium',
+    badge: 'Enterprise',
+    tagline: 'Source, score, and hire the top 1% of talent with AI.',
+    Illustration: null,
+    primaryAction: { label: 'Start Hiring', to: '/register' },
+    seo: {
+      title: 'AI Recruiting Pipeline — CareerPilot',
+      description: 'Find the best candidates faster. AI matching, scoring, and automated pipelines.',
+      keywords: 'recruiting, AI sourcing, ATS, talent pipeline',
+      canonical: 'https://careerpilot.app/recruiters',
+    },
+    hero: {
+      badgeText: 'For Recruiters',
+      title: 'Hire the top 1%',
+      accentText: 'faster than ever.',
+      description: 'Stop sifting through hundreds of mismatched resumes. Our AI ranks candidates by true fit and handles the initial screening automatically.',
+      primaryCta: { text: 'Start hiring now', to: '/register' },
+      secondaryCta: { text: 'See how it works', href: '#demo' },
+      stats: [{ value: '5x', label: 'Faster sourcing' }, { value: '98%', label: 'Match accuracy' }],
+    },
+    showcase: {
+      heading: 'Upgrade your recruiting pipeline',
+      features: [
+        { icon: 'Target', title: 'Smart matching', description: 'AI scores candidates against your exact requirements.' },
+        { icon: 'Zap', title: 'Instant screening', description: 'Automated first-round Q&A.' },
+        { icon: 'Users', title: 'Talent pooling', description: 'Keep track of runners-up for future roles.' },
+        { icon: 'BarChart', title: 'Analytics', description: 'Insights into your hiring funnel velocity.' },
+      ],
+    },
+    video: { heading: 'Candidate scoring in action', subheading: 'Watch how we rank applicants.', videoUrl: '', caption: 'Demo coming soon.' },
+    howItWorks: { title: 'Hire better, faster', steps: [
+      { number: 1, title: 'Post a job', description: 'Define the ideal candidate.', illustration: null },
+      { number: 2, title: 'AI ranks', description: 'Applicants are scored instantly.', illustration: null },
+      { number: 3, title: 'Interview the best', description: 'Skip straight to the top 10%.', illustration: null },
+    ] },
+    testimonials: { heading: 'Trusted by hiring teams', items: [
+      { name: 'Sarah J.', role: 'Head of Talent', metric: 'Cut time-to-hire by 40%', quote: 'The AI scoring is spot on. We no longer waste time on phone screens with unqualified candidates.', avatar: 'https://api.dicebear.com/7.x/avataaars/svg?seed=Sarah', rating: 5 },
+    ] },
+    cta: { headline: 'Ready to transform your hiring?', subtext: 'Join forward-thinking talent teams.', ctaText: 'Get started', ctaTo: '/register' },
   }
 ];
 

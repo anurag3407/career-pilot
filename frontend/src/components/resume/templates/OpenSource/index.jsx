@@ -1,6 +1,6 @@
 import { useResume } from '../../../../context/ResumeContext'
 import Section from '../../shared/Section'
-import ExperienceRow from '../../shared/ExperienceRow'
+import OrderedSections from '../../shared/OrderedSections'
 
 /**
  * OpenSource — contribution-graph SVG in header (53 weeks × 7 days
@@ -26,6 +26,90 @@ export default function OpenSource() {
   const { cells, weeks, days } = buildHeatmap()
   const levelColors = ['#ecfdf5', '#a7f3d0', '#6ee7b7', '#34d399', '#047857']
 
+  const nodes = {
+    summary: personal.summary ? (
+      <Section title="// about" accent="#047857" uppercase={false}>
+        <p style={{ margin: 0, color: '#334155', fontFamily: '"Helvetica Neue", sans-serif' }}>{personal.summary}</p>
+      </Section>
+    ) : null,
+
+    experience: experience.length > 0 ? (
+      <Section title="// experience" accent="#047857" uppercase={false}>
+        {experience.map((e, i) => (
+          <div key={i} style={{ marginBottom: '4mm' }}>
+            <div style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'baseline' }}>
+              <strong style={{ fontSize: '11pt', color: '#0f172a', fontFamily: '"Helvetica Neue", sans-serif' }}>
+                {e.role}
+              </strong>
+              {e.period && <span style={{ color: '#6b7280', fontSize: '9pt' }}>{e.period}</span>}
+            </div>
+            <div style={{ color: '#047857', fontFamily: '"Helvetica Neue", sans-serif' }}>
+              @{e.company}{e.location ? ` · ${e.location}` : ''}
+            </div>
+            {e.bullets.length > 0 && (
+              <ul style={{ margin: '1.5mm 0 0', paddingLeft: '5mm', color: '#334155', fontFamily: '"Helvetica Neue", sans-serif' }}>
+                {e.bullets.map((b, j) => (
+                  <li key={j} style={{ marginBottom: '0.7mm' }}>{b}</li>
+                ))}
+              </ul>
+            )}
+          </div>
+        ))}
+      </Section>
+    ) : null,
+
+    projects: projects.length > 0 ? (
+      <Section title="// open source projects" accent="#047857" uppercase={false}>
+        {projects.map((p, i) => (
+          <div key={i} style={{ marginBottom: '3mm', fontFamily: '"Helvetica Neue", sans-serif' }}>
+            <strong>{p.title}</strong>
+            {p.description && <div style={{ color: '#334155' }}>{p.description}</div>}
+            {p.techStack.length > 0 && (
+              <div style={{ color: '#6b7280', fontSize: '8.5pt' }}>{p.techStack.join(' · ')}</div>
+            )}
+            {p.link && <div style={{ color: '#047857', fontSize: '8.5pt' }}>{p.link}</div>}
+          </div>
+        ))}
+      </Section>
+    ) : null,
+
+    skills: skills.length > 0 ? (
+      <Section title="// skills" accent="#047857" uppercase={false}>
+        <div style={{ display: 'flex', flexWrap: 'wrap', gap: '1mm' }}>
+          {skills.map((s, i) => (
+            <span key={i} style={{ fontSize: '8.5pt', padding: '0.5mm 2mm', background: '#d1fae5', color: '#047857', borderRadius: 2 }}>
+              {s.name}
+            </span>
+          ))}
+        </div>
+      </Section>
+    ) : null,
+
+    education: education.length > 0 ? (
+      <Section title="// education" accent="#047857" uppercase={false}>
+        {education.map((e, i) => (
+          <div key={i} style={{ marginBottom: '2mm', fontFamily: '"Helvetica Neue", sans-serif' }}>
+            <strong>{e.degree}</strong>
+            <div style={{ color: '#047857', fontSize: '9pt' }}>{e.institution}</div>
+            <div style={{ color: '#6b7280', fontSize: '8.5pt' }}>{e.period}</div>
+          </div>
+        ))}
+      </Section>
+    ) : null,
+
+    certifications: certifications.length > 0 ? (
+      <Section title="// certs" accent="#047857" uppercase={false}>
+        {certifications.map((c, i) => (
+          <div key={i} style={{ marginBottom: '1.5mm', fontFamily: '"Helvetica Neue", sans-serif' }}>
+            <strong>{c.name}</strong>
+            {c.issuer && <span style={{ color: '#6b7280' }}> · {c.issuer}</span>}
+            {c.year && <span style={{ color: '#6b7280' }}> ({c.year})</span>}
+          </div>
+        ))}
+      </Section>
+    ) : null,
+  }
+
   return (
     <div
       className="resume-export-root"
@@ -40,6 +124,7 @@ export default function OpenSource() {
         lineHeight: 1.5,
       }}
     >
+      {/* ── Header (fixed) ── */}
       <header style={{ borderBottom: '0.5pt solid #e5e7eb', paddingBottom: '5mm', marginBottom: '6mm' }}>
         <h1 style={{ margin: 0, fontSize: '22pt', fontWeight: 700, color: '#0f172a', fontFamily: '"Helvetica Neue", sans-serif' }}>
           {personal.name || 'Your Name'}
@@ -56,7 +141,7 @@ export default function OpenSource() {
         </div>
       </header>
 
-      {/* ── Heatmap ── */}
+      {/* ── Heatmap (fixed header slot) ── */}
       <section style={{ marginBottom: '6mm' }}>
         <div style={{ fontSize: '9pt', color: '#374151', marginBottom: '2mm' }}>$ git log --graph --decorate --all</div>
         <svg
@@ -86,89 +171,12 @@ export default function OpenSource() {
         </div>
       </section>
 
-      {personal.summary && (
-        <Section title="// about" accent="#047857">
-          <p style={{ margin: 0, color: '#334155', fontFamily: '"Helvetica Neue", sans-serif' }}>{personal.summary}</p>
-        </Section>
-      )}
-
-      {experience.length > 0 && (
-        <Section title="// experience" accent="#047857">
-          {experience.map((e, i) => (
-            <div key={i} style={{ marginBottom: '4mm' }}>
-              <div style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'baseline' }}>
-                <strong style={{ fontSize: '11pt', color: '#0f172a', fontFamily: '"Helvetica Neue", sans-serif' }}>
-                  {e.role}
-                </strong>
-                {e.period && <span style={{ color: '#6b7280', fontSize: '9pt' }}>{e.period}</span>}
-              </div>
-              <div style={{ color: '#047857', fontFamily: '"Helvetica Neue", sans-serif' }}>
-                @{e.company}{e.location ? ` · ${e.location}` : ''}
-              </div>
-              {e.bullets.length > 0 && (
-                <ul style={{ margin: '1.5mm 0 0', paddingLeft: '5mm', color: '#334155', fontFamily: '"Helvetica Neue", sans-serif' }}>
-                  {e.bullets.map((b, j) => (
-                    <li key={j} style={{ marginBottom: '0.7mm' }}>{b}</li>
-                  ))}
-                </ul>
-              )}
-            </div>
-          ))}
-        </Section>
-      )}
-
-      {projects.length > 0 && (
-        <Section title="// open source projects" accent="#047857">
-          {projects.map((p, i) => (
-            <div key={i} style={{ marginBottom: '3mm', fontFamily: '"Helvetica Neue", sans-serif' }}>
-              <strong>{p.title}</strong>
-              {p.description && <div style={{ color: '#334155' }}>{p.description}</div>}
-              {p.techStack.length > 0 && (
-                <div style={{ color: '#6b7280', fontSize: '8.5pt' }}>{p.techStack.join(' · ')}</div>
-              )}
-              {p.link && <div style={{ color: '#047857', fontSize: '8.5pt' }}>{p.link}</div>}
-            </div>
-          ))}
-        </Section>
-      )}
-
-      <div style={{ display: 'grid', gridTemplateColumns: '1fr 1fr', gap: '6mm' }}>
-        {skills.length > 0 && (
-          <Section title="// skills" accent="#047857">
-            <div style={{ display: 'flex', flexWrap: 'wrap', gap: '1mm' }}>
-              {skills.map((s, i) => (
-                <span key={i} style={{ fontSize: '8.5pt', padding: '0.5mm 2mm', background: '#d1fae5', color: '#047857', borderRadius: 2 }}>
-                  {s.name}
-                </span>
-              ))}
-            </div>
-          </Section>
-        )}
-
-        {education.length > 0 && (
-          <Section title="// education" accent="#047857">
-            {education.map((e, i) => (
-              <div key={i} style={{ marginBottom: '2mm', fontFamily: '"Helvetica Neue", sans-serif' }}>
-                <strong>{e.degree}</strong>
-                <div style={{ color: '#047857', fontSize: '9pt' }}>{e.institution}</div>
-                <div style={{ color: '#6b7280', fontSize: '8.5pt' }}>{e.period}</div>
-              </div>
-            ))}
-          </Section>
-        )}
-      </div>
-
-      {certifications.length > 0 && (
-        <Section title="// certs" accent="#047857">
-          {certifications.map((c, i) => (
-            <div key={i} style={{ marginBottom: '1.5mm', fontFamily: '"Helvetica Neue", sans-serif' }}>
-              <strong>{c.name}</strong>
-              {c.issuer && <span style={{ color: '#6b7280' }}> · {c.issuer}</span>}
-              {c.year && <span style={{ color: '#6b7280' }}> ({c.year})</span>}
-            </div>
-          ))}
-        </Section>
-      )}
+      {/* ── Body sections (drag-and-drop order honored here) ── */}
+      <OrderedSections
+        nodes={nodes}
+        sectionProps={{ accent: '#047857', uppercase: false }}
+        customBodyStyle={{ color: '#334155' }}
+      />
     </div>
   )
 }

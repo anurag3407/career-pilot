@@ -9,6 +9,7 @@ import TestimonialsSection from '../components/ui/TestimonialsSection'
 import CTASection from '../components/ui/CTASection'
 import Footer from '../components/ui/Footer'
 import { StackedCircularFooter } from '../components/ui/stacked-circular-footer'
+import MultiOrbitIntegrations from '../components/ui/multi-orbit-semi-circle'
 import Seo from '../components/Seo'
 
 export default function Home() {
@@ -60,6 +61,9 @@ export default function Home() {
 
       {/* CTA Section */}
       <CTASection />
+
+      {/* Integrations */}
+      <MultiOrbitIntegrations />
 
       {/* Footer */}
       <Footer />

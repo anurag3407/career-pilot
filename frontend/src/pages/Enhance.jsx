@@ -1,11 +1,12 @@
 import { useState, useEffect, useRef } from 'react'
-import { useParams, useNavigate } from 'react-router-dom'
+import { useParams, useNavigate, Link } from 'react-router-dom'
 import toast from 'react-hot-toast'
 import { motion } from 'framer-motion'
 import { resumeApi, enhanceApi, portfolioApi } from '../services/api'
 import { auth } from '../config/firebase'
 import { decryptKey } from '../utils/encryption'
 import ReactMarkdown from 'react-markdown'
+import { DragDropContext, Droppable, Draggable } from '@hello-pangea/dnd'
 import { triggerConfetti } from '../utils/confetti'
 import ResumeAnalysisSkeleton from '../components/ui/ResumeAnalysisSkeleton'
 import {
@@ -32,7 +33,9 @@ import {
   Brain,
   Edit3,
   ClipboardList,
-  Globe
+  Globe,
+  GripVertical,
+  Layers
 } from 'lucide-react'
 import { SkeletonList } from '../components/ui/Skeleton'
 import ResumeScore from '../components/ResumeScore'
@@ -350,6 +353,132 @@ const SeniorTipCard = ({ tip, index }) => {
           )}
         </div>
       </div>
+    </motion.div>
+  )
+}
+
+// ─── Drag-and-drop Section Order panel ────────────────────────────────────────
+const SECTION_LABELS = {
+  education: 'Education',
+  experience: 'Experience',
+  projects: 'Projects',
+  skills: 'Skills',
+  certifications: 'Certifications',
+}
+const STANDARD_SECTIONS = ['education', 'experience', 'projects', 'skills', 'certifications']
+
+// Seed the reorder list from the saved sectionOrder, then append any standard
+// or custom sections not yet present so nothing is missing. Returns [{id,label}].
+function buildSectionItems(resume) {
+  const saved = Array.isArray(resume?.sectionOrder) ? resume.sectionOrder.filter(Boolean) : []
+  const custom = Array.isArray(resume?.customSections) ? resume.customSections : []
+  const labelFor = (id) => SECTION_LABELS[id] || custom.find((c) => c.id === id)?.title || id
+  const isKnown = (id) => Boolean(SECTION_LABELS[id]) || custom.some((c) => c.id === id)
+  const seen = new Set()
+  const ids = []
+  for (const id of saved) if (isKnown(id) && !seen.has(id)) { ids.push(id); seen.add(id) }
+  for (const id of STANDARD_SECTIONS) if (!seen.has(id)) { ids.push(id); seen.add(id) }
+  for (const c of custom) if (c?.id && !seen.has(c.id)) { ids.push(c.id); seen.add(c.id) }
+  return ids.map((id) => ({ id, label: labelFor(id) }))
+}
+
+function SectionOrderPanel({ resumeId, resume }) {
+  const [items, setItems] = useState(() => buildSectionItems(resume))
+  const [saving, setSaving] = useState(false)
+
+  // Re-seed when the resume loads / its saved order changes.
+  useEffect(() => {
+    setItems(buildSectionItems(resume))
+    // eslint-disable-next-line react-hooks/exhaustive-deps
+  }, [resume?.id, resume?.sectionOrder])
+
+  const persist = async (next) => {
+    setItems(next)
+    if (!resumeId) return
+    setSaving(true)
+    try {
+      await resumeApi.reorderSections(resumeId, next.map((i) => i.id))
+      toast.success('Section order saved')
+    } catch (_e) {
+      toast.error('Failed to save section order')
+    } finally {
+      setSaving(false)
+    }
+  }
+
+  const onDragEnd = (result) => {
+    if (!result.destination || result.destination.index === result.source.index) return
+    const next = Array.from(items)
+    const [moved] = next.splice(result.source.index, 1)
+    next.splice(result.destination.index, 0, moved)
+    persist(next)
+  }
+
+  return (
+    <motion.div
+      initial={{ opacity: 0, y: 20 }}
+      animate={{ opacity: 1, y: 0 }}
+      className="bg-background/50 border border-border rounded-2xl p-6 mb-8"
+    >
+      <div className="flex items-center gap-3 mb-4">
+        <div className="w-10 h-10 bg-primary/20 rounded-xl flex items-center justify-center">
+          <Layers className="w-5 h-5 text-primary" />
+        </div>
+        <div>
+          <h2 className="text-lg font-semibold text-foreground">Section Order</h2>
+          <p className="text-sm text-muted-foreground">
+            Drag to reorder how sections appear in your resume template
+          </p>
+        </div>
+        {saving && <span className="ml-auto text-xs text-muted-foreground">Saving…</span>}
+      </div>
+
+      <DragDropContext onDragEnd={onDragEnd}>
+        <Droppable droppableId="enhance-sections">
+          {(provided) => (
+            <div ref={provided.innerRef} {...provided.droppableProps} className="space-y-2">
+              {items.map((item, index) => (
+                <Draggable key={item.id} draggableId={item.id} index={index}>
+                  {(prov, snapshot) => (
+                    <div
+                      ref={prov.innerRef}
+                      {...prov.draggableProps}
+                      className={`flex items-center gap-3 px-4 py-3 rounded-xl border bg-muted/40 transition-shadow ${
+                        snapshot.isDragging ? 'border-primary shadow-lg' : 'border-border'
+                      }`}
+                    >
+                      <span
+                        {...prov.dragHandleProps}
+                        className="text-muted-foreground hover:text-foreground cursor-grab active:cursor-grabbing"
+                        aria-label={`Drag ${item.label}`}
+                      >
+                        <GripVertical className="w-4 h-4" />
+                      </span>
+                      <span className="text-sm font-medium text-foreground">{item.label}</span>
+                      <span className="ml-auto text-xs text-muted-foreground tabular-nums">{index + 1}</span>
+                    </div>
+                  )}
+                </Draggable>
+              ))}
+              {provided.placeholder}
+            </div>
+          )}
+        </Droppable>
+      </DragDropContext>
+
+      <p className="mt-3 text-xs text-muted-foreground">
+        Summary always appears first. Sections with no content are skipped when the template renders.
+        Your order is honored by order-aware templates (e.g. Ivy League).
+      </p>
+
+      <Link
+        to={`/resume-templates?resumeId=${resumeId}`}
+        className="mt-4 inline-flex items-center gap-2 px-4 py-2 rounded-lg bg-primary/10 text-primary hover:bg-primary/20 transition-colors text-sm font-medium"
+      >
+        <Layers className="w-4 h-4" />
+        Preview &amp; export in a template
+        <ArrowRight className="w-4 h-4" />
+      </Link>
     </motion.div>
   )
 }
@@ -754,6 +883,9 @@ export default function Enhance() {
             </div>
           </motion.div>
         )}
+
+        {/* Section Order (drag-and-drop) — always available once loaded */}
+        {resume && <SectionOrderPanel resumeId={resumeId} resume={resume} />}
 
         {/* Analyzing State */}
         {analyzing && <ResumeAnalysisSkeleton />}

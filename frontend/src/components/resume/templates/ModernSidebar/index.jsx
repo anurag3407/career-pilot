@@ -1,4 +1,7 @@
 import { useResume } from '../../../../context/ResumeContext'
+import Section from '../../shared/Section'
+import ExperienceRow from '../../shared/ExperienceRow'
+import OrderedSections from '../../shared/OrderedSections'
 
 /**
  * Modern Sidebar — two-column resume template.
@@ -9,6 +12,9 @@ import { useResume } from '../../../../context/ResumeContext'
  * Designed for multi-page A4 output. No fixed heights — sections flow
  * naturally across pages. Use .resume-export-root as the canvas root for
  * PDF export targeting.
+ *
+ * Migrated to the OrderedSections pattern: the order-aware body lives in
+ * the right main column; the left sidebar acts as a fixed header slot.
  */
 export default function ModernSidebar() {
   const { personal, experience, education, projects, skills, certifications } =
@@ -20,6 +26,50 @@ export default function ModernSidebar() {
     .slice(0, 2)
     .map(s => s[0]?.toUpperCase())
     .join('')
+
+  const nodes = {
+    summary: personal.summary ? (
+      <Section title="Summary" accent="#0f766e" uppercase={false}>
+        <p style={{ margin: 0, color: '#374151' }}>{personal.summary}</p>
+      </Section>
+    ) : null,
+
+    experience: experience.length > 0 ? (
+      <Section title="Experience" accent="#0f766e" uppercase={false}>
+        {experience.map((e, i) => (
+          <ExperienceRow
+            key={i}
+            exp={e}
+            roleColor="#0f172a"
+            companyColor="#0f766e"
+            periodColor="#6b7280"
+            bulletColor="#374151"
+            fontSize="10pt"
+          />
+        ))}
+      </Section>
+    ) : null,
+
+    projects: projects.length > 0 ? (
+      <Section title="Projects" accent="#0f766e" uppercase={false}>
+        {projects.map((p, i) => (
+          <article key={i} style={{ marginBottom: '4mm' }}>
+            <h3 style={{ margin: 0, fontSize: '10.5pt', fontWeight: 700, color: '#0f172a' }}>
+              {p.title || 'Project'}
+            </h3>
+            {p.description && (
+              <p style={{ margin: '1mm 0', color: '#374151' }}>{p.description}</p>
+            )}
+            {p.techStack.length > 0 && (
+              <div style={{ fontSize: '9pt', color: '#0f766e', fontWeight: 600 }}>
+                {p.techStack.join(' · ')}
+              </div>
+            )}
+          </article>
+        ))}
+      </Section>
+    ) : null,
+  }
 
   return (
     <div
@@ -36,7 +86,7 @@ export default function ModernSidebar() {
         gridTemplateColumns: '70mm 1fr',
       }}
     >
-      {/* ─── Sidebar ─── */}
+      {/* ─── Sidebar (acts as a fixed header slot) ─── */}
       <aside
         style={{
           background: '#0f766e',
@@ -158,60 +208,12 @@ export default function ModernSidebar() {
           )}
         </header>
 
-        {personal.summary && (
-          <Section title="Summary">
-            <p style={{ margin: 0, color: '#374151' }}>{personal.summary}</p>
-          </Section>
-        )}
-
-        {experience.length > 0 && (
-          <Section title="Experience">
-            {experience.map((e, i) => (
-              <article key={i} style={{ marginBottom: '5mm' }}>
-                <div style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'baseline' }}>
-                  <h3 style={{ margin: 0, fontSize: '11pt', fontWeight: 700, color: '#0f172a' }}>
-                    {e.role || 'Role'}
-                  </h3>
-                  {e.period && (
-                    <span style={{ fontSize: '9pt', color: '#6b7280', whiteSpace: 'nowrap' }}>
-                      {e.period}
-                    </span>
-                  )}
-                </div>
-                <div style={{ fontSize: '10pt', color: '#0f766e', fontWeight: 600 }}>
-                  {[e.company, e.location].filter(Boolean).join(' · ')}
-                </div>
-                {e.bullets.length > 0 && (
-                  <ul style={{ margin: '2mm 0 0', paddingLeft: '5mm', color: '#374151' }}>
-                    {e.bullets.map((b, j) => (
-                      <li key={j} style={{ marginBottom: '1mm' }}>{b}</li>
-                    ))}
-                  </ul>
-                )}
-              </article>
-            ))}
-          </Section>
-        )}
-
-        {projects.length > 0 && (
-          <Section title="Projects">
-            {projects.map((p, i) => (
-              <article key={i} style={{ marginBottom: '4mm' }}>
-                <h3 style={{ margin: 0, fontSize: '10.5pt', fontWeight: 700, color: '#0f172a' }}>
-                  {p.title || 'Project'}
-                </h3>
-                {p.description && (
-                  <p style={{ margin: '1mm 0', color: '#374151' }}>{p.description}</p>
-                )}
-                {p.techStack.length > 0 && (
-                  <div style={{ fontSize: '9pt', color: '#0f766e', fontWeight: 600 }}>
-                    {p.techStack.join(' · ')}
-                  </div>
-                )}
-              </article>
-            ))}
-          </Section>
-        )}
+        {/* ── Body sections (drag-and-drop order honored here) ── */}
+        <OrderedSections
+          nodes={nodes}
+          sectionProps={{ accent: '#0f766e', uppercase: false }}
+          customBodyStyle={{ color: '#374151' }}
+        />
       </main>
     </div>
   )
@@ -230,28 +232,6 @@ function SidebarSection({ title, children }) {
           margin: '0 0 3mm',
           paddingBottom: '1.5mm',
           borderBottom: '0.5pt solid #14b8a6',
-        }}
-      >
-        {title}
-      </h2>
-      {children}
-    </section>
-  )
-}
-
-function Section({ title, children }) {
-  return (
-    <section style={{ marginBottom: '7mm' }}>
-      <h2
-        style={{
-          fontSize: '11pt',
-          fontWeight: 700,
-          textTransform: 'uppercase',
-          letterSpacing: '2px',
-          color: '#0f766e',
-          margin: '0 0 3mm',
-          paddingBottom: '1mm',
-          borderBottom: '1pt solid #ccfbf1',
         }}
       >
         {title}

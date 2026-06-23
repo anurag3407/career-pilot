@@ -17,7 +17,9 @@ import dummy from '../data/dummy_resume.json'
  *     education:   [{ degree, institution, period, location, description }],
  *     projects:    [{ title, description, techStack[], link }],
  *     skills:      [{ name, level, category }],
- *     certifications: [{ name, issuer, year }]
+ *     certifications: [{ name, issuer, year }],
+ *     sectionOrder:   [String]  // drag-and-drop order of body sections
+ *     customSections: [{ id, title, kind, items[], body, order }]
  *   }
  */
 
@@ -131,6 +133,22 @@ function normalizeCertification(item = {}) {
   }
 }
 
+// Mirrors backend/src/models/Resume.model.js customSections schema.
+const CUSTOM_SECTION_KINDS = ['list', 'paragraph', 'books', 'quotes']
+
+function normalizeCustomSection(item, index = 0) {
+  if (!item || typeof item !== 'object') return null
+  const kind = CUSTOM_SECTION_KINDS.includes(item.kind) ? item.kind : 'list'
+  return {
+    id: asString(item.id) || `custom-${index}`,
+    title: asString(item.title),
+    kind,
+    items: Array.isArray(item.items) ? item.items.map(asString).filter(Boolean) : [],
+    body: asString(item.body),
+    order: Number.isFinite(item.order) ? item.order : index,
+  }
+}
+
 function normalizePersonal(p = {}, fallback = {}) {
   const src = { ...fallback, ...p }
   return {
@@ -207,6 +225,21 @@ export function normalizeResumeData(raw) {
   // or undefined. Caller can override via ResumeProvider value.layout.
   const layout = { ...DEFAULT_LAYOUT, ...(raw?.layout || {}) }
 
+  // Drag-and-drop section order + user-defined custom sections. Both are
+  // optional; templates that honor ordering read these via <OrderedSections>.
+  // An absent/partial sectionOrder degrades to each template's default order,
+  // so templates that don't consume it are unaffected.
+  const sectionOrder = Array.isArray(raw?.sectionOrder)
+    ? [...new Set(raw.sectionOrder.map((v) => asString(v)).filter(Boolean))]
+    : []
+
+  const customSections = Array.isArray(raw?.customSections)
+    ? raw.customSections
+        .map(normalizeCustomSection)
+        .filter(s => s && (s.title || s.items.length || s.body))
+        .sort((a, b) => a.order - b.order)
+    : []
+
   return {
     personal,
     experience,
@@ -215,6 +248,8 @@ export function normalizeResumeData(raw) {
     skills,
     certifications,
     layout,
+    sectionOrder,
+    customSections,
   }
 }
 

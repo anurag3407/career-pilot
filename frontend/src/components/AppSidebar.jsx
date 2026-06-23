@@ -43,11 +43,7 @@ const navLinks = [
         href: "/dashboard",
         icon: <LayoutDashboard className="w-5 h-5 shrink-0" />,
     },
-    {
-        label: "ATS Dashboard",
-        href: "/ats-dashboard",
-        icon: <LineChart className="w-5 h-5 shrink-0" />,
-    },
+
     {
         label: "Resume Builder",
         href: "/hub/resume",
@@ -285,44 +281,10 @@ export default function AppSidebar({ animate = true }) {
                                     transition={{ duration: 0.3 }}
                                     className="overflow-hidden ml-4 flex flex-col gap-1"
                                 >
-                                    <SidebarLink
-                                        link={{
-                                            label: "Cold Outreach",
-                                            href: "/outreach",
-                                            icon: <Mail className="w-4 h-4 shrink-0" />,
-                                        }}
-                                        onClick={() => setOpen(false)}
-                                    />
-                                    <SidebarLink
-                                        link={{
-                                            label: "Skill Gap Analyzer",
-                                            href: "/skill-gap",
-                                            icon: <Brain className="w-4 h-4 shrink-0" />,
-                                        }}
-                                        onClick={() => setOpen(false)}
-                                    />
 
                                     <SidebarLink
                                         link={{
-                                            label: "Career Trajectory",
-                                            href: "/career-path",
-                                            icon: <Brain className="w-4 h-4 shrink-0" />,
-                                        }}
-                                        onClick={() => setOpen(false)}
-                                    />
-
-                                    <SidebarLink
-                                        link={{
-                                            label: "Salary Estimator",
-                                            href: "/salary-estimate",
-                                            icon: <Brain className="w-4 h-4 shrink-0" />,
-                                        }}
-                                        onClick={() => setOpen(false)}
-                                    />
-
-                                    <SidebarLink
-                                        link={{
-                                            label: "Project Visualizer",
+                                            label: "Recent Visualizers",
                                             href: "/project-visualizer",
                                             icon: <GitMerge className="w-4 h-4 shrink-0" />,
                                         }}
