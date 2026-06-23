@@ -1,7 +1,8 @@
-import { useState, useRef } from "react";
+import { useState, useRef, useEffect } from "react";
+import { resumeApi } from "../services/api";
 
 const TONES = ["formal", "conversational", "enthusiastic"];
-const API_URL = import.meta.env.VITE_API_URL || "http://localhost:5001";
+const API_URL = import.meta.env.VITE_API_URL || "http://localhost:5000";
 
 const CoverLetter = () => {
   const fileInputRef = useRef(null);
@@ -18,6 +19,47 @@ const CoverLetter = () => {
   const [copied, setCopied] = useState(false);
   const [dragOver, setDragOver] = useState(false);
   const [step, setStep] = useState(1); // 1=upload, 2=details, 3=result
+  const [savedResumes, setSavedResumes] = useState([]);
+  const [loadingResumes, setLoadingResumes] = useState(true);
+  const [selectedResumeId, setSelectedResumeId] = useState("");
+
+  useEffect(() => {
+    const fetchResumes = async () => {
+      try {
+        const response = await resumeApi.getAll();
+        let fetchedResumes = [];
+        if (Array.isArray(response)) fetchedResumes = response;
+        else if (Array.isArray(response.data)) fetchedResumes = response.data;
+        else if (Array.isArray(response.resumes)) fetchedResumes = response.resumes;
+        else if (response.data && Array.isArray(response.data.resumes)) fetchedResumes = response.data.resumes;
+        setSavedResumes(fetchedResumes);
+      } catch (error) {
+        console.error("Failed to fetch saved resumes:", error);
+      } finally {
+        setLoadingResumes(false);
+      }
+    };
+    fetchResumes();
+  }, []);
+
+  const handleSelectSavedResume = (id) => {
+    if (!id) return;
+    // Normalize both sides to String to avoid numeric vs string strict equality mismatch
+    const selected = savedResumes.find((r) => String(r._id || r.id) === String(id));
+    if (selected) {
+      // Prefer enhancedText (latest AI-improved content) over originalText
+      const text = selected.enhancedText || selected.originalText || "";
+      if (!text || text.trim().length < 20) {
+        setError("Selected resume has no valid text content.");
+        return;
+      }
+      setError("");
+      setResumeFile({ name: selected.title || "Saved Resume" });
+      setResumeText(text);
+      setSelectedResumeId(id);
+      setStep(2);
+    }
+  };
 
   const toBase64 = (file) =>
     new Promise((resolve, reject) => {
@@ -201,9 +243,52 @@ const CoverLetter = () => {
           ))}
         </div>
 
-        {/* Step 1: Upload */}
+        {/* Step 1: Upload or Select */}
         {step === 1 && (
-          <div
+          <div className="space-y-8">
+            {!loadingResumes && savedResumes.length > 0 && (
+              <div className="bg-white/[0.03] border border-white/10 rounded-2xl p-6">
+                <h3 className="text-lg font-medium text-white mb-2">Use a Saved Resume</h3>
+                <p className="text-gray-400 text-sm mb-4">Quickly generate a cover letter using a resume you've already built.</p>
+                <div className="flex flex-col sm:flex-row gap-3">
+                  <select
+                    value={selectedResumeId}
+                    onChange={(e) => { setSelectedResumeId(e.target.value); setError(""); }}
+                    className="flex-1 bg-black/40 border border-white/10 rounded-xl px-4 py-3 text-white text-sm focus:outline-none focus:border-blue-500 appearance-none"
+                  >
+                    <option value="">Select a saved resume...</option>
+                    {savedResumes.map((resume) => (
+                      <option key={resume._id || resume.id} value={String(resume._id || resume.id)}>
+                        {resume.title || "Untitled Resume"}
+                      </option>
+                    ))}
+                  </select>
+                  <button
+                    onClick={() => handleSelectSavedResume(selectedResumeId)}
+                    disabled={!selectedResumeId}
+                    className="px-6 py-3 bg-blue-600 hover:bg-blue-500 disabled:opacity-50 disabled:hover:bg-blue-600 text-white font-medium rounded-xl transition-colors whitespace-nowrap"
+                  >
+                    Continue
+                  </button>
+                </div>
+                {/* Show error inline in Step 1 so it's never silently swallowed */}
+                {error && (
+                  <p className="mt-3 text-sm text-red-400 flex items-center gap-1.5">
+                    <span>⚠</span> {error}
+                  </p>
+                )}
+              </div>
+            )}
+
+            {!loadingResumes && savedResumes.length > 0 && (
+              <div className="flex items-center gap-4">
+                <div className="h-px bg-white/10 flex-1"></div>
+                <span className="text-gray-500 text-xs font-bold uppercase tracking-widest">OR UPLOAD NEW</span>
+                <div className="h-px bg-white/10 flex-1"></div>
+              </div>
+            )}
+
+            <div
             className={`relative border-2 border-dashed rounded-2xl p-12 text-center cursor-pointer transition-all duration-200 ${
               dragOver
                 ? "border-blue-500 bg-blue-500/10"
@@ -257,6 +342,7 @@ const CoverLetter = () => {
                 </div>
               </div>
             )}
+          </div>
           </div>
         )}
 

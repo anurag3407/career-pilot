@@ -1,3 +1,4 @@
+/* eslint-env jest */
 import express from 'express';
 import request from 'supertest';
 import { cspHeaders } from '../src/middleware/cspHeaders.js';

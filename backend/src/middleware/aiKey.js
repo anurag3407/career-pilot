@@ -45,7 +45,23 @@ export const extractAIProvider = async (req, res, next) => {
       return next();
     }
 
-    // --- Case 2: No custom headers – reject gracefully ---
+    // --- Case 2: No custom headers – check for server-side fallback ---
+    const envProvider = process.env.AI_PROVIDER || 'gemini';
+    let envKey = null;
+
+    if (envProvider === 'gemini') envKey = process.env.GEMINI_API_KEY;
+    else if (envProvider === 'openai') envKey = process.env.OPENAI_API_KEY;
+    else if (envProvider === 'groq') envKey = process.env.GROQ_API_KEY;
+    else if (envProvider === 'openrouter') envKey = process.env.OPENROUTER_API_KEY;
+    else if (envProvider === 'requesty') envKey = process.env.REQUESTY_API_KEY;
+
+    if (envKey) {
+      req.aiProvider = AIProviderFactory.create(envProvider, envKey);
+      req.aiProviderSource = 'server_env';
+      return next();
+    }
+
+    // --- Case 3: No custom headers and no env fallback – reject gracefully ---
     return res.status(403).json({
       success: false,
       error: 'API key is required. Please add your API key in Settings to use this feature.',

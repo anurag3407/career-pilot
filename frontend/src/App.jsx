@@ -42,15 +42,21 @@ const OpenRouterCallback = lazy(() => import("./pages/OpenRouterCallback"));
 const Upload = lazy(() => import("./pages/Upload"));
 const Enhance = lazy(() => import("./pages/Enhance"));
 const ResumeView = lazy(() => import("./pages/ResumeView"));
+const ResumeTemplates = lazy(() => import("./pages/ResumeTemplates"));
+const ResumeExamples = lazy(() => import("./pages/ResumeExamples"));
 const JobAlerts = lazy(() => import("./pages/JobAlerts"));
 const InterviewPrep = lazy(() => import("./pages/InterviewPrep"));
 const InterviewHistory = lazy(() => import("./pages/InterviewHistory"));
 const InterviewReplay = lazy(() => import("./pages/InterviewReplay"));
 const UserProfile = lazy(() => import("./pages/UserProfile"));
 const SecuritySettings = lazy(() => import("./pages/SecuritySettings"));
-const EmailGenerator = lazy(() => import("./pages/EmailGenerator"));
 const LinkedInOptimizer = lazy(() => import("./pages/LinkedInOptimizer"));
 const Settings = lazy(() => import("./pages/Settings"));
+const ResumeRoast = lazy(() => import('./pages/ResumeRoast'));
+const RoastHub = lazy(() => import('./pages/hubs/RoastHub'));
+const PortfolioGithub = lazy(() => import('./pages/PortfolioGithub'));
+const GithubPortfolioHub = lazy(() => import('./pages/hubs/GithubPortfolioHub'));
+const GithubCallback = lazy(() => import('./pages/auth/GithubCallback'));
 const SkillGap = lazy(() => import("./pages/SkillGap"));
 const ResumeHub = lazy(() => import("./pages/hubs/ResumeHub"));
 const JobsHub = lazy(() => import("./pages/hubs/JobsHub"));
@@ -73,6 +79,9 @@ const FellowshipChat = lazy(() => import("./pages/fellowship/FellowshipChat"));
 const AdminLayout = lazy(() => import("./pages/admin/layout/AdminLayout"));
 const AdminDashboard = lazy(() => import("./pages/admin/views/AdminDashboard"));
 const AdminUsers = lazy(() => import("./pages/admin/views/AdminUsers"));
+const SharedResumeView = lazy(() => import("./pages/SharedResumeView"));
+const AdminLogins = lazy(() => import("./pages/admin/views/AdminLogins"));
+const AdminBugs = lazy(() => import("./pages/admin/views/AdminBugs"));
 
 import { NotFound } from './pages';
 
@@ -81,8 +90,7 @@ const TermsOfService = lazy(() => import('./pages/TermsOfService'));
 const CookiePolicy = lazy(() => import('./pages/CookiePolicy'));
 
 
-import LegalPageErrorBoundary from './components/LegalPageErrorBoundary';
-import RouteErrorBoundary from './components/RouteErrorBoundary';
+
 
 
 // Hub Imports
@@ -91,8 +99,18 @@ const LinkedInDashboard = lazy(() => import('./pages/LinkedInDashboard'));
 const RepoAnalyzerLanding = lazy(() => import('./pages/RepoAnalyzer/Landing'));
 const RepoAnalyzerDashboard = lazy(() => import('./pages/RepoAnalyzer/Dashboard'));
 const RepoAnalyzerWorkspace = lazy(() => import('./pages/RepoAnalyzer/Workspace'));
-const ProjectVisualizerLanding = lazy(() => import('./pages/ProjectVisualizer/Landing'));
+const LegacyProjectVisualizerLanding = lazy(() => import('./pages/ProjectVisualizer/Landing'));
 const ProjectVisualizerDashboard = lazy(() => import('./pages/ProjectVisualizer/Dashboard'));
+
+const ResumeBuilderLanding = lazy(() => import('./pages/features/ResumeBuilderLanding'));
+const PortfolioBuilderLanding = lazy(() => import('./pages/features/PortfolioBuilderLanding'));
+const ResumeRoastLanding = lazy(() => import('./pages/features/ResumeRoastLanding'));
+const GithubPortfolioLanding = lazy(() => import('./pages/features/GithubPortfolioLanding'));
+const ProjectVisualizerLanding = lazy(() => import('./pages/features/ProjectVisualizerLanding'));
+const JobFinderLanding = lazy(() => import('./pages/features/JobFinderLanding'));
+const MockInterviewLanding = lazy(() => import('./pages/features/MockInterviewLanding'));
+const RecruitersLanding = lazy(() => import('./pages/features/RecruitersLanding'));
+
 import ScrollToTop from "./components/ScrollToTop";
 import NorthernFjords from './components/portfolio/templates/Northern_Fjords';
 import RainforestCanopy from './components/portfolio/templates/Rainforest_Canopy/index.jsx';
@@ -120,6 +138,12 @@ import TransparentDesktopOverlayOS from './components/portfolio/templates/Transp
 import Commercial_Pilot_Cockpit from './components/portfolio/templates/Commercial_Pilot_Cockpit/index.jsx';
 import Book_Page_Flip_3D_Render from './components/portfolio/templates/Book_Page_Flip_3D_Render/index.jsx';
 import IKEA_Assembly_Manual from './components/portfolio/templates/IKEA_Assembly_Manual/index.jsx';
+import MichelinStarChefPlating from './components/portfolio/templates/Michelin_Star_Chef_Plating/index.jsx';
+import SommelierWineCellarRacks from './components/portfolio/templates/Sommelier_Wine_Cellar_Racks/index.jsx';
+import MinimalDarkFluid from './components/portfolio/templates/Minimal_Dark_Fluid/index.jsx';
+import TerminalSkills from './components/portfolio/templates/Terminal_Skills/index.jsx';
+import ChiragChrgTheme from './components/portfolio/templates/ChiragChrg_Theme/index.jsx';
+import InspiredDevJadiya from "./components/portfolio/templates/Inspired_Dev_Jadiya";
 
 function LoadingScreen({ label }) {
   return (
@@ -180,18 +204,18 @@ function PublicRoute({ children }) {
 // Admin Route Wrapper
 const AdminRoute = ({ children }) => {
   const { user, loading } = useAuth();
-  
+
   if (loading) {
     return <LoadingScreen label="Checking permissions..." />;
   }
-  
+
   // Note: we trust the backend to enforce the real check.
   // We can just check if they are logged in here, and rely on the backend.
   // Ideally, the user object would have a role property from the decoded token.
   if (!user) {
     return <Navigate to="/login" replace />;
   }
-  
+
   return children;
 };
 
@@ -250,26 +274,43 @@ function AppRoutes() {
         <Route path="/auth/linkedin/callback" element={<Suspense fallback={<LoadingScreen label="Loading callback..." />}><LinkedInCallback /></Suspense>} />
         <Route path="/auth/openrouter/callback" element={<Suspense fallback={<LoadingScreen label="Loading callback..." />}><OpenRouterCallback /></Suspense>} />
 
+        {/* Feature SaaS Landing Pages (Clean Slugs) */}
+        <Route path="/resume-builder" element={<Suspense fallback={<LoadingScreen label="Loading..." />}><ResumeBuilderLanding /></Suspense>} />
+        <Route path="/portfolio-builder" element={<Suspense fallback={<LoadingScreen label="Loading..." />}><PortfolioBuilderLanding /></Suspense>} />
+        <Route path="/resume-roast" element={<Suspense fallback={<LoadingScreen label="Loading..." />}><ResumeRoastLanding /></Suspense>} />
+        <Route path="/github-portfolio" element={<Suspense fallback={<LoadingScreen label="Loading..." />}><GithubPortfolioLanding /></Suspense>} />
+        <Route path="/project-visualizer" element={<Suspense fallback={<LoadingScreen label="Loading..." />}><ProjectVisualizerLanding /></Suspense>} />
+        <Route path="/job-finder" element={<Suspense fallback={<LoadingScreen label="Loading..." />}><JobFinderLanding /></Suspense>} />
+        <Route path="/mock-interview" element={<Suspense fallback={<LoadingScreen label="Loading..." />}><MockInterviewLanding /></Suspense>} />
+        <Route path="/recruiters" element={<Suspense fallback={<LoadingScreen label="Loading..." />}><RecruitersLanding /></Suspense>} />
+
+        {/* Legacy Landing Redirects */}
+        <Route path="/resume-builder-landing" element={<Navigate to="/resume-builder" replace />} />
+        <Route path="/roast" element={<Navigate to="/resume-roast" replace />} />
+        <Route path="/visualizer" element={<Navigate to="/project-visualizer" replace />} />
+        <Route path="/ai-interview" element={<Navigate to="/mock-interview" replace />} />
+
         {/* Legal Pages (Public) */}
-        <Route path="/privacy" element={<LegalPageErrorBoundary><Suspense fallback={null}><PrivacyPolicy /></Suspense></LegalPageErrorBoundary>} />
+        <Route path="/privacy" element={<Suspense fallback={null}><PrivacyPolicy /></Suspense>} />
         <Route path="/about" element={<Suspense fallback={<LoadingScreen label="Loading About..." />}><About /></Suspense>} />
-        <Route path="/terms" element={<LegalPageErrorBoundary><Suspense fallback={null}><TermsOfService /></Suspense></LegalPageErrorBoundary>} />
-        <Route path="/cookies" element={<LegalPageErrorBoundary><Suspense fallback={null}><CookiePolicy /></Suspense></LegalPageErrorBoundary>} />
+        <Route path="/terms" element={<Suspense fallback={null}><TermsOfService /></Suspense>} />
+        <Route path="/cookies" element={<Suspense fallback={null}><CookiePolicy /></Suspense>} />
 
         {/* Template Gallery Route (Registered at /templates) */}
         <Route path="/templates" element={<TemplateGallery />} />
         <Route path="/preview/:templateId" element={<TemplatePreviewOnly />} />
+        <Route path="/preview-inspired-dev-jadiya" element={<InspiredDevJadiya />} />
         <Route path="/cover-letter" element={<CoverLetter />} />
-        
 
-               {/* <Route path="/templates/day-night-cycle" element={<DayNightCycle />} /> */}
+
+        {/* <Route path="/templates/day-night-cycle" element={<DayNightCycle />} /> */}
 
         <Route path="/templates/rainforest-canopy" element={<RainforestCanopy />} />
         <Route path="/templates/northern-fjords" element={<NorthernFjords />} />
         <Route path="/templates/duotone-bold" element={<DuotoneBold />} />
         <Route path="/templates/chromatic-glitch" element={<ChromaticGlitch />} />
         <Route path="/templates/swiss-typography" element={<SwissTypography />} />
-      
+
         <Route path="/templates/desert-dunes" element={<DesertDunes />} />
         <Route path="/templates/psychedelic-swirl" element={<PsychedelicSwirl />} />
         <Route path="/templates/memphis-pop" element={<MemphisPop />} />
@@ -285,121 +326,158 @@ function AppRoutes() {
         <Route path="/templates/digital-manifesto-scroll" element={<DigitalManifestoScroll />} />
 
         <Route path="/templates/zine-collage" element={<ZineCollage />} />
-        <Route path="/templates/chatbot" element={<ChatbotPortfolio />} /> 
-        <Route path="/templates/glassmorphism" element={<GlassmorphismTemplate/>} />
+        <Route path="/templates/chatbot" element={<ChatbotPortfolio />} />
+        <Route path="/templates/glassmorphism" element={<GlassmorphismTemplate />} />
         <Route path="/templates/transparent-desktop-overlay-os" element={<TransparentDesktopOverlayOS />} />
         <Route path="/templates/commercial-pilot-cockpit" element={<Commercial_Pilot_Cockpit />} />
         <Route path="/templates/book-page-flip-3d-render" element={<Book_Page_Flip_3D_Render />} />
         <Route path="/templates/ikea-assembly-manual" element={<IKEA_Assembly_Manual />} />
+        <Route path="/templates/michelin-star-chef-plating" element={<MichelinStarChefPlating />} />
+        <Route path="/templates/sommelier-wine-cellar-racks" element={<SommelierWineCellarRacks />} />
+        <Route path="/templates/minimal-dark-fluid" element={<MinimalDarkFluid />} />
+        <Route path="/templates/terminal-skills" element={<TerminalSkills />} />
+        <Route path="/templates/chiragchrg-theme" element={<ChiragChrgTheme />} />
         {/* Core Protected Routes */}
-        <Route 
-  path="/dashboard" 
-  element={
-    <ProtectedRoute>
-      <Suspense fallback={<LoadingScreen label="Loading Dashboard..." />}>
-        <Dashboard />
-      </Suspense>
-    </ProtectedRoute>
-  } 
-/>
         <Route
-  path="/dashboard/analytics"
-  element={
-    <Suspense fallback={<LoadingScreen label="Loading Analytics..." />}>
-      <Analytics />
-    </Suspense>
-  }
-/>
+          path="/dashboard"
+          element={
+            <ProtectedRoute>
+              <Suspense fallback={<LoadingScreen label="Loading Dashboard..." />}>
+                <Dashboard />
+              </Suspense>
+            </ProtectedRoute>
+          }
+        />
+        <Route
+          path="/dashboard/analytics"
+          element={
+            <Suspense fallback={<LoadingScreen label="Loading Analytics..." />}>
+              <Analytics />
+            </Suspense>
+          }
+        />
         <Route path="/upload" element={<ProtectedRoute><Suspense fallback={<LoadingScreen label="Loading Upload..." />}><Upload /></Suspense></ProtectedRoute>} />
-        <Route 
-  path="/resume-builder" 
-  element={
-    <ProtectedRoute>
-      <Suspense fallback={<LoadingScreen label="Loading Resume Builder..." />}>
-        <ResumeBuilder />
-      </Suspense>
-    </ProtectedRoute>
-  } 
-/>
+        <Route
+          path="/shared/:shareToken" element={<SharedResumeView />} />
+        <Route
+          path="/roast/:shareToken"
+          element={
+            <ProtectedRoute>
+              <Suspense fallback={<LoadingScreen label="Loading shared roast..." />}>
+                <ResumeRoast />
+              </Suspense>
+            </ProtectedRoute>
+          }
+        />
+        <Route path="/resume-builder/build"
+          element={
+            <ProtectedRoute>
+              <Suspense fallback={<LoadingScreen label="Loading Resume Builder..." />}>
+                <ResumeBuilder />
+              </Suspense>
+            </ProtectedRoute>
+          }
+        />
         <Route path="/text-to-resume" element={<ProtectedRoute><Suspense fallback={<LoadingScreen label="Loading Text to Resume..." />}><TextToResume /></Suspense></ProtectedRoute>} />
         <Route path="/enhance/:resumeId" element={<ProtectedRoute><Suspense fallback={<LoadingScreen label="Loading Resume Enhancer..." />}><Enhance /></Suspense></ProtectedRoute>} />
+        <Route path="/shared/:shareToken" element={<SharedResumeView />} />
         <Route path="/resume/:resumeId" element={<ProtectedRoute><Suspense fallback={<LoadingScreen label="Loading Resume..." />}><ResumeView /></Suspense></ProtectedRoute>} />
-        <Route 
-  path="/jobs" 
-  element={
-    <ProtectedRoute>
-      <Suspense fallback={<LoadingScreen label="Loading Jobs..." />}>
-        <JobSearch />
-      </Suspense>
-    </ProtectedRoute>
-  } 
-/>
+        <Route path="/resume-templates" element={<ProtectedRoute><Suspense fallback={<LoadingScreen label="Loading Templates..." />}><ResumeTemplates /></Suspense></ProtectedRoute>} />
+        <Route path="/resume-examples" element={<ProtectedRoute><Suspense fallback={<LoadingScreen label="Loading Examples..." />}><ResumeExamples /></Suspense></ProtectedRoute>} />
+        <Route
+          path="/job-finder/search"
+          element={
+            <ProtectedRoute>
+              <Suspense fallback={<LoadingScreen label="Loading Jobs..." />}>
+                <JobSearch />
+              </Suspense>
+            </ProtectedRoute>
+          }
+        />
+        {/* Legacy redirect for jobs */}
+        <Route path="/jobs" element={<Navigate to="/job-finder/search" replace />} />
         <Route path="/job-alerts" element={<ProtectedRoute><Suspense fallback={<LoadingScreen label="Loading Job Alerts..." />}><JobAlerts /></Suspense></ProtectedRoute>} />
         <Route path="/job-tracker" element={<ProtectedRoute><Suspense fallback={<LoadingScreen label="Loading Job Tracker..." />}><JobTracker /></Suspense></ProtectedRoute>} />
-        <Route 
-  path="/community" 
-  element={
-    <ProtectedRoute>
-      <Suspense fallback={<LoadingScreen label="Loading Community..." />}>
-        <Community />
-      </Suspense>
-    </ProtectedRoute>
-  } 
-/>
-        <Route path="/interview-prep" element={<ProtectedRoute><Suspense fallback={<LoadingScreen label="Loading Interview Prep..." />}><InterviewPrep /></Suspense></ProtectedRoute>} />
         <Route
-  path="/interview-history"
-  element={
-    <ProtectedRoute>
-      <Suspense fallback={<LoadingScreen label="Loading Interview History..." />}>
-        <InterviewHistory />
-      </Suspense>
-    </ProtectedRoute>
-  }
-/>
+          path="/community"
+          element={
+            <ProtectedRoute>
+              <Suspense fallback={<LoadingScreen label="Loading Community..." />}>
+                <Community />
+              </Suspense>
+            </ProtectedRoute>
+          }
+        />
+        <Route path="/mock-interview/practice" element={<ProtectedRoute><Suspense fallback={<LoadingScreen label="Loading Interview Prep..." />}><InterviewPrep /></Suspense></ProtectedRoute>} />
+        {/* Legacy redirect for interview-prep */}
+        <Route path="/interview-prep" element={<Navigate to="/mock-interview/practice" replace />} />
+        <Route
+          path="/interview-history"
+          element={
+            <ProtectedRoute>
+              <Suspense fallback={<LoadingScreen label="Loading Interview History..." />}>
+                <InterviewHistory />
+              </Suspense>
+            </ProtectedRoute>
+          }
+        />
 
-<Route
-  path="/interview-history/:id"
-  element={
-    <ProtectedRoute>
-      <Suspense fallback={<LoadingScreen label="Loading Interview Replay..." />}>
-        <InterviewReplay />
-      </Suspense>
-    </ProtectedRoute>
-  }
-/>
+        <Route
+          path="/interview-history/:id"
+          element={
+            <ProtectedRoute>
+              <Suspense fallback={<LoadingScreen label="Loading Interview Replay..." />}>
+                <InterviewReplay />
+              </Suspense>
+            </ProtectedRoute>
+          }
+        />
         <Route path="/profile" element={<ProtectedRoute><Suspense fallback={<LoadingScreen label="Loading Profile..." />}><UserProfile /></Suspense></ProtectedRoute>} />
         <Route path="/profile/:uid" element={<ProtectedRoute><Suspense fallback={<LoadingScreen label="Loading Profile..." />}><UserProfile /></Suspense></ProtectedRoute>} />
         <Route path="/security" element={<ProtectedRoute><Suspense fallback={<LoadingScreen label="Loading Security Settings..." />}><SecuritySettings /></Suspense></ProtectedRoute>} />
-        <Route path="/email-generator" element={<ProtectedRoute><Suspense fallback={<LoadingScreen label="Loading Email Generator..." />}><EmailGenerator /></Suspense></ProtectedRoute>} />
         <Route path="/linkedin-optimizer" element={<ProtectedRoute><Suspense fallback={<LoadingScreen label="Loading LinkedIn Optimizer..." />}><LinkedInOptimizer /></Suspense></ProtectedRoute>} />
         <Route path="/skill-gap" element={<ProtectedRoute><Suspense fallback={<LoadingScreen label="Loading Skill Gap Analyzer..." />}><SkillGap /></Suspense></ProtectedRoute>} />
         <Route path="/deployments" element={<ProtectedRoute><Suspense fallback={<LoadingScreen label="Loading Deployments..." />}><Deployments /></Suspense></ProtectedRoute>} />
+        <Route path="/resume-roast/analyze" element={<ProtectedRoute><Suspense fallback={<LoadingScreen label="Loading Resume Roast..." />}><ResumeRoast /></Suspense></ProtectedRoute>} />
+        <Route path="/github-portfolio/build" element={<ProtectedRoute><Suspense fallback={<LoadingScreen label="Loading GitHub Portfolio Builder..." />}><PortfolioGithub /></Suspense></ProtectedRoute>} />
+        {/* Legacy redirects */}
+        <Route path="/portfolio/github" element={<Navigate to="/github-portfolio/build" replace />} />
+        <Route path="/auth/github/callback" element={<ProtectedRoute><Suspense fallback={<LoadingScreen label="Completing GitHub connection..." />}><GithubCallback /></Suspense></ProtectedRoute>} />
         <Route path="/settings" element={<ProtectedRoute><Suspense fallback={<LoadingScreen label="Loading Settings..." />}><Settings /></Suspense></ProtectedRoute>} />
 
-        
+
         {/* Admin Routes */}
-        <Route path="/admin" element={<AdminRoute><Suspense fallback={<LoadingScreen label="Loading Admin..." />}><AdminLayout /></Suspense></AdminRoute>}>
+        <Route path="/admin" element={
+          <AdminRoute>
+            <Suspense fallback={<LoadingScreen label="Loading Admin..." />}>
+              <AdminLayout />
+            </Suspense>
+          </AdminRoute>
+        }>
           <Route index element={<AdminDashboard />} />
           <Route path="users" element={<AdminUsers />} />
+          <Route path="logins" element={<AdminLogins />} />
+          <Route path="bugs" element={<AdminBugs />} />
         </Route>
 
         {/* Hub Routes */}
         <Route path="/hub/resume" element={<ProtectedRoute><Suspense fallback={<LoadingScreen label="Loading Resume Hub..." />}><ResumeHub /></Suspense></ProtectedRoute>} />
+        <Route path="/hub/roast" element={<ProtectedRoute><Suspense fallback={<LoadingScreen label="Loading Roast Hub..." />}><RoastHub /></Suspense></ProtectedRoute>} />
+        <Route path="/hub/portfolio/github" element={<ProtectedRoute><Suspense fallback={<LoadingScreen label="Loading GitHub Portfolio Hub..." />}><GithubPortfolioHub /></Suspense></ProtectedRoute>} />
         <Route path="/hub/jobs" element={<ProtectedRoute><Suspense fallback={<LoadingScreen label="Loading Jobs Hub..." />}><JobsHub /></Suspense></ProtectedRoute>} />
         <Route path="/hub/portfolio" element={<ProtectedRoute><Suspense fallback={<LoadingScreen label="Loading Portfolio Hub..." />}><PortfolioHub /></Suspense></ProtectedRoute>} />
         <Route path="/hub/career" element={<ProtectedRoute><Suspense fallback={<LoadingScreen label="Loading Career Hub..." />}><CareerGrowthHub /></Suspense></ProtectedRoute>} />
         <Route path="/hub/community" element={<ProtectedRoute><Suspense fallback={<LoadingScreen label="Loading Community Hub..." />}><CommunityHub /></Suspense></ProtectedRoute>} />
-        <Route 
-  path="/github-dashboard" 
-  element={
-    <ProtectedRoute>
-      <Suspense fallback={<LoadingScreen label="Loading GitHub Dashboard..." />}>
-        <GitHubDashboard />
-      </Suspense>
-    </ProtectedRoute>
-  } 
-/>
+        <Route
+          path="/github-dashboard"
+          element={
+            <ProtectedRoute>
+              <Suspense fallback={<LoadingScreen label="Loading GitHub Dashboard..." />}>
+                <GitHubDashboard />
+              </Suspense>
+            </ProtectedRoute>
+          }
+        />
         <Route
           path="/github"
           element={
@@ -435,26 +513,30 @@ function AppRoutes() {
         <Route path="/repo-analyzer" element={<Navigate to="/project-visualizer" replace />} />
         <Route path="/repo-analyzer/dashboard" element={<Navigate to="/project-visualizer" replace />} />
         <Route path="/repo-analyzer/workspace" element={<Navigate to="/project-visualizer" replace />} />
-        <Route 
-  path="/project-visualizer" 
-  element={
-    <ProtectedRoute>
-      <Suspense fallback={<LoadingScreen label="Loading Project Visualizer..." />}>
-        <ProjectVisualizerLanding />
-      </Suspense>
-    </ProtectedRoute>
-  } 
-/>
-        <Route 
-  path="/project-visualizer/dashboard/:sessionId" 
-  element={
-    <ProtectedRoute>
-      <Suspense fallback={<LoadingScreen label="Loading Analysis Dashboard..." />}>
-        <ProjectVisualizerDashboard />
-      </Suspense>
-    </ProtectedRoute>
-  } 
-/>
+        <Route
+          path="/project-visualizer"
+          element={
+            <Suspense fallback={<LoadingScreen label="Loading..." />}>
+              <ProjectVisualizerLanding />
+            </Suspense>
+          }
+        />
+        <Route
+          path="/project-visualizer-legacy"
+          element={
+            <Navigate to="/project-visualizer" replace />
+          }
+        />
+        <Route
+          path="/project-visualizer/dashboard/:sessionId"
+          element={
+            <ProtectedRoute>
+              <Suspense fallback={<LoadingScreen label="Loading Analysis Dashboard..." />}>
+                <ProjectVisualizerDashboard />
+              </Suspense>
+            </ProtectedRoute>
+          }
+        />
 
 
         {/* Nested Fellowship Routes */}

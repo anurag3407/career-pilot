@@ -10,6 +10,12 @@ async function getAuthHeaders() {
 const user = auth?.currentUser
 
 if (!user) {
+  if (import.meta.env.DEV) {
+    return {
+      Authorization: `Bearer mock-dev-token`,
+      'Content-Type': 'application/json'
+    }
+  }
   throw new Error('Not authenticated')
 }
 
@@ -18,6 +24,16 @@ const token = await user.getIdToken()
 const headers = {
   Authorization: `Bearer ${token}`,
   'Content-Type': 'application/json'
+}
+
+// Inject GitHub BYOK token if present (PAT stored in encrypted localStorage)
+try {
+  const { useGithubConfigStore } = await import('../stores/useGithubConfigStore')
+  const ghState = useGithubConfigStore.getState()
+  const decryptedPat = ghState.getDecryptedToken()
+  if (decryptedPat) headers['X-GitHub-Token'] = decryptedPat
+} catch (e) {
+  // store not yet available
 }
 
 // Try the new Zustand store first
@@ -57,7 +73,7 @@ if (aiConfigStr) {
     headers['X-OpenRouter-Key'] = decryptKey(openRouterKey)
   }
 }
-  
+
 return headers
 }
 
@@ -156,10 +172,9 @@ export const uploadApi = {
   // Upload PDF and extract text
   async uploadPdf(file, options = {}) {
     const user = auth?.currentUser
-    if (!user) throw new Error('Not authenticated')
+    if (!user && !import.meta.env.DEV) throw new Error('Not authenticated')
 
-
-    const token = await user.getIdToken()
+    const token = user ? await user.getIdToken() : 'mock-dev-token'
     const formData = new FormData()
     formData.append('resume', file)
 
@@ -178,10 +193,9 @@ export const uploadApi = {
   // Extract text from PDF (re-process)
   async extractText(file, options = {}) {
     const user = auth?.currentUser
-    if (!user) throw new Error('Not authenticated')
+    if (!user && !import.meta.env.DEV) throw new Error('Not authenticated')
 
-
-    const token = await user.getIdToken()
+    const token = user ? await user.getIdToken() : 'mock-dev-token'
     const formData = new FormData()
     formData.append('resume', file)
 
@@ -243,6 +257,17 @@ export const resumeApi = {
     return handleResponse(response)
   },
 
+  // Reorder sections
+  async reorderSections(resumeId, sectionOrder) {
+    const headers = await getAuthHeaders()
+    const response = await fetch(`${API_BASE}/resumes/${resumeId}/reorder`, {
+      method: 'PUT',
+      headers,
+      body: JSON.stringify({ sectionOrder })
+    })
+    return handleResponse(response)
+  },
+
   // Delete resume
   async delete(resumeId) {
     const headers = await getAuthHeaders()
@@ -300,9 +325,9 @@ export const resumeApi = {
   // Download resume as PDF
   async downloadPdf(resumeId, version = 'enhanced') {
     const user = auth?.currentUser
-    if (!user) throw new Error('Not authenticated')
+    if (!user && !import.meta.env.DEV) throw new Error('Not authenticated')
 
-    const token = await user.getIdToken()
+    const token = user ? await user.getIdToken() : 'mock-dev-token'
     const response = await fetch(`${API_BASE}/resumes/${resumeId}/download?version=${version}`, {
       method: 'GET',
       headers: {
@@ -617,7 +642,161 @@ export const enhanceApi = {
       body: JSON.stringify({ resumeText, jobDescription })
     })
     return handleResponse(response)
+  },
+
+  // Translate resume to a target language while preserving formatting.
+  async translateResume(resumeText, targetLanguage, sourceLanguage = 'auto-detect') {
+    const headers = await getAuthHeaders()
+    const response = await fetch(`${API_BASE}/enhance/translate`, {
+      method: 'POST',
+      headers,
+      body: JSON.stringify({ resumeText, targetLanguage, sourceLanguage })
+    })
+    return handleResponse(response)
+  },
+
+  // One-Click Resume Tailor: rewrite resume text to match a job description.
+  async tailorResume(resumeText, jobDescription, jobRole = '') {
+    const headers = await getAuthHeaders()
+    const response = await fetch(`${API_BASE}/enhance/tailor`, {
+      method: 'POST',
+      headers,
+      body: JSON.stringify({ resumeText, jobDescription, jobRole })
+    })
+    return handleResponse(response)
   }
+}
+
+// ============ Resume Roast API ============
+export const roastApi = {
+  // Create a new roast
+  async create({ resumeText, jobRole = '', isPublic = false }) {
+    const headers = await getAuthHeaders()
+    const response = await fetch(`${API_BASE}/roast`, {
+      method: 'POST',
+      headers,
+      body: JSON.stringify({ resumeText, jobRole, isPublic })
+    })
+    return handleResponse(response)
+  },
+
+  // List user's roast history
+  async getHistory(limit = 20) {
+    const headers = await getAuthHeaders()
+    const response = await fetch(`${API_BASE}/roast/history?limit=${limit}`, {
+      headers
+    })
+    return handleResponse(response)
+  },
+
+  // Fetch a single roast by id
+  async getById(id) {
+    const headers = await getAuthHeaders()
+    const response = await fetch(`${API_BASE}/roast/${id}`, { headers })
+    return handleResponse(response)
+  },
+
+  // Fetch a public roast by share token
+  async getByShareToken(token) {
+    const response = await fetch(`${API_BASE}/roast/share/${token}`)
+    return handleResponse(response)
+  },
+
+  // Delete a roast
+  async remove(id) {
+    const headers = await getAuthHeaders()
+    const response = await fetch(`${API_BASE}/roast/${id}`, {
+      method: 'DELETE',
+      headers
+    })
+    return handleResponse(response)
+  }
+}
+
+// ============ GitHub Portfolio Builder API ============
+export const githubPortfolioApi = {
+  async listRepos(username, token) {
+    const headers = await getAuthHeaders()
+    const response = await fetch(`${API_BASE}/portfolio/github/repos`, {
+      method: 'POST',
+      headers,
+      body: JSON.stringify({ username, token }),
+    })
+    return handleResponse(response)
+  },
+
+  async validateToken(token) {
+    const headers = await getAuthHeaders()
+    const response = await fetch(`${API_BASE}/portfolio/github/validate-token`, {
+      method: 'POST',
+      headers,
+      body: JSON.stringify({ token }),
+    })
+    return handleResponse(response)
+  },
+
+  async build({ username, token, selectedRepos, templateSlug, isPublic }) {
+    const headers = await getAuthHeaders()
+    const response = await fetch(`${API_BASE}/portfolio/github/build`, {
+      method: 'POST',
+      headers,
+      body: JSON.stringify({ username, token, selectedRepos, templateSlug, isPublic }),
+    })
+    return handleResponse(response)
+  },
+
+  async getHistory(limit = 20) {
+    const headers = await getAuthHeaders()
+    const response = await fetch(`${API_BASE}/portfolio/github/history?limit=${limit}`, {
+      headers,
+    })
+    return handleResponse(response)
+  },
+
+  async getById(id) {
+    const headers = await getAuthHeaders()
+    const response = await fetch(`${API_BASE}/portfolio/github/${id}`, { headers })
+    return handleResponse(response)
+  },
+
+  async remove(id) {
+    const headers = await getAuthHeaders()
+    const response = await fetch(`${API_BASE}/portfolio/github/${id}`, {
+      method: 'DELETE',
+      headers,
+    })
+    return handleResponse(response)
+  },
+}
+
+// ============ GitHub OAuth API ============
+export const githubAuthApi = {
+  // Start the OAuth flow — returns the GitHub consent URL + state.
+  async start() {
+    const headers = await getAuthHeaders()
+    const response = await fetch(`${API_BASE}/auth/github/start`, {
+      method: 'POST',
+      headers,
+    })
+    return handleResponse(response)
+  },
+
+  // Inspect current connection status (server-side encrypted token presence)
+  async status() {
+    const headers = await getAuthHeaders()
+    const response = await fetch(`${API_BASE}/auth/github/status`, { headers })
+    return handleResponse(response)
+  },
+
+  // Disconnect — wipes the stored encrypted token
+  async disconnect() {
+    const headers = await getAuthHeaders()
+    const response = await fetch(`${API_BASE}/auth/github/disconnect`, {
+      method: 'DELETE',
+      headers,
+    })
+    return handleResponse(response)
+  },
 }
 
 // ============ AI API ============
@@ -673,13 +852,25 @@ export const interviewApi = {
     return handleResponse(response);
   },
 
-  // Submit an answer for a specific question
+  // Submit an answer for a specific question (multipart; transcript + optional audio + optional code)
   async submitAnswer(interviewId, data) {
     const headers = await getAuthHeaders();
+    // multipart — strip Content-Type so the browser sets the boundary
+    delete headers['Content-Type'];
+    const form = new FormData();
+    form.append('questionId', data.questionId);
+    form.append('transcript', data.transcript || '');
+    form.append('duration', String(data.duration || 0));
+    if (data.code) form.append('code', data.code);
+    if (data.codingLanguage) form.append('codingLanguage', data.codingLanguage);
+    if (typeof data.isWarmup === 'boolean') form.append('isWarmup', String(data.isWarmup));
+    if (data.expressionMetrics) form.append('expressionMetrics', JSON.stringify(data.expressionMetrics));
+    if (data.audioBlob) form.append('audio', data.audioBlob, 'answer.webm');
+
     const response = await fetch(`${API_BASE}/interview/${interviewId}/answer`, {
       method: 'POST',
       headers,
-      body: JSON.stringify(data)
+      body: form
     });
     return handleResponse(response);
   },
@@ -720,6 +911,77 @@ export const interviewApi = {
     const response = await fetch(`${API_BASE}/interview/${id}`, {
       method: 'GET',
       headers
+    });
+    return handleResponse(response);
+  },
+
+  // ─── v2 additions ────────────────────────────────────────────────────
+
+  // Transcribe an audio Blob via BYOK provider (OpenAI Whisper, Groq Whisper, Gemini inline)
+  async transcribe({ audioBlob, language = 'en' }) {
+    const headers = await getAuthHeaders();
+    delete headers['Content-Type'];
+    const form = new FormData();
+    form.append('audio', audioBlob, 'recording.webm');
+    form.append('language', language);
+    const response = await fetch(`${API_BASE}/interview/transcribe`, {
+      method: 'POST',
+      headers,
+      body: form
+    });
+    return handleResponse(response);
+  },
+
+  // Parse a JD from URL or pasted text
+  async parseJd({ url, text }) {
+    const headers = await getAuthHeaders();
+    const response = await fetch(`${API_BASE}/interview/parse-jd`, {
+      method: 'POST',
+      headers,
+      body: JSON.stringify({ url, text })
+    });
+    return handleResponse(response);
+  },
+
+  // LLM-judged dry-run of candidate code against the problem's test cases
+  async runCode(interviewId, { code, language, problemId }) {
+    const headers = await getAuthHeaders();
+    const response = await fetch(`${API_BASE}/interview/${interviewId}/run-code`, {
+      method: 'POST',
+      headers,
+      body: JSON.stringify({ code, language, problemId })
+    });
+    return handleResponse(response);
+  },
+
+  // Save a personal annotation on a specific answer
+  async annotate(interviewId, answerId, annotation) {
+    const headers = await getAuthHeaders();
+    const response = await fetch(`${API_BASE}/interview/${interviewId}/annotate/${answerId}`, {
+      method: 'POST',
+      headers,
+      body: JSON.stringify({ annotation })
+    });
+    return handleResponse(response);
+  },
+
+  // Switch AI provider mid-interview — re-runs analysis of the last answer
+  async switchProvider(interviewId) {
+    const headers = await getAuthHeaders();
+    const response = await fetch(`${API_BASE}/interview/${interviewId}/switch-provider`, {
+      method: 'POST',
+      headers
+    });
+    return handleResponse(response);
+  },
+
+  // 2 ungraded warmup questions
+  async getWarmupQuestions({ jobRole, industry, language = 'en' }) {
+    const headers = await getAuthHeaders();
+    const response = await fetch(`${API_BASE}/interview/warmup-questions`, {
+      method: 'POST',
+      headers,
+      body: JSON.stringify({ jobRole, industry, language })
     });
     return handleResponse(response);
   }
@@ -1301,6 +1563,22 @@ export const userProfileApi = {
     return handleResponse(response)
   },
 
+  async setMyAvatar(avatarUrl) {
+    const headers = await getAuthHeaders()
+    const response = await fetch(`${API_BASE}/user-profiles/me/avatar`, {
+      method: 'POST',
+      headers,
+      body: JSON.stringify({ avatarUrl })
+    })
+    return handleResponse(response)
+  },
+
+  async deleteMyAvatar() {
+    const headers = await getAuthHeaders()
+    const response = await fetch(`${API_BASE}/user-profiles/me/avatar`, { method: 'DELETE', headers })
+    return handleResponse(response)
+  },
+
   async getProfile(uid) {
     const headers = await getAuthHeaders()
     const response = await fetch(`${API_BASE}/user-profiles/${uid}`, { method: 'GET', headers })
@@ -1571,6 +1849,16 @@ export const projectVisualizerApi = {
     return handleResponse(response)
   },
 
+  async getActivity(sessionId, { detail = false } = {}) {
+    const headers = await getAuthHeaders()
+    const qs = detail ? '?detail=1' : ''
+    const response = await fetch(`${API_BASE}/project-visualizer/analysis/${sessionId}/activity${qs}`, {
+      method: 'GET',
+      headers
+    })
+    return handleResponse(response)
+  },
+
   async askModule(sessionId, modulePath, question) {
     const headers = await getAuthHeaders()
     const response = await fetch(`${API_BASE}/project-visualizer/analysis/${sessionId}/ask-module`, {
@@ -1638,6 +1926,30 @@ export const adminAPI = {
   async getUsers(page = 1, limit = 10) {
     const headers = await getAuthHeaders();
     const response = await fetch(`${API_BASE}/admin/users?page=${page}&limit=${limit}`, { headers });
+    return handleResponse(response);
+  },
+
+  async getLogins(page = 1, limit = 20) {
+    const headers = await getAuthHeaders();
+    const response = await fetch(`${API_BASE}/admin/logins?page=${page}&limit=${limit}`, { headers });
+    return handleResponse(response);
+  }
+};
+
+export const bugsApi = {
+  async submitBug(title, description) {
+    const headers = await getAuthHeaders();
+    const response = await fetch(`${API_BASE}/bugs`, {
+      method: 'POST',
+      headers,
+      body: JSON.stringify({ title, description })
+    });
+    return handleResponse(response);
+  },
+
+  async getBugs(page = 1, limit = 20) {
+    const headers = await getAuthHeaders();
+    const response = await fetch(`${API_BASE}/bugs?page=${page}&limit=${limit}`, { headers });
     return handleResponse(response);
   }
 };

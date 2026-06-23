@@ -1,3 +1,4 @@
+/* eslint-env browser */
 /**
  * script.js — Apple HIG-Inspired Portfolio
  * Clean data injection. No JS animations.
