@@ -34,6 +34,7 @@ import JobApplicationSuccessInsights from '../components/JobApplicationSuccessIn
 import ResumeBulletEnhancer from '../components/ResumeBulletEnhancer'
 import PortfolioTemplatePreview from '../components/PortfolioTemplatePreview'
 import ResumeIndustryOptimizer from '../components/ResumeIndustryOptimizer'
+import ResumeSectionStrengthAnalyzer from '../components/ResumeSectionStrengthAnalyzer'
 import {
   SkeletonAction,
   SkeletonStat,
@@ -518,6 +519,10 @@ export default function Dashboard() {
 
 <motion.div variants={itemVariants} className="mb-10">
   <ResumeIndustryOptimizer />
+</motion.div>
+
+<motion.div variants={itemVariants} className="mb-10">
+  <ResumeSectionStrengthAnalyzer />
 </motion.div>
 
             <div className="grid lg:grid-cols-2 gap-10">
