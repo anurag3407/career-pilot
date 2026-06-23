@@ -545,6 +545,7 @@ function Hero() {
   const { yearsExperience, projectsCompleted } = data.stats;
 
   const containerRef = useRef(null);
+  const timeoutRef = useRef(null);
   const { scrollYProgress } = useScroll({ target: containerRef, offset: ['start start', 'end start'] });
   const yText = useTransform(scrollYProgress, [0, 1], [0, 120]);
   const opacity = useTransform(scrollYProgress, [0, 0.75], [1, 0]);
@@ -567,6 +568,14 @@ function Hero() {
   const [typed, setTyped] = useState('');
   // Hover on name
   const [nameHovered, setNameHovered] = useState(false);
+
+  useEffect(() => {
+  return () => {
+    if (timeoutRef.current) {
+      clearTimeout(timeoutRef.current);
+    }
+  };
+}, []);
 
   useEffect(() => {
     const full = title || 'Full Stack Developer';
@@ -2001,7 +2010,9 @@ function Contact() {
   const handleSubmit = (e) => {
     e.preventDefault();
     setStatus('sending');
-    setTimeout(() => setStatus('success'), 1800);
+    timeoutRef.current = setTimeout(() => {
+  setStatus('success');
+}, 1800);
   };
 
   const socials = [

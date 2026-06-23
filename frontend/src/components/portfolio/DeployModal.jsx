@@ -84,13 +84,25 @@ export default function DeployModal({ isOpen, onClose, portfolioTitle = "My Port
 
   // Clear timers/confetti on unmount to keep everything clean and prevent leakages
   useEffect(() => {
-    return () => {
-      if (logTimerRef.current) clearTimeout(logTimerRef.current);
-      if (confettiIntervalRef.current) clearInterval(confettiIntervalRef.current);
-      if (deployTimeoutRef.current) clearTimeout(deployTimeoutRef.current);
-      confetti.reset();
-    };
-  }, []);
+  return () => {
+    if (logTimerRef.current) {
+      clearTimeout(logTimerRef.current);
+      logTimerRef.current = null;
+    }
+
+    if (confettiIntervalRef.current) {
+      clearInterval(confettiIntervalRef.current);
+      confettiIntervalRef.current = null;
+    }
+
+    if (deployTimeoutRef.current) {
+      clearTimeout(deployTimeoutRef.current);
+      deployTimeoutRef.current = null;
+    }
+
+    confetti.reset();
+  };
+}, []);
 
   // Handle auto-scrolling to the bottom of our retro build terminal
   useEffect(() => {
@@ -267,20 +279,28 @@ export default function DeployModal({ isOpen, onClose, portfolioTitle = "My Port
   };
 
   const handleClose = () => {
-    setStep('select');
-    setDeployedUrl('');
-    setErrorMessage('');
-    if (confettiIntervalRef.current) {
-      clearInterval(confettiIntervalRef.current);
-      confettiIntervalRef.current = null;
-    }
-    if (deployTimeoutRef.current) {
-      clearTimeout(deployTimeoutRef.current);
-      deployTimeoutRef.current = null;
-    }
-    confetti.reset();
-    onClose();
-  };
+  setStep('select');
+  setDeployedUrl('');
+  setErrorMessage('');
+
+  if (logTimerRef.current) {
+    clearTimeout(logTimerRef.current);
+    logTimerRef.current = null;
+  }
+
+  if (confettiIntervalRef.current) {
+    clearInterval(confettiIntervalRef.current);
+    confettiIntervalRef.current = null;
+  }
+
+  if (deployTimeoutRef.current) {
+    clearTimeout(deployTimeoutRef.current);
+    deployTimeoutRef.current = null;
+  }
+
+  confetti.reset();
+  onClose();
+};
 
   // Deploy button is enabled only when the selected provider's token is validated
   const selectedProviderMeta = PROVIDERS.find((p) => p.id === selectedProvider);
