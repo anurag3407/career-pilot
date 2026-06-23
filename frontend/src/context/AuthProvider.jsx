@@ -5,12 +5,14 @@ import {
   createUserWithEmailAndPassword,
   signOut,
   GoogleAuthProvider,
+  GithubAuthProvider,
   signInWithPopup,
   updateProfile,
   sendEmailVerification
 } from 'firebase/auth'
 import { auth } from '../config/firebase'
 import { AuthContext } from './AuthContext'
+import { authApi } from '../services/api'
 
 /**
  * Provider component that manages and exposes the Firebase authentication state and methods.
@@ -32,6 +34,7 @@ export function AuthProvider({ children }) {
           uid: 'dev-user-001',
           email: 'dev@example.com',
           displayName: 'Local Dev User',
+          isAdmin: true,
           getIdToken: async () => 'mock-dev-token'
         });
       }
@@ -39,8 +42,27 @@ export function AuthProvider({ children }) {
       return;
     }
 
-    const unsubscribe = onAuthStateChanged(auth, (user) => {
-      setUser(user)
+    const unsubscribe = onAuthStateChanged(auth, async (firebaseUser) => {
+      if (firebaseUser) {
+        setLoading(true)
+        try {
+          const response = await authApi.getProfile()
+          if (response?.success && response?.user) {
+            firebaseUser.isAdmin = !!response.user.isAdmin
+            if (response.user.name) {
+              firebaseUser.displayName = response.user.name
+            }
+          } else {
+            firebaseUser.isAdmin = false
+          }
+        } catch (error) {
+          console.error('Failed to fetch user profile for admin check:', error)
+          firebaseUser.isAdmin = false
+        }
+        setUser(firebaseUser)
+      } else {
+        setUser(null)
+      }
       setLoading(false)
     })
 
@@ -111,6 +133,19 @@ export function AuthProvider({ children }) {
   }
 
   /**
+   * Logs in a user using GitHub Sign-In popup.
+   *
+   * @returns {Promise<object>} The Firebase user object.
+   */
+  const loginWithGitHub = async () => {
+    if (!auth) throw new Error("Authentication service is not configured. Please check your environment variables and authentication provider setup. Refer to the project setup documentation for configuration instructions.")
+    const provider = new GithubAuthProvider()
+    provider.addScope('user:email')
+    const result = await signInWithPopup(auth, provider)
+    return result.user
+  }
+
+  /**
    * Signs the user out of the current session.
    *
    * @returns {Promise<void>}
@@ -133,10 +168,12 @@ export function AuthProvider({ children }) {
   const value = {
     user,
     loading,
+    isAdmin: loading ? undefined : (user?.isAdmin ?? false),
     signup,
     login,
     loginWithGoogle,
     loginWithLinkedIn,
+    loginWithGitHub,
     logout,
     getToken,
     isMockAuth: !auth // Helper flag indicating local offline development

@@ -71,7 +71,6 @@ const userSchema = new mongoose.Schema(
   { timestamps: true }
 );
 
-userSchema.index({ email: 1 }, { unique: true, background: true });
 userSchema.index({ jobRole: 1 }, { background: true });
 userSchema.index({ collegeStudent: 1 }, { background: true });
 userSchema.index({ jobRole: 1, yearsOfExperience: 1 }, { background: true });

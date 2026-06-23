@@ -8,6 +8,15 @@ The following versions of **Career Pilot** are currently supported with security
 | ------- | --------- |
 | main    | ✅ Yes     |
 
+## Threat Model & CSRF Protection
+
+Career Pilot employs a defense-in-depth strategy to prevent Cross-Site Request Forgery (CSRF) and Cross-Site WebSocket Hijacking (CSWSH) attacks:
+
+1. **Bearer Tokens over Cookies**: The primary application API relies on Firebase ID tokens passed via the `Authorization: Bearer` header rather than cookies. Since standard web browsers do not automatically attach custom headers to cross-origin requests, this architecture natively mitigates classic CSRF vectors.
+2. **CORS Restrictions**: Express middleware enforces strict CORS policies on the REST API, permitting requests only from explicit, known origins (e.g., the configured frontend URL).
+3. **Socket.IO Origin Enforcement**: WebSocket connections are protected by an `allowRequest` hook that strictly validates the `Origin` header during the connection handshake. This ensures that an attacker cannot open a WebSocket connection on behalf of a victim from a malicious domain.
+4. **Basic Auth Origin Checks**: Administrative routes using HTTP Basic Auth (such as BullMQ Dashboard) enforce a strict `Origin`/`Referer` check for all state-changing methods (`POST`, `PUT`, `DELETE`). This prevents an attacker from abusing cached Basic Auth credentials via cross-site requests.
+
 ## Reporting a Vulnerability
 
 If you discover a security vulnerability in **Career Pilot**, please **do not open a public issue**.
