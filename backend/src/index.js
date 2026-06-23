@@ -1,6 +1,8 @@
 import 'dotenv/config';
 import express from 'express';
 import collaborationRoutes from './routes/collaboration.js';
+import roastRoutes from './routes/roast.js';
+import portfolioGithubRoutes from './routes/portfolioGithub.js';
 
 import dotenv from "dotenv";
 dotenv.config();
@@ -176,7 +178,7 @@ app.use(cors({
   },
   credentials: true,
   methods: ['GET', 'POST', 'PUT', 'DELETE', 'OPTIONS', 'PATCH'],
-  allowedHeaders: ['Content-Type', 'Authorization', 'X-Requested-With', 'X-AI-Provider', 'X-AI-Key', 'X-AI-Model', 'X-OpenRouter-Key']
+  allowedHeaders: ['Content-Type', 'Authorization', 'X-Requested-With', 'X-AI-Provider', 'X-AI-Key', 'X-AI-Model', 'X-OpenRouter-Key', 'X-GitHub-Token']
 }));
 
 // Helmet security headers - configured to not interfere with CORS
@@ -281,6 +283,7 @@ app.use('/api/auth', authRoutes);
 app.use('/api/upload', uploadRoutes);
 app.use('/api/resumes', resumeRoutes);
 app.use('/api/enhance', enhanceRoutes);
+app.use('/api/roast', roastRoutes);
 app.use("/api/cover-letter", coverLetterRoutes);
 app.use('/api/fetchjobs', jobsRoutes);
 app.use('/api/job-tracker', jobTrackerRoutes);
@@ -301,6 +304,7 @@ app.use('/api/payments', paymentRoutes);
     console.warn('⚠️ Payment routes disabled:', error.message);
 }
 app.use('/api/portfolio', portfolioRoutes);
+app.use('/api/portfolio/github', portfolioGithubRoutes);
 app.use('/api/user-profiles', userProfileRoutes);
 app.use('/api/gdpr', gdprRoutes);
 app.use('/api/auth/2fa', twoFactorRoutes);

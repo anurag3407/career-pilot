@@ -1,8 +1,8 @@
 import { triggerConfetti } from '../utils/confetti'
-import { useState, useRef, useEffect } from 'react';
+import { useState, useRef, useEffect, lazy, Suspense } from 'react';
 import { useNavigate, useLocation } from 'react-router-dom';
 import { motion } from 'framer-motion';
-import { Mic, MicOff, Video, VideoOff, XCircle, CheckCircle, AlertCircle, Volume2, VolumeX, RotateCcw, UserX, Loader2, Sparkles, ArrowRight, Target, TrendingUp, MessageSquare, Eye, Brain, Award, ChevronDown, ChevronUp, Clock, BarChart3, Lightbulb, Zap, Laptop, Smartphone, Chrome, AlertTriangle, FileUp, FileText, X } from 'lucide-react';
+import { Mic, MicOff, Video, VideoOff, XCircle, CheckCircle, AlertCircle, Volume2, VolumeX, RotateCcw, UserX, Loader2, Sparkles, ArrowRight, Target, TrendingUp, MessageSquare, Eye, Brain, Award, ChevronDown, ChevronUp, Clock, BarChart3, Lightbulb, Zap, Laptop, Smartphone, Chrome, AlertTriangle, FileUp, FileText, X, Globe, Code2, Play, Link as LinkIcon, Share2, Download } from 'lucide-react';
 import Button from '../components/Button';
 import BodyLanguageTips from '../components/BodyLanguageTips';
 import VoiceToTextButton from '../components/VoiceToTextButton';
@@ -12,7 +12,15 @@ import {DEFAULT_PROGRESS,updateDifficulty} from '../utils/interviewDifficulty';
 import LearningRecommendations from "../components/LearningRecommendations";
 import CopyButton from '../components/CopyButton';
 import QuestionAnalysisCard from '../components/interview/QuestionAnalysisCard';
+import AvatarInterviewer from '../components/interview/AvatarInterviewer';
 import { useAIConfigStore } from '../stores/useAIConfigStore';
+import { SUPPORTED_LANGUAGES, getLanguage, DEFAULT_LANGUAGE_CODE } from '../constants/languages';
+import { captureCardToBlob, downloadBlob, shareImage, buildShareCaption } from '../utils/shareCard';
+
+// Code editor (Monaco) — ~3MB chunk, lazy-loaded only when mode === 'coding'
+const CodeEditor = lazy(() => import('../components/interview/CodeEditor'));
+const CodingQuestionCard = lazy(() => import('../components/interview/CodingQuestionCard'));
+const ShareCard = lazy(() => import('../components/ShareCard'));
 
 // Device and browser detection utilities
 const isMobileDevice = () => {
@@ -51,13 +59,32 @@ const EXPERIENCE_LEVELS = [
   { value: 'lead', label: 'Lead/Principal (10+ years)' }
 ];
 
+const INTERVIEW_MODES = [
+  { value: 'behavioral', label: 'Behavioral', desc: 'Soft-skill & STAR-method questions' },
+  { value: 'technical', label: 'Technical', desc: 'Domain knowledge & reasoning' },
+  { value: 'coding', label: 'Coding', desc: 'Live code with test cases' },
+  { value: 'mixed', label: 'Mixed', desc: 'Behavioral + technical blend' }
+];
+
+const CODING_LANGUAGES = [
+  { value: 'javascript', label: 'JavaScript' },
+  { value: 'python', label: 'Python' },
+  { value: 'java', label: 'Java' },
+  { value: 'cpp', label: 'C++' },
+  { value: 'go', label: 'Go' }
+];
+
+
+
+
+
 
 
 
 export default function InterviewPrep() {
   const navigate = useNavigate();
   const location = useLocation();
-  const [step, setStep] = useState('setup'); // 'setup', 'av-check', 'interview', 'feedback'
+  const [step, setStep] = useState('setup'); // 'setup' | 'warmup' | 'av-check' | 'interview' | 'feedback'
   const [loading, setLoading] = useState(false);
   const [error, setError] = useState('');
 
@@ -76,7 +103,13 @@ export default function InterviewPrep() {
     jobRole: location.state?.jobRole || '',
     industry: 'software_engineering',
     experienceLevel: 'entry',
-    questionCount: 10
+    questionCount: 10,
+    language: 'en',
+    mode: 'behavioral',
+    companyName: '',
+    codingLanguage: 'javascript',
+    jdText: '',
+    skipWarmup: false
   });
 
   // Resume upload state
@@ -89,6 +122,7 @@ export default function InterviewPrep() {
   const resumeInputRef = useRef(null);
   const [interviewId, setInterviewId] = useState(null);
   const [questions, setQuestions] = useState([]);
+  const [codingQuestion, setCodingQuestion] = useState(null);
   const [currentQuestionIndex, setCurrentQuestionIndex] = useState(0);
   const [isRecording, setIsRecording] = useState(false);
   const [transcript, setTranscript] = useState('');
@@ -99,6 +133,24 @@ export default function InterviewPrep() {
   const [faceVisible, setFaceVisible] = useState(true);
   const [faceConfidence, setFaceConfidence] = useState(50);
   const [answersSubmitted, setAnswersSubmitted] = useState([]);
+  const [warmupQuestions, setWarmupQuestions] = useState([]);
+  const [warmupIndex, setWarmupIndex] = useState(0);
+  const [code, setCode] = useState('');
+  const [runResults, setRunResults] = useState(null);
+  const [isRunningCode, setIsRunningCode] = useState(false);
+  const [jdInput, setJdInput] = useState('');
+  const [jdMode, setJdMode] = useState('none'); // 'none' | 'paste' | 'url'
+  const [jdLoading, setJdLoading] = useState(false);
+  const [jdError, setJdError] = useState('');
+  const [jdSummary, setJdSummary] = useState(null); // { role, company, jdText }
+  const [shareOpen, setShareOpen] = useState(false);
+  const [shareBusy, setShareBusy] = useState(false);
+  const [showSwitchProvider, setShowSwitchProvider] = useState(false);
+  const [switchBusy, setSwitchBusy] = useState(false);
+  const [amplitude, setAmplitude] = useState(0);
+  const mediaRecorderRef = useRef(null);
+  const audioChunksRef = useRef([]);
+  const shareCardRef = useRef(null);
   
   const [useTextInput, setUseTextInput] = useState(false);
   const [textAnswer, setTextAnswer] = useState('');
@@ -118,12 +170,16 @@ export default function InterviewPrep() {
 });
   const [expressionSamples, setExpressionSamples] = useState([]);
 
+  // Active AI config (BYOK) — for the avatar and provider-switch modal
+  const activeConfig = useAIConfigStore((s) => s.activeProvider);
+  const configuredProviders = useAIConfigStore((s) => s.providers);
+
   const videoRef = useRef(null);
   const mediaStreamRef = useRef(null);
   const recognitionRef = useRef(null);
   const timerRef = useRef(null);
   const startTimeRef = useRef(null);
-  const synthRef = useRef(window.speechSynthesis);
+  const synthRef = useRef(typeof window !== 'undefined' ? window.speechSynthesis : null);
   const canvasRef = useRef(null);
   const ctxRef = useRef(null);
   const faceCheckIntervalRef = useRef(null);
@@ -137,7 +193,8 @@ export default function InterviewPrep() {
 
   // Check device and browser on mount
   useEffect(() => {
-    setIsMobile(isMobileDevice());
+    const mobile = isMobileDevice();
+    setIsMobile(mobile);
     setIsChrome(isChromeBrowser());
 
     // Re-check on resize
@@ -145,6 +202,13 @@ export default function InterviewPrep() {
     window.addEventListener('resize', handleResize);
     return () => window.removeEventListener('resize', handleResize);
   }, []);
+
+  // On mobile we auto-route to text-answer mode because (a) Web Speech API
+  // is unreliable on mobile Chrome/Safari and (b) many users prefer typing on
+  // a phone keyboard. Desktop users still get voice-first UX by default.
+  useEffect(() => {
+    if (isMobile) setUseTextInput(true);
+  }, [isMobile]);
 
   // Check BYOK config and fetch saved resumes
   useEffect(() => {
@@ -215,7 +279,11 @@ export default function InterviewPrep() {
   const initializeMedia = async () => {
     try {
       const stream = await navigator.mediaDevices.getUserMedia({
-        video: { width: 640, height: 480, facingMode: 'user' },
+        video: {
+          width: { ideal: 1280 },
+          height: { ideal: 720 },
+          facingMode: 'user'
+        },
         audio: true
       });
       mediaStreamRef.current = stream;
@@ -307,21 +375,55 @@ export default function InterviewPrep() {
 
   const speakQuestion = (text) => {
     if (!text || !synthRef.current) return;
-    synthRef.current.cancel();
+    try { synthRef.current.cancel(); } catch {}
     setIsSpeaking(true);
 
+    const lang = getLanguage(formData.language);
     const utterance = new SpeechSynthesisUtterance(text);
     utterance.rate = 0.9;
     utterance.pitch = 1;
+    utterance.lang = lang.speechLocale;
 
     const voices = synthRef.current.getVoices();
-    const preferredVoice = voices.find(v => v.lang.startsWith('en') && v.name.includes('Google'))
+    const localePrefix = lang.speechLocale.split('-')[0];
+    const preferredVoice =
+      voices.find(v => v.lang === lang.speechLocale && v.name.includes('Google'))
+      || voices.find(v => v.lang === lang.speechLocale)
+      || voices.find(v => v.lang.startsWith(localePrefix))
+      || voices.find(v => v.lang.startsWith('en') && v.name.includes('Google'))
       || voices.find(v => v.lang.startsWith('en-US'))
       || voices.find(v => v.lang.startsWith('en'));
     if (preferredVoice) utterance.voice = preferredVoice;
 
-    utterance.onend = () => setIsSpeaking(false);
-    utterance.onerror = () => setIsSpeaking(false);
+    utterance.onend = () => { setIsSpeaking(false); setAmplitude(0); };
+    utterance.onerror = () => { setIsSpeaking(false); setAmplitude(0); };
+
+    // Animate the avatar mouth while speaking
+    let phase = 0;
+    let active = true;
+    let raf = 0;
+    const loop = () => {
+      phase += 0.18;
+      const amp = active
+        ? Math.max(0, Math.min(1, 0.45 + 0.45 * (Math.sin(phase) * 0.5 + Math.sin(phase * 2.7) * 0.25 + Math.sin(phase * 5.1) * 0.15)))
+        : 0;
+      setAmplitude(amp);
+      if (active) raf = requestAnimationFrame(loop);
+    };
+    raf = requestAnimationFrame(loop);
+    utterance.onend = () => {
+      active = false;
+      setIsSpeaking(false);
+      setAmplitude(0);
+      cancelAnimationFrame(raf);
+    };
+    utterance.onerror = () => {
+      active = false;
+      setIsSpeaking(false);
+      setAmplitude(0);
+      cancelAnimationFrame(raf);
+    };
+
     synthRef.current.speak(utterance);
   };
 
@@ -464,7 +566,7 @@ export default function InterviewPrep() {
   };
 
   const handleStartInterview = async (e) => {
-    e.preventDefault();
+    e?.preventDefault?.();
     if (!formData.jobRole.trim()) {
       setError('Please enter a job role');
       return;
@@ -474,25 +576,134 @@ export default function InterviewPrep() {
     setError('');
 
     try {
-      // Include resume text in API call
+      // Resume text + JD text are both included for personalized questions
       const response = await interviewApi.startInterview({
         ...formData,
-        resumeText: resumeText || null
+        resumeText: resumeText || null,
+        jobDescriptionText: jdSummary?.jdText || null,
+        companyName: formData.companyName || null,
+        companyRole: formData.companyName ? formData.jobRole : null,
+        skipWarmup: formData.skipWarmup || warmupQuestions.length > 0
       });
       setInterviewId(response.data.interviewId);
       setQuestions(response.data.questions);
+      setCodingQuestion(response.data.codingQuestion || null);
+      setCode(response.data.codingQuestion?.starterCode || '');
       setAnswersSubmitted([]);
 
-      // Go to A/V check step first
-      setStep('av-check');
-
-      // Initialize A/V check
-      await initializeAVCheck();
+      // Route: warmup → av-check → interview → feedback
+      if (!formData.skipWarmup) {
+        try {
+          const wr = await interviewApi.getWarmupQuestions({
+            jobRole: formData.jobRole,
+            industry: formData.industry,
+            language: formData.language
+          });
+          setWarmupQuestions(wr.data?.questions || []);
+          setWarmupIndex(0);
+          setStep('warmup');
+        } catch (e) {
+          console.warn('Warmup fetch failed, skipping:', e.message);
+          setStep('av-check');
+          await initializeAVCheck();
+        }
+      } else {
+        setStep('av-check');
+        await initializeAVCheck();
+      }
     } catch (err) {
       setError(err.message || 'Failed to start interview');
     } finally {
       setLoading(false);
     }
+  };
+
+  const completeWarmup = async () => {
+    setStep('av-check');
+    await initializeAVCheck();
+  };
+
+  const switchProvider = async () => {
+    if (!interviewId) return;
+    setSwitchBusy(true);
+    setError('');
+    try {
+      const res = await interviewApi.switchProvider(interviewId);
+      if (res?.data?.analysis) {
+        // Update the last answer's analysis in-place
+        setAnswersSubmitted((prev) => {
+          if (prev.length === 0) return prev;
+          const last = prev[prev.length - 1];
+          return [...prev.slice(0, -1), { ...last, analysis: res.data.analysis }];
+        });
+      }
+      setShowSwitchProvider(false);
+    } catch (err) {
+      setError(err.message || 'Failed to switch provider');
+    } finally {
+      setSwitchBusy(false);
+    }
+  };
+
+  const runCandidateCode = async () => {
+    if (!interviewId || !code?.trim()) return;
+    setIsRunningCode(true);
+    setRunResults(null);
+    try {
+      const res = await interviewApi.runCode(interviewId, {
+        code,
+        language: formData.codingLanguage,
+        problemId: codingQuestion?.questionId || questions[0]?.questionId
+      });
+      setRunResults(res.data);
+    } catch (err) {
+      setError(err.message || 'Failed to evaluate code');
+    } finally {
+      setIsRunningCode(false);
+    }
+  };
+
+  const parseJd = async () => {
+    if (!jdInput.trim()) return;
+    setJdLoading(true);
+    setJdError('');
+    try {
+      const payload = jdMode === 'url' ? { url: jdInput.trim() } : { text: jdInput.trim() };
+      const res = await interviewApi.parseJd(payload);
+      setJdSummary(res.data);
+      if (res.data?.role && !formData.jobRole) {
+        setFormData((f) => ({ ...f, jobRole: res.data.role }));
+      }
+    } catch (err) {
+      setJdError(err.message || 'Failed to parse job description');
+    } finally {
+      setJdLoading(false);
+    }
+  };
+
+  const generateShareImage = async () => {
+    if (!shareCardRef.current || !overallResults) return null;
+    setShareBusy(true);
+    try {
+      const blob = await captureCardToBlob(shareCardRef.current);
+      return blob;
+    } finally {
+      setShareBusy(false);
+    }
+  };
+
+  const handleShare = async () => {
+    const blob = await generateShareImage();
+    if (!blob) return;
+    const caption = buildShareCaption(overallResults);
+    const result = await shareImage({ blob, text: caption, fileName: `careerpilot-${overallResults.interviewId || 'score'}.png` });
+    if (result.method === 'native' || result.method === 'cancelled') return;
+  };
+
+  const handleDownloadShare = async () => {
+    const blob = await generateShareImage();
+    if (!blob) return;
+    downloadBlob(blob, `careerpilot-${overallResults?.interviewId || 'score'}.png`);
   };
 
   const startVisualizerDraw = (analyser, canvas) => {
@@ -612,6 +823,24 @@ export default function InterviewPrep() {
       setRecordingTime(Math.floor((Date.now() - startTimeRef.current) / 1000));
     }, 1000);
 
+    // Also record audio via MediaRecorder so we can upload the answer audio for replay.
+    try {
+      if (mediaStreamRef.current && typeof MediaRecorder !== 'undefined') {
+        const mimeType = MediaRecorder.isTypeSupported('audio/webm;codecs=opus')
+          ? 'audio/webm;codecs=opus'
+          : (MediaRecorder.isTypeSupported('audio/webm') ? 'audio/webm' : '');
+        const recorder = mimeType ? new MediaRecorder(mediaStreamRef.current, { mimeType }) : new MediaRecorder(mediaStreamRef.current);
+        audioChunksRef.current = [];
+        recorder.ondataavailable = (e) => {
+          if (e.data && e.data.size > 0) audioChunksRef.current.push(e.data);
+        };
+        recorder.start(1000);
+        mediaRecorderRef.current = recorder;
+      }
+    } catch (e) {
+      console.warn('MediaRecorder unavailable:', e.message);
+    }
+
     const recognition = new SpeechRec();
     recognition.lang = 'en-US';
     recognition.interimResults = true;
@@ -674,13 +903,46 @@ export default function InterviewPrep() {
     recognitionRef.current = null;
     if (timerRef.current) clearInterval(timerRef.current);
 
+    // Stop MediaRecorder and collect audio blob
+    let audioBlob = null;
+    if (mediaRecorderRef.current) {
+      try {
+        const recorder = mediaRecorderRef.current;
+        if (recorder.state !== 'inactive') {
+          await new Promise((resolve) => {
+            recorder.onstop = resolve;
+            try { recorder.stop(); } catch (_) { resolve(); }
+          });
+        }
+        if (audioChunksRef.current.length > 0) {
+          audioBlob = new Blob(audioChunksRef.current, { type: recorder.mimeType || 'audio/webm' });
+        }
+      } catch (e) {
+        console.warn('MediaRecorder stop failed:', e.message);
+      }
+      mediaRecorderRef.current = null;
+    }
+
     setIsRecording(false);
     // eslint-disable-next-line
     const duration = Math.floor((Date.now() - startTimeRef.current) / 1000);
     const metrics = getAverageMetrics();
 
     const finalTranscript = transcriptRef.current.trim() || transcript.trim();
-    if (!finalTranscript) {
+
+    // If Web Speech failed and we have a recorded audio blob, send to backend /transcribe
+    let resolvedTranscript = finalTranscript;
+    if (!resolvedTranscript && audioBlob) {
+      try {
+        const tr = await interviewApi.transcribe({ audioBlob, language: formData.language });
+        resolvedTranscript = (tr?.data?.text || '').trim();
+        if (resolvedTranscript) setTranscript(resolvedTranscript);
+      } catch (e) {
+        console.warn('Backend transcription failed:', e.message);
+      }
+    }
+
+    if (!resolvedTranscript) {
       setError('No speech recorded. Please try again.');
       return;
     }
@@ -691,12 +953,15 @@ export default function InterviewPrep() {
     try {
       const response = await interviewApi.submitAnswer(interviewId, {
         questionId: questions[currentQuestionIndex].questionId,
-        transcript: finalTranscript,
+        transcript: resolvedTranscript,
         duration,
-        expressionMetrics: metrics
+        expressionMetrics: metrics,
+        code: formData.mode === 'coding' ? code : undefined,
+        codingLanguage: formData.mode === 'coding' ? formData.codingLanguage : undefined,
+        audioBlob
       });
 
-      setAnswersSubmitted([...answersSubmitted, { questionIndex: currentQuestionIndex, transcript: finalTranscript }]);
+      setAnswersSubmitted([...answersSubmitted, { questionIndex: currentQuestionIndex, transcript: resolvedTranscript, analysis: response.data.analysis }]);
 
       if (response.data && response.data.questions) {
         setQuestions(response.data.questions);
@@ -707,6 +972,8 @@ export default function InterviewPrep() {
       } else {
         setCurrentQuestionIndex(prev => prev + 1);
         setTranscript('');
+        setCode(response.data?.codingQuestion?.starterCode || code);
+        setRunResults(null);
       }
     } catch (err) {
       setError(err.message || 'Failed to submit answer');
@@ -811,46 +1078,10 @@ ${updatedProgress.level}`
     setAnswersSubmitted([]);
   };
 
-  // Mobile device block - show message if on phone/tablet
-  if (isMobile) {
-    return (
-      <div className="min-h-screen bg-background flex items-center justify-center p-6">
-        <div className="fixed inset-0 overflow-hidden pointer-events-none">
-          <div className="absolute top-1/4 left-0 w-96 h-96 bg-red-500/10 rounded-full blur-3xl" />
-        </div>
-
-        <motion.div
-          initial={{ opacity: 0, y: 20 }}
-          animate={{ opacity: 1, y: 0 }}
-          className="relative max-w-md w-full text-center"
-        >
-          <div className="bg-background/50 border border-border rounded-2xl p-8">
-            <div className="w-20 h-20 bg-red-500/20 rounded-2xl flex items-center justify-center mx-auto mb-6">
-              <Smartphone className="w-10 h-10 text-red-400" />
-            </div>
-
-            <h1 className="text-2xl font-bold text-foreground mb-3">Laptop Only</h1>
-            <p className="text-muted-foreground mb-6">
-              AI Interview Prep is currently only supported on laptops and desktop computers.
-            </p>
-
-            <div className="bg-amber-500/10 border border-amber-500/20 rounded-xl p-4 mb-6">
-              <div className="flex items-center gap-3">
-                <Laptop className="w-6 h-6 text-amber-400 shrink-0" />
-                <p className="text-amber-300 text-sm text-left">
-                  Please open this page on a laptop or desktop computer with a webcam and microphone.
-                </p>
-              </div>
-            </div>
-
-            <Button variant="outline" onClick={() => navigate('/dashboard')}>
-              Back to Dashboard
-            </Button>
-          </div>
-        </motion.div>
-      </div>
-    );
-  }
+  // Mobile devices are now supported. We auto-route to text-input mode so
+  // users without a desktop mic can still complete the interview via typing.
+  // The A/V check still works on mobile (front-facing camera + mic), but the
+  // voice capture path gracefully falls back to text.
 
   // A/V Check step - confirm camera and microphone before interview
   if (step === 'av-check') {
@@ -861,7 +1092,7 @@ ${updatedProgress.level}`
           <div className="absolute bottom-1/4 right-0 w-96 h-96 bg-purple-500/10 rounded-full blur-3xl" />
         </div>
 
-        <div className="relative max-w-2xl mx-auto px-4 sm:px-6 lg:px-8 py-8">
+          <div className="relative max-w-2xl mx-auto px-4 sm:px-6 lg:px-8 py-8">
           <motion.div initial={{ opacity: 0, y: -20 }} animate={{ opacity: 1, y: 0 }} className="text-center mb-8">
             <div className="inline-flex items-center gap-2 px-4 py-2 rounded-full bg-amber-500/10 border border-amber-500/20 text-amber-400 text-sm mb-4">
               <AlertTriangle className="w-4 h-4" />
@@ -870,6 +1101,18 @@ ${updatedProgress.level}`
             <h1 className="text-3xl font-bold text-foreground mb-2">Confirm Your Setup</h1>
             <p className="text-muted-foreground">Please verify your camera and microphone are working before starting</p>
           </motion.div>
+
+          {/* Mobile notice */}
+          {isMobile && (
+            <motion.div initial={{ opacity: 0, y: 10 }} animate={{ opacity: 1, y: 0 }} className="mb-6 bg-blue-500/10 border border-blue-500/30 rounded-xl p-4">
+              <div className="flex items-start gap-3">
+                <Smartphone className="w-5 h-5 text-blue-400 shrink-0 mt-0.5" />
+                <p className="text-blue-200 text-sm">
+                  Mobile detected — text-answer mode is recommended. You can still use voice if your keyboard is hidden.
+                </p>
+              </div>
+            </motion.div>
+          )}
 
           {/* Chrome Warning */}
           {!isChrome && (
@@ -1058,6 +1301,85 @@ ${updatedProgress.level}`
                 </div>
 
                 <div>
+                  <label className="block text-sm font-medium text-muted-foreground mb-2">
+                    Interview Mode
+                  </label>
+                  <div className="grid grid-cols-2 gap-2">
+                    {INTERVIEW_MODES.map((m) => (
+                      <button
+                        key={m.value}
+                        type="button"
+                        onClick={() => setFormData({ ...formData, mode: m.value })}
+                        className={
+                          'text-left p-3 rounded-xl border transition-colors ' +
+                          (formData.mode === m.value
+                            ? 'bg-primary/15 border-primary/50 text-foreground'
+                            : 'bg-muted/30 border-border text-muted-foreground hover:border-primary/30')
+                        }
+                      >
+                        <div className="text-sm font-semibold">{m.label}</div>
+                        <div className="text-xs mt-0.5">{m.desc}</div>
+                      </button>
+                    ))}
+                  </div>
+                </div>
+
+                {formData.mode === 'coding' && (
+                  <div>
+                    <label className="block text-sm font-medium text-muted-foreground mb-2">
+                      Coding Language
+                    </label>
+                    <select
+                      value={formData.codingLanguage}
+                      onChange={(e) => setFormData({ ...formData, codingLanguage: e.target.value })}
+                      className="w-full px-4 py-3 bg-muted/50 border border-border rounded-xl text-foreground focus:ring-2 focus:ring-primary"
+                    >
+                      {CODING_LANGUAGES.map((l) => (
+                        <option key={l.value} value={l.value}>{l.label}</option>
+                      ))}
+                    </select>
+                  </div>
+                )}
+
+                <div>
+                  <label className="block text-sm font-medium text-muted-foreground mb-2">
+                    <span className="inline-flex items-center gap-1.5">
+                      <Globe className="w-4 h-4" /> Language
+                    </span>
+                  </label>
+                  <select
+                    value={formData.language}
+                    onChange={(e) => setFormData({ ...formData, language: e.target.value })}
+                    className="w-full px-4 py-3 bg-muted/50 border border-border rounded-xl text-foreground focus:ring-2 focus:ring-primary"
+                  >
+                    {SUPPORTED_LANGUAGES.map((l) => (
+                      <option key={l.code} value={l.code}>{l.label}</option>
+                    ))}
+                  </select>
+                  {formData.language !== 'en' && (
+                    <p className="text-xs text-muted-foreground mt-1.5">
+                      Non-English uses backend transcription via your AI provider.
+                    </p>
+                  )}
+                </div>
+
+                <div>
+                  <label className="block text-sm font-medium text-muted-foreground mb-2">
+                    Target Company <span className="text-muted-foreground/60">(optional)</span>
+                  </label>
+                  <input
+                    type="text"
+                    value={formData.companyName}
+                    onChange={(e) => setFormData({ ...formData, companyName: e.target.value })}
+                    placeholder="e.g., Google, Stripe, Airbnb"
+                    className="w-full px-4 py-3 bg-card/50 border border-border rounded-xl text-foreground placeholder:text-muted-foreground focus:ring-2 focus:ring-primary focus:border-primary/50"
+                  />
+                  <p className="text-xs text-muted-foreground mt-1.5">
+                    Pulls from the curated company question bank when available.
+                  </p>
+                </div>
+
+                <div>
                   <label className="block text-sm font-medium text-muted-foreground mb-2">Number of Questions</label>
                   <div className="flex items-center gap-4">
                     <input
@@ -1071,6 +1393,82 @@ ${updatedProgress.level}`
                     <span className="w-12 text-center text-lg font-semibold text-primary">{formData.questionCount}</span>
                   </div>
                   <p className="text-xs text-muted-foreground mt-2">Choose between 2 to 20 questions for your interview</p>
+                </div>
+
+                {/* Job Description (paste or URL) */}
+                <div className="border-2 border-dashed border-blue-500/20 rounded-2xl p-6 bg-blue-500/5 transition-colors">
+                  <div className="flex items-center justify-between mb-3">
+                    <div className="flex items-center gap-3">
+                      <div className="w-10 h-10 bg-blue-500/20 rounded-xl flex items-center justify-center">
+                        <LinkIcon className="w-5 h-5 text-blue-400" />
+                      </div>
+                      <div>
+                        <h3 className="text-foreground font-bold text-base">Job Description <span className="text-xs text-muted-foreground font-normal">(optional)</span></h3>
+                        <p className="text-xs text-muted-foreground">Personalize questions to a specific role.</p>
+                      </div>
+                    </div>
+                    {jdSummary && (
+                      <button
+                        type="button"
+                        onClick={() => { setJdSummary(null); setJdInput(''); }}
+                        className="text-xs text-muted-foreground hover:text-foreground"
+                      >
+                        Clear
+                      </button>
+                    )}
+                  </div>
+
+                  {!jdSummary && (
+                    <>
+                      <div className="flex items-center gap-2 mb-3 text-xs">
+                        {['none', 'paste', 'url'].map((m) => (
+                          <button
+                            key={m}
+                            type="button"
+                            onClick={() => setJdMode(m)}
+                            className={
+                              'px-3 py-1 rounded-full transition-colors ' +
+                              (jdMode === m
+                                ? 'bg-blue-500/20 border border-blue-500/40 text-blue-300'
+                                : 'bg-muted/30 border border-border text-muted-foreground hover:border-blue-500/30')
+                            }
+                          >
+                            {m === 'none' ? 'Skip' : m === 'paste' ? 'Paste Text' : 'From URL'}
+                          </button>
+                        ))}
+                      </div>
+
+                      {jdMode !== 'none' && (
+                        <>
+                          <textarea
+                            value={jdInput}
+                            onChange={(e) => setJdInput(e.target.value)}
+                            placeholder={jdMode === 'url' ? 'https://job-boards.example.com/job/...' : 'Paste the job description text here...'}
+                            rows={jdMode === 'url' ? 2 : 5}
+                            className="w-full px-3 py-2 text-sm bg-card border border-border rounded-lg text-foreground placeholder:text-muted-foreground focus:ring-2 focus:ring-blue-500 resize-y"
+                          />
+                          {jdError && <p className="text-xs text-red-400 mt-1.5">{jdError}</p>}
+                          <button
+                            type="button"
+                            onClick={parseJd}
+                            disabled={jdLoading || !jdInput.trim()}
+                            className="mt-2 inline-flex items-center gap-1.5 px-3 py-1.5 text-xs font-medium rounded-lg bg-blue-500 text-white disabled:opacity-50 hover:bg-blue-600"
+                          >
+                            {jdLoading ? <Loader2 className="w-3.5 h-3.5 animate-spin" /> : null}
+                            {jdLoading ? 'Parsing…' : 'Parse & Use'}
+                          </button>
+                        </>
+                      )}
+                    </>
+                  )}
+
+                  {jdSummary && (
+                    <div className="text-xs text-blue-200 space-y-1">
+                      <div><span className="text-muted-foreground">Detected role: </span>{jdSummary.role || '—'}</div>
+                      {jdSummary.company && <div><span className="text-muted-foreground">Company: </span>{jdSummary.company}</div>}
+                      <div><span className="text-muted-foreground">Text length: </span>{jdSummary.jdText.length} characters</div>
+                    </div>
+                  )}
                 </div>
 
                 {/* Resume Upload Section */}
@@ -1187,9 +1585,47 @@ ${updatedProgress.level}`
     );
   }
 
+  // ─── Warmup step ──────────────────────────────────────────────────────
+  if (step === 'warmup' && warmupQuestions.length > 0) {
+    const wq = warmupQuestions[warmupIndex];
+    return (
+      <div className="min-h-screen bg-background flex items-center justify-center p-6">
+        <div className="fixed inset-0 overflow-hidden pointer-events-none">
+          <div className="absolute top-1/4 left-0 w-96 h-96 bg-blue-500/10 rounded-full blur-3xl" />
+        </div>
+        <motion.div initial={{ opacity: 0, y: 20 }} animate={{ opacity: 1, y: 0 }} className="relative max-w-xl w-full">
+          <div className="text-center mb-4">
+            <span className="inline-flex items-center gap-1.5 px-3 py-1 rounded-full bg-blue-500/10 border border-blue-500/20 text-blue-300 text-xs">
+              <Sparkles className="w-3 h-3" /> Warmup · not scored
+            </span>
+          </div>
+          <div className="p-8 rounded-3xl bg-background/60 border border-border backdrop-blur-xl">
+            <h2 className="text-2xl font-bold text-foreground mb-3">
+              Warmup question {warmupIndex + 1} of {warmupQuestions.length}
+            </h2>
+            <p className="text-lg text-foreground/90 leading-relaxed">{wq?.question}</p>
+            <p className="mt-3 text-sm text-muted-foreground">
+              This won't count toward your score — just a chance to find your rhythm.
+            </p>
+            <div className="mt-6 flex gap-3">
+              <Button variant="outline" onClick={completeWarmup} className="flex-1">
+                Skip warmup
+              </Button>
+              <Button variant="primary" onClick={completeWarmup} className="flex-1">
+                {warmupIndex + 1 >= warmupQuestions.length ? 'Start real interview' : 'Next'}
+                <ArrowRight className="w-4 h-4 ml-2" />
+              </Button>
+            </div>
+          </div>
+        </motion.div>
+      </div>
+    );
+  }
+
   if (step === 'interview') {
     const currentQuestion = questions[currentQuestionIndex];
     const progress = ((currentQuestionIndex + 1) / formData.questionCount) * 100;
+    const isCoding = formData.mode === 'coding';
 
     return (
     <>
@@ -1201,106 +1637,177 @@ ${updatedProgress.level}`
         <div className="relative max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-8">
           <motion.div initial={{ opacity: 0 }} animate={{ opacity: 1 }} className="mb-6">
             <div className="flex justify-between items-center mb-2">
-              <span className="text-sm font-medium text-muted-foreground">Question {currentQuestionIndex + 1} of {formData.questionCount}</span>
-              <span className="text-sm font-medium text-primary">{Math.round(progress)}%</span>
+              <span className="text-sm font-medium text-muted-foreground">
+                {isCoding ? <span className="inline-flex items-center gap-1"><Code2 className="w-3.5 h-3.5" /> Coding Question</span> : `Question ${currentQuestionIndex + 1} of ${formData.questionCount}`}
+              </span>
+              <div className="flex items-center gap-3">
+                <button
+                  onClick={() => setShowSwitchProvider(true)}
+                  className="text-xs inline-flex items-center gap-1 px-2.5 py-1 rounded-full bg-muted/50 border border-border text-muted-foreground hover:text-foreground hover:border-primary/30"
+                  title="Re-analyze with a different AI provider"
+                >
+                  <Sparkles className="w-3 h-3" />
+                  Switch AI
+                </button>
+                <span className="text-sm font-medium text-primary">{Math.round(progress)}%</span>
+              </div>
             </div>
             <div className="w-full h-2 bg-muted rounded-full overflow-hidden">
               <motion.div initial={{ width: 0 }} animate={{ width: `${progress}%` }} className="h-full bg-gradient-to-r from-primary to-secondary" />
             </div>
           </motion.div>
 
-          <div className="grid grid-cols-1 lg:grid-cols-2 gap-6">
+          <div className={isCoding ? 'grid grid-cols-1 gap-6' : 'grid grid-cols-1 lg:grid-cols-2 gap-6'}>
             <motion.div initial={{ opacity: 0, x: -20 }} animate={{ opacity: 1, x: 0 }} className="p-6 rounded-2xl bg-background/50 border border-border">
-              <div className="relative aspect-video bg-background rounded-xl overflow-hidden mb-4">
-                <video ref={videoRef} autoPlay muted playsInline className="w-full h-full object-cover" style={{ transform: 'scaleX(-1)' }} />
-                {!videoEnabled && (
-                  <div className="absolute inset-0 flex items-center justify-center bg-background">
-                    <VideoOff className="w-12 h-12 text-muted-foreground/80" />
+              {!isCoding && (
+                <>
+                  <div className="relative aspect-video bg-background rounded-xl overflow-hidden mb-4">
+                    <video ref={videoRef} autoPlay muted playsInline className="w-full h-full object-cover" style={{ transform: 'scaleX(-1)' }} />
+                    {!videoEnabled && (
+                      <div className="absolute inset-0 flex items-center justify-center bg-background">
+                        <VideoOff className="w-12 h-12 text-muted-foreground/80" />
+                      </div>
+                    )}
+                    {isRecording && (
+                      <div className="absolute top-4 left-4 px-3 py-1.5 bg-red-500 text-foreground rounded-full flex items-center gap-2 animate-pulse">
+                        <div className="w-2 h-2 bg-card rounded-full" />
+                        <span className="text-sm font-medium">REC {formatTime(recordingTime)}</span>
+                      </div>
+                    )}
+                    {isSpeaking && (
+                      <div className="absolute top-4 left-4 px-3 py-1.5 bg-primary text-foreground rounded-full flex items-center gap-2">
+                        <Volume2 className="w-4 h-4 animate-pulse" />
+                        <span className="text-sm font-medium">AI Speaking...</span>
+                      </div>
+                    )}
+                    {isRecording && !faceVisible && (
+                      <div className="absolute inset-0 bg-red-950/80 flex flex-col items-center justify-center">
+                        <UserX className="w-16 h-16 text-red-400 mb-3" />
+                        <p className="text-foreground font-semibold text-lg">Face Not Visible!</p>
+                        <p className="text-red-300 text-sm mt-1">Please position yourself in front of the camera</p>
+                      </div>
+                    )}
                   </div>
-                )}
-                {isRecording && (
-                  <div className="absolute top-4 left-4 px-3 py-1.5 bg-red-500 text-foreground rounded-full flex items-center gap-2 animate-pulse">
-                    <div className="w-2 h-2 bg-card rounded-full" />
-                    <span className="text-sm font-medium">REC {formatTime(recordingTime)}</span>
-                  </div>
-                )}
-                {isSpeaking && (
-                  <div className="absolute top-4 left-4 px-3 py-1.5 bg-primary text-foreground rounded-full flex items-center gap-2">
-                    <Volume2 className="w-4 h-4 animate-pulse" />
-                    <span className="text-sm font-medium">AI Speaking...</span>
-                  </div>
-                )}
-                {isRecording && !faceVisible && (
-                  <div className="absolute inset-0 bg-red-950/80 flex flex-col items-center justify-center">
-                    <UserX className="w-16 h-16 text-red-400 mb-3" />
-                    <p className="text-foreground font-semibold text-lg">Face Not Visible!</p>
-                    <p className="text-red-300 text-sm mt-1">Please position yourself in front of the camera</p>
-                  </div>
-                )}
-              </div>
 
-              <div className="flex justify-center gap-3">
-                <button onClick={toggleVideo} className={`p-3 rounded-xl border transition-colors cursor-pointer ${videoEnabled ? 'bg-muted border-border text-foreground hover:bg-muted/80' : 'bg-red-500/20 border-red-500/30 text-red-400'}`}>
-                  {videoEnabled ? <Video className="w-5 h-5" /> : <VideoOff className="w-5 h-5" />}
-                </button>
-                <button onClick={toggleAudio} className={`p-3 rounded-xl border transition-colors cursor-pointer ${audioEnabled ? 'bg-muted border-border text-foreground hover:bg-muted/80' : 'bg-red-500/20 border-red-500/30 text-red-400'}`}>
-                  {audioEnabled ? <Mic className="w-5 h-5" /> : <MicOff className="w-5 h-5" />}
-                </button>
-                {isSpeaking ? (
-                  <button onClick={stopSpeaking} className="p-3 rounded-xl bg-amber-500/20 border border-amber-500/30 text-amber-400 transition-colors cursor-pointer hover:bg-amber-500/30">
-                    <VolumeX className="w-5 h-5" />
-                  </button>
-                ) : (
-                  <button onClick={replayQuestion} className="p-3 rounded-xl bg-primary/20 border border-primary/30 text-primary transition-colors cursor-pointer hover:bg-primary/90/30" title="Replay question">
-                    <RotateCcw className="w-5 h-5" />
-                  </button>
-                )}
-              </div>
+                  <div className="flex justify-center gap-3">
+                    <button onClick={toggleVideo} className={`p-3 rounded-xl border transition-colors cursor-pointer ${videoEnabled ? 'bg-muted border-border text-foreground hover:bg-muted/80' : 'bg-red-500/20 border-red-500/30 text-red-400'}`}>
+                      {videoEnabled ? <Video className="w-5 h-5" /> : <VideoOff className="w-5 h-5" />}
+                    </button>
+                    <button onClick={toggleAudio} className={`p-3 rounded-xl border transition-colors cursor-pointer ${audioEnabled ? 'bg-muted border-border text-foreground hover:bg-muted/80' : 'bg-red-500/20 border-red-500/30 text-red-400'}`}>
+                      {audioEnabled ? <Mic className="w-5 h-5" /> : <MicOff className="w-5 h-5" />}
+                    </button>
+                    {isSpeaking ? (
+                      <button onClick={stopSpeaking} className="p-3 rounded-xl bg-amber-500/20 border border-amber-500/30 text-amber-400 transition-colors cursor-pointer hover:bg-amber-500/30">
+                        <VolumeX className="w-5 h-5" />
+                      </button>
+                    ) : (
+                      <button onClick={replayQuestion} className="p-3 rounded-xl bg-primary/20 border border-primary/30 text-primary transition-colors cursor-pointer hover:bg-primary/90/30" title="Replay question">
+                        <RotateCcw className="w-5 h-5" />
+                      </button>
+                    )}
+                  </div>
+                </>
+              )}
             </motion.div>
 
             <motion.div initial={{ opacity: 0, x: 20 }} animate={{ opacity: 1, x: 0 }} className="space-y-6">
-              <div className="p-6 rounded-2xl bg-background/50 border border-border">
-                <div className="flex items-start gap-3 mb-4">
-                  <div className="w-10 h-10 rounded-xl bg-primary/20 border border-primary/30 flex items-center justify-center shrink-0">
-                    <span className="text-primary font-bold">{currentQuestionIndex + 1}</span>
+              {isCoding ? (
+                <>
+                  <Suspense fallback={<div className="h-40 flex items-center justify-center text-muted-foreground">Loading problem…</div>}>
+                    <CodingQuestionCard
+                      coding={codingQuestion || questions[0]?.coding}
+                      runResults={runResults}
+                    />
+                  </Suspense>
+                  <div className="p-4 rounded-2xl bg-background/50 border border-border space-y-3">
+                    <div className="flex items-center justify-between gap-2">
+                      <span className="text-xs uppercase tracking-wide text-muted-foreground">
+                        Your solution · {formData.codingLanguage}
+                      </span>
+                      <Button
+                        onClick={runCandidateCode}
+                        disabled={isRunningCode || !code?.trim()}
+                        variant="outline"
+                        className="!py-2 !px-3 !text-xs"
+                      >
+                        {isRunningCode ? <Loader2 className="w-3.5 h-3.5 animate-spin mr-1.5" /> : <Play className="w-3.5 h-3.5 mr-1.5" />}
+                        {isRunningCode ? 'Evaluating…' : 'Run Tests'}
+                      </Button>
+                    </div>
+                    <Suspense fallback={<div className="h-32 flex items-center justify-center text-muted-foreground text-sm">Loading editor…</div>}>
+                      <CodeEditor
+                        language={formData.codingLanguage}
+                        value={code}
+                        onChange={setCode}
+                        height="320px"
+                      />
+                    </Suspense>
                   </div>
-                  <div className="flex-1">
-                    <span className="text-xs font-medium text-primary uppercase tracking-wide">
-                      {currentQuestion?.type} • {currentQuestion?.difficulty}
-                    </span>
-                    <h3 className="text-xl font-semibold text-foreground mt-1">{currentQuestion?.question}</h3>
+                  <textarea
+                    value={textAnswer}
+                    onChange={(e) => setTextAnswer(e.target.value)}
+                    placeholder="Optional: explain your approach (will be analyzed alongside your code)…"
+                    rows={3}
+                    className="w-full p-3 rounded-xl bg-muted/40 border border-border text-sm text-foreground focus:ring-2 focus:ring-primary resize-y"
+                  />
+                  <Button
+                    onClick={submitTextAnswer}
+                    disabled={loading || !code?.trim()}
+                    variant="primary"
+                    className="w-full !py-4 !rounded-xl flex items-center justify-center gap-2"
+                  >
+                    {loading ? <Loader2 className="w-4 h-4 animate-spin" /> : null}
+                    {loading ? 'Submitting…' : 'Submit Solution'}
+                  </Button>
+                </>
+              ) : (
+                <>
+                  <div className="p-4 rounded-2xl bg-background/50 border border-border">
+                    <AvatarInterviewer isSpeaking={isSpeaking} amplitude={amplitude} />
                   </div>
-                </div>
-
-                {isRecording && (
-                  <>
-                    <div className="mt-4 p-4 bg-gradient-to-r from-primary/10 to-secondary/10 border border-primary/20 rounded-xl">
-                      <div className="flex items-center gap-3">
-                        <div className="relative">
-                          <div className="w-10 h-10 rounded-full bg-primary/20 flex items-center justify-center">
-                            <Mic className="w-5 h-5 text-primary" />
-                          </div>
-                          <div className="absolute inset-0 rounded-full bg-primary/30 animate-ping" />
-                        </div>
-                        <div>
-                          <p className="text-foreground font-medium">Recording in progress</p>
-                          <p className="text-muted-foreground text-sm">Speak clearly into your microphone</p>
-                        </div>
+                  <div className="p-6 rounded-2xl bg-background/50 border border-border">
+                    <div className="flex items-start gap-3 mb-4">
+                      <div className="w-10 h-10 rounded-xl bg-primary/20 border border-primary/30 flex items-center justify-center shrink-0">
+                        <span className="text-primary font-bold">{currentQuestionIndex + 1}</span>
+                      </div>
+                      <div className="flex-1">
+                        <span className="text-xs font-medium text-primary uppercase tracking-wide">
+                          {currentQuestion?.type} • {currentQuestion?.difficulty}
+                        </span>
+                        <h3 className="text-xl font-semibold text-foreground mt-1">{currentQuestion?.question}</h3>
                       </div>
                     </div>
-                    <div className="mt-4">
-                        <ConfidenceMeter confidence={faceConfidence} />
-                   </div>
-                    {/* Glowing voice visualizer waveform canvas */}
-                    <div className="mt-4 rounded-xl overflow-hidden border border-border/60 bg-slate-950 p-1 flex items-center justify-center">
-                      <canvas
-                        ref={visualizerCanvasRef}
-                        className="w-full h-24 bg-slate-900 rounded-lg shadow-inner"
-                      />
-                    </div>
-                  </>
-                )}
-              </div>
+
+                    {isRecording && (
+                      <>
+                        <div className="mt-4 p-4 bg-gradient-to-r from-primary/10 to-secondary/10 border border-primary/20 rounded-xl">
+                          <div className="flex items-center gap-3">
+                            <div className="relative">
+                              <div className="w-10 h-10 rounded-full bg-primary/20 flex items-center justify-center">
+                                <Mic className="w-5 h-5 text-primary" />
+                              </div>
+                              <div className="absolute inset-0 rounded-full bg-primary/30 animate-ping" />
+                            </div>
+                            <div>
+                              <p className="text-foreground font-medium">Recording in progress</p>
+                              <p className="text-muted-foreground text-sm">Speak clearly into your microphone</p>
+                            </div>
+                          </div>
+                        </div>
+                        <div className="mt-4">
+                            <ConfidenceMeter confidence={faceConfidence} />
+                       </div>
+                        <div className="mt-4 rounded-xl overflow-hidden border border-border/60 bg-slate-950 p-1 flex items-center justify-center">
+                          <canvas
+                            ref={visualizerCanvasRef}
+                            className="w-full h-24 bg-slate-900 rounded-lg shadow-inner"
+                          />
+                        </div>
+                      </>
+                    )}
+                  </div>
+                </>
+              )}
 
               {error && (
                 <div className="p-4 rounded-xl bg-red-500/10 border border-red-500/20 flex items-start gap-3">
@@ -1309,56 +1816,96 @@ ${updatedProgress.level}`
                 </div>
               )}
 
-              {/* Body language coaching tip — rotates each question, dismissible */}
-              <BodyLanguageTips currentQuestionIndex={currentQuestionIndex} />
+              {!isCoding && <BodyLanguageTips currentQuestionIndex={currentQuestionIndex} />}
 
-              <div className="flex gap-3 w-full">
-                {useTextInput ? (
-                  <div className="flex flex-col w-full gap-3">
-                    <textarea
-                      value={textAnswer}
-                      onChange={(e) => setTextAnswer(e.target.value)}
-                      placeholder="Type your answer here..."
-                      className="w-full min-h-[120px] p-4 rounded-xl bg-muted/50 border border-border text-foreground focus:ring-2 focus:ring-primary resize-y"
-                      disabled={loading}
-                    />
-                    <div className="flex gap-3">
-                      <Button onClick={() => setUseTextInput(false)} disabled={loading} variant="outline" className="flex-1 !py-4 !rounded-xl flex items-center justify-center gap-2">
-                        <Mic className="w-4 h-4" /> Use Microphone
+              {!isCoding && (
+                <div className="flex gap-3 w-full">
+                  {useTextInput ? (
+                    <div className="flex flex-col w-full gap-3">
+                      <textarea
+                        value={textAnswer}
+                        onChange={(e) => setTextAnswer(e.target.value)}
+                        placeholder="Type your answer here..."
+                        className="w-full min-h-[120px] p-4 rounded-xl bg-muted/50 border border-border text-foreground focus:ring-2 focus:ring-primary resize-y"
+                        disabled={loading}
+                      />
+                      <div className="flex gap-3">
+                        <Button onClick={() => setUseTextInput(false)} disabled={loading} variant="outline" className="flex-1 !py-4 !rounded-xl flex items-center justify-center gap-2">
+                          <Mic className="w-4 h-4" /> Use Microphone
+                        </Button>
+                        <Button onClick={submitTextAnswer} disabled={loading || !textAnswer.trim()} variant="primary" className="flex-[2] !py-4 !rounded-xl flex items-center justify-center gap-2">
+                          {loading ? <Loader2 className="w-4 h-4 animate-spin" /> : null}
+                          {loading ? 'Submitting...' : 'Submit Answer'}
+                        </Button>
+                      </div>
+                    </div>
+                  ) : !isRecording ? (
+                    <div className="flex w-full gap-3">
+                      <Button onClick={() => setUseTextInput(true)} disabled={loading || isSpeaking} variant="outline" className="flex-1 !py-4 !rounded-xl flex items-center justify-center gap-2">
+                        <FileText className="w-4 h-4" /> Type Answer
                       </Button>
-                      <Button onClick={submitTextAnswer} disabled={loading || !textAnswer.trim()} variant="primary" className="flex-[2] !py-4 !rounded-xl flex items-center justify-center gap-2">
-                        {loading ? <Loader2 className="w-4 h-4 animate-spin" /> : null}
-                        {loading ? 'Submitting...' : 'Submit Answer'}
+                      <Button onClick={startRecording} disabled={loading || isSpeaking} variant="primary" className="flex-[2] !py-4 !rounded-xl flex items-center justify-center gap-2">
+                        <Mic className="w-5 h-5" />
+                        {isSpeaking ? 'Wait for question...' : 'Start Recording'}
                       </Button>
                     </div>
-                  </div>
-                ) : !isRecording ? (
-                  <div className="flex w-full gap-3">
-                    <Button onClick={() => setUseTextInput(true)} disabled={loading || isSpeaking} variant="outline" className="flex-1 !py-4 !rounded-xl flex items-center justify-center gap-2">
-                      <FileText className="w-4 h-4" /> Type Answer
-                    </Button>
-                    <Button onClick={startRecording} disabled={loading || isSpeaking} variant="primary" className="flex-[2] !py-4 !rounded-xl flex items-center justify-center gap-2">
-                      <Mic className="w-5 h-5" />
-                      {isSpeaking ? 'Wait for question...' : 'Start Recording'}
-                    </Button>
-                  </div>
-                ) : (
-                  <button onClick={stopRecording} disabled={loading} className="flex-1 w-full py-4 rounded-xl bg-red-500 hover:bg-red-600 text-foreground font-medium flex items-center justify-center gap-2 transition-colors cursor-pointer disabled:opacity-50">
-                    <XCircle className="w-5 h-5" />
-                    {loading ? 'Submitting...' : 'Stop & Submit'}
-                  </button>
-                )}
-              </div>
+                  ) : (
+                    <button onClick={stopRecording} disabled={loading} className="flex-1 w-full py-4 rounded-xl bg-red-500 hover:bg-red-600 text-foreground font-medium flex items-center justify-center gap-2 transition-colors cursor-pointer disabled:opacity-50">
+                      <XCircle className="w-5 h-5" />
+                      {loading ? 'Submitting...' : 'Stop & Submit'}
+                    </button>
+                  )}
+                </div>
+              )}
 
               <div className="p-4 rounded-xl bg-muted/30 border border-border">
                 <p className="text-xs text-muted-foreground text-center">
-                  Complete all questions to see your feedback • No scores shown during interview
+                  {isCoding ? 'Submit when your solution passes the visible test cases.' : 'Complete all questions to see your feedback • No scores shown during interview'}
                 </p>
               </div>
             </motion.div>
           </div>
         </div>
       </div>
+
+      {/* Switch-provider modal */}
+      {showSwitchProvider && (
+        <div className="fixed inset-0 bg-black/60 z-50 flex items-center justify-center p-4" onClick={() => !switchBusy && setShowSwitchProvider(false)}>
+          <div className="bg-card border border-border rounded-2xl p-6 max-w-md w-full" onClick={(e) => e.stopPropagation()}>
+            <h3 className="text-lg font-semibold text-foreground mb-2">Switch AI Provider</h3>
+            <p className="text-sm text-muted-foreground mb-4">
+              Re-analyze your last answer using a different BYOK provider. Add providers in Settings first if needed.
+            </p>
+            <div className="space-y-2 max-h-64 overflow-y-auto">
+              {Object.entries(configuredProviders).map(([key, val]) => (
+                <button
+                  key={key}
+                  onClick={async () => {
+                    useAIConfigStore.getState().setActiveProvider(key);
+                    await switchProvider();
+                  }}
+                  disabled={switchBusy || key === activeConfig}
+                  className={
+                    'w-full text-left p-3 rounded-xl border transition-colors flex items-center justify-between ' +
+                    (key === activeConfig
+                      ? 'bg-primary/15 border-primary/40 text-primary'
+                      : 'bg-muted/30 border-border text-foreground hover:border-primary/30')
+                  }
+                >
+                  <span className="font-medium capitalize">{key}</span>
+                  {key === activeConfig && <CheckCircle className="w-4 h-4" />}
+                </button>
+              ))}
+              {Object.keys(configuredProviders).length === 0 && (
+                <p className="text-sm text-muted-foreground">No providers configured. Visit Settings to add one.</p>
+              )}
+            </div>
+            <div className="mt-4 flex gap-2 justify-end">
+              <Button variant="outline" onClick={() => setShowSwitchProvider(false)} disabled={switchBusy}>Cancel</Button>
+            </div>
+          </div>
+        </div>
+      )}
       </>
     );
   }
@@ -1905,16 +2452,47 @@ if (communicationTips.length === 0) {
             </motion.div>
           )}
 
-          <motion.div initial={{ opacity: 0, y: 20 }} animate={{ opacity: 1, y: 0 }} transition={{ delay: 0.7 }} className="flex gap-4">
-            <Button onClick={resetInterview} variant="primary" className="flex-1 !py-5 !rounded-2xl flex items-center justify-center gap-3 !text-lg font-semibold">
+          <motion.div initial={{ opacity: 0, y: 20 }} animate={{ opacity: 1, y: 0 }} transition={{ delay: 0.7 }} className="flex flex-wrap gap-4">
+            <Button onClick={resetInterview} variant="primary" className="flex-1 !py-5 !rounded-2xl flex items-center justify-center gap-3 !text-lg font-semibold min-w-[200px]">
               <Mic className="w-6 h-6" />
               Start New Interview
             </Button>
-            <Button onClick={() => navigate('/dashboard')} variant="secondary" className="flex-1 !py-5 !rounded-2xl flex items-center justify-center gap-3 !text-lg font-semibold">
+            <Button
+              onClick={() => setShareOpen((s) => !s)}
+              variant="secondary"
+              className="flex-1 !py-5 !rounded-2xl flex items-center justify-center gap-3 !text-lg font-semibold min-w-[200px]"
+            >
+              <Share2 className="w-6 h-6" />
+              Share My Score
+            </Button>
+            <Button onClick={() => navigate('/dashboard')} variant="outline" className="flex-1 !py-5 !rounded-2xl flex items-center justify-center gap-3 !text-lg font-semibold min-w-[200px]">
               Back to Dashboard
               <ArrowRight className="w-6 h-6" />
             </Button>
           </motion.div>
+
+          {shareOpen && (
+            <motion.div initial={{ opacity: 0, y: 10 }} animate={{ opacity: 1, y: 0 }} className="mt-4 p-4 rounded-2xl bg-card border border-border flex flex-wrap items-center gap-3">
+              <p className="text-sm text-muted-foreground flex-1 min-w-[200px]">
+                Capture your score as an image and share it on LinkedIn, X/Twitter, or download it.
+              </p>
+              <Button onClick={handleShare} disabled={shareBusy} variant="primary" className="!py-2 !text-sm">
+                {shareBusy ? <Loader2 className="w-4 h-4 animate-spin mr-1.5" /> : <Share2 className="w-4 h-4 mr-1.5" />}
+                Share Image
+              </Button>
+              <Button onClick={handleDownloadShare} disabled={shareBusy} variant="outline" className="!py-2 !text-sm">
+                <Download className="w-4 h-4 mr-1.5" />
+                Download PNG
+              </Button>
+            </motion.div>
+          )}
+
+          {/* Offscreen card used for html2canvas capture */}
+          <div style={{ position: 'fixed', left: '-99999px', top: 0 }} aria-hidden="true">
+            <Suspense fallback={null}>
+              <ShareCard ref={shareCardRef} interview={overallResults} />
+            </Suspense>
+          </div>
         </div>
       </div>
     );

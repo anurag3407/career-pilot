@@ -236,6 +236,21 @@ let _defaultProvider = null;
 export function getDefaultProvider() {
   if (_defaultProvider) return _defaultProvider;
 
+  const envProvider = process.env.AI_PROVIDER;
+  if (envProvider) {
+    let envKey = null;
+    if (envProvider === 'gemini') envKey = process.env.GEMINI_API_KEY;
+    else if (envProvider === 'openai') envKey = process.env.OPENAI_API_KEY;
+    else if (envProvider === 'groq') envKey = process.env.GROQ_API_KEY;
+    else if (envProvider === 'openrouter') envKey = process.env.OPENROUTER_API_KEY;
+    else if (envProvider === 'requesty') envKey = process.env.REQUESTY_API_KEY;
+
+    if (envKey) {
+      _defaultProvider = createAIProvider(envProvider, envKey);
+      return _defaultProvider;
+    }
+  }
+
   const groqApiKey = process.env.GROQ_API_KEY;
   if (groqApiKey && groqApiKey.startsWith('gsk_')) {
     _defaultProvider = createAIProvider('groq', groqApiKey);

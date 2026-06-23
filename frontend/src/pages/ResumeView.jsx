@@ -12,6 +12,8 @@ import { sectionsToMarkdown } from '../components/customSectionUtils'
 import { SkeletonList } from '../components/ui/Skeleton'
 import ResumeVersions from '../components/ResumeVersions'
 import AtsProgressChart from '../components/AtsProgressChart'
+import ResumeTranslator from '../components/resume/ResumeTranslator'
+import ResumeTailor from '../components/resume/ResumeTailor'
 import { Loader2 } from 'lucide-react'
 import html2canvas from 'html2canvas'
 
@@ -127,7 +129,7 @@ export default function ResumeView() {
   const handleDownloadImage = async () => {
     try {
       setDownloadingImage(true)
-      
+
       const targetElement = document.querySelector('.resume-preview') || document.querySelector('pre.whitespace-pre-wrap')
 
       if (!targetElement) {
@@ -136,13 +138,13 @@ export default function ResumeView() {
       }
 
       toast.success(`Exporting resume as ${imageFormat.toUpperCase()}`)
-      
-      const canvas = await html2canvas(targetElement, { 
+
+      const canvas = await html2canvas(targetElement, {
         scale: 2,
         useCORS: true,
         backgroundColor: '#ffffff'
       })
-      
+
       const dataUrl = canvas.toDataURL(`image/${imageFormat}`)
 
       const a = document.createElement('a')
@@ -159,6 +161,29 @@ export default function ResumeView() {
     } finally {
       setDownloadingImage(false)
     }
+  }
+
+  // Download the resume as plain text. Useful for ATS systems and quick
+  // copy-paste into other tools (LinkedIn, application portals, email).
+  const handleDownloadTxt = () => {
+    const text =
+      previewTab === 'enhanced'
+        ? resume?.enhancedText
+        : resume?.originalText
+    if (!text || !text.trim()) {
+      toast.error('No resume text to export')
+      return
+    }
+    const blob = new Blob([text], { type: 'text/plain;charset=utf-8' })
+    const url = URL.createObjectURL(blob)
+    const a = document.createElement('a')
+    a.href = url
+    a.download = `${resume?.title || 'resume'}_${previewTab}.txt`
+    document.body.appendChild(a)
+    a.click()
+    document.body.removeChild(a)
+    URL.revokeObjectURL(url)
+    toast.success('Text file downloaded')
   }
 
   const handleAnalyzeResume = async () => {
@@ -269,6 +294,9 @@ export default function ResumeView() {
               <Button variant="primary">
                 {resume?.enhancedText ? 'Re-enhance' : 'Enhance'}
               </Button>
+            </Link>
+            <Link to={`/resume-templates?resumeId=${resumeId}`}>
+              <Button variant="secondary">Templates</Button>
             </Link>
             <Link to="/dashboard">
               <Button variant="outline">Back to Dashboard</Button>
@@ -407,6 +435,38 @@ export default function ResumeView() {
                       'Download as Image'
                     )}
                   </Button>
+                  <Button
+                    variant="outline"
+                    onClick={handleDownloadTxt}
+                  >
+                    Download .txt
+                  </Button>
+                  <ResumeTranslator
+                    resumeText={
+                      previewTab === 'enhanced'
+                        ? resume?.enhancedText
+                        : resume?.originalText
+                    }
+                    onTranslated={(text) => {
+                      // Update the in-memory copy so the user can immediately
+                      // download the translation or copy it. The persisted
+                      // resume on the server is unchanged.
+                      setResume(prev => ({ ...(prev || {}), enhancedText: text }))
+                      toast.success('Preview updated to translated version')
+                    }}
+                  />
+                  <ResumeTailor
+                    resumeText={
+                      previewTab === 'enhanced'
+                        ? resume?.enhancedText
+                        : resume?.originalText
+                    }
+                    jobRole={resume?.jobRole}
+                    onTailored={(text) => {
+                      setResume(prev => ({ ...(prev || {}), enhancedText: text }))
+                      toast.success('Resume tailored to this job')
+                    }}
+                  />
                   <Button
                     variant="primary"
                     onClick={handleAnalyzeResume}

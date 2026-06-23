@@ -5,7 +5,8 @@ import { motion, AnimatePresence } from 'framer-motion'
 import { useNavigate } from 'react-router-dom'
 import {
   ArrowLeft, ArrowRight, CheckCircle, Plus, Trash2,
-  Save, FileText, User, Briefcase, GraduationCap, Code, Star, GripVertical
+  Save, FileText, User, Briefcase, GraduationCap, Code, Star, GripVertical,
+  LayoutTemplate
 } from 'lucide-react'
 import { DragDropContext, Droppable, Draggable } from '@hello-pangea/dnd'
 import { resumeApi } from '../services/api'
@@ -346,8 +347,8 @@ const normalizedSkills = React.useMemo(() => {
 useEffect(() => {
   const certs = []
 
-  const role = targetRole.toLowerCase()
-  const skillText = skills.toLowerCase()
+  const role = (targetRole || '').toLowerCase()
+  const skillText = normalizedSkills.join(" ").toLowerCase()
 
   // Frontend
   if (
@@ -430,7 +431,7 @@ useEffect(() => {
   }
 
   setRecommendedCertifications([...new Set(certs)])
-}, [targetRole, skills])
+}, [targetRole, normalizedSkills])
 useEffect(() => {
   // 1. Gather all inputs into a clean string representation
   const resumeText = `${personal?.summary || ''} ${normalizedSkills.join(' ')} ${
@@ -928,6 +929,11 @@ useEffect(() => {
                 value={personal.summary}
                 onChange={e => updatePersonal('summary', e.target.value)}
                 placeholder="A brief summary of your professional background..."
+              />
+              <AchievementEnhancer
+                value={personal.summary}
+                jobRole={targetRole}
+                onApply={(text) => updatePersonal('summary', text)}
               />
             </div>
           </div>
@@ -1913,7 +1919,7 @@ useEffect(() => {
 </AnimatePresence>
 
         {/* Navigation Actions */}
-        <div className="mt-8 flex justify-between items-center">
+        <div className="mt-8 flex flex-wrap justify-between items-center gap-3">
           <button
             onClick={handlePrev}
             disabled={currentStep === 0}
@@ -1923,22 +1929,64 @@ useEffect(() => {
           </button>
 
           {currentStep === STEPS.length - 1 ? (
-            <button
-              onClick={handleGenerate}
-              disabled={isSubmitting}
-              className="px-6 py-2.5 rounded-full bg-primary text-primary-foreground hover:bg-primary/90 hover:scale-105 active:scale-95 disabled:opacity-50 disabled:hover:scale-100 transition-all shadow-lg shadow-primary/25 flex items-center gap-2 font-medium"
-            >
-              {isSubmitting ? (
-                <>
-                  <div className="w-4 h-4 border-2 border-white/20 border-t-white rounded-full animate-spin" />
-                  Generating...
-                </>
-              ) : (
-                <>
-                  <Save className="w-4 h-4" /> Generate &amp; Enhance
-                </>
-              )}
-            </button>
+            <div className="flex flex-wrap gap-2">
+              <button
+                onClick={() => navigate('/resume-templates', {
+                  state: {
+                    builderData: {
+                      personal,
+                      experience: (experience || []).filter(e => e.title || e.company)
+                        .map(e => ({
+                          role: e.title,
+                          company: e.company,
+                          period: [e.startDate, e.current ? 'Present' : e.endDate]
+                            .filter(Boolean).join(' – ') || undefined,
+                          location: e.location,
+                          description: e.description,
+                        })),
+                      education: (education || []).filter(e => e.school || e.degree)
+                        .map(e => ({
+                          degree: e.degree,
+                          institution: e.school,
+                          period: [e.startDate, e.endDate].filter(Boolean).join(' – ') || undefined,
+                          location: e.location,
+                          description: e.field,
+                        })),
+                      projects: (projects || []).filter(p => p.name).map(p => ({
+                        title: p.name,
+                        description: p.description,
+                        techStack: p.tech ? p.tech.split(',').map(s => s.trim()).filter(Boolean) : [],
+                        link: p.link,
+                      })),
+                      skills: normalizedSkills,
+                      // Carry the drag-and-drop section order so the template
+                      // renders sections in the order chosen in the builder.
+                      sectionOrder,
+                      customSections: [],
+                    }
+                  }
+                })}
+                className="px-6 py-2.5 rounded-full bg-secondary text-secondary-foreground hover:bg-secondary/80 transition-all flex items-center gap-2 font-medium border border-border"
+              >
+                <LayoutTemplate className="w-4 h-4" /> Choose Resume Template
+              </button>
+              <button
+                onClick={handleGenerate}
+                disabled={isSubmitting}
+                className="px-6 py-2.5 rounded-full bg-primary text-primary-foreground hover:bg-primary/90 hover:scale-105 active:scale-95 disabled:opacity-50 disabled:hover:scale-100 transition-all shadow-lg shadow-primary/25 flex items-center gap-2 font-medium"
+              >
+                {isSubmitting ? (
+                  <>
+                    <div className="w-4 h-4 border-2 border-white/20 border-t-white rounded-full animate-spin" />
+                    Generating...
+                  </>
+                ) : (
+                  <>
+                    <Save className="w-4 h-4" /> Generate &amp; Enhance
+                  </>
+                )}
+              </button>
+            </div>
           ) : (
             <button
               onClick={handleNext}

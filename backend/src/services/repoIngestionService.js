@@ -11,8 +11,12 @@ export const sessions = new Map();
 export const cloneRepo = async (repoUrl) => {
   const sessionId = Date.now().toString(36) + Math.random().toString(36).substring(2);
   const tempDir = path.join(os.tmpdir(), `repo-analyzer-${sessionId}`);
-  
-  await execFileAsync('git', ['clone', '--depth', '1', repoUrl, tempDir]);
+
+  // Full history is required by the time-series activity feature
+  // (backend/src/services/activityService.js). A shallow clone
+  // (`--depth 1`) would make `git log` return only the most recent
+  // commit, breaking weekly aggregation.
+  await execFileAsync('git', ['clone', repoUrl, tempDir]);
   return { sessionId, tempDir };
 };
 
@@ -137,7 +141,7 @@ export const buildCodebaseSkeleton = async (files, rootDir) => {
       if (exports.length > 0) {
         skeleton += `  Exports: ${exports.join(', ')}\n`;
       }
-    } catch (e) {}
+    } catch (e) { /* ignore */ }
     
     skeleton += "\n";
   }

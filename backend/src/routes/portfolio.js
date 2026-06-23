@@ -18,6 +18,9 @@ import { generateRobotsTxt, generateSitemapXml } from '../utils/sitemapGenerator
 import { analyzeAccessibility } from '../services/accessibilityChecker.js';
 import PortfolioVersion from '../models/PortfolioVersion.model.js';
 import UserProfile from '../models/UserProfile.model.js';
+import {
+  invalidateProfileCache,
+} from '../services/profileCache.js';
 import { getObjectDiff, applyDiff } from '../utils/diff.js';
 
 const router = express.Router();
@@ -639,6 +642,7 @@ router.post('/:id/restore/:versionId', verifyToken, asyncHandler(async (req, res
     if (Object.keys(update.$unset).length === 0) delete update.$unset;
 
     await UserProfile.findOneAndUpdate({ uid: id }, update, { upsert: true });
+    await invalidateProfileCache(id);
   } else {
     let portfolioVersions = inMemoryStore.get(id) || [];
     newVersionNumber = (portfolioVersions[portfolioVersions.length - 1]?.version || 0) + 1;
