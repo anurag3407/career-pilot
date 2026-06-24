@@ -96,6 +96,33 @@ const STATUS_CONFIG = {
 // portfolioAnalytics intentionally removed — no real API exists yet.
 // Section is gated behind portfolioCount > 0 in the JSX below.
 
+const hubColorMap = {
+  "emerald-500": { 
+    bg: "bg-emerald-500/10", 
+    text: "text-emerald-500", 
+    border: "border-emerald-500/20",
+    hoverBg: "group-hover:bg-emerald-500/15" 
+  },
+  "purple-500": { 
+    bg: "bg-purple-500/10", 
+    text: "text-purple-500", 
+    border: "border-purple-500/20",
+    hoverBg: "group-hover:bg-purple-500/15"
+  },
+  "primary": { 
+    bg: "bg-primary/10", 
+    text: "text-primary", 
+    border: "border-primary/20",
+    hoverBg: "group-hover:bg-primary/15"
+  },
+  "secondary": { 
+    bg: "bg-secondary/10", 
+    text: "text-secondary", 
+    border: "border-secondary/20",
+    hoverBg: "group-hover:bg-secondary/15"
+  }
+};
+
 export default function Dashboard() {
   const [resumes, setResumes] = useState([])
   const [trackedJobs, setTrackedJobs] = useState([])
