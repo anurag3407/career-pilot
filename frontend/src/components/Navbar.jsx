@@ -1,8 +1,9 @@
-import { useState, useEffect } from 'react'
+import { useState, useEffect, useRef } from 'react'
 import { Link, useLocation } from 'react-router-dom'
 import { useAuth } from '../hooks/useAuth'
 import { useTheme } from '../hooks/useTheme'
 import { motion, AnimatePresence } from 'framer-motion'
+import useClickOutside from '../hooks/useClickOutside'
 import {
   Search,
   FileText,
@@ -35,10 +36,20 @@ export default function Navbar() {
   const [mobileMenuOpen, setMobileMenuOpen] = useState(false)
   const [scrolled, setScrolled] = useState(false)
   const [searchQuery, setSearchQuery] = useState('')
-  const [showDropdown, setShowDropdown] = useState(false)
+  
+  // DECOUPLED STATES - Replaced single showDropdown with two distinct states
+  const [searchDropdownOpen, setSearchDropdownOpen] = useState(false)
+  const [profileDropdownOpen, setProfileDropdownOpen] = useState(false)
   const [showProductsDropdown, setShowProductsDropdown] = useState(false)
   // notificationCount: set to 0 until a real notifications API is wired up
   const [notificationCount] = useState(0)
+  // Refs for click outside handling
+  const searchRef = useRef(null)
+  const profileRef = useRef(null)
+
+  // Use custom hooks for outside click detection
+  useClickOutside(searchRef, () => setSearchDropdownOpen(false))
+  useClickOutside(profileRef, () => setProfileDropdownOpen(false))
 
   const productLinks = FEATURES.map(feature => ({
     path: `/${feature.slug}`,
@@ -49,12 +60,25 @@ export default function Navbar() {
 
   useEffect(() => {
     const handleScroll = () => {
-      setScrolled(window.scrollY>20)
+      setScrolled(window.scrollY > 20)
     }
 
     window.addEventListener('scroll', handleScroll)
 
     return () => window.removeEventListener('scroll', handleScroll)
+  }, [])
+
+  // Handle Escape key to close both dropdowns
+  useEffect(() => {
+    const handleEscape = (e) => {
+      if (e.key === 'Escape') {
+        setSearchDropdownOpen(false)
+        setProfileDropdownOpen(false)
+      }
+    }
+    
+    window.addEventListener('keydown', handleEscape)
+    return () => window.removeEventListener('keydown', handleEscape)
   }, [])
 
   const handleLogout = async () => {
@@ -79,6 +103,17 @@ export default function Navbar() {
         window.scrollTo(0, 0)
       }, 0)
     }
+  }
+
+  // Mutual exclusion handlers
+  const openProfileDropdown = () => {
+    setProfileDropdownOpen(true)
+    setSearchDropdownOpen(false) // Close search dropdown if open
+  }
+
+  const openSearchDropdown = () => {
+    setSearchDropdownOpen(true)
+    setProfileDropdownOpen(false) // Close profile dropdown if open
   }
 
   const isActive = (path) => location.pathname === path
@@ -139,8 +174,8 @@ export default function Navbar() {
           {/* Desktop Navigation */}
           <div className="hidden lg:flex items-center gap-2">
 
-            {/* Search Bar */}
-            <div className="relative">
+            {/* Search Bar - with ref and decoupled state */}
+            <div className="relative" ref={searchRef}>
               <div className="flex items-center bg-muted border border-border rounded-xl px-3 py-2 w-72 focus-within:ring-2 focus-within:ring-primary/40 transition-all">
                 <Search className="w-4 h-4 text-muted-foreground mr-2" />
 
@@ -149,20 +184,34 @@ export default function Navbar() {
                   placeholder="Search anything..."
                   value={searchQuery}
                   onChange={(e) => setSearchQuery(e.target.value)}
-                  onFocus={() => setShowDropdown(true)}
-                  onBlur={() => setTimeout(() => setShowDropdown(false), 200)}
+                  onFocus={() => {
+                    if (searchBlurTimeoutRef.current) {
+                      clearTimeout(searchBlurTimeoutRef.current)
+                      searchBlurTimeoutRef.current = null
+                    }
+                    openSearchDropdown()
+                  }}
+                  onBlur={() => {
+                    if (searchBlurTimeoutRef.current) {
+                      clearTimeout(searchBlurTimeoutRef.current)
+                    }
+                    searchBlurTimeoutRef.current = setTimeout(() => {
+                      setSearchDropdownOpen(false)
+                      searchBlurTimeoutRef.current = null
+                    }, 200)
+                  }}
                   className="bg-transparent outline-none text-sm w-full text-foreground placeholder:text-muted-foreground"
                 />
               </div>
 
-              {/* Suggestions Dropdown */}
+              {/* Search Suggestions Dropdown - uses searchDropdownOpen only */}
               <AnimatePresence>
-                {showDropdown && (
+                {searchDropdownOpen && (
                   <motion.div
                     initial={{ opacity: 0, y: 8 }}
                     animate={{ opacity: 1, y: 0 }}
                     exit={{ opacity: 0, y: 8 }}
-                    className="absolute top-14 left-0 w-full bg-background border border-border rounded-xl shadow-xl overflow-hidden"
+                    className="absolute top-14 left-0 w-full bg-background border border-border rounded-xl shadow-xl overflow-hidden z-50"
                   >
                     {searchSuggestions.map((item, index) => (
                       <button
@@ -291,13 +340,13 @@ export default function Navbar() {
                   )}
                 </button>
 
-                {/* User Dropdown */}
-                <div className="relative">
+                {/* User Profile Dropdown - with ref and decoupled state */}
+                <div className="relative" ref={profileRef}>
                   <button
-                    onClick={() => setShowDropdown(!showDropdown)}
+                    onClick={() => openProfileDropdown()}
                     className="flex items-center gap-2 px-3 py-2 bg-muted border border-border rounded-full hover:bg-accent transition-all"
                     aria-label="User menu"
-                    aria-expanded={showDropdown}
+                    aria-expanded={profileDropdownOpen}
                   >
                     <div className="w-8 h-8 rounded-full overflow-hidden bg-primary/20 flex items-center justify-center">
                       <img
@@ -314,17 +363,19 @@ export default function Navbar() {
                     <ChevronDown className="w-4 h-4 text-muted-foreground" />
                   </button>
 
+                  {/* Profile Menu Dropdown - uses profileDropdownOpen only */}
                   <AnimatePresence>
-                    {showDropdown && (
+                    {profileDropdownOpen && (
                       <motion.div
                         initial={{ opacity: 0, y: 10 }}
                         animate={{ opacity: 1, y: 0 }}
                         exit={{ opacity: 0, y: 10 }}
-                        className="absolute right-0 top-14 w-52 bg-background border border-border rounded-2xl shadow-xl overflow-hidden"
+                        className="absolute right-0 top-14 w-52 bg-background border border-border rounded-2xl shadow-xl overflow-hidden z-50"
                       >
                         <Link
                           to="/profile"
                           className="flex items-center gap-2 px-4 py-3 hover:bg-muted transition-colors text-sm"
+                          onClick={() => setProfileDropdownOpen(false)}
                         >
                           <User className="w-4 h-4" />
                           Profile
@@ -333,13 +384,17 @@ export default function Navbar() {
                         <Link
                           to="/settings"
                           className="flex items-center gap-2 px-4 py-3 hover:bg-muted transition-colors text-sm"
+                          onClick={() => setProfileDropdownOpen(false)}
                         >
                           <Palette className="w-4 h-4" />
                           Settings
                         </Link>
 
                         <button
-                          onClick={handleLogout}
+                          onClick={() => {
+                            handleLogout()
+                            setProfileDropdownOpen(false)
+                          }}
                           className="flex items-center gap-2 w-full px-4 py-3 text-left hover:bg-destructive/10 text-destructive transition-colors text-sm"
                         >
                           <LogOut className="w-4 h-4" />
@@ -463,9 +518,6 @@ export default function Navbar() {
                     {label}
                   </Link>
                 ))}
-
-               
-
 
               {user ? (
                 <button

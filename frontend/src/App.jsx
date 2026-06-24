@@ -17,6 +17,7 @@ import { AuthProvider } from './context/AuthProvider';
 import { useAuth } from './hooks/useAuth';
 import { SocketProvider } from './context/SocketProvider';
 import { ThemeProvider } from './context/ThemeProvider';
+import EmailVerificationPrompt from './components/EmailVerificationPrompt';
 import AppLayout from './components/AppLayout';
 import Footer from './components/ui/Footer';
 
@@ -172,10 +173,14 @@ function ProtectedRoute({ children }) {
   }
 
   if (!user) {
-    return <Navigate to="/login" replace />;
-  }
+  return <Navigate to="/login" replace />;
+}
 
-  return <AppLayout>{children}</AppLayout>;
+if (!user.emailVerified) {
+  return <EmailVerificationPrompt />;
+}
+
+return <AppLayout>{children}</AppLayout>;
 }
 
 
