@@ -1,3 +1,10 @@
+# [1.266.0](https://github.com/anurag3407/career-pilot/compare/v1.265.1...v1.266.0) (2026-06-24)
+
+
+### Features
+
+* add career readiness checklist dashboard ([#4307](https://github.com/anurag3407/career-pilot/issues/4307)) ([ae696b3](https://github.com/anurag3407/career-pilot/commit/ae696b3885b05160ebea12f1d42430e0781b0790))
+
 ## [1.265.1](https://github.com/anurag3407/career-pilot/compare/v1.265.0...v1.265.1) (2026-06-23)
 
 
