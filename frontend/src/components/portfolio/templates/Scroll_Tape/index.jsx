@@ -1,3 +1,4 @@
+import { usePortfolio } from "../../../../context/PortfolioContext";
 import React, { useEffect, useRef, useState } from 'react';
 import { motion, useScroll, useInView, AnimatePresence } from 'framer-motion';
 import {
@@ -5,7 +6,6 @@ import {
   Star, ChevronDown, Play, Pause,
   Volume2, VolumeX, SkipForward, Rewind
 } from 'lucide-react';
-import data from '../../../../data/dummy_data.json';
 
 /* ─── VHS / CRT utilities ──────────────────────────────────────── */
 
@@ -68,6 +68,8 @@ const GlitchLine = ({ top, color, delay = 0 }) => (
 
 /* ─── Section reveal wrapper ───────────────────────────────────── */
 const TapeSection = ({ children, className = '' }) => {
+  const { portfolioData: data } = usePortfolio();
+
   const ref = useRef(null);
   const isInView = useInView(ref, { once: true, margin: '-80px' });
   const [showStatic, setShowStatic] = useState(false);
@@ -98,6 +100,8 @@ const TapeSection = ({ children, className = '' }) => {
 
 /* ─── VHS timestamp / tape counter ────────────────────────────── */
 const TapeCounter = () => {
+  const { portfolioData: data } = usePortfolio();
+
   const [time, setTime] = useState('00:00:00:00');
   useEffect(() => {
     const id = setInterval(() => {
@@ -123,6 +127,8 @@ const TapeCounter = () => {
 
 /* ─── Tape transport bar (bottom) ──────────────────────────────── */
 const TapeTransport = ({ progress }) => {
+  const { portfolioData: data } = usePortfolio();
+
   const [playing, setPlaying] = useState(true);
   const [muted, setMuted] = useState(false);
 
@@ -226,6 +232,8 @@ const ChapterLabel = ({ label, index }) => (
 
 /* ─── HERO ──────────────────────────────────────────────────────── */
 const Hero = () => {
+  const { portfolioData: data } = usePortfolio();
+
   const [glitch, setGlitch] = useState(false);
 
   useEffect(() => {
@@ -448,6 +456,8 @@ const About = () => (
 
 /* ─── SKILLS ────────────────────────────────────────────────────── */
 const Skills = () => {
+  const { portfolioData: data } = usePortfolio();
+
   const categories = [...new Set(data.skills.map(s => s.category))];
 
   return (
@@ -475,6 +485,8 @@ const Skills = () => {
 };
 
 const SkillBar = ({ skill, delay }) => {
+  const { portfolioData: data } = usePortfolio();
+
   const ref = useRef(null);
   const inView = useInView(ref, { once: true });
 
@@ -521,6 +533,8 @@ const Projects = () => (
 );
 
 const ProjectCard = ({ project, index }) => {
+  const { portfolioData: data } = usePortfolio();
+
   const [hovered, setHovered] = useState(false);
 
   return (
@@ -708,6 +722,8 @@ const Testimonials = () => (
 
 /* ─── CONTACT ───────────────────────────────────────────────────── */
 const Contact = () => {
+  const { portfolioData: data } = usePortfolio();
+
   const [sent, setSent] = useState(false);
   const [form, setForm] = useState({ name: '', email: '', message: '' });
 
@@ -836,6 +852,8 @@ const Contact = () => {
 
 /* ─── NAV ───────────────────────────────────────────────────────── */
 const Nav = () => {
+  const { portfolioData: data } = usePortfolio();
+
   const sections = ['About', 'Skills', 'Projects', 'Experience', 'Testimonials', 'Contact'];
   return (
     <nav className="fixed top-4 left-1/2 -translate-x-1/2 z-[70] hidden sm:flex items-center gap-1 px-3 py-1.5 rounded-full"
@@ -861,6 +879,8 @@ const Nav = () => {
 
 /* ─── ROOT COMPONENT ────────────────────────────────────────────── */
 export default function ScrollTape() {
+  const { portfolioData: data } = usePortfolio();
+
   const { scrollYProgress } = useScroll();
   const [progress, setProgress] = useState(0);
 

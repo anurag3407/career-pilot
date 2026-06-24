@@ -169,3 +169,55 @@ export const generatePDF = async (markdownText, options = {}) => {
     await browser.close();
   }
 };
+
+/**
+ * Render an arbitrary HTML string (e.g. one of the resume templates'
+ * JSX output, server-rendered) to an ATS-safe multi-page A4 PDF using
+ * Puppeteer. The text layer is preserved — selectable text in the PDF.
+ *
+ * @param {string} htmlBody - Already-rendered HTML body (no <html>/<head> wrapper needed)
+ * @param {Object} options
+ * @param {'A4'|'Letter'} [options.format='A4']
+ * @param {string} [options.title='Resume']
+ * @param {string} [options.css=''] - Optional additional CSS to inject into <head>
+ * @returns {Promise<Buffer>}
+ */
+export const generatePDFFromHTML = async (htmlBody, options = {}) => {
+  const { format = 'A4', title = 'Resume', css = '' } = options;
+
+  const fullHtml = `<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <title>${title}</title>
+  <style>
+    @page { size: ${format}; margin: 0; }
+    html, body { margin: 0; padding: 0; }
+    body { font-family: 'Helvetica Neue', Helvetica, Arial, sans-serif; color: #111; }
+    ${css}
+  </style>
+</head>
+<body>
+  ${htmlBody}
+</body>
+</html>`;
+
+  const browser = await puppeteer.launch({
+    headless: true,
+    args: ['--no-sandbox', '--disable-setuid-sandbox'],
+  });
+
+  try {
+    const page = await browser.newPage();
+    await page.setContent(fullHtml, { waitUntil: 'networkidle0' });
+    const pdfBuffer = await page.pdf({
+      format,
+      printBackground: true,
+      preferCSSPageSize: true,
+      margin: { top: '0', bottom: '0', left: '0', right: '0' },
+    });
+    return Buffer.from(pdfBuffer);
+  } finally {
+    await browser.close();
+  }
+};

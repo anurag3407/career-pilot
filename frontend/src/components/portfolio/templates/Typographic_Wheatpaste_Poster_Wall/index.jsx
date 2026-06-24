@@ -1,3 +1,4 @@
+import { usePortfolio } from "../../../../context/PortfolioContext";
 import React, { useState, useEffect, useRef, useMemo } from 'react';
 import { motion, useScroll, useTransform, AnimatePresence, useInView } from 'framer-motion';
 import {
@@ -18,7 +19,6 @@ import {
   ArrowRight,
   Zap,
 } from 'lucide-react';
-import data from '../../../../data/dummy_data.json';
 
 /* ─────────────────────────────────────────────────────
    DESIGN TOKENS — Wheatpaste Poster Wall palette
@@ -178,6 +178,8 @@ const globalCSS = `
 `;
 
 function GlobalStyles() {
+  const { portfolioData: data } = usePortfolio();
+
   return <style dangerouslySetInnerHTML={{ __html: globalCSS }} />;
 }
 
@@ -185,6 +187,8 @@ function GlobalStyles() {
    HELPERS — Torn paper, tape, decorative elements
 ───────────────────────────────────────────────────── */
 function TornEdgeTop({ color = C.paperLight, height = 28 }) {
+  const { portfolioData: data } = usePortfolio();
+
   const pts = Array.from({ length: 51 }, (_, i) => {
     const x = (i / 50) * 100;
     const y = i % 2 === 0
@@ -206,6 +210,8 @@ function TornEdgeTop({ color = C.paperLight, height = 28 }) {
 }
 
 function TornEdgeBottom({ color = C.paperLight, height = 28 }) {
+  const { portfolioData: data } = usePortfolio();
+
   const pts = Array.from({ length: 51 }, (_, i) => {
     const x = (i / 50) * 100;
     const y = i % 2 === 0
@@ -227,6 +233,8 @@ function TornEdgeBottom({ color = C.paperLight, height = 28 }) {
 }
 
 function TapeStrip({ top, left, right, bottom, width = '80px', angle = '-3deg', color = C.tape }) {
+  const { portfolioData: data } = usePortfolio();
+
   return (
     <div style={{
       position: 'absolute',
@@ -244,6 +252,8 @@ function TapeStrip({ top, left, right, bottom, width = '80px', angle = '-3deg', 
 }
 
 function TapeCorner({ corner = 'tl' }) {
+  const { portfolioData: data } = usePortfolio();
+
   const pos = {
     tl: { top: -8, left: 10 },
     tr: { top: -8, right: 10 },
@@ -266,6 +276,8 @@ function TapeCorner({ corner = 'tl' }) {
 }
 
 function StickyNote({ children, style = {}, color = '#FDED82', rotate = '-2deg' }) {
+  const { portfolioData: data } = usePortfolio();
+
   return (
     <div style={{
       background: color,
@@ -292,6 +304,8 @@ function StickyNote({ children, style = {}, color = '#FDED82', rotate = '-2deg' 
 }
 
 function InkStamp({ children, style = {} }) {
+  const { portfolioData: data } = usePortfolio();
+
   return (
     <motion.div
       initial={{ scale: 1.5, opacity: 0, rotate: -5 }}
@@ -321,6 +335,8 @@ function InkStamp({ children, style = {} }) {
 }
 
 function MarqueeBar({ text, bg = C.red, fg = C.offWhite }) {
+  const { portfolioData: data } = usePortfolio();
+
   const repeated = Array.from({ length: 12 }, () => text).join('  ✦  ');
   return (
     <div style={{
@@ -347,6 +363,8 @@ function MarqueeBar({ text, bg = C.red, fg = C.offWhite }) {
 }
 
 function PaperScrap({ style = {}, children }) {
+  const { portfolioData: data } = usePortfolio();
+
   return (
     <div style={{
       background: C.paperMid,
@@ -367,6 +385,8 @@ function PaperScrap({ style = {}, children }) {
    NAV
 ───────────────────────────────────────────────────── */
 function Nav() {
+  const { portfolioData: data } = usePortfolio();
+
   const [open, setOpen] = useState(false);
   const [scrolled, setScrolled] = useState(false);
 
@@ -518,6 +538,8 @@ function Nav() {
 }
 
 function Hero() {
+  const { portfolioData: data } = usePortfolio();
+
   const { name, title, location, bio } = data.personal;
   const { github, linkedin, twitter, email } = data.socials;
   const { yearsExperience, projectsCompleted } = data.stats;
@@ -1035,6 +1057,8 @@ function Hero() {
    ABOUT
 ───────────────────────────────────────────────────── */
 function About() {
+  const { portfolioData: data } = usePortfolio();
+
   const { name, bio, avatar, location } = data.personal;
   const email = data.socials.email;
   const ref = useRef(null);
@@ -1247,6 +1271,8 @@ function About() {
    SKILLS
 ───────────────────────────────────────────────────── */
 function Skills() {
+  const { portfolioData: data } = usePortfolio();
+
   const ref = useRef(null);
   const inView = useInView(ref, { once: true, margin: '-80px' });
 
@@ -1435,6 +1461,8 @@ function Skills() {
    EXPERIENCE
 ───────────────────────────────────────────────────── */
 function Experience() {
+  const { portfolioData: data } = usePortfolio();
+
   const ref = useRef(null);
   const inView = useInView(ref, { once: true, margin: '-80px' });
 
@@ -1606,6 +1634,8 @@ function Experience() {
    PROJECTS
 ───────────────────────────────────────────────────── */
 function Projects() {
+  const { portfolioData: data } = usePortfolio();
+
   const ref = useRef(null);
   const inView = useInView(ref, { once: true, margin: '-80px' });
 
@@ -1798,6 +1828,8 @@ function Projects() {
    TESTIMONIALS
 ───────────────────────────────────────────────────── */
 function Testimonials() {
+  const { portfolioData: data } = usePortfolio();
+
   const ref = useRef(null);
   const inView = useInView(ref, { once: true, margin: '-80px' });
 
@@ -1958,6 +1990,8 @@ function Testimonials() {
    CONTACT
 ───────────────────────────────────────────────────── */
 function Contact() {
+  const { portfolioData: data } = usePortfolio();
+
   const ref = useRef(null);
   const inView = useInView(ref, { once: true, margin: '-80px' });
   const [form, setForm] = useState({ name: '', email: '', message: '' });
@@ -2258,6 +2292,8 @@ function Contact() {
    FOOTER
 ───────────────────────────────────────────────────── */
 function Footer() {
+  const { portfolioData: data } = usePortfolio();
+
   return (
     <footer style={{
       background: C.inkDeep,
@@ -2319,6 +2355,8 @@ function Footer() {
    ROOT EXPORT
 ───────────────────────────────────────────────────── */
 export default function TypographicWheatpastePosterWall() {
+  const { portfolioData: data } = usePortfolio();
+
   return (
     <>
       <GlobalStyles />

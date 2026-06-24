@@ -1,3 +1,4 @@
+import { usePortfolio } from "../../../../context/PortfolioContext";
 import { useState, useRef } from 'react';
 import { motion, useScroll, useTransform, useInView, AnimatePresence } from 'framer-motion';
 import {
@@ -5,7 +6,6 @@ import {
   Star, Menu, X, Send, CheckCircle, ChevronDown,
   Code2, Server, Layers, Palette,
 } from 'lucide-react';
-import data from '../../../../data/dummy_data.json';
 
 /* ─── Design Tokens ─────────────────────────────────────────────── */
 const C = {
@@ -41,6 +41,8 @@ const RAINBOW = `linear-gradient(135deg,
 
 /* ─── Global Keyframes ───────────────────────────────────────────── */
 function GlobalStyles() {
+  const { portfolioData: data } = usePortfolio();
+
   return (
     <style>{`
       @import url('https://fonts.googleapis.com/css2?family=Pacifico&family=Fredoka+One&display=swap');
@@ -308,6 +310,8 @@ function GlobalStyles() {
 
 /* ─── Mandala Background ─────────────────────────────────────────── */
 function Mandala({ size = 700, opacity = 0.45 }) {
+  const { portfolioData: data } = usePortfolio();
+
   const s = size;
   const cx = s / 2, cy = s / 2;
 
@@ -384,6 +388,8 @@ function Mandala({ size = 700, opacity = 0.45 }) {
 
 /* ─── Floating Orbs ──────────────────────────────────────────────── */
 function FloatOrb({ style }) {
+  const { portfolioData: data } = usePortfolio();
+
   return (
     <div className="psych-float" style={{
       position: 'absolute', borderRadius: '50%',
@@ -394,6 +400,8 @@ function FloatOrb({ style }) {
 
 /* ─── Flower Decoration ──────────────────────────────────────────── */
 function Flower({ size = 48, color = C.pink, className = '' }) {
+  const { portfolioData: data } = usePortfolio();
+
   return (
     <svg width={size} height={size} viewBox="0 0 48 48" className={className}>
       {Array.from({ length: 6 }, (_, i) => {
@@ -411,6 +419,8 @@ function Flower({ size = 48, color = C.pink, className = '' }) {
 
 /* ─── Section Wave Divider ───────────────────────────────────────── */
 function WaveDivider({ from, to, flip = false }) {
+  const { portfolioData: data } = usePortfolio();
+
   return (
     <div style={{ lineHeight: 0, transform: flip ? 'scaleY(-1)' : 'none' }}>
       <svg viewBox="0 0 1440 60" preserveAspectRatio="none" style={{ display: 'block', width: '100%', height: 60 }}>
@@ -429,6 +439,8 @@ function WaveDivider({ from, to, flip = false }) {
 
 /* ─── Section Heading ────────────────────────────────────────────── */
 function SectionHeading({ title, sub }) {
+  const { portfolioData: data } = usePortfolio();
+
   const ref = useRef(null);
   const inView = useInView(ref, { once: true, margin: '-60px' });
   return (
@@ -446,6 +458,8 @@ function SectionHeading({ title, sub }) {
 
 /* ─── Nav ─────────────────────────────────────────────────────────── */
 function Nav() {
+  const { portfolioData: data } = usePortfolio();
+
   const [open, setOpen] = useState(false);
   const [scrolled, setScrolled] = useState(false);
   const navRef = useRef(null);
@@ -536,6 +550,8 @@ function Nav() {
 
 /* ─── Hero ───────────────────────────────────────────────────────── */
 function Hero() {
+  const { portfolioData: data } = usePortfolio();
+
   const { scrollYProgress } = useScroll();
   const y = useTransform(scrollYProgress, [0, 0.3], [0, -60]);
 
@@ -663,6 +679,8 @@ function Hero() {
 
 /* ─── About ──────────────────────────────────────────────────────── */
 function About() {
+  const { portfolioData: data } = usePortfolio();
+
   const ref = useRef(null);
   const inView = useInView(ref, { once: true, margin: '-80px' });
 
@@ -742,6 +760,8 @@ function About() {
 
 /* ─── Skills ─────────────────────────────────────────────────────── */
 function Skills() {
+  const { portfolioData: data } = usePortfolio();
+
   const ref = useRef(null);
   const inView = useInView(ref, { once: true, margin: '-80px' });
 
@@ -829,6 +849,8 @@ function Skills() {
 
 /* ─── Projects ───────────────────────────────────────────────────── */
 function Projects() {
+  const { portfolioData: data } = usePortfolio();
+
   const ref = useRef(null);
   const inView = useInView(ref, { once: true, margin: '-80px' });
 
@@ -952,6 +974,8 @@ function Projects() {
 
 /* ─── Experience ─────────────────────────────────────────────────── */
 function Experience() {
+  const { portfolioData: data } = usePortfolio();
+
   const ref = useRef(null);
   const inView = useInView(ref, { once: true, margin: '-80px' });
 
@@ -1024,6 +1048,8 @@ function Experience() {
 
 /* ─── Testimonials ───────────────────────────────────────────────── */
 function Testimonials() {
+  const { portfolioData: data } = usePortfolio();
+
   const ref = useRef(null);
   const inView = useInView(ref, { once: true, margin: '-80px' });
 
@@ -1088,6 +1114,8 @@ function Testimonials() {
 
 /* ─── Contact ────────────────────────────────────────────────────── */
 function Contact() {
+  const { portfolioData: data } = usePortfolio();
+
   const ref = useRef(null);
   const inView = useInView(ref, { once: true, margin: '-80px' });
 
@@ -1217,6 +1245,8 @@ function Contact() {
 
 /* ─── Footer ─────────────────────────────────────────────────────── */
 function Footer() {
+  const { portfolioData: data } = usePortfolio();
+
   return (
     <footer style={{ background: C.bgAlt, borderTop: `2px solid ${C.border}`, padding: '40px 24px 32px' }}>
       <div style={{ maxWidth: 1100, margin: '0 auto', textAlign: 'center' }}>
@@ -1248,6 +1278,8 @@ function Footer() {
 
 /* ─── Root Export ────────────────────────────────────────────────── */
 export default function PsychedelicSwirl() {
+  const { portfolioData: data } = usePortfolio();
+
   return (
     <>
       <GlobalStyles />

@@ -1,6 +1,6 @@
+import { usePortfolio } from "../../../../context/PortfolioContext";
 import React from 'react';
 import { motion, useScroll, useTransform } from 'framer-motion';
-import data from '../../../../data/dummy_data.json';
 import Hero from './Hero';
 import About from './About';
 import Skills from './Skills';
@@ -18,6 +18,8 @@ import Contact from './Contact';
 
 /* ─── Navigation ─── */
 function Navigation() {
+  const { portfolioData: data } = usePortfolio();
+
   const navItems = [
     { label: 'Home', href: '#hero' },
     { label: 'About', href: '#about' },
@@ -58,6 +60,8 @@ function Navigation() {
 
 /* ─── Mobile Menu ─── */
 function MobileMenu({ navItems }) {
+  const { portfolioData: data } = usePortfolio();
+
   const [open, setOpen] = React.useState(false);
 
   return (
@@ -101,6 +105,8 @@ function MobileMenu({ navItems }) {
 
 /* ─── Ambient Space Particles ─── */
 function SpaceAmbience() {
+  const { portfolioData: data } = usePortfolio();
+
   const { scrollYProgress } = useScroll();
   const opacity = useTransform(scrollYProgress, [0, 0.3], [0.4, 0.15]);
 
@@ -130,6 +136,8 @@ function SpaceAmbience() {
 
 /* ─── Section Divider ─── */
 function SectionDivider() {
+  const { portfolioData: data } = usePortfolio();
+
   return (
     <div className="flex items-center justify-center py-4">
       <div className="w-1 h-1 rounded-full bg-orange-500/40" />
@@ -143,6 +151,8 @@ function SectionDivider() {
 
 /* ─── Main Template ─── */
 export default function SolarEclipse() {
+  const { portfolioData: data } = usePortfolio();
+
   return (
     <div className="relative min-h-screen bg-gray-950 text-white overflow-x-hidden font-sans">
       {/* Ambient background */}

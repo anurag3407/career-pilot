@@ -1,5 +1,5 @@
+import { usePortfolio } from "../../../../context/PortfolioContext";
 import React from 'react';
-import dummyData from '../../../../data/dummy_data.json';
 import Hero from './Hero';
 import Services from './Services';
 import InvoiceSection from './InvoiceSection';
@@ -18,6 +18,8 @@ import Contact from './Contact';
  * Upwork Pro, Notion Invoice, and modern consulting portfolio aesthetics.
  */
 export default function FreelancerInvoice({ portfolioData }) {
+  const { portfolioData: dummyData } = usePortfolio();
+
   // Merge AI data with dummyData
   const personal = {
     ...dummyData.personal,

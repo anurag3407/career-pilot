@@ -1,5 +1,5 @@
+import { usePortfolio } from "../../../../context/PortfolioContext";
 import React from 'react';
-import data from '../../../../data/dummy_data.json';
 
 /**
  * Creative Agency Portfolio Template
@@ -7,6 +7,8 @@ import data from '../../../../data/dummy_data.json';
  * Description: Bold creative agency style with oversized typography, case study focus with before/after, black and white with one vibrant accent color.
  */
 export default function CreativeAgency() {
+  const { portfolioData: data } = usePortfolio();
+
   return (
     <div className="min-h-screen bg-gray-950 text-white flex flex-col items-center justify-center p-8 font-sans">
       <div className="max-w-3xl w-full text-center">
