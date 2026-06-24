@@ -1,3 +1,10 @@
+# [1.267.0](https://github.com/anurag3407/career-pilot/compare/v1.266.0...v1.267.0) (2026-06-24)
+
+
+### Features
+
+* add portfolio contact interaction analytics ([#4306](https://github.com/anurag3407/career-pilot/issues/4306)) ([5fc968d](https://github.com/anurag3407/career-pilot/commit/5fc968d5a211297520389457fc703aab69cc4bf9))
+
 # [1.266.0](https://github.com/anurag3407/career-pilot/compare/v1.265.1...v1.266.0) (2026-06-24)
 
 
