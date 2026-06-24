@@ -22,6 +22,18 @@ export default function PortfolioBuilderLanding() {
   const primaryCtaLink = user ? config.primaryAction.to : config.hero.primaryCta.to;
   const ctaSectionText = user ? config.primaryAction.label : config.cta.ctaText;
   const ctaSectionLink = user ? config.primaryAction.to : config.cta.ctaTo;
+  const previewName = [
+    user?.firstName,
+    user?.lastName,
+  ].filter(Boolean).join(' ') ||
+    user?.displayName ||
+    user?.name ||
+    user?.fullName ||
+    user?.username ||
+    user?.profile?.name ||
+    user?.email?.split('@')[0] ||
+    'Your Name';
+
 
   return (
     <div className="relative flex flex-col min-h-screen bg-[#0a0a0a] text-foreground">
@@ -42,12 +54,16 @@ export default function PortfolioBuilderLanding() {
 
       <main className="relative z-10 flex-1">
         <PortfolioBuilderHero
-          badgeText="150+ templates live"
-          headlineBefore="Ship a stunning portfolio in"
-          rotatingWords={['minutes', 'one click', 'a weekend', 'one coffee']}
-          description={config.hero.description}
+          badgeText="Portfolio Builder"
+          headlineBefore="Build portfolios that get noticed,"
+          rotatingWords={['not ignored.', 'not forgotten.', 'not skipped.']}
+          description="Launch a polished personal website with templates, GitHub projects, custom sections, and one-click deployment — built for students, developers, and job seekers."
+          previewName={previewName}
           primaryCta={{ text: primaryCtaText, to: primaryCtaLink }}
-          secondaryCta={{ text: config.hero.secondaryCta.text, href: config.hero.secondaryCta.href }}
+          secondaryCta={{
+            text: config.hero.secondaryCta.text,
+            href: config.hero.secondaryCta.href,
+          }}
         />
 
         <div className="bg-[#0a0a0a]/60 backdrop-blur-[2px]">

@@ -8,8 +8,14 @@ import React, {
   useMemo,
 } from 'react';
 import { Link } from 'react-router-dom';
-import { motion, AnimatePresence, useScroll, useMotionValueEvent } from 'framer-motion';
+import { motion, AnimatePresence } from 'framer-motion';
 import { cn } from '../../lib/utils';
+
+const MotionSpan = motion.span;
+const MotionDiv = motion.div;
+const MotionA = motion.a;
+const MotionH1 = motion.h1;
+const MotionP = motion.p;
 
 /* ─── Rotating word effect (rotates "Templates", "Projects", "Skills", "Deploys") ─── */
 
@@ -43,7 +49,7 @@ const RotatingText = forwardRef(function RotatingText(
       try {
         const segmenter = new Intl.Segmenter('en', { granularity: 'grapheme' });
         return Array.from(segmenter.segment(text), (segment) => segment.segment);
-      } catch (err) {
+      } catch {
         return text.split('');
       }
     }
@@ -136,7 +142,7 @@ const RotatingText = forwardRef(function RotatingText(
   }, [next, rotationInterval, auto, texts.length]);
 
   return (
-    <motion.span
+    <MotionSpan
       className={cn(
         'inline-flex flex-wrap whitespace-pre-wrap relative align-bottom pb-[10px]',
         mainClassName
@@ -146,7 +152,7 @@ const RotatingText = forwardRef(function RotatingText(
     >
       <span className="sr-only">{texts[currentTextIndex]}</span>
       <AnimatePresence mode={animatePresenceMode} initial={animatePresenceInitial}>
-        <motion.div
+        <MotionDiv
           key={currentTextIndex}
           className={cn(
             'inline-flex flex-wrap relative',
@@ -171,7 +177,7 @@ const RotatingText = forwardRef(function RotatingText(
               {elementObj.characters.map((char, charIndex) => {
                 const globalIndex = elementObj.startIndex + charIndex;
                 return (
-                  <motion.span
+                  <MotionSpan
                     key={`${char}-${charIndex}`}
                     initial={initial}
                     animate={animate}
@@ -186,14 +192,14 @@ const RotatingText = forwardRef(function RotatingText(
                     )}
                   >
                     {char === ' ' ? '\u00A0' : char}
-                  </motion.span>
+                  </MotionSpan>
                 );
               })}
             </span>
           ))}
-        </motion.div>
+        </MotionDiv>
       </AnimatePresence>
-    </motion.span>
+    </MotionSpan>
   );
 });
 
@@ -208,6 +214,7 @@ const ShinyText = ({ text, className = '' }) => (
         inset: 0,
         background:
           'linear-gradient(90deg, transparent, rgba(255,255,255,0.3), transparent)',
+        backgroundSize: '200% 100%',
         animation: 'shine 2s infinite linear',
         opacity: 0.5,
         pointerEvents: 'none',
@@ -299,7 +306,7 @@ const RocketIcon = (props) => (
 /* ─── Nav subcomponents ─── */
 
 const NavLink = ({ href = '#', children, hasDropdown = false, className = '', onClick }) => (
-  <motion.a
+  <MotionA
     href={href}
     onClick={onClick}
     className={cn(
@@ -311,20 +318,20 @@ const NavLink = ({ href = '#', children, hasDropdown = false, className = '', on
     {children}
     {hasDropdown && <ChevronDownIcon />}
     {!hasDropdown && (
-      <motion.div
+      <MotionDiv
         className="absolute bottom-[-2px] left-0 right-0 h-[1px] bg-[#0CF2A0]"
         variants={{ initial: { scaleX: 0, originX: 0.5 }, hover: { scaleX: 1, originX: 0.5 } }}
         initial="initial"
         transition={{ duration: 0.3, ease: 'easeOut' }}
       />
     )}
-  </motion.a>
+  </MotionA>
 );
 
 const DropdownMenu = ({ children, isOpen }) => (
   <AnimatePresence>
     {isOpen && (
-      <motion.div
+      <MotionDiv
         initial={{ opacity: 0, y: 10, scale: 0.95 }}
         animate={{ opacity: 1, y: 0, scale: 1 }}
         exit={{ opacity: 0, y: 10, scale: 0.95, transition: { duration: 0.15 } }}
@@ -334,7 +341,7 @@ const DropdownMenu = ({ children, isOpen }) => (
         <div className="bg-[#111111] border border-gray-700/50 rounded-md shadow-xl p-2">
           {children}
         </div>
-      </motion.div>
+      </MotionDiv>
     )}
   </AnimatePresence>
 );
@@ -562,174 +569,334 @@ const InteractiveDotCanvas = ({
 /* ─── Hero (content only — background handled by InteractiveDotCanvas at page level) ─── */
 
 const PortfolioBuilderHero = ({
-  badgeText = '150+ templates live',
-  headlineBefore = 'Ship a stunning portfolio in',
-  rotatingWords = ['minutes', 'one click', 'a weekend', 'one coffee'],
-  description = 'Pick a template, fill a few fields, and your personal site is live on a global CDN. GitHub, resume, and 150+ creative themes — all in one builder.',
-  primaryCta = { text: 'Start building free', to: '/portfolio-builder/templates' },
-  secondaryCta = { text: 'See live examples', href: '#templates' },
+  badgeText = 'Portfolio Builder',
+  headlineBefore = 'Build portfolios that get noticed,',
+  rotatingWords = ['not ignored.', 'not forgotten.', 'not skipped.'],
+  description = 'Launch a polished personal website with templates, GitHub projects, custom sections, and one-click deployment — built for students, developers, and job seekers.',
+  primaryCta = { text: 'Open Portfolio Builder', to: '/portfolio-builder/templates' },
+  secondaryCta = { text: 'See examples', href: '#templates' },
+  previewName = 'Your Name',
 }) => {
-  /* ─── Entrance animations ─── */
   const contentDelay = 0.3;
   const itemDelayIncrement = 0.1;
 
   const bannerV = {
     hidden: { opacity: 0, y: -10 },
-    visible: { opacity: 1, y: 0, transition: { duration: 0.4, delay: contentDelay } },
+    visible: {
+      opacity: 1,
+      y: 0,
+      transition: { duration: 0.4, delay: contentDelay },
+    },
   };
+
   const headlineV = {
-    hidden: { opacity: 0 },
-    visible: { opacity: 1, transition: { duration: 0.5, delay: contentDelay + itemDelayIncrement } },
+    hidden: { opacity: 0, y: 18 },
+    visible: {
+      opacity: 1,
+      y: 0,
+      transition: { duration: 0.55, delay: contentDelay + itemDelayIncrement },
+    },
   };
+
   const subV = {
-    hidden: { opacity: 0, y: 10 },
-    visible: { opacity: 1, y: 0, transition: { duration: 0.5, delay: contentDelay + itemDelayIncrement * 2 } },
+    hidden: { opacity: 0, y: 14 },
+    visible: {
+      opacity: 1,
+      y: 0,
+      transition: { duration: 0.5, delay: contentDelay + itemDelayIncrement * 2 },
+    },
   };
+
   const formV = {
-    hidden: { opacity: 0, y: 10 },
-    visible: { opacity: 1, y: 0, transition: { duration: 0.5, delay: contentDelay + itemDelayIncrement * 3 } },
+    hidden: { opacity: 0, y: 14 },
+    visible: {
+      opacity: 1,
+      y: 0,
+      transition: { duration: 0.5, delay: contentDelay + itemDelayIncrement * 3 },
+    },
   };
-  const trialV = {
-    hidden: { opacity: 0 },
-    visible: { opacity: 1, transition: { duration: 0.5, delay: contentDelay + itemDelayIncrement * 4 } },
+
+  const previewV = {
+    hidden: { opacity: 0, y: 24, scale: 0.97 },
+    visible: {
+      opacity: 1,
+      y: 0,
+      scale: 1,
+      transition: { duration: 0.55, delay: contentDelay + itemDelayIncrement * 4 },
+    },
   };
-  const worksWithV = {
-    hidden: { opacity: 0 },
-    visible: { opacity: 1, transition: { duration: 0.5, delay: contentDelay + itemDelayIncrement * 5 } },
+
+  const statsV = {
+    hidden: { opacity: 0, y: 12 },
+    visible: {
+      opacity: 1,
+      y: 0,
+      transition: { duration: 0.5, delay: contentDelay + itemDelayIncrement * 5 },
+    },
   };
+
+  const heroStats = [
+    { value: '150+', label: 'Templates live' },
+    { value: '10s', label: 'Deploy time' },
+    { value: '4+', label: 'Hosting options' },
+  ];
+
+  const valuePills = [
+    'No-code setup',
+    'GitHub import',
+    'Responsive templates',
+  ];
+
+  const previewHighlights = [
+    { label: 'Projects', value: '6', color: 'bg-emerald-400' },
+    { label: 'Skills', value: '12', color: 'bg-sky-400' },
+    { label: 'Sections', value: '5', color: 'bg-violet-400' },
+  ];
+
+  const deployTargets = ['GitHub Pages', 'Cloudflare', 'Netlify', 'Vercel'];
+
+  const previewInitials = previewName
+    .split(' ')
+    .filter(Boolean)
+    .map((part) => part[0])
+    .join('')
+    .slice(0, 2)
+    .toUpperCase() || 'YN';
+
+  const primaryButton = (
+    <span className="inline-flex items-center justify-center gap-2">
+      <RocketIcon className="h-4 w-4" aria-hidden="true" />
+      {primaryCta.text}
+    </span>
+  );
+
+  const secondaryButton = (
+    <span className="inline-flex items-center justify-center gap-2">
+      {secondaryCta.text}
+      <ExternalLinkIcon className="h-4 w-4" aria-hidden="true" />
+    </span>
+  );
 
   return (
-    <section className="relative text-gray-300 overflow-hidden">
-      {/* Hero content */}
-      <div className="relative z-10 flex flex-col items-center justify-center text-center px-4 pt-24 pb-20 min-h-[760px]">
-        {/* Banner */}
-        <motion.div variants={bannerV} initial="hidden" animate="visible" className="mb-6">
-          <ShinyText
-            text={badgeText}
-            className="bg-[#1a1a1a] border border-gray-700 text-[#0CF2A0] px-4 py-1 rounded-full text-xs sm:text-sm font-medium cursor-pointer hover:border-[#0CF2A0]/50 transition-colors"
-          />
-        </motion.div>
+    <section className="relative isolate overflow-hidden px-4 pb-20 pt-28 text-white sm:px-6 sm:pb-24 sm:pt-32 lg:px-8 lg:pb-28 lg:pt-36">
+      <div className="absolute inset-x-0 top-20 -z-10 mx-auto h-72 max-w-4xl rounded-full bg-emerald-500/10 blur-3xl" />
 
-        {/* Headline with rotating word */}
-        <motion.h1
-          variants={headlineV}
-          initial="hidden"
-          animate="visible"
-          className="text-4xl sm:text-5xl lg:text-[64px] font-semibold text-white leading-tight max-w-4xl mb-4"
-        >
-          {headlineBefore}{' '}
-          <span className="inline-block h-[1.2em] overflow-hidden align-bottom">
-            <RotatingText
-              texts={rotatingWords}
-              mainClassName="text-[#0CF2A0] mx-1"
-              staggerFrom="last"
-              initial={{ y: '-100%', opacity: 0 }}
-              animate={{ y: 0, opacity: 1 }}
-              exit={{ y: '110%', opacity: 0 }}
-              staggerDuration={0.01}
-              transition={{ type: 'spring', damping: 18, stiffness: 250 }}
-              rotationInterval={2200}
-              splitBy="characters"
-              auto
-              loop
-            />
-          </span>
-          .
-        </motion.h1>
-
-        {/* Subheadline */}
-        <motion.p
-          variants={subV}
-          initial="hidden"
-          animate="visible"
-          className="text-base sm:text-lg lg:text-xl text-gray-400 max-w-2xl mx-auto mb-8"
-        >
-          {description}
-        </motion.p>
-
-        {/* CTAs */}
-        <motion.div
-          variants={formV}
-          initial="hidden"
-          animate="visible"
-          className="flex flex-col sm:flex-row items-center justify-center gap-2 w-full max-w-md mx-auto mb-3"
-        >
-          <Link
-            to={primaryCta.to}
-            className="w-full sm:w-auto bg-[#0CF2A0] text-[#111111] px-5 py-2.5 rounded-md text-sm font-semibold hover:bg-opacity-90 transition-colors duration-200 whitespace-nowrap shadow-sm hover:shadow-md flex-shrink-0 flex items-center justify-center gap-2"
+      <div className="mx-auto grid max-w-7xl items-center gap-14 lg:grid-cols-[1.02fr_0.98fr] lg:gap-12">
+        <div className="mx-auto max-w-3xl text-center lg:mx-0 lg:text-left">
+          <MotionDiv
+            variants={bannerV}
+            initial="hidden"
+            animate="visible"
+            className="mb-8 inline-flex items-center rounded-full border border-white/10 bg-white/10 px-4 py-2 text-sm font-semibold text-emerald-300 shadow-[0_0_30px_rgba(16,185,129,0.12)] backdrop-blur"
           >
-            <RocketIcon />
-            {primaryCta.text}
-          </Link>
-          <a
-            href={secondaryCta.href}
-            className="w-full sm:w-auto px-5 py-2.5 rounded-md text-sm font-semibold border border-gray-700 text-gray-200 hover:border-[#0CF2A0] hover:text-white transition-colors duration-200 whitespace-nowrap flex-shrink-0"
+            <ShinyText text={badgeText} />
+          </MotionDiv>
+
+          <MotionH1
+            variants={headlineV}
+            initial="hidden"
+            animate="visible"
+            className="max-w-3xl text-balance text-5xl font-black leading-[0.92] tracking-tight text-white sm:text-6xl lg:text-6xl xl:text-7xl"
           >
-            {secondaryCta.text}
-          </a>
-        </motion.div>
+            {headlineBefore}{' '}
+            <span className="block text-emerald-300">
+              <RotatingText
+                texts={rotatingWords}
+                mainClassName="inline-flex overflow-hidden align-bottom pb-1"
+                splitLevelClassName="inline-flex"
+                elementLevelClassName="inline-block"
+                rotationInterval={2400}
+                staggerDuration={0.015}
+              />
+            </span>
+          </MotionH1>
 
-        <motion.p
-          variants={trialV}
+          <MotionP
+            variants={subV}
+            initial="hidden"
+            animate="visible"
+            className="mx-auto mt-6 max-w-2xl text-balance text-lg leading-8 text-slate-300 sm:text-xl lg:mx-0"
+          >
+            {description}
+          </MotionP>
+
+          <MotionDiv
+            variants={formV}
+            initial="hidden"
+            animate="visible"
+            className="mt-9 flex flex-col items-stretch justify-center gap-4 sm:flex-row lg:justify-start"
+          >
+            {primaryCta.to ? (
+              <Link
+                to={primaryCta.to}
+                aria-label={primaryCta.text}
+                className="inline-flex min-h-14 items-center justify-center rounded-2xl bg-emerald-400 px-7 py-4 text-base font-bold text-slate-950 shadow-[0_18px_45px_rgba(16,185,129,0.24)] transition hover:-translate-y-0.5 hover:bg-emerald-300 focus:outline-none focus:ring-2 focus:ring-emerald-300 focus:ring-offset-2 focus:ring-offset-slate-950"
+              >
+                {primaryButton}
+              </Link>
+            ) : (
+              <a
+                href={primaryCta.href}
+                aria-label={primaryCta.text}
+                className="inline-flex min-h-14 items-center justify-center rounded-2xl bg-emerald-400 px-7 py-4 text-base font-bold text-slate-950 shadow-[0_18px_45px_rgba(16,185,129,0.24)] transition hover:-translate-y-0.5 hover:bg-emerald-300 focus:outline-none focus:ring-2 focus:ring-emerald-300 focus:ring-offset-2 focus:ring-offset-slate-950"
+              >
+                {primaryButton}
+              </a>
+            )}
+
+            <a
+              href={secondaryCta.href}
+              aria-label={secondaryCta.text}
+              className="inline-flex min-h-14 items-center justify-center rounded-2xl border border-white/15 bg-white/5 px-7 py-4 text-base font-bold text-white transition hover:-translate-y-0.5 hover:border-white/30 hover:bg-white/10 focus:outline-none focus:ring-2 focus:ring-white/40 focus:ring-offset-2 focus:ring-offset-slate-950"
+            >
+              {secondaryButton}
+            </a>
+          </MotionDiv>
+
+          <MotionDiv
+            variants={statsV}
+            initial="hidden"
+            animate="visible"
+            className="mt-8 flex flex-wrap items-center justify-center gap-3 text-sm text-slate-400 lg:justify-start"
+          >
+            {valuePills.map((pill) => (
+              <span
+                key={pill}
+                className="rounded-full border border-white/10 bg-white/5 px-3 py-1.5"
+              >
+                {pill}
+              </span>
+            ))}
+          </MotionDiv>
+
+          <MotionDiv
+            variants={statsV}
+            initial="hidden"
+            animate="visible"
+            className="mt-12 grid grid-cols-3 gap-4 border-t border-white/10 pt-8 sm:max-w-xl lg:max-w-none"
+          >
+            {heroStats.map((stat) => (
+              <div key={stat.label}>
+                <div className="text-3xl font-black text-white sm:text-4xl">
+                  {stat.value}
+                </div>
+                <div className="mt-1 text-xs font-medium uppercase tracking-[0.2em] text-slate-500 sm:text-sm">
+                  {stat.label}
+                </div>
+              </div>
+            ))}
+          </MotionDiv>
+        </div>
+
+        <MotionDiv
+          variants={previewV}
           initial="hidden"
           animate="visible"
-          className="text-xs text-gray-500 mb-10"
+          className="relative mx-auto w-full max-w-xl lg:max-w-none"
+          aria-label="Portfolio Builder preview mockup"
         >
-          Free forever for individuals · No credit card · Deploy in under 10s
-        </motion.p>
+          <div className="absolute -inset-6 rounded-[2rem] bg-emerald-400/10 blur-3xl" />
 
-        {/* Trust row */}
-        <motion.div
-          variants={worksWithV}
-          initial="hidden"
-          animate="visible"
-          className="flex flex-col items-center justify-center space-y-2"
-        >
-          <span className="text-xs uppercase text-gray-500 tracking-wider font-medium">
-            Powers deploys to
-          </span>
-          <div className="flex flex-wrap items-center justify-center gap-x-6 gap-y-2 text-gray-400">
-            <span className="flex items-center gap-2 whitespace-nowrap">
-              <svg width="14" height="14" viewBox="0 0 24 24" fill="currentColor">
-                <path d="M12 .297c-6.63 0-12 5.373-12 12 0 5.303 3.438 9.8 8.205 11.385.6.113.82-.258.82-.577 0-.285-.01-1.04-.015-2.04-3.338.724-4.042-1.61-4.042-1.61C4.422 18.07 3.633 17.7 3.633 17.7c-1.087-.744.084-.729.084-.729 1.205.084 1.838 1.236 1.838 1.236 1.07 1.835 2.809 1.305 3.495.998.108-.776.417-1.305.76-1.605-2.665-.3-5.466-1.332-5.466-5.93 0-1.31.465-2.38 1.235-3.22-.135-.303-.54-1.523.105-3.176 0 0 1.005-.322 3.3 1.23.96-.267 1.98-.4 3-.405 1.02.005 2.04.138 3 .405 2.28-1.552 3.285-1.23 3.285-1.23.645 1.653.24 2.873.12 3.176.765.84 1.23 1.91 1.23 3.22 0 4.61-2.805 5.625-5.475 5.92.42.36.81 1.096.81 2.22 0 1.606-.015 2.896-.015 3.286 0 .315.21.69.825.57C20.565 22.092 24 17.592 24 12.297c0-6.627-5.373-12-12-12" />
-              </svg>
-              GitHub Pages
-            </span>
-            <span className="flex items-center gap-2 whitespace-nowrap">
-              <svg width="16" height="16" viewBox="0 0 24 24" fill="#F38020">
-                <path d="M16.5 16.5L24 9l-3.5-3.5-4.5 4.5-4.5-4.5L8 9l8.5 7.5zM0 9l3.5-3.5L8 9l-4.5 4.5L0 9zm8.5 4.5L12 9l3.5 4.5L12 18l-3.5-4.5z" />
-              </svg>
-              Cloudflare
-            </span>
-            <span className="flex items-center gap-2 whitespace-nowrap">
-              <svg width="14" height="14" viewBox="0 0 24 24" fill="#00C7B7">
-                <path d="M17.5 12.5c0-1.5-1-2.7-2.4-3.1.2-.5.3-1 .3-1.5 0-2.2-1.8-4-4-4-1.7 0-3.1 1-3.7 2.5C6 6.6 4.6 7.7 4 9.3 2.4 9.7 1.2 11.1 1.2 12.8c0 1.9 1.5 3.4 3.4 3.4h12.5c1.5 0 2.7-1.2 2.7-2.7 0-.4-.1-.7-.2-1z" />
-              </svg>
-              Netlify
-            </span>
-            <span className="flex items-center gap-2 whitespace-nowrap">
-              <svg width="14" height="14" viewBox="0 0 24 24" fill="currentColor">
-                <path d="M12 .5C5.65.5.5 5.65.5 12c0 5.08 3.29 9.39 7.86 10.92.58.1.79-.25.79-.56v-2.1c-3.2.7-3.87-1.36-3.87-1.36-.52-1.33-1.28-1.68-1.28-1.68-1.05-.71.08-.7.08-.7 1.16.08 1.77 1.19 1.77 1.19 1.03 1.77 2.7 1.26 3.36.96.1-.75.4-1.26.73-1.55-2.55-.29-5.24-1.28-5.24-5.69 0-1.26.45-2.29 1.18-3.1-.12-.29-.51-1.46.11-3.04 0 0 .96-.31 3.15 1.18.91-.25 1.89-.38 2.86-.39.97.01 1.95.14 2.86.39 2.18-1.49 3.14-1.18 3.14-1.18.63 1.58.24 2.75.12 3.04.74.81 1.18 1.84 1.18 3.1 0 4.42-2.69 5.4-5.25 5.68.41.36.78 1.07.78 2.15v3.19c0 .31.21.67.8.56C20.21 21.38 23.5 17.08 23.5 12 23.5 5.65 18.35.5 12 .5z" />
-              </svg>
-              Vercel
-            </span>
-            <span className="whitespace-nowrap text-gray-500 font-medium uppercase text-xs">
-              + GitHub import
-            </span>
+          <div className="relative overflow-hidden rounded-[2rem] border border-white/10 bg-slate-950/80 p-4 shadow-2xl shadow-emerald-950/30 backdrop-blur-xl sm:p-5">
+            <div className="mb-4 flex items-center justify-between rounded-2xl border border-white/10 bg-white/5 px-4 py-3">
+              <div>
+                <p className="text-xs font-semibold uppercase tracking-[0.25em] text-emerald-300">
+                  Portfolio preview
+                </p>
+                <p className="mt-1 text-sm text-slate-400">
+                  Sample layout generated from portfolio details
+                </p>
+              </div>
+              <span className="rounded-full bg-emerald-400/15 px-3 py-1 text-xs font-bold text-emerald-300">
+                Ready
+              </span>
+            </div>
+
+            <div className="rounded-[1.5rem] border border-white/10 bg-white/[0.03] p-5">
+              <div className="flex items-start justify-between gap-4">
+                <div>
+                  <div className="flex h-12 w-12 items-center justify-center rounded-2xl bg-gradient-to-br from-emerald-300 to-sky-400 text-sm font-black text-slate-950 shadow-lg shadow-emerald-500/20">
+                    {previewInitials}
+                  </div>
+                  <p className="mt-5 text-2xl font-black text-white">
+                    {previewName}
+                  </p>
+                  <p className="mt-2 max-w-sm text-sm leading-6 text-slate-400">
+                    Frontend developer portfolio with projects, skills,
+                    experience, and contact sections.
+                  </p>
+                </div>
+
+                <div className="rounded-full border border-emerald-300/25 bg-emerald-300/10 px-3 py-1 text-xs font-bold text-emerald-300">
+                  Published
+                </div>
+              </div>
+
+              <div className="mt-6 grid grid-cols-3 gap-3">
+                {previewHighlights.map((item) => (
+                  <div
+                    key={item.label}
+                    className="rounded-2xl border border-white/10 bg-slate-900/80 p-3"
+                  >
+                    <div className={cn('mb-3 h-2 w-8 rounded-full', item.color)} />
+                    <div className="text-xl font-black text-white">
+                      {item.value}
+                    </div>
+                    <div className="text-xs text-slate-500">
+                      {item.label}
+                    </div>
+                  </div>
+                ))}
+              </div>
+
+              <div className="mt-6 space-y-3">
+                {['AI Resume Builder', 'GitHub Project Visualizer', 'CareerPilot Dashboard'].map(
+                  (project) => (
+                    <div
+                      key={project}
+                      className="flex items-center justify-between rounded-2xl border border-white/10 bg-white/[0.04] px-4 py-3"
+                    >
+                      <span className="text-sm font-semibold text-slate-200">
+                        {project}
+                      </span>
+                      <span className="text-xs font-medium text-emerald-300">
+                        Featured
+                      </span>
+                    </div>
+                  )
+                )}
+              </div>
+            </div>
+
+            <div className="mt-5 rounded-2xl border border-white/10 bg-white/[0.04] px-4 py-4">
+              <p className="text-center text-xs font-semibold uppercase tracking-[0.25em] text-slate-500">
+                Powers deploys to
+              </p>
+              <div className="mt-4 flex flex-wrap items-center justify-center gap-3">
+                {deployTargets.map((target) => (
+                  <span
+                    key={target}
+                    className="rounded-full border border-white/10 bg-white/5 px-3 py-1.5 text-sm font-semibold text-slate-300"
+                  >
+                    {target}
+                  </span>
+                ))}
+              </div>
+            </div>
           </div>
-        </motion.div>
+        </MotionDiv>
       </div>
 
-      {/* Inline keyframes for the shine animation used by ShinyText */}
-      <style>{`
-        @keyframes shine {
-          0% { transform: translateX(-100%); }
-          100% { transform: translateX(100%); }
-        }
-      `}</style>
+      <style>
+        {`
+          @keyframes shine {
+            0% { background-position: 200% center; }
+            100% { background-position: -200% center; }
+          }
+        `}
+      </style>
     </section>
   );
 };
-
-export { PortfolioBuilderHero, InteractiveDotCanvas };
+export { InteractiveDotCanvas };
 export default PortfolioBuilderHero;
