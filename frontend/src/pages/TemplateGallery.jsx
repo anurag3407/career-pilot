@@ -5,6 +5,22 @@ import DeployModal from "../components/portfolio/DeployModal";
 import ThemeSelector from "../components/portfolio/ThemeSelector";
 import { templates } from '../data/templates';
 import { motion, AnimatePresence } from "framer-motion";
+import { Moon, Sun, ChevronDown, Check, Eye, Star } from "lucide-react";
+import HolographicAbout from "../components/portfolio/templates/Holographic/About";
+import CulinaryAbout from "../components/portfolio/templates/Culinary_Restaurant/About";
+import TechStartupHero from "../components/portfolio/templates/Tech_Startup/Hero";
+import GeometricShapesAbout from "../components/portfolio/templates/Geometric_Shapes/About";
+import StageMagicianHero from "../components/portfolio/templates/Stage_Magician_Spellbook/Hero";
+import Navbar from '../components/Navbar'
+
+/* ─────────────────────────────────────────────────────────
+   Custom FilterSelect
+   Renders a fully-styled dark dropdown with:
+   - White text on dark bg
+   - Glowing cyan border when open
+   - Cyan bg + white text on item hover
+   - Smooth slide-down animation
+───────────────────────────────────────────────────────── */
 import { Moon, Sun, ChevronDown, Check, Eye, Star, Sparkles, X } from "lucide-react";
 import { useSearchParams } from "react-router-dom";
 
@@ -363,6 +379,57 @@ const TemplatePreviewModal = ({ templateId, isOpen, onClose, portfolioData }) =>
 
 export default function TemplateGallery() {
   const { theme, toggleTheme } = useTheme();
+
+  const templates = [
+    {
+      id: 1,
+      title: "Modern Portfolio",
+      category: "Portfolio",
+      colorScheme: "Dark",
+      layout: "Grid",
+      author: "Alex Johnson",
+      views: 1200,
+      rating: 4.8,
+      image: "/template-previews/Modern-Portfolio.png",
+      createdAt: "2026-05-10",
+    },
+    {
+      id: 2,
+      title: "Minimal Resume",
+      category: "Resume",
+      colorScheme: "Light",
+      layout: "Minimal",
+      author: "Sarah Lee",
+      views: 980,
+      rating: 4.6,
+      image: "/template-previews/Minimal-Resume.png",
+      createdAt: "2026-05-18",
+    },
+    {
+      id: 3,
+      title: "Creative Dashboard",
+      category: "Dashboard",
+      colorScheme: "Colorful",
+      layout: "Cards",
+      author: "Michael",
+      views: 2100,
+      rating: 4.9,
+      image: "/template-previews/Creative-Dashboard.png",
+      createdAt: "2026-05-15",
+    },
+    {
+      id: 4,
+      title: "Stage Magician Spellbook",
+      category: "Portfolio",
+      colorScheme: "Dark",
+      layout: "Mystical",
+      author: "Valerius Vance",
+      views: 1420,
+      rating: 5.0,
+      image: "/template-previews/Stage-Magician-Spellbook.png",
+      createdAt: "2026-06-21",
+    },
+  ];
   const [searchParams, setSearchParams] = useSearchParams();
   const previewTemplateId = searchParams.get("preview");
   const [hoveredCard, setHoveredCard] = useState(null);
@@ -459,6 +526,7 @@ export default function TemplateGallery() {
   );
 
   return (
+    <div className="min-h-screen bg-background text-foreground p-8 pt-24 transition-colors duration-300">
     <div className="min-h-screen bg-background text-foreground transition-colors duration-300">
       <Navbar />
 
@@ -639,6 +707,19 @@ export default function TemplateGallery() {
       {/* Inspired Clyde DSouza - sandboxed fixed-nav frame */}
       <div className="mt-12">
         <div className="mb-4 flex items-center gap-3 px-1">
+          <span className="rounded-full bg-amber-500/20 px-3 py-1 text-xs font-bold uppercase tracking-widest text-amber-400 border border-amber-500/30">
+            Preview
+          </span>
+          <h2 className="text-lg font-semibold text-foreground/70">Geometric Shapes Theme — About Section</h2>
+        </div>
+        <div className="overflow-hidden rounded-2xl border border-border">
+          <GeometricShapesAbout />
+        </div>
+      </div>
+    <div className="mt-12">
+        <div className="mb-4 flex items-center gap-3 px-1">
+          <span className="rounded-full bg-amber-500/20 px-3 py-1 text-xs font-bold uppercase tracking-widest text-amber-400 border border-amber-500/30">
+            Preview
           <span className="rounded-full bg-emerald-500/15 px-3 py-1 text-xs font-bold uppercase tracking-widest text-emerald-500 border border-emerald-500/25">
             🧑 Clyde D'Souza Inspired
           </span>
@@ -664,6 +745,9 @@ export default function TemplateGallery() {
         </div>
       </div>
 
+      <div className="mt-12 overflow-hidden rounded-2xl border border-border">
+        <StageMagicianHero />
+      </div>
     </div>
   );
 }
