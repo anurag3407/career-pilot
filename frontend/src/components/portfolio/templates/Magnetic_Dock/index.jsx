@@ -1,10 +1,10 @@
+import { usePortfolio } from "../../../../context/PortfolioContext";
 import React, { useState, useRef } from "react";
 import { motion, useMotionValue, useTransform, useSpring, AnimatePresence, useInView } from "framer-motion";
 import {
   Github, Linkedin, Twitter, Mail, ExternalLink,
   Home, User, Zap, Grid, Briefcase, Star, MessageSquare
 } from "lucide-react";
-import data from "../../../../data/dummy_data.json";
 
 const C = {
   bg:     "#0D0D14",
@@ -29,6 +29,8 @@ const DOCK_ICONS = [
 ];
 
 function GlobalStyles() {
+  const { portfolioData: data } = usePortfolio();
+
   return (
     <style>{`
       @import url('https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700;800&display=swap');
@@ -138,6 +140,8 @@ function GlobalStyles() {
 
 /* ── Magnetic Dock Item ── */
 function DockItem({ icon: { id, label, Icon, color }, mouseX, onClick, isActive }) {
+  const { portfolioData: data } = usePortfolio();
+
   const ref = useRef(null);
 
   const distance = useTransform(mouseX, (val) => {
@@ -205,6 +209,8 @@ function DockItem({ icon: { id, label, Icon, color }, mouseX, onClick, isActive 
 
 /* ── The Dock ── */
 function MagneticDockBar({ activeSection, onNavigate }) {
+  const { portfolioData: data } = usePortfolio();
+
   const mouseX = useMotionValue(Infinity);
 
   return (
@@ -247,6 +253,8 @@ function MagneticDockBar({ activeSection, onNavigate }) {
 }
 
 function FadeIn({ children, delay = 0, className = "", style = {} }) {
+  const { portfolioData: data } = usePortfolio();
+
   const ref = useRef(null);
   const inView = useInView(ref, { once: true, margin: "-80px" });
   return (
@@ -259,6 +267,8 @@ function FadeIn({ children, delay = 0, className = "", style = {} }) {
 }
 
 function SkillBar({ name, level, category }) {
+  const { portfolioData: data } = usePortfolio();
+
   const ref = useRef(null);
   const inView = useInView(ref, { once: true });
   return (
@@ -276,6 +286,8 @@ function SkillBar({ name, level, category }) {
 }
 
 export default function MagneticDock() {
+  const { portfolioData: data } = usePortfolio();
+
   const [activeSection, setActiveSection] = useState("hero");
   const [contactState, setContactState] = useState("idle");
   const [form, setForm] = useState({ name: "", email: "", message: "" });

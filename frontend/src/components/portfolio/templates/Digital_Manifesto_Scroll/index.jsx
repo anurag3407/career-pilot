@@ -4,7 +4,6 @@ import {
   Github, Linkedin, Twitter, Mail, ExternalLink, MapPin,
   ChevronDown, ChevronUp, Menu, X, GraduationCap, Award,
 } from "lucide-react";
-import dummyData from "../../../../data/dummy_data.json";
 import { usePortfolio } from "../../../../context/PortfolioContext";
 
 /* ─── Constants ─── */
@@ -15,6 +14,8 @@ const SKILL_CATS = ["Frontend", "Backend", "Tools", "Design", "Database", "DevOp
    Global Styles — all CSS scoped with `dms-` prefix
    ═══════════════════════════════════════════════════════════ */
 function GlobalStyles() {
+  const { portfolioData: dummyData } = usePortfolio();
+
   return (
     <style>{`
 @import url('https://fonts.googleapis.com/css2?family=Playfair+Display:ital,wght@0,400;0,500;0,600;0,700;0,800;0,900;1,400;1,600&family=Inter:wght@300;400;500;600;700;800&family=JetBrains+Mono:wght@400;500&display=swap');
@@ -523,6 +524,8 @@ function GlobalStyles() {
 
 /** Scroll-triggered reveal wrapper */
 function Reveal({ children, delay = 0 }) {
+  const { portfolioData: dummyData } = usePortfolio();
+
   const ref = useRef(null);
   const inView = useInView(ref, { once: true, margin: "-60px" });
   return (
@@ -539,6 +542,8 @@ function Reveal({ children, delay = 0 }) {
 
 /** Chapter heading (roman numeral + rule + title) */
 function Chapter({ number, title }) {
+  const { portfolioData: dummyData } = usePortfolio();
+
   return (
     <div className="dms-chapter">
       <div className="dms-chapter-num">{number}</div>
@@ -550,6 +555,8 @@ function Chapter({ number, title }) {
 
 /** Animated skill bar */
 function SkillBar({ name, level, delay = 0 }) {
+  const { portfolioData: dummyData } = usePortfolio();
+
   const ref = useRef(null);
   const inView = useInView(ref, { once: true });
   return (
@@ -574,6 +581,8 @@ function SkillBar({ name, level, delay = 0 }) {
    Main Template Component
    ═══════════════════════════════════════════════════════════ */
 export default function DigitalManifestoScroll() {
+  const { portfolioData: dummyData } = usePortfolio();
+
   const { portfolioData } = usePortfolio();
   const [menuOpen, setMenuOpen] = useState(false);
   const [scrollY, setScrollY] = useState(0);

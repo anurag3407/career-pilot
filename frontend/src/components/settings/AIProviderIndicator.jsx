@@ -20,7 +20,7 @@ export default function AIProviderIndicator({ open, animate }) {
   const activeMeta = activeProvider ? PROVIDER_META[activeProvider] : null;
 
   const icon = activeMeta?.icon ?? "🤖";
-  const label = activeMeta?.name ?? "Server AI";
+  const label = activeMeta?.name ?? "Select Provider";
   const activeModel =
     activeProvider && providers[activeProvider]?.model
       ? providers[activeProvider].model
@@ -123,27 +123,7 @@ export default function AIProviderIndicator({ open, animate }) {
 
             {/* Provider list */}
             <div className="px-2 pb-2 flex flex-col gap-0.5">
-              {/* Server Default option */}
-              <button
-                onClick={() => handleSelect("")}
-                className={cn(
-                  "flex items-center gap-3 w-full px-3 py-2.5 rounded-lg text-left transition-all cursor-pointer",
-                  !activeProvider
-                    ? "bg-muted text-foreground"
-                    : "text-muted-foreground hover:text-foreground hover:bg-muted/50"
-                )}
-              >
-                <Cpu className="w-4 h-4 shrink-0" />
-                <div className="min-w-0 flex-1">
-                  <p className="text-sm font-semibold truncate">Server Default</p>
-                  <p className="text-xs text-muted-foreground truncate">
-                    Uses backend AI configuration
-                  </p>
-                </div>
-                {!activeProvider && (
-                  <span className="w-2 h-2 rounded-full bg-emerald-400 shrink-0" />
-                )}
-              </button>
+
 
               {/* Configured providers */}
               {configuredProviders.map((key) => {

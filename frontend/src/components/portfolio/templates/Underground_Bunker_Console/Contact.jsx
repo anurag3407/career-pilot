@@ -38,7 +38,7 @@ export default function Contact({ data }) {
             <form onSubmit={handleSubmit} style={{ display: 'flex', flexDirection: 'column', gap: 16, marginBottom: 32 }}>
               <div>
                     <label style={{ display: 'block', color: '#666', fontSize: '0.6875rem', marginBottom: 6, letterSpacing: '0.05em' }}>
-                      > CALLSIGN
+                      &gt; CALLSIGN
                     </label>
                     <input type="text" placeholder="YOUR_IDENTIFIER"
                       style={{
@@ -53,7 +53,7 @@ export default function Contact({ data }) {
               </div>
               <div>
                     <label style={{ display: 'block', color: '#666', fontSize: '0.6875rem', marginBottom: 6, letterSpacing: '0.05em' }}>
-                      > MESSAGE
+                      &gt; MESSAGE
                     </label>
                     <textarea rows={4} placeholder="TRANSMISSION_CONTENT"
                       style={{

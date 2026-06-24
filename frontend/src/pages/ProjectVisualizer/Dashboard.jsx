@@ -5,7 +5,7 @@ import {
   GitBranch, Star, GitFork, AlertCircle, ArrowLeft,
   Map, Grid3X3, AlertTriangle, Users, Search,
   Loader2, ChevronDown, Box, Info, Scale,
-  Sparkles, CheckCircle2, Package, Code2, BrainCircuit, BookOpen
+  Sparkles, CheckCircle2, Package, Code2, BrainCircuit, BookOpen, TrendingUp
 } from 'lucide-react';
 import toast from 'react-hot-toast';
 import { useProjectVisualizerStore } from '../../stores/useProjectVisualizerStore';
@@ -26,6 +26,7 @@ import DependencyHealth from '../../components/visualizer/DependencyHealth';
 import FileExplorer from '../../components/visualizer/FileExplorer';
 import InterviewPrep from '../../components/visualizer/InterviewPrep';
 import ContributionGuide from '../../components/visualizer/ContributionGuide';
+import ActivityTab from '../../components/visualizer/ActivityTab';
 import { cn } from '../../lib/utils';
 
 const Dashboard = () => {
@@ -156,6 +157,7 @@ const Dashboard = () => {
     { id: 'architecture', label: 'Architecture', icon: Map, color: 'text-cyan-400', bg: 'bg-cyan-500/10' },
     { id: 'modules', label: 'Modules', icon: Grid3X3, color: 'text-violet-400', bg: 'bg-violet-500/10' },
     { id: 'files', label: 'Files & Code', icon: Code2, color: 'text-blue-400', bg: 'bg-blue-500/10' },
+    { id: 'activity', label: 'Activity', icon: TrendingUp, color: 'text-emerald-400', bg: 'bg-emerald-500/10' },
     { id: 'dependencies', label: 'Dependencies', icon: Package, color: 'text-amber-400', bg: 'bg-amber-500/10' },
     { id: 'interview', label: 'Interview Prep', icon: BrainCircuit, color: 'text-red-400', bg: 'bg-red-500/10' },
     { id: 'contribution', label: 'Contribution Guide', icon: BookOpen, color: 'text-emerald-400', bg: 'bg-emerald-500/10' },
@@ -494,7 +496,7 @@ const Dashboard = () => {
 
             {/* CONTRIBUTION TAB */}
             {activeTab === 'contribution' && (
-              <motion.div 
+              <motion.div
                 key="contribution"
                 initial={{ opacity: 0, y: 10 }}
                 animate={{ opacity: 1, y: 0 }}
@@ -503,6 +505,20 @@ const Dashboard = () => {
                 className="h-full flex flex-col gap-6"
               >
                 <ContributionGuide />
+              </motion.div>
+            )}
+
+            {/* ACTIVITY TAB */}
+            {activeTab === 'activity' && (
+              <motion.div
+                key="activity"
+                initial={{ opacity: 0, y: 10 }}
+                animate={{ opacity: 1, y: 0 }}
+                exit={{ opacity: 0, y: -10 }}
+                transition={{ duration: 0.3 }}
+                className="h-full flex flex-col gap-6"
+              >
+                <ActivityTab />
               </motion.div>
             )}
 

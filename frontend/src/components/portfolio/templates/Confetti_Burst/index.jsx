@@ -1,3 +1,4 @@
+import { usePortfolio } from "../../../../context/PortfolioContext";
 import React from "react";
 import { motion } from "framer-motion";
 import {
@@ -10,7 +11,6 @@ import {
   Sparkles,
 } from "lucide-react";
 
-import data from "../../../../data/dummy_data.json";
 
 const confettiColors = [
   "bg-pink-500",
@@ -22,6 +22,8 @@ const confettiColors = [
 ];
 
 export default function ConfettiBurst() {
+  const { portfolioData: data } = usePortfolio();
+
   const [bursts, setBursts] = React.useState([]);
 
   const createBurst = (e) => {

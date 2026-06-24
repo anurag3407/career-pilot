@@ -1,15 +1,17 @@
 import { useState, useEffect } from 'react'
 import { motion, AnimatePresence } from 'framer-motion'
-import { Bell, Mail, MessageSquare, FileText, Save, Cpu, Sparkles } from 'lucide-react'
+import { Bell, Mail, MessageSquare, FileText, Save, Sparkles, Github } from 'lucide-react'
 import { notificationApi } from '../services/api'
 import Button from '../components/Button'
 import toast from 'react-hot-toast'
 import { SkeletonList } from '../components/ui/Skeleton'
 import AIProviderSetup from '../components/settings/AIProviderSetup'
+import GithubTokenCard from '../components/settings/GithubTokenCard'
 
 const tabs = [
-  { id: 'notifications', label: 'Notifications', icon: Bell },
   { id: 'ai-providers', label: 'AI Providers', icon: Sparkles },
+  { id: 'integrations', label: 'Integrations', icon: Github },
+  { id: 'notifications', label: 'Notifications', icon: Bell },
 ]
 
 export default function Settings() {
@@ -193,6 +195,30 @@ export default function Settings() {
                 transition={{ duration: 0.25 }}
               >
                 <AIProviderSetup />
+              </motion.div>
+            )}
+
+            {/* INTEGRATIONS TAB — GitHub, etc. */}
+            {activeTab === 'integrations' && (
+              <motion.div
+                key="integrations"
+                initial={{ opacity: 0, x: 20 }}
+                animate={{ opacity: 1, x: 0 }}
+                exit={{ opacity: 0, x: -20 }}
+                transition={{ duration: 0.25 }}
+                className="space-y-4"
+              >
+                <div className="mb-2">
+                  <h2 className="text-lg font-semibold text-foreground flex items-center gap-2">
+                    <Github className="w-5 h-5" />
+                    GitHub Integration
+                  </h2>
+                  <p className="text-sm text-muted-foreground">
+                    Connect GitHub to power the GitHub-Powered Portfolio Builder
+                    and unlock private repos + 5,000 req/hr.
+                  </p>
+                </div>
+                <GithubTokenCard />
               </motion.div>
             )}
           </AnimatePresence>

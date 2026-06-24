@@ -6,9 +6,9 @@ export default function ConsistencyPanel({ errors = [] }) {
 
   // Defensive Severity Color Map Configuration
   const severityStyles = {
-    error: 'bg-rose-50 border-rose-100 text-rose-800',
-    warning: 'bg-amber-50 border-amber-100 text-amber-800',
-    fallback: 'bg-slate-50 border-slate-200 text-slate-700'
+    error: 'bg-red-500/10 border-red-500/20 text-red-400',
+    warning: 'bg-yellow-500/10 border-yellow-500/20 text-yellow-400',
+    fallback: 'bg-muted border-border text-muted-foreground'
   };
 
   return (
@@ -16,10 +16,10 @@ export default function ConsistencyPanel({ errors = [] }) {
       initial={{ opacity: 0, y: -10 }}
       animate={{ opacity: 1, y: 0 }}
       exit={{ opacity: 0, y: -10 }}
-      className="mb-6 p-4 border-2 border-black bg-white rounded-xl shadow-[4px_4px_0px_0px_rgba(0,0,0,1)] font-mono"
+      className="mb-6 p-4 border border-border bg-card rounded-xl shadow-lg"
     >
       <div className="flex items-center gap-2 mb-3">
-        <span className="text-lg font-black bg-black text-white px-2 py-0.5 uppercase tracking-tighter">
+        <span className="text-lg font-black bg-foreground text-background px-2 py-0.5 rounded uppercase tracking-tighter">
           Analysis // Flags ({errors.length})
         </span>
       </div>

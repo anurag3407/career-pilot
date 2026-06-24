@@ -1,7 +1,7 @@
+import { usePortfolio } from "../../../../context/PortfolioContext";
 ﻿import { useEffect, useState } from "react";
 import { motion } from "framer-motion";
 import { Github, Linkedin, Mail, Twitter, ExternalLink } from "lucide-react";
-import data from "../../../../data/dummy_data.json";
 
 const PixelBar = ({ label, level }) => (
   <div className="mb-3">
@@ -26,6 +26,8 @@ const SectionTitle = ({ children }) => (
 );
 
 export default function PixelQuest() {
+  const { portfolioData: data } = usePortfolio();
+
   const [blink, setBlink] = useState(true);
   const { personal, socials, skills, projects, experience, testimonials, stats } = data;
 

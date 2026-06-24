@@ -1,5 +1,5 @@
+import { usePortfolio } from "../../../../context/PortfolioContext";
 import React from 'react';
-import data from '../../../../data/dummy_data.json';
 import { GooeyFilter } from './Shared';
 import LavaBackground from './LavaBackground';
 import NavBar from './NavBar';
@@ -12,6 +12,8 @@ import Testimonials from './Testimonials';
 import Contact from './Contact';
 
 const LavaLampPortfolio = () => {
+  const { portfolioData: data } = usePortfolio();
+
   return (
     <div className="min-h-screen font-serif text-[#2b1318] selection:bg-[#f28e2b] selection:text-[#2b1318] bg-[#2b1318] relative overflow-hidden">
       <GooeyFilter />

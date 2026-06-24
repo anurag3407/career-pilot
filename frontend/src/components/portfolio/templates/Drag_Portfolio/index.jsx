@@ -1,3 +1,4 @@
+import { usePortfolio } from "../../../../context/PortfolioContext";
 import React, { useState, useEffect, useRef } from 'react';
 import { motion, AnimatePresence } from 'framer-motion';
 import { 
@@ -18,9 +19,10 @@ import {
   Maximize2
 } from 'lucide-react';
 import DraggableCard from './DraggableCard';
-import data from '../../../../data/dummy_data.json';
 
 export default function DragPortfolio() {
+  const { portfolioData: data } = usePortfolio();
+
   const containerRef = useRef(null);
   const [isMobile, setIsMobile] = useState(false);
   const [resetKey, setResetKey] = useState(0);

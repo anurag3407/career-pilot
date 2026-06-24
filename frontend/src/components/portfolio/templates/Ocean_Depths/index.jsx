@@ -1,7 +1,7 @@
+import { usePortfolio } from "../../../../context/PortfolioContext";
 import React, { useEffect, useRef, useState, useCallback } from 'react';
 import { motion, useScroll, useTransform, AnimatePresence, useInView } from 'framer-motion';
 import { Github, Linkedin, Twitter, Mail, MapPin, ExternalLink, Star, Briefcase, Code2, ChevronDown, Quote, Send, User, Layers } from 'lucide-react';
-import data from '../../../../data/dummy_data.json';
 
 /* ── Bioluminescent palette ────────────────────────────────────────── */
 const OCEAN = {
@@ -17,6 +17,8 @@ const OCEAN = {
 
 /* ── Floating bubble component ─────────────────────────────────────── */
 function Bubble({ x, delay, size, opacity }) {
+  const { portfolioData: data } = usePortfolio();
+
   return (
     <motion.div
       className="absolute rounded-full pointer-events-none"
@@ -37,6 +39,8 @@ function Bubble({ x, delay, size, opacity }) {
 
 /* ── Animated fish SVG ─────────────────────────────────────────────── */
 function Fish({ y, direction, color, scale = 1, delay = 0 }) {
+  const { portfolioData: data } = usePortfolio();
+
   const startX = direction === 'right' ? '-120px' : 'calc(100vw + 120px)';
   const endX   = direction === 'right' ? 'calc(100vw + 120px)' : '-120px';
   return (
@@ -65,6 +69,8 @@ function Fish({ y, direction, color, scale = 1, delay = 0 }) {
 
 /* ── Light ray component ───────────────────────────────────────────── */
 function LightRay({ x, rotation, opacity }) {
+  const { portfolioData: data } = usePortfolio();
+
   return (
     <motion.div
       className="absolute top-0 pointer-events-none origin-top"
@@ -84,6 +90,8 @@ function LightRay({ x, rotation, opacity }) {
 
 /* ── Coral SVG ─────────────────────────────────────────────────────── */
 function CoralCluster({ x, color, scale = 1, flip = false }) {
+  const { portfolioData: data } = usePortfolio();
+
   return (
     <motion.svg
       viewBox="0 0 100 120"
@@ -112,6 +120,8 @@ function CoralCluster({ x, color, scale = 1, flip = false }) {
 
 /* ── Section fade-in wrapper ───────────────────────────────────────── */
 function FadeSection({ children, className = '', delay = 0 }) {
+  const { portfolioData: data } = usePortfolio();
+
   const ref = useRef(null);
   const inView = useInView(ref, { once: true, margin: '-80px' });
   return (
@@ -129,6 +139,8 @@ function FadeSection({ children, className = '', delay = 0 }) {
 
 /* ── Section heading ───────────────────────────────────────────────── */
 function SectionHeading({ icon: Icon, title }) {
+  const { portfolioData: data } = usePortfolio();
+
   return (
     <div className="flex items-center gap-3 mb-10">
       <div className="p-2.5 rounded-xl" style={{ background: 'rgba(0,229,255,0.12)', border: '1px solid rgba(0,229,255,0.25)' }}>
@@ -142,6 +154,8 @@ function SectionHeading({ icon: Icon, title }) {
 
 /* ── Skill bar ─────────────────────────────────────────────────────── */
 function SkillBar({ name, level, category, delay }) {
+  const { portfolioData: data } = usePortfolio();
+
   const ref = useRef(null);
   const inView = useInView(ref, { once: true });
   const catColor = { Frontend: OCEAN.glow, Backend: OCEAN.bio, DevOps: OCEAN.coral, Design: OCEAN.jellyfish };
@@ -170,6 +184,8 @@ function SkillBar({ name, level, category, delay }) {
 
 /* ── Project card ──────────────────────────────────────────────────── */
 function ProjectCard({ project, index }) {
+  const { portfolioData: data } = usePortfolio();
+
   const [hovered, setHovered] = useState(false);
   return (
     <FadeSection delay={index * 0.1}>
@@ -225,6 +241,8 @@ function ProjectCard({ project, index }) {
 
 /* ── Testimonial card ──────────────────────────────────────────────── */
 function TestimonialCard({ testimonial, index }) {
+  const { portfolioData: data } = usePortfolio();
+
   return (
     <FadeSection delay={index * 0.12}>
       <div className="relative p-6 rounded-2xl h-full" style={{
@@ -248,6 +266,8 @@ function TestimonialCard({ testimonial, index }) {
 
 /* ── Contact form ──────────────────────────────────────────────────── */
 function ContactForm() {
+  const { portfolioData: data } = usePortfolio();
+
   const [form, setForm] = useState({ name: '', email: '', message: '' });
   const [sent, setSent] = useState(false);
   const handleSubmit = (e) => { e.preventDefault(); setSent(true); };
@@ -292,6 +312,8 @@ function ContactForm() {
 
 /* ── Jellyfish ambient element ─────────────────────────────────────── */
 function Jellyfish({ x, y, delay = 0 }) {
+  const { portfolioData: data } = usePortfolio();
+
   return (
     <motion.svg viewBox="0 0 60 80" style={{ position: 'absolute', left: `${x}%`, top: `${y}%`, width: 50, height: 70, opacity: 0.25, pointerEvents: 'none', filter: 'blur(1px)' }}
       animate={{ y: [0, -20, 0], rotate: [0, 5, -5, 0] }}
@@ -310,6 +332,8 @@ function Jellyfish({ x, y, delay = 0 }) {
    MAIN COMPONENT
 ═══════════════════════════════════════════════════════════════════════ */
 export default function OceanDepths() {
+  const { portfolioData: data } = usePortfolio();
+
   const containerRef = useRef(null);
   const { scrollYProgress } = useScroll({ target: containerRef });
   const heroParallax = useTransform(scrollYProgress, [0, 0.3], [0, -80]);
