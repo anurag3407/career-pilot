@@ -1,5 +1,20 @@
 export const templates = [
   {
+    id: "Jigsaw_Puzzle_Assembly",
+    title: "Jigsaw Puzzle Assembly",
+    category: "Portfolio",
+    colorScheme: "Colorful",
+    layout: "Interactive",
+    author: "System",
+    views: 0,
+    rating: 0,
+    image: "template-previews/Jigsaw_Puzzle_Assembly.png",
+    createdAt: "2026-06-24",
+    description: "A vibrant portfolio where big jigsaw pieces are assembled in the hero and scatter as you scroll down — rejoining as you scroll back up. Funky neon colours, unique interlocking shapes, and scroll-driven physics.",
+    isComplete: true
+  },
+  
+  {
     id: "Bruno_Simon_Playground",
     title: "Bruno Simon Playground",
     category: "Portfolio",
