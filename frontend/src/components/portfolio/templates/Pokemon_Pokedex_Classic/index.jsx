@@ -212,6 +212,18 @@ const PokemonPokedexClassic = ({ portfolioData }) => {
           box-shadow: inset 1px 1px 2px rgba(0,0,0,0.3);
           transform: translateY(1px);
         }
+
+        .pokedex-btn[aria-disabled="true"] {
+          background: linear-gradient(135deg, #7f8c8d 0%, #34495e 100%);
+          color: #d5f5d5;
+          cursor: not-allowed;
+          opacity: 0.75;
+        }
+
+        .pokedex-btn[aria-disabled="true"]:hover,
+        .pokedex-btn[aria-disabled="true"]:focus-visible {
+          box-shadow: inset -1px -1px 2px rgba(0,0,0,0.3), 0 0 12px rgba(100,255,100,0.35);
+        }
         
         .bottom-row {
           display: flex;
@@ -467,11 +479,11 @@ const PokemonPokedexClassic = ({ portfolioData }) => {
           <div className="button-section">
             <button 
               className="pokedex-btn" 
+              aria-disabled={!currentEntry.links?.github}
+              title={currentEntry.links?.github ? "Open GitHub project" : "GitHub link not entered"}
               onClick={() => {
                 if (currentEntry.links?.github) {
                   window.open(currentEntry.links.github, "_blank", "noopener,noreferrer");
-                } else {
-                  alert("No GitHub link available for this project!");
                 }
               }}
             >
@@ -479,11 +491,11 @@ const PokemonPokedexClassic = ({ portfolioData }) => {
             </button>
             <button 
               className="pokedex-btn" 
+              aria-disabled={!currentEntry.links?.live}
+              title={currentEntry.links?.live ? "Open live project" : "Live deployment link not entered"}
               onClick={() => {
                 if (currentEntry.links?.live) {
                   window.open(currentEntry.links.live, "_blank", "noopener,noreferrer");
-                } else {
-                  alert("No Live deployment link available!");
                 }
               }}
             >

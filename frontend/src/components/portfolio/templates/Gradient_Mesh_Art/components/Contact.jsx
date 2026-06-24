@@ -1,14 +1,16 @@
-import React from "react";
+import React, { useState } from "react";
 import data from "../../../../../data/dummy_data.json";
 import { Mail, Github, Linkedin, Twitter, Send } from "lucide-react";
 import { motion } from "framer-motion";
 
 export default function Contact() {
-    const handleSubmit = (e) => {
-  e.preventDefault();
+  const [sent, setSent] = useState(false);
 
-  alert("Message sent successfully!");
-};
+  const handleSubmit = (e) => {
+    e.preventDefault();
+    e.currentTarget.reset();
+    setSent(true);
+  };
 
   return (
     <section className="relative py-32 px-6 md:px-20 overflow-hidden" id="contact">
@@ -146,6 +148,15 @@ export default function Contact() {
             >
               Send Message <Send size={18} />
             </button>
+
+            {sent && (
+              <p
+                role="status"
+                className="rounded-2xl border border-cyan-300/30 bg-cyan-300/10 p-4 text-center text-sm font-medium text-cyan-100 shadow-[0_0_30px_rgba(34,211,238,0.12)]"
+              >
+                Message sent. I’ll reply soon.
+              </p>
+            )}
           </motion.form>
 
         </div>

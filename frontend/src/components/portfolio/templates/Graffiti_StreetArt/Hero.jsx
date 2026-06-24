@@ -1,14 +1,15 @@
-import React from 'react';
+import React, { useState } from 'react';
 import { SprayCan, Brush, ArrowRight, Star, Zap, Palette } from 'lucide-react';
 
 export default function Hero() {
-  // For demo/preview purposes, just show an alert when clicked
+  const [previewNote, setPreviewNote] = useState('');
+
   const handleExploreClick = () => {
-    alert('🚀 This is a preview! In the full template, this would scroll to your portfolio section.');
+    setPreviewNote('Portfolio wall coming soon.');
   };
 
   const handleContactClick = () => {
-    alert('📧 This is a preview! In the full template, this would scroll to the contact section.');
+    setPreviewNote('Contact wall coming soon.');
   };
 
   return (
@@ -94,6 +95,15 @@ export default function Hero() {
             Contact Me
           </button>
         </div>
+
+        {previewNote && (
+          <div
+            role="status"
+            className="mt-5 rounded-full border-2 border-yellow-300/70 bg-black/60 px-5 py-2 text-sm font-bold uppercase tracking-wide text-yellow-200 shadow-[0_0_24px_rgba(236,72,153,0.35)]"
+          >
+            {previewNote}
+          </div>
+        )}
 
         {/* Stats with icons */}
         <div className="mt-16 flex flex-wrap justify-center gap-8 md:gap-12">
