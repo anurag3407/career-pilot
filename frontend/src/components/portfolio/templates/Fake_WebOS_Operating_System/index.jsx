@@ -4,7 +4,7 @@ import {
   User, FolderOpen, Code2, Briefcase, MessageSquare, Mail,
   Github, Linkedin, Twitter, ExternalLink, X, Minus, Maximize2,
   ChevronRight, Terminal, Wifi, Battery, Volume2, Search,
-  Star, Clock, Settings, Globe, FileText, Award, MapPin,
+  Star, Settings, Globe, FileText, Award, MapPin,
 } from "lucide-react";
 import { usePortfolio } from "../../../../context/PortfolioContext";
 
@@ -432,7 +432,7 @@ function AppContent({ appId, data }) {
 }
 
 /* ─── Clock ─────────────────────────────────────────────── */
-function ClockWidget() {
+function SystemClock() {
   const [time, setTime] = useState(new Date());
   useEffect(() => { const t = setInterval(() => setTime(new Date()), 1000); return () => clearInterval(t); }, []);
   return (
@@ -508,7 +508,7 @@ export default function FakeWebOSOperatingSystem() {
             <Wifi size={12} color={C.muted} />
             <Battery size={12} color={C.muted} />
             <Volume2 size={12} color={C.muted} />
-            <ClockWidget />
+            <SystemClock />
           </div>
         </div>
 
