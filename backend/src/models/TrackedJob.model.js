@@ -57,7 +57,19 @@ const trackedJobSchema = new mongoose.Schema({
         default: 'saved',
         index: true
     },
-    notes: [noteSchema]
+    notes: [noteSchema],
+    deadline: {
+        type: Date,
+        default: null
+    },
+    userEmail: {
+        type: String,
+        default: null
+    },
+    deadlineReminderSent: {
+        fortyEightHour: { type: Boolean, default: false },
+        today: { type: Boolean, default: false }
+    }
 }, {
     timestamps: {
         createdAt: 'createdAt',
@@ -75,6 +87,8 @@ trackedJobSchema.index({ userId: 1, status: 1 }, { background: true });
 trackedJobSchema.index({ userId: 1, company: 1 }, { background: true });
 trackedJobSchema.index({ userId: 1, updatedAt: -1 }, { background: true });
 trackedJobSchema.index({ userId: 1, status: 1, updatedAt: -1 }, { background: true });
+trackedJobSchema.index({ userId: 1, deadline: 1 }, { background: true });
+trackedJobSchema.index({ deadline: 1 }, { background: true, sparse: true });
 
 const TrackedJob = mongoose.model('TrackedJob', trackedJobSchema);
 
