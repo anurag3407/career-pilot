@@ -1,4 +1,17 @@
 export const templates = [
+   {
+    "id": "Rubik_s_Cube_3D_Rotate",
+    "title": "Rubik's Cube 3D Rotate",
+    "category": "Portfolio",
+    "colorScheme": "Dark",
+    "layout": "Interactive",
+    "author": "ShaktiShrey-01",
+    "views": 0,
+    "rating": 0,
+    "image": "/template-previews/Rubik_s_Cube_3D_Rotate.png",
+    "createdAt": "2026-06-24",
+    isComplete: true
+},
   {
     id: "Bruno_Simon_Playground",
     title: "Bruno Simon Playground",
