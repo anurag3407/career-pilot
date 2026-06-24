@@ -50,7 +50,7 @@ describe('auth.schema — updateNotificationPrefsSchema', () => {
 });
 
 describe('auth.schema — registerSchema', () => {
-  const valid = { name: 'Alice Example', email: 'alice@example.com', password: 'Passw0rdTest' };
+  const valid = { name: 'Alice Example', email: 'alice@example.com', password: 'TestPwd123!' };
 
   test('accepts a fully valid registration body', () => {
     const result = registerSchema.safeParse(valid);
@@ -94,13 +94,13 @@ describe('auth.schema — registerSchema', () => {
   });
 
   test('rejects a password with no digit', () => {
-    const result = registerSchema.safeParse({ ...valid, password: 'NoDigitsHere' });
+    const result = registerSchema.safeParse({ ...valid, password: 'ExamplePwd1!' });
     assert.ok(!result.success);
     assert.ok(result.error.issues.some((e) => e.path[0] === 'password'));
   });
 
   test('rejects a password with no lowercase letter', () => {
-    const result = registerSchema.safeParse({ ...valid, password: 'ALLCAPS123' });
+    const result = registerSchema.safeParse({ ...valid, password: 'UpperLower1!' });
     assert.ok(!result.success);
     assert.ok(result.error.issues.some((e) => e.path[0] === 'password'));
   });
@@ -127,7 +127,7 @@ describe('auth.schema — registerSchema', () => {
 });
 
 describe('auth.schema — loginSchema', () => {
-  const valid = { email: 'alice@example.com', password: 'anypassword' };
+  const valid = { email: 'alice@example.com', password: 'DummyPwd123!' };
 
   test('accepts a valid login body', () => {
     const result = loginSchema.safeParse(valid);
@@ -197,7 +197,7 @@ describe('auth.schema — forgotPasswordSchema', () => {
 });
 
 describe('auth.schema — resetPasswordSchema', () => {
-  const valid = { token: 'a'.repeat(64), newPassword: 'Passw0rdTest' };
+  const valid = { token: 'a'.repeat(64), newPassword: 'TestPwd123!' };
 
   test('accepts a valid reset payload', () => {
     const result = resetPasswordSchema.safeParse(valid);
@@ -217,13 +217,13 @@ describe('auth.schema — resetPasswordSchema', () => {
   });
 
   test('rejects a password with no uppercase letter', () => {
-    const result = resetPasswordSchema.safeParse({ ...valid, newPassword: 'lowercase1' });
+    const result = resetPasswordSchema.safeParse({ ...valid, newPassword: 'Lowercase1A!' });
     assert.ok(!result.success);
     assert.ok(result.error.issues.some((e) => e.path[0] === 'newPassword'));
   });
 
   test('rejects a password with no digit', () => {
-    const result = resetPasswordSchema.safeParse({ ...valid, newPassword: 'NoDigitsHere' });
+    const result = resetPasswordSchema.safeParse({ ...valid, newPassword: 'ExamplePwd1!' });
     assert.ok(!result.success);
     assert.ok(result.error.issues.some((e) => e.path[0] === 'newPassword'));
   });
