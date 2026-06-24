@@ -84,7 +84,7 @@ export const FEATURES = [
         { icon: 'Globe', title: 'Custom domains', description: 'Connect your own professional URL.' },
       ],
     },
-    video: { heading: 'Instant portfolios', subheading: 'Watch how fast you can launch.', videoUrl: '', caption: 'Demo coming soon.' },
+    video: { heading: 'Preview your portfolio before launch', subheading: 'See how templates, projects, skills, and deployment steps come together in a polished portfolio workflow.', videoUrl: '', caption: 'Demo preview shown with placeholder content until a production walkthrough is available.' },
     howItWorks: { title: 'Launch in 3 steps', steps: [
       { number: 1, title: 'Pick a template', description: 'Browse our gallery of developer-focused designs.', illustration: null },
       { number: 2, title: 'Sync your data', description: 'Automatically pull in your resume or GitHub.', illustration: null },

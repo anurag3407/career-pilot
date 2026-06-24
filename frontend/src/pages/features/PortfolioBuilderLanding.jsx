@@ -78,6 +78,7 @@ export default function PortfolioBuilderLanding() {
               subheading={config.video.subheading}
               videoUrl={config.video.videoUrl}
               caption={config.video.caption}
+              variant="portfolio"
             />
           </div>
 
