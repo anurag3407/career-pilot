@@ -8,7 +8,7 @@ const POOL_CONFIG = {
   minPoolSize: 2,
   connectTimeoutMS: 10000,
   socketTimeoutMS: 45000,
-  serverSelectionTimeoutMS: 5000,
+  serverSelectionTimeoutMS: 30000,
 };
 
 let isConnected = false;
