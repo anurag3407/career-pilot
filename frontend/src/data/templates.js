@@ -1,5 +1,18 @@
 export const templates = [
   {
+    "id": "Pure_CSS_Art_Gallery",
+    "title": "Pure CSS Art Gallery",
+    "category": "Portfolio",
+    "colorScheme": "Colorful",
+    "layout": "Gallery",
+    "author": "tejinderpa",
+    "views": 0,
+    "rating": 4.9,
+    "image": "/template-previews/Pure_CSS_Art_Gallery.png",
+    "createdAt": "2026-06-09",
+    "isComplete": true
+  },
+  {
     id: "Jigsaw_Puzzle_Assembly",
     title: "Jigsaw Puzzle Assembly",
     category: "Portfolio",
@@ -13,7 +26,7 @@ export const templates = [
     description: "A vibrant portfolio where big jigsaw pieces are assembled in the hero and scatter as you scroll down — rejoining as you scroll back up. Funky neon colours, unique interlocking shapes, and scroll-driven physics.",
     isComplete: true
   },
-  
+
   {
     id: "Bruno_Simon_Playground",
     title: "Bruno Simon Playground",
@@ -308,7 +321,7 @@ rating: 4.8,
     author: "ShaktiShrey-01",
     views: 0,
     rating: 0,
-    image: "/template-previews/Forensic_investigator_desk.png", 
+    image: "/template-previews/Forensic_investigator_desk.png",
     createdAt: "2026-06-11",
     isComplete: true
 },
@@ -338,7 +351,7 @@ rating: 4.8,
   "createdAt": "2026-06-07",
   "isComplete": true
 },
-  
+
 {
   "id": "Eye_Tracking_Heatmap_Simulation",
   "title": "Eye Tracking Heatmap Simulation",
@@ -798,7 +811,7 @@ rating: 4.8,
     "createdAt": "2026-05-31",
     "isComplete": true
   },
-  
+
   {
     id: "ZineCollage",
     title: "Zine Collage",
@@ -813,7 +826,7 @@ rating: 4.8,
     description: "An asymmetric, high-contrast scrapbook magazine layout featuring heavy ink borders, rotated clipping frames, and retro label-maker accents.",
     isComplete: true
   },
-  
+
   {
     "id": "Cinematic",
     "title": "Cinematic",
@@ -2973,7 +2986,7 @@ rating: 4.8,
   id: 'error_404_infinite_gallery',
   name: 'Error 404 Infinite Gallery',
   path: 'Error_404_Infinite_Gallery',
-  thumbnail: '/templates/error_404_infinite_gallery.png', 
+  thumbnail: '/templates/error_404_infinite_gallery.png',
   category: 'Special / Error Pages',
   description: 'An interactive 404 error page wrapped in an infinite smoothly-looping background project showcase.'
   },
@@ -3131,4 +3144,3 @@ rating: 4.8,
   "isComplete": true
   }
 ];
-

@@ -153,6 +153,10 @@ function useInView(options = {}) {
 function TemplateCard({ template, hovered, onHover, onLeave, onUse, aiDraft }) {
   const [ref, inView] = useInView({ threshold: 0 });
   const [iframeLoaded, setIframeLoaded] = useState(false);
+  const title = template.title || template.name || 'Untitled Template';
+  const author = template.author || 'System';
+  const rating = Number.isFinite(Number(template.rating)) ? Number(template.rating) : 0;
+  const views = Number.isFinite(Number(template.views)) ? Number(template.views) : 0;
 
   const shouldRenderIframe = inView || hovered;
 
@@ -190,7 +194,7 @@ function TemplateCard({ template, hovered, onHover, onLeave, onUse, aiDraft }) {
       ref={ref}
     >
       <div className="overflow-hidden relative bg-background aspect-[16/10]">
-        
+
         {/* Layer 0: Sleek Fallback Placeholder / Loading Screen */}
         <div className="absolute inset-0 flex flex-col items-center justify-center bg-gradient-to-br from-neutral-900 to-black p-6 text-center z-0">
            {!iframeLoaded ? (
@@ -201,7 +205,7 @@ function TemplateCard({ template, hovered, onHover, onLeave, onUse, aiDraft }) {
            ) : (
              <>
                 <Sparkles className="w-8 h-8 text-primary mb-3 opacity-50" />
-                <h3 className="text-lg font-semibold text-white/80 font-mono tracking-tight">{template.title}</h3>
+                <h3 className="text-lg font-semibold text-white/80 font-mono tracking-tight">{title}</h3>
              </>
            )}
         </div>
@@ -221,7 +225,7 @@ function TemplateCard({ template, hovered, onHover, onLeave, onUse, aiDraft }) {
             <iframe
               src={`/preview/${template.id}`}
               className="w-full h-full border-none pointer-events-none bg-background"
-              title={template.title}
+              title={title}
               sandbox="allow-scripts allow-same-origin"
               onLoad={() => setIframeLoaded(true)}
             />
@@ -238,16 +242,16 @@ function TemplateCard({ template, hovered, onHover, onLeave, onUse, aiDraft }) {
 
       <div className="p-5 flex-1">
         <h2 className="text-2xl font-semibold text-foreground">
-          {template.title}
+          {title}
         </h2>
         <p className="text-muted-foreground mt-1 text-sm">
-          By {template.author}
+          By {author}
         </p>
         <div className="flex flex-wrap gap-2 mt-3">
-          {[template.category, template.colorScheme, template.layout].map(
-            (tag) => (
+          {[template.category, template.colorScheme, template.layout].filter(Boolean).map(
+            (tag, tagIndex) => (
               <span
-                key={tag}
+                key={`${tag}-${tagIndex}`}
                 className="text-xs bg-muted text-muted-foreground px-2.5 py-1 rounded-full"
               >
                 {tag}
@@ -261,11 +265,11 @@ function TemplateCard({ template, hovered, onHover, onLeave, onUse, aiDraft }) {
         <div className="flex justify-between text-sm text-muted-foreground mb-4">
           <span className="flex items-center gap-1.5">
             <Star className="w-3.5 h-3.5 text-amber-400 fill-amber-400" />
-            {template.rating || 0}
+            {rating.toFixed(1)}
           </span>
           <span className="flex items-center gap-1.5">
             <Eye className="w-3.5 h-3.5" />
-            {(template.views || 0).toLocaleString()}
+            {views.toLocaleString()}
           </span>
         </div>
 
@@ -294,7 +298,7 @@ function TemplateCard({ template, hovered, onHover, onLeave, onUse, aiDraft }) {
               <button
                 onClick={(e) => {
                   e.stopPropagation();
-                  onUse(template.title, false, template.id);
+                  onUse(title, false, template.id);
                 }}
                 className="flex-1 bg-primary text-primary-foreground py-2.5 rounded-xl font-semibold text-sm cursor-pointer hover:scale-[1.02] active:scale-[0.98] transition-transform"
               >
@@ -443,20 +447,13 @@ export default function TemplateGallery() {
       template.category?.toLowerCase().includes(q);
     return matchesCategory && matchesColorScheme && matchesLayout && matchesSearch;
   });
-  
+
   const sortedTemplates = [...filteredTemplates].sort((a, b) => {
-  if (sort === 'Popular') return b.views - a.views;
-  if (sort === 'Highest Rated') return b.rating - a.rating;
+  if (sort === 'Popular') return (Number(b.views) || 0) - (Number(a.views) || 0);
+  if (sort === 'Highest Rated') return (Number(b.rating) || 0) - (Number(a.rating) || 0);
   if (sort === 'Newest') return new Date(b.createdAt) - new Date(a.createdAt);
   return 0;
   });
-
-  console.log(
-    "Vercel cards:",
-    sortedTemplates.filter(
-      (t) => t.title === "Vercel Deploy"
-    ).length
-  );
 
   return (
     <div className="min-h-screen bg-background text-foreground transition-colors duration-300">
@@ -667,5 +664,5 @@ export default function TemplateGallery() {
     </div>
   );
 }
-      
-       
+
+

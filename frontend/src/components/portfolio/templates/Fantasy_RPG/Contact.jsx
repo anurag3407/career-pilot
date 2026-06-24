@@ -8,6 +8,7 @@ export default function Contact() {
   const sectionRef = useRef(null);
   const [visible, setVisible] = useState(false);
   const [summoning, setSummoning] = useState(false);
+  const [sent, setSent] = useState(false);
 
   useEffect(() => {
     const observer = new IntersectionObserver(
@@ -27,8 +28,9 @@ export default function Contact() {
     e.preventDefault();
     setSummoning(true);
     setTimeout(() => {
+      e.target.reset();
       setSummoning(false);
-      alert("A raven has been dispatched to the intended recipient.");
+      setSent(true);
     }, 2000);
   };
 
@@ -43,7 +45,7 @@ export default function Contact() {
       <div className="absolute inset-0 bg-[radial-gradient(#201910_1px,transparent_1px)] [background-size:32px_32px] pointer-events-none opacity-45" />
 
       <div className="relative z-10 max-w-4xl mx-auto flex flex-col items-center">
-        
+
         {/* Header */}
         <div className="flex flex-col items-center text-center mb-16 relative">
           <div className="flex items-center gap-4 mb-3">
@@ -84,8 +86,8 @@ export default function Contact() {
             <form onSubmit={handleSummon} className="flex flex-col gap-5">
               <div className="flex flex-col gap-1.5">
                 <label className="font-fantasy-game text-[10px] text-amber-500 tracking-widest uppercase">Your Name (Title Optional)</label>
-                <input 
-                  type="text" 
+                <input
+                  type="text"
                   required
                   className="bg-black/60 border border-amber-900/60 text-amber-100 px-4 py-2.5 rounded focus:outline-none focus:border-amber-500 font-fantasy-body text-sm shadow-[inset_0_2px_4px_rgba(0,0,0,0.6)]"
                   placeholder="Lord / Lady..."
@@ -94,8 +96,8 @@ export default function Contact() {
 
               <div className="flex flex-col gap-1.5">
                 <label className="font-fantasy-game text-[10px] text-amber-500 tracking-widest uppercase">Magical Address (Email)</label>
-                <input 
-                  type="email" 
+                <input
+                  type="email"
                   required
                   className="bg-black/60 border border-amber-900/60 text-amber-100 px-4 py-2.5 rounded focus:outline-none focus:border-amber-500 font-fantasy-body text-sm shadow-[inset_0_2px_4px_rgba(0,0,0,0.6)]"
                   placeholder="name@realm.com"
@@ -104,7 +106,7 @@ export default function Contact() {
 
               <div className="flex flex-col gap-1.5">
                 <label className="font-fantasy-game text-[10px] text-amber-500 tracking-widest uppercase">The Message</label>
-                <textarea 
+                <textarea
                   required
                   rows={4}
                   className="bg-black/60 border border-amber-900/60 text-amber-100 px-4 py-2.5 rounded focus:outline-none focus:border-amber-500 font-fantasy-body text-sm shadow-[inset_0_2px_4px_rgba(0,0,0,0.6)] resize-none"
@@ -112,7 +114,7 @@ export default function Contact() {
                 />
               </div>
 
-              <button 
+              <button
                 type="submit"
                 disabled={summoning}
                 className="mt-4 flex items-center justify-center gap-2 py-3 bg-gradient-to-b from-amber-800 to-amber-950 hover:from-amber-700 hover:to-amber-900 text-amber-100 font-fantasy-game text-xs font-bold border border-amber-500/60 rounded shadow-[inset_0_1px_4px_rgba(255,255,255,0.2)] hover:text-amber-200 transition-all cursor-pointer uppercase tracking-widest"
@@ -126,6 +128,14 @@ export default function Contact() {
                   </>
                 )}
               </button>
+              {sent && (
+                <p
+                  role="status"
+                  className="rounded border border-amber-600/60 bg-amber-950/40 px-4 py-3 text-center font-fantasy-game text-[10px] uppercase tracking-widest text-amber-200 shadow-[0_0_18px_rgba(245,158,11,0.16)]"
+                >
+                  Raven dispatched. Watch the horizon for a reply.
+                </p>
+              )}
             </form>
           </div>
 
@@ -151,7 +161,7 @@ export default function Contact() {
                     </div>
                   </a>
                 )}
-                
+
                 {data.location && (
                   <div className="flex items-center gap-4 group">
                     <div className="w-10 h-10 bg-amber-950/50 border border-amber-800/50 rounded flex items-center justify-center">

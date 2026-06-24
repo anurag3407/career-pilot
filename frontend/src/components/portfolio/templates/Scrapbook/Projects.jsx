@@ -41,10 +41,6 @@ const projects = [
 ];
 
 export default function Projects() {
-  const handleProjectClick = () => {
-    alert('Project preview coming soon!');
-  };
-
   return (
     <section className="relative w-full py-20 px-6 md:px-12 bg-gradient-to-b from-slate-950 via-slate-900 to-slate-950 overflow-hidden">
       
@@ -118,11 +114,12 @@ export default function Projects() {
                 <div className="mt-8">
                   <button
                     type="button"
-                    onClick={handleProjectClick}
-                    className="w-full flex items-center justify-center gap-2 px-4 py-3 rounded-lg bg-amber-500 text-slate-900 font-semibold hover:bg-amber-400 transition cursor-pointer"
+                    aria-disabled="true"
+                    title="Project preview coming soon"
+                    className="w-full flex items-center justify-center gap-2 px-4 py-3 rounded-lg bg-amber-200 text-slate-700 font-semibold border-2 border-dashed border-amber-500/70 cursor-not-allowed"
                   >
                     <ExternalLink className="w-4 h-4" />
-                    View Project
+                    Coming Soon
                   </button>
                 </div>
               </div>

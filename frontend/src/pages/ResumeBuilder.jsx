@@ -61,7 +61,7 @@ export default function ResumeBuilder() {
   const [toneScore, setToneScore] = useState(100)
   const [toneSuggestions, setToneSuggestions] = useState([])
   const [sectionSuggestions, setSectionSuggestions] = useState([]);
-  
+
 
   // ── form state ──────────────────────────────────────────────────────────────
   const [personal, setPersonal] = useState({
@@ -88,7 +88,7 @@ export default function ResumeBuilder() {
   const [missingKeywords, setMissingKeywords] = useState([])
   const [resumeVersions, setResumeVersions] = useState([])
   const [selectedVersion, setSelectedVersion] = useState(null)
-  
+
   const [recommendedSkills, setRecommendedSkills] = useState([])
   const [profileScore, setProfileScore] = useState(0)
   const [recommendedCertifications, setRecommendedCertifications] = useState([])
@@ -447,7 +447,7 @@ useEffect(() => {
 
   // 3. State update calculations
   setMissingKeywords(missing);
-  
+
   // Prioritize missing crucial devops/infrastructure skills first in recommendation
   const recommendations = [
     ...prioritySkills.filter(sk => !found.includes(sk)),
@@ -494,7 +494,7 @@ useEffect(() => {
   // ─────────────────── Automated Recommendations Engine ───────────────────
   useEffect(() => {
     const recommendations = [];
-    
+
   if (projects.every(p => !p.name.trim())) {
     recommendations.push("Projects")
   }

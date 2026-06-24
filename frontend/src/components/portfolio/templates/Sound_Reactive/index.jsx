@@ -84,6 +84,7 @@ export default function SoundReactive() {
   const { portfolioData: data } = usePortfolio();
 
   const [isListening, setIsListening] = useState(false);
+  const [micError, setMicError] = useState("");
   const canvasRef = useRef(null);
   const containerRef = useRef(null);
   const audioContextRef = useRef(null);
@@ -94,6 +95,7 @@ export default function SoundReactive() {
 
   const startListening = async () => {
     try {
+      setMicError("");
       const stream = await navigator.mediaDevices.getUserMedia({ audio: true });
       const audioContext = new (window.AudioContext || window.webkitAudioContext)();
       const analyser = audioContext.createAnalyser();
@@ -118,7 +120,7 @@ export default function SoundReactive() {
       drawVisualizer();
     } catch (err) {
       console.error("Error accessing microphone:", err);
-      alert("Could not access microphone. Please allow microphone permissions.");
+      setMicError("Mic blocked. Allow microphone access to enable sound reaction.");
     }
   };
 
@@ -341,6 +343,14 @@ export default function SoundReactive() {
         {!isListening && (
           <div className="absolute right-full mr-4 top-1/2 -translate-y-1/2 bg-[#0d0d1a]/90 backdrop-blur-md border border-white/10 px-4 py-2 rounded-xl text-sm font-semibold whitespace-nowrap hidden md:flex items-center gap-2 shadow-xl">
             <Sparkles className="w-4 h-4 text-cyan-400" /> Enable mic for reaction!
+          </div>
+        )}
+        {micError && (
+          <div
+            role="status"
+            className="absolute bottom-full right-0 mb-4 w-72 rounded-2xl border border-fuchsia-400/30 bg-[#0d0d1a]/95 p-4 text-sm text-fuchsia-100 shadow-[0_0_24px_rgba(217,70,239,0.25)]"
+          >
+            {micError}
           </div>
         )}
       </div>

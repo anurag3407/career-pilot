@@ -328,16 +328,18 @@ export default function Projects() {
 
                     {/* Secondary CTA */}
                     <button
-                      onClick={() => alert("Project preview coming soon")}
-                      className="w-full flex items-center justify-center gap-2 mt-3 text-sm font-semibold text-stone-500 hover:text-stone-900 transition-all group/arrow"
+                      type="button"
+                      aria-disabled="true"
+                      title="Project preview coming soon"
+                      className="w-full flex items-center justify-center gap-2 mt-3 text-sm font-semibold text-stone-400 cursor-not-allowed"
                       style={{ fontFamily: "sans-serif" }}
                     >
 
-                      View Project
+                      Preview Coming Soon
 
                       <ArrowUpRight
                         size={15}
-                        className="group-hover/arrow:translate-x-1 group-hover/arrow:-translate-y-1 transition duration-300"
+                        className="opacity-50"
                       />
 
                     </button>
@@ -359,14 +361,16 @@ export default function Projects() {
         </p>
 
         <button  
-        onClick={() => alert("Collection coming soon")}
-        className="group flex items-center gap-2 text-sm font-bold text-stone-900 hover:text-orange-500 transition">
+        type="button"
+        aria-disabled="true"
+        title="Full collection coming soon"
+        className="flex items-center gap-2 rounded-full border border-stone-300 bg-white/70 px-4 py-2 text-sm font-bold text-stone-500 cursor-not-allowed">
 
-          Explore Full Collection
+          Full Collection Coming Soon
 
           <ArrowUpRight
             size={16}
-            className="group-hover:translate-x-1 group-hover:-translate-y-1 transition duration-300"
+            className="opacity-50"
           />
 
         </button>
