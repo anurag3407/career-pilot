@@ -1,5 +1,5 @@
 /**
- * Upload service — wraps Cloudinary raw uploads.
+ * Upload service 鈥?wraps Cloudinary raw uploads.
  *
  * Existing flow (used by resume PDF uploads) is preserved as the default
  * export. We add two named exports:
@@ -8,7 +8,7 @@
  *     'video' (Cloudinary stores audio under the video resource type, which
  *     preserves duration metadata and is required for inline playback).
  *
- *   - uploadFile(buffer, fileName): legacy raw upload — unchanged.
+ *   - uploadFile(buffer, fileName): legacy raw upload 鈥?unchanged.
  */
 
 import cloudinary from '../config/cloudinary.js';
