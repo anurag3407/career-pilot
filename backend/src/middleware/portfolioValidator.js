@@ -2,7 +2,7 @@ const MAX_SECTION_BYTES = 50 * 1024;
 
 const SLUG_PATTERN = /^[a-z0-9]([a-z0-9-]*[a-z0-9])?$/;
 
-const VALID_SECTIONS = ['hero', 'projects', 'about', 'skills'];
+const VALID_SECTIONS = ['hero', 'projects', 'about', 'skills', 'experience', 'education'];
 
 const URL_KEYS = new Set(['url', 'link', 'href', 'website', 'github', 'linkedin', 'twitter']);
 const IMAGE_URL_KEYS = new Set(['imageUrl', 'avatarUrl', 'photoUrl', 'image', 'avatar', 'photo', 'thumbnail']);

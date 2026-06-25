@@ -1,10 +1,23 @@
 import React from 'react';
+import { Download } from 'lucide-react';
 
-export default function ResumeCTA() {
+export default function ResumeCTA({ data }) {
+  if (!data?.personal?.resumeUrl) return null;
+
   return (
-    <div className="w-full min-h-[400px] flex items-center justify-center border-2 border-dashed border-gray-300 rounded-xl p-8">
-      <h2 className="text-2xl font-bold text-gray-500">Anime_Manga Theme - ResumeCTA Section</h2>
-      <p className="mt-4 text-gray-400">Implementation pending. Open an issue to contribute!</p>
-    </div>
+    <section className="relative w-full py-4 text-center">
+      <a 
+        href={data.personal.resumeUrl} 
+        target="_blank" 
+        rel="noopener noreferrer"
+        className="group relative inline-flex items-center justify-center gap-4 px-12 py-6 bg-white text-black border-4 border-black text-3xl font-black uppercase tracking-widest hover:bg-black hover:text-white transition-colors overflow-hidden"
+      >
+        <div className="absolute inset-0 action-lines opacity-20 pointer-events-none group-hover:invert" />
+        <span className="relative z-10 flex items-center gap-4">
+          <Download size={32} strokeWidth={3} className="group-hover:animate-bounce" />
+          DOWNLOAD DOSSIER
+        </span>
+      </a>
+    </section>
   );
 }
