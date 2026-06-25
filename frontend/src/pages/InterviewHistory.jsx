@@ -3,11 +3,13 @@ import { useNavigate, Link } from "react-router-dom";
 import { interviewApi } from "../services/api";
 import { LineChart, Line, XAxis, YAxis, CartesianGrid, Tooltip, ResponsiveContainer } from "recharts";
 import { format, subDays, isAfter } from "date-fns";
-import { Calendar, Briefcase, Clock, Trophy, ChevronRight, FilterX } from "lucide-react";
+import { Calendar, Clock, Trophy, FilterX, Trash2 } from "lucide-react";
+import toast from "react-hot-toast";
 
 export default function InterviewHistory() {
   const [history, setHistory] = useState([]);
   const [loading, setLoading] = useState(true);
+  const [deletingId, setDeletingId] = useState(null);
 
   // Filters
   const [roleFilter, setRoleFilter] = useState("all");
@@ -72,6 +74,25 @@ export default function InterviewHistory() {
     setRoleFilter("all");
     setDateFilter("all");
     setScoreFilter("all");
+  };
+
+  const handleDeleteHistory = async (id, event) => {
+    event.preventDefault();
+    event.stopPropagation();
+
+    const confirmed = window.confirm("Delete this interview history entry?");
+    if (!confirmed) return;
+
+    try {
+      setDeletingId(id);
+      await interviewApi.deleteHistory(id);
+      setHistory((previous) => previous.filter((session) => session._id !== id));
+      toast.success("Interview deleted");
+    } catch (error) {
+      toast.error("Failed to delete interview");
+    } finally {
+      setDeletingId(null);
+    }
   };
 
   const getScoreBadgeColor = (score) => {
@@ -163,7 +184,7 @@ export default function InterviewHistory() {
                     className="w-full bg-background border border-border rounded-lg px-3 py-2 text-sm text-foreground focus:ring-1 focus:ring-primary focus:outline-none"
                   >
                     <option value="all">Any Score</option>
-                    <option value="high">Strong (≥80)</option>
+                    <option value="high">Strong (鈮?0)</option>
                     <option value="medium">Good (50-79)</option>
                     <option value="low">Needs Work (&lt;50)</option>
                   </select>
@@ -188,8 +209,19 @@ export default function InterviewHistory() {
                       <h4 className="font-semibold text-foreground text-sm leading-tight group-hover:text-primary transition-colors line-clamp-1 flex-1 pr-2">
                         {session.jobRole || "General Interview"}
                       </h4>
-                      <div className={`shrink-0 px-2 py-0.5 rounded text-xs font-bold border ${getScoreBadgeColor(session.overallScore || 0)}`}>
-                        {session.overallScore || 0}%
+                      <div className="flex items-start gap-2 shrink-0">
+                        <div className={`px-2 py-0.5 rounded text-xs font-bold border ${getScoreBadgeColor(session.overallScore || 0)}`}>
+                          {session.overallScore || 0}%
+                        </div>
+                        <button
+                          type="button"
+                          aria-label={`Delete ${session.jobRole || "interview"} history`}
+                          disabled={deletingId === session._id}
+                          onClick={(event) => handleDeleteHistory(session._id, event)}
+                          className="rounded-md p-1 text-muted-foreground opacity-0 transition hover:bg-red-500/10 hover:text-red-400 focus:outline-none focus:ring-2 focus:ring-red-400/40 disabled:cursor-not-allowed disabled:opacity-100 group-hover:opacity-100"
+                        >
+                          <Trash2 className="h-4 w-4" />
+                        </button>
                       </div>
                     </div>
                     
@@ -299,7 +331,7 @@ export default function InterviewHistory() {
                 }`}>
                   {filteredHistory.length >= 2 
                     ? ((filteredHistory[filteredHistory.length - 1]?.overallScore || 0) >= (filteredHistory[filteredHistory.length - 2]?.overallScore || 0) 
-                        ? '↗' : '↘')
+                        ? '鈫? : '鈫?)
                     : '-'}
                 </p>
               </div>
