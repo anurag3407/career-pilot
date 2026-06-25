@@ -13,6 +13,34 @@
 
 import cloudinary from '../config/cloudinary.js';
 
+const CLOUDINARY_UPLOAD_SEGMENT = '/upload/';
+
+export function getCloudinaryPublicIdFromUrl(url) {
+  if (!url || typeof url !== 'string') return null;
+
+  try {
+    const parsed = new URL(url);
+    const uploadIndex = parsed.pathname.indexOf(CLOUDINARY_UPLOAD_SEGMENT);
+    if (uploadIndex === -1) return null;
+
+    const assetPath = parsed.pathname.slice(uploadIndex + CLOUDINARY_UPLOAD_SEGMENT.length);
+    const segments = assetPath.split('/').filter(Boolean);
+    if (segments.length < 2) return null;
+
+    const versionIndex = segments.findIndex((segment) => /^v\d+$/.test(segment));
+    const publicIdSegments = versionIndex >= 0 ? segments.slice(versionIndex + 1) : segments.slice(1);
+    if (publicIdSegments.length === 0) return null;
+
+    const lastSegment = publicIdSegments[publicIdSegments.length - 1];
+    publicIdSegments[publicIdSegments.length - 1] = lastSegment.replace(/\.[^.]+$/, '');
+
+    const publicId = publicIdSegments.join('/');
+    return publicId || null;
+  } catch {
+    return null;
+  }
+}
+
 export async function uploadFile(buffer, fileName) {
   return new Promise((resolve, reject) => {
     cloudinary.uploader.upload_stream(
@@ -53,6 +81,18 @@ export async function uploadAudioBuffer(file) {
 
     uploadStream.end(file.buffer);
   });
+}
+
+export async function deleteAudioByUrl(url) {
+  const publicId = getCloudinaryPublicIdFromUrl(url);
+  if (!publicId) return { deleted: false, reason: 'invalid_url' };
+
+  const result = await cloudinary.uploader.destroy(publicId, { resource_type: 'video' });
+  return {
+    deleted: result?.result === 'ok',
+    publicId,
+    result: result?.result || 'unknown',
+  };
 }
 
 export default uploadFile;

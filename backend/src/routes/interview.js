@@ -26,6 +26,7 @@ import {
 } from '../schemas/interview.schema.js';
 import { parseJdFromUrl, parseJdFromText } from '../services/jdParser.service.js';
 import { uploadAudioBuffer } from '../services/upload.service.js';
+import { deleteInterviewHistoryEntry } from './interview.handlers.js';
 
 const router = express.Router();
 
@@ -546,6 +547,13 @@ router.get('/history', verifyToken, asyncHandler(async (req, res) => {
 }));
 
 // ---------------------------------------------------------------------------
+// DELETE /api/interview/:id
+// ---------------------------------------------------------------------------
+router.delete('/:id([0-9a-fA-F]{24})', verifyToken, asyncHandler(async (req, res) => {
+    await deleteInterviewHistoryEntry(req, res);
+}));
+
+// ---------------------------------------------------------------------------
 // GET /api/interview/analytics
 // ---------------------------------------------------------------------------
 router.get('/analytics', verifyToken, asyncHandler(async (req, res) => {
@@ -575,6 +583,10 @@ router.get('/:id([0-9a-fA-F]{24})', verifyToken, asyncHandler(async (req, res) =
 }));
 
 router.get('/:id', verifyToken, asyncHandler(async (req, res) => {
+    throw new ApiError(400, 'Invalid interview ID format');
+}));
+
+router.delete('/:id', verifyToken, asyncHandler(async (req, res) => {
     throw new ApiError(400, 'Invalid interview ID format');
 }));
 
