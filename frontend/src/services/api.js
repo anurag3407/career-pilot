@@ -771,7 +771,7 @@ export const githubPortfolioApi = {
 
 // ============ GitHub OAuth API ============
 export const githubAuthApi = {
-  // Start the OAuth flow — returns the GitHub consent URL + state.
+  // Start the OAuth flow 鈥?returns the GitHub consent URL + state.
   async start() {
     const headers = await getAuthHeaders()
     const response = await fetch(`${API_BASE}/auth/github/start`, {
@@ -788,7 +788,7 @@ export const githubAuthApi = {
     return handleResponse(response)
   },
 
-  // Disconnect — wipes the stored encrypted token
+  // Disconnect 鈥?wipes the stored encrypted token
   async disconnect() {
     const headers = await getAuthHeaders()
     const response = await fetch(`${API_BASE}/auth/github/disconnect`, {
@@ -855,7 +855,7 @@ export const interviewApi = {
   // Submit an answer for a specific question (multipart; transcript + optional audio + optional code)
   async submitAnswer(interviewId, data) {
     const headers = await getAuthHeaders();
-    // multipart — strip Content-Type so the browser sets the boundary
+    // multipart 鈥?strip Content-Type so the browser sets the boundary
     delete headers['Content-Type'];
     const form = new FormData();
     form.append('questionId', data.questionId);
@@ -887,18 +887,27 @@ export const interviewApi = {
 
   // Get interview history
   async getHistory() {
-    const headers = await getAuthHeaders();
-    const response = await fetch(`${API_BASE}/interview/history`, {
-      method: 'GET',
-      headers
-    });
-    return handleResponse(response);
-  },
+      const headers = await getAuthHeaders();
+      const response = await fetch(`${API_BASE}/interview/history`, {
+        method: 'GET',
+        headers
+      });
+      return handleResponse(response);
+    },
 
-  // Get interview analytics
-  async getAnalytics() {
-    const headers = await getAuthHeaders();
-    const response = await fetch(`${API_BASE}/interview/analytics`, {
+    async deleteHistory(id) {
+      const headers = await getAuthHeaders();
+      const response = await fetch(`${API_BASE}/interview/${id}`, {
+        method: 'DELETE',
+        headers
+      });
+      return handleResponse(response);
+    },
+
+    // Get interview analytics
+    async getAnalytics() {
+      const headers = await getAuthHeaders();
+      const response = await fetch(`${API_BASE}/interview/analytics`, {
       method: 'GET',
       headers
     });
@@ -915,7 +924,7 @@ export const interviewApi = {
     return handleResponse(response);
   },
 
-  // ─── v2 additions ────────────────────────────────────────────────────
+  // 鈹€鈹€鈹€ v2 additions 鈹€鈹€鈹€鈹€鈹€鈹€鈹€鈹€鈹€鈹€鈹€鈹€鈹€鈹€鈹€鈹€鈹€鈹€鈹€鈹€鈹€鈹€鈹€鈹€鈹€鈹€鈹€鈹€鈹€鈹€鈹€鈹€鈹€鈹€鈹€鈹€鈹€鈹€鈹€鈹€鈹€鈹€鈹€鈹€鈹€鈹€鈹€鈹€鈹€鈹€鈹€鈹€
 
   // Transcribe an audio Blob via BYOK provider (OpenAI Whisper, Groq Whisper, Gemini inline)
   async transcribe({ audioBlob, language = 'en' }) {
@@ -965,7 +974,7 @@ export const interviewApi = {
     return handleResponse(response);
   },
 
-  // Switch AI provider mid-interview — re-runs analysis of the last answer
+  // Switch AI provider mid-interview 鈥?re-runs analysis of the last answer
   async switchProvider(interviewId) {
     const headers = await getAuthHeaders();
     const response = await fetch(`${API_BASE}/interview/${interviewId}/switch-provider`, {
