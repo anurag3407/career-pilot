@@ -167,19 +167,6 @@ rating: 4.8,
   "isComplete": true
 },
 {
-  "id": "Forensic_Investigator_Desk",
-  "title": "Forensic Investigator Desk",
-  "category": "Portfolio",
-  "colorScheme": "Dark",
-  "layout": "Interactive",
-  "author": "ShaktiShrey-01",
-  "views": 0,
-  "rating": 0,
-  "image": "/template-previews/Forensic_investigator_desk.png",
-  "createdAt": "2026-06-11",
-  "isComplete": true
-},
-{
   "id": "IKEA_Assembly_Manual",
   "title": "IKEA Assembly Manual",
   "category": "Portfolio",
@@ -3098,11 +3085,13 @@ rating: 4.8,
     "title": "Crossword Puzzle Word Fill",
     "category": "Portfolio",
     "colorScheme": "Dark",
-    "layout": "Crossword_Puzzle_Word_Fill",
+    "layout": "Interactive",
     "author": "System",
     "views": 1050,
     "rating": 4.8,
-    "image": "/template-previews/crossword_puzzle_word_fill.png"
+    "image": "/template-previews/crossword_puzzle_word_fill.png",
+    "createdAt": "2026-06-13",
+    "isComplete": true
   },
   {
     "id": "Autumn_Forest_Leaf_Fall",
@@ -3118,17 +3107,17 @@ rating: 4.8,
     "isComplete": true
   },
   {
-  "id": "Cyber_Security_Red_Team",
-  "title": "Cyber Security Red Team",
-  "category": "Portfolio",
-  "colorScheme": "Dark",
-  "layout": "Dashboard",
-  "author": "Ayush Srivastava",
-  "views": 0,
-  "rating": 5.0,
-  "image": "/templates/Cyber_Security_Red_Team.png",
-  "createdAt": "2026-06-14",
-  "isComplete": true
+    "id": "Deconstructed_UI_Components_Scatter",
+    "title": "Deconstructed UI Components Scatter",
+    "category": "Portfolio",
+    "colorScheme": "Dark",
+    "layout": "Interactive",
+    "author": "Antigravity",
+    "views": 0,
+    "rating": 5.0,
+    "image": "/templates/Deconstructed_UI_Components_Scatter.png",
+    "createdAt": "2026-06-14",
+    "isComplete": true
   }
 ];
 

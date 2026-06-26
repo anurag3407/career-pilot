@@ -5,7 +5,7 @@ import DeployModal from "../components/portfolio/DeployModal";
 import ThemeSelector from "../components/portfolio/ThemeSelector";
 import { templates } from '../data/templates';
 import { motion, AnimatePresence } from "framer-motion";
-import { Moon, Sun, ChevronDown, Check, Eye, Star, Sparkles, X } from "lucide-react";
+import { Moon, Sun, ChevronDown, Check, Eye, Star, Sparkles, X, Search } from "lucide-react";
 import { useSearchParams } from "react-router-dom";
 
 
@@ -150,22 +150,25 @@ function useInView(options = {}) {
   return [ref, inView];
 }
 
-function TemplateCard({ template, hovered, onHover, onLeave, onUse, aiDraft }) {
+function TemplateCard({ template, hovered, onHover, onLeave, onUse, aiDraft, index }) {
   const [ref, inView] = useInView({ threshold: 0 });
   const [iframeLoaded, setIframeLoaded] = useState(false);
+  const [iframeError, setIframeError] = useState(false);
 
+  // Determine if iframe should be rendered (in view or hovered)
   const shouldRenderIframe = inView || hovered;
 
-  // Reset iframe loaded state when it unmounts
+  // Reset iframe states when it unmounts or when we stop rendering it
   useEffect(() => {
     if (!shouldRenderIframe) {
       setIframeLoaded(false);
+      setIframeError(false);
     }
   }, [shouldRenderIframe]);
 
   return (
     <motion.div
-      onMouseEnter={() => onHover(template.id)}
+      onMouseEnter={() => onHover(`${template.id ?? 'template'}-${index}`)}
       onMouseLeave={onLeave}
       animate={hovered ? 'hover' : 'rest'}
       initial="rest"
@@ -193,17 +196,19 @@ function TemplateCard({ template, hovered, onHover, onLeave, onUse, aiDraft }) {
         
         {/* Layer 0: Sleek Fallback Placeholder / Loading Screen */}
         <div className="absolute inset-0 flex flex-col items-center justify-center bg-gradient-to-br from-neutral-900 to-black p-6 text-center z-0">
-           {!iframeLoaded ? (
-             <div className="flex flex-col items-center gap-3">
-               <div className="w-8 h-8 border-2 border-cyan-400 border-t-transparent rounded-full animate-spin" />
-               <span className="text-xs text-cyan-300 font-mono uppercase tracking-widest animate-pulse">Loading Hero Section</span>
-             </div>
-           ) : (
-             <>
-                <Sparkles className="w-8 h-8 text-primary mb-3 opacity-50" />
-                <h3 className="text-lg font-semibold text-white/80 font-mono tracking-tight">{template.title}</h3>
-             </>
-           )}
+          {!iframeLoaded && !iframeError ? (
+            <div className="flex flex-col items-center gap-3">
+              <div className="w-8 h-8 border-2 border-cyan-400 border-t-transparent rounded-full animate-spin" />
+              <span className="text-xs text-cyan-300 font-mono uppercase tracking-widest animate-pulse">Loading Hero Section</span>
+            </div>
+          ) : iframeError ? (
+            <img src={template.image} alt={template.title} className="max-w-full h-auto object-cover" />
+          ) : (
+            <>
+              <Sparkles className="w-8 h-8 text-primary mb-3 opacity-50" />
+              <h3 className="text-lg font-semibold text-white/80 font-mono tracking-tight">{template.title}</h3>
+            </>
+          )}
         </div>
 
         {/* Layer 1: Live iframe — loads when in view to provide an always-visible hero section */}
@@ -224,6 +229,10 @@ function TemplateCard({ template, hovered, onHover, onLeave, onUse, aiDraft }) {
               title={template.title}
               sandbox="allow-scripts allow-same-origin"
               onLoad={() => setIframeLoaded(true)}
+              onError={() => {
+                setIframeLoaded(true);
+                setIframeError(true);
+              }}
             />
           </div>
         )}
@@ -236,26 +245,28 @@ function TemplateCard({ template, hovered, onHover, onLeave, onUse, aiDraft }) {
         />
       </div>
 
-      <div className="p-5 flex-1">
-        <h2 className="text-2xl font-semibold text-foreground">
-          {template.title}
-        </h2>
-        <p className="text-muted-foreground mt-1 text-sm">
-          By {template.author}
-        </p>
-        <div className="flex flex-wrap gap-2 mt-3">
-          {[template.category, template.colorScheme, template.layout].map(
-            (tag) => (
-              <span
-                key={tag}
-                className="text-xs bg-muted text-muted-foreground px-2.5 py-1 rounded-full"
-              >
-                {tag}
-              </span>
-            )
-          )}
-        </div>
-      </div>
+          <div className="p-5 flex-1">
+            {/* Defensive rendering with fallbacks */}
+            <h2 className="text-2xl font-semibold text-foreground">
+              {template?.title ?? 'Untitled'}
+            </h2>
+            <p className="text-muted-foreground mt-1 text-sm">
+              By {template?.author ?? 'Unknown'}
+            </p>
+            <div className="flex flex-wrap gap-2 mt-3">
+              {/* Ensure tags are defined; use fallback strings */}
+              {[template?.category ?? 'Misc', template?.colorScheme ?? 'Default', template?.layout ?? 'Default'].map(
+                (tag, idx) => (
+                  <span
+                    key={`tag-${idx}`}
+                    className="text-xs bg-muted text-muted-foreground px-2.5 py-1 rounded-full"
+                  >
+                    {tag}
+                  </span>
+                )
+              )}
+            </div>
+          </div>
 
       <div className="px-5 pb-5">
         <div className="flex justify-between text-sm text-muted-foreground mb-4">
@@ -367,6 +378,7 @@ export default function TemplateGallery() {
   const previewTemplateId = searchParams.get("preview");
   const [hoveredCard, setHoveredCard] = useState(null);
 
+  const [searchQuery, setSearchQuery] = useState("");
   const [category, setCategory] = useState("All");
   const [colorScheme, setColorScheme] = useState("All");
   const [layout, setLayout] = useState("All");
@@ -429,19 +441,17 @@ export default function TemplateGallery() {
   ];
 
   const filteredTemplates = templates.filter((template) => {
+    const q = searchQuery.trim().toLowerCase();
+    const matchesSearch =
+      !q ||
+      (template.title || '').toLowerCase().includes(q) ||
+      (template.id || '').toLowerCase().includes(q);
     const matchesCategory =
       category === 'All' || template.category === category;
     const matchesColorScheme =
       colorScheme === 'All' || template.colorScheme === colorScheme;
     const matchesLayout = layout === 'All' || template.layout === layout;
-    const q = search.toLowerCase().trim();
-    const matchesSearch = !q ||
-      template.title?.toLowerCase().includes(q) ||
-      template.author?.toLowerCase().includes(q) ||
-      template.colorScheme?.toLowerCase().includes(q) ||
-      template.layout?.toLowerCase().includes(q) ||
-      template.category?.toLowerCase().includes(q);
-    return matchesCategory && matchesColorScheme && matchesLayout && matchesSearch;
+    return matchesSearch && matchesCategory && matchesColorScheme && matchesLayout;
   });
   
   const sortedTemplates = [...filteredTemplates].sort((a, b) => {
@@ -544,30 +554,26 @@ export default function TemplateGallery() {
           />
         </div>
 
-        <div className="mb-4">
-          <div className="relative">
-            <input
-              type="text"
-              value={search}
-              onChange={e => setSearch(e.target.value)}
-              placeholder="Search templates... e.g. Cyberpunk, Minimal, Dark"
-              className="w-full px-5 py-3.5 pl-12 rounded-2xl border border-border bg-card text-foreground placeholder:text-muted-foreground focus:outline-none focus:ring-2 focus:ring-cyan-500/40 focus:border-cyan-500/60 transition-all text-sm"
-            />
-            <svg
-              className="absolute left-4 top-1/2 -translate-y-1/2 w-4 h-4 text-muted-foreground"
-              fill="none" stroke="currentColor" viewBox="0 0 24 24"
+        {/* Search bar */}
+        <div className="mb-5 relative">
+          <Search className="absolute left-4 top-1/2 -translate-y-1/2 w-4 h-4 text-muted-foreground pointer-events-none" />
+          <input
+            id="template-search"
+            type="text"
+            placeholder="Search templates…"
+            value={searchQuery}
+            onChange={(e) => setSearchQuery(e.target.value)}
+            className="w-full pl-11 pr-10 py-3 rounded-xl border border-border bg-card text-sm text-foreground placeholder:text-muted-foreground focus:outline-none focus:ring-2 focus:ring-cyan-400/50 focus:border-cyan-400 transition-all duration-200"
+          />
+          {searchQuery && (
+            <button
+              onClick={() => setSearchQuery('')}
+              className="absolute right-3 top-1/2 -translate-y-1/2 p-1 rounded-lg hover:bg-muted text-muted-foreground hover:text-foreground transition-colors"
+              aria-label="Clear search"
             >
-              <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M21 21l-6-6m2-5a7 7 0 11-14 0 7 7 0 0114 0z" />
-            </svg>
-            {search && (
-              <button
-                onClick={() => setSearch("")}
-                className="absolute right-4 top-1/2 -translate-y-1/2 text-muted-foreground hover:text-foreground transition-colors"
-              >
-                <X className="w-4 h-4" />
-              </button>
-            )}
-          </div>
+              <X className="w-4 h-4" />
+            </button>
+          )}
         </div>
 
         <div className="flex flex-wrap items-center gap-3 mb-8">
@@ -595,25 +601,19 @@ export default function TemplateGallery() {
         </div>
 
         {sortedTemplates.length === 0 ? (
-          <div className="text-center text-muted-foreground mt-12">
-            <div className="text-4xl mb-4">🔍</div>
-            <div className="text-xl font-semibold mb-2">No templates found</div>
-            <div className="text-sm">
-              {search ? `No results for "${search}" — try a different keyword` : "No templates match the selected filters"}
-            </div>
-            {search && (
-              <button onClick={() => setSearch("")} className="mt-4 text-cyan-400 hover:text-cyan-300 text-sm underline">
-                Clear search
-              </button>
-            )}
+          <div className="text-center text-muted-foreground mt-12 text-xl">
+            {searchQuery.trim()
+              ? `No templates found matching "${searchQuery.trim()}".`
+              : 'No templates match the selected criteria.'}
           </div>
         ) : (
           <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 xl:grid-cols-4 gap-6">
-            {sortedTemplates.map((template) => (
+            {sortedTemplates.map((template, index) => (
               <TemplateCard
-                key={template.id}
+                key={`${template.id ?? 'template'}-${index}`}
+                index={index}
                 template={template}
-                hovered={hoveredCard === template.id}
+                hovered={hoveredCard === `${template.id ?? 'template'}-${index}`}
                 onHover={setHoveredCard}
                 onLeave={() => setHoveredCard(null)}
                 onUse={handleUseTemplate}
