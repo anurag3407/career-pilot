@@ -147,6 +147,7 @@ export default function Navbar() {
                 <input
                   type="text"
                   placeholder="Search anything..."
+                  aria-label="Search"
                   value={searchQuery}
                   onChange={(e) => setSearchQuery(e.target.value)}
                   onFocus={() => setShowDropdown(true)}
@@ -418,6 +419,7 @@ export default function Navbar() {
                 <input
                   type="text"
                   placeholder="Search..."
+                  aria-label="Search"
                   className="bg-transparent outline-none text-sm w-full"
                 />
               </div>
