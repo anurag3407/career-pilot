@@ -279,6 +279,9 @@ export default function ResumeView() {
               Last modified: {formatDate(resume?.lastModified || resume?.createdAt)}
             </p>
           </div>
+
+         <div className="flex flex-col sm:flex-row gap-3 w-full sm:w-auto">
+
           <div className="flex gap-2">
             <Link 
               to="/interview-prep" 
@@ -290,6 +293,7 @@ export default function ResumeView() {
             >
               <Button variant="secondary">Practice Interview</Button>
             </Link>
+
             <Link to={`/enhance/${resumeId}`}>
               <Button variant="primary">
                 {resume?.enhancedText ? 'Re-enhance' : 'Enhance'}
@@ -299,14 +303,34 @@ export default function ResumeView() {
               <Button variant="secondary">Templates</Button>
             </Link>
             <Link to="/dashboard">
-              <Button variant="outline">Back to Dashboard</Button>
+             <Button
+  variant="outline"
+  className="w-full sm:w-auto rounded-xl px-5 py-3 font-semibold"
+>
+  Back to Dashboard
+</Button>
             </Link>
           </div>
         </div>
 
         {/* Tab Navigation */}
         <div className="border-b border-border mb-6">
+
+         <nav className="flex flex-wrap gap-4 sm:gap-8 overflow-x-auto scrollbar-hide">
+            {resume?.enhancedText && (
+              <button
+                onClick={() => setActiveTab('enhanced')}
+                className={`pb-4 text-sm font-medium border-b-2 transition-colors cursor-pointer ${activeTab === 'enhanced'
+                    ? 'border-primary text-primary'
+                    : 'border-transparent text-muted-foreground hover:text-foreground'
+                  }`}
+              >
+                Enhanced Version
+              </button>
+            )}
+
           <nav className="flex gap-8">
+
             <button
               onClick={() => setActiveTab('preview')}
               className={`pb-4 text-sm font-semibold border-b-2 transition-all cursor-pointer ${activeTab === 'preview'
@@ -336,6 +360,61 @@ export default function ResumeView() {
             </button>
           </nav>
         </div>
+
+
+        {/* Content */}
+        <Card className="rounded-2xl shadow-xl">
+          <div className="flex flex-col sm:flex-row justify-between items-start sm:items-center gap-4 mb-4">
+            <h2 className="text-lg font-medium text-foreground">
+              {activeTab === 'enhanced' ? 'AI-Enhanced Resume' : 'Original Resume'}
+            </h2>
+           <div className="flex flex-wrap gap-3 w-full sm:w-auto">
+            <Button
+  variant="primary"
+  className="w-full sm:w-auto rounded-xl px-5 py-3 font-semibold shadow-md hover:scale-[1.02] transition-all duration-300"
+
+                onClick={handleDownloadPdf}
+                disabled={downloading}
+              >
+                {downloading ? 'Downloading...' : 'Download PDF'}
+              </Button>
+             <Button
+  variant="secondary"
+  className="w-full sm:w-auto rounded-xl"
+                onClick={() =>
+                  handleCopy(
+                    activeTab === 'enhanced'
+                      ? resume?.enhancedText
+                      : resume?.originalText,
+                  )
+                }
+              >
+                Copy to Clipboard
+              </Button>
+              {customSections.length > 0 && (
+                <Button
+                  variant="outline"
+                  onClick={() => {
+                    const base =
+                      activeTab === 'enhanced'
+                        ? resume?.enhancedText
+                        : resume?.originalText
+                    handleCopy((base || '') + '\n\n' + sectionsToMarkdown(customSections))
+                  }}
+                >
+                  Copy with Custom Sections
+                </Button>
+              )}
+            </div>
+          </div>
+<div className="bg-card border border-border/40 rounded-2xl p-4 sm:p-6 min-h-[500px] overflow-auto shadow-2xl transition-all duration-300" style={{ maxWidth: '210mm', margin: '0 auto' }}>
+            {activeTab === 'enhanced' && resume?.enhancedText ? (
+              <div className="resume-preview max-w-none text-foreground text-sm leading-tight">
+                <ReactMarkdown
+                  components={{
+                    h1: ({ node, ...props }) => (
+                      <div className="text-foreground text-center py-2 px-4 mb-1 text-2xl font-bold border-b-2 border-black">
+                        {props.children}
 
         {/* Content Tabs */}
         {activeTab === 'preview' && (
@@ -430,6 +509,7 @@ export default function ResumeView() {
                       <div className="flex items-center gap-2">
                         <Loader2 className="w-4 h-4 animate-spin" />
                         Generating Image...
+
                       </div>
                     ) : (
                       'Download as Image'
@@ -502,6 +582,25 @@ export default function ResumeView() {
                   )}
                 </div>
               </div>
+
+            ) : (
+              <pre className="whitespace-pre-wrap text-xs text-foreground/80 font-mono">
+                {resume?.originalText}
+              </pre>
+            )}
+          </div>
+        </Card>
+
+        {/* Metadata */}
+        {resume?.preferences && Object.keys(resume.preferences).length > 0 && (
+          <Card className="mt-6 rounded-2xl shadow-lg">
+            <h3 className="text-lg font-medium text-foreground mb-4">Enhancement Settings Used</h3>
+            <div className="grid sm:grid-cols-2 gap-4 text-sm">
+              {resume.jobRole && (
+                <div>
+                  <span className="text-muted-foreground">Target Role:</span>
+                  <span className="ml-2 text-foreground">{resume.jobRole}</span>
+
 
               <div className="bg-card border border-border/40 rounded-lg p-6 min-h-96 overflow-auto shadow-lg" style={{ maxWidth: '210mm', margin: '0 auto' }}>
                 {previewTab === 'enhanced' && resume?.enhancedText ? (
@@ -606,6 +705,7 @@ export default function ResumeView() {
                   <p className="text-xs text-muted-foreground mt-4 text-center max-w-sm">
                     This might take a few seconds as the AI evaluates your resume against industry benchmarks and formats custom suggestions.
                   </p>
+
                 </div>
               </Card>
             )}
@@ -759,11 +859,21 @@ export default function ResumeView() {
           </Card>
         )}
 
+
+        {/* ── Custom Sections ─────────────────────────────────────────────── */}
+        <Card className="mt-6 rounded-2xl shadow-lg">
+          <CustomSection
+            sections={customSections}
+            onSectionsChange={handleSectionsChange}
+          />
+        </Card>
+
         {activeTab === 'ats' && (
           <Card>
             <AtsProgressChart resumeId={resumeId} />
           </Card>
         )}
+
       </div>
     </div>
   )
