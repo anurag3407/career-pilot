@@ -6,11 +6,13 @@ on:
       - main
       - master
       - develop
+      - codex/**
   pull_request:
     branches:
       - main
       - master
       - develop
+      - codex/**
   schedule:
     - cron: "0 2 * * *"
   workflow_dispatch:
