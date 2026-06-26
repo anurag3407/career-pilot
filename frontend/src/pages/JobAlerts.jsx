@@ -238,7 +238,7 @@ export default function JobAlerts() {
                     animate="animate"
                   >
                     {searchResults.map((job, index) => (
-                      <JobCard key={job.id || index} job={job} index={index} onEmail={setOutreachJob} />
+                      <JobCard key={job.id || index} job={job} index={index} />
                     ))}
                   </motion.div>
                 </div>
@@ -268,18 +268,12 @@ export default function JobAlerts() {
         onClose={() => setIsModalOpen(false)}
         onSuccess={fetchStats}
       />
-      {outreachJob && (
-        <OutreachPanel
-          companyName={outreachJob.company}
-          onClose={() => setOutreachJob(null)}
-        />
-      )}
     </div>
   );
 }
 
 // Job Card Component
-function JobCard({ job, index , onEmail }) {
+function JobCard({ job, index }) {
   const handleApply = () => {
     if (job.applyLink) {
       window.open(job.applyLink, '_blank');
@@ -290,7 +284,7 @@ const [showMailtoConfirm, setShowMailtoConfirm] = useState(false);
 const recruiterEmailIsValid = isValidEmail(job.recruiterEmail);
 
 const handleEmail = () => {
-  onEmail?.(job);
+  handleMailtoFallback();
 };
 
 const handleMailtoFallback = () => {
