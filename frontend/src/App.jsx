@@ -132,6 +132,7 @@ import LowPolyTerrain from './components/portfolio/templates/Low_Poly_Terrain/in
 import HighFashion from './components/portfolio/templates/High_Fashion/index.jsx';
 import TypographicWheatpastePosterWall from './components/portfolio/templates/Typographic_Wheatpaste_Poster_Wall/index.jsx';
 import DigitalManifestoScroll from './components/portfolio/templates/Digital_Manifesto_Scroll/index.jsx';
+import CeramicMinimal from './components/portfolio/templates/Ceramic_Minimal/index.jsx';
 import TestSocialLinks from './pages/TestSocialLinks';
 import ZineCollage from './components/portfolio/templates/ZineCollage';
 import TransparentDesktopOverlayOS from './components/portfolio/templates/Transparent_Desktop_Overlay_OS/index.jsx';
@@ -337,6 +338,7 @@ function AppRoutes() {
         <Route path="/templates/minimal-dark-fluid" element={<MinimalDarkFluid />} />
         <Route path="/templates/terminal-skills" element={<TerminalSkills />} />
         <Route path="/templates/chiragchrg-theme" element={<ChiragChrgTheme />} />
+        <Route path="/templates/ceramic-minimal" element={<CeramicMinimal />} />
         {/* Core Protected Routes */}
         <Route
           path="/dashboard"

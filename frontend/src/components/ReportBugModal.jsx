@@ -1,12 +1,28 @@
-import React, { useState } from 'react';
+import React, { useState, useEffect } from 'react';
 import { motion, AnimatePresence } from 'framer-motion';
 import { X, Bug, Loader2 } from 'lucide-react';
 import toast from 'react-hot-toast';
 import { bugsApi } from '../services/api';
 
-export default function ReportBugModal({ isOpen, onClose }) {
+export default function ReportBugModal({
+  isOpen,
+  onClose,
+  brokenUrl,
+}) {
   const [title, setTitle] = useState('');
   const [description, setDescription] = useState('');
+
+  useEffect(() => {
+  if (isOpen && brokenUrl) {
+    setTitle("Broken Link");
+
+    setDescription(
+      `Broken URL: ${brokenUrl}\n\nPlease describe what happened...`
+    );
+  }
+}, [isOpen, brokenUrl]);
+
+
   const [isSubmitting, setIsSubmitting] = useState(false);
 
   const handleSubmit = async (e) => {
