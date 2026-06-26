@@ -587,6 +587,12 @@ If you are part of GSSoC or a first-time contributor, comment on an issue or ope
 
 See [CONTRIBUTING.md](CONTRIBUTING.md) and [CODE_OF_CONDUCT.md](CODE_OF_CONDUCT.md) for the full policy.
 
+### 👥 Contributors
+
+Thanks to all contributors ❤️
+
+[![Contributors](https://contrib.rocks/image?repo=anurag3407/career-pilot)](https://github.com/anurag3407/career-pilot/graphs/contributors)
+
 ---
 
 ## 👥 Maintainers
