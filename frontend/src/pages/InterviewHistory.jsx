@@ -331,7 +331,7 @@ export default function InterviewHistory() {
                 }`}>
                   {filteredHistory.length >= 2 
                     ? ((filteredHistory[filteredHistory.length - 1]?.overallScore || 0) >= (filteredHistory[filteredHistory.length - 2]?.overallScore || 0) 
-                        ? '鈫? : '鈫?)
+                        ? 'up' : 'down')
                     : '-'}
                 </p>
               </div>
