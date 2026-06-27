@@ -31,6 +31,10 @@
 ## Table of Contents
 
 - [✨ What is Career Pilot?](#-what-is-career-pilot)
+- [🔄 How It Works](#-how-it-works)
+- [📸 Screenshots](#-screenshots)
+- [🔑 Environment Variables](#-environment-variables)
+- [📂 Project Structure](#-project-structure)
 - [🧭 Feature Pillars](#-feature-pillars)
 - [🚀 Quick Install](#-quick-install)
 - [📝 Pillar 1 — Resume Studio](#-pillar-1--resume-studio)
@@ -65,6 +69,49 @@ Powered by **multi-provider AI** (OpenAI, Anthropic Claude, Groq, Google Gemini,
 It's modular by design: the Express backend exposes 30+ route groups, the React frontend has 50+ pages across feature hubs, and contributors can pick up **good-first-issue** tickets in any one of them without having to grok the rest of the system.
 
 ---
+
+## 🔄 How It Works
+
+Career Pilot guides users through their complete career journey:
+
+1. Sign up or log in securely.
+2. Build or import your resume.
+3. Enhance it using AI and ATS optimization.
+4. Practice mock interviews with AI.
+5. Search and track job applications.
+6. Build and deploy your portfolio.
+7. Analyze GitHub repositories and improve your profile.
+8. Connect with the community and participate in fellowships.
+
+## 📸 Screenshots
+
+| Home Page | Resume Enhancer |
+|-----------|-----------------|
+| ![](docs/images/home_page.png) | ![](docs/images/resume_enhancer.png) |
+
+| Mock Interview | Job Tracker |
+|----------------|-------------|
+| ![](docs/images/mock_interview.png) | ![](docs/images/job_tracker.png) |
+
+| Email Generator | Community Board |
+|-----------------|-----------------|
+| ![](docs/images/email_generator_form.png) | ![](docs/images/community_board.png) |
+
+## 📂 Project Structure
+
+```text
+career-pilot/
+├── backend/          # Express backend and APIs
+├── frontend/         # React + Vite frontend
+├── docs/             # Project documentation
+├── API_DOCS/         # API documentation
+├── firebase/         # Firebase configuration
+├── scripts/          # Utility scripts
+├── docker-compose.yml
+└── README.md
+```
+
+For a detailed architecture overview, see the **Architecture at a Glance** section below.
 
 ## 🧭 Feature Pillars
 
@@ -114,6 +161,47 @@ cp backend/.env.example backend/.env
 cp frontend/.env.example frontend/.env
 # Edit frontend/.env — set VITE_API_URL, VITE_FIREBASE_* keys
 ```
+
+## 🔑 Environment Variables
+
+Career Pilot uses separate environment configuration files for the backend and frontend.
+
+Copy the example files before starting the application:
+
+```bash
+cp backend/.env.example backend/.env
+cp frontend/.env.example frontend/.env
+```
+
+### Backend Environment Variables
+
+| Category | Important Variables |
+|----------|---------------------|
+| Server | `PORT`, `NODE_ENV`, `FRONTEND_URL` |
+| Database | `MONGODB_URI` |
+| Firebase Admin | `FIREBASE_PROJECT_ID`, `FIREBASE_STORAGE_BUCKET`, `FIREBASE_SERVICE_ACCOUNT_PATH` |
+| AI Services | `GEMINI_API_KEY`, `OPENAI_API_KEY`, `GROQ_API_KEY`, `AI_PROVIDER` |
+| Job Search | `RAPIDAPI_KEY`, `RAPIDAPI_HOST` |
+| Email | `EMAIL_USER`, `EMAIL_PASS`, `EMAIL_HOST`, `EMAIL_PORT` |
+| Redis | `REDIS_URL` |
+| Payments | `RAZORPAY_KEY_ID`, `RAZORPAY_KEY_SECRET` |
+| OAuth | `LINKEDIN_CLIENT_ID`, `LINKEDIN_CLIENT_SECRET`, `GITHUB_CLIENT_ID`, `GITHUB_CLIENT_SECRET` |
+| Deployment | `NETLIFY_ACCESS_TOKEN`, `VERCEL_TOKEN`, `CLOUDFLARE_API_TOKEN` |
+| Security | `ENCRYPTION_KEY`, `TOTP_ENCRYPTION_KEY` |
+
+> Refer to `backend/.env.example` for the complete list of backend environment variables and descriptions.
+
+### Frontend Environment Variables
+
+| Category | Important Variables |
+|----------|---------------------|
+| Backend API | `VITE_API_URL`, `VITE_API_BASE` |
+| Firebase Client | `VITE_FIREBASE_API_KEY`, `VITE_FIREBASE_AUTH_DOMAIN`, `VITE_FIREBASE_PROJECT_ID`, `VITE_FIREBASE_STORAGE_BUCKET`, `VITE_FIREBASE_MESSAGING_SENDER_ID`, `VITE_FIREBASE_APP_ID`, `VITE_FIREBASE_MEASUREMENT_ID` |
+| File Upload | `VITE_MAX_SIZE_MB` |
+| Feature Flags | `VITE_ENABLE_PREMIUM_THEMES` |
+
+> Refer to `frontend/.env.example` for the complete list of frontend environment variables and descriptions.
+
 
 ### Run locally
 
