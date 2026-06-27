@@ -6,11 +6,15 @@ import { handleUpload } from '../middleware/upload.js';
 import { verifyToken } from '../middleware/auth.js';
 import { asyncHandler, ApiError } from '../middleware/errorHandler.js';
 import { validateUpload } from '../middleware/uploadValidator.js';
+import { uploadSecurityScanner } from '../middleware/uploadSecurityScanner.js';
 
 const router = express.Router();
 
 // Upload and extract text from PDF
-router.post('/', verifyToken, handleUpload, validateUpload, asyncHandler(async (req, res) => {
+// Note: uploadSecurityScanner is placed after verifyToken to ensure 
+// we only scan files from authenticated users, avoiding unnecessary 
+// processing of unauthenticated uploads.
+router.post('/', verifyToken, handleUpload, validateUpload, uploadSecurityScanner, asyncHandler(async (req, res) => {
   if (!req.file) {
     throw new ApiError(400, 'No file uploaded');
   }
@@ -48,7 +52,8 @@ router.post('/', verifyToken, handleUpload, validateUpload, asyncHandler(async (
 }));
 
 // Extract text only endpoint (for re-processing)
-router.post('/extract-text', verifyToken, handleUpload, validateUpload, asyncHandler(async (req, res) => {
+// Note: Scanner follows auth for security and efficiency.
+router.post('/extract-text', verifyToken, handleUpload, validateUpload, uploadSecurityScanner, asyncHandler(async (req, res) => {
   if (!req.file) {
     throw new ApiError(400, 'No file uploaded');
   }

@@ -773,6 +773,7 @@ Response Format:
 | **Input Validation** | Schema validation | Prevent injection |
 | **Headers** | Helmet.js | Security headers |
 | **CORS** | cors middleware | Cross-origin protection |
+| **File Security** | Security Scanner | Malicious PDF pattern detection |
 | **Firestore Rules** | Security rules | Database access control |
 
 ### Security Middleware Stack
@@ -784,6 +785,7 @@ app.use(cors({...}));        // CORS policy
 app.use(rateLimit({...}));   // Rate limiting
 app.use(express.json());     // Body parsing with limits
 router.use(verifyToken);     // Auth verification
+router.use(uploadSecurityScanner); // File security scanning (on upload routes)
 ```
 
 ### Firebase Security Rules
