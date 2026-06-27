@@ -33,10 +33,11 @@
 - [✨ What is Career Pilot?](#-what-is-career-pilot)
 - [🔄 How It Works](#-how-it-works)
 - [📸 Screenshots](#-screenshots)
-- [🔑 Environment Variables](#-environment-variables)
 - [📂 Project Structure](#-project-structure)
 - [🧭 Feature Pillars](#-feature-pillars)
 - [🚀 Quick Install](#-quick-install)
+- [🔑 Environment Variables](#-environment-variables)
+- [🏁 Getting Started](#-getting-started)
 - [📝 Pillar 1 — Resume Studio](#-pillar-1--resume-studio)
 - [🎤 Pillar 2 — Interview Sim](#-pillar-2--interview-sim)
 - [💼 Pillar 3 — Jobs & Tracker](#-pillar-3--jobs--tracker)
@@ -106,8 +107,7 @@ career-pilot/
 ├── docs/             # Project documentation
 ├── API_DOCS/         # API documentation
 ├── firebase/         # Firebase configuration
-├── scripts/          # Utility scripts
-├── docker-compose.yml
+├── Docker-compose.yml
 └── README.md
 ```
 
