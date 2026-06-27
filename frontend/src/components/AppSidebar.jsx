@@ -110,8 +110,7 @@ function Logo() {
             <motion.div
                 animate={{
                     display: animate ? (open ? "flex" : "none") : "flex",
-                    opacity: animate ? (open ? 1 : 0) : 1,
-                }}
+opacity: open ? 1 : 0,                }}
                 transition={{ duration: 0.2 }}
                 className="flex items-center gap-2"
             >
@@ -158,8 +157,7 @@ function UserSection() {
                 <motion.div
                     animate={{
                         display: animate ? (open ? "block" : "none") : "block",
-                        opacity: animate ? (open ? 1 : 0) : 1,
-                    }}
+opacity: open ? 1 : 0,                    }}
                     transition={{ duration: 0.2 }}
                     className="flex-1 min-w-0"
                 >
@@ -173,17 +171,15 @@ function UserSection() {
                 onClick={toggleTheme}
                 className={cn(
                     "flex items-center gap-2 px-3 py-2 rounded-lg text-sm font-medium transition-all duration-300 w-full text-muted-foreground hover:text-foreground hover:bg-muted cursor-pointer",
-                    !open && animate ? "px-0 justify-center" : "justify-start"
-                )}
+!open ? "px-0 justify-center" : "justify-start"                )}
             >
                 {theme === 'light' ? <Moon className="w-5 h-5 shrink-0" /> : 
                  theme === 'dark' ? <Contrast className="w-5 h-5 shrink-0" /> : 
                  <Sun className="w-5 h-5 shrink-0" />}
                 <motion.span
                     animate={{
-                        display: animate ? (open ? "inline-block" : "none") : "inline-block",
-                        opacity: animate ? (open ? 1 : 0) : 1,
-                    }}
+display: open ? "inline-block" : "none",
+opacity: open ? 1 : 0,                    }}
                     transition={{ duration: 0.2 }}
                     className="text-sm font-semibold whitespace-pre"
                 >
@@ -200,15 +196,13 @@ function UserSection() {
                 }}
                 className={cn(
                     "flex items-center gap-2 px-3 py-2 rounded-lg text-sm font-semibold transition-all duration-300 w-full cursor-pointer hover:text-destructive hover:bg-destructive/10",
-                    !open && animate ? "px-0 justify-center" : "justify-start"
-                )}
+!open ? "px-0 justify-center" : "justify-start"                )}
             >
                 <LogOut className="w-5 h-5 shrink-0" />
                 <motion.span
                     animate={{
-                        display: animate ? (open ? "inline-block" : "none") : "inline-block",
-                        opacity: animate ? (open ? 1 : 0) : 1,
-                    }}
+display: open ? "inline-block" : "none",
+opacity: open ? 1 : 0,                    }}
                     transition={{ duration: 0.2 }}
                     className="text-sm font-semibold whitespace-pre"
                 >
@@ -327,15 +321,14 @@ export default function AppSidebar() {
                             onClick={() => setIsBugModalOpen(true)}
                             className={cn(
                                 "flex items-center gap-2 px-3 py-2.5 rounded-xl text-sm font-semibold transition-all duration-300 w-full cursor-pointer text-red-500 bg-red-500/10 hover:bg-red-500/20",
-                                !open && animate ? "px-0 justify-center" : "justify-start"
+                                !open ? "px-0 justify-center" : "justify-start"
                             )}
                         >
                             <Bug className="w-5 h-5 shrink-0" />
                             <motion.span
                                 animate={{
-                                    display: animate ? (open ? "inline-block" : "none") : "inline-block",
-                                    opacity: animate ? (open ? 1 : 0) : 1,
-                                }}
+display: open ? "inline-block" : "none",
+opacity: open ? 1 : 0,                                }}
                                 transition={{ duration: 0.2 }}
                                 className="whitespace-pre"
                             >

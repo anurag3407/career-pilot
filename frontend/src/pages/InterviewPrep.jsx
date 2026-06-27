@@ -16,6 +16,7 @@ import AvatarInterviewer from '../components/interview/AvatarInterviewer';
 import { useAIConfigStore } from '../stores/useAIConfigStore';
 import { SUPPORTED_LANGUAGES, getLanguage, DEFAULT_LANGUAGE_CODE } from '../constants/languages';
 import { captureCardToBlob, downloadBlob, shareImage, buildShareCaption } from '../utils/shareCard';
+import ReportBugModal from '../components/ReportBugModal';
 
 // Code editor (Monaco) — ~3MB chunk, lazy-loaded only when mode === 'coding'
 const CodeEditor = lazy(() => import('../components/interview/CodeEditor'));
@@ -156,6 +157,7 @@ export default function InterviewPrep() {
   const [textAnswer, setTextAnswer] = useState('');
 
   const [overallResults, setOverallResults] = useState(null);
+  const [isBugModalOpen, setIsBugModalOpen] = useState(false);
   const [progressData, setProgressData] = useState(() => {
 
   const stored =
@@ -1197,11 +1199,32 @@ ${updatedProgress.level}`
             </div>
 
             {error && (
-              <div className="mb-6 p-4 bg-red-500/10 border border-red-500/30 rounded-xl flex items-start gap-3">
-                <AlertCircle className="w-5 h-5 text-red-400 shrink-0 mt-0.5" />
-                <p className="text-red-400 text-sm">{error}</p>
-              </div>
-            )}
+  <div className="mb-6 p-4 bg-red-500/10 border border-red-500/30 rounded-xl">
+    <div className="flex items-start gap-3">
+      <AlertCircle className="w-5 h-5 text-red-400 shrink-0 mt-0.5" />
+      <p className="text-red-400 text-sm">{error}</p>
+    </div>
+
+    <div className="flex gap-2 mt-4">
+      <Button
+        variant="outline"
+        onClick={() => {
+          setError('');
+          initializeAVCheck();
+        }}
+      >
+        Retry
+      </Button>
+
+      <Button
+        variant="outline"
+        onClick={() => setIsBugModalOpen(true)}
+      >
+        Report Issue
+      </Button>
+    </div>
+  </div>
+)}
 
             {/* Action Buttons */}
             <div className="flex gap-4">
@@ -1239,6 +1262,11 @@ ${updatedProgress.level}`
           >
             <p>Make sure you're in a well-lit, quiet environment for the best results.</p>
           </motion.div>
+                <ReportBugModal
+                  isOpen={isBugModalOpen}
+                  onClose={() => setIsBugModalOpen(false)}
+                />
+
         </div>
       </div>
     );
@@ -2228,14 +2256,17 @@ if (communicationTips.length === 0) {
         </p>
       </div>
 
-      <div className="p-4 rounded-xl bg-red-500/10 border border-red-500/20">
+    
         <p className="text-sm text-muted-foreground">
           Filler Words
         </p>
+          {error && (
+            <div className="p-4 rounded-xl bg-red-500/10 border border-red-500/20">
         <p className="text-3xl font-bold text-red-400">
           {totalFillerWords}
         </p>
       </div>
+          )}
 
       <div className="p-4 rounded-xl bg-amber-500/10 border border-amber-500/20">
         <p className="text-sm text-muted-foreground">

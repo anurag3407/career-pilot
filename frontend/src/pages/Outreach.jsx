@@ -4,6 +4,8 @@ import { Loader2, Mail, CheckCircle2, AlertCircle, Globe, ArrowRight } from 'luc
 import { getSocket } from '../services/socket';
 import OutreachDraftCard from '../components/OutreachDraftCard';
 import { useAuth } from '../hooks/useAuth';
+import ReportBugModal from '../components/ReportBugModal';
+
 
 const Outreach = () => {
     const [companyUrl, setCompanyUrl] = useState('');
@@ -11,8 +13,10 @@ const Outreach = () => {
     const [statusMessage, setStatusMessage] = useState('');
     const [drafts, setDrafts] = useState([]);
     const [error, setError] = useState(null);
+    const [isBugModalOpen, setIsBugModalOpen] = useState(false);
     const [outreachId, setOutreachId] = useState(null);
     const { getToken } = useAuth();
+
 
     useEffect(() => {
         const socket = getSocket();
@@ -113,6 +117,18 @@ const Outreach = () => {
         }
     };
 
+
+    const OutreachSkeleton = () => (
+    <div className="bg-white rounded-2xl shadow-sm border border-gray-200 p-8 animate-pulse">
+        <div className="h-6 bg-gray-200 rounded w-1/3 mb-6"></div>
+
+        <div className="space-y-4">
+        <div className="h-20 bg-gray-200 rounded-xl"></div>
+        <div className="h-20 bg-gray-200 rounded-xl"></div>
+        <div className="h-20 bg-gray-200 rounded-xl"></div>
+        </div>
+    </div>
+    );
     return (
         <div className="max-w-4xl mx-auto py-10 px-4 sm:px-6 lg:px-8">
             <div className="text-center mb-10">
@@ -169,9 +185,7 @@ const Outreach = () => {
                         exit={{ opacity: 0, y: -20 }}
                         className="bg-indigo-50 border border-indigo-100 rounded-2xl p-8 text-center"
                     >
-                        <Loader2 className="w-10 h-10 animate-spin text-indigo-500 mx-auto mb-4" />
-                        <h3 className="text-lg font-medium text-indigo-900 mb-2">Processing Request</h3>
-                        <p className="text-indigo-700">{statusMessage}</p>
+                        <OutreachSkeleton />
                     </motion.div>
                 )}
 
@@ -192,6 +206,13 @@ const Outreach = () => {
                         >
                             Try Again
                         </button>
+                        <button
+                                type="button"
+                                onClick={() => setIsBugModalOpen(true)}
+                               className="mt-4 ml-2 px-4 py-2 bg-red-600 hover:bg-red-700 text-white rounded-lg font-medium transition-colors"
+                            >
+                                Report Issue
+                            </button>
                     </motion.div>
                 )}
 
@@ -220,6 +241,10 @@ const Outreach = () => {
                     </motion.div>
                 )}
             </AnimatePresence>
+              <ReportBugModal
+                    isOpen={isBugModalOpen}
+                    onClose={() => setIsBugModalOpen(false)}
+                />
         </div>
     );
 };

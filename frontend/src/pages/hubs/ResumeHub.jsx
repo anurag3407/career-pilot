@@ -18,7 +18,7 @@ import ToolCard from '../../components/ToolCard';
 import { Link } from 'react-router-dom';
 import { motion } from 'framer-motion';
 import toast from 'react-hot-toast';
-
+import { Skeleton } from '../../components/ui/Skeleton';
 
 export default function ResumeHub() {
   const [resumes, setResumes] = useState([])
@@ -66,6 +66,21 @@ export default function ResumeHub() {
       bg: 'bg-primary/10',
     },
   ];
+
+
+  // Show skeleton cards while resumes are loading
+  if (loading) {
+  return (
+    <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-4">
+      {Array.from({ length: 9 }).map((_, i) => (
+        <Skeleton
+          key={i}
+          className="h-40 rounded-xl"
+        />
+      ))}
+    </div>
+  );
+}
 
   return (
     <HubLayout
