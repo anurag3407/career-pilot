@@ -637,4 +637,61 @@ router.post('/career-trajectory', verifyToken, extractAIProvider, aiRateLimiter,
   }
 }));
 
+// Estimate Salary based on role, experience, location, and skills
+// POST /api/enhance/salary-estimate
+router.post('/salary-estimate', verifyToken, extractAIProvider, aiRateLimiter, asyncHandler(async (req, res) => {
+  const { role, experience, location, skills } = req.body;
+
+  if (!role || typeof role !== 'string' || !role.trim()) {
+    throw new ApiError(400, 'Role is required');
+  }
+
+  try {
+    const prompt = `Estimate the salary for a ${role} with ${experience || 'some'} years of experience in ${location || 'a general market'} with the following skills: ${skills || 'none specified'}. 
+Return a JSON object with EXACTLY these fields:
+- estimatedSalaryRange (string, e.g. "$80,000 - $110,000")
+- medianSalary (string)
+- marketDemand (string, e.g. "High", "Medium", "Low")
+- keyFactors (array of strings, e.g. ["Location premium", "High demand for React skills"])
+- alternativeRoles (array of strings, related roles)
+
+Return ONLY valid JSON. No markdown fences, no extra text.`;
+
+    const provider = req.aiProvider;
+    const result = await provider.generateContent(prompt);
+    let text = result.text.trim();
+
+    // Strip markdown fences
+    if (text.startsWith('```')) {
+      text = text.replace(/^```(?:json)?\n?/, '').replace(/\n?```$/, '').trim();
+    }
+    
+    // Attempt extra extraction
+    const jsonMatch = text.match(/\{[\s\S]*\}/);
+    if (jsonMatch) text = jsonMatch[0];
+
+    let data;
+    try {
+      data = JSON.parse(text);
+    } catch (parseErr) {
+      console.error('Salary estimate JSON parse error:', parseErr, 'Raw text:', text);
+      throw new ApiError(
+        502,
+        'AI service returned an invalid response. Please try again in a moment.'
+      );
+    }
+
+    res.json({
+      success: true,
+      data,
+      provider: provider.providerName,
+      providerSource: req.aiProviderSource
+    });
+  } catch (error) {
+    console.error('Salary estimate error:', error);
+    if (error instanceof ApiError) throw error;
+    throw new ApiError(500, 'Failed to estimate salary. Please try again.');
+  }
+}));
+
 export default router;
