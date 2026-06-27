@@ -9,14 +9,21 @@ import {
   Mail,
   ExternalLink,
   Loader2,
-  AlertCircle,
   Sparkles,
-  Zap
+  Zap,
+  Send
 } from 'lucide-react';
 import toast from 'react-hot-toast';
 import { jobAlertsApi, jobsApi } from '../services/api';
 import { JobAlertModal, JobAlertsList } from '../components';
-import { SkeletonStatCards, SkeletonJobList } from '../components/ui/Skeleton'
+import OutreachPanel from '../components/OutreachPanel';
+import Modal from '../components/Modal';
+import { SkeletonStatCards, SkeletonJobList } from '../components/ui/Skeleton';
+import {
+  buildSafeMailtoUrl,
+  isValidRecruiterEmail,
+  sanitizeRecruiterEmail,
+} from '../utils/emailCheck';
 
 export default function JobAlerts() {
   const [activeTab, setActiveTab] = useState('alerts'); // 'alerts' | 'search'
@@ -26,6 +33,8 @@ export default function JobAlerts() {
   const [searchQuery, setSearchQuery] = useState('');
   const [searchResults, setSearchResults] = useState([]);
   const [searchLoading, setSearchLoading] = useState(false);
+  const [outreachJob, setOutreachJob] = useState(null);
+  const [mailtoConfirm, setMailtoConfirm] = useState(null);
 
   const hoverBorderClassMap = {
     indigo: 'hover:border-primary/30',
@@ -70,6 +79,33 @@ export default function JobAlerts() {
 
   const handleCreateAlertFromSearch = () => {
     setIsModalOpen(true);
+  };
+
+  const handleApplyOutreach = (job) => {
+    setOutreachJob(job);
+  };
+
+  const handleRequestMailto = (job) => {
+    const email = sanitizeRecruiterEmail(job.recruiterEmail);
+    if (!isValidRecruiterEmail(email)) {
+      toast.error('Invalid recruiter email address');
+      return;
+    }
+    setMailtoConfirm({ email, title: job.title });
+  };
+
+  const handleConfirmMailto = () => {
+    if (!mailtoConfirm) return;
+    const url = buildSafeMailtoUrl(mailtoConfirm.email, {
+      subject: `Application for ${mailtoConfirm.title}`,
+    });
+    if (!url) {
+      toast.error('Invalid recruiter email address');
+      setMailtoConfirm(null);
+      return;
+    }
+    window.location.href = url;
+    setMailtoConfirm(null);
   };
 
   return (
@@ -238,7 +274,13 @@ export default function JobAlerts() {
                     animate="animate"
                   >
                     {searchResults.map((job, index) => (
-                      <JobCard key={job.id || index} job={job} index={index} />
+                      <JobCard
+                        key={job.id || index}
+                        job={job}
+                        index={index}
+                        onApplyOutreach={handleApplyOutreach}
+                        onRequestMailto={handleRequestMailto}
+                      />
                     ))}
                   </motion.div>
                 </div>
@@ -268,21 +310,56 @@ export default function JobAlerts() {
         onClose={() => setIsModalOpen(false)}
         onSuccess={fetchStats}
       />
+
+      {outreachJob && (
+        <OutreachPanel
+          companyName={outreachJob.company}
+          companyUrl={
+            outreachJob.applyLink?.startsWith('http') ? outreachJob.applyLink : ''
+          }
+          onClose={() => setOutreachJob(null)}
+        />
+      )}
+
+      <Modal
+        isOpen={!!mailtoConfirm}
+        onClose={() => setMailtoConfirm(null)}
+        title="Open your mail client to apply?"
+        size="sm"
+      >
+        <p className="text-sm text-gray-600 dark:text-gray-400 mb-6">
+          You&apos;ll leave CareerPilot and open your email app to send an application
+          {mailtoConfirm?.email ? ` to ${mailtoConfirm.email}` : ''}.
+        </p>
+        <div className="flex justify-end gap-3">
+          <button
+            type="button"
+            onClick={() => setMailtoConfirm(null)}
+            className="px-4 py-2 text-sm font-medium text-gray-600 dark:text-gray-400 hover:text-gray-900 dark:hover:text-white rounded-lg transition-colors"
+          >
+            Cancel
+          </button>
+          <button
+            type="button"
+            onClick={handleConfirmMailto}
+            className="px-4 py-2 text-sm font-medium text-white bg-primary hover:bg-primary/90 rounded-lg transition-colors"
+          >
+            Open mail client
+          </button>
+        </div>
+      </Modal>
     </div>
   );
 }
 
 // Job Card Component
-function JobCard({ job, index }) {
-  const handleApply = () => {
-    if (job.applyLink) {
-      window.open(job.applyLink, '_blank');
-    }
-  };
+function JobCard({ job, index, onApplyOutreach, onRequestMailto }) {
+  const recruiterEmail = sanitizeRecruiterEmail(job.recruiterEmail);
+  const hasValidRecruiterEmail = isValidRecruiterEmail(recruiterEmail);
 
-  const handleEmail = () => {
-    if (job.recruiterEmail) {
-      window.location.href = `mailto:${job.recruiterEmail}?subject=Application for ${job.title}`;
+  const handleApplyOnSite = () => {
+    if (job.applyLink) {
+      window.open(job.applyLink, '_blank', 'noopener,noreferrer');
     }
   };
 
@@ -310,18 +387,27 @@ function JobCard({ job, index }) {
 
             {/* Action Buttons */}
             <div className="flex gap-2 shrink-0">
-              {job.applyLink && (
+              {job.recruiterEmail && (
                 <button
-                  onClick={handleApply}
+                  onClick={() => onApplyOutreach(job)}
                   className="flex items-center gap-1.5 px-4 py-2 bg-card text-foreground rounded-lg border border-border font-medium hover:bg-muted/20 transition-colors text-sm cursor-pointer"
                 >
-                  <ExternalLink className="w-4 h-4" />
+                  <Send className="w-4 h-4" />
                   Apply
                 </button>
               )}
-              {job.recruiterEmail && (
+              {job.applyLink && (
                 <button
-                  onClick={handleEmail}
+                  onClick={handleApplyOnSite}
+                  className="flex items-center gap-1.5 px-4 py-2 bg-card text-foreground rounded-lg border border-border font-medium hover:bg-muted/20 transition-colors text-sm cursor-pointer"
+                >
+                  <ExternalLink className="w-4 h-4" />
+                  {job.recruiterEmail ? 'Apply on site' : 'Apply'}
+                </button>
+              )}
+              {hasValidRecruiterEmail && (
+                <button
+                  onClick={() => onRequestMailto(job)}
                   className="flex items-center gap-1.5 px-4 py-2 bg-card text-foreground rounded-lg border border-border font-medium hover:bg-muted/60 transition-colors text-sm cursor-pointer"
                 >
                   <Mail className="w-4 h-4" />
