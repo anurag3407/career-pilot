@@ -14,8 +14,12 @@ import { fileURLToPath } from 'url';
 
 const __dirname = path.dirname(fileURLToPath(import.meta.url));
 
-// Path to the pre-built standalone portfolio app
-const DIST_DIR = path.resolve(__dirname, '../../../../frontend/dist-portfolio');
+// Path to the pre-built standalone portfolio app.
+// Tests can override the dist directory via PORTFOLIO_DIST_DIR so they don't
+// have to mutate the real build artifact (which would be shared global state
+// racing with parallel test runs and a running dev server).
+const DIST_DIR = process.env.PORTFOLIO_DIST_DIR
+  || path.resolve(__dirname, '../../../../frontend/dist-portfolio');
 
 /**
  * Escape a string for safe embedding inside a `<script>` tag *as the contents
@@ -33,7 +37,9 @@ function escapeForScript(str) {
   return str
     .replace(/\\/g, '\\\\')
     .replace(/'/g, "\\'")
-    .replace(/<\/script/gi, '<\\/script')
+    // Capture the matched `/script` so the original casing (`</SCRIPT>`,
+    // `</Script>`, ...) round-trips through `JSON.parse(...)` unchanged.
+    .replace(/<(\/script)/gi, '<\\$1')
     .replace(/<!--/g, '<\\!--')
     .replace(/\u2028/g, '\\u2028')
     .replace(/\u2029/g, '\\u2029');
@@ -86,24 +92,33 @@ export async function buildPortfolioBundle(sections, templateId = 'default') {
       window.__TEMPLATE_ID__ = '${escapeForScript(String(templateId))}';
     </script>`;
 
-  // Replace the placeholder injection block
+  // Replace the placeholder injection block. We pass a *function* as the
+  // replacement so `String.prototype.replace` inserts `injection` verbatim —
+  // otherwise `$&`, `` $` ``, `$'`, `$$` and `$n` sequences inside the
+  // escaped JSON would be expanded against the regex match, re-emitting the
+  // unescaped placeholder block (which itself contains `</script>`) into
+  // the JSON literal and breaking the very escaping we just performed.
   html = html.replace(
     /<!-- PORTFOLIO_DATA_INJECTION -->[\s\S]*?<!-- END_PORTFOLIO_DATA_INJECTION -->/,
-    injection
+    () => injection
   );
 
-  // If no placeholder found, inject before </head>
+  // If no placeholder found, inject before </head>. Same `$`-expansion
+  // concern as above — use a function so the script body is inserted literally.
   if (!html.includes('__PORTFOLIO_DATA__')) {
-    html = html.replace('</head>', `${injection}\n</head>`);
+    html = html.replace('</head>', () => `${injection}\n</head>`);
   }
 
   // Update page title. Both fields are user-controlled, so they must be
-  // HTML-escaped before being interpolated into the HTML shell.
+  // HTML-escaped before being interpolated into the HTML shell. We again use
+  // a replacer function so any `$`-tokens in `name`/`title` (which
+  // `escapeHtml` does not neutralize) are inserted literally rather than
+  // expanded against the regex match.
   const name = sections?.hero?.subtitle || 'Portfolio';
   const title = sections?.hero?.title || '';
   html = html.replace(
     /<title>.*?<\/title>/,
-    `<title>${escapeHtml(name)} — ${escapeHtml(title)}</title>`
+    () => `<title>${escapeHtml(name)} — ${escapeHtml(title)}</title>`
   );
 
   // Read all asset files (JS, CSS, etc.)

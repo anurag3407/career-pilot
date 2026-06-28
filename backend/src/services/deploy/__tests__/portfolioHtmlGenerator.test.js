@@ -24,6 +24,14 @@
  *      assigns `window.__PORTFOLIO_DATA__` to a JSON.parse'd copy of the
  *      original sections — and does NOT set any attacker-controlled global.
  *
+ * Isolation:
+ *   The generator looks at `process.env.PORTFOLIO_DIST_DIR` first, so the
+ *   test points it at a per-process temp directory under `os.tmpdir()`. That
+ *   keeps the test off the real `frontend/dist-portfolio/standalone.html`
+ *   build artifact — no shared global state, no race with parallel test
+ *   runs or a running dev server, no risk of leaving the developer's real
+ *   shell file in a half-overwritten state if the run aborts.
+ *
  * Run:
  *   node --test src/services/deploy/__tests__/portfolioHtmlGenerator.test.js
  */
@@ -31,18 +39,26 @@
 import { test, describe, before, after } from 'node:test';
 import assert from 'node:assert/strict';
 import fs from 'fs/promises';
+import os from 'os';
 import path from 'path';
 import { fileURLToPath } from 'url';
 import { JSDOM } from 'jsdom';
 
-import { buildPortfolioBundle } from '../portfolioHtmlGenerator.js';
-
 const __filename = fileURLToPath(import.meta.url);
 const __dirname  = path.dirname(__filename);
 
-// Mirror DIST_DIR from portfolioHtmlGenerator.js (../../../../frontend/dist-portfolio)
-const DIST_DIR = path.resolve(__dirname, '../../../../../frontend/dist-portfolio');
-const SHELL    = path.join(DIST_DIR, 'standalone.html');
+// Sandbox the generator into a per-process temp dir so it never touches the
+// real `frontend/dist-portfolio/standalone.html` build artifact. Must be set
+// *before* importing the generator, because the module captures DIST_DIR at
+// import time.
+const TMP_DIST_DIR = await fs.mkdtemp(
+  path.join(os.tmpdir(), 'portfolio-html-gen-test-')
+);
+process.env.PORTFOLIO_DIST_DIR = TMP_DIST_DIR;
+
+const { buildPortfolioBundle } = await import('../portfolioHtmlGenerator.js');
+
+const SHELL = path.join(TMP_DIST_DIR, 'standalone.html');
 
 const MIN_SHELL = `<!DOCTYPE html>
 <html lang="en">
@@ -70,22 +86,14 @@ async function buildAndExecute(sections, templateId = 'default') {
   return { html, dom, window: dom.window };
 }
 
-let originalShell = null;
-
 before(async () => {
-  try {
-    originalShell = await fs.readFile(SHELL, 'utf-8');
-  } catch {
-    originalShell = null;
-  }
-  await fs.mkdir(DIST_DIR, { recursive: true });
   await fs.writeFile(SHELL, MIN_SHELL, 'utf-8');
 });
 
 after(async () => {
-  if (originalShell !== null) {
-    await fs.writeFile(SHELL, originalShell, 'utf-8');
-  }
+  // Always wipe the entire temp dir. We created it, so we own it — no need
+  // to restore anything, and nothing leaks back into the repo.
+  await fs.rm(TMP_DIST_DIR, { recursive: true, force: true });
 });
 
 describe('buildPortfolioBundle — XSS hardening (CWE-79)', () => {
@@ -117,6 +125,19 @@ describe('buildPortfolioBundle — XSS hardening (CWE-79)', () => {
     // 3. The original (literal) payload should be available as data, intact.
     assert.equal(window.__PORTFOLIO_DATA__.projects[0].name, payload,
       'Round-trip of attacker payload as literal data failed');
+  });
+
+  test('</SCRIPT> with non-lowercase casing round-trips unchanged', async () => {
+    // The `</script` escaper uses a capture group so the original casing is
+    // preserved. Without it, `JSON.parse(...)` would reconstruct `</SCRIPT>`
+    // as `</script>`, silently mangling the user's data.
+    const payload = 'see </SCRIPT> and </Script> tags';
+    const malicious = { notes: payload };
+
+    const { window } = await buildAndExecute(malicious, 'default');
+
+    assert.equal(window.__PORTFOLIO_DATA__.notes, payload,
+      'Casing of </script>-like substrings was not preserved on round-trip');
   });
 
   test('hero fields with </title> cannot inject via <title> breakout', async () => {
@@ -165,6 +186,48 @@ describe('buildPortfolioBundle — XSS hardening (CWE-79)', () => {
     );
     assert.equal(window.__tplPwned, undefined,
       'Attacker JS executed via templateId breakout');
+  });
+
+  test('$-tokens in user data are inserted literally, not expanded by String.replace', async () => {
+    // `String.prototype.replace` with a string replacement expands `$&`,
+    // `` $` ``, `$'`, `$$` and `$n` against the regex match. If the
+    // replacement is built from user data, that turns into a data-integrity
+    // bug (and, for the script-tag injection path, an escape-bypass:
+    // `$&` would re-emit the placeholder block — which contains `</script>`
+    // — unescaped into the JSON literal). All three call sites use a
+    // replacer function to defeat this.
+    const sections = {
+      hero: {
+        // `$&` would otherwise be replaced by the entire `<title>...</title>`
+        // match; `$$` would collapse to a single `$`.
+        subtitle: 'Dollar $& and $$ and $`',
+        title: "trailing $' here"
+      },
+      // Inside the JSON-string injection, `$&` would re-insert the
+      // placeholder block (containing `</script>`), corrupting the JSON.
+      projects: [{ name: 'price was $5 and ends with $&' }]
+    };
+
+    const { html, window } = await buildAndExecute(sections, 'default');
+
+    // Exactly one <script> — the placeholder block was not reconstituted
+    // into the JSON literal via `$&` expansion.
+    const scripts = [...window.document.querySelectorAll('script')];
+    assert.equal(scripts.length, 1,
+      `Expected exactly 1 <script>, found ${scripts.length}.\n${html}`);
+
+    // Data round-trips verbatim.
+    assert.equal(window.__PORTFOLIO_DATA__.projects[0].name,
+      sections.projects[0].name,
+      'User data containing $-tokens did not round-trip literally');
+
+    // Title interpolation inserts the escaped user values literally —
+    // `$&`, `$$`, `` $` ``, `$'` are not expanded.
+    assert.equal(
+      window.document.title,
+      `${sections.hero.subtitle} — ${sections.hero.title}`,
+      '$-tokens in hero fields were expanded by String.replace'
+    );
   });
 
   test('happy path: legitimate portfolio data round-trips through JSON.parse', async () => {
