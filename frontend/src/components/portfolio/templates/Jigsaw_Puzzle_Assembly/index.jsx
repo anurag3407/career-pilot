@@ -985,7 +985,7 @@ function ProjectCard({ project, index }) {
               style={{clipPath:q.clip,transformStyle:'preserve-3d',willChange:'transform',
                 x:qM[qi].x,y:qM[qi].y,z:qM[qi].z,rotateX:qM[qi].rotateX,rotateY:qM[qi].rotateY}}>
               <motion.img src={project.image} alt={project.title} className="w-full h-full object-cover"
-                animate={hovered?{scale:1.08}:{scale:1}} transition={{duration:0.4}}/>
+                animate={hovered?{scale:1.08}:{scale:1}} transition={{duration:0.4}/>
             </motion.div>
           ))
         ):(
