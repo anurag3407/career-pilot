@@ -23,6 +23,7 @@ import {
   buildSafeMailtoUrl,
   isValidRecruiterEmail,
   sanitizeRecruiterEmail,
+  isSafeHttpUrl,
 } from '../utils/emailCheck';
 
 export default function JobAlerts() {
@@ -87,23 +88,28 @@ export default function JobAlerts() {
 
   const handleRequestMailto = (job) => {
     const email = sanitizeRecruiterEmail(job.recruiterEmail);
+  
     if (!isValidRecruiterEmail(email)) {
       toast.error('Invalid recruiter email address');
       return;
     }
+  
     setMailtoConfirm({ email, title: job.title });
   };
 
   const handleConfirmMailto = () => {
     if (!mailtoConfirm) return;
+  
     const url = buildSafeMailtoUrl(mailtoConfirm.email, {
       subject: `Application for ${mailtoConfirm.title}`,
     });
+  
     if (!url) {
       toast.error('Invalid recruiter email address');
       setMailtoConfirm(null);
       return;
     }
+  
     window.location.href = url;
     setMailtoConfirm(null);
   };
@@ -315,7 +321,9 @@ export default function JobAlerts() {
         <OutreachPanel
           companyName={outreachJob.company}
           companyUrl={
-            outreachJob.applyLink?.startsWith('http') ? outreachJob.applyLink : ''
+            isSafeHttpUrl(outreachJob.applyLink)
+              ? outreachJob.applyLink
+              : ''
           }
           onClose={() => setOutreachJob(null)}
         />
@@ -358,9 +366,14 @@ function JobCard({ job, index, onApplyOutreach, onRequestMailto }) {
   const hasValidRecruiterEmail = isValidRecruiterEmail(recruiterEmail);
 
   const handleApplyOnSite = () => {
-    if (job.applyLink) {
-      window.open(job.applyLink, '_blank', 'noopener,noreferrer');
+    if (!job.applyLink) return;
+  
+    if (!isSafeHttpUrl(job.applyLink)) {
+      toast.error('Invalid application link');
+      return;
     }
+  
+    window.open(job.applyLink, '_blank', 'noopener,noreferrer');
   };
 
   return (
