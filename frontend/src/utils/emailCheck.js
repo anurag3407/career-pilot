@@ -10,10 +10,22 @@ const RECRUITER_EMAIL_REGEX = /^[^\s@]+@[^\s@]+\.[^\s@]{2,}$/;
 export function sanitizeRecruiterEmail(raw) {
   if (typeof raw !== 'string') return '';
 
-  return raw
-    .trim()
-    .split(/[?#]/)[0]
-    .trim();
+  const trimmed = raw.trim();
+  const atIndex = trimmed.lastIndexOf('@');
+
+  if (atIndex === -1) return trimmed;
+
+  const queryIndex = trimmed.indexOf('?', atIndex);
+  const fragmentIndex = trimmed.indexOf('#', atIndex);
+
+  const suffixStart = [queryIndex, fragmentIndex]
+    .filter(index => index >= 0)
+    .sort((a, b) => a - b)[0];
+
+  return (suffixStart === undefined
+    ? trimmed
+    : trimmed.slice(0, suffixStart)
+  ).trim();
 }
 
 /**

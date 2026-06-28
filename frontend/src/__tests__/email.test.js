@@ -22,6 +22,12 @@ describe('sanitizeRecruiterEmail', () => {
     ).toBe('recruiter@co.com')
   })
 
+  test('preserves question marks in the local part', () => {
+    expect(
+      sanitizeRecruiterEmail('dev?jobs@company.com')
+    ).toBe('dev?jobs@company.com')
+  })
+
   test('does not modify long email addresses', () => {
     const longLocal = 'a'.repeat(MAX_EMAIL_LENGTH)
     const email = `${longLocal}@example.com`
