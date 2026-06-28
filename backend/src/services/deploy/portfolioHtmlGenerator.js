@@ -18,15 +18,38 @@ const __dirname = path.dirname(fileURLToPath(import.meta.url));
 const DIST_DIR = path.resolve(__dirname, '../../../../frontend/dist-portfolio');
 
 /**
- * Escape data for safe embedding in a <script> tag.
- * Prevents XSS via </script> injection in user data.
+ * Escape a string for safe embedding inside a `<script>` tag *as the contents
+ * of a single-quoted JS string literal*. Defends against:
+ *   - `</script>` HTML-parser breakouts (CWE-79)
+ *   - `<!--` HTML comment confusion
+ *   - U+2028 / U+2029 line terminators, which end string literals in classic
+ *     script context even though they are valid JSON
+ *   - Backslash / single-quote escaping of the literal itself
+ *
+ * Intended to wrap a `JSON.stringify(...)` payload that will be parsed back
+ * out at runtime via `JSON.parse('...')`.
  */
 function escapeForScript(str) {
   return str
     .replace(/\\/g, '\\\\')
     .replace(/'/g, "\\'")
     .replace(/<\/script/gi, '<\\/script')
-    .replace(/<!--/g, '<\\!--');
+    .replace(/<!--/g, '<\\!--')
+    .replace(/\u2028/g, '\\u2028')
+    .replace(/\u2029/g, '\\u2029');
+}
+
+/**
+ * Escape a string for safe embedding in HTML text / attribute context.
+ * Used for the page <title>, which is interpolated into the HTML shell.
+ */
+function escapeHtml(str) {
+  return String(str)
+    .replace(/&/g, '&amp;')
+    .replace(/</g, '&lt;')
+    .replace(/>/g, '&gt;')
+    .replace(/"/g, '&quot;')
+    .replace(/'/g, '&#39;');
 }
 
 /**
@@ -49,11 +72,18 @@ export async function buildPortfolioBundle(sections, templateId = 'default') {
     );
   }
 
-  // Inject portfolio data and template ID into the HTML
+  // Inject portfolio data and template ID into the HTML.
+  //
+  // Security: the JSON payload is wrapped in a JS string literal and parsed
+  // back out at runtime via `JSON.parse(...)`. This means every character of
+  // the user-controlled data passes through `escapeForScript`, so attacker
+  // input cannot break out of the inline `<script>` tag (CWE-79). Embedding
+  // `JSON.stringify(...)` directly into the script body would let any string
+  // containing `</script>` terminate the surrounding script context.
   const dataJson = JSON.stringify(sections || {});
   const injection = `<script>
-      window.__PORTFOLIO_DATA__ = ${dataJson};
-      window.__TEMPLATE_ID__ = "${escapeForScript(templateId)}";
+      window.__PORTFOLIO_DATA__ = JSON.parse('${escapeForScript(dataJson)}');
+      window.__TEMPLATE_ID__ = '${escapeForScript(String(templateId))}';
     </script>`;
 
   // Replace the placeholder injection block
@@ -67,10 +97,14 @@ export async function buildPortfolioBundle(sections, templateId = 'default') {
     html = html.replace('</head>', `${injection}\n</head>`);
   }
 
-  // Update page title
+  // Update page title. Both fields are user-controlled, so they must be
+  // HTML-escaped before being interpolated into the HTML shell.
   const name = sections?.hero?.subtitle || 'Portfolio';
   const title = sections?.hero?.title || '';
-  html = html.replace(/<title>.*?<\/title>/, `<title>${name} — ${title}</title>`);
+  html = html.replace(
+    /<title>.*?<\/title>/,
+    `<title>${escapeHtml(name)} — ${escapeHtml(title)}</title>`
+  );
 
   // Read all asset files (JS, CSS, etc.)
   const assets = {};
