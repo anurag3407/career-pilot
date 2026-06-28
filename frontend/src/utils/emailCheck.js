@@ -1,23 +1,37 @@
 /** RFC 5321 maximum email address length */
-export const MAX_EMAIL_LENGTH = 254
+export const MAX_EMAIL_LENGTH = 254;
 
-const RECRUITER_EMAIL_REGEX = /^[^\s@]+@[^\s@]+\.[^\s@]{2,}$/
+const RECRUITER_EMAIL_REGEX = /^[^\s@]+@[^\s@]+\.[^\s@]{2,}$/;
 
 /**
- * Strip query-string injection from API-provided recruiter emails
- * (e.g. "recruiter@co.com?cc=attacker@evil.com").
+ * Removes query/fragment injection while preserving
+ * the original email address.
  */
 export function sanitizeRecruiterEmail(raw) {
-  if (!raw || typeof raw !== 'string') return ''
-  const cleaned = raw.trim().split(/[?&#]/)[0].trim()
-  if (!cleaned) return ''
-  return cleaned.length <= MAX_EMAIL_LENGTH ? cleaned : cleaned.slice(0, MAX_EMAIL_LENGTH)
+  if (typeof raw !== 'string') return '';
+
+  return raw
+    .trim()
+    .split(/[?#]/)[0]
+    .trim();
 }
 
+/**
+ * Validates a recruiter email after sanitization.
+ *
+ * @param {string} email
+ * @returns {boolean}
+ */
 export function isValidRecruiterEmail(email) {
-  const sanitized = sanitizeRecruiterEmail(email)
-  if (!sanitized) return false
-  return RECRUITER_EMAIL_REGEX.test(sanitized)
+  const sanitized = sanitizeRecruiterEmail(email);
+
+  if (!sanitized) return false;
+
+  if (sanitized.length > MAX_EMAIL_LENGTH) {
+    return false;
+  }
+
+  return RECRUITER_EMAIL_REGEX.test(sanitized);
 }
 
 /**
@@ -25,13 +39,32 @@ export function isValidRecruiterEmail(email) {
  * Returns null when the email is invalid.
  */
 export function buildSafeMailtoUrl(email, { subject = '', body = '' } = {}) {
-  const sanitized = sanitizeRecruiterEmail(email)
-  if (!isValidRecruiterEmail(sanitized)) return null
+  if (!isValidRecruiterEmail(email)) return null;
 
-  const params = new URLSearchParams()
-  if (subject) params.set('subject', subject)
-  if (body) params.set('body', body)
+  const sanitized = sanitizeRecruiterEmail(email);
 
-  const query = params.toString()
-  return query ? `mailto:${sanitized}?${query}` : `mailto:${sanitized}`
+  const params = new URLSearchParams();
+  if (subject) params.set('subject', subject);
+  if (body) params.set('body', body);
+
+  const query = params.toString();
+
+  return query ? `mailto:${sanitized}?${query}` : `mailto:${sanitized}`;
+}
+
+/**
+ * Returns true only for valid HTTP/HTTPS URLs.
+ *
+ * @param {string} url
+ * @returns {boolean}
+ */
+export function isSafeHttpUrl(url) {
+  if (!url || typeof url !== "string") return false;
+
+  try {
+    const parsed = new URL(url.trim());
+    return parsed.protocol === "http:" || parsed.protocol === "https:";
+  } catch {
+    return false;
+  }
 }
