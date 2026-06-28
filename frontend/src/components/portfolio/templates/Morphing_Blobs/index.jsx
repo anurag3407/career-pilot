@@ -264,15 +264,15 @@ export default function MorphingBlobs() {
 
       {/* ── Navbar ── */}
       <nav className="mb-nav">
-        <button className="mb-nav-link" onClick={() => scrollTo("hero")} style={{ color: C.accent, fontSize: 16, fontWeight: 800, letterSpacing: 2 }}>
+        <button type="button" className="mb-nav-link" onClick={() => scrollTo("hero")} style={{ color: C.accent, fontSize: 16, fontWeight: 800, letterSpacing: 2 }}>
           {data.personal.name.split(" ")[0]}
         </button>
         <div className="mb-nav-desktop">
           {sections.map((s) => (
-            <button key={s} className="mb-nav-link" onClick={() => scrollTo(s.toLowerCase())}>{s}</button>
+            <button type="button" key={s} className="mb-nav-link" onClick={() => scrollTo(s.toLowerCase())}>{s}</button>
           ))}
         </div>
-        <button className="mb-hamburger" onClick={() => setMenuOpen(!menuOpen)} aria-label="Menu">
+        <button type="button" className="mb-hamburger" onClick={() => setMenuOpen(!menuOpen)} aria-label="Menu">
           {[0,1,2].map(i => (
             <div key={i} style={{ width: 22, height: 2, background: i === 1 ? C.accent : C.text, margin: "4px 0", transition: "all .2s",
               transform: menuOpen ? (i === 0 ? "rotate(45deg) translate(4px,5px)" : i === 2 ? "rotate(-45deg) translate(4px,-5px)" : "none") : "none",
@@ -285,7 +285,7 @@ export default function MorphingBlobs() {
         {menuOpen && (
           <motion.div className="mb-mobile-menu" initial={{ opacity: 0, y: -8 }} animate={{ opacity: 1, y: 0 }} exit={{ opacity: 0, y: -8 }}>
             {sections.map((s) => (
-              <button key={s} className="mb-nav-link" onClick={() => scrollTo(s.toLowerCase())} style={{ textAlign: "left", padding: "10px 0" }}>
+              <button type="button" key={s} className="mb-nav-link" onClick={() => scrollTo(s.toLowerCase())} style={{ textAlign: "left", padding: "10px 0" }}>
                 <span style={{ color: C.accent, marginRight: 8 }}>◉</span>{s}
               </button>
             ))}
@@ -313,8 +313,8 @@ export default function MorphingBlobs() {
           </motion.p>
           <motion.div initial={{ opacity: 0, y: 16 }} animate={{ opacity: 1, y: 0 }} transition={{ duration: 0.5, delay: 0.5 }}
             style={{ display: "flex", flexWrap: "wrap", gap: 16, justifyContent: "center", marginBottom: 48 }}>
-            <button className="mb-btn mb-btn-primary" onClick={() => scrollTo("projects")}>View Work</button>
-            <button className="mb-btn mb-btn-ghost" onClick={() => scrollTo("contact")}>Get In Touch</button>
+            <button type="button" className="mb-btn mb-btn-primary" onClick={() => scrollTo("projects")}>View Work</button>
+            <button type="button" className="mb-btn mb-btn-ghost" onClick={() => scrollTo("contact")}>Get In Touch</button>
           </motion.div>
           <motion.div initial={{ opacity: 0 }} animate={{ opacity: 1 }} transition={{ delay: 0.65 }}>
             <div className="mb-stats">

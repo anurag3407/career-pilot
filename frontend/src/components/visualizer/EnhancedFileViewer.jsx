@@ -75,7 +75,7 @@ const EnhancedFileViewer = () => {
       {/* Header */}
       <div className="flex items-center justify-between p-4 border-b border-white/10 bg-[#0f172a]">
         <div className="flex items-center gap-3 overflow-hidden">
-          <button 
+          <button type="button" 
             onClick={handleBack}
             className="p-1 hover:bg-white/10 rounded mr-1 text-slate-400 hover:text-white"
             title="Back to Module"
@@ -94,14 +94,14 @@ const EnhancedFileViewer = () => {
         </div>
         
         <div className="flex items-center gap-2 shrink-0 ml-4">
-          <button
+          <button type="button"
             onClick={handleCopy}
             disabled={loading || !content}
             className="p-2 rounded hover:bg-white/10 text-slate-400 hover:text-white transition-colors"
           >
             {copied ? <Check className="w-4 h-4 text-green-400" /> : <Copy className="w-4 h-4" />}
           </button>
-          <button
+          <button type="button"
             onClick={() => setInspectorOpen(false)}
             className="p-2 rounded hover:bg-white/10 text-slate-400 hover:text-white transition-colors"
           >

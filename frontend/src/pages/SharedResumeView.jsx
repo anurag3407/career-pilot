@@ -71,7 +71,7 @@ export default function SharedResumeView() {
           </select>
           <textarea className="w-full border rounded p-2 text-sm mb-2" rows={3} placeholder="Your comment..."
             value={form.text} onChange={e => setForm(f => ({ ...f, text: e.target.value }))} />
-          <button onClick={submitComment}
+          <button type="button" onClick={submitComment}
             className="w-full bg-blue-600 text-white rounded py-2 text-sm hover:bg-blue-700 transition">
             {submitted ? '✓ Submitted!' : 'Submit Feedback'}
           </button>

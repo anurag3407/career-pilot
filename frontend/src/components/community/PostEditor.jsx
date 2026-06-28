@@ -189,7 +189,7 @@ const removePollOption = (index) => {
           <h2 className="text-xl font-semibold text-foreground">
             {editPost ? 'Edit Post' : 'Create New Post'}
           </h2>
-          <button 
+          <button type="button" 
             onClick={onClose}
             className="p-2 text-muted-foreground hover:text-foreground hover:bg-muted rounded-lg"
           >

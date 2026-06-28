@@ -82,7 +82,7 @@ export default function OpenRouterCallback() {
         {error ? (
           <div className="text-red-500 mb-4">
             <p className="mb-4">{error}</p>
-            <button 
+            <button type="button" 
               onClick={() => navigate('/')} 
               className="px-6 py-2 bg-indigo-600 text-white rounded hover:bg-indigo-700 transition-colors"
             >

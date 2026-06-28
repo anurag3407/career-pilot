@@ -126,7 +126,7 @@ export default function RoastInput({
           <span className="inline-flex items-center gap-1.5 text-xs text-muted-foreground">
             <FileText className="h-3.5 w-3.5" />
             {fileName}
-            <button
+            <button type="button"
               onClick={() => {
                 setFileName(null);
                 onChange('');

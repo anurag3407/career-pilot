@@ -318,7 +318,7 @@ function Nav() {
             Hire Me ★
           </a>
 
-          <button onClick={() => setOpen(o => !o)} className="flex md:hidden" style={{
+          <button type="button" onClick={() => setOpen(o => !o)} className="flex md:hidden" style={{
             background: 'none', border: `2px solid ${C.yellow}`, color: C.yellow,
             cursor: 'pointer', padding: '4px 6px', display: 'flex', alignItems: 'center',
           }}>
@@ -925,7 +925,7 @@ function Contact() {
                   <h3 style={{ fontFamily: C.font, fontSize: '2rem', textTransform: 'uppercase',
                     color: C.black, marginBottom: 8 }}>Groovy! ★</h3>
                   <p style={{ color: '#555' }}>Thanks for reaching out — I'll be in touch soon!</p>
-                  <button onClick={() => { setStatus('idle'); setForm({ name: '', email: '', message: '' }); }}
+                  <button type="button" onClick={() => { setStatus('idle'); setForm({ name: '', email: '', message: '' }); }}
                     className="mp-cta" style={{ background: C.yellow, color: C.black, boxShadow: hs(), marginTop: 24 }}>
                     Send Another
                   </button>

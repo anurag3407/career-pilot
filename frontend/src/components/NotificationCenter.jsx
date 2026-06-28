@@ -72,7 +72,7 @@ export default function NotificationCenter() {
   return (
     <div className="relative" ref={panelRef}>
       {/* Bell button */}
-      <button
+      <button type="button"
         onClick={() => setOpen((v) => !v)}
         className="relative flex items-center justify-center w-10 h-10 rounded-xl hover:bg-muted transition-colors text-muted-foreground hover:text-foreground"
         aria-label="Notifications"
@@ -103,7 +103,7 @@ export default function NotificationCenter() {
             <div className="flex items-center justify-between px-4 py-3 border-b border-border shrink-0">
               <span className="font-bold text-foreground text-sm">Notifications</span>
               {unreadCount > 0 && (
-                <button
+                <button type="button"
                   onClick={markAllRead}
                   className="flex items-center gap-1 text-xs text-primary hover:text-primary/80 font-medium transition-colors"
                 >
@@ -158,7 +158,7 @@ export default function NotificationCenter() {
                         <span className="w-2 h-2 rounded-full bg-primary shrink-0 mt-1.5" />
                       )}
                       {/* Dismiss */}
-                      <button
+                      <button type="button"
                         onClick={(e) => handleDismiss(e, notif.id)}
                         className="opacity-0 group-hover:opacity-100 absolute right-2 top-2 p-1 rounded-lg hover:bg-muted text-muted-foreground hover:text-foreground transition-all"
                         aria-label="Dismiss notification"

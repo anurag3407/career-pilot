@@ -437,7 +437,7 @@ export default function Projects({
                 </div>
 
                 <div className="relative">
-                  <button
+                  <button type="button"
                     onClick={() => setShowInventory(!showInventory)}
                     className="flex flex-col items-center justify-center p-2.5 bg-amber-900/30 hover:bg-amber-900/60 border border-amber-700/60 rounded-lg text-amber-400 hover:text-amber-200 transition-all shadow-[2px_2px_4px_rgba(0,0,0,0.5)] cursor-pointer"
                   >
@@ -587,7 +587,7 @@ export default function Projects({
             <div className="flex flex-wrap items-center justify-center sm:justify-start gap-3 w-full sm:w-auto">
               <span className="font-fantasy-game text-[10px] text-amber-500 tracking-wider mr-2 uppercase">SELECT QUEST CLASS:</span>
               {categories.map((cat) => (
-                <button
+                <button type="button"
                   key={cat}
                   onClick={() => setActiveCategory(cat)}
                   className={`font-fantasy-game text-[10px] px-4 py-2 border rounded transition-all cursor-pointer relative uppercase
@@ -728,7 +728,7 @@ export default function Projects({
               <p className="font-fantasy-body text-xs text-amber-100/40 uppercase max-w-xs px-4">
                 No quests active in this realm sector yet. Explore other categories or level up!
               </p>
-              <button
+              <button type="button"
                 onClick={() => setActiveCategory("All")}
                 className="mt-6 font-fantasy-game text-[10px] px-6 py-2.5 border border-amber-500 bg-amber-950/30 hover:bg-amber-900/20 text-amber-300 rounded shadow-md transition-all cursor-pointer uppercase"
               >

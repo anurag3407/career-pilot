@@ -351,7 +351,7 @@ export default function LowPolyTerrain() {
           </motion.div>
           <div className="hidden md:flex items-center gap-1">
             {navLinks.map((link) => (
-              <button key={link.id} onClick={() => scrollTo(link.id)}
+              <button type="button" key={link.id} onClick={() => scrollTo(link.id)}
                 className="px-3 py-1.5 rounded-lg text-sm transition-all"
                 style={{ color: activeSection === link.id ? POLY.accent : (isDay ? '#5a8a5a' : '#7bc47b'),
                   background: activeSection === link.id ? 'rgba(61,107,61,0.12)' : 'transparent',

@@ -95,7 +95,7 @@ export default function DirectMessages() {
       {/* Header */}
       <div className="p-4 border-b border-border flex items-center justify-between">
         <h3 className="font-semibold text-foreground">Direct Messages</h3>
-        <button
+        <button type="button"
           onClick={() => setShowNewDM(true)}
           className="p-1.5 text-primary hover:bg-primary/20 rounded-lg"
         >
@@ -127,7 +127,7 @@ export default function DirectMessages() {
               const unreadCount = conv.unreadCount || 0;
 
               return (
-                <button
+                <button type="button"
                   key={convId}
                   onClick={() => handleSelectConversation(conv)}
                   className={`w-full flex items-center gap-3 px-4 py-3 hover:bg-muted transition-colors ${
@@ -184,7 +184,7 @@ export default function DirectMessages() {
         ) : (
           <div className="p-6 text-center text-muted-foreground">
             <p className="text-sm">No conversations yet</p>
-            <button
+            <button type="button"
               onClick={() => setShowNewDM(true)}
               className="mt-2 text-primary hover:text-primary/80 text-sm font-medium"
             >
@@ -200,7 +200,7 @@ export default function DirectMessages() {
           <div className="bg-card border border-border rounded-xl shadow-xl max-w-md w-full">
             <div className="flex items-center justify-between p-4 border-b border-border">
               <h3 className="font-semibold text-foreground">New Message</h3>
-              <button
+              <button type="button"
                 onClick={() => setShowNewDM(false)}
                 className="p-1 text-muted-foreground hover:text-foreground"
               >
@@ -229,7 +229,7 @@ export default function DirectMessages() {
                 {filteredUsers.length > 0 ? (
                   <div className="space-y-1">
                     {filteredUsers.map(u => (
-                      <button
+                      <button type="button"
                         key={u.uid}
                         onClick={() => handleStartConversation(u)}
                         className="w-full flex items-center gap-3 px-3 py-2 hover:bg-muted rounded-lg"

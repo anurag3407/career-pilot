@@ -34,7 +34,7 @@ export default function LinkedInHeadlineGenerator() {
           LinkedIn Headline Generator
         </h2>
 
-        <button
+        <button type="button"
           onClick={regenerateHeadlines}
           className="px-4 py-2 rounded-lg bg-blue-600 hover:bg-blue-700 transition"
         >
@@ -42,7 +42,7 @@ export default function LinkedInHeadlineGenerator() {
         </button>
       </div>
 
-      <button className="w-full py-3 rounded-lg bg-indigo-600 hover:bg-indigo-700 transition font-medium">
+      <button type="button" className="w-full py-3 rounded-lg bg-indigo-600 hover:bg-indigo-700 transition font-medium">
         Generate Headlines
       </button>
 
@@ -63,7 +63,7 @@ export default function LinkedInHeadlineGenerator() {
                 </span>
               </div>
 
-              <button
+              <button type="button"
                 onClick={() => copyHeadline(headline)}
                 className="px-3 py-1 rounded bg-gray-700 hover:bg-gray-600 text-sm"
               >

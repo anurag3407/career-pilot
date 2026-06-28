@@ -107,7 +107,7 @@ export default function ResumeScore({ data, onRescore }) {
           <p className={`text-2xl font-bold ${scoreText}`}>{label}</p>
           <p className="text-muted-foreground text-sm mt-1">Overall Resume Score</p>
           {onRescore && (
-            <button
+            <button type="button"
               onClick={onRescore}
               className="mt-3 text-sm text-primary hover:text-primary/80 flex items-center gap-1 mx-auto sm:mx-0"
             >

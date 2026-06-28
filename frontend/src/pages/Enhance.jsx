@@ -872,7 +872,7 @@ export default function Enhance() {
                 className="flex-1 px-4 py-3 bg-muted/50 border border-border rounded-xl text-foreground placeholder:text-muted-foreground focus:ring-2 focus:ring-primary focus:border-transparent"
                 onKeyPress={(e) => e.key === 'Enter' && handleAnalyze()}
               />
-              <button
+              <button type="button"
                 onClick={handleAnalyze}
                 disabled={analyzing || !jobRole.trim()}
                 className="px-8 py-3 bg-gradient-to-r from-indigo-600 to-purple-600 text-foreground rounded-xl font-medium hover:from-primary hover:to-secondary transition-all disabled:opacity-50 disabled:cursor-not-allowed flex items-center gap-2"
@@ -911,7 +911,7 @@ export default function Enhance() {
                     </p>
                     <p className="text-sm text-muted-foreground">for {jobRole}</p>
                   </div>
-                  <button
+                  <button type="button"
                     onClick={() => {
                       setHasAnalyzed(false)
                       setAtsAnalysis(null)
@@ -923,7 +923,7 @@ export default function Enhance() {
                     <RefreshCw className="w-4 h-4" />
                     Analyze Different Role
                   </button>
-                  <button
+                  <button type="button"
                     onClick={handleScoreResume}
                     disabled={scoring}
                     className="mt-2 text-sm text-purple-400 hover:text-purple-300 flex items-center gap-1"
@@ -1069,7 +1069,7 @@ export default function Enhance() {
                     { id: 'tips', label: 'Senior Tips', icon: Lightbulb },
                     { id: 'score', label: 'Resume Score', icon: ClipboardList }
                   ].map(tab => (
-                    <button
+                    <button type="button"
                       key={tab.id}
                       onClick={() => setActiveTab(tab.id)}
                       className={`flex items-center gap-2 px-4 py-2 rounded-lg transition-all ${activeTab === tab.id
@@ -1265,7 +1265,7 @@ export default function Enhance() {
                         </div>
                         <h3 className="text-xl font-semibold text-foreground mb-2">Resume Score</h3>
                         <p className="text-muted-foreground mb-6">Get an overall score and section-by-section breakdown with 3 tailored improvement tips.</p>
-                        <button
+                        <button type="button"
                           onClick={handleScoreResume}
                           disabled={scoring}
                           className="px-8 py-3 bg-gradient-to-r from-indigo-600 to-purple-600 text-white rounded-xl font-medium hover:from-primary hover:to-secondary transition-all flex items-center gap-2 mx-auto"
@@ -1300,7 +1300,7 @@ export default function Enhance() {
                 </div>
                 <div className="flex w-full flex-col gap-3 md:w-auto md:flex-row">
                   {enhancementComplete && (
-                    <button
+                    <button type="button"
                       onClick={handleGeneratePortfolio}
                       disabled={generatingPortfolio}
                       className="w-full md:w-auto px-8 py-4 bg-secondary text-secondary-foreground rounded-xl font-semibold hover:bg-secondary/90 transition-all disabled:opacity-50 disabled:cursor-not-allowed flex items-center justify-center gap-2"
@@ -1318,7 +1318,7 @@ export default function Enhance() {
                       )}
                     </button>
                   )}
-                  <button
+                  <button type="button"
                     onClick={handleEnhanceWithAI}
                     disabled={enhancing}
                     className="w-full md:w-auto px-8 py-4 bg-gradient-to-r from-indigo-600 to-purple-600 text-foreground rounded-xl font-semibold hover:from-primary hover:to-secondary transition-all disabled:opacity-50 disabled:cursor-not-allowed flex items-center justify-center gap-2 shadow-lg shadow-indigo-500/25"
@@ -1527,7 +1527,7 @@ export default function Enhance() {
 
       <div className="flex items-center gap-3">
         {!enhancing && (
-          <button
+          <button type="button"
             onClick={() => setStreamedText('')}
             className="
               rounded-xl

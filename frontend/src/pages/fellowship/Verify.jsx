@@ -41,7 +41,7 @@ export default function Verify() {
                     </div>
                     <h2 className="mt-4 text-xl font-semibold text-foreground">Already Verified!</h2>
                     <p className="mt-2 text-muted-foreground">Your student status has been verified.</p>
-                    <button
+                    <button type="button"
                         onClick={() => navigate('/fellowship/challenges')}
                         className="mt-6 px-6 py-2.5 bg-emerald-600 hover:bg-emerald-500 text-foreground rounded-xl font-medium"
                     >
@@ -57,7 +57,7 @@ export default function Verify() {
             <div className="max-w-lg mx-auto">
                 <div className="bg-background border border-border rounded-2xl p-8 text-center">
                     <p className="text-muted-foreground">Verification is only required for student accounts.</p>
-                    <button
+                    <button type="button"
                         onClick={() => navigate('/fellowship/challenges')}
                         className="mt-4 text-emerald-400 hover:text-emerald-300"
                     >
@@ -113,7 +113,7 @@ export default function Verify() {
 
     return (
         <div className="max-w-lg mx-auto">
-            <button
+            <button type="button"
                 onClick={() => navigate(-1)}
                 className="flex items-center gap-2 text-muted-foreground hover:text-foreground text-sm mb-6"
             >
@@ -148,7 +148,7 @@ export default function Verify() {
                                 />
                             </div>
 
-                            <button
+                            <button type="button"
                                 onClick={handleSendCode}
                                 disabled={loading || !email.trim()}
                                 className="w-full py-3 bg-emerald-600 hover:bg-emerald-500 text-foreground rounded-xl font-medium disabled:opacity-50 disabled:cursor-not-allowed flex items-center justify-center gap-2"
@@ -179,7 +179,7 @@ export default function Verify() {
                                 className="w-full px-4 py-4 bg-muted border border-border rounded-xl text-foreground text-center text-2xl tracking-widest placeholder:text-muted-foreground/80 focus:outline-none focus:border-emerald-500"
                             />
 
-                            <button
+                            <button type="button"
                                 onClick={handleVerify}
                                 disabled={loading || verificationCode.length !== 6}
                                 className="w-full py-3 bg-emerald-600 hover:bg-emerald-500 text-foreground rounded-xl font-medium disabled:opacity-50 disabled:cursor-not-allowed flex items-center justify-center gap-2"
@@ -187,7 +187,7 @@ export default function Verify() {
                                 {loading ? <Loader2 className="w-5 h-5 animate-spin" /> : 'Verify'}
                             </button>
 
-                            <button
+                            <button type="button"
                                 onClick={handleSendCode}
                                 disabled={loading}
                                 className="w-full py-2 text-muted-foreground hover:text-foreground text-sm"

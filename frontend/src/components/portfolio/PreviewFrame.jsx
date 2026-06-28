@@ -20,7 +20,7 @@ const PreviewFrame = ({ url, title = "Portfolio Preview" }) => {
     <div className="flex flex-col items-center w-full space-y-4">
       {/* Device Toggles */}
       <div className="flex items-center space-x-2 bg-secondary p-1 rounded-lg">
-        <button
+        <button type="button"
           onClick={() => setDevice('desktop')}
           className={`flex items-center px-4 py-2 rounded-md transition-colors ${
             device === 'desktop' ? 'bg-background shadow-sm text-foreground' : 'text-muted-foreground hover:bg-background/50'
@@ -30,7 +30,7 @@ const PreviewFrame = ({ url, title = "Portfolio Preview" }) => {
           <Monitor className="w-5 h-5 mr-2" />
           <span className="hidden sm:inline">Desktop</span>
         </button>
-        <button
+        <button type="button"
           onClick={() => setDevice('tablet')}
           className={`flex items-center px-4 py-2 rounded-md transition-colors ${
             device === 'tablet' ? 'bg-background shadow-sm text-foreground' : 'text-muted-foreground hover:bg-background/50'
@@ -40,7 +40,7 @@ const PreviewFrame = ({ url, title = "Portfolio Preview" }) => {
           <Tablet className="w-5 h-5 mr-2" />
           <span className="hidden sm:inline">Tablet</span>
         </button>
-        <button
+        <button type="button"
           onClick={() => setDevice('mobile')}
           className={`flex items-center px-4 py-2 rounded-md transition-colors ${
             device === 'mobile' ? 'bg-background shadow-sm text-foreground' : 'text-muted-foreground hover:bg-background/50'

@@ -66,7 +66,7 @@ function MobileMenu({ navItems }) {
 
   return (
     <div className="md:hidden">
-      <button
+      <button type="button"
         onClick={() => setOpen(!open)}
         className="p-2 rounded-lg text-gray-400 hover:text-orange-400 transition-colors"
         aria-label="Toggle menu"

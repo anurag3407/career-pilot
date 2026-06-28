@@ -64,7 +64,7 @@ function HeadlineCard({ headline, index, copied, onCopy }) {
         {index + 1}
       </span>
       <p className="text-sm text-foreground font-medium flex-1 leading-relaxed">{headline}</p>
-      <button
+      <button type="button"
         onClick={() => onCopy(headline, `hl-${index}`)}
         className="ml-2 text-muted-foreground hover:text-primary transition shrink-0"
         title="Copy"
@@ -391,13 +391,13 @@ export default function LinkedInOptimizer() {
                       <Linkedin className="w-5 h-5 text-blue-400" /> Rewritten About Section
                     </h2>
                     <div className="flex gap-2">
-                      <button
+                      <button type="button"
                         onClick={copyAbout}
                         className="flex items-center gap-1.5 text-sm px-3 py-1.5 rounded-lg bg-primary/10 text-primary hover:bg-primary/20 border border-primary/20 transition font-medium"
                       >
                         {aboutCopied ? <><Check className="w-3.5 h-3.5" /> Copied</> : <><Copy className="w-3.5 h-3.5" /> Copy All</>}
                       </button>
-                      <button
+                      <button type="button"
                         onClick={() => setAboutExpanded(!aboutExpanded)}
                         className="flex items-center gap-1 text-sm text-muted-foreground hover:text-foreground transition"
                       >
@@ -409,7 +409,7 @@ export default function LinkedInOptimizer() {
                     {results.aboutRewrite}
                   </div>
                   {!aboutExpanded && (
-                    <button onClick={() => setAboutExpanded(true)} className="text-xs text-primary hover:text-primary/80 mt-2 font-medium">
+                    <button type="button" onClick={() => setAboutExpanded(true)} className="text-xs text-primary hover:text-primary/80 mt-2 font-medium">
                       Show full rewrite →
                     </button>
                   )}

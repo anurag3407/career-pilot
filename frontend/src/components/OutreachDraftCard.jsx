@@ -29,7 +29,7 @@ const OutreachDraftCard = ({ style, subjectLine, content }) => {
                 <span className={`px-3 py-1 text-xs font-medium uppercase tracking-wider rounded-full border ${styleBadge}`}>
                     {style}
                 </span>
-                <button 
+                <button type="button" 
                     onClick={handleCopy}
                     className="flex items-center gap-1.5 text-sm font-medium text-gray-600 hover:text-indigo-600 transition-colors"
                 >

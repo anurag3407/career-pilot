@@ -134,7 +134,7 @@ const ArchitectureCanvas = () => {
         
         {/* View Toggles */}
         <div className="bg-[#0f172a]/90 backdrop-blur border border-white/10 rounded-lg p-1 flex gap-1 pointer-events-auto">
-          <button
+          <button type="button"
             onClick={() => setViewMode('modules')}
             className={cn(
               "px-3 py-1.5 rounded-md text-sm font-medium flex items-center gap-2 transition-colors",
@@ -143,7 +143,7 @@ const ArchitectureCanvas = () => {
           >
             <Box className="w-4 h-4" /> Modules
           </button>
-          <button
+          <button type="button"
             onClick={() => setViewMode('files')}
             className={cn(
               "px-3 py-1.5 rounded-md text-sm font-medium flex items-center gap-2 transition-colors",

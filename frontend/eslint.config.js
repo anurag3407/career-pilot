@@ -2,6 +2,7 @@ import js from '@eslint/js'
 import globals from 'globals'
 import reactHooks from 'eslint-plugin-react-hooks'
 import reactRefresh from 'eslint-plugin-react-refresh'
+import react from 'eslint-plugin-react'
 
 export default [
   { ignores: ['dist'] },
@@ -19,6 +20,7 @@ export default [
     plugins: {
       'react-hooks': reactHooks,
       'react-refresh': reactRefresh,
+      'react': react,
     },
     rules: {
       ...reactHooks.configs.recommended.rules,
@@ -30,7 +32,9 @@ export default [
       'no-empty': 'off',
       'react-hooks/exhaustive-deps': 'warn',
       'no-undef': 'warn',
-      'react-compiler/react-compiler': 'off'
+      'react-compiler/react-compiler': 'off',
+      // Enforce explicit type on every <button> — prevents silent form submissions
+      'react/button-has-type': 'error',
     },
   },
 ]

@@ -135,7 +135,7 @@ function ProjectsForm({ data, onChange }) {
     <div className="flex flex-col gap-4">
       {projects.map((project, i) => (
         <div key={project.id || i} className="p-4 rounded-xl border border-border bg-background/50 flex flex-col gap-3 relative">
-          <button
+          <button type="button"
             onClick={() => removeProject(i)}
             className="absolute top-3 right-3 text-muted-foreground hover:text-destructive transition"
           >
@@ -150,7 +150,7 @@ function ProjectsForm({ data, onChange }) {
           <Input label="Image URL" value={project.image} onChange={v => updateProject(i, 'image', v)} placeholder="https://..." />
         </div>
       ))}
-      <button
+      <button type="button"
         onClick={addProject}
         className="flex items-center justify-center gap-2 py-2 px-4 rounded-lg
           border border-dashed border-primary/40 text-primary text-sm font-medium
@@ -209,7 +209,7 @@ function SkillsForm({ data, onChange }) {
         <div key={group.id || gi} className="p-4 rounded-xl border border-border bg-background/50 flex flex-col gap-3">
           <div className="flex items-center justify-between">
             <Input label="Category" value={group.category} onChange={v => updateGroup(gi, 'category', v)} placeholder="e.g. Frontend" />
-            <button onClick={() => removeGroup(gi)} className="ml-3 mt-5 text-muted-foreground hover:text-destructive transition">
+            <button type="button" onClick={() => removeGroup(gi)} className="ml-3 mt-5 text-muted-foreground hover:text-destructive transition">
               <Trash2 className="w-4 h-4" />
             </button>
           </div>
@@ -221,12 +221,12 @@ function SkillsForm({ data, onChange }) {
               <div className="flex-1">
                 <Slider label="Level" value={skill.level} onChange={v => updateSkill(gi, si, 'level', v)} />
               </div>
-              <button onClick={() => removeSkill(gi, si)} className="mb-1 text-muted-foreground hover:text-destructive transition">
+              <button type="button" onClick={() => removeSkill(gi, si)} className="mb-1 text-muted-foreground hover:text-destructive transition">
                 <Trash2 className="w-4 h-4" />
               </button>
             </div>
           ))}
-          <button
+          <button type="button"
             onClick={() => addSkill(gi)}
             className="text-xs text-primary hover:underline text-left"
           >
@@ -234,7 +234,7 @@ function SkillsForm({ data, onChange }) {
           </button>
         </div>
       ))}
-      <button
+      <button type="button"
         onClick={addGroup}
         className="flex items-center justify-center gap-2 py-2 px-4 rounded-lg
           border border-dashed border-primary/40 text-primary text-sm font-medium
@@ -288,7 +288,7 @@ function ExperienceForm({ data, onChange }) {
     <div className="flex flex-col gap-4">
       {entries.map((entry, i) => (
         <div key={entry.id || i} className="p-4 rounded-xl border border-border bg-background/50 flex flex-col gap-3 relative">
-          <button onClick={() => removeEntry(i)} className="absolute top-3 right-3 text-muted-foreground hover:text-destructive transition">
+          <button type="button" onClick={() => removeEntry(i)} className="absolute top-3 right-3 text-muted-foreground hover:text-destructive transition">
             <Trash2 className="w-4 h-4" />
           </button>
           <p className="text-xs font-bold text-primary uppercase tracking-wider">Experience {i + 1}</p>
@@ -310,18 +310,18 @@ function ExperienceForm({ data, onChange }) {
                     text-sm text-foreground placeholder:text-muted-foreground
                     focus:outline-none focus:ring-2 focus:ring-primary/40 transition"
                 />
-                <button onClick={() => removeBullet(i, bi)} className="text-muted-foreground hover:text-destructive transition">
+                <button type="button" onClick={() => removeBullet(i, bi)} className="text-muted-foreground hover:text-destructive transition">
                   <Trash2 className="w-4 h-4" />
                 </button>
               </div>
             ))}
-            <button onClick={() => addBullet(i)} className="text-xs text-primary hover:underline text-left">
+            <button type="button" onClick={() => addBullet(i)} className="text-xs text-primary hover:underline text-left">
               + Add Bullet
             </button>
           </div>
         </div>
       ))}
-      <button
+      <button type="button"
         onClick={addEntry}
         className="flex items-center justify-center gap-2 py-2 px-4 rounded-lg
           border border-dashed border-primary/40 text-primary text-sm font-medium
@@ -341,7 +341,7 @@ function ContactForm({ data, onChange }) {
       <Input label="Location" value={data.location} onChange={v => onChange({ ...data, location: v })} placeholder="e.g. Bangalore, India" />
       <div className="flex items-center justify-between p-3 rounded-lg border border-border bg-background/50">
         <span className="text-sm font-medium text-foreground">Show Contact Form</span>
-        <button
+        <button type="button"
           onClick={() => onChange({ ...data, showForm: !data.showForm })}
           className={`w-11 h-6 rounded-full transition-colors ${data.showForm ? 'bg-primary' : 'bg-muted'}`}
         >
@@ -430,7 +430,7 @@ export default function SectionEditor({ portfolioId, sectionType, initialData = 
                 </p>
               </div>
             </div>
-            <button
+            <button type="button"
               onClick={handleCancel}
               className="p-2 rounded-lg text-muted-foreground hover:text-foreground hover:bg-muted transition"
             >
@@ -445,14 +445,14 @@ export default function SectionEditor({ portfolioId, sectionType, initialData = 
 
           {/* Footer */}
           <div className="flex items-center justify-end gap-3 px-6 py-4 border-t border-border bg-card">
-            <button
+            <button type="button"
               onClick={handleCancel}
               className="px-4 py-2 rounded-lg text-sm font-medium text-muted-foreground
                 hover:text-foreground hover:bg-muted transition"
             >
               Cancel
             </button>
-            <button
+            <button type="button"
               onClick={handleSave}
               disabled={saving}
               className="flex items-center gap-2 px-5 py-2 rounded-lg text-sm font-semibold

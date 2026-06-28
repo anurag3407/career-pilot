@@ -85,12 +85,12 @@ export default function GithubCallback() {
             </p>
             <div className="flex gap-2 justify-center">
               <Link to="/settings">
-                <button className="rounded-xl border border-border px-4 py-2 text-sm font-semibold hover:bg-muted">
+                <button type="button" className="rounded-xl border border-border px-4 py-2 text-sm font-semibold hover:bg-muted">
                   Open Settings
                 </button>
               </Link>
               <Link to="/portfolio/github">
-                <button className="rounded-xl bg-primary px-4 py-2 text-sm font-semibold text-primary-foreground hover:bg-primary/90">
+                <button type="button" className="rounded-xl bg-primary px-4 py-2 text-sm font-semibold text-primary-foreground hover:bg-primary/90">
                   Try again
                 </button>
               </Link>

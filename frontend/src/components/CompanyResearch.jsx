@@ -68,7 +68,7 @@ export default function CompanyResearch({ companyName, industry = '', onClose })
                 <p className="text-xs text-muted-foreground">{industry || 'Company Research'}</p>
               </div>
             </div>
-            <button
+            <button type="button"
               onClick={onClose}
               className="p-2 text-muted-foreground hover:text-foreground hover:bg-muted/80 rounded-lg transition"
             >

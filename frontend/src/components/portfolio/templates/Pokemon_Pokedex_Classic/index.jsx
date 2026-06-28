@@ -437,7 +437,7 @@ const PokemonPokedexClassic = ({ portfolioData }) => {
 
           {/* D-Pad Navigation */}
           <div className="dpad">
-            <button
+            <button type="button"
               className="dpad-btn"
               onClick={() =>
                 setSelectedIndex((prev) =>
@@ -446,12 +446,12 @@ const PokemonPokedexClassic = ({ portfolioData }) => {
               }
               title="Previous"
             />
-            <button className="dpad-btn" title="Up" />
-            <button className="dpad-btn" title="Right" />
-            <button className="dpad-btn" title="Left" />
+            <button type="button" className="dpad-btn" title="Up" />
+            <button type="button" className="dpad-btn" title="Right" />
+            <button type="button" className="dpad-btn" title="Left" />
             <div className="dpad-center" />
-            <button className="dpad-btn" title="Right" />
-            <button
+            <button type="button" className="dpad-btn" title="Right" />
+            <button type="button"
               className="dpad-btn"
               onClick={() =>
                 setSelectedIndex((prev) =>
@@ -460,14 +460,14 @@ const PokemonPokedexClassic = ({ portfolioData }) => {
               }
               title="Down"
             />
-            <button className="dpad-btn" title="Right" />
-            <button className="dpad-btn" title="Right" />
+            <button type="button" className="dpad-btn" title="Right" />
+            <button type="button" className="dpad-btn" title="Right" />
           </div>
 
           {/* Buttons */}
           {/* EDIT 4: Changed click triggers to use fully sanitized, absolute links safely */}
           <div className="button-section">
-            <button 
+            <button type="button" 
               className="pokedex-btn" 
               onClick={() => {
                 if (currentEntry.links?.github) {
@@ -479,7 +479,7 @@ const PokemonPokedexClassic = ({ portfolioData }) => {
             >
               GitHub
             </button>
-            <button 
+            <button type="button" 
               className="pokedex-btn" 
               onClick={() => {
                 if (currentEntry.links?.live) {
@@ -518,7 +518,7 @@ const PokemonPokedexClassic = ({ portfolioData }) => {
             <div style={{ color: "#000", fontSize: "8px", fontWeight: "bold" }}>
               PORTFOLIO
             </div>
-            <button className="red-btn" title="View All Projects">
+            <button type="button" className="red-btn" title="View All Projects">
               PROJ
             </button>
           </div>

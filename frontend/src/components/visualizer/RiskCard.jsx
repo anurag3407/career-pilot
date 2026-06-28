@@ -50,7 +50,7 @@ const RiskCard = ({ risk }) => {
           </div>
           <div>
             <h4 className="font-semibold text-white capitalize">{type.replace('-', ' ')}</h4>
-            <button 
+            <button type="button" 
               onClick={handleFileClick}
               className="text-xs font-mono text-slate-400 hover:text-cyan-400 truncate max-w-[200px] sm:max-w-sm text-left"
               title={file}

@@ -192,7 +192,7 @@ const DetailsPanel = ({ element, onClose }) => {
         boxShadow: `0 10px 40px -10px ${color}30`,
       }}
     >
-      <button 
+      <button type="button" 
         onClick={onClose}
         className="absolute top-4 right-4 p-2 rounded-full hover:bg-white/10 transition-colors"
         style={{ color: C.textMuted }}
@@ -313,7 +313,7 @@ export default function InteractiveTablePortfolio({ portfolioData }) {
           {/* Legend / Filters */}
           <div className="flex flex-wrap gap-3">
             {categories.map(cat => (
-              <button
+              <button type="button"
                 key={cat}
                 onClick={() => setActiveCategory(cat)}
                 className="px-4 py-1.5 rounded-full text-xs font-bold uppercase tracking-widest transition-all"

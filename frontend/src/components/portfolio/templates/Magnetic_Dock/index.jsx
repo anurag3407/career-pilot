@@ -333,8 +333,8 @@ export default function MagneticDock() {
           </motion.p>
           <motion.div initial={{ opacity: 0, y: 12 }} animate={{ opacity: 1, y: 0 }} transition={{ duration: 0.5, delay: 0.55 }}
             style={{ display: "flex", flexWrap: "wrap", gap: 16, justifyContent: "center", marginBottom: 48 }}>
-            <button className="md-btn md-btn-primary" onClick={() => scrollTo("projects")}>View Work</button>
-            <button className="md-btn md-btn-ghost" onClick={() => scrollTo("contact")}>Get In Touch</button>
+            <button type="button" className="md-btn md-btn-primary" onClick={() => scrollTo("projects")}>View Work</button>
+            <button type="button" className="md-btn md-btn-ghost" onClick={() => scrollTo("contact")}>Get In Touch</button>
           </motion.div>
           <motion.div initial={{ opacity: 0 }} animate={{ opacity: 1 }} transition={{ delay: 0.7 }}>
             <div className="md-stats">

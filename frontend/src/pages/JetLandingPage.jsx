@@ -80,7 +80,7 @@ const menuItemVariants = {
               </div>
 
               {/* Mobile Menu Button */}
-              <button 
+              <button type="button" 
                 className="md:hidden text-gray-400 cursor-pointer mr-8 "
                 onClick={() => setIsMobileMenuOpen(!isMobileMenuOpen)}
                 aria-label="Toggle menu"
@@ -131,12 +131,12 @@ const menuItemVariants = {
             </p>
 
             <div className="flex items-center gap-4">
-              <button 
+              <button type="button" 
                 onClick={() => window.location.href='/jobs'}
                 className="px-6 py-3 rounded-full bg-gray-300 text-gray-800 font-medium hover:bg-gray-400 transition-colors">
                 Explore Jobs
               </button>
-              <button 
+              <button type="button" 
                 onClick={() => window.location.href='/register'}
                 className="px-6 py-3 rounded-full text-white font-medium transition-colors" 
                 style={{ backgroundColor: '#202A36' }} 

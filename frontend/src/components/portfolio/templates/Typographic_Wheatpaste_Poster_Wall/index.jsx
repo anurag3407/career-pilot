@@ -436,7 +436,7 @@ function Nav() {
           {/* Desktop links */}
           <div className="hidden md:flex items-center gap-6">
             {links.map((link) => (
-              <button
+              <button type="button"
                 key={link}
                 onClick={() => scrollTo(link)}
                 className="wp-nav-link"
@@ -478,7 +478,7 @@ function Nav() {
           </div>
 
           {/* Hamburger */}
-          <button
+          <button type="button"
             className="md:hidden"
             onClick={() => setOpen(!open)}
             aria-label="Toggle menu"

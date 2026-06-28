@@ -275,7 +275,7 @@ export default function Dashboard() {
             {fetchError && (
               <div className="mb-8 rounded-2xl border border-destructive/20 bg-destructive/5 px-6 py-4 text-sm text-destructive flex items-center justify-between backdrop-blur-md">
                 <span className="font-semibold">{fetchError}</span>
-                <button
+                <button type="button"
                   onClick={fetchData}
                   className="px-4 py-1.5 bg-destructive text-foreground rounded-lg font-bold hover:opacity-90 transition-opacity"
                 >

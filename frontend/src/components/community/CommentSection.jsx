@@ -85,7 +85,7 @@ function CommentItem({ comment, currentUser, onReply, onLike, depth = 0 }) {
 
           {/* Actions */}
           <div className="flex items-center gap-4 mt-2">
-            <button
+            <button type="button"
               onClick={() => onLike(comment.id)}
               className={`flex items-center gap-1 text-xs transition-colors ${
                 isLiked ? 'text-destructive' : 'text-muted-foreground hover:text-destructive'
@@ -96,7 +96,7 @@ function CommentItem({ comment, currentUser, onReply, onLike, depth = 0 }) {
             </button>
 
             {depth === 0 && (
-              <button
+              <button type="button"
                 onClick={() => setIsReplying(!isReplying)}
                 className="flex items-center gap-1 text-xs text-muted-foreground hover:text-primary"
               >
@@ -139,7 +139,7 @@ function CommentItem({ comment, currentUser, onReply, onLike, depth = 0 }) {
       {/* Replies */}
       {comment.replies?.length > 0 && (
         <div className="mt-1">
-          <button
+          <button type="button"
             onClick={() => setShowReplies(!showReplies)}
             className="flex items-center gap-1 text-xs text-primary hover:text-primary/80 mb-2 ml-11"
           >
@@ -337,7 +337,7 @@ export default function CommentSection({ postId, currentUser, onCommentAdded }) 
         {/* Load More */}
         {hasMore && !loading && (
           <div className="p-4 text-center">
-            <button
+            <button type="button"
               onClick={() => fetchComments(true)}
               className="text-sm text-primary hover:text-primary/80 font-medium"
             >

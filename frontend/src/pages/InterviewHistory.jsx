@@ -102,7 +102,7 @@ export default function InterviewHistory() {
           <Trophy className="w-16 h-16 text-muted-foreground/30 mx-auto mb-4" />
           <h2 className="text-xl font-semibold text-foreground mb-2">No Interviews Yet</h2>
           <p className="text-muted-foreground mb-6">Start your first mock interview to see your history and analytics here.</p>
-          <button 
+          <button type="button" 
             onClick={() => navigate('/interview-prep')}
             className="px-6 py-2.5 bg-primary text-primary-foreground font-medium rounded-lg hover:bg-primary/90 transition-colors"
           >
@@ -122,7 +122,7 @@ export default function InterviewHistory() {
                   <FilterX className="w-4 h-4 text-muted-foreground" />
                   Filters
                 </h3>
-                <button onClick={clearFilters} className="text-xs text-primary hover:underline font-medium">
+                <button type="button" onClick={clearFilters} className="text-xs text-primary hover:underline font-medium">
                   Clear All
                 </button>
               </div>

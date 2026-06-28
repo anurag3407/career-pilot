@@ -33,7 +33,7 @@ class RouteErrorBoundary extends React.Component {
               <pre className="text-amber-300 text-xs font-mono whitespace-pre-wrap">{this.state.errorInfo?.componentStack}</pre>
             </div>
 
-            <button
+            <button type="button"
               onClick={() => window.location.reload()}
               className="mt-6 px-6 py-3 bg-red-500 hover:bg-red-600 text-white rounded-xl font-semibold transition-colors"
             >

@@ -39,7 +39,7 @@ export default function Hero() {
           {/* BUTTONS */}
           <div className="flex flex-wrap justify-center lg:justify-start gap-4 mt-10">
 
-            <button
+            <button type="button"
               className="
                 px-7 py-4 rounded-2xl 
                 bg-linear-to-r from-pink-500 to-cyan-400
@@ -56,7 +56,7 @@ export default function Hero() {
               View Projects
             </button>
 
-            <button
+            <button type="button"
               className="
                 px-7 py-4 rounded-2xl
                 bg-white/5

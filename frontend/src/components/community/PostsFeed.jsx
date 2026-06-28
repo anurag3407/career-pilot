@@ -303,7 +303,7 @@ const handleCreatePost = async (postData) => {
       <div className="bg-background border-b border-border px-6 py-4">
         <div className="flex items-center justify-between mb-4">
           <h2 className="text-xl font-bold text-foreground">Community Discussions</h2>
-          <button
+          <button type="button"
             onClick={() => setShowEditor(true)}
             className="flex items-center gap-2 px-4 py-2 bg-primary text-primary-foreground rounded-lg hover:bg-primary/90 transition-colors"
           >
@@ -316,7 +316,7 @@ const handleCreatePost = async (postData) => {
         <div className="flex flex-wrap gap-3 items-center">
           {/* Sort Options */}
           <div className="flex gap-1 bg-muted p-1 rounded-lg">
-            <button
+            <button type="button"
               onClick={() => setSortBy('latest')}
               className={`flex items-center gap-1.5 px-3 py-1.5 rounded-md text-sm font-medium transition-colors ${
                 sortBy === 'latest' ? 'bg-card shadow-sm text-primary' : 'text-muted-foreground hover:text-foreground'
@@ -325,7 +325,7 @@ const handleCreatePost = async (postData) => {
               <Clock className="w-4 h-4" />
               Latest
             </button>
-            <button
+            <button type="button"
               onClick={() => setSortBy('popular')}
               className={`flex items-center gap-1.5 px-3 py-1.5 rounded-md text-sm font-medium transition-colors ${
                 sortBy === 'popular' ? 'bg-card shadow-sm text-primary' : 'text-muted-foreground hover:text-foreground'
@@ -334,7 +334,7 @@ const handleCreatePost = async (postData) => {
               <Heart className="w-4 h-4" />
               Popular
             </button>
-            <button
+            <button type="button"
               onClick={() => setSortBy('trending')}
               className={`flex items-center gap-1.5 px-3 py-1.5 rounded-md text-sm font-medium transition-colors ${
                 sortBy === 'trending' ? 'bg-card shadow-sm text-primary' : 'text-muted-foreground hover:text-foreground'
@@ -356,7 +356,7 @@ const handleCreatePost = async (postData) => {
               className="w-full pl-10 pr-4 py-2 bg-muted border border-border rounded-lg text-sm text-foreground placeholder:text-muted-foreground focus:ring-2 focus:ring-primary focus:border-primary"
             />
             {searchQuery && (
-              <button
+              <button type="button"
                 onClick={() => setSearchQuery('')}
                 className="absolute right-3 top-1/2 -translate-y-1/2 text-muted-foreground hover:text-foreground"
               >
@@ -369,7 +369,7 @@ const handleCreatePost = async (postData) => {
         {/* Category Tabs */}
         <div className="flex gap-2 mt-4 overflow-x-auto pb-2">
           {CATEGORIES.map(cat => (
-            <button
+            <button type="button"
               key={cat.value}
               onClick={() => setSelectedCategory(cat.value)}
               className={`flex items-center gap-1.5 px-3 py-1.5 rounded-full text-sm whitespace-nowrap transition-colors ${
@@ -391,7 +391,7 @@ const handleCreatePost = async (postData) => {
           {/* Scheduled posts section — only shown to the post author */}
           {scheduledPosts.length > 0 && (
             <div className="border border-sky-500/20 rounded-xl overflow-hidden">
-              <button
+              <button type="button"
                 onClick={() => setShowScheduled(prev => !prev)}
                 className="w-full flex items-center justify-between px-4 py-3 bg-sky-500/10 hover:bg-sky-500/15 transition-colors"
               >
@@ -479,7 +479,7 @@ const handleCreatePost = async (postData) => {
               <p className="text-4xl mb-3">📝</p>
               <h3 className="text-lg font-medium text-foreground">No posts yet</h3>
               <p className="text-muted-foreground mt-1">Be the first to share your thoughts!</p>
-              <button
+              <button type="button"
                 onClick={() => setShowEditor(true)}
                 className="mt-4 px-4 py-2 bg-primary text-primary-foreground rounded-lg hover:bg-primary/90"
               >

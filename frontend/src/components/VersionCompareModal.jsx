@@ -60,7 +60,7 @@ export default function VersionCompareModal({ isOpen, onClose, versions, initial
               <p className="text-xs text-muted-foreground">Select two versions to inspect exact modifications</p>
             </div>
           </div>
-          <button 
+          <button type="button" 
             onClick={onClose}
             className="p-1.5 rounded-lg hover:bg-muted text-muted-foreground hover:text-foreground transition-all"
           >
@@ -103,7 +103,7 @@ export default function VersionCompareModal({ isOpen, onClose, versions, initial
           </div>
 
           <div className="flex items-center bg-card border border-border rounded-xl p-0.5">
-            <button
+            <button type="button"
               onClick={() => setViewMode('split')}
               className={`px-3 py-1.5 rounded-lg text-xs font-semibold transition-all ${
                 viewMode === 'split' ? 'bg-primary text-primary-foreground shadow-sm' : 'text-muted-foreground hover:text-foreground'
@@ -111,7 +111,7 @@ export default function VersionCompareModal({ isOpen, onClose, versions, initial
             >
               Split View
             </button>
-            <button
+            <button type="button"
               onClick={() => setViewMode('unified')}
               className={`px-3 py-1.5 rounded-lg text-xs font-semibold transition-all ${
                 viewMode === 'unified' ? 'bg-primary text-primary-foreground shadow-sm' : 'text-muted-foreground hover:text-foreground'

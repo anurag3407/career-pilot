@@ -38,7 +38,7 @@ export default function ResumeBulletEnhancer() {
       />
 
       {/* Button */}
-      <button
+      <button type="button"
         onClick={enhanceBullet}
         className="mt-4 flex items-center gap-2 px-5 py-2 rounded-xl bg-primary text-primary-foreground font-bold hover:opacity-90 transition"
       >

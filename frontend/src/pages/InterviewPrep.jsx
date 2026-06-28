@@ -1641,7 +1641,7 @@ ${updatedProgress.level}`
                 {isCoding ? <span className="inline-flex items-center gap-1"><Code2 className="w-3.5 h-3.5" /> Coding Question</span> : `Question ${currentQuestionIndex + 1} of ${formData.questionCount}`}
               </span>
               <div className="flex items-center gap-3">
-                <button
+                <button type="button"
                   onClick={() => setShowSwitchProvider(true)}
                   className="text-xs inline-flex items-center gap-1 px-2.5 py-1 rounded-full bg-muted/50 border border-border text-muted-foreground hover:text-foreground hover:border-primary/30"
                   title="Re-analyze with a different AI provider"
@@ -1690,18 +1690,18 @@ ${updatedProgress.level}`
                   </div>
 
                   <div className="flex justify-center gap-3">
-                    <button onClick={toggleVideo} className={`p-3 rounded-xl border transition-colors cursor-pointer ${videoEnabled ? 'bg-muted border-border text-foreground hover:bg-muted/80' : 'bg-red-500/20 border-red-500/30 text-red-400'}`}>
+                    <button type="button" onClick={toggleVideo} className={`p-3 rounded-xl border transition-colors cursor-pointer ${videoEnabled ? 'bg-muted border-border text-foreground hover:bg-muted/80' : 'bg-red-500/20 border-red-500/30 text-red-400'}`}>
                       {videoEnabled ? <Video className="w-5 h-5" /> : <VideoOff className="w-5 h-5" />}
                     </button>
-                    <button onClick={toggleAudio} className={`p-3 rounded-xl border transition-colors cursor-pointer ${audioEnabled ? 'bg-muted border-border text-foreground hover:bg-muted/80' : 'bg-red-500/20 border-red-500/30 text-red-400'}`}>
+                    <button type="button" onClick={toggleAudio} className={`p-3 rounded-xl border transition-colors cursor-pointer ${audioEnabled ? 'bg-muted border-border text-foreground hover:bg-muted/80' : 'bg-red-500/20 border-red-500/30 text-red-400'}`}>
                       {audioEnabled ? <Mic className="w-5 h-5" /> : <MicOff className="w-5 h-5" />}
                     </button>
                     {isSpeaking ? (
-                      <button onClick={stopSpeaking} className="p-3 rounded-xl bg-amber-500/20 border border-amber-500/30 text-amber-400 transition-colors cursor-pointer hover:bg-amber-500/30">
+                      <button type="button" onClick={stopSpeaking} className="p-3 rounded-xl bg-amber-500/20 border border-amber-500/30 text-amber-400 transition-colors cursor-pointer hover:bg-amber-500/30">
                         <VolumeX className="w-5 h-5" />
                       </button>
                     ) : (
-                      <button onClick={replayQuestion} className="p-3 rounded-xl bg-primary/20 border border-primary/30 text-primary transition-colors cursor-pointer hover:bg-primary/90/30" title="Replay question">
+                      <button type="button" onClick={replayQuestion} className="p-3 rounded-xl bg-primary/20 border border-primary/30 text-primary transition-colors cursor-pointer hover:bg-primary/90/30" title="Replay question">
                         <RotateCcw className="w-5 h-5" />
                       </button>
                     )}
@@ -1850,7 +1850,7 @@ ${updatedProgress.level}`
                       </Button>
                     </div>
                   ) : (
-                    <button onClick={stopRecording} disabled={loading} className="flex-1 w-full py-4 rounded-xl bg-red-500 hover:bg-red-600 text-foreground font-medium flex items-center justify-center gap-2 transition-colors cursor-pointer disabled:opacity-50">
+                    <button type="button" onClick={stopRecording} disabled={loading} className="flex-1 w-full py-4 rounded-xl bg-red-500 hover:bg-red-600 text-foreground font-medium flex items-center justify-center gap-2 transition-colors cursor-pointer disabled:opacity-50">
                       <XCircle className="w-5 h-5" />
                       {loading ? 'Submitting...' : 'Stop & Submit'}
                     </button>
@@ -1878,7 +1878,7 @@ ${updatedProgress.level}`
             </p>
             <div className="space-y-2 max-h-64 overflow-y-auto">
               {Object.entries(configuredProviders).map(([key, val]) => (
-                <button
+                <button type="button"
                   key={key}
                   onClick={async () => {
                     useAIConfigStore.getState().setActiveProvider(key);

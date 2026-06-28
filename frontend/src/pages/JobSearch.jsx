@@ -441,7 +441,7 @@ className="w-full pl-12 pr-10 py-4 bg-muted/50 border border-border rounded-xl t
                 </p>
                 <div className="flex flex-wrap gap-2">
                   {POPULAR_SEARCHES.map(search => (
-                    <button
+                    <button type="button"
                       key={search}
                       onMouseEnter={() => prefetchJobSearch(search, filters)}
                       onFocus={() => prefetchJobSearch(search, filters)}
@@ -582,7 +582,7 @@ className="w-full pl-12 pr-10 py-4 bg-muted/50 border border-border rounded-xl t
 
                       {/* Actions */}
                       <div className="flex flex-col gap-2 ml-4">
-                        <button
+                        <button type="button"
                           onClick={() => handleSaveJob(job)}
                           className={`p-2 rounded-lg transition-colors cursor-pointer ${savedJobs.has(job.job_id || job.id)
                             ? 'bg-primary/20 text-primary border border-primary/30'

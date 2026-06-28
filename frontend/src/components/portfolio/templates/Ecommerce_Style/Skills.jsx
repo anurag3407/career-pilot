@@ -27,7 +27,7 @@ export default function Skills({ data }) {
               Technical <span className="bg-gradient-to-r from-orange-500 to-red-500 bg-clip-text text-transparent">Capabilities</span>
             </h2>
           </div>
-          <button className="hidden md:flex items-center gap-2 text-sm font-bold text-stone-500 hover:text-stone-900 transition">
+          <button type="button" className="hidden md:flex items-center gap-2 text-sm font-bold text-stone-500 hover:text-stone-900 transition">
             View All Categories &rarr;
           </button>
         </div>
@@ -60,7 +60,7 @@ export default function Skills({ data }) {
 
                 {/* Quick Add Button Reveal */}
                 <div className="absolute inset-x-0 bottom-0 p-4 opacity-0 group-hover:opacity-100 transform translate-y-2 group-hover:translate-y-0 transition-all duration-300">
-                  <button className="w-full py-2 bg-stone-900 text-white text-xs font-bold rounded-xl shadow-lg">
+                  <button type="button" className="w-full py-2 bg-stone-900 text-white text-xs font-bold rounded-xl shadow-lg">
                     Quick View
                   </button>
                 </div>

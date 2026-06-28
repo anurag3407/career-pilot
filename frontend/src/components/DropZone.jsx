@@ -194,7 +194,7 @@ export default function DropZone({
                   {isDone ? (
                     <CheckCircle className="w-5 h-5 text-green-500" />
                   ) : (
-                    <button
+                    <button type="button"
                       onClick={(e) => {
                         e.stopPropagation()
                         removeFile(preview.name)

@@ -100,7 +100,7 @@ export default function ChallengeDetail() {
 
     return (
         <div className="max-w-3xl mx-auto space-y-6">
-            <button
+            <button type="button"
                 onClick={() => navigate(-1)}
                 className="flex items-center gap-2 text-muted-foreground hover:text-foreground text-sm"
             >
@@ -204,7 +204,7 @@ export default function ChallengeDetail() {
                         <h3 className="font-semibold text-amber-300">Verify to Apply</h3>
                         <p className="text-sm text-amber-400/70">You need to verify your student status first</p>
                     </div>
-                    <button
+                    <button type="button"
                         onClick={() => navigate('/fellowship/verify')}
                         className="ml-auto px-4 py-2 bg-amber-600 text-foreground rounded-lg text-sm hover:bg-amber-500"
                     >
@@ -214,7 +214,7 @@ export default function ChallengeDetail() {
             )}
 
             {canApply && !showApplyForm && (
-                <button
+                <button type="button"
                     onClick={() => setShowApplyForm(true)}
                     className="w-full py-4 bg-emerald-600 hover:bg-emerald-500 text-foreground rounded-2xl font-semibold flex items-center justify-center gap-2"
                 >
@@ -280,13 +280,13 @@ export default function ChallengeDetail() {
                     </div>
 
                     <div className="flex gap-3 pt-2">
-                        <button
+                        <button type="button"
                             onClick={() => setShowApplyForm(false)}
                             className="px-6 py-3 bg-muted text-foreground rounded-xl font-medium hover:bg-muted/80"
                         >
                             Cancel
                         </button>
-                        <button
+                        <button type="button"
                             onClick={handleApply}
                             disabled={applying}
                             className="flex-1 py-3 bg-emerald-600 hover:bg-emerald-500 text-foreground rounded-xl font-medium disabled:opacity-50 flex items-center justify-center gap-2"
