@@ -4,8 +4,7 @@ const jobListingSchema = new mongoose.Schema({
     externalId: {
         type: String,
         required: true,
-        unique: true,
-        index: true
+        unique: true
     },
     title: {
         type: String,
@@ -86,5 +85,10 @@ jobListingSchema.index({ title: 'text', company: 'text', description: 'text' });
 jobListingSchema.index({ source: 1, fetchedAt: -1 });
 jobListingSchema.index({ location: 1, isRemote: 1 });
 jobListingSchema.index({ createdAt: -1 });
-// Text index for global search
+jobListingSchema.index({ employmentType: 1, isRemote: 1, postedAt: -1 }, { background: true });
+jobListingSchema.index({ 'salary.min': 1, 'salary.max': 1 }, { background: true });
+jobListingSchema.index({ skills: 1 }, { background: true });
+jobListingSchema.index({ expiresAt: 1 }, { background: true });
+jobListingSchema.index({ source: 1, employmentType: 1, postedAt: -1 }, { background: true });
+
 export default mongoose.model('JobListing', jobListingSchema);

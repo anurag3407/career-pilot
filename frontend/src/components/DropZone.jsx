@@ -1,4 +1,4 @@
-import { useCallback, useState } from 'react'
+import { useCallback, useState, useRef, useEffect } from 'react'
 import { useDropzone } from 'react-dropzone'
 import { Upload, FileText, X, CheckCircle, AlertCircle } from 'lucide-react'
 import toast from 'react-hot-toast'
@@ -12,6 +12,7 @@ export default function DropZone({
   const maxSizeBytes = maxSizeMB * 1024 * 1024
   const [previews, setPreviews] = useState([])
   const [uploadProgress, setUploadProgress] = useState({})
+  const intervalsRef = useRef([])
 
   const simulateProgress = (fileName) => {
     let progress = 0
@@ -24,6 +25,7 @@ export default function DropZone({
       }
       setUploadProgress((prev) => ({ ...prev, [fileName]: progress }))
     }, 150)
+    intervalsRef.current.push(interval)
   }
 
   const onDrop = useCallback(
@@ -80,6 +82,13 @@ export default function DropZone({
     multiple,
     disabled,
   })
+
+  useEffect(() => {
+  return () => {
+    intervalsRef.current.forEach((id) => clearInterval(id))
+    intervalsRef.current = []
+  }
+}, [])
 
   return (
     <div className="w-full space-y-4">
@@ -154,7 +163,7 @@ export default function DropZone({
                 className="flex items-center gap-3 p-3 rounded-xl border border-border bg-card"
               >
                 {/* Icon */}
-                <div className="w-10 h-10 bg-primary/10 rounded-lg flex items-center justify-center flex-shrink-0">
+                <div className="w-10 h-10 bg-primary/10 rounded-lg flex items-center justify-center shrink-0">
                   <FileText className="w-5 h-5 text-primary" />
                 </div>
 
@@ -162,7 +171,7 @@ export default function DropZone({
                 <div className="flex-1 min-w-0">
                   <div className="flex items-center justify-between mb-1">
                     <p className="text-sm font-medium text-foreground truncate">{preview.name}</p>
-                    <span className="text-xs text-muted-foreground ml-2 flex-shrink-0">
+                    <span className="text-xs text-muted-foreground ml-2 shrink-0">
                       {preview.size} MB
                     </span>
                   </div>
@@ -181,7 +190,7 @@ export default function DropZone({
                 </div>
 
                 {/* Status / Remove */}
-                <div className="flex-shrink-0">
+                <div className="shrink-0">
                   {isDone ? (
                     <CheckCircle className="w-5 h-5 text-green-500" />
                   ) : (

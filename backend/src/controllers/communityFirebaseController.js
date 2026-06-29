@@ -31,9 +31,11 @@ export const getChannels = async (req, res, next) => {
     }
 
     if (cursor) {
-      const cursorDate = new Date(cursor);
-      if (!Number.isNaN(cursorDate.getTime())) {
-        query = query.startAfter(cursorDate);
+      try {
+        const parsed = JSON.parse(cursor);
+        query = query.startAfter(parsed.isDefault, parsed.createdAt);
+      } catch {
+        // Ignore invalid cursor
       }
     }
 
@@ -51,7 +53,13 @@ export const getChannels = async (req, res, next) => {
     }
 
     const lastDoc = snapshot.docs[snapshot.docs.length - 1];
-    const nextCursor = lastDoc?.data().createdAt?.toDate?.()?.toISOString() || null;
+    const lastData = lastDoc?.data();
+    const nextCursor = lastData
+      ? JSON.stringify({
+          isDefault: lastData.isDefault ?? false,
+          createdAt: lastData.createdAt?.toDate?.() || lastData.createdAt
+        })
+      : null;
 
     res.json({
       success: true,
@@ -87,7 +95,11 @@ export const createChannel = async (req, res, next) => {
   try {
     const { name, description, type = 'public', category = 'general', icon } = req.body;
 
-    const channelName = name.toLowerCase().replace(/\s+/g, '-');
+    if (typeof name !== 'string' || !name.trim()) {
+      throw new ApiError(400, 'Channel name is required');
+    }
+
+    const channelName = name.trim().toLowerCase().replace(/\s+/g, '-');
 
     // Check if channel name exists
     const existingSnapshot = await channelsRef.where('name', '==', channelName).get();
@@ -281,6 +293,29 @@ export const getPosts = async (req, res, next) => {
     const { limit = 20, cursor, category, channelId, authorId, startDate, endDate, sortBy = 'latest' } = req.query;
     const maxLimit = Math.min(parseInt(limit) || 20, 100);
 
+    // Parse date filters BEFORE query building so they can be applied before orderBy
+    let parsedStartDate = null;
+    let parsedEndDate = null;
+    if (startDate) {
+      parsedStartDate = new Date(startDate);
+      if (isNaN(parsedStartDate.getTime())) parsedStartDate = null;
+    }
+    if (endDate) {
+      parsedEndDate = new Date(endDate);
+      if (!isNaN(parsedEndDate.getTime())) {
+        parsedEndDate.setHours(23, 59, 59, 999);
+      } else {
+        parsedEndDate = null;
+      }
+    }
+
+    // Determine whether the range filter is compatible with the sort order.
+    // Firestore requires: if a field has a range filter (>= / <=), it must be
+    // the first field in orderBy. Only 'latest' sort naturally orders by createdAt.
+    const hasDateFilter = parsedStartDate || parsedEndDate;
+    const needsClientDateFilter = hasDateFilter && sortBy !== 'latest';
+
+    // Phase 1: where filters (equality first, range only when compatible)
     let query = postsRef.where('isDeleted', '==', false);
 
     if (category && category !== 'all') {
@@ -295,6 +330,17 @@ export const getPosts = async (req, res, next) => {
       query = query.where('author.uid', '==', authorId);
     }
 
+    // Only add date range to Firestore query when sort order is compatible
+    if (!needsClientDateFilter) {
+      if (parsedStartDate) {
+        query = query.where('createdAt', '>=', parsedStartDate);
+      }
+      if (parsedEndDate) {
+        query = query.where('createdAt', '<=', parsedEndDate);
+      }
+    }
+
+    // Phase 2: orderBy
     if (sortBy === 'popular') {
       query = query.orderBy('likeCount', 'desc').orderBy('createdAt', 'desc');
     } else if (sortBy === 'trending') {
@@ -303,6 +349,7 @@ export const getPosts = async (req, res, next) => {
       query = query.orderBy('createdAt', 'desc');
     }
 
+    // Phase 3: cursor
     let cursorValid = true;
     if (cursor) {
       try {
@@ -325,57 +372,33 @@ export const getPosts = async (req, res, next) => {
       }
     }
 
-    let parsedStartDate = null;
-    let parsedEndDate = null;
-    if (startDate) {
-      parsedStartDate = new Date(startDate);
-      if (isNaN(parsedStartDate.getTime())) parsedStartDate = null;
-    }
-    if (endDate) {
-      parsedEndDate = new Date(endDate);
-      if (!isNaN(parsedEndDate.getTime())) {
-        parsedEndDate.setHours(23, 59, 59, 999);
-      } else {
-        parsedEndDate = null;
-      }
-    }
+    const effectiveLimit = maxLimit * (needsClientDateFilter ? 3 : hasDateFilter ? 2 : 1);
+    const snapshot = await query.limit(effectiveLimit).get();
+    let posts = snapshot.docs.map(transformPost).filter(p => !p.status || p.status === 'published');
 
-    const hasValidDateFilter = parsedStartDate || parsedEndDate;
-
-    if (hasValidDateFilter) {
-      let dateQuery = query;
-      if (parsedStartDate) {
-        dateQuery = dateQuery.where('createdAt', '>=', parsedStartDate);
-      }
-      if (parsedEndDate) {
-        dateQuery = dateQuery.where('createdAt', '<=', parsedEndDate);
-      }
-
-      const snapshot = await dateQuery.limit(maxLimit * 2).get();
-      let posts = snapshot.docs.map(transformPost).filter(p => !p.status || p.status === 'published');
-      posts = posts.slice(0, maxLimit);
-
-      return res.json({
-        success: true,
-        posts,
-        pagination: {
-          limit: maxLimit,
-          nextCursor: posts.length ? posts[posts.length - 1].id : null,
-          hasMore: posts.length === maxLimit,
-          invalidCursor: !cursorValid
-        }
+    // Client-side date filtering for incompatible sort orders
+    if (needsClientDateFilter) {
+      const startTime = parsedStartDate?.getTime();
+      const endTime = parsedEndDate?.getTime();
+      posts = posts.filter(p => {
+        const created = p.createdAt instanceof Date
+          ? p.createdAt.getTime()
+          : new Date(p.createdAt || 0).getTime();
+        if (startTime && created < startTime) return false;
+        if (endTime && created > endTime) return false;
+        return true;
       });
+      posts = posts.slice(0, maxLimit);
+    } else if (hasDateFilter) {
+      posts = posts.slice(0, maxLimit);
     }
-
-    const snapshot = await query.limit(maxLimit).get();
-    const posts = snapshot.docs.map(transformPost).filter(p => !p.status || p.status === 'published');
 
     res.json({
       success: true,
       posts,
       pagination: {
         limit: maxLimit,
-        nextCursor: posts.length === maxLimit ? posts[posts.length - 1].id : null,
+        nextCursor: posts.length ? posts[posts.length - 1].id : null,
         hasMore: posts.length === maxLimit,
         invalidCursor: !cursorValid
       }

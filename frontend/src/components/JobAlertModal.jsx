@@ -119,7 +119,7 @@ export default function JobAlertModal({ isOpen, onClose, onSuccess, editAlert = 
                     className="relative w-full max-w-lg bg-card border border-border rounded-2xl shadow-2xl my-8 max-h-[90vh] flex flex-col"
                 >
                     {/* Header */}
-                    <div className="bg-gradient-to-r from-primary to-secondary px-6 py-5 flex-shrink-0 rounded-t-2xl">
+                    <div className="bg-gradient-to-r from-primary to-secondary px-6 py-5 shrink-0 rounded-t-2xl">
                         <div className="flex items-center justify-between">
                             <div className="flex items-center gap-3">
                                 <div className="p-2 bg-primary-foreground/20 rounded-lg">
@@ -132,6 +132,7 @@ export default function JobAlertModal({ isOpen, onClose, onSuccess, editAlert = 
                             <button
                                 onClick={onClose}
                                 className="p-1 hover:bg-primary-foreground/20 rounded-lg transition-colors"
+                                aria-label="Close modal"
                             >
                                 <X className="w-5 h-5 text-primary-foreground" />
                             </button>

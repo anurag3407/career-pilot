@@ -1,6 +1,7 @@
 import express from 'express';
 import pdfParse from 'pdf-parse';
 import { v4 as uuidv4 } from 'uuid';
+import fs from 'fs/promises';
 import { handleUpload } from '../middleware/upload.js';
 import { verifyToken } from '../middleware/auth.js';
 import { asyncHandler, ApiError } from '../middleware/errorHandler.js';
@@ -14,7 +15,8 @@ router.post('/', verifyToken, handleUpload, validateUpload, asyncHandler(async (
     throw new ApiError(400, 'No file uploaded');
   }
   try {
-    const pdfData = await pdfParse(req.file.buffer);
+    const fileBuffer = await fs.readFile(req.file.path);
+    const pdfData = await pdfParse(fileBuffer);
     const resumeId = uuidv4();
 
     res.json({
@@ -34,6 +36,14 @@ router.post('/', verifyToken, handleUpload, validateUpload, asyncHandler(async (
   } catch (error) {
     console.error('PDF parsing error:', error);
     throw new ApiError(400, 'Failed to parse PDF. Please ensure the file is a valid PDF document.');
+  } finally {
+    if (req.file && req.file.path) {
+      try {
+        await fs.unlink(req.file.path);
+      } catch (err) {
+        console.error('[UploadRoute] Failed to delete temp file:', err.message);
+      }
+    }
   }
 }));
 
@@ -43,7 +53,8 @@ router.post('/extract-text', verifyToken, handleUpload, validateUpload, asyncHan
     throw new ApiError(400, 'No file uploaded');
   }
   try {
-    const pdfData = await pdfParse(req.file.buffer);
+    const fileBuffer = await fs.readFile(req.file.path);
+    const pdfData = await pdfParse(fileBuffer);
 
     res.json({
       success: true,
@@ -55,6 +66,14 @@ router.post('/extract-text', verifyToken, handleUpload, validateUpload, asyncHan
   } catch (error) {
     console.error('PDF text extraction error:', error);
     throw new ApiError(400, 'Failed to extract text from PDF');
+  } finally {
+    if (req.file && req.file.path) {
+      try {
+        await fs.unlink(req.file.path);
+      } catch (err) {
+        console.error('[UploadRoute] Failed to delete temp file:', err.message);
+      }
+    }
   }
 }));
 

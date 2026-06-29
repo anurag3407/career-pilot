@@ -1,0 +1,191 @@
+/* ── LAYOUT ── */
+.github-profile-theme {
+  display: flex;
+  gap: 24px;
+  background-color: #0d1117;
+  color: #c9d1d9;
+  font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", Helvetica,
+    Arial, sans-serif;
+  min-height: 100vh;
+  padding: 24px;
+  box-sizing: border-box;
+}
+
+/* ── SIDEBAR ── */
+.gp-sidebar {
+  width: 260px;
+  flex-shrink: 0;
+}
+
+.gp-avatar {
+  width: 100%;
+  border-radius: 50%;
+  border: 2px solid #30363d;
+  margin-bottom: 16px;
+}
+
+.gp-name {
+  font-size: 24px;
+  font-weight: 600;
+  color: #f0f6fc;
+  margin: 0 0 4px;
+}
+
+.gp-username {
+  font-size: 18px;
+  color: #8b949e;
+  margin: 0 0 12px;
+}
+
+.gp-bio {
+  font-size: 14px;
+  color: #c9d1d9;
+  margin: 0 0 8px;
+}
+
+.gp-location {
+  font-size: 13px;
+  color: #8b949e;
+  margin: 0 0 16px;
+}
+
+/* Skills */
+.gp-skills h3 {
+  font-size: 14px;
+  color: #f0f6fc;
+  margin: 0 0 8px;
+  border-top: 1px solid #30363d;
+  padding-top: 12px;
+}
+
+.gp-skills-list {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 6px;
+}
+
+.gp-skill-badge {
+  background: #161b22;
+  border: 1px solid #30363d;
+  border-radius: 20px;
+  padding: 2px 10px;
+  font-size: 12px;
+  color: #58a6ff;
+}
+
+/* ── MAIN ── */
+.gp-main {
+  flex: 1;
+}
+
+.gp-section {
+  margin-bottom: 32px;
+}
+
+.gp-section h2 {
+  font-size: 16px;
+  color: #f0f6fc;
+  border-bottom: 1px solid #30363d;
+  padding-bottom: 8px;
+  margin-bottom: 16px;
+}
+
+/* ── CONTRIBUTION GRAPH ── */
+.gp-contribution-graph {
+  display: flex;
+  gap: 3px;
+  overflow-x: auto;
+  padding-bottom: 8px;
+}
+
+.gp-week {
+  display: flex;
+  flex-direction: column;
+  gap: 3px;
+}
+
+.gp-day {
+  width: 11px;
+  height: 11px;
+  border-radius: 2px;
+}
+
+.level-0 { background-color: #161b22; }
+.level-1 { background-color: #0e4429; }
+.level-2 { background-color: #006d32; }
+.level-3 { background-color: #26a641; }
+.level-4 { background-color: #39d353; }
+
+.gp-graph-legend {
+  display: flex;
+  align-items: center;
+  gap: 4px;
+  margin-top: 8px;
+  font-size: 11px;
+  color: #8b949e;
+}
+
+/* ── PINNED REPOS ── */
+.gp-pinned-grid {
+  display: grid;
+  grid-template-columns: repeat(2, 1fr);
+  gap: 16px;
+}
+
+.gp-repo-card {
+  background: #161b22;
+  border: 1px solid #30363d;
+  border-radius: 6px;
+  padding: 16px;
+  display: flex;
+  flex-direction: column;
+  gap: 8px;
+}
+
+.gp-repo-header {
+  display: flex;
+  align-items: center;
+  gap: 8px;
+}
+
+.gp-repo-name {
+  color: #58a6ff;
+  font-size: 14px;
+  font-weight: 600;
+  text-decoration: none;
+}
+
+.gp-repo-name:hover {
+  text-decoration: underline;
+}
+
+.gp-repo-desc {
+  font-size: 12px;
+  color: #8b949e;
+  flex: 1;
+  margin: 0;
+}
+
+.gp-repo-footer {
+  display: flex;
+  gap: 12px;
+  font-size: 12px;
+  color: #8b949e;
+}
+
+.gp-repo-lang {
+  color: #f0f6fc;
+}
+
+/* ── RESPONSIVE ── */
+@media (max-width: 768px) {
+  .github-profile-theme {
+    flex-direction: column;
+  }
+  .gp-sidebar {
+    width: 100%;
+  }
+  .gp-pinned-grid {
+    grid-template-columns: 1fr;
+  }
+}

@@ -1,3 +1,4 @@
+node_modules
 # Dependencies
 node_modules/
 .pnp
@@ -76,3 +77,6 @@ venv/
 node_modules/
 .env
 .env.*
+
+*issues
+PORTFOLIO_BUILDER_REVAMP_PLAN.md

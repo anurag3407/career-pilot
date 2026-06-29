@@ -23,6 +23,9 @@ const twoFactorSchema = new mongoose.Schema({
   }
 }, { timestamps: true });
 
+// Compound index: check if 2FA is enabled for a user (auth middleware)
+twoFactorSchema.index({ uid: 1, enabled: 1 }, { background: true });
+
 const TwoFactor = mongoose.model('TwoFactor', twoFactorSchema);
 
 export default TwoFactor;

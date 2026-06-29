@@ -1,7 +1,7 @@
 import { useRef, useMemo, useState, useEffect } from "react";
 import { motion } from "framer-motion";
 import DottedMap from "dotted-map";
-import { useTheme } from "../../context/ThemeContext";
+import { useTheme } from "../../hooks/useTheme";
 
 // Cache the computed map globally so it runs only once per app session
 let cachedSvgMap = null;
@@ -22,14 +22,13 @@ const { theme } = useTheme();
 const isDark = theme === "dark";
 const dotColor = isDark ? "#ffffff" : "#000000";
 
-const svgMap = useMemo(() => {
-
   const svgMap = useMemo(() => {
     if (!isMounted) return null;
     if (cachedSvgMap) return cachedSvgMap;
 
     try {
       const map = new DottedMap({ height: 100, grid: "diagonal" });
+      // eslint-disable-next-line
       cachedSvgMap = map.getSVG({
         radius: 0.22,
         color: dotColor,

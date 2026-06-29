@@ -34,6 +34,16 @@ const buttonVariants = cva(
     },
 )
 
+/**
+ * Custom Button component that wraps a motion button and renders with custom styles.
+ *
+ * @param {object} props - The component props.
+ * @param {string} [props.className] - Extra class name custom styling.
+ * @param {string} [props.variant] - Button variant style (default, destructive, outline, etc.).
+ * @param {string} [props.size] - Button size (default, sm, lg, icon).
+ * @param {boolean} [props.asChild=false] - Whether to render as child component slot.
+ * @returns {React.JSX.Element} The rendered Button component.
+ */
 const Button = React.forwardRef(
     ({ className, variant, size, asChild = false, ...props }, ref) => {
         const Comp = asChild ? Slot : motion.button
@@ -51,4 +61,4 @@ const Button = React.forwardRef(
 )
 Button.displayName = "Button"
 
-export { Button, buttonVariants }
+export { Button }

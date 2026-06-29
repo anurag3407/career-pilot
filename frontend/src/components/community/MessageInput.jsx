@@ -1,5 +1,5 @@
 import { useState, useRef, useEffect } from 'react';
-import { useSocket } from '../../context/SocketContext';
+import { useSocket } from '../../hooks/useSocket';
 import { 
   Send, 
   Smile, 

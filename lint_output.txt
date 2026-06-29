@@ -1,0 +1,292 @@
+
+> careerpilot@1.0.0 lint
+> eslint .
+
+
+/Users/jarvis/Downloads/career-pilot/frontend/src/__tests__/Button.test.jsx
+   4:1  warning  'describe' is not defined  no-undef
+   5:3  warning  'test' is not defined      no-undef
+   7:5  warning  'expect' is not defined    no-undef
+  10:3  warning  'test' is not defined      no-undef
+  12:5  warning  'expect' is not defined    no-undef
+  15:3  warning  'test' is not defined      no-undef
+  17:5  warning  'expect' is not defined    no-undef
+
+/Users/jarvis/Downloads/career-pilot/frontend/src/__tests__/Login.test.jsx
+   5:1   warning  'vi' is not defined        no-undef
+   7:12  warning  'vi' is not defined        no-undef
+   8:22  warning  'vi' is not defined        no-undef
+   9:24  warning  'vi' is not defined        no-undef
+  13:1   warning  'vi' is not defined        no-undef
+  15:13  warning  'vi' is not defined        no-undef
+  16:19  warning  'vi' is not defined        no-undef
+  20:1   warning  'vi' is not defined        no-undef
+  24:1   warning  'describe' is not defined  no-undef
+  25:3   warning  'test' is not defined      no-undef
+  32:5   warning  'expect' is not defined    no-undef
+  33:5   warning  'expect' is not defined    no-undef
+  34:5   warning  'expect' is not defined    no-undef
+  37:3   warning  'test' is not defined      no-undef
+  44:5   warning  'expect' is not defined    no-undef
+
+/Users/jarvis/Downloads/career-pilot/frontend/src/components/AppSidebar.jsx
+  3:10  warning  'motion' is defined but never used. Allowed unused vars must match /^[A-Z_]/u  no-unused-vars
+
+/Users/jarvis/Downloads/career-pilot/frontend/src/components/Button.jsx
+  2:10  warning  'motion' is defined but never used. Allowed unused vars must match /^[A-Z_]/u  no-unused-vars
+
+/Users/jarvis/Downloads/career-pilot/frontend/src/components/CommandPalette.jsx
+  162:6  warning  React Hook useEffect has missing dependencies: 'handleSelect' and 'setIsOpen'. Either include them or remove the dependency array. If 'setIsOpen' changes too often, find the parent component that defines it and wrap that definition in useCallback  react-hooks/exhaustive-deps
+
+/Users/jarvis/Downloads/career-pilot/frontend/src/components/CompanyResearch.jsx
+  2:10  warning  'motion' is defined but never used. Allowed unused vars must match /^[A-Z_]/u  no-unused-vars
+
+/Users/jarvis/Downloads/career-pilot/frontend/src/components/DropZone.jsx
+  63:5  warning  React Hook useCallback has an unnecessary dependency: 'maxSizeBytes'. Either exclude it or remove the dependency array  react-hooks/exhaustive-deps
+
+/Users/jarvis/Downloads/career-pilot/frontend/src/components/FAB.jsx
+  2:10  warning  'motion' is defined but never used. Allowed unused vars must match /^[A-Z_]/u  no-unused-vars
+
+/Users/jarvis/Downloads/career-pilot/frontend/src/components/JobAlertModal.jsx
+  2:10  warning  'motion' is defined but never used. Allowed unused vars must match /^[A-Z_]/u  no-unused-vars
+
+/Users/jarvis/Downloads/career-pilot/frontend/src/components/JobAlertsList.jsx
+  2:10  warning  'motion' is defined but never used. Allowed unused vars must match /^[A-Z_]/u  no-unused-vars
+
+/Users/jarvis/Downloads/career-pilot/frontend/src/components/Navbar.jsx
+    5:10  warning  'motion' is defined but never used. Allowed unused vars must match /^[A-Z_]/u  no-unused-vars
+  106:52  warning  'Icon' is defined but never used                                               no-unused-vars
+  121:61  warning  'Icon' is defined but never used                                               no-unused-vars
+  230:54  warning  'Icon' is defined but never used                                               no-unused-vars
+  261:59  warning  'Icon' is defined but never used                                               no-unused-vars
+
+/Users/jarvis/Downloads/career-pilot/frontend/src/components/NotificationCenter.jsx
+  2:10  warning  'motion' is defined but never used. Allowed unused vars must match /^[A-Z_]/u  no-unused-vars
+
+/Users/jarvis/Downloads/career-pilot/frontend/src/components/StepWizard.jsx
+  1:10  warning  'motion' is defined but never used. Allowed unused vars must match /^[A-Z_]/u  no-unused-vars
+
+/Users/jarvis/Downloads/career-pilot/frontend/src/components/community/ChannelList.jsx
+  3:10  warning  'motion' is defined but never used. Allowed unused vars must match /^[A-Z_]/u  no-unused-vars
+
+/Users/jarvis/Downloads/career-pilot/frontend/src/components/community/CommentSection.jsx
+   39:14  warning  'error' is defined but never used                                                                                 no-unused-vars
+  182:6   warning  React Hook useEffect has a missing dependency: 'fetchComments'. Either include it or remove the dependency array  react-hooks/exhaustive-deps
+  201:14  warning  'error' is defined but never used                                                                                 no-unused-vars
+  220:14  warning  'error' is defined but never used                                                                                 no-unused-vars
+  270:14  warning  'error' is defined but never used                                                                                 no-unused-vars
+
+/Users/jarvis/Downloads/career-pilot/frontend/src/components/community/DirectMessages.jsx
+  14:10  warning  'messages' is assigned a value but never used. Allowed unused vars must match /^[A-Z_]/u  no-unused-vars
+
+/Users/jarvis/Downloads/career-pilot/frontend/src/components/community/MembersList.jsx
+  2:10  warning  'motion' is defined but never used. Allowed unused vars must match /^[A-Z_]/u  no-unused-vars
+
+/Users/jarvis/Downloads/career-pilot/frontend/src/components/community/MessageBubble.jsx
+   20:69  warning  'channelId' is defined but never used  no-unused-vars
+  197:11  warning  'node' is defined but never used       no-unused-vars
+
+/Users/jarvis/Downloads/career-pilot/frontend/src/components/community/PostCard.jsx
+  22:9  warning  'navigate' is assigned a value but never used. Allowed unused vars must match /^[A-Z_]/u  no-unused-vars
+
+/Users/jarvis/Downloads/career-pilot/frontend/src/components/community/PostsFeed.jsx
+    2:10  warning  'motion' is defined but never used. Allowed unused vars must match /^[A-Z_]/u                                  no-unused-vars
+   70:6   warning  React Hook useEffect has a missing dependency: 'fetchPosts'. Either include it or remove the dependency array  react-hooks/exhaustive-deps
+   83:6   warning  React Hook useEffect has a missing dependency: 'user'. Either include it or remove the dependency array        react-hooks/exhaustive-deps
+  152:14  warning  'error' is defined but never used                                                                              no-unused-vars
+  227:14  warning  'error' is defined but never used                                                                              no-unused-vars
+
+/Users/jarvis/Downloads/career-pilot/frontend/src/components/portfolio/DeployModal.jsx
+  2:10  warning  'motion' is defined but never used. Allowed unused vars must match /^[A-Z_]/u  no-unused-vars
+
+/Users/jarvis/Downloads/career-pilot/frontend/src/components/ui/AnimatedCounter.jsx
+  30:12  warning  'setTrigger' is assigned a value but never used. Allowed unused vars must match /^[A-Z_]/u  no-unused-vars
+
+/Users/jarvis/Downloads/career-pilot/frontend/src/components/ui/AnimatedText.jsx
+  1:10  warning  'motion' is defined but never used. Allowed unused vars must match /^[A-Z_]/u  no-unused-vars
+
+/Users/jarvis/Downloads/career-pilot/frontend/src/components/ui/CTASection.jsx
+  1:10  warning  'motion' is defined but never used. Allowed unused vars must match /^[A-Z_]/u  no-unused-vars
+
+/Users/jarvis/Downloads/career-pilot/frontend/src/components/ui/FeaturesCard.jsx
+    1:10  warning  'motion' is defined but never used. Allowed unused vars must match /^[A-Z_]/u  no-unused-vars
+  178:29  warning  'Icon' is defined but never used                                               no-unused-vars
+  302:34  warning  'Icon' is defined but never used                                               no-unused-vars
+
+/Users/jarvis/Downloads/career-pilot/frontend/src/components/ui/FeaturesSection.jsx
+  1:10  warning  'motion' is defined but never used. Allowed unused vars must match /^[A-Z_]/u  no-unused-vars
+
+/Users/jarvis/Downloads/career-pilot/frontend/src/components/ui/HeroSection.jsx
+  1:10  warning  'motion' is defined but never used. Allowed unused vars must match /^[A-Z_]/u  no-unused-vars
+
+/Users/jarvis/Downloads/career-pilot/frontend/src/components/ui/HowItWorksSection.jsx
+  2:10  warning  'motion' is defined but never used. Allowed unused vars must match /^[A-Z_]/u  no-unused-vars
+
+/Users/jarvis/Downloads/career-pilot/frontend/src/components/ui/PageTransition.jsx
+  1:10  warning  'motion' is defined but never used. Allowed unused vars must match /^[A-Z_]/u  no-unused-vars
+
+/Users/jarvis/Downloads/career-pilot/frontend/src/components/ui/PortfolioShowcaseSection.jsx
+  2:10  warning  'motion' is defined but never used. Allowed unused vars must match /^[A-Z_]/u  no-unused-vars
+
+/Users/jarvis/Downloads/career-pilot/frontend/src/components/ui/Sidebar.jsx
+  4:27  warning  'motion' is defined but never used. Allowed unused vars must match /^[A-Z_]/u  no-unused-vars
+
+/Users/jarvis/Downloads/career-pilot/frontend/src/components/ui/TestimonialsSection.jsx
+  1:10  warning  'motion' is defined but never used. Allowed unused vars must match /^[A-Z_]/u  no-unused-vars
+
+/Users/jarvis/Downloads/career-pilot/frontend/src/components/ui/WorldMap.jsx
+  2:10  warning  'motion' is defined but never used. Allowed unused vars must match /^[A-Z_]/u  no-unused-vars
+
+/Users/jarvis/Downloads/career-pilot/frontend/src/components/ui/dark-grid-features.jsx
+   3:10  warning  'motion' is defined but never used. Allowed unused vars must match /^[A-Z_]/u  no-unused-vars
+  49:48  warning  'Icon' is defined but never used                                               no-unused-vars
+
+/Users/jarvis/Downloads/career-pilot/frontend/src/components/ui/stacked-circular-footer.jsx
+  38:18  warning  'error' is defined but never used  no-unused-vars
+  72:34  warning  'Icon' is defined but never used   no-unused-vars
+
+/Users/jarvis/Downloads/career-pilot/frontend/src/components/ui/testimonials-columns.jsx
+  3:10  warning  'motion' is defined but never used. Allowed unused vars must match /^[A-Z_]/u  no-unused-vars
+
+/Users/jarvis/Downloads/career-pilot/frontend/src/context/SocketContext.jsx
+  152:6  warning  React Hook useEffect has a missing dependency: 'pushNotification'. Either include it or remove the dependency array  react-hooks/exhaustive-deps
+
+/Users/jarvis/Downloads/career-pilot/frontend/src/hooks/useFaceDetection.js
+  44:15  warning  'eyeDistance' is assigned a value but never used. Allowed unused vars must match /^[A-Z_]/u  no-unused-vars
+
+/Users/jarvis/Downloads/career-pilot/frontend/src/pages/Community.jsx
+    1:31  warning  'useRef' is defined but never used. Allowed unused vars must match /^[A-Z_]/u  no-unused-vars
+   23:10  warning  'motion' is defined but never used. Allowed unused vars must match /^[A-Z_]/u  no-unused-vars
+  194:14  warning  'error' is defined but never used                                              no-unused-vars
+
+/Users/jarvis/Downloads/career-pilot/frontend/src/pages/Dashboard.jsx
+  4:10  warning  'motion' is defined but never used. Allowed unused vars must match /^[A-Z_]/u  no-unused-vars
+
+/Users/jarvis/Downloads/career-pilot/frontend/src/pages/EmailGenerator.jsx
+  3:10  warning  'motion' is defined but never used. Allowed unused vars must match /^[A-Z_]/u  no-unused-vars
+
+/Users/jarvis/Downloads/career-pilot/frontend/src/pages/Enhance.jsx
+    4:10  warning  'motion' is defined but never used. Allowed unused vars must match /^[A-Z_]/u  no-unused-vars
+  174:50  warning  'Icon' is defined but never used                                               no-unused-vars
+  384:14  warning  '_error' is defined but never used                                             no-unused-vars
+
+/Users/jarvis/Downloads/career-pilot/frontend/src/pages/GitHubDashboard.jsx
+  2:10  warning  'motion' is defined but never used. Allowed unused vars must match /^[A-Z_]/u  no-unused-vars
+
+/Users/jarvis/Downloads/career-pilot/frontend/src/pages/InterviewPrep.jsx
+    4:10  warning  'motion' is defined but never used. Allowed unused vars must match /^[A-Z_]/u                                                                                                                                                                                    no-unused-vars
+  259:10  warning  'avConfirmed' is assigned a value but never used. Allowed unused vars must match /^[A-Z_]/u                                                                                                                                                                      no-unused-vars
+  325:38  warning  The ref value 'synthRef.current' will likely have changed by the time this effect cleanup function runs. If this ref points to a node rendered by React, copy 'synthRef.current' to a variable inside the effect, and use that variable in the cleanup function  react-hooks/exhaustive-deps
+  368:14  warning  'err' is defined but never used                                                                                                                                                                                                                                  no-unused-vars
+  427:16  warning  'e' is defined but never used                                                                                                                                                                                                                                    no-unused-vars
+  433:79  warning  'e' is defined but never used                                                                                                                                                                                                                                    no-unused-vars
+  750:64  warning  'e' is defined but never used                                                                                                                                                                                                                                    no-unused-vars
+  756:64  warning  'e' is defined but never used                                                                                                                                                                                                                                    no-unused-vars
+  784:79  warning  'e' is defined but never used                                                                                                                                                                                                                                    no-unused-vars
+
+/Users/jarvis/Downloads/career-pilot/frontend/src/pages/JobAlerts.jsx
+  2:10  warning  'motion' is defined but never used. Allowed unused vars must match /^[A-Z_]/u  no-unused-vars
+
+/Users/jarvis/Downloads/career-pilot/frontend/src/pages/JobSearch.jsx
+    4:10  warning  'motion' is defined but never used. Allowed unused vars must match /^[A-Z_]/u  no-unused-vars
+  133:14  warning  'error' is defined but never used                                              no-unused-vars
+
+/Users/jarvis/Downloads/career-pilot/frontend/src/pages/JobTracker.jsx
+  2:10  warning  'motion' is defined but never used. Allowed unused vars must match /^[A-Z_]/u  no-unused-vars
+
+/Users/jarvis/Downloads/career-pilot/frontend/src/pages/LinkedInCallback.jsx
+  25:19  warning  'isNew' is assigned a value but never used. Allowed unused vars must match /^[A-Z_]/u                                             no-unused-vars
+  68:8   warning  React Hook useEffect has missing dependencies: 'navigate' and 'searchParams'. Either include them or remove the dependency array  react-hooks/exhaustive-deps
+
+/Users/jarvis/Downloads/career-pilot/frontend/src/pages/LinkedInOptimizer.jsx
+    2:10  warning  'motion' is defined but never used. Allowed unused vars must match /^[A-Z_]/u  no-unused-vars
+  141:16  warning  'fallbackErr' is defined but never used                                        no-unused-vars
+  169:16  warning  'fallbackErr' is defined but never used                                        no-unused-vars
+
+/Users/jarvis/Downloads/career-pilot/frontend/src/pages/NotFound.jsx
+  34:6  warning  React Hook useEffect has a missing dependency: 'fullText'. Either include it or remove the dependency array  react-hooks/exhaustive-deps
+
+/Users/jarvis/Downloads/career-pilot/frontend/src/pages/ResumeView.jsx
+    3:10  warning  'motion' is defined but never used. Allowed unused vars must match /^[A-Z_]/u                                   no-unused-vars
+   43:6   warning  React Hook useEffect has a missing dependency: 'fetchResume'. Either include it or remove the dependency array  react-hooks/exhaustive-deps
+   54:14  warning  'error' is defined but never used                                                                               no-unused-vars
+  241:28  warning  'node' is defined but never used                                                                                no-unused-vars
+  246:28  warning  'node' is defined but never used                                                                                no-unused-vars
+  251:28  warning  'node' is defined but never used                                                                                no-unused-vars
+  256:27  warning  'node' is defined but never used                                                                                no-unused-vars
+  261:28  warning  'node' is defined but never used                                                                                no-unused-vars
+  266:28  warning  'node' is defined but never used                                                                                no-unused-vars
+  272:32  warning  'node' is defined but never used                                                                                no-unused-vars
+  277:28  warning  'node' is defined but never used                                                                                no-unused-vars
+  283:27  warning  'node' is defined but never used                                                                                no-unused-vars
+
+/Users/jarvis/Downloads/career-pilot/frontend/src/pages/SecuritySettings.jsx
+   23:32  warning  'Icon' is defined but never used   no-unused-vars
+  131:14  warning  'error' is defined but never used  no-unused-vars
+  286:30  warning  'Icon' is defined but never used   no-unused-vars
+
+/Users/jarvis/Downloads/career-pilot/frontend/src/pages/Settings.jsx
+    2:10  warning  'motion' is defined but never used. Allowed unused vars must match /^[A-Z_]/u  no-unused-vars
+   50:14  warning  'error' is defined but never used                                              no-unused-vars
+   64:14  warning  'error' is defined but never used                                              no-unused-vars
+   75:14  warning  'error' is defined but never used                                              no-unused-vars
+   87:14  warning  'error' is defined but never used                                              no-unused-vars
+  103:14  warning  'error' is defined but never used                                              no-unused-vars
+
+/Users/jarvis/Downloads/career-pilot/frontend/src/pages/TemplateGallery.jsx
+  6:34  warning  'useTheme' is not defined  no-undef
+
+/Users/jarvis/Downloads/career-pilot/frontend/src/pages/Upload.jsx
+  4:10  warning  'motion' is defined but never used. Allowed unused vars must match /^[A-Z_]/u  no-unused-vars
+
+/Users/jarvis/Downloads/career-pilot/frontend/src/pages/UserProfile.jsx
+   4:10  warning  'motion' is defined but never used. Allowed unused vars must match /^[A-Z_]/u                                no-unused-vars
+  49:27  warning  'setIsRepoAnalyzing' is assigned a value but never used. Allowed unused vars must match /^[A-Z_]/u           no-unused-vars
+  63:6   warning  React Hook useEffect has a missing dependency: 'fetchAll'. Either include it or remove the dependency array  react-hooks/exhaustive-deps
+
+/Users/jarvis/Downloads/career-pilot/frontend/src/pages/fellowship/ChallengeDetail.jsx
+   5:10  warning  'motion' is defined but never used. Allowed unused vars must match /^[A-Z_]/u  no-unused-vars
+  46:18  warning  'error' is defined but never used                                              no-unused-vars
+
+/Users/jarvis/Downloads/career-pilot/frontend/src/pages/fellowship/ChallengeProposals.jsx
+   5:10  warning  'motion' is defined but never used. Allowed unused vars must match /^[A-Z_]/u                                                 no-unused-vars
+  53:8   warning  React Hook useEffect has missing dependencies: 'loadData' and 'navigate'. Either include them or remove the dependency array  react-hooks/exhaustive-deps
+  70:18  warning  'error' is defined but never used                                                                                             no-unused-vars
+
+/Users/jarvis/Downloads/career-pilot/frontend/src/pages/fellowship/Challenges.jsx
+   6:10  warning  'motion' is defined but never used. Allowed unused vars must match /^[A-Z_]/u            no-unused-vars
+  73:13  warning  'profile' is assigned a value but never used. Allowed unused vars must match /^[A-Z_]/u  no-unused-vars
+  87:18  warning  'error' is defined but never used                                                        no-unused-vars
+
+/Users/jarvis/Downloads/career-pilot/frontend/src/pages/fellowship/CreateChallenge.jsx
+   6:10  warning  'motion' is defined but never used. Allowed unused vars must match /^[A-Z_]/u            no-unused-vars
+  28:13  warning  'profile' is assigned a value but never used. Allowed unused vars must match /^[A-Z_]/u  no-unused-vars
+
+/Users/jarvis/Downloads/career-pilot/frontend/src/pages/fellowship/FellowshipChat.jsx
+    6:10  warning  'motion' is defined but never used. Allowed unused vars must match /^[A-Z_]/u                                              no-unused-vars
+   38:8   warning  React Hook useEffect has a missing dependency: 'loadRoom'. Either include it or remove the dependency array                react-hooks/exhaustive-deps
+   66:8   warning  React Hook useEffect has missing dependencies: 'emit' and 'subscribe'. Either include them or remove the dependency array  react-hooks/exhaustive-deps
+   84:18  warning  'error' is defined but never used                                                                                          no-unused-vars
+  111:18  warning  'error' is defined but never used                                                                                          no-unused-vars
+
+/Users/jarvis/Downloads/career-pilot/frontend/src/pages/fellowship/FellowshipLayout.jsx
+  45:8  warning  React Hook useEffect has missing dependencies: 'loadProfile' and 'navigate'. Either include them or remove the dependency array  react-hooks/exhaustive-deps
+
+/Users/jarvis/Downloads/career-pilot/frontend/src/pages/fellowship/FellowshipMessages.jsx
+  4:8   warning  'toast' is defined but never used. Allowed unused vars must match /^[A-Z_]/u   no-unused-vars
+  5:10  warning  'motion' is defined but never used. Allowed unused vars must match /^[A-Z_]/u  no-unused-vars
+
+/Users/jarvis/Downloads/career-pilot/frontend/src/pages/fellowship/MyChallenges.jsx
+   5:10  warning  'motion' is defined but never used. Allowed unused vars must match /^[A-Z_]/u                                no-unused-vars
+  41:8   warning  React Hook useEffect has a missing dependency: 'navigate'. Either include it or remove the dependency array  react-hooks/exhaustive-deps
+
+/Users/jarvis/Downloads/career-pilot/frontend/src/pages/fellowship/MyProposals.jsx
+   4:8   warning  'toast' is defined but never used. Allowed unused vars must match /^[A-Z_]/u                                 no-unused-vars
+   5:10  warning  'motion' is defined but never used. Allowed unused vars must match /^[A-Z_]/u                                no-unused-vars
+  49:8   warning  React Hook useEffect has a missing dependency: 'navigate'. Either include it or remove the dependency array  react-hooks/exhaustive-deps
+
+/Users/jarvis/Downloads/career-pilot/frontend/src/pages/fellowship/Verify.jsx
+  5:10  warning  'motion' is defined but never used. Allowed unused vars must match /^[A-Z_]/u  no-unused-vars
+
+✖ 153 problems (0 errors, 153 warnings)
+

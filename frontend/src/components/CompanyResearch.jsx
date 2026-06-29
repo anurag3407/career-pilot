@@ -58,9 +58,9 @@ export default function CompanyResearch({ companyName, industry = '', onClose })
           className="relative w-full max-w-lg h-full bg-background border-l border-border shadow-2xl flex flex-col z-10 overflow-hidden"
         >
           {/* Drawer Header */}
-          <div className="px-6 py-5 border-b border-border bg-card/30 flex items-center justify-between flex-shrink-0">
+          <div className="px-6 py-5 border-b border-border bg-card/30 flex items-center justify-between shrink-0">
             <div className="flex items-center gap-2.5">
-              <div className="w-10 h-10 rounded-xl bg-primary/10 border border-primary/20 flex items-center justify-center text-primary flex-shrink-0">
+              <div className="w-10 h-10 rounded-xl bg-primary/10 border border-primary/20 flex items-center justify-center text-primary shrink-0">
                 <Briefcase className="w-5 h-5" />
               </div>
               <div>
@@ -88,7 +88,7 @@ export default function CompanyResearch({ companyName, industry = '', onClose })
               </div>
             ) : error ? (
               <div className="p-4 bg-destructive/10 border border-destructive/20 text-destructive text-sm rounded-xl flex items-start gap-2">
-                <ShieldAlert className="w-5 h-5 flex-shrink-0 mt-0.5" />
+                <ShieldAlert className="w-5 h-5 shrink-0 mt-0.5" />
                 <div>
                   <p className="font-semibold">Research Failed</p>
                   <p className="text-xs mt-0.5 opacity-80">{error}</p>
@@ -115,7 +115,7 @@ export default function CompanyResearch({ companyName, industry = '', onClose })
                 <div className="grid grid-cols-2 gap-4">
                   {/* Size */}
                   <div className="p-4 bg-muted/30 border border-border rounded-xl flex items-start gap-3">
-                    <Users className="w-5 h-5 text-sky-400 mt-0.5 flex-shrink-0" />
+                    <Users className="w-5 h-5 text-sky-400 mt-0.5 shrink-0" />
                     <div>
                       <p className="text-xs text-muted-foreground">Employee Count</p>
                       <p className="text-sm font-semibold text-foreground mt-0.5">{researchData.size}</p>
@@ -124,7 +124,7 @@ export default function CompanyResearch({ companyName, industry = '', onClose })
 
                   {/* Industry */}
                   <div className="p-4 bg-muted/30 border border-border rounded-xl flex items-start gap-3">
-                    <Target className="w-5 h-5 text-indigo-400 mt-0.5 flex-shrink-0" />
+                    <Target className="w-5 h-5 text-indigo-400 mt-0.5 shrink-0" />
                     <div>
                       <p className="text-xs text-muted-foreground">Industry Sector</p>
                       <p className="text-sm font-semibold text-foreground mt-0.5 line-clamp-1">{researchData.industry}</p>
@@ -133,7 +133,7 @@ export default function CompanyResearch({ companyName, industry = '', onClose })
 
                   {/* Funding */}
                   <div className="p-4 bg-muted/30 border border-border rounded-xl flex items-start gap-3 col-span-2">
-                    <DollarSign className="w-5 h-5 text-green-400 mt-0.5 flex-shrink-0" />
+                    <DollarSign className="w-5 h-5 text-green-400 mt-0.5 shrink-0" />
                     <div>
                       <p className="text-xs text-muted-foreground">Funding Status</p>
                       <p className="text-sm font-semibold text-foreground mt-0.5">{researchData.funding}</p>

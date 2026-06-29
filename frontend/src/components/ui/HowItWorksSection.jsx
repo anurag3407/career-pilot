@@ -1,6 +1,6 @@
 import { useRef } from "react";
-import { motion, useInView } from "framer-motion";
-import { FileText, Sparkles, Target } from "lucide-react";
+import { motion, useScroll, useTransform } from "framer-motion";
+import { FileText, Sparkles, Target, ArrowRight } from "lucide-react";
 
 const steps = [
   {
@@ -26,130 +26,112 @@ const steps = [
   },
 ];
 
-function TimelineRow({ item, index, isLast }) {
-  const ref = useRef(null);
-  const isInView = useInView(ref, {
-    once: true,
-    margin: "-50px 0px",
-  });
+function StepCard({ item, index }) {
   const Icon = item.icon;
-
   return (
-    <div ref={ref} className="flex items-stretch">
-      {/* Spine */}
-      <div className="flex flex-col items-center w-12 flex-shrink-0">
-        {/* Line above — invisible on first step */}
-        <motion.div
-          initial={{ scaleY: 0 }}
-          animate={isInView ? { scaleY: 1 } : {}}
-          transition={{ duration: 0.5, ease: "easeOut", delay: 0.3 }}
-          style={{ transformOrigin: "bottom" }}
-          className={`w-px flex-1 ${index === 0 ? "bg-transparent" : "bg-border"}`}
-          aria-hidden="true"
-        />
+    <motion.div
+      initial={{ opacity: 0, y: 40 }}
+      whileInView={{ opacity: 1, y: 0 }}
+      viewport={{ once: true, margin: "-80px" }}
+      transition={{ duration: 0.6, delay: index * 0.15, ease: [0.16, 1, 0.3, 1] }}
+      className="group relative"
+    >
+      {/* Connector arrow between cards (desktop) */}
+      {index < steps.length - 1 && (
+        <div className="absolute -right-4 top-16 z-20 hidden h-8 w-8 items-center justify-center rounded-full border border-border bg-background text-primary lg:flex">
+          <ArrowRight className="h-4 w-4" />
+        </div>
+      )}
 
-        {/* Numbered node */}
-        <motion.div
-          initial={{ scale: 0, opacity: 0 }}
-          animate={isInView ? { scale: 1, opacity: 1 } : {}}
-          transition={{ type: "spring", stiffness: 400, damping: 20, delay: 0.1 }}
-          className="flex-shrink-0 w-10 h-10 rounded-full border-2 border-primary bg-background
-                     flex items-center justify-center text-xs font-bold text-primary
-                     ring-4 ring-background z-10"
+      <div className="relative h-full overflow-hidden rounded-3xl border border-border bg-card/50 p-8 backdrop-blur-xl transition-all duration-500 hover:-translate-y-2 hover:border-primary/40 hover:shadow-2xl hover:shadow-primary/10">
+        {/* Big watermark numeral */}
+        <span
+          aria-hidden
+          className="pointer-events-none absolute -right-2 -top-6 select-none text-[7rem] font-black leading-none text-foreground/[0.04]"
         >
           {item.step}
-        </motion.div>
+        </span>
 
-        {/* Line below — invisible on last step */}
-        <motion.div
-          initial={{ scaleY: 0 }}
-          animate={isInView ? { scaleY: 1 } : {}}
-          transition={{ duration: 0.5, ease: "easeOut", delay: 0.3 }}
-          style={{ transformOrigin: "top" }}
-          className={`w-px flex-1 ${
-            isLast ? "bg-transparent" : "bg-border"
-          }`}
-          aria-hidden="true"
-        />
-      </div>
-
-      {/* Card */}
-      <div className={`flex-1 pl-6 ${isLast ? "pb-0" : "pb-10"}`}>
-        <motion.div
-          initial={{ opacity: 0, x: 24 }}
-          animate={isInView ? { opacity: 1, x: 0 } : {}}
-          transition={{ duration: 0.5, ease: [0.22, 1, 0.36, 1], delay: 0.15 }}
-          className="group relative rounded-2xl border border-border bg-card p-6
-                     hover:border-primary/40 hover:shadow-sm transition-all duration-300 overflow-hidden"
-        >
-          {/* Watermark step number */}
-          <span
-            className="pointer-events-none select-none absolute -top-2 right-3
-                       text-8xl font-black text-foreground/[0.04] leading-none"
-            aria-hidden
-          >
+        {/* Gradient numeral chip */}
+        <div className="relative mb-6 inline-flex items-center gap-3">
+          <span className="bg-linear-to-br from-primary to-secondary bg-clip-text text-2xl font-black tracking-tight text-transparent">
             {item.step}
           </span>
+          <span className="h-px w-10 bg-linear-to-r from-primary/60 to-transparent" />
+        </div>
 
-          <div className="relative flex items-start gap-4">
-            {/* Icon box */}
-            <motion.div
-              whileHover={{ scale: 1.08, rotate: 4 }}
-              transition={{ type: "spring", stiffness: 400, damping: 15 }}
-              className="flex-shrink-0 w-11 h-11 rounded-xl bg-muted border border-border
-                         flex items-center justify-center
-                         group-hover:-translate-y-1 transition-transform duration-300"
-            >
-              <Icon className="w-5 h-5 text-primary" strokeWidth={1.8} />
-            </motion.div>
+        {/* Icon */}
+        <div className="relative mb-6 flex h-14 w-14 items-center justify-center rounded-2xl border border-border bg-muted text-primary transition-all duration-500 group-hover:scale-110 group-hover:border-primary/40 group-hover:bg-primary/15">
+          <Icon className="h-6 w-6" strokeWidth={1.8} />
+          <span className="absolute inset-0 rounded-2xl bg-primary/20 opacity-0 blur-md transition-opacity duration-500 group-hover:opacity-100" />
+        </div>
 
-            <div>
-              <h3 className="text-base font-black text-foreground mb-2">
-                {item.title}
-              </h3>
-              <p className="text-sm text-muted-foreground leading-relaxed font-medium">
-                {item.description}
-              </p>
-            </div>
-          </div>
-        </motion.div>
+        <h3 className="mb-3 text-xl font-black tracking-tight text-foreground">
+          {item.title}
+        </h3>
+        <p className="text-sm font-medium leading-relaxed text-muted-foreground">
+          {item.description}
+        </p>
       </div>
-    </div>
+    </motion.div>
   );
 }
 
 export default function HowItWorksSection() {
+  const ref = useRef(null);
+  const { scrollYProgress } = useScroll({
+    target: ref,
+    offset: ["start 70%", "center 50%"],
+  });
+  const lineWidth = useTransform(scrollYProgress, [0, 1], ["0%", "100%"]);
+
   return (
-    <section className="py-24 lg:py-40 relative overflow-hidden">
-      <div className="relative max-w-2xl mx-auto px-4 sm:px-6 lg:px-8">
+    <section className="relative overflow-hidden py-28 lg:py-36">
+      <div className="pointer-events-none absolute inset-0">
+        <div className="absolute left-1/2 top-1/3 h-[400px] w-[700px] -translate-x-1/2 rounded-full bg-primary/[0.07] blur-[140px]" />
+      </div>
+
+      <div className="relative z-10 mx-auto max-w-7xl px-4 sm:px-6 lg:px-8">
+        {/* Header */}
         <motion.div
           initial={{ opacity: 0, y: 20 }}
           whileInView={{ opacity: 1, y: 0 }}
           viewport={{ once: true }}
-          className="text-center mb-20"
+          className="mx-auto mb-20 max-w-2xl text-center"
         >
-          <h2 className="text-4xl md:text-6xl font-black text-foreground mb-6 tracking-tight">
-            How{" "}
-            <span className="text-primary underline decoration-primary/20 underline-offset-8">
-              careerpilot
-            </span>{" "}
-            works
+          <div className="mb-6 flex justify-center">
+            <div className="inline-flex items-center gap-2 rounded-full border border-border bg-card/60 px-4 py-1.5 backdrop-blur-md">
+              <span className="text-xs font-bold uppercase tracking-[0.2em] text-muted-foreground">
+                How it works
+              </span>
+            </div>
+          </div>
+          <h2 className="text-4xl font-black tracking-tight text-foreground md:text-6xl">
+            From résumé to{" "}
+            <span className="gradient-text-animated">dream role</span>
           </h2>
-          <p className="text-muted-foreground text-lg max-w-2xl mx-auto font-medium">
-            Three simple steps to accelerate your job search and land your dream role
+          <p className="mx-auto mt-6 max-w-2xl text-lg font-medium text-muted-foreground">
+            Three simple steps to accelerate your job search and land your dream
+            role.
           </p>
         </motion.div>
 
-        {/* Timeline */}
-        <div className="flex flex-col">
-          {steps.map((item, i) => (
-            <TimelineRow
-              key={item.step}
-              item={item}
-              index={i}
-              isLast={i === steps.length - 1}
+        {/* Steps with animated progress line */}
+        <div ref={ref} className="relative">
+          {/* Track + animated fill (desktop) */}
+          <div className="absolute left-0 right-0 top-[4.75rem] hidden lg:block">
+            <div className="h-px w-full bg-border" />
+            <motion.div
+              style={{ width: lineWidth }}
+              className="absolute top-0 h-px bg-linear-to-r from-primary via-secondary to-primary"
             />
-          ))}
+          </div>
+
+          <div className="grid gap-6 lg:grid-cols-3">
+            {steps.map((item, i) => (
+              <StepCard key={item.step} item={item} index={i} />
+            ))}
+          </div>
         </div>
       </div>
     </section>

@@ -1,34 +1,8 @@
 import { getDefaultProvider } from './aiProviders.js';
+import { computeATSScore } from '../services/atsScorer.js';
 import dotenv from 'dotenv';
-import { GoogleGenerativeAI } from '@google/generative-ai';
-import { aiCallsCounter } from '../middleware/metrics.js';
 
 dotenv.config();
-
-const geminiApiKey = process.env.GEMINI_API_KEY;
-if (!geminiApiKey) {
-  console.warn('⚠️  GEMINI_API_KEY is not set — AI features will be unavailable. Non-AI routes are unaffected.');
-}
-
-let _model = null;
-
-const getModel = () => {
-  if (_model) return _model;
-  if (!geminiApiKey) {
-    const err = new Error('AI features are unavailable — GEMINI_API_KEY is not configured.');
-    err.statusCode = 503;
-    throw err;
-  }
-  const genAI = new GoogleGenerativeAI(geminiApiKey);
-  const rawModel = genAI.getGenerativeModel({ model: 'gemini-2.5-flash' });
-  _model = {
-    generateContent: async (prompt) => {
-      aiCallsCounter.inc({ provider: 'gemini' });
-      return await rawModel.generateContent(prompt);
-    }
-  };
-  return _model;
-};
 
 // ---------------------------------------------------------------------------
 // Helper: resolve the AI provider to use
@@ -151,9 +125,6 @@ export const enhanceResume = async (resumeText, preferences, aiProvider) => {
 
     const prompt = `${systemPrompt}\n\nPlease enhance the following resume:\n\n${resumeText}`;
 
-    const result = await getModel().generateContent(prompt);
-    const response = await result.response;
-    const text = response.text();
     const providerResult = await provider.generateContent(prompt);
 
     return {
@@ -178,9 +149,6 @@ export const generateSummary = async (resumeText, jobRole, aiProvider) => {
 Resume:
 ${resumeText}`;
 
-    const result = await getModel().generateContent(prompt);
-    const response = await result.response;
-    const text = response.text();
     const providerResult = await provider.generateContent(prompt);
 
     return {
@@ -195,6 +163,53 @@ ${resumeText}`;
   }
 };
 
+/**
+ * Translate a resume into a target language while preserving formatting,
+ * section headers, dates, technical terms, and proper-noun company /
+ * school / product names. The output should be a ready-to-render copy of
+ * the resume, NOT a literal line-by-line translation.
+ *
+ * @param {string} resumeText  - Resume content (markdown or plain text)
+ * @param {string} targetLang  - Target language (e.g. "Spanish", "French", "Mandarin Chinese")
+ * @param {string} sourceLang  - Optional source language; defaults to "auto-detect"
+ * @param {object} aiProvider  - Optional provider injected by middleware
+ */
+export const translateResume = async (resumeText, targetLang, sourceLang = 'auto-detect', aiProvider) => {
+  try {
+    const provider = resolveProvider(aiProvider);
+    const prompt = `You are a professional resume translator. Translate the following resume into ${targetLang}${sourceLang === 'auto-detect' ? '' : ` from ${sourceLang}`}.
+
+CRITICAL RULES:
+1. Preserve the original formatting (markdown, bullet points, headers) exactly.
+2. Do NOT translate: company names, school/university names, product names, technical proper nouns, programming language / framework names (e.g. React, PostgreSQL, AWS), or job titles that are typically English-only.
+3. Translate dates into the most natural format for the target locale (e.g. "Jan 2022 – Present" → target-locale equivalent).
+4. Localize currency symbols and units where appropriate.
+5. Keep email addresses, URLs, phone numbers, and GitHub/LinkedIn handles exactly as they appear.
+6. Output ONLY the translated resume — no preamble, no explanation, no code fences.
+
+Resume:
+${resumeText}`;
+
+    const providerResult = await provider.generateContent(prompt);
+    // Strip accidental code fences the LLM may add
+    const cleaned = String(providerResult.text || '')
+      .replace(/^```[a-z]*\n?/i, '')
+      .replace(/\n?```\s*$/i, '')
+      .trim();
+    return {
+      success: true,
+      translatedText: cleaned,
+      targetLanguage: targetLang,
+      sourceLanguage: sourceLang,
+      provider: provider.providerName,
+    };
+  } catch (error) {
+    if (error.statusCode === 503) throw error;
+    console.error('Error translating resume:', error);
+    throw new Error(`Failed to translate resume: ${error.message}`);
+  }
+};
+
 // Function to suggest improvements
 export const suggestImprovements = async (resumeText, jobRole, aiProvider) => {
   try {
@@ -204,9 +219,6 @@ export const suggestImprovements = async (resumeText, jobRole, aiProvider) => {
 Resume:
 ${resumeText}`;
 
-    const result = await getModel().generateContent(prompt);
-    const response = await result.response;
-    const text = response.text();
     const providerResult = await provider.generateContent(prompt);
 
     return {
@@ -225,22 +237,18 @@ ${resumeText}`;
 export const analyzeATSScore = async (resumeText, jobRole, aiProvider) => {
   try {
     const provider = resolveProvider(aiProvider);
+    
+    // Calculate deterministic score first
+    const deterministicScoring = computeATSScore(resumeText, jobRole);
+
     const prompt = `You are an expert ATS (Applicant Tracking System) analyzer and resume reviewer. Analyze the provided resume for a ${jobRole} position.
 
 IMPORTANT: The current year is 2026. Do NOT flag dates from 2024, 2025, or 2026 as outdated or issues. All recent dates are valid.
 
 IMPORTANT: Return ONLY valid JSON, no markdown code blocks, no explanations, just pure JSON.
 
-Analyze and return the following JSON structure:
+Analyze and return the following JSON structure focusing on qualitative feedback:
 {
-  "atsScore": <number between 0-100>,
-  "scoreBreakdown": {
-    "keywordMatch": <number 0-100>,
-    "formatting": <number 0-100>,
-    "experienceRelevance": <number 0-100>,
-    "skillsAlignment": <number 0-100>,
-    "educationMatch": <number 0-100>
-  },
   "strengths": [
     "<strength 1>",
     "<strength 2>",
@@ -261,47 +269,53 @@ Analyze and return the following JSON structure:
 Rules:
 1. Be specific and actionable in improvements
 2. Provide 4-6 improvement suggestions
-3. Score fairly based on actual resume content
-4. Consider ATS parsing, keyword density, and relevance to ${jobRole}
-5. Missing keywords should be relevant to ${jobRole} position
+3. Missing keywords should be relevant to ${jobRole} position
+4. DO NOT provide numerical scores, only qualitative feedback
 
 Resume:
 ${resumeText}`;
 
-    const result = await getModel().generateContent(prompt);
-    const response = await result.response;
-    const text = response.text();
     const providerResult = await provider.generateContent(prompt);
 
     // Parse JSON from response
-    let analysisData;
+    let qualitativeData;
     try {
-      // Remove markdown code blocks if present
-      const cleanedText = providerResult.text.replace(/```json\n?/g, '').replace(/```\n?/g, '').trim();
-      analysisData = JSON.parse(cleanedText);
+      let cleanedText = providerResult.text.replace(/```json\n?/g, '').replace(/```\n?/g, '').trim();
+      const jsonMatch = cleanedText.match(/\{[\s\S]*\}/);
+      if (jsonMatch) {
+        cleanedText = jsonMatch[0];
+      }
+      qualitativeData = JSON.parse(cleanedText);
     } catch (parseError) {
-      console.error('Failed to parse ATS analysis JSON:', parseError);
-      // Return default structure on parse error
-      analysisData = {
-        atsScore: 50,
-        scoreBreakdown: {
-          keywordMatch: 50,
-          formatting: 50,
-          experienceRelevance: 50,
-          skillsAlignment: 50,
-          educationMatch: 50
-        },
-        strengths: ["Unable to fully analyze - please try again"],
+      console.error('Failed to parse ATS qualitative analysis JSON:', parseError);
+      qualitativeData = {
+        strengths: ["Clear effort shown in formatting"],
         improvements: [{
           category: "General",
-          issue: "Analysis incomplete",
-          suggestion: "Please try analyzing again",
-          priority: "high"
+          issue: "Could not generate full qualitative analysis",
+          suggestion: "Review keywords and formatting guidelines for your industry",
+          priority: "medium"
         }],
         missingKeywords: [],
-        summary: "Unable to complete full analysis. Please try again."
+        summary: "Unable to complete full qualitative analysis."
       };
     }
+
+    // Combine deterministic scores with AI qualitative feedback
+    const analysisData = {
+      atsScore: deterministicScoring.overallScore,
+      scoreBreakdown: {
+        keywordMatch: deterministicScoring.breakdown.keywordMatch,
+        formatting: deterministicScoring.breakdown.formatting,
+        experienceRelevance: deterministicScoring.breakdown.experience,
+        skillsAlignment: deterministicScoring.breakdown.skills,
+        educationMatch: 70 // default fallback
+      },
+      strengths: qualitativeData.strengths || [],
+      improvements: qualitativeData.improvements || [],
+      missingKeywords: qualitativeData.missingKeywords || [],
+      summary: qualitativeData.summary || "Resume analyzed successfully."
+    };
 
     return {
       success: true,
@@ -418,14 +432,15 @@ ANALYSIS RULES:
 Resume to analyze:
 ${resumeText}`;
 
-    const result = await getModel().generateContent(prompt);
-    const response = await result.response;
-    const text = response.text();
     const providerResult = await provider.generateContent(prompt);
 
     let analysisData;
     try {
-      const cleanedText = providerResult.text.replace(/```json\n?/g, '').replace(/```\n?/g, '').trim();
+      let cleanedText = providerResult.text.replace(/```json\n?/g, '').replace(/```\n?/g, '').trim();
+      const jsonMatch = cleanedText.match(/\{[\s\S]*\}/);
+      if (jsonMatch) {
+        cleanedText = jsonMatch[0];
+      }
       analysisData = JSON.parse(cleanedText);
     } catch (parseError) {
       console.error('Failed to parse comprehensive analysis JSON:', parseError);
@@ -491,14 +506,15 @@ Rules:
 Resume:
 ${resumeText}`;
 
-    const result = await getModel().generateContent(prompt);
-    const response = await result.response;
-    const text = response.text();
     const providerResult = await provider.generateContent(prompt);
 
     let bulletData;
     try {
-      const cleanedText = providerResult.text.replace(/```json\n?/g, '').replace(/```\n?/g, '').trim();
+      let cleanedText = providerResult.text.replace(/```json\n?/g, '').replace(/```\n?/g, '').trim();
+      const jsonMatch = cleanedText.match(/\{[\s\S]*\}/);
+      if (jsonMatch) {
+        cleanedText = jsonMatch[0];
+      }
       bulletData = JSON.parse(cleanedText);
     } catch (parseError) {
       console.error('Failed to parse bullet analysis JSON:', parseError);
@@ -547,14 +563,15 @@ Focus on the 3-5 most impactful changes.
 Original Resume:
 ${resumeText}`;
 
-    const result = await getModel().generateContent(prompt);
-    const response = await result.response;
-    const text = response.text();
     const providerResult = await provider.generateContent(prompt);
 
     let comparisonData;
     try {
-      const cleanedText = providerResult.text.replace(/```json\n?/g, '').replace(/```\n?/g, '').trim();
+      let cleanedText = providerResult.text.replace(/```json\n?/g, '').replace(/```\n?/g, '').trim();
+      const jsonMatch = cleanedText.match(/\{[\s\S]*\}/);
+      if (jsonMatch) {
+        cleanedText = jsonMatch[0];
+      }
       comparisonData = JSON.parse(cleanedText);
     } catch (parseError) {
       console.error('Failed to parse comparison JSON:', parseError);
@@ -573,9 +590,251 @@ ${resumeText}`;
   }
 };
 
+// Analyze skill gap between resume and job description
+export const analyzeSkillGap = async (resumeText, jobDescription, aiProvider) => {
+  try {
+    const provider = resolveProvider(aiProvider);
+    const prompt = `You are a career advisor. Given the following resume text and job description, identify:
+
+1. Skills from the job description already present in the resume
+2. Skills from the job description missing from the resume
+3. An overall match score from 0 to 100
+4. Brief learning suggestions for missing skills
+
+IMPORTANT: Return ONLY valid JSON, no markdown code blocks, no explanations.
+
+Return this exact JSON structure:
+{
+  "matchScore": <number 0-100>,
+  "matchedSkills": ["<skill1>", "<skill2>"],
+  "missingSkills": ["<skill1>", "<skill2>"],
+  "suggestions": "<brief paragraph with learning suggestions for the missing skills>"
+}
+
+Rules:
+1. Be thorough in identifying skills - include technical skills, soft skills, tools, and frameworks
+2. The match score should reflect how well the resume covers the job requirements
+3. Suggestions should be specific and actionable with resource recommendations
+4. Compare semantically, not just by exact keyword match (e.g. "React.js" matches "React")
+
+Resume:
+${resumeText}
+
+Job Description:
+${jobDescription}`;
+
+    const providerResult = await provider.generateContent(prompt);
+
+    let analysisData;
+    try {
+      let cleanedText = providerResult.text.replace(/```json\n?/g, '').replace(/```\n?/g, '').trim();
+      const jsonMatch = cleanedText.match(/\{[\s\S]*\}/);
+      if (jsonMatch) {
+        cleanedText = jsonMatch[0];
+      }
+      analysisData = JSON.parse(cleanedText);
+    } catch (parseError) {
+      console.error('Failed to parse skill gap analysis JSON:', parseError);
+      throw new Error('Failed to parse skill gap analysis results');
+    }
+
+    return {
+      success: true,
+      analysis: {
+        matchScore: Number(analysisData.matchScore) || 0,
+        matchedSkills: Array.isArray(analysisData.matchedSkills) ? analysisData.matchedSkills : [],
+        missingSkills: Array.isArray(analysisData.missingSkills) ? analysisData.missingSkills : [],
+        suggestions: analysisData.suggestions || 'No suggestions available.',
+      },
+      provider: provider.providerName
+    };
+  } catch (error) {
+    if (error.statusCode === 503) throw error;
+    console.error('Error analyzing skill gap:', error);
+    throw new Error(`Failed to analyze skill gap: ${error.message}`);
+  }
+};
+
+// Export power/weak verbs for frontend use
+
+
+/**
+ * One-Click Resume Tailor.
+ *
+ * Takes a resume + job description and returns an updated resume
+ * tailored to the JD. The output is a full rewrite of the resume text
+ * — not just keyword suggestions — with:
+ *   - Title matched to the JD's role
+ *   - Summary rewritten to mirror JD's key requirements
+ *   - Experience bullets reordered to lead with the most relevant achievements
+ *   - Skills section extended with JD-relevant skills the candidate has
+ *   - Power verbs and quantified impact preferred
+ *
+ * The returned `tailoredText` is a drop-in replacement for the
+ * resume's `enhancedText` (markdown format).
+ *
+ * @param {string} resumeText
+ * @param {string} jobDescription
+ * @param {string} [jobRole] - target job title (optional)
+ * @param {object} [aiProvider]
+ */
+export const tailorResume = async (resumeText, jobDescription, jobRole, aiProvider) => {
+  try {
+    const provider = resolveProvider(aiProvider);
+    const prompt = `You are an expert resume tailor. Rewrite the provided resume so it is perfectly tailored to the target job description below. Output ONLY the rewritten resume in markdown — no preamble, no explanation, no code fences.
+
+RULES:
+1. Keep ALL factual content (companies, dates, schools, tech stack, locations) exactly as in the original. Do NOT fabricate experience.
+2. Lead with a 2–3 sentence summary that mirrors the JD's top 3 requirements.
+3. Reorder experience bullets within each role so the most JD-relevant achievements come first.
+4. Replace weak verbs (e.g. "helped", "worked on") with strong action verbs (e.g. "led", "architected", "drove").
+5. Add quantifiable impact wherever the original has any numbers; keep numbers verbatim if present.
+6. Extend the Skills section with JD-relevant skills that the candidate's experience already supports. Do NOT invent skills the candidate does not have.
+7. Use markdown: ## for section headings, **bold** for role/company, - for bullets. Match the original resume's heading style.
+8. Preserve the candidate's name, contact info, and education order.
+
+Target job title: ${jobRole || '(not specified)'}
+
+Target job description:
+${jobDescription}
+
+Original resume:
+${resumeText}`;
+
+    const providerResult = await provider.generateContent(prompt);
+    const tailored = String(providerResult.text || '')
+      .replace(/^```[a-z]*\n?/i, '')
+      .replace(/\n?```\s*$/i, '')
+      .trim();
+
+    return {
+      success: true,
+      tailoredText: tailored,
+      provider: provider.providerName,
+    };
+  } catch (error) {
+    if (error.statusCode === 503) throw error;
+    console.error('Error tailoring resume:', error);
+    throw new Error(`Failed to tailor resume: ${error.message}`);
+  }
+};
+
+// ---------------------------------------------------------------------------
+// Resume Roast — comedic but honest critique
+// ---------------------------------------------------------------------------
+
+const ROAST_JSON_SHAPE = `{
+  "tagline": "<one-line witty verdict, <=120 chars>",
+  "ratings": {
+    "buzzwordDensity": <integer 1-5>,
+    "actionVerbs": <integer 1-5>,
+    "quantifiedAchievements": <integer 1-5>,
+    "formatting": <integer 1-5>
+  },
+  "roast": "<3-paragraph comedic critique with constructive punchlines. Plain text, no markdown.>",
+  "silverLinings": ["<positive 1>", "<positive 2>", "<positive 3>"],
+  "quickWins": ["<actionable fix 1>", "<actionable fix 2>", "<actionable fix 3>", "<actionable fix 4>", "<actionable fix 5>"],
+  "emoji": "<single emoji like 🔥 💀 🌟 🤡 ✨>"
+}`;
+
+/**
+ * Generate a comedic-but-honest resume roast with star ratings.
+ *
+ * Combines the deterministic ATS score with an LLM-generated critique.
+ * The LLM is constrained to strict JSON so the frontend can render
+ * structured ratings and a share card.
+ *
+ * @param {string} resumeText - Resume plain-text or markdown
+ * @param {string} jobRole - Target role (optional, improves critique)
+ * @param {object} aiProvider - Injected AI adapter from middleware
+ * @param {object} deterministicScoring - Pre-computed output of computeATSScore()
+ */
+export const generateRoast = async (resumeText, jobRole, aiProvider, deterministicScoring) => {
+  const provider = resolveProvider(aiProvider);
+
+  const roleClause = jobRole ? `for a ${jobRole} position` : 'for general tech roles';
+  const baselineClause = deterministicScoring
+    ? `Baseline deterministic ATS score: ${deterministicScoring.overallScore}/100
+- Formatting: ${deterministicScoring.breakdown.formatting}/100
+- Keyword match: ${deterministicScoring.breakdown.keywordMatch}/100
+- Experience: ${deterministicScoring.breakdown.experience}/100
+- Skills: ${deterministicScoring.breakdown.skills}/100
+- Sections found: ${(deterministicScoring.sectionsFound || []).join(', ') || 'none'}`
+    : '';
+
+  const prompt = `You are "Harsh But Fair" — a stand-up comedian who moonlights as a senior recruiter.
+Roast this resume ${roleClause}. Be witty, brutal, but ALWAYS end with 3 silver linings and 5 quick wins.
+Never punch down on protected characteristics (race, gender, age, disability, religion). Punch at the resume.
+
+${baselineClause}
+
+Rate these four axes 1-5 stars:
+- buzzwordDensity (5 = pristine, 1 = "synergy ninja guru rockstar")
+- actionVerbs (5 = "Architected, Shipped, Scaled", 1 = "Was responsible for duties")
+- quantifiedAchievements (5 = "increased revenue 32%", 1 = no numbers anywhere)
+- formatting (5 = scannable bullets + dates, 1 = wall of text)
+
+Resume:
+"""
+${resumeText.slice(0, 12000)}
+"""
+
+Return ONLY valid JSON matching this exact shape (no markdown fences, no commentary):
+${ROAST_JSON_SHAPE}`;
+
+  const providerResult = await provider.generateContent(prompt);
+  let text = String(providerResult.text || '').trim();
+
+  // Robust JSON extraction
+  if (text.startsWith('```')) {
+    text = text.replace(/^```(?:json)?\n?/i, '').replace(/\n?```\s*$/i, '').trim();
+  }
+  const jsonMatch = text.match(/\{[\s\S]*\}/);
+  if (jsonMatch) text = jsonMatch[0];
+
+  let parsed;
+  try {
+    parsed = JSON.parse(text);
+  } catch (err) {
+    console.error('[generateRoast] JSON parse error:', err.message, 'Raw:', text.slice(0, 400));
+    throw new Error('AI returned an invalid roast response. Please try again.');
+  }
+
+  // Defensive normalisation — clamp ratings to 1-5, ensure arrays
+  const clamp = (n) => Math.min(5, Math.max(1, Number(n) || 1));
+  return {
+    tagline: String(parsed.tagline || 'Your resume walked into a bar... and the bartender skipped it.').slice(0, 200),
+    ratings: {
+      buzzwordDensity: clamp(parsed.ratings?.buzzwordDensity),
+      actionVerbs: clamp(parsed.ratings?.actionVerbs),
+      quantifiedAchievements: clamp(parsed.ratings?.quantifiedAchievements),
+      formatting: clamp(parsed.ratings?.formatting),
+    },
+    roast: String(parsed.roast || '').trim(),
+    silverLinings: Array.isArray(parsed.silverLinings)
+      ? parsed.silverLinings.slice(0, 5).map(String)
+      : [],
+    quickWins: Array.isArray(parsed.quickWins)
+      ? parsed.quickWins.slice(0, 7).map(String)
+      : [],
+    emoji: String(parsed.emoji || '🔥').slice(0, 4),
+    provider: provider.providerName,
+  };
+};
+
 // Export power/weak verbs for frontend use
 export const getVerbLists = () => ({
-  powerVerbs: POWER_VERBS,
-  weakVerbs: WEAK_VERBS
+  powerVerbs: [
+    'Achieved', 'Architected', 'Automated', 'Boosted', 'Built', 'Championed',
+    'Coached', 'Consolidated', 'Crafted', 'Cut', 'Delivered', 'Designed',
+    'Drove', 'Engineered', 'Established', 'Expanded', 'Generated', 'Implemented',
+    'Improved', 'Increased', 'Initiated', 'Launched', 'Led', 'Mentored',
+    'Modernized', 'Negotiated', 'Optimized', 'Orchestrated', 'Owned', 'Pioneered',
+    'Reduced', 'Refactored', 'Resolved', 'Scaled', 'Shipped', 'Spearheaded',
+    'Streamlined', 'Transformed', 'Unified', 'Validated',
+  ],
+  weakVerbs: [
+    'Was', 'Did', 'Made', 'Got', 'Had', 'Worked on', 'Helped', 'Tried',
+    'Used', 'Involved in', 'Responsible for', 'Duties included', 'Various',
+  ],
 });
-export { getSystemPrompt };

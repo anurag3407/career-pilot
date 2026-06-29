@@ -34,7 +34,7 @@ Add the following variables to your `.env` file:
 # GitHub OAuth Configuration
 GITHUB_OAUTH_CLIENT_ID=your_oauth_client_id_here
 GITHUB_OAUTH_CLIENT_SECRET=your_oauth_client_secret_here
-GITHUB_OAUTH_REDIRECT_URI=http://localhost:5000/api/auth/github/callback
+GITHUB_OAUTH_REDIRECT_URI=http://localhost:5001/api/auth/github/callback
 
 # GitHub API Configuration
 GITHUB_API_TOKEN=your_personal_access_token_here
@@ -42,7 +42,7 @@ GITHUB_API_BASE=https://api.github.com
 GITHUB_API_VERSION=2022-11-28
 
 # Rate Limiting
-GITHUB_API_RATE_LIMIT=5000
+GITHUB_API_RATE_LIMIT=5001
 GITHUB_API_RATE_WINDOW=3600000
 ```
 
@@ -141,7 +141,7 @@ export const exchangeCodeForToken = async (code) => {
   }
 
   const data = await response.json();
-  
+
   if (data.error) {
     throw new Error(`OAuth error: ${data.error_description}`);
   }
@@ -171,7 +171,7 @@ export const getGitHubProfile = async (accessToken) => {
   }
 
   const profile = await response.json();
-  
+
   return {
     githubId: profile.id,
     username: profile.login,
@@ -215,12 +215,12 @@ export const encryptToken = (token) => {
     Buffer.from(ENCRYPTION_KEY, 'hex'),
     iv
   );
-  
+
   let encrypted = cipher.update(token, 'utf8', 'hex');
   encrypted += cipher.final('hex');
-  
+
   const authTag = cipher.getAuthTag();
-  
+
   return `${iv.toString('hex')}:${authTag.toString('hex')}:${encrypted}`;
 };
 
@@ -231,12 +231,12 @@ export const decryptToken = (encryptedToken) => {
     Buffer.from(ENCRYPTION_KEY, 'hex'),
     Buffer.from(iv, 'hex')
   );
-  
+
   decipher.setAuthTag(Buffer.from(authTag, 'hex'));
-  
+
   let decrypted = decipher.update(encrypted, 'hex', 'utf8');
   decrypted += decipher.final('utf8');
-  
+
   return decrypted;
 };
 ```
@@ -247,7 +247,7 @@ export const decryptToken = (encryptedToken) => {
 
 ### Base URL
 ```
-http://localhost:5000/api/github
+http://localhost:5001/api/github
 ```
 
 ### Authentication
@@ -266,7 +266,7 @@ GET /api/auth/github
 
 **Example:**
 ```bash
-curl http://localhost:5000/api/auth/github
+curl http://localhost:5001/api/auth/github
 ```
 
 ---
@@ -875,9 +875,9 @@ Example:
 
 **Calculation:**
 ```javascript
-doc_score = (readmeExists * 25 + readmeLength * 15 + 
-             hasExamples * 15 + hasApiDocs * 15 + 
-             hasContribGuide * 15 + commentDensity * 10 + 
+doc_score = (readmeExists * 25 + readmeLength * 15 +
+             hasExamples * 15 + hasApiDocs * 15 +
+             hasContribGuide * 15 + commentDensity * 10 +
              hasArchDocs * 5) / 100;
 ```
 
@@ -1132,8 +1132,8 @@ const readmeEngineConfig = {
 
 **Generated HTML:**
 ```html
-<img 
-  src="https://img.shields.io/badge/Health-78%25-yellowgreen?style=flat-square" 
+<img
+  src="https://img.shields.io/badge/Health-78%25-yellowgreen?style=flat-square"
   alt="Health Score"
   title="Repository health score"
 />
@@ -1235,10 +1235,10 @@ router.post('/readme/generate', verifyToken, asyncHandler(async (req, res) => {
 
   // Fetch repository data
   const repoData = await fetchGitHubRepo(owner, repo);
-  
+
   // Generate asset
   const asset = await generateReadmeAsset(assetType, repoData, config);
-  
+
   // Return asset
   res.json({
     success: true,
@@ -1366,15 +1366,15 @@ app.use('/api/github/', limiter);
 const adaptiveRateLimiter = (req, res, next) => {
   const userId = req.user.uid;
   const endpoint = req.path;
-  
+
   // Determine user tier
   const tier = getTierForUser(userId);
   const config = rateLimitConfig[tier];
-  
+
   // Get current usage
   const key = `usage:${userId}:${endpoint}`;
   const usage = redisClient.get(key) || 0;
-  
+
   if (usage >= config.requests) {
     return res.status(429).json({
       success: false,
@@ -1384,18 +1384,18 @@ const adaptiveRateLimiter = (req, res, next) => {
       resetTime: Math.ceil(config.window / 1000)
     });
   }
-  
+
   // Increment counter
   redisClient.incr(key);
   redisClient.expire(key, config.window);
-  
+
   // Set response headers
   res.set({
     'X-RateLimit-Limit': config.requests,
     'X-RateLimit-Remaining': config.requests - usage - 1,
     'X-RateLimit-Reset': Math.floor(Date.now() / 1000) + config.window
   });
-  
+
   next();
 };
 ```
@@ -1406,11 +1406,11 @@ const adaptiveRateLimiter = (req, res, next) => {
 const quotaMiddleware = asyncHandler(async (req, res, next) => {
   const userId = req.user.uid;
   const tier = await getUserTier(userId);
-  
+
   // Check daily quota
   const dailyKey = `quota:daily:${userId}:${getDate()}`;
   const dailyUsage = await redisClient.incr(dailyKey);
-  
+
   if (dailyUsage > tier.dailyLimit) {
     return res.status(429).json({
       success: false,
@@ -1420,17 +1420,17 @@ const quotaMiddleware = asyncHandler(async (req, res, next) => {
       resetTime: getNextDayStart()
     });
   }
-  
+
   // Set expiry to end of day
   await redisClient.expireAt(dailyKey, getEndOfDayTimestamp());
-  
+
   // Add quota info to request
   req.quota = {
     tier,
     dailyUsed: dailyUsage,
     dailyRemaining: tier.dailyLimit - dailyUsage
   };
-  
+
   next();
 });
 ```
@@ -1467,10 +1467,10 @@ const operationCosts = {
 
 const costMiddleware = (req, res, next) => {
   const cost = getOperationCost(req);
-  
+
   const key = `cost:${userId}:${window}`;
   const currentCost = redisClient.incrby(key, cost);
-  
+
   if (currentCost > config.costLimit) {
     return res.status(429).json({
       success: false,
@@ -1479,7 +1479,7 @@ const costMiddleware = (req, res, next) => {
       available: config.costLimit - currentCost
     });
   }
-  
+
   next();
 };
 ```
@@ -1520,11 +1520,11 @@ const rateLimitMonitor = (req, res, next) => {
       tier: req.user.tier,
       timestamp: new Date()
     });
-    
+
     // Alert if excessive violations
     const violationKey = `violations:${userId}`;
     const violationCount = redisClient.incr(violationKey);
-    
+
     if (violationCount > 10 && isWithinOneHour(violationKey)) {
       alertAdmin(`User ${userId} has ${violationCount} rate limit violations`);
     }
@@ -1550,26 +1550,26 @@ sequenceDiagram
     Backend->>Backend: Generate state token<br/>(CSRF protection)
     Backend->>Frontend: Redirect to GitHub OAuth
     Frontend->>GitHub: Redirect with client_id & state
-    
+
     GitHub->>GitHub: User logs in & approves scopes
     GitHub->>Backend: GET /callback?code=CODE&state=STATE
-    
+
     Backend->>Backend: Validate state token
     Backend->>GitHub: POST /login/oauth/access_token<br/>(code, client_id, secret)
     GitHub->>Backend: Returns access_token
-    
+
     Backend->>GitHub: GET /user<br/>(using access_token)
     GitHub->>Backend: Returns user profile data
-    
+
     Backend->>Database: Store encrypted token<br/>& user profile
     Database->>Backend: Confirm storage
-    
+
     Backend->>Backend: Create Firebase session token
     Backend->>Frontend: Redirect with token
     Frontend->>Frontend: Save token & update UI
-    
+
     User->>User: Authenticated!
-    
+
     rect rgb(200, 220, 240)
     Note over Backend,GitHub: Subsequent API Calls
     User->>Frontend: Request GitHub data
@@ -1695,6 +1695,6 @@ Frontend: "Connection error. Please check your internet and try again."
 
 ---
 
-**Last Updated**: May 20, 2026  
-**Version**: 1.0.0  
+**Last Updated**: May 20, 2026
+**Version**: 1.0.0
 **Maintainer**: Career Pilot Team

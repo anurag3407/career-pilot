@@ -7,6 +7,7 @@ import { fileURLToPath } from 'url'
 const __dirname = path.dirname(fileURLToPath(import.meta.url))
 
 export default defineConfig({
+  base: process.env.VITE_CDN_URL || '/',
   test: {
     environment: 'jsdom',
     setupFiles: './src/test/setup.js',
@@ -24,10 +25,18 @@ export default defineConfig({
   },
   server: {
     port: 5173,
+    headers: {
+      'Cross-Origin-Opener-Policy': 'same-origin-allow-popups',
+    },
     proxy: {
       '/api': {
-        target: 'http://localhost:5000',
+        target: process.env.IS_DOCKER ? 'http://backend_container:5000' : 'http://localhost:5000',
         changeOrigin: true,
+        configure: (proxy, _options) => {
+          proxy.on('error', (err, _req, _res) => {
+            console.log('proxy error', err);
+          });
+        },
       },
     },
   },

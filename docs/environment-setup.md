@@ -35,7 +35,7 @@ Local setup for contributors. Runs entirely on your machine.
 ### Backend (`backend/.env`)
 
 ```env
-PORT=5000
+PORT=5001
 NODE_ENV=development
 FRONTEND_URL=http://localhost:5173
 MONGODB_URI=mongodb://localhost:27017/career-pilot
@@ -50,14 +50,14 @@ FIREBASE_SERVICE_ACCOUNT_PATH=./path/to/service-account-key.json
 EMAIL_HOST=smtp.gmail.com
 EMAIL_PORT=587
 EMAIL_USER=<your-email-address>
-EMAIL_PASS=<your-gmail-app-password>
+EMAIL_PASS=<placeholder>
 EMAIL_SERVICE_URL=https://email-service.example.com
 EMAIL_API_KEY=<your-email-api-key>
 RAZORPAY_KEY_ID=rzp_test_<your-key-id>
 RAZORPAY_KEY_SECRET=<your-razorpay-key-secret>
 LINKEDIN_CLIENT_ID=<your-linkedin-client-id>
 LINKEDIN_CLIENT_SECRET=<your-linkedin-client-secret>
-LINKEDIN_REDIRECT_URI=http://localhost:5000/api/auth/linkedin/callback
+LINKEDIN_REDIRECT_URI=http://localhost:5001/api/auth/linkedin/callback
 PROXYCURL_API_KEY=<your-proxycurl-api-key>
 TOTP_ENCRYPTION_KEY=<64-char-hex-string>
 RATE_LIMIT_WINDOW_MS=900000
@@ -73,8 +73,8 @@ DEV_USER_EMAIL=dev@example.com
 ### Frontend (`frontend/.env`)
 
 ```env
-VITE_API_URL=http://localhost:5000
-VITE_API_BASE=http://localhost:5000/api
+VITE_API_URL=http://localhost:5001
+VITE_API_BASE=http://localhost:5001/api
 VITE_FIREBASE_API_KEY=<your-firebase-web-api-key>
 VITE_FIREBASE_AUTH_DOMAIN=<your-firebase-project-id>.firebaseapp.com
 VITE_FIREBASE_PROJECT_ID=<your-firebase-project-id>

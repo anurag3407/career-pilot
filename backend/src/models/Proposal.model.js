@@ -61,6 +61,8 @@ proposalSchema.index({ challengeId: 1, studentId: 1 }, { unique: true, backgroun
 proposalSchema.index({ studentId: 1, status: 1 }, { background: true });
 proposalSchema.index({ studentId: 1, createdAt: -1 }, { background: true });
 proposalSchema.index({ challengeId: 1, createdAt: -1 }, { background: true });
+proposalSchema.index({ challengeId: 1, status: 1 }, { background: true });
+proposalSchema.index({ challengeId: 1, status: 1, createdAt: -1 }, { background: true });
 
 proposalSchema.pre('save', function () {
     this.updatedAt = new Date();

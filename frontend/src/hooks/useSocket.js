@@ -1,5 +1,17 @@
-import { useEffect, useRef, useCallback } from 'react';
-import { useSocket } from '../context/SocketContext';
+import { useEffect, useRef, useCallback, useContext } from 'react';
+import { SocketContext } from '../context/SocketContext';
+
+/**
+ * Hook to access the socket context (connection state, events, notifications, etc.).
+ * Must be used inside a SocketProvider.
+ */
+export function useSocket() {
+  const context = useContext(SocketContext);
+  if (!context) {
+    throw new Error('useSocket must be used within a SocketProvider');
+  }
+  return context;
+}
 
 /**
  * Custom hook to listen to socket events with automatic cleanup

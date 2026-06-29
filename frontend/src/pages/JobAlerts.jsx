@@ -296,7 +296,7 @@ function JobCard({ job, index }) {
     >
       <div className="flex items-start gap-4">
         {/* Company Logo or Initial */}
-        <div className="w-14 h-14 rounded-lg bg-gradient-to-br from-primary to-secondary flex items-center justify-center text-foreground font-bold text-xl flex-shrink-0">
+        <div className="w-14 h-14 rounded-lg bg-gradient-to-br from-primary to-secondary flex items-center justify-center text-foreground font-bold text-xl shrink-0">
           {job.company?.charAt(0) || 'J'}
         </div>
 
@@ -309,7 +309,7 @@ function JobCard({ job, index }) {
             </div>
 
             {/* Action Buttons */}
-            <div className="flex gap-2 flex-shrink-0">
+            <div className="flex gap-2 shrink-0">
               {job.applyLink && (
                 <button
                   onClick={handleApply}

@@ -1,0 +1,68 @@
+import React from 'react';
+import { NavLink, Outlet, Navigate } from 'react-router-dom';
+import { LayoutDashboard, Users, Briefcase, FileText, Globe } from 'lucide-react';
+import { useAuth } from '../../../hooks/useAuth';
+
+const AdminLayout = () => {
+  const { user, loading } = useAuth();
+
+  if (loading) return null;
+  
+  // Basic frontend check. Real check happens on backend.
+  // In a real app we'd fetch the user profile to check role, 
+  // but we can rely on the backend rejecting API calls for now.
+  if (!user) {
+    return <Navigate to="/login" replace />;
+  }
+
+  const links = [
+    { to: '/admin', icon: LayoutDashboard, label: 'Dashboard', end: true },
+    { to: '/admin/users', icon: Users, label: 'Users' },
+    { to: '/admin/logins', icon: Briefcase, label: 'Logins' },
+    { to: '/admin/bugs', icon: FileText, label: 'Bug Reports' },
+    { to: '/admin/fellowships', icon: Globe, label: 'Fellowships' },
+  ];
+
+  return (
+    <div className="flex h-screen bg-background overflow-hidden">
+      {/* Admin Sidebar */}
+      <aside className="w-64 flex-shrink-0 bg-card border-r border-border hidden md:flex flex-col">
+        <div className="h-16 flex items-center px-6 border-b border-border">
+          <span className="text-xl font-bold bg-clip-text text-transparent bg-gradient-to-r from-primary to-secondary">
+            Admin Panel
+          </span>
+        </div>
+        <div className="flex-1 overflow-y-auto py-4">
+          <nav className="px-4 space-y-1">
+            {links.map((link) => (
+              <NavLink
+                key={link.to}
+                to={link.to}
+                end={link.end}
+                className={({ isActive }) =>
+                  `flex items-center gap-3 px-3 py-2 rounded-lg transition-colors ${
+                    isActive
+                      ? 'bg-primary/10 text-primary font-medium'
+                      : 'text-muted-foreground hover:bg-muted'
+                  }`
+                }
+              >
+                <link.icon className="w-5 h-5" />
+                {link.label}
+              </NavLink>
+            ))}
+          </nav>
+        </div>
+      </aside>
+
+      {/* Main Content Area */}
+      <main className="flex-1 overflow-y-auto relative bg-background">
+        <div className="p-8 max-w-7xl mx-auto">
+          <Outlet />
+        </div>
+      </main>
+    </div>
+  );
+};
+
+export default AdminLayout;

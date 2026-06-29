@@ -15,14 +15,16 @@ import {
   BookmarkCheck,
   Filter,
   X,
-  Loader2,
   TrendingUp,
   Zap,
   Target,
   Sparkles
 } from 'lucide-react'
+import { SkeletonJobCard } from '../components/ui/Skeleton'
 import { jobsApi, jobTrackerApi } from '../services/api'
+import { usePrefetch } from '../hooks/usePrefetch'
 import Button from '../components/Button'
+import MatchScoreBadge from '../components/MatchScoreBadge'
 import { SkeletonJobList } from '../components/ui/Skeleton'
 
 const JOB_TYPES = ['All Types', 'Full-time', 'Part-time', 'Contract', 'Internship', 'Remote']
@@ -40,6 +42,7 @@ const POPULAR_SEARCHES = [
 
 export default function JobSearch() {
   const [searchParams, setSearchParams] = useSearchParams()
+  const { prefetchJobSearch, getCachedJobSearch } = usePrefetch()
   const [searchQuery, setSearchQuery] = useState(searchParams.get('q') || '')
   const [jobs, setJobs] = useState([])
   const [loading, setLoading] = useState(false)
@@ -51,6 +54,43 @@ export default function JobSearch() {
     experienceLevel: EXPERIENCE_LEVELS.includes(searchParams.get('experienceLevel')) ? searchParams.get('experienceLevel') : 'All Levels',
     location: searchParams.get('location') || ''
   })
+
+  const isAnyFilterActive =
+    filters.jobType !== 'All Types' ||
+    filters.experienceLevel !== 'All Levels' ||
+    filters.location !== ''
+
+  const clearAllFilters = async () => {
+    const clearedFilters = {
+      jobType: 'All Types',
+      experienceLevel: 'All Levels',
+      location: ''
+    }
+    setFilters(clearedFilters)
+
+    const params = {}
+    if (searchQuery.trim()) {
+      params.q = searchQuery
+    }
+    setSearchParams(params)
+
+    if (searchQuery.trim()) {
+      setLoading(true)
+      setHasSearched(true)
+      try {
+        const response = await jobsApi.search(searchQuery, clearedFilters)
+        setJobs(response.data || [])
+        toast.success('Filters cleared!')
+      } catch (error) {
+        toast.error(error.message || 'Failed to search jobs')
+        setJobs([])
+      } finally {
+        setLoading(false)
+      }
+    } else {
+      toast.success('Filters cleared!')
+    }
+  }
 
   // Load saved jobs on mount
   useEffect(() => {
@@ -73,15 +113,28 @@ export default function JobSearch() {
       return
     }
 
-    setLoading(true)
-    setHasSearched(true)
-
     // Only persist non-default filter values for cleaner URLs
     const params = { q: searchQuery }
     if (filters.jobType !== 'All Types') params.jobType = filters.jobType
     if (filters.experienceLevel !== 'All Levels') params.experienceLevel = filters.experienceLevel
     if (filters.location) params.location = filters.location
     setSearchParams(params)
+
+    setHasSearched(true)
+
+    // Check cache first
+    const cachedData = getCachedJobSearch(searchQuery, filters)
+    if (cachedData) {
+      setJobs(cachedData)
+      if (cachedData.length === 0) {
+        toast('No jobs found. Try different keywords.', { icon: '🔍' })
+      } else {
+        toast.success(`Found ${cachedData.length} jobs!`)
+      }
+      return
+    }
+
+    setLoading(true)
 
     try {
       const response = await jobsApi.search(searchQuery, filters)
@@ -105,6 +158,30 @@ export default function JobSearch() {
     setTimeout(() => {
       handleSearch()
     }, 100)
+  }
+
+  const handleResetFilters = () => {
+    const defaultFilters = { jobType: 'All Types', experienceLevel: 'All Levels', location: '' }
+    setFilters(defaultFilters)
+    setSearchParams({ q: searchQuery })
+
+    if (hasSearched && searchQuery.trim()) {
+      setLoading(true)
+      jobsApi.search(searchQuery, defaultFilters)
+        .then(response => {
+          setJobs(response.data || [])
+          toast.success('Filters reset successfully')
+        })
+        .catch(error => {
+          toast.error(error.message || 'Failed to search jobs')
+          setJobs([])
+        })
+        .finally(() => {
+          setLoading(false)
+        })
+    } else {
+      toast.success('Filters reset')
+    }
   }
 
   const handleSaveJob = async (job) => {
@@ -134,6 +211,29 @@ export default function JobSearch() {
       toast.error('Failed to save job')
     }
   }
+  const saveRecentlyViewedJob = (job) => {
+  const recentJobs =
+    JSON.parse(localStorage.getItem('recentJobs')) || [];
+
+  const filteredJobs = recentJobs.filter(
+    (item) =>
+      (item.job_id || item.id) !==
+      (job.job_id || job.id)
+  );
+
+  const updatedJobs = [
+    {
+      ...job,
+      viewedAt: new Date().toISOString(),
+    },
+    ...filteredJobs,
+  ].slice(0, 15);
+
+  localStorage.setItem(
+    'recentJobs',
+    JSON.stringify(updatedJobs)
+  );
+};
 
   const formatSalary = (job) => {
     if (job.job_min_salary && job.job_max_salary) {
@@ -150,6 +250,12 @@ export default function JobSearch() {
     const date = new Date(dateString)
     if (Number.isNaN(date.getTime())) return 'Recently'
     return formatDistanceToNow(date, { addSuffix: true })
+  }
+
+  const getMatchScore = (job) => {
+    const score = job.matchScore ?? job.match_score ?? job.matchPercentage ?? job.match_percentage
+    const numericScore = typeof score === 'string' ? Number(score) : score
+    return typeof numericScore === 'number' && Number.isFinite(numericScore) ? numericScore : null
   }
 
   return (
@@ -216,7 +322,7 @@ className="w-full pl-12 pr-10 py-4 bg-muted/50 border border-border rounded-xl t
                   className="!px-8 !py-4 !text-lg !rounded-xl flex items-center gap-2"
                 >
                   {loading ? (
-                    <Loader2 className="w-5 h-5 animate-spin" />
+                    <span className="w-5 h-5 rounded-full border-2 border-primary-foreground/40 border-t-primary-foreground animate-spin inline-block" />
                   ) : (
                     <Search className="w-5 h-5" />
                   )}
@@ -225,6 +331,7 @@ className="w-full pl-12 pr-10 py-4 bg-muted/50 border border-border rounded-xl t
                 <button
                   type="button"
                   onClick={() => setShowFilters(!showFilters)}
+                  aria-label="Toggle Filters"
                   className={`px-4 py-4 rounded-xl border transition-all cursor-pointer ${showFilters
                     ? 'bg-primary/20 border-primary/30 text-primary'
                     : 'bg-muted/50 border-border text-muted-foreground hover:bg-muted'
@@ -243,12 +350,30 @@ className="w-full pl-12 pr-10 py-4 bg-muted/50 border border-border rounded-xl t
                     exit={{ height: 0, opacity: 0 }}
                     className="overflow-hidden"
                   >
-                    <div className="pt-4 border-t border-border grid md:grid-cols-3 gap-4">
+                    <div className="pt-4 border-t border-border">
+                      <div className="flex items-center justify-between mb-4">
+                        <h3 className="font-semibold text-lg text-foreground">Filters</h3>
+                        {isAnyFilterActive && (
+                          <button
+                            type="button"
+                            onClick={clearAllFilters}
+                            className="text-sm text-red-500 hover:text-red-700 font-medium transition-colors duration-200 flex items-center gap-1 cursor-pointer"
+                            aria-label="Clear all filters"
+                          >
+                            <svg xmlns="http://www.w3.org/2000/svg" className="h-4 w-4" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+                              <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M6 18L18 6M6 6l12 12" />
+                            </svg>
+                            Clear All
+                          </button>
+                        )}
+                      </div>
+                      <div className="grid md:grid-cols-3 gap-4">
                       <div>
-                        <label className="block text-sm font-medium text-muted-foreground mb-2">
+                        <label htmlFor="job-type-select" className="block text-sm font-medium text-muted-foreground mb-2">
                           Job Type
                         </label>
                         <select
+                          id="job-type-select"
                           value={filters.jobType}
                           onChange={(e) => setFilters({ ...filters, jobType: e.target.value })}
                           className="w-full px-4 py-3 bg-muted/50 border border-border rounded-lg text-foreground focus:ring-2 focus:ring-primary"
@@ -259,10 +384,11 @@ className="w-full pl-12 pr-10 py-4 bg-muted/50 border border-border rounded-xl t
                         </select>
                       </div>
                       <div>
-                        <label className="block text-sm font-medium text-muted-foreground mb-2">
+                        <label htmlFor="experience-level-select" className="block text-sm font-medium text-muted-foreground mb-2">
                           Experience Level
                         </label>
                         <select
+                          id="experience-level-select"
                           value={filters.experienceLevel}
                           onChange={(e) => setFilters({ ...filters, experienceLevel: e.target.value })}
                           className="w-full px-4 py-3 bg-muted/50 border border-border rounded-lg text-foreground focus:ring-2 focus:ring-primary"
@@ -273,12 +399,13 @@ className="w-full pl-12 pr-10 py-4 bg-muted/50 border border-border rounded-xl t
                         </select>
                       </div>
                       <div>
-                        <label className="block text-sm font-medium text-muted-foreground mb-2">
+                        <label htmlFor="location-input" className="block text-sm font-medium text-muted-foreground mb-2">
                           Location
                         </label>
                         <div className="relative">
                           <MapPin className="absolute left-3 top-1/2 transform -translate-y-1/2 text-muted-foreground w-4 h-4" />
                           <input
+                            id="location-input"
                             type="text"
                             value={filters.location}
                             onChange={(e) => setFilters({ ...filters, location: e.target.value })}
@@ -288,10 +415,22 @@ className="w-full pl-12 pr-10 py-4 bg-muted/50 border border-border rounded-xl t
                         </div>
                       </div>
                     </div>
-                  </motion.div>
-                )}
-              </AnimatePresence>
-            </form>
+                    <div className="mt-4 flex justify-end">
+                      <button
+                        type="button"
+                        onClick={handleResetFilters}
+                        className="px-4 py-2.5 bg-muted/40 hover:bg-muted/60 border border-border rounded-xl text-sm font-medium text-muted-foreground hover:text-foreground transition-all duration-200 flex items-center gap-2 backdrop-blur-md shadow-sm cursor-pointer hover:border-primary/30"
+                      >
+                        <X className="w-4 h-4 text-muted-foreground hover:text-foreground transition-colors" />
+                        Reset Filters
+                      </button>
+                    </div>
+                  </div>
+                </motion.div>
+              )}
+            </AnimatePresence>
+          </form>
+
 
             {/* Popular Searches */}
             {!hasSearched && (
@@ -304,6 +443,8 @@ className="w-full pl-12 pr-10 py-4 bg-muted/50 border border-border rounded-xl t
                   {POPULAR_SEARCHES.map(search => (
                     <button
                       key={search}
+                      onMouseEnter={() => prefetchJobSearch(search, filters)}
+                      onFocus={() => prefetchJobSearch(search, filters)}
                       onClick={() => handleQuickSearch(search)}
                       className="px-4 py-2 bg-muted hover:bg-primary/20 hover:text-primary hover:border-primary/30 border border-border rounded-full text-sm text-muted-foreground transition-all cursor-pointer"
                     >
@@ -318,13 +459,11 @@ className="w-full pl-12 pr-10 py-4 bg-muted/50 border border-border rounded-xl t
 
         {/* Results Section */}
         {loading ? (
-          <motion.div
-            initial={{ opacity: 0 }}
-            animate={{ opacity: 1 }}
-            className="space-y-4"
-          >
-            <SkeletonJobList count={5} />
-          </motion.div>
+          <div className="space-y-4">
+            {Array.from({ length: 5 }).map((_, i) => (
+              <SkeletonJobCard key={i} />
+            ))}
+          </div>
         ) : hasSearched && jobs.length === 0 ? (
           <motion.div
             initial={{ opacity: 0 }}
@@ -372,7 +511,7 @@ className="w-full pl-12 pr-10 py-4 bg-muted/50 border border-border rounded-xl t
                     <div className="flex justify-between items-start">
                       <div className="flex gap-4">
                         {/* Company Logo */}
-                        <div className="w-14 h-14 bg-gradient-to-br from-primary/20 to-secondary/20 rounded-xl flex items-center justify-center flex-shrink-0 border border-border">
+                        <div className="w-14 h-14 bg-gradient-to-br from-primary/20 to-secondary/20 rounded-xl flex items-center justify-center shrink-0 border border-border">
                           {job.employer_logo ? (
                             <img
                               src={job.employer_logo}
@@ -388,9 +527,12 @@ className="w-full pl-12 pr-10 py-4 bg-muted/50 border border-border rounded-xl t
                         </div>
 
                         <div className="flex-1">
-                          <h3 className="text-lg font-semibold text-foreground group-hover:text-primary transition-colors">
-                            {job.job_title || job.title}
-                          </h3>
+                          <div className="flex flex-wrap items-start gap-3">
+                            <h3 className="text-lg font-semibold text-foreground group-hover:text-primary transition-colors">
+                              {job.job_title || job.title}
+                            </h3>
+                            <MatchScoreBadge score={getMatchScore(job)} />
+                          </div>
                           <p className="text-muted-foreground font-medium">
                             {job.employer_name || job.company}
                           </p>
@@ -460,11 +602,12 @@ className="w-full pl-12 pr-10 py-4 bg-muted/50 border border-border rounded-xl t
                     {/* Apply Button */}
                     <div className="flex justify-end mt-4 pt-4 border-t border-border">
                       <a
-                        href={job.job_apply_link || job.applyLink}
-                        target="_blank"
-                        rel="noopener noreferrer"
-                        className="inline-flex items-center gap-2 px-6 py-2.5 bg-card hover:bg-muted/20 text-foreground rounded-lg font-medium transition-colors cursor-pointer"
-                      >
+  href={job.job_apply_link || job.applyLink}
+  onClick={() => saveRecentlyViewedJob(job)}
+  target="_blank"
+  rel="noopener noreferrer"
+  className="inline-flex items-center gap-2 px-6 py-2.5 bg-card hover:bg-muted/20 text-foreground rounded-lg font-medium transition-colors"
+>
                         Apply Now
                         <ExternalLink className="w-4 h-4" />
                       </a>

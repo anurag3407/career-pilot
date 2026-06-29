@@ -1,7 +1,7 @@
 import { useRef, useEffect } from "react";
 import createGlobe from "cobe";
 import { cn } from "@/lib/utils";
-import { useTheme } from "../../context/ThemeContext";
+import { useTheme } from "../../hooks/useTheme";
 
 export default function Globe({ className }) {
   const canvasRef = useRef(null);

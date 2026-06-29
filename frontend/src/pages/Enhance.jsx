@@ -1,9 +1,14 @@
-import { useState, useEffect } from 'react'
-import { useParams, useNavigate } from 'react-router-dom'
+import { useState, useEffect, useRef } from 'react'
+import { useParams, useNavigate, Link } from 'react-router-dom'
 import toast from 'react-hot-toast'
 import { motion } from 'framer-motion'
-import { resumeApi, enhanceApi } from '../services/api'
+import { resumeApi, enhanceApi, portfolioApi } from '../services/api'
+import { auth } from '../config/firebase'
+import { decryptKey } from '../utils/encryption'
+import ReactMarkdown from 'react-markdown'
+import { DragDropContext, Droppable, Draggable } from '@hello-pangea/dnd'
 import { triggerConfetti } from '../utils/confetti'
+import ResumeAnalysisSkeleton from '../components/ui/ResumeAnalysisSkeleton'
 import {
   Target,
   TrendingUp,
@@ -25,10 +30,16 @@ import {
   Code,
   FolderKanban,
   Lightbulb,
-  ArrowLeftRight,
   Brain,
-  Edit3
+  Edit3,
+  ClipboardList,
+  Globe,
+  GripVertical,
+  Layers
 } from 'lucide-react'
+import { SkeletonList } from '../components/ui/Skeleton'
+import ResumeScore from '../components/ResumeScore'
+import CopyButton from '../components/CopyButton'
 
 // Score ring component
 const ScoreRing = ({ score, size = 120, strokeWidth = 8 }) => {
@@ -37,10 +48,10 @@ const ScoreRing = ({ score, size = 120, strokeWidth = 8 }) => {
   const offset = circumference - (score / 100) * circumference
 
   const getScoreColor = (score) => {
-    if (score >= 80) return '#22c55e' // green
-    if (score >= 60) return '#eab308' // yellow
-    if (score >= 40) return '#f97316' // orange
-    return '#ef4444' // red
+    if (score >= 80) return '#22c55e'
+    if (score >= 60) return '#eab308'
+    if (score >= 40) return '#f97316'
+    return '#ef4444'
   }
 
   return (
@@ -66,9 +77,7 @@ const ScoreRing = ({ score, size = 120, strokeWidth = 8 }) => {
           r={radius}
           cx={size / 2}
           cy={size / 2}
-          style={{
-            strokeDasharray: circumference,
-          }}
+          style={{ strokeDasharray: circumference }}
         />
       </svg>
       <div className="absolute inset-0 flex flex-col items-center justify-center">
@@ -122,7 +131,7 @@ const ImprovementCard = ({ improvement, index }) => {
       case 'high': return 'bg-red-500/20 text-red-400 border-red-500/30'
       case 'medium': return 'bg-yellow-500/20 text-yellow-400 border-yellow-500/30'
       case 'low': return 'bg-green-500/20 text-green-400 border-green-500/30'
-      default: return 'bg-muted-foreground/20 text-muted-foreground border-border/60/30'
+      default: return 'bg-muted-foreground/20 text-muted-foreground border-border/30'
     }
   }
 
@@ -147,9 +156,9 @@ const ImprovementCard = ({ improvement, index }) => {
           <p className="text-foreground font-medium">{improvement.issue}</p>
         </div>
         {expanded ? (
-          <ChevronUp className="w-5 h-5 text-muted-foreground ml-2 flex-shrink-0" />
+          <ChevronUp className="w-5 h-5 text-muted-foreground ml-2 shrink-0" />
         ) : (
-          <ChevronDown className="w-5 h-5 text-muted-foreground ml-2 flex-shrink-0" />
+          <ChevronDown className="w-5 h-5 text-muted-foreground ml-2 shrink-0" />
         )}
       </div>
 
@@ -160,7 +169,7 @@ const ImprovementCard = ({ improvement, index }) => {
           className="mt-3 pt-3 border-t border-border"
         >
           <div className="flex items-start gap-2">
-            <Zap className="w-4 h-4 text-primary mt-0.5 flex-shrink-0" />
+            <Zap className="w-4 h-4 text-primary mt-0.5 shrink-0" />
             <p className="text-sm text-foreground">{improvement.suggestion}</p>
           </div>
         </motion.div>
@@ -229,13 +238,10 @@ const BulletAnalysisCard = ({ bullet, index }) => {
       transition={{ delay: index * 0.05 }}
       className="bg-muted/30 border border-border rounded-xl p-4 hover:bg-muted/50 transition-all"
     >
-      <div
-        className="cursor-pointer"
-        onClick={() => setExpanded(!expanded)}
-      >
+      <div className="cursor-pointer" onClick={() => setExpanded(!expanded)}>
         <div className="flex items-start justify-between gap-4">
           <p className="text-foreground text-sm flex-1">{bullet.original}</p>
-          <div className="flex items-center gap-2 flex-shrink-0">
+          <div className="flex items-center gap-2 shrink-0">
             <span className={`text-xs px-2 py-1 rounded-lg border ${getScoreColor(bullet.score)}`}>
               {bullet.score}/10
             </span>
@@ -247,7 +253,6 @@ const BulletAnalysisCard = ({ bullet, index }) => {
           </div>
         </div>
 
-        {/* STAR Check indicators */}
         {bullet.starCheck && (
           <div className="flex gap-2 mt-2">
             {['S', 'T', 'A', 'R'].map((letter, i) => {
@@ -284,11 +289,13 @@ const BulletAnalysisCard = ({ bullet, index }) => {
               </div>
             </div>
           )}
-
           <div className="bg-primary/10 border border-primary/30 rounded-lg p-3">
-            <div className="flex items-center gap-2 mb-2">
-              <Sparkles className="w-4 h-4 text-primary" />
-              <span className="text-xs text-primary font-medium">Improved Version</span>
+            <div className="flex items-center justify-between gap-2 mb-2">
+              <div className="flex items-center gap-2">
+                <Sparkles className="w-4 h-4 text-primary" />
+                <span className="text-xs text-primary font-medium">Improved Version</span>
+              </div>
+              <CopyButton text={bullet.improved} label="" size={13} variant="ghost" className="shrink-0" />
             </div>
             <p className="text-sm text-foreground">{bullet.improved}</p>
           </div>
@@ -332,7 +339,7 @@ const SeniorTipCard = ({ tip, index }) => {
       className={`border rounded-xl p-4 ${getCategoryColor(tip.category)}`}
     >
       <div className="flex items-start gap-3">
-        <Icon className="w-5 h-5 mt-0.5 flex-shrink-0" />
+        <Icon className="w-5 h-5 mt-0.5 shrink-0" />
         <div>
           <div className="flex items-center gap-2 mb-1">
             <span className="text-xs opacity-75 capitalize">{tip.category}</span>
@@ -350,33 +357,173 @@ const SeniorTipCard = ({ tip, index }) => {
   )
 }
 
+// ─── Drag-and-drop Section Order panel ────────────────────────────────────────
+const SECTION_LABELS = {
+  education: 'Education',
+  experience: 'Experience',
+  projects: 'Projects',
+  skills: 'Skills',
+  certifications: 'Certifications',
+}
+const STANDARD_SECTIONS = ['education', 'experience', 'projects', 'skills', 'certifications']
+
+// Seed the reorder list from the saved sectionOrder, then append any standard
+// or custom sections not yet present so nothing is missing. Returns [{id,label}].
+function buildSectionItems(resume) {
+  const saved = Array.isArray(resume?.sectionOrder) ? resume.sectionOrder.filter(Boolean) : []
+  const custom = Array.isArray(resume?.customSections) ? resume.customSections : []
+  const labelFor = (id) => SECTION_LABELS[id] || custom.find((c) => c.id === id)?.title || id
+  const isKnown = (id) => Boolean(SECTION_LABELS[id]) || custom.some((c) => c.id === id)
+  const seen = new Set()
+  const ids = []
+  for (const id of saved) if (isKnown(id) && !seen.has(id)) { ids.push(id); seen.add(id) }
+  for (const id of STANDARD_SECTIONS) if (!seen.has(id)) { ids.push(id); seen.add(id) }
+  for (const c of custom) if (c?.id && !seen.has(c.id)) { ids.push(c.id); seen.add(c.id) }
+  return ids.map((id) => ({ id, label: labelFor(id) }))
+}
+
+function SectionOrderPanel({ resumeId, resume }) {
+  const [items, setItems] = useState(() => buildSectionItems(resume))
+  const [saving, setSaving] = useState(false)
+
+  // Re-seed when the resume loads / its saved order changes.
+  useEffect(() => {
+    setItems(buildSectionItems(resume))
+    // eslint-disable-next-line react-hooks/exhaustive-deps
+  }, [resume?.id, resume?.sectionOrder])
+
+  const persist = async (next) => {
+    setItems(next)
+    if (!resumeId) return
+    setSaving(true)
+    try {
+      await resumeApi.reorderSections(resumeId, next.map((i) => i.id))
+      toast.success('Section order saved')
+    } catch (_e) {
+      toast.error('Failed to save section order')
+    } finally {
+      setSaving(false)
+    }
+  }
+
+  const onDragEnd = (result) => {
+    if (!result.destination || result.destination.index === result.source.index) return
+    const next = Array.from(items)
+    const [moved] = next.splice(result.source.index, 1)
+    next.splice(result.destination.index, 0, moved)
+    persist(next)
+  }
+
+  return (
+    <motion.div
+      initial={{ opacity: 0, y: 20 }}
+      animate={{ opacity: 1, y: 0 }}
+      className="bg-background/50 border border-border rounded-2xl p-6 mb-8"
+    >
+      <div className="flex items-center gap-3 mb-4">
+        <div className="w-10 h-10 bg-primary/20 rounded-xl flex items-center justify-center">
+          <Layers className="w-5 h-5 text-primary" />
+        </div>
+        <div>
+          <h2 className="text-lg font-semibold text-foreground">Section Order</h2>
+          <p className="text-sm text-muted-foreground">
+            Drag to reorder how sections appear in your resume template
+          </p>
+        </div>
+        {saving && <span className="ml-auto text-xs text-muted-foreground">Saving…</span>}
+      </div>
+
+      <DragDropContext onDragEnd={onDragEnd}>
+        <Droppable droppableId="enhance-sections">
+          {(provided) => (
+            <div ref={provided.innerRef} {...provided.droppableProps} className="space-y-2">
+              {items.map((item, index) => (
+                <Draggable key={item.id} draggableId={item.id} index={index}>
+                  {(prov, snapshot) => (
+                    <div
+                      ref={prov.innerRef}
+                      {...prov.draggableProps}
+                      className={`flex items-center gap-3 px-4 py-3 rounded-xl border bg-muted/40 transition-shadow ${
+                        snapshot.isDragging ? 'border-primary shadow-lg' : 'border-border'
+                      }`}
+                    >
+                      <span
+                        {...prov.dragHandleProps}
+                        className="text-muted-foreground hover:text-foreground cursor-grab active:cursor-grabbing"
+                        aria-label={`Drag ${item.label}`}
+                      >
+                        <GripVertical className="w-4 h-4" />
+                      </span>
+                      <span className="text-sm font-medium text-foreground">{item.label}</span>
+                      <span className="ml-auto text-xs text-muted-foreground tabular-nums">{index + 1}</span>
+                    </div>
+                  )}
+                </Draggable>
+              ))}
+              {provided.placeholder}
+            </div>
+          )}
+        </Droppable>
+      </DragDropContext>
+
+      <p className="mt-3 text-xs text-muted-foreground">
+        Summary always appears first. Sections with no content are skipped when the template renders.
+        Your order is honored by order-aware templates (e.g. Ivy League).
+      </p>
+
+      <Link
+        to={`/resume-templates?resumeId=${resumeId}`}
+        className="mt-4 inline-flex items-center gap-2 px-4 py-2 rounded-lg bg-primary/10 text-primary hover:bg-primary/20 transition-colors text-sm font-medium"
+      >
+        <Layers className="w-4 h-4" />
+        Preview &amp; export in a template
+        <ArrowRight className="w-4 h-4" />
+      </Link>
+    </motion.div>
+  )
+}
+
 export default function Enhance() {
   const { resumeId } = useParams()
   const navigate = useNavigate()
-
+  const streamContainerRef = useRef(null)
   const [resume, setResume] = useState(null)
   const [loading, setLoading] = useState(true)
   const [analyzing, setAnalyzing] = useState(false)
   const [enhancing, setEnhancing] = useState(false)
+
+  const [streamedText, setStreamedText] = useState('')
+  const [generatingPortfolio, setGeneratingPortfolio] = useState(false)
+  const [scoring, setScoring] = useState(false)
+  const [scoreData, setScoreData] = useState(null)
   const [atsAnalysis, setAtsAnalysis] = useState(null)
   const [comprehensiveAnalysis, setComprehensiveAnalysis] = useState(null)
-  const [activeTab, setActiveTab] = useState('overview') // 'overview', 'bullets', 'tips'
+  const [activeTab, setActiveTab] = useState('overview')
 
-  // Job role input
   const [jobRole, setJobRole] = useState('')
   const [hasAnalyzed, setHasAnalyzed] = useState(false)
+  const [enhancementComplete, setEnhancementComplete] = useState(false)
+  const [copiedKeyword, setCopiedKeyword] = useState(null)
 
   useEffect(() => {
     fetchResume()
     // eslint-disable-next-line react-hooks/exhaustive-deps
   }, [resumeId])
 
+  useEffect(() => {
+    if (streamContainerRef.current) {
+      streamContainerRef.current.scrollTo({
+        top: streamContainerRef.current.scrollHeight,
+        behavior: 'smooth',
+      })
+    }
+  }, [streamedText])
+
   const fetchResume = async () => {
     try {
       const response = await resumeApi.getById(resumeId)
       setResume(response.data)
-
-      // Pre-fill job role if available
+      setEnhancementComplete(Boolean(response.data.enhancedText))
       if (response.data.jobRole) {
         setJobRole(response.data.jobRole)
       }
@@ -396,25 +543,39 @@ export default function Enhance() {
 
     setAnalyzing(true)
     try {
-      // Fetch both ATS analysis and comprehensive analysis in parallel
       const [atsResponse, comprehensiveResponse] = await Promise.all([
         enhanceApi.analyzeATS(resume.originalText, jobRole),
         enhanceApi.comprehensiveAnalysis(resume.originalText, jobRole)
       ])
 
-     setAtsAnalysis(atsResponse.data)
-setComprehensiveAnalysis(comprehensiveResponse.data)
-setHasAnalyzed(true)
+      setAtsAnalysis(atsResponse.data)
+      setComprehensiveAnalysis(comprehensiveResponse.data)
+      setHasAnalyzed(true)
 
-if (atsResponse.data?.atsScore >= 90) {
-  triggerConfetti({
-    duration: 4000,
-    particleCount: 220,
-    spread: 140
-  })
-}
-      // Save job role to resume
+      if (atsResponse.data?.atsScore >= 90) {
+        triggerConfetti({ duration: 4000, particleCount: 220, spread: 140 })
+      }
+
       await resumeApi.update(resumeId, { jobRole })
+
+      // Log to ATS history
+      try {
+        await resumeApi.logAtsHistory(resumeId, {
+          jobRole: jobRole,
+          atsScore: atsResponse.data?.atsScore || 0,
+          scoreBreakdown: {
+            keywordMatch: atsResponse.data?.scoreBreakdown?.keywordMatch || 0,
+            formatting: atsResponse.data?.scoreBreakdown?.formatting || 0,
+            experienceRelevance: atsResponse.data?.scoreBreakdown?.experienceRelevance || 0,
+            skillsAlignment: atsResponse.data?.scoreBreakdown?.skillsAlignment || 0,
+            educationMatch: atsResponse.data?.scoreBreakdown?.educationMatch || 0
+          },
+          missingKeywords: atsResponse.data?.missingKeywords || [],
+          improvementsCount: atsResponse.data?.improvements?.length || 0
+        })
+      } catch (err) {
+        console.error('Failed to log ATS score run:', err)
+      }
 
       toast.success('Senior-level analysis complete!')
     } catch (error) {
@@ -424,47 +585,220 @@ if (atsResponse.data?.atsScore >= 90) {
     }
   }
 
+  const copyKeywordToClipboard = async (keyword) => {
+    if (!keyword) return
+
+    try {
+      await navigator.clipboard.writeText(keyword)
+      setCopiedKeyword(keyword)
+      setTimeout(() => {
+        setCopiedKeyword((current) => (current === keyword ? null : current))
+      }, 2000)
+    } catch (err) {
+      console.error('Failed to copy keyword:', err)
+      toast.error('Could not copy keyword to clipboard. Please try again.')
+    }
+  }
+
+  async function getAuthHeaders() {
+    const user = auth?.currentUser
+
+    if (!user) {
+      if (import.meta.env.DEV) {
+        return {
+          Authorization: `Bearer mock-dev-token`,
+          'Content-Type': 'application/json',
+        }
+      }
+      throw new Error('Not authenticated')
+    }
+
+    const token = await user.getIdToken()
+
+    return {
+      Authorization: `Bearer ${token}`,
+      'Content-Type': 'application/json',
+    }
+  }
+
   const handleEnhanceWithAI = async () => {
     setEnhancing(true)
+
     try {
-      // Prepare preferences for API
       const apiPreferences = {
         jobRole: jobRole,
-        yearsOfExperience: 0,
+        yearsOfExperience: resume?.yearsOfExperience ?? 0,
         skills: atsAnalysis?.missingKeywords || [],
         industry: '',
-        customInstructions: `Focus on improving: ${atsAnalysis?.improvements?.map(i => i.issue).join(', ') || 'general improvements'}`,
+        customInstructions: `Focus on improving: ${
+          atsAnalysis?.improvements?.map(i => i.issue).join(', ') ||
+          'general improvements'
+        }`,
         profileInfo: {}
       }
 
-      // Call enhance API
-      const enhanceResponse = await enhanceApi.enhance(
-        resume.originalText,
-        apiPreferences
-      )
+      // Reset streamed content
+      let streamedResume = ''
 
-      // Update resume with enhanced text
+      const headers = await getAuthHeaders()
+      const aiConfigStr = localStorage.getItem('aiConfig')
+
+      if (aiConfigStr) {
+        try {
+          const aiConfig = JSON.parse(aiConfigStr)
+
+          if (aiConfig.provider) {
+            headers['X-AI-Provider'] = aiConfig.provider
+          }
+
+          if (aiConfig.apiKey) {
+            headers['X-AI-Key'] = decryptKey(aiConfig.apiKey)
+          }
+
+          if (aiConfig.model) {
+            headers['X-AI-Model'] = aiConfig.model
+          }
+        } catch (e) {
+          console.error(e)
+        }
+      }
+
+      const response = await fetch('/api/enhance/stream', {
+        method: 'POST',
+        headers,
+        body: JSON.stringify({
+          resumeText: resume.originalText,
+          preferences: apiPreferences,
+        }),
+      })
+
+      if (!response.ok) {
+        throw new Error('Failed to start enhancement stream')
+      }
+
+      if (!response.body) {
+        throw new Error('Streaming not supported')
+      }
+
+      const reader = response.body.getReader()
+      const decoder = new TextDecoder()
+
+      let done = false
+      let buffer = ''
+
+      while (!done) {
+        const { value, done: doneReading } = await reader.read()
+
+        done = doneReading
+
+        const chunkValue = decoder.decode(value || new Uint8Array(), {
+          stream: !done,
+        })
+        buffer += chunkValue
+
+        const parts = buffer.split('\n\n')
+
+        buffer = parts.pop() || ''
+
+        for (const part of parts) {
+          const lines = part.split('\n')
+
+          for (const line of lines) {
+            if (!line.startsWith('data:')) continue
+
+            const data = line.replace('data:', '').trim()
+
+            if (!data) continue
+
+            // Ignore completion marker
+            if (data === '[DONE]') {
+              continue
+            }
+
+            let parsed
+
+            try {
+              parsed = JSON.parse(data)
+            } catch {
+              streamedResume += data
+              setStreamedText(streamedResume)
+              continue
+            }
+
+            if (parsed.type === 'error') {
+              throw new Error(parsed.message || 'Streaming failed')
+            }
+
+            if (parsed.type === 'chunk' && parsed.content) {
+              streamedResume += parsed.content
+              setStreamedText(streamedResume)
+            }
+          }
+        }
+      }
+      
+      // Save final enhanced text
       await resumeApi.update(resumeId, {
-        enhancedText: enhanceResponse.data.enhancedResume,
+        enhancedText: streamedResume,
         jobRole: jobRole,
         preferences: apiPreferences
       })
 
-      toast.success('Resume enhanced successfully!')
+      setResume((current) => ({
+        ...current,
+        enhancedText: streamedResume,
+        jobRole,
+        preferences: apiPreferences
+      }))
 
-triggerConfetti({
-  duration: 3000,
-  particleCount: 150,
-  spread: 120
-})
+      setEnhancementComplete(true)
 
-navigate(`/resume/${resumeId}`)
+  } catch (error) {
+    console.error(error)
+    toast.error(error.message || 'Failed to enhance resume')
+  } finally {
+    setEnhancing(false)
+  }
+}
+
+  const handleGeneratePortfolio = async () => {
+    setGeneratingPortfolio(true)
+    const toastId = toast.loading('Generating portfolio from enhanced resume...')
+
+    try {
+      const response = await portfolioApi.generateFromResume(resumeId)
+      const portfolioData = response.data?.portfolio || response.data
+
+      localStorage.setItem('ai_portfolio_draft', JSON.stringify(portfolioData))
+      toast.success('Portfolio draft generated!', { id: toastId })
+      navigate('/templates')
     } catch (error) {
-      toast.error(error.message || 'Failed to enhance resume')
+      toast.error(error.message || 'Failed to generate portfolio', { id: toastId })
     } finally {
-      setEnhancing(false)
+      setGeneratingPortfolio(false)
     }
   }
+
+  const handleScoreResume = async () => {
+    if (!resume?.originalText) {
+      toast.error('No resume text found to score')
+      return
+    }
+    setScoring(true)
+    setActiveTab('score')
+    try {
+      const response = await enhanceApi.scoreResume(resume.originalText)
+      setScoreData(response.data)
+      // Save the score back to the resume history
+      await resumeApi.update(resumeId, { atsScore: response.data.overallScore })
+      toast.success('Resume scored!')
+    } catch (error) {
+      toast.error(error.message || 'Failed to score resume')
+      setActiveTab('overview')
+    } finally {
+      setScoring(false)
+    }
+}
   if (loading) {
     return (
       <div className="min-h-screen bg-background">
@@ -475,14 +809,11 @@ navigate(`/resume/${resumeId}`)
             transition={{ duration: 0.4 }}
             className="space-y-8"
           >
-            {/* Header Skeleton */}
             <div className="mb-8 space-y-3">
               <div className="h-4 bg-muted rounded-lg w-32 animate-pulse" />
               <div className="h-10 bg-muted rounded-lg w-2/3 animate-pulse" />
               <div className="h-4 bg-muted rounded-lg w-1/2 animate-pulse" />
             </div>
-
-            {/* Content Skeleton */}
             <SkeletonList count={4} />
           </motion.div>
         </div>
@@ -546,55 +877,18 @@ navigate(`/resume/${resumeId}`)
                 disabled={analyzing || !jobRole.trim()}
                 className="px-8 py-3 bg-gradient-to-r from-indigo-600 to-purple-600 text-foreground rounded-xl font-medium hover:from-primary hover:to-secondary transition-all disabled:opacity-50 disabled:cursor-not-allowed flex items-center gap-2"
               >
-                {analyzing ? (
-                  <>
-                    <RefreshCw className="w-5 h-5 animate-spin" />
-                    Analyzing...
-                  </>
-                ) : (
-                  <>
-                    <BarChart3 className="w-5 h-5" />
-                    Analyze Resume
-                  </>
-                )}
+                <BarChart3 className="w-5 h-5" />
+                Analyze Resume
               </button>
             </div>
           </motion.div>
         )}
 
+        {/* Section Order (drag-and-drop) — always available once loaded */}
+        {resume && <SectionOrderPanel resumeId={resumeId} resume={resume} />}
+
         {/* Analyzing State */}
-        {analyzing && (
-          <motion.div
-            initial={{ opacity: 0 }}
-            animate={{ opacity: 1 }}
-            className="bg-background/50 border border-border rounded-2xl p-12 text-center"
-          >
-            <div className="inline-flex items-center justify-center w-16 h-16 bg-primary/20 rounded-full mb-4">
-              <RefreshCw className="w-8 h-8 text-primary animate-spin" />
-            </div>
-            <h3 className="text-xl font-semibold text-foreground mb-2">Analyzing Your Resume</h3>
-            <p className="text-muted-foreground">
-              Our AI is evaluating your resume against ATS systems for the {jobRole} position...
-            </p>
-            <div className="mt-4 flex justify-center gap-1">
-              {[0, 1, 2].map((i) => (
-                <motion.div
-                  key={i}
-                  animate={{
-                    scale: [1, 1.2, 1],
-                    opacity: [0.5, 1, 0.5]
-                  }}
-                  transition={{
-                    duration: 1,
-                    repeat: Infinity,
-                    delay: i * 0.2
-                  }}
-                  className="w-2 h-2 bg-primary rounded-full"
-                />
-              ))}
-            </div>
-          </motion.div>
-        )}
+        {analyzing && <ResumeAnalysisSkeleton />}
 
         {/* ATS Analysis Results */}
         {hasAnalyzed && atsAnalysis && (
@@ -609,7 +903,6 @@ navigate(`/resume/${resumeId}`)
               >
                 <div className="flex flex-col items-center">
                   <ScoreRing score={atsAnalysis.atsScore} size={160} strokeWidth={12} />
-
                   <div className="mt-4 text-center">
                     <p className="text-lg font-medium text-foreground mb-1">
                       {atsAnalysis.atsScore >= 80 ? 'Excellent!' :
@@ -618,7 +911,6 @@ navigate(`/resume/${resumeId}`)
                     </p>
                     <p className="text-sm text-muted-foreground">for {jobRole}</p>
                   </div>
-
                   <button
                     onClick={() => {
                       setHasAnalyzed(false)
@@ -630,6 +922,14 @@ navigate(`/resume/${resumeId}`)
                   >
                     <RefreshCw className="w-4 h-4" />
                     Analyze Different Role
+                  </button>
+                  <button
+                    onClick={handleScoreResume}
+                    disabled={scoring}
+                    className="mt-2 text-sm text-purple-400 hover:text-purple-300 flex items-center gap-1"
+                  >
+                    <ClipboardList className="w-4 h-4" />
+                    {scoring ? 'Scoring...' : 'Score My Resume'}
                   </button>
                 </div>
               </motion.div>
@@ -662,16 +962,18 @@ navigate(`/resume/${resumeId}`)
               transition={{ delay: 0.3 }}
               className="bg-background/50 border border-border rounded-2xl p-6"
             >
-              <h3 className="text-lg font-semibold text-foreground mb-3 flex items-center gap-2">
-                <AlertCircle className="w-5 h-5 text-primary" />
-                Analysis Summary
-              </h3>
+              <div className="flex items-center justify-between gap-2 mb-3">
+                <h3 className="text-lg font-semibold text-foreground flex items-center gap-2">
+                  <AlertCircle className="w-5 h-5 text-primary" />
+                  Analysis Summary
+                </h3>
+                <CopyButton text={atsAnalysis.summary} label="Copy" size={14} />
+              </div>
               <p className="text-foreground leading-relaxed">{atsAnalysis.summary}</p>
             </motion.div>
 
             {/* Strengths & Missing Keywords */}
             <div className="grid lg:grid-cols-2 gap-6">
-              {/* Strengths */}
               <motion.div
                 initial={{ opacity: 0, x: -20 }}
                 animate={{ opacity: 1, x: 0 }}
@@ -691,14 +993,13 @@ navigate(`/resume/${resumeId}`)
                       transition={{ delay: 0.5 + index * 0.1 }}
                       className="flex items-start gap-2"
                     >
-                      <Award className="w-4 h-4 text-green-400 mt-1 flex-shrink-0" />
+                      <Award className="w-4 h-4 text-green-400 mt-1 shrink-0" />
                       <span className="text-foreground">{strength}</span>
                     </motion.li>
                   ))}
                 </ul>
               </motion.div>
 
-              {/* Missing Keywords */}
               <motion.div
                 initial={{ opacity: 0, x: 20 }}
                 animate={{ opacity: 1, x: 0 }}
@@ -716,9 +1017,15 @@ navigate(`/resume/${resumeId}`)
                       initial={{ opacity: 0, scale: 0.8 }}
                       animate={{ opacity: 1, scale: 1 }}
                       transition={{ delay: 0.5 + index * 0.05 }}
-                      className="px-3 py-1.5 bg-yellow-500/10 border border-yellow-500/30 text-yellow-400 rounded-lg text-sm"
+                      onClick={() => copyKeywordToClipboard(keyword)}
+                      className="relative cursor-pointer px-3 py-1.5 bg-yellow-500/10 border border-yellow-500/30 text-yellow-400 rounded-lg text-sm transition hover:bg-yellow-500/20 hover:border-yellow-500/50 hover:text-yellow-300"
                     >
-                      {keyword}
+                      <span className="relative z-10">{keyword}</span>
+                      {copiedKeyword === keyword && (
+                        <span className="pointer-events-none absolute -top-7 left-1/2 -translate-x-1/2 rounded-full bg-amber-500/95 px-2 py-1 text-[10px] font-semibold text-white shadow-lg">
+                          Copied!
+                        </span>
+                      )}
                     </motion.span>
                   ))}
                   {(!atsAnalysis.missingKeywords || atsAnalysis.missingKeywords.length === 0) && (
@@ -746,7 +1053,7 @@ navigate(`/resume/${resumeId}`)
               </div>
             </motion.div>
 
-            {/* Senior Expert Analysis - Only show if comprehensiveAnalysis is available */}
+            {/* Senior Expert Analysis */}
             {comprehensiveAnalysis && (
               <>
                 {/* Tab Navigation */}
@@ -759,7 +1066,8 @@ navigate(`/resume/${resumeId}`)
                   {[
                     { id: 'overview', label: 'Section Grades', icon: BarChart3 },
                     { id: 'bullets', label: 'Bullet Analysis', icon: Edit3 },
-                    { id: 'tips', label: 'Senior Tips', icon: Lightbulb }
+                    { id: 'tips', label: 'Senior Tips', icon: Lightbulb },
+                    { id: 'score', label: 'Resume Score', icon: ClipboardList }
                   ].map(tab => (
                     <button
                       key={tab.id}
@@ -783,11 +1091,12 @@ navigate(`/resume/${resumeId}`)
                     className="space-y-4"
                   >
                     <div className="flex items-center gap-3 mb-4">
-                      <div className={`w-16 h-16 rounded-xl bg-gradient-to-br ${comprehensiveAnalysis.overallGrade === 'A' ? 'from-green-500 to-emerald-500' :
+                      <div className={`w-16 h-16 rounded-xl bg-gradient-to-br ${
+                        comprehensiveAnalysis.overallGrade === 'A' ? 'from-green-500 to-emerald-500' :
                         comprehensiveAnalysis.overallGrade === 'B' ? 'from-blue-500 to-cyan-500' :
-                          comprehensiveAnalysis.overallGrade === 'C' ? 'from-yellow-500 to-orange-400' :
-                            'from-red-500 to-red-600'
-                        } flex items-center justify-center`}>
+                        comprehensiveAnalysis.overallGrade === 'C' ? 'from-yellow-500 to-orange-400' :
+                        'from-red-500 to-red-600'
+                      } flex items-center justify-center`}>
                         <span className="text-foreground font-bold text-2xl">{comprehensiveAnalysis.overallGrade}</span>
                       </div>
                       <div>
@@ -804,9 +1113,7 @@ navigate(`/resume/${resumeId}`)
                       <SectionGradeCard section="Projects" data={comprehensiveAnalysis.sectionGrades?.projects} icon={FolderKanban} />
                     </div>
 
-                    {/* Action Verb & Quantification Analysis */}
                     <div className="grid lg:grid-cols-2 gap-4 mt-6">
-                      {/* Action Verb Analysis */}
                       <div className="bg-muted/50 border border-border rounded-xl p-4">
                         <h4 className="font-medium text-foreground mb-3 flex items-center gap-2">
                           <Zap className="w-4 h-4 text-orange-400" />
@@ -825,7 +1132,6 @@ navigate(`/resume/${resumeId}`)
                         )}
                       </div>
 
-                      {/* Quantification Analysis */}
                       <div className="bg-muted/50 border border-border rounded-xl p-4">
                         <h4 className="font-medium text-foreground mb-3 flex items-center gap-2">
                           <BarChart3 className="w-4 h-4 text-blue-400" />
@@ -855,22 +1161,12 @@ navigate(`/resume/${resumeId}`)
                       </h3>
                       <div className="flex items-center gap-2 text-sm">
                         <span className="text-muted-foreground">Legend:</span>
-                        <span className="flex items-center gap-1 text-xs">
-                          <span className="px-1.5 py-0.5 bg-green-500/20 text-green-400 rounded">S</span>
-                          <span className="text-muted-foreground">Situation</span>
-                        </span>
-                        <span className="flex items-center gap-1 text-xs">
-                          <span className="px-1.5 py-0.5 bg-green-500/20 text-green-400 rounded">T</span>
-                          <span className="text-muted-foreground">Task</span>
-                        </span>
-                        <span className="flex items-center gap-1 text-xs">
-                          <span className="px-1.5 py-0.5 bg-green-500/20 text-green-400 rounded">A</span>
-                          <span className="text-muted-foreground">Action</span>
-                        </span>
-                        <span className="flex items-center gap-1 text-xs">
-                          <span className="px-1.5 py-0.5 bg-green-500/20 text-green-400 rounded">R</span>
-                          <span className="text-muted-foreground">Result</span>
-                        </span>
+                        {['S', 'T', 'A', 'R'].map((l, i) => (
+                          <span key={l} className="flex items-center gap-1 text-xs">
+                            <span className="px-1.5 py-0.5 bg-green-500/20 text-green-400 rounded">{l}</span>
+                            <span className="text-muted-foreground">{['Situation', 'Task', 'Action', 'Result'][i]}</span>
+                          </span>
+                        ))}
                       </div>
                     </div>
                     <p className="text-sm text-muted-foreground mb-4">Click on any bullet to see detailed analysis and AI-improved version</p>
@@ -908,7 +1204,6 @@ navigate(`/resume/${resumeId}`)
                       ))}
                     </div>
 
-                    {/* Competitive Edge */}
                     {comprehensiveAnalysis.competitiveEdge && (
                       <div className="bg-gradient-to-r from-amber-900/30 to-orange-900/30 border border-amber-500/30 rounded-xl p-6 mt-4">
                         <h4 className="font-semibold text-foreground mb-3 flex items-center gap-2">
@@ -921,7 +1216,7 @@ navigate(`/resume/${resumeId}`)
                             <ul className="space-y-1">
                               {comprehensiveAnalysis.competitiveEdge.standoutFactors.map((factor, i) => (
                                 <li key={i} className="text-sm text-amber-300 flex items-start gap-2">
-                                  <CheckCircle className="w-4 h-4 flex-shrink-0 mt-0.5" />
+                                  <CheckCircle className="w-4 h-4 shrink-0 mt-0.5" />
                                   {factor}
                                 </li>
                               ))}
@@ -934,13 +1229,50 @@ navigate(`/resume/${resumeId}`)
                             <ul className="space-y-1">
                               {comprehensiveAnalysis.competitiveEdge.differentiators.map((diff, i) => (
                                 <li key={i} className="text-sm text-foreground/80 flex items-start gap-2">
-                                  <ArrowRight className="w-4 h-4 flex-shrink-0 mt-0.5 text-amber-400" />
+                                  <ArrowRight className="w-4 h-4 shrink-0 mt-0.5 text-amber-400" />
                                   {diff}
                                 </li>
                               ))}
                             </ul>
                           </div>
                         )}
+                      </div>
+                    )}
+                  </motion.div>
+                )}
+
+                {/* Resume Score Tab */}
+                {activeTab === 'score' && (
+                  <motion.div
+                    initial={{ opacity: 0, y: 20 }}
+                    animate={{ opacity: 1, y: 0 }}
+                    className="space-y-4"
+                  >
+                    {scoring ? (
+                      <div className="bg-background/50 border border-border rounded-2xl p-12 text-center">
+                        <div className="inline-flex items-center justify-center w-16 h-16 bg-primary/20 rounded-full mb-4">
+                          <RefreshCw className="w-8 h-8 text-primary animate-spin" />
+                        </div>
+                        <h3 className="text-xl font-semibold text-foreground mb-2">Scoring Your Resume</h3>
+                        <p className="text-muted-foreground">Gemini is evaluating each section...</p>
+                      </div>
+                    ) : scoreData ? (
+                      <ResumeScore data={scoreData} onRescore={handleScoreResume} />
+                    ) : (
+                      <div className="bg-background/50 border border-border rounded-2xl p-12 text-center">
+                        <div className="inline-flex items-center justify-center w-16 h-16 bg-primary/20 rounded-full mb-4">
+                          <ClipboardList className="w-8 h-8 text-primary" />
+                        </div>
+                        <h3 className="text-xl font-semibold text-foreground mb-2">Resume Score</h3>
+                        <p className="text-muted-foreground mb-6">Get an overall score and section-by-section breakdown with 3 tailored improvement tips.</p>
+                        <button
+                          onClick={handleScoreResume}
+                          disabled={scoring}
+                          className="px-8 py-3 bg-gradient-to-r from-indigo-600 to-purple-600 text-white rounded-xl font-medium hover:from-primary hover:to-secondary transition-all flex items-center gap-2 mx-auto"
+                        >
+                          <ClipboardList className="w-5 h-5" />
+                          Score My Resume
+                        </button>
                       </div>
                     )}
                   </motion.div>
@@ -953,9 +1285,10 @@ navigate(`/resume/${resumeId}`)
               initial={{ opacity: 0, y: 20 }}
               animate={{ opacity: 1, y: 0 }}
               transition={{ delay: 0.6 }}
-              className="bg-gradient-to-r from-indigo-900/50 to-purple-900/50 border border-primary/30 rounded-2xl p-8"
+              className="glass glow border border-primary/30 rounded-3xl p-8 relative overflow-hidden mt-8"
             >
-              <div className="flex flex-col md:flex-row items-center justify-between gap-6">
+              <div className="absolute inset-0 pointer-events-none bg-gradient-to-r from-indigo-500/10 to-purple-500/10"></div>
+              <div className="relative z-10 flex flex-col md:flex-row items-center justify-between gap-6">
                 <div className="flex items-center gap-4">
                   <div className="w-14 h-14 bg-gradient-to-br from-primary to-secondary rounded-xl flex items-center justify-center">
                     <Sparkles className="w-7 h-7 text-foreground" />
@@ -965,24 +1298,45 @@ navigate(`/resume/${resumeId}`)
                     <p className="text-muted-foreground">Let AI optimize your resume based on the analysis above</p>
                   </div>
                 </div>
-                <button
-                  onClick={handleEnhanceWithAI}
-                  disabled={enhancing}
-                  className="w-full md:w-auto px-8 py-4 bg-gradient-to-r from-indigo-600 to-purple-600 text-foreground rounded-xl font-semibold hover:from-primary hover:to-secondary transition-all disabled:opacity-50 disabled:cursor-not-allowed flex items-center justify-center gap-2 shadow-lg shadow-indigo-500/25"
-                >
-                  {enhancing ? (
-                    <>
-                      <RefreshCw className="w-5 h-5 animate-spin" />
-                      Enhancing with AI...
-                    </>
-                  ) : (
-                    <>
-                      <Sparkles className="w-5 h-5" />
-                      Improve with AI
-                      <ArrowRight className="w-5 h-5" />
-                    </>
+                <div className="flex w-full flex-col gap-3 md:w-auto md:flex-row">
+                  {enhancementComplete && (
+                    <button
+                      onClick={handleGeneratePortfolio}
+                      disabled={generatingPortfolio}
+                      className="w-full md:w-auto px-8 py-4 bg-secondary text-secondary-foreground rounded-xl font-semibold hover:bg-secondary/90 transition-all disabled:opacity-50 disabled:cursor-not-allowed flex items-center justify-center gap-2"
+                    >
+                      {generatingPortfolio ? (
+                        <>
+                          <RefreshCw className="w-5 h-5 animate-spin" />
+                          Generating...
+                        </>
+                      ) : (
+                        <>
+                          <Globe className="w-5 h-5" />
+                          Generate Portfolio
+                        </>
+                      )}
+                    </button>
                   )}
-                </button>
+                  <button
+                    onClick={handleEnhanceWithAI}
+                    disabled={enhancing}
+                    className="w-full md:w-auto px-8 py-4 bg-gradient-to-r from-indigo-600 to-purple-600 text-foreground rounded-xl font-semibold hover:from-primary hover:to-secondary transition-all disabled:opacity-50 disabled:cursor-not-allowed flex items-center justify-center gap-2 shadow-lg shadow-indigo-500/25"
+                  >
+                    {enhancing ? (
+                      <>
+                        <RefreshCw className="w-5 h-5 animate-spin" />
+                        Enhancing with AI...
+                      </>
+                    ) : (
+                      <>
+                        <Sparkles className="w-5 h-5" />
+                        Improve with AI
+                        <ArrowRight className="w-5 h-5" />
+                      </>
+                    )}
+                  </button>
+                </div>
               </div>
 
               {enhancing && (
@@ -996,6 +1350,205 @@ navigate(`/resume/${resumeId}`)
           </div>
         )}
       </div>
+      
+  {(streamedText || enhancing) && (
+  <div
+    className="
+      fixed
+      bottom-6
+      right-6
+      z-50
+      w-[92vw]
+      md:w-[620px]
+      h-[78vh]
+      rounded-[28px]
+      border
+      border-white/10
+      bg-[#070B1A]/95
+      backdrop-blur-2xl
+      shadow-[0_0_60px_rgba(0,0,0,0.6)]
+      overflow-hidden
+      flex
+      flex-col
+      animate-in
+      fade-in
+      slide-in-from-bottom-4
+      duration-300
+    "
+  >
+    {/* Top Glow */}
+    <div className="absolute inset-x-0 top-0 h-24 bg-gradient-to-r from-cyan-500/10 via-violet-500/10 to-fuchsia-500/10 blur-3xl pointer-events-none" />
+
+    {/* Header */}
+    <div className="relative flex items-center justify-between px-6 py-5 border-b border-white/10">
+      <div className="flex items-center gap-4">
+        <div
+          className="
+            h-12
+            w-12
+            rounded-2xl
+            bg-gradient-to-br
+            from-cyan-400
+            via-blue-500
+            to-violet-600
+            flex
+            items-center
+            justify-center
+            shadow-lg
+          "
+        >
+          <span className="text-xl">✨</span>
+        </div>
+
+        <div>
+          <h2 className="text-xl font-bold text-white tracking-tight">
+            AI Resume Enhancement
+          </h2>
+
+          <p className="text-sm text-gray-400">
+            Real-time streaming optimization powered by AI
+          </p>
+        </div>
+      </div>
+
+      <div className="flex items-center gap-3">
+        {enhancing ? (
+          <div
+            className="
+              flex
+              items-center
+              gap-2
+              rounded-full
+              border
+              border-emerald-500/20
+              bg-emerald-500/10
+              px-3
+              py-1.5
+              text-sm
+              text-emerald-300
+            "
+          >
+            <span className="h-2 w-2 rounded-full bg-emerald-400 animate-pulse" />
+
+            Streaming
+          </div>
+        ) : (
+          <div
+            className="
+              rounded-full
+              border
+              border-cyan-500/20
+              bg-cyan-500/10
+              px-3
+              py-1.5
+              text-sm
+              text-cyan-300
+            "
+          >
+            Complete
+          </div>
+        )}
+      </div>
+    </div>
+
+    {/* Stream Body */}
+    <div
+      ref={streamContainerRef}
+      className="
+        relative
+        flex-1
+        overflow-y-auto
+        px-6
+        py-6
+        scroll-smooth
+      "
+    >
+      {/* Background Grid */}
+      <div className="absolute inset-0 opacity-[0.03] bg-[linear-gradient(to_right,#fff_1px,transparent_1px),linear-gradient(to_bottom,#fff_1px,transparent_1px)] bg-[size:40px_40px] pointer-events-none" />
+
+      <div
+        className="
+          relative
+          prose
+          prose-invert
+          max-w-none
+          prose-headings:text-white
+          prose-p:text-gray-300
+          prose-strong:text-cyan-300
+          prose-li:text-gray-300
+          prose-code:text-cyan-300
+          prose-pre:bg-black/30
+          prose-pre:border
+          prose-pre:border-white/10
+          prose-blockquote:border-cyan-500
+          prose-blockquote:text-gray-300
+        "
+      >
+        <ReactMarkdown>
+          {streamedText || 'Initializing enhancement stream...'}
+        </ReactMarkdown>
+
+        {enhancing && (
+          <span
+            className="
+              inline-block
+              ml-1
+              text-cyan-300
+              animate-pulse
+              text-lg
+            "
+          >
+            ▋
+          </span>
+        )}
+      </div>
+    </div>
+
+    {/* Footer */}
+    <div
+      className="
+        border-t
+        border-white/10
+        px-6
+        py-4
+        flex
+        items-center
+        justify-between
+        bg-white/[0.02]
+      "
+    >
+      <div className="flex items-center gap-3 text-sm text-gray-400">
+        <div className="h-2 w-2 rounded-full bg-cyan-400 animate-pulse" />
+
+        {enhancing
+          ? 'Generating optimized resume sections in real time'
+          : 'Enhancement completed successfully'}
+      </div>
+
+      <div className="flex items-center gap-3">
+        {!enhancing && (
+          <button
+            onClick={() => setStreamedText('')}
+            className="
+              rounded-xl
+              border
+              border-white/10
+              bg-white/5
+              px-4
+              py-2
+              text-sm
+              text-white
+              transition-all
+              hover:bg-white/10
+            "
+          >
+            Close
+          </button>
+        )}
+      </div>
+    </div>
+  </div>
+)}
     </div>
   )
 }

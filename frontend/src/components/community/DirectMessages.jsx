@@ -1,6 +1,6 @@
-import { useState, useEffect } from 'react';
-import { useAuth } from '../../context/AuthContext';
-import { useSocket } from '../../context/SocketContext';
+import { useState, useEffect, useCallback } from 'react';
+import { useAuth } from '../../hooks/useAuth';
+import { useSocket } from '../../hooks/useSocket';
 import { communityApi } from '../../services/api';
 import { formatDistanceToNow } from 'date-fns';
 import { Search, Plus, Circle, X } from 'lucide-react';
@@ -17,9 +17,21 @@ export default function DirectMessages() {
   const [searchQuery, setSearchQuery] = useState('');
 
   // Fetch conversations on mount
+  const fetchConversations = useCallback(async () => {
+    try {
+      setLoading(true);
+      const data = await communityApi.getConversations();
+      setConversations(data.conversations);
+    } catch (error) {
+      console.error('Failed to fetch conversations:', error);
+    } finally {
+      setLoading(false);
+    }
+  }, []);
+
   useEffect(() => {
     fetchConversations();
-  }, []);
+  }, [fetchConversations]);
 
   // Subscribe to new DMs
   useEffect(() => {
@@ -43,18 +55,6 @@ export default function DirectMessages() {
 
     return () => unsubNewDM();
   }, [subscribe, selectedConversation]);
-
-  const fetchConversations = async () => {
-    try {
-      setLoading(true);
-      const data = await communityApi.getConversations();
-      setConversations(data.conversations);
-    } catch (error) {
-      console.error('Failed to fetch conversations:', error);
-    } finally {
-      setLoading(false);
-    }
-  };
 
   const fetchMessages = async (conversationId) => {
     try {

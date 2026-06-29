@@ -4,16 +4,33 @@ import { useState, createContext, useContext } from "react";
 import { AnimatePresence, motion } from "framer-motion";
 import { Menu, X } from "lucide-react";
 
-const SidebarContext = createContext(undefined);
+import { SidebarContext } from "../../context/SidebarContext";
 
-export const useSidebar = () => {
+// Internal convenience — components within this file consume the context directly.
+/**
+ * Internal custom hook to retrieve the Sidebar context.
+ * Throws an error if used outside a SidebarProvider.
+ *
+ * @returns {object} The Sidebar context object.
+ */
+function useSidebarInternal() {
     const context = useContext(SidebarContext);
     if (!context) {
         throw new Error("useSidebar must be used within a SidebarProvider");
     }
     return context;
-};
+}
 
+/**
+ * Context Provider component that wraps children and holds state for the Sidebar.
+ *
+ * @param {object} props - The component props.
+ * @param {React.ReactNode} props.children - The children elements.
+ * @param {boolean} [props.open] - Controlled open/close state.
+ * @param {Function} [props.setOpen] - Callback function to update open state.
+ * @param {boolean} [props.animate=true] - Whether to animate transition.
+ * @returns {React.JSX.Element} The rendered Provider component.
+ */
 export const SidebarProvider = ({
     children,
     open: openProp,
@@ -32,6 +49,16 @@ export const SidebarProvider = ({
     );
 };
 
+/**
+ * Sidebar component that initializes the SidebarProvider context.
+ *
+ * @param {object} props - The component props.
+ * @param {React.ReactNode} props.children - The children elements.
+ * @param {boolean} [props.open] - Controlled open/close state.
+ * @param {Function} [props.setOpen] - Callback function to update open state.
+ * @param {boolean} [props.animate=true] - Whether to animate transition.
+ * @returns {React.JSX.Element} The rendered Sidebar component.
+ */
 export const Sidebar = ({
     children,
     open,
@@ -45,6 +72,12 @@ export const Sidebar = ({
     );
 };
 
+/**
+ * Component that renders both Desktop and Mobile views of the Sidebar.
+ *
+ * @param {object} props - The component props.
+ * @returns {React.JSX.Element} The rendered SidebarBody.
+ */
 export const SidebarBody = (props) => {
     return (
         <>
@@ -54,20 +87,28 @@ export const SidebarBody = (props) => {
     );
 };
 
+/**
+ * Desktop sidebar component with expand/collapse animations on hover.
+ *
+ * @param {object} props - The component props.
+ * @param {string} [props.className] - Extra class name custom styling.
+ * @param {React.ReactNode} props.children - Child elements.
+ * @returns {React.JSX.Element} The rendered DesktopSidebar.
+ */
 export const DesktopSidebar = ({
     className,
     children,
     ...props
 }) => {
-    const { open, setOpen, animate } = useSidebar();
+    const { open, setOpen, animate } = useSidebarInternal();
     return (
         <motion.div
             className={cn(
-                "h-full px-4 py-4 hidden md:flex md:flex-col bg-card border-r border-border w-[280px] flex-shrink-0",
+                "h-full px-3 py-4 hidden md:flex md:flex-col bg-card border-r border-border w-[280px] shrink-0 overflow-x-hidden",
                 className
             )}
             animate={{
-                width: animate ? (open ? "280px" : "70px") : "280px",
+                width: animate ? (open ? "280px" : "80px") : "280px",
             }}
             transition={{
                 duration: 0.3,
@@ -82,12 +123,20 @@ export const DesktopSidebar = ({
     );
 };
 
+/**
+ * Mobile sidebar component with toggle menu bar and responsive slide-out drawer overlay.
+ *
+ * @param {object} props - The component props.
+ * @param {string} [props.className] - Extra class name custom styling.
+ * @param {React.ReactNode} props.children - Child elements.
+ * @returns {React.JSX.Element} The rendered MobileSidebar.
+ */
 export const MobileSidebar = ({
     className,
     children,
     ...props
 }) => {
-    const { open, setOpen } = useSidebar();
+    const { open, setOpen } = useSidebarInternal();
     return (
         <>
             <div
@@ -97,10 +146,14 @@ export const MobileSidebar = ({
                 {...props}
             >
                 <div className="flex justify-end z-20 w-full">
-                    <Menu
-                        className="text-muted-foreground cursor-pointer hover:text-foreground transition-colors"
+                    <button
                         onClick={() => setOpen(!open)}
-                    />
+                        className="p-2 rounded-lg text-muted-foreground hover:text-foreground hover:bg-muted transition-colors focus:outline-none focus:ring-2 focus:ring-primary focus:ring-offset-2 focus:ring-offset-background"
+                        aria-label={open ? "Close sidebar menu" : "Open sidebar menu"}
+                        aria-expanded={open}
+                    >
+                        <Menu className="w-6 h-6" />
+                    </button>
                 </div>
                 <AnimatePresence>
                     {open && (
@@ -117,12 +170,13 @@ export const MobileSidebar = ({
                                 className
                             )}
                         >
-                            <div
-                                className="absolute right-6 top-6 z-50 text-muted-foreground cursor-pointer hover:text-foreground transition-colors"
+                            <button
+                                className="absolute right-6 top-6 z-50 p-2 rounded-lg text-muted-foreground hover:text-foreground hover:bg-muted transition-colors focus:outline-none focus:ring-2 focus:ring-primary focus:ring-offset-2 focus:ring-offset-background"
                                 onClick={() => setOpen(!open)}
+                                aria-label="Close sidebar menu"
                             >
                                 <X className="w-6 h-6" />
-                            </div>
+                            </button>
                             {children}
                         </motion.div>
                     )}
@@ -132,6 +186,16 @@ export const MobileSidebar = ({
     );
 };
 
+/**
+ * Navigation item link within the Sidebar.
+ *
+ * @param {object} props - The component props.
+ * @param {object} props.link - The link item data (label, href, icon).
+ * @param {string} [props.className] - Extra class name custom styling.
+ * @param {boolean} [props.active] - Override active link styling status.
+ * @param {Function} [props.onClick] - Click callback handler.
+ * @returns {React.JSX.Element} The rendered SidebarLink.
+ */
 export const SidebarLink = ({
     link,
     className,
@@ -139,7 +203,7 @@ export const SidebarLink = ({
     onClick,
     ...props
 }) => {
-    const { open, animate } = useSidebar();
+    const { open, animate } = useSidebarInternal();
     const location = useLocation();
     const isActive = active !== undefined ? active : location.pathname === link.href;
 
@@ -148,15 +212,14 @@ export const SidebarLink = ({
             to={link.href}
             onClick={onClick}
             className={cn(
-                "flex items-center justify-start gap-3 group/sidebar py-3 px-3 rounded-xl transition-all duration-200",
-                isActive
-                    ? "bg-primary/10 text-primary border border-primary/20"
-                    : "text-muted-foreground hover:text-foreground hover:bg-muted",
+                "nav-link w-full group/sidebar transition-all duration-200",
+                !open && animate ? "justify-center px-0" : "justify-start px-3",
+                isActive ? "nav-link-active" : "nav-link-inactive",
                 className
             )}
             {...props}
         >
-            <div className="flex-shrink-0">
+            <div className="shrink-0">
                 {link.icon}
             </div>
             <motion.span
@@ -175,8 +238,13 @@ export const SidebarLink = ({
     );
 };
 
+/**
+ * Divider line component that animates dynamically when Sidebar collapses.
+ *
+ * @returns {React.JSX.Element} The rendered SidebarDivider.
+ */
 export const SidebarDivider = () => {
-    const { open, animate } = useSidebar();
+    const { open, animate } = useSidebarInternal();
     return (
         <motion.div
             animate={{

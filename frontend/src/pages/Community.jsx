@@ -1,6 +1,7 @@
+import { useSearchParams } from 'react-router-dom';
 import { useState, useEffect, useRef, useCallback } from 'react';
-import { useAuth } from '../context/AuthContext';
-import { useSocket } from '../context/SocketContext';
+import { useAuth } from '../hooks/useAuth';
+import { useSocket } from '../hooks/useSocket';
 import { communityApi } from '../services/api';
 import ChannelList from '../components/community/ChannelList';
 import ChatWindow from '../components/community/ChatWindow';
@@ -25,11 +26,26 @@ import { motion, AnimatePresence } from 'framer-motion';
 export default function Community() {
   const { user } = useAuth();
   const { isConnected, onlineUsers, subscribe, joinChannel, leaveChannel } = useSocket();
+  const [searchParams, setSearchParams] = useSearchParams();
 
   // View state
-  const [activeView, setActiveView] = useState('channels'); // channels, posts, dms
+  const [activeView, setActiveView] = useState(searchParams.get('view') || 'channels'); // channels, posts, dms
   const [sidebarOpen, setSidebarOpen] = useState(true);
   const [membersOpen, setMembersOpen] = useState(true);
+
+  // Sync activeView with search parameter changes
+  useEffect(() => {
+    const view = searchParams.get('view');
+    if (view && ['channels', 'posts', 'dms'].includes(view)) {
+      setActiveView(view);
+    }
+  }, [searchParams]);
+
+  // Update URL search parameters when tab is clicked
+  const handleTabChange = (view) => {
+    setActiveView(view);
+    setSearchParams({ view });
+  };
 
   // Channel state
   const [channels, setChannels] = useState([]);
@@ -260,33 +276,32 @@ export default function Community() {
     <div className="h-full bg-background">
       <div className="h-full flex">
         {/* Left Sidebar - Channels/Navigation */}
-        <div className={`${sidebarOpen ? 'w-64' : 'w-0'} bg-background border-r border-border flex flex-col transition-all duration-300 overflow-hidden`}>
-          {/* View Tabs */}
+<div className={`${sidebarOpen ? 'w-72' : 'w-0'} bg-background border-r border-border flex flex-col transition-all duration-300 overflow-hidden shrink-0`}>          {/* View Tabs */}
           <div className="p-3 border-b border-border">
-            <div className="flex gap-1 bg-muted p-1 rounded-lg">
-              <button
-                onClick={() => setActiveView('channels')}
+<div className="flex gap-1 bg-muted p-1 rounded-lg w-full">
+                <button
+                onClick={() => handleTabChange('channels')}
                 className={`flex-1 flex items-center justify-center gap-1.5 py-2 px-3 rounded-md text-sm font-medium transition-colors ${activeView === 'channels' ? 'bg-card text-foreground shadow-sm' : 'text-muted-foreground hover:text-foreground'
                   }`}
               >
                 <MessageSquare className="w-4 h-4" />
-                <span className="hidden lg:inline">Chat</span>
+                <span className="inline">Chat</span>
               </button>
               <button
-                onClick={() => setActiveView('posts')}
+                onClick={() => handleTabChange('posts')}
                 className={`flex-1 flex items-center justify-center gap-1.5 py-2 px-3 rounded-md text-sm font-medium transition-colors ${activeView === 'posts' ? 'bg-card text-foreground shadow-sm' : 'text-muted-foreground hover:text-foreground'
                   }`}
               >
                 <FileText className="w-4 h-4" />
-                <span className="hidden lg:inline">Posts</span>
+                <span className="inline">Posts</span>
               </button>
               <button
-                onClick={() => setActiveView('dms')}
+                onClick={() => handleTabChange('dms')}
                 className={`flex-1 flex items-center justify-center gap-1.5 py-2 px-3 rounded-md text-sm font-medium transition-colors ${activeView === 'dms' ? 'bg-card text-foreground shadow-sm' : 'text-muted-foreground hover:text-foreground'
                   }`}
               >
                 <Mail className="w-4 h-4" />
-                <span className="hidden lg:inline">DMs</span>
+                <span className="inline">DMs</span>
               </button>
             </div>
           </div>
@@ -341,8 +356,8 @@ export default function Community() {
           ) : activeView === 'posts' ? (
             <PostsFeed />
           ) : activeView === 'dms' ? (
-            <div className="flex-1 flex items-center justify-center text-muted-foreground">
-              <div className="text-center">
+            <div className="flex-1 flex items-center justify-center text-muted-foreground bg-background min-w-0">
+              <div className="text-center px-6">
                 <Mail className="w-12 h-12 mx-auto mb-3 text-muted-foreground/30" />
                 <p className="text-muted-foreground">Select a conversation to start messaging</p>
               </div>
