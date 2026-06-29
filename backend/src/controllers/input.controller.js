@@ -4,8 +4,32 @@ import { extractSkills } from "../utils/resumeparser.js";
 import axios from "axios";
 import pdfParse from "pdf-parse";
 
+function parseInputDataPayload(data) {
+  if (!data) {
+    return {};
+  }
+
+  if (typeof data === "object") {
+    return data;
+  }
+
+  try {
+    return JSON.parse(data);
+  } catch {
+    return null;
+  }
+}
+
 async function inputupload(req, res) {
   try {
+    const parsedData = parseInputDataPayload(req.body.data);
+
+    if (parsedData === null) {
+      return res.status(400).json({
+        message: "Invalid JSON format in request body",
+      });
+    }
+
     const user = await userModel.findById(req.user.id);
 
     if (!user) {
@@ -13,8 +37,6 @@ async function inputupload(req, res) {
         message: "User not found",
       });   
     }
-
-    const parsedData = req.body.data ? JSON.parse(req.body.data) : {};
 
     let experienceLevel = "Entry";
 
@@ -104,6 +126,7 @@ async function getinput(req, res) {
 }
 
 export {
+  parseInputDataPayload,
   inputupload,
   getinput,
 };
