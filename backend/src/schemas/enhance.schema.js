@@ -107,6 +107,7 @@ export const resumeScoreSchema = z.object({
   resumeText: z
     .string({ required_error: 'resumeText is required' })
     .min(50, 'resumeText is too short to score meaningfully'),
+  jobRole: z.string().max(120).optional(),
 });
 
 /**
