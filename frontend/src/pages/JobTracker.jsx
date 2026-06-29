@@ -160,6 +160,10 @@ const JobTracker = () => {
     }
   };
 
+  useEffect(() => {
+    setSelectedJobIds(prev => prev.filter(id => trackedJobs.some(job => job.id === id)))
+  }, [trackedJobs])
+
   const fetchStats = async () => {
     try {
       const data = await jobTrackerApi.getStats();
@@ -338,34 +342,87 @@ const JobTracker = () => {
     }
   };
 
-  const handleSaveNote = async (jobId, noteContent) => {
-    const trimmed = noteContent.trim();
-    if (!trimmed) {
-      setNoteEditing(null);
-      setNoteText("");
-      return;
+  const handleBulkStatusUpdate = async () => {
+    if (selectedJobIds.length === 0) {
+      toast.error('Select at least one job first')
+      return
     }
+
     try {
-      const job = trackedJobs.find((j) => j.id === jobId);
-      if (!job) return;
-      await jobTrackerApi.updateStatus(jobId, job.status, trimmed);
-      const newNote = { content: trimmed, createdAt: new Date().toISOString() };
-      const updatedJobs = trackedJobs.map((j) =>
-        j.id === jobId
-          ? { ...j, notes: [...(j.notes || []), newNote] }
-          : j,
-      );
-      setTrackedJobs(updatedJobs);
-      persistTrackerSnapshot(updatedJobs, calculateJobStats(updatedJobs));
-      toast.success("Note saved!");
+      setBulkLoading(true)
+      await jobTrackerApi.bulkUpdate(selectedJobIds, bulkStatus)
+
+      setTrackedJobs(prev =>
+        prev.map(job =>
+          selectedJobIds.includes(job.id)
+            ? { ...job, status: bulkStatus, updatedAt: new Date() }
+            : job
+        )
+      )
+
+      setSelectedJobIds([])
+      toast.success('Selected jobs updated')
+      fetchStats()
     } catch (error) {
-      console.error("Error saving note:", error);
-      toast.error("Failed to save note");
+      console.error('Error updating selected jobs:', error)
+      toast.error('Failed to update selected jobs')
     } finally {
-      setNoteEditing(null);
-      setNoteText("");
+      setBulkLoading(false)
     }
-  };
+  }
+
+  const handleBulkDelete = async () => {
+    if (selectedJobIds.length === 0) {
+      toast.error('Select at least one job first')
+      return
+    }
+
+    if (!window.confirm(`Remove ${selectedJobIds.length} selected job${selectedJobIds.length === 1 ? '' : 's'} from your tracker?`)) {
+      return
+    }
+
+    try {
+      setBulkLoading(true)
+      await jobTrackerApi.bulkDelete(selectedJobIds)
+      setTrackedJobs(prev => prev.filter(job => !selectedJobIds.includes(job.id)))
+      setSelectedJobIds([])
+      toast.success('Selected jobs removed from tracker')
+      fetchStats()
+    } catch (error) {
+      console.error('Error deleting selected jobs:', error)
+      toast.error('Failed to remove selected jobs')
+    } finally {
+      setBulkLoading(false)
+    }
+  }
+
+  const toggleJobSelection = (jobId) => {
+    setSelectedJobIds(prev =>
+      prev.includes(jobId)
+        ? prev.filter(id => id !== jobId)
+        : [...prev, jobId]
+    )
+  }
+
+  const toggleVisibleSelection = () => {
+    const visibleIds = filteredJobs.map(job => job.id)
+    const allVisibleSelected = visibleIds.length > 0 && visibleIds.every(id => selectedJobIds.includes(id))
+
+    setSelectedJobIds(prev => {
+      if (allVisibleSelected) {
+        return prev.filter(id => !visibleIds.includes(id))
+      }
+
+      return Array.from(new Set([...prev, ...visibleIds]))
+    })
+  }
+
+  const filteredJobs = filterStatus === 'all'
+    ? trackedJobs
+    : trackedJobs.filter(job => job.status === filterStatus)
+
+  const visibleSelectedCount = filteredJobs.filter(job => selectedJobIds.includes(job.id)).length
+  const allVisibleSelected = filteredJobs.length > 0 && visibleSelectedCount === filteredJobs.length
 
   const getStatusInfo = (status) => {
     return (
@@ -543,8 +600,55 @@ const JobTracker = () => {
             ))}
           </div>
 
-          {/* Kanban Board */}
-          {trackedJobs.length === 0 ? (
+          {filteredJobs.length > 0 && (
+            <div className="flex flex-col gap-4 sm:flex-row sm:items-center sm:justify-between mb-6 p-4 rounded-xl border border-border bg-background/50">
+              <button
+                onClick={toggleVisibleSelection}
+                className="flex items-center gap-2 text-sm font-medium text-foreground hover:text-primary transition-colors"
+              >
+                {allVisibleSelected ? (
+                  <CheckSquare className="w-5 h-5" />
+                ) : (
+                  <Square className="w-5 h-5" />
+                )}
+                {allVisibleSelected ? 'Clear visible selection' : 'Select visible jobs'}
+              </button>
+
+              <div className="flex flex-col gap-3 sm:flex-row sm:items-center">
+                <span className="text-sm text-muted-foreground">
+                  {selectedJobIds.length} selected
+                </span>
+                <select
+                  value={bulkStatus}
+                  onChange={(e) => setBulkStatus(e.target.value)}
+                  className="px-3 py-2 bg-muted border border-border rounded-lg text-foreground text-sm focus:outline-none focus:border-primary"
+                >
+                  {statusOptions.map(status => (
+                    <option key={status.value} value={status.value}>
+                      {status.icon} {status.label}
+                    </option>
+                  ))}
+                </select>
+                <Button
+                  onClick={handleBulkStatusUpdate}
+                  disabled={selectedJobIds.length === 0 || bulkLoading}
+                  className="whitespace-nowrap"
+                >
+                  Update Selected
+                </Button>
+                <button
+                  onClick={handleBulkDelete}
+                  disabled={selectedJobIds.length === 0 || bulkLoading}
+                  className="px-4 py-2 rounded-lg bg-red-600/10 hover:bg-red-600/20 text-red-500 font-medium transition-colors disabled:opacity-50 disabled:cursor-not-allowed"
+                >
+                  Delete Selected
+                </button>
+              </div>
+            </div>
+          )}
+
+          {/* Jobs List */}
+          {filteredJobs.length === 0 ? (
             <Card className="p-12 text-center bg-background/50 border-border">
               <div className="max-w-md mx-auto">
                 <Briefcase className="w-16 h-16 text-muted-foreground/80 mx-auto mb-4" />

@@ -1038,12 +1038,34 @@ export const jobTrackerApi = {
     return handleResponse(response)
   },
 
+  // Bulk update job application status
+  async bulkUpdate(jobIds, status) {
+    const headers = await getAuthHeaders()
+    const response = await fetch(`${API_BASE}/job-tracker/bulk-update`, {
+      method: 'PUT',
+      headers,
+      body: JSON.stringify({ jobIds, status })
+    })
+    return handleResponse(response)
+  },
+
   // Delete tracked job
   async delete(jobId) {
     const headers = await getAuthHeaders()
     const response = await fetch(`${API_BASE}/job-tracker/${jobId}`, {
       method: 'DELETE',
       headers
+    })
+    return handleResponse(response)
+  },
+
+  // Bulk delete tracked jobs
+  async bulkDelete(jobIds) {
+    const headers = await getAuthHeaders()
+    const response = await fetch(`${API_BASE}/job-tracker/bulk-delete`, {
+      method: 'DELETE',
+      headers,
+      body: JSON.stringify({ jobIds })
     })
     return handleResponse(response)
   },
