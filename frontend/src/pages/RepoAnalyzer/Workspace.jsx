@@ -1,6 +1,6 @@
 import { useState } from 'react';
 import { motion, AnimatePresence } from 'framer-motion';
-import { GithubIcon, Loader2, GitMerge } from 'lucide-react';
+import { Github, Loader2, GitMerge } from 'lucide-react';
 import GraphCanvas from '../../components/analyzer/GraphCanvas';
 import FileDrawer from '../../components/analyzer/FileDrawer';
 import ChatPanel from '../../components/analyzer/ChatPanel';
@@ -103,3 +103,4 @@ export default function RepoAnalyzerWorkspace() {
     </div>
   );
 }
+

@@ -1,6 +1,6 @@
 import React from 'react';
 import { motion } from 'framer-motion';
-import { GithubIcon, Linkedin, Mail, Twitter } from 'lucide-react';
+import { Github, Linkedin, Mail, Twitter } from 'lucide-react';
 
 const ease = [0.22, 1, 0.36, 1];
 
@@ -76,3 +76,4 @@ export default function Contact({ data }) {
     </footer>
   );
 }
+

@@ -1,7 +1,7 @@
+import { usePortfolio } from "../../../../context/PortfolioContext";
 import React from 'react';
 import { motion } from 'framer-motion';
-import { GithubIcon, Linkedin, Twitter, ExternalLink, Code } from 'lucide-react';
-import data from '../../../../data/dummy_data.json';
+import { Github, Linkedin, Twitter, ExternalLink, Code } from 'lucide-react';
 
 // Minimal animation variants
 const fadeInUp = {
@@ -15,6 +15,8 @@ const staggerContainer = {
 };
 
 export default function GridStrict() {
+  const { portfolioData: data } = usePortfolio();
+
   const { personal, socials, skills, projects, experience, testimonials, stats } = data;
 
   return (

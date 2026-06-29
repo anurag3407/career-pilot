@@ -1,5 +1,5 @@
 import express from 'express';
-import { enhanceResume, generateSummary, suggestImprovements, analyzeATSScore, analyzeResumeComprehensive, analyzeBulletPoints, generateBeforeAfter, getVerbLists, getSystemPrompt } from '../config/langchain.js';
+import { enhanceResume, generateSummary, suggestImprovements, analyzeATSScore, analyzeResumeComprehensive, analyzeBulletPoints, generateBeforeAfter, getVerbLists, getSystemPrompt, analyzeSkillGap, translateResume, tailorResume } from '../config/langchain.js';
 import { computeATSScore } from '../services/atsScorer.js';
 import { generateEmails } from '../services/emailGeneratorService.js';
 import { predictTrajectory } from '../services/ai/careerTrajectory.js';
@@ -18,14 +18,26 @@ import {
   generateEmailSchema,
   optimizeLinkedInSchema,
   resumeScoreSchema,
+  skillGapSchema,
+  translateResumeSchema,
+  tailorResumeSchema,
 } from '../schemas/enhance.schema.js';
 
 const router = express.Router();
+
+const MAX_RESUME_TEXT_LENGTH = 50_000;
+
+function assertResumeTextWithinLimit(resumeText) {
+  if (typeof resumeText === 'string' && resumeText.length > MAX_RESUME_TEXT_LENGTH) {
+    throw new ApiError(413, 'Payload Too Large: Resume text exceeds maximum allowed length.');
+  }
+}
 
 // Score a resume and return structured feedback
 // POST /api/enhance/resume-score
 router.post('/resume-score', verifyToken, extractAIProvider, aiRateLimiter, validate(resumeScoreSchema), asyncHandler(async (req, res) => {
   const { resumeText, jobRole } = req.body;
+  assertResumeTextWithinLimit(resumeText);
   const targetRole = jobRole || 'Software Engineer'; // Fallback if not provided
 
   try {
@@ -61,20 +73,10 @@ Return ONLY valid JSON. No markdown fences, no extra text.`;
       qualitativeData = JSON.parse(text);
     } catch (parseErr) {
       console.error('Resume score JSON parse error:', parseErr, 'Raw text:', text);
-      qualitativeData = {
-        sections: {
-          summary: { feedback: 'Consider making your summary more impactful.' },
-          skills: { feedback: 'Ensure skills match the target job description.' },
-          experience: { feedback: 'Use strong action verbs and metrics.' },
-          education: { feedback: 'Include relevant coursework or GPA if applicable.' },
-          projects: { feedback: 'Detail the technologies used and outcomes.' }
-        },
-        topSuggestions: [
-          'Add more quantifiable metrics to your experience.',
-          'Tailor keywords to the specific job role.',
-          'Ensure formatting is clean and easy to read.'
-        ]
-      };
+      throw new ApiError(
+        502,
+        'AI service returned an invalid response. Please try again in a moment.'
+      );
     }
 
     // 3. Map into the format expected by the frontend
@@ -129,6 +131,7 @@ router.post('/', verifyToken, extractAIProvider, aiRateLimiter, validate(enhance
   if (!resumeText || !resumeText.trim()) {
     throw new ApiError(400, 'Resume text is required');
   }
+  assertResumeTextWithinLimit(resumeText);
 
   if (!preferences || !preferences.jobRole) {
     throw new ApiError(400, 'Job role preference is required');
@@ -169,6 +172,9 @@ router.post('/summary', verifyToken, extractAIProvider, aiRateLimiter, validate(
   if (!resumeText || !resumeText.trim()) {
     throw new ApiError(400, 'Resume text is required');
   }
+  assertResumeTextWithinLimit(resumeText);
+
+
 
   if (!jobRole) {
     throw new ApiError(400, 'Job role is required');
@@ -198,6 +204,7 @@ router.post('/suggestions', verifyToken, extractAIProvider, aiRateLimiter, valid
   if (!resumeText || !resumeText.trim()) {
     throw new ApiError(400, 'Resume text is required');
   }
+  assertResumeTextWithinLimit(resumeText);
 
   if (!jobRole) {
     throw new ApiError(400, 'Job role is required');
@@ -227,6 +234,7 @@ router.post('/ats-analysis', verifyToken, extractAIProvider, aiRateLimiter, vali
   if (!resumeText || !resumeText.trim()) {
     throw new ApiError(400, 'Resume text is required');
   }
+  assertResumeTextWithinLimit(resumeText);
 
   if (!jobRole) {
     throw new ApiError(400, 'Job role is required');
@@ -254,6 +262,7 @@ router.post('/comprehensive-analysis', verifyToken, extractAIProvider, aiRateLim
   if (!resumeText || !resumeText.trim()) {
     throw new ApiError(400, 'Resume text is required');
   }
+  assertResumeTextWithinLimit(resumeText);
 
   if (!jobRole) {
     throw new ApiError(400, 'Job role is required');
@@ -281,6 +290,7 @@ router.post('/analyze-bullets', verifyToken, extractAIProvider, aiRateLimiter, v
   if (!resumeText || !resumeText.trim()) {
     throw new ApiError(400, 'Resume text is required');
   }
+  assertResumeTextWithinLimit(resumeText);
 
   if (!jobRole) {
     throw new ApiError(400, 'Job role is required');
@@ -308,6 +318,7 @@ router.post('/before-after', verifyToken, extractAIProvider, aiRateLimiter, vali
   if (!resumeText || !resumeText.trim()) {
     throw new ApiError(400, 'Resume text is required');
   }
+  assertResumeTextWithinLimit(resumeText);
 
   if (!jobRole) {
     throw new ApiError(400, 'Job role is required');
@@ -345,6 +356,7 @@ router.post('/generate-email', verifyToken, extractAIProvider, aiRateLimiter, va
   if (!resume || !jobDesc) {
     throw new ApiError(400, 'Resume and Job Description are required');
   }
+  assertResumeTextWithinLimit(resume);
 
   try {
     const result = await generateEmails(resume, jobDesc, tone || 'Professional', req.aiProvider);
@@ -379,6 +391,76 @@ router.post('/optimize-linkedin', verifyToken, extractAIProvider, aiRateLimiter,
   res.json(result);
 }));
 
+// Analyze skill gap between resume and job description
+router.post('/skill-gap', verifyToken, extractAIProvider, aiRateLimiter, validate(skillGapSchema), asyncHandler(async (req, res) => {
+  const { resumeText, jobDescription } = req.body;
+  assertResumeTextWithinLimit(resumeText);
+
+  try {
+    const result = await analyzeSkillGap(resumeText, jobDescription, req.aiProvider);
+
+    res.json({
+      success: true,
+      data: result.analysis,
+      provider: result.provider,
+      providerSource: req.aiProviderSource
+    });
+  } catch (error) {
+    console.error('Skill gap analysis error:', error);
+    throw new ApiError(500, 'Failed to analyze skill gap. Please try again.');
+  }
+}));
+
+// Translate a resume into a target language while preserving formatting.
+// Powers the "Translate" tool in the resume viewer — useful for international
+// job applications.
+router.post('/translate', verifyToken, extractAIProvider, aiRateLimiter, validate(translateResumeSchema), asyncHandler(async (req, res) => {
+  const { resumeText, targetLanguage, sourceLanguage } = req.body;
+  assertResumeTextWithinLimit(resumeText);
+
+  try {
+    const result = await translateResume(resumeText, targetLanguage, sourceLanguage, req.aiProvider);
+
+    res.json({
+      success: true,
+      data: {
+        translatedText: result.translatedText,
+        targetLanguage: result.targetLanguage,
+        sourceLanguage: result.sourceLanguage,
+      },
+      provider: result.provider,
+      providerSource: req.aiProviderSource,
+    });
+  } catch (error) {
+    console.error('Resume translation error:', error);
+    throw new ApiError(500, 'Failed to translate resume. Please try again.');
+  }
+}));
+
+// One-Click Resume Tailor — rewrites the resume to match a job description.
+// Powers the "Tailor to this job" tool in the resume viewer.
+router.post('/tailor', verifyToken, extractAIProvider, aiRateLimiter, validate(tailorResumeSchema), asyncHandler(async (req, res) => {
+  const { resumeText, jobDescription, jobRole } = req.body;
+  assertResumeTextWithinLimit(resumeText);
+
+  try {
+    const result = await tailorResume(resumeText, jobDescription, jobRole, req.aiProvider);
+
+    res.json({
+      success: true,
+      data: {
+        tailoredText: result.tailoredText,
+        jobRole: jobRole || null,
+      },
+      provider: result.provider,
+      providerSource: req.aiProviderSource,
+    });
+  } catch (error) {
+    console.error('Resume tailoring error:', error);
+    throw new ApiError(500, 'Failed to tailor resume. Please try again.');
+  }
+}));
+
 // Streaming endpoint for resume enhancement
 router.post('/stream', verifyToken, extractAIProvider, aiRateLimiter, asyncHandler(async (req, res) => {
   const { resumeText, preferences } = req.body;
@@ -394,6 +476,7 @@ router.post('/stream', verifyToken, extractAIProvider, aiRateLimiter, asyncHandl
   if (!resumeText || !resumeText.trim()) {
     throw new ApiError(400, 'Resume text is required');
   }
+  assertResumeTextWithinLimit(resumeText);
 
   if (!preferences || !preferences.jobRole) {
     throw new ApiError(400, 'Job role preference is required');

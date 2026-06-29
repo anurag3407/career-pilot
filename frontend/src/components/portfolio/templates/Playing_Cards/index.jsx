@@ -1,4 +1,6 @@
+import { usePortfolio } from "../../../../context/PortfolioContext";
 import React, { useState, useEffect } from 'react';
+import data from '../../../../data/dummy_data.json';
 import { motion } from 'framer-motion';
 import Hero from './Hero';
 import About from './About';
@@ -7,15 +9,59 @@ import Projects from './Projects';
 import Experience from './Experience';
 import Testimonials from './Testimonials';
 import Contact from './Contact';
-import data from '../../../../data/dummy_data.json';
 
-const PlayingCardsPortfolio = () => {
+const PlayingCardsPortfolio = ({ portfolioData }) => {
+  const { portfolioData: dummyData } = usePortfolio();
+
   const [isLoaded, setIsLoaded] = useState(false);
   const [activeSection, setActiveSection] = useState('home');
 
   useEffect(() => {
     setIsLoaded(true);
   }, []);
+
+  // Merge AI data with dummyData
+  const personal = {
+    ...dummyData.personal,
+    ...(portfolioData?.hero?.subtitle && { name: portfolioData.hero.subtitle }),
+    ...(portfolioData?.hero?.title && { title: portfolioData.hero.title }),
+    ...(portfolioData?.hero?.tagline && { tagline: portfolioData.hero.tagline }),
+    ...(portfolioData?.about?.bio && { bio: portfolioData.about.bio }),
+  };
+
+  const socials = { ...dummyData.socials, ...portfolioData?.socials };
+
+  let skills = dummyData.skills;
+  if (portfolioData?.skills?.length > 0) {
+    if (typeof portfolioData.skills[0] === 'string') {
+      const categories = ["Core", "Technical", "Additional"];
+      skills = portfolioData.skills.map((s, i) => ({
+        name: s,
+        level: Math.floor(Math.random() * 20) + 75,
+        category: categories[i % categories.length]
+      }));
+    } else {
+      skills = portfolioData.skills;
+    }
+  }
+
+  let projects = dummyData.projects;
+  if (portfolioData?.projects?.length > 0) {
+    projects = portfolioData.projects.map((p, i) => ({
+      title: p.title || p.name || 'Project',
+      description: p.description || '',
+      techStack: p.technologies || p.techStack || [],
+      image: p.image || dummyData.projects[i % dummyData.projects.length].image,
+      liveUrl: p.liveUrl || "#",
+      githubUrl: p.githubUrl || "#"
+    }));
+  }
+
+  const experience = portfolioData?.experience?.length > 0 ? portfolioData.experience : dummyData.experience;
+  const testimonials = portfolioData?.testimonials?.length > 0 ? portfolioData.testimonials : dummyData.testimonials;
+  const stats = portfolioData?.stats || dummyData.stats;
+
+  const data = { personal, socials, skills, projects, experience, testimonials, stats };
 
   if (!data || !data.personal) {
     return (

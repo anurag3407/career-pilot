@@ -1,4 +1,4 @@
-import { GithubIcon, Heart, Leaf, Linkedin, Mail, MapPin, Mountain, TreePine, Twitter } from "lucide-react";
+import { Github, Heart, Leaf, Linkedin, Mail, MapPin, Mountain, TreePine, Twitter } from "lucide-react";
 
 const skills = ["React", "Node.js", "TypeScript", "Python", "Tailwind CSS", "MongoDB", "GraphQL", "Docker"];
 
@@ -129,3 +129,4 @@ export default function About() {
     </section>
   );
 }
+

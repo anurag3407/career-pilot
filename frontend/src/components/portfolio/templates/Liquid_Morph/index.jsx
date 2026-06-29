@@ -1,6 +1,6 @@
+import { usePortfolio } from "../../../../context/PortfolioContext";
 import React from 'react';
 import { motion } from 'framer-motion';
-import data from '../../../../data/dummy_data.json';
 
 import Hero from './Hero';
 import About from './About';
@@ -49,6 +49,8 @@ const SectionWrapper = ({ children, id, index }) => (
 );
 
 export default function LiquidMorphPortfolio() {
+  const { portfolioData: data } = usePortfolio();
+
   return (
     <div className="min-h-screen bg-[#0B0B0C] text-slate-200 font-sans selection:bg-indigo-500 selection:text-white overflow-x-hidden relative">
       

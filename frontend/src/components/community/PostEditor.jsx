@@ -484,16 +484,13 @@ const removePollOption = (index) => {
               </button>
               <button
                 type="button"
-                className="p-2 text-muted-foreground hover:text-foreground hover:bg-muted rounded-lg"
-                title="Add link"
-              >
-                <LinkIcon className="w-5 h-5" />
-              </button>
-              <button
-                type="button"
                 onClick={() => setShowPoll(!showPoll)}
                 aria-label={showPoll ? 'Remove poll' : 'Add poll'}
-                className="p-2 text-muted-foreground hover:text-foreground hover:bg-muted rounded-lg"
+                className={`p-2 rounded-lg transition-colors ${
+                  showPoll
+                    ? 'text-primary bg-primary/10'
+                    : 'text-muted-foreground hover:text-foreground hover:bg-muted'
+                }`}
                 title="Add Poll"
               >
                 📊

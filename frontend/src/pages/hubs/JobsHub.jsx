@@ -1,5 +1,5 @@
 import { useState, useEffect } from 'react'
-import { Briefcase, Search, Bell, Star, Send, MessageSquare, CheckCircle2, Building2, Eye, ExternalLink } from 'lucide-react'
+import { Briefcase, Search, Bell, Star, Send, MessageSquare, CheckCircle2, Building2, Eye, ExternalLink, Mail, LineChart } from 'lucide-react'
 import { jobTrackerApi } from '../../services/api'
 import HubLayout from '../../components/HubLayout'
 import ToolCard from '../../components/ToolCard'
@@ -90,6 +90,27 @@ export default function JobsHub() {
         icon={Building2}
         title="Company Research"
         description="Explore detailed insights about hiring organizations and specific roles."
+        color="primary"
+      />
+      <ToolCard
+        to="/email-generator"
+        icon={Mail}
+        title="Email Generator"
+        description="Draft professional cold emails, application follow-ups, and negotiation letters."
+        color="emerald-500"
+      />
+      <ToolCard
+        to="/outreach"
+        icon={Send}
+        title="Cold Outreach"
+        description="Manage cold outreach campaigns and track email responses."
+        color="secondary"
+      />
+      <ToolCard
+        to="/salary-estimate"
+        icon={LineChart}
+        title="Salary Estimator"
+        description="Estimate salary ranges for specific roles and locations."
         color="primary"
       />
 

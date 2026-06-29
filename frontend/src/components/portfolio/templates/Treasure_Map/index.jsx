@@ -1,7 +1,7 @@
+import { usePortfolio } from "../../../../context/PortfolioContext";
 import React, { useState } from 'react';
 import { motion } from 'framer-motion';
-import { GithubIcon, Linkedin, Twitter, Mail, ExternalLink, MapPin, Compass, Skull, Zap } from 'lucide-react';
-import data from '../../../../data/dummy_data.json';
+import { Github, Linkedin, Twitter, Mail, ExternalLink, MapPin, Compass, Skull, Zap } from 'lucide-react';
 
 /**
  * Treasure Map Portfolio Template
@@ -22,6 +22,8 @@ const MapDecoration = ({ className = '' }) => (
 
 // Dotted Path Component
 const DottedPath = ({ from, to }) => {
+  const { portfolioData: data } = usePortfolio();
+
   const distance = Math.sqrt(Math.pow(to.x - from.x, 2) + Math.pow(to.y - from.y, 2));
   const angle = Math.atan2(to.y - from.y, to.x - from.x);
   
@@ -216,6 +218,8 @@ const About = () => (
 
 // Skills Section
 const Skills = () => {
+  const { portfolioData: data } = usePortfolio();
+
   const categories = [...new Set(data.skills.map((s) => s.category))];
 
   return (
@@ -551,6 +555,8 @@ const Contact = () => (
 
 // Main Component
 export default function TreasureMap() {
+  const { portfolioData: data } = usePortfolio();
+
   return (
     <div
       className="min-h-screen bg-gradient-to-b from-yellow-100 via-yellow-50 to-yellow-100 text-yellow-900 overflow-x-hidden"
