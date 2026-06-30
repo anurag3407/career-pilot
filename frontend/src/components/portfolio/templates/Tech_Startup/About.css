@@ -1,4 +1,4 @@
-@import url('https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500&family=JetBrains+Mono:wght@400;500&family=Playfair+Display:ital,wght@1,400;1,700&display=swap');
+@import 'https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500&family=JetBrains+Mono:wght@400;500&family=Playfair+Display:ital,wght@1,400;1,700&display=swap';
 
 /* Scoped to .tech-startup-about instead of :root to prevent global variable pollution */
 .tech-startup-about {
@@ -15,7 +15,7 @@
   --border-emphasis: rgba(224, 185, 106, 0.38);
 
   --font-display: 'Playfair Display', Georgia, serif;
-  --font-body: 'Inter', system-ui, sans-serif;
+  --font-body: Inter, system-ui, sans-serif;
   --font-mono: 'JetBrains Mono', monospace;
 }
 
@@ -34,10 +34,10 @@
 .animated-underline-path {
   stroke-dasharray: 1;
   stroke-dashoffset: 1;
-  animation: drawUnderline 1.2s cubic-bezier(0.4, 0, 0.2, 1) 0.3s forwards;
+  animation: draw-underline 1.2s cubic-bezier(0.4, 0, 0.2, 1) 0.3s forwards;
 }
 
-@keyframes drawUnderline {
+@keyframes draw-underline {
   to {
     stroke-dashoffset: 0;
   }

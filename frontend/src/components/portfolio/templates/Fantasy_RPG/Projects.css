@@ -1,13 +1,13 @@
-@import url('https://fonts.googleapis.com/css2?family=Cinzel:wght@600;800;900&family=MedievalSharp&family=Inter:wght@400;500;600&display=swap');
+@import 'https://fonts.googleapis.com/css2?family=Cinzel:wght@600;800;900&family=MedievalSharp&family=Inter:wght@400;500;600&display=swap';
 
 .font-fantasy-title {
-  font-family: 'Cinzel', serif;
+  font-family: Cinzel, serif;
 }
 .font-fantasy-game {
-  font-family: 'MedievalSharp', cursive;
+  font-family: MedievalSharp, cursive;
 }
 .font-fantasy-body {
-  font-family: 'Inter', sans-serif;
+  font-family: Inter, sans-serif;
 }
 
 /* Renamed from gold-shimmer to avoid collision with ResumeCTA.css */
@@ -31,7 +31,7 @@
   50%       { transform: translateY(-8px) rotate(3deg); }
 }
 
-.gold-border-glow {
+.rpg-proj-gold-border-glow {
   animation: rpg-proj-gold-shimmer 4s infinite ease-in-out;
 }
 
@@ -39,7 +39,7 @@
   animation: dice-spin 0.6s infinite linear;
 }
 
-.floating-rune {
+.rpg-proj-floating-rune {
   animation: rpg-proj-float-runes 5s infinite ease-in-out;
 }
 

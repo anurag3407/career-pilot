@@ -1,8 +1,8 @@
-@import url('https://fonts.googleapis.com/css2?family=Cinzel:wght@600;800;900&family=MedievalSharp&family=Inter:wght@400;500;600&display=swap');
+@import 'https://fonts.googleapis.com/css2?family=Cinzel:wght@600;800;900&family=MedievalSharp&family=Inter:wght@400;500;600&display=swap';
 
-.font-fantasy-title { font-family: 'Cinzel', serif; }
-.font-fantasy-game  { font-family: 'MedievalSharp', cursive; }
-.font-fantasy-body  { font-family: 'Inter', sans-serif; }
+.font-fantasy-title { font-family: Cinzel, serif; }
+.font-fantasy-game  { font-family: MedievalSharp, cursive; }
+.font-fantasy-body  { font-family: Inter, sans-serif; }
 
 /* Renamed from gold-shimmer to avoid collision with Projects.css */
 @keyframes rpg-cta-gold-shimmer {
@@ -22,8 +22,8 @@
   50%       { box-shadow: 0 0 30px rgba(212,175,55,0.7), inset 0 1px 0 rgba(255,215,0,0.4); }
 }
 
-.gold-border-glow { animation: rpg-cta-gold-shimmer 4s infinite ease-in-out; }
-.floating-rune    { animation: rpg-cta-float-runes 5s infinite ease-in-out; }
+.rpg-cta-gold-border-glow { animation: rpg-cta-gold-shimmer 4s infinite ease-in-out; }
+.rpg-cta-floating-rune    { animation: rpg-cta-float-runes 5s infinite ease-in-out; }
 .cta-beacon       { animation: cta-beacon 2.5s infinite ease-in-out; }
 
 .metal-corner-tl::before {

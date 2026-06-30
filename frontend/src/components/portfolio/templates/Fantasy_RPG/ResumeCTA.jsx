@@ -88,11 +88,11 @@ export default function ResumeCTA({
           {/* ── Section Header ── */}
           <div className="text-center">
             <div className="flex items-center justify-center gap-3 mb-3">
-              <Scroll className="w-5 h-5 text-amber-500 floating-rune" />
+              <Scroll className="w-5 h-5 text-amber-500 rpg-cta-floating-rune" />
               <span className="font-fantasy-game text-xs tracking-[0.3em] text-amber-500/80 uppercase">
                 Guild Registry · Official Document
               </span>
-              <Scroll className="w-5 h-5 text-amber-500 floating-rune" style={{ animationDelay: '1s' }} />
+              <Scroll className="w-5 h-5 text-amber-500 rpg-cta-floating-rune" style={{ animationDelay: '1s' }} />
             </div>
             <h2 className="font-fantasy-title text-4xl sm:text-5xl font-black text-amber-100 tracking-wide uppercase mb-3"
               style={{ textShadow: '0 0 30px rgba(212,175,55,0.4)' }}>
@@ -106,7 +106,7 @@ export default function ResumeCTA({
           </div>
 
           {/* ── Main Parchment Card ── */}
-          <div className="w-full bg-[#121118]/90 border-2 border-[#302718] rounded-xl p-8 sm:p-10 shadow-[0_10px_40px_rgba(0,0,0,0.9)] relative gold-border-glow">
+          <div className="w-full bg-[#121118]/90 border-2 border-[#302718] rounded-xl p-8 sm:p-10 shadow-[0_10px_40px_rgba(0,0,0,0.9)] relative rpg-cta-gold-border-glow">
             <div className="metal-corner-tl" />
             <div className="metal-corner-tr" />
             <div className="metal-corner-bl" />

@@ -1,6 +1,7 @@
 import React, { useRef, useEffect, useState } from 'react';
 import { usePortfolio } from '../../../../context/PortfolioContext';
 import { MessageSquare, Quote, Star, Award } from 'lucide-react';
+import "./Projects.css";
 
 export default function Testimonials() {
   const { portfolioData } = usePortfolio();
@@ -66,7 +67,7 @@ export default function Testimonials() {
           {data.map((testimonial, index) => (
             <div 
               key={index}
-              className="bg-[#121118]/90 border-2 border-[#302718] p-8 rounded-xl shadow-[0_10px_30px_rgba(0,0,0,0.8)] relative gold-border-glow group"
+              className="bg-[#121118]/90 border-2 border-[#302718] p-8 rounded-xl shadow-[0_10px_30px_rgba(0,0,0,0.8)] relative rpg-proj-gold-border-glow group"
             >
               {/* Corner Ornaments */}
               <div className="metal-corner-tl" />

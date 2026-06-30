@@ -12,7 +12,6 @@ const { personal, socials, skills, projects, experience, stats, testimonials } =
     <div className="min-h-screen bg-zinc-900 text-zinc-300 font-mono overflow-x-hidden selection:bg-zinc-700 selection:text-white">
       
 
-
       <div className="charcoal-bg min-h-screen">
         <div className="max-w-5xl mx-auto px-6 py-20 space-y-32">
           

@@ -296,7 +296,7 @@ export default function Projects({
         <div className="relative z-10 max-w-7xl mx-auto flex flex-col items-center">
           
           {/* ──────────────── CHARACTER STATUS HUD (RPG Dashboard) ──────────────── */}
-          <div className="w-full max-w-5xl bg-[#121118]/90 border-2 border-[#302718] p-4 rounded-xl mb-12 shadow-[0_10px_30px_rgba(0,0,0,0.8)] relative gold-border-glow">
+          <div className="w-full max-w-5xl bg-[#121118]/90 border-2 border-[#302718] p-4 rounded-xl mb-12 shadow-[0_10px_30px_rgba(0,0,0,0.8)] relative rpg-proj-gold-border-glow">
             {/* HUD Metal Ornaments */}
             <div className="metal-corner-tl" />
             <div className="metal-corner-tr" />
@@ -680,7 +680,7 @@ export default function Projects({
           <div className="w-full max-w-5xl mt-16 flex flex-col sm:flex-row items-center justify-between gap-6 border-t border-dashed border-amber-900/40 pt-8">
             {/* Spinning Coin / XP Decorator */}
             <div className="flex items-center gap-3">
-              <div className="w-7 h-7 bg-gradient-to-br from-amber-400 to-amber-700 border border-amber-200 rounded-full flex items-center justify-center shadow-[inset_0_1px_3px_rgba(255,255,255,0.4)] animate-[spin_5s_linear_infinite] floating-rune">
+              <div className="w-7 h-7 bg-gradient-to-br from-amber-400 to-amber-700 border border-amber-200 rounded-full flex items-center justify-center shadow-[inset_0_1px_3px_rgba(255,255,255,0.4)] animate-[spin_5s_linear_infinite] rpg-proj-floating-rune">
                 <span className="font-fantasy-game text-[10px] text-amber-950 font-black">g</span>
               </div>
               <p className="font-fantasy-game text-xs text-amber-500/60 uppercase tracking-wide">
