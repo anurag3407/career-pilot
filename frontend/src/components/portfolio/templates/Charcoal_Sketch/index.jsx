@@ -1,5 +1,6 @@
 import { usePortfolio } from "../../../../context/PortfolioContext";
 import React from 'react';
+import "./styles.css";
 import { motion } from 'framer-motion';
 import { Github, Linkedin, Twitter, Mail, ExternalLink, Briefcase, Award } from 'lucide-react';
 
@@ -10,23 +11,7 @@ const { personal, socials, skills, projects, experience, stats, testimonials } =
   return (
     <div className="min-h-screen bg-zinc-900 text-zinc-300 font-mono overflow-x-hidden selection:bg-zinc-700 selection:text-white">
       
-      {/* 
-        INLINE STYLES FOR CHARCOAL EFFECT 
-      */}
-      <style dangerouslySetInnerHTML={{__html: `
-        .sketch-box {
-          border: 2px solid #71717a;
-          border-radius: 255px 15px 225px 15px/15px 225px 15px 255px;
-          background: rgba(39, 39, 42, 0.4);
-        }
-        .sketch-text {
-          text-shadow: 2px 2px 4px rgba(0,0,0,0.5);
-        }
-        .charcoal-bg {
-          background-image: radial-gradient(#3f3f46 1px, transparent 1px);
-          background-size: 24px 24px;
-        }
-      `}} />
+
 
       <div className="charcoal-bg min-h-screen">
         <div className="max-w-5xl mx-auto px-6 py-20 space-y-32">

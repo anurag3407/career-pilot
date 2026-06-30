@@ -1,0 +1,21 @@
+@keyframes sonar-sweep-rot {
+  0% { transform: rotate(0deg); }
+  100% { transform: rotate(360deg); }
+}
+@keyframes radar-blip-pulse {
+  0% { transform: scale(0.6); opacity: 1; }
+  100% { transform: scale(2.8); opacity: 0; }
+}
+@keyframes text-glow-pulse {
+  0%, 100% { text-shadow: 0 0 4px rgba(34,211,238,0.4); }
+  50% { text-shadow: 0 0 12px rgba(34,211,238,0.8); }
+}
+.sonar-sweep-line {
+  animation: sonar-sweep-rot 8s linear infinite;
+}
+.radar-ping-ring {
+  animation: radar-blip-pulse 2s cubic-bezier(0.1, 0.8, 0.3, 1) infinite;
+}
+.glow-cyan-text {
+  animation: text-glow-pulse 3s infinite;
+}

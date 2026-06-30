@@ -1,0 +1,17 @@
+@import url('https://fonts.googleapis.com/css2?family=Caveat:wght@400..700&display=swap');
+.font-handwriting { font-family: 'Caveat', cursive; }
+
+.corkboard-pattern {
+  background-color: #dcb382;
+  background-image: url("data:image/svg+xml,%3Csvg width='40' height='40' viewBox='0 0 40 40' xmlns='http://www.w3.org/2000/svg'%3E%3Cpath d='M20 20.5V18H0v-2h20v-2H0v-2h20v-2H0V8h20V6H0V4h20V2H0V0h22v20h2V0h2v20h2V0h2v20h2V0h2v20h2V0h2v20h2v2H20v-1.5zM0 20h2v20H0V20zm4 0h2v20H4V20zm4 0h2v20H8V20zm4 0h2v20h-2V20zm4 0h2v20h-2V20zm4 4h20v2H20v-2zm0 4h20v2H20v-2zm0 4h20v2H20v-2zm0 4h20v2H20v-2z' fill='%23b98c56' fill-opacity='0.15' fill-rule='evenodd'/%3E%3C/svg%3E");
+}
+
+.cork-texture {
+   background: radial-gradient(circle, transparent 20%, #dcb382 20%, #dcb382 80%, transparent 80%, transparent), radial-gradient(circle, transparent 20%, #dcb382 20%, #dcb382 80%, transparent 80%, transparent) 25px 25px, linear-gradient(#b98c56 2px, transparent 2px) 0 -1px, linear-gradient(90deg, #b98c56 2px, #dcb382 2px) -1px 0;
+   background-size: 50px 50px, 50px 50px, 25px 25px, 25px 25px;
+   opacity: 0.05;
+   position: fixed;
+   inset: 0;
+   pointer-events: none;
+   z-index: 0;
+}
