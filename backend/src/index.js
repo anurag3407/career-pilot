@@ -81,6 +81,7 @@ import {
 import { startOutreachWorker } from './services/outreachQueue.js';
 import { getSafeConfig } from './utils/safeConfig.js';
 import { validateEmailConfig } from './utils/emailConfig.js';
+import { scheduleDeadlineReminders } from './services/deadlineReminderService.js';
 
 // ==========================================================================
 // Configuration validation - Check for required API keys (dev only)
@@ -399,6 +400,12 @@ const startServer = async () => {
       startOutreachWorker();
     } catch (outreachErr) {
       console.warn('⚠️ Outreach worker initialization skipped:', outreachErr.message);
+    }
+
+    try {
+      scheduleDeadlineReminders();
+    } catch (reminderError) {
+      console.warn('⚠️ Deadline reminder scheduler initialization skipped:', reminderError.message);
     }
 
   } catch (error) {

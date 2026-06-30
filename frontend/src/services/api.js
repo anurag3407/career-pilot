@@ -1067,6 +1067,17 @@ export const jobTrackerApi = {
       headers
     })
     return handleResponse(response)
+  },
+
+  // Update job application deadline (null to remove)
+  async updateDeadline(jobId, deadline) {
+    const headers = await getAuthHeaders()
+    const response = await fetch(`${API_BASE}/job-tracker/${jobId}/deadline`, {
+      method: 'PATCH',
+      headers,
+      body: JSON.stringify({ deadline })
+    })
+    return handleResponse(response)
   }
 }
 
