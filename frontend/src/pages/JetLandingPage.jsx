@@ -62,7 +62,7 @@ const menuItemVariants = {
             <div className={`w-full max-w-7xl py-2 flex items-center justify-between transition-all duration-300 ${scrolled?'md:px-8':'md:px-20'}`}>
               <Link to="/" className="text-3xl text-[#B08D57] flex items-center gap-2  font-black">
                 <img src="/speed.png" alt="logo" className="w-18 h-18 md:w-12 md:h-12 object-contain" />
-                <span className="hidden md:block">CarrerPilot</span>
+                <span className="hidden md:block">CareerPilot</span>
               </Link>
               
               {/* Desktop Menu */}
