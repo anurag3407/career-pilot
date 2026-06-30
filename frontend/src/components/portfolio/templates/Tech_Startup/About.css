@@ -15,7 +15,7 @@
   --border-emphasis: rgba(224, 185, 106, 0.38);
 
   --font-display: 'Playfair Display', Georgia, serif;
-  --font-body: Inter, system-ui, sans-serif;
+  --font-body: 'Inter', system-ui, sans-serif;
   --font-mono: 'JetBrains Mono', monospace;
 }
 

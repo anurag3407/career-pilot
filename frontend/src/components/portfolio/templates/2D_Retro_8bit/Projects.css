@@ -26,7 +26,7 @@
   font-family: 'Press Start 2P', monospace;
 }
 .font-retro-body {
-  font-family: VT323, monospace;
+  font-family: 'VT323', monospace;
 }
 .retro-scanline::before {
   content: "";
