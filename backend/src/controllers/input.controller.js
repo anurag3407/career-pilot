@@ -5,16 +5,33 @@ import axios from "axios";
 import pdfParse from "pdf-parse";
 
 function parseInputDataPayload(data) {
-  if (!data) {
+  if (data === undefined || data === null) {
     return {};
   }
 
-  if (typeof data === "object") {
+  if (
+    typeof data === "object" &&
+    !Array.isArray(data)
+  ) {
     return data;
   }
 
   try {
-    return JSON.parse(data);
+    if (typeof data !== "string" || data.trim() === "") {
+      return null;
+    }
+
+    const parsedData = JSON.parse(data);
+
+    if (
+      parsedData === null ||
+      Array.isArray(parsedData) ||
+      typeof parsedData !== "object"
+    ) {
+      return null;
+    }
+
+    return parsedData;
   } catch {
     return null;
   }

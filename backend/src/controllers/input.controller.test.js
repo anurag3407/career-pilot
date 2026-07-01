@@ -11,13 +11,31 @@ describe("parseInputDataPayload", () => {
     });
   });
 
+  test("returns empty object for missing payloads", () => {
+    assert.deepEqual(parseInputDataPayload(undefined), {});
+    assert.deepEqual(parseInputDataPayload(null), {});
+  });
+
   test("returns null for malformed JSON strings", () => {
     assert.equal(parseInputDataPayload("{invalid json"), null);
+  });
+
+  test("returns null for empty strings", () => {
+    assert.equal(parseInputDataPayload(""), null);
+    assert.equal(parseInputDataPayload("   "), null);
   });
 
   test("passes through object payloads", () => {
     const payload = { experience: "Mid Level" };
     assert.equal(parseInputDataPayload(payload), payload);
+  });
+
+  test("returns null for arrays and primitive JSON values", () => {
+    assert.equal(parseInputDataPayload([]), null);
+    assert.equal(parseInputDataPayload('["React"]'), null);
+    assert.equal(parseInputDataPayload('"Engineer"'), null);
+    assert.equal(parseInputDataPayload("42"), null);
+    assert.equal(parseInputDataPayload("true"), null);
   });
 });
 
