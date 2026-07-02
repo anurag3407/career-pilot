@@ -4,6 +4,14 @@ import { extractSkills } from "../utils/resumeparser.js";
 import axios from "axios";
 import pdfParse from "pdf-parse";
 
+/**
+ * Normalizes the multipart `data` field into the object shape expected by the
+ * profile upload flow.
+ *
+ * @param {unknown} data Raw `req.body.data` payload from the upload request.
+ * @returns {Record<string, unknown> | null} A plain object for valid payloads,
+ * `{}` for omitted payloads, or `null` when the input is invalid JSON or not an object.
+ */
 function parseInputDataPayload(data) {
   if (data === undefined || data === null) {
     return {};
@@ -37,6 +45,13 @@ function parseInputDataPayload(data) {
   }
 }
 
+/**
+ * Creates an input profile entry from the uploaded resume and structured form data.
+ *
+ * @param {import("express").Request} req Express request containing multipart form data.
+ * @param {import("express").Response} res Express response used to return upload status.
+ * @returns {Promise<import("express").Response>} The JSON response for the upload attempt.
+ */
 async function inputupload(req, res) {
   try {
     const parsedData = parseInputDataPayload(req.body.data);
@@ -125,6 +140,13 @@ async function inputupload(req, res) {
   }
 }
 
+/**
+ * Returns the most recently created input profile for the authenticated user.
+ *
+ * @param {import("express").Request} req Express request for the current user.
+ * @param {import("express").Response} res Express response used to return the profile data.
+ * @returns {Promise<void>} Resolves after the response has been sent.
+ */
 async function getinput(req, res) {
   try {
     const data = await inputModel    
