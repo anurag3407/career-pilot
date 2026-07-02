@@ -144,6 +144,18 @@ import MinimalDarkFluid from './components/portfolio/templates/Minimal_Dark_Flui
 import TerminalSkills from './components/portfolio/templates/Terminal_Skills/index.jsx';
 import ChiragChrgTheme from './components/portfolio/templates/ChiragChrg_Theme/index.jsx';
 import InspiredDevJadiya from "./components/portfolio/templates/Inspired_Dev_Jadiya";
+import Anonymous_Whistleblower_Drop_Box from "./components/portfolio/templates/Anonymous_Whistleblower_Drop_Box";
+import Astronaut_Spacesuit_Helmet_HUD from "./components/portfolio/templates/Astronaut_Spacesuit_Helmet_HUD";
+import Audio_Visualizer_Frequency from "./components/portfolio/templates/Audio_Visualizer_Frequency";
+import Blank_Canvas_Scratch_to_Reveal from "./components/portfolio/templates/Blank_Canvas_Scratch_to_Reveal";
+import Bouncing_DVD_Logo from "./components/portfolio/templates/Bouncing_DVD_Logo";
+import Captcha_Solver_Portfolio_Gate from "./components/portfolio/templates/Captcha_Solver_Portfolio_Gate";
+import Git_Commit_History_Tree from "./components/portfolio/templates/Git_Commit_History_Tree";
+import Infinite_Zoom_Mandelbrot_Set from "./components/portfolio/templates/Infinite_Zoom_Mandelbrot_Set";
+import Inspired_Clyde_DSouza from "./components/portfolio/templates/Inspired_Clyde_DSouza";
+import Inspired_Delba from "./components/portfolio/templates/Inspired_Delba";
+import Magnifying_Glass_Hidden_Reveal from "./components/portfolio/templates/Magnifying_Glass_Hidden_Reveal";
+import Morse_Code_Flashing_Decoder from "./components/portfolio/templates/Morse_Code_Flashing_Decoder";
 
 function LoadingScreen({ label }) {
   return (
@@ -310,7 +322,6 @@ function AppRoutes() {
         <Route path="/templates/duotone-bold" element={<DuotoneBold />} />
         <Route path="/templates/chromatic-glitch" element={<ChromaticGlitch />} />
         <Route path="/templates/swiss-typography" element={<SwissTypography />} />
-
         <Route path="/templates/desert-dunes" element={<DesertDunes />} />
         <Route path="/templates/psychedelic-swirl" element={<PsychedelicSwirl />} />
         <Route path="/templates/memphis-pop" element={<MemphisPop />} />
@@ -324,7 +335,6 @@ function AppRoutes() {
         <Route path="/templates/high-fashion" element={<HighFashion />} />
         <Route path="/templates/typographic-wheatpaste-poster-wall" element={<TypographicWheatpastePosterWall />} />
         <Route path="/templates/digital-manifesto-scroll" element={<DigitalManifestoScroll />} />
-
         <Route path="/templates/zine-collage" element={<ZineCollage />} />
         <Route path="/templates/chatbot" element={<ChatbotPortfolio />} />
         <Route path="/templates/glassmorphism" element={<GlassmorphismTemplate />} />
@@ -337,6 +347,18 @@ function AppRoutes() {
         <Route path="/templates/minimal-dark-fluid" element={<MinimalDarkFluid />} />
         <Route path="/templates/terminal-skills" element={<TerminalSkills />} />
         <Route path="/templates/chiragchrg-theme" element={<ChiragChrgTheme />} />
+        <Route path="/templates/inspired-clyde-dsouza" element={<Inspired_Clyde_DSouza />} />
+        <Route path="/templates/Morse_Code_Flashing_Decoder" element={<Morse_Code_Flashing_Decoder />} />
+        <Route path="/templates/Magnifying_Glass_Hidden_Reveal" element={<Magnifying_Glass_Hidden_Reveal />} />
+        <Route path="/templates/Inspired_Delba" element={<Inspired_Delba />} />
+        <Route path="/templates/Infinite_Zoom_Mandelbrot_Set" element={<Infinite_Zoom_Mandelbrot_Set />} />
+        <Route path="/templates/Git_Commit_History_Tree" element={<Git_Commit_History_Tree />} />
+        <Route path="/templates/Captcha_Solver_Portfolio_Gate" element={<Captcha_Solver_Portfolio_Gate />} />
+        <Route path="/templates/Bouncing_DVD_Logo" element={<Bouncing_DVD_Logo />} />
+        <Route path="/templates/Blank_Canvas_Scratch_to_Reveal" element={<Blank_Canvas_Scratch_to_Reveal />} />
+        <Route path="/templates/Audio_Visualizer_Frequency" element={<Audio_Visualizer_Frequency />} />
+        <Route path="/templates/Astronaut_Spacesuit_Helmet_HUD" element={<Astronaut_Spacesuit_Helmet_HUD />} />
+        <Route path="/templates/Anonymous_Whistleblower_Drop_Box" element={<Anonymous_Whistleblower_Drop_Box />} />
         {/* Core Protected Routes */}
         <Route
           path="/dashboard"
@@ -576,6 +598,22 @@ function App() {
       </AuthProvider>
     </ThemeProvider>
   );
+  // return (
+  //   <>
+  //   {/* <Inspired_Clyde_DSouza/> */}
+  //   {/* <Morse_Code_Flashing_Decoder/> */}
+  //   {/* <Magnifying_Glass_Hidden_Reveal/> */}
+  //   {/* <Inspired_Delba/> */}
+  //   {/* <Infinite_Zoom_Mandelbrot_Set/> */}
+  //   {/* <Git_Commit_History_Tree/> */}
+  //   {/* <Captcha_Solver_Portfolio_Gate/> */}
+  //   {/* <Bouncing_DVD_Logo/> */}
+  //   {/* <Blank_Canvas_Scratch_to_Reveal/> */}
+  //   {/* <Audio_Visualizer_Frequency/> */}
+  //   {/* <Astronaut_Spacesuit_Helmet_HUD/> */}
+  //   {/* <Anonymous_Whistleblower_Drop_Box/>  */}
+  //   </>  
+  // );
 }
 
 export default App;
