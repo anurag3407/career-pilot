@@ -17,6 +17,14 @@ Career Pilot employs a defense-in-depth strategy to prevent Cross-Site Request F
 3. **Socket.IO Origin Enforcement**: WebSocket connections are protected by an `allowRequest` hook that strictly validates the `Origin` header during the connection handshake. This ensures that an attacker cannot open a WebSocket connection on behalf of a victim from a malicious domain.
 4. **Basic Auth Origin Checks**: Administrative routes using HTTP Basic Auth (such as BullMQ Dashboard) enforce a strict `Origin`/`Referer` check for all state-changing methods (`POST`, `PUT`, `DELETE`). This prevents an attacker from abusing cached Basic Auth credentials via cross-site requests.
 
+## Development Auth Bypass Policy
+
+The application supports a development-only authentication bypass for local testing. This bypass is designed with the following strict constraints to prevent accidental exposure in production:
+
+1. **CLI Argument Only**: The bypass can ONLY be enabled via the explicit `--dev-bypass-auth` command-line argument. Legacy environment variables (e.g., `DEV_BYPASS_AUTH=true`) are no longer supported for enabling this bypass.
+2. **Strictly Development Mode**: The bypass is strictly disabled when `NODE_ENV=production`, regardless of the CLI argument.
+3. **Fail-Closed Startup**: The application will intentionally crash (fail-closed) on startup if it detects the `--dev-bypass-auth` CLI argument OR the legacy `DEV_BYPASS_AUTH=true` environment variable while running in a `production` environment. This prevents accidental legacy misconfigurations from silently exposing the server.
+
 ## Reporting a Vulnerability
 
 If you discover a security vulnerability in **Career Pilot**, please **do not open a public issue**.
