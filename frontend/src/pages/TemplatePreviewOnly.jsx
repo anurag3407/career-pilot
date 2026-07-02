@@ -15,7 +15,7 @@ const FALLBACK_PORTFOLIO = {
     phone: "+1 (555) 123-4567",
     location: "San Francisco, CA",
     bio: "Passionate full-stack developer with 5+ years of experience building scalable web applications. Specializing in React, Node.js, and cloud architecture.",
-    avatar: "",
+    avatar: "https://images.unsplash.com/photo-1507003211169-0a1dd7228f2d?w=400&h=400&fit=crop&crop=face",
     website: "https://alexmorgan.dev",
   },
   personalInfo: {
