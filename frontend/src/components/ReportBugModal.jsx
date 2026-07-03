@@ -1,10 +1,11 @@
-import { useEffect, useState } from 'react'
+import { useEffect, useRef, useState } from 'react'
 import { motion } from 'framer-motion'
 import { X, Bug } from 'lucide-react'
 import toast from 'react-hot-toast'
 
 export default function ReportBugModal({ isOpen, onClose, invalidPath }) {
   const [reportBody, setReportBody] = useState('')
+  const dialogRef = useRef(null)
 
   useEffect(() => {
     if (!isOpen) return
@@ -12,7 +13,26 @@ export default function ReportBugModal({ isOpen, onClose, invalidPath }) {
     setReportBody(
       `Invalid URL: ${invalidPath}\n\nPlease describe what you were expecting to find and any additional details that would help us fix this broken link.`
     )
+
+    const dialog = dialogRef.current
+    if (dialog) {
+      dialog.focus()
+    }
   }, [isOpen, invalidPath])
+
+  useEffect(() => {
+    if (!isOpen) return
+
+    const handleKeyDown = (event) => {
+      if (event.key === 'Escape') {
+        event.preventDefault()
+        onClose()
+      }
+    }
+
+    document.addEventListener('keydown', handleKeyDown)
+    return () => document.removeEventListener('keydown', handleKeyDown)
+  }, [isOpen, onClose])
 
   const handleSubmit = async (event) => {
     event.preventDefault()
@@ -44,7 +64,13 @@ export default function ReportBugModal({ isOpen, onClose, invalidPath }) {
         initial={{ opacity: 0, scale: 0.96, y: 20 }}
         animate={{ opacity: 1, scale: 1, y: 0 }}
         exit={{ opacity: 0, scale: 0.96, y: 20 }}
-        className="relative w-full max-w-2xl rounded-3xl border border-white/10 bg-[#0c0c0c] shadow-2xl"
+        ref={dialogRef}
+        role="dialog"
+        aria-modal="true"
+        aria-labelledby="report-bug-title"
+        aria-describedby="report-bug-description"
+        tabIndex={-1}
+        className="relative w-full max-w-2xl rounded-3xl border border-white/10 bg-[#0c0c0c] shadow-2xl outline-none"
       >
         <div className="flex items-start justify-between gap-4 border-b border-white/10 px-6 py-5">
           <div className="flex items-center gap-3">
@@ -52,8 +78,8 @@ export default function ReportBugModal({ isOpen, onClose, invalidPath }) {
               <Bug className="h-5 w-5" />
             </div>
             <div>
-              <h2 className="text-lg font-semibold text-white">Report broken link</h2>
-              <p className="text-sm text-neutral-400">The invalid URL is prefilled so your report is ready to share.</p>
+              <h2 id="report-bug-title" className="text-lg font-semibold text-white">Report broken link</h2>
+              <p id="report-bug-description" className="text-sm text-neutral-400">The invalid URL is prefilled so your report is ready to share.</p>
             </div>
           </div>
           <button
