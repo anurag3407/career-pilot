@@ -1,3 +1,4 @@
+import { analyzePerformance } from "../utils/interviewAnalyzer";
 import { useEffect, useState } from 'react'
 import { Link } from 'react-router-dom'
 import toast from 'react-hot-toast'
@@ -46,6 +47,8 @@ export default function Analytics() {
       setError('')
       try {
         const response = await interviewApi.getAnalytics()
+        console.log("Analytics Response:", response)
+        console.log("Analytics Data:", response.data)
         const payload = response.data || { sessions: [], summary: DEFAULT_SUMMARY }
         setAnalytics({
           sessions: Array.isArray(payload.sessions) ? payload.sessions : [],
@@ -87,8 +90,11 @@ export default function Analytics() {
     { label: 'Avg. Confidence', value: `${summary.averageConfidence}%`, icon: Sparkles, accent: 'text-amber-500' }
   ]
 
-  const chartData = sessions
-  const hasSessions = sessions.length > 0
+  const chartData = sessions || []
+const hasSessions = sessions.length > 0
+
+const insights = analyzePerformance(sessions)
+const improvement = insights.improvement || 0
 
   return (
     <div className="min-h-screen bg-background">
@@ -185,6 +191,101 @@ export default function Analytics() {
                 ))}
               </div>
             </section>
+            <section className="rounded-3xl border border-border bg-card p-6 shadow-sm">
+  <h3 className="text-lg font-black text-foreground mb-6">
+    Personalized Improvement Insights
+  </h3>
+
+  <div className="space-y-5">
+
+    <div>
+      <h4 className="font-bold text-red-500 mb-2">
+        Weak Areas
+      </h4>
+
+      {insights.weaknesses.length > 0 ? (
+        <ul className="list-disc ml-5 text-sm">
+          {insights.weaknesses.map((item) => (
+            <li key={item}>{item}</li>
+          ))}
+        </ul>
+      ) : (
+        <p className="text-sm text-muted-foreground">
+          No major weaknesses detected.
+        </p>
+      )}
+    </div>
+    <div>
+  <h4 className="font-bold text-orange-500 mb-2">
+    Recurring Weaknesses
+  </h4>
+
+  {insights.recurringWeaknesses?.length > 0 ? (
+    <ul className="list-disc ml-5 text-sm">
+      {insights.recurringWeaknesses.map((item) => (
+        <li key={item}>{item}</li>
+      ))}
+    </ul>
+  ) : (
+    <p className="text-sm text-muted-foreground">
+      No recurring weaknesses detected.
+    </p>
+  )}
+</div>
+
+    <div>
+      <h4 className="font-bold text-green-500 mb-2">
+        Strengths
+      </h4>
+
+      {insights.strengths.length > 0 ? (
+        <ul className="list-disc ml-5 text-sm">
+          {insights.strengths.map((item) => (
+            <li key={item}>{item}</li>
+          ))}
+        </ul>
+      ) : (
+        <p className="text-sm text-muted-foreground">
+          No strengths identified yet.
+        </p>
+      )}
+    </div>
+
+    <div>
+      <h4 className="font-bold text-blue-500 mb-2">
+        Recommendations
+      </h4>
+
+      {insights.recommendations.length > 0 ? (
+        <ul className="list-disc ml-5 text-sm">
+          {insights.recommendations.map((item) => (
+            <li key={item}>{item}</li>
+          ))}
+        </ul>
+      ) : (
+        <p className="text-sm text-muted-foreground">
+          Keep maintaining your current performance.
+        </p>
+      )}
+    </div>
+
+    <div>
+      <h4 className="font-bold text-purple-500 mb-2">
+        Progress Tracking
+      </h4>
+
+      <p className="text-sm">
+        Overall Improvement:
+        <span className="font-bold ml-2">
+  {Number(improvement) > 0
+    ? `+${improvement}%`
+    : `${improvement}%`}
+</span>
+      </p>
+    </div>
+
+  </div>
+</section>
 
             <section className="rounded-3xl border border-border bg-card p-6 shadow-sm">
               <div className="flex items-center justify-between mb-6">

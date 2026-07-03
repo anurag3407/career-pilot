@@ -3,12 +3,13 @@ import { useNavigate } from 'react-router-dom';
 import { motion, AnimatePresence } from 'framer-motion';
 import {
   GitBranch, Search, Zap, Users, Bot, AlertTriangle, 
-  ArrowRight, History, Loader2, Trash2, Clock, Star, GitFork
+  ArrowRight, History, Loader2, Trash2, Clock, Star, GitFork, Package, BookOpen, BrainCircuit
 } from 'lucide-react';
 import toast from 'react-hot-toast';
 import { useProjectVisualizerStore } from '../../stores/useProjectVisualizerStore';
 import { projectVisualizerApi } from '../../services/api';
 import { cn } from '../../lib/utils';
+import { HeroSection } from '../../components/ui/hero-section-dark';
 
 const Landing = () => {
   const [url, setUrl] = useState('');
@@ -83,22 +84,34 @@ const Landing = () => {
       color: "from-cyan-500/20 to-cyan-500/0"
     },
     {
+      title: "Dependency Scanner",
+      desc: "Automatically check packages for vulnerabilities and updates",
+      icon: <Package className="w-6 h-6 text-amber-400" />,
+      color: "from-amber-500/20 to-amber-500/0"
+    },
+    {
+      title: "Codebase Chat",
+      desc: "Context-aware AI chat specifically tied to files and modules",
+      icon: <Bot className="w-6 h-6 text-violet-400" />,
+      color: "from-violet-500/20 to-violet-500/0"
+    },
+    {
+      title: "Interview Prep",
+      desc: "Mock interviews to test your knowledge of the repository",
+      icon: <BrainCircuit className="w-6 h-6 text-red-400" />,
+      color: "from-red-500/20 to-red-500/0"
+    },
+    {
+      title: "Contribution Guide",
+      desc: "Generate comprehensive markdown guides for new contributors",
+      icon: <BookOpen className="w-6 h-6 text-emerald-400" />,
+      color: "from-emerald-500/20 to-emerald-500/0"
+    },
+    {
       title: "Risk & Hotspots",
       desc: "Identify complexity, coupling, and missing tests",
       icon: <AlertTriangle className="w-6 h-6 text-orange-400" />,
       color: "from-orange-500/20 to-orange-500/0"
-    },
-    {
-      title: "Contributor Insights",
-      desc: "Who owns what, activity patterns and history",
-      icon: <Users className="w-6 h-6 text-pink-400" />,
-      color: "from-pink-500/20 to-pink-500/0"
-    },
-    {
-      title: "AI Onboarding",
-      desc: "Ask questions, get starting points for contribution",
-      icon: <Bot className="w-6 h-6 text-violet-400" />,
-      color: "from-violet-500/20 to-violet-500/0"
     }
   ];
 
@@ -110,44 +123,30 @@ const Landing = () => {
       <div className="absolute top-[-20%] left-[-10%] w-[50%] h-[50%] rounded-full bg-cyan-600/10 blur-[120px] pointer-events-none" />
       <div className="absolute bottom-[-10%] right-[-10%] w-[40%] h-[40%] rounded-full bg-violet-600/10 blur-[120px] pointer-events-none" />
       
-      <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 pt-20 pb-24 relative z-10">
-        
-        {/* Header Section */}
-        <div className="text-center max-w-3xl mx-auto mb-16">
-          <motion.div
-            initial={{ opacity: 0, y: -20 }}
-            animate={{ opacity: 1, y: 0 }}
-            transition={{ duration: 0.5 }}
-            
-            className="inline-flex items-center gap-2 px-4 py-2 rounded-full bg-muted border border-border mb-8"
-          >
-            <Zap className="w-4 h-4 text-cyan-400" />
-           
-            <span className="text-sm font-medium text-muted-foreground">Repo-to-Map in 10 seconds</span>
-          </motion.div>
-          
-          <motion.h1
-            initial={{ opacity: 0, y: 20 }}
-            animate={{ opacity: 1, y: 0 }}
-            transition={{ duration: 0.5, delay: 0.1 }}
-            className="text-5xl md:text-7xl font-bold tracking-tight mb-6"
-          >
-            Project{' '}
-            <span className="text-transparent bg-clip-text bg-gradient-to-r from-cyan-400 to-violet-500">
-              Visualizer
-            </span>
-          </motion.h1>
-          
-          <motion.p
-            initial={{ opacity: 0 }}
-            animate={{ opacity: 1 }}
-            transition={{ duration: 0.5, delay: 0.2 }}
-            
-            className="text-xl text-muted-foreground"
-          >
-            Paste a GitHub repo → get a visual architecture map + AI onboarding in seconds.
-          </motion.p>
-        </div>
+      <HeroSection
+        title="Repo-to-Map in 10 seconds"
+        subtitle={{
+          regular: "Project ",
+          gradient: "Visualizer",
+        }}
+        description="Paste a GitHub repo → get a visual architecture map + AI onboarding in seconds."
+        ctaText="Start Exploring"
+        ctaHref="#analyzer-form"
+        bottomImage={{
+          light: "https://images.unsplash.com/photo-1460925895917-afdab827c52f?q=80&w=2015&auto=format&fit=crop",
+          dark: "https://images.unsplash.com/photo-1460925895917-afdab827c52f?q=80&w=2015&auto=format&fit=crop",
+        }}
+        gridOptions={{
+          angle: 65,
+          opacity: 0.4,
+          cellSize: 50,
+          lightLineColor: "#4a4a4a",
+          darkLineColor: "#2a2a2a",
+        }}
+      />
+
+      <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 pb-24 relative z-10" id="analyzer-form">
+
 
         {/* URL Input Form */}
         <motion.div
@@ -196,7 +195,7 @@ const Landing = () => {
         </motion.div>
 
         {/* Feature Grid */}
-        <div className="grid grid-cols-1 md:grid-cols-2 gap-6 max-w-5xl mx-auto mb-24">
+        <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6 max-w-6xl mx-auto mb-24">
           {features.map((feature, i) => (
             <motion.div
               key={i}

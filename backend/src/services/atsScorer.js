@@ -1,4 +1,4 @@
-const KEYWORD_DICTIONARY = {
+export const KEYWORD_DICTIONARY = {
   'software engineer': ['javascript', 'python', 'java', 'react', 'node', 'express', 'sql', 'nosql', 'api', 'rest', 'git', 'docker', 'kubernetes', 'aws', 'agile', 'algorithm', 'data structure', 'testing', 'ci/cd', 'architecture'],
   'frontend developer': ['html', 'css', 'javascript', 'react', 'vue', 'angular', 'typescript', 'webpack', 'ui/ux', 'responsive design', 'sass', 'less', 'redux', 'jest', 'cypress', 'accessibility', 'web performance', 'figma'],
   'backend developer': ['node', 'python', 'java', 'go', 'ruby', 'c++', 'sql', 'postgresql', 'mongodb', 'redis', 'api', 'rest', 'graphql', 'docker', 'kubernetes', 'aws', 'microservices', 'caching', 'security', 'oauth'],
@@ -67,7 +67,7 @@ function scoreFormatting(text) {
   else if (wordCount > 200) score += 10;
 
   // Bullet point usage (ideal resume uses bullet points)
-  const bulletPointMatches = text.match(/^[•\-\*]\s/gm);
+  const bulletPointMatches = text.match(/^[•\-*]\s/gm);
   if (bulletPointMatches && bulletPointMatches.length > 5) {
     score += 15;
   }

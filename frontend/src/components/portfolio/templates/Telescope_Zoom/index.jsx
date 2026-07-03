@@ -1,3 +1,4 @@
+import { usePortfolio } from "../../../../context/PortfolioContext";
 import React, { useEffect, useRef, useState, useCallback } from 'react';
 import {
   motion,
@@ -12,7 +13,6 @@ import {
   Code2, ChevronDown, Send, Quote, Globe,
   Eye, Crosshair, Circle,
 } from 'lucide-react';
-import data from '../../../../data/dummy_data.json';
 
 /* ═══════════════════════════════════════════════════════════════════════════
    TELESCOPE CURSOR LENS
@@ -20,6 +20,8 @@ import data from '../../../../data/dummy_data.json';
    layer – always visible after intro, adds depth to the telescope theme.
 ═══════════════════════════════════════════════════════════════════════════ */
 function TelescopeCursorLens() {
+  const { portfolioData: data } = usePortfolio();
+
   const lensRef = useRef(null);
   const [pos, setPos] = useState({ x: -999, y: -999 });
   const [active, setActive] = useState(false);
@@ -122,6 +124,8 @@ function TelescopeCursorLens() {
    Plays automatically on mount. Page is fully accessible afterward.
 ═══════════════════════════════════════════════════════════════════════════ */
 function TelescopeIntro({ onComplete }) {
+  const { portfolioData: data } = usePortfolio();
+
   const [phase, setPhase] = useState('closed'); // closed | opening | glare | done
 
   useEffect(() => {
@@ -255,6 +259,8 @@ function TelescopeIntro({ onComplete }) {
    AMBIENT STAR FIELD (fixed background)
 ═══════════════════════════════════════════════════════════════════════════ */
 function StarField() {
+  const { portfolioData: data } = usePortfolio();
+
   const stars = Array.from({ length: 80 }, (_, i) => ({
     id: i,
     x: Math.random() * 100,
@@ -288,6 +294,8 @@ function StarField() {
    SECTION REVEAL
 ═══════════════════════════════════════════════════════════════════════════ */
 function Section({ children, className = '', id = '' }) {
+  const { portfolioData: data } = usePortfolio();
+
   return (
     <motion.section
       id={id}
@@ -304,6 +312,8 @@ function Section({ children, className = '', id = '' }) {
 
 /* ─── Section Heading ──────────────────────────────────────────────────────── */
 function SectionHeading({ label, title }) {
+  const { portfolioData: data } = usePortfolio();
+
   return (
     <div className="mb-16 text-center relative">
       {/* decorative circle */}
@@ -328,6 +338,8 @@ function SectionHeading({ label, title }) {
 
 /* ─── Skill Bar ────────────────────────────────────────────────────────────── */
 function SkillBar({ name, level, delay = 0, category }) {
+  const { portfolioData: data } = usePortfolio();
+
   const catColors = {
     Frontend: 'from-cyan-500 to-sky-400',
     Backend: 'from-violet-500 to-purple-400',
@@ -373,6 +385,8 @@ function SkillBar({ name, level, delay = 0, category }) {
 
 /* ─── Project Card ─────────────────────────────────────────────────────────── */
 function ProjectCard({ project, index }) {
+  const { portfolioData: data } = usePortfolio();
+
   const [hovered, setHovered] = useState(false);
 
   return (
@@ -468,6 +482,8 @@ function ProjectCard({ project, index }) {
 
 /* ─── Experience Card ──────────────────────────────────────────────────────── */
 function ExperienceCard({ exp, index }) {
+  const { portfolioData: data } = usePortfolio();
+
   return (
     <motion.div
       initial={{ opacity: 0, x: -30 }}
@@ -511,6 +527,8 @@ function ExperienceCard({ exp, index }) {
 
 /* ─── Testimonial Card ─────────────────────────────────────────────────────── */
 function TestimonialCard({ t, index }) {
+  const { portfolioData: data } = usePortfolio();
+
   return (
     <motion.div
       initial={{ opacity: 0, scale: 0.92 }}
@@ -548,6 +566,8 @@ function TestimonialCard({ t, index }) {
 
 /* ─── Nav ──────────────────────────────────────────────────────────────────── */
 function Nav() {
+  const { portfolioData: data } = usePortfolio();
+
   const { scrollY } = useScroll();
   const [scrolled, setScrolled] = useState(false);
 
@@ -605,6 +625,8 @@ function Nav() {
    HERO
 ═══════════════════════════════════════════════════════════════════════════ */
 function Hero() {
+  const { portfolioData: data } = usePortfolio();
+
   const personal = data.personal ?? {};
   const social = data.socials ?? {};
   const stats = data.stats ?? {};
@@ -784,6 +806,8 @@ function Hero() {
    MAIN
 ═══════════════════════════════════════════════════════════════════════════ */
 export default function TelescopeZoom() {
+  const { portfolioData: data } = usePortfolio();
+
   const [introComplete, setIntroComplete] = useState(false);
 
   const personal = data.personal ?? {};

@@ -18,11 +18,19 @@ export const useProjectVisualizerStore = create(
       risks: [],
       suggestions: [],
       architectureSummary: '',
+      dependencies: null,
+      
       
       // GitHub enrichment
       github: null,
       contributors: [],
       commits: [],
+
+      // Time-series activity (from the Python activity analyzer)
+      activity: null,
+      activityDetailed: null,
+      activityLoading: false,
+      activityError: null,
       
       // UI state
       viewMode: 'modules', // 'modules' | 'files' | 'dependencies'
@@ -54,6 +62,7 @@ export const useProjectVisualizerStore = create(
         suggestions: data.suggestions,
         architectureSummary: data.architectureSummary,
         github: data.github,
+        dependencies: data.dependencies,
         status: 'complete',
       }),
       
@@ -68,6 +77,12 @@ export const useProjectVisualizerStore = create(
       
       setContributors: (contributors) => set({ contributors }),
       setCommits: (commits) => set({ commits }),
+
+      // Activity actions
+      setActivity: (activity) => set({ activity }),
+      setActivityDetailed: (activityDetailed) => set({ activityDetailed }),
+      setActivityLoading: (activityLoading) => set({ activityLoading }),
+      setActivityError: (activityError) => set({ activityError }),
       
       // Chat actions
       setChatMode: (mode) => set({ chatMode: mode }),
@@ -81,6 +96,8 @@ export const useProjectVisualizerStore = create(
         stats: null, modules: [], fileGraph: { nodes: [], edges: [] },
         moduleGraph: { nodes: [], edges: [] }, risks: [], suggestions: [],
         architectureSummary: '', github: null, contributors: [], commits: [],
+        activity: null, activityDetailed: null, activityLoading: false, activityError: null,
+        dependencies: null,
         viewMode: 'modules', selectedModule: null, selectedFile: null,
         fileContent: '', searchQuery: '', activeTab: 'architecture',
         inspectorOpen: false, chatExpanded: false,
@@ -107,6 +124,7 @@ export const useProjectVisualizerStore = create(
         suggestions: state.suggestions,
         architectureSummary: state.architectureSummary,
         github: state.github,
+        dependencies: state.dependencies,
         activeTab: state.activeTab,
         messages: state.messages,
       }),

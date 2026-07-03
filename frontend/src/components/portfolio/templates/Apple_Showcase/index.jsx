@@ -1,3 +1,4 @@
+import { usePortfolio } from "../../../../context/PortfolioContext";
 import React, { useState } from 'react';
 import { motion, AnimatePresence } from 'framer-motion';
 import { 
@@ -22,9 +23,10 @@ import {
   Laptop,
   Check
 } from 'lucide-react';
-import data from '../../../../data/dummy_data.json';
 
 export default function AppleShowcase() {
+  const { portfolioData: data } = usePortfolio();
+
   const { personal, socials, skills, projects, experience, testimonials, stats } = data;
   const [mobileMenuOpen, setMobileMenuOpen] = useState(false);
   const [activeTab, setActiveTab] = useState('All');
