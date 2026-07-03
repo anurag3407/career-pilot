@@ -42,7 +42,7 @@ const NotFound = () => {
   }, []);
 
   useEffect(() => {
-    setSearchParams({ q: searchQuery });
+    setSearchParams({ q: searchQuery }, { replace: true });
   }, [searchQuery, setSearchParams]);
 
   return (
