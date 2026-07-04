@@ -237,7 +237,7 @@ export default function PortfolioHub() {
                         Draft
                       </span>
                     ) : (
-                      
+                      <a
                         href={portfolio.url}
                         target="_blank"
                         rel="noopener noreferrer"
