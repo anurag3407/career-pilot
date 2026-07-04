@@ -85,6 +85,14 @@ export default function SwipeRightDatingApp() {
   const { portfolioData } = usePortfolio();
   const data = portfolioData;
 
+  // Open URL safely to prevent target="_blank" vulnerability and javascript: scheme execution
+  const openSafeUrl = (url) => {
+    if (!url || url === "#") return;
+    if (/^https?:\/\//i.test(url)) {
+      window.open(url, "_blank", "noopener,noreferrer");
+    }
+  };
+
   // Tabs: 'discover' (Hero), 'profile' (About), 'skills' (Skills), 'projects' (Projects), 'chats' (Experience), 'testimonials' (Testimonials), 'match' (Contact)
   const [activeTab, setActiveTab] = useState("discover");
   const [isSparkling, setIsSparkling] = useState(false);
@@ -98,6 +106,15 @@ export default function SwipeRightDatingApp() {
   const experienceList = data?.experience || [];
   const [activeChatIdx, setActiveChatIdx] = useState(0);
   const activeCompany = experienceList[activeChatIdx];
+
+  // Reset/clamp activeChatIdx when experienceList changes
+  useEffect(() => {
+    if (experienceList.length > 0) {
+      if (activeChatIdx >= experienceList.length) {
+        setActiveChatIdx(0);
+      }
+    }
+  }, [experienceList, activeChatIdx]);
 
   // Testimonials Matching Inbox State
   const testimonials = data?.testimonials || [];
@@ -711,15 +728,11 @@ export default function SwipeRightDatingApp() {
                         indexOffset={indexOffset}
                         onSwipeLeft={() => {
                           setProjectIndex(prev => prev + 1);
-                          if (project.githubUrl && project.githubUrl !== "#") {
-                            window.open(project.githubUrl, "_blank");
-                          }
+                          openSafeUrl(project.githubUrl);
                         }}
                         onSwipeRight={() => {
                           setProjectIndex(prev => prev + 1);
-                          if (project.liveUrl && project.liveUrl !== "#") {
-                            window.open(project.liveUrl, "_blank");
-                          }
+                          openSafeUrl(project.liveUrl);
                         }}
                         onPass={() => {
                           setProjectIndex(prev => prev + 1);
@@ -753,7 +766,7 @@ export default function SwipeRightDatingApp() {
                   </button>
                   <div className="relative">
                     <div className="w-10 h-10 bg-white/20 rounded-full flex items-center justify-center font-bold border-2 border-white/60">
-                      {activeCompany?.company?.slice(0, 2).toUpperCase() || "CP"}
+                      {activeCompany?.company?.slice(0, 2)?.toUpperCase() || "CP"}
                     </div>
                     <div className="absolute bottom-0 right-0 w-2.5 h-2.5 bg-emerald-500 rounded-full border border-white" />
                   </div>
@@ -778,17 +791,17 @@ export default function SwipeRightDatingApp() {
                       {/* Message 1 */}
                       <div className="flex gap-2 max-w-[85%] items-end">
                         <div className="w-7 h-7 rounded-full bg-slate-200 shrink-0 flex items-center justify-center font-bold text-[10px] text-slate-600">
-                          {activeCompany?.company?.slice(0, 2).toUpperCase()}
+                          {activeCompany?.company?.slice(0, 2)?.toUpperCase() || "CP"}
                         </div>
                         <div className="bg-white p-3 rounded-2xl rounded-bl-none shadow-sm text-xs text-slate-700 leading-relaxed border border-rose-50/50">
-                          Hey Alex! We match. Excited to chat. What was your role at <span className="font-bold">{activeCompany.company}</span> and what did you focus on?
+                          Hey Alex! We match. Excited to chat. What was your role at <span className="font-bold">{activeCompany?.company || "Employer"}</span> and what did you focus on?
                         </div>
                       </div>
 
                       {/* Message 2 */}
                       <div className="flex gap-2 max-w-[85%] items-end self-end justify-end">
                         <div className="bg-rose-500 text-white p-3 rounded-2xl rounded-br-none shadow-sm text-xs leading-relaxed">
-                          Hey there! I worked as a <span className="font-bold">{activeCompany.role}</span> from <span className="italic">{activeCompany.period}</span>. My main mission was driving frontend architecture, reducing rendering bottlenecks, and optimizing deployment systems.
+                          Hey there! I worked as a <span className="font-bold">{activeCompany?.role || "Developer"}</span> from <span className="italic">{activeCompany?.period || "Timeline"}</span>. My main mission was driving frontend architecture, reducing rendering bottlenecks, and optimizing deployment systems.
                         </div>
                         <img
                           src={data?.personal?.avatar || "https://images.unsplash.com/photo-1534528741775-53994a69daeb?w=100&h=100&fit=crop"}
@@ -800,7 +813,7 @@ export default function SwipeRightDatingApp() {
                       {/* Message 3 */}
                       <div className="flex gap-2 max-w-[85%] items-end">
                         <div className="w-7 h-7 rounded-full bg-slate-200 shrink-0 flex items-center justify-center font-bold text-[10px] text-slate-600">
-                          {activeCompany?.company?.slice(0, 2).toUpperCase()}
+                          {activeCompany?.company?.slice(0, 2)?.toUpperCase() || "CP"}
                         </div>
                         <div className="bg-white p-3 rounded-2xl rounded-bl-none shadow-sm text-xs text-slate-700 leading-relaxed border border-rose-50/50">
                           Nice! Can you tell us more about the specific projects or achievements you delivered? Any key highlights?
@@ -810,8 +823,8 @@ export default function SwipeRightDatingApp() {
                       {/* Message 4 */}
                       <div className="flex gap-2 max-w-[85%] items-end self-end justify-end">
                         <div className="bg-rose-500 text-white p-3 rounded-2xl rounded-br-none shadow-sm text-xs leading-relaxed space-y-2">
-                          <p>{activeCompany.description || "Here are some of the key milestones I accomplished:"}</p>
-                          {activeCompany.highlights && activeCompany.highlights.length > 0 && (
+                          <p>{activeCompany?.description || "Here are some of the key milestones I accomplished:"}</p>
+                          {activeCompany?.highlights && activeCompany.highlights.length > 0 && (
                             <ul className="list-disc list-inside space-y-1 text-[11px] text-rose-100">
                               {activeCompany.highlights.map((highlight, index) => (
                                 <li key={index}>{highlight}</li>
@@ -829,7 +842,7 @@ export default function SwipeRightDatingApp() {
                       {/* Message 5 */}
                       <div className="flex gap-2 max-w-[85%] items-end">
                         <div className="w-7 h-7 rounded-full bg-slate-200 shrink-0 flex items-center justify-center font-bold text-[10px] text-slate-600">
-                          {activeCompany?.company?.slice(0, 2).toUpperCase()}
+                          {activeCompany?.company?.slice(0, 2)?.toUpperCase() || "CP"}
                         </div>
                         <div className="bg-white p-3 rounded-2xl rounded-bl-none shadow-sm text-xs text-slate-700 leading-relaxed border border-rose-50/50">
                           Impressive metrics! Let's match up and talk next steps. See you at the Match Connect panel!
@@ -1255,9 +1268,6 @@ function ProjectCard({ project, isTop, indexOffset, onSwipeLeft, onSwipeRight, o
         {/* Like Button (opens Github) */}
         <button
           onClick={isTop ? () => {
-            if (project.githubUrl && project.githubUrl !== "#") {
-              window.open(project.githubUrl, "_blank");
-            }
             onSwipeLeft();
           } : undefined}
           className="px-4 py-2 bg-white text-rose-500 hover:bg-rose-50 rounded-xl border border-rose-100 flex items-center gap-1 text-xs font-extrabold shadow-sm transition-all active:scale-95"
@@ -1269,9 +1279,6 @@ function ProjectCard({ project, isTop, indexOffset, onSwipeLeft, onSwipeRight, o
         {/* Match Button (opens Live Link) */}
         <button
           onClick={isTop ? () => {
-            if (project.liveUrl && project.liveUrl !== "#") {
-              window.open(project.liveUrl, "_blank");
-            }
             onSwipeRight();
           } : undefined}
           className="px-4 py-2 bg-gradient-to-r from-rose-500 to-pink-500 text-white rounded-xl flex items-center gap-1 text-xs font-extrabold shadow-md hover:opacity-90 transition-all active:scale-95"
