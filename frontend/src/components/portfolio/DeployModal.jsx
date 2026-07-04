@@ -5,6 +5,7 @@ import toast from 'react-hot-toast';
 import confetti from 'canvas-confetti';
 import { auth } from '../../config/firebase';
 import { portfolioApi } from '../../services/api';
+import { useAuth } from '../../hooks/useAuth';
 
 // Hey there, code reviewer or fellow builder!
 // We defined some custom metadata here for each hosting platform.
@@ -62,6 +63,7 @@ function TokenStatusChip({ status }) {
 export default function DeployModal({ isOpen, onClose, portfolioTitle = "My Portfolio", templateId = "default", aiDraft, onDeploySuccess }) {
   // Step workflow: select -> loading -> success -> error
   const [step, setStep] = useState('select');
+  const { getToken } = useAuth();
   const [selectedProvider, setSelectedProvider] = useState('cloudflare'); // default to recommended Cloudflare
   const [visibleLogs, setVisibleLogs] = useState([]);
   const [deployedUrl, setDeployedUrl] = useState('');
@@ -82,13 +84,25 @@ export default function DeployModal({ isOpen, onClose, portfolioTitle = "My Port
 
   // Clear timers/confetti on unmount to keep everything clean and prevent leakages
   useEffect(() => {
-    return () => {
-      if (logTimerRef.current) clearTimeout(logTimerRef.current);
-      if (confettiIntervalRef.current) clearInterval(confettiIntervalRef.current);
-      if (deployTimeoutRef.current) clearTimeout(deployTimeoutRef.current);
-      confetti.reset();
-    };
-  }, []);
+  return () => {
+    if (logTimerRef.current) {
+      clearTimeout(logTimerRef.current);
+      logTimerRef.current = null;
+    }
+
+    if (confettiIntervalRef.current) {
+      clearInterval(confettiIntervalRef.current);
+      confettiIntervalRef.current = null;
+    }
+
+    if (deployTimeoutRef.current) {
+      clearTimeout(deployTimeoutRef.current);
+      deployTimeoutRef.current = null;
+    }
+
+    confetti.reset();
+  };
+}, []);
 
   // Handle auto-scrolling to the bottom of our retro build terminal
   useEffect(() => {
@@ -170,15 +184,14 @@ export default function DeployModal({ isOpen, onClose, portfolioTitle = "My Port
   const handleCheckToken = async (providerId) => {
     setTokenStatuses((prev) => ({ ...prev, [providerId]: 'checking' }));
     try {
-      const user = auth.currentUser;
-      if (!user) throw new Error('Not authenticated');
-      const idToken = await user.getIdToken();
+      const token = await getToken();
+      if (!token && !import.meta.env.DEV) throw new Error('Not authenticated');
 
       const provider = PROVIDERS.find((p) => p.id === providerId);
       const res = await fetch('/api/portfolio/validate-token', {
         method: 'POST',
         headers: {
-          Authorization: `Bearer ${idToken}`,
+          Authorization: `Bearer ${token}`,
           'Content-Type': 'application/json',
         },
         body: JSON.stringify({
@@ -266,20 +279,28 @@ export default function DeployModal({ isOpen, onClose, portfolioTitle = "My Port
   };
 
   const handleClose = () => {
-    setStep('select');
-    setDeployedUrl('');
-    setErrorMessage('');
-    if (confettiIntervalRef.current) {
-      clearInterval(confettiIntervalRef.current);
-      confettiIntervalRef.current = null;
-    }
-    if (deployTimeoutRef.current) {
-      clearTimeout(deployTimeoutRef.current);
-      deployTimeoutRef.current = null;
-    }
-    confetti.reset();
-    onClose();
-  };
+  setStep('select');
+  setDeployedUrl('');
+  setErrorMessage('');
+
+  if (logTimerRef.current) {
+    clearTimeout(logTimerRef.current);
+    logTimerRef.current = null;
+  }
+
+  if (confettiIntervalRef.current) {
+    clearInterval(confettiIntervalRef.current);
+    confettiIntervalRef.current = null;
+  }
+
+  if (deployTimeoutRef.current) {
+    clearTimeout(deployTimeoutRef.current);
+    deployTimeoutRef.current = null;
+  }
+
+  confetti.reset();
+  onClose();
+};
 
   // Deploy button is enabled only when the selected provider's token is validated
   const selectedProviderMeta = PROVIDERS.find((p) => p.id === selectedProvider);

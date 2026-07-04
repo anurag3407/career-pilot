@@ -1,5 +1,5 @@
+import { usePortfolio } from "../../../../context/PortfolioContext";
 import React from 'react';
-import data from '../../../../data/dummy_data.json';
 import GlobalBackground from './GlobalBackground';
 import LavaAnimate from './LavaAnimate';
 
@@ -11,6 +11,8 @@ import Experience from './components/Experience';
 import Contact from './components/Contact';
 
 export default function VolcanicForgeTemplate() {
+  const { portfolioData: data } = usePortfolio();
+
   const { personal, socials, skills, projects, experience, stats } = data;
 
   return (

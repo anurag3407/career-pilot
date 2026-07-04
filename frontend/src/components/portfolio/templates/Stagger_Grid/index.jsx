@@ -1,5 +1,5 @@
+import { usePortfolio } from "../../../../context/PortfolioContext";
 import React from 'react';
-import data from '../../../../data/dummy_data.json';
 
 // Import Modular Components
 import { Hero } from './Hero';
@@ -11,6 +11,8 @@ import { Testimonials } from './Testimonials';
 import { Contact } from './Contact';
 
 export default function StaggerGridPortfolio() {
+  const { portfolioData: data } = usePortfolio();
+
   return (
     <div className="font-sans antialiased bg-white selection:bg-indigo-500 selection:text-white">
       <Hero />

@@ -1,7 +1,7 @@
+import { usePortfolio } from "../../../../context/PortfolioContext";
 import React, { useState, useRef, useEffect } from 'react';
 import { motion, useMotionValue, useSpring } from 'framer-motion';
 import * as Icons from 'lucide-react';
-import data from '../../../../data/dummy_data.json';
 
 // --- PERFORMANCE OPTIMIZATION: MEMOIZED SUB-COMPONENTS ---
 const DynamicIcon = React.memo(({ name, className = "w-5 h-5" }) => {
@@ -10,6 +10,8 @@ const DynamicIcon = React.memo(({ name, className = "w-5 h-5" }) => {
 });
 
 export default function SplitPersonality() {
+  const { portfolioData: data } = usePortfolio();
+
   const [sliderPos, setSliderPos] = useState(50);
   const [isActiveDrag, setIsActiveDrag] = useState(false);
   const isDragging = useRef(false);

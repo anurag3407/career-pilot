@@ -1,7 +1,7 @@
+import { usePortfolio } from "../../../../context/PortfolioContext";
 import React, { useRef, useState, useCallback, useEffect } from 'react';
 import { motion, useScroll, useTransform, AnimatePresence, useInView } from 'framer-motion';
 import { Github, Linkedin, Twitter, Mail, MapPin, ExternalLink, Briefcase, Code2, ChevronDown, Quote, Send, User, Layers, Zap } from 'lucide-react';
-import data from '../../../../data/dummy_data.json';
 
 /* ── Cyberpunk palette ─────────────────────────────────────────────── */
 const NEON = {
@@ -20,6 +20,8 @@ const NEON = {
 
 /* ── Rain drop ─────────────────────────────────────────────────────── */
 function RainDrop({ x, delay, duration }) {
+  const { portfolioData: data } = usePortfolio();
+
   return (
     <motion.div className="absolute pointer-events-none"
       style={{ left: `${x}%`, top: '-5px', width: 1, height: 12,
@@ -32,6 +34,8 @@ function RainDrop({ x, delay, duration }) {
 
 /* ── Neon sign flicker ─────────────────────────────────────────────── */
 function NeonSign({ text, color, x, y, size = 14, angle = 0 }) {
+  const { portfolioData: data } = usePortfolio();
+
   const [on, setOn] = useState(true);
   useEffect(() => {
     const id = setInterval(() => {
@@ -52,6 +56,8 @@ function NeonSign({ text, color, x, y, size = 14, angle = 0 }) {
 
 /* ── City building silhouette ─────────────────────────────────────── */
 function CityBuildings({ layer = 1 }) {
+  const { portfolioData: data } = usePortfolio();
+
   const buildings = layer === 1
     ? [
         { x: 0,   w: 40,  h: 180 }, { x: 45,  w: 30, h: 220 }, { x: 80,  w: 50, h: 160 },
@@ -97,6 +103,8 @@ function CityBuildings({ layer = 1 }) {
 
 /* ── Glitch text ──────────────────────────────────────────────────── */
 function GlitchText({ text, className = '', style = {} }) {
+  const { portfolioData: data } = usePortfolio();
+
   const [g, setG] = useState(false);
   useEffect(() => {
     const id = setInterval(() => {
@@ -117,6 +125,8 @@ function GlitchText({ text, className = '', style = {} }) {
 
 /* ── Scroll fade wrapper ───────────────────────────────────────────── */
 function FadeSection({ children, className = '', delay = 0 }) {
+  const { portfolioData: data } = usePortfolio();
+
   const ref = useRef(null);
   const inView = useInView(ref, { once: true, margin: '-80px' });
   return (
@@ -130,6 +140,8 @@ function FadeSection({ children, className = '', delay = 0 }) {
 
 /* ── Section heading ───────────────────────────────────────────────── */
 function SectionHeading({ icon: Icon, title, accent = NEON.pink }) {
+  const { portfolioData: data } = usePortfolio();
+
   return (
     <div className="flex items-center gap-3 mb-10">
       <div className="p-2.5 rounded-xl" style={{ background: `${accent}15`, border: `1px solid ${accent}35` }}>
@@ -143,6 +155,8 @@ function SectionHeading({ icon: Icon, title, accent = NEON.pink }) {
 
 /* ── Skill bar ─────────────────────────────────────────────────────── */
 function SkillBar({ name, level, category, delay }) {
+  const { portfolioData: data } = usePortfolio();
+
   const ref = useRef(null);
   const inView = useInView(ref, { once: true });
   const catColor = { Frontend: NEON.cyan, Backend: NEON.pink, DevOps: NEON.yellow, Design: NEON.purple };
@@ -168,6 +182,8 @@ function SkillBar({ name, level, category, delay }) {
 
 /* ── Project card ──────────────────────────────────────────────────── */
 function ProjectCard({ project, index }) {
+  const { portfolioData: data } = usePortfolio();
+
   const [hovered, setHovered] = useState(false);
   const accent = index % 2 === 0 ? NEON.pink : NEON.cyan;
   return (
@@ -221,6 +237,8 @@ function ProjectCard({ project, index }) {
 
 /* ── Testimonial card ──────────────────────────────────────────────── */
 function TestimonialCard({ testimonial, index }) {
+  const { portfolioData: data } = usePortfolio();
+
   return (
     <FadeSection delay={index * 0.1}>
       <div className="p-6 rounded-2xl h-full"
@@ -242,6 +260,8 @@ function TestimonialCard({ testimonial, index }) {
 
 /* ── Contact form ──────────────────────────────────────────────────── */
 function ContactForm() {
+  const { portfolioData: data } = usePortfolio();
+
   const [form, setForm] = useState({ name: '', email: '', message: '' });
   const [sent, setSent] = useState(false);
   const inputStyle = {
@@ -287,6 +307,8 @@ function ContactForm() {
    MAIN COMPONENT
 ═══════════════════════════════════════════════════════════════════════ */
 export default function NeonCityscape() {
+  const { portfolioData: data } = usePortfolio();
+
   const containerRef = useRef(null);
   const { scrollYProgress } = useScroll({ target: containerRef });
   const heroParallax = useTransform(scrollYProgress, [0, 0.3], [0, -60]);

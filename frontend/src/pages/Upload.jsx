@@ -296,15 +296,15 @@ export default function Upload() {
             initial={{ opacity: 0, y: 20 }}
             animate={{ opacity: 1, y: 0 }}
             transition={{ delay: 0.25 }}
-            className="mt-6 rounded-xl bg-neutral-900/50 border border-neutral-800 p-6"
+            className="mt-6 rounded-xl bg-background/50 border border-border p-6"
           >
             <div className="flex items-center gap-3 mb-5">
               <div className="w-10 h-10 bg-sky-500/20 rounded-lg flex items-center justify-center">
                 <Linkedin className="w-5 h-5 text-sky-400" />
               </div>
               <div>
-                <h2 className="text-lg font-semibold text-white">Import from LinkedIn</h2>
-                <p className="text-sm text-neutral-500">Paste your public LinkedIn profile URL to auto-fill your resume</p>
+                <h2 className="text-lg font-semibold text-foreground">Import from LinkedIn</h2>
+                <p className="text-sm text-muted-foreground">Paste your public LinkedIn profile URL to auto-fill your resume</p>
               </div>
             </div>
 
@@ -318,7 +318,7 @@ export default function Upload() {
                   setLinkedinProfile(null)
                 }}
                 placeholder="https://linkedin.com/in/your-profile"
-                className="flex-1 px-4 py-2.5 rounded-lg bg-neutral-950 border border-neutral-800 text-white placeholder:text-neutral-500 focus:outline-none focus:ring-2 focus:ring-sky-500/50 focus:border-sky-500 transition-all duration-200 text-sm"
+                className="flex-1 px-4 py-2.5 rounded-lg bg-muted/50 border border-border text-foreground placeholder:text-muted-foreground focus:outline-none focus:ring-2 focus:ring-primary/30 focus:border-primary transition-all duration-200 text-sm"
               />
               <Button
                 variant="secondary"
@@ -338,38 +338,38 @@ export default function Upload() {
                 className="mt-5 rounded-xl border border-sky-500/20 bg-sky-500/5 p-5"
               >
                 <div className="flex items-start gap-4 mb-4">
-                  <div className="w-12 h-12 rounded-full bg-linear-to-br from-sky-500 to-indigo-600 flex items-center justify-center shrink-0">
-                    <span className="text-white font-bold text-lg">
+                  <div className="w-12 h-12 rounded-full bg-gradient-to-br from-primary to-secondary flex items-center justify-center shrink-0">
+                    <span className="text-primary-foreground font-bold text-lg">
                       {linkedinPreview.name?.charAt(0)?.toUpperCase() || '?'}
                     </span>
                   </div>
                   <div className="flex-1 min-w-0">
-                    <h3 className="text-white font-semibold text-base">{linkedinPreview.name}</h3>
+                    <h3 className="text-foreground font-semibold text-base">{linkedinPreview.name}</h3>
                     {linkedinPreview.headline && (
-                      <p className="text-sky-400 text-sm mt-0.5">{linkedinPreview.headline}</p>
+                      <p className="text-sky-600 dark:text-sky-400 text-sm mt-0.5">{linkedinPreview.headline}</p>
                     )}
                     {linkedinPreview.location && (
-                      <p className="text-neutral-500 text-xs mt-0.5">{linkedinPreview.location}</p>
+                      <p className="text-muted-foreground text-xs mt-0.5">{linkedinPreview.location}</p>
                     )}
                   </div>
                 </div>
 
-                <div className="flex flex-wrap gap-4 text-sm text-neutral-400 mb-4">
+                <div className="flex flex-wrap gap-4 text-sm text-muted-foreground mb-4">
                   {linkedinPreview.experienceCount > 0 && (
                     <span className="flex items-center gap-1.5">
-                      <Briefcase className="w-4 h-4 text-neutral-500" />
+                      <Briefcase className="w-4 h-4 text-muted-foreground" />
                       {linkedinPreview.experienceCount} experience {linkedinPreview.experienceCount === 1 ? 'entry' : 'entries'}
                     </span>
                   )}
                   {linkedinPreview.educationCount > 0 && (
                     <span className="flex items-center gap-1.5">
-                      <GraduationCap className="w-4 h-4 text-neutral-500" />
+                      <GraduationCap className="w-4 h-4 text-muted-foreground" />
                       {linkedinPreview.educationCount} education {linkedinPreview.educationCount === 1 ? 'entry' : 'entries'}
                     </span>
                   )}
                   {linkedinPreview.skills?.length > 0 && (
                     <span className="flex items-center gap-1.5">
-                      <User className="w-4 h-4 text-neutral-500" />
+                      <User className="w-4 h-4 text-muted-foreground" />
                       {linkedinPreview.skills.length} skills
                     </span>
                   )}
@@ -380,13 +380,13 @@ export default function Upload() {
                     {linkedinPreview.skills.slice(0, 8).map((skill, i) => (
                       <span
                         key={i}
-                        className="px-2.5 py-1 bg-sky-500/10 border border-sky-500/20 text-sky-400 rounded-full text-xs font-medium"
+                        className="px-2.5 py-1 bg-sky-500/10 border border-sky-500/20 text-sky-600 dark:text-sky-400 rounded-full text-xs font-medium"
                       >
                         {skill}
                       </span>
                     ))}
                     {linkedinPreview.skills.length > 8 && (
-                      <span className="px-2.5 py-1 text-neutral-500 text-xs">
+                      <span className="px-2.5 py-1 text-muted-foreground text-xs">
                         +{linkedinPreview.skills.length - 8} more
                       </span>
                     )}

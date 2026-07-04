@@ -9,6 +9,7 @@ import toast from 'react-hot-toast';
 import { useProjectVisualizerStore } from '../../stores/useProjectVisualizerStore';
 import { projectVisualizerApi } from '../../services/api';
 import { cn } from '../../lib/utils';
+import { HeroSection } from '../../components/ui/hero-section-dark';
 
 const Landing = () => {
   const [url, setUrl] = useState('');
@@ -122,44 +123,30 @@ const Landing = () => {
       <div className="absolute top-[-20%] left-[-10%] w-[50%] h-[50%] rounded-full bg-cyan-600/10 blur-[120px] pointer-events-none" />
       <div className="absolute bottom-[-10%] right-[-10%] w-[40%] h-[40%] rounded-full bg-violet-600/10 blur-[120px] pointer-events-none" />
       
-      <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 pt-20 pb-24 relative z-10">
-        
-        {/* Header Section */}
-        <div className="text-center max-w-3xl mx-auto mb-16">
-          <motion.div
-            initial={{ opacity: 0, y: -20 }}
-            animate={{ opacity: 1, y: 0 }}
-            transition={{ duration: 0.5 }}
-            
-            className="inline-flex items-center gap-2 px-4 py-2 rounded-full bg-muted border border-border mb-8"
-          >
-            <Zap className="w-4 h-4 text-cyan-400" />
-           
-            <span className="text-sm font-medium text-muted-foreground">Repo-to-Map in 10 seconds</span>
-          </motion.div>
-          
-          <motion.h1
-            initial={{ opacity: 0, y: 20 }}
-            animate={{ opacity: 1, y: 0 }}
-            transition={{ duration: 0.5, delay: 0.1 }}
-            className="text-5xl md:text-7xl font-bold tracking-tight mb-6"
-          >
-            Project{' '}
-            <span className="text-transparent bg-clip-text bg-gradient-to-r from-cyan-400 to-violet-500">
-              Visualizer
-            </span>
-          </motion.h1>
-          
-          <motion.p
-            initial={{ opacity: 0 }}
-            animate={{ opacity: 1 }}
-            transition={{ duration: 0.5, delay: 0.2 }}
-            
-            className="text-xl text-muted-foreground"
-          >
-            Paste a GitHub repo → get a visual architecture map + AI onboarding in seconds.
-          </motion.p>
-        </div>
+      <HeroSection
+        title="Repo-to-Map in 10 seconds"
+        subtitle={{
+          regular: "Project ",
+          gradient: "Visualizer",
+        }}
+        description="Paste a GitHub repo → get a visual architecture map + AI onboarding in seconds."
+        ctaText="Start Exploring"
+        ctaHref="#analyzer-form"
+        bottomImage={{
+          light: "https://images.unsplash.com/photo-1460925895917-afdab827c52f?q=80&w=2015&auto=format&fit=crop",
+          dark: "https://images.unsplash.com/photo-1460925895917-afdab827c52f?q=80&w=2015&auto=format&fit=crop",
+        }}
+        gridOptions={{
+          angle: 65,
+          opacity: 0.4,
+          cellSize: 50,
+          lightLineColor: "#4a4a4a",
+          darkLineColor: "#2a2a2a",
+        }}
+      />
+
+      <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 pb-24 relative z-10" id="analyzer-form">
+
 
         {/* URL Input Form */}
         <motion.div

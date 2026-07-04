@@ -9,6 +9,7 @@ export { default as FileUpload } from './FileUpload'
 export { default as JobAlertModal } from './JobAlertModal'
 export { default as JobAlertsList } from './JobAlertsList'
 export { default as BackButton } from './BackButton'
+export { default as CopyButton } from './CopyButton'
 
 // Export skeleton components
 export {

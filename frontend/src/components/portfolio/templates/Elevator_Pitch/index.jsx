@@ -1,7 +1,7 @@
+import { usePortfolio } from "../../../../context/PortfolioContext";
 // frontend/src/components/portfolio/templates/Elevator_Pitch/index.jsx
 import React, { useState } from 'react';
 import { motion, useScroll, useMotionValueEvent } from 'framer-motion';
-import data from '../../../../data/dummy_data.json';
 import { ElevatorDoors } from './ElevatorDoors';
 import { Hero } from './Hero';
 import { About } from './About';
@@ -12,6 +12,8 @@ import { Contact } from './Contact';
 import { ChevronUp, ChevronDown } from 'lucide-react';
 
 export default function ElevatorPitchPortfolio() {
+  const { portfolioData: data } = usePortfolio();
+
   const { scrollYProgress } = useScroll();
   const [currentFloor, setCurrentFloor] = useState(1);
   const [scrollDirection, setScrollDirection] = useState(null);

@@ -1,7 +1,9 @@
+import { usePortfolio } from "../../../../context/PortfolioContext";
 import React from 'react';
-import data from '../../../../data/dummy_data.json';
 import { motion } from "framer-motion";
 function DNAHelix() {
+  const { portfolioData: data } = usePortfolio();
+
   return (
     <div className="relative h-80 flex justify-center items-center overflow-hidden">
       {[...Array(12)].map((_, i) => (
@@ -53,6 +55,8 @@ function DNAHelix() {
  * Description: Rotating DNA double-helix hero section with biotech-inspired color palette (cyan, magenta, white). Animated helix using CSS transforms and keyframes.
  */
 export default function DigitalDNA() {
+  const { portfolioData: data } = usePortfolio();
+
   return (
     <div className="min-h-screen bg-gray-950 text-white flex flex-col items-center justify-center p-8 font-sans">
       <div className="max-w-3xl w-full text-center">
