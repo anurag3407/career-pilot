@@ -180,10 +180,6 @@ export const uploadApi = {
     const formData = new FormData()
     formData.append('resume', file)
 
-    const token = await user.getIdToken();
-    const formData = new FormData();
-    formData.append("resume", file);
-
     const response = await fetch(`${API_BASE}/upload`, {
       method: "POST",
       headers: {
@@ -203,10 +199,6 @@ export const uploadApi = {
     const token = user ? await user.getIdToken() : 'mock-dev-token'
     const formData = new FormData()
     formData.append('resume', file)
-
-    const token = await user.getIdToken();
-    const formData = new FormData();
-    formData.append("resume", file);
 
     const response = await fetch(`${API_BASE}/upload/extract-text`, {
       method: "POST",
@@ -469,9 +461,6 @@ export const portfolioApi = {
       headers,
     });
     return handleResponse(response);
-  },
-};
-    return handleResponse(response)
   },
 
   // Create portfolio
