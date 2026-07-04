@@ -1,4 +1,18 @@
 export const templates = [
+  {
+    id: "Swipe_Right_Dating_App",
+    title: "Swipe Right Dating App",
+    category: "Portfolio",
+    colorScheme: "Light",
+    layout: "Interactive",
+    author: "Antigravity",
+    views: 1250,
+    rating: 5.0,
+    image: "/templates/Swipe_Right_Dating_App.png",
+    createdAt: "2026-07-04",
+    isComplete: true,
+    description: "A premium, interactive developer portfolio styled like a modern dating application. Swipe through projects, chat history experience, and match with the developer."
+  },
    {
     "id": "Rubik_s_Cube_3D_Rotate",
     "title": "Rubik's Cube 3D Rotate",
