@@ -10,6 +10,7 @@ import {
   BarChart3,
   Sparkles
 } from 'lucide-react'
+import logger from '../utils/logger'
 import {
   LineChart,
   Line,
@@ -47,8 +48,8 @@ export default function Analytics() {
       setError('')
       try {
         const response = await interviewApi.getAnalytics()
-        console.log("Analytics Response:", response)
-        console.log("Analytics Data:", response.data)
+        logger.log("Analytics Response loaded", { status: response.status })
+        logger.log("Analytics Data loaded", { sessionCount: response.data?.sessions?.length })
         const payload = response.data || { sessions: [], summary: DEFAULT_SUMMARY }
         setAnalytics({
           sessions: Array.isArray(payload.sessions) ? payload.sessions : [],
