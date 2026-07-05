@@ -1,5 +1,19 @@
 export const templates = [
   {
+    id: "Stand_up_Comedy_Brick_Wall_Mic",
+    title: "Stand-up Comedy Brick Wall Mic",
+    category: "Portfolio",
+    colorScheme: "Dark",
+    layout: "Interactive",
+    author: "Antigravity",
+    views: 1500,
+    rating: 5.0,
+    image: "/templates/Stand_up_Comedy_Brick_Wall_Mic.png",
+    createdAt: "2026-07-05",
+    isComplete: true,
+    description: "A premium, pixel-perfect developer portfolio styled like a classic stand-up comedy club stage, featuring a dark brick wall backdrop, glowing spotlight, theatrical curtains, marquee light borders, and tour-history timeline experience."
+  },
+  {
     id: "Swipe_Right_Dating_App",
     title: "Swipe Right Dating App",
     category: "Portfolio",
