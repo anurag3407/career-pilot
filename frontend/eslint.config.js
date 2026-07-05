@@ -29,6 +29,7 @@ export default [
       'react-hooks/static-components': 'off',
       'no-empty': 'off',
       'react-hooks/exhaustive-deps': 'warn',
+      'no-console': ['warn', { allow: ['warn', 'error'] }],
       'no-undef': 'warn',
       'react-compiler/react-compiler': 'off'
     },
