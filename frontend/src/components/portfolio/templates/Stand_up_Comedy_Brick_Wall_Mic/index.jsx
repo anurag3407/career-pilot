@@ -1,11 +1,9 @@
-import React, { useState, useEffect, useRef } from "react";
+import React, { useState, useEffect } from "react";
 import { motion, AnimatePresence } from "framer-motion";
 import { usePortfolio } from "../../../../context/PortfolioContext";
 import {
-  Mic, Heart, Star, MapPin, Mail, Linkedin, Github, Twitter,
-  ExternalLink, ChevronLeft, ChevronRight, Send, ArrowRight,
-  Smile, Ticket, SmilePlus, Clapperboard, Lightbulb, Calendar,
-  Menu, X, Sparkles, Award, User, Volume2, ShieldAlert
+  Mic, MapPin, Mail, Linkedin, Github, Twitter, ExternalLink,
+  Smile, Ticket, SmilePlus, Menu, X, Volume2
 } from "lucide-react";
 
 // ── Global CSS Injection for the Comedy Theme ──
@@ -353,7 +351,7 @@ export default function StandUpComedyBrickWallMic() {
 
   const statYears = data.stats?.yearsExperience || "5+";
   const statProjects = data.stats?.projectsCompleted || "120+";
-  const statSatisfaction = data.stats?.happyClients ? `${data.stats.happyClients}%` : "98%";
+  const statSatisfaction = (data.stats?.happyClients !== undefined && data.stats?.happyClients !== null) ? `${data.stats.happyClients}%` : "98%";
   const statRate = data.stats?.hourlyRate || "$50/hr";
 
   const skills = data.skills || [];
@@ -362,7 +360,7 @@ export default function StandUpComedyBrickWallMic() {
   const testimonials = data.testimonials || [];
 
   return (
-    <div className="comedy-wall text-zinc-100 min-h-screen relative font-body select-none">
+    <div className="comedy-wall text-zinc-100 min-h-screen relative font-body">
       {/* CSS Injection */}
       <style dangerouslySetInnerHTML={{ __html: GLOBAL_THEME_CSS }} />
 
@@ -422,6 +420,8 @@ export default function StandUpComedyBrickWallMic() {
               <button 
                 onClick={() => setMobileMenuOpen(prev => !prev)}
                 className="lg:hidden p-2 text-zinc-400 hover:text-white focus:outline-none"
+                aria-label={mobileMenuOpen ? "Close menu" : "Open menu"}
+                aria-expanded={mobileMenuOpen}
               >
                 {mobileMenuOpen ? <X size={24} /> : <Menu size={24} />}
               </button>
@@ -483,7 +483,16 @@ export default function StandUpComedyBrickWallMic() {
                 transition={{ duration: 0.6, delay: 0.1 }}
                 className="font-heading text-4xl sm:text-5xl md:text-6xl font-black uppercase leading-[1.05] tracking-tight mb-4 text-zinc-100"
               >
-                I turn ideas into <span className="neon-text-red block sm:inline">standout</span> experiences
+                {(() => {
+                  const parts = personalTagline.split(/(standout)/i);
+                  return parts.map((part, i) => 
+                    /standout/i.test(part) ? (
+                      <span key={i} className="neon-text-red block sm:inline">{part}</span>
+                    ) : (
+                      part
+                    )
+                  );
+                })()}
               </motion.h1>
 
               {/* Developer Title Tag/Banner */}
@@ -702,7 +711,7 @@ export default function StandUpComedyBrickWallMic() {
 
               <div className="flex flex-col gap-5">
                 {skills.slice(0, 7).map((skill, index) => {
-                  const skillLevel = skill.level || 75;
+                  const skillLevel = (skill.level !== undefined && skill.level !== null) ? skill.level : 75;
                   return (
                     <div key={skill.name || index} className="text-left">
                       <div className="flex justify-between items-center text-xs font-semibold uppercase tracking-wider text-zinc-300 mb-1">
