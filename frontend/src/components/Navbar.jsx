@@ -21,9 +21,11 @@ import {
   Moon,
   Palette,
   ChevronDown,
-  Target
+  Target,
+  Briefcase
 } from 'lucide-react'
 import AIProviderSelector from './AIProviderSelector'
+import { FEATURES } from '../data/featuresConfig'
 
 export default function Navbar() {
   const { user, logout } = useAuth()
@@ -34,7 +36,16 @@ export default function Navbar() {
   const [scrolled, setScrolled] = useState(false)
   const [searchQuery, setSearchQuery] = useState('')
   const [showDropdown, setShowDropdown] = useState(false)
-  const [notificationCount] = useState(3)
+  const [showProductsDropdown, setShowProductsDropdown] = useState(false)
+  // notificationCount: set to 0 until a real notifications API is wired up
+  const [notificationCount] = useState(0)
+
+  const productLinks = FEATURES.map(feature => ({
+    path: `/${feature.slug}`,
+    label: feature.name,
+    description: feature.tagline.split('.')[0], // Take first sentence
+    icon: feature.icon
+  }))
 
   useEffect(() => {
     const handleScroll = () => {
@@ -85,9 +96,6 @@ export default function Navbar() {
     { path: '/fellowship', label: 'Fellowship', icon: GraduationCap },
     { path: '/community', label: 'Community', icon: Users },
     { path: '/upload', label: 'Resume', icon: FileText },
-    { path: '/email-generator', label: 'Emails', icon: Mail },
-    { path: '/linkedin-optimizer', label: 'LinkedIn', icon: Linkedin },
-    { path: '/skill-gap', label: 'Skill Gap', icon: Target },
   ]
 
   const searchSuggestions = [
@@ -163,6 +171,49 @@ export default function Navbar() {
                       >
                         {item}
                       </button>
+                    ))}
+                  </motion.div>
+                )}
+              </AnimatePresence>
+            </div>
+
+            {/* Products Dropdown */}
+            <div
+              className="relative"
+              onMouseEnter={() => setShowProductsDropdown(true)}
+              onMouseLeave={() => setShowProductsDropdown(false)}
+            >
+              <button
+                className={`nav-link ${showProductsDropdown ? 'nav-link-active' : 'nav-link-inactive'}`}
+              >
+                Products
+                <ChevronDown className={`w-4 h-4 transition-transform ${showProductsDropdown ? 'rotate-180' : ''}`} />
+              </button>
+
+              <AnimatePresence>
+                {showProductsDropdown && (
+                  <motion.div
+                    initial={{ opacity: 0, y: 10 }}
+                    animate={{ opacity: 1, y: 0 }}
+                    exit={{ opacity: 0, y: 10 }}
+                    transition={{ duration: 0.2 }}
+                    className="absolute top-full left-1/2 -translate-x-1/2 mt-2 w-[600px] bg-background/95 backdrop-blur-xl border border-border rounded-2xl shadow-2xl overflow-hidden p-4 grid grid-cols-2 gap-2 z-50"
+                  >
+                    {productLinks.map(({ path, label, description, icon: Icon }) => (
+                      <Link
+                        key={path}
+                        to={path}
+                        onClick={() => setShowProductsDropdown(false)}
+                        className="flex items-start gap-3 p-3 rounded-xl hover:bg-muted transition-colors group"
+                      >
+                        <div className="w-10 h-10 rounded-lg bg-primary/10 flex items-center justify-center shrink-0 group-hover:bg-primary/20 transition-colors">
+                          <Icon className="w-5 h-5 text-primary" />
+                        </div>
+                        <div>
+                          <p className="text-sm font-semibold text-foreground">{label}</p>
+                          <p className="text-xs text-muted-foreground mt-0.5">{description}</p>
+                        </div>
+                      </Link>
                     ))}
                   </motion.div>
                 )}
@@ -370,6 +421,23 @@ export default function Navbar() {
                   className="bg-transparent outline-none text-sm w-full"
                 />
               </div>
+
+              {/* Mobile Products */}
+              <div className="space-y-1">
+                <p className="text-xs font-semibold text-muted-foreground uppercase tracking-wider px-2 pt-2">Products</p>
+                {productLinks.map(({ path, label, icon: Icon }) => (
+                  <Link
+                    key={path}
+                    to={path}
+                    onClick={() => setMobileMenuOpen(false)}
+                    className={`nav-link text-base ${isActive(path) ? 'nav-link-active' : 'nav-link-inactive'}`}
+                  >
+                    <Icon className="w-5 h-5" />
+                    {label}
+                  </Link>
+                ))}
+              </div>
+              <div className="border-t border-border my-2"></div>
 
               {publicLinks.map(({ path, label, icon: Icon }) => (
                 <Link
