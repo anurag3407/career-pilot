@@ -1,4 +1,18 @@
 export const templates = [
+{
+    id: "Hot_Air_Balloon_Drifting",
+    title: "Hot Air Balloon Drifting",
+    category: "Portfolio",
+    colorScheme: "Bright Sky (Peaches & Blues)",
+    layout: "Parallax Background",
+    author: "System",
+    views: 0,
+    rating: 5.0,
+    image: "/template-previews/Hot_Air_Balloon_Drifting.png",
+    createdAt: "2026-06-22",
+    description: "A bright, whimsical portfolio featuring a massive, continuously drifting hot air balloon, animated CSS clouds, and transparent glassmorphism cards over a dynamic parallax sky.",
+    isComplete: true
+  },
   {
     id: "Stand_up_Comedy_Brick_Wall_Mic",
     title: "Stand-up Comedy Brick Wall Mic",

@@ -178,9 +178,7 @@ const globalCSS = `
 `;
 
 function GlobalStyles() {
-  const { portfolioData: data } = usePortfolio();
-
-  return <style dangerouslySetInnerHTML={{ __html: globalCSS }} />;
+  return <style>{globalCSS}</style>;
 }
 
 /* ─────────────────────────────────────────────────────

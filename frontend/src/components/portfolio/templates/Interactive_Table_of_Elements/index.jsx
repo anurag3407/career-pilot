@@ -1,5 +1,6 @@
 import { usePortfolio } from "../../../../context/PortfolioContext";
 import React, { useState, useEffect } from 'react';
+import "./styles.css";
 import { motion, AnimatePresence } from 'framer-motion';
 import {
   Code,
@@ -386,12 +387,7 @@ export default function InteractiveTablePortfolio({ portfolioData }) {
         </div>
       </main>
 
-      <style dangerouslySetInnerHTML={{__html: `
-        .custom-scrollbar::-webkit-scrollbar { width: 6px; }
-        .custom-scrollbar::-webkit-scrollbar-track { background: transparent; }
-        .custom-scrollbar::-webkit-scrollbar-thumb { background: #334155; border-radius: 10px; }
-        .custom-scrollbar::-webkit-scrollbar-thumb:hover { background: #475569; }
-      `}} />
+
     </div>
   );
 }

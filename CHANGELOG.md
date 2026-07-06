@@ -1,4 +1,4 @@
-# [1.1.0](https://github.com/homasvikaneria/career-pilot/compare/v1.0.0...v1.1.0) (2026-07-05)
+# [1.1.0](https://github.com/homasvikaneria/career-pilot/compare/v1.0.0...v1.1.0) (2026-07-06)
 
 
 ## Bug Fixes
@@ -101,7 +101,15 @@
 * **portfolio:** implement Art Deco Gold template ([#1944](https://github.com/homasvikaneria/career-pilot/issues/1944)) ([#4066](https://github.com/homasvikaneria/career-pilot/issues/4066)) ([8dc90d5](https://github.com/homasvikaneria/career-pilot/commit/8dc90d50686a089c1d1e5ae078920ee72502ef20))
 * **portfolio:** implement Origami_Unfold_Step_Animation portfolio template ([71c9ad0](https://github.com/homasvikaneria/career-pilot/commit/71c9ad03e0842869b14e078726557de05fadafb3))
 * **template:** add Commercial Pilot Cockpit interactive 3D portfolio template ([07f1629](https://github.com/homasvikaneria/career-pilot/commit/07f16290d2e27a304433f145eff87ed70e9e0adb))
+* **templates:** add Hot Air Balloon Drifting portfolio template ([#3176](https://github.com/homasvikaneria/career-pilot/issues/3176)) ([#4285](https://github.com/homasvikaneria/career-pilot/issues/4285)) ([78826b6](https://github.com/homasvikaneria/career-pilot/commit/78826b69e2fe9834ae484f245f4a5c1581a4a5a0))
 * update website favicon ([33c9a55](https://github.com/homasvikaneria/career-pilot/commit/33c9a55852222b5163995e820fd373cfd4a8b102))
+
+# [1.268.0](https://github.com/anurag3407/career-pilot/compare/v1.267.3...v1.268.0) (2026-07-06)
+
+
+### Features
+
+* **templates:** add Hot Air Balloon Drifting portfolio template ([#3176](https://github.com/anurag3407/career-pilot/issues/3176)) ([#4285](https://github.com/anurag3407/career-pilot/issues/4285)) ([78826b6](https://github.com/anurag3407/career-pilot/commit/78826b69e2fe9834ae484f245f4a5c1581a4a5a0))
 
 # [1.1.0](https://github.com/homasvikaneria/career-pilot/compare/v1.0.0...v1.1.0) (2026-07-04)
 
