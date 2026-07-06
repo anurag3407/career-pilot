@@ -247,7 +247,7 @@ export default function Navbar() {
           </div>
 
           {/* Right Side */}
-          <div className="hidden md:flex items-center gap-3">
+          <div className="hidden lg:flex items-center gap-3">
             
             {/* AI Provider Selector */}
             <AIProviderSelector />
@@ -370,7 +370,7 @@ export default function Navbar() {
           </div>
 
           {/* Mobile Menu */}
-          <div className="flex items-center gap-2 md:hidden">
+          <div className="flex items-center gap-2 lg:hidden">
             <AIProviderSelector />
             <button
               onClick={toggleTheme}
@@ -407,7 +407,7 @@ export default function Navbar() {
             initial={{ opacity: 0, height: 0 }}
             animate={{ opacity: 1, height: 'auto' }}
             exit={{ opacity: 0, height: 0 }}
-            className="md:hidden border-t border-border bg-background/95 backdrop-blur-xl overflow-hidden"
+            className="lg:hidden border-t border-border bg-background/95 backdrop-blur-xl overflow-hidden"
           >
             <div className="px-4 py-6 space-y-3">
 
