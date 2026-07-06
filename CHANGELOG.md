@@ -1,7 +1,7 @@
 # [1.1.0](https://github.com/homasvikaneria/career-pilot/compare/v1.0.0...v1.1.0) (2026-07-05)
 
 
-### Bug Fixes
+## Bug Fixes
 
 * add missing AI feedback fields to answerSchema ([#3484](https://github.com/homasvikaneria/career-pilot/issues/3484)) ([80e0d56](https://github.com/homasvikaneria/career-pilot/commit/80e0d56c65d777d8903b00059111786935556b92))
 * address codeant-ai review comments ([02c9270](https://github.com/homasvikaneria/career-pilot/commit/02c92705c32d8775b0621e04b3701d583521454b))
@@ -45,7 +45,7 @@
 * validate Scandinavian project links ([f3b3442](https://github.com/homasvikaneria/career-pilot/commit/f3b34420684762b9621446f5cdbfe767a9d31f8a))
 
 
-### Features
+## Features
 
 * add Accordion Fold Brochure portfolio template ([18d2728](https://github.com/homasvikaneria/career-pilot/commit/18d2728af1325b0615b3241eb021e9defa910d44))
 * add AI-powered resume bullet point enhancer ([#4221](https://github.com/homasvikaneria/career-pilot/issues/4221)) ([1b35e32](https://github.com/homasvikaneria/career-pilot/commit/1b35e32c5eb3a92645ee61c1af53787ec44c47e0))
