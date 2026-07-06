@@ -664,6 +664,17 @@ export const enhanceApi = {
       body: JSON.stringify({ resumeText, jobDescription, jobRole })
     })
     return handleResponse(response)
+  },
+
+  // Estimate Salary based on role, experience, location, and skills
+  async estimateSalary(data) {
+    const headers = await getAuthHeaders()
+    const response = await fetch(`${API_BASE}/enhance/salary-estimate`, {
+      method: 'POST',
+      headers,
+      body: JSON.stringify(data)
+    })
+    return handleResponse(response)
   }
 }
 

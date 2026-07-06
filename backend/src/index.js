@@ -297,12 +297,12 @@ app.use("/api/outreach", outreachRoutes);
 app.use("/api/bugs", bugsRoutes);
 try {
     const paymentRoutes = (await import('./routes/payments.js')).default;
-    app.use('/api/collaboration', collaborationRoutes);
-app.use('/api/payments', paymentRoutes);
+    app.use('/api/payments', paymentRoutes);
     console.log('✅ Payment routes loaded');
 } catch (error) {
     console.warn('⚠️ Payment routes disabled:', error.message);
 }
+app.use('/api/collaboration', collaborationRoutes);
 app.use('/api/portfolio', portfolioRoutes);
 app.use('/api/portfolio/github', portfolioGithubRoutes);
 app.use('/api/user-profiles', userProfileRoutes);
