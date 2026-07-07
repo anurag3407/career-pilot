@@ -116,7 +116,7 @@ export default function Hero({ data }) {
           transition={{ duration: 1, ease: 'easeOut', delay: 0.5 }}
           className="relative z-10 w-32 h-32 md:w-40 md:h-40 rounded-full border-4 border-white/40 overflow-hidden shadow-2xl animate-float mb-6 mt-8"
         >
-          <img src={personal.avatar} alt={personal.name} className="w-full h-full object-cover" />
+          <img src={personal.avatar} alt={personal.name || "Explorer"} className="w-full h-full object-cover" />
         </motion.div>
       )}
 
