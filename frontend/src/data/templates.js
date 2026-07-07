@@ -3184,6 +3184,20 @@ rating: 4.8,
   "image": "/templates/Cyber_Security_Red_Team.png",
   "createdAt": "2026-06-14",
   "isComplete": true
+  },
+  {
+    "id": "Film_Director_Clapper_Board",
+    "title": "Film Director Clapper Board",
+    "category": "Portfolio",
+    "colorScheme": "Cinematic Dark",
+    "layout": "Storyboard Grid",
+    "author": "System",
+    "views": 0,
+    "rating": 5.0,
+    "image": "/template-previews/Film_Director_Clapper_Board.png",
+    "createdAt": "2026-07-06",
+    "isComplete": true,
+    "description": "A premium cinematic portfolio styled like a director's clapperboard and storyboard reel. Features dark matte interfaces, film reel project showcases, and a rolling-credits experience."
   }
 ];
 
