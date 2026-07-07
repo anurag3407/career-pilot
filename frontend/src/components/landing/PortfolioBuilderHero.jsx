@@ -555,7 +555,12 @@ const InteractiveDotCanvas = ({
       document.documentElement.removeEventListener('mouseleave', handleMouseLeave);
       if (animationFrameId.current) cancelAnimationFrame(animationFrameId.current);
     };
-  }, [measure, handleMouseMove, animateDots]);
+    // `measure`, `handleMouseMove`, and `animateDots` are wrapped in
+    // useCallback with stable deps upstream — adding them here would
+    // re-bind window listeners on every state change, which causes
+    // MaxListeners warnings in StrictMode.
+    // eslint-disable-next-line react-hooks/exhaustive-deps
+  }, []);
 
   return (
     <canvas
