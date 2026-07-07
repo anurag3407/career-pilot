@@ -31,7 +31,24 @@ export default function Projects({ projects }) {
         {/* Projects Grid */}
         <div className="grid grid-cols-1 md:grid-cols-2 gap-8">
           {projects.map((project, idx) => {
-            const tech = project.techStack || project.technologies || project.tech || [];
+            const rawTech = project.techStack || project.technologies || project.tech || [];
+            const tech = Array.isArray(rawTech)
+              ? rawTech
+              : (typeof rawTech === 'string'
+                  ? rawTech.split(',').map(s => s.trim()).filter(Boolean)
+                  : []);
+
+            const getSafeUrl = (url) => {
+              if (!url || typeof url !== 'string') return '#';
+              const cleanUrl = url.trim();
+              if (/^javascript:/i.test(cleanUrl)) return '#';
+              return cleanUrl;
+            };
+
+            const repositoryUrl = project.repoUrl || project.githubUrl;
+            const safeLiveUrl = getSafeUrl(project.liveUrl);
+            const safeRepoUrl = getSafeUrl(repositoryUrl);
+
             return (
               <motion.div 
                 key={idx}
@@ -111,9 +128,9 @@ export default function Projects({ projects }) {
 
                 {/* Action Buttons */}
                 <div className="flex gap-4 mt-auto w-full font-mono text-xs">
-                  {project.liveUrl && project.liveUrl !== "#" && (
+                  {safeLiveUrl && safeLiveUrl !== "#" && (
                     <a 
-                      href={project.liveUrl} 
+                      href={safeLiveUrl} 
                       target="_blank" 
                       rel="noreferrer" 
                       className="flex-1 py-2.5 px-4 bg-cyan-950/30 hover:bg-cyan-500 hover:text-slate-950 text-cyan-300 text-center font-bold border border-cyan-500/40 hover:border-transparent rounded-lg shadow-sm hover:shadow-[0_0_15px_rgba(34,211,238,0.4)] transition-all flex items-center justify-center gap-1.5"
@@ -122,9 +139,9 @@ export default function Projects({ projects }) {
                       <ExternalLink className="w-3.5 h-3.5" />
                     </a>
                   )}
-                  {project.githubUrl && project.githubUrl !== "#" && (
+                  {safeRepoUrl && safeRepoUrl !== "#" && (
                     <a 
-                      href={project.githubUrl} 
+                      href={safeRepoUrl} 
                       target="_blank" 
                       rel="noreferrer" 
                       className="flex-1 py-2.5 px-4 bg-slate-950/80 hover:bg-slate-800 text-slate-200 text-center font-bold border border-slate-700 hover:border-slate-500 rounded-lg transition-all flex items-center justify-center gap-1.5"

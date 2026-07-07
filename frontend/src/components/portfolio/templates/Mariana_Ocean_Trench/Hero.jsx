@@ -1,6 +1,6 @@
 import React from 'react';
 import { motion } from 'framer-motion';
-import { ChevronDown, Ship, Compass } from 'lucide-react';
+import { Ship, Compass } from 'lucide-react';
 
 export default function Hero({ data }) {
   const personal = data?.personal || data?.personalInfo || {};

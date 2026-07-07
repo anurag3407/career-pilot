@@ -12,7 +12,7 @@ import Contact from './Contact';
 
 export default function MarianaOceanTrenchTemplate({ portfolioData: propData }) {
   const context = usePortfolio();
-  const data = propData || context?.portfolioData;
+  const data = context?.portfolioData || propData;
 
   const [scrollPercent, setScrollPercent] = useState(0);
   const [depth, setDepth] = useState(0);

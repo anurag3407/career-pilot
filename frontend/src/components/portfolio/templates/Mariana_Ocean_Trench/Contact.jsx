@@ -1,4 +1,4 @@
-import React, { useState } from 'react';
+import React, { useState, useEffect, useRef } from 'react';
 import { motion } from 'framer-motion';
 import { Mail, MapPin, Send, Radio, Github, Linkedin, Terminal, ArrowUp, FileText } from 'lucide-react';
 
@@ -6,21 +6,40 @@ export default function Contact({ personal, socials }) {
   const [formState, setFormState] = useState('IDLE'); // IDLE, TRANSMITTING, SENT
   const [formData, setFormData] = useState({ name: '', email: '', message: '' });
 
+  const transmitTimerRef = useRef(null);
+  const idleTimerRef = useRef(null);
+
+  useEffect(() => {
+    return () => {
+      if (transmitTimerRef.current) clearTimeout(transmitTimerRef.current);
+      if (idleTimerRef.current) clearTimeout(idleTimerRef.current);
+    };
+  }, []);
+
   const handleTransmit = (e) => {
     e.preventDefault();
     if (!formData.name || !formData.email || !formData.message) return;
     
     setFormState('TRANSMITTING');
-    setTimeout(() => {
+    
+    if (transmitTimerRef.current) clearTimeout(transmitTimerRef.current);
+    if (idleTimerRef.current) clearTimeout(idleTimerRef.current);
+
+    transmitTimerRef.current = setTimeout(() => {
       setFormState('SENT');
       setFormData({ name: '', email: '', message: '' });
-      setTimeout(() => setFormState('IDLE'), 3500);
+      
+      idleTimerRef.current = setTimeout(() => {
+        setFormState('IDLE');
+      }, 3500);
     }, 2000);
   };
 
   const handleScrollToTop = () => {
     window.scrollTo({ top: 0, behavior: 'smooth' });
   };
+
+  const emailAddress = socials?.email || socials?.contact || personal?.email || "";
 
   return (
     <section 
@@ -82,7 +101,7 @@ export default function Contact({ personal, socials }) {
                   <Mail className="w-4 h-4 text-cyan-500 mt-0.5" />
                   <div>
                     <div className="text-[9px] text-slate-500 uppercase tracking-widest">UPLINK_UBOX</div>
-                    <div className="text-sm text-cyan-200 mt-0.5 break-all">{personal.email || "not-provided@system.net"}</div>
+                    <div className="text-sm text-cyan-200 mt-0.5 break-all">{emailAddress || "not-provided@system.net"}</div>
                   </div>
                 </div>
               </div>

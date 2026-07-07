@@ -3,7 +3,7 @@ import { motion } from 'framer-motion';
 import { Radio, MessageSquare, Terminal, RefreshCw } from 'lucide-react';
 
 export default function Testimonials({ testimonials }) {
-  if (!testimonials || testimonials.length === 0) return null;
+  if (!testimonials || !Array.isArray(testimonials) || testimonials.length === 0) return null;
 
   return (
     <section 

@@ -4,8 +4,6 @@ import { Anchor, MapPin, User, FileText, Terminal } from 'lucide-react';
 
 export default function About({ data }) {
   const personal = data?.personal || data?.personalInfo || {};
-  
-  if (!personal.bio && !personal.location) return null;
 
   return (
     <section 

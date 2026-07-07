@@ -1,5 +1,5 @@
 import React from 'react';
-import { Compass, Shield, Radio, Activity } from 'lucide-react';
+import { Compass, Radio, Activity } from 'lucide-react';
 
 export default function HUD({ depth, pressure, zone, scrollPercent }) {
   return (
