@@ -3184,6 +3184,20 @@ rating: 4.8,
   "image": "/templates/Cyber_Security_Red_Team.png",
   "createdAt": "2026-06-14",
   "isComplete": true
+  },
+  {
+    "id": "Mariana_Ocean_Trench",
+    "title": "Mariana Ocean Trench",
+    "category": "Portfolio",
+    "colorScheme": "Dark",
+    "layout": "Interactive",
+    "author": "Antigravity",
+    "views": 2500,
+    "rating": 5.0,
+    "image": "/templates/Mariana_Ocean_Trench.png",
+    "createdAt": "2026-07-07",
+    "isComplete": true,
+    "description": "An immersive, Awwwards-worthy portfolio template simulating a deep-sea submarine expedition. Features a real-time floating HUD (depth & pressure tracker, sonar scanner), vertical scrolling zone transitions, bioluminescent glow cards, and submarine controls."
   }
 ];
 
