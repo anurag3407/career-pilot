@@ -367,17 +367,128 @@ router.get('/', asyncHandler(async (req, res) => {
   let slugs = [];
   try {
     const entries = await fs.readdir(templatesDir);
-    slugs = entries.filter((e) => !e.startsWith('.'));
+    slugs = entries.filter((e) => !e.startsWith('.') && !e.startsWith('_') && VALID_SLUG_PATTERN.test(e));
   } catch {
     slugs = [];
   }
-  const portfolios = slugs.map((slug) => ({
-    slug,
-    url: `/portfolio/public/${slug}`,
-  }));
+  const portfolios = await Promise.all(
+    slugs.map(async (slug) => {
+      let deployStatus = 'live';
+      try {
+        const metaRaw = await fs.readFile(
+          new URL(`../templates/portfolio/${slug}/meta.json`, import.meta.url),
+          'utf-8'
+        );
+        const meta = JSON.parse(metaRaw);
+        deployStatus = meta.deployStatus ?? 'live';
+      } catch {
+        // no meta.json, assume live
+      }
+      return { slug, url: `/portfolio/public/${slug}`, deployStatus };
+    })
+  );
   res.status(200).json({ success: true, portfolios, data: portfolios });
 }));
 
+/**
+ * POST /api/portfolio/:id/duplicate
+ * Duplicates a portfolio template folder with a new slug.
+ */
+const duplicateLimiter = new Map();
+
+router.post(
+  '/:id/duplicate',
+  verifyToken,
+  asyncHandler(async (req, res) => {
+    const { id } = req.params;
+    const userId = req.user?.uid;
+    const now = Date.now();
+    const windowMs = 60 * 1000;
+    const maxPerWindow = 5;
+
+    const userHistory = duplicateLimiter.get(userId) || [];
+    const recent = userHistory.filter((t) => now - t < windowMs);
+    if (recent.length >= maxPerWindow) {
+      throw new ApiError(429, 'Too many duplicate requests. Please wait a moment.');
+    }
+    recent.push(now);
+    duplicateLimiter.set(userId, recent);
+
+    assertValidPortfolioSlug(id);
+
+    const sourcePath = new URL(`../templates/portfolio/${id}`, import.meta.url);
+
+    // Check source exists
+    try {
+      await fs.stat(sourcePath);
+    } catch {
+      throw new ApiError(404, 'Portfolio not found.');
+    }
+
+    // Read original meta.json for title
+    let meta = {};
+    try {
+      const metaRaw = await fs.readFile(
+        new URL(`../templates/portfolio/${id}/meta.json`, import.meta.url),
+        'utf-8'
+      );
+      meta = JSON.parse(metaRaw);
+    } catch {
+      meta = { title: id };
+    }
+
+    // Generate new slug: original-slug-copy, or original-slug-copy-2, etc.
+    const templatesDir = new URL('../templates/portfolio', import.meta.url);
+    let newSlug = `${id}-copy`;
+    let counter = 2;
+
+    while (true) {
+      const destPath = new URL(`../templates/portfolio/${newSlug}`, import.meta.url);
+      try {
+        await fs.cp(sourcePath, destPath, {
+          recursive: true,
+          force: false,
+          errorOnExist: true,
+        });
+        break;
+      } catch (error) {
+        if (error?.code !== 'ERR_FS_CP_EEXIST' && error?.code !== 'EEXIST') {
+          throw error;
+        }
+        newSlug = `${id}-copy-${counter}`;
+        counter++;
+      }
+    }
+
+    const originalTitle = meta.title ?? meta.name ?? id;
+    const originalName = meta.name ?? id;
+
+    const newMeta = {
+      ...meta,
+      title: `${originalTitle} (Copy)`,
+      ...(meta.name ? { name: `${originalName} (Copy)` } : {}),
+      slug: newSlug,
+      deployStatus: 'draft',
+      deployedUrl: null,
+    };
+    await fs.writeFile(
+      new URL(`../templates/portfolio/${newSlug}/meta.json`, import.meta.url),
+      JSON.stringify(newMeta, null, 2),
+      'utf-8'
+    );
+
+    res.status(201).json({
+      success: true,
+      message: 'Portfolio duplicated successfully.',
+      data: {
+        slug: newSlug,
+        title: newMeta.title,
+        deployStatus: 'draft',
+        url: `/portfolio/public/${newSlug}`,
+      },
+    });
+  })
+);
 /**
  * POST /api/portfolio
  * Create a new portfolio with validated and sanitized content.
@@ -418,12 +529,6 @@ router.put('/:slug', verifyToken, validatePortfolioSlug, validatePortfolioConten
   if (!portfolio) {
     throw new ApiError(404, `Portfolio "${slug}" not found.`);
   }
-res.status(200).json({
-  success: true,
-  message: 'Portfolio updated successfully.',
-  data: portfolio,
-});
-
 
   res.status(200).json({
     success: true,
