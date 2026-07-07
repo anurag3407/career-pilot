@@ -12,7 +12,7 @@ dotenv.config();
 // ---------------------------------------------------------------------------
 // Supported provider identifiers
 // ---------------------------------------------------------------------------
-export const SUPPORTED_PROVIDERS = ['gemini', 'openai', 'openrouter', 'requesty', 'groq'];
+export const SUPPORTED_PROVIDERS = ['gemini', 'openai', 'openrouter', 'requesty', 'groq', 'custom'];
 
 // Default model names per provider (used when caller doesn't specify one)
 const DEFAULT_MODELS = {
@@ -21,6 +21,7 @@ const DEFAULT_MODELS = {
   openrouter: 'openai/gpt-4o-mini',   // OpenRouter uses "org/model" format
   requesty: 'openai/gpt-4o-mini',     // Requesty uses "org/model" format
   groq: 'llama-3.3-70b-versatile',
+  custom: 'gpt-3.5-turbo',
 };
 
 // ---------------------------------------------------------------------------
@@ -127,6 +128,57 @@ class OpenAIAdapter {
   }
 }
 
+/**
+ * Adapter for Custom OpenAI-compatible endpoints (via official openai SDK).
+ */
+class CustomAdapter {
+  constructor(apiKey, modelName, baseUrl) {
+    const key = apiKey || 'dummy-key';
+    const config = { apiKey: key };
+    if (baseUrl) {
+      config.baseURL = baseUrl;
+    }
+    this.client = new OpenAI(config);
+    this.modelName = modelName || DEFAULT_MODELS.custom;
+    this.providerName = 'custom';
+  }
+
+  async generateContent(prompt) {
+    aiCallsCounter.inc({ provider: this.providerName });
+    const completion = await this.client.chat.completions.create({
+      model: this.modelName,
+      messages: [{ role: 'user', content: prompt }],
+      temperature: 0.7,
+    });
+    const u = completion.usage;
+    const usage = u
+      ? {
+          prompt: u.prompt_tokens ?? 0,
+          completion: u.completion_tokens ?? 0,
+          total: u.total_tokens ?? 0,
+        }
+      : undefined;
+    return { text: completion.choices[0]?.message?.content || '', usage };
+  }
+
+  async *generateContentStream(prompt) {
+    const completion = await this.client.chat.completions.create({
+      model: this.modelName,
+      messages: [{ role: 'user', content: prompt }],
+      temperature: 0.7,
+      stream: true,
+    });
+    let fullText = '';
+    for await (const chunk of completion) {
+      const text = chunk.choices[0]?.delta?.content || '';
+      fullText += text;
+      yield { text, fullText };
+    }
+    const u = completion.usage;
+    yield { done: true, usage: u ? { prompt: u.prompt_tokens ?? 0, completion: u.completion_tokens ?? 0, total: u.total_tokens ?? 0 } : undefined };
+  }
+}
+
 
 /**
  * Adapter for Groq (via groq-sdk).
@@ -189,12 +241,13 @@ class GroqAdapter {
 /**
  * Creates an AI provider adapter based on the given provider name and API key.
  *
- * @param {string} provider  - One of 'gemini' | 'openai' | 'openrouter' | 'groq'
+ * @param {string} provider  - One of 'gemini' | 'openai' | 'openrouter' | 'groq' | 'custom'
  * @param {string} apiKey    - The API key for the chosen provider
  * @param {string} [modelName] - Optional override for the model name
+ * @param {string} [baseUrl] - Optional override for the base URL (custom provider)
  * @returns {{ generateContent(prompt: string): Promise<{ text: string, usage?: { prompt: number, completion: number, total: number } }>, providerName: string }}
  */
-export function createAIProvider(provider, apiKey, modelName) {
+export function createAIProvider(provider, apiKey, modelName, baseUrl) {
   const normalised = (provider || '').toLowerCase().trim();
 
   switch (normalised) {
@@ -208,6 +261,8 @@ export function createAIProvider(provider, apiKey, modelName) {
       return new RequestyAdapter(apiKey, modelName);
     case 'groq':
       return new GroqAdapter(apiKey, modelName);
+    case 'custom':
+      return new CustomAdapter(apiKey, modelName, baseUrl);
     default:
       throw new Error(
         `Unsupported AI provider "${provider}". Supported providers: ${SUPPORTED_PROVIDERS.join(', ')}`

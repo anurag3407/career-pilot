@@ -1,4 +1,5 @@
 import React from 'react';
+import './PolygonMorph.css';
 
 // Custom floating polygon decoration component
 const FloatingPolygon = ({ className, delay = '0s', duration = '6s' }) => (
@@ -40,17 +41,7 @@ export default function PolygonMorph() {
   return (
     <section className="relative min-h-screen w-full bg-[#0a0a16] text-slate-100 py-24 px-4 overflow-hidden flex flex-col justify-center items-center">
       
-      {/* Global CSS Injection for the custom floating/morph keyframes without an external stylesheet */}
-      <style dangerouslySetInnerHTML={{__html: `
-        @keyframes float-polygon {
-          0%, 100% { transform: translateY(0px) rotate(0deg) scale(1); }
-          50% { transform: translateY(-25px) rotate(15deg) scale(1.05); }
-        }
-        @keyframes mesh-pulse {
-          0%, 100% { opacity: 0.15; }
-          50% { opacity: 0.3; }
-        }
-      `}} />
+
 
       {/* Futuristic Geometric Background Mesh */}
       <div className="absolute inset-0 bg-[linear-gradient(to_right,#1f293710_1px,transparent_1px),linear-gradient(to_bottom,#1f293710_1px,transparent_1px)] bg-[size:4rem_4rem] [mask-image:radial-gradient(ellipse_60%_50%_at_50%_50%,#000_70%,transparent_100%)] pointer-events-none" />
