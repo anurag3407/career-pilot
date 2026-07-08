@@ -15,13 +15,14 @@ import {
   BookmarkCheck,
   Filter,
   X,
-  Loader2,
   TrendingUp,
   Zap,
   Target,
   Sparkles
 } from 'lucide-react'
+import { SkeletonJobCard } from '../components/ui/Skeleton'
 import { jobsApi, jobTrackerApi } from '../services/api'
+import { usePrefetch } from '../hooks/usePrefetch'
 import Button from '../components/Button'
 import MatchScoreBadge from '../components/MatchScoreBadge'
 import { SkeletonJobList } from '../components/ui/Skeleton'
@@ -41,6 +42,7 @@ const POPULAR_SEARCHES = [
 
 export default function JobSearch() {
   const [searchParams, setSearchParams] = useSearchParams()
+  const { prefetchJobSearch, getCachedJobSearch } = usePrefetch()
   const [searchQuery, setSearchQuery] = useState(searchParams.get('q') || '')
   const [jobs, setJobs] = useState([])
   const [loading, setLoading] = useState(false)
@@ -111,15 +113,28 @@ export default function JobSearch() {
       return
     }
 
-    setLoading(true)
-    setHasSearched(true)
-
     // Only persist non-default filter values for cleaner URLs
     const params = { q: searchQuery }
     if (filters.jobType !== 'All Types') params.jobType = filters.jobType
     if (filters.experienceLevel !== 'All Levels') params.experienceLevel = filters.experienceLevel
     if (filters.location) params.location = filters.location
     setSearchParams(params)
+
+    setHasSearched(true)
+
+    // Check cache first
+    const cachedData = getCachedJobSearch(searchQuery, filters)
+    if (cachedData) {
+      setJobs(cachedData)
+      if (cachedData.length === 0) {
+        toast('No jobs found. Try different keywords.', { icon: '🔍' })
+      } else {
+        toast.success(`Found ${cachedData.length} jobs!`)
+      }
+      return
+    }
+
+    setLoading(true)
 
     try {
       const response = await jobsApi.search(searchQuery, filters)
@@ -307,7 +322,7 @@ className="w-full pl-12 pr-10 py-4 bg-muted/50 border border-border rounded-xl t
                   className="!px-8 !py-4 !text-lg !rounded-xl flex items-center gap-2"
                 >
                   {loading ? (
-                    <Loader2 className="w-5 h-5 animate-spin" />
+                    <span className="w-5 h-5 rounded-full border-2 border-primary-foreground/40 border-t-primary-foreground animate-spin inline-block" />
                   ) : (
                     <Search className="w-5 h-5" />
                   )}
@@ -428,6 +443,8 @@ className="w-full pl-12 pr-10 py-4 bg-muted/50 border border-border rounded-xl t
                   {POPULAR_SEARCHES.map(search => (
                     <button
                       key={search}
+                      onMouseEnter={() => prefetchJobSearch(search, filters)}
+                      onFocus={() => prefetchJobSearch(search, filters)}
                       onClick={() => handleQuickSearch(search)}
                       className="px-4 py-2 bg-muted hover:bg-primary/20 hover:text-primary hover:border-primary/30 border border-border rounded-full text-sm text-muted-foreground transition-all cursor-pointer"
                     >
@@ -442,13 +459,11 @@ className="w-full pl-12 pr-10 py-4 bg-muted/50 border border-border rounded-xl t
 
         {/* Results Section */}
         {loading ? (
-          <motion.div
-            initial={{ opacity: 0 }}
-            animate={{ opacity: 1 }}
-            className="space-y-4"
-          >
-            <SkeletonJobList count={5} />
-          </motion.div>
+          <div className="space-y-4">
+            {Array.from({ length: 5 }).map((_, i) => (
+              <SkeletonJobCard key={i} />
+            ))}
+          </div>
         ) : hasSearched && jobs.length === 0 ? (
           <motion.div
             initial={{ opacity: 0 }}

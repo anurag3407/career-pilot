@@ -1,4 +1,5 @@
 import React, { useState, useEffect, useRef } from "react";
+import "./Projects.css";
 import {
   Gamepad2,
   Trophy,
@@ -154,71 +155,7 @@ export default function Projects({
   };
 
   return (
-    <>
-      {/* ──────────────── Injecting Custom Retro Typography and Keyframes ──────────────── */}
-      <style dangerouslySetInnerHTML={{ __html: `
-        @import url('https://fonts.googleapis.com/css2?family=Press+Start+2P&family=VT323&display=swap');
-
-        /* Dynamic Scanline Shimmering */
-        @keyframes crt-scan {
-          0% { transform: translateY(-100%); }
-          100% { transform: translateY(100%); }
-        }
-        @keyframes pixel-flicker {
-          0%, 100% { opacity: 0.99; }
-          50% { opacity: 0.95; }
-        }
-        @keyframes neon-glow-cyan {
-          0%, 100% { text-shadow: 0 0 2px #00f0ff, 0 0 10px rgba(0, 240, 255, 0.5); }
-          50% { text-shadow: 0 0 6px #00f0ff, 0 0 20px rgba(0, 240, 255, 0.8); }
-        }
-        @keyframes coin-spin {
-          0%, 100% { transform: scaleX(1); }
-          50% { transform: scaleX(0.1); }
-        }
-        @keyframes hero-bounce {
-          0%, 100% { transform: translateY(0); }
-          50% { transform: translateY(-6px); }
-        }
-        
-        .font-retro-title {
-          font-family: 'Press Start 2P', monospace;
-        }
-        .font-retro-body {
-          font-family: 'VT323', monospace;
-        }
-        .retro-scanline::before {
-          content: "";
-          position: absolute;
-          inset: 0;
-          pointer-events: none;
-          background: linear-gradient(
-            rgba(18, 16, 16, 0) 50%,
-            rgba(0, 0, 0, 0.25) 50%
-          );
-          background-size: 100% 4px;
-          z-index: 40;
-        }
-        .retro-scanline::after {
-          content: "";
-          position: absolute;
-          top: 0;
-          left: 0;
-          width: 100%;
-          height: 100px;
-          background: linear-gradient(
-            to bottom,
-            rgba(0, 240, 255, 0) 0%,
-            rgba(0, 240, 255, 0.05) 50%,
-            rgba(0, 240, 255, 0) 100%
-          );
-          animation: crt-scan 8s linear infinite;
-          pointer-events: none;
-          z-index: 41;
-        }
-      `}} />
-
-      <section
+    <section
         id="projects"
         ref={sectionRef}
         className={`relative min-h-screen w-full bg-[#0c051a] py-20 px-4 sm:px-6 lg:px-8 border-t-8 border-b-8 border-black select-none ${
@@ -657,6 +594,5 @@ export default function Projects({
 
         </div>
       </section>
-    </>
   );
 }

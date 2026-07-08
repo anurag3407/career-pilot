@@ -1,5 +1,5 @@
+import { usePortfolio } from "../../../../context/PortfolioContext";
 import React, { useMemo } from 'react';
-import data from '../../../../data/dummy_data.json';
 import { motion, useScroll, useSpring, useTransform } from 'framer-motion';
 import {
   Briefcase,
@@ -54,6 +54,8 @@ const categoryIconMap = {
 };
 
 function PixelPanel({ children, className = '' }) {
+  const { portfolioData: data } = usePortfolio();
+
   return (
     <div
       className={`rounded-md border border-[#5a3a82] bg-[#11111a]/90 shadow-[0_0_0_2px_#2b1f40,0_0_0_4px_#1a1128,0_0_16px_rgba(212,175,55,0.28)] ${className}`}
@@ -64,6 +66,8 @@ function PixelPanel({ children, className = '' }) {
 }
 
 export default function GamifiedXP() {
+  const { portfolioData: data } = usePortfolio();
+
   const { scrollYProgress } = useScroll();
   const xpProgress = useSpring(scrollYProgress, { stiffness: 140, damping: 22 });
   const xpWidth = useTransform(xpProgress, [0, 1], ['0%', '100%']);

@@ -1,3 +1,4 @@
+/* eslint-env browser */
 import puppeteer from 'puppeteer';
 import { BaseScraper } from './BaseScraper.js';
 

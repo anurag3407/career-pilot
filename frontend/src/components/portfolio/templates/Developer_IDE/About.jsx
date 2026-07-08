@@ -26,9 +26,10 @@ function useTypingEffect(text, speed = 40, startDelay = 0) {
         setDisplayed(text.slice(0, i + 1));
         i++;
         if (i >= text.length) {
-          clearInterval(intervalRef.current);
-          setDone(true);
-        }
+  clearInterval(intervalRef.current);
+  intervalRef.current = null;
+  setDone(true);
+}
       }, speed);
     }, startDelay);
     return () => {

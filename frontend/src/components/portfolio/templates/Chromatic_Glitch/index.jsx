@@ -1,10 +1,12 @@
+import { usePortfolio } from "../../../../context/PortfolioContext";
 import React, { useState, useRef } from "react";
 import { motion, useScroll, useTransform, AnimatePresence, useInView } from "framer-motion";
 import { Github, Linkedin, Twitter, Mail, ExternalLink, ChevronDown, Zap, Code, Terminal, Cpu } from "lucide-react";
-import data from "../../../../data/dummy_data.json";
 
 /* ── GlobalStyles ─────────────────────────────────────────────────────────── */
 function GlobalStyles() {
+  const { portfolioData: data } = usePortfolio();
+
   return (
     <style>{`
       @import url('https://fonts.googleapis.com/css2?family=Space+Grotesk:wght@300;400;500;600;700&family=Space+Mono:wght@400;700&display=swap');
@@ -256,6 +258,8 @@ function GlobalStyles() {
 }
 
 function GlitchText({ text, className = "", style = {} }) {
+  const { portfolioData: data } = usePortfolio();
+
   return (
     <span className={`cg-glitch ${className}`} data-text={text} style={style}>
       {text}
@@ -264,6 +268,8 @@ function GlitchText({ text, className = "", style = {} }) {
 }
 
 function SkillBar({ name, level, category }) {
+  const { portfolioData: data } = usePortfolio();
+
   const ref = useRef(null);
   const inView = useInView(ref, { once: true });
   return (
@@ -281,6 +287,8 @@ function SkillBar({ name, level, category }) {
 }
 
 function FadeIn({ children, delay = 0, style = {}, className = "" }) {
+  const { portfolioData: data } = usePortfolio();
+
   const ref = useRef(null);
   const inView = useInView(ref, { once: true, margin: "-80px" });
   return (
@@ -298,6 +306,8 @@ function FadeIn({ children, delay = 0, style = {}, className = "" }) {
 }
 
 export default function ChromaticGlitch() {
+  const { portfolioData: data } = usePortfolio();
+
   const [menuOpen, setMenuOpen] = useState(false);
   const [contactState, setContactState] = useState("idle");
   const [form, setForm] = useState({ name: "", email: "", message: "" });

@@ -1,9 +1,14 @@
-## graphify
+# Sayalabs Principal Architect & Intern Protocol
 
-This project has a knowledge graph at graphify-out/ with god nodes, community structure, and cross-file relationships.
+You are operating as a Principal Architect managing a team of AI interns.
+You must actively delegate sub-tasks, background execution, and research to the `ask-agy` MCP tool.
 
-Rules:
-- For codebase questions, first run `graphify query "<question>"` when graphify-out/graph.json exists. Use `graphify path "<A>" "<B>"` for relationships and `graphify explain "<concept>"` for focused concepts. These return a scoped subgraph, usually much smaller than GRAPH_REPORT.md or raw grep output.
-- If graphify-out/wiki/index.md exists, use it for broad navigation instead of raw source browsing.
-- Read graphify-out/GRAPH_REPORT.md only for broad architecture review or when query/path/explain do not surface enough context.
-- After modifying code, run `graphify update .` to keep the graph current (AST-only, no API cost).
+## Image Generation Skill
+Whenever the user asks for image generation, designs, or mockups:
+1. DO NOT try to describe it in text.
+2. Immediately call `ask-agy` with the prompt: "Generate an image for: [User's Request]"
+
+## Intern Delegation Skill
+For any repetitive coding, boilerplate, or extensive file modifications:
+1. Treat `ask-agy` as your junior intern.
+2. Send the exact requirements via `ask-agy` and let it do the manual labor.

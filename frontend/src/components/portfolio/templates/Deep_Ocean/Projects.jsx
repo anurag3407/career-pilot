@@ -1,4 +1,5 @@
 import React, { useState, useEffect, useRef } from 'react';
+import './Projects.css';
 import {
   Compass,
   Radio,
@@ -289,42 +290,7 @@ export default function Projects({ projects = DEFAULT_PROJECTS }) {
   return (
     <section id="projects" className="w-full bg-[#020713] text-cyan-100 py-24 px-4 sm:px-6 lg:px-8 relative overflow-hidden font-mono select-none border-t border-cyan-900/20">
       
-      {/* Dynamic inline styles for bioluminescent effects and radar sweeps */}
-      <style dangerouslySetInnerHTML={{__html: `
-        @keyframes submarine-sonar-sweep {
-          0% { transform: rotate(0deg); }
-          100% { transform: rotate(360deg); }
-        }
-        @keyframes biolume-bubble-rise {
-          0% { transform: translateY(100%) scale(0.6); opacity: 0; }
-          50% { opacity: 0.35; }
-          100% { transform: translateY(-20%) scale(1.1); opacity: 0; }
-        }
-        @keyframes hydro-glitch-text {
-          0%, 100% { text-shadow: 0 0 2px rgba(34,211,238,0.3); }
-          50% { text-shadow: 0 0 8px rgba(34,211,238,0.7), 0 0 16px rgba(34,211,238,0.2); }
-        }
-        .hydro-sonar-sweep {
-          animation: submarine-sonar-sweep 6s linear infinite;
-        }
-        .hydro-bubble-1 {
-          animation: biolume-bubble-rise 9s infinite ease-in;
-          left: 12%;
-        }
-        .hydro-bubble-2 {
-          animation: biolume-bubble-rise 12s infinite ease-in;
-          left: 45%;
-          animation-delay: 2s;
-        }
-        .hydro-bubble-3 {
-          animation: biolume-bubble-rise 8s infinite ease-in;
-          left: 78%;
-          animation-delay: 4s;
-        }
-        .hydro-glow-text {
-          animation: hydro-glitch-text 3s infinite;
-        }
-      `}} />
+
 
       {/* Underwater Grid Backdrop */}
       <div 

@@ -1,10 +1,12 @@
+import { usePortfolio } from "../../../../context/PortfolioContext";
 import React from 'react';
+import data from '../../../../data/dummy_data.json';
 import { motion } from 'framer-motion';
+import "./styles.css";
 import { 
   Github, Linkedin, Twitter, Mail, MapPin, 
   ExternalLink, Code2, Briefcase, Award 
 } from 'lucide-react';
-import defaultData from '../../../../data/dummy_data.json';
 
 /**
  * Stable hash for deterministic randomness (prevents layout shifts on re-renders)
@@ -26,31 +28,12 @@ const getStableRandom = (seed, min, max) => {
 };
 
 export default function PolaroidMemories({ data: propData }) {
+  const { portfolioData: defaultData } = usePortfolio();
+
   const data = propData || defaultData;
 
   return (
     <div className="min-h-screen font-sans text-gray-800 relative overflow-hidden bg-[#e0cba8]">
-      {/* Dynamic Font Import & CSS Patterns */}
-      <style dangerouslySetInnerHTML={{ __html: `
-        @import url('https://fonts.googleapis.com/css2?family=Caveat:wght@400..700&display=swap');
-        .font-handwriting { font-family: 'Caveat', cursive; }
-        
-        .corkboard-pattern {
-          background-color: #dcb382;
-          background-image: url("data:image/svg+xml,%3Csvg width='40' height='40' viewBox='0 0 40 40' xmlns='http://www.w3.org/2000/svg'%3E%3Cpath d='M20 20.5V18H0v-2h20v-2H0v-2h20v-2H0V8h20V6H0V4h20V2H0V0h22v20h2V0h2v20h2V0h2v20h2V0h2v20h2V0h2v20h2v2H20v-1.5zM0 20h2v20H0V20zm4 0h2v20H4V20zm4 0h2v20H8V20zm4 0h2v20h-2V20zm4 0h2v20h-2V20zm4 4h20v2H20v-2zm0 4h20v2H20v-2zm0 4h20v2H20v-2zm0 4h20v2H20v-2z' fill='%23b98c56' fill-opacity='0.15' fill-rule='evenodd'/%3E%3C/svg%3E");
-        }
-        
-        .cork-texture {
-           background: radial-gradient(circle, transparent 20%, #dcb382 20%, #dcb382 80%, transparent 80%, transparent), radial-gradient(circle, transparent 20%, #dcb382 20%, #dcb382 80%, transparent 80%, transparent) 25px 25px, linear-gradient(#b98c56 2px, transparent 2px) 0 -1px, linear-gradient(90deg, #b98c56 2px, #dcb382 2px) -1px 0;
-           background-size: 50px 50px, 50px 50px, 25px 25px, 25px 25px;
-           opacity: 0.05;
-           position: fixed;
-           inset: 0;
-           pointer-events: none;
-           z-index: 0;
-        }
-      `}} />
-
       <div className="cork-texture" />
 
       {/* Main Board Container */}
@@ -236,6 +219,8 @@ export default function PolaroidMemories({ data: propData }) {
 // ============================================================================
 
 function Polaroid({ image, caption, rotation, delay = 0, isHero = false, className = "", children }) {
+  const { portfolioData: defaultData } = usePortfolio();
+
   return (
     <motion.div
       initial={{ opacity: 0, y: 60, rotate: rotation - 15, scale: 0.9 }}
@@ -270,6 +255,8 @@ function Polaroid({ image, caption, rotation, delay = 0, isHero = false, classNa
 }
 
 function StickyNote({ children, color = "bg-yellow-100", rotation = 0, delay = 0, pinType = "tape", className = "" }) {
+  const { portfolioData: defaultData } = usePortfolio();
+
   return (
     <motion.div
       initial={{ opacity: 0, scale: 0.8, rotate: rotation - 10 }}
@@ -300,6 +287,8 @@ function StickyNote({ children, color = "bg-yellow-100", rotation = 0, delay = 0
 }
 
 function SectionTitle({ title, icon, rotation = 0 }) {
+  const { portfolioData: defaultData } = usePortfolio();
+
   return (
     <motion.div 
       initial={{ opacity: 0, y: -20 }}

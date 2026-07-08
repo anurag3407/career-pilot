@@ -143,18 +143,28 @@ export async function deploy(portfolioId, htmlContent, assets = {}, siteName, to
     throw new Error('Unexpected response from Netlify when listing sites. Check your access token and try again.');
   }
 
-  const prefix = `career-pilot-${portfolioId}`;
+  const prefix = toSiteNameSlug(`cp-${portfolioId}`);
   const existing = allSites.find((s) => s.name && s.name.startsWith(prefix));
 
   if (existing) {
     siteId = existing.id;
   } else {
-    const nameSlug = siteName
-      ? toSiteNameSlug(siteName)
-      : toSiteNameSlug(`career-pilot-${portfolioId}`);
-
-    const newSite = await netlifyRequest('POST', '/sites', { name: nameSlug }, resolvedToken);
-    siteId = newSite.id;
+    const randomSuffix = crypto.randomBytes(3).toString('hex');
+    let nameSlug = siteName ? toSiteNameSlug(siteName) : `${prefix}-${randomSuffix}`;
+    
+    // Fallback: If site name is taken, retry with a random suffix
+    try {
+      const newSite = await netlifyRequest('POST', '/sites', { name: nameSlug }, resolvedToken);
+      siteId = newSite.id;
+    } catch (err) {
+      if (err.message.includes('422')) {
+        nameSlug = `${prefix}-${crypto.randomBytes(4).toString('hex')}`.slice(0, MAX_SITE_NAME_LENGTH);
+        const newSite = await netlifyRequest('POST', '/sites', { name: nameSlug }, resolvedToken);
+        siteId = newSite.id;
+      } else {
+        throw err;
+      }
+    }
   }
 
   // Create a deploy with file digests; Netlify responds with which files are missing

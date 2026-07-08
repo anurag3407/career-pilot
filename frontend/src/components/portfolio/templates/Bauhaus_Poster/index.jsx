@@ -1,3 +1,4 @@
+import { usePortfolio } from "../../../../context/PortfolioContext";
 import React, { useMemo, useState, useEffect } from 'react';
 import { motion } from 'framer-motion';
 import Hero from './Hero';
@@ -9,11 +10,12 @@ import Testimonials from './Testimonials';
 import FooterContact from './FooterContact';
 
 // Required data import per issue description
-import data from '../../../../data/dummy_data.json';
 
 const colors = ['#E3000F', '#00509E', '#FFD700', '#000000', '#FFFFFF'];
 
 const BauhausPortfolioIntegrated = () => {
+  const { portfolioData: data } = usePortfolio();
+
   // Bauhaus Primary Palette
   const [isMobile, setIsMobile] = useState(false);
 
