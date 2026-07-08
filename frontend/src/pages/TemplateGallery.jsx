@@ -5,6 +5,28 @@ import DeployModal from "../components/portfolio/DeployModal";
 import ThemeSelector from "../components/portfolio/ThemeSelector";
 import { templates } from '../data/templates';
 import { motion, AnimatePresence } from "framer-motion";
+import { Moon, Sun, ChevronDown, Check, Eye, Star } from "lucide-react";
+import HolographicAbout from "../components/portfolio/templates/Holographic/About";
+import Contact from "../components/portfolio/templates/Holographic/Contact";
+import Hero from "../components/portfolio/templates/Holographic/Hero";
+import CulinaryAbout from "../components/portfolio/templates/Culinary_Restaurant/About";
+import TechStartupHero from "../components/portfolio/templates/Tech_Startup/Hero";
+import GeometricShapesAbout from "../components/portfolio/templates/Geometric_Shapes/About";
+import ChooseAdventurePortfolio from "../components/portfolio/templates/Choose_Adventure/index";
+import { Moon, Sun, ChevronDown, Check, Eye, Star, Sparkles } from "lucide-react";
+import SwissTypography from "../components/portfolio/templates/Swiss_Typography/index";
+import LiquidGlass from "../components/portfolio/templates/Liquid_Glass/index";
+import MidnightGradient from "../components/portfolio/templates/Midnight_Gradient/index";
+import PlayingCardsPortfolio from "../components/portfolio/templates/Playing_Cards";
+import CherryBlossom from "../components/portfolio/templates/Cherry_Blossom/index";
+import PsychedelicSwirl from "../components/portfolio/templates/Psychedelic_Swirl/index";
+import DesertDunes from "../components/portfolio/templates/Desert_Dunes/index";
+import MemphisPop from "../components/portfolio/templates/Memphis_Pop/index";
+import CassetteMixtape from "../components/portfolio/templates/Cassette_Mixtape/index";
+import ChromaticGlitch from "../components/portfolio/templates/Chromatic_Glitch/index";
+import MagneticDock from "../components/portfolio/templates/Magnetic_Dock/index";
+import Navbar from '../components/Navbar'
+import { X } from "lucide-react";
 import { Moon, Sun, ChevronDown, Check, Eye, Star, Sparkles, X } from "lucide-react";
 import { useSearchParams } from "react-router-dom";
 
@@ -498,6 +520,29 @@ export default function TemplateGallery() {
           </div>
         )}
 
+      {/* Midnight Gradient */}
+      <div className="mt-12">
+        <div className="mb-4 flex items-center gap-3 px-1">
+          <span className="rounded-full bg-indigo-500/20 px-3 py-1 text-xs font-bold uppercase tracking-widest text-indigo-400 border border-indigo-500/30">
+            Preview
+          </span>
+          <h2 className="text-lg font-semibold text-foreground/70">Midnight Gradient Theme</h2>
+        </div>
+        <div className="overflow-hidden rounded-2xl border border-border">
+          <HolographicAbout />
+          <Contact />
+          <MidnightGradient />
+</div>
+      {/* Playing Cards Theme */}
+      <div className="mt-12">
+        <div className="mb-4 flex items-center gap-3 px-1">
+          <span className="rounded-full bg-emerald-500/20 px-3 py-1 text-xs font-bold uppercase tracking-widest text-emerald-400 border border-emerald-500/30">
+            🃟 NEW — Playing Cards
+          </span>
+          <h2 className="text-lg font-semibold text-foreground/70">Playing Cards Theme — Click to flip, shuffle deck</h2>
+        </div>
+        <div className="overflow-hidden rounded-2xl border border-emerald-500/20">
+          <PlayingCardsPortfolio portfolioData={aiDraft} />
         <div className="flex justify-between items-center mb-8">
           <h1 className="text-4xl font-bold">Template Gallery</h1>
           <button
