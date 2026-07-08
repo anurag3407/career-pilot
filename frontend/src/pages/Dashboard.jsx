@@ -526,7 +526,7 @@ export default function Dashboard() {
 </motion.div>
 
 <motion.div variants={itemVariants} className="mb-10">
-  <ResumeSectionStrengthAnalyzer />
+  <ResumeSectionStrengthAnalyzer resume={resumes[0]} />
 </motion.div>
 
 <motion.div variants={itemVariants} className="mb-10">
