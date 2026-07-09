@@ -3186,18 +3186,17 @@ rating: 4.8,
   "isComplete": true
   },
   {
-    "id": "Film_Director_Clapper_Board",
+    "id": "Film_Director_Clapperboard",
     "title": "Film Director Clapper Board",
     "category": "Portfolio",
     "colorScheme": "Cinematic Dark",
     "layout": "Storyboard Grid",
-    "author": "System",
+    "author": "Ayush Srivastava",
     "views": 0,
     "rating": 5.0,
-    "image": "/template-previews/Film_Director_Clapper_Board.png",
+    "image": "/template-previews/Film_Director_Clapperboard.png",
     "createdAt": "2026-07-06",
     "isComplete": true,
-    "description": "A premium cinematic portfolio styled like a director's clapperboard and storyboard reel. Features dark matte interfaces, film reel project showcases, and a rolling-credits experience."
   }
 ];
 

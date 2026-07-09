@@ -144,7 +144,7 @@ import MinimalDarkFluid from './components/portfolio/templates/Minimal_Dark_Flui
 import TerminalSkills from './components/portfolio/templates/Terminal_Skills/index.jsx';
 import ChiragChrgTheme from './components/portfolio/templates/ChiragChrg_Theme/index.jsx';
 import InspiredDevJadiya from "./components/portfolio/templates/Inspired_Dev_Jadiya";
-import Film_Director_Clapper_Board from "./components/portfolio/templates/Film_Director_Clapper_Board/index.jsx";
+import Film_Director_Clapperboard from './components/portfolio/templates/Film_Director_Clapperboard/index.jsx';
 
 function LoadingScreen({ label }) {
   return (
@@ -338,7 +338,7 @@ function AppRoutes() {
         <Route path="/templates/minimal-dark-fluid" element={<MinimalDarkFluid />} />
         <Route path="/templates/terminal-skills" element={<TerminalSkills />} />
         <Route path="/templates/chiragchrg-theme" element={<ChiragChrgTheme />} />
-        <Route path="/templates/film-director-clapperboard" element={<Film_Director_Clapper_Board />} />
+        <Route path="/templates/film-director-clapperboard" element={<Film_Director_Clapperboard />} />
         {/* Core Protected Routes */}
         <Route
           path="/dashboard"
