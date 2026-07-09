@@ -1,4 +1,21 @@
-import React from 'react';
+import json
+import os
+import re
+
+folders = [
+    "Live_Satellite_Imagery_Feed",
+    "Low_Poly_Terrain",
+    "Magnetic_Dock",
+    "Magnifying_Glass_Hidden_Reveal",
+    "Matte_Clay",
+    "Medium_Article",
+    "Memphis_Pop",
+    "Michelin_Star_Chef_Plating",
+    "Minimal_Dark_Fluid",
+    "Morphing_Blobs"
+]
+
+jsx_code = """import React from 'react';
 import { usePortfolio } from '../../../../context/PortfolioContext';
 
 export default function Template() {
@@ -91,3 +108,36 @@ export default function Template() {
     </div>
   );
 }
+"""
+
+# Write JSX files
+for folder in folders:
+    dir_path = f"frontend/src/components/portfolio/templates/{folder}"
+    os.makedirs(dir_path, exist_ok=True)
+    with open(f"{dir_path}/index.jsx", "w") as f:
+        f.write(jsx_code)
+
+# Modify templates.js
+templates_file = "frontend/src/data/templates.js"
+with open(templates_file, "r") as f:
+    content = f.read()
+
+# We'll use a regex to extract the templates array. Since it's a JS file exporting an array, 
+# we can find all objects and parse them, but it's simpler to do a JS string manipulation.
+# Let's extract the JS array content.
+# The file looks like: export const templates = [ { ... }, { ... } ];
+match = re.search(r'export const templates = (\[.*\]);', content, re.DOTALL)
+if match:
+    # Need to be careful with JSON parsing because it might not be strict JSON.
+    # Actually, it's JS. To do this safely, we can just find the string block for each template
+    # and move it to the top.
+    pass
+
+# Alternative string replacement strategy:
+for folder in folders:
+    # Find the object that has `id: "{folder}"` or `"id": "{folder}"`
+    # We will regex to find the object block.
+    # Regex pattern: { ... "id": "Folder_Name" ... }
+    # This might be tricky if there are nested braces. 
+    pass
+

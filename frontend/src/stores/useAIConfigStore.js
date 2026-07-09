@@ -41,6 +41,16 @@ export const PROVIDER_META = {
     color: 'amber',
     models: ['llama-3.3-70b-versatile', 'llama-3.1-8b-instant', 'mixtral-8x7b-32768'],
   },
+  custom: {
+    name: 'Custom Endpoint',
+    tagline: 'OpenAI-compatible API',
+    icon: '🔌',
+    keyUrl: '',
+    defaultModel: 'gpt-3.5-turbo',
+    color: 'slate',
+    models: [],
+    customEndpoint: true,
+  },
 };
 
 // ---------------------------------------------------------------------------
@@ -51,6 +61,7 @@ const STORAGE_KEY = 'aiConfig_v2';
 const defaultProviderEntry = () => ({
   apiKey: '',
   model: '',
+  baseUrl: '',
   validated: false,
   lastValidated: null,
 });
@@ -197,6 +208,19 @@ export const useAIConfigStore = create((set, get) => ({
     persist(get());
   },
 
+  setProviderBaseUrl: (provider, baseUrl) => {
+    set((state) => ({
+      providers: {
+        ...state.providers,
+        [provider]: {
+          ...(state.providers[provider] || defaultProviderEntry()),
+          baseUrl,
+        },
+      },
+    }));
+    persist(get());
+  },
+
   markValidated: (provider, isValid) => {
     set((state) => ({
       providers: {
@@ -247,6 +271,7 @@ export const useAIConfigStore = create((set, get) => ({
       provider: activeProvider,
       apiKey: decryptKey(entry.apiKey),
       model: entry.model || PROVIDER_META[activeProvider]?.defaultModel || '',
+      baseUrl: entry.baseUrl || '',
     };
   },
 

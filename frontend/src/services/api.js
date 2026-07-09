@@ -46,6 +46,7 @@ try {
     if (aiConfig.provider) headers['X-AI-Provider'] = aiConfig.provider
     if (aiConfig.apiKey) headers['X-AI-Key'] = aiConfig.apiKey
     if (aiConfig.model) headers['X-AI-Model'] = aiConfig.model
+    if (aiConfig.baseUrl) headers['X-AI-Base-Url'] = aiConfig.baseUrl
 
     return headers
   }
@@ -664,7 +665,30 @@ export const enhanceApi = {
       body: JSON.stringify({ resumeText, jobDescription, jobRole })
     })
     return handleResponse(response)
-  }
+  },
+
+  // AI Portfolio Builder: turn a chat prompt into a structured patch
+  // describing one or more field edits to portfolio data.
+  async aiEditPortfolio({ prompt, currentData }) {
+    const headers = await getAuthHeaders()
+    const response = await fetch(`${API_BASE}/portfolio/ai-edit`, {
+      method: 'POST',
+      headers,
+      body: JSON.stringify({ prompt, currentData }),
+    })
+    return handleResponse(response)
+  },
+
+  // Inline AI enhancer: rewrite a single field's text (no auth headers in
+  // the request so the modal can call it during dev without a Firebase user).
+  async enhanceElement({ slug, kind, value }) {
+    const response = await fetch(`${API_BASE}/enhance/element`, {
+      method: 'POST',
+      headers: { 'Content-Type': 'application/json' },
+      body: JSON.stringify({ slug, kind, value }),
+    })
+    return handleResponse(response)
+  },
 }
 
 // ============ Resume Roast API ============
@@ -812,12 +836,12 @@ export const aiApi = {
   },
 
   // Validate an API key against its provider (lightweight, no token usage)
-  async validateKey(provider, apiKey) {
+  async validateKey(provider, apiKey, config = {}) {
     const headers = await getAuthHeaders()
     const response = await fetch(`${API_BASE}/ai/validate-key`, {
       method: 'POST',
       headers,
-      body: JSON.stringify({ provider, apiKey })
+      body: JSON.stringify({ provider, apiKey, ...config })
     })
     return handleResponse(response)
   }

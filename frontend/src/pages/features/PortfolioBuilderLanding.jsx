@@ -1,4 +1,4 @@
-import React from 'react';
+import React, { useState } from 'react';
 import { useAuth } from '../../hooks/useAuth';
 import Navbar from '../../components/Navbar';
 import Footer from '../../components/ui/Footer';
@@ -7,6 +7,8 @@ import Seo from '../../components/Seo';
 import PortfolioBuilderHero, {
   InteractiveDotCanvas,
 } from '../../components/landing/PortfolioBuilderHero';
+import AIEditorCard from '../../components/landing/AIEditorCard';
+import AIBuilderModal from '../../components/landing/aiEditor/AIBuilderModal';
 import FeatureShowcase from '../../components/landing/FeatureShowcase';
 import FeatureVideoSection from '../../components/landing/FeatureVideoSection';
 import FeatureHowItWorks from '../../components/landing/FeatureHowItWorks';
@@ -17,6 +19,7 @@ import { FEATURES_BY_SLUG } from '../../data/featuresConfig';
 export default function PortfolioBuilderLanding() {
   const { user } = useAuth();
   const config = FEATURES_BY_SLUG['portfolio-builder'];
+  const [aiBuilderOpen, setAiBuilderOpen] = useState(false);
 
   const primaryCtaText = user ? config.primaryAction.label : config.hero.primaryCta.text;
   const primaryCtaLink = user ? config.primaryAction.to : config.hero.primaryCta.to;
@@ -66,6 +69,9 @@ export default function PortfolioBuilderLanding() {
           }}
         />
 
+        {/* AI editor CTA card (sits between hero and showcase) */}
+        <AIEditorCard onOpen={() => setAiBuilderOpen(true)} />
+
         <div className="bg-[#0a0a0a]/60 backdrop-blur-[2px]">
           <FeatureShowcase
             heading={config.showcase.heading}
@@ -103,6 +109,12 @@ export default function PortfolioBuilderLanding() {
       </main>
 
       <Footer />
+
+      {/* AI Builder modal */}
+      <AIBuilderModal
+        isOpen={aiBuilderOpen}
+        onClose={() => setAiBuilderOpen(false)}
+      />
     </div>
   );
 }

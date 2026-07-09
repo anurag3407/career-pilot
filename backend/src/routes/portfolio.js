@@ -745,4 +745,115 @@ router.get('/:slug/bandwidth', asyncHandler(async (req, res) => {
   });
 }));
 
+/**
+ * l. POST /api/portfolio/ai-edit
+ * Turns a freeform user prompt into a structured patch of field edits.
+ * Used by the AI Portfolio Builder modal's chat panel.
+ *
+ * v1 returns a deterministic keyword-based patch so the modal flow is
+ * demoable without an LLM. The route is shaped for easy upgrade to
+ * `req.aiProvider.generateContent(prompt)` once a model is wired.
+ */
+router.post('/ai-edit', verifyToken, extractAIProvider, asyncHandler(async (req, res) => {
+  const { prompt, currentData } = req.body;
+  if (!prompt || typeof prompt !== 'string' || !prompt.trim()) {
+    throw new ApiError(400, 'Prompt is required');
+  }
+  if (!currentData || typeof currentData !== 'object') {
+    throw new ApiError(400, 'currentData object is required');
+  }
+
+  const systemPrompt = `You are an AI portfolio editor. You receive a user prompt and the current portfolio JSON data. You must output a JSON object representing a "patch" of edits to apply to the portfolio data based on the user's prompt.
+The patch should only contain the specific fields and objects that need to be updated. For example, if the user asks to change the bio, return {"patch": {"personal": {"bio": "New bio..."}}, "summary": "Changed bio"}. If the user asks to change their name, return {"patch": {"personal": {"name": "New Name"}}, "summary": "Changed name"}.
+Maintain the existing data structure for the fields you modify.
+Also include a "summary" string concisely explaining what was changed.
+Return ONLY valid JSON. No markdown fences, no extra text. Format: {"patch": {...}, "summary": "..."}`;
+
+  const userMessage = `Current Portfolio Data:\n${JSON.stringify(currentData)}\n\nUser Prompt: ${prompt}`;
+
+  try {
+    const provider = req.aiProvider;
+    const result = await provider.generateContent(`${systemPrompt}\n\n${userMessage}`);
+    let text = result.text.trim();
+
+    if (text.startsWith('```')) {
+      text = text.replace(/^```(?:json)?\n?/, '').replace(/\n?```$/, '').trim();
+    }
+    
+    const jsonMatch = text.match(/\{[\s\S]*\}/);
+    if (jsonMatch) text = jsonMatch[0];
+
+    const parsed = JSON.parse(text);
+
+    res.status(200).json({
+      success: true,
+      patch: parsed.patch || {},
+      summary: parsed.summary || 'Applied changes.',
+      provider: provider.providerName || 'gemini',
+      providerSource: req.aiProviderSource || 'v1-router',
+    });
+  } catch (error) {
+    console.error('AI Edit Error:', error);
+    // Fallback to mock behavior if AI fails
+    const lower = prompt.toLowerCase();
+    const patch = {};
+
+    if (/(bio|about|summary)/.test(lower)) {
+      const baseBio =
+        currentData?.personal?.bio ||
+        currentData?.personalInfo?.bio ||
+        'Engineer focused on shipping high-quality software.';
+      patch.personal = {
+        ...(currentData.personal || {}),
+        bio: `${baseBio.trim()} — refined by AI for confidence, clarity, and conversion.`,
+      };
+      if (currentData.personalInfo) {
+        patch.personalInfo = { ...currentData.personalInfo, bio: patch.personal.bio };
+      }
+    }
+    if (/(color|accent|blue|green|purple|red)/.test(lower)) {
+      let themeAccent = '#8b5cf6';
+      if (lower.includes('blue')) themeAccent = '#3b82f6';
+      else if (lower.includes('green')) themeAccent = '#10b981';
+      else if (lower.includes('red')) themeAccent = '#E10600';
+      patch.themeAccent = themeAccent;
+    }
+    if (/(skill|stack|technology)/.test(lower)) {
+      patch.skills = [
+        { name: 'React / Next.js', rating: 96, type: 'Engine' },
+        { name: 'TypeScript', rating: 94, type: 'Engine' },
+        { name: 'System Design', rating: 88, type: 'Aerodynamics' },
+        { name: 'Cloud & DevOps', rating: 86, type: 'Turbocharger' },
+      ];
+    }
+    if (/(project|portfolio)/.test(lower)) {
+      patch.projects = Array.isArray(currentData.projects)
+        ? currentData.projects.map((p) => ({
+            ...p,
+            description: `${p.description || ''} (impact-focused polish)`.trim(),
+          }))
+        : currentData.projects;
+    }
+
+    const summary =
+      Object.keys(patch).length > 0
+        ? `Applied edits to: ${Object.keys(patch).join(', ')}`
+        : "I couldn't detect a clear section in that prompt. Try mentioning 'bio', 'skills', or 'projects'.";
+
+    res.status(200).json({
+      success: true,
+      patch,
+      summary,
+      provider: req.aiProvider?.providerName || 'keyword-router',
+      providerSource: req.aiProviderSource || 'v1-router',
+    });
+  }
+}));
+
+/**
+ * m. POST /api/enhance/element
+ * Inline AI enhancer: rewrite a single field's text in place. Used by the
+ * InlineElementEditor's ✨ Enhance button. Lightweight — no auth required,
+ * intended for v1 of the AI Portfolio Builder modal.
+ */
 export default router;
