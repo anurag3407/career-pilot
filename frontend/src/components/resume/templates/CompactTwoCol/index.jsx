@@ -1,4 +1,7 @@
 import { useResume } from '../../../../context/ResumeContext'
+import Section from '../../shared/Section'
+import ExperienceRow from '../../shared/ExperienceRow'
+import OrderedSections from '../../shared/OrderedSections'
 
 /**
  * Compact Two-Column — dense, info-packed layout for experienced candidates.
@@ -11,6 +14,44 @@ import { useResume } from '../../../../context/ResumeContext'
 export default function CompactTwoCol() {
   const { personal, experience, education, projects, skills, certifications } =
     useResume()
+
+  const nodes = {
+    summary: personal.summary ? (
+      <Section title="Summary" accent="#7c3aed" uppercase={false}>
+        <p style={{ margin: 0, color: '#374151' }}>{personal.summary}</p>
+      </Section>
+    ) : null,
+
+    experience: experience.length > 0 ? (
+      <Section title="Experience" accent="#7c3aed" uppercase={false}>
+        {experience.map((e, i) => (
+          <ExperienceRow
+            key={i}
+            exp={e}
+            roleColor="#1e1b4b"
+            companyColor="#7c3aed"
+            periodColor="#6b7280"
+            bulletColor="#374151"
+            fontSize="9pt"
+          />
+        ))}
+      </Section>
+    ) : null,
+
+    projects: projects.length > 0 ? (
+      <Section title="Projects" accent="#7c3aed" uppercase={false}>
+        {projects.map((p, i) => (
+          <article key={i} style={{ marginBottom: '3mm' }}>
+            <h3 style={{ margin: 0, fontSize: '10pt', fontWeight: 700 }}>{p.title}</h3>
+            {p.description && <p style={{ margin: '0.8mm 0', color: '#374151' }}>{p.description}</p>}
+            {p.techStack.length > 0 && (
+              <div style={{ fontSize: '8pt', color: '#7c3aed' }}>{p.techStack.join(' · ')}</div>
+            )}
+          </article>
+        ))}
+      </Section>
+    ) : null,
+  }
 
   return (
     <div
@@ -29,7 +70,7 @@ export default function CompactTwoCol() {
         gap: '6mm',
       }}
     >
-      {/* ── Sidebar ── */}
+      {/* ── Sidebar (acts as a fixed header slot) ── */}
       <aside style={{ borderRight: '0.5pt solid #ede9fe', paddingRight: '5mm' }}>
         <h1
           style={{
@@ -121,53 +162,12 @@ export default function CompactTwoCol() {
 
       {/* ── Main ── */}
       <main>
-        {personal.summary && (
-          <Section title="Summary">
-            <p style={{ margin: 0, color: '#374151' }}>{personal.summary}</p>
-          </Section>
-        )}
-
-        {experience.length > 0 && (
-          <Section title="Experience">
-            {experience.map((e, i) => (
-              <article key={i} style={{ marginBottom: '4mm' }}>
-                <div style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'baseline' }}>
-                  <h3 style={{ margin: 0, fontSize: '10.5pt', fontWeight: 700, color: '#1e1b4b' }}>
-                    {e.role}
-                  </h3>
-                  {e.period && (
-                    <span style={{ fontSize: '8.5pt', color: '#6b7280' }}>{e.period}</span>
-                  )}
-                </div>
-                <div style={{ fontSize: '9pt', color: '#7c3aed', fontWeight: 500 }}>
-                  {e.company}
-                  {e.location && <span style={{ color: '#6b7280' }}> · {e.location}</span>}
-                </div>
-                {e.bullets.length > 0 && (
-                  <ul style={{ margin: '1mm 0 0', paddingLeft: '4mm', color: '#374151' }}>
-                    {e.bullets.map((b, j) => (
-                      <li key={j} style={{ marginBottom: '0.5mm' }}>{b}</li>
-                    ))}
-                  </ul>
-                )}
-              </article>
-            ))}
-          </Section>
-        )}
-
-        {projects.length > 0 && (
-          <Section title="Projects">
-            {projects.map((p, i) => (
-              <article key={i} style={{ marginBottom: '3mm' }}>
-                <h3 style={{ margin: 0, fontSize: '10pt', fontWeight: 700 }}>{p.title}</h3>
-                {p.description && <p style={{ margin: '0.8mm 0', color: '#374151' }}>{p.description}</p>}
-                {p.techStack.length > 0 && (
-                  <div style={{ fontSize: '8pt', color: '#7c3aed' }}>{p.techStack.join(' · ')}</div>
-                )}
-              </article>
-            ))}
-          </Section>
-        )}
+        {/* ── Body sections (drag-and-drop order honored here) ── */}
+        <OrderedSections
+          nodes={nodes}
+          sectionProps={{ accent: '#7c3aed', uppercase: false }}
+          customBodyStyle={{ color: '#374151' }}
+        />
       </main>
     </div>
   )
@@ -189,28 +189,6 @@ function SideTitle({ children }) {
     >
       {children}
     </h2>
-  )
-}
-
-function Section({ title, children }) {
-  return (
-    <section style={{ marginBottom: '6mm' }}>
-      <h2
-        style={{
-          fontSize: '10pt',
-          fontWeight: 700,
-          textTransform: 'uppercase',
-          letterSpacing: '1.5px',
-          color: '#1e1b4b',
-          margin: '0 0 3mm',
-          paddingBottom: '1mm',
-          borderBottom: '1pt solid #7c3aed',
-        }}
-      >
-        {title}
-      </h2>
-      {children}
-    </section>
   )
 }
 

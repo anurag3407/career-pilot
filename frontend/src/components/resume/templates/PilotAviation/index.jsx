@@ -2,12 +2,73 @@ import { useResume } from '../../../../context/ResumeContext'
 import Section from '../../shared/Section'
 import KPICell from '../../shared/KPICell'
 import Avatar from '../../shared/Avatar'
+import OrderedSections from '../../shared/OrderedSections'
 
 /**
  * PilotAviation — type ratings and flight hours. Photo-enabled.
  */
 export default function PilotAviation() {
   const { personal, experience, education, skills, certifications } = useResume()
+
+  const nodes = {
+    summary: personal.summary ? (
+      <Section title="Profile" accent="#2563eb" uppercase={false}>
+        <p style={{ margin: 0, color: '#334155' }}>{personal.summary}</p>
+      </Section>
+    ) : null,
+
+    experience: experience.length > 0 ? (
+      <Section title="Flight Experience" accent="#2563eb" uppercase={false}>
+        {experience.map((e, i) => (
+          <div key={i} style={{ marginBottom: '5mm' }}>
+            <div style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'baseline' }}>
+              <strong style={{ fontSize: '11pt', color: '#0f172a' }}>{e.role}</strong>
+              {e.period && <span style={{ fontSize: '9pt', color: '#64748b' }}>{e.period}</span>}
+            </div>
+            <div style={{ fontSize: '10pt', color: '#2563eb', fontWeight: 500 }}>
+              {[e.company, e.location].filter(Boolean).join(' · ')}
+            </div>
+            {e.bullets.length > 0 && (
+              <ul style={{ margin: '1.5mm 0 0', paddingLeft: '5mm', color: '#334155' }}>
+                {e.bullets.map((b, j) => (
+                  <li key={j} style={{ marginBottom: '0.5mm' }}>{b}</li>
+                ))}
+              </ul>
+            )}
+          </div>
+        ))}
+      </Section>
+    ) : null,
+
+    education: education.length > 0 ? (
+      <Section title="Education" accent="#2563eb" uppercase={false}>
+        {education.map((e, i) => (
+          <div key={i} style={{ marginBottom: '2mm' }}>
+            <strong>{e.degree}</strong> · {e.institution}
+            {e.period && <span style={{ color: '#64748b' }}> · {e.period}</span>}
+          </div>
+        ))}
+      </Section>
+    ) : null,
+
+    skills: skills.length > 0 ? (
+      <Section title="Skills" accent="#2563eb" uppercase={false}>
+        <div style={{ color: '#334155' }}>{skills.map((s) => s.name).join(' · ')}</div>
+      </Section>
+    ) : null,
+
+    certifications: certifications.length > 0 ? (
+      <Section title="Additional Certifications" accent="#2563eb" uppercase={false}>
+        {certifications.map((c, i) => (
+          <div key={i} style={{ marginBottom: '1.5mm' }}>
+            <strong>{c.name}</strong>
+            {c.issuer && <span> · {c.issuer}</span>}
+            {c.year && <span style={{ color: '#64748b' }}> · {c.year}</span>}
+          </div>
+        ))}
+      </Section>
+    ) : null,
+  }
 
   return (
     <div
@@ -22,6 +83,7 @@ export default function PilotAviation() {
         lineHeight: 1.5,
       }}
     >
+      {/* ── Photo header (fixed) ── */}
       <header
         style={{
           background: 'linear-gradient(135deg, #2563eb 0%, #1d4ed8 60%, #1e3a8a 100%)',
@@ -52,81 +114,32 @@ export default function PilotAviation() {
         </div>
       </header>
 
-      {/* ── KPI strip ── */}
-      <div style={{ display: 'grid', gridTemplateColumns: 'repeat(4, 1fr)', gap: '3mm', padding: '5mm 18mm' }}>
-        <KPICell label="Total Hours" value="4,250" bg="#dbeafe" fg="#1e3a8a" lbl="#2563eb" />
-        <KPICell label="PIC Hours" value="3,100" bg="#dbeafe" fg="#1e3a8a" lbl="#2563eb" />
-        <KPICell label="Type Ratings" value="4" bg="#dbeafe" fg="#1e3a8a" lbl="#2563eb" />
-        <KPICell label="Years" value="9+" bg="#dbeafe" fg="#1e3a8a" lbl="#2563eb" />
-      </div>
-
-      <Section title="Type Ratings & Certifications" accent="#2563eb">
-        <div style={{ display: 'flex', flexWrap: 'wrap', gap: '1mm 4mm', fontSize: '10pt' }}>
-          <span><strong>ATP</strong> · Air Transport Pilot</span>
-          <span>· <strong>CFI</strong> · Certificated Flight Instructor</span>
-          <span>· <strong>CFII</strong> · Instrument Instructor</span>
-          <span>· <strong>Type:</strong> B737, A320, CRJ-200, ERJ-170</span>
-        </div>
-      </Section>
-
       <div style={{ padding: '4mm 18mm 12mm' }}>
-        {personal.summary && (
-          <Section title="Profile" accent="#2563eb">
-            <p style={{ margin: 0, color: '#334155' }}>{personal.summary}</p>
-          </Section>
-        )}
+        {/* ── Body sections (drag-and-drop order honored here) ── */}
+        <OrderedSections
+          nodes={nodes}
+          sectionProps={{ accent: '#2563eb', uppercase: false }}
+          customBodyStyle={{ color: '#334155' }}
+          header={
+            <>
+              <div style={{ display: 'grid', gridTemplateColumns: 'repeat(4, 1fr)', gap: '3mm', padding: '5mm 0', marginBottom: '4mm' }}>
+                <KPICell label="Total Hours" value="4,250" bg="#dbeafe" fg="#1e3a8a" lbl="#2563eb" />
+                <KPICell label="PIC Hours" value="3,100" bg="#dbeafe" fg="#1e3a8a" lbl="#2563eb" />
+                <KPICell label="Type Ratings" value="4" bg="#dbeafe" fg="#1e3a8a" lbl="#2563eb" />
+                <KPICell label="Years" value="9+" bg="#dbeafe" fg="#1e3a8a" lbl="#2563eb" />
+              </div>
 
-        {experience.length > 0 && (
-          <Section title="Flight Experience" accent="#2563eb">
-            {experience.map((e, i) => (
-              <div key={i} style={{ marginBottom: '5mm' }}>
-                <div style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'baseline' }}>
-                  <strong style={{ fontSize: '11pt', color: '#0f172a' }}>{e.role}</strong>
-                  {e.period && <span style={{ fontSize: '9pt', color: '#64748b' }}>{e.period}</span>}
+              <Section title="Type Ratings & Certifications" accent="#2563eb" uppercase={false}>
+                <div style={{ display: 'flex', flexWrap: 'wrap', gap: '1mm 4mm', fontSize: '10pt' }}>
+                  <span><strong>ATP</strong> · Air Transport Pilot</span>
+                  <span>· <strong>CFI</strong> · Certificated Flight Instructor</span>
+                  <span>· <strong>CFII</strong> · Instrument Instructor</span>
+                  <span>· <strong>Type:</strong> B737, A320, CRJ-200, ERJ-170</span>
                 </div>
-                <div style={{ fontSize: '10pt', color: '#2563eb', fontWeight: 500 }}>
-                  {[e.company, e.location].filter(Boolean).join(' · ')}
-                </div>
-                {e.bullets.length > 0 && (
-                  <ul style={{ margin: '1.5mm 0 0', paddingLeft: '5mm', color: '#334155' }}>
-                    {e.bullets.map((b, j) => (
-                      <li key={j} style={{ marginBottom: '0.5mm' }}>{b}</li>
-                    ))}
-                  </ul>
-                )}
-              </div>
-            ))}
-          </Section>
-        )}
-
-        {education.length > 0 && (
-          <Section title="Education" accent="#2563eb">
-            {education.map((e, i) => (
-              <div key={i} style={{ marginBottom: '2mm' }}>
-                <strong>{e.degree}</strong> · {e.institution}
-                {e.period && <span style={{ color: '#64748b' }}> · {e.period}</span>}
-              </div>
-            ))}
-          </Section>
-        )}
-
-        {skills.length > 0 && (
-          <Section title="Skills" accent="#2563eb">
-            <div style={{ color: '#334155' }}>{skills.map((s) => s.name).join(' · ')}</div>
-          </Section>
-        )}
-
-        {certifications.length > 0 && (
-          <Section title="Additional Certifications" accent="#2563eb">
-            {certifications.map((c, i) => (
-              <div key={i} style={{ marginBottom: '1.5mm' }}>
-                <strong>{c.name}</strong>
-                {c.issuer && <span> · {c.issuer}</span>}
-                {c.year && <span style={{ color: '#64748b' }}> · {c.year}</span>}
-              </div>
-            ))}
-          </Section>
-        )}
+              </Section>
+            </>
+          }
+        />
       </div>
     </div>
   )

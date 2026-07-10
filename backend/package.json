@@ -8,7 +8,10 @@
     "start": "node src/index.js",
     "dev": "nodemon src/index.js",
     "lint": "eslint src/",
-    "test": "node --test src/schemas/__tests__/schemas.test.js src/schemas/__tests__/interview-extended.test.js src/services/__tests__/jdParser.test.js src/services/__tests__/interview-coding.test.js src/services/__tests__/transcription.test.js src/config/__tests__/socketOptions.test.js"
+    "test": "node --test src/schemas/__tests__/schemas.test.js src/schemas/__tests__/interview-extended.test.js src/services/__tests__/jdParser.test.js src/services/__tests__/interview-coding.test.js src/services/__tests__/transcription.test.js src/config/__tests__/socketOptions.test.js src/middleware/__tests__/cacheLayer.test.js src/migrations/__tests__/migrationRunner.test.js src/services/__tests__/jobDeduplicator.test.js src/__tests__/jobFetcher.perf.test.js",
+    "migrate": "node src/migrations/migrationRunner.js up",
+    "migrate:status": "node src/migrations/migrationRunner.js status",
+    "migrate:down": "node src/migrations/migrationRunner.js down"
   },
   "dependencies": {
     "@anthropic-ai/sdk": "^0.99.0",

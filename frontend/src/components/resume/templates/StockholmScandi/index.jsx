@@ -1,6 +1,7 @@
 import { useResume } from '../../../../context/ResumeContext'
 import Section from '../../shared/Section'
 import ExperienceRow from '../../shared/ExperienceRow'
+import OrderedSections from '../../shared/OrderedSections'
 
 /**
  * StockholmScandi — Scandinavian spacing and monochrome palette. Calm,
@@ -8,6 +9,41 @@ import ExperienceRow from '../../shared/ExperienceRow'
  */
 export default function StockholmScandi() {
   const { personal, experience, education, projects, skills, certifications } = useResume()
+
+  const nodes = {
+    summary: personal.summary ? (
+      <Section title="Profile" accent="#1c1917" variant="plain" uppercase={false}>
+        <p style={{ margin: 0, fontStyle: 'italic', color: '#1c1917' }}>{personal.summary}</p>
+      </Section>
+    ) : null,
+
+    experience: experience.length > 0 ? (
+      <Section title="Experience" accent="#1c1917" uppercase={false}>
+        {experience.map((e, i) => (
+          <ExperienceRow
+            key={i}
+            exp={e}
+            roleColor="#1c1917"
+            companyColor="#57534e"
+            periodColor="#78716c"
+            bulletColor="#1c1917"
+            fontSize="10pt"
+          />
+        ))}
+      </Section>
+    ) : null,
+
+    projects: projects.length > 0 ? (
+      <Section title="Projects" accent="#1c1917" uppercase={false}>
+        {projects.map((p, i) => (
+          <div key={i} style={{ marginBottom: '3mm' }}>
+            <strong>{p.title}</strong>
+            {p.description && <div style={{ color: '#1c1917' }}>{p.description}</div>}
+          </div>
+        ))}
+      </Section>
+    ) : null,
+  }
 
   return (
     <div
@@ -24,7 +60,7 @@ export default function StockholmScandi() {
         gridTemplateColumns: '80mm 1fr',
       }}
     >
-      {/* ── Sidebar ── */}
+      {/* ── Sidebar (acts as a fixed header slot) ── */}
       <aside
         style={{
           background: '#f5f5f4',
@@ -93,45 +129,12 @@ export default function StockholmScandi() {
 
       {/* ── Main ── */}
       <main style={{ padding: '14mm 12mm', background: '#fafaf9' }}>
-        {personal.summary && (
-          <Section title="Profile" accent="#1c1917" variant="plain">
-            <p style={{ margin: 0, fontStyle: 'italic', color: '#1c1917' }}>{personal.summary}</p>
-          </Section>
-        )}
-
-        {experience.length > 0 && (
-          <Section title="Experience" accent="#1c1917">
-            {experience.map((e, i) => (
-              <div key={i} style={{ marginBottom: '5mm' }}>
-                <div style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'baseline' }}>
-                  <strong style={{ fontSize: '11pt', color: '#1c1917' }}>{e.role}</strong>
-                  {e.period && <span style={{ fontSize: '9pt', color: '#78716c', fontStyle: 'italic' }}>{e.period}</span>}
-                </div>
-                <div style={{ fontSize: '10pt', color: '#57534e', fontStyle: 'italic' }}>
-                  {[e.company, e.location].filter(Boolean).join(', ')}
-                </div>
-                {e.bullets.length > 0 && (
-                  <ul style={{ margin: '1.5mm 0 0', paddingLeft: '5mm', color: '#1c1917' }}>
-                    {e.bullets.map((b, j) => (
-                      <li key={j} style={{ marginBottom: '1mm' }}>{b}</li>
-                    ))}
-                  </ul>
-                )}
-              </div>
-            ))}
-          </Section>
-        )}
-
-        {projects.length > 0 && (
-          <Section title="Projects" accent="#1c1917">
-            {projects.map((p, i) => (
-              <div key={i} style={{ marginBottom: '3mm' }}>
-                <strong>{p.title}</strong>
-                {p.description && <div style={{ color: '#1c1917' }}>{p.description}</div>}
-              </div>
-            ))}
-          </Section>
-        )}
+        {/* ── Body sections (drag-and-drop order honored here) ── */}
+        <OrderedSections
+          nodes={nodes}
+          sectionProps={{ accent: '#1c1917', uppercase: false }}
+          customBodyStyle={{ color: '#1c1917' }}
+        />
       </main>
     </div>
   )

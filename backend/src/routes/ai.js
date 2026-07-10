@@ -106,13 +106,13 @@ router.get('/models', verifyToken, async (req, res) => {
 // Makes a lightweight "list models" call to the provider's API (no tokens used)
 // ---------------------------------------------------------------------------
 router.post('/validate-key', verifyToken, async (req, res) => {
-    const { provider, apiKey } = req.body;
+    const { provider, apiKey, baseUrl } = req.body;
 
-    if (!provider || !apiKey) {
+    if (!provider || (!apiKey && provider !== 'custom')) {
         return res.status(400).json({
             success: false,
             valid: false,
-            error: 'Both provider and apiKey are required'
+            error: 'Provider and API key are required'
         });
     }
 
@@ -205,11 +205,36 @@ router.post('/validate-key', verifyToken, async (req, res) => {
                 break;
             }
 
+            case 'custom': {
+                if (!baseUrl) {
+                    return res.json({ success: true, valid: false, error: 'Base URL is required for custom endpoints' });
+                }
+                try {
+                    const url = baseUrl.endsWith('/') ? `${baseUrl}models` : `${baseUrl}/models`;
+                    const headers = {};
+                    if (apiKey) headers['Authorization'] = `Bearer ${apiKey}`;
+                    
+                    const response = await fetch(url, { headers });
+                    if (response.ok) {
+                        valid = true;
+                    } else if (response.status === 401) {
+                        return res.json({ success: true, valid: false, error: 'Invalid API key for custom endpoint' });
+                    } else {
+                        // If it's reachable but returns something else (e.g. 404 for missing /models route), 
+                        // we still consider it valid as a reachable endpoint.
+                        valid = true;
+                    }
+                } catch (e) {
+                    return res.json({ success: true, valid: false, error: `Could not connect to custom endpoint: ${e.message}` });
+                }
+                break;
+            }
+
             default:
                 return res.status(400).json({
                     success: false,
                     valid: false,
-                    error: `Unsupported provider "${provider}". Supported: gemini, openai, openrouter, requesty, groq`
+                    error: `Unsupported provider "${provider}". Supported: gemini, openai, openrouter, requesty, groq, custom`
                 });
         }
 

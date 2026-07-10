@@ -2,14 +2,109 @@ import { useResume } from '../../../../context/ResumeContext'
 import Section from '../../shared/Section'
 import ExperienceRow from '../../shared/ExperienceRow'
 import ProjectCard from '../../shared/ProjectCard'
+import OrderedSections from '../../shared/OrderedSections'
 
 /**
  * IvyLeague — Harvard-style single-column resume. Education-first with a
  * centered, traditional serif header. Designed for academic / entry-level
  * professional roles where education matters most.
+ *
+ * Reference template for the drag-and-drop section feature: the header stays
+ * fixed, while the body sections are rendered through <OrderedSections/> so the
+ * user's chosen `sectionOrder` (and any custom sections) drive the layout.
+ * Other templates can adopt the same `nodes` map + <OrderedSections/> pattern.
  */
 export default function IvyLeague() {
   const { personal, experience, education, projects, skills, certifications } = useResume()
+
+  // Build a map of section id → rendered node. <OrderedSections/> emits these
+  // in the user-chosen order, leads with `summary`, and appends custom sections.
+  const nodes = {
+    summary: personal.summary ? (
+      <Section title="Summary" accent="#111827" variant="plain">
+        <p style={{ margin: 0, textAlign: 'center', fontStyle: 'italic', color: '#1f2937' }}>
+          {personal.summary}
+        </p>
+      </Section>
+    ) : null,
+
+    education: education.length > 0 ? (
+      <Section title="Education" accent="#111827">
+        {education.map((e, i) => (
+          <div key={i} style={{ marginBottom: '4mm' }}>
+            <div style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'baseline' }}>
+              <strong style={{ fontSize: '11.5pt', color: '#0f172a' }}>{e.institution || 'Institution'}</strong>
+              {e.period && <span style={{ fontStyle: 'italic', color: '#374151', fontSize: '10pt' }}>{e.period}</span>}
+            </div>
+            <div style={{ fontStyle: 'italic', fontSize: '10pt', color: '#1f2937' }}>
+              {[e.degree, e.location].filter(Boolean).join(', ')}
+            </div>
+            {e.description && (
+              <p style={{ margin: '1.5mm 0 0', color: '#374151', fontSize: '10pt' }}>{e.description}</p>
+            )}
+          </div>
+        ))}
+      </Section>
+    ) : null,
+
+    experience: experience.length > 0 ? (
+      <Section title="Experience" accent="#111827">
+        {experience.map((e, i) => (
+          <ExperienceRow
+            key={i}
+            exp={e}
+            roleColor="#0f172a"
+            companyColor="#1f2937"
+            periodColor="#374151"
+            bulletColor="#1f2937"
+            fontSize="10pt"
+          />
+        ))}
+      </Section>
+    ) : null,
+
+    projects: projects.length > 0 ? (
+      <Section title="Projects" accent="#111827">
+        {projects.map((p, i) => (
+          <ProjectCard
+            key={i}
+            project={p}
+            titleColor="#0f172a"
+            descColor="#1f2937"
+            techColor="#374151"
+            linkColor="#1f2937"
+            fontSize="10pt"
+          />
+        ))}
+      </Section>
+    ) : null,
+
+    skills: skills.length > 0 ? (
+      <Section title="Skills & Interests" accent="#111827">
+        <div style={{ display: 'flex', flexWrap: 'wrap', gap: '1mm 4mm' }}>
+          {skills.map((s, i) => (
+            <span key={i} style={{ fontSize: '10pt' }}>
+              <strong>{s.name}</strong>
+              {s.level && <span style={{ color: '#6b7280' }}> ({s.level})</span>}
+              {i < skills.length - 1 && <span style={{ color: '#9ca3af' }}> · </span>}
+            </span>
+          ))}
+        </div>
+      </Section>
+    ) : null,
+
+    certifications: certifications.length > 0 ? (
+      <Section title="Certifications" accent="#111827">
+        {certifications.map((c, i) => (
+          <div key={i} style={{ marginBottom: '1.5mm', fontSize: '10pt' }}>
+            <strong>{c.name}</strong>
+            {c.issuer && <span> · {c.issuer}</span>}
+            {c.year && <span style={{ color: '#6b7280' }}> · {c.year}</span>}
+          </div>
+        ))}
+      </Section>
+    ) : null,
+  }
 
   return (
     <div
@@ -25,7 +120,7 @@ export default function IvyLeague() {
         lineHeight: 1.5,
       }}
     >
-      {/* ── Header ── */}
+      {/* ── Header (fixed) ── */}
       <header style={{ textAlign: 'center', marginBottom: '8mm' }}>
         <h1 style={{ margin: 0, fontSize: '26pt', fontWeight: 700, letterSpacing: '1.5px', color: '#0f172a' }}>
           {personal.name || 'Your Name'}
@@ -54,90 +149,12 @@ export default function IvyLeague() {
 
       <hr style={{ border: 'none', borderTop: '1.5pt solid #111827', margin: '0 0 6mm' }} />
 
-      {personal.summary && (
-        <Section title="Summary" accent="#111827" variant="plain">
-          <p style={{ margin: 0, textAlign: 'center', fontStyle: 'italic', color: '#1f2937' }}>
-            {personal.summary}
-          </p>
-        </Section>
-      )}
-
-      {education.length > 0 && (
-        <Section title="Education" accent="#111827">
-          {education.map((e, i) => (
-            <div key={i} style={{ marginBottom: '4mm' }}>
-              <div style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'baseline' }}>
-                <strong style={{ fontSize: '11.5pt', color: '#0f172a' }}>{e.institution || 'Institution'}</strong>
-                {e.period && <span style={{ fontStyle: 'italic', color: '#374151', fontSize: '10pt' }}>{e.period}</span>}
-              </div>
-              <div style={{ fontStyle: 'italic', fontSize: '10pt', color: '#1f2937' }}>
-                {[e.degree, e.location].filter(Boolean).join(', ')}
-              </div>
-              {e.description && (
-                <p style={{ margin: '1.5mm 0 0', color: '#374151', fontSize: '10pt' }}>{e.description}</p>
-              )}
-            </div>
-          ))}
-        </Section>
-      )}
-
-      {experience.length > 0 && (
-        <Section title="Experience" accent="#111827">
-          {experience.map((e, i) => (
-            <ExperienceRow
-              key={i}
-              exp={e}
-              roleColor="#0f172a"
-              companyColor="#1f2937"
-              periodColor="#374151"
-              bulletColor="#1f2937"
-              fontSize="10pt"
-            />
-          ))}
-        </Section>
-      )}
-
-      {projects.length > 0 && (
-        <Section title="Projects" accent="#111827">
-          {projects.map((p, i) => (
-            <ProjectCard
-              key={i}
-              project={p}
-              titleColor="#0f172a"
-              descColor="#1f2937"
-              techColor="#374151"
-              linkColor="#1f2937"
-              fontSize="10pt"
-            />
-          ))}
-        </Section>
-      )}
-
-      {skills.length > 0 && (
-        <Section title="Skills & Interests" accent="#111827">
-          <div style={{ display: 'flex', flexWrap: 'wrap', gap: '1mm 4mm' }}>
-            {skills.map((s, i) => (
-              <span key={i} style={{ fontSize: '10pt' }}>
-                <strong>{s.name}</strong>
-                {s.level && <span style={{ color: '#6b7280' }}> ({s.level})</span>}
-                {i < skills.length - 1 && <span style={{ color: '#9ca3af' }}> · </span>}
-              </span>
-            ))}
-          </div>
-        </Section>
-      )}
-
-      {certifications.length > 0 && (
-        <Section title="Certifications" accent="#111827">
-          {certifications.map((c, i) => (
-            <div key={i} style={{ marginBottom: '1.5mm', fontSize: '10pt' }}>
-              <strong>{c.name}</strong>
-              {c.issuer && <span> · {c.issuer}</span>}
-              {c.year && <span style={{ color: '#6b7280' }}> · {c.year}</span>}
-            </div>
-          ))}
-        </Section>
-      )}
+      {/* ── Body sections (drag-and-drop order honored here) ── */}
+      <OrderedSections
+        nodes={nodes}
+        sectionProps={{ accent: '#111827' }}
+        customBodyStyle={{ color: '#1f2937', fontSize: '10pt' }}
+      />
     </div>
   )
 }

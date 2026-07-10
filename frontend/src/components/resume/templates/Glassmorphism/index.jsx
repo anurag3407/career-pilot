@@ -1,6 +1,6 @@
 import { useResume } from '../../../../context/ResumeContext'
-import Section from '../../shared/Section'
 import ExperienceRow from '../../shared/ExperienceRow'
+import OrderedSections from '../../shared/OrderedSections'
 
 /**
  * Glassmorphism — frosted-glass card surfaces over a gradient background.
@@ -8,6 +8,77 @@ import ExperienceRow from '../../shared/ExperienceRow'
  */
 export default function Glassmorphism() {
   const { personal, experience, education, projects, skills, certifications } = useResume()
+
+  const nodes = {
+    summary: personal.summary ? (
+      <GlassCard title="About">
+        <p style={{ margin: 0, color: '#1f2937' }}>{personal.summary}</p>
+      </GlassCard>
+    ) : null,
+
+    skills: skills.length > 0 ? (
+      <GlassCard title="Skills">
+        <div style={{ display: 'flex', flexWrap: 'wrap', gap: '1mm' }}>
+          {skills.map((s, i) => (
+            <span key={i} style={{ fontSize: '9pt', padding: '0.5mm 2mm', background: 'rgba(255, 255, 255, 0.4)', color: '#1e1b4b', borderRadius: 12, fontWeight: 500 }}>
+              {s.name}
+            </span>
+          ))}
+        </div>
+      </GlassCard>
+    ) : null,
+
+    experience: experience.length > 0 ? (
+      <GlassCard title="Experience" wide>
+        {experience.map((e, i) => (
+          <ExperienceRow
+            key={i}
+            exp={e}
+            roleColor="#1e1b4b"
+            companyColor="#4338ca"
+            periodColor="#6b7280"
+            bulletColor="#1f2937"
+            fontSize="10pt"
+          />
+        ))}
+      </GlassCard>
+    ) : null,
+
+    education: education.length > 0 ? (
+      <GlassCard title="Education">
+        {education.map((e, i) => (
+          <div key={i} style={{ marginBottom: '2mm' }}>
+            <strong>{e.degree}</strong>
+            <div style={{ color: '#4338ca', fontSize: '9pt' }}>{e.institution}</div>
+            <div style={{ color: '#6b7280', fontSize: '8.5pt' }}>{e.period}</div>
+          </div>
+        ))}
+      </GlassCard>
+    ) : null,
+
+    projects: projects.length > 0 ? (
+      <GlassCard title="Projects">
+        {projects.map((p, i) => (
+          <div key={i} style={{ marginBottom: '2mm' }}>
+            <strong>{p.title}</strong>
+            {p.description && <div style={{ color: '#1f2937' }}>{p.description}</div>}
+          </div>
+        ))}
+      </GlassCard>
+    ) : null,
+
+    certifications: certifications.length > 0 ? (
+      <GlassCard title="Certifications" wide>
+        {certifications.map((c, i) => (
+          <div key={i} style={{ marginBottom: '1.5mm' }}>
+            <strong>{c.name}</strong>
+            {c.issuer && <span> · {c.issuer}</span>}
+            {c.year && <span style={{ color: '#6b7280' }}> · {c.year}</span>}
+          </div>
+        ))}
+      </GlassCard>
+    ) : null,
+  }
 
   return (
     <div
@@ -23,6 +94,7 @@ export default function Glassmorphism() {
         lineHeight: 1.5,
       }}
     >
+      {/* ── Header (fixed) ── */}
       <header style={{ marginBottom: '7mm' }}>
         <div
           style={{
@@ -52,78 +124,12 @@ export default function Glassmorphism() {
         </div>
       </header>
 
-      <div style={{ display: 'grid', gridTemplateColumns: '1fr 1fr', gap: '5mm' }}>
-        {personal.summary && (
-          <GlassCard title="About">
-            <p style={{ margin: 0, color: '#1f2937' }}>{personal.summary}</p>
-          </GlassCard>
-        )}
-
-        {skills.length > 0 && (
-          <GlassCard title="Skills">
-            <div style={{ display: 'flex', flexWrap: 'wrap', gap: '1mm' }}>
-              {skills.map((s, i) => (
-                <span key={i} style={{ fontSize: '9pt', padding: '0.5mm 2mm', background: 'rgba(255, 255, 255, 0.4)', color: '#1e1b4b', borderRadius: 12, fontWeight: 500 }}>
-                  {s.name}
-                </span>
-              ))}
-            </div>
-          </GlassCard>
-        )}
-      </div>
-
-      {experience.length > 0 && (
-        <GlassCard title="Experience" wide>
-          {experience.map((e, i) => (
-            <ExperienceRow
-              key={i}
-              exp={e}
-              roleColor="#1e1b4b"
-              companyColor="#4338ca"
-              periodColor="#6b7280"
-              bulletColor="#1f2937"
-              fontSize="10pt"
-            />
-          ))}
-        </GlassCard>
-      )}
-
-      <div style={{ display: 'grid', gridTemplateColumns: '1fr 1fr', gap: '5mm' }}>
-        {education.length > 0 && (
-          <GlassCard title="Education">
-            {education.map((e, i) => (
-              <div key={i} style={{ marginBottom: '2mm' }}>
-                <strong>{e.degree}</strong>
-                <div style={{ color: '#4338ca', fontSize: '9pt' }}>{e.institution}</div>
-                <div style={{ color: '#6b7280', fontSize: '8.5pt' }}>{e.period}</div>
-              </div>
-            ))}
-          </GlassCard>
-        )}
-
-        {projects.length > 0 && (
-          <GlassCard title="Projects">
-            {projects.map((p, i) => (
-              <div key={i} style={{ marginBottom: '2mm' }}>
-                <strong>{p.title}</strong>
-                {p.description && <div style={{ color: '#1f2937' }}>{p.description}</div>}
-              </div>
-            ))}
-          </GlassCard>
-        )}
-      </div>
-
-      {certifications.length > 0 && (
-        <GlassCard title="Certifications" wide>
-          {certifications.map((c, i) => (
-            <div key={i} style={{ marginBottom: '1.5mm' }}>
-              <strong>{c.name}</strong>
-              {c.issuer && <span> · {c.issuer}</span>}
-              {c.year && <span style={{ color: '#6b7280' }}> · {c.year}</span>}
-            </div>
-          ))}
-        </GlassCard>
-      )}
+      {/* ── Body sections (drag-and-drop order honored here) ── */}
+      <OrderedSections
+        nodes={nodes}
+        sectionProps={{ accent: '#4338ca', uppercase: false }}
+        customBodyStyle={{ color: '#1f2937' }}
+      />
     </div>
   )
 }

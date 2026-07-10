@@ -5,6 +5,9 @@ import { asyncHandler } from '../middleware/errorHandler.js';
 import UserProfile from '../models/UserProfile.model.js';
 import Resume from '../models/Resume.model.js';
 import Portfolio from '../models/Portfolio.model.js';
+import {
+  invalidateProfileCache,
+} from '../services/profileCache.js';
 import TrackedJob from '../models/TrackedJob.model.js';
 import Interview from '../models/Interview.model.js';
 
@@ -145,6 +148,8 @@ router.delete(
       TokenUsage.deleteMany({ userId: uid }),
       TwoFactor.deleteOne({ uid })
     ]);
+
+    await invalidateProfileCache(uid);
 
     res.status(200).json({
       success: true,

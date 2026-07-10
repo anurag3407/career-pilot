@@ -22,9 +22,37 @@
     <img src="https://img.shields.io/badge/Multi--AI-OpenAI%20%7C%20Anthropic%20%7C%20Groq%20%7C%20Gemini-7c3aed" alt="Multi-AI"/>
   </p>
   <p>
-    Documentation · <a href="#-community">Discord</a> · License: <a href="LICENSE">MIT</a> · Built with ❤️ by the Career Pilot community
+    Documentation · <a href="https://discord.gg/dpDMVywS">Discord</a> · License: <a href="LICENSE">MIT</a> · Built with ❤️ by the Career Pilot community
   </p>
 </div>
+
+---
+
+## Table of Contents
+
+- [✨ What is Career Pilot?](#-what-is-career-pilot)
+- [🧭 Feature Pillars](#-feature-pillars)
+- [🚀 Quick Install](#-quick-install)
+- [📝 Pillar 1 — Resume Studio](#-pillar-1--resume-studio)
+- [🎤 Pillar 2 — Interview Sim](#-pillar-2--interview-sim)
+- [💼 Pillar 3 — Jobs & Tracker](#-pillar-3--jobs--tracker)
+- [🎨 Pillar 4 — Portfolio Studio](#-pillar-4--portfolio-studio)
+- [🧠 Pillar 5 — AI Career Tools](#-pillar-5--ai-career-tools)
+- [🌐 Pillar 6 — Community, Fellowships & GitHub Intel](#-pillar-6--community-fellowships--github-intel)
+- [🔐 Security, Auth & Privacy](#-security-auth--privacy)
+- [🧩 Architecture at a Glance](#-architecture-at-a-glance)
+- [🌐 Real-time, Queues & Background Work](#-real-time-queues--background-work)
+- [🛠 CLI vs Web Quick Reference](#-cli-vs-web-quick-reference)
+- [📚 Documentation](#-documentation)
+- [🧪 Testing](#-testing)
+- [🚢 Deployment](#-deployment)
+- [🔄 Migrating from Other Tools](#-migrating-from-other-tools)
+- [🛣 Roadmap](#-roadmap)
+- [🧠 Project Notes](#-project-notes)
+- [🤝 Contributing](#-contributing)
+- [👥 Maintainers](#-maintainers)
+- [💬 Community](#-community)
+- [📄 License](#-license)
 
 ---
 
@@ -592,7 +620,7 @@ See [CONTRIBUTING.md](CONTRIBUTING.md) and [CODE_OF_CONDUCT.md](CODE_OF_CONDUCT.
 
 ## 💬 Community
 
-- 💬 Discord — coming soon
+- 💬 [Discord Community](https://discord.gg/dpDMVywS) — Join our server to chat, ask questions, and share ideas!
 - 🐛 [GitHub Issues](https://github.com/anurag3407/career-pilot/issues)
 - 📚 [Full Documentation](docs/PROJECT_DOCUMENTATION.md)
 - 🌟 Star the repo to follow releases

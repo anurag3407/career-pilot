@@ -1,4 +1,7 @@
 import { useResume } from '../../../../context/ResumeContext'
+import Section from '../../shared/Section'
+import ExperienceRow from '../../shared/ExperienceRow'
+import OrderedSections from '../../shared/OrderedSections'
 
 /**
  * Executive Band — premium single-column layout with a full-width colored
@@ -9,6 +12,104 @@ import { useResume } from '../../../../context/ResumeContext'
 export default function ExecutiveBand() {
   const { personal, experience, education, projects, skills, certifications } =
     useResume()
+
+  const nodes = {
+    summary: personal.summary ? (
+      <Section title="Executive Summary" accent="#7f1d1d" uppercase={false}>
+        <p style={{ margin: 0, color: '#1c1917', fontSize: '10.5pt' }}>
+          {personal.summary}
+        </p>
+      </Section>
+    ) : null,
+
+    experience: experience.length > 0 ? (
+      <Section title="Professional Experience" accent="#7f1d1d" uppercase={false}>
+        {experience.map((e, i) => (
+          <ExperienceRow
+            key={i}
+            exp={e}
+            roleColor="#7f1d1d"
+            companyColor="#44403c"
+            periodColor="#7f1d1d"
+            bulletColor="#1c1917"
+            fontSize="10.5pt"
+          />
+        ))}
+      </Section>
+    ) : null,
+
+    education: education.length > 0 ? (
+      <Section title="Education" accent="#7f1d1d" uppercase={false}>
+        {education.map((e, i) => (
+          <div key={i} style={{ marginBottom: '4mm' }}>
+            <div style={{ fontWeight: 700, color: '#7f1d1d' }}>{e.degree}</div>
+            <div style={{ fontStyle: 'italic' }}>{e.institution}</div>
+            <div style={{ fontSize: '9pt', color: '#78716c' }}>
+              {[e.period, e.location].filter(Boolean).join(' · ')}
+            </div>
+            {e.description && (
+              <p style={{ margin: '1.5mm 0 0', color: '#1c1917', fontSize: '9.5pt' }}>
+                {e.description}
+              </p>
+            )}
+          </div>
+        ))}
+      </Section>
+    ) : null,
+
+    skills: skills.length > 0 ? (
+      <Section title="Core Competencies" accent="#7f1d1d" uppercase={false}>
+        <div style={{ display: 'flex', flexWrap: 'wrap', gap: '2mm' }}>
+          {skills.map((s, i) => (
+            <span
+              key={i}
+              style={{
+                fontSize: '9.5pt',
+                padding: '1mm 3mm',
+                border: '0.5pt solid #fecaca',
+                borderRadius: '1mm',
+                color: '#7f1d1d',
+                background: '#fef2f2',
+              }}
+            >
+              <strong>{s.name}</strong>
+              {s.level && <span style={{ fontSize: '8pt', color: '#9f1239' }}> · {s.level}</span>}
+            </span>
+          ))}
+        </div>
+      </Section>
+    ) : null,
+
+    projects: projects.length > 0 ? (
+      <Section title="Selected Projects" accent="#7f1d1d" uppercase={false}>
+        {projects.map((p, i) => (
+          <article key={i} style={{ marginBottom: '4mm' }}>
+            <h3 style={{ margin: 0, fontSize: '11pt', fontWeight: 700, color: '#7f1d1d' }}>
+              {p.title}
+            </h3>
+            {p.description && <p style={{ margin: '1.5mm 0', color: '#1c1917' }}>{p.description}</p>}
+            {p.techStack.length > 0 && (
+              <div style={{ fontSize: '9pt', fontStyle: 'italic', color: '#78716c' }}>
+                {p.techStack.join(' · ')}
+              </div>
+            )}
+          </article>
+        ))}
+      </Section>
+    ) : null,
+
+    certifications: certifications.length > 0 ? (
+      <Section title="Certifications" accent="#7f1d1d" uppercase={false}>
+        {certifications.map((c, i) => (
+          <div key={i} style={{ marginBottom: '1.5mm' }}>
+            <strong>{c.name}</strong>
+            {c.issuer && <span> — {c.issuer}</span>}
+            {c.year && <span style={{ color: '#78716c' }}> ({c.year})</span>}
+          </div>
+        ))}
+      </Section>
+    ) : null,
+  }
 
   return (
     <div
@@ -23,7 +124,7 @@ export default function ExecutiveBand() {
         lineHeight: 1.5,
       }}
     >
-      {/* ── Header Band ── */}
+      {/* ── Header Band (fixed) ── */}
       <header
         style={{
           background: '#7f1d1d',
@@ -84,125 +185,12 @@ export default function ExecutiveBand() {
       </header>
 
       <div style={{ padding: '10mm 18mm 12mm' }}>
-        {personal.summary && (
-          <Section title="Executive Summary">
-            <p style={{ margin: 0, color: '#1c1917', fontSize: '10.5pt' }}>
-              {personal.summary}
-            </p>
-          </Section>
-        )}
-
-        {experience.length > 0 && (
-          <Section title="Professional Experience">
-            {experience.map((e, i) => (
-              <article key={i} style={{ marginBottom: '6mm' }}>
-                <div style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'baseline' }}>
-                  <h3 style={{ margin: 0, fontSize: '12pt', fontWeight: 700, color: '#7f1d1d' }}>
-                    {e.role}
-                  </h3>
-                  {e.period && (
-                    <span style={{ fontSize: '9.5pt', color: '#7f1d1d', fontStyle: 'italic' }}>
-                      {e.period}
-                    </span>
-                  )}
-                </div>
-                <div style={{ fontSize: '10.5pt', fontStyle: 'italic', color: '#44403c', marginBottom: '2mm' }}>
-                  {[e.company, e.location].filter(Boolean).join(', ')}
-                </div>
-                {e.bullets.length > 0 && (
-                  <ul style={{ margin: 0, paddingLeft: '5mm', color: '#1c1917' }}>
-                    {e.bullets.map((b, j) => (
-                      <li key={j} style={{ marginBottom: '1.5mm' }}>{b}</li>
-                    ))}
-                  </ul>
-                )}
-              </article>
-            ))}
-          </Section>
-        )}
-
-        <div
-          style={{
-            display: 'grid',
-            gridTemplateColumns:
-              skills.length > 0 && education.length > 0 ? '1fr 1fr' : '1fr',
-            gap: '8mm',
-          }}
-        >
-          {education.length > 0 && (
-            <Section title="Education">
-              {education.map((e, i) => (
-                <div key={i} style={{ marginBottom: '4mm' }}>
-                  <div style={{ fontWeight: 700, color: '#7f1d1d' }}>{e.degree}</div>
-                  <div style={{ fontStyle: 'italic' }}>{e.institution}</div>
-                  <div style={{ fontSize: '9pt', color: '#78716c' }}>
-                    {[e.period, e.location].filter(Boolean).join(' · ')}
-                  </div>
-                  {e.description && (
-                    <p style={{ margin: '1.5mm 0 0', color: '#1c1917', fontSize: '9.5pt' }}>
-                      {e.description}
-                    </p>
-                  )}
-                </div>
-              ))}
-            </Section>
-          )}
-
-          {skills.length > 0 && (
-            <Section title="Core Competencies">
-              <div style={{ display: 'flex', flexWrap: 'wrap', gap: '2mm' }}>
-                {skills.map((s, i) => (
-                  <span
-                    key={i}
-                    style={{
-                      fontSize: '9.5pt',
-                      padding: '1mm 3mm',
-                      border: '0.5pt solid #fecaca',
-                      borderRadius: '1mm',
-                      color: '#7f1d1d',
-                      background: '#fef2f2',
-                    }}
-                  >
-                    <strong>{s.name}</strong>
-                    {s.level && <span style={{ fontSize: '8pt', color: '#9f1239' }}> · {s.level}</span>}
-                  </span>
-                ))}
-              </div>
-            </Section>
-          )}
-        </div>
-
-        {projects.length > 0 && (
-          <Section title="Selected Projects">
-            {projects.map((p, i) => (
-              <article key={i} style={{ marginBottom: '4mm' }}>
-                <h3 style={{ margin: 0, fontSize: '11pt', fontWeight: 700, color: '#7f1d1d' }}>
-                  {p.title}
-                </h3>
-                {p.description && <p style={{ margin: '1.5mm 0', color: '#1c1917' }}>{p.description}</p>}
-                {p.techStack.length > 0 && (
-                  <div style={{ fontSize: '9pt', fontStyle: 'italic', color: '#78716c' }}>
-                    {p.techStack.join(' · ')}
-                  </div>
-                )}
-              </article>
-            ))}
-          </Section>
-        )}
-
-        {certifications.length > 0 && (
-          <Section title="Certifications">
-            <ul style={{ margin: 0, paddingLeft: '5mm', color: '#1c1917' }}>
-              {certifications.map((c, i) => (
-                <li key={i} style={{ marginBottom: '1.5mm' }}>
-                  <strong>{c.name}</strong>
-                  {c.issuer && <span> — {c.issuer}</span>}
-                  {c.year && <span style={{ color: '#78716c' }}> ({c.year})</span>}
-                </li>
-              ))}
-            </ul>
-          </Section>
-        )}
+        {/* ── Body sections (drag-and-drop order honored here) ── */}
+        <OrderedSections
+          nodes={nodes}
+          sectionProps={{ accent: '#7f1d1d', uppercase: false }}
+          customBodyStyle={{ color: '#1c1917' }}
+        />
       </div>
     </div>
   )
@@ -211,27 +199,5 @@ export default function ExecutiveBand() {
 function Dot() {
   return (
     <span style={{ color: '#fecaca', opacity: 0.6 }}>•</span>
-  )
-}
-
-function Section({ title, children }) {
-  return (
-    <section style={{ marginBottom: '8mm' }}>
-      <h2
-        style={{
-          fontSize: '11pt',
-          fontWeight: 700,
-          textTransform: 'uppercase',
-          letterSpacing: '2px',
-          color: '#7f1d1d',
-          margin: '0 0 3mm',
-          paddingBottom: '1.5mm',
-          borderBottom: '1pt solid #fecaca',
-        }}
-      >
-        {title}
-      </h2>
-      {children}
-    </section>
   )
 }

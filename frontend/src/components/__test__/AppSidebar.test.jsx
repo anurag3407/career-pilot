@@ -151,19 +151,7 @@ describe("AppSidebar", () => {
 
     expect(
       screen.getByRole("button", {
-        name: /skill gap analyzer/i,
-      })
-    ).toBeInTheDocument();
-
-    expect(
-      screen.getByRole("button", {
-        name: /career trajectory/i,
-      })
-    ).toBeInTheDocument();
-
-    expect(
-      screen.getByRole("button", {
-        name: /salary estimator/i,
+        name: /recent visualizers/i,
       })
     ).toBeInTheDocument();
   });

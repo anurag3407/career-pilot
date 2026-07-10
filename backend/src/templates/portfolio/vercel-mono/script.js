@@ -1,3 +1,4 @@
+/* eslint-env browser */
 /**
  * script.js — Vercel-Inspired Portfolio
  * Clean, minimalistic data injection & interactions

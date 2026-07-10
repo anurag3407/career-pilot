@@ -15,13 +15,17 @@ import {
   StickyNote,
   Send,
   X,
+  Mail,
 } from "lucide-react";
+import { Link } from "react-router-dom";
 import Layout from "../components/Layout";
 import { jobTrackerApi } from "../services/api";
 import { auth } from "../config/firebase";
 import Button from "../components/Button";
 import Card from "../components/Card";
 import CompanyResearch from "../components/CompanyResearch";
+import EmailGeneratorPanel from "../components/EmailGeneratorPanel";
+import OutreachPanel from "../components/OutreachPanel";
 import { SkeletonTracker } from "../components/ui/Skeleton";
 import {
   calculateJobStats,
@@ -47,6 +51,8 @@ const JobTracker = () => {
   const [pendingSyncCount, setPendingSyncCount] = useState(0);
   const [noteEditing, setNoteEditing] = useState(null); // jobId or null
   const [noteText, setNoteText] = useState("");
+  const [emailGeneratorJob, setEmailGeneratorJob] = useState(null);
+  const [outreachJob, setOutreachJob] = useState(null);
 
   const currentUserId = auth?.currentUser?.uid || "anonymous";
 
@@ -650,6 +656,18 @@ const JobTracker = () => {
                                         >
                                           <Sparkles className="w-3 h-3" /> AI Research
                                         </button>
+                                        <button
+                                          onClick={() => setEmailGeneratorJob(job)}
+                                          className="flex-1 bg-emerald-500/10 hover:bg-emerald-500/20 text-emerald-600 py-1.5 rounded-md text-[11px] font-bold text-center transition-colors flex items-center justify-center gap-1"
+                                        >
+                                          <Mail className="w-3 h-3" /> Draft Email
+                                        </button>
+                                        <button
+                                          onClick={() => setOutreachJob(job)}
+                                          className="flex-1 bg-indigo-500/10 hover:bg-indigo-500/20 text-indigo-600 py-1.5 rounded-md text-[11px] font-bold text-center transition-colors flex items-center justify-center gap-1"
+                                        >
+                                          <Send className="w-3 h-3" /> Outreach
+                                        </button>
                                         {/* Notes toggle button */}
                                         <button
                                           onClick={(e) => {
@@ -769,6 +787,19 @@ const JobTracker = () => {
           companyName={researchCompany.name}
           industry={researchCompany.industry}
           onClose={() => setResearchCompany(null)}
+        />
+      )}
+      {emailGeneratorJob && (
+        <EmailGeneratorPanel
+          companyName={emailGeneratorJob.company}
+          jobTitle={emailGeneratorJob.title}
+          onClose={() => setEmailGeneratorJob(null)}
+        />
+      )}
+      {outreachJob && (
+        <OutreachPanel
+          companyName={outreachJob.company}
+          onClose={() => setOutreachJob(null)}
         />
       )}
     </Layout>

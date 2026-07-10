@@ -1,4 +1,7 @@
 import { useResume } from '../../../../context/ResumeContext'
+import Section from '../../shared/Section'
+import ExperienceRow from '../../shared/ExperienceRow'
+import OrderedSections from '../../shared/OrderedSections'
 
 /**
  * PMClassic — project-management focused resume template.
@@ -28,6 +31,92 @@ export default function PMClassic() {
   const projectCount = projects.length
     || experience.reduce((acc, e) => acc + (e.bullets?.length || 0), 0)
 
+  const nodes = {
+    summary: personal.summary ? (
+      <Section title="Executive Summary" accent="#1e40af" uppercase={false}>
+        <p style={{ margin: 0, color: '#334155', fontSize: '10.5pt' }}>{personal.summary}</p>
+      </Section>
+    ) : null,
+
+    experience: experience.length > 0 ? (
+      <Section title="Professional Experience" accent="#1e40af" uppercase={false}>
+        {experience.map((e, i) => (
+          <ExperienceRow
+            key={i}
+            exp={e}
+            roleColor="#0f172a"
+            companyColor="#1e40af"
+            periodColor="#64748b"
+            bulletColor="#334155"
+            fontSize="10pt"
+          />
+        ))}
+      </Section>
+    ) : null,
+
+    skills: skills.length > 0 ? (
+      <Section title="Core Competencies" accent="#1e40af" uppercase={false}>
+        <div style={{ display: 'grid', gridTemplateColumns: 'repeat(3, 1fr)', gap: '1mm 4mm' }}>
+          {skills.map((s, i) => (
+            <div key={i} style={{ fontSize: '9.5pt' }}>
+              <strong>{s.name}</strong>
+              {s.level && <span style={{ color: '#64748b' }}> · {s.level}</span>}
+            </div>
+          ))}
+        </div>
+      </Section>
+    ) : null,
+
+    projects: projects.length > 0 ? (
+      <Section title="Selected Projects" accent="#1e40af" uppercase={false}>
+        {projects.map((p, i) => (
+          <article key={i} style={{ marginBottom: '3mm' }}>
+            <h3 style={{ margin: 0, fontSize: '10.5pt', fontWeight: 700 }}>{p.title}</h3>
+            {p.description && <p style={{ margin: '0.5mm 0', color: '#334155' }}>{p.description}</p>}
+            {p.techStack.length > 0 && (
+              <div style={{ fontSize: '8.5pt', color: '#1e40af' }}>{p.techStack.join(' · ')}</div>
+            )}
+          </article>
+        ))}
+      </Section>
+    ) : null,
+
+    education: education.length > 0 ? (
+      <Section title="Education" accent="#1e40af" uppercase={false}>
+        {education.map((e, i) => (
+          <div key={i} style={{ marginBottom: '2mm' }}>
+            <strong>{e.institution}</strong>
+            {e.degree && <span> — {e.degree}</span>}
+            {e.period && <span style={{ color: '#64748b' }}> ({e.period})</span>}
+          </div>
+        ))}
+      </Section>
+    ) : null,
+
+    certifications: certifications.length > 0 ? (
+      <Section title="Certifications" accent="#1e40af" uppercase={false}>
+        {certifications.map((c, i) => (
+          <span
+            key={i}
+            style={{
+              display: 'inline-block',
+              marginRight: '2mm',
+              marginBottom: '2mm',
+              fontSize: '9pt',
+              padding: '1mm 3mm',
+              background: '#dbeafe',
+              color: '#1e40af',
+              borderRadius: 12,
+              fontWeight: 500,
+            }}
+          >
+            {c.name}{c.year ? ` · ${c.year}` : ''}
+          </span>
+        ))}
+      </Section>
+    ) : null,
+  }
+
   return (
     <div
       className="resume-export-root"
@@ -42,7 +131,7 @@ export default function PMClassic() {
         lineHeight: 1.5,
       }}
     >
-      {/* ── Header ── */}
+      {/* ── Header (fixed) ── */}
       <header style={{ marginBottom: '6mm' }}>
         <h1 style={{ margin: 0, fontSize: '28pt', fontWeight: 700, color: '#0f172a', letterSpacing: '-0.5px' }}>
           {personal.name || 'Your Name'}
@@ -60,7 +149,7 @@ export default function PMClassic() {
         </div>
       </header>
 
-      {/* ── KPI bar ── */}
+      {/* ── KPI bar (fixed header slot) ── */}
       <div
         style={{
           display: 'grid',
@@ -78,99 +167,12 @@ export default function PMClassic() {
         <KPI label="Certifications" value={certifications.length || 0} />
       </div>
 
-      {personal.summary && (
-        <Section title="Executive Summary">
-          <p style={{ margin: 0, color: '#334155', fontSize: '10.5pt' }}>{personal.summary}</p>
-        </Section>
-      )}
-
-      {experience.length > 0 && (
-        <Section title="Professional Experience">
-          {experience.map((e, i) => (
-            <article key={i} style={{ marginBottom: '5mm' }}>
-              <div style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'baseline' }}>
-                <h3 style={{ margin: 0, fontSize: '11pt', fontWeight: 700, color: '#0f172a' }}>
-                  {e.role}
-                </h3>
-                {e.period && (
-                  <span style={{ fontSize: '9pt', color: '#64748b' }}>{e.period}</span>
-                )}
-              </div>
-              <div style={{ fontSize: '10pt', color: '#1e40af', fontWeight: 500 }}>
-                {[e.company, e.location].filter(Boolean).join(' · ')}
-              </div>
-              {e.bullets.length > 0 && (
-                <ul style={{ margin: '2mm 0 0', paddingLeft: '5mm', color: '#334155' }}>
-                  {e.bullets.map((b, j) => (
-                    <li key={j} style={{ marginBottom: '1mm' }}>{b}</li>
-                  ))}
-                </ul>
-              )}
-            </article>
-          ))}
-        </Section>
-      )}
-
-      {skills.length > 0 && (
-        <Section title="Core Competencies">
-          <div style={{ display: 'grid', gridTemplateColumns: 'repeat(3, 1fr)', gap: '1mm 4mm' }}>
-            {skills.map((s, i) => (
-              <div key={i} style={{ fontSize: '9.5pt' }}>
-                <strong>{s.name}</strong>
-                {s.level && <span style={{ color: '#64748b' }}> · {s.level}</span>}
-              </div>
-            ))}
-          </div>
-        </Section>
-      )}
-
-      {projects.length > 0 && (
-        <Section title="Selected Projects">
-          {projects.map((p, i) => (
-            <article key={i} style={{ marginBottom: '3mm' }}>
-              <h3 style={{ margin: 0, fontSize: '10.5pt', fontWeight: 700 }}>{p.title}</h3>
-              {p.description && <p style={{ margin: '0.5mm 0', color: '#334155' }}>{p.description}</p>}
-              {p.techStack.length > 0 && (
-                <div style={{ fontSize: '8.5pt', color: '#1e40af' }}>{p.techStack.join(' · ')}</div>
-              )}
-            </article>
-          ))}
-        </Section>
-      )}
-
-      {education.length > 0 && (
-        <Section title="Education">
-          {education.map((e, i) => (
-            <div key={i} style={{ marginBottom: '2mm' }}>
-              <strong>{e.institution}</strong>
-              {e.degree && <span> — {e.degree}</span>}
-              {e.period && <span style={{ color: '#64748b' }}> ({e.period})</span>}
-            </div>
-          ))}
-        </Section>
-      )}
-
-      {certifications.length > 0 && (
-        <Section title="Certifications">
-          <div style={{ display: 'flex', flexWrap: 'wrap', gap: '2mm' }}>
-            {certifications.map((c, i) => (
-              <span
-                key={i}
-                style={{
-                  fontSize: '9pt',
-                  padding: '1mm 3mm',
-                  background: '#dbeafe',
-                  color: '#1e40af',
-                  borderRadius: 12,
-                  fontWeight: 500,
-                }}
-              >
-                {c.name}{c.year ? ` · ${c.year}` : ''}
-              </span>
-            ))}
-          </div>
-        </Section>
-      )}
+      {/* ── Body sections (drag-and-drop order honored here) ── */}
+      <OrderedSections
+        nodes={nodes}
+        sectionProps={{ accent: '#1e40af', uppercase: false }}
+        customBodyStyle={{ color: '#334155' }}
+      />
     </div>
   )
 }
@@ -183,27 +185,5 @@ function KPI({ label, value }) {
         {label}
       </div>
     </div>
-  )
-}
-
-function Section({ title, children }) {
-  return (
-    <section style={{ marginBottom: '6mm' }}>
-      <h2
-        style={{
-          fontSize: '10pt',
-          fontWeight: 700,
-          textTransform: 'uppercase',
-          letterSpacing: '1.5px',
-          color: '#1e40af',
-          margin: '0 0 3mm',
-          paddingBottom: '1mm',
-          borderBottom: '1.5pt solid #1e40af',
-        }}
-      >
-        {title}
-      </h2>
-      {children}
-    </section>
   )
 }

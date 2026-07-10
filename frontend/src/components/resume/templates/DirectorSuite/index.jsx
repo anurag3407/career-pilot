@@ -2,6 +2,7 @@ import { useResume } from '../../../../context/ResumeContext'
 import Section from '../../shared/Section'
 import ExperienceRow from '../../shared/ExperienceRow'
 import Avatar from '../../shared/Avatar'
+import OrderedSections from '../../shared/OrderedSections'
 
 /**
  * DirectorSuite — black accent, monogram crest, hairline rules. Built
@@ -9,6 +10,72 @@ import Avatar from '../../shared/Avatar'
  */
 export default function DirectorSuite() {
   const { personal, experience, education, projects, skills, certifications } = useResume()
+
+  const nodes = {
+    summary: personal.summary ? (
+      <Section title="Profile" accent="#1c1917" variant="plain" uppercase={false}>
+        <p style={{ margin: 0, fontStyle: 'italic', color: '#1c1917' }}>{personal.summary}</p>
+      </Section>
+    ) : null,
+
+    experience: experience.length > 0 ? (
+      <Section title="Experience" accent="#1c1917" uppercase={false}>
+        {experience.map((e, i) => (
+          <ExperienceRow
+            key={i}
+            exp={e}
+            roleColor="#1c1917"
+            companyColor="#1c1917"
+            periodColor="#57534e"
+            bulletColor="#1c1917"
+            fontSize="10.5pt"
+          />
+        ))}
+      </Section>
+    ) : null,
+
+    education: education.length > 0 ? (
+      <Section title="Education" accent="#1c1917" uppercase={false}>
+        {education.map((e, i) => (
+          <div key={i} style={{ marginBottom: '2mm' }}>
+            <strong>{e.institution}</strong> · {e.degree}
+            {e.period && <span style={{ color: '#57534e' }}> · {e.period}</span>}
+          </div>
+        ))}
+      </Section>
+    ) : null,
+
+    skills: skills.length > 0 ? (
+      <Section title="Areas of Expertise" accent="#1c1917" uppercase={false}>
+        <div style={{ color: '#1c1917', lineHeight: 1.7 }}>
+          {skills.map((s) => s.name).join(' · ')}
+        </div>
+      </Section>
+    ) : null,
+
+    projects: projects.length > 0 ? (
+      <Section title="Selected Engagements" accent="#1c1917" uppercase={false}>
+        {projects.map((p, i) => (
+          <div key={i} style={{ marginBottom: '3mm' }}>
+            <strong>{p.title}</strong>
+            {p.description && <div style={{ color: '#1c1917' }}>{p.description}</div>}
+          </div>
+        ))}
+      </Section>
+    ) : null,
+
+    certifications: certifications.length > 0 ? (
+      <Section title="Board Roles & Affiliations" accent="#1c1917" uppercase={false}>
+        {certifications.map((c, i) => (
+          <div key={i} style={{ marginBottom: '1.5mm' }}>
+            <strong>{c.name}</strong>
+            {c.issuer && <span> · {c.issuer}</span>}
+            {c.year && <span style={{ color: '#57534e' }}> · {c.year}</span>}
+          </div>
+        ))}
+      </Section>
+    ) : null,
+  }
 
   return (
     <div
@@ -24,7 +91,7 @@ export default function DirectorSuite() {
         lineHeight: 1.5,
       }}
     >
-      {/* ── Crest ── */}
+      {/* ── Crest (fixed) ── */}
       <header style={{ display: 'flex', alignItems: 'center', gap: '8mm', marginBottom: '6mm', borderBottom: '1pt solid #1c1917', paddingBottom: '5mm' }}>
         <div
           style={{
@@ -65,76 +132,12 @@ export default function DirectorSuite() {
         </div>
       </header>
 
-      {personal.summary && (
-        <Section title="Profile" accent="#1c1917" variant="plain">
-          <p style={{ margin: 0, fontStyle: 'italic', color: '#1c1917' }}>{personal.summary}</p>
-        </Section>
-      )}
-
-      {experience.length > 0 && (
-        <Section title="Experience" accent="#1c1917">
-          {experience.map((e, i) => (
-            <div key={i} style={{ marginBottom: '5mm' }}>
-              <div style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'baseline' }}>
-                <strong style={{ fontSize: '11.5pt', color: '#1c1917' }}>{e.role}</strong>
-                {e.period && <span style={{ fontSize: '10pt', fontStyle: 'italic', color: '#57534e' }}>{e.period}</span>}
-              </div>
-              <div style={{ fontSize: '10pt', color: '#1c1917', fontStyle: 'italic', marginBottom: '1.5mm' }}>
-                {[e.company, e.location].filter(Boolean).join(', ')}
-              </div>
-              {e.bullets.length > 0 && (
-                <ul style={{ margin: 0, paddingLeft: '5mm', color: '#1c1917' }}>
-                  {e.bullets.map((b, j) => (
-                    <li key={j} style={{ marginBottom: '1mm' }}>{b}</li>
-                  ))}
-                </ul>
-              )}
-            </div>
-          ))}
-        </Section>
-      )}
-
-      {education.length > 0 && (
-        <Section title="Education" accent="#1c1917">
-          {education.map((e, i) => (
-            <div key={i} style={{ marginBottom: '2mm' }}>
-              <strong>{e.institution}</strong> · {e.degree}
-              {e.period && <span style={{ color: '#57534e' }}> · {e.period}</span>}
-            </div>
-          ))}
-        </Section>
-      )}
-
-      {skills.length > 0 && (
-        <Section title="Areas of Expertise" accent="#1c1917">
-          <div style={{ color: '#1c1917', lineHeight: 1.7 }}>
-            {skills.map((s) => s.name).join(' · ')}
-          </div>
-        </Section>
-      )}
-
-      {projects.length > 0 && (
-        <Section title="Selected Engagements" accent="#1c1917">
-          {projects.map((p, i) => (
-            <div key={i} style={{ marginBottom: '3mm' }}>
-              <strong>{p.title}</strong>
-              {p.description && <div style={{ color: '#1c1917' }}>{p.description}</div>}
-            </div>
-          ))}
-        </Section>
-      )}
-
-      {certifications.length > 0 && (
-        <Section title="Board Roles & Affiliations" accent="#1c1917">
-          {certifications.map((c, i) => (
-            <div key={i} style={{ marginBottom: '1.5mm' }}>
-              <strong>{c.name}</strong>
-              {c.issuer && <span> · {c.issuer}</span>}
-              {c.year && <span style={{ color: '#57534e' }}> · {c.year}</span>}
-            </div>
-          ))}
-        </Section>
-      )}
+      {/* ── Body sections (drag-and-drop order honored here) ── */}
+      <OrderedSections
+        nodes={nodes}
+        sectionProps={{ accent: '#1c1917', uppercase: false }}
+        customBodyStyle={{ color: '#1c1917' }}
+      />
     </div>
   )
 }

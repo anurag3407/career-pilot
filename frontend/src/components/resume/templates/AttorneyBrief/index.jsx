@@ -1,6 +1,7 @@
 import { useResume } from '../../../../context/ResumeContext'
 import Section from '../../shared/Section'
 import ExperienceRow from '../../shared/ExperienceRow'
+import OrderedSections from '../../shared/OrderedSections'
 
 /**
  * AttorneyBrief — legal CV with Bar Admissions and Practice Areas blocks.
@@ -8,6 +9,57 @@ import ExperienceRow from '../../shared/ExperienceRow'
  */
 export default function AttorneyBrief() {
   const { personal, experience, education, certifications } = useResume()
+
+  const nodes = {
+    summary: personal.summary ? (
+      <Section title="Profile" accent="#111827" uppercase={false}>
+        <p style={{ margin: 0, textAlign: 'justify', color: '#1f2937' }}>{personal.summary}</p>
+      </Section>
+    ) : null,
+
+    experience: experience.length > 0 ? (
+      <Section title="Experience" accent="#111827" uppercase={false}>
+        {experience.map((e, i) => (
+          <ExperienceRow
+            key={i}
+            exp={e}
+            roleColor="#111827"
+            companyColor="#1f2937"
+            periodColor="#374151"
+            bulletColor="#1f2937"
+            fontSize="10pt"
+          />
+        ))}
+      </Section>
+    ) : null,
+
+    education: education.length > 0 ? (
+      <Section title="Education" accent="#111827" uppercase={false}>
+        {education.map((e, i) => (
+          <div key={i} style={{ marginBottom: '3mm' }}>
+            <div style={{ display: 'flex', justifyContent: 'space-between' }}>
+              <strong style={{ fontSize: '11pt' }}>{e.institution}</strong>
+              {e.period && <span style={{ fontStyle: 'italic', color: '#374151' }}>{e.period}</span>}
+            </div>
+            <div style={{ fontStyle: 'italic', color: '#1f2937' }}>{e.degree}</div>
+            {e.description && <div style={{ fontSize: '9.5pt', color: '#6b7280', marginTop: '1mm' }}>{e.description}</div>}
+          </div>
+        ))}
+      </Section>
+    ) : null,
+
+    certifications: certifications.length > 0 ? (
+      <Section title="Honors & Awards" accent="#111827" uppercase={false}>
+        {certifications.map((c, i) => (
+          <div key={i} style={{ marginBottom: '1.5mm' }}>
+            <strong>{c.name}</strong>
+            {c.issuer && <span> · {c.issuer}</span>}
+            {c.year && <span style={{ color: '#6b7280' }}> · {c.year}</span>}
+          </div>
+        ))}
+      </Section>
+    ) : null,
+  }
 
   return (
     <div
@@ -23,6 +75,7 @@ export default function AttorneyBrief() {
         lineHeight: 1.5,
       }}
     >
+      {/* ── Header (fixed) ── */}
       <header style={{ textAlign: 'center', marginBottom: '6mm' }}>
         <h1 style={{ margin: 0, fontSize: '24pt', fontWeight: 700, letterSpacing: '1.5px' }}>
           {personal.name || 'Your Name'}
@@ -40,76 +93,30 @@ export default function AttorneyBrief() {
 
       <hr style={{ border: 'none', borderTop: '1pt solid #111827', margin: '0 0 5mm' }} />
 
-      {personal.summary && (
-        <Section title="Profile" accent="#111827">
-          <p style={{ margin: 0, textAlign: 'justify' }}>{personal.summary}</p>
-        </Section>
-      )}
-
-      <Section title="Bar Admissions" accent="#111827">
-        <div style={{ fontSize: '10pt', lineHeight: 1.7 }}>
-          <div>· State Bar of California (Active, since 2018)</div>
-          <div>· U.S. District Court, Northern District of California</div>
-          <div>· U.S. Court of Appeals, Ninth Circuit</div>
-        </div>
-      </Section>
-
-      <Section title="Practice Areas" accent="#111827">
-        <div style={{ fontSize: '10pt', lineHeight: 1.7 }}>
-          <div>· Corporate Law · Mergers & Acquisitions · Securities Regulation</div>
-          <div>· Commercial Contracts · Employment Law · Privacy & Data Protection</div>
-        </div>
-      </Section>
-
-      {experience.length > 0 && (
-        <Section title="Experience" accent="#111827">
-          {experience.map((e, i) => (
-            <div key={i} style={{ marginBottom: '5mm' }}>
-              <div style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'baseline' }}>
-                <strong style={{ fontSize: '11pt' }}>{e.role}</strong>
-                {e.period && <span style={{ fontStyle: 'italic', color: '#374151', fontSize: '9.5pt' }}>{e.period}</span>}
+      {/* ── Body sections (drag-and-drop order honored here) ── */}
+      <OrderedSections
+        nodes={nodes}
+        sectionProps={{ accent: '#111827', uppercase: false }}
+        customBodyStyle={{ color: '#1f2937' }}
+        header={
+          <>
+            <Section title="Bar Admissions" accent="#111827" uppercase={false}>
+              <div style={{ fontSize: '10pt', lineHeight: 1.7 }}>
+                <div>· State Bar of California (Active, since 2018)</div>
+                <div>· U.S. District Court, Northern District of California</div>
+                <div>· U.S. Court of Appeals, Ninth Circuit</div>
               </div>
-              <div style={{ fontSize: '10pt', color: '#1f2937', fontStyle: 'italic' }}>
-                {[e.company, e.location].filter(Boolean).join(', ')}
-              </div>
-              {e.bullets.length > 0 && (
-                <ul style={{ margin: '1.5mm 0 0', paddingLeft: '5mm' }}>
-                  {e.bullets.map((b, j) => (
-                    <li key={j} style={{ marginBottom: '0.5mm' }}>{b}</li>
-                  ))}
-                </ul>
-              )}
-            </div>
-          ))}
-        </Section>
-      )}
+            </Section>
 
-      {education.length > 0 && (
-        <Section title="Education" accent="#111827">
-          {education.map((e, i) => (
-            <div key={i} style={{ marginBottom: '3mm' }}>
-              <div style={{ display: 'flex', justifyContent: 'space-between' }}>
-                <strong style={{ fontSize: '11pt' }}>{e.institution}</strong>
-                {e.period && <span style={{ fontStyle: 'italic', color: '#374151' }}>{e.period}</span>}
+            <Section title="Practice Areas" accent="#111827" uppercase={false}>
+              <div style={{ fontSize: '10pt', lineHeight: 1.7 }}>
+                <div>· Corporate Law · Mergers &amp; Acquisitions · Securities Regulation</div>
+                <div>· Commercial Contracts · Employment Law · Privacy &amp; Data Protection</div>
               </div>
-              <div style={{ fontStyle: 'italic', color: '#1f2937' }}>{e.degree}</div>
-              {e.description && <div style={{ fontSize: '9.5pt', color: '#6b7280', marginTop: '1mm' }}>{e.description}</div>}
-            </div>
-          ))}
-        </Section>
-      )}
-
-      {certifications.length > 0 && (
-        <Section title="Honors & Awards" accent="#111827">
-          {certifications.map((c, i) => (
-            <div key={i} style={{ marginBottom: '1.5mm' }}>
-              <strong>{c.name}</strong>
-              {c.issuer && <span> · {c.issuer}</span>}
-              {c.year && <span style={{ color: '#6b7280' }}> · {c.year}</span>}
-            </div>
-          ))}
-        </Section>
-      )}
+            </Section>
+          </>
+        }
+      />
     </div>
   )
 }

@@ -21,6 +21,7 @@ import {
   RefreshCw,
   Award
 } from 'lucide-react';
+import "./Projects.css";
 
 // Dynamic Fallback Projects styled for Fantasy RPG theme
 const DEFAULT_PROJECTS = [
@@ -270,68 +271,6 @@ export default function Projects({
 
   return (
     <>
-      {/* ──────────────── Injecting Custom Medieval/Fantasy Typography and Animations ──────────────── */}
-      <style dangerouslySetInnerHTML={{ __html: `
-        @import url('https://fonts.googleapis.com/css2?family=Cinzel:wght@600;800;900&family=MedievalSharp&family=Inter:wght@400;500;600&display=swap');
-
-        .font-fantasy-title {
-          font-family: 'Cinzel', serif;
-        }
-        .font-fantasy-game {
-          font-family: 'MedievalSharp', cursive;
-        }
-        .font-fantasy-body {
-          font-family: 'Inter', sans-serif;
-        }
-
-        @keyframes gold-shimmer {
-          0% { border-color: #b48c3b; box-shadow: 0 0 5px rgba(180, 140, 59, 0.4); }
-          50% { border-color: #d4af37; box-shadow: 0 0 15px rgba(212, 175, 55, 0.8); }
-          100% { border-color: #b48c3b; box-shadow: 0 0 5px rgba(180, 140, 59, 0.4); }
-        }
-
-        @keyframes dice-spin {
-          0% { transform: rotate(0deg) scale(1); }
-          25% { transform: rotate(90deg) scale(1.15); }
-          50% { transform: rotate(180deg) scale(0.9); }
-          75% { transform: rotate(270deg) scale(1.1); }
-          100% { transform: rotate(360deg) scale(1); }
-        }
-
-        @keyframes float-runes {
-          0%, 100% { transform: translateY(0px) rotate(0deg); }
-          50% { transform: translateY(-8px) rotate(3deg); }
-        }
-
-        .gold-border-glow {
-          animation: gold-shimmer 4s infinite ease-in-out;
-        }
-
-        .dice-anim {
-          animation: dice-spin 0.6s infinite linear;
-        }
-
-        .floating-rune {
-          animation: float-runes 5s infinite ease-in-out;
-        }
-
-        .metal-corner-tl::before {
-          content: ""; position: absolute; top: 0; left: 0; width: 12px; height: 12px;
-          border-top: 3px solid #d4af37; border-left: 3px solid #d4af37; pointer-events: none;
-        }
-        .metal-corner-tr::before {
-          content: ""; position: absolute; top: 0; right: 0; width: 12px; height: 12px;
-          border-top: 3px solid #d4af37; border-right: 3px solid #d4af37; pointer-events: none;
-        }
-        .metal-corner-bl::before {
-          content: ""; position: absolute; bottom: 0; left: 0; width: 12px; height: 12px;
-          border-bottom: 3px solid #d4af37; border-left: 3px solid #d4af37; pointer-events: none;
-        }
-        .metal-corner-br::before {
-          content: ""; position: absolute; bottom: 0; right: 0; width: 12px; height: 12px;
-          border-bottom: 3px solid #d4af37; border-right: 3px solid #d4af37; pointer-events: none;
-        }
-      `}} />
 
       <section
         id="projects"
@@ -357,7 +296,7 @@ export default function Projects({
         <div className="relative z-10 max-w-7xl mx-auto flex flex-col items-center">
           
           {/* ──────────────── CHARACTER STATUS HUD (RPG Dashboard) ──────────────── */}
-          <div className="w-full max-w-5xl bg-[#121118]/90 border-2 border-[#302718] p-4 rounded-xl mb-12 shadow-[0_10px_30px_rgba(0,0,0,0.8)] relative gold-border-glow">
+          <div className="w-full max-w-5xl bg-[#121118]/90 border-2 border-[#302718] p-4 rounded-xl mb-12 shadow-[0_10px_30px_rgba(0,0,0,0.8)] relative rpg-proj-gold-border-glow">
             {/* HUD Metal Ornaments */}
             <div className="metal-corner-tl" />
             <div className="metal-corner-tr" />
@@ -741,7 +680,7 @@ export default function Projects({
           <div className="w-full max-w-5xl mt-16 flex flex-col sm:flex-row items-center justify-between gap-6 border-t border-dashed border-amber-900/40 pt-8">
             {/* Spinning Coin / XP Decorator */}
             <div className="flex items-center gap-3">
-              <div className="w-7 h-7 bg-gradient-to-br from-amber-400 to-amber-700 border border-amber-200 rounded-full flex items-center justify-center shadow-[inset_0_1px_3px_rgba(255,255,255,0.4)] animate-[spin_5s_linear_infinite] floating-rune">
+              <div className="w-7 h-7 bg-gradient-to-br from-amber-400 to-amber-700 border border-amber-200 rounded-full flex items-center justify-center shadow-[inset_0_1px_3px_rgba(255,255,255,0.4)] animate-[spin_5s_linear_infinite] rpg-proj-floating-rune">
                 <span className="font-fantasy-game text-[10px] text-amber-950 font-black">g</span>
               </div>
               <p className="font-fantasy-game text-xs text-amber-500/60 uppercase tracking-wide">

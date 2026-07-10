@@ -26,7 +26,7 @@ export default function Footer() {
     resources: [
       { label: "Documentation", href: "#" },
       { label: "Help Center", href: "#" },
-      { label: "Community", href: "#" },
+      { label: "Community", href: "https://discord.gg/dpDMVywS" },
       { label: "Support", href: "#" },
     ],
     company: [

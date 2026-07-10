@@ -1,5 +1,6 @@
 import { usePortfolio } from "../../../../context/PortfolioContext";
 import React from 'react';
+import "./styles.css";
 import { motion } from 'framer-motion';
 
 import Hero from './Hero';
@@ -65,31 +66,7 @@ export default function LiquidMorphPortfolio() {
         </defs>
       </svg>
 
-      {/* Global CSS for Liquid Animations & Gradient Shifts */}
-      <style dangerouslySetInnerHTML={{__html: `
-        @keyframes hardcore-morph {
-          0% { border-radius: 40% 60% 70% 30% / 40% 40% 60% 50%; }
-          34% { border-radius: 70% 30% 50% 50% / 30% 30% 70% 70%; }
-          67% { border-radius: 100% 60% 60% 100% / 100% 100% 60% 60%; }
-          100% { border-radius: 40% 60% 70% 30% / 40% 40% 60% 50%; }
-        }
-        @keyframes gradient-flow {
-          0% { background-position: 0% 50%; }
-          50% { background-position: 100% 50%; }
-          100% { background-position: 0% 50%; }
-        }
-        .liquid-blob-container {
-          filter: url(#goo);
-        }
-        .liquid-shape {
-          animation: hardcore-morph 8s ease-in-out infinite, gradient-flow 12s ease infinite;
-          background-size: 300% 300%;
-        }
-        .liquid-shape-fast {
-          animation: hardcore-morph 5s ease-in-out infinite reverse, gradient-flow 8s ease infinite;
-          background-size: 300% 300%;
-        }
-      `}} />
+
 
       {/* Background Liquid Ambient Blobs melting into each other */}
       <div className="fixed inset-0 pointer-events-none z-0 liquid-blob-container opacity-20">
