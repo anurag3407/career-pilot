@@ -90,7 +90,7 @@ const ColorCustomizer = ({ portfolioColors = {}, onColorsChange }) => {
 
       <div style={{ display: "flex", flexWrap: "wrap", gap: "8px", marginBottom: "20px" }}>
         {PRESET_PALETTES.map((palette) => (
-          <button
+          <button type="button"
             key={palette.name}
             onClick={() => applyPreset(palette)}
             title={palette.name}

@@ -56,7 +56,7 @@ export default function AIProviderIndicator({ open, animate }) {
   return (
     <div className="relative">
       {/* Trigger button */}
-      <button
+      <button type="button"
         ref={buttonRef}
         onClick={() => setShowPopover((prev) => !prev)}
         className={cn(
@@ -135,7 +135,7 @@ export default function AIProviderIndicator({ open, animate }) {
                 const isActive = activeProvider === key;
 
                 return (
-                  <button
+                  <button type="button"
                     key={key}
                     onClick={() => handleSelect(key)}
                     className={cn(
@@ -166,7 +166,7 @@ export default function AIProviderIndicator({ open, animate }) {
 
             {/* Divider + Manage Keys link */}
             <div className="border-t border-border px-2 py-2">
-              <button
+              <button type="button"
                 onClick={() => {
                   setShowPopover(false);
                   navigate("/settings");

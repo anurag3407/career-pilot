@@ -393,7 +393,7 @@ export default function StandUpComedyBrickWallMic() {
             {/* Desktop Navigation Links */}
             <nav className="hidden lg:flex items-center gap-6 bg-black/40 px-6 py-2.5 rounded-full border border-orange-950/30">
               {sections.map((sect) => (
-                <button
+                <button type="button"
                   key={sect}
                   onClick={() => handleNavClick(sect)}
                   className={`text-xs font-semibold uppercase tracking-wider transition-all duration-200 ${
@@ -409,7 +409,7 @@ export default function StandUpComedyBrickWallMic() {
 
             {/* Right Booking CTA */}
             <div className="flex items-center gap-3">
-              <button 
+              <button type="button" 
                 onClick={() => handleNavClick("contact")}
                 className="hidden sm:inline-flex items-center gap-1.5 text-xs font-bold tracking-widest text-red-500 border border-red-500/80 rounded-md px-4 py-2 hover:bg-red-500 hover:text-white transition-all select-none uppercase hover:shadow-[0_0_15px_rgba(239,68,68,0.6)]"
               >
@@ -417,7 +417,7 @@ export default function StandUpComedyBrickWallMic() {
               </button>
 
               {/* Hamburger Mobile Menu toggle */}
-              <button 
+              <button type="button" 
                 onClick={() => setMobileMenuOpen(prev => !prev)}
                 className="lg:hidden p-2 text-zinc-400 hover:text-white focus:outline-none"
                 aria-label={mobileMenuOpen ? "Close menu" : "Open menu"}
@@ -439,7 +439,7 @@ export default function StandUpComedyBrickWallMic() {
               >
                 <div className="py-4 px-6 flex flex-col gap-4 font-heading">
                   {sections.map((sect) => (
-                    <button
+                    <button type="button"
                       key={sect}
                       onClick={() => handleNavClick(sect)}
                       className={`text-left text-lg tracking-widest uppercase transition-colors ${
@@ -449,7 +449,7 @@ export default function StandUpComedyBrickWallMic() {
                       {sect}
                     </button>
                   ))}
-                  <button 
+                  <button type="button" 
                     onClick={() => handleNavClick("contact")}
                     className="w-full text-center py-2.5 mt-2 bg-red-500 text-white font-bold rounded-lg uppercase text-sm tracking-wider"
                   >
@@ -523,7 +523,7 @@ export default function StandUpComedyBrickWallMic() {
                 className="flex flex-wrap gap-4"
               >
                 {/* View My Set button */}
-                <button 
+                <button type="button" 
                   onClick={() => handleNavClick("projects")}
                   className="inline-flex items-center gap-2 text-sm font-bold tracking-widest text-red-500 border border-red-500 rounded-lg px-6 py-3 select-none uppercase hover:bg-red-500 hover:text-white transition-all shadow-[0_0_10px_rgba(239,68,68,0.35)] hover:shadow-[0_0_20px_rgba(239,68,68,0.75)] hover:scale-[1.02]"
                 >
@@ -531,7 +531,7 @@ export default function StandUpComedyBrickWallMic() {
                   View My Set
                 </button>
                 {/* Get In Touch button */}
-                <button 
+                <button type="button" 
                   onClick={() => handleNavClick("contact")}
                   className="inline-flex items-center gap-2 text-sm font-bold tracking-widest text-zinc-300 border border-zinc-700 rounded-lg px-6 py-3 hover:border-amber-500 hover:text-amber-400 hover:shadow-[0_0_15px_rgba(245,158,11,0.4)] transition-all select-none uppercase hover:scale-[1.02]"
                 >
@@ -831,7 +831,7 @@ export default function StandUpComedyBrickWallMic() {
                   {/* Buttons with red neon borders */}
                   <div className="grid grid-cols-2 gap-3 pt-4 border-t border-zinc-900/60">
                     {project.liveUrl && (
-                      <button
+                      <button type="button"
                         onClick={() => handleLinkClick(project.liveUrl)}
                         className="inline-flex items-center justify-center gap-1.5 text-xs font-bold text-red-500 border border-red-500/50 rounded-lg py-2 hover:bg-red-500 hover:text-white transition-all shadow-[0_0_5px_rgba(239,68,68,0.2)] hover:shadow-[0_0_12px_rgba(239,68,68,0.6)]"
                       >
@@ -840,7 +840,7 @@ export default function StandUpComedyBrickWallMic() {
                       </button>
                     )}
                     {project.githubUrl && (
-                      <button
+                      <button type="button"
                         onClick={() => handleLinkClick(project.githubUrl)}
                         className="inline-flex items-center justify-center gap-1.5 text-xs font-bold text-zinc-300 border border-zinc-800 rounded-lg py-2 hover:border-amber-500 hover:text-amber-400 hover:shadow-[0_0_8px_rgba(245,158,11,0.3)] transition-all"
                       >
@@ -996,7 +996,7 @@ export default function StandUpComedyBrickWallMic() {
                   {/* Social links row */}
                   <div className="flex gap-3 mt-4">
                     {data.socials?.github && (
-                      <button
+                      <button type="button"
                         onClick={() => handleLinkClick(data.socials.github)}
                         className="p-3 bg-zinc-900 border border-zinc-800 text-zinc-400 hover:text-white hover:border-red-500 rounded-xl transition-all shadow-[0_0_8px_rgba(0,0,0,0.6)]"
                       >
@@ -1004,7 +1004,7 @@ export default function StandUpComedyBrickWallMic() {
                       </button>
                     )}
                     {data.socials?.linkedin && (
-                      <button
+                      <button type="button"
                         onClick={() => handleLinkClick(data.socials.linkedin)}
                         className="p-3 bg-zinc-900 border border-zinc-800 text-zinc-400 hover:text-white hover:border-red-500 rounded-xl transition-all shadow-[0_0_8px_rgba(0,0,0,0.6)]"
                       >
@@ -1012,7 +1012,7 @@ export default function StandUpComedyBrickWallMic() {
                       </button>
                     )}
                     {data.socials?.twitter && (
-                      <button
+                      <button type="button"
                         onClick={() => handleLinkClick(data.socials.twitter)}
                         className="p-3 bg-zinc-900 border border-zinc-800 text-zinc-400 hover:text-white hover:border-red-500 rounded-xl transition-all shadow-[0_0_8px_rgba(0,0,0,0.6)]"
                       >

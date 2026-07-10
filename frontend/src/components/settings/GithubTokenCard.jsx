@@ -129,7 +129,7 @@ export default function GithubTokenCard() {
       )}
     >
       {/* Header */}
-      <button
+      <button type="button"
         onClick={() => setExpanded((p) => !p)}
         className="flex w-full items-center justify-between gap-3 p-5 text-left"
       >
@@ -296,7 +296,7 @@ export default function GithubTokenCard() {
                         </span>
                       )}
                     </div>
-                    <button
+                    <button type="button"
                       onClick={handleRemove}
                       className="text-muted-foreground hover:text-destructive transition-colors"
                       aria-label="Remove PAT"

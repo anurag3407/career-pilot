@@ -23,7 +23,7 @@ class AppErrorBoundary extends React.Component {
             <p className="text-zinc-400 mb-6">
               The application encountered an unexpected error. Please try refreshing the page.
             </p>
-            <button
+            <button type="button"
               onClick={() => window.location.reload()}
               className="px-4 py-2 bg-zinc-800 hover:bg-zinc-700 rounded-lg text-white transition-colors"
             >

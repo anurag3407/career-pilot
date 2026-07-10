@@ -303,12 +303,12 @@ export default function ColorBlock() {
 
       {/* ── Navbar ── */}
       <nav className="cb-nav">
-        <button className="cb-nav-brand" onClick={() => scrollTo("hero")}>
+        <button type="button" className="cb-nav-brand" onClick={() => scrollTo("hero")}>
           {data.personal.name.split(" ")[0]}
         </button>
         <div className="cb-nav-links">
           {sections.map((s, i) => (
-            <button key={s} className="cb-nav-link"
+            <button type="button" key={s} className="cb-nav-link"
               style={{ background: i === 0 ? M.red : i === 1 ? M.blue : "none", color: (i === 0 || i === 1) ? M.white : M.black }}
               onClick={() => scrollTo(s.toLowerCase())}>
               {s}
@@ -316,7 +316,7 @@ export default function ColorBlock() {
           ))}
           <div className="cb-nav-spacer" />
         </div>
-        <button className="cb-hamburger" onClick={() => setMenuOpen(!menuOpen)} aria-label="Menu">
+        <button type="button" className="cb-hamburger" onClick={() => setMenuOpen(!menuOpen)} aria-label="Menu">
           {[0,1,2].map(i => <div key={i} style={{ width: 22, height: 3, background: M.black, margin: "3px 0", transition: "all .2s",
             transform: menuOpen ? (i === 0 ? "rotate(45deg) translate(4px,4px)" : i === 2 ? "rotate(-45deg) translate(4px,-4px)" : "none") : "none",
             opacity: menuOpen && i === 1 ? 0 : 1,
@@ -328,7 +328,7 @@ export default function ColorBlock() {
         {menuOpen && (
           <motion.div className="cb-mobile-menu" initial={{ opacity: 0, y: -8 }} animate={{ opacity: 1, y: 0 }} exit={{ opacity: 0, y: -8 }}>
             {sections.map((s, i) => (
-              <button key={s} className="cb-mobile-link"
+              <button type="button" key={s} className="cb-mobile-link"
                 style={{ background: [M.red, M.blue, M.yellow, M.white, M.red, M.blue][i] || M.white,
                          color: [M.white, M.white, M.black, M.black, M.white, M.white][i] }}
                 onClick={() => scrollTo(s.toLowerCase())}>
@@ -349,7 +349,7 @@ export default function ColorBlock() {
               {data.personal.name}
             </h1>
             <div style={{ display: "flex", gap: 16, flexWrap: "wrap" }}>
-              <button className="cb-btn cb-btn-red" onClick={() => scrollTo("projects")}><span>View Work</span></button>
+              <button type="button" className="cb-btn cb-btn-red" onClick={() => scrollTo("projects")}><span>View Work</span></button>
               <a href={resumeUrl} className="cb-btn cb-btn-black"><span>Resume</span></a>
             </div>
           </motion.div>

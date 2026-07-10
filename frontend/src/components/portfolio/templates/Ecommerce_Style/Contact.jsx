@@ -99,7 +99,7 @@ export default function Contact({ data }) {
                 />
               </div>
               
-              <button className="w-full mt-4 flex items-center justify-center gap-2 bg-gradient-to-r from-orange-500 to-red-500 hover:from-orange-400 hover:to-red-400 text-white font-bold py-4 rounded-xl transition-all shadow-lg hover:shadow-orange-500/25">
+              <button type="button" className="w-full mt-4 flex items-center justify-center gap-2 bg-gradient-to-r from-orange-500 to-red-500 hover:from-orange-400 hover:to-red-400 text-white font-bold py-4 rounded-xl transition-all shadow-lg hover:shadow-orange-500/25">
                 Subscribe & Send <Send size={18} />
               </button>
             </form>

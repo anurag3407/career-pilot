@@ -92,7 +92,7 @@ const AdminUsers = () => {
                       {user.createdAt ? formatDistanceToNow(new Date(user.createdAt), { addSuffix: true }) : '-'}
                     </td>
                     <td className="px-6 py-4 whitespace-nowrap text-sm font-medium">
-                      <button className="text-primary hover:underline transition-colors">Edit</button>
+                      <button type="button" className="text-primary hover:underline transition-colors">Edit</button>
                     </td>
                   </tr>
                 ))
@@ -108,14 +108,14 @@ const AdminUsers = () => {
               Showing page <span className="font-medium text-foreground">{page}</span> of <span className="font-medium text-foreground">{totalPages}</span>
             </div>
             <div className="flex gap-2">
-              <button
+              <button type="button"
                 onClick={() => setPage(p => Math.max(1, p - 1))}
                 disabled={page === 1}
                 className="p-2 text-foreground bg-card border border-border rounded-xl disabled:opacity-50 hover:bg-muted transition-colors"
               >
                 <ChevronLeft className="w-5 h-5" />
               </button>
-              <button
+              <button type="button"
                 onClick={() => setPage(p => Math.min(totalPages, p + 1))}
                 disabled={page === totalPages}
                 className="p-2 text-foreground bg-card border border-border rounded-xl disabled:opacity-50 hover:bg-muted transition-colors"

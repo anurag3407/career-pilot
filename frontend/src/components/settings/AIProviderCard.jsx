@@ -204,7 +204,7 @@ export default function AIProviderCard({ providerId, isActive, onActivate }) {
         </div>
 
         {/* Expand toggle */}
-        <button
+        <button type="button"
           onClick={toggleExpand}
           className="flex h-8 w-8 shrink-0 items-center justify-center rounded-lg text-muted-foreground transition-colors hover:bg-muted hover:text-foreground"
           aria-label={expanded ? 'Collapse' : 'Expand'}
@@ -339,7 +339,7 @@ export default function AIProviderCard({ providerId, isActive, onActivate }) {
                 {/* Action Buttons */}
                 <div className="flex items-center gap-2">
                   {hasKey && (
-                    <button
+                    <button type="button"
                       onClick={handleDelete}
                       className="inline-flex items-center justify-center p-2 rounded-lg text-red-400 hover:text-red-300 hover:bg-red-400/10 transition-colors"
                       title="Delete API Key"
@@ -348,7 +348,7 @@ export default function AIProviderCard({ providerId, isActive, onActivate }) {
                     </button>
                   )}
                   {/* Validate & Save Button */}
-                  <button
+                  <button type="button"
                     onClick={handleValidate}
                     disabled={isValidating || !apiKey.trim()}
                     className={cn(

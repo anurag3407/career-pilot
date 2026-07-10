@@ -39,7 +39,7 @@ function Navbar({ name, onScrollTo }) {
     <>
       <nav className="tks-nav" role="navigation" aria-label="Main navigation">
         {/* Brand */}
-        <button
+        <button type="button"
           className="tks-nav-brand"
           onClick={() => onScrollTo('hero')}
           aria-label="Back to top"
@@ -50,7 +50,7 @@ function Navbar({ name, onScrollTo }) {
         {/* Desktop links */}
         <div className="tks-nav-links" role="list">
           {NAV_SECTIONS.map(s => (
-            <button
+            <button type="button"
               key={s}
               className="tks-nav-link"
               onClick={() => onScrollTo(s.toLowerCase())}
@@ -62,7 +62,7 @@ function Navbar({ name, onScrollTo }) {
         </div>
 
         {/* Mobile hamburger */}
-        <button
+        <button type="button"
           onClick={() => setMenuOpen(v => !v)}
           aria-label={menuOpen ? 'Close menu' : 'Open menu'}
           aria-expanded={menuOpen}
@@ -112,7 +112,7 @@ function Navbar({ name, onScrollTo }) {
             role="menu"
           >
             {NAV_SECTIONS.map(s => (
-              <button
+              <button type="button"
                 key={s}
                 className="tks-nav-link"
                 onClick={() => { onScrollTo(s.toLowerCase()); setMenuOpen(false); }}

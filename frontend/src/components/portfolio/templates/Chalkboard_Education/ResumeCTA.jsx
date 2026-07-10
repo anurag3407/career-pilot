@@ -34,7 +34,7 @@ export default function ResumeCTA() {
         {/* CTA Buttons */}
         <div className="mt-12 flex flex-col items-center justify-center gap-5 sm:flex-row">
           
-          <button className="group flex items-center gap-3 rounded-2xl border-2 border-green-300 bg-green-200 px-8 py-4 text-lg font-bold text-[#1b1b1b] transition-all duration-300 hover:scale-105 hover:shadow-[0_0_25px_rgba(134,239,172,0.45)]">
+          <button type="button" className="group flex items-center gap-3 rounded-2xl border-2 border-green-300 bg-green-200 px-8 py-4 text-lg font-bold text-[#1b1b1b] transition-all duration-300 hover:scale-105 hover:shadow-[0_0_25px_rgba(134,239,172,0.45)]">
             <Download
               size={22}
               className="transition-transform duration-300 group-hover:-translate-y-1"
@@ -42,7 +42,7 @@ export default function ResumeCTA() {
             Download Resume
           </button>
 
-          <button className="group flex items-center gap-3 rounded-2xl border-2 border-dashed border-white/40 bg-white/5 px-8 py-4 text-lg font-semibold text-white transition-all duration-300 hover:scale-105 hover:bg-white/10">
+          <button type="button" className="group flex items-center gap-3 rounded-2xl border-2 border-dashed border-white/40 bg-white/5 px-8 py-4 text-lg font-semibold text-white transition-all duration-300 hover:scale-105 hover:bg-white/10">
             <FileText
               size={22}
               className="transition-transform duration-300 group-hover:rotate-6"

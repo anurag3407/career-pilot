@@ -307,7 +307,7 @@ export default function ResumeView() {
         {/* Tab Navigation */}
         <div className="border-b border-border mb-6">
           <nav className="flex gap-8">
-            <button
+            <button type="button"
               onClick={() => setActiveTab('preview')}
               className={`pb-4 text-sm font-semibold border-b-2 transition-all cursor-pointer ${activeTab === 'preview'
                   ? 'border-primary text-primary'
@@ -316,7 +316,7 @@ export default function ResumeView() {
             >
               Resume Preview
             </button>
-            <button
+            <button type="button"
               onClick={() => setActiveTab('versions')}
               className={`pb-4 text-sm font-semibold border-b-2 transition-all cursor-pointer ${activeTab === 'versions'
                   ? 'border-primary text-primary'
@@ -325,7 +325,7 @@ export default function ResumeView() {
             >
               Versions & Snapshots
             </button>
-            <button
+            <button type="button"
               onClick={() => setActiveTab('ats')}
               className={`pb-4 text-sm font-semibold border-b-2 transition-all cursor-pointer ${activeTab === 'ats'
                   ? 'border-primary text-primary'
@@ -348,7 +348,7 @@ export default function ResumeView() {
                   </h2>
                   {resume?.enhancedText && (
                     <div className="flex bg-muted rounded-xl p-0.5 border border-border">
-                      <button
+                      <button type="button"
                         onClick={() => setPreviewTab('enhanced')}
                         className={`px-3 py-1 text-xs font-semibold rounded-lg transition-all ${
                           previewTab === 'enhanced' ? 'bg-primary text-primary-foreground shadow' : 'text-muted-foreground hover:text-foreground'
@@ -356,7 +356,7 @@ export default function ResumeView() {
                       >
                         AI Enhanced
                       </button>
-                      <button
+                      <button type="button"
                         onClick={() => setPreviewTab('original')}
                         className={`px-3 py-1 text-xs font-semibold rounded-lg transition-all ${
                           previewTab === 'original' ? 'bg-primary text-primary-foreground shadow' : 'text-muted-foreground hover:text-foreground'

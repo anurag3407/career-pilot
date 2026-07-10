@@ -149,7 +149,7 @@ export default function MessageInput({ channelId, channelName, onTyping, replyTo
             <span className="font-medium text-foreground">{replyTo.sender.name}</span>
             <p className="text-muted-foreground truncate">{replyTo.content}</p>
           </div>
-          <button
+          <button type="button"
             onClick={onCancelReply}
             className="p-1 text-muted-foreground hover:text-foreground cursor-pointer"
           >
@@ -174,7 +174,7 @@ export default function MessageInput({ channelId, channelName, onTyping, replyTo
               <span className="text-sm text-foreground max-w-[150px] truncate">
                 {file.name}
               </span>
-              <button
+              <button type="button"
                 onClick={() => removeAttachment(index)}
                 className="absolute -top-1 -right-1 w-4 h-4 bg-destructive text-destructive-foreground rounded-full opacity-0 group-hover:opacity-100 transition-opacity flex items-center justify-center cursor-pointer"
               >

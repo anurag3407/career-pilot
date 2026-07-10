@@ -167,7 +167,7 @@ function MobileMenu({ navItems, scrolled }) {
 
   return (
     <div className="md:hidden">
-      <button
+      <button type="button"
         onClick={() => setOpen(!open)}
         className={`p-2 rounded-lg ${scrolled ? 'text-slate-600' : 'text-white'}`}
         aria-label="Toggle menu"

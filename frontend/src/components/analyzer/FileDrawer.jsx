@@ -14,7 +14,7 @@ export default function FileDrawer() {
           <Terminal className="w-4 h-4" />
           {selectedFile.relativePath}
         </div>
-        <button 
+        <button type="button" 
           onClick={() => setSelectedFile(null)}
           className="p-1 hover:bg-white/10 rounded-md transition-colors"
         >

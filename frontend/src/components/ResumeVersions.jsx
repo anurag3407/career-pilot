@@ -183,7 +183,7 @@ export default function ResumeVersions({
           <h3 className="text-lg font-bold text-foreground">Resume Version Manager</h3>
           <p className="text-xs text-muted-foreground">Restore snapshots or review content changes over time</p>
         </div>
-        <button
+        <button type="button"
           onClick={() => {
             setSnapshotRole(currentJobRole || '')
             setShowSnapshotForm(true)
@@ -270,21 +270,21 @@ export default function ResumeVersions({
 
                     {/* Timeline Card Action Buttons */}
                     <div className="flex items-center gap-1.5 sm:self-start">
-                      <button
+                      <button type="button"
                         onClick={() => triggerCompare(version)}
                         title="Compare with another version"
                         className="p-2 rounded-xl bg-muted/40 hover:bg-primary/15 text-muted-foreground hover:text-primary transition-all cursor-pointer"
                       >
                         <GitPullRequest className="w-4 h-4" />
                       </button>
-                      <button
+                      <button type="button"
                         onClick={() => startEdit(version)}
                         title="Edit label & tags"
                         className="p-2 rounded-xl bg-muted/40 hover:bg-yellow-500/15 text-muted-foreground hover:text-yellow-400 transition-all cursor-pointer"
                       >
                         <Edit2 className="w-4 h-4" />
                       </button>
-                      <button
+                      <button type="button"
                         onClick={() => handleRestore(version)}
                         disabled={isActive}
                         title={isActive ? "Current active version" : "Restore this version"}
@@ -297,7 +297,7 @@ export default function ResumeVersions({
                         <RotateCcw className="w-4 h-4" />
                         <span>Restore</span>
                       </button>
-                      <button
+                      <button type="button"
                         onClick={() => handleDelete(version)}
                         title="Delete this version"
                         className="p-2 rounded-xl bg-destructive/10 hover:bg-destructive/25 text-destructive transition-all cursor-pointer"
@@ -332,7 +332,7 @@ export default function ResumeVersions({
             >
               <div className="flex justify-between items-center mb-4">
                 <h4 className="text-lg font-bold text-foreground">Create Resume Snapshot</h4>
-                <button onClick={() => setShowSnapshotForm(false)} className="text-muted-foreground hover:text-foreground">
+                <button type="button" onClick={() => setShowSnapshotForm(false)} className="text-muted-foreground hover:text-foreground">
                   <X className="w-5 h-5" />
                 </button>
               </div>
@@ -412,7 +412,7 @@ export default function ResumeVersions({
             >
               <div className="flex justify-between items-center mb-4">
                 <h4 className="text-lg font-bold text-foreground">Edit Version Details (v{editingVersion.versionNumber})</h4>
-                <button onClick={() => setEditingVersion(null)} className="text-muted-foreground hover:text-foreground">
+                <button type="button" onClick={() => setEditingVersion(null)} className="text-muted-foreground hover:text-foreground">
                   <X className="w-5 h-5" />
                 </button>
               </div>

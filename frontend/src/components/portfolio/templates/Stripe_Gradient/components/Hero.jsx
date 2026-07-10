@@ -63,7 +63,7 @@ export default function Hero() {
             <ArrowRight size={18} />
           </a>
 
-          <button className="px-6 py-3 rounded-full border border-white/20 backdrop-blur-md flex items-center gap-2">
+          <button type="button" className="px-6 py-3 rounded-full border border-white/20 backdrop-blur-md flex items-center gap-2">
             Resume
             <Download size={18} />
           </button>

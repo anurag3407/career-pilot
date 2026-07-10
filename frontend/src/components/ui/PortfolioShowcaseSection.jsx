@@ -263,7 +263,7 @@ export default function PortfolioShowcaseSection() {
             {/* Theme switcher dots */}
             <div className="mt-6 flex justify-center gap-3">
               {themes.map((t, i) => (
-                <button
+                <button type="button"
                   key={t.id}
                   onClick={() => setActive(i)}
                   aria-label={`Show ${t.name} theme`}

@@ -239,7 +239,7 @@ export default function OnePageScroll() {
       {/* Side dot navigation */}
       <div className="ops-dot-nav">
         {SECTIONS.map(({ id, label }) => (
-          <button key={id} className={`ops-dot ${active === id ? "active" : ""}`} onClick={() => scrollTo(id)} title={label} aria-label={label}>
+          <button type="button" key={id} className={`ops-dot ${active === id ? "active" : ""}`} onClick={() => scrollTo(id)} title={label} aria-label={label}>
             <span className="ops-dot-tooltip">{label}</span>
           </button>
         ))}
@@ -247,11 +247,11 @@ export default function OnePageScroll() {
 
       {/* Top nav */}
       <nav className="ops-nav">
-        <button onClick={() => scrollTo("hero")} style={{ background: "none", border: "none", cursor: "pointer", fontSize: 16, fontWeight: 700, color: C.dark, fontFamily: "'Inter',sans-serif" }}>
+        <button type="button" onClick={() => scrollTo("hero")} style={{ background: "none", border: "none", cursor: "pointer", fontSize: 16, fontWeight: 700, color: C.dark, fontFamily: "'Inter',sans-serif" }}>
           {data.personal.name.split(" ")[0]}
         </button>
         <div style={{ display: "flex", alignItems: "center", gap: 12 }}>
-          <button className="ops-btn ops-btn-outline" onClick={() => scrollTo("contact")} style={{ fontSize: 12, padding: "8px 16px" }}>Say Hi</button>
+          <button type="button" className="ops-btn ops-btn-outline" onClick={() => scrollTo("contact")} style={{ fontSize: 12, padding: "8px 16px" }}>Say Hi</button>
           <a href={resumeUrl} className="ops-btn ops-btn-primary" style={{ fontSize: 12, padding: "8px 16px" }}>Resume</a>
         </div>
       </nav>
@@ -276,8 +276,8 @@ export default function OnePageScroll() {
           </motion.p>
           <motion.div initial={{ opacity: 0, y: 12 }} animate={{ opacity: 1, y: 0 }} transition={{ duration: 0.5, delay: 0.5 }}
             style={{ display: "flex", flexWrap: "wrap", gap: 12, justifyContent: "center", marginBottom: 48 }}>
-            <button className="ops-btn ops-btn-primary" onClick={() => scrollTo("projects")}>View Projects</button>
-            <button className="ops-btn ops-btn-outline" onClick={() => scrollTo("contact")}>Get In Touch</button>
+            <button type="button" className="ops-btn ops-btn-primary" onClick={() => scrollTo("projects")}>View Projects</button>
+            <button type="button" className="ops-btn ops-btn-outline" onClick={() => scrollTo("contact")}>Get In Touch</button>
           </motion.div>
           <motion.div initial={{ opacity: 0 }} animate={{ opacity: 1 }} transition={{ delay: 0.65 }}>
             <div className="ops-stats" style={{ margin: "0 auto" }}>
@@ -294,7 +294,7 @@ export default function OnePageScroll() {
             </div>
           </motion.div>
         </div>
-        <button onClick={() => scrollTo("about")} style={{ position: "absolute", bottom: 24, left: "50%", transform: "translateX(-50%)", background: "none", border: "none", cursor: "pointer" }}>
+        <button type="button" onClick={() => scrollTo("about")} style={{ position: "absolute", bottom: 24, left: "50%", transform: "translateX(-50%)", background: "none", border: "none", cursor: "pointer" }}>
           <motion.div animate={{ y: [0,6,0] }} transition={{ duration: 1.8, repeat: Infinity }}>
             <ChevronDown size={20} style={{ color: C.muted }} />
           </motion.div>

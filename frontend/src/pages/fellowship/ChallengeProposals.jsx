@@ -203,7 +203,7 @@ export default function ChallengeProposals() {
 
     return (
         <div className="max-w-4xl mx-auto space-y-6">
-            <button
+            <button type="button"
                 onClick={() => navigate('/fellowship/my-challenges')}
                 className="flex items-center gap-2 text-muted-foreground hover:text-foreground text-sm"
             >
@@ -323,7 +323,7 @@ export default function ChallengeProposals() {
                                                         className="w-full px-4 py-3 bg-muted border border-border rounded-xl text-foreground placeholder:text-muted-foreground focus:outline-none focus:border-emerald-500 resize-none"
                                                     />
                                                     <div className="flex gap-2">
-                                                        <button
+                                                        <button type="button"
                                                             onClick={() => handleUpdateStatus(proposal._id, 'accepted')}
                                                             disabled={updating === proposal._id}
                                                             className="flex-1 py-2.5 bg-emerald-600 hover:bg-emerald-500 text-foreground rounded-lg font-medium disabled:opacity-50 flex items-center justify-center gap-2"
@@ -331,7 +331,7 @@ export default function ChallengeProposals() {
                                                             {updating === proposal._id ? <Loader2 className="w-4 h-4 animate-spin" /> : <CheckCircle className="w-4 h-4" />}
                                                             Accept
                                                         </button>
-                                                        <button
+                                                        <button type="button"
                                                             onClick={() => handleUpdateStatus(proposal._id, 'rejected')}
                                                             disabled={updating === proposal._id}
                                                             className="flex-1 py-2.5 bg-red-600 hover:bg-red-500 text-foreground rounded-lg font-medium disabled:opacity-50 flex items-center justify-center gap-2"
@@ -340,7 +340,7 @@ export default function ChallengeProposals() {
                                                             Reject
                                                         </button>
                                                     </div>
-                                                    <button
+                                                    <button type="button"
                                                         onClick={() => { setShowFeedbackFor(null); setFeedback('') }}
                                                         className="w-full py-2 text-muted-foreground hover:text-foreground text-sm"
                                                     >
@@ -348,7 +348,7 @@ export default function ChallengeProposals() {
                                                     </button>
                                                 </div>
                                             ) : (
-                                                <button
+                                                <button type="button"
                                                     onClick={() => setShowFeedbackFor(proposal._id)}
                                                     className="w-full py-2.5 bg-muted hover:bg-muted/80 text-foreground rounded-lg font-medium"
                                                 >
@@ -360,7 +360,7 @@ export default function ChallengeProposals() {
 
                                     {proposal.status === 'accepted' && (
                                         <div className="mt-6 pt-4 border-t border-border">
-                                            <button
+                                            <button type="button"
                                                 onClick={() => handleMessageClick(proposal._id)}
                                                 disabled={!hasRoom}
                                                 className="w-full py-2.5 bg-emerald-600 hover:bg-emerald-500 text-foreground rounded-lg font-medium flex items-center justify-center gap-2"

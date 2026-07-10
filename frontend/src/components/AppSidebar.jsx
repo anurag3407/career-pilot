@@ -161,7 +161,7 @@ function UserSection() {
                     <p className="text-xs text-muted-foreground font-medium truncate">{user.email}</p>
                 </motion.div>
             </div>
-            <button
+            <button type="button"
                 onClick={toggleTheme}
                 className={cn(
                     "flex items-center gap-2 px-3 py-2 rounded-lg text-sm font-medium transition-all duration-300 w-full text-muted-foreground hover:text-foreground hover:bg-muted cursor-pointer",
@@ -185,7 +185,7 @@ function UserSection() {
                 </motion.span>
             </button>
             <AIProviderIndicator open={open} animate={animate} />
-            <button
+            <button type="button"
                 onClick={() => {
                     handleLogout();
                     setOpen(false);
@@ -255,7 +255,7 @@ export default function AppSidebar({ animate = true }) {
                             </div>
                             {/* AI Tools Collapsible */}
                             <div className="mt-2">
-                                <button
+                                <button type="button"
                                     onClick={() => setOpenAI(!openAI)}
                                     className="flex items-center justify-between w-full px-4 py-3 rounded-xl text-muted-foreground hover:text-foreground hover:bg-muted font-semibold transition-all"
                                 >
@@ -295,7 +295,7 @@ export default function AppSidebar({ animate = true }) {
                         </div>
                     </div>
                     <div className="shrink-0 space-y-2">
-                        <button
+                        <button type="button"
                             onClick={() => setIsBugModalOpen(true)}
                             className={cn(
                                 "flex items-center gap-2 px-3 py-2.5 rounded-xl text-sm font-semibold transition-all duration-300 w-full cursor-pointer text-red-500 bg-red-500/10 hover:bg-red-500/20",

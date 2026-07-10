@@ -192,7 +192,7 @@ export default function ChatWindow({ channel, messages, currentUser, onOptimisti
         </div>
 
         <div className="flex items-center gap-2">
-          <button
+          <button type="button"
             onClick={() => setShowSearch(!showSearch)}
             className={`p-2 rounded-lg transition-colors ${
               showSearch ? 'bg-primary/20 text-primary' : 'text-muted-foreground hover:bg-muted'
@@ -200,13 +200,13 @@ export default function ChatWindow({ channel, messages, currentUser, onOptimisti
           >
             <Search className="w-5 h-5" />
           </button>
-          <button className="p-2 text-muted-foreground hover:bg-muted rounded-lg">
+          <button type="button" className="p-2 text-muted-foreground hover:bg-muted rounded-lg">
             <Pin className="w-5 h-5" />
           </button>
-          <button className="p-2 text-muted-foreground hover:bg-muted rounded-lg">
+          <button type="button" className="p-2 text-muted-foreground hover:bg-muted rounded-lg">
             <Users className="w-5 h-5" />
           </button>
-          <button
+          <button type="button"
             onClick={toggleTheme}
             className="p-2 text-muted-foreground hover:bg-muted rounded-lg transition-colors"
             title={theme === 'light' ? 'Switch to Dark Mode' : theme === 'dark' ? 'Switch to High Contrast' : 'Switch to Light Mode'}
@@ -215,7 +215,7 @@ export default function ChatWindow({ channel, messages, currentUser, onOptimisti
              theme === 'dark' ? <Contrast className="w-5 h-5" /> : 
              <Sun className="w-5 h-5" />}
           </button>
-          <button className="p-2 text-muted-foreground hover:bg-muted rounded-lg">
+          <button type="button" className="p-2 text-muted-foreground hover:bg-muted rounded-lg">
             <MoreVertical className="w-5 h-5" />
           </button>
         </div>

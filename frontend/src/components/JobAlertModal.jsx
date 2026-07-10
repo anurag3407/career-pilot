@@ -129,7 +129,7 @@ export default function JobAlertModal({ isOpen, onClose, onSuccess, editAlert = 
                                     {editAlert ? 'Edit Job Alert' : 'Create Job Alert'}
                                 </h2>
                             </div>
-                            <button
+                            <button type="button"
                                 onClick={onClose}
                                 className="p-1 hover:bg-primary-foreground/20 rounded-lg transition-colors"
                                 aria-label="Close modal"

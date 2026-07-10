@@ -48,7 +48,7 @@ explainFile: mockExplainFile,
 }));
 
 vi.mock("../visualizer/CodeViewer", () => ({
-default: ({ fileName, onExplain }) => ( <div> <div>{fileName}</div> <button onClick={onExplain}>Explain</button> </div>
+default: ({ fileName, onExplain }) => ( <div> <div>{fileName}</div> <button type="button" onClick={onExplain}>Explain</button> </div>
 ),
 }));
 

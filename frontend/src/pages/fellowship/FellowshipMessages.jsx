@@ -64,7 +64,7 @@ export default function FellowshipMessages() {
                             ? 'Once a company accepts your proposal, you can chat with them here.'
                             : 'Accept a student proposal to start a conversation with them.'}
                     </p>
-                    <button
+                    <button type="button"
                         onClick={() => navigate('/fellowship/challenges')}
                         className="mt-4 px-4 py-2 bg-emerald-600 hover:bg-emerald-500 text-foreground rounded-xl font-medium"
                     >

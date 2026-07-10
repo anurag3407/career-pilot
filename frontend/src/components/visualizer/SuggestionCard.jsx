@@ -66,7 +66,7 @@ const SuggestionCard = ({ suggestion, index }) => {
             <span className="font-mono bg-black/30 px-2 py-0.5 rounded text-xs border border-white/5">{module}</span>
           </div>
           
-          <button 
+          <button type="button" 
             onClick={handleModuleClick}
             className="flex items-center gap-1 text-sm font-medium text-violet-400 hover:text-violet-300 transition-colors"
           >

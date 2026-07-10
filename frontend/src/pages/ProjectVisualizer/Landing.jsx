@@ -302,7 +302,7 @@ const Landing = () => {
                     </div>
                   </div>
                   
-                  <button
+                  <button type="button"
                     onClick={(e) => handleDeleteHistory(item._id, e)}
                     className="p-2 rounded-lg text-muted-foreground hover:text-red-400 hover:bg-red-400/10 transition-colors opacity-0 group-hover:opacity-100"
                   >

@@ -66,12 +66,12 @@ export default function Projects() {
 
               <div className="flex gap-4">
 
-                <button className="flex items-center gap-2 px-4 py-2 rounded-xl bg-white/10 border border-white/20 text-white hover:bg-white/20 transition">
+                <button type="button" className="flex items-center gap-2 px-4 py-2 rounded-xl bg-white/10 border border-white/20 text-white hover:bg-white/20 transition">
                   <Github size={18} />
                   Code
                 </button>
 
-                <button className="flex items-center gap-2 px-4 py-2 rounded-xl bg-purple-500/30 border border-purple-300/20 text-white hover:bg-purple-500/40 transition">
+                <button type="button" className="flex items-center gap-2 px-4 py-2 rounded-xl bg-purple-500/30 border border-purple-300/20 text-white hover:bg-purple-500/40 transition">
                   <ExternalLink size={18} />
                   Live
                 </button>

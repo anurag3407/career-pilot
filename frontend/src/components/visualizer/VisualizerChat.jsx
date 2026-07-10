@@ -152,7 +152,7 @@ const VisualizerChat = () => {
               { id: 'qa', icon: Search, label: 'Q&A Engine', color: 'text-cyan-400' },
               { id: 'interview', icon: ShieldAlert, label: 'Principal Interview', color: 'text-red-400' }
             ].map(mode => (
-              <button
+              <button type="button"
                 key={mode.id}
                 onClick={() => setChatMode(mode.id)}
                 className={cn(
@@ -167,7 +167,7 @@ const VisualizerChat = () => {
               </button>
             ))}
           </div>
-          <button 
+          <button type="button" 
             onClick={() => setChatExpanded(false)}
             className="p-1.5 rounded-md hover:bg-white/10 text-slate-400 hover:text-white"
           >
@@ -238,7 +238,7 @@ const VisualizerChat = () => {
       {/* Input Area */}
       <div className="p-4 bg-[#0a0f1c] mt-auto flex items-center gap-4 max-w-6xl mx-auto w-full h-[80px]">
         {!chatExpanded && (
-          <button 
+          <button type="button" 
             onClick={() => setChatExpanded(true)}
             className="p-3 rounded-xl bg-white/5 hover:bg-white/10 border border-white/10 text-slate-300 transition-colors shrink-0"
           >
@@ -249,7 +249,7 @@ const VisualizerChat = () => {
         {!chatExpanded && messages.length === 0 && (
           <div className="hidden md:flex items-center gap-2 mr-4 shrink-0 overflow-x-auto custom-scrollbar pb-2">
             {quickActions.map(action => (
-              <button
+              <button type="button"
                 key={action}
                 onClick={() => handleSubmit(null, action)}
                 className="whitespace-nowrap px-4 py-2 rounded-full bg-white/5 border border-white/10 hover:bg-white/10 hover:border-violet-500/50 text-sm text-slate-300 transition-colors"

@@ -272,7 +272,7 @@ const ActivityTab = () => {
       <div className="flex flex-col items-center justify-center h-96 gap-3 text-slate-400">
         <ActivityIcon className="w-10 h-10 text-rose-400" />
         <p className="text-rose-300">{activityError}</p>
-        <button
+        <button type="button"
           onClick={handleRefresh}
           className="flex items-center gap-2 px-4 py-2 rounded-lg bg-white/5 hover:bg-white/10 text-white text-sm"
         >
@@ -318,7 +318,7 @@ const ActivityTab = () => {
           </p>
         </div>
         <div className="flex items-center gap-2">
-          <button
+          <button type="button"
             onClick={() => setShowLines((v) => !v)}
             className={cn(
               'flex items-center gap-2 px-3 py-1.5 rounded-lg text-xs font-medium border transition-colors',
@@ -330,7 +330,7 @@ const ActivityTab = () => {
             <BarChart3 className="w-3.5 h-3.5" />
             {showLines ? 'Hide' : 'Show'} code volume
           </button>
-          <button
+          <button type="button"
             onClick={handleRefresh}
             disabled={activityLoading}
             className="flex items-center gap-2 px-3 py-1.5 rounded-lg text-xs font-medium bg-white/5 hover:bg-white/10 border border-white/10 text-slate-300 disabled:opacity-50"
@@ -512,7 +512,7 @@ const ActivityTab = () => {
             <Sparkles className="w-5 h-5 text-violet-400" /> AI Insight
           </h3>
           {!activityDetailed && (
-            <button
+            <button type="button"
               onClick={handleExplainDeeper}
               disabled={loadingDetailed}
               className="flex items-center gap-1.5 text-xs font-medium text-violet-300 hover:text-violet-200 disabled:opacity-50"

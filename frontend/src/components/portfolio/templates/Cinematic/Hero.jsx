@@ -92,13 +92,13 @@ export default function Hero({ data }) {
 
           {/* Actions */}
           <div className="animate-cinematic flex flex-col sm:flex-row gap-4 sm:gap-6 items-center w-full sm:w-auto px-4" style={{ animationDelay: '2.2s' }}>
-            <button className="group relative flex items-center justify-center gap-3 px-10 py-4 bg-white text-black font-bold uppercase tracking-[0.2em] text-xs sm:text-sm rounded-sm hover:bg-neutral-200 transition-all duration-500 overflow-hidden w-full sm:w-auto shadow-[0_0_30px_rgba(255,255,255,0.1)] hover:shadow-[0_0_40px_rgba(255,255,255,0.2)]">
+            <button type="button" className="group relative flex items-center justify-center gap-3 px-10 py-4 bg-white text-black font-bold uppercase tracking-[0.2em] text-xs sm:text-sm rounded-sm hover:bg-neutral-200 transition-all duration-500 overflow-hidden w-full sm:w-auto shadow-[0_0_30px_rgba(255,255,255,0.1)] hover:shadow-[0_0_40px_rgba(255,255,255,0.2)]">
               <div className="absolute inset-0 bg-neutral-900/10 translate-y-full group-hover:translate-y-0 transition-transform duration-500 ease-out"></div>
               <Play size={16} className="fill-black group-hover:scale-110 transition-transform duration-500" />
               <span className="relative z-10">Play Showreel</span>
             </button>
             
-            <button className="group flex items-center justify-center gap-2 px-10 py-4 bg-transparent border border-neutral-700 text-white font-bold uppercase tracking-[0.2em] text-xs sm:text-sm rounded-sm hover:border-neutral-400 hover:text-white transition-all duration-500 w-full sm:w-auto">
+            <button type="button" className="group flex items-center justify-center gap-2 px-10 py-4 bg-transparent border border-neutral-700 text-white font-bold uppercase tracking-[0.2em] text-xs sm:text-sm rounded-sm hover:border-neutral-400 hover:text-white transition-all duration-500 w-full sm:w-auto">
               <span className="group-hover:translate-x-1 transition-transform duration-500">View Credits</span>
               <ChevronRight size={16} className="group-hover:translate-x-2 transition-transform duration-500 text-neutral-500 group-hover:text-white" />
             </button>

@@ -168,7 +168,7 @@ export default function Challenges() {
                 </div>
                 <div className="flex flex-wrap gap-2">
                     {CATEGORIES.map(cat => (
-                        <button
+                        <button type="button"
                             key={cat.id}
                             onClick={() => setSelectedCategory(cat.id)}
                             className={`px-3 py-1.5 rounded-lg text-sm font-medium transition-colors ${selectedCategory === cat.id

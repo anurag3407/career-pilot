@@ -962,7 +962,7 @@ useEffect(() => {
                               <div {...provided.dragHandleProps} className="absolute top-4 left-4 text-muted-foreground hover:text-foreground cursor-grab">
                                 <GripVertical className="w-4 h-4" />
                               </div>
-                              <button
+                              <button type="button"
                                 onClick={() => removeEducation(index)}
                                 className="absolute top-4 right-4 text-muted-foreground hover:text-red-500 transition-colors"
                                 aria-label="Remove education entry"
@@ -1055,7 +1055,7 @@ useEffect(() => {
                 )}
               </Droppable>
             </DragDropContext>
-            <button onClick={addEducation} className="flex items-center gap-2 text-primary hover:text-primary/80 transition-colors">
+            <button type="button" onClick={addEducation} className="flex items-center gap-2 text-primary hover:text-primary/80 transition-colors">
               <Plus className="w-4 h-4" /> Add Education
             </button>
           </div>
@@ -1084,7 +1084,7 @@ useEffect(() => {
                               <div {...provided.dragHandleProps} className="absolute top-4 left-4 text-muted-foreground hover:text-foreground cursor-grab">
                                 <GripVertical className="w-4 h-4" />
                               </div>
-                              <button
+                              <button type="button"
                                 onClick={() => removeExperience(index)}
                                 className="absolute top-4 right-4 text-muted-foreground hover:text-red-500 transition-colors"
                                 aria-label="Remove experience entry"
@@ -1199,7 +1199,7 @@ useEffect(() => {
                 )}
               </Droppable>
             </DragDropContext>
-            <button onClick={addExperience} className="flex items-center gap-2 text-primary hover:text-primary/80 transition-colors">
+            <button type="button" onClick={addExperience} className="flex items-center gap-2 text-primary hover:text-primary/80 transition-colors">
               <Plus className="w-4 h-4" /> Add Experience
             </button>
           </div>
@@ -1225,7 +1225,7 @@ useEffect(() => {
                             <div {...provided.dragHandleProps} className="absolute top-4 left-4 text-muted-foreground hover:text-foreground cursor-grab">
                               <GripVertical className="w-4 h-4" />
                             </div>
-                            <button
+                            <button type="button"
                               onClick={() => removeProject(index)}
                               className="absolute top-4 right-4 text-muted-foreground hover:text-red-500 transition-colors"
                               aria-label="Remove project"
@@ -1282,7 +1282,7 @@ useEffect(() => {
                 )}
               </Droppable>
             </DragDropContext>
-            <button onClick={addProject} className="flex items-center gap-2 text-primary hover:text-primary/80 transition-colors">
+            <button type="button" onClick={addProject} className="flex items-center gap-2 text-primary hover:text-primary/80 transition-colors">
               <Plus className="w-4 h-4" /> Add Project
             </button>
           </div>
@@ -1344,7 +1344,7 @@ useEffect(() => {
             </div>
 
             <div className="flex justify-end mb-4">
-  <button
+  <button type="button"
     onClick={saveVersion}
     className="px-4 py-2 rounded-lg bg-primary text-primary-foreground"
   >
@@ -1622,7 +1622,7 @@ useEffect(() => {
             {version.timestamp}
           </span>
 
-          <button
+          <button type="button"
             onClick={() => restoreVersion(version)}
             className="text-primary text-sm font-medium"
           >
@@ -1920,7 +1920,7 @@ useEffect(() => {
 
         {/* Navigation Actions */}
         <div className="mt-8 flex flex-wrap justify-between items-center gap-3">
-          <button
+          <button type="button"
             onClick={handlePrev}
             disabled={currentStep === 0}
             className="px-6 py-2.5 rounded-full bg-secondary text-secondary-foreground hover:bg-secondary/80 disabled:opacity-50 disabled:cursor-not-allowed transition-all flex items-center gap-2"
@@ -1930,7 +1930,7 @@ useEffect(() => {
 
           {currentStep === STEPS.length - 1 ? (
             <div className="flex flex-wrap gap-2">
-              <button
+              <button type="button"
                 onClick={() => navigate('/resume-templates', {
                   state: {
                     builderData: {
@@ -1970,7 +1970,7 @@ useEffect(() => {
               >
                 <LayoutTemplate className="w-4 h-4" /> Choose Resume Template
               </button>
-              <button
+              <button type="button"
                 onClick={handleGenerate}
                 disabled={isSubmitting}
                 className="px-6 py-2.5 rounded-full bg-primary text-primary-foreground hover:bg-primary/90 hover:scale-105 active:scale-95 disabled:opacity-50 disabled:hover:scale-100 transition-all shadow-lg shadow-primary/25 flex items-center gap-2 font-medium"
@@ -1988,7 +1988,7 @@ useEffect(() => {
               </button>
             </div>
           ) : (
-            <button
+            <button type="button"
               onClick={handleNext}
               className="px-6 py-2.5 rounded-full bg-foreground text-background hover:bg-foreground/90 hover:scale-105 active:scale-95 transition-all shadow-lg flex items-center gap-2 font-medium"
             >

@@ -172,13 +172,13 @@ export default function MessageBubble({ message, isOwn, showAvatar, channelId, o
                 className="flex-1 px-3 py-1.5 bg-muted border border-border rounded-lg text-sm text-foreground focus:ring-2 focus:ring-primary"
                 autoFocus
               />
-              <button
+              <button type="button"
                 onClick={handleEdit}
                 className="px-3 py-1 bg-primary text-primary-foreground rounded-lg text-sm"
               >
                 Save
               </button>
-              <button
+              <button type="button"
                 onClick={() => setIsEditing(false)}
                 className="px-3 py-1 bg-muted-foreground/20 text-foreground rounded-lg text-sm"
               >
@@ -243,7 +243,7 @@ export default function MessageBubble({ message, isOwn, showAvatar, channelId, o
           {message.reactions?.length > 0 && (
             <div className={`flex gap-1 mt-1 flex-wrap ${isOwn ? 'justify-end' : ''}`}>
               {message.reactions.map((reaction, index) => (
-                <button
+                <button type="button"
                   key={index}
                   onClick={() => handleReaction(reaction.emoji)}
                   className={`inline-flex items-center gap-1 px-2 py-0.5 rounded-full text-xs transition-colors ${
@@ -267,7 +267,7 @@ export default function MessageBubble({ message, isOwn, showAvatar, channelId, o
               <div className="flex items-center gap-1 bg-card border border-border rounded-lg shadow-sm p-1">
                 {/* Quick Reaction */}
                 <div className="relative">
-                  <button
+                  <button type="button"
                     onClick={() => setShowReactions(!showReactions)}
                     className="p-1.5 text-muted-foreground hover:text-foreground hover:bg-muted rounded"
                   >
@@ -277,7 +277,7 @@ export default function MessageBubble({ message, isOwn, showAvatar, channelId, o
                   {showReactions && (
                     <div className="absolute bottom-full mb-1 left-0 bg-card border border-border rounded-lg shadow-lg p-1 flex gap-1">
                       {QUICK_REACTIONS.map(emoji => (
-                        <button
+                        <button type="button"
                           key={emoji}
                           onClick={() => handleReaction(emoji)}
                           className="p-1 hover:bg-muted rounded text-lg"
@@ -290,7 +290,7 @@ export default function MessageBubble({ message, isOwn, showAvatar, channelId, o
                 </div>
 
                 {/* Copy */}
-                <button 
+                <button type="button" 
                   onClick={handleCopy}
                   className="p-1.5 text-muted-foreground hover:text-foreground hover:bg-muted rounded"
                 >
@@ -300,7 +300,7 @@ export default function MessageBubble({ message, isOwn, showAvatar, channelId, o
                 {/* Edit & Delete (only for own messages) */}
                 {isOwn && (
                   <>
-                    <button
+                    <button type="button"
                       onClick={() => setIsEditing(true)}
                       className="p-1.5 text-muted-foreground hover:text-foreground hover:bg-muted rounded"
                     >
@@ -308,13 +308,13 @@ export default function MessageBubble({ message, isOwn, showAvatar, channelId, o
                     </button>
                     {showConfirmDelete ? (
                       <div className="flex items-center gap-1 bg-destructive/10 rounded p-0.5">
-                        <button
+                        <button type="button"
                           onClick={confirmDelete}
                           className="text-[10px] text-destructive hover:underline px-1"
                         >
                           Confirm
                         </button>
-                        <button
+                        <button type="button"
                           onClick={() => setShowConfirmDelete(false)}
                           className="text-[10px] text-muted-foreground hover:underline px-1"
                         >
@@ -322,7 +322,7 @@ export default function MessageBubble({ message, isOwn, showAvatar, channelId, o
                         </button>
                       </div>
                     ) : (
-                      <button
+                      <button type="button"
                         onClick={() => setShowConfirmDelete(true)}
                         className="p-1.5 text-muted-foreground hover:text-destructive hover:bg-destructive/10 rounded"
                       >

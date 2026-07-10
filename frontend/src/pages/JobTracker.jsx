@@ -518,7 +518,7 @@ const JobTracker = () => {
 
           {/* Filter Buttons */}
           <div className="flex flex-wrap gap-2 mb-6">
-            <button
+            <button type="button"
               onClick={() => setFilterStatus("all")}
               className={`px-4 py-2 rounded-lg font-medium transition-colors ${
                 filterStatus === "all"
@@ -529,7 +529,7 @@ const JobTracker = () => {
               All Columns
             </button>
             {statusOptions.map((status) => (
-              <button
+              <button type="button"
                 key={status.value}
                 onClick={() => setFilterStatus(status.value)}
                 className={`px-4 py-2 rounded-lg font-medium transition-colors ${
@@ -605,7 +605,7 @@ const JobTracker = () => {
                                         <h4 className="font-bold text-foreground text-sm line-clamp-2 leading-tight pr-4">
                                           {job.title}
                                         </h4>
-                                        <button
+                                        <button type="button"
                                           onClick={() => handleDelete(job.id)}
                                           className="text-muted-foreground/50 hover:text-red-500 transition-colors absolute top-4 right-4"
                                           title="Remove Job"
@@ -645,7 +645,7 @@ const JobTracker = () => {
                                             <ExternalLink className="w-3 h-3" /> Apply
                                           </a>
                                         )}
-                                        <button
+                                        <button type="button"
                                           onClick={() =>
                                             setResearchCompany({
                                               name: job.company,
@@ -656,20 +656,20 @@ const JobTracker = () => {
                                         >
                                           <Sparkles className="w-3 h-3" /> AI Research
                                         </button>
-                                        <button
+                                        <button type="button"
                                           onClick={() => setEmailGeneratorJob(job)}
                                           className="flex-1 bg-emerald-500/10 hover:bg-emerald-500/20 text-emerald-600 py-1.5 rounded-md text-[11px] font-bold text-center transition-colors flex items-center justify-center gap-1"
                                         >
                                           <Mail className="w-3 h-3" /> Draft Email
                                         </button>
-                                        <button
+                                        <button type="button"
                                           onClick={() => setOutreachJob(job)}
                                           className="flex-1 bg-indigo-500/10 hover:bg-indigo-500/20 text-indigo-600 py-1.5 rounded-md text-[11px] font-bold text-center transition-colors flex items-center justify-center gap-1"
                                         >
                                           <Send className="w-3 h-3" /> Outreach
                                         </button>
                                         {/* Notes toggle button */}
-                                        <button
+                                        <button type="button"
                                           onClick={(e) => {
                                             e.stopPropagation();
                                             if (noteEditing === job.id) {
@@ -746,7 +746,7 @@ const JobTracker = () => {
                                               className="flex-1 text-[11px] bg-background border border-amber-500/30 focus:border-amber-500/60 rounded-lg px-2.5 py-1.5 text-foreground placeholder:text-muted-foreground/40 resize-none outline-none transition-colors"
                                             />
                                             <div className="flex flex-col gap-1">
-                                              <button
+                                              <button type="button"
                                                 onClick={() => handleSaveNote(job.id, noteText)}
                                                 disabled={!noteText.trim()}
                                                 title="Save note (⌘↵)"
@@ -754,7 +754,7 @@ const JobTracker = () => {
                                               >
                                                 <Send className="w-3 h-3" />
                                               </button>
-                                              <button
+                                              <button type="button"
                                                 onClick={() => { setNoteEditing(null); setNoteText(""); }}
                                                 title="Cancel"
                                                 className="p-1.5 bg-muted hover:bg-muted/80 text-muted-foreground rounded-lg transition-colors flex items-center justify-center"

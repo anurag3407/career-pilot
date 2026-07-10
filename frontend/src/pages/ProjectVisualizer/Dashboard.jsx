@@ -143,7 +143,7 @@ const Dashboard = () => {
         <AlertCircle className="w-16 h-16 text-red-500 mb-6" />
         <h2 className="text-2xl font-bold text-white mb-2">Analysis Error</h2>
         <p className="text-slate-400 mb-8 max-w-md text-center">{error}</p>
-        <button 
+        <button type="button" 
           onClick={() => navigate('/project-visualizer')}
           className="px-6 py-3 bg-white/10 hover:bg-white/20 text-white rounded-xl transition-colors"
         >
@@ -171,7 +171,7 @@ const Dashboard = () => {
       {/* Header */}
       <header className="shrink-0 bg-[#0a0f1c] border-b border-white/5 py-4 px-6 flex flex-col md:flex-row md:items-center justify-between gap-4 sticky top-0 z-30 shadow-xl">
         <div className="flex flex-col gap-2">
-          <button 
+          <button type="button" 
             onClick={() => navigate('/project-visualizer')}
             className="flex items-center gap-1.5 text-sm font-medium text-slate-400 hover:text-white transition-colors group w-max"
           >
@@ -196,7 +196,7 @@ const Dashboard = () => {
         {/* Tab Navigation */}
         <div className="flex items-center p-1 bg-black/40 rounded-xl border border-white/5 overflow-x-auto custom-scrollbar md:w-auto w-full">
           {tabs.map(tab => (
-            <button
+            <button type="button"
               key={tab.id}
               onClick={() => setActiveTab(tab.id)}
               className={cn(
@@ -394,7 +394,7 @@ const Dashboard = () => {
                     
                     <div className="flex items-center gap-2 bg-black/30 p-1 rounded-lg border border-white/10">
                       {['all', 'critical', 'high', 'medium', 'low'].map(f => (
-                        <button
+                        <button type="button"
                           key={f}
                           onClick={() => setRiskFilter(f)}
                           className={cn(

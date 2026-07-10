@@ -82,7 +82,7 @@ export default function MyChallenges() {
                     <h1 className="text-2xl font-bold text-foreground">My Challenges</h1>
                     <p className="text-muted-foreground">Manage your posted challenges</p>
                 </div>
-                <button
+                <button type="button"
                     onClick={() => navigate('/fellowship/create-challenge')}
                     className="flex items-center gap-2 px-4 py-2 bg-emerald-600 hover:bg-emerald-500 text-foreground rounded-xl font-medium"
                 >
@@ -96,7 +96,7 @@ export default function MyChallenges() {
                     <FolderKanban className="h-12 w-12 text-muted-foreground/80" />
                     <h3 className="mt-4 text-lg font-semibold text-foreground">No challenges yet</h3>
                     <p className="mt-2 text-sm text-muted-foreground">Post your first challenge to find student talent</p>
-                    <button
+                    <button type="button"
                         onClick={() => navigate('/fellowship/create-challenge')}
                         className="mt-4 flex items-center gap-2 px-4 py-2 bg-emerald-600 hover:bg-emerald-500 text-foreground rounded-xl font-medium"
                     >
@@ -149,14 +149,14 @@ export default function MyChallenges() {
                                 </div>
 
                                 <div className="mt-4 flex gap-2">
-                                    <button
+                                    <button type="button"
                                         onClick={() => navigate(`/fellowship/challenges/${challenge._id}`)}
                                         className="px-4 py-2 bg-muted text-foreground rounded-lg text-sm hover:bg-muted/80"
                                     >
                                         View Details
                                     </button>
                                     {challenge.proposalCount > 0 && (
-                                        <button
+                                        <button type="button"
                                             onClick={() => navigate(`/fellowship/challenges/${challenge._id}/proposals`)}
                                             className="px-4 py-2 bg-emerald-600 text-foreground rounded-lg text-sm hover:bg-emerald-500"
                                         >
@@ -166,7 +166,7 @@ export default function MyChallenges() {
 
                                     {confirmDelete === challenge._id ? (
                                         <div className="flex gap-2 ml-auto">
-                                            <button
+                                            <button type="button"
                                                 onClick={() => handleDelete(challenge._id)}
                                                 disabled={deleting === challenge._id}
                                                 className="px-4 py-2 bg-red-600 text-foreground rounded-lg text-sm hover:bg-red-500 disabled:opacity-50 flex items-center gap-2"
@@ -177,7 +177,7 @@ export default function MyChallenges() {
                                                     'Confirm'
                                                 )}
                                             </button>
-                                            <button
+                                            <button type="button"
                                                 onClick={() => setConfirmDelete(null)}
                                                 className="px-4 py-2 bg-card text-foreground rounded-lg text-sm hover:bg-muted/60"
                                             >
@@ -185,7 +185,7 @@ export default function MyChallenges() {
                                             </button>
                                         </div>
                                     ) : (
-                                        <button
+                                        <button type="button"
                                             onClick={() => setConfirmDelete(challenge._id)}
                                             className="px-3 py-2 bg-muted text-red-400 rounded-lg text-sm hover:bg-red-950 ml-auto"
                                             title="Delete challenge"

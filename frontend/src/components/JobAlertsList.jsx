@@ -124,7 +124,7 @@ export default function JobAlertsList() {
             <div className="text-center py-12">
                 <AlertCircle className="w-12 h-12 text-destructive mx-auto mb-4" />
                 <p className="text-muted-foreground">{error}</p>
-                <button
+                <button type="button"
                     onClick={fetchAlerts}
                     className="mt-4 px-4 py-2 bg-primary text-primary-foreground rounded-lg hover:bg-primary/90"
                 >
@@ -144,7 +144,7 @@ export default function JobAlertsList() {
                         Get notified when jobs matching your criteria are posted
                     </p>
                 </div>
-                <button
+                <button type="button"
                     onClick={() => setIsModalOpen(true)}
                     className="flex items-center gap-2 px-4 py-2.5 bg-primary text-primary-foreground rounded-lg font-medium hover:bg-primary/90 transition-all"
                 >
@@ -161,7 +161,7 @@ export default function JobAlertsList() {
                     <p className="text-muted-foreground mt-2 max-w-sm mx-auto">
                         Create your first alert to get notified about new job opportunities
                     </p>
-                    <button
+                    <button type="button"
                         onClick={() => setIsModalOpen(true)}
                         className="mt-6 px-6 py-2.5 bg-primary text-primary-foreground rounded-lg font-medium hover:bg-primary/90 transition-colors"
                     >
@@ -248,7 +248,7 @@ export default function JobAlertsList() {
                                 {/* Actions */}
 <div className="flex items-center gap-2">
     <Tooltip content="Test alert now">
-        <button
+        <button type="button"
             onClick={() => handleTest(alert._id)}
             disabled={testingId === alert._id}
             className="p-2 text-muted-foreground hover:text-emerald-500 hover:bg-emerald-500/10 rounded-lg transition-colors disabled:opacity-50"
@@ -263,7 +263,7 @@ export default function JobAlertsList() {
     </Tooltip>
 
     <Tooltip content={alert.isActive ? 'Pause alert' : 'Activate alert'}>
-        <button
+        <button type="button"
             onClick={() => handleToggle(alert._id)}
             className={`p-2 rounded-lg transition-colors ${
                 alert.isActive
@@ -281,7 +281,7 @@ export default function JobAlertsList() {
     </Tooltip>
 
     <Tooltip content="Edit alert">
-        <button
+        <button type="button"
             onClick={() => handleEdit(alert)}
             className="p-2 text-muted-foreground hover:text-primary hover:bg-primary/10 rounded-lg transition-colors"
             aria-label="Edit alert"
@@ -291,7 +291,7 @@ export default function JobAlertsList() {
     </Tooltip>
 
     <Tooltip content="Delete alert">
-        <button
+        <button type="button"
             onClick={() => handleDelete(alert._id)}
             className="p-2 text-muted-foreground hover:text-destructive hover:bg-destructive/10 rounded-lg transition-colors"
             aria-label="Delete alert"

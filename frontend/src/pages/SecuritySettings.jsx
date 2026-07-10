@@ -409,7 +409,7 @@ export default function SecuritySettings() {
                   onCopy={() => handleCopyCodes(newCodes)}
                   onDownload={() => handleDownloadCodes(newCodes)}
                 />
-                <button
+                <button type="button"
                   onClick={() => { setNewCodes([]); setShowCodesFor(null) }}
                   className="mt-3 text-xs text-muted-foreground hover:text-muted-foreground/80 transition-colors"
                 >

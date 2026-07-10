@@ -26,7 +26,7 @@ const CodeViewer = ({ code, language, fileName, onExplain }) => {
         
         <div className="flex items-center gap-2">
           {onExplain && (
-            <button
+            <button type="button"
               onClick={onExplain}
               className="flex items-center gap-1.5 px-3 py-1.5 rounded-lg text-xs font-medium bg-violet-500/10 text-violet-400 hover:bg-violet-500/20 transition-colors border border-violet-500/20"
             >
@@ -34,7 +34,7 @@ const CodeViewer = ({ code, language, fileName, onExplain }) => {
               Explain File
             </button>
           )}
-          <button
+          <button type="button"
             onClick={handleCopy}
             className="p-1.5 rounded-lg text-slate-400 hover:text-slate-200 hover:bg-white/10 transition-colors"
             title="Copy Code"

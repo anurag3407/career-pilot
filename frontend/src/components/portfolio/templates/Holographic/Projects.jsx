@@ -310,7 +310,7 @@ function HoloCard({ project, index, isActive, onActivate }) {
 /* ─── Filter pill ─────────────────────── */
 function FilterPill({ label, active, onClick }) {
   return (
-    <button
+    <button type="button"
       onClick={onClick}
       aria-pressed={active}
       className={`px-4 py-1.5 rounded-full text-sm font-medium border transition-all duration-200 whitespace-nowrap
@@ -547,7 +547,7 @@ export default function HolographicProjects({
             <div className="flex flex-col items-center justify-center py-24 text-center">
               <Layers className="w-12 h-12 text-slate-600 mb-4" />
               <p className="text-slate-500 text-lg font-medium">No projects in this category yet</p>
-              <button
+              <button type="button"
                 onClick={() => setFilter("All")}
                 className="mt-4 text-sm text-cyan-400 hover:text-cyan-300 underline transition-colors"
               >

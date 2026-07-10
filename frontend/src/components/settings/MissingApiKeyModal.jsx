@@ -47,7 +47,7 @@ export default function MissingApiKeyModal() {
                   <KeyRound className="w-6 h-6" />
                   <h2 className="text-lg font-bold">API Key Required</h2>
                 </div>
-                <button
+                <button type="button"
                   onClick={() => setIsOpen(false)}
                   className="text-muted-foreground hover:text-foreground hover:bg-muted p-2 rounded-xl transition-colors"
                 >
@@ -62,13 +62,13 @@ export default function MissingApiKeyModal() {
                 </p>
 
                 <div className="flex justify-end gap-3">
-                  <button
+                  <button type="button"
                     onClick={() => setIsOpen(false)}
                     className="px-4 py-2 font-semibold text-muted-foreground hover:text-foreground hover:bg-muted rounded-xl transition-all"
                   >
                     Cancel
                   </button>
-                  <button
+                  <button type="button"
                     onClick={handleGoToSettings}
                     className="flex items-center gap-2 px-5 py-2 font-bold text-primary-foreground bg-primary hover:bg-primary/90 rounded-xl transition-all shadow-lg hover:shadow-primary/25"
                   >
