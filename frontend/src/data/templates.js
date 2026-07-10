@@ -432,6 +432,30 @@ export const templates = [
     "isComplete": true
   },
   {
+    "id": "Tron_Legacy_Light_Grid",
+    "title": "Tron Legacy Light Grid",
+    "category": "Portfolio",
+    "colorScheme": "Dark",
+    "layout": "Interactive",
+    "author": "System",
+    "views": 0,
+    "rating": 0,
+    "image": "/template-previews/Tron_Legacy_Light_Grid.png",
+    "createdAt": "2026-06-12",
+    "isComplete": true
+  },
+  {
+    "id": "Forensic_Investigator_Desk",
+    "title": "Forensic Investigator Desk",
+    "category": "Portfolio",
+    "colorScheme": "Dark",
+    "layout": "Interactive",
+    "author": "System",
+    "views": 0,
+    "rating": 0,
+    "image": "/template-previews/Forensic_investigator_desk.png", 
+    "createdAt": "2026-06-11",
+    "isComplete": true
     "id": "ASCII_Art_Terminal_Code",
     "title": "ASCII Art Terminal Code",
     "category": "Portfolio",
