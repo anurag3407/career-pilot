@@ -156,6 +156,7 @@ import Inspired_Clyde_DSouza from "./components/portfolio/templates/Inspired_Cly
 import Inspired_Delba from "./components/portfolio/templates/Inspired_Delba";
 import Magnifying_Glass_Hidden_Reveal from "./components/portfolio/templates/Magnifying_Glass_Hidden_Reveal";
 import Morse_Code_Flashing_Decoder from "./components/portfolio/templates/Morse_Code_Flashing_Decoder";
+import Film_Director_Clapperboard from './components/portfolio/templates/Film_Director_Clapperboard/index.jsx';
 
 function LoadingScreen({ label }) {
   return (
@@ -359,6 +360,7 @@ function AppRoutes() {
         <Route path="/templates/Audio_Visualizer_Frequency" element={<Audio_Visualizer_Frequency />} />
         <Route path="/templates/Astronaut_Spacesuit_Helmet_HUD" element={<Astronaut_Spacesuit_Helmet_HUD />} />
         <Route path="/templates/Anonymous_Whistleblower_Drop_Box" element={<Anonymous_Whistleblower_Drop_Box />} />
+        <Route path="/templates/film-director-clapperboard" element={<Film_Director_Clapperboard />} />
         {/* Core Protected Routes */}
         <Route
           path="/dashboard"

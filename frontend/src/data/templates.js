@@ -3334,5 +3334,18 @@ export const templates = [
     "createdAt": "2026-07-07",
     "isComplete": true,
     "description": "An immersive, Awwwards-worthy portfolio template simulating a deep-sea submarine expedition. Features a real-time floating HUD (depth & pressure tracker, sonar scanner), vertical scrolling zone transitions, bioluminescent glow cards, and submarine controls."
+  },
+  {
+    "id": "Film_Director_Clapperboard",
+    "title": "Film Director Clapper Board",
+    "category": "Portfolio",
+    "colorScheme": "Cinematic Dark",
+    "layout": "Storyboard Grid",
+    "author": "Ayush Srivastava",
+    "views": 0,
+    "rating": 5.0,
+    "image": "/template-previews/Film_Director_Clapperboard.png",
+    "createdAt": "2026-07-06",
+    "isComplete": true,
   }
 ];
