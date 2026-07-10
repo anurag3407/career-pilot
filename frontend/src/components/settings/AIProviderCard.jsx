@@ -23,6 +23,7 @@ export default function AIProviderCard({ providerId, isActive, onActivate }) {
   const providerData = useAIConfigStore((s) => s.providers[providerId]);
   const setProviderKey = useAIConfigStore((s) => s.setProviderKey);
   const setProviderModel = useAIConfigStore((s) => s.setProviderModel);
+  const setProviderBaseUrl = useAIConfigStore((s) => s.setProviderBaseUrl);
   const markValidated = useAIConfigStore((s) => s.markValidated);
   const removeProvider = useAIConfigStore((s) => s.removeProvider);
 
@@ -30,6 +31,7 @@ export default function AIProviderCard({ providerId, isActive, onActivate }) {
   const [showKey, setShowKey] = useState(false);
   const [apiKey, setApiKey] = useState('');
   const [selectedModel, setSelectedModel] = useState('');
+  const [baseUrl, setBaseUrl] = useState('');
   const [isValidating, setIsValidating] = useState(false);
   const [validationResult, setValidationResult] = useState(null); // 'success' | 'error' | null
   const [dynamicModels, setDynamicModels] = useState([]);
@@ -47,6 +49,7 @@ export default function AIProviderCard({ providerId, isActive, onActivate }) {
       setSelectedModel(
         providerData.model || meta.defaultModel || ''
       );
+      setBaseUrl(providerData.baseUrl || '');
     }
   }, [expanded, providerData, meta.defaultModel]);
 
@@ -101,10 +104,13 @@ export default function AIProviderCard({ providerId, isActive, onActivate }) {
     setValidationResult(null);
 
     try {
-      await aiApi.validateKey(providerId, apiKey.trim());
+      await aiApi.validateKey(providerId, apiKey.trim(), { baseUrl: baseUrl.trim(), model: selectedModel });
       // Save to store
       setProviderKey(providerId, apiKey.trim());
       setProviderModel(providerId, selectedModel || meta.defaultModel);
+      if (meta.customEndpoint) {
+        setProviderBaseUrl(providerId, baseUrl.trim());
+      }
       markValidated(providerId, true);
       setValidationResult('success');
       toast.success(`${meta.name} key validated & saved!`);
@@ -120,6 +126,7 @@ export default function AIProviderCard({ providerId, isActive, onActivate }) {
   const handleDelete = () => {
     removeProvider(providerId);
     setApiKey('');
+    setBaseUrl('');
     setValidationResult(null);
     toast.success(`${meta.name} key removed`);
   };
@@ -255,8 +262,28 @@ export default function AIProviderCard({ providerId, isActive, onActivate }) {
                 </div>
               </div>
 
+              {/* Base URL Input for Custom Endpoints */}
+              {meta.customEndpoint && (
+                <div className="space-y-1.5 mt-4">
+                  <label className="text-xs font-medium text-muted-foreground">
+                    Base URL (e.g., http://localhost:11434/v1)
+                  </label>
+                  <input
+                    type="url"
+                    value={baseUrl}
+                    onChange={(e) => setBaseUrl(e.target.value)}
+                    placeholder="Enter custom endpoint base URL"
+                    className={cn(
+                      'w-full rounded-lg border bg-background/60 px-3 py-2.5 text-sm text-foreground placeholder:text-muted-foreground/50',
+                      'border-border focus:border-primary/50 focus:outline-none focus:ring-1 focus:ring-primary/30',
+                      'transition-colors'
+                    )}
+                  />
+                </div>
+              )}
+
               {/* Model Selector */}
-              <div className="space-y-1.5">
+              <div className="space-y-1.5 mt-4">
                 <label className="text-xs font-medium text-muted-foreground">
                   Model
                 </label>

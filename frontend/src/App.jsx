@@ -145,6 +145,7 @@ import MinimalDarkFluid from './components/portfolio/templates/Minimal_Dark_Flui
 import TerminalSkills from './components/portfolio/templates/Terminal_Skills/index.jsx';
 import ChiragChrgTheme from './components/portfolio/templates/ChiragChrg_Theme/index.jsx';
 import InspiredDevJadiya from "./components/portfolio/templates/Inspired_Dev_Jadiya";
+import Film_Director_Clapperboard from './components/portfolio/templates/Film_Director_Clapperboard/index.jsx';
 
 function LoadingScreen({ label }) {
   return (

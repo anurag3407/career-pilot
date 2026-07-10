@@ -28,6 +28,34 @@
 
 ---
 
+## Table of Contents
+
+- [✨ What is Career Pilot?](#-what-is-career-pilot)
+- [🧭 Feature Pillars](#-feature-pillars)
+- [🚀 Quick Install](#-quick-install)
+- [📝 Pillar 1 — Resume Studio](#-pillar-1--resume-studio)
+- [🎤 Pillar 2 — Interview Sim](#-pillar-2--interview-sim)
+- [💼 Pillar 3 — Jobs & Tracker](#-pillar-3--jobs--tracker)
+- [🎨 Pillar 4 — Portfolio Studio](#-pillar-4--portfolio-studio)
+- [🧠 Pillar 5 — AI Career Tools](#-pillar-5--ai-career-tools)
+- [🌐 Pillar 6 — Community, Fellowships & GitHub Intel](#-pillar-6--community-fellowships--github-intel)
+- [🔐 Security, Auth & Privacy](#-security-auth--privacy)
+- [🧩 Architecture at a Glance](#-architecture-at-a-glance)
+- [🌐 Real-time, Queues & Background Work](#-real-time-queues--background-work)
+- [🛠 CLI vs Web Quick Reference](#-cli-vs-web-quick-reference)
+- [📚 Documentation](#-documentation)
+- [🧪 Testing](#-testing)
+- [🚢 Deployment](#-deployment)
+- [🔄 Migrating from Other Tools](#-migrating-from-other-tools)
+- [🛣 Roadmap](#-roadmap)
+- [🧠 Project Notes](#-project-notes)
+- [🤝 Contributing](#-contributing)
+- [👥 Maintainers](#-maintainers)
+- [💬 Community](#-community)
+- [📄 License](#-license)
+
+---
+
 ## ✨ What is Career Pilot?
 
 **Career Pilot** is a full-stack, AI-first **career operating system** that turns job hunting from a chaotic, multi-tab slog into a single workflow. It's not a single-purpose resume builder — it's a unified platform that combines **resumes, mock interviews, job search & tracking, portfolio publishing, GitHub intelligence, fellowships, paid challenges, community, outreach, and admin tooling** behind one authenticated dashboard.
