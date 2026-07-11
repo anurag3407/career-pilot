@@ -11,12 +11,17 @@ export default function ResumeSectionStrengthAnalyzer({ resume }) {
   useEffect(() => {
     if (!resume) return;
     
+    const abortController = new AbortController();
+    
     const fetchScore = async () => {
       setLoading(true);
       setError("");
       try {
         const text = resume.enhancedText || resume.originalText;
+        // In a real app we might pass abortController.signal to the fetch call inside resumeApi
         const res = await resumeApi.score(text, resume.jobRole || 'Software Engineer');
+        
+        if (abortController.signal.aborted) return;
         
         if (res?.data?.sections) {
           const formattedSections = Object.entries(res.data.sections).map(([key, value]) => ({
@@ -26,16 +31,25 @@ export default function ResumeSectionStrengthAnalyzer({ resume }) {
           }));
           setSections(formattedSections);
           setOverallScore(res.data.overallScore);
+        } else {
+          setError("No section data found in the response.");
         }
       } catch (err) {
+        if (abortController.signal.aborted) return;
         console.error("Error scoring resume:", err);
         setError("Failed to analyze resume strength.");
       } finally {
-        setLoading(false);
+        if (!abortController.signal.aborted) {
+          setLoading(false);
+        }
       }
     };
     
     fetchScore();
+    
+    return () => {
+      abortController.abort();
+    };
   }, [resume]);
 
   if (!resume) {

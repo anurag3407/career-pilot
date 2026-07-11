@@ -32,7 +32,7 @@ Return ONLY valid JSON. No markdown fences, no extra text.`;
   try {
     qualitativeData = JSON.parse(text);
   } catch (parseErr) {
-    console.error('Resume score JSON parse error:', parseErr, 'Raw text:', text);
+    console.error('Resume score JSON parse error:', parseErr.message);
     throw new ApiError(
       502,
       'AI service returned an invalid response. Please try again in a moment.'
