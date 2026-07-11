@@ -30,7 +30,7 @@ export default function LandingNavbar() {
           </div>
 
           {/* Mobile Menu Button */}
-          <button 
+          <button type="button" 
             className="md:hidden text-gray-900 cursor-pointer"
             onClick={() => setIsMobileMenuOpen(!isMobileMenuOpen)}
             aria-label="Toggle menu"

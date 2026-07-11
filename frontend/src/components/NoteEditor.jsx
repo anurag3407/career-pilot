@@ -18,13 +18,13 @@ export default function NoteEditor({ notes = [], onAddNote }) {
             {/* Editor */}
             <div className="border border-border rounded-lg p-4 bg-card shadow-sm transition-colors duration-300">
                 <div className="flex gap-2 mb-2">
-                    <button
+                    <button type="button"
                         className={`text-sm px-3 py-1 rounded transition-colors ${!showPreview ? "bg-primary/10 text-primary font-medium" : "text-muted-foreground hover:text-foreground"}`}
                         onClick={() => setShowPreview(false)}
                     >
                         Write
                     </button>
-                    <button
+                    <button type="button"
                         className={`text-sm px-3 py-1 rounded transition-colors ${showPreview ? "bg-primary/10 text-primary font-medium" : "text-muted-foreground hover:text-foreground"}`}
                         onClick={() => setShowPreview(true)}
                     >
@@ -50,7 +50,7 @@ export default function NoteEditor({ notes = [], onAddNote }) {
                     </div>
                 )}
 
-                <button
+                <button type="button"
                     className="mt-4 px-4 py-1.5 bg-primary text-primary-foreground text-sm font-medium rounded-lg hover:brightness-110 disabled:opacity-50 disabled:cursor-not-allowed transition-all"
                     onClick={handleSubmit}
                     disabled={!content.trim()}

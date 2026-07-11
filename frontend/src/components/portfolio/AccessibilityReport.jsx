@@ -50,7 +50,7 @@ const AccessibilityReport = ({ report, onRecheck, isLoading }) => {
           color contrast ratios, missing ARIA tags, screen reader compatibility, 
           and general semantic HTML structure.
         </p>
-        <button
+        <button type="button"
           onClick={onRecheck}
           className="inline-flex items-center px-5 py-2.5 bg-cyan-500 text-white font-medium rounded-lg hover:bg-cyan-600 transition-colors shadow-[0_0_15px_rgba(34,211,238,0.25)]"
         >
@@ -91,7 +91,7 @@ const AccessibilityReport = ({ report, onRecheck, isLoading }) => {
               </span>
             </div>
           </div>
-          <button
+          <button type="button"
             onClick={onRecheck}
             disabled={isLoading}
             className="p-2.5 text-muted-foreground hover:text-foreground hover:bg-accent rounded-lg transition-colors disabled:opacity-50 flex items-center font-medium border border-transparent hover:border-border"

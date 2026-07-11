@@ -63,7 +63,7 @@ export default function SchedulePost({ onClose, onSchedule }) {
             <Clock className="w-5 h-5 text-indigo-400" />
             <h3 className="text-base font-semibold text-white">Schedule Post</h3>
           </div>
-          <button
+          <button type="button"
             onClick={onClose}
             aria-label="Close schedule picker"
             className="p-1.5 text-neutral-500 hover:text-white hover:bg-neutral-800 rounded-lg transition-colors"
@@ -119,13 +119,13 @@ export default function SchedulePost({ onClose, onSchedule }) {
 
         {/* Footer */}
         <div className="flex gap-2 px-5 pb-5">
-          <button
+          <button type="button"
             onClick={onClose}
             className="flex-1 px-4 py-2 border border-neutral-700 rounded-lg text-sm text-neutral-300 hover:bg-neutral-800 transition-colors"
           >
             Back
           </button>
-          <button
+          <button type="button"
             onClick={handleConfirm}
             disabled={!value}
             className="flex-1 flex items-center justify-center gap-2 px-4 py-2 bg-indigo-600 text-white rounded-lg text-sm font-medium hover:bg-indigo-500 disabled:opacity-50 disabled:cursor-not-allowed transition-colors"

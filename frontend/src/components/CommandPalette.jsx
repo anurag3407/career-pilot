@@ -245,7 +245,7 @@ const CommandPalette = ({ isOpen, setIsOpen }) => {
                   matchedAction?.icon || Briefcase;
 
                 return (
-                  <button
+                  <button type="button"
                     key={action.id}
                     onClick={() => handleSelect(action)}
                     className="flex w-full items-center gap-3 rounded-xl px-3 py-2 text-left hover:bg-white/5 transition"
@@ -276,7 +276,7 @@ const CommandPalette = ({ isOpen, setIsOpen }) => {
               const Icon = action.icon;
 
               return (
-                <button
+                <button type="button"
                   key={action.id}
                   onClick={() => handleSelect(action)}
                   className={`flex w-full items-center gap-3 rounded-2xl px-4 py-3 text-left transition-all duration-200 ${

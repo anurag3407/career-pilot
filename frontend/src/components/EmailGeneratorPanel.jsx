@@ -66,7 +66,7 @@ export default function EmailGeneratorPanel({ companyName, jobTitle, onClose }) 
                 <p className="text-xs text-muted-foreground">{companyName ? `${jobTitle} at ${companyName}` : 'AI Email Generator'}</p>
               </div>
             </div>
-            <button
+            <button type="button"
               onClick={onClose}
               className="p-2 text-muted-foreground hover:text-foreground hover:bg-muted/80 rounded-lg transition"
             >
@@ -147,7 +147,7 @@ export default function EmailGeneratorPanel({ companyName, jobTitle, onClose }) 
               >
                 <div className="flex items-center justify-between border-b border-border pb-2">
                   <h2 className="text-xl font-bold text-foreground">Your AI Generated Options</h2>
-                  <button onClick={() => setResults(null)} className="text-sm text-primary font-semibold hover:underline">
+                  <button type="button" onClick={() => setResults(null)} className="text-sm text-primary font-semibold hover:underline">
                     Edit Details
                   </button>
                 </div>
@@ -161,7 +161,7 @@ export default function EmailGeneratorPanel({ companyName, jobTitle, onClose }) 
                       <li key={idx} className="flex items-center gap-3 bg-background p-3 rounded-lg shadow-sm border border-border">
                         <span className="shrink-0 w-6 h-6 bg-primary/20 text-primary rounded-full flex items-center justify-center text-sm font-bold">{idx + 1}</span>
                         <span className="text-foreground font-medium text-sm">{subject}</span>
-                        <button
+                        <button type="button"
                           onClick={() => copyToClipboard(subject, `subj-${idx}`)}
                           className="ml-auto text-muted-foreground hover:text-primary transition p-1"
                           title="Copy"
@@ -180,7 +180,7 @@ export default function EmailGeneratorPanel({ companyName, jobTitle, onClose }) 
                       <div key={idx} className="bg-background p-5 rounded-2xl shadow-sm border border-border flex flex-col h-full hover:border-primary/50 transition-all">
                         <div className="flex justify-between items-center mb-4 border-b border-border pb-2">
                           <span className="font-bold text-foreground text-sm">Option {idx + 1}</span>
-                          <button
+                          <button type="button"
                             onClick={() => copyToClipboard(variant, `body-${idx}`)}
                             className="text-xs flex items-center gap-1 text-primary hover:text-primary/80 font-semibold"
                           >

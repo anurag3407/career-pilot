@@ -373,7 +373,7 @@ const seoScore = Math.round(
                 </p>
               </div>
             </div>
-            <button
+            <button type="button"
               onClick={handleClose}
               aria-label="Close Deploy Dialog"
               className="p-2 hover:bg-zinc-800/80 rounded-xl transition-colors cursor-pointer text-zinc-400 hover:text-zinc-200"
@@ -547,7 +547,7 @@ const seoScore = Math.round(
 </div>
 
                   {/* Submit Action */}
-                  <button
+                  <button type="button"
                     onClick={handleDeploy}
                     disabled={!isTokenValidated}
                     title={!isTokenValidated ? 'Verify your token first by clicking "Check"' : undefined}
@@ -670,7 +670,7 @@ const seoScore = Math.round(
                       </span>
                     </div>
 
-                    <button
+                    <button type="button"
                       onClick={handleCopyLink}
                       aria-label="Copy deployed link to clipboard"
                       className={`p-3 rounded-xl border transition-all duration-300 flex items-center justify-center shrink-0 cursor-pointer ${
@@ -695,7 +695,7 @@ const seoScore = Math.round(
                       View Live Site
                     </a>
 
-                    <button
+                    <button type="button"
                       onClick={handleClose}
                       className="py-3.5 px-4 bg-zinc-800 hover:bg-zinc-700 border border-zinc-700/60 text-zinc-200 rounded-2xl font-semibold transition-colors cursor-pointer select-none active:scale-95"
                     >
@@ -736,14 +736,14 @@ const seoScore = Math.round(
 
                   {/* Actions */}
                   <div className="w-full flex gap-3 pt-1">
-                    <button
+                    <button type="button"
                       onClick={handleDeploy}
                       className="flex-1 py-3.5 bg-indigo-600 text-zinc-100 rounded-2xl font-semibold shadow-lg shadow-indigo-950/20 hover:bg-indigo-500 transition-all cursor-pointer active:scale-95"
                     >
                       Retry Build
                     </button>
 
-                    <button
+                    <button type="button"
                       onClick={() => setStep('select')}
                       className="flex-1 py-3.5 bg-zinc-800 hover:bg-zinc-700 border border-zinc-700/60 text-zinc-200 rounded-2xl font-semibold transition-colors cursor-pointer active:scale-95"
                     >

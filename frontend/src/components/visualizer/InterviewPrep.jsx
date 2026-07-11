@@ -68,7 +68,7 @@ const InterviewPrep = () => {
       <div className="flex flex-col items-center justify-center h-96">
         <ShieldAlert className="w-16 h-16 text-slate-500 mb-4" />
         <p className="text-slate-400 mb-4">No questions available.</p>
-        <button 
+        <button type="button" 
           onClick={fetchQuestions}
           className="px-4 py-2 bg-white/10 hover:bg-white/20 rounded-lg text-white transition-colors"
         >
@@ -90,7 +90,7 @@ const InterviewPrep = () => {
               <BrainCircuit className="w-5 h-5 text-red-400" />
               Categories
             </h3>
-            <button 
+            <button type="button" 
               onClick={fetchQuestions}
               className="p-1.5 rounded-lg bg-white/5 hover:bg-white/10 text-slate-400 transition-colors"
               title="Regenerate Questions"
@@ -100,7 +100,7 @@ const InterviewPrep = () => {
           </div>
           <div className="space-y-2">
             {questions.map((cat, i) => (
-              <button
+              <button type="button"
                 key={i}
                 onClick={() => setActiveCategory(i)}
                 className={cn(
@@ -166,7 +166,7 @@ const InterviewPrep = () => {
                 )}
                 
                 <div className="flex items-center gap-3 border-t border-white/5 pt-4 mt-4">
-                  <button
+                  <button type="button"
                     onClick={() => toggleAnswer(idx)}
                     className="flex-1 flex items-center justify-center gap-2 px-4 py-2 bg-white/5 hover:bg-white/10 border border-white/10 rounded-xl text-sm font-medium text-slate-300 transition-colors"
                   >
@@ -176,7 +176,7 @@ const InterviewPrep = () => {
                       <><Eye className="w-4 h-4" /> Reveal Answer</>
                     )}
                   </button>
-                  <button
+                  <button type="button"
                     onClick={() => startMockInterview(q.question)}
                     className="flex-1 flex items-center justify-center gap-2 px-4 py-2 bg-red-500/10 hover:bg-red-500/20 border border-red-500/20 rounded-xl text-sm font-medium text-red-400 transition-colors"
                   >

@@ -46,7 +46,7 @@ const RepoCard = ({ owner, repo, name, description, language, stars, forks, isPr
       </div>
 
       {/* Analyze Button */}
-      <button
+      <button type="button"
         onClick={handleAnalyze}
         disabled={isScanning}
         aria-busy={isScanning}

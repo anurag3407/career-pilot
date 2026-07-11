@@ -382,14 +382,14 @@ Return ONLY the raw markdown content, no explanations.`
           <span className="header-title">README Generator</span>
         </div>
         <div style={{ display: "flex", gap: 8 }}>
-          <button className="btn btn-ghost" onClick={copyMarkdown}>
+          <button type="button" className="btn btn-ghost" onClick={copyMarkdown}>
             {copied ? (
               <><span>✓</span> Copied!</>
             ) : (
               <><span>⎘</span> Copy Markdown</>
             )}
           </button>
-          <button className="btn btn-ghost" onClick={downloadReadme}>
+          <button type="button" className="btn btn-ghost" onClick={downloadReadme}>
             <span>↓</span> Download .md
           </button>
         </div>
@@ -413,7 +413,7 @@ Return ONLY the raw markdown content, no explanations.`
             }}
             placeholder={SAMPLE_PROMPT_PLACEHOLDER}
           />
-          <button
+          <button type="button"
             className="btn btn-primary"
             onClick={generate}
             disabled={loading || !prompt.trim()}
@@ -441,7 +441,7 @@ Return ONLY the raw markdown content, no explanations.`
       }}>
         <div className="tab-bar">
           {["split", "editor", "preview"].map(t => (
-            <button key={t} className={`tab ${activeTab === t ? "active" : ""}`} onClick={() => setActiveTab(t)}>
+            <button type="button" key={t} className={`tab ${activeTab === t ? "active" : ""}`} onClick={() => setActiveTab(t)}>
               {t === "split" ? "⊟ Split" : t === "editor" ? "✎ Editor" : "👁 Preview"}
             </button>
           ))}

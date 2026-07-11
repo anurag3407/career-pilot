@@ -53,14 +53,14 @@ export default function PortfolioProjectCarousel() {
         </p>
 
         <div className="flex justify-center gap-4 mt-6">
-          <button
+          <button type="button"
             onClick={prevSlide}
             className="p-2 rounded-lg border"
           >
             <ChevronLeft size={18} />
           </button>
 
-          <button
+          <button type="button"
             onClick={nextSlide}
             className="p-2 rounded-lg border"
           >

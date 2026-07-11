@@ -88,7 +88,7 @@ export default function ChannelList({
     <div className="py-2">
       {/* Create Channel Button */}
       <div className="px-3 mb-2">
-        <button
+        <button type="button"
           onClick={onCreateChannel}
           className="w-full flex items-center gap-2 px-3 py-2 text-sm text-muted-foreground hover:bg-muted rounded-lg transition-colors"
         >
@@ -101,7 +101,7 @@ export default function ChannelList({
       {Object.entries(groupedChannels).map(([category, categoryChannels]) => (
         <div key={category} className="mb-1">
           {/* Category Header */}
-          <button
+          <button type="button"
             onClick={() => toggleCategory(category)}
             className="w-full flex items-center gap-1 px-3 py-1.5 text-xs font-semibold text-muted-foreground uppercase tracking-wider hover:text-foreground"
           >
@@ -169,7 +169,7 @@ export default function ChannelList({
       {channels.length === 0 && !loading && (
         <div className="px-4 py-8 text-center text-muted-foreground">
           <p className="text-sm">No channels yet</p>
-          <button
+          <button type="button"
             onClick={onCreateChannel}
             className="mt-2 text-primary hover:text-primary/80 text-sm font-medium"
           >

@@ -230,7 +230,7 @@ const FileExplorer = () => {
                     <FileJson className="w-4 h-4 text-violet-400" />
                     AI Explanation
                   </h3>
-                  <button 
+                  <button type="button" 
                     onClick={() => setExplanation(null)}
                     className="text-xs text-slate-400 hover:text-white"
                   >
@@ -276,7 +276,7 @@ const FileExplorer = () => {
                       )}
                       
                       <div className="pt-4 border-t border-white/10">
-                        <button 
+                        <button type="button" 
                           onClick={startFileChat}
                           className="w-full py-2 bg-white/5 hover:bg-white/10 border border-white/10 rounded-lg text-sm text-white transition-colors"
                         >

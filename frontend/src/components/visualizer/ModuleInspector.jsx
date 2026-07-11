@@ -40,7 +40,7 @@ const ModuleInspector = () => {
               <span className="text-slate-400">{loc?.toLocaleString()} LOC</span>
             </div>
           </div>
-          <button 
+          <button type="button" 
             onClick={() => setInspectorOpen(false)}
             className="p-1.5 rounded-md hover:bg-white/10 text-slate-400 hover:text-white transition-colors"
           >
@@ -80,7 +80,7 @@ const ModuleInspector = () => {
                   // extract relative path or filename
                   const fileName = file.split('/').pop();
                   return (
-                    <button
+                    <button type="button"
                       key={file}
                       onClick={() => setSelectedFile({ relativePath: file, fileName })}
                       className="text-left px-3 py-2 rounded-lg hover:bg-cyan-500/10 text-sm text-slate-400 hover:text-cyan-400 border border-transparent hover:border-cyan-500/20 transition-colors flex items-center gap-2 group"
@@ -97,7 +97,7 @@ const ModuleInspector = () => {
 
         {/* Bottom Actions */}
         <div className="pt-5 mt-auto border-t border-white/10">
-          <button
+          <button type="button"
             onClick={handleAskAI}
             className="w-full py-3 px-4 rounded-xl bg-gradient-to-r from-violet-600 to-indigo-600 hover:from-violet-500 hover:to-indigo-500 text-white font-medium flex items-center justify-center gap-2 transition-all shadow-lg shadow-violet-500/25 active:scale-95"
           >

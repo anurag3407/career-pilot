@@ -219,7 +219,7 @@ export default function PostCard({
                 </span>
               </p>
 
-              <button
+              <button type="button"
                 onClick={() =>
                   onCancelSchedule(
                     post.id || post._id
@@ -256,7 +256,7 @@ export default function PostCard({
                 {previewText + '...'}
               </ReactMarkdown>
 
-              <button
+              <button type="button"
                 onClick={() =>
                   setShowFullContent(true)
                 }
@@ -279,7 +279,7 @@ export default function PostCard({
                 {post.content}
               </ReactMarkdown>
               {shouldTruncate && (
-                <button
+                <button type="button"
                   onClick={() => setShowFullContent(false)}
                   className="text-primary hover:text-primary/80 font-medium text-sm mt-2 block"
                 >
@@ -392,7 +392,7 @@ export default function PostCard({
       {/* Actions */}
       <div className="px-4 py-3 border-t border-border flex items-center justify-between">
         <div className="flex items-center gap-4">
-          <button
+          <button type="button"
             onClick={() =>
               onLike(post.id || post._id)
             }
@@ -419,7 +419,7 @@ export default function PostCard({
           </button>
 
           {/* Comments */}
-          <button
+          <button type="button"
             onClick={() =>
               setShowComments(!showComments)
             }
@@ -447,7 +447,7 @@ export default function PostCard({
           </button>
 
           {/* Share */}
-          <button
+          <button type="button"
             onClick={handleShare}
             className="flex items-center gap-1.5 text-sm text-muted-foreground hover:text-primary"
           >
@@ -455,7 +455,7 @@ export default function PostCard({
           </button>
         </div>
 
-        <button
+        <button type="button"
           onClick={handleShare}
           className="p-1.5 rounded-lg hover:bg-muted text-muted-foreground hover:text-foreground transition-colors"
           title="Share Post"

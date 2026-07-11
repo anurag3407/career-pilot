@@ -32,7 +32,7 @@ export default function AIProviderSelector() {
   return (
     <div className="relative" ref={containerRef}>
       {/* Trigger Button */}
-      <button
+      <button type="button"
         onClick={() => setIsOpen((prev) => !prev)}
         className="flex items-center gap-2 p-2 rounded-xl bg-muted border border-border hover:bg-accent text-foreground transition-all"
         aria-label="Select AI Provider"
@@ -74,7 +74,7 @@ export default function AIProviderSelector() {
                   const isActive = id === activeProviderId;
                   
                   return (
-                    <button
+                    <button type="button"
                       key={id}
                       onClick={() => {
                         setActiveProvider(id);

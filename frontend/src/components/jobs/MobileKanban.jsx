@@ -109,7 +109,7 @@ const JobCard = memo(function JobCard({
                   <h4 className="font-bold text-foreground text-sm leading-tight line-clamp-2">
                     {job.title || "Untitled Position"}
                   </h4>
-                  <button
+                  <button type="button"
                     onClick={() => onDelete(job.id)}
                     className="shrink-0 text-muted-foreground/50 hover:text-red-500 transition-colors p-1 -mr-1 -mt-1"
                     aria-label={`Remove ${job.title}`}

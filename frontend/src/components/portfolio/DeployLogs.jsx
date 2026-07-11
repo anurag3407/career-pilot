@@ -32,7 +32,7 @@ export default function DeployLogs({ logs = [] }) {
           Deployment Logs
         </h2>
 
-        <button
+        <button type="button"
           onClick={copyLogs}
           className="px-3 py-1 rounded bg-gray-800 hover:bg-gray-700 text-white text-xs transition"
         >

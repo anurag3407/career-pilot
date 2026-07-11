@@ -165,7 +165,7 @@ export default function Navbar() {
                     className="absolute top-14 left-0 w-full bg-background border border-border rounded-xl shadow-xl overflow-hidden"
                   >
                     {searchSuggestions.map((item, index) => (
-                      <button
+                      <button type="button"
                         key={index}
                         className="w-full text-left px-4 py-3 hover:bg-muted transition-colors text-sm text-foreground"
                       >
@@ -183,7 +183,7 @@ export default function Navbar() {
               onMouseEnter={() => setShowProductsDropdown(true)}
               onMouseLeave={() => setShowProductsDropdown(false)}
             >
-              <button
+              <button type="button"
                 className={`nav-link ${showProductsDropdown ? 'nav-link-active' : 'nav-link-inactive'}`}
               >
                 Products
@@ -253,7 +253,7 @@ export default function Navbar() {
             <AIProviderSelector />
 
             {/* Theme Toggle */}
-            <button
+            <button type="button"
               onClick={toggleTheme}
               className="p-2 rounded-xl bg-muted hover:bg-accent border border-border text-foreground transition-all"
               aria-label="Toggle theme"
@@ -278,7 +278,7 @@ export default function Navbar() {
             {user ? (
               <>
                 {/* Notification Bell */}
-                <button
+                <button type="button"
                   className="relative p-2 rounded-xl bg-muted border border-border hover:bg-accent transition-all"
                   aria-label="Notifications"
                 >
@@ -293,7 +293,7 @@ export default function Navbar() {
 
                 {/* User Dropdown */}
                 <div className="relative">
-                  <button
+                  <button type="button"
                     onClick={() => setShowDropdown(!showDropdown)}
                     className="flex items-center gap-2 px-3 py-2 bg-muted border border-border rounded-full hover:bg-accent transition-all"
                     aria-label="User menu"
@@ -338,7 +338,7 @@ export default function Navbar() {
                           Settings
                         </Link>
 
-                        <button
+                        <button type="button"
                           onClick={handleLogout}
                           className="flex items-center gap-2 w-full px-4 py-3 text-left hover:bg-destructive/10 text-destructive transition-colors text-sm"
                         >
@@ -372,7 +372,7 @@ export default function Navbar() {
           {/* Mobile Menu */}
           <div className="flex items-center gap-2 md:hidden">
             <AIProviderSelector />
-            <button
+            <button type="button"
               onClick={toggleTheme}
               className="p-2 rounded-xl bg-muted border border-border"
               aria-label="Toggle theme"
@@ -384,7 +384,7 @@ export default function Navbar() {
               )}
             </button>
 
-            <button
+            <button type="button"
               onClick={() => setMobileMenuOpen(!mobileMenuOpen)}
               className="p-2 rounded-lg hover:bg-muted transition-all"
               aria-label={mobileMenuOpen ? "Close main navigation menu" : "Open main navigation menu"}
@@ -468,7 +468,7 @@ export default function Navbar() {
 
 
               {user ? (
-                <button
+                <button type="button"
                   onClick={() => {
                     handleLogout()
                     setMobileMenuOpen(false)

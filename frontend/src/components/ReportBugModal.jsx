@@ -55,7 +55,7 @@ export default function ReportBugModal({ isOpen, onClose }) {
                 <Bug className="w-5 h-5 text-red-500" />
                 <h2 className="text-lg font-bold">Report a Bug</h2>
               </div>
-              <button
+              <button type="button"
                 onClick={onClose}
                 className="p-2 rounded-xl hover:bg-muted text-muted-foreground transition-colors"
               >

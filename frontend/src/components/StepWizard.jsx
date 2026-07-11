@@ -77,7 +77,7 @@ export default function StepWizard({ steps = [], currentStep = 0, onStepChange }
 
       {/* Navigation */}
       <div className="flex justify-between">
-          <button
+          <button type="button"
             onClick={() => onStepChange?.(currentStep - 1)}
             disabled={isFirst}
             className={cn(
@@ -91,7 +91,7 @@ export default function StepWizard({ steps = [], currentStep = 0, onStepChange }
             Previous
           </button>
 
-          <button
+          <button type="button"
             onClick={() => onStepChange?.(currentStep + 1)}
             disabled={isLast}
             className={cn(
