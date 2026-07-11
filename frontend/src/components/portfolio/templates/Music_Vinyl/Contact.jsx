@@ -51,7 +51,7 @@ export default function Contact({ personal, socials }) {
                   placeholder="What's on your mind?"
                 ></textarea>
               </div>
-              <button className="w-full bg-amber-600 hover:bg-amber-500 text-[#0a0502] font-bold uppercase tracking-widest py-3 px-6 rounded-lg flex items-center justify-center space-x-2 transition-colors">
+              <button type="button" className="w-full bg-amber-600 hover:bg-amber-500 text-[#0a0502] font-bold uppercase tracking-widest py-3 px-6 rounded-lg flex items-center justify-center space-x-2 transition-colors">
                 <span>Send Track</span>
                 <Send className="w-4 h-4" />
               </button>

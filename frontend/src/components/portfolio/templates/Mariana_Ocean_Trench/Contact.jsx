@@ -243,7 +243,7 @@ export default function Contact({ personal, socials }) {
             )}
             
             {/* Return to Surface */}
-            <button 
+            <button type="button" 
               onClick={handleScrollToTop}
               className="flex-1 sm:flex-initial py-2.5 px-5 bg-cyan-950/20 border border-cyan-500/30 hover:border-cyan-400 rounded-lg flex items-center justify-center gap-2 text-cyan-300 hover:shadow-[0_0_15px_rgba(34,211,238,0.25)] transition-all cursor-pointer"
             >

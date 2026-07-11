@@ -58,7 +58,7 @@ function Navbar() {
           <a href={`mailto:${data.socials?.email ?? "#"}`} className="hidden sm:inline-flex bg-white text-black text-xs font-mono font-bold px-3 py-1.5 rounded-lg hover:opacity-80 transition-opacity">
             Hire Me →
           </a>
-          <button className="md:hidden text-zinc-400" onClick={() => setOpen(v => !v)}>
+          <button type="button" className="md:hidden text-zinc-400" onClick={() => setOpen(v => !v)}>
             {open ? <X size={18}/> : <Menu size={18}/>}
           </button>
         </div>
@@ -609,7 +609,7 @@ function Footer() {
           <span className="text-zinc-600 font-mono text-xs">© {new Date().getFullYear()} {data.personal?.name}</span>
         </div>
         <Badge status="ready"/>
-        <button onClick={() => window.scrollTo({ top: 0, behavior: "smooth" })}
+        <button type="button" onClick={() => window.scrollTo({ top: 0, behavior: "smooth" })}
           className="w-8 h-8 bg-zinc-900 border border-zinc-800 rounded-lg flex items-center justify-center text-zinc-500 hover:text-emerald-400 hover:border-emerald-500/40 transition-all">
           <ArrowUp size={13}/>
         </button>

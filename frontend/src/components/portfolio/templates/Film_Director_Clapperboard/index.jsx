@@ -858,7 +858,7 @@ function Navbar() {
         </div>
         <div className="hidden md:flex items-center">
           {navItems.map((item) => (
-            <button
+            <button type="button"
               key={item}
               onClick={() => scrollTo(item)}
               className="relative px-3 py-1.5"
@@ -878,7 +878,7 @@ function Navbar() {
             </button>
           ))}
         </div>
-        <button className="md:hidden" onClick={() => setMobileOpen(!mobileOpen)} style={{ color: DIM }}>
+        <button type="button" className="md:hidden" onClick={() => setMobileOpen(!mobileOpen)} style={{ color: DIM }}>
           {mobileOpen ? <XIcon size={16} /> : <Menu size={16} />}
         </button>
       </div>
@@ -892,7 +892,7 @@ function Navbar() {
             style={{ backgroundColor: VOID, borderTop: `1px solid ${BORDER}` }}
           >
             {navItems.map((item) => (
-              <button
+              <button type="button"
                 key={item}
                 onClick={() => scrollTo(item)}
                 className="block w-full text-left px-8 py-3"
@@ -1543,7 +1543,7 @@ function Projects() {
               { d: "left", cls: "left-2 -translate-x-5" },
               { d: "right", cls: "right-2 translate-x-5" },
             ].map(({ d }) => (
-              <button
+              <button type="button"
                 key={d}
                 onClick={() => scroll(d)}
                 className="absolute w-9 h-9 rounded-full flex items-center justify-center z-30 transition-all duration-300 hover:scale-110 shadow-lg top-1/2 -translate-y-1/2"

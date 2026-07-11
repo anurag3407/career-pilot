@@ -453,7 +453,7 @@ export default function SlotMachine() {
                 
                 {/* Audio and Cheat Controls inside cabinet */}
                 <div className="flex items-center gap-3">
-                  <button
+                  <button type="button"
                     onClick={() => {
                       setVolumeOn(!volumeOn);
                       playRetroSound("tick");
@@ -464,7 +464,7 @@ export default function SlotMachine() {
                     {volumeOn ? <Volume2 size={18} /> : <VolumeX size={18} />}
                   </button>
 
-                  <button
+                  <button type="button"
                     onClick={() => {
                       setIsCheatMode(!isCheatMode);
                       playRetroSound("tick");
@@ -579,7 +579,7 @@ export default function SlotMachine() {
                 </div>
 
                 {/* Big Spin Button */}
-                <button
+                <button type="button"
                   onClick={handleSpin}
                   disabled={isSpinning.some(Boolean) || credits <= 0}
                   className={`w-full md:w-auto min-w-[180px] h-14 rounded-2xl flex items-center justify-center gap-3.5 text-base font-black uppercase tracking-widest text-black transition-all cursor-pointer relative overflow-hidden select-none ${

@@ -24,7 +24,7 @@ export default function Hero() {
             visual identity.
           </p>
 
-          <button className="group flex items-center gap-3 border border-black px-6 py-3 hover:bg-black hover:text-white transition-all duration-300">
+          <button type="button" className="group flex items-center gap-3 border border-black px-6 py-3 hover:bg-black hover:text-white transition-all duration-300">
             Explore Portfolio
 
             <ArrowRight

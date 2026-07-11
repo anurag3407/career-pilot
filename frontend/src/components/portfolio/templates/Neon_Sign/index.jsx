@@ -193,7 +193,7 @@ function NeonNav({ menuOpen, setMenuOpen }) {
       </Motion.a>
 
       {/* Mobile hamburger */}
-      <button
+      <button type="button"
         className="md:hidden p-2 rounded border border-pink-500/40 text-pink-400 cursor-pointer"
         style={{ background: 'rgba(255,43,214,0.06)', boxShadow: '0 0 8px #ff2bd620' }}
         onClick={() => setMenuOpen((o) => !o)}
@@ -257,7 +257,7 @@ function MobileAccordion({ sectionId, label, color, children }) {
       className="border-b border-white/5"
       style={{ borderColor: `${color}20` }}
     >
-      <button
+      <button type="button"
         id={sectionId}
         onClick={() => setOpen((o) => !o)}
         className="w-full flex items-center justify-between px-5 py-4 cursor-pointer"

@@ -87,13 +87,13 @@ export default function Testimonials({ testimonials = [] }) {
                   MSG {activeIndex + 1} / {testimonials.length}
                 </span>
                 <div className="flex gap-4">
-                  <button 
+                  <button type="button" 
                     onClick={prevTestimonial}
                     className="font-retro-title text-[10px] px-3 py-2 bg-neutral-900 border-2 border-black text-[#ffde00] hover:bg-neutral-800 active:translate-y-1 shadow-[2px_2px_0px_0px_#000000] cursor-pointer"
                   >
                     ◀ PREV
                   </button>
-                  <button 
+                  <button type="button" 
                     onClick={nextTestimonial}
                     className="font-retro-title text-[10px] px-3 py-2 bg-[#ffde00] border-2 border-black text-black hover:bg-[#ffea00] active:translate-y-1 shadow-[2px_2px_0px_0px_#000000] cursor-pointer"
                   >

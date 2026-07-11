@@ -64,7 +64,7 @@ function ToolbarButton({ icon: Icon, label, isActive, onClick }) {
   const { portfolioData: data } = usePortfolio();
 
   return (
-    <button
+    <button type="button"
       onClick={onClick}
       title={label}
       className={`p-1.5 rounded-md transition-colors ${
@@ -130,7 +130,7 @@ function LayerItem({ label, color, isSelected, isVisible, onClick, onToggleVisib
       onClick={onClick}
     >
       {hasChildren ? (
-        <button
+        <button type="button"
           onClick={(e) => { e.stopPropagation(); onToggleExpanded?.(); }}
           className="text-[#666] hover:text-[#ababab]"
         >
@@ -141,7 +141,7 @@ function LayerItem({ label, color, isSelected, isVisible, onClick, onToggleVisib
       )}
       <Frame size={10} style={{ color }} />
       <span className="flex-1 truncate text-[11px]">{label}</span>
-      <button
+      <button type="button"
         onClick={(e) => { e.stopPropagation(); onToggleVisibility(); }}
         className="opacity-0 group-hover:opacity-100 text-[#666] hover:text-[#ababab] transition-opacity"
       >
@@ -468,20 +468,20 @@ export default function FigmaCanvas() {
 
         <div className="flex items-center gap-2">
           <div className="flex items-center gap-1 bg-[#1e1e1e] rounded-md px-2 py-1">
-            <button
+            <button type="button"
               onClick={() => adjustZoom(-0.1)}
               className="text-[#ababab] hover:text-white transition-colors"
             >
               <ZoomOut size={14} />
             </button>
             <span className="text-xs text-[#ababab] w-8 sm:w-10 text-center">{zoomPercent}%</span>
-            <button
+            <button type="button"
               onClick={() => adjustZoom(0.1)}
               className="text-[#ababab] hover:text-white transition-colors"
             >
               <ZoomIn size={14} />
             </button>
-            <button
+            <button type="button"
               onClick={fitAll}
               className="text-[#ababab] hover:text-white transition-colors ml-1"
               title="Zoom to fit"
@@ -490,11 +490,11 @@ export default function FigmaCanvas() {
             </button>
           </div>
 
-          <button className="hidden sm:flex items-center gap-1.5 bg-[#0d99ff] hover:bg-[#0b87e0] text-white text-xs font-medium px-3 py-1.5 rounded-lg transition-colors">
+          <button type="button" className="hidden sm:flex items-center gap-1.5 bg-[#0d99ff] hover:bg-[#0b87e0] text-white text-xs font-medium px-3 py-1.5 rounded-lg transition-colors">
             <Play size={12} fill="white" />
             Present
           </button>
-          <button className="flex items-center gap-1.5 bg-[#0d99ff] hover:bg-[#0b87e0] text-white text-xs font-medium px-3 py-1.5 rounded-lg transition-colors">
+          <button type="button" className="flex items-center gap-1.5 bg-[#0d99ff] hover:bg-[#0b87e0] text-white text-xs font-medium px-3 py-1.5 rounded-lg transition-colors">
             <Share2 size={12} />
             Share
           </button>
@@ -525,10 +525,10 @@ export default function FigmaCanvas() {
                   Layers
                 </div>
                 <div className="flex items-center gap-1">
-                  <button className="text-[#ababab] hover:text-white p-0.5">
+                  <button type="button" className="text-[#ababab] hover:text-white p-0.5">
                     <Search size={12} />
                   </button>
-                  <button
+                  <button type="button"
                     onClick={() => setShowLayers(false)}
                     className="md:hidden text-[#ababab] hover:text-white p-0.5 ml-1"
                   >
@@ -599,7 +599,7 @@ export default function FigmaCanvas() {
         >
           {/* Layers toggle (mobile) */}
           {!showLayers && (
-            <button
+            <button type="button"
               onClick={() => setShowLayers(true)}
               className="md:hidden fixed top-14 left-2 z-30 bg-[#2c2c2c] border border-[#3c3c3c] rounded-md p-1.5 text-[#ababab]"
             >
@@ -1060,7 +1060,7 @@ export default function FigmaCanvas() {
                           rows={3}
                           className="w-full bg-[#1e1e2e] border border-[#3c3c3c] rounded-lg px-4 py-2.5 text-xs text-white placeholder-[#666] focus:outline-none focus:border-[#14ae5c] transition-colors resize-none"
                         />
-                        <button className="flex items-center gap-2 bg-[#14ae5c] hover:bg-[#12994f] text-white text-xs font-medium px-5 py-2.5 rounded-lg transition-colors w-full justify-center">
+                        <button type="button" className="flex items-center gap-2 bg-[#14ae5c] hover:bg-[#12994f] text-white text-xs font-medium px-5 py-2.5 rounded-lg transition-colors w-full justify-center">
                           <Send size={12} />
                           Send Message
                         </button>
@@ -1091,7 +1091,7 @@ export default function FigmaCanvas() {
       {/* ======= BOTTOM BAR ======= */}
       <div className="h-7 bg-[#2c2c2c] border-t border-[#3c3c3c] flex items-center justify-between px-3 shrink-0 text-[10px] text-[#666] z-50">
         <div className="flex items-center gap-3">
-          <button
+          <button type="button"
             onClick={() => setShowLayers(!showLayers)}
             className="hidden md:flex items-center gap-1 hover:text-[#ababab] transition-colors"
           >

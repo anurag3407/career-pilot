@@ -116,7 +116,7 @@ export default function ProjectsSection({ data, onChoice }) {
           </div>
 
           <div className="flex items-center justify-between px-6 pb-5">
-            <button
+            <button type="button"
               onClick={() => setActiveIndex((p) => Math.max(0, p - 1))}
               disabled={activeIndex === 0}
               className="flex items-center gap-1 text-xs text-slate-400 hover:text-white disabled:opacity-30 disabled:cursor-not-allowed transition-colors"
@@ -126,7 +126,7 @@ export default function ProjectsSection({ data, onChoice }) {
             </button>
             <div className="flex gap-1.5">
               {projects.map((p, i) => (
-                <button
+                <button type="button"
                   key={i}
                   onClick={() => setActiveIndex(i)}
                   aria-label={`View project: ${p.title}`}
@@ -135,7 +135,7 @@ export default function ProjectsSection({ data, onChoice }) {
                 />
               ))}
             </div>
-            <button
+            <button type="button"
               onClick={() => setActiveIndex((p) => Math.min(projects.length - 1, p + 1))}
               disabled={activeIndex === projects.length - 1}
               className="flex items-center gap-1 text-xs text-slate-400 hover:text-white disabled:opacity-30 disabled:cursor-not-allowed transition-colors"

@@ -26,7 +26,7 @@ const Projects = ({ data }) => {
           <span className="text-purple-300 font-semibold">🃟 PROJECT DECK 🃟</span>
         </div>
         <h2 className="text-4xl md:text-5xl font-bold text-white mb-4">My Project Cards</h2>
-        <button onClick={handleShuffle} disabled={shuffling}
+        <button type="button" onClick={handleShuffle} disabled={shuffling}
           className="mt-4 px-6 py-2 bg-purple-600 text-white rounded-lg hover:bg-purple-500 transition-all">
           {shuffling ? 'Shuffling...' : '🔀 Shuffle Deck'}
         </button>
