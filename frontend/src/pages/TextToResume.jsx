@@ -88,7 +88,7 @@ export default function TextToResume() {
             </div>
 
             <div className="flex justify-end pt-4">
-              <button
+              <button type="button"
                 onClick={handleConvert}
                 disabled={isLoading || !text.trim()}
                 className="px-8 py-3 rounded-full bg-primary text-primary-foreground font-medium flex items-center gap-2 hover:bg-primary/90 hover:scale-[1.02] active:scale-[0.98] transition-all disabled:opacity-50 disabled:pointer-events-none shadow-lg shadow-primary/20"

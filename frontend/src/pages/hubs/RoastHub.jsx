@@ -68,7 +68,7 @@ export default function RoastHub() {
                     {new Date(r.createdAt).toLocaleDateString()}
                   </p>
                 </Link>
-                <button
+                <button type="button"
                   onClick={(e) => {
                     e.preventDefault();
                     removeFromHistory(r._id || r.id);

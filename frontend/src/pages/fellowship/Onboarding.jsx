@@ -201,7 +201,7 @@ export default function Onboarding() {
                                 <p className="mt-1 text-right text-xs text-muted-foreground">{bio.length}/500 characters</p>
                             </div>
 
-                            <button
+                            <button type="button"
                                 onClick={handleCompanySubmit}
                                 disabled={loading || !companyName.trim()}
                                 className="w-full py-3 bg-blue-600 hover:bg-blue-500 text-foreground rounded-xl font-medium disabled:opacity-50 disabled:cursor-not-allowed flex items-center justify-center gap-2"
@@ -257,7 +257,7 @@ export default function Onboarding() {
                                 />
                             </div>
 
-                            <button
+                            <button type="button"
                                 onClick={handleSendVerification}
                                 disabled={loading || !email.trim()}
                                 className="w-full py-3 bg-emerald-600 hover:bg-emerald-500 text-foreground rounded-xl font-medium disabled:opacity-50 disabled:cursor-not-allowed flex items-center justify-center gap-2"
@@ -265,7 +265,7 @@ export default function Onboarding() {
                                 {loading ? <Loader2 className="w-5 h-5 animate-spin" /> : 'Send Verification Code'}
                             </button>
 
-                            <button
+                            <button type="button"
                                 onClick={handleSkipVerification}
                                 disabled={loading}
                                 className="w-full py-2 text-muted-foreground hover:text-foreground text-sm disabled:opacity-50"
@@ -296,7 +296,7 @@ export default function Onboarding() {
                                 className="w-full px-4 py-4 bg-background border border-border rounded-xl text-foreground text-center text-2xl tracking-widest placeholder:text-muted-foreground/80 focus:outline-none focus:border-emerald-500"
                             />
 
-                            <button
+                            <button type="button"
                                 onClick={handleVerifyCode}
                                 disabled={loading || verificationCode.length !== 6}
                                 className="w-full py-3 bg-emerald-600 hover:bg-emerald-500 text-foreground rounded-xl font-medium disabled:opacity-50 disabled:cursor-not-allowed flex items-center justify-center gap-2"
@@ -304,7 +304,7 @@ export default function Onboarding() {
                                 {loading ? <Loader2 className="w-5 h-5 animate-spin" /> : 'Verify'}
                             </button>
 
-                            <button
+                            <button type="button"
                                 onClick={handleSendVerification}
                                 disabled={loading}
                                 className="w-full py-2 text-muted-foreground hover:text-foreground text-sm"

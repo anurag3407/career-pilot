@@ -201,7 +201,7 @@ export default function ResumeHub() {
                     <Eye className="w-3.5 h-3.5 inline mr-1" />
                     View
                   </Link>
-                  <button
+                  <button type="button"
                     onClick={() => handleDelete(resume._id)}
                     className="text-xs font-semibold px-3 py-2 rounded-lg bg-destructive/10 text-destructive hover:bg-destructive/20 transition-colors"
                   >

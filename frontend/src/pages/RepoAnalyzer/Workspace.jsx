@@ -39,7 +39,7 @@ export default function RepoAnalyzerWorkspace() {
         </div>
 
         <div className="flex items-center gap-3">
-          <button
+          <button type="button"
             onClick={() => navigate('/repo-analyzer/dashboard')}
             className="px-3 py-1.5 text-sm font-medium rounded-md bg-slate-800 hover:bg-slate-700 text-slate-300 transition-all cursor-pointer mr-2"
           >
@@ -47,13 +47,13 @@ export default function RepoAnalyzerWorkspace() {
           </button>
           <span className="text-sm text-slate-400 font-medium">Mode:</span>
           <div className="flex items-center bg-[#0f172a] rounded-lg p-1 border border-slate-700">
-            <button
+            <button type="button"
               onClick={() => setIsInterviewMode(false)}
               className={`px-3 py-1.5 text-sm font-medium rounded-md transition-all cursor-pointer ${!isInterviewMode ? 'bg-blue-600 text-white' : 'text-slate-400 hover:text-slate-200'}`}
             >
               QA Engine
             </button>
-            <button
+            <button type="button"
               onClick={() => setIsInterviewMode(true)}
               className={`px-3 py-1.5 text-sm font-medium rounded-md transition-all cursor-pointer ${isInterviewMode ? 'bg-red-600 text-white' : 'text-slate-400 hover:text-slate-200'}`}
             >

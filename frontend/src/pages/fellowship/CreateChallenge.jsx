@@ -95,7 +95,7 @@ export default function CreateChallenge() {
 
     return (
         <div className="max-w-2xl mx-auto space-y-6">
-            <button
+            <button type="button"
                 onClick={() => navigate(-1)}
                 className="flex items-center gap-2 text-muted-foreground hover:text-foreground text-sm"
             >
@@ -213,7 +213,7 @@ export default function CreateChallenge() {
                             {requirements.map((req, i) => (
                                 <span key={i} className="flex items-center gap-1 px-3 py-1 bg-muted text-foreground rounded-lg text-sm">
                                     {req}
-                                    <button onClick={() => handleRemoveRequirement(i)} className="hover:text-red-400">
+                                    <button type="button" onClick={() => handleRemoveRequirement(i)} className="hover:text-red-400">
                                         <X className="w-3 h-3" />
                                     </button>
                                 </span>
@@ -223,13 +223,13 @@ export default function CreateChallenge() {
                 </div>
 
                 <div className="flex gap-3 pt-4 border-t border-border">
-                    <button
+                    <button type="button"
                         onClick={() => navigate(-1)}
                         className="px-6 py-3 bg-muted text-foreground rounded-xl font-medium hover:bg-muted/80"
                     >
                         Cancel
                     </button>
-                    <button
+                    <button type="button"
                         onClick={handleSubmit}
                         disabled={!isValid || loading}
                         className="flex-1 py-3 bg-emerald-600 hover:bg-emerald-500 text-foreground rounded-xl font-medium disabled:opacity-50 disabled:cursor-not-allowed flex items-center justify-center gap-2"

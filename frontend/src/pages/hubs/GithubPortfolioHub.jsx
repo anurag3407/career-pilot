@@ -71,14 +71,14 @@ export default function GithubPortfolioHub() {
             </p>
             <div className="flex flex-wrap gap-2">
               <Link to="/settings">
-                <button className="inline-flex items-center gap-1.5 rounded-lg border border-border px-3 py-1.5 text-xs font-semibold hover:bg-muted">
+                <button type="button" className="inline-flex items-center gap-1.5 rounded-lg border border-border px-3 py-1.5 text-xs font-semibold hover:bg-muted">
                   <Key className="h-3.5 w-3.5" />
                   Manage GitHub settings
                 </button>
               </Link>
               {!oauthConnected && (
                 <Link to="/settings">
-                  <button className="inline-flex items-center gap-1.5 rounded-lg bg-primary px-3 py-1.5 text-xs font-semibold text-primary-foreground hover:bg-primary/90">
+                  <button type="button" className="inline-flex items-center gap-1.5 rounded-lg bg-primary px-3 py-1.5 text-xs font-semibold text-primary-foreground hover:bg-primary/90">
                     <ShieldCheck className="h-3.5 w-3.5" />
                     Connect with OAuth
                   </button>
@@ -126,7 +126,7 @@ export default function GithubPortfolioHub() {
                     {new Date(b.createdAt).toLocaleDateString()}
                   </p>
                 </Link>
-                <button
+                <button type="button"
                   onClick={() => removeBuild(b._id)}
                   className="absolute top-3 right-3 text-xs text-muted-foreground hover:text-destructive transition-colors opacity-0 group-hover:opacity-100"
                 >

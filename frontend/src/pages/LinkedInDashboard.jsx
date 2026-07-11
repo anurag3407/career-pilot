@@ -266,7 +266,7 @@ export default function LinkedInDashboard() {
                 )}
 
                 <div className="pt-6 border-t border-white/10 flex justify-end">
-                  <button
+                  <button type="button"
                     onClick={handleImport}
                     disabled={isImporting}
                     className="px-8 py-3 bg-[#0077b5] text-white rounded-full font-medium hover:bg-[#005885] hover:scale-105 active:scale-95 transition-all flex items-center gap-2 shadow-lg shadow-[#0077b5]/25 disabled:opacity-50 disabled:pointer-events-none"

@@ -72,7 +72,7 @@ export default function InterviewReplay() {
       <div className="max-w-4xl mx-auto px-4 py-16 text-center">
         <h2 className="text-2xl font-bold text-foreground mb-4">Error Loading Interview</h2>
         <p className="text-muted-foreground mb-6">{error}</p>
-        <button
+        <button type="button"
           onClick={() => navigate('/interview-history')}
           className="inline-flex items-center gap-2 text-primary hover:underline"
         >
@@ -87,7 +87,7 @@ export default function InterviewReplay() {
     return (
       <div className="max-w-4xl mx-auto px-4 py-16 text-center">
         <h2 className="text-2xl font-bold text-foreground mb-4">Interview Not Found</h2>
-        <button
+        <button type="button"
           onClick={() => navigate('/interview-history')}
           className="inline-flex items-center gap-2 text-primary hover:underline"
         >
@@ -102,7 +102,7 @@ export default function InterviewReplay() {
     <div className="max-w-4xl mx-auto px-4 py-8 sm:px-6 lg:px-8">
       {/* Header and Back Button */}
       <div className="mb-6">
-        <button
+        <button type="button"
           onClick={() => navigate('/interview-history')}
           className="inline-flex items-center gap-2 text-muted-foreground hover:text-foreground mb-4 transition-colors text-sm font-medium"
         >
@@ -341,7 +341,7 @@ function AnswerWithExtras({ interviewId, answer, index }) {
               rows={2}
               className="flex-1 text-sm bg-muted/40 border border-border rounded-lg px-3 py-2 text-foreground focus:ring-2 focus:ring-primary focus:border-primary/50 resize-y"
             />
-            <button
+            <button type="button"
               onClick={saveAnnotation}
               disabled={!annotation.trim() || saving}
               className="inline-flex items-center gap-1.5 px-3 py-2 rounded-lg bg-primary text-primary-foreground text-sm font-medium disabled:opacity-50 hover:bg-primary/90 transition-colors"

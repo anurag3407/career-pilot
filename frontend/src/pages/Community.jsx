@@ -279,7 +279,7 @@ export default function Community() {
 <div className={`${sidebarOpen ? 'w-72' : 'w-0'} bg-background border-r border-border flex flex-col transition-all duration-300 overflow-hidden shrink-0`}>          {/* View Tabs */}
           <div className="p-3 border-b border-border">
 <div className="flex gap-1 bg-muted p-1 rounded-lg w-full">
-                <button
+                <button type="button"
                 onClick={() => handleTabChange('channels')}
                 className={`flex-1 flex items-center justify-center gap-1.5 py-2 px-3 rounded-md text-sm font-medium transition-colors ${activeView === 'channels' ? 'bg-card text-foreground shadow-sm' : 'text-muted-foreground hover:text-foreground'
                   }`}
@@ -287,7 +287,7 @@ export default function Community() {
                 <MessageSquare className="w-4 h-4" />
                 <span className="inline">Chat</span>
               </button>
-              <button
+              <button type="button"
                 onClick={() => handleTabChange('posts')}
                 className={`flex-1 flex items-center justify-center gap-1.5 py-2 px-3 rounded-md text-sm font-medium transition-colors ${activeView === 'posts' ? 'bg-card text-foreground shadow-sm' : 'text-muted-foreground hover:text-foreground'
                   }`}
@@ -295,7 +295,7 @@ export default function Community() {
                 <FileText className="w-4 h-4" />
                 <span className="inline">Posts</span>
               </button>
-              <button
+              <button type="button"
                 onClick={() => handleTabChange('dms')}
                 className={`flex-1 flex items-center justify-center gap-1.5 py-2 px-3 rounded-md text-sm font-medium transition-colors ${activeView === 'dms' ? 'bg-card text-foreground shadow-sm' : 'text-muted-foreground hover:text-foreground'
                   }`}
@@ -333,7 +333,7 @@ export default function Community() {
         </div>
 
         {/* Sidebar Toggle */}
-        <button
+        <button type="button"
           onClick={() => setSidebarOpen(!sidebarOpen)}
           className="absolute left-0 top-1/2 -translate-y-1/2 z-10 bg-card border border-border rounded-r-lg p-1.5 shadow-md hover:bg-muted lg:hidden"
         >
@@ -384,7 +384,7 @@ export default function Community() {
 
         {/* Members Toggle */}
         {activeView === 'channels' && (
-          <button
+          <button type="button"
             onClick={() => setMembersOpen(!membersOpen)}
             className="absolute right-0 top-1/2 -translate-y-1/2 z-10 bg-card border border-border rounded-l-lg p-1.5 shadow-md hover:bg-muted hidden lg:block"
           >
@@ -441,7 +441,7 @@ function CreateChannelModal({ onClose, onCreate }) {
             <Hash className="w-5 h-5 text-primary" />
             Create Channel
           </h2>
-          <button onClick={onClose} className="text-muted-foreground hover:text-foreground transition-colors">
+          <button type="button" onClick={onClose} className="text-muted-foreground hover:text-foreground transition-colors">
             <X className="w-5 h-5" />
           </button>
         </div>

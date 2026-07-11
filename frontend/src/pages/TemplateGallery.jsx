@@ -291,7 +291,7 @@ function TemplateCard({ template, hovered, onHover, onLeave, onUse, aiDraft }) {
               }}
               className="flex gap-2 w-full mt-4"
             >
-              <button
+              <button type="button"
                 onClick={(e) => {
                   e.stopPropagation();
                   onUse(template.title, false, template.id);
@@ -300,7 +300,7 @@ function TemplateCard({ template, hovered, onHover, onLeave, onUse, aiDraft }) {
               >
                 Use Theme
               </button>
-              <button
+              <button type="button"
                 onClick={(e) => {
                   e.stopPropagation();
                   onUse(template.id, true, template.id);
@@ -338,7 +338,7 @@ const TemplatePreviewModal = ({ templateId, isOpen, onClose, portfolioData }) =>
             <span className="text-sm font-semibold text-foreground/70 uppercase tracking-widest">
               Preview — {templateId?.replace(/_/g, " ")}
             </span>
-            <button
+            <button type="button"
               onClick={onClose}
               className="p-2 rounded-xl hover:bg-accent text-muted-foreground hover:text-foreground transition-colors"
             >
@@ -488,7 +488,7 @@ export default function TemplateGallery() {
                 automatically inject your experience and projects!
               </p>
             </div>
-            <button
+            <button type="button"
               onClick={clearDraft}
               className="p-2 hover:bg-emerald-500/20 text-emerald-400 rounded-lg transition-colors"
               title="Discard Draft"
@@ -500,7 +500,7 @@ export default function TemplateGallery() {
 
         <div className="flex justify-between items-center mb-8">
           <h1 className="text-4xl font-bold">Template Gallery</h1>
-          <button
+          <button type="button"
             onClick={toggleTheme}
             className="p-2 rounded-xl bg-muted hover:bg-accent border border-border text-foreground transition-all cursor-pointer overflow-hidden relative group"
             aria-label="Toggle theme"
@@ -560,7 +560,7 @@ export default function TemplateGallery() {
               <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M21 21l-6-6m2-5a7 7 0 11-14 0 7 7 0 0114 0z" />
             </svg>
             {search && (
-              <button
+              <button type="button"
                 onClick={() => setSearch("")}
                 className="absolute right-4 top-1/2 -translate-y-1/2 text-muted-foreground hover:text-foreground transition-colors"
               >
@@ -602,7 +602,7 @@ export default function TemplateGallery() {
               {search ? `No results for "${search}" — try a different keyword` : "No templates match the selected filters"}
             </div>
             {search && (
-              <button onClick={() => setSearch("")} className="mt-4 text-cyan-400 hover:text-cyan-300 text-sm underline">
+              <button type="button" onClick={() => setSearch("")} className="mt-4 text-cyan-400 hover:text-cyan-300 text-sm underline">
                 Clear search
               </button>
             )}

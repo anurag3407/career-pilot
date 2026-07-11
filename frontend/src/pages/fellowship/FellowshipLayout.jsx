@@ -80,13 +80,13 @@ export default function FellowshipLayout() {
                 <div className="max-w-md text-center space-y-4">
                     <p className="text-foreground">{error}</p>
                     <div className="flex flex-wrap justify-center gap-3">
-                        <button
+                        <button type="button"
                             onClick={loadProfile}
                             className="px-4 py-2 bg-emerald-600 hover:bg-emerald-500 text-foreground rounded-lg"
                         >
                             Retry
                         </button>
-                        <button
+                        <button type="button"
                             onClick={() => navigate('/dashboard')}
                             className="px-4 py-2 bg-muted text-foreground rounded-lg hover:bg-muted/80"
                         >
@@ -200,7 +200,7 @@ export default function FellowshipLayout() {
             <div className="flex flex-1 flex-col overflow-hidden">
                 <header className="flex h-16 items-center justify-between border-b border-border bg-background px-4 lg:px-6">
                     <div className="flex items-center gap-4">
-                        <button
+                        <button type="button"
                             className="lg:hidden p-2 text-muted-foreground hover:text-foreground"
                             onClick={() => setSidebarOpen(true)}
                         >
@@ -210,7 +210,7 @@ export default function FellowshipLayout() {
                     </div>
 
                     <div className="flex items-center gap-3">
-                        <button
+                        <button type="button"
                             onClick={handleLogout}
                             className="flex items-center gap-2 px-3 py-1.5 text-sm text-muted-foreground hover:text-foreground transition-colors"
                         >

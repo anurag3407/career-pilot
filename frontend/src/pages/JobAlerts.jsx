@@ -97,7 +97,7 @@ export default function JobAlerts() {
                 We'll email you when new jobs match your criteria.
               </p>
             </div>
-            <button
+            <button type="button"
               onClick={() => setIsModalOpen(true)}
               className="flex items-center gap-2 px-6 py-3 bg-card text-foreground border border-border rounded-xl font-semibold hover:bg-muted/20 transition-all cursor-pointer"
             >
@@ -153,7 +153,7 @@ export default function JobAlerts() {
             { id: 'alerts', label: 'My Alerts', icon: Bell },
             { id: 'search', label: 'Search Jobs', icon: Search },
           ].map(tab => (
-            <button
+            <button type="button"
               key={tab.id}
               onClick={() => setActiveTab(tab.id)}
               className={`flex items-center gap-2 px-6 py-3 rounded-t-xl font-medium transition-all cursor-pointer ${
@@ -210,7 +210,7 @@ export default function JobAlerts() {
                     <p className="text-sm text-muted-foreground">
                       Want to get notified about "{searchQuery}" jobs?
                     </p>
-                    <button
+                    <button type="button"
                       onClick={handleCreateAlertFromSearch}
                       className="text-sm text-primary font-medium hover:text-primary/85 flex items-center gap-1 cursor-pointer"
                     >
@@ -311,7 +311,7 @@ function JobCard({ job, index }) {
             {/* Action Buttons */}
             <div className="flex gap-2 shrink-0">
               {job.applyLink && (
-                <button
+                <button type="button"
                   onClick={handleApply}
                   className="flex items-center gap-1.5 px-4 py-2 bg-card text-foreground rounded-lg border border-border font-medium hover:bg-muted/20 transition-colors text-sm cursor-pointer"
                 >
@@ -320,7 +320,7 @@ function JobCard({ job, index }) {
                 </button>
               )}
               {job.recruiterEmail && (
-                <button
+                <button type="button"
                   onClick={handleEmail}
                   className="flex items-center gap-1.5 px-4 py-2 bg-card text-foreground rounded-lg border border-border font-medium hover:bg-muted/60 transition-colors text-sm cursor-pointer"
                 >

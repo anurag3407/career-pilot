@@ -86,7 +86,7 @@ const AdminLogins = () => {
         {/* Pagination */}
         {!loading && totalPages > 1 && (
           <div className="flex items-center justify-between p-4 border-t border-gray-100 dark:border-gray-700">
-            <button
+            <button type="button"
               disabled={page === 1}
               onClick={() => setPage(page - 1)}
               className="px-4 py-2 text-sm font-medium text-gray-700 bg-white border border-gray-300 rounded-lg hover:bg-gray-50 disabled:opacity-50 disabled:cursor-not-allowed dark:bg-gray-800 dark:border-gray-600 dark:text-gray-300 dark:hover:bg-gray-700"
@@ -96,7 +96,7 @@ const AdminLogins = () => {
             <span className="text-sm text-gray-500 dark:text-gray-400">
               Page <span className="font-semibold text-gray-900 dark:text-white">{page}</span> of <span className="font-semibold text-gray-900 dark:text-white">{totalPages}</span>
             </span>
-            <button
+            <button type="button"
               disabled={page === totalPages}
               onClick={() => setPage(page + 1)}
               className="px-4 py-2 text-sm font-medium text-gray-700 bg-white border border-gray-300 rounded-lg hover:bg-gray-50 disabled:opacity-50 disabled:cursor-not-allowed dark:bg-gray-800 dark:border-gray-600 dark:text-gray-300 dark:hover:bg-gray-700"
