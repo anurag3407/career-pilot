@@ -1,3 +1,10 @@
+## [1.269.1](https://github.com/anurag3407/career-pilot/compare/v1.269.0...v1.269.1) (2026-07-12)
+
+
+### Bug Fixes
+
+* add explicit type attribute to button elements (templates) ([#4395](https://github.com/anurag3407/career-pilot/issues/4395)) ([2fb66e1](https://github.com/anurag3407/career-pilot/commit/2fb66e13be4850bac24426e2353613e88369ea75))
+
 # 1.0.0 (2026-07-09)
 
 
