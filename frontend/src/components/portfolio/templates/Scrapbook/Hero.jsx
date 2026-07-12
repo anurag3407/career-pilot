@@ -91,14 +91,14 @@ export default function Hero() {
               </div>
 
               <div className="flex items-center gap-6 mt-4">
-                <button className="relative group inline-block">
+                <button type="button" className="relative group inline-block">
                   <div className="absolute inset-0 bg-stone-800 transform translate-x-1.5 translate-y-1.5 transition-transform group-hover:translate-x-2.5 group-hover:translate-y-2.5 rounded-sm" />
                   <div className="relative px-8 py-4 bg-white border-2 border-stone-800 text-stone-800 font-bold text-lg flex items-center gap-3 transform transition-transform group-hover:-translate-x-0.5 group-hover:-translate-y-0.5 rounded-sm">
                     <Send className="w-5 h-5 group-hover:rotate-12 transition-transform" />
                     Contact Me
                   </div>
                 </button>
-                <button className="font-bold text-stone-600 hover:text-rose-500 transition-colors underline decoration-2 underline-offset-4 decoration-stone-300 hover:decoration-rose-300">
+                <button type="button" className="font-bold text-stone-600 hover:text-rose-500 transition-colors underline decoration-2 underline-offset-4 decoration-stone-300 hover:decoration-rose-300">
                   View Projects
                 </button>
               </div>

@@ -748,19 +748,19 @@ export default function MorseCodeFlashingDecoder() {
 
       {/* ── Navigation ── */}
       <nav className={`mcd-nav${scrollY > 60 ? " mcd-nav-scrolled" : ""}`}>
-        <button className="mcd-nav-brand" onClick={() => scrollTo("hero")}>
+        <button type="button" className="mcd-nav-brand" onClick={() => scrollTo("hero")}>
           &gt; <span>{personal.name?.split(" ")[0] || "MORSE"}</span>.exe
         </button>
         <ul className="mcd-nav-links">
           {navLinks.map((l) => (
             <li key={l.id}>
-              <button className="mcd-nav-link" onClick={() => scrollTo(l.id)}>
+              <button type="button" className="mcd-nav-link" onClick={() => scrollTo(l.id)}>
                 {l.label}
               </button>
             </li>
           ))}
         </ul>
-        <button className="mcd-nav-toggle" onClick={() => setMenuOpen(true)} aria-label="Open menu">
+        <button type="button" className="mcd-nav-toggle" onClick={() => setMenuOpen(true)} aria-label="Open menu">
           <Menu size={22} />
         </button>
       </nav>
@@ -775,7 +775,7 @@ export default function MorseCodeFlashingDecoder() {
             exit={{ opacity: 0 }}
             transition={{ duration: 0.2 }}
           >
-            <button className="mcd-mobile-close" onClick={() => setMenuOpen(false)} aria-label="Close">
+            <button type="button" className="mcd-mobile-close" onClick={() => setMenuOpen(false)} aria-label="Close">
               <X size={26} />
             </button>
             {navLinks.map((l, i) => (
@@ -820,10 +820,10 @@ export default function MorseCodeFlashingDecoder() {
             <p className="mcd-hero-tagline">{personal.tagline}</p>
           )}
           <div className="mcd-hero-actions">
-            <button className="mcd-btn mcd-btn-primary" onClick={() => scrollTo("projects")}>
+            <button type="button" className="mcd-btn mcd-btn-primary" onClick={() => scrollTo("projects")}>
               VIEW PROJECTS
             </button>
-            <button className="mcd-btn mcd-btn-outline" onClick={() => scrollTo("contact")}>
+            <button type="button" className="mcd-btn mcd-btn-outline" onClick={() => scrollTo("contact")}>
               CONTACT
             </button>
           </div>

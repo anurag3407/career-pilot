@@ -104,7 +104,7 @@ const PlayingCardsPortfolio = ({ portfolioData }) => {
       <nav className="sticky top-4 z-50 max-w-7xl mx-auto px-4">
         <div className="bg-white/10 backdrop-blur-md rounded-full shadow-xl p-2 flex flex-wrap justify-center gap-1 md:gap-2 border border-white/20">
           {sections.map((section) => (
-            <button
+            <button type="button"
               key={section.id}
               onClick={() => {
                 const element = document.getElementById(section.id);

@@ -20,7 +20,7 @@ export default function StoryEngine({ node, onChoice, onReset, history = [] }) {
 
       <div className="relative z-10 w-full max-w-2xl">
         {history.length > 0 && (
-          <button
+          <button type="button"
             onClick={onReset}
             className="mb-8 flex items-center gap-2 text-xs text-violet-400 hover:text-violet-200 transition-colors"
           >

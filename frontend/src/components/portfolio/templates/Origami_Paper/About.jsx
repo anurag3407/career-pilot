@@ -191,7 +191,7 @@ export default function About() {
         {/* Tabs */}
         <div className="flex justify-center gap-0 mb-8">
           {tabs.map((tab, i) => (
-            <button
+            <button type="button"
               key={tab.id}
               onClick={() => setActiveTab(tab.id)}
               className="px-6 py-3 text-sm tracking-wider uppercase transition-all duration-200 relative"

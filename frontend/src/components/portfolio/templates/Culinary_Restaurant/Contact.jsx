@@ -167,7 +167,7 @@ export default function Contact({ personal, socials }) {
                 </div>
 
                 <div className="pt-6">
-                  <button className="w-full py-4 bg-[#c5a880] hover:bg-[#d4b896] text-[#0a0a0a] font-bold text-sm tracking-[0.2em] uppercase transition-colors duration-300">
+                  <button type="button" className="w-full py-4 bg-[#c5a880] hover:bg-[#d4b896] text-[#0a0a0a] font-bold text-sm tracking-[0.2em] uppercase transition-colors duration-300">
                     Request Booking
                   </button>
                 </div>

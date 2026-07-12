@@ -22,14 +22,14 @@ export default function Projects({ projects }) {
           </span>
         </h2>
         <div className="flex gap-2">
-          <button
+          <button type="button"
             onClick={() => scroll(-1)}
             className="w-8 h-8 rounded-full bg-white/10 hover:bg-[#E50914] flex items-center justify-center transition-colors"
             aria-label="Scroll left"
           >
             <ChevronLeft className="w-4 h-4 text-white" />
           </button>
-          <button
+          <button type="button"
             onClick={() => scroll(1)}
             className="w-8 h-8 rounded-full bg-white/10 hover:bg-[#E50914] flex items-center justify-center transition-colors"
             aria-label="Scroll right"

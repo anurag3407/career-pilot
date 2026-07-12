@@ -105,12 +105,12 @@ export default function Projects() {
 
                 {/* Buttons */}
                 <div className="flex items-center gap-4">
-                  <button className="flex items-center gap-2 rounded-full bg-yellow-400 px-5 py-2 font-semibold text-black transition hover:scale-105 hover:bg-yellow-300">
+                  <button type="button" className="flex items-center gap-2 rounded-full bg-yellow-400 px-5 py-2 font-semibold text-black transition hover:scale-105 hover:bg-yellow-300">
                     Live Demo
                     <ExternalLink size={18} />
                   </button>
 
-                  <button className="flex items-center gap-2 rounded-full border border-yellow-400 px-5 py-2 font-semibold text-yellow-300 transition hover:bg-yellow-400 hover:text-black">
+                  <button type="button" className="flex items-center gap-2 rounded-full border border-yellow-400 px-5 py-2 font-semibold text-yellow-300 transition hover:bg-yellow-400 hover:text-black">
                     Code
                     <Github size={18} />
                   </button>

@@ -53,14 +53,14 @@ const ExperiencePage = React.forwardRef(function ExperiencePage(_, ref) {
           <div className="shrink-0 pt-4 border-t border-slate-800 flex justify-between items-center mt-auto">
             <span className="text-[9px] text-slate-600 font-mono">PAGE {currentPage + 1} / {totalPages || 1}</span>
             <div className="flex gap-2">
-              <button 
+              <button type="button" 
                 disabled={currentPage === 0} 
                 onClick={() => setCurrentPage(p => p - 1)} 
                 className="px-4 py-1.5 text-[9px] border border-cyan-500/30 text-cyan-400 hover:bg-cyan-500/10 disabled:opacity-20 uppercase font-mono tracking-widest transition-colors"
               >
                 Prev
               </button>
-              <button 
+              <button type="button" 
                 disabled={currentPage >= totalPages - 1} 
                 onClick={() => setCurrentPage(p => p + 1)} 
                 className="px-4 py-1.5 text-[9px] border border-cyan-500/30 text-cyan-400 hover:bg-cyan-500/10 disabled:opacity-20 uppercase font-mono tracking-widest transition-colors"

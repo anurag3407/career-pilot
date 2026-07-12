@@ -634,7 +634,7 @@ function Skills() {
       <SectionHeader label="// CHAR.STATS" title="Skills" />
       <div className="erm-skills-cats">
         {categories.map(cat => (
-          <button key={cat} className={`erm-cat-btn${active === cat ? ' active' : ''}`} onClick={() => handleCat(cat)}>
+          <button type="button" key={cat} className={`erm-cat-btn${active === cat ? ' active' : ''}`} onClick={() => handleCat(cat)}>
             {cat}
           </button>
         ))}
@@ -809,13 +809,13 @@ export default function EndlessRunnerMinigame() {
                 <div className="erm-hero-sub">{personal.title || 'Developer'}</div>
                 
                 {gameState === 'idle' && (
-                    <button className="erm-start-btn" onClick={handleStartGame}>
+                    <button type="button" className="erm-start-btn" onClick={handleStartGame}>
                         START BACKGROUND GAME
                     </button>
                 )}
 
                 {gameState === 'dead' && (
-                    <button className="erm-start-btn" style={{ borderColor: '#ff2d78', color: '#ff2d78' }} onClick={handleStartGame}>
+                    <button type="button" className="erm-start-btn" style={{ borderColor: '#ff2d78', color: '#ff2d78' }} onClick={handleStartGame}>
                         GAME OVER // RETRY
                     </button>
                 )}

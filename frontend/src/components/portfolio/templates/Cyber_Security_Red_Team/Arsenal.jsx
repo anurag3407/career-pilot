@@ -150,7 +150,7 @@ export function Arsenal() {
             {/* MODIFIED: Removed the extreme mt-10/lg:mt-4 hacks since the grid structure now handles spacing automatically */}
             <div className="flex flex-wrap gap-2 border border-[#1A1A1A] p-1.5 self-start bg-[rgba(11,11,11,0.6)]">
               {categories.map((cat) => (
-                <button
+                <button type="button"
                   key={cat}
                   onClick={() => setActive(cat)}
                   className="relative px-4 py-2 tracking-[0.15em] transition-all duration-300 font-mono text-[0.6rem]"
