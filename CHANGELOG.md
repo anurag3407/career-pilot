@@ -1,3 +1,10 @@
+# [1.270.0](https://github.com/anurag3407/career-pilot/compare/v1.269.1...v1.270.0) (2026-07-16)
+
+
+### Features
+
+* add-Macintosh-1984-Classic-template ([#4396](https://github.com/anurag3407/career-pilot/issues/4396)) ([1883435](https://github.com/anurag3407/career-pilot/commit/18834356fa101e27260edb0c75cd137f1481f133))
+
 ## [1.269.1](https://github.com/anurag3407/career-pilot/compare/v1.269.0...v1.269.1) (2026-07-12)
 
 
