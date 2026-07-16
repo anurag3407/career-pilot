@@ -1,5 +1,20 @@
 export const templates = [
 {
+    id: "Macintosh_1984_Classic",
+    title: "Macintosh 1984 Classic",
+    category: "Portfolio",
+    colorScheme: "Light",
+    layout: "Interactive",
+    author: "Antigravity",
+    views: 0,
+    rating: 5.0,
+    image: "/templates/Macintosh_1984_Classic.png",
+    createdAt: "2026-07-16",
+    isComplete: true,
+    description: "A pixel-perfect recreation of the original 1984 Macintosh desktop as a fully interactive portfolio. Features authentic Finder windows, Chicago-inspired bitmap typography, double-click desktop icons, and classic monochrome aesthetics."
+  },
+{
+
     id: "Hot_Air_Balloon_Drifting",
     title: "Hot Air Balloon Drifting",
     category: "Portfolio",
