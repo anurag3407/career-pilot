@@ -418,19 +418,12 @@ router.put('/:slug', verifyToken, validatePortfolioSlug, validatePortfolioConten
   if (!portfolio) {
     throw new ApiError(404, `Portfolio "${slug}" not found.`);
   }
-res.status(200).json({
-  success: true,
-  message: 'Portfolio updated successfully.',
-  data: portfolio,
-});
-
 
   res.status(200).json({
     success: true,
     message: 'Portfolio updated successfully.',
     data: portfolio,
   });
-  
 }));
 
 /**
@@ -440,16 +433,25 @@ router.post('/:id/save', verifyToken, asyncHandler(async (req, res) => {
   const { id } = req.params;
   const { content } = req.body;
 
-  // Authorization check (IDOR Protection)
-  if (req.user.uid !== id) {
-    throw new ApiError(403, 'Unauthorized access to this portfolio.');
+  const isConnected = mongoose.connection.readyState === 1;
+
+  if (isConnected) {
+    if (!mongoose.Types.ObjectId.isValid(id)) {
+      throw new ApiError(400, 'Invalid portfolio ID format.');
+    }
+    const portfolio = await Portfolio.findById(id).lean();
+    if (!portfolio) {
+      throw new ApiError(404, 'Portfolio not found.');
+    }
+    if (portfolio.userId !== req.user.uid) {
+      throw new ApiError(403, 'Unauthorized access to this portfolio.');
+    }
   }
 
   if (!content) {
     throw new ApiError(400, 'Content is required for saving.');
   }
 
-  const isConnected = mongoose.connection.readyState === 1;
   let latestVersion;
 
   if (isConnected) {
@@ -547,11 +549,20 @@ router.post('/:id/save', verifyToken, asyncHandler(async (req, res) => {
 router.get('/:id/versions', verifyToken, asyncHandler(async (req, res) => {
   const { id } = req.params;
 
-  if (req.user.uid !== id) {
-    throw new ApiError(403, 'Unauthorized access to version history.');
-  }
-
   const isConnected = mongoose.connection.readyState === 1;
+
+  if (isConnected) {
+    if (!mongoose.Types.ObjectId.isValid(id)) {
+      throw new ApiError(400, 'Invalid portfolio ID format.');
+    }
+    const portfolio = await Portfolio.findById(id).lean();
+    if (!portfolio) {
+      throw new ApiError(404, 'Portfolio not found.');
+    }
+    if (portfolio.userId !== req.user.uid) {
+      throw new ApiError(403, 'Unauthorized access to version history.');
+    }
+  }
 
   let versions;
   if (isConnected) {
@@ -579,11 +590,20 @@ router.get('/:id/versions', verifyToken, asyncHandler(async (req, res) => {
 router.post('/:id/restore/:versionId', verifyToken, asyncHandler(async (req, res) => {
   const { id, versionId } = req.params;
 
-  if (req.user.uid !== id) {
-    throw new ApiError(403, 'Unauthorized access to restore this portfolio.');
-  }
-
   const isConnected = mongoose.connection.readyState === 1;
+
+  if (isConnected) {
+    if (!mongoose.Types.ObjectId.isValid(id)) {
+      throw new ApiError(400, 'Invalid portfolio ID format.');
+    }
+    const portfolio = await Portfolio.findById(id).lean();
+    if (!portfolio) {
+      throw new ApiError(404, 'Portfolio not found.');
+    }
+    if (portfolio.userId !== req.user.uid) {
+      throw new ApiError(403, 'Unauthorized access to restore this portfolio.');
+    }
+  }
 
   let versionToRestore;
   if (isConnected) {
