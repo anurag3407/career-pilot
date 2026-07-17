@@ -85,9 +85,9 @@ const AdminBugs = lazy(() => import("./pages/admin/views/AdminBugs"));
 
 import { NotFound } from './pages';
 
-const PrivacyPolicy = lazy(() => import('./pages/PrivacyPolicy'));
+const PrivacyPolicy = lazy(() => import('./pages/LegalPrivacy'));
 const TermsOfService = lazy(() => import('./pages/TermsOfService'));
-const CookiePolicy = lazy(() => import('./pages/CookiePolicy'));
+const CookiePolicy = lazy(() => import('./pages/LegalCookies'));
 
 
 

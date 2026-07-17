@@ -4,7 +4,7 @@ import { Link } from 'react-router-dom';
 import Navbar from '../components/Navbar';
 import Footer from '../components/ui/Footer';
 
-export default function CookiePolicy() {
+export default function LegalCookies() {
   const lastUpdated = "May 2026";
 
   useEffect(() => {
