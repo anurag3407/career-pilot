@@ -114,24 +114,7 @@ const RecruitersLanding = lazy(() => import('./pages/features/RecruitersLanding'
 import ScrollToTop from "./components/ScrollToTop";
 import NorthernFjords from './components/portfolio/templates/Northern_Fjords';
 import RainforestCanopy from './components/portfolio/templates/Rainforest_Canopy/index.jsx';
-import DuotoneBold from './components/portfolio/templates/Duotone_Bold/index.jsx';
-import ChromaticGlitch from './components/portfolio/templates/Chromatic_Glitch/index.jsx';
-import SwissTypography from './components/portfolio/templates/Swiss_Typography/index.jsx';
-import DesertDunes from './components/portfolio/templates/Desert_Dunes/index.jsx';
-import PsychedelicSwirl from './components/portfolio/templates/Psychedelic_Swirl/index.jsx';
-import MemphisPop from './components/portfolio/templates/Memphis_Pop/index.jsx';
-import HiddenEasterEggScavengerHunt from './components/portfolio/templates/Hidden_Easter_Egg_Scavenger_Hunt/index.jsx';
-import CassetteMixtape from './components/portfolio/templates/Cassette_Mixtape/index.jsx';
-import MagneticDock from './components/portfolio/templates/Magnetic_Dock/index.jsx';
-import Hero from './components/portfolio/templates/Magazine_Editorial/Hero';
-import ColorBlock from './components/portfolio/templates/Color_Block/index.jsx';
-import OceanDepths from './components/portfolio/templates/Ocean_Depths/index.jsx';
-import NeonCityscape from './components/portfolio/templates/Neon_Cityscape/index.jsx';
-import PlanetaryOrbit from './components/portfolio/templates/Planetary_Orbit/index.jsx';
-import LowPolyTerrain from './components/portfolio/templates/Low_Poly_Terrain/index.jsx';
-import HighFashion from './components/portfolio/templates/High_Fashion/index.jsx';
-import TypographicWheatpastePosterWall from './components/portfolio/templates/Typographic_Wheatpaste_Poster_Wall/index.jsx';
-import DigitalManifestoScroll from './components/portfolio/templates/Digital_Manifesto_Scroll/index.jsx';
+import CeramicMinimal from './components/portfolio/templates/Ceramic_Minimal/index.jsx';
 import TestSocialLinks from './pages/TestSocialLinks';
 import ZineCollage from './components/portfolio/templates/ZineCollage';
 import TransparentDesktopOverlayOS from './components/portfolio/templates/Transparent_Desktop_Overlay_OS/index.jsx';
@@ -307,38 +290,7 @@ function AppRoutes() {
         {/* <Route path="/templates/day-night-cycle" element={<DayNightCycle />} /> */}
 
         <Route path="/templates/rainforest-canopy" element={<RainforestCanopy />} />
-        <Route path="/templates/northern-fjords" element={<NorthernFjords />} />
-        <Route path="/templates/duotone-bold" element={<DuotoneBold />} />
-        <Route path="/templates/chromatic-glitch" element={<ChromaticGlitch />} />
-        <Route path="/templates/swiss-typography" element={<SwissTypography />} />
-
-        <Route path="/templates/desert-dunes" element={<DesertDunes />} />
-        <Route path="/templates/psychedelic-swirl" element={<PsychedelicSwirl />} />
-        <Route path="/templates/memphis-pop" element={<MemphisPop />} />
-        <Route path="/templates/cassette-mixtape" element={<CassetteMixtape />} />
-        <Route path="/templates/hidden-easter-egg-scavenger-hunt" element={<HiddenEasterEggScavengerHunt />} />
-        <Route path="/templates/magnetic-dock" element={<MagneticDock />} />
-        <Route path="/templates/ocean-depths" element={<OceanDepths />} />
-        <Route path="/templates/neon-cityscape" element={<NeonCityscape />} />
-        <Route path="/templates/planetary-orbit" element={<PlanetaryOrbit />} />
-        <Route path="/templates/low-poly-terrain" element={<LowPolyTerrain />} />
-        <Route path="/templates/high-fashion" element={<HighFashion />} />
-        <Route path="/templates/typographic-wheatpaste-poster-wall" element={<TypographicWheatpastePosterWall />} />
-        <Route path="/templates/digital-manifesto-scroll" element={<DigitalManifestoScroll />} />
-
-        <Route path="/templates/zine-collage" element={<ZineCollage />} />
-        <Route path="/templates/chatbot" element={<ChatbotPortfolio />} />
-        <Route path="/templates/glassmorphism" element={<GlassmorphismTemplate />} />
-        <Route path="/templates/transparent-desktop-overlay-os" element={<TransparentDesktopOverlayOS />} />
-        <Route path="/templates/commercial-pilot-cockpit" element={<Commercial_Pilot_Cockpit />} />
-        <Route path="/templates/book-page-flip-3d-render" element={<Book_Page_Flip_3D_Render />} />
-        <Route path="/templates/ikea-assembly-manual" element={<IKEA_Assembly_Manual />} />
-        <Route path="/templates/michelin-star-chef-plating" element={<MichelinStarChefPlating />} />
-        <Route path="/templates/sommelier-wine-cellar-racks" element={<SommelierWineCellarRacks />} />
-        <Route path="/templates/minimal-dark-fluid" element={<MinimalDarkFluid />} />
-        <Route path="/templates/terminal-skills" element={<TerminalSkills />} />
-        <Route path="/templates/chiragchrg-theme" element={<ChiragChrgTheme />} />
-        <Route path="/templates/film-director-clapperboard" element={<Film_Director_Clapperboard />} />
+        <Route path="/templates/ceramic-minimal" element={<CeramicMinimal />} />
         {/* Core Protected Routes */}
         <Route
           path="/dashboard"
