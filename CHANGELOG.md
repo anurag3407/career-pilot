@@ -1,3 +1,10 @@
+# [1.271.0](https://github.com/anurag3407/career-pilot/compare/v1.270.0...v1.271.0) (2026-07-17)
+
+
+### Features
+
+* migrate deployment environment to Vercel and Netlify ([f75d128](https://github.com/anurag3407/career-pilot/commit/f75d128b33fc180578d7b042e54dc5f8b6f17f54))
+
 # [1.270.0](https://github.com/anurag3407/career-pilot/compare/v1.269.1...v1.270.0) (2026-07-16)
 
 
