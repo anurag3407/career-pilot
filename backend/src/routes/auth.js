@@ -4,7 +4,7 @@ import bcrypt from 'bcryptjs';
 import { asyncHandler, ApiError } from '../middleware/errorHandler.js';
 import { verifyToken } from '../middleware/auth.js';
 import { loginProtection } from '../middleware/loginProtection.js';
-import { saveUserToFirebase } from '../services/firebaseDataService.js';
+import { saveUserToAppwrite } from '../services/appwriteDataService.js';
 import { validate } from '../middleware/validate.js';
 import {
   registerSchema,
@@ -285,7 +285,7 @@ setInterval(() => {
 router.post('/verify', loginProtection, verifyToken, asyncHandler(async (req, res) => {
   // Save/update user in Firebase on each verification
   try {
-    await saveUserToFirebase(req.user);
+    await saveUserToAppwrite(req.user);
   } catch (error) {
     console.warn('Could not save user to Firebase:', error.message);
   }
@@ -300,7 +300,7 @@ router.post('/verify', loginProtection, verifyToken, asyncHandler(async (req, re
 router.get('/profile', verifyToken, asyncHandler(async (req, res) => {
   // Update last login in Firebase
   try {
-    await saveUserToFirebase(req.user);
+    await saveUserToAppwrite(req.user);
   } catch (error) {
     console.warn('⚠️  Could not update user in Firebase:', error.message);
   }

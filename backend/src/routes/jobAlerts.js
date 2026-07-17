@@ -7,10 +7,10 @@ import { triggerAlertCheck, processAlert } from '../services/jobFetcher.js';
 import { getQueueStats, getQueue, emptyQueue } from '../services/jobAlertQueue.js';
 import { displayQueueStatus, clearQueue, getFailedJobsInfo } from '../utils/queueManager.js';
 import { 
-    saveJobAlertToFirebase, 
-    deleteJobAlertFromFirebase,
+    saveJobAlertToAppwrite, 
+    deleteJobAlertFromAppwrite,
     saveUserToFirebase 
-} from '../services/firebaseDataService.js';
+} from '../services/appwriteDataService.js';
 import { validate } from '../middleware/validate.js';
 import { createJobAlertSchema, updateJobAlertSchema } from '../schemas/jobAlerts.schema.js';
 
@@ -178,7 +178,7 @@ router.post('/', verifyToken, validate(createJobAlertSchema), asyncHandler(async
 
     // Save to Firebase
     try {
-        await saveJobAlertToFirebase(alert.toObject());
+        await saveJobAlertToAppwrite(alert.toObject());
     } catch (fbError) {
         console.warn('⚠️  Could not save alert to Firebase:', fbError.message);
     }
@@ -229,7 +229,7 @@ router.put('/:id', verifyToken, validate(updateJobAlertSchema), asyncHandler(asy
 
     // Update in Firebase
     try {
-        await saveJobAlertToFirebase(alert.toObject());
+        await saveJobAlertToAppwrite(alert.toObject());
     } catch (fbError) {
         console.warn('⚠️  Could not update alert in Firebase:', fbError.message);
     }
@@ -257,7 +257,7 @@ router.delete('/:id', verifyToken, asyncHandler(async (req, res) => {
 
     // Delete from Firebase
     try {
-        await deleteJobAlertFromFirebase(id);
+        await deleteJobAlertFromAppwrite(id);
     } catch (fbError) {
         console.warn('⚠️  Could not delete alert from Firebase:', fbError.message);
     }

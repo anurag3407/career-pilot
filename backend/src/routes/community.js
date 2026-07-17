@@ -31,7 +31,7 @@ import {
   searchCommunity,
   // Utilities
   fixPostLikeCounts
-} from '../controllers/communityFirebaseController.js';
+} from '../controllers/communityAppwriteController.js';
 
 const router = express.Router();
 
