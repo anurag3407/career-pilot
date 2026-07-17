@@ -438,6 +438,17 @@ export const resumeApi = {
       body: JSON.stringify(data)
     })
     return handleResponse(response)
+  },
+
+  // Score resume with AI
+  async score(resumeText, jobRole = 'Software Engineer') {
+    const headers = await getAuthHeaders()
+    const response = await fetch(`${API_BASE}/resumes/score`, {
+      method: 'POST',
+      headers,
+      body: JSON.stringify({ resumeText, jobRole })
+    })
+    return handleResponse(response)
   }
 }
 
