@@ -37,7 +37,7 @@
     "jsdom": "^20.0.3",
     "marked": "^18.0.3",
     "mongoose": "^9.6.2",
-    "multer": "^2.1.1",
+    "multer": "^2.2.0",
     "multer-storage-cloudinary": "^4.0.0",
     "node-appwrite": "^27.0.0",
     "node-cron": "^4.2.1",
