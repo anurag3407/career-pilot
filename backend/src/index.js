@@ -295,14 +295,13 @@ app.use("/api/upload", inputRoutes);
 app.use("/api/recruiter", recruiterRoutes);
 app.use("/api/outreach", outreachRoutes);
 app.use("/api/bugs", bugsRoutes);
-try {
-    const paymentRoutes = (await import('./routes/payments.js')).default;
-    app.use('/api/collaboration', collaborationRoutes);
-app.use('/api/payments', paymentRoutes);
+import('./routes/payments.js').then((module) => {
+    app.use('/api/payments', module.default);
     console.log('✅ Payment routes loaded');
-} catch (error) {
+}).catch((error) => {
     console.warn('⚠️ Payment routes disabled:', error.message);
-}
+});
+app.use('/api/collaboration', collaborationRoutes);
 app.use('/api/portfolio', portfolioRoutes);
 app.use('/api/portfolio/github', portfolioGithubRoutes);
 app.use('/api/user-profiles', userProfileRoutes);
@@ -407,7 +406,9 @@ const startServer = async () => {
   }
 };
 
-startServer();
+if (!process.env.NETLIFY && !process.env.VERCEL) {
+  startServer();
+}
 
 const shutdown = async (signal) => {
     console.log(`\n📥 Received ${signal}, shutting down gracefully...`);

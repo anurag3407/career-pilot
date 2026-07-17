@@ -6,8 +6,17 @@ import { dirname, join } from 'path';
 
 dotenv.config();
 
-const __filename = fileURLToPath(import.meta.url);
-const __dirname = dirname(__filename);
+let currentFilename = '';
+let currentDirname = '';
+try {
+  currentFilename = typeof __filename !== 'undefined' ? __filename : fileURLToPath(import.meta.url);
+  currentDirname = typeof __dirname !== 'undefined' ? __dirname : dirname(currentFilename);
+} catch (e) {
+  currentFilename = process.cwd() + '/mock.js';
+  currentDirname = process.cwd();
+}
+const _filename = currentFilename;
+const _dirname = currentDirname;
 
 // Initialize Firebase Admin SDK
 const firebaseConfig = {
@@ -21,7 +30,7 @@ let serviceAccount = null;
 // Try to load service account from file path first (FIREBASE_SERVICE_ACCOUNT_PATH)
 if (process.env.FIREBASE_SERVICE_ACCOUNT_PATH) {
   try {
-    const serviceAccountPath = join(__dirname, '../../', process.env.FIREBASE_SERVICE_ACCOUNT_PATH);
+    const serviceAccountPath = join(_dirname, '../../', process.env.FIREBASE_SERVICE_ACCOUNT_PATH);
     if (existsSync(serviceAccountPath)) {
       serviceAccount = JSON.parse(readFileSync(serviceAccountPath, 'utf8'));
       console.log('✅ Loaded service account from file path');

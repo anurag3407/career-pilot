@@ -22,6 +22,15 @@ import {
   invalidateProfileCache,
 } from '../services/profileCache.js';
 import { getObjectDiff, applyDiff } from '../utils/diff.js';
+import path from 'path';
+import { fileURLToPath } from 'url';
+
+let _dirname = '';
+try {
+  _dirname = typeof __dirname !== 'undefined' ? __dirname : path.dirname(fileURLToPath(import.meta.url));
+} catch (e) {
+  _dirname = process.cwd();
+}
 
 const router = express.Router();
 
@@ -82,7 +91,7 @@ const getApiBaseUrl = (req) => {
 };
 
 const getPortfolioTemplatePath = (slug) => {
-  return new URL(`../templates/portfolio/${slug}/index.html`, import.meta.url);
+  return path.join(_dirname, `../templates/portfolio/${slug}/index.html`);
 };
 
 const assertValidPortfolioSlug = (slug) => {
@@ -363,7 +372,7 @@ router.get(
  * Returns a list of available portfolio template slugs.
  */
 router.get('/', asyncHandler(async (req, res) => {
-  const templatesDir = new URL('../templates/portfolio', import.meta.url);
+  const templatesDir = path.join(_dirname, '../templates/portfolio');
   let slugs = [];
   try {
     const entries = await fs.readdir(templatesDir);

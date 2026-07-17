@@ -1,4 +1,4 @@
-import fetch from 'node-fetch';
+
 
 let customFetch = fetch;
 
