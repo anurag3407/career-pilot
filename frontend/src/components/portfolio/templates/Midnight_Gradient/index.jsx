@@ -1,4 +1,6 @@
 import React from 'react';
+import { motion, AnimatePresence } from 'framer-motion';
+import { Github, Linkedin, Twitter, Mail, Download, Sparkles, ExternalLink, Code2, ChevronRight, Terminal, Database, Server, Star, Quote, User, MapPin, Briefcase, Globe, Award, MessageSquare, Phone, Send } from 'lucide-react';
 import dummyData from '../../../../data/dummy_data.json';
 
 // Section imports
@@ -649,7 +651,6 @@ function Contact() {
 }
 
 // ─── Main Export ──────────────────────────────────────────────────────────────
-export default function MidnightGradient() {
   return (
     <div className="min-h-screen bg-[#020410] text-gray-100 font-sans relative overflow-hidden selection:bg-cyan-500/30 selection:text-cyan-200">
       {/* Dynamic Floating Mesh Elements */}

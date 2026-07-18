@@ -1,5 +1,6 @@
 import React, { useState, useRef, useEffect, Suspense, useMemo } from "react";
 import { templates } from '../data/templates';
+import dummyData from '../data/dummy_data.json';
 import DeployModal from "../components/portfolio/DeployModal";
 import ThemeSelector from "../components/portfolio/ThemeSelector";
 import { useTheme } from "../hooks/useTheme";
@@ -107,9 +108,10 @@ const TemplateHeroPreview = ({ templateId, portfolioData }) => {
   }, [templateId]);
 
   if (!templateId) return null;
+  const safeData = portfolioData || dummyData;
   return (
     <Suspense fallback={<div className="w-full h-full bg-muted/50" />}>
-      <Component portfolioData={portfolioData} />
+      <Component portfolioData={safeData} data={safeData} />
     </Suspense>
   );
 };
@@ -225,9 +227,7 @@ const TemplatePreviewModal = ({ templateId, isOpen, onClose, portfolioData }) =>
   const Component = useMemo(() => {
     if (!templateId) return null;
     return React.lazy(() => 
-      import(`../components/portfolio/templates/${templateId}/Hero.jsx`).catch(() => 
-        import(`../components/portfolio/templates/${templateId}/index.jsx`)
-      )
+      import(`../components/portfolio/templates/${templateId}/index.jsx`)
     );
   }, [templateId]);
 
@@ -258,7 +258,7 @@ const TemplatePreviewModal = ({ templateId, isOpen, onClose, portfolioData }) =>
             <p className="animate-pulse font-medium tracking-wide text-sm uppercase">Loading interactive preview...</p>
           </div>
         }>
-          {Component && <Component portfolioData={portfolioData} />}
+          {Component && <Component portfolioData={portfolioData || dummyData} data={portfolioData || dummyData} />}
         </Suspense>
       </div>
     </div>

@@ -1,8 +1,11 @@
 import React, { useContext } from 'react';
 import { PortfolioContext } from './index';
+import dummyData from '../../../../data/dummy_data.json';
 
 const Hero = () => {
-  const { personal, socials } = useContext(PortfolioContext);
+  const contextData = useContext(PortfolioContext);
+  const data = contextData || dummyData;
+  const { personal, socials } = data;
 
   return (
     <section className="relative">
