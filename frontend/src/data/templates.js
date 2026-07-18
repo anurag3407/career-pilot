@@ -1777,16 +1777,17 @@ export const templates = [
     "createdAt": "2026-05-01"
   },
   {
-    "id": "Magazine_Editorial",
-    "title": "Magazine Editorial",
-    "category": "Portfolio",
-    "colorScheme": "Dark",
-    "layout": "Grid",
-    "author": "System",
-    "views": 1095,
-    "rating": 4.5,
-    "image": "/template-previews/Magazine_Editorial.png",
-    "createdAt": "2026-05-01"
+  "id": "Magazine_Editorial",
+  "title": "Magazine Editorial",
+  "category": "Portfolio",
+  "colorScheme": "Dark",
+  "layout": "Grid",
+  "author": "System",
+  "views": 1095,
+  "rating": 4.5,
+  "image": "/template-previews/Magazine_Editorial.png",
+  "createdAt": "2026-05-01",
+  "isComplete": true
   },
   {
     "id": "Medical_Clean",
@@ -1798,7 +1799,8 @@ export const templates = [
     "views": 1098,
     "rating": 4.5,
     "image": "/template-previews/Medical_Clean.png",
-    "createdAt": "2026-05-01"
+    "createdAt": "2026-05-01",
+    "isComplete": true
   },
   {
     "id": "Midnight_Gradient",
