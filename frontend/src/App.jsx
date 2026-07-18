@@ -104,7 +104,7 @@ const ProjectVisualizerDashboard = lazy(() => import('./pages/ProjectVisualizer/
 
 const ResumeBuilderLanding = lazy(() => import('./pages/features/ResumeBuilderLanding'));
 const PortfolioBuilderLanding = lazy(() => import('./pages/features/PortfolioBuilderLanding'));
-const ResumeRoastLanding = lazy(() => import('./pages/features/ResumeRoastLanding'));
+const ResumeRoastLanding = lazy(() => import('./pages/features/ResumeRoastForge'));
 const GithubPortfolioLanding = lazy(() => import('./pages/features/GithubPortfolioLanding'));
 const ProjectVisualizerLanding = lazy(() => import('./pages/features/ProjectVisualizerLanding'));
 const JobFinderLanding = lazy(() => import('./pages/features/JobFinderLanding'));
