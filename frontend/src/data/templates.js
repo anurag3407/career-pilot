@@ -1,5 +1,18 @@
 export const templates = [
   {
+    "id": "One_Pixel_Master_Layout",
+    "title": "One Pixel Master Layout",
+    "category": "Portfolio",
+    "colorScheme": "Dark",
+    "layout": "Grid",
+    "author": "anurag3407",
+    "views": 1000,
+    "rating": 4.8,
+    "image": "/template-previews/One_Pixel_Master_Layout.png",
+    "createdAt": "2026-07-18",
+    "isComplete": true
+  },
+  {
     "id": "2D_Retro_8bit",
     "title": "2D Retro 8bit",
     "category": "Portfolio",
