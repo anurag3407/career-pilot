@@ -1,7 +1,7 @@
 Warning: Identity file /home/azureuser/.ssh/id_rsa not accessible: No such file or directory.
 import Navbar from '../components/Navbar'
 import HeroSection from '../components/ui/HeroSection'
-import OurToolsSection from '../components/landing/OurToolsSection'
+import OurToolsSection from '../components/landing/ForgeToolsSection'
 import FeaturesSection, { AdditionalFeatures } from '../components/ui/FeaturesSection'
 import PortfolioShowcaseSection from '../components/ui/PortfolioShowcaseSection'
 import ProjectVisualizerSection from '../components/ui/ProjectVisualizerSection'
