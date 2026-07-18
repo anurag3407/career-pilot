@@ -79,3 +79,9 @@ node_modules/
 .env.*
 
 *issues
+PORTFOLIO_BUILDER_REVAMP_PLAN.md
+
+# Local Netlify folder
+.netlify
+.vercel
+.tmp_home

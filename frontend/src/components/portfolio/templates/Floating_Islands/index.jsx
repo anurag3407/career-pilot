@@ -1,6 +1,6 @@
+import { usePortfolio } from "../../../../context/PortfolioContext";
 import React, { useEffect, useState } from 'react';
 import { motion, useScroll, useTransform } from 'framer-motion';
-import data from '../../../../data/dummy_data.json';
 import Hero from './Hero';
 import About from './About';
 import Skills from './Skills';
@@ -17,6 +17,8 @@ import Contact from './Contact';
 
 /* ─── Cloud SVG Component ─── */
 function Cloud({ className, style }) {
+  const { portfolioData: data } = usePortfolio();
+
   return (
     <svg
       viewBox="0 0 200 80"
@@ -35,6 +37,8 @@ function Cloud({ className, style }) {
 
 /* ─── Animated Background Clouds ─── */
 function BackgroundClouds() {
+  const { portfolioData: data } = usePortfolio();
+
   const clouds = [
     { top: '8%', duration: 45, delay: 0, size: 'w-40 md:w-56', opacity: 0.15 },
     { top: '18%', duration: 60, delay: -15, size: 'w-32 md:w-44', opacity: 0.1 },
@@ -68,6 +72,8 @@ function BackgroundClouds() {
 
 /* ─── Parallax Sky Layers ─── */
 function SkyLayers() {
+  const { portfolioData: data } = usePortfolio();
+
   const { scrollYProgress } = useScroll();
   const y1 = useTransform(scrollYProgress, [0, 1], [0, -150]);
   const y2 = useTransform(scrollYProgress, [0, 1], [0, -80]);
@@ -96,6 +102,8 @@ function SkyLayers() {
 
 /* ─── Navigation ─── */
 function Navigation() {
+  const { portfolioData: data } = usePortfolio();
+
   const [scrolled, setScrolled] = useState(false);
 
   useEffect(() => {
@@ -153,11 +161,13 @@ function Navigation() {
 
 /* ─── Mobile Menu ─── */
 function MobileMenu({ navItems, scrolled }) {
+  const { portfolioData: data } = usePortfolio();
+
   const [open, setOpen] = useState(false);
 
   return (
     <div className="md:hidden">
-      <button
+      <button type="button"
         onClick={() => setOpen(!open)}
         className={`p-2 rounded-lg ${scrolled ? 'text-slate-600' : 'text-white'}`}
         aria-label="Toggle menu"
@@ -196,6 +206,8 @@ function MobileMenu({ navItems, scrolled }) {
 
 /* ─── Decorative Floating Elements ─── */
 function FloatingDecorations() {
+  const { portfolioData: data } = usePortfolio();
+
   const { scrollYProgress } = useScroll();
   const y1 = useTransform(scrollYProgress, [0, 1], [0, -200]);
   const y2 = useTransform(scrollYProgress, [0, 1], [0, -120]);
@@ -221,6 +233,8 @@ function FloatingDecorations() {
 
 /* ─── Main Template ─── */
 export default function FloatingIslands() {
+  const { portfolioData: data } = usePortfolio();
+
   return (
     <div className="relative min-h-screen overflow-x-hidden font-sans">
       {/* Sky Background */}

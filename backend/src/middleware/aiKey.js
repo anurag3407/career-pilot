@@ -20,6 +20,7 @@ export const extractAIProvider = async (req, res, next) => {
     const providerHeader = req.headers['x-ai-provider'];
     const apiKeyHeader   = req.headers['x-ai-key'];
     const modelHeader    = req.headers['x-ai-model'];
+    const baseUrlHeader  = req.headers['x-ai-base-url'];
     const openRouterKeyHeader = req.headers['x-openrouter-key'];
 
     // --- Case 1a: User supplies OpenRouter key via BYOK PKCE flow ---
@@ -40,24 +41,33 @@ export const extractAIProvider = async (req, res, next) => {
         });
       }
 
-      req.aiProvider = AIProviderFactory.create(provider, apiKeyHeader, modelHeader);
+      req.aiProvider = AIProviderFactory.create(provider, apiKeyHeader, modelHeader, baseUrlHeader);
       req.aiProviderSource = 'user_header';
       return next();
     }
 
-    // --- Case 2: No custom headers – fall back to server-side .env key ---
-    try {
-      req.aiProvider = getDefaultProvider();
-      req.aiProviderSource = 'server_default';
+    // --- Case 2: No custom headers – check for server-side fallback ---
+    const envProvider = process.env.AI_PROVIDER || 'gemini';
+    let envKey = null;
+
+    if (envProvider === 'gemini') envKey = process.env.GEMINI_API_KEY;
+    else if (envProvider === 'openai') envKey = process.env.OPENAI_API_KEY;
+    else if (envProvider === 'groq') envKey = process.env.GROQ_API_KEY;
+    else if (envProvider === 'openrouter') envKey = process.env.OPENROUTER_API_KEY;
+    else if (envProvider === 'requesty') envKey = process.env.REQUESTY_API_KEY;
+
+    if (envKey) {
+      req.aiProvider = AIProviderFactory.create(envProvider, envKey);
+      req.aiProviderSource = 'server_env';
       return next();
-    } catch (fallbackError) {
-      // No server-side key configured either — reject gracefully
-      return res.status(403).json({
-        success: false,
-        error: 'API key is required. Please add your API key in Settings to use this feature.',
-        requireApiKey: true
-      });
     }
+
+    // --- Case 3: No custom headers and no env fallback – reject gracefully ---
+    return res.status(403).json({
+      success: false,
+      error: 'API key is required. Please add your API key in Settings to use this feature.',
+      requireApiKey: true
+    });
   } catch (error) {
     console.error('AI provider middleware error:', error.message);
     return res.status(500).json({

@@ -1,5 +1,5 @@
+import { usePortfolio } from "../../../../context/PortfolioContext";
 import React, { useState, useEffect } from "react";
-import dummyData from "../../../../data/dummy_data.json";
 import { motion } from "framer-motion";
 
 // Section imports
@@ -12,6 +12,8 @@ import Testimonials from "./Testimonials";
 import Contact from "./Contact";
 
 const CherryBlossom = ({ portfolioData }) => {
+  const { portfolioData: dummyData } = usePortfolio();
+
   // Merge AI extracted data with dummy data fallbacks for visual completeness
   const personal = {
     ...dummyData.personal,

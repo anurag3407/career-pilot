@@ -1,3 +1,4 @@
+import { usePortfolio } from "../../../../context/PortfolioContext";
 import React, { useState } from 'react';
 import { motion, AnimatePresence } from 'framer-motion';
 import { 
@@ -22,9 +23,10 @@ import {
   Laptop,
   Check
 } from 'lucide-react';
-import data from '../../../../data/dummy_data.json';
 
 export default function AppleShowcase() {
+  const { portfolioData: data } = usePortfolio();
+
   const { personal, socials, skills, projects, experience, testimonials, stats } = data;
   const [mobileMenuOpen, setMobileMenuOpen] = useState(false);
   const [activeTab, setActiveTab] = useState('All');
@@ -105,7 +107,7 @@ export default function AppleShowcase() {
           </div>
 
           {/* Mobile hamburger trigger */}
-          <button 
+          <button type="button" 
             onClick={() => setMobileMenuOpen(prev => !prev)}
             className="md:hidden text-neutral-400 hover:text-white transition-colors"
           >
@@ -363,7 +365,7 @@ export default function AppleShowcase() {
             {/* Category tabs */}
             <div className="flex justify-center gap-2 mt-8 flex-wrap">
               {categories.map((cat) => (
-                <button
+                <button type="button"
                   key={cat}
                   onClick={() => setActiveTab(cat)}
                   className={`text-xs px-4 py-2 rounded-full font-medium transition-all ${

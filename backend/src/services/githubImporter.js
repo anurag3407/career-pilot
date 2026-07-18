@@ -1,4 +1,4 @@
-import fetch from 'node-fetch';
+
 
 const getUtcDateKey = (value) => {
   if (!value) return null;
@@ -43,16 +43,18 @@ const calculateCurrentActivityStreak = (repos) => {
 /**
  * Fetches user profile and repository data from GitHub public API
  * @param {string} username - GitHub username
+ * @param {string|null} [token] - Optional BYOK token
  */
-export const fetchGitHubProfile = async (username) => {
+export const fetchGitHubProfile = async (username, token = null) => {
   try {
     const headers = {
       'User-Agent': 'Career-Pilot-App'
     };
-    
+
     // Add GitHub token if available to increase rate limits
-    if (process.env.GITHUB_TOKEN) {
-      headers['Authorization'] = `token ${process.env.GITHUB_TOKEN}`;
+    const effectiveToken = token || process.env.GITHUB_TOKEN;
+    if (effectiveToken) {
+      headers['Authorization'] = `token ${effectiveToken}`;
     }
 
     // Fetch user profile

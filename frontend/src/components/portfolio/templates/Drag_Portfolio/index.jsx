@@ -1,3 +1,4 @@
+import { usePortfolio } from "../../../../context/PortfolioContext";
 import React, { useState, useEffect, useRef } from 'react';
 import { motion, AnimatePresence } from 'framer-motion';
 import { 
@@ -18,9 +19,10 @@ import {
   Maximize2
 } from 'lucide-react';
 import DraggableCard from './DraggableCard';
-import data from '../../../../data/dummy_data.json';
 
 export default function DragPortfolio() {
+  const { portfolioData: data } = usePortfolio();
+
   const containerRef = useRef(null);
   const [isMobile, setIsMobile] = useState(false);
   const [resetKey, setResetKey] = useState(0);
@@ -102,7 +104,7 @@ export default function DragPortfolio() {
           </AnimatePresence>
 
           {!isMobile && (
-            <button
+            <button type="button"
               onClick={handleReset}
               className="flex items-center gap-2 px-4 py-2 text-xs font-mono font-bold uppercase tracking-wider text-slate-200 bg-white/5 border border-white/10 hover:bg-cyan-500 hover:border-cyan-400 hover:text-black rounded-xl transition-all duration-300 shadow-sm shadow-black"
             >
@@ -299,7 +301,7 @@ export default function DragPortfolio() {
                   <div className="flex justify-between items-center pt-2 border-t border-white/5">
                     <div className="flex gap-1.5">
                       {projects.map((_, idx) => (
-                        <button
+                        <button type="button"
                           key={idx}
                           onClick={() => setActiveProjectIdx(idx)}
                           className={`w-2.5 h-2.5 rounded-full transition-all duration-300 ${

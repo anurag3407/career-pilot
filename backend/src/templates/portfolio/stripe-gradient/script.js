@@ -1,3 +1,4 @@
+/* eslint-env browser */
 /**
  * script.js — Stripe Docs Portfolio Theme
  * 

@@ -1,4 +1,5 @@
 import React, { useState, useEffect, useRef } from 'react';
+import './Projects.css';
 import {
   Compass,
   Radio,
@@ -289,42 +290,7 @@ export default function Projects({ projects = DEFAULT_PROJECTS }) {
   return (
     <section id="projects" className="w-full bg-[#020713] text-cyan-100 py-24 px-4 sm:px-6 lg:px-8 relative overflow-hidden font-mono select-none border-t border-cyan-900/20">
       
-      {/* Dynamic inline styles for bioluminescent effects and radar sweeps */}
-      <style dangerouslySetInnerHTML={{__html: `
-        @keyframes submarine-sonar-sweep {
-          0% { transform: rotate(0deg); }
-          100% { transform: rotate(360deg); }
-        }
-        @keyframes biolume-bubble-rise {
-          0% { transform: translateY(100%) scale(0.6); opacity: 0; }
-          50% { opacity: 0.35; }
-          100% { transform: translateY(-20%) scale(1.1); opacity: 0; }
-        }
-        @keyframes hydro-glitch-text {
-          0%, 100% { text-shadow: 0 0 2px rgba(34,211,238,0.3); }
-          50% { text-shadow: 0 0 8px rgba(34,211,238,0.7), 0 0 16px rgba(34,211,238,0.2); }
-        }
-        .hydro-sonar-sweep {
-          animation: submarine-sonar-sweep 6s linear infinite;
-        }
-        .hydro-bubble-1 {
-          animation: biolume-bubble-rise 9s infinite ease-in;
-          left: 12%;
-        }
-        .hydro-bubble-2 {
-          animation: biolume-bubble-rise 12s infinite ease-in;
-          left: 45%;
-          animation-delay: 2s;
-        }
-        .hydro-bubble-3 {
-          animation: biolume-bubble-rise 8s infinite ease-in;
-          left: 78%;
-          animation-delay: 4s;
-        }
-        .hydro-glow-text {
-          animation: hydro-glitch-text 3s infinite;
-        }
-      `}} />
+
 
       {/* Underwater Grid Backdrop */}
       <div 
@@ -371,7 +337,7 @@ export default function Projects({ projects = DEFAULT_PROJECTS }) {
               <div className="text-base font-bold text-cyan-300 tracking-widest">{sysTime || '09:14:26'}</div>
             </div>
             <div className="h-8 w-px bg-cyan-500/20" />
-            <button 
+            <button type="button" 
               onClick={() => { setSoundEnabled(!soundEnabled); playSonarPing(soundEnabled ? 440 : 880, 0.8); }}
               className={`p-2.5 rounded-lg transition-all border ${
                 soundEnabled 
@@ -397,7 +363,7 @@ export default function Projects({ projects = DEFAULT_PROJECTS }) {
             const Icon = zone.icon;
             const isSelected = activeZone === zone.id;
             return (
-              <button
+              <button type="button"
                 key={zone.id}
                 onClick={() => { setActiveZone(zone.id); playSonarPing(isSelected ? 600 : 780, 1.0); }}
                 className={`flex-1 min-w-[140px] flex items-center gap-3 px-4 py-3 rounded-xl transition-all border font-mono text-left cursor-pointer ${
@@ -613,7 +579,7 @@ export default function Projects({ projects = DEFAULT_PROJECTS }) {
                   </div>
                 </div>
               ) : (
-                <button
+                <button type="button"
                   onClick={handlePRTransmission}
                   className="w-full bg-gradient-to-r from-cyan-500 to-blue-600 hover:from-cyan-400 hover:to-blue-500 text-slate-950 hover:text-black py-4 px-6 rounded-xl font-mono font-bold text-xs tracking-[0.18em] flex items-center justify-center gap-3 transition-all shadow-[0_0_15px_rgba(34,211,238,0.2)] hover:shadow-[0_0_25px_rgba(34,211,238,0.4)] hover:scale-[1.01] cursor-pointer uppercase"
                 >

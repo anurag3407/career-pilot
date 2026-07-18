@@ -1,13 +1,15 @@
+import { usePortfolio } from "../../../../context/PortfolioContext";
 import React, { useState, useEffect, useRef } from 'react';
 import { motion, useMotionValue, useSpring, useTransform } from 'framer-motion';
 import { 
   Mic, MicOff, ExternalLink, Github, Linkedin, Mail, Twitter, 
   ChevronDown, Award, Briefcase, User, Code, Volume2, Sparkles
 } from 'lucide-react';
-import data from '../../../../data/dummy_data.json';
 
 // A 3D interactive card component for projects
 function ProjectCard({ project, pulseGlowStyle }) {
+  const { portfolioData: data } = usePortfolio();
+
   const x = useMotionValue(0);
   const y = useMotionValue(0);
 
@@ -79,6 +81,8 @@ function ProjectCard({ project, pulseGlowStyle }) {
 }
 
 export default function SoundReactive() {
+  const { portfolioData: data } = usePortfolio();
+
   const [isListening, setIsListening] = useState(false);
   const canvasRef = useRef(null);
   const containerRef = useRef(null);
@@ -315,7 +319,7 @@ export default function SoundReactive() {
 
       {/* Mic Control Fab */}
       <div className="fixed bottom-8 right-8 z-50">
-        <button
+        <button type="button"
           onClick={isListening ? stopListening : startListening}
           className={`flex items-center justify-center p-4 rounded-full backdrop-blur-md border ${
             isListening 

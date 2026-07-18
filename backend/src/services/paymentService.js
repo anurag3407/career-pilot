@@ -41,8 +41,8 @@ const razorpay = new Proxy({}, {
  * @returns {Promise<object>} Razorpay order object
  */
 export const createOrder = async (amount, receipt, notes = {}) => {
-     if (!razorpay) {
-        throw new Error('Razorpay is not configured');
+    if (!process.env.RAZORPAY_KEY_ID || !process.env.RAZORPAY_KEY_SECRET) {
+        throw new Error('Razorpay is not configured. Set RAZORPAY_KEY_ID and RAZORPAY_KEY_SECRET in your .env file.');
     }
     const options = {
         amount: Math.round(amount * 100), // Razorpay expects amount in paise
@@ -70,6 +70,10 @@ export const createOrder = async (amount, receipt, notes = {}) => {
  * @returns {boolean} Whether the signature is valid
  */
 export const verifyPaymentSignature = (orderId, paymentId, signature) => {
+    if (!process.env.RAZORPAY_KEY_SECRET) {
+        console.warn('⚠️ Cannot verify payment signature: RAZORPAY_KEY_SECRET is not configured.');
+        return false;
+    }
     const body = orderId + '|' + paymentId;
     const expectedSignature = crypto
         .createHmac('sha256', process.env.RAZORPAY_KEY_SECRET)
@@ -96,9 +100,9 @@ export const verifyPaymentSignature = (orderId, paymentId, signature) => {
  * @returns {Promise<object>} Order details
  */
 export const getOrder = async (orderId) => {
-    if (!razorpay) {
-    throw new Error('Razorpay is not configured');
-}
+    if (!process.env.RAZORPAY_KEY_ID || !process.env.RAZORPAY_KEY_SECRET) {
+        throw new Error('Razorpay is not configured. Set RAZORPAY_KEY_ID and RAZORPAY_KEY_SECRET in your .env file.');
+    }
     try {
         return await razorpay.orders.fetch(orderId);
     } catch (error) {
@@ -113,9 +117,9 @@ export const getOrder = async (orderId) => {
  * @returns {Promise<object>} Payment details
  */
 export const getPayment = async (paymentId) => {
-    if (!razorpay) {
-    throw new Error('Razorpay is not configured');
-}
+    if (!process.env.RAZORPAY_KEY_ID || !process.env.RAZORPAY_KEY_SECRET) {
+        throw new Error('Razorpay is not configured. Set RAZORPAY_KEY_ID and RAZORPAY_KEY_SECRET in your .env file.');
+    }
     try {
         return await razorpay.payments.fetch(paymentId);
     } catch (error) {

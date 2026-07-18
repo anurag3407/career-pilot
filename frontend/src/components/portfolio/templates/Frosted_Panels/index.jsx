@@ -1,3 +1,4 @@
+import { usePortfolio } from "../../../../context/PortfolioContext";
 import React, { useState, useEffect } from 'react';
 import { motion, AnimatePresence } from 'framer-motion';
 import {
@@ -34,7 +35,6 @@ import {
   CalendarDays,
   Phone
 } from 'lucide-react';
-import data from '../../../../data/dummy_data.json';
 
 /**
  * Frosted Panels Portfolio Template (Glass / Modern UI)
@@ -47,6 +47,8 @@ import data from '../../../../data/dummy_data.json';
  * - Background connection: Absolute background panels connecting the user's flow
  */
 export default function FrostedPanels() {
+  const { portfolioData: data } = usePortfolio();
+
   const [activeSection, setActiveSection] = useState('home');
   const [hoveredLink, setHoveredLink] = useState(null);
   const [mobileMenuOpen, setMobileMenuOpen] = useState(false);
@@ -278,7 +280,7 @@ export default function FrostedPanels() {
 
           {/* Hamburger Mobile Menu Toggle Button */}
           <div className="md:hidden relative z-20">
-            <button
+            <button type="button"
               onClick={() => setMobileMenuOpen(!mobileMenuOpen)}
               className="p-2 rounded-full bg-white/50 border border-white/40 text-[#1b1435] hover:bg-white/80 transition-colors focus:outline-none"
               aria-label="Toggle navigation menu"

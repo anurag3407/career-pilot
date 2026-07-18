@@ -25,13 +25,16 @@ export default defineConfig({
   },
   server: {
     port: 5173,
-    headers: {
-      'Cross-Origin-Opener-Policy': 'same-origin-allow-popups',
-    },
+
     proxy: {
       '/api': {
-        target: 'http://localhost:5001',
+        target: process.env.IS_DOCKER ? 'http://backend_container:5002' : 'http://localhost:5002',
         changeOrigin: true,
+        configure: (proxy, _options) => {
+          proxy.on('error', (err, _req, _res) => {
+            console.log('proxy error', err);
+          });
+        },
       },
     },
   },

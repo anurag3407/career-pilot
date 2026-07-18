@@ -170,7 +170,7 @@ export default function Projects() {
                   </span>
 
                   {/* Wishlist */}
-                  <button 
+                  <button type="button" 
                     aria-label="Add to wishlist"
                     onClick={() => {/* implement wishlist toggle */}}
                     className="absolute top-5 right-5 w-10 h-10 rounded-full bg-white/80 backdrop-blur-xl flex items-center justify-center shadow-md hover:scale-110 transition"
@@ -308,7 +308,7 @@ export default function Projects() {
                     </div>
 
                     {/* CTA */}
-                    <button
+                    <button type="button"
                       onClick={() => toggle(p.id)}
                       className="w-full flex items-center justify-center gap-2 py-3 rounded-2xl text-sm font-bold transition-all duration-300 active:scale-95 hover:scale-[1.02] shadow-xl"
                       style={{
@@ -327,7 +327,7 @@ export default function Projects() {
                     </button>
 
                     {/* Secondary CTA */}
-                    <button
+                    <button type="button"
                       onClick={() => alert("Project preview coming soon")}
                       className="w-full flex items-center justify-center gap-2 mt-3 text-sm font-semibold text-stone-500 hover:text-stone-900 transition-all group/arrow"
                       style={{ fontFamily: "sans-serif" }}
@@ -358,7 +358,7 @@ export default function Projects() {
           Showing {projects.length} premium featured projects
         </p>
 
-        <button  
+        <button type="button"  
         onClick={() => alert("Collection coming soon")}
         className="group flex items-center gap-2 text-sm font-bold text-stone-900 hover:text-orange-500 transition">
 

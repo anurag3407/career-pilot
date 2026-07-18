@@ -1,3 +1,4 @@
+import { usePortfolio } from "../../../../context/PortfolioContext";
 import React, { useState } from 'react';
 import { motion, AnimatePresence } from 'framer-motion';
 import { 
@@ -7,7 +8,6 @@ import {
   CheckCircle2, Code2, Briefcase, Star, BadgeCheck,
   Github, Linkedin, Twitter, ExternalLink, Flame
 } from 'lucide-react';
-import data from '../../../../data/dummy_data.json';
 
 /**
  * Twitter Profile Portfolio Template
@@ -15,6 +15,8 @@ import data from '../../../../data/dummy_data.json';
  * Description: Twitter/X profile layout with banner image, profile info section, and tweet-style project posts in a feed.
  */
 export default function TwitterProfile() {
+  const { portfolioData: data } = usePortfolio();
+
   const [activeTab, setActiveTab] = useState('Projects');
 
   // Format date safely
@@ -54,7 +56,7 @@ export default function TwitterProfile() {
             <NavItem icon={<User size={26} strokeWidth={2.5} />} label="Profile" isActive />
             <NavItem icon={<MoreHorizontal size={26} />} label="More" />
 
-            <button className="mt-4 bg-[#1d9bf0] hover:bg-[#1a8cd8] text-white rounded-full font-bold transition-colors w-[52px] h-[52px] xl:w-full xl:h-[52px] xl:px-8 text-[17px] flex items-center justify-center shadow-md">
+            <button type="button" className="mt-4 bg-[#1d9bf0] hover:bg-[#1a8cd8] text-white rounded-full font-bold transition-colors w-[52px] h-[52px] xl:w-full xl:h-[52px] xl:px-8 text-[17px] flex items-center justify-center shadow-md">
               <span className="hidden xl:inline">Post</span>
               <span className="xl:hidden">
                 <svg viewBox="0 0 24 24" className="w-6 h-6 fill-current"><g><path d="M23 3c-6.62-.1-10.38 2.421-13.05 6.03C7.29 12.61 6 17.331 6 22h2c0-1.007.07-2.012.19-3H12c4.1 0 7.48-3.082 7.94-7.054C22.79 10.147 23.17 6.359 23 3zm-7 8h-1.5v2H16c.63-.016 1.2-.08 1.72-.188C16.95 15.24 14.68 17 12 17H8.55c.57-2.512 1.57-4.851 3-6.78 2.16-2.912 5.29-4.911 9.45-5.187C20.95 8.079 19.9 11 16 11zM4 9V6H1V4h3V1h2v3h3v2H6v3H4z"></path></g></svg>
@@ -113,7 +115,7 @@ export default function TwitterProfile() {
                   <a href={`mailto:${data.socials.email}`} className="w-9 h-9 rounded-full border border-[#536471] flex items-center justify-center hover:bg-white/10 transition-colors">
                     <Mail size={18} className="text-white" />
                   </a>
-                  <button className="px-4 py-1.5 rounded-full border border-[#536471] text-white font-bold text-[15px] hover:bg-white/10 transition-colors">
+                  <button type="button" className="px-4 py-1.5 rounded-full border border-[#536471] text-white font-bold text-[15px] hover:bg-white/10 transition-colors">
                     Edit profile
                   </button>
                 </div>
@@ -172,7 +174,7 @@ export default function TwitterProfile() {
           {/* Tabs */}
           <div className="flex border-b border-[#2f3336] overflow-x-auto hide-scrollbar">
             {tabs.map((tab) => (
-              <button
+              <button type="button"
                 key={tab}
                 onClick={() => setActiveTab(tab)}
                 className="flex-1 min-w-[100px] hover:bg-white/10 transition-colors relative flex items-center justify-center h-[53px]"
@@ -307,6 +309,8 @@ export default function TwitterProfile() {
 // Subcomponents
 
 function NavItem({ icon, label, isActive, className = '' }) {
+  const { portfolioData: data } = usePortfolio();
+
   return (
     <div className={`p-3 xl:px-4 xl:py-3 w-fit xl:w-full hover:bg-white/10 rounded-full transition-colors cursor-pointer flex items-center gap-5 xl:hover:bg-[#181818] ${className}`}>
       <div className={`relative ${isActive ? 'text-[#e7e9ea]' : 'text-[#e7e9ea]'}`}>
@@ -320,6 +324,8 @@ function NavItem({ icon, label, isActive, className = '' }) {
 }
 
 function FollowItem({ name, handle, icon, href }) {
+  const { portfolioData: data } = usePortfolio();
+
   return (
     <a href={href} target="_blank" rel="noopener noreferrer" className="px-4 py-3 flex justify-between items-center hover:bg-white/5 cursor-pointer transition-colors block">
       <div className="flex gap-3 items-center">
@@ -331,7 +337,7 @@ function FollowItem({ name, handle, icon, href }) {
           <div className="text-[#71767b] text-[15px]">{handle}</div>
         </div>
       </div>
-      <button className="bg-white text-black font-bold text-sm px-4 py-1.5 rounded-full hover:bg-gray-200 transition-colors">
+      <button type="button" className="bg-white text-black font-bold text-sm px-4 py-1.5 rounded-full hover:bg-gray-200 transition-colors">
         Follow
       </button>
     </a>
@@ -351,6 +357,8 @@ function Tweet({
   retweeterName,
   links
 }) {
+  const { portfolioData: data } = usePortfolio();
+
   return (
     <article className="border-b border-[#2f3336] px-4 pt-3 pb-2 hover:bg-white/[0.03] transition-colors cursor-pointer">
       
@@ -425,6 +433,8 @@ function Tweet({
 }
 
 function ActionIcon({ icon, count, color, bg, hideCount }) {
+  const { portfolioData: data } = usePortfolio();
+
   return (
     <div className={`flex items-center gap-1 group cursor-pointer text-[13px]`}>
       <div className={`p-2 rounded-full transition-colors ${bg} ${color}`}>
@@ -441,7 +451,9 @@ function ActionIcon({ icon, count, color, bg, hideCount }) {
 
 // Feeds
 
-function ProjectsFeed({ data }) {
+function ProjectsFeed() {
+  const { portfolioData: data } = usePortfolio();
+
   return (
     <div>
       {data.projects.map((project, idx) => (
@@ -479,7 +491,9 @@ function ProjectsFeed({ data }) {
   );
 }
 
-function ExperienceFeed({ data }) {
+function ExperienceFeed() {
+  const { portfolioData: data } = usePortfolio();
+
   return (
     <div>
       {/* Pinned Tweet styling for current role */}
@@ -511,7 +525,9 @@ function ExperienceFeed({ data }) {
   );
 }
 
-function SkillsFeed({ data }) {
+function SkillsFeed() {
+  const { portfolioData: data } = usePortfolio();
+
   // Group skills into a thread
   const categories = [...new Set(data.skills.map(s => s.category))];
   
@@ -548,7 +564,9 @@ function SkillsFeed({ data }) {
   );
 }
 
-function TestimonialsFeed({ data }) {
+function TestimonialsFeed() {
+  const { portfolioData: data } = usePortfolio();
+
   return (
     <div>
       {data.testimonials.map((test, idx) => (

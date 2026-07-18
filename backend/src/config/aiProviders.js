@@ -3,6 +3,7 @@ import OpenAI from 'openai';
 import Groq from 'groq-sdk';
 import dotenv from 'dotenv';
 import { OpenRouterAdapter } from './providers/openrouter.js';
+import { RequestyAdapter } from './providers/requesty.js';
 import { ApiError } from '../middleware/errorHandler.js';
 import { aiCallsCounter } from '../middleware/metrics.js';
 
@@ -11,14 +12,16 @@ dotenv.config();
 // ---------------------------------------------------------------------------
 // Supported provider identifiers
 // ---------------------------------------------------------------------------
-export const SUPPORTED_PROVIDERS = ['gemini', 'openai', 'openrouter', 'groq'];
+export const SUPPORTED_PROVIDERS = ['gemini', 'openai', 'openrouter', 'requesty', 'groq', 'custom'];
 
 // Default model names per provider (used when caller doesn't specify one)
 const DEFAULT_MODELS = {
   gemini: 'gemini-2.5-flash',
   openai: 'gpt-4o-mini',
   openrouter: 'openai/gpt-4o-mini',   // OpenRouter uses "org/model" format
+  requesty: 'openai/gpt-4o-mini',     // Requesty uses "org/model" format
   groq: 'llama-3.3-70b-versatile',
+  custom: 'gpt-3.5-turbo',
 };
 
 // ---------------------------------------------------------------------------
@@ -125,6 +128,57 @@ class OpenAIAdapter {
   }
 }
 
+/**
+ * Adapter for Custom OpenAI-compatible endpoints (via official openai SDK).
+ */
+class CustomAdapter {
+  constructor(apiKey, modelName, baseUrl) {
+    const key = apiKey || 'dummy-key';
+    const config = { apiKey: key };
+    if (baseUrl) {
+      config.baseURL = baseUrl;
+    }
+    this.client = new OpenAI(config);
+    this.modelName = modelName || DEFAULT_MODELS.custom;
+    this.providerName = 'custom';
+  }
+
+  async generateContent(prompt) {
+    aiCallsCounter.inc({ provider: this.providerName });
+    const completion = await this.client.chat.completions.create({
+      model: this.modelName,
+      messages: [{ role: 'user', content: prompt }],
+      temperature: 0.7,
+    });
+    const u = completion.usage;
+    const usage = u
+      ? {
+          prompt: u.prompt_tokens ?? 0,
+          completion: u.completion_tokens ?? 0,
+          total: u.total_tokens ?? 0,
+        }
+      : undefined;
+    return { text: completion.choices[0]?.message?.content || '', usage };
+  }
+
+  async *generateContentStream(prompt) {
+    const completion = await this.client.chat.completions.create({
+      model: this.modelName,
+      messages: [{ role: 'user', content: prompt }],
+      temperature: 0.7,
+      stream: true,
+    });
+    let fullText = '';
+    for await (const chunk of completion) {
+      const text = chunk.choices[0]?.delta?.content || '';
+      fullText += text;
+      yield { text, fullText };
+    }
+    const u = completion.usage;
+    yield { done: true, usage: u ? { prompt: u.prompt_tokens ?? 0, completion: u.completion_tokens ?? 0, total: u.total_tokens ?? 0 } : undefined };
+  }
+}
+
 
 /**
  * Adapter for Groq (via groq-sdk).
@@ -187,12 +241,13 @@ class GroqAdapter {
 /**
  * Creates an AI provider adapter based on the given provider name and API key.
  *
- * @param {string} provider  - One of 'gemini' | 'openai' | 'openrouter' | 'groq'
+ * @param {string} provider  - One of 'gemini' | 'openai' | 'openrouter' | 'groq' | 'custom'
  * @param {string} apiKey    - The API key for the chosen provider
  * @param {string} [modelName] - Optional override for the model name
+ * @param {string} [baseUrl] - Optional override for the base URL (custom provider)
  * @returns {{ generateContent(prompt: string): Promise<{ text: string, usage?: { prompt: number, completion: number, total: number } }>, providerName: string }}
  */
-export function createAIProvider(provider, apiKey, modelName) {
+export function createAIProvider(provider, apiKey, modelName, baseUrl) {
   const normalised = (provider || '').toLowerCase().trim();
 
   switch (normalised) {
@@ -202,8 +257,12 @@ export function createAIProvider(provider, apiKey, modelName) {
       return new OpenAIAdapter(apiKey, modelName);
     case 'openrouter':
       return new OpenRouterAdapter(apiKey, modelName);
+    case 'requesty':
+      return new RequestyAdapter(apiKey, modelName);
     case 'groq':
       return new GroqAdapter(apiKey, modelName);
+    case 'custom':
+      return new CustomAdapter(apiKey, modelName, baseUrl);
     default:
       throw new Error(
         `Unsupported AI provider "${provider}". Supported providers: ${SUPPORTED_PROVIDERS.join(', ')}`
@@ -232,12 +291,39 @@ let _defaultProvider = null;
 export function getDefaultProvider() {
   if (_defaultProvider) return _defaultProvider;
 
+  const envProvider = process.env.AI_PROVIDER;
+  if (envProvider) {
+    let envKey = null;
+    if (envProvider === 'gemini') envKey = process.env.GEMINI_API_KEY;
+    else if (envProvider === 'openai') envKey = process.env.OPENAI_API_KEY;
+    else if (envProvider === 'groq') envKey = process.env.GROQ_API_KEY;
+    else if (envProvider === 'openrouter') envKey = process.env.OPENROUTER_API_KEY;
+    else if (envProvider === 'requesty') envKey = process.env.REQUESTY_API_KEY;
+
+    if (envKey) {
+      _defaultProvider = createAIProvider(envProvider, envKey);
+      return _defaultProvider;
+    }
+  }
+
+  const groqApiKey = process.env.GROQ_API_KEY;
+  if (groqApiKey && groqApiKey.startsWith('gsk_')) {
+    _defaultProvider = createAIProvider('groq', groqApiKey);
+    return _defaultProvider;
+  }
+
+  const openaiApiKey = process.env.OPENAI_API_KEY;
+  if (openaiApiKey && openaiApiKey.startsWith('sk-')) {
+    _defaultProvider = createAIProvider('openai', openaiApiKey);
+    return _defaultProvider;
+  }
+
   const geminiApiKey = process.env.GEMINI_API_KEY;
   if (!geminiApiKey) {
     throw new ApiError(
       503,
-      'AI features are unavailable — GEMINI_API_KEY is not configured. ' +
-      'Set it in your .env file or supply your own key via the X-AI-Key header.'
+      'AI features are unavailable — Neither OPENAI_API_KEY nor GEMINI_API_KEY is configured. ' +
+      'Set one in your .env file or supply your own key via the X-AI-Key header.'
     );
   }
 

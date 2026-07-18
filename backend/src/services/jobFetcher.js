@@ -4,6 +4,7 @@ import JobAlert from '../models/JobAlert.model.js';
 import JobListing from '../models/JobListing.model.js';
 import NotificationLog from '../models/NotificationLog.model.js';
 import { searchJobs } from './rapidApiService.js';
+import { deduplicateJobs } from './jobDeduplicator.js';
 import { sendJobAlertEmail } from './mailService.js';
 import scraperRegistry from './scrapers/index.js';
 import {
@@ -13,9 +14,9 @@ import {
     emitAlertProcessing
 } from './jobAlertSocket.js';
 import {
-    saveNotificationToFirebase,
-    saveJobListingToFirebase
-} from './firebaseDataService.js';
+    saveNotificationToAppwrite,
+    saveJobListingToAppwrite
+} from './appwriteDataService.js';
 import {
     initializeQueue,
     isQueueAvailable,
@@ -105,60 +106,220 @@ const mapEmploymentType = (types) => {
  * @param {Function} [onNewJobs]   Async callback receiving newly inserted docs.
  * @returns {Promise<object[]>}    Jobs enriched with their MongoDB _id.
  */
-export const bulkUpsertJobs = async (fetchedJobs, JobModel, onNewJobs) => {
-    const MAX_BATCH_SIZE = 25;
-    const batch = fetchedJobs.slice(0, MAX_BATCH_SIZE);
+const normalizeSourceIdentity = (value) => {
+  const normalized = String(value ?? '')
+    .trim()
+    .toLowerCase();
 
-    if (batch.length === 0) return [];
+  return normalized || 'rapidapi-jsearch';
+};
 
-    const externalIds = batch.map(j => j.externalId).filter(Boolean);
+const normalizeProviderExternalId = (value) =>
+  value === null || value === undefined
+    ? ''
+    : String(value).trim();
 
-    // Single $in query instead of one findOne per job
-    const existingDocs = await JobModel.find({ externalId: { $in: externalIds } })
-        .select('_id externalId')
-        .lean();
+const buildSourceScopedExternalId = (
+  source,
+  externalId,
+) => {
+  const normalizedSource =
+    normalizeSourceIdentity(source);
 
-    const existingMap = new Map(existingDocs.map(d => [d.externalId, d]));
+  const normalizedExternalId =
+    normalizeProviderExternalId(externalId);
 
-    const toInsert = batch.filter(j => j.externalId && !existingMap.has(j.externalId));
+  if (!normalizedExternalId) {
+    return '';
+  }
 
-    if (toInsert.length > 0) {
-        let insertedDocs = [];
-        try {
-            insertedDocs = await JobModel.insertMany(toInsert, { ordered: false });
-        } catch (err) {
-            // 11000 = duplicate key: a concurrent worker inserted first — not an error.
-            if (err.name === 'MongoBulkWriteError' || err.code === 11000) {
-                insertedDocs = err.insertedDocs ?? [];
-                console.warn(`⚠️  Bulk insert: ${err.writeErrors?.length ?? 0} duplicate(s) skipped (concurrent workers)`);
-            } else {
-                throw err;
-            }
-        }
+  return `${normalizedSource}:${normalizedExternalId}`;
+};
 
-        for (const doc of insertedDocs) {
-            existingMap.set(doc.externalId, doc);
-        }
+const buildStorageExternalId = (job) =>
+  buildSourceScopedExternalId(
+    job.source,
+    job.externalId,
+  );
 
-        // Recover IDs for any docs a concurrent worker inserted between our find and insertMany
-        const stillMissing = toInsert
-            .map(j => j.externalId)
-            .filter(id => id && !existingMap.has(id));
-        if (stillMissing.length > 0) {
-            const recovered = await JobModel.find({ externalId: { $in: stillMissing } })
-                .select('_id externalId')
-                .lean();
-            for (const doc of recovered) existingMap.set(doc.externalId, doc);
-        }
+export const bulkUpsertJobs = async (
+  fetchedJobs,
+  JobModel,
+  onNewJobs,
+) => {
+  const MAX_BATCH_SIZE = 25;
+  const batch = fetchedJobs.slice(0, MAX_BATCH_SIZE);
 
-        if (onNewJobs && insertedDocs.length > 0) {
-            await onNewJobs(insertedDocs);
-        }
+  if (batch.length === 0) {
+    return [];
+  }
+
+  const preparedBatch = batch
+    .map((job) => {
+      const rawExternalId =
+        normalizeProviderExternalId(job.externalId);
+
+      const normalizedSource =
+        normalizeSourceIdentity(job.source);
+
+      return {
+        job,
+        rawExternalId,
+        normalizedSource,
+        storageExternalId:
+          buildStorageExternalId(job),
+      };
+    })
+    .filter(
+      ({ rawExternalId, storageExternalId }) =>
+        rawExternalId && storageExternalId,
+    );
+
+  if (preparedBatch.length === 0) {
+    return [];
+  }
+
+  /*
+   * Search for both source-scoped IDs and legacy raw IDs.
+   * This avoids duplicating existing same-source records while
+   * allowing different providers to reuse the same raw ID.
+   */
+  const lookupExternalIds = [
+    ...new Set(
+      preparedBatch.flatMap(
+        ({
+          rawExternalId,
+          storageExternalId,
+        }) => [
+          rawExternalId,
+          storageExternalId,
+        ],
+      ),
+    ),
+  ];
+
+  const existingDocs = await JobModel.find({
+    externalId: {
+      $in: lookupExternalIds,
+    },
+  })
+    .select('_id externalId source')
+    .lean();
+
+  const existingByStoredId = new Map(
+    existingDocs.map((document) => [
+      String(document.externalId),
+      document,
+    ]),
+  );
+
+  const existingLegacyBySourceId = new Map(
+    existingDocs.map((document) => [
+      buildSourceScopedExternalId(
+        document.source,
+        document.externalId,
+      ),
+      document,
+    ]),
+  );
+
+  const resolveExistingDocument = (entry) =>
+    existingByStoredId.get(
+      entry.storageExternalId,
+    ) ??
+    existingLegacyBySourceId.get(
+      buildSourceScopedExternalId(
+        entry.normalizedSource,
+        entry.rawExternalId,
+      ),
+    );
+
+  const entriesToInsert = preparedBatch.filter(
+    (entry) => !resolveExistingDocument(entry),
+  );
+
+  if (entriesToInsert.length > 0) {
+    const documentsToInsert =
+      entriesToInsert.map((entry) => ({
+        ...entry.job,
+        externalId: entry.storageExternalId,
+      }));
+
+    let insertedDocs = [];
+
+    try {
+      insertedDocs = await JobModel.insertMany(
+        documentsToInsert,
+        {
+          ordered: false,
+        },
+      );
+    } catch (error) {
+      if (
+        error.name === 'MongoBulkWriteError' ||
+        error.code === 11000
+      ) {
+        insertedDocs = error.insertedDocs ?? [];
+
+        console.warn(
+          `⚠️ Bulk insert: ${
+            error.writeErrors?.length ?? 0
+          } duplicate(s) skipped ` +
+            '(concurrent workers)',
+        );
+      } else {
+        throw error;
+      }
     }
 
-    return batch
-        .map(job => ({ ...job, _id: existingMap.get(job.externalId)?._id }))
-        .filter(j => j._id != null);
+    for (const document of insertedDocs) {
+      existingByStoredId.set(
+        String(document.externalId),
+        document,
+      );
+    }
+
+    const stillMissingExternalIds =
+      entriesToInsert
+        .map((entry) => entry.storageExternalId)
+        .filter(
+          (externalId) =>
+            !existingByStoredId.has(externalId),
+        );
+
+    if (stillMissingExternalIds.length > 0) {
+      const recoveredDocs = await JobModel.find({
+        externalId: {
+          $in: stillMissingExternalIds,
+        },
+      })
+        .select('_id externalId source')
+        .lean();
+
+      for (const document of recoveredDocs) {
+        existingByStoredId.set(
+          String(document.externalId),
+          document,
+        );
+      }
+    }
+
+    if (onNewJobs && insertedDocs.length > 0) {
+      await onNewJobs(insertedDocs);
+    }
+  }
+
+  return preparedBatch
+    .map((entry) => {
+      const existingDocument =
+        resolveExistingDocument(entry);
+
+      return {
+        ...entry.job,
+        _id: existingDocument?._id,
+      };
+    })
+    .filter((job) => job._id != null);
 };
 
 /**
@@ -244,19 +405,33 @@ export const processAlert = async (alertData) => {
             return { success: true, newJobs: 0 };
         }
 
+        const {
+          jobs: deduplicatedJobs,
+          stats: deduplicationStats,
+        } = deduplicateJobs(fetchedJobs);
+
+        console.log(
+          ` Job deduplication: ${deduplicationStats.inputCount} input, ` +
+          `${deduplicationStats.outputCount} unique, ` +
+          `${deduplicationStats.duplicatesRemoved} duplicate(s) removed`,
+        );
+
         // Bulk upsert: one $in lookup + one insertMany instead of N findOne calls
-        const jobsToSend = await bulkUpsertJobs(fetchedJobs, JobListing, async (newDocs) => {
+        const jobsToSend = await bulkUpsertJobs(deduplicatedJobs, JobListing, async (newDocs) => {
             // Batch Firebase sync for newly cached jobs
             await Promise.allSettled(
                 newDocs.map(doc => {
                     const obj = typeof doc.toObject === 'function' ? doc.toObject() : doc;
-                    return saveJobListingToFirebase(obj);
+                    return saveJobListingToAppwrite(obj);
                 })
             );
             console.log(`💾 Cached and synced ${newDocs.length} new job(s) to Firebase`);
         });
 
-        console.log(`📧 Sending ${jobsToSend.length} jobs to user (deduplication DISABLED)`);
+        console.log(
+          ` Sending ${jobsToSend.length} unique jobs to user ` +
+          `(${deduplicationStats.duplicatesRemoved} duplicate(s) removed)`,
+        );
 
         // Always send email if there are jobs
         if (jobsToSend.length > 0) {
@@ -326,7 +501,7 @@ export const processAlert = async (alertData) => {
 
                         // Save to Firebase (convert ObjectIds to strings)
                         try {
-                            await saveNotificationToFirebase({
+                            await saveNotificationToAppwrite({
                                 ...notification.toObject(),
                                 _id: notification._id.toString(),
                                 alertId: alertId.toString(),

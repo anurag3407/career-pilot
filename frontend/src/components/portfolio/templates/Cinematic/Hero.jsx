@@ -1,7 +1,10 @@
 import React from 'react';
 import { Play, ChevronRight, Film, Award } from 'lucide-react';
 
-export default function Hero() {
+export default function Hero({ data }) {
+  const name = data?.personal?.name || 'John Doe';
+  const tagline = data?.personal?.bio || "Crafting digital experiences with a touch of magic and relentless precision.";
+  
   return (
     <>
       <style>
@@ -41,7 +44,7 @@ export default function Hero() {
         <div className="absolute bottom-0 left-0 w-full h-[8vh] bg-black z-30 pointer-events-none shadow-[0_-20px_40px_rgba(0,0,0,0.8)] flex items-center justify-center">
             {/* Production info on bottom bar */}
             <div className="flex items-center gap-4 sm:gap-6 text-[9px] sm:text-[10px] text-neutral-500 font-mono tracking-[0.3em] uppercase opacity-80">
-                <span className="flex items-center gap-1.5"><Award size={12} className="text-neutral-400" /> Official Selection 2024</span>
+                <span className="flex items-center gap-1.5"><Award size={12} className="text-neutral-400" /> Official Selection {new Date().getFullYear()}</span>
                 <span className="hidden sm:inline opacity-50">|</span>
                 <span className="hidden sm:inline">Dolby Digital</span>
             </div>
@@ -60,14 +63,14 @@ export default function Hero() {
           {/* Main Title */}
           <div className="animate-cinematic w-full" style={{ animationDelay: '0.7s' }}>
             <h1 className="text-5xl sm:text-7xl md:text-8xl lg:text-9xl font-black uppercase tracking-tighter mb-6 text-transparent bg-clip-text bg-gradient-to-b from-white via-neutral-300 to-neutral-700 drop-shadow-2xl filter drop-shadow-[0_0_25px_rgba(255,255,255,0.15)] leading-none px-4">
-              John Doe
+              {name}
             </h1>
           </div>
 
           {/* Subtitle / Tagline */}
           <div className="animate-cinematic px-4" style={{ animationDelay: '1.2s' }}>
             <p className="text-base sm:text-xl md:text-2xl font-light tracking-wide text-neutral-300 max-w-3xl mb-12 italic opacity-90 font-serif">
-              "Crafting digital experiences with a touch of magic and relentless precision."
+              "{tagline}"
             </p>
           </div>
 
@@ -89,13 +92,13 @@ export default function Hero() {
 
           {/* Actions */}
           <div className="animate-cinematic flex flex-col sm:flex-row gap-4 sm:gap-6 items-center w-full sm:w-auto px-4" style={{ animationDelay: '2.2s' }}>
-            <button className="group relative flex items-center justify-center gap-3 px-10 py-4 bg-white text-black font-bold uppercase tracking-[0.2em] text-xs sm:text-sm rounded-sm hover:bg-neutral-200 transition-all duration-500 overflow-hidden w-full sm:w-auto shadow-[0_0_30px_rgba(255,255,255,0.1)] hover:shadow-[0_0_40px_rgba(255,255,255,0.2)]">
+            <button type="button" className="group relative flex items-center justify-center gap-3 px-10 py-4 bg-white text-black font-bold uppercase tracking-[0.2em] text-xs sm:text-sm rounded-sm hover:bg-neutral-200 transition-all duration-500 overflow-hidden w-full sm:w-auto shadow-[0_0_30px_rgba(255,255,255,0.1)] hover:shadow-[0_0_40px_rgba(255,255,255,0.2)]">
               <div className="absolute inset-0 bg-neutral-900/10 translate-y-full group-hover:translate-y-0 transition-transform duration-500 ease-out"></div>
               <Play size={16} className="fill-black group-hover:scale-110 transition-transform duration-500" />
               <span className="relative z-10">Play Showreel</span>
             </button>
             
-            <button className="group flex items-center justify-center gap-2 px-10 py-4 bg-transparent border border-neutral-700 text-white font-bold uppercase tracking-[0.2em] text-xs sm:text-sm rounded-sm hover:border-neutral-400 hover:text-white transition-all duration-500 w-full sm:w-auto">
+            <button type="button" className="group flex items-center justify-center gap-2 px-10 py-4 bg-transparent border border-neutral-700 text-white font-bold uppercase tracking-[0.2em] text-xs sm:text-sm rounded-sm hover:border-neutral-400 hover:text-white transition-all duration-500 w-full sm:w-auto">
               <span className="group-hover:translate-x-1 transition-transform duration-500">View Credits</span>
               <ChevronRight size={16} className="group-hover:translate-x-2 transition-transform duration-500 text-neutral-500 group-hover:text-white" />
             </button>

@@ -1,4 +1,6 @@
+import { usePortfolio } from "../../../../context/PortfolioContext";
 import React, { useState, useEffect } from 'react';
+import data from '../../../../data/dummy_data.json';
 import { motion } from 'framer-motion';
 import Hero from './Hero';
 import About from './About';
@@ -7,9 +9,10 @@ import Projects from './Projects';
 import Experience from './Experience';
 import Testimonials from './Testimonials';
 import Contact from './Contact';
-import dummyData from '../../../../data/dummy_data.json';
 
 const PlayingCardsPortfolio = ({ portfolioData }) => {
+  const { portfolioData: dummyData } = usePortfolio();
+
   const [isLoaded, setIsLoaded] = useState(false);
   const [activeSection, setActiveSection] = useState('home');
 
@@ -101,7 +104,7 @@ const PlayingCardsPortfolio = ({ portfolioData }) => {
       <nav className="sticky top-4 z-50 max-w-7xl mx-auto px-4">
         <div className="bg-white/10 backdrop-blur-md rounded-full shadow-xl p-2 flex flex-wrap justify-center gap-1 md:gap-2 border border-white/20">
           {sections.map((section) => (
-            <button
+            <button type="button"
               key={section.id}
               onClick={() => {
                 const element = document.getElementById(section.id);

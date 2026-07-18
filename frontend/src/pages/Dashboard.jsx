@@ -28,13 +28,64 @@ import {
 } from 'lucide-react'
 import { resumeApi, jobTrackerApi, portfolioApi, userProfileApi } from '../services/api'
 import Button from '../components/Button'
-import { 
-  SkeletonDashboardActions, 
-  SkeletonStatCards, 
-  SkeletonJobList,
-  SkeletonList 
+import PremiumFeatureCard from '../components/landing/PremiumFeatureCard'
+import PortfolioGrammarAssistant from '../components/PortfolioGrammarAssistant'
+import JobApplicationSuccessInsights from '../components/JobApplicationSuccessInsights'
+import ResumeBulletEnhancer from '../components/ResumeBulletEnhancer'
+import PortfolioTemplatePreview from '../components/PortfolioTemplatePreview'
+import ResumeIndustryOptimizer from '../components/ResumeIndustryOptimizer'
+import ResumeSectionStrengthAnalyzer from '../components/ResumeSectionStrengthAnalyzer'
+import PortfolioProjectCarousel from '../components/PortfolioProjectCarousel'
+import ResumeKeywordDensityInsights from '../components/ResumeKeywordDensityInsights'
+import PortfolioContactInteractionAnalytics from "../components/PortfolioContactInteractionAnalytics";
+import CareerReadinessChecklistDashboard from "../components/CareerReadinessChecklistDashboard";
+import {
+  SkeletonAction,
+  SkeletonStat,
+  SkeletonRow,
+  SkeletonBlock
 } from '../components/ui/Skeleton'
 import { getGithubUsername } from '../utils/github'
+import { FEATURES } from '../data/featuresConfig'
+
+function DashboardSkeleton() {
+  return (
+    <div>
+      {/* Quick Actions skeleton */}
+      <div className="grid grid-cols-2 md:grid-cols-4 lg:grid-cols-7 gap-4 mb-10">
+        {Array.from({ length: 7 }).map((_, i) => (
+          <SkeletonAction key={i} />
+        ))}
+      </div>
+
+      {/* Stats Row skeleton */}
+      <div className="grid grid-cols-2 md:grid-cols-5 gap-5 mb-10">
+        {Array.from({ length: 5 }).map((_, i) => (
+          <SkeletonStat key={i} />
+        ))}
+      </div>
+
+      {/* Two-column content skeleton */}
+      <div className="grid lg:grid-cols-2 gap-10">
+        {[0, 1].map((col) => (
+          <div key={col}>
+            <div className="flex justify-between items-center mb-6">
+              <SkeletonBlock className="h-7 w-52" />
+              <SkeletonBlock className="h-4 w-20" />
+            </div>
+            <div className="rounded-[2rem] bg-card border border-border overflow-hidden shadow-sm">
+              <div className="divide-y divide-border">
+                {Array.from({ length: 5 }).map((_, i) => (
+                  <SkeletonRow key={i} />
+                ))}
+              </div>
+            </div>
+          </div>
+        ))}
+      </div>
+    </div>
+  )
+}
 
 const STATUS_CONFIG = {
   saved: { label: 'Saved', color: 'bg-muted text-muted-foreground border border-border', icon: Star },
@@ -42,6 +93,8 @@ const STATUS_CONFIG = {
   interviewing: { label: 'Interviewing', color: 'bg-secondary/10 text-secondary border border-secondary/20', icon: MessageSquare },
   offered: { label: 'Offered', color: 'bg-emerald-500/10 text-emerald-500 border border-emerald-500/20', icon: CheckCircle2 }
 }
+// portfolioAnalytics intentionally removed — no real API exists yet.
+// Section is gated behind portfolioCount > 0 in the JSX below.
 
 export default function Dashboard() {
   const [resumes, setResumes] = useState([])
@@ -56,6 +109,7 @@ export default function Dashboard() {
     offered: 0
   })
   const [portfolioCount, setPortfolioCount] = useState(0)
+  // careerInsights: no real API yet — section is gated behind resumes.length > 0
   const [candidateName, setCandidateName] = useState('')
   const [githubOverview, setGithubOverview] = useState({
     connected: false,
@@ -147,9 +201,9 @@ export default function Dashboard() {
       setFetchError('Failed to load your dashboard. Please try again.')
       toast.error('Failed to load dashboard data')
     } finally {
-      if (!canUpdate()) return
-
-      setLoading(false)
+      if (canUpdate()) {
+        setLoading(false)
+      }
     }
   }
 
@@ -215,42 +269,7 @@ export default function Dashboard() {
         </motion.div>
 
         {loading ? (
-          <div className="space-y-10">
-            {/* Quick Actions Skeleton */}
-            <motion.div
-              initial={{ opacity: 0, y: 10 }}
-              animate={{ opacity: 1, y: 0 }}
-              transition={{ duration: 0.4 }}
-            >
-              <SkeletonDashboardActions />
-            </motion.div>
-
-            {/* Stats Skeleton */}
-            <motion.div
-              initial={{ opacity: 0, y: 10 }}
-              animate={{ opacity: 1, y: 0 }}
-              transition={{ duration: 0.4, delay: 0.1 }}
-            >
-              <SkeletonStatCards count={5} />
-            </motion.div>
-
-            {/* Recent Applications & Resumes Skeleton */}
-            <motion.div
-              initial={{ opacity: 0, y: 10 }}
-              animate={{ opacity: 1, y: 0 }}
-              transition={{ duration: 0.4, delay: 0.2 }}
-              className="grid lg:grid-cols-2 gap-10"
-            >
-              <div>
-                <div className="mb-6 h-8 bg-muted rounded-lg w-1/3 animate-pulse" />
-                <SkeletonList count={3} />
-              </div>
-              <div>
-                <div className="mb-6 h-8 bg-muted rounded-lg w-1/3 animate-pulse" />
-                <SkeletonList count={3} />
-              </div>
-            </motion.div>
-          </div>
+          <DashboardSkeleton />
         ) : (
           <motion.div variants={containerVariants} initial="hidden" animate="visible">
             {fetchError && (
@@ -266,49 +285,32 @@ export default function Dashboard() {
             )}
 
             {/* Modular Hubs */}
-            <motion.div variants={itemVariants} className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 xl:grid-cols-5 gap-5 mb-10">
-              {[
-                { to: '/hub/resume', icon: FileText, label: 'Resume Builder', desc: 'Create, parse, and optimize ATS resumes.', sub: `${resumes.length} resumes`, color: 'primary', badge: 'AI' },
-                { to: '/hub/jobs', icon: Briefcase, label: 'Job Finder', desc: 'Search jobs, set alerts, and track applications.', sub: `${jobStats.total} tracked`, color: 'primary' },
-                { to: '/hub/portfolio', icon: Globe, label: 'Portfolio Builder', desc: 'Sync repos and deploy portfolios instantly.', sub: `${portfolioCount} portfolios`, color: 'secondary' },
-                { to: '/hub/career', icon: GraduationCap, label: 'Career Growth', desc: 'AI mock interviews, email & profile tuning.', sub: '4 tools', color: 'emerald-500', badge: 'AI' },
-                { to: '/hub/community', icon: Users, label: 'Community Hub', desc: 'Group chat, public posts, and direct DMs.', sub: 'Connect', color: 'primary' },
-              ].map((hub, idx) => (
-                <motion.div key={idx} variants={itemVariants}>
-                  <Link to={hub.to} className="group block h-full">
-                    <div className="relative p-6 rounded-3xl bg-card border border-border overflow-hidden transition-all duration-300 hover:border-primary/40 hover:shadow-xl hover:shadow-primary/5 hover:-translate-y-1 h-full flex flex-col justify-between">
-                      {/* Hover glow effect */}
-                      <div className="absolute inset-0 bg-gradient-to-br from-primary/5 via-transparent to-transparent opacity-0 group-hover:opacity-100 transition-opacity duration-500 pointer-events-none" />
-                      
-                      {/* Badge */}
-                      {hub.badge && (
-                        <div className="absolute top-4 right-4 px-2 py-0.5 bg-primary/10 rounded-full text-[9px] text-primary font-black uppercase tracking-wider border border-primary/20">
-                          {hub.badge}
-                        </div>
-                      )}
+            <motion.div variants={itemVariants} className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 xl:grid-cols-4 gap-6 mb-10">
+              {FEATURES.map((feature, idx) => {
+                let size = 'small';
+                let badge = undefined;
+                if (idx < 2) size = 'large';
+                else if (idx < 4) size = 'medium';
+                
+                if (feature.slug === 'resume-builder') badge = 'Most Popular';
+                if (feature.slug === 'portfolio-builder') badge = 'New';
+                if (feature.slug === 'mock-interview') badge = 'AI Audio';
 
-                      <div>
-                        {/* Icon */}
-                        <div className={`w-14 h-14 bg-${hub.color}/10 border border-${hub.color}/20 rounded-2xl flex items-center justify-center mb-5 group-hover:scale-110 group-hover:bg-${hub.color}/15 transition-all duration-300`}>
-                          <hub.icon className={`w-7 h-7 text-${hub.color}`} />
-                        </div>
-                        
-                        {/* Content */}
-                        <h3 className="text-lg font-black text-foreground mb-2 group-hover:text-primary transition-colors">{hub.label}</h3>
-                        <p className="text-muted-foreground text-xs font-semibold leading-relaxed mb-4">{hub.desc}</p>
-                      </div>
-
-                      {/* Footer Info */}
-                      <div className="flex items-center justify-between text-[11px] font-bold text-muted-foreground pt-4 border-t border-border/40 mt-auto">
-                        <span className="uppercase tracking-wider">{hub.sub}</span>
-                        <span className="text-primary opacity-0 group-hover:opacity-100 group-hover:translate-x-0.5 transition-all flex items-center gap-0.5">
-                          Open <ArrowRight className="w-3 h-3" />
-                        </span>
-                      </div>
-                    </div>
-                  </Link>
-                </motion.div>
-              ))}
+                return (
+                  <div key={feature.slug} className={
+                    size === 'large' ? 'col-span-1 md:col-span-2' : 'col-span-1'
+                  }>
+                    <PremiumFeatureCard 
+                      to={`/${feature.slug}`} 
+                      icon={feature.icon} 
+                      title={feature.name} 
+                      description={feature.tagline.split('.')[0]} 
+                      badge={badge} 
+                      size={size} 
+                    />
+                  </div>
+                )
+              })}
             </motion.div>
 
             {/* Stats Row */}
@@ -388,6 +390,10 @@ export default function Dashboard() {
               })}
             </motion.div>
 
+            <motion.div variants={itemVariants} className="mb-10">
+              <JobApplicationSuccessInsights />
+            </motion.div>
+
             {/* GitHub Overview */}
             <motion.div variants={itemVariants} className="mb-10">
               {githubOverview.connected ? (
@@ -446,6 +452,98 @@ export default function Dashboard() {
                 </div>
               )}
             </motion.div>
+
+            <motion.div variants={itemVariants} className="mb-10">
+  <div className="rounded-2xl bg-card border border-border p-6 shadow-sm">
+    <div className="flex items-center gap-3 mb-5">
+      <GraduationCap className="w-6 h-6 text-primary" />
+      <h2 className="text-xl font-black">
+        Career Growth Insights
+      </h2>
+    </div>
+
+    {resumes.length > 0 ? (
+      <div className="p-6 rounded-xl border border-dashed border-border bg-muted/20 text-center">
+        <GraduationCap className="w-10 h-10 text-muted-foreground mx-auto mb-3 opacity-50" />
+        <p className="text-sm font-bold text-muted-foreground mb-1">AI Career Insights Coming Soon</p>
+        <p className="text-xs text-muted-foreground max-w-xs mx-auto">
+          Personalized readiness score, skill gap analysis, and trending skills will appear here once our AI analyses your resume.
+        </p>
+      </div>
+    ) : (
+      <div className="p-6 rounded-xl border border-dashed border-primary/20 bg-primary/5 text-center">
+        <GraduationCap className="w-10 h-10 text-primary mx-auto mb-3 opacity-60" />
+        <p className="text-sm font-bold text-foreground mb-1">Upload a Resume to Unlock Insights</p>
+        <p className="text-xs text-muted-foreground max-w-xs mx-auto mb-4">
+          Your readiness score, skill gaps, and personalised learning path will be generated once you add a resume.
+        </p>
+        <Link
+          to="/upload"
+          className="inline-flex items-center gap-2 px-4 py-2 bg-primary text-primary-foreground rounded-xl text-xs font-black hover:bg-primary/90 transition-colors"
+        >
+          Upload Resume <ArrowRight className="w-3.5 h-3.5" />
+        </Link>
+      </div>
+    )}
+  </div>
+</motion.div>
+
+{portfolioCount > 0 && (
+  <motion.div variants={itemVariants} className="mb-10">
+    <div className="rounded-2xl bg-card border border-border p-6 shadow-sm">
+      <div className="flex items-center gap-3 mb-6">
+        <TrendingUp className="w-6 h-6 text-primary" />
+        <h2 className="text-xl font-black">
+          Portfolio Performance Analytics
+        </h2>
+      </div>
+
+      <div className="p-6 rounded-xl border border-dashed border-border bg-muted/20 text-center">
+        <TrendingUp className="w-10 h-10 text-muted-foreground mx-auto mb-3 opacity-50" />
+        <p className="text-sm font-bold text-muted-foreground mb-1">Analytics Tracking Coming Soon</p>
+        <p className="text-xs text-muted-foreground max-w-sm mx-auto">
+          Real visit counts, unique visitors, and weekly growth metrics will be tracked once portfolio analytics are enabled.
+        </p>
+      </div>
+    </div>
+  </motion.div>
+)}
+
+<motion.div variants={itemVariants} className="mb-10">
+  <PortfolioGrammarAssistant />
+</motion.div>
+
+<motion.div variants={itemVariants} className="mb-10">
+  <PortfolioTemplatePreview />
+</motion.div>
+
+<motion.div variants={itemVariants} className="mb-10">
+  <ResumeBulletEnhancer />
+</motion.div>
+
+<motion.div variants={itemVariants} className="mb-10">
+  <ResumeIndustryOptimizer />
+</motion.div>
+
+<motion.div variants={itemVariants} className="mb-10">
+  <ResumeSectionStrengthAnalyzer />
+</motion.div>
+
+<motion.div variants={itemVariants} className="mb-10">
+  <PortfolioProjectCarousel />
+</motion.div>
+
+<motion.div variants={itemVariants} className="mb-10">
+  <ResumeKeywordDensityInsights />
+</motion.div>
+
+<motion.div variants={itemVariants} className="mb-10">
+  <PortfolioContactInteractionAnalytics />
+</motion.div>
+
+<motion.div variants={itemVariants} className="mb-10">
+  <CareerReadinessChecklistDashboard />
+</motion.div>
 
             <div className="grid lg:grid-cols-2 gap-10">
               {/* Recent Applications */}

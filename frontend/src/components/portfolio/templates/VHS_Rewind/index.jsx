@@ -1,3 +1,4 @@
+import { usePortfolio } from "../../../../context/PortfolioContext";
 import React, { useState, useEffect } from 'react';
 import { motion, useScroll, useTransform, AnimatePresence } from 'framer-motion';
 import {
@@ -26,7 +27,6 @@ import {
   Menu,
   X,
 } from 'lucide-react';
-import data from '../../../../data/dummy_data.json';
 import './styles.css';
 
 /* ═══════════════════════════════════════════════════════════════
@@ -61,6 +61,8 @@ const scaleIn = {
 
 // ── VHS Timestamp Component ──────────────────────────────────
 function VHSTimestamp() {
+  const { portfolioData: data } = usePortfolio();
+
   const [time, setTime] = useState(new Date());
 
   useEffect(() => {
@@ -87,32 +89,34 @@ function VHSTimestamp() {
 
 // ── VCR Controls Bar Component ───────────────────────────────
 function VCRControls() {
+  const { portfolioData: data } = usePortfolio();
+
   const [isPlaying, setIsPlaying] = useState(true);
 
   return (
     <div className="flex items-center gap-3 vhs-font">
-      <button
+      <button type="button"
         onClick={() => setIsPlaying(false)}
         className="text-[#f0e6d3]/40 hover:text-[#00e5ff] transition-colors"
         aria-label="Rewind"
       >
         <Rewind size={16} />
       </button>
-      <button
+      <button type="button"
         onClick={() => setIsPlaying(!isPlaying)}
         className="text-[#00e5ff] hover:text-[#ff00aa] transition-colors"
         aria-label={isPlaying ? 'Pause' : 'Play'}
       >
         {isPlaying ? <Pause size={18} /> : <Play size={18} />}
       </button>
-      <button
+      <button type="button"
         onClick={() => setIsPlaying(false)}
         className="text-[#f0e6d3]/40 hover:text-[#00e5ff] transition-colors"
         aria-label="Fast Forward"
       >
         <FastForward size={16} />
       </button>
-      <button
+      <button type="button"
         className="text-[#f0e6d3]/40 hover:text-[#ff00aa] transition-colors"
         aria-label="Stop"
       >
@@ -141,6 +145,8 @@ function VCRControls() {
 
 // ── REC Indicator Component ──────────────────────────────────
 function RECIndicator() {
+  const { portfolioData: data } = usePortfolio();
+
   return (
     <div className="flex items-center gap-2">
       <div className="w-2 h-2 rounded-full bg-red-500 vhs-rec-dot" />
@@ -153,6 +159,8 @@ function RECIndicator() {
 
 // ── Section Label (VHS Style) ────────────────────────────────
 function SectionLabel({ label, icon: Icon }) {
+  const { portfolioData: data } = usePortfolio();
+
   return (
     <div className="flex items-center gap-3 mb-8">
       <div className="flex items-center gap-2 px-3 py-1.5 vhs-tape-label">
@@ -168,6 +176,8 @@ function SectionLabel({ label, icon: Icon }) {
 
 // ── Navigation Bar ───────────────────────────────────────────
 function VHSNavbar() {
+  const { portfolioData: data } = usePortfolio();
+
   const [isMobileMenuOpen, setIsMobileMenuOpen] = useState(false);
 
   const sections = [
@@ -214,7 +224,7 @@ function VHSNavbar() {
         {/* Desktop Nav Links — hidden on mobile */}
         <div className="hidden md:flex items-center gap-1 lg:gap-2">
           {sections.map((s) => (
-            <button
+            <button type="button"
               key={s.id}
               onClick={() => handleNavClick(s.id)}
               className="px-2 py-1 text-xs vhs-font text-[#f0e6d3]/50 hover:text-[#00e5ff] hover:bg-[#00e5ff]/5 rounded transition-all tracking-widest"
@@ -232,7 +242,7 @@ function VHSNavbar() {
           </div>
 
           {/* Mobile hamburger button */}
-          <button
+          <button type="button"
             onClick={() => setIsMobileMenuOpen(!isMobileMenuOpen)}
             aria-label="Toggle menu"
             aria-expanded={isMobileMenuOpen}
@@ -288,6 +298,8 @@ function VHSNavbar() {
 //  HERO SECTION
 // ═══════════════════════════════════════════════════════════════
 function HeroSection() {
+  const { portfolioData: data } = usePortfolio();
+
   const { scrollY } = useScroll();
   const bgY = useTransform(scrollY, [0, 600], [0, 150]);
 
@@ -410,6 +422,8 @@ function HeroSection() {
 //  ABOUT SECTION
 // ═══════════════════════════════════════════════════════════════
 function AboutSection() {
+  const { portfolioData: data } = usePortfolio();
+
   return (
     <section id="about" className="relative py-16 sm:py-24 px-4 sm:px-6">
       <div className="max-w-5xl mx-auto">
@@ -537,6 +551,8 @@ function AboutSection() {
 //  SKILLS SECTION
 // ═══════════════════════════════════════════════════════════════
 function SkillsSection() {
+  const { portfolioData: data } = usePortfolio();
+
   // Group skills by category
   const categories = data.skills.reduce((acc, skill) => {
     if (!acc[skill.category]) acc[skill.category] = [];
@@ -611,6 +627,8 @@ function SkillsSection() {
 //  PROJECTS SECTION
 // ═══════════════════════════════════════════════════════════════
 function ProjectsSection() {
+  const { portfolioData: data } = usePortfolio();
+
   return (
     <section id="projects" className="relative py-16 sm:py-24 px-4 sm:px-6">
       <div className="max-w-5xl mx-auto">
@@ -721,6 +739,8 @@ function ProjectsSection() {
 //  EXPERIENCE SECTION
 // ═══════════════════════════════════════════════════════════════
 function ExperienceSection() {
+  const { portfolioData: data } = usePortfolio();
+
   return (
     <section id="experience" className="relative py-16 sm:py-24 px-4 sm:px-6">
       <div className="max-w-5xl mx-auto">
@@ -788,6 +808,8 @@ function ExperienceSection() {
 //  TESTIMONIALS SECTION
 // ═══════════════════════════════════════════════════════════════
 function TestimonialsSection() {
+  const { portfolioData: data } = usePortfolio();
+
   const [activeIdx, setActiveIdx] = useState(0);
 
   useEffect(() => {
@@ -859,7 +881,7 @@ function TestimonialsSection() {
         {/* Testimonial selector — tape thumbnails */}
         <div className="grid grid-cols-2 sm:grid-cols-4 gap-3">
           {data.testimonials.map((t, idx) => (
-            <button
+            <button type="button"
               key={idx}
               onClick={() => setActiveIdx(idx)}
               className={`p-3 rounded-lg text-left transition-all duration-300 vhs-tape-border ${
@@ -903,6 +925,8 @@ function TestimonialsSection() {
 //  CONTACT SECTION
 // ═══════════════════════════════════════════════════════════════
 function ContactSection() {
+  const { portfolioData: data } = usePortfolio();
+
   const [formData, setFormData] = useState({ name: '', email: '', message: '' });
 
   const handleChange = (e) => {
@@ -1083,6 +1107,8 @@ function ContactSection() {
 //  FOOTER
 // ═══════════════════════════════════════════════════════════════
 function VHSFooter() {
+  const { portfolioData: data } = usePortfolio();
+
   return (
     <footer className="relative py-8 px-4 sm:px-6 border-t border-[#1a1a3e]/50">
       <div className="max-w-5xl mx-auto">
@@ -1117,6 +1143,8 @@ function VHSFooter() {
 //  MAIN COMPONENT EXPORT
 // ═══════════════════════════════════════════════════════════════
 export default function VHSRewind() {
+  const { portfolioData: data } = usePortfolio();
+
   return (
     <div className="relative min-h-screen bg-[#0a0a14] text-[#f0e6d3] vhs-scrollbar vhs-scanlines vhs-noise vhs-flicker overflow-x-hidden">
       {/* CRT Vignette overlay */}

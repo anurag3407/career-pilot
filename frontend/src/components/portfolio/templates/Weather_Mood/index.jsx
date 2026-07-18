@@ -1,3 +1,4 @@
+import { usePortfolio } from "../../../../context/PortfolioContext";
 import React, { useState, useEffect, useMemo, useCallback } from 'react';
 import { motion, AnimatePresence } from 'framer-motion';
 import {
@@ -6,7 +7,6 @@ import {
   Sunset, Wind, Droplets, Thermometer, Quote, Snowflake, Zap,
   CloudLightning, CloudSnow, CloudDrizzle, Flame, Leaf, CloudFog,
 } from 'lucide-react';
-import data from '../../../../data/dummy_data.json';
 
 // ─── Mood Definitions ────────────────────────────────────────────────────────
 
@@ -388,6 +388,8 @@ function autoDetectMood(hour) {
 // ─── Weather Particle Layers ─────────────────────────────────────────────────
 
 function StarField({ count = 90, color = '#ffffff' }) {
+  const { portfolioData: data } = usePortfolio();
+
   const stars = useMemo(() => Array.from({ length: count }, (_, i) => ({
     id: i, x: Math.random() * 100, y: Math.random() * 100,
     size: Math.random() * 2.2 + 0.4, delay: Math.random() * 5, dur: Math.random() * 3 + 2,
@@ -406,6 +408,8 @@ function StarField({ count = 90, color = '#ffffff' }) {
 }
 
 function AuroraLayer() {
+  const { portfolioData: data } = usePortfolio();
+
   return (
     <div className="absolute inset-0 overflow-hidden pointer-events-none">
       <StarField count={70} color="#a5f3fc" />
@@ -444,10 +448,14 @@ function RainLayer({ intensity = 60, color = 'rgba(147,197,253,0.55)', speed = 0
 }
 
 function DrizzleLayer() {
+  const { portfolioData: data } = usePortfolio();
+
   return <RainLayer intensity={35} color="rgba(134,239,172,0.45)" speed={1.1} />;
 }
 
 function SnowLayer() {
+  const { portfolioData: data } = usePortfolio();
+
   const flakes = useMemo(() => Array.from({ length: 55 }, (_, i) => ({
     id: i, x: Math.random() * 100, size: Math.random() * 6 + 3,
     delay: Math.random() * 4, dur: Math.random() * 5 + 5, drift: Math.random() * 40 - 20,
@@ -466,6 +474,8 @@ function SnowLayer() {
 }
 
 function LightningLayer() {
+  const { portfolioData: data } = usePortfolio();
+
   const [flash, setFlash] = useState(false);
   useEffect(() => {
     const cycle = () => {
@@ -503,6 +513,8 @@ function LightningLayer() {
 }
 
 function CloudLayer({ count = 5, opacity = 0.22, fillColor = 'white', yRange = [3, 40] }) {
+  const { portfolioData: data } = usePortfolio();
+
   const clouds = useMemo(() => Array.from({ length: count }, (_, i) => ({
     id: i, y: yRange[0] + Math.random() * (yRange[1] - yRange[0]),
     scale: Math.random() * 0.7 + 0.55, dur: Math.random() * 35 + 28,
@@ -529,6 +541,8 @@ function CloudLayer({ count = 5, opacity = 0.22, fillColor = 'white', yRange = [
 }
 
 function FogLayer() {
+  const { portfolioData: data } = usePortfolio();
+
   return (
     <div className="absolute inset-0 overflow-hidden pointer-events-none">
       {[0, 1, 2, 3].map(i => (
@@ -571,6 +585,8 @@ function MoonGlow({ color = 'rgba(224,231,255,0.88)', shadow = 'rgba(165,180,252
 }
 
 function HeatHaze() {
+  const { portfolioData: data } = usePortfolio();
+
   return (
     <div className="absolute bottom-0 left-0 right-0 pointer-events-none" style={{ height: '35%' }}>
       {[0, 1, 2].map(i => (
@@ -585,6 +601,8 @@ function HeatHaze() {
 }
 
 function LeafParticles() {
+  const { portfolioData: data } = usePortfolio();
+
   const leaves = useMemo(() => Array.from({ length: 20 }, (_, i) => ({
     id: i, x: Math.random() * 100, delay: Math.random() * 6, dur: Math.random() * 6 + 5,
     rotate: Math.random() * 360, drift: Math.random() * 60 - 30,
@@ -605,6 +623,8 @@ function LeafParticles() {
 }
 
 function WindStreaks() {
+  const { portfolioData: data } = usePortfolio();
+
   const streaks = useMemo(() => Array.from({ length: 12 }, (_, i) => ({
     id: i, y: Math.random() * 90, w: Math.random() * 120 + 60,
     delay: Math.random() * 2, dur: Math.random() * 1 + 0.8, opacity: Math.random() * 0.3 + 0.1,
@@ -624,6 +644,8 @@ function WindStreaks() {
 }
 
 function GoldenDust() {
+  const { portfolioData: data } = usePortfolio();
+
   const motes = useMemo(() => Array.from({ length: 28 }, (_, i) => ({
     id: i, x: Math.random() * 100, y: Math.random() * 100,
     size: Math.random() * 3 + 1, delay: Math.random() * 5, dur: Math.random() * 4 + 3,
@@ -644,6 +666,8 @@ function GoldenDust() {
 }
 
 function WeatherParticles({ particle }) {
+  const { portfolioData: data } = usePortfolio();
+
   switch (particle) {
     case 'dawn':       return <><CloudLayer count={3} opacity={0.12} fillColor="rgba(251,146,60,0.9)" /><SunGlow color="rgba(249,115,22,0.6)" shadow="rgba(251,146,60,0.25)" /></>;
     case 'morning':    return <><SunGlow /><CloudLayer count={4} opacity={0.3} /></>;
@@ -667,12 +691,14 @@ function WeatherParticles({ particle }) {
 // ─── Mood Picker ─────────────────────────────────────────────────────────────
 
 function MoodPicker({ current, onChange }) {
+  const { portfolioData: data } = usePortfolio();
+
   const [open, setOpen] = useState(false);
   const theme = MOODS[current];
 
   return (
     <div className="relative">
-      <button
+      <button type="button"
         onClick={() => setOpen(o => !o)}
         className="flex items-center gap-2 px-3 py-1.5 rounded-xl text-xs font-semibold border transition-all"
         style={{ background: theme.badgeBg, borderColor: theme.badgeBorder, color: theme.badgeText }}
@@ -694,7 +720,7 @@ function MoodPicker({ current, onChange }) {
           >
             <div className="p-2 grid grid-cols-3 gap-1 max-h-72 overflow-y-auto">
               {Object.entries(MOODS).map(([key, mood]) => (
-                <button
+                <button type="button"
                   key={key}
                   onClick={() => { onChange(key); setOpen(false); }}
                   className="flex flex-col items-center gap-1 px-2 py-2.5 rounded-xl text-center transition-all hover:scale-105"
@@ -722,6 +748,8 @@ function MoodPicker({ current, onChange }) {
 const NAV_ITEMS = ['about', 'skills', 'projects', 'experience', 'testimonials', 'contact'];
 
 function Navbar({ theme, active, moodKey, onMoodChange }) {
+  const { portfolioData: data } = usePortfolio();
+
   const [scrolled, setScrolled] = useState(false);
   useEffect(() => {
     const fn = () => setScrolled(window.scrollY > 40);
@@ -737,7 +765,7 @@ function Navbar({ theme, active, moodKey, onMoodChange }) {
       className={`fixed top-0 left-0 right-0 z-50 px-5 py-2.5 flex items-center justify-between transition-shadow duration-300 ${scrolled ? 'shadow-xl' : ''}`}
       style={theme.nav}
     >
-      <button onClick={() => window.scrollTo({ top: 0, behavior: 'smooth' })}
+      <button type="button" onClick={() => window.scrollTo({ top: 0, behavior: 'smooth' })}
         className="font-bold tracking-tight text-sm" style={{ color: theme.accent }}>
         {data.personal.name.split(' ')[0]}
         <span style={{ color: theme.muted }}>.dev</span>
@@ -745,7 +773,7 @@ function Navbar({ theme, active, moodKey, onMoodChange }) {
 
       <div className="hidden md:flex items-center gap-0.5">
         {NAV_ITEMS.map(item => (
-          <button key={item} onClick={() => scrollTo(item)}
+          <button type="button" key={item} onClick={() => scrollTo(item)}
             className="px-3 py-1.5 rounded-lg text-xs font-medium capitalize transition-all"
             style={{
               color: active === item ? theme.accent : theme.muted,
@@ -764,6 +792,8 @@ function Navbar({ theme, active, moodKey, onMoodChange }) {
 // ─── Section Wrapper ──────────────────────────────────────────────────────────
 
 function Section({ id, children }) {
+  const { portfolioData: data } = usePortfolio();
+
   return (
     <motion.section id={id}
       initial={{ opacity: 0, y: 44 }} whileInView={{ opacity: 1, y: 0 }}
@@ -776,6 +806,8 @@ function Section({ id, children }) {
 }
 
 function SectionTitle({ theme, children }) {
+  const { portfolioData: data } = usePortfolio();
+
   return (
     <h2 className="text-3xl md:text-4xl font-bold mb-12" style={{ color: theme.prose }}>
       {children}<span style={{ color: theme.accent }}>.</span>
@@ -786,6 +818,8 @@ function SectionTitle({ theme, children }) {
 // ─── Card helper ─────────────────────────────────────────────────────────────
 
 function Card({ theme, children, className = '', hover = false }) {
+  const { portfolioData: data } = usePortfolio();
+
   return (
     <div
       className={`rounded-2xl backdrop-blur-sm ${hover ? 'transition-transform duration-300 hover:scale-[1.02]' : ''} ${className}`}
@@ -799,6 +833,8 @@ function Card({ theme, children, className = '', hover = false }) {
 // ─── Hero ─────────────────────────────────────────────────────────────────────
 
 function Hero({ theme, moodKey }) {
+  const { portfolioData: data } = usePortfolio();
+
   const mood = MOODS[moodKey];
   return (
     <section className="relative min-h-screen flex flex-col items-center justify-center px-6 pt-20 pb-16 text-center overflow-hidden">
@@ -888,6 +924,8 @@ function Hero({ theme, moodKey }) {
 // ─── About ────────────────────────────────────────────────────────────────────
 
 function About({ theme }) {
+  const { portfolioData: data } = usePortfolio();
+
   return (
     <Section id="about">
       <SectionTitle theme={theme}>About Me</SectionTitle>
@@ -925,6 +963,8 @@ function About({ theme }) {
 // ─── Skills ───────────────────────────────────────────────────────────────────
 
 function Skills({ theme }) {
+  const { portfolioData: data } = usePortfolio();
+
   const categories = useMemo(() => {
     const map = {};
     data.skills.forEach(s => { if (!map[s.category]) map[s.category] = []; map[s.category].push(s); });
@@ -967,6 +1007,8 @@ function Skills({ theme }) {
 // ─── Projects ─────────────────────────────────────────────────────────────────
 
 function Projects({ theme }) {
+  const { portfolioData: data } = usePortfolio();
+
   return (
     <Section id="projects">
       <SectionTitle theme={theme}>Projects</SectionTitle>
@@ -1021,6 +1063,8 @@ function Projects({ theme }) {
 // ─── Experience ───────────────────────────────────────────────────────────────
 
 function Experience({ theme }) {
+  const { portfolioData: data } = usePortfolio();
+
   return (
     <Section id="experience">
       <SectionTitle theme={theme}>Experience</SectionTitle>
@@ -1057,6 +1101,8 @@ function Experience({ theme }) {
 // ─── Testimonials ─────────────────────────────────────────────────────────────
 
 function Testimonials({ theme }) {
+  const { portfolioData: data } = usePortfolio();
+
   return (
     <Section id="testimonials">
       <SectionTitle theme={theme}>Testimonials</SectionTitle>
@@ -1087,6 +1133,8 @@ function Testimonials({ theme }) {
 // ─── Contact ──────────────────────────────────────────────────────────────────
 
 function Contact({ theme }) {
+  const { portfolioData: data } = usePortfolio();
+
   const [form, setForm] = useState({ name: '', email: '', message: '' });
   const [sent, setSent] = useState(false);
   const inputStyle = {
@@ -1158,6 +1206,8 @@ function Contact({ theme }) {
 // ─── Root ─────────────────────────────────────────────────────────────────────
 
 export default function WeatherMood() {
+  const { portfolioData: data } = usePortfolio();
+
   const [moodKey, setMoodKey] = useState(() => autoDetectMood(new Date().getHours()));
   const theme = MOODS[moodKey];
   const [activeSection, setActiveSection] = useState('');

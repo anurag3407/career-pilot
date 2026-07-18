@@ -170,6 +170,8 @@ const ArchitectureCanvas = () => {
       <ReactFlow
         nodes={nodes}
         edges={edges}
+        style={{ width: '100%', height: '100%' }}
+        className="w-full h-full"
         onNodesChange={onNodesChange}
         onEdgesChange={onEdgesChange}
         onNodeClick={onNodeClick}

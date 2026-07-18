@@ -26,9 +26,10 @@ function useTypingEffect(text, speed = 40, startDelay = 0) {
         setDisplayed(text.slice(0, i + 1));
         i++;
         if (i >= text.length) {
-          clearInterval(intervalRef.current);
-          setDone(true);
-        }
+  clearInterval(intervalRef.current);
+  intervalRef.current = null;
+  setDone(true);
+}
       }, speed);
     }, startDelay);
     return () => {
@@ -162,7 +163,7 @@ export default function About({
           {tabs.map((tab) => {
             const isActive = activeTab === tab;
             return (
-              <button
+              <button type="button"
                 key={tab}
                 onClick={() => setActiveTab(tab)}
                 className="flex items-center gap-1.5 px-4 py-2.5 text-xs transition-all duration-150"
@@ -189,7 +190,7 @@ export default function About({
             style={{ background: "#161b22", borderRight: "1px solid #21262d", width: 48 }}
           >
             {sideIcons.map((Icon, i) => (
-              <button
+              <button type="button"
                 key={i}
                 className="p-1.5 rounded transition-colors"
                 style={{ color: i === 0 ? "#4ade80" : "#6e7681" }}

@@ -1,10 +1,12 @@
 import { useState } from "react";
 import { Link } from "react-router-dom";
 import { Zap, GitGraph, Twitter, Linkedin,Instagram } from "lucide-react";
+import { FEATURES } from "../../data/featuresConfig";
 
 export default function Footer() {
   const [email, setEmail] = useState("");
   const [status, setStatus] = useState("idle"); // idle, loading, success, error
+  const currentYear = new Date().getFullYear();
 
   const handleSubscribe = async (e) => {
     e.preventDefault();
@@ -20,16 +22,11 @@ export default function Footer() {
     }
   };
   const footerLinks = {
-    product: [
-      { label: "Features", href: "#features" },
-      { label: "Pricing", href: "#pricing" },
-      { label: "Job Search", href: "/jobs" },
-      { label: "Resume Builder", href: "/upload" },
-    ],
+    product: FEATURES.map(f => ({ label: f.name, href: `/${f.slug}` })),
     resources: [
       { label: "Documentation", href: "#" },
       { label: "Help Center", href: "#" },
-      { label: "Community", href: "#" },
+      { label: "Community", href: "https://discord.gg/dpDMVywS" },
       { label: "Support", href: "#" },
     ],
     company: [
@@ -188,7 +185,7 @@ export default function Footer() {
 
           {/* Left */}
           <p className="text-sm text-muted-foreground">
-            © {new Date().getFullYear()} careerpilot. All rights reserved.
+            &copy; {currentYear} careerpilot. All rights reserved.
           </p>
 
           {/* Center (socials grouped properly) */}
