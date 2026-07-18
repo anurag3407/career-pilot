@@ -1,3 +1,4 @@
+Warning: Identity file /home/azureuser/.ssh/id_rsa not accessible: No such file or directory.
 import Navbar from '../components/Navbar'
 import HeroSection from '../components/ui/HeroSection'
 import OurToolsSection from '../components/landing/OurToolsSection'
@@ -26,7 +27,7 @@ export default function Home() {
       {/* Hero Section with World Map */}
       <HeroSection />
 
-      {/* Our Tools Section - Premium Feature Cards Grid */}
+      {/* Our Tools Section - Forge redesign */}
       <OurToolsSection />
 
       {/* Main Features Section - Bento Grid */}
