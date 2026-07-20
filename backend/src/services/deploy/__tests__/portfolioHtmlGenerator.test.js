@@ -188,6 +188,20 @@ describe('buildPortfolioBundle — XSS hardening (CWE-79)', () => {
       'Attacker JS executed via templateId breakout');
   });
 
+  test('templateId with CR/LF does not break the single-quoted script literal', async () => {
+    // A raw \r or \n interpolated into a single-quoted JS literal is a
+    // syntax error that prevents the bootstrap script from executing at
+    // all, silently breaking the deployed page. `escapeForScript` must
+    // escape newlines before templateId is embedded.
+    const tpl = 'default\r\ninjected';
+    const { window } = await buildAndExecute(
+      { hero: { subtitle: 'A', title: 'B' } },
+      tpl
+    );
+    assert.equal(window.__TEMPLATE_ID__, tpl,
+      'templateId with CR/LF did not round-trip through the inline script');
+  });
+
   test('$-tokens in user data are inserted literally, not expanded by String.replace', async () => {
     // `String.prototype.replace` with a string replacement expands `$&`,
     // `` $` ``, `$'`, `$$` and `$n` against the regex match. If the

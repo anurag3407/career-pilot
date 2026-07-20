@@ -34,9 +34,11 @@ const DIST_DIR = process.env.PORTFOLIO_DIST_DIR
  * out at runtime via `JSON.parse('...')`.
  */
 function escapeForScript(str) {
-  return str
+  return String(str)
     .replace(/\\/g, '\\\\')
     .replace(/'/g, "\\'")
+    .replace(/\r/g, '\\r')
+    .replace(/\n/g, '\\n')
     // Capture the matched `/script` so the original casing (`</SCRIPT>`,
     // `</Script>`, ...) round-trips through `JSON.parse(...)` unchanged.
     .replace(/<(\/script)/gi, '<\\$1')
