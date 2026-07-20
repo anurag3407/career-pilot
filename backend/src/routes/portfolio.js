@@ -427,19 +427,12 @@ router.put('/:slug', verifyToken, validatePortfolioSlug, validatePortfolioConten
   if (!portfolio) {
     throw new ApiError(404, `Portfolio "${slug}" not found.`);
   }
-res.status(200).json({
-  success: true,
-  message: 'Portfolio updated successfully.',
-  data: portfolio,
-});
-
-
   res.status(200).json({
     success: true,
     message: 'Portfolio updated successfully.',
     data: portfolio,
   });
-  
+
 }));
 
 /**
