@@ -7,7 +7,7 @@ import { templates } from '../data/templates';
 import { motion, AnimatePresence } from "framer-motion";
 import { Moon, Sun, ChevronDown, Check, Eye, Star, Sparkles, X } from "lucide-react";
 import { useSearchParams } from "react-router-dom";
-
+import dummyData from "../data/dummy_data.json";
 
 /* TemplatePreviewFrame — contains each full portfolio template in a
    sandboxed scrollable box. The key trick: CSS `transform` on the outer
@@ -352,7 +352,7 @@ const TemplatePreviewModal = ({ templateId, isOpen, onClose, portfolioData }) =>
                 <p className="animate-pulse font-medium tracking-wide text-sm uppercase">Loading interactive preview...</p>
               </div>
             }>
-              {Component && <Component portfolioData={portfolioData} />}
+              {Component && <Component portfolioData={portfolioData || dummyData} data={portfolioData || dummyData} />}
             </Suspense>
           </div>
         </motion.div>
