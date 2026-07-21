@@ -5,29 +5,34 @@ import { projectVisualizerApi } from '../../services/api';
 
 const syntaxHighlight = (code) => {
   if (!code) return '';
-  
-  // Basic Regex highlighters
+
+  // Escape ALL HTML-special characters including quotes before injecting into innerHTML.
+  // Without escaping " and ', unescaped quotes in file content can break out of the
+  // intended text context when the result is set via dangerouslySetInnerHTML.
   let html = code
-    .replace(/&/g, "&amp;")
-    .replace(/</g, "&lt;")
-    .replace(/>/g, "&gt;");
-    
+    .replace(/&/g, '&amp;')
+    .replace(/</g, '&lt;')
+    .replace(/>/g, '&gt;')
+    .replace(/"/g, '&quot;')
+    .replace(/'/g, '&#39;');
+
   // Keywords (cyan)
   const keywords = /\b(const|let|var|function|class|import|export|return|if|else|for|while|async|await|try|catch|switch|case|default|break|continue|new|this|typeof|instanceof)\b/g;
   html = html.replace(keywords, '<span class="text-cyan-400">$1</span>');
-  
-  // Strings (green)
-  const strings = /(&quot;.*?&quot;|&#39;.*?&#39;|`.*?`)/g;
+
+  // Strings (green) — now correctly matches &quot;...&quot; and &#39;...&#39; because
+  // both quote characters are encoded in the initial escaping pass above.
+  const strings = /(&quot;[^&]*(?:&(?!quot;)[^&]*)*&quot;|&#39;[^&]*(?:&(?!#39;)[^&]*)*&#39;|`[^`]*`)/g;
   html = html.replace(strings, '<span class="text-green-400">$1</span>');
-  
+
   // Numbers (orange)
   const numbers = /\b(\d+)\b/g;
   html = html.replace(numbers, '<span class="text-orange-400">$1</span>');
-  
-  // Comments (muted)
-  const comments = /(\/\/.*|\/\*[\s\S]*?\*\/)/g;
+
+  // Comments (muted) — [^\n]* prevents single-line pattern from crossing line boundaries
+  const comments = /(\/\/[^\n]*|\/\*[\s\S]*?\*\/)/g;
   html = html.replace(comments, '<span class="text-slate-500 italic">$1</span>');
-  
+
   return html;
 };
 
