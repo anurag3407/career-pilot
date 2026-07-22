@@ -6,219 +6,214 @@ import { ArrowRight, GitBranch, Network, Zap, ShieldAlert } from "lucide-react";
 const features = [
   {
     icon: Network,
-    color: "text-cyan-400",
-    bg: "bg-cyan-500/10 border-cyan-500/20",
     title: "Architecture Maps",
     desc: "Interactive visual graphs of your codebase modules.",
   },
   {
     icon: ShieldAlert,
-    color: "text-orange-400",
-    bg: "bg-orange-500/10 border-orange-500/20",
     title: "Risk Hotspots",
     desc: "Detect complexity and coupling instantly.",
   },
   {
     icon: Zap,
-    color: "text-violet-400",
-    bg: "bg-violet-500/10 border-violet-500/20",
     title: "AI Onboarding",
     desc: "Chat with an AI that knows your architecture.",
   },
 ];
 
-const nodes = [
-  {
-    pos: "left-8 top-10",
-    border: "border-cyan-500/60",
-    bar: "bg-cyan-400",
-    glow: "shadow-[0_0_24px_rgba(34,211,238,0.25)]",
-    w: "w-24",
-    delay: 0.2,
-  },
-  {
-    pos: "right-10 top-28",
-    border: "border-violet-500/60",
-    bar: "bg-violet-400",
-    glow: "shadow-[0_0_24px_rgba(139,92,246,0.25)]",
-    w: "w-20",
-    delay: 0.45,
-  },
-  {
-    pos: "left-20 bottom-12",
-    border: "border-orange-500/60",
-    bar: "bg-orange-400",
-    glow: "shadow-[0_0_24px_rgba(249,115,22,0.25)]",
-    w: "w-28",
-    delay: 0.7,
-  },
-];
-
 export default function ProjectVisualizerSection() {
   return (
-    <section className="relative overflow-hidden bg-background py-28">
-      {/* Background */}
-      <div className="pointer-events-none absolute inset-0">
-        <div className="absolute left-1/2 top-0 h-[420px] w-full max-w-3xl -translate-x-1/2 bg-linear-to-b from-cyan-500/10 to-violet-500/5 blur-3xl" />
-        <div className="premium-grid absolute inset-0 opacity-30" />
-      </div>
+    <section className="relative overflow-hidden bg-[#080b12] py-32">
+      {/* Grid texture */}
+      <div
+        className="pointer-events-none absolute inset-0 opacity-[0.04]"
+        style={{
+          backgroundImage:
+            "linear-gradient(rgba(255,255,255,0.1) 1px, transparent 1px), linear-gradient(90deg, rgba(255,255,255,0.1) 1px, transparent 1px)",
+          backgroundSize: "48px 48px",
+        }}
+      />
+      {/* Top gradient fade */}
+      <div className="absolute inset-x-0 top-0 h-32 bg-gradient-to-b from-background to-transparent" />
+      {/* Bottom gradient fade */}
+      <div className="absolute inset-x-0 bottom-0 h-32 bg-gradient-to-t from-background to-transparent" />
 
-      <div className="relative z-10 mx-auto max-w-7xl px-4 sm:px-6 lg:px-8">
-        <div className="grid items-center gap-16 lg:grid-cols-2">
-          {/* ── Copy ─────────────────────────────────── */}
-          <motion.div
-            initial={{ opacity: 0, x: -30 }}
-            whileInView={{ opacity: 1, x: 0 }}
-            viewport={{ once: true }}
-            transition={{ duration: 0.7, ease: [0.16, 1, 0.3, 1] }}
-          >
-            <div className="inline-flex items-center gap-2 rounded-full border border-violet-500/20 bg-violet-500/10 px-4 py-1.5 text-sm font-bold text-violet-400 backdrop-blur-md">
-              <GitBranch className="h-4 w-4" />
-              Project Visualizer
+      <div className="relative z-10 mx-auto max-w-6xl px-4 sm:px-6 lg:px-8">
+        {/* Header */}
+        <motion.div
+          initial={{ opacity: 0, y: 20 }}
+          whileInView={{ opacity: 1, y: 0 }}
+          viewport={{ once: true }}
+          transition={{ duration: 0.6 }}
+          className="mb-16"
+        >
+          <span className="text-[11px] font-black uppercase tracking-[0.35em] text-cyan-400/70">
+            005 — Visualizer
+          </span>
+          <h2 className="mt-4 text-4xl font-black leading-[0.95] tracking-tighter text-white md:text-7xl">
+            Paste a URL.
+            <br />
+            <span className="text-white/30">See the whole codebase.</span>
+          </h2>
+        </motion.div>
+
+        {/* Terminal window - full width */}
+        <motion.div
+          initial={{ opacity: 0, y: 30 }}
+          whileInView={{ opacity: 1, y: 0 }}
+          viewport={{ once: true }}
+          transition={{ duration: 0.7, delay: 0.1 }}
+          className="overflow-hidden rounded-2xl border border-white/10 bg-[#0d1117] shadow-2xl"
+        >
+          {/* Title bar */}
+          <div className="flex items-center gap-2 border-b border-white/5 bg-[#161b22] px-4 py-3">
+            <span className="h-3 w-3 rounded-full bg-[#ff5f57]" />
+            <span className="h-3 w-3 rounded-full bg-[#febc2e]" />
+            <span className="h-3 w-3 rounded-full bg-[#28c840]" />
+            <span className="ml-4 font-mono text-xs text-white/40">
+              careerpilot visualize github.com/facebook/react
+            </span>
+          </div>
+
+          {/* Terminal body */}
+          <div className="p-6 md:p-10">
+            {/* Command output lines */}
+            <div className="space-y-2 font-mono text-sm">
+              <motion.p
+                initial={{ opacity: 0 }}
+                whileInView={{ opacity: 1 }}
+                viewport={{ once: true }}
+                transition={{ delay: 0.3 }}
+                className="text-emerald-400"
+              >
+                ✓ Analyzing repository structure...
+              </motion.p>
+              <motion.p
+                initial={{ opacity: 0 }}
+                whileInView={{ opacity: 1 }}
+                viewport={{ once: true }}
+                transition={{ delay: 0.5 }}
+                className="text-emerald-400"
+              >
+                ✓ Mapping 1,247 modules across 89 packages
+              </motion.p>
+              <motion.p
+                initial={{ opacity: 0 }}
+                whileInView={{ opacity: 1 }}
+                viewport={{ once: true }}
+                transition={{ delay: 0.7 }}
+                className="text-amber-400"
+              >
+                ⚠ 3 high-coupling risk hotspots detected
+              </motion.p>
+              <motion.p
+                initial={{ opacity: 0 }}
+                whileInView={{ opacity: 1 }}
+                viewport={{ once: true }}
+                transition={{ delay: 0.9 }}
+                className="text-cyan-400"
+              >
+                → Architecture map ready. Opening visual explorer...
+              </motion.p>
             </div>
 
-            <h2 className="mt-7 text-4xl font-black leading-[1.1] tracking-tight text-foreground md:text-5xl">
-              Understand any repo in{" "}
-              <span className="bg-linear-to-r from-cyan-400 to-violet-500 bg-clip-text text-transparent">
-                seconds
-              </span>
-            </h2>
-
-            <p className="mt-6 max-w-lg text-lg font-medium leading-relaxed text-muted-foreground">
-              Paste a GitHub URL and let our AI engine instantly build a dynamic,
-              visual architecture map. Explore modules, dependencies, and risks
-              without cloning a single file.
-            </p>
-
-            <div className="mt-10 space-y-3">
-              {features.map((f, i) => (
-                <motion.div
-                  key={f.title}
-                  initial={{ opacity: 0, x: -20 }}
-                  whileInView={{ opacity: 1, x: 0 }}
+            {/* Visual graph area */}
+            <div className="relative mt-8 rounded-xl border border-white/5 bg-[#0a0e14] p-8">
+              {/* Connection lines */}
+              <svg className="pointer-events-none absolute inset-0 h-full w-full opacity-40">
+                <defs>
+                  <linearGradient id="pv-grad" x1="0" y1="0" x2="1" y2="1">
+                    <stop offset="0%" stopColor="#22d3ee" />
+                    <stop offset="100%" stopColor="#8b5cf6" />
+                  </linearGradient>
+                </defs>
+                <motion.path
+                  d="M 120 60 Q 250 80 340 140"
+                  fill="none"
+                  stroke="url(#pv-grad)"
+                  strokeWidth="1.5"
+                  strokeDasharray="4 4"
+                  initial={{ pathLength: 0 }}
+                  whileInView={{ pathLength: 1 }}
                   viewport={{ once: true }}
-                  transition={{ delay: 0.1 + i * 0.1, duration: 0.5 }}
-                  className="group flex items-start gap-4 rounded-2xl border border-border bg-card/40 p-4 backdrop-blur-md transition-all duration-300 hover:border-primary/30 hover:bg-card/70"
+                  transition={{ duration: 1.5, delay: 1 }}
+                />
+                <motion.path
+                  d="M 100 90 Q 120 180 200 220"
+                  fill="none"
+                  stroke="url(#pv-grad)"
+                  strokeWidth="1.5"
+                  strokeDasharray="4 4"
+                  initial={{ pathLength: 0 }}
+                  whileInView={{ pathLength: 1 }}
+                  viewport={{ once: true }}
+                  transition={{ duration: 1.5, delay: 1.2 }}
+                />
+              </svg>
+
+              {/* Module nodes */}
+              {[
+                { label: "react-reconciler", x: "8%", y: "15%", color: "border-cyan-500/50 text-cyan-400" },
+                { label: "react-dom", x: "55%", y: "45%", color: "border-violet-500/50 text-violet-400" },
+                { label: "scheduler", x: "25%", y: "70%", color: "border-amber-500/50 text-amber-400" },
+              ].map((node, i) => (
+                <motion.div
+                  key={node.label}
+                  initial={{ opacity: 0, scale: 0.8 }}
+                  whileInView={{ opacity: 1, scale: 1 }}
+                  viewport={{ once: true }}
+                  transition={{ delay: 1 + i * 0.2, type: "spring", stiffness: 200 }}
+                  className={`absolute rounded-lg border ${node.color} bg-[#161b22] px-3 py-2 font-mono text-xs`}
+                  style={{ left: node.x, top: node.y }}
                 >
-                  <div
-                    className={`flex h-11 w-11 shrink-0 items-center justify-center rounded-xl border ${f.bg} transition-transform duration-300 group-hover:scale-110`}
-                  >
-                    <f.icon className={`h-5 w-5 ${f.color}`} />
-                  </div>
-                  <div>
-                    <h4 className="font-bold text-foreground">{f.title}</h4>
-                    <p className="text-sm text-muted-foreground">{f.desc}</p>
-                  </div>
+                  {node.label}
                 </motion.div>
               ))}
-            </div>
 
-            <Link
-              to="/project-visualizer"
-              className="group mt-10 inline-flex items-center justify-center gap-2 rounded-2xl bg-foreground px-8 py-4 font-bold text-background shadow-xl transition-all duration-300 hover:-translate-y-0.5"
-            >
-              Try Visualizer Now
-              <ArrowRight className="h-4 w-4 transition-transform group-hover:translate-x-1" />
-            </Link>
-          </motion.div>
-
-          {/* ── Visual graph mockup ──────────────────── */}
-          <motion.div
-            initial={{ opacity: 0, x: 30 }}
-            whileInView={{ opacity: 1, x: 0 }}
-            viewport={{ once: true }}
-            transition={{ duration: 0.7, delay: 0.15, ease: [0.16, 1, 0.3, 1] }}
-            className="relative"
-          >
-            <div className="absolute -inset-6 -z-10 rounded-[2.5rem] bg-linear-to-tr from-cyan-500/20 to-violet-500/20 blur-[80px]" />
-
-            <div className="relative flex aspect-[4/3] flex-col overflow-hidden rounded-3xl border border-slate-800 bg-[#0b1120] shadow-2xl">
-              {/* Window header */}
-              <div className="flex h-11 items-center gap-2 border-b border-slate-800 bg-[#0a0f1c] px-4">
-                <span className="h-3 w-3 rounded-full bg-red-500/80" />
-                <span className="h-3 w-3 rounded-full bg-yellow-500/80" />
-                <span className="h-3 w-3 rounded-full bg-green-500/80" />
-                <div className="mx-auto rounded border border-slate-700/50 bg-slate-800/50 px-3 py-1 font-mono text-[10px] text-slate-400">
-                  github.com/facebook/react
+              {/* AI insight bubble */}
+              <motion.div
+                initial={{ opacity: 0, y: 10 }}
+                whileInView={{ opacity: 1, y: 0 }}
+                viewport={{ once: true }}
+                transition={{ delay: 1.8 }}
+                className="absolute bottom-4 right-4 max-w-[240px] rounded-lg border border-white/10 bg-[#1c2128] p-3"
+              >
+                <div className="flex items-start gap-2">
+                  <Zap className="mt-0.5 h-3.5 w-3.5 shrink-0 text-cyan-400" />
+                  <p className="text-xs leading-relaxed text-white/60">
+                    The core reconciler module seems heavily coupled. Consider reviewing dependencies.
+                  </p>
                 </div>
-              </div>
-
-              {/* Graph body */}
-              <div className="relative flex-1 p-6">
-                {/* Animated connection paths */}
-                <svg
-                  className="pointer-events-none absolute inset-0 h-full w-full"
-                  style={{ zIndex: 0 }}
-                >
-                  <defs>
-                    <linearGradient id="pv-line" x1="0" y1="0" x2="1" y2="1">
-                      <stop offset="0%" stopColor="#22d3ee" />
-                      <stop offset="100%" stopColor="#8b5cf6" />
-                    </linearGradient>
-                  </defs>
-                  {[
-                    "M 110 70 Q 230 70 300 150",
-                    "M 90 110 Q 90 200 160 270",
-                  ].map((d, i) => (
-                    <motion.path
-                      key={i}
-                      d={d}
-                      fill="none"
-                      stroke="url(#pv-line)"
-                      strokeWidth="2"
-                      strokeDasharray="5 5"
-                      initial={{ pathLength: 0, opacity: 0 }}
-                      whileInView={{ pathLength: 1, opacity: 0.7 }}
-                      viewport={{ once: true }}
-                      transition={{ duration: 1.2, delay: 0.5 + i * 0.3 }}
-                    />
-                  ))}
-                </svg>
-
-                {/* Nodes */}
-                {nodes.map((n, i) => (
-                  <motion.div
-                    key={i}
-                    initial={{ opacity: 0, scale: 0.8 }}
-                    whileInView={{ opacity: 1, scale: 1 }}
-                    viewport={{ once: true }}
-                    transition={{
-                      type: "spring",
-                      stiffness: 300,
-                      damping: 18,
-                      delay: n.delay,
-                    }}
-                    className={`absolute ${n.pos} ${n.w} rounded-lg border ${n.border} ${n.glow} bg-[#1e293b] p-3`}
-                  >
-                    <div className={`mb-2 h-1 w-6 rounded-full ${n.bar}`} />
-                    <div className="mb-1.5 h-2 w-full rounded-full bg-slate-600" />
-                    <div className="h-2 w-2/3 rounded-full bg-slate-700" />
-                  </motion.div>
-                ))}
-
-                {/* AI chat bubble */}
-                <motion.div
-                  initial={{ opacity: 0, y: 16 }}
-                  whileInView={{ opacity: 1, y: 0 }}
-                  viewport={{ once: true }}
-                  transition={{ delay: 1.1, duration: 0.5 }}
-                  className="absolute bottom-6 right-6 max-w-[210px] rounded-xl border border-slate-700 bg-slate-800/90 p-3 shadow-xl backdrop-blur"
-                >
-                  <div className="flex items-start gap-2">
-                    <span className="relative mt-0.5 flex h-4 w-4 shrink-0">
-                      <span className="absolute inline-flex h-full w-full animate-ping rounded-full bg-cyan-400 opacity-60" />
-                      <Zap className="relative h-4 w-4 text-cyan-400" />
-                    </span>
-                    <p className="text-xs leading-relaxed text-slate-300">
-                      The core reconciler module seems heavily coupled. Consider
-                      reviewing dependencies.
-                    </p>
-                  </div>
-                </motion.div>
-              </div>
+              </motion.div>
             </div>
-          </motion.div>
-        </div>
+          </div>
+        </motion.div>
+
+        {/* Feature pills + CTA */}
+        <motion.div
+          initial={{ opacity: 0, y: 20 }}
+          whileInView={{ opacity: 1, y: 0 }}
+          viewport={{ once: true }}
+          transition={{ duration: 0.6, delay: 0.3 }}
+          className="mt-12 flex flex-col items-center gap-8"
+        >
+          <div className="flex flex-wrap items-center justify-center gap-4">
+            {features.map((f) => (
+              <span key={f.title} className="inline-flex items-center gap-2 rounded-lg border border-white/10 bg-white/5 px-4 py-2.5 text-sm font-bold text-white/70">
+                <f.icon className="h-4 w-4 text-cyan-400" />
+                {f.title}
+              </span>
+            ))}
+          </div>
+
+          <Link
+            to="/project-visualizer"
+            className="group inline-flex items-center gap-3 rounded-xl bg-white px-8 py-4 text-sm font-black text-[#080b12] transition-all duration-300 hover:-translate-y-0.5 hover:shadow-xl hover:shadow-cyan-500/20"
+          >
+            Try Visualizer Now
+            <ArrowRight className="h-4 w-4 transition-transform group-hover:translate-x-1" />
+          </Link>
+        </motion.div>
       </div>
     </section>
   );

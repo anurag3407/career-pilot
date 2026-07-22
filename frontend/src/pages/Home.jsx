@@ -29,18 +29,11 @@ export default function Home() {
       {/* Our Tools Section - Premium Feature Cards Grid */}
       <OurToolsSection />
 
-      {/* Main Features Section - Bento Grid */}
-      <section id="features" className="relative overflow-hidden">
-        <div className="absolute inset-0 bg-gradient-to-b from-background via-muted/50 to-background" />
-        <div className="relative px-4 sm:px-6 lg:px-8">
-          <FeaturesSection />
-
-          {/* Additional Features Grid */}
-          <div className="max-w-7xl mx-auto pb-20">
-            <AdditionalFeatures />
-          </div>
-        </div>
-      </section>
+      {/* Platform Features */}
+      <div id="features">
+        <FeaturesSection />
+        <AdditionalFeatures />
+      </div>
 
       {/* Portfolio Showcase Section */}
       <PortfolioShowcaseSection />
@@ -51,13 +44,8 @@ export default function Home() {
       {/* How It Works Section */}
       <HowItWorksSection />
 
-      {/* Testimonials Section */}
-      <section className="relative overflow-hidden">
-        <div className="absolute inset-0 bg-gradient-to-b from-background via-muted/50 to-background" />
-        <div className="relative">
-          <TestimonialsSection />
-        </div>
-      </section>
+      {/* Testimonials */}
+      <TestimonialsSection />
 
       {/* CTA Section */}
       <CTASection />
