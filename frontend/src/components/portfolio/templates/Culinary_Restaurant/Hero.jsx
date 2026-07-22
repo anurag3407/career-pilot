@@ -98,12 +98,12 @@ export default function Hero() {
 
             {/* CTA Buttons */}
             <div className="flex flex-col sm:flex-row gap-4 pt-2">
-              <button className="group flex items-center justify-center gap-2 px-8 py-4 bg-amber-500 hover:bg-amber-400 text-black font-semibold text-sm tracking-wide rounded-full transition-all duration-300"
+              <button type="button" className="group flex items-center justify-center gap-2 px-8 py-4 bg-amber-500 hover:bg-amber-400 text-black font-semibold text-sm tracking-wide rounded-full transition-all duration-300"
                 style={{ fontFamily: 'sans-serif' }}>
                 View Signature Menu
                 <ArrowRight size={16} />
               </button>
-              <button className="flex items-center justify-center gap-2 px-8 py-4 border border-white/15 hover:border-amber-500/50 text-white/80 hover:text-white font-medium text-sm tracking-wide rounded-full transition-all duration-300 hover:bg-white/5"
+              <button type="button" className="flex items-center justify-center gap-2 px-8 py-4 border border-white/15 hover:border-amber-500/50 text-white/80 hover:text-white font-medium text-sm tracking-wide rounded-full transition-all duration-300 hover:bg-white/5"
                 style={{ fontFamily: 'sans-serif' }}>
                 Book a Private Event
               </button>

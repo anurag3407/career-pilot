@@ -125,19 +125,46 @@ const iconBg = {
 
 /* ─── main component ──────────────────────────────────────── */
 
-export default function About({ data = SAMPLE_DATA }) {
-  const {
-    name,
-    role,
-    bio,
-    quote,
-    location,
-    locationSub,
-    photoLabel,
-    facts,
-    skills,
-    links,
-  } = data;
+export default function About({ data }) {
+  // Extract personal/info fields from data.personal or data.personalInfo if they exist
+  const name = data?.personal?.name || data?.personalInfo?.name || data?.name || SAMPLE_DATA.name;
+  const role = data?.personal?.title || data?.personalInfo?.title || data?.role || SAMPLE_DATA.role;
+  const location = data?.personal?.location || data?.personalInfo?.location || data?.location || SAMPLE_DATA.location;
+  
+  // Handle bio (could be string or array)
+  const rawBio = data?.personal?.bio || data?.personalInfo?.bio || data?.bio;
+  const bio = Array.isArray(rawBio) 
+    ? rawBio 
+    : (typeof rawBio === 'string' ? [rawBio] : SAMPLE_DATA.bio);
+
+  const quote = data?.quote || SAMPLE_DATA.quote;
+  const locationSub = data?.locationSub || SAMPLE_DATA.locationSub;
+  const photoLabel = data?.photoLabel || SAMPLE_DATA.photoLabel;
+  const facts = data?.facts || SAMPLE_DATA.facts;
+
+  // Transform skills from standard format ({name}) to Scrapbook format ({label, color})
+  const colors = ['blue', 'green', 'amber', 'pink'];
+  const skills = (data?.skills && data.skills.length > 0)
+    ? data.skills.map((skill, idx) => ({
+        label: typeof skill === 'object' ? (skill.name || skill.label) : skill,
+        color: (typeof skill === 'object' && skill.color) ? skill.color : colors[idx % colors.length]
+      }))
+    : SAMPLE_DATA.skills;
+
+  // Transform socials object to links array if needed
+  let links = SAMPLE_DATA.links;
+  if (data?.socials && typeof data.socials === 'object') {
+    const socialsEntries = Object.entries(data.socials).filter(([_, val]) => !!val);
+    if (socialsEntries.length > 0) {
+      links = socialsEntries.map(([platform, url]) => ({
+        icon: platform,
+        label: url.replace(/^https?:\/\/(www\.)?/, ''),
+        href: url
+      }));
+    }
+  } else if (data?.links) {
+    links = data.links;
+  }
 
   return (
     <>
@@ -263,7 +290,7 @@ export default function About({ data = SAMPLE_DATA }) {
                 </span>
                 {bio.map((p, i) => (
                   <p key={i} className="sb-body text-[16px] text-[#4a3828] leading-relaxed mb-4 last:mb-5">
-                    {i === 0 ? (
+                    {i === 0 && p === SAMPLE_DATA.bio[0] ? (
                       <>
                         Hey! I'm a{" "}
                         <span className="sb-highlight">creative developer</span>{" "}

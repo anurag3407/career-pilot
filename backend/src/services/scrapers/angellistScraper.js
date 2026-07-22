@@ -1,3 +1,4 @@
+/* eslint-env browser */
 /**
  * AngelList / Wellfound Startup Job Scraper
  * -----------------------------------------

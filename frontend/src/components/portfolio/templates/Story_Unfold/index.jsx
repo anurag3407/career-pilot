@@ -1,5 +1,5 @@
+import { usePortfolio } from "../../../../context/PortfolioContext";
 import React from 'react';
-import data from '../../../../data/dummy_data.json';
 
 /**
  * Story Unfold Portfolio Template
@@ -7,6 +7,8 @@ import data from '../../../../data/dummy_data.json';
  * Description: Narrative scroll portfolio where a personal story unfolds chapter by chapter. Text and images reveal with fade-in/slide-up animations as user scrolls.
  */
 export default function StoryUnfold() {
+  const { portfolioData: data } = usePortfolio();
+
   return (
     <div className="min-h-screen bg-gray-950 text-white flex flex-col items-center justify-center p-8 font-sans">
       <div className="max-w-3xl w-full text-center">

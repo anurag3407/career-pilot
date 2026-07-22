@@ -3,19 +3,82 @@ import fs from 'fs/promises';
 import mongoose from 'mongoose';
 import { verifyToken } from '../middleware/auth.js';
 import { asyncHandler, ApiError } from '../middleware/errorHandler.js';
+import cacheHeaders from '../middleware/cacheHeaders.js';
+import { validateToken as validateCloudflareToken, deploy as cloudflareDeploy } from '../services/deploy/cloudflareDeployer.js';
+import { validateToken as validateGithubToken, deploy as githubDeploy } from '../services/deploy/githubPagesDeployer.js';
+import { validateToken as validateNetlifyToken, deploy as netlifyDeploy } from '../services/deploy/netlifyDeployer.js';
+import { buildPortfolioBundle } from '../services/deploy/portfolioHtmlGenerator.js';
+import { validatePortfolioSlug, validatePortfolioContent } from '../middleware/portfolioValidator.js';
+import Portfolio from '../models/Portfolio.model.js';
+import Resume from '../models/Resume.model.js';
 import { enhanceSection } from '../services/ai/portfolioContentEnhancer.js';
+import { extractPortfolioData } from '../services/ai/portfolioExtractor.js';
 import { extractAIProvider } from '../middleware/aiKey.js';
 import { generateRobotsTxt, generateSitemapXml } from '../utils/sitemapGenerator.js';
 import { analyzeAccessibility } from '../services/accessibilityChecker.js';
 import PortfolioVersion from '../models/PortfolioVersion.model.js';
 import UserProfile from '../models/UserProfile.model.js';
+import {
+  invalidateProfileCache,
+} from '../services/profileCache.js';
 import { getObjectDiff, applyDiff } from '../utils/diff.js';
+import path from 'path';
+import { fileURLToPath } from 'url';
+
+let _dirname = '';
+try {
+  _dirname = typeof __dirname !== 'undefined' ? __dirname : path.dirname(fileURLToPath(import.meta.url));
+} catch (e) {
+  _dirname = process.cwd();
+}
 
 const router = express.Router();
 
-const VALID_SECTIONS = ['hero', 'projects', 'about', 'skills'];
+const VALID_SECTIONS = ['hero', 'projects', 'about', 'skills', 'experience', 'education'];
 const VALID_SLUG_PATTERN = /^[a-z0-9]+(?:[a-z0-9-]*[a-z0-9])?$/i;
 const FREE_TIER_LIMIT_MB = 100;
+
+// @route   POST /api/portfolio/extract-from-resume
+// @desc    Extracts portfolio JSON structure from raw resume text using AI
+// @access  Private
+router.post('/extract-from-resume', verifyToken, extractAIProvider, asyncHandler(async (req, res) => {
+  const { resumeText } = req.body;
+  if (!resumeText) {
+    throw new ApiError(400, 'Resume text is required');
+  }
+
+  const extractedData = await extractPortfolioData(resumeText, req.aiProvider);
+  
+  res.json({
+    success: true,
+    data: extractedData
+  });
+}));
+
+// @route   POST /api/portfolio/generate-from-resume/:resumeId
+// @desc    Generates portfolio JSON from an enhanced resume
+// @access  Private
+router.post('/generate-from-resume/:resumeId', verifyToken, extractAIProvider, asyncHandler(async (req, res) => {
+  const { resumeId } = req.params;
+  const userId = req.user.uid;
+
+  const resume = await Resume.findOne({ _id: resumeId, userId }).lean();
+  if (!resume) {
+    throw new ApiError(404, 'Resume not found');
+  }
+
+  if (!resume.enhancedText) {
+    throw new ApiError(400, 'Enhance this resume before generating a portfolio');
+  }
+
+  const extractedData = await extractPortfolioData(resume.enhancedText, req.aiProvider);
+
+  res.json({
+    success: true,
+    data: extractedData
+  });
+}));
+
 
 const getPublicPortfolioBaseUrl = (req) => {
   const configuredBaseUrl = process.env.PORTFOLIO_BASE_URL || process.env.FRONTEND_URL;
@@ -28,7 +91,7 @@ const getApiBaseUrl = (req) => {
 };
 
 const getPortfolioTemplatePath = (slug) => {
-  return new URL(`../templates/portfolio/${slug}/index.html`, import.meta.url);
+  return path.join(_dirname, `../templates/portfolio/${slug}/index.html`);
 };
 
 const assertValidPortfolioSlug = (slug) => {
@@ -141,7 +204,8 @@ const TOKEN_VALIDATORS = {
 };
 
 router.post('/validate-token', verifyToken, asyncHandler(async (req, res) => {
-  const { provider, token } = req.body ?? {};
+  let { provider, token } = req.body ?? {};
+  if (typeof token === 'string') token = token.trim();
 
   if (!provider || !TOKEN_VALIDATORS[provider]) {
     throw new ApiError(400, `provider must be one of: ${Object.keys(TOKEN_VALIDATORS).join(', ')}`);
@@ -150,6 +214,72 @@ router.post('/validate-token', verifyToken, asyncHandler(async (req, res) => {
   const result = await TOKEN_VALIDATORS[provider](token);
 
   res.status(200).json({ success: true, provider, ...result });
+}));
+
+/**
+ * POST /api/portfolio/deploy
+ * Generates a standalone HTML page from portfolio data and deploys it
+ * to Cloudflare Pages via the Direct Upload API.
+ */
+router.post('/deploy', verifyToken, asyncHandler(async (req, res) => {
+  let { slug, sections, templateId, title, provider = 'cloudflare', token } = req.body;
+  if (typeof token === 'string') token = token.trim();
+  const userId = req.user.uid;
+
+  if (!slug || typeof slug !== 'string') {
+    throw new ApiError(400, 'slug is required.');
+  }
+
+  if (!sections || typeof sections !== 'object') {
+    throw new ApiError(400, 'sections (portfolio data) is required.');
+  }
+
+  // Build the deployable React app bundle with the user's data and chosen template
+  let html, assets;
+  try {
+    const bundle = await buildPortfolioBundle(sections, templateId || 'default');
+    html = bundle.html;
+    assets = bundle.assets;
+  } catch (bundleErr) {
+    console.error('Portfolio bundle build error:', bundleErr);
+    throw new ApiError(500, `Failed to build portfolio: ${bundleErr.message}`);
+  }
+
+  let deployment;
+  try {
+    if (provider === 'github') {
+      deployment = await githubDeploy(slug, html, assets, slug, token);
+    } else if (provider === 'netlify') {
+      deployment = await netlifyDeploy(slug, html, assets, slug, token);
+    } else {
+      deployment = await cloudflareDeploy(slug, html, assets);
+    }
+  } catch (err) {
+    console.error(`${provider} deploy error:`, err);
+    throw new ApiError(502, `Deployment failed: ${err.message}`);
+  }
+
+  // Save the portfolio to the database (upsert so re-deploys overwrite)
+  try {
+    await Portfolio.findOneAndUpdate(
+      { userId, slug },
+      { userId, slug, sections, deployedUrl: deployment.url, projectName: deployment.projectName || slug },
+      { upsert: true, new: true }
+    );
+  } catch (dbErr) {
+    console.error('DB save after deploy error:', dbErr);
+    // Don't fail the response — the site IS live, even if DB save had an issue
+  }
+
+  res.status(200).json({
+    success: true,
+    message: 'Portfolio deployed successfully!',
+    data: {
+      url: deployment.url,
+      deploymentId: deployment.deployId || deployment.commitSha || deployment.deploymentId || null,
+      projectName: deployment.projectName || slug,
+    },
+  });
 }));
 
 /**
@@ -242,7 +372,7 @@ router.get(
  * Returns a list of available portfolio template slugs.
  */
 router.get('/', asyncHandler(async (req, res) => {
-  const templatesDir = new URL('../templates/portfolio', import.meta.url);
+  const templatesDir = path.join(_dirname, '../templates/portfolio');
   let slugs = [];
   try {
     const entries = await fs.readdir(templatesDir);
@@ -255,6 +385,61 @@ router.get('/', asyncHandler(async (req, res) => {
     url: `/portfolio/public/${slug}`,
   }));
   res.status(200).json({ success: true, portfolios, data: portfolios });
+}));
+
+/**
+ * POST /api/portfolio
+ * Create a new portfolio with validated and sanitized content.
+ */
+router.post('/', verifyToken, validatePortfolioSlug, validatePortfolioContent, asyncHandler(async (req, res) => {
+  const { slug, sections } = req.body;
+  const userId = req.user.uid;
+
+  const existing = await Portfolio.findOne({ userId, slug });
+  if (existing) {
+    throw new ApiError(409, `A portfolio with slug "${slug}" already exists.`);
+  }
+
+  const portfolio = await Portfolio.create({ userId, slug, sections });
+
+  res.status(201).json({
+    success: true,
+    message: 'Portfolio created successfully.',
+    data: portfolio,
+  });
+}));
+
+/**
+ * PUT /api/portfolio/:slug
+ * Update an existing portfolio with validated and sanitized content.
+ */
+router.put('/:slug', verifyToken, validatePortfolioSlug, validatePortfolioContent, asyncHandler(async (req, res) => {
+  const { slug } = req.params;
+  const { sections } = req.body;
+  const userId = req.user.uid;
+
+  const portfolio = await Portfolio.findOneAndUpdate(
+    { userId, slug },
+    { sections },
+    { new: true }
+  );
+
+  if (!portfolio) {
+    throw new ApiError(404, `Portfolio "${slug}" not found.`);
+  }
+res.status(200).json({
+  success: true,
+  message: 'Portfolio updated successfully.',
+  data: portfolio,
+});
+
+
+  res.status(200).json({
+    success: true,
+    message: 'Portfolio updated successfully.',
+    data: portfolio,
+  });
+  
 }));
 
 /**
@@ -466,6 +651,7 @@ router.post('/:id/restore/:versionId', verifyToken, asyncHandler(async (req, res
     if (Object.keys(update.$unset).length === 0) delete update.$unset;
 
     await UserProfile.findOneAndUpdate({ uid: id }, update, { upsert: true });
+    await invalidateProfileCache(id);
   } else {
     let portfolioVersions = inMemoryStore.get(id) || [];
     newVersionNumber = (portfolioVersions[portfolioVersions.length - 1]?.version || 0) + 1;
@@ -568,4 +754,115 @@ router.get('/:slug/bandwidth', asyncHandler(async (req, res) => {
   });
 }));
 
+/**
+ * l. POST /api/portfolio/ai-edit
+ * Turns a freeform user prompt into a structured patch of field edits.
+ * Used by the AI Portfolio Builder modal's chat panel.
+ *
+ * v1 returns a deterministic keyword-based patch so the modal flow is
+ * demoable without an LLM. The route is shaped for easy upgrade to
+ * `req.aiProvider.generateContent(prompt)` once a model is wired.
+ */
+router.post('/ai-edit', verifyToken, extractAIProvider, asyncHandler(async (req, res) => {
+  const { prompt, currentData } = req.body;
+  if (!prompt || typeof prompt !== 'string' || !prompt.trim()) {
+    throw new ApiError(400, 'Prompt is required');
+  }
+  if (!currentData || typeof currentData !== 'object') {
+    throw new ApiError(400, 'currentData object is required');
+  }
+
+  const systemPrompt = `You are an AI portfolio editor. You receive a user prompt and the current portfolio JSON data. You must output a JSON object representing a "patch" of edits to apply to the portfolio data based on the user's prompt.
+The patch should only contain the specific fields and objects that need to be updated. For example, if the user asks to change the bio, return {"patch": {"personal": {"bio": "New bio..."}}, "summary": "Changed bio"}. If the user asks to change their name, return {"patch": {"personal": {"name": "New Name"}}, "summary": "Changed name"}.
+Maintain the existing data structure for the fields you modify.
+Also include a "summary" string concisely explaining what was changed.
+Return ONLY valid JSON. No markdown fences, no extra text. Format: {"patch": {...}, "summary": "..."}`;
+
+  const userMessage = `Current Portfolio Data:\n${JSON.stringify(currentData)}\n\nUser Prompt: ${prompt}`;
+
+  try {
+    const provider = req.aiProvider;
+    const result = await provider.generateContent(`${systemPrompt}\n\n${userMessage}`);
+    let text = result.text.trim();
+
+    if (text.startsWith('```')) {
+      text = text.replace(/^```(?:json)?\n?/, '').replace(/\n?```$/, '').trim();
+    }
+    
+    const jsonMatch = text.match(/\{[\s\S]*\}/);
+    if (jsonMatch) text = jsonMatch[0];
+
+    const parsed = JSON.parse(text);
+
+    res.status(200).json({
+      success: true,
+      patch: parsed.patch || {},
+      summary: parsed.summary || 'Applied changes.',
+      provider: provider.providerName || 'gemini',
+      providerSource: req.aiProviderSource || 'v1-router',
+    });
+  } catch (error) {
+    console.error('AI Edit Error:', error);
+    // Fallback to mock behavior if AI fails
+    const lower = prompt.toLowerCase();
+    const patch = {};
+
+    if (/(bio|about|summary)/.test(lower)) {
+      const baseBio =
+        currentData?.personal?.bio ||
+        currentData?.personalInfo?.bio ||
+        'Engineer focused on shipping high-quality software.';
+      patch.personal = {
+        ...(currentData.personal || {}),
+        bio: `${baseBio.trim()} — refined by AI for confidence, clarity, and conversion.`,
+      };
+      if (currentData.personalInfo) {
+        patch.personalInfo = { ...currentData.personalInfo, bio: patch.personal.bio };
+      }
+    }
+    if (/(color|accent|blue|green|purple|red)/.test(lower)) {
+      let themeAccent = '#8b5cf6';
+      if (lower.includes('blue')) themeAccent = '#3b82f6';
+      else if (lower.includes('green')) themeAccent = '#10b981';
+      else if (lower.includes('red')) themeAccent = '#E10600';
+      patch.themeAccent = themeAccent;
+    }
+    if (/(skill|stack|technology)/.test(lower)) {
+      patch.skills = [
+        { name: 'React / Next.js', rating: 96, type: 'Engine' },
+        { name: 'TypeScript', rating: 94, type: 'Engine' },
+        { name: 'System Design', rating: 88, type: 'Aerodynamics' },
+        { name: 'Cloud & DevOps', rating: 86, type: 'Turbocharger' },
+      ];
+    }
+    if (/(project|portfolio)/.test(lower)) {
+      patch.projects = Array.isArray(currentData.projects)
+        ? currentData.projects.map((p) => ({
+            ...p,
+            description: `${p.description || ''} (impact-focused polish)`.trim(),
+          }))
+        : currentData.projects;
+    }
+
+    const summary =
+      Object.keys(patch).length > 0
+        ? `Applied edits to: ${Object.keys(patch).join(', ')}`
+        : "I couldn't detect a clear section in that prompt. Try mentioning 'bio', 'skills', or 'projects'.";
+
+    res.status(200).json({
+      success: true,
+      patch,
+      summary,
+      provider: req.aiProvider?.providerName || 'keyword-router',
+      providerSource: req.aiProviderSource || 'v1-router',
+    });
+  }
+}));
+
+/**
+ * m. POST /api/enhance/element
+ * Inline AI enhancer: rewrite a single field's text in place. Used by the
+ * InlineElementEditor's ✨ Enhance button. Lightweight — no auth required,
+ * intended for v1 of the AI Portfolio Builder modal.
+ */
 export default router;

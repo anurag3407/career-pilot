@@ -1,18 +1,60 @@
-import fetch from 'node-fetch';
+
+
+const getUtcDateKey = (value) => {
+  if (!value) return null;
+  const date = new Date(value);
+  if (Number.isNaN(date.getTime())) return null;
+  return date.toISOString().slice(0, 10);
+};
+
+const shiftUtcDate = (date, days) => {
+  const shifted = new Date(date);
+  shifted.setUTCDate(shifted.getUTCDate() + days);
+  return shifted;
+};
+
+const calculateCurrentActivityStreak = (repos) => {
+  const activeDates = new Set(
+    repos
+      .map(repo => getUtcDateKey(repo.pushed_at || repo.updated_at))
+      .filter(Boolean)
+  );
+
+  if (activeDates.size === 0) return 0;
+
+  let cursor = new Date();
+  let cursorKey = getUtcDateKey(cursor);
+
+  if (!activeDates.has(cursorKey)) {
+    cursor = shiftUtcDate(cursor, -1);
+    cursorKey = getUtcDateKey(cursor);
+  }
+
+  let streak = 0;
+  while (activeDates.has(cursorKey)) {
+    streak += 1;
+    cursor = shiftUtcDate(cursor, -1);
+    cursorKey = getUtcDateKey(cursor);
+  }
+
+  return streak;
+};
 
 /**
  * Fetches user profile and repository data from GitHub public API
  * @param {string} username - GitHub username
+ * @param {string|null} [token] - Optional BYOK token
  */
-export const fetchGitHubProfile = async (username) => {
+export const fetchGitHubProfile = async (username, token = null) => {
   try {
     const headers = {
       'User-Agent': 'Career-Pilot-App'
     };
-    
+
     // Add GitHub token if available to increase rate limits
-    if (process.env.GITHUB_TOKEN) {
-      headers['Authorization'] = `token ${process.env.GITHUB_TOKEN}`;
+    const effectiveToken = token || process.env.GITHUB_TOKEN;
+    if (effectiveToken) {
+      headers['Authorization'] = `token ${effectiveToken}`;
     }
 
     // Fetch user profile
@@ -60,6 +102,10 @@ export const fetchGitHubProfile = async (username) => {
       .slice(0, 10)
       .map(([lang]) => lang);
 
+    const sourceRepos = repos.filter(repo => !repo.fork);
+    const totalStars = sourceRepos.reduce((sum, repo) => sum + (repo.stargazers_count || 0), 0);
+    const currentStreak = calculateCurrentActivityStreak(sourceRepos);
+
     return {
       username: profile.login,
       name: profile.name || profile.login,
@@ -72,6 +118,9 @@ export const fetchGitHubProfile = async (username) => {
       public_repos: profile.public_repos,
       followers: profile.followers,
       url: profile.html_url,
+      totalRepos: profile.public_repos,
+      totalStars,
+      currentStreak,
       topRepositories: processedRepos,
       topLanguages
     };

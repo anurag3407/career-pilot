@@ -49,9 +49,41 @@ export default function F1Hero({ data }) {
     ]
   };
 
-  const profile = data?.personalInfo ? data.personalInfo : defaultData.personalInfo;
-  const stats = data?.stats ? data.stats : defaultData.stats;
-  const skills = data?.skills ? data.skills : defaultData.skills;
+  const profileData = data?.personal || data?.personalInfo || defaultData.personalInfo;
+  // Merge socials if they are separate, without mutating original object
+  const profile = {
+    ...profileData,
+    socials: data?.socials ? { ...(profileData.socials || {}), ...data.socials } : profileData.socials
+  };
+
+  const stats = data?.stats || {
+    driverNumber: "33",
+    team: data?.experience?.[0]?.company || "Freelance",
+    experience: data?.experience ? `${data.experience.length} Roles` : "8 Yrs",
+    podiums: data?.projects ? `${data.projects.length} Projects` : "42 Projects",
+    fastestLaps: "99.9% Uptime",
+    status: "ACTIVE"
+  };
+
+  let skills = data?.skills || defaultData.skills;
+  if (skills && skills.length > 0) {
+    if (typeof skills === 'string') {
+      skills = skills.split(',').map(s => s.trim()).filter(Boolean);
+    }
+    if (Array.isArray(skills)) {
+      if (typeof skills[0] === 'string') {
+        skills = skills.slice(0, 5).map(s => ({ name: s, rating: 90, type: "Core" }));
+      } else if (skills[0] && typeof skills[0] === 'object' && !skills[0].rating) {
+        skills = skills.slice(0, 5).map(s => {
+          let r = 85;
+          if (s?.level?.toLowerCase?.()?.includes('expert')) r = 98;
+          if (s?.level?.toLowerCase?.()?.includes('advanced')) r = 90;
+          if (s?.level?.toLowerCase?.()?.includes('intermediate')) r = 75;
+          return { name: s?.name || s?.skill || s?.keyword || "Skill", rating: r, type: s?.category || "Engine" };
+        });
+      }
+    }
+  }
 
   // --- GRID LIGHTS STATE ---
   const [lightCount, setLightCount] = useState(0);
@@ -265,7 +297,7 @@ export default function F1Hero({ data }) {
 
           {/* Reset button inside grid light panel */}
           {isRaceStarted && (
-            <button 
+            <button type="button" 
               onClick={restartSequence} 
               className="ml-4 p-1.5 rounded-full hover:bg-neutral-800 border border-neutral-800 text-neutral-400 hover:text-white transition-colors duration-150 group"
               title="Restart Lights Sequence"
@@ -552,7 +584,7 @@ export default function F1Hero({ data }) {
                 </div>
 
                 {/* DRS and Control Buttons */}
-                <button 
+                <button type="button" 
                   onClick={() => setIsTimerRunning(prev => !prev)}
                   className="px-3 py-1.5 border border-neutral-800 hover:border-neutral-600 bg-neutral-900 text-[10px] font-mono font-bold tracking-wider rounded-md transition-colors hover:text-white uppercase"
                   disabled={!isRaceStarted}

@@ -1,14 +1,10 @@
-import { motion } from "framer-motion";
+import { useRef } from "react";
+import { motion, useMotionValue, useMotionTemplate } from "framer-motion";
 import { cn } from "@/lib/utils";
 import {
-  Search,
   Sparkles,
-  Briefcase,
-  BarChart3,
   Bell,
-  Users,
-  FileText,
-  Zap
+  LayoutGrid,
 } from "lucide-react";
 import Globe from "./Globe";
 
@@ -175,19 +171,30 @@ const features = [
 
 export default function FeaturesSection() {
   return (
-    <div className="relative z-20 py-20 lg:py-32 max-w-7xl mx-auto">
+    <div className="relative mx-auto max-w-7xl py-20 lg:py-32">
       <div className="px-8">
+        <motion.div
+          initial={{ opacity: 0, y: 16 }}
+          whileInView={{ opacity: 1, y: 0 }}
+          viewport={{ once: true }}
+          className="mb-7 flex justify-center"
+        >
+          <div className="inline-flex items-center gap-2 rounded-full border border-border bg-card/60 px-4 py-1.5 backdrop-blur-md">
+            <LayoutGrid className="h-3.5 w-3.5 text-primary" />
+            <span className="text-xs font-bold uppercase tracking-[0.2em] text-muted-foreground">
+              The Platform
+            </span>
+          </div>
+        </motion.div>
+
         <motion.h2
           initial={{ opacity: 0, y: 20 }}
           whileInView={{ opacity: 1, y: 0 }}
           viewport={{ once: true }}
-          className="text-3xl lg:text-6xl lg:leading-tight max-w-5xl mx-auto text-center tracking-tight font-black text-foreground"
+          className="mx-auto max-w-5xl text-center text-3xl font-black tracking-tight text-foreground lg:text-6xl lg:leading-tight"
         >
           Everything you need to{" "}
-          <span className="text-primary underline decoration-primary/20 underline-offset-8">
-            accelerate
-          </span>{" "}
-          your career
+          <span className="gradient-text-animated">accelerate</span> your career
         </motion.h2>
 
         <motion.p
@@ -195,7 +202,7 @@ export default function FeaturesSection() {
           whileInView={{ opacity: 1, y: 0 }}
           viewport={{ once: true }}
           transition={{ delay: 0.1 }}
-          className="text-base lg:text-lg max-w-2xl my-6 mx-auto text-muted-foreground text-center font-medium"
+          className="mx-auto my-6 max-w-2xl text-center text-base font-medium text-muted-foreground lg:text-lg"
         >
           From AI resume optimization to global job search, careerpilot provides
           the tools you need to land your dream job faster.
@@ -203,7 +210,10 @@ export default function FeaturesSection() {
       </div>
 
       <div className="relative mt-12">
-        <div className="grid grid-cols-1 lg:grid-cols-6 border rounded-[2.5rem] border-border bg-card/50 backdrop-blur-xl overflow-hidden shadow-2xl">
+        {/* Glow behind the bento */}
+        <div className="pointer-events-none absolute -inset-x-8 -inset-y-6 -z-10 rounded-[3rem] bg-linear-to-tr from-primary/5 via-transparent to-secondary/5 blur-2xl" />
+
+        <div className="grid grid-cols-1 overflow-hidden rounded-[2.5rem] border border-border bg-card/50 shadow-2xl backdrop-blur-xl lg:grid-cols-6">
           {features.map((feature, index) => (
             <FeatureCard key={feature.title} className={feature.className} index={index}>
               <FeatureTitle>{feature.title}</FeatureTitle>
@@ -218,22 +228,44 @@ export default function FeaturesSection() {
 }
 
 function FeatureCard({ children, className, index }) {
+  const ref = useRef(null);
+  const mx = useMotionValue(0);
+  const my = useMotionValue(0);
+  const spotlight = useMotionTemplate`radial-gradient(360px circle at ${mx}px ${my}px, rgba(var(--primary-rgb), 0.08), transparent 70%)`;
+
+  const onMove = (e) => {
+    const rect = ref.current?.getBoundingClientRect();
+    if (!rect) return;
+    mx.set(e.clientX - rect.left);
+    my.set(e.clientY - rect.top);
+  };
+
   return (
     <motion.div
+      ref={ref}
+      onMouseMove={onMove}
       initial={{ opacity: 0, y: 20 }}
       whileInView={{ opacity: 1, y: 0 }}
       viewport={{ once: true }}
       transition={{ delay: index * 0.1 }}
-      className={cn("p-6 sm:p-10 relative overflow-hidden group hover:bg-muted/50 transition-colors duration-500", className)}
+      className={cn(
+        "group relative overflow-hidden p-6 transition-colors duration-500 hover:bg-muted/40 sm:p-10",
+        className
+      )}
     >
-      {children}
+      <motion.div
+        aria-hidden
+        className="pointer-events-none absolute inset-0 opacity-0 transition-opacity duration-500 group-hover:opacity-100"
+        style={{ background: spotlight }}
+      />
+      <div className="relative z-10">{children}</div>
     </motion.div>
   );
 }
 
 function FeatureTitle({ children }) {
   return (
-    <p className="max-w-5xl mx-auto text-left tracking-tight text-foreground text-xl md:text-3xl md:leading-snug font-black">
+    <p className="mx-auto max-w-5xl text-left text-xl font-black tracking-tight text-foreground transition-colors duration-300 group-hover:text-primary md:text-3xl md:leading-snug">
       {children}
     </p>
   );
@@ -241,7 +273,7 @@ function FeatureTitle({ children }) {
 
 function FeatureDescription({ children }) {
   return (
-    <p className="text-base md:text-lg max-w-4xl text-left mx-auto text-muted-foreground font-medium my-3">
+    <p className="mx-auto my-3 max-w-4xl text-left text-base font-medium text-muted-foreground md:text-lg">
       {children}
     </p>
   );

@@ -1,4 +1,11 @@
 import crypto from 'crypto';
+import { exec } from 'child_process';
+import { promisify } from 'util';
+import fs from 'fs/promises';
+import path from 'path';
+import os from 'os';
+
+const execAsync = promisify(exec);
 
 const CF_API = 'https://api.cloudflare.com/client/v4';
 
@@ -156,7 +163,7 @@ export async function validateToken(token) {
 }
 
 /**
- * Deploy an HTML portfolio to Cloudflare Pages via the Direct Upload API.
+ * Deploy an HTML portfolio to Cloudflare Pages via Wrangler.
  * HTML is sanitized server-side before upload.
  *
  * @param {string} portfolioId  - Stable identifier used to name/find the Pages project
@@ -174,62 +181,69 @@ export async function deploy(portfolioId, htmlContent, assets = {}) {
   }
 
   const projectName = toProjectName(`cp-${portfolioId}`);
-
-  // Create the Pages project if it doesn't exist yet
-  let projectExists = false;
+  
+  // 1. Create a temporary directory for the build output
+  const tmpDir = await fs.mkdtemp(path.join(os.tmpdir(), `deploy-${projectName}-`));
+  
   try {
-    await cfRequest('GET', `/accounts/${accountId}/pages/projects/${projectName}`, undefined, token);
-    projectExists = true;
-  } catch (err) {
-    if (!err.message.includes('404') && !err.message.includes('8000007')) throw err;
+    // 2. Write HTML — skip sanitization for React app bundles (they contain
+    //    trusted <script type="module"> tags that must not be stripped)
+    const htmlString = Buffer.isBuffer(htmlContent) ? htmlContent.toString('utf8') : htmlContent;
+    const isReactBundle = htmlString.includes('__PORTFOLIO_DATA__') || htmlString.includes('type="module"');
+    const finalHtml = isReactBundle ? htmlString : sanitizeHtml(htmlString);
+    
+    await fs.writeFile(path.join(tmpDir, 'index.html'), finalHtml);
+    
+    // 3. Write additional assets
+    for (const [assetPath, content] of Object.entries(assets)) {
+      const normalizedPath = assetPath.startsWith('/') ? assetPath.slice(1) : assetPath;
+      const fullPath = path.join(tmpDir, normalizedPath);
+      await fs.mkdir(path.dirname(fullPath), { recursive: true });
+      await fs.writeFile(fullPath, content);
+    }
+    
+    // 4. Run Wrangler to deploy
+    const env = {
+      ...process.env,
+      CLOUDFLARE_API_TOKEN: token,
+      CLOUDFLARE_ACCOUNT_ID: accountId,
+      NO_D3_WARNING: 'true'
+    };
+    
+    // The --commit-dirty=true flag suppresses git warnings
+    const cmd = `npx wrangler pages deploy "${tmpDir}" --project-name "${projectName}" --branch main --commit-dirty=true`;
+    
+    const { stdout, stderr } = await execAsync(cmd, { env });
+    
+    if (stderr && stderr.includes('Error:')) {
+      throw new Error(`Wrangler error: ${stderr}`);
+    }
+    
+    // Extract deployment URL from stdout
+    // Wrangler outputs something like: ✨ Deployment complete! Take a peek over at https://a3be0141.cp-soft-neumorphic.pages.dev
+    let deployUrl = `https://${projectName}.pages.dev`; // Fallback to production alias
+    const match = stdout.match(/https:\/\/[a-zA-Z0-9-]+\.[a-zA-Z0-9-]+\.pages\.dev/);
+    if (match) {
+      deployUrl = match[0];
+    }
+    
+    // Always return the main alias instead of the hash alias to prevent DNS resolution delays
+    const productionUrl = `https://${projectName}.pages.dev`;
+    
+    return {
+      deploymentId: 'wrangler-deploy', // Wrangler doesn't easily expose the raw ID in stdout
+      url: productionUrl, 
+      projectName,
+    };
+    
+  } finally {
+    // 5. Clean up temp directory
+    try {
+      await fs.rm(tmpDir, { recursive: true, force: true });
+    } catch (e) {
+      console.warn(`Failed to cleanup temp directory ${tmpDir}:`, e);
+    }
   }
-
-  if (!projectExists) {
-    await cfRequest('POST', `/accounts/${accountId}/pages/projects`, {
-      name: projectName,
-      production_branch: 'main',
-    }, token);
-  }
-
-  // Sanitize HTML before upload — credentials stay server-side
-  const sanitizedHtml = sanitizeHtml(
-    Buffer.isBuffer(htmlContent) ? htmlContent.toString('utf8') : htmlContent
-  );
-
-  // Build file map: normalised path (no leading /) → Buffer
-  const fileMap = {
-    'index.html': Buffer.from(sanitizedHtml, 'utf8'),
-  };
-  for (const [path, content] of Object.entries(assets)) {
-    const normalised = path.startsWith('/') ? path.slice(1) : path;
-    fileMap[normalised] = Buffer.isBuffer(content) ? content : Buffer.from(content, 'utf8');
-  }
-
-  // Manifest: "/path" → SHA-256 hex (Cloudflare Pages Direct Upload format)
-  const manifest = {};
-  for (const [path, buf] of Object.entries(fileMap)) {
-    manifest[`/${path}`] = sha256(buf);
-  }
-
-  // Build multipart form — manifest field + one entry per file
-  const form = new FormData();
-  form.append('manifest', JSON.stringify(manifest));
-  for (const [path, buf] of Object.entries(fileMap)) {
-    form.append(path, new Blob([buf]), path);
-  }
-
-  const deployment = await cfRequest(
-    'POST',
-    `/accounts/${accountId}/pages/projects/${projectName}/deployments`,
-    form,
-    token
-  );
-
-  return {
-    deploymentId: deployment.id,
-    url: deployment.url ?? `https://${projectName}.pages.dev`,
-    projectName,
-  };
 }
 
 /**

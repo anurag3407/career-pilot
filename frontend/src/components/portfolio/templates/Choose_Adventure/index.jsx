@@ -1,7 +1,7 @@
+import { usePortfolio } from "../../../../context/PortfolioContext";
 import React, { useState, useCallback } from 'react';
 import { AnimatePresence, motion } from 'framer-motion';
 
-import data from '../../../../data/dummy_data.json';
 import HeroSection from './sections/HeroSection';
 import AboutSection from './sections/AboutSection';
 import SkillsSection from './sections/SkillsSection';
@@ -27,6 +27,8 @@ const SECTIONS = {
 };
 
 export default function ChooseAdventurePortfolio() {
+  const { portfolioData: data } = usePortfolio();
+
   const [scene, setScene] = useState('hero');
 
   const navigate = useCallback((next) => {
@@ -103,7 +105,7 @@ export default function ChooseAdventurePortfolio() {
           </span>
           <div className="hidden sm:flex items-center gap-1">
             {['about', 'skills', 'projects', 'experience', 'testimonials', 'contact'].map((s) => (
-              <button
+              <button type="button"
                 key={s}
                 onClick={() => navigate(s)}
                 className={`px-3 py-1 rounded-lg text-xs transition-colors capitalize ${scene === s ? 'bg-violet-800/50 text-white' : 'text-slate-500 hover:text-slate-200'}`}
@@ -112,7 +114,7 @@ export default function ChooseAdventurePortfolio() {
               </button>
             ))}
           </div>
-          <button
+          <button type="button"
             onClick={reset}
             className="text-xs text-slate-600 hover:text-slate-400 transition-colors"
           >
@@ -135,7 +137,7 @@ export default function ChooseAdventurePortfolio() {
         <div className="fixed bottom-4 right-4 z-50 font-mono">
           <div className="flex gap-1">
             {['about', 'skills', 'projects', 'experience', 'testimonials', 'contact'].map((s) => (
-              <button
+              <button type="button"
                 key={s}
                 onClick={() => navigate(s)}
                 aria-label={`Go to ${s}`}

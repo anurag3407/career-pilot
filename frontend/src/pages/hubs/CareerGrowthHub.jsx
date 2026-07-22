@@ -27,18 +27,18 @@ export default function CareerGrowthHub() {
         color="secondary"
       />
       <ToolCard
-        to="/email-generator"
-        icon={Mail}
-        title="AI Email Generator"
-        description="Draft professional cold emails, application follow-ups, and negotiation letters."
+        to="/skill-gap"
+        icon={Sparkles}
+        title="Skill Gap Analyzer"
+        description="Identify gaps in your skill set against target job requirements."
+        badge="AI"
         color="emerald-500"
       />
       <ToolCard
-        to="/linkedin-optimizer"
-        icon={Linkedin}
-        title="LinkedIn Optimizer"
-        description="Optimize your LinkedIn headline, bio, and descriptions with high-impact keywords."
-        badge="AI"
+        to="/career-path"
+        icon={GraduationCap}
+        title="Career Trajectory"
+        description="Map out potential future career steps and the skills needed to reach them."
         color="primary"
       />
 

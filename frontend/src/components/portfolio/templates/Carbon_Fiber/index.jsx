@@ -1,5 +1,5 @@
+import { usePortfolio } from "../../../../context/PortfolioContext";
 import React from 'react';
-import data from '../../../../data/dummy_data.json';
 
 /**
  * Carbon Fiber Portfolio Template
@@ -7,6 +7,8 @@ import data from '../../../../data/dummy_data.json';
  * Description: Carbon fiber texture pattern backgrounds, metallic silver/chrome accents, industrial aesthetic. Feels like a sports car dashboard.
  */
 export default function CarbonFiber() {
+  const { portfolioData: data } = usePortfolio();
+
   return (
     <div className="min-h-screen bg-gray-950 text-white flex flex-col items-center justify-center p-8 font-sans">
       <div className="max-w-3xl w-full text-center">

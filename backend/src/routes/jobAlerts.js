@@ -1,5 +1,5 @@
 import express from 'express';
-import { verifyToken } from '../middleware/auth.js';
+import { verifyToken, adminOnly } from '../middleware/auth.js';
 import { asyncHandler, ApiError } from '../middleware/errorHandler.js';
 import JobAlert from '../models/JobAlert.model.js';
 import NotificationLog from '../models/NotificationLog.model.js';
@@ -7,10 +7,10 @@ import { triggerAlertCheck, processAlert } from '../services/jobFetcher.js';
 import { getQueueStats, getQueue, emptyQueue } from '../services/jobAlertQueue.js';
 import { displayQueueStatus, clearQueue, getFailedJobsInfo } from '../utils/queueManager.js';
 import { 
-    saveJobAlertToFirebase, 
-    deleteJobAlertFromFirebase,
+    saveJobAlertToAppwrite, 
+    deleteJobAlertFromAppwrite,
     saveUserToFirebase 
-} from '../services/firebaseDataService.js';
+} from '../services/appwriteDataService.js';
 import { validate } from '../middleware/validate.js';
 import { createJobAlertSchema, updateJobAlertSchema } from '../schemas/jobAlerts.schema.js';
 
@@ -178,7 +178,7 @@ router.post('/', verifyToken, validate(createJobAlertSchema), asyncHandler(async
 
     // Save to Firebase
     try {
-        await saveJobAlertToFirebase(alert.toObject());
+        await saveJobAlertToAppwrite(alert.toObject());
     } catch (fbError) {
         console.warn('⚠️  Could not save alert to Firebase:', fbError.message);
     }
@@ -229,7 +229,7 @@ router.put('/:id', verifyToken, validate(updateJobAlertSchema), asyncHandler(asy
 
     // Update in Firebase
     try {
-        await saveJobAlertToFirebase(alert.toObject());
+        await saveJobAlertToAppwrite(alert.toObject());
     } catch (fbError) {
         console.warn('⚠️  Could not update alert in Firebase:', fbError.message);
     }
@@ -257,7 +257,7 @@ router.delete('/:id', verifyToken, asyncHandler(async (req, res) => {
 
     // Delete from Firebase
     try {
-        await deleteJobAlertFromFirebase(id);
+        await deleteJobAlertFromAppwrite(id);
     } catch (fbError) {
         console.warn('⚠️  Could not delete alert from Firebase:', fbError.message);
     }
@@ -368,7 +368,7 @@ if (enableDebugRoutes) {
      * GET /api/job-alerts/debug/queue-status
      * Debug endpoint to check queue and worker status
      */
-    router.get('/debug/queue-status', verifyToken, asyncHandler(async (req, res) => {
+    router.get('/debug/queue-status', verifyToken, adminOnly, asyncHandler(async (req, res) => {
         const queue = getQueue();
         const stats = await getQueueStats();
         
@@ -407,10 +407,10 @@ if (enableDebugRoutes) {
      * POST /api/job-alerts/debug/process-now
      * Debug endpoint to manually process all active alerts immediately
      */
-    router.post('/debug/process-now', verifyToken, asyncHandler(async (req, res) => {
+    router.post('/debug/process-now', verifyToken, adminOnly, asyncHandler(async (req, res) => {
         const alerts = await JobAlert.find({ 
             isActive: true,
-            userEmail: { $exists: true, $ne: '', $ne: null }
+            userEmail: { $exists: true, $nin: ['', null] }
         }).lean();
         
         console.log(`\n🔧 DEBUG: Manually processing ${alerts.length} alerts...`);
@@ -448,7 +448,7 @@ if (enableDebugRoutes) {
      * POST /api/job-alerts/debug/empty-queue
      * Empty all jobs from Redis queue with detailed reporting
      */
-    router.post('/debug/empty-queue', verifyToken, asyncHandler(async (req, res) => {
+    router.post('/debug/empty-queue', verifyToken, adminOnly, asyncHandler(async (req, res) => {
         console.log('\n🗑️  Request to empty Redis queue received...');
         
         const result = await clearQueue();
@@ -464,7 +464,7 @@ if (enableDebugRoutes) {
      * GET /api/job-alerts/debug/queue-details
      * Get detailed queue status with visual formatting
      */
-    router.get('/debug/queue-details', verifyToken, asyncHandler(async (req, res) => {
+    router.get('/debug/queue-details', verifyToken, adminOnly, asyncHandler(async (req, res) => {
         const stats = await displayQueueStatus();
         const failedJobs = await getFailedJobsInfo();
         

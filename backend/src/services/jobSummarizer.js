@@ -65,7 +65,8 @@ ${jobDescription}`;
 
     return {
       success: true,
-      summary: summaryData
+      summary: summaryData,
+      usage: result.usage
     };
   } catch (error) {
     console.error('Error summarizing job description:', error);

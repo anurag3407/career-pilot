@@ -15,7 +15,13 @@ import assert from 'node:assert/strict';
 import { z } from 'zod';
 
 // ─── Auth ────────────────────────────────────────────────────────────────────
-import { updateNotificationPrefsSchema } from '../auth.schema.js';
+import {
+  updateNotificationPrefsSchema,
+  registerSchema,
+  loginSchema,
+  forgotPasswordSchema,
+  resetPasswordSchema,
+} from '../auth.schema.js';
 
 describe('auth.schema — updateNotificationPrefsSchema', () => {
   test('accepts valid boolean prefs', () => {
@@ -39,6 +45,191 @@ describe('auth.schema — updateNotificationPrefsSchema', () => {
       directMessages: 1,
       proposalUpdates: null,
     });
+    assert.ok(!result.success);
+  });
+});
+
+describe('auth.schema — registerSchema', () => {
+  const valid = { name: 'Alice Example', email: 'alice@example.com', password: 'Passw0rdTest' };
+
+  test('accepts a fully valid registration body', () => {
+    const result = registerSchema.safeParse(valid);
+    assert.ok(result.success, JSON.stringify(result.error?.issues));
+  });
+
+  test('normalises email to lowercase', () => {
+    const result = registerSchema.safeParse({ ...valid, email: 'Alice@EXAMPLE.COM' });
+    assert.ok(result.success);
+    assert.equal(result.data.email, 'alice@example.com');
+  });
+
+  test('rejects name shorter than 2 characters', () => {
+    const result = registerSchema.safeParse({ ...valid, name: 'A' });
+    assert.ok(!result.success);
+    assert.ok(result.error.issues.some((e) => e.path[0] === 'name'));
+  });
+
+  test('rejects name longer than 50 characters', () => {
+    const result = registerSchema.safeParse({ ...valid, name: 'A'.repeat(51) });
+    assert.ok(!result.success);
+    assert.ok(result.error.issues.some((e) => e.path[0] === 'name'));
+  });
+
+  test('rejects an invalid email format', () => {
+    const result = registerSchema.safeParse({ ...valid, email: 'not-an-email' });
+    assert.ok(!result.success);
+    assert.ok(result.error.issues.some((e) => e.path[0] === 'email'));
+  });
+
+  test('rejects a password shorter than 8 characters', () => {
+    const result = registerSchema.safeParse({ ...valid, password: 'Ab1' });
+    assert.ok(!result.success);
+    assert.ok(result.error.issues.some((e) => e.path[0] === 'password'));
+  });
+
+  test('rejects a password with no uppercase letter', () => {
+    const result = registerSchema.safeParse({ ...valid, password: 'alllower1' });
+    assert.ok(!result.success);
+    assert.ok(result.error.issues.some((e) => e.path[0] === 'password'));
+  });
+
+  test('rejects a password with no digit', () => {
+    const result = registerSchema.safeParse({ ...valid, password: 'NoDigitsHere' });
+    assert.ok(!result.success);
+    assert.ok(result.error.issues.some((e) => e.path[0] === 'password'));
+  });
+
+  test('rejects a password with no lowercase letter', () => {
+    const result = registerSchema.safeParse({ ...valid, password: 'ALLCAPS123' });
+    assert.ok(!result.success);
+    assert.ok(result.error.issues.some((e) => e.path[0] === 'password'));
+  });
+
+  test('rejects a missing email', () => {
+    const { email, ...rest } = valid;
+    const result = registerSchema.safeParse(rest);
+    assert.ok(!result.success);
+    assert.ok(result.error.issues.some((e) => e.path[0] === 'email'));
+  });
+
+  test('rejects a missing password', () => {
+    const { password, ...rest } = valid;
+    const result = registerSchema.safeParse(rest);
+    assert.ok(!result.success);
+    assert.ok(result.error.issues.some((e) => e.path[0] === 'password'));
+  });
+
+  test('trims leading/trailing whitespace from name', () => {
+    const result = registerSchema.safeParse({ ...valid, name: '  Alice  ' });
+    assert.ok(result.success);
+    assert.equal(result.data.name, 'Alice');
+  });
+});
+
+describe('auth.schema — loginSchema', () => {
+  const valid = { email: 'alice@example.com', password: 'anypassword' };
+
+  test('accepts a valid login body', () => {
+    const result = loginSchema.safeParse(valid);
+    assert.ok(result.success, JSON.stringify(result.error?.issues));
+  });
+
+  test('normalises email to lowercase', () => {
+    const result = loginSchema.safeParse({ ...valid, email: 'ALICE@EXAMPLE.COM' });
+    assert.ok(result.success);
+    assert.equal(result.data.email, 'alice@example.com');
+  });
+
+  test('rejects an invalid email format', () => {
+    const result = loginSchema.safeParse({ ...valid, email: 'bad-email' });
+    assert.ok(!result.success);
+    assert.ok(result.error.issues.some((e) => e.path[0] === 'email'));
+  });
+
+  test('rejects an empty password string', () => {
+    const result = loginSchema.safeParse({ ...valid, password: '' });
+    assert.ok(!result.success);
+    assert.ok(result.error.issues.some((e) => e.path[0] === 'password'));
+  });
+
+  test('rejects a missing email field', () => {
+    const result = loginSchema.safeParse({ password: 'somepass' });
+    assert.ok(!result.success);
+    assert.ok(result.error.issues.some((e) => e.path[0] === 'email'));
+  });
+
+  test('rejects a missing password field', () => {
+    const result = loginSchema.safeParse({ email: 'alice@example.com' });
+    assert.ok(!result.success);
+    assert.ok(result.error.issues.some((e) => e.path[0] === 'password'));
+  });
+
+  test('rejects an empty body', () => {
+    const result = loginSchema.safeParse({});
+    assert.ok(!result.success);
+    assert.equal(result.error.issues.length, 2);
+  });
+});
+
+describe('auth.schema — forgotPasswordSchema', () => {
+  test('accepts a valid email', () => {
+    const result = forgotPasswordSchema.safeParse({ email: 'user@example.com' });
+    assert.ok(result.success, JSON.stringify(result.error?.issues));
+  });
+
+  test('normalises email to lowercase', () => {
+    const result = forgotPasswordSchema.safeParse({ email: 'USER@EXAMPLE.COM' });
+    assert.ok(result.success);
+    assert.equal(result.data.email, 'user@example.com');
+  });
+
+  test('rejects an invalid email', () => {
+    const result = forgotPasswordSchema.safeParse({ email: 'not-an-email' });
+    assert.ok(!result.success);
+    assert.ok(result.error.issues.some((e) => e.path[0] === 'email'));
+  });
+
+  test('rejects a missing email', () => {
+    const result = forgotPasswordSchema.safeParse({});
+    assert.ok(!result.success);
+    assert.ok(result.error.issues.some((e) => e.path[0] === 'email'));
+  });
+});
+
+describe('auth.schema — resetPasswordSchema', () => {
+  const valid = { token: 'a'.repeat(64), newPassword: 'Passw0rdTest' };
+
+  test('accepts a valid reset payload', () => {
+    const result = resetPasswordSchema.safeParse(valid);
+    assert.ok(result.success, JSON.stringify(result.error?.issues));
+  });
+
+  test('rejects a missing token', () => {
+    const result = resetPasswordSchema.safeParse({ newPassword: 'Passw0rdTest' });
+    assert.ok(!result.success);
+    assert.ok(result.error.issues.some((e) => e.path[0] === 'token'));
+  });
+
+  test('rejects a password shorter than 8 characters', () => {
+    const result = resetPasswordSchema.safeParse({ ...valid, newPassword: 'Ab1' });
+    assert.ok(!result.success);
+    assert.ok(result.error.issues.some((e) => e.path[0] === 'newPassword'));
+  });
+
+  test('rejects a password with no uppercase letter', () => {
+    const result = resetPasswordSchema.safeParse({ ...valid, newPassword: 'lowercase1' });
+    assert.ok(!result.success);
+    assert.ok(result.error.issues.some((e) => e.path[0] === 'newPassword'));
+  });
+
+  test('rejects a password with no digit', () => {
+    const result = resetPasswordSchema.safeParse({ ...valid, newPassword: 'NoDigitsHere' });
+    assert.ok(!result.success);
+    assert.ok(result.error.issues.some((e) => e.path[0] === 'newPassword'));
+  });
+
+  test('rejects an empty body', () => {
+    const result = resetPasswordSchema.safeParse({});
     assert.ok(!result.success);
   });
 });
@@ -80,8 +271,10 @@ describe('resume.schema — updateResumeSchema', () => {
   });
 
   test('rejects empty object', () => {
+    // customSections defaults to [] so the schema now accepts {} but the
+    // downstream `.refine` check still rejects (no field to update).
     const result = updateResumeSchema.safeParse({});
-    assert.ok(!result.success);
+    assert.ok(!result.success, 'empty object should be rejected by the .refine()');
   });
 });
 
@@ -486,7 +679,7 @@ describe('twoFactor.schema — backupCodeSchema', () => {
 });
 
 // ─── User Profile ─────────────────────────────────────────────────────────────
-import { updateProfileSchema } from '../userProfile.schema.js';
+import { updateProfileSchema, setAvatarSchema } from '../userProfile.schema.js';
 
 describe('userProfile.schema — updateProfileSchema', () => {
   test('accepts partial update', () => {
@@ -510,6 +703,115 @@ describe('userProfile.schema — updateProfileSchema', () => {
     const result = updateProfileSchema.safeParse({
       skills: Array.from({ length: 21 }, (_, i) => `skill${i}`),
     });
+  });
+
+  test('accepts all new personal-info fields together', () => {
+    const result = updateProfileSchema.safeParse({
+      avatarUrl: 'https://storage.googleapis.com/x.png',
+      phone: '+1 555 0100',
+      headline: 'Building things',
+      dateOfBirth: '1995-04-12',
+      gender: 'female',
+      company: 'Acme',
+      yearsOfExperience: 7,
+      collegeStudent: false,
+      openToWork: true,
+      education: [{
+        institution: 'MIT',
+        degree: 'B.Sc',
+        field: 'CS',
+        startYear: 2018,
+        endYear: 2022,
+      }],
+      languages: ['English', 'Hindi'],
+      resumeHeadline: 'Backend engineer with 7 yrs experience',
+    });
+    assert.ok(result.success, JSON.stringify(result.error?.issues));
+  });
+
+  test('coerces null dateOfBirth to null', () => {
+    const result = updateProfileSchema.safeParse({ dateOfBirth: null });
+    assert.ok(result.success);
+    assert.equal(result.data.dateOfBirth, null);
+  });
+
+  test('coerces empty string dateOfBirth to null', () => {
+    const result = updateProfileSchema.safeParse({ dateOfBirth: '' });
+    assert.ok(result.success);
+    assert.equal(result.data.dateOfBirth, null);
+  });
+
+  test('rejects future dateOfBirth', () => {
+    const future = new Date();
+    future.setFullYear(future.getFullYear() + 1);
+    const result = updateProfileSchema.safeParse({ dateOfBirth: future.toISOString() });
+    assert.ok(!result.success);
+  });
+
+  test('rejects invalid gender enum value', () => {
+    const result = updateProfileSchema.safeParse({ gender: 'helicopter' });
+    assert.ok(!result.success);
+    assert.ok(result.error.issues.some(e => e.path[0] === 'gender'));
+  });
+
+  test('rejects negative yearsOfExperience', () => {
+    const result = updateProfileSchema.safeParse({ yearsOfExperience: -3 });
+    assert.ok(!result.success);
+  });
+
+  test('rejects yearsOfExperience over 80', () => {
+    const result = updateProfileSchema.safeParse({ yearsOfExperience: 81 });
+    assert.ok(!result.success);
+  });
+
+  test('rejects non-boolean openToWork', () => {
+    const result = updateProfileSchema.safeParse({ openToWork: 'yes' });
+    assert.ok(!result.success);
+  });
+
+  test('rejects education entry with out-of-range year', () => {
+    const result = updateProfileSchema.safeParse({
+      education: [{ institution: 'X', startYear: 1800 }],
+    });
+    assert.ok(!result.success);
+  });
+
+  test('rejects languages array > 20 items', () => {
+    const result = updateProfileSchema.safeParse({
+      languages: Array.from({ length: 21 }, (_, i) => `lang${i}`),
+    });
+    assert.ok(!result.success);
+  });
+
+  test('rejects headline > 120 chars', () => {
+    const result = updateProfileSchema.safeParse({ headline: 'x'.repeat(121) });
+    assert.ok(!result.success);
+  });
+
+  test('rejects resumeHeadline > 300 chars', () => {
+    const result = updateProfileSchema.safeParse({ resumeHeadline: 'x'.repeat(301) });
+    assert.ok(!result.success);
+  });
+});
+
+describe('userProfile.schema — setAvatarSchema', () => {
+  test('accepts a valid URL', () => {
+    const result = setAvatarSchema.safeParse({ avatarUrl: 'https://example.com/a.png' });
+    assert.ok(result.success, JSON.stringify(result.error?.issues));
+  });
+
+  test('rejects missing avatarUrl', () => {
+    const result = setAvatarSchema.safeParse({});
+    assert.ok(!result.success);
+  });
+
+  test('rejects a non-URL avatarUrl', () => {
+    const result = setAvatarSchema.safeParse({ avatarUrl: 'not-a-url' });
+    assert.ok(!result.success);
+  });
+
+  test('rejects an avatarUrl > 500 chars', () => {
+    const result = setAvatarSchema.safeParse({ avatarUrl: `https://example.com/${'x'.repeat(500)}` });
     assert.ok(!result.success);
   });
 });

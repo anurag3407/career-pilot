@@ -44,7 +44,7 @@ export default function TextToResume() {
           <div className="inline-flex items-center justify-center p-3 bg-primary/10 rounded-2xl mb-6 ring-1 ring-primary/20 shadow-[0_0_30px_rgba(var(--primary-rgb),0.2)]">
             <FileText className="w-8 h-8 text-primary" />
           </div>
-          <h1 className="text-4xl md:text-5xl font-bold bg-clip-text text-transparent bg-gradient-to-r from-white to-white/60 tracking-tight mb-4">
+          <h1 className="text-4xl md:text-5xl font-bold text-foreground tracking-tight mb-4">
             Text to Resume
           </h1>
           <p className="text-xl text-muted-foreground max-w-2xl mx-auto">
@@ -55,8 +55,7 @@ export default function TextToResume() {
         <motion.div
           initial={{ opacity: 0, y: 20 }}
           animate={{ opacity: 1, y: 0 }}
-          transition={{ delay: 0.1 }}
-          className="bg-card/50 backdrop-blur-xl border border-white/5 rounded-3xl p-6 sm:p-8 shadow-2xl"
+          className="bg-card backdrop-blur-xl border border-border rounded-3xl p-6 sm:p-8 shadow-2xl"
         >
           <div className="space-y-6">
             <div>
@@ -65,7 +64,7 @@ export default function TextToResume() {
               </label>
               <input 
                 type="text" 
-                className="w-full bg-background/50 border border-border rounded-xl px-4 py-3 focus:ring-2 focus:ring-primary/50 transition-all outline-none" 
+                className="w-full bg-muted border border-border rounded-xl px-4 py-3 focus:ring-2 focus:ring-primary/50 transition-all outline-none text-foreground" 
                 value={jobRole} 
                 onChange={e => setJobRole(e.target.value)} 
                 placeholder="e.g. Senior Frontend Developer" 
@@ -81,7 +80,7 @@ export default function TextToResume() {
                 <span className="text-xs font-normal text-muted-foreground">{text.length} characters</span>
               </label>
               <textarea 
-                className="w-full bg-background/50 border border-border rounded-xl px-4 py-4 min-h-[300px] focus:ring-2 focus:ring-primary/50 transition-all outline-none font-mono text-sm resize-y" 
+                className="w-full bg-muted border border-border rounded-xl px-4 py-4 min-h-[300px] focus:ring-2 focus:ring-primary/50 transition-all outline-none font-mono text-sm resize-y text-foreground" 
                 value={text} 
                 onChange={e => setText(e.target.value)} 
                 placeholder="Paste your unformatted resume content, LinkedIn about section, or job history here..." 

@@ -1,5 +1,5 @@
-import { useState } from 'react';
-import { X, Image as ImageIcon, Link, Hash, Send, Clock } from 'lucide-react';
+import { useState, useRef, useCallback } from 'react';
+import { X, Image as ImageIcon, Hash, Send, Clock, FileText, Link as LinkIcon } from 'lucide-react';
 import { format } from 'date-fns';
 import SchedulePost from './SchedulePost';
 
@@ -13,6 +13,22 @@ const CATEGORIES = [
   { value: 'resource', label: '📚 Resource' },
 ];
 
+const ACCEPTED_IMAGE_TYPES = '.png,.jpg,.jpeg,.gif,.webp';
+const ACCEPTED_DOC_TYPES = '.pdf,.doc,.docx,.ppt,.pptx,.txt';
+
+const FILE_ICONS = {
+  pdf: '📄',
+  doc: '📝',
+  docx: '📝',
+  ppt: '📊',
+  pptx: '📊',
+  txt: '📃',
+};
+
+function getExtension(filename) {
+  return filename.split('.').pop().toLowerCase();
+}
+
 export default function PostEditor({ onClose, onSubmit, editPost = null }) {
   const [title, setTitle] = useState(editPost?.title || '');
   const [content, setContent] = useState(editPost?.content || '');
@@ -23,59 +39,108 @@ export default function PostEditor({ onClose, onSubmit, editPost = null }) {
   const [showScheduler, setShowScheduler] = useState(false);
   const [scheduledAt, setScheduledAt] = useState(null);
   const [showPoll, setShowPoll] = useState(false);
+  const [pollQuestion, setPollQuestion] = useState('');
+  const [pollOptions, setPollOptions] = useState(['', '']);
 
-const [pollQuestion, setPollQuestion] = useState('');
+  // Attachment state — store File object + local preview URL
+  const [imageFile, setImageFile] = useState(null);       // File object
+  const [imagePreview, setImagePreview] = useState(null);  // object URL for preview
+  const [docFile, setDocFile] = useState(null);             // File object
 
-const [pollOptions, setPollOptions] = useState([
-  '',
-  ''
-]);
+  const imageInputRef = useRef(null);
+  const docInputRef = useRef(null);
 
+  // ---- Image handlers ----
+  const handleImageClick = () => imageInputRef.current?.click();
+
+  const handleImageChange = useCallback((e) => {
+    const file = e.target.files?.[0];
+    if (!file) return;
+
+    const ext = getExtension(file.name);
+    if (!['png', 'jpg', 'jpeg', 'gif', 'webp'].includes(ext)) {
+      setError('Unsupported image type. Please use PNG, JPG, GIF, or WEBP.');
+      e.target.value = '';
+      return;
+    }
+
+    // Revoke old preview URL if any
+    if (imagePreview) URL.revokeObjectURL(imagePreview);
+
+    const preview = URL.createObjectURL(file);
+    setImageFile(file);
+    setImagePreview(preview);
+    setError('');
+    e.target.value = '';
+  }, [imagePreview]);
+
+  const removeImage = useCallback(() => {
+    if (imagePreview) URL.revokeObjectURL(imagePreview);
+    setImageFile(null);
+    setImagePreview(null);
+  }, [imagePreview]);
+
+  // ---- Document handlers ----
+  const handleDocClick = () => docInputRef.current?.click();
+
+  const handleDocChange = useCallback((e) => {
+    const file = e.target.files?.[0];
+    if (!file) return;
+
+    const ext = getExtension(file.name);
+    if (!['pdf', 'doc', 'docx', 'ppt', 'pptx', 'txt'].includes(ext)) {
+      setError('Unsupported file type. Please use PDF, DOC, DOCX, PPT, PPTX, or TXT.');
+      e.target.value = '';
+      return;
+    }
+
+    setDocFile(file);
+    setError('');
+    e.target.value = '';
+  }, []);
+
+  const removeDoc = useCallback(() => setDocFile(null), []);
+
+  // ---- Build & submit ----
   const buildPostData = () => {
- const buildPostData = () => {
-  const normalizedOptions = pollOptions
-    .map(option => option.trim())
-    .filter(Boolean);
+    // Build lightweight attachment metadata (no raw data URLs)
+    const attachments = [];
+    if (imageFile) {
+      attachments.push({
+        name: imageFile.name,
+        type: imageFile.type,
+        size: imageFile.size,
+      });
+    }
+    if (docFile) {
+      attachments.push({
+        name: docFile.name,
+        type: docFile.type,
+        size: docFile.size,
+      });
+    }
 
-  const trimmedQuestion = pollQuestion.trim();
+    const normalizedOptions = pollOptions
+      .map(option => option.trim())
+      .filter(Boolean);
+    const trimmedQuestion = pollQuestion.trim();
+    const isValidPoll = trimmedQuestion.length > 0 && normalizedOptions.length >= 2;
 
-  const isValidPoll =
-    trimmedQuestion.length > 0 &&
-    normalizedOptions.length >= 2;
-
-  return {
-    title: title.trim(),
-    content: content.trim(),
-    category,
-    tags: tags.split(',').map(t => t.trim()).filter(Boolean),
-
-    ...(showPoll && isValidPoll && {
-      poll: {
-        question: trimmedQuestion,
-        options: normalizedOptions
-      }
-    }),
-
-    ...(scheduledAt && { scheduledAt })
+    return {
+      title: title.trim(),
+      content: content.trim(),
+      category,
+      tags: tags.split(',').map(t => t.trim()).filter(Boolean),
+      ...(attachments.length > 0 && { attachments }),
+      ...(showPoll && isValidPoll && {
+        poll: {
+          question: trimmedQuestion,
+          options: normalizedOptions
+        }
+      }),
+      ...(scheduledAt && { scheduledAt }),
+    };
   };
-};
-
-  return {
-    title: title.trim(),
-    content: content.trim(),
-    category,
-    tags: tags.split(',').map(t => t.trim()).filter(Boolean),
-
-    ...(showPoll && {
-      poll: {
-        question: pollQuestion.trim(),
-        options: validOptions
-      }
-    }),
-
-    ...(scheduledAt && { scheduledAt })
-  };
-};
 
   const handleSubmit = async (e) => {
     e.preventDefault();
@@ -288,6 +353,62 @@ const removePollOption = (index) => {
                 ))}
               </div>
             )}
+
+            {/* Attachment Previews */}
+            {(imageFile || docFile) && (
+              <div className="space-y-3">
+                <label className="block text-sm font-medium text-foreground">
+                  Attachments
+                </label>
+
+                {/* Image preview */}
+                {imageFile && imagePreview && (
+                  <div className="relative group inline-block">
+                    <img
+                      src={imagePreview}
+                      alt={imageFile.name}
+                      className="max-h-48 rounded-xl border border-border object-cover"
+                    />
+                    <button
+                      type="button"
+                      onClick={removeImage}
+                      className="absolute top-2 right-2 p-1 bg-black/60 hover:bg-black/80 text-white rounded-full opacity-0 group-hover:opacity-100 transition-opacity"
+                      title="Remove image"
+                    >
+                      <X className="w-4 h-4" />
+                    </button>
+                    <p className="mt-1 text-xs text-muted-foreground truncate max-w-[240px]">
+                      {imageFile.name}
+                    </p>
+                  </div>
+                )}
+
+                {/* Document preview */}
+                {docFile && (
+                  <div className="flex items-center gap-3 px-4 py-3 bg-muted border border-border rounded-xl group">
+                    <span className="text-2xl flex-shrink-0">
+                      {FILE_ICONS[getExtension(docFile.name)] || '📎'}
+                    </span>
+                    <div className="flex-1 min-w-0">
+                      <p className="text-sm font-medium text-foreground truncate">
+                        {docFile.name}
+                      </p>
+                      <p className="text-xs text-muted-foreground uppercase">
+                        {getExtension(docFile.name)} file
+                      </p>
+                    </div>
+                    <button
+                      type="button"
+                      onClick={removeDoc}
+                      className="p-1 text-muted-foreground hover:text-foreground hover:bg-muted rounded-full opacity-0 group-hover:opacity-100 transition-opacity flex-shrink-0"
+                      title="Remove file"
+                    >
+                      <X className="w-4 h-4" />
+                    </button>
+                  </div>
+                )}
+              </div>
+            )}
           </div>
 
           {error && (
@@ -321,32 +442,60 @@ const removePollOption = (index) => {
           {/* Footer */}
           <div className="px-6 py-4 border-t border-border bg-card flex items-center justify-between">
             <div className="flex gap-2">
-  <button
-    type="button"
-    className="p-2 text-muted-foreground hover:text-foreground hover:bg-muted rounded-lg"
-    title="Add image"
-  >
-    <ImageIcon className="w-5 h-5" />
-  </button>
+              {/* Hidden file inputs */}
+              <input
+                type="file"
+                ref={imageInputRef}
+                accept={ACCEPTED_IMAGE_TYPES}
+                onChange={handleImageChange}
+                className="hidden"
+              />
+              <input
+                type="file"
+                ref={docInputRef}
+                accept={ACCEPTED_DOC_TYPES}
+                onChange={handleDocChange}
+                className="hidden"
+              />
 
-  <button
-    type="button"
-    className="p-2 text-muted-foreground hover:text-foreground hover:bg-muted rounded-lg"
-    title="Add link"
-  >
-    <Link className="w-5 h-5" />
-  </button>
-
-  <button
-    type="button"
-    onClick={() => setShowPoll(!showPoll)}
-    aria-label={showPoll ? 'Remove poll' : 'Add poll'}
-    className="p-2 text-muted-foreground hover:text-foreground hover:bg-muted rounded-lg"
-    title="Add Poll"
-  >
-    📊
-  </button>
-</div>
+              <button
+                type="button"
+                onClick={handleImageClick}
+                className={`p-2 rounded-lg transition-colors ${
+                  imageFile
+                    ? 'text-primary bg-primary/10'
+                    : 'text-muted-foreground hover:text-foreground hover:bg-muted'
+                }`}
+                title="Add image"
+              >
+                <ImageIcon className="w-5 h-5" />
+              </button>
+              <button
+                type="button"
+                onClick={handleDocClick}
+                className={`p-2 rounded-lg transition-colors ${
+                  docFile
+                    ? 'text-primary bg-primary/10'
+                    : 'text-muted-foreground hover:text-foreground hover:bg-muted'
+                }`}
+                title="Attach file"
+              >
+                <FileText className="w-5 h-5" />
+              </button>
+              <button
+                type="button"
+                onClick={() => setShowPoll(!showPoll)}
+                aria-label={showPoll ? 'Remove poll' : 'Add poll'}
+                className={`p-2 rounded-lg transition-colors ${
+                  showPoll
+                    ? 'text-primary bg-primary/10'
+                    : 'text-muted-foreground hover:text-foreground hover:bg-muted'
+                }`}
+                title="Add Poll"
+              >
+                📊
+              </button>
+            </div>
 
             <div className="flex gap-2">
               <button
