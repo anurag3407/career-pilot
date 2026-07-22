@@ -9,7 +9,7 @@ import { displayQueueStatus, clearQueue, getFailedJobsInfo } from '../utils/queu
 import { 
     saveJobAlertToAppwrite, 
     deleteJobAlertFromAppwrite,
-    saveUserToFirebase 
+    saveUserToAppwrite 
 } from '../services/appwriteDataService.js';
 import { validate } from '../middleware/validate.js';
 import { createJobAlertSchema, updateJobAlertSchema } from '../schemas/jobAlerts.schema.js';
@@ -125,11 +125,11 @@ router.post('/', verifyToken, validate(createJobAlertSchema), asyncHandler(async
     }
 
     try {
-        await saveUserToFirebase({
-            uid: userId,
-            email: userEmail,
-            displayName: userName,
-            ...req.user
+        await saveUserToAppwrite({
+            uid: req.user.uid,
+            email: req.user.email,
+            name: req.user.name,
+            picture: req.user.picture
         });
     } catch (fbError) {
         console.warn('⚠️  Could not save user to Firebase:', fbError.message);

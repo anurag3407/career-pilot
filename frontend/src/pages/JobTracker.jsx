@@ -20,7 +20,7 @@ import {
 import { Link } from "react-router-dom";
 import Layout from "../components/Layout";
 import { jobTrackerApi } from "../services/api";
-import { auth } from "../config/firebase";
+
 import Button from "../components/Button";
 import Card from "../components/Card";
 import CompanyResearch from "../components/CompanyResearch";
@@ -54,7 +54,7 @@ const JobTracker = () => {
   const [emailGeneratorJob, setEmailGeneratorJob] = useState(null);
   const [outreachJob, setOutreachJob] = useState(null);
 
-  const currentUserId = auth?.currentUser?.uid || "anonymous";
+  const currentUserId = window.Clerk?.user?.id || "anonymous";
 
   const statusOptions = [
     {

@@ -3,7 +3,7 @@ import { useParams, useNavigate, Link } from 'react-router-dom'
 import toast from 'react-hot-toast'
 import { motion } from 'framer-motion'
 import { resumeApi, enhanceApi, portfolioApi } from '../services/api'
-import { auth } from '../config/firebase'
+
 import { decryptKey } from '../utils/encryption'
 import ReactMarkdown from 'react-markdown'
 import { DragDropContext, Droppable, Draggable } from '@hello-pangea/dnd'
@@ -601,7 +601,7 @@ export default function Enhance() {
   }
 
   async function getAuthHeaders() {
-    const user = auth?.currentUser
+    const user = window.Clerk?.user
 
     if (!user) {
       if (import.meta.env.DEV) {

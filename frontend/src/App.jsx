@@ -37,7 +37,7 @@ import JobTracker from './pages/JobTracker';
 const Community = lazy(() => import('./pages/Community'));
 const Login = lazy(() => import("./pages/Login"));
 const Register = lazy(() => import("./pages/Register"));
-const LinkedInCallback = lazy(() => import("./pages/LinkedInCallback"));
+
 const OpenRouterCallback = lazy(() => import("./pages/OpenRouterCallback"));
 const Upload = lazy(() => import("./pages/Upload"));
 const Enhance = lazy(() => import("./pages/Enhance"));
@@ -272,7 +272,7 @@ function AppRoutes() {
         <Route path="/" element={<PublicRoute><Home /></PublicRoute>} />
         <Route path="/login" element={<PublicRoute><Suspense fallback={<LoadingScreen label="Loading Login..." />}><Login /></Suspense></PublicRoute>} />
         <Route path="/register" element={<PublicRoute><Suspense fallback={<LoadingScreen label="Loading Registration..." />}><Register /></Suspense></PublicRoute>} />
-        <Route path="/auth/linkedin/callback" element={<Suspense fallback={<LoadingScreen label="Loading callback..." />}><LinkedInCallback /></Suspense>} />
+
         <Route path="/auth/openrouter/callback" element={<Suspense fallback={<LoadingScreen label="Loading callback..." />}><OpenRouterCallback /></Suspense>} />
 
         {/* Feature SaaS Landing Pages (Clean Slugs) */}

@@ -1,31 +1,6 @@
-import { Client, Account } from 'node-appwrite';
+import { createClerkClient, verifyToken } from '@clerk/express';
 
-const decodeBase64Url = (value) => {
-  const base64 = value.replace(/-/g, '+').replace(/_/g, '/');
-  const padded = base64 + '='.repeat((4 - (base64.length % 4)) % 4);
-  return Buffer.from(padded, 'base64').toString('utf8');
-};
-
-const decodeTokenPayload = (token) => {
-  try {
-    const parts = token.split('.');
-    if (parts.length !== 3) return null;
-    const payload = decodeBase64Url(parts[1]);
-    return JSON.parse(payload);
-  } catch {
-    return null;
-  }
-};
-
-const verifyAppwriteToken = async (token) => {
-  const authClient = new Client()
-    .setEndpoint(process.env.APPWRITE_ENDPOINT || 'https://nyc.cloud.appwrite.io/v1')
-    .setProject(process.env.APPWRITE_PROJECT_ID)
-    .setJWT(token);
-  
-  const account = new Account(authClient);
-  return await account.get();
-};
+const clerkClient = createClerkClient({ secretKey: process.env.CLERK_SECRET_KEY });
 
 export const socketAuthMiddleware = async (socket, next) => {
   try {
@@ -36,35 +11,33 @@ export const socketAuthMiddleware = async (socket, next) => {
     }
 
     try {
-      const decodedUser = await verifyAppwriteToken(token);
+      const decoded = await verifyToken(token, { secretKey: process.env.CLERK_SECRET_KEY });
+      const userId = decoded.userId || decoded.sub;
+      
+      const user = await clerkClient.users.getUser(userId);
+      const email = user.emailAddresses.find(e => e.id === user.primaryEmailAddressId)?.emailAddress || user.emailAddresses[0]?.emailAddress;
+
       socket.user = {
-        uid: decodedUser.$id,
-        email: decodedUser.email,
-        name: decodedUser.name || decodedUser.email?.split('@')[0],
-        picture: null,
-        emailVerified: decodedUser.emailVerification
+        uid: user.id,
+        email: email,
+        name: user.fullName || user.username || email?.split('@')[0],
+        picture: user.imageUrl,
+        emailVerified: true
       };
       next();
-    } catch (appwriteError) {
+    } catch (clerkError) {
       if (process.env.ALLOW_DEV_SOCKET_AUTH === 'true' || (process.env.NODE_ENV === 'development' && process.env.DEV_BYPASS_AUTH === 'true')) {
-        console.warn('Appwrite verification failed, using token payload with ALLOW_DEV_SOCKET_AUTH');
-        const tokenPayload = decodeTokenPayload(token);
-        
-        if (tokenPayload && tokenPayload.userId) { // Appwrite usually has userId in JWT or we just mock it
-          socket.user = {
-            uid: tokenPayload.userId || 'dev-user-001',
-            email: tokenPayload.email || 'unknown@example.com',
-            name: tokenPayload.name || 'User',
-            picture: null,
-            emailVerified: true
-          };
-          next();
-        } else {
-          console.error('Could not extract user info from token');
-          next(new Error('Invalid authentication token'));
-        }
+        console.warn('Clerk verification failed, using dev bypass');
+        socket.user = {
+          uid: 'dev-user-001',
+          email: 'dev@example.com',
+          name: 'User',
+          picture: null,
+          emailVerified: true
+        };
+        next();
       } else {
-        console.error('Socket auth error:', appwriteError.message);
+        console.error('Socket auth error:', clerkError.message);
         next(new Error('Invalid authentication token'));
       }
     }

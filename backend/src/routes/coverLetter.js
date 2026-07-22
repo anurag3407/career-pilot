@@ -22,7 +22,7 @@ const coverLetterLimiter = rateLimit({
 
 // POST /api/cover-letter/extract-resume
 // Accepts base64 PDF and extracts resume text using Groq
-router.post("/extract-resume", coverLetterLimiter, async (req, res) => {
+router.post("/extract-resume", verifyToken, coverLetterLimiter, async (req, res) => {
   try {
     const { base64PDF } = req.body;
     if (!base64PDF) {
@@ -37,7 +37,7 @@ router.post("/extract-resume", coverLetterLimiter, async (req, res) => {
 });
 
 // POST /api/cover-letter/generate-text
-router.post("/generate-text", coverLetterLimiter, async (req, res) => {
+router.post("/generate-text", verifyToken, coverLetterLimiter, async (req, res) => {
   try {
     const { resumeText, jobDescription, companyName, hiringManager, tone } = req.body;
 
@@ -61,7 +61,7 @@ router.post("/generate-text", coverLetterLimiter, async (req, res) => {
 });
 
 // POST /api/cover-letter/download-pdf
-router.post("/download-pdf", async (req, res) => {
+router.post("/download-pdf", verifyToken, async (req, res) => {
   try {
     const { coverLetter, candidateName = "Candidate" } = req.body;
     if (!coverLetter) {

@@ -1,10 +1,9 @@
 import CryptoJS from 'crypto-js';
-import { auth } from '../config/firebase';
 
 const getSecretKey = () => {
-  const user = auth?.currentUser;
+  const user = window.Clerk?.user;
   // Fallback secret if user is not fully loaded
-  return user?.uid || 'fallback_secret_key_careerpilot';
+  return user?.id || 'fallback_secret_key_careerpilot';
 };
 
 export const encryptKey = (plainTextKey) => {

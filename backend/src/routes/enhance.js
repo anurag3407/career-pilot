@@ -652,6 +652,7 @@ router.post(
 // provider is fully wired into the modal's auth flow.
 router.post(
   "/element",
+  verifyToken,
   extractAIProvider,
   aiRateLimiter,
   asyncHandler(async (req, res) => {

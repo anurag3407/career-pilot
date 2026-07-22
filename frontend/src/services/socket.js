@@ -1,6 +1,5 @@
 import { io } from 'socket.io-client';
 import { createSocketOptions } from './socketOptions.js';
-import { auth } from '../config/firebase';
 
 const SOCKET_URL = import.meta.env.VITE_API_URL || 'http://localhost:5000';
 
@@ -16,7 +15,9 @@ export const initializeSocket = async () => {
     return socket;
   }
 
-  if (!auth || !auth.currentUser) {
+  const session = window.Clerk?.session;
+
+  if (!session) {
     console.warn(
       'Cannot initialize socket: No authenticated user'
     );
@@ -28,13 +29,13 @@ export const initializeSocket = async () => {
    * may change after the initial socket creation.
    */
   const getFreshToken = async () => {
-    const currentUser = auth.currentUser;
+    const session = window.Clerk?.session;
 
-    if (!currentUser) {
+    if (!session) {
       throw new Error('No authenticated user');
     }
 
-    return currentUser.getIdToken();
+    return await session.getToken();
   };
 
   /**

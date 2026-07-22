@@ -2,7 +2,7 @@ import { useState, useRef, useEffect } from 'react';
 import { Send, User, Bot, Loader2, ShieldAlert } from 'lucide-react';
 import ReactMarkdown from 'react-markdown';
 import { useAnalyzerStore } from '../../stores/useAnalyzerStore';
-import { auth } from '../../config/firebase';
+
 
 const API_BASE = import.meta.env.VITE_API_BASE || '/api';
 
@@ -40,8 +40,8 @@ export default function ChatPanel() {
     addMessage({ role: 'assistant', content: '' });
 
     try {
-      const user = auth.currentUser;
-      const token = await user.getIdToken();
+      const user = window.Clerk?.user;
+      const token = await window.Clerk?.session?.getToken();
 
       const response = await fetch(`${API_BASE}/analyzer/chat`, {
         method: 'POST',
