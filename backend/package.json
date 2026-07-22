@@ -20,7 +20,7 @@
     "@clerk/express": "^2.1.43",
     "@google/generative-ai": "^0.21.0",
     "axe-core": "^4.11.4",
-    "axios": "^1.16.1",
+    "axios": "^1.18.1",
     "bcryptjs": "^2.4.3",
     "bullmq": "^5.66.4",
     "cheerio": "1.2.0",
