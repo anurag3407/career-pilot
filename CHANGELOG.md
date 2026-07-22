@@ -1,3 +1,10 @@
+## [1.271.1](https://github.com/anurag3407/career-pilot/compare/v1.271.0...v1.271.1) (2026-07-22)
+
+
+### Bug Fixes
+
+* remove generated lint report artifacts ([#4406](https://github.com/anurag3407/career-pilot/issues/4406)) ([#4408](https://github.com/anurag3407/career-pilot/issues/4408)) ([2960d51](https://github.com/anurag3407/career-pilot/commit/2960d512d964e0403d8b1f4ac44870d257af71bc))
+
 # [1.271.0](https://github.com/anurag3407/career-pilot/compare/v1.270.0...v1.271.0) (2026-07-17)
 
 
