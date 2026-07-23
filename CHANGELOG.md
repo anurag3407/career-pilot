@@ -1,3 +1,10 @@
+## [1.271.3](https://github.com/anurag3407/career-pilot/compare/v1.271.2...v1.271.3) (2026-07-23)
+
+
+### Bug Fixes
+
+* **linkedin:** remove top-level await in linkedinImporter for Vercel deployment stability ([6ba0ca8](https://github.com/anurag3407/career-pilot/commit/6ba0ca84f319b38d76ec82d6b5433b872a1a6777))
+
 ## [1.271.2](https://github.com/anurag3407/career-pilot/compare/v1.271.1...v1.271.2) (2026-07-23)
 
 
