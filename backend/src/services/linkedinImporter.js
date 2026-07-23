@@ -50,10 +50,17 @@ const getMockProfile = (url) => ({
 });
 
 const TINYFISH_ENDPOINT = 'https://api.search.tinyfish.ai';
-const DEFAULT_TINYFISH_KEY = 'sk-tinyfish-rZOuT0vqMwTCpPlKJVIy7gu4PIVSL72r';
 
 export const scrapeLinkedInProfile = async (url) => {
-  const apiKey = process.env.TINYFISH_API_KEY || DEFAULT_TINYFISH_KEY;
+  const apiKey = process.env.TINYFISH_API_KEY;
+
+  if (!apiKey) {
+    if (process.env.NODE_ENV === 'development' || process.env.NODE_ENV === 'test') {
+      console.warn('⚠️ TINYFISH_API_KEY is not set — returning mock LinkedIn profile.');
+      return getMockProfile(url);
+    }
+    throw new Error('LinkedIn import requires TINYFISH_API_KEY to be set in environment variables.');
+  }
 
   const requestUrl = `${TINYFISH_ENDPOINT}?query=${encodeURIComponent(url)}`;
 
