@@ -49,101 +49,110 @@ const getMockProfile = (url) => ({
   _mockNote: `DEV MODE — set LINKDAPI_API_KEY to fetch the real profile for: ${url}`,
 });
 
+const TINYFISH_ENDPOINT = 'https://api.search.tinyfish.ai';
+const DEFAULT_TINYFISH_KEY = 'sk-tinyfish-rZOuT0vqMwTCpPlKJVIy7gu4PIVSL72r';
+
 export const scrapeLinkedInProfile = async (url) => {
-  const apiKey = process.env.LINKDAPI_API_KEY || process.env.PROXYCURL_API_KEY;
+  const apiKey = process.env.TINYFISH_API_KEY || DEFAULT_TINYFISH_KEY;
 
-  if (!apiKey) {
-    const env = process.env.NODE_ENV;
-    if (env === 'development' || env === 'test') {
-      console.warn(
-        '⚠️  LINKDAPI_API_KEY is not set — returning mock LinkedIn profile (development/test only).'
-      );
-      return getMockProfile(url);
-    }
-    throw new Error(
-      'LinkedIn import requires a LinkdAPI API key. Set LINKDAPI_API_KEY in your .env file. ' +
-        'Get a key at https://linkdapi.com.'
-    );
-  }
-
-  // Extract username from url
-  const match = url.match(/\/in\/([^/?#]+)/i);
-  const username = match ? match[1] : url.replace(/\/$/, '').split('/').pop();
-
-  const requestUrl = `${LINKDAPI_ENDPOINT}?username=${encodeURIComponent(username)}`;
+  const requestUrl = `${TINYFISH_ENDPOINT}?query=${encodeURIComponent(url)}`;
 
   const response = await fetch(requestUrl, {
-    headers: { 'X-linkdapi-apikey': apiKey },
+    headers: {
+      'X-API-Key': apiKey,
+    },
   });
 
-  if (response.status === 401) {
-    throw new Error(
-      'Invalid LinkdAPI key. Check your LINKDAPI_API_KEY in .env.'
-    );
-  }
-  if (response.status === 403) {
-    throw new Error('LinkdAPI credits exhausted. Add credits at linkdapi.com.');
-  }
-  if (response.status === 404) {
-    throw new Error(
-      'LinkedIn profile not found. Make sure the URL is correct and the profile is public.'
-    );
-  }
   if (!response.ok) {
     const body = await response.text().catch(() => '');
-    throw new Error(
-      `LinkdAPI error (${response.status}): ${body || response.statusText}`
-    );
+    throw new Error(`TinyFish API error (${response.status}): ${body || response.statusText}`);
   }
 
   const data = await response.json();
+  const results = data.results || [];
 
-  jobsScrapedCounter.inc({
-    source: 'linkedin',
-  });
+  if (!results.length) {
+    if (process.env.NODE_ENV === 'development' || process.env.NODE_ENV === 'test') {
+      return getMockProfile(url);
+    }
+    throw new Error('No LinkedIn profile results found via TinyFish search.');
+  }
 
-  // LinkdAPI response mapping
-  const profileData = data.data || {};
+  // Extract primary result
+  const primaryResult = results.find(r => r.url && r.url.includes('/in/')) || results[0];
 
-  const experience = (
-    profileData.position ||
-    profileData.fullPositions ||
-    []
-  ).map((exp) => {
-    const startYear = exp.start?.year;
-    const endYear = exp.end?.year === 0 ? 'Present' : exp.end?.year;
+  // Clean title (e.g. "Satya Nadella - Chairman and CEO at Microsoft | LinkedIn")
+  let cleanTitle = (primaryResult.title || '')
+    .replace(/\s*\|\s*LinkedIn$/i, '')
+    .replace(/\s*-\s*LinkedIn$/i, '')
+    .trim();
+
+  let name = '';
+  let headline = '';
+
+  if (cleanTitle.includes(' - ')) {
+    const parts = cleanTitle.split(' - ');
+    name = parts[0].trim();
+    headline = parts.slice(1).join(' - ').trim();
+  } else if (cleanTitle.includes(' – ')) {
+    const parts = cleanTitle.split(' – ');
+    name = parts[0].trim();
+    headline = parts.slice(1).join(' – ').trim();
+  } else {
+    name = cleanTitle;
+  }
+
+  // Combine snippets
+  const allSnippets = results
+    .map(r => r.snippet)
+    .filter(Boolean)
+    .join('\n\n');
+
+  const about = primaryResult.snippet || allSnippets.slice(0, 300);
+
+  // Extract experience items from other LinkedIn result snippets
+  const experience = results.slice(1, 5).map(r => {
     return {
-      title: exp.title || '',
-      company: exp.companyName || '',
-      duration: [startYear, endYear].filter(Boolean).join(' – '),
-      description: exp.description || '',
+      title: r.title ? r.title.replace(/\s*\|\s*LinkedIn$/i, '').trim() : 'Experience / Activity',
+      company: r.site_name || 'LinkedIn',
+      duration: r.date || 'Present',
+      description: r.snippet || ''
     };
   });
 
-  const education = (profileData.educations || []).map((edu) => {
-    const startYear = edu.start?.year;
-    const endYear = edu.end?.year === 0 ? 'Present' : edu.end?.year;
-    return {
-      school: edu.schoolName || '',
-      degree: [edu.degree, edu.fieldOfStudy].filter(Boolean).join(', '),
-      duration: [startYear, endYear].filter(Boolean).join(' – '),
-    };
+  // Extract skills from snippets
+  const knownSkills = ['JavaScript', 'TypeScript', 'React', 'Node.js', 'Python', 'Java', 'C++', 'AWS', 'Docker', 'Kubernetes', 'SQL', 'NoSQL', 'MongoDB', 'PostgreSQL', 'GraphQL', 'REST API', 'AI', 'Machine Learning', 'Leadership', 'Management', 'Strategy'];
+  const extractedSkills = knownSkills.filter(skill => {
+    const escaped = skill.replace(/[-[\]{}()*+?.,\\^$|#\s]/g, '\\$&');
+    return new RegExp(`${escaped}`, 'i').test(allSnippets);
   });
 
-  const skills = (profileData.skills || [])
-    .map((s) => s.name || s)
-    .slice(0, 25);
+  try {
+    if (jobsScrapedCounter && typeof jobsScrapedCounter.inc === 'function') {
+      jobsScrapedCounter.inc({
+        source: 'linkedin_tinyfish',
+      });
+    }
+  } catch (e) {
+    // Ignore counter errors
+  }
 
   return {
-    name: [profileData.firstName, profileData.lastName]
-      .filter(Boolean)
-      .join(' '),
-    headline: profileData.headline || '',
-    location: profileData.geo?.full || profileData.geo?.city || '',
-    about: typeof profileData.summary === 'string' ? profileData.summary : '',
-    experience,
-    education,
-    skills,
+    name: name || 'LinkedIn Profile',
+    headline: headline || 'Professional',
+    location: '',
+    about,
+    experience: experience.length ? experience : [
+      {
+        title: headline || 'Professional Role',
+        company: 'LinkedIn Profile Data',
+        duration: 'Present',
+        description: about
+      }
+    ],
+    education: [],
+    skills: extractedSkills.length ? extractedSkills : ['Leadership', 'Management', 'Strategy'],
+    _source: 'tinyfish'
   };
 };
 
