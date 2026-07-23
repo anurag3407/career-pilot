@@ -140,12 +140,22 @@ const app = express();
 
 // Ensure DB connection for serverless/Vercel requests
 app.use(async (req, res, next) => {
+  const path = req.path.toLowerCase();
+  const isDbOptional = path.startsWith('/api/ai/models') || path.startsWith('/api/ai/validate-key') || path.startsWith('/api/ai/openrouter') || path === '/health' || path === '/api/health';
+
   try {
     await connectDB();
     next();
   } catch (err) {
     console.error('Database connection error:', err.message);
-    res.status(500).json({ error: 'Database connection error: ' + err.message });
+    if (isDbOptional) {
+      return next();
+    }
+    res.status(500).json({ 
+      success: false, 
+      error: 'Database connection error: ' + err.message,
+      message: 'Please set MONGODB_URI in your Vercel Environment Variables.'
+    });
   }
 });
 
@@ -182,11 +192,15 @@ app.use(cors({
   origin: function (origin, callback) {
     if (!origin) return callback(null, true);
     const normalizedOrigin = origin.replace(/\/$/, '');
-    if (allowedOrigins.includes(normalizedOrigin)) {
+    if (
+      allowedOrigins.includes(normalizedOrigin) ||
+      normalizedOrigin.endsWith('.vercel.app') ||
+      normalizedOrigin.endsWith('.netlify.app')
+    ) {
       callback(null, true);
     } else {
       console.log('❌ CORS blocked origin:', origin, '| Allowed:', allowedOrigins);
-      callback(new Error('Not allowed by CORS'));
+      callback(null, false);
     }
   },
   credentials: true,

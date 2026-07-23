@@ -116,10 +116,17 @@ export const initializeSocket = async () => {
   socketInstance.on(
     'connect_error',
     (error) => {
-      console.error(
-        '❌ Socket connection error:',
-        error.message
-      );
+      if (error?.message?.includes('xhr poll error') || error?.message?.includes('404')) {
+        if (import.meta.env.DEV) {
+          console.warn('⚡ Real-time Socket.IO server is not available on this host. Socket disconnected.');
+        }
+        socketInstance.disconnect();
+      } else {
+        console.error(
+          '❌ Socket connection error:',
+          error.message
+        );
+      }
     }
   );
 
