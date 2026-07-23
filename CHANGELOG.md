@@ -1,3 +1,11 @@
+## [1.271.2](https://github.com/anurag3407/career-pilot/compare/v1.271.1...v1.271.2) (2026-07-23)
+
+
+### Bug Fixes
+
+* **backend:** add serverless db connection handling and caching ([3930975](https://github.com/anurag3407/career-pilot/commit/3930975673e63e89f60393e346937e87356c9f5f))
+* update auth routes for clerk wildcard paths ([54f02a6](https://github.com/anurag3407/career-pilot/commit/54f02a62017981e0b916fc40fdf75b9bff3860d1))
+
 ## [1.271.1](https://github.com/anurag3407/career-pilot/compare/v1.271.0...v1.271.1) (2026-07-22)
 
 
