@@ -304,8 +304,13 @@ export default function Upload() {
               </div>
               <div>
                 <h2 className="text-lg font-semibold text-foreground">Import from LinkedIn</h2>
-                <p className="text-sm text-muted-foreground">Paste your public LinkedIn profile URL to auto-fill your resume</p>
+                <p className="text-sm text-muted-foreground">Paste your profile URL or use the <strong>CareerPilot Chrome Extension</strong> for 1-click import.</p>
               </div>
+            </div>
+
+            <div className="mb-4 p-3 rounded-lg bg-orange-500/10 border border-orange-500/20 text-xs text-orange-300 flex items-center justify-between">
+              <span>💡 <strong>Free Chrome Extension Available!</strong> Bypasses LinkedIn restrictions directly from your browser.</span>
+              <a href="/extension/manifest.json" download="manifest.json" className="underline font-semibold hover:text-white ml-2">Extension Folder</a>
             </div>
 
             <div className="flex gap-3">

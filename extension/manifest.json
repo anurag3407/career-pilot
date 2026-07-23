@@ -1,0 +1,22 @@
+{
+  "manifest_version": 3,
+  "name": "CareerPilot — LinkedIn Importer",
+  "version": "1.0.0",
+  "description": "Export your LinkedIn profile directly into CareerPilot with one click.",
+  "permissions": ["activeTab", "scripting", "storage"],
+  "host_permissions": [
+    "https://*.linkedin.com/*",
+    "http://localhost:*/*",
+    "https://*/*"
+  ],
+  "action": {
+    "default_popup": "popup.html",
+    "default_title": "CareerPilot Importer"
+  },
+  "content_scripts": [
+    {
+      "matches": ["https://www.linkedin.com/in/*"],
+      "js": ["content.js"]
+    }
+  ]
+}

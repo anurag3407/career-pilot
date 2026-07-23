@@ -331,13 +331,11 @@ router.post('/import/linkedin', verifyToken, asyncHandler(async (req, res) => {
   const { url, profile: cachedProfile } = req.body;
   const userId = req.user.uid;
 
-  if (!url && !(process.env.NODE_ENV === 'development' && cachedProfile)) {
-    throw new ApiError(400, 'LinkedIn URL is required');
+  if (!url && !cachedProfile) {
+    throw new ApiError(400, 'LinkedIn URL or profile data is required');
   }
 
-  const profile = (process.env.NODE_ENV === 'development' && cachedProfile)
-    ? cachedProfile
-    : await scrapeLinkedInProfile(url.trim());
+  const profile = cachedProfile || await scrapeLinkedInProfile(url.trim());
   const resumeText = profileToResumeText(profile);
   const title = `${profile.name || 'LinkedIn'} — Imported ${new Date().toLocaleDateString()}`;
 
