@@ -1,3 +1,10 @@
+## [1.271.4](https://github.com/anurag3407/career-pilot/compare/v1.271.3...v1.271.4) (2026-07-23)
+
+
+### Bug Fixes
+
+* **socket:** gracefully handle socket 404/xhr poll error on Netlify and Vercel deployments ([949c8d1](https://github.com/anurag3407/career-pilot/commit/949c8d17d677f8547a0bac1623c06550c2d24efc))
+
 ## [1.271.3](https://github.com/anurag3407/career-pilot/compare/v1.271.2...v1.271.3) (2026-07-23)
 
 
