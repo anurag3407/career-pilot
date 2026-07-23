@@ -39,6 +39,36 @@ const TEMPLATES = {
     description: 'Impact-driven layout highlighting products and metrics.',
     promptDirective: `Use a STARTUP FOUNDER style: bold name + one-liner mission statement, "Building" section describing current product with a tagline, "Previously" section with past ventures as a timeline, "Metrics that matter" section (users served, revenue, growth), "Tech I Use" as a compact badge row, "Speaking & Writing" section with talk/article placeholders, and a "Let's Talk" CTA with Calendly and email links. Use power emojis sparingly (🚀, 📈).`,
   },
+  devops: {
+    id: 'devops',
+    name: 'DevOps / SRE',
+    description: 'Infrastructure-focused layout with tooling and uptime vibes.',
+    promptDirective: `Use a DEVOPS/SRE style: terminal-style header with a $ prompt showing the name, "Infrastructure I Work With" section using shields.io badges grouped by category (Cloud, Containers, CI/CD, Monitoring, IaC), "Certifications" section as a badge row (AWS, GCP, CKA, etc.), "Homelab / Side Projects" section with descriptions, a "Philosophy" quote block about reliability/automation, GitHub stats card with dark theme, and a "Status" section styled like a status page (All Systems Operational ✅). Use monospace formatting and terminal aesthetics.`,
+  },
+  datascience: {
+    id: 'datascience',
+    name: 'Data Scientist / ML',
+    description: 'Analytics-driven layout with models, datasets, and notebooks.',
+    promptDirective: `Use a DATA SCIENTIST/ML style: name header with a tagline about data, "Research Focus" section describing ML/AI interests, "Featured Notebooks & Models" section linking to top repos with descriptions and metrics (accuracy, F1), "Tech Stack" grouped as (Languages, ML Frameworks, Visualization, Cloud), a "Publications & Talks" placeholder section, "Kaggle / Competitions" section with rank placeholders, GitHub stats card, and a "Currently Exploring" section. Use 📊🧠🔬 emojis for section headers.`,
+  },
+  opensource: {
+    id: 'opensource',
+    name: 'Open Source Hero',
+    description: 'Community-focused layout celebrating contributions and projects.',
+    promptDirective: `Use an OPEN SOURCE HERO style: welcoming header with a wave emoji, "About" section emphasizing community and collaboration, "My Projects" section as a table with columns (Project, Description, Stars, Language, Link), "Contributions" section highlighting notable OSS contributions, "Maintainer Of" section listing maintained repos, a "How to Contribute" callout box, GitHub stats + streak + activity graph (github-readme-streak-stats), "Let's Collaborate" section with contact links, and a visitor counter. Use 🌟🤝💚 emojis. Emphasize community values.`,
+  },
+  freelancer: {
+    id: 'freelancer',
+    name: 'Freelancer / Consultant',
+    description: 'Client-facing layout showcasing services and availability.',
+    promptDirective: `Use a FREELANCER/CONSULTANT style: professional name + "Available for hire" badge (green shield), "Services I Offer" section as a list with brief descriptions (Web Dev, API Design, Consulting, etc.), "Selected Work" section with 3-4 project highlights and outcomes, "Tech Stack" as a compact badge row, "Testimonials" placeholder section with 2 quote blocks, "Process" section (Discovery → Build → Ship → Support), pricing/contact CTA with email and Calendly links, and a "Currently" section (available/booked). Keep it professional and conversion-focused. Use 💼✨ emojis sparingly.`,
+  },
+  gamer: {
+    id: 'gamer',
+    name: 'Gamer / Streamer',
+    description: 'Fun, energetic layout for content creators and game devs.',
+    promptDirective: `Use a GAMER/STREAMER style: bold animated header with gaming aesthetics, "About Me" section mixing dev and gaming identity, "Tech Stack" as pixel-art style badges, "Projects" section styled like a game quest log (Quest 1, Quest 2...), "Streaming Setup" section listing tools (OBS, etc.), "Achievements Unlocked" section for milestones (repos, stars, followers), a "Now Playing / Watching" section, social links with Discord/Twitch/YouTube badges, and a fun footer with a Konami code easter egg comment. Use 🎮🕹️⚡🏆 emojis liberally. Make it energetic and fun.`,
+  },
 };
 
 // ---------------------------------------------------------------------------

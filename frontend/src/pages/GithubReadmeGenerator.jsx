@@ -3,7 +3,8 @@ import { motion, AnimatePresence } from 'framer-motion';
 import {
   Github, Sparkles, Copy, Download, Check, Loader2,
   ArrowRight, ArrowLeft, FileCode2, Layout, Palette,
-  GraduationCap, Rocket, RefreshCw, Wand2, AlertCircle
+  GraduationCap, Rocket, RefreshCw, Wand2, AlertCircle,
+  Server, Brain, Heart, Briefcase, Gamepad2
 } from 'lucide-react';
 import { useAIConfigStore } from '../stores/useAIConfigStore';
 import Navbar from '../components/Navbar';
@@ -21,6 +22,11 @@ const TEMPLATES = [
   { id: 'creative', name: 'Creative Portfolio', icon: Palette, description: 'Bold, visual-first layout with banners and personality.', color: 'from-purple-500 to-pink-600' },
   { id: 'academic', name: 'Academic / Research', icon: GraduationCap, description: 'Structured for researchers with publications and citations.', color: 'from-emerald-500 to-teal-600' },
   { id: 'startup', name: 'Startup Founder', icon: Rocket, description: 'Impact-driven layout highlighting products and metrics.', color: 'from-orange-500 to-red-600' },
+  { id: 'devops', name: 'DevOps / SRE', icon: Server, description: 'Infrastructure-focused layout with tooling and uptime vibes.', color: 'from-cyan-500 to-blue-700' },
+  { id: 'datascience', name: 'Data Scientist / ML', icon: Brain, description: 'Analytics-driven layout with models, datasets, and notebooks.', color: 'from-violet-500 to-purple-700' },
+  { id: 'opensource', name: 'Open Source Hero', icon: Heart, description: 'Community-focused layout celebrating contributions and projects.', color: 'from-green-500 to-emerald-700' },
+  { id: 'freelancer', name: 'Freelancer / Consultant', icon: Briefcase, description: 'Client-facing layout showcasing services and availability.', color: 'from-amber-500 to-orange-600' },
+  { id: 'gamer', name: 'Gamer / Streamer', icon: Gamepad2, description: 'Fun, energetic layout for content creators and game devs.', color: 'from-fuchsia-500 to-pink-700' },
 ];
 
 // ---------------------------------------------------------------------------
