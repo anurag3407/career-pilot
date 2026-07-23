@@ -42,6 +42,7 @@ import inputRoutes from'./routes/input.route.js';
 import recruiterRoutes from '../src/routes/recruiter.routes.js';
 import outreachRoutes from './routes/outreach.route.js';
 import bugsRoutes from './routes/bugs.js';
+import readmeGeneratorRoutes from './routes/readmeGenerator.js';
 
 import { globalErrorHandler } from './middleware/globalErrorHandler.js';
 import {
@@ -314,6 +315,7 @@ app.use('/api/search', searchRoutes);
 app.use('/api/ai', aiRoutes);
 app.use('/api/email-tracking', emailTrackingRoutes);
 app.use('/api/analyzer', repoAnalyzerRoutes);
+app.use('/api/readme-generator', readmeGeneratorRoutes);
 app.use('/api/project-visualizer', projectVisualizerRoutes);
 app.use('/api/admin', adminRoutes);
 app.use('/api/admin/queues', bullBoardRoutes);

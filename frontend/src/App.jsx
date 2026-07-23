@@ -110,6 +110,7 @@ const ProjectVisualizerLanding = lazy(() => import('./pages/features/ProjectVisu
 const JobFinderLanding = lazy(() => import('./pages/features/JobFinderLanding'));
 const MockInterviewLanding = lazy(() => import('./pages/features/MockInterviewLanding'));
 const RecruitersLanding = lazy(() => import('./pages/features/RecruitersLanding'));
+const GithubReadmeGenerator = lazy(() => import('./pages/GithubReadmeGenerator'));
 
 import ScrollToTop from "./components/ScrollToTop";
 import NorthernFjords from './components/portfolio/templates/Northern_Fjords';
@@ -284,6 +285,7 @@ function AppRoutes() {
         <Route path="/job-finder" element={<Suspense fallback={<LoadingScreen label="Loading..." />}><JobFinderLanding /></Suspense>} />
         <Route path="/mock-interview" element={<Suspense fallback={<LoadingScreen label="Loading..." />}><MockInterviewLanding /></Suspense>} />
         <Route path="/recruiters" element={<Suspense fallback={<LoadingScreen label="Loading..." />}><RecruitersLanding /></Suspense>} />
+                <Route path="/readme-generator" element={<Suspense fallback={<LoadingScreen label="Loading..." />}><GithubReadmeGenerator /></Suspense>} />
 
         {/* Legacy Landing Redirects */}
         <Route path="/resume-builder-landing" element={<Navigate to="/resume-builder" replace />} />
