@@ -1,4 +1,4 @@
-import { useState, useEffect, useRef } from 'react';
+import { useState, useEffect, useRef, useMemo } from 'react';
 import { motion, AnimatePresence } from 'framer-motion';
 import {
   Key,
@@ -17,6 +17,7 @@ import { cn } from '../../lib/utils';
 import { useAIConfigStore, PROVIDER_META } from '../../stores/useAIConfigStore';
 import { aiApi } from '../../services/api';
 import { decryptKey } from '../../utils/encryption';
+import { generateRandomString, generateCodeChallenge } from '../../utils/pkce';
 
 export default function AIProviderCard({ providerId, isActive, onActivate }) {
   const meta = PROVIDER_META[providerId];
@@ -60,24 +61,59 @@ export default function AIProviderCard({ providerId, isActive, onActivate }) {
       aiApi
         .getModels('openrouter')
         .then((res) => {
-          const models = res.models || res.data || [];
-          setDynamicModels(
-            Array.isArray(models)
-              ? models.map((m) => (typeof m === 'string' ? m : m.id || m.name))
-              : []
-          );
+          const fetched = res.models || res.data || [];
+          const fetchedNames = Array.isArray(fetched)
+            ? fetched.map((m) => (typeof m === 'string' ? m : m.id || m.name))
+            : [];
+          if (fetchedNames.length > 0) {
+            const merged = Array.from(new Set([...(meta.models || []), ...fetchedNames]));
+            setDynamicModels(merged);
+          }
         })
         .catch(() => {
-          // Fallback — keep empty so the user can still type
+          // Fallback — keep meta.models
         })
         .finally(() => setLoadingModels(false));
     }
-  }, [expanded, providerId, dynamicModels.length]);
+  }, [expanded, providerId, dynamicModels.length, meta.models]);
 
-  const models =
-    providerId === 'openrouter' && dynamicModels.length > 0
-      ? dynamicModels
-      : meta.models;
+  const handleModelSelect = (newModel) => {
+    setSelectedModel(newModel);
+    if (hasKey || isValidated) {
+      setProviderModel(providerId, newModel);
+      toast.success(`${meta.name} model set to: ${newModel}`);
+    }
+  };
+
+  // Categorize models into Free and Paid with pricing metadata
+  const normalizedModels = useMemo(() => {
+    const rawList = providerId === 'openrouter' && dynamicModels.length > 0 ? dynamicModels : meta.models || [];
+    return rawList.map((item) => {
+      if (typeof item === 'object' && item !== null && item.id) {
+        return {
+          id: item.id,
+          name: item.name || item.id,
+          isFree: item.isFree || item.id.endsWith(':free'),
+          price: item.price || (item.id.endsWith(':free') ? 'Free' : 'Paid')
+        };
+      }
+      const str = String(item);
+      const isFree = str.endsWith(':free');
+      return {
+        id: str,
+        name: str,
+        isFree,
+        price: isFree ? 'Free' : 'Paid'
+      };
+    });
+  }, [providerId, dynamicModels, meta.models]);
+
+  const freeModels = useMemo(() => normalizedModels.filter((m) => m.isFree), [normalizedModels]);
+  const paidModels = useMemo(() => normalizedModels.filter((m) => !m.isFree), [normalizedModels]);
+
+  const selectedModelObj = useMemo(() => {
+    return normalizedModels.find((m) => m.id === selectedModel);
+  }, [normalizedModels, selectedModel]);
 
   // ---- Handlers ----
 
@@ -104,22 +140,44 @@ export default function AIProviderCard({ providerId, isActive, onActivate }) {
     setValidationResult(null);
 
     try {
-      await aiApi.validateKey(providerId, apiKey.trim(), { baseUrl: baseUrl.trim(), model: selectedModel });
-      // Save to store
-      setProviderKey(providerId, apiKey.trim());
-      setProviderModel(providerId, selectedModel || meta.defaultModel);
-      if (meta.customEndpoint) {
-        setProviderBaseUrl(providerId, baseUrl.trim());
+      const res = await aiApi.validateKey(providerId, apiKey.trim(), { baseUrl: baseUrl.trim(), model: selectedModel });
+      if (res && res.valid) {
+        // Save to store
+        setProviderKey(providerId, apiKey.trim());
+        setProviderModel(providerId, selectedModel || meta.defaultModel);
+        if (meta.customEndpoint) {
+          setProviderBaseUrl(providerId, baseUrl.trim());
+        }
+        markValidated(providerId, true);
+        setValidationResult('success');
+        toast.success(`${meta.name} key validated & saved!`);
+      } else {
+        markValidated(providerId, false);
+        setValidationResult('error');
+        toast.error(res?.error || `Invalid ${meta.name} API key`);
       }
-      markValidated(providerId, true);
-      setValidationResult('success');
-      toast.success(`${meta.name} key validated & saved!`);
     } catch (err) {
       markValidated(providerId, false);
       setValidationResult('error');
       toast.error(err?.message || `Invalid ${meta.name} API key`);
     } finally {
       setIsValidating(false);
+    }
+  };
+
+  const handleOpenRouterOAuth = async () => {
+    try {
+      const codeVerifier = generateRandomString(64);
+      const codeChallenge = await generateCodeChallenge(codeVerifier);
+      sessionStorage.setItem('or_code_verifier', codeVerifier);
+      localStorage.setItem('or_code_verifier', codeVerifier);
+
+      const callbackUrl = `${window.location.origin}/auth/openrouter/callback`;
+      const authUrl = `https://openrouter.ai/auth?callback_url=${encodeURIComponent(callbackUrl)}&code_challenge=${codeChallenge}&code_challenge_method=S256`;
+      
+      window.location.href = authUrl;
+    } catch (err) {
+      toast.error('Failed to initiate OpenRouter OAuth connection');
     }
   };
 
@@ -229,11 +287,38 @@ export default function AIProviderCard({ providerId, isActive, onActivate }) {
             className="overflow-hidden"
           >
             <div className="space-y-4 border-t border-border/60 px-5 pb-5 pt-4">
-              {/* API Key Input */}
+              {/* OpenRouter OAuth Option */}
+              {providerId === 'openrouter' && (
+                <div className="rounded-xl border border-violet-500/30 bg-violet-500/10 dark:bg-violet-950/30 p-4 space-y-2">
+                  <div className="flex flex-col sm:flex-row sm:items-center justify-between gap-3">
+                    <div className="space-y-1">
+                      <div className="flex items-center gap-2">
+                        <span className="text-xs font-bold text-violet-600 dark:text-violet-300">Option 1: Quick OAuth Connect</span>
+                        <span className="rounded-full bg-violet-500/20 text-violet-700 dark:text-violet-300 text-[10px] font-bold px-2 py-0.5">Recommended</span>
+                      </div>
+                      <p className="text-xs text-muted-foreground">
+                        Connect directly via OpenRouter OAuth PKCE without copying keys manually.
+                      </p>
+                    </div>
+                    <button
+                      type="button"
+                      onClick={handleOpenRouterOAuth}
+                      className="inline-flex items-center justify-center gap-2 rounded-xl bg-violet-600 hover:bg-violet-700 active:scale-[0.98] text-white text-xs font-semibold px-4 py-2.5 transition-all shadow-sm shrink-0"
+                    >
+                      <ExternalLink className="h-3.5 w-3.5" />
+                      Connect via OAuth
+                    </button>
+                  </div>
+                </div>
+              )}
+
+              {/* API Key Input Header / Option 2 */}
               <div className="space-y-1.5">
-                <label className="flex items-center gap-1.5 text-xs font-medium text-muted-foreground">
-                  <Key className="h-3.5 w-3.5" />
-                  API Key
+                <label className="flex items-center justify-between text-xs font-medium text-muted-foreground">
+                  <span className="flex items-center gap-1.5">
+                    <Key className="h-3.5 w-3.5" />
+                    {providerId === 'openrouter' ? 'Option 2: Enter API Key Manually' : 'API Key'}
+                  </span>
                 </label>
                 <div className="relative">
                   <input
@@ -283,36 +368,72 @@ export default function AIProviderCard({ providerId, isActive, onActivate }) {
               )}
 
               {/* Model Selector */}
-              <div className="space-y-1.5 mt-4">
-                <label className="text-xs font-medium text-muted-foreground">
-                  Model
-                </label>
-                {models.length > 0 ? (
+              <div className="space-y-2 mt-4">
+                <div className="flex items-center justify-between flex-wrap gap-2">
+                  <label className="text-xs font-medium text-muted-foreground flex items-center gap-1.5">
+                    <Sparkles className="h-3.5 w-3.5 text-violet-400" />
+                    Selected Model {providerId === 'openrouter' && '(OAuth & API Key)'}
+                  </label>
+                  <div className="flex items-center gap-2">
+                    {selectedModelObj && (
+                      <span
+                        className={cn(
+                          'text-[10px] font-bold px-2 py-0.5 rounded-full border',
+                          selectedModelObj.isFree
+                            ? 'bg-emerald-500/10 text-emerald-400 border-emerald-500/30'
+                            : 'bg-amber-500/10 text-amber-400 border-amber-500/30'
+                        )}
+                      >
+                        {selectedModelObj.isFree ? '🎁 FREE' : `💳 ${selectedModelObj.price}`}
+                      </span>
+                    )}
+                    {(hasKey || isValidated) && (
+                      <span className="text-[10px] text-emerald-400 font-medium bg-emerald-500/10 px-2 py-0.5 rounded-md border border-emerald-500/20">
+                        Auto-saved
+                      </span>
+                    )}
+                  </div>
+                </div>
+
+                {normalizedModels.length > 0 ? (
                   <select
                     value={selectedModel}
-                    onChange={(e) => setSelectedModel(e.target.value)}
+                    onChange={(e) => handleModelSelect(e.target.value)}
                     className={cn(
                       'w-full rounded-lg border bg-background/60 px-3 py-2.5 text-sm text-foreground',
                       'border-border focus:border-primary/50 focus:outline-none focus:ring-1 focus:ring-primary/30',
                       'appearance-none cursor-pointer transition-colors'
                     )}
                   >
-                    {models.map((m) => (
-                      <option key={m} value={m}>
-                        {m}
-                      </option>
-                    ))}
+                    {freeModels.length > 0 && (
+                      <optgroup label="🎁 Free Models (Zero Cost / $0)">
+                        {freeModels.map((m) => (
+                          <option key={m.id} value={m.id}>
+                            {m.name} ({m.price})
+                          </option>
+                        ))}
+                      </optgroup>
+                    )}
+                    {paidModels.length > 0 && (
+                      <optgroup label="💳 Paid Models (Credit Balance Required)">
+                        {paidModels.map((m) => (
+                          <option key={m.id} value={m.id}>
+                            {m.name} — {m.price}
+                          </option>
+                        ))}
+                      </optgroup>
+                    )}
                   </select>
                 ) : loadingModels ? (
                   <div className="flex items-center gap-2 rounded-lg border border-border bg-background/60 px-3 py-2.5 text-sm text-muted-foreground">
                     <Loader2 className="h-3.5 w-3.5 animate-spin" />
-                    Loading models…
+                    Loading OpenRouter models & pricings…
                   </div>
                 ) : (
                   <input
                     type="text"
                     value={selectedModel}
-                    onChange={(e) => setSelectedModel(e.target.value)}
+                    onChange={(e) => handleModelSelect(e.target.value)}
                     placeholder="e.g. openai/gpt-4o-mini"
                     className={cn(
                       'w-full rounded-lg border bg-background/60 px-3 py-2.5 text-sm text-foreground placeholder:text-muted-foreground/50',
@@ -320,6 +441,11 @@ export default function AIProviderCard({ providerId, isActive, onActivate }) {
                       'transition-colors'
                     )}
                   />
+                )}
+                {providerId === 'openrouter' && (
+                  <p className="text-[11px] text-muted-foreground pt-0.5">
+                    Models are categorized into 🎁 <b>Free</b> models (e.g., Gemini 2.0 Flash Free, DeepSeek R1 Free) and 💳 <b>Paid</b> models with real-time pricing tags per 1M prompt tokens.
+                  </p>
                 )}
               </div>
 

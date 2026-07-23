@@ -843,6 +843,17 @@ export const aiApi = {
       body: JSON.stringify({ provider, apiKey, ...config })
     })
     return handleResponse(response)
+  },
+
+  // Exchange OpenRouter PKCE auth code for API key
+  async openRouterOAuthExchange(code, codeVerifier) {
+    const headers = await getAuthHeaders()
+    const response = await fetch(`${API_BASE}/ai/openrouter/oauth-exchange`, {
+      method: 'POST',
+      headers,
+      body: JSON.stringify({ code, code_verifier: codeVerifier })
+    })
+    return handleResponse(response)
   }
 }
 
