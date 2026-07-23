@@ -116,15 +116,14 @@ export const initializeSocket = async () => {
   socketInstance.on(
     'connect_error',
     (error) => {
-      if (error?.message?.includes('xhr poll error') || error?.message?.includes('404')) {
-        if (import.meta.env.DEV) {
-          console.warn('⚡ Real-time Socket.IO server is not available on this host. Socket disconnected.');
-        }
+      const msg = error?.message || '';
+      if (msg.includes('xhr poll error') || msg.includes('404') || msg.includes('websocket error')) {
+        // Real-time Socket.IO server is not available on serverless hosts (Vercel/Netlify). Disconnect gracefully.
         socketInstance.disconnect();
       } else {
-        console.error(
-          '❌ Socket connection error:',
-          error.message
+        console.warn(
+          'Socket connection note:',
+          msg
         );
       }
     }
