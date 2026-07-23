@@ -137,6 +137,18 @@ if (process.env.NODE_ENV === 'production') {
 }
 
 const app = express();
+
+// Ensure DB connection for serverless/Vercel requests
+app.use(async (req, res, next) => {
+  try {
+    await connectDB();
+    next();
+  } catch (err) {
+    console.error('Database connection error:', err.message);
+    res.status(500).json({ error: 'Database connection error: ' + err.message });
+  }
+});
+
 app.use(metricsMiddleware);
 app.use(compressionMiddleware);
 const httpServer = createServer(app);

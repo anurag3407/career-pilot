@@ -1,6 +1,10 @@
 import mongoose from 'mongoose';
 
 export const connectDB = async () => {
+  if (mongoose.connection.readyState >= 1) {
+    return;
+  }
+
   const mongoUri = process.env.MONGODB_URI;
 
   const env = process.env.NODE_ENV || 'development';
