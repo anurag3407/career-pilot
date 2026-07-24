@@ -8,9 +8,23 @@ import {
   enable2FASchema,
   tokenOnlySchema,
   backupCodeSchema,
+  verifyLoginSchema,
 } from '../schemas/twoFactor.schema.js';
 
 const router = express.Router();
+
+export const verifyLoginChallenge = async (req, res, deps = twoFactor) => {
+  const { token, useBackup = false } = req.body;
+  const ok = useBackup
+    ? await deps.verifyBackupCode(req.user.uid, token)
+    : await deps.verifyTotp(req.user.uid, token);
+
+  if (!ok) {
+    throw new ApiError(401, useBackup ? 'Invalid backup code' : 'Invalid or expired code');
+  }
+
+  res.json({ success: true });
+};
 
 // Strict rate limit for code-verification endpoints to prevent brute force
 const verifyLimiter = rateLimit({
@@ -86,6 +100,12 @@ router.post('/verify-backup', verifyToken, verifyLimiter, validate(backupCodeSch
   if (!ok) throw new ApiError(401, 'Invalid backup code');
 
   res.json({ success: true });
+}));
+
+// POST /api/auth/2fa/verify-login  (rate-limited)
+// Backwards-compatible login endpoint used by older frontend code paths.
+router.post('/verify-login', verifyToken, verifyLimiter, validate(verifyLoginSchema), asyncHandler(async (req, res) => {
+  await verifyLoginChallenge(req, res);
 }));
 
 // POST /api/auth/2fa/backup-codes/regenerate

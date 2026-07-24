@@ -31,3 +31,20 @@ export const backupCodeSchema = z.object({
     .string({ required_error: 'code is required' })
     .min(1, 'code cannot be empty'),
 });
+
+/**
+ * POST /api/auth/2fa/verify-login
+ */
+export const verifyLoginSchema = z.object({
+  email: z
+    .string()
+    .email('email must be a valid email address')
+    .optional(),
+  token: z
+    .string({ required_error: 'token is required' })
+    .min(1, 'token cannot be empty'),
+  useBackup: z
+    .boolean()
+    .optional()
+    .default(false),
+});
