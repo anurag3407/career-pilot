@@ -162,7 +162,7 @@ app.use(async (req, res, next) => {
 app.use(metricsMiddleware);
 app.use(compressionMiddleware);
 const httpServer = createServer(app);
-const PORT = process.env.PORT || 5000;
+const PORT = process.env.PORT || 5002;
 
 // Log a presence-only configuration summary in development only.
 // Secrets cannot leak into startup logs or aggregated log output.

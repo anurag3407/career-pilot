@@ -2,7 +2,7 @@ import { useState, useRef, useEffect } from "react";
 import { resumeApi } from "../services/api";
 
 const TONES = ["formal", "conversational", "enthusiastic"];
-const API_URL = import.meta.env.VITE_API_URL || "http://localhost:5000";
+const API_URL = import.meta.env.VITE_API_URL || "http://localhost:5002";
 
 const CoverLetter = () => {
   const fileInputRef = useRef(null);
