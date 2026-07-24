@@ -1,3 +1,10 @@
+## [1.274.3](https://github.com/anurag3407/career-pilot/compare/v1.274.2...v1.274.3) (2026-07-24)
+
+
+### Bug Fixes
+
+* **portfolio-github:** allow null token in schema and pass undefined in frontend to resolve 400 validation error ([7c87f89](https://github.com/anurag3407/career-pilot/commit/7c87f890815a22dc1c350b93f634a115b1f9956c))
+
 ## [1.274.2](https://github.com/anurag3407/career-pilot/compare/v1.274.1...v1.274.2) (2026-07-24)
 
 
