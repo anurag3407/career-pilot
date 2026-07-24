@@ -92,11 +92,14 @@ router.post('/fetch-profile', verifyToken, async (req, res) => {
       return res.status(400).json({ success: false, error: 'GitHub username is required' });
     }
 
-    // Strip URL if user pastes full URL
+    // Clean username (handles full URLs, @, trailing paths)
     let cleanUsername = username.trim();
-    const urlMatch = cleanUsername.match(/github\.com\/([a-zA-Z0-9_-]+)/);
-    if (urlMatch) cleanUsername = urlMatch[1];
-    cleanUsername = cleanUsername.replace(/^@/, '');
+    cleanUsername = cleanUsername.replace(/^https?:\/\/(www\.)?github\.com\//i, '').replace(/^@/, '');
+    cleanUsername = cleanUsername.split('/')[0].trim();
+
+    if (!cleanUsername) {
+      return res.status(400).json({ success: false, error: 'Invalid GitHub username' });
+    }
 
     const githubToken = req.headers['x-github-token'] || null;
     const profile = await fetchGitHubProfile(cleanUsername, githubToken);
@@ -104,10 +107,11 @@ router.post('/fetch-profile', verifyToken, async (req, res) => {
     res.json({ success: true, profile });
   } catch (error) {
     console.error('README Generator - Fetch Profile Error:', error);
-    if (error.message === 'GitHub user not found') {
-      return res.status(404).json({ success: false, error: 'GitHub user not found. Check the username and try again.' });
-    }
-    res.status(500).json({ success: false, error: 'Failed to fetch GitHub profile' });
+    const statusCode = error.status || error.statusCode || 500;
+    res.status(statusCode).json({
+      success: false,
+      error: error.message || 'Failed to fetch GitHub profile'
+    });
   }
 });
 
@@ -126,11 +130,14 @@ router.post('/generate', verifyToken, extractAIProvider, async (req, res) => {
       return res.status(400).json({ success: false, error: 'Valid templateId is required' });
     }
 
-    // Strip URL if user pastes full URL
+    // Clean username
     let cleanUsername = username.trim();
-    const urlMatch = cleanUsername.match(/github\.com\/([a-zA-Z0-9_-]+)/);
-    if (urlMatch) cleanUsername = urlMatch[1];
-    cleanUsername = cleanUsername.replace(/^@/, '');
+    cleanUsername = cleanUsername.replace(/^https?:\/\/(www\.)?github\.com\//i, '').replace(/^@/, '');
+    cleanUsername = cleanUsername.split('/')[0].trim();
+
+    if (!cleanUsername) {
+      return res.status(400).json({ success: false, error: 'Invalid GitHub username' });
+    }
 
     // Fetch GitHub profile
     const githubToken = req.headers['x-github-token'] || null;
@@ -195,10 +202,11 @@ Generate the complete README.md now:`;
     });
   } catch (error) {
     console.error('README Generator - Generate Error:', error);
-    if (error.message === 'GitHub user not found') {
-      return res.status(404).json({ success: false, error: 'GitHub user not found.' });
-    }
-    res.status(500).json({ success: false, error: error.message || 'Failed to generate README' });
+    const statusCode = error.status || error.statusCode || 500;
+    res.status(statusCode).json({
+      success: false,
+      error: error.message || 'Failed to generate README'
+    });
   }
 });
 

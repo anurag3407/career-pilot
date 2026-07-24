@@ -48,22 +48,40 @@ const calculateCurrentActivityStreak = (repos) => {
 export const fetchGitHubProfile = async (username, token = null) => {
   try {
     const headers = {
-      'User-Agent': 'Career-Pilot-App'
+      'User-Agent': 'Career-Pilot-App',
+      'Accept': 'application/vnd.github.v3+json'
     };
 
     // Add GitHub token if available to increase rate limits
     const effectiveToken = token || process.env.GITHUB_TOKEN;
-    if (effectiveToken) {
-      headers['Authorization'] = `token ${effectiveToken}`;
+    if (effectiveToken && typeof effectiveToken === 'string' && effectiveToken.trim()) {
+      const cleanToken = effectiveToken.trim();
+      headers['Authorization'] = (cleanToken.startsWith('Bearer ') || cleanToken.startsWith('token '))
+        ? cleanToken
+        : `Bearer ${cleanToken}`;
     }
 
     // Fetch user profile
     const profileResponse = await fetch(`https://api.github.com/users/${username}`, { headers });
     if (!profileResponse.ok) {
       if (profileResponse.status === 404) {
-        throw new Error('GitHub user not found');
+        const err = new Error('GitHub user not found. Check the username and try again.');
+        err.status = 404;
+        throw err;
       }
-      throw new Error(`GitHub API error: ${profileResponse.statusText}`);
+      if (profileResponse.status === 403 || profileResponse.status === 429) {
+        const err = new Error('GitHub API rate limit exceeded. Please try again later or add a GitHub Personal Access Token in Settings.');
+        err.status = 429;
+        throw err;
+      }
+      if (profileResponse.status === 401) {
+        const err = new Error('Invalid or expired GitHub token. Please verify your GitHub token.');
+        err.status = 401;
+        throw err;
+      }
+      const err = new Error(`GitHub API error (${profileResponse.status}): ${profileResponse.statusText}`);
+      err.status = profileResponse.status;
+      throw err;
     }
     const profile = await profileResponse.json();
 
@@ -71,27 +89,30 @@ export const fetchGitHubProfile = async (username, token = null) => {
     const reposResponse = await fetch(`https://api.github.com/users/${username}/repos?sort=updated&per_page=100`, { headers });
     let repos = [];
     if (reposResponse.ok) {
-      repos = await reposResponse.json();
+      const repoData = await reposResponse.json();
+      if (Array.isArray(repoData)) {
+        repos = repoData;
+      }
     }
 
     // Process repository data
     const processedRepos = repos
-      .filter(repo => !repo.fork) // Ignore forks
-      .sort((a, b) => b.stargazers_count - a.stargazers_count) // Sort by stars
+      .filter(repo => repo && !repo.fork) // Ignore forks
+      .sort((a, b) => (b.stargazers_count || 0) - (a.stargazers_count || 0)) // Sort by stars
       .slice(0, 6) // Take top 6
       .map(repo => ({
-        name: repo.name,
-        description: repo.description,
-        url: repo.html_url,
-        language: repo.language,
-        stars: repo.stargazers_count,
-        updatedAt: repo.updated_at
+        name: repo.name || '',
+        description: repo.description || '',
+        url: repo.html_url || '',
+        language: repo.language || null,
+        stars: repo.stargazers_count || 0,
+        updatedAt: repo.updated_at || null
       }));
 
     // Aggregate languages
     const languages = {};
     repos.forEach(repo => {
-      if (repo.language && !repo.fork) {
+      if (repo && repo.language && !repo.fork) {
         languages[repo.language] = (languages[repo.language] || 0) + 1;
       }
     });
@@ -102,7 +123,7 @@ export const fetchGitHubProfile = async (username, token = null) => {
       .slice(0, 10)
       .map(([lang]) => lang);
 
-    const sourceRepos = repos.filter(repo => !repo.fork);
+    const sourceRepos = repos.filter(repo => repo && !repo.fork);
     const totalStars = sourceRepos.reduce((sum, repo) => sum + (repo.stargazers_count || 0), 0);
     const currentStreak = calculateCurrentActivityStreak(sourceRepos);
 
@@ -115,10 +136,10 @@ export const fetchGitHubProfile = async (username, token = null) => {
       email: profile.email || '',
       blog: profile.blog || '',
       avatar_url: profile.avatar_url,
-      public_repos: profile.public_repos,
-      followers: profile.followers,
+      public_repos: profile.public_repos || 0,
+      followers: profile.followers || 0,
       url: profile.html_url,
-      totalRepos: profile.public_repos,
+      totalRepos: profile.public_repos || 0,
       totalStars,
       currentStreak,
       topRepositories: processedRepos,

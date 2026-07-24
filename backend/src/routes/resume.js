@@ -435,7 +435,12 @@ router.post('/import/github/preview', verifyToken, asyncHandler(async (req, res)
     throw new ApiError(400, 'GitHub username is required');
   }
 
-  const profileData = await fetchGitHubProfile(username.trim());
+  let cleanUsername = username.trim();
+  cleanUsername = cleanUsername.replace(/^https?:\/\/(www\.)?github\.com\//i, '').replace(/^@/, '');
+  cleanUsername = cleanUsername.split('/')[0].trim();
+
+  const githubToken = req.headers['x-github-token'] || null;
+  const profileData = await fetchGitHubProfile(cleanUsername, githubToken);
   res.json({
     success: true,
     preview: profileData
@@ -451,7 +456,9 @@ router.post('/import/github', verifyToken, asyncHandler(async (req, res) => {
     throw new ApiError(400, 'GitHub username or profile data is required');
   }
 
-  const profile = cachedProfile || await fetchGitHubProfile(username.trim());
+  let cleanUsername = username ? username.trim().replace(/^https?:\/\/(www\.)?github\.com\//i, '').replace(/^@/, '').split('/')[0].trim() : '';
+  const githubToken = req.headers['x-github-token'] || null;
+  const profile = cachedProfile || await fetchGitHubProfile(cleanUsername, githubToken);
   const resumeText = convertGitHubToResumeText(profile);
   const title = `${profile.name || username} GitHub Profile — Imported ${new Date().toLocaleDateString()}`;
 
