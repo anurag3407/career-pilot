@@ -1,3 +1,10 @@
+# [1.272.0](https://github.com/anurag3407/career-pilot/compare/v1.271.6...v1.272.0) (2026-07-24)
+
+
+### Features
+
+* **landing:** redesign Powerful AI tools section with Forge system ([e5f6960](https://github.com/anurag3407/career-pilot/commit/e5f6960255acc239df91f572f69a14e9bbe3d041))
+
 ## [1.271.6](https://github.com/anurag3407/career-pilot/compare/v1.271.5...v1.271.6) (2026-07-24)
 
 
