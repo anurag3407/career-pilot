@@ -1,4 +1,5 @@
 import { useState } from "react";
+import logger from "../../../../../utils/logger";
 import { motion } from "framer-motion";
 import { Mail, Github, Linkedin, Twitter, Send, CheckCircle } from "lucide-react";
 
@@ -21,7 +22,7 @@ export default function Contact({ personal, socials }) {
     setForm({ name: "", email: "", message: "" });
 
   } catch (error) {
-    console.log(error);
+    logger.error('Contact form submission failed', error);
 
   } finally {
     setLoading(false);

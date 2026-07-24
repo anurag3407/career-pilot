@@ -451,9 +451,8 @@ export default function TemplateGallery() {
   return 0;
   });
 
-  console.log(
-    "Vercel cards:",
-    sortedTemplates.filter(
+  logger.log("Vercel cards filtered", {
+    cards: sortedTemplates.filter(
       (t) => t.title === "Vercel Deploy"
     ).length
   );
