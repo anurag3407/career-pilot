@@ -120,6 +120,72 @@ export const F1_EDITABLE_ELEMENTS = [
 export const F1_EDITABLE_SLUGS = F1_EDITABLE_ELEMENTS.map((e) => e.slug);
 
 /**
+ * Resolve a clicked text string to an editable element by checking against
+ * the CURRENT portfolio data (not hardcoded matchText). This makes
+ * click-to-edit work reliably even after the user has already edited fields.
+ *
+ * Strategy:
+ * 1. For each editable element, resolve its `dataPath` in the live data.
+ * 2. If the resolved value's string representation is contained in (or
+ *    contains) the clicked text, it's a match.
+ * 3. Fall back to `matchText` patterns for elements whose data path
+ *    resolves to empty/null.
+ * 4. Return the FIRST match (elements are ordered by specificity).
+ */
+export function resolveEditableFromClick(clickedText, portfolioData) {
+  if (!clickedText || !portfolioData) return null;
+  const text = clickedText.trim();
+  if (!text || text.length < 2) return null;
+
+  for (const el of F1_EDITABLE_ELEMENTS) {
+    // Primary: match against live data at dataPath
+    if (el.dataPath) {
+      const parts = el.dataPath.split('.');
+      let cur = portfolioData;
+      for (const p of parts) {
+        if (cur == null) break;
+        cur = cur[p];
+      }
+      if (cur != null) {
+        const curStr = String(cur).trim();
+        if (curStr.length > 1) {
+          // Check both directions: clicked text contains value, or value contains clicked text
+          if (text.includes(curStr) || curStr.includes(text)) {
+            return { element: el, currentValue: curStr };
+          }
+          // Also check partial overlap (first 20 chars) for long bios
+          if (curStr.length > 40 && text.length > 20) {
+            const prefix = curStr.slice(0, 30);
+            if (text.includes(prefix)) {
+              return { element: el, currentValue: curStr };
+            }
+          }
+        }
+      }
+    }
+
+    // Fallback: static matchText patterns (for initial/default state)
+    if (el.matchText && el.matchText.length > 0) {
+      if (el.matchText.some((m) => text.includes(m) || m.includes(text))) {
+        // Resolve current value from data
+        let val = '';
+        if (el.dataPath) {
+          const parts = el.dataPath.split('.');
+          let cur = portfolioData;
+          for (const p of parts) {
+            if (cur == null) break;
+            cur = cur[p];
+          }
+          val = cur != null ? String(cur) : '';
+        }
+        return { element: el, currentValue: val };
+      }
+    }
+  }
+  return null;
+}
+
+/**
  * Apply a single field edit to a portfolioData object using the slug's
  * `dataPath`. Supports nested paths like `personal.name` and array indices
  * aren't needed for v1.
