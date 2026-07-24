@@ -108,7 +108,7 @@ const ResumeRoastLanding = lazy(() => import('./pages/features/ResumeRoastLandin
 const GithubPortfolioLanding = lazy(() => import('./pages/features/GithubPortfolioLanding'));
 const ProjectVisualizerLanding = lazy(() => import('./pages/features/ProjectVisualizerLanding'));
 const JobFinderLanding = lazy(() => import('./pages/features/JobFinderLanding'));
-const MockInterviewLanding = lazy(() => import('./pages/features/MockInterviewLanding'));
+const MockInterviewLanding = lazy(() => import('./pages/features/MockInterviewForge'));
 const RecruitersLanding = lazy(() => import('./pages/features/RecruitersLanding'));
 const GithubReadmeGenerator = lazy(() => import('./pages/GithubReadmeGenerator'));
 
