@@ -6,7 +6,7 @@ import pdfParse from "pdf-parse";
 
 async function inputupload(req, res) {
   try {
-    const user = await userModel.findById(req.user.id);
+    const user = await userModel.findOne({ email: req.user.email });
 
     if (!user) {
       return res.status(404).json({
@@ -63,7 +63,7 @@ async function inputupload(req, res) {
 
     
     const newInput = await inputModel.create({
-      user: req.user.id,
+      user: user._id,
       name: parsedData.name,
       jobRole: parsedData.jobRole,
       experienceLevel,
@@ -88,8 +88,17 @@ async function inputupload(req, res) {
 
 async function getinput(req, res) {
   try {
+    const user = await userModel.findOne({ email: req.user.email });
+
+    if (!user) {
+      return res.status(404).json({
+        message: "User not found",
+        data: null,
+      });
+    }
+
     const data = await inputModel    
-      .findOne({ user: req.user.id })
+      .findOne({ user: user._id })
       .sort({ createdAt: -1 });
 
     res.status(200).json({

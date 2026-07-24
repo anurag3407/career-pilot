@@ -5,7 +5,7 @@ async function saveAnalysis(req, res) {
   try {
     const { matchPercentage, jobTitle } = req.body;
 
-    const user = await userModel.findById(req.user.id).select("username email");
+    const user = await userModel.findOne({ email: req.user.email }).select("username email");
 
     if (!user) {
       return res.status(404).json({
@@ -15,14 +15,14 @@ async function saveAnalysis(req, res) {
     }
 
     const input = await inputModel
-      .findOne({ user: req.user.id })
+      .findOne({ user: user._id })
       .sort({ createdAt: -1 });
     const resumeUrl = input?.resume || "";
 
     const doc = await recruiterModel.findOneAndUpdate(
-      { userId: req.user.id },
+      { userId: user._id },
       {
-        userId: req.user.id,
+        userId: user._id,
         username: user.username,
         email: user.email,
         resumeUrl,
