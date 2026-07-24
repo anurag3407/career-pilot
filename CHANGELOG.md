@@ -1,3 +1,10 @@
+## [1.271.6](https://github.com/anurag3407/career-pilot/compare/v1.271.5...v1.271.6) (2026-07-24)
+
+
+### Bug Fixes
+
+* **redis:** dynamic import for redis-memory-server in development mode ([165d0af](https://github.com/anurag3407/career-pilot/commit/165d0af0b856c51e97ab36d7c6f3de653940f645))
+
 ## [1.271.5](https://github.com/anurag3407/career-pilot/compare/v1.271.4...v1.271.5) (2026-07-24)
 
 
