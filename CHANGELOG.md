@@ -1,3 +1,10 @@
+# [1.274.0](https://github.com/anurag3407/career-pilot/compare/v1.273.0...v1.274.0) (2026-07-24)
+
+
+### Features
+
+* **aiEditor:** enhance F1PreviewPane and InlineElementEditor for improved editing experience ([807df68](https://github.com/anurag3407/career-pilot/commit/807df68a10b730d7658f789f3ac831dba1471d4e))
+
 # [1.273.0](https://github.com/anurag3407/career-pilot/compare/v1.272.0...v1.273.0) (2026-07-24)
 
 
