@@ -66,7 +66,9 @@ export default function AIProviderCard({ providerId, isActive, onActivate }) {
             ? fetched.map((m) => (typeof m === 'string' ? m : m.id || m.name))
             : [];
           if (fetchedNames.length > 0) {
-            const merged = Array.from(new Set([...(meta.models || []), ...fetchedNames]));
+            const metaIds = new Set((meta.models || []).map((m) => (typeof m === 'object' && m !== null ? m.id : String(m))));
+            const newNames = fetchedNames.filter((id) => !metaIds.has(id));
+            const merged = [...(meta.models || []), ...newNames];
             setDynamicModels(merged);
           }
         })
@@ -85,27 +87,31 @@ export default function AIProviderCard({ providerId, isActive, onActivate }) {
     }
   };
 
-  // Categorize models into Free and Paid with pricing metadata
+  // Categorize models into Free and Paid with pricing metadata & ensure unique IDs
   const normalizedModels = useMemo(() => {
     const rawList = providerId === 'openrouter' && dynamicModels.length > 0 ? dynamicModels : meta.models || [];
-    return rawList.map((item) => {
-      if (typeof item === 'object' && item !== null && item.id) {
-        return {
-          id: item.id,
-          name: item.name || item.id,
-          isFree: item.isFree || item.id.endsWith(':free'),
-          price: item.price || (item.id.endsWith(':free') ? 'Free' : 'Paid')
-        };
+    const modelMap = new Map();
+
+    for (const item of rawList) {
+      if (!item) continue;
+      const isObj = typeof item === 'object' && item !== null && item.id;
+      const id = isObj ? item.id : String(item);
+
+      if (!modelMap.has(id) || isObj) {
+        const isFree = isObj ? (item.isFree || id.endsWith(':free')) : id.endsWith(':free');
+        const name = isObj ? (item.name || id) : id;
+        const price = isObj ? (item.price || (isFree ? 'Free' : 'Paid')) : (isFree ? 'Free' : 'Paid');
+
+        modelMap.set(id, {
+          id,
+          name,
+          isFree,
+          price
+        });
       }
-      const str = String(item);
-      const isFree = str.endsWith(':free');
-      return {
-        id: str,
-        name: str,
-        isFree,
-        price: isFree ? 'Free' : 'Paid'
-      };
-    });
+    }
+
+    return Array.from(modelMap.values());
   }, [providerId, dynamicModels, meta.models]);
 
   const freeModels = useMemo(() => normalizedModels.filter((m) => m.isFree), [normalizedModels]);
