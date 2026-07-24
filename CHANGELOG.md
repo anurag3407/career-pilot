@@ -1,3 +1,10 @@
+## [1.271.5](https://github.com/anurag3407/career-pilot/compare/v1.271.4...v1.271.5) (2026-07-24)
+
+
+### Bug Fixes
+
+* **deploy:** update Dockerfile npm command, package.json scripts, and add .npmrc for Render auto-deploy ([df578ca](https://github.com/anurag3407/career-pilot/commit/df578ca636fafc3805eb379fb4749cb09805d37a))
+
 ## [1.271.4](https://github.com/anurag3407/career-pilot/compare/v1.271.3...v1.271.4) (2026-07-23)
 
 
