@@ -44,7 +44,7 @@
     "react-hot-toast": "^2.4.1",
     "react-markdown": "^9.1.0",
     "react-pageflip": "^2.0.3",
-    "react-router-dom": "^7.1.1",
+    "react-router-dom": "^7.18.1",
     "react-syntax-highlighter": "^16.1.1",
     "recharts": "^2.8.0",
     "remark-gfm": "^4.0.1",
