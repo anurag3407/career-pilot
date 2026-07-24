@@ -1,124 +1,135 @@
-import React, { useState } from 'react';
-import { motion, AnimatePresence } from 'framer-motion';
-import { X, Bug, Loader2 } from 'lucide-react';
-import toast from 'react-hot-toast';
-import { bugsApi } from '../services/api';
+import { useEffect, useRef, useState } from 'react'
+import { motion } from 'framer-motion'
+import { X, Bug } from 'lucide-react'
+import toast from 'react-hot-toast'
 
-export default function ReportBugModal({ isOpen, onClose }) {
-  const [title, setTitle] = useState('');
-  const [description, setDescription] = useState('');
-  const [isSubmitting, setIsSubmitting] = useState(false);
+export default function ReportBugModal({ isOpen, onClose, invalidPath }) {
+  const [reportBody, setReportBody] = useState('')
+  const dialogRef = useRef(null)
 
-  const handleSubmit = async (e) => {
-    e.preventDefault();
-    
-    if (!title.trim() || !description.trim()) {
-      toast.error('Please fill out both title and description.');
-      return;
+  useEffect(() => {
+    if (!isOpen) return
+
+    setReportBody(
+      `Invalid URL: ${invalidPath}\n\nPlease describe what you were expecting to find and any additional details that would help us fix this broken link.`
+    )
+
+    const dialog = dialogRef.current
+    if (dialog) {
+      dialog.focus()
+    }
+  }, [isOpen, invalidPath])
+
+  useEffect(() => {
+    if (!isOpen) return
+
+    const handleKeyDown = (event) => {
+      if (event.key === 'Escape') {
+        event.preventDefault()
+        onClose()
+      }
     }
 
-    setIsSubmitting(true);
+    document.addEventListener('keydown', handleKeyDown)
+    return () => document.removeEventListener('keydown', handleKeyDown)
+  }, [isOpen, onClose])
+
+  const handleSubmit = async (event) => {
+    event.preventDefault()
+
     try {
-      await bugsApi.submitBug(title, description);
-      toast.success('Bug reported successfully! Thank you.');
-      setTitle('');
-      setDescription('');
-      onClose();
+      await navigator.clipboard.writeText(reportBody)
+      toast.success('Bug report copied to clipboard!')
+      onClose()
     } catch (error) {
-      console.error('Error reporting bug:', error);
-      toast.error(error.message || 'Failed to report bug. Please try again later.');
-    } finally {
-      setIsSubmitting(false);
+      toast.error('Unable to copy report to clipboard. Please try again.')
     }
-  };
+  }
+
+  if (!isOpen) {
+    return null
+  }
 
   return (
-    <AnimatePresence>
-      {isOpen && (
-        <div className="fixed inset-0 z-50 flex items-center justify-center p-4">
-          <motion.div
-            initial={{ opacity: 0 }}
-            animate={{ opacity: 1 }}
-            exit={{ opacity: 0 }}
-            onClick={onClose}
-            className="absolute inset-0 bg-black/60 backdrop-blur-sm"
-          />
-          
-          <motion.div
-            initial={{ opacity: 0, scale: 0.95, y: 20 }}
-            animate={{ opacity: 1, scale: 1, y: 0 }}
-            exit={{ opacity: 0, scale: 0.95, y: 20 }}
-            className="relative w-full max-w-lg bg-card rounded-2xl shadow-xl overflow-hidden border border-border"
-          >
-            <div className="flex items-center justify-between px-6 py-4 border-b border-border">
-              <div className="flex items-center gap-2 text-foreground">
-                <Bug className="w-5 h-5 text-red-500" />
-                <h2 className="text-lg font-bold">Report a Bug</h2>
-              </div>
-              <button
-                onClick={onClose}
-                className="p-2 rounded-xl hover:bg-muted text-muted-foreground transition-colors"
-              >
-                <X className="w-5 h-5" />
-              </button>
+    <div className="fixed inset-0 z-50 flex items-center justify-center p-4 overflow-y-auto">
+      <motion.div
+        initial={{ opacity: 0 }}
+        animate={{ opacity: 1 }}
+        exit={{ opacity: 0 }}
+        onClick={onClose}
+        className="fixed inset-0 bg-black/70 backdrop-blur-sm"
+      />
+
+      <motion.div
+        initial={{ opacity: 0, scale: 0.96, y: 20 }}
+        animate={{ opacity: 1, scale: 1, y: 0 }}
+        exit={{ opacity: 0, scale: 0.96, y: 20 }}
+        ref={dialogRef}
+        role="dialog"
+        aria-modal="true"
+        aria-labelledby="report-bug-title"
+        aria-describedby="report-bug-description"
+        tabIndex={-1}
+        className="relative w-full max-w-2xl rounded-3xl border border-white/10 bg-[#0c0c0c] shadow-2xl outline-none"
+      >
+        <div className="flex items-start justify-between gap-4 border-b border-white/10 px-6 py-5">
+          <div className="flex items-center gap-3">
+            <div className="rounded-2xl bg-[#00ffaa]/10 p-3 text-[#00ffaa]">
+              <Bug className="h-5 w-5" />
             </div>
-
-            <form onSubmit={handleSubmit} className="p-6 space-y-4">
-              <div>
-                <label className="block text-sm font-semibold text-foreground mb-1">
-                  Title
-                </label>
-                <input
-                  type="text"
-                  value={title}
-                  onChange={(e) => setTitle(e.target.value)}
-                  placeholder="E.g., Resume builder fails to save"
-                  className="w-full px-4 py-2 bg-background border border-border rounded-xl text-foreground placeholder:text-muted-foreground focus:outline-none focus:ring-2 focus:ring-primary/50"
-                  maxLength={100}
-                  required
-                />
-              </div>
-              
-              <div>
-                <label className="block text-sm font-semibold text-foreground mb-1">
-                  Description
-                </label>
-                <textarea
-                  value={description}
-                  onChange={(e) => setDescription(e.target.value)}
-                  placeholder="Please describe what you were doing when the issue occurred..."
-                  className="w-full px-4 py-2 h-32 resize-none bg-background border border-border rounded-xl text-foreground placeholder:text-muted-foreground focus:outline-none focus:ring-2 focus:ring-primary/50"
-                  required
-                />
-              </div>
-
-              <div className="pt-2 flex justify-end gap-3">
-                <button
-                  type="button"
-                  onClick={onClose}
-                  className="px-4 py-2 text-sm font-semibold text-foreground hover:bg-muted rounded-xl transition-colors"
-                >
-                  Cancel
-                </button>
-                <button
-                  type="submit"
-                  disabled={isSubmitting}
-                  className="flex items-center gap-2 px-6 py-2 bg-primary text-primary-foreground text-sm font-semibold rounded-xl hover:opacity-90 transition-opacity disabled:opacity-50 disabled:cursor-not-allowed"
-                >
-                  {isSubmitting ? (
-                    <>
-                      <Loader2 className="w-4 h-4 animate-spin" />
-                      Submitting...
-                    </>
-                  ) : (
-                    'Submit Bug'
-                  )}
-                </button>
-              </div>
-            </form>
-          </motion.div>
+            <div>
+              <h2 id="report-bug-title" className="text-lg font-semibold text-white">Report broken link</h2>
+              <p id="report-bug-description" className="text-sm text-neutral-400">The invalid URL is prefilled so your report is ready to share.</p>
+            </div>
+          </div>
+          <button
+            type="button"
+            onClick={onClose}
+            className="rounded-full p-2 text-neutral-400 transition hover:bg-white/10 hover:text-white"
+            aria-label="Close report modal"
+          >
+            <X className="h-5 w-5" />
+          </button>
         </div>
-      )}
-    </AnimatePresence>
-  );
+
+        <form onSubmit={handleSubmit} className="space-y-4 px-6 py-6">
+          <div>
+            <label className="mb-2 block text-sm font-semibold text-neutral-300">Invalid URL</label>
+            <div className="rounded-2xl border border-white/10 bg-[#111111] px-4 py-3 text-sm text-[#00ffaa] font-mono break-words">
+              {invalidPath}
+            </div>
+          </div>
+
+          <div>
+            <label htmlFor="bug-report" className="mb-2 block text-sm font-semibold text-neutral-300">
+              Report details
+            </label>
+            <textarea
+              id="bug-report"
+              value={reportBody}
+              onChange={(event) => setReportBody(event.target.value)}
+              rows={7}
+              className="w-full resize-none rounded-2xl border border-white/10 bg-[#111111] px-4 py-3 text-sm text-white outline-none transition focus:border-[#00ffaa] focus:ring-2 focus:ring-[#00ffaa]/20"
+            />
+          </div>
+
+          <div className="flex flex-col gap-3 sm:flex-row sm:justify-end">
+            <button
+              type="button"
+              onClick={onClose}
+              className="rounded-2xl border border-white/10 bg-[#111111] px-5 py-3 text-sm text-neutral-200 transition hover:border-[#00ffaa] hover:text-white"
+            >
+              Cancel
+            </button>
+            <button
+              type="submit"
+              className="rounded-2xl bg-[#00ffaa] px-5 py-3 text-sm font-semibold text-[#0a0a0a] transition hover:bg-[#00e699]"
+            >
+              Copy report
+            </button>
+          </div>
+        </form>
+      </motion.div>
+    </div>
+  )
 }
