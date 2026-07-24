@@ -1,3 +1,10 @@
+## [1.274.1](https://github.com/anurag3407/career-pilot/compare/v1.274.0...v1.274.1) (2026-07-24)
+
+
+### Bug Fixes
+
+* **frontend:** resolve build and test issues across components and setup ([35b55c8](https://github.com/anurag3407/career-pilot/commit/35b55c8e51a3f405d86b7ce45731f378d6a5f59c))
+
 # [1.274.0](https://github.com/anurag3407/career-pilot/compare/v1.273.0...v1.274.0) (2026-07-24)
 
 
