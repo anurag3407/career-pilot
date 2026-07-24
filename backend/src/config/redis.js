@@ -1,6 +1,5 @@
 import IORedis from 'ioredis';
 import dotenv from 'dotenv';
-import { RedisMemoryServer } from 'redis-memory-server';
 
 dotenv.config();
 
@@ -10,6 +9,7 @@ if (process.env.NODE_ENV === 'development') {
         console.log('🔄 Starting redis-memory-server to satisfy localhost REDIS_URL...');
         (async () => {
             try {
+                const { RedisMemoryServer } = await import('redis-memory-server');
                 const redisServer = new RedisMemoryServer();
                 const host = await redisServer.getHost();
                 const port = await redisServer.getPort();
