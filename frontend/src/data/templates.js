@@ -1,11 +1,25 @@
 export const templates = [
-{
+  {
+    id: "MySpace_2005",
+    title: "MySpace 2005",
+    category: "Portfolio",
+    colorScheme: "Light",
+    layout: "Grid",
+    author: "Ayush Srivastava",
+    views: 0,
+    rating: 5.0,
+    image: "/templates/MySpace_2005.png",
+    createdAt: "2026-07-17",
+    isComplete: true,
+    description: "A faithful recreation of a classic 2005 MySpace profile page as a developer portfolio. Features the iconic two-column layout, blue navigation, connected white panels, dark blue section headers, compact Verdana typography, interactive project accordion, and stacked profile modules — pure nostalgia."
+  },
+  {
     id: "Macintosh_1984_Classic",
     title: "Macintosh 1984 Classic",
     category: "Portfolio",
     colorScheme: "Light",
     layout: "Interactive",
-    author: "Antigravity",
+    author: "Ayush Srivastava",
     views: 0,
     rating: 5.0,
     image: "/templates/Macintosh_1984_Classic.png",
@@ -13,7 +27,7 @@ export const templates = [
     isComplete: true,
     description: "A pixel-perfect recreation of the original 1984 Macintosh desktop as a fully interactive portfolio. Features authentic Finder windows, Chicago-inspired bitmap typography, double-click desktop icons, and classic monochrome aesthetics."
   },
-{
+  {
 
     id: "Hot_Air_Balloon_Drifting",
     title: "Hot Air Balloon Drifting",
@@ -56,7 +70,7 @@ export const templates = [
     isComplete: true,
     description: "A premium, interactive developer portfolio styled like a modern dating application. Swipe through projects, chat history experience, and match with the developer."
   },
-   {
+  {
     "id": "Rubik_s_Cube_3D_Rotate",
     "title": "Rubik's Cube 3D Rotate",
     "category": "Portfolio",
@@ -68,7 +82,7 @@ export const templates = [
     "image": "/template-previews/Rubik_s_Cube_3D_Rotate.png",
     "createdAt": "2026-06-24",
     isComplete: true
-},
+  },
   {
     id: "Jigsaw_Puzzle_Assembly",
     title: "Jigsaw Puzzle Assembly",
@@ -83,7 +97,7 @@ export const templates = [
     description: "A vibrant portfolio where big jigsaw pieces are assembled in the hero and scatter as you scroll down — rejoining as you scroll back up. Funky neon colours, unique interlocking shapes, and scroll-driven physics.",
     isComplete: true
   },
-  
+
   {
     "id": "Live_Satellite_Imagery_Feed",
     "title": "Live Satellite Imagery Feed",
