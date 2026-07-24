@@ -13,7 +13,7 @@ EXPOSE 5001
 CMD ["npm", "run", "dev"]
 
 FROM base AS production
-RUN npm ci --only=production \
+RUN npm install --legacy-peer-deps --omit=dev \
  && pip install --no-cache-dir --break-system-packages -r requirements.txt
 COPY . .
 EXPOSE 5001
