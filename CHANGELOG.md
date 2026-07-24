@@ -1,3 +1,16 @@
+# [1.273.0](https://github.com/anurag3407/career-pilot/compare/v1.272.0...v1.273.0) (2026-07-24)
+
+
+### Bug Fixes
+
+* replace console.log with ESLint rule + structured logger ([e5dc291](https://github.com/anurag3407/career-pilot/commit/e5dc29193fb71bce8fde278ed05e64199bcd7e77))
+
+
+### Features
+
+* Add MySpace 2005 portfolio template ([1907184](https://github.com/anurag3407/career-pilot/commit/1907184ba6bd7a6a02cae733f41df77e72c37c38))
+* implement AI-powered resume scoring to replace hardcoded endpoint ([9f29f6c](https://github.com/anurag3407/career-pilot/commit/9f29f6c4f0000b767b272c0311c30e8dbceff10e)), closes [#4365](https://github.com/anurag3407/career-pilot/issues/4365)
+
 # [1.272.0](https://github.com/anurag3407/career-pilot/compare/v1.271.6...v1.272.0) (2026-07-24)
 
 
