@@ -1,17 +1,19 @@
-node_modules
 # Dependencies
 node_modules/
 .pnp
 .pnp.js
+venv/
 
 # Build outputs
 dist/
+dist-portfolio/
 build/
 .next/
 out/
 
 # Environment files
 .env
+.env.*
 .env.local
 .env.development.local
 .env.test.local
@@ -21,6 +23,10 @@ out/
 *-firebase-adminsdk-*.json
 serviceAccountKey.json
 firebase-adminsdk*.json
+
+# Service account keys (IMPORTANT - never commit these)
+*serviceAccount*.json
+*service-account*.json
 
 # IDE
 .vscode/
@@ -53,35 +59,38 @@ pubsub-debug.log
 storage-debug.log
 *.pem
 
-# Service account keys (IMPORTANT - never commit these)
-*serviceAccount*.json
-*service-account*.json
-
 # Temporary files
 tmp/
 temp/
 *.tmp
 *.temp
+.tmp_home/
 
 # Cache
 .cache/
 .parcel-cache/
 .eslintcache
 
+# Python
+__pycache__/
+*.pyc
+
+# Local deployment state
+.netlify/
+.vercel/
+.wrangler/
+
+# Scratch/experimental
+scratch/
+issues/
+
+# Backup files
+*.bak
+*.backup
+
+# Lint/output snapshots
+lint_output.txt
+
 # Misc
 *.pdf
 !resume.pdf
-
-*issues
-venv/
-node_modules/
-.env
-.env.*
-
-*issues
-PORTFOLIO_BUILDER_REVAMP_PLAN.md
-
-# Local Netlify folder
-.netlify
-.vercel
-.tmp_home
