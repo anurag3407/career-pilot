@@ -1,3 +1,10 @@
+## [1.274.2](https://github.com/anurag3407/career-pilot/compare/v1.274.1...v1.274.2) (2026-07-24)
+
+
+### Bug Fixes
+
+* **settings:** deduplicate OpenRouter models to prevent duplicate key warning ([375279a](https://github.com/anurag3407/career-pilot/commit/375279a48f811eb434d7b241cea93d369a8d9e19))
+
 ## [1.274.1](https://github.com/anurag3407/career-pilot/compare/v1.274.0...v1.274.1) (2026-07-24)
 
 
