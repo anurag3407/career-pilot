@@ -455,7 +455,7 @@ export default function TemplateGallery() {
     cards: sortedTemplates.filter(
       (t) => t.title === "Vercel Deploy"
     ).length
-  );
+  });
 
   return (
     <div className="min-h-screen bg-background text-foreground transition-colors duration-300">

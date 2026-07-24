@@ -10,7 +10,7 @@ export default defineConfig({
   base: process.env.VITE_CDN_URL || '/',
   test: {
     environment: 'jsdom',
-    setupFiles: './src/test/setup.js',
+    setupFiles: './src/test/setup.jsx',
     globals: true,
   },
 

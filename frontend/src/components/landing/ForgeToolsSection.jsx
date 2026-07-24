@@ -1,7 +1,7 @@
 import React from 'react';
 import { motion } from 'framer-motion';
 import { FEATURES } from '../../data/featuresConfig';
-import '../styles/forge.css';
+import '../../styles/forge.css';
 import StatusBadge from '../forge/StatusBadge';
 import ForgeButton from '../forge/ForgeButton';
 

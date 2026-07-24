@@ -28,8 +28,9 @@ describe('API Service', () => {
     api = await import('../services/api.js');
   });
 
-  test('exports default axios instance', () => {
-    expect(api.default).toBeDefined();
+  test('exports API modules', () => {
+    expect(api.authApi).toBeDefined();
+    expect(api.resumeApi).toBeDefined();
   });
 
   test('exports api helper functions', () => {

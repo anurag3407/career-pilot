@@ -362,7 +362,7 @@ export default function StandUpComedyBrickWallMic() {
   return (
     <div className="comedy-wall text-zinc-100 min-h-screen relative font-body">
       {/* CSS Injection */}
-      <style dangerouslySetInnerHTML={{ __html: GLOBAL_THEME_CSS }} />
+      <style>{GLOBAL_THEME_CSS}</style>
 
       {/* Frame overlays: Red side curtains */}
       <LeftCurtain />

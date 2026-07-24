@@ -281,7 +281,7 @@ describe("MobileKanban component", () => {
       });
 
       await waitFor(() => {
-        expect(mockOfflineUtils.queueStatusUpdate).toHaveBeenCalledWith("test-user-123", "job-1", "applied");
+        expect(mockOfflineUtils.queueStatusUpdate).toHaveBeenCalledWith("anonymous", "job-1", "applied");
         expect(mockToast.success).toHaveBeenCalledWith(
           "Status saved offline. It will sync when you reconnect.",
           expect.any(Object)

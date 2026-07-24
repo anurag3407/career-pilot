@@ -36,9 +36,9 @@ export const createSocketOptions = (getToken) => ({
   rememberUpgrade: false,
 
   reconnection: true,
-  reconnectionAttempts: 5,
+  reconnectionAttempts: Infinity,
   reconnectionDelay: 1_000,
   reconnectionDelayMax: 10_000,
   randomizationFactor: 0.5,
-  timeout: 10_000
+  timeout: 20_000
 });
