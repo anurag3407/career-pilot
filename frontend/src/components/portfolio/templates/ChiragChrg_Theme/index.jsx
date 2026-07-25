@@ -100,7 +100,7 @@ const ChiragChrg_Theme = () => {
 
           {/* Theme Switcher */}
           <div className="relative">
-            <button 
+            <button type="button" 
               onClick={() => setIsDropdownOpen(!isDropdownOpen)}
               className="flex items-center gap-2 px-3 py-1.5 bg-white/5 hover:bg-white/10 border border-white/10 rounded-md transition-colors"
             >
@@ -112,7 +112,7 @@ const ChiragChrg_Theme = () => {
             {isDropdownOpen && (
               <div className="absolute top-full right-0 mt-2 w-40 bg-[#18181b] border border-white/10 rounded-lg shadow-xl overflow-hidden py-1 z-50">
                 {themes.map(t => (
-                  <button
+                  <button type="button"
                     key={t.name}
                     onClick={() => {
                       setThemeName(t.name);

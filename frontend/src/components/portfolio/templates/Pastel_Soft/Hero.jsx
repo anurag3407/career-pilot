@@ -23,11 +23,11 @@ export default function Hero() {
         </p>
 
         <div className="mt-8 flex gap-4 flex-wrap">
-          <button className="px-6 py-3 rounded-full bg-purple-400 text-white font-medium hover:bg-purple-500 transition">
+          <button type="button" className="px-6 py-3 rounded-full bg-purple-400 text-white font-medium hover:bg-purple-500 transition">
             View Projects
           </button>
 
-          <button className="px-6 py-3 rounded-full border border-purple-400 text-purple-600 font-medium hover:bg-purple-100 transition">
+          <button type="button" className="px-6 py-3 rounded-full border border-purple-400 text-purple-600 font-medium hover:bg-purple-100 transition">
             Contact Me
           </button>
         </div>

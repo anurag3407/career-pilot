@@ -72,12 +72,12 @@ const About = () => {
             </p>
 
             <div className="flex gap-4 flex-wrap">
-              <button className="px-8 py-4 bg-white text-black rounded-xl flex items-center gap-2 hover:scale-105 transition">
+              <button type="button" className="px-8 py-4 bg-white text-black rounded-xl flex items-center gap-2 hover:scale-105 transition">
                 Download Resume
                 <ArrowRight size={18} />
               </button>
 
-              <button className="px-8 py-4 border border-white/20 rounded-xl hover:bg-white hover:text-black transition">
+              <button type="button" className="px-8 py-4 border border-white/20 rounded-xl hover:bg-white hover:text-black transition">
                 Contact Me
               </button>
             </div>

@@ -106,8 +106,8 @@ export default function PinterestMasonry({ data: propData }) {
           <div className="w-12 h-12 rounded-full flex items-center justify-center hover:bg-gray-100 cursor-pointer text-[#e60023]">
             <svg viewBox="0 0 24 24" className="w-6 h-6 fill-current"><path d="M12.017 0C5.396 0 .029 5.367.029 11.987c0 5.079 3.158 9.417 7.618 11.162-.105-.949-.199-2.403.041-3.439.219-.937 1.406-5.957 1.406-5.957s-.359-.72-.359-1.781c0-1.663.967-2.911 2.168-2.911 1.024 0 1.518.769 1.518 1.688 0 1.029-.653 2.567-.992 3.992-.285 1.193.6 2.165 1.775 2.165 2.128 0 3.768-2.245 3.768-5.487 0-2.861-2.063-4.869-5.008-4.869-3.41 0-5.409 2.562-5.409 5.199 0 1.033.394 2.143.889 2.741.099.12.112.225.085.345l-.288 1.178c-.046.19-.152.232-.344.143-1.282-.598-2.083-2.476-2.083-3.984 0-3.238 2.355-6.216 6.786-6.216 3.565 0 6.337 2.54 6.337 5.927 0 3.543-2.234 6.394-5.335 6.394-1.042 0-2.023-.542-2.357-1.18l-.64 2.438c-.231.884-.858 1.99-1.28 2.665 1.002.308 2.066.474 3.155.474 6.621 0 11.988-5.368 11.988-11.988C24 5.367 18.638 0 12.017 0z"/></svg>
           </div>
-          <button className="hidden md:block px-4 py-3 bg-[#111111] text-white rounded-full font-semibold text-[15px]">Home</button>
-          <button className="hidden md:flex px-4 py-3 hover:bg-gray-100 rounded-full font-semibold text-[15px] items-center gap-1">Create <ChevronDown size={20}/></button>
+          <button type="button" className="hidden md:block px-4 py-3 bg-[#111111] text-white rounded-full font-semibold text-[15px]">Home</button>
+          <button type="button" className="hidden md:flex px-4 py-3 hover:bg-gray-100 rounded-full font-semibold text-[15px] items-center gap-1">Create <ChevronDown size={20}/></button>
         </div>
 
         {/* Search */}
@@ -143,7 +143,7 @@ export default function PinterestMasonry({ data: propData }) {
         <div className="flex justify-center mb-8 overflow-x-auto hide-scrollbar py-2">
           <div className="flex gap-2">
             {categories.map(category => (
-              <button
+              <button type="button"
                 key={category}
                 onClick={() => setActiveCategory(category)}
                 className={`px-5 py-2.5 rounded-full font-semibold text-[15px] transition-colors whitespace-nowrap ${
@@ -233,10 +233,10 @@ function ProfilePin({ pin }) {
         </p>
 
         <div className="flex gap-4 w-full">
-          <button className="flex-1 py-3 bg-[#e60023] hover:bg-[#b50019] text-white rounded-full font-bold transition-colors">
+          <button type="button" className="flex-1 py-3 bg-[#e60023] hover:bg-[#b50019] text-white rounded-full font-bold transition-colors">
             Follow
           </button>
-          <button className="flex-1 py-3 bg-[#e9e9e9] hover:bg-[#e1e1e1] rounded-full font-bold transition-colors">
+          <button type="button" className="flex-1 py-3 bg-[#e9e9e9] hover:bg-[#e1e1e1] rounded-full font-bold transition-colors">
             Message
           </button>
         </div>
@@ -279,7 +279,7 @@ function ProjectPin({ pin, data }) {
         {/* Hover Overlay */}
         <div className="absolute inset-0 bg-black/40 opacity-0 group-hover:opacity-100 transition-opacity duration-300 flex flex-col justify-between p-4">
           <div className="flex justify-end">
-            <button className="bg-[#e60023] hover:bg-[#b50019] text-white font-bold px-4 py-3 rounded-full shadow-md text-[15px] transform translate-y-2 group-hover:translate-y-0 transition-transform duration-300">
+            <button type="button" className="bg-[#e60023] hover:bg-[#b50019] text-white font-bold px-4 py-3 rounded-full shadow-md text-[15px] transform translate-y-2 group-hover:translate-y-0 transition-transform duration-300">
               Save
             </button>
           </div>
@@ -290,10 +290,10 @@ function ProjectPin({ pin, data }) {
               </a>
             )}
             <div className="flex gap-2">
-              <button className="w-9 h-9 rounded-full bg-white/90 hover:bg-white flex items-center justify-center text-black backdrop-blur-sm transform translate-y-2 group-hover:translate-y-0 transition-transform duration-300 delay-100">
+              <button type="button" className="w-9 h-9 rounded-full bg-white/90 hover:bg-white flex items-center justify-center text-black backdrop-blur-sm transform translate-y-2 group-hover:translate-y-0 transition-transform duration-300 delay-100">
                 <Share size={18} />
               </button>
-              <button className="w-9 h-9 rounded-full bg-white/90 hover:bg-white flex items-center justify-center text-black backdrop-blur-sm transform translate-y-2 group-hover:translate-y-0 transition-transform duration-300 delay-150">
+              <button type="button" className="w-9 h-9 rounded-full bg-white/90 hover:bg-white flex items-center justify-center text-black backdrop-blur-sm transform translate-y-2 group-hover:translate-y-0 transition-transform duration-300 delay-150">
                 <MoreHorizontal size={18} />
               </button>
             </div>

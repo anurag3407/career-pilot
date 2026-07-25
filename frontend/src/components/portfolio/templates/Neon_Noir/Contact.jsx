@@ -102,7 +102,7 @@ export default function Contact({ personal, socials }) {
                   rows="3"
                   className="w-full bg-black/40 border border-white/10 rounded-lg px-4 py-2 focus:outline-none focus:border-cyan-500/50 text-sm resize-none"
                 ></textarea>
-                <button 
+                <button type="button" 
                   className="w-full bg-white/10 hover:bg-white/20 border border-white/20 text-white font-medium py-2 rounded-lg transition-all"
                 >
                   Send Message

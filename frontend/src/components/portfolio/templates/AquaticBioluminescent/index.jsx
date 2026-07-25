@@ -351,7 +351,7 @@ const Nav = ({ name }) => {
       borderBottom: scrolled ? `1px solid ${C.border}` : "none",
       transition: "all 0.4s ease",
     }}>
-      <button onClick={() => scrollTo("home")} style={{
+      <button type="button" onClick={() => scrollTo("home")} style={{
         background: "none", border: "none", cursor: "pointer",
         fontFamily: "'Syne', sans-serif", fontWeight: 800, fontSize: 20,
         color: C.cyan, letterSpacing: 1,
@@ -361,7 +361,7 @@ const Nav = ({ name }) => {
       </button>
       <div style={{ display: "flex", gap: "clamp(10px,2vw,28px)" }}>
         {sections.map((s) => (
-          <button key={s} onClick={() => scrollTo(s)} style={{
+          <button type="button" key={s} onClick={() => scrollTo(s)} style={{
             background: "none", border: "none", cursor: "pointer",
             fontFamily: "'Space Mono', monospace", fontSize: 11,
             letterSpacing: 1.5, textTransform: "uppercase",
@@ -453,13 +453,13 @@ const HeroSection = ({ data }) => {
         )}
 
         <div style={{ display: "flex", gap: 14, justifyContent: "center", flexWrap: "wrap", animation: "opm-rise 0.8s 1.0s both" }}>
-          <button onClick={() => document.getElementById("projects")?.scrollIntoView({ behavior: "smooth" })}
+          <button type="button" onClick={() => document.getElementById("projects")?.scrollIntoView({ behavior: "smooth" })}
             style={{ padding: "13px 34px", borderRadius: 2, cursor: "pointer", border: `1px solid ${C.cyan}`, background: "rgba(0,212,255,0.08)", color: C.cyan, fontFamily: "'Space Mono', monospace", fontSize: 12, letterSpacing: 2, textTransform: "uppercase", boxShadow: C.glow, transition: "all 0.3s" }}
             onMouseEnter={(e) => { e.currentTarget.style.background = "rgba(0,212,255,0.18)"; e.currentTarget.style.boxShadow = C.glowStrong; }}
             onMouseLeave={(e) => { e.currentTarget.style.background = "rgba(0,212,255,0.08)"; e.currentTarget.style.boxShadow = C.glow; }}>
             Explore Work
           </button>
-          <button onClick={() => document.getElementById("contact")?.scrollIntoView({ behavior: "smooth" })}
+          <button type="button" onClick={() => document.getElementById("contact")?.scrollIntoView({ behavior: "smooth" })}
             style={{ padding: "13px 34px", borderRadius: 2, cursor: "pointer", border: `1px solid ${C.border}`, background: "transparent", color: C.muted, fontFamily: "'Space Mono', monospace", fontSize: 12, letterSpacing: 2, textTransform: "uppercase", transition: "all 0.3s" }}
             onMouseEnter={(e) => { e.currentTarget.style.borderColor = C.cyan; e.currentTarget.style.color = C.cyan; }}
             onMouseLeave={(e) => { e.currentTarget.style.borderColor = C.border; e.currentTarget.style.color = C.muted; }}>
@@ -470,7 +470,7 @@ const HeroSection = ({ data }) => {
         {socials.length > 0 && (
           <div style={{ display: "flex", gap: 12, justifyContent: "center", marginTop: 40, animation: "opm-rise 0.8s 1.1s both" }}>
             {socials.map((s, i) => (
-              <button key={i} onClick={() => safeOpen(s.url)} title={s.platform}
+              <button type="button" key={i} onClick={() => safeOpen(s.url)} title={s.platform}
                 style={{ width: 38, height: 38, borderRadius: "50%", border: `1px solid ${C.border}`, background: C.surface, color: C.muted, fontFamily: "'Space Mono', monospace", fontSize: 9, cursor: "pointer", transition: "all 0.3s", display: "flex", alignItems: "center", justifyContent: "center" }}
                 onMouseEnter={(e) => { e.currentTarget.style.borderColor = C.cyan; e.currentTarget.style.color = C.cyan; e.currentTarget.style.boxShadow = C.glow; }}
                 onMouseLeave={(e) => { e.currentTarget.style.borderColor = C.border; e.currentTarget.style.color = C.muted; e.currentTarget.style.boxShadow = "none"; }}>
@@ -662,13 +662,13 @@ const ProjectCard = ({ project, index }) => {
 
       <div style={{ display: "flex", gap: 14 }}>
         {project.liveUrl && (
-          <button onClick={() => safeOpen(project.liveUrl)}
+          <button type="button" onClick={() => safeOpen(project.liveUrl)}
             style={{ background: "none", border: "none", cursor: "pointer", fontFamily: "'Space Mono', monospace", fontSize: 10, color: hov ? col : C.muted, letterSpacing: 1, transition: "color 0.3s", padding: 0 }}>
             Live ↗
           </button>
         )}
         {project.githubUrl && (
-          <button onClick={() => safeOpen(project.githubUrl)}
+          <button type="button" onClick={() => safeOpen(project.githubUrl)}
             style={{ background: "none", border: "none", cursor: "pointer", fontFamily: "'Space Mono', monospace", fontSize: 10, color: hov ? col : C.muted, letterSpacing: 1, transition: "color 0.3s", padding: 0 }}>
             GitHub ↗
           </button>
@@ -709,7 +709,7 @@ const ExperienceSection = ({ data }) => {
         <div style={{ display: "grid", gridTemplateColumns: "260px 1fr", gap: 36 }}>
           <div style={{ display: "flex", flexDirection: "column" }}>
             {experience.map((e, i) => (
-              <button key={i} onClick={() => setActiveIdx(i)}
+              <button type="button" key={i} onClick={() => setActiveIdx(i)}
                 style={{
                   background: "none", border: "none", cursor: "pointer",
                   padding: "16px 0 16px 22px", textAlign: "left",
@@ -796,7 +796,7 @@ const ContactSection = ({ data }) => {
               onChange={(e) => setFields((f) => ({ ...f, message: e.target.value }))}
               onFocus={() => setFocused("message")} onBlur={() => setFocused(null)}
               rows={5} style={{ ...inputStyle("message"), resize: "vertical" }} />
-            <button onClick={() => { if (fields.name && fields.email) setSent(true); }}
+            <button type="button" onClick={() => { if (fields.name && fields.email) setSent(true); }}
               style={{ padding: "15px 0", borderRadius: 4, cursor: "pointer", border: `1px solid ${C.cyan}`, background: "rgba(0,212,255,0.08)", color: C.cyan, fontFamily: "'Space Mono', monospace", fontSize: 12, letterSpacing: 2, textTransform: "uppercase", boxShadow: C.glow, transition: "all 0.3s" }}
               onMouseEnter={(e) => { e.currentTarget.style.background = "rgba(0,212,255,0.18)"; e.currentTarget.style.boxShadow = C.glowStrong; }}
               onMouseLeave={(e) => { e.currentTarget.style.background = "rgba(0,212,255,0.08)"; e.currentTarget.style.boxShadow = C.glow; }}>
@@ -815,7 +815,7 @@ const ContactSection = ({ data }) => {
             </a>
           )}
           {socialLinks.slice(0, 3).map((s, i) => (
-            <button key={i} onClick={() => safeOpen(s.url)}
+            <button type="button" key={i} onClick={() => safeOpen(s.url)}
               style={{ background: "none", border: "none", cursor: "pointer", fontFamily: "'Space Mono', monospace", fontSize: 11, color: C.muted, transition: "color 0.3s", letterSpacing: 1, padding: 0 }}
               onMouseEnter={(e) => { e.target.style.color = C.cyan; }}
               onMouseLeave={(e) => { e.target.style.color = C.muted; }}>

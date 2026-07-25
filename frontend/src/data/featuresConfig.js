@@ -1,4 +1,4 @@
-import { FileText, Palette, Flame, Github, Network, Briefcase, Mic, Users } from 'lucide-react';
+import { FileText, Palette, Flame, Github, Network, Briefcase, Mic, Users, BookMarked } from 'lucide-react';
 import * as Ill from '../components/landing/illustrations';
 
 export const FEATURES = [
@@ -356,6 +356,50 @@ export const FEATURES = [
       { name: 'Sarah J.', role: 'Head of Talent', metric: 'Cut time-to-hire by 40%', quote: 'The AI scoring is spot on. We no longer waste time on phone screens with unqualified candidates.', avatar: 'https://api.dicebear.com/7.x/avataaars/svg?seed=Sarah', rating: 5 },
     ] },
     cta: { headline: 'Ready to transform your hiring?', subtext: 'Join forward-thinking talent teams.', ctaText: 'Get started', ctaTo: '/register' },
+  },
+  {
+    slug: 'readme-generator',
+    name: 'README Generator',
+    icon: BookMarked,
+    size: 'small',
+    badge: 'New',
+    tagline: 'Turn your GitHub profile into a stunning README in seconds with AI.',
+    Illustration: null,
+    primaryAction: { label: 'Generate README', to: '/readme-generator' },
+    seo: {
+      title: 'GitHub README Generator — CareerPilot',
+      description: 'Generate a stunning GitHub profile README.md with AI. Choose from 5 templates, auto-fetch your repos and stats.',
+      keywords: 'github readme generator, profile readme, github profile',
+      canonical: 'https://careerpilot.app/readme-generator',
+    },
+    hero: {
+      badgeText: 'README Generator',
+      title: 'Your GitHub profile',
+      accentText: 'deserves better.',
+      description: 'Generate a stunning profile README in seconds. Pick a template, paste your URL, and let AI do the rest.',
+      primaryCta: { text: 'Generate my README', to: '/readme-generator' },
+      secondaryCta: { text: 'See templates', href: '#demo' },
+      stats: [{ value: '5', label: 'Templates' }, { value: '30s', label: 'Generation time' }],
+    },
+    showcase: {
+      heading: 'Stand out on GitHub',
+      features: [
+        { icon: 'Github', title: 'Auto-fetch data', description: 'Pulls your repos, languages, and stats.' },
+        { icon: 'Layout', title: '5 templates', description: 'From minimal to creative to academic.' },
+        { icon: 'Sparkles', title: 'AI-powered', description: 'Crafts compelling copy from your data.' },
+        { icon: 'Download', title: 'Copy & deploy', description: 'One-click copy with setup instructions.' },
+      ],
+    },
+    video: { heading: 'README in 30 seconds', subheading: 'Watch the magic happen.', videoUrl: '', caption: 'Demo coming soon.' },
+    howItWorks: { title: '3 steps to a killer profile', steps: [
+      { number: 1, title: 'Paste your URL', description: 'Enter your GitHub username or profile link.', illustration: null },
+      { number: 2, title: 'Pick a template', description: 'Choose from 5 professionally designed styles.', illustration: null },
+      { number: 3, title: 'Copy & deploy', description: 'Get your README with step-by-step instructions.', illustration: null },
+    ] },
+    testimonials: { heading: 'Developers love it', items: [
+      { name: 'Jordan T.', role: 'Full Stack Dev', metric: '200+ Profile Views/week', quote: 'My GitHub profile went from blank to professional in under a minute. Recruiters actually notice now.', avatar: 'https://api.dicebear.com/7.x/avataaars/svg?seed=Jordan', rating: 5 },
+    ] },
+    cta: { headline: 'Stop having a blank GitHub profile.', subtext: 'Generate a stunning README in 30 seconds.', ctaText: 'Generate my README', ctaTo: '/readme-generator' },
   }
 ];
 

@@ -367,7 +367,7 @@ export default function PlanetaryOrbit() {
           </motion.div>
           <div className="hidden md:flex items-center gap-1">
             {PLANETS.map((p) => (
-              <button key={p.id} onClick={() => scrollTo(p.id)}
+              <button type="button" key={p.id} onClick={() => scrollTo(p.id)}
                 className="flex items-center gap-1.5 px-3 py-1.5 rounded-lg text-xs font-semibold transition-all"
                 style={{ color: activeSection === p.id ? p.color : SPACE.muted,
                   background: activeSection === p.id ? `${p.color}12` : 'transparent' }}>

@@ -625,7 +625,7 @@ const featuredProjects = projects.filter(
                 </div>
 
                 {/* Skip button (Pointer events enabled) */}
-                <button
+                <button type="button"
                   onClick={revealAll}
                   className="pointer-events-auto px-6 py-2.5 rounded-lg bg-black border border-slate-800 hover:border-white text-[10px] font-mono tracking-widest uppercase text-slate-300 hover:text-white transition-all duration-300 cursor-pointer flex items-center gap-2 shadow-2xl"
                   aria-label="Skip scratching and reveal portfolio immediately"

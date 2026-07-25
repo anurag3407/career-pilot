@@ -375,7 +375,7 @@ export default function Projects() {
       }}
     >
       {/* ── Theme Toggle ─────────────────────────────────────────────────── */}
-      <button
+      <button type="button"
         onClick={() => setIsDark(!isDark)}
         aria-label={isDark ? 'Switch to light mode' : 'Switch to dark mode'}
         style={{

@@ -28,7 +28,7 @@ function RemoteRow({ name, url, type, icon: Icon, color, delay, inView }) {
           {url}
         </a>
       </span>
-      <button
+      <button type="button"
         onClick={handleCopy}
         aria-label={`Copy ${name} URL`}
         className="opacity-0 group-hover:opacity-100 transition-opacity text-[#8B949E] hover:text-white"

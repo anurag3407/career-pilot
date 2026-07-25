@@ -370,7 +370,7 @@ export default function NeonCityscape() {
           </motion.div>
           <div className="hidden md:flex items-center gap-1">
             {navLinks.map((link) => (
-              <button key={link.id} onClick={() => scrollTo(link.id)}
+              <button type="button" key={link.id} onClick={() => scrollTo(link.id)}
                 className="px-3 py-1.5 rounded text-xs font-bold uppercase tracking-widest transition-all font-mono"
                 style={{
                   color: activeSection === link.id ? NEON.cyan : NEON.muted,

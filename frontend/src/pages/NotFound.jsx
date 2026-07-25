@@ -1,7 +1,15 @@
 import React, { useState, useEffect } from 'react';
-import { Link } from 'react-router-dom';
+import { Link, useLocation, useNavigate, useSearchParams } from 'react-router-dom';
+import SearchInput from '../components/SearchInput';
+import ReportBugModal from '../components/ReportBugModal';
 
 const NotFound = () => {
+  const location = useLocation();
+  const navigate = useNavigate();
+  const [searchParams, setSearchParams] = useSearchParams();
+  const invalidPath = `${location.pathname}${location.search}`;
+  const [searchQuery, setSearchQuery] = useState(searchParams.get('q') || invalidPath);
+  const [isReportOpen, setIsReportOpen] = useState(false);
   const [terminalText, setTerminalText] = useState('');
   const fullText = [
     '> git checkout page',
@@ -32,6 +40,10 @@ const NotFound = () => {
 
     return () => clearInterval(typingInterval);
   }, []);
+
+  useEffect(() => {
+    setSearchParams({ q: searchQuery }, { replace: true });
+  }, [searchQuery, setSearchParams]);
 
   return (
     <div className="min-h-screen flex flex-col items-center justify-center bg-[#0a0a0a] text-white p-6 font-mono overflow-hidden">
@@ -73,16 +85,53 @@ const NotFound = () => {
         </div>
       </div>
 
-      {/* Action Button */}
-      <Link
-        to="/dashboard"
-        className="px-8 py-4 bg-[#00ffaa] text-[#0a0a0a] font-bold rounded-xl transition-all duration-300 transform hover:scale-105 hover:bg-[#00e699] active:scale-95 focus:outline-none focus:ring-2 focus:ring-[#00ffaa] focus:border-transparent flex items-center gap-2 shadow-[0_0_30px_rgba(0,255,170,0.2)]"
-      >
-        <span>git checkout dashboard</span>
-        <svg xmlns="http://www.w3.org/2000/svg" className="h-5 w-5" viewBox="0 0 20 20" fill="currentColor">
-          <path fillRule="evenodd" d="M10.293 3.293a1 1 0 011.414 0l6 6a1 1 0 010 1.414l-6 6a1 1 0 01-1.414-1.414L14.586 11H3a1 1 0 110-2h11.586l-4.293-4.293a1 1 0 010-1.414z" clipRule="evenodd" />
-        </svg>
-      </Link>
+      {/* Search + CTA Section */}
+      <div className="w-full max-w-xl space-y-6 mb-10">
+        <div className="rounded-3xl border border-white/10 bg-[#111111]/80 p-6 shadow-2xl">
+          <div className="mb-4 text-sm text-neutral-400">Search this path or refine your query</div>
+          <SearchInput
+            name="notfound-search"
+            value={searchQuery}
+            placeholder="Search for a page, feature, or help topic"
+            onChange={setSearchQuery}
+            wrapperClassName="w-full"
+          />
+        </div>
+
+        <div className="grid gap-3 sm:grid-cols-3">
+          <button
+            type="button"
+            onClick={() => navigate(-1)}
+            className="w-full rounded-2xl border border-white/10 bg-[#111111]/90 px-5 py-4 text-sm font-semibold text-white transition hover:border-[#00ffaa] hover:text-[#00ffaa]"
+          >
+            Go Back
+          </button>
+          <Link
+            to="/dashboard"
+            className="w-full rounded-2xl bg-[#00ffaa] px-5 py-4 text-sm font-semibold text-[#0a0a0a] transition hover:bg-[#00e699]"
+          >
+            git checkout dashboard
+          </Link>
+          <button
+            type="button"
+            onClick={() => setIsReportOpen(true)}
+            className="w-full rounded-2xl border border-white/10 bg-[#111111]/90 px-5 py-4 text-sm font-semibold text-white transition hover:border-[#00ffaa] hover:text-[#00ffaa]"
+          >
+            Report this broken link
+          </button>
+        </div>
+      </div>
+
+      <div className="w-full max-w-xl rounded-3xl border border-white/10 bg-[#111111]/80 p-6 text-left text-sm text-neutral-300 shadow-2xl mb-8">
+        <p className="text-xs uppercase tracking-[0.25em] text-[#00ffaa]/80 mb-2">Invalid URL</p>
+        <p className="break-words font-mono text-sm text-white">{invalidPath}</p>
+      </div>
+
+      <ReportBugModal
+        isOpen={isReportOpen}
+        onClose={() => setIsReportOpen(false)}
+        invalidPath={invalidPath}
+      />
 
       {/* Subtle background element */}
       <div className="absolute top-1/2 left-1/2 -translate-x-1/2 -translate-y-1/2 w-[500px] h-[500px] bg-[#00ffaa] opacity-[0.03] blur-[100px] -z-10 rounded-full"></div>

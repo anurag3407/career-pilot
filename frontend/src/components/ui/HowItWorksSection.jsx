@@ -1,6 +1,6 @@
 import { useRef } from "react";
 import { motion, useScroll, useTransform } from "framer-motion";
-import { FileText, Sparkles, Target, ArrowRight } from "lucide-react";
+import { FileText, Sparkles, Target } from "lucide-react";
 
 const steps = [
   {
@@ -26,110 +26,73 @@ const steps = [
   },
 ];
 
-function StepCard({ item, index }) {
-  const Icon = item.icon;
-  return (
-    <motion.div
-      initial={{ opacity: 0, y: 40 }}
-      whileInView={{ opacity: 1, y: 0 }}
-      viewport={{ once: true, margin: "-80px" }}
-      transition={{ duration: 0.6, delay: index * 0.15, ease: [0.16, 1, 0.3, 1] }}
-      className="group relative"
-    >
-      {/* Connector arrow between cards (desktop) */}
-      {index < steps.length - 1 && (
-        <div className="absolute -right-4 top-16 z-20 hidden h-8 w-8 items-center justify-center rounded-full border border-border bg-background text-primary lg:flex">
-          <ArrowRight className="h-4 w-4" />
-        </div>
-      )}
-
-      <div className="relative h-full overflow-hidden rounded-3xl border border-border bg-card/50 p-8 backdrop-blur-xl transition-all duration-500 hover:-translate-y-2 hover:border-primary/40 hover:shadow-2xl hover:shadow-primary/10">
-        {/* Big watermark numeral */}
-        <span
-          aria-hidden
-          className="pointer-events-none absolute -right-2 -top-6 select-none text-[7rem] font-black leading-none text-foreground/[0.04]"
-        >
-          {item.step}
-        </span>
-
-        {/* Gradient numeral chip */}
-        <div className="relative mb-6 inline-flex items-center gap-3">
-          <span className="bg-linear-to-br from-primary to-secondary bg-clip-text text-2xl font-black tracking-tight text-transparent">
-            {item.step}
-          </span>
-          <span className="h-px w-10 bg-linear-to-r from-primary/60 to-transparent" />
-        </div>
-
-        {/* Icon */}
-        <div className="relative mb-6 flex h-14 w-14 items-center justify-center rounded-2xl border border-border bg-muted text-primary transition-all duration-500 group-hover:scale-110 group-hover:border-primary/40 group-hover:bg-primary/15">
-          <Icon className="h-6 w-6" strokeWidth={1.8} />
-          <span className="absolute inset-0 rounded-2xl bg-primary/20 opacity-0 blur-md transition-opacity duration-500 group-hover:opacity-100" />
-        </div>
-
-        <h3 className="mb-3 text-xl font-black tracking-tight text-foreground">
-          {item.title}
-        </h3>
-        <p className="text-sm font-medium leading-relaxed text-muted-foreground">
-          {item.description}
-        </p>
-      </div>
-    </motion.div>
-  );
-}
-
 export default function HowItWorksSection() {
-  const ref = useRef(null);
+  const containerRef = useRef(null);
   const { scrollYProgress } = useScroll({
-    target: ref,
-    offset: ["start 70%", "center 50%"],
+    target: containerRef,
+    offset: ["start 60%", "end 40%"],
   });
-  const lineWidth = useTransform(scrollYProgress, [0, 1], ["0%", "100%"]);
+  const lineScale = useTransform(scrollYProgress, [0, 1], [0, 1]);
 
   return (
-    <section className="relative overflow-hidden py-28 lg:py-36">
-      <div className="pointer-events-none absolute inset-0">
-        <div className="absolute left-1/2 top-1/3 h-[400px] w-[700px] -translate-x-1/2 rounded-full bg-primary/[0.07] blur-[140px]" />
-      </div>
-
-      <div className="relative z-10 mx-auto max-w-7xl px-4 sm:px-6 lg:px-8">
+    <section className="relative overflow-hidden py-32 lg:py-40">
+      <div className="relative z-10 mx-auto max-w-4xl px-4 sm:px-6 lg:px-8">
         {/* Header */}
         <motion.div
           initial={{ opacity: 0, y: 20 }}
           whileInView={{ opacity: 1, y: 0 }}
           viewport={{ once: true }}
-          className="mx-auto mb-20 max-w-2xl text-center"
+          className="mb-24"
         >
-          <div className="mb-6 flex justify-center">
-            <div className="inline-flex items-center gap-2 rounded-full border border-border bg-card/60 px-4 py-1.5 backdrop-blur-md">
-              <span className="text-xs font-bold uppercase tracking-[0.2em] text-muted-foreground">
-                How it works
-              </span>
-            </div>
-          </div>
-          <h2 className="text-4xl font-black tracking-tight text-foreground md:text-6xl">
-            From résumé to{" "}
-            <span className="gradient-text-animated">dream role</span>
+          <span className="text-[11px] font-black uppercase tracking-[0.35em] text-primary/70">
+            006 — Process
+          </span>
+          <h2 className="mt-4 text-4xl font-black leading-[0.95] tracking-tighter text-foreground md:text-7xl">
+            Three steps.
+            <br />
+            <span className="text-muted-foreground/40">That's it.</span>
           </h2>
-          <p className="mx-auto mt-6 max-w-2xl text-lg font-medium text-muted-foreground">
-            Three simple steps to accelerate your job search and land your dream
-            role.
-          </p>
         </motion.div>
 
-        {/* Steps with animated progress line */}
-        <div ref={ref} className="relative">
-          {/* Track + animated fill (desktop) */}
-          <div className="absolute left-0 right-0 top-[4.75rem] hidden lg:block">
-            <div className="h-px w-full bg-border" />
-            <motion.div
-              style={{ width: lineWidth }}
-              className="absolute top-0 h-px bg-linear-to-r from-primary via-secondary to-primary"
-            />
-          </div>
+        {/* Vertical timeline */}
+        <div ref={containerRef} className="relative">
+          {/* Timeline line */}
+          <div className="absolute left-[27px] top-0 bottom-0 w-px bg-border md:left-[35px]" />
+          <motion.div
+            style={{ scaleY: lineScale }}
+            className="absolute left-[27px] top-0 bottom-0 w-px origin-top bg-primary md:left-[35px]"
+          />
 
-          <div className="grid gap-6 lg:grid-cols-3">
-            {steps.map((item, i) => (
-              <StepCard key={item.step} item={item} index={i} />
+          <div className="space-y-20">
+            {steps.map((item, index) => (
+              <motion.div
+                key={item.step}
+                initial={{ opacity: 0, y: 30 }}
+                whileInView={{ opacity: 1, y: 0 }}
+                viewport={{ once: true, margin: "-60px" }}
+                transition={{ duration: 0.6, delay: index * 0.12, ease: [0.16, 1, 0.3, 1] }}
+                className="relative flex gap-8 md:gap-12"
+              >
+                {/* Node */}
+                <div className="relative z-10 shrink-0">
+                  <div className="flex h-14 w-14 items-center justify-center rounded-full border-2 border-primary bg-background shadow-lg shadow-primary/10 md:h-[72px] md:w-[72px]">
+                    <item.icon className="h-6 w-6 text-primary md:h-7 md:w-7" strokeWidth={1.5} />
+                  </div>
+                </div>
+
+                {/* Content */}
+                <div className="pb-4 pt-2">
+                  <span className="text-[11px] font-black uppercase tracking-[0.3em] text-muted-foreground/40">
+                    Step {item.step}
+                  </span>
+                  <h3 className="mt-2 text-2xl font-black tracking-tight text-foreground md:text-4xl">
+                    {item.title}
+                  </h3>
+                  <p className="mt-3 max-w-lg text-base font-medium leading-relaxed text-muted-foreground">
+                    {item.description}
+                  </p>
+                </div>
+              </motion.div>
             ))}
           </div>
         </div>

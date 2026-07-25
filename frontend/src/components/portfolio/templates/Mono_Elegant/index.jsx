@@ -440,7 +440,7 @@ export default function MonoElegant() {
         <div className="max-w-7xl mx-auto px-6 h-20 flex items-center justify-between">
           
           {/* Logo / Initials */}
-          <button 
+          <button type="button" 
             onClick={() => handleScrollTo("hero")}
             className="text-lg font-bold tracking-[0.25em] uppercase mono-font-sans flex items-center gap-2"
           >
@@ -459,7 +459,7 @@ export default function MonoElegant() {
               { id: "contact", label: "Contact" }
             ].map((item) => (
               <Magnetic key={item.id}>
-                <button
+                <button type="button"
                   onClick={() => handleScrollTo(item.id)}
                   className={`mono-nav-link text-xs uppercase tracking-widest text-neutral-400 dark:text-neutral-500 hover:text-current px-1 py-1 ${
                     activeSection === item.id ? "text-neutral-900 dark:text-neutral-100 font-semibold" : ""
@@ -474,7 +474,7 @@ export default function MonoElegant() {
           {/* Theme Toggler + Menu Toggle */}
           <div className="flex items-center gap-4">
             <Magnetic>
-              <button
+              <button type="button"
                 onClick={() => setIsNoir(!isNoir)}
                 className="px-3.5 py-1 text-[10px] tracking-widest uppercase border mono-border rounded-full hover:bg-neutral-100 dark:hover:bg-neutral-900 transition-colors"
                 aria-label="Toggle monochrome theme"
@@ -484,7 +484,7 @@ export default function MonoElegant() {
             </Magnetic>
 
             {/* Mobile Menu Toggle */}
-            <button
+            <button type="button"
               onClick={() => setMobileMenuOpen(!mobileMenuOpen)}
               className="p-1 md:hidden hover:opacity-75 transition-opacity"
               aria-label="Toggle navigation menu"
@@ -515,7 +515,7 @@ export default function MonoElegant() {
                 { id: "testimonials", label: "Quotes" },
                 { id: "contact", label: "Contact" }
               ].map((item) => (
-                <button
+                <button type="button"
                   key={item.id}
                   onClick={() => handleScrollTo(item.id)}
                   className="text-left text-sm uppercase tracking-widest py-2 border-b mono-border last:border-0"
@@ -589,7 +589,7 @@ export default function MonoElegant() {
           {/* Calls to Action */}
           <motion.div variants={fadeUp} className="flex flex-wrap gap-4 justify-center">
             <Magnetic>
-              <button 
+              <button type="button" 
                 onClick={() => handleScrollTo("contact")}
                 className="mono-btn-primary px-9 py-4 text-xs uppercase tracking-widest flex items-center gap-2 border mono-border"
               >
@@ -598,7 +598,7 @@ export default function MonoElegant() {
               </button>
             </Magnetic>
             <Magnetic>
-              <button 
+              <button type="button" 
                 onClick={() => handleScrollTo("projects")}
                 className="mono-btn-secondary px-9 py-4 text-xs uppercase tracking-widest"
               >
@@ -1022,7 +1022,7 @@ export default function MonoElegant() {
           </p>
           <div className="flex gap-6 text-[10px] uppercase tracking-widest">
             <Magnetic>
-              <button onClick={() => handleScrollTo("hero")} className="hover:text-neutral-900 dark:hover:text-white transition-colors">Back to Top</button>
+              <button type="button" onClick={() => handleScrollTo("hero")} className="hover:text-neutral-900 dark:hover:text-white transition-colors">Back to Top</button>
             </Magnetic>
           </div>
         </div>
@@ -1051,7 +1051,7 @@ function ProjectsGrid({ projects }) {
         <span className="text-[10px] uppercase tracking-widest text-neutral-400 dark:text-neutral-500 mr-4">// Taxonomy:</span>
         {allTech.map((tech) => (
           <Magnetic key={tech}>
-            <button
+            <button type="button"
               onClick={() => setActiveFilter(tech)}
               className={`px-3 py-1.5 text-[10px] uppercase tracking-widest border transition-colors ${
                 activeFilter === tech
@@ -1211,7 +1211,7 @@ function TestimonialsCarousel({ testimonials }) {
       {/* Buttons */}
       <div className="flex justify-end gap-2 mt-8 md:mt-4">
         <Magnetic>
-          <button
+          <button type="button"
             onClick={handlePrev}
             className="p-2.5 border mono-border hover:bg-neutral-100 dark:hover:bg-neutral-900 transition-colors flex items-center justify-center"
             aria-label="Previous quote"
@@ -1220,7 +1220,7 @@ function TestimonialsCarousel({ testimonials }) {
           </button>
         </Magnetic>
         <Magnetic>
-          <button
+          <button type="button"
             onClick={handleNext}
             className="p-2.5 border mono-border hover:bg-neutral-100 dark:hover:bg-neutral-900 transition-colors flex items-center justify-center"
             aria-label="Next quote"

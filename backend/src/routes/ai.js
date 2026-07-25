@@ -36,20 +36,44 @@ router.get('/models', verifyToken, async (req, res) => {
 
     if (provider?.toLowerCase() === 'openrouter') {
         try {
-            const response = await fetch('https://openrouter.ai/api/v1/models');
+            const response = await fetch('https://openrouter.ai/api/v1/models', {
+                headers: {
+                    'HTTP-Referer': process.env.FRONTEND_URL || 'http://localhost:5173',
+                    'X-Title': 'CareerPilot',
+                    'User-Agent': 'CareerPilot/1.0',
+                    'Accept': 'application/json'
+                },
+                signal: AbortSignal.timeout(10000)
+            });
             if (!response.ok) {
                 throw new Error(`OpenRouter models API returned ${response.status}`);
             }
             const data = await response.json();
 
-            // Transform OpenRouter model data
-            const models = (data.data || []).map(model => ({
-                id: model.id,
-                name: model.name || model.id,
-                description: model.description || '',
-                pricing: model.pricing || null,
-                context_length: model.context_length || 0
-            }));
+            // Transform OpenRouter model data with pricing & free/paid classification
+            const models = (data.data || []).map(model => {
+                const promptPrice = parseFloat(model.pricing?.prompt || 0);
+                const completionPrice = parseFloat(model.pricing?.completion || 0);
+                const isFree = model.id.endsWith(':free') || (promptPrice === 0 && completionPrice === 0);
+                
+                let priceFormatted = 'Free';
+                if (!isFree) {
+                    const promptPer1M = promptPrice * 1000000;
+                    priceFormatted = promptPer1M < 0.01 
+                        ? `<$0.01 / 1M prompt` 
+                        : `$${promptPer1M.toFixed(2)} / 1M prompt`;
+                }
+
+                return {
+                    id: model.id,
+                    name: model.name || model.id,
+                    isFree,
+                    price: priceFormatted,
+                    description: model.description || '',
+                    pricing: model.pricing || null,
+                    context_length: model.context_length || 0
+                };
+            });
 
             return res.status(200).json({
                 success: true,
@@ -157,18 +181,59 @@ router.post('/validate-key', verifyToken, async (req, res) => {
             }
 
             case 'openrouter': {
-                const response = await fetch('https://openrouter.ai/api/v1/auth/key', {
-                    headers: { 'Authorization': `Bearer ${apiKey}` }
-                });
-                if (response.ok) {
-                    const data = await response.json();
-                    valid = true;
-                    meta.label = data.data?.label || 'API Key';
-                    meta.usage = data.data?.usage;
-                } else if (response.status === 401 || response.status === 403) {
-                    return res.json({ success: true, valid: false, error: 'Invalid API key — check your OpenRouter key at openrouter.ai/keys' });
-                } else {
-                    return res.json({ success: true, valid: false, error: `OpenRouter returned status ${response.status}` });
+                const cleanKey = apiKey.trim();
+                const authHeaders = {
+                    'Authorization': `Bearer ${cleanKey}`,
+                    'HTTP-Referer': process.env.FRONTEND_URL || 'http://localhost:5173',
+                    'X-Title': 'CareerPilot',
+                    'User-Agent': 'CareerPilot/1.0',
+                    'Accept': 'application/json'
+                };
+
+                try {
+                    const response = await fetch('https://openrouter.ai/api/v1/auth/key', {
+                        headers: authHeaders,
+                        signal: AbortSignal.timeout(10000)
+                    });
+
+                    if (response.ok) {
+                        const data = await response.json();
+                        valid = true;
+                        meta.label = data.data?.label || 'API Key';
+                        meta.usage = data.data?.usage;
+                    } else if (response.status === 401 || response.status === 403) {
+                        return res.json({ success: true, valid: false, error: 'Invalid API key — check your OpenRouter key at openrouter.ai/keys' });
+                    } else {
+                        // Fallback check to /models with key
+                        const modelRes = await fetch('https://openrouter.ai/api/v1/models', {
+                            headers: authHeaders,
+                            signal: AbortSignal.timeout(10000)
+                        });
+                        if (modelRes.ok) {
+                            valid = true;
+                            meta.label = 'API Key';
+                        } else if (modelRes.status === 401 || modelRes.status === 403) {
+                            return res.json({ success: true, valid: false, error: 'Invalid API key — check your OpenRouter key at openrouter.ai/keys' });
+                        } else {
+                            return res.json({ success: true, valid: false, error: `OpenRouter returned status ${response.status}` });
+                        }
+                    }
+                } catch (fetchErr) {
+                    console.warn('OpenRouter key validation socket/network error, attempting fallback models check:', fetchErr.message);
+                    try {
+                        const modelRes = await fetch('https://openrouter.ai/api/v1/models', {
+                            headers: authHeaders,
+                            signal: AbortSignal.timeout(10000)
+                        });
+                        if (modelRes.ok) {
+                            valid = true;
+                            meta.label = 'API Key';
+                        } else {
+                            return res.json({ success: true, valid: false, error: `OpenRouter connection error: ${fetchErr.message}` });
+                        }
+                    } catch (secErr) {
+                        return res.json({ success: true, valid: false, error: `Socket connection failed to OpenRouter servers: ${fetchErr.message}` });
+                    }
                 }
                 break;
             }
@@ -245,6 +310,65 @@ router.post('/validate-key', verifyToken, async (req, res) => {
             success: false,
             valid: false,
             error: `Failed to validate key: ${error.message}`
+        });
+    }
+});
+
+// ---------------------------------------------------------------------------
+// POST /ai/openrouter/oauth-exchange — exchange PKCE auth code for OpenRouter key
+// ---------------------------------------------------------------------------
+router.post('/openrouter/oauth-exchange', verifyToken, async (req, res) => {
+    const { code, code_verifier } = req.body;
+
+    if (!code || !code_verifier) {
+        return res.status(400).json({
+            success: false,
+            error: 'Authorization code and code_verifier are required'
+        });
+    }
+
+    try {
+        const response = await fetch('https://openrouter.ai/api/v1/auth/keys', {
+            method: 'POST',
+            headers: {
+                'Content-Type': 'application/json',
+                'HTTP-Referer': process.env.FRONTEND_URL || 'http://localhost:5173',
+                'X-Title': 'CareerPilot',
+                'User-Agent': 'CareerPilot/1.0'
+            },
+            body: JSON.stringify({
+                code,
+                code_verifier,
+                code_challenge_method: 'S256'
+            })
+        });
+
+        if (!response.ok) {
+            const errorText = await response.text();
+            console.error('OpenRouter OAuth exchange response error:', response.status, errorText);
+            return res.status(400).json({
+                success: false,
+                error: `OpenRouter returned status ${response.status}: ${errorText || response.statusText}`
+            });
+        }
+
+        const data = await response.json();
+        if (data.key) {
+            return res.status(200).json({
+                success: true,
+                key: data.key
+            });
+        } else {
+            return res.status(400).json({
+                success: false,
+                error: 'No key returned from OpenRouter'
+            });
+        }
+    } catch (error) {
+        console.error('OpenRouter OAuth Exchange Error:', error);
+        return res.status(500).json({
+            success: false,
+            error: `Failed to exchange OAuth code: ${error.message}`
         });
     }
 });

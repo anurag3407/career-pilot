@@ -5,7 +5,7 @@ export default function ChatHeader({ channelName, onToggleMobile }) {
   return (
     <div className="h-12 min-h-[48px] px-2 sm:px-4 flex items-center border-b border-[#1F2023] shadow-sm bg-[#313338] select-none">
       {/* Mobile hamburger */}
-      <button onClick={onToggleMobile} aria-label="Toggle mobile menu" className="md:hidden mr-2 text-[#B5BAC1] hover:text-white cursor-pointer">
+      <button type="button" onClick={onToggleMobile} aria-label="Toggle mobile menu" className="md:hidden mr-2 text-[#B5BAC1] hover:text-white cursor-pointer">
         <Menu className="w-5 h-5" />
       </button>
 

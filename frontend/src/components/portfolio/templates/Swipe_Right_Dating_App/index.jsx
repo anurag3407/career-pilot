@@ -167,7 +167,7 @@ export default function SwipeRightDatingApp() {
             </span>
           </div>
           <div className="flex gap-2">
-            <button
+            <button type="button"
               onClick={() => setActiveTab("match")}
               className="p-2 text-rose-400 hover:bg-rose-50 rounded-full transition-colors"
               title="Connect"
@@ -211,7 +211,7 @@ export default function SwipeRightDatingApp() {
             const Icon = tab.icon;
             const isActive = activeTab === tab.id;
             return (
-              <button
+              <button type="button"
                 key={tab.id}
                 onClick={() => setActiveTab(tab.id)}
                 className={`w-full flex items-center gap-3 px-3 py-2.5 rounded-xl text-sm font-semibold transition-all ${
@@ -230,7 +230,7 @@ export default function SwipeRightDatingApp() {
 
           {/* Matches / Testimonials trigger list */}
           <div className="space-y-1">
-            <button
+            <button type="button"
               onClick={() => setActiveTab("testimonials")}
               className={`w-full flex items-center gap-3 px-3 py-2.5 rounded-xl text-sm font-semibold transition-all ${
                 activeTab === "testimonials"
@@ -243,7 +243,7 @@ export default function SwipeRightDatingApp() {
             </button>
             <div className="flex gap-2 px-3 py-1 overflow-x-auto scrollbar-none">
               {testimonials.map((testi, i) => (
-                <button
+                <button type="button"
                   key={i}
                   onClick={() => {
                     setActiveTestimonialIdx(i);
@@ -271,7 +271,7 @@ export default function SwipeRightDatingApp() {
 
           {/* DMs / Experience list */}
           <div className="space-y-1 pt-2">
-            <button
+            <button type="button"
               onClick={() => setActiveTab("chats")}
               className={`w-full flex items-center gap-3 px-3 py-2.5 rounded-xl text-sm font-semibold transition-all ${
                 activeTab === "chats"
@@ -284,7 +284,7 @@ export default function SwipeRightDatingApp() {
             </button>
             <div className="space-y-1">
               {experienceList.map((exp, i) => (
-                <button
+                <button type="button"
                   key={i}
                   onClick={() => {
                     setActiveChatIdx(i);
@@ -306,7 +306,7 @@ export default function SwipeRightDatingApp() {
 
         {/* Sidebar Footer */}
         <div className="p-4 border-t border-rose-50 text-center">
-          <button
+          <button type="button"
             onClick={() => setActiveTab("match")}
             className="w-full py-2 bg-gradient-to-r from-rose-500 to-pink-500 text-white text-sm font-bold rounded-xl shadow-md hover:from-rose-600 hover:to-pink-600 transition-all flex items-center justify-center gap-2"
           >
@@ -326,7 +326,7 @@ export default function SwipeRightDatingApp() {
           </span>
         </div>
         <div className="flex items-center gap-3">
-          <button
+          <button type="button"
             onClick={() => setActiveTab("profile")}
             className="w-8 h-8 rounded-full overflow-hidden border-2 border-pink-400"
           >
@@ -443,7 +443,7 @@ export default function SwipeRightDatingApp() {
                 {/* Tinder Action Buttons */}
                 <div className="p-5 bg-gradient-to-t from-rose-50/50 to-white flex items-center justify-around border-t border-rose-50/50">
                   {/* Rewind */}
-                  <button
+                  <button type="button"
                     onClick={() => {
                       setActiveTab("profile");
                     }}
@@ -454,7 +454,7 @@ export default function SwipeRightDatingApp() {
                   </button>
 
                   {/* Pass */}
-                  <button
+                  <button type="button"
                     onClick={() => setActiveTab("profile")}
                     className="w-14 h-14 bg-white text-rose-500 hover:bg-rose-50 rounded-full flex items-center justify-center border border-gray-100 shadow-md transition-all active:scale-95 hover:scale-105"
                     title="Nope"
@@ -463,7 +463,7 @@ export default function SwipeRightDatingApp() {
                   </button>
 
                   {/* Super Like */}
-                  <button
+                  <button type="button"
                     onClick={triggerSuperLike}
                     className="w-12 h-12 bg-white text-sky-400 hover:bg-sky-50 rounded-full flex items-center justify-center border border-gray-100 shadow-md transition-all active:scale-95 hover:scale-105"
                     title="Super Like"
@@ -472,7 +472,7 @@ export default function SwipeRightDatingApp() {
                   </button>
 
                   {/* Like */}
-                  <button
+                  <button type="button"
                     onClick={() => setActiveTab("match")}
                     className="w-14 h-14 bg-gradient-to-r from-rose-500 to-pink-500 text-white rounded-full flex items-center justify-center shadow-lg shadow-rose-500/20 hover:shadow-rose-500/30 transition-all active:scale-95 hover:scale-105"
                     title="Like & Match"
@@ -481,7 +481,7 @@ export default function SwipeRightDatingApp() {
                   </button>
 
                   {/* Boost */}
-                  <button
+                  <button type="button"
                     onClick={() => setActiveTab("skills")}
                     className="w-12 h-12 bg-white text-purple-500 hover:text-purple-600 rounded-full flex items-center justify-center border border-gray-100 shadow-md transition-all active:scale-95 group"
                     title="Developer Interests / Skills"
@@ -509,7 +509,7 @@ export default function SwipeRightDatingApp() {
                     <h2 className="text-2xl font-extrabold">Dating Profile Info</h2>
                     <p className="text-rose-100 text-xs">Let's check if we match requirements ❤️</p>
                   </div>
-                  <button
+                  <button type="button"
                     onClick={() => setActiveTab("discover")}
                     className="p-2 bg-white/20 hover:bg-white/30 text-white rounded-full transition-colors"
                   >
@@ -578,7 +578,7 @@ export default function SwipeRightDatingApp() {
                 </div>
 
                 <div className="p-4 bg-rose-50/50 border-t border-rose-50 flex gap-3">
-                  <button
+                  <button type="button"
                     onClick={() => setActiveTab("skills")}
                     className="flex-1 py-3 bg-gradient-to-r from-rose-500 to-pink-500 text-white font-bold rounded-2xl hover:opacity-90 shadow-md text-sm transition-all flex items-center justify-center gap-2"
                   >
@@ -605,7 +605,7 @@ export default function SwipeRightDatingApp() {
                     <h2 className="text-2xl font-extrabold">My Interests & Badges</h2>
                     <p className="text-rose-100 text-xs">These are the stacks I swiped right on ⚡</p>
                   </div>
-                  <button
+                  <button type="button"
                     onClick={() => setActiveTab("discover")}
                     className="p-2 bg-white/20 hover:bg-white/30 text-white rounded-full transition-colors"
                   >
@@ -660,7 +660,7 @@ export default function SwipeRightDatingApp() {
                 </div>
 
                 <div className="p-4 bg-rose-50/50 border-t border-rose-50">
-                  <button
+                  <button type="button"
                     onClick={() => setActiveTab("projects")}
                     className="w-full py-3 bg-gradient-to-r from-rose-500 to-pink-500 text-white font-bold rounded-2xl hover:opacity-90 shadow-md text-sm transition-all flex items-center justify-center gap-2"
                   >
@@ -707,7 +707,7 @@ export default function SwipeRightDatingApp() {
                     <p className="text-slate-500 text-sm mt-2 max-w-xs mx-auto">
                       You've swiped through all of my projects. Reset the stack to review them again or check out my employment chats.
                     </p>
-                    <button
+                    <button type="button"
                       onClick={() => setProjectIndex(0)}
                       className="mt-6 px-6 py-2.5 bg-gradient-to-r from-rose-500 to-pink-500 text-white font-bold rounded-full shadow-md text-sm transition-all hover:opacity-90 flex items-center gap-2 mx-auto"
                     >
@@ -758,7 +758,7 @@ export default function SwipeRightDatingApp() {
               <div className="bg-white rounded-[32px] shadow-xl overflow-hidden border border-rose-100 flex flex-col h-[75vh]">
                 {/* Chat Header */}
                 <div className="p-4 bg-gradient-to-r from-rose-500 to-pink-500 text-white flex items-center gap-3">
-                  <button
+                  <button type="button"
                     onClick={() => setActiveTab("discover")}
                     className="p-1 hover:bg-white/20 rounded-full transition-colors lg:hidden"
                   >
@@ -855,7 +855,7 @@ export default function SwipeRightDatingApp() {
                 {/* Mobile Chat Switcher Buttons */}
                 {experienceList.length > 1 && (
                   <div className="p-3 bg-white border-t border-rose-100 flex items-center justify-between text-xs text-slate-500 shrink-0">
-                    <button
+                    <button type="button"
                       disabled={activeChatIdx === 0}
                       onClick={() => setActiveChatIdx(prev => prev - 1)}
                       className="px-3 py-1.5 rounded-lg border border-gray-200 hover:bg-slate-50 disabled:opacity-50 disabled:hover:bg-white flex items-center gap-1 font-bold"
@@ -865,7 +865,7 @@ export default function SwipeRightDatingApp() {
                     <span className="font-semibold text-slate-400">
                       {activeChatIdx + 1} / {experienceList.length}
                     </span>
-                    <button
+                    <button type="button"
                       disabled={activeChatIdx === experienceList.length - 1}
                       onClick={() => setActiveChatIdx(prev => prev + 1)}
                       className="px-3 py-1.5 rounded-lg border border-gray-200 hover:bg-slate-50 disabled:opacity-50 disabled:hover:bg-white flex items-center gap-1 font-bold"
@@ -894,7 +894,7 @@ export default function SwipeRightDatingApp() {
                     <h2 className="text-2xl font-extrabold">My Matches (Feedback)</h2>
                     <p className="text-rose-100 text-xs">Inbox recommendations from collaborators ⭐</p>
                   </div>
-                  <button
+                  <button type="button"
                     onClick={() => setActiveTab("discover")}
                     className="p-2 bg-white/20 hover:bg-white/30 text-white rounded-full transition-colors"
                   >
@@ -961,7 +961,7 @@ export default function SwipeRightDatingApp() {
                 </div>
 
                 <div className="p-4 bg-rose-50/50 border-t border-rose-50 shrink-0">
-                  <button
+                  <button type="button"
                     onClick={() => setActiveTab("match")}
                     className="w-full py-3 bg-gradient-to-r from-rose-500 to-pink-500 text-white font-bold rounded-2xl hover:opacity-90 shadow-md text-sm transition-all flex items-center justify-center gap-2"
                   >
@@ -1086,7 +1086,7 @@ export default function SwipeRightDatingApp() {
                   </div>
 
                   {/* Reset Discovery */}
-                  <button
+                  <button type="button"
                     onClick={() => setActiveTab("discover")}
                     className="text-slate-400 hover:text-slate-200 text-xs font-semibold pt-4 flex items-center justify-center gap-1.5 mx-auto transition-colors"
                   >
@@ -1105,7 +1105,7 @@ export default function SwipeRightDatingApp() {
           const Icon = tab.icon;
           const isActive = activeTab === tab.id;
           return (
-            <button
+            <button type="button"
               key={tab.id}
               onClick={() => setActiveTab(tab.id)}
               className="flex flex-col items-center justify-center flex-1 h-full relative"
@@ -1257,7 +1257,7 @@ function ProjectCard({ project, isTop, indexOffset, onSwipeLeft, onSwipeRight, o
       {/* Card Action Buttons (only interactive on top card) */}
       <div className="p-4 bg-slate-50 border-t border-rose-50 flex items-center justify-around shrink-0">
         {/* Pass Button */}
-        <button
+        <button type="button"
           onClick={isTop ? onPass : undefined}
           className="w-10 h-10 bg-white hover:bg-rose-50 text-slate-400 hover:text-slate-600 rounded-full flex items-center justify-center border border-gray-200 shadow-sm transition-all active:scale-95"
           title="Pass Card"
@@ -1266,7 +1266,7 @@ function ProjectCard({ project, isTop, indexOffset, onSwipeLeft, onSwipeRight, o
         </button>
 
         {/* Like Button (opens Github) */}
-        <button
+        <button type="button"
           onClick={isTop ? () => {
             onSwipeLeft();
           } : undefined}
@@ -1277,7 +1277,7 @@ function ProjectCard({ project, isTop, indexOffset, onSwipeLeft, onSwipeRight, o
         </button>
 
         {/* Match Button (opens Live Link) */}
-        <button
+        <button type="button"
           onClick={isTop ? () => {
             onSwipeRight();
           } : undefined}

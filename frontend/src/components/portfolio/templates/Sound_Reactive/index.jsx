@@ -319,7 +319,7 @@ export default function SoundReactive() {
 
       {/* Mic Control Fab */}
       <div className="fixed bottom-8 right-8 z-50">
-        <button
+        <button type="button"
           onClick={isListening ? stopListening : startListening}
           className={`flex items-center justify-center p-4 rounded-full backdrop-blur-md border ${
             isListening 

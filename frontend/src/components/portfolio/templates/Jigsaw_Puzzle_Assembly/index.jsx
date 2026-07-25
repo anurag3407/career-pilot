@@ -534,11 +534,9 @@ function Hero({ personal, socials, stats }) {
         {/* Profile avatar — true 3D quad assembly */}
         <div style={{perspective:'900px',marginBottom:32}}>
           <motion.div className="relative" style={{width:148,height:148,transformStyle:'preserve-3d'}}
-            initial="hidden" animate="visible"
-            // idle float
-            animate={{y:[0,-8,0]}}
-            transition={{duration:4,repeat:Infinity,ease:'easeInOut',delay:2.5}}>
-            <motion.div className="relative" style={{width:148,height:148}}
+             initial="hidden" animate={{y:[0,-8,0]}}
+             transition={{duration:4,repeat:Infinity,ease:'easeInOut',delay:2.5}}>
+             <motion.div className="relative" style={{width:148,height:148}}
               initial="hidden" animate="visible"
               variants={{hidden:{},visible:{transition:{staggerChildren:0.14,delayChildren:0.2}}}}>
               {heroQuadDefs.map(q=>(
@@ -1181,10 +1179,9 @@ function TestimonialCard({ testimonial, index }) {
   return (
     <PuzzleAssemble delay={index*0.08}>
       <motion.div className="relative rounded-2xl p-6 flex flex-col gap-4 group"
-        style={{background:accent.fill,border:`1px solid ${accent.border}`,backdropFilter:'blur(10px)',willChange:'transform'}}
+        style={{background:accent.fill,border:`1px solid ${accent.border}`,backdropFilter:'blur(10px)',willChange:'transform',perspective:'700px'}}
         whileHover={{y:-8,z:30,rotateX:-4,boxShadow:`0 20px 60px ${accent.border}88`}}
-        transition={{duration:0.22}}
-        style={{perspective:'700px'}}>
+        transition={{duration:0.22}}>
         <motion.div aria-hidden="true" className="absolute top-4 right-4 pointer-events-none"
           initial={{opacity:0,rotate:-90,z:-30}} whileInView={{opacity:0.3,rotate:0,z:0}}
           viewport={{once:true}}

@@ -552,7 +552,7 @@ function Contact() {
               placeholder="Your Message"
               className="w-full px-4 py-3 rounded-lg bg-purple-500/5 border border-purple-500/20 text-white placeholder-gray-500 text-sm focus:outline-none focus:border-purple-500/50 transition-all mb-4 resize-none"
             />
-            <button className="w-full py-3 rounded-lg bg-purple-600 hover:bg-purple-500 text-white font-medium transition-all hover:shadow-[0_0_20px_rgba(168,85,247,0.4)]">
+            <button type="button" className="w-full py-3 rounded-lg bg-purple-600 hover:bg-purple-500 text-white font-medium transition-all hover:shadow-[0_0_20px_rgba(168,85,247,0.4)]">
               <Send size={16} className="inline mr-2" />
               Send Message
             </button>

@@ -297,7 +297,7 @@ export default function F1Hero({ data }) {
 
           {/* Reset button inside grid light panel */}
           {isRaceStarted && (
-            <button 
+            <button type="button" 
               onClick={restartSequence} 
               className="ml-4 p-1.5 rounded-full hover:bg-neutral-800 border border-neutral-800 text-neutral-400 hover:text-white transition-colors duration-150 group"
               title="Restart Lights Sequence"
@@ -584,7 +584,7 @@ export default function F1Hero({ data }) {
                 </div>
 
                 {/* DRS and Control Buttons */}
-                <button 
+                <button type="button" 
                   onClick={() => setIsTimerRunning(prev => !prev)}
                   className="px-3 py-1.5 border border-neutral-800 hover:border-neutral-600 bg-neutral-900 text-[10px] font-mono font-bold tracking-wider rounded-md transition-colors hover:text-white uppercase"
                   disabled={!isRaceStarted}

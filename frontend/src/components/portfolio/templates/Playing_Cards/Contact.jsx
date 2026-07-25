@@ -42,7 +42,7 @@ const Contact = ({ data }) => {
               <p className="text-purple-600 text-sm mb-2">Email Me</p>
               <div className="flex items-center gap-2">
                 <Mail className="w-5 h-5 text-purple-600" /><span className="text-gray-900 flex-1">{socials.email}</span>
-                <button onClick={() => { navigator.clipboard.writeText(socials.email); setCopied(true); setTimeout(() => setCopied(false), 2000); }} className="p-2 bg-purple-100 rounded-lg hover:bg-purple-200">{copied ? <CheckCircle className="w-4 h-4 text-green-600" /> : <Copy className="w-4 h-4 text-purple-600" />}</button>
+                <button type="button" onClick={() => { navigator.clipboard.writeText(socials.email); setCopied(true); setTimeout(() => setCopied(false), 2000); }} className="p-2 bg-purple-100 rounded-lg hover:bg-purple-200">{copied ? <CheckCircle className="w-4 h-4 text-green-600" /> : <Copy className="w-4 h-4 text-purple-600" />}</button>
               </div>
             </div>
             <div className="flex flex-wrap gap-3">

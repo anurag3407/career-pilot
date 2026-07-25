@@ -1,170 +1,91 @@
 import { useState, useEffect } from 'react'
-import {
-  onAuthStateChanged,
-  signInWithEmailAndPassword,
-  createUserWithEmailAndPassword,
-  signOut,
-  GoogleAuthProvider,
-  GithubAuthProvider,
-  signInWithPopup,
-  updateProfile
-} from 'firebase/auth'
-import { auth } from '../config/firebase'
+import { useUser, useAuth, useClerk } from '@clerk/clerk-react'
 import { AuthContext } from './AuthContext'
 import { authApi } from '../services/api'
 
-/**
- * Provider component that manages and exposes the Firebase authentication state and methods.
- *
- * @param {object} props - The component props.
- * @param {React.ReactNode} props.children - The children elements.
- * @returns {React.JSX.Element} The rendered Provider component.
- */
 export function AuthProvider({ children }) {
-  const [user, setUser] = useState(null)
-  const [loading, setLoading] = useState(true)
+  const { isLoaded, isSignedIn, user: clerkUser } = useUser()
+  const { getToken: getClerkToken, signOut } = useAuth()
+  const clerk = useClerk()
+  
+  const [mappedUser, setMappedUser] = useState(null)
+  const [isAdmin, setIsAdmin] = useState(false)
+  const [checkingAdmin, setCheckingAdmin] = useState(false)
 
+  // Map Clerk user to our app's expected user structure
   useEffect(() => {
-    // If firebase initialization was skipped, unblock the loading state immediately
-    // and provide a mock user for local development.
-    if (!auth) {
-      if (import.meta.env.DEV) {
-        setUser({
-          uid: 'dev-user-001',
-          email: 'dev@example.com',
-          displayName: 'Local Dev User',
-          isAdmin: true,
-          getIdToken: async () => 'mock-dev-token'
-        });
+    if (isLoaded && isSignedIn && clerkUser) {
+      setCheckingAdmin(true)
+      
+      const u = {
+        uid: clerkUser.id,
+        email: clerkUser.primaryEmailAddress?.emailAddress,
+        displayName: clerkUser.fullName || clerkUser.username || clerkUser.primaryEmailAddress?.emailAddress?.split('@')[0],
+        photoURL: clerkUser.imageUrl,
+        isAdmin: false // default, check backend next
       }
-      setLoading(false);
-      return;
-    }
 
-    const unsubscribe = onAuthStateChanged(auth, async (firebaseUser) => {
-      if (firebaseUser) {
-        setLoading(true)
-        try {
-          const response = await authApi.getProfile()
-          if (response?.success && response?.user) {
-            firebaseUser.isAdmin = !!response.user.isAdmin
-            if (response.user.name) {
-              firebaseUser.displayName = response.user.name
-            }
-          } else {
-            firebaseUser.isAdmin = false
+      authApi.getProfile()
+        .then(res => {
+          if (res?.success && res?.user) {
+            u.isAdmin = !!res.user.isAdmin
+            setIsAdmin(u.isAdmin)
           }
-        } catch (error) {
-          console.error('Failed to fetch user profile for admin check:', error)
-          firebaseUser.isAdmin = false
-        }
-        setUser(firebaseUser)
-      } else {
-        setUser(null)
-      }
-      setLoading(false)
-    })
-
-    return unsubscribe
-  }, [])
-
-  /**
-   * Registers a new user with an email, password, and display name.
-   *
-   * @param {string} email - The email address.
-   * @param {string} password - The password.
-   * @param {string} displayName - The user's display name.
-   * @returns {Promise<object>} The Firebase user object.
-   */
-  const signup = async (email, password, displayName) => {
-    if (!auth) throw new Error("Authentication service is not configured. Please check your environment variables and authentication provider setup. Refer to the project setup documentation for configuration instructions.")
-    const result = await createUserWithEmailAndPassword(auth, email, password)
-    if (displayName) {
-      await updateProfile(result.user, { displayName })
+        })
+        .catch(err => {
+          console.error('Failed to fetch user profile for admin check:', err)
+        })
+        .finally(() => {
+          setMappedUser(u)
+          setCheckingAdmin(false)
+        })
+    } else {
+      setMappedUser(null)
+      setIsAdmin(false)
+      setCheckingAdmin(false)
     }
-    return result.user
+  }, [isLoaded, isSignedIn, clerkUser])
+
+  const signup = async () => {
+    clerk.redirectToSignUp()
   }
 
-  /**
-   * Logs in a user with an email and password.
-   *
-   * @param {string} email - The email address.
-   * @param {string} password - The password.
-   * @returns {Promise<object>} The Firebase user object.
-   */
-  const login = async (email, password) => {
-    if (!auth && import.meta.env.DEV) {
-      const mockUser = {
-        uid: 'dev-user-001',
-        email: 'dev@example.com',
-        displayName: 'Local Dev User',
-        getIdToken: async () => 'mock-dev-token'
-      };
-      setUser(mockUser);
-      return mockUser;
-    }
-    if (!auth) throw new Error("Authentication service is not configured. Please check your environment variables and authentication provider setup. Refer to the project setup documentation for configuration instructions.")
-    const result = await signInWithEmailAndPassword(auth, email, password)
-    return result.user
+  const login = async () => {
+    clerk.redirectToSignIn()
   }
 
-  /**
-   * Logs in a user using Google Sign-In popup.
-   *
-   * @returns {Promise<object>} The Firebase user object.
-   */
   const loginWithGoogle = async () => {
-    if (!auth) throw new Error("Authentication service is not configured. Please check your environment variables and authentication provider setup. Refer to the project setup documentation for configuration instructions.")
-    const provider = new GoogleAuthProvider()
-    const result = await signInWithPopup(auth, provider)
-    return result.user
+    clerk.redirectToSignIn({ strategy: 'oauth_google' })
   }
 
-  /**
-   * Redirects the user to the LinkedIn authentication flow.
-   */
   const loginWithLinkedIn = () => {
-    const apiUrl = import.meta.env.VITE_API_URL || 'http://localhost:5000'
-    window.location.href = `${apiUrl}/api/auth/linkedin`
+    clerk.redirectToSignIn({ strategy: 'oauth_linkedin' })
   }
 
-  /**
-   * Logs in a user using GitHub Sign-In popup.
-   *
-   * @returns {Promise<object>} The Firebase user object.
-   */
   const loginWithGitHub = async () => {
-    if (!auth) throw new Error("Authentication service is not configured. Please check your environment variables and authentication provider setup. Refer to the project setup documentation for configuration instructions.")
-    const provider = new GithubAuthProvider()
-    provider.addScope('user:email')
-    const result = await signInWithPopup(auth, provider)
-    return result.user
+    clerk.redirectToSignIn({ strategy: 'oauth_github' })
   }
 
-  /**
-   * Signs the user out of the current session.
-   *
-   * @returns {Promise<void>}
-   */
   const logout = async () => {
-    if (!auth) throw new Error("Authentication service is not configured. Please check your environment variables and authentication provider setup. Refer to the project setup documentation for configuration instructions.")
-    await signOut(auth)
+    await signOut()
   }
 
-  /**
-   * Retrieves the current user's Firebase ID token.
-   *
-   * @returns {Promise<string|null>} The token string, or null if no user is authenticated.
-   */
   const getToken = async () => {
-    if (!user) return null
-    return await user.getIdToken()
+    if (!isSignedIn) return null
+    try {
+      return await getClerkToken()
+    } catch (err) {
+      console.error("Failed to get Clerk token", err)
+      return null
+    }
   }
+
+  const loading = !isLoaded || (isSignedIn && checkingAdmin)
 
   const value = {
-    user,
+    user: mappedUser,
     loading,
-    isAdmin: loading ? undefined : (user?.isAdmin ?? false),
+    isAdmin,
     signup,
     login,
     loginWithGoogle,
@@ -172,7 +93,7 @@ export function AuthProvider({ children }) {
     loginWithGitHub,
     logout,
     getToken,
-    isMockAuth: !auth // Helper flag indicating local offline development
+    isMockAuth: false
   }
 
   return (

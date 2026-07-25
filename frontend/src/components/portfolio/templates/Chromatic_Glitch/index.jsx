@@ -351,15 +351,15 @@ export default function ChromaticGlitch() {
 
       {/* ── Navbar ── */}
       <nav className="cg-nav">
-        <button className="cg-nav-link" onClick={() => scrollTo("hero")} style={{ fontSize: 15, fontWeight: 700 }}>
+        <button type="button" className="cg-nav-link" onClick={() => scrollTo("hero")} style={{ fontSize: 15, fontWeight: 700 }}>
           <span className="cg-gradient-text">GLITCH</span>
         </button>
         <div className="cg-nav-links-desktop">
           {sections.map((s) => (
-            <button key={s} className="cg-nav-link" onClick={() => scrollTo(s.toLowerCase())}>{s}</button>
+            <button type="button" key={s} className="cg-nav-link" onClick={() => scrollTo(s.toLowerCase())}>{s}</button>
           ))}
         </div>
-        <button
+        <button type="button"
           className="cg-hamburger"
           onClick={() => setMenuOpen(!menuOpen)}
           style={{ background: "none", border: "none", color: "#e0e0ff", cursor: "pointer", padding: 4 }}
@@ -377,7 +377,7 @@ export default function ChromaticGlitch() {
             initial={{ opacity: 0, y: -10 }} animate={{ opacity: 1, y: 0 }} exit={{ opacity: 0, y: -10 }}
             style={{ position: "fixed", top: 60, left: 0, right: 0, zIndex: 49 }}>
             {sections.map((s) => (
-              <button key={s} className="cg-nav-link" onClick={() => scrollTo(s.toLowerCase())}
+              <button type="button" key={s} className="cg-nav-link" onClick={() => scrollTo(s.toLowerCase())}
                 style={{ textAlign: "left", padding: "10px 0", fontSize: 12, color: "#e0e0ff" }}>
                 <span style={{ color: "#00ffff", marginRight: 8 }}>//</span>{s}
               </button>
@@ -415,10 +415,10 @@ export default function ChromaticGlitch() {
 
             <motion.div initial={{ opacity: 0, y: 20 }} animate={{ opacity: 1, y: 0 }} transition={{ duration: 0.6, delay: 0.4 }}
               style={{ display: "flex", flexWrap: "wrap", gap: 16, marginBottom: 48 }}>
-              <button className="cg-btn cg-btn-primary" onClick={() => scrollTo("projects")}>
+              <button type="button" className="cg-btn cg-btn-primary" onClick={() => scrollTo("projects")}>
                 <Zap size={14} /><span>View Work</span>
               </button>
-              <button className="cg-btn cg-btn-secondary" onClick={() => scrollTo("contact")}>
+              <button type="button" className="cg-btn cg-btn-secondary" onClick={() => scrollTo("contact")}>
                 <span>Contact</span>
               </button>
             </motion.div>

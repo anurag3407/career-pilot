@@ -102,7 +102,7 @@ export default function Book_Page_Flip_3D_Render({ data: localData, portfolioDat
         </div>
         
         {bookState === 'open' && (
-          <button 
+          <button type="button" 
             onClick={handleCloseBook}
             className="flex items-center gap-2 border border-[#c5a059]/40 bg-black/30 hover:bg-[#c5a059]/10 text-[#c5a059] px-3.5 py-1.5 rounded-sm font-mono text-[10px] uppercase tracking-widest transition-all duration-300 active:scale-95"
           >
@@ -305,7 +305,7 @@ export default function Book_Page_Flip_3D_Render({ data: localData, portfolioDat
 
             {/* Quick action overlay page-turn buttons */}
             {currentPage > 0 && (
-              <button 
+              <button type="button" 
                 onClick={prevFlip}
                 className="absolute left-[-60px] top-1/2 -translate-y-1/2 w-11 h-11 rounded-full border border-[#c5a059]/40 bg-black/40 hover:bg-[#c5a059]/20 text-[#c5a059] flex items-center justify-center transition-all duration-300 active:scale-90 z-40"
               >
@@ -313,7 +313,7 @@ export default function Book_Page_Flip_3D_Render({ data: localData, portfolioDat
               </button>
             )}
             {currentPage < 13 && (
-              <button 
+              <button type="button" 
                 onClick={nextFlip}
                 className="absolute right-[-60px] top-1/2 -translate-y-1/2 w-11 h-11 rounded-full border border-[#c5a059]/40 bg-black/40 hover:bg-[#c5a059]/20 text-[#c5a059] flex items-center justify-center transition-all duration-300 active:scale-90 z-40"
               >
@@ -343,7 +343,7 @@ export default function Book_Page_Flip_3D_Render({ data: localData, portfolioDat
                 // Determine if this tab matches the current page spread
                 const isActive = (currentPage === tab.page || currentPage === tab.page + 1 || (tab.page === 0 && currentPage === 0));
                 return (
-                  <button
+                  <button type="button"
                     key={idx}
                     onClick={() => turnTo(tab.page)}
                     className={`px-3 py-1 font-mono text-[9px] uppercase tracking-wider rounded-sm transition-all duration-300 ${

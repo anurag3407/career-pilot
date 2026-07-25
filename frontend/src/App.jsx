@@ -37,7 +37,7 @@ import JobTracker from './pages/JobTracker';
 const Community = lazy(() => import('./pages/Community'));
 const Login = lazy(() => import("./pages/Login"));
 const Register = lazy(() => import("./pages/Register"));
-const LinkedInCallback = lazy(() => import("./pages/LinkedInCallback"));
+
 const OpenRouterCallback = lazy(() => import("./pages/OpenRouterCallback"));
 const Upload = lazy(() => import("./pages/Upload"));
 const Enhance = lazy(() => import("./pages/Enhance"));
@@ -85,9 +85,9 @@ const AdminBugs = lazy(() => import("./pages/admin/views/AdminBugs"));
 
 import { NotFound } from './pages';
 
-const PrivacyPolicy = lazy(() => import('./pages/PrivacyPolicy'));
+const PrivacyPolicy = lazy(() => import('./pages/LegalPrivacy'));
 const TermsOfService = lazy(() => import('./pages/TermsOfService'));
-const CookiePolicy = lazy(() => import('./pages/CookiePolicy'));
+const CookiePolicy = lazy(() => import('./pages/LegalCookies'));
 
 
 
@@ -110,6 +110,7 @@ const ProjectVisualizerLanding = lazy(() => import('./pages/features/ProjectVisu
 const JobFinderLanding = lazy(() => import('./pages/features/JobFinderLanding'));
 const MockInterviewLanding = lazy(() => import('./pages/features/MockInterviewLanding'));
 const RecruitersLanding = lazy(() => import('./pages/features/RecruitersLanding'));
+const GithubReadmeGenerator = lazy(() => import('./pages/GithubReadmeGenerator'));
 
 import ScrollToTop from "./components/ScrollToTop";
 import NorthernFjords from './components/portfolio/templates/Northern_Fjords';
@@ -144,6 +145,7 @@ import MinimalDarkFluid from './components/portfolio/templates/Minimal_Dark_Flui
 import TerminalSkills from './components/portfolio/templates/Terminal_Skills/index.jsx';
 import ChiragChrgTheme from './components/portfolio/templates/ChiragChrg_Theme/index.jsx';
 import InspiredDevJadiya from "./components/portfolio/templates/Inspired_Dev_Jadiya";
+import Film_Director_Clapperboard from './components/portfolio/templates/Film_Director_Clapperboard/index.jsx';
 
 function LoadingScreen({ label }) {
   return (
@@ -269,9 +271,9 @@ function AppRoutes() {
       <Routes>
         {/* Public Routes */}
         <Route path="/" element={<PublicRoute><Home /></PublicRoute>} />
-        <Route path="/login" element={<PublicRoute><Suspense fallback={<LoadingScreen label="Loading Login..." />}><Login /></Suspense></PublicRoute>} />
-        <Route path="/register" element={<PublicRoute><Suspense fallback={<LoadingScreen label="Loading Registration..." />}><Register /></Suspense></PublicRoute>} />
-        <Route path="/auth/linkedin/callback" element={<Suspense fallback={<LoadingScreen label="Loading callback..." />}><LinkedInCallback /></Suspense>} />
+        <Route path="/login/*" element={<PublicRoute><Suspense fallback={<LoadingScreen label="Loading Login..." />}><Login /></Suspense></PublicRoute>} />
+        <Route path="/register/*" element={<PublicRoute><Suspense fallback={<LoadingScreen label="Loading Registration..." />}><Register /></Suspense></PublicRoute>} />
+
         <Route path="/auth/openrouter/callback" element={<Suspense fallback={<LoadingScreen label="Loading callback..." />}><OpenRouterCallback /></Suspense>} />
 
         {/* Feature SaaS Landing Pages (Clean Slugs) */}
@@ -283,6 +285,7 @@ function AppRoutes() {
         <Route path="/job-finder" element={<Suspense fallback={<LoadingScreen label="Loading..." />}><JobFinderLanding /></Suspense>} />
         <Route path="/mock-interview" element={<Suspense fallback={<LoadingScreen label="Loading..." />}><MockInterviewLanding /></Suspense>} />
         <Route path="/recruiters" element={<Suspense fallback={<LoadingScreen label="Loading..." />}><RecruitersLanding /></Suspense>} />
+                <Route path="/readme-generator" element={<Suspense fallback={<LoadingScreen label="Loading..." />}><GithubReadmeGenerator /></Suspense>} />
 
         {/* Legacy Landing Redirects */}
         <Route path="/resume-builder-landing" element={<Navigate to="/resume-builder" replace />} />
@@ -337,6 +340,7 @@ function AppRoutes() {
         <Route path="/templates/minimal-dark-fluid" element={<MinimalDarkFluid />} />
         <Route path="/templates/terminal-skills" element={<TerminalSkills />} />
         <Route path="/templates/chiragchrg-theme" element={<ChiragChrgTheme />} />
+        <Route path="/templates/film-director-clapperboard" element={<Film_Director_Clapperboard />} />
         {/* Core Protected Routes */}
         <Route
           path="/dashboard"

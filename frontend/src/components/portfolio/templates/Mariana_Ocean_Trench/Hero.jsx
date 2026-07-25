@@ -88,14 +88,14 @@ export default function Hero({ data }) {
           transition={{ duration: 0.8, ease: 'easeOut', delay: 0.4 }}
           className="flex flex-col sm:flex-row gap-4 mt-4 w-full sm:w-auto"
         >
-          <button 
+          <button type="button" 
             onClick={handleBeginDive}
             className="group px-8 py-4 bg-sky-100 hover:bg-white text-sky-950 font-bold rounded-full shadow-lg hover:shadow-sky-200/50 transition-all flex items-center justify-center gap-2 cursor-pointer border-2 border-transparent"
           >
             <span>🌊 Begin the Dive</span>
           </button>
           
-          <button 
+          <button type="button" 
             onClick={() => {
               const projectsSection = document.getElementById('midnight-zone');
               if (projectsSection) projectsSection.scrollIntoView({ behavior: 'smooth' });

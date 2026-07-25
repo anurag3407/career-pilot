@@ -389,7 +389,7 @@ export default function InspiredDevJadiya() {
         <div className="flex items-center gap-2">
           <span className={`${style.textMuted}`}>Theme Mode:</span>
           {['tokyonight', 'matrix', 'dracula', 'monokai'].map((t) => (
-            <button
+            <button type="button"
               key={t}
               onClick={() => setTheme(t)}
               className={`px-1.5 py-0.5 border uppercase text-[10px] ${

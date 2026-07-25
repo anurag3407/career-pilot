@@ -77,52 +77,72 @@ function PortfolioDemoPreview({ videoUrl, posterUrl, heading }) {
         <div className="flex items-center justify-between gap-3 border-b border-white/10 pb-4">
           <div>
             <p className="text-xs font-semibold uppercase tracking-[0.25em] text-emerald-300">
-              Portfolio preview
+              Portfolio Live Preview
             </p>
             <p className="mt-1 text-sm text-slate-400">
-              Template, projects, skills, and deployment flow
+              Real-time synchronization across templates, projects, and deployments
             </p>
           </div>
           <span className="rounded-full border border-emerald-300/20 bg-emerald-300/10 px-3 py-1 text-xs font-bold text-emerald-300">
-            Demo
+            Live Demo
           </span>
         </div>
 
         <div className="mt-5 grid gap-4 sm:grid-cols-[1.1fr_0.9fr]">
           <div className="rounded-2xl border border-white/10 bg-slate-900/80 p-4">
-            <div className="h-3 w-24 rounded-full bg-emerald-300/80" />
-            <div className="mt-4 h-8 w-40 rounded-xl bg-white/15" />
-            <div className="mt-3 space-y-2">
-              <div className="h-2.5 w-full rounded-full bg-white/10" />
-              <div className="h-2.5 w-4/5 rounded-full bg-white/10" />
-              <div className="h-2.5 w-3/5 rounded-full bg-white/10" />
+            <div className="flex items-center gap-3 mb-3">
+              <div className="w-10 h-10 rounded-xl bg-gradient-to-tr from-emerald-400 to-cyan-500 p-0.5 shadow-md">
+                <img 
+                  src="https://api.dicebear.com/7.x/avataaars/svg?seed=AlexRivera" 
+                  alt="Dev Avatar" 
+                  className="w-full h-full rounded-[10px] bg-slate-950" 
+                />
+              </div>
+              <div>
+                <h4 className="text-sm font-bold text-white">Alex Rivera</h4>
+                <p className="text-[11px] text-emerald-300 font-medium">Senior Software Engineer</p>
+              </div>
             </div>
+            
+            <p className="text-xs text-slate-300 leading-relaxed mb-4">
+              Building high-performance web applications and neural codebase graph analyzers.
+            </p>
 
-            <div className="mt-5 grid grid-cols-3 gap-2">
-              {previewStats.map((stat) => (
-                <div
-                  key={stat.label}
-                  className="min-w-0 overflow-hidden rounded-xl border border-white/10 bg-white/[0.04] p-3"
-                >
-                  <div className="truncate text-sm font-black text-white">{stat.value}</div>
-                  <div className="mt-1 truncate text-[10px] uppercase tracking-[0.08em] text-slate-500">
-                    {stat.label}
-                  </div>
-                </div>
-              ))}
+            <div className="grid grid-cols-3 gap-2">
+              <div className="rounded-xl border border-white/10 bg-white/[0.04] p-2.5 text-center">
+                <div className="text-xs font-bold text-emerald-400">12+</div>
+                <div className="text-[9px] uppercase tracking-wider text-slate-500">Projects</div>
+              </div>
+              <div className="rounded-xl border border-white/10 bg-white/[0.04] p-2.5 text-center">
+                <div className="text-xs font-bold text-cyan-400">4.2k</div>
+                <div className="text-[9px] uppercase tracking-wider text-slate-500">Stars</div>
+              </div>
+              <div className="rounded-xl border border-white/10 bg-white/[0.04] p-2.5 text-center">
+                <div className="text-xs font-bold text-indigo-400">100%</div>
+                <div className="text-[9px] uppercase tracking-wider text-slate-500">Deploy</div>
+              </div>
             </div>
           </div>
 
           <div className="space-y-3">
-            {['Template selected', 'Projects imported', 'Ready to publish'].map((item, index) => (
+            {[
+              { title: 'Minimal Dark Fluid', badge: 'Active Theme', color: 'text-emerald-400 border-emerald-500/20 bg-emerald-500/10' },
+              { title: 'GitHub OAuth Synced', badge: 'Auto-Update', color: 'text-cyan-400 border-cyan-500/20 bg-cyan-500/10' },
+              { title: 'Custom Domain Connected', badge: 'SSL Live', color: 'text-indigo-400 border-indigo-500/20 bg-indigo-500/10' }
+            ].map((item, index) => (
               <div
-                key={item}
-                className="flex items-center gap-3 rounded-2xl border border-white/10 bg-white/[0.04] px-4 py-3"
+                key={item.title}
+                className="flex items-center justify-between gap-3 rounded-2xl border border-white/10 bg-white/[0.04] px-4 py-3"
               >
-                <span className="flex h-7 w-7 items-center justify-center rounded-full bg-emerald-300/15 text-xs font-black text-emerald-300">
-                  {index + 1}
+                <div className="flex items-center gap-3">
+                  <span className="flex h-6 w-6 items-center justify-center rounded-full bg-emerald-300/15 text-xs font-black text-emerald-300">
+                    {index + 1}
+                  </span>
+                  <span className="text-xs font-semibold text-slate-200">{item.title}</span>
+                </div>
+                <span className={`text-[10px] font-mono font-bold px-2 py-0.5 rounded-full border ${item.color}`}>
+                  {item.badge}
                 </span>
-                <span className="text-sm font-semibold text-slate-200">{item}</span>
               </div>
             ))}
           </div>

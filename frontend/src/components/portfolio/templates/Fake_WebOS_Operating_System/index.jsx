@@ -56,7 +56,7 @@ function TrafficLights({ onClose, onMinimize, onMaximize }) {
         { color: C.yellow, Icon: Minus,     action: onMinimize },
         { color: C.green,  Icon: Maximize2, action: onMaximize },
       ].map(({ color, Icon, action }) => (
-        <button key={color} onClick={action} style={{
+        <button type="button" key={color} onClick={action} style={{
           width: 13, height: 13, borderRadius: "50%",
           background: color, border: "none", cursor: "pointer",
           display: "flex", alignItems: "center", justifyContent: "center",
@@ -248,7 +248,7 @@ function ProjectsApp({ data }) {
       <div style={{ width: 200, background: C.sidebar, borderRight: `1px solid ${C.border}`, overflowY: "auto", flexShrink: 0 }}>
         <div style={{ padding: "12px 14px 8px", fontSize: 10, fontWeight: 700, letterSpacing: "0.3em", textTransform: "uppercase", color: C.dim }}>All Projects</div>
         {projects.map((pr, i) => (
-          <button key={i} onClick={() => setActive(i)} style={{
+          <button type="button" key={i} onClick={() => setActive(i)} style={{
             width: "100%", textAlign: "left", padding: "10px 14px",
             background: active === i ? `${C.accent}18` : "transparent",
             border: "none", borderLeft: active === i ? `2px solid ${C.accent}` : "2px solid transparent",
@@ -289,7 +289,7 @@ function SkillsApp({ data }) {
       <div style={{ width: 160, background: C.sidebar, borderRight: `1px solid ${C.border}`, padding: "12px 0", flexShrink: 0 }}>
         <div style={{ padding: "0 14px 8px", fontSize: 10, fontWeight: 700, letterSpacing: "0.3em", textTransform: "uppercase", color: C.dim }}>Category</div>
         {categories.map((c) => (
-          <button key={c} onClick={() => setCat(c)} style={{
+          <button type="button" key={c} onClick={() => setCat(c)} style={{
             width: "100%", textAlign: "left", padding: "9px 14px",
             background: cat === c ? `${C.accent}18` : "transparent",
             border: "none", borderLeft: cat === c ? `2px solid ${C.accent}` : "2px solid transparent",

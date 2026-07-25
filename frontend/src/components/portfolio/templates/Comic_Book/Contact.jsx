@@ -55,7 +55,7 @@ export default function Contact({ personal, socials }) {
                 <label className="font-black uppercase text-black text-lg tracking-wider">Transmission</label>
                 <textarea rows={4} placeholder="We need your help!" className="w-full border-4 border-black p-4 font-bold text-black focus:outline-none focus:ring-4 focus:ring-sky-400 bg-gray-50 shadow-[4px_4px_0px_0px_rgba(0,0,0,1)] resize-none" />
               </div>
-              <button className="bg-red-500 hover:bg-red-600 text-white font-black uppercase text-xl px-8 py-4 border-4 border-black shadow-[6px_6px_0px_0px_rgba(0,0,0,1)] hover:translate-y-1 hover:shadow-[2px_2px_0px_0px_rgba(0,0,0,1)] transition-all flex justify-center items-center gap-3">
+              <button type="button" className="bg-red-500 hover:bg-red-600 text-white font-black uppercase text-xl px-8 py-4 border-4 border-black shadow-[6px_6px_0px_0px_rgba(0,0,0,1)] hover:translate-y-1 hover:shadow-[2px_2px_0px_0px_rgba(0,0,0,1)] transition-all flex justify-center items-center gap-3">
                 <Send className="w-6 h-6" /> Send Message
               </button>
             </form>

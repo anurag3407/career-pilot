@@ -8,7 +8,7 @@ import {
 import UserProfile from '../models/UserProfile.model.js';
 import Resume from '../models/Resume.model.js';
 import Interview from '../models/Interview.model.js';
-import { db } from '../config/firebase.js';
+
 import { validate } from '../middleware/validate.js';
 import { updateProfileSchema, setAvatarSchema } from '../schemas/userProfile.schema.js';
 
@@ -17,36 +17,7 @@ const router = express.Router();
 router.use(verifyToken);
 
 const getPostsForUser = async (uid) => {
-  let snapshot;
-  try {
-    snapshot = await db.collection('posts')
-      .where('author.uid', '==', uid)
-      .limit(50)
-      .get();
-  } catch (error) {
-    console.warn('Unable to load profile activity feed:', error.message);
-    return [];
-  }
-
-  return snapshot.docs
-    .map(doc => ({ id: doc.id, ...doc.data() }))
-    .filter(p => !p.isDeleted && (!p.status || p.status === 'published'))
-    .sort((a, b) => {
-      const aTime = a.createdAt?.toDate?.() || new Date(a.createdAt || 0);
-      const bTime = b.createdAt?.toDate?.() || new Date(b.createdAt || 0);
-      return bTime - aTime;
-    })
-    .slice(0, 10)
-    .map(p => ({
-      id: p.id,
-      type: 'post',
-      title: p.title || '',
-      content: p.content || '',
-      category: p.category || '',
-      likeCount: Array.isArray(p.likes) ? p.likes.length : (p.likeCount || 0),
-      commentCount: p.commentCount || 0,
-      createdAt: p.createdAt?.toDate?.() || p.createdAt || null,
-    }));
+  return [];
 };
 
 // Get or create own profile

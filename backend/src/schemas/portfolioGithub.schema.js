@@ -10,7 +10,7 @@ export const buildGithubPortfolioSchema = z.object({
     .max(39, 'GitHub usernames are at most 39 characters')
     .regex(/^[a-zA-Z0-9](?:[a-zA-Z0-9-]*[a-zA-Z0-9])?$/, 'Invalid GitHub username'),
   // Optional explicit PAT — frontend passes when the user opted out of OAuth
-  token: z.string().optional(),
+  token: z.string().nullable().optional(),
   // Restrict to specific repos (format: "owner/name"). Empty array = auto-pick top 6.
   selectedRepos: z.array(z.string()).max(20).optional().default([]),
   templateSlug: z.string().max(80).optional().default('github-default'),

@@ -337,7 +337,7 @@ export default function Projects({ projects = DEFAULT_PROJECTS }) {
               <div className="text-base font-bold text-cyan-300 tracking-widest">{sysTime || '09:14:26'}</div>
             </div>
             <div className="h-8 w-px bg-cyan-500/20" />
-            <button 
+            <button type="button" 
               onClick={() => { setSoundEnabled(!soundEnabled); playSonarPing(soundEnabled ? 440 : 880, 0.8); }}
               className={`p-2.5 rounded-lg transition-all border ${
                 soundEnabled 
@@ -363,7 +363,7 @@ export default function Projects({ projects = DEFAULT_PROJECTS }) {
             const Icon = zone.icon;
             const isSelected = activeZone === zone.id;
             return (
-              <button
+              <button type="button"
                 key={zone.id}
                 onClick={() => { setActiveZone(zone.id); playSonarPing(isSelected ? 600 : 780, 1.0); }}
                 className={`flex-1 min-w-[140px] flex items-center gap-3 px-4 py-3 rounded-xl transition-all border font-mono text-left cursor-pointer ${
@@ -579,7 +579,7 @@ export default function Projects({ projects = DEFAULT_PROJECTS }) {
                   </div>
                 </div>
               ) : (
-                <button
+                <button type="button"
                   onClick={handlePRTransmission}
                   className="w-full bg-gradient-to-r from-cyan-500 to-blue-600 hover:from-cyan-400 hover:to-blue-500 text-slate-950 hover:text-black py-4 px-6 rounded-xl font-mono font-bold text-xs tracking-[0.18em] flex items-center justify-center gap-3 transition-all shadow-[0_0_15px_rgba(34,211,238,0.2)] hover:shadow-[0_0_25px_rgba(34,211,238,0.4)] hover:scale-[1.01] cursor-pointer uppercase"
                 >

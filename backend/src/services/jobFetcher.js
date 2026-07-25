@@ -14,9 +14,9 @@ import {
     emitAlertProcessing
 } from './jobAlertSocket.js';
 import {
-    saveNotificationToFirebase,
-    saveJobListingToFirebase
-} from './firebaseDataService.js';
+    saveNotificationToAppwrite,
+    saveJobListingToAppwrite
+} from './appwriteDataService.js';
 import {
     initializeQueue,
     isQueueAvailable,
@@ -422,7 +422,7 @@ export const processAlert = async (alertData) => {
             await Promise.allSettled(
                 newDocs.map(doc => {
                     const obj = typeof doc.toObject === 'function' ? doc.toObject() : doc;
-                    return saveJobListingToFirebase(obj);
+                    return saveJobListingToAppwrite(obj);
                 })
             );
             console.log(`💾 Cached and synced ${newDocs.length} new job(s) to Firebase`);
@@ -501,7 +501,7 @@ export const processAlert = async (alertData) => {
 
                         // Save to Firebase (convert ObjectIds to strings)
                         try {
-                            await saveNotificationToFirebase({
+                            await saveNotificationToAppwrite({
                                 ...notification.toObject(),
                                 _id: notification._id.toString(),
                                 alertId: alertId.toString(),

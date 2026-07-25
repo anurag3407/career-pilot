@@ -30,7 +30,7 @@ export default function Testimonials({ data }) {
               Based on {totalReviews} reviews
             </p>
             
-            <button className="w-full md:w-auto px-8 py-3 bg-white border-2 border-stone-900 text-stone-900 font-bold rounded-full hover:bg-stone-900 hover:text-white transition-colors">
+            <button type="button" className="w-full md:w-auto px-8 py-3 bg-white border-2 border-stone-900 text-stone-900 font-bold rounded-full hover:bg-stone-900 hover:text-white transition-colors">
               Write a Review
             </button>
           </div>
@@ -67,11 +67,11 @@ export default function Testimonials({ data }) {
                 </p>
 
                 <div className="flex items-center gap-4 text-sm font-semibold text-stone-400 border-t border-stone-100 pt-4">
-                  <button className="flex items-center gap-1.5 hover:text-stone-900 transition-colors">
+                  <button type="button" className="flex items-center gap-1.5 hover:text-stone-900 transition-colors">
                     <ThumbsUp size={16} /> Helpful ({Math.floor(Math.random() * 50) + 5})
                   </button>
                   <div className="w-1 h-1 bg-stone-300 rounded-full"></div>
-                  <button className="flex items-center gap-1.5 hover:text-stone-900 transition-colors">
+                  <button type="button" className="flex items-center gap-1.5 hover:text-stone-900 transition-colors">
                     <MessageSquare size={16} /> Comment
                   </button>
                 </div>

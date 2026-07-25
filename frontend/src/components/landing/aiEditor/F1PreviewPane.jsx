@@ -1,273 +1,193 @@
-import React, { useCallback, useEffect, useRef, useState } from 'react';
-import { Loader2, ExternalLink, RefreshCw } from 'lucide-react';
+import React, { useCallback, useRef, useState } from 'react';
+import { ExternalLink, RefreshCw, MousePointerClick } from 'lucide-react';
 import { cn } from '../../../lib/utils';
-import { F1_EDITABLE_ELEMENTS, applyFieldEdit } from './f1EditableMap';
+import { F1_EDITABLE_ELEMENTS, applyFieldEdit, resolveEditableFromClick } from './f1EditableMap';
 import InlineElementEditor from './InlineElementEditor';
+import F1RacingTemplate from '../../portfolio/templates/F1_Racing/index';
 
 /**
  * F1PreviewPane — left side of the AI Builder modal.
  *
- * Strategy: load `/preview/F1_Racing` in an iframe. That route already
- * renders the F1_Racing template wrapped in a `TemplatePreviewOnly`
- * listener that responds to `postMessage('UPDATE_PORTFOLIO_DATA')` and
- * reads `localStorage.ai_portfolio_draft` on mount.
+ * v2: Renders the F1_Racing template DIRECTLY in the React tree (no iframe).
+ * Click-to-edit works via event delegation on the wrapper div. We walk up
+ * the DOM from the click target, extract text content, and resolve it
+ * against the current portfolioData to find the matching editable field.
  *
- * For click-to-edit: we listen to clicks inside the iframe, identify
- * which editable element was clicked using a text-matching heuristic
- * against the configured `matchText` patterns, and open an
- * InlineElementEditor popover positioned over the click target.
+ * This eliminates all cross-origin issues, postMessage round-trips, and
+ * fragile text-matching heuristics that broke after the first edit.
  */
-
-const F1_PREVIEW_PATH = '/preview/F1_Racing';
-
-function findElementForClick(clickedText, editableElements, currentData) {
-  if (!clickedText) return null;
-  const text = clickedText.trim();
-  if (!text) return null;
-
-  for (const el of editableElements) {
-    // 1. Match against current live data
-    if (el.dataPath && currentData) {
-      const parts = el.dataPath.split('.');
-      let cur = currentData;
-      for (const p of parts) {
-        if (cur == null) break;
-        cur = cur[p];
-      }
-      if (cur != null) {
-        const curStr = String(cur).trim();
-        if (curStr && (text.includes(curStr) || curStr.includes(text))) {
-          return el;
-        }
-      }
-    }
-
-    // 2. Fallback to default matchText array
-    if (el.matchText && el.matchText.length > 0) {
-      if (el.matchText.some((m) => text.includes(m) || m.includes(text))) {
-        return el;
-      }
-    }
-  }
-  return null;
-}
-
 export default function F1PreviewPane({
   portfolioData,
   onUpdate,
-  onRequestEnhance,
   onShowToast,
 }) {
-  const iframeRef = useRef(null);
-  const [loading, setLoading] = useState(true);
-  const [editorState, setEditorState] = useState(null); // { element, position, currentValue }
-  const [highlightSlug, setHighlightSlug] = useState(null);
+  const containerRef = useRef(null);
+  const [editorState, setEditorState] = useState(null);
+  const [hoveredPath, setHoveredPath] = useState(null);
 
-  // Push current data into iframe (both via localStorage for first paint
-  // AND via postMessage for live updates while it's open)
-  useEffect(() => {
-    try {
-      localStorage.setItem('ai_portfolio_draft', JSON.stringify(portfolioData || {}));
-    } catch (e) {
-      // ignore quota errors
+  const handleClick = useCallback((e) => {
+    const container = containerRef.current;
+    if (!container) return;
+
+    // Don't intercept clicks on the editor popover itself
+    if (e.target.closest('[data-editor-popover]')) return;
+
+    // Walk up from click target to find meaningful text
+    let target = e.target;
+    let depth = 0;
+    let text = '';
+
+    while (target && target !== container && depth < 8) {
+      const nodeText = target.textContent?.trim() || '';
+      if (nodeText.length > 1 && nodeText.length < 600) {
+        text = nodeText;
+        break;
+      }
+      target = target.parentElement;
+      depth += 1;
     }
-    if (iframeRef.current?.contentWindow) {
-      iframeRef.current.contentWindow.postMessage(
-        { type: 'UPDATE_PORTFOLIO_DATA', payload: portfolioData },
-        '*'
-      );
-    }
+
+    if (!text) return;
+
+    // Resolve which editable field this text belongs to
+    const resolved = resolveEditableFromClick(text, portfolioData);
+    if (!resolved) return;
+
+    e.preventDefault();
+    e.stopPropagation();
+
+    // Get position for the popover
+    const rect = (target || e.target).getBoundingClientRect();
+    const containerRect = container.getBoundingClientRect();
+
+    setEditorState({
+      element: resolved.element,
+      position: {
+        x: rect.left + rect.width / 2 - containerRect.left,
+        y: rect.top - containerRect.top,
+      },
+      currentValue: resolved.currentValue,
+      currentColor: portfolioData?.themeAccent || '#E10600',
+    });
   }, [portfolioData]);
 
-  const portfolioDataRef = useRef(portfolioData);
-  useEffect(() => {
-    portfolioDataRef.current = portfolioData;
-  }, [portfolioData]);
+  const handleMouseOver = useCallback((e) => {
+    const container = containerRef.current;
+    if (!container || editorState) return;
 
-  const handleIframeClick = useCallback((event) => {
-    const iframe = iframeRef.current;
-    if (!iframe || !iframe.contentWindow || !iframe.contentDocument) return;
+    let target = e.target;
+    let depth = 0;
+    let text = '';
 
-    try {
-      const innerDoc = iframe.contentDocument;
-      const target = event.target;
-
-      // Walk up a few levels to find a node with substantive text
-      let candidate = target;
-      let depth = 0;
-      let text = '';
-      while (candidate && depth < 6 && candidate !== innerDoc.body) {
-        if (candidate.textContent) {
-          text = candidate.textContent.trim();
-          if (text.length > 1 && text.length < 500) break;
-        }
-        candidate = candidate.parentElement;
-        depth += 1;
+    while (target && target !== container && depth < 6) {
+      const nodeText = target.textContent?.trim() || '';
+      if (nodeText.length > 1 && nodeText.length < 300) {
+        text = nodeText;
+        break;
       }
-
-      const currentData = portfolioDataRef.current;
-      const element = findElementForClick(text, F1_EDITABLE_ELEMENTS, currentData);
-      if (!element) return;
-
-      event.preventDefault();
-      event.stopPropagation();
-
-      const rect = target.getBoundingClientRect();
-      const iframeRect = iframe.getBoundingClientRect();
-      const screenX = iframeRect.left + rect.left + rect.width / 2;
-      const screenY = iframeRect.top + rect.top;
-
-      const parts = (element.dataPath || '').split('.');
-      let cur = currentData;
-      for (const p of parts) {
-        if (cur == null) break;
-        cur = cur[p];
-      }
-
-      setEditorState({
-        element,
-        position: { x: screenX, y: screenY },
-        currentValue: cur != null ? String(cur) : '',
-        currentColor: currentData?.themeAccent || '#E10600',
-      });
-      setHighlightSlug(element.slug);
-    } catch (e) {
-      // ignore
+      target = target.parentElement;
+      depth += 1;
     }
-  }, []);
 
-  const handleIframeLoad = useCallback(() => {
-    setLoading(false);
-    try {
-      const iframe = iframeRef.current;
-      if (iframe && iframe.contentDocument) {
-        iframe.contentDocument.addEventListener('click', handleIframeClick, true);
-      }
-    } catch (e) {
-      // ignore cross-origin access errors
+    if (!text) {
+      setHoveredPath(null);
+      return;
     }
-  }, [handleIframeClick]);
 
-  // Listen for iframe messages so we can react to inner events
-  useEffect(() => {
-    const onMessage = (event) => {
-      const data = event.data;
-      if (!data || typeof data !== 'object') return;
-      // Future: handle iframe-originated events like "element:clicked"
-    };
-    window.addEventListener('message', onMessage);
-    return () => window.removeEventListener('message', onMessage);
-  }, []);
+    const resolved = resolveEditableFromClick(text, portfolioData);
+    setHoveredPath(resolved ? resolved.element.dataPath : null);
+  }, [portfolioData, editorState]);
 
   const closeEditor = useCallback(() => {
     setEditorState(null);
-    setHighlightSlug(null);
   }, []);
 
-  const commitEdit = useCallback(
-    ({ slug, value, color }) => {
-      const element = F1_EDITABLE_ELEMENTS.find((e) => e.slug === slug);
-      if (!element) return;
-      const next = applyFieldEdit(portfolioData, element.dataPath, value);
-      if (color) {
-        next.themeAccent = color;
-      }
-      onUpdate?.(next);
-      onShowToast?.(`Saved ${element.label}`);
-    },
-    [onShowToast, onUpdate, portfolioData]
-  );
+  const commitEdit = useCallback(({ slug, value, color }) => {
+    const element = F1_EDITABLE_ELEMENTS.find((el) => el.slug === slug);
+    if (!element) return;
+    const next = applyFieldEdit(portfolioData, element.dataPath, value);
+    if (color && color !== portfolioData?.themeAccent) {
+      next.themeAccent = color;
+    }
+    onUpdate?.(next);
+    onShowToast?.(`Updated ${element.label}`);
+    setEditorState(null);
+  }, [onShowToast, onUpdate, portfolioData]);
 
-  const handleEnhanceForInline = useCallback(
-    async ({ slug, kind, value }) => {
-      try {
-        const res = await fetch('/api/enhance/element', {
-          method: 'POST',
-          headers: { 'Content-Type': 'application/json' },
-          body: JSON.stringify({ slug, kind, value }),
-        });
-        if (!res.ok) throw new Error(`HTTP ${res.status}`);
-        const data = await res.json();
-        return data?.enhanced ?? null;
-      } catch (e) {
-        return null; // falls back to mockEnhanceElement inside InlineElementEditor
-      }
-    },
-    []
-  );
-
-  const refreshPreview = useCallback(() => {
-    if (iframeRef.current) {
-      setLoading(true);
-      // Re-load iframe to pick up latest localStorage
-      iframeRef.current.src = iframeRef.current.src;
+  const handleEnhance = useCallback(async ({ slug, kind, value }) => {
+    try {
+      const res = await fetch('/api/enhance/element', {
+        method: 'POST',
+        headers: { 'Content-Type': 'application/json' },
+        body: JSON.stringify({ slug, kind, value }),
+      });
+      if (!res.ok) throw new Error(`HTTP ${res.status}`);
+      const data = await res.json();
+      return data?.enhanced ?? null;
+    } catch {
+      return null;
     }
   }, []);
 
   return (
     <div className="relative h-full bg-[#070709] flex flex-col">
       {/* Top bar */}
-      <div className="flex items-center justify-between px-4 py-2.5 border-b border-neutral-800 bg-[#0c0c10]">
+      <div className="flex items-center justify-between px-4 py-2.5 border-b border-neutral-800 bg-[#0c0c10] shrink-0">
         <div className="flex items-center gap-2">
           <span className="w-2.5 h-2.5 rounded-full bg-red-500/70" />
           <span className="w-2.5 h-2.5 rounded-full bg-amber-400/70" />
           <span className="w-2.5 h-2.5 rounded-full bg-emerald-400/70" />
           <span className="ml-3 text-[10px] font-mono text-neutral-500 uppercase tracking-widest">
-            F1_Racing · live preview · click any element to edit
+            F1_Racing · click any element to edit
           </span>
         </div>
         <div className="flex items-center gap-2">
-          <button
-            type="button"
-            onClick={refreshPreview}
-            className="inline-flex items-center gap-1.5 text-[10px] font-mono uppercase tracking-widest text-neutral-400 hover:text-white border border-neutral-800 rounded px-2 py-1"
-          >
-            <RefreshCw className="h-3 w-3" />
-            Refresh
-          </button>
           <a
-            href={F1_PREVIEW_PATH}
+            href="/preview/F1_Racing"
             target="_blank"
             rel="noopener noreferrer"
-            className="inline-flex items-center gap-1.5 text-[10px] font-mono uppercase tracking-widest text-neutral-400 hover:text-white border border-neutral-800 rounded px-2 py-1"
+            className="inline-flex items-center gap-1.5 text-[10px] font-mono uppercase tracking-widest text-neutral-400 hover:text-white border border-neutral-800 rounded px-2 py-1 transition-colors"
           >
-            Open <ExternalLink className="h-3 w-3" />
+            Full Preview <ExternalLink className="h-3 w-3" />
           </a>
         </div>
       </div>
 
-      {/* Frame wrapper */}
-      <div className="relative flex-1 bg-neutral-950 overflow-hidden">
-        {loading && (
-          <div className="absolute inset-0 z-10 flex items-center justify-center pointer-events-none">
-            <div className="flex items-center gap-2 text-xs font-mono text-neutral-500 uppercase tracking-widest">
-              <Loader2 className="h-4 w-4 animate-spin text-[#E10600]" />
-              Loading F1_Racing…
+      {/* Template rendered directly — no iframe */}
+      <div
+        ref={containerRef}
+        onClick={handleClick}
+        onMouseOver={handleMouseOver}
+        onMouseOut={() => setHoveredPath(null)}
+        className={cn(
+          'relative flex-1 overflow-y-auto overflow-x-hidden',
+          'cursor-crosshair',
+          hoveredPath && 'cursor-pointer'
+        )}
+      >
+        {/* Editable highlight overlay hint */}
+        {!editorState && (
+          <div className="sticky top-0 z-20 flex justify-center pointer-events-none py-2">
+            <div className="inline-flex items-center gap-1.5 px-3 py-1.5 rounded-full bg-[#E10600]/15 border border-[#E10600]/40 backdrop-blur-sm text-[10px] font-mono uppercase tracking-widest text-[#ff6655]">
+              <MousePointerClick className="h-3 w-3" />
+              Click any text to edit inline
             </div>
           </div>
         )}
 
-        <iframe
-          ref={iframeRef}
-          src={F1_PREVIEW_PATH}
-          title="F1 Racing preview"
-          onLoad={handleIframeLoad}
-          className="w-full h-full border-0 bg-[#070709]"
-          sandbox="allow-same-origin allow-scripts allow-forms allow-popups"
-        />
-
-        {/* Hint badge for new users */}
-        {!editorState && !loading && (
-          <div className="absolute top-4 left-1/2 -translate-x-1/2 px-3 py-1.5 rounded-full bg-[#E10600]/15 border border-[#E10600]/40 backdrop-blur-sm text-[10px] font-mono uppercase tracking-widest text-[#ff6655] pointer-events-none animate-pulse">
-            👆 click any text on the page to edit
-          </div>
-        )}
+        {/* The actual template — rendered in-place, fully interactive */}
+        <div className={cn(
+          'transition-opacity duration-200',
+          hoveredPath && '[&_*]:transition-shadow'
+        )}>
+          <F1RacingTemplate portfolioData={portfolioData} />
+        </div>
       </div>
 
-      {/* Footer hint when something is selected */}
-      {highlightSlug && (
-        <div className="absolute bottom-4 left-1/2 -translate-x-1/2 px-3 py-1.5 rounded-full bg-emerald-500/15 border border-emerald-500/40 backdrop-blur-sm text-[10px] font-mono uppercase tracking-widest text-emerald-300 pointer-events-none">
-          Selected: {highlightSlug}
+      {/* Selected element indicator */}
+      {editorState && (
+        <div className="absolute bottom-4 left-1/2 -translate-x-1/2 z-20 px-3 py-1.5 rounded-full bg-emerald-500/15 border border-emerald-500/40 backdrop-blur-sm text-[10px] font-mono uppercase tracking-widest text-emerald-300 pointer-events-none">
+          Editing: {editorState.element.label}
         </div>
       )}
 
@@ -282,7 +202,7 @@ export default function F1PreviewPane({
           position={editorState.position}
           onCommit={commitEdit}
           onClose={closeEditor}
-          onRequestEnhance={handleEnhanceForInline}
+          onRequestEnhance={handleEnhance}
         />
       )}
     </div>

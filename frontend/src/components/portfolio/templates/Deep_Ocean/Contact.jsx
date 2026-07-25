@@ -112,7 +112,7 @@ export default function Contact() {
             {/* Social Icons */}
             <div className="mt-10 flex gap-4">
               {[Linkedin, Github, Twitter].map((Icon, idx) => (
-                <button
+                <button type="button"
                   key={idx}
                   className="rounded-2xl border border-cyan-400/20 bg-cyan-500/10 p-3 text-cyan-300 transition-all duration-300 hover:-translate-y-1 hover:border-cyan-300 hover:bg-cyan-400/20"
                 >

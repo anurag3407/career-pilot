@@ -698,7 +698,7 @@ function MoodPicker({ current, onChange }) {
 
   return (
     <div className="relative">
-      <button
+      <button type="button"
         onClick={() => setOpen(o => !o)}
         className="flex items-center gap-2 px-3 py-1.5 rounded-xl text-xs font-semibold border transition-all"
         style={{ background: theme.badgeBg, borderColor: theme.badgeBorder, color: theme.badgeText }}
@@ -720,7 +720,7 @@ function MoodPicker({ current, onChange }) {
           >
             <div className="p-2 grid grid-cols-3 gap-1 max-h-72 overflow-y-auto">
               {Object.entries(MOODS).map(([key, mood]) => (
-                <button
+                <button type="button"
                   key={key}
                   onClick={() => { onChange(key); setOpen(false); }}
                   className="flex flex-col items-center gap-1 px-2 py-2.5 rounded-xl text-center transition-all hover:scale-105"
@@ -765,7 +765,7 @@ function Navbar({ theme, active, moodKey, onMoodChange }) {
       className={`fixed top-0 left-0 right-0 z-50 px-5 py-2.5 flex items-center justify-between transition-shadow duration-300 ${scrolled ? 'shadow-xl' : ''}`}
       style={theme.nav}
     >
-      <button onClick={() => window.scrollTo({ top: 0, behavior: 'smooth' })}
+      <button type="button" onClick={() => window.scrollTo({ top: 0, behavior: 'smooth' })}
         className="font-bold tracking-tight text-sm" style={{ color: theme.accent }}>
         {data.personal.name.split(' ')[0]}
         <span style={{ color: theme.muted }}>.dev</span>
@@ -773,7 +773,7 @@ function Navbar({ theme, active, moodKey, onMoodChange }) {
 
       <div className="hidden md:flex items-center gap-0.5">
         {NAV_ITEMS.map(item => (
-          <button key={item} onClick={() => scrollTo(item)}
+          <button type="button" key={item} onClick={() => scrollTo(item)}
             className="px-3 py-1.5 rounded-lg text-xs font-medium capitalize transition-all"
             style={{
               color: active === item ? theme.accent : theme.muted,

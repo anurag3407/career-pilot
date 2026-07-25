@@ -3,7 +3,7 @@ import { motion, AnimatePresence } from 'framer-motion';
 import { X, Globe, Copy, Check, ExternalLink, Loader2, Sparkles, AlertCircle, Terminal } from 'lucide-react';
 import toast from 'react-hot-toast';
 import confetti from 'canvas-confetti';
-import { auth } from '../../config/firebase';
+
 import { portfolioApi } from '../../services/api';
 import { useAuth } from '../../hooks/useAuth';
 

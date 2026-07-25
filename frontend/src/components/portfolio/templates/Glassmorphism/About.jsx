@@ -66,7 +66,7 @@ export default function About() {
               ideas into impactful products that solve real-world problems.
             </p>
 
-            <button className="mt-8 rounded-2xl border border-white/20 bg-white/10 px-6 py-3 backdrop-blur-xl transition-all duration-300 hover:scale-105 hover:bg-white/20">
+            <button type="button" className="mt-8 rounded-2xl border border-white/20 bg-white/10 px-6 py-3 backdrop-blur-xl transition-all duration-300 hover:scale-105 hover:bg-white/20">
               Learn More
             </button>
           </div>

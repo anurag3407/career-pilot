@@ -99,7 +99,7 @@ export default function PortfolioGithub() {
     setBuilding(true);
     setError(null);
     try {
-      const pat = authMode === 'pat' ? getDecryptedToken() : null;
+      const pat = authMode === 'pat' ? (getDecryptedToken() || undefined) : undefined;
       const res = await githubPortfolioApi.build({
         username: username.trim(),
         token: pat,

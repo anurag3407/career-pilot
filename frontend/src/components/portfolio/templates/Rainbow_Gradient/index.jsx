@@ -213,7 +213,7 @@ export default function RainbowGradient() {
       <nav className="rg-nav">
         <div className="rg-nav-rainbow" />
         <div className="rg-nav-inner">
-          <button style={{ background: "none", border: "none", cursor: "pointer", fontFamily: "'Outfit',sans-serif", fontWeight: 800, fontSize: 18, color: "#fff" }}
+          <button type="button" style={{ background: "none", border: "none", cursor: "pointer", fontFamily: "'Outfit',sans-serif", fontWeight: 800, fontSize: 18, color: "#fff" }}
             onClick={() => scrollTo("hero")}>
             <span style={{ background: "linear-gradient(90deg,#FF2D2D,#FF8C00,#FFD700,#00C97A,#2196F3,#4B3FEE,#CC44FF)", WebkitBackgroundClip: "text", WebkitTextFillColor: "transparent", backgroundClip: "text" }}>
               {data.personal.name.split(" ")[0]}
@@ -223,7 +223,7 @@ export default function RainbowGradient() {
             {sections.map((s, i) => {
               const r = getRainbow(s.toLowerCase());
               return (
-                <button key={s} className="rg-nav-link" onClick={() => scrollTo(s.toLowerCase())}
+                <button type="button" key={s} className="rg-nav-link" onClick={() => scrollTo(s.toLowerCase())}
                   style={{ "--c": r?.color || "#fff" }}>
                   <style>{`.rg-nav-link:nth-child(${i+1}):hover::after { background:${r?.color || "#fff"}; }`}</style>
                   {s}
@@ -231,7 +231,7 @@ export default function RainbowGradient() {
               );
             })}
           </div>
-          <button className="rg-hamburger" onClick={() => setMenuOpen(!menuOpen)} aria-label="Menu">
+          <button type="button" className="rg-hamburger" onClick={() => setMenuOpen(!menuOpen)} aria-label="Menu">
             {[0,1,2].map(i => (
               <div key={i} style={{ width: 22, height: 2, margin: "4px 0", transition: "all .2s",
                 background: `linear-gradient(90deg,${RAINBOW[i*2]?.color},${RAINBOW[i*2+1]?.color || RAINBOW[6].color})`,
@@ -249,7 +249,7 @@ export default function RainbowGradient() {
             {sections.map((s, i) => {
               const r = getRainbow(s.toLowerCase());
               return (
-                <button key={s} style={{ background: "none", border: "none", cursor: "pointer", textAlign: "left", padding: "10px 0", fontSize: 12, fontWeight: 700, letterSpacing: 2, textTransform: "uppercase", color: r?.color || "#fff", fontFamily: "'Outfit',sans-serif" }}
+                <button type="button" key={s} style={{ background: "none", border: "none", cursor: "pointer", textAlign: "left", padding: "10px 0", fontSize: 12, fontWeight: 700, letterSpacing: 2, textTransform: "uppercase", color: r?.color || "#fff", fontFamily: "'Outfit',sans-serif" }}
                   onClick={() => scrollTo(s.toLowerCase())}>
                   <span style={{ opacity: 0.5, marginRight: 8 }}>{r?.section}</span>{s}
                 </button>
@@ -282,10 +282,10 @@ export default function RainbowGradient() {
           </motion.p>
           <motion.div initial={{ opacity: 0, y: 16 }} animate={{ opacity: 1, y: 0 }} transition={{ duration: 0.5, delay: 0.4 }}
             style={{ display: "flex", flexWrap: "wrap", gap: 16, justifyContent: "center", marginBottom: 48 }}>
-            <button onClick={() => scrollTo("projects")} style={{ padding: "14px 28px", borderRadius: 99, background: `linear-gradient(135deg,${RAINBOW[0].color},${RAINBOW[1].color})`, color: "#fff", border: "none", fontSize: 13, fontWeight: 700, letterSpacing: 2, textTransform: "uppercase", cursor: "pointer", transition: "all .2s" }}>
+            <button type="button" onClick={() => scrollTo("projects")} style={{ padding: "14px 28px", borderRadius: 99, background: `linear-gradient(135deg,${RAINBOW[0].color},${RAINBOW[1].color})`, color: "#fff", border: "none", fontSize: 13, fontWeight: 700, letterSpacing: 2, textTransform: "uppercase", cursor: "pointer", transition: "all .2s" }}>
               View Work
             </button>
-            <button onClick={() => scrollTo("contact")} style={{ padding: "14px 28px", borderRadius: 99, background: "transparent", color: "#fff", border: "1px solid rgba(255,255,255,.2)", fontSize: 13, fontWeight: 700, letterSpacing: 2, textTransform: "uppercase", cursor: "pointer" }}>
+            <button type="button" onClick={() => scrollTo("contact")} style={{ padding: "14px 28px", borderRadius: 99, background: "transparent", color: "#fff", border: "1px solid rgba(255,255,255,.2)", fontSize: 13, fontWeight: 700, letterSpacing: 2, textTransform: "uppercase", cursor: "pointer" }}>
               Say Hello
             </button>
           </motion.div>

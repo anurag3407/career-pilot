@@ -216,7 +216,7 @@ export default function About() {
 
           <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-6">
             {VALUES.map(({ icon: Icon, title, desc }, i) => (
-             <button
+             <button type="button"
                 key={title}
                 onClick={() => setActiveValue(i)}
                 aria-pressed={activeValue === i}

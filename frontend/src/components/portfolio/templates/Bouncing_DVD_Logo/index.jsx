@@ -303,7 +303,7 @@ export default function Bouncing_DVD_Logo({ data: propData }) {
         <span style={styles.navBrand}>{data.name || defaultData.name}</span>
         <div style={styles.navLinks}>
           {SECTIONS.map(s => (
-            <button key={s} style={styles.navLink(activeSection === s)} onClick={() => setActiveSection(s)}>
+            <button type="button" key={s} style={styles.navLink(activeSection === s)} onClick={() => setActiveSection(s)}>
               {s}
             </button>
           ))}

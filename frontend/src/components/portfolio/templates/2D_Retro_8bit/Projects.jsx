@@ -220,7 +220,7 @@ export default function Projects({
             <div className="flex flex-wrap items-center gap-3 w-full md:w-auto">
               <span className="font-retro-title text-[9px] text-[#ffde00] mr-2">STAGE SELECT:</span>
               {categories.map((cat, i) => (
-                <button
+                <button type="button"
                   key={cat}
                   onClick={() => setActiveCategory(cat)}
                   className={`font-retro-title text-[9px] px-3.5 py-2 border-2 border-black transition-all cursor-pointer relative
@@ -239,7 +239,7 @@ export default function Projects({
             <div className="flex flex-wrap items-center gap-6 self-end md:self-auto">
               {/* Insert Coin Slot & Coin Counter */}
               <div className="flex items-center gap-3">
-                <button
+                <button type="button"
                   onClick={handleInsertCoin}
                   disabled={isInserting}
                   className={`flex items-center gap-1.5 px-3 py-2 bg-[#ff007f] hover:bg-[#d8006c] text-white border-2 border-black font-retro-title text-[9px] shadow-[4px_4px_0px_0px_#000000] transition-all cursor-pointer active:translate-x-[2px] active:translate-y-[2px] active:shadow-[2px_2px_0px_0px_#000000] ${
@@ -258,7 +258,7 @@ export default function Projects({
               </div>
 
               {/* CRT Scanline Filter Toggle */}
-              <button
+              <button type="button"
                 onClick={() => setCrtFilter(!crtFilter)}
                 className={`flex items-center gap-1.5 px-3 py-2 border-2 border-black font-retro-title text-[9px] shadow-[4px_4px_0px_0px_#000000] active:translate-x-[2px] active:translate-y-[2px] active:shadow-[2px_2px_0px_0px_#000000] transition-colors cursor-pointer
                   ${
@@ -273,7 +273,7 @@ export default function Projects({
 
               {/* Toggle Game View Layout Mode */}
               <div className="flex rounded-md overflow-hidden border-2 border-black shadow-[4px_4px_0px_0px_#000000]">
-                <button
+                <button type="button"
                   onClick={() => setViewMode("grid")}
                   className={`p-2 transition-colors cursor-pointer ${
                     viewMode === "grid" ? "bg-[#00f0ff] text-black" : "bg-neutral-800 text-neutral-400 hover:text-white"
@@ -282,7 +282,7 @@ export default function Projects({
                 >
                   <Grid className="w-4 h-4" />
                 </button>
-                <button
+                <button type="button"
                   onClick={() => setViewMode("leaderboard")}
                   className={`p-2 transition-colors cursor-pointer ${
                     viewMode === "leaderboard" ? "bg-[#00f0ff] text-black" : "bg-neutral-800 text-neutral-400 hover:text-white"
@@ -552,7 +552,7 @@ export default function Projects({
               <p className="font-retro-body text-xl text-neutral-400 uppercase max-w-sm px-4">
                 No quests completed in this sector yet. Keep building!
               </p>
-              <button
+              <button type="button"
                 onClick={() => setActiveCategory("All")}
                 className="mt-6 font-retro-title text-[9px] px-4 py-2 border-2 border-black bg-[#00f0ff] hover:bg-[#00c5d3] text-black shadow-[4px_4px_0px_0px_rgba(0,0,0,1)] active:translate-x-[2px] active:translate-y-[2px] active:shadow-[2px_2px_0px_0px_rgba(0,0,0,1)] transition-all cursor-pointer"
               >

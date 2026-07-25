@@ -717,19 +717,19 @@ export default function DigitalManifestoScroll() {
       {/* ── Navigation ── */}
       <nav className={`dms-nav${scrollY > 80 ? " dms-nav-scrolled" : ""}`}>
         <div className="dms-nav-inner">
-          <button className="dms-nav-brand" onClick={() => scrollTo("hero")}>
+          <button type="button" className="dms-nav-brand" onClick={() => scrollTo("hero")}>
             {personal.name?.split(" ")[0] || "Manifesto"}
           </button>
           <ul className="dms-nav-links">
             {navLinks.map((l) => (
               <li key={l.id}>
-                <button className="dms-nav-link" onClick={() => scrollTo(l.id)}>
+                <button type="button" className="dms-nav-link" onClick={() => scrollTo(l.id)}>
                   {l.label}
                 </button>
               </li>
             ))}
           </ul>
-          <button className="dms-nav-toggle" onClick={() => setMenuOpen(true)} aria-label="Open menu">
+          <button type="button" className="dms-nav-toggle" onClick={() => setMenuOpen(true)} aria-label="Open menu">
             <Menu size={24} />
           </button>
         </div>
@@ -745,7 +745,7 @@ export default function DigitalManifestoScroll() {
             exit={{ opacity: 0 }}
             transition={{ duration: 0.25 }}
           >
-            <button className="dms-mobile-close" onClick={() => setMenuOpen(false)} aria-label="Close menu">
+            <button type="button" className="dms-mobile-close" onClick={() => setMenuOpen(false)} aria-label="Close menu">
               <X size={28} />
             </button>
             {navLinks.map((l, i) => (
@@ -783,8 +783,8 @@ export default function DigitalManifestoScroll() {
           )}
           
           <div className="dms-hero-actions">
-            <button className="dms-btn dms-btn-primary" onClick={() => scrollTo("projects")}>View Portfolio</button>
-            <button className="dms-btn dms-btn-outline" onClick={() => scrollTo("contact")}>Get In Touch</button>
+            <button type="button" className="dms-btn dms-btn-primary" onClick={() => scrollTo("projects")}>View Portfolio</button>
+            <button type="button" className="dms-btn dms-btn-outline" onClick={() => scrollTo("contact")}>Get In Touch</button>
           </div>
 
           <div className="dms-hero-stats">
