@@ -1,7 +1,7 @@
 /**
  * Strip HTML/script tags from chat message content before persistence.
  */
-export function sanitizeMessageContent(content) {
+export function sanitizeMessageContent(content: unknown): string {
   if (typeof content !== "string") {
     return "";
   }

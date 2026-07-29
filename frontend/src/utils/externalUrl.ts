@@ -1,4 +1,4 @@
-export function normalizeExternalUrl(value) {
+export function normalizeExternalUrl(value: unknown): string | null {
   if (typeof value !== 'string') {
     return null;
   }
