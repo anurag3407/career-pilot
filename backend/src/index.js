@@ -14,7 +14,7 @@ import cors from 'cors';
 import { cspHeaders } from './middleware/cspHeaders.js';
 import helmet from 'helmet';
 import compressionMiddleware from './middleware/compression.js';
-import rateLimit from 'express-rate-limit';
+import { globalLimiter, strictLimiter } from './middleware/rateLimiter.js';
 import searchRoutes from './routes/search.js';
 import portfolioRoutes from './routes/portfolio.js';
 import uploadRoutes from './routes/upload.js';
@@ -258,40 +258,7 @@ app.use(helmet({
   },
 }));
 
-const limiter = rateLimit({
-  windowMs: parseInt(process.env.RATE_LIMIT_WINDOW_MS) || 15 * 60 * 1000,
-  max: parseInt(process.env.RATE_LIMIT_MAX_REQUESTS) || 1000,
-  standardHeaders: true,
-  legacyHeaders: false,
-  handler: (req, res, next, options) => {
-    const resetTime = req.rateLimit?.resetTime;
-    const retryAfterSeconds = resetTime
-      ? Math.max(1, Math.ceil((resetTime - Date.now()) / 1000))
-      : Math.ceil((options.windowMs || 0) / 1000);
-
-    const headers = {
-      'Retry-After': String(retryAfterSeconds),
-      'X-RateLimit-Limit': String(options.max),
-      'X-RateLimit-Remaining': String(req.rateLimit?.remaining ?? 0),
-      'X-RateLimit-Quota': String(options.max)
-    };
-
-    if (resetTime) {
-      headers['X-RateLimit-Reset'] = String(Math.ceil(resetTime / 1000));
-    }
-
-    res.set(headers);
-    res.status(options.statusCode).json({
-      success: false,
-      error: options.message?.error || 'Rate limit exceeded',
-      message: options.message
-    });
-  },
-  message: {
-    error: 'Too many requests, please try again later.'
-  }
-});
-app.use('/api/', limiter);
+app.use('/api/', globalLimiter);
 
 // Webhook route needs raw body, mount before express.json()
 app.use('/api/webhooks', webhookRoutes);
@@ -310,9 +277,9 @@ app.get('/metrics', metricsHandler);
 
 app.use('/api/docs', swaggerUi.serve, swaggerUi.setup(swaggerSpec));
 app.use('/api/auth', authRoutes);
-app.use('/api/upload', uploadRoutes);
+app.use('/api/upload', strictLimiter, uploadRoutes);
 app.use('/api/resumes', resumeRoutes);
-app.use('/api/enhance', enhanceRoutes);
+app.use('/api/enhance', strictLimiter, enhanceRoutes);
 app.use('/api/roast', roastRoutes);
 app.use("/api/cover-letter", coverLetterRoutes);
 app.use('/api/fetchjobs', jobsRoutes);
@@ -321,7 +288,7 @@ app.use('/api/job-alerts', jobAlertRoutes);
 app.use('/api/community', communityRoutes);
 app.use('/api/fellowship', fellowshipRoutes);
 app.use('/api/interview', interviewRoutes);
-app.use("/api/upload", inputRoutes);
+app.use("/api/upload", strictLimiter, inputRoutes);
 app.use("/api/recruiter", recruiterRoutes);
 app.use("/api/outreach", outreachRoutes);
 app.use("/api/bugs", bugsRoutes);

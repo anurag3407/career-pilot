@@ -20,7 +20,6 @@ import { optimizeLinkedInProfile } from "../services/linkedinOptimizerService.js
 import { verifyToken } from "../middleware/auth.js";
 import { extractAIProvider } from "../middleware/aiKey.js";
 import { asyncHandler, ApiError } from "../middleware/errorHandler.js";
-import { aiRateLimiter } from "../middleware/rateLimiter.js";
 import { createSSEStream } from "../middleware/stream.js";
 import { validate } from "../middleware/validate.js";
 import { genAI } from "../config/genAI.js";
@@ -58,7 +57,6 @@ router.post(
   "/resume-score",
   verifyToken,
   extractAIProvider,
-  aiRateLimiter,
   validate(resumeScoreSchema),
   asyncHandler(async (req, res) => {
     const { resumeText, jobRole } = req.body;
@@ -165,7 +163,6 @@ router.post(
   "/",
   verifyToken,
   extractAIProvider,
-  aiRateLimiter,
   validate(enhanceResumeSchema),
   asyncHandler(async (req, res) => {
     const { resumeText, preferences } = req.body;
@@ -217,7 +214,6 @@ router.post(
   "/summary",
   verifyToken,
   extractAIProvider,
-  aiRateLimiter,
   validate(resumeTextJobRoleSchema),
   asyncHandler(async (req, res) => {
     const { resumeText, jobRole } = req.body;
@@ -254,7 +250,6 @@ router.post(
   "/suggestions",
   verifyToken,
   extractAIProvider,
-  aiRateLimiter,
   validate(resumeTextJobRoleSchema),
   asyncHandler(async (req, res) => {
     const { resumeText, jobRole } = req.body;
@@ -298,7 +293,6 @@ router.post(
   "/ats-analysis",
   verifyToken,
   extractAIProvider,
-  aiRateLimiter,
   validate(resumeTextJobRoleSchema),
   asyncHandler(async (req, res) => {
     const { resumeText, jobRole } = req.body;
@@ -333,7 +327,6 @@ router.post(
   "/comprehensive-analysis",
   verifyToken,
   extractAIProvider,
-  aiRateLimiter,
   validate(resumeTextJobRoleSchema),
   asyncHandler(async (req, res) => {
     const { resumeText, jobRole } = req.body;
@@ -375,7 +368,6 @@ router.post(
   "/analyze-bullets",
   verifyToken,
   extractAIProvider,
-  aiRateLimiter,
   validate(resumeTextJobRoleSchema),
   asyncHandler(async (req, res) => {
     const { resumeText, jobRole } = req.body;
@@ -417,7 +409,6 @@ router.post(
   "/before-after",
   verifyToken,
   extractAIProvider,
-  aiRateLimiter,
   validate(beforeAfterSchema),
   asyncHandler(async (req, res) => {
     const { resumeText, jobRole, analysisResults } = req.body;
@@ -474,7 +465,6 @@ router.post(
   "/generate-email",
   verifyToken,
   extractAIProvider,
-  aiRateLimiter,
   validate(generateEmailSchema),
   asyncHandler(async (req, res) => {
     const { resume, jobDesc, tone } = req.body;
@@ -510,7 +500,6 @@ router.post(
   "/optimize-linkedin",
   verifyToken,
   extractAIProvider,
-  aiRateLimiter,
   validate(optimizeLinkedInSchema),
   asyncHandler(async (req, res) => {
     const { profileText, targetRole } = req.body;
@@ -544,7 +533,6 @@ router.post(
   "/skill-gap",
   verifyToken,
   extractAIProvider,
-  aiRateLimiter,
   validate(skillGapSchema),
   asyncHandler(async (req, res) => {
     const { resumeText, jobDescription } = req.body;
@@ -577,7 +565,6 @@ router.post(
   "/translate",
   verifyToken,
   extractAIProvider,
-  aiRateLimiter,
   validate(translateResumeSchema),
   asyncHandler(async (req, res) => {
     const { resumeText, targetLanguage, sourceLanguage } = req.body;
@@ -614,7 +601,6 @@ router.post(
   "/tailor",
   verifyToken,
   extractAIProvider,
-  aiRateLimiter,
   validate(tailorResumeSchema),
   asyncHandler(async (req, res) => {
     const { resumeText, jobDescription, jobRole } = req.body;
@@ -654,7 +640,6 @@ router.post(
   "/element",
   verifyToken,
   extractAIProvider,
-  aiRateLimiter,
   asyncHandler(async (req, res) => {
     const { slug, kind, value } = req.body || {};
     if (typeof value !== "string") {
@@ -713,7 +698,6 @@ router.post(
   "/stream",
   verifyToken,
   extractAIProvider,
-  aiRateLimiter,
   asyncHandler(async (req, res) => {
     const { resumeText, preferences } = req.body;
     let isAborted = false;
@@ -830,7 +814,6 @@ router.post(
   "/career-trajectory",
   verifyToken,
   extractAIProvider,
-  aiRateLimiter,
   asyncHandler(async (req, res) => {
     const { resumeData } = req.body;
 
