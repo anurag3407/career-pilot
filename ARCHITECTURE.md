@@ -415,7 +415,7 @@ flowchart TB
 { isActive: 1, lastCheckedAt: 1 }
 ```
 
-#### TrackedJob Collection
+#### Tracked Job Collection
 ```javascript
 {
   _id: ObjectId,
