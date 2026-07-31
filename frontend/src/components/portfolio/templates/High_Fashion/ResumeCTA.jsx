@@ -37,7 +37,7 @@ function ExperienceRow({ job, index }) {
           </div>
           <div className="flex items-center gap-1 flex-shrink-0">
             <Calendar size={10} style={{ color: F.subtle }} />
-            <span className="text-xs" style={{ color: F.subtle }}>{job.duration}</span>
+            <span className="text-xs" style={{ color: F.subtle }}>{job.period ?? job.duration}</span>
           </div>
         </div>
         {job.description && (
