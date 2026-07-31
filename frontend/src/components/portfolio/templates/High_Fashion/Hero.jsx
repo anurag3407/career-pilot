@@ -1,4 +1,4 @@
-import React, { useState } from 'react';
+import React from 'react';
 import { motion } from 'framer-motion';
 import { ArrowDown, MapPin } from 'lucide-react';
 import data from '../../../../data/dummy_data.json';
