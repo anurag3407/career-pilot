@@ -46,16 +46,13 @@ const EmptyJobState = ({ filterStatus, statusLabel }) => {
   return (
     <div className="ejs-root">
       <style>{`
-        @import url('https://fonts.googleapis.com/css2?family=DM+Sans:wght@400;500;600&display=swap');
-
         .ejs-root {
-          font-family: 'DM Sans', sans-serif;
           position: relative;
           overflow: hidden;
           padding: 72px 24px 80px;
           border-radius: 20px;
-          background: #080810;
-          border: 1px solid rgba(255,255,255,0.06);
+          background: var(--card);
+          border: 1px solid var(--border);
           display: flex;
           flex-direction: column;
           align-items: center;
@@ -65,11 +62,12 @@ const EmptyJobState = ({ filterStatus, statusLabel }) => {
         .ejs-grid {
           position: absolute; inset: 0; pointer-events: none;
           background-image:
-            linear-gradient(rgba(255,255,255,0.03) 1px, transparent 1px),
-            linear-gradient(90deg, rgba(255,255,255,0.03) 1px, transparent 1px);
+            linear-gradient(var(--border) 1px, transparent 1px),
+            linear-gradient(90deg, var(--border) 1px, transparent 1px);
           background-size: 52px 52px;
           mask-image: radial-gradient(ellipse 75% 65% at 50% 50%, black 30%, transparent 100%);
           -webkit-mask-image: radial-gradient(ellipse 75% 65% at 50% 50%, black 30%, transparent 100%);
+          opacity: 0.4;
         }
 
         .ejs-glow {
@@ -83,16 +81,16 @@ const EmptyJobState = ({ filterStatus, statusLabel }) => {
         .ejs-gc {
           position: absolute;
           width: 108px; border-radius: 10px;
-          background: rgba(255,255,255,0.025);
-          border: 1px solid rgba(255,255,255,0.06);
+          background: var(--muted);
+          border: 1px solid var(--border);
           padding: 10px;
         }
         .ejs-gc:nth-child(1) { top: 14%; left: 2%;  animation: gcf 6s 0s    ease-in-out infinite; }
         .ejs-gc:nth-child(2) { top: 18%; right: 2%; animation: gcf 6s -2.2s ease-in-out infinite; }
         .ejs-gc:nth-child(3) { bottom: 14%; left: 4%; animation: gcf 6s -4.1s ease-in-out infinite; }
         @keyframes gcf { 0%,100% { transform: translateY(0); } 50% { transform: translateY(-8px); } }
-        .gcl { height: 6px; border-radius: 3px; background: rgba(255,255,255,0.07); margin-bottom: 6px; }
-        .gct { display: inline-block; height: 10px; width: 36px; border-radius: 4px; background: rgba(99,87,255,0.22); }
+        .gcl { height: 6px; border-radius: 3px; background: var(--muted-foreground); opacity: 0.2; margin-bottom: 6px; }
+        .gct { display: inline-block; height: 10px; width: 36px; border-radius: 4px; background: var(--primary); opacity: 0.22; }
 
         /* Solar system */
         .ejs-solar {
@@ -122,7 +120,7 @@ const EmptyJobState = ({ filterStatus, statusLabel }) => {
           position: absolute;
           top: 50%; left: 50%;
           border-radius: 50%;
-          border: 1px solid rgba(255,255,255,0.08);
+          border: 1px solid var(--border);
         }
         .ejs-o1 { width: 96px;  height: 96px;  margin: -48px 0 0 -48px;  animation: sp 3.2s linear infinite; }
         .ejs-o2 { width: 134px; height: 134px; margin: -67px 0 0 -67px;  animation: sp 5.5s linear infinite reverse; }
@@ -171,22 +169,22 @@ const EmptyJobState = ({ filterStatus, statusLabel }) => {
           display: inline-flex; align-items: center; gap: 8px;
           margin-bottom: 22px;
           padding: 5px 14px; border-radius: 999px;
-          background: rgba(255,255,255,0.04);
-          border: 1px solid rgba(255,255,255,0.09);
-          font-size: 12px; color: rgba(255,255,255,0.38);
+          background: var(--muted);
+          border: 1px solid var(--border);
+          font-size: 12px; color: var(--muted-foreground);
           animation: fup 0.6s cubic-bezier(0.22,1,0.36,1) both;
         }
-        .ejs-pill-dot { width: 6px; height: 6px; border-radius: 50%; background: rgba(255,255,255,0.25); }
+        .ejs-pill-dot { width: 6px; height: 6px; border-radius: 50%; background: var(--muted-foreground); opacity: 0.5; }
 
         .ejs-h {
           font-size: 30px; font-weight: 600;
-          color: #f4f3ff; margin: 0 0 14px;
+          color: var(--foreground); margin: 0 0 14px;
           letter-spacing: -0.6px; line-height: 1.2;
           animation: fup 0.7s 0.08s cubic-bezier(0.22,1,0.36,1) both;
         }
 
         .ejs-p {
-          font-size: 15px; color: rgba(255,255,255,0.42);
+          font-size: 15px; color: var(--muted-foreground);
           max-width: 370px; line-height: 1.75;
           margin: 0 0 36px;
           animation: fup 0.7s 0.16s cubic-bezier(0.22,1,0.36,1) both;
@@ -203,7 +201,6 @@ const EmptyJobState = ({ filterStatus, statusLabel }) => {
           padding: 12px 24px;
           background: linear-gradient(135deg, #4d96ff 0%, #845ef7 100%);
           color: #fff; font-size: 14px; font-weight: 600;
-          font-family: 'DM Sans', sans-serif;
           border: none; border-radius: 12px; cursor: pointer;
           box-shadow: 0 4px 22px rgba(77,150,255,0.35);
           transition: transform 0.2s, box-shadow 0.2s, filter 0.2s;
@@ -219,17 +216,16 @@ const EmptyJobState = ({ filterStatus, statusLabel }) => {
         .ejs-bg {
           display: inline-flex; align-items: center; gap: 6px;
           padding: 12px 20px;
-          background: transparent; color: rgba(255,255,255,0.48);
+          background: transparent; color: var(--muted-foreground);
           font-size: 14px; font-weight: 500;
-          font-family: 'DM Sans', sans-serif;
-          border: 1px solid rgba(255,255,255,0.11); border-radius: 12px;
+          border: 1px solid var(--border); border-radius: 12px;
           cursor: pointer; text-decoration: none;
           transition: color 0.2s, border-color 0.2s, background 0.2s;
         }
         .ejs-bg:hover {
-          color: rgba(255,255,255,0.85);
-          border-color: rgba(255,255,255,0.22);
-          background: rgba(255,255,255,0.04);
+          color: var(--foreground);
+          border-color: var(--ring);
+          background: var(--muted);
         }
 
         /* Chips */
@@ -241,12 +237,11 @@ const EmptyJobState = ({ filterStatus, statusLabel }) => {
         .ejs-chip {
           padding: 5px 13px; border-radius: 999px;
           font-size: 12px; font-weight: 500;
-          color: rgba(255,255,255,0.36);
-          background: rgba(255,255,255,0.04);
-          border: 1px solid rgba(255,255,255,0.07);
-          font-family: 'DM Sans', sans-serif;
+          color: var(--muted-foreground);
+          background: var(--muted);
+          border: 1px solid var(--border);
         }
-        .ejs-chip b { color: rgba(255,255,255,0.6); font-weight: 600; margin-right: 3px; }
+        .ejs-chip b { color: var(--foreground); font-weight: 600; margin-right: 3px; }
 
         @keyframes fup {
           from { opacity: 0; transform: translateY(18px); }
