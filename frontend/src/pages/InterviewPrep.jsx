@@ -245,9 +245,13 @@ export default function InterviewPrep() {
 
   useEffect(() => {
     if (step === 'interview') initializeMedia();
+    
+    // Capture ref value locally
+    const synth = synthRef.current;
+    
     return () => {
       cleanupMedia();
-      if (synthRef.current) synthRef.current.cancel();
+      if (synth) synth.cancel();
     };
   }, [step]);
 
