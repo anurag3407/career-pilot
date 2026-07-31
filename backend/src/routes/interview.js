@@ -194,6 +194,7 @@ router.post('/start', verifyToken, extractAIProvider, aiRateLimiter, validate(st
     });
 }));
 
+router.post('/:id/answer', verifyToken, extractAIProvider, aiRateLimiter, validate(submitAnswerSchema), asyncHandler(async (req, res) => {
 // ---------------------------------------------------------------------------
 // POST /api/interview/warmup-questions
 // ---------------------------------------------------------------------------
@@ -447,6 +448,7 @@ router.post('/:id([0-9a-fA-F]{24})/switch-provider', verifyToken, extractAIProvi
         throw new ApiError(404, 'Question not found');
     }
 
+    const analysis = await analyzeAnswer(question.question, transcript, duration, req.aiProvider);
     const reAnalysis = await analyzeAnswer(
         lastQuestion.question,
         lastAnswer.transcript,
@@ -484,6 +486,7 @@ router.post('/:id([0-9a-fA-F]{24})/switch-provider', verifyToken, extractAIProvi
     });
 }));
 
+router.post('/:id/complete', verifyToken, extractAIProvider, aiRateLimiter, asyncHandler(async (req, res) => {
 // ---------------------------------------------------------------------------
 // POST /api/interview/:id/complete
 // ---------------------------------------------------------------------------
