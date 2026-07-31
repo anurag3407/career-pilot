@@ -19,6 +19,8 @@
 - [Security Architecture](#-security-architecture)
 - [Deployment Architecture](#-deployment-architecture)
 - [Scalability Design](#-scalability-design)
+- [Monitoring & Observability](#-monitoring--observability)
+- [Additional Resources](#-additional-resources)
 
 ---
 
