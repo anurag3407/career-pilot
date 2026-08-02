@@ -167,7 +167,7 @@ function Counter({ value, duration = 1.8, delay = 0 }) {
     
     let start = 0;
     const end = parseInt(value, 10);
-    if (isNaN(end)) {
+    if (Number.isNaN(end)) {
       setCount(value);
       return;
     }
