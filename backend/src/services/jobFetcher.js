@@ -214,7 +214,7 @@ export const bulkUpsertJobs = async (
   );
 
   const existingLegacyBySourceId = new Map(
-    existingDocs.map((document) => [
+    (existingDocs ?? []).map((document) => [
       buildSourceScopedExternalId(
         document.source,
         document.externalId,
