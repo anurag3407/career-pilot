@@ -208,7 +208,7 @@ async function scrapeWellfoundJobs({ role = "", location = "", maxJobs = 20 } = 
         }, maxJobs);
 
         // Post-process: normalize funding stage and parse equity
-        const processed = jobs.map((job) => ({
+        const processed = (jobs ?? []).map((job) => ({
             jobTitle: job.jobTitle,
             jobUrl: job.jobUrl,
             location: job.location,

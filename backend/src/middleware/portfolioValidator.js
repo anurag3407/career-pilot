@@ -60,7 +60,7 @@ function collectUrlErrors(obj, path, errors) {
 function sanitizeObject(obj) {
   if (typeof obj === 'string') return stripHtml(obj);
 
-  if (Array.isArray(obj)) return obj.map(sanitizeObject);
+  if (Array.isArray(obj)) return (obj ?? []).map(sanitizeObject);
 
   if (typeof obj === 'object' && obj !== null) {
     const out = {};

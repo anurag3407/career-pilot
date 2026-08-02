@@ -111,7 +111,7 @@ async function inputupload(req, res) {
     const uniqueSkills = [...new Set(combinedSkills)];
 
     
-    const techSkills = uniqueSkills.map((skill) => ({
+    const techSkills = (uniqueSkills ?? []).map((skill) => ({
       name: skill,
     }));
 

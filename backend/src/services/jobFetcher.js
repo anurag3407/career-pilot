@@ -207,7 +207,7 @@ export const bulkUpsertJobs = async (
     .lean();
 
   const existingByStoredId = new Map(
-    existingDocs.map((document) => [
+    (existingDocs ?? []).map((document) => [
       String(document.externalId),
       document,
     ]),
