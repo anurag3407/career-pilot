@@ -8,7 +8,7 @@ export default function Contact({ personal, socials }) {
       : Object.entries(socials)
           .filter(([_, url]) => !!url)
           .map(([platform, url]) => ({
-            platform: platform.charAt(0).toUpperCase() + platform.slice(1),
+            platform: platform[0].toUpperCase() + platform.slice(1),
             url: url
           }))
       )
