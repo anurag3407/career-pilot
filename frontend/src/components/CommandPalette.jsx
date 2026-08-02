@@ -236,7 +236,7 @@ const CommandPalette = ({ isOpen, setIsOpen }) => {
             </div>
 
             <div className="space-y-1">
-              {recentActions.map((action) => {
+              {(recentActions ?? []).map((action) => {
                 const matchedAction = actions.find(
                   (a) => a.id === action.id
                 );
