@@ -1285,7 +1285,7 @@ ${updatedProgress.level}`
                     onChange={(e) => setFormData({ ...formData, industry: e.target.value })}
                     className="w-full px-4 py-3 bg-muted/50 border border-border rounded-xl text-foreground focus:ring-2 focus:ring-primary"
                   >
-                    {INDUSTRIES.map(ind => <option key={ind.value} value={ind.value}>{ind.label}</option>)}
+                    {(INDUSTRIES ?? []).map(ind => <option key={ind.value} value={ind.value}>{ind.label}</option>)}
                   </select>
                 </div>
 
