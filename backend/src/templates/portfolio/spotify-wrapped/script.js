@@ -91,7 +91,7 @@ const compileTemplates = () => {
     });
 
     // Write compiled HTML back to the body
-    document.body.innerHTML = html;
+    document.body.textContent = html;
 
     // Update document title
     document.title = document.title.replace(/\{\{\s*name\s*\}\}/g, PORTFOLIO_DATA.name);
