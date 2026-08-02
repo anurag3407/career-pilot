@@ -60,7 +60,7 @@ export default function ChallengeDetail() {
             toast.error('Cover letter must be at least 100 characters')
             return
         }
-        if (!estimatedDays || parseInt(estimatedDays) < 1) {
+        if (!estimatedDays || parseInt(estimatedDays, 10) < 1) {
             toast.error('Estimated days must be at least 1')
             return
         }
@@ -70,7 +70,7 @@ export default function ChallengeDetail() {
             await fellowshipApi.applyToChallenge(id, {
                 coverLetter,
                 proposedPrice: challenge.price,
-                estimatedDays: parseInt(estimatedDays),
+                estimatedDays: parseInt(estimatedDays, 10),
                 portfolioLinks: portfolioLinks.split('\n').filter(l => l.trim())
             })
             toast.success('Proposal submitted!')
