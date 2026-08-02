@@ -19,7 +19,7 @@ export function usePresence(userIds = []) {
   // any delimiter) are encoded correctly. Sorting first ensures ['a','b'] and
   // ['b','a'] produce the same key and don't trigger extra subscriptions.
   const serializedUserIds =
-    uniqueUserIds.length === 0 ? '' : JSON.stringify([...uniqueUserIds].sort());
+    uniqueUserIds.length === 0 ? '' : JSON.stringify([...uniqueUserIds].sort((a, b) => a - b));
 
   // Reconstruct a stable array reference from the parsed JSON so that inline
   // arrays (e.g. usePresence(['user1','user2'])) do not cause subscription
