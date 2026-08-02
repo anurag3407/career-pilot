@@ -425,7 +425,7 @@ export default function LinkedInOptimizer() {
                       <Zap className="w-5 h-5 text-yellow-400" /> Quick Wins
                     </h2>
                     <div className="space-y-3">
-                      {results.quickWins.map((win, i) => {
+                      {results.(quickWins ?? []).map((win, i) => {
                         const cfg = IMPACT_CONFIG[win.impact] || IMPACT_CONFIG.Low
                         return (
                           <motion.div
