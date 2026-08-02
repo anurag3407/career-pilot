@@ -1149,7 +1149,7 @@ function SkillCard({ skill, index }) {
     numericLevel = skill.level;
   } else if (typeof skill.level === 'string') {
     const parsed = parseInt(skill.level.replace(/\D/g, ""), 10);
-    if (!isNaN(parsed) && parsed > 0) {
+    if (!Number.isNaN(parsed) && parsed > 0) {
       numericLevel = parsed;
     } else {
       const l = skill.level.toLowerCase();
