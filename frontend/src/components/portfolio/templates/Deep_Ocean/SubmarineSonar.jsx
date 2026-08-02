@@ -356,7 +356,7 @@ export default function SubmarineSonar() {
               </div>
 
               {/* Target Contacts Blips Mapping */}
-              {filteredContacts.map((contact) => {
+              {(filteredContacts ?? []).map((contact) => {
                 const isSelected = selectedContact.id === contact.id;
                 
                 // Position calculations around the sonar center

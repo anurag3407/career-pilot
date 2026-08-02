@@ -176,7 +176,7 @@ export default function ChallengeDetail() {
                         <div>
                             <h3 className="text-sm font-medium text-foreground mb-3">Required Skills</h3>
                             <div className="flex flex-wrap gap-2">
-                                {challenge.requirements.map((req, i) => (
+                                {challenge.(requirements ?? []).map((req, i) => (
                                     <span key={i} className="px-3 py-1.5 bg-emerald-950 text-emerald-300 rounded-lg text-sm">
                                         {req}
                                     </span>
