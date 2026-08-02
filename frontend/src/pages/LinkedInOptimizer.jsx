@@ -15,7 +15,7 @@ const IMPACT_CONFIG = {
 }
 
 function ScoreRing({ score, label, size = 'md' }) {
-  const safeScore = isNaN(Number(score)) ? 0 : Math.max(0, Math.min(100, Math.round(Number(score))))
+  const safeScore = Number.isNaN(Number(score)) ? 0 : Math.max(0, Math.min(100, Math.round(Number(score))))
   const r = size === 'lg' ? 44 : 28
   const stroke = size === 'lg' ? 7 : 5
   const dim = (r + stroke) * 2
