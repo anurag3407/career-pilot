@@ -31,7 +31,7 @@ export default function SchedulePost({ onClose, onSchedule }) {
   const handleConfirm = () => {
     const chosen = new Date(value);
 
-    if (isNaN(chosen.getTime())) {
+    if (Number.isNaN(chosen.getTime())) {
       setError('Please enter a valid date and time.');
       return;
     }
