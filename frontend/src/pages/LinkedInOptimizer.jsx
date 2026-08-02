@@ -376,7 +376,7 @@ export default function LinkedInOptimizer() {
                     <Sparkles className="w-5 h-5 text-blue-400" /> Optimized Headline Suggestions
                   </h2>
                   <div className="space-y-3">
-                    {results.headlineSuggestions.map((h, i) => (
+                    {results.(headlineSuggestions ?? []).map((h, i) => (
                       <HeadlineCard key={i} headline={h} index={i} copied={copiedIndex} onCopy={copyToClipboard} />
                     ))}
                   </div>
