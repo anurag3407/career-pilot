@@ -25,7 +25,7 @@ function parseInputDataPayload(data) {
   }
 
   try {
-    if (typeof data !== "string" || data.trim() === "") {
+    if (typeof data !== "string" || data.trim().length === 0) {
       return null;
     }
 

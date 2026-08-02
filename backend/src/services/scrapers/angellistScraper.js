@@ -42,7 +42,7 @@ async function launchBrowser() {
  * @returns {{ min: number|null, max: number|null, raw: string }}
  */
 function parseEquity(equityStr) {
-    if (!equityStr || equityStr.trim() === "" || equityStr === "No equity") {
+    if (!equityStr || equityStr.trim().length === 0 || equityStr === "No equity") {
         return { min: null, max: null, raw: equityStr || "Not specified" };
     }
 
