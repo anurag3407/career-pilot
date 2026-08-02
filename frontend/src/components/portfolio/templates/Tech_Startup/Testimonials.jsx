@@ -31,7 +31,7 @@ export default function Testimonials({ testimonials }) {
               
               <div className="relative z-10 flex items-center gap-4 mt-auto">
                 <div className="w-12 h-12 rounded-full bg-[#0A192F] border border-[#233554] group-hover:border-[#64FFDA] flex items-center justify-center text-[#64FFDA] font-bold text-lg transition-colors">
-                  {t.author.charAt(0).toUpperCase()}
+                  {t.author[0].toUpperCase()}
                 </div>
                 <div>
                   <h4 className="text-[#CCD6F6] font-semibold">{t.author}</h4>

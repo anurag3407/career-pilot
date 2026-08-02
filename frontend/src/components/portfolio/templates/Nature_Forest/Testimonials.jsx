@@ -40,7 +40,7 @@ export default function Testimonials() {
               
               <div className="flex items-center gap-4 border-t border-green-800/40 pt-6">
                 <div className="w-12 h-12 rounded-full bg-green-800 flex items-center justify-center text-green-300 font-bold text-lg">
-                  {t.author?.charAt(0) || "U"}
+                  {t.author?[0] || "U"}
                 </div>
                 <div>
                   <h4 className="text-white font-bold group-hover:text-green-300 transition-colors">

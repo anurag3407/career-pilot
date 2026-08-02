@@ -25,7 +25,7 @@ export default function Skills({ skills }) {
               <div className="absolute inset-0 bg-gradient-to-tr from-[#64FFDA]/0 to-[#64FFDA]/10 opacity-0 group-hover:opacity-100 transition-opacity duration-300"></div>
               
               <div className="w-12 h-12 mb-4 flex items-center justify-center rounded-full bg-[#0A192F] border border-[#233554] group-hover:border-[#64FFDA] transition-colors">
-                <span className="text-[#64FFDA] font-mono font-bold text-xl">{skill.name.charAt(0).toUpperCase()}</span>
+                <span className="text-[#64FFDA] font-mono font-bold text-xl">{skill.name[0].toUpperCase()}</span>
               </div>
               <h3 className="text-[#CCD6F6] font-semibold tracking-wide group-hover:text-[#64FFDA] transition-colors">
                 {skill.name}

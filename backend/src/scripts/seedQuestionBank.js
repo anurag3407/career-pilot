@@ -177,7 +177,7 @@ const seed = async () => {
             updatedAt: new Date()
           });
           created++;
-          console.log(`  ✓ ${company.padEnd(12)} / ${role.padEnd(30)} / ${level.padEnd(7)} — ${questions.length} questions`);
+          console.log(`  ✓ ${company.padEnd(12, " ")} / ${role.padEnd(30, " ")} / ${level.padEnd(7, " ")} — ${questions.length} questions`);
         } catch (err) {
           // Race condition or duplicate — treat as skip
           if (err.code === 11000) {
