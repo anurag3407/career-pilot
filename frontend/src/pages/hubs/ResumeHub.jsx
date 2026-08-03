@@ -18,6 +18,7 @@ import ToolCard from '../../components/ToolCard';
 import { Link } from 'react-router-dom';
 import { motion } from 'framer-motion';
 import toast from 'react-hot-toast';
+import EmptyState from '../../components/EmptyState';
 
 
 export default function ResumeHub() {
@@ -121,6 +122,14 @@ export default function ResumeHub() {
         color="primary"
       />
       <ToolCard
+        to="/linkedin-optimizer"
+        icon={Linkedin}
+        title="LinkedIn Optimizer"
+        description="Optimize your LinkedIn headline, bio, and descriptions with high-impact keywords."
+        badge="AI"
+        color="primary"
+      />
+      <ToolCard
         to="/upload"
         icon={BarChart3}
         title="ATS Score Analyzer"
@@ -142,67 +151,79 @@ export default function ResumeHub() {
       />
 
       {/* My Resumes Section */}
-      {!loading && resumes.length > 0 && (
+      {!loading && (
         <div className="col-span-full mt-6">
           <h2 className="text-xl font-bold text-foreground mb-4 flex items-center gap-2">
             <span className="w-1.5 h-6 rounded-full bg-secondary" />
             My Resumes
           </h2>
-          <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-4">
-            {resumes.map((resume, idx) => (
-              <motion.div
-                key={resume._id}
-                initial={{ opacity: 0, y: 10 }}
-                animate={{ opacity: 1, y: 0 }}
-                transition={{ delay: idx * 0.05 }}
-                className="p-5 rounded-2xl bg-card border border-border hover:border-primary/30 transition-all group"
-              >
-                <div className="flex items-start justify-between mb-3">
-                  <div className="w-10 h-10 rounded-lg bg-primary/10 flex items-center justify-center">
-                    <FileText className="w-5 h-5 text-primary" />
-                  </div>
-                  <span className="text-xs text-muted-foreground font-medium">
-                    {new Date(resume.createdAt).toLocaleDateString('en-US', {
-                      month: 'short',
-                      day: 'numeric',
-                    })}
-                  </span>
-                </div>
-                <h3 className="font-bold text-foreground mb-1 truncate">
-                  {resume.title || resume.originalFilename || 'Untitled Resume'}
-                </h3>
-                <div className="flex items-center gap-2 mb-4">
-                  <p className="text-xs text-muted-foreground">
-                    {resume.enhancedText ? 'AI Enhanced' : 'Original'}
-                  </p>
-                  {resume.atsScore && (
-                    <span className="text-[10px] font-bold px-2 py-0.5 rounded-md bg-indigo-500/10 text-indigo-600 border border-indigo-500/20">
-                      ATS: {resume.atsScore}
+          {resumes.length === 0 ? (
+            <EmptyState
+              icon={FileText}
+              title="No Resumes Built Yet"
+              description="Create a resume from scratch, upload a PDF to parse, or import from LinkedIn."
+              actionLabel="Create Resume"
+              to="/resume-builder"
+              secondaryLabel="Upload & Parse"
+              secondaryTo="/upload"
+            />
+          ) : (
+            <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-4">
+              {resumes.map((resume, idx) => (
+                <motion.div
+                  key={resume._id}
+                  initial={{ opacity: 0, y: 10 }}
+                  animate={{ opacity: 1, y: 0 }}
+                  transition={{ delay: idx * 0.05 }}
+                  className="p-5 rounded-2xl bg-card border border-border hover:border-primary/30 transition-all group"
+                >
+                  <div className="flex items-start justify-between mb-3">
+                    <div className="w-10 h-10 rounded-lg bg-primary/10 flex items-center justify-center">
+                      <FileText className="w-5 h-5 text-primary" />
+                    </div>
+                    <span className="text-xs text-muted-foreground font-medium">
+                      {new Date(resume.createdAt).toLocaleDateString('en-US', {
+                        month: 'short',
+                        day: 'numeric',
+                      })}
                     </span>
-                  )}
-                </div>
-                <div className="flex items-center gap-2">
-                  <Link
-                    to={
-                      resume.enhancedText
-                        ? `/enhance/${resume._id}`
-                        : `/resume/${resume._id}`
-                    }
-                    className="flex-1 text-center text-xs font-semibold px-3 py-2 rounded-lg bg-primary/10 text-primary hover:bg-primary/20 transition-colors"
-                  >
-                    <Eye className="w-3.5 h-3.5 inline mr-1" />
-                    View
-                  </Link>
-                  <button
-                    onClick={() => handleDelete(resume._id)}
-                    className="text-xs font-semibold px-3 py-2 rounded-lg bg-destructive/10 text-destructive hover:bg-destructive/20 transition-colors"
-                  >
-                    Delete
-                  </button>
-                </div>
-              </motion.div>
-            ))}
-          </div>
+                  </div>
+                  <h3 className="font-bold text-foreground mb-1 truncate">
+                    {resume.title || resume.originalFilename || 'Untitled Resume'}
+                  </h3>
+                  <div className="flex items-center gap-2 mb-4">
+                    <p className="text-xs text-muted-foreground">
+                      {resume.enhancedText ? 'AI Enhanced' : 'Original'}
+                    </p>
+                    {resume.atsScore && (
+                      <span className="text-[10px] font-bold px-2 py-0.5 rounded-md bg-indigo-500/10 text-indigo-600 border border-indigo-500/20">
+                        ATS: {resume.atsScore}
+                      </span>
+                    )}
+                  </div>
+                  <div className="flex items-center gap-2">
+                    <Link
+                      to={
+                        resume.enhancedText
+                          ? `/enhance/${resume._id}`
+                          : `/resume/${resume._id}`
+                      }
+                      className="flex-1 text-center text-xs font-semibold px-3 py-2 rounded-lg bg-primary/10 text-primary hover:bg-primary/20 transition-colors"
+                    >
+                      <Eye className="w-3.5 h-3.5 inline mr-1" />
+                      View
+                    </Link>
+                    <button
+                      onClick={() => handleDelete(resume._id)}
+                      className="text-xs font-semibold px-3 py-2 rounded-lg bg-destructive/10 text-destructive hover:bg-destructive/20 transition-colors"
+                    >
+                      Delete
+                    </button>
+                  </div>
+                </motion.div>
+              ))}
+            </div>
+          )}
         </div>
       )}
     </HubLayout>
