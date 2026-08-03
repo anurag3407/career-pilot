@@ -15,7 +15,7 @@ function ProjectCard({ project, index, isOpen, onToggle }) {
       className="border border-green-900/40 bg-black/80 hover:border-green-700/60 transition-colors"
     >
       {/* File tree row */}
-      <button
+      <button type="button"
         onClick={onToggle}
         className="w-full flex items-center gap-2 px-4 py-2.5 font-mono text-sm text-left hover:bg-green-900/10 transition-colors focus:outline-none focus-visible:ring-1 focus-visible:ring-green-500"
         aria-expanded={isOpen}

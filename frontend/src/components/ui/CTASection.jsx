@@ -1,58 +1,68 @@
 import { motion } from "framer-motion";
 import { Link } from "react-router-dom";
-import { ArrowRight, Zap } from "lucide-react";
+import { ArrowRight } from "lucide-react";
+
+const perks = [
+  "No credit card required",
+  "Free forever plan",
+  "Cancel anytime",
+];
 
 export default function CTASection() {
   return (
-    <section className="py-24 lg:py-44 relative overflow-hidden">
-      {/* Background Effects */}
-      <div className="absolute inset-0 bg-gradient-to-t from-muted/20 via-background to-background" />
-      
-      {/* Glow Effect */}
-      <div className="absolute bottom-0 left-1/2 -translate-x-1/2 w-[800px] h-[400px] bg-primary/10 blur-[120px] rounded-full" />
+    <section className="relative overflow-hidden py-32 lg:py-48">
+      {/* Massive background text */}
+      <div className="pointer-events-none absolute inset-0 flex items-center justify-center overflow-hidden">
+        <span className="select-none whitespace-nowrap text-[20vw] font-black leading-none text-foreground/[0.02]">
+          CAREERPILOT
+        </span>
+      </div>
 
-      <div className="relative max-w-4xl mx-auto px-4 sm:px-6 lg:px-8 text-center">
+      <div className="relative z-10 mx-auto max-w-4xl px-4 sm:px-6 lg:px-8">
         <motion.div
-          initial={{ opacity: 0, y: 20 }}
+          initial={{ opacity: 0, y: 30 }}
           whileInView={{ opacity: 1, y: 0 }}
           viewport={{ once: true }}
+          transition={{ duration: 0.8, ease: [0.16, 1, 0.3, 1] }}
+          className="text-center"
         >
-          <div className="inline-flex items-center gap-2 px-5 py-2.5 rounded-full border border-border bg-card shadow-sm mb-10 group hover:border-primary/30 transition-all">
-            <Zap className="w-4 h-4 text-primary animate-pulse" />
-            <span className="text-sm font-bold text-muted-foreground uppercase tracking-widest">Ready to accelerate?</span>
-          </div>
+          <span className="text-[11px] font-black uppercase tracking-[0.35em] text-primary/70">
+            008 — Start
+          </span>
 
-          <h2 className="text-5xl md:text-7xl font-black text-foreground mb-8 leading-[1.1] tracking-tight">
-            Start your journey to{" "}
-            <span className="text-primary underline decoration-primary/20 underline-offset-8">
-              career success
-            </span>
+          <h2 className="mt-6 text-5xl font-black leading-[0.9] tracking-tighter text-foreground md:text-8xl">
+            Your career
+            <br />
+            <span className="text-muted-foreground/30">deserves better.</span>
           </h2>
 
-          <p className="text-xl text-muted-foreground mb-12 max-w-2xl mx-auto font-medium leading-relaxed">
-            Join thousands of professionals who have transformed their job search with careerpilot. 
-            Free to start, powerful to scale.
+          <p className="mx-auto mt-8 max-w-lg text-lg font-medium leading-relaxed text-muted-foreground">
+            Join thousands of professionals who have transformed their job search. Free to start, powerful to scale.
           </p>
 
-          <div className="flex flex-col sm:flex-row justify-center gap-5">
+          <div className="mt-12 flex flex-col items-center justify-center gap-4 sm:flex-row">
             <Link
               to="/register"
-              className="group inline-flex items-center justify-center gap-3 px-10 py-5 bg-primary text-primary-foreground font-black rounded-2xl hover:bg-primary/90 transition-all duration-300 shadow-xl shadow-primary/20 hover:-translate-y-1"
+              className="group inline-flex items-center gap-3 rounded-xl bg-foreground px-10 py-5 text-base font-black text-background transition-all duration-300 hover:-translate-y-0.5 hover:shadow-2xl"
             >
               Get Started Free
-              <ArrowRight className="w-5 h-5 group-hover:translate-x-1 transition-transform" />
+              <ArrowRight className="h-5 w-5 transition-transform group-hover:translate-x-1" />
             </Link>
             <Link
               to="/login"
-              className="inline-flex items-center justify-center gap-3 px-10 py-5 border-2 border-border text-foreground font-black rounded-2xl hover:bg-muted transition-all duration-300 hover:-translate-y-1"
+              className="inline-flex items-center rounded-xl border border-border px-10 py-5 text-base font-black text-foreground transition-all duration-300 hover:border-foreground/40"
             >
               Sign In
             </Link>
           </div>
 
-          <p className="text-sm font-bold text-muted-foreground mt-10 uppercase tracking-widest opacity-60">
-            No credit card required • Free forever plan available
-          </p>
+          <div className="mt-10 flex flex-wrap items-center justify-center gap-x-8 gap-y-2">
+            {perks.map((p) => (
+              <span key={p} className="text-sm font-medium text-muted-foreground/60">
+                {p}
+              </span>
+            ))}
+          </div>
         </motion.div>
       </div>
     </section>

@@ -1,7 +1,7 @@
 import fs from 'fs/promises';
 import path from 'path';
 import semver from 'semver';
-import fetch from 'node-fetch';
+
 
 export const parseDependencyFiles = async (repoPath) => {
   const manifests = [];
@@ -44,7 +44,7 @@ export const parseDependencyFiles = async (repoPath) => {
     for (const line of lines) {
       if (line.trim() && !line.startsWith('#')) {
         // e.g. "requests==2.25.1" or "flask>=1.1.2"
-        const match = line.match(/^([a-zA-Z0-9_\-]+)[=><~]+(.*)/);
+        const match = line.match(/^([a-zA-Z0-9_-]+)[=><~]+(.*)/);
         if (match) {
           packages.push({
             name: match[1],

@@ -1,6 +1,7 @@
 import React, { useRef, useEffect, useState } from 'react';
 import { usePortfolio } from '../../../../context/PortfolioContext';
 import { Mail, Send, Github, Linkedin, Twitter, MapPin } from 'lucide-react';
+import "./ResumeCTA.css";
 
 export default function Contact() {
   const { portfolioData } = usePortfolio();
@@ -71,7 +72,7 @@ export default function Contact() {
 
         <div className="grid grid-cols-1 md:grid-cols-2 gap-12 w-full">
           {/* Scroll / Form */}
-          <div className="bg-[#121118]/90 border border-[#302718] p-8 rounded-xl shadow-[0_10px_30px_rgba(0,0,0,0.8)] relative gold-border-glow">
+          <div className="bg-[#121118]/90 border border-[#302718] p-8 rounded-xl shadow-[0_10px_30px_rgba(0,0,0,0.8)] relative rpg-cta-gold-border-glow">
             <div className="metal-corner-tl" />
             <div className="metal-corner-tr" />
             <div className="metal-corner-bl" />

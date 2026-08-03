@@ -73,7 +73,7 @@ export default function FluidSimulation3DWebGL({ portfolioData: propData }) {
         <div className="max-w-6xl mx-auto px-6 h-16 flex items-center justify-between">
           
           {/* Logo Name */}
-          <button 
+          <button type="button" 
             onClick={() => handleNavClick('home')}
             onMouseEnter={handleNavHover}
             className="flex items-center gap-1.5 font-black text-sm tracking-wider uppercase bg-gradient-to-r from-cyan-400 to-indigo-500 bg-clip-text text-transparent cursor-pointer"
@@ -93,7 +93,7 @@ export default function FluidSimulation3DWebGL({ portfolioData: propData }) {
             ].map(item => {
               const active = activeSection === item.id;
               return (
-                <button
+                <button type="button"
                   key={item.id}
                   onClick={() => handleNavClick(item.id)}
                   onMouseEnter={handleNavHover}

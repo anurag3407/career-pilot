@@ -12,10 +12,15 @@ import fs from 'fs/promises';
 import path from 'path';
 import { fileURLToPath } from 'url';
 
-const __dirname = path.dirname(fileURLToPath(import.meta.url));
+let _dirname = '';
+try {
+  _dirname = typeof __dirname !== 'undefined' ? __dirname : path.dirname(fileURLToPath(import.meta.url));
+} catch (e) {
+  _dirname = process.cwd();
+}
 
 // Path to the pre-built standalone portfolio app
-const DIST_DIR = path.resolve(__dirname, '../../../../frontend/dist-portfolio');
+const DIST_DIR = path.resolve(_dirname, '../../../../frontend/dist-portfolio');
 
 /**
  * Escape data for safe embedding in a <script> tag.

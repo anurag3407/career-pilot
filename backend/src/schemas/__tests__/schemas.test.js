@@ -271,8 +271,10 @@ describe('resume.schema — updateResumeSchema', () => {
   });
 
   test('rejects empty object', () => {
+    // customSections defaults to [] so the schema now accepts {} but the
+    // downstream `.refine` check still rejects (no field to update).
     const result = updateResumeSchema.safeParse({});
-    assert.ok(!result.success);
+    assert.ok(!result.success, 'empty object should be rejected by the .refine()');
   });
 });
 
@@ -677,7 +679,7 @@ describe('twoFactor.schema — backupCodeSchema', () => {
 });
 
 // ─── User Profile ─────────────────────────────────────────────────────────────
-import { updateProfileSchema } from '../userProfile.schema.js';
+import { updateProfileSchema, setAvatarSchema } from '../userProfile.schema.js';
 
 describe('userProfile.schema — updateProfileSchema', () => {
   test('accepts partial update', () => {
@@ -701,6 +703,115 @@ describe('userProfile.schema — updateProfileSchema', () => {
     const result = updateProfileSchema.safeParse({
       skills: Array.from({ length: 21 }, (_, i) => `skill${i}`),
     });
+  });
+
+  test('accepts all new personal-info fields together', () => {
+    const result = updateProfileSchema.safeParse({
+      avatarUrl: 'https://storage.googleapis.com/x.png',
+      phone: '+1 555 0100',
+      headline: 'Building things',
+      dateOfBirth: '1995-04-12',
+      gender: 'female',
+      company: 'Acme',
+      yearsOfExperience: 7,
+      collegeStudent: false,
+      openToWork: true,
+      education: [{
+        institution: 'MIT',
+        degree: 'B.Sc',
+        field: 'CS',
+        startYear: 2018,
+        endYear: 2022,
+      }],
+      languages: ['English', 'Hindi'],
+      resumeHeadline: 'Backend engineer with 7 yrs experience',
+    });
+    assert.ok(result.success, JSON.stringify(result.error?.issues));
+  });
+
+  test('coerces null dateOfBirth to null', () => {
+    const result = updateProfileSchema.safeParse({ dateOfBirth: null });
+    assert.ok(result.success);
+    assert.equal(result.data.dateOfBirth, null);
+  });
+
+  test('coerces empty string dateOfBirth to null', () => {
+    const result = updateProfileSchema.safeParse({ dateOfBirth: '' });
+    assert.ok(result.success);
+    assert.equal(result.data.dateOfBirth, null);
+  });
+
+  test('rejects future dateOfBirth', () => {
+    const future = new Date();
+    future.setFullYear(future.getFullYear() + 1);
+    const result = updateProfileSchema.safeParse({ dateOfBirth: future.toISOString() });
+    assert.ok(!result.success);
+  });
+
+  test('rejects invalid gender enum value', () => {
+    const result = updateProfileSchema.safeParse({ gender: 'helicopter' });
+    assert.ok(!result.success);
+    assert.ok(result.error.issues.some(e => e.path[0] === 'gender'));
+  });
+
+  test('rejects negative yearsOfExperience', () => {
+    const result = updateProfileSchema.safeParse({ yearsOfExperience: -3 });
+    assert.ok(!result.success);
+  });
+
+  test('rejects yearsOfExperience over 80', () => {
+    const result = updateProfileSchema.safeParse({ yearsOfExperience: 81 });
+    assert.ok(!result.success);
+  });
+
+  test('rejects non-boolean openToWork', () => {
+    const result = updateProfileSchema.safeParse({ openToWork: 'yes' });
+    assert.ok(!result.success);
+  });
+
+  test('rejects education entry with out-of-range year', () => {
+    const result = updateProfileSchema.safeParse({
+      education: [{ institution: 'X', startYear: 1800 }],
+    });
+    assert.ok(!result.success);
+  });
+
+  test('rejects languages array > 20 items', () => {
+    const result = updateProfileSchema.safeParse({
+      languages: Array.from({ length: 21 }, (_, i) => `lang${i}`),
+    });
+    assert.ok(!result.success);
+  });
+
+  test('rejects headline > 120 chars', () => {
+    const result = updateProfileSchema.safeParse({ headline: 'x'.repeat(121) });
+    assert.ok(!result.success);
+  });
+
+  test('rejects resumeHeadline > 300 chars', () => {
+    const result = updateProfileSchema.safeParse({ resumeHeadline: 'x'.repeat(301) });
+    assert.ok(!result.success);
+  });
+});
+
+describe('userProfile.schema — setAvatarSchema', () => {
+  test('accepts a valid URL', () => {
+    const result = setAvatarSchema.safeParse({ avatarUrl: 'https://example.com/a.png' });
+    assert.ok(result.success, JSON.stringify(result.error?.issues));
+  });
+
+  test('rejects missing avatarUrl', () => {
+    const result = setAvatarSchema.safeParse({});
+    assert.ok(!result.success);
+  });
+
+  test('rejects a non-URL avatarUrl', () => {
+    const result = setAvatarSchema.safeParse({ avatarUrl: 'not-a-url' });
+    assert.ok(!result.success);
+  });
+
+  test('rejects an avatarUrl > 500 chars', () => {
+    const result = setAvatarSchema.safeParse({ avatarUrl: `https://example.com/${'x'.repeat(500)}` });
     assert.ok(!result.success);
   });
 });

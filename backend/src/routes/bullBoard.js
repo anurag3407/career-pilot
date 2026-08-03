@@ -96,6 +96,30 @@ const initializeBullBoard = () => {
 
 bullBoardRouter = initializeBullBoard();
 
+// CSRF Protection for Basic Auth endpoints
+// State-changing requests must come from the same host
+const verifyOrigin = (req, res, next) => {
+  if (['GET', 'HEAD', 'OPTIONS'].includes(req.method)) return next();
+  
+  const source = req.headers.origin || req.headers.referer;
+  if (!source) {
+    return res.status(403).send('CSRF validation failed: Missing Origin or Referer');
+  }
+
+  try {
+    const sourceUrl = new URL(source);
+    const host = req.headers['x-forwarded-host'] || req.headers.host;
+    
+    if (host && sourceUrl.host === host) {
+      return next();
+    }
+    return res.status(403).send('CSRF validation failed: Cross-origin request denied');
+  } catch (err) {
+    return res.status(403).send('CSRF validation failed: Invalid Origin format');
+  }
+};
+
+router.use(verifyOrigin);
 router.use(bullBoardBasicAuth);
 
 router.get('/health', (req, res) => {

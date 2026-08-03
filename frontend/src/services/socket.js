@@ -1,8 +1,7 @@
 import { io } from 'socket.io-client';
 import { createSocketOptions } from './socketOptions.js';
-import { auth } from '../config/firebase';
 
-const SOCKET_URL = import.meta.env.VITE_API_URL || 'http://localhost:5000';
+const SOCKET_URL = import.meta.env.VITE_API_URL || 'http://localhost:5002';
 
 let socket = null;
 
@@ -16,7 +15,9 @@ export const initializeSocket = async () => {
     return socket;
   }
 
-  if (!auth || !auth.currentUser) {
+  const session = window.Clerk?.session;
+
+  if (!session) {
     console.warn(
       'Cannot initialize socket: No authenticated user'
     );
@@ -28,13 +29,13 @@ export const initializeSocket = async () => {
    * may change after the initial socket creation.
    */
   const getFreshToken = async () => {
-    const currentUser = auth.currentUser;
+    const session = window.Clerk?.session;
 
-    if (!currentUser) {
+    if (!session) {
       throw new Error('No authenticated user');
     }
 
-    return currentUser.getIdToken();
+    return await session.getToken();
   };
 
   /**
@@ -115,10 +116,16 @@ export const initializeSocket = async () => {
   socketInstance.on(
     'connect_error',
     (error) => {
-      console.error(
-        '❌ Socket connection error:',
-        error.message
-      );
+      const msg = error?.message || '';
+      if (msg.includes('xhr poll error') || msg.includes('404') || msg.includes('websocket error')) {
+        // Real-time Socket.IO server is not available on serverless hosts (Vercel/Netlify). Disconnect gracefully.
+        socketInstance.disconnect();
+      } else {
+        console.warn(
+          'Socket connection note:',
+          msg
+        );
+      }
     }
   );
 

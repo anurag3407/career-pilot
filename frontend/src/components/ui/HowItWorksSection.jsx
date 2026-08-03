@@ -1,5 +1,5 @@
 import { useRef } from "react";
-import { motion, useInView } from "framer-motion";
+import { motion, useScroll, useTransform } from "framer-motion";
 import { FileText, Sparkles, Target } from "lucide-react";
 
 const steps = [
@@ -26,130 +26,75 @@ const steps = [
   },
 ];
 
-function TimelineRow({ item, index, isLast }) {
-  const ref = useRef(null);
-  const isInView = useInView(ref, {
-    once: true,
-    margin: "-50px 0px",
-  });
-  const Icon = item.icon;
-
-  return (
-    <div ref={ref} className="flex items-stretch">
-      {/* Spine */}
-      <div className="flex flex-col items-center w-12 shrink-0">
-        {/* Line above — invisible on first step */}
-        <motion.div
-          initial={{ scaleY: 0 }}
-          animate={isInView ? { scaleY: 1 } : {}}
-          transition={{ duration: 0.5, ease: "easeOut", delay: 0.3 }}
-          style={{ transformOrigin: "bottom" }}
-          className={`w-px flex-1 ${index === 0 ? "bg-transparent" : "bg-border"}`}
-          aria-hidden="true"
-        />
-
-        {/* Numbered node */}
-        <motion.div
-          initial={{ scale: 0, opacity: 0 }}
-          animate={isInView ? { scale: 1, opacity: 1 } : {}}
-          transition={{ type: "spring", stiffness: 400, damping: 20, delay: 0.1 }}
-          className="shrink-0 w-10 h-10 rounded-full border-2 border-primary bg-background
-                     flex items-center justify-center text-xs font-bold text-primary
-                     ring-4 ring-background z-10"
-        >
-          {item.step}
-        </motion.div>
-
-        {/* Line below — invisible on last step */}
-        <motion.div
-          initial={{ scaleY: 0 }}
-          animate={isInView ? { scaleY: 1 } : {}}
-          transition={{ duration: 0.5, ease: "easeOut", delay: 0.3 }}
-          style={{ transformOrigin: "top" }}
-          className={`w-px flex-1 ${
-            isLast ? "bg-transparent" : "bg-border"
-          }`}
-          aria-hidden="true"
-        />
-      </div>
-
-      {/* Card */}
-      <div className={`flex-1 pl-6 ${isLast ? "pb-0" : "pb-10"}`}>
-        <motion.div
-          initial={{ opacity: 0, x: 24 }}
-          animate={isInView ? { opacity: 1, x: 0 } : {}}
-          transition={{ duration: 0.5, ease: [0.22, 1, 0.36, 1], delay: 0.15 }}
-          className="group relative rounded-2xl border border-border bg-card p-6
-                     hover:border-primary/40 hover:shadow-sm transition-all duration-300 overflow-hidden"
-        >
-          {/* Watermark step number */}
-          <span
-            className="pointer-events-none select-none absolute -top-2 right-3
-                       text-8xl font-black text-foreground/[0.04] leading-none"
-            aria-hidden
-          >
-            {item.step}
-          </span>
-
-          <div className="relative flex items-start gap-4">
-            {/* Icon box */}
-            <motion.div
-              whileHover={{ scale: 1.08, rotate: 4 }}
-              transition={{ type: "spring", stiffness: 400, damping: 15 }}
-              className="shrink-0 w-11 h-11 rounded-xl bg-muted border border-border
-                         flex items-center justify-center
-                         group-hover:-translate-y-1 transition-transform duration-300"
-            >
-              <Icon className="w-5 h-5 text-primary" strokeWidth={1.8} />
-            </motion.div>
-
-            <div>
-              <h3 className="text-base font-black text-foreground mb-2">
-                {item.title}
-              </h3>
-              <p className="text-sm text-muted-foreground leading-relaxed font-medium">
-                {item.description}
-              </p>
-            </div>
-          </div>
-        </motion.div>
-      </div>
-    </div>
-  );
-}
-
 export default function HowItWorksSection() {
+  const containerRef = useRef(null);
+  const { scrollYProgress } = useScroll({
+    target: containerRef,
+    offset: ["start 60%", "end 40%"],
+  });
+  const lineScale = useTransform(scrollYProgress, [0, 1], [0, 1]);
+
   return (
-    <section className="py-24 lg:py-40 relative overflow-hidden">
-      <div className="relative max-w-2xl mx-auto px-4 sm:px-6 lg:px-8">
+    <section className="relative overflow-hidden py-32 lg:py-40">
+      <div className="relative z-10 mx-auto max-w-4xl px-4 sm:px-6 lg:px-8">
+        {/* Header */}
         <motion.div
           initial={{ opacity: 0, y: 20 }}
           whileInView={{ opacity: 1, y: 0 }}
           viewport={{ once: true }}
-          className="text-center mb-20"
+          className="mb-24"
         >
-          <h2 className="text-4xl md:text-6xl font-black text-foreground mb-6 tracking-tight">
-            How{" "}
-            <span className="text-primary underline decoration-primary/20 underline-offset-8">
-              careerpilot
-            </span>{" "}
-            works
+          <span className="text-[11px] font-black uppercase tracking-[0.35em] text-primary/70">
+            006 — Process
+          </span>
+          <h2 className="mt-4 text-4xl font-black leading-[0.95] tracking-tighter text-foreground md:text-7xl">
+            Three steps.
+            <br />
+            <span className="text-muted-foreground/40">That's it.</span>
           </h2>
-          <p className="text-muted-foreground text-lg max-w-2xl mx-auto font-medium">
-            Three simple steps to accelerate your job search and land your dream role
-          </p>
         </motion.div>
 
-        {/* Timeline */}
-        <div className="flex flex-col">
-          {steps.map((item, i) => (
-            <TimelineRow
-              key={item.step}
-              item={item}
-              index={i}
-              isLast={i === steps.length - 1}
-            />
-          ))}
+        {/* Vertical timeline */}
+        <div ref={containerRef} className="relative">
+          {/* Timeline line */}
+          <div className="absolute left-[27px] top-0 bottom-0 w-px bg-border md:left-[35px]" />
+          <motion.div
+            style={{ scaleY: lineScale }}
+            className="absolute left-[27px] top-0 bottom-0 w-px origin-top bg-primary md:left-[35px]"
+          />
+
+          <div className="space-y-20">
+            {steps.map((item, index) => (
+              <motion.div
+                key={item.step}
+                initial={{ opacity: 0, y: 30 }}
+                whileInView={{ opacity: 1, y: 0 }}
+                viewport={{ once: true, margin: "-60px" }}
+                transition={{ duration: 0.6, delay: index * 0.12, ease: [0.16, 1, 0.3, 1] }}
+                className="relative flex gap-8 md:gap-12"
+              >
+                {/* Node */}
+                <div className="relative z-10 shrink-0">
+                  <div className="flex h-14 w-14 items-center justify-center rounded-full border-2 border-primary bg-background shadow-lg shadow-primary/10 md:h-[72px] md:w-[72px]">
+                    <item.icon className="h-6 w-6 text-primary md:h-7 md:w-7" strokeWidth={1.5} />
+                  </div>
+                </div>
+
+                {/* Content */}
+                <div className="pb-4 pt-2">
+                  <span className="text-[11px] font-black uppercase tracking-[0.3em] text-muted-foreground/40">
+                    Step {item.step}
+                  </span>
+                  <h3 className="mt-2 text-2xl font-black tracking-tight text-foreground md:text-4xl">
+                    {item.title}
+                  </h3>
+                  <p className="mt-3 max-w-lg text-base font-medium leading-relaxed text-muted-foreground">
+                    {item.description}
+                  </p>
+                </div>
+              </motion.div>
+            ))}
+          </div>
         </div>
       </div>
     </section>

@@ -145,19 +145,19 @@ const TapeTransport = ({ progress }) => {
 
       {/* Controls */}
       <div className="flex items-center gap-2">
-        <button onClick={() => window.scrollTo({ top: 0, behavior: 'smooth' })}
+        <button type="button" onClick={() => window.scrollTo({ top: 0, behavior: 'smooth' })}
           className="text-[#00ffaa] hover:text-white transition-colors" aria-label="rewind">
           <Rewind size={14} />
         </button>
-        <button onClick={() => setPlaying(p => !p)}
+        <button type="button" onClick={() => setPlaying(p => !p)}
           className="text-[#00ffaa] hover:text-white transition-colors" aria-label="play/pause">
           {playing ? <Pause size={14} /> : <Play size={14} />}
         </button>
-        <button onClick={() => window.scrollTo({ top: document.body.scrollHeight, behavior: 'smooth' })}
+        <button type="button" onClick={() => window.scrollTo({ top: document.body.scrollHeight, behavior: 'smooth' })}
           className="text-[#00ffaa] hover:text-white transition-colors" aria-label="skip forward">
           <SkipForward size={14} />
         </button>
-        <button onClick={() => setMuted(m => !m)}
+        <button type="button" onClick={() => setMuted(m => !m)}
           className="text-[#00ffaa] hover:text-white transition-colors" aria-label="mute">
           {muted ? <VolumeX size={14} /> : <Volume2 size={14} />}
         </button>

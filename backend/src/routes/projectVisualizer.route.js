@@ -3,6 +3,7 @@ import rateLimit from 'express-rate-limit';
 import { verifyToken } from '../middleware/auth.js';
 import { aiRateLimiter } from '../middleware/rateLimiter.js';
 import { analyzeRepo } from '../services/analysisService.js';
+import { runActivityAnalyzer } from '../services/activityService.js';
 import { enrichWithGitHubData } from '../services/githubEnricherService.js';
 import { generateArchitectureSummary, generateSuggestions, streamChat, streamFileChat, explainFile, generateInterviewQuestions, generateContributionGuide } from '../services/anthropicChatService.js';
 import ProjectAnalysis from '../models/ProjectAnalysis.model.js';
@@ -31,7 +32,7 @@ router.post('/analyze', verifyToken, ingestLimiter, async (req, res) => {
       return res.status(400).json({ error: 'Valid GitHub repoUrl is required' });
     }
 
-    const match = repoUrl.match(/github\.com\/([^\/]+)\/([^\/]+)/);
+    const match = repoUrl.match(/github\.com\/([^/]+)\/([^/]+)/);
     if (!match) return res.status(400).json({ error: 'Invalid GitHub URL format' });
     
     const owner = match[1];
@@ -295,12 +296,51 @@ router.post('/analysis/:sessionId/contribution-guide', verifyToken, aiRateLimite
     let readmeContent = 'No README found.';
     try {
       readmeContent = await fs.readFile(path.join(session.repoPath, 'README.md'), 'utf-8');
-    } catch(e) {}
+    } catch(e) { /* ignore */ }
     
     const guide = await generateContributionGuide(session.skeleton, readmeContent, session.modules, analysis.github);
     res.json({ guide });
   } catch (error) {
     res.status(500).json({ error: 'Failed to generate contribution guide' });
+  }
+});
+
+router.get('/analysis/:sessionId/activity', verifyToken, aiRateLimiter, async (req, res) => {
+  try {
+    const { sessionId } = req.params;
+    const detail = req.query.detail === '1' || req.query.detail === 'true';
+
+    // Confirm the session belongs to the requesting user.
+    const analysis = await ProjectAnalysis.findOne({ sessionId });
+    if (!analysis) return res.status(404).json({ error: 'Analysis not found' });
+    if (analysis.userId !== req.user.uid) return res.status(403).json({ error: 'Access denied' });
+
+    // The cloned repo lives in a temp dir for ~2 hours; read from there.
+    const session = sessions.get(sessionId);
+    if (!session || !session.repoPath) {
+      return res.status(410).json({
+        error: 'Repository files are no longer available. Please re-run the analysis.',
+      });
+    }
+
+    // Allow per-request override of the AI provider (mirrors the
+    // X-AI-Provider / X-AI-Key / X-AI-Model headers used elsewhere).
+    const provider = req.headers['x-ai-provider'] || req.query.provider || undefined;
+    const apiKey = req.headers['x-ai-key'] || req.query.apiKey || undefined;
+    const model = req.headers['x-ai-model'] || req.query.model || undefined;
+
+    const payload = await runActivityAnalyzer(session.repoPath, {
+      provider,
+      apiKey,
+      model,
+      weeks: 52,
+      detail,
+    });
+
+    res.json(payload);
+  } catch (error) {
+    console.error('Activity Error:', error);
+    res.status(500).json({ error: 'Failed to compute activity: ' + error.message });
   }
 });
 

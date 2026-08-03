@@ -163,7 +163,7 @@ export default function ContactSection({ data, onReset }) {
               <p className="text-slate-400 text-sm mb-6">
                 Thanks, {form.name}. The adventure continues — I'll be in touch soon.
               </p>
-              <button
+              <button type="button"
                 onClick={() => { setSubmitted(false); setForm({ name: '', email: '', message: '' }); }}
                 className="text-xs text-violet-400 hover:text-violet-200 transition-colors flex items-center gap-1 mx-auto"
               >

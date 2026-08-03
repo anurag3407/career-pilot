@@ -32,7 +32,7 @@ export default function PixelQuest() {
   const { personal, socials, skills, projects, experience, testimonials, stats } = data;
 
   useEffect(() => {
-    const interval = setInterval(() => setBlink((b) => !b), 600);
+    const intervalId = setInterval(() => setBlink((b) => !b), 600);
     return () => clearInterval(interval);
   }, []);
 

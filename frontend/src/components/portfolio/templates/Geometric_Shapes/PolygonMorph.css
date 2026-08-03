@@ -1,0 +1,8 @@
+@keyframes float-polygon {
+  0%, 100% { transform: translateY(0px) rotate(0deg) scale(1); }
+  50% { transform: translateY(-25px) rotate(15deg) scale(1.05); }
+}
+@keyframes mesh-pulse {
+  0%, 100% { opacity: 0.15; }
+  50% { opacity: 0.3; }
+}

@@ -1,4 +1,4 @@
-import { useCallback, useState } from 'react'
+import { useCallback, useState, useRef, useEffect } from 'react'
 import { useDropzone } from 'react-dropzone'
 import { Upload, FileText, X, CheckCircle, AlertCircle } from 'lucide-react'
 import toast from 'react-hot-toast'
@@ -12,6 +12,7 @@ export default function DropZone({
   const maxSizeBytes = maxSizeMB * 1024 * 1024
   const [previews, setPreviews] = useState([])
   const [uploadProgress, setUploadProgress] = useState({})
+  const intervalsRef = useRef([])
 
   const simulateProgress = (fileName) => {
     let progress = 0
@@ -24,6 +25,7 @@ export default function DropZone({
       }
       setUploadProgress((prev) => ({ ...prev, [fileName]: progress }))
     }, 150)
+    intervalsRef.current.push(interval)
   }
 
   const onDrop = useCallback(
@@ -80,6 +82,13 @@ export default function DropZone({
     multiple,
     disabled,
   })
+
+  useEffect(() => {
+  return () => {
+    intervalsRef.current.forEach((id) => clearInterval(id))
+    intervalsRef.current = []
+  }
+}, [])
 
   return (
     <div className="w-full space-y-4">

@@ -98,7 +98,7 @@ export default function Hero({ data }) {
               >
                 Hire Me
               </a>
-              <button
+              <button type="button"
                 onClick={() => setMenuOpen(!menuOpen)}
                 style={{ background: 'none', border: 'none', cursor: 'pointer', padding: 4, display: 'flex', flexDirection: 'column', gap: 5 }}
                 className="fi-hamburger"
@@ -347,7 +347,7 @@ export default function Hero({ data }) {
                     <span style={{ fontSize: 18, fontWeight: 900, color: '#2563EB' }}>${projTotal.toLocaleString()}</span>
                   </div>
 
-                  <button className="fi-btn-primary" style={{ width: '100%', padding: '10px', borderRadius: 8, fontSize: 13, fontWeight: 600, display: 'flex', alignItems: 'center', justifyContent: 'center', gap: 6, marginTop: 12 }}>
+                  <button type="button" className="fi-btn-primary" style={{ width: '100%', padding: '10px', borderRadius: 8, fontSize: 13, fontWeight: 600, display: 'flex', alignItems: 'center', justifyContent: 'center', gap: 6, marginTop: 12 }}>
                     <Download size={14} />
                     Download Invoice
                   </button>

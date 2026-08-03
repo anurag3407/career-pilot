@@ -118,10 +118,10 @@ export default function Hero({ data, onScrollTo }) {
               transition={{ duration: 0.5 }}
               style={{ display: 'flex', flexWrap: 'wrap', gap: 16, marginBottom: 56 }}
             >
-              <button className="tks-btn tks-btn-primary" onClick={() => onScrollTo('about')}>
+              <button type="button" className="tks-btn tks-btn-primary" onClick={() => onScrollTo('about')}>
                 &gt; Start Reading
               </button>
-              <button className="tks-btn tks-btn-outline" onClick={() => onScrollTo('contact')}>
+              <button type="button" className="tks-btn tks-btn-outline" onClick={() => onScrollTo('contact')}>
                 &gt; Contact Me
               </button>
             </motion.div>
@@ -158,7 +158,7 @@ export default function Hero({ data, onScrollTo }) {
       </div>
 
       {/* Scroll indicator */}
-      <button
+      <button type="button"
         onClick={() => onScrollTo('about')}
         style={{
           position: 'absolute', bottom: 28, left: '50%', transform: 'translateX(-50%)',

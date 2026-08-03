@@ -304,15 +304,15 @@ export default function TypewriterEffect() {
 
       {/* ── Navbar ── */}
       <nav className="tw-nav">
-        <button className="tw-nav-link tw-display" onClick={() => scrollTo("hero")} style={{ color: C.ribbon, fontSize: 13, letterSpacing: 3 }}>
+        <button type="button" className="tw-nav-link tw-display" onClick={() => scrollTo("hero")} style={{ color: C.ribbon, fontSize: 13, letterSpacing: 3 }}>
           {data.personal.name.split(" ")[0]}
         </button>
         <div className="tw-nav-desktop">
           {sections.map((s) => (
-            <button key={s} className="tw-nav-link" onClick={() => scrollTo(s.toLowerCase())}>{s}</button>
+            <button type="button" key={s} className="tw-nav-link" onClick={() => scrollTo(s.toLowerCase())}>{s}</button>
           ))}
         </div>
-        <button className="tw-hamburger" onClick={() => setMenuOpen(!menuOpen)} aria-label="Menu">
+        <button type="button" className="tw-hamburger" onClick={() => setMenuOpen(!menuOpen)} aria-label="Menu">
           {["---", "---", "---"].map((_, i) => (
             <div key={i} style={{ width: 20, height: 2, background: i === 1 ? C.ribbon : C.mid, margin: "4px 0", transition: "all .2s",
               transform: menuOpen ? (i === 0 ? "rotate(45deg) translate(3px,5px)" : i === 2 ? "rotate(-45deg) translate(3px,-5px)" : "none") : "none",
@@ -325,7 +325,7 @@ export default function TypewriterEffect() {
         {menuOpen && (
           <motion.div className="tw-mobile-menu" initial={{ opacity: 0, y: -8 }} animate={{ opacity: 1, y: 0 }} exit={{ opacity: 0, y: -8 }}>
             {sections.map((s) => (
-              <button key={s} className="tw-nav-link" onClick={() => scrollTo(s.toLowerCase())} style={{ textAlign: "left", padding: "8px 0" }}>
+              <button type="button" key={s} className="tw-nav-link" onClick={() => scrollTo(s.toLowerCase())} style={{ textAlign: "left", padding: "8px 0" }}>
                 <span style={{ color: C.ribbon, marginRight: 6 }}>{">"}</span>{s}
               </button>
             ))}
@@ -359,8 +359,8 @@ export default function TypewriterEffect() {
             {bio.done && (
               <motion.div initial={{ opacity: 0 }} animate={{ opacity: 1 }} transition={{ duration: 0.4 }}
                 style={{ display: "flex", flexWrap: "wrap", gap: 14, marginBottom: 48 }}>
-                <button className="tw-btn tw-btn-primary" onClick={() => scrollTo("projects")}>&gt; view_work</button>
-                <button className="tw-btn tw-btn-outline" onClick={() => scrollTo("contact")}>&gt; contact</button>
+                <button type="button" className="tw-btn tw-btn-primary" onClick={() => scrollTo("projects")}>&gt; view_work</button>
+                <button type="button" className="tw-btn tw-btn-outline" onClick={() => scrollTo("contact")}>&gt; contact</button>
               </motion.div>
             )}
           </AnimatePresence>
@@ -381,7 +381,7 @@ export default function TypewriterEffect() {
             </motion.div>
           )}
         </div>
-        <button onClick={() => scrollTo("about")} style={{ position: "absolute", bottom: 24, left: "50%", transform: "translateX(-50%)", background: "none", border: "none", cursor: "pointer", color: C.muted, fontSize: 12, letterSpacing: 2, fontFamily: "'Courier Prime',monospace" }}>
+        <button type="button" onClick={() => scrollTo("about")} style={{ position: "absolute", bottom: 24, left: "50%", transform: "translateX(-50%)", background: "none", border: "none", cursor: "pointer", color: C.muted, fontSize: 12, letterSpacing: 2, fontFamily: "'Courier Prime',monospace" }}>
           <motion.div animate={{ y: [0,5,0] }} transition={{ duration: 2, repeat: Infinity }}>
             &darr; scroll_down
           </motion.div>

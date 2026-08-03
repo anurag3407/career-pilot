@@ -1,0 +1,8 @@
+/* Scoped to .oled-black-root for safety/consistency with other templates (see Mono_Elegant/styles.css).
+   Note: in the current mount contexts (gallery iframe, preview modal, standalone deploy) the actual scroll
+   container is outside this wrapper, so these rules are currently inert rather than actively scoping
+   anything — kept for parity and as a no-op safety net if the wrapper ever becomes the real scroll container. */
+.oled-black-root::-webkit-scrollbar { width: 8px; }
+.oled-black-root::-webkit-scrollbar-track { background: #000000; }
+.oled-black-root::-webkit-scrollbar-thumb { background: #1f2937; }
+.oled-black-root::-webkit-scrollbar-thumb:hover { background: #22d3ee; }

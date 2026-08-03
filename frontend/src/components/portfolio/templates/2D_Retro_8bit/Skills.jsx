@@ -45,7 +45,7 @@ export default function Skills({ skills = [] }) {
           <div className="flex flex-wrap items-center justify-center gap-3 w-full">
             <span className="font-retro-title text-[9px] text-[#ffde00] mr-2">FILTER TYPE:</span>
             {categories.map((cat) => (
-              <button
+              <button type="button"
                 key={cat}
                 onClick={() => setActiveCategory(cat)}
                 className={`font-retro-title text-[9px] px-3.5 py-2 border-2 border-black transition-all cursor-pointer relative

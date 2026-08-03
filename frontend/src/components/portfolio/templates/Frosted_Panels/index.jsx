@@ -280,7 +280,7 @@ export default function FrostedPanels() {
 
           {/* Hamburger Mobile Menu Toggle Button */}
           <div className="md:hidden relative z-20">
-            <button
+            <button type="button"
               onClick={() => setMobileMenuOpen(!mobileMenuOpen)}
               className="p-2 rounded-full bg-white/50 border border-white/40 text-[#1b1435] hover:bg-white/80 transition-colors focus:outline-none"
               aria-label="Toggle navigation menu"

@@ -1,5 +1,6 @@
 import { usePortfolio } from "../../../../context/PortfolioContext";
 import React, { useState, useEffect } from 'react';
+import "./styles.css";
 import { motion, AnimatePresence } from 'framer-motion';
 import {
   Code,
@@ -192,7 +193,7 @@ const DetailsPanel = ({ element, onClose }) => {
         boxShadow: `0 10px 40px -10px ${color}30`,
       }}
     >
-      <button 
+      <button type="button" 
         onClick={onClose}
         className="absolute top-4 right-4 p-2 rounded-full hover:bg-white/10 transition-colors"
         style={{ color: C.textMuted }}
@@ -313,7 +314,7 @@ export default function InteractiveTablePortfolio({ portfolioData }) {
           {/* Legend / Filters */}
           <div className="flex flex-wrap gap-3">
             {categories.map(cat => (
-              <button
+              <button type="button"
                 key={cat}
                 onClick={() => setActiveCategory(cat)}
                 className="px-4 py-1.5 rounded-full text-xs font-bold uppercase tracking-widest transition-all"
@@ -386,12 +387,7 @@ export default function InteractiveTablePortfolio({ portfolioData }) {
         </div>
       </main>
 
-      <style dangerouslySetInnerHTML={{__html: `
-        .custom-scrollbar::-webkit-scrollbar { width: 6px; }
-        .custom-scrollbar::-webkit-scrollbar-track { background: transparent; }
-        .custom-scrollbar::-webkit-scrollbar-thumb { background: #334155; border-radius: 10px; }
-        .custom-scrollbar::-webkit-scrollbar-thumb:hover { background: #475569; }
-      `}} />
+
     </div>
   );
 }

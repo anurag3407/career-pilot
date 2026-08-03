@@ -59,7 +59,7 @@ const Testimonials = ({ testimonials }) => {
 
         <div className="absolute bottom-6 right-8 z-10 flex gap-2">
           {testimonials.map((_, index) => (
-            <button
+            <button type="button"
               key={index}
               onClick={() => setActiveIndex(index)}
               className={`h-1 transition-all duration-300 ${activeIndex === index ? 'w-8 bg-cyan-400' : 'w-2 bg-gray-700 hover:bg-gray-500'}`}

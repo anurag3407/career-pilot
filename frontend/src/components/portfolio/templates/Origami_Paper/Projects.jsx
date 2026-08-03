@@ -88,7 +88,7 @@ export default function Projects() {
                   {project.title}
                 </h3>
 
-                <button
+                <button type="button"
                   aria-label={`Open ${project.title}`}
                   className="h-10 w-10 flex items-center justify-center border-2 border-black bg-[#f7efe3] transition-transform group-hover:rotate-12"
                 >
@@ -121,7 +121,7 @@ export default function Projects() {
 
         {/* CTA */}
         <div className="mt-20 text-center">
-          <button className="border-2 border-black bg-black px-10 py-4 text-white font-bold shadow-[6px_6px_0px_#cbb89d] transition-all hover:-translate-y-1 hover:shadow-[10px_10px_0px_#cbb89d]">
+          <button type="button" className="border-2 border-black bg-black px-10 py-4 text-white font-bold shadow-[6px_6px_0px_#cbb89d] transition-all hover:-translate-y-1 hover:shadow-[10px_10px_0px_#cbb89d]">
             View All Projects
           </button>
         </div>
@@ -156,7 +156,7 @@ export default function Projects() {
               ))}
             </div>
 
-            <button
+            <button type="button"
               onClick={() => setActiveProject(null)}
               className="mt-6 border-2 border-black bg-black text-white px-4 py-2"
             >

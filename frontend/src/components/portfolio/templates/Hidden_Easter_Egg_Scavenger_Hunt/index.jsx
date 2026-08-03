@@ -247,7 +247,7 @@ function VictoryModal({ onClose }) {
               animationDelay: `${EGGS.indexOf(e) * 0.15}s` }}>{e.emoji}</span>
           ))}
         </div>
-        <button onClick={onClose} className="eh-btn"
+        <button type="button" onClick={onClose} className="eh-btn"
           style={{ background: C.gold, color: C.bg }}>
           🎉 Thanks for Playing!
         </button>
@@ -387,7 +387,7 @@ function Nav({ foundCount }) {
             Hire Me 🌸
           </a>
 
-          <button onClick={() => setOpen(o => !o)} style={{
+          <button type="button" onClick={() => setOpen(o => !o)} style={{
             background: 'none', border: '1px solid #2A4A2A',
             color: C.cream, cursor: 'pointer', padding: '6px 8px',
             display: 'flex', borderRadius: 8,
@@ -1021,7 +1021,7 @@ function Contact({ foundEggs, onFind }) {
                   <p style={{ color: C.light, fontFamily: C.mono, fontSize: '0.88rem', lineHeight: 1.6 }}>
                     Thanks for reaching out! I'll get back to you soon 🐣
                   </p>
-                  <button onClick={() => { setStatus('idle'); setForm({ name:'', email:'', message:'' }); }}
+                  <button type="button" onClick={() => { setStatus('idle'); setForm({ name:'', email:'', message:'' }); }}
                     className="eh-btn" style={{ background: C.green, color: C.bg, marginTop: 24 }}>
                     🌸 Send Another
                   </button>
@@ -1162,7 +1162,7 @@ function Scoreboard({ foundEggs, show, onClose }) {
               letterSpacing: '0.15em', textTransform: 'uppercase', fontWeight: 700 }}>
               🥚 Egg Progress
             </div>
-            <button onClick={onClose} style={{ background: 'none', border: 'none',
+            <button type="button" onClick={onClose} style={{ background: 'none', border: 'none',
               color: C.muted, cursor: 'pointer' }}>
               <X size={16} />
             </button>

@@ -95,28 +95,28 @@ function VCRControls() {
 
   return (
     <div className="flex items-center gap-3 vhs-font">
-      <button
+      <button type="button"
         onClick={() => setIsPlaying(false)}
         className="text-[#f0e6d3]/40 hover:text-[#00e5ff] transition-colors"
         aria-label="Rewind"
       >
         <Rewind size={16} />
       </button>
-      <button
+      <button type="button"
         onClick={() => setIsPlaying(!isPlaying)}
         className="text-[#00e5ff] hover:text-[#ff00aa] transition-colors"
         aria-label={isPlaying ? 'Pause' : 'Play'}
       >
         {isPlaying ? <Pause size={18} /> : <Play size={18} />}
       </button>
-      <button
+      <button type="button"
         onClick={() => setIsPlaying(false)}
         className="text-[#f0e6d3]/40 hover:text-[#00e5ff] transition-colors"
         aria-label="Fast Forward"
       >
         <FastForward size={16} />
       </button>
-      <button
+      <button type="button"
         className="text-[#f0e6d3]/40 hover:text-[#ff00aa] transition-colors"
         aria-label="Stop"
       >
@@ -224,7 +224,7 @@ function VHSNavbar() {
         {/* Desktop Nav Links — hidden on mobile */}
         <div className="hidden md:flex items-center gap-1 lg:gap-2">
           {sections.map((s) => (
-            <button
+            <button type="button"
               key={s.id}
               onClick={() => handleNavClick(s.id)}
               className="px-2 py-1 text-xs vhs-font text-[#f0e6d3]/50 hover:text-[#00e5ff] hover:bg-[#00e5ff]/5 rounded transition-all tracking-widest"
@@ -242,7 +242,7 @@ function VHSNavbar() {
           </div>
 
           {/* Mobile hamburger button */}
-          <button
+          <button type="button"
             onClick={() => setIsMobileMenuOpen(!isMobileMenuOpen)}
             aria-label="Toggle menu"
             aria-expanded={isMobileMenuOpen}
@@ -881,7 +881,7 @@ function TestimonialsSection() {
         {/* Testimonial selector — tape thumbnails */}
         <div className="grid grid-cols-2 sm:grid-cols-4 gap-3">
           {data.testimonials.map((t, idx) => (
-            <button
+            <button type="button"
               key={idx}
               onClick={() => setActiveIdx(idx)}
               className={`p-3 rounded-lg text-left transition-all duration-300 vhs-tape-border ${

@@ -1,0 +1,494 @@
+/* Framer Design System Tokens */
+:root {
+  /* Colors */
+  --framer-primary: #ffffff;
+  --framer-on-primary: #000000;
+  --framer-accent-blue: #0099ff;
+  --framer-ink: #ffffff;
+  --framer-ink-muted: #999999;
+  --framer-canvas: #090909;
+  --framer-surface-1: #141414;
+  --framer-surface-2: #1c1c1c;
+  --framer-hairline: #262626;
+  --framer-hairline-soft: #1a1a1a;
+  --framer-inverse-canvas: #ffffff;
+  --framer-inverse-ink: #000000;
+  
+  --framer-gradient-magenta: #d44df0;
+  --framer-gradient-violet: #6a4cf5;
+  --framer-gradient-orange: #ff7a3d;
+  --framer-gradient-coral: #ff5577;
+  --framer-semantic-success: #22c55e;
+
+  /* Fonts */
+  /* Fallbacks applied since we don't have GT Walsheim Medium */
+  --font-display: "Inter", "Mona Sans", system-ui, sans-serif;
+  --font-body: "Inter Variable", "Inter", system-ui, sans-serif;
+}
+
+.framerCanvas {
+  background-color: var(--framer-canvas);
+  color: var(--framer-ink);
+  min-height: 100vh;
+  font-family: var(--font-body);
+  /* Apply OpenType character variants as requested */
+  font-feature-settings: "cv01", "cv05", "cv09", "cv11", "ss03", "ss07";
+  -webkit-font-smoothing: antialiased;
+  -moz-osx-font-smoothing: grayscale;
+}
+
+/* Typography Scale */
+.displayXxl {
+  font-family: var(--font-display);
+  font-size: 110px;
+  font-weight: 600; /* Bumping slightly to make up for Walsheim Medium */
+  line-height: 0.85;
+  letter-spacing: -5.5px;
+  color: var(--framer-ink);
+  margin: 0;
+}
+
+.displayXl {
+  font-family: var(--font-display);
+  font-size: 85px;
+  font-weight: 600;
+  line-height: 0.95;
+  letter-spacing: -4.25px;
+  color: var(--framer-ink);
+  margin: 0;
+}
+
+.displayLg {
+  font-family: var(--font-display);
+  font-size: 62px;
+  font-weight: 600;
+  line-height: 1.00;
+  letter-spacing: -3.1px;
+  color: var(--framer-ink);
+  margin: 0;
+}
+
+.displayMd {
+  font-family: var(--font-display);
+  font-size: 32px;
+  font-weight: 600;
+  line-height: 1.13;
+  letter-spacing: -1.0px;
+  color: var(--framer-ink);
+  margin: 0;
+}
+
+.headline {
+  font-family: var(--font-body);
+  font-size: 22px;
+  font-weight: 700;
+  line-height: 1.20;
+  letter-spacing: -0.8px;
+  color: var(--framer-ink);
+  margin: 0;
+}
+
+.subhead {
+  font-family: var(--font-body);
+  font-size: 24px;
+  font-weight: 400;
+  line-height: 1.30;
+  letter-spacing: -0.01px;
+  color: var(--framer-ink);
+  margin: 0;
+}
+
+.bodyLg {
+  font-family: var(--font-body);
+  font-size: 18px;
+  font-weight: 400;
+  line-height: 1.30;
+  letter-spacing: -0.18px;
+  color: var(--framer-ink-muted);
+}
+
+.body {
+  font-family: var(--font-body);
+  font-size: 15px;
+  font-weight: 400;
+  line-height: 1.30;
+  letter-spacing: -0.15px;
+  color: var(--framer-ink);
+}
+
+.bodyMuted {
+  font-family: var(--font-body);
+  font-size: 15px;
+  font-weight: 400;
+  line-height: 1.30;
+  letter-spacing: -0.15px;
+  color: var(--framer-ink-muted);
+}
+
+.bodySm {
+  font-family: var(--font-body);
+  font-size: 14px;
+  font-weight: 500;
+  line-height: 1.40;
+  letter-spacing: -0.14px;
+  color: var(--framer-ink);
+}
+
+.caption {
+  font-family: var(--font-body);
+  font-size: 13px;
+  font-weight: 500;
+  line-height: 1.20;
+  letter-spacing: -0.13px;
+  color: var(--framer-ink-muted);
+}
+
+.micro {
+  font-family: var(--font-body);
+  font-size: 12px;
+  font-weight: 400;
+  line-height: 1.20;
+  letter-spacing: -0.12px;
+  color: var(--framer-ink-muted);
+}
+
+/* Layout & Spacing Classes */
+.container {
+  max-width: 1199px;
+  margin: 0 auto;
+  padding: 0 30px;
+}
+
+.section {
+  padding: 96px 0;
+}
+
+.grid {
+  display: grid;
+  gap: 30px; /* spacing.xl */
+}
+
+.grid2Up {
+  grid-template-columns: repeat(2, 1fr);
+}
+
+.grid4Up {
+  grid-template-columns: repeat(4, 1fr);
+}
+
+@media (max-width: 810px) {
+  .grid2Up, .grid4Up {
+    grid-template-columns: 1fr;
+  }
+  
+  .displayXxl { font-size: 62px; letter-spacing: -3.1px; }
+  .displayXl { font-size: 62px; letter-spacing: -3.1px; }
+  .displayLg { font-size: 48px; letter-spacing: -2px; }
+}
+
+/* Components */
+
+/* Buttons */
+.buttonBase {
+  font-family: var(--font-body);
+  font-size: 14px;
+  font-weight: 500;
+  line-height: 1.0;
+  letter-spacing: -0.14px;
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  text-decoration: none;
+  cursor: pointer;
+  transition: transform 0.15s ease, opacity 0.15s ease;
+  border: none;
+}
+
+.buttonBase:active {
+  transform: scale(0.96);
+}
+
+.buttonPrimary {
+  background-color: var(--framer-primary);
+  color: var(--framer-on-primary);
+  border-radius: 100px;
+  padding: 12px 18px; /* Slightly adjusted for optical balance with 14px type */
+}
+
+.buttonSecondary {
+  background-color: var(--framer-surface-1);
+  color: var(--framer-ink);
+  border-radius: 100px;
+  padding: 12px 18px;
+}
+
+.buttonTranslucent {
+  background-color: var(--framer-surface-2);
+  color: var(--framer-ink);
+  border-radius: 30px; /* xxl */
+  padding: 8px 14px;
+}
+
+.buttonIconCircular {
+  background-color: var(--framer-surface-1);
+  color: var(--framer-ink);
+  border-radius: 9999px;
+  width: 40px;
+  height: 40px;
+  padding: 0;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+}
+
+/* Links */
+.linkAccent {
+  color: var(--framer-accent-blue);
+  text-decoration: none;
+  transition: opacity 0.15s ease;
+}
+
+.linkAccent:hover {
+  opacity: 0.8;
+}
+
+/* Cards */
+.cardSurface1 {
+  background-color: var(--framer-surface-1);
+  border-radius: 20px; /* xl */
+  padding: 24px;
+}
+
+.cardSurface2 {
+  background-color: var(--framer-surface-2);
+  border-radius: 20px; /* xl */
+  padding: 24px;
+}
+
+.cardMockupTile {
+  background-color: var(--framer-surface-1);
+  border-radius: 20px; /* xl */
+  padding: 16px;
+  box-shadow: inset 0 0.5px 0 rgba(255,255,255,0.10), 0 10px 30px rgba(0,0,0,0.25);
+}
+
+/* Gradient Spotlight Cards */
+.gradientSpotlightCard {
+  border-radius: 30px; /* xxl */
+  padding: 32px;
+  color: var(--framer-ink);
+}
+
+.gradientViolet {
+  background: linear-gradient(135deg, var(--framer-gradient-violet), #3a22af);
+}
+
+.gradientMagenta {
+  background: linear-gradient(135deg, var(--framer-gradient-magenta), #8f21a5);
+}
+
+.gradientOrange {
+  background: linear-gradient(135deg, var(--framer-gradient-orange), #c2400a);
+}
+
+.gradientCoral {
+  background: linear-gradient(135deg, var(--framer-gradient-coral), #b32542);
+}
+
+/* Top Nav */
+.topNav {
+  background-color: var(--framer-canvas);
+  color: var(--framer-ink);
+  height: 72px; /* Increased slightly from 56px for better breathing room */
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  padding: 0 30px;
+  position: sticky;
+  top: 0;
+  z-index: 50;
+  border-bottom: 1px solid var(--framer-hairline);
+}
+
+.navLinks {
+  display: flex;
+  gap: 24px;
+  align-items: center;
+}
+
+.navLink {
+  color: var(--framer-ink-muted);
+  font-family: var(--font-body);
+  font-size: 14px;
+  font-weight: 500;
+  text-decoration: none;
+  transition: color 0.15s ease;
+}
+
+.navLink:hover {
+  color: var(--framer-ink);
+}
+
+.navActions {
+  display: flex;
+  gap: 12px;
+}
+
+/* Hero */
+.hero {
+  padding-top: 140px;
+  padding-bottom: 96px;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  text-align: center;
+}
+
+.heroTitle {
+  max-width: 900px;
+  margin-bottom: 24px;
+}
+
+.heroAccent {
+  color: var(--framer-ink-muted); /* As per Framer, secondary text is often just gray. Or we can use gradient text if requested, but "accentText" on dark is often gray or white. Let's make it gray. */
+}
+
+.heroDescription {
+  max-width: 600px;
+  margin-bottom: 40px;
+}
+
+.heroActions {
+  display: flex;
+  gap: 16px;
+  margin-bottom: 80px;
+}
+
+/* Stats */
+.statsContainer {
+  display: flex;
+  gap: 60px;
+  justify-content: center;
+}
+
+.statItem {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+}
+
+.statValue {
+  font-family: var(--font-display);
+  font-size: 48px;
+  font-weight: 600;
+  letter-spacing: -2px;
+  line-height: 1;
+}
+
+.statLabel {
+  font-family: var(--font-body);
+  font-size: 15px;
+  color: var(--framer-ink-muted);
+  margin-top: 8px;
+}
+
+/* Feature Showcase */
+.showcaseHeader {
+  text-align: center;
+  margin-bottom: 64px;
+}
+
+.featureCardIcon {
+  margin-bottom: 16px;
+  color: var(--framer-ink);
+}
+
+.featureCardTitle {
+  margin-bottom: 8px;
+}
+
+/* How It Works */
+.howItWorksList {
+  display: flex;
+  flex-direction: column;
+  gap: 40px;
+  max-width: 600px;
+  margin: 0 auto;
+}
+
+.stepNumber {
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  width: 40px;
+  height: 40px;
+  border-radius: 9999px;
+  background-color: var(--framer-surface-2);
+  color: var(--framer-ink);
+  font-family: var(--font-body);
+  font-weight: 600;
+  margin-bottom: 16px;
+}
+
+/* Footer */
+.footer {
+  padding: 96px 30px;
+  border-top: 1px solid var(--framer-hairline);
+  margin-top: 96px;
+}
+
+.footerGrid {
+  display: grid;
+  grid-template-columns: 2fr repeat(4, 1fr);
+  gap: 40px;
+}
+
+.footerColTitle {
+  color: var(--framer-ink);
+  margin-bottom: 24px;
+}
+
+.footerLinkList {
+  list-style: none;
+  padding: 0;
+  margin: 0;
+  display: flex;
+  flex-direction: column;
+  gap: 12px;
+}
+
+.footerLink {
+  color: var(--framer-ink-muted);
+  text-decoration: none;
+  transition: color 0.15s ease;
+}
+
+.footerLink:hover {
+  color: var(--framer-ink);
+}
+
+@media (max-width: 810px) {
+  .footerGrid {
+    grid-template-columns: 1fr 1fr;
+  }
+}
+
+/* Misc Utilities */
+.textCenter { text-align: center; }
+.mb1 { margin-bottom: 8px; }
+.mb2 { margin-bottom: 16px; }
+.mb3 { margin-bottom: 24px; }
+.mb4 { margin-bottom: 32px; }
+.mb5 { margin-bottom: 40px; }
+.mb6 { margin-bottom: 64px; }
+.mt2 { margin-top: 16px; }
+.mt4 { margin-top: 32px; }
+.mt6 { margin-top: 64px; }
+
+.flex { display: flex; }
+.flexCol { flex-direction: column; }
+.itemsCenter { align-items: center; }
+.justifyCenter { justify-content: center; }
+.justifyBetween { justify-content: space-between; }
+.gap2 { gap: 16px; }
+.gap4 { gap: 32px; }

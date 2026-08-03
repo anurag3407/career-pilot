@@ -1,3 +1,4 @@
+/* eslint-env browser */
 import { Queue, Worker } from 'bullmq';
 import dotenv from 'dotenv';
 import redisManager from '../config/redis.js';

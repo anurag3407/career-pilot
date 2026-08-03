@@ -17,6 +17,7 @@ import {
 import { scrapeLinkedInProfile, profileToResumeText } from '../services/linkedinImporter.js';
 import { fetchGitHubProfile, convertGitHubToResumeText } from '../services/githubImporter.js';
 import { getDefaultProvider } from '../config/aiProviders.js';
+import { analyzeResume } from '../services/resumeService.js';
 
 const router = express.Router();
 
@@ -104,12 +105,13 @@ router.get('/:resumeId', verifyToken, asyncHandler(async (req, res) => {
 // Create a new resume
 router.post('/', verifyToken, validate(createResumeSchema), asyncHandler(async (req, res) => {
   const userId = req.user.uid;
-  const { 
-    originalText, 
-    enhancedText, 
-    jobRole, 
+  const {
+    originalText,
+    enhancedText,
+    jobRole,
     preferences,
-    title 
+    title,
+    customSections
   } = req.body;
 
   if (!originalText) {
@@ -122,7 +124,8 @@ router.post('/', verifyToken, validate(createResumeSchema), asyncHandler(async (
     enhancedText: enhancedText || null,
     jobRole: jobRole || null,
     preferences: preferences || {},
-    title: title || `Resume - ${new Date().toLocaleDateString()}`
+    title: title || `Resume - ${new Date().toLocaleDateString()}`,
+    customSections: Array.isArray(customSections) ? customSections : [],
   });
 
   try {
@@ -185,7 +188,7 @@ router.put('/:resumeId', verifyToken, validate(updateResumeSchema), asyncHandler
   const userId = req.user.uid;
   const updates = req.body;
 
-  const allowedUpdates = ['originalText', 'enhancedText', 'jobRole', 'atsScore', 'preferences', 'title', 'pdfUrl'];
+  const allowedUpdates = ['originalText', 'enhancedText', 'jobRole', 'atsScore', 'preferences', 'title', 'pdfUrl', 'sectionOrder', 'customSections'];
   const updateData = {};
   for (const key of allowedUpdates) {
     if (updates[key] !== undefined) updateData[key] = updates[key];
@@ -198,6 +201,55 @@ router.put('/:resumeId', verifyToken, validate(updateResumeSchema), asyncHandler
   const updatedResume = await Resume.findOneAndUpdate(
     { _id: resumeId, userId },
     { $set: updateData },
+    { new: true, runValidators: true }
+  ).lean();
+
+  if (!updatedResume) {
+    throw new ApiError(404, 'Resume not found');
+  }
+
+  res.json({
+    success: true,
+    data: {
+      id: updatedResume._id.toString(),
+      ...updatedResume,
+      _id: undefined
+    }
+  });
+}));
+
+/**
+ * @swagger
+ * /api/resumes/{resumeId}/reorder:
+ *   put:
+ *     summary: Reorder resume sections
+ *     parameters:
+ *       - in: path
+ *         name: resumeId
+ *         required: true
+ *     requestBody:
+ *       required: true
+ *       content:
+ *         application/json:
+ *           schema:
+ *             type: object
+ *     responses:
+ *       200:
+ *         description: Success
+ */
+// Reorder sections
+router.put('/:resumeId/reorder', verifyToken, asyncHandler(async (req, res) => {
+  const { resumeId } = req.params;
+  const userId = req.user.uid;
+  const { sectionOrder } = req.body;
+
+  if (!sectionOrder || !Array.isArray(sectionOrder)) {
+    throw new ApiError(400, 'Invalid section order');
+  }
+
+  const updatedResume = await Resume.findOneAndUpdate(
+    { _id: resumeId, userId },
+    { $set: { sectionOrder } },
     { new: true, runValidators: true }
   ).lean();
 
@@ -384,7 +436,12 @@ router.post('/import/github/preview', verifyToken, asyncHandler(async (req, res)
     throw new ApiError(400, 'GitHub username is required');
   }
 
-  const profileData = await fetchGitHubProfile(username.trim());
+  let cleanUsername = username.trim();
+  cleanUsername = cleanUsername.replace(/^https?:\/\/(www\.)?github\.com\//i, '').replace(/^@/, '');
+  cleanUsername = cleanUsername.split('/')[0].trim();
+
+  const githubToken = req.headers['x-github-token'] || null;
+  const profileData = await fetchGitHubProfile(cleanUsername, githubToken);
   res.json({
     success: true,
     preview: profileData
@@ -400,7 +457,9 @@ router.post('/import/github', verifyToken, asyncHandler(async (req, res) => {
     throw new ApiError(400, 'GitHub username or profile data is required');
   }
 
-  const profile = cachedProfile || await fetchGitHubProfile(username.trim());
+  let cleanUsername = username ? username.trim().replace(/^https?:\/\/(www\.)?github\.com\//i, '').replace(/^@/, '').split('/')[0].trim() : '';
+  const githubToken = req.headers['x-github-token'] || null;
+  const profile = cachedProfile || await fetchGitHubProfile(cleanUsername, githubToken);
   const resumeText = convertGitHubToResumeText(profile);
   const title = `${profile.name || username} GitHub Profile — Imported ${new Date().toLocaleDateString()}`;
 
@@ -477,8 +536,8 @@ ${text}`;
     
     // Strip markdown fences
     let structuredText = result.text.trim();
-    if (structuredText.startsWith('\`\`\`')) {
-      structuredText = structuredText.replace(/^\`\`\`(?:markdown)?\n?/, '').replace(/\n?\`\`\`$/, '').trim();
+    if (structuredText.startsWith('```')) {
+      structuredText = structuredText.replace(/^```(?:markdown)?\n?/, '').replace(/\n?```$/, '').trim();
     }
     
     const resume = await Resume.create({
@@ -534,38 +593,11 @@ router.post('/score', asyncHandler(async (req, res) => {
     });
   }
 
+  const analysisResult = await analyzeResume(resumeText);
+
   res.json({
     success: true,
-    data: {
-      overallScore: 82,
-      sections: {
-        summary: {
-          score: 80,
-          feedback: "Good professional summary"
-        },
-        skills: {
-          score: 85,
-          feedback: "Skills are relevant"
-        },
-        experience: {
-          score: 78,
-          feedback: "Add more quantified achievements"
-        },
-        education: {
-          score: 88,
-          feedback: "Education section is clear"
-        },
-        projects: {
-          score: 79,
-          feedback: "Projects need more impact metrics"
-        }
-      },
-      topSuggestions: [
-        "Add measurable achievements",
-        "Improve project descriptions",
-        "Use stronger action verbs"
-      ]
-    }
+    data: analysisResult
   });
 }));
 

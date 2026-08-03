@@ -24,76 +24,70 @@
 
 ## 🎯 High-Level Architecture
 
-```
-┌─────────────────────────────────────────────────────────────────────────────────┐
-│                              CLIENT LAYER                                        │
-│  ┌─────────────────────────────────────────────────────────────────────────┐   │
-│  │                         React 19 Frontend (Vite)                         │   │
-│  │  ┌──────────┐ ┌──────────┐ ┌──────────┐ ┌──────────┐ ┌──────────┐      │   │
-│  │  │  Auth    │ │ Dashboard│ │  Resume  │ │   Jobs   │ │Community │      │   │
-│  │  │  Context │ │   Page   │ │ Enhance  │ │  Tracker │ │  Module  │      │   │
-│  │  └──────────┘ └──────────┘ └──────────┘ └──────────┘ └──────────┘      │   │
-│  │                    │              │              │                       │   │
-│  │              ┌─────┴──────────────┴──────────────┴─────┐                │   │
-│  │              │         Socket.IO Client               │                │   │
-│  │              └────────────────────────────────────────┘                │   │
-│  └─────────────────────────────────────────────────────────────────────────┘   │
-└─────────────────────────────────────────────────────────────────────────────────┘
-                                      │
-                                      │ HTTPS / WSS
-                                      ▼
-┌─────────────────────────────────────────────────────────────────────────────────┐
-│                              API GATEWAY LAYER                                   │
-│  ┌─────────────────────────────────────────────────────────────────────────┐   │
-│  │                      Express.js + Socket.IO Server                       │   │
-│  │  ┌──────────┐ ┌──────────┐ ┌──────────┐ ┌──────────┐ ┌──────────┐      │   │
-│  │  │  CORS    │ │  Helmet  │ │   Rate   │ │   JWT    │ │  Error   │      │   │
-│  │  │Middleware│ │ Security │ │ Limiter  │ │  Auth    │ │ Handler  │      │   │
-│  │  └──────────┘ └──────────┘ └──────────┘ └──────────┘ └──────────┘      │   │
-│  └─────────────────────────────────────────────────────────────────────────┘   │
-└─────────────────────────────────────────────────────────────────────────────────┘
-                                      │
-                                      ▼
-┌─────────────────────────────────────────────────────────────────────────────────┐
-│                            SERVICE LAYER                                         │
-│  ┌───────────┐ ┌───────────┐ ┌───────────┐ ┌───────────┐ ┌───────────┐        │
-│  │  Resume   │ │    Job    │ │    Job    │ │ Community │ │   Mail    │        │
-│  │  Service  │ │  Fetcher  │ │   Alert   │ │  Service  │ │  Service  │        │
-│  └───────────┘ └───────────┘ └───────────┘ └───────────┘ └───────────┘        │
-│        │             │             │             │             │               │
-│        └─────────────┼─────────────┼─────────────┼─────────────┘               │
-│                      │             │             │                              │
-│                      ▼             ▼             ▼                              │
-│  ┌─────────────────────────────────────────────────────────────────────────┐   │
-│  │                        BullMQ Job Queue (Redis)                          │   │
-│  │  ┌──────────────────┐  ┌──────────────────┐  ┌──────────────────┐      │   │
-│  │  │  Alert Processing│  │   Email Queue    │  │   Cron Scheduler │      │   │
-│  │  └──────────────────┘  └──────────────────┘  └──────────────────┘      │   │
-│  └─────────────────────────────────────────────────────────────────────────┘   │
-└─────────────────────────────────────────────────────────────────────────────────┘
-                                      │
-                                      ▼
-┌─────────────────────────────────────────────────────────────────────────────────┐
-│                            DATA LAYER                                            │
-│  ┌─────────────────────┐  ┌─────────────────────┐  ┌─────────────────────┐     │
-│  │     MongoDB         │  │    Firebase         │  │      Redis          │     │
-│  │  ┌───────────────┐  │  │  ┌───────────────┐  │  │  ┌───────────────┐  │     │
-│  │  │   Resumes     │  │  │  │   Firestore   │  │  │  │  Job Queues   │  │     │
-│  │  │   Job Alerts  │  │  │  │   (Real-time) │  │  │  │  Rate Limits  │  │     │
-│  │  │   Tracked Jobs│  │  │  │   Storage     │  │  │  │  Sessions     │  │     │
-│  │  │   Notifications│ │  │  │   Auth        │  │  │  └───────────────┘  │     │
-│  │  └───────────────┘  │  │  └───────────────┘  │  └─────────────────────┘     │
-│  └─────────────────────┘  └─────────────────────┘                              │
-└─────────────────────────────────────────────────────────────────────────────────┘
-                                      │
-                                      ▼
-┌─────────────────────────────────────────────────────────────────────────────────┐
-│                          EXTERNAL SERVICES                                       │
-│  ┌─────────────────────┐  ┌─────────────────────┐  ┌─────────────────────┐     │
-│  │   Google Gemini     │  │     RapidAPI        │  │       SMTP          │     │
-│  │   (AI Enhancement)  │  │   (Job Search)      │  │   (Email Service)   │     │
-│  └─────────────────────┘  └─────────────────────┘  └─────────────────────┘     │
-└─────────────────────────────────────────────────────────────────────────────────┘
+```mermaid
+flowchart TB
+    subgraph CLIENT["🖥️ CLIENT LAYER"]
+        subgraph FE["React 19 Frontend (Vite)"]
+            Auth[Auth Context]
+            Dash[Dashboard Page]
+            Resume[Resume Enhance]
+            Jobs[Jobs Tracker]
+            Community[Community Module]
+            Socket[Socket.IO Client]
+            Auth --- Socket
+            Dash --- Socket
+            Resume --- Socket
+            Jobs --- Socket
+            Community --- Socket
+        end
+    end
+
+    subgraph GATEWAY["🚪 API GATEWAY LAYER"]
+        subgraph EXPRESS["Express.js + Socket.IO Server"]
+            CORS[CORS Middleware]
+            Helmet[Helmet Security]
+            Rate[Rate Limiter]
+            JWT[JWT Auth]
+            ErrH[Error Handler]
+        end
+    end
+
+    subgraph SERVICE["⚙️ SERVICE LAYER"]
+        ResumeSvc[Resume Service]
+        JobFetcher[Job Fetcher]
+        JobAlert[Job Alert]
+        CommunitySvc[Community Service]
+        MailSvc[Mail Service]
+
+        subgraph QUEUE["BullMQ Job Queue (Redis)"]
+            AlertProc[Alert Processing]
+            EmailQ[Email Queue]
+            CronSched[Cron Scheduler]
+        end
+
+        ResumeSvc --> QUEUE
+        JobFetcher --> QUEUE
+        JobAlert --> QUEUE
+        CommunitySvc --> QUEUE
+        MailSvc --> QUEUE
+    end
+
+    subgraph DATA["🗄️ DATA LAYER"]
+        Mongo[("MongoDB<br/>Resumes, Job Alerts,<br/>Tracked Jobs, Notifications")]
+        Firebase[("Firebase<br/>Firestore, Storage, Auth")]
+        Redis[("Redis<br/>Job Queues, Rate Limits,<br/>Sessions")]
+    end
+
+    subgraph EXTERNAL["🌐 EXTERNAL SERVICES"]
+        Gemini[Google Gemini<br/>AI Enhancement]
+        RapidAPI[RapidAPI<br/>Job Search]
+        SMTP[SMTP<br/>Email Service]
+    end
+
+    CLIENT -->|HTTPS / WSS| GATEWAY
+    GATEWAY --> SERVICE
+    SERVICE --> DATA
+    DATA --> EXTERNAL
 ```
 
 ---

@@ -648,10 +648,10 @@ function CaptchaGate({ onVerified }) {
         </div>
 
         <div className="cpg-actions">
-          <button className="cpg-refresh-btn" onClick={refresh} title="Get new challenge">
+          <button type="button" className="cpg-refresh-btn" onClick={refresh} title="Get new challenge">
             <RefreshCw size={13} /> Refresh
           </button>
-          <button
+          <button type="button"
             className="cpg-verify-btn"
             onClick={verify}
             disabled={feedback === "success"}

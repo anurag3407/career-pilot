@@ -1,175 +1,117 @@
 import express from 'express';
-import bcrypt from 'bcryptjs';
+import rateLimit from 'express-rate-limit';
 import { asyncHandler, ApiError } from '../middleware/errorHandler.js';
 import { verifyToken } from '../middleware/auth.js';
-import { loginProtection } from '../middleware/loginProtection.js';
-import { saveUserToFirebase } from '../services/firebaseDataService.js';
+import { saveUserToAppwrite } from '../services/appwriteDataService.js';
 import { validate } from '../middleware/validate.js';
-import {
-  registerSchema,
-  loginSchema,
-  forgotPasswordSchema,
-  resetPasswordSchema,
-  updateNotificationPrefsSchema,
-} from '../schemas/auth.schema.js';
-import { sendPasswordResetEmail } from '../services/mailService.js';
-import { exchangeCodeForToken, getLinkedInAuthUrl, getLinkedInProfile } from '../services/linkedinService.js';
+import { updateNotificationPrefsSchema } from '../schemas/auth.schema.js';
 import User from '../models/User.model.js';
-import admin from '../config/firebase.js';
+import GithubToken from '../models/GithubToken.model.js';
 import crypto from 'crypto';
 
+// ---------------------------------------------------------------------------
+// GitHub OAuth App (portfolio + private repos)
+// ---------------------------------------------------------------------------
+const githubExchangeLimiter = rateLimit({
+  windowMs: 60 * 1000,
+  max: 10,
+  standardHeaders: true,
+  legacyHeaders: false,
+});
+
+const GITHUB_OAUTH_SCOPES = 'read:user repo';
+const getGithubAuthUrl = (state) => {
+  const clientId = process.env.GITHUB_CLIENT_ID;
+  if (!clientId) {
+    throw new Error('GITHUB_CLIENT_ID is not configured');
+  }
+  const redirectUri =
+    process.env.GITHUB_OAUTH_REDIRECT_URI ||
+    `${process.env.FRONTEND_URL || 'http://localhost:5173'}/api/auth/github/callback`;
+  const params = new URLSearchParams({
+    client_id: clientId,
+    redirect_uri: redirectUri,
+    scope: GITHUB_OAUTH_SCOPES,
+    state,
+    allow_signup: 'true',
+  });
+  return `https://github.com/login/oauth/authorize?${params.toString()}`;
+};
+
+const exchangeGithubCode = async (code) => {
+  const clientId = process.env.GITHUB_CLIENT_ID;
+  const clientSecret = process.env.GITHUB_CLIENT_SECRET;
+  if (!clientId || !clientSecret) {
+    throw new Error('GitHub OAuth client credentials are not configured');
+  }
+  const response = await fetch('https://github.com/login/oauth/access_token', {
+    method: 'POST',
+    headers: {
+      Accept: 'application/json',
+      'Content-Type': 'application/json',
+    },
+    body: JSON.stringify({
+      client_id: clientId,
+      client_secret: clientSecret,
+      code,
+    }),
+  });
+  if (!response.ok) {
+    throw new Error(`GitHub token exchange failed: ${response.statusText}`);
+  }
+  const data = await response.json();
+  if (data.error) {
+    throw new Error(`GitHub OAuth error: ${data.error_description || data.error}`);
+  }
+  return data;
+};
+
+const fetchGithubUser = async (accessToken) => {
+  const response = await fetch('https://api.github.com/user', {
+    headers: {
+      Authorization: `Bearer ${accessToken}`,
+      Accept: 'application/vnd.github.v3+json',
+      'User-Agent': 'Career-Pilot-Backend',
+    },
+  });
+  if (!response.ok) {
+    throw new Error(`Failed to fetch GitHub user: ${response.statusText}`);
+  }
+  return response.json();
+};
+
 const router = express.Router();
+const githubStateStore = new Map();
 
-// Holds CSRF-protection state params for the LinkedIn OAuth initiation flow (10-min TTL)
-const stateStore = new Map();
-const tokenStore = new Map();       // one-time LinkedIn token exchange store
-const passwordResetStore = new Map(); // one-time password reset token store (1h TTL)
-
-router.post('/register', validate(registerSchema), asyncHandler(async (req, res) => {
-  const { email, name, password } = req.body;
-
-  const existingUser = await User.findOne({ email });
-  if (existingUser) {
-    return res.status(400).json({ success: false, error: 'User already exists' });
-  }
-
-  // Explicitly hash here even though the pre-save hook also guards this path,
-  // so password is never accidentally persisted as plaintext if the hook is bypassed
-  // (e.g. via Model.updateOne or direct driver access in future code paths).
-  const passwordHash = await bcrypt.hash(password, 12);
-
-  const user = await User.create({ email, username: name, password: passwordHash });
-
-  res.status(201).json({
-    success: true,
-    message: 'User registered successfully',
-    user: { id: user._id, email: user.email, name: user.username },
-  });
-}));
-
-// Uniform error message on both "wrong email" and "wrong password" paths
-// prevents user enumeration via differing error strings or timing.
-router.post('/login', loginProtection, validate(loginSchema), asyncHandler(async (req, res) => {
-  const { email, password } = req.body;
-
-  const user = await User.findOne({ email }).select('+password');
-
-  const rejectWithUniform = () => {
-    throw new ApiError(401, 'Invalid email or password');
-  };
-
-  if (!user || !user.password) rejectWithUniform();
-
-  // Check the reset flag BEFORE calling bcrypt.compare. Accounts flagged by the
-  // migration script may still have a plaintext value stored; passing that to
-  // bcrypt.compare throws "Invalid salt" (a 500) instead of the expected 403.
-  if (user.requiresPasswordReset) {
-    return res.status(403).json({
-      success: false,
-      error: 'A password reset is required before you can log in. Use the forgot-password flow to set a new password.',
-      requiresPasswordReset: true,
-    });
-  }
-
-  const passwordMatches = await user.comparePassword(password);
-  if (!passwordMatches) rejectWithUniform();
-
-  // Only catch the specific "user not found" code — any other Firebase error
-  // (network, permissions, quota) should surface as a 500 so it is visible.
-  let firebaseUid;
-  try {
-    const firebaseUser = await admin.auth().getUserByEmail(email);
-    firebaseUid = firebaseUser.uid;
-  } catch (firebaseErr) {
-    if (firebaseErr?.code !== 'auth/user-not-found') {
-      throw new ApiError(500, 'Authentication service error. Please try again.');
-    }
-    const newFirebaseUser = await admin.auth().createUser({ email, displayName: user.username });
-    firebaseUid = newFirebaseUser.uid;
-  }
-
-  const customToken = await admin.auth().createCustomToken(firebaseUid);
-
-  res.json({
-    success: true,
-    message: 'Login successful',
-    token: customToken,
-    user: { id: user._id, email: user.email, name: user.username },
-  });
-}));
-
-// Always returns 200 regardless of whether the email exists, to prevent enumeration.
-router.post('/forgot-password', validate(forgotPasswordSchema), asyncHandler(async (req, res) => {
-  const { email } = req.body;
-
-  const user = await User.findOne({ email });
-
-  if (user) {
-    const resetToken = crypto.randomBytes(32).toString('hex');
-    passwordResetStore.set(resetToken, {
-      userId: user._id.toString(),
-      expiresAt: Date.now() + 60 * 60 * 1000, // 1 hour
-    });
-
-    const frontendUrl = process.env.FRONTEND_URL || 'http://localhost:5173';
-    const resetLink = `${frontendUrl}/reset-password?token=${resetToken}`;
-
-    sendPasswordResetEmail({ email, resetLink }).catch((err) =>
-      console.error('Failed to send password reset email:', err.message)
-    );
-  }
-
-  res.json({
-    success: true,
-    message: 'If an account with that email exists, a password reset link has been sent.',
-  });
-}));
-
-router.post('/reset-password', validate(resetPasswordSchema), asyncHandler(async (req, res) => {
-  const { token, newPassword } = req.body;
-
-  const entry = passwordResetStore.get(token);
-  if (!entry || Date.now() > entry.expiresAt) {
-    passwordResetStore.delete(token);
-    throw new ApiError(400, 'Reset token is invalid or has expired. Please request a new one.');
-  }
-
-  passwordResetStore.delete(token);
-
-  const passwordHash = await bcrypt.hash(newPassword, 12);
-
-  await User.updateOne(
-    { _id: entry.userId },
-    { $set: { password: passwordHash, requiresPasswordReset: false } }
-  );
-
-  res.json({ success: true, message: 'Password reset successfully. You can now log in.' });
-}));
-
-// Periodic sweep of expired store entries every 10 minutes to prevent memory leaks
+// Periodic sweep of expired store entries every 10 minutes
 setInterval(() => {
   const now = Date.now();
-  for (const [state, expiry] of stateStore.entries()) {
-    if (now > expiry) stateStore.delete(state);
-  }
-  for (const [code, entry] of tokenStore.entries()) {
-    if (now > entry.expiresAt) tokenStore.delete(code);
-  }
-  for (const [token, entry] of passwordResetStore.entries()) {
-    if (now > entry.expiresAt) passwordResetStore.delete(token);
+  for (const [state, entry] of githubStateStore.entries()) {
+    if (now > entry.expiresAt) githubStateStore.delete(state);
   }
 }, 10 * 60 * 1000).unref();
 
-// Sweep expired linkedInTokenStore entries every 60 seconds
-
-// Verify token endpoint — loginProtection tracks failed attempts per IP
-// and locks out after 5 consecutive failures for 15 minutes.
-router.post('/verify', loginProtection, verifyToken, asyncHandler(async (req, res) => {
-  // Save/update user in Firebase on each verification
+// Verify token endpoint
+router.post('/verify', verifyToken, asyncHandler(async (req, res) => {
+  // Sync user to MongoDB if not exists
   try {
-    await saveUserToFirebase(req.user);
+    let mongoUser = await User.findOne({ email: req.user.email });
+    if (!mongoUser) {
+      mongoUser = await User.create({
+        email: req.user.email,
+        username: req.user.name,
+        password: crypto.randomBytes(32).toString('hex') // dummy password
+      });
+    }
   } catch (error) {
-    console.warn('Could not save user to Firebase:', error.message);
+    console.warn('Could not sync user to MongoDB:', error.message);
+  }
+
+  // Save/update user in Appwrite on each verification
+  try {
+    await saveUserToAppwrite(req.user);
+  } catch (error) {
+    console.warn('Could not save user to Appwrite:', error.message);
   }
 
   res.json({
@@ -180,11 +122,11 @@ router.post('/verify', loginProtection, verifyToken, asyncHandler(async (req, re
 
 // Get user profile
 router.get('/profile', verifyToken, asyncHandler(async (req, res) => {
-  // Update last login in Firebase
+  // Update last login in Appwrite
   try {
-    await saveUserToFirebase(req.user);
+    await saveUserToAppwrite(req.user);
   } catch (error) {
-    console.warn('⚠️  Could not update user in Firebase:', error.message);
+    console.warn('⚠️  Could not update user in Appwrite:', error.message);
   }
 
   res.json({
@@ -213,118 +155,117 @@ router.put('/notification-preferences', verifyToken, validate(updateNotification
   await User.findOneAndUpdate(
     { email: req.user.email },
     { notificationPreferences: { jobAlerts, directMessages, proposalUpdates } },
-    { new: true }
+    { new: true, upsert: true }
   );
 
   res.json({ success: true, message: 'Preferences updated!' });
 }));
 
-// Linkedin OAuth routes
-router.get('/linkedin', (req, res) => {
-  const state = crypto.randomBytes(16).toString('hex');
-  stateStore.set(state, Date.now() + 10 * 60 * 1000);
 
-  const authUrl = getLinkedInAuthUrl(state);
-  res.redirect(authUrl);
-});
+// =============================================================================
+// GitHub OAuth
+// =============================================================================
 
-router.get('/linkedin/callback', asyncHandler(async (req, res) => {
+router.post('/github/start', verifyToken, asyncHandler(async (req, res) => {
+  const state = crypto.randomBytes(24).toString('hex');
+  githubStateStore.set(state, {
+    userId: req.user.uid,
+    expiresAt: Date.now() + 10 * 60 * 1000,
+  });
+
+  try {
+    const authUrl = getGithubAuthUrl(state);
+    res.json({ success: true, authUrl, state });
+  } catch (err) {
+    throw new ApiError(500, err.message);
+  }
+}));
+
+router.get('/github/callback', githubExchangeLimiter, asyncHandler(async (req, res) => {
   const { code, state, error } = req.query;
   const frontendUrl = process.env.FRONTEND_URL || 'http://localhost:5173';
 
   if (error) {
-    console.error('LinkedIn Oauth error: ', error);
-    return res.redirect(`${frontendUrl}/login?error=linkedin_denied`);
+    console.error('GitHub OAuth error from provider:', error);
+    return res.redirect(`${frontendUrl}/auth/github/callback?error=${encodeURIComponent(String(error))}`);
   }
 
-  const storedExpiry = stateStore.get(state);
-  if (!storedExpiry || Date.now() > storedExpiry) {
-    stateStore.delete(state);
-    return res.redirect(`${frontendUrl}/login?error=linkedin_invalid_state`);
+  const stored = githubStateStore.get(String(state));
+  if (!stored || Date.now() > stored.expiresAt) {
+    githubStateStore.delete(state);
+    return res.redirect(`${frontendUrl}/auth/github/callback?error=invalid_state`);
   }
+  githubStateStore.delete(state);
+  const { userId } = stored;
 
-  stateStore.delete(state);
-
-  let accessToken, idToken;
-
+  let tokenData;
   try {
-    ({ accessToken, idToken } = await exchangeCodeForToken(code));
+    tokenData = await exchangeGithubCode(String(code));
   } catch (err) {
-    console.error('LinkedIn token exchange failed:', err.response?.data || err.message);
-    return res.redirect(`${frontendUrl}/login?error=linkedin_token_failed`);
+    console.error('GitHub token exchange failed:', err.message);
+    return res.redirect(`${frontendUrl}/auth/github/callback?error=token_failed`);
+  }
+
+  const accessToken = tokenData.access_token;
+  if (!accessToken) {
+    return res.redirect(`${frontendUrl}/auth/github/callback?error=no_access_token`);
   }
 
   let profile;
   try {
-    profile = await getLinkedInProfile(accessToken, idToken);
+    profile = await fetchGithubUser(accessToken);
   } catch (err) {
-    console.error('LinkedIn profile fetch failed:', err.response?.data || err.message);
-    return res.redirect(`${frontendUrl}/login?error=linkedin_profile_failed`);
+    console.error('Failed to fetch GitHub user:', err.message);
+    return res.redirect(`${frontendUrl}/auth/github/callback?error=profile_failed`);
   }
 
-  const { linkedinId, email, name, picture } = profile;
+  // Encrypt and store at rest
+  const encrypted = GithubToken.encryptToken(accessToken);
+  await GithubToken.findOneAndUpdate(
+    { userId, provider: 'github-oauth-app' },
+    {
+      ...encrypted,
+      scopes: tokenData.scope || GITHUB_OAUTH_SCOPES,
+      githubLogin: profile.login,
+      lastUsedAt: new Date(),
+    },
+    { upsert: true, new: true, setDefaultsOnInsert: true }
+  );
 
-  let mongoUser = await User.findOne({ email });
-
-  let firebaseUid;
-
-  if (mongoUser) {
-    if (!mongoUser.linkedinId) {
-      mongoUser.linkedinId = linkedinId;
-      await mongoUser.save();
-    }
-
-    try {
-      const firebaseUser = await admin.auth().getUserByEmail(email);
-      firebaseUid = firebaseUser.uid;
-    } catch (firebaseErr) {
-      if (firebaseErr?.code !== 'auth/user-not-found') {
-        return res.redirect(`${frontendUrl}/login?error=linkedin_auth_failed`);
-      }
-      const newFirebaseUser = await admin.auth().createUser({ email, displayName: name, photoURL: picture });
-      firebaseUid = newFirebaseUser.uid;
-    }
-  } else {
-    try {
-      const firebaseUser = await admin.auth().getUserByEmail(email);
-      firebaseUid = firebaseUser.uid;
-    } catch (firebaseErr) {
-      if (firebaseErr?.code !== 'auth/user-not-found') {
-        return res.redirect(`${frontendUrl}/login?error=linkedin_auth_failed`);
-      }
-      const firebaseUser = await admin.auth().createUser({ email, displayName: name, photoURL: picture });
-      firebaseUid = firebaseUser.uid;
-    }
-
-    await admin.auth().setCustomUserClaims(firebaseUid, { linkedinId, pendingOnboarding: true });
-  }
-
-  const customToken = await admin.auth().createCustomToken(firebaseUid, { linkedinId });
-
-  // Store token in one-time exchange store (60s TTL) instead of passing in URL
-  const exchangeCode = crypto.randomBytes(16).toString('hex');
-  tokenStore.set(exchangeCode, { token: customToken, isNew: !mongoUser, expiresAt: Date.now() + 60000 });
-
-  res.redirect(`${frontendUrl}/auth/linkedin/callback?code=${exchangeCode}`);
+  res.redirect(
+    `${frontendUrl}/auth/github/callback?success=1&login=${encodeURIComponent(profile.login)}`
+  );
 }));
 
-// One-time token exchange endpoint — the frontend calls this immediately after the OAuth
-// redirect to retrieve the Firebase custom token without it appearing in a URL,
-// server access log, browser history, or Referer header.
-// No verifyToken here — the user is mid-authentication and has no Firebase token yet.
-// The exchange code (192-bit entropy, 60-sec TTL, single-use) is the security boundary.
+// Disconnect
+router.delete('/github/disconnect', verifyToken, asyncHandler(async (req, res) => {
+  const result = await GithubToken.deleteOne({
+    userId: req.user.uid,
+    provider: 'github-oauth-app',
+  });
+  res.json({ success: true, deleted: result.deletedCount > 0 });
+}));
 
-// One-time token exchange endpoint — frontend calls this after LinkedIn OAuth redirect
-// instead of receiving the Firebase custom token in the URL.
-router.get('/linkedin/token/:code', asyncHandler(async (req, res) => {
-  const { code } = req.params;
-  const entry = tokenStore.get(code);
-  if (!entry || Date.now() > entry.expiresAt) {
-    tokenStore.delete(code);
-    return res.status(404).json({ success: false, error: 'Code not found or expired' });
+// Inspect connection status
+router.get('/github/status', verifyToken, asyncHandler(async (req, res) => {
+  const record = await GithubToken.findOne({
+    userId: req.user.uid,
+    provider: 'github-oauth-app',
+  })
+    .select('githubLogin scopes lastUsedAt createdAt updatedAt')
+    .lean();
+
+  if (!record) {
+    return res.json({ success: true, connected: false });
   }
-  tokenStore.delete(code);
-  res.json({ success: true, token: entry.token, isNew: entry.isNew });
+  res.json({
+    success: true,
+    connected: true,
+    githubLogin: record.githubLogin,
+    scopes: record.scopes,
+    lastUsedAt: record.lastUsedAt,
+    connectedAt: record.createdAt,
+  });
 }));
 
 export default router;

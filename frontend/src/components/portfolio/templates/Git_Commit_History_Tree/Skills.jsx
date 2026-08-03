@@ -51,7 +51,7 @@ function BranchGroup({ category, skills, meta, inView, globalIdx }) {
       className="bg-[#161B22] border border-[#30363D] rounded-lg overflow-hidden"
     >
       {/* Branch header / toggle */}
-      <button
+      <button type="button"
         onClick={() => setOpen(v => !v)}
         className="w-full flex items-center gap-3 px-4 py-3 border-b border-[#30363D] hover:bg-[#1C2128] transition-colors text-left"
         aria-expanded={open}

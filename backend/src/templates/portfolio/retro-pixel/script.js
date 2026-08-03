@@ -1,3 +1,4 @@
+/* eslint-env browser */
 /**
  * script.js — Retro Pixel Portfolio
  * 8-bit / NES-inspired interactive layer

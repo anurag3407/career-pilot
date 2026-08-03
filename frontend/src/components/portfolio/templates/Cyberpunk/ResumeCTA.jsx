@@ -36,7 +36,7 @@ export default function ResumeCTA() {
         {/* CTA Buttons */}
         <div className="mt-12 flex flex-col items-center justify-center gap-5 sm:flex-row">
           
-          <button className="group flex items-center gap-3 rounded-2xl bg-gradient-to-r from-cyan-500 to-pink-500 px-8 py-4 text-lg font-bold text-black transition-all duration-300 hover:scale-105 hover:shadow-[0_0_30px_rgba(0,255,255,0.45)]">
+          <button type="button" className="group flex items-center gap-3 rounded-2xl bg-gradient-to-r from-cyan-500 to-pink-500 px-8 py-4 text-lg font-bold text-black transition-all duration-300 hover:scale-105 hover:shadow-[0_0_30px_rgba(0,255,255,0.45)]">
             <Download
               size={22}
               className="transition-transform duration-300 group-hover:-translate-y-1"
@@ -44,7 +44,7 @@ export default function ResumeCTA() {
             Download Resume
           </button>
 
-          <button className="group flex items-center gap-3 rounded-2xl border border-pink-400/30 bg-white/5 px-8 py-4 text-lg font-semibold text-pink-300 transition-all duration-300 hover:scale-105 hover:bg-pink-500/10 hover:shadow-[0_0_25px_rgba(255,0,200,0.25)]">
+          <button type="button" className="group flex items-center gap-3 rounded-2xl border border-pink-400/30 bg-white/5 px-8 py-4 text-lg font-semibold text-pink-300 transition-all duration-300 hover:scale-105 hover:bg-pink-500/10 hover:shadow-[0_0_25px_rgba(255,0,200,0.25)]">
             <Eye
               size={22}
               className="transition-transform duration-300 group-hover:scale-110"

@@ -343,8 +343,8 @@ export default function AudioFirstSonarNavigation() {
           </motion.p>
           <motion.div initial={{ opacity: 0, y: 12 }} animate={{ opacity: 1, y: 0 }} transition={{ duration: 0.5, delay: 0.55 }}
             style={{ display: "flex", flexWrap: "wrap", gap: 16, justifyContent: "center", marginBottom: 52 }}>
-            <button className="asn-btn asn-btn-primary" onClick={() => scrollTo("projects")}><Music size={14} />View Work</button>
-            <button className="asn-btn asn-btn-ghost" onClick={() => scrollTo("contact")}><Radio size={14} />Get In Touch</button>
+            <button type="button" className="asn-btn asn-btn-primary" onClick={() => scrollTo("projects")}><Music size={14} />View Work</button>
+            <button type="button" className="asn-btn asn-btn-ghost" onClick={() => scrollTo("contact")}><Radio size={14} />Get In Touch</button>
           </motion.div>
           <motion.div initial={{ opacity: 0 }} animate={{ opacity: 1 }} transition={{ delay: 0.7 }}
             style={{

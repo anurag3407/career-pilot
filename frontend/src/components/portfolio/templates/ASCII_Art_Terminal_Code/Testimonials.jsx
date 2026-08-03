@@ -145,7 +145,7 @@ export default function Testimonials() {
             transition={{ delay: 0.4, duration: 0.3 }}
             className="flex items-center gap-4 justify-center font-mono text-xs"
           >
-            <button
+            <button type="button"
               onClick={() => setPage(p => Math.max(0, p - 1))}
               disabled={page === 0}
               id="testimonials-prev"
@@ -160,7 +160,7 @@ export default function Testimonials() {
               page {page + 1}/{totalPages}
             </span>
 
-            <button
+            <button type="button"
               onClick={() => setPage(p => Math.min(totalPages - 1, p + 1))}
               disabled={page === totalPages - 1}
               id="testimonials-next"

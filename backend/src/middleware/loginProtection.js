@@ -37,16 +37,33 @@ const handleFailure = async (ip, email, currentAttempts) => {
   }
 };
 
-const handleSuccess = async (ip, email) => {
+import LoginLog from '../models/LoginLog.model.js';
+
+const handleSuccess = async (ip, email, userAgent) => {
+  // Reset lockout
   await LoginAttempt.findOneAndUpdate(
     { ip },
     { attempts: 0, lockoutUntil: null, email },
     { upsert: true }
   );
+
+  // Track persistent login history
+  if (email) {
+    try {
+      await LoginLog.create({
+        email,
+        ip,
+        userAgent: userAgent || 'Unknown'
+      });
+    } catch (err) {
+      console.error('Failed to log successful login:', err.message);
+    }
+  }
 };
 
 export const loginProtection = async (req, res, next) => {
   const ip = req.ip || req.socket.remoteAddress;
+  const isLoginRoute = (req.originalUrl || req.path || '').endsWith('/login') && req.method === 'POST';
 
   try {
     const record = await LoginAttempt.findOne({ ip });
@@ -59,7 +76,7 @@ export const loginProtection = async (req, res, next) => {
       });
     }
 
-    const email = getEmailFromToken(req.headers.authorization) || record?.email;
+    const email = req.body?.email || getEmailFromToken(req.headers.authorization) || record?.email;
     const currentAttempts = record?.attempts ?? 0;
 
     // Intercept res.json to observe the outcome without modifying verifyToken.
@@ -68,15 +85,20 @@ export const loginProtection = async (req, res, next) => {
     const originalJson = res.json.bind(res);
     res.json = function (body) {
       const statusCode = res.statusCode;
+      const userAgent = req.headers['user-agent'];
+      const resolvedEmail = body?.user?.email || req.body?.email || email;
 
-      if (statusCode === 401) {
-        handleFailure(ip, email, currentAttempts).catch(
-          (err) => console.error('loginProtection failure tracking error:', err.message)
-        );
-      } else if (statusCode >= 200 && statusCode < 300 && currentAttempts > 0) {
-        handleSuccess(ip, email).catch(
-          (err) => console.error('loginProtection success tracking error:', err.message)
-        );
+      if (isLoginRoute) {
+        if (statusCode === 401) {
+          handleFailure(ip, resolvedEmail, currentAttempts).catch(
+            (err) => console.error('loginProtection failure tracking error:', err.message)
+          );
+        } else if (statusCode >= 200 && statusCode < 300) {
+          // We call handleSuccess on successful logins to reset attempts and log history
+          handleSuccess(ip, resolvedEmail, userAgent).catch(
+            (err) => console.error('loginProtection success tracking error:', err.message)
+          );
+        }
       }
 
       return originalJson(body);

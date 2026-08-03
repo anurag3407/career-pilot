@@ -11,6 +11,7 @@ import {
   BookOpen,
   Gem
 } from 'lucide-react';
+import "./ResumeCTA.css";
 
 export default function ResumeCTA({
   resumeUrl = "#",
@@ -60,86 +61,6 @@ export default function ResumeCTA({
 
   return (
     <>
-      {/* ── Fonts & Animations (same as Projects.jsx) ── */}
-      <style dangerouslySetInnerHTML={{
-        __html: `
-        @import url('https://fonts.googleapis.com/css2?family=Cinzel:wght@600;800;900&family=MedievalSharp&family=Inter:wght@400;500;600&display=swap');
-
-        .font-fantasy-title { font-family: 'Cinzel', serif; }
-        .font-fantasy-game  { font-family: 'MedievalSharp', cursive; }
-        .font-fantasy-body  { font-family: 'Inter', sans-serif; }
-
-        @keyframes gold-shimmer {
-          0%   { border-color: #b48c3b; box-shadow: 0 0 5px rgba(180,140,59,0.4); }
-          50%  { border-color: #d4af37; box-shadow: 0 0 18px rgba(212,175,55,0.8); }
-          100% { border-color: #b48c3b; box-shadow: 0 0 5px rgba(180,140,59,0.4); }
-        }
-
-        @keyframes float-runes {
-          0%, 100% { transform: translateY(0px) rotate(0deg); }
-          50%       { transform: translateY(-8px) rotate(3deg); }
-        }
-
-        @keyframes cta-beacon {
-          0%, 100% { box-shadow: 0 0 10px rgba(212,175,55,0.3), inset 0 1px 0 rgba(255,215,0,0.2); }
-          50%       { box-shadow: 0 0 30px rgba(212,175,55,0.7), inset 0 1px 0 rgba(255,215,0,0.4); }
-        }
-
-        .gold-border-glow { animation: gold-shimmer 4s infinite ease-in-out; }
-        .floating-rune    { animation: float-runes 5s infinite ease-in-out; }
-        .cta-beacon       { animation: cta-beacon 2.5s infinite ease-in-out; }
-
-        .metal-corner-tl::before {
-          content: ""; position: absolute; top: 0; left: 0;
-          width: 12px; height: 12px;
-          border-top: 3px solid #d4af37; border-left: 3px solid #d4af37;
-          pointer-events: none;
-        }
-        .metal-corner-tr::before {
-          content: ""; position: absolute; top: 0; right: 0;
-          width: 12px; height: 12px;
-          border-top: 3px solid #d4af37; border-right: 3px solid #d4af37;
-          pointer-events: none;
-        }
-        .metal-corner-bl::before {
-          content: ""; position: absolute; bottom: 0; left: 0;
-          width: 12px; height: 12px;
-          border-bottom: 3px solid #d4af37; border-left: 3px solid #d4af37;
-          pointer-events: none;
-        }
-        .metal-corner-br::before {
-          content: ""; position: absolute; bottom: 0; right: 0;
-          width: 12px; height: 12px;
-          border-bottom: 3px solid #d4af37; border-right: 3px solid #d4af37;
-          pointer-events: none;
-        }
-
-        .rpg-btn-primary {
-          background: linear-gradient(135deg, #b8860b 0%, #8b6508 50%, #c8960c 100%);
-          border: 1px solid #d4af37;
-          color: #1a0a00;
-          transition: all 0.25s ease;
-        }
-        .rpg-btn-primary:hover {
-          background: linear-gradient(135deg, #d4af37 0%, #b8860b 100%);
-          box-shadow: 0 0 24px rgba(212,175,55,0.7);
-          transform: translateY(-2px);
-        }
-
-        .rpg-btn-secondary {
-          background: transparent;
-          border: 1px solid rgba(180,140,59,0.5);
-          color: #c8a96e;
-          transition: all 0.25s ease;
-        }
-        .rpg-btn-secondary:hover {
-          background: rgba(180,140,59,0.12);
-          border-color: #d4af37;
-          color: #d4af37;
-          box-shadow: 0 0 16px rgba(212,175,55,0.3);
-          transform: translateY(-2px);
-        }
-      `}} />
 
       <section
         id="resume-cta"
@@ -167,11 +88,11 @@ export default function ResumeCTA({
           {/* ── Section Header ── */}
           <div className="text-center">
             <div className="flex items-center justify-center gap-3 mb-3">
-              <Scroll className="w-5 h-5 text-amber-500 floating-rune" />
+              <Scroll className="w-5 h-5 text-amber-500 rpg-cta-floating-rune" />
               <span className="font-fantasy-game text-xs tracking-[0.3em] text-amber-500/80 uppercase">
                 Guild Registry · Official Document
               </span>
-              <Scroll className="w-5 h-5 text-amber-500 floating-rune" style={{ animationDelay: '1s' }} />
+              <Scroll className="w-5 h-5 text-amber-500 rpg-cta-floating-rune" style={{ animationDelay: '1s' }} />
             </div>
             <h2 className="font-fantasy-title text-4xl sm:text-5xl font-black text-amber-100 tracking-wide uppercase mb-3"
               style={{ textShadow: '0 0 30px rgba(212,175,55,0.4)' }}>
@@ -185,7 +106,7 @@ export default function ResumeCTA({
           </div>
 
           {/* ── Main Parchment Card ── */}
-          <div className="w-full bg-[#121118]/90 border-2 border-[#302718] rounded-xl p-8 sm:p-10 shadow-[0_10px_40px_rgba(0,0,0,0.9)] relative gold-border-glow">
+          <div className="w-full bg-[#121118]/90 border-2 border-[#302718] rounded-xl p-8 sm:p-10 shadow-[0_10px_40px_rgba(0,0,0,0.9)] relative rpg-cta-gold-border-glow">
             <div className="metal-corner-tl" />
             <div className="metal-corner-tr" />
             <div className="metal-corner-bl" />

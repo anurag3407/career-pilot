@@ -138,3 +138,31 @@ test('preserves CORS methods and credentials', () => {
 
   assert.equal(options.cors.credentials, true);
 });
+
+test('allowRequest strictly enforces WebSocket origins (CSRF prevention)', () => {
+  const options = createSocketOptions();
+  
+  // Valid origin
+  options.allowRequest({ headers: { origin: 'http://localhost:5173' } }, (err, allowed) => {
+    assert.equal(err, null);
+    assert.equal(allowed, true);
+  });
+
+  // Valid referer (fallback)
+  options.allowRequest({ headers: { referer: 'http://localhost:3000' } }, (err, allowed) => {
+    assert.equal(err, null);
+    assert.equal(allowed, true);
+  });
+
+  // Invalid origin
+  options.allowRequest({ headers: { origin: 'https://evil-hacker.com' } }, (err, allowed) => {
+    assert.match(err, /Not allowed by CORS/);
+    assert.equal(allowed, false);
+  });
+
+  // Missing origin AND referer (allowed for mobile apps / server clients, browsers always send it)
+  options.allowRequest({ headers: {} }, (err, allowed) => {
+    assert.equal(err, null);
+    assert.equal(allowed, true);
+  });
+});

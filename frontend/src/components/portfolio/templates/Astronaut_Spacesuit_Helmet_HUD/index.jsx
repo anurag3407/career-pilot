@@ -1196,8 +1196,8 @@ export default function AstronautSpacesuitHelmetHUD() {
                 <p className="hero-title">{personal.title ?? 'Full Stack Developer'}</p>
                 <p className="hero-bio">{personal.bio}</p>
                 <div className="hero-actions">
-                  <button className="btn-primary" onClick={() => scrollTo('missions')}>VIEW MISSIONS</button>
-                  <button className="btn-secondary" onClick={() => scrollTo('trajectory')}>TRAJECTORY LOG</button>
+                  <button type="button" className="btn-primary" onClick={() => scrollTo('missions')}>VIEW MISSIONS</button>
+                  <button type="button" className="btn-secondary" onClick={() => scrollTo('trajectory')}>TRAJECTORY LOG</button>
                 </div>
               </div>
 
@@ -1266,7 +1266,7 @@ export default function AstronautSpacesuitHelmetHUD() {
               <div style={{ flex: 1 }}>
                 <div className="cat-filters">
                   {categories.map(c => (
-                    <button key={c} className={`cat-pill ${activeCat===c?'active':''}`} onClick={() => setActiveCat(c)}>
+                    <button type="button" key={c} className={`cat-pill ${activeCat===c?'active':''}`} onClick={() => setActiveCat(c)}>
                       {c}
                     </button>
                   ))}

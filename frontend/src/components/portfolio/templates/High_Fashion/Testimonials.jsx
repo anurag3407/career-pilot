@@ -80,15 +80,15 @@ export default function Testimonials() {
 
         {/* Controls */}
         <div className="flex items-center gap-6 mt-16">
-          <button onClick={prev} className="w-12 h-12 flex items-center justify-center transition-all hover:bg-white/5" style={{ border: `1px solid rgba(255,255,255,0.2)` }}>
+          <button type="button" onClick={prev} className="w-12 h-12 flex items-center justify-center transition-all hover:bg-white/5" style={{ border: `1px solid rgba(255,255,255,0.2)` }}>
             <ChevronLeft size={16} />
           </button>
           <div className="flex gap-2">
             {data.testimonials.map((_, i) => (
-              <button key={i} onClick={() => setCurrent(i)} className="w-2 h-2 transition-all" style={{ background: i === current ? F.gold : 'rgba(255,255,255,0.2)' }} aria-label={`Go to testimonial ${i + 1}`} />
+              <button type="button" key={i} onClick={() => setCurrent(i)} className="w-2 h-2 transition-all" style={{ background: i === current ? F.gold : 'rgba(255,255,255,0.2)' }} aria-label={`Go to testimonial ${i + 1}`} />
             ))}
           </div>
-          <button onClick={next} className="w-12 h-12 flex items-center justify-center transition-all hover:bg-white/5" style={{ border: `1px solid rgba(255,255,255,0.2)` }}>
+          <button type="button" onClick={next} className="w-12 h-12 flex items-center justify-center transition-all hover:bg-white/5" style={{ border: `1px solid rgba(255,255,255,0.2)` }}>
             <ChevronRight size={16} />
           </button>
         </div>

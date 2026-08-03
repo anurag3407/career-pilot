@@ -553,7 +553,7 @@ export default function StockTicker() {
             <Activity size={10} className="text-cyan-500" />
             <span className="text-[9px] text-cyan-600 tracking-[0.2em] uppercase font-semibold">Live Quotes</span>
             <div className="flex-1 h-px" style={{ background: "rgba(34,211,238,0.07)" }} />
-            <button
+            <button type="button"
               onClick={() => setPaused(p => !p)}
               className="text-[9px] text-slate-600 hover:text-cyan-400 tracking-widest uppercase transition-colors duration-200"
               aria-label={paused ? "Resume ticker" : "Pause ticker"}

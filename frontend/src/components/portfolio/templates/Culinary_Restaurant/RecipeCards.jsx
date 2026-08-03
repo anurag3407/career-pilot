@@ -96,7 +96,7 @@ export default function RecipeCards() {
                   </div>
                 </div>
 
-                <button className="flex items-center gap-3 text-[#c5a880] font-medium tracking-widest uppercase text-xs group/btn w-fit overflow-hidden">
+                <button type="button" className="flex items-center gap-3 text-[#c5a880] font-medium tracking-widest uppercase text-xs group/btn w-fit overflow-hidden">
                   <span className="relative z-10">View Recipe</span>
                   <ArrowRight className="w-4 h-4 group-hover/btn:translate-x-2 transition-transform duration-300 relative z-10" />
                 </button>

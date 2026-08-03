@@ -279,15 +279,15 @@ export default function SmokeMist() {
 
       {/* ── Navbar ── */}
       <nav className="sm-nav">
-        <button className="sm-nav-link sm-serif" onClick={() => scrollTo("hero")} style={{ color: C.accent, fontSize: 13, letterSpacing: 4 }}>
+        <button type="button" className="sm-nav-link sm-serif" onClick={() => scrollTo("hero")} style={{ color: C.accent, fontSize: 13, letterSpacing: 4 }}>
           {data.personal.name.split(" ")[0].toUpperCase()}
         </button>
         <div className="sm-nav-desktop">
           {sections.map((s) => (
-            <button key={s} className="sm-nav-link" onClick={() => scrollTo(s.toLowerCase())}>{s}</button>
+            <button type="button" key={s} className="sm-nav-link" onClick={() => scrollTo(s.toLowerCase())}>{s}</button>
           ))}
         </div>
-        <button className="sm-hamburger" onClick={() => setMenuOpen(!menuOpen)} aria-label="Menu">
+        <button type="button" className="sm-hamburger" onClick={() => setMenuOpen(!menuOpen)} aria-label="Menu">
           {[0,1,2].map(i => (
             <div key={i} style={{ width: 22, height: 1.5, background: i === 1 ? C.accent : C.ghost, margin: "5px 0", transition: "all .3s",
               transform: menuOpen ? (i === 0 ? "rotate(45deg) translate(4px,5px)" : i === 2 ? "rotate(-45deg) translate(4px,-5px)" : "none") : "none",
@@ -300,7 +300,7 @@ export default function SmokeMist() {
         {menuOpen && (
           <motion.div className="sm-mobile-menu" initial={{ opacity: 0, y: -8 }} animate={{ opacity: 1, y: 0 }} exit={{ opacity: 0, y: -8 }}>
             {sections.map((s) => (
-              <button key={s} className="sm-nav-link" onClick={() => scrollTo(s.toLowerCase())} style={{ textAlign: "left", padding: "10px 0" }}>
+              <button type="button" key={s} className="sm-nav-link" onClick={() => scrollTo(s.toLowerCase())} style={{ textAlign: "left", padding: "10px 0" }}>
                 <span style={{ color: C.accent, marginRight: 8 }}>~</span>{s}
               </button>
             ))}
@@ -329,10 +329,10 @@ export default function SmokeMist() {
           </motion.p>
           <motion.div initial={{ opacity: 0, y: 16 }} animate={{ opacity: 1, y: 0 }} transition={{ duration: 0.6, delay: 0.8 }}
             style={{ display: "flex", flexWrap: "wrap", gap: 16, marginBottom: 48 }}>
-            <button className="sm-btn sm-btn-ghost" onClick={() => scrollTo("projects")}>
+            <button type="button" className="sm-btn sm-btn-ghost" onClick={() => scrollTo("projects")}>
               <span>Through the Mist</span>
             </button>
-            <button className="sm-btn sm-btn-solid" onClick={() => scrollTo("contact")}>
+            <button type="button" className="sm-btn sm-btn-solid" onClick={() => scrollTo("contact")}>
               <span>Connect</span>
             </button>
           </motion.div>

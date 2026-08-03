@@ -1,5 +1,6 @@
 import { usePortfolio } from "../../../../context/PortfolioContext";
 import React from 'react';
+import "./styles.css";
 import Hero from './Hero';
 import About from './About';
 import Skills from './Skills';
@@ -14,13 +15,8 @@ export default function OLED_Black_Portfolio() {
   const { personal, socials, skills, projects, experience, testimonials, stats } = data;
 
   return (
-    <div className="min-h-screen bg-black text-gray-200 selection:bg-cyan-500/30 selection:text-cyan-200 font-sans">
-      <style dangerouslySetInnerHTML={{__html: `
-        ::-webkit-scrollbar { width: 8px; }
-        ::-webkit-scrollbar-track { background: #000000; }
-        ::-webkit-scrollbar-thumb { background: #1f2937; }
-        ::-webkit-scrollbar-thumb:hover { background: #22d3ee; }
-      `}} />
+    <div className="oled-black-root min-h-screen bg-black text-gray-200 selection:bg-cyan-500/30 selection:text-cyan-200 font-sans">
+
 
       <main className="max-w-6xl mx-auto px-6 md:px-12 relative z-10">
         <Hero personal={personal} stats={stats} socials={socials} />

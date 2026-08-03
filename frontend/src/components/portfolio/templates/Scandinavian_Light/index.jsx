@@ -1,32 +1,62 @@
-import { usePortfolio } from "../../../../context/PortfolioContext";
-import React from 'react';
+import React, { useEffect } from 'react';
+import dummyData from '../../../../data/dummy_data.json';
+import Hero from './Hero';
+import About from './About';
+import Skills from './Skills';
+import Projects from './Projects';
+import Experience from './Experience';
+import Testimonials from './Testimonials';
+import Contact from './Contact';
 
-/**
- * Scandinavian Light Portfolio Template
- * Category: Minimal / Clean
- * Description: Scandinavian design with warm whites, soft shadows, wood-grain texture accents, rounded friendly shapes. Cozy, hygge-inspired minimal feel.
- */
+const FONT_STYLESHEET_ID = 'scandinavian-light-fonts';
+const FONT_HREF =
+  'https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700;800&family=Lora:wght@400;500;600&display=swap';
+import { usePortfolio } from "../../../../context/PortfolioContext";
+
 export default function ScandinavianLight() {
+  useEffect(() => {
+    if (typeof document === 'undefined') return;
+    if (document.getElementById(FONT_STYLESHEET_ID)) return;
+
+    const googlePreconnect = document.createElement('link');
+    googlePreconnect.rel = 'preconnect';
+    googlePreconnect.href = 'https://fonts.googleapis.com';
+
+    const gstaticPreconnect = document.createElement('link');
+    gstaticPreconnect.rel = 'preconnect';
+    gstaticPreconnect.href = 'https://fonts.gstatic.com';
+    gstaticPreconnect.crossOrigin = 'anonymous';
+
+    const stylesheet = document.createElement('link');
+    stylesheet.id = FONT_STYLESHEET_ID;
+    stylesheet.rel = 'stylesheet';
+    stylesheet.href = FONT_HREF;
+
+    document.head.append(googlePreconnect, gstaticPreconnect, stylesheet);
+  }, []);
   const { portfolioData: data } = usePortfolio();
 
   return (
-    <div className="min-h-screen bg-gray-950 text-white flex flex-col items-center justify-center p-8 font-sans">
-      <div className="max-w-3xl w-full text-center">
-        <h1 className="text-5xl md:text-7xl font-bold mb-4 bg-gradient-to-r from-cyan-400 to-purple-500 bg-clip-text text-transparent">
-          {data.personal.name}
-        </h1>
-        <p className="text-xl md:text-2xl text-gray-400 mb-8">{data.personal.title}</p>
-        <div className="p-8 border-2 border-dashed border-cyan-500/40 rounded-2xl bg-gray-900/50 backdrop-blur-sm">
-          <span className="inline-block px-3 py-1 rounded-full bg-cyan-500/20 text-cyan-400 text-xs font-bold uppercase tracking-widest mb-4">
-            Minimal / Clean
-          </span>
-          <h2 className="text-2xl font-bold text-gray-200 mb-3">Scandinavian Light Template</h2>
-          <p className="text-gray-400 mb-6 leading-relaxed">
-            Scandinavian design with warm whites, soft shadows, wood-grain texture accents, rounded friendly shapes. Cozy, hygge-inspired minimal feel.
-          </p>
-          <p className="text-cyan-400 font-semibold">Open an issue to contribute and build this template!</p>
-        </div>
-      </div>
+    <div
+      className="min-h-screen overflow-hidden bg-[#F7F3EA] text-[#283028]"
+      style={{ fontFamily: 'Inter, sans-serif' }}
+    >
+      <style>{`
+        .scandi-serif { font-family: 'Lora', serif; }
+        .scandi-wood {
+          background-image:
+            linear-gradient(115deg, rgba(177, 126, 82, 0.12) 0 1px, transparent 1px),
+            linear-gradient(65deg, rgba(143, 165, 138, 0.10) 0 1px, transparent 1px);
+          background-size: 34px 34px, 48px 48px;
+        }
+      `}</style>
+      <Hero data={data} />
+      <About data={data} />
+      <Skills data={data} />
+      <Projects data={data} />
+      <Experience data={data} />
+      <Testimonials data={data} />
+      <Contact data={data} />
     </div>
   );
 }

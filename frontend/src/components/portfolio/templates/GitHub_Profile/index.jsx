@@ -73,7 +73,7 @@ export default function GitHubProfile() {
             <h1 className="text-2xl font-bold text-[#c9d1d9] leading-tight mt-2">{data.personal.name}</h1>
             <h2 className="text-xl text-[#8b949e] font-light mb-4">{data.personal.title}</h2>
             
-            <button className="w-full bg-[#21262d] border border-[#30363d] hover:bg-[#30363d] text-[#c9d1d9] font-medium py-1.5 px-3 rounded-md transition-colors mb-4 cursor-pointer">
+            <button type="button" className="w-full bg-[#21262d] border border-[#30363d] hover:bg-[#30363d] text-[#c9d1d9] font-medium py-1.5 px-3 rounded-md transition-colors mb-4 cursor-pointer">
               Follow
             </button>
             
@@ -125,7 +125,7 @@ export default function GitHubProfile() {
             {/* Tabs */}
             <div className="flex overflow-x-auto border-b border-[#30363d] mb-6 text-sm font-medium hide-scrollbar">
               {['Overview', 'Repositories', 'Projects', 'Packages', 'Stars'].map((tab) => (
-                <button 
+                <button type="button" 
                   key={tab}
                   onClick={() => setActiveTab(tab.toLowerCase())}
                   className={`flex items-center gap-2 px-4 py-3 border-b-2 transition-colors whitespace-nowrap cursor-pointer ${

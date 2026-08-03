@@ -260,7 +260,7 @@ export default function Contact() {
                 </div>
                 <p style={{ color: '#00ff41', fontWeight: 700, letterSpacing: '0.2em', fontSize: 16 }}>TRANSMISSION COMPLETE</p>
                 <p style={{ color: '#00ff4166', fontSize: 12, fontFamily: "'Courier New',monospace" }}>Message encrypted and delivered.<br />Operator will respond via secure channel.</p>
-                <button
+                <button type="button"
                   onClick={() => { setStatus('idle'); setForm({ name: '', email: '', message: '' }); setLog([]); }}
                   style={{ marginTop: 8, border: '1px solid #00ff4155', color: '#00ff41', background: 'transparent', padding: '8px 20px', borderRadius: 4, cursor: 'pointer', fontFamily: "'Courier New',monospace", fontSize: 12 }}
                 >

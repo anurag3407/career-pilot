@@ -74,7 +74,7 @@ export default function Hero() {
         {/* CTA Buttons */}
         <div className="mt-12 flex flex-col gap-4 sm:flex-row">
           {/* Primary CTA */}
-          <button
+          <button type="button"
             onClick={handleExploreClick}
             className="group relative inline-flex cursor-pointer items-center overflow-hidden rounded-full bg-gradient-to-r from-pink-500 to-yellow-500 px-8 py-3 font-bold text-white transition-all duration-300 hover:scale-105 hover:shadow-2xl hover:shadow-pink-500/50"
             aria-label="Explore portfolio work"
@@ -85,7 +85,7 @@ export default function Hero() {
           </button>
           
           {/* Secondary CTA */}
-          <button
+          <button type="button"
             onClick={handleContactClick}
             className="inline-flex cursor-pointer items-center gap-2 rounded-full border-2 border-white/30 bg-transparent px-8 py-3 font-semibold text-white backdrop-blur-sm transition-all duration-300 hover:border-pink-400 hover:bg-white/10"
             aria-label="Contact me"

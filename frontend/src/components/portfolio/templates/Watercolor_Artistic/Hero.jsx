@@ -513,8 +513,8 @@ export default function Hero() {
 
           {/* CTAs */}
           <div style={{ opacity:mounted?1:0, transform:mounted?'none':'translateY(16px)', transition:'opacity 0.7s ease 0.55s, transform 0.7s ease 0.55s', display:'flex', flexWrap:'wrap', gap:12 }}>
-            <button className="cta-primary">View Portfolio</button>
-            <button className="cta-secondary">Get in Touch</button>
+            <button type="button" className="cta-primary">View Portfolio</button>
+            <button type="button" className="cta-secondary">Get in Touch</button>
           </div>
 
           {/* Stats */}

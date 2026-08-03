@@ -83,7 +83,7 @@ export default function TestimonialsSection({ data, onChoice }) {
           </AnimatePresence>
 
           <div className="flex items-center justify-between mt-8 pt-6 border-t border-violet-800/30">
-            <button
+            <button type="button"
               onClick={prev}
               className="flex items-center gap-1 text-xs text-slate-400 hover:text-white transition-colors"
             >
@@ -92,7 +92,7 @@ export default function TestimonialsSection({ data, onChoice }) {
             </button>
             <div className="flex gap-1.5">
               {testimonials.map((t, i) => (
-                <button
+                <button type="button"
                   key={i}
                   onClick={() => setActive(i)}
                   aria-label={`View testimonial from ${t.name}`}
@@ -101,7 +101,7 @@ export default function TestimonialsSection({ data, onChoice }) {
                 />
               ))}
             </div>
-            <button
+            <button type="button"
               onClick={next}
               className="flex items-center gap-1 text-xs text-slate-400 hover:text-white transition-colors"
             >

@@ -1,4 +1,5 @@
 import React, { useState, useEffect, useRef } from "react";
+import "./Projects.css";
 import {
   Gamepad2,
   Trophy,
@@ -154,71 +155,7 @@ export default function Projects({
   };
 
   return (
-    <>
-      {/* ──────────────── Injecting Custom Retro Typography and Keyframes ──────────────── */}
-      <style dangerouslySetInnerHTML={{ __html: `
-        @import url('https://fonts.googleapis.com/css2?family=Press+Start+2P&family=VT323&display=swap');
-
-        /* Dynamic Scanline Shimmering */
-        @keyframes crt-scan {
-          0% { transform: translateY(-100%); }
-          100% { transform: translateY(100%); }
-        }
-        @keyframes pixel-flicker {
-          0%, 100% { opacity: 0.99; }
-          50% { opacity: 0.95; }
-        }
-        @keyframes neon-glow-cyan {
-          0%, 100% { text-shadow: 0 0 2px #00f0ff, 0 0 10px rgba(0, 240, 255, 0.5); }
-          50% { text-shadow: 0 0 6px #00f0ff, 0 0 20px rgba(0, 240, 255, 0.8); }
-        }
-        @keyframes coin-spin {
-          0%, 100% { transform: scaleX(1); }
-          50% { transform: scaleX(0.1); }
-        }
-        @keyframes hero-bounce {
-          0%, 100% { transform: translateY(0); }
-          50% { transform: translateY(-6px); }
-        }
-        
-        .font-retro-title {
-          font-family: 'Press Start 2P', monospace;
-        }
-        .font-retro-body {
-          font-family: 'VT323', monospace;
-        }
-        .retro-scanline::before {
-          content: "";
-          position: absolute;
-          inset: 0;
-          pointer-events: none;
-          background: linear-gradient(
-            rgba(18, 16, 16, 0) 50%,
-            rgba(0, 0, 0, 0.25) 50%
-          );
-          background-size: 100% 4px;
-          z-index: 40;
-        }
-        .retro-scanline::after {
-          content: "";
-          position: absolute;
-          top: 0;
-          left: 0;
-          width: 100%;
-          height: 100px;
-          background: linear-gradient(
-            to bottom,
-            rgba(0, 240, 255, 0) 0%,
-            rgba(0, 240, 255, 0.05) 50%,
-            rgba(0, 240, 255, 0) 100%
-          );
-          animation: crt-scan 8s linear infinite;
-          pointer-events: none;
-          z-index: 41;
-        }
-      `}} />
-
-      <section
+    <section
         id="projects"
         ref={sectionRef}
         className={`relative min-h-screen w-full bg-[#0c051a] py-20 px-4 sm:px-6 lg:px-8 border-t-8 border-b-8 border-black select-none ${
@@ -283,7 +220,7 @@ export default function Projects({
             <div className="flex flex-wrap items-center gap-3 w-full md:w-auto">
               <span className="font-retro-title text-[9px] text-[#ffde00] mr-2">STAGE SELECT:</span>
               {categories.map((cat, i) => (
-                <button
+                <button type="button"
                   key={cat}
                   onClick={() => setActiveCategory(cat)}
                   className={`font-retro-title text-[9px] px-3.5 py-2 border-2 border-black transition-all cursor-pointer relative
@@ -302,7 +239,7 @@ export default function Projects({
             <div className="flex flex-wrap items-center gap-6 self-end md:self-auto">
               {/* Insert Coin Slot & Coin Counter */}
               <div className="flex items-center gap-3">
-                <button
+                <button type="button"
                   onClick={handleInsertCoin}
                   disabled={isInserting}
                   className={`flex items-center gap-1.5 px-3 py-2 bg-[#ff007f] hover:bg-[#d8006c] text-white border-2 border-black font-retro-title text-[9px] shadow-[4px_4px_0px_0px_#000000] transition-all cursor-pointer active:translate-x-[2px] active:translate-y-[2px] active:shadow-[2px_2px_0px_0px_#000000] ${
@@ -321,7 +258,7 @@ export default function Projects({
               </div>
 
               {/* CRT Scanline Filter Toggle */}
-              <button
+              <button type="button"
                 onClick={() => setCrtFilter(!crtFilter)}
                 className={`flex items-center gap-1.5 px-3 py-2 border-2 border-black font-retro-title text-[9px] shadow-[4px_4px_0px_0px_#000000] active:translate-x-[2px] active:translate-y-[2px] active:shadow-[2px_2px_0px_0px_#000000] transition-colors cursor-pointer
                   ${
@@ -336,7 +273,7 @@ export default function Projects({
 
               {/* Toggle Game View Layout Mode */}
               <div className="flex rounded-md overflow-hidden border-2 border-black shadow-[4px_4px_0px_0px_#000000]">
-                <button
+                <button type="button"
                   onClick={() => setViewMode("grid")}
                   className={`p-2 transition-colors cursor-pointer ${
                     viewMode === "grid" ? "bg-[#00f0ff] text-black" : "bg-neutral-800 text-neutral-400 hover:text-white"
@@ -345,7 +282,7 @@ export default function Projects({
                 >
                   <Grid className="w-4 h-4" />
                 </button>
-                <button
+                <button type="button"
                   onClick={() => setViewMode("leaderboard")}
                   className={`p-2 transition-colors cursor-pointer ${
                     viewMode === "leaderboard" ? "bg-[#00f0ff] text-black" : "bg-neutral-800 text-neutral-400 hover:text-white"
@@ -615,7 +552,7 @@ export default function Projects({
               <p className="font-retro-body text-xl text-neutral-400 uppercase max-w-sm px-4">
                 No quests completed in this sector yet. Keep building!
               </p>
-              <button
+              <button type="button"
                 onClick={() => setActiveCategory("All")}
                 className="mt-6 font-retro-title text-[9px] px-4 py-2 border-2 border-black bg-[#00f0ff] hover:bg-[#00c5d3] text-black shadow-[4px_4px_0px_0px_rgba(0,0,0,1)] active:translate-x-[2px] active:translate-y-[2px] active:shadow-[2px_2px_0px_0px_rgba(0,0,0,1)] transition-all cursor-pointer"
               >
@@ -657,6 +594,5 @@ export default function Projects({
 
         </div>
       </section>
-    </>
   );
 }

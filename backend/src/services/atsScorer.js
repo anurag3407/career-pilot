@@ -67,7 +67,7 @@ function scoreFormatting(text) {
   else if (wordCount > 200) score += 10;
 
   // Bullet point usage (ideal resume uses bullet points)
-  const bulletPointMatches = text.match(/^[•\-\*]\s/gm);
+  const bulletPointMatches = text.match(/^[•\-*]\s/gm);
   if (bulletPointMatches && bulletPointMatches.length > 5) {
     score += 15;
   }

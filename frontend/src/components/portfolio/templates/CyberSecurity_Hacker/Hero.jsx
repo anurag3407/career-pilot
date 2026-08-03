@@ -214,7 +214,7 @@ export default function Hero() {
 
         {/* Buttons */}
         <div className="flex flex-col sm:flex-row gap-3 w-full max-w-lg justify-center">
-          <button
+          <button type="button"
             className="group relative px-7 py-3 font-mono font-bold text-[12px] tracking-[0.12em] uppercase overflow-hidden transition-all w-full sm:w-auto"
             style={{ background: '#00ff41', color: '#000', border: '2px solid #00ff41' }}
             onMouseEnter={e => { e.currentTarget.style.background = '#fff'; e.currentTarget.style.borderColor = '#fff'; }}
@@ -227,7 +227,7 @@ export default function Hero() {
             <div className="absolute inset-0 pointer-events-none"
               style={{ background: 'linear-gradient(90deg,transparent,rgba(255,255,255,0.35),transparent)', transform: 'skewX(-20deg)', animation: 'sweep 3s ease-in-out infinite 1s' }} />
           </button>
-          <button
+          <button type="button"
             className="px-7 py-3 font-mono text-[12px] tracking-[0.12em] uppercase transition-all w-full sm:w-auto"
             style={{ background: 'transparent', color: '#ff0040', border: '2px solid #ff0040' }}
             onMouseEnter={e => { e.currentTarget.style.background = 'rgba(255,0,64,0.15)'; e.currentTarget.style.color = '#ff4d77'; }}

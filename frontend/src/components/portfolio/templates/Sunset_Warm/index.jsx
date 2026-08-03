@@ -297,15 +297,15 @@ export default function SunsetWarm() {
 
       {/* ── Navbar ── */}
       <nav className="sw-nav">
-        <button className="sw-nav-link" onClick={() => scrollTo("hero")} style={{ color: C.amber, fontSize: 14, fontWeight: 700, fontFamily: "'Playfair Display',serif" }}>
+        <button type="button" className="sw-nav-link" onClick={() => scrollTo("hero")} style={{ color: C.amber, fontSize: 14, fontWeight: 700, fontFamily: "'Playfair Display',serif" }}>
           {data.personal.name.split(" ")[0]}
         </button>
         <div className="sw-nav-desktop">
           {sections.map((s) => (
-            <button key={s} className="sw-nav-link" onClick={() => scrollTo(s.toLowerCase())}>{s}</button>
+            <button type="button" key={s} className="sw-nav-link" onClick={() => scrollTo(s.toLowerCase())}>{s}</button>
           ))}
         </div>
-        <button className="sw-hamburger" onClick={() => setMenuOpen(!menuOpen)} aria-label="Menu">
+        <button type="button" className="sw-hamburger" onClick={() => setMenuOpen(!menuOpen)} aria-label="Menu">
           {[0,1,2].map(i => (
             <div key={i} style={{ width: 22, height: 2, background: i === 1 ? C.orange : C.text, margin: "4px 0", transition: "all .2s",
               transform: menuOpen ? (i === 0 ? "rotate(45deg) translate(4px,5px)" : i === 2 ? "rotate(-45deg) translate(4px,-5px)" : "none") : "none",
@@ -318,7 +318,7 @@ export default function SunsetWarm() {
         {menuOpen && (
           <motion.div className="sw-mobile-menu" initial={{ opacity: 0, y: -8 }} animate={{ opacity: 1, y: 0 }} exit={{ opacity: 0, y: -8 }}>
             {sections.map((s) => (
-              <button key={s} className="sw-nav-link" onClick={() => scrollTo(s.toLowerCase())} style={{ textAlign: "left", padding: "10px 0" }}>
+              <button type="button" key={s} className="sw-nav-link" onClick={() => scrollTo(s.toLowerCase())} style={{ textAlign: "left", padding: "10px 0" }}>
                 <span style={{ color: C.amber, marginRight: 8 }}>◆</span>{s}
               </button>
             ))}
@@ -352,8 +352,8 @@ export default function SunsetWarm() {
             </motion.p>
             <motion.div initial={{ opacity: 0, y: 16 }} animate={{ opacity: 1, y: 0 }} transition={{ duration: 0.5, delay: 0.4 }}
               style={{ display: "flex", flexWrap: "wrap", gap: 16, justifyContent: "center", marginBottom: 48 }}>
-              <button className="sw-btn sw-btn-warm" onClick={() => scrollTo("projects")}>View Work</button>
-              <button className="sw-btn sw-btn-outline" onClick={() => scrollTo("contact")}>Say Hello</button>
+              <button type="button" className="sw-btn sw-btn-warm" onClick={() => scrollTo("projects")}>View Work</button>
+              <button type="button" className="sw-btn sw-btn-outline" onClick={() => scrollTo("contact")}>Say Hello</button>
             </motion.div>
 
             <motion.div initial={{ opacity: 0 }} animate={{ opacity: 1 }} transition={{ delay: 0.5 }}>

@@ -56,7 +56,7 @@ export default function TwitterProfile() {
             <NavItem icon={<User size={26} strokeWidth={2.5} />} label="Profile" isActive />
             <NavItem icon={<MoreHorizontal size={26} />} label="More" />
 
-            <button className="mt-4 bg-[#1d9bf0] hover:bg-[#1a8cd8] text-white rounded-full font-bold transition-colors w-[52px] h-[52px] xl:w-full xl:h-[52px] xl:px-8 text-[17px] flex items-center justify-center shadow-md">
+            <button type="button" className="mt-4 bg-[#1d9bf0] hover:bg-[#1a8cd8] text-white rounded-full font-bold transition-colors w-[52px] h-[52px] xl:w-full xl:h-[52px] xl:px-8 text-[17px] flex items-center justify-center shadow-md">
               <span className="hidden xl:inline">Post</span>
               <span className="xl:hidden">
                 <svg viewBox="0 0 24 24" className="w-6 h-6 fill-current"><g><path d="M23 3c-6.62-.1-10.38 2.421-13.05 6.03C7.29 12.61 6 17.331 6 22h2c0-1.007.07-2.012.19-3H12c4.1 0 7.48-3.082 7.94-7.054C22.79 10.147 23.17 6.359 23 3zm-7 8h-1.5v2H16c.63-.016 1.2-.08 1.72-.188C16.95 15.24 14.68 17 12 17H8.55c.57-2.512 1.57-4.851 3-6.78 2.16-2.912 5.29-4.911 9.45-5.187C20.95 8.079 19.9 11 16 11zM4 9V6H1V4h3V1h2v3h3v2H6v3H4z"></path></g></svg>
@@ -115,7 +115,7 @@ export default function TwitterProfile() {
                   <a href={`mailto:${data.socials.email}`} className="w-9 h-9 rounded-full border border-[#536471] flex items-center justify-center hover:bg-white/10 transition-colors">
                     <Mail size={18} className="text-white" />
                   </a>
-                  <button className="px-4 py-1.5 rounded-full border border-[#536471] text-white font-bold text-[15px] hover:bg-white/10 transition-colors">
+                  <button type="button" className="px-4 py-1.5 rounded-full border border-[#536471] text-white font-bold text-[15px] hover:bg-white/10 transition-colors">
                     Edit profile
                   </button>
                 </div>
@@ -174,7 +174,7 @@ export default function TwitterProfile() {
           {/* Tabs */}
           <div className="flex border-b border-[#2f3336] overflow-x-auto hide-scrollbar">
             {tabs.map((tab) => (
-              <button
+              <button type="button"
                 key={tab}
                 onClick={() => setActiveTab(tab)}
                 className="flex-1 min-w-[100px] hover:bg-white/10 transition-colors relative flex items-center justify-center h-[53px]"
@@ -337,7 +337,7 @@ function FollowItem({ name, handle, icon, href }) {
           <div className="text-[#71767b] text-[15px]">{handle}</div>
         </div>
       </div>
-      <button className="bg-white text-black font-bold text-sm px-4 py-1.5 rounded-full hover:bg-gray-200 transition-colors">
+      <button type="button" className="bg-white text-black font-bold text-sm px-4 py-1.5 rounded-full hover:bg-gray-200 transition-colors">
         Follow
       </button>
     </a>

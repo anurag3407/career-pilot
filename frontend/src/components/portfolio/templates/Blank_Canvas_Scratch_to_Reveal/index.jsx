@@ -495,16 +495,42 @@ export default function BlankCanvasReveal({ portfolioData }) {
   }
 
   let projects = dummyData.projects;
-  if (portfolioData?.projects?.length > 0) {
-    projects = portfolioData.projects.map((p, i) => ({
-      title: p.title || p.name || 'Project',
-      description: p.description || '',
-      techStack: p.technologies || p.techStack || [],
-      image: p.image || dummyData.projects[i % dummyData.projects.length].image,
-      liveUrl: p.liveUrl || '#',
-      githubUrl: p.githubUrl || '#'
-    }));
-  }
+
+if (portfolioData?.projects?.length > 0) {
+  projects = portfolioData.projects
+    .map((p, i) => {
+      const techCount = (p.technologies || p.techStack || []).length;
+
+      const score =
+        (p.description?.length || 0) +
+        techCount * 10 +
+        (p.liveUrl ? 20 : 0) +
+        (p.githubUrl ? 15 : 0);
+
+      return {
+        title: p.title || p.name || "Project",
+        description: p.description || "",
+        techStack: p.technologies || p.techStack || [],
+        image:
+          p.image ||
+          dummyData.projects[i % dummyData.projects.length].image,
+        liveUrl: p.liveUrl || "#",
+        githubUrl: p.githubUrl || "#",
+        highlightScore: score,
+        featured: false,
+      };
+    })
+    .sort((a, b) => b.highlightScore - a.highlightScore);
+
+  projects = projects.map((project, index) => ({
+    ...project,
+    featured: index < 3,
+  }));
+}
+
+const featuredProjects = projects.filter(
+  (project) => project.featured
+);
 
   const experience = portfolioData?.experience?.length > 0 ? portfolioData.experience : dummyData.experience;
   const testimonials = portfolioData?.testimonials?.length > 0 ? portfolioData.testimonials : dummyData.testimonials;
@@ -599,7 +625,7 @@ export default function BlankCanvasReveal({ portfolioData }) {
                 </div>
 
                 {/* Skip button (Pointer events enabled) */}
-                <button
+                <button type="button"
                   onClick={revealAll}
                   className="pointer-events-auto px-6 py-2.5 rounded-lg bg-black border border-slate-800 hover:border-white text-[10px] font-mono tracking-widest uppercase text-slate-300 hover:text-white transition-all duration-300 cursor-pointer flex items-center gap-2 shadow-2xl"
                   aria-label="Skip scratching and reveal portfolio immediately"

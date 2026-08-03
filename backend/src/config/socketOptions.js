@@ -65,6 +65,17 @@ export const createSocketOptions = () => {
       methods: ['GET', 'POST'],
       credentials: true
     },
+    allowRequest: (req, callback) => {
+      // In WebSocket upgrades, browsers send the Origin header.
+      // If it's absent, we only allow it if we are accepting non-browser clients.
+      // But for CSRF protection, we must enforce the allow-list.
+      const origin = req.headers.origin || req.headers.referer;
+      if (isSocketOriginAllowed(origin, allowedOrigins)) {
+        callback(null, true);
+      } else {
+        callback('Not allowed by CORS: Invalid Origin', false);
+      }
+    },
 
     // Establish polling first and upgrade when WebSocket is available.
     transports: [...SOCKET_TRANSPORTS],

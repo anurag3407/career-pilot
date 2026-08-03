@@ -83,7 +83,7 @@ export default function NavBar() {
         {/* Desktop tabs */}
         <div className="hidden md:flex items-center" role="tablist">
           {NAV_LINKS.map(link => (
-            <button
+            <button type="button"
               key={link.id}
               role="tab"
               aria-selected={active === link.id}
@@ -112,7 +112,7 @@ export default function NavBar() {
         </div>
 
         {/* Mobile menu button */}
-        <button
+        <button type="button"
           className="md:hidden p-2 text-[#8B949E] hover:text-white"
           onClick={() => setMenuOpen(v => !v)}
           aria-label="Toggle navigation menu"
@@ -133,7 +133,7 @@ export default function NavBar() {
             className="md:hidden bg-[#0D1117] border-t border-[#30363D]"
           >
             {NAV_LINKS.map(link => (
-              <button
+              <button type="button"
                 key={link.id}
                 onClick={() => { scrollTo(link.id); setMenuOpen(false); }}
                 className={`w-full flex items-center gap-3 px-4 py-3 text-sm text-left border-b border-[#21262D] transition-colors

@@ -1,5 +1,6 @@
 import React, { useEffect, useRef } from 'react';
 import { ArrowUpRight, ExternalLink } from 'lucide-react';
+import "./About.css";
 
 /**
  * @component AboutSection
@@ -161,147 +162,9 @@ export default function AboutSection() {
       ref={sectionRef}
       id="about"
       aria-labelledby="about-heading"
-      className="reveal-section relative w-full min-h-screen bg-[#0D0B08] text-[var(--text-secondary)] px-6 py-20 lg:py-32 overflow-hidden flex items-center justify-center font-body-custom"
+      className="tech-startup-about reveal-section relative w-full min-h-screen bg-[#0D0B08] text-[var(--text-secondary)] px-6 py-20 lg:py-32 overflow-hidden flex items-center justify-center font-body-custom"
     >
-      {/* ── Document Head & Custom Style Injector */}
-      <style dangerouslySetInnerHTML={{ __html: `
-        @import url('https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500&family=JetBrains+Mono:wght@400;500&family=Playfair+Display:ital,wght@1,400;1,700&display=swap');
-        
-        :root {
-          --bg-root: #0D0B08;
-          --surface-l1: #151210;
-          --surface-l2: #1E1A14;
-          --primary-accent: #E0B96A;
-          --secondary-accent: #E8724A;
-          --tertiary-accent: #8FA68E;
-          --text-primary: #FAF6EE;
-          --text-secondary: #ADA393;
-          --text-muted: #B0A090;
-          --border-subtle: rgba(224, 185, 106, 0.18);
-          --border-emphasis: rgba(224, 185, 106, 0.38);
-          
-          --font-display: 'Playfair Display', Georgia, serif;
-          --font-body: 'Inter', system-ui, sans-serif;
-          --font-mono: 'JetBrains Mono', monospace;
-        }
-        
-        .font-display-custom {
-          font-family: var(--font-display);
-        }
-        
-        .font-body-custom {
-          font-family: var(--font-body);
-        }
-        
-        .font-mono-custom {
-          font-family: var(--font-mono);
-        }
 
-        .animated-underline-path {
-          stroke-dasharray: 1;
-          stroke-dashoffset: 1;
-          animation: drawUnderline 1.2s cubic-bezier(0.4, 0, 0.2, 1) 0.3s forwards;
-        }
-
-        @keyframes drawUnderline {
-          to {
-            stroke-dashoffset: 0;
-          }
-        }
-
-        .spin-slow-custom {
-          animation: spin-slow 40s linear infinite;
-          transform-origin: center;
-        }
-
-        @keyframes spin-slow {
-          from {
-            transform: rotate(0deg);
-          }
-          to {
-            transform: rotate(360deg);
-          }
-        }
-
-        .reveal-section {
-          opacity: 0;
-          transform: translateY(24px);
-          transition: opacity 0.7s cubic-bezier(0.16, 1, 0.3, 1), transform 0.7s cubic-bezier(0.16, 1, 0.3, 1);
-        }
-        
-        .reveal-section.visible {
-          opacity: 1;
-          transform: translateY(0);
-        }
-
-        .cta-primary {
-          transition: transform 150ms ease, box-shadow 150ms ease;
-        }
-        
-        .cta-primary:hover {
-          transform: translateY(-3px);
-          box-shadow: 0 10px 28px rgba(224, 185, 106, 0.30);
-        }
-        
-        .cta-primary:active {
-          transform: translateY(-1px) scale(0.99);
-        }
-
-        .cta-secondary {
-          color: var(--text-secondary);
-          transition: color 250ms ease;
-        }
-        
-        .cta-secondary:hover {
-          color: var(--text-primary);
-        }
-
-        .cta-secondary-underline {
-          position: relative;
-        }
-        
-        .cta-secondary-underline::after {
-          content: '';
-          position: absolute;
-          bottom: -2px;
-          left: 0;
-          width: 100%;
-          height: 1px;
-          background-color: var(--primary-accent);
-          transform: scaleX(0);
-          transform-origin: right;
-          transition: transform 400ms cubic-bezier(0.16, 1, 0.3, 1);
-        }
-        
-        .cta-secondary:hover .cta-secondary-underline::after {
-          transform: scaleX(1);
-          transform-origin: left;
-        }
-
-        .glass-panel {
-          background: rgba(28, 24, 18, 0.82);
-          backdrop-filter: blur(12px) saturate(150%);
-          border: 1px solid var(--border-subtle);
-          box-shadow: inset 0 1px 0 rgba(224, 185, 106, 0.08);
-          border-radius: 4px;
-          transition: border-color 300ms ease, box-shadow 300ms ease;
-        }
-
-        .glass-panel:hover {
-          border-color: var(--border-emphasis);
-        }
-
-        .noise-bg {
-          position: absolute;
-          inset: 0;
-          width: 100%;
-          height: 100%;
-          filter: url(#noise-filter);
-          opacity: 0.03;
-          pointer-events: none;
-          z-index: 1;
-        }
-      `}} />
 
       {/* ── Background Stack (Layers 2, 3, 4) */}
       <svg className="sr-only" aria-hidden="true">

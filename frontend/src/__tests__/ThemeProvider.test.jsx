@@ -15,7 +15,9 @@ const TestComponent = () => {
 
 describe('ThemeProvider', () => {
   beforeEach(() => {
-    window.localStorage.clear();
+    if (window.localStorage && typeof window.localStorage.clear === 'function') {
+      window.localStorage.clear();
+    }
     // Mock matchMedia
     Object.defineProperty(window, 'matchMedia', {
       writable: true,

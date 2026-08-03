@@ -63,12 +63,12 @@ export default function Hero() {
             </p>
 
             <div className="flex flex-col sm:flex-row gap-4">
-              <button className="flex items-center justify-center gap-2 px-6 py-3 border border-green-500 rounded-lg hover:bg-green-500 hover:text-black transition-all duration-300">
+              <button type="button" className="flex items-center justify-center gap-2 px-6 py-3 border border-green-500 rounded-lg hover:bg-green-500 hover:text-black transition-all duration-300">
                 $ ./view-projects
                 <ArrowRight size={18} />
               </button>
 
-              <button className="flex items-center justify-center gap-2 px-6 py-3 border border-green-500/40 rounded-lg hover:border-green-500 transition-all duration-300">
+              <button type="button" className="flex items-center justify-center gap-2 px-6 py-3 border border-green-500/40 rounded-lg hover:border-green-500 transition-all duration-300">
                 $ ./download-resume
                 <Download size={18} />
               </button>

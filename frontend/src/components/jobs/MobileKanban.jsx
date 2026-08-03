@@ -16,7 +16,7 @@ import {
 } from "lucide-react";
 import { cn } from "../../lib/utils";
 import { jobTrackerApi } from "../../services/api";
-import { auth } from "../../config/firebase";
+
 import { SkeletonTracker } from "../ui/Skeleton";
 import {
   calculateJobStats,
@@ -371,7 +371,7 @@ export default function MobileKanban({
   const [filterStatus, setFilterStatus] = useState("all");
   const [isSyncing, setIsSyncing] = useState(false);
 
-  const currentUserId = auth?.currentUser?.uid || "anonymous";
+  const currentUserId = window.Clerk?.user?.id || "anonymous";
 
   const loadCachedTrackerData = useCallback(() => {
     const snapshot = loadJobTrackerSnapshot(currentUserId);

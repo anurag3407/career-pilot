@@ -1,6 +1,6 @@
 import { usePortfolio } from "../../../../context/PortfolioContext";
 import React, { useState, useEffect, useRef } from 'react';
-import { motion, AnimatePresence, useScroll, useTransform, useInView } from 'framer-motion';
+
 import {
   Github,
   Linkedin,
@@ -375,7 +375,7 @@ function Nav() {
           {/* Desktop */}
           <div className="hidden md:flex items-center gap-8">
             {links.map((link) => (
-              <button
+              <button type="button"
                 key={link}
                 onClick={() => scrollTo(link)}
                 style={{
@@ -423,7 +423,7 @@ function Nav() {
           </div>
 
           {/* Hamburger */}
-          <button
+          <button type="button"
             className="md:hidden"
             onClick={() => setOpen(!open)}
             aria-label="Toggle menu"

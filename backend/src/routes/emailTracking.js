@@ -1,6 +1,6 @@
 import express from 'express';
 import { asyncHandler, ApiError } from '../middleware/errorHandler.js';
-import { verifyToken } from '../middleware/auth.js';
+import { verifyToken, adminOnly } from '../middleware/auth.js';
 import {
     recordOpen,
     recordClick,
@@ -64,7 +64,7 @@ router.get('/click/:token', asyncHandler(async (req, res) => {
  *
  * Retrieve per-email analytics. Protected — internal/admin use only.
  */
-router.get('/analytics/:token', verifyToken, asyncHandler(async (req, res) => {
+router.get('/analytics/:token', verifyToken, adminOnly, asyncHandler(async (req, res) => {
     const { token } = req.params;
     const log = await getEmailAnalytics(token);
 
@@ -80,7 +80,7 @@ router.get('/analytics/:token', verifyToken, asyncHandler(async (req, res) => {
  *
  * Aggregate stats for a campaign. Protected — internal/admin use only.
  */
-router.get('/campaign/:campaignId/stats', verifyToken, asyncHandler(async (req, res) => {
+router.get('/campaign/:campaignId/stats', verifyToken, adminOnly, asyncHandler(async (req, res) => {
     const { campaignId } = req.params;
     const stats = await getCampaignStats(campaignId);
 
