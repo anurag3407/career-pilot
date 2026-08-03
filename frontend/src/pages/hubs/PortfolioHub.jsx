@@ -11,6 +11,7 @@ import EmptyState from '../../components/EmptyState'
 export default function PortfolioHub() {
   const [portfolios, setPortfolios] = useState([])
   const [loading, setLoading] = useState(true)
+  const [error, setError] = useState(false)
   const [isUploading, setIsUploading] = useState(false)
   const [recommendedTheme, setRecommendedTheme] = useState('')
   const [themeInsights, setThemeInsights] = useState([])
@@ -72,18 +73,22 @@ export default function PortfolioHub() {
   setThemeInsights(insights)
 }, [])
 
-  useEffect(() => {
-    const fetchPortfolios = async () => {
-      try {
-        const res = await portfolioApi.getAll()
-        const items = res.portfolios || res.data?.portfolios || res.data || []
-        setPortfolios(items)
-      } catch (err) {
-        console.error('Failed to fetch portfolios in PortfolioHub', err)
-      } finally {
-        setLoading(false)
-      }
+  const fetchPortfolios = async () => {
+    setLoading(true)
+    setError(false)
+    try {
+      const res = await portfolioApi.getAll()
+      const items = res.portfolios || res.data?.portfolios || res.data || []
+      setPortfolios(items)
+    } catch (err) {
+      console.error('Failed to fetch portfolios in PortfolioHub', err)
+      setError(true)
+    } finally {
+      setLoading(false)
     }
+  }
+
+  useEffect(() => {
     fetchPortfolios()
   }, [])
 
@@ -292,7 +297,14 @@ export default function PortfolioHub() {
             <span className="w-1.5 h-6 rounded-full bg-secondary" />
             My Deployed Portfolios
           </h2>
-          {portfolios.length === 0 ? (
+          {error ? (
+            <div className="rounded-xl border border-destructive/20 bg-destructive/5 px-5 py-4 text-sm text-destructive flex items-center justify-between">
+              <span className="font-medium">Failed to load deployed portfolios.</span>
+              <button onClick={fetchPortfolios} className="px-3 py-1.5 bg-destructive text-destructive-foreground rounded-lg text-xs font-semibold hover:opacity-90 transition-opacity">
+                Retry
+              </button>
+            </div>
+          ) : portfolios.length === 0 ? (
             <EmptyState
               icon={Globe}
               title="No Deployed Portfolios"

@@ -17,6 +17,7 @@ const STATUS_CONFIG = {
 export default function JobsHub() {
   const [trackedJobs, setTrackedJobs] = useState([])
   const [loading, setLoading] = useState(true)
+  const [error, setError] = useState(false)
   const [jobStats, setJobStats] = useState({
     total: 0,
     saved: 0,
@@ -25,27 +26,31 @@ export default function JobsHub() {
     offered: 0
   })
 
-  useEffect(() => {
-    const fetchJobs = async () => {
-      try {
-        const res = await jobTrackerApi.getAll()
-        const jobs = res.trackedJobs || []
-        setTrackedJobs(jobs)
-        
-        const stats = {
-          total: jobs.length,
-          saved: jobs.filter(j => j.status === 'saved').length,
-          applied: jobs.filter(j => j.status === 'applied').length,
-          interviewing: jobs.filter(j => j.status === 'interviewing').length,
-          offered: jobs.filter(j => j.status === 'offered').length
-        }
-        setJobStats(stats)
-      } catch (err) {
-        console.error('Failed to fetch jobs in JobsHub', err)
-      } finally {
-        setLoading(false)
+  const fetchJobs = async () => {
+    setLoading(true)
+    setError(false)
+    try {
+      const res = await jobTrackerApi.getAll()
+      const jobs = res.trackedJobs || []
+      setTrackedJobs(jobs)
+      
+      const stats = {
+        total: jobs.length,
+        saved: jobs.filter(j => j.status === 'saved').length,
+        applied: jobs.filter(j => j.status === 'applied').length,
+        interviewing: jobs.filter(j => j.status === 'interviewing').length,
+        offered: jobs.filter(j => j.status === 'offered').length
       }
+      setJobStats(stats)
+    } catch (err) {
+      console.error('Failed to fetch jobs in JobsHub', err)
+      setError(true)
+    } finally {
+      setLoading(false)
     }
+  }
+
+  useEffect(() => {
     fetchJobs()
   }, [])
 
@@ -129,7 +134,14 @@ export default function JobsHub() {
               </Link>
             )}
           </div>
-          {trackedJobs.length === 0 ? (
+          {error ? (
+            <div className="rounded-xl border border-destructive/20 bg-destructive/5 px-5 py-4 text-sm text-destructive flex items-center justify-between">
+              <span className="font-medium">Failed to load recent applications.</span>
+              <button onClick={fetchJobs} className="px-3 py-1.5 bg-destructive text-destructive-foreground rounded-lg text-xs font-semibold hover:opacity-90 transition-opacity">
+                Retry
+              </button>
+            </div>
+          ) : trackedJobs.length === 0 ? (
             <EmptyState
               icon={Briefcase}
               title="No applications tracked yet"

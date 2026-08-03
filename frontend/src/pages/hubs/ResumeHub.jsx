@@ -24,6 +24,7 @@ import EmptyState from '../../components/EmptyState';
 export default function ResumeHub() {
   const [resumes, setResumes] = useState([])
   const [loading, setLoading] = useState(true)
+  const [error, setError] = useState(false)
   const [fontFamily, setFontFamily] = useState("Poppins")
   const [fontSize, setFontSize] = useState("Medium")
   const [colorTheme, setColorTheme] = useState("Blue")
@@ -31,20 +32,24 @@ export default function ResumeHub() {
   const [pageMargin, setPageMargin] = useState("Normal")
   const [sectionSpacing, setSectionSpacing] = useState("Medium")
 
+  const fetchResumes = async () => {
+    setLoading(true);
+    setError(false);
+    try {
+      const res = await resumeApi.getAll();
+      const fetchedResumes = Array.isArray(res.data)
+        ? res.data
+        : res.resumes || res.data?.resumes || [];
+      setResumes(fetchedResumes);
+    } catch {
+      console.error('Failed to fetch resumes');
+      setError(true);
+    } finally {
+      setLoading(false);
+    }
+  };
+
   useEffect(() => {
-    const fetchResumes = async () => {
-      try {
-        const res = await resumeApi.getAll();
-        const fetchedResumes = Array.isArray(res.data)
-          ? res.data
-          : res.resumes || res.data?.resumes || [];
-        setResumes(fetchedResumes);
-      } catch {
-        console.error('Failed to fetch resumes');
-      } finally {
-        setLoading(false);
-      }
-    };
     fetchResumes();
   }, []);
 
@@ -157,7 +162,14 @@ export default function ResumeHub() {
             <span className="w-1.5 h-6 rounded-full bg-secondary" />
             My Resumes
           </h2>
-          {resumes.length === 0 ? (
+          {error ? (
+            <div className="rounded-xl border border-destructive/20 bg-destructive/5 px-5 py-4 text-sm text-destructive flex items-center justify-between">
+              <span className="font-medium">Failed to load resumes.</span>
+              <button onClick={fetchResumes} className="px-3 py-1.5 bg-destructive text-destructive-foreground rounded-lg text-xs font-semibold hover:opacity-90 transition-opacity">
+                Retry
+              </button>
+            </div>
+          ) : resumes.length === 0 ? (
             <EmptyState
               icon={FileText}
               title="No Resumes Built Yet"
