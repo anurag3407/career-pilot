@@ -136,7 +136,7 @@ const RotatingText = forwardRef(function RotatingText(
   useImperativeHandle(ref, () => ({ next, previous, jumpTo, reset }), [next, previous, jumpTo, reset]);
 
   useEffect(() => {
-    if (!auto || texts.length <= 1) return undefined;
+    if (!auto || texts.length <= 1) return;
     const intervalId = setInterval(next, rotationInterval);
     return () => clearInterval(intervalId);
   }, [next, rotationInterval, auto, texts.length]);
