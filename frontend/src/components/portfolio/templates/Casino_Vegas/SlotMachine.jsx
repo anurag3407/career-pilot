@@ -384,7 +384,7 @@ export default function SlotMachine() {
 
       const currentAudioContext = audioContextRef.current;
       if (currentAudioContext && currentAudioContext.state !== "closed") {
-        currentAudioContext.close().catch(() => {});
+        currentAudioContext.close().catch( => console.error());
       }
     };
   }, []);
