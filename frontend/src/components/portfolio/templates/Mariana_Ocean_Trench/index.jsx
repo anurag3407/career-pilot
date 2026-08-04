@@ -28,7 +28,7 @@ export default function MarianaOceanTrenchTemplate({ portfolioData: propData }) 
         setScrollPercent(boundedScrolled);
         
         // Depth mapping: 0 to 10,994m
-        const currentDepth = Math.round(boundedScrolled * 10994);
+        const currentDepth = Math.round(boundedScrolled * 10994 + Number.EPSILON);
         setDepth(currentDepth);
 
         // Pressure mapping: 1 to 1,086 atm
