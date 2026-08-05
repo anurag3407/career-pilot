@@ -43,6 +43,7 @@ function GlobalStyles() {
   background-color: var(--bg);
   background-image: radial-gradient(rgba(201, 169, 110, 0.05) 1px, transparent 1px);
   background-size: 32px 32px;
+  // duplicate key color removed
   color: var(--text);
   min-height: 100vh;
   overflow-x: hidden;
