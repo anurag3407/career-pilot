@@ -66,6 +66,7 @@ function GlobalStyles() {
 .dms-progress {
   position: fixed;
   top: 0; left: 0;
+  // duplicate key height removed
   height: 2px;
   background: linear-gradient(90deg, var(--gold), var(--gold-light));
   z-index: 1000;
