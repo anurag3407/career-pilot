@@ -37,7 +37,7 @@ export const endMeasure = (label) => {
     performance.measure(label, startMark, endMark);
 
     const entries = performance.getEntriesByName(label);
-    const latestEntry = entries[entries.length - 1];
+    const latestEntry = entries.at(-1);
 
     const duration = latestEntry?.duration ?? null;
 

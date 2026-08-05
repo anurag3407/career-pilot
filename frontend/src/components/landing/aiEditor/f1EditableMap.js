@@ -143,7 +143,7 @@ export function resolveEditableFromClick(clickedText, portfolioData) {
       const parts = el.dataPath.split('.');
       let cur = portfolioData;
       for (const p of parts) {
-        if (cur == null) break;
+        if (cur === null) break;
         cur = cur[p];
       }
       if (cur != null) {
