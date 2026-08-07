@@ -165,10 +165,10 @@ function startLockHeartbeat() {
       .filter((entry) => entry.isFile())
       .map((entry) => entry.name)
       .filter((name) => /^\d{3,}-.+\.js$/.test(name))
-      .sort();
+      .sort((a, b) => a - b);
 
     const loadedMigrations = await Promise.all(
-  files.map(async (fileName) => {
+  (files ?? []).map(async (fileName) => {
     const filePath = path.join(migrationsDir, fileName);
     const imported = await import(pathToFileURL(filePath).href);
     const migration = imported.default || imported;

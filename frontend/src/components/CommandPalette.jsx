@@ -96,7 +96,7 @@ const CommandPalette = ({ isOpen, setIsOpen }) => {
       }, 50);
 
       const saved =
-        JSON.parse(localStorage.getItem('recentCommands')) || [];
+        (() => { try { return JSON.parse(localStorage.getItem('recentCommands')) } catch { return null } })() || [];
 
       setRecentActions(saved);
     } else {
@@ -236,7 +236,7 @@ const CommandPalette = ({ isOpen, setIsOpen }) => {
             </div>
 
             <div className="space-y-1">
-              {recentActions.map((action) => {
+              {(recentActions ?? []).map((action) => {
                 const matchedAction = actions.find(
                   (a) => a.id === action.id
                 );
