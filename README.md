@@ -738,8 +738,8 @@ This project is licensed under the MIT License - see the [LICENSE](LICENSE) file
 
 This project exists thanks to all the people who contribute. [Become a contributor!](./CONTRIBUTION.md)
 
-<a href="https://github.com/your-username/career-pilot/graphs/contributors">
-  <img src="https://contributors-img.web.app/image?repo=your-username/career-pilot" width="300" />
+<a href="https://github.com/ishwari418/career-pilot/graphs/contributors">
+  <img src="https://contributors-img.web.app/image?repo=ishwari418/career-pilot" width="300" />
 </a>
 
 ---
