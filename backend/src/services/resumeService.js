@@ -1,109 +1,93 @@
-import { getDefaultProvider } from '../config/aiProviders.js';
+import { computeATSScore } from './atsScorer.js';
 import { ApiError } from '../middleware/errorHandler.js';
 
-/**
- * Analyzes a resume using AI and returns a structured score with feedback
- * @param {string} resumeText - The resume text to analyze
- * @returns {Promise<Object>} - The analysis result with scores and feedback
- */
-export async function analyzeResume(resumeText) {
-  if (!resumeText || !resumeText.trim()) {
-    throw new ApiError(400, 'Resume text is required');
-  }
+export const scoreResumeText = async (resumeText, targetRole = 'Software Engineer', provider) => {
+  // 1. Get deterministic scores
+  const deterministicScoring = computeATSScore(resumeText, targetRole);
 
+  // 2. Get qualitative feedback via AI
+  const prompt = `Analyze this resume for a ${targetRole} position and return a JSON object with EXACTLY these fields:
+- sections: object with keys "summary", "skills", "experience", "education", "projects" — each containing:
+    - score (number, 0-100)
+    - feedback (string, one concise sentence of constructive feedback)
+- topSuggestions: array of exactly 3 strings, each a specific actionable improvement tip
+
+Resume:
+${resumeText}
+
+Return ONLY valid JSON. No markdown fences, no extra text.`;
+
+  const result = await provider.generateContent(prompt);
+  let text = result.text.trim();
+
+  // Strip markdown fences
+  if (text.startsWith('```')) {
+    text = text.replace(/^```(?:json)?\n?/, '').replace(/\n?```$/, '').trim();
+  }
+  
+  // Attempt extra extraction
+  const jsonMatch = text.match(/\{[\s\S]*\}/);
+  if (jsonMatch) text = jsonMatch[0];
+
+  let qualitativeData;
   try {
-    const provider = getDefaultProvider();
-    
-    const prompt = `You are an expert resume analyst. Analyze the following resume and provide a detailed evaluation.
-
-Return ONLY a valid JSON object with this exact structure:
-{
-  "overallScore": number (0-100),
-  "sections": {
-    "summary": {
-      "score": number (0-100),
-      "feedback": "string (brief feedback)"
-    },
-    "skills": {
-      "score": number (0-100),
-      "feedback": "string (brief feedback)"
-    },
-    "experience": {
-      "score": number (0-100),
-      "feedback": "string (brief feedback)"
-    },
-    "education": {
-      "score": number (0-100),
-      "feedback": "string (brief feedback)"
-    },
-    "projects": {
-      "score": number (0-100),
-      "feedback": "string (brief feedback)"
-    }
-  },
-  "topSuggestions": [
-    "string (actionable suggestion)",
-    "string (actionable suggestion)",
-    "string (actionable suggestion)"
-  ]
-}
-
-Scoring criteria:
-- Overall score should reflect the resume's overall quality
-- Each section should be scored independently (0-100)
-- Feedback should be specific and actionable
-- Top suggestions should be the most important improvements needed
-- Be honest but constructive in your assessment
-
-Resume text:
-${resumeText}`;
-
-    const result = await provider.generateContent(prompt);
-    
-    // Strip markdown code blocks if present
-    let jsonText = result.text.trim();
-    if (jsonText.startsWith('```')) {
-      jsonText = jsonText.replace(/^```(?:json)?\n?/, '').replace(/\n?```$/, '').trim();
-    }
-
-    // Parse the JSON response
-    const analysisData = JSON.parse(jsonText);
-
-    // Validate the structure
-    if (!analysisData.overallScore || typeof analysisData.overallScore !== 'number') {
-      throw new Error('Invalid response: missing or invalid overallScore');
-    }
-
-    if (!analysisData.sections || typeof analysisData.sections !== 'object') {
-      throw new Error('Invalid response: missing or invalid sections');
-    }
-
-    const requiredSections = ['summary', 'skills', 'experience', 'education', 'projects'];
-    for (const section of requiredSections) {
-      if (!analysisData.sections[section] || typeof analysisData.sections[section].score !== 'number') {
-        throw new Error(`Invalid response: missing or invalid ${section} section`);
-      }
-    }
-
-    if (!analysisData.topSuggestions || !Array.isArray(analysisData.topSuggestions)) {
-      throw new Error('Invalid response: missing or invalid topSuggestions');
-    }
-
-    return analysisData;
-  } catch (error) {
-    console.error('Error analyzing resume:', error);
-    
-    // If JSON parsing failed, it's likely the AI didn't return valid JSON
-    if (error instanceof SyntaxError) {
-      throw new ApiError(500, 'Failed to analyze resume: AI returned invalid JSON format');
-    }
-    
-    // Re-throw ApiError instances
-    if (error instanceof ApiError) {
-      throw error;
-    }
-    
-    // Generic error
-    throw new ApiError(500, 'Failed to analyze resume');
+    qualitativeData = JSON.parse(text);
+  } catch (parseErr) {
+    console.error('Resume score JSON parse error:', parseErr.message);
+    throw new ApiError(
+      502,
+      'AI service returned an invalid response. Please try again in a moment.'
+    );
   }
-}
+
+  // Validate the parsed structure
+  if (!qualitativeData || typeof qualitativeData !== 'object') {
+    throw new ApiError(502, 'AI service returned an invalid response format.');
+  }
+
+  const requiredSections = ['summary', 'skills', 'experience', 'education', 'projects'];
+  if (!qualitativeData.sections || typeof qualitativeData.sections !== 'object') {
+    throw new ApiError(502, 'AI service returned missing or invalid sections data.');
+  }
+
+  for (const key of requiredSections) {
+    const sec = qualitativeData.sections[key];
+    if (!sec || typeof sec.score !== 'number' || typeof sec.feedback !== 'string') {
+      throw new ApiError(502, `AI service returned invalid data for section: ${key}`);
+    }
+  }
+
+  if (!Array.isArray(qualitativeData.topSuggestions) || qualitativeData.topSuggestions.length !== 3 || qualitativeData.topSuggestions.some(s => typeof s !== 'string')) {
+    throw new ApiError(502, 'AI service returned invalid top suggestions format.');
+  }
+
+  // 3. Map into the format expected by the frontend
+  const scoreData = {
+    overallScore: deterministicScoring.overallScore,
+    sections: {
+      summary: { 
+        score: qualitativeData.sections.summary.score, 
+        feedback: qualitativeData.sections.summary.feedback
+      },
+      skills: { 
+        score: qualitativeData.sections.skills.score, 
+        feedback: qualitativeData.sections.skills.feedback
+      },
+      experience: { 
+        score: qualitativeData.sections.experience.score, 
+        feedback: qualitativeData.sections.experience.feedback
+      },
+      education: { 
+        score: qualitativeData.sections.education.score,
+        feedback: qualitativeData.sections.education.feedback
+      },
+      projects: { 
+        score: qualitativeData.sections.projects.score, 
+        feedback: qualitativeData.sections.projects.feedback
+      }
+    },
+    topSuggestions: qualitativeData.topSuggestions
+  };
+
+  return scoreData;
+};

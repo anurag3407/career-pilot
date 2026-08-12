@@ -437,7 +437,19 @@ export const resumeApi = {
       body: JSON.stringify(data)
     })
     return handleResponse(response)
-  }
+  },
+
+  // Get AI score and qualitative feedback for a resume
+  async score(resumeText, jobRole = 'Software Engineer', options = {}) {
+    const headers = await getAuthHeaders()
+    const response = await fetch(`${API_BASE}/resumes/score`, {
+      method: 'POST',
+      headers,
+      body: JSON.stringify({ resumeText, jobRole }),
+      signal: options.signal
+    })
+    return handleResponse(response)
+  },
 }
 
 // ============ PORTFOLIO API ============

@@ -17,7 +17,8 @@ import {
 import { scrapeLinkedInProfile, profileToResumeText } from '../services/linkedinImporter.js';
 import { fetchGitHubProfile, convertGitHubToResumeText } from '../services/githubImporter.js';
 import { getDefaultProvider } from '../config/aiProviders.js';
-import { analyzeResume } from '../services/resumeService.js';
+import { scoreResumeText } from '../services/resumeService.js';
+import { extractAIProvider } from '../middleware/aiKey.js';
 
 const router = express.Router();
 
@@ -583,22 +584,26 @@ ${text}`;
   }
 }));
 
-router.post('/score', asyncHandler(async (req, res) => {
-  const { resumeText } = req.body;
+router.post('/score', extractAIProvider, asyncHandler(async (req, res) => {
+  const { resumeText, jobRole } = req.body;
 
-  if (!resumeText || !resumeText.trim()) {
-    return res.status(400).json({
-      success: false,
-      message: 'Resume text is required'
-    });
+  if (typeof resumeText !== 'string' || !resumeText.trim()) {
+    throw new ApiError(400, 'Resume text is required and must be a string');
   }
 
-  const analysisResult = await analyzeResume(resumeText);
-
-  res.json({
-    success: true,
-    data: analysisResult
-  });
+  try {
+    const provider = req.aiProvider;
+    const scoreData = await scoreResumeText(resumeText, jobRole || 'Software Engineer', provider);
+    
+    res.json({
+      success: true,
+      data: scoreData
+    });
+  } catch (error) {
+    console.error('Resume scoring error:', error);
+    if (error instanceof ApiError) throw error;
+    throw new ApiError(500, 'Failed to score resume with AI.');
+  }
 }));
 
 
