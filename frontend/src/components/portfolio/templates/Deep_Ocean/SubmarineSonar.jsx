@@ -234,7 +234,7 @@ export default function SubmarineSonar() {
   const selectContact = (contact) => {
     setSelectedContact(contact);
     // Ping pitch depends on contact range (closer = higher pitch)
-    const rangeVal = parseInt(contact.range);
+    const rangeVal = parseInt(contact.range, 10);
     const pitch = 1200 - (rangeVal * 1.2);
     playSonarPing(pitch);
   };
@@ -356,7 +356,7 @@ export default function SubmarineSonar() {
               </div>
 
               {/* Target Contacts Blips Mapping */}
-              {filteredContacts.map((contact) => {
+              {(filteredContacts ?? []).map((contact) => {
                 const isSelected = selectedContact.id === contact.id;
                 
                 // Position calculations around the sonar center
