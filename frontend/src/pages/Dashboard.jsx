@@ -50,6 +50,7 @@ import {
   SkeletonBlock
 } from '../components/ui/Skeleton'
 import { getGithubUsername } from '../utils/github'
+import EmptyState from '../components/EmptyState'
 
 /* ─── Feature Categories ─────────────────────────────────────────────── */
 const FEATURE_CATEGORIES = [
@@ -399,14 +400,13 @@ export default function Dashboard() {
                 </div>
 
                 {trackedJobs.length === 0 ? (
-                  <div className="rounded-xl border border-dashed border-border p-8 text-center">
-                    <Briefcase className="w-8 h-8 text-muted-foreground/40 mx-auto mb-3" />
-                    <p className="text-sm font-medium text-muted-foreground mb-1">No applications yet</p>
-                    <p className="text-xs text-muted-foreground/70 mb-4">Start searching to track your progress</p>
-                    <Link to="/job-finder/search" className="inline-flex items-center gap-1.5 px-3 py-1.5 bg-primary text-primary-foreground rounded-lg text-xs font-semibold hover:bg-primary/90 transition-colors">
-                      <Search className="w-3.5 h-3.5" /> Search Jobs
-                    </Link>
-                  </div>
+                  <EmptyState
+                    icon={Briefcase}
+                    title="No applications yet"
+                    description="Start searching and track your job applications here."
+                    actionLabel="Explore Jobs"
+                    to="/job-finder/search"
+                  />
                 ) : (
                   <div className="rounded-xl bg-card border border-border divide-y divide-border overflow-hidden">
                     {trackedJobs.slice(0, 5).map((job, index) => {
@@ -441,14 +441,13 @@ export default function Dashboard() {
                 </div>
 
                 {resumes.length === 0 ? (
-                  <div className="rounded-xl border border-dashed border-border p-8 text-center">
-                    <FileText className="w-8 h-8 text-muted-foreground/40 mx-auto mb-3" />
-                    <p className="text-sm font-medium text-muted-foreground mb-1">No resumes yet</p>
-                    <p className="text-xs text-muted-foreground/70 mb-4">Upload or build one to get started</p>
-                    <Link to="/resume-builder/build" className="inline-flex items-center gap-1.5 px-3 py-1.5 bg-primary text-primary-foreground rounded-lg text-xs font-semibold hover:bg-primary/90 transition-colors">
-                      <FileText className="w-3.5 h-3.5" /> Build Resume
-                    </Link>
-                  </div>
+                  <EmptyState
+                    icon={FileText}
+                    title="No resumes yet"
+                    description="Upload your resume or build one from scratch using our builder."
+                    actionLabel="Create Resume"
+                    to="/resume-builder/build"
+                  />
                 ) : (
                   <div className="rounded-xl bg-card border border-border divide-y divide-border overflow-hidden">
                     {resumes.slice(0, 5).map((resume) => (

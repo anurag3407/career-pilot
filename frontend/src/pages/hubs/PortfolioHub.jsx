@@ -6,10 +6,12 @@ import ToolCard from '../../components/ToolCard'
 import { Link, useNavigate } from 'react-router-dom'
 import { motion } from 'framer-motion'
 import toast from 'react-hot-toast'
+import EmptyState from '../../components/EmptyState'
 
 export default function PortfolioHub() {
   const [portfolios, setPortfolios] = useState([])
   const [loading, setLoading] = useState(true)
+  const [error, setError] = useState(false)
   const [isUploading, setIsUploading] = useState(false)
   const [recommendedTheme, setRecommendedTheme] = useState('')
   const [themeInsights, setThemeInsights] = useState([])
@@ -71,18 +73,22 @@ export default function PortfolioHub() {
   setThemeInsights(insights)
 }, [])
 
-  useEffect(() => {
-    const fetchPortfolios = async () => {
-      try {
-        const res = await portfolioApi.getAll()
-        const items = res.portfolios || res.data?.portfolios || res.data || []
-        setPortfolios(items)
-      } catch (err) {
-        console.error('Failed to fetch portfolios in PortfolioHub', err)
-      } finally {
-        setLoading(false)
-      }
+  const fetchPortfolios = async () => {
+    setLoading(true)
+    setError(false)
+    try {
+      const res = await portfolioApi.getAll()
+      const items = res.portfolios || res.data?.portfolios || res.data || []
+      setPortfolios(items)
+    } catch (err) {
+      console.error('Failed to fetch portfolios in PortfolioHub', err)
+      setError(true)
+    } finally {
+      setLoading(false)
     }
+  }
+
+  useEffect(() => {
     fetchPortfolios()
   }, [])
 
@@ -285,49 +291,68 @@ export default function PortfolioHub() {
       />
 
       {/* Showcase list or placeholder */}
-      {!loading && portfolios.length > 0 && (
+      {!loading && (
         <div className="col-span-full mt-6">
           <h2 className="text-xl font-bold text-foreground mb-4 flex items-center gap-2">
             <span className="w-1.5 h-6 rounded-full bg-secondary" />
             My Deployed Portfolios
           </h2>
-          <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-4">
-            {portfolios.map((portfolio, idx) => (
-              <motion.div
-                key={portfolio.id || idx}
-                initial={{ opacity: 0, y: 10 }}
-                animate={{ opacity: 1, y: 0 }}
-                transition={{ delay: idx * 0.05 }}
-                className="p-5 rounded-2xl bg-card border border-border hover:border-primary/30 transition-all group relative overflow-hidden"
-              >
-                <div className="flex items-start justify-between mb-3">
-                  <div className="w-10 h-10 rounded-lg bg-primary/10 flex items-center justify-center">
-                    <Globe className="w-5 h-5 text-primary" />
+          {error ? (
+            <div className="rounded-xl border border-destructive/20 bg-destructive/5 px-5 py-4 text-sm text-destructive flex items-center justify-between">
+              <span className="font-medium">Failed to load deployed portfolios.</span>
+              <button onClick={fetchPortfolios} className="px-3 py-1.5 bg-destructive text-destructive-foreground rounded-lg text-xs font-semibold hover:opacity-90 transition-opacity">
+                Retry
+              </button>
+            </div>
+          ) : portfolios.length === 0 ? (
+            <EmptyState
+              icon={Globe}
+              title="No Deployed Portfolios"
+              description="Choose a premium template or import repositories from GitHub to showcase your work."
+              actionLabel="Portfolio Templates"
+              to="/templates"
+              secondaryLabel="GitHub Dashboard"
+              secondaryTo="/github-dashboard"
+            />
+          ) : (
+            <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-4">
+              {portfolios.map((portfolio, idx) => (
+                <motion.div
+                  key={portfolio.id || idx}
+                  initial={{ opacity: 0, y: 10 }}
+                  animate={{ opacity: 1, y: 0 }}
+                  transition={{ delay: idx * 0.05 }}
+                  className="p-5 rounded-2xl bg-card border border-border hover:border-primary/30 transition-all group relative overflow-hidden"
+                >
+                  <div className="flex items-start justify-between mb-3">
+                    <div className="w-10 h-10 rounded-lg bg-primary/10 flex items-center justify-center">
+                      <Globe className="w-5 h-5 text-primary" />
+                    </div>
+                    <span className="text-[10px] font-black uppercase tracking-wider px-2 py-0.5 rounded bg-emerald-500/10 text-emerald-500 border border-emerald-500/20">
+                      Live
+                    </span>
                   </div>
-                  <span className="text-[10px] font-black uppercase tracking-wider px-2 py-0.5 rounded bg-emerald-500/10 text-emerald-500 border border-emerald-500/20">
-                    Live
-                  </span>
-                </div>
-                <h3 className="font-bold text-foreground mb-1 truncate">
-                  {portfolio.title || portfolio.name || 'Personal Portfolio'}
-                </h3>
-                <p className="text-xs text-muted-foreground mb-4 truncate font-medium">
-                  Theme: {portfolio.theme || 'Modern'}
-                </p>
-                <div className="flex items-center gap-2">
-                  <a
-                    href={portfolio.url}
-                    target="_blank"
-                    rel="noopener noreferrer"
-                    className="flex-1 text-center text-xs font-semibold px-3 py-2 rounded-lg bg-primary/10 text-primary hover:bg-primary/20 transition-colors inline-flex items-center justify-center gap-1.5"
-                  >
-                    Visit Site
-                    <Globe className="w-3 h-3" />
-                  </a>
-                </div>
-              </motion.div>
-            ))}
-          </div>
+                  <h3 className="font-bold text-foreground mb-1 truncate">
+                    {portfolio.title || portfolio.name || 'Personal Portfolio'}
+                  </h3>
+                  <p className="text-xs text-muted-foreground mb-4 truncate font-medium">
+                    Theme: {portfolio.theme || 'Modern'}
+                  </p>
+                  <div className="flex items-center gap-2">
+                    <a
+                      href={portfolio.url}
+                      target="_blank"
+                      rel="noopener noreferrer"
+                      className="flex-1 text-center text-xs font-semibold px-3 py-2 rounded-lg bg-primary/10 text-primary hover:bg-primary/20 transition-colors inline-flex items-center justify-center gap-1.5"
+                    >
+                      Visit Site
+                      <Globe className="w-3 h-3" />
+                    </a>
+                  </div>
+                </motion.div>
+              ))}
+            </div>
+          )}
         </div>
       )}
     </HubLayout>

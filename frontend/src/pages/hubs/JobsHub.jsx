@@ -5,6 +5,7 @@ import HubLayout from '../../components/HubLayout'
 import ToolCard from '../../components/ToolCard'
 import { Link } from 'react-router-dom'
 import { motion } from 'framer-motion'
+import EmptyState from '../../components/EmptyState'
 
 const STATUS_CONFIG = {
   saved: { label: 'Saved', color: 'bg-muted text-muted-foreground border border-border', icon: Star },
@@ -16,6 +17,7 @@ const STATUS_CONFIG = {
 export default function JobsHub() {
   const [trackedJobs, setTrackedJobs] = useState([])
   const [loading, setLoading] = useState(true)
+  const [error, setError] = useState(false)
   const [jobStats, setJobStats] = useState({
     total: 0,
     saved: 0,
@@ -24,27 +26,31 @@ export default function JobsHub() {
     offered: 0
   })
 
-  useEffect(() => {
-    const fetchJobs = async () => {
-      try {
-        const res = await jobTrackerApi.getAll()
-        const jobs = res.trackedJobs || []
-        setTrackedJobs(jobs)
-        
-        const stats = {
-          total: jobs.length,
-          saved: jobs.filter(j => j.status === 'saved').length,
-          applied: jobs.filter(j => j.status === 'applied').length,
-          interviewing: jobs.filter(j => j.status === 'interviewing').length,
-          offered: jobs.filter(j => j.status === 'offered').length
-        }
-        setJobStats(stats)
-      } catch (err) {
-        console.error('Failed to fetch jobs in JobsHub', err)
-      } finally {
-        setLoading(false)
+  const fetchJobs = async () => {
+    setLoading(true)
+    setError(false)
+    try {
+      const res = await jobTrackerApi.getAll()
+      const jobs = res.trackedJobs || []
+      setTrackedJobs(jobs)
+      
+      const stats = {
+        total: jobs.length,
+        saved: jobs.filter(j => j.status === 'saved').length,
+        applied: jobs.filter(j => j.status === 'applied').length,
+        interviewing: jobs.filter(j => j.status === 'interviewing').length,
+        offered: jobs.filter(j => j.status === 'offered').length
       }
+      setJobStats(stats)
+    } catch (err) {
+      console.error('Failed to fetch jobs in JobsHub', err)
+      setError(true)
+    } finally {
+      setLoading(false)
     }
+  }
+
+  useEffect(() => {
     fetchJobs()
   }, [])
 
@@ -115,58 +121,79 @@ export default function JobsHub() {
       />
 
       {/* Recent Applications Section */}
-      {!loading && trackedJobs.length > 0 && (
+      {!loading && (
         <div className="col-span-full mt-6">
           <div className="flex justify-between items-center mb-4">
             <h2 className="text-xl font-bold text-foreground flex items-center gap-2">
               <span className="w-1.5 h-6 rounded-full bg-secondary" />
               Recent Applications
             </h2>
-            <Link to="/job-tracker" className="text-xs font-semibold text-primary hover:underline flex items-center gap-1">
-              View Application Tracker <ExternalLink className="w-3 h-3" />
-            </Link>
+            {trackedJobs.length > 0 && (
+              <Link to="/job-tracker" className="text-xs font-semibold text-primary hover:underline flex items-center gap-1">
+                View Application Tracker <ExternalLink className="w-3 h-3" />
+              </Link>
+            )}
           </div>
-          <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-4">
-            {trackedJobs.slice(0, 3).map((job, idx) => {
-              const statusConfig = STATUS_CONFIG[job.status] || STATUS_CONFIG.saved
-              const StatusIcon = statusConfig.icon
+          {error ? (
+            <div className="rounded-xl border border-destructive/20 bg-destructive/5 px-5 py-4 text-sm text-destructive flex items-center justify-between">
+              <span className="font-medium">Failed to load recent applications.</span>
+              <button onClick={fetchJobs} className="px-3 py-1.5 bg-destructive text-destructive-foreground rounded-lg text-xs font-semibold hover:opacity-90 transition-opacity">
+                Retry
+              </button>
+            </div>
+          ) : trackedJobs.length === 0 ? (
+            <EmptyState
+              icon={Briefcase}
+              title="No applications tracked yet"
+              description="Keep track of your active job search. Find open roles or manage them on your tracker board."
+              actionLabel="Explore Jobs"
+              to="/jobs"
+              secondaryLabel="Application Tracker"
+              secondaryTo="/job-tracker"
+            />
+          ) : (
+            <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-4">
+              {trackedJobs.slice(0, 3).map((job, idx) => {
+                const statusConfig = STATUS_CONFIG[job.status] || STATUS_CONFIG.saved
+                const StatusIcon = statusConfig.icon
 
-              return (
-                <motion.div
-                  key={job._id || job.id || idx}
-                  initial={{ opacity: 0, y: 10 }}
-                  animate={{ opacity: 1, y: 0 }}
-                  transition={{ delay: idx * 0.05 }}
-                  className="p-5 rounded-2xl bg-card border border-border hover:border-primary/30 transition-all group relative overflow-hidden"
-                >
-                  <div className="flex items-start justify-between mb-3">
-                    <div className="w-10 h-10 rounded-lg bg-primary/10 flex items-center justify-center">
-                      <Briefcase className="w-5 h-5 text-primary" />
+                return (
+                  <motion.div
+                    key={job._id || job.id || idx}
+                    initial={{ opacity: 0, y: 10 }}
+                    animate={{ opacity: 1, y: 0 }}
+                    transition={{ delay: idx * 0.05 }}
+                    className="p-5 rounded-2xl bg-card border border-border hover:border-primary/30 transition-all group relative overflow-hidden"
+                  >
+                    <div className="flex items-start justify-between mb-3">
+                      <div className="w-10 h-10 rounded-lg bg-primary/10 flex items-center justify-center">
+                        <Briefcase className="w-5 h-5 text-primary" />
+                      </div>
+                      <span className={`px-2 py-0.5 rounded-lg text-[10px] font-black flex items-center gap-1.5 uppercase ${statusConfig.color}`}>
+                        <StatusIcon className="w-3 h-3" />
+                        {statusConfig.label}
+                      </span>
                     </div>
-                    <span className={`px-2 py-0.5 rounded-lg text-[10px] font-black flex items-center gap-1.5 uppercase ${statusConfig.color}`}>
-                      <StatusIcon className="w-3 h-3" />
-                      {statusConfig.label}
-                    </span>
-                  </div>
-                  <h3 className="font-bold text-foreground mb-1 truncate">
-                    {job.title}
-                  </h3>
-                  <p className="text-xs text-muted-foreground mb-4 font-semibold">
-                    {job.company}
-                  </p>
-                  <div className="flex items-center gap-2">
-                    <Link
-                      to="/job-tracker"
-                      className="flex-1 text-center text-xs font-semibold px-3 py-2 rounded-lg bg-primary/10 text-primary hover:bg-primary/20 transition-colors"
-                    >
-                      <Eye className="w-3.5 h-3.5 inline mr-1" />
-                      Manage
-                    </Link>
-                  </div>
-                </motion.div>
-              )
-            })}
-          </div>
+                    <h3 className="font-bold text-foreground mb-1 truncate">
+                      {job.title}
+                    </h3>
+                    <p className="text-xs text-muted-foreground mb-4 font-semibold">
+                      {job.company}
+                    </p>
+                    <div className="flex items-center gap-2">
+                      <Link
+                        to="/job-tracker"
+                        className="flex-1 text-center text-xs font-semibold px-3 py-2 rounded-lg bg-primary/10 text-primary hover:bg-primary/20 transition-colors"
+                      >
+                        <Eye className="w-3.5 h-3.5 inline mr-1" />
+                        Manage
+                      </Link>
+                    </div>
+                  </motion.div>
+                )
+              })}
+            </div>
+          )}
         </div>
       )}
     </HubLayout>
