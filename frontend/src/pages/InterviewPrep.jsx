@@ -1285,7 +1285,7 @@ ${updatedProgress.level}`
                     onChange={(e) => setFormData({ ...formData, industry: e.target.value })}
                     className="w-full px-4 py-3 bg-muted/50 border border-border rounded-xl text-foreground focus:ring-2 focus:ring-primary"
                   >
-                    {INDUSTRIES.map(ind => <option key={ind.value} value={ind.value}>{ind.label}</option>)}
+                    {(INDUSTRIES ?? []).map(ind => <option key={ind.value} value={ind.value}>{ind.label}</option>)}
                   </select>
                 </div>
 
@@ -1387,7 +1387,7 @@ ${updatedProgress.level}`
                       min="2"
                       max="20"
                       value={formData.questionCount}
-                      onChange={(e) => setFormData({ ...formData, questionCount: parseInt(e.target.value) })}
+                      onChange={(e) => setFormData({ ...formData, questionCount: parseInt(e.target.value, 10) })}
                       className="flex-1 h-2 bg-card rounded-lg appearance-none cursor-pointer accent-indigo-500"
                     />
                     <span className="w-12 text-center text-lg font-semibold text-primary">{formData.questionCount}</span>
