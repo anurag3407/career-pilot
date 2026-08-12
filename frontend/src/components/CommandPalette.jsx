@@ -96,7 +96,7 @@ const CommandPalette = ({ isOpen, setIsOpen }) => {
       }, 50);
 
       const saved =
-        JSON.parse(localStorage.getItem('recentCommands')) || [];
+        (() => { try { return JSON.parse(localStorage.getItem('recentCommands')) } catch { return null } })() || [];
 
       setRecentActions(saved);
     } else {
