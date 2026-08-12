@@ -1387,7 +1387,7 @@ ${updatedProgress.level}`
                       min="2"
                       max="20"
                       value={formData.questionCount}
-                      onChange={(e) => setFormData({ ...formData, questionCount: parseInt(e.target.value) })}
+                      onChange={(e) => setFormData({ ...formData, questionCount: parseInt(e.target.value, 10) })}
                       className="flex-1 h-2 bg-card rounded-lg appearance-none cursor-pointer accent-indigo-500"
                     />
                     <span className="w-12 text-center text-lg font-semibold text-primary">{formData.questionCount}</span>
