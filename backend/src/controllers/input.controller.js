@@ -25,7 +25,7 @@ function parseInputDataPayload(data) {
   }
 
   try {
-    if (typeof data !== "string" || data.trim() === "") {
+    if (typeof data !== "string" || data.trim().length === 0) {
       return null;
     }
 
@@ -111,7 +111,7 @@ async function inputupload(req, res) {
     const uniqueSkills = [...new Set(combinedSkills)];
 
     
-    const techSkills = uniqueSkills.map((skill) => ({
+    const techSkills = (uniqueSkills ?? []).map((skill) => ({
       name: skill,
     }));
 

@@ -207,14 +207,14 @@ export const bulkUpsertJobs = async (
     .lean();
 
   const existingByStoredId = new Map(
-    existingDocs.map((document) => [
+    (existingDocs ?? []).map((document) => [
       String(document.externalId),
       document,
     ]),
   );
 
   const existingLegacyBySourceId = new Map(
-    existingDocs.map((document) => [
+    (existingDocs ?? []).map((document) => [
       buildSourceScopedExternalId(
         document.source,
         document.externalId,
@@ -359,7 +359,7 @@ export const processAlert = async (alertData) => {
 
     // Ensure email matches the current alert's email (in case of updates)
     const currentEmail = alertExists.userEmail;
-    if (!currentEmail || currentEmail.trim() === '') {
+    if (!currentEmail || currentEmail.trim().length === 0) {
         console.error(`❌ Alert ${alertId} has no email address in database - skipping`);
         return { success: false, error: 'No email in database', skipped: true };
     }

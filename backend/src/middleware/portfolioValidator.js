@@ -60,7 +60,7 @@ function collectUrlErrors(obj, path, errors) {
 function sanitizeObject(obj) {
   if (typeof obj === 'string') return stripHtml(obj);
 
-  if (Array.isArray(obj)) return obj.map(sanitizeObject);
+  if (Array.isArray(obj)) return (obj ?? []).map(sanitizeObject);
 
   if (typeof obj === 'object' && obj !== null) {
     const out = {};
@@ -76,7 +76,7 @@ function sanitizeObject(obj) {
 export const validatePortfolioSlug = (req, res, next) => {
   const rawSlug = req.params.slug ?? req.body?.slug;
 
-  if (typeof rawSlug !== 'string' || rawSlug.trim() === '') {
+  if (typeof rawSlug !== 'string' || rawSlug.trim().length === 0) {
     return res.status(400).json({
       success: false,
       error: 'Portfolio slug is required.',
