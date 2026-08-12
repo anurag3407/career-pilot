@@ -111,7 +111,7 @@ export default function BehanceGrid() {
                       fontWeight: 700,
                     }}
                   >
-                    {(p.title || '·').charAt(0).toUpperCase()}
+                    {(p.title || '·')[0].toUpperCase()}
                   </div>
                   <div style={{ padding: '3mm' }}>
                     <h3 style={{ margin: 0, fontSize: '10.5pt', fontWeight: 700, color: '#1f2937' }}>
