@@ -47,7 +47,7 @@ const Testimonials = ({ testimonials = [] }) => {
                 <img src={t.avatar} alt={t.name} className="w-10 h-10 rounded-full object-cover border border-slate-800" />
               ) : (
                 <div className="w-10 h-10 rounded-full bg-slate-900 border border-slate-800 flex items-center justify-center text-cyan-400 text-sm font-bold">
-                  {t.name?.charAt(0) || '?'}
+                  {t.name?[0] || '?'}
                 </div>
               )}
               <div>

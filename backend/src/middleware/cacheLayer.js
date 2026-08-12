@@ -120,7 +120,7 @@ const createScopeDigest = (scope) => {
   if (
     scope === null ||
     scope === undefined ||
-    String(scope).trim() === ''
+    String(scope).trim().length === 0
   ) {
     throw new TypeError(
       'cache scope must be a non-empty value',

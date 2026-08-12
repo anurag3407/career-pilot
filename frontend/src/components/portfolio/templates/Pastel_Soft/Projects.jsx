@@ -30,7 +30,7 @@ export default function Projects() {
                 {project.image ? (
                   <img src={project.image} alt={project.title} className="w-full h-full object-cover group-hover:scale-105 transition-transform duration-500" />
                 ) : (
-                  <div className="text-teal-300 font-bold text-4xl opacity-50">{project.title.charAt(0)}</div>
+                  <div className="text-teal-300 font-bold text-4xl opacity-50">{project.title[0]}</div>
                 )}
                 <div className="absolute inset-0 bg-teal-900/10 opacity-0 group-hover:opacity-100 transition-opacity duration-300"></div>
               </div>

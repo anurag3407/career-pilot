@@ -35,7 +35,7 @@ export default function Testimonials() {
               </p>
               <div className="flex items-center gap-4">
                 <div className="w-12 h-12 bg-rose-100 rounded-full flex items-center justify-center text-rose-500 font-bold text-xl">
-                  {testimonial.author?.charAt(0) || "U"}
+                  {testimonial.author?[0] || "U"}
                 </div>
                 <div>
                   <h4 className="font-bold text-slate-700">{testimonial.author}</h4>
