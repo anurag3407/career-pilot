@@ -96,7 +96,8 @@ Return ONLY the raw markdown content, no explanations.`
           }]
         })
       });
-      const data = await response.json();
+      if (!response.ok) throw new Error("Request failed");
+const data = await response.json();
       const text = data.content?.map(b => b.text || "").join("") || "";
       if (text) setMarkdown(text);
       else setError("No content returned. Please try again.");
