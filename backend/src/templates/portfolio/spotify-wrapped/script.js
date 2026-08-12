@@ -59,7 +59,7 @@ const compileTemplates = () => {
     // Compile Skills Loop
     const skillRegex = /\{%\s*for\s+skill\s+in\s+skills\s*%\}([\s\S]*?)\{%\s*endfor\s*%\}/g;
     html = html.replace(skillRegex, (match, innerHtml) => {
-      return PORTFOLIO_DATA.skills.map(skill => {
+      return PORTFOLIO_DATA.(skills ?? []).map(skill => {
         return innerHtml.replace(/\{\{\s*skill\s*\}\}/g, skill);
       }).join('');
     });
@@ -91,7 +91,7 @@ const compileTemplates = () => {
     });
 
     // Write compiled HTML back to the body
-    document.body.innerHTML = html;
+    document.body.textContent = html;
 
     // Update document title
     document.title = document.title.replace(/\{\{\s*name\s*\}\}/g, PORTFOLIO_DATA.name);
