@@ -15,7 +15,7 @@ const IMPACT_CONFIG = {
 }
 
 function ScoreRing({ score, label, size = 'md' }) {
-  const safeScore = isNaN(Number(score)) ? 0 : Math.max(0, Math.min(100, Math.round(Number(score))))
+  const safeScore = Number.isNaN(Number(score)) ? 0 : Math.max(0, Math.min(100, Math.round(Number(score))))
   const r = size === 'lg' ? 44 : 28
   const stroke = size === 'lg' ? 7 : 5
   const dim = (r + stroke) * 2
@@ -376,7 +376,7 @@ export default function LinkedInOptimizer() {
                     <Sparkles className="w-5 h-5 text-blue-400" /> Optimized Headline Suggestions
                   </h2>
                   <div className="space-y-3">
-                    {results.headlineSuggestions.map((h, i) => (
+                    {results.(headlineSuggestions ?? []).map((h, i) => (
                       <HeadlineCard key={i} headline={h} index={i} copied={copiedIndex} onCopy={copyToClipboard} />
                     ))}
                   </div>
@@ -425,7 +425,7 @@ export default function LinkedInOptimizer() {
                       <Zap className="w-5 h-5 text-yellow-400" /> Quick Wins
                     </h2>
                     <div className="space-y-3">
-                      {results.quickWins.map((win, i) => {
+                      {results.(quickWins ?? []).map((win, i) => {
                         const cfg = IMPACT_CONFIG[win.impact] || IMPACT_CONFIG.Low
                         return (
                           <motion.div
