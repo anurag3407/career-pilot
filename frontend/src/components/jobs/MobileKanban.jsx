@@ -353,6 +353,16 @@ function KanbanColumn({ column, jobs, onDelete }) {
  * @param {Function}      props.onDelete            - Callback when a job card is removed
  * @param {string}        props.className           - Additional CSS classes
  */
+/**
+ * Enhanced Kanban board for job tracking.
+ *
+ * Features:
+ * - Drag and drop
+ * - Offline support
+ * - Status filtering
+ * - Memoized rendering
+ * - Optimistic updates
+ */
 export default function MobileKanban({
   initialJobs,
   onStatusUpdate: externalOnStatusUpdate,
@@ -678,7 +688,12 @@ export default function MobileKanban({
         <EmptyKanban />
       ) : (
         <DragDropContext onDragEnd={onDragEnd}>
-          <div className="flex flex-col gap-4">
+          <div className="
+          grid
+          grid-cols-1
+          md:grid-cols-2
+          xl:grid-cols-5
+          gap-4">
             {filteredColumns.map((column) => (
               <KanbanColumn
                 key={column.value}
