@@ -33,6 +33,7 @@ import ChatbotPortfolio from "./components/portfolio/templates/Chatbot_Portfolio
 import GlassmorphismTemplate from "./components/portfolio/templates/Glassmorphism/index";
 
 import JobTracker from './pages/JobTracker';
+import CookieBanner from "./components/CookieBanner";
 
 const Community = lazy(() => import('./pages/Community'));
 const Login = lazy(() => import("./pages/Login"));
@@ -566,6 +567,7 @@ function AppRoutes() {
         <Route path="*" element={<NotFound />} />
         <Route path="/templates/color-block" element={<ColorBlock />} />
       </Routes>
+      <CookieBanner />
     </BrowserRouter>
   );
 }
