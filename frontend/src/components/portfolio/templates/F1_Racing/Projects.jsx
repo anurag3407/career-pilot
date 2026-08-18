@@ -2091,7 +2091,7 @@ export default function Projects({ data }) {
           if (typeof prog === 'string') {
              prog = parseInt(prog.replace(/[^0-9]/g, ''), 10);
           }
-          if (typeof prog !== 'number' || isNaN(prog)) {
+          if (typeof prog !== 'number' || Number.isNaN(prog)) {
              prog = Math.floor(Math.random() * 15) + 85;
           }
 
